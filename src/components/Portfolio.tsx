@@ -202,7 +202,7 @@ const Portfolio: React.FC = () => {
   };
 
   return (
-    <section id="portfolio" className="w-full max-w-7xl mx-auto px-6 py-28 md:py-40">
+    <section id="portfolio" className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-28 md:py-40">
       <div className="flex justify-center mb-20">
         <div className="w-px h-24 bg-gradient-to-b from-transparent via-mustard-500/30 to-transparent" />
       </div>

@@ -1,6 +1,6 @@
 const Footer: React.FC = () => {
   return (
-    <footer className="w-full max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-10">
+    <footer className="w-full px-6 md:px-16 lg:px-24 xl:px-32 pt-20 pb-10">
       {/* Divider */}
       <div className="flex justify-center mb-16">
         <div className="w-px h-24 bg-gradient-to-b from-transparent via-mustard-500/20 to-transparent" />

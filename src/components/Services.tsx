@@ -39,7 +39,7 @@ const services = [
 
 const Services: React.FC = () => {
   return (
-    <section id="services" className="w-full max-w-7xl mx-auto px-6 md:px-12 py-28 md:py-40">
+    <section id="services" className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-28 md:py-40">
       {/* Divider */}
       <div className="flex justify-center mb-20">
         <div className="w-px h-24 bg-gradient-to-b from-transparent via-mustard-500/30 to-transparent" />
