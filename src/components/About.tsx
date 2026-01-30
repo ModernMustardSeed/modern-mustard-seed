@@ -9,7 +9,7 @@ const disciplines = [
 
 const About: React.FC = () => {
   return (
-    <section id="about" className="w-full max-w-6xl mx-auto px-6 py-28 md:py-40">
+    <section id="about" className="w-full max-w-7xl mx-auto px-6 md:px-12 py-28 md:py-40">
       {/* Divider */}
       <div className="flex justify-center mb-20">
         <div className="w-px h-24 bg-gradient-to-b from-transparent via-mustard-500/30 to-transparent" />

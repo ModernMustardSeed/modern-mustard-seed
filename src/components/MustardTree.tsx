@@ -56,7 +56,7 @@ const MustardTree: React.FC = () => {
         leaves.length = 0;
 
         seedX = p.width * 0.5;
-        groundY = p.height * 0.58;
+        groundY = p.height * 0.72;
         seedY = groundY;
 
         // --- ROOTS ---
@@ -185,24 +185,26 @@ const MustardTree: React.FC = () => {
           }
         };
 
-        // Main branch directions — spread wide for canopy
+        // Main branch directions — spread extra wide for full canopy shade
         const branchAngles = [
-          -p.HALF_PI - 0.6,
-          -p.HALF_PI - 0.3,
+          -p.HALF_PI - 1.1,
+          -p.HALF_PI - 0.7,
+          -p.HALF_PI - 0.35,
           -p.HALF_PI,
-          -p.HALF_PI + 0.3,
-          -p.HALF_PI + 0.6,
+          -p.HALF_PI + 0.35,
+          -p.HALF_PI + 0.7,
+          -p.HALF_PI + 1.1,
         ];
         for (const angle of branchAngles) {
-          const len = p.height * p.random(0.1, 0.18);
-          const thick = p.width * p.random(0.003, 0.006);
+          const len = p.height * p.random(0.12, 0.22);
+          const thick = p.width * p.random(0.004, 0.007);
           generateBranches(trunkTopX, trunkTopY, angle, len, thick, 0, 0.35);
         }
 
-        // Extra canopy leaves for fullness
-        for (let i = 0; i < 80; i++) {
+        // Extra canopy leaves for fullness — wide spread
+        for (let i = 0; i < 150; i++) {
           const angle = p.random(-p.PI, 0);
-          const dist = p.random(p.width * 0.05, p.width * 0.32);
+          const dist = p.random(p.width * 0.05, p.width * 0.48);
           const lx = trunkTopX + p.cos(angle) * dist;
           const ly = trunkTopY + p.sin(angle * 0.6) * dist * 0.5 - p.random(0, p.height * 0.08);
           if (ly > groundY - 20) continue;
@@ -380,7 +382,7 @@ const MustardTree: React.FC = () => {
         if (growthProgress > 0.7) {
           const shadeAlpha = p.map(growthProgress, 0.7, 1, 0, 10);
           p.fill(90, 20, 15, shadeAlpha);
-          p.ellipse(seedX, seedY - p.height * 0.25, p.width * 0.7, p.height * 0.35);
+          p.ellipse(seedX, seedY - p.height * 0.35, p.width * 1.0, p.height * 0.45);
         }
       };
 

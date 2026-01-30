@@ -24,7 +24,7 @@ const Hero: React.FC = () => {
           <br />
           <span className="text-gradient-mustard">Mustard</span>
           <br />
-          <span className="font-extralight text-white/80">Seed</span>
+          <span className="text-liquid-metal text-6xl md:text-8xl lg:text-9xl font-black tracking-wider drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]">Seed</span>
         </h1>
       </div>
 

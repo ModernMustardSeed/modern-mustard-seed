@@ -45,6 +45,26 @@
     @apply bg-neutral-950/40 backdrop-blur-sm border border-white/[0.04] rounded-2xl;
   }
 
+  .text-liquid-metal {
+    background: linear-gradient(
+      180deg,
+      #f0f0f0 0%,
+      #d4d4d4 15%,
+      #fafafa 30%,
+      #a0a0a0 45%,
+      #e8e8e8 55%,
+      #c0c0c0 70%,
+      #f5f5f5 85%,
+      #d0d0d0 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: contrast(1.2) brightness(1.1);
+    -webkit-text-stroke: 1px rgba(200, 164, 21, 0.3);
+    paint-order: stroke fill;
+  }
+
   .skill-pill {
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] uppercase tracking-[0.15em] font-mono font-bold border transition-all duration-300;
   }
