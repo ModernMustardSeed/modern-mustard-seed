@@ -93,19 +93,21 @@ const Contact: React.FC = () => {
                 <span className="text-lg">🎙️</span>
               </div>
               <div>
-                <h4 className="font-sans text-sm font-bold text-white">Talk to Our AI Agent</h4>
-                <p className="text-[10px] text-white/30 font-body">Demo our voice AI live</p>
+                <h4 className="font-sans text-sm font-bold text-white">Talk to Olivia</h4>
+                <p className="text-[10px] text-white/30 font-body">Our AI voice assistant</p>
               </div>
             </div>
             <p className="text-white/30 text-sm font-body font-light leading-6 mb-4">
-              Prefer to talk? Our AI voice agent can answer your questions, walk you through a demo, and book a call — 24/7.
+              Click the mustard button in the bottom-right corner to talk to Olivia. She can answer your questions, walk you through our services, and book a discovery call — 24/7.
             </p>
-            <button
-              className="w-full py-3 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-lg hover:bg-mustard-500/10 transition-all"
-              onClick={() => alert('Voice agent coming soon!')}
+            <a
+              href="https://calendar.app.google/8YvQK2wbL5LPGxtT7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-3 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-lg hover:bg-mustard-500/10 transition-all text-center"
             >
-              Start a Conversation
-            </button>
+              Book a Discovery Call
+            </a>
           </div>
 
           {/* Direct Contact */}
@@ -126,7 +128,7 @@ const Contact: React.FC = () => {
               {[
                 { name: 'X', url: 'https://x.com' },
                 { name: 'LinkedIn', url: 'https://linkedin.com' },
-                { name: 'Facebook', url: 'https://facebook.com' },
+                { name: 'GitHub', url: 'https://github.com/ModernMustardSeed' },
                 { name: 'Instagram', url: 'https://instagram.com' },
                 { name: 'TikTok', url: 'https://tiktok.com' },
               ].map((social) => (

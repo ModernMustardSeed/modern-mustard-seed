@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
           {[
             { name: 'X', url: 'https://x.com' },
             { name: 'LinkedIn', url: 'https://linkedin.com' },
-            { name: 'Facebook', url: 'https://facebook.com' },
+            { name: 'GitHub', url: 'https://github.com/ModernMustardSeed' },
             { name: 'Instagram', url: 'https://instagram.com' },
             { name: 'TikTok', url: 'https://tiktok.com' },
           ].map((social) => (

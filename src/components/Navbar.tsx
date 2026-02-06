@@ -12,7 +12,6 @@ const Navbar: React.FC = () => {
   const navLinks = [
     { label: 'About', href: '#about' },
     { label: 'Services', href: '#services' },
-    { label: 'Portfolio', href: '#portfolio' },
     { label: 'Contact', href: '#contact' },
   ];
 
@@ -41,7 +40,7 @@ const Navbar: React.FC = () => {
             href="#contact"
             className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/50 transition-all"
           >
-            Talk to AI
+            Talk to Olivia
           </a>
         </div>
 

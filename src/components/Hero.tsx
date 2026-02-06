@@ -32,23 +32,26 @@ const Hero: React.FC = () => {
       <div className="w-24 h-px bg-gradient-to-r from-transparent via-mustard-500/40 to-transparent mb-6 opacity-0 animate-fade-in-up-delay" />
 
       {/* Tagline */}
-      <p className="text-white/30 text-sm md:text-base font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-10 opacity-0 animate-fade-in-up-delay">
+      <p className="text-white/30 text-sm md:text-base font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-4 opacity-0 animate-fade-in-up-delay">
+        God-sized vision. Relentless execution.
+      </p>
+      <p className="text-white/20 text-xs md:text-sm font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-10 opacity-0 animate-fade-in-up-delay">
         AI-powered products, voice agents, immersive experiences, and business automation — each one built with faith, precision, and the audacity to ship what others only dream about.
       </p>
 
       {/* CTAs */}
       <div className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in-up-delay-2">
         <a
-          href="#portfolio"
+          href="#services"
           className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all duration-300"
         >
-          Explore Our Work
+          Explore Our Services
         </a>
         <a
           href="#contact"
           className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/50 transition-all duration-300"
         >
-          Talk to Our AI
+          Talk to Olivia
         </a>
       </div>
 
