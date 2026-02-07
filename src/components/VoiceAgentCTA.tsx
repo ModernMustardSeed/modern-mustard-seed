@@ -10,7 +10,7 @@ const VoiceAgentCTA: React.FC = () => {
     script.onload = () => {
       if ((window as any).vapiSDK) {
         (window as any).vapiSDK.run({
-          apiKey: '2fdf36fa-e5de-4163-ab89-a67369e1b346',
+          apiKey: '270cb513-2c86-489b-b1f1-10dd129237c4',
           assistant: 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee',
           config: {
             position: 'bottom-right',
