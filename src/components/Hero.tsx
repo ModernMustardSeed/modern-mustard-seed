@@ -42,16 +42,16 @@ const Hero: React.FC = () => {
       {/* CTAs */}
       <div className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in-up-delay-2">
         <a
-          href="#services"
+          href="#demo"
           className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all duration-300"
         >
-          Explore Our Services
+          Try a Live Demo
         </a>
         <a
-          href="#contact"
+          href="#services"
           className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/50 transition-all duration-300"
         >
-          Talk to Olivia
+          Explore Services
         </a>
       </div>
 
