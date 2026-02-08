@@ -1,4 +1,13 @@
 const Footer: React.FC = () => {
+  const socials: { name: string; url: string; external?: boolean }[] = [
+    { name: 'X', url: 'https://x.com', external: true },
+    { name: 'LinkedIn', url: 'https://linkedin.com', external: true },
+    { name: 'GitHub', url: 'https://github.com/ModernMustardSeed', external: true },
+    { name: 'Instagram', url: 'https://instagram.com', external: true },
+    { name: 'TikTok', url: 'https://tiktok.com', external: true },
+    { name: 'Portfolio', url: '#portfolio-page' },
+  ];
+
   return (
     <footer className="w-full px-6 md:px-16 lg:px-24 xl:px-32 pt-20 pb-10">
       {/* Divider */}
@@ -19,20 +28,12 @@ const Footer: React.FC = () => {
       {/* Bottom */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-white/[0.04]">
         {/* Social */}
-        <div className="flex gap-6">
-          {[
-            { name: 'X', url: 'https://x.com' },
-            { name: 'LinkedIn', url: 'https://linkedin.com' },
-            { name: 'GitHub', url: 'https://github.com/ModernMustardSeed' },
-            { name: 'Instagram', url: 'https://instagram.com' },
-            { name: 'TikTok', url: 'https://tiktok.com' },
-            { name: 'Portfolio', url: 'https://kingdom-lab.vercel.app/' },
-          ].map((social) => (
+        <div className="flex flex-wrap gap-4 md:gap-6">
+          {socials.map((social) => (
             <a
               key={social.name}
               href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...(social.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className="text-[10px] uppercase tracking-[0.15em] text-white/20 hover:text-mustard-400 transition-colors font-mono font-bold"
             >
               {social.name}
