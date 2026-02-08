@@ -1,6 +1,6 @@
 const Hero: React.FC = () => {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center">
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 md:pt-6 text-center">
       {/* Eyebrow */}
       <div className="mb-6 opacity-0 animate-fade-in-up">
         <span className="text-[10px] tracking-[0.5em] uppercase text-mustard-500/60 font-mono font-bold block mb-6">
@@ -8,12 +8,12 @@ const Hero: React.FC = () => {
         </span>
 
         {/* Brand Name */}
-        <h1 className="font-sans text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight uppercase leading-[0.95]">
+        <h1 className="font-sans text-4xl md:text-7xl lg:text-8xl font-extrabold tracking-tight uppercase leading-[0.95]">
           <span className="text-gradient-mustard">Modern</span>
           <br />
           <span className="text-gradient-mustard">Mustard</span>
           <br />
-          <span className="text-liquid-metal text-6xl md:text-8xl lg:text-9xl font-black tracking-wider drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]">Seed</span>
+          <span className="text-liquid-metal text-5xl md:text-8xl lg:text-9xl font-black tracking-wider drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]">Seed</span>
         </h1>
       </div>
 
