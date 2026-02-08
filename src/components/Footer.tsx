@@ -41,14 +41,24 @@ const Footer: React.FC = () => {
           ))}
         </div>
 
-        {/* Copyright */}
-        <p className="text-[10px] text-white/15 font-mono tracking-wider">
-          &copy; {new Date().getFullYear()}{' '}
-          <a href="https://modernmustardseed.com" className="hover:text-mustard-400 transition-colors">
-            Modern Mustard Seed
-          </a>
-          . All rights reserved.
-        </p>
+        {/* Legal + Copyright */}
+        <div className="flex flex-col items-center md:items-end gap-2">
+          <div className="flex gap-4">
+            <a href="#privacy" className="text-[10px] uppercase tracking-[0.15em] text-white/20 hover:text-mustard-400 transition-colors font-mono font-bold">
+              Privacy
+            </a>
+            <a href="#terms" className="text-[10px] uppercase tracking-[0.15em] text-white/20 hover:text-mustard-400 transition-colors font-mono font-bold">
+              Terms
+            </a>
+          </div>
+          <p className="text-[10px] text-white/15 font-mono tracking-wider">
+            &copy; {new Date().getFullYear()}{' '}
+            <a href="https://modernmustardseed.com" className="hover:text-mustard-400 transition-colors">
+              Modern Mustard Seed
+            </a>
+            . All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   );

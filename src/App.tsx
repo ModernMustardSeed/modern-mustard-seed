@@ -5,19 +5,31 @@ import Hero from './components/Hero';
 import SocialProof from './components/SocialProof';
 import VideoShowcase from './components/VideoShowcase';
 import Services from './components/Services';
+import Insights from './components/Insights';
 import ProductDemo from './components/ProductDemo';
 import Contact from './components/Contact';
 import VoiceAgentCTA from './components/VoiceAgentCTA';
 import Footer from './components/Footer';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
+
+type Page = 'home' | 'portfolio' | 'privacy' | 'terms';
+
+function getPage(): Page {
+  const hash = window.location.hash;
+  if (hash === '#portfolio-page') return 'portfolio';
+  if (hash === '#privacy') return 'privacy';
+  if (hash === '#terms') return 'terms';
+  return 'home';
+}
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<'home' | 'portfolio'>(
-    window.location.hash === '#portfolio-page' ? 'portfolio' : 'home'
-  );
+  const [currentPage, setCurrentPage] = useState<Page>(getPage);
 
   useEffect(() => {
     const onHashChange = () => {
-      setCurrentPage(window.location.hash === '#portfolio-page' ? 'portfolio' : 'home');
+      setCurrentPage(getPage());
+      window.scrollTo(0, 0);
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -50,6 +62,9 @@ const App: React.FC = () => {
     );
   }
 
+  if (currentPage === 'privacy') return <PrivacyPolicy />;
+  if (currentPage === 'terms') return <TermsOfService />;
+
   return (
     <div className="relative w-full min-h-screen bg-[#0a0804] text-white selection:bg-mustard-500/30 selection:text-white overflow-x-hidden">
       {/* Background Layer (Fixed) — Mustard Tree Animation */}
@@ -79,6 +94,7 @@ const App: React.FC = () => {
           <SocialProof />
           <VideoShowcase />
           <Services />
+          <Insights />
           <ProductDemo />
           <Contact />
         </main>

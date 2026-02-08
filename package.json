@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vapi-ai/web": "^2.5.2",
+    "@vercel/analytics": "^1.6.1",
     "p5": "1.8.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1"
