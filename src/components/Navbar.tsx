@@ -9,11 +9,12 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
+  const navLinks: { label: string; href: string; external?: boolean }[] = [
     { label: 'About', href: '#about' },
     { label: 'Services', href: '#services' },
     { label: 'Live Demo', href: '#demo' },
     { label: 'Contact', href: '#contact' },
+    { label: 'Portfolio', href: 'https://kingdom-lab.vercel.app/', external: true },
   ];
 
   return (
@@ -32,6 +33,7 @@ const Navbar: React.FC = () => {
             <a
               key={link.label}
               href={link.href}
+              {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className="text-[11px] uppercase tracking-[0.2em] text-white/40 hover:text-mustard-400 transition-colors font-body font-medium"
             >
               {link.label}

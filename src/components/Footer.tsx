@@ -26,6 +26,7 @@ const Footer: React.FC = () => {
             { name: 'GitHub', url: 'https://github.com/ModernMustardSeed' },
             { name: 'Instagram', url: 'https://instagram.com' },
             { name: 'TikTok', url: 'https://tiktok.com' },
+            { name: 'Portfolio', url: 'https://kingdom-lab.vercel.app/' },
           ].map((social) => (
             <a
               key={social.name}
