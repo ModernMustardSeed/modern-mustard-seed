@@ -148,7 +148,7 @@ const Contact: React.FC = () => {
             <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-mono font-bold block mb-4">Connect</span>
             <div className="flex flex-wrap gap-3">
               {[
-                { name: 'X', url: 'https://x.com' },
+                { name: 'X', url: 'https://x.com/sarahmscarano' },
                 { name: 'LinkedIn', url: 'https://linkedin.com' },
                 { name: 'GitHub', url: 'https://github.com/ModernMustardSeed' },
                 { name: 'Instagram', url: 'https://instagram.com' },
