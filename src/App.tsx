@@ -3,6 +3,7 @@ import MustardTree from './components/MustardTree';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import SocialProof from './components/SocialProof';
+import VideoShowcase from './components/VideoShowcase';
 import Services from './components/Services';
 import ProductDemo from './components/ProductDemo';
 import Contact from './components/Contact';
@@ -76,6 +77,7 @@ const App: React.FC = () => {
         <main>
           <Hero />
           <SocialProof />
+          <VideoShowcase />
           <Services />
           <ProductDemo />
           <Contact />
