@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MustardTree from './components/MustardTree';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import SocialProof from './components/SocialProof';
 import Services from './components/Services';
 import ProductDemo from './components/ProductDemo';
 import Contact from './components/Contact';
@@ -74,6 +75,7 @@ const App: React.FC = () => {
         <Navbar />
         <main>
           <Hero />
+          <SocialProof />
           <Services />
           <ProductDemo />
           <Contact />

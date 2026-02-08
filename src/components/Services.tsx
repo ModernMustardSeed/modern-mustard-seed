@@ -1,27 +1,9 @@
 const services = [
   {
-    icon: '🧠',
-    title: 'AI-Powered Products',
-    description: 'Custom AI tools, SaaS platforms, and intelligent systems that think, learn, and act autonomously. From LLM-powered agents to computer vision pipelines.',
-    outcomes: ['Autonomous AI agents', 'Custom SaaS platforms', 'Intelligent automation'],
-  },
-  {
     icon: '🎙️',
     title: 'Voice Agents',
     description: 'Enterprise-grade voice AI that handles real phone conversations. Demo calls, appointment booking, customer service, and lead qualification — 24/7.',
     outcomes: ['24/7 phone coverage', 'Appointment booking', 'Lead qualification'],
-  },
-  {
-    icon: '⚡',
-    title: 'Business Automation',
-    description: 'End-to-end workflow orchestration that eliminates manual processes. CRM pipelines, email sequences, data sync, and multi-system integrations.',
-    outcomes: ['Workflow orchestration', 'CRM automation', 'System integration'],
-  },
-  {
-    icon: '✨',
-    title: 'Creative & Generative Tech',
-    description: 'Immersive digital experiences, generative art, interactive visualizations, and WebGL-powered environments that stop people mid-scroll.',
-    outcomes: ['Interactive experiences', 'Generative art', 'WebGL environments'],
   },
   {
     icon: '🏗️',
@@ -35,6 +17,12 @@ const services = [
     description: 'Brand DNA extraction, content strategy, and go-to-market execution. Building identities that resonate and strategies that convert.',
     outcomes: ['Brand identity', 'Content strategy', 'Go-to-market'],
   },
+];
+
+const secondaryCapabilities = [
+  'AI-Powered Products',
+  'Business Automation',
+  'Creative & Generative Tech',
 ];
 
 const Services: React.FC = () => {
@@ -61,8 +49,8 @@ const Services: React.FC = () => {
         </p>
       </div>
 
-      {/* Service Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.03] rounded-2xl overflow-hidden">
+      {/* Primary Service Grid — 3 cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/[0.03] rounded-2xl overflow-hidden mb-12">
         {services.map((service) => (
           <div
             key={service.title}
@@ -99,6 +87,21 @@ const Services: React.FC = () => {
               </div>
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* Secondary Capabilities */}
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-mono font-bold mr-1">Also:</span>
+        {secondaryCapabilities.map((cap, i) => (
+          <span key={cap} className="flex items-center gap-3">
+            <span className="skill-pill text-white/50 border-white/[0.08] hover:text-mustard-400/80 hover:border-mustard-500/30">
+              {cap}
+            </span>
+            {i < secondaryCapabilities.length - 1 && (
+              <span className="text-white/15 text-xs hidden sm:inline">·</span>
+            )}
+          </span>
         ))}
       </div>
     </section>

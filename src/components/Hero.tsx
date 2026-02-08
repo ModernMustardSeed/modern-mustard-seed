@@ -1,24 +1,13 @@
 const Hero: React.FC = () => {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center">
-      {/* Scripture */}
-      <div className="mb-12 max-w-2xl animate-fade-in">
-        <div className="glass-card p-8 md:p-12">
-          <span className="text-[10px] md:text-xs text-mustard-500 font-bold tracking-[0.4em] uppercase font-mono drop-shadow-[0_0_8px_rgba(200,164,21,0.5)] block mb-4">
-            Matthew 17:20
-          </span>
-          <p className="text-white font-sans font-extrabold text-lg md:text-2xl tracking-wide opacity-90 leading-relaxed">
-            "If you have faith as small as a mustard seed, you can say to this mountain, 'Move from here to there,' and it will move.{' '}
-            <span className="text-gradient-mustard">Nothing will be impossible for you.</span>"
-          </p>
-        </div>
-      </div>
-
-      {/* Logo */}
+      {/* Eyebrow */}
       <div className="mb-6 opacity-0 animate-fade-in-up">
         <span className="text-[10px] tracking-[0.5em] uppercase text-mustard-500/60 font-mono font-bold block mb-6">
           Where Faith Meets Innovation
         </span>
+
+        {/* Brand Name */}
         <h1 className="font-sans text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight uppercase leading-[0.95]">
           <span className="text-gradient-mustard">Modern</span>
           <br />
@@ -35,12 +24,14 @@ const Hero: React.FC = () => {
       <p className="text-white/60 text-base md:text-lg font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-4 opacity-0 animate-fade-in-up-delay">
         God-sized vision. Relentless execution.
       </p>
+
+      {/* Value-first description */}
       <p className="text-white/45 text-sm md:text-base font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-10 opacity-0 animate-fade-in-up-delay">
-        AI-powered products, voice agents, immersive experiences, and business automation — each one built with faith, precision, and the audacity to ship what others only dream about.
+        We build voice agents, production apps, and brand systems that grow businesses — powered by AI, grounded in faith.
       </p>
 
       {/* CTAs */}
-      <div className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in-up-delay-2">
+      <div className="flex flex-col sm:flex-row gap-4 mb-14 opacity-0 animate-fade-in-up-delay-2">
         <a
           href="#demo"
           className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all duration-300"
@@ -53,6 +44,18 @@ const Hero: React.FC = () => {
         >
           Explore Services
         </a>
+      </div>
+
+      {/* Scripture — moved below CTAs, subtler */}
+      <div className="max-w-lg opacity-0 animate-fade-in-up-delay-2">
+        <div className="glass-card px-6 py-5 md:px-8 md:py-6">
+          <span className="text-[9px] md:text-[10px] text-mustard-500/70 font-bold tracking-[0.4em] uppercase font-mono drop-shadow-[0_0_6px_rgba(200,164,21,0.3)] block mb-2">
+            Matthew 17:20
+          </span>
+          <p className="text-white/60 font-sans font-semibold text-sm md:text-base tracking-wide leading-relaxed">
+            "If you have faith as small as a mustard seed… <span className="text-gradient-mustard">Nothing will be impossible for you.</span>"
+          </p>
+        </div>
       </div>
 
       {/* Scroll indicator */}
