@@ -40,7 +40,7 @@ const About: React.FC = () => {
             a conviction, a blank screen, and the discipline to see it through to deployment.
           </p>
 
-          <p className="text-neutral-400 text-base md:text-lg leading-8 font-body font-light">
+          <p className="text-neutral-300 text-base md:text-lg leading-8 font-body font-light">
             I work at the intersection of deep technical execution and creative vision. I architect
             full-stack platforms from zero, engineer AI systems that think and act autonomously,
             build voice agents that handle real phone conversations, and design experiences that stop
@@ -48,7 +48,7 @@ const About: React.FC = () => {
             presence — the range is the resume.
           </p>
 
-          <p className="text-neutral-400 text-base md:text-lg leading-8 font-body font-light">
+          <p className="text-neutral-300 text-base md:text-lg leading-8 font-body font-light">
             What sets this work apart isn't just the technology. It's the <em className="text-mustard-300/80 not-italic font-medium">why</em>.
             Every line of code is an act of stewardship. Every shipped product is a seed planted.
             I believe the same God who created the universe also created innovation — and I'm here to
@@ -70,7 +70,7 @@ const About: React.FC = () => {
         {/* Right Column — Disciplines & Signal */}
         <div className="lg:col-span-5">
           <div className="sticky top-32">
-            <span className="text-[9px] uppercase tracking-[0.4em] text-white/20 font-mono font-bold mb-6 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-mono font-bold mb-6 block">
               Core Disciplines
             </span>
 
@@ -88,7 +88,7 @@ const About: React.FC = () => {
                       {String(i + 1).padStart(2, '0')}
                     </span>
                   </div>
-                  <p className="text-[11px] text-white/25 group-hover:text-mustard-400/50 mt-1.5 font-mono tracking-wide transition-colors">
+                  <p className="text-xs text-white/40 group-hover:text-mustard-400/70 mt-1.5 font-mono tracking-wide transition-colors">
                     {d.detail}
                   </p>
                 </div>
@@ -103,7 +103,7 @@ const About: React.FC = () => {
                   Currently Available
                 </span>
               </div>
-              <p className="text-white/40 text-xs leading-5 font-body font-light">
+              <p className="text-white/55 text-sm leading-6 font-body font-light">
                 Open to ventures, partnerships, and projects that align with the mission.
                 If you're building something meaningful — let's talk.
               </p>
@@ -127,10 +127,10 @@ const About: React.FC = () => {
             <div className="text-2xl md:text-3xl font-sans font-extrabold text-gradient-mustard mb-2">
               {stat.value}
             </div>
-            <div className="text-[10px] uppercase tracking-[0.25em] text-white/50 font-sans font-semibold mb-1">
+            <div className="text-[11px] uppercase tracking-[0.25em] text-white/60 font-sans font-semibold mb-1">
               {stat.label}
             </div>
-            <div className="text-[9px] text-white/20 font-mono tracking-wider">
+            <div className="text-[10px] text-white/35 font-mono tracking-wider">
               {stat.sublabel}
             </div>
           </div>

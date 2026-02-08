@@ -32,10 +32,10 @@ const Hero: React.FC = () => {
       <div className="w-24 h-px bg-gradient-to-r from-transparent via-mustard-500/40 to-transparent mb-6 opacity-0 animate-fade-in-up-delay" />
 
       {/* Tagline */}
-      <p className="text-white/30 text-sm md:text-base font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-4 opacity-0 animate-fade-in-up-delay">
+      <p className="text-white/60 text-base md:text-lg font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-4 opacity-0 animate-fade-in-up-delay">
         God-sized vision. Relentless execution.
       </p>
-      <p className="text-white/20 text-xs md:text-sm font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-10 opacity-0 animate-fade-in-up-delay">
+      <p className="text-white/45 text-sm md:text-base font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-10 opacity-0 animate-fade-in-up-delay">
         AI-powered products, voice agents, immersive experiences, and business automation — each one built with faith, precision, and the audacity to ship what others only dream about.
       </p>
 

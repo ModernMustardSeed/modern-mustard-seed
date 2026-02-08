@@ -55,7 +55,7 @@ const Services: React.FC = () => {
           <span className="text-white/80">Strategy</span> x{' '}
           <span className="text-gradient-mustard">Faith</span>
         </h2>
-        <p className="text-white/30 text-sm md:text-base font-body font-light leading-relaxed">
+        <p className="text-white/50 text-base md:text-lg font-body font-light leading-relaxed">
           Every engagement is a seed planted — built with excellence, shipped with conviction,
           and designed to grow beyond what anyone expected.
         </p>
@@ -81,17 +81,17 @@ const Services: React.FC = () => {
               </h3>
 
               {/* Description */}
-              <p className="text-white/30 text-sm font-body font-light leading-6 mb-6">
+              <p className="text-white/50 text-sm md:text-base font-body font-light leading-7 mb-6">
                 {service.description}
               </p>
 
               {/* Outcomes */}
               <div className="space-y-2">
-                <span className="text-[8px] uppercase tracking-[0.3em] text-white/15 font-mono block mb-2">Key Outcomes</span>
+                <span className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-mono block mb-2">Key Outcomes</span>
                 {service.outcomes.map((outcome) => (
                   <div key={outcome} className="flex items-center gap-2">
-                    <div className="w-1 h-1 rounded-full bg-mustard-500/40 group-hover:bg-mustard-500/70 transition-colors" />
-                    <span className="text-[11px] text-white/35 group-hover:text-mustard-300/50 font-mono tracking-wide transition-colors">
+                    <div className="w-1 h-1 rounded-full bg-mustard-500/50 group-hover:bg-mustard-500/80 transition-colors" />
+                    <span className="text-xs text-white/50 group-hover:text-mustard-300/70 font-mono tracking-wide transition-colors">
                       {outcome}
                     </span>
                   </div>

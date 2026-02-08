@@ -133,12 +133,12 @@ const ProductDemo: React.FC = () => {
         <h2 className="font-sans text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6">
           Hear It In <span className="text-gradient-mustard">Action</span>
         </h2>
-        <p className="text-white/30 text-sm md:text-base font-body font-light leading-relaxed mb-4">
+        <p className="text-white/50 text-base md:text-lg font-body font-light leading-relaxed mb-4">
           Pick your industry. Our AI voice agent will answer the phone as if she already works for
           your business — handling calls, qualifying leads, and booking appointments. No scripts. No
           setup. Just talk.
         </p>
-        <p className="text-white/15 text-xs font-mono tracking-wider">
+        <p className="text-white/35 text-sm font-mono tracking-wider">
           Your browser mic is required — the demo is a real voice conversation.
         </p>
       </div>
@@ -263,7 +263,7 @@ const ProductDemo: React.FC = () => {
               </h3>
 
               {/* Description */}
-              <p className="text-white/30 text-sm font-body font-light leading-6 mb-6">
+              <p className="text-white/50 text-sm md:text-base font-body font-light leading-7 mb-6">
                 {industry.description}
               </p>
 
@@ -295,7 +295,7 @@ const ProductDemo: React.FC = () => {
 
       {/* Bottom CTA */}
       <div className="text-center mt-16">
-        <p className="text-white/20 text-xs font-body font-light mb-4">
+        <p className="text-white/40 text-sm font-body font-light mb-4">
           Impressed? Imagine this answering every call for your business — 24/7, never misses a
           beat.
         </p>

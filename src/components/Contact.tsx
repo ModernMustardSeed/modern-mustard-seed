@@ -43,7 +43,7 @@ const Contact: React.FC = () => {
         <h2 className="font-sans text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6">
           Plant a <span className="text-gradient-mustard">Seed</span> Together
         </h2>
-        <p className="text-white/30 text-sm font-body font-light leading-relaxed">
+        <p className="text-white/50 text-base font-body font-light leading-relaxed">
           Whether you're building something meaningful, need AI-powered solutions, or want to explore a partnership — reach out.
         </p>
       </div>

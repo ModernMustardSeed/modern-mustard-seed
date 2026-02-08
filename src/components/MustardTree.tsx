@@ -7,142 +7,8 @@ const MustardTree: React.FC = () => {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // --- Bird song audio synthesis ---
-    let audioCtx: AudioContext | null = null;
-    let songInterval: ReturnType<typeof setInterval> | null = null;
-    let audioStarted = false;
-
-    const startBirdSong = () => {
-      if (audioStarted) return;
-      audioStarted = true;
-      try {
-        audioCtx = new AudioContext();
-      } catch { return; }
-
-      // Play a single note with envelope
-      const playNote = (freq: number, startTime: number, duration: number, volume: number = 0.035) => {
-        if (!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        const filter = audioCtx.createBiquadFilter();
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.type = 'sine';
-        filter.type = 'bandpass';
-        filter.frequency.value = freq;
-        filter.Q.value = 8;
-        gain.gain.setValueAtTime(0, startTime);
-        gain.gain.linearRampToValueAtTime(volume, startTime + duration * 0.1);
-        gain.gain.setValueAtTime(volume * 0.9, startTime + duration * 0.6);
-        gain.gain.linearRampToValueAtTime(0, startTime + duration);
-        osc.frequency.setValueAtTime(freq, startTime);
-        // Slight vibrato
-        osc.frequency.linearRampToValueAtTime(freq * 1.02, startTime + duration * 0.5);
-        osc.frequency.linearRampToValueAtTime(freq * 0.99, startTime + duration);
-        osc.start(startTime);
-        osc.stop(startTime + duration + 0.01);
-      };
-
-      // Melodic song phrases — sequences of notes forming short melodies
-      const melodies = [
-        // Robin-like: descending then up
-        (base: number, t: number) => {
-          const notes = [1, 0.9, 0.8, 0.85, 1.1, 1.0, 0.75, 0.9];
-          notes.forEach((r, i) => playNote(base * r, t + i * 0.12, 0.1, 0.03));
-        },
-        // Warbler: ascending scale with trill at end
-        (base: number, t: number) => {
-          [0.8, 0.9, 1.0, 1.1, 1.2, 1.3].forEach((r, i) => playNote(base * r, t + i * 0.1, 0.09, 0.03));
-          // Trill at end
-          for (let i = 0; i < 6; i++) {
-            playNote(base * (i % 2 === 0 ? 1.3 : 1.4), t + 0.6 + i * 0.04, 0.035, 0.025);
-          }
-        },
-        // Nightingale-like: varied intervals, longer phrase
-        (base: number, t: number) => {
-          const pattern = [1.0, 1.2, 1.0, 0.8, 1.0, 1.3, 1.1, 0.9, 1.0, 1.15];
-          const durations = [0.15, 0.1, 0.2, 0.12, 0.08, 0.15, 0.1, 0.15, 0.12, 0.2];
-          let offset = 0;
-          pattern.forEach((r, i) => {
-            playNote(base * r, t + offset, durations[i], 0.032);
-            offset += durations[i] + 0.02;
-          });
-        },
-        // Finch: short bright bursts
-        (base: number, t: number) => {
-          [1.0, 1.2, 1.4, 1.2, 1.0].forEach((r, i) => playNote(base * r, t + i * 0.08, 0.07, 0.035));
-        },
-        // Thrush: slow melodic with pauses
-        (base: number, t: number) => {
-          playNote(base * 1.0, t, 0.25, 0.03);
-          playNote(base * 0.85, t + 0.35, 0.2, 0.028);
-          playNote(base * 1.1, t + 0.65, 0.3, 0.032);
-          playNote(base * 0.9, t + 1.05, 0.2, 0.025);
-        },
-      ];
-
-      // Quick chirp (kept for variety)
-      const playChirp = () => {
-        if (!audioCtx) return;
-        const now = audioCtx.currentTime;
-        const base = 2500 + Math.random() * 2000;
-        const type = Math.random();
-        if (type < 0.5) {
-          // Quick ascending chirp
-          playNote(base * 0.7, now, 0.06, 0.03);
-          playNote(base * 1.1, now + 0.07, 0.08, 0.035);
-        } else {
-          // Two-tone tweet
-          playNote(base, now, 0.08, 0.03);
-          playNote(base * 1.25, now + 0.1, 0.1, 0.03);
-        }
-      };
-
-      // Play a full song phrase
-      const playSong = () => {
-        if (!audioCtx) return;
-        const now = audioCtx.currentTime;
-        const base = 1800 + Math.random() * 1500;
-        const melody = melodies[Math.floor(Math.random() * melodies.length)];
-        melody(base, now);
-      };
-
-      // Birds "talking" — one sings, another responds after a pause
-      const playConversation = () => {
-        if (!audioCtx) return;
-        const now = audioCtx.currentTime;
-        // Bird A sings
-        const baseA = 1800 + Math.random() * 1200;
-        const melA = melodies[Math.floor(Math.random() * melodies.length)];
-        melA(baseA, now);
-        // Bird B responds (different pitch range)
-        const delay = 1.2 + Math.random() * 0.8;
-        const baseB = 2200 + Math.random() * 1500;
-        const melB = melodies[Math.floor(Math.random() * melodies.length)];
-        melB(baseB, now + delay);
-      };
-
-      // Schedule bird sounds — mix of songs, chirps, and conversations
-      const scheduleSong = () => {
-        const delay = 2000 + Math.random() * 4000;
-        songInterval = setTimeout(() => {
-          const r = Math.random();
-          if (r < 0.45) {
-            playSong();
-          } else if (r < 0.7) {
-            playConversation();
-          } else {
-            playChirp();
-            if (Math.random() < 0.5) {
-              setTimeout(playChirp, 150 + Math.random() * 250);
-            }
-          }
-          scheduleSong();
-        }, delay);
-      };
-      scheduleSong();
-    };
+    // Bird song audio removed — visual birds remain
+    const startBirdSong = () => {};
 
     const sketch = (p: p5) => {
       let growthProgress = 0;
@@ -724,8 +590,6 @@ const MustardTree: React.FC = () => {
     const p5Instance = new p5(sketch, containerRef.current);
     return () => {
       p5Instance.remove();
-      if (songInterval) clearTimeout(songInterval);
-      if (audioCtx) audioCtx.close();
     };
   }, []);
 
