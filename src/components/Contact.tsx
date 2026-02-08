@@ -3,13 +3,31 @@ import { useState } from 'react';
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Modern Mustard Seed Inquiry from ${formData.name}`);
-    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`);
-    window.open(`mailto:sarah@modernmustardseed.com?subject=${subject}&body=${body}`, '_self');
-    setSubmitted(true);
+    setSending(true);
+    setError('');
+
+    try {
+      const res = await fetch('https://modern-mustard-seed-voice-agent.onrender.com/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError('Something went wrong. Please try again.');
+      }
+    } catch {
+      setError('Unable to send. Please email sarah@modernmustardseed.com directly.');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -74,11 +92,15 @@ const Contact: React.FC = () => {
                   placeholder="Tell us about your vision..."
                 />
               </div>
+              {error && (
+                <p className="text-red-400 text-sm font-body text-center">{error}</p>
+              )}
               <button
                 type="submit"
-                className="w-full py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all duration-300"
+                disabled={sending}
+                className="w-full py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all duration-300 disabled:opacity-50"
               >
-                Send Message
+                {sending ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           )}
