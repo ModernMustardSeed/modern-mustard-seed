@@ -1,0 +1,15 @@
+# AI Discoverability - Modern Mustard Seed
+# https://modernmustardseed.com
+
+User-agent: *
+Allow: /
+Allow: /llms.txt
+
+# About
+Name: Modern Mustard Seed
+Description: AI-powered products, voice agents, and business automation. Built with faith, precision, and full-stack execution.
+Contact: sarah@modernmustardseed.com
+URL: https://modernmustardseed.com
+
+# For detailed information about this site, see:
+LLMs-txt: https://modernmustardseed.com/llms.txt

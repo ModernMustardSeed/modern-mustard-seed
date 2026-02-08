@@ -1,10 +1,10 @@
 const Footer: React.FC = () => {
   const socials: { name: string; url: string; external?: boolean }[] = [
     { name: 'X', url: 'https://x.com/sarahmscarano', external: true },
-    { name: 'LinkedIn', url: 'https://linkedin.com', external: true },
+    { name: 'LinkedIn', url: 'https://linkedin.com/in/sarahscarano', external: true },
     { name: 'GitHub', url: 'https://github.com/ModernMustardSeed', external: true },
-    { name: 'Instagram', url: 'https://instagram.com', external: true },
-    { name: 'TikTok', url: 'https://tiktok.com', external: true },
+    { name: 'Instagram', url: 'https://instagram.com/modernmustardseed', external: true },
+    { name: 'TikTok', url: 'https://tiktok.com/@modernmustardseed', external: true },
     { name: 'Portfolio', url: '#portfolio-page' },
   ];
 

@@ -1,0 +1,32 @@
+# Modern Mustard Seed
+
+> AI-powered products, voice agents, and business automation. Built with faith, precision, and full-stack execution.
+
+## About
+Modern Mustard Seed is a technology studio founded by Sarah Scarano. We build voice agents, production apps, and brand systems that grow businesses — powered by AI, grounded in faith.
+
+## Services
+- Voice Agents: Enterprise-grade voice AI for phone conversations, appointment booking, customer service, and lead qualification — 24/7.
+- Full-Stack Development: Production-grade web applications from concept to deployment. React, Next.js, databases, APIs, authentication, payments.
+- Brand & Strategy: Brand DNA extraction, content strategy, and go-to-market execution.
+- AI-Powered Products: Custom AI tools, SaaS platforms, and intelligent systems.
+- Business Automation: End-to-end workflow orchestration, CRM pipelines, and multi-system integrations.
+- Creative & Generative Tech: Immersive digital experiences, generative art, and interactive visualizations.
+
+## Contact
+- Website: https://modernmustardseed.com
+- Email: sarah@modernmustardseed.com
+- Twitter/X: https://x.com/sarahmscarano
+- LinkedIn: https://linkedin.com/in/sarahscarano
+- GitHub: https://github.com/ModernMustardSeed
+- Instagram: https://instagram.com/modernmustardseed
+- TikTok: https://tiktok.com/@modernmustardseed
+
+## Tech Stack
+React, TypeScript, Next.js, Vite, Tailwind CSS, Supabase, Stripe, Trigger.dev, Three.js, Vapi (Voice AI), Google Gemini, OpenAI
+
+## Products
+- VoiceStaff: AI voice agents that handle real business phone calls 24/7
+- Make Me Studio: AI-powered creative production platform
+- Ignition: Idea-to-Income agentic swarm
+- Wild Daisy Command Center: AI-powered operations hub with 30 specialized agents
