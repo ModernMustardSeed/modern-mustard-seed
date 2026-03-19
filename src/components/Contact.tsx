@@ -116,7 +116,7 @@ const Contact: React.FC = () => {
               Schedule a free 30-minute discovery call to talk through your project and see if we're a fit.
             </p>
             <a
-              href="https://calendar.app.google/8YvQK2wbL5LPGxtT7"
+              href="https://modernmustardseed.zohobookings.com/#/4764600000000052054"
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full py-3 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-lg hover:bg-mustard-500/10 transition-all text-center"

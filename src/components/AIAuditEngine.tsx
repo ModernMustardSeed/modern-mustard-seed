@@ -20,7 +20,7 @@ const ML = '#FFCA28';           // mustard-400
 const MD = '#A68B10';           // mustard-600
 const MG = 'rgba(200,164,21,0.12)'; // mustard glow bg
 const MB = 'rgba(200,164,21,0.25)'; // mustard border
-const BOOKING_URL = 'https://calendar.app.google/WX9ApsgqkK44SKwf6';
+const BOOKING_URL = 'https://modernmustardseed.zohobookings.com/#/4764600000000052054';
 const CONTACT_URL = 'https://modern-mustard-seed-voice-agent.onrender.com/api/contact';
 
 const STAT_C = { critical: '#EF4444', high: '#F59E0B', medium: '#22C55E' } as const;
