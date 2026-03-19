@@ -108,19 +108,12 @@ const Contact: React.FC = () => {
 
         {/* Contact Info */}
         <div className="space-y-8">
-          {/* Voice Agent CTA */}
+          {/* Discovery Call CTA */}
           <div className="glass-card p-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-mustard-500/10 border border-mustard-500/20 flex items-center justify-center">
-                <span className="text-lg">🎙️</span>
-              </div>
-              <div>
-                <h4 className="font-sans text-sm font-bold text-white">Talk to Olivia</h4>
-                <p className="text-[10px] text-white/30 font-body">Our AI voice assistant</p>
-              </div>
-            </div>
-            <p className="text-white/30 text-sm font-body font-light leading-6 mb-4">
-              Click the mustard button in the bottom-right corner to talk to Olivia. She can answer your questions, walk you through our services, and book a discovery call — 24/7.
+            <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-mono font-bold block mb-4">Book a Call</span>
+            <h4 className="font-sans text-sm font-bold text-white mb-3">Ready to build something?</h4>
+            <p className="text-white/30 text-sm font-body font-light leading-6 mb-5">
+              Schedule a free 30-minute discovery call to talk through your project and see if we're a fit.
             </p>
             <a
               href="https://calendar.app.google/8YvQK2wbL5LPGxtT7"

@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
 
   const navLinks: { label: string; href: string }[] = [
     { label: 'Services', href: '#services' },
-    { label: 'Live Demo', href: '#demo' },
+    { label: 'AI Audit', href: '#ai-audit' },
     { label: 'Contact', href: '#contact' },
     { label: 'Portfolio', href: '#portfolio-page' },
   ];
@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
             href="#contact"
             className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/50 transition-all"
           >
-            Talk to Olivia
+            Get in Touch
           </a>
         </div>
 
@@ -78,7 +78,7 @@ const Navbar: React.FC = () => {
             onClick={() => setMenuOpen(false)}
             className="mt-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/50 transition-all text-center"
           >
-            Talk to Olivia
+            Get in Touch
           </a>
         </div>
       </div>
