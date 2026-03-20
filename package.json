@@ -11,14 +11,18 @@
   "dependencies": {
     "@vapi-ai/web": "^2.5.2",
     "@vercel/analytics": "^1.6.1",
+    "lucide-react": "^0.574.0",
     "p5": "1.8.0",
     "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "react-dom": "^19.2.1",
+    "recharts": "^3.7.0",
+    "resend": "^6.9.4"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@vercel/node": "^5.6.4",
     "@vitejs/plugin-react": "^5.0.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",

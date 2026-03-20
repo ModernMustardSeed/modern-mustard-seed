@@ -12,7 +12,7 @@ const Contact: React.FC = () => {
     setError('');
 
     try {
-      const res = await fetch('https://modern-mustard-seed-voice-agent.onrender.com/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
