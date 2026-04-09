@@ -5,7 +5,7 @@ const Footer: React.FC = () => {
     { name: 'GitHub', url: 'https://github.com/ModernMustardSeed', external: true },
     { name: 'Instagram', url: 'https://instagram.com/modernmustardseed', external: true },
     { name: 'TikTok', url: 'https://tiktok.com/@modernmustardseed', external: true },
-    { name: 'Portfolio', url: '#portfolio-page' },
+    { name: 'Portfolio', url: '#portfolio' },
   ];
 
   return (

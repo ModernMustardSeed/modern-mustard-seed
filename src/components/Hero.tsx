@@ -1,6 +1,6 @@
 const Hero: React.FC = () => {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 md:pt-6 text-center">
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-36 md:pt-44 text-center">
       {/* Eyebrow */}
       <div className="mb-6 opacity-0 animate-fade-in-up">
         <span className="text-[10px] tracking-[0.5em] uppercase text-mustard-500/60 font-mono font-bold block mb-6">
@@ -27,16 +27,16 @@ const Hero: React.FC = () => {
 
       {/* Value-first description */}
       <p className="text-white/45 text-sm md:text-base font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-10 opacity-0 animate-fade-in-up-delay">
-        We build voice agents, production apps, and brand systems that grow businesses — powered by AI, grounded in faith.
+        We build production apps, AI-powered products, and brand systems that grow businesses — powered by innovation, grounded in faith.
       </p>
 
       {/* CTAs */}
       <div className="flex flex-col sm:flex-row gap-4 mb-14 opacity-0 animate-fade-in-up-delay-2">
         <a
-          href="#demo"
+          href="#portfolio"
           className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all duration-300"
         >
-          Try a Live Demo
+          View the Work
         </a>
         <a
           href="#services"

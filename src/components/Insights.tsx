@@ -1,20 +1,20 @@
 const posts = [
   {
-    date: 'Feb 2026',
-    tag: 'Voice AI',
-    title: 'Why Every Small Business Needs a Voice Agent in 2026',
-    excerpt: 'Your competitors are hiring AI receptionists that never sleep. Here\'s how voice agents are changing the game for small businesses — and why waiting is costing you leads.',
-    readTime: '4 min read',
+    date: 'Apr 2026',
+    tag: 'AI Products',
+    title: 'Shipping 40+ Products Solo: The AI-Native Workflow',
+    excerpt: 'How one person builds and deploys production apps at startup speed — the tools, the process, and the mindset behind shipping fast with AI.',
+    readTime: '5 min read',
   },
   {
-    date: 'Feb 2026',
+    date: 'Mar 2026',
     tag: 'Product',
-    title: 'From Idea to Production App in 30 Days',
-    excerpt: 'How we took VoiceStaff from concept to handling thousands of live calls — the stack, the process, and the lessons learned shipping fast with AI.',
+    title: 'From Napkin Sketch to Deployed Product in 2 Weeks',
+    excerpt: 'The stack, the process, and the lessons learned from taking ideas from concept to production — every single time. No handoffs, no meetings, just building.',
     readTime: '6 min read',
   },
   {
-    date: 'Jan 2026',
+    date: 'Feb 2026',
     tag: 'Strategy',
     title: 'The AI-First Agency Model',
     excerpt: 'Traditional agencies charge $10K/month and move slow. We built a model where AI handles 80% of the execution, so clients get better results at a fraction of the cost.',
@@ -39,7 +39,7 @@ const Insights: React.FC = () => {
           Thinking Out <span className="text-gradient-mustard">Loud</span>
         </h2>
         <p className="text-white/50 text-base md:text-lg font-body font-light leading-relaxed">
-          Lessons from the frontlines of building AI products, voice agents, and businesses that move fast.
+          Lessons from the frontlines of building AI products, shipping fast, and businesses that move at the speed of faith.
         </p>
       </div>
 

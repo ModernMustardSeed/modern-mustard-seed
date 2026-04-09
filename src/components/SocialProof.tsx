@@ -1,6 +1,6 @@
 const stats = [
-  { value: '10+', label: 'Products Shipped' },
-  { value: '1000s', label: 'of Voice Calls Handled' },
+  { value: '40+', label: 'Products Shipped' },
+  { value: '2-6 Wks', label: 'Idea to Launch' },
   { value: 'AI-First', label: 'Every Product' },
   { value: 'Full Stack', label: 'Concept to Launch' },
 ];

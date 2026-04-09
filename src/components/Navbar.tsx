@@ -11,10 +11,10 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navLinks: { label: string; href: string }[] = [
+    { label: 'Portfolio', href: '#portfolio' },
     { label: 'Services', href: '#services' },
     { label: 'AI Audit', href: '#ai-audit' },
     { label: 'Contact', href: '#contact' },
-    { label: 'Portfolio', href: '#portfolio-page' },
   ];
 
   return (

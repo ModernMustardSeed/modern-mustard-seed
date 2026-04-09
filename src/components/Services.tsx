@@ -1,9 +1,9 @@
 const services = [
   {
-    icon: '🎙️',
-    title: 'Voice Agents',
-    description: 'Enterprise-grade voice AI that handles real phone conversations. Demo calls, appointment booking, customer service, and lead qualification — 24/7.',
-    outcomes: ['24/7 phone coverage', 'Appointment booking', 'Lead qualification'],
+    icon: '🤖',
+    title: 'AI-Powered Products',
+    description: 'Custom AI applications that solve real problems — multi-agent systems, content generation, intelligent automation, and production-grade tools that scale.',
+    outcomes: ['Custom AI tools', 'Multi-agent systems', 'Intelligent automation'],
   },
   {
     icon: '🏗️',
