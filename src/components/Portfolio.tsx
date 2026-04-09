@@ -80,7 +80,7 @@ const projects = [
     title: 'Wild Things',
     subtitle: 'Personal portfolio. VHS aesthetic, scroll-driven storytelling',
     tags: ['Next.js', 'Framer Motion', 'WebGL'],
-    href: 'https://wild-things-pi.vercel.app',
+    href: 'https://wild-things-nine.vercel.app',
     color: 'from-amber-900/40 to-amber-800/20',
   },
 ];
@@ -173,7 +173,7 @@ const Portfolio: React.FC = () => {
       {/* Gallery CTA */}
       <div className="flex justify-center mt-10">
         <a
-          href="https://wild-things-pi.vercel.app/gallery"
+          href="https://wild-things-nine.vercel.app/gallery"
           target="_blank"
           rel="noopener noreferrer"
           className="group inline-flex items-center gap-3 border border-mustard-500/20 hover:border-mustard-500/40 px-8 py-4 rounded-full transition-all duration-500 hover:bg-mustard-500/5"
