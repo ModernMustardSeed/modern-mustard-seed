@@ -8,7 +8,7 @@ export default function Footer() {
       links: [
         { label: 'Case Studies', href: '/case-studies' },
         { label: 'Services', href: '/services' },
-        { label: 'Pricing', href: '/work-with-us' },
+        { label: 'How We Work', href: '/work-with-us' },
         { label: 'AI Audit', href: '/audit' },
       ],
     },

@@ -137,7 +137,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
                 href="/work-with-us"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 transition-all"
               >
-                See Pricing
+                See How We Engage
               </Link>
             </div>
           </div>

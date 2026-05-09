@@ -17,33 +17,19 @@ export default function PricingTable() {
             {pkg.highlighted && (
               <div className="-mt-12 mb-6 self-start">
                 <span className="px-3 py-1 text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full">
-                  Most popular
+                  Where most start
                 </span>
               </div>
             )}
 
-            <div className="mb-6">
+            <div className="mb-6 pb-6 border-b border-white/[0.05]">
               <h3 className="font-sans text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-2">
                 {pkg.name}
               </h3>
-              <p className="text-mustard-400/70 text-sm font-body font-light tracking-wide">
+              <p className="text-mustard-400/70 text-sm font-body font-light tracking-wide mb-4">
                 {pkg.tagline}
               </p>
-            </div>
-
-            <div className="mb-6 pb-6 border-b border-white/[0.05]">
-              <div className="flex items-baseline gap-2">
-                <span className="font-sans text-4xl md:text-5xl font-extrabold text-gradient-mustard tracking-tight">
-                  {pkg.priceLabel}
-                </span>
-                {pkg.cadence === 'monthly' && (
-                  <span className="text-white/30 text-sm font-mono">per month</span>
-                )}
-                {pkg.cadence === 'one-time' && (
-                  <span className="text-white/30 text-sm font-mono">one-time</span>
-                )}
-              </div>
-              <p className="text-[10px] uppercase tracking-[0.25em] text-white/30 font-mono font-bold mt-2">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-white/30 font-mono font-bold">
                 Timeline: {pkg.timeline}
               </p>
             </div>

@@ -89,7 +89,7 @@ export default function ServicesPage() {
               href="/work-with-us"
               className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all"
             >
-              See Pricing &amp; Packages
+              See How We Engage
             </Link>
           </div>
         </div>

@@ -68,12 +68,20 @@ export default function HomePage() {
           <p className="text-white/55 text-base font-body font-light max-w-xl mx-auto leading-relaxed mb-8">
             Drop your website. We will tell you in 60 seconds where AI can save the most time, recover the most revenue, and stop the bleeding.
           </p>
-          <Link
-            href="/audit"
-            className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all"
-          >
-            Run the Free Audit
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/audit"
+              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all"
+            >
+              Run the Free Audit
+            </Link>
+            <Link
+              href="/work-with-us"
+              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 transition-all"
+            >
+              See How We Engage
+            </Link>
+          </div>
         </div>
       </section>
 

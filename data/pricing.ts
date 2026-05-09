@@ -1,30 +1,23 @@
-export type PricingPackage = {
+export type Engagement = {
   id: string;
   name: string;
   tagline: string;
-  price: number | null;
-  priceLabel: string;
-  cadence: 'one-time' | 'monthly' | 'project' | 'starting-at';
   description: string;
   deliverables: string[];
   timeline: string;
   cta: string;
   ctaHref?: string;
-  stripePriceId?: string;
   highlighted?: boolean;
   ideal?: string;
 };
 
-// Pricing is intentionally config-driven so it can be edited without touching components.
-// Update prices, swap CTAs to Stripe URLs, or add new packages by editing this file.
-export const packages: PricingPackage[] = [
+// Engagement structures are the way we work. Pricing is per-project,
+// quoted after a discovery call, scoped to your specific situation.
+export const packages: Engagement[] = [
   {
     id: 'audit',
     name: 'AI Audit + Roadmap',
     tagline: 'Find your AI leverage in 14 days',
-    price: 2500,
-    priceLabel: '$2,500',
-    cadence: 'one-time',
     description:
       'A two-week deep dive into your business. We map every workflow, identify the highest-leverage AI opportunities, and deliver a 30-day implementation roadmap with prioritized wins, ROI projections, and a build sequence you could hand to any team.',
     deliverables: [
@@ -45,9 +38,6 @@ export const packages: PricingPackage[] = [
     id: 'voice-agent',
     name: 'Voice Agent Launch',
     tagline: 'A 24/7 phone agent live in 2 weeks',
-    price: 7500,
-    priceLabel: '$7,500',
-    cadence: 'one-time',
     description:
       'We design, build, and deploy a production voice agent on your business phone number. Handles inbound calls, qualifies leads, books appointments, and transfers to humans when needed. Includes call analytics, transcript review, and 30 days of post-launch tuning.',
     deliverables: [
@@ -67,11 +57,8 @@ export const packages: PricingPackage[] = [
     id: 'custom-build',
     name: 'Custom AI Build',
     tagline: 'Production-grade product, end to end',
-    price: 25000,
-    priceLabel: 'From $25K',
-    cadence: 'starting-at',
     description:
-      'A fully designed and engineered AI product, shipped to production. Web app, dashboard, agentic workflow, internal tool — whatever your business needs to leap forward. Architected to scale, built to last, owned by you.',
+      'A fully designed and engineered AI product, shipped to production. Web app, dashboard, agentic workflow, internal tool. Whatever your business needs to leap forward. Architected to scale, built to last, owned by you.',
     deliverables: [
       'Discovery + technical architecture',
       'Full UI/UX design system',
@@ -89,14 +76,11 @@ export const packages: PricingPackage[] = [
     id: 'fractional',
     name: 'Fractional AI Partner',
     tagline: 'Embedded AI leadership, monthly',
-    price: 6000,
-    priceLabel: '$6,000/mo',
-    cadence: 'monthly',
     description:
       'A monthly retainer for ongoing AI strategy, build work, and team enablement. Treat us as your fractional CTO and AI lead. Weekly strategy, hands-on building, and a continually evolving roadmap as your business grows.',
     deliverables: [
       'Weekly strategy sessions',
-      'Up to 40 hours of build time per month',
+      'Generous monthly build allotment',
       'Continuous roadmap evolution',
       'Direct Slack access',
       'Quarterly business review',
@@ -114,12 +98,16 @@ export const pricingFaq = [
     a: 'Traditional agencies bill for hours and hand off to junior staff. We work as a single embedded operator-engineer who owns your project end to end. AI handles the leverage. You pay for outcomes, not hours.',
   },
   {
-    q: 'What if my project does not fit one of these packages?',
+    q: 'How does pricing work?',
+    a: 'Every engagement is quoted after a discovery call. We propose a flat fee tied to a defined deliverable and a tight timeline, no hourly billing. You will know the full cost and timeline before any work begins.',
+  },
+  {
+    q: 'What if my project does not fit one of these engagements?',
     a: 'Most do not, exactly. Start with the audit. We will map your project against our model and propose a custom scope before any large commitment.',
   },
   {
     q: 'Do you offer payment plans?',
-    a: 'Yes. The Custom Build and Fractional packages can be split into monthly milestones. Audit and Voice Agent are typically paid up front to keep timelines tight.',
+    a: 'Yes. Larger builds and ongoing partnerships can be split into monthly milestones. Audit and Voice Agent engagements are typically paid up front to keep timelines tight.',
   },
   {
     q: 'Who owns the code and assets?',

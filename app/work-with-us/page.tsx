@@ -8,9 +8,9 @@ import { pricingFaq } from '@/data/pricing';
 import { bookingUrl } from '@/data/socials';
 
 export const metadata = buildMetadata({
-  title: 'Pricing & Packages',
+  title: 'How We Work',
   description:
-    'Transparent pricing for AI audits, voice agents, custom builds, and fractional partnerships. Scope, cost, and timeline up front.',
+    'Four engagement structures: AI audits, voice agent launches, custom builds, and fractional partnerships. Quoted per project. Scoped before commitment.',
   path: '/work-with-us',
 });
 
@@ -21,7 +21,7 @@ export default function WorkWithUsPage() {
         data={[
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },
-            { name: 'Work With Us', url: '/work-with-us' },
+            { name: 'How We Work', url: '/work-with-us' },
           ]),
           faqJsonLd(pricingFaq),
         ]}
@@ -31,16 +31,16 @@ export default function WorkWithUsPage() {
       <div className="relative pt-36 md:pt-44">
         <div className="max-w-5xl mx-auto px-6 md:px-8 text-center mb-12">
           <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
-            Pricing &amp; Packages
+            How We Work
           </span>
           <h1 className="font-sans text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6">
-            Real Prices. <span className="text-gradient-mustard">No Decks.</span>
+            Four Ways to <span className="text-gradient-mustard">Engage</span>
           </h1>
           <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto mb-4">
-            Most engagements start with a paid audit. From there we scope a build, a launch, or an ongoing partnership. Every package is a flat fee with a defined deliverable and a tight timeline.
+            Every engagement is a flat fee tied to a defined deliverable and a tight timeline. No hourly billing. No surprise scope. Most engagements start with an audit, then expand into a build or a partnership.
           </p>
           <p className="text-white/35 text-sm font-mono italic">
-            Pricing updated as the work evolves. Lock yours in by booking a discovery call.
+            Scope and quote shared after a free 30-minute discovery call.
           </p>
         </div>
 
@@ -80,10 +80,10 @@ export default function WorkWithUsPage() {
         <div className="max-w-4xl mx-auto px-6 md:px-8 py-12 text-center">
           <div className="glass-card p-10">
             <h3 className="font-sans text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-4">
-              Not sure which package fits?
+              Not sure which engagement fits?
             </h3>
             <p className="text-white/55 text-base font-body font-light mb-6 max-w-lg mx-auto">
-              Book a 30-minute discovery call. We will scope your project, recommend the right path, and quote a fixed price within 48 hours.
+              Book a 30-minute discovery call. We will scope your project, recommend the right path, and send a fixed quote within 48 hours.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
@@ -107,7 +107,7 @@ export default function WorkWithUsPage() {
         <div className="px-6 md:px-8 py-20">
           <NewsletterSignup
             headline="Get the playbooks we use in client engagements."
-            subhead="Subscribers get our pricing PDF, an AI implementation checklist, and a new playbook every week."
+            subhead="Subscribers get an AI implementation checklist and a new playbook every week."
           />
         </div>
       </div>

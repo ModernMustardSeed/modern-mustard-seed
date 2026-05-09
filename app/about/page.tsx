@@ -68,9 +68,9 @@ export default function AboutPage() {
               className="glass-card p-6 hover:border-mustard-500/20 transition-all text-center"
             >
               <span className="block text-[10px] uppercase tracking-[0.3em] text-mustard-500/60 font-mono font-bold mb-2">
-                Pricing
+                Engage
               </span>
-              <span className="font-sans text-base font-bold text-white">Packages &amp; rates</span>
+              <span className="font-sans text-base font-bold text-white">How we work</span>
             </Link>
             <Link
               href="/contact"

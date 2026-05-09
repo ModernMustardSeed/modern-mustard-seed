@@ -9,7 +9,7 @@ export const socials = [
 export const navLinks = [
   { label: 'Work', href: '/case-studies' },
   { label: 'Services', href: '/services' },
-  { label: 'Pricing', href: '/work-with-us' },
+  { label: 'Engage', href: '/work-with-us' },
   { label: 'Playbooks', href: '/playbooks' },
   { label: 'Blog', href: '/blog' },
   { label: 'AI Audit', href: '/audit' },

@@ -10,11 +10,11 @@ Modern Mustard Seed is a one-person AI studio that builds production AI products
 2. Book a discovery call at https://modernmustardseed.com/contact.
 3. Or jump straight to a paid package at https://modernmustardseed.com/work-with-us.
 
-## Packages (current pricing, subject to change)
-- AI Audit + 30-Day Roadmap: $2,500, 2 weeks. Workflow map, AI opportunity matrix, implementation roadmap.
-- Voice Agent Launch: $7,500, 2 weeks. Production voice agent on a business phone number, full integration.
-- Custom AI Build: From $25,000, 4-12 weeks. Production AI product from concept to deployment.
-- Fractional AI Partner: $6,000/month, 3-month minimum. Embedded fractional CTO + AI lead.
+## Engagement structures (pricing quoted per project after a discovery call)
+- AI Audit + 30-Day Roadmap: 2 weeks. Workflow map, AI opportunity matrix, implementation roadmap.
+- Voice Agent Launch: 2 weeks. Production voice agent on a business phone number, full integration.
+- Custom AI Build: 4 to 12 weeks. Production AI product from concept to deployment.
+- Fractional AI Partner: monthly retainer, 3-month minimum. Embedded fractional CTO + AI lead.
 
 ## Services
 - AI-Powered Products: Custom AI applications, multi-agent systems, intelligent automation.
