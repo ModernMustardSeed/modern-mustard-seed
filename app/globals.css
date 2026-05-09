@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    background-color: #0a0804;
+    color: #fff;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  ::selection {
+    background-color: rgba(200, 164, 21, 0.3);
+    color: white;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(200, 164, 21, 0.15);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(200, 164, 21, 0.3);
+  }
+}
+
+@layer utilities {
+  .text-gradient-mustard {
+    background: linear-gradient(135deg, #A68B10 0%, #E6C84A 40%, #C8A415 70%, #FFE082 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-mustard-subtle {
+    background: linear-gradient(135deg, #C8A415 0%, #FFE082 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-card {
+    @apply bg-neutral-950/40 backdrop-blur-sm border border-white/[0.04] rounded-2xl;
+  }
+
+  .text-liquid-metal {
+    background: linear-gradient(
+      180deg,
+      #f0f0f0 0%,
+      #d4d4d4 15%,
+      #fafafa 30%,
+      #a0a0a0 45%,
+      #e8e8e8 55%,
+      #c0c0c0 70%,
+      #f5f5f5 85%,
+      #d0d0d0 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: contrast(1.2) brightness(1.1);
+    -webkit-text-stroke: 1px rgba(200, 164, 21, 0.3);
+    paint-order: stroke fill;
+  }
+
+  .skill-pill {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] uppercase tracking-[0.15em] font-mono font-bold border transition-all duration-300;
+  }
+}
+
+/* MDX prose styling */
+.mdx-prose {
+  @apply text-white/75 font-body;
+}
+.mdx-prose h1 {
+  @apply font-sans text-4xl md:text-5xl font-extrabold text-white tracking-tight mt-12 mb-6;
+}
+.mdx-prose h2 {
+  @apply font-sans text-2xl md:text-3xl font-extrabold text-white tracking-tight mt-12 mb-4;
+}
+.mdx-prose h3 {
+  @apply font-sans text-xl font-bold text-white/95 tracking-wide mt-8 mb-3;
+}
+.mdx-prose p {
+  @apply text-base md:text-lg leading-relaxed mb-5;
+}
+.mdx-prose a {
+  @apply text-mustard-400 underline decoration-mustard-500/30 underline-offset-4 hover:text-mustard-300 hover:decoration-mustard-500/60 transition-colors;
+}
+.mdx-prose strong {
+  @apply text-white font-semibold;
+}
+.mdx-prose ul {
+  @apply list-disc list-outside pl-6 mb-5 space-y-2;
+}
+.mdx-prose ol {
+  @apply list-decimal list-outside pl-6 mb-5 space-y-2;
+}
+.mdx-prose li {
+  @apply leading-relaxed;
+}
+.mdx-prose blockquote {
+  @apply border-l-2 border-mustard-500/40 pl-5 my-6 text-white/60 italic;
+}
+.mdx-prose code {
+  @apply bg-white/[0.05] border border-white/[0.06] rounded px-1.5 py-0.5 text-sm font-mono text-mustard-300;
+}
+.mdx-prose pre {
+  @apply bg-neutral-950/80 border border-white/[0.05] rounded-xl p-5 my-6 overflow-x-auto text-sm font-mono;
+}
+.mdx-prose pre code {
+  @apply bg-transparent border-0 p-0 text-white/85;
+}
+.mdx-prose hr {
+  @apply border-white/[0.08] my-12;
+}
+.mdx-prose table {
+  @apply w-full border-collapse my-6 text-sm;
+}
+.mdx-prose th {
+  @apply border-b border-white/[0.08] py-3 text-left font-mono text-[10px] uppercase tracking-[0.2em] text-mustard-400;
+}
+.mdx-prose td {
+  @apply border-b border-white/[0.04] py-3 align-top text-white/70;
+}
+.mdx-prose img {
+  @apply rounded-xl border border-white/[0.05] my-8;
+}

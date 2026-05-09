@@ -1,0 +1,59 @@
+---
+title: "Make Me Studio: A Creator's AI Studio with BYOK and Stripe"
+description: "An AI creative studio for video, image, and asset generation. BYOK, Stripe-metered, shipped to production with auth and usage tracking in five weeks."
+date: "2026-03-15"
+tag: "Build"
+client: "Modern Mustard Seed"
+liveUrl: "https://source-zip.vercel.app"
+stack:
+  - "Next.js 15"
+  - "Supabase"
+  - "Stripe"
+  - "Google Gemini"
+  - "OpenAI"
+  - "Vercel"
+metrics:
+  - { label: "Time to V1", value: "5 weeks" }
+  - { label: "Generation models", value: "12" }
+  - { label: "Auth + BYOK", value: "Live" }
+  - { label: "Stripe metering", value: "Per-call" }
+---
+
+## The brief
+
+Creators who use AI generation tools want the power of pro-grade models without the SaaS lock-in. The premise of Make Me Studio: a single canvas with access to a curated set of generation models, paid through Stripe, with a "bring your own key" option for power users.
+
+## What we shipped
+
+- Multi-model AI generation (image, video, audio, copy)
+- BYOK with secure server-side key storage
+- Stripe metered billing for credits or subscription
+- Supabase auth with magic links + OAuth
+- Per-asset history, retry, and remix
+- Library and exports
+
+## The architecture choices that mattered
+
+**BYOK as a first-class feature.** Most creator tools treat BYOK as an afterthought. We built it as the first auth flow. Users who bring their own key bypass our billing entirely. This sounds backwards. It is not. It pre-qualifies the power users who will pay for the value layer (collaboration, library, workflows) instead of resenting the markup on raw inference.
+
+**Stripe metered billing in week 2.** Adding billing late kills morale and forces a refactor. We wired the meter on day one and used it as a forcing function for cleaner provider abstractions.
+
+**Provider abstraction over vendor lock-in.** Every model behind a single internal interface. Adding a new provider takes about an hour. Swapping a provider takes about an hour. The product evolves at the speed of provider releases, not at the speed of refactors.
+
+## What this looked like in practice
+
+Week 1: Auth, workspace, schema, design system.
+Week 2: First model integration (Gemini), Stripe metered, basic canvas.
+Week 3: Multi-model expansion, BYOK, key vault.
+Week 4: History, retry, remix, library.
+Week 5: Onboarding, billing flows, public launch.
+
+## What we learned
+
+**Generation UX is a stateful problem.** The hard part is not the prompt. It is the history, the retry, the remix, the variant comparison. Treat it as a stateful editor, not a request/response form.
+
+**Pricing models matter more than features.** We tried subscription, credits, and BYOK. BYOK plus pay-as-you-go credits ended up converting 3x better than flat subscription. The same product. The pricing model was the bottleneck.
+
+## Where it goes next
+
+The next push is collaboration: shared workspaces, comments on generations, version trees. If you build creator tools, [book a teardown call](/contact) and we will walk through the system architecture.

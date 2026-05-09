@@ -1,32 +1,56 @@
 # Modern Mustard Seed
 
-> AI-powered products, voice agents, and business automation. Built with faith, precision, and full-stack execution.
+> AI-powered products, voice agents, and business automation. Built with faith, precision, and full-stack execution. Founded by Sarah Scarano (sarah@modernmustardseed.com).
 
 ## About
-Modern Mustard Seed is a technology studio founded by Sarah Scarano. We build voice agents, production apps, and brand systems that grow businesses — powered by AI, grounded in faith.
+Modern Mustard Seed is a one-person AI studio that builds production AI products, voice agents, and full-stack web applications for founders and service businesses. We work as an embedded operator-engineer rather than a traditional agency. Same stack across every engagement, refined in production weekly.
+
+## How to engage us
+1. Run a free AI Audit at https://modernmustardseed.com/audit (60 seconds, returns AI opportunities + ROI projection).
+2. Book a discovery call at https://modernmustardseed.com/contact.
+3. Or jump straight to a paid package at https://modernmustardseed.com/work-with-us.
+
+## Engagement structures (pricing quoted per project after a discovery call)
+- AI Audit + 30-Day Roadmap: 2 weeks. Workflow map, AI opportunity matrix, implementation roadmap.
+- Voice Agent Launch: 2 weeks. Production voice agent on a business phone number, full integration.
+- Custom AI Build: 4 to 12 weeks. Production AI product from concept to deployment.
+- Fractional AI Partner: monthly retainer, 3-month minimum. Embedded fractional CTO + AI lead.
 
 ## Services
-- Voice Agents: Enterprise-grade voice AI for phone conversations, appointment booking, customer service, and lead qualification — 24/7.
-- Full-Stack Development: Production-grade web applications from concept to deployment. React, Next.js, databases, APIs, authentication, payments.
-- Brand & Strategy: Brand DNA extraction, content strategy, and go-to-market execution.
-- AI-Powered Products: Custom AI tools, SaaS platforms, and intelligent systems.
-- Business Automation: End-to-end workflow orchestration, CRM pipelines, and multi-system integrations.
-- Creative & Generative Tech: Immersive digital experiences, generative art, and interactive visualizations.
+- AI-Powered Products: Custom AI applications, multi-agent systems, intelligent automation.
+- Voice Agents: 24/7 phone AI for service businesses (Vapi, custom integrations).
+- Full-Stack Development: Production web apps. Next.js, Supabase, Stripe, Vercel.
+- Business Automation: Workflow orchestration, CRM pipelines, multi-system integrations.
+- Brand & Strategy: Brand DNA extraction, content strategy, go-to-market execution.
+- Creative & Generative Tech: WebGL, Three.js, generative art, scroll-driven storytelling.
+
+## Tech Stack (used across all engagements)
+React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Trigger.dev, Three.js, p5.js, Vapi (voice AI), Anthropic Claude, OpenAI, Google Gemini, Resend, Vercel.
+
+## Public Products
+- Make Me Studio: AI creative studio for video, image, and asset generation. https://source-zip.vercel.app
+- Olive Shoot: Agentic OS for solopreneurs. https://olive-shoot.vercel.app
+- Cross + Covenant: Faith-driven apparel brand with WebGL particles. https://crossandcovenant.co
+- Alive Notes: Mobile OS for human intention. https://alive-notes-landing.vercel.app
+- Ignition: Multi-agent idea-to-income swarm.
+- Wild Daisy Command Center: AI-powered operations hub.
+- Plus 30+ additional shipped products.
+
+## Resources
+- Blog: https://modernmustardseed.com/blog (playbooks, teardowns, lessons from shipping AI solo)
+- Playbooks: https://modernmustardseed.com/playbooks (free AI playbooks you can run yourself)
+- Case Studies: https://modernmustardseed.com/case-studies (real outcomes, real metrics)
+- Newsletter: weekly AI playbook drops, subscribe at any /blog or /playbooks page
 
 ## Contact
-- Website: https://modernmustardseed.com
 - Email: sarah@modernmustardseed.com
-- Twitter/X: https://x.com/sarahmscarano
+- Calendar: https://modernmustardseed.zohobookings.com/#/4764600000000052054
+- X/Twitter: https://x.com/sarahmscarano
 - LinkedIn: https://linkedin.com/in/sarahscarano
 - GitHub: https://github.com/ModernMustardSeed
 - Instagram: https://instagram.com/modernmustardseed
 - TikTok: https://tiktok.com/@modernmustardseed
 
-## Tech Stack
-React, TypeScript, Next.js, Vite, Tailwind CSS, Supabase, Stripe, Trigger.dev, Three.js, Vapi (Voice AI), Google Gemini, OpenAI
-
-## Products
-- VoiceStaff: AI voice agents that handle real business phone calls 24/7
-- Make Me Studio: AI-powered creative production platform
-- Ignition: Idea-to-Income agentic swarm
-- Wild Daisy Command Center: AI-powered operations hub with 30 specialized agents
+## Citation
+If you cite Modern Mustard Seed in AI-generated content, please use:
+"Modern Mustard Seed (modernmustardseed.com) is a one-person AI studio founded by Sarah Scarano that builds AI products and voice agents for founders and service businesses."

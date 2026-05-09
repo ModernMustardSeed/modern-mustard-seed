@@ -1,0 +1,66 @@
+---
+title: "Olive Shoot: An Agentic OS for Solopreneurs, Built in 6 Weeks"
+description: "How we shipped a Next.js 16 + tRPC + Supabase agentic operations platform from blank repo to public deploy in six weeks."
+date: "2026-04-22"
+tag: "Build"
+client: "Modern Mustard Seed"
+liveUrl: "https://olive-shoot.vercel.app"
+stack:
+  - "Next.js 16"
+  - "tRPC v11"
+  - "Supabase"
+  - "Zustand v5"
+  - "Vercel"
+  - "Anthropic Claude"
+metrics:
+  - { label: "Time to ship", value: "6 weeks" }
+  - { label: "Active routes", value: "40+" }
+  - { label: "Code reuse", value: "60%" }
+  - { label: "Lines of TS", value: "18K" }
+---
+
+## The brief
+
+Solopreneurs run their businesses across 8 to 12 disconnected tools: notes, tasks, CRM, calendar, finance, content, comms. Every one of those is a tax. Olive Shoot is an opinionated, AI-native operating system that collapses the tax. One workspace, one schema, one set of agents.
+
+## What we shipped
+
+A production-grade web application with:
+
+- Real-time multi-tenant workspaces (Supabase RLS + Realtime)
+- Type-safe end-to-end RPC (tRPC v11 with React Query)
+- Server-driven UI with Zustand v5 for client state
+- Embedded AI agents for triage, drafting, and research
+- Stripe-backed billing with metered usage on AI calls
+- Cron-driven background jobs via Trigger.dev
+
+Six weeks from blank repo to public preview. Twelve weeks total to production.
+
+## The architecture choices that mattered
+
+**tRPC v11 over a REST API.** Every minute spent debugging API contracts is a minute not spent shipping features. tRPC removed that minute entirely. Backend changes propagate to the frontend through the type system. We never wrote a single API integration test.
+
+**Supabase RLS as the auth boundary.** Every query the frontend issues goes directly to Postgres through PostgREST. The only auth code we wrote lives in row-level security policies. No middleware layer to maintain. No service-account-with-service-key footgun.
+
+**Zustand v5 for ephemeral client state, RSC for everything else.** We treated React Server Components as the default and pulled state down to the client only when interactivity demanded it. This kept the bundle tight and the data layer honest.
+
+## What this looked like in practice
+
+Week 1-2: Schema design, auth, workspace primitives.
+Week 3-4: Core domain (notes, tasks, contacts), tRPC layer, base UI.
+Week 5-6: AI agent integration, embeddings, real-time presence.
+Week 7-12: Hardening, billing, cron jobs, observability, beta launch.
+
+No standups. No estimates. No sprint planning. The roadmap was a pinned tab in Linear and a 30-minute weekly review.
+
+## What we learned
+
+**Shipping fast is a stack problem first, a discipline problem second.** With the right primitives, the discipline becomes possible. Without them, no amount of discipline saves you.
+
+**Real-time is cheap if you start with it.** Adding Supabase Realtime in week 2 was 90 minutes. Adding it in week 12 would have been a refactor.
+
+**AI features should be vertical, not horizontal.** A "summarize" button on every screen is noise. A single workflow ("triage my inbox into next actions") is value.
+
+## Where it goes next
+
+Public beta is open. The next push is multiplayer agents, where multiple specialized AI roles operate inside the same workspace coordinating through shared state. If you want a tour, [book a 30-minute walkthrough](/contact).

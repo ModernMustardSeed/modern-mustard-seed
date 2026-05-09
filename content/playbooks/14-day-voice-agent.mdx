@@ -1,0 +1,101 @@
+---
+title: "The 14-Day Voice Agent Playbook"
+description: "Exactly how we ship a production voice agent on a business phone number in 14 days. Day-by-day. Stack, scripts, integrations, the whole thing."
+date: "2026-05-01"
+tag: "Voice AI"
+author: "Sarah Scarano"
+gated: false
+---
+
+This is the exact playbook I run on every Voice Agent Launch engagement. Steal it, run it on your own business, ship it. Or hand it to me and I will ship it for you in 14 days.
+
+## What you are building
+
+A voice AI that picks up your business phone number, handles inbound calls intelligently, qualifies leads, books on your calendar, transfers complex calls to a human, and hands you a daily transcript and summary. Live 24/7. Sounds human enough that customers do not realize until you tell them.
+
+## What you need before day one
+
+- A business phone number you control (or willingness to port one)
+- A Vapi account ($20/mo to start) or equivalent
+- A calendar integration (Cal.com, Google Calendar, Calendly)
+- A CRM or destination for leads (Supabase, HubSpot, Airtable, Google Sheets all fine)
+- A clear definition of who is calling and what they want
+
+The last one is the only hard part.
+
+## Day 1-2: ICP and intent map
+
+Sit down and write out, in plain English:
+
+1. Who calls this number? (Existing customer, new lead, vendor, wrong number, support)
+2. What are the top 5 reasons people call?
+3. For each reason, what is the ideal outcome? (Booking, qualification, FAQ answer, transfer, capture-and-callback)
+4. What is the warmest possible greeting?
+
+This is the spec. Most teams skip it and try to "tune" later. Tuning never works without the spec.
+
+## Day 3-4: Build the agent
+
+In Vapi (or equivalent):
+
+1. Create a new assistant.
+2. Set the system prompt to a structured version of your intent map. Include guardrails ("Never quote prices. If asked, say I will pass that to my team.").
+3. Wire functions: book-appointment, capture-lead, transfer-to-human, send-info. Each function calls a webhook that hits your backend.
+4. Pick a voice (test 5, pick the one that sounds most like your brand).
+5. Set call termination rules (max length, hang-up on silence).
+
+This takes a focused day if the spec is clean.
+
+## Day 5-7: Wire integrations
+
+Build webhook endpoints for each function. Minimum:
+
+- `POST /api/voice/book` - takes a time, books on Cal.com or Google, returns confirmation
+- `POST /api/voice/lead` - takes name/phone/email/intent, writes to your CRM
+- `POST /api/voice/transfer` - returns a phone number to transfer to
+- `POST /api/voice/end-of-call` - takes the transcript and summary, writes to your DB or sends to Slack
+
+The webhook contract is the only place agent failures show up. Log everything. Use [Trigger.dev](https://trigger.dev) for retries.
+
+## Day 8-10: Test with real calls
+
+Call the number 50 times. Yes, 50. Here is what to test:
+
+- Happy path booking
+- Asking for things the agent cannot do
+- Talking over the agent
+- Long pauses
+- Strong accents
+- Background noise
+- Asking about pricing (verify guardrail holds)
+- Trying to escalate emotionally
+- Asking to talk to a human
+
+Every failure becomes a tweak to the system prompt or a new function. Iterate until 90 percent of calls produce the intended outcome.
+
+## Day 11-12: Port the number
+
+Port your business line or set up call forwarding to the Vapi number. If you are nervous, fork: forward only after-hours calls for the first week, then expand.
+
+## Day 13: Soft launch
+
+Tell your team. Watch the first 20 live calls. You will see things tests did not surface. Tweak overnight.
+
+## Day 14: Public
+
+Update your website with the number, add it to email signatures, tell your customers. Set a daily review of the transcripts for the first 30 days.
+
+## What this costs you to run
+
+- Vapi: ~$0.05/min of call time
+- Phone number: $1-3/mo
+- Backend infra: $20/mo on Vercel/Supabase
+- Total for a service business doing 200 calls/mo at 4 min each: about $50/mo
+
+What it returns: every call answered, every lead captured, every appointment booked. For most service businesses, that is the difference between a $300K and a $500K year.
+
+## Want this shipped for you?
+
+We do this in 14 days flat. Includes the agent, the integrations, the analytics dashboard, 30 days of post-launch tuning, and team training. Quoted per engagement after a free discovery call. [Start here](/work-with-us).
+
+If you want to ship it yourself, this playbook is the whole thing. Ping me on [X](https://x.com/sarahmscarano) when yours is live and I will share it.
