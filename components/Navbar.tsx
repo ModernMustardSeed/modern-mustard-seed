@@ -41,10 +41,10 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href="/contact"
-            className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/50 transition-all"
+            href="/build-queue"
+            className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_20px_rgba(200,164,21,0.25)] transition-all"
           >
-            Get in Touch
+            Join the Queue
           </Link>
         </div>
 
@@ -88,11 +88,11 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href="/contact"
+            href="/build-queue"
             onClick={() => setMenuOpen(false)}
-            className="mt-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/50 transition-all text-center"
+            className="mt-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_20px_rgba(200,164,21,0.25)] transition-all text-center"
           >
-            Get in Touch
+            Join the Queue
           </Link>
         </div>
       </div>

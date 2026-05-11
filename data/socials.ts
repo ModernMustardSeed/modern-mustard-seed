@@ -7,12 +7,11 @@ export const socials = [
 ];
 
 export const navLinks = [
-  { label: 'Work', href: '/case-studies' },
-  { label: 'Services', href: '/services' },
-  { label: 'Engage', href: '/work-with-us' },
+  { label: 'The Work', href: '/work' },
+  { label: 'How it Works', href: '/work-with-us' },
   { label: 'Playbooks', href: '/playbooks' },
   { label: 'Blog', href: '/blog' },
-  { label: 'AI Audit', href: '/audit' },
+  { label: 'Audit', href: '/audit' },
 ];
 
 export const bookingUrl = 'https://modernmustardseed.zohobookings.com/#/4764600000000052054';

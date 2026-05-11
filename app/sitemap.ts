@@ -4,12 +4,14 @@ import { SITE } from '@/lib/seo';
 
 const STATIC_PATHS = [
   '',
+  '/build-queue',
+  '/work',
   '/services',
   '/work-with-us',
-  '/case-studies',
   '/blog',
   '/playbooks',
   '/audit',
+  '/ai-proof',
   '/about',
   '/contact',
   '/privacy',
@@ -23,7 +25,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${SITE.url}${path}`,
     lastModified: now,
     changeFrequency: (path === '' ? 'weekly' : 'monthly') as 'weekly' | 'monthly',
-    priority: path === '' ? 1.0 : path === '/work-with-us' || path === '/audit' ? 0.9 : 0.7,
+    priority:
+      path === '' || path === '/build-queue'
+        ? 1.0
+        : path === '/work' || path === '/audit'
+          ? 0.9
+          : 0.7,
   }));
 
   const blog = listContent('blog').map((p) => ({
@@ -33,8 +40,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const studies = listContent('case-studies').map((s) => ({
-    url: `${SITE.url}/case-studies/${s.slug}`,
+  const studies = listContent('work').map((s) => ({
+    url: `${SITE.url}/work/${s.slug}`,
     lastModified: new Date(s.date),
     changeFrequency: 'monthly' as const,
     priority: 0.85,

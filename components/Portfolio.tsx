@@ -67,7 +67,7 @@ export default function Portfolio({ limit, showHeader = true }: Props) {
 
                 <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
                   <span className="text-[10px] uppercase tracking-[0.2em] text-mustard-400 font-sans font-bold">
-                    {project.caseStudySlug ? 'Read Case Study' : 'View Live'}
+                    {project.workSlug ? 'Read Case Study' : 'View Live'}
                   </span>
                   <svg className="w-3.5 h-3.5 text-mustard-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
@@ -80,8 +80,8 @@ export default function Portfolio({ limit, showHeader = true }: Props) {
           const sharedClasses =
             'group relative flex flex-col justify-end aspect-[3/4] rounded-xl overflow-hidden border border-white/[0.04] hover:border-mustard-500/20 transition-all duration-500';
 
-          return project.caseStudySlug ? (
-            <Link key={project.title} href={`/case-studies/${project.caseStudySlug}`} className={sharedClasses}>
+          return project.workSlug ? (
+            <Link key={project.title} href={`/work/${project.workSlug}`} className={sharedClasses}>
               {inner}
             </Link>
           ) : (
@@ -106,11 +106,11 @@ export default function Portfolio({ limit, showHeader = true }: Props) {
 
           <div className="flex justify-center mt-10">
             <Link
-              href="/case-studies"
+              href="/work"
               className="group inline-flex items-center gap-3 border border-mustard-500/20 hover:border-mustard-500/40 px-8 py-4 rounded-full transition-all duration-500 hover:bg-mustard-500/5"
             >
               <span className="text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white/40 group-hover:text-mustard-400 transition-colors">
-                Read the Case Studies
+                See All the Work
               </span>
               <svg className="w-4 h-4 text-mustard-400/40 group-hover:text-mustard-400 group-hover:translate-x-1 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
