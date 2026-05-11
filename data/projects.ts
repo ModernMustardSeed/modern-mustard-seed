@@ -4,7 +4,7 @@ export type Project = {
   tags: string[];
   href: string;
   color: string;
-  caseStudySlug?: string;
+  workSlug?: string;
 };
 
 export const projects: Project[] = [
@@ -14,7 +14,7 @@ export const projects: Project[] = [
     tags: ['Next.js', 'Gemini', 'Stripe'],
     href: 'https://source-zip.vercel.app',
     color: 'from-amber-900/40 to-amber-800/20',
-    caseStudySlug: 'make-me-studio',
+    workSlug: 'make-me-studio',
   },
   {
     title: 'Cross + Covenant',
@@ -29,7 +29,7 @@ export const projects: Project[] = [
     tags: ['Next.js 16', 'tRPC', 'Zustand'],
     href: 'https://olive-shoot.vercel.app',
     color: 'from-blue-900/40 to-blue-800/20',
-    caseStudySlug: 'olive-shoot',
+    workSlug: 'olive-shoot',
   },
   {
     title: 'Ignition',

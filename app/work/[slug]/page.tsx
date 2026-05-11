@@ -10,23 +10,23 @@ import { getAllSlugs, getContent } from '@/lib/content';
 type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
-  return getAllSlugs('case-studies').map((slug) => ({ slug }));
+  return getAllSlugs('work').map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
-  const study = getContent('case-studies', slug);
+  const study = getContent('work', slug);
   if (!study) return buildMetadata({ title: 'Not Found', noindex: true });
   return buildMetadata({
     title: study.meta.title,
     description: study.meta.description,
-    path: `/case-studies/${slug}`,
+    path: `/work/${slug}`,
   });
 }
 
-export default async function CaseStudyPage({ params }: { params: Params }) {
+export default async function WorkDetail({ params }: { params: Params }) {
   const { slug } = await params;
-  const study = getContent('case-studies', slug);
+  const study = getContent('work', slug);
   if (!study) notFound();
 
   return (
@@ -34,8 +34,8 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
       <JsonLd
         data={breadcrumbJsonLd([
           { name: 'Home', url: '/' },
-          { name: 'Case Studies', url: '/case-studies' },
-          { name: study.meta.title, url: `/case-studies/${slug}` },
+          { name: 'Work', url: '/work' },
+          { name: study.meta.title, url: `/work/${slug}` },
         ])}
       />
       <StaticBackground />
@@ -43,10 +43,10 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
       <article className="relative pt-36 md:pt-44 pb-20">
         <div className="max-w-4xl mx-auto px-6 md:px-8">
           <Link
-            href="/case-studies"
+            href="/work"
             className="text-[10px] uppercase tracking-[0.3em] text-mustard-500/60 font-mono font-bold hover:text-mustard-400 transition-colors"
           >
-            &larr; All case studies
+            &larr; All work
           </Link>
 
           <header className="mt-8 mb-12 pb-12 border-b border-white/[0.06]">
@@ -121,23 +121,23 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
 
           <div className="mt-16 glass-card p-10 text-center">
             <h3 className="font-sans text-2xl font-extrabold text-white tracking-tight mb-3">
-              Want this for your business?
+              Want this kind of build for your next venture?
             </h3>
             <p className="text-white/55 text-base font-body font-light mb-6 max-w-md mx-auto">
-              Start with a free AI audit, or scope a build directly.
+              Four builds a quarter. Waitlist only.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/audit"
+                href="/build-queue"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.2)] transition-all"
               >
-                Run Free Audit
+                Join the Build Queue
               </Link>
               <Link
-                href="/work-with-us"
+                href="/audit"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 transition-all"
               >
-                See How We Engage
+                Run Free AI Audit
               </Link>
             </div>
           </div>

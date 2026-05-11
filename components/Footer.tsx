@@ -6,10 +6,11 @@ export default function Footer() {
     {
       title: 'Work',
       links: [
-        { label: 'Case Studies', href: '/case-studies' },
-        { label: 'Services', href: '/services' },
-        { label: 'How We Work', href: '/work-with-us' },
+        { label: 'The Work', href: '/work' },
+        { label: 'How it Works', href: '/work-with-us' },
+        { label: 'Join the Queue', href: '/build-queue' },
         { label: 'AI Audit', href: '/audit' },
+        { label: 'AI-Proof Your Business', href: '/ai-proof' },
       ],
     },
     {

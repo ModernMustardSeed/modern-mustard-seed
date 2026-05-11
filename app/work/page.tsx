@@ -6,21 +6,21 @@ import { listContent } from '@/lib/content';
 import { projects } from '@/data/projects';
 
 export const metadata = buildMetadata({
-  title: 'Case Studies',
+  title: 'The Work',
   description:
-    'Real projects, real outcomes. How we ship AI products, voice agents, and production apps in weeks.',
-  path: '/case-studies',
+    'Real products, real receipts. Every build is a shipped product with a defined problem, scope, stack, and outcome.',
+  path: '/work',
 });
 
-export default function CaseStudiesPage() {
-  const studies = listContent('case-studies');
+export default function WorkIndex() {
+  const studies = listContent('work');
 
   return (
     <>
       <JsonLd
         data={breadcrumbJsonLd([
           { name: 'Home', url: '/' },
-          { name: 'Case Studies', url: '/case-studies' },
+          { name: 'Work', url: '/work' },
         ])}
       />
       <StaticBackground />
@@ -29,13 +29,13 @@ export default function CaseStudiesPage() {
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <div className="text-center mb-16">
             <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
-              Case Studies
+              The Work
             </span>
             <h1 className="font-sans text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6">
-              The Work, <span className="text-gradient-mustard">Annotated</span>
+              Real Products. <span className="text-gradient-mustard">Real Receipts.</span>
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
-              Each case study is a teardown: the brief, the build, the stack, the metrics. What it was, how we built it, what it does now.
+              Each case study is a teardown. The problem, the build, the stack, the outcome. What it was. How we built it. What it does now.
             </p>
           </div>
 
@@ -44,7 +44,7 @@ export default function CaseStudiesPage() {
               {studies.map((s) => (
                 <Link
                   key={s.slug}
-                  href={`/case-studies/${s.slug}`}
+                  href={`/work/${s.slug}`}
                   className="group glass-card p-8 hover:border-mustard-500/20 transition-all duration-500"
                 >
                   <div className="flex items-center gap-3 mb-5">
@@ -87,7 +87,7 @@ export default function CaseStudiesPage() {
               The Full Portfolio
             </h2>
             <p className="text-white/40 text-sm font-body font-light text-center mb-8 max-w-xl mx-auto">
-              Live products, public deployments. Click through to see them.
+              Live products. Public deployments. Click through.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {projects.map((p) => (
@@ -106,10 +106,7 @@ export default function CaseStudiesPage() {
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {p.tags.map((t) => (
-                      <span
-                        key={t}
-                        className="skill-pill border-white/[0.06] text-white/30 text-[8px]"
-                      >
+                      <span key={t} className="skill-pill border-white/[0.06] text-white/30 text-[8px]">
                         {t}
                       </span>
                     ))}

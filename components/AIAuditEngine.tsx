@@ -508,7 +508,7 @@ const AIAuditEngine: React.FC = () => {
         body: JSON.stringify({
           name: leadName,
           email: leadEmail,
-          message: `AI Audit Lead — Industry: ${d.name} | Company: ${leadCompany || 'N/A'} | Phone: ${leadPhone || 'N/A'} | URL: ${auditUrl || 'N/A'} | Source: ${source}`,
+          message: `AI Audit Lead. Industry: ${d.name} | Company: ${leadCompany || 'N/A'} | Phone: ${leadPhone || 'N/A'} | URL: ${auditUrl || 'N/A'} | Source: ${source}`,
         }),
       });
     } catch (err) {
@@ -671,13 +671,13 @@ const AIAuditEngine: React.FC = () => {
                     <ScoreRing score={quizScore} size={120} />
                   </div>
                   <div className="font-sans text-lg font-bold text-white mb-2">
-                    {quizScore >= 75 ? 'You\'re AI-Ready! 🚀' : quizScore >= 50 ? 'Strong Foundation — Let\'s Build' : 'Massive Opportunity Ahead'}
+                    {quizScore >= 75 ? 'You\'re AI-Ready! 🚀' : quizScore >= 50 ? 'Strong Foundation. Let\'s Build' : 'Massive Opportunity Ahead'}
                   </div>
                   <p className="text-sm text-white/40 font-body leading-relaxed mb-6 max-w-sm mx-auto">
                     {quizScore >= 75
                       ? 'Your operations are primed for advanced AI integration. Let\'s identify the highest-ROI moves.'
                       : quizScore >= 50
-                      ? 'You have good building blocks in place. Strategic AI deployment could transform your efficiency.'
+                      ? 'You have good building blocks in place. Strategic AI deployment could compound your efficiency.'
                       : 'You\'re sitting on a gold mine of automation opportunity. Early movers in your space are seeing 3–5x returns.'}
                   </p>
                   <div className="flex gap-3 justify-center flex-wrap">
@@ -755,7 +755,7 @@ const AIAuditEngine: React.FC = () => {
                 <div className="text-center py-10">
                   <Loader2 size={40} color={M} className="mx-auto mb-5 animate-spin" />
                   <div className="font-sans text-base font-bold text-white mb-1">{PHASE_LABELS[auditPhase]}</div>
-                  {leadName && <div className="text-xs text-white/30 font-body mb-5">Hang tight, {leadName.split(' ')[0]} — usually takes about 15 seconds</div>}
+                  {leadName && <div className="text-xs text-white/30 font-body mb-5">Hang tight, {leadName.split(' ')[0]}. Usually takes about 15 seconds.</div>}
                   <div className="flex gap-1 justify-center">
                     {[1, 2, 3, 4, 5].map(p => (
                       <div key={p} className="w-12 h-1 rounded-full transition-all duration-500"
@@ -808,7 +808,7 @@ const AIAuditEngine: React.FC = () => {
                   {/* Top Tools */}
                   <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-4 mb-4">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="text-[11px] font-sans font-bold" style={{ color: M }}>Recommended AI Tools — By Impact</div>
+                      <div className="text-[11px] font-sans font-bold" style={{ color: M }}>Recommended AI Tools. By Impact.</div>
                       <span className="text-[8px] font-mono text-white/25 uppercase tracking-widest">Hover for options</span>
                     </div>
                     {auditResult.topTools.map((t, i) => {
@@ -837,7 +837,7 @@ const AIAuditEngine: React.FC = () => {
 
                   {/* Quick Wins */}
                   <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-4 mb-4">
-                    <div className="text-[11px] font-sans font-bold text-amber-400 mb-3">⚡ Quick Wins — Deploy This Week</div>
+                    <div className="text-[11px] font-sans font-bold text-amber-400 mb-3">⚡ Quick Wins. Deploy This Week.</div>
                     <div className="flex gap-2 flex-wrap">
                       {auditResult.quickWins.map((w, i) => (
                         <div key={i} className="px-3 py-1.5 rounded-lg text-xs text-amber-200 font-body" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.15)' }}>{w}</div>
@@ -860,7 +860,7 @@ const AIAuditEngine: React.FC = () => {
                   {/* CTA */}
                   <div className="rounded-2xl p-6 text-center" style={{ background: MG, border: `1px solid ${MB}` }}>
                     <div className="font-sans text-base font-extrabold text-white mb-1">Ready to turn this audit into your custom AI platform?</div>
-                    <p className="text-xs text-white/40 font-body mb-5">We build everything above — one platform, your brand, fully integrated.</p>
+                    <p className="text-xs text-white/40 font-body mb-5">We build everything above. One platform, your brand, fully integrated.</p>
                     <div className="flex gap-3 justify-center flex-wrap">
                       <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-sans font-bold text-black no-underline transition-all"
@@ -872,7 +872,7 @@ const AIAuditEngine: React.FC = () => {
                         {reportSent ? <><CheckCircle size={13} /> Report Sent!</> : <><Mail size={13} /> Email My Report</>}
                       </button>
                     </div>
-                    {leadName && <p className="text-[11px] text-white/30 font-body mt-4">Hey {leadName.split(' ')[0]} — we'll follow up with a full breakdown for {leadCompany || auditResult.businessName}.</p>}
+                    {leadName && <p className="text-[11px] text-white/30 font-body mt-4">Hey {leadName.split(' ')[0]}. We'll follow up with a full breakdown for {leadCompany || auditResult.businessName}.</p>}
                   </div>
                 </div>
               )}
@@ -1056,8 +1056,8 @@ const AIAuditEngine: React.FC = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {[
-                  { label: 'Full Custom Platform', badge: 'ALL-IN-ONE', desc: 'Your entire AI stack as one unified platform — every tool, one dashboard, your brand.', tags: ['Fully integrated', 'Your branding', 'One dashboard', 'You own it'], c: M },
-                  { label: 'Individual MMS Tools', badge: 'À LA CARTE', desc: 'Pick the tools you need most — we build and deploy them individually, tailored to your business.', tags: ['Voice agents', 'Doc AI', 'Chatbots', 'Automations'], c: '#22C55E' },
+                  { label: 'Full Custom Platform', badge: 'ALL-IN-ONE', desc: 'Your entire AI stack as one unified platform. Every tool, one dashboard, your brand.', tags: ['Fully integrated', 'Your branding', 'One dashboard', 'You own it'], c: M },
+                  { label: 'Individual MMS Tools', badge: 'À LA CARTE', desc: 'Pick the tools you need most. We build and deploy them individually, tailored to your business.', tags: ['Voice agents', 'Doc AI', 'Chatbots', 'Automations'], c: '#22C55E' },
                   { label: 'DIY with Existing Tools', badge: 'SELF-SERVE', desc: 'Each tool card shows third-party options you can start using today.', tags: ['Start today', 'Known brands', 'Lower upfront', 'Good for testing'], c: '#6B8AFF' },
                 ].map((item, i) => (
                   <div key={i} className="bg-white/[0.02] border-l-2 rounded-xl p-4" style={{ borderColor: item.c }}>
@@ -1235,7 +1235,7 @@ const AIAuditEngine: React.FC = () => {
               <Sparkles size={16} color={M} />
               <div>
                 <div className="text-sm font-sans font-bold text-white">Your Custom Platform Build Roadmap</div>
-                <div className="text-xs text-white/30 font-body">We deploy your AI tools in 3 phases — results from week one, full platform by month 6</div>
+                <div className="text-xs text-white/30 font-body">We deploy your AI tools in 3 phases. Results from week one. Full platform by month 6.</div>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1244,7 +1244,7 @@ const AIAuditEngine: React.FC = () => {
                 const COLS = ['#22C55E', '#F59E0B', '#8B5CF6'];
                 const LABELS = ['Quick Deploy', 'Core Platform', 'Advanced Intelligence'];
                 const TIMES = ['Week 1–2', 'Month 1–2', 'Month 3–6'];
-                const DESCS = ['High-impact tools live fast — immediate ROI', 'Your unified dashboard takes shape', 'Predictive AI & deep integrations'];
+                const DESCS = ['High-impact tools live fast. Immediate ROI.', 'Your unified dashboard takes shape', 'Predictive AI and deep integrations'];
                 return (
                   <div key={phase} className="glass-card p-5" style={{ border: `1px solid ${COLS[phase - 1]}20` }}>
                     <div className="flex items-center gap-2 mb-1">
@@ -1282,7 +1282,7 @@ const AIAuditEngine: React.FC = () => {
           <div className="flex flex-col gap-4">
             {/* Area chart */}
             <div className="glass-card p-6">
-              <div className="text-xs font-sans font-bold text-white mb-4">Cumulative ROI — 6 Month Projection</div>
+              <div className="text-xs font-sans font-bold text-white mb-4">Cumulative ROI. 6-Month Projection.</div>
               <ResponsiveContainer width="100%" height={260}>
                 <AreaChart data={d.monthlyROI}>
                   <defs>
@@ -1342,7 +1342,7 @@ const AIAuditEngine: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="glass-card p-6">
               <div className="text-xs font-sans font-bold text-white mb-1">Your Custom ROI Calculator</div>
-              <div className="text-xs text-white/30 font-body mb-6">See how much capacity AI can unlock for your team</div>
+              <div className="text-xs text-white/30 font-body mb-6">See how much capacity AI can return to your team</div>
               {[
                 { l: 'Team Size', k: 'employees' as const, min: 1, max: 500, step: 1, unit: '' },
                 { l: 'Avg. Hourly Value ($/hr)', k: 'hourlyRate' as const, min: 15, max: 300, step: 5, unit: '$' },
@@ -1402,7 +1402,7 @@ const AIAuditEngine: React.FC = () => {
               <Sparkles size={8} /> Ready to Build?
             </div>
             <div className="font-sans text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
-              Let's map your AI roadmap — <span className="text-gradient-mustard">free</span>.
+              Let's map your AI roadmap. <span className="text-gradient-mustard">Free.</span>
             </div>
             <p className="text-sm text-white/55 font-body max-w-lg mx-auto mb-8 leading-relaxed">
               Run your AI audit above, or book a call and we'll walk you through exactly what to build, in what order, and what it'll return.

@@ -3,7 +3,7 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
 
-export type ContentType = 'blog' | 'case-studies' | 'playbooks';
+export type ContentType = 'blog' | 'work' | 'playbooks';
 
 export type ContentMeta = {
   slug: string;
