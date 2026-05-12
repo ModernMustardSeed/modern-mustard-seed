@@ -62,7 +62,7 @@ export default async function WorkDetail({ params }: { params: Params }) {
                 </span>
               )}
             </div>
-            <h1 className="font-sans text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.05] mb-6">
+            <h1 className="font-sans text-4xl md:text-6xl font-semibold text-white tracking-tight leading-[1.05] mb-6">
               {study.meta.title}
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed mb-8">
@@ -73,7 +73,7 @@ export default async function WorkDetail({ params }: { params: Params }) {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {study.meta.metrics.map((m) => (
                   <div key={m.label} className="glass-card p-5 text-center">
-                    <div className="font-sans text-2xl md:text-3xl font-extrabold text-gradient-mustard tracking-tight">
+                    <div className="font-sans text-2xl md:text-3xl font-semibold text-gradient-mustard tracking-tight">
                       {m.value}
                     </div>
                     <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-mono font-bold mt-2">
@@ -120,7 +120,7 @@ export default async function WorkDetail({ params }: { params: Params }) {
           </div>
 
           <div className="mt-16 glass-card p-10 text-center">
-            <h3 className="font-sans text-2xl font-extrabold text-white tracking-tight mb-3">
+            <h3 className="font-sans text-2xl font-semibold text-white tracking-tight mb-3">
               Want this kind of build for your next venture?
             </h3>
             <p className="text-white/55 text-base font-body font-light mb-6 max-w-md mx-auto">

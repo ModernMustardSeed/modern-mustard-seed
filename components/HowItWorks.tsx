@@ -36,7 +36,7 @@ export default function HowItWorks() {
         <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
           How it works
         </span>
-        <h2 className="font-sans text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-5">
+        <h2 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-5">
           Four Steps. <span className="text-gradient-mustard">Thirty Days.</span>
         </h2>
         <p className="text-white/55 text-base md:text-lg font-body font-light leading-relaxed">
@@ -51,7 +51,7 @@ export default function HowItWorks() {
               key={step.number}
               className="relative glass-card p-7 md:p-8 hover:border-mustard-500/20 transition-all duration-500"
             >
-              <span className="font-sans text-3xl md:text-4xl font-extrabold text-gradient-mustard-subtle tracking-tight block mb-4">
+              <span className="font-sans text-3xl md:text-4xl font-semibold text-gradient-mustard-subtle tracking-tight block mb-4">
                 {step.number}
               </span>
               <h3 className="font-sans text-lg md:text-xl font-bold text-white tracking-tight mb-3">

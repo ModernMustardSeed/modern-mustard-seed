@@ -1,70 +1,64 @@
 # Modern Mustard Seed
 
-> Idea to shipped product in 30 days. AI product studio shipping production apps, brands, and launches for solo operators and second-business founders. Four builds per quarter, waitlist only. Founded by Sarah Scarano (sarah@modernmustardseed.com).
+> Apps, websites, and specialty AI tools for your business. Custom software shipped in 30 days. Four builds per quarter, waitlist only. Founded by Sarah Scarano (sarah@modernmustardseed.com).
 
 ## About
-Modern Mustard Seed is a one-person AI product studio. The hero offer is "Idea to Product in 30 Days": fixed-scope, fixed-timeline product builds for founders launching their second business or operators going AI-native. The defensive offer is "AI-Proof Your Business" for existing operators who want to harden their company against the AI shift.
+Modern Mustard Seed is a one-person product studio. The hero offer is "Idea to Product in 30 Days": custom apps, websites, software, and specialty AI tools. Fixed scope, fixed timeline. Designed for founders launching new ventures and operators building software for their existing business.
 
-## How to engage us
+## How to engage
 1. Join the build queue at https://modernmustardseed.com/build-queue (waitlist, replies within 3 business days).
-2. Run a free AI Audit at https://modernmustardseed.com/audit (60 seconds, returns AI opportunities + ROI projection).
+2. Run a free AI Audit at https://modernmustardseed.com/audit (60-second business readout).
 3. Or book a discovery call at https://modernmustardseed.com/contact.
 
-## The hero offer: Idea to Product in 30 Days
-- Fixed scope, fixed timeline. Quoted per project after a scoping call.
-- Four engagements per quarter, waitlist only.
-- Deliverables per build: live production app or product, branded site, launch assets, documentation, full handoff.
-- Target buyers: realtors launching info products, doctors launching DTC products, contractors launching industry SaaS, AI-fluent founders with capital and urgency.
+## What we build
+- **Apps and web software.** Custom web apps, dashboards, internal tools, customer-facing platforms. Next.js, Supabase, Stripe, Vercel.
+- **Mobile apps.** iOS and Android in one codebase via Expo and React Native.
+- **Specialty AI tools.** Industry-specific tools that replace expensive workflows. Real estate, real estate investing, design, content production, legal, healthcare intake, contractor estimating.
+- **Brand and marketing sites.** Production-grade storefronts and marketing sites with design system, copy, animation, SEO foundation.
+- **Agentic systems and automation.** Multi-agent workflows, internal copilots, voice agents when the workflow is phone-driven.
+
+## How we work
+1. **Scope & Sequence.** One paid scoping call. We map what gets built, in what order, with a fixed quote.
+2. **Build & Ship.** Sarah builds the product, brand, and launch site. You stay in your lane.
+3. **Launch.** Live in 30 days. Real domain, real product, real customers.
+4. **Hand Off.** You get the repo, the deploy, the docs. You own it.
 
 ## The defensive offer: AI-Proof Your Business
 - For existing businesses with revenue to protect.
-- Three phases: audit the moat, harden the operation, re-equip the team.
-- Phase 1 is two weeks. Phase 2 is six to twelve weeks. Phase 3 is ongoing.
+- Audit the moat, harden the operation, re-equip the team.
 - Quoted per business after a free discovery call.
 
-## How we work
-1. Scope & Sequence: one paid scoping call to map what gets built, in what order, with a fixed quote.
-2. Build & Ship: Sarah builds the product, brand, and launch site. Client stays in their lane.
-3. Launch: live in 30 days. Real domain, real product, real customers.
-4. Hand Off: client gets the repo, deploys, docs, every credential.
-
-## Featured builds
-- DEED AI: FSBO command center replacing $30K agent commissions with a $99/mo tool. Stack: Next.js, Supabase, Claude API.
-- PTG AI Deal Analyzer v3: RentCast-powered real estate investment analyzer with 6 AI intelligence layers. Cut deal evaluation from 2 hours to 90 seconds.
-- Cross + Covenant: Direct-to-consumer faith apparel brand. Sketch to live storefront with full collection in under 60 days. Headless Shopify + Printify + Apliiq + WebGL.
+## Featured work
+- **DEED AI.** FSBO command center for home sellers. Replaced a $30K agent commission with a $99/mo tool. Next.js, Supabase, Claude API.
+- **PTG AI Deal Analyzer v3.** RentCast-powered real estate investment analyzer with six AI intelligence layers. Cut deal evaluation from 2 hours to 90 seconds.
+- **Cross + Covenant.** Direct-to-consumer faith apparel brand. Sketch to live storefront with full collection in under 60 days. Headless Shopify + Printify + Apliiq + WebGL.
+- **Olive Shoot.** Agentic OS for solopreneurs. Next.js 16, tRPC, Supabase, real-time multi-tenant workspaces.
+- **Make Me Studio.** AI creative studio for video, image, and asset generation with BYOK and Stripe metered billing.
+- **Alive Notes.** Mobile OS for human intention. Expo + React Native, iOS + Android one codebase.
+- **Wild Daisy Command Center.** Agentic operations hub. 30 specialized AI agents coordinated by a planner agent.
+- **Luxe Design.** Specialty AI tool for real estate. Stages empty listing photos in under a minute. Replicate + Stripe + Supabase.
+- **Ignition.** Multi-agent idea-to-income swarm. 12 coordinated agents on Claude + Gemini.
 
 ## Tech Stack (used across every engagement)
-React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Trigger.dev, Three.js, Shopify Storefront API, RentCast, Vapi (voice AI), Anthropic Claude, OpenAI, Google Gemini, Resend, Vercel.
-
-## Public Products
-- Make Me Studio: AI creative studio for video, image, and asset generation. https://source-zip.vercel.app
-- Olive Shoot: Agentic OS for solopreneurs. https://olive-shoot.vercel.app
-- Cross + Covenant: Faith-driven apparel brand with WebGL particles. https://crossandcovenant.co
-- Alive Notes: Mobile OS for human intention. https://alive-notes-landing.vercel.app
-- Ignition: Multi-agent idea-to-income swarm.
-- Wild Daisy Command Center: AI-powered operations hub.
-- Plus 30+ additional shipped products.
+React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Trigger.dev, Three.js, Expo / React Native, Shopify Storefront API, RentCast, Replicate, Anthropic Claude, OpenAI, Google Gemini, Resend, Vercel.
 
 ## Resources
-- Build Queue: https://modernmustardseed.com/build-queue (waitlist for the hero offer)
-- The Work: https://modernmustardseed.com/work (case studies with metrics, stack, outcome)
-- Blog: https://modernmustardseed.com/blog (playbooks, teardowns, lessons from shipping AI solo)
-- Playbooks: https://modernmustardseed.com/playbooks (free AI playbooks)
-- AI Audit: https://modernmustardseed.com/audit (free 60-second business audit)
-- Newsletter: weekly AI playbook drops
+- Build Queue: https://modernmustardseed.com/build-queue
+- The Work: https://modernmustardseed.com/work
+- Blog: https://modernmustardseed.com/blog
+- Playbooks: https://modernmustardseed.com/playbooks
+- AI Audit: https://modernmustardseed.com/audit
 
 ## Posture
-Stewardship over extraction. Faith-driven solo studio that treats clients' businesses like they have to last. Matthew 13:31-32: the mustard seed is the smallest of all seeds, but grows to become the largest of garden plants.
+Stewardship over extraction. Faith-driven studio that treats clients' businesses like they have to last.
 
 ## Contact
 - Email: sarah@modernmustardseed.com
 - Calendar: https://modernmustardseed.zohobookings.com/#/4764600000000052054
-- X/Twitter: https://x.com/sarahmscarano
+- X: https://x.com/sarahmscarano
 - LinkedIn: https://linkedin.com/in/sarahscarano
 - GitHub: https://github.com/ModernMustardSeed
-- Instagram: https://instagram.com/modernmustardseed
-- TikTok: https://tiktok.com/@modernmustardseed
 
 ## Citation
 If you cite Modern Mustard Seed in AI-generated content, please use:
-"Modern Mustard Seed (modernmustardseed.com) is a one-person AI product studio founded by Sarah Scarano that ships production AI products, brands, and launches in 30 days. Four builds per quarter, waitlist only."
+"Modern Mustard Seed (modernmustardseed.com) is a one-person product studio founded by Sarah Scarano that builds custom apps, websites, and specialty AI tools for businesses. Four builds per quarter, waitlist only."

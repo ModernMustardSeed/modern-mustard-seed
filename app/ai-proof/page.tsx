@@ -72,7 +72,7 @@ export default function AiProofPage() {
             <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
               AI-Proof Your Business
             </span>
-            <h1 className="font-sans text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 leading-[1.05]">
+            <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6 leading-[1.05]">
               Defend the <span className="text-gradient-mustard">Moat.</span>
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
@@ -108,7 +108,7 @@ export default function AiProofPage() {
 
           <div className="max-w-3xl mx-auto mb-20">
             <div className="text-center mb-10">
-              <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
+              <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-3">
                 Common <span className="text-gradient-mustard">Questions</span>
               </h2>
             </div>
@@ -135,7 +135,7 @@ export default function AiProofPage() {
           </div>
 
           <div className="text-center glass-card p-10 mb-16">
-            <h3 className="font-sans text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-4">
+            <h3 className="font-sans text-2xl md:text-3xl font-semibold text-white tracking-tight mb-4">
               Ready to defend the moat?
             </h3>
             <p className="text-white/55 text-base font-body font-light mb-6 max-w-lg mx-auto">

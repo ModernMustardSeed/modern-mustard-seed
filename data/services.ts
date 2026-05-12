@@ -10,69 +10,47 @@ export type Service = {
 
 export const services: Service[] = [
   {
-    slug: 'ai-products',
-    icon: '🤖',
-    title: 'AI-Powered Products',
+    slug: 'apps-software',
+    icon: '📱',
+    title: 'Apps & Web Software',
     short:
-      'Custom AI applications that solve real problems. Multi-agent systems, content generation, intelligent automation, production-grade tools that scale.',
+      'Custom apps and web software built end to end. Frontend, backend, auth, billing, deployment. Real products that scale.',
     description:
-      'We build custom AI products end to end. From the model selection and prompt architecture to the UI, the database, the auth, the billing, and the deployment. Every product is shipped to production, owned by you, and engineered to scale.',
-    outcomes: ['Custom AI tools', 'Multi-agent systems', 'Intelligent automation'],
-    ideal: 'Founders with a clear AI product vision who want it built once, built right.',
+      'We build the apps and web software your business needs. From idea to shipped product in 30 days. React, Next.js, Supabase, Stripe, Vercel. The same stack we run every business on.',
+    outcomes: ['Web apps', 'Mobile apps', 'Custom dashboards'],
+    ideal: 'Founders with a clear product vision who need it built once, built right.',
   },
   {
-    slug: 'voice-agents',
-    icon: '📞',
-    title: 'Voice Agents',
+    slug: 'specialty-ai-tools',
+    icon: '🛠️',
+    title: 'Specialty AI Tools',
     short:
-      'Enterprise-grade voice AI for phone conversations, appointment booking, customer service, and lead qualification. 24/7.',
+      'Industry-specific AI tools that replace expensive workflows. The $3K service line item becomes the $99 subscription.',
     description:
-      'A voice agent that picks up your business phone, handles inbound calls intelligently, books appointments on your calendar, qualifies leads, and transfers complex calls to humans. Powered by Vapi, integrated with your CRM, monitored end to end.',
-    outcomes: ['24/7 phone coverage', 'Lead qualification', 'Appointment booking'],
-    ideal: 'Service businesses where every missed call is a missed customer.',
+      'Pick the friction in your industry. We build the AI tool that removes it. Listing description generators, deal analyzers, estimate builders, intake summarizers. Tailored to your industry, owned by you.',
+    outcomes: ['Industry-specific AI', 'Replace expensive workflows', 'Per-engagement pricing'],
+    ideal: 'Operators with a clear sense of where AI will pay back fastest.',
   },
   {
-    slug: 'full-stack',
-    icon: '🏗️',
-    title: 'Full-Stack Development',
+    slug: 'brand-sites',
+    icon: '🎨',
+    title: 'Brand & Marketing Sites',
     short:
-      'Production-grade web applications from concept to deployment. React, Next.js, databases, APIs, authentication, payments. The full stack.',
+      'Production-grade marketing sites. Design system, copy, animation, SEO foundation, launch assets.',
     description:
-      'We build web apps the way modern teams ship: Next.js + Supabase + Stripe + Vercel. Designed for performance, secured by default, deployed continuously, and easy to extend. Our stack is the same one we run every business on.',
-    outcomes: ['Production apps', 'API architecture', 'Database design'],
-    ideal: 'Founders who need a real product, not a prototype.',
-  },
-  {
-    slug: 'business-automation',
-    icon: '⚙️',
-    title: 'Business Automation',
-    short:
-      'End-to-end workflow orchestration, CRM pipelines, multi-system integrations. Cut manual work, scale capacity.',
-    description:
-      'Most businesses run on a stack of disconnected tools and human glue. We replace the human glue with automation. Trigger.dev, Zapier, custom workflows, AI agents, scheduled jobs. The work that used to take hours happens in seconds.',
-    outcomes: ['Workflow orchestration', 'CRM pipelines', 'Multi-system sync'],
-    ideal: 'Operations-heavy businesses ready to remove themselves from the inbox.',
-  },
-  {
-    slug: 'brand-strategy',
-    icon: '🎯',
-    title: 'Brand & Strategy',
-    short:
-      'Brand DNA extraction, content strategy, go-to-market execution. Building identities that resonate and strategies that convert.',
-    description:
-      'Strategy work for founders who treat their brand like a moat. We extract your brand DNA, design the system, and ship the go-to-market. Positioning, voice, content engine, launch sequence. Built to convert and engineered to compound.',
-    outcomes: ['Brand identity', 'Content strategy', 'Go-to-market'],
+      'A site that looks like the brand you are trying to be, not the brand you were. Headless commerce, WebGL hero treatments, structured data, performance budgets, all of it. Ships with launch copy and the social assets.',
+    outcomes: ['Brand identity', 'Marketing site', 'Launch assets'],
     ideal: 'Founders launching something they want to last.',
   },
   {
-    slug: 'creative-tech',
-    icon: '✨',
-    title: 'Creative & Generative Tech',
+    slug: 'agentic-systems',
+    icon: '🤖',
+    title: 'Agentic Systems & Automation',
     short:
-      'Immersive digital experiences, generative art, interactive visualizations. Brand expression as software.',
+      'Multi-agent workflows, internal copilots, end-to-end automation. Replace the human glue with software that runs itself.',
     description:
-      'When the brief calls for something that has not existed before. WebGL, Three.js, p5, generative art, scroll-driven storytelling, 3D product configurators. Brand expression where the website itself is the demo.',
-    outcomes: ['WebGL experiences', 'Generative art', '3D product configurators'],
-    ideal: 'Brands competing on craft, not commodity.',
+      'Most businesses run on a stack of disconnected tools and human glue. We replace the glue. Trigger.dev for orchestration, Claude for reasoning, custom agents tuned for your specific operation. Voice agents available when the workflow is phone-driven.',
+    outcomes: ['Workflow automation', 'Multi-agent systems', 'Voice agents'],
+    ideal: 'Operations-heavy businesses ready to take the small jobs off the operator plate.',
   },
 ];

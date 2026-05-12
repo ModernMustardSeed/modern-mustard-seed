@@ -75,7 +75,7 @@ export default async function BlogPost({ params }: { params: Params }) {
               </span>
               <span className="text-[10px] text-white/30 font-mono">{post.meta.readingTime}</span>
             </div>
-            <h1 className="font-sans text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.05] mb-6">
+            <h1 className="font-sans text-4xl md:text-6xl font-semibold text-white tracking-tight leading-[1.05] mb-6">
               {post.meta.title}
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed">

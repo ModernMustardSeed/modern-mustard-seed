@@ -6,7 +6,7 @@ export default function VideoShowcase() {
           <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-4 block">
             See It In Action
           </span>
-          <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight">
             Watch How We <span className="text-gradient-mustard">Build</span>
           </h2>
         </div>

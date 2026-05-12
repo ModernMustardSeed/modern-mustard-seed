@@ -10,10 +10,10 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Syne"', 'system-ui', 'sans-serif'],
+        sans: ['"Manrope"', 'system-ui', 'sans-serif'],
         body: ['"DM Sans"', 'system-ui', 'sans-serif'],
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        mono: ['"Space Mono"', 'monospace'],
+        mono: ['"JetBrains Mono"', '"Space Mono"', 'monospace'],
       },
       colors: {
         mustard: {

@@ -31,7 +31,7 @@ export default function BlogIndex() {
             <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
               Insights
             </span>
-            <h1 className="font-sans text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6">
+            <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6">
               Thinking Out <span className="text-gradient-mustard">Loud</span>
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">

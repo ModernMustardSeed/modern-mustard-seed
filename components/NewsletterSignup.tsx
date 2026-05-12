@@ -74,7 +74,7 @@ export default function NewsletterSignup({
         <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500 font-mono font-bold block mb-3">
           Newsletter
         </span>
-        <h3 className="font-sans text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-3">
+        <h3 className="font-sans text-2xl md:text-3xl font-semibold text-white tracking-tight mb-3">
           {headline}
         </h3>
         <p className="text-white/50 text-sm font-body font-light leading-relaxed">{subhead}</p>

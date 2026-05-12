@@ -23,7 +23,7 @@ export default function PricingTable() {
             )}
 
             <div className="mb-6 pb-6 border-b border-white/[0.05]">
-              <h3 className="font-sans text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-2">
+              <h3 className="font-sans text-2xl md:text-3xl font-semibold text-white tracking-tight mb-2">
                 {pkg.name}
               </h3>
               <p className="text-mustard-400/70 text-sm font-body font-light tracking-wide mb-4">

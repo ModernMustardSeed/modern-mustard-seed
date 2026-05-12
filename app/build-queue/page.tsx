@@ -27,7 +27,7 @@ export default function BuildQueuePage() {
             <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
               The Build Queue
             </span>
-            <h1 className="font-sans text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 leading-[1.05]">
+            <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6 leading-[1.05]">
               Four Builds <span className="text-gradient-mustard">a Quarter.</span>
               <br />
               Pick Your Slot.

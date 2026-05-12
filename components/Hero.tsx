@@ -8,7 +8,7 @@ export default function Hero() {
           Where Faith Meets Innovation
         </span>
 
-        <h1 className="font-sans text-4xl md:text-7xl lg:text-8xl font-extrabold tracking-tight uppercase leading-[0.95]">
+        <h1 className="font-sans text-4xl md:text-7xl lg:text-8xl font-semibold tracking-tight uppercase leading-[0.95]">
           <span className="text-gradient-mustard">Modern</span>
           <br />
           <span className="text-gradient-mustard">Mustard</span>

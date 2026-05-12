@@ -3,9 +3,9 @@ import type { Metadata } from 'next';
 export const SITE = {
   name: 'Modern Mustard Seed',
   url: 'https://modernmustardseed.com',
-  tagline: 'Idea to Shipped Product in 30 Days',
+  tagline: 'Apps, Sites, and Specialty AI Tools',
   description:
-    'AI product studio shipping production apps, brands, and launches in 30 days. Four builds a quarter. Waitlist gated.',
+    'Custom apps, websites, and specialty AI tools for your business. Shipped in 30 days. Four builds per quarter, waitlist only.',
   twitter: '@sarahmscarano',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',

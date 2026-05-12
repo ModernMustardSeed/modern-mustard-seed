@@ -27,7 +27,7 @@ export default function AboutPage() {
             <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
               About
             </span>
-            <h1 className="font-sans text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6">
+            <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6">
               Faith Meets <span className="text-gradient-mustard">Function</span>
             </h1>
           </div>

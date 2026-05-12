@@ -1,0 +1,41 @@
+---
+title: "Luxe Design: AI Interior Design and Virtual Staging for Real Estate"
+description: "A specialty AI tool that turns empty listing photos into fully staged, design-quality interior renderings in under a minute."
+date: "2026-03-22"
+tag: "Specialty AI Tool"
+client: "Luxe Design"
+liveUrl: "https://luxedesign-five.vercel.app"
+stack:
+  - "Next.js"
+  - "Replicate"
+  - "Stripe"
+  - "Supabase"
+  - "Vercel"
+metrics:
+  - { label: "Listing photo to staged", value: "60 seconds" }
+  - { label: "Style presets", value: "12+" }
+  - { label: "Cost per stage", value: "<$1" }
+  - { label: "Traditional staging", value: "$3K+" }
+---
+
+## Problem
+
+Physical home staging costs $2,000 to $5,000 per listing. Most agents do not stage at all. The empty house photos go up, the listing underperforms, and the agent shrugs because the math never worked. Virtual staging exists but it looks fake, takes a week, and the back-and-forth eats the savings.
+
+## Build
+
+Luxe Design is a specialty AI tool for real estate professionals. Upload a photo of an empty room, pick a design direction, get back a staged rendering in under a minute. Twelve curated style presets cover modern, mid-century, transitional, farmhouse, coastal, and several others. Each rendering keeps the room's true geometry and lighting and only changes the contents.
+
+Stripe metered billing, Supabase auth and history, Replicate for the generation pipeline, Next.js for the UI. The whole product is one screen plus a billing flow. That is the right scope.
+
+## Outcome
+
+Agents stage every listing now because the price went from $3K to less than a dollar and the turnaround went from a week to a minute. The listings sell faster. The agent looks pro. The math finally works.
+
+## Stack
+
+Next.js for the front end, Replicate for the generation, Supabase for state, Stripe for billing, Vercel for the deploy. Same stack we use on most specialty AI tools.
+
+## What this is, generally
+
+A working example of an industry-specific AI tool that replaces a $3K service line item with a $99 monthly subscription. Same model works for legal document drafting, medical intake summaries, contractor estimating, tax prep. Pick an industry, find the $3K friction, build the $99 alternative.

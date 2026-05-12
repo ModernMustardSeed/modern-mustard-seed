@@ -54,7 +54,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
         <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
           Let&rsquo;s Connect
         </span>
-        <h2 className="font-sans text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6">
+        <h2 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-6">
           Plant a <span className="text-gradient-mustard">Seed</span> Together
         </h2>
         <p className="text-white/50 text-base font-body font-light leading-relaxed">

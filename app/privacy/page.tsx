@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <StaticBackground />
       <div className="relative pt-36 md:pt-44 pb-28">
         <div className="max-w-3xl mx-auto px-6 md:px-8">
-          <h1 className="font-sans text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-2">
+          <h1 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-2">
             Privacy <span className="text-gradient-mustard">Policy</span>
           </h1>
           <p className="text-white/40 text-sm font-mono mb-12">Last updated: 2026-05-07</p>

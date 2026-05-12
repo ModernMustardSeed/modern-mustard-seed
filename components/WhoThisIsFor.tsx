@@ -33,7 +33,7 @@ export default function WhoThisIsFor() {
         <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
           Who this is for
         </span>
-        <h2 className="font-sans text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-5">
+        <h2 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-5">
           Three Kinds of <span className="text-gradient-mustard">Builders</span>
         </h2>
         <p className="text-white/55 text-base md:text-lg font-body font-light leading-relaxed">

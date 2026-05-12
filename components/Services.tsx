@@ -21,7 +21,7 @@ export default function Services({ limit = 3, showHeader = true }: Props) {
             <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
               What We Build
             </span>
-            <h2 className="font-sans text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6">
+            <h2 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-6">
               <span className="text-gradient-mustard">Creativity</span> x{' '}
               <span className="text-white/80">Strategy</span> x{' '}
               <span className="text-gradient-mustard">Faith</span>

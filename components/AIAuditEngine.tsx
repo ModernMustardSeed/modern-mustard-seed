@@ -610,7 +610,7 @@ const AIAuditEngine: React.FC = () => {
               <div className="text-[10px] font-mono font-bold tracking-[0.35em] uppercase mb-0.5" style={{ color: M }}>
                 Modern Mustard Seed
               </div>
-              <div className="font-sans text-xl font-extrabold text-white tracking-tight">
+              <div className="font-sans text-xl font-semibold text-white tracking-tight">
                 AI Integration Audit Engine™
               </div>
             </div>
@@ -713,7 +713,7 @@ const AIAuditEngine: React.FC = () => {
                     style={{ background: MG, border: `1px solid ${MB}` }}>
                     <Sparkles size={24} color={M} />
                   </div>
-                  <div className="font-sans text-2xl font-extrabold text-white tracking-tight mb-2">
+                  <div className="font-sans text-2xl font-semibold text-white tracking-tight mb-2">
                     Free AI Integration Audit
                   </div>
                   <p className="text-sm text-white/40 font-body mb-8 max-w-md mx-auto leading-relaxed">
@@ -773,7 +773,7 @@ const AIAuditEngine: React.FC = () => {
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <div className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase mb-1" style={{ color: M }}>Personalized AI Audit</div>
-                      <div className="font-sans text-xl font-extrabold text-white">{auditResult.businessName}</div>
+                      <div className="font-sans text-xl font-semibold text-white">{auditResult.businessName}</div>
                       <div className="text-xs text-white/40 font-body">{auditResult.industry}</div>
                     </div>
                     <ScoreRing score={auditResult.score} size={72} />
@@ -859,7 +859,7 @@ const AIAuditEngine: React.FC = () => {
 
                   {/* CTA */}
                   <div className="rounded-2xl p-6 text-center" style={{ background: MG, border: `1px solid ${MB}` }}>
-                    <div className="font-sans text-base font-extrabold text-white mb-1">Ready to turn this audit into your custom AI platform?</div>
+                    <div className="font-sans text-base font-semibold text-white mb-1">Ready to turn this audit into your custom AI platform?</div>
                     <p className="text-xs text-white/40 font-body mb-5">We build everything above. One platform, your brand, fully integrated.</p>
                     <div className="flex gap-3 justify-center flex-wrap">
                       <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
@@ -917,7 +917,7 @@ const AIAuditEngine: React.FC = () => {
             <div className="flex items-center gap-3 mb-3">
               <d.icon size={22} color={M} />
               <div>
-                <div className="font-sans text-xl font-extrabold text-white">{d.name}</div>
+                <div className="font-sans text-xl font-semibold text-white">{d.name}</div>
                 <div className="text-xs text-white/30 font-body">{d.subtitle}</div>
               </div>
             </div>
@@ -1120,7 +1120,7 @@ const AIAuditEngine: React.FC = () => {
 
             <div className="glass-card mt-4 p-6 text-center" style={{ background: MG, border: `1px solid ${MB}` }}>
               <div className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase mb-2" style={{ color: M }}>The MMS Approach</div>
-              <div className="font-sans text-base font-extrabold text-white mb-2">Need one tool or the whole stack? We build both.</div>
+              <div className="font-sans text-base font-semibold text-white mb-2">Need one tool or the whole stack? We build both.</div>
               <p className="text-xs text-white/40 font-body max-w-xl mx-auto mb-4 leading-relaxed">
                 Deploy a single AI voice agent for your {d.name.toLowerCase()} this week, or let us build your full custom platform with every tool integrated.
               </p>
@@ -1401,7 +1401,7 @@ const AIAuditEngine: React.FC = () => {
               style={{ background: 'rgba(200,164,21,0.2)', border: `1px solid rgba(200,164,21,0.4)`, color: ML }}>
               <Sparkles size={8} /> Ready to Build?
             </div>
-            <div className="font-sans text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
+            <div className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-3">
               Let's map your AI roadmap. <span className="text-gradient-mustard">Free.</span>
             </div>
             <p className="text-sm text-white/55 font-body max-w-lg mx-auto mb-8 leading-relaxed">

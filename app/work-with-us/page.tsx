@@ -33,7 +33,7 @@ export default function WorkWithUsPage() {
           <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
             How We Work
           </span>
-          <h1 className="font-sans text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6">
+          <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6">
             Four Ways to <span className="text-gradient-mustard">Engage</span>
           </h1>
           <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto mb-4">
@@ -51,7 +51,7 @@ export default function WorkWithUsPage() {
             <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-4 block">
               FAQ
             </span>
-            <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+            <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight">
               Common <span className="text-gradient-mustard">Questions</span>
             </h2>
           </div>
@@ -79,7 +79,7 @@ export default function WorkWithUsPage() {
 
         <div className="max-w-4xl mx-auto px-6 md:px-8 py-12 text-center">
           <div className="glass-card p-10">
-            <h3 className="font-sans text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-4">
+            <h3 className="font-sans text-2xl md:text-3xl font-semibold text-white tracking-tight mb-4">
               Not sure which engagement fits?
             </h3>
             <p className="text-white/55 text-base font-body font-light mb-6 max-w-lg mx-auto">

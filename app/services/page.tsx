@@ -31,7 +31,7 @@ export default function ServicesPage() {
             <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
               Services
             </span>
-            <h1 className="font-sans text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6">
+            <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6">
               What We <span className="text-gradient-mustard">Build</span>
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
@@ -47,7 +47,7 @@ export default function ServicesPage() {
                 className="glass-card p-8 md:p-10 hover:border-mustard-500/20 transition-all duration-500"
               >
                 <div className="text-3xl mb-5">{service.icon}</div>
-                <h2 className="font-sans text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-4">
+                <h2 className="font-sans text-2xl md:text-3xl font-semibold text-white tracking-tight mb-4">
                   {service.title}
                 </h2>
                 <p className="text-white/55 text-base font-body font-light leading-7 mb-6">

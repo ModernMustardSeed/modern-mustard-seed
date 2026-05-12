@@ -38,7 +38,7 @@ export default function Footer() {
       </div>
 
       <div className="text-center max-w-2xl mx-auto mb-16">
-        <p className="font-sans font-extrabold text-lg md:text-xl text-mustard-200/50 leading-relaxed mb-4">
+        <p className="font-sans font-semibold text-lg md:text-xl text-mustard-200/50 leading-relaxed mb-4">
           &ldquo;He told them another parable: &lsquo;The kingdom of heaven is like a mustard seed, which a man took and planted in his field. Though it is the smallest of all seeds, yet when it grows, it is the largest of garden plants and becomes a tree, so that the birds come and perch in its branches.&rsquo;&rdquo;
         </p>
         <cite className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/40 font-mono font-bold not-italic">
