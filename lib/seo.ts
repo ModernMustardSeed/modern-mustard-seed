@@ -9,7 +9,7 @@ export const SITE = {
   twitter: '@sarahmscarano',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',
-  ogImage: '/og-image.png',
+  ogImage: '/opengraph-image',
 };
 
 type SeoArgs = {

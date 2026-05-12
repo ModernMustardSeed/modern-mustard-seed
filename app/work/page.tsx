@@ -3,7 +3,6 @@ import StaticBackground from '@/components/StaticBackground';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { listContent } from '@/lib/content';
-import { projects } from '@/data/projects';
 
 export const metadata = buildMetadata({
   title: 'The Work',
@@ -39,7 +38,7 @@ export default function WorkIndex() {
             </p>
           </div>
 
-          {studies.length > 0 && (
+          {studies.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
               {studies.map((s) => (
                 <Link
@@ -69,7 +68,9 @@ export default function WorkIndex() {
                     <div className="grid grid-cols-3 gap-3 pt-5 border-t border-white/[0.05]">
                       {s.metrics.slice(0, 3).map((m) => (
                         <div key={m.label}>
-                          <div className="font-sans text-lg font-bold text-gradient-mustard">{m.value}</div>
+                          <div className="font-sans text-lg font-bold text-gradient-mustard">
+                            {m.value}
+                          </div>
                           <div className="text-[9px] uppercase tracking-[0.2em] text-white/30 font-mono mt-1">
                             {m.label}
                           </div>
@@ -80,40 +81,25 @@ export default function WorkIndex() {
                 </Link>
               ))}
             </div>
+          ) : (
+            <p className="text-center text-white/40 font-body italic mb-12">
+              New case studies shipping shortly.
+            </p>
           )}
 
-          <div className="mb-12">
-            <h2 className="font-sans text-2xl font-extrabold text-white tracking-tight mb-3 text-center">
-              The Full Portfolio
-            </h2>
-            <p className="text-white/40 text-sm font-body font-light text-center mb-8 max-w-xl mx-auto">
-              Live products. Public deployments. Click through.
+          <div className="text-center glass-card p-10 max-w-3xl mx-auto">
+            <h3 className="font-sans text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-4">
+              Want this for your venture?
+            </h3>
+            <p className="text-white/55 text-base font-body font-light mb-6 max-w-lg mx-auto">
+              Four builds per quarter. Waitlist gated. Drop your idea and Sarah will review it personally.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {projects.map((p) => (
-                <a
-                  key={p.title}
-                  href={p.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group p-5 border border-white/[0.04] rounded-xl hover:border-mustard-500/20 transition-all"
-                >
-                  <h3 className="font-sans text-base font-bold text-white/90 group-hover:text-white mb-1">
-                    {p.title}
-                  </h3>
-                  <p className="text-white/40 text-xs font-body font-light leading-relaxed mb-3">
-                    {p.subtitle}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {p.tags.map((t) => (
-                      <span key={t} className="skill-pill border-white/[0.06] text-white/30 text-[8px]">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </a>
-              ))}
-            </div>
+            <Link
+              href="/build-queue"
+              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.25)] transition-all"
+            >
+              Join the Build Queue
+            </Link>
           </div>
         </div>
       </div>
