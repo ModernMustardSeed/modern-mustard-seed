@@ -5,7 +5,6 @@ import HowItWorks from '@/components/HowItWorks';
 import WhatGetsBuilt from '@/components/WhatGetsBuilt';
 import AiProofPromo from '@/components/AiProofPromo';
 import SocialProof from '@/components/SocialProof';
-import BlogTeaser from '@/components/BlogTeaser';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
@@ -50,7 +49,6 @@ export default function HomePage() {
       <HowItWorks />
       <WhatGetsBuilt />
       <AiProofPromo />
-      <BlogTeaser />
       <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-20">
         <NewsletterSignup />
       </section>
