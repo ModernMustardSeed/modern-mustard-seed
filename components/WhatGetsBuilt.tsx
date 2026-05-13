@@ -4,12 +4,12 @@ import { getContent } from '@/lib/content';
 // Hand-curated featured work for the homepage. Order matters.
 // Edit this list to control what shows on the homepage without changing dates.
 const FEATURED_SLUGS = [
+  'cxc-studio',
   'deed-ai',
   'ptg-deal-analyzer',
   'cross-and-covenant',
   'voicestaff',
   'olive-shoot',
-  'make-me-studio',
 ];
 
 export default function WhatGetsBuilt() {

@@ -1,0 +1,42 @@
+---
+title: "CXC Studio: A Custom AI Fashion House OS for a Single Brand"
+description: "A bespoke AI design platform built for Cross + Covenant. Six input modes, eight apparel types, one Generate Drop button. Multi-model generation pipeline routes the right model to the right job."
+date: "2026-05-11"
+tag: "Specialty AI Tool"
+client: "Cross + Covenant"
+liveUrl: "https://cxc-studio-zeta.vercel.app/"
+stack:
+  - "Next.js 16"
+  - "Ideogram V3"
+  - "Recraft"
+  - "fal"
+  - "Supabase"
+  - "Vercel"
+metrics:
+  - { label: "Apparel types", value: "8" }
+  - { label: "Input modes", value: "6" }
+  - { label: "Concept to drop", value: "Minutes" }
+  - { label: "Models routed", value: "Multi" }
+---
+
+## Problem
+
+A fashion brand with a strong point of view ships slower than the culture moves. Every collection drop needs sketches, mockups, garment selection, photo treatment, and a thousand decisions that should take minutes and instead take weeks. AI tools that exist for general design do not understand a single brand's visual grammar. The brand voice gets diluted every time a generic prompt goes into a generic model.
+
+## Build
+
+CXC Studio is the Fashion House OS we built specifically for Cross + Covenant. One creative director sits in front of one screen. Six input modes (mockup, phrases, script, mood, image, dice) feed a multi-model generation pipeline. Pick the apparel type from eight tuned silhouettes. Hit Generate Drop. The system returns brand-consistent designs on actual product photography.
+
+The interesting part is the routing layer. Apparel generation routes to Ideogram V3 (typography control). Logo and vector work routes to Recraft. Background and editorial photography routes through fal. The brand wordmark is post-processed as an overlay so the canonical mark always renders cleanly. The user does not see any of this. They see one canvas and one button.
+
+## Outcome
+
+A creative director who used to take a full week to move a sketch into a marketable collection now moves six concepts through in an afternoon. The brand voice stays consistent because the system is trained on the brand, not on generic taste. Every drop is faster, and the floor of quality is higher than what a freelance designer would deliver in the same window.
+
+## Stack
+
+Next.js 16 App Router for the UI, Ideogram V3 for typography-heavy generation, Recraft for vector and logo work, fal for the fast image pipeline, Supabase for asset history and brand library, Vercel for the deploy. The brand wordmark overlay runs as a post-processing step in our own pipeline so it does not depend on the model getting it right.
+
+## What this is, generally
+
+A working example of a custom AI tool built for ONE business. Not a general-purpose creative SaaS. Not a Figma plugin. A bespoke studio that knows your brand, routes the right model to the right job, and gives you one button. The same pattern applies to any business with a strong visual language: a real estate brand, a hospitality group, a faith community, an artist collective. Pick the brand. Build the studio. Skip the freelancers.
