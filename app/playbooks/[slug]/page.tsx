@@ -4,7 +4,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import StaticBackground from '@/components/StaticBackground';
 import NewsletterSignup from '@/components/NewsletterSignup';
-import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
+import { JsonLd, breadcrumbJsonLd, howToJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { getAllSlugs, getContent } from '@/lib/content';
 
@@ -33,11 +33,19 @@ export default async function PlaybookPage({ params }: { params: Params }) {
   return (
     <>
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: 'Home', url: '/' },
-          { name: 'Playbooks', url: '/playbooks' },
-          { name: pb.meta.title, url: `/playbooks/${slug}` },
-        ])}
+        data={[
+          howToJsonLd({
+            title: pb.meta.title,
+            description: pb.meta.description,
+            slug,
+            date: pb.meta.date,
+          }),
+          breadcrumbJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Playbooks', url: '/playbooks' },
+            { name: pb.meta.title, url: `/playbooks/${slug}` },
+          ]),
+        ]}
       />
       <StaticBackground />
 

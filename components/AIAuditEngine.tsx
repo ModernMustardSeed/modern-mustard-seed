@@ -23,7 +23,7 @@ const MD = '#A68B10';           // mustard-600
 const MG = 'rgba(200,164,21,0.12)'; // mustard glow bg
 const MB = 'rgba(200,164,21,0.25)'; // mustard border
 const BOOKING_URL = 'https://modernmustardseed.zohobookings.com/#/4764600000000052054';
-const CONTACT_URL = 'https://modern-mustard-seed-voice-agent.onrender.com/api/contact';
+const AUDIT_LEAD_URL = '/api/audit/lead';
 
 const STAT_C = { critical: '#EF4444', high: '#F59E0B', medium: '#22C55E' } as const;
 const STAT_L = { critical: 'Critical', high: 'High', medium: 'Quick Win' } as const;
@@ -499,16 +499,20 @@ const AIAuditEngine: React.FC = () => {
     setTimeout(() => setAnim(false), 500);
   }, []);
 
-  /* ── Lead capture to existing backend */
+  /* ── Lead capture: triggers Sarah notification + 3-email drip on the audit endpoint */
   const saveLead = useCallback(async (source: string) => {
     try {
-      await fetch(CONTACT_URL, {
+      await fetch(AUDIT_LEAD_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: leadName,
           email: leadEmail,
-          message: `AI Audit Lead. Industry: ${d.name} | Company: ${leadCompany || 'N/A'} | Phone: ${leadPhone || 'N/A'} | URL: ${auditUrl || 'N/A'} | Source: ${source}`,
+          phone: leadPhone || undefined,
+          company: leadCompany || undefined,
+          industry: d.name,
+          auditUrl: auditUrl || undefined,
+          source,
         }),
       });
     } catch (err) {

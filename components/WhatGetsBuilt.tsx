@@ -1,8 +1,21 @@
 import Link from 'next/link';
-import { listContent } from '@/lib/content';
+import { getContent } from '@/lib/content';
+
+// Hand-curated featured work for the homepage. Order matters.
+// Edit this list to control what shows on the homepage without changing dates.
+const FEATURED_SLUGS = [
+  'deed-ai',
+  'ptg-deal-analyzer',
+  'cross-and-covenant',
+  'voicestaff',
+  'olive-shoot',
+  'make-me-studio',
+];
 
 export default function WhatGetsBuilt() {
-  const studies = listContent('work').slice(0, 6);
+  const studies = FEATURED_SLUGS.map((slug) => getContent('work', slug))
+    .filter((c): c is NonNullable<ReturnType<typeof getContent>> => c !== null)
+    .map((c) => c.meta);
 
   return (
     <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-20 md:py-28">

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import StaticBackground from '@/components/StaticBackground';
-import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
+import { JsonLd, breadcrumbJsonLd, caseStudyJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { getAllSlugs, getContent } from '@/lib/content';
 
@@ -32,11 +32,20 @@ export default async function WorkDetail({ params }: { params: Params }) {
   return (
     <>
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: 'Home', url: '/' },
-          { name: 'Work', url: '/work' },
-          { name: study.meta.title, url: `/work/${slug}` },
-        ])}
+        data={[
+          caseStudyJsonLd({
+            title: study.meta.title,
+            description: study.meta.description,
+            slug,
+            date: study.meta.date,
+            client: study.meta.client,
+          }),
+          breadcrumbJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Work', url: '/work' },
+            { name: study.meta.title, url: `/work/${slug}` },
+          ]),
+        ]}
       />
       <StaticBackground />
 

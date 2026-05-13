@@ -52,7 +52,48 @@ export function blogPostingJsonLd(args: {
     author: { '@type': 'Person', name: args.author ?? SITE.founder },
     publisher: { '@id': `${SITE.url}/#organization` },
     mainEntityOfPage: `${SITE.url}/blog/${args.slug}`,
-    image: `${SITE.url}/og-image.png`,
+    image: `${SITE.url}/opengraph-image`,
+  };
+}
+
+export function howToJsonLd(args: {
+  title: string;
+  description: string;
+  slug: string;
+  date: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: args.title,
+    description: args.description,
+    datePublished: args.date,
+    author: { '@type': 'Person', name: SITE.founder },
+    publisher: { '@id': `${SITE.url}/#organization` },
+    mainEntityOfPage: `${SITE.url}/playbooks/${args.slug}`,
+    image: `${SITE.url}/opengraph-image`,
+  };
+}
+
+export function caseStudyJsonLd(args: {
+  title: string;
+  description: string;
+  slug: string;
+  date: string;
+  client?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': `${SITE.url}/work/${args.slug}#article`,
+    headline: args.title,
+    description: args.description,
+    datePublished: args.date,
+    author: { '@type': 'Person', name: SITE.founder },
+    publisher: { '@id': `${SITE.url}/#organization` },
+    mainEntityOfPage: `${SITE.url}/work/${args.slug}`,
+    image: `${SITE.url}/opengraph-image`,
+    about: args.client ? { '@type': 'Organization', name: args.client } : undefined,
   };
 }
 
