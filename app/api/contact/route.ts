@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { clientEmail, leadNotification, p } from '@/lib/email';
 
 export const runtime = 'nodejs';
 
@@ -19,59 +20,43 @@ export async function POST(req: Request) {
       );
     }
 
-    const sourceLine = source ? `<p><strong>Package interest:</strong> ${source}</p>` : '';
+    const firstName = String(name).split(' ')[0];
+    const fields = [
+      { label: 'Email', value: email, isLink: false },
+      ...(source ? [{ label: 'Package interest', value: source }] : []),
+    ];
 
+    // Sarah notification
     await resend.emails.send({
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',
       replyTo: email,
       subject: source ? `New ${source} inquiry from ${name}` : `New Inquiry from ${name}`,
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
-          <h2 style="color:#DAA520">New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-          ${sourceLine}
-          <p><strong>Message:</strong></p>
-          <div style="background:#f9f9f9;padding:15px;border-radius:8px;border-left:4px solid #DAA520">
-            ${String(message).replace(/\n/g, '<br>')}
-          </div>
-          <p style="color:#888;font-size:12px;margin-top:20px">Submitted via modernmustardseed.com</p>
-        </div>
-      `,
+      html: leadNotification({
+        type: 'Contact',
+        name,
+        email,
+        fields,
+        message,
+        suggestedAction: 'Reply within 24-48 hours',
+      }),
     });
 
+    // Applicant auto-reply
     await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
-      subject: 'Thanks for Reaching Out to Modern Mustard Seed',
-      html: `
-<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8">
-<style>
-  body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-  .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-  .header { background-color: #C8A415; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-  .content { background-color: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-  .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
-</style>
-</head>
-<body>
-<div class="container">
-  <div class="header"><h1>Thanks for Reaching Out</h1></div>
-  <div class="content">
-    <p>Hi ${name},</p>
-    <p>Thanks for contacting Modern Mustard Seed. I received your message and will personally get back to you within <strong>24-48 hours</strong>.</p>
-    <p>While you wait, you can <a href="https://modernmustardseed.zohobookings.com/#/4764600000000052054" style="color:#C8A415">book a 30-minute discovery call</a> on my calendar, or run the <a href="https://modernmustardseed.com/audit" style="color:#C8A415">free AI audit</a> on your business.</p>
-    <p>Looking forward to building with you.</p>
-    <p>Best,<br><strong>Sarah</strong><br>Modern Mustard Seed</p>
-  </div>
-  <div class="footer"><p>Modern Mustard Seed | AI products, voice agents, and full-stack execution</p></div>
-</div>
-</body>
-</html>
-      `,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: 'Thanks for reaching out',
+      html: clientEmail({
+        preheader: 'I got your note and will reply within 24-48 hours.',
+        greeting: `Hi ${firstName},`,
+        body:
+          p('Thanks for reaching out. I got your message and will personally reply within 24-48 hours.') +
+          p('In the meantime, two useful links:'),
+        cta: { label: 'Book a 30-min call', url: 'https://modernmustardseed.zohobookings.com/#/4764600000000052054' },
+        secondary: { label: 'Run the free AI audit', url: 'https://modernmustardseed.com/audit' },
+      }),
     });
 
     return NextResponse.json({ success: true });

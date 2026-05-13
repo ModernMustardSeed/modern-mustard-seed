@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { clientEmail, leadNotification, p, callout } from '@/lib/email';
 
 export const runtime = 'nodejs';
 
@@ -17,7 +18,6 @@ const TIMELINE_LABELS: Record<string, string> = {
   exploring: 'Exploring',
 };
 
-// Match the applicant's idea to the most relevant playbook.
 function pickPlaybook(desc: string): { slug: string; title: string; hook: string } {
   const t = (desc ?? '').toLowerCase();
   if (t.includes('voice') || t.includes('phone') || t.includes('call')) {
@@ -75,66 +75,54 @@ export async function POST(req: Request) {
     const timelineLabel = TIMELINE_LABELS[timeline] ?? timeline;
     const playbook = pickPlaybook(ideaDescription);
 
-    // 1. Notify Sarah
     await resend.emails.send({
       from: 'Build Queue <sarah@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',
       replyTo: email,
       subject: `Build Queue: ${businessName} (${timelineLabel})`,
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto">
-          <h2 style="color:#C8A415">New Build Queue Application</h2>
-          <table style="width:100%;border-collapse:collapse">
-            <tr><td style="padding:8px 0;color:#666;width:160px"><strong>Name</strong></td><td style="padding:8px 0">${name}</td></tr>
-            <tr><td style="padding:8px 0;color:#666"><strong>Email</strong></td><td style="padding:8px 0"><a href="mailto:${email}">${email}</a></td></tr>
-            <tr><td style="padding:8px 0;color:#666"><strong>Business / idea</strong></td><td style="padding:8px 0">${businessName}</td></tr>
-            <tr><td style="padding:8px 0;color:#666"><strong>Revenue</strong></td><td style="padding:8px 0">${revenueLabel}</td></tr>
-            <tr><td style="padding:8px 0;color:#666"><strong>Timeline</strong></td><td style="padding:8px 0">${timelineLabel}</td></tr>
-            <tr><td style="padding:8px 0;color:#666"><strong>Suggested playbook</strong></td><td style="padding:8px 0">${playbook.title}</td></tr>
-          </table>
-          <h3 style="margin-top:24px;color:#333">What they want built</h3>
-          <div style="background:#f9f9f9;padding:16px;border-radius:8px;border-left:4px solid #C8A415">
-            ${String(ideaDescription).replace(/\n/g, '<br>')}
-          </div>
-          <p style="color:#888;font-size:12px;margin-top:20px">Auto-reply sent to applicant. They are expecting a personal response within 3 business days.</p>
-        </div>
-      `,
+      html: leadNotification({
+        type: 'Build Queue',
+        name,
+        email,
+        fields: [
+          { label: 'Business / idea', value: businessName },
+          { label: 'Revenue', value: revenueLabel },
+          { label: 'Timeline', value: timelineLabel },
+          { label: 'Suggested playbook', value: playbook.title },
+        ],
+        message: ideaDescription,
+        suggestedAction: 'Reply within 3 business days',
+      }),
     });
 
-    // 2. Auto-reply to the applicant
     await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
       replyTo: 'sarah@modernmustardseed.com',
       subject: `You're on the list, ${firstName}`,
-      html: `
-<!DOCTYPE html>
-<html><body style="font-family:Arial,sans-serif;line-height:1.65;color:#333;max-width:600px;margin:0 auto;padding:20px">
-  <p>${firstName},</p>
-  <p>Got your Build Queue entry for <strong>${businessName}</strong>. I read every one personally.</p>
-  <p>Here is what happens next:</p>
-  <ol>
-    <li><strong>Within 3 business days</strong>, I will email you back with one of three answers: a fit-check, a request for a quick call, or an honest "not the right match and here is why."</li>
-    <li>If we are a fit, the next step is a 30-minute scoping call. You leave that call with a fixed scope, fixed timeline, and a fixed quote. No decks.</li>
-    <li>If we are not a fit, I will point you somewhere useful. That part matters too.</li>
-  </ol>
-  <p>While you wait, the playbook I would point you at first based on what you submitted:</p>
-  <p style="background:#FFF8E1;border-left:4px solid #C8A415;padding:14px;margin:16px 0">
-    <strong style="font-size:16px;color:#333">${playbook.title}</strong><br>
-    <span style="color:#555">${playbook.hook}</span><br>
-    <a href="https://modernmustardseed.com/playbooks/${playbook.slug}" style="color:#C8A415;font-weight:600">Read it here</a>
-  </p>
-  <p>If your situation is urgent and you would rather skip the queue, the calendar is open at <a href="https://modernmustardseed.zohobookings.com/#/4764600000000052054" style="color:#C8A415">this link</a>. Otherwise I will be in touch shortly.</p>
-  <p>Talk soon.</p>
-  <p>Best,<br><strong>Sarah</strong><br>Modern Mustard Seed</p>
-  <hr style="border:0;border-top:1px solid #eee;margin:24px 0">
-  <p style="font-size:12px;color:#888">You are getting this because you applied to the Build Queue at modernmustardseed.com.</p>
-</body></html>
-      `,
+      html: clientEmail({
+        preheader: 'I read every entry personally. Reply within 3 business days.',
+        greeting: `${firstName},`,
+        body:
+          p(`Got your Build Queue entry for <strong>${businessName}</strong>. I read every one personally.`) +
+          p('Here is what happens next:') +
+          `<ol style="margin:0 0 18px;padding-left:22px;color:#1a1410;line-height:1.75">
+            <li style="margin-bottom:10px"><strong>Within 3 business days</strong>, I will email you back: a fit-check, a request for a quick call, or an honest "not the right match and here is why."</li>
+            <li style="margin-bottom:10px">If we are a fit, the next step is a 30-minute scoping call. You leave that call with a fixed scope, fixed timeline, and a fixed quote. No decks.</li>
+            <li>If we are not a fit, I will point you somewhere useful. That part matters too.</li>
+          </ol>` +
+          p('While you wait, the playbook I would point you at first based on what you submitted:') +
+          callout({
+            label: 'Recommended reading',
+            title: playbook.title,
+            body: playbook.hook,
+            href: `https://modernmustardseed.com/playbooks/${playbook.slug}`,
+            cta: 'Read the playbook',
+          }) +
+          p('If your situation is urgent and you would rather skip the queue, the calendar is open below.'),
+        cta: { label: 'Book a discovery call', url: 'https://modernmustardseed.zohobookings.com/#/4764600000000052054' },
+      }),
     });
-
-    // TODO: when Supabase is wired here, also insert this lead into a `build_queue_leads` table.
-    // env var needed: SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY.
 
     return NextResponse.json({ success: true });
   } catch (err) {

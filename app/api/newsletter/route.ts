@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { clientEmail, leadNotification, p } from '@/lib/email';
 
 export const runtime = 'nodejs';
 
@@ -11,6 +12,7 @@ export async function POST(req: Request) {
     }
     const resend = new Resend(apiKey);
     const AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID;
+
     const { email, firstName } = await req.json();
 
     if (!email || typeof email !== 'string' || !email.includes('@')) {
@@ -26,36 +28,45 @@ export async function POST(req: Request) {
           audienceId: AUDIENCE_ID,
         });
       } catch (e) {
-        // already-subscribed errors are fine, surface unexpected ones
         console.warn('Resend audience add:', e);
       }
     }
 
+    const greetingName = firstName || email.split('@')[0];
+
+    // Subscriber welcome
     await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
+      replyTo: 'sarah@modernmustardseed.com',
       subject: 'Welcome to Modern Mustard Seed',
-      html: `
-<!DOCTYPE html>
-<html><body style="font-family:Arial,sans-serif;line-height:1.6;color:#333;max-width:600px;margin:0 auto;padding:20px">
-  <h1 style="color:#C8A415">Welcome aboard.</h1>
-  <p>You are now on the Modern Mustard Seed list. Here is what to expect:</p>
-  <ul>
-    <li><strong>One email a week.</strong> A real playbook, a live build, or a teardown of something we shipped.</li>
-    <li><strong>No fluff.</strong> If I do not have something useful to say, I will not send.</li>
-    <li><strong>Subscriber-only PDFs.</strong> Every playbook gets a downloadable version, free for you.</li>
-  </ul>
-  <p>Want to get started? Run the <a href="https://modernmustardseed.com/audit" style="color:#C8A415"><strong>free AI audit</strong></a> on your business and get a 60-second readout on the highest-leverage AI moves you could make.</p>
-  <p>Talk soon.<br>Sarah</p>
-</body></html>
-      `,
+      html: clientEmail({
+        preheader: 'One short email a week. Real plays. No fluff.',
+        greeting: `Hi ${greetingName},`,
+        body:
+          p('You are now on the Modern Mustard Seed list. Here is what to expect:') +
+          `<ul style="margin:0 0 18px;padding-left:22px;color:#1a1410;line-height:1.75">
+            <li style="margin-bottom:10px"><strong>One email a week.</strong> A real playbook, a live build, or a teardown of something we shipped.</li>
+            <li style="margin-bottom:10px"><strong>No fluff.</strong> If I do not have something useful to say, I will not send.</li>
+            <li><strong>Subscriber-only PDFs</strong> on the playbooks we publish.</li>
+          </ul>` +
+          p('Want to start with something concrete? Run the free AI audit and get a 60-second readout on the highest-leverage moves you could make in your business.'),
+        cta: { label: 'Run the free AI audit', url: 'https://modernmustardseed.com/audit' },
+        secondary: { label: 'See recent work', url: 'https://modernmustardseed.com/work' },
+      }),
     });
 
+    // Sarah notification
     await resend.emails.send({
       from: 'Newsletter Signups <sarah@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',
-      subject: 'New newsletter signup',
-      html: `<p>${email}${firstName ? ` (${firstName})` : ''} subscribed.</p>`,
+      subject: `New subscriber: ${greetingName}`,
+      html: leadNotification({
+        type: 'Newsletter',
+        name: firstName || greetingName,
+        email,
+        fields: [{ label: 'Audience', value: AUDIENCE_ID ? 'Added to Resend audience' : 'Not in audience (set RESEND_AUDIENCE_ID)' }],
+      }),
     });
 
     return NextResponse.json({ success: true, message: 'You are in. Check your inbox.' });
