@@ -1,9 +1,14 @@
 # Modern Mustard Seed
 
-> Apps, websites, and specialty AI tools for your business. Custom software shipped in 30 days. Four builds per quarter, waitlist only. Founded by Sarah Scarano (sarah@modernmustardseed.com).
+> Apps, websites, and specialty AI tools for your business. Custom software shipped in 30 days. Four builds per quarter, waitlist only. For everyone, not just AI-fluent founders. Founded by Sarah Scarano (sarah@modernmustardseed.com).
 
 ## About
-Modern Mustard Seed is a one-person product studio. The hero offer is "Idea to Product in 30 Days": custom apps, websites, software, and specialty AI tools. Fixed scope, fixed timeline. Designed for founders launching new ventures and operators building software for their existing business.
+Modern Mustard Seed is a one-person product studio. The hero offer is "Idea to Product in 30 Days": custom apps, websites, software, and specialty AI tools. Fixed scope, fixed timeline. For everyone, from a small business owner who needs their first real website to a founder shipping a custom AI tool. You do not need to know much about AI to start.
+
+## Three ways in
+1. **New to online.** You need a real website, a way to take bookings or payments, and to show up when people search for what you do. We build the whole thing brand to launch.
+2. **Already running.** Your business works. You want AI to handle the busy parts so the day stops dissolving into small jobs. We audit, build, and hand it off.
+3. **Building something new.** You have an app, a tool, or a product idea. We design it, build it, brand it, and ship it. End to end.
 
 ## How to engage
 1. Join the build queue at https://modernmustardseed.com/build-queue (waitlist, replies within 3 business days).

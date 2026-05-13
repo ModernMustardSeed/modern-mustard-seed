@@ -12,7 +12,7 @@ type FormState = {
 };
 
 const REVENUE_OPTIONS = [
-  { value: 'pre-revenue', label: 'Pre-revenue' },
+  { value: 'pre-revenue', label: 'Just getting started' },
   { value: 'under-100k', label: 'Under $100K' },
   { value: '100k-500k', label: '$100K to $500K' },
   { value: '500k-1m', label: '$500K to $1M' },

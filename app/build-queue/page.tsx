@@ -32,8 +32,11 @@ export default function BuildQueuePage() {
               <br />
               Pick Your Slot.
             </h1>
-            <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-xl mx-auto">
-              We take on four Idea-to-Product engagements per quarter. Drop your idea below. Sarah reviews every entry and replies within 3 business days. Current quarter availability is updated on each reply.
+            <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-xl mx-auto mb-3">
+              Whether you need your first real website or a custom AI tool, drop the idea below. Sarah reads every entry and replies within 3 business days.
+            </p>
+            <p className="text-white/40 text-sm font-body font-light leading-relaxed max-w-xl mx-auto">
+              You do not need to know what to call it. You do not need to know anything about AI. Tell us what you are trying to do and we will figure out the rest together.
             </p>
           </div>
 

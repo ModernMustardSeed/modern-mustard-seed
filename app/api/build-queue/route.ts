@@ -4,7 +4,7 @@ import { Resend } from 'resend';
 export const runtime = 'nodejs';
 
 const REVENUE_LABELS: Record<string, string> = {
-  'pre-revenue': 'Pre-revenue',
+  'pre-revenue': 'Just getting started',
   'under-100k': 'Under $100K',
   '100k-500k': '$100K to $500K',
   '500k-1m': '$500K to $1M',

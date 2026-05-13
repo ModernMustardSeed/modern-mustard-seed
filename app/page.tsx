@@ -1,5 +1,6 @@
 import PageBackground from '@/components/PageBackground';
 import HeroIdeaToProduct from '@/components/HeroIdeaToProduct';
+import StartingPoints from '@/components/StartingPoints';
 import WhatGetsBuilt from '@/components/WhatGetsBuilt';
 import AiProofPromo from '@/components/AiProofPromo';
 import NewsletterSignup from '@/components/NewsletterSignup';
@@ -41,6 +42,7 @@ export default function HomePage() {
       <JsonLd data={[homeJsonLd, offerJsonLd, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} />
       <PageBackground />
       <HeroIdeaToProduct />
+      <StartingPoints />
       <WhatGetsBuilt />
       <AiProofPromo />
       <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16">
