@@ -123,7 +123,7 @@ export async function POST(req: Request) {
         body:
           p('Thanks for running the AI Audit. You should be looking at your readout on the site right now.') +
           p('Here is what I would do with the audit result over the next week:') +
-          `<ol style="margin:0 0 18px;padding-left:22px;color:#1a1410;line-height:1.75">
+          `<ol style="margin:0 0 18px;padding-left:22px;color:#e9e1cf;line-height:1.75;font-size:16px">
             <li style="margin-bottom:10px">Look at your top three quick wins. Pick the one with the highest impact and the lowest dependency on anyone else.</li>
             <li style="margin-bottom:10px">Block 90 minutes this week to scope it. I have a playbook for exactly that conversation, coming in my next email.</li>
             <li>If the scope is more than 30 days of work, that is what we exist to ship. Come back to the Build Queue when you are ready.</li>
@@ -170,7 +170,7 @@ export async function POST(req: Request) {
         body:
           p('This is the third and last note from me on your audit.') +
           p('Most people who run the audit do one of three things in the next month:') +
-          `<ol style="margin:0 0 18px;padding-left:22px;color:#1a1410;line-height:1.75">
+          `<ol style="margin:0 0 18px;padding-left:22px;color:#e9e1cf;line-height:1.75;font-size:16px">
             <li style="margin-bottom:10px">Ship something themselves using the playbook I sent. Best outcome by far.</li>
             <li style="margin-bottom:10px">Stall. Nothing happens. The audit gets forgotten. Shows up as a regret six months later.</li>
             <li>Bring me in. We scope it, fix-price it, and ship it in 30 days.</li>

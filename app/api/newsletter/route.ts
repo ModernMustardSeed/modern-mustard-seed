@@ -52,10 +52,10 @@ export async function POST(req: Request) {
         greeting: `Hi ${greetingName},`,
         body:
           p('You are now on the Modern Mustard Seed list. Here is what to expect:') +
-          `<ul style="margin:0 0 18px;padding-left:22px;color:#1a1410;line-height:1.75">
-            <li style="margin-bottom:10px"><strong>One email a week.</strong> A real playbook, a live build, or a teardown of something we shipped.</li>
-            <li style="margin-bottom:10px"><strong>No fluff.</strong> If I do not have something useful to say, I will not send.</li>
-            <li><strong>Subscriber-only PDFs</strong> on the playbooks we publish.</li>
+          `<ul style="margin:0 0 18px;padding-left:22px;color:#e9e1cf;line-height:1.75;font-size:16px">
+            <li style="margin-bottom:10px"><strong style="color:#fff">One email a week.</strong> A real playbook, a live build, or a teardown of something we shipped.</li>
+            <li style="margin-bottom:10px"><strong style="color:#fff">No fluff.</strong> If I do not have something useful to say, I will not send.</li>
+            <li><strong style="color:#fff">Subscriber-only PDFs</strong> on the playbooks we publish.</li>
           </ul>` +
           p('Want to start with something concrete? Run the free AI audit and get a 60-second readout on the highest-leverage moves you could make in your business.'),
         cta: { label: 'Run the free AI audit', url: 'https://modernmustardseed.com/audit' },

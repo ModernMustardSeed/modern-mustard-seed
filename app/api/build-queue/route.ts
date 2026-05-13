@@ -118,10 +118,9 @@ export async function POST(req: Request) {
         body:
           p(`Got your Build Queue entry for <strong>${businessName}</strong>. I read every one personally.`) +
           p('Here is what happens next:') +
-          `<ol style="margin:0 0 18px;padding-left:22px;color:#1a1410;line-height:1.75">
-            <li style="margin-bottom:10px"><strong>Within 3 business days</strong>, I will email you back: a fit-check, a request for a quick call, or an honest "not the right match and here is why."</li>
-            <li style="margin-bottom:10px">If we are a fit, the next step is a 30-minute scoping call. You leave that call with a fixed scope, fixed timeline, and a fixed quote. No decks.</li>
-            <li>If we are not a fit, I will point you somewhere useful. That part matters too.</li>
+          `<ol style="margin:0 0 18px;padding-left:22px;color:#e9e1cf;line-height:1.75;font-size:16px">
+            <li style="margin-bottom:10px"><strong style="color:#fff">Within 3 business days</strong>, I will email you back personally with next steps.</li>
+            <li>If we are a fit, the next step is a 30-minute scoping call. You leave that call with a fixed scope, fixed timeline, and a fixed quote. No decks.</li>
           </ol>` +
           p('While you wait, the playbook I would point you at first based on what you submitted:') +
           callout({
