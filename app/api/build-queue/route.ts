@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { clientEmail, leadNotification, p, callout } from '@/lib/email';
+import { insertLead } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
 
@@ -74,6 +75,17 @@ export async function POST(req: Request) {
     const revenueLabel = REVENUE_LABELS[revenueRange] ?? revenueRange;
     const timelineLabel = TIMELINE_LABELS[timeline] ?? timeline;
     const playbook = pickPlaybook(ideaDescription);
+
+    await insertLead({
+      type: 'build-queue',
+      name,
+      email,
+      business_name: businessName,
+      idea_description: ideaDescription,
+      revenue_range: revenueLabel,
+      timeline: timelineLabel,
+      suggested_playbook: playbook.title,
+    });
 
     await resend.emails.send({
       from: 'Build Queue <sarah@modernmustardseed.com>',

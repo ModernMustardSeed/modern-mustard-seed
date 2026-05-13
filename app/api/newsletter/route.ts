@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { clientEmail, leadNotification, p } from '@/lib/email';
+import { insertLead } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
 
@@ -33,6 +34,12 @@ export async function POST(req: Request) {
     }
 
     const greetingName = firstName || email.split('@')[0];
+
+    await insertLead({
+      type: 'newsletter',
+      name: firstName ?? null,
+      email,
+    });
 
     // Subscriber welcome
     await resend.emails.send({

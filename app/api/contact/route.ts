@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { clientEmail, leadNotification, p } from '@/lib/email';
+import { insertLead } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
 
@@ -19,6 +20,14 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    await insertLead({
+      type: 'contact',
+      name,
+      email,
+      message,
+      source: source ?? null,
+    });
 
     const firstName = String(name).split(' ')[0];
     const fields = [

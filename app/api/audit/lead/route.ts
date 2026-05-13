@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { clientEmail, leadNotification, p, callout } from '@/lib/email';
+import { insertLead } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
 
@@ -73,6 +74,20 @@ export async function POST(req: Request) {
 
     const firstName = name.split(' ')[0];
     const playbook = pickPlaybook(industry);
+
+    await insertLead({
+      type: 'audit',
+      name,
+      email,
+      phone: phone ?? null,
+      company: company ?? null,
+      industry: industry ?? null,
+      audit_url: auditUrl ?? null,
+      audit_score: typeof score === 'number' ? score : null,
+      source: source ?? 'audit',
+      suggested_playbook: playbook.title,
+      message: summary ?? null,
+    });
 
     await resend.emails.send({
       from: 'AI Audit Leads <sarah@modernmustardseed.com>',
