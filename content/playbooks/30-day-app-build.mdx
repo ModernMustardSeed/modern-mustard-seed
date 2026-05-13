@@ -1,0 +1,81 @@
+---
+title: "The 30-Day App Build Playbook"
+description: "The exact week-by-week sequence we use to take an app from blank repo to live product in 30 days. Stack, scope rules, and the decisions that actually save the timeline."
+date: "2026-05-12"
+tag: "Builds"
+author: "Sarah Scarano"
+gated: false
+---
+
+This is the playbook we run on every Idea-to-Product engagement. It is not theory. It is the schedule. Steal it, run it on your own app, ship it. Or hand it to me and I will ship it for you.
+
+## What you are building
+
+A production app with the work that matters: auth, a real database, a real domain, a paying-customer-grade UI, and a deploy that scales. Not a Figma file. Not a "proof of concept." A live thing your customer can use on Monday.
+
+## The stack (non-negotiable)
+
+- **Frontend:** Next.js 16 App Router, TypeScript, Tailwind
+- **Backend:** Supabase (Postgres, Auth, Storage, RLS)
+- **Billing:** Stripe (if it charges money)
+- **AI:** Anthropic Claude or OpenAI, depending on the workload
+- **Orchestration:** Trigger.dev for any background or scheduled work
+- **Deploy:** Vercel
+
+Same stack on every build. The repeated parts compound. You will be tempted to swap pieces. Do not, on the first build.
+
+## Week 1: Scope and skeleton
+
+**Goal:** end the week with the schema, auth, and one working flow.
+
+Days 1-2: A single scoping document. One page. Define the user, the job they hired the app to do, the three to five screens, the data model, and the cut list. Write the cut list first. The features you are not building are the ones that save the timeline.
+
+Days 3-4: Spin up the repo, install the stack, deploy a blank Next.js app to Vercel on day three. The deploy pipeline is the first thing to work, not the last. Wire Supabase auth. Create the core tables with RLS policies.
+
+Days 5-7: Build the one workflow that proves the product. Not all of them. The one. End-to-end. From login to outcome. Ugly UI is fine in week one. Boring UI is fine forever.
+
+## Week 2: Build the actual product
+
+**Goal:** ship the full feature surface, end of week.
+
+This is the heads-down week. Every screen in the scope doc gets built. Use shadcn/ui or a clean component library. Steal layouts from products that look right. Stop tweaking spacing.
+
+Discipline rule: any feature not in the scope doc is dragged to next quarter. Adding features in week two is the single most common reason builds blow the timeline.
+
+By end of week two, the product should be usable by someone who has never seen it. Not polished. Usable.
+
+## Week 3: Pay, integrate, polish
+
+**Goal:** the product can actually run a real customer through it.
+
+Days 15-17: Stripe. Even if you are not charging on day one, wire it now. Subscriptions, metered billing, customer portal. Stripe takes a real day to get right. Do not save it for the end.
+
+Days 18-19: Third-party integrations the product depends on. Resend for transactional email, the AI provider, any webhooks. Each integration is a half-day if you do it now and a full day if you do it later.
+
+Days 20-21: Polish pass. Real copy, not Lorem Ipsum. Empty states. Loading states. Error states. Onboarding. The first five minutes of the user experience matters more than the next five hours.
+
+## Week 4: Launch
+
+**Goal:** real customers using a real product on a real domain.
+
+Days 22-24: Brand site. One page. Headline, three sections, signup CTA. Use the same stack. Same Vercel project, separate route or separate deploy depending on scope.
+
+Days 25-27: Beta with three real users. Watch them use it. Take the notes. Fix what is actually broken, ignore what is preference.
+
+Day 28: DNS, domain, SSL, sitemap, robots, analytics, monitoring. The boring layer.
+
+Days 29-30: Public launch. Email list, social, the people who said they wanted this. Real customers, real money, real feedback.
+
+## What kills the timeline (and how to not let it)
+
+- **Scope drift.** Cut twice as much as you think you should. The features you cut are the ones the customer never asked for anyway.
+- **Stack indecision.** Do not let "is Bun better than Node" eat a day. The answer is "use what you have working."
+- **Perfection on the wrong layer.** Spending three days on the marketing copy in week two. Spending six hours debating a color palette. Do not.
+- **Building for scale that does not exist yet.** A million users is a future problem. Ship for the next fifty.
+- **Working alone without ship pressure.** The hardest part of a one-person build is the lack of an external clock. Pick a Friday on the calendar. Tell three people. Move toward the date.
+
+## Want this shipped for you?
+
+We do this in 30 days flat, four times a quarter, waitlist only. Drop your idea on the [Build Queue](/build-queue) and Sarah will reply within 3 business days with a fit-check and a fixed quote.
+
+If you want to ship it yourself, this is the whole playbook. Ping me on [X](https://x.com/sarahmscarano) when yours is live.

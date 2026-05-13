@@ -1,0 +1,94 @@
+---
+title: "The Specialty AI Tool Playbook: Find the $3K Friction, Build the $99 Alternative"
+description: "How to spot the high-margin friction in any industry and build the AI tool that replaces it. With examples from real estate, design, and law."
+date: "2026-05-10"
+tag: "AI Products"
+author: "Sarah Scarano"
+gated: false
+---
+
+Most industries have a line item that costs the customer a few thousand dollars, takes a week, and is mostly invisible labor. Real estate has staging. Law has document review. Design has revisions. Healthcare has intake. In every one of these, AI has collapsed the cost of doing the work by an order of magnitude. The line item is still on the invoice. That gap is the opportunity.
+
+This playbook is how to find your gap and build the tool.
+
+## The framework
+
+For any industry, find a workflow that:
+
+1. **Costs $1K to $5K** to the end customer.
+2. **Takes 2 days to 2 weeks** to deliver.
+3. **Is mostly cognitive labor** that AI can now produce in seconds.
+4. **Has a clear input and a clear output.** Not "consulting." Not "advisory."
+5. **Is purchased by a non-technical buyer** who hires it out today.
+
+Three out of five and you have a candidate. Four or five and you have a product.
+
+## Examples in the wild
+
+**Luxe Design** ($3K traditional virtual staging → $99/mo AI tool):
+- Cost: $2K to $5K per listing.
+- Time: 3 to 7 days back-and-forth.
+- Labor: A designer in Photoshop.
+- Input/output: Photo in, staged photo out.
+- Buyer: Real estate agents.
+
+**DEED AI** ($30K commission → $99/mo command center):
+- Cost: 6% of home value, often $30K+.
+- Time: Months of agent engagement.
+- Labor: Listing, pricing, contract paperwork, offer review.
+- Input/output: Property info in, complete transaction support out.
+- Buyer: FSBO sellers.
+
+**PTG AI Deal Analyzer** (2 hours of analyst time → 90 seconds):
+- Cost: Analyst time + opportunity cost of slow deals.
+- Time: 1 to 2 hours per property.
+- Labor: Comps, rent estimates, rehab assumptions, cash flow models.
+- Input/output: Address in, complete buy decision out.
+- Buyer: Real estate investors.
+
+Same pattern, three different industries.
+
+## How to validate before you build
+
+Do not build the thing. Build the test first.
+
+1. **Find 10 buyers** in the target industry. Real ones with real wallets.
+2. **Mock the output by hand.** Use ChatGPT or Claude to produce one polished, real-quality output. Show it to 5 of the buyers.
+3. **Ask one question:** "Would you pay $X/month for unlimited of these?" Watch their face. Their face will tell you.
+4. **If three of five say yes, build.** If less, repeat with a different output or a different price point.
+
+This costs you a weekend, not three months.
+
+## The build
+
+Once validated:
+
+- **Single screen.** Specialty AI tools should have one main screen. Input, output, history. That is the product.
+- **Pick the model that fits the workload.** Generation tasks (images, layouts) often need Replicate or fal. Reasoning tasks (legal, financial, real estate analysis) need Claude. Long-context research needs Gemini. Match the model to the task.
+- **Bill per-use or subscription, not both.** Pick one. Subscription if usage is predictable, metered if it varies wildly.
+- **Authenticate from day one.** Supabase Auth. Single-source customer record from the first user.
+
+Three to four weeks from validation to launch is normal. Past four weeks, you are over-building.
+
+## The pricing trap
+
+The most common mistake is pricing as a percentage of the thing you replaced. The market is "$3K staging," so you price the AI tool at $1K and feel like you are giving a deal. You are not.
+
+Price for the volume of usage your customer will actually do, plus margin. Most specialty AI tools land between $49 and $499 per month. Above $500, you are competing with full-service offerings again. Below $49, you are not building a business.
+
+## The launch
+
+The buyer pool is small and specific. Do not buy ads. Do not do SEO at launch.
+
+- **Direct outreach** to the 50 most active buyers in your target industry. DM, email, conference, whatever.
+- **One demo loom** showing the input-to-output flow. 90 seconds. Loud, fast, clear.
+- **A two-week free trial** that requires a credit card up front. Filters tire-kickers.
+- **A reference customer** from the first three signups. Their logo on your site is worth more than any other marketing.
+
+Specialty AI tools win on direct distribution to a known buyer pool. Not on broad acquisition.
+
+## Want this built for you?
+
+We build specialty AI tools as one of our four engagement types. Pick an industry. We will validate, scope, and ship in 30 days.
+
+Start at the [Build Queue](/build-queue). Sarah reviews every entry.

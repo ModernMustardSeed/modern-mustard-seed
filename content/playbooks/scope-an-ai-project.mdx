@@ -1,0 +1,80 @@
+---
+title: "How to Scope an AI Project in 90 Minutes"
+description: "The exact 90-minute conversation we run to take a vague idea and produce a fixed scope, a fixed timeline, and a build sequence anyone could run."
+date: "2026-05-08"
+tag: "Strategy"
+author: "Sarah Scarano"
+gated: false
+---
+
+Most AI projects fail at scope, not execution. The team picks the wrong workflow to automate, builds for a use case nobody asked for, or signs up for an open-ended engagement that drags into next quarter. The fix is a tighter front door.
+
+This is the 90-minute conversation we run before every engagement. Run it on your own project before you build, or hand the spec to whoever is building for you.
+
+## Block 1 (0-15 min): The job
+
+Write down, in a single sentence, the job the AI system is hired to do.
+
+Bad: "Use AI to improve our customer experience."
+Good: "Automatically triage 100 percent of inbound support emails into the right category and surface a draft reply for the rep."
+
+If you cannot write it in one sentence, you do not have a job. You have a vibe.
+
+## Block 2 (15-35 min): The workflow as it exists today
+
+Walk through the current process step by step. Who does what, in what tool, with what input, producing what output. Time-box each step. Be specific.
+
+This often takes longer than you expect. Do not skip it. Every shortcut you take here becomes a build problem later.
+
+By the end, you should have a flowchart on paper or in a Notion doc. Each step labeled with: actor, tool, input, output, time. The AI candidates are the steps where the actor is a human and the work is repetitive or cognitive.
+
+## Block 3 (35-55 min): The leverage matrix
+
+Plot each candidate on two axes:
+
+- **Vertical: impact.** How much time or money does this step cost per month? Use real numbers.
+- **Horizontal: AI fit.** How well does current AI handle this? Score from 1 to 5.
+
+The top-right quadrant is your roadmap. The top-left is "AI cannot do this yet, revisit in six months." The bottom-right is "AI can do it but the impact is small, skip." The bottom-left is "neither relevant."
+
+Focus on no more than three top-right candidates. More than three and you are building a platform instead of solving a problem.
+
+## Block 4 (55-75 min): The build sequence
+
+For the top three candidates, decide order. The order rule:
+
+1. **First**: the one with highest impact AND lowest technical risk.
+2. **Second**: the one that unlocks the most downstream value (data, workflow, customer experience).
+3. **Third**: the moonshot, only if the first two ship cleanly.
+
+Most teams reverse this. They build the exciting thing first and run out of momentum before the boring-but-valuable thing ever ships. Resist.
+
+## Block 5 (75-90 min): The deliverable spec
+
+For the first candidate, write a one-page spec:
+
+- **One-sentence job.**
+- **Input** (where the data comes from, what shape).
+- **Output** (where it goes, what shape).
+- **Reasoning layer** (which model, which prompt, which guardrails).
+- **Human override** (when the AI hands back to a person).
+- **Success metric** (one number that defines done).
+- **Cut list** (what is explicitly not in scope).
+- **Timeline** (in weeks, not months).
+
+If the spec does not fit on one page, the scope is too big.
+
+## What this prevents
+
+Run this and you avoid the four most common AI project failure modes:
+
+1. **Wrong workflow.** Building for the workflow that sounded cool instead of the one that loses money.
+2. **Scope drift.** No clear deliverable, no clear stop point, no clear success metric.
+3. **Wrong model.** Picking the tool before defining the task. Always backwards.
+4. **No human override.** Shipping an AI system with no graceful fallback when it gets something wrong.
+
+## Want this run on your project?
+
+We run this exact conversation as the front door to every engagement. Two paid scoping calls inside our AI Audit + Roadmap product, or the first call of any larger build.
+
+[Run the free AI Audit](/audit) for a 60-second version, or [join the Build Queue](/build-queue) for the full thing.

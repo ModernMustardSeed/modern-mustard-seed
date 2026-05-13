@@ -1,0 +1,89 @@
+---
+title: "The BYOK Pricing Playbook: When Bring-Your-Own-Key Beats Subscription"
+description: "Three pricing models for AI products, with the rule for picking the right one. Lessons from running BYOK plus metered credits at Make Me Studio."
+date: "2026-05-05"
+tag: "Pricing"
+author: "Sarah Scarano"
+gated: false
+---
+
+If you are charging for an AI product, you have three pricing models to choose from. Picking wrong is the single biggest reason early AI products stall.
+
+## The three models
+
+**1. Flat subscription.** Customer pays $X per month, you cover the model costs.
+**2. Metered / pay-as-you-go.** Customer pays per use, you mark up the model cost.
+**3. BYOK (Bring Your Own Key).** Customer brings their own API key, you charge for the surrounding product.
+
+Most teams pick subscription because it is familiar from SaaS. For AI products, that is often the wrong call.
+
+## Why subscription is dangerous for AI
+
+The customer who uses your product 10x more than average costs you 10x more in inference. With a flat subscription, your most engaged users are also your least profitable. Past a threshold, they are loss leaders.
+
+For SaaS, the marginal cost of a user is near zero. For AI products, the marginal cost is real and scales with engagement. The economics are different. The pricing model needs to match.
+
+## When subscription works
+
+Pick subscription when:
+
+- Usage is predictable per user (low variance).
+- The model cost per user is well under your price point.
+- The customer values predictability more than savings.
+- You have a high-volume, low-margin product where simplicity beats optimization.
+
+Examples: a writing assistant for marketers, a chatbot widget for sites, a meeting summarizer.
+
+## When metered wins
+
+Pick metered when:
+
+- Usage varies wildly across users.
+- The model cost is significant relative to the price.
+- The customer is already comfortable with consumption pricing (developers, agencies).
+- You can show the customer the ROI of each use clearly.
+
+Examples: image and video generation, document analysis at scale, code generation for engineers.
+
+## When BYOK is the answer
+
+Pick BYOK when:
+
+- The model cost would dominate the price (>50% of revenue).
+- Your customer is technical or AI-fluent.
+- The customer wants control over which model they use.
+- You can charge a flat fee for the surrounding product (workflows, UI, history, integrations) and let the customer eat the inference cost.
+
+BYOK is what we ran at Make Me Studio for power users. The premise: charge for the value layer, not the raw inference. Customers who bring their own keys are already sophisticated enough to know what they want. They are not the customer you should be marking up inference to.
+
+## The combo model (often the right answer)
+
+Most production AI products end up running two of the three at once. The most common combo:
+
+- **Free or BYOK** for technical / power users who want control.
+- **Metered credits** for the broad market who wants pay-as-you-go.
+- **Subscription tier** for high-volume users who want predictability.
+
+This sounds complex. It is not, if your billing is set up correctly. Stripe handles all three with the same primitive (subscriptions + metered usage + tax).
+
+## The pricing rule
+
+For any AI product, ask:
+
+1. **What is my unit cost per active user per month?** If you cannot answer in one number, you are not ready to price.
+2. **What is the gross margin I need?** AI products should target 60 to 80 percent gross margin.
+3. **What does the customer pay for similar pain elsewhere?** Anchor to that.
+
+Set your price so that (price - unit cost) / price >= your target margin. If you cannot get to your margin with subscription, switch to metered. If metered does not get you there at acceptable customer prices, the answer is BYOK.
+
+## The most common pricing mistake
+
+Pricing too low. Every AI product I have built was underpriced on day one. The fix was always painful. New customers at the higher price. Grandfathered legacy at the lower price. Annoying email to send.
+
+Bias high. You can always cut. Raising prices is hard.
+
+## Want this set up for you?
+
+We wire pricing into every build during week 3 of the 30-day cycle. Stripe metered, BYOK vaulting, subscription tiers, customer portal, the whole flow.
+
+Drop your project on the [Build Queue](/build-queue).
