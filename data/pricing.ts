@@ -107,14 +107,14 @@ export const pricingFaq = [
   },
   {
     q: 'Do you offer payment plans?',
-    a: 'Yes. Larger builds and ongoing partnerships can be split into monthly milestones. Audit and Voice Agent engagements are typically paid up front to keep timelines tight.',
+    a: 'Yes. Most engagements can be split into milestone payments that fit your situation. Tell us what works during the discovery call and we will structure it together.',
   },
   {
     q: 'Who owns the code and assets?',
     a: 'You do, fully. All code is delivered to your repos. All credentials, accounts, and infrastructure are yours from day one.',
   },
   {
-    q: 'What is your refund policy?',
-    a: 'If you are not happy with the audit deliverable within 7 days of delivery, we refund the full amount. For builds, we refund any unworked milestone if we part ways early.',
+    q: 'What if I am not happy with what gets built?',
+    a: 'We do not work in handoffs. We work in iterations. We do not stop until the build is right by you. Revision rounds are baked into every engagement, not bolted on. We do not offer refunds because we do not walk away. We finish the work until it is what you wanted.',
   },
 ];
