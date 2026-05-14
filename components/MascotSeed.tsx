@@ -69,7 +69,7 @@ export default function MascotSeed({
           height: 100% !important;
           object-fit: cover !important;
           object-position: center !important;
-          transform: scale(1.02);
+          transform: scale(1.12);
         }
 
         .mascot-img-wrap.jumping {
