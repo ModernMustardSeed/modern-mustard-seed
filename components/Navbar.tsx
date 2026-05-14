@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { navLinks } from '@/data/socials';
+import MascotSeed from './MascotSeed';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -25,9 +26,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-5 flex justify-between items-center">
         <Link
           href="/"
-          className="font-sans text-xs md:text-sm tracking-[0.15em] text-white/60 uppercase font-bold hover:text-white/90 transition-colors"
+          className="flex items-center gap-3 hover:opacity-90 transition-opacity"
         >
-          Modern Mustard Seed
+          <MascotSeed size={36} interactive={false} showGlow={false} />
+          <span className="font-sans text-xs md:text-sm tracking-[0.15em] text-white/60 uppercase font-bold hover:text-white/90 transition-colors">
+            Modern Mustard Seed
+          </span>
         </Link>
 
         <div className="hidden md:flex items-center gap-7">

@@ -1,6 +1,8 @@
 import PageBackground from '@/components/PageBackground';
 import HeroIdeaToProduct from '@/components/HeroIdeaToProduct';
+import ResultsMarquee from '@/components/ResultsMarquee';
 import StartingPoints from '@/components/StartingPoints';
+import LiveStats from '@/components/LiveStats';
 import WhatGetsBuilt from '@/components/WhatGetsBuilt';
 import AiProofPromo from '@/components/AiProofPromo';
 import NewsletterSignup from '@/components/NewsletterSignup';
@@ -42,7 +44,9 @@ export default function HomePage() {
       <JsonLd data={[homeJsonLd, offerJsonLd, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} />
       <PageBackground />
       <HeroIdeaToProduct />
+      <ResultsMarquee />
       <StartingPoints />
+      <LiveStats />
       <WhatGetsBuilt />
       <AiProofPromo />
       <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16">

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { socials } from '@/data/socials';
+import MascotSeed from './MascotSeed';
 
 export default function Footer() {
   const linkSections = [
@@ -33,8 +34,9 @@ export default function Footer() {
 
   return (
     <footer className="w-full px-6 md:px-16 lg:px-24 xl:px-32 pt-20 pb-10">
-      <div className="flex justify-center mb-16">
-        <div className="w-px h-24 bg-gradient-to-b from-transparent via-mustard-500/20 to-transparent" />
+      <div className="flex flex-col items-center mb-12 gap-6">
+        <div className="w-px h-16 bg-gradient-to-b from-transparent via-mustard-500/20 to-transparent" />
+        <MascotSeed size={88} interactive />
       </div>
 
       <div className="text-center max-w-2xl mx-auto mb-16">
