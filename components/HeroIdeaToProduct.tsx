@@ -1,24 +1,19 @@
 import Link from 'next/link';
-import MascotSeed from './MascotSeed';
 
 export default function HeroIdeaToProduct() {
   return (
-    <section className="relative min-h-[88vh] flex flex-col items-center justify-center px-6 pt-32 md:pt-40 pb-20 text-center">
+    <section className="relative min-h-[88vh] flex flex-col items-center justify-center px-6 pt-36 md:pt-44 pb-20 text-center">
       <div className="opacity-0 animate-fade-in-up max-w-4xl mx-auto">
-        <span className="text-[10px] tracking-[0.4em] uppercase text-mustard-500/70 font-mono font-medium block mb-7">
+        <span className="text-[10px] tracking-[0.4em] uppercase text-mustard-500/70 font-mono font-medium block mb-10">
           Modern Mustard Seed
         </span>
-
-        <div className="flex justify-center mb-7">
-          <MascotSeed size={180} priority />
-        </div>
 
         <h1 className="font-sans text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.1] text-white">
           We build <span className="text-gradient-mustard">apps, sites,</span> and{' '}
           <span className="text-gradient-mustard">specialty AI tools</span> for your business.
         </h1>
 
-        <p className="text-white/60 text-base md:text-lg font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mt-7 mb-3">
+        <p className="text-white/60 text-base md:text-lg font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mt-8 mb-3">
           From your first website to your custom AI tool. Shipped in 30 days, four builds per quarter.
         </p>
         <p className="text-white/45 text-sm md:text-base font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mb-10">
