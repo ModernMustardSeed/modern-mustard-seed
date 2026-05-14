@@ -5,13 +5,12 @@ export const config = {
   matcher: ['/admin/:path*'],
 };
 
-export function middleware(req: NextRequest) {
-  // Allow the login page through
+export async function middleware(req: NextRequest) {
   if (req.nextUrl.pathname === '/admin/login') {
     return NextResponse.next();
   }
   const token = req.cookies.get(COOKIE_NAME)?.value;
-  const session = token ? verifyToken(token) : null;
+  const session = token ? await verifyToken(token) : null;
   if (!session) {
     const url = new URL('/admin/login', req.url);
     url.searchParams.set('next', req.nextUrl.pathname);
