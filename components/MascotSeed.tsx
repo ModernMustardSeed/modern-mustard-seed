@@ -57,9 +57,19 @@ export default function MascotSeed({
           width: 100%;
           height: 100%;
           z-index: 2;
+          border-radius: 50%;
+          overflow: hidden;
           animation: float 4.5s ease-in-out infinite, wobble 7s ease-in-out infinite;
           transform-origin: center bottom;
           will-change: transform;
+        }
+
+        .mascot-img-wrap :global(img) {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+          object-position: center !important;
+          transform: scale(1.02);
         }
 
         .mascot-img-wrap.jumping {
@@ -162,7 +172,6 @@ export default function MascotSeed({
             height={size}
             priority={priority}
             sizes={`${size}px`}
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </div>
         {greeting && <div className="bubble">{greeting}</div>}
