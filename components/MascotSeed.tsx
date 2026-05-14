@@ -1,13 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 
 type Props = {
   size?: number;
   className?: string;
   interactive?: boolean;
-  showGlow?: boolean;
   priority?: boolean;
 };
 
@@ -26,27 +25,10 @@ export default function MascotSeed({
   size = 200,
   className = '',
   interactive = true,
-  showGlow = true,
   priority = false,
 }: Props) {
   const [greeting, setGreeting] = useState<string | null>(null);
   const [jumping, setJumping] = useState(false);
-  const [blinks, setBlinks] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Random blink trigger (re-applies the CSS animation by toggling a key)
-  useEffect(() => {
-    if (!interactive) return;
-    const tick = () => {
-      setBlinks((b) => b + 1);
-      const next = 3000 + Math.random() * 4000;
-      timerRef.current = setTimeout(tick, next);
-    };
-    timerRef.current = setTimeout(tick, 4000);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, [interactive]);
 
   const handleClick = () => {
     if (!interactive) return;
@@ -70,21 +52,6 @@ export default function MascotSeed({
           user-select: none;
         }
 
-        .mascot-glow {
-          position: absolute;
-          inset: -22%;
-          background: radial-gradient(
-            circle at center,
-            rgba(200, 164, 21, 0.32) 0%,
-            rgba(200, 164, 21, 0.14) 30%,
-            transparent 65%
-          );
-          filter: blur(20px);
-          animation: glow-pulse 5s ease-in-out infinite;
-          pointer-events: none;
-          z-index: 0;
-        }
-
         .mascot-img-wrap {
           position: relative;
           width: 100%;
@@ -103,28 +70,6 @@ export default function MascotSeed({
           animation: float-fast 1.2s ease-in-out infinite, wobble 7s ease-in-out infinite;
         }
 
-        .mascot-wrap:hover .mascot-glow {
-          background: radial-gradient(
-            circle at center,
-            rgba(200, 164, 21, 0.5) 0%,
-            rgba(200, 164, 21, 0.2) 30%,
-            transparent 65%
-          );
-        }
-
-        /* Eyelid overlay synced with random blink trigger */
-        .blink-mask {
-          position: absolute;
-          inset: 28% 25% 45% 25%;
-          z-index: 3;
-          pointer-events: none;
-          opacity: 0;
-        }
-        .blink-mask.blink {
-          animation: blink-anim 0.22s ease-in-out;
-        }
-
-        /* Speech bubble */
         .bubble {
           position: absolute;
           top: -10%;
@@ -172,11 +117,6 @@ export default function MascotSeed({
           50% { transform: rotate(2deg); }
         }
 
-        @keyframes glow-pulse {
-          0%, 100% { opacity: 0.7; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.1); }
-        }
-
         @keyframes jump {
           0% { transform: translateY(0) scale(1, 1); }
           15% { transform: translateY(0) scale(1.1, 0.85); }
@@ -184,11 +124,6 @@ export default function MascotSeed({
           70% { transform: translateY(-15px) scale(1, 1); }
           90% { transform: translateY(0) scale(1.05, 0.92); }
           100% { transform: translateY(0) scale(1, 1); }
-        }
-
-        @keyframes blink-anim {
-          0%, 100% { opacity: 0; }
-          50% { opacity: 1; }
         }
 
         @keyframes bubble-in {
@@ -200,8 +135,7 @@ export default function MascotSeed({
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .mascot-img-wrap,
-          .mascot-glow {
+          .mascot-img-wrap {
             animation: none !important;
           }
         }
@@ -220,7 +154,6 @@ export default function MascotSeed({
         }}
         aria-label={interactive ? 'Modern Mustard Seed mascot. Click for a greeting.' : 'Modern Mustard Seed mascot'}
       >
-        {showGlow && <div className="mascot-glow" />}
         <div className={`mascot-img-wrap ${jumping ? 'jumping' : ''}`}>
           <Image
             src="/mascot.png"
@@ -232,15 +165,6 @@ export default function MascotSeed({
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </div>
-        <div
-          key={blinks}
-          className="blink-mask blink"
-          aria-hidden="true"
-          style={{
-            background:
-              'radial-gradient(ellipse 35% 50% at 35% 50%, #0f0c08 0%, #0f0c08 50%, transparent 60%), radial-gradient(ellipse 35% 50% at 65% 50%, #0f0c08 0%, #0f0c08 50%, transparent 60%)',
-          }}
-        />
         {greeting && <div className="bubble">{greeting}</div>}
       </div>
     </>
