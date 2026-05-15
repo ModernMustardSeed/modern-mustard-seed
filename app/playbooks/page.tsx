@@ -8,7 +8,7 @@ import { listContent } from '@/lib/content';
 export const metadata = buildMetadata({
   title: 'Playbooks',
   description:
-    'Battle-tested AI playbooks. Free to read, copy, and run on your own business. New playbooks added monthly.',
+    'Battle-tested playbooks for building, shipping, and running a real business. Free to read, copy, and run yourself. New playbooks added monthly.',
   path: '/playbooks',
 });
 

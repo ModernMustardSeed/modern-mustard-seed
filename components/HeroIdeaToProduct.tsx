@@ -13,11 +13,11 @@ export default function HeroIdeaToProduct() {
           <span className="text-gradient-mustard">specialty AI tools</span> for your business.
         </h1>
 
-        <p className="text-white/60 text-base md:text-lg font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mt-8 mb-3">
+        <p className="text-white/65 text-base md:text-lg font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mt-8 mb-3">
           From your first website to your custom AI tool. Shipped in 30 days, four builds per quarter.
         </p>
-        <p className="text-white/45 text-sm md:text-base font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mb-10">
-          For everyone. You do not need to know much about AI to start.
+        <p className="text-mustard-200/70 text-sm md:text-base font-body font-medium tracking-normal max-w-2xl mx-auto leading-relaxed mb-10">
+          You do not need to know a single thing about AI. That is literally why you hire us.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center opacity-0 animate-fade-in-up-delay">

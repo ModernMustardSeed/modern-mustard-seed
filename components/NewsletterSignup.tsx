@@ -10,8 +10,8 @@ type Props = {
 
 export default function NewsletterSignup({
   variant = 'card',
-  headline = 'AI playbooks. In your inbox.',
-  subhead = 'One short email a week. Real plays we use to ship AI products and run businesses on autopilot. No fluff, no spam.',
+  headline = 'Playbooks. In your inbox.',
+  subhead = 'One short email a week. Real plays we use to ship products, run businesses, and make tech feel human. No fluff, no spam.',
 }: Props) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
