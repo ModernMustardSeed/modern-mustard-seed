@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import MagneticCursor from '@/components/MagneticCursor';
 import { JsonLd, orgJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main>{children}</main>
           <Footer />
         </div>
+        <MagneticCursor />
         <Analytics />
         <noscript>
           <p style={{ padding: '2rem', textAlign: 'center', color: '#fff' }}>

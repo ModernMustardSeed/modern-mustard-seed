@@ -5,6 +5,7 @@ import EraOfEntrepreneur from '@/components/EraOfEntrepreneur';
 import StartingPoints from '@/components/StartingPoints';
 import LiveStats from '@/components/LiveStats';
 import BuiltByGoodPeople from '@/components/BuiltByGoodPeople';
+import WhatAreYouBuilding from '@/components/WhatAreYouBuilding';
 import WhatGetsBuilt from '@/components/WhatGetsBuilt';
 import AiProofPromo from '@/components/AiProofPromo';
 import NewsletterSignup from '@/components/NewsletterSignup';
@@ -51,6 +52,7 @@ export default function HomePage() {
       <StartingPoints />
       <LiveStats />
       <BuiltByGoodPeople />
+      <WhatAreYouBuilding />
       <WhatGetsBuilt />
       <AiProofPromo />
       <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16">

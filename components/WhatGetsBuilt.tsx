@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getContent } from '@/lib/content';
+import TiltCard from './TiltCard';
 
 // Hand-curated featured work for the homepage. Order matters.
 // Edit this list to control what shows on the homepage without changing dates.
@@ -33,38 +34,39 @@ export default function WhatGetsBuilt() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto mb-12">
         {studies.map((s) => (
-          <Link
-            key={s.slug}
-            href={`/work/${s.slug}`}
-            className="group glass-card p-6 flex flex-col hover:border-mustard-500/20 transition-all duration-500"
-          >
-            <div className="flex items-center gap-2.5 mb-4">
-              {s.tag && (
-                <span className="skill-pill text-mustard-400/70 border-mustard-500/20 text-[8px]">
-                  {s.tag}
-                </span>
-              )}
-            </div>
-
-            <h3 className="font-sans text-lg md:text-xl font-semibold text-white/95 tracking-tight mb-3 leading-snug">
-              {s.title.split(':')[0]}
-            </h3>
-
-            <p className="text-white/50 text-sm font-body font-light leading-6 mb-5 flex-1">
-              {s.description}
-            </p>
-
-            {s.metrics && s.metrics[0] && (
-              <div className="pt-4 border-t border-white/[0.05]">
-                <div className="font-sans text-base font-semibold text-mustard-300/80">
-                  {s.metrics[0].value}
-                </div>
-                <div className="text-[9px] uppercase tracking-[0.25em] text-white/35 font-mono mt-1">
-                  {s.metrics[0].label}
-                </div>
+          <TiltCard key={s.slug}>
+            <Link
+              href={`/work/${s.slug}`}
+              className="group glass-card p-6 flex flex-col hover:border-mustard-500/20 transition-all duration-500 h-full"
+            >
+              <div className="flex items-center gap-2.5 mb-4">
+                {s.tag && (
+                  <span className="skill-pill text-mustard-400/70 border-mustard-500/20 text-[8px]">
+                    {s.tag}
+                  </span>
+                )}
               </div>
-            )}
-          </Link>
+
+              <h3 className="font-sans text-lg md:text-xl font-semibold text-white/95 tracking-tight mb-3 leading-snug">
+                {s.title.split(':')[0]}
+              </h3>
+
+              <p className="text-white/50 text-sm font-body font-light leading-6 mb-5 flex-1">
+                {s.description}
+              </p>
+
+              {s.metrics && s.metrics[0] && (
+                <div className="pt-4 border-t border-white/[0.05]">
+                  <div className="font-sans text-base font-semibold text-mustard-300/80">
+                    {s.metrics[0].value}
+                  </div>
+                  <div className="text-[9px] uppercase tracking-[0.25em] text-white/35 font-mono mt-1">
+                    {s.metrics[0].label}
+                  </div>
+                </div>
+              )}
+            </Link>
+          </TiltCard>
         ))}
       </div>
 
