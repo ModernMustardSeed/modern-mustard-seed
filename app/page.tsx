@@ -1,6 +1,7 @@
 import PageBackground from '@/components/PageBackground';
 import HeroIdeaToProduct from '@/components/HeroIdeaToProduct';
 import ResultsMarquee from '@/components/ResultsMarquee';
+import EraOfEntrepreneur from '@/components/EraOfEntrepreneur';
 import StartingPoints from '@/components/StartingPoints';
 import LiveStats from '@/components/LiveStats';
 import BuiltByGoodPeople from '@/components/BuiltByGoodPeople';
@@ -46,6 +47,7 @@ export default function HomePage() {
       <PageBackground />
       <HeroIdeaToProduct />
       <ResultsMarquee />
+      <EraOfEntrepreneur />
       <StartingPoints />
       <LiveStats />
       <BuiltByGoodPeople />
