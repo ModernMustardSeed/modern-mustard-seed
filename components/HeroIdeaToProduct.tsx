@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import MagneticLink from './MagneticLink';
 
 export default function HeroIdeaToProduct() {
   return (
@@ -21,12 +22,12 @@ export default function HeroIdeaToProduct() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center opacity-0 animate-fade-in-up-delay">
-          <Link
+          <MagneticLink
             href="/build-queue"
-            className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.25)] transition-all"
+            className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(200,164,21,0.3)]"
           >
             Join the Build Queue
-          </Link>
+          </MagneticLink>
           <Link
             href="/work"
             className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 border border-mustard-500/30 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/50 transition-all"

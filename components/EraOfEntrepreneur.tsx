@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import MagneticLink from './MagneticLink';
 
 const ROTATING_WORDS = [
   'founders',
@@ -160,13 +161,12 @@ export default function EraOfEntrepreneur() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-          <Link
+          <MagneticLink
             href="/build-queue"
-            className="group relative px-10 py-4 text-[12px] uppercase tracking-[0.22em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_50px_rgba(200,164,21,0.45)] transition-all duration-500 hover:scale-[1.03]"
+            className="px-10 py-4 text-[12px] uppercase tracking-[0.22em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_55px_rgba(200,164,21,0.5)]"
           >
-            <span className="relative z-10">Get in the build queue</span>
-            <span className="absolute inset-0 rounded-full bg-gradient-to-r from-mustard-400 to-mustard-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </Link>
+            Get in the build queue
+          </MagneticLink>
           <Link
             href="/work"
             className="px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/55 hover:text-mustard-300 transition-all"
