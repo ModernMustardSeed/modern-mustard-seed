@@ -1,0 +1,54 @@
+import { ImageResponse } from 'next/og';
+
+export const runtime = 'edge';
+export const size = { width: 180, height: 180 };
+export const contentType = 'image/png';
+
+const GOLD = 'linear-gradient(135deg, #A68B10 0%, #E6C84A 40%, #C8A415 65%, #FFE082 100%)';
+
+export default function AppleIcon() {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: '#0a0804',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: 8,
+            left: 8,
+            right: 8,
+            bottom: 8,
+            borderRadius: 28,
+            border: '1px solid rgba(200, 164, 21, 0.35)',
+            display: 'flex',
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            fontSize: 84,
+            fontWeight: 900,
+            letterSpacing: -5,
+            lineHeight: 1,
+            backgroundImage: GOLD,
+            backgroundClip: 'text',
+            color: 'transparent',
+          }}
+        >
+          MMS
+        </div>
+      </div>
+    ),
+    { ...size }
+  );
+}
