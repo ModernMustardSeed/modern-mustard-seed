@@ -1,26 +1,80 @@
 import { SITE } from './seo';
 
+const PERSON_ID = `${SITE.url}/#sarah`;
+const ORG_ID = `${SITE.url}/#organization`;
+const WEBSITE_ID = `${SITE.url}/#website`;
+const LOGO_URL = `${SITE.url}/opengraph-image`;
+const OG_IMAGE = {
+  '@type': 'ImageObject',
+  url: `${SITE.url}/opengraph-image`,
+  width: 1200,
+  height: 630,
+};
+
+export const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': PERSON_ID,
+  name: SITE.founder,
+  givenName: 'Sarah',
+  familyName: 'Scarano',
+  email: SITE.email,
+  url: `${SITE.url}/about`,
+  image: `${SITE.url}/opengraph-image`,
+  jobTitle: 'Founder, Engineer, and AI Systems Architect',
+  description:
+    'Founder of Modern Mustard Seed. Self-taught full-stack engineer and AI systems architect. Ships custom apps, websites, and specialty AI tools in 30 days.',
+  worksFor: { '@id': ORG_ID },
+  knowsAbout: [
+    'Artificial Intelligence',
+    'Large Language Models',
+    'Next.js',
+    'React',
+    'TypeScript',
+    'Supabase',
+    'Stripe',
+    'AI agents',
+    'Voice AI',
+    'Product engineering',
+    'Generative AI',
+    'Full-stack development',
+  ],
+  sameAs: [
+    'https://x.com/sarahmscarano',
+    'https://linkedin.com/in/sarahscarano',
+    'https://github.com/ModernMustardSeed',
+    'https://instagram.com/modernmustardseed',
+    'https://tiktok.com/@modernmustardseed',
+  ],
+};
+
 export const orgJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  '@id': `${SITE.url}/#organization`,
+  '@id': ORG_ID,
   name: SITE.name,
+  alternateName: 'MMS',
   url: SITE.url,
-  logo: `${SITE.url}/og-image.png`,
-  description: SITE.description,
-  founder: {
-    '@type': 'Person',
-    name: SITE.founder,
-    email: SITE.email,
-    url: SITE.url,
-    sameAs: [
-      'https://x.com/sarahmscarano',
-      'https://linkedin.com/in/sarahscarano',
-      'https://github.com/ModernMustardSeed',
-      'https://instagram.com/modernmustardseed',
-      'https://tiktok.com/@modernmustardseed',
-    ],
+  logo: {
+    '@type': 'ImageObject',
+    url: LOGO_URL,
+    width: 1200,
+    height: 630,
   },
+  image: LOGO_URL,
+  description: SITE.description,
+  slogan: SITE.tagline,
+  founder: { '@id': PERSON_ID },
+  employee: { '@id': PERSON_ID },
+  foundingDate: '2024',
+  knowsAbout: [
+    'AI product development',
+    'Custom software',
+    'Generative AI tools',
+    'Voice AI agents',
+    'Business automation',
+    'Specialty AI for real estate, design, content, and legal',
+  ],
   sameAs: [
     'https://x.com/sarahmscarano',
     'https://linkedin.com/in/sarahscarano',
@@ -33,7 +87,32 @@ export const orgJsonLd = {
     email: SITE.email,
     contactType: 'sales',
     availableLanguage: 'English',
+    areaServed: 'Worldwide',
   },
+};
+
+export const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': WEBSITE_ID,
+  url: SITE.url,
+  name: SITE.name,
+  description: SITE.description,
+  publisher: { '@id': ORG_ID },
+  inLanguage: 'en-US',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${SITE.url}/blog?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+export const siteGraphJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [orgJsonLd, personJsonLd, websiteJsonLd],
 };
 
 export function blogPostingJsonLd(args: {
@@ -41,18 +120,31 @@ export function blogPostingJsonLd(args: {
   description: string;
   slug: string;
   date: string;
+  dateModified?: string;
   author?: string;
+  wordCount?: number;
+  keywords?: string[];
 }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
+    '@id': `${SITE.url}/blog/${args.slug}#article`,
     headline: args.title,
     description: args.description,
     datePublished: args.date,
-    author: { '@type': 'Person', name: args.author ?? SITE.founder },
-    publisher: { '@id': `${SITE.url}/#organization` },
+    dateModified: args.dateModified ?? args.date,
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': ORG_ID },
     mainEntityOfPage: `${SITE.url}/blog/${args.slug}`,
-    image: `${SITE.url}/opengraph-image`,
+    image: OG_IMAGE,
+    inLanguage: 'en-US',
+    isPartOf: { '@id': WEBSITE_ID },
+    ...(args.wordCount ? { wordCount: args.wordCount } : {}),
+    ...(args.keywords?.length ? { keywords: args.keywords.join(', ') } : {}),
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.mdx-prose h2', '.mdx-prose p:first-of-type'],
+    },
   };
 }
 
@@ -61,17 +153,22 @@ export function howToJsonLd(args: {
   description: string;
   slug: string;
   date: string;
+  dateModified?: string;
 }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
+    '@id': `${SITE.url}/playbooks/${args.slug}#howto`,
     name: args.title,
     description: args.description,
     datePublished: args.date,
-    author: { '@type': 'Person', name: SITE.founder },
-    publisher: { '@id': `${SITE.url}/#organization` },
+    dateModified: args.dateModified ?? args.date,
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': ORG_ID },
     mainEntityOfPage: `${SITE.url}/playbooks/${args.slug}`,
-    image: `${SITE.url}/opengraph-image`,
+    image: OG_IMAGE,
+    inLanguage: 'en-US',
+    isPartOf: { '@id': WEBSITE_ID },
   };
 }
 
@@ -80,7 +177,10 @@ export function caseStudyJsonLd(args: {
   description: string;
   slug: string;
   date: string;
+  dateModified?: string;
   client?: string;
+  stack?: string[];
+  wordCount?: number;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -89,11 +189,20 @@ export function caseStudyJsonLd(args: {
     headline: args.title,
     description: args.description,
     datePublished: args.date,
-    author: { '@type': 'Person', name: SITE.founder },
-    publisher: { '@id': `${SITE.url}/#organization` },
+    dateModified: args.dateModified ?? args.date,
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': ORG_ID },
     mainEntityOfPage: `${SITE.url}/work/${args.slug}`,
-    image: `${SITE.url}/opengraph-image`,
-    about: args.client ? { '@type': 'Organization', name: args.client } : undefined,
+    image: OG_IMAGE,
+    inLanguage: 'en-US',
+    isPartOf: { '@id': WEBSITE_ID },
+    ...(args.wordCount ? { wordCount: args.wordCount } : {}),
+    ...(args.stack?.length ? { keywords: args.stack.join(', ') } : {}),
+    ...(args.client ? { about: { '@type': 'Organization', name: args.client } } : {}),
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.mdx-prose h2', '.mdx-prose p:first-of-type'],
+    },
   };
 }
 
@@ -115,7 +224,8 @@ export function serviceJsonLd(svc: { name: string; description: string }) {
     '@type': 'Service',
     name: svc.name,
     description: svc.description,
-    provider: { '@id': `${SITE.url}/#organization` },
+    provider: { '@id': ORG_ID },
+    areaServed: 'Worldwide',
   };
 }
 
@@ -129,6 +239,22 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
       name: item.name,
       item: `${SITE.url}${item.url}`,
     })),
+  };
+}
+
+export function aboutPageJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    '@id': `${SITE.url}/about#aboutpage`,
+    url: `${SITE.url}/about`,
+    name: `About ${SITE.name}`,
+    description:
+      'About Modern Mustard Seed, the one-person product studio founded by Sarah Scarano. Faith meets function. Ship custom apps, websites, and specialty AI tools in 30 days.',
+    mainEntity: { '@id': PERSON_ID },
+    publisher: { '@id': ORG_ID },
+    isPartOf: { '@id': WEBSITE_ID },
+    inLanguage: 'en-US',
   };
 }
 

@@ -14,6 +14,8 @@ export type ContentMeta = {
   cover?: string;
   author?: string;
   readingTime: string;
+  wordCount: number;
+  dateModified?: string;
   draft?: boolean;
   gated?: boolean;
   // case study specific
@@ -52,6 +54,8 @@ export function getContent(type: ContentType, slug: string): { meta: ContentMeta
       cover: data.cover,
       author: data.author,
       readingTime: stats.text,
+      wordCount: Math.round(stats.words),
+      dateModified: data.dateModified ?? data.updated ?? data.date ?? new Date().toISOString().slice(0, 10),
       draft: data.draft ?? false,
       gated: data.gated ?? false,
       client: data.client,

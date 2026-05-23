@@ -39,7 +39,10 @@ export default async function BlogPost({ params }: { params: Params }) {
             description: post.meta.description,
             slug,
             date: post.meta.date,
+            dateModified: post.meta.dateModified,
             author: post.meta.author,
+            wordCount: post.meta.wordCount,
+            keywords: post.meta.tag ? [post.meta.tag] : undefined,
           }),
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },

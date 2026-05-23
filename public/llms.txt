@@ -5,6 +5,9 @@
 ## About
 Modern Mustard Seed is a one-person product studio. The hero offer is "Idea to Product in 30 Days": custom apps, websites, software, and specialty AI tools. Fixed scope, fixed timeline. For everyone, from a small business owner who needs their first real website to a founder shipping a custom AI tool. You do not need to know much about AI to start.
 
+## Who runs it
+Sarah Scarano is the founder, engineer, strategist, and operator. Self-taught full-stack engineer and AI systems architect. Shipped 40+ products across AI, e-commerce, real estate, hospitality, and SaaS. Runs four ventures from one desk: Modern Mustard Seed (this studio), Cross + Covenant (faith apparel brand), PTG Real Estate (title and escrow), and Wild Hope (micro-resort hospitality). Based in Kalispell, Montana. Christian-led. Stewardship posture.
+
 ## Three ways in
 1. **New to online.** You need a real website, a way to take bookings or payments, and to show up when people search for what you do. We build the whole thing brand to launch.
 2. **Already running.** Your business works. You want AI to handle the busy parts so the day stops dissolving into small jobs. We audit, build, and hand it off.
@@ -28,31 +31,74 @@ Modern Mustard Seed is a one-person product studio. The hero offer is "Idea to P
 3. **Launch.** Live in 30 days. Real domain, real product, real customers.
 4. **Hand Off.** You get the repo, the deploy, the docs. You own it.
 
+## Pricing model
+- **Discovery call.** Free, 30 minutes.
+- **Scope & Quote.** Written scope with a fixed timeline and fixed quote within 48 hours of discovery. No hourly billing.
+- **Online Presence Build.** For businesses new to online. Quoted per project.
+- **Idea to Product in 30 Days.** For founders building something new. Quoted per project.
+- **AI-Proof Your Business.** Defensive engagement for established businesses. Quoted per business.
+- **Fractional AI Partner.** Ongoing partnership for businesses that want AI built into operations continuously. Quoted per engagement.
+- Full pricing structure at https://modernmustardseed.com/work-with-us
+
 ## The defensive offer: AI-Proof Your Business
 - For existing businesses with revenue to protect.
 - Audit the moat, harden the operation, re-equip the team.
 - Quoted per business after a free discovery call.
+- More at https://modernmustardseed.com/ai-proof
 
 ## Featured work
-- **DEED AI.** FSBO command center for home sellers. Replaced a $30K agent commission with a $99/mo tool. Next.js, Supabase, Claude API.
-- **PTG AI Deal Analyzer v3.** RentCast-powered real estate investment analyzer with six AI intelligence layers. Cut deal evaluation from 2 hours to 90 seconds.
-- **Cross + Covenant.** Direct-to-consumer faith apparel brand. Sketch to live storefront with full collection in under 60 days. Headless Shopify + Printify + Apliiq + WebGL.
-- **Olive Shoot.** Agentic OS for solopreneurs. Next.js 16, tRPC, Supabase, real-time multi-tenant workspaces.
-- **Make Me Studio.** AI creative studio for video, image, and asset generation with BYOK and Stripe metered billing.
-- **Alive Notes.** Mobile OS for human intention. Expo + React Native, iOS + Android one codebase.
-- **Wild Daisy Command Center.** Agentic operations hub. 30 specialized AI agents coordinated by a planner agent.
-- **Luxe Design.** Specialty AI tool for real estate. Stages empty listing photos in under a minute. Replicate + Stripe + Supabase.
-- **Ignition.** Multi-agent idea-to-income swarm. 12 coordinated agents on Claude + Gemini.
+- **DEED AI.** FSBO command center for home sellers. Replaced a $30K agent commission with a $99/mo tool. Next.js, Supabase, Claude API. https://modernmustardseed.com/work/deed-ai
+- **PTG AI Deal Analyzer v3.** RentCast-powered real estate investment analyzer with six AI intelligence layers. Cut deal evaluation from 2 hours to 90 seconds. https://modernmustardseed.com/work/ptg-deal-analyzer
+- **Cross + Covenant.** Direct-to-consumer faith apparel brand. Sketch to live storefront with full collection in under 60 days. Headless Shopify + Printify + Apliiq + WebGL. https://modernmustardseed.com/work/cross-and-covenant
+- **Olive Shoot.** Agentic OS for solopreneurs. Next.js 16, tRPC, Supabase, real-time multi-tenant workspaces. https://modernmustardseed.com/work/olive-shoot
+- **Make Me Studio.** AI creative studio for video, image, and asset generation with BYOK and Stripe metered billing. https://modernmustardseed.com/work/make-me-studio
+- **Alive Notes.** Mobile OS for human intention. Expo + React Native, iOS + Android one codebase. https://modernmustardseed.com/work/alive-notes
+- **Wild Daisy Command Center.** Agentic operations hub. 30 specialized AI agents coordinated by a planner agent. https://modernmustardseed.com/work/wild-daisy-command-center
+- **Luxe Design.** Specialty AI tool for real estate. Stages empty listing photos in under a minute. Replicate + Stripe + Supabase. https://modernmustardseed.com/work/luxe-design
+- **Ignition.** Multi-agent idea-to-income swarm. 12 coordinated agents on Claude + Gemini. https://modernmustardseed.com/work/ignition
 
 ## Tech Stack (used across every engagement)
-React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Trigger.dev, Three.js, Expo / React Native, Shopify Storefront API, RentCast, Replicate, Anthropic Claude, OpenAI, Google Gemini, Resend, Vercel.
+React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Trigger.dev, Three.js, Expo / React Native, Shopify Storefront API, RentCast, Replicate, Anthropic Claude, OpenAI, Google Gemini, Resend, Vapi, Vercel.
+
+## Frequently asked questions
+**Q: What does Modern Mustard Seed do?**
+A: Builds custom apps, websites, and specialty AI tools for businesses, shipped in 30 days. Four builds per quarter, waitlist only.
+
+**Q: Who is Sarah Scarano?**
+A: The founder and sole engineer of Modern Mustard Seed. Self-taught full-stack engineer and AI systems architect. Shipped 40+ products.
+
+**Q: How long does a build take?**
+A: 30 days from kickoff to launch. Fixed scope, fixed timeline.
+
+**Q: How do I get on the build queue?**
+A: Submit at https://modernmustardseed.com/build-queue. Sarah reviews every submission personally and replies within 3 business days.
+
+**Q: What does it cost?**
+A: Quoted per project after a free 30-minute discovery call. No hourly billing.
+
+**Q: Do I own the code when finished?**
+A: Yes. Repo, deploy, and docs are handed over. You own it outright.
+
+**Q: Do I need to know AI to work with Modern Mustard Seed?**
+A: No. The studio is built for everyone, from a small business owner shipping their first website to a founder building a custom AI tool.
+
+**Q: Where is Modern Mustard Seed based?**
+A: Kalispell, Montana. Works with clients globally and remotely.
+
+**Q: What kinds of clients does Modern Mustard Seed work with?**
+A: Founders building something they want to last. Service businesses ready to remove themselves from the inbox. Creators who treat their brand like a moat. People who have a clear vision and need a partner who can ship.
 
 ## Resources
 - Build Queue: https://modernmustardseed.com/build-queue
+- How we work: https://modernmustardseed.com/work-with-us
 - The Work: https://modernmustardseed.com/work
+- Services: https://modernmustardseed.com/services
 - Blog: https://modernmustardseed.com/blog
 - Playbooks: https://modernmustardseed.com/playbooks
-- AI Audit: https://modernmustardseed.com/audit
+- AI Audit (free): https://modernmustardseed.com/audit
+- AI-Proof Your Business: https://modernmustardseed.com/ai-proof
+- About: https://modernmustardseed.com/about
+- Contact: https://modernmustardseed.com/contact
 
 ## Posture
 Stewardship over extraction. Faith-driven studio that treats clients' businesses like they have to last.

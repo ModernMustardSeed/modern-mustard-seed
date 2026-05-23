@@ -38,7 +38,10 @@ export default async function WorkDetail({ params }: { params: Params }) {
             description: study.meta.description,
             slug,
             date: study.meta.date,
+            dateModified: study.meta.dateModified,
             client: study.meta.client,
+            stack: study.meta.stack,
+            wordCount: study.meta.wordCount,
           }),
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },

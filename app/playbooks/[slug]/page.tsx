@@ -39,6 +39,7 @@ export default async function PlaybookPage({ params }: { params: Params }) {
             description: pb.meta.description,
             slug,
             date: pb.meta.date,
+            dateModified: pb.meta.dateModified,
           }),
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import StaticBackground from '@/components/StaticBackground';
-import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
+import { JsonLd, aboutPageJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
@@ -14,10 +14,13 @@ export default function AboutPage() {
   return (
     <>
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: 'Home', url: '/' },
-          { name: 'About', url: '/about' },
-        ])}
+        data={[
+          aboutPageJsonLd(),
+          breadcrumbJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'About', url: '/about' },
+          ]),
+        ]}
       />
       <StaticBackground />
 
@@ -55,7 +58,7 @@ export default function AboutPage() {
 
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link
-              href="/case-studies"
+              href="/work"
               className="glass-card p-6 hover:border-mustard-500/20 transition-all text-center"
             >
               <span className="block text-[10px] uppercase tracking-[0.3em] text-mustard-500/60 font-mono font-bold mb-2">

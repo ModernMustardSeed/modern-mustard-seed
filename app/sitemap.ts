@@ -35,21 +35,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const blog = listContent('blog').map((p) => ({
     url: `${SITE.url}/blog/${p.slug}`,
-    lastModified: new Date(p.date),
+    lastModified: new Date(p.dateModified ?? p.date),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }));
 
   const studies = listContent('work').map((s) => ({
     url: `${SITE.url}/work/${s.slug}`,
-    lastModified: new Date(s.date),
+    lastModified: new Date(s.dateModified ?? s.date),
     changeFrequency: 'monthly' as const,
     priority: 0.85,
   }));
 
   const playbooks = listContent('playbooks').map((pb) => ({
     url: `${SITE.url}/playbooks/${pb.slug}`,
-    lastModified: new Date(pb.date),
+    lastModified: new Date(pb.dateModified ?? pb.date),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }));

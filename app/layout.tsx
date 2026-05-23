@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MagneticCursor from '@/components/MagneticCursor';
-import { JsonLd, orgJsonLd } from '@/lib/jsonld';
+import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
 
@@ -26,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300..600;1,9..40,300..500&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
-        <JsonLd data={orgJsonLd} />
+        <JsonLd data={siteGraphJsonLd} />
       </head>
       <body className="bg-[#0a0804] text-white selection:bg-mustard-500/30 selection:text-white">
         <div className="relative z-30">
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <MagneticCursor />
         <Analytics />
+        <SpeedInsights />
         <noscript>
           <p style={{ padding: '2rem', textAlign: 'center', color: '#fff' }}>
             {SITE.name}. {SITE.description} Visit{' '}

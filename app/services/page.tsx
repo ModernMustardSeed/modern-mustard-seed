@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import StaticBackground from '@/components/StaticBackground';
-import { JsonLd, breadcrumbJsonLd, serviceJsonLd } from '@/lib/jsonld';
+import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { services } from '@/data/services';
 
@@ -10,6 +10,33 @@ export const metadata = buildMetadata({
     'AI products, voice agents, full-stack apps, business automation, brand strategy, and generative tech. Built end to end by Modern Mustard Seed.',
   path: '/services',
 });
+
+const servicesFaq = [
+  {
+    q: 'What services does Modern Mustard Seed offer?',
+    a: 'Four lines of work: custom apps and web software, specialty AI tools tailored to a specific industry, brand and marketing sites, and agentic systems with multi-agent workflows and voice agents. Every service is shipped end to end by Sarah Scarano, the founder and sole engineer.',
+  },
+  {
+    q: 'Do you build mobile apps as well as web apps?',
+    a: 'Yes. Mobile apps for iOS and Android are built in one codebase using Expo and React Native. The same engagement structure applies as for web apps.',
+  },
+  {
+    q: 'What is a specialty AI tool?',
+    a: 'An industry-specific software tool that replaces an expensive recurring workflow. Examples: a FSBO command center that replaces a real estate agent commission, a deal analyzer that cuts investment evaluation from 2 hours to 90 seconds, a real estate staging tool that finishes in under a minute. Specialty AI tools turn $3K service line items into $99 subscriptions.',
+  },
+  {
+    q: 'Can you handle the brand and the website together?',
+    a: 'Yes. Brand and marketing sites is one of the four lines of work. Logo, color, type, voice, copy, animation, structured data, and launch assets are all included. The deliverable looks like the brand you are trying to be, not the brand you were.',
+  },
+  {
+    q: 'What is an agentic system?',
+    a: 'A multi-agent workflow that replaces the human glue between disconnected tools. Modern Mustard Seed uses Trigger.dev for orchestration, Anthropic Claude for reasoning, and custom agents tuned for the specific operation. Voice agents are added when the workflow is phone-driven.',
+  },
+  {
+    q: 'Which industries have you built specialty AI tools for?',
+    a: 'Real estate, real estate investing, design, content production, legal, healthcare intake, and contractor estimating, among others. The pattern is industry-agnostic: pick the friction, build the tool that removes it.',
+  },
+];
 
 export default function ServicesPage() {
   return (
@@ -21,6 +48,7 @@ export default function ServicesPage() {
             { name: 'Services', url: '/services' },
           ]),
           ...services.map((s) => serviceJsonLd({ name: s.title, description: s.description })),
+          faqJsonLd(servicesFaq),
         ]}
       />
       <StaticBackground />
