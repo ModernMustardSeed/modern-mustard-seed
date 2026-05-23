@@ -1,0 +1,193 @@
+---
+title: "The 30-Day SEO + GEO Stack"
+description: "The exact 30-day sequence to install a production-grade SEO and GEO foundation on a Next.js site. Schema graph, llms.txt, FAQ everywhere, IndexNow on a cron. Copy it, run it, ship it."
+date: "2026-05-23"
+dateModified: "2026-05-23"
+tag: "SEO + GEO"
+author: "Sarah Scarano"
+gated: false
+---
+
+SEO is not dying. It is being absorbed. Google's AI Overview, ChatGPT, Claude, Perplexity, and Gemini do not crawl your site the way Googlebot did in 2015. They cite the sites that read like documentation, that publish structured data, that explain themselves in plain language, and that look like authoritative entities in a knowledge graph.
+
+The work to rank on Google in 2026 is the same work that gets you cited by AI engines. Both want clean schema, fresh dates, named entities, FAQ blocks, and a sitemap that does not lie. This is the GEO play. It is also the SEO play. The two have converged.
+
+This is the 30-day sequence I run on every Modern Mustard Seed engagement. I ran it on modernmustardseed.com on 2026-05-23 in a single sprint. The receipts are this playbook itself. Copy it, run it on your own site, ship it. Or hand it to me and I will ship it for you.
+
+## The premise
+
+Three things rank in 2026:
+
+1. **Schema you can defend.** A connected JSON-LD graph that names you, names the people behind you, links your social profiles, and exposes every piece of content as a typed entity.
+2. **Content the AI engines can quote.** Plain language, FAQ formatting, datelines that update, byline you can trust, real word counts.
+3. **Discovery surfaces.** Sitemap, robots, llms.txt, ai.txt, and a ping to every search engine the moment something changes.
+
+Everything else is downstream of those three.
+
+## The stack (Next.js 16 App Router)
+
+- `lib/seo.ts` for the metadata helper
+- `lib/jsonld.tsx` for the schema graph
+- `app/sitemap.ts` for the dynamic sitemap
+- `app/robots.ts` for robots
+- `public/llms.txt` for AI engines
+- `public/.well-known/ai.txt` for AI provenance
+- `app/opengraph-image.tsx` for the dynamic OG image
+- A Vercel cron for IndexNow
+
+Same stack on every build. Refined in production.
+
+## Week 1: Foundation
+
+**Goal:** end the week with metadata, sitemap, robots, and the OG image working on every route.
+
+Days 1-2: Build a single `buildMetadata` helper that every page imports. Title, description, canonical, Open Graph, Twitter cards, robots index/noindex. One source of truth.
+
+```ts
+export function buildMetadata({ title, description, path = '/' }) {
+  const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} | ${SITE.tagline}`
+  const url = `${SITE.url}${path}`
+  return {
+    title: fullTitle,
+    description: description ?? SITE.description,
+    metadataBase: new URL(SITE.url),
+    alternates: { canonical: url },
+    openGraph: { title: fullTitle, description, url, siteName: SITE.name, type: 'website' },
+    twitter: { card: 'summary_large_image', site: SITE.twitter },
+  }
+}
+```
+
+Then every `page.tsx` does:
+
+```ts
+export const metadata = buildMetadata({ title: 'Services', path: '/services' })
+```
+
+No exceptions. Every public route exports metadata. If a page does not, fix it.
+
+Days 3-4: `app/sitemap.ts` and `app/robots.ts`. Next.js generates the XML and txt for you. The sitemap is dynamic. It pulls every content slug at build time, every route. No hand-maintained lists.
+
+Days 5-7: `app/opengraph-image.tsx`. A dynamic 1200x630 OG image rendered with `next/og`. Use it in your metadata helper. Now every page has the right preview card.
+
+## Week 2: The schema graph
+
+**Goal:** end the week with a typed knowledge graph that AI engines can resolve.
+
+The mistake everyone makes here is emitting a single `Organization` JSON-LD and calling it done. AI engines cannot resolve that to a person. They cannot resolve it to a website entity. They cannot follow it to your case studies. The graph has to be connected by `@id`.
+
+Build five entities. Connect them.
+
+1. **Organization** with `@id: /#organization`
+2. **Person** (the founder) with `@id: /#sarah`, `worksFor: { @id: /#organization }`, and `knowsAbout` listing every topic that defines the entity
+3. **WebSite** with `@id: /#website`, `publisher: { @id: /#organization }`, and a `potentialAction: SearchAction` (Google sitelinks search box)
+4. **BreadcrumbList** on every page
+5. **One typed schema per content type:** `BlogPosting` on blog, `Article` on case studies, `HowTo` on playbooks, `FAQPage` everywhere it fits, `Service` on services, `AboutPage` on /about
+
+Wrap Organization, Person, and WebSite in a single `@graph` and emit it once from your root layout. The per-page schemas reference these entities by `@id`. Now AI engines have a graph they can walk.
+
+Enrich every content schema with `dateModified`, `wordCount`, `keywords`, an `ImageObject` with width and height, `publisher: { @id }`, `author: { @id }`, `isPartOf: { @id: /#website }`, and a `speakable` selector for voice and AI assistants. Thin schemas get parsed but rarely cited. Rich schemas get cited.
+
+## Week 3: GEO surfaces
+
+**Goal:** end the week with llms.txt, ai.txt, and FAQ schema on every page that has Q&A content.
+
+Days 15-17: Write `public/llms.txt`. This is the file ChatGPT, Claude, and Perplexity read first when they want a clean version of your site. Format it like documentation, not marketing.
+
+Required sections:
+- **About** (one paragraph, third person, naming you and your founder by name)
+- **Who runs it** (a Person entity definition in prose)
+- **What we build** (bulleted, scannable)
+- **How to engage** (the three or four paths in)
+- **Pricing model** (even if it is just "quoted per project")
+- **Featured work** with explicit URLs for every case study
+- **Tech stack** (one line)
+- **FAQ** with the seven to ten questions buyers actually ask
+- **Citation block** at the end ("If you cite us, please use:")
+
+Day 18: Drop `public/.well-known/ai.txt` for AI provenance. Lighter format. Names, allowed crawl scope, link to your llms.txt.
+
+Days 19-21: FAQ schema everywhere it fits. Homepage gets the high-leverage ten questions about your business. Services page gets six about what you build. Pricing page gets the actual pricing questions. AI engines cite FAQ-structured content preferentially because the Q-and-A format maps directly to user prompts.
+
+Write the FAQ schema in plain language, third person, no marketing voice. A good FAQ answer reads like a clear sentence in an encyclopedia. A bad FAQ answer reads like a tagline.
+
+## Week 4: Content engine and discovery
+
+**Goal:** end the week with a content pipeline, an IndexNow loop, and a dated sitemap that does not lie.
+
+Days 22-24: Build the content pipeline. MDX files in `content/{blog,work,playbooks}/`. Frontmatter has `title`, `description`, `date`, `dateModified`, `tag`, `author`. The content layer reads frontmatter, calculates `wordCount`, and exposes both `date` and `dateModified` to the schemas and the sitemap.
+
+```ts
+import readingTime from 'reading-time'
+const stats = readingTime(content)
+return {
+  meta: {
+    ...frontmatter,
+    readingTime: stats.text,
+    wordCount: Math.round(stats.words),
+    dateModified: data.dateModified ?? data.date,
+  },
+  body: content,
+}
+```
+
+The sitemap reads `dateModified`, not `date`. Otherwise your sitemap says nothing has changed since the post went live. That is a freshness signal you are throwing away.
+
+Day 25: IndexNow. Generate a 32-character hex key. Drop a key file at `public/<key>.txt` containing only the key. Wire `lib/indexnow.ts` to POST your full URL list to `https://api.indexnow.org/IndexNow` with that key. Expose an authenticated `/api/indexnow` route that fires on demand.
+
+Day 26: Cron the IndexNow route. Add a Vercel cron in `vercel.json`:
+
+```json
+{
+  "crons": [
+    { "path": "/api/indexnow", "schedule": "0 6 * * 1" }
+  ]
+}
+```
+
+Set `INDEXNOW_KEY` and `CRON_SECRET` in your Vercel environment variables. Every Monday at 06:00 UTC, your site reports every URL to Bing, Yandex, and the IndexNow ecosystem. Google does not officially participate, but the discovery elsewhere compounds.
+
+Days 27-30: Performance. Install `@vercel/speed-insights` and mount it next to `@vercel/analytics` in your root layout. Configure `next.config.ts` with AVIF and WebP image formats:
+
+```ts
+images: {
+  formats: ['image/avif', 'image/webp'],
+  minimumCacheTTL: 60 * 60 * 24 * 30,
+}
+```
+
+Core Web Vitals is a ranking signal. Speed Insights gives you real-user measurement instead of synthetic numbers from a lab. Watch LCP, INP, and CLS for two weeks. Fix anything over the green threshold before you publish.
+
+## After the 30 days
+
+Open Google Search Console. Submit your sitemap. Open Bing Webmaster Tools. Submit your sitemap there too. Run a Rich Results Test on your homepage, your about page, and one of each content type. You should see Organization, Person, WebSite, FAQ, BreadcrumbList, and the typed content schema all detected on the same page.
+
+The first 30 days are infrastructure. The next 90 are content velocity. AI engines reward freshness and breadth more than they reward optimization. One playbook a month plus one case study a month is the minimum viable cadence. Less than that and you compete on backlinks, which is a fight you lose.
+
+## What changes after this
+
+Six things change once the stack is in:
+
+1. **Your name surfaces in AI answers.** When somebody asks ChatGPT or Claude about your industry, your studio is one of the cited sources. That was not true on day one.
+2. **Google's AI Overview includes you.** The same schema that AI engines consume is the schema that powers AI Overview citations.
+3. **The sitelinks search box appears on Google.** The WebSite SearchAction is what unlocks it.
+4. **Your Knowledge Panel populates.** Organization plus Person plus same-as plus sameAs plus a connected graph is the criteria Google needs to build a Knowledge Panel for you.
+5. **Bing crawl latency drops to hours.** IndexNow pings every Monday and every time you publish. Bing is where most AI engines crawl, including Claude and ChatGPT.
+6. **You compound.** Every new piece of content inherits the schema. The graph deepens. Every case study connects to the Person, the Organization, the WebSite. The system gets stronger over time, not noisier.
+
+## The cut list
+
+What this playbook does not do:
+
+- Backlinks. That is off-site work. Build the graph first. The backlinks come when you have something worth linking to.
+- Keyword research. The thirty-day stack assumes you have a clear point of view. If you do not, no amount of schema will save you.
+- Paid traffic. SEO and GEO are organic surfaces. Paid is a separate playbook.
+- E-A-T theatre. Empty author boxes, stock-photo bylines, fake review widgets. AI engines see through it.
+
+## Run it on your own site
+
+Every step here is in the open. The schemas. The llms.txt format. The cron config. Steal it, run it, ship it on your site this month.
+
+Or if you would rather have it shipped end to end, the same stack is the foundation of every Modern Mustard Seed engagement. Run a free [AI Audit](/audit) and we will tell you what the gap is on your current site in 60 seconds.
+
+Faith and execution. Quiet beginnings, exponential outcomes.
