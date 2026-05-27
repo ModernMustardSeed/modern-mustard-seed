@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { listContent } from '@/lib/content';
 import { SITE } from '@/lib/seo';
+import { industries } from '@/data/industries';
 
 const STATIC_PATHS = [
   '',
@@ -12,6 +13,7 @@ const STATIC_PATHS = [
   '/playbooks',
   '/audit',
   '/ai-proof',
+  '/for',
   '/about',
   '/contact',
   '/privacy',
@@ -54,5 +56,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticUrls, ...blog, ...studies, ...playbooks];
+  const industryPages = industries.map((i) => ({
+    url: `${SITE.url}/for/${i.slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.85,
+  }));
+
+  return [...staticUrls, ...blog, ...studies, ...playbooks, ...industryPages];
 }
