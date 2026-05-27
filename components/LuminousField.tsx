@@ -20,7 +20,7 @@ export default function LuminousField() {
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'low-power' });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.setClearColor(new THREE.Color('#0a0804'), 1);
+    renderer.setClearColor(new THREE.Color('#1A1140'), 1);
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();

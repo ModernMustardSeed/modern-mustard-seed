@@ -5,9 +5,9 @@ export default function StaticBackground() {
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse 60% 40% at 50% 30%, rgba(200, 164, 21, 0.05) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 40% at 50% 30%, rgba(255,179,71, 0.05) 0%, transparent 60%),
             radial-gradient(ellipse 50% 50% at 80% 70%, rgba(180, 140, 20, 0.03) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 40% at 20% 80%, rgba(200, 164, 21, 0.02) 0%, transparent 60%)
+            radial-gradient(ellipse 60% 40% at 20% 80%, rgba(255,179,71, 0.02) 0%, transparent 60%)
           `,
         }}
       />

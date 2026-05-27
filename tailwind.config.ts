@@ -17,18 +17,20 @@ const config: Config = {
         display: ['"Fraunces"', '"Cormorant Garamond"', 'Georgia', 'serif'],
       },
       colors: {
-        // Legacy palette kept so existing components don't break during rebrand preview
+        // Legacy "mustard" tokens remapped to Mountain Sunrise so every existing
+        // text-mustard-*, bg-mustard-*, border-mustard-* utility picks up the new
+        // palette without rewriting components. Names are kept for backwards-compat.
         mustard: {
-          50: '#FFF8E1',
-          100: '#FFECB3',
-          200: '#FFE082',
-          300: '#FFD54F',
-          400: '#FFCA28',
-          500: '#C8A415',
-          600: '#A68B10',
-          700: '#8B7209',
-          800: '#6D5A06',
-          900: '#4E3F04',
+          50: '#FFF1ED',
+          100: '#FFE3D5',
+          200: '#FFD2B8',
+          300: '#FFC093',
+          400: '#FFB347', // sunrise.gold (primary accent)
+          500: '#FF8E72', // sunrise.peach (primary brand)
+          600: '#FF6B6B', // sunrise.rose (deep accent)
+          700: '#E0524E',
+          800: '#B53E3E',
+          900: '#8A2D2D',
         },
         // New Mountain Sunrise palette
         night: {

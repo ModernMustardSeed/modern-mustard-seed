@@ -163,7 +163,7 @@ export default function EraOfEntrepreneur() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
           <MagneticLink
             href="/build-queue"
-            className="px-10 py-4 text-[12px] uppercase tracking-[0.22em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_55px_rgba(200,164,21,0.5)]"
+            className="px-10 py-4 text-[12px] uppercase tracking-[0.22em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_55px_rgba(255,179,71,0.5)]"
           >
             Get in the build queue
           </MagneticLink>

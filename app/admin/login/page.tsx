@@ -37,7 +37,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-[#0a0804]">
+    <div className="min-h-screen flex items-center justify-center px-6 bg-[#1A1140]">
       <form onSubmit={submit} className="w-full max-w-sm glass-card p-8 md:p-10">
         <div className="text-center mb-8">
           <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium block mb-3">
@@ -81,7 +81,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-lg disabled:opacity-50 hover:shadow-[0_0_30px_rgba(200,164,21,0.25)] transition-all"
+            className="w-full py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg disabled:opacity-50 hover:shadow-[0_0_30px_rgba(255,179,71,0.25)] transition-all"
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>

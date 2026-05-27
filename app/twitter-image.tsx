@@ -6,7 +6,8 @@ export const alt = 'Modern Mustard Seed. Idea to Shipped Product in 30 Days.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const GOLD_GRADIENT = 'linear-gradient(135deg, #A68B10 0%, #E6C84A 40%, #C8A415 70%, #FFE082 100%)';
+const SUNRISE_GRADIENT = 'linear-gradient(120deg, #FF6B6B 0%, #FF8E72 25%, #FFB347 55%, #7FE4C5 85%, #4ECDC4 100%)';
+const SUNRISE_WARM = 'linear-gradient(120deg, #FF6B6B 0%, #FFB347 100%)';
 
 export default async function TwitterImage() {
   return new ImageResponse(
@@ -15,7 +16,7 @@ export default async function TwitterImage() {
         style={{
           width: '100%',
           height: '100%',
-          background: '#0a0804',
+          background: '#1A1140',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -32,7 +33,7 @@ export default async function TwitterImage() {
             left: 0,
             right: 0,
             height: 4,
-            background: GOLD_GRADIENT,
+            background: SUNRISE_WARM,
             display: 'flex',
           }}
         />
@@ -43,7 +44,7 @@ export default async function TwitterImage() {
             fontWeight: 700,
             textTransform: 'uppercase',
             letterSpacing: 8,
-            color: 'rgba(200, 164, 21, 0.7)',
+            color: 'rgba(255,179,71, 0.7)',
             marginBottom: 28,
           }}
         >
@@ -60,7 +61,7 @@ export default async function TwitterImage() {
             lineHeight: 1.02,
             letterSpacing: -2,
             textAlign: 'center',
-            backgroundImage: GOLD_GRADIENT,
+            backgroundImage: SUNRISE_GRADIENT,
             backgroundClip: 'text',
             color: 'transparent',
             marginBottom: 32,
@@ -74,7 +75,7 @@ export default async function TwitterImage() {
             width: 220,
             height: 1,
             background:
-              'linear-gradient(to right, transparent, rgba(200,164,21,0.5), transparent)',
+              'linear-gradient(to right, transparent, rgba(255,179,71,0.5), transparent)',
             marginBottom: 28,
             display: 'flex',
           }}
@@ -112,7 +113,7 @@ export default async function TwitterImage() {
             fontFamily: 'monospace',
             fontSize: 14,
             fontWeight: 700,
-            color: 'rgba(200, 164, 21, 0.55)',
+            color: 'rgba(255,179,71, 0.55)',
             letterSpacing: 6,
             textTransform: 'uppercase',
           }}
@@ -126,7 +127,7 @@ export default async function TwitterImage() {
             left: 0,
             right: 0,
             height: 4,
-            background: GOLD_GRADIENT,
+            background: SUNRISE_WARM,
             display: 'flex',
           }}
         />

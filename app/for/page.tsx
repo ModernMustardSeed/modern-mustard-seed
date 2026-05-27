@@ -84,7 +84,7 @@ export default function ForIndex() {
           <div className="text-center">
             <Link
               href="/audit"
-              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(200,164,21,0.25)] hover:shadow-[0_0_40px_rgba(200,164,21,0.45)] transition-all"
+              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,179,71,0.25)] hover:shadow-[0_0_40px_rgba(255,179,71,0.45)] transition-all"
             >
               Not sure which fits? Run the Free AI Audit.
             </Link>

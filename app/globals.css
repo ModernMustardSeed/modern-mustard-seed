@@ -98,7 +98,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     filter: contrast(1.2) brightness(1.1);
-    -webkit-text-stroke: 1px rgba(200, 164, 21, 0.3);
+    -webkit-text-stroke: 1px rgba(255, 179, 71, 0.35);
     paint-order: stroke fill;
   }
 

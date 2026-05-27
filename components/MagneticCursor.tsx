@@ -70,8 +70,8 @@ export default function MagneticCursor() {
           width: hovering ? '0px' : '5px',
           height: hovering ? '0px' : '5px',
           borderRadius: '50%',
-          background: '#FFE082',
-          boxShadow: '0 0 10px rgba(255, 224, 130, 0.85)',
+          background: '#FFB347',
+          boxShadow: '0 0 10px rgba(255, 179, 71, 0.9)',
           mixBlendMode: 'screen',
           transition: 'width 0.25s ease, height 0.25s ease',
         }}

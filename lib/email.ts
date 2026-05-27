@@ -4,21 +4,21 @@
  */
 
 const COLORS = {
-  void: '#0a0804',
-  card: '#14100b',
-  text: '#e9e1cf',
+  void: '#1A1140',
+  card: '#150E33',
+  text: '#F5EFE4',
   heading: '#ffffff',
-  muted: 'rgba(255,255,255,0.55)',
-  faint: 'rgba(255,255,255,0.32)',
+  muted: 'rgba(255,255,255,0.62)',
+  faint: 'rgba(255,255,255,0.38)',
   hairlineWhite: 'rgba(255,255,255,0.08)',
-  hairlineGold: 'rgba(200,164,21,0.22)',
-  goldDim: 'rgba(200,164,21,0.7)',
-  gold: '#C8A415',
-  brightGold: '#FFE082',
+  hairlineGold: 'rgba(255,179,71,0.25)',
+  goldDim: 'rgba(255,179,71,0.78)',
+  gold: '#FF8E72',
+  brightGold: '#FFB347',
 };
 
 const GOLD_GRADIENT =
-  'linear-gradient(135deg,#A68B10 0%,#E6C84A 40%,#C8A415 70%,#FFE082 100%)';
+  'linear-gradient(120deg,#FF6B6B 0%,#FFB347 55%,#4ECDC4 100%)';
 
 const FONT_STACK = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 const SERIF_STACK = '"Iowan Old Style", "Apple Garamond", Baskerville, Georgia, serif';
@@ -139,8 +139,8 @@ function renderCta(cta: { label: string; url: string }, secondary?: { label: str
   return `
     <tr><td style="padding:24px 44px 8px" align="left">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-        <td bgcolor="#C8A415" style="background:${GOLD_GRADIENT};border-radius:999px">
-          <a href="${cta.url}" style="display:inline-block;color:#0a0804;text-decoration:none;font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;padding:16px 32px;font-family:${FONT_STACK}">
+        <td bgcolor="#FF8E72" style="background:${GOLD_GRADIENT};border-radius:999px">
+          <a href="${cta.url}" style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;padding:16px 32px;font-family:${FONT_STACK}">
             ${escape(cta.label)}
           </a>
         </td>
@@ -171,9 +171,9 @@ export function leadNotification({
   suggestedAction,
 }: LeadNotificationArgs): string {
   const typeAccent = {
-    'Build Queue': '#FFE082',
-    'AI Audit': '#E6C84A',
-    'Contact': '#C8A415',
+    'Build Queue': '#FFB347',
+    'AI Audit': '#FF8E72',
+    'Contact': '#FF6B6B',
     'Newsletter': 'rgba(255,255,255,0.45)',
   }[type];
 
@@ -216,7 +216,7 @@ export function leadNotification({
           </td></tr>
 
           ${message ? `<tr><td style="padding:18px 40px 0">
-            <div style="background:rgba(200,164,21,0.06);border-left:2px solid ${COLORS.gold};padding:18px 22px;border-radius:6px;font-size:14px;color:${COLORS.text};line-height:1.65;white-space:pre-wrap;font-family:${FONT_STACK}">${escape(message)}</div>
+            <div style="background:rgba(255,179,71,0.08);border-left:2px solid ${COLORS.gold};padding:18px 22px;border-radius:6px;font-size:14px;color:${COLORS.text};line-height:1.65;white-space:pre-wrap;font-family:${FONT_STACK}">${escape(message)}</div>
           </td></tr>` : ''}
 
           ${suggestedAction ? `<tr><td style="padding:18px 40px 0">
@@ -225,8 +225,8 @@ export function leadNotification({
 
           <tr><td style="padding:24px 40px 32px">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-              <td bgcolor="#C8A415" style="background:${GOLD_GRADIENT};border-radius:8px">
-                <a href="mailto:${email}" style="display:inline-block;color:#0a0804;text-decoration:none;font-weight:700;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:13px 24px;font-family:${FONT_STACK}">Reply to ${escape(name.split(' ')[0])}</a>
+              <td bgcolor="#FF8E72" style="background:${GOLD_GRADIENT};border-radius:8px">
+                <a href="mailto:${email}" style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:13px 24px;font-family:${FONT_STACK}">Reply to ${escape(name.split(' ')[0])}</a>
               </td>
               <td style="padding-left:12px">
                 <a href="https://modernmustardseed.com/admin" style="display:inline-block;color:${COLORS.gold};text-decoration:none;font-weight:600;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:13px 8px;font-family:${FONT_STACK}">Open in admin →</a>
@@ -262,7 +262,7 @@ export function p(content: string): string {
 
 /** Callout block. Gold-bordered card for highlighted content (playbook recs etc). */
 export function callout(args: { label?: string; title: string; body?: string; href?: string; cta?: string }): string {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 22px"><tr><td style="background:rgba(200,164,21,0.06);border-left:2px solid ${COLORS.gold};padding:20px 22px;border-radius:6px">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 22px"><tr><td style="background:rgba(255,179,71,0.08);border-left:2px solid ${COLORS.gold};padding:20px 22px;border-radius:6px">
     ${args.label ? `<div style="font-family:${MONO_STACK};font-size:10px;font-weight:700;letter-spacing:3px;color:${COLORS.gold};text-transform:uppercase;margin-bottom:8px">${escape(args.label)}</div>` : ''}
     <div style="font-size:17px;font-weight:600;color:${COLORS.heading};margin-bottom:${args.body ? '8px' : '0'};line-height:1.4">${escape(args.title)}</div>
     ${args.body ? `<div style="font-size:14px;color:${COLORS.muted};line-height:1.6;margin-bottom:${args.href ? '12px' : '0'}">${escape(args.body)}</div>` : ''}

@@ -93,7 +93,7 @@ export default function WhatAreYouBuilding() {
                 aria-pressed={isSelected}
                 className={`group inline-flex items-center gap-2.5 px-5 py-3 rounded-full text-[11px] md:text-[12px] uppercase tracking-[0.18em] font-sans font-semibold transition-all duration-300 ${
                   isSelected
-                    ? 'bg-gradient-to-r from-mustard-500 to-mustard-400 text-black border border-mustard-500 shadow-[0_0_30px_rgba(200,164,21,0.4)] scale-[1.02]'
+                    ? 'bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 text-white border border-mustard-500 shadow-[0_0_30px_rgba(255,179,71,0.4)] scale-[1.02]'
                     : 'bg-white/[0.04] text-white/65 border border-white/10 hover:border-mustard-500/40 hover:text-mustard-300 hover:bg-mustard-500/[0.06]'
                 }`}
               >
@@ -154,7 +154,7 @@ export default function WhatAreYouBuilding() {
                     ? '/audit'
                     : `/build-queue?intent=${selected.key}`
                 }
-                className="flex-1 text-center px-8 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_40px_rgba(200,164,21,0.4)] transition-all"
+                className="flex-1 text-center px-8 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_40px_rgba(255,179,71,0.4)] transition-all"
               >
                 {selected.key === 'audit' ? 'Run the free audit' : 'Reserve a queue slot'}
               </Link>

@@ -54,7 +54,7 @@ export default function TiltCard({ children, className = '', maxTilt = 6 }: Prop
           className="absolute inset-0 pointer-events-none rounded-[inherit]"
           style={{
             background: tilt.active
-              ? `radial-gradient(380px circle at ${tilt.x}% ${tilt.y}%, rgba(200, 164, 21, 0.14), transparent 55%)`
+              ? `radial-gradient(380px circle at ${tilt.x}% ${tilt.y}%, rgba(255,179,71, 0.14), transparent 55%)`
               : 'transparent',
             transition: 'background 0.35s ease-out',
             mixBlendMode: 'screen',

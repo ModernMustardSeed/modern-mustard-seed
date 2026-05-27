@@ -4,7 +4,7 @@ export const runtime = 'edge';
 export const size = { width: 180, height: 180 };
 export const contentType = 'image/png';
 
-const GOLD = 'linear-gradient(135deg, #A68B10 0%, #E6C84A 40%, #C8A415 65%, #FFE082 100%)';
+const SUNRISE = 'linear-gradient(120deg, #FF6B6B 0%, #FFB347 55%, #4ECDC4 100%)';
 
 export default function AppleIcon() {
   return new ImageResponse(
@@ -13,7 +13,7 @@ export default function AppleIcon() {
         style={{
           width: '100%',
           height: '100%',
-          background: '#0a0804',
+          background: '#1A1140',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -29,7 +29,7 @@ export default function AppleIcon() {
             right: 8,
             bottom: 8,
             borderRadius: 28,
-            border: '1px solid rgba(200, 164, 21, 0.35)',
+            border: '1px solid rgba(255,179,71, 0.35)',
             display: 'flex',
           }}
         />
@@ -40,7 +40,7 @@ export default function AppleIcon() {
             fontWeight: 900,
             letterSpacing: -5,
             lineHeight: 1,
-            backgroundImage: GOLD,
+            backgroundImage: SUNRISE,
             backgroundClip: 'text',
             color: 'transparent',
           }}

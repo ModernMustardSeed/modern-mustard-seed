@@ -11,7 +11,7 @@ import './globals.css';
 export const metadata: Metadata = buildMetadata();
 
 export const viewport: Viewport = {
-  themeColor: '#C8A415',
+  themeColor: '#FF8E72',
   width: 'device-width',
   initialScale: 1,
 };
@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <JsonLd data={siteGraphJsonLd} />
       </head>
-      <body className="bg-[#0a0804] text-white selection:bg-mustard-500/30 selection:text-white">
+      <body className="bg-[#1A1140] text-white selection:bg-mustard-500/30 selection:text-white">
         <div className="relative z-30">
           <Navbar />
           <main>{children}</main>
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <noscript>
           <p style={{ padding: '2rem', textAlign: 'center', color: '#fff' }}>
             {SITE.name}. {SITE.description} Visit{' '}
-            <a href={SITE.url} style={{ color: '#C8A415' }}>
+            <a href={SITE.url} style={{ color: '#FF8E72' }}>
               {SITE.url}
             </a>{' '}
             for more.
