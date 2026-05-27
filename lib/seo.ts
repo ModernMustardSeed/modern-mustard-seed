@@ -32,6 +32,11 @@ export function buildMetadata({ title, description, path = '/', image, noindex }
     metadataBase: new URL(SITE.url),
     alternates: { canonical: url },
     robots: noindex ? { index: false, follow: false } : { index: true, follow: true },
+    verification: {
+      other: {
+        'msvalidate.01': 'DEDD2DDDDB7C501DC147D6EB1396FDE9',
+      },
+    },
     openGraph: {
       title: fullTitle,
       description: desc,
