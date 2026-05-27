@@ -70,6 +70,13 @@ export default function WorkWithUsPage() {
           <p className="text-white/40 text-sm font-body italic">
             Pick the path that sounds like your situation. We quote after a free discovery call.
           </p>
+
+          <div className="mt-10 max-w-2xl mx-auto px-5 py-4 border border-mustard-500/20 rounded-lg bg-mustard-500/[0.03]">
+            <p className="text-white/65 text-sm font-body font-light leading-relaxed">
+              <span className="text-mustard-400 font-semibold">Pricing orientation.</span>{' '}
+              The free AI Audit is free. Builds range from $2,500 to $45,000+ depending on scope and complexity. Retainers from $1,500/month. The number below each engagement is the range typical for that path. Every project is quoted in writing before any work begins.
+            </p>
+          </div>
         </div>
 
         {/* Engagements */}
@@ -157,6 +164,41 @@ export default function WorkWithUsPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Who this is (and is not) for */}
+        <div className="max-w-5xl mx-auto px-6 md:px-8 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="glass-card p-8 border-mustard-500/20">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium mb-4 block">
+                Who this is for
+              </span>
+              <h3 className="font-sans text-xl font-semibold text-white tracking-tight mb-4">
+                Operators who want it built right and shipped fast.
+              </h3>
+              <ul className="space-y-2.5 text-white/60 text-sm font-body font-light leading-6">
+                <li>Founders with a clear vision who need a technical partner, not a strategy deck.</li>
+                <li>Small business owners who know the old way is too slow and do not have time to become AI experts.</li>
+                <li>Operators with revenue to protect who want AI on the front lines before competitors get there.</li>
+                <li>Service businesses bleeding hours to repetitive work that should already be automated.</li>
+              </ul>
+            </div>
+
+            <div className="glass-card p-8 border-white/[0.08]">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-mono font-medium mb-4 block">
+                Who this is not for
+              </span>
+              <h3 className="font-sans text-xl font-semibold text-white tracking-tight mb-4">
+                We do not take every project, and we say no early.
+              </h3>
+              <ul className="space-y-2.5 text-white/45 text-sm font-body font-light leading-6">
+                <li>Anyone looking for a $300 website or a magic-button AI tool.</li>
+                <li>Founders who want endless meetings instead of a shipped build.</li>
+                <li>Projects that need 8 stakeholders to approve a button color.</li>
+                <li>Businesses chasing AI hype without a problem to solve.</li>
+              </ul>
+            </div>
           </div>
         </div>
 

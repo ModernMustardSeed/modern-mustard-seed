@@ -5,6 +5,7 @@ export type Engagement = {
   description: string;
   deliverables: string[];
   timeline: string;
+  priceRange: string;
   cta: string;
   ctaHref?: string;
   highlighted?: boolean;
@@ -31,6 +32,7 @@ export const packages: Engagement[] = [
       'Full handoff: repo, accounts, docs',
     ],
     timeline: '30 days',
+    priceRange: '$2,500 to $7,500',
     cta: 'Start your site',
     ctaHref: '/contact?package=online-presence',
     ideal: 'Small businesses, creators, service pros. Anyone who needs to actually show up online.',
@@ -52,6 +54,7 @@ export const packages: Engagement[] = [
       'Repo + docs + credentials handoff',
     ],
     timeline: '30 days',
+    priceRange: '$15,000 to $45,000+',
     cta: 'Scope your build',
     ctaHref: '/contact?package=idea-to-product',
     ideal: 'Founders, second-business operators, anyone with a clear vision ready to ship.',
@@ -72,6 +75,7 @@ export const packages: Engagement[] = [
       'Ongoing roadmap as the AI shift evolves',
     ],
     timeline: '8 to 12 weeks',
+    priceRange: '$5,000 to $15,000',
     cta: 'AI-proof your business',
     ctaHref: '/ai-proof',
     ideal: 'Existing operators. Service businesses. Owners ready to lead the shift, not get hit by it.',
@@ -91,6 +95,7 @@ export const packages: Engagement[] = [
       'Priority slot in the build queue',
     ],
     timeline: 'Monthly, 3-month minimum',
+    priceRange: 'From $1,500/month',
     cta: 'Become a partner',
     ctaHref: '/contact?package=fractional',
     ideal: 'Established operators wanting a long-term AI partner inside the business.',

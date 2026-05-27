@@ -29,6 +29,9 @@ export default function PricingTable() {
               <p className="text-mustard-400/70 text-sm font-body font-light tracking-wide mb-4">
                 {pkg.tagline}
               </p>
+              <p className="font-sans text-xl md:text-2xl font-semibold text-white tracking-tight mb-3">
+                {pkg.priceRange}
+              </p>
               <p className="text-[10px] uppercase tracking-[0.25em] text-white/30 font-mono font-bold">
                 Timeline: {pkg.timeline}
               </p>
