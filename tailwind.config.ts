@@ -34,8 +34,11 @@ const config: Config = {
         'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
         'fade-in-up-delay': 'fadeInUp 0.8s ease-out 0.3s forwards',
         'fade-in-up-delay-2': 'fadeInUp 0.8s ease-out 0.6s forwards',
+        'fade-in-up-delay-3': 'fadeInUp 0.8s ease-out 0.9s forwards',
         'pulse-slow': 'pulse 4s ease-in-out infinite',
         'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        'ken-burns': 'kenBurns 32s ease-in-out infinite alternate',
+        'shimmer': 'shimmer 3.5s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -49,6 +52,14 @@ const config: Config = {
         pulseGlow: {
           '0%, 100%': { opacity: '0.4' },
           '50%': { opacity: '1' },
+        },
+        kenBurns: {
+          '0%': { transform: 'scale(1) translate(0, 0)' },
+          '100%': { transform: 'scale(1.08) translate(-1.2%, -0.8%)' },
+        },
+        shimmer: {
+          '0%, 100%': { opacity: '0.3', transform: 'translateX(-20%)' },
+          '50%': { opacity: '0.9', transform: 'translateX(20%)' },
         },
       },
       typography: {
