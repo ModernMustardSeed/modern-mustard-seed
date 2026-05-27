@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import StaticBackground from '@/components/StaticBackground';
+import AuroraField from '@/components/AuroraField';
+import MountainRange from '@/components/MountainRange';
 import {
   JsonLd,
   breadcrumbJsonLd,
@@ -113,9 +115,10 @@ export default async function IndustryPage({ params }: { params: Params }) {
           </div>
         </header>
 
-        {/* Builds */}
-        <section className="max-w-6xl mx-auto px-6 md:px-8 py-12">
-          <div className="text-center max-w-3xl mx-auto mb-12">
+        {/* Builds (aurora-bathed) */}
+        <section className="relative max-w-6xl mx-auto px-6 md:px-8 py-12">
+          <AuroraField intensity="subtle" className="rounded-3xl" />
+          <div className="relative text-center max-w-3xl mx-auto mb-12">
             <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium mb-5 block">
               What gets built
             </span>
@@ -228,6 +231,13 @@ export default async function IndustryPage({ params }: { params: Params }) {
             </div>
           </div>
         </section>
+
+        {/* Cinematic ridge before the FAQ */}
+        <div className="max-w-6xl mx-auto px-6 md:px-8 my-8">
+          <div className="rounded-2xl overflow-hidden border border-white/[0.06] shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+            <MountainRange height="sm" />
+          </div>
+        </div>
 
         {/* FAQ */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 py-16">

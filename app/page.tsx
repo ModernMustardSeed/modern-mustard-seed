@@ -9,6 +9,9 @@ import WhatAreYouBuilding from '@/components/WhatAreYouBuilding';
 import WhatGetsBuilt from '@/components/WhatGetsBuilt';
 import AiProofPromo from '@/components/AiProofPromo';
 import NewsletterSignup from '@/components/NewsletterSignup';
+import MountainRange from '@/components/MountainRange';
+import AuroraField from '@/components/AuroraField';
+import GlacialLake from '@/components/GlacialLake';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -100,14 +103,37 @@ export default function HomePage() {
       <JsonLd data={[homeJsonLd, offerJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} />
       <PageBackground />
       <HeroIdeaToProduct />
+
+      {/* Dawn ridge transition out of the hero */}
+      <MountainRange height="md" />
+
       <ResultsMarquee />
       <EraOfEntrepreneur />
-      <StartingPoints />
+
+      {/* Starting points sits in an aurora-bathed section */}
+      <section className="relative">
+        <AuroraField intensity="subtle" />
+        <StartingPoints />
+      </section>
+
       <LiveStats />
       <BuiltByGoodPeople />
       <WhatAreYouBuilding />
       <WhatGetsBuilt />
+
+      {/* Glacial lake feature illustration between work and the AI-proof promo */}
+      <section className="relative w-full max-w-6xl mx-auto px-6 md:px-16 py-12">
+        <GlacialLake variant="dawn" className="aspect-[16/9] md:aspect-[2.4/1] border border-white/[0.06] shadow-[0_30px_80px_rgba(0,0,0,0.5)]" />
+        <p className="mt-6 text-center text-[10px] md:text-[11px] uppercase tracking-[0.4em] text-white/45 font-mono">
+          Tiny seed. Real system. Measurable fruit.
+        </p>
+      </section>
+
       <AiProofPromo />
+
+      {/* Final dawn ridge before newsletter */}
+      <MountainRange height="sm" showSun={false} />
+
       <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16">
         <NewsletterSignup />
       </section>

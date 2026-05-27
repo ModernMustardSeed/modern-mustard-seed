@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import StaticBackground from '@/components/StaticBackground';
+import GlacialLake from '@/components/GlacialLake';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { industries } from '@/data/industries';
@@ -44,7 +45,7 @@ export default function ForIndex() {
 
       <div className="relative pt-36 md:pt-44 pb-24">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
-          <header className="text-center mb-20">
+          <header className="text-center mb-12">
             <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium mb-6 block">
               Industries
             </span>
@@ -56,6 +57,11 @@ export default function ForIndex() {
               Generic AI agencies pitch generic builds. We document exactly what gets built per industry, the case studies that anchor it, and what it costs.
             </p>
           </header>
+
+          {/* Glacial lake feature illustration */}
+          <div className="mb-20 rounded-2xl overflow-hidden border border-white/[0.06] shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
+            <GlacialLake variant="dawn" className="aspect-[16/9] md:aspect-[2.4/1]" />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-16">
             {industries.map((i) => (
