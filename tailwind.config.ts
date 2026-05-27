@@ -14,8 +14,10 @@ const config: Config = {
         body: ['"DM Sans"', 'system-ui', 'sans-serif'],
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', '"Space Mono"', 'monospace'],
+        display: ['"Fraunces"', '"Cormorant Garamond"', 'Georgia', 'serif'],
       },
       colors: {
+        // Legacy palette kept so existing components don't break during rebrand preview
         mustard: {
           50: '#FFF8E1',
           100: '#FFECB3',
@@ -28,6 +30,25 @@ const config: Config = {
           800: '#6D5A06',
           900: '#4E3F04',
         },
+        // New Mountain Sunrise palette
+        night: {
+          DEFAULT: '#1A1140',
+          900: '#0E0824',
+          800: '#150E33',
+          700: '#1A1140',
+          600: '#26174F',
+          500: '#3A2475',
+          400: '#5238A1',
+        },
+        sunrise: {
+          rose: '#FF6B6B',
+          peach: '#FF8E72',
+          gold: '#FFB347',
+          mint: '#7FE4C5',
+          cyan: '#4ECDC4',
+          sky: '#9FD3E0',
+        },
+        steel: '#7C8DB5',
       },
       animation: {
         'fade-in': 'fadeIn 1s ease-out forwards',
