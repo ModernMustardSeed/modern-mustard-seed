@@ -37,14 +37,14 @@ export default function Navbar() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-[11px] uppercase tracking-[0.2em] text-white/40 hover:text-mustard-400 transition-colors font-body font-medium"
+              className="text-[11px] uppercase tracking-[0.2em] text-white/50 hover:text-sunrise-gold transition-colors font-body font-medium"
             >
               {link.label}
             </Link>
           ))}
           <Link
             href="/build-queue"
-            className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-black bg-gradient-to-r from-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_20px_rgba(200,164,21,0.25)] transition-all"
+            className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-sunrise-warm rounded-full hover:shadow-[0_0_20px_rgba(255,107,107,0.4)] transition-all"
           >
             Join the Queue
           </Link>
