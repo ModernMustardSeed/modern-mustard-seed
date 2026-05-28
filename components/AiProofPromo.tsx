@@ -1,10 +1,12 @@
 import Link from 'next/link';
+import SnowDrift from './SnowDrift';
 
 export default function AiProofPromo() {
   return (
     <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-12">
-      <div className="max-w-4xl mx-auto glass-card p-7 md:p-9">
-        <div className="md:flex md:items-center md:justify-between gap-8">
+      <div className="relative max-w-4xl mx-auto glass-card p-7 md:p-9 overflow-hidden border-mustard-500/25">
+        <SnowDrift density="medium" />
+        <div className="relative md:flex md:items-center md:justify-between gap-8">
           <div className="md:flex-1 mb-5 md:mb-0">
             <span className="text-[10px] uppercase tracking-[0.35em] text-mustard-500/70 font-mono font-medium block mb-2">
               Already running?

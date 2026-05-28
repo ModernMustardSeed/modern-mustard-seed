@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import StaticBackground from '@/components/StaticBackground';
 import AuroraField from '@/components/AuroraField';
 import MountainRange from '@/components/MountainRange';
+import SnowDrift from '@/components/SnowDrift';
 import {
   JsonLd,
   breadcrumbJsonLd,
@@ -164,42 +165,45 @@ export default async function IndustryPage({ params }: { params: Params }) {
             </h2>
           </div>
 
-          <div className="glass-card p-8 md:p-12 border-mustard-500/15">
-            <div className="mb-6 pb-6 border-b border-white/[0.06]">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-500/70 font-mono font-bold block mb-2">
-                Featured case study
-              </span>
-              <h3 className="font-sans text-2xl md:text-3xl font-semibold text-white tracking-tight">
-                {i.receipt.caseStudyTitle}
-              </h3>
-            </div>
-
-            <p className="text-white/65 text-base md:text-lg font-body font-light leading-relaxed mb-8">
-              {i.receipt.body}
-            </p>
-
-            {i.receipt.metrics && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                {i.receipt.metrics.map((m) => (
-                  <div key={m.label} className="p-4 rounded-xl border border-white/[0.06] bg-black/30">
-                    <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-mustard-500/70 block mb-2">
-                      {m.label}
-                    </span>
-                    <span className="font-sans text-xl md:text-2xl font-semibold text-white tracking-tight">
-                      {m.value}
-                    </span>
-                  </div>
-                ))}
+          <div className="relative glass-card p-8 md:p-12 border-mustard-500/25 overflow-hidden">
+            <SnowDrift density="subtle" />
+            <div className="relative">
+              <div className="mb-6 pb-6 border-b border-white/[0.06]">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-500/70 font-mono font-bold block mb-2">
+                  Featured case study
+                </span>
+                <h3 className="font-sans text-2xl md:text-3xl font-semibold text-white tracking-tight">
+                  {i.receipt.caseStudyTitle}
+                </h3>
               </div>
-            )}
 
-            <Link
-              href={`/work/${i.receipt.caseStudySlug}`}
-              className="inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 border border-mustard-500/40 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/60 transition-all"
-            >
-              Read the full case study
-              <span aria-hidden="true">→</span>
-            </Link>
+              <p className="text-white/65 text-base md:text-lg font-body font-light leading-relaxed mb-8">
+                {i.receipt.body}
+              </p>
+
+              {i.receipt.metrics && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                  {i.receipt.metrics.map((m) => (
+                    <div key={m.label} className="p-4 rounded-xl border border-white/[0.06] bg-black/30">
+                      <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-mustard-500/70 block mb-2">
+                        {m.label}
+                      </span>
+                      <span className="font-sans text-xl md:text-2xl font-semibold text-white tracking-tight">
+                        {m.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <Link
+                href={`/work/${i.receipt.caseStudySlug}`}
+                className="inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 border border-mustard-500/40 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/60 transition-all"
+              >
+                Read the full case study
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
           </div>
         </section>
 
