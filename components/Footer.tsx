@@ -32,8 +32,19 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="w-full px-6 md:px-16 lg:px-24 xl:px-32 pt-20 pb-10">
-      <div className="flex justify-center mb-16">
+    <footer className="relative w-full px-6 md:px-16 lg:px-24 xl:px-32 pt-20 pb-10 bg-[#080c16] border-t border-cream-100/[0.04]">
+      {/* Soft fade-in from the section above so the midnight backdrop
+          does not slam into the previous section's background */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 -top-16 h-16 pointer-events-none"
+        style={{
+          background:
+            'linear-gradient(to bottom, transparent 0%, rgba(8,12,22,0.55) 50%, #080c16 100%)',
+        }}
+      />
+
+      <div className="relative flex justify-center mb-16">
         <div className="w-px h-24 bg-gradient-to-b from-transparent via-mustard-500/20 to-transparent" />
       </div>
 
