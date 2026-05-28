@@ -184,7 +184,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
               {i.receipt.metrics && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                   {i.receipt.metrics.map((m) => (
-                    <div key={m.label} className="p-4 rounded-xl border border-white/[0.06] bg-black/30">
+                    <div key={m.label} className="p-4 rounded-xl border border-white/[0.06] bg-night-900/30">
                       <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-mustard-500/70 block mb-2">
                         {m.label}
                       </span>

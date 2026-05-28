@@ -4,16 +4,22 @@ import MagneticLink from './MagneticLink';
 export default function HeroIdeaToProduct() {
   return (
     <section className="relative isolate min-h-[92vh] flex flex-col items-center justify-center px-6 pt-36 md:pt-44 pb-24 text-center overflow-hidden">
-      {/* Layer 1: Cinematic video background with slow Ken Burns drift */}
+      {/* Layer 0: Aubergine plate behind the video so first paint is on-brand,
+          not the browser's default black. Eliminates the load flash. */}
+      <div className="absolute inset-0 z-0 bg-[#1A1140]" aria-hidden="true" />
+
+      {/* Layer 1: Cinematic video background with slow Ken Burns drift.
+          No poster: a static frame with its own text was flashing and
+          competing with the hero copy on first paint. */}
       <video
         className="absolute inset-0 w-full h-full object-cover z-0 animate-ken-burns motion-reduce-hide"
         autoPlay
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
         aria-hidden="true"
-        poster="/opengraph-image"
+        style={{ backgroundColor: '#1A1140' }}
       >
         <source src="/video/hero.mp4" type="video/mp4" />
       </video>
@@ -48,7 +54,7 @@ export default function HeroIdeaToProduct() {
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto">
         {/* Live status pill with quiet urgency */}
-        <div className="opacity-0 animate-fade-in-up inline-flex items-center gap-2.5 px-4 py-1.5 mb-10 rounded-full border border-sunrise-gold/40 bg-black/40 backdrop-blur-md shadow-[0_0_30px_rgba(255,179,71,0.12)]">
+        <div className="opacity-0 animate-fade-in-up inline-flex items-center gap-2.5 px-4 py-1.5 mb-10 rounded-full border border-sunrise-gold/40 bg-night-900/40 backdrop-blur-md shadow-[0_0_30px_rgba(255,179,71,0.12)]">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sunrise-gold opacity-70" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-sunrise-gold" />
@@ -62,7 +68,7 @@ export default function HeroIdeaToProduct() {
           </span>
         </div>
 
-        <span className="opacity-0 animate-fade-in-up text-[10px] tracking-[0.4em] uppercase text-sunrise-gold/85 font-mono font-medium block mb-10">
+        <span className="opacity-0 animate-fade-in-up text-[10px] tracking-[0.4em] uppercase text-white/70 font-mono font-medium block mb-10">
           Modern Mustard Seed
         </span>
 

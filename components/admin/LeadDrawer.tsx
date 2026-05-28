@@ -73,7 +73,7 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
 
   return (
     <div className="fixed inset-0 z-50 flex">
-      <div className="flex-1 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="flex-1 bg-night-900/60 backdrop-blur-sm" onClick={onClose} />
       <aside className="w-full max-w-xl bg-[#0f0c08] border-l border-white/[0.06] overflow-y-auto">
         <div className="sticky top-0 bg-[#0f0c08]/95 backdrop-blur-md border-b border-white/[0.06] px-6 py-5 flex justify-between items-start">
           <div>

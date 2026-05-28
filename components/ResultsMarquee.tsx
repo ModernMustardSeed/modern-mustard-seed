@@ -19,7 +19,7 @@ export default function ResultsMarquee() {
   const items = [...RESULTS, ...RESULTS];
 
   return (
-    <section className="w-full py-12 md:py-16 border-y border-white/[0.04] bg-black/20 backdrop-blur-sm overflow-hidden">
+    <section className="w-full py-12 md:py-16 border-y border-white/[0.04] bg-night-900/20 backdrop-blur-sm overflow-hidden">
       <style jsx>{`
         @keyframes scroll-left {
           0% { transform: translateX(0); }

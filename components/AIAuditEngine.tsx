@@ -638,7 +638,7 @@ const AIAuditEngine: React.FC = () => {
 
         {/* ═══════════ QUIZ MODAL */}
         {showQuiz && (
-          <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-6">
+          <div className="fixed inset-0 bg-night-900/80 z-50 flex items-center justify-center p-6">
             <div className="glass-card w-full max-w-lg p-8 relative" style={{ border: `1px solid ${MB}` }}>
               <button onClick={() => setShowQuiz(false)} className="absolute top-4 right-4 text-white/30 hover:text-white/60 transition-colors">
                 <X size={18} />
@@ -703,7 +703,7 @@ const AIAuditEngine: React.FC = () => {
 
         {/* ═══════════ AUDIT MODAL */}
         {showAudit && (
-          <div className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-6 overflow-auto">
+          <div className="fixed inset-0 bg-night-900/85 z-50 flex items-center justify-center p-6 overflow-auto">
             <div className="glass-card w-full max-w-2xl p-8 relative max-h-[90vh] overflow-y-auto" style={{ border: `1px solid ${MB}` }}>
               <button
                 onClick={() => { setShowAudit(false); setAuditResult(null); setAuditLoading(false); }}
