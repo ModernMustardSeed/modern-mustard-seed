@@ -41,10 +41,9 @@ export const personJsonLd = {
   ],
   sameAs: [
     'https://x.com/sarahmscarano',
-    'https://linkedin.com/in/sarahscarano',
+    'https://www.linkedin.com/in/sarahmscarano/',
     'https://github.com/ModernMustardSeed',
     'https://instagram.com/modernmustardseed',
-    'https://tiktok.com/@modernmustardseed',
   ],
 };
 
@@ -77,10 +76,9 @@ export const orgJsonLd = {
   ],
   sameAs: [
     'https://x.com/sarahmscarano',
-    'https://linkedin.com/in/sarahscarano',
+    'https://www.linkedin.com/in/sarahmscarano/',
     'https://github.com/ModernMustardSeed',
     'https://instagram.com/modernmustardseed',
-    'https://tiktok.com/@modernmustardseed',
   ],
   contactPoint: {
     '@type': 'ContactPoint',

@@ -14,33 +14,45 @@ const FEATURES = [
   },
   {
     eyebrow: '02',
+    title: 'Full booking system with embedded CRM',
+    body:
+      'Real-time availability, calendar booking, automated reminders, and a CRM that captures every interaction in one place. Zoho, HubSpot, Acuity, or a custom build. The booking flow and the customer record are one system, not eight tabs.',
+  },
+  {
+    eyebrow: '03',
     title: 'Funnels and lead magnets, live on day one',
     body:
       'Not coming-soon. Live. The site ships with a primary funnel, a secondary funnel for the slower buyer, and at least one lead magnet that converts strangers into your email list. Tested before launch.',
   },
   {
-    eyebrow: '03',
-    title: 'A back office that surfaces the right thing',
-    body:
-      'One dashboard. Leads, revenue, content queue, social schedule, and ops in one view. Replace the eight tools you are paying for and barely using. Built for the way you actually work, not the way the SaaS company decided.',
-  },
-  {
     eyebrow: '04',
-    title: 'AI agents on the site AND inside the back office',
+    title: 'Restaurants, shops, services, MVPs',
     body:
-      'Public-facing agents that answer questions, qualify leads, and recommend next steps. Internal agents that draft your follow-ups, summarize your week, and triage your inbox. The same brain, on both sides of the wall.',
+      'Ordering apps for restaurants. Ecommerce for shops. Booking flows for service businesses. Zero-to-one software for founders building something new. The engine adapts to the vertical. The pattern stays the same.',
   },
   {
     eyebrow: '05',
-    title: 'Production-grade brand and site',
+    title: 'A back office that surfaces the right thing',
     body:
-      'Brand identity, copy, design, motion, and a site fast enough and beautiful enough to feel like a Series A company. Built on Next.js + Vercel, owned by you, handed off with every credential on day one.',
+      'One dashboard. Leads, revenue, content queue, social schedule, ops, and inventory in one view. Replace the eight tools you are paying for and barely using. Built for the way you actually work.',
   },
   {
     eyebrow: '06',
+    title: 'AI agents on the site AND inside the back office',
+    body:
+      'Public-facing agents that answer questions, qualify leads, take orders, and recommend next steps. Internal agents that draft your follow-ups, summarize your week, and triage your inbox. The same brain, on both sides of the wall.',
+  },
+  {
+    eyebrow: '07',
+    title: 'Innovation as the default, not the upsell',
+    body:
+      'We ship the build using the latest models, the latest patterns, the latest infrastructure (Next.js 16, Vercel, Anthropic, Gemini, Vapi, multi-agent orchestration). What is bleeding-edge today is the baseline of every engagement.',
+  },
+  {
+    eyebrow: '08',
     title: 'It is yours, fully',
     body:
-      'No vendor lock-in, no per-seat fee, no agency retainer required. The code, the database, the deploy, the AI prompts, and every account are transferred to you the day we launch. Hire any other engineer to maintain it. Or call us back when you want to grow it.',
+      'No vendor lock-in, no per-seat fee, no agency retainer required. The code, the database, the deploy, the AI prompts, and every account are transferred to you the day we launch. Hire any other engineer later. Or call us back when you grow.',
   },
 ];
 
@@ -61,7 +73,7 @@ export default function YourSiteWorksForYou() {
             Not just sit there looking nice.
           </p>
           <p className="text-cream-100/70 text-base md:text-lg font-body font-light leading-relaxed">
-            A Modern Mustard Seed build is not a brochure. It is a working business engine. The site captures leads, qualifies them, runs funnels, hosts the lead magnets, and feeds it all into a back office where you actually run the operation. AI agents live on both sides: in front of customers, and behind the curtain.
+            A Modern Mustard Seed build is not a brochure. It is a working business engine. Booking systems with embedded CRMs. Ordering apps for restaurants. Ecommerce shops. Zero-to-one software for the founder building something new. The site captures leads, qualifies them, runs funnels, hosts the lead magnets, and feeds it all into a back office where you actually run the operation. AI agents live on both sides: in front of customers, and behind the curtain.
           </p>
         </div>
 

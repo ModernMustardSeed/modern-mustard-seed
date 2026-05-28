@@ -105,11 +105,9 @@ export function clientEmail({
           <tr><td align="center" style="padding-bottom:14px">
             ${footerLink('X', 'https://x.com/sarahmscarano')}
             ${footerSeparator()}
-            ${footerLink('LinkedIn', 'https://linkedin.com/in/sarahscarano')}
+            ${footerLink('LinkedIn', 'https://www.linkedin.com/in/sarahmscarano/')}
             ${footerSeparator()}
             ${footerLink('Instagram', 'https://instagram.com/modernmustardseed')}
-            ${footerSeparator()}
-            ${footerLink('TikTok', 'https://tiktok.com/@modernmustardseed')}
           </td></tr>
           <tr><td align="center" style="padding-bottom:18px">
             <a href="https://modernmustardseed.com" style="color:${COLORS.gold};text-decoration:none;font-family:${MONO_STACK};font-size:11px;letter-spacing:4px;text-transform:uppercase;font-weight:700">modernmustardseed.com</a>

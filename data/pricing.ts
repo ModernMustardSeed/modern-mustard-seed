@@ -21,13 +21,14 @@ export const packages: Engagement[] = [
     name: 'Full-Service Business Build',
     tagline: 'A site that runs your business, not just shows it off.',
     description:
-      'Not a website. A working business system with the site as the front door. Brand, production-grade marketing site, AI sales-development rep capturing every lead, built-in funnels and lead magnets, a back office that surfaces what matters, and AI agents embedded in both your site and your back office so the business runs while you focus on the work.',
+      'Not a website. A working business system with the site as the front door. Brand, production-grade site, a full booking system with an embedded CRM, an AI sales-development rep capturing every lead, built-in funnels and lead magnets, a back office that surfaces what matters, and AI agents embedded in both your site and your back office. Restaurants, shops, services, zero-to-one ideas: same engine, scoped to you.',
     deliverables: [
       'Brand identity (logo, colors, type, voice)',
       'Production-grade marketing site',
+      'Full booking system with embedded CRM (Zoho, HubSpot, Acuity, or custom)',
       'AI SDR that captures and qualifies every lead 24/7',
-      'Built-in funnels and lead magnets, tested on day one',
-      'Booking or payment integration',
+      'Built-in funnels and lead magnets, tested and converting on day one',
+      'Ecommerce or ordering vertical when it fits (restaurant ordering, retail shop, service marketplace)',
       'Back office dashboard: leads, revenue, content, ops in one view',
       'AI agents embedded on the public site and inside the back office',
       'Real copy, written for your business',
@@ -39,7 +40,7 @@ export const packages: Engagement[] = [
     priceRange: '$8,500 to $22,000',
     cta: 'Build my business engine',
     ctaHref: '/contact?package=online-presence',
-    ideal: 'Small businesses, service pros, and operators who are tired of websites that just sit there. You want the site to do the work.',
+    ideal: 'Small businesses, restaurants, shops, service pros, operators with revenue, and zero-to-one founders who want a partner to ship the whole thing.',
   },
   {
     id: 'idea-to-product',

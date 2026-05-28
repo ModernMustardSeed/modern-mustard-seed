@@ -1,9 +1,8 @@
 export const socials = [
   { name: 'X', url: 'https://x.com/sarahmscarano' },
-  { name: 'LinkedIn', url: 'https://linkedin.com/in/sarahscarano' },
+  { name: 'LinkedIn', url: 'https://www.linkedin.com/in/sarahmscarano/' },
   { name: 'GitHub', url: 'https://github.com/ModernMustardSeed' },
   { name: 'Instagram', url: 'https://instagram.com/modernmustardseed' },
-  { name: 'TikTok', url: 'https://tiktok.com/@modernmustardseed' },
 ];
 
 export const navLinks = [
