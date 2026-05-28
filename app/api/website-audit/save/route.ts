@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { clientEmail, leadNotification } from '@/lib/email';
+import { auditFollowupEmail, leadNotification } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
@@ -21,9 +21,11 @@ export async function POST(req: Request) {
     const email = (body.email ?? '').trim();
     const url = (body.url ?? '').trim();
     const name = (body.name ?? '').trim() || 'Site owner';
+    const firstName = name.split(' ')[0] || 'there';
     const score = typeof body.overallScore === 'number' ? body.overallScore : null;
     const grade = (body.letterGrade ?? '').trim() || null;
     const headline = (body.headline ?? '').trim();
+    const fixes = body.topThreeFixes ?? [];
 
     if (!email || !email.includes('@')) {
       return NextResponse.json({ error: 'Provide your email.' }, { status: 400 });
@@ -53,59 +55,53 @@ export async function POST(req: Request) {
         { label: 'Source', value: 'Website Audit' },
       ];
 
+      const recommendation =
+        score === null
+          ? 'Reply with the engagement link'
+          : score < 70
+            ? 'Score below 70. Pitch Seed Site ($2.5K-$5K) first.'
+            : score < 90
+              ? 'Score 70-89. Pitch Full-Service Business Build ($8.5K-$22K).'
+              : 'Score 90+. Pitch Fractional AI Partner retainer.';
+
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',
         replyTo: email,
-        subject: `Website audit lead: ${url}`,
+        subject: `Website audit lead: ${url}${score !== null ? ` (${score}/${grade ?? ''})` : ''}`,
         html: leadNotification({
           type: 'AI Audit',
           name,
           email,
           fields,
           message: headline,
-          suggestedAction: 'Reply with the build queue link if the score is below 80',
+          suggestedAction: recommendation,
         }),
       });
 
-      const fixesHtml = (body.topThreeFixes ?? [])
-        .map(
-          (f, i) =>
-            `<p style="margin:14px 0 4px;font-size:15px;color:#F5F0E8;font-weight:600">${i + 1}. ${f.title}</p>
-<p style="margin:0 0 4px;font-size:14px;color:#F5F0E8B0">${f.why}</p>
-<p style="margin:0;font-size:14px;color:#F5F0E8B0"><em>How:</em> ${f.how}</p>`
-        )
-        .join('');
-
-      await resend.emails.send({
-        from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: email,
-        replyTo: 'sarah@modernmustardseed.com',
-        subject: `Your website audit${score !== null ? `: ${score}/100, ${grade ?? ''}` : ''}`.trim(),
-        html: clientEmail({
-          preheader: 'Your saved website audit. Top three fixes inside.',
-          eyebrow: 'Website Audit',
-          greeting: `Your audit of ${url}`,
-          body: `${score !== null ? `<p style="margin:0 0 8px;font-size:18px"><strong>${score}/100${grade ? ` (${grade})` : ''}</strong></p>` : ''}
-${headline ? `<p style="margin:0 0 18px;font-style:italic">${headline}</p>` : ''}
-<p>Here are the three highest-leverage things to fix first:</p>
-${fixesHtml || '<p>See the full report at modernmustardseed.com/website-audit.</p>'}
-<p style="margin-top:22px">Want us to build the A version for you?</p>`,
-          cta: { label: 'See the engagements', url: 'https://modernmustardseed.com/work-with-us' },
-          secondary: {
-            label: 'Book a discovery call',
-            url: 'https://modernmustardseed.zohobookings.com/#/4764600000000052054',
-          },
-          signature: 'Sarah',
-        }),
-      });
+      if (score !== null && grade && fixes.length > 0 && headline) {
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: email,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: `Your website audit: ${score}/100, ${grade}`,
+          html: auditFollowupEmail({
+            firstName,
+            url,
+            score,
+            grade,
+            headline,
+            topThreeFixes: fixes,
+          }),
+        });
+      }
     }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('website-audit save error', err);
     return NextResponse.json(
-      { error: 'Could not save. Try again, or email sarah@modernmustardseed.com.' },
+      { error: 'Could not save. Try again or email sarah@modernmustardseed.com.' },
       { status: 500 }
     );
   }

@@ -1,49 +1,74 @@
 /**
- * Branded email templates for Modern Mustard Seed.
- * Dark, editorial, atmospheric. Matches the site aesthetic.
+ * Modern Mustard Seed email templates.
+ *
+ * Design system: cabin-at-dusk. Midnight bg, cream body text, brass
+ * accents, Playfair Display headlines via web-safe serif fallback.
+ * Every template shares the same shell (preheader → eyebrow → headline
+ * → body → optional value block → CTA → footer with scripture).
+ *
+ * No em dashes anywhere. Period.
  */
 
-const COLORS = {
-  void: '#080c16',
-  card: '#080c16',
-  text: '#F5EFE4',
-  heading: '#ffffff',
-  muted: 'rgba(255,255,255,0.62)',
-  faint: 'rgba(255,255,255,0.38)',
-  hairlineWhite: 'rgba(255,255,255,0.08)',
-  hairlineGold: 'rgba(255,107,53,0.25)',
-  goldDim: 'rgba(255,107,53,0.78)',
-  gold: '#C8964E',
-  brightGold: '#F0D090',
+const C = {
+  midnight: '#080c16',
+  midnight800: '#0F1422',
+  midnight700: '#1A1A2E',
+  brass: '#C8964E',
+  brassLight: '#E8C88A',
+  brassBright: '#F0D090',
+  rust: '#C86A45',
+  ember: '#FF6B35',
+  lake: '#3B6B8A',
+  sage: '#8FA98F',
+  cream: '#F5F0E8',
+  creamDim: 'rgba(245,240,232,0.78)',
+  creamFaint: 'rgba(245,240,232,0.55)',
+  creamGhost: 'rgba(245,240,232,0.30)',
+  hairline: 'rgba(245,240,232,0.10)',
+  hairlineBrass: 'rgba(200,150,78,0.35)',
 };
 
-const GOLD_GRADIENT =
-  'linear-gradient(135deg,#E8C88A 0%,#C8964E 50%,#C86A45 100%)';
+const FONT_SERIF = '"Playfair Display","Cormorant Garamond","Iowan Old Style","Apple Garamond",Baskerville,Georgia,serif';
+const FONT_SANS = '"DM Sans","Helvetica Neue",Helvetica,Arial,sans-serif';
+const FONT_MONO = '"JetBrains Mono","SF Mono",Menlo,Consolas,monospace';
 
-const FONT_STACK = '"Helvetica Neue", Helvetica, Arial, sans-serif';
-const SERIF_STACK = '"Iowan Old Style", "Apple Garamond", Baskerville, Georgia, serif';
-const MONO_STACK = '"SF Mono", "Menlo", "Consolas", monospace';
+const SITE = 'https://modernmustardseed.com';
+const BOOKING_URL = 'https://modernmustardseed.zohobookings.com/#/4764600000000052054';
+const AUDIT_URL = `${SITE}/audit`;
+const WEBSITE_AUDIT_URL = `${SITE}/website-audit`;
+const BUILD_QUEUE_URL = `${SITE}/build-queue`;
+const WORK_URL = `${SITE}/work`;
+const ENGAGEMENTS_URL = `${SITE}/work-with-us`;
 
-type ClientEmailArgs = {
+export function escape(str: string): string {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ────────────────────────── SHELL ────────────────────────── */
+
+type ShellArgs = {
   preheader?: string;
-  eyebrow?: string;
-  greeting?: string;
-  body: string;
-  cta?: { label: string; url: string };
-  secondary?: { label: string; url: string };
-  signature?: string;
+  inner: string;
+  showSocial?: boolean;
 };
 
-/** Outgoing customer email. Dark, editorial. */
-export function clientEmail({
-  preheader = '',
-  eyebrow,
-  greeting,
-  body,
-  cta,
-  secondary,
-  signature = 'Sarah',
-}: ClientEmailArgs): string {
+function shell({ preheader = '', inner, showSocial = true }: ShellArgs): string {
+  const socialRow = showSocial
+    ? `
+    <tr><td align="center" style="padding-bottom:12px">
+      <a href="https://x.com/sarahmscarano" style="color:${C.creamFaint};text-decoration:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:${FONT_MONO};font-weight:600">X</a>
+      <span style="color:${C.creamGhost};margin:0 12px">·</span>
+      <a href="https://www.linkedin.com/in/sarahmscarano/" style="color:${C.creamFaint};text-decoration:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:${FONT_MONO};font-weight:600">LinkedIn</a>
+      <span style="color:${C.creamGhost};margin:0 12px">·</span>
+      <a href="https://instagram.com/modernmustardseed" style="color:${C.creamFaint};text-decoration:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:${FONT_MONO};font-weight:600">Instagram</a>
+    </td></tr>`
+    : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,67 +78,49 @@ export function clientEmail({
 <meta name="supported-color-schemes" content="dark only">
 <title>Modern Mustard Seed</title>
 </head>
-<body style="margin:0;padding:0;background:${COLORS.void};font-family:${FONT_STACK};color:${COLORS.text};line-height:1.65;-webkit-font-smoothing:antialiased">
+<body style="margin:0;padding:0;background:${C.midnight};font-family:${FONT_SANS};color:${C.cream};line-height:1.7;-webkit-font-smoothing:antialiased">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${escape(preheader)}</div>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${COLORS.void}" style="background:${COLORS.void}">
-  <tr><td align="center" style="padding:48px 16px 32px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.midnight}" style="background:${C.midnight}">
+  <tr><td align="center" style="padding:56px 16px 40px">
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:580px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:620px">
 
-      <tr><td align="center" style="padding:0 0 6px">
-        <div style="font-family:${MONO_STACK};font-size:10px;font-weight:700;letter-spacing:6px;color:${COLORS.goldDim};text-transform:uppercase">
+      <!-- Wordmark eyebrow -->
+      <tr><td align="center" style="padding:0 0 8px">
+        <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:7px;color:${C.brassLight};text-transform:uppercase">
           Modern Mustard Seed
         </div>
       </td></tr>
 
+      <!-- Brass hairline -->
       <tr><td align="center" style="padding:14px 0 0">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td width="48" style="height:1px;background:${COLORS.hairlineGold};line-height:1px;font-size:0">&nbsp;</td></tr></table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td width="56" style="height:1px;background:${C.hairlineBrass};line-height:1px;font-size:0">&nbsp;</td></tr></table>
       </td></tr>
 
+      <!-- Card body -->
       <tr><td style="padding:36px 0 0">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${COLORS.card}" style="background:${COLORS.card};border:1px solid ${COLORS.hairlineWhite};border-radius:14px">
-
-          <tr><td height="1" style="height:1px;line-height:1px;font-size:0;background:${GOLD_GRADIENT}">&nbsp;</td></tr>
-
-          ${eyebrow ? `<tr><td style="padding:36px 44px 0">
-            <div style="font-family:${MONO_STACK};font-size:10px;font-weight:700;letter-spacing:4px;color:${COLORS.gold};text-transform:uppercase">${escape(eyebrow)}</div>
-          </td></tr>` : ''}
-
-          ${greeting ? `<tr><td style="padding:${eyebrow ? '20px' : '40px'} 44px 0">
-            <p style="margin:0;font-size:20px;color:${COLORS.heading};font-weight:500;letter-spacing:-0.2px;line-height:1.4">${escape(greeting)}</p>
-          </td></tr>` : ''}
-
-          <tr><td style="padding:22px 44px 8px;font-size:16px;color:${COLORS.text};line-height:1.75">
-            ${body}
-          </td></tr>
-
-          ${cta ? renderCta(cta, secondary) : ''}
-
-          <tr><td style="padding:18px 44px 36px">
-            <div style="font-size:11px;letter-spacing:3px;color:${COLORS.faint};text-transform:uppercase;font-family:${MONO_STACK};margin-bottom:8px">Signed</div>
-            <p style="margin:0;font-size:17px;color:${COLORS.heading};font-weight:500">${escape(signature)}</p>
-            <p style="margin:2px 0 0;font-size:13px;color:${COLORS.muted};letter-spacing:0.3px">Modern Mustard Seed</p>
-          </td></tr>
-
-          <tr><td height="1" style="height:1px;line-height:1px;font-size:0;background:${GOLD_GRADIENT}">&nbsp;</td></tr>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.midnight800}" style="background:${C.midnight800};border:1px solid ${C.hairline};border-radius:18px;overflow:hidden">
+          ${inner}
         </table>
       </td></tr>
 
-      <tr><td style="padding:32px 12px 0">
+      <!-- Footer -->
+      <tr><td style="padding:36px 12px 0">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          ${socialRow}
           <tr><td align="center" style="padding-bottom:14px">
-            ${footerLink('X', 'https://x.com/sarahmscarano')}
-            ${footerSeparator()}
-            ${footerLink('LinkedIn', 'https://www.linkedin.com/in/sarahmscarano/')}
-            ${footerSeparator()}
-            ${footerLink('Instagram', 'https://instagram.com/modernmustardseed')}
+            <a href="${SITE}" style="color:${C.brassLight};text-decoration:none;font-family:${FONT_MONO};font-size:10px;letter-spacing:4px;text-transform:uppercase;font-weight:700">modernmustardseed.com</a>
           </td></tr>
-          <tr><td align="center" style="padding-bottom:18px">
-            <a href="https://modernmustardseed.com" style="color:${COLORS.gold};text-decoration:none;font-family:${MONO_STACK};font-size:11px;letter-spacing:4px;text-transform:uppercase;font-weight:700">modernmustardseed.com</a>
+          <tr><td align="center" style="padding-bottom:10px">
+            <p style="margin:0;color:${C.creamFaint};font-family:${FONT_SERIF};font-size:13px;font-style:italic;letter-spacing:0.3px;line-height:1.5">
+              &ldquo;If you have faith as small as a mustard seed, nothing will be impossible for you.&rdquo;
+            </p>
           </td></tr>
           <tr><td align="center">
-            <p style="margin:0;color:${COLORS.faint};font-family:${SERIF_STACK};font-size:14px;font-style:italic;letter-spacing:0.3px">Stewardship over extraction.</p>
+            <p style="margin:0;color:${C.creamGhost};font-family:${FONT_MONO};font-size:9px;letter-spacing:3px;text-transform:uppercase;font-weight:700">
+              Matthew 17:20 · Kalispell, Montana
+            </p>
           </td></tr>
         </table>
       </td></tr>
@@ -125,30 +132,404 @@ export function clientEmail({
 </body></html>`;
 }
 
-function footerLink(label: string, url: string): string {
-  return `<a href="${url}" style="color:${COLORS.muted};text-decoration:none;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:${MONO_STACK};font-weight:500">${label}</a>`;
+/* ────────────────────────── SHARED BLOCKS ────────────────────────── */
+
+function brassDivider(): string {
+  return `<tr><td height="1" style="height:1px;line-height:1px;font-size:0;background:linear-gradient(90deg,transparent,${C.brassLight},transparent)">&nbsp;</td></tr>`;
 }
 
-function footerSeparator(): string {
-  return `<span style="color:${COLORS.faint};margin:0 12px">·</span>`;
+function eyebrow(text: string): string {
+  return `<tr><td style="padding:42px 48px 0">
+    <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:5px;color:${C.brassLight};text-transform:uppercase">${escape(text)}</div>
+  </td></tr>`;
 }
 
-function renderCta(cta: { label: string; url: string }, secondary?: { label: string; url: string }): string {
-  return `
-    <tr><td style="padding:24px 44px 8px" align="left">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-        <td bgcolor="#C8964E" style="background:${GOLD_GRADIENT};border-radius:999px">
-          <a href="${cta.url}" style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;padding:16px 32px;font-family:${FONT_STACK}">
-            ${escape(cta.label)}
-          </a>
-        </td>
-        ${secondary ? `<td style="padding-left:12px"><a href="${secondary.url}" style="display:inline-block;color:${COLORS.gold};text-decoration:none;font-weight:600;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:16px 8px;font-family:${FONT_STACK}">${escape(secondary.label)} →</a></td>` : ''}
-      </tr></table>
-    </td></tr>
+function headline(text: string): string {
+  return `<tr><td style="padding:18px 48px 0">
+    <h1 style="margin:0;font-family:${FONT_SERIF};font-style:italic;font-size:32px;font-weight:500;color:${C.cream};letter-spacing:-0.5px;line-height:1.18">${escape(text)}</h1>
+  </td></tr>`;
+}
+
+function lede(text: string): string {
+  return `<tr><td style="padding:18px 48px 0">
+    <p style="margin:0;font-family:${FONT_SERIF};font-style:italic;font-size:18px;font-weight:400;color:${C.creamDim};line-height:1.5">${escape(text)}</p>
+  </td></tr>`;
+}
+
+function paragraph(html: string): string {
+  return `<tr><td style="padding:22px 48px 0;font-family:${FONT_SANS};font-size:15px;color:${C.cream};line-height:1.75">${html}</td></tr>`;
+}
+
+function valueCallout(label: string, html: string): string {
+  return `<tr><td style="padding:28px 48px 0">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:2px solid ${C.brass};background:${C.midnight700};border-radius:6px">
+      <tr><td style="padding:18px 22px">
+        <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brassLight};text-transform:uppercase;margin-bottom:8px">${escape(label)}</div>
+        <div style="font-family:${FONT_SANS};font-size:14px;color:${C.cream};line-height:1.7">${html}</div>
+      </td></tr>
+    </table>
+  </td></tr>`;
+}
+
+function ctaBlock(primary: { label: string; url: string }, secondary?: { label: string; url: string }): string {
+  return `<tr><td style="padding:30px 48px 0" align="left">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td bgcolor="${C.brass}" style="background:linear-gradient(120deg,${C.rust} 0%,${C.brass} 60%,${C.brassLight} 100%);border-radius:999px">
+        <a href="${primary.url}" style="display:inline-block;color:${C.cream};text-decoration:none;font-weight:700;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:15px 30px;font-family:${FONT_SANS}">${escape(primary.label)}</a>
+      </td>
+      ${secondary ? `<td style="padding-left:14px"><a href="${secondary.url}" style="display:inline-block;color:${C.brassLight};text-decoration:none;font-weight:600;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:15px 8px;font-family:${FONT_SANS}">${escape(secondary.label)} →</a></td>` : ''}
+    </tr></table>
+  </td></tr>`;
+}
+
+function signature(name: string): string {
+  return `<tr><td style="padding:32px 48px 44px">
+    <div style="font-family:${FONT_MONO};font-size:10px;letter-spacing:3px;color:${C.creamGhost};text-transform:uppercase;margin-bottom:6px">Signed</div>
+    <p style="margin:0;font-family:${FONT_SERIF};font-style:italic;font-size:22px;color:${C.cream};font-weight:500">${escape(name)}</p>
+    <p style="margin:2px 0 0;font-family:${FONT_MONO};font-size:10px;color:${C.creamFaint};letter-spacing:2px;text-transform:uppercase">Modern Mustard Seed</p>
+  </td></tr>`;
+}
+
+function nextUp(text: string): string {
+  return `<tr><td style="padding:0 48px 30px">
+    <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brassLight};text-transform:uppercase;margin-bottom:8px">Coming next</div>
+    <p style="margin:0;font-family:${FONT_SANS};font-size:13px;color:${C.creamDim};line-height:1.6;font-style:italic">${escape(text)}</p>
+  </td></tr>`;
+}
+
+/* ────────────────────────── CLIENT EMAIL (general) ────────────────────────── */
+
+type ClientEmailArgs = {
+  preheader?: string;
+  eyebrow?: string;
+  greeting?: string;
+  body: string; // HTML
+  cta?: { label: string; url: string };
+  secondary?: { label: string; url: string };
+  signature?: string;
+};
+
+/** General-purpose outbound customer email. Cleaner type hierarchy than v1. */
+export function clientEmail({
+  preheader = '',
+  eyebrow: eb,
+  greeting,
+  body,
+  cta,
+  secondary,
+  signature: sig = 'Sarah',
+}: ClientEmailArgs): string {
+  const inner = `
+    ${brassDivider()}
+    ${eb ? eyebrow(eb) : ''}
+    ${greeting ? headline(greeting) : ''}
+    ${paragraph(body)}
+    ${cta ? ctaBlock(cta, secondary) : ''}
+    ${signature(sig)}
+    ${brassDivider()}
   `;
+  return shell({ preheader, inner });
 }
 
-type LeadField = { label: string; value: string; isLink?: boolean };
+/* ────────────────────────── PLAYBOOK EMAIL (post-chat) ────────────────────────── */
+
+type PlaybookEmailArgs = {
+  firstName: string;
+  painSummary: string;
+  recommendedSteps: { title: string; detail: string }[];
+  recommendedOffer?: { name: string; price: string; why: string; href: string };
+  nextUpTease?: string;
+};
+
+/** Value-based auto-reply after the Mustard Seed chat. Reads the visitor's
+ * pain back at them, then hands them a 3-5 step playbook AI-generated for
+ * their specific situation. */
+export function playbookEmail({
+  firstName,
+  painSummary,
+  recommendedSteps,
+  recommendedOffer,
+  nextUpTease,
+}: PlaybookEmailArgs): string {
+  const stepsHtml = recommendedSteps
+    .map(
+      (s, i) => `
+    <div style="padding:20px 0;border-bottom:1px solid ${C.hairline}">
+      <div style="display:inline-block;width:32px;font-family:${FONT_SERIF};font-style:italic;font-size:24px;color:${C.brassLight};font-weight:600;line-height:1;vertical-align:top">${i + 1}</div>
+      <div style="display:inline-block;width:calc(100% - 40px);vertical-align:top">
+        <h3 style="margin:0 0 6px;font-family:${FONT_SERIF};font-size:17px;color:${C.cream};font-weight:600;line-height:1.3">${escape(s.title)}</h3>
+        <p style="margin:0;font-family:${FONT_SANS};font-size:14px;color:${C.creamDim};line-height:1.65">${escape(s.detail)}</p>
+      </div>
+    </div>`
+    )
+    .join('');
+
+  const stepsBlock = `<tr><td style="padding:22px 48px 0">
+    <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:5px;color:${C.brassLight};text-transform:uppercase;margin-bottom:14px">Your playbook</div>
+    ${stepsHtml}
+  </td></tr>`;
+
+  const offerBlock = recommendedOffer
+    ? `<tr><td style="padding:30px 48px 0">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.midnight700};border:1px solid ${C.hairlineBrass};border-radius:10px">
+          <tr><td style="padding:22px 24px">
+            <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brassLight};text-transform:uppercase;margin-bottom:8px">If you want us to ship it</div>
+            <h3 style="margin:0 0 4px;font-family:${FONT_SERIF};font-size:20px;color:${C.cream};font-weight:600">${escape(recommendedOffer.name)}</h3>
+            <p style="margin:0 0 10px;font-family:${FONT_MONO};font-size:11px;color:${C.brassLight};letter-spacing:2px;text-transform:uppercase">${escape(recommendedOffer.price)}</p>
+            <p style="margin:0 0 12px;font-family:${FONT_SANS};font-size:14px;color:${C.creamDim};line-height:1.65">${escape(recommendedOffer.why)}</p>
+            <a href="${recommendedOffer.href}" style="color:${C.brassLight};text-decoration:none;font-family:${FONT_MONO};font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700">See the details →</a>
+          </td></tr>
+        </table>
+      </td></tr>`
+    : '';
+
+  const inner = `
+    ${brassDivider()}
+    ${eyebrow('Your Mustard Seed playbook')}
+    ${headline(`${firstName}, I read what you sent.`)}
+    ${valueCallout('What I heard', escape(painSummary))}
+    ${paragraph(`<p style="margin:0">You named the pain. That is the hard part. Here is what I would do, in order, starting tomorrow morning.</p>`)}
+    ${stepsBlock}
+    ${offerBlock}
+    ${ctaBlock(
+      { label: 'Run the free Website Audit', url: WEBSITE_AUDIT_URL },
+      { label: 'Apply to build queue', url: BUILD_QUEUE_URL }
+    )}
+    ${signature('Sarah')}
+    ${nextUpTease ? nextUp(nextUpTease) : ''}
+    ${brassDivider()}
+  `;
+  return shell({ preheader: `Your custom 5-step playbook for ${firstName}. Read inside.`, inner });
+}
+
+/* ────────────────────────── BOOKING EMAILS ────────────────────────── */
+
+type BookingArgs = {
+  firstName: string;
+  whenDisplay: string; // e.g. "Tuesday, June 10, 11:00 AM Mountain"
+  durationMinutes: number;
+  painSummary?: string;
+  conferenceLink?: string;
+};
+
+/** Sent to the visitor when they book a call through the chatbot. */
+export function bookingConfirmationEmail({
+  firstName,
+  whenDisplay,
+  durationMinutes,
+  painSummary,
+  conferenceLink,
+}: BookingArgs): string {
+  const inner = `
+    ${brassDivider()}
+    ${eyebrow('Discovery call confirmed')}
+    ${headline(`${firstName}, you are on my calendar.`)}
+    <tr><td style="padding:28px 48px 0">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.midnight700};border:1px solid ${C.hairlineBrass};border-radius:10px">
+        <tr><td style="padding:24px 26px">
+          <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:5px;color:${C.brassLight};text-transform:uppercase;margin-bottom:10px">When</div>
+          <p style="margin:0;font-family:${FONT_SERIF};font-style:italic;font-size:22px;color:${C.cream};font-weight:500;line-height:1.3">${escape(whenDisplay)}</p>
+          <p style="margin:8px 0 0;font-family:${FONT_MONO};font-size:11px;color:${C.creamFaint};letter-spacing:2px;text-transform:uppercase">${durationMinutes} minutes</p>
+        </td></tr>
+      </table>
+    </td></tr>
+    ${conferenceLink ? paragraph(`<p style="margin:0">Video link: <a href="${escape(conferenceLink)}" style="color:${C.brassLight};text-decoration:underline">${escape(conferenceLink)}</a></p>`) : paragraph(`<p style="margin:0">I will send a video link the day before. If you would rather meet by phone, reply with the number to call.</p>`)}
+    ${valueCallout(
+      'How to make the call worth your time',
+      `<ul style="margin:0;padding-left:18px;line-height:1.75">
+        <li>Bring the URL of your current site (if you have one).</li>
+        <li>Bring the one thing that is most slowing the business down.</li>
+        <li>Have a rough budget in mind. We can scope around any range.</li>
+      </ul>`
+    )}
+    ${painSummary ? paragraph(`<p style="margin:0 0 6px;font-family:${FONT_MONO};font-size:10px;color:${C.brassLight};letter-spacing:3px;text-transform:uppercase;font-weight:700">What you told me</p><p style="margin:0;font-style:italic;color:${C.creamDim}">"${escape(painSummary)}"</p>`) : ''}
+    ${ctaBlock(
+      { label: 'Run the free Website Audit before we meet', url: WEBSITE_AUDIT_URL },
+      { label: 'See the work', url: WORK_URL }
+    )}
+    ${signature('Sarah')}
+    ${brassDivider()}
+  `;
+  return shell({ preheader: `Your discovery call is confirmed for ${whenDisplay}.`, inner });
+}
+
+/** Sent to Sarah when a visitor books through the chatbot. */
+export function bookingNotificationEmail(args: {
+  name: string;
+  email: string;
+  business?: string;
+  whenDisplay: string;
+  painSummary: string;
+  recommendedSteps?: { title: string; detail: string }[];
+}): string {
+  const stepsHtml = (args.recommendedSteps ?? [])
+    .map(
+      (s, i) => `<p style="margin:6px 0 0;font-family:${FONT_SANS};font-size:13px;color:${C.cream};line-height:1.65"><strong>${i + 1}. ${escape(s.title)}</strong> <span style="color:${C.creamDim}">${escape(s.detail)}</span></p>`
+    )
+    .join('');
+
+  const inner = `
+    ${brassDivider()}
+    <tr><td style="padding:36px 48px 0">
+      <span style="display:inline-block;background:${C.ember};color:${C.cream};padding:5px 12px;border-radius:4px;font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Booked</span>
+    </td></tr>
+    ${headline(args.whenDisplay)}
+    <tr><td style="padding:22px 48px 0">
+      <p style="margin:0;font-family:${FONT_SERIF};font-size:20px;color:${C.cream};font-weight:600;line-height:1.3">${escape(args.name)}</p>
+      <p style="margin:4px 0 0;font-family:${FONT_MONO};font-size:13px;color:${C.brassLight};letter-spacing:0.5px"><a href="mailto:${escape(args.email)}" style="color:${C.brassLight};text-decoration:none">${escape(args.email)}</a>${args.business ? ` · ${escape(args.business)}` : ''}</p>
+    </td></tr>
+    ${valueCallout('Pain point', escape(args.painSummary))}
+    ${stepsHtml ? `<tr><td style="padding:24px 48px 0">
+      <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brassLight};text-transform:uppercase;margin-bottom:6px">Playbook I sent them</div>
+      ${stepsHtml}
+    </td></tr>` : ''}
+    <tr><td style="padding:30px 48px 36px">
+      <p style="margin:0;font-family:${FONT_MONO};font-size:11px;color:${C.creamFaint};letter-spacing:1.5px">Prep checklist: review their site if they have one, draft a 3-question outline, send video link 24h before.</p>
+    </td></tr>
+    ${brassDivider()}
+  `;
+  return shell({ preheader: `Booked: ${args.name}, ${args.whenDisplay}`, inner, showSocial: false });
+}
+
+/* ────────────────────────── SEQUENCE EMAILS (Day 2 + Day 5) ────────────────────────── */
+
+/** Day 2 of the post-chat funnel. A specific tactic + case study reference. */
+export function sequenceDay2Email(firstName: string): string {
+  const inner = `
+    ${brassDivider()}
+    ${eyebrow('Day 2 · A specific tactic')}
+    ${headline(`${firstName}, one move you can make today.`)}
+    ${paragraph(`<p style="margin:0 0 14px">If your website does not load in under two seconds on a phone, you are losing half your visitors before they ever see your offer. Run this test in two minutes:</p>
+    <ol style="margin:0 0 14px;padding-left:20px;line-height:1.8">
+      <li>Open your site on a phone with 4G (turn wifi off).</li>
+      <li>Count one-Mississippi until the page is fully usable.</li>
+      <li>If it is over three seconds, you have a foundation problem.</li>
+    </ol>
+    <p style="margin:0">The good news: most slow sites can be fixed in under a week. The work is image optimization, font loading, and killing the third-party scripts that are not earning their keep.</p>`)}
+    ${valueCallout('What we built for VoiceStaff', `Their old site loaded in 4.8s on mobile. The new one loads in 0.9s. Same content. Same brand. Just a clean Next.js + Vercel build. Conversion on the same offer went from 2.1% to 5.4%. <a href="${SITE}/work/voicestaff" style="color:${C.brassLight};text-decoration:underline">See the case study →</a>`)}
+    ${paragraph(`<p style="margin:0">If you want, run our free Website Audit on your URL. It will tell you exactly what is slowing your site down and what to fix first, ranked by impact.</p>`)}
+    ${ctaBlock({ label: 'Run the Website Audit', url: WEBSITE_AUDIT_URL }, { label: 'See engagements', url: ENGAGEMENTS_URL })}
+    ${signature('Sarah')}
+    ${nextUp('Day 5: how the right back office turns leads into recurring revenue without you opening eight tabs.')}
+    ${brassDivider()}
+  `;
+  return shell({ preheader: 'A two-minute test that tells you if your site is losing customers.', inner });
+}
+
+/** Day 5 of the post-chat funnel. The bigger picture + invite to book. */
+export function sequenceDay5Email(firstName: string): string {
+  const inner = `
+    ${brassDivider()}
+    ${eyebrow('Day 5 · The bigger picture')}
+    ${headline(`${firstName}, here is what I would actually build.`)}
+    ${paragraph(`<p style="margin:0 0 14px">Most "small business" owners are running 8 to 12 separate tools (CRM, email, social scheduler, booking, payments, analytics, helpdesk, project tracker). Each tool costs $30 to $80 a month. None of them talk to each other cleanly. Every Monday morning, the owner opens eight tabs and tries to remember what closed last week.</p>
+    <p style="margin:0 0 14px">A Full-Service Business Build replaces that whole stack with one custom system. Your site captures the lead. The AI SDR qualifies it. The booking system holds the call. The back office shows you what closed, what stalled, and what to work on this week. The AI agents draft your follow-ups in your voice. Everything lives in one screen. You own all of it.</p>
+    <p style="margin:0">Most builds run $8,500 to $22,000 and take 30 days. Smaller scope (just the site, no AI engine) is the Seed Site at $2,500 to $5,000 in 14 days.</p>`)}
+    ${valueCallout('The math that makes this obvious', `12 SaaS subscriptions × $50/mo × 24 months = <strong>$14,400</strong>. And you still own none of it. A Full-Service Business Build at $14,000 lands at the same total cost over two years, and at month 25 you keep going on $30/month in hosting. Forever.`)}
+    ${paragraph(`<p style="margin:0">If any of this fits the shape of your business, the next step is a 30-minute discovery call. I will scope your situation specifically and tell you honestly if I think we are the right partner.</p>`)}
+    ${ctaBlock({ label: 'Book a discovery call', url: BOOKING_URL }, { label: 'Apply to build queue', url: BUILD_QUEUE_URL })}
+    ${signature('Sarah')}
+    ${brassDivider()}
+  `;
+  return shell({ preheader: 'The 12-tool stack vs. one custom system. The math is wild.', inner });
+}
+
+/* ────────────────────────── AUDIT FOLLOW-UPS (score-conditioned) ────────────────────────── */
+
+type AuditFollowupArgs = {
+  firstName: string;
+  url: string;
+  score: number;
+  grade: string;
+  headline: string;
+  topThreeFixes: { title: string; why: string; how: string }[];
+};
+
+function fixesList(fixes: { title: string; why: string; how: string }[]): string {
+  return fixes
+    .map(
+      (f, i) => `
+    <div style="padding:18px 0;border-bottom:1px solid ${C.hairline}">
+      <div style="font-family:${FONT_SERIF};font-style:italic;font-size:22px;color:${C.brassLight};font-weight:600;line-height:1;margin-bottom:6px">${i + 1}. ${escape(f.title)}</div>
+      <p style="margin:0 0 6px;font-family:${FONT_SANS};font-size:13px;color:${C.creamDim};line-height:1.6"><span style="font-family:${FONT_MONO};font-size:9px;color:${C.brassLight};letter-spacing:2px;text-transform:uppercase;margin-right:6px">Why</span>${escape(f.why)}</p>
+      <p style="margin:0;font-family:${FONT_SANS};font-size:13px;color:${C.cream};line-height:1.6"><span style="font-family:${FONT_MONO};font-size:9px;color:${C.brassLight};letter-spacing:2px;text-transform:uppercase;margin-right:6px">How</span>${escape(f.how)}</p>
+    </div>`
+    )
+    .join('');
+}
+
+/** Audit follow-up email. Branches its recommendation based on score:
+ *  < 70  → Seed Site (fix the basics fast)
+ *  70-89 → Full-Service Business Build (you are past basics, time for the engine)
+ *  >= 90 → Fractional AI Partner (you do not need a rebuild, you need a strategist) */
+export function auditFollowupEmail({ firstName, url, score, grade, headline: line, topThreeFixes }: AuditFollowupArgs): string {
+  let offerBlock: string;
+  let preheader: string;
+
+  if (score < 70) {
+    preheader = `Your audit: ${score}/${grade}. The good news: Seed Site fixes it in 14 days.`;
+    offerBlock = `<tr><td style="padding:30px 48px 0">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.midnight700};border:1px solid ${C.hairlineBrass};border-radius:10px">
+        <tr><td style="padding:22px 24px">
+          <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brassLight};text-transform:uppercase;margin-bottom:8px">For where you are</div>
+          <h3 style="margin:0 0 4px;font-family:${FONT_SERIF};font-size:22px;color:${C.cream};font-weight:600">Seed Site</h3>
+          <p style="margin:0 0 10px;font-family:${FONT_MONO};font-size:11px;color:${C.brassLight};letter-spacing:2px;text-transform:uppercase">$2,500 to $5,000 · 14 days</p>
+          <p style="margin:0 0 14px;font-family:${FONT_SANS};font-size:14px;color:${C.creamDim};line-height:1.65">Beautiful, fast, brand-aligned site that fixes the foundation issues your audit just flagged. Loads in under two seconds. SEO foundation built in. Full handoff.</p>
+          <a href="${ENGAGEMENTS_URL}#seed-site" style="color:${C.brassLight};text-decoration:none;font-family:${FONT_MONO};font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700">See the engagement →</a>
+        </td></tr>
+      </table>
+    </td></tr>`;
+  } else if (score < 90) {
+    preheader = `Your audit: ${score}/${grade}. You are past basics. Ready for the engine?`;
+    offerBlock = `<tr><td style="padding:30px 48px 0">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.midnight700};border:1px solid ${C.hairlineBrass};border-radius:10px">
+        <tr><td style="padding:22px 24px">
+          <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brassLight};text-transform:uppercase;margin-bottom:8px">For where you are</div>
+          <h3 style="margin:0 0 4px;font-family:${FONT_SERIF};font-size:22px;color:${C.cream};font-weight:600">Full-Service Business Build</h3>
+          <p style="margin:0 0 10px;font-family:${FONT_MONO};font-size:11px;color:${C.brassLight};letter-spacing:2px;text-transform:uppercase">$8,500 to $22,000 · 30 days</p>
+          <p style="margin:0 0 14px;font-family:${FONT_SANS};font-size:14px;color:${C.creamDim};line-height:1.65">Your foundation is solid. What you need now is the engine: bespoke booking with embedded CRM, an AI SDR capturing every lead, funnels live on day one, a back office that surfaces what matters, AI agents on both sides of the wall.</p>
+          <a href="${ENGAGEMENTS_URL}#online-presence" style="color:${C.brassLight};text-decoration:none;font-family:${FONT_MONO};font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700">See the engagement →</a>
+        </td></tr>
+      </table>
+    </td></tr>`;
+  } else {
+    preheader = `Your audit: ${score}/${grade}. You do not need a rebuild. You need a strategist.`;
+    offerBlock = `<tr><td style="padding:30px 48px 0">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.midnight700};border:1px solid ${C.hairlineBrass};border-radius:10px">
+        <tr><td style="padding:22px 24px">
+          <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brassLight};text-transform:uppercase;margin-bottom:8px">For where you are</div>
+          <h3 style="margin:0 0 4px;font-family:${FONT_SERIF};font-size:22px;color:${C.cream};font-weight:600">Fractional AI Partner</h3>
+          <p style="margin:0 0 10px;font-family:${FONT_MONO};font-size:11px;color:${C.brassLight};letter-spacing:2px;text-transform:uppercase">From $1,500/month · 3-month minimum</p>
+          <p style="margin:0 0 14px;font-family:${FONT_SANS};font-size:14px;color:${C.creamDim};line-height:1.65">Your site is excellent. You do not need to rebuild. You need a partner who can keep extending it, plug in new AI capabilities as they ship, and watch your numbers with you. That is exactly what this retainer is.</p>
+          <a href="${ENGAGEMENTS_URL}#fractional" style="color:${C.brassLight};text-decoration:none;font-family:${FONT_MONO};font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700">See the engagement →</a>
+        </td></tr>
+      </table>
+    </td></tr>`;
+  }
+
+  const inner = `
+    ${brassDivider()}
+    ${eyebrow(`Your website audit: ${grade}`)}
+    ${headline(`${firstName}, ${score}/100.`)}
+    ${lede(`"${line}"`)}
+    <tr><td style="padding:28px 48px 0">
+      <p style="margin:0;font-family:${FONT_MONO};font-size:10px;color:${C.creamFaint};letter-spacing:2px">${escape(url)}</p>
+    </td></tr>
+    <tr><td style="padding:22px 48px 0">
+      <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:5px;color:${C.brassLight};text-transform:uppercase;margin-bottom:14px">Fix these three first</div>
+      ${fixesList(topThreeFixes)}
+    </td></tr>
+    ${offerBlock}
+    ${ctaBlock({ label: 'See all engagements', url: ENGAGEMENTS_URL }, { label: 'Apply to build queue', url: BUILD_QUEUE_URL })}
+    ${signature('Sarah')}
+    ${brassDivider()}
+  `;
+  return shell({ preheader, inner });
+}
+
+/* ────────────────────────── LEAD NOTIFICATION (Sarah's triage view) ────────────────────────── */
+
+export type LeadField = { label: string; value: string; isLink?: boolean };
 
 type LeadNotificationArgs = {
   type: 'Build Queue' | 'AI Audit' | 'Contact' | 'Newsletter';
@@ -159,7 +540,7 @@ type LeadNotificationArgs = {
   suggestedAction?: string;
 };
 
-/** Sarah's inbound notification. Dark, scannable, designed for triage. */
+/** Sarah's inbound notification. Clean, scannable, designed for triage. */
 export function leadNotification({
   type,
   name,
@@ -169,101 +550,64 @@ export function leadNotification({
   suggestedAction,
 }: LeadNotificationArgs): string {
   const typeAccent = {
-    'Build Queue': '#F0D090',
-    'AI Audit': '#C8964E',
-    'Contact': '#C86A45',
-    'Newsletter': 'rgba(255,255,255,0.45)',
+    'Build Queue': C.brassBright,
+    'AI Audit': C.brass,
+    Contact: C.rust,
+    Newsletter: C.creamFaint,
   }[type];
 
-  const rows = fields
+  const fieldsHtml = fields
     .map(
-      (f) => `
-      <tr>
-        <td style="padding:11px 0;color:${COLORS.faint};font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2px;width:180px;vertical-align:top;font-family:${MONO_STACK}">${escape(f.label)}</td>
-        <td style="padding:11px 0;color:${COLORS.text};font-size:14px;vertical-align:top;line-height:1.5">${f.isLink ? `<a href="${f.value}" style="color:${COLORS.gold};text-decoration:none">${escape(f.value)}</a>` : escape(f.value)}</td>
-      </tr>`
+      (f) => `<tr>
+      <td style="padding:8px 0;width:130px;font-family:${FONT_MONO};font-size:10px;color:${C.creamFaint};letter-spacing:1.5px;text-transform:uppercase;vertical-align:top">${escape(f.label)}</td>
+      <td style="padding:8px 0;font-family:${FONT_SANS};font-size:13px;color:${C.cream}">${f.isLink ? `<a href="${escape(f.value)}" style="color:${C.brassLight};text-decoration:none">${escape(f.value)}</a>` : escape(f.value)}</td>
+    </tr>`
     )
     .join('');
 
-  return `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark only"><meta name="supported-color-schemes" content="dark only"></head>
-<body style="margin:0;padding:0;background:${COLORS.void};font-family:${FONT_STACK};color:${COLORS.text};-webkit-font-smoothing:antialiased">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${COLORS.void}" style="background:${COLORS.void}">
-  <tr><td align="center" style="padding:32px 16px">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px">
-
-      <tr><td style="padding-bottom:18px;font-family:${MONO_STACK};font-size:10px;font-weight:700;letter-spacing:5px;color:${COLORS.goldDim};text-transform:uppercase">
-        Modern Mustard Seed &nbsp;·&nbsp; Inbox
-      </td></tr>
-
-      <tr><td bgcolor="${COLORS.card}" style="background:${COLORS.card};border:1px solid ${COLORS.hairlineWhite};border-radius:14px;overflow:hidden">
-
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td height="2" style="height:2px;line-height:2px;font-size:0;background:${typeAccent}">&nbsp;</td></tr></table>
-
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr><td style="padding:32px 40px 0">
-            <div style="font-family:${MONO_STACK};font-size:10px;font-weight:700;letter-spacing:4px;color:${typeAccent};text-transform:uppercase;margin-bottom:14px">${type}</div>
-            <h1 style="margin:0;font-size:26px;color:${COLORS.heading};font-weight:600;letter-spacing:-0.4px;font-family:${FONT_STACK}">${escape(name)}</h1>
-            <p style="margin:6px 0 0;font-size:14px"><a href="mailto:${email}" style="color:${COLORS.gold};text-decoration:none">${escape(email)}</a></p>
-          </td></tr>
-
-          <tr><td style="padding:24px 40px 0">
-            <div style="border-top:1px solid ${COLORS.hairlineWhite};padding-top:8px"></div>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${rows}</table>
-          </td></tr>
-
-          ${message ? `<tr><td style="padding:18px 40px 0">
-            <div style="background:rgba(255,107,53,0.08);border-left:2px solid ${COLORS.gold};padding:18px 22px;border-radius:6px;font-size:14px;color:${COLORS.text};line-height:1.65;white-space:pre-wrap;font-family:${FONT_STACK}">${escape(message)}</div>
-          </td></tr>` : ''}
-
-          ${suggestedAction ? `<tr><td style="padding:18px 40px 0">
-            <p style="margin:0;font-family:${MONO_STACK};font-size:11px;color:${COLORS.faint};letter-spacing:1.5px;text-transform:uppercase">&rarr; ${escape(suggestedAction)}</p>
-          </td></tr>` : ''}
-
-          <tr><td style="padding:24px 40px 32px">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-              <td bgcolor="#C8964E" style="background:${GOLD_GRADIENT};border-radius:8px">
-                <a href="mailto:${email}" style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:13px 24px;font-family:${FONT_STACK}">Reply to ${escape(name.split(' ')[0])}</a>
-              </td>
-              <td style="padding-left:12px">
-                <a href="https://modernmustardseed.com/admin" style="display:inline-block;color:${COLORS.gold};text-decoration:none;font-weight:600;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:13px 8px;font-family:${FONT_STACK}">Open in admin →</a>
-              </td>
-            </tr></table>
-          </td></tr>
-        </table>
-
-      </td></tr>
-
-      <tr><td align="center" style="padding-top:18px">
-        <p style="margin:0;color:${COLORS.faint};font-family:${MONO_STACK};font-size:10px;letter-spacing:2px;text-transform:uppercase">Logged at /admin · Synced to Supabase</p>
-      </td></tr>
-    </table>
-  </td></tr>
-</table>
-</body></html>`;
+  const inner = `
+    ${brassDivider()}
+    <tr><td style="padding:36px 48px 0">
+      <span style="display:inline-block;background:${typeAccent};color:${C.midnight};padding:5px 12px;border-radius:4px;font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">${escape(type)}</span>
+    </td></tr>
+    ${headline(name)}
+    <tr><td style="padding:8px 48px 0">
+      <a href="mailto:${escape(email)}" style="color:${C.brassLight};text-decoration:none;font-family:${FONT_MONO};font-size:13px;letter-spacing:0.5px">${escape(email)}</a>
+    </td></tr>
+    <tr><td style="padding:28px 48px 0">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        ${fieldsHtml}
+      </table>
+    </td></tr>
+    ${message ? valueCallout('Message', `<div style="white-space:pre-wrap">${escape(message)}</div>`) : ''}
+    ${suggestedAction ? `<tr><td style="padding:24px 48px 0">
+      <p style="margin:0;font-family:${FONT_MONO};font-size:11px;color:${C.brassLight};letter-spacing:1.5px;text-transform:uppercase;font-weight:700">Suggested action</p>
+      <p style="margin:6px 0 0;font-family:${FONT_SANS};font-size:14px;color:${C.cream};line-height:1.6">${escape(suggestedAction)}</p>
+    </td></tr>` : ''}
+    <tr><td style="padding:36px 48px 36px"></td></tr>
+    ${brassDivider()}
+  `;
+  return shell({ preheader: `New ${type} lead: ${name}`, inner, showSocial: false });
 }
 
-function escape(s: string): string {
-  return String(s ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+/** Compatibility shim — older code imported `p`. */
+export function p(html: string): string {
+  return paragraph(html);
 }
 
-/** Paragraph helper for body content. */
-export function p(content: string): string {
-  return `<p style="margin:0 0 18px;color:${COLORS.text};line-height:1.75;font-size:16px">${content}</p>`;
-}
-
-/** Callout block. Gold-bordered card for highlighted content (playbook recs etc). */
-export function callout(args: { label?: string; title: string; body?: string; href?: string; cta?: string }): string {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 22px"><tr><td style="background:rgba(255,107,53,0.08);border-left:2px solid ${COLORS.gold};padding:20px 22px;border-radius:6px">
-    ${args.label ? `<div style="font-family:${MONO_STACK};font-size:10px;font-weight:700;letter-spacing:3px;color:${COLORS.gold};text-transform:uppercase;margin-bottom:8px">${escape(args.label)}</div>` : ''}
-    <div style="font-size:17px;font-weight:600;color:${COLORS.heading};margin-bottom:${args.body ? '8px' : '0'};line-height:1.4">${escape(args.title)}</div>
-    ${args.body ? `<div style="font-size:14px;color:${COLORS.muted};line-height:1.6;margin-bottom:${args.href ? '12px' : '0'}">${escape(args.body)}</div>` : ''}
-    ${args.href ? `<a href="${args.href}" style="color:${COLORS.gold};text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase">${escape(args.cta ?? 'Read it')} →</a>` : ''}
-  </td></tr></table>`;
+/** Compatibility shim for older routes that called `callout({ label, title, body, href, cta })`.
+ * Renders a brass-bordered card with optional internal link. */
+export function callout(args: {
+  label: string;
+  title: string;
+  body: string;
+  href?: string;
+  cta?: string;
+}): string {
+  return `<div style="background:${C.midnight700};border:1px solid ${C.hairlineBrass};border-left:3px solid ${C.brass};border-radius:8px;padding:20px 22px;margin:16px 0">
+    <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brassLight};text-transform:uppercase;margin-bottom:8px">${escape(args.label)}</div>
+    <h3 style="margin:0 0 6px;font-family:${FONT_SERIF};font-size:18px;color:${C.cream};font-weight:600;line-height:1.3">${escape(args.title)}</h3>
+    <p style="margin:0 0 ${args.href ? '12px' : '0'};font-family:${FONT_SANS};font-size:14px;color:${C.creamDim};line-height:1.65">${escape(args.body)}</p>
+    ${args.href ? `<a href="${args.href}" style="color:${C.brassLight};text-decoration:none;font-family:${FONT_MONO};font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700">${escape(args.cta ?? 'Read more')} →</a>` : ''}
+  </div>`;
 }
