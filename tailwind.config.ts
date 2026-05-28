@@ -10,70 +10,120 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Manrope"', 'system-ui', 'sans-serif'],
+        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
         body: ['"DM Sans"', 'system-ui', 'sans-serif'],
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', '"Space Mono"', 'monospace'],
-        display: ['"Fraunces"', '"Cormorant Garamond"', 'Georgia', 'serif'],
+        display: ['"Playfair Display"', '"Cormorant Garamond"', 'Georgia', 'serif'],
       },
       colors: {
-        // Legacy "mustard" tokens REMAPPED to Dawn Sky (cool blue) so every
-        // existing text-mustard-*, bg-mustard-*, border-mustard-* utility
-        // immediately picks up the new sky colors without rewriting components.
+        // Legacy "mustard" tokens REMAPPED to Campfire Brass so every existing
+        // text-mustard-*, bg-mustard-*, border-mustard-* utility immediately
+        // picks up the warm cabin palette without rewriting components.
         mustard: {
-          50: '#F0F7FF',
-          100: '#DCEBFB',
-          200: '#B5D6F5',
-          300: '#8FC0EF',
-          400: '#6FACE7', // dawn sky (primary accent)
-          500: '#4F92D8', // mid sky (primary brand)
-          600: '#3776C2', // deep sky (deep accent)
-          700: '#2A5A9F',
-          800: '#1F4280',
-          900: '#16305C',
+          50: '#F5F0E8',
+          100: '#EDDFC2',
+          200: '#E8C88A', // gold-light
+          300: '#D4A053',
+          400: '#C8964E', // gold (primary accent) - muted brass
+          500: '#C86A45', // rust (primary brand)
+          600: '#B8603F',
+          700: '#9A4F35',
+          800: '#7A3F2A',
+          900: '#5A2F20',
         },
-        // Aubergine night, the dark side of dawn
+        // Midnight: deep cool blue-black, NOT pure black, NOT warm black
+        midnight: {
+          DEFAULT: '#080C16',
+          900: '#04060D',
+          800: '#080C16',
+          700: '#0F1422',
+          600: '#1A1A2E',
+          500: '#2D2D44',
+        },
         night: {
-          DEFAULT: '#1A1140',
-          900: '#0E0824',
-          800: '#150E33',
-          700: '#1A1140',
-          600: '#26174F',
-          500: '#3A2475',
-          400: '#5238A1',
+          DEFAULT: '#080C16',
+          900: '#04060D',
+          800: '#080C16',
+          700: '#0F1422',
+          600: '#1A1A2E',
+          500: '#2D2D44',
+          400: '#3F3F58',
         },
-        // Dawn sky palette
+        // Campfire brass-gold (muted, aged, never vivid mustard yellow)
+        gold: {
+          DEFAULT: '#C8964E',
+          50: '#F5F0E8',
+          100: '#EDDFC2',
+          200: '#E8C88A',  // gold-light
+          300: '#D4A053',
+          400: '#C8964E',  // gold (the brand brass)
+          500: '#B58341',
+          600: '#9A6E36',
+          700: '#7C582A',
+          bright: '#F0D090',
+          light: '#E8C88A',
+        },
+        // Ember orange — the bonfire pop
+        ember: {
+          DEFAULT: '#FF6B35',
+          bright: '#FF8550',
+          glow: '#E07850',
+        },
+        // Rust — the deep earthy accent
+        rust: {
+          DEFAULT: '#C86A45',
+          light: '#E07850',
+          deep: '#B8603F',
+        },
+        // Lake teal — cool counterpoint, the alpine water
+        lake: {
+          DEFAULT: '#3B6B8A',
+          light: '#5C8AA8',
+          deep: '#284E6A',
+        },
+        // Sage green — the wilderness, evergreens
+        sage: {
+          DEFAULT: '#8FA98F',
+          light: '#A8BFA8',
+          deep: '#6E876E',
+        },
+        // Cream — warm off-white for cozy content
+        cream: {
+          DEFAULT: '#F5F0E8',
+          50: '#FCFAF5',
+          100: '#F5F0E8',
+          200: '#E8E0CF',
+        },
+        // Legacy aliases pointing at the new brand. Keep for cascade.
         sky: {
-          50: '#F0F7FF',
-          100: '#DCEBFB',
-          200: '#B5D6F5',
-          300: '#8FC0EF',
-          400: '#6FACE7',
-          500: '#4F92D8',
-          600: '#3776C2',
-          700: '#2A5A9F',
-          800: '#1F4280',
-          900: '#16305C',
+          50: '#EAF0F5',
+          100: '#C9D7E2',
+          200: '#94B0C5',
+          300: '#5C8AA8',
+          400: '#3B6B8A',  // lake
+          500: '#284E6A',  // lake deep
+          600: '#1A3548',
+          700: '#102233',
+          800: '#0A1A28',
+          900: '#06121E',
         },
-        // Cloud whites for fluff and highlight
         cloud: {
-          50: '#FAFCFF',
-          100: '#F0F5FB',
-          200: '#E0E8F2',
-          300: '#C7D3E3',
+          50: '#FCFAF5',
+          100: '#F5F0E8',   // cream
+          200: '#E8E0CF',
+          300: '#D4C8B0',
         },
-        // Sunrise warm tones are now reserved for scenic art only (the literal
-        // sun in MountainRange, the lake-reflection streak in GlacialLake, the
-        // dawn horizon glow). NOT for UI buttons, eyebrows, borders, or glows.
+        // Sunrise tokens kept (used in scenic art horizons) — now ember-shifted
         sunrise: {
-          rose: '#FF6B6B',
-          peach: '#FF8E72',
-          gold: '#FFB347',
-          mint: '#7FE4C5',
-          cyan: '#4ECDC4',
-          sky: '#9FD3E0',
+          rose: '#C86A45',  // rust
+          peach: '#E07850', // rust glow
+          gold: '#C8964E',  // brass gold
+          mint: '#8FA98F',  // sage
+          cyan: '#3B6B8A',  // lake
+          sky: '#5C8AA8',   // lake light
         },
-        steel: '#7C8DB5',
+        steel: '#5C7188',
       },
       animation: {
         'fade-in': 'fadeIn 1s ease-out forwards',

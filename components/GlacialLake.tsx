@@ -27,46 +27,47 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
         className="block w-full h-full"
       >
         <defs>
-          {/* Sky */}
+          {/* Cabin-at-dusk sky: midnight deepening to brass horizon */}
           <linearGradient id="gl-sky" x1="0" y1="0" x2="0" y2="1">
             {isDawn ? (
               <>
-                <stop offset="0%" stopColor="#1A1140" />
-                <stop offset="30%" stopColor="#1F4280" />
-                <stop offset="58%" stopColor="#3776C2" />
-                <stop offset="80%" stopColor="#6FACE7" />
-                <stop offset="93%" stopColor="#FFB347" />
-                <stop offset="100%" stopColor="#FFE2B0" />
+                <stop offset="0%" stopColor="#04060d" />
+                <stop offset="35%" stopColor="#080c16" />
+                <stop offset="62%" stopColor="#1A1A2E" />
+                <stop offset="82%" stopColor="#3B6B8A" />
+                <stop offset="92%" stopColor="#C8964E" />
+                <stop offset="100%" stopColor="#F0D090" />
               </>
             ) : (
               <>
-                <stop offset="0%" stopColor="#0E0824" />
-                <stop offset="60%" stopColor="#1A1140" />
-                <stop offset="100%" stopColor="#1F4280" />
+                <stop offset="0%" stopColor="#04060d" />
+                <stop offset="60%" stopColor="#080c16" />
+                <stop offset="100%" stopColor="#1A1A2E" />
               </>
             )}
           </linearGradient>
 
-          {/* Lake water gradient. Turquoise glacial. */}
+          {/* Lake water gradient. Alpine teal, deepening to midnight. */}
           <linearGradient id="gl-water" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#7FE4C5" stopOpacity="0.95" />
-            <stop offset="35%" stopColor="#4ECDC4" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#1A6C7A" stopOpacity="1" />
+            <stop offset="0%"  stopColor="#5C8AA8" stopOpacity="0.95" />
+            <stop offset="35%" stopColor="#3B6B8A" stopOpacity="0.96" />
+            <stop offset="75%" stopColor="#284E6A" stopOpacity="1" />
+            <stop offset="100%" stopColor="#0F1422" stopOpacity="1" />
           </linearGradient>
 
-          {/* Reflected sun streak on water */}
+          {/* Reflected sun streak on water: brass-cream */}
           <linearGradient id="gl-streak" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FFE2B0" stopOpacity="0.85" />
-            <stop offset="60%" stopColor="#FFB347" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#FF8E72" stopOpacity="0" />
+            <stop offset="0%"  stopColor="#F5F0E8" stopOpacity="0.88" />
+            <stop offset="55%" stopColor="#C8964E" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#C86A45" stopOpacity="0" />
           </linearGradient>
 
-          {/* Sun glow */}
+          {/* Sun glow: brass corona fading to ember */}
           <radialGradient id="gl-sun" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#FFE2B0" stopOpacity="1" />
-            <stop offset="35%" stopColor="#FFB347" stopOpacity="0.8" />
-            <stop offset="70%" stopColor="#FF8E72" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#FF6B6B" stopOpacity="0" />
+            <stop offset="0%"  stopColor="#F5F0E8" stopOpacity="1" />
+            <stop offset="35%" stopColor="#F0D090" stopOpacity="0.85" />
+            <stop offset="70%" stopColor="#C8964E" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#FF6B35" stopOpacity="0" />
           </radialGradient>
 
           {/* Ripple filter on the water. baseFrequency animates very slowly so
@@ -106,21 +107,21 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
         {isDawn && (
           <>
             <circle cx="1180" cy="320" r="180" fill="url(#gl-sun)" />
-            <circle cx="1180" cy="320" r="58" fill="#FFE2B0" opacity="0.95" />
+            <circle cx="1180" cy="320" r="58" fill="#F5F0E8" opacity="0.98" />
           </>
         )}
 
         {/* Distant ridge */}
         <path
           d="M 0 450 L 0 360 L 180 340 L 360 355 L 540 330 L 720 348 L 900 325 L 1080 345 L 1260 330 L 1440 350 L 1600 340 L 1600 450 Z"
-          fill="#3A2475"
+          fill="#1a1a2e"
           opacity="0.6"
         />
 
         {/* Mid ridge */}
         <path
           d="M 0 450 L 0 380 L 140 330 L 280 360 L 440 290 L 600 340 L 780 270 L 940 320 L 1120 260 L 1300 310 L 1460 285 L 1600 320 L 1600 450 Z"
-          fill="#2A1A55"
+          fill="#1A1A2E"
           opacity="0.85"
         />
 
@@ -128,12 +129,12 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
         <g>
           <path
             d="M 0 450 L 0 405 L 90 365 L 180 400 L 280 320 L 380 380 L 480 280 L 600 360 L 740 250 L 880 340 L 1020 270 L 1160 350 L 1300 285 L 1440 365 L 1600 310 L 1600 450 Z"
-            fill="#0E0824"
+            fill="#04060d"
           />
           {/* Snow caps on the sharpest peaks */}
           <path
             d="M 273 328 L 280 320 L 287 328 Z M 472 288 L 480 280 L 488 288 Z M 732 258 L 740 250 L 748 258 Z M 1012 278 L 1020 270 L 1028 278 Z M 1292 293 L 1300 285 L 1308 293 Z"
-            fill="#F5F0FA"
+            fill="#FCFAF5"
             opacity="0.85"
           />
         </g>
@@ -151,17 +152,17 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
           {/* Distant reflected ridge */}
           <path
             d="M 0 450 L 0 360 L 180 340 L 360 355 L 540 330 L 720 348 L 900 325 L 1080 345 L 1260 330 L 1440 350 L 1600 340 L 1600 450 Z"
-            fill="#3A2475"
+            fill="#1a1a2e"
           />
           {/* Mid reflected ridge */}
           <path
             d="M 0 450 L 0 380 L 140 330 L 280 360 L 440 290 L 600 340 L 780 270 L 940 320 L 1120 260 L 1300 310 L 1460 285 L 1600 320 L 1600 450 Z"
-            fill="#2A1A55"
+            fill="#1A1A2E"
           />
           {/* Foreground reflected ridge */}
           <path
             d="M 0 450 L 0 405 L 90 365 L 180 400 L 280 320 L 380 380 L 480 280 L 600 360 L 740 250 L 880 340 L 1020 270 L 1160 350 L 1300 285 L 1440 365 L 1600 310 L 1600 450 Z"
-            fill="#0E0824"
+            fill="#04060d"
           />
         </g>
 
@@ -179,15 +180,15 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
         )}
 
         {/* Horizon glow line where mountains meet water */}
-        <rect x="0" y="446" width="1600" height="6" fill="#FFB347" opacity="0.25" />
-        <rect x="0" y="448" width="1600" height="2" fill="#FFE2B0" opacity="0.55" />
+        <rect x="0" y="446" width="1600" height="6" fill="#C8964E" opacity="0.28" />
+        <rect x="0" y="448" width="1600" height="2" fill="#F0D090" opacity="0.6" />
 
         {/* Subtle water highlights */}
         <g opacity="0.35" filter="url(#gl-ripple)">
-          <line x1="0" y1="540" x2="1600" y2="540" stroke="#7FE4C5" strokeWidth="1" />
-          <line x1="0" y1="600" x2="1600" y2="600" stroke="#7FE4C5" strokeWidth="0.6" />
-          <line x1="0" y1="680" x2="1600" y2="680" stroke="#7FE4C5" strokeWidth="0.4" />
-          <line x1="0" y1="760" x2="1600" y2="760" stroke="#7FE4C5" strokeWidth="0.3" />
+          <line x1="0" y1="540" x2="1600" y2="540" stroke="#5C8AA8" strokeWidth="1" />
+          <line x1="0" y1="600" x2="1600" y2="600" stroke="#5C8AA8" strokeWidth="0.6" />
+          <line x1="0" y1="680" x2="1600" y2="680" stroke="#5C8AA8" strokeWidth="0.4" />
+          <line x1="0" y1="760" x2="1600" y2="760" stroke="#5C8AA8" strokeWidth="0.3" />
         </g>
       </svg>
     </div>

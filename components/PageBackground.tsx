@@ -10,7 +10,7 @@ export default function PageBackground() {
       <div className="pointer-events-auto absolute inset-0">
         <LuminousField />
       </div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_45%,rgba(14,8,36,0.78)_100%)] z-10" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_45%,rgba(8,12,22,0.78)_100%)] z-10" />
     </div>
   );
 }

@@ -58,16 +58,16 @@ export async function GET(req: Request) {
   const html = `
 <!DOCTYPE html>
 <html><body style="font-family:Arial,sans-serif;line-height:1.65;color:#333;max-width:600px;margin:0 auto;padding:20px">
-  <p style="font-size:11px;letter-spacing:3px;color:#6FACE7;text-transform:uppercase;font-weight:700">
+  <p style="font-size:11px;letter-spacing:3px;color:#C8964E;text-transform:uppercase;font-weight:700">
     Playbook of the Week
   </p>
-  <h1 style="font-size:28px;margin:8px 0 16px;color:#1A1140">${playbook.title}</h1>
+  <h1 style="font-size:28px;margin:8px 0 16px;color:#080c16">${playbook.title}</h1>
   <p style="font-size:16px;color:#555;margin-bottom:24px">${playbook.description}</p>
   <p style="margin:24px 0">
-    <a href="${playbookUrl}" style="display:inline-block;padding:14px 28px;background:linear-gradient(120deg,#4F92D8,#4ECDC4);color:#ffffff;text-decoration:none;font-weight:700;border-radius:999px;font-size:12px;letter-spacing:2px;text-transform:uppercase">Read the playbook</a>
+    <a href="${playbookUrl}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#F0D090,#C8964E);color:#ffffff;text-decoration:none;font-weight:700;border-radius:999px;font-size:12px;letter-spacing:2px;text-transform:uppercase">Read the playbook</a>
   </p>
   <p style="font-size:14px;color:#777">Free to read. Free to run yourself. The whole point.</p>
-  <p style="font-size:14px;color:#777">If you would rather have us ship the thing for you, the <a href="https://modernmustardseed.com/build-queue" style="color:#6FACE7">Build Queue</a> is open. Four slots a quarter.</p>
+  <p style="font-size:14px;color:#777">If you would rather have us ship the thing for you, the <a href="https://modernmustardseed.com/build-queue" style="color:#C8964E">Build Queue</a> is open. Four slots a quarter.</p>
   <hr style="border:0;border-top:1px solid #eee;margin:32px 0">
   <p style="font-size:12px;color:#888">Modern Mustard Seed. Apps, sites, and specialty AI tools.<br>
   Reply to this email to talk to Sarah directly.</p>

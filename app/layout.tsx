@@ -11,7 +11,7 @@ import './globals.css';
 export const metadata: Metadata = buildMetadata();
 
 export const viewport: Viewport = {
-  themeColor: '#4F92D8',
+  themeColor: '#C8964E',
   width: 'device-width',
   initialScale: 1,
 };
@@ -24,12 +24,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300..600;1,9..40,300..500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=JetBrains+Mono:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
         <JsonLd data={siteGraphJsonLd} />
       </head>
-      <body className="bg-[#1A1140] text-white selection:bg-mustard-500/30 selection:text-white">
+      <body className="bg-[#080c16] text-white selection:bg-mustard-500/30 selection:text-white">
         <div className="relative z-30">
           <Navbar />
           <main>{children}</main>
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <noscript>
           <p style={{ padding: '2rem', textAlign: 'center', color: '#fff' }}>
             {SITE.name}. {SITE.description} Visit{' '}
-            <a href={SITE.url} style={{ color: '#4F92D8' }}>
+            <a href={SITE.url} style={{ color: '#C8964E' }}>
               {SITE.url}
             </a>{' '}
             for more.

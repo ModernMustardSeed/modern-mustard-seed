@@ -74,63 +74,63 @@ export default function MountainRange({
         className="absolute inset-0 w-full h-full"
       >
         <defs>
-          {/* Dawn sky: aubergine top -> deep sky -> dawn -> warm horizon */}
+          {/* Cabin-at-dusk sky: midnight top deepening to brass horizon */}
           <linearGradient id="mr-sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"  stopColor="#0E0824" />
-            <stop offset="22%" stopColor="#1F4280" />
-            <stop offset="52%" stopColor="#3776C2" />
-            <stop offset="74%" stopColor="#6FACE7" />
-            <stop offset="88%" stopColor="#FFB347" />
-            <stop offset="100%" stopColor="#FFE2B0" />
+            <stop offset="0%"  stopColor="#04060d" />
+            <stop offset="28%" stopColor="#080c16" />
+            <stop offset="55%" stopColor="#1A1A2E" />
+            <stop offset="78%" stopColor="#2D2D44" />
+            <stop offset="90%" stopColor="#C8964E" />
+            <stop offset="100%" stopColor="#F0D090" />
           </linearGradient>
 
-          {/* Sun: hot core, peach corona, fading rose */}
+          {/* Sun: cream-white core, brass corona, fading to ember */}
           <radialGradient id="mr-sun" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"  stopColor="#FFFAE8" stopOpacity="1" />
-            <stop offset="18%" stopColor="#FFE2B0" stopOpacity="0.95" />
-            <stop offset="42%" stopColor="#FFB347" stopOpacity="0.75" />
-            <stop offset="72%" stopColor="#FF8E72" stopOpacity="0.18" />
-            <stop offset="100%" stopColor="#FF6B6B" stopOpacity="0" />
+            <stop offset="0%"  stopColor="#FCFAF5" stopOpacity="1" />
+            <stop offset="20%" stopColor="#F5F0E8" stopOpacity="0.96" />
+            <stop offset="42%" stopColor="#F0D090" stopOpacity="0.80" />
+            <stop offset="72%" stopColor="#C8964E" stopOpacity="0.22" />
+            <stop offset="100%" stopColor="#FF6B35" stopOpacity="0" />
           </radialGradient>
 
-          {/* Wide sun halo wash across the right side of the sky */}
+          {/* Wide brass halo wash across the right side of the sky */}
           <radialGradient id="mr-halo" cx="78%" cy="32%" r="55%">
-            <stop offset="0%"  stopColor="#FFD0A8" stopOpacity="0.35" />
-            <stop offset="55%" stopColor="#FFB347" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#FFB347" stopOpacity="0" />
+            <stop offset="0%"  stopColor="#E8C88A" stopOpacity="0.32" />
+            <stop offset="55%" stopColor="#C8964E" stopOpacity="0.10" />
+            <stop offset="100%" stopColor="#C8964E" stopOpacity="0" />
           </radialGradient>
 
-          {/* Warm horizon glow ribbon (where sun line meets the rear ridge) */}
+          {/* Horizon glow ribbon (sun line meets the rear ridge): brass+ember */}
           <linearGradient id="mr-horizon" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"  stopColor="#FFE2B0" stopOpacity="0" />
-            <stop offset="50%" stopColor="#FFB347" stopOpacity="0.55" />
-            <stop offset="100%" stopColor="#FF8E72" stopOpacity="0" />
+            <stop offset="0%"  stopColor="#F0D090" stopOpacity="0" />
+            <stop offset="50%" stopColor="#C8964E" stopOpacity="0.60" />
+            <stop offset="100%" stopColor="#C86A45" stopOpacity="0" />
           </linearGradient>
 
-          {/* Cool deep-sky atmospheric haze between distant ridges */}
+          {/* Cool lake haze between distant ridges */}
           <linearGradient id="mr-haze-cool" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stopColor="#8FC0EF" stopOpacity="0" />
-            <stop offset="100%" stopColor="#3776C2" stopOpacity="0.35" />
+            <stop offset="0%"   stopColor="#5C8AA8" stopOpacity="0" />
+            <stop offset="100%" stopColor="#3B6B8A" stopOpacity="0.32" />
           </linearGradient>
 
-          {/* Sun-facing warm rim highlight (peach gradient sweep) */}
+          {/* Sun-facing brass rim highlight (warm gradient sweep) */}
           <linearGradient id="mr-rim" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stopColor="#FFB347" stopOpacity="0" />
-            <stop offset="50%"  stopColor="#FFD0A8" stopOpacity="0.75" />
-            <stop offset="100%" stopColor="#FFE2B0" stopOpacity="0.95" />
+            <stop offset="0%"   stopColor="#C8964E" stopOpacity="0" />
+            <stop offset="50%"  stopColor="#E8C88A" stopOpacity="0.78" />
+            <stop offset="100%" stopColor="#F5F0E8" stopOpacity="0.95" />
           </linearGradient>
 
-          {/* Snow gradient: bright top, fading into the rock below */}
+          {/* Snow gradient: cream-bright top, fading to lake-tinted rock below */}
           <linearGradient id="mr-snow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stopColor="#FAFCFF" stopOpacity="0.95" />
-            <stop offset="55%"  stopColor="#DCEBFB" stopOpacity="0.55" />
-            <stop offset="100%" stopColor="#B5D6F5" stopOpacity="0" />
+            <stop offset="0%"   stopColor="#FCFAF5" stopOpacity="0.95" />
+            <stop offset="55%"  stopColor="#F5F0E8" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="#5C8AA8" stopOpacity="0" />
           </linearGradient>
 
-          {/* Sun-lit snow (right side, where it catches morning light) */}
+          {/* Sun-lit snow (right side, catching the brass sun) */}
           <linearGradient id="mr-snow-lit" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stopColor="#FAFCFF" stopOpacity="0.0" />
-            <stop offset="100%" stopColor="#FFE2B0" stopOpacity="0.7" />
+            <stop offset="0%"   stopColor="#FCFAF5" stopOpacity="0.0" />
+            <stop offset="100%" stopColor="#F0D090" stopOpacity="0.78" />
           </linearGradient>
 
           {/* Painterly texture: fine fractal noise applied with overlay blend */}
@@ -143,12 +143,12 @@ export default function MountainRange({
           <filter id="mr-blur-far"  x="-2%" y="-2%" width="104%" height="104%"><feGaussianBlur stdDeviation="3.5" /></filter>
           <filter id="mr-blur-mid"  x="-2%" y="-2%" width="104%" height="104%"><feGaussianBlur stdDeviation="1.6" /></filter>
 
-          {/* Sun-side clip: anything inside this region gets the warm rim */}
+          {/* Sun-side clip: anything inside this region gets the brass rim */}
           <linearGradient id="mr-warm-side" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%"   stopColor="#000" stopOpacity="0" />
             <stop offset="55%"  stopColor="#000" stopOpacity="0" />
-            <stop offset="80%"  stopColor="#FFD0A8" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#FFE2B0" stopOpacity="0.55" />
+            <stop offset="80%"  stopColor="#C8964E" stopOpacity="0.32" />
+            <stop offset="100%" stopColor="#E8C88A" stopOpacity="0.52" />
           </linearGradient>
         </defs>
 
@@ -162,8 +162,8 @@ export default function MountainRange({
         {showSun && (
           <g style={{ transform: `translateY(${offset * 25}px)` }}>
             <circle cx="1480" cy="295" r="230" fill="url(#mr-sun)" />
-            <circle cx="1480" cy="295" r="62" fill="#FFF6DC" opacity="0.98" />
-            <circle cx="1480" cy="295" r="36" fill="#FFFFFF" opacity="0.95" />
+            <circle cx="1480" cy="295" r="62" fill="#F5F0E8" opacity="0.98" />
+            <circle cx="1480" cy="295" r="36" fill="#FCFAF5" opacity="0.98" />
           </g>
         )}
 
@@ -181,7 +181,7 @@ export default function MountainRange({
               T 1920 388
               L 1920 700 Z
             "
-            fill="#3A2475"
+            fill="#1a1a2e"
             opacity="0.5"
           />
           {/* Sun-facing rim on rear ridge */}
@@ -219,7 +219,7 @@ export default function MountainRange({
               Q 1860 398 1920 408
               L 1920 700 Z
             "
-            fill="#26174F"
+            fill="#0f1422"
             opacity="0.88"
           />
           <path
@@ -259,7 +259,7 @@ export default function MountainRange({
               Q 1880 386 1920 400
               L 1920 700 Z
             "
-            fill="#1A1140"
+            fill="#080c16"
             opacity="0.95"
           />
           {/* Sun rim along the top edge, only on the right (sun) side */}
@@ -338,7 +338,7 @@ export default function MountainRange({
               Q 1840 412 1920 432
               L 1920 700 Z
             "
-            fill="#0E0824"
+            fill="#04060d"
             opacity="0.97"
           />
           {/* Lit edge along sun-facing peaks (right half) */}
@@ -426,7 +426,7 @@ export default function MountainRange({
               Q 1800 440 1920 470
               L 1920 700 Z
             "
-            fill="#06031A"
+            fill="#04060d"
           />
           {/* Foreground lit-edge along the right ridge tops */}
           <path

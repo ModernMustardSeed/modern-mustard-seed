@@ -26,7 +26,7 @@ const DENSITIES = { subtle: 18, medium: 36, bold: 60 };
 
 export default function SnowDrift({
   density = 'medium',
-  color = '230,240,253',
+  color = '245,240,232',
   className = '',
 }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);

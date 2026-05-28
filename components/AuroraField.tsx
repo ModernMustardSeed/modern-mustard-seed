@@ -30,42 +30,42 @@ export default function AuroraField({ intensity = 'medium', className = '' }: Pr
       aria-hidden="true"
       className={`pointer-events-none absolute inset-0 overflow-hidden mix-blend-screen ${INTENSITY_OPACITY[intensity]} ${className}`}
     >
-      {/* Deep sky curtain. Sweeps top-left to bottom-right. */}
+      {/* Brass campfire curtain. Sweeps top-left to bottom-right. */}
       <div
         className="absolute -inset-40 aurora-curtain aurora-1"
         style={{
           background:
-            'radial-gradient(45% 75% at 30% 50%, rgba(55,118,194,0.6) 0%, rgba(55,118,194,0) 65%)',
+            'radial-gradient(45% 75% at 30% 50%, rgba(200,150,78,0.55) 0%, rgba(200,150,78,0) 65%)',
           filter: 'blur(60px)',
         }}
       />
 
-      {/* Dawn sky curtain. Crosses the middle. */}
+      {/* Ember curtain. Crosses the middle. */}
       <div
         className="absolute -inset-40 aurora-curtain aurora-2"
         style={{
           background:
-            'radial-gradient(55% 65% at 60% 40%, rgba(111,172,231,0.55) 0%, rgba(111,172,231,0) 70%)',
+            'radial-gradient(55% 65% at 60% 40%, rgba(255,107,53,0.40) 0%, rgba(255,107,53,0) 70%)',
           filter: 'blur(70px)',
         }}
       />
 
-      {/* Glacial cyan curtain. Sweeps right to left. */}
+      {/* Lake teal counter-curtain (cool balance). Sweeps right to left. */}
       <div
         className="absolute -inset-40 aurora-curtain aurora-3"
         style={{
           background:
-            'radial-gradient(50% 70% at 70% 60%, rgba(78,205,196,0.55) 0%, rgba(127,228,197,0) 70%)',
+            'radial-gradient(50% 70% at 70% 60%, rgba(59,107,138,0.50) 0%, rgba(59,107,138,0) 70%)',
           filter: 'blur(65px)',
         }}
       />
 
-      {/* Cloud highlight. Slowest layer. */}
+      {/* Cream warm-light highlight. Slowest layer. */}
       <div
         className="absolute -inset-40 aurora-curtain aurora-4"
         style={{
           background:
-            'radial-gradient(60% 80% at 20% 80%, rgba(220,235,251,0.4) 0%, rgba(220,235,251,0) 70%)',
+            'radial-gradient(60% 80% at 20% 80%, rgba(245,240,232,0.32) 0%, rgba(245,240,232,0) 70%)',
           filter: 'blur(80px)',
         }}
       />

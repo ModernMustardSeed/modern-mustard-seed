@@ -20,7 +20,7 @@ export default function LuminousField() {
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'low-power' });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.setClearColor(new THREE.Color('#1A1140'), 1);
+    renderer.setClearColor(new THREE.Color('#080c16'), 1);
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -106,8 +106,8 @@ export default function LuminousField() {
           vec2 light = (uMouse - 0.5) * 0.6;
           light.x *= aspect;
 
-          // Base aubergine void
-          vec3 col = vec3(0.060, 0.040, 0.135);
+          // Base midnight void
+          vec3 col = vec3(0.031, 0.047, 0.086);  // #080c16
 
           // Domain warp gives the blooms an organic motion
           vec2 q = vec2(
@@ -116,22 +116,26 @@ export default function LuminousField() {
           );
           float bloom = fbm(p * 1.1 + q * 2.4 + light);
 
-          // Dawn sky palette
-          vec3 midSky    = vec3(0.310, 0.572, 0.847);  // #4F92D8
-          vec3 cyanLight = vec3(0.498, 0.894, 0.769);  // #7FE4C5
-          vec3 deepSky   = vec3(0.165, 0.353, 0.620);  // #2A5A9F
+          // Campfire brass + lake-cool counterpoint
+          vec3 brass     = vec3(0.784, 0.588, 0.306);  // #C8964E
+          vec3 brassLight = vec3(0.941, 0.816, 0.565); // #F0D090
+          vec3 lake      = vec3(0.231, 0.420, 0.541);  // #3B6B8A
 
-          // Low-frequency atmospheric deep-sky haze
-          col += smoothstep(0.30, 0.85, bloom) * deepSky * 0.55;
+          // Low-frequency atmospheric brass haze (the campfire light)
+          col += smoothstep(0.30, 0.85, bloom) * brass * 0.42;
 
-          // Bright bloom highlights, dawn sky blue
+          // Bright bloom highlights, warm brass
           float peak = pow(smoothstep(0.55, 0.92, bloom), 2.0);
-          col += peak * midSky * 0.55;
-          col += pow(peak, 3.0) * cyanLight * 0.7;
+          col += peak * brass * 0.5;
+          col += pow(peak, 3.0) * brassLight * 0.62;
 
-          // Tiny twinkling embers, cool cloud-white
+          // Cool lake counter-glow in the lower areas (subtle)
+          float lakeBloom = fbm(p * 0.6 + vec2(t * -0.5, 0.8));
+          col += smoothstep(0.55, 0.85, lakeBloom) * lake * 0.18;
+
+          // Tiny twinkling cream-warm embers
           float em = embers(p * 18.0 + vec2(0.0, t * 4.0), uTime);
-          col += em * vec3(0.90, 0.94, 1.0) * 1.3;
+          col += em * vec3(1.0, 0.92, 0.78) * 1.35;
 
           // Radial vignette pulls focus to center
           float vignette = 1.0 - smoothstep(0.4, 1.4, length(p));

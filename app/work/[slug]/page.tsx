@@ -148,7 +148,7 @@ export default async function WorkDetail({ params }: { params: Params }) {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/build-queue"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(78,205,196,0.2)] transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(255,107,53,0.2)] transition-all"
               >
                 Join the Build Queue
               </Link>

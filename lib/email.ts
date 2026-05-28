@@ -4,21 +4,21 @@
  */
 
 const COLORS = {
-  void: '#1A1140',
-  card: '#150E33',
+  void: '#080c16',
+  card: '#080c16',
   text: '#F5EFE4',
   heading: '#ffffff',
   muted: 'rgba(255,255,255,0.62)',
   faint: 'rgba(255,255,255,0.38)',
   hairlineWhite: 'rgba(255,255,255,0.08)',
-  hairlineGold: 'rgba(78,205,196,0.25)',
-  goldDim: 'rgba(78,205,196,0.78)',
-  gold: '#4F92D8',
-  brightGold: '#6FACE7',
+  hairlineGold: 'rgba(255,107,53,0.25)',
+  goldDim: 'rgba(255,107,53,0.78)',
+  gold: '#C8964E',
+  brightGold: '#F0D090',
 };
 
 const GOLD_GRADIENT =
-  'linear-gradient(120deg,#2A5A9F 0%,#4F92D8 50%,#4ECDC4 100%)';
+  'linear-gradient(135deg,#E8C88A 0%,#C8964E 50%,#C86A45 100%)';
 
 const FONT_STACK = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 const SERIF_STACK = '"Iowan Old Style", "Apple Garamond", Baskerville, Georgia, serif';
@@ -139,7 +139,7 @@ function renderCta(cta: { label: string; url: string }, secondary?: { label: str
   return `
     <tr><td style="padding:24px 44px 8px" align="left">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-        <td bgcolor="#4F92D8" style="background:${GOLD_GRADIENT};border-radius:999px">
+        <td bgcolor="#C8964E" style="background:${GOLD_GRADIENT};border-radius:999px">
           <a href="${cta.url}" style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;padding:16px 32px;font-family:${FONT_STACK}">
             ${escape(cta.label)}
           </a>
@@ -171,9 +171,9 @@ export function leadNotification({
   suggestedAction,
 }: LeadNotificationArgs): string {
   const typeAccent = {
-    'Build Queue': '#6FACE7',
-    'AI Audit': '#4F92D8',
-    'Contact': '#3776C2',
+    'Build Queue': '#F0D090',
+    'AI Audit': '#C8964E',
+    'Contact': '#C86A45',
     'Newsletter': 'rgba(255,255,255,0.45)',
   }[type];
 
@@ -216,7 +216,7 @@ export function leadNotification({
           </td></tr>
 
           ${message ? `<tr><td style="padding:18px 40px 0">
-            <div style="background:rgba(78,205,196,0.08);border-left:2px solid ${COLORS.gold};padding:18px 22px;border-radius:6px;font-size:14px;color:${COLORS.text};line-height:1.65;white-space:pre-wrap;font-family:${FONT_STACK}">${escape(message)}</div>
+            <div style="background:rgba(255,107,53,0.08);border-left:2px solid ${COLORS.gold};padding:18px 22px;border-radius:6px;font-size:14px;color:${COLORS.text};line-height:1.65;white-space:pre-wrap;font-family:${FONT_STACK}">${escape(message)}</div>
           </td></tr>` : ''}
 
           ${suggestedAction ? `<tr><td style="padding:18px 40px 0">
@@ -225,7 +225,7 @@ export function leadNotification({
 
           <tr><td style="padding:24px 40px 32px">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-              <td bgcolor="#4F92D8" style="background:${GOLD_GRADIENT};border-radius:8px">
+              <td bgcolor="#C8964E" style="background:${GOLD_GRADIENT};border-radius:8px">
                 <a href="mailto:${email}" style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:13px 24px;font-family:${FONT_STACK}">Reply to ${escape(name.split(' ')[0])}</a>
               </td>
               <td style="padding-left:12px">
@@ -262,7 +262,7 @@ export function p(content: string): string {
 
 /** Callout block. Gold-bordered card for highlighted content (playbook recs etc). */
 export function callout(args: { label?: string; title: string; body?: string; href?: string; cta?: string }): string {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 22px"><tr><td style="background:rgba(78,205,196,0.08);border-left:2px solid ${COLORS.gold};padding:20px 22px;border-radius:6px">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 22px"><tr><td style="background:rgba(255,107,53,0.08);border-left:2px solid ${COLORS.gold};padding:20px 22px;border-radius:6px">
     ${args.label ? `<div style="font-family:${MONO_STACK};font-size:10px;font-weight:700;letter-spacing:3px;color:${COLORS.gold};text-transform:uppercase;margin-bottom:8px">${escape(args.label)}</div>` : ''}
     <div style="font-size:17px;font-weight:600;color:${COLORS.heading};margin-bottom:${args.body ? '8px' : '0'};line-height:1.4">${escape(args.title)}</div>
     ${args.body ? `<div style="font-size:14px;color:${COLORS.muted};line-height:1.6;margin-bottom:${args.href ? '12px' : '0'}">${escape(args.body)}</div>` : ''}

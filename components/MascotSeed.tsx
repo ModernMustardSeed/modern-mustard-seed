@@ -96,7 +96,7 @@ export default function MascotSeed({
           white-space: nowrap;
           opacity: 0;
           pointer-events: none;
-          box-shadow: 0 4px 18px rgba(78,205,196, 0.35);
+          box-shadow: 0 4px 18px rgba(255,107,53, 0.35);
           animation: bubble-in 2.2s cubic-bezier(0.34, 1.56, 0.64, 1);
           z-index: 5;
         }

@@ -4,7 +4,7 @@ export const runtime = 'edge';
 export const size = { width: 64, height: 64 };
 export const contentType = 'image/png';
 
-const GOLD = 'linear-gradient(120deg, #4F92D8 0%, #6FACE7 50%, #4ECDC4 100%)';
+const GOLD = 'linear-gradient(135deg, #C8964E 0%, #D4A053 50%, #C86A45 100%)';
 
 export default function Icon() {
   return new ImageResponse(
@@ -13,7 +13,7 @@ export default function Icon() {
         style={{
           width: '100%',
           height: '100%',
-          background: '#1A1140',
+          background: '#080c16',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

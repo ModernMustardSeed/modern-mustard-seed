@@ -117,7 +117,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
               <button
                 type="submit"
                 disabled={sending}
-                className="w-full py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_30px_rgba(78,205,196,0.2)] transition-all duration-300 disabled:opacity-50"
+                className="w-full py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_30px_rgba(255,107,53,0.2)] transition-all duration-300 disabled:opacity-50"
               >
                 {sending ? 'Sending...' : 'Send Message'}
               </button>
