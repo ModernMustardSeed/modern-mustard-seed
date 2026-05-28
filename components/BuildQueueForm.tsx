@@ -70,7 +70,7 @@ export default function BuildQueueForm() {
       <div className="glass-card p-10 md:p-14 text-center">
         <div className="text-5xl mb-6">🌱</div>
         <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4">
-          You&rsquo;re on the list.
+          You&rsquo;re on the list
         </h2>
         <p className="text-white/60 text-base md:text-lg font-body font-light max-w-md mx-auto leading-relaxed">
           Sarah reviews every entry. You&rsquo;ll hear back within 3 business days.

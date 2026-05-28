@@ -73,7 +73,7 @@ export default function AiProofPage() {
               AI-Proof Your Business
             </span>
             <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6 leading-[1.05]">
-              Defend the <span className="text-gradient-mustard">Moat.</span>
+              Defend the <span className="text-gradient-mustard">Moat</span>
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
               For owners who already built something real. We audit your operation against the AI shift, harden the surfaces AI will hit first, and re-equip your team to run the new stack. Your business stays yours.

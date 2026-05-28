@@ -25,7 +25,7 @@ export default function WhatGetsBuilt() {
           Recent work
         </span>
         <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4">
-          Real products. <span className="text-gradient-mustard">Real receipts.</span>
+          Real products <span className="text-gradient-mustard">real receipts</span>
         </h2>
         <p className="text-white/55 text-base font-body font-light leading-relaxed">
           A range of recent builds. Apps, dashboards, storefronts, specialty AI tools.

@@ -37,7 +37,7 @@ export default function HowItWorks() {
           How it works
         </span>
         <h2 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-5">
-          Four Steps. <span className="text-gradient-mustard">Thirty Days.</span>
+          Four Steps <span className="text-gradient-mustard">Thirty Days</span>
         </h2>
         <p className="text-white/55 text-base md:text-lg font-body font-light leading-relaxed">
           The same sequence every time. The repeatable part is what makes the speed possible.

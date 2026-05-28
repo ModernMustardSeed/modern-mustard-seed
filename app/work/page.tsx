@@ -31,7 +31,7 @@ export default function WorkIndex() {
               The Work
             </span>
             <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6">
-              Real Products. <span className="text-gradient-mustard">Real Receipts.</span>
+              Real Products <span className="text-gradient-mustard">Real Receipts</span>
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
               Each case study is a teardown. The problem, the build, the stack, the outcome. What it was. How we built it. What it does now.

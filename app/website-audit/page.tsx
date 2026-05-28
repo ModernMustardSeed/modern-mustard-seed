@@ -91,10 +91,10 @@ export default function WebsiteAuditPage() {
           </span>
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-medium text-cream-50 tracking-tight leading-[1.02] mb-7">
             Get a real grade on your{' '}
-            <span className="text-gradient-brass italic">website</span>.
+            <span className="text-gradient-brass italic">website</span>
           </h1>
           <p className="font-display italic text-2xl md:text-3xl text-cream-100/95 font-light leading-snug mb-5">
-            In 60 seconds.
+            In 60 seconds
           </p>
           <p className="text-cream-100/70 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
             Drop your URL. Get a numeric score, a letter grade, an honest one-line headline, the three things to fix first, and a full to-do list to get to an A. Across brand, trust, SEO, GEO, AI features, conversion, and design.
@@ -113,8 +113,8 @@ export default function WebsiteAuditPage() {
               What we score
             </span>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-cream-50 tracking-tight">
-              Seven categories.{' '}
-              <span className="text-gradient-brass italic">No vibes.</span>
+              Seven categories{' '}
+              <span className="text-gradient-brass italic">no vibes</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -220,7 +220,7 @@ export default function WebsiteAuditPage() {
             </span>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-cream-50 tracking-tight">
               Common{' '}
-              <span className="text-gradient-brass italic">questions</span>.
+              <span className="text-gradient-brass italic">questions</span>
             </h2>
           </div>
           <div className="space-y-3">

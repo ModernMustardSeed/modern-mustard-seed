@@ -28,9 +28,9 @@ export default function BuildQueuePage() {
               The Build Queue
             </span>
             <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6 leading-[1.05]">
-              Four Builds <span className="text-gradient-mustard">a Quarter.</span>
+              Four Builds <span className="text-gradient-mustard">a Quarter</span>
               <br />
-              Pick Your Slot.
+              Pick Your Slot
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-xl mx-auto mb-3">
               Whether you need your first real website or a custom AI tool, drop the idea below. Sarah reads every entry and replies within 3 business days.

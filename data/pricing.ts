@@ -19,7 +19,7 @@ export const packages: Engagement[] = [
   {
     id: 'seed-site',
     name: 'Seed Site',
-    tagline: 'A beautiful site that gets you online for real, in 14 days.',
+    tagline: 'A beautiful site that gets you online for real, in 14 days',
     description:
       'For when you do not need an engine yet. You need a storefront. A clean, fast, brand-aligned site that loads in under two seconds, looks like a real business, and converts the visitors you already have. No AI agents, no SDR, no back office. Just the site you needed years ago, shipped in two weeks. Step up to a Full-Service Business Build whenever you are ready.',
     deliverables: [
@@ -42,7 +42,7 @@ export const packages: Engagement[] = [
   {
     id: 'online-presence',
     name: 'Full-Service Business Build',
-    tagline: 'A site that runs your business, not just shows it off.',
+    tagline: 'A site that runs your business, not just shows it off',
     description:
       'Not a website. A working business system with the site as the front door. Brand, production-grade site, bespoke booking services with embedded CRM, personalized client-care software, an AI sales-development rep capturing every lead, built-in funnels and lead magnets, a back office that surfaces what matters, AI agents embedded in both your site and your back office, and the Mustard Seed chatbot answering for you when you cannot. Restaurants, shops, service pros, custom academies, courses, rendering studios, ad command centers, zero-to-one software: same engine, scoped to you.',
     deliverables: [
@@ -70,7 +70,7 @@ export const packages: Engagement[] = [
   {
     id: 'idea-to-product',
     name: 'Idea to Product',
-    tagline: 'Your app, tool, or specialty AI product. Shipped in 30 days.',
+    tagline: 'Your app, tool, or specialty AI product. Shipped in 30 days',
     description:
       'A full-stack product build for founders with a vision. We design it, build it, brand it, and ship it to production end to end. The deliverable is a live product real customers can use. You own the code, the deploys, and the docs from day one.',
     deliverables: [
@@ -93,7 +93,7 @@ export const packages: Engagement[] = [
   {
     id: 'ai-proof',
     name: 'AI-Proof Your Business',
-    tagline: 'For owners with revenue to protect.',
+    tagline: 'For owners with revenue to protect',
     description:
       'A three-phase engagement for existing operations. We audit your business against the AI shift, harden the surfaces AI will hit first, and re-equip your team to run the new stack. Your business stays yours. You become the AI-native version of your industry, not the casualty.',
     deliverables: [
@@ -113,7 +113,7 @@ export const packages: Engagement[] = [
   {
     id: 'fractional',
     name: 'Fractional AI Partner',
-    tagline: 'Embedded leadership, monthly.',
+    tagline: 'Embedded leadership, monthly',
     description:
       'A monthly retainer for ongoing strategy and build work. Treat us as your fractional CTO and AI lead. Weekly sessions, hands-on building, and a continually evolving roadmap as your business grows. Most retainers begin after a shipped engagement, when the partnership has already proven itself.',
     deliverables: [

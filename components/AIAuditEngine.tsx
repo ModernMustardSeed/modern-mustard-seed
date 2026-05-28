@@ -1406,7 +1406,7 @@ const AIAuditEngine: React.FC = () => {
               <Sparkles size={8} /> Ready to Build?
             </div>
             <div className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-3">
-              Let's map your AI roadmap. <span className="text-gradient-mustard">Free.</span>
+              Let's map your AI roadmap <span className="text-gradient-mustard">Free</span>
             </div>
             <p className="text-sm text-white/55 font-body max-w-lg mx-auto mb-8 leading-relaxed">
               Run your AI audit above, or book a call and we'll walk you through exactly what to build, in what order, and what it'll return.

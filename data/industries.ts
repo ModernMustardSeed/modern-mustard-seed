@@ -45,7 +45,7 @@ export const industries: Industry[] = [
     metaDescription:
       'Custom AI tools for real estate investors. Deal analyzers, virtual staging, off-market sourcing, FSBO command centers. Shipped in 30 days by Modern Mustard Seed.',
     eyebrow: 'AI for Real Estate Investors',
-    h1: 'AI Tools for Real Estate Investors. What to Build First.',
+    h1: 'AI Tools for Real Estate Investors. What to Build First',
     lede:
       'Real estate investing rewards speed and ruthlessness. Most investors spend two hours on the math of every deal that crosses the desk. By the time the underwriting is finished, the deal is gone. AI does not replace your judgment. It compresses the math, the comps, the staging, and the follow-up so you can run ten times the deals through the same brain. We build the specific AI tools active investors actually need: a deal analyzer that takes 90 seconds, virtual staging that finishes in under a minute, off-market sourcing that runs while you sleep, and a FSBO command center for the flips you do not want to hand 3% to an agent. Custom, owned by you, shipped in 30 days.',
     buildsHeadline: 'What we build for investors',
@@ -127,7 +127,7 @@ export const industries: Industry[] = [
       },
     ],
     cta: {
-      headline: 'Stop losing deals to slow underwriting.',
+      headline: 'Stop losing deals to slow underwriting',
       body:
         'Run the free AI Audit. Sixty seconds. We will tell you exactly which AI tool would compress your investing workflow the most, what it would cost, and how fast we could ship it.',
     },
@@ -142,7 +142,7 @@ export const industries: Industry[] = [
     metaDescription:
       'AI virtual staging, listing description generators, voice agents for buyer follow-up. Custom AI tools for real estate agents who refuse to lose listings to AI-powered competition. Built in 30 days.',
     eyebrow: 'AI for Real Estate Agents',
-    h1: 'AI Tools for Realtors. Stop Losing Listings to AI-Powered Competition.',
+    h1: 'AI Tools for Realtors. Stop Losing Listings to AI-Powered Competition',
     lede:
       'Real estate agents are getting squeezed from two directions. Buyers research listings on AI-powered platforms before they ever call you. Sellers test FSBO tools that promise to save the 3% commission with AI-driven listing, pricing, and contract workflows. The agents who win the next five years are the ones who fight back with the same tools, used better. We build the AI that makes your listings convert faster: virtual staging that finishes in under a minute, listing descriptions that read like a $400-an-hour copywriter wrote them, and voice agents that follow up with warm buyers 24/7. Real production tools, owned by you, shipped in 30 days.',
     buildsHeadline: 'What we build for agents',
@@ -222,7 +222,7 @@ export const industries: Industry[] = [
       },
     ],
     cta: {
-      headline: 'Fight back with better tools.',
+      headline: 'Fight back with better tools',
       body:
         'Run the free AI Audit. We will tell you which AI tool would protect your listings, your time, and your commission split the fastest.',
     },
@@ -237,7 +237,7 @@ export const industries: Industry[] = [
     metaDescription:
       'AI voice agents that answer 24/7, qualify leads, and book appointments. Custom AI tools for plumbers, HVAC, cleaning, med spas, and contractors. Shipped in 30 days.',
     eyebrow: 'AI for Service Businesses',
-    h1: 'AI for Service Businesses. Stop Missing the Calls That Pay the Bills.',
+    h1: 'AI for Service Businesses. Stop Missing the Calls That Pay the Bills',
     lede:
       'The average small service business misses 24% of its inbound calls. Of those callers, 80% never call back. They call the next business on Google. If your average ticket is $400, even five missed calls a week is $80,000 a year on the floor. The fix is not hiring a $40,000-a-year evening receptionist. It is an AI voice agent that picks up 24/7, qualifies the lead, books the appointment, and writes the notes into your CRM. We build them custom. They sound human. They work on day one. And they pay for themselves in the first month.',
     buildsHeadline: 'What we build for service businesses',
@@ -321,7 +321,7 @@ export const industries: Industry[] = [
       },
     ],
     cta: {
-      headline: 'Stop bleeding revenue to voicemail.',
+      headline: 'Stop bleeding revenue to voicemail',
       body:
         'Run the free AI Audit. We will tell you how much revenue you are losing to missed calls, slow follow-up, and unstaffed evenings. Then we tell you what to build first.',
     },
@@ -336,7 +336,7 @@ export const industries: Industry[] = [
     metaDescription:
       'Custom AI design studios, headless storefronts, AI product photography. Apparel and DTC builds shipped in 30 days. From sketch to live storefront in under 60.',
     eyebrow: 'AI for DTC and Apparel',
-    h1: 'AI for Apparel and DTC Brands. From Sketch to Shipped Drop, Faster.',
+    h1: 'AI for Apparel and DTC Brands. From Sketch to Shipped Drop, Faster',
     lede:
       'Running a DTC brand in 2026 means competing with brands that ship a drop every two weeks and run AI on every touchpoint of the customer journey. The good news is you can do the same thing without hiring a team. We built Cross + Covenant from sketch to live storefront in under 60 days using a custom AI design pipeline, a headless Shopify storefront, and a two-tier production model with Printify and Apliiq. The same pattern works for any apparel brand willing to let AI do the heavy lifting on design exploration, product photography, listing copy, and email sequences. You own the brand. AI accelerates everything around it.',
     buildsHeadline: 'What we build for DTC brands',
@@ -424,7 +424,7 @@ export const industries: Industry[] = [
       },
     ],
     cta: {
-      headline: 'Ship faster than your competition.',
+      headline: 'Ship faster than your competition',
       body:
         'Run the free AI Audit. We will tell you what to build first, how fast we can ship it, and how much faster your next drop could go live.',
     },
@@ -439,7 +439,7 @@ export const industries: Industry[] = [
     metaDescription:
       'Custom solo operating systems, personal brand sites, AI content engines, intentional capture apps. For solopreneurs who refuse to live inside 47 SaaS subscriptions.',
     eyebrow: 'AI for Solopreneurs',
-    h1: 'AI for Solopreneurs. The OS You Should Have Built Two Years Ago.',
+    h1: 'AI for Solopreneurs. The OS You Should Have Built Two Years Ago',
     lede:
       'Solopreneurs do not need 47 SaaS subscriptions. They need one operating system that ties together their leads, content, projects, calendar, finances, and follow-up so nothing slips through. The solopreneurs who win are the ones where the founder owns the system, not the system that owns the founder. We built Olive Shoot to prove the pattern: a Next.js and Supabase agentic operating system that handles 30 plus projects, leads, outreach, social, and analytics from one command palette. Yours can look different. The pattern is the same: custom, owned, and shaped to how you actually work.',
     buildsHeadline: 'What we build for solos',
@@ -521,7 +521,7 @@ export const industries: Industry[] = [
       },
     ],
     cta: {
-      headline: 'Stop renting your business from 12 SaaS companies.',
+      headline: 'Stop renting your business from 12 SaaS companies',
       body:
         'Run the free AI Audit. We will tell you which piece of your solo stack is most worth owning, what it would cost to build, and how fast we can ship it.',
     },
@@ -536,7 +536,7 @@ export const industries: Industry[] = [
     metaDescription:
       'AI intake bots, content engines, proposal generators, voice agents. Custom AI tools for coaches and consultants who want every hour back from admin work.',
     eyebrow: 'AI for Coaches and Consultants',
-    h1: 'AI for Coaches and Consultants. Reclaim Your Calendar.',
+    h1: 'AI for Coaches and Consultants. Reclaim Your Calendar',
     lede:
       'If you are a coach or consultant, your business is not your expertise. Your business is your calendar. Every hour you spend on intake forms, follow-up, content production, and proposal writing is an hour you are not in front of a paying client. We build the AI infrastructure that gives those hours back: intake bots that pre-qualify before a discovery call, content engines that turn a 30-minute voice memo into a week of LinkedIn posts, proposal generators that draft from your template in 60 seconds, and CRM automations that follow up so no warm lead ever goes cold again. Custom, owned, and shaped to how you actually work.',
     buildsHeadline: 'What we build for coaches and consultants',
@@ -616,7 +616,7 @@ export const industries: Industry[] = [
       },
     ],
     cta: {
-      headline: 'Get your calendar back.',
+      headline: 'Get your calendar back',
       body:
         'Run the free AI Audit. We will tell you which task in your week is bleeding the most hours, what to automate first, and how fast we can ship it.',
     },

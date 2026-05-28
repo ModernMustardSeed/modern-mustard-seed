@@ -75,7 +75,7 @@ export default function HeroIdeaToProduct() {
           Your dream,
           <br />
           built to{' '}
-          <span className="text-gradient-brass italic">fullness</span>.
+          <span className="text-gradient-brass italic">fullness</span>
         </h1>
 
         {/* Hairline divider with shimmer */}

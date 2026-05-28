@@ -242,7 +242,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
               FAQ
             </span>
             <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight">
-              Common <span className="text-gradient-mustard">questions</span>.
+              Common <span className="text-gradient-mustard">questions</span>
             </h2>
           </div>
           <div className="space-y-3">

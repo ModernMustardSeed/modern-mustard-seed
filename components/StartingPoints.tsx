@@ -35,7 +35,7 @@ export default function StartingPoints() {
           For everyone
         </span>
         <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4">
-          Three <span className="text-gradient-mustard">ways in</span>.
+          Three <span className="text-gradient-mustard">ways in</span>
         </h2>
         <p className="text-white/55 text-base font-body font-light leading-relaxed">
           You do not need to know much about AI. You do not need a technical co-founder. Pick the path that sounds like you.
@@ -52,7 +52,7 @@ export default function StartingPoints() {
               {p.eyebrow}
             </span>
             <h3 className="font-sans text-xl md:text-2xl font-semibold text-white tracking-tight mb-4 leading-snug">
-              {p.label}.
+              {p.label}
             </h3>
             <p className="text-white/55 text-sm md:text-base font-body font-light leading-7 mb-5 flex-1">
               {p.body}

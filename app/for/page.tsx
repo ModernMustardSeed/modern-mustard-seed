@@ -56,7 +56,7 @@ export default function ForIndex() {
             </span>
             <h1 className="font-sans text-4xl md:text-6xl font-semibold text-white tracking-tight leading-[1.1] mb-6">
               Built for the work you{' '}
-              <span className="text-gradient-mustard">actually do</span>.
+              <span className="text-gradient-mustard">actually do</span>
             </h1>
             <p className="text-white/65 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
               Generic AI agencies pitch generic builds. We document exactly what gets built per industry, the case studies that anchor it, and what it costs.

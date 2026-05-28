@@ -79,10 +79,10 @@ export default function YourSiteWorksForYou() {
           </span>
           <h2 className="font-display text-4xl md:text-6xl font-medium text-cream-50 tracking-tight leading-[1.05] mb-6">
             Your site should work{' '}
-            <span className="text-gradient-brass italic">for you</span>.
+            <span className="text-gradient-brass italic">for you</span>
           </h2>
           <p className="font-display italic text-xl md:text-2xl text-cream-100/90 font-light leading-snug mb-4">
-            Not just sit there looking nice.
+            Not just sit there looking nice
           </p>
           <p className="text-cream-100/70 text-base md:text-lg font-body font-light leading-relaxed mb-5">
             A Modern Mustard Seed build is not a brochure. It is a working business engine. Bespoke booking with embedded CRM. Personalized client care software. Mustard Seed AI chatbot on the page. Ordering apps for restaurants. Ecommerce shops. Custom courses, academies, rendering studios, ad command centers. Zero-to-one software for the founder building something new.

@@ -13,7 +13,7 @@ const ROTATING_WORDS = [
   'first-time creators',
 ];
 
-const HEADLINE_WORDS = ['The', 'Era', 'of', 'the', 'Entrepreneur.'];
+const HEADLINE_WORDS = ['The', 'Era', 'of', 'the', 'Entrepreneur'];
 
 export default function EraOfEntrepreneur() {
   const ref = useRef<HTMLElement>(null);
@@ -157,7 +157,7 @@ export default function EraOfEntrepreneur() {
             </span>
           </span>
           <span className="text-white/35">·</span>
-          <span className="text-white/55">no AI degree required.</span>
+          <span className="text-white/55">no AI degree required</span>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">

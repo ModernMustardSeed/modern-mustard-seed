@@ -62,7 +62,7 @@ export default function WorkWithUsPage() {
             How We Work
           </span>
           <h1 className="font-sans text-4xl md:text-6xl font-semibold text-white tracking-tight leading-[1.1] mb-6">
-            Four ways to <span className="text-gradient-mustard">engage</span>.
+            Four ways to <span className="text-gradient-mustard">engage</span>
           </h1>
           <p className="text-white/60 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto mb-3">
             Every engagement is a fixed scope, a fixed timeline, and a quote you see before anyone writes a line of code. No hourly billing. No surprise scope.
@@ -89,7 +89,7 @@ export default function WorkWithUsPage() {
               The process
             </span>
             <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4">
-              The same four steps, <span className="text-gradient-mustard">every time</span>.
+              The same four steps, <span className="text-gradient-mustard">every time</span>
             </h2>
             <p className="text-white/55 text-base font-body font-light leading-relaxed">
               No new playbook per client. The repeated parts are what make the speed possible.
@@ -124,34 +124,34 @@ export default function WorkWithUsPage() {
               How we operate
             </span>
             <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight">
-              What you can count on.
+              What you can count on
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {
-                title: 'Fixed scope, fixed timeline.',
+                title: 'Fixed scope, fixed timeline',
                 body: 'You see the full cost and the full delivery date before any work begins. No hourly drift.',
               },
               {
-                title: 'We iterate until it is right.',
+                title: 'We iterate until it is right',
                 body: 'Revisions are part of every engagement. We do not stop when a contract says so. We stop when you are happy.',
               },
               {
-                title: 'You own everything.',
+                title: 'You own everything',
                 body: 'Code, deploys, credentials, accounts. All transferred from day one. No vendor lock-in.',
               },
               {
-                title: 'One operator, end to end.',
+                title: 'One operator, end to end',
                 body: 'No handoffs to junior staff. No coordination tax. The person who scopes it is the person who ships it.',
               },
               {
-                title: 'Payment plans, on request.',
+                title: 'Payment plans, on request',
                 body: 'Most engagements can be split into milestones that fit your situation. We structure it together on the call.',
               },
               {
-                title: 'Stewardship over extraction.',
+                title: 'Stewardship over extraction',
                 body: 'We treat your business like it has to last. Decisions get made for the long game, not the demo.',
               },
             ].map((principle) => (
@@ -175,7 +175,7 @@ export default function WorkWithUsPage() {
                 Who this is for
               </span>
               <h3 className="font-sans text-xl font-semibold text-white tracking-tight mb-4">
-                Operators who want it built right and shipped fast.
+                Operators who want it built right and shipped fast
               </h3>
               <ul className="space-y-2.5 text-white/60 text-sm font-body font-light leading-6">
                 <li>Founders with a clear vision who need a technical partner, not a strategy deck.</li>
@@ -190,7 +190,7 @@ export default function WorkWithUsPage() {
                 Who this is not for
               </span>
               <h3 className="font-sans text-xl font-semibold text-white tracking-tight mb-4">
-                We do not take every project, and we say no early.
+                We do not take every project, and we say no early
               </h3>
               <ul className="space-y-2.5 text-white/45 text-sm font-body font-light leading-6">
                 <li>Anyone looking for a $300 website or a magic-button AI tool.</li>
@@ -209,7 +209,7 @@ export default function WorkWithUsPage() {
               FAQ
             </span>
             <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight">
-              Common <span className="text-gradient-mustard">questions</span>.
+              Common <span className="text-gradient-mustard">questions</span>
             </h2>
           </div>
           <div className="space-y-3">

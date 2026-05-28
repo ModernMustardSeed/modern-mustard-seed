@@ -14,7 +14,7 @@ export default function BuiltByGoodPeople() {
 
         <h2 className="font-sans text-3xl md:text-5xl font-semibold text-white tracking-tight leading-[1.15] mb-8">
           Good people in tech, <br className="hidden md:block" />
-          building <span className="text-gradient-mustard">beautiful things</span>.
+          building <span className="text-gradient-mustard">beautiful things</span>
         </h2>
 
         <p className="text-white/70 text-base md:text-lg font-body font-light leading-relaxed mb-5">

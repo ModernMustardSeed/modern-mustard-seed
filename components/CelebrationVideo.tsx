@@ -53,7 +53,7 @@ export default function CelebrationVideo() {
 
         <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-medium tracking-[-0.01em] leading-[1.02] text-cream-50 mb-8 drop-shadow-[0_2px_30px_rgba(8,12,22,0.7)]">
           You finally have a{' '}
-          <span className="text-gradient-brass italic">partner</span>.
+          <span className="text-gradient-brass italic">partner</span>
         </h2>
 
         <p className="font-display italic text-2xl md:text-3xl font-light text-cream-100/95 leading-snug mb-6 max-w-2xl mx-auto drop-shadow-[0_2px_18px_rgba(8,12,22,0.65)]">
