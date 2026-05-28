@@ -17,6 +17,29 @@ export type Engagement = {
 // partnership option. Pricing is per-project, quoted after a discovery call.
 export const packages: Engagement[] = [
   {
+    id: 'seed-site',
+    name: 'Seed Site',
+    tagline: 'A beautiful site that gets you online for real, in 14 days.',
+    description:
+      'For when you do not need an engine yet. You need a storefront. A clean, fast, brand-aligned site that loads in under two seconds, looks like a real business, and converts the visitors you already have. No AI agents, no SDR, no back office. Just the site you needed years ago, shipped in two weeks. Step up to a Full-Service Business Build whenever you are ready.',
+    deliverables: [
+      'Brand identity (logo, colors, type, voice)',
+      '3 to 5 page production-grade site',
+      'Mobile-optimized, fast (Lighthouse 90+)',
+      'Booking or payment integration',
+      'Contact form routed to your inbox',
+      'Real copy, written for your business',
+      'SEO foundation (metadata, sitemap, structured data)',
+      'Launch assets (social, email, OG image)',
+      'Full handoff: repo, accounts, every credential',
+    ],
+    timeline: '14 days',
+    priceRange: '$2,500 to $5,000',
+    cta: 'Plant my Seed Site',
+    ctaHref: '/contact?package=seed-site',
+    ideal: 'Small businesses, creators, service pros, and faith-driven brands who need a clean, real online home right now. No AI bells. Just a beautiful site that works.',
+  },
+  {
     id: 'online-presence',
     name: 'Full-Service Business Build',
     tagline: 'A site that runs your business, not just shows it off.',

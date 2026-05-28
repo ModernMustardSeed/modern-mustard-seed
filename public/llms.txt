@@ -15,7 +15,8 @@ Sarah Scarano is the founder, engineer, strategist, and operator. Self-taught fu
 
 ## How to engage
 1. Join the build queue at https://modernmustardseed.com/build-queue (waitlist, replies within 3 business days).
-2. Run a free AI Audit at https://modernmustardseed.com/audit (60-second business readout).
+2. Run a free AI Audit at https://modernmustardseed.com/audit (60-second business AI-readiness scan).
+2a. Run a free Website Audit at https://modernmustardseed.com/website-audit (Claude grades a URL across brand, trust, SEO, GEO, AI features, conversion, and design; returns 0-100 score, letter grade, and prioritized to-do list to get to an A).
 3. Or book a discovery call at https://modernmustardseed.com/contact.
 
 ## What we build
@@ -34,6 +35,7 @@ Sarah Scarano is the founder, engineer, strategist, and operator. Self-taught fu
 ## Pricing model
 - **Discovery call.** Free, 30 minutes.
 - **Scope & Quote.** Written scope with a fixed timeline and fixed quote within 48 hours of discovery. No hourly billing.
+- **Seed Site.** Beautiful, fast, brand-aligned site in 14 days. Brand identity, 3-5 page production site, mobile-optimized (Lighthouse 90+), booking or payment integration, real copy, SEO foundation, full handoff. For people who need a real online home right now without the full system. $2,500 to $5,000.
 - **Full-Service Business Build.** A working business engine, not a brochure site. Includes brand, production-grade site, bespoke booking services with embedded CRM (Zoho/HubSpot/Acuity/custom), personalized client care software, the Mustard Seed AI chatbot embedded on the site, AI sales-development rep capturing every lead 24/7, built-in funnels and lead magnets live on day one, vertical apps when they fit (restaurant ordering, ecommerce shop, custom courses, academies, rendering studios, ad command centers, zero-to-one MVPs), back-office dashboard, and AI agents embedded on the site and in the back office. $8,500 to $22,000.
 - **Idea to Product in 30 Days.** For founders building something new. Quoted per project.
 - **AI-Proof Your Business.** Defensive engagement for established businesses. Quoted per business.
