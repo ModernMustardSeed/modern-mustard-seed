@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import StaticBackground from '@/components/StaticBackground';
 import AuroraField from '@/components/AuroraField';
-import MountainRange from '@/components/MountainRange';
 import SnowDrift from '@/components/SnowDrift';
 import {
   JsonLd,
@@ -235,13 +234,6 @@ export default async function IndustryPage({ params }: { params: Params }) {
             </div>
           </div>
         </section>
-
-        {/* Cinematic ridge before the FAQ */}
-        <div className="max-w-6xl mx-auto px-6 md:px-8 my-8">
-          <div className="rounded-2xl overflow-hidden border border-white/[0.06] shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
-            <MountainRange height="sm" />
-          </div>
-        </div>
 
         {/* FAQ */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 py-16">

@@ -122,21 +122,21 @@ function CloudPiece({
       className={className}
       aria-hidden="true"
     >
-      {/* Campfire-lit cumulus: cream-gold tops, lake-deep underbellies */}
+      {/* Fluffy white cumulus: bright white tops, soft blue underbellies */}
       <defs>
         <linearGradient id={`cl-${id}-fill`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"  stopColor="#F5F0E8" stopOpacity="0.98" />
-          <stop offset="22%" stopColor="#F0D090" stopOpacity="0.96" />
-          <stop offset="48%" stopColor="#E8C88A" stopOpacity="0.92" />
-          <stop offset="78%" stopColor="#3B6B8A" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="#1A1A2E" stopOpacity="0.55" />
+          <stop offset="0%"  stopColor="#FFFFFF" stopOpacity="1" />
+          <stop offset="25%" stopColor="#FAFCFF" stopOpacity="0.98" />
+          <stop offset="55%" stopColor="#E8EFF7" stopOpacity="0.94" />
+          <stop offset="82%" stopColor="#8FA9C5" stopOpacity="0.72" />
+          <stop offset="100%" stopColor="#3B6B8A" stopOpacity="0.55" />
         </linearGradient>
 
-        {/* Brass campfire highlight on the upper-left of every cloud */}
+        {/* Bright sunlight on upper-left of each cloud (catches blue sky light) */}
         <radialGradient id={`cl-${id}-sun`} cx="35%" cy="22%" r="55%">
-          <stop offset="0%"  stopColor="#F0D090" stopOpacity="0.55" />
-          <stop offset="55%" stopColor="#C8964E" stopOpacity="0.15" />
-          <stop offset="100%" stopColor="#C8964E" stopOpacity="0" />
+          <stop offset="0%"  stopColor="#FFFFFF" stopOpacity="0.7" />
+          <stop offset="55%" stopColor="#F0F7FF" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#F0F7FF" stopOpacity="0" />
         </radialGradient>
 
         {/* Soft fluffy edge: gaussian blur + light noise displacement */}
@@ -153,15 +153,15 @@ function CloudPiece({
       </defs>
 
       {/* Cloud underbelly shadow (drawn first, behind everything) */}
-      <g filter={`url(#cl-${id}-shadow)`} opacity="0.55">
+      <g filter={`url(#cl-${id}-shadow)`} opacity="0.42">
         {shape.lobes.map((l, i) => (
           <ellipse
             key={`s-${i}`}
             cx={l.cx}
-            cy={l.cy + 12}
+            cy={l.cy + 10}
             rx={l.rx}
             ry={l.ry * 0.5}
-            fill="#0F1422"
+            fill="#2A4B6E"
           />
         ))}
       </g>
@@ -242,7 +242,7 @@ export default function Clouds({ density = 'medium', className = '' }: Props) {
         .cloud-layer {
           position: absolute;
           will-change: transform;
-          filter: drop-shadow(0 8px 22px rgba(8, 12, 22, 0.45));
+          filter: drop-shadow(0 12px 24px rgba(31, 66, 128, 0.35));
         }
         @keyframes cloud-drift-right {
           0%   { transform: translateX(-30%); }

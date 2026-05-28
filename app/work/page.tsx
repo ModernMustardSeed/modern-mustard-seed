@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import StaticBackground from '@/components/StaticBackground';
-import MountainRange from '@/components/MountainRange';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { listContent } from '@/lib/content';
@@ -37,11 +36,6 @@ export default function WorkIndex() {
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
               Each case study is a teardown. The problem, the build, the stack, the outcome. What it was. How we built it. What it does now.
             </p>
-          </div>
-
-          {/* Cinematic dawn ridge banner */}
-          <div className="mb-16 -mx-6 md:-mx-8 rounded-2xl overflow-hidden border border-white/[0.06] shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
-            <MountainRange height="md" />
           </div>
 
           {studies.length > 0 ? (
