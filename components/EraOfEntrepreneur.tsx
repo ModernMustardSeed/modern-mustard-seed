@@ -67,11 +67,11 @@ export default function EraOfEntrepreneur() {
         .headline-shimmer {
           background: linear-gradient(
             90deg,
-            #c8a415 0%,
-            #f0d878 25%,
-            #ffe8a8 50%,
-            #f0d878 75%,
-            #c8a415 100%
+            #2A5A9F 0%,
+            #4F92D8 25%,
+            #6FACE7 50%,
+            #4ECDC4 75%,
+            #2A5A9F 100%
           );
           background-size: 200% auto;
           -webkit-background-clip: text;
@@ -91,7 +91,7 @@ export default function EraOfEntrepreneur() {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(255, 220, 130, 0.9), transparent 70%);
+          background: radial-gradient(circle, rgba(143, 192, 239, 0.95), transparent 70%);
           animation: float-spark 6s ease-in-out infinite;
           pointer-events: none;
         }

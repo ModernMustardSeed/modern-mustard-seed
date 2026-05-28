@@ -5,8 +5,8 @@ import * as THREE from 'three';
 
 /**
  * LuminousField: a fullscreen Three.js shader plane that paints an
- * atmospheric, drifting field of mustard-gold light blooms and
- * twinkling embers against deep void. Abstract, not literal. Calm.
+ * atmospheric, drifting field of dawn-sky light blooms and twinkling
+ * cloud-white embers against an aubergine void. Calm, never warm.
  */
 export default function LuminousField() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -106,8 +106,8 @@ export default function LuminousField() {
           vec2 light = (uMouse - 0.5) * 0.6;
           light.x *= aspect;
 
-          // Base near-black void with very slight warm tint
-          vec3 col = vec3(0.04, 0.032, 0.022);
+          // Base aubergine void
+          vec3 col = vec3(0.060, 0.040, 0.135);
 
           // Domain warp gives the blooms an organic motion
           vec2 q = vec2(
@@ -116,22 +116,22 @@ export default function LuminousField() {
           );
           float bloom = fbm(p * 1.1 + q * 2.4 + light);
 
-          // Mustard gold palette
-          vec3 gold = vec3(0.78, 0.64, 0.08);
-          vec3 brightGold = vec3(1.0, 0.88, 0.51);
-          vec3 deepAmber = vec3(0.42, 0.30, 0.04);
+          // Dawn sky palette
+          vec3 midSky    = vec3(0.310, 0.572, 0.847);  // #4F92D8
+          vec3 cyanLight = vec3(0.498, 0.894, 0.769);  // #7FE4C5
+          vec3 deepSky   = vec3(0.165, 0.353, 0.620);  // #2A5A9F
 
-          // Low-frequency atmospheric gold haze
-          col += smoothstep(0.30, 0.85, bloom) * deepAmber * 0.55;
+          // Low-frequency atmospheric deep-sky haze
+          col += smoothstep(0.30, 0.85, bloom) * deepSky * 0.55;
 
-          // Bright bloom highlights, concentrated
+          // Bright bloom highlights, dawn sky blue
           float peak = pow(smoothstep(0.55, 0.92, bloom), 2.0);
-          col += peak * gold * 0.65;
-          col += pow(peak, 3.0) * brightGold * 0.75;
+          col += peak * midSky * 0.55;
+          col += pow(peak, 3.0) * cyanLight * 0.7;
 
-          // Tiny twinkling embers scattered through the field
+          // Tiny twinkling embers, cool cloud-white
           float em = embers(p * 18.0 + vec2(0.0, t * 4.0), uTime);
-          col += em * vec3(1.0, 0.92, 0.65) * 1.4;
+          col += em * vec3(0.90, 0.94, 1.0) * 1.3;
 
           // Radial vignette pulls focus to center
           float vignette = 1.0 - smoothstep(0.4, 1.4, length(p));
