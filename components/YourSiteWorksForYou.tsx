@@ -8,48 +8,60 @@ import Link from 'next/link';
 const FEATURES = [
   {
     eyebrow: '01',
+    title: 'Mustard Seed chatbot embedded',
+    body:
+      "Our own AI, trained on your business, living in the corner of your site. Greets every visitor, answers questions in your brand voice, qualifies the lead, and captures the pain point. The chatbot you see on this site is the one we will build for you.",
+  },
+  {
+    eyebrow: '02',
     title: 'AI SDR built in',
     body:
       'A sales-development rep that lives inside your site, captures every lead the moment it lands, qualifies it against your real criteria, and routes it into your inbox or CRM with notes. 24/7. Never sleeps. Never lets a warm lead go cold.',
   },
   {
-    eyebrow: '02',
-    title: 'Full booking system with embedded CRM',
+    eyebrow: '03',
+    title: 'Bespoke booking services with embedded CRM',
     body:
       'Real-time availability, calendar booking, automated reminders, and a CRM that captures every interaction in one place. Zoho, HubSpot, Acuity, or a custom build. The booking flow and the customer record are one system, not eight tabs.',
   },
   {
-    eyebrow: '03',
+    eyebrow: '04',
+    title: 'Personalized client care software',
+    body:
+      'Intake forms that ask the right thing. Onboarding sequences that walk a new client through your process. Status updates that fire automatically. Retention flows that bring them back. Software that treats clients the way you would if you had ten more hours a day.',
+  },
+  {
+    eyebrow: '05',
     title: 'Funnels and lead magnets, live on day one',
     body:
       'Not coming-soon. Live. The site ships with a primary funnel, a secondary funnel for the slower buyer, and at least one lead magnet that converts strangers into your email list. Tested before launch.',
   },
   {
-    eyebrow: '04',
-    title: 'Restaurants, shops, services, MVPs',
+    eyebrow: '06',
+    title: 'Verticals: shops, restaurants, academies, studios, command centers',
     body:
-      'Ordering apps for restaurants. Ecommerce for shops. Booking flows for service businesses. Zero-to-one software for founders building something new. The engine adapts to the vertical. The pattern stays the same.',
+      'Ordering apps for restaurants. Ecommerce for shops. Custom courses and academies. Rendering studios. Ad command centers. Zero-to-one software for founders building something new. The engine adapts to the vertical. The pattern stays the same.',
   },
   {
-    eyebrow: '05',
+    eyebrow: '07',
     title: 'A back office that surfaces the right thing',
     body:
       'One dashboard. Leads, revenue, content queue, social schedule, ops, and inventory in one view. Replace the eight tools you are paying for and barely using. Built for the way you actually work.',
   },
   {
-    eyebrow: '06',
+    eyebrow: '08',
     title: 'AI agents on the site AND inside the back office',
     body:
       'Public-facing agents that answer questions, qualify leads, take orders, and recommend next steps. Internal agents that draft your follow-ups, summarize your week, and triage your inbox. The same brain, on both sides of the wall.',
   },
   {
-    eyebrow: '07',
+    eyebrow: '09',
     title: 'Innovation as the default, not the upsell',
     body:
       'We ship the build using the latest models, the latest patterns, the latest infrastructure (Next.js 16, Vercel, Anthropic, Gemini, Vapi, multi-agent orchestration). What is bleeding-edge today is the baseline of every engagement.',
   },
   {
-    eyebrow: '08',
+    eyebrow: '10',
     title: 'It is yours, fully',
     body:
       'No vendor lock-in, no per-seat fee, no agency retainer required. The code, the database, the deploy, the AI prompts, and every account are transferred to you the day we launch. Hire any other engineer later. Or call us back when you grow.',
@@ -72,8 +84,11 @@ export default function YourSiteWorksForYou() {
           <p className="font-display italic text-xl md:text-2xl text-cream-100/90 font-light leading-snug mb-4">
             Not just sit there looking nice.
           </p>
-          <p className="text-cream-100/70 text-base md:text-lg font-body font-light leading-relaxed">
-            A Modern Mustard Seed build is not a brochure. It is a working business engine. Booking systems with embedded CRMs. Ordering apps for restaurants. Ecommerce shops. Zero-to-one software for the founder building something new. The site captures leads, qualifies them, runs funnels, hosts the lead magnets, and feeds it all into a back office where you actually run the operation. AI agents live on both sides: in front of customers, and behind the curtain.
+          <p className="text-cream-100/70 text-base md:text-lg font-body font-light leading-relaxed mb-5">
+            A Modern Mustard Seed build is not a brochure. It is a working business engine. Bespoke booking with embedded CRM. Personalized client care software. Mustard Seed AI chatbot on the page. Ordering apps for restaurants. Ecommerce shops. Custom courses, academies, rendering studios, ad command centers. Zero-to-one software for the founder building something new.
+          </p>
+          <p className="font-display italic text-xl md:text-2xl text-gold-light/95 font-light leading-snug">
+            What is your pain point? Let us fix it.
           </p>
         </div>
 

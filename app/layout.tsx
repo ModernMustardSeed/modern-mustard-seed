@@ -4,6 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MagneticCursor from '@/components/MagneticCursor';
+import MustardSeedChat from '@/components/MustardSeedChat';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
         </div>
         <MagneticCursor />
+        <MustardSeedChat />
         <Analytics />
         <SpeedInsights />
         <noscript>

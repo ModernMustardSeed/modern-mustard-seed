@@ -21,14 +21,16 @@ export const packages: Engagement[] = [
     name: 'Full-Service Business Build',
     tagline: 'A site that runs your business, not just shows it off.',
     description:
-      'Not a website. A working business system with the site as the front door. Brand, production-grade site, a full booking system with an embedded CRM, an AI sales-development rep capturing every lead, built-in funnels and lead magnets, a back office that surfaces what matters, and AI agents embedded in both your site and your back office. Restaurants, shops, services, zero-to-one ideas: same engine, scoped to you.',
+      'Not a website. A working business system with the site as the front door. Brand, production-grade site, bespoke booking services with embedded CRM, personalized client-care software, an AI sales-development rep capturing every lead, built-in funnels and lead magnets, a back office that surfaces what matters, AI agents embedded in both your site and your back office, and the Mustard Seed chatbot answering for you when you cannot. Restaurants, shops, service pros, custom academies, courses, rendering studios, ad command centers, zero-to-one software: same engine, scoped to you.',
     deliverables: [
       'Brand identity (logo, colors, type, voice)',
       'Production-grade marketing site',
-      'Full booking system with embedded CRM (Zoho, HubSpot, Acuity, or custom)',
+      'Bespoke booking services with embedded CRM (Zoho, HubSpot, Acuity, or custom)',
+      'Personalized client care software (intake, onboarding, status updates, retention)',
+      'Mustard Seed AI chatbot embedded on the site, trained on your business',
       'AI SDR that captures and qualifies every lead 24/7',
       'Built-in funnels and lead magnets, tested and converting on day one',
-      'Ecommerce or ordering vertical when it fits (restaurant ordering, retail shop, service marketplace)',
+      'Vertical app when it fits (ordering for restaurants, ecommerce shop, rendering studio, academy or course platform, ad command center, zero-to-one MVP)',
       'Back office dashboard: leads, revenue, content, ops in one view',
       'AI agents embedded on the public site and inside the back office',
       'Real copy, written for your business',
@@ -40,7 +42,7 @@ export const packages: Engagement[] = [
     priceRange: '$8,500 to $22,000',
     cta: 'Build my business engine',
     ctaHref: '/contact?package=online-presence',
-    ideal: 'Small businesses, restaurants, shops, service pros, operators with revenue, and zero-to-one founders who want a partner to ship the whole thing.',
+    ideal: 'Small businesses, restaurants, shops, service pros, coaches, course creators, agencies, operators with revenue, and zero-to-one founders who want a partner to ship the whole thing.',
   },
   {
     id: 'idea-to-product',
