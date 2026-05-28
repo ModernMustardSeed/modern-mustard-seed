@@ -359,6 +359,12 @@ export const industries: Industry[] = [
           'On-model shots and flatlays generated from a single design file. Eight aesthetic styles, multiple poses, background variations. Replaces a $2,000 photoshoot per drop with a sub-$100 per-drop AI render workflow. Photos look real, perform on ads, and ship same-day.',
       },
       {
+        title: 'AI Ad Creative Engine',
+        caseStudySlug: 'ugc-studio-secret',
+        body:
+          'A four-agent creative supply chain that takes a product URL and a competitor and outputs a production-ready ad kit in 45 seconds: hook variants, full script, storyboard frames, casting brief, and micro-tribe recruitment templates. Replaces the first two weeks of an ad agency engagement.',
+      },
+      {
         title: 'AI Listing Copy and Email Sequences',
         body:
           'Product page copy, abandoned cart sequences, welcome series, and post-purchase flows all generated in your brand voice from a single brand brief. Tuned for conversion. Tested against the alternatives. Edited by you, never by committee.',

@@ -56,6 +56,7 @@ Sarah Scarano is the founder, engineer, strategist, and operator. Self-taught fu
 - **Wild Daisy Command Center.** Agentic operations hub. 30 specialized AI agents coordinated by a planner agent. https://modernmustardseed.com/work/wild-daisy-command-center
 - **Luxe Design.** Specialty AI tool for real estate. Stages empty listing photos in under a minute. Replicate + Stripe + Supabase. https://modernmustardseed.com/work/luxe-design
 - **Ignition.** Multi-agent idea-to-income swarm. 12 coordinated agents on Claude + Gemini. https://modernmustardseed.com/work/ignition
+- **UGC Studio Secret.** Agentic creative-strategy platform. Four AI agents (scout, strategist, director, simulator) take a product URL to a production-ready ad kit in 45 seconds. Gemini 3.0 Pro + Veo 3.1 + Gemini TTS. https://modernmustardseed.com/work/ugc-studio-secret
 
 ## Tech Stack (used across every engagement)
 React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Trigger.dev, Three.js, Expo / React Native, Shopify Storefront API, RentCast, Replicate, Anthropic Claude, OpenAI, Google Gemini, Resend, Vapi, Vercel.
