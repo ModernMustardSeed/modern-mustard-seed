@@ -20,8 +20,8 @@ import {
 const M = '#FF8E72';            // sunrise.peach (was mustard-500)
 const ML = '#FFB347';           // sunrise.gold  (was mustard-400)
 const MD = '#FF6B6B';           // sunrise.rose  (was mustard-600)
-const MG = 'rgba(255,179,71,0.12)'; // mustard glow bg
-const MB = 'rgba(255,179,71,0.25)'; // mustard border
+const MG = 'rgba(78,205,196,0.12)'; // mustard glow bg
+const MB = 'rgba(78,205,196,0.25)'; // mustard border
 const BOOKING_URL = 'https://modernmustardseed.zohobookings.com/#/4764600000000052054';
 const AUDIT_LEAD_URL = '/api/audit/lead';
 
@@ -412,7 +412,7 @@ const ScoreRing = ({ score, size = 88 }: { score: number; size?: number }) => {
       style={{
         width: size, height: size,
         background: `conic-gradient(${M} ${score * 3.6}deg, rgba(255,255,255,0.04) 0deg)`,
-        boxShadow: `0 0 24px rgba(255,179,71,0.15)`,
+        boxShadow: `0 0 24px rgba(78,205,196,0.15)`,
       }}
     >
       <div
@@ -443,7 +443,7 @@ const ImpactBar = ({ value, className = '' }: { value: number; className?: strin
   <div className={`h-1.5 rounded-full bg-white/[0.04] ${className}`}>
     <div
       className="h-full rounded-full"
-      style={{ width: `${value}%`, background: `linear-gradient(90deg, ${M}, ${ML})`, boxShadow: `0 0 6px rgba(255,179,71,0.25)` }}
+      style={{ width: `${value}%`, background: `linear-gradient(90deg, ${M}, ${ML})`, boxShadow: `0 0 6px rgba(78,205,196,0.25)` }}
     />
   </div>
 );
@@ -596,7 +596,7 @@ const AIAuditEngine: React.FC = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full opacity-[0.04]"
           style={{ background: `radial-gradient(ellipse, ${M} 0%, transparent 70%)` }} />
         <div className="absolute inset-0 opacity-[0.025]"
-          style={{ backgroundImage: 'radial-gradient(rgba(255,179,71,0.8) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+          style={{ backgroundImage: 'radial-gradient(rgba(78,205,196,0.8) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
         <div className="absolute top-0 left-0 right-0 h-px"
           style={{ background: `linear-gradient(90deg, transparent, ${M}40, transparent)` }} />
       </div>
@@ -629,7 +629,7 @@ const AIAuditEngine: React.FC = () => {
             <button
               onClick={() => setShowAudit(true)}
               className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-[11px] font-sans font-bold uppercase tracking-[0.15em] transition-all hover:scale-[1.02] text-[#1A1140]"
-              style={{ background: `linear-gradient(135deg, ${M}, ${ML})`, boxShadow: `0 3px 16px rgba(255,179,71,0.35)` }}
+              style={{ background: `linear-gradient(135deg, ${M}, ${ML})`, boxShadow: `0 3px 16px rgba(78,205,196,0.35)` }}
             >
               <Sparkles size={12} /> Free AI Audit
             </button>
@@ -868,7 +868,7 @@ const AIAuditEngine: React.FC = () => {
                     <div className="flex gap-3 justify-center flex-wrap">
                       <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-sans font-bold text-black no-underline transition-all"
-                        style={{ background: `linear-gradient(135deg, ${M}, ${ML})`, boxShadow: `0 4px 20px rgba(255,179,71,0.25)` }}>
+                        style={{ background: `linear-gradient(135deg, ${M}, ${ML})`, boxShadow: `0 4px 20px rgba(78,205,196,0.25)` }}>
                         <Calendar size={13} /> Book Your Free Strategy Call
                       </a>
                       <button onClick={async () => { await saveLead('email-report'); setReportSent(true); }} disabled={reportSent}
@@ -909,9 +909,9 @@ const AIAuditEngine: React.FC = () => {
         <div
           className="rounded-2xl flex items-center justify-between p-6 md:p-8 mb-5 transition-all duration-500 relative overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, rgba(255,179,71,0.12) 0%, rgba(10,8,4,0.5) 60%, rgba(255,179,71,0.06) 100%)`,
-            border: `1px solid rgba(255,179,71,0.35)`,
-            boxShadow: `0 0 40px rgba(255,179,71,0.08), inset 0 1px 0 rgba(255,179,71,0.15)`,
+            background: `linear-gradient(135deg, rgba(78,205,196,0.12) 0%, rgba(10,8,4,0.5) 60%, rgba(78,205,196,0.06) 100%)`,
+            border: `1px solid rgba(78,205,196,0.35)`,
+            boxShadow: `0 0 40px rgba(78,205,196,0.08), inset 0 1px 0 rgba(78,205,196,0.15)`,
             opacity: anim ? 0.7 : 1, transform: anim ? 'translateY(4px)' : 'none',
           }}
         >
@@ -945,7 +945,7 @@ const AIAuditEngine: React.FC = () => {
             <button key={t.key} onClick={() => setTab(t.key)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[11px] font-sans font-semibold whitespace-nowrap transition-all duration-200"
               style={{
-                background: tab === t.key ? `rgba(255,179,71,0.18)` : 'transparent',
+                background: tab === t.key ? `rgba(78,205,196,0.18)` : 'transparent',
                 border: tab === t.key ? `1.5px solid ${M}55` : '1px solid transparent',
                 color: tab === t.key ? ML : 'rgba(255,255,255,0.38)',
                 textShadow: tab === t.key ? `0 0 12px ${M}60` : 'none',
@@ -1000,15 +1000,15 @@ const AIAuditEngine: React.FC = () => {
             <div className="glass-card p-6">
               <div className="flex items-center gap-2 mb-4">
                 <div className="text-xs font-sans font-bold text-white">Top AI Recommendations</div>
-                <span className="text-[9px] font-mono px-2 py-0.5 rounded" style={{ color: ML, background: `rgba(255,179,71,0.15)`, border: `1px solid rgba(255,179,71,0.25)` }}>✦ Critical</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded" style={{ color: ML, background: `rgba(78,205,196,0.15)`, border: `1px solid rgba(78,205,196,0.25)` }}>✦ Critical</span>
               </div>
               {d.tools.filter(t => t.status === 'critical').map((t, i) => {
                 const readyOpts = READY_TOOLS[t.name];
                 return (
                   <div key={i} className="mb-3 rounded-xl p-3 transition-all"
-                    style={{ background: 'rgba(255,179,71,0.04)', border: '1px solid rgba(255,179,71,0.08)' }}>
+                    style={{ background: 'rgba(78,205,196,0.04)', border: '1px solid rgba(78,205,196,0.08)' }}>
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `rgba(255,179,71,0.15)`, boxShadow: `0 0 12px rgba(255,179,71,0.15)` }}>
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `rgba(78,205,196,0.15)`, boxShadow: `0 0 12px rgba(78,205,196,0.15)` }}>
                         <t.icon size={14} color={ML} />
                       </div>
                       <div className="flex-1">
@@ -1382,7 +1382,7 @@ const AIAuditEngine: React.FC = () => {
               ))}
               <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 mt-2 py-3.5 rounded-xl text-sm font-sans font-bold text-black no-underline transition-all"
-                style={{ background: `linear-gradient(135deg, ${M}, ${ML})`, boxShadow: `0 4px 20px rgba(255,179,71,0.2)` }}>
+                style={{ background: `linear-gradient(135deg, ${M}, ${ML})`, boxShadow: `0 4px 20px rgba(78,205,196,0.2)` }}>
                 <Calendar size={14} /> Turn This Into Your Custom Plan
               </a>
             </div>
@@ -1392,9 +1392,9 @@ const AIAuditEngine: React.FC = () => {
         {/* ═══════════ BOTTOM CTA */}
         <div className="mt-8 rounded-2xl p-10 text-center relative overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, rgba(255,179,71,0.22) 0%, rgba(255,179,71,0.08) 50%, rgba(255,202,40,0.15) 100%)`,
-            border: `1px solid rgba(255,179,71,0.45)`,
-            boxShadow: `0 0 80px rgba(255,179,71,0.12), inset 0 1px 0 rgba(255,202,40,0.25), 0 1px 0 rgba(255,179,71,0.2)`,
+            background: `linear-gradient(135deg, rgba(78,205,196,0.22) 0%, rgba(78,205,196,0.08) 50%, rgba(255,202,40,0.15) 100%)`,
+            border: `1px solid rgba(78,205,196,0.45)`,
+            boxShadow: `0 0 80px rgba(78,205,196,0.12), inset 0 1px 0 rgba(255,202,40,0.25), 0 1px 0 rgba(78,205,196,0.2)`,
           }}>
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-32 rounded-full opacity-20"
@@ -1402,7 +1402,7 @@ const AIAuditEngine: React.FC = () => {
           </div>
           <div className="relative">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[9px] font-mono font-bold tracking-[0.3em] uppercase mb-4"
-              style={{ background: 'rgba(255,179,71,0.2)', border: `1px solid rgba(255,179,71,0.4)`, color: ML }}>
+              style={{ background: 'rgba(78,205,196,0.2)', border: `1px solid rgba(78,205,196,0.4)`, color: ML }}>
               <Sparkles size={8} /> Ready to Build?
             </div>
             <div className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-3">
@@ -1414,7 +1414,7 @@ const AIAuditEngine: React.FC = () => {
             <div className="flex gap-4 justify-center flex-wrap">
               <button onClick={() => setShowAudit(true)}
                 className="flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-sans font-bold text-[#1A1140] transition-all hover:scale-[1.02]"
-                style={{ background: `linear-gradient(135deg, ${M}, ${ML})`, boxShadow: `0 6px 30px rgba(255,179,71,0.40)` }}>
+                style={{ background: `linear-gradient(135deg, ${M}, ${ML})`, boxShadow: `0 6px 30px rgba(78,205,196,0.40)` }}>
                 <Sparkles size={15} /> Run Free AI Audit
               </button>
               <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"

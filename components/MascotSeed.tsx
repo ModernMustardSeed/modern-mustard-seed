@@ -85,7 +85,7 @@ export default function MascotSeed({
           top: -10%;
           left: 50%;
           transform: translate(-50%, -100%) scale(0.6);
-          background: linear-gradient(120deg, #FF6B6B, #FFB347);
+          background: linear-gradient(120deg, #4F92D8, #4ECDC4);
           color: #ffffff;
           font-family: 'Manrope', system-ui, sans-serif;
           font-weight: 700;
@@ -96,7 +96,7 @@ export default function MascotSeed({
           white-space: nowrap;
           opacity: 0;
           pointer-events: none;
-          box-shadow: 0 4px 18px rgba(255,179,71, 0.35);
+          box-shadow: 0 4px 18px rgba(78,205,196, 0.35);
           animation: bubble-in 2.2s cubic-bezier(0.34, 1.56, 0.64, 1);
           z-index: 5;
         }
@@ -109,7 +109,7 @@ export default function MascotSeed({
           transform: translateX(-50%) rotate(45deg);
           width: 10px;
           height: 10px;
-          background: #FF8E72;
+          background: #4F92D8;
         }
 
         @keyframes float {

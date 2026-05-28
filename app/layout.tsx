@@ -11,7 +11,7 @@ import './globals.css';
 export const metadata: Metadata = buildMetadata();
 
 export const viewport: Viewport = {
-  themeColor: '#FF8E72',
+  themeColor: '#4F92D8',
   width: 'device-width',
   initialScale: 1,
 };
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <noscript>
           <p style={{ padding: '2rem', textAlign: 'center', color: '#fff' }}>
             {SITE.name}. {SITE.description} Visit{' '}
-            <a href={SITE.url} style={{ color: '#FF8E72' }}>
+            <a href={SITE.url} style={{ color: '#4F92D8' }}>
               {SITE.url}
             </a>{' '}
             for more.

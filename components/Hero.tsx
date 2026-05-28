@@ -32,7 +32,7 @@ export default function Hero() {
       <div className="flex flex-col sm:flex-row gap-4 mb-14 opacity-0 animate-fade-in-up-delay-2">
         <Link
           href="/audit"
-          className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(255,179,71,0.2)] transition-all duration-300"
+          className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(78,205,196,0.2)] transition-all duration-300"
         >
           Start a Free AI Audit
         </Link>
@@ -46,7 +46,7 @@ export default function Hero() {
 
       <div className="max-w-lg opacity-0 animate-fade-in-up-delay-2">
         <div className="glass-card px-6 py-5 md:px-8 md:py-6">
-          <span className="text-[9px] md:text-[10px] text-mustard-500/70 font-bold tracking-[0.4em] uppercase font-mono drop-shadow-[0_0_6px_rgba(255,179,71,0.3)] block mb-2">
+          <span className="text-[9px] md:text-[10px] text-mustard-500/70 font-bold tracking-[0.4em] uppercase font-mono drop-shadow-[0_0_6px_rgba(78,205,196,0.3)] block mb-2">
             Matthew 17:20
           </span>
           <p className="text-white/60 font-sans font-semibold text-sm md:text-base tracking-wide leading-relaxed">

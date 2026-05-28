@@ -55,7 +55,7 @@ export default function NewsletterSignup({
         <button
           type="submit"
           disabled={status === 'sending'}
-          className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_30px_rgba(255,179,71,0.2)] transition-all disabled:opacity-50"
+          className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_30px_rgba(78,205,196,0.2)] transition-all disabled:opacity-50"
         >
           {status === 'sending' ? 'Sending...' : 'Subscribe'}
         </button>
@@ -91,7 +91,7 @@ export default function NewsletterSignup({
         <button
           type="submit"
           disabled={status === 'sending'}
-          className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_30px_rgba(255,179,71,0.2)] transition-all disabled:opacity-50"
+          className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_30px_rgba(78,205,196,0.2)] transition-all disabled:opacity-50"
         >
           {status === 'sending' ? 'Sending...' : 'Subscribe'}
         </button>

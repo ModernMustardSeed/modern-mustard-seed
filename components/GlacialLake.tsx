@@ -32,16 +32,17 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
             {isDawn ? (
               <>
                 <stop offset="0%" stopColor="#1A1140" />
-                <stop offset="45%" stopColor="#3A1A4F" />
-                <stop offset="75%" stopColor="#FF8E72" />
-                <stop offset="92%" stopColor="#FFB347" />
+                <stop offset="30%" stopColor="#1F4280" />
+                <stop offset="58%" stopColor="#3776C2" />
+                <stop offset="80%" stopColor="#6FACE7" />
+                <stop offset="93%" stopColor="#FFB347" />
                 <stop offset="100%" stopColor="#FFE2B0" />
               </>
             ) : (
               <>
                 <stop offset="0%" stopColor="#0E0824" />
                 <stop offset="60%" stopColor="#1A1140" />
-                <stop offset="100%" stopColor="#3A2475" />
+                <stop offset="100%" stopColor="#1F4280" />
               </>
             )}
           </linearGradient>

@@ -4,7 +4,7 @@ export const runtime = 'edge';
 export const size = { width: 180, height: 180 };
 export const contentType = 'image/png';
 
-const SUNRISE = 'linear-gradient(120deg, #FF6B6B 0%, #FFB347 55%, #4ECDC4 100%)';
+const SUNRISE = 'linear-gradient(120deg, #4F92D8 0%, #6FACE7 50%, #4ECDC4 100%)';
 
 export default function AppleIcon() {
   return new ImageResponse(
@@ -29,7 +29,7 @@ export default function AppleIcon() {
             right: 8,
             bottom: 8,
             borderRadius: 28,
-            border: '1px solid rgba(255,179,71, 0.35)',
+            border: '1px solid rgba(78,205,196, 0.35)',
             display: 'flex',
           }}
         />

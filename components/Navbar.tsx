@@ -37,7 +37,7 @@ export default function Navbar() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-[11px] uppercase tracking-[0.2em] text-white/50 hover:text-sunrise-gold transition-colors font-body font-medium"
+              className="text-[11px] uppercase tracking-[0.2em] text-white/50 hover:text-sky-300 transition-colors font-body font-medium"
             >
               {link.label}
             </Link>
@@ -92,7 +92,7 @@ export default function Navbar() {
           <Link
             href="/build-queue"
             onClick={() => setMenuOpen(false)}
-            className="mt-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_20px_rgba(255,179,71,0.25)] transition-all text-center"
+            className="mt-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_20px_rgba(78,205,196,0.25)] transition-all text-center"
           >
             Join the Queue
           </Link>

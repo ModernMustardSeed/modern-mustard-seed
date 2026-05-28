@@ -70,16 +70,17 @@ export default function MountainRange({
         className="absolute inset-0 w-full h-full"
       >
         <defs>
-          {/* Sky gradient: aubergine top -> rose -> gold horizon */}
+          {/* Dawn sky gradient: aubergine night top -> deep sky -> dawn sky -> warm horizon */}
           <linearGradient id="mr-sky" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#1A1140" />
-            <stop offset="50%" stopColor="#2A1A55" />
-            <stop offset="78%" stopColor="#5A2D5A" />
-            <stop offset="92%" stopColor="#FF8E72" />
-            <stop offset="100%" stopColor="#FFB347" />
+            <stop offset="30%" stopColor="#1F4280" />
+            <stop offset="58%" stopColor="#3776C2" />
+            <stop offset="80%" stopColor="#6FACE7" />
+            <stop offset="93%" stopColor="#FFB347" />
+            <stop offset="100%" stopColor="#FFE2B0" />
           </linearGradient>
 
-          {/* Sun glow */}
+          {/* Sun glow (warm, kept — it IS the literal sun) */}
           <radialGradient id="mr-sun" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#FFE2B0" stopOpacity="1" />
             <stop offset="35%" stopColor="#FFB347" stopOpacity="0.85" />
@@ -87,17 +88,17 @@ export default function MountainRange({
             <stop offset="100%" stopColor="#FF6B6B" stopOpacity="0" />
           </radialGradient>
 
-          {/* Atmospheric haze between ridges (warm) */}
+          {/* Warm horizon haze (only at the sun line) */}
           <linearGradient id="mr-haze-warm" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#FFB347" stopOpacity="0" />
-            <stop offset="60%" stopColor="#FF8E72" stopOpacity="0.18" />
-            <stop offset="100%" stopColor="#FF6B6B" stopOpacity="0.28" />
+            <stop offset="60%" stopColor="#FFB347" stopOpacity="0.14" />
+            <stop offset="100%" stopColor="#FF8E72" stopOpacity="0.22" />
           </linearGradient>
 
-          {/* Atmospheric haze (cool, between higher ridges) */}
+          {/* Cool sky haze between distant ridges */}
           <linearGradient id="mr-haze-cool" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#7FE4C5" stopOpacity="0" />
-            <stop offset="100%" stopColor="#4ECDC4" stopOpacity="0.18" />
+            <stop offset="0%" stopColor="#8FC0EF" stopOpacity="0" />
+            <stop offset="100%" stopColor="#4F92D8" stopOpacity="0.22" />
           </linearGradient>
 
           {/* Snow-cap highlight gradient */}

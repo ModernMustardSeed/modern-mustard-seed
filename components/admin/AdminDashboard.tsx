@@ -179,7 +179,7 @@ export default function AdminDashboard() {
           </div>
           <button
             onClick={load}
-            className="px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_20px_rgba(255,179,71,0.2)] transition-all"
+            className="px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_20px_rgba(78,205,196,0.2)] transition-all"
           >
             Apply
           </button>

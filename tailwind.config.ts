@@ -17,22 +17,22 @@ const config: Config = {
         display: ['"Fraunces"', '"Cormorant Garamond"', 'Georgia', 'serif'],
       },
       colors: {
-        // Legacy "mustard" tokens remapped to Mountain Sunrise so every existing
-        // text-mustard-*, bg-mustard-*, border-mustard-* utility picks up the new
-        // palette without rewriting components. Names are kept for backwards-compat.
+        // Legacy "mustard" tokens REMAPPED to Dawn Sky (cool blue) so every
+        // existing text-mustard-*, bg-mustard-*, border-mustard-* utility
+        // immediately picks up the new sky colors without rewriting components.
         mustard: {
-          50: '#FFF1ED',
-          100: '#FFE3D5',
-          200: '#FFD2B8',
-          300: '#FFC093',
-          400: '#FFB347', // sunrise.gold (primary accent)
-          500: '#FF8E72', // sunrise.peach (primary brand)
-          600: '#FF6B6B', // sunrise.rose (deep accent)
-          700: '#E0524E',
-          800: '#B53E3E',
-          900: '#8A2D2D',
+          50: '#F0F7FF',
+          100: '#DCEBFB',
+          200: '#B5D6F5',
+          300: '#8FC0EF',
+          400: '#6FACE7', // dawn sky (primary accent)
+          500: '#4F92D8', // mid sky (primary brand)
+          600: '#3776C2', // deep sky (deep accent)
+          700: '#2A5A9F',
+          800: '#1F4280',
+          900: '#16305C',
         },
-        // New Mountain Sunrise palette
+        // Aubergine night, the dark side of dawn
         night: {
           DEFAULT: '#1A1140',
           900: '#0E0824',
@@ -42,6 +42,29 @@ const config: Config = {
           500: '#3A2475',
           400: '#5238A1',
         },
+        // Dawn sky palette
+        sky: {
+          50: '#F0F7FF',
+          100: '#DCEBFB',
+          200: '#B5D6F5',
+          300: '#8FC0EF',
+          400: '#6FACE7',
+          500: '#4F92D8',
+          600: '#3776C2',
+          700: '#2A5A9F',
+          800: '#1F4280',
+          900: '#16305C',
+        },
+        // Cloud whites for fluff and highlight
+        cloud: {
+          50: '#FAFCFF',
+          100: '#F0F5FB',
+          200: '#E0E8F2',
+          300: '#C7D3E3',
+        },
+        // Sunrise warm tones are now reserved for scenic art only (the literal
+        // sun in MountainRange, the lake-reflection streak in GlacialLake, the
+        // dawn horizon glow). NOT for UI buttons, eyebrows, borders, or glows.
         sunrise: {
           rose: '#FF6B6B',
           peach: '#FF8E72',

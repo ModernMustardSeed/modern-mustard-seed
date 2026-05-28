@@ -16,7 +16,7 @@
   }
 
   ::selection {
-    background-color: rgba(255, 142, 114, 0.35);
+    background-color: rgba(111, 172, 231, 0.4);
     color: white;
   }
 
@@ -29,53 +29,72 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(255, 179, 71, 0.18);
+    background: rgba(111, 172, 231, 0.22);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 142, 114, 0.4);
+    background: rgba(78, 205, 196, 0.45);
   }
 }
 
 @layer utilities {
-  /* Mountain Sunrise. The brand gradient. Used on H1 spans and hero accents. */
+  /* Dawn Sky. The brand gradient. Used on H1 spans and hero accents.
+     Deep sky -> mid sky -> dawn sky -> mint -> glacial cyan.  */
+  .text-gradient-sky {
+    background: linear-gradient(120deg, #2A5A9F 0%, #4F92D8 25%, #6FACE7 55%, #7FE4C5 85%, #4ECDC4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Compact variant. Two stops, mid-sky to glacial cyan. Good on small UI. */
+  .text-gradient-sky-cool {
+    background: linear-gradient(120deg, #4F92D8 0%, #4ECDC4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Legacy aliases. Anything still calling -mustard or -sunrise now reads sky. */
   .text-gradient-sunrise {
-    background: linear-gradient(120deg, #FF6B6B 0%, #FF8E72 25%, #FFB347 55%, #7FE4C5 85%, #4ECDC4 100%);
+    background: linear-gradient(120deg, #2A5A9F 0%, #4F92D8 25%, #6FACE7 55%, #7FE4C5 85%, #4ECDC4 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
-  /* Warm-only variant for compact UI moments where 3-stop reads chaotic. */
   .text-gradient-sunrise-warm {
-    background: linear-gradient(120deg, #FF6B6B 0%, #FFB347 100%);
+    background: linear-gradient(120deg, #4F92D8 0%, #4ECDC4 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
-  /* Legacy alias. Anything still calling text-gradient-mustard now reads as sunrise. */
   .text-gradient-mustard {
-    background: linear-gradient(120deg, #FF6B6B 0%, #FF8E72 25%, #FFB347 55%, #7FE4C5 85%, #4ECDC4 100%);
+    background: linear-gradient(120deg, #2A5A9F 0%, #4F92D8 25%, #6FACE7 55%, #7FE4C5 85%, #4ECDC4 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .text-gradient-mustard-subtle {
-    background: linear-gradient(120deg, #FFB347 0%, #FF8E72 100%);
+    background: linear-gradient(120deg, #4F92D8 0%, #6FACE7 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .bg-sunrise {
-    background: linear-gradient(120deg, #FF6B6B 0%, #FFB347 60%, #4ECDC4 100%);
+  /* Background gradient utilities */
+  .bg-sky-gradient {
+    background: linear-gradient(120deg, #2A5A9F 0%, #4F92D8 50%, #4ECDC4 100%);
   }
-
+  .bg-sky-cool {
+    background: linear-gradient(120deg, #4F92D8 0%, #4ECDC4 100%);
+  }
+  /* Legacy aliases keep existing CTAs working with the new palette */
+  .bg-sunrise {
+    background: linear-gradient(120deg, #2A5A9F 0%, #4F92D8 50%, #4ECDC4 100%);
+  }
   .bg-sunrise-warm {
-    background: linear-gradient(120deg, #FF6B6B 0%, #FFB347 100%);
+    background: linear-gradient(120deg, #4F92D8 0%, #4ECDC4 100%);
   }
 
   .glass-card {
@@ -98,7 +117,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     filter: contrast(1.2) brightness(1.1);
-    -webkit-text-stroke: 1px rgba(255, 179, 71, 0.35);
+    -webkit-text-stroke: 1px rgba(111, 172, 231, 0.35);
     paint-order: stroke fill;
   }
 

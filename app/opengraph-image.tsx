@@ -6,8 +6,8 @@ export const alt = 'Modern Mustard Seed. Idea to Shipped Product in 30 Days.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const SUNRISE_GRADIENT = 'linear-gradient(120deg, #FF6B6B 0%, #FF8E72 25%, #FFB347 55%, #7FE4C5 85%, #4ECDC4 100%)';
-const SUNRISE_WARM = 'linear-gradient(120deg, #FF6B6B 0%, #FFB347 100%)';
+const SUNRISE_GRADIENT = 'linear-gradient(120deg, #2A5A9F 0%, #4F92D8 25%, #6FACE7 55%, #7FE4C5 85%, #4ECDC4 100%)';
+const SUNRISE_WARM = 'linear-gradient(120deg, #4F92D8 0%, #4ECDC4 100%)';
 
 export default async function OpengraphImage() {
   return new ImageResponse(
@@ -47,7 +47,7 @@ export default async function OpengraphImage() {
             fontWeight: 700,
             textTransform: 'uppercase',
             letterSpacing: 8,
-            color: 'rgba(255,179,71, 0.7)',
+            color: 'rgba(78,205,196, 0.7)',
             marginBottom: 28,
           }}
         >
@@ -82,7 +82,7 @@ export default async function OpengraphImage() {
             width: 220,
             height: 1,
             background:
-              'linear-gradient(to right, transparent, rgba(255,179,71,0.5), transparent)',
+              'linear-gradient(to right, transparent, rgba(78,205,196,0.5), transparent)',
             marginBottom: 28,
             display: 'flex',
           }}
@@ -126,7 +126,7 @@ export default async function OpengraphImage() {
             fontFamily: 'monospace',
             fontSize: 14,
             fontWeight: 700,
-            color: 'rgba(255,179,71, 0.55)',
+            color: 'rgba(78,205,196, 0.55)',
             letterSpacing: 6,
             textTransform: 'uppercase',
           }}

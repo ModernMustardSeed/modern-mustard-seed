@@ -12,6 +12,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import MountainRange from '@/components/MountainRange';
 import AuroraField from '@/components/AuroraField';
 import GlacialLake from '@/components/GlacialLake';
+import Clouds from '@/components/Clouds';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -110,9 +111,10 @@ export default function HomePage() {
       <ResultsMarquee />
       <EraOfEntrepreneur />
 
-      {/* Starting points sits in an aurora-bathed section */}
-      <section className="relative">
+      {/* Starting points sits in an aurora-bathed sky with drifting clouds */}
+      <section className="relative overflow-hidden">
         <AuroraField intensity="subtle" />
+        <Clouds density="subtle" />
         <StartingPoints />
       </section>
 
