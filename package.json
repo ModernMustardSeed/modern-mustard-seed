@@ -12,6 +12,7 @@
     "indexnow:all": "node scripts/indexnow.mjs --from-sitemap"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.0",
     "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
     "@next/mdx": "^16.0.0",
