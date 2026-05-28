@@ -256,6 +256,103 @@ export function aboutPageJsonLd() {
   };
 }
 
+export function productJsonLd(args: {
+  slug: string;
+  name: string;
+  description: string;
+  priceUsd: number;
+  category: string;
+  pages: number;
+  image?: string;
+}) {
+  const url = `${SITE.url}/store/${args.slug}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `${url}#product`,
+    name: args.name,
+    description: args.description,
+    sku: args.slug,
+    brand: { '@id': ORG_ID },
+    manufacturer: { '@id': ORG_ID },
+    author: { '@id': PERSON_ID },
+    category: args.category,
+    image: args.image ?? `${SITE.url}/opengraph-image`,
+    url,
+    offers: {
+      '@type': 'Offer',
+      price: args.priceUsd.toFixed(2),
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      url,
+      seller: { '@id': ORG_ID },
+    },
+    isRelatedTo: { '@id': WEBSITE_ID },
+    additionalProperty: [
+      { '@type': 'PropertyValue', name: 'Format', value: 'PDF' },
+      { '@type': 'PropertyValue', name: 'Pages', value: String(args.pages) },
+      { '@type': 'PropertyValue', name: 'Delivery', value: 'Instant download after purchase' },
+    ],
+  };
+}
+
+export function productHowToJsonLd(args: {
+  slug: string;
+  name: string;
+  description: string;
+  toc: string[];
+}) {
+  const url = `${SITE.url}/store/${args.slug}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    '@id': `${url}#howto`,
+    name: args.name,
+    description: args.description,
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': ORG_ID },
+    inLanguage: 'en-US',
+    step: args.toc.map((stepText, i) => {
+      const [title, ...rest] = stepText.split('.');
+      const text = rest.join('.').trim() || title.trim();
+      return {
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: title.trim(),
+        text,
+      };
+    }),
+  };
+}
+
+export function collectionPageJsonLd(args: {
+  url: string;
+  name: string;
+  description: string;
+  itemListElement: { url: string; name: string }[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${args.url}#collection`,
+    url: args.url,
+    name: args.name,
+    description: args.description,
+    isPartOf: { '@id': WEBSITE_ID },
+    publisher: { '@id': ORG_ID },
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: args.itemListElement.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: item.url,
+        name: item.name,
+      })),
+    },
+  };
+}
+
 export function JsonLd({ data }: { data: object | object[] }) {
   return (
     <script

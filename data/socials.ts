@@ -8,8 +8,8 @@ export const socials = [
 export const navLinks = [
   { label: 'The Work', href: '/work' },
   { label: 'How it Works', href: '/work-with-us' },
+  { label: 'Store', href: '/store' },
   { label: 'Playbooks', href: '/playbooks' },
-  { label: 'Blog', href: '/blog' },
   { label: 'Audit', href: '/audit' },
 ];
 

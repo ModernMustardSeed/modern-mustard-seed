@@ -11,5 +11,10 @@ Description: AI-powered products, voice agents, and business automation. Built w
 Contact: sarah@modernmustardseed.com
 URL: https://modernmustardseed.com
 
+# Product feeds for AI shopping integrations
+Product-Feed-XML: https://modernmustardseed.com/api/feed/products.xml
+Product-Feed-JSON: https://modernmustardseed.com/api/feed/products.json
+Store: https://modernmustardseed.com/store
+
 # For detailed information about this site, see:
 LLMs-txt: https://modernmustardseed.com/llms.txt

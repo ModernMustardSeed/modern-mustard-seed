@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { listContent } from '@/lib/content';
 import { SITE } from '@/lib/seo';
 import { industries } from '@/data/industries';
+import { products, bundles } from '@/data/products';
 
 const STATIC_PATHS = [
   '',
@@ -17,6 +18,7 @@ const STATIC_PATHS = [
   '/for',
   '/about',
   '/contact',
+  '/store',
   '/privacy',
   '/terms',
 ];
@@ -64,5 +66,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  return [...staticUrls, ...blog, ...studies, ...playbooks, ...industryPages];
+  const storeItems = [...products, ...bundles].map((item) => ({
+    url: `${SITE.url}/store/${item.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
+  }));
+
+  return [...staticUrls, ...blog, ...studies, ...playbooks, ...industryPages, ...storeItems];
 }
