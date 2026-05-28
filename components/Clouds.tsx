@@ -1,16 +1,18 @@
 /**
- * Clouds. Pure-CSS-animated SVG clouds drifting across a section.
+ * Clouds. Painterly multi-lobe cumulus with morning sunshine on top.
  *
- * Six pillowy clouds at different heights, sizes, opacities, and drift
- * speeds (45s to 110s). Soft sky-blue gradient fills with a darker
- * lavender underbelly so they read three-dimensional, not flat.
+ * Each cloud is a composition of 5-8 overlapping ellipses wrapped in a
+ * Gaussian blur + turbulence filter so the edges read as fluffy cumulus
+ * rather than a single SVG path. A two-stop gradient gives every cloud
+ * a warm peach top (sun-lit) and a cool deep-sky underbelly (shadow).
  *
  *   <section className="relative">
  *     <Clouds />
  *     ...content
  *   </section>
  *
- * Honors prefers-reduced-motion. Pointer-events disabled.
+ * Six clouds drifting on independent paths (48s to 110s). A few stars
+ * peek through the upper dawn. Honors prefers-reduced-motion.
  */
 type Props = {
   density?: 'subtle' | 'medium' | 'bold';
@@ -18,70 +20,179 @@ type Props = {
 };
 
 const OPACITY = {
-  subtle: 0.55,
-  medium: 0.75,
-  bold: 0.95,
+  subtle: 0.6,
+  medium: 0.82,
+  bold: 1,
 };
 
-// Stylized cloud shape. Multi-lobed top, soft flat-ish bottom.
-function CloudShape({
+type Lobe = { cx: number; cy: number; rx: number; ry: number };
+
+// Six hand-tuned cumulus silhouettes. Each is a multi-ellipse composition
+// that, when blurred, reads as a single fluffy cloud with believable lobes.
+const CLOUD_SHAPES: Record<string, { lobes: Lobe[]; w: number; h: number }> = {
+  // Large billowing cumulus
+  a: {
+    w: 420, h: 180,
+    lobes: [
+      { cx: 90,  cy: 130, rx: 70, ry: 50 },
+      { cx: 140, cy: 95,  rx: 60, ry: 55 },
+      { cx: 195, cy: 75,  rx: 70, ry: 60 },
+      { cx: 250, cy: 90,  rx: 65, ry: 55 },
+      { cx: 305, cy: 110, rx: 60, ry: 50 },
+      { cx: 350, cy: 135, rx: 55, ry: 40 },
+      { cx: 175, cy: 130, rx: 80, ry: 35 },
+      { cx: 250, cy: 135, rx: 70, ry: 32 },
+    ],
+  },
+  // Compact puffy cumulus
+  b: {
+    w: 300, h: 150,
+    lobes: [
+      { cx: 70,  cy: 105, rx: 50, ry: 38 },
+      { cx: 120, cy: 75,  rx: 55, ry: 50 },
+      { cx: 170, cy: 70,  rx: 50, ry: 45 },
+      { cx: 215, cy: 95,  rx: 50, ry: 42 },
+      { cx: 145, cy: 105, rx: 70, ry: 30 },
+    ],
+  },
+  // Stretched horizontal cumulus
+  c: {
+    w: 540, h: 160,
+    lobes: [
+      { cx: 80,  cy: 110, rx: 60, ry: 40 },
+      { cx: 140, cy: 85,  rx: 55, ry: 50 },
+      { cx: 200, cy: 75,  rx: 60, ry: 55 },
+      { cx: 270, cy: 80,  rx: 65, ry: 50 },
+      { cx: 340, cy: 90,  rx: 60, ry: 48 },
+      { cx: 410, cy: 100, rx: 55, ry: 45 },
+      { cx: 470, cy: 115, rx: 50, ry: 40 },
+      { cx: 260, cy: 115, rx: 110, ry: 30 },
+    ],
+  },
+  // Small wisp
+  d: {
+    w: 220, h: 90,
+    lobes: [
+      { cx: 50,  cy: 55, rx: 35, ry: 25 },
+      { cx: 95,  cy: 42, rx: 38, ry: 30 },
+      { cx: 140, cy: 50, rx: 35, ry: 26 },
+      { cx: 175, cy: 60, rx: 28, ry: 20 },
+    ],
+  },
+  // Mid cumulus with high top
+  e: {
+    w: 360, h: 200,
+    lobes: [
+      { cx: 90,  cy: 140, rx: 55, ry: 45 },
+      { cx: 140, cy: 100, rx: 55, ry: 55 },
+      { cx: 190, cy: 75,  rx: 60, ry: 60 },
+      { cx: 245, cy: 95,  rx: 55, ry: 55 },
+      { cx: 295, cy: 130, rx: 50, ry: 45 },
+      { cx: 195, cy: 145, rx: 90, ry: 30 },
+    ],
+  },
+  // Tiny distant cloud
+  f: {
+    w: 180, h: 80,
+    lobes: [
+      { cx: 45,  cy: 50, rx: 30, ry: 22 },
+      { cx: 80,  cy: 38, rx: 32, ry: 28 },
+      { cx: 115, cy: 45, rx: 30, ry: 25 },
+      { cx: 145, cy: 55, rx: 22, ry: 18 },
+    ],
+  },
+};
+
+function CloudPiece({
   id,
-  className,
-  style,
   size,
+  className,
 }: {
-  id: string;
-  className?: string;
-  style?: React.CSSProperties;
+  id: keyof typeof CLOUD_SHAPES;
   size: number;
+  className?: string;
 }) {
-  const w = size * 1.8;
-  const h = size;
+  const shape = CLOUD_SHAPES[id];
+  const w = (size * shape.w) / shape.h;
   return (
     <svg
-      viewBox="0 0 300 100"
+      viewBox={`0 0 ${shape.w} ${shape.h}`}
       width={w}
-      height={h}
+      height={size}
       className={className}
-      style={style}
       aria-hidden="true"
     >
       <defs>
-        <linearGradient id={`cloud-${id}-top`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#FAFCFF" stopOpacity="0.95" />
-          <stop offset="55%" stopColor="#DCEBFB" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#8FC0EF" stopOpacity="0.65" />
+        {/* Two-stop sun-lit gradient: warm peach top, cool deep-sky underbelly */}
+        <linearGradient id={`cl-${id}-fill`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFE2B0" stopOpacity="0.98" />
+          <stop offset="22%" stopColor="#FFD0A8" stopOpacity="0.96" />
+          <stop offset="48%" stopColor="#F5F0FA" stopOpacity="0.94" />
+          <stop offset="78%" stopColor="#B5D6F5" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#3776C2" stopOpacity="0.55" />
         </linearGradient>
-        <linearGradient id={`cloud-${id}-shadow`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#8FC0EF" stopOpacity="0.0" />
-          <stop offset="100%" stopColor="#3776C2" stopOpacity="0.35" />
-        </linearGradient>
+
+        {/* Inner highlight at the very top where sun catches */}
+        <radialGradient id={`cl-${id}-sun`} cx="60%" cy="22%" r="55%">
+          <stop offset="0%" stopColor="#FFE6B8" stopOpacity="0.55" />
+          <stop offset="60%" stopColor="#FFD0A8" stopOpacity="0.0" />
+          <stop offset="100%" stopColor="#FFD0A8" stopOpacity="0" />
+        </radialGradient>
+
+        {/* Soft fluffy edge: gaussian blur + light noise displacement */}
+        <filter id={`cl-${id}-fluff`} x="-15%" y="-15%" width="130%" height="130%">
+          <feGaussianBlur stdDeviation="3" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="3" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
+        </filter>
+
+        {/* Soft underbelly shadow */}
+        <filter id={`cl-${id}-shadow`} x="-10%" y="-10%" width="120%" height="130%">
+          <feGaussianBlur stdDeviation="6" />
+        </filter>
       </defs>
-      {/* Soft shadow underneath */}
-      <ellipse
-        cx="150"
-        cy="84"
-        rx="120"
-        ry="8"
-        fill={`url(#cloud-${id}-shadow)`}
-      />
-      {/* Main cloud body. Composite of soft round bumps. */}
-      <path
-        d="
-          M 40 78
-          Q 18 78, 18 62
-          Q 18 44, 42 42
-          Q 48 22, 78 22
-          Q 92 6, 124 14
-          Q 144 -2, 172 12
-          Q 196 4, 218 22
-          Q 248 22, 256 42
-          Q 282 44, 282 62
-          Q 282 78, 260 78
-          Z
-        "
-        fill={`url(#cloud-${id}-top)`}
-      />
+
+      {/* Cloud underbelly shadow (drawn first, behind everything) */}
+      <g filter={`url(#cl-${id}-shadow)`} opacity="0.45">
+        {shape.lobes.map((l, i) => (
+          <ellipse
+            key={`s-${i}`}
+            cx={l.cx}
+            cy={l.cy + 12}
+            rx={l.rx}
+            ry={l.ry * 0.5}
+            fill="#1F4280"
+          />
+        ))}
+      </g>
+
+      {/* Main cloud body. Lobes blurred together with the fluff filter */}
+      <g filter={`url(#cl-${id}-fluff)`}>
+        {shape.lobes.map((l, i) => (
+          <ellipse
+            key={`b-${i}`}
+            cx={l.cx}
+            cy={l.cy}
+            rx={l.rx}
+            ry={l.ry}
+            fill={`url(#cl-${id}-fill)`}
+          />
+        ))}
+      </g>
+
+      {/* Sun-lit highlight on top */}
+      <g filter={`url(#cl-${id}-fluff)`} opacity="0.85">
+        {shape.lobes.map((l, i) => (
+          <ellipse
+            key={`h-${i}`}
+            cx={l.cx + 6}
+            cy={l.cy - l.ry * 0.45}
+            rx={l.rx * 0.7}
+            ry={l.ry * 0.55}
+            fill={`url(#cl-${id}-sun)`}
+          />
+        ))}
+      </g>
     </svg>
   );
 }
@@ -94,7 +205,7 @@ export default function Clouds({ density = 'medium', className = '' }: Props) {
       aria-hidden="true"
       className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
     >
-      {/* Stars peeking through the dawn (subtle, only at top) */}
+      {/* A handful of stars peek through the upper dawn */}
       <div className="absolute inset-x-0 top-0 h-1/2 pointer-events-none">
         <svg className="absolute inset-0 w-full h-full" aria-hidden="true">
           <circle cx="12%" cy="14%" r="1" fill="#F0F5FB" opacity="0.7" />
@@ -108,29 +219,30 @@ export default function Clouds({ density = 'medium', className = '' }: Props) {
         </svg>
       </div>
 
-      <div className="cloud-layer cloud-l1" style={{ opacity: baseOpacity * 0.9 }}>
-        <CloudShape id="a" size={180} />
+      <div className="cloud-layer cloud-l1" style={{ opacity: baseOpacity * 0.92 }}>
+        <CloudPiece id="a" size={170} />
       </div>
-      <div className="cloud-layer cloud-l2" style={{ opacity: baseOpacity * 0.75 }}>
-        <CloudShape id="b" size={120} />
+      <div className="cloud-layer cloud-l2" style={{ opacity: baseOpacity * 0.78 }}>
+        <CloudPiece id="b" size={110} />
       </div>
-      <div className="cloud-layer cloud-l3" style={{ opacity: baseOpacity * 0.85 }}>
-        <CloudShape id="c" size={220} />
+      <div className="cloud-layer cloud-l3" style={{ opacity: baseOpacity * 0.88 }}>
+        <CloudPiece id="c" size={195} />
       </div>
-      <div className="cloud-layer cloud-l4" style={{ opacity: baseOpacity * 0.6 }}>
-        <CloudShape id="d" size={90} />
+      <div className="cloud-layer cloud-l4" style={{ opacity: baseOpacity * 0.65 }}>
+        <CloudPiece id="d" size={85} />
       </div>
-      <div className="cloud-layer cloud-l5" style={{ opacity: baseOpacity * 0.8 }}>
-        <CloudShape id="e" size={150} />
+      <div className="cloud-layer cloud-l5" style={{ opacity: baseOpacity * 0.82 }}>
+        <CloudPiece id="e" size={145} />
       </div>
-      <div className="cloud-layer cloud-l6" style={{ opacity: baseOpacity * 0.55 }}>
-        <CloudShape id="f" size={70} />
+      <div className="cloud-layer cloud-l6" style={{ opacity: baseOpacity * 0.58 }}>
+        <CloudPiece id="f" size={68} />
       </div>
 
       <style>{`
         .cloud-layer {
           position: absolute;
           will-change: transform;
+          filter: drop-shadow(0 8px 20px rgba(31, 66, 128, 0.25));
         }
         @keyframes cloud-drift-right {
           0%   { transform: translateX(-30%); }
@@ -141,12 +253,12 @@ export default function Clouds({ density = 'medium', className = '' }: Props) {
           100% { transform: translateX(-30%); }
         }
 
-        .cloud-l1 { top: 8%;  animation: cloud-drift-right  85s linear infinite; }
-        .cloud-l2 { top: 22%; animation: cloud-drift-left   62s linear infinite; }
-        .cloud-l3 { top: 38%; animation: cloud-drift-right 110s linear infinite; }
-        .cloud-l4 { top: 16%; animation: cloud-drift-left   48s linear infinite; }
-        .cloud-l5 { top: 52%; animation: cloud-drift-right  95s linear infinite; }
-        .cloud-l6 { top: 32%; animation: cloud-drift-left   72s linear infinite; }
+        .cloud-l1 { top: 7%;  animation: cloud-drift-right  90s linear infinite; }
+        .cloud-l2 { top: 22%; animation: cloud-drift-left   65s linear infinite; }
+        .cloud-l3 { top: 36%; animation: cloud-drift-right 115s linear infinite; }
+        .cloud-l4 { top: 14%; animation: cloud-drift-left   50s linear infinite; }
+        .cloud-l5 { top: 50%; animation: cloud-drift-right  98s linear infinite; }
+        .cloud-l6 { top: 30%; animation: cloud-drift-left   75s linear infinite; }
 
         @media (prefers-reduced-motion: reduce) {
           .cloud-layer { animation: none !important; }
