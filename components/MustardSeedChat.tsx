@@ -9,6 +9,17 @@ const GREETING: Msg = {
   text: "Hi. I'm Mustard Seed. What is the pain point in your business right now? Let's name it.",
 };
 
+// Quick-start prompts the visitor can click instead of typing from scratch.
+// Cover the main funnels: service biz, founders, ecommerce, automation, AI add-on, dreamers.
+const STARTERS = [
+  'I miss too many calls and lose leads',
+  'I have an idea but no technical co-founder',
+  'My website does not bring me business',
+  'I need to automate my client onboarding',
+  'I want to add AI to my existing business',
+  'Help me figure out what to build',
+];
+
 export default function MustardSeedChat() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
@@ -27,12 +38,11 @@ export default function MustardSeedChat() {
     if (open) inputRef.current?.focus();
   }, [open]);
 
-  const send = async (e: FormEvent) => {
-    e.preventDefault();
-    const text = input.trim();
-    if (!text || sending) return;
+  const sendText = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || sending) return;
 
-    const next: Msg[] = [...messages, { role: 'user', text }];
+    const next: Msg[] = [...messages, { role: 'user', text: trimmed }];
     setMessages(next);
     setInput('');
     setSending(true);
@@ -60,6 +70,14 @@ export default function MustardSeedChat() {
       setSending(false);
     }
   };
+
+  const send = (e: FormEvent) => {
+    e.preventDefault();
+    void sendText(input);
+  };
+
+  // Has the visitor sent anything yet? Used to decide whether to show starter chips.
+  const showStarters = messages.length === 1 && !sending;
 
   const reset = () => {
     setMessages([GREETING]);
@@ -142,6 +160,28 @@ export default function MustardSeedChat() {
                 </div>
               </div>
             ))}
+
+            {/* Quick-start prompt chips. Click to send. Hide once the conversation starts. */}
+            {showStarters && (
+              <div className="pt-2 pb-1">
+                <span className="block text-[9px] uppercase tracking-[0.35em] text-cream-100/45 font-mono font-medium mb-2.5">
+                  Or start with
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {STARTERS.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => void sendText(s)}
+                      className="text-left px-3 py-2 rounded-xl text-[12px] font-body leading-snug bg-midnight-900/55 border border-gold-light/15 text-cream-100/85 hover:bg-midnight-900/80 hover:border-gold-light/40 hover:text-cream-50 transition-all"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {sending && (
               <div className="flex justify-start">
                 <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-midnight-600/70 border border-gold-light/15">
