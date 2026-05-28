@@ -10,7 +10,7 @@ import { bookingUrl } from '@/data/socials';
 export const metadata = buildMetadata({
   title: 'How We Work',
   description:
-    'Four engagement structures aligned with how clients actually start: Online Presence Build, Idea to Product, AI-Proof Your Business, and Fractional AI Partner. Fixed scope, fixed timeline, quoted per project.',
+    'Four engagement structures aligned with how clients actually start: Full-Service Business Build (site + AI SDR + funnels + back office + embedded AI agents), Idea to Product, AI-Proof Your Business, and Fractional AI Partner. Fixed scope, fixed timeline, quoted per project.',
   path: '/work-with-us',
 });
 

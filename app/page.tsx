@@ -12,6 +12,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import AuroraField from '@/components/AuroraField';
 import Clouds from '@/components/Clouds';
 import CelebrationVideo from '@/components/CelebrationVideo';
+import YourSiteWorksForYou from '@/components/YourSiteWorksForYou';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -116,6 +117,7 @@ export default function HomePage() {
 
       <LiveStats />
       <BuiltByGoodPeople />
+      <YourSiteWorksForYou />
       <WhatAreYouBuilding />
       <WhatGetsBuilt />
       <AiProofPromo />

@@ -4,7 +4,7 @@ export const runtime = 'edge';
 export const size = { width: 64, height: 64 };
 export const contentType = 'image/png';
 
-const GOLD = 'linear-gradient(135deg, #C8964E 0%, #D4A053 50%, #C86A45 100%)';
+const BRASS = 'linear-gradient(135deg, #E8C88A 0%, #F0D090 35%, #C8964E 75%, #C86A45 100%)';
 
 export default function Icon() {
   return new ImageResponse(
@@ -13,23 +13,24 @@ export default function Icon() {
         style={{
           width: '100%',
           height: '100%',
-          background: '#080c16',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontFamily: 'system-ui, -apple-system, sans-serif',
+          background: 'linear-gradient(180deg, #1F4280 0%, #3B6B8A 100%)',
+          fontFamily: 'serif',
         }}
       >
         <div
           style={{
             display: 'flex',
             fontSize: 30,
-            fontWeight: 900,
-            letterSpacing: -2,
+            fontWeight: 700,
+            letterSpacing: -1.5,
             lineHeight: 1,
-            backgroundImage: GOLD,
+            backgroundImage: BRASS,
             backgroundClip: 'text',
             color: 'transparent',
+            fontStyle: 'italic',
           }}
         >
           MMS
