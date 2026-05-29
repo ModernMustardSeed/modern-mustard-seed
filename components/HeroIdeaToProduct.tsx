@@ -43,6 +43,16 @@ export default function HeroIdeaToProduct() {
         <Clouds density="bold" />
       </div>
 
+      {/* Layer 4b: Mobile readability scrim. The bold cloud field is beautiful
+          on desktop where the wide column keeps clouds clear of the words, but
+          on a narrow phone the bright-white clouds drift straight behind the
+          cream type and erase the contrast. This radial veil dims the clouds
+          behind the text on small screens only. Hidden entirely on md+. */}
+      <div
+        className="absolute inset-0 z-[4] md:hidden pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(8,12,22,0.6)_0%,rgba(8,12,22,0.42)_45%,transparent_82%)]"
+        aria-hidden="true"
+      />
+
       {/* Layer 5: Bottom fade into next section */}
       <div
         className="absolute inset-x-0 bottom-0 h-1/3 z-[3] bg-gradient-to-b from-transparent via-[#0F1422]/40 to-[#080c16] pointer-events-none"
