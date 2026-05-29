@@ -590,6 +590,102 @@ export function leadNotification({
   return shell({ preheader: `New ${type} lead: ${name}`, inner, showSocial: false });
 }
 
+/* ────────────────────────── STORE ORDER EMAILS ────────────────────────── */
+
+type StoreOrderConfirmationArgs = {
+  firstName: string;
+  itemName: string;
+  downloads: { name: string; url: string }[];
+  priceUsd: number;
+};
+
+/** Sent to the buyer right after Stripe confirms payment. Contains signed
+ *  download URL(s) with 24h TTL. For bundles, lists every included PDF. */
+export function storeOrderConfirmationEmail({
+  firstName,
+  itemName,
+  downloads,
+  priceUsd,
+}: StoreOrderConfirmationArgs): string {
+  const downloadsHtml = downloads
+    .map(
+      (d) => `<tr><td style="padding:14px 0;border-bottom:1px solid ${C.hairline}">
+        <p style="margin:0 0 6px;font-family:${FONT_SERIF};font-style:italic;font-size:18px;color:${C.cream};font-weight:500;line-height:1.3">${escape(d.name)}</p>
+        <a href="${d.url}" style="display:inline-block;font-family:${FONT_MONO};font-size:11px;font-weight:700;letter-spacing:2.5px;color:${C.brassLight};text-decoration:none;text-transform:uppercase">Download PDF →</a>
+      </td></tr>`
+    )
+    .join('');
+
+  const inner = `
+    ${brassDivider()}
+    ${eyebrow('Your playbook is ready')}
+    ${headline(`${firstName}, here it is.`)}
+    ${paragraph(
+      `Thanks for buying ${escape(itemName)}. The download link${downloads.length > 1 ? 's are' : ' is'} below. Each link is signed and good for 24 hours. If you need a fresh link later, just reply to this email and I will resend.`
+    )}
+    <tr><td style="padding:16px 48px 0">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.midnight700};border:1px solid ${C.hairlineBrass};border-radius:10px">
+        <tr><td style="padding:20px 26px">
+          <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:5px;color:${C.brassLight};text-transform:uppercase;margin-bottom:14px">Your download${downloads.length > 1 ? 's' : ''}</div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            ${downloadsHtml}
+          </table>
+        </td></tr>
+      </table>
+    </td></tr>
+    ${valueCallout(
+      'The 10x Companion',
+      `Once you have read the PDF, upload it to Claude as context. Then ask it to coach you through implementation on your specific business. It will reference every framework in the book and adapt it to your situation. This is the unfair advantage most buyers miss.`
+    )}
+    ${valueCallout(
+      `Your $${priceUsd} credits toward any engagement`,
+      `If you decide you would rather have us build the system than build it yourself, every dollar you spent on this playbook comes off any Seed Site ($2,500 to $5,000) or Full-Service Business Build ($8,500 to $22,000). Mention it on the discovery call.`
+    )}
+    ${ctaBlock(
+      { label: 'Book a discovery call', url: 'https://modernmustardseed.com/build-queue' },
+      { label: 'See the full studio', url: 'https://modernmustardseed.com' }
+    )}
+    ${signature('Sarah')}
+    ${brassDivider()}
+  `;
+  return shell({
+    preheader: `Your ${itemName} download is ready inside.`,
+    inner,
+  });
+}
+
+/** Sent to Sarah when a sale closes. Triage view. */
+export function storeOrderNotificationEmail(args: {
+  name: string;
+  email: string;
+  itemName: string;
+  priceUsd: number;
+  sessionId: string;
+}): string {
+  const inner = `
+    ${brassDivider()}
+    <tr><td style="padding:36px 48px 0">
+      <span style="display:inline-block;background:${C.brassBright};color:${C.midnight};padding:5px 12px;border-radius:4px;font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Store Sale · $${args.priceUsd}</span>
+    </td></tr>
+    ${headline(args.itemName)}
+    <tr><td style="padding:8px 48px 0">
+      <p style="margin:0;font-family:${FONT_SERIF};font-size:20px;color:${C.cream};font-weight:600;line-height:1.3">${escape(args.name)}</p>
+      <p style="margin:4px 0 0;font-family:${FONT_MONO};font-size:13px;color:${C.brassLight};letter-spacing:0.5px"><a href="mailto:${escape(args.email)}" style="color:${C.brassLight};text-decoration:none">${escape(args.email)}</a></p>
+    </td></tr>
+    ${valueCallout(
+      'Follow-up move',
+      `Buyer is now flagged in the leads table as <code>store-buyer</code> with <code>[bought:${args.sessionId.slice(0, 14)}...]</code> tag. The chatbot, audit, and Day 14 sequence will all recognize them. Consider a personal note this week if the engagement feels likely.`
+    )}
+    <tr><td style="padding:30px 48px 36px"></td></tr>
+    ${brassDivider()}
+  `;
+  return shell({
+    preheader: `New sale: ${args.itemName} to ${args.name} for $${args.priceUsd}`,
+    inner,
+    showSocial: false,
+  });
+}
+
 /** Compatibility shim — older code imported `p`. */
 export function p(html: string): string {
   return paragraph(html);

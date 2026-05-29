@@ -10,6 +10,7 @@ import {
   faqJsonLd,
 } from '@/lib/jsonld';
 import { products, bundles, getProductBySlug, getBundleBySlug } from '@/data/products';
+import StoreBuyButton from '@/components/StoreBuyButton';
 
 export const dynamicParams = false;
 export const revalidate = 3600;
@@ -119,8 +120,7 @@ export default async function StoreItemPage({
     );
   }
 
-  const whopUrl = item.whopUrl || '/contact?subject=playbook-' + slug;
-  const buyDisabled = !item.whopUrl;
+  const configured = !!item.stripePriceId;
 
   return (
     <main className="min-h-screen bg-midnight-900 text-cream-50 pt-24">
@@ -182,25 +182,8 @@ export default async function StoreItemPage({
                 )}
               </p>
             </div>
-            <div className="md:text-right">
-              <a
-                href={whopUrl}
-                target={item.whopUrl ? '_blank' : undefined}
-                rel={item.whopUrl ? 'noopener noreferrer' : undefined}
-                className={`inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-bold transition-all ${
-                  buyDisabled
-                    ? 'text-cream-100/70 border border-cream-100/30 bg-midnight-700/40'
-                    : 'text-cream-50 bg-brass campfire-glow hover:shadow-[0_0_40px_rgba(255,107,53,0.5)]'
-                }`}
-              >
-                {buyDisabled ? 'Notify me when live' : 'Get the Playbook →'}
-              </a>
-              {buyDisabled && (
-                <p className="text-cream-100/40 text-[10px] font-mono uppercase tracking-[0.22em] mt-3 md:text-right">
-                  Launching shortly
-                </p>
-              )}
-            </div>
+            <StoreBuyButton slug={slug} configured={configured} />
+
           </div>
         </section>
 

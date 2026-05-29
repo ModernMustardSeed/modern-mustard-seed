@@ -58,7 +58,7 @@ export default function StorePage() {
           Seven playbooks. From $47
         </p>
         <p className="text-cream-100/70 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto mb-2">
-          Production-tested workbooks built from 40+ shipped AI products and a $500K studio. AI strategy. Claude Code. Shopify builds. Brand systems. AI sales. GEO and AI commerce. Instant PDF download after purchase.
+          Production-tested workbooks built from 40+ shipped AI products. AI strategy. Claude Code. Shopify builds. Brand systems. AI sales. GEO and AI commerce. Instant PDF download after purchase.
         </p>
         <p className="text-cream-100/45 text-xs font-mono uppercase tracking-[0.25em]">
           Authored by Sarah Scarano. Built by Modern Mustard Seed

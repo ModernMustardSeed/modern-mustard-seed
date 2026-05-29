@@ -1,15 +1,21 @@
 /**
  * MMS Digital Product Catalog.
  *
- * Hosted as marketing surface on modernmustardseed.com; checkout and delivery
- * are handled by Whop. Each product page generates Product/Offer/HowTo/FAQPage
- * JSON-LD so the catalog is indexable for AI shopping (ChatGPT, Gemini, Perplexity,
- * Copilot) and standard search.
+ * Native Stripe checkout. PDFs live in Supabase Storage bucket `store-products`
+ * (private). Buyers get a 24h signed download URL after Stripe webhook confirms
+ * payment. Buyer email is dropped into the `leads` table with source
+ * `store-buyer` so downstream funnel logic (chatbot, audit, sequences) can
+ * recognize them.
+ *
+ * Each product page generates Product/Offer/HowTo/FAQPage JSON-LD so the
+ * catalog is indexable for AI shopping (ChatGPT, Gemini, Perplexity, Copilot)
+ * and standard search.
  *
  * To go live with a new product:
- *  1. Upload the PDF to Whop and create the product.
- *  2. Paste the Whop checkout URL into `whopUrl` below.
- *  3. Set `comingSoon: false` (default is false on shipped items).
+ *  1. Upload the PDF to Supabase Storage bucket `store-products` with the
+ *     exact filename in `pdfFileName` below.
+ *  2. Create the Product + Price in Stripe Dashboard (mode: payment, one-time).
+ *  3. Paste the price ID into `stripePriceId` below.
  */
 
 export type Product = {
@@ -21,10 +27,10 @@ export type Product = {
   toc: string[];
   pages: number;
   priceUsd: number;
-  /** Whop checkout URL. Empty string until Sarah uploads to Whop. */
-  whopUrl: string;
-  /** Optional Gumroad backup URL. */
-  gumroadUrl?: string;
+  /** Stripe Price ID (price_xxx). Empty string until Sarah creates it in Stripe Dashboard. */
+  stripePriceId: string;
+  /** Filename in Supabase Storage bucket `store-products`. */
+  pdfFileName: string;
   idealBuyer: string;
   funnelRole: string;
   /** Hex color used as accent on the product page header. */
@@ -43,7 +49,8 @@ export type Bundle = {
   savings: number;
   individualTotal: number;
   productSlugs: string[];
-  whopUrl: string;
+  /** Stripe Price ID for the bundle. Empty string until Sarah creates it in Stripe Dashboard. */
+  stripePriceId: string;
 };
 
 export const products: Product[] = [
@@ -69,7 +76,8 @@ export const products: Product[] = [
     ],
     pages: 33,
     priceUsd: 47,
-    whopUrl: '',
+    stripePriceId: '',
+    pdfFileName: 'MMS_AI-Ready_Business_Blueprint_FINAL.pdf',
     idealBuyer:
       'Second-business operators, service business owners exploring AI, solo operators who want to build an AI product but do not know where to start.',
     funnelRole: 'Entry point. Builds trust. Qualifies leads for $225/hr consulting.',
@@ -102,7 +110,8 @@ export const products: Product[] = [
     ],
     pages: 44,
     priceUsd: 47,
-    whopUrl: '',
+    stripePriceId: '',
+    pdfFileName: 'MMS_AI-Native_Business_Playbook_FINAL.pdf',
     idealBuyer:
       'Entrepreneurs starting AI-native service businesses, business buyers interested in automation arbitrage, existing service business owners rebuilding operations with AI.',
     funnelRole:
@@ -135,7 +144,8 @@ export const products: Product[] = [
     ],
     pages: 39,
     priceUsd: 67,
-    whopUrl: '',
+    stripePriceId: '',
+    pdfFileName: 'MMS_Shopify_Store_with_Claude_Code_FINAL.pdf',
     idealBuyer:
       'Entrepreneurs launching Shopify stores, existing store owners who want to use Claude Code, non-technical founders who want production-quality stores without hiring a developer.',
     funnelRole: 'Technical credibility product. Shows MMS builds real things.',
@@ -163,7 +173,8 @@ export const products: Product[] = [
     ],
     pages: 27,
     priceUsd: 67,
-    whopUrl: '',
+    stripePriceId: '',
+    pdfFileName: 'MMS_Claude_Code_Masterclass_FINAL.pdf',
     idealBuyer:
       'Anyone who wants to build software without being a developer, solo operators who want to ship their own tools, developers who want to 10x their speed with AI.',
     funnelRole: 'Gateway product. Makes every other Build with Claude product more valuable.',
@@ -188,7 +199,8 @@ export const products: Product[] = [
     ],
     pages: 18,
     priceUsd: 47,
-    whopUrl: '',
+    stripePriceId: '',
+    pdfFileName: 'MMS_AI_Sales_Machine_FINAL.pdf',
     idealBuyer:
       'Solo operators who need more clients, service business owners who hate cold outreach, anyone who wants a repeatable sales system without hiring a sales team.',
     funnelRole: 'Revenue product. Immediate ROI for buyers.',
@@ -213,7 +225,8 @@ export const products: Product[] = [
     ],
     pages: 20,
     priceUsd: 67,
-    whopUrl: '',
+    stripePriceId: '',
+    pdfFileName: 'MMS_Brand_Studio_Playbook_FINAL.pdf',
     idealBuyer:
       'New businesses that need a brand system, existing businesses that have a logo but not a brand, anyone who wants agency-quality branding on a DIY budget.',
     funnelRole: 'Creative product. Pairs with Claude Code Masterclass for the full build toolkit.',
@@ -244,7 +257,8 @@ export const products: Product[] = [
     ],
     pages: 30,
     priceUsd: 67,
-    whopUrl: '',
+    stripePriceId: '',
+    pdfFileName: 'MMS_GEO_AI_Commerce_Playbook_FINAL.pdf',
     idealBuyer:
       'E-commerce store owners, service businesses that depend on search traffic, anyone selling products online who wants to be visible in AI-generated answers and AI shopping channels.',
     funnelRole: 'Most timely product in catalog. Highest search demand. Strong standalone seller.',
@@ -263,7 +277,7 @@ export const bundles: Bundle[] = [
     savings: 44,
     individualTotal: 141,
     productSlugs: ['ai-ready-business-blueprint', 'ai-native-business-playbook', 'ai-sales-machine'],
-    whopUrl: '',
+    stripePriceId: '',
   },
   {
     slug: 'builder-bundle',
@@ -279,7 +293,7 @@ export const bundles: Bundle[] = [
       'brand-studio-playbook',
       'geo-ai-commerce-playbook',
     ],
-    whopUrl: '',
+    stripePriceId: '',
   },
   {
     slug: 'complete-library',
@@ -290,7 +304,7 @@ export const bundles: Bundle[] = [
     savings: 115,
     individualTotal: 362,
     productSlugs: products.map((p) => p.slug),
-    whopUrl: '',
+    stripePriceId: '',
   },
 ];
 
