@@ -76,7 +76,7 @@ export const products: Product[] = [
     ],
     pages: 33,
     priceUsd: 47,
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSTmJkPPLrDL9He25lKB07',
     pdfFileName: 'MMS_AI-Ready_Business_Blueprint_FINAL.pdf',
     idealBuyer:
       'Second-business operators, service business owners exploring AI, solo operators who want to build an AI product but do not know where to start.',
@@ -110,7 +110,7 @@ export const products: Product[] = [
     ],
     pages: 44,
     priceUsd: 47,
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSTnJkPPLrDL9HyrCUyNDi',
     pdfFileName: 'MMS_AI-Native_Business_Playbook_FINAL.pdf',
     idealBuyer:
       'Entrepreneurs starting AI-native service businesses, business buyers interested in automation arbitrage, existing service business owners rebuilding operations with AI.',
@@ -144,7 +144,7 @@ export const products: Product[] = [
     ],
     pages: 39,
     priceUsd: 67,
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSToJkPPLrDL9H9j7BvSlB',
     pdfFileName: 'MMS_Shopify_Store_with_Claude_Code_FINAL.pdf',
     idealBuyer:
       'Entrepreneurs launching Shopify stores, existing store owners who want to use Claude Code, non-technical founders who want production-quality stores without hiring a developer.',
@@ -173,7 +173,7 @@ export const products: Product[] = [
     ],
     pages: 27,
     priceUsd: 67,
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSTqJkPPLrDL9HdNKI4rGR',
     pdfFileName: 'MMS_Claude_Code_Masterclass_FINAL.pdf',
     idealBuyer:
       'Anyone who wants to build software without being a developer, solo operators who want to ship their own tools, developers who want to 10x their speed with AI.',
@@ -199,7 +199,7 @@ export const products: Product[] = [
     ],
     pages: 18,
     priceUsd: 47,
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSTrJkPPLrDL9HJ6uVrPXP',
     pdfFileName: 'MMS_AI_Sales_Machine_FINAL.pdf',
     idealBuyer:
       'Solo operators who need more clients, service business owners who hate cold outreach, anyone who wants a repeatable sales system without hiring a sales team.',
@@ -225,7 +225,7 @@ export const products: Product[] = [
     ],
     pages: 20,
     priceUsd: 67,
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSTsJkPPLrDL9HlGAkHzpJ',
     pdfFileName: 'MMS_Brand_Studio_Playbook_FINAL.pdf',
     idealBuyer:
       'New businesses that need a brand system, existing businesses that have a logo but not a brand, anyone who wants agency-quality branding on a DIY budget.',
@@ -257,7 +257,7 @@ export const products: Product[] = [
     ],
     pages: 30,
     priceUsd: 67,
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSTuJkPPLrDL9Hf9X6vGJV',
     pdfFileName: 'MMS_GEO_AI_Commerce_Playbook_FINAL.pdf',
     idealBuyer:
       'E-commerce store owners, service businesses that depend on search traffic, anyone selling products online who wants to be visible in AI-generated answers and AI shopping channels.',
@@ -277,7 +277,7 @@ export const bundles: Bundle[] = [
     savings: 44,
     individualTotal: 141,
     productSlugs: ['ai-ready-business-blueprint', 'ai-native-business-playbook', 'ai-sales-machine'],
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSTvJkPPLrDL9HIfk7Ip5O',
   },
   {
     slug: 'builder-bundle',
@@ -293,7 +293,7 @@ export const bundles: Bundle[] = [
       'brand-studio-playbook',
       'geo-ai-commerce-playbook',
     ],
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSTwJkPPLrDL9Hu5hzZZEo',
   },
   {
     slug: 'complete-library',
@@ -304,7 +304,7 @@ export const bundles: Bundle[] = [
     savings: 115,
     individualTotal: 362,
     productSlugs: products.map((p) => p.slug),
-    stripePriceId: '',
+    stripePriceId: 'price_1TcSTyJkPPLrDL9HY1FSp8Lz',
   },
 ];
 

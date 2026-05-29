@@ -20,7 +20,8 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 function loadEnv(path) {
   if (!existsSync(path)) return;
-  for (const line of readFileSync(path, 'utf8').split('\n')) {
+  for (const rawLine of readFileSync(path, 'utf8').split('\n')) {
+    const line = rawLine.replace(/\r$/, '');
     const m = line.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
     if (!m) continue;
     const [, k, v] = m;

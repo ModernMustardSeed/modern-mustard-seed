@@ -18,8 +18,8 @@ import { resolve } from 'node:path';
 // Tiny inline .env loader so we have no extra deps.
 function loadEnv(path) {
   if (!existsSync(path)) return;
-  const lines = readFileSync(path, 'utf8').split('\n');
-  for (const line of lines) {
+  for (const rawLine of readFileSync(path, 'utf8').split('\n')) {
+    const line = rawLine.replace(/\r$/, '');
     const m = line.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
     if (!m) continue;
     const [, k, v] = m;
