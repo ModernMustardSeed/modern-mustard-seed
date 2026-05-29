@@ -80,12 +80,13 @@ export default function HeroIdeaToProduct() {
           Modern Mustard Seed
         </span>
 
-        {/* New headline: partnership + abundance, no peak/light language */}
+        {/* Headline: the brand's strongest line, promoted from the subhead.
+            Seed -> tree -> Matthew 17:20. Concrete and ownable. No periods. */}
         <h1 className="opacity-0 animate-fade-in-up font-display text-5xl md:text-7xl lg:text-8xl font-medium tracking-[-0.01em] leading-[0.98] text-cream-50 drop-shadow-[0_2px_30px_rgba(8,12,22,0.7)]">
-          Your dream,
+          You bring the seed
           <br />
-          built to{' '}
-          <span className="text-gradient-brass italic">fullness</span>
+          We build the{' '}
+          <span className="text-gradient-brass italic">tree</span>
         </h1>
 
         {/* Hairline divider with shimmer */}
@@ -95,7 +96,7 @@ export default function HeroIdeaToProduct() {
         </div>
 
         <p className="opacity-0 animate-fade-in-up-delay font-display text-2xl md:text-3xl font-light italic tracking-tight leading-[1.25] text-cream-100/95 max-w-2xl mx-auto mb-6 drop-shadow-[0_2px_18px_rgba(8,12,22,0.6)]">
-          You bring the seed. We build the tree.
+          Your dream, built to fullness
         </p>
 
         <p className="opacity-0 animate-fade-in-up-delay text-cream-100/85 text-base md:text-lg font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mb-4 drop-shadow-[0_1px_12px_rgba(8,12,22,0.55)]">
