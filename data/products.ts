@@ -83,6 +83,7 @@ export const products: Product[] = [
     funnelRole: 'Entry point. Builds trust. Qualifies leads for $225/hr consulting.',
     accentColor: '#C8964E',
     recommendFor: ['ai-curious', 'scoping', 'first-build', 'audit-fail-ai-features'],
+    comingSoon: true,
   },
   {
     slug: 'ai-native-business-playbook',
@@ -118,6 +119,7 @@ export const products: Product[] = [
       'Pairs with Blueprint. Blueprint answers "what should I build?" Playbook answers "how do I build a whole business around it?"',
     accentColor: '#1B2838',
     recommendFor: ['agency-owner', 'acquisition', 'service-business', 'scale'],
+    comingSoon: true,
   },
   {
     slug: 'shopify-store-with-claude-code',
@@ -151,6 +153,7 @@ export const products: Product[] = [
     funnelRole: 'Technical credibility product. Shows MMS builds real things.',
     accentColor: '#1B3A4B',
     recommendFor: ['shopify', 'ecommerce', 'apparel', 'dtc', 'audit-fail-conversion'],
+    comingSoon: true,
   },
   {
     slug: 'claude-code-masterclass',
@@ -314,4 +317,17 @@ export function getProductBySlug(slug: string): Product | undefined {
 
 export function getBundleBySlug(slug: string): Bundle | undefined {
   return bundles.find((b) => b.slug === slug);
+}
+
+/** A bundle inherits coming-soon if any of its included products is still
+ *  awaiting upload. Prevents bundle buyers from getting broken PDF links. */
+export function isComingSoon(slug: string): boolean {
+  const product = getProductBySlug(slug);
+  if (product) return !!product.comingSoon;
+  const bundle = getBundleBySlug(slug);
+  if (!bundle) return false;
+  return bundle.productSlugs.some((s) => {
+    const p = getProductBySlug(s);
+    return p?.comingSoon;
+  });
 }

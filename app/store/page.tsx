@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
-import { products, bundles } from '@/data/products';
+import { products, bundles, isComingSoon } from '@/data/products';
 
 export const metadata: Metadata = buildMetadata({
   title: 'The Playbook Store. Workbooks for builders and operators',
@@ -108,38 +108,48 @@ export default function StorePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {items.map((p) => (
-              <Link
-                key={p.slug}
-                href={`/store/${p.slug}`}
-                className="group relative glass-card p-7 md:p-8 hover:border-gold-light/30 transition-all duration-500 flex flex-col overflow-hidden"
-                style={{
-                  boxShadow: `inset 4px 0 0 0 ${p.accentColor}`,
-                }}
-              >
-                <div
-                  className="absolute -top-20 -right-20 w-48 h-48 rounded-full opacity-[0.06] blur-3xl pointer-events-none group-hover:opacity-[0.12] transition-opacity duration-700"
-                  style={{ backgroundColor: p.accentColor }}
-                />
-                <span className="text-[9px] uppercase tracking-[0.3em] text-gold-light/70 font-mono font-bold mb-4 relative">
-                  {p.category}
-                </span>
-                <h3 className="font-display text-xl md:text-2xl text-cream-50 font-medium tracking-tight leading-snug mb-3 relative">
-                  {p.name}
-                </h3>
-                <p className="text-cream-100/65 text-sm font-body font-light leading-relaxed mb-5 flex-1 relative">
-                  {p.pitch}
-                </p>
-                <div className="flex items-baseline justify-between relative">
-                  <span className="font-display text-2xl text-cream-50 font-medium tracking-tight">
-                    ${p.priceUsd}
-                  </span>
-                  <span className="text-[10px] uppercase tracking-[0.25em] text-cream-100/45 font-mono">
-                    {p.pages} pages
-                  </span>
-                </div>
-              </Link>
-            ))}
+            {items.map((p) => {
+              const soon = !!p.comingSoon;
+              return (
+                <Link
+                  key={p.slug}
+                  href={`/store/${p.slug}`}
+                  className="group relative glass-card p-7 md:p-8 hover:border-gold-light/30 transition-all duration-500 flex flex-col overflow-hidden"
+                  style={{
+                    boxShadow: `inset 4px 0 0 0 ${p.accentColor}`,
+                  }}
+                >
+                  <div
+                    className="absolute -top-20 -right-20 w-48 h-48 rounded-full opacity-[0.06] blur-3xl pointer-events-none group-hover:opacity-[0.12] transition-opacity duration-700"
+                    style={{ backgroundColor: p.accentColor }}
+                  />
+                  <div className="flex items-center justify-between mb-4 relative">
+                    <span className="text-[9px] uppercase tracking-[0.3em] text-gold-light/70 font-mono font-bold">
+                      {p.category}
+                    </span>
+                    {soon && (
+                      <span className="text-[8px] uppercase tracking-[0.3em] text-cream-100/55 font-mono font-bold px-2 py-1 rounded-full border border-cream-100/15 bg-midnight-700/50">
+                        Coming soon
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-display text-xl md:text-2xl text-cream-50 font-medium tracking-tight leading-snug mb-3 relative">
+                    {p.name}
+                  </h3>
+                  <p className="text-cream-100/65 text-sm font-body font-light leading-relaxed mb-5 flex-1 relative">
+                    {p.pitch}
+                  </p>
+                  <div className="flex items-baseline justify-between relative">
+                    <span className="font-display text-2xl text-cream-50 font-medium tracking-tight">
+                      ${p.priceUsd}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-[0.25em] text-cream-100/45 font-mono">
+                      {p.pages} pages
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
       ))}
@@ -154,31 +164,41 @@ export default function StorePage() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {bundles.map((b) => (
-            <Link
-              key={b.slug}
-              href={`/store/${b.slug}`}
-              className="group glass-card p-7 md:p-8 hover:border-gold-light/30 transition-all duration-500 flex flex-col"
-            >
-              <span className="text-[9px] uppercase tracking-[0.3em] text-gold-light/70 font-mono font-bold mb-4">
-                Bundle · Save ${b.savings}
-              </span>
-              <h3 className="font-display text-xl md:text-2xl text-cream-50 font-medium tracking-tight leading-snug mb-3">
-                {b.name}
-              </h3>
-              <p className="text-cream-100/65 text-sm font-body font-light leading-relaxed mb-5 flex-1">
-                {b.pitch}
-              </p>
-              <div className="flex items-baseline justify-between">
-                <span className="font-display text-2xl text-cream-50 font-medium tracking-tight">
-                  ${b.priceUsd}
-                </span>
-                <span className="text-[10px] uppercase tracking-[0.25em] text-cream-100/45 font-mono line-through">
-                  ${b.individualTotal}
-                </span>
-              </div>
-            </Link>
-          ))}
+          {bundles.map((b) => {
+            const soon = isComingSoon(b.slug);
+            return (
+              <Link
+                key={b.slug}
+                href={`/store/${b.slug}`}
+                className="group glass-card p-7 md:p-8 hover:border-gold-light/30 transition-all duration-500 flex flex-col"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-gold-light/70 font-mono font-bold">
+                    Bundle · Save ${b.savings}
+                  </span>
+                  {soon && (
+                    <span className="text-[8px] uppercase tracking-[0.3em] text-cream-100/55 font-mono font-bold px-2 py-1 rounded-full border border-cream-100/15 bg-midnight-700/50">
+                      Coming soon
+                    </span>
+                  )}
+                </div>
+                <h3 className="font-display text-xl md:text-2xl text-cream-50 font-medium tracking-tight leading-snug mb-3">
+                  {b.name}
+                </h3>
+                <p className="text-cream-100/65 text-sm font-body font-light leading-relaxed mb-5 flex-1">
+                  {b.pitch}
+                </p>
+                <div className="flex items-baseline justify-between">
+                  <span className="font-display text-2xl text-cream-50 font-medium tracking-tight">
+                    ${b.priceUsd}
+                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.25em] text-cream-100/45 font-mono line-through">
+                    ${b.individualTotal}
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

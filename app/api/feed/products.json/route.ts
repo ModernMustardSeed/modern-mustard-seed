@@ -17,7 +17,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { products, bundles } from '@/data/products';
+import { products, bundles, isComingSoon } from '@/data/products';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -33,7 +33,7 @@ export async function GET() {
     generated_at: new Date().toISOString(),
     currency: 'USD',
     products: [
-      ...products.map((p) => ({
+      ...products.filter((p) => !p.comingSoon).map((p) => ({
         product_id: p.slug,
         title: p.name,
         description: p.whatsInside,
@@ -53,7 +53,7 @@ export async function GET() {
         delivery: 'instant_download',
         tags: p.recommendFor,
       })),
-      ...bundles.map((b) => ({
+      ...bundles.filter((b) => !isComingSoon(b.slug)).map((b) => ({
         product_id: b.slug,
         title: b.name,
         description: b.pitch,

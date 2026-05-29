@@ -9,7 +9,13 @@ import {
   productHowToJsonLd,
   faqJsonLd,
 } from '@/lib/jsonld';
-import { products, bundles, getProductBySlug, getBundleBySlug } from '@/data/products';
+import {
+  products,
+  bundles,
+  getProductBySlug,
+  getBundleBySlug,
+  isComingSoon,
+} from '@/data/products';
 import StoreBuyButton from '@/components/StoreBuyButton';
 
 export const dynamicParams = false;
@@ -120,7 +126,7 @@ export default async function StoreItemPage({
     );
   }
 
-  const configured = !!item.stripePriceId;
+  const configured = !!item.stripePriceId && !isComingSoon(slug);
 
   return (
     <main className="min-h-screen bg-midnight-900 text-cream-50 pt-24">

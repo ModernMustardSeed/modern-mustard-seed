@@ -16,7 +16,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { products, bundles } from '@/data/products';
+import { products, bundles, isComingSoon } from '@/data/products';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -56,30 +56,34 @@ function productItem(args: {
 
 export async function GET() {
   const itemsXml = [
-    ...products.map((p) =>
-      productItem({
-        id: p.slug,
-        title: p.name,
-        description: p.whatsInside,
-        link: `${SITE.url}/store/${p.slug}`,
-        imageLink: `${SITE.url}/opengraph-image`,
-        priceUsd: p.priceUsd,
-        brand: SITE.name,
-        category: p.category,
-      })
-    ),
-    ...bundles.map((b) =>
-      productItem({
-        id: b.slug,
-        title: b.name,
-        description: b.pitch,
-        link: `${SITE.url}/store/${b.slug}`,
-        imageLink: `${SITE.url}/opengraph-image`,
-        priceUsd: b.priceUsd,
-        brand: SITE.name,
-        category: 'Bundle',
-      })
-    ),
+    ...products
+      .filter((p) => !p.comingSoon)
+      .map((p) =>
+        productItem({
+          id: p.slug,
+          title: p.name,
+          description: p.whatsInside,
+          link: `${SITE.url}/store/${p.slug}`,
+          imageLink: `${SITE.url}/opengraph-image`,
+          priceUsd: p.priceUsd,
+          brand: SITE.name,
+          category: p.category,
+        })
+      ),
+    ...bundles
+      .filter((b) => !isComingSoon(b.slug))
+      .map((b) =>
+        productItem({
+          id: b.slug,
+          title: b.name,
+          description: b.pitch,
+          link: `${SITE.url}/store/${b.slug}`,
+          imageLink: `${SITE.url}/opengraph-image`,
+          priceUsd: b.priceUsd,
+          brand: SITE.name,
+          category: 'Bundle',
+        })
+      ),
   ].join('');
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
