@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import StaticBackground from '@/components/StaticBackground';
-import Clouds from '@/components/Clouds';
 import { JsonLd, breadcrumbJsonLd, caseStudyJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { getAllSlugs, getContent } from '@/lib/content';
@@ -52,12 +51,6 @@ export default async function WorkDetail({ params }: { params: Params }) {
         ]}
       />
       <StaticBackground />
-
-      {/* Drifting clouds over the upper page so the case study opens like the
-          rest of the site: in a dawn sky. */}
-      <div className="absolute inset-x-0 top-0 h-[55vh] overflow-hidden pointer-events-none z-0">
-        <Clouds density="subtle" />
-      </div>
 
       <article className="relative z-10 pt-36 md:pt-44 pb-20">
         <div className="max-w-4xl mx-auto px-6 md:px-8">

@@ -10,7 +10,6 @@ import WhatGetsBuilt from '@/components/WhatGetsBuilt';
 import AiProofPromo from '@/components/AiProofPromo';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import AuroraField from '@/components/AuroraField';
-import Clouds from '@/components/Clouds';
 import CelebrationVideo from '@/components/CelebrationVideo';
 import YourSiteWorksForYou from '@/components/YourSiteWorksForYou';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
@@ -111,7 +110,6 @@ export default function HomePage() {
       {/* Starting points sits in a soft sky-light section */}
       <section className="relative overflow-hidden">
         <AuroraField intensity="subtle" />
-        <Clouds density="subtle" />
         <StartingPoints />
       </section>
 

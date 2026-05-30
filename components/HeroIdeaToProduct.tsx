@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import MagneticLink from './MagneticLink';
-import Clouds from './Clouds';
 
 export default function HeroIdeaToProduct() {
   return (
@@ -38,21 +37,6 @@ export default function HeroIdeaToProduct() {
         }}
       />
 
-      {/* Layer 4: Fluffy white clouds drifting across the entire hero */}
-      <div className="absolute inset-0 z-[2] pointer-events-none" aria-hidden="true">
-        <Clouds density="bold" />
-      </div>
-
-      {/* Layer 4b: Mobile readability scrim. The bold cloud field is beautiful
-          on desktop where the wide column keeps clouds clear of the words, but
-          on a narrow phone the bright-white clouds drift straight behind the
-          cream type and erase the contrast. This radial veil dims the clouds
-          behind the text on small screens only. Hidden entirely on md+. */}
-      <div
-        className="absolute inset-0 z-[4] md:hidden pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(8,12,22,0.6)_0%,rgba(8,12,22,0.42)_45%,transparent_82%)]"
-        aria-hidden="true"
-      />
-
       {/* Layer 5: Bottom fade into next section */}
       <div
         className="absolute inset-x-0 bottom-0 h-1/3 z-[3] bg-gradient-to-b from-transparent via-[#0F1422]/40 to-[#080c16] pointer-events-none"
@@ -82,7 +66,7 @@ export default function HeroIdeaToProduct() {
 
         {/* Headline: the brand's strongest line, promoted from the subhead.
             Seed -> tree -> Matthew 17:20. Concrete and ownable. No periods. */}
-        <h1 className="opacity-0 animate-fade-in-up font-display text-5xl md:text-7xl lg:text-8xl font-medium tracking-[-0.01em] leading-[0.98] text-cream-50 drop-shadow-[0_2px_30px_rgba(8,12,22,0.7)]">
+        <h1 className="opacity-0 animate-fade-in-up font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-[-0.025em] leading-[0.95] text-cream-50 drop-shadow-[0_3px_36px_rgba(8,12,22,0.8)]">
           You bring the seed
           <br />
           We build the{' '}
@@ -95,7 +79,7 @@ export default function HeroIdeaToProduct() {
           <div className="shimmer-line absolute inset-0" />
         </div>
 
-        <p className="opacity-0 animate-fade-in-up-delay font-display text-2xl md:text-3xl font-light italic tracking-tight leading-[1.25] text-cream-100/95 max-w-2xl mx-auto mb-6 drop-shadow-[0_2px_18px_rgba(8,12,22,0.6)]">
+        <p className="opacity-0 animate-fade-in-up-delay font-display text-2xl md:text-3xl font-semibold italic tracking-tight leading-[1.25] text-cream-100 max-w-2xl mx-auto mb-6 drop-shadow-[0_2px_18px_rgba(8,12,22,0.6)]">
           Your dream, built to fullness
         </p>
 

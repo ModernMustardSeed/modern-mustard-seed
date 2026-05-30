@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import StaticBackground from '@/components/StaticBackground';
-import Clouds from '@/components/Clouds';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { industries } from '@/data/industries';
@@ -42,11 +41,6 @@ export default function ForIndex() {
         ]}
       />
       <StaticBackground />
-
-      {/* Drifting clouds over the upper page */}
-      <div className="absolute inset-x-0 top-0 h-[60vh] overflow-hidden pointer-events-none z-0">
-        <Clouds density="subtle" />
-      </div>
 
       <div className="relative pt-36 md:pt-44 pb-24">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
