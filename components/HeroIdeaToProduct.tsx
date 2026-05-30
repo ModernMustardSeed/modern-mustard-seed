@@ -64,13 +64,13 @@ export default function HeroIdeaToProduct() {
           Modern Mustard Seed
         </span>
 
-        {/* Headline: the brand's strongest line, promoted from the subhead.
-            Seed -> tree -> Matthew 17:20. Concrete and ownable. No periods. */}
+        {/* Headline: the brand's strongest line. Water metaphor that echoes the
+            hero video. You bring the splash, we create the ripple. No periods. */}
         <h1 className="opacity-0 animate-fade-in-up font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.015em] leading-[1.0] text-cream-50 drop-shadow-[0_3px_30px_rgba(8,12,22,0.75)]">
-          You bring the seed
+          You bring the splash
           <br />
-          We build the{' '}
-          <span className="text-gradient-brass italic">tree</span>
+          We create the{' '}
+          <span className="text-gradient-brass italic">ripple</span>
         </h1>
 
         {/* Hairline divider with shimmer */}
