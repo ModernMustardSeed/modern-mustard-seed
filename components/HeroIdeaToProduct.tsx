@@ -66,7 +66,7 @@ export default function HeroIdeaToProduct() {
 
         {/* Headline: the brand's strongest line, promoted from the subhead.
             Seed -> tree -> Matthew 17:20. Concrete and ownable. No periods. */}
-        <h1 className="opacity-0 animate-fade-in-up font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-[-0.025em] leading-[0.95] text-cream-50 drop-shadow-[0_3px_36px_rgba(8,12,22,0.8)]">
+        <h1 className="opacity-0 animate-fade-in-up font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.015em] leading-[1.0] text-cream-50 drop-shadow-[0_3px_30px_rgba(8,12,22,0.75)]">
           You bring the seed
           <br />
           We build the{' '}
