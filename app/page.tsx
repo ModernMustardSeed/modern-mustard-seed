@@ -1,5 +1,6 @@
 import PageBackground from '@/components/PageBackground';
 import HeroIdeaToProduct from '@/components/HeroIdeaToProduct';
+import FlagshipPrograms from '@/components/FlagshipPrograms';
 import ResultsMarquee from '@/components/ResultsMarquee';
 import EraOfEntrepreneur from '@/components/EraOfEntrepreneur';
 import StartingPoints from '@/components/StartingPoints';
@@ -103,6 +104,8 @@ export default function HomePage() {
       <JsonLd data={[homeJsonLd, offerJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} />
       <PageBackground />
       <HeroIdeaToProduct />
+
+      <FlagshipPrograms />
 
       <ResultsMarquee />
       <EraOfEntrepreneur />

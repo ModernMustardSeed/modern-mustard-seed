@@ -6,6 +6,8 @@ import { products, bundles } from '@/data/products';
 
 const STATIC_PATHS = [
   '',
+  '/the-terminal',
+  '/idea-to-spec',
   '/build-queue',
   '/work',
   '/services',
@@ -33,9 +35,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/build-queue'
         ? 1.0
-        : path === '/work' || path === '/audit'
-          ? 0.9
-          : 0.7,
+        : path === '/the-terminal' || path === '/idea-to-spec'
+          ? 0.95
+          : path === '/work' || path === '/audit'
+            ? 0.9
+            : 0.7,
   }));
 
   const blog = listContent('blog').map((p) => ({

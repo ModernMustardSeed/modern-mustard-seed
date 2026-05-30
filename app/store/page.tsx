@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
 import { products, bundles, isComingSoon } from '@/data/products';
+import { programs } from '@/data/programs';
 
 export const metadata: Metadata = buildMetadata({
   title: 'The Playbook Store. Workbooks for builders and operators',
@@ -64,6 +65,34 @@ export default function StorePage() {
           Authored by Sarah Scarano. Built by Modern Mustard Seed
         </p>
       </header>
+
+      {/* Flagship programs: the two $497 front doors */}
+      <section className="max-w-5xl mx-auto px-6 md:px-8 mb-16">
+        <div className="text-center mb-8">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-gold-light/85 font-mono font-bold block mb-3">The flagship programs</span>
+          <p className="text-cream-100/70 font-body">Spec it, then build it. Two front doors at $497, or get both in the Zero to One Bundle.</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-5">
+          {['idea-to-spec', 'the-terminal'].map((slug) => {
+            const p = programs.find((x) => x.slug === slug)!;
+            return (
+              <Link
+                key={slug}
+                href={`/${slug}`}
+                className="block rounded-2xl border border-white/[0.08] p-7 hover:border-gold-light/40 transition-all group"
+                style={{ background: `linear-gradient(155deg, ${p.accent}55 0%, rgba(13,18,28,0.7) 70%)` }}
+              >
+                <span className="text-[10px] uppercase tracking-[0.3em] text-gold-light/85 font-mono font-bold">{p.name} . ${p.priceUsd}</span>
+                <h3 className="font-display text-2xl font-semibold text-cream-50 mt-3 leading-tight">{p.tagline}</h3>
+                <p className="text-cream-100/60 font-body text-sm mt-3 leading-relaxed">{p.promise}</p>
+                <span className="inline-flex items-center gap-2 mt-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-gold-light group-hover:gap-3 transition-all">
+                  Explore <span aria-hidden>&rarr;</span>
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
 
       {featured && (
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-20">
