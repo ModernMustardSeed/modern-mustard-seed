@@ -22,7 +22,7 @@ const ML = '#FFB347';           // sunrise.gold  (was mustard-400)
 const MD = '#FF6B6B';           // sunrise.rose  (was mustard-600)
 const MG = 'rgba(255,107,53,0.12)'; // mustard glow bg
 const MB = 'rgba(255,107,53,0.25)'; // mustard border
-const BOOKING_URL = 'https://modernmustardseed.zohobookings.com/#/4764600000000052054';
+const BOOKING_URL = '/?book=1';
 const AUDIT_LEAD_URL = '/api/audit/lead';
 
 const STAT_C = { critical: '#EF4444', high: '#F59E0B', medium: '#22C55E' } as const;

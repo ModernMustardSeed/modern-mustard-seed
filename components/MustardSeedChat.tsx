@@ -38,6 +38,27 @@ export default function MustardSeedChat() {
     if (open) inputRef.current?.focus();
   }, [open]);
 
+  // Open straight into booking when a "Book a call" CTA anywhere on the site
+  // (or in an email) links to ?book=1 / #book, or dispatches `mustardseed:book`.
+  const bookingKickedRef = useRef(false);
+  const startBooking = () => {
+    setOpen(true);
+    if (bookingKickedRef.current || sending) return;
+    bookingKickedRef.current = true;
+    void sendText('I would like to book a discovery call with Sarah.');
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const wantsBooking =
+      /[?&]book=1\b/.test(window.location.search) || window.location.hash === '#book';
+    if (wantsBooking) startBooking();
+    const handler = () => startBooking();
+    window.addEventListener('mustardseed:book', handler);
+    return () => window.removeEventListener('mustardseed:book', handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const sendText = async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || sending) return;
@@ -164,6 +185,18 @@ export default function MustardSeedChat() {
             {/* Quick-start prompt chips. Click to send. Hide once the conversation starts. */}
             {showStarters && (
               <div className="pt-2 pb-1">
+                {/* Primary CTA: book a 30-min call with Sarah, guided in-chat */}
+                <button
+                  type="button"
+                  onClick={startBooking}
+                  className="w-full flex items-center justify-between gap-3 px-4 py-3.5 rounded-xl bg-brass campfire-glow border border-gold-light/40 text-cream-50 hover:shadow-[0_0_30px_rgba(255,107,53,0.5)] transition-all mb-4"
+                >
+                  <span className="flex flex-col text-left leading-tight">
+                    <span className="font-display italic text-base font-medium tracking-tight">Book a call with Sarah</span>
+                    <span className="text-[10px] uppercase tracking-[0.22em] font-mono font-semibold text-cream-50/80 mt-0.5">30 min · Wed &amp; Thu · pick a time here</span>
+                  </span>
+                  <span className="text-lg leading-none">&rarr;</span>
+                </button>
                 <span className="block text-[9px] uppercase tracking-[0.35em] text-cream-100/45 font-mono font-medium mb-2.5">
                   Or start with
                 </span>

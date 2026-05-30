@@ -129,7 +129,7 @@ export async function POST(req: Request) {
             <li>If the scope is more than 30 days of work, that is what we exist to ship. Come back to the Build Queue when you are ready.</li>
           </ol>` +
           p('If you want me to walk through your audit personally, the calendar is open below.'),
-        cta: { label: 'Book a personal walkthrough', url: 'https://modernmustardseed.zohobookings.com/#/4764600000000052054' },
+        cta: { label: 'Book a personal walkthrough', url: 'https://modernmustardseed.com/?book=1' },
         secondary: { label: 'Join the Build Queue', url: 'https://modernmustardseed.com/build-queue' },
       }),
       scheduledAt: daysFromNow(0),

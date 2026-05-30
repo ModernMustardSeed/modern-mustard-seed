@@ -63,7 +63,7 @@ export async function POST(req: Request) {
         body:
           p('Thanks for reaching out. I got your message and will personally reply within 24-48 hours.') +
           p('In the meantime, two useful links:'),
-        cta: { label: 'Book a 30-min call', url: 'https://modernmustardseed.zohobookings.com/#/4764600000000052054' },
+        cta: { label: 'Book a 30-min call', url: 'https://modernmustardseed.com/?book=1' },
         secondary: { label: 'Run the free AI audit', url: 'https://modernmustardseed.com/audit' },
       }),
     });

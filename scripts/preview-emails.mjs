@@ -57,6 +57,36 @@ const samples = [
     message: 'I run a 4-person family law firm and we draft 20 motions a week by hand. I want an AI tool that pulls the template, fills in the case facts, and exports a Word doc ready for my review.',
     suggestedAction: 'Reply within 24h with discovery call slots. This is a high-fit Full-Service Build candidate.',
   })],
+  ['client-email', () => E.clientEmail({
+    eyebrow: 'A quick note',
+    greeting: 'Thanks for reaching out, Sarah.',
+    body:
+      E.p('I got your message and will personally reply within 24 to 48 hours. In the meantime, two links worth your time:') +
+      E.callout({
+        label: 'Start here',
+        title: 'The free AI Website Audit',
+        body: 'A 60-second readout on the highest-leverage moves you could make on your site right now.',
+        href: 'https://modernmustardseed.com/website-audit',
+        cta: 'Run the audit',
+      }) +
+      E.p('If anything is urgent, the calendar is open below and I will make room.'),
+    cta: { label: 'Book a discovery call', url: 'https://modernmustardseed.com/?book=1' },
+    secondary: { label: 'See the work', url: 'https://modernmustardseed.com/work' },
+  })],
+  ['booking-notification', () => E.bookingNotificationEmail({
+    name: 'Jane Builder', email: 'jane@example.com', business: 'Builder Law',
+    whenDisplay: 'Friday, June 6 at 11:00 AM MT',
+    painSummary: 'No online presence and losing customers to competitors who have one.',
+    recommendedSteps: [
+      { title: 'Stand up a one-page site', detail: 'Name, offer, proof, call to action. Live this week.' },
+      { title: 'Wire a booking link', detail: 'Stop playing email tag with new leads.' },
+    ],
+  })],
+  ['store-order-notification', () => E.storeOrderNotificationEmail({
+    name: 'Jane Builder', email: 'jane@example.com',
+    itemName: 'The GEO and AI Commerce Playbook', priceUsd: 67,
+    sessionId: 'cs_test_a1b2c3d4e5f6g7h8',
+  })],
 ];
 
 const linksHtml = samples

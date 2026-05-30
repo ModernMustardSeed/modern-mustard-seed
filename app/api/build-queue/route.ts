@@ -131,7 +131,7 @@ export async function POST(req: Request) {
             cta: 'Read the playbook',
           }) +
           p('If your situation is urgent and you would rather skip the queue, the calendar is open below.'),
-        cta: { label: 'Book a discovery call', url: 'https://modernmustardseed.zohobookings.com/#/4764600000000052054' },
+        cta: { label: 'Book a discovery call', url: 'https://modernmustardseed.com/?book=1' },
       }),
     });
 

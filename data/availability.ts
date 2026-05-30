@@ -13,8 +13,8 @@
 export const availability = {
   enabled: true,
 
-  // 0 = Sunday … 6 = Saturday
-  workingWeekdays: [1, 2, 3, 4, 5],
+  // 0 = Sunday … 6 = Saturday. Sarah takes consults Wednesday and Thursday only.
+  workingWeekdays: [3, 4],
 
   // Local Mountain Time
   startHour: 11,
@@ -35,6 +35,7 @@ export const availability = {
   // ISO date strings (YYYY-MM-DD) when Sarah is out
   blackoutRanges: [] as { fromDate: string; toDate: string; reason?: string }[],
 
-  // The video link Sarah will send before the call. Placeholder string for now.
-  conferenceLink: '' as string,
+  // Sarah's permanent Zoho Meeting room. Goes into every calendar invite and
+  // booking confirmation so the visitor has the join link immediately.
+  conferenceLink: 'https://meet.zoho.com/cgjx-tgt-blf' as string,
 } as const;

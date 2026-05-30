@@ -13,4 +13,4 @@ export const navLinks = [
   { label: 'Audit', href: '/audit' },
 ];
 
-export const bookingUrl = 'https://modernmustardseed.zohobookings.com/#/4764600000000052054';
+export const bookingUrl = '/?book=1';
