@@ -275,6 +275,33 @@ export function magicLinkEmail({ firstName, url }: { firstName?: string; url: st
   return shell({ preheader: 'Your secure sign-in link (expires in 20 minutes)', subtitle: 'Your sign-in link', inner });
 }
 
+/* ────────────────────────── PROGRAM ACCESS (Terminal / Idea to Spec) ────────────────────────── */
+
+/** Delivery email for a $497 program purchase. Carries a passwordless link
+ *  straight into the gated HQ (live tool + watermarked playbook). */
+export function programAccessEmail({
+  firstName,
+  programName,
+  toolName,
+  url,
+}: {
+  firstName?: string;
+  programName: string;
+  toolName: string;
+  url: string;
+}): string {
+  const name = firstName?.trim();
+  const inner =
+    headline(name ? `You're in, ${name}` : `Welcome to ${programName}`) +
+    lede('Thank you. Everything is ready and waiting for you.') +
+    paragraph(`Your purchase of ${escape(programName)} is confirmed. The button below takes you straight into your HQ, where ${escape(toolName)} lives and stays current, and your playbook is ready to download, watermarked to you.`) +
+    ctaBlock({ label: `Enter ${programName}`, url }) +
+    paragraph(`<span style="font-size:13px;color:${C.muted}">Bookmark it. This link signs you in for 30 days. If it ever expires, request a fresh one from the sign-in page with this same email.</span>`) +
+    paragraph('Start with the setup checklist inside your HQ, then run the first step. The whole thing is built to get you shipping, not studying.') +
+    signature('Sarah');
+  return shell({ preheader: `Your ${programName} access is ready`, subtitle: programName, inner });
+}
+
 /* ────────────────────────── CLIENT EMAIL (general) ────────────────────────── */
 
 type ClientEmailArgs = {

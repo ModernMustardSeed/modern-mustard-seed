@@ -19,11 +19,115 @@ import { Resend } from 'resend';
 import { getStripe, STRIPE_WEBHOOK_SECRET } from '@/lib/stripe';
 import { getSupabase } from '@/lib/supabase';
 import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/data/products';
+import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
-import { storeOrderConfirmationEmail, storeOrderNotificationEmail } from '@/lib/email';
+import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification } from '@/lib/email';
+import { grantEntitlement, PROGRAM_ASSETS, isProgramSlug, type ProgramSlug } from '@/lib/entitlements';
+import { createMagicToken } from '@/lib/client-auth';
+import { insertLead } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
+
+/**
+ * A $497 program (or the Zero to One bundle) was purchased. Grant entitlement
+ * to each included program, record the order + buyer, and email a passwordless
+ * access link straight into the gated HQ.
+ */
+async function handleProgramPurchase(
+  req: Request,
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null,
+  itemName: string
+) {
+  const isBundle = slug === programBundle.slug;
+  const grantSlugs: ProgramSlug[] = isBundle
+    ? programBundle.programSlugs
+    : isProgramSlug(slug)
+      ? [slug]
+      : [];
+  if (grantSlugs.length === 0) {
+    console.error('program webhook: unknown program slug', slug);
+    return;
+  }
+
+  // Grant access to every included program.
+  await Promise.all(grantSlugs.map((s) => grantEntitlement(email, s, 'purchase')));
+
+  // Record the order and the buyer so the back office and funnel see it.
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      await supabase.from('orders').insert({
+        stripe_session_id: session.id,
+        stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+        product_slug: slug,
+        product_name: itemName,
+        item_type: 'program',
+        price_paid_cents: session.amount_total ?? 49700,
+        currency: session.currency ?? 'usd',
+        email,
+        name: name ?? null,
+        status: 'paid',
+      });
+    } catch (err) {
+      console.error('program order insert failed', err);
+    }
+  }
+  try {
+    await insertLead({ type: 'contact', email, name: name ?? null, source: 'program-buyer', status: 'new', notes: `[bought:${slug}]` });
+  } catch (err) {
+    console.error('program lead insert failed', err);
+  }
+
+  // Passwordless access link into the first granted program's HQ.
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const origin = new URL(req.url).origin || 'https://modernmustardseed.com';
+    const landing = grantSlugs[0];
+    const assets = PROGRAM_ASSETS[landing];
+    const token = await createMagicToken(email);
+    const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}&next=/${landing}/hq`;
+    const resend = new Resend(apiKey);
+    const firstName = name?.split(' ')[0];
+
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}your ${isBundle ? programBundle.name : assets.programName} access is ready`,
+      html: programAccessEmail({
+        firstName,
+        programName: isBundle ? programBundle.name : assets.programName,
+        toolName: assets.toolName,
+        url,
+      }),
+    });
+
+    await resend.emails.send({
+      from: 'Modern Mustard Seed Store <sarah@modernmustardseed.com>',
+      to: 'sarah@modernmustardseed.com',
+      subject: `New program sale. ${itemName}. $${((session.amount_total ?? 49700) / 100).toFixed(0)}.`,
+      html: leadNotification({
+        type: 'Contact',
+        name: name ?? 'unknown',
+        email,
+        fields: [
+          { label: 'Program', value: itemName },
+          { label: 'Email', value: email },
+          { label: 'Amount', value: `$${((session.amount_total ?? 49700) / 100).toFixed(0)}` },
+        ],
+        message: `Granted access to: ${grantSlugs.join(', ')}`,
+        suggestedAction: 'Access email sent to buyer with their HQ link.',
+      }),
+    });
+  } catch (err) {
+    console.error('program access email failed', err);
+  }
+}
 
 export async function POST(req: Request) {
   const stripe = getStripe();
@@ -58,6 +162,12 @@ export async function POST(req: Request) {
   if (!slug || !email) {
     console.error('Webhook missing slug or email:', session.id);
     return NextResponse.json({ error: 'missing_fields' }, { status: 200 });
+  }
+
+  // ── Flagship $497 program purchase (The Terminal, Idea to Spec, bundle) ──
+  if (session.metadata?.kind === 'program') {
+    await handleProgramPurchase(req, session, slug, email, name ?? null, itemName ?? slug);
+    return NextResponse.json({ received: true, kind: 'program' });
   }
 
   const product = getProductBySlug(slug);

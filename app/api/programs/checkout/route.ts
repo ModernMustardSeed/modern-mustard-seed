@@ -42,17 +42,17 @@ export async function POST(req: Request) {
   const stripe = getStripe();
   if (!stripe) return NextResponse.json({ error: 'stripe_not_configured' }, { status: 503 });
 
-  // Where to land after pay. Programs welcome to their own page; bundle to the
-  // Terminal welcome (both are granted). Cancel back to the sales page.
-  const landing = program ? `/${program.slug}` : '/store';
+  // After pay, /api/programs/enter verifies the session, grants access, signs
+  // them in, and drops them in their HQ. Cancel returns to the sales page.
+  const cancelLanding = program ? `/${program.slug}` : '/store';
 
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${SITE.url}${landing}?status=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE.url}${landing}`,
+      success_url: `${SITE.url}/api/programs/enter?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${SITE.url}${cancelLanding}`,
       allow_promotion_codes: true,
       automatic_tax: { enabled: true },
       tax_id_collection: { enabled: true },

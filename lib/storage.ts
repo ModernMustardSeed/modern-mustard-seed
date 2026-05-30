@@ -27,3 +27,22 @@ export async function getSignedDownloadUrl(pdfFileName: string): Promise<string 
   }
   return data.signedUrl;
 }
+
+/** Download a stored file's raw bytes (server-side, service role). For serving
+ *  gated program tools (HTML) and watermarking playbook PDFs on the fly. */
+export async function getFileBytes(fileName: string): Promise<Uint8Array | null> {
+  const client = getSupabase();
+  if (!client) return null;
+  const { data, error } = await client.storage.from(BUCKET).download(fileName);
+  if (error || !data) {
+    console.error('Storage download error:', error, 'file:', fileName);
+    return null;
+  }
+  return new Uint8Array(await data.arrayBuffer());
+}
+
+/** Download a stored text file (e.g. a program tool HTML) as a string. */
+export async function getFileText(fileName: string): Promise<string | null> {
+  const bytes = await getFileBytes(fileName);
+  return bytes ? new TextDecoder().decode(bytes) : null;
+}

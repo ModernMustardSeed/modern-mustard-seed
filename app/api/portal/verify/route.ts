@@ -13,6 +13,10 @@ export async function GET(req: Request) {
   const token = url.searchParams.get('token');
   const origin = url.origin;
 
+  // Optional landing path (e.g. a program HQ). Relative paths only, no open redirect.
+  const nextParam = url.searchParams.get('next');
+  const next = nextParam && /^\/[A-Za-z0-9/_-]*$/.test(nextParam) ? nextParam : '/portal';
+
   if (!token) {
     return NextResponse.redirect(`${origin}/portal/login?error=missing`);
   }
@@ -23,5 +27,5 @@ export async function GET(req: Request) {
   }
 
   await setClientSessionCookie(session.email);
-  return NextResponse.redirect(`${origin}/portal`);
+  return NextResponse.redirect(`${origin}${next}`);
 }
