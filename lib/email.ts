@@ -114,6 +114,9 @@ function footer(showSocial: boolean): string {
 
   return `<tr><td style="padding:30px 16px 0">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      ${showSocial ? `<tr><td align="center" style="padding:0 0 24px">
+        <a href="${BOOKING_URL}" style="display:inline-block;font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${C.gold};text-decoration:none;border:1px solid ${C.lineGold};border-radius:999px;padding:12px 26px">Book a 30 min call with Sarah &rarr;</a>
+      </td></tr>` : ''}
       <tr><td align="center" style="padding:0 0 18px">
         <table role="presentation" width="110" cellpadding="0" cellspacing="0" border="0"><tr>
           <td height="1" bgcolor="${C.goldBrand}" style="height:1px;line-height:1px;font-size:0;background:${C.goldBrand};background-image:linear-gradient(to right,transparent,${C.goldBrand},transparent)">&nbsp;</td>
