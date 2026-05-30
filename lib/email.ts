@@ -1,43 +1,43 @@
 /**
  * Modern Mustard Seed email templates.
  *
- * Design system: morning light. Cream bg, deep ink text, brass accents,
- * Playfair Display italic headlines via web-safe serif fallback. Editorial
- * magazine feel. Every template shares the same shell (preheader →
- * ornament → wordmark → card → body → CTA → scripture footer).
+ * Design system: clean light modern. Pure white card on a soft gray page,
+ * bold DM Sans headlines, medium-gray body, brass accent reserved for the
+ * eyebrow and CTA button only. Every template shares the same shell
+ * (preheader → wordmark → card → body → CTA → footer with scripture).
  *
  * No em dashes anywhere. Period.
  *
- * The token names below (C.midnight, C.cream, etc.) are kept from the
- * previous dark-mode palette so every existing template inherits the new
- * light-mode values without callsite churn. Read C.midnight as "page",
- * C.midnight800 as "card", C.midnight700 as "callout", C.cream as "ink".
+ * Token names below (C.midnight, C.cream, etc.) are kept from the original
+ * dark palette to avoid touching every template callsite. The VALUES are
+ * the light palette. Read C.midnight as "page bg", C.midnight800 as "card",
+ * C.midnight700 as "callout", C.cream as "headline ink".
  */
 
 const C = {
-  // Background layers (was dark-on-dark, now light-on-light)
-  midnight: '#F5F0E8',       // page background (warm cream)
+  // Background layers
+  midnight: '#F2F4F8',       // page bg (soft cool gray — frames the white card)
   midnight800: '#FFFFFF',    // card surface (pure white)
-  midnight700: '#FAF4E6',    // callout surface (soft warm cream)
+  midnight700: '#F7F8FB',    // callout surface (soft off-white)
 
-  // Brass accents (deepened for readability on light backgrounds)
-  brass: '#A6722D',          // primary brass on light (deepened)
-  brassLight: '#B58341',     // accent brass for labels + headers
-  brassBright: '#C8964E',    // brightest brass for special halos
-  rust: '#B8603F',           // rust accent (deepened)
-  ember: '#E25A1E',          // ember accent (slightly deepened)
-  lake: '#284E6A',           // lake accent (deepened)
-  sage: '#6E876E',           // sage accent (deepened)
+  // Brass accents — strong and confident on white
+  brass: '#B07A1F',          // primary brass (CTA + accents)
+  brassLight: '#C8964E',     // brand brass for divider gradients
+  brassBright: '#E8C88A',    // lightest brass (decorative gradient stops)
+  rust: '#A6481E',
+  ember: '#D6471A',
+  lake: '#1F4280',
+  sage: '#5E7A5E',
 
-  // Text layers (was cream alpha, now deep ink alpha)
-  cream: '#13182A',          // primary text (deep editorial ink)
-  creamDim: 'rgba(19,24,42,0.74)',
-  creamFaint: 'rgba(19,24,42,0.50)',
-  creamGhost: 'rgba(19,24,42,0.28)',
+  // Text layers
+  cream: '#0B1424',          // headline ink (near-black navy, max contrast)
+  creamDim: '#3D4862',       // body copy (medium navy-gray, comfortable reading)
+  creamFaint: '#6B7387',     // tertiary copy (labels, secondary)
+  creamGhost: '#9AA1B2',     // ghost copy (fine print)
 
-  // Hairlines (subtle dark on cream)
-  hairline: 'rgba(19,24,42,0.09)',
-  hairlineBrass: 'rgba(166,114,45,0.38)',
+  // Hairlines
+  hairline: '#E7EAF1',       // soft visible hairline on white
+  hairlineBrass: '#E0C28C',  // visible brass hairline
 };
 
 const FONT_SERIF = '"Playfair Display","Cormorant Garamond","Iowan Old Style","Apple Garamond",Baskerville,Georgia,serif';
@@ -82,60 +82,67 @@ function shell({ preheader = '', inner, showSocial = true }: ShellArgs): string 
     : '';
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background:#FFFFFF">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light only">
-<meta name="supported-color-schemes" content="light only">
+<meta name="supported-color-schemes" content="light">
+<meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
 <title>Modern Mustard Seed</title>
+<style>
+  /* Force light-mode in dark-mode email clients (Gmail, Outlook, Apple Mail). */
+  :root { color-scheme: light only; supported-color-schemes: light; }
+  [data-ogsc] body, [data-ogsb] body { background:#F2F4F8 !important; }
+  [data-ogsc] .mms-card, [data-ogsb] .mms-card { background:#FFFFFF !important; }
+  [data-ogsc] .mms-ink, [data-ogsb] .mms-ink { color:#0B1424 !important; }
+  [data-ogsc] .mms-body, [data-ogsb] .mms-body { color:#3D4862 !important; }
+  u + .body .gmail-fix { display:none; }
+  @media (prefers-color-scheme: dark) {
+    body { background:#F2F4F8 !important; }
+    .mms-card { background:#FFFFFF !important; }
+    .mms-ink { color:#0B1424 !important; }
+    .mms-body { color:#3D4862 !important; }
+  }
+</style>
 </head>
-<body style="margin:0;padding:0;background:${C.midnight};font-family:${FONT_SANS};color:${C.cream};line-height:1.7;-webkit-font-smoothing:antialiased">
+<body class="body" style="margin:0;padding:0;background:#F2F4F8;font-family:${FONT_SANS};color:#0B1424;line-height:1.6;-webkit-font-smoothing:antialiased;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${escape(preheader)}</div>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.midnight}" style="background:${C.midnight}">
-  <tr><td align="center" style="padding:56px 16px 44px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F2F4F8" style="background:#F2F4F8">
+  <tr><td align="center" style="padding:40px 16px 32px">
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:620px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px">
 
-      <!-- Wordmark eyebrow -->
-      <tr><td align="center" style="padding:0 0 10px">
-        <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:7px;color:${C.brass};text-transform:uppercase">
+      <!-- Wordmark above the card -->
+      <tr><td align="center" style="padding:0 0 24px">
+        <div style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:6px;color:#B07A1F;text-transform:uppercase">
           Modern Mustard Seed
         </div>
       </td></tr>
 
-      <!-- Decorative brass ornament: hairline, diamond, hairline -->
-      <tr><td align="center" style="padding:8px 0 0">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-          <td width="56" style="height:1px;background:${C.hairlineBrass};line-height:1px;font-size:0">&nbsp;</td>
-          <td style="padding:0 12px;font-family:${FONT_SERIF};font-size:10px;color:${C.brass};line-height:1">✦</td>
-          <td width="56" style="height:1px;background:${C.hairlineBrass};line-height:1px;font-size:0">&nbsp;</td>
-        </tr></table>
-      </td></tr>
-
-      <!-- Card body -->
-      <tr><td style="padding:34px 0 0">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.midnight800}" style="background:${C.midnight800};border:1px solid ${C.hairline};border-top:3px solid ${C.brass};border-radius:14px;overflow:hidden;box-shadow:0 1px 0 rgba(166,114,45,0.15),0 24px 60px rgba(19,24,42,0.08),0 2px 8px rgba(19,24,42,0.04)">
+      <!-- The card -->
+      <tr><td style="padding:0">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" class="mms-card" style="background:#FFFFFF;border:1px solid #E7EAF1;border-radius:16px;overflow:hidden">
           ${inner}
         </table>
       </td></tr>
 
-      <!-- Footer -->
-      <tr><td style="padding:34px 12px 0">
+      <!-- Footer below the card -->
+      <tr><td style="padding:28px 12px 0">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
           ${socialRow}
           <tr><td align="center" style="padding-bottom:14px">
-            <a href="${SITE}" style="color:${C.brass};text-decoration:none;font-family:${FONT_MONO};font-size:10px;letter-spacing:4px;text-transform:uppercase;font-weight:700">modernmustardseed.com</a>
+            <a href="${SITE}" style="color:#B07A1F;text-decoration:none;font-family:${FONT_MONO};font-size:10px;letter-spacing:4px;text-transform:uppercase;font-weight:700">modernmustardseed.com</a>
           </td></tr>
-          <tr><td align="center" style="padding-bottom:12px">
-            <p style="margin:0;color:${C.creamDim};font-family:${FONT_SERIF};font-size:14px;font-style:italic;letter-spacing:0.3px;line-height:1.55">
+          <tr><td align="center" style="padding-bottom:10px">
+            <p class="mms-body" style="margin:0;color:#3D4862;font-family:${FONT_SERIF};font-size:14px;font-style:italic;line-height:1.55">
               &ldquo;If you have faith as small as a mustard seed, nothing will be impossible for you.&rdquo;
             </p>
           </td></tr>
           <tr><td align="center">
-            <p style="margin:0;color:${C.creamFaint};font-family:${FONT_MONO};font-size:9px;letter-spacing:3px;text-transform:uppercase;font-weight:700">
-              Matthew 17:20 · Kalispell, Montana
+            <p style="margin:0;color:#6B7387;font-family:${FONT_MONO};font-size:9px;letter-spacing:3px;text-transform:uppercase;font-weight:700">
+              Matthew 17:20 &middot; Kalispell, Montana
             </p>
           </td></tr>
         </table>
@@ -151,65 +158,65 @@ function shell({ preheader = '', inner, showSocial = true }: ShellArgs): string 
 /* ────────────────────────── SHARED BLOCKS ────────────────────────── */
 
 function brassDivider(): string {
-  return `<tr><td height="1" style="height:1px;line-height:1px;font-size:0;background:linear-gradient(90deg,transparent,${C.brassLight},transparent)">&nbsp;</td></tr>`;
+  return `<tr><td height="1" style="height:1px;line-height:1px;font-size:0;background:#E7EAF1">&nbsp;</td></tr>`;
 }
 
 function eyebrow(text: string): string {
-  return `<tr><td style="padding:42px 48px 0">
-    <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:5px;color:${C.brass};text-transform:uppercase">${escape(text)}</div>
+  return `<tr><td style="padding:40px 40px 0">
+    <div style="font-family:${FONT_MONO};font-size:11px;font-weight:700;letter-spacing:4px;color:#B07A1F;text-transform:uppercase">${escape(text)}</div>
   </td></tr>`;
 }
 
 function headline(text: string): string {
-  return `<tr><td style="padding:16px 48px 0">
-    <h1 style="margin:0;font-family:${FONT_SERIF};font-style:italic;font-size:34px;font-weight:600;color:${C.cream};letter-spacing:-0.6px;line-height:1.15">${escape(text)}</h1>
+  return `<tr><td style="padding:14px 40px 0">
+    <h1 class="mms-ink" style="margin:0;font-family:${FONT_SANS};font-size:32px;font-weight:700;color:#0B1424;letter-spacing:-0.5px;line-height:1.18">${escape(text)}</h1>
   </td></tr>`;
 }
 
 function lede(text: string): string {
-  return `<tr><td style="padding:18px 48px 0">
-    <p style="margin:0;font-family:${FONT_SERIF};font-style:italic;font-size:18px;font-weight:400;color:${C.creamDim};line-height:1.5">${escape(text)}</p>
+  return `<tr><td style="padding:14px 40px 0">
+    <p class="mms-body" style="margin:0;font-family:${FONT_SANS};font-size:18px;font-weight:400;color:#3D4862;line-height:1.55">${escape(text)}</p>
   </td></tr>`;
 }
 
 function paragraph(html: string): string {
-  return `<tr><td style="padding:22px 48px 0;font-family:${FONT_SANS};font-size:15px;color:${C.cream};line-height:1.75">${html}</td></tr>`;
+  return `<tr><td class="mms-body" style="padding:20px 40px 0;font-family:${FONT_SANS};font-size:16px;color:#3D4862;line-height:1.7">${html}</td></tr>`;
 }
 
 function valueCallout(label: string, html: string): string {
-  return `<tr><td style="padding:28px 48px 0">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid ${C.hairlineBrass};border-left:3px solid ${C.brass};background:${C.midnight700};border-radius:8px">
-      <tr><td style="padding:20px 24px">
-        <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brass};text-transform:uppercase;margin-bottom:10px">${escape(label)}</div>
-        <div style="font-family:${FONT_SANS};font-size:14px;color:${C.cream};line-height:1.7">${html}</div>
+  return `<tr><td style="padding:24px 40px 0">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F7F8FB" style="background:#F7F8FB;border-left:3px solid #B07A1F;border-radius:8px">
+      <tr><td style="padding:18px 22px">
+        <div style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:3px;color:#B07A1F;text-transform:uppercase;margin-bottom:10px">${escape(label)}</div>
+        <div class="mms-body" style="font-family:${FONT_SANS};font-size:15px;color:#3D4862;line-height:1.7">${html}</div>
       </td></tr>
     </table>
   </td></tr>`;
 }
 
 function ctaBlock(primary: { label: string; url: string }, secondary?: { label: string; url: string }): string {
-  return `<tr><td style="padding:32px 48px 0" align="left">
+  return `<tr><td style="padding:32px 40px 0" align="left">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-      <td bgcolor="${C.brass}" style="background:linear-gradient(120deg,${C.rust} 0%,${C.brass} 55%,${C.brassLight} 100%);border-radius:999px;box-shadow:0 4px 14px rgba(166,114,45,0.30)">
-        <a href="${primary.url}" style="display:inline-block;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:15px 30px;font-family:${FONT_SANS}">${escape(primary.label)}</a>
+      <td bgcolor="#B07A1F" style="background:#B07A1F;border-radius:8px">
+        <a href="${primary.url}" style="display:inline-block;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:16px 28px;font-family:${FONT_SANS}">${escape(primary.label)}</a>
       </td>
-      ${secondary ? `<td style="padding-left:18px"><a href="${secondary.url}" style="display:inline-block;color:${C.brass};text-decoration:none;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:15px 8px;font-family:${FONT_SANS};border-bottom:1px solid ${C.hairlineBrass}">${escape(secondary.label)} →</a></td>` : ''}
+      ${secondary ? `<td style="padding-left:16px"><a href="${secondary.url}" style="display:inline-block;color:#B07A1F;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:16px 4px;font-family:${FONT_SANS}">${escape(secondary.label)} &rarr;</a></td>` : ''}
     </tr></table>
   </td></tr>`;
 }
 
 function signature(name: string): string {
-  return `<tr><td style="padding:34px 48px 46px">
-    <div style="font-family:${FONT_MONO};font-size:10px;letter-spacing:3px;color:${C.creamFaint};text-transform:uppercase;margin-bottom:6px">Signed</div>
-    <p style="margin:0;font-family:${FONT_SERIF};font-style:italic;font-size:24px;color:${C.cream};font-weight:600;letter-spacing:-0.3px">${escape(name)}</p>
-    <p style="margin:4px 0 0;font-family:${FONT_MONO};font-size:10px;color:${C.brass};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
+  return `<tr><td style="padding:36px 40px 40px">
+    <div style="font-family:${FONT_MONO};font-size:10px;letter-spacing:3px;color:#6B7387;text-transform:uppercase;margin-bottom:8px">Signed</div>
+    <p class="mms-ink" style="margin:0;font-family:${FONT_SANS};font-size:22px;color:#0B1424;font-weight:700;letter-spacing:-0.3px">${escape(name)}</p>
+    <p style="margin:4px 0 0;font-family:${FONT_MONO};font-size:10px;color:#B07A1F;letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
   </td></tr>`;
 }
 
 function nextUp(text: string): string {
-  return `<tr><td style="padding:0 48px 32px">
-    <div style="font-family:${FONT_MONO};font-size:9px;font-weight:700;letter-spacing:4px;color:${C.brass};text-transform:uppercase;margin-bottom:8px">Coming next</div>
-    <p style="margin:0;font-family:${FONT_SANS};font-size:13px;color:${C.creamDim};line-height:1.65;font-style:italic">${escape(text)}</p>
+  return `<tr><td style="padding:0 40px 32px">
+    <div style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:3px;color:#B07A1F;text-transform:uppercase;margin-bottom:8px">Coming next</div>
+    <p class="mms-body" style="margin:0;font-family:${FONT_SANS};font-size:14px;color:#3D4862;line-height:1.65">${escape(text)}</p>
   </td></tr>`;
 }
 
