@@ -100,6 +100,12 @@ export default function Footer() {
               {social.name}
             </a>
           ))}
+          <Link
+            href="/portal"
+            className="text-[10px] uppercase tracking-[0.15em] text-white/20 hover:text-mustard-400 transition-colors font-mono font-bold"
+          >
+            Client Portal
+          </Link>
         </div>
 
         <p className="text-[10px] text-white/15 font-mono tracking-wider">

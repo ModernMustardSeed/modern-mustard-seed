@@ -259,6 +259,22 @@ function statusPill(label: string, bg: string, fg: string): string {
   </td></tr>`;
 }
 
+/* ────────────────────────── MAGIC LINK (portal sign-in) ────────────────────────── */
+
+/** Passwordless sign-in email for the client portal. */
+export function magicLinkEmail({ firstName, url }: { firstName?: string; url: string }): string {
+  const name = firstName?.trim();
+  const inner =
+    headline(name ? `Welcome back, ${name}` : 'Sign in to your portal') +
+    lede('One tap and you are in. No password to remember.') +
+    paragraph('Use the button below to open your Modern Mustard Seed workspace. For your security the link expires in 20 minutes and can be used once.') +
+    ctaBlock({ label: 'Open my portal', url }) +
+    paragraph(`<span style="font-size:13px;color:${C.muted}">If the button does not work, paste this link into your browser:<br><a href="${url}" style="color:${C.gold};word-break:break-all">${url}</a></span>`) +
+    paragraph(`<span style="font-size:13px;color:${C.muted}">If you did not request this, you can safely ignore this email.</span>`) +
+    signature('Sarah');
+  return shell({ preheader: 'Your secure sign-in link (expires in 20 minutes)', subtitle: 'Your sign-in link', inner });
+}
+
 /* ────────────────────────── CLIENT EMAIL (general) ────────────────────────── */
 
 type ClientEmailArgs = {

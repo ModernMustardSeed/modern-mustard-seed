@@ -1,0 +1,93 @@
+import { NextResponse } from 'next/server';
+import { getClientSession } from '@/lib/client-auth';
+import { getSupabase } from '@/lib/supabase';
+import { displayForIso } from '@/lib/booking';
+
+export const runtime = 'nodejs';
+
+/**
+ * Everything the signed-in client should see, scoped strictly to their email:
+ * their engagement record, project + milestones, files, store downloads, and
+ * upcoming calls. Each block is best-effort so a not-yet-migrated table just
+ * yields an empty section instead of failing the whole portal.
+ */
+export async function GET() {
+  const session = await getClientSession();
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const email = session.email;
+  const supabase = getSupabase();
+  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
+
+  let client: { name: string | null; company: string | null; tier: string; welcomeNote: string | null } | null = null;
+  try {
+    const { data } = await supabase.from('clients').select('name, company, tier, welcome_note').eq('email', email).maybeSingle();
+    if (data) client = { name: (data.name as string | null) ?? null, company: (data.company as string | null) ?? null, tier: (data.tier as string) ?? 'engagement', welcomeNote: (data.welcome_note as string | null) ?? null };
+  } catch {
+    /* clients table not migrated */
+  }
+
+  let projects: Array<{ id: string; name: string; status: string; summary: string | null; progress: number; milestones: Array<{ title: string; detail?: string; done?: boolean; due?: string }>; launchTarget: string | null }> = [];
+  try {
+    const { data } = await supabase
+      .from('projects')
+      .select('id, name, status, summary, progress, milestones, launch_target')
+      .eq('client_email', email)
+      .order('created_at', { ascending: false });
+    if (data) {
+      projects = data.map((p) => ({
+        id: p.id as string,
+        name: p.name as string,
+        status: p.status as string,
+        summary: (p.summary as string | null) ?? null,
+        progress: Number(p.progress) || 0,
+        milestones: Array.isArray(p.milestones) ? (p.milestones as Array<{ title: string; detail?: string; done?: boolean; due?: string }>) : [],
+        launchTarget: (p.launch_target as string | null) ?? null,
+      }));
+    }
+  } catch {
+    /* projects table not migrated */
+  }
+
+  let files: Array<{ label: string; url: string; kind: string }> = [];
+  try {
+    const { data } = await supabase.from('client_files').select('label, url, kind').eq('client_email', email).order('created_at', { ascending: false });
+    if (data) files = data.map((f) => ({ label: f.label as string, url: f.url as string, kind: (f.kind as string) ?? 'link' }));
+  } catch {
+    /* client_files table not migrated */
+  }
+
+  let orders: Array<{ sessionId: string; productName: string; createdAt: string }> = [];
+  try {
+    const { data } = await supabase
+      .from('orders')
+      .select('stripe_session_id, product_name, created_at, status')
+      .eq('email', email)
+      .eq('status', 'paid')
+      .order('created_at', { ascending: false });
+    if (data) orders = data.map((o) => ({ sessionId: o.stripe_session_id as string, productName: o.product_name as string, createdAt: o.created_at as string }));
+  } catch {
+    /* orders table missing */
+  }
+
+  let bookings: Array<{ whenIso: string; display: string }> = [];
+  try {
+    const { data } = await supabase
+      .from('leads')
+      .select('timeline')
+      .eq('email', email)
+      .eq('source', 'mustard-seed-booking')
+      .eq('status', 'booked')
+      .gte('timeline', new Date().toISOString())
+      .order('timeline', { ascending: true });
+    if (data) bookings = data.filter((b) => b.timeline).map((b) => ({ whenIso: b.timeline as string, display: displayForIso(b.timeline as string).display }));
+  } catch {
+    /* ignore */
+  }
+
+  const isClient = !!client || projects.length > 0;
+  const isBuyer = orders.length > 0;
+  const audience = isClient && isBuyer ? 'both' : isClient ? 'client' : isBuyer ? 'buyer' : 'guest';
+
+  return NextResponse.json({ email, client, projects, files, orders, bookings, audience });
+}
