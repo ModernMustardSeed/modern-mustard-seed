@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import Link from 'next/link';
 import LeadDrawer from './LeadDrawer';
 import type { LeadRow, LeadType, LeadStatus } from '@/lib/supabase';
 
@@ -96,10 +97,19 @@ export default function AdminDashboard() {
               Admin
             </h1>
           </div>
-          <div className="flex items-center gap-3">
+          <nav className="flex items-center gap-1">
+            <Link
+              href="/admin"
+              className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2"
+            >
+              Overview
+            </Link>
+            <span className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-300 px-4 py-2">
+              Pipeline
+            </span>
             <button
               onClick={load}
-              className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 hover:text-mustard-300 px-4 py-2"
+              className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2"
             >
               Refresh
             </button>
@@ -109,7 +119,7 @@ export default function AdminDashboard() {
             >
               Sign out
             </button>
-          </div>
+          </nav>
         </div>
       </header>
 
