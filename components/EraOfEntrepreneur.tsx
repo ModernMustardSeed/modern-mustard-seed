@@ -146,18 +146,16 @@ export default function EraOfEntrepreneur() {
           That is the era we are in. We are here to give you the tools.
         </p>
 
-        <div className="text-base md:text-xl font-body text-white/55 mb-12 flex items-center justify-center flex-wrap gap-x-3 gap-y-2">
+        <div className="text-2xl md:text-4xl font-body text-white/70 mb-12 flex items-center justify-center flex-wrap gap-x-3 gap-y-2">
           <span>Built for</span>
           <span className="rotator">
             <span
               key={wordIdx}
-              className="rotator-word font-serif italic text-mustard-300 text-xl md:text-2xl tracking-tight"
+              className="rotator-word font-serif italic text-mustard-300 text-3xl md:text-5xl tracking-tight"
             >
               {ROTATING_WORDS[wordIdx]}
             </span>
           </span>
-          <span className="text-white/35">·</span>
-          <span className="text-white/55">no code required</span>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
