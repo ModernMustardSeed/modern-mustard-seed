@@ -2,17 +2,25 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { navLinks } from '@/data/socials';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname() || '/';
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // App shells (admin, client portal, program HQs) have their own headers.
+  // Hide the marketing nav there so it never overlaps them.
+  const isAppShell =
+    pathname.startsWith('/admin') || pathname.startsWith('/portal') || pathname.endsWith('/hq');
+  if (isAppShell) return null;
 
   return (
     <nav
@@ -43,10 +51,10 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href="/build-queue"
+            href="/book"
             className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-sunrise-warm rounded-full hover:shadow-[0_0_20px_rgba(255,107,107,0.4)] transition-all"
           >
-            Join the Queue
+            Book a Call
           </Link>
         </div>
 
@@ -90,11 +98,11 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href="/build-queue"
+            href="/book"
             onClick={() => setMenuOpen(false)}
             className="mt-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_20px_rgba(255,107,53,0.25)] transition-all text-center"
           >
-            Join the Queue
+            Book a Call
           </Link>
         </div>
       </div>

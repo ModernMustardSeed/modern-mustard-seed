@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import Link from 'next/link';
 import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts';
+import AdminHeader from './AdminHeader';
 
 /**
  * The owner command center. One screen to run the business: revenue, sales,
@@ -151,33 +151,12 @@ export default function CommandCenter() {
     }
   };
 
-  const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' });
-    window.location.href = '/admin/login';
-  };
-
   const t = data?.targets;
   const pct = (val: number, goal: number) => (goal > 0 ? Math.min(100, Math.round((val / goal) * 100)) : 0);
 
   return (
     <div className="min-h-screen bg-[#080c16] text-white">
-      <header className="border-b border-white/[0.06] sticky top-0 z-30 bg-[#080c16]/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium block">
-              Modern Mustard Seed
-            </span>
-            <h1 className="font-sans text-xl font-semibold text-white tracking-tight mt-1">Command Center</h1>
-          </div>
-          <nav className="flex items-center gap-1">
-            <span className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-300 px-4 py-2">Overview</span>
-            <Link href="/admin/leads" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Pipeline</Link>
-            <Link href="/admin/partners" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Partners</Link>
-            <button onClick={load} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Refresh</button>
-            <button onClick={handleLogout} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Sign out</button>
-          </nav>
-        </div>
-      </header>
+      <AdminHeader active="overview" title="Command Center" onRefresh={load} />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         {error && (

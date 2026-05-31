@@ -11,20 +11,6 @@ export default function CelebrationVideo() {
       {/* Deep sky plate */}
       <div className="absolute inset-0 z-0 bg-[#080c16]" aria-hidden="true" />
 
-      {/* Cinematic backdrop */}
-      <video
-        className="absolute inset-0 w-full h-full object-cover z-0 motion-reduce-hide"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-        style={{ backgroundColor: '#080c16' }}
-      >
-        <source src="/video/celebration.mp4" type="video/mp4" />
-      </video>
-
       {/* Dark sky wash so the copy reads */}
       <div
         className="absolute inset-0 z-[1] bg-[#080c16]/55 mix-blend-multiply pointer-events-none"
@@ -66,16 +52,16 @@ export default function CelebrationVideo() {
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
-            href="/build-queue"
+            href="/book"
             className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-semibold text-cream-50 bg-brass rounded-full campfire-glow hover:shadow-[0_0_55px_rgba(255,107,53,0.55),0_0_28px_rgba(232,200,138,0.4)] transition-all"
           >
-            Join the Build Queue
+            Book a call with Sarah
           </Link>
           <Link
-            href="/audit"
+            href="/build-queue"
             className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-semibold text-cream-100 border border-cream-100/35 rounded-full bg-midnight-700/30 backdrop-blur-sm hover:bg-midnight-700/55 hover:border-cream-100/65 transition-all"
           >
-            Run the Free AI Audit
+            Join the Build Queue
           </Link>
         </div>
       </div>

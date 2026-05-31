@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import Link from 'next/link';
+import AdminHeader from './AdminHeader';
 
 type Row = {
   id: string;
@@ -55,28 +55,12 @@ export default function AffiliatesAdmin() {
     } finally { setBusy(null); }
   };
 
-  const logout = async () => { await fetch('/api/admin/logout', { method: 'POST' }); window.location.href = '/admin/login'; };
-
   const pending = rows.filter((r) => r.status === 'pending');
   const approved = rows.filter((r) => r.status === 'approved');
 
   return (
     <div className="min-h-screen bg-[#080c16] text-white">
-      <header className="border-b border-white/[0.06] sticky top-0 z-30 bg-[#080c16]/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium block">Modern Mustard Seed</span>
-            <h1 className="font-sans text-xl font-semibold text-white tracking-tight mt-1">Partners</h1>
-          </div>
-          <nav className="flex items-center gap-1">
-            <Link href="/admin" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Overview</Link>
-            <Link href="/admin/leads" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Pipeline</Link>
-            <span className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-300 px-4 py-2">Partners</span>
-            <button onClick={load} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Refresh</button>
-            <button onClick={logout} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Sign out</button>
-          </nav>
-        </div>
-      </header>
+      <AdminHeader active="partners" title="Partners" onRefresh={load} />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         {error && <div className="glass-card p-5 mb-6 border-red-500/30"><p className="text-red-300 text-sm font-body">{error}</p></div>}

@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import MagneticCursor from '@/components/MagneticCursor';
 import MustardSeedChat from '@/components/MustardSeedChat';
 import RefCapture from '@/components/RefCapture';
+import HideOnAppShell from '@/components/HideOnAppShell';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
@@ -35,7 +36,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="relative z-30">
           <Navbar />
           <main>{children}</main>
-          <Footer />
+          <HideOnAppShell>
+            <Footer />
+          </HideOnAppShell>
         </div>
         <MagneticCursor />
         <MustardSeedChat />
