@@ -107,6 +107,12 @@ export default function AdminDashboard() {
             <span className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-300 px-4 py-2">
               Pipeline
             </span>
+            <Link
+              href="/admin/partners"
+              className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2"
+            >
+              Partners
+            </Link>
             <button
               onClick={load}
               className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2"

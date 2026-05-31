@@ -275,6 +275,31 @@ export function magicLinkEmail({ firstName, url }: { firstName?: string; url: st
   return shell({ preheader: 'Your secure sign-in link (expires in 20 minutes)', subtitle: 'Your sign-in link', inner });
 }
 
+/* ────────────────────────── AFFILIATE WELCOME ────────────────────────── */
+
+/** Sent when Sarah approves a partner. Carries their code and a passwordless
+ *  link into their dashboard, where their links and free access live. */
+export function affiliateWelcomeEmail({
+  firstName,
+  code,
+  url,
+}: {
+  firstName?: string;
+  code: string;
+  url: string;
+}): string {
+  const name = firstName?.trim();
+  const inner =
+    headline(name ? `Welcome to the team, ${name}` : 'Welcome to the team') +
+    lede('You are in, and I am genuinely glad you are here.') +
+    paragraph('Your partner account is live. You now have free access to every Modern Mustard Seed product, so you can learn them and speak to them honestly, and you earn 50 percent on every product sale and 10 percent of any build you send our way.') +
+    valueCallout('Your referral code', `<span style="font-family:${SERIF};font-size:22px;color:${C.ink};font-weight:600;letter-spacing:1px">${escape(code)}</span><br><span style="font-size:13px;color:${C.muted}">Add it to any link, for example ${escape(SITE)}/the-terminal?ref=${escape(code)}</span>`) +
+    ctaBlock({ label: 'Open my partner dashboard', url }) +
+    paragraph('Inside you will find your links with one-tap copy, your numbers and earnings, and free access to every product. Share what you believe in, tell your audience the truth (including that you earn a commission), and we will root for you the whole way.') +
+    signature('Sarah');
+  return shell({ preheader: 'Your Modern Mustard Seed partner account is live', subtitle: 'Partner Program', inner });
+}
+
 /* ────────────────────────── PROGRAM ACCESS (Terminal / Idea to Spec) ────────────────────────── */
 
 /** Delivery email for a $497 program purchase. Carries a passwordless link

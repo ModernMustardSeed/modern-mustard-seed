@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MagneticCursor from '@/components/MagneticCursor';
 import MustardSeedChat from '@/components/MustardSeedChat';
+import RefCapture from '@/components/RefCapture';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <MagneticCursor />
         <MustardSeedChat />
+        <RefCapture />
         <Analytics />
         <SpeedInsights />
         <noscript>

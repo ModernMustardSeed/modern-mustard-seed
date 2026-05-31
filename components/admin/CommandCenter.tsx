@@ -172,6 +172,7 @@ export default function CommandCenter() {
           <nav className="flex items-center gap-1">
             <span className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-300 px-4 py-2">Overview</span>
             <Link href="/admin/leads" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Pipeline</Link>
+            <Link href="/admin/partners" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Partners</Link>
             <button onClick={load} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Refresh</button>
             <button onClick={handleLogout} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Sign out</button>
           </nav>

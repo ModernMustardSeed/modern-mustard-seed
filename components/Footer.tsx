@@ -106,6 +106,12 @@ export default function Footer() {
           >
             Client Portal
           </Link>
+          <Link
+            href="/partners"
+            className="text-[10px] uppercase tracking-[0.15em] text-white/20 hover:text-mustard-400 transition-colors font-mono font-bold"
+          >
+            Partners
+          </Link>
         </div>
 
         <p className="text-[10px] text-white/15 font-mono tracking-wider">

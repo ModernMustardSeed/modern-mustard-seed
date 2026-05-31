@@ -8,6 +8,7 @@ const STATIC_PATHS = [
   '',
   '/the-terminal',
   '/idea-to-spec',
+  '/partners',
   '/build-queue',
   '/work',
   '/services',

@@ -133,6 +133,8 @@ export type ProgramBundle = {
   slug: 'zero-to-one';
   name: string;
   pitch: string;
+  priceUsd: number;
+  savings: number;
   stripePriceEnv: string;
   programSlugs: Program['slug'][];
 };
@@ -140,7 +142,9 @@ export type ProgramBundle = {
 export const programBundle: ProgramBundle = {
   slug: 'zero-to-one',
   name: 'The Zero to One Bundle',
-  pitch: 'Spec it with Idea to Spec, build it with The Terminal. The front half and the back half of taking something from nothing to shipped, together at one price.',
+  pitch: 'Spec it with Idea to Spec, build it with The Terminal. The front half and the back half of taking something from nothing to shipped, together at one price. $797 for both, a $197 saving.',
+  priceUsd: 797,
+  savings: 197,
   stripePriceEnv: 'STRIPE_PRICE_ZERO_TO_ONE',
   programSlugs: ['idea-to-spec', 'the-terminal'],
 };

@@ -25,6 +25,7 @@ import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccess
 import { grantEntitlement, PROGRAM_ASSETS, isProgramSlug, type ProgramSlug } from '@/lib/entitlements';
 import { createMagicToken } from '@/lib/client-auth';
 import { insertLead } from '@/lib/supabase';
+import { recordProductCommission } from '@/lib/affiliate';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -55,6 +56,18 @@ async function handleProgramPurchase(
 
   // Grant access to every included program.
   await Promise.all(grantSlugs.map((s) => grantEntitlement(email, s, 'purchase')));
+
+  // Affiliate attribution: 50% product commission on a referred sale.
+  const ref = session.metadata?.ref;
+  if (ref) {
+    await recordProductCommission({
+      affiliateCode: ref,
+      orderEmail: email,
+      productSlug: slug,
+      amountCents: session.amount_total ?? 49700,
+      stripeSessionId: session.id,
+    });
+  }
 
   // Record the order and the buyer so the back office and funnel see it.
   const supabase = getSupabase();
