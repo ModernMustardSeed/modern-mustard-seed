@@ -48,8 +48,11 @@ const C = {
   lineGold: '#E3D0A2',  // gold hairline
 };
 
-const SERIF = '"Playfair Display","Hoefler Text","Iowan Old Style","Cormorant Garamond",Georgia,"Times New Roman",serif';
-const SANS = '-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif';
+// Font names use SINGLE quotes so they never break a double-quoted style="..."
+// attribute. Double quotes here would close the attribute early and drop every
+// CSS property after font-family (color, text-decoration, borders).
+const SERIF = "'Playfair Display','Hoefler Text','Iowan Old Style','Cormorant Garamond',Georgia,'Times New Roman',serif";
+const SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif";
 
 const SITE = 'https://modernmustardseed.com';
 // "Book a discovery call" opens the Mustard Seed chatbot straight into the

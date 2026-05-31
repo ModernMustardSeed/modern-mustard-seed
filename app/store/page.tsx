@@ -52,8 +52,8 @@ export default function StorePage() {
           The Playbook Store
         </span>
         <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-medium text-cream-50 tracking-tight leading-[1.02] mb-7">
-          The same systems we ship to{' '}
-          <span className="text-gradient-brass italic">$225/hour</span> clients
+          The same systems behind our{' '}
+          <span className="text-gradient-brass italic">client work</span>
         </h1>
         <p className="font-display italic text-2xl md:text-3xl text-cream-100/95 font-light leading-snug mb-5">
           Seven playbooks. From $47
