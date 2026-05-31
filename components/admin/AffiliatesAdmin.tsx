@@ -55,6 +55,14 @@ export default function AffiliatesAdmin() {
     } finally { setBusy(null); }
   };
 
+  const payout = async (id: string) => {
+    setBusy(id);
+    try {
+      await fetch(`/api/admin/affiliates/${id}/payout`, { method: 'POST' });
+      await load();
+    } finally { setBusy(null); }
+  };
+
   const pending = rows.filter((r) => r.status === 'pending');
   const approved = rows.filter((r) => r.status === 'approved');
 
@@ -123,8 +131,8 @@ export default function AffiliatesAdmin() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/[0.06]">
-                      {['Partner', 'Code', 'Clicks', 'Sales', 'Pending', 'Payable', 'Paid'].map((h) => (
-                        <th key={h} className="text-left text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono font-medium px-4 py-3">{h}</th>
+                      {['Partner', 'Code', 'Clicks', 'Sales', 'Pending', 'Payable', 'Paid', ''].map((h, i) => (
+                        <th key={i} className="text-left text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono font-medium px-4 py-3">{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -138,6 +146,13 @@ export default function AffiliatesAdmin() {
                         <td className="px-4 py-3.5 text-white/50 font-mono text-xs">{money(r.pendingCents)}</td>
                         <td className="px-4 py-3.5 text-emerald-300 font-mono text-xs font-semibold">{money(r.payableCents)}</td>
                         <td className="px-4 py-3.5 text-white/50 font-mono text-xs">{money(r.paidCents)}</td>
+                        <td className="px-4 py-3.5 text-right">
+                          {r.payableCents > 0 && (
+                            <button onClick={() => payout(r.id)} disabled={busy === r.id} className="text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-emerald-300 hover:text-emerald-200 disabled:opacity-50 whitespace-nowrap">
+                              {busy === r.id ? '...' : 'Mark paid'}
+                            </button>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

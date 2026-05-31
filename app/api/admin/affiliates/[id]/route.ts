@@ -3,7 +3,7 @@ import { Resend } from 'resend';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { makeCodeSeed, type Affiliate } from '@/lib/affiliate';
-import { grantEntitlement } from '@/lib/entitlements';
+import { grantAllProducts } from '@/lib/entitlements';
 import { createMagicToken } from '@/lib/client-auth';
 import { affiliateWelcomeEmail } from '@/lib/email';
 
@@ -46,11 +46,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   await supabase.from('affiliates').update({ status: 'approved', code, approved_at: new Date().toISOString() }).eq('id', id);
 
-  // Free access to every program.
-  await Promise.all([
-    grantEntitlement(aff.email, 'the-terminal', 'affiliate'),
-    grantEntitlement(aff.email, 'idea-to-spec', 'affiliate'),
-  ]);
+  // Free access to every product (both programs and all playbooks).
+  await grantAllProducts(aff.email, 'affiliate');
 
   // Welcome email with a passwordless link to the partner dashboard.
   const apiKey = process.env.RESEND_API_KEY;

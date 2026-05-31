@@ -142,6 +142,27 @@ async function handleProgramPurchase(
   }
 }
 
+/** On refund, claw back the affiliate commission for that purchase. */
+async function handleRefundClawback(stripe: ReturnType<typeof getStripe>, charge: Stripe.Charge) {
+  if (!stripe) return;
+  const supabase = getSupabase();
+  if (!supabase) return;
+  const pi = typeof charge.payment_intent === 'string' ? charge.payment_intent : null;
+  if (!pi) return;
+  try {
+    const sessions = await stripe.checkout.sessions.list({ payment_intent: pi, limit: 1 });
+    const sessionId = sessions.data[0]?.id;
+    if (!sessionId) return;
+    await supabase
+      .from('commissions')
+      .update({ status: 'clawed_back' })
+      .eq('stripe_session_id', sessionId)
+      .in('status', ['pending', 'payable']);
+  } catch (err) {
+    console.error('refund clawback failed', err);
+  }
+}
+
 export async function POST(req: Request) {
   const stripe = getStripe();
   const secret = STRIPE_WEBHOOK_SECRET();
@@ -160,6 +181,12 @@ export async function POST(req: Request) {
     const msg = err instanceof Error ? err.message : 'invalid';
     console.error('Webhook signature failed:', msg);
     return NextResponse.json({ error: 'invalid_signature' }, { status: 400 });
+  }
+
+  // Refund: claw back any affiliate commission tied to this charge's session.
+  if (event.type === 'charge.refunded') {
+    await handleRefundClawback(stripe, event.data.object as Stripe.Charge);
+    return NextResponse.json({ received: true, kind: 'refund' });
   }
 
   if (event.type !== 'checkout.session.completed') {

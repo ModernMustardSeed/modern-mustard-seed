@@ -1,5 +1,9 @@
 import { getSupabase } from './supabase';
 import { normalizeEmail } from './client-auth';
+import { products } from '@/data/products';
+
+/** Every product an affiliate gets free: the two programs plus the playbooks. */
+export const ALL_PRODUCT_SLUGS: string[] = ['the-terminal', 'idea-to-spec', ...products.map((p) => p.slug)];
 
 /**
  * Program entitlements. A buyer (or approved affiliate) is entitled to a
@@ -32,7 +36,7 @@ export function isProgramSlug(slug: string): slug is ProgramSlug {
 }
 
 /** Grant entitlement (idempotent). Used by the webhook and the affiliate engine. */
-export async function grantEntitlement(email: string, slug: ProgramSlug, source = 'purchase'): Promise<void> {
+export async function grantEntitlement(email: string, slug: string, source = 'purchase'): Promise<void> {
   const client = getSupabase();
   if (!client) return;
   try {
@@ -44,8 +48,13 @@ export async function grantEntitlement(email: string, slug: ProgramSlug, source 
   }
 }
 
-/** Does this email have access to this program? */
-export async function hasEntitlement(email: string, slug: ProgramSlug): Promise<boolean> {
+/** Grant free access to every product. Used when an affiliate is approved. */
+export async function grantAllProducts(email: string, source = 'affiliate'): Promise<void> {
+  await Promise.all(ALL_PRODUCT_SLUGS.map((slug) => grantEntitlement(email, slug, source)));
+}
+
+/** Does this email have access to this product? */
+export async function hasEntitlement(email: string, slug: string): Promise<boolean> {
   const client = getSupabase();
   if (!client) return false;
   try {

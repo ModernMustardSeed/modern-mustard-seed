@@ -16,6 +16,10 @@
     {
       "path": "/api/cron/mustard-sequence",
       "schedule": "0 17 * * *"
+    },
+    {
+      "path": "/api/cron/commissions",
+      "schedule": "0 9 * * *"
     }
   ]
 }

@@ -4,6 +4,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { getClientSession } from '@/lib/client-auth';
 import { getAffiliateByEmail } from '@/lib/affiliate';
 import { getSupabase } from '@/lib/supabase';
+import { products } from '@/data/products';
 import AffiliateLinks from '@/components/partners/AffiliateLinks';
 
 export const metadata = buildMetadata({ title: 'Partner Dashboard', path: '/partners/hq', noindex: true });
@@ -109,11 +110,25 @@ export default async function PartnerHQ() {
               </div>
             </div>
             <div className="glass-card p-6">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">Free access</span>
-              <p className="text-white/55 font-body text-sm mb-4">You have free access to every product, so you can learn them and speak to them honestly.</p>
-              <div className="flex flex-wrap gap-2">
-                <Link href="/the-terminal/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-cream-100 border border-cream-100/25 rounded-full hover:border-cream-100/50">The Terminal HQ</Link>
-                <Link href="/idea-to-spec/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-cream-100 border border-cream-100/25 rounded-full hover:border-cream-100/50">Idea to Spec HQ</Link>
+              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">Free access to everything</span>
+              <p className="text-white/55 font-body text-sm mb-4">Every product is yours, free, so you can learn them and speak to them honestly.</p>
+              <div className="mb-4">
+                <span className="text-[9px] uppercase tracking-[0.25em] text-white/35 font-mono block mb-2">Programs (live tools)</span>
+                <div className="flex flex-wrap gap-2">
+                  <Link href="/the-terminal/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-cream-100 border border-cream-100/25 rounded-full hover:border-cream-100/50">The Terminal HQ</Link>
+                  <Link href="/idea-to-spec/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-cream-100 border border-cream-100/25 rounded-full hover:border-cream-100/50">Idea to Spec HQ</Link>
+                </div>
+              </div>
+              <div>
+                <span className="text-[9px] uppercase tracking-[0.25em] text-white/35 font-mono block mb-2">Playbooks (download)</span>
+                <div className="space-y-1">
+                  {products.map((p) => (
+                    <a key={p.slug} href={`/api/programs/download/${p.slug}`} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06] transition-colors group">
+                      <span className="text-white/75 font-body text-sm group-hover:text-white">{p.name}</span>
+                      <span className="text-[9px] uppercase tracking-[0.2em] text-mustard-400/70 font-mono">PDF ↓</span>
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
