@@ -157,7 +157,7 @@ export default function EraOfEntrepreneur() {
             </span>
           </span>
           <span className="text-white/35">·</span>
-          <span className="text-white/55">no AI degree required</span>
+          <span className="text-white/55">no code required</span>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
