@@ -87,6 +87,20 @@ export function templateFor(channel: ChannelType, touch: number): { subject?: st
   return { body: SOCIAL_TEMPLATES[channel] };
 }
 
+/** Days to wait before the next email touch. Touch 1 -> 2 is 3 days, 2 -> 3 is 4. */
+export const CADENCE_WAIT_DAYS: Record<number, number> = { 2: 3, 3: 4 };
+
+/** Follow-up touches (2 and 3) only need the first name filled. They carry no
+ *  invented specifics, so they can be sent on cadence without the AI. */
+export function personalizeTouch(touch: number, firstName: string): { subject: string; body: string } {
+  const t = EMAIL_TOUCHES.find((e) => e.touch === touch) ?? EMAIL_TOUCHES[0];
+  const fn = (firstName || 'there').trim();
+  return {
+    subject: t.subject.replace('[their channel or audience]', 'your audience'),
+    body: t.body.replace(/\[first name\]/g, fn),
+  };
+}
+
 /** Is this contact on the permanent suppression list (opted out)? */
 export async function isSuppressed(contact: string): Promise<boolean> {
   const client = getSupabase();
