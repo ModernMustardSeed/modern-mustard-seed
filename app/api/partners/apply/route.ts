@@ -26,6 +26,18 @@ export async function POST(req: Request) {
   if (!supabase) return NextResponse.json({ error: 'Not configured' }, { status: 503 });
 
   try {
+    // Never downgrade an existing partner. If they are already approved, this is
+    // a no-op (they just re-submitted), so their status and code stay intact.
+    const { data: existing } = await supabase
+      .from('affiliates')
+      .select('status')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (existing?.status === 'approved') {
+      return NextResponse.json({ ok: true, alreadyPartner: true });
+    }
+
     const { error } = await supabase.from('affiliates').upsert(
       {
         email,
