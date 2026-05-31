@@ -4,27 +4,37 @@ import { socials } from '@/data/socials';
 export default function Footer() {
   const linkSections = [
     {
-      title: 'Work',
+      title: 'Programs',
+      links: [
+        { label: 'Idea to Spec', href: '/idea-to-spec' },
+        { label: 'The Terminal', href: '/the-terminal' },
+        { label: 'The Store', href: '/store' },
+        { label: 'Free Playbooks', href: '/playbooks' },
+      ],
+    },
+    {
+      title: 'Work With Us',
       links: [
         { label: 'The Work', href: '/work' },
         { label: 'How it Works', href: '/work-with-us' },
-        { label: 'Join the Queue', href: '/build-queue' },
-        { label: 'AI Audit', href: '/audit' },
+        { label: 'Book a Call', href: '/book' },
+        { label: 'Join the Build Queue', href: '/build-queue' },
         { label: 'AI-Proof Your Business', href: '/ai-proof' },
       ],
     },
     {
-      title: 'Resources',
+      title: 'Free Tools',
       links: [
-        { label: 'Blog', href: '/blog' },
-        { label: 'Playbooks', href: '/playbooks' },
-        { label: 'About', href: '/about' },
-        { label: 'Contact', href: '/contact' },
+        { label: 'AI Audit', href: '/audit' },
+        { label: 'Website Audit', href: '/website-audit' },
       ],
     },
     {
-      title: 'Legal',
+      title: 'Company',
       links: [
+        { label: 'Blog', href: '/blog' },
+        { label: 'About', href: '/about' },
+        { label: 'Contact', href: '/contact' },
         { label: 'Privacy', href: '/privacy' },
         { label: 'Terms', href: '/terms' },
       ],
@@ -57,7 +67,7 @@ export default function Footer() {
         </cite>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mb-12 pb-12 border-b border-white/[0.04]">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-8 max-w-6xl mx-auto mb-12 pb-12 border-b border-white/[0.04]">
         <div className="col-span-2 md:col-span-1">
           <span className="font-sans text-xs tracking-[0.15em] text-white/60 uppercase font-bold block mb-4">
             Modern Mustard Seed
