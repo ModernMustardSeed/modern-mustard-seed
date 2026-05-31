@@ -9,11 +9,12 @@ import Link from 'next/link';
  * tab row so nothing overlaps or overflows.
  */
 
-type Tab = 'overview' | 'pipeline' | 'partners';
+type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
   { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
   { key: 'partners', label: 'Partners', href: '/admin/partners' },
+  { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
 ];
 
 export default function AdminHeader({ active, title, onRefresh }: { active: Tab; title: string; onRefresh?: () => void }) {
