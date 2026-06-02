@@ -163,3 +163,25 @@ export async function isSlotAvailable(startIso: string): Promise<boolean> {
 export function displayForIso(startIso: string): { display: string; shortLabel: string } {
   return formatMt(new Date(startIso));
 }
+
+/**
+ * UTC bounds [startUtc, endUtc] for the current Mountain-Time calendar day.
+ * DST-correct (offset comes from Intl, not a hardcoded number). Used by the
+ * day-of reminder cron to scope "today's" appointments.
+ */
+export function mtDayBoundsUtc(now: Date = new Date()): { startUtc: string; endUtc: string } {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: MT_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(now);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+  const y = parseInt(get('year'), 10);
+  const m = parseInt(get('month'), 10);
+  const d = parseInt(get('day'), 10);
+  const start = mtToUtc(y, m, d, 0, 0);
+  // 23:59 MT, pushed to :59.999 so the very last slot of the day is inclusive.
+  const end = new Date(mtToUtc(y, m, d, 23, 59).getTime() + 59_999);
+  return { startUtc: start.toISOString(), endUtc: end.toISOString() };
+}

@@ -491,6 +491,44 @@ export function bookingConfirmationEmail({
   });
 }
 
+/** Sent the morning of the call, with the join link front and center. */
+export function bookingReminderEmail({
+  firstName,
+  whenDisplay,
+  conferenceLink,
+}: {
+  firstName: string;
+  whenDisplay: string;
+  conferenceLink?: string;
+}): string {
+  const inner = `
+    ${headline(`${firstName}, we talk today.`)}
+    <tr><td style="padding:26px 44px 0">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panelWarm}" style="background:${C.panelWarm};border:1px solid ${C.lineGold};border-radius:12px">
+        <tr><td style="padding:24px 26px">
+          <div style="margin-bottom:10px">${overline('Today')}</div>
+          <p class="mms-ink" style="margin:0;font-family:${SERIF};font-style:italic;font-size:23px;color:${C.ink};font-weight:500;line-height:1.3">${escape(whenDisplay)}</p>
+          <p style="margin:9px 0 0;font-family:${SANS};font-size:11px;color:${C.muted};letter-spacing:2px;text-transform:uppercase;font-weight:700">30 minutes with Sarah</p>
+        </td></tr>
+      </table>
+    </td></tr>
+    ${paragraph(`<p style="margin:0">A quick reminder that we are on for today. The room opens at our time, and I have read your notes ahead so we can get right to it.</p>`)}
+    ${conferenceLink
+      ? ctaBlock({ label: 'Join the call', url: conferenceLink })
+      : paragraph(`<p style="margin:0">I will send the video link shortly. If you would rather meet by phone, reply with the best number to reach you.</p>`)}
+    ${conferenceLink
+      ? paragraph(`<p style="margin:0;font-size:13px;color:${C.muted}">Or paste this into your browser: <a href="${escape(conferenceLink)}" style="color:${C.gold};text-decoration:underline">${escape(conferenceLink)}</a></p>`)
+      : ''}
+    ${paragraph(`<p style="margin:0">Need to move it? Just reply to this email and we will find a better time.</p>`)}
+    ${signature('Sarah')}
+  `;
+  return shell({
+    preheader: `Reminder: your call with Sarah is today, ${whenDisplay}.`,
+    subtitle: 'Your call is today',
+    inner,
+  });
+}
+
 /** Sent to Sarah when a visitor books through the chatbot. */
 export function bookingNotificationEmail(args: {
   name: string;
