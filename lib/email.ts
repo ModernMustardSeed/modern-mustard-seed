@@ -519,7 +519,7 @@ export function bookingNotificationEmail(args: {
       ${stepsHtml}
     </td></tr>` : ''}
     <tr><td style="padding:28px 44px 38px">
-      <p style="margin:0;font-family:${SANS};font-size:12px;color:${C.muted};letter-spacing:0.5px;line-height:1.6">Prep: review their site, draft a three-question outline, send the video link 24 hours before.</p>
+      <p style="margin:0;font-family:${SANS};font-size:12px;color:${C.muted};letter-spacing:0.5px;line-height:1.6">Prep: review their site and draft a three-question outline. The video link is already in their invite, so just show up.</p>
     </td></tr>
   `;
   return shell({

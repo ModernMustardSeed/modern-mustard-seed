@@ -62,7 +62,7 @@ export default function BookCall() {
         </div>
         <h2 className="font-display text-2xl font-semibold text-cream-50 mb-2">You are on my calendar</h2>
         <p className="text-white/60 font-body text-sm leading-relaxed">
-          {done}. A calendar invite is on its way to your inbox, and I will send the video link before we meet. I read every answer before the call, so we can get right to it. See you soon.
+          {done}. A calendar invite with the video link is on its way to your inbox. I read every answer before the call, so we can get right to it. See you soon.
         </p>
       </div>
     );
