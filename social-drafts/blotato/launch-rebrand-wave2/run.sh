@@ -161,9 +161,9 @@ modernmustardseed.com/work-with-us
 POST
 
 read -r -d '' LI_07 <<'POST' || true
-Four builds per quarter. By design.
+Now booking new builds.
 
-Two slots remain for the next cycle. If any of this week sounded like the partner you have been looking for, apply.
+We would love to build yours. If any of this week sounded like the partner you have been looking for, apply.
 
 You drop your idea or your pain point. I read every submission personally and reply within 3 business days. If we are the right fit, the next step is a 30-minute scoping call. You walk away from that call with a fixed scope, a fixed timeline, and a fixed quote. No decks.
 

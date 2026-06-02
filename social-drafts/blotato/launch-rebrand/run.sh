@@ -418,9 +418,9 @@ modernmustardseed.com
 EOF
 
 read -r -d '' P7_X <<'EOF' || true
-Four Full-Service Business Builds per quarter.
+Now booking new Full-Service Business Builds.
 
-Two slots left for the next cycle.
+We would love to build yours.
 
 If you have faith as small as a mustard seed, nothing will be impossible. (Matthew 17:20)
 
@@ -430,9 +430,9 @@ modernmustardseed.com/build-queue
 EOF
 
 read -r -d '' P7_LI <<'EOF' || true
-Four Full-Service Business Builds per quarter. By design.
+Now booking new Full-Service Business Builds. By design.
 
-Two slots remain for the next cycle.
+We would love to build yours.
 
 If you have an idea you cannot ship. A site that does not work for you. A business that depends on you opening eight tabs every morning to keep running. A dream that has been sitting in a notebook for a year.
 
@@ -450,7 +450,7 @@ modernmustardseed.com/build-queue
 EOF
 
 read -r -d '' P7_FB <<'EOF' || true
-Four Full-Service Business Builds per quarter. By design. Two slots remain for the next cycle.
+Now booking new Full-Service Business Builds.
 
 If you have a dream sitting in a notebook, a business that depends on you opening eight tabs every morning, or a site that does not work for you, bring it. We will build the engine that makes it real.
 
@@ -462,7 +462,7 @@ modernmustardseed.com/build-queue
 EOF
 
 read -r -d '' P7_IG <<'EOF' || true
-Four Full-Service Business Builds per quarter. Two slots left.
+Now booking new Full-Service Business Builds. Apply any time.
 
 You bring the seed. We build the tree.
 

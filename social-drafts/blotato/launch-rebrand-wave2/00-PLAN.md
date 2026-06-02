@@ -36,7 +36,7 @@ Facebook copy lives in `FACEBOOK-COPY.md` for manual posting.
 | 4 | Wed 2026-06-17 | Seed Site tier, $2.5K-$5K | Offer expansion |
 | 5 | Thu 2026-06-18 | What an A-grade looks like (own-site audit teardown) | Receipts |
 | 6 | Fri 2026-06-19 | Five-engagement ladder explained | Offer clarity |
-| 7 | Sat 2026-06-20 | Apply: 2 slots remain + Matthew 17:20 | Sales close |
+| 7 | Sat 2026-06-20 | Apply: now booking + Matthew 17:20 | Sales close |
 
 Every post uses the new blue-sky-with-Matthew-17:20 OG card as media.
 

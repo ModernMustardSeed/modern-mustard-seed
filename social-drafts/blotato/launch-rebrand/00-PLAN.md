@@ -20,7 +20,7 @@ campaign Sat 05-30 to Fri 06-05 has completed):
 | 4 | Wed 2026-06-10 | Funnels and lead magnets, day one | Feature deep-dive |
 | 5 | Thu 2026-06-11 | A back office that surfaces what matters | Feature deep-dive |
 | 6 | Fri 2026-06-12 | Embedded AI agents (both sides of the wall) | Feature deep-dive |
-| 7 | Sat 2026-06-13 | Apply: two slots left | Sales close |
+| 7 | Sat 2026-06-13 | Apply: now booking | Sales close |
 
 Each day publishes to X, LinkedIn, Facebook, Instagram. Every IG
 caption is pre-trimmed to exactly 5 hashtags (Blotato API hard cap).

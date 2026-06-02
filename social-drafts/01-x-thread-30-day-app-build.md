@@ -71,6 +71,6 @@ The full week-by-week playbook (free):
 
 https://modernmustardseed.com/playbooks/30-day-app-build
 
-If you would rather we ship the thing for you, the Build Queue is open. 4 slots a quarter, waitlist only:
+If you would rather we ship the thing for you, the Build Queue is open. now booking new builds:
 
 https://modernmustardseed.com/build-queue

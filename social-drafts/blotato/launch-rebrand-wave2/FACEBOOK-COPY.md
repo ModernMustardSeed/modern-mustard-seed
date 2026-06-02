@@ -111,7 +111,7 @@ modernmustardseed.com/work-with-us
 
 ## Sat 2026-06-20 — Apply, build queue close
 
-Four builds per quarter. By design. Two slots remain for the next cycle.
+Now booking new builds.
 
 Drop your idea or your pain point. I read every submission personally and reply within 3 business days. If we are a fit, you get a 30-minute scoping call with a fixed scope, a fixed timeline, and a fixed quote.
 

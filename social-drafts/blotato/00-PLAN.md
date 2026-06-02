@@ -38,7 +38,7 @@ INSTAGRAM_ACCOUNT_ID=...
 | 4 | Tue 2026-06-02 | The one task you should stop doing manually | Founder Therapy | OG card |
 | 5 | Wed 2026-06-03 | PTG AI Deal Analyzer case | Receipts | OG card |
 | 6 | Thu 2026-06-04 | Three offers, no fluff | Offer clarity | OG card |
-| 7 | Fri 2026-06-05 | Four builds per quarter. Apply. | Sales close | OG card |
+| 7 | Fri 2026-06-05 | Now booking new builds. Apply. | Sales close | OG card |
 
 Each post ships in 4 platform variants. X is short (under 280). LinkedIn is long-form and operator voice. Facebook is medium narrative. Instagram is medium with a strict 5-hashtag ceiling (Blotato enforces this at the API level).
 
@@ -93,7 +93,7 @@ CTA: `modernmustardseed.com/services`
 
 ## Post 7. Apply. Fri 2026-06-05 10:00 MT
 
-Direct close. Four builds per quarter. Two slots remaining for the next cycle. Apply now.
+Direct close. Now booking new builds. Apply now.
 
 CTA: `modernmustardseed.com/build-queue`
 

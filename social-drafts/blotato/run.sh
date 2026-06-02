@@ -70,7 +70,7 @@ create_post () {
 read -r -d '' P1_X <<'EOF' || true
 Tiny seed. Real system. Measurable fruit.
 
-We build apps, sites, and specialty AI tools for your business. Shipped in 30 days. Four builds per quarter.
+We build apps, sites, and specialty AI tools for your business. Shipped in 30 days. Now booking new builds.
 
 Start with the free AI Audit.
 
@@ -86,7 +86,7 @@ We are a one-person product studio for founders and small business owners who do
 
 Fixed scope. Fixed timeline. Fixed quote.
 
-Four builds per quarter. By design. The work is the work, and the work is good.
+Now booking new builds. The work is the work, and the work is good.
 
 If your business has a problem AI can solve but the path is not clear, start with the free AI Audit. We will tell you in 60 minutes whether AI is the right move, what to build first, and what it would cost.
 
@@ -102,7 +102,7 @@ That is the Modern Mustard Seed thesis.
 
 We build custom apps, websites, and specialty AI tools for founders and small businesses. Fixed scope. Fixed timeline. Shipped in 30 days.
 
-Four builds per quarter. Serious clients only.
+Now booking new builds. Serious clients only.
 
 Where are you stuck? A messy workflow you cannot scale. A website that does not sell. An idea you have not been able to ship. We have built for real estate investors, churches, fashion brands, title and escrow, voice agents, hospitality, and more.
 
@@ -116,7 +116,7 @@ Tiny seed. Real system. Measurable fruit.
 
 That is the Modern Mustard Seed thesis. We build apps, sites, and specialty AI tools for your business. Shipped in 30 days.
 
-Four builds per quarter. Serious clients only.
+Now booking new builds. Serious clients only.
 
 Start with the free AI Audit. Link in bio.
 
@@ -388,7 +388,7 @@ Three phases. Audit the AI shift against your business. Harden the surfaces AI w
 4. Fractional AI Partner (monthly)
 Embedded fractional CTO and AI lead. Weekly sessions, hands-on building, continuous roadmap. For operators who want a long-term partner inside the business.
 
-Four builds per quarter. Always quoted before any work starts. Free discovery call.
+Now booking new builds. Always quoted before any work starts. Free discovery call.
 
 modernmustardseed.com/services
 EOF
@@ -421,11 +421,11 @@ modernmustardseed.com/services
 EOF
 
 read -r -d '' P7_X <<'EOF' || true
-Four builds per quarter.
+Now booking new builds.
 
-We do not overlap engagements. The work is the work.
+We give every engagement our full focus. The work is the work.
 
-Two slots remain for the next cycle.
+We would love to build yours.
 
 Apply for the build queue.
 
@@ -433,11 +433,11 @@ modernmustardseed.com/build-queue
 EOF
 
 read -r -d '' P7_LI <<'EOF' || true
-Four builds per quarter.
+Now booking new builds.
 
-That is the entire Modern Mustard Seed production capacity. By design. We do not overlap engagements. The work is the work, and the work is good.
+Modern Mustard Seed gives every engagement its full focus. The work is the work, and the work is good.
 
-Two slots remain in the next cycle.
+We would love to build yours.
 
 If you have an app idea you have not been able to ship.
 If your business has a workflow eating your week.
@@ -452,11 +452,11 @@ modernmustardseed.com/build-queue
 EOF
 
 read -r -d '' P7_FB <<'EOF' || true
-Four builds per quarter. By design.
+Now booking new builds.
 
-We do not overlap engagements. The work is the work, and the work is good.
+We give every engagement our full focus. The work is the work, and the work is good.
 
-Two slots remain for the next cycle.
+We would love to build yours.
 
 If you have an app idea you have not been able to ship, a workflow eating your week, or a website that does not look like the business you actually run, apply for the build queue.
 
@@ -466,9 +466,9 @@ modernmustardseed.com/build-queue
 EOF
 
 read -r -d '' P7_IG <<'EOF' || true
-Four builds per quarter. By design.
+Now booking new builds.
 
-We do not overlap engagements. Two slots remain in the next cycle.
+We give every engagement our full focus.
 
 If you have an idea you cannot ship, a workflow eating your week, or a site that does not look like the business you actually run, apply.
 
