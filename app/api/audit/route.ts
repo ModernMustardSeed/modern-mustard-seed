@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { captureHarvestInbound } from '@/lib/harvest-capture';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -11,6 +12,10 @@ export async function POST(req: Request) {
     if (!url) {
       return NextResponse.json({ error: 'URL is required' }, { status: 400 });
     }
+
+    // Harvest Module 0: capture the submission as a pre-qualified inbound lead.
+    // Best-effort, never blocks or breaks the audit response.
+    await captureHarvestInbound({ url });
 
     if (!ANTHROPIC_API_KEY) {
       return NextResponse.json({ error: 'API not configured' }, { status: 500 });
