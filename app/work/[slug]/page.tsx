@@ -136,7 +136,7 @@ export default async function WorkDetail({ params }: { params: Params }) {
               Want this kind of build for your next venture?
             </h3>
             <p className="text-white/55 text-base font-body font-light mb-6 max-w-md mx-auto">
-              Four builds a quarter. Waitlist only.
+              Now booking new builds. Yours, fully.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link

@@ -92,7 +92,7 @@ export default function WorkIndex() {
               Want this for your venture?
             </h3>
             <p className="text-white/55 text-base font-body font-light mb-6 max-w-lg mx-auto">
-              Four builds per quarter. Waitlist gated. Drop your idea and Sarah will review it personally.
+              Now booking new builds. Drop your idea and Sarah will review it personally.
             </p>
             <Link
               href="/build-queue"

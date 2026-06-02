@@ -33,7 +33,7 @@ const INTENTS: Intent[] = [
     body: 'Specialty internal or industry-facing tools that take work off your plate or sell to your niche. Think DEED AI for landscapers or PTG Deal Analyzer for title work.',
     playbookSlug: 'specialty-ai-tool',
     playbookTitle: 'The Specialty AI Tool Playbook',
-    engagement: 'Idea to Product — fixed scope, four per quarter',
+    engagement: 'Idea to Product — fixed scope, now booking',
   },
   {
     key: 'phone-agent',

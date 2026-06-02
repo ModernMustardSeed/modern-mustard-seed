@@ -5,7 +5,6 @@ import ResultsMarquee from '@/components/ResultsMarquee';
 import EraOfEntrepreneur from '@/components/EraOfEntrepreneur';
 import StartingPoints from '@/components/StartingPoints';
 import LiveStats from '@/components/LiveStats';
-import BuiltByGoodPeople from '@/components/BuiltByGoodPeople';
 import WhatAreYouBuilding from '@/components/WhatAreYouBuilding';
 import WhatGetsBuilt from '@/components/WhatGetsBuilt';
 import AiProofPromo from '@/components/AiProofPromo';
@@ -19,7 +18,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Apps, Sites, and Specialty AI Tools',
   description:
-    'Custom apps, websites, and specialty AI tools for your business. Shipped in 30 days. Four builds per quarter, waitlist only.',
+    'Custom apps, websites, and specialty AI tools for your business. Shipped in 30 days. Now booking new builds.',
 });
 
 const homeJsonLd = {
@@ -49,7 +48,7 @@ const offerJsonLd = {
   '@type': 'Service',
   name: 'Idea to Product in 30 Days',
   description:
-    'Custom apps, websites, software, and specialty AI tools. Fixed scope, fixed timeline. Four builds per quarter.',
+    'Custom apps, websites, software, and specialty AI tools. Fixed scope, fixed timeline. Now booking new builds.',
   provider: { '@id': 'https://modernmustardseed.com/#organization' },
   serviceType: 'Custom software development',
   areaServed: 'Worldwide',
@@ -58,7 +57,7 @@ const offerJsonLd = {
 const homeFaq = faqJsonLd([
   {
     q: 'What does Modern Mustard Seed do?',
-    a: 'Modern Mustard Seed is a one-person product studio that builds custom apps, websites, and specialty AI tools for businesses. Founded by Sarah Scarano, it ships fixed-scope, fixed-timeline products in 30 days. Four builds per quarter, by waitlist.',
+    a: 'Modern Mustard Seed is a one-person product studio that builds custom apps, websites, and specialty AI tools for businesses. Founded by Sarah Scarano, it ships fixed-scope, fixed-timeline products in 30 days. Now booking new builds.',
   },
   {
     q: 'Who is Sarah Scarano?',
@@ -66,7 +65,7 @@ const homeFaq = faqJsonLd([
   },
   {
     q: 'How long does a build take?',
-    a: 'Thirty days from kickoff to launch. Fixed scope, fixed timeline, fixed quote. Modern Mustard Seed accepts four builds per quarter and does not overlap engagements.',
+    a: 'Thirty days from kickoff to launch. Fixed scope, fixed timeline, fixed quote. Modern Mustard Seed is now booking new builds and gives each engagement focused attention.',
   },
   {
     q: 'How do I get on the build queue?',
@@ -117,7 +116,6 @@ export default function HomePage() {
       </section>
 
       <LiveStats />
-      <BuiltByGoodPeople />
       <YourSiteWorksForYou />
       <WhatAreYouBuilding />
       <WhatGetsBuilt />

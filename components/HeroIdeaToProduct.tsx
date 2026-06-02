@@ -56,7 +56,7 @@ export default function HeroIdeaToProduct() {
           </span>
           <span className="w-px h-3 bg-cream-100/25" aria-hidden="true" />
           <span className="text-[10px] tracking-[0.3em] uppercase text-gold-light font-mono font-medium">
-            2 slots left this quarter
+            New builds welcome
           </span>
         </div>
 
@@ -84,7 +84,7 @@ export default function HeroIdeaToProduct() {
         </p>
 
         <p className="opacity-0 animate-fade-in-up-delay text-cream-100/85 text-base md:text-lg font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mb-4 drop-shadow-[0_1px_12px_rgba(8,12,22,0.55)]">
-          Apps, sites, and specialty AI tools for founders, operators, and small business owners who finally have a partner to ship what they have been carrying. Built in 30 days. Four builds per quarter. Yours, fully.
+          Apps, sites, and specialty AI tools for founders, operators, and small business owners who finally have a partner to ship what they have been carrying. Built in 30 days. Now booking new builds. Yours, fully.
         </p>
 
         <p className="opacity-0 animate-fade-in-up-delay-2 text-gold-light text-sm md:text-base font-body font-medium tracking-normal max-w-2xl mx-auto leading-relaxed mb-12 drop-shadow-[0_1px_12px_rgba(8,12,22,0.55)]">

@@ -13,7 +13,7 @@ type Stat = {
 const STATS: Stat[] = [
   { value: 40, suffix: '+', label: 'Products shipped' },
   { value: 30, label: 'Day build cycle' },
-  { value: 4, label: 'Builds per quarter' },
+  { value: 100, suffix: '%', label: 'You own it' },
   { value: 65, suffix: '+', label: 'Industries served' },
 ];
 

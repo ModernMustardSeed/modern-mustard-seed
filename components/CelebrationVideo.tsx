@@ -47,7 +47,7 @@ export default function CelebrationVideo() {
         </p>
 
         <p className="text-cream-100/85 text-base md:text-lg font-body font-light leading-relaxed mb-12 max-w-2xl mx-auto drop-shadow-[0_1px_12px_rgba(8,12,22,0.55)]">
-          Your dream does not need to wait for a co-founder, a hire, or a perfect time. It needs a partner who can ship. Four builds a quarter, by design. Yours, fully, when we are done.
+          Your dream does not need to wait for a co-founder, a hire, or a perfect time. It needs a partner who can ship. Now booking new builds. Yours, fully, when we are done.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

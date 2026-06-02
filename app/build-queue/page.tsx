@@ -6,7 +6,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Join the Build Queue',
   description:
-    'Idea to shipped product in 30 days. Four builds per quarter. Waitlist gated. Drop your idea and Sarah will review it personally.',
+    'Idea to shipped product in 30 days. Now booking new builds. Drop your idea and Sarah will review it personally.',
   path: '/build-queue',
 });
 
@@ -28,9 +28,9 @@ export default function BuildQueuePage() {
               The Build Queue
             </span>
             <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6 leading-[1.05]">
-              Four Builds <span className="text-gradient-mustard">a Quarter</span>
+              Now Booking <span className="text-gradient-mustard">New Builds</span>
               <br />
-              Pick Your Slot
+              Drop Your Idea
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-xl mx-auto mb-3">
               Whether you need your first real website or a custom AI tool, drop the idea below. Sarah reads every entry and replies within 3 business days.
@@ -51,9 +51,9 @@ export default function BuildQueuePage() {
             </div>
             <div className="glass-card p-6">
               <span className="block text-[10px] uppercase tracking-[0.3em] text-mustard-500/60 font-mono font-bold mb-2">
-                Builds per quarter
+                Availability
               </span>
-              <span className="font-sans text-lg font-bold text-white">4 slots</span>
+              <span className="font-sans text-lg font-bold text-white">Now booking</span>
             </div>
             <div className="glass-card p-6">
               <span className="block text-[10px] uppercase tracking-[0.3em] text-mustard-500/60 font-mono font-bold mb-2">

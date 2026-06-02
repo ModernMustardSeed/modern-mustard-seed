@@ -175,7 +175,7 @@ export async function POST(req: Request) {
             <li style="margin-bottom:10px">Stall. Nothing happens. The audit gets forgotten. Shows up as a regret six months later.</li>
             <li>Bring me in. We scope it, fix-price it, and ship it in 30 days.</li>
           </ol>` +
-          p('If you are in camp three, the Build Queue is open. Four slots a quarter. I review every entry personally and reply within 3 business days.') +
+          p('If you are in camp three, the Build Queue is open and I am booking new builds. I review every entry personally and reply within 3 business days.') +
           p('If you are in camp one, ignore me. Send me a screenshot when it ships. I genuinely want to see it.'),
         cta: { label: 'Join the Build Queue', url: 'https://modernmustardseed.com/build-queue' },
       }),
