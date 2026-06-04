@@ -20,17 +20,18 @@ const config: Config = {
         // Legacy "mustard" tokens REMAPPED to Campfire Brass so every existing
         // text-mustard-*, bg-mustard-*, border-mustard-* utility immediately
         // picks up the warm cabin palette without rewriting components.
+        // Remapped to pop-art mustard. text/bg/border-mustard-* now read bright.
         mustard: {
-          50: '#F5F0E8',
-          100: '#EDDFC2',
-          200: '#E8C88A', // gold-light
-          300: '#D4A053',
-          400: '#C8964E', // gold (primary accent) - muted brass
-          500: '#C86A45', // rust (primary brand)
-          600: '#B8603F',
-          700: '#9A4F35',
-          800: '#7A3F2A',
-          900: '#5A2F20',
+          50: '#FCF7E6',
+          100: '#FBEFC2',
+          200: '#FFD23F',
+          300: '#FFC400',
+          400: '#F5B700', // primary pop yellow
+          500: '#E8A800',
+          600: '#FF8A00', // amber pop for gradients
+          700: '#C97A00',
+          800: '#9A5E00',
+          900: '#6E4400',
         },
         // Midnight: deep cool blue-black, NOT pure black, NOT warm black
         midnight: {
@@ -50,19 +51,27 @@ const config: Config = {
           500: '#2D2D44',
           400: '#3F3F58',
         },
-        // Campfire brass-gold (muted, aged, never vivid mustard yellow)
+        // Pop-art mustard (bright, comic). text-gold-* now reads vivid yellow.
         gold: {
-          DEFAULT: '#C8964E',
-          50: '#F5F0E8',
-          100: '#EDDFC2',
-          200: '#E8C88A',  // gold-light
-          300: '#D4A053',
-          400: '#C8964E',  // gold (the brand brass)
-          500: '#B58341',
-          600: '#9A6E36',
-          700: '#7C582A',
-          bright: '#F0D090',
-          light: '#E8C88A',
+          DEFAULT: '#F5B700',
+          50: '#FCF7E6',
+          100: '#FBEFC2',
+          200: '#FFD23F',
+          300: '#FFC400',
+          400: '#F5B700',
+          500: '#E8A800',
+          600: '#FF8A00',
+          700: '#C97A00',
+          bright: '#FFDD55',
+          light: '#FFD23F',
+        },
+        // Pop-art palette
+        pop: {
+          yellow: '#F5B700',
+          red: '#E0301E',
+          blue: '#1E50C8',
+          cream: '#FBF6EA',
+          ink: '#161616',
         },
         // Ember orange — the bonfire pop
         ember: {

@@ -5,15 +5,22 @@
 @layer base {
   :root {
     --midnight: #080c16;
-    --gold: #c8964e;
-    --gold-light: #e8c88a;
-    --gold-bright: #f0d090;
-    --ember: #ff6b35;
-    --rust: #c86a45;
-    --rust-glow: #e07850;
-    --lake: #3b6b8a;
+    /* Pop-art mustard. Bright, comic, bold. */
+    --gold: #f5b700;
+    --gold-light: #ffd23f;
+    --gold-bright: #ffdd55;
+    --ember: #ff8a00;
+    --rust: #e0301e;
+    --rust-glow: #ff5a45;
+    --lake: #1e50c8;
     --sage: #8fa98f;
-    --cream: #f5f0e8;
+    --cream: #fbf6ea;
+    /* Pop palette tokens */
+    --pop-yellow: #f5b700;
+    --pop-red: #e0301e;
+    --pop-blue: #1e50c8;
+    --pop-cream: #fbf6ea;
+    --pop-ink: #161616;
   }
 
   html, body {
@@ -56,24 +63,24 @@
   /* Campfire Brass. The brand gradient. Brass-gold deepening to rust, the
      cabin-by-lake palette of the Claude Glamp Camp aesthetic. */
   .text-gradient-brass {
-    background: linear-gradient(135deg, #E8C88A 0%, #F0D090 30%, #C8964E 60%, #C86A45 100%);
+    background: linear-gradient(135deg, #FFD23F 0%, #FFC400 35%, #F5B700 70%, #FF8A00 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .text-gradient-ember {
-    background: linear-gradient(135deg, #F0D090 0%, #C8964E 50%, #FF6B35 100%);
+    background: linear-gradient(135deg, #FFD23F 0%, #F5B700 45%, #FF8A00 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   /* Legacy aliases. Anything calling text-gradient-mustard/sunrise/sky now
-     renders as the campfire brass flow. */
+     renders as the pop-art mustard flow. */
   .text-gradient-mustard,
   .text-gradient-sunrise,
   .text-gradient-sky {
-    background: linear-gradient(135deg, #E8C88A 0%, #F0D090 30%, #C8964E 60%, #C86A45 100%);
+    background: linear-gradient(135deg, #FFD23F 0%, #FFC400 35%, #F5B700 70%, #FF8A00 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
