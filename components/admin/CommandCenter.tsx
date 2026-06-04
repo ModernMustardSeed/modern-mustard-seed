@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
 import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts';
 import AdminHeader from './AdminHeader';
@@ -15,6 +16,7 @@ type Overview = {
   revenue: { month: number; allTime: number; monthCount: number; allTimeCount: number };
   leads: { total: number; byStatus: Record<string, number>; byType: Record<string, number>; new7d: number; new30d: number };
   bookings: { upcoming: Array<{ name: string | null; email: string; whenIso: string; display: string; leadId: string }>; monthCount: number };
+  proposals?: { open: number; openValue: number; accepted: number; acceptedValue: number };
   attention: Array<{ kind: string; title: string; detail: string; whenIso: string; leadId?: string; severity: 'high' | 'medium' }>;
   recentOrders: Array<{ name: string | null; email: string; product_name: string; price_paid_cents: number; created_at: string }>;
   recentLeads: Array<{ id: string; name: string | null; email: string; type: string; status: string; created_at: string }>;
@@ -172,7 +174,7 @@ export default function CommandCenter() {
         ) : (
           <>
             {/* KPI row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
               <div className="glass-card p-5">
                 <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">Revenue this month</div>
                 <div className="font-sans text-3xl font-semibold text-white mt-1.5">{money(data.revenue.month)}</div>
@@ -220,6 +222,15 @@ export default function CommandCenter() {
                 )}
                 <div className="text-[10px] text-white/35 font-mono mt-2">Wed and Thu slots</div>
               </div>
+
+              <Link href="/admin/proposals" className="glass-card p-5 hover:border-mustard-500/30 transition-colors col-span-2 lg:col-span-1">
+                <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">Open proposals</div>
+                <div className="font-sans text-3xl font-semibold text-white mt-1.5">{data.proposals?.open ?? 0}</div>
+                <div className="text-[10px] text-white/35 font-mono mt-2">
+                  {money(data.proposals?.openValue ?? 0)} outstanding
+                  {data.proposals?.accepted ? ` · ${money(data.proposals.acceptedValue)} accepted` : ''}
+                </div>
+              </Link>
             </div>
 
             {/* AI brief */}

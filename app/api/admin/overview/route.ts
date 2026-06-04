@@ -204,6 +204,27 @@ export async function GET() {
     // targets table not migrated yet
   }
 
+  // ── Proposals ─────────────────────────────────────────────────────
+  const proposals = { open: 0, openValue: 0, accepted: 0, acceptedValue: 0 };
+  try {
+    const { data: props } = await supabase.from('proposals').select('status, one_time_total');
+    if (props) {
+      for (const p of props) {
+        const s = (p.status as string) || 'draft';
+        const v = Number(p.one_time_total) || 0;
+        if (s === 'draft' || s === 'sent') {
+          proposals.open += 1;
+          proposals.openValue += v;
+        } else if (s === 'accepted') {
+          proposals.accepted += 1;
+          proposals.acceptedValue += v;
+        }
+      }
+    }
+  } catch {
+    // proposals table not migrated yet
+  }
+
   return NextResponse.json({
     generatedAt: now.toISOString(),
     revenue: {
@@ -214,6 +235,7 @@ export async function GET() {
     },
     leads: { total: leadsTotal, byStatus, byType, new7d, new30d },
     bookings: { upcoming, monthCount: upcoming.filter((u) => new Date(u.whenIso) >= monthStart).length },
+    proposals,
     attention: attention.slice(0, 8),
     recentOrders,
     recentLeads,

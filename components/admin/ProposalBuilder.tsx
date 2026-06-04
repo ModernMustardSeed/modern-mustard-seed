@@ -19,6 +19,24 @@ import {
 
 type Line = { id: string; price: number; qty: number; scope: string[]; framing: string };
 type Prose = { intro: string; situation: string; recommendation: string; close: string };
+type Summary = {
+  id: string;
+  client_name: string | null;
+  client_company: string | null;
+  site_url: string | null;
+  status: string;
+  one_time_total: number;
+  monthly_total: number;
+  updated_at: string;
+};
+
+const STATUS_BADGE: Record<string, string> = {
+  draft: 'text-white/50 border-white/15 bg-white/5',
+  sent: 'text-blue-200 border-blue-400/40 bg-blue-500/10',
+  accepted: 'text-emerald-200 border-emerald-400/40 bg-emerald-500/10',
+  declined: 'text-white/40 border-white/10 bg-white/5',
+};
+const STATUSES = ['draft', 'sent', 'accepted', 'declined'];
 
 const inp =
   'bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 w-full';
@@ -50,6 +68,15 @@ export default function ProposalBuilder() {
   const [draftError, setDraftError] = useState('');
   const [copied, setCopied] = useState(false);
 
+  // Persistence
+  const [pathId, setPathId] = useState<string | null>(null);
+  const [currentId, setCurrentId] = useState<string | null>(null);
+  const [status, setStatus] = useState('draft');
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const [saved, setSaved] = useState(false);
+  const [list, setList] = useState<Summary[]>([]);
+
   const add = (id: string) => {
     const s = byId(id);
     if (!s || lines.some((l) => l.id === id)) return;
@@ -78,6 +105,7 @@ export default function ProposalBuilder() {
         }))
     );
     setProse((pr) => ({ ...pr, recommendation: pr.recommendation || path.rationale }));
+    setPathId(path.id);
   };
 
   // Seed from the audit screen's "Build a proposal from this audit" handoff.
@@ -150,6 +178,138 @@ export default function ProposalBuilder() {
       setDraftError('Network error. Try again.');
     } finally {
       setDrafting(false);
+    }
+  };
+
+  // ── Persistence ──
+  const loadList = async () => {
+    try {
+      const r = await fetch('/api/admin/proposals');
+      const j = await r.json().catch(() => null);
+      if (r.ok && j) setList(j.proposals || []);
+    } catch {
+      /* offline */
+    }
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    loadList();
+  }, []);
+
+  const buildPayload = () => ({
+    client_name: name,
+    client_company: company,
+    client_email: email,
+    site_url: url,
+    situation,
+    notes,
+    path_id: pathId,
+    status,
+    lines,
+    prose,
+    one_time_total: oneTime,
+    monthly_total: monthly,
+  });
+
+  const save = async () => {
+    if (saving || !lines.length) return;
+    setSaving(true);
+    setSaveError('');
+    try {
+      const payload = buildPayload();
+      const res = currentId
+        ? await fetch(`/api/admin/proposals/${currentId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+        : await fetch('/api/admin/proposals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+      const j = await res.json().catch(() => null);
+      if (!res.ok) {
+        setSaveError((j && j.error) || 'Could not save.');
+      } else {
+        if (j?.id) setCurrentId(j.id);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+        loadList();
+      }
+    } catch {
+      setSaveError('Network error.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const changeStatus = async (s: string) => {
+    setStatus(s);
+    if (currentId) {
+      try {
+        await fetch(`/api/admin/proposals/${currentId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: s }),
+        });
+        loadList();
+      } catch {
+        /* ignore */
+      }
+    }
+  };
+
+  const loadProposal = async (id: string) => {
+    try {
+      const r = await fetch(`/api/admin/proposals/${id}`);
+      const j = await r.json().catch(() => null);
+      if (!r.ok || !j?.proposal) return;
+      const p = j.proposal;
+      setName(p.client_name || '');
+      setCompany(p.client_company || '');
+      setEmail(p.client_email || '');
+      setUrl(p.site_url || '');
+      setSituation(p.situation || '');
+      setNotes(p.notes || '');
+      setPathId(p.path_id || null);
+      setStatus(p.status || 'draft');
+      setLines(Array.isArray(p.lines) ? p.lines : []);
+      setProse({
+        intro: p.prose?.intro || '',
+        situation: p.prose?.situation || '',
+        recommendation: p.prose?.recommendation || '',
+        close: p.prose?.close || '',
+      });
+      setCurrentId(p.id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const newProposal = () => {
+    setCurrentId(null);
+    setStatus('draft');
+    setName('');
+    setCompany('');
+    setEmail('');
+    setUrl('');
+    setSituation('');
+    setNotes('');
+    setPathId(null);
+    setLines([]);
+    setProse({ intro: '', situation: '', recommendation: '', close: '' });
+    setSaveError('');
+  };
+
+  const deleteProposal = async (id: string) => {
+    try {
+      await fetch(`/api/admin/proposals/${id}`, { method: 'DELETE' });
+      if (currentId === id) newProposal();
+      loadList();
+    } catch {
+      /* ignore */
     }
   };
 
@@ -231,6 +391,59 @@ export default function ProposalBuilder() {
         <div className="grid lg:grid-cols-2 gap-6">
           {/* ───────── Builder ───────── */}
           <div className="space-y-5 print:hidden">
+            {/* Saved proposals */}
+            {list.length > 0 && (
+              <div className="glass-card p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold">
+                    Saved proposals ({list.length})
+                  </span>
+                  <button
+                    onClick={newProposal}
+                    className="text-[10px] uppercase tracking-[0.15em] font-mono text-mustard-300 hover:text-mustard-200"
+                  >
+                    + New
+                  </button>
+                </div>
+                <div className="space-y-1.5 max-h-72 overflow-y-auto">
+                  {list.map((p) => (
+                    <div
+                      key={p.id}
+                      className={`flex items-center gap-2 p-2.5 rounded-lg border ${
+                        currentId === p.id
+                          ? 'border-mustard-500/40 bg-mustard-500/10'
+                          : 'border-white/[0.06] bg-white/[0.02]'
+                      }`}
+                    >
+                      <button onClick={() => loadProposal(p.id)} className="flex-1 min-w-0 text-left">
+                        <span className="block text-sm font-sans font-medium text-white/90 truncate">
+                          {p.client_company || p.client_name || p.site_url || 'Untitled'}
+                        </span>
+                        <span className="block text-[11px] text-white/35 font-mono">
+                          {p.one_time_total ? money(p.one_time_total) : '—'}
+                          {p.monthly_total ? ` · ${money(p.monthly_total)}/mo` : ''}
+                        </span>
+                      </button>
+                      <span
+                        className={`flex-shrink-0 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] font-mono font-bold border rounded ${
+                          STATUS_BADGE[p.status] ?? STATUS_BADGE.draft
+                        }`}
+                      >
+                        {p.status}
+                      </span>
+                      <button
+                        onClick={() => deleteProposal(p.id)}
+                        className="flex-shrink-0 text-white/25 hover:text-red-300 text-xs px-1"
+                        aria-label="Delete proposal"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Client */}
             <div className="glass-card p-5">
               <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">
@@ -404,21 +617,49 @@ export default function ProposalBuilder() {
 
           {/* ───────── Preview ───────── */}
           <div>
-            <div className="flex items-center gap-2 mb-3 print:hidden">
-              <button
-                onClick={() => window.print()}
-                disabled={!lines.length}
-                className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
-              >
-                Print / Save as PDF
-              </button>
-              <button
-                onClick={copyMarkdown}
-                disabled={!lines.length}
-                className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/70 border border-white/15 hover:border-white/30 disabled:opacity-40 transition-colors"
-              >
-                {copied ? 'Copied' : 'Copy markdown'}
-              </button>
+            <div className="print:hidden mb-3 space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={save}
+                  disabled={saving || !lines.length}
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+                >
+                  {saving ? 'Saving…' : saved ? 'Saved' : currentId ? 'Update' : 'Save'}
+                </button>
+                <select
+                  value={status}
+                  onChange={(e) => changeStatus(e.target.value)}
+                  className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-2 py-2 text-xs text-white focus:outline-none focus:border-mustard-500/40"
+                >
+                  {STATUSES.map((s) => (
+                    <option key={s} value={s} className="bg-neutral-900">
+                      {s}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={newProposal}
+                  className="px-3 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/60 border border-white/15 hover:border-white/30 transition-colors"
+                >
+                  New
+                </button>
+                <span className="w-px h-5 bg-white/10 mx-1" aria-hidden />
+                <button
+                  onClick={() => window.print()}
+                  disabled={!lines.length}
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/70 border border-white/15 hover:border-white/30 disabled:opacity-40 transition-colors"
+                >
+                  Print / PDF
+                </button>
+                <button
+                  onClick={copyMarkdown}
+                  disabled={!lines.length}
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/70 border border-white/15 hover:border-white/30 disabled:opacity-40 transition-colors"
+                >
+                  {copied ? 'Copied' : 'Copy markdown'}
+                </button>
+              </div>
+              {saveError && <p className="text-red-300 text-xs font-body">{saveError}</p>}
             </div>
 
             <div className="proposal-doc bg-[#FBF8F2] text-[#1B2436] rounded-xl overflow-hidden">
