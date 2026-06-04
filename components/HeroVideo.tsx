@@ -32,7 +32,7 @@ export default function HeroVideo() {
         playsInline
         preload="auto"
         aria-hidden="true"
-        style={{ backgroundColor: '#1F4280' }}
+        style={{ backgroundColor: '#D98E2B' }}
       >
         <source src="/video/hero-seed.mp4" type="video/mp4" />
       </video>
