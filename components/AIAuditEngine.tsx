@@ -17,11 +17,11 @@ import {
 } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────── CONSTANTS */
-const M = '#FF8E72';            // sunrise.peach (was mustard-500)
-const ML = '#FFB347';           // sunrise.gold  (was mustard-400)
-const MD = '#FF6B6B';           // sunrise.rose  (was mustard-600)
-const MG = 'rgba(255,107,53,0.12)'; // mustard glow bg
-const MB = 'rgba(255,107,53,0.25)'; // mustard border
+const M = '#F5B700';            // pop mustard yellow (primary accent)
+const ML = '#FFD23F';           // pop light yellow
+const MD = '#E0301E';           // pop red
+const MG = 'rgba(245,183,0,0.14)'; // yellow glow bg
+const MB = 'rgba(245,183,0,0.35)'; // yellow border
 const BOOKING_URL = '/?book=1';
 const AUDIT_LEAD_URL = '/api/audit/lead';
 
@@ -416,7 +416,7 @@ const ScoreRing = ({ score, size = 88 }: { score: number; size?: number }) => {
       }}
     >
       <div
-        className="rounded-full bg-[#080c16] flex items-center justify-center"
+        className="rounded-full bg-[#161616] flex items-center justify-center"
         style={{ width: inner, height: inner }}
       >
         <span className="font-mono font-bold text-white" style={{ fontSize }}>{score}</span>
@@ -582,7 +582,7 @@ const AIAuditEngine: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white font-body relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#161616] text-white font-body relative overflow-x-hidden">
       {/* Ambient background */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-0 right-0 w-[700px] h-[700px] rounded-full opacity-[0.12]"

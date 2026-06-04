@@ -1,4 +1,3 @@
-import StaticBackground from '@/components/StaticBackground';
 import AIAuditEngine from '@/components/AIAuditEngine';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
@@ -45,8 +44,7 @@ export default function AuditPage() {
           faqJsonLd(auditFaq),
         ]}
       />
-      <StaticBackground />
-      <div className="relative pt-28 md:pt-32">
+      <div className="relative bg-[#161616] pt-28 md:pt-32">
         <AIAuditEngine />
       </div>
     </>

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import StaticBackground from '@/components/StaticBackground';
 import WebsiteAuditEngine from '@/components/WebsiteAuditEngine';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
@@ -81,22 +80,24 @@ export default function WebsiteAuditPage() {
           ]),
         ]}
       />
-      <StaticBackground />
-
-      <article className="relative pt-36 md:pt-44 pb-24">
+      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-24">
+        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+        <div className="relative">
         {/* Hero */}
         <header className="max-w-4xl mx-auto px-6 md:px-8 text-center mb-16">
-          <span className="text-[10px] uppercase tracking-[0.45em] text-gold-light/85 font-mono font-medium mb-7 block">
+          <span className="text-[10px] uppercase tracking-[0.45em] text-[#E0301E] font-mono font-bold mb-7 block">
             Free Website Audit
           </span>
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-medium text-cream-50 tracking-tight leading-[1.02] mb-7">
+          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[1.02] mb-7">
             Get a real grade on your{' '}
-            <span className="text-gradient-brass italic">website</span>
+            <span className="text-[#F5B700] italic" style={{ WebkitTextStroke: '2px #161616' }}>
+              website
+            </span>
           </h1>
-          <p className="font-display italic text-2xl md:text-3xl text-cream-100/95 font-light leading-snug mb-5">
+          <p className="font-display italic font-bold text-2xl md:text-3xl text-[#161616] leading-snug mb-5">
             In 60 seconds
           </p>
-          <p className="text-cream-100/70 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
+          <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
             Drop your URL. Get a numeric score, a letter grade, an honest one-line headline, the three things to fix first, and a full to-do list to get to an A. Across brand, trust, SEO, GEO, AI features, conversion, and design.
           </p>
         </header>
@@ -109,12 +110,14 @@ export default function WebsiteAuditPage() {
         {/* What we score */}
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-24">
           <div className="text-center mb-10">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-gold-light/85 font-mono font-medium mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#E0301E] font-mono font-bold mb-5 block">
               What we score
             </span>
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-cream-50 tracking-tight">
+            <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight">
               Seven categories{' '}
-              <span className="text-gradient-brass italic">no vibes</span>
+              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                no vibes
+              </span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -148,11 +151,11 @@ export default function WebsiteAuditPage() {
                 d: 'Typography. Color hierarchy. Whitespace. Mobile responsiveness. Visual rhythm. Modern feel.',
               },
             ].map((c) => (
-              <div key={c.t} className="glass-card p-7">
-                <h3 className="font-display text-xl text-cream-50 font-medium tracking-tight mb-2">
+              <div key={c.t} className="pop-card p-7">
+                <h3 className="font-display text-xl text-[#161616] font-black tracking-tight mb-2">
                   {c.t}
                 </h3>
-                <p className="text-cream-100/65 text-sm font-body font-light leading-relaxed">{c.d}</p>
+                <p className="text-[#3a3733] text-sm font-body leading-relaxed">{c.d}</p>
               </div>
             ))}
           </div>
@@ -160,37 +163,40 @@ export default function WebsiteAuditPage() {
 
         {/* From C to A */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 mb-24">
-          <div className="glass-card p-8 md:p-12 border-gold-light/25">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-gold-light/85 font-mono font-medium mb-5 block">
+          <div className="pop-card-yellow p-8 md:p-12">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#161616] font-mono font-bold mb-5 block">
               From C to A
             </span>
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-cream-50 tracking-tight mb-4">
+            <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight mb-4">
               Want us to build the{' '}
-              <span className="text-gradient-brass italic">A version</span>?
+              <span className="text-white" style={{ WebkitTextStroke: '2px #161616' }}>
+                A version
+              </span>
+              ?
             </h2>
-            <p className="text-cream-100/85 text-base md:text-lg font-body font-light leading-relaxed mb-7">
+            <p className="text-[#161616]/80 text-base md:text-lg font-body font-medium leading-relaxed mb-7">
               The audit shows you exactly what to fix. We can ship the fixed version for you. Two engagement paths depending on where you want to land.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-7">
-              <div className="p-5 rounded-xl border border-cream-100/[0.08]">
-                <p className="font-display text-lg text-cream-50 font-medium tracking-tight mb-2">
+              <div className="p-5 rounded-xl border-2 border-[#161616] bg-white">
+                <p className="font-display text-lg text-[#161616] font-black tracking-tight mb-2">
                   Seed Site
                 </p>
-                <p className="text-cream-100/60 text-sm font-body font-light leading-relaxed mb-3">
+                <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-3">
                   Beautiful, fast, brand-aligned site. Loads in under two seconds. Looks like a real business.
                 </p>
-                <p className="text-cream-100/45 text-[11px] uppercase tracking-[0.25em] font-mono">
+                <p className="text-[#161616]/55 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
                   $2,500 to $5,000 · 14 days
                 </p>
               </div>
-              <div className="p-5 rounded-xl border border-gold-light/30 bg-gold-light/[0.02]">
-                <p className="font-display text-lg text-cream-50 font-medium tracking-tight mb-2">
+              <div className="p-5 rounded-xl border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616]">
+                <p className="font-display text-lg text-[#161616] font-black tracking-tight mb-2">
                   Full-Service Business Build
                 </p>
-                <p className="text-cream-100/60 text-sm font-body font-light leading-relaxed mb-3">
+                <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-3">
                   Site + bespoke booking with CRM + AI SDR + funnels + back office + embedded agents. The engine.
                 </p>
-                <p className="text-cream-100/45 text-[11px] uppercase tracking-[0.25em] font-mono">
+                <p className="text-[#161616]/55 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
                   $8,500 to $22,000 · 30 days
                 </p>
               </div>
@@ -198,13 +204,13 @@ export default function WebsiteAuditPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/work-with-us"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-semibold text-cream-50 bg-brass rounded-full campfire-glow hover:shadow-[0_0_40px_rgba(255,107,53,0.5)] transition-all text-center"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all text-center"
               >
                 See engagements
               </Link>
               <Link
                 href="/build-queue"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-semibold text-cream-100 border border-cream-100/30 rounded-full bg-midnight-700/30 backdrop-blur-sm hover:bg-midnight-700/55 hover:border-cream-100/55 transition-all text-center"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-center"
               >
                 Apply to build queue
               </Link>
@@ -215,35 +221,35 @@ export default function WebsiteAuditPage() {
         {/* FAQ */}
         <section className="max-w-3xl mx-auto px-6 md:px-8">
           <div className="text-center mb-10">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-gold-light/85 font-mono font-medium mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#E0301E] font-mono font-bold mb-5 block">
               FAQ
             </span>
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-cream-50 tracking-tight">
+            <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight">
               Common{' '}
-              <span className="text-gradient-brass italic">questions</span>
+              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                questions
+              </span>
             </h2>
           </div>
           <div className="space-y-3">
             {FAQS.map((item) => (
-              <details
-                key={item.q}
-                className="glass-card p-6 group cursor-pointer hover:border-gold-light/25 transition-all"
-              >
+              <details key={item.q} className="pop-card p-6 group cursor-pointer">
                 <summary className="flex justify-between items-start gap-4 list-none">
-                  <h3 className="font-display text-lg md:text-xl text-cream-50 font-medium tracking-tight">
+                  <h3 className="font-display text-lg md:text-xl text-[#161616] font-black tracking-tight">
                     {item.q}
                   </h3>
-                  <span className="text-gold-light text-2xl flex-shrink-0 transition-transform group-open:rotate-45 leading-none">
+                  <span className="text-[#E0301E] text-2xl flex-shrink-0 transition-transform group-open:rotate-45 leading-none font-black">
                     +
                   </span>
                 </summary>
-                <p className="text-cream-100/65 text-sm md:text-base font-body font-light leading-relaxed mt-4">
+                <p className="text-[#3a3733] text-sm md:text-base font-body leading-relaxed mt-4">
                   {item.a}
                 </p>
               </details>
             ))}
           </div>
         </section>
+        </div>
       </article>
     </>
   );

@@ -55,17 +55,17 @@ const CATEGORY_LABELS = {
 };
 
 const PRIORITY_STYLES = {
-  high: 'text-rust-light border-rust-light/40 bg-rust-light/10',
-  medium: 'text-gold-light border-gold-light/40 bg-gold-light/10',
-  low: 'text-sage-light border-sage-light/40 bg-sage-light/10',
+  high: 'text-[#E0301E] border-[#E0301E]/50 bg-[#E0301E]/10',
+  medium: 'text-[#161616] border-[#161616]/30 bg-[#F5B700]/30',
+  low: 'text-[#1E50C8] border-[#1E50C8]/50 bg-[#1E50C8]/10',
 };
 
 const GRADE_GLOW = (grade: string): string => {
-  if (grade.startsWith('A')) return 'shadow-[0_0_60px_rgba(127,228,197,0.35),0_0_120px_rgba(127,228,197,0.18)]';
-  if (grade.startsWith('B')) return 'shadow-[0_0_60px_rgba(240,208,144,0.35),0_0_120px_rgba(240,208,144,0.18)]';
-  if (grade.startsWith('C')) return 'shadow-[0_0_60px_rgba(200,150,78,0.35),0_0_120px_rgba(200,150,78,0.18)]';
-  if (grade === 'D') return 'shadow-[0_0_60px_rgba(255,142,114,0.35),0_0_120px_rgba(255,142,114,0.18)]';
-  return 'shadow-[0_0_60px_rgba(255,107,53,0.45),0_0_120px_rgba(255,107,53,0.22)]';
+  if (grade.startsWith('A')) return 'shadow-[6px_6px_0_0_#15803D]';
+  if (grade.startsWith('B')) return 'shadow-[6px_6px_0_0_#F5B700]';
+  if (grade.startsWith('C')) return 'shadow-[6px_6px_0_0_#FF8A00]';
+  if (grade === 'D') return 'shadow-[6px_6px_0_0_#E0301E]';
+  return 'shadow-[6px_6px_0_0_#E0301E]';
 };
 
 export default function WebsiteAuditEngine() {
@@ -157,7 +157,7 @@ export default function WebsiteAuditEngine() {
       {/* URL input form */}
       {!report && (
         <form onSubmit={runAudit} className="relative">
-          <div className="glass-card p-2 md:p-3 flex flex-col md:flex-row gap-2 md:gap-3">
+          <div className="pop-card p-2 md:p-3 flex flex-col md:flex-row gap-2 md:gap-3">
             <input
               type="text"
               value={url}
@@ -167,17 +167,17 @@ export default function WebsiteAuditEngine() {
               spellCheck={false}
               autoCapitalize="none"
               autoCorrect="off"
-              className="flex-1 bg-transparent text-cream-50 placeholder:text-cream-100/30 px-4 md:px-5 py-4 font-body text-base md:text-lg focus:outline-none disabled:opacity-50"
+              className="flex-1 bg-transparent text-[#161616] placeholder:text-[#161616]/35 px-4 md:px-5 py-4 font-body text-base md:text-lg focus:outline-none disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={loading || !url.trim()}
-              className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-bold text-cream-50 bg-brass rounded-xl campfire-glow hover:shadow-[0_0_45px_rgba(255,107,53,0.55)] disabled:opacity-50 transition-all whitespace-nowrap"
+              className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-xl border-2 border-[#161616] hover:-translate-y-0.5 disabled:opacity-50 transition-all whitespace-nowrap"
             >
               {loading ? 'Auditing…' : 'Audit my site →'}
             </button>
           </div>
-          <p className="text-center text-cream-100/50 text-xs font-body mt-4">
+          <p className="text-center text-[#161616]/55 text-xs font-body mt-4">
             Free. No email required to see your score. Powered by Anthropic Claude.
           </p>
         </form>
@@ -190,12 +190,12 @@ export default function WebsiteAuditEngine() {
             {LOAD_STEPS.map((s, i) => (
               <div
                 key={s}
-                className={`flex items-center gap-3 text-sm md:text-base font-body transition-all ${
+                className={`flex items-center gap-3 text-sm md:text-base font-body font-medium transition-all ${
                   i < loadStep
-                    ? 'text-sage-light'
+                    ? 'text-[#1E50C8]'
                     : i === loadStep
-                      ? 'text-cream-100 animate-pulse'
-                      : 'text-cream-100/30'
+                      ? 'text-[#161616] animate-pulse'
+                      : 'text-[#161616]/30'
                 }`}
               >
                 <span className="w-5 inline-flex items-center justify-center">
@@ -210,12 +210,12 @@ export default function WebsiteAuditEngine() {
 
       {/* Error */}
       {error && !loading && (
-        <div className="mt-8 glass-card p-6 border-rust-light/30">
-          <p className="text-rust-light text-sm font-body leading-relaxed">{error}</p>
+        <div className="mt-8 pop-card p-6 border-[#E0301E]/40">
+          <p className="text-[#E0301E] text-sm font-body font-bold leading-relaxed">{error}</p>
           <button
             type="button"
             onClick={() => setError(null)}
-            className="mt-3 text-[10px] uppercase tracking-[0.25em] text-cream-100/65 hover:text-cream-50 font-mono"
+            className="mt-3 text-[10px] uppercase tracking-[0.25em] text-[#161616]/65 hover:text-[#161616] font-mono font-bold"
           >
             Try again
           </button>
@@ -229,25 +229,25 @@ export default function WebsiteAuditEngine() {
           <div className="text-center">
             <div className="inline-flex flex-col items-center gap-5">
               <div
-                className={`relative w-44 h-44 md:w-56 md:h-56 rounded-full flex flex-col items-center justify-center border border-gold-light/30 bg-midnight-700/55 backdrop-blur-md ${GRADE_GLOW(report.letter_grade)}`}
+                className={`relative w-44 h-44 md:w-56 md:h-56 rounded-full flex flex-col items-center justify-center border-[3px] border-[#161616] bg-[#F5B700] ${GRADE_GLOW(report.letter_grade)}`}
               >
-                <span className="font-display text-6xl md:text-7xl font-medium text-cream-50 leading-none">
+                <span className="font-display text-6xl md:text-7xl font-black text-[#161616] leading-none">
                   {report.overall_score}
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.4em] text-cream-100/55 font-mono mt-1.5">
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#161616]/60 font-mono mt-1.5">
                   out of 100
                 </span>
-                <div className="mt-3 px-3 py-0.5 rounded-full border border-gold-light/40 bg-midnight-900/70">
-                  <span className="font-display italic text-lg md:text-xl font-medium text-gold-light tracking-tight">
+                <div className="mt-3 px-3 py-0.5 rounded-full border-2 border-[#161616] bg-white">
+                  <span className="font-display italic text-lg md:text-xl font-black text-[#161616] tracking-tight">
                     {report.letter_grade}
                   </span>
                 </div>
               </div>
-              <p className="font-display italic text-xl md:text-2xl text-cream-50 font-medium max-w-2xl leading-snug px-4">
+              <p className="font-display italic text-xl md:text-2xl text-[#161616] font-bold max-w-2xl leading-snug px-4">
                 &ldquo;{report.headline}&rdquo;
               </p>
               {auditedUrl && (
-                <p className="text-[10px] uppercase tracking-[0.4em] text-cream-100/45 font-mono">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#161616]/45 font-mono">
                   {new URL(auditedUrl).hostname}
                 </p>
               )}
@@ -255,45 +255,45 @@ export default function WebsiteAuditEngine() {
           </div>
 
           {/* Overall analysis */}
-          <div className="glass-card p-8 md:p-10">
-            <span className="text-[9px] uppercase tracking-[0.4em] text-gold-light/85 font-mono font-medium block mb-4">
+          <div className="pop-card p-8 md:p-10">
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-4">
               Analysis
             </span>
-            <p className="text-cream-100/85 text-base md:text-lg font-body font-light leading-relaxed whitespace-pre-line">
+            <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed whitespace-pre-line">
               {report.overall_analysis}
             </p>
           </div>
 
           {/* Category breakdown */}
           <div>
-            <span className="text-[9px] uppercase tracking-[0.4em] text-gold-light/85 font-mono font-medium block mb-5 text-center">
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-5 text-center">
               The 7 categories
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {(Object.entries(report.categories) as [keyof typeof CATEGORY_LABELS, Category][]).map(
                 ([key, cat]) => (
-                  <div key={key} className="glass-card p-6">
+                  <div key={key} className="pop-card p-6">
                     <div className="flex items-baseline justify-between mb-3">
-                      <h3 className="font-display text-xl text-cream-50 font-medium tracking-tight">
+                      <h3 className="font-display text-xl text-[#161616] font-black tracking-tight">
                         {CATEGORY_LABELS[key]}
                       </h3>
                       <div className="flex items-baseline gap-2">
-                        <span className="font-display text-2xl font-medium text-cream-50">
+                        <span className="font-display text-2xl font-black text-[#161616]">
                           {cat.score}
                         </span>
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-gold-light font-mono font-bold">
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
                           {cat.letter}
                         </span>
                       </div>
                     </div>
                     {/* Score bar */}
-                    <div className="h-1 rounded-full bg-midnight-900/70 mb-4 overflow-hidden">
+                    <div className="h-2 rounded-full bg-[#161616]/10 border border-[#161616]/15 mb-4 overflow-hidden">
                       <div
-                        className="h-full bg-brass rounded-full transition-all duration-700"
+                        className="h-full bg-[#F5B700] transition-all duration-700"
                         style={{ width: `${cat.score}%` }}
                       />
                     </div>
-                    <p className="text-cream-100/70 text-sm font-body font-light leading-relaxed">
+                    <p className="text-[#3a3733] text-sm font-body leading-relaxed">
                       {cat.notes}
                     </p>
                   </div>
@@ -304,28 +304,28 @@ export default function WebsiteAuditEngine() {
 
           {/* Top 3 fixes */}
           <div>
-            <span className="text-[9px] uppercase tracking-[0.4em] text-gold-light/85 font-mono font-medium block mb-5 text-center">
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-5 text-center">
               Fix these three first
             </span>
             <div className="space-y-4">
               {report.top_three_fixes.map((fix, i) => (
-                <div key={i} className="glass-card p-6 md:p-8">
+                <div key={i} className="pop-card p-6 md:p-8">
                   <div className="flex items-start gap-5">
-                    <span className="font-display text-4xl md:text-5xl font-medium text-gradient-brass leading-none flex-shrink-0 mt-1">
+                    <span className="font-display text-4xl md:text-5xl font-black text-[#F5B700] leading-none flex-shrink-0 mt-1" style={{ WebkitTextStroke: '1.5px #161616' }}>
                       {i + 1}
                     </span>
                     <div>
-                      <h3 className="font-display text-xl md:text-2xl text-cream-50 font-medium tracking-tight mb-2">
+                      <h3 className="font-display text-xl md:text-2xl text-[#161616] font-black tracking-tight mb-2">
                         {fix.title}
                       </h3>
-                      <p className="text-cream-100/70 text-sm md:text-base font-body font-light leading-relaxed mb-2">
-                        <span className="text-gold-light font-mono text-[10px] uppercase tracking-[0.25em] mr-2">
+                      <p className="text-[#3a3733] text-sm md:text-base font-body leading-relaxed mb-2">
+                        <span className="text-[#E0301E] font-mono font-bold text-[10px] uppercase tracking-[0.25em] mr-2">
                           Why
                         </span>
                         {fix.why}
                       </p>
-                      <p className="text-cream-100/85 text-sm md:text-base font-body font-light leading-relaxed">
-                        <span className="text-gold-light font-mono text-[10px] uppercase tracking-[0.25em] mr-2">
+                      <p className="text-[#161616] text-sm md:text-base font-body leading-relaxed">
+                        <span className="text-[#E0301E] font-mono font-bold text-[10px] uppercase tracking-[0.25em] mr-2">
                           How
                         </span>
                         {fix.how}
@@ -339,26 +339,26 @@ export default function WebsiteAuditEngine() {
 
           {/* Full to-do */}
           <div>
-            <span className="text-[9px] uppercase tracking-[0.4em] text-gold-light/85 font-mono font-medium block mb-5 text-center">
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-5 text-center">
               The full to-do list to your A
             </span>
-            <div className="glass-card p-6 md:p-8 space-y-3">
+            <div className="pop-card p-6 md:p-8 space-y-3">
               {report.full_todo.map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-4 py-2 border-b border-cream-100/[0.05] last:border-0"
+                  className="flex items-start gap-4 py-2 border-b border-[#161616]/10 last:border-0"
                 >
                   <span
-                    className={`flex-shrink-0 px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] font-mono font-bold border rounded ${
+                    className={`flex-shrink-0 px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] font-mono font-bold border-2 rounded ${
                       PRIORITY_STYLES[item.priority]
                     }`}
                   >
                     {item.priority}
                   </span>
-                  <span className="flex-shrink-0 text-[9px] uppercase tracking-[0.3em] text-cream-100/45 font-mono pt-1 hidden md:inline-block min-w-[90px]">
+                  <span className="flex-shrink-0 text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono pt-1 hidden md:inline-block min-w-[90px]">
                     {CATEGORY_LABELS[item.category]}
                   </span>
-                  <p className="text-cream-100/85 text-sm font-body font-light leading-relaxed flex-1">
+                  <p className="text-[#161616] text-sm font-body leading-relaxed flex-1">
                     {item.task}
                   </p>
                 </div>
@@ -367,16 +367,16 @@ export default function WebsiteAuditEngine() {
           </div>
 
           {/* Save report */}
-          <div className="glass-card p-8 md:p-10 border-gold-light/25">
+          <div className="pop-card-yellow p-8 md:p-10">
             {!saved ? (
               <>
-                <span className="text-[9px] uppercase tracking-[0.4em] text-gold-light/85 font-mono font-medium block mb-3">
+                <span className="text-[9px] uppercase tracking-[0.4em] text-[#161616] font-mono font-bold block mb-3">
                   Save the report
                 </span>
-                <h3 className="font-display text-2xl md:text-3xl text-cream-50 font-medium tracking-tight mb-2">
+                <h3 className="font-display text-2xl md:text-3xl text-[#161616] font-black tracking-tight mb-2">
                   Want this report in your inbox?
                 </h3>
-                <p className="text-cream-100/65 text-sm md:text-base font-body font-light leading-relaxed mb-6">
+                <p className="text-[#161616]/75 text-sm md:text-base font-body font-medium leading-relaxed mb-6">
                   Drop your email and we will send you the top three fixes plus a path to the A version. No spam. Reply to talk to Sarah directly.
                 </p>
                 <form onSubmit={saveReport} className="flex flex-col md:flex-row gap-3">
@@ -386,7 +386,7 @@ export default function WebsiteAuditEngine() {
                     onChange={(e) => setSaveName(e.target.value)}
                     placeholder="Your name (optional)"
                     disabled={saving}
-                    className="flex-1 bg-midnight-900/70 border border-cream-100/10 rounded-lg px-4 py-3 text-cream-100 placeholder:text-cream-100/30 font-body text-sm focus:outline-none focus:border-gold-light/50 disabled:opacity-50"
+                    className="flex-1 bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/40 font-body text-sm focus:outline-none disabled:opacity-50"
                   />
                   <input
                     type="email"
@@ -395,24 +395,24 @@ export default function WebsiteAuditEngine() {
                     placeholder="you@yourbusiness.com"
                     disabled={saving}
                     required
-                    className="flex-1 bg-midnight-900/70 border border-cream-100/10 rounded-lg px-4 py-3 text-cream-100 placeholder:text-cream-100/30 font-body text-sm focus:outline-none focus:border-gold-light/50 disabled:opacity-50"
+                    className="flex-1 bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/40 font-body text-sm focus:outline-none disabled:opacity-50"
                   />
                   <button
                     type="submit"
                     disabled={saving || !saveEmail.trim()}
-                    className="px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-bold text-cream-50 bg-brass rounded-lg campfire-glow disabled:opacity-50 hover:shadow-[0_0_30px_rgba(255,107,53,0.5)] transition-all whitespace-nowrap"
+                    className="px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-lg border-2 border-[#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-all whitespace-nowrap"
                   >
                     {saving ? 'Sending…' : 'Email me'}
                   </button>
                 </form>
-                {saveError && <p className="text-rust-light text-xs font-mono mt-3">{saveError}</p>}
+                {saveError && <p className="text-[#161616] font-bold text-xs font-mono mt-3">{saveError}</p>}
               </>
             ) : (
               <div className="text-center py-6">
-                <p className="font-display italic text-xl md:text-2xl text-gold-light font-medium mb-3">
+                <p className="font-display italic text-xl md:text-2xl text-[#161616] font-black mb-3">
                   Sent. Check your inbox.
                 </p>
-                <p className="text-cream-100/65 text-sm font-body font-light leading-relaxed">
+                <p className="text-[#161616]/75 text-sm font-body font-medium leading-relaxed">
                   Sarah was copied. If you want to skip the queue, reply to her note and tell her your context.
                 </p>
               </div>
@@ -431,7 +431,7 @@ export default function WebsiteAuditEngine() {
                 setSaveEmail('');
                 setSaveName('');
               }}
-              className="text-[10px] uppercase tracking-[0.3em] text-cream-100/55 hover:text-cream-50 font-mono transition-colors"
+              className="text-[10px] uppercase tracking-[0.3em] text-[#161616]/55 hover:text-[#E0301E] font-mono font-bold transition-colors"
             >
               ← Audit another site
             </button>
