@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import MagneticLink from './MagneticLink';
+import HeroVideo from './HeroVideo';
 
 export default function HeroIdeaToProduct() {
   return (
@@ -7,19 +8,8 @@ export default function HeroIdeaToProduct() {
       {/* Layer 0: Deep blue sky plate */}
       <div className="absolute inset-0 z-0 bg-[#1F4280]" aria-hidden="true" />
 
-      {/* Layer 1: Real cinematic backdrop video, no poster, on-brand color */}
-      <video
-        className="absolute inset-0 w-full h-full object-cover z-0 motion-reduce-hide"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        aria-hidden="true"
-        style={{ backgroundColor: '#1F4280' }}
-      >
-        <source src="/video/hero.mp4" type="video/mp4" />
-      </video>
+      {/* Layer 1: Real cinematic backdrop video with optional soundtrack */}
+      <HeroVideo />
 
       {/* Layer 2: Sky-blue base tint over the video so the brand owns the color */}
       <div
