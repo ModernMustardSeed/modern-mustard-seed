@@ -63,7 +63,7 @@ export default function HeroIdeaToProduct() {
             You bring the seed
             <br />
             We build the{' '}
-            <span className="text-gradient-brass italic">tree</span>
+            <span className="text-gradient-ember italic drop-shadow-[0_2px_16px_rgba(255,107,53,0.35)]">tree</span>
           </h1>
 
           {/* Hairline divider with shimmer */}
