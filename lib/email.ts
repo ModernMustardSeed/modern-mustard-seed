@@ -418,6 +418,47 @@ export function auditReportEmail({
   });
 }
 
+/* ────────────────────────── DEPOSIT INVOICE (proposal money loop) ────────────────────────── */
+
+/**
+ * The deposit-to-begin email for an accepted proposal. Carries the amount and a
+ * Stripe payment link. Sent by hand from the admin, never part of a drip.
+ */
+export function depositInvoiceEmail({
+  toName,
+  label,
+  amountUsd,
+  payUrl,
+  note,
+}: {
+  toName?: string;
+  label: string;
+  amountUsd: number;
+  payUrl: string;
+  note?: string;
+}): string {
+  const first = toName?.trim()?.split(/\s+/)[0];
+  const inner =
+    headline(first ? `${first}, here is your deposit to begin` : 'Your deposit to begin') +
+    lede('One payment and we start. This holds your timeline.') +
+    (note && note.trim()
+      ? paragraph(escape(note.trim()).replace(/\n/g, '<br>'))
+      : paragraph(
+          `This is the 50 percent deposit to begin ${escape(label)}. The balance is due on delivery. The deposit holds your spot and your timeline, and it is the only thing standing between here and the work starting.`
+        )) +
+    valueCallout(
+      'Deposit due',
+      `<span style="font-family:${SERIF};font-size:30px;color:${C.ink};font-weight:600">$${amountUsd.toLocaleString('en-US')}</span> <span style="font-size:14px;color:${C.muted}">to start</span>`
+    ) +
+    ctaBlock({ label: 'Pay the deposit', url: payUrl }) +
+    paragraph(
+      `<span style="font-size:13px;color:${C.muted}">Secure checkout by Stripe. If the button does not work, paste this into your browser:<br><a href="${payUrl}" style="color:${C.gold};word-break:break-all">${payUrl}</a></span>`
+    ) +
+    paragraph('The moment this clears, your build is on the calendar and I get to work. Questions before you pay? Just reply to this email.') +
+    signature('Sarah');
+  return shell({ preheader: `Your deposit to begin ${label}`, subtitle: 'Deposit to begin', inner });
+}
+
 /* ────────────────────────── PROGRAM ACCESS (Terminal / Idea to Spec) ────────────────────────── */
 
 /** Delivery email for a $497 program purchase. Carries a passwordless link

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import AdminHeader from './AdminHeader';
 import {
   SERVICES,
@@ -76,6 +77,16 @@ export default function ProposalBuilder() {
   const [saveError, setSaveError] = useState('');
   const [saved, setSaved] = useState(false);
   const [list, setList] = useState<Summary[]>([]);
+
+  // Deposit (money loop)
+  const [depositAmount, setDepositAmount] = useState<number | ''>('');
+  const [depositStatus, setDepositStatus] = useState('unpaid');
+  const [depositUrl, setDepositUrl] = useState('');
+  const [depositBusy, setDepositBusy] = useState(false);
+  const [depositMsg, setDepositMsg] = useState('');
+  const [startingProject, setStartingProject] = useState(false);
+
+  const router = useRouter();
 
   const add = (id: string) => {
     const s = byId(id);
@@ -282,6 +293,10 @@ export default function ProposalBuilder() {
         close: p.prose?.close || '',
       });
       setCurrentId(p.id);
+      setDepositAmount(p.deposit_amount || '');
+      setDepositStatus(p.deposit_status || 'unpaid');
+      setDepositUrl(p.deposit_url || '');
+      setDepositMsg('');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch {
       /* ignore */
@@ -301,6 +316,63 @@ export default function ProposalBuilder() {
     setLines([]);
     setProse({ intro: '', situation: '', recommendation: '', close: '' });
     setSaveError('');
+    setDepositAmount('');
+    setDepositStatus('unpaid');
+    setDepositUrl('');
+    setDepositMsg('');
+  };
+
+  const generateDeposit = async () => {
+    if (!currentId || depositBusy) return;
+    setDepositBusy(true);
+    setDepositMsg('');
+    try {
+      const amount = depositAmount === '' ? undefined : Number(depositAmount);
+      const res = await fetch(`/api/admin/proposals/${currentId}/deposit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount }),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.url) {
+        setDepositMsg((j && j.error) || 'Could not create the link.');
+      } else {
+        setDepositUrl(j.url);
+        setDepositStatus('link_sent');
+        if (j.amount) setDepositAmount(j.amount);
+        setDepositMsg(j.emailed ? 'Link created and emailed to the client.' : 'Link created. No client email on file, copy it below.');
+        loadList();
+      }
+    } catch {
+      setDepositMsg('Network error.');
+    } finally {
+      setDepositBusy(false);
+    }
+  };
+
+  const markDepositPaid = async () => {
+    if (!currentId || depositBusy) return;
+    setDepositBusy(true);
+    setDepositMsg('');
+    try {
+      const res = await fetch(`/api/admin/proposals/${currentId}/deposit`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'mark_paid' }),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok) {
+        setDepositMsg((j && j.error) || 'Could not mark paid.');
+      } else {
+        setDepositStatus('paid');
+        setDepositMsg('Marked paid. Recorded to revenue.');
+        loadList();
+      }
+    } catch {
+      setDepositMsg('Network error.');
+    } finally {
+      setDepositBusy(false);
+    }
   };
 
   const deleteProposal = async (id: string) => {
@@ -310,6 +382,25 @@ export default function ProposalBuilder() {
       loadList();
     } catch {
       /* ignore */
+    }
+  };
+
+  const startProject = async () => {
+    if (!email.trim() || startingProject) return;
+    setStartingProject(true);
+    try {
+      const res = await fetch('/api/admin/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_email: email.trim(),
+          name: company.trim() || name.trim() || 'New project',
+          summary: situation || prose.recommendation || '',
+        }),
+      });
+      if (res.ok) router.push('/admin/projects');
+    } finally {
+      setStartingProject(false);
     }
   };
 
@@ -610,6 +701,87 @@ export default function ProposalBuilder() {
                       </div>
                     );
                   })}
+                </div>
+              </div>
+            )}
+
+            {/* Deposit (money loop) */}
+            {currentId && (
+              <div className="glass-card p-5 border-emerald-500/20">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-emerald-300/80 font-mono font-bold block mb-1">
+                  Deposit
+                </span>
+                <p className="text-white/40 text-xs font-body mb-3">
+                  Generate a Stripe deposit link and email it to the client. A paid deposit records to
+                  revenue and wins the linked lead.
+                </p>
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span className="text-[10px] uppercase tracking-[0.15em] text-white/35 font-mono">$</span>
+                  <input
+                    type="number"
+                    value={depositAmount}
+                    onChange={(e) => setDepositAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                    placeholder={String(Math.round(oneTime * 0.5))}
+                    className={`${inp} max-w-[150px]`}
+                  />
+                  <span className="text-[11px] text-white/35 font-mono">
+                    50% = {money(Math.round(oneTime * 0.5))}
+                  </span>
+                  <span
+                    className={`ml-auto px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] font-mono font-bold border rounded ${
+                      depositStatus === 'paid'
+                        ? 'text-emerald-200 border-emerald-400/40 bg-emerald-500/10'
+                        : depositStatus === 'link_sent'
+                          ? 'text-blue-200 border-blue-400/40 bg-blue-500/10'
+                          : 'text-white/50 border-white/15 bg-white/5'
+                    }`}
+                  >
+                    {depositStatus.replace('_', ' ')}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={generateDeposit}
+                    disabled={depositBusy || depositStatus === 'paid'}
+                    className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+                  >
+                    {depositBusy ? 'Working…' : depositStatus === 'link_sent' ? 'Regenerate + email' : 'Create + email link'}
+                  </button>
+                  {depositStatus !== 'paid' && (
+                    <button
+                      onClick={markDepositPaid}
+                      disabled={depositBusy}
+                      className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/70 border border-white/15 hover:border-white/30 disabled:opacity-40 transition-colors"
+                    >
+                      Mark paid
+                    </button>
+                  )}
+                </div>
+                {depositUrl && (
+                  <p className="text-[11px] font-mono mt-3 break-all">
+                    <a
+                      href={depositUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-mustard-300 hover:text-mustard-200"
+                    >
+                      {depositUrl}
+                    </a>
+                  </p>
+                )}
+                {depositMsg && <p className="text-emerald-300/90 text-xs font-body mt-2">{depositMsg}</p>}
+
+                <div className="mt-3 pt-3 border-t border-white/[0.06]">
+                  <button
+                    onClick={startProject}
+                    disabled={!email.trim() || startingProject}
+                    className="text-[10px] uppercase tracking-[0.18em] font-mono font-bold text-emerald-300 hover:text-emerald-200 disabled:opacity-40"
+                  >
+                    {startingProject ? 'Starting…' : 'Start a project from this →'}
+                  </button>
+                  {!email.trim() && (
+                    <span className="text-white/30 text-[11px] font-body ml-2">add a client email first</span>
+                  )}
                 </div>
               </div>
             )}

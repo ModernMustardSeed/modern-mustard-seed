@@ -57,12 +57,22 @@ export async function POST(req: Request) {
 
   const status = body.status && STATUSES.includes(body.status) ? body.status : 'draft';
 
+  // Link to a pipeline lead by email, if one exists. Connects the proposal to
+  // the lead so a paid deposit can win it and the timeline lines up.
+  let leadId: string | null = null;
+  const emailKey = body.client_email?.trim().toLowerCase();
+  if (emailKey) {
+    const { data: lead } = await supabase.from('leads').select('id').ilike('email', emailKey).maybeSingle();
+    if (lead) leadId = lead.id as string;
+  }
+
   const { data, error } = await supabase
     .from('proposals')
     .insert({
       client_name: body.client_name?.trim() || null,
       client_company: body.client_company?.trim() || null,
       client_email: body.client_email?.trim() || null,
+      lead_id: leadId,
       site_url: body.site_url?.trim() || null,
       situation: body.situation ?? null,
       notes: body.notes ?? null,
