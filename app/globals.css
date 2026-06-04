@@ -276,3 +276,55 @@
 .mdx-prose img {
   @apply rounded-xl border border-white/[0.05] my-8;
 }
+
+/* Light pop-art prose. Add alongside .mdx-prose on cream pages. */
+.mdx-prose-pop {
+  color: #3a3733;
+}
+.mdx-prose-pop h1,
+.mdx-prose-pop h2,
+.mdx-prose-pop h3 {
+  color: #161616;
+}
+.mdx-prose-pop a {
+  color: #e0301e;
+  text-decoration-color: rgba(224, 48, 30, 0.4);
+}
+.mdx-prose-pop a:hover {
+  color: #161616;
+}
+.mdx-prose-pop strong {
+  color: #161616;
+}
+.mdx-prose-pop blockquote {
+  border-left-color: #f5b700;
+  color: #3a3733;
+}
+.mdx-prose-pop code {
+  background: #fff;
+  border: 1px solid #161616;
+  color: #161616;
+}
+.mdx-prose-pop pre {
+  background: #161616;
+  border: 2px solid #161616;
+}
+.mdx-prose-pop pre code {
+  background: transparent;
+  border: 0;
+  color: #fbf6ea;
+}
+.mdx-prose-pop th {
+  color: #e0301e;
+  border-bottom-color: rgba(22, 22, 22, 0.15);
+}
+.mdx-prose-pop td {
+  color: #3a3733;
+  border-bottom-color: rgba(22, 22, 22, 0.08);
+}
+.mdx-prose-pop hr {
+  border-color: rgba(22, 22, 22, 0.12);
+}
+.mdx-prose-pop img {
+  border: 2px solid #161616;
+}

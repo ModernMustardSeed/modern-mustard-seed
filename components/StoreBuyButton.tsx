@@ -17,10 +17,10 @@ export default function StoreBuyButton({
   if (!configured) {
     return (
       <div className="md:text-right">
-        <span className="inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-bold text-cream-100/70 border border-cream-100/30 bg-midnight-700/40">
+        <span className="inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] border-2 border-[#161616] bg-white">
           Launching shortly
         </span>
-        <p className="text-cream-100/40 text-[10px] font-mono uppercase tracking-[0.22em] mt-3 md:text-right">
+        <p className="text-[#161616]/55 text-[10px] font-mono uppercase tracking-[0.22em] mt-3 md:text-right">
           Notify list opens at launch
         </p>
       </div>
@@ -60,14 +60,14 @@ export default function StoreBuyButton({
       <button
         onClick={onClick}
         disabled={loading}
-        className={`inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-bold text-cream-50 bg-brass campfire-glow hover:shadow-[0_0_40px_rgba(255,107,53,0.5)] transition-all ${
+        className={`inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all ${
           loading ? 'opacity-60 cursor-wait' : ''
         }`}
       >
         {loading ? 'Opening checkout…' : label}
       </button>
       {error && (
-        <p className="text-rust text-[11px] font-mono uppercase tracking-[0.18em] mt-3 md:text-right">
+        <p className="text-[#161616] text-[11px] font-mono font-bold uppercase tracking-[0.18em] mt-3 md:text-right">
           {error}
         </p>
       )}
