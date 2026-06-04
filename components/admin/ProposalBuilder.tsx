@@ -158,6 +158,8 @@ export default function ProposalBuilder() {
     return { oneTime: o, monthly: m };
   }, [lines]);
 
+  const hasVariable = useMemo(() => lines.some((l) => byId(l.id)?.variable), [lines]);
+
   const draft = async () => {
     if (!lines.length || drafting) return;
     setDrafting(true);
@@ -426,7 +428,11 @@ export default function ProposalBuilder() {
     }
     L.push(`\n## Totals`);
     if (oneTime) L.push(`One-time: ${money(oneTime)} (50% to start, 50% on delivery)`);
-    if (monthly) L.push(`Then: ${money(monthly)}/mo`);
+    if (monthly) L.push(`Then: ${money(monthly)}/mo${hasVariable ? ' (estimated)' : ''}`);
+    if (hasVariable)
+      L.push(
+        'Software and compute is billed at cost and moves with the compute used each month. The monthly figure is an estimate, not a fixed charge.'
+      );
     L.push(`\n## Terms`);
     for (const t of TERMS) L.push(`- ${t}`);
     if (prose.close) L.push(`\n${prose.close}`);
@@ -876,8 +882,11 @@ export default function ProposalBuilder() {
                               <span className="font-semibold text-[16px]" style={{ fontFamily: 'Georgia, serif' }}>
                                 {s.name}
                               </span>
-                              <span className="text-[14px] font-semibold text-[#1B2436] whitespace-nowrap">
-                                {linePriceLabel(s, l)}
+                              <span className="text-right whitespace-nowrap">
+                                <span className="text-[14px] font-semibold text-[#1B2436]">{linePriceLabel(s, l)}</span>
+                                {s.variable && (
+                                  <span className="block text-[10px] text-[#8A8170] font-normal">at cost, varies with usage</span>
+                                )}
                               </span>
                             </div>
                             {l.framing && <p className="text-[13.5px] text-[#474F60] leading-relaxed mb-2">{l.framing}</p>}
@@ -911,9 +920,17 @@ export default function ProposalBuilder() {
                       )}
                       {monthly > 0 && (
                         <div className="flex items-baseline justify-between mt-2">
-                          <span className="text-[14px] text-[#474F60]">Then, ongoing</span>
+                          <span className="text-[14px] text-[#474F60]">
+                            Then, ongoing{hasVariable ? ' (estimated)' : ''}
+                          </span>
                           <span className="text-[16px] font-semibold">{money(monthly)}/mo</span>
                         </div>
+                      )}
+                      {hasVariable && (
+                        <p className="text-[12px] text-[#8A8170] mt-1.5 leading-relaxed">
+                          Software and compute is billed at cost and moves with the compute used each
+                          month. The monthly figure is an estimate, not a fixed charge.
+                        </p>
                       )}
                     </div>
 

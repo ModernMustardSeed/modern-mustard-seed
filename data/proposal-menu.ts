@@ -26,6 +26,9 @@ export type Service = {
   status: ServiceStatus;
   requires?: string;
   note?: string;
+  /** Usage-based pass-through (model/voice/hosting). Billed at cost, the
+   *  monthly figure is an estimate that moves with compute used. */
+  variable?: boolean;
 };
 
 export const ENGAGEMENT_MODELS = {
@@ -246,6 +249,26 @@ export const SERVICES: Service[] = [
     priceMax: null,
     unit: 'monthly_from',
     status: 'recommended',
+    variable: true,
+  },
+  {
+    id: 'software_compute',
+    group: 'Running Costs',
+    name: 'Software & Compute',
+    description:
+      'The monthly cost to run what we build. AI model usage, voice minutes, hosting, and any third-party tools. Billed at cost. It depends on how much compute the system uses each month, so the figure is an estimate that moves with real usage.',
+    scope: [
+      'AI model usage (Claude, OpenAI, Gemini) at cost',
+      'Voice minutes and telephony where an agent is involved',
+      'Hosting, database, email and SMS sending',
+      'Any third-party software the build depends on',
+      'Billed at cost. The estimate moves with actual usage each month',
+    ],
+    priceMin: 50,
+    priceMax: 500,
+    unit: 'monthly',
+    status: 'recommended',
+    variable: true,
   },
   {
     id: 'single_skill',
@@ -370,21 +393,21 @@ export const PATHS: Path[] = [
     id: 'manual_overload',
     label: 'Drowning in manual work',
     when: 'Revenue exists, but the team is buried in repetitive tasks.',
-    serviceIds: ['single_automation', 'custom_ai_system'],
+    serviceIds: ['single_automation', 'custom_ai_system', 'software_compute'],
     rationale: 'Remove the worst repeating task first, then build the system that runs the operation.',
   },
   {
     id: 'needs_agent',
     label: 'Needs an agent on the front line',
     when: 'Missed calls, slow lead response, after-hours gaps.',
-    serviceIds: ['ai_agent_build', 'agent_operation'],
+    serviceIds: ['ai_agent_build', 'agent_operation', 'software_compute'],
     rationale: 'Build the agent for the real job, then run it month to month.',
   },
   {
     id: 'has_idea',
     label: 'Has an idea, needs it built',
     when: 'A clear vision for a product or tool, ready to ship.',
-    serviceIds: ['strategy_intensive', 'idea_to_product'],
+    serviceIds: ['strategy_intensive', 'idea_to_product', 'software_compute'],
     rationale: 'Scope and sequence it first (credited toward the build), then build and ship in 30 days.',
   },
 ];
