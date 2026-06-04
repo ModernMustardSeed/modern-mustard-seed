@@ -14,7 +14,6 @@ import {
   isRecurring,
   isHourly,
   TERMS,
-  ENGAGEMENT_MODELS,
   type Service,
 } from '@/data/proposal-menu';
 
@@ -159,6 +158,8 @@ export default function ProposalBuilder() {
   }, [lines]);
 
   const hasVariable = useMemo(() => lines.some((l) => byId(l.id)?.variable), [lines]);
+  const depositDue = Math.round(oneTime * 0.5);
+  const balanceDue = oneTime - depositDue;
 
   const draft = async () => {
     if (!lines.length || drafting) return;
@@ -427,8 +428,12 @@ export default function ProposalBuilder() {
       for (const b of l.scope) L.push(`- ${b}`);
     }
     L.push(`\n## Totals`);
-    if (oneTime) L.push(`One-time: ${money(oneTime)} (50% to start, 50% on delivery)`);
-    if (monthly) L.push(`Then: ${money(monthly)}/mo${hasVariable ? ' (estimated)' : ''}`);
+    if (oneTime) {
+      L.push(`Project total: ${money(oneTime)}`);
+      L.push(`- To start, 50% deposit: ${money(depositDue)}`);
+      L.push(`- Balance on delivery: ${money(balanceDue)}`);
+    }
+    if (monthly) L.push(`Monthly${hasVariable ? ', estimated' : ''}: ${money(monthly)}/mo`);
     if (hasVariable)
       L.push(
         'Software and compute is billed at cost and moves with the compute used each month. The monthly figure is an estimate, not a fixed charge.'
@@ -903,31 +908,36 @@ export default function ProposalBuilder() {
                       })}
                     </div>
 
-                    {/* Totals */}
-                    <div className="mt-6 border-t border-[#E7DECC] pt-4">
+                    {/* Totals: three buckets */}
+                    <div className="mt-6 border-t border-[#E7DECC] pt-4 space-y-3">
                       {oneTime > 0 && (
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-[14px] text-[#474F60]">One-time total</span>
-                          <span className="text-[20px] font-semibold" style={{ fontFamily: 'Georgia, serif' }}>
-                            {money(oneTime)}
-                          </span>
-                        </div>
-                      )}
-                      {oneTime > 0 && (
-                        <p className="text-[12px] text-[#8A8170] mt-0.5">
-                          {ENGAGEMENT_MODELS.payment_terms}
-                        </p>
+                        <>
+                          <div className="flex items-baseline justify-between">
+                            <span className="text-[14px] text-[#474F60]">Project total</span>
+                            <span className="text-[20px] font-semibold" style={{ fontFamily: 'Georgia, serif' }}>
+                              {money(oneTime)}
+                            </span>
+                          </div>
+                          <div className="rounded-lg bg-[#F5EEE0] border border-[#E7DECC] p-3.5 space-y-2">
+                            <div className="flex items-baseline justify-between">
+                              <span className="text-[13px] text-[#474F60]">To start, 50% deposit</span>
+                              <span className="text-[15px] font-semibold text-[#1B2436]">{money(depositDue)}</span>
+                            </div>
+                            <div className="flex items-baseline justify-between">
+                              <span className="text-[13px] text-[#474F60]">Balance on delivery</span>
+                              <span className="text-[15px] font-semibold text-[#1B2436]">{money(balanceDue)}</span>
+                            </div>
+                          </div>
+                        </>
                       )}
                       {monthly > 0 && (
-                        <div className="flex items-baseline justify-between mt-2">
-                          <span className="text-[14px] text-[#474F60]">
-                            Then, ongoing{hasVariable ? ' (estimated)' : ''}
-                          </span>
-                          <span className="text-[16px] font-semibold">{money(monthly)}/mo</span>
+                        <div className="flex items-baseline justify-between">
+                          <span className="text-[14px] text-[#474F60]">Monthly{hasVariable ? ', estimated' : ''}</span>
+                          <span className="text-[16px] font-semibold text-[#1B2436]">{money(monthly)}/mo</span>
                         </div>
                       )}
                       {hasVariable && (
-                        <p className="text-[12px] text-[#8A8170] mt-1.5 leading-relaxed">
+                        <p className="text-[12px] text-[#8A8170] leading-relaxed">
                           Software and compute is billed at cost and moves with the compute used each
                           month. The monthly figure is an estimate, not a fixed charge.
                         </p>
