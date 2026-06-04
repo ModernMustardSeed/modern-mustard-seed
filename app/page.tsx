@@ -11,6 +11,7 @@ import AiProofPromo from '@/components/AiProofPromo';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import AuroraField from '@/components/AuroraField';
 import CelebrationVideo from '@/components/CelebrationVideo';
+import HeroVideo from '@/components/HeroVideo';
 import YourSiteWorksForYou from '@/components/YourSiteWorksForYou';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
@@ -126,6 +127,16 @@ export default function HomePage() {
 
       <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16">
         <NewsletterSignup />
+      </section>
+
+      {/* Lion video, at the very bottom of the page */}
+      <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 pb-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="text-[10px] uppercase tracking-[0.35em] text-mustard-400 font-mono font-bold block mb-3">
+            Watch
+          </span>
+          <HeroVideo />
+        </div>
       </section>
     </>
   );

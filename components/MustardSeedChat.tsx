@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useRef, useEffect, FormEvent } from 'react';
 
 type Msg = { role: 'assistant' | 'user'; text: string };
@@ -114,16 +115,15 @@ export default function MustardSeedChat() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        aria-label={open ? 'Close Mustard Seed chat' : 'Open Mustard Seed chat'}
+        aria-label={open ? 'Close Mr. Mustard chat' : 'Talk to Mr. Mustard'}
         className="fixed bottom-6 right-6 z-[80] group"
       >
-        <div className="relative flex items-center gap-3 px-5 py-3.5 rounded-full bg-brass campfire-glow border border-gold-light/40 hover:shadow-[0_0_50px_rgba(255,107,53,0.5)] transition-all">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cream-50 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-cream-50" />
+        <div className="relative flex items-center gap-2 pl-2 pr-4 py-2 rounded-full bg-[#F5B700] border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] group-hover:shadow-[6px_6px_0_0_#161616] group-hover:-translate-y-0.5 transition-all">
+          <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white border-2 border-[#161616] overflow-hidden">
+            <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
           </span>
-          <span className="font-display italic text-base md:text-lg text-cream-50 font-medium tracking-tight pr-1">
-            Mustard Seed
+          <span className="font-sans text-sm md:text-base text-[#161616] font-extrabold tracking-tight">
+            Talk to Mr. Mustard now
           </span>
         </div>
       </button>

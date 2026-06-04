@@ -6,8 +6,6 @@ export const socials = [
 ];
 
 export const navLinks = [
-  { label: 'Idea to Spec', href: '/idea-to-spec' },
-  { label: 'The Terminal', href: '/the-terminal' },
   { label: 'Store', href: '/store' },
   { label: 'Free Playbooks', href: '/playbooks' },
   { label: 'The Work', href: '/work' },

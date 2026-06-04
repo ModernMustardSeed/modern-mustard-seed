@@ -25,10 +25,8 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-        scrolled || menuOpen
-          ? 'bg-[#FBF6EA]/95 backdrop-blur-md border-b-2 border-[#161616]'
-          : ''
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-[#FBF6EA]/95 backdrop-blur-md border-b-2 border-[#161616] ${
+        scrolled ? 'shadow-[0_3px_0_0_rgba(22,22,22,0.12)]' : ''
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-3.5 flex justify-between items-center">
@@ -46,7 +44,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-7">
+        <div className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.label}
@@ -56,6 +54,12 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/portal"
+            className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] hover:bg-[#FFF8E6] transition-all"
+          >
+            Clients
+          </Link>
           <Link
             href="/book"
             className="px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
@@ -104,9 +108,16 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
+            href="/portal"
+            onClick={() => setMenuOpen(false)}
+            className="mt-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] transition-all text-center"
+          >
+            Clients
+          </Link>
+          <Link
             href="/book"
             onClick={() => setMenuOpen(false)}
-            className="mt-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] transition-all text-center"
+            className="px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] transition-all text-center"
           >
             Book a Call
           </Link>

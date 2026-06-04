@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import MagneticLink from './MagneticLink';
-import HeroVideo from './HeroVideo';
 
 // Pop-art hero. Cream + halftone, the logo-with-mascot front and center, bold
 // black comic type, and the lion video moved down to a framed band at the
@@ -103,13 +102,6 @@ export default function HeroIdeaToProduct() {
           </div>
         </div>
 
-        {/* Lion video, moved to the bottom of the hero */}
-        <div className="mt-14 max-w-3xl mx-auto">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#161616]/55 font-mono font-bold block mb-3">
-            Watch
-          </span>
-          <HeroVideo />
-        </div>
       </div>
     </section>
   );
