@@ -18,34 +18,36 @@
  * the legacy `skyShell` split is gone, every email now flows through `shell`.
  */
 
+// Pop-art comic palette. Cream page, white card, bold black ink, mustard
+// header, red accents. Inline-safe hexes for email clients.
 const C = {
   // Surfaces
-  page: '#EDE6D8',      // warm ivory page (frames the card)
-  card: '#FBF8F2',      // cream card surface
-  panel: '#FFFFFF',     // inset panel (pops on the cream)
-  panelWarm: '#F5EEE0', // alternate warm inset
+  page: '#FBF6EA',      // cream page (frames the card)
+  card: '#FFFFFF',      // white comic card surface
+  panel: '#FFFDF6',     // inset panel
+  panelWarm: '#FFF3CC', // yellow-tinted inset
 
-  // Brand sky
-  sky: '#1F4280',       // deep brand sky (header, primary actions)
-  skyDeep: '#163259',   // header gradient anchor
-  skyMid: '#34588C',    // mid sky
-  skyLo: '#6F92BC',     // light sky
+  // Header (mustard, comic)
+  sky: '#F5B700',       // mustard header + primary fills
+  skyDeep: '#E8A800',   // deeper mustard
+  skyMid: '#FFC400',    // mid mustard
+  skyLo: '#FFD23F',     // light mustard
 
-  // Brand brass
-  gold: '#A8741A',      // gold for text and links on cream (legible when bold)
-  goldDeep: '#85590F',  // deeper gold
-  goldBrand: '#C8964E', // signature brass (CTA fill, gradients, rules)
-  goldLite: '#E8C88A',  // light brass (gradient stop, ornament)
+  // Accents
+  gold: '#C2261A',      // red, legible link/accent on cream (bold)
+  goldDeep: '#9A1C12',  // deeper red
+  goldBrand: '#F5B700', // mustard (CTA fill, rules)
+  goldLite: '#FFD23F',  // light mustard
 
   // Ink
-  ink: '#1B2436',       // warm navy ink (headlines, max contrast on cream)
-  body: '#474F60',      // comfortable body copy
-  muted: '#8A8170',     // warm taupe for labels and fine print
+  ink: '#161616',       // comic black ink (headlines, max contrast)
+  body: '#3A3733',      // comfortable body copy
+  muted: '#8A8378',     // taupe for labels and fine print
   ghost: '#A7A091',     // ghost copy
 
   // Hairlines
-  line: '#E7DECC',      // warm hairline
-  lineGold: '#E3D0A2',  // gold hairline
+  line: '#E7DECC',      // soft warm hairline (inner rules)
+  lineGold: '#161616',  // comic black rule
 };
 
 // Font names use SINGLE quotes so they never break a double-quoted style="..."
@@ -84,23 +86,11 @@ type ShellArgs = {
 
 function header(subtitle?: string): string {
   return `
-    <!-- Brass sunrise hairline -->
-    <tr><td height="3" bgcolor="${C.goldBrand}" style="height:3px;line-height:3px;font-size:0;background:${C.goldBrand};background-image:linear-gradient(to right,${C.goldLite} 0%,${C.goldBrand} 55%,${C.skyLo} 100%)">&nbsp;</td></tr>
-
-    <!-- Deep-sky header -->
-    <tr><td align="center" bgcolor="${C.sky}" style="background:${C.sky};background-image:linear-gradient(158deg,${C.skyDeep} 0%,${C.sky} 48%,${C.skyMid} 100%);padding:38px 40px 32px">
-      <!-- Seed emblem: one gold seed, light breaking on either side -->
-      <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 18px"><tr>
-        <td width="64" style="font-size:0;line-height:0"><div style="height:1px;line-height:1px;font-size:0;background-image:linear-gradient(to right,rgba(232,200,138,0) 0%,${C.goldLite} 100%)">&nbsp;</div></td>
-        <td style="padding:0 12px;font-size:0;line-height:0">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-            <td width="9" height="9" bgcolor="${C.goldLite}" style="width:9px;height:9px;font-size:0;line-height:9px;background:${C.goldLite};border-radius:9px;box-shadow:0 0 14px rgba(232,200,138,0.85)">&nbsp;</td>
-          </tr></table>
-        </td>
-        <td width="64" style="font-size:0;line-height:0"><div style="height:1px;line-height:1px;font-size:0;background-image:linear-gradient(to left,rgba(232,200,138,0) 0%,${C.goldLite} 100%)">&nbsp;</div></td>
-      </tr></table>
-      <div style="font-family:${SANS};font-size:12px;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:#FFFFFF">Modern Mustard Seed</div>
-      ${subtitle ? `<div style="font-family:${SERIF};font-style:italic;font-size:17px;color:rgba(255,255,255,0.90);margin-top:12px;letter-spacing:0.2px">${escape(subtitle)}</div>` : ''}
+    <!-- Mustard comic header with the mascot -->
+    <tr><td align="center" bgcolor="${C.sky}" style="background:${C.sky};padding:34px 40px 28px;border-bottom:3px solid ${C.ink}">
+      <img src="${SITE}/brand/mascot.png" width="56" height="75" alt="Modern Mustard Seed" style="display:block;margin:0 auto 14px;border:0;outline:none;text-decoration:none;height:auto;max-width:56px" />
+      <div style="font-family:${SANS};font-size:13px;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:${C.ink}">Modern Mustard Seed</div>
+      ${subtitle ? `<div style="font-family:${SERIF};font-style:italic;font-weight:600;font-size:17px;color:${C.ink};margin-top:10px;letter-spacing:0.2px">${escape(subtitle)}</div>` : ''}
     </td></tr>`;
 }
 
@@ -177,7 +167,7 @@ function shell({ preheader = '', subtitle, inner, showSocial = true }: ShellArgs
 
       <!-- The card -->
       <tr><td style="padding:0">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.card}" class="mms-card" style="background:${C.card};border:1px solid ${C.line};border-radius:18px;overflow:hidden">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.card}" class="mms-card" style="background:${C.card};border:2px solid ${C.ink};border-radius:18px;overflow:hidden">
           ${header(subtitle)}
           ${inner}
         </table>
@@ -206,7 +196,7 @@ function headline(text: string): string {
 
 function lede(text: string): string {
   return `<tr><td style="padding:18px 44px 0">
-    <p style="margin:0;font-family:${SERIF};font-style:italic;font-size:20px;font-weight:500;color:${C.skyMid};line-height:1.45">${escape(text)}</p>
+    <p style="margin:0;font-family:${SERIF};font-style:italic;font-weight:600;font-size:20px;color:${C.gold};line-height:1.45">${escape(text)}</p>
   </td></tr>`;
 }
 
@@ -228,7 +218,7 @@ function valueCallout(label: string, html: string): string {
 function ctaBlock(primary: { label: string; url: string }, secondary?: { label: string; url: string }): string {
   return `<tr><td style="padding:32px 44px 0" align="left">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-      <td bgcolor="${C.goldBrand}" style="background:${C.goldBrand};background-image:linear-gradient(135deg,${C.goldLite} 0%,${C.goldBrand} 100%);border-radius:10px">
+      <td bgcolor="${C.goldBrand}" style="background:${C.goldBrand};border:2px solid ${C.ink};border-radius:10px">
         <a href="${primary.url}" style="display:inline-block;color:${C.ink};text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:16px 30px;font-family:${SANS}">${escape(primary.label)}</a>
       </td>
       ${secondary ? `<td style="padding-left:18px"><a href="${secondary.url}" style="display:inline-block;color:${C.gold};text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;padding:16px 4px;font-family:${SANS}">${escape(secondary.label)} &rarr;</a></td>` : ''}
@@ -701,7 +691,7 @@ export function bookingNotificationEmail(args: {
     .join('');
 
   const inner = `
-    ${statusPill('Booked', C.sky, '#FFFFFF')}
+    ${statusPill('Booked', C.sky, C.ink)}
     ${headline(args.whenDisplay)}
     <tr><td style="padding:18px 44px 0">
       <p class="mms-ink" style="margin:0;font-family:${SERIF};font-size:20px;color:${C.ink};font-weight:600;line-height:1.3">${escape(args.name)}</p>
@@ -886,7 +876,7 @@ export function leadNotification({
     Contact: C.goldDeep,
     Newsletter: C.muted,
   }[type];
-  const pillFg = type === 'AI Audit' ? C.ink : '#FFFFFF';
+  const pillFg = type === 'AI Audit' || type === 'Build Queue' ? C.ink : '#FFFFFF';
 
   const fieldsHtml = fields
     .map(
