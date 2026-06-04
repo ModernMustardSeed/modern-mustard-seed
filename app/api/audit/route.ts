@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { parse } from 'node-html-parser';
 import { captureHarvestInbound } from '@/lib/harvest-capture';
 
 export const runtime = 'nodejs';
@@ -7,6 +8,63 @@ export const maxDuration = 60;
 // Trim defensively: a stray newline or literal "\n" pasted into the env var
 // produces a silent 401, which is easy to miss.
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
+
+// Fetch the real page and pull the signals that matter for an AI-readiness read.
+// Best-effort: returns null if the page cannot be loaded, so the audit still
+// runs (degrading to URL inference) rather than failing outright.
+async function fetchPageContext(rawUrl: string): Promise<string | null> {
+  let target: URL;
+  try {
+    target = new URL(/^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`);
+  } catch {
+    return null;
+  }
+
+  let html: string;
+  try {
+    const resp = await fetch(target.toString(), {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (compatible; MMS-Audit/1.0; +https://modernmustardseed.com/audit)',
+        Accept: 'text/html,application/xhtml+xml',
+      },
+      redirect: 'follow',
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!resp.ok) return null;
+    html = (await resp.text()).slice(0, 200_000);
+  } catch {
+    return null;
+  }
+
+  const root = parse(html, { lowerCaseTagName: true });
+  const all = (sel: string) => root.querySelectorAll(sel);
+  const text = (sel: string) => root.querySelector(sel)?.text?.trim() ?? null;
+  const attr = (sel: string, a: string) => root.querySelector(sel)?.getAttribute(a) ?? null;
+
+  const scriptSrcs = all('script[src]').map((s) => s.getAttribute('src') ?? '').filter(Boolean);
+  const chatHints = ['intercom', 'crisp', 'tawk', 'tidio', 'drift', 'hubspot', 'zendesk', 'chatbot', 'livechat'];
+  const analyticsHints = ['gtag', 'googletagmanager', 'analytics', 'segment', 'mixpanel', 'plausible', 'fathom'];
+  const imgs = all('img');
+
+  const signals = {
+    url: target.toString(),
+    title: text('title')?.slice(0, 300) ?? null,
+    meta_description: attr('meta[name="description"]', 'content')?.slice(0, 400) ?? null,
+    h1: all('h1').slice(0, 3).map((h) => h.text.trim().slice(0, 160)),
+    h1_count: all('h1').length,
+    h2_count: all('h2').length,
+    has_json_ld: all('script[type="application/ld+json"]').length > 0,
+    img_count: imgs.length,
+    img_missing_alt: imgs.filter((i) => !i.getAttribute('alt')).length,
+    form_count: all('form').length,
+    has_chat_widget: scriptSrcs.some((s) => chatHints.some((h) => s.toLowerCase().includes(h))),
+    has_analytics: scriptSrcs.some((s) => analyticsHints.some((h) => s.toLowerCase().includes(h))),
+    body_text: root.querySelector('body')?.text?.replace(/\s+/g, ' ').trim().slice(0, 4000) ?? null,
+  };
+
+  return JSON.stringify(signals, null, 2);
+}
 
 export async function POST(req: Request) {
   try {
@@ -27,6 +85,15 @@ export async function POST(req: Request) {
       );
     }
 
+    // Pull the real page so the analysis is grounded, not guessed from the URL.
+    const pageContext = await fetchPageContext(url);
+    const groundingBlock = pageContext
+      ? `Here is what was actually fetched from the page. Ground every score, strength, gap, and recommendation in this real content. If an important signal is absent (no chat widget, no structured data, missing alt text, thin copy), that absence is itself a finding.
+
+Fetched page signals:
+${pageContext}`
+      : `The live page could not be fetched, so infer cautiously from the URL alone and keep the score conservative.`;
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -40,9 +107,11 @@ export async function POST(req: Request) {
         messages: [
           {
             role: 'user',
-            content: `You are an expert AI integration consultant performing a rapid website audit. Analyze this business website URL: ${url}
+            content: `You are an expert AI integration consultant performing a rapid website audit for this business: ${url}
 
-Based on the URL and what you can infer about this business, respond ONLY with a valid JSON object (no markdown, no backticks, no preamble) with this exact structure:
+${groundingBlock}
+
+Respond ONLY with a valid JSON object (no markdown, no backticks, no preamble) with this exact structure:
 {
   "businessName": "inferred business name",
   "industry": "detected industry",
