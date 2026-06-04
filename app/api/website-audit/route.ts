@@ -61,7 +61,7 @@ Return JSON matching the schema exactly. Nothing else.`;
 const CATEGORY_SCHEMA = {
   type: 'object' as const,
   properties: {
-    score: { type: 'number', minimum: 0, maximum: 100 },
+    score: { type: 'number' },
     letter: {
       type: 'string',
       enum: ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D', 'F'],
@@ -75,7 +75,7 @@ const CATEGORY_SCHEMA = {
 const REPORT_SCHEMA = {
   type: 'object' as const,
   properties: {
-    overall_score: { type: 'number', minimum: 0, maximum: 100 },
+    overall_score: { type: 'number' },
     letter_grade: {
       type: 'string',
       enum: ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D', 'F'],
@@ -98,8 +98,6 @@ const REPORT_SCHEMA = {
     },
     top_three_fixes: {
       type: 'array' as const,
-      minItems: 3,
-      maxItems: 3,
       items: {
         type: 'object' as const,
         properties: {
@@ -113,8 +111,6 @@ const REPORT_SCHEMA = {
     },
     full_todo: {
       type: 'array' as const,
-      minItems: 8,
-      maxItems: 15,
       items: {
         type: 'object' as const,
         properties: {
@@ -268,7 +264,9 @@ function extractSignals(url: URL, html: string, status: number): Signals {
 
 export async function POST(req: Request) {
   try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    // Trim defensively: a stray newline or literal "\n" pasted into the env var
+    // produces an "invalid x-api-key" 401, which is easy to miss.
+    const apiKey = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
     if (!apiKey) {
       return NextResponse.json(
         { error: 'Audit is not configured. Email sarah@modernmustardseed.com.' },
@@ -363,11 +361,24 @@ Return the JSON report.`,
       return NextResponse.json({ error: 'Audit failed to generate a report.' }, { status: 500 });
     }
 
-    let report: unknown;
+    let report: {
+      top_three_fixes?: unknown[];
+      full_todo?: unknown[];
+      [key: string]: unknown;
+    };
     try {
       report = JSON.parse(textBlock.text);
     } catch {
       return NextResponse.json({ error: 'Audit returned malformed JSON.' }, { status: 500 });
+    }
+
+    // The schema can no longer enforce item counts (structured outputs rejects
+    // minItems/maxItems), so trim to the promised shape here.
+    if (Array.isArray(report.top_three_fixes)) {
+      report.top_three_fixes = report.top_three_fixes.slice(0, 3);
+    }
+    if (Array.isArray(report.full_todo)) {
+      report.full_todo = report.full_todo.slice(0, 15);
     }
 
     return NextResponse.json({
