@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 /**
  * Shared admin header. One responsive bar across the command center, pipeline,
@@ -30,9 +31,12 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
     <header className="border-b border-white/[0.06] sticky top-0 z-30 bg-[#080c16]/92 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-5 md:px-6 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div className="flex items-center justify-between">
-          <div>
-            <span className="text-[9px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium block">Modern Mustard Seed</span>
-            <h1 className="font-sans text-lg font-semibold text-white tracking-tight">{title}</h1>
+          <div className="flex items-center gap-2.5">
+            <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-8 w-auto" priority />
+            <div>
+              <span className="text-[9px] uppercase tracking-[0.4em] text-mustard-400 font-mono font-bold block">Modern Mustard Seed</span>
+              <h1 className="font-sans text-lg font-bold text-white tracking-tight">{title}</h1>
+            </div>
           </div>
         </div>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, FormEvent } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 /**
  * The client workspace. One screen scoped to the signed-in client: their
@@ -66,9 +67,12 @@ export default function ClientPortal() {
     <div className="min-h-screen bg-[#080c16] text-white">
       <header className="border-b border-white/[0.06] sticky top-0 z-30 bg-[#080c16]/90 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium block">Modern Mustard Seed</span>
-            <h1 className="font-sans text-xl font-semibold text-white tracking-tight mt-1">Your Portal</h1>
+          <div className="flex items-center gap-2.5">
+            <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" priority />
+            <div>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-400 font-mono font-bold block">Modern Mustard Seed</span>
+              <h1 className="font-sans text-xl font-bold text-white tracking-tight mt-1">Your Portal</h1>
+            </div>
           </div>
           <nav className="flex items-center gap-1">
             <Link href="/?book=1" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 hover:text-mustard-300 px-4 py-2">Book a call</Link>
