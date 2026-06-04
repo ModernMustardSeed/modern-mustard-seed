@@ -50,36 +50,40 @@ export default function HeroIdeaToProduct() {
           </span>
         </div>
 
-        <span className="opacity-0 animate-fade-in-up text-[10px] tracking-[0.4em] uppercase text-cream-100/80 font-mono font-medium block mb-10">
-          Modern Mustard Seed
-        </span>
+        {/* Readability card: a translucent scrim so the copy is legible while
+            the video still reads through and all around it. */}
+        <div className="opacity-0 animate-fade-in-up mb-12 mx-auto max-w-3xl rounded-[2rem] border border-cream-100/10 bg-midnight-900/45 backdrop-blur-md px-6 py-10 md:px-14 md:py-12 shadow-[0_8px_50px_rgba(8,12,22,0.5)]">
+          <span className="text-[10px] tracking-[0.4em] uppercase text-cream-100/80 font-mono font-medium block mb-8">
+            Modern Mustard Seed
+          </span>
 
-        {/* Headline: the brand's strongest line. Mustard-seed metaphor.
-            You bring the seed, we build the tree. No periods. */}
-        <h1 className="opacity-0 animate-fade-in-up font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.015em] leading-[1.0] text-cream-50 drop-shadow-[0_3px_30px_rgba(8,12,22,0.75)]">
-          You bring the seed
-          <br />
-          We build the{' '}
-          <span className="text-gradient-brass italic">tree</span>
-        </h1>
+          {/* Headline: the brand's strongest line. Mustard-seed metaphor.
+              You bring the seed, we build the tree. No periods. */}
+          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.015em] leading-[1.0] text-cream-50 drop-shadow-[0_3px_30px_rgba(8,12,22,0.75)]">
+            You bring the seed
+            <br />
+            We build the{' '}
+            <span className="text-gradient-brass italic">tree</span>
+          </h1>
 
-        {/* Hairline divider with shimmer */}
-        <div className="relative mt-10 mb-8 mx-auto h-px w-24 opacity-0 animate-fade-in-up-delay">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-light/70 to-transparent" />
-          <div className="shimmer-line absolute inset-0" />
+          {/* Hairline divider with shimmer */}
+          <div className="relative mt-10 mb-8 mx-auto h-px w-24">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-light/70 to-transparent" />
+            <div className="shimmer-line absolute inset-0" />
+          </div>
+
+          <p className="font-display text-2xl md:text-3xl font-semibold italic tracking-tight leading-[1.25] text-cream-100 max-w-2xl mx-auto mb-6 drop-shadow-[0_2px_18px_rgba(8,12,22,0.6)]">
+            Your dream, built to fullness
+          </p>
+
+          <p className="text-cream-100/90 text-base md:text-lg font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mb-4 drop-shadow-[0_1px_12px_rgba(8,12,22,0.55)]">
+            Apps, sites, and specialty AI tools for founders, operators, and small business owners who finally have a partner to ship what they have been carrying. Built in 30 days. Now booking new builds. Yours, fully.
+          </p>
+
+          <p className="text-gold-light text-sm md:text-base font-body font-medium tracking-normal max-w-2xl mx-auto leading-relaxed drop-shadow-[0_1px_12px_rgba(8,12,22,0.55)]">
+            The era of the entrepreneur is here. Bring your idea. We will build it real.
+          </p>
         </div>
-
-        <p className="opacity-0 animate-fade-in-up-delay font-display text-2xl md:text-3xl font-semibold italic tracking-tight leading-[1.25] text-cream-100 max-w-2xl mx-auto mb-6 drop-shadow-[0_2px_18px_rgba(8,12,22,0.6)]">
-          Your dream, built to fullness
-        </p>
-
-        <p className="opacity-0 animate-fade-in-up-delay text-cream-100/85 text-base md:text-lg font-body font-light tracking-normal max-w-2xl mx-auto leading-relaxed mb-4 drop-shadow-[0_1px_12px_rgba(8,12,22,0.55)]">
-          Apps, sites, and specialty AI tools for founders, operators, and small business owners who finally have a partner to ship what they have been carrying. Built in 30 days. Now booking new builds. Yours, fully.
-        </p>
-
-        <p className="opacity-0 animate-fade-in-up-delay-2 text-gold-light text-sm md:text-base font-body font-medium tracking-normal max-w-2xl mx-auto leading-relaxed mb-12 drop-shadow-[0_1px_12px_rgba(8,12,22,0.55)]">
-          The era of the entrepreneur is here. Bring your idea. We will build it real.
-        </p>
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center opacity-0 animate-fade-in-up-delay-3 mb-14">
