@@ -303,6 +303,121 @@ export function affiliateWelcomeEmail({
   return shell({ preheader: 'Your Modern Mustard Seed partner account is live', subtitle: 'Partner Program', inner });
 }
 
+/* ────────────────────────── WEBSITE AUDIT (manual, personalized) ────────────────────────── */
+
+export type AuditCategory = { score: number; letter: string; notes: string };
+export type AuditReport = {
+  overall_score: number;
+  letter_grade: string;
+  headline: string;
+  overall_analysis: string;
+  categories?: Record<string, AuditCategory>;
+  top_three_fixes?: { title: string; why: string; how: string }[];
+  full_todo?: { category: string; priority: string; task: string }[];
+};
+
+/**
+ * Personalized website-audit email. Sent by hand from the admin, never part of
+ * any drip. Carries the score, the honest headline, the three highest-leverage
+ * fixes, the full to-do list, and a booking link for anyone who wants help.
+ * `note` is Sarah's own message at the top, so each send reads as a real,
+ * one-to-one offer rather than a template.
+ */
+export function auditReportEmail({
+  toName,
+  url,
+  report,
+  note,
+}: {
+  toName?: string;
+  url: string;
+  report: AuditReport;
+  note?: string;
+}): string {
+  let domain = url;
+  try {
+    domain = new URL(/^https?:\/\//i.test(url) ? url : `https://${url}`).hostname.replace(/^www\./, '');
+  } catch {
+    /* keep raw url */
+  }
+  const first = toName?.trim()?.split(/\s+/)[0];
+
+  const priorityStyle: Record<string, { bg: string; fg: string }> = {
+    high: { bg: '#F6E2DC', fg: '#9A2D14' },
+    medium: { bg: '#F6ECD6', fg: C.goldDeep },
+    low: { bg: '#E9EEE6', fg: '#5C6B57' },
+  };
+
+  const noteHtml =
+    note && note.trim()
+      ? escape(note.trim()).replace(/\n/g, '<br>')
+      : `I ran a full audit on ${escape(domain)} and pulled together what is working, what is not, and the highest-leverage things to fix. The short version is below, the full to-do list is at the bottom.`;
+
+  const fixes = (report.top_three_fixes ?? []).slice(0, 3);
+  const fixesBlock = fixes.length
+    ? `<tr><td style="padding:30px 44px 0">
+        <div style="margin-bottom:14px">${overline('Fix these three first')}</div>
+        ${fixes
+          .map(
+            (f, i) => `
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.line};border-radius:10px;margin-bottom:12px">
+            <tr><td style="padding:18px 20px">
+              <p class="mms-ink" style="margin:0 0 8px;font-family:${SERIF};font-size:18px;font-weight:600;color:${C.ink};line-height:1.3">${i + 1}. ${escape(f.title)}</p>
+              <p class="mms-body" style="margin:0 0 6px;font-family:${SANS};font-size:14px;color:${C.body};line-height:1.6"><span style="color:${C.gold};font-weight:700;font-size:11px;letter-spacing:1.5px;text-transform:uppercase">Why&nbsp;&nbsp;</span>${escape(f.why)}</p>
+              <p class="mms-body" style="margin:0;font-family:${SANS};font-size:14px;color:${C.body};line-height:1.6"><span style="color:${C.gold};font-weight:700;font-size:11px;letter-spacing:1.5px;text-transform:uppercase">How&nbsp;&nbsp;</span>${escape(f.how)}</p>
+            </td></tr>
+          </table>`
+          )
+          .join('')}
+      </td></tr>`
+    : '';
+
+  const todos = report.full_todo ?? [];
+  const todoBlock = todos.length
+    ? `<tr><td style="padding:30px 44px 0">
+        <div style="margin-bottom:14px">${overline('Your full to-do list')}</div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.line};border-radius:10px">
+          ${todos
+            .map((t, i) => {
+              const ps = priorityStyle[t.priority] ?? priorityStyle.medium;
+              return `<tr><td style="padding:12px 18px;${i === 0 ? '' : `border-top:1px solid ${C.line}`}">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                <td valign="top" style="padding-right:12px">
+                  <span style="display:inline-block;background:${ps.bg};color:${ps.fg};padding:3px 8px;border-radius:5px;font-family:${SANS};font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">${escape(t.priority)}</span>
+                </td>
+                <td valign="top"><span class="mms-body" style="font-family:${SANS};font-size:14px;color:${C.body};line-height:1.55">${escape(t.task)}</span></td>
+              </tr></table>
+            </td></tr>`;
+            })
+            .join('')}
+        </table>
+      </td></tr>`
+    : '';
+
+  const inner =
+    headline(first ? `${first}, here is your audit` : `Your audit, ${domain}`) +
+    lede(report.headline || `A clear read on ${domain}`) +
+    paragraph(noteHtml) +
+    valueCallout(
+      'The score',
+      `<span style="font-family:${SERIF};font-size:30px;color:${C.ink};font-weight:600">${escape(String(report.overall_score))}</span><span style="font-size:15px;color:${C.muted}"> / 100</span> &nbsp;&nbsp; <span style="font-size:13px;color:${C.gold};font-weight:700;letter-spacing:1px">GRADE ${escape(report.letter_grade)}</span>`
+    ) +
+    (report.overall_analysis ? paragraph(escape(report.overall_analysis).replace(/\n/g, '<br><br>')) : '') +
+    fixesBlock +
+    todoBlock +
+    ctaBlock({ label: 'Book a 30 min call', url: BOOKING_URL }, { label: 'Run it again anytime', url: WEBSITE_AUDIT_URL }) +
+    paragraph(
+      `<span style="font-size:14px">If you want, I can take this whole list off your plate. Just reply to this email or grab a time above, and we will map the fastest path to your A.</span>`
+    ) +
+    signature('Sarah');
+
+  return shell({
+    preheader: `Your website audit: ${report.overall_score}/100 (${report.letter_grade}). The three fixes that matter most.`,
+    subtitle: `Audit · ${domain}`,
+    inner,
+  });
+}
+
 /* ────────────────────────── PROGRAM ACCESS (Terminal / Idea to Spec) ────────────────────────── */
 
 /** Delivery email for a $497 program purchase. Carries a passwordless link

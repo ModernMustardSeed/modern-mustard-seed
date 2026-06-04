@@ -228,7 +228,28 @@ function extractSignals(url: URL, html: string, status: number): Signals {
     .filter(Boolean)
     .slice(0, 30);
 
-  const chatHints = ['intercom', 'crisp', 'tawk', 'tidio', 'drift', 'hubspot', 'zendesk', 'mustard-seed', 'chatbot', 'livechat'];
+  // Chat detection. The old version only scanned external script srcs, which
+  // missed inline/self-hosted widgets (a React chatbot rendered into the page,
+  // including our own Mustard Seed bot). Now we also read aria-labels and the
+  // raw markup for vendor signatures, so a real chat widget is actually found.
+  const ariaLabels = allOf('[aria-label]')
+    .map((e) => (e.getAttribute('aria-label') ?? '').toLowerCase())
+    .filter(Boolean);
+  // Specific enough to avoid matching ordinary prose (e.g. "snowdrift").
+  const chatVendorSignatures = [
+    'intercom', 'crisp.chat', 'client.crisp', 'tawk.to', 'embed.tawk', 'tidio',
+    'js.driftt.com', 'drift.com', 'hubspot-messages', 'js.hs-scripts', 'zdassets',
+    'zendesk', 'livechatinc', 'cdn.livechat', 'freshchat', 'fbcustomerchat',
+    'static.olark', 'smartsupp', 'gorgias-chat', 'chatlio', 'kustomerapp',
+  ];
+  const lowerHtml = html.toLowerCase();
+  const hasChatWidget =
+    // A control explicitly labelled for chat (covers custom bots like ours)
+    ariaLabels.some((a) => a.includes('chat')) ||
+    // A known third-party chat widget, by script src or anywhere in the markup
+    scriptSrcs.some((s) => chatVendorSignatures.some((h) => s.toLowerCase().includes(h))) ||
+    chatVendorSignatures.some((h) => lowerHtml.includes(h));
+
   const analyticsHints = ['gtag', 'googletagmanager', 'analytics', 'segment', 'mixpanel', 'amplitude', 'plausible', 'fathom', 'umami', 'vercel'];
 
   return {
@@ -256,7 +277,7 @@ function extractSignals(url: URL, html: string, status: number): Signals {
     external_link_count: externalLinks.length,
     body_text_snippet: root.querySelector('body')?.text?.trim()?.replace(/\s+/g, ' ')?.slice(0, 5000) ?? null,
     script_srcs: scriptSrcs,
-    has_chat_widget_hint: scriptSrcs.some((s) => chatHints.some((h) => s.toLowerCase().includes(h))),
+    has_chat_widget_hint: hasChatWidget,
     has_analytics: scriptSrcs.some((s) => analyticsHints.some((h) => s.toLowerCase().includes(h))),
     aux: { llms_txt: false, ai_txt: false, robots_txt: false, sitemap_xml: false },
   };
