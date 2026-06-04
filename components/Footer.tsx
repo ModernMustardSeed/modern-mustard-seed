@@ -20,6 +20,7 @@ export default function Footer() {
         { label: 'Book a Call', href: '/book' },
         { label: 'Join the Build Queue', href: '/build-queue' },
         { label: 'AI-Proof Your Business', href: '/ai-proof' },
+        { label: 'Partner Program', href: '/partners' },
       ],
     },
     {
@@ -115,12 +116,6 @@ export default function Footer() {
             className="text-[10px] uppercase tracking-[0.15em] text-white/20 hover:text-mustard-400 transition-colors font-mono font-bold"
           >
             Client Portal
-          </Link>
-          <Link
-            href="/partners"
-            className="text-[10px] uppercase tracking-[0.15em] text-white/20 hover:text-mustard-400 transition-colors font-mono font-bold"
-          >
-            Partners
           </Link>
         </div>
 
