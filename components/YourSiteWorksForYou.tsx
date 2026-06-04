@@ -74,20 +74,22 @@ export default function YourSiteWorksForYou() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <span className="text-[10px] uppercase tracking-[0.5em] text-gold-light/85 font-mono font-medium mb-6 block">
+          <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
             What we actually build
           </span>
-          <h2 className="font-display text-4xl md:text-6xl font-medium text-cream-50 tracking-tight leading-[1.05] mb-6">
+          <h2 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-6">
             Your site should work{' '}
-            <span className="text-gradient-brass italic">for you</span>
+            <span className="text-[#F5B700] italic" style={{ WebkitTextStroke: '2px #161616' }}>
+              for you
+            </span>
           </h2>
-          <p className="font-display italic text-xl md:text-2xl text-cream-100/90 font-light leading-snug mb-4">
+          <p className="font-display italic font-bold text-xl md:text-2xl text-[#161616] leading-snug mb-4">
             Not just sit there looking nice
           </p>
-          <p className="text-cream-100/70 text-base md:text-lg font-body font-light leading-relaxed mb-5">
+          <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed mb-5">
             A Modern Mustard Seed build is not a brochure. It is a working business engine. Bespoke booking with embedded CRM. Personalized client care software. Mustard Seed AI chatbot on the page. Ordering apps for restaurants. Ecommerce shops. Custom courses, academies, rendering studios, ad command centers. Zero-to-one software for the founder building something new.
           </p>
-          <p className="font-display italic text-xl md:text-2xl text-gold-light/95 font-light leading-snug">
+          <p className="font-display italic font-bold text-xl md:text-2xl text-[#E0301E] leading-snug">
             What is your pain point? Let us fix it.
           </p>
         </div>
@@ -95,41 +97,36 @@ export default function YourSiteWorksForYou() {
         {/* Feature grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-20">
           {FEATURES.map((f) => (
-            <div
-              key={f.title}
-              className="glass-card p-8 md:p-10 hover:border-gold-light/30 transition-all duration-500"
-            >
-              <span className="font-display text-3xl md:text-4xl font-semibold text-gradient-brass tracking-tight block mb-4">
+            <div key={f.title} className="pop-card p-8 md:p-10 hover:-translate-y-1 transition-transform duration-300">
+              <span className="font-display text-3xl md:text-4xl font-black text-[#F5B700] tracking-tight block mb-4" style={{ WebkitTextStroke: '1.5px #161616' }}>
                 {f.eyebrow}
               </span>
-              <h3 className="font-display text-xl md:text-2xl font-medium text-cream-50 tracking-tight mb-3 leading-snug">
+              <h3 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-3 leading-snug">
                 {f.title}
               </h3>
-              <p className="text-cream-100/65 text-sm md:text-base font-body font-light leading-7">
-                {f.body}
-              </p>
+              <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">{f.body}</p>
             </div>
           ))}
         </div>
 
         {/* CTA */}
         <div className="text-center max-w-2xl mx-auto">
-          <p className="font-display italic text-xl md:text-2xl text-cream-100/95 font-light leading-snug mb-3">
+          <p className="font-display italic font-bold text-xl md:text-2xl text-[#161616] leading-snug mb-3">
             One build. One operator. One engine.
           </p>
-          <p className="text-cream-100/65 text-sm md:text-base font-body font-light leading-relaxed mb-10">
+          <p className="text-[#3a3733] text-sm md:text-base font-body leading-relaxed mb-10">
             Shipped in 30 days. Yours forever. Most full-service builds fall between $8,500 and $22,000 depending on scope and the depth of the AI work. Audits free.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/build-queue"
-              className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-semibold text-cream-50 bg-brass rounded-full campfire-glow hover:shadow-[0_0_55px_rgba(255,107,53,0.55)] transition-all"
+              className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
             >
               Build my engine
             </Link>
             <Link
               href="/audit"
-              className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-semibold text-cream-100 border border-cream-100/35 rounded-full bg-midnight-700/30 backdrop-blur-sm hover:bg-midnight-700/55 hover:border-cream-100/60 transition-all"
+              className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
             >
               Run the Free AI Audit
             </Link>

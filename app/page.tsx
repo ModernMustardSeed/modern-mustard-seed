@@ -1,4 +1,3 @@
-import PageBackground from '@/components/PageBackground';
 import HeroIdeaToProduct from '@/components/HeroIdeaToProduct';
 import FlagshipPrograms from '@/components/FlagshipPrograms';
 import ResultsMarquee from '@/components/ResultsMarquee';
@@ -9,7 +8,6 @@ import WhatAreYouBuilding from '@/components/WhatAreYouBuilding';
 import WhatGetsBuilt from '@/components/WhatGetsBuilt';
 import AiProofPromo from '@/components/AiProofPromo';
 import NewsletterSignup from '@/components/NewsletterSignup';
-import AuroraField from '@/components/AuroraField';
 import CelebrationVideo from '@/components/CelebrationVideo';
 import HeroVideo from '@/components/HeroVideo';
 import YourSiteWorksForYou from '@/components/YourSiteWorksForYou';
@@ -102,42 +100,37 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[homeJsonLd, offerJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} />
-      <PageBackground />
       <HeroIdeaToProduct />
 
-      <FlagshipPrograms />
-
-      <ResultsMarquee />
-      <EraOfEntrepreneur />
-
-      {/* Starting points sits in a soft sky-light section */}
-      <section className="relative overflow-hidden">
-        <AuroraField intensity="subtle" />
+      {/* Light pop-art base for the whole homepage body */}
+      <main className="relative bg-[#FBF6EA] text-[#161616]">
+        <FlagshipPrograms />
+        <ResultsMarquee />
+        <EraOfEntrepreneur />
         <StartingPoints />
-      </section>
+        <LiveStats />
+        <YourSiteWorksForYou />
+        <WhatAreYouBuilding />
+        <WhatGetsBuilt />
+        <AiProofPromo />
 
-      <LiveStats />
-      <YourSiteWorksForYou />
-      <WhatAreYouBuilding />
-      <WhatGetsBuilt />
-      <AiProofPromo />
+        {/* Celebration video close: partnership + dreams to fullness */}
+        <CelebrationVideo />
 
-      {/* Celebration video close: partnership + dreams to fullness */}
-      <CelebrationVideo />
+        <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16">
+          <NewsletterSignup />
+        </section>
 
-      <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16">
-        <NewsletterSignup />
-      </section>
-
-      {/* Lion video, at the very bottom of the page */}
-      <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 pb-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="text-[10px] uppercase tracking-[0.35em] text-mustard-400 font-mono font-bold block mb-3">
-            Watch
-          </span>
-          <HeroVideo />
-        </div>
-      </section>
+        {/* Lion video, at the very bottom of the page */}
+        <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 pb-20 border-t-4 border-[#161616]">
+          <div className="max-w-4xl mx-auto text-center pt-16">
+            <span className="text-[10px] uppercase tracking-[0.35em] text-[#E0301E] font-mono font-bold block mb-3">
+              Watch
+            </span>
+            <HeroVideo />
+          </div>
+        </section>
+      </main>
     </>
   );
 }

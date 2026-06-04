@@ -21,13 +21,16 @@ export default function WhatGetsBuilt() {
   return (
     <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-20 md:py-28">
       <div className="text-center max-w-3xl mx-auto mb-14">
-        <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium mb-5 block">
+        <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold mb-5 block">
           Recent work
         </span>
-        <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4">
-          Real products <span className="text-gradient-mustard">real receipts</span>
+        <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight mb-4">
+          Real products{' '}
+          <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+            real receipts
+          </span>
         </h2>
-        <p className="text-white/55 text-base font-body font-light leading-relaxed">
+        <p className="text-[#3a3733] text-base font-body leading-relaxed">
           A range of recent builds. Apps, dashboards, storefronts, specialty AI tools.
         </p>
       </div>
@@ -37,30 +40,30 @@ export default function WhatGetsBuilt() {
           <TiltCard key={s.slug}>
             <Link
               href={`/work/${s.slug}`}
-              className="group glass-card p-6 flex flex-col hover:border-mustard-500/20 transition-all duration-500 h-full"
+              className="group pop-card p-6 flex flex-col hover:-translate-y-1 transition-transform duration-300 h-full"
             >
               <div className="flex items-center gap-2.5 mb-4">
                 {s.tag && (
-                  <span className="skill-pill text-mustard-400/70 border-mustard-500/20 text-[8px]">
+                  <span className="text-[8px] uppercase tracking-[0.18em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-2.5 py-1">
                     {s.tag}
                   </span>
                 )}
               </div>
 
-              <h3 className="font-sans text-lg md:text-xl font-semibold text-white/95 tracking-tight mb-3 leading-snug">
+              <h3 className="font-display text-lg md:text-xl font-black text-[#161616] tracking-tight mb-3 leading-snug">
                 {s.title.split(':')[0]}
               </h3>
 
-              <p className="text-white/50 text-sm font-body font-light leading-6 mb-5 flex-1">
+              <p className="text-[#3a3733] text-sm font-body leading-6 mb-5 flex-1">
                 {s.description}
               </p>
 
               {s.metrics && s.metrics[0] && (
-                <div className="pt-4 border-t border-white/[0.05]">
-                  <div className="font-sans text-base font-semibold text-mustard-300/80">
+                <div className="pt-4 border-t-2 border-[#161616]/10">
+                  <div className="font-display text-base font-black text-[#E0301E]">
                     {s.metrics[0].value}
                   </div>
-                  <div className="text-[9px] uppercase tracking-[0.25em] text-white/35 font-mono mt-1">
+                  <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/45 font-mono mt-1">
                     {s.metrics[0].label}
                   </div>
                 </div>
@@ -73,7 +76,7 @@ export default function WhatGetsBuilt() {
       <div className="flex justify-center">
         <Link
           href="/work"
-          className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] font-sans font-medium text-white/50 hover:text-mustard-400 transition-colors"
+          className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#161616] hover:text-[#E0301E] transition-colors"
         >
           See all the work
           <svg

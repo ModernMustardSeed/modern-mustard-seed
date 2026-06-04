@@ -31,14 +31,18 @@ export default function StartingPoints() {
   return (
     <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-20 md:py-28">
       <div className="text-center max-w-3xl mx-auto mb-14">
-        <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium mb-5 block">
+        <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold mb-5 block">
           For everyone
         </span>
-        <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4">
-          Three <span className="text-gradient-mustard">ways in</span>
+        <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight mb-4">
+          Three{' '}
+          <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+            ways in
+          </span>
         </h2>
-        <p className="text-white/55 text-base font-body font-light leading-relaxed">
-          You do not need to know much about AI. You do not need a technical co-founder. Pick the path that sounds like you.
+        <p className="text-[#3a3733] text-base font-body leading-relaxed">
+          You do not need to know much about AI. You do not need a technical co-founder. Pick the path
+          that sounds like you.
         </p>
       </div>
 
@@ -46,23 +50,19 @@ export default function StartingPoints() {
         {PATHS.map((p) => (
           <article
             key={p.label}
-            className="glass-card p-7 md:p-8 flex flex-col hover:border-mustard-500/20 transition-all duration-500"
+            className="pop-card p-7 md:p-8 flex flex-col hover:-translate-y-1 transition-transform duration-300"
           >
-            <span className="text-[9px] uppercase tracking-[0.3em] text-mustard-500/60 font-mono font-medium mb-4">
+            <span className="text-[9px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-4">
               {p.eyebrow}
             </span>
-            <h3 className="font-sans text-xl md:text-2xl font-semibold text-white tracking-tight mb-4 leading-snug">
+            <h3 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-4 leading-snug">
               {p.label}
             </h3>
-            <p className="text-white/55 text-sm md:text-base font-body font-light leading-7 mb-5 flex-1">
-              {p.body}
-            </p>
-            <p className="text-mustard-300/80 text-sm font-body italic leading-relaxed pt-4 border-t border-white/[0.05]">
+            <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5 flex-1">{p.body}</p>
+            <p className="text-[#161616] text-sm font-body font-bold italic leading-relaxed pt-4 border-t-2 border-[#161616]/10">
               {p.outcome}
             </p>
-            <p className="text-white/35 text-xs font-body leading-relaxed mt-3">
-              For: {p.forWho}
-            </p>
+            <p className="text-[#161616]/45 text-xs font-body leading-relaxed mt-3">For: {p.forWho}</p>
           </article>
         ))}
       </div>
@@ -70,7 +70,7 @@ export default function StartingPoints() {
       <div className="flex justify-center">
         <Link
           href="/build-queue"
-          className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(255,107,53,0.25)] transition-all"
+          className="inline-block px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
         >
           Tell us what you need
         </Link>

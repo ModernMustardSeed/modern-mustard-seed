@@ -88,10 +88,10 @@ export default function EraOfEntrepreneur() {
         }
         .spark {
           position: absolute;
-          width: 6px;
-          height: 6px;
+          width: 9px;
+          height: 9px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(143, 192, 239, 0.95), transparent 70%);
+          background: radial-gradient(circle, rgba(245, 183, 0, 0.95), transparent 70%);
           animation: float-spark 6s ease-in-out infinite;
           pointer-events: none;
         }
@@ -119,19 +119,19 @@ export default function EraOfEntrepreneur() {
       <div className="spark" style={{ top: '50%', left: '50%', animationDelay: '3.5s' }} />
 
       <div className="absolute inset-x-0 top-0 flex justify-center pointer-events-none">
-        <div className="w-px h-24 bg-gradient-to-b from-transparent via-mustard-500/30 to-transparent" />
+        <div className="w-px h-24 bg-gradient-to-b from-transparent via-[#161616]/20 to-transparent" />
       </div>
 
       <div className="max-w-5xl mx-auto text-center relative">
-        <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-7 block">
+        <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-7 block">
           A manifesto
         </span>
 
-        <h2 className="font-sans text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95] mb-10">
+        <h2 className="font-display text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-10">
           {HEADLINE_WORDS.map((w, i) => (
             <span
               key={`${w}-${i}`}
-              className={`word-reveal ${visible ? 'in' : ''} ${i === 1 || i === 4 ? 'headline-shimmer' : 'text-white'} mr-3`}
+              className={`word-reveal ${visible ? 'in' : ''} ${i === 1 || i === 4 ? 'text-[#E0301E]' : 'text-[#161616]'} mr-3`}
               style={{ animationDelay: `${i * 0.12}s` }}
             >
               {w}
@@ -139,19 +139,19 @@ export default function EraOfEntrepreneur() {
           ))}
         </h2>
 
-        <p className="text-white/75 text-lg md:text-2xl font-body font-light leading-relaxed max-w-3xl mx-auto mb-6">
+        <p className="text-[#161616] text-lg md:text-2xl font-body leading-relaxed max-w-3xl mx-auto mb-6">
           One person with the right tools can now build what used to take a team of fifty.
         </p>
-        <p className="text-mustard-200/80 text-base md:text-lg font-body font-medium leading-relaxed max-w-2xl mx-auto mb-14">
+        <p className="text-[#3a3733] text-base md:text-lg font-body font-bold leading-relaxed max-w-2xl mx-auto mb-14">
           That is the era we are in. We are here to give you the tools.
         </p>
 
-        <div className="text-2xl md:text-4xl font-body text-white/70 mb-12 flex items-center justify-center flex-wrap gap-x-3 gap-y-2">
+        <div className="text-2xl md:text-4xl font-body text-[#161616] mb-12 flex items-center justify-center flex-wrap gap-x-3 gap-y-2">
           <span>Built for</span>
           <span className="rotator">
             <span
               key={wordIdx}
-              className="rotator-word font-serif italic text-mustard-300 text-3xl md:text-5xl tracking-tight"
+              className="rotator-word font-display italic font-black text-[#1E50C8] text-3xl md:text-5xl tracking-tight"
             >
               {ROTATING_WORDS[wordIdx]}
             </span>
@@ -161,13 +161,13 @@ export default function EraOfEntrepreneur() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
           <MagneticLink
             href="/build-queue"
-            className="px-10 py-4 text-[12px] uppercase tracking-[0.22em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_55px_rgba(255,107,53,0.5)]"
+            className="px-10 py-4 text-[12px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5"
           >
             Get in the build queue
           </MagneticLink>
           <Link
             href="/work"
-            className="px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/55 hover:text-mustard-300 transition-all"
+            className="px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#161616]/60 hover:text-[#E0301E] transition-all"
           >
             See what we ship →
           </Link>
@@ -175,7 +175,7 @@ export default function EraOfEntrepreneur() {
       </div>
 
       <div className="absolute inset-x-0 bottom-0 flex justify-center pointer-events-none">
-        <div className="w-px h-24 bg-gradient-to-t from-transparent via-mustard-500/30 to-transparent" />
+        <div className="w-px h-24 bg-gradient-to-t from-transparent via-[#161616]/20 to-transparent" />
       </div>
     </section>
   );

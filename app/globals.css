@@ -36,6 +36,33 @@
     scroll-behavior: smooth;
   }
 
+  /* ── Pop-art building blocks (comic cards, halftone, sticker shadows) ── */
+  .pop-card {
+    background: #ffffff;
+    border: 2px solid #161616;
+    border-radius: 1rem;
+    box-shadow: 5px 5px 0 0 #161616;
+  }
+  .pop-card-yellow {
+    background: #f5b700;
+    border: 2px solid #161616;
+    border-radius: 1rem;
+    box-shadow: 5px 5px 0 0 #161616;
+  }
+  .pop-card-cream {
+    background: #fffdf6;
+    border: 2px solid #161616;
+    border-radius: 1rem;
+    box-shadow: 5px 5px 0 0 #161616;
+  }
+  .pop-shadow {
+    box-shadow: 4px 4px 0 0 #161616;
+  }
+  .halftone-bg {
+    background-image: radial-gradient(rgba(245, 183, 0, 0.3) 1.5px, transparent 1.6px);
+    background-size: 18px 18px;
+  }
+
   ::selection {
     background-color: rgba(200, 150, 78, 0.35);
     color: #f5f0e8;
