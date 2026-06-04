@@ -5,15 +5,15 @@ import HeroVideo from './HeroVideo';
 export default function HeroIdeaToProduct() {
   return (
     <section className="relative isolate min-h-[94vh] flex flex-col items-center justify-center px-6 pt-36 md:pt-44 pb-24 text-center overflow-hidden">
-      {/* Layer 0: Warm amber plate that matches the video so there is no flash */}
-      <div className="absolute inset-0 z-0 bg-[#D98E2B]" aria-hidden="true" />
+      {/* Layer 0: Warm mustard plate that matches the video so there is no flash */}
+      <div className="absolute inset-0 z-0 bg-[#D1A02B]" aria-hidden="true" />
 
       {/* Layer 1: Real cinematic backdrop video with optional soundtrack */}
       <HeroVideo />
 
-      {/* Layer 2: Warm amber base tint over the video so the brand owns the color */}
+      {/* Layer 2: Warm mustard base tint over the video so the brand owns the color */}
       <div
-        className="absolute inset-0 z-[1] bg-[#D98E2B]/20 mix-blend-multiply pointer-events-none"
+        className="absolute inset-0 z-[1] bg-[#D1A02B]/20 mix-blend-multiply pointer-events-none"
         aria-hidden="true"
       />
 
