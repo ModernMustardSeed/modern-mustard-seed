@@ -70,13 +70,6 @@ export default function WorkWithUsPage() {
           <p className="text-white/40 text-sm font-body italic">
             Pick the path that sounds like your situation. We quote after a free discovery call.
           </p>
-
-          <div className="mt-10 max-w-2xl mx-auto px-5 py-4 border border-mustard-500/20 rounded-lg bg-mustard-500/[0.03]">
-            <p className="text-white/65 text-sm font-body font-light leading-relaxed">
-              <span className="text-mustard-400 font-semibold">Pricing orientation.</span>{' '}
-              The free AI Audit is free. Builds range from $2,500 to $45,000+ depending on scope and complexity. Retainers from $1,500/month. The number below each engagement is the range typical for that path. Every project is quoted in writing before any work begins.
-            </p>
-          </div>
         </div>
 
         {/* Engagements */}
