@@ -44,136 +44,183 @@ export default function StorePage() {
   ];
 
   return (
-    <main className="min-h-screen bg-midnight-900 text-cream-50 pt-24">
-      <JsonLd data={jsonLd} />
+    <main className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-24">
+      <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+      <div className="relative">
+        <JsonLd data={jsonLd} />
 
-      <header className="max-w-5xl mx-auto px-6 md:px-8 pt-12 md:pt-20 pb-12 text-center">
-        <span className="text-[10px] uppercase tracking-[0.45em] text-gold-light/85 font-mono font-medium mb-7 block">
-          The Playbook Store
-        </span>
-        <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-medium text-cream-50 tracking-tight leading-[1.02] mb-7">
-          The same systems behind our{' '}
-          <span className="text-gradient-brass italic">client work</span>
-        </h1>
-        <p className="font-display italic text-2xl md:text-3xl text-cream-100/95 font-light leading-snug mb-5">
-          Seven playbooks. From $47
-        </p>
-        <p className="text-cream-100/70 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto mb-2">
-          Production-tested workbooks built from 40+ shipped AI products. AI strategy. Claude Code. Shopify builds. Brand systems. AI sales. GEO and AI commerce. Instant PDF download after purchase.
-        </p>
-        <p className="text-cream-100/45 text-xs font-mono uppercase tracking-[0.25em]">
-          Authored by Sarah Scarano. Built by Modern Mustard Seed
-        </p>
-      </header>
+        <header className="max-w-5xl mx-auto px-6 md:px-8 pt-12 md:pt-20 pb-12 text-center">
+          <span className="text-[10px] uppercase tracking-[0.45em] text-[#E0301E] font-mono font-bold mb-7 block">
+            The Playbook Store
+          </span>
+          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[1.02] mb-7">
+            The same systems behind our{' '}
+            <span className="text-[#F5B700] italic" style={{ WebkitTextStroke: '2px #161616' }}>
+              client work
+            </span>
+          </h1>
+          <p className="font-display italic font-bold text-2xl md:text-3xl text-[#161616] leading-snug mb-5">
+            Seven playbooks. From $47
+          </p>
+          <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-2">
+            Production-tested workbooks built from 40+ shipped AI products. AI strategy. Claude Code. Shopify builds. Brand systems. AI sales. GEO and AI commerce. Instant PDF download after purchase.
+          </p>
+          <p className="text-[#161616]/45 text-xs font-mono uppercase tracking-[0.25em]">
+            Authored by Sarah Scarano. Built by Modern Mustard Seed
+          </p>
+        </header>
 
-      {/* Flagship programs: the two $497 front doors */}
-      <section className="max-w-5xl mx-auto px-6 md:px-8 mb-16">
-        <div className="text-center mb-8">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-gold-light/85 font-mono font-bold block mb-3">The flagship programs</span>
-          <p className="text-cream-100/70 font-body">Spec it, then build it. Two front doors at $497, or get both in the Zero to One Bundle.</p>
-        </div>
-        <div className="grid md:grid-cols-2 gap-5">
-          {['idea-to-spec', 'the-terminal'].map((slug) => {
-            const p = programs.find((x) => x.slug === slug)!;
-            return (
-              <Link
-                key={slug}
-                href={`/${slug}`}
-                className="block rounded-2xl border border-white/[0.08] p-7 hover:border-gold-light/40 transition-all group"
-                style={{ background: `linear-gradient(155deg, ${p.accent}55 0%, rgba(13,18,28,0.7) 70%)` }}
-              >
-                <span className="text-[10px] uppercase tracking-[0.3em] text-gold-light/85 font-mono font-bold">{p.name} . ${p.priceUsd}</span>
-                <h3 className="font-display text-2xl font-semibold text-cream-50 mt-3 leading-tight">{p.tagline}</h3>
-                <p className="text-cream-100/60 font-body text-sm mt-3 leading-relaxed">{p.promise}</p>
-                <span className="inline-flex items-center gap-2 mt-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-gold-light group-hover:gap-3 transition-all">
-                  Explore <span aria-hidden>&rarr;</span>
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {featured && (
-        <section className="max-w-5xl mx-auto px-6 md:px-8 mb-20">
-          <Link
-            href={`/store/${featured.slug}`}
-            className="block glass-card p-8 md:p-12 border-gold-light/30 bg-gradient-to-br from-gold-light/[0.04] via-transparent to-brass/[0.04] hover:border-gold-light/50 transition-all duration-500 group"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center">
-              <div>
-                <span className="text-[9px] uppercase tracking-[0.45em] text-gold-light/85 font-mono font-bold mb-4 block">
-                  The Complete Library. Save $115
-                </span>
-                <h2 className="font-display text-3xl md:text-5xl font-medium text-cream-50 tracking-tight leading-[1.05] mb-4">
-                  {featured.name}
-                </h2>
-                <p className="text-cream-100/80 text-base md:text-lg font-body font-light leading-relaxed mb-3">
-                  {featured.pitch}
-                </p>
-                <p className="text-cream-100/45 text-xs font-mono uppercase tracking-[0.25em]">
-                  7 playbooks · 240+ pages · ${featured.priceUsd}
-                </p>
-              </div>
-              <div className="md:text-right">
-                <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-[11px] uppercase tracking-[0.22em] font-sans font-bold text-cream-50 bg-brass campfire-glow group-hover:shadow-[0_0_40px_rgba(255,107,53,0.5)] transition-all">
-                  Get the Library →
-                </span>
-              </div>
-            </div>
-          </Link>
-        </section>
-      )}
-
-      {Object.entries(grouped).map(([category, items]) => (
-        <section key={category} className="max-w-6xl mx-auto px-6 md:px-8 mb-20">
-          <div className="mb-10">
-            <h2 className="font-display text-2xl md:text-4xl font-medium text-cream-50 tracking-tight mb-3">
-              {category}
-            </h2>
-            <p className="text-cream-100/65 text-sm md:text-base font-body font-light leading-relaxed max-w-2xl">
-              {CATEGORY_BLURBS[category]}
-            </p>
+        {/* Flagship programs: the two $497 front doors */}
+        <section className="max-w-5xl mx-auto px-6 md:px-8 mb-16">
+          <div className="text-center mb-8">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-3">The flagship programs</span>
+            <p className="text-[#3a3733] font-body">Spec it, then build it. Two front doors at $497, or get both in the Zero to One Bundle.</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {items.map((p) => {
-              const soon = !!p.comingSoon;
+          <div className="grid md:grid-cols-2 gap-5">
+            {['idea-to-spec', 'the-terminal'].map((slug) => {
+              const p = programs.find((x) => x.slug === slug)!;
               return (
                 <Link
-                  key={p.slug}
-                  href={`/store/${p.slug}`}
-                  className="group relative glass-card p-7 md:p-8 hover:border-gold-light/30 transition-all duration-500 flex flex-col overflow-hidden"
-                  style={{
-                    boxShadow: `inset 4px 0 0 0 ${p.accentColor}`,
-                  }}
+                  key={slug}
+                  href={`/${slug}`}
+                  className="block rounded-2xl border-2 border-[#161616] bg-white p-7 transition-transform hover:-translate-y-1 group"
+                  style={{ boxShadow: `inset 6px 0 0 0 ${p.accent}, 5px 5px 0 0 #161616` }}
                 >
-                  <div
-                    className="absolute -top-20 -right-20 w-48 h-48 rounded-full opacity-[0.06] blur-3xl pointer-events-none group-hover:opacity-[0.12] transition-opacity duration-700"
-                    style={{ backgroundColor: p.accentColor }}
-                  />
-                  <div className="flex items-center justify-between mb-4 relative">
-                    <span className="text-[9px] uppercase tracking-[0.3em] text-gold-light/70 font-mono font-bold">
-                      {p.category}
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">{p.name} . ${p.priceUsd}</span>
+                  <h3 className="font-display text-2xl font-black text-[#161616] mt-3 leading-tight">{p.tagline}</h3>
+                  <p className="text-[#3a3733] font-body text-sm mt-3 leading-relaxed">{p.promise}</p>
+                  <span className="inline-flex items-center gap-2 mt-5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] group-hover:gap-3 transition-all">
+                    Explore <span aria-hidden>&rarr;</span>
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        {featured && (
+          <section className="max-w-5xl mx-auto px-6 md:px-8 mb-20">
+            <Link
+              href={`/store/${featured.slug}`}
+              className="block pop-card-yellow p-8 md:p-12 transition-transform duration-300 hover:-translate-y-1 group"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center">
+                <div>
+                  <span className="text-[9px] uppercase tracking-[0.45em] text-[#161616] font-mono font-bold mb-4 block">
+                    The Complete Library. Save $115
+                  </span>
+                  <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05] mb-4">
+                    {featured.name}
+                  </h2>
+                  <p className="text-[#161616]/80 text-base md:text-lg font-body font-medium leading-relaxed mb-3">
+                    {featured.pitch}
+                  </p>
+                  <p className="text-[#161616]/55 text-xs font-mono uppercase tracking-[0.25em]">
+                    7 playbooks · 240+ pages · ${featured.priceUsd}
+                  </p>
+                </div>
+                <div className="md:text-right">
+                  <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] border-2 border-[#161616] transition-all">
+                    Get the Library →
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </section>
+        )}
+
+        {Object.entries(grouped).map(([category, items]) => (
+          <section key={category} className="max-w-6xl mx-auto px-6 md:px-8 mb-20">
+            <div className="mb-10">
+              <h2 className="font-display text-2xl md:text-4xl font-black text-[#161616] tracking-tight mb-3">
+                {category}
+              </h2>
+              <p className="text-[#3a3733] text-sm md:text-base font-body leading-relaxed max-w-2xl">
+                {CATEGORY_BLURBS[category]}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {items.map((p) => {
+                const soon = !!p.comingSoon;
+                return (
+                  <Link
+                    key={p.slug}
+                    href={`/store/${p.slug}`}
+                    className="group relative bg-white border-2 border-[#161616] rounded-2xl p-7 md:p-8 transition-transform duration-300 hover:-translate-y-1 flex flex-col overflow-hidden"
+                    style={{ boxShadow: `inset 6px 0 0 0 ${p.accentColor}, 5px 5px 0 0 #161616` }}
+                  >
+                    <div className="flex items-center justify-between mb-4 relative">
+                      <span className="text-[9px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
+                        {p.category}
+                      </span>
+                      {soon && (
+                        <span className="text-[8px] uppercase tracking-[0.3em] text-[#161616]/55 font-mono font-bold px-2 py-1 rounded-full border-2 border-[#161616]/20 bg-[#FBF6EA]">
+                          Coming soon
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-display text-xl md:text-2xl text-[#161616] font-black tracking-tight leading-snug mb-3 relative">
+                      {p.name}
+                    </h3>
+                    <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-5 flex-1 relative">
+                      {p.pitch}
+                    </p>
+                    <div className="flex items-baseline justify-between relative">
+                      <span className="font-display text-2xl text-[#161616] font-black tracking-tight">
+                        ${p.priceUsd}
+                      </span>
+                      <span className="text-[10px] uppercase tracking-[0.25em] text-[#161616]/45 font-mono">
+                        {p.pages} pages
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+
+        <section className="max-w-6xl mx-auto px-6 md:px-8 mb-20">
+          <div className="mb-10">
+            <h2 className="font-display text-2xl md:text-4xl font-black text-[#161616] tracking-tight mb-3">
+              Bundles
+            </h2>
+            <p className="text-[#3a3733] text-sm md:text-base font-body leading-relaxed max-w-2xl">
+              Buy by topic and save. Same playbooks, lower per-page price.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {bundles.map((b) => {
+              const soon = isComingSoon(b.slug);
+              return (
+                <Link
+                  key={b.slug}
+                  href={`/store/${b.slug}`}
+                  className="group pop-card p-7 md:p-8 transition-transform duration-300 hover:-translate-y-1 flex flex-col"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[9px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
+                      Bundle · Save ${b.savings}
                     </span>
                     {soon && (
-                      <span className="text-[8px] uppercase tracking-[0.3em] text-cream-100/55 font-mono font-bold px-2 py-1 rounded-full border border-cream-100/15 bg-midnight-700/50">
+                      <span className="text-[8px] uppercase tracking-[0.3em] text-[#161616]/55 font-mono font-bold px-2 py-1 rounded-full border-2 border-[#161616]/20 bg-[#FBF6EA]">
                         Coming soon
                       </span>
                     )}
                   </div>
-                  <h3 className="font-display text-xl md:text-2xl text-cream-50 font-medium tracking-tight leading-snug mb-3 relative">
-                    {p.name}
+                  <h3 className="font-display text-xl md:text-2xl text-[#161616] font-black tracking-tight leading-snug mb-3">
+                    {b.name}
                   </h3>
-                  <p className="text-cream-100/65 text-sm font-body font-light leading-relaxed mb-5 flex-1 relative">
-                    {p.pitch}
+                  <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-5 flex-1">
+                    {b.pitch}
                   </p>
-                  <div className="flex items-baseline justify-between relative">
-                    <span className="font-display text-2xl text-cream-50 font-medium tracking-tight">
-                      ${p.priceUsd}
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-display text-2xl text-[#161616] font-black tracking-tight">
+                      ${b.priceUsd}
                     </span>
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-cream-100/45 font-mono">
-                      {p.pages} pages
+                    <span className="text-[10px] uppercase tracking-[0.25em] text-[#161616]/45 font-mono line-through">
+                      ${b.individualTotal}
                     </span>
                   </div>
                 </Link>
@@ -181,83 +228,35 @@ export default function StorePage() {
             })}
           </div>
         </section>
-      ))}
 
-      <section className="max-w-6xl mx-auto px-6 md:px-8 mb-20">
-        <div className="mb-10">
-          <h2 className="font-display text-2xl md:text-4xl font-medium text-cream-50 tracking-tight mb-3">
-            Bundles
-          </h2>
-          <p className="text-cream-100/65 text-sm md:text-base font-body font-light leading-relaxed max-w-2xl">
-            Buy by topic and save. Same playbooks, lower per-page price.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {bundles.map((b) => {
-            const soon = isComingSoon(b.slug);
-            return (
+        <section className="max-w-3xl mx-auto px-6 md:px-8 pb-24 text-center">
+          <div className="pop-card-yellow p-8 md:p-12">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#161616] font-mono font-bold mb-5 block">
+              Ready to build it for you?
+            </span>
+            <h2 className="font-display text-2xl md:text-4xl font-black text-[#161616] tracking-tight mb-4">
+              Skip the workbook
+            </h2>
+            <p className="text-[#161616]/80 text-base font-body font-medium leading-relaxed mb-7 max-w-xl mx-auto">
+              If you would rather have us ship the system than build it yourself, the playbooks are credited toward any Seed Site or Full-Service Business Build. Just mention it on the discovery call.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                key={b.slug}
-                href={`/store/${b.slug}`}
-                className="group glass-card p-7 md:p-8 hover:border-gold-light/30 transition-all duration-500 flex flex-col"
+                href="/work-with-us"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all text-center"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-[9px] uppercase tracking-[0.3em] text-gold-light/70 font-mono font-bold">
-                    Bundle · Save ${b.savings}
-                  </span>
-                  {soon && (
-                    <span className="text-[8px] uppercase tracking-[0.3em] text-cream-100/55 font-mono font-bold px-2 py-1 rounded-full border border-cream-100/15 bg-midnight-700/50">
-                      Coming soon
-                    </span>
-                  )}
-                </div>
-                <h3 className="font-display text-xl md:text-2xl text-cream-50 font-medium tracking-tight leading-snug mb-3">
-                  {b.name}
-                </h3>
-                <p className="text-cream-100/65 text-sm font-body font-light leading-relaxed mb-5 flex-1">
-                  {b.pitch}
-                </p>
-                <div className="flex items-baseline justify-between">
-                  <span className="font-display text-2xl text-cream-50 font-medium tracking-tight">
-                    ${b.priceUsd}
-                  </span>
-                  <span className="text-[10px] uppercase tracking-[0.25em] text-cream-100/45 font-mono line-through">
-                    ${b.individualTotal}
-                  </span>
-                </div>
+                See engagements
               </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="max-w-3xl mx-auto px-6 md:px-8 pb-24 text-center">
-        <div className="glass-card p-8 md:p-12 border-gold-light/20">
-          <span className="text-[10px] uppercase tracking-[0.45em] text-gold-light/85 font-mono font-medium mb-5 block">
-            Ready to build it for you?
-          </span>
-          <h2 className="font-display text-2xl md:text-4xl font-medium text-cream-50 tracking-tight mb-4">
-            Skip the workbook
-          </h2>
-          <p className="text-cream-100/75 text-base font-body font-light leading-relaxed mb-7 max-w-xl mx-auto">
-            If you would rather have us ship the system than build it yourself, the playbooks are credited toward any Seed Site or Full-Service Business Build. Just mention it on the discovery call.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              href="/work-with-us"
-              className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-semibold text-cream-50 bg-brass rounded-full campfire-glow hover:shadow-[0_0_40px_rgba(255,107,53,0.5)] transition-all text-center"
-            >
-              See engagements
-            </Link>
-            <Link
-              href="/build-queue"
-              className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-semibold text-cream-100 border border-cream-100/30 rounded-full bg-midnight-700/30 backdrop-blur-sm hover:bg-midnight-700/55 hover:border-cream-100/55 transition-all text-center"
-            >
-              Apply to build queue
-            </Link>
+              <Link
+                href="/build-queue"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-center"
+              >
+                Apply to build queue
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

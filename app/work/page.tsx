@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import StaticBackground from '@/components/StaticBackground';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { listContent } from '@/lib/content';
@@ -22,18 +21,20 @@ export default function WorkIndex() {
           { name: 'Work', url: '/work' },
         ])}
       />
-      <StaticBackground />
-
-      <div className="relative pt-36 md:pt-44 pb-28">
-        <div className="max-w-6xl mx-auto px-6 md:px-8">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
+        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto px-6 md:px-8">
           <div className="text-center mb-12">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
               The Work
             </span>
-            <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6">
-              Real Products <span className="text-gradient-mustard">Real Receipts</span>
+            <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6">
+              Real Products{' '}
+              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
+                Real Receipts
+              </span>
             </h1>
-            <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-[#3a3733] text-lg font-body leading-relaxed max-w-2xl mx-auto">
               Each case study is a teardown. The problem, the build, the stack, the outcome. What it was. How we built it. What it does now.
             </p>
           </div>
@@ -44,34 +45,32 @@ export default function WorkIndex() {
                 <Link
                   key={s.slug}
                   href={`/work/${s.slug}`}
-                  className="group glass-card p-8 hover:border-mustard-500/20 transition-all duration-500"
+                  className="group pop-card p-8 hover:-translate-y-1 transition-transform duration-300"
                 >
                   <div className="flex items-center gap-3 mb-5">
                     {s.tag && (
-                      <span className="skill-pill text-mustard-400/70 border-mustard-500/20 text-[8px]">
+                      <span className="text-[8px] uppercase tracking-[0.18em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-2.5 py-1">
                         {s.tag}
                       </span>
                     )}
                     {s.client && (
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-mono">
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-[#161616]/40 font-mono">
                         {s.client}
                       </span>
                     )}
                   </div>
-                  <h2 className="font-sans text-2xl font-bold text-white/90 group-hover:text-white tracking-wide mb-3 leading-snug transition-colors">
+                  <h2 className="font-display text-2xl font-black text-[#161616] tracking-tight mb-3 leading-snug">
                     {s.title}
                   </h2>
-                  <p className="text-white/45 text-sm font-body font-light leading-7 mb-5">
+                  <p className="text-[#3a3733] text-sm font-body leading-7 mb-5">
                     {s.description}
                   </p>
                   {s.metrics && (
-                    <div className="grid grid-cols-3 gap-3 pt-5 border-t border-white/[0.05]">
+                    <div className="grid grid-cols-3 gap-3 pt-5 border-t-2 border-[#161616]/10">
                       {s.metrics.slice(0, 3).map((m) => (
                         <div key={m.label}>
-                          <div className="font-sans text-lg font-bold text-gradient-mustard">
-                            {m.value}
-                          </div>
-                          <div className="text-[9px] uppercase tracking-[0.2em] text-white/30 font-mono mt-1">
+                          <div className="font-display text-lg font-black text-[#E0301E]">{m.value}</div>
+                          <div className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/40 font-mono mt-1">
                             {m.label}
                           </div>
                         </div>
@@ -82,21 +81,21 @@ export default function WorkIndex() {
               ))}
             </div>
           ) : (
-            <p className="text-center text-white/40 font-body italic mb-12">
+            <p className="text-center text-[#161616]/40 font-body italic mb-12">
               New case studies shipping shortly.
             </p>
           )}
 
-          <div className="text-center glass-card p-10 max-w-3xl mx-auto">
-            <h3 className="font-sans text-2xl md:text-3xl font-semibold text-white tracking-tight mb-4">
+          <div className="text-center pop-card-yellow p-10 max-w-3xl mx-auto">
+            <h3 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight mb-4">
               Want this for your venture?
             </h3>
-            <p className="text-white/55 text-base font-body font-light mb-6 max-w-lg mx-auto">
+            <p className="text-[#161616]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">
               Now booking new builds. Drop your idea and Sarah will review it personally.
             </p>
             <Link
               href="/build-queue"
-              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(255,107,53,0.25)] transition-all"
+              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.35)] hover:-translate-y-0.5 transition-all"
             >
               Join the Build Queue
             </Link>
