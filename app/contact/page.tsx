@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import StaticBackground from '@/components/StaticBackground';
 import ContactForm from '@/components/ContactForm';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
@@ -25,11 +24,13 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
           { name: 'Contact', url: '/contact' },
         ])}
       />
-      <StaticBackground />
-      <div className="relative pt-28 md:pt-32">
-        <Suspense fallback={null}>
-          <ContactForm defaultPackage={pkg} />
-        </Suspense>
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-28 md:pt-32">
+        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+        <div className="relative">
+          <Suspense fallback={null}>
+            <ContactForm defaultPackage={pkg} />
+          </Suspense>
+        </div>
       </div>
     </>
   );

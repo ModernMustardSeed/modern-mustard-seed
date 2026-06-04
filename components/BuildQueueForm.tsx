@@ -67,12 +67,12 @@ export default function BuildQueueForm() {
 
   if (status === 'success') {
     return (
-      <div className="glass-card p-10 md:p-14 text-center">
+      <div className="pop-card-yellow p-10 md:p-14 text-center">
         <div className="text-5xl mb-6">🌱</div>
-        <h2 className="font-sans text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4">
+        <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight mb-4">
           You&rsquo;re on the list
         </h2>
-        <p className="text-white/60 text-base md:text-lg font-body font-light max-w-md mx-auto leading-relaxed">
+        <p className="text-[#161616]/80 text-base md:text-lg font-body font-medium max-w-md mx-auto leading-relaxed">
           Sarah reviews every entry. You&rsquo;ll hear back within 3 business days.
         </p>
       </div>
@@ -80,10 +80,10 @@ export default function BuildQueueForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card p-8 md:p-10 space-y-6">
+    <form onSubmit={handleSubmit} className="pop-card p-8 md:p-10 space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-mono font-bold block mb-2">
+          <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2">
             Name
           </label>
           <input
@@ -91,12 +91,12 @@ export default function BuildQueueForm() {
             type="text"
             value={form.name}
             onChange={(e) => update('name', e.target.value)}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-4 py-3 text-sm text-white font-body placeholder-white/15 focus:outline-none focus:border-mustard-500/30 transition-colors"
+            className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body placeholder-[#161616]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow"
             placeholder="Your name"
           />
         </div>
         <div>
-          <label className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-mono font-bold block mb-2">
+          <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2">
             Email
           </label>
           <input
@@ -104,14 +104,14 @@ export default function BuildQueueForm() {
             type="email"
             value={form.email}
             onChange={(e) => update('email', e.target.value)}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-4 py-3 text-sm text-white font-body placeholder-white/15 focus:outline-none focus:border-mustard-500/30 transition-colors"
+            className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body placeholder-[#161616]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow"
             placeholder="you@company.com"
           />
         </div>
       </div>
 
       <div>
-        <label className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-mono font-bold block mb-2">
+        <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2">
           Business or idea name
         </label>
         <input
@@ -119,13 +119,13 @@ export default function BuildQueueForm() {
           type="text"
           value={form.businessName}
           onChange={(e) => update('businessName', e.target.value)}
-          className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-4 py-3 text-sm text-white font-body placeholder-white/15 focus:outline-none focus:border-mustard-500/30 transition-colors"
+          className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body placeholder-[#161616]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow"
           placeholder="What it&rsquo;s called, or what you&rsquo;d call it"
         />
       </div>
 
       <div>
-        <label className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-mono font-bold block mb-2">
+        <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2">
           One-line description of what you want built
         </label>
         <textarea
@@ -133,21 +133,21 @@ export default function BuildQueueForm() {
           rows={3}
           value={form.ideaDescription}
           onChange={(e) => update('ideaDescription', e.target.value)}
-          className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-4 py-3 text-sm text-white font-body placeholder-white/15 focus:outline-none focus:border-mustard-500/30 transition-colors resize-none"
+          className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body placeholder-[#161616]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow resize-none"
           placeholder="The shortest version of what this thing is and who it&rsquo;s for."
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-mono font-bold block mb-2">
+          <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2">
             Current revenue range
           </label>
           <select
             required
             value={form.revenueRange}
             onChange={(e) => update('revenueRange', e.target.value)}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-4 py-3 text-sm text-white font-body focus:outline-none focus:border-mustard-500/30 transition-colors"
+            className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow"
           >
             <option value="">Select range</option>
             {REVENUE_OPTIONS.map((o) => (
@@ -158,14 +158,14 @@ export default function BuildQueueForm() {
           </select>
         </div>
         <div>
-          <label className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-mono font-bold block mb-2">
+          <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2">
             Timeline urgency
           </label>
           <select
             required
             value={form.timeline}
             onChange={(e) => update('timeline', e.target.value)}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-4 py-3 text-sm text-white font-body focus:outline-none focus:border-mustard-500/30 transition-colors"
+            className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow"
           >
             <option value="">Select urgency</option>
             {TIMELINE_OPTIONS.map((o) => (
@@ -178,18 +178,18 @@ export default function BuildQueueForm() {
       </div>
 
       {errorMsg && (
-        <p className="text-red-400 text-sm font-body text-center">{errorMsg}</p>
+        <p className="text-[#E0301E] text-sm font-body font-bold text-center">{errorMsg}</p>
       )}
 
       <button
         type="submit"
         disabled={status === 'sending'}
-        className="w-full py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_30px_rgba(255,107,53,0.25)] transition-all disabled:opacity-50"
+        className="w-full py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-lg border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-50"
       >
         {status === 'sending' ? 'Sending...' : 'Join the Build Queue'}
       </button>
 
-      <p className="text-center text-white/30 text-xs font-body font-light italic">
+      <p className="text-center text-[#161616]/45 text-xs font-body italic">
         Sarah reviews every entry personally. You will hear back within 3 business days.
       </p>
     </form>

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import StaticBackground from '@/components/StaticBackground';
 import { JsonLd, aboutPageJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -22,20 +21,22 @@ export default function AboutPage() {
           ]),
         ]}
       />
-      <StaticBackground />
-
-      <div className="relative pt-36 md:pt-44 pb-28">
-        <div className="max-w-3xl mx-auto px-6 md:px-8">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
+        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+        <div className="relative max-w-3xl mx-auto px-6 md:px-8">
           <div className="text-center mb-16">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-mustard-500 font-mono font-bold mb-6 block">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
               About
             </span>
-            <h1 className="font-sans text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6">
-              Faith Meets <span className="text-gradient-mustard">Function</span>
+            <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6">
+              Faith Meets{' '}
+              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
+                Function
+              </span>
             </h1>
           </div>
 
-          <div className="mdx-prose space-y-6">
+          <div className="mdx-prose mdx-prose-pop space-y-6">
             <p>
               Modern Mustard Seed is a one-person AI studio. I am Sarah Scarano, the founder, the engineer, the strategist, and (when needed) the one on the call. I have shipped 40+ products across AI, e-commerce, real estate, hospitality, and SaaS, and I run four ventures from this same desk.
             </p>
@@ -57,32 +58,23 @@ export default function AboutPage() {
           </div>
 
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Link
-              href="/work"
-              className="glass-card p-6 hover:border-mustard-500/20 transition-all text-center"
-            >
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-mustard-500/60 font-mono font-bold mb-2">
+            <Link href="/work" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
+              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">
                 Work
               </span>
-              <span className="font-sans text-base font-bold text-white">See the case studies</span>
+              <span className="font-display text-base font-black text-[#161616]">See the case studies</span>
             </Link>
-            <Link
-              href="/work-with-us"
-              className="glass-card p-6 hover:border-mustard-500/20 transition-all text-center"
-            >
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-mustard-500/60 font-mono font-bold mb-2">
+            <Link href="/work-with-us" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
+              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">
                 Engage
               </span>
-              <span className="font-sans text-base font-bold text-white">How we work</span>
+              <span className="font-display text-base font-black text-[#161616]">How we work</span>
             </Link>
-            <Link
-              href="/contact"
-              className="glass-card p-6 hover:border-mustard-500/20 transition-all text-center"
-            >
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-mustard-500/60 font-mono font-bold mb-2">
+            <Link href="/contact" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
+              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">
                 Talk
               </span>
-              <span className="font-sans text-base font-bold text-white">Book a call</span>
+              <span className="font-display text-base font-black text-[#161616]">Book a call</span>
             </Link>
           </div>
         </div>
