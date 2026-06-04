@@ -76,6 +76,8 @@ export default function ProposalBuilder() {
   const [saveError, setSaveError] = useState('');
   const [saved, setSaved] = useState(false);
   const [list, setList] = useState<Summary[]>([]);
+  const [sendingProposal, setSendingProposal] = useState(false);
+  const [proposalSent, setProposalSent] = useState(false);
 
   // Deposit (money loop)
   const [depositAmount, setDepositAmount] = useState<number | ''>('');
@@ -255,6 +257,26 @@ export default function ProposalBuilder() {
       setSaveError('Network error.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const sendProposal = async () => {
+    if (!currentId || !email.trim() || sendingProposal) return;
+    setSendingProposal(true);
+    try {
+      const res = await fetch(`/api/admin/proposals/${currentId}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      if (res.ok) {
+        setProposalSent(true);
+        setStatus('sent');
+        setTimeout(() => setProposalSent(false), 3000);
+        loadList();
+      }
+    } finally {
+      setSendingProposal(false);
     }
   };
 
@@ -825,6 +847,14 @@ export default function ProposalBuilder() {
                   className="px-3 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/60 border border-white/15 hover:border-white/30 transition-colors"
                 >
                   New
+                </button>
+                <button
+                  onClick={sendProposal}
+                  disabled={!currentId || !email.trim() || sendingProposal}
+                  title={!email.trim() ? 'Add a client email first' : !currentId ? 'Save first' : ''}
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#080c16] bg-emerald-400 hover:bg-emerald-300 disabled:opacity-40 transition-colors"
+                >
+                  {sendingProposal ? 'Sending…' : proposalSent ? 'Sent ✓' : 'Send for signature'}
                 </button>
                 <span className="w-px h-5 bg-white/10 mx-1" aria-hidden />
                 <button

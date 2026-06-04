@@ -26,6 +26,7 @@ import { grantEntitlement, PROGRAM_ASSETS, isProgramSlug, type ProgramSlug } fro
 import { createMagicToken } from '@/lib/client-auth';
 import { insertLead } from '@/lib/supabase';
 import { recordProductCommission } from '@/lib/affiliate';
+import { provisionFromProposal } from '@/lib/proposal-provision';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -175,6 +176,9 @@ async function handleDepositPaid(session: Stripe.Checkout.Session, email: string
     .from('proposals')
     .update({ deposit_status: 'paid', deposit_paid_at: new Date().toISOString() })
     .eq('id', proposalId);
+
+  // Make sure the client + project exist even if they paid without signing.
+  await provisionFromProposal(proposalId);
 
   if (p?.lead_id) {
     try {
