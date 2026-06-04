@@ -4,13 +4,15 @@ import { captureHarvestInbound } from '@/lib/harvest-capture';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+// Trim defensively: a stray newline or literal "\n" pasted into the env var
+// produces a silent 401, which is easy to miss.
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
 
 export async function POST(req: Request) {
   try {
     const { url } = await req.json();
     if (!url) {
-      return NextResponse.json({ error: 'URL is required' }, { status: 400 });
+      return NextResponse.json({ error: true, message: 'URL is required' }, { status: 400 });
     }
 
     // Harvest Module 0: capture the submission as a pre-qualified inbound lead.
@@ -18,7 +20,11 @@ export async function POST(req: Request) {
     await captureHarvestInbound({ url });
 
     if (!ANTHROPIC_API_KEY) {
-      return NextResponse.json({ error: 'API not configured' }, { status: 500 });
+      console.error('audit: ANTHROPIC_API_KEY is not set');
+      return NextResponse.json(
+        { error: true, message: 'The audit is not configured yet. Sarah has been notified.' },
+        { status: 500 }
+      );
     }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -62,47 +68,45 @@ Based on the URL and what you can infer about this business, respond ONLY with a
     });
 
     if (!response.ok) {
-      throw new Error(`Anthropic API error: ${response.status}`);
+      const detail = await response.text().catch(() => '');
+      // Distinguish the failure mode so the next issue surfaces fast in logs.
+      const kind =
+        response.status === 401
+          ? 'auth (invalid x-api-key)'
+          : response.status === 429
+            ? 'rate limit'
+            : response.status >= 500
+              ? 'anthropic server error'
+              : 'bad request';
+      console.error(`audit: anthropic ${response.status} (${kind}) ${detail.slice(0, 300)}`);
+      const message =
+        response.status === 429
+          ? 'The audit is busy right now. Try again in a moment.'
+          : 'The audit could not be generated right now. Your details are saved and Sarah will follow up.';
+      return NextResponse.json({ error: true, message }, { status: 502 });
     }
 
     const data = await response.json();
     const text = (data.content || []).map((c: { text?: string }) => c.text || '').join('');
     const clean = text.replace(/```json|```/g, '').trim();
-    const result = JSON.parse(clean);
+
+    let result: unknown;
+    try {
+      result = JSON.parse(clean);
+    } catch {
+      console.error('audit: model returned unparseable JSON:', clean.slice(0, 300));
+      return NextResponse.json(
+        { error: true, message: 'The audit returned an unreadable response. Please try again.' },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json(result);
   } catch (err) {
-    console.error('Audit error:', err);
-    return NextResponse.json({
-      error: true,
-      businessName: 'Your business',
-      industry: 'Unknown',
-      score: 65,
-      strengths: ['Web presence detected', 'Digital footprint exists', 'Growth potential identified'],
-      gaps: [
-        'AI integration opportunities found',
-        'Automation gaps detected',
-        'Process optimization needed',
-        'Customer experience can be enhanced',
-      ],
-      topTools: [
-        { name: 'AI Voice Agent', impact: 92, reason: 'Capture leads 24/7' },
-        { name: 'Process Automation', impact: 87, reason: 'Reduce manual workflows' },
-        { name: 'Content Intelligence', impact: 83, reason: 'Scale content production' },
-        { name: 'Customer Insights AI', impact: 79, reason: 'Understand customer behavior' },
-        { name: 'Smart Scheduling', impact: 75, reason: 'Optimize time management' },
-      ],
-      monthlyTimeSaved: 30,
-      estimatedROI: 15000,
-      quickWins: [
-        'Deploy AI voice agent for calls',
-        'Automate email follow-ups',
-        'AI-powered content creation',
-      ],
-      competitiveEdge:
-        'Early AI adoption creates a significant moat against slower competitors',
-      riskOfInaction:
-        'Competitors adopting AI will capture market share through faster response times and better customer experience',
-    });
+    console.error('audit: unexpected error', err);
+    return NextResponse.json(
+      { error: true, message: 'The audit hit a snag. Please try again or book a call.' },
+      { status: 500 }
+    );
   }
 }

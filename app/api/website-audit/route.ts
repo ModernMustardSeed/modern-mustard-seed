@@ -402,7 +402,18 @@ Return the JSON report.`,
         { status: 429 }
       );
     }
-    console.error('website-audit error', err);
+    // Distinguish the failure mode so the next issue surfaces fast in logs.
+    if (err instanceof Anthropic.APIError) {
+      const kind =
+        err.status === 401
+          ? 'auth (invalid x-api-key)'
+          : err.status === 400
+            ? 'bad request (likely schema)'
+            : `status ${err.status}`;
+      console.error(`website-audit: anthropic ${kind}:`, err.message);
+    } else {
+      console.error('website-audit: unexpected error', err);
+    }
     return NextResponse.json(
       { error: 'Audit hit a snag. Try again or email sarah@modernmustardseed.com.' },
       { status: 500 }

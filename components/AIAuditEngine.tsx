@@ -473,6 +473,7 @@ const AIAuditEngine: React.FC = () => {
   const [auditUrl, setAuditUrl] = useState('');
   const [auditLoading, setAuditLoading] = useState(false);
   const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
+  const [auditError, setAuditError] = useState<string | null>(null);
   const [auditPhase, setAuditPhase] = useState(0);
 
   // Lead
@@ -525,6 +526,7 @@ const AIAuditEngine: React.FC = () => {
     if (!auditUrl.trim() || !leadName.trim() || !leadEmail.trim()) return;
     setAuditLoading(true);
     setAuditResult(null);
+    setAuditError(null);
     saveLead('audit-start');
 
     const phases = [1, 2, 3, 4, 5];
@@ -539,25 +541,19 @@ const AIAuditEngine: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: auditUrl }),
       });
-      const data = await res.json();
-      setAuditResult(data);
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data || data.error) {
+        setAuditError(
+          (data && data.message) ||
+            'We could not complete your audit right now. Your details are saved and Sarah will follow up personally.'
+        );
+      } else {
+        setAuditResult(data);
+      }
     } catch {
-      setAuditResult({
-        error: true, businessName: auditUrl, industry: 'Unknown', score: 65,
-        strengths: ['Web presence detected', 'Digital footprint exists', 'Growth potential identified'],
-        gaps: ['AI integration opportunities found', 'Automation gaps detected', 'Process optimization needed', 'Customer experience can be enhanced'],
-        topTools: [
-          { name: 'AI Voice Agent', impact: 92, reason: 'Capture leads 24/7' },
-          { name: 'Process Automation', impact: 87, reason: 'Reduce manual workflows' },
-          { name: 'Content Intelligence', impact: 83, reason: 'Scale content production' },
-          { name: 'Customer Insights AI', impact: 79, reason: 'Understand customer behavior' },
-          { name: 'Smart Scheduling', impact: 75, reason: 'Optimize time management' },
-        ],
-        monthlyTimeSaved: 30, estimatedROI: 15000,
-        quickWins: ['Deploy AI voice agent for calls', 'Automate email follow-ups', 'AI-powered content creation'],
-        competitiveEdge: 'Early AI adoption creates a significant moat against slower competitors',
-        riskOfInaction: 'Competitors adopting AI will capture market share through faster response times',
-      });
+      setAuditError(
+        'We could not reach the audit service. Your details are saved and Sarah will follow up personally.'
+      );
     }
     setAuditLoading(false);
   }, [auditUrl, leadName, leadEmail, saveLead]);
@@ -706,12 +702,12 @@ const AIAuditEngine: React.FC = () => {
           <div className="fixed inset-0 bg-night-900/85 z-50 flex items-center justify-center p-6 overflow-auto">
             <div className="glass-card w-full max-w-2xl p-8 relative max-h-[90vh] overflow-y-auto" style={{ border: `1px solid ${MB}` }}>
               <button
-                onClick={() => { setShowAudit(false); setAuditResult(null); setAuditLoading(false); }}
+                onClick={() => { setShowAudit(false); setAuditResult(null); setAuditError(null); setAuditLoading(false); }}
                 className="absolute top-4 right-4 text-white/30 hover:text-white/60 transition-colors z-10">
                 <X size={18} />
               </button>
 
-              {!auditResult && !auditLoading && (
+              {!auditResult && !auditLoading && !auditError && (
                 <div className="text-center">
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
                     style={{ background: MG, border: `1px solid ${MB}` }}>
@@ -765,6 +761,32 @@ const AIAuditEngine: React.FC = () => {
                       <div key={p} className="w-12 h-1 rounded-full transition-all duration-500"
                         style={{ background: p <= auditPhase ? M : 'rgba(255,255,255,0.06)' }} />
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {auditError && !auditLoading && (
+                <div className="text-center py-8">
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
+                    style={{ background: 'rgba(239,68,68,0.10)', border: '1px solid rgba(239,68,68,0.25)' }}>
+                    <AlertTriangle size={24} color="#EF4444" />
+                  </div>
+                  <div className="font-sans text-xl font-semibold text-white tracking-tight mb-2">
+                    The audit did not go through
+                  </div>
+                  <p className="text-sm text-white/45 font-body mb-7 max-w-md mx-auto leading-relaxed">
+                    {auditError}
+                  </p>
+                  <div className="flex gap-3 justify-center flex-wrap">
+                    <button onClick={runAudit}
+                      className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-sans font-bold text-black transition-all"
+                      style={{ background: `linear-gradient(135deg, ${M}, ${ML})` }}>
+                      <RefreshCw size={13} /> Try again
+                    </button>
+                    <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-sans font-semibold border border-white/[0.08] text-white/50 hover:border-mustard-500/30 hover:text-mustard-400 transition-all no-underline">
+                      <Calendar size={13} /> Book a call instead
+                    </a>
                   </div>
                 </div>
               )}
