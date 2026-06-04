@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import AdminHeader from './AdminHeader';
 import {
   SERVICES,
@@ -79,6 +79,33 @@ export default function ProposalBuilder() {
     );
     setProse((pr) => ({ ...pr, recommendation: pr.recommendation || path.rationale }));
   };
+
+  // Seed from the audit screen's "Build a proposal from this audit" handoff.
+  // Runs once on mount, then clears the key so a refresh starts clean.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('mms_proposal_seed');
+      if (!raw) return;
+      sessionStorage.removeItem('mms_proposal_seed');
+      const seed = JSON.parse(raw) as {
+        url?: string;
+        name?: string;
+        email?: string;
+        situation?: string;
+        notes?: string;
+        pathId?: string;
+      };
+      if (seed.name) setName(seed.name);
+      if (seed.email) setEmail(seed.email);
+      if (seed.url) setUrl(seed.url);
+      if (seed.situation) setSituation(seed.situation);
+      if (seed.notes) setNotes(seed.notes);
+      if (seed.pathId) applyPath(seed.pathId);
+    } catch {
+      /* nothing to seed */
+    }
+  }, []);
 
   const { oneTime, monthly } = useMemo(() => {
     let o = 0;

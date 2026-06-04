@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import AdminHeader from './AdminHeader';
 
 type Category = { score: number; letter: string; notes: string };
@@ -44,6 +45,7 @@ function hostOf(url: string): string {
 }
 
 export default function AuditAdmin() {
+  const router = useRouter();
   const [url, setUrl] = useState('');
   const [running, setRunning] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
@@ -131,6 +133,53 @@ export default function AuditAdmin() {
     setSendError('');
   };
 
+  // Hand the audit to the proposal builder: carry the URL, a situation line, a
+  // rich notes block for the AI draft, and a suggested path. Passed via
+  // sessionStorage (the full report is too big for a query string).
+  const toProposal = () => {
+    if (!report) return;
+    const host = hostOf(auditedUrl);
+    const situation = `${host}: ${report.headline} Scored ${report.overall_score}/100 (${report.letter_grade}).`;
+    const notes = [
+      `Website audit summary for ${host}.`,
+      `Overall ${report.overall_score}/100, grade ${report.letter_grade}.`,
+      `Headline: ${report.headline}`,
+      '',
+      report.overall_analysis,
+      '',
+      'Category scores:',
+      ...Object.entries(report.categories).map(
+        ([k, c]) => `- ${CATEGORY_LABELS[k] ?? k}: ${c.score} (${c.letter}). ${c.notes}`
+      ),
+      '',
+      'Top fixes:',
+      ...report.top_three_fixes.map((f, i) => `${i + 1}. ${f.title}. ${f.why}`),
+      '',
+      'Full to-do:',
+      ...report.full_todo.map((t) => `- [${t.priority}] ${t.task}`),
+    ].join('\n');
+    // Suggested path from the score. Sarah can change it in the builder.
+    const s = report.overall_score;
+    const pathId = s >= 75 ? 'off_site_only' : s >= 55 ? 'modern_invisible' : 'closed_builder';
+
+    try {
+      sessionStorage.setItem(
+        'mms_proposal_seed',
+        JSON.stringify({
+          url: auditedUrl,
+          name: toName.trim() || undefined,
+          email: toEmail.trim() || undefined,
+          situation,
+          notes,
+          pathId,
+        })
+      );
+    } catch {
+      /* sessionStorage blocked; builder just starts empty */
+    }
+    router.push('/admin/proposals');
+  };
+
   return (
     <div className="min-h-screen bg-[#080c16] text-white">
       <AdminHeader active="audit" title="Website Audit" />
@@ -171,6 +220,16 @@ export default function AuditAdmin() {
 
         {report && (
           <>
+            {/* Handoff to the proposal builder */}
+            <div className="flex justify-end mb-3">
+              <button
+                onClick={toProposal}
+                className="px-5 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-mustard-300 border border-mustard-500/40 hover:bg-mustard-500/10 transition-colors"
+              >
+                Build a proposal from this audit →
+              </button>
+            </div>
+
             {/* Report summary */}
             <div className="glass-card p-5 md:p-6 mb-6">
               <div className="flex items-start justify-between gap-4 mb-4">
