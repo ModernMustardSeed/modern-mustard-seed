@@ -3,7 +3,6 @@ import FlagshipPrograms from '@/components/FlagshipPrograms';
 import ResultsMarquee from '@/components/ResultsMarquee';
 import EraOfEntrepreneur from '@/components/EraOfEntrepreneur';
 import StartingPoints from '@/components/StartingPoints';
-import LiveStats from '@/components/LiveStats';
 import WhatAreYouBuilding from '@/components/WhatAreYouBuilding';
 import WhatGetsBuilt from '@/components/WhatGetsBuilt';
 import AiProofPromo from '@/components/AiProofPromo';
@@ -108,7 +107,6 @@ export default function HomePage() {
         <ResultsMarquee />
         <EraOfEntrepreneur />
         <StartingPoints />
-        <LiveStats />
         <YourSiteWorksForYou />
         <WhatAreYouBuilding />
         <WhatGetsBuilt />
