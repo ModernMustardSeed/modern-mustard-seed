@@ -4,7 +4,8 @@ import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
 import { provisionFromProposal } from '@/lib/proposal-provision';
 import { createMagicToken } from '@/lib/client-auth';
-import { leadNotification, magicLinkEmail } from '@/lib/email';
+import { leadNotification, magicLinkEmail, proposalSignedEmail } from '@/lib/email';
+import { renderProposalPdf } from '@/lib/proposal-pdf';
 
 export const runtime = 'nodejs';
 
@@ -35,10 +36,70 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     // Set up the client + project on both sides.
     await provisionFromProposal(p.id as string);
 
-    // Notify Sarah and send the client a portal link.
+    // Notify Sarah, send the client a signed PDF + pay link, and a portal link.
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
       const resend = new Resend(apiKey);
+
+      // Render the signed proposal PDF (best-effort).
+      let pdf: Buffer | null = null;
+      try {
+        const bytes = await renderProposalPdf({
+          client_name: p.client_name,
+          client_company: p.client_company,
+          client_email: p.client_email,
+          site_url: p.site_url,
+          situation: p.situation,
+          prose: p.prose,
+          lines: p.lines,
+          one_time_total: p.one_time_total,
+          monthly_total: p.monthly_total,
+          deposit_amount: p.deposit_amount,
+          signed_name: name,
+          signed_at: new Date().toISOString(),
+        });
+        pdf = Buffer.from(bytes);
+      } catch (err) {
+        console.error('sign: pdf render failed', err);
+      }
+      const pdfAttachment = pdf ? [{ filename: 'Modern-Mustard-Seed-Proposal.pdf', content: pdf }] : undefined;
+      const payUrl = `${SITE.url}/proposal/${token}`;
+
+      // Client: signed copy with the PDF attached, plus the pay link.
+      if (p.client_email) {
+        try {
+          await resend.emails.send({
+            from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+            to: p.client_email as string,
+            replyTo: 'sarah@modernmustardseed.com',
+            subject: 'Your signed proposal (PDF attached)',
+            html: proposalSignedEmail({
+              toName: name,
+              payUrl: p.deposit_status === 'paid' ? undefined : payUrl,
+            }),
+            attachments: pdfAttachment,
+          });
+        } catch (err) {
+          console.error('sign: client signed email failed', err);
+        }
+
+        // Portal access link.
+        try {
+          const magic = await createMagicToken(String(p.client_email));
+          const portalUrl = `${SITE.url}/api/portal/verify?token=${encodeURIComponent(magic)}&next=/portal`;
+          await resend.emails.send({
+            from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+            to: p.client_email as string,
+            replyTo: 'sarah@modernmustardseed.com',
+            subject: 'Your project space is live',
+            html: magicLinkEmail({ firstName: name.split(' ')[0], url: portalUrl }),
+          });
+        } catch (err) {
+          console.error('sign: portal link failed', err);
+        }
+      }
+
+      // Sarah: notification with the signed PDF for the record.
       try {
         await resend.emails.send({
           from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
@@ -55,24 +116,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
             message: 'Proposal accepted. Client + project provisioned. Awaiting the 50% deposit.',
             suggestedAction: 'Kick off discovery.',
           }),
+          attachments: pdfAttachment,
         });
       } catch (err) {
         console.error('sign: notify failed', err);
-      }
-      if (p.client_email) {
-        try {
-          const magic = await createMagicToken(String(p.client_email));
-          const portalUrl = `${SITE.url}/api/portal/verify?token=${encodeURIComponent(magic)}&next=/portal`;
-          await resend.emails.send({
-            from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
-            to: p.client_email as string,
-            replyTo: 'sarah@modernmustardseed.com',
-            subject: 'Your project space is live',
-            html: magicLinkEmail({ firstName: name.split(' ')[0], url: portalUrl }),
-          });
-        } catch (err) {
-          console.error('sign: portal link failed', err);
-        }
       }
     }
   }

@@ -441,6 +441,21 @@ export function proposalSendEmail({
   return shell({ preheader: 'Your proposal: review, sign, and begin', subtitle: 'Your proposal', inner });
 }
 
+/** Sent to the client right after they sign, with the signed PDF attached. */
+export function proposalSignedEmail({ toName, payUrl }: { toName?: string; payUrl?: string }): string {
+  const first = toName?.trim()?.split(/\s+/)[0];
+  const inner =
+    headline(first ? `${first}, you signed. Here is your copy` : 'You signed. Here is your copy') +
+    lede('Your signed proposal is attached.') +
+    paragraph('Thank you. The signed proposal is attached as a PDF for your records. Your project space is live and you will get a separate email with your portal link.') +
+    (payUrl
+      ? ctaBlock({ label: 'Pay the deposit to begin', url: payUrl }) +
+        paragraph('The moment the 50 percent deposit clears, your build is on the calendar and I get to work.')
+      : paragraph('I am on it. Watch your inbox for next steps.')) +
+    signature('Sarah');
+  return shell({ preheader: 'Your signed proposal (PDF attached)', subtitle: 'Signed and accepted', inner });
+}
+
 /* ────────────────────────── DEPOSIT INVOICE (proposal money loop) ────────────────────────── */
 
 /**

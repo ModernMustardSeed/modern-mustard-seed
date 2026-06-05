@@ -23,20 +23,34 @@ type Summary = {
   id: string;
   client_name: string | null;
   client_company: string | null;
+  client_email: string | null;
   site_url: string | null;
   status: string;
   one_time_total: number;
   monthly_total: number;
   updated_at: string;
+  signed_at: string | null;
+  deposit_status: string | null;
+  share_token: string | null;
 };
 
 const STATUS_BADGE: Record<string, string> = {
   draft: 'text-white/50 border-white/15 bg-white/5',
-  sent: 'text-blue-200 border-blue-400/40 bg-blue-500/10',
-  accepted: 'text-emerald-200 border-emerald-400/40 bg-emerald-500/10',
+  sent: 'text-mustard-200 border-mustard-500/40 bg-mustard-500/10',
+  signed: 'text-blue-200 border-blue-400/40 bg-blue-500/10',
+  paid: 'text-emerald-200 border-emerald-400/40 bg-emerald-500/10',
+  accepted: 'text-blue-200 border-blue-400/40 bg-blue-500/10',
   declined: 'text-white/40 border-white/10 bg-white/5',
 };
 const STATUSES = ['draft', 'sent', 'accepted', 'declined'];
+
+// The real-world progression for a row: paid > signed > sent > status.
+function progressLabel(p: Summary): string {
+  if (p.deposit_status === 'paid') return 'paid';
+  if (p.signed_at) return 'signed';
+  if (p.status === 'accepted') return 'signed';
+  return p.status;
+}
 
 const inp =
   'bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 w-full';
@@ -277,6 +291,33 @@ export default function ProposalBuilder() {
       }
     } finally {
       setSendingProposal(false);
+    }
+  };
+
+  const [resendId, setResendId] = useState<string | null>(null);
+  const resendProposal = async (id: string) => {
+    setResendId(id);
+    try {
+      await fetch(`/api/admin/proposals/${id}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
+      });
+      loadList();
+    } finally {
+      setResendId(null);
+    }
+  };
+
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const copyLink = async (p: Summary) => {
+    if (!p.share_token) return;
+    try {
+      await navigator.clipboard.writeText(`https://modernmustardseed.com/proposal/${p.share_token}`);
+      setCopiedId(p.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      /* clipboard blocked */
     }
   };
 
@@ -533,35 +574,57 @@ export default function ProposalBuilder() {
                   {list.map((p) => (
                     <div
                       key={p.id}
-                      className={`flex items-center gap-2 p-2.5 rounded-lg border ${
+                      className={`p-2.5 rounded-lg border ${
                         currentId === p.id
                           ? 'border-mustard-500/40 bg-mustard-500/10'
                           : 'border-white/[0.06] bg-white/[0.02]'
                       }`}
                     >
-                      <button onClick={() => loadProposal(p.id)} className="flex-1 min-w-0 text-left">
-                        <span className="block text-sm font-sans font-medium text-white/90 truncate">
-                          {p.client_company || p.client_name || p.site_url || 'Untitled'}
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => loadProposal(p.id)} className="flex-1 min-w-0 text-left">
+                          <span className="block text-sm font-sans font-medium text-white/90 truncate">
+                            {p.client_company || p.client_name || p.site_url || 'Untitled'}
+                          </span>
+                          <span className="block text-[11px] text-white/35 font-mono">
+                            {p.one_time_total ? money(p.one_time_total) : '—'}
+                            {p.monthly_total ? ` · ${money(p.monthly_total)}/mo` : ''}
+                          </span>
+                        </button>
+                        <span
+                          className={`flex-shrink-0 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] font-mono font-bold border rounded ${
+                            STATUS_BADGE[progressLabel(p)] ?? STATUS_BADGE.draft
+                          }`}
+                        >
+                          {progressLabel(p)}
                         </span>
-                        <span className="block text-[11px] text-white/35 font-mono">
-                          {p.one_time_total ? money(p.one_time_total) : '—'}
-                          {p.monthly_total ? ` · ${money(p.monthly_total)}/mo` : ''}
-                        </span>
-                      </button>
-                      <span
-                        className={`flex-shrink-0 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] font-mono font-bold border rounded ${
-                          STATUS_BADGE[p.status] ?? STATUS_BADGE.draft
-                        }`}
-                      >
-                        {p.status}
-                      </span>
-                      <button
-                        onClick={() => deleteProposal(p.id)}
-                        className="flex-shrink-0 text-white/25 hover:text-red-300 text-xs px-1"
-                        aria-label="Delete proposal"
-                      >
-                        ✕
-                      </button>
+                      </div>
+                      {/* Row actions: only meaningful once there is a client email + token */}
+                      <div className="flex items-center gap-3 mt-2 pl-0.5">
+                        {p.share_token && (
+                          <button
+                            onClick={() => copyLink(p)}
+                            className="text-[9px] uppercase tracking-[0.15em] font-mono text-white/40 hover:text-mustard-300"
+                          >
+                            {copiedId === p.id ? 'Copied' : 'Copy link'}
+                          </button>
+                        )}
+                        {p.client_email && p.deposit_status !== 'paid' && (
+                          <button
+                            onClick={() => resendProposal(p.id)}
+                            disabled={resendId === p.id}
+                            className="text-[9px] uppercase tracking-[0.15em] font-mono text-emerald-300/80 hover:text-emerald-200 disabled:opacity-50"
+                          >
+                            {resendId === p.id ? 'Sending…' : p.signed_at ? 'Resend' : 'Send'}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => deleteProposal(p.id)}
+                          className="ml-auto text-[9px] uppercase tracking-[0.15em] font-mono text-white/25 hover:text-red-300"
+                          aria-label="Delete proposal"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
