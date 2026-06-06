@@ -9,6 +9,7 @@ import AiProofPromo from '@/components/AiProofPromo';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import CelebrationVideo from '@/components/CelebrationVideo';
 import HeroVideo from '@/components/HeroVideo';
+import Testimonials from '@/components/Testimonials';
 import YourSiteWorksForYou from '@/components/YourSiteWorksForYou';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
@@ -110,6 +111,7 @@ export default function HomePage() {
         <YourSiteWorksForYou />
         <WhatAreYouBuilding />
         <WhatGetsBuilt />
+        <Testimonials />
         <AiProofPromo />
 
         {/* Celebration video close: partnership + dreams to fullness */}

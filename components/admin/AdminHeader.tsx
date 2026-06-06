@@ -10,13 +10,14 @@ import Image from 'next/image';
  * tab row so nothing overlaps or overflows.
  */
 
-type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'proposals' | 'projects';
+type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'proposals' | 'projects' | 'reviews';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
   { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
   { key: 'audit', label: 'Audit', href: '/admin/audit' },
   { key: 'proposals', label: 'Proposals', href: '/admin/proposals' },
   { key: 'projects', label: 'Projects', href: '/admin/projects' },
+  { key: 'reviews', label: 'Reviews', href: '/admin/testimonials' },
   { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
   { key: 'partners', label: 'Partners', href: '/admin/partners' },
 ];
