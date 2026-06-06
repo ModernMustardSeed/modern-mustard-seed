@@ -497,6 +497,41 @@ export function depositInvoiceEmail({
   return shell({ preheader: `Your deposit to begin ${label}`, subtitle: 'Deposit to begin', inner });
 }
 
+/** The final balance invoice, sent when the build is delivered. */
+export function balanceInvoiceEmail({
+  toName,
+  label,
+  amountUsd,
+  payUrl,
+  note,
+}: {
+  toName?: string;
+  label: string;
+  amountUsd: number;
+  payUrl: string;
+  note?: string;
+}): string {
+  const first = toName?.trim()?.split(/\s+/)[0];
+  const inner =
+    headline(first ? `${first}, the build is ready` : 'The build is ready') +
+    lede('Here is the final balance to wrap it up.') +
+    (note && note.trim()
+      ? paragraph(escape(note.trim()).replace(/\n/g, '<br>'))
+      : paragraph(
+          `This is the remaining 50 percent balance on ${escape(label)}, due on delivery. Once it clears, everything is fully yours: the repo, the deploys, every credential.`
+        )) +
+    valueCallout(
+      'Balance due',
+      `<span style="font-family:${SERIF};font-size:30px;color:${C.ink};font-weight:600">$${amountUsd.toLocaleString('en-US')}</span> <span style="font-size:14px;color:${C.muted}">on delivery</span>`
+    ) +
+    ctaBlock({ label: 'Pay the balance', url: payUrl }) +
+    paragraph(
+      `<span style="font-size:13px;color:${C.muted}">Secure checkout by Stripe. If the button does not work, paste this into your browser:<br><a href="${payUrl}" style="color:${C.gold};word-break:break-all">${payUrl}</a></span>`
+    ) +
+    signature('Sarah');
+  return shell({ preheader: `Final balance for ${label}`, subtitle: 'Balance due', inner });
+}
+
 /* ────────────────────────── PROGRAM ACCESS (Terminal / Idea to Spec) ────────────────────────── */
 
 /** Delivery email for a $497 program purchase. Carries a passwordless link

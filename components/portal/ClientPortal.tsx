@@ -20,7 +20,32 @@ type PortalData = {
   orders: Array<{ sessionId: string; productName: string; createdAt: string }>;
   bookings: Array<{ whenIso: string; display: string }>;
   audience: 'client' | 'buyer' | 'both' | 'guest';
+  billing: {
+    oneTime: number;
+    deposit: number;
+    depositPaid: boolean;
+    balanceDue: number;
+    balancePaid: boolean;
+    signed: boolean;
+  } | null;
 };
+
+const money = (n: number) => `$${n.toLocaleString('en-US')}`;
+
+/** Conic progress ring. */
+function ProgressRing({ value }: { value: number }) {
+  const v = Math.max(0, Math.min(100, value));
+  return (
+    <div
+      className="relative h-14 w-14 rounded-full flex-shrink-0"
+      style={{ background: `conic-gradient(#F5B700 ${v * 3.6}deg, rgba(255,255,255,0.08) 0deg)` }}
+    >
+      <div className="absolute inset-[3px] rounded-full bg-[#080c16] flex items-center justify-center">
+        <span className="text-[12px] font-mono font-bold text-white">{v}%</span>
+      </div>
+    </div>
+  );
+}
 
 const STATUS_LABEL: Record<string, string> = {
   discovery: 'Discovery', building: 'In build', review: 'In review', launched: 'Launched', paused: 'Paused',
@@ -39,6 +64,20 @@ export default function ClientPortal() {
   const [data, setData] = useState<PortalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [payingBalance, setPayingBalance] = useState(false);
+
+  const payBalance = async () => {
+    if (payingBalance) return;
+    setPayingBalance(true);
+    try {
+      const res = await fetch('/api/portal/pay-balance', { method: 'POST' });
+      const j = await res.json().catch(() => null);
+      if (j?.url) window.location.href = j.url;
+      else setPayingBalance(false);
+    } catch {
+      setPayingBalance(false);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -106,45 +145,102 @@ export default function ClientPortal() {
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Main column */}
               <div className="lg:col-span-2 space-y-6">
+                {/* Billing */}
+                {data.billing && data.billing.oneTime > 0 && (
+                  <div className="glass-card p-6 border-mustard-500/25">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-400 font-mono font-bold block mb-4">
+                      Your engagement
+                    </span>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-white/55 font-body text-sm">Project total</span>
+                        <span className="text-white font-sans font-bold">{money(data.billing.oneTime)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-white/55 font-body text-sm">Deposit, 50%</span>
+                        {data.billing.depositPaid ? (
+                          <span className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-emerald-300">Paid ✓</span>
+                        ) : (
+                          <span className="text-white/70 font-mono text-sm">{money(data.billing.deposit)} due</span>
+                        )}
+                      </div>
+                      {data.billing.balanceDue > 0 && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-white/55 font-body text-sm">Balance on delivery</span>
+                          {data.billing.balancePaid ? (
+                            <span className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-emerald-300">Paid ✓</span>
+                          ) : (
+                            <span className="text-white/70 font-mono text-sm">{money(data.billing.balanceDue)}</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {data.billing.depositPaid && data.billing.balanceDue > 0 && !data.billing.balancePaid && (
+                      <button
+                        onClick={payBalance}
+                        disabled={payingBalance}
+                        className="mt-5 w-full py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-cream-50 bg-brass rounded-lg disabled:opacity-50 hover:shadow-[0_0_30px_rgba(255,107,53,0.4)] transition-all"
+                      >
+                        {payingBalance ? 'Opening checkout…' : `Pay remaining balance ${money(data.billing.balanceDue)}`}
+                      </button>
+                    )}
+                    {data.billing.balancePaid && (
+                      <p className="mt-4 text-emerald-300/90 font-body text-sm">Paid in full. Thank you. It is all yours.</p>
+                    )}
+                    {data.billing.signed && (
+                      <a
+                        href="/api/portal/proposal-pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 inline-block text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-mustard-400 hover:text-mustard-300"
+                      >
+                        Download signed proposal ↗
+                      </a>
+                    )}
+                  </div>
+                )}
+
                 {/* Projects */}
-                {data.projects.map((p) => (
+                {data.projects.map((p) => {
+                  const activeIdx = p.milestones.findIndex((m) => !m.done);
+                  return (
                   <div key={p.id} className="glass-card p-6">
-                    <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start justify-between gap-4 mb-4">
                       <div>
                         <span className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">Project</span>
                         <h3 className="font-sans text-lg font-semibold text-white mt-1">{p.name}</h3>
+                        <span className={`inline-block mt-2 text-[9px] uppercase tracking-[0.15em] font-mono font-semibold px-2.5 py-1 rounded border ${STATUS_COLOR[p.status] ?? STATUS_COLOR.building}`}>
+                          {STATUS_LABEL[p.status] ?? p.status}
+                        </span>
                       </div>
-                      <span className={`text-[9px] uppercase tracking-[0.15em] font-mono font-semibold px-2.5 py-1 rounded border ${STATUS_COLOR[p.status] ?? STATUS_COLOR.building}`}>
-                        {STATUS_LABEL[p.status] ?? p.status}
-                      </span>
+                      <ProgressRing value={p.progress} />
                     </div>
                     {p.summary && <p className="text-white/60 font-body text-sm leading-relaxed mb-4">{p.summary}</p>}
-                    <div className="mb-1 flex items-center justify-between">
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-mono">Progress</span>
-                      <span className="text-white/70 font-mono text-xs font-semibold">{p.progress}%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/[0.07] overflow-hidden mb-2">
-                      <div className="h-full bg-gradient-to-r from-mustard-600 to-mustard-400" style={{ width: `${Math.min(100, p.progress)}%` }} />
-                    </div>
-                    {p.launchTarget && <p className="text-white/35 font-mono text-[11px] mb-5">Launch target: {p.launchTarget}</p>}
+                    {p.launchTarget && <p className="text-white/35 font-mono text-[11px] mb-2">Launch target: {p.launchTarget}</p>}
 
                     {p.milestones.length > 0 && (
                       <div className="space-y-2.5 mt-5">
                         <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-mono block mb-1">Milestones</span>
-                        {p.milestones.map((m, i) => (
-                          <div key={i} className="flex items-start gap-3">
-                            <span className={`mt-0.5 h-4 w-4 rounded-full flex-shrink-0 flex items-center justify-center text-[9px] ${m.done ? 'bg-emerald-500/80 text-white' : 'border border-white/20 text-transparent'}`}>✓</span>
-                            <div className="flex-1">
-                              <p className={`font-body text-sm ${m.done ? 'text-white/45 line-through' : 'text-white/85'}`}>{m.title}</p>
-                              {m.detail && <p className="text-white/35 font-body text-xs mt-0.5">{m.detail}</p>}
+                        {p.milestones.map((m, i) => {
+                          const active = i === activeIdx;
+                          return (
+                            <div key={i} className={`flex items-start gap-3 ${active ? 'rounded-lg bg-mustard-500/[0.07] border border-mustard-500/20 px-3 py-2 -mx-1' : ''}`}>
+                              <span className={`mt-0.5 h-4 w-4 rounded-full flex-shrink-0 flex items-center justify-center text-[9px] ${m.done ? 'bg-emerald-500/80 text-white' : active ? 'border-2 border-mustard-400 text-transparent' : 'border border-white/20 text-transparent'}`}>✓</span>
+                              <div className="flex-1">
+                                <p className={`font-body text-sm ${m.done ? 'text-white/45 line-through' : 'text-white/85'}`}>{m.title}</p>
+                                {m.detail && <p className="text-white/35 font-body text-xs mt-0.5">{m.detail}</p>}
+                              </div>
+                              {active && <span className="text-[8px] uppercase tracking-[0.2em] font-mono font-bold text-mustard-300 mt-1">Now</span>}
+                              {!active && m.due && <span className="text-white/30 font-mono text-[10px]">{m.due}</span>}
                             </div>
-                            {m.due && <span className="text-white/30 font-mono text-[10px]">{m.due}</span>}
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     )}
                   </div>
-                ))}
+                  );
+                })}
 
                 {/* Downloads (PDF buyers) */}
                 {data.orders.length > 0 && (

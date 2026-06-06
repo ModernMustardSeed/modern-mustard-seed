@@ -213,6 +213,58 @@ async function handleDepositPaid(session: Stripe.Checkout.Session, email: string
   }
 }
 
+/** The final balance on a proposal was paid. Record it and notify Sarah. */
+async function handleBalancePaid(session: Stripe.Checkout.Session, email: string | null, name: string | null) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  const proposalId = session.metadata?.proposal_id;
+  if (!proposalId) return;
+
+  const { data: p } = await supabase.from('proposals').select('*').eq('id', proposalId).maybeSingle();
+
+  try {
+    await supabase.from('orders').insert({
+      stripe_session_id: session.id,
+      stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+      product_name: session.metadata?.item_name || 'Balance',
+      item_type: 'balance',
+      price_paid_cents: session.amount_total ?? 0,
+      currency: session.currency ?? 'usd',
+      email: email || (p?.client_email as string) || 'client@unknown',
+      name: name || (p?.client_name as string) || null,
+      status: 'paid',
+    });
+  } catch (err) {
+    console.error('balance order insert failed (may be duplicate)', err);
+  }
+
+  await supabase
+    .from('proposals')
+    .update({ balance_status: 'paid', balance_paid_at: new Date().toISOString() })
+    .eq('id', proposalId);
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to: 'sarah@modernmustardseed.com',
+        subject: `Balance paid in full. $${((session.amount_total ?? 0) / 100).toFixed(0)}.`,
+        html: leadNotification({
+          type: 'Contact',
+          name: name || (p?.client_name as string) || 'client',
+          email: email || (p?.client_email as string) || 'unknown',
+          fields: [{ label: 'Amount', value: `$${((session.amount_total ?? 0) / 100).toFixed(0)}` }],
+          message: 'The final balance cleared. The engagement is paid in full.',
+          suggestedAction: 'Confirm handoff is complete.',
+        }),
+      });
+    } catch (err) {
+      console.error('balance notify failed', err);
+    }
+  }
+}
+
 /** On refund, claw back the affiliate commission for that purchase. */
 async function handleRefundClawback(stripe: ReturnType<typeof getStripe>, charge: Stripe.Charge) {
   if (!stripe) return;
@@ -274,6 +326,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'deposit') {
     await handleDepositPaid(session, email ?? null, name ?? null);
     return NextResponse.json({ received: true, kind: 'deposit' });
+  }
+
+  // ── Proposal balance (final 50%) ──
+  if (session.metadata?.kind === 'balance') {
+    await handleBalancePaid(session, email ?? null, name ?? null);
+    return NextResponse.json({ received: true, kind: 'balance' });
   }
 
   if (!slug || !email) {

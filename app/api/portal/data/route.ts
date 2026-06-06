@@ -49,6 +49,40 @@ export async function GET() {
     /* projects table not migrated */
   }
 
+  // Billing: the client's accepted proposal (deposit/balance state).
+  let billing: {
+    oneTime: number;
+    deposit: number;
+    depositPaid: boolean;
+    balanceDue: number;
+    balancePaid: boolean;
+    signed: boolean;
+  } | null = null;
+  try {
+    const { data } = await supabase
+      .from('proposals')
+      .select('one_time_total, deposit_amount, deposit_status, balance_status, signed_at, status')
+      .eq('client_email', email)
+      .in('status', ['accepted', 'sent'])
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (data) {
+      const oneTime = Number(data.one_time_total) || 0;
+      const deposit = Math.round(Number(data.deposit_amount) || Math.round(oneTime * 0.5));
+      billing = {
+        oneTime,
+        deposit,
+        depositPaid: data.deposit_status === 'paid',
+        balanceDue: Math.max(0, oneTime - deposit),
+        balancePaid: data.balance_status === 'paid',
+        signed: !!data.signed_at,
+      };
+    }
+  } catch {
+    /* proposals not migrated */
+  }
+
   let files: Array<{ label: string; url: string; kind: string }> = [];
   try {
     const { data } = await supabase.from('client_files').select('label, url, kind').eq('client_email', email).order('created_at', { ascending: false });
@@ -89,5 +123,5 @@ export async function GET() {
   const isBuyer = orders.length > 0;
   const audience = isClient && isBuyer ? 'both' : isClient ? 'client' : isBuyer ? 'buyer' : 'guest';
 
-  return NextResponse.json({ email, client, projects, files, orders, bookings, audience });
+  return NextResponse.json({ email, client, projects, files, orders, bookings, audience, billing });
 }

@@ -416,6 +416,24 @@ export default function ProposalBuilder() {
     }
   };
 
+  const [balanceBusy, setBalanceBusy] = useState(false);
+  const [balanceMsg, setBalanceMsg] = useState('');
+  const sendBalance = async () => {
+    if (!currentId || balanceBusy) return;
+    setBalanceBusy(true);
+    setBalanceMsg('');
+    try {
+      const res = await fetch(`/api/admin/proposals/${currentId}/balance`, { method: 'POST' });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.url) setBalanceMsg((j && j.error) || 'Could not create the balance link.');
+      else setBalanceMsg(j.emailed ? 'Balance invoice emailed to the client.' : 'Balance link created. No client email on file.');
+    } catch {
+      setBalanceMsg('Network error.');
+    } finally {
+      setBalanceBusy(false);
+    }
+  };
+
   const markDepositPaid = async () => {
     if (!currentId || depositBusy) return;
     setDepositBusy(true);
@@ -866,6 +884,22 @@ export default function ProposalBuilder() {
                   </p>
                 )}
                 {depositMsg && <p className="text-emerald-300/90 text-xs font-body mt-2">{depositMsg}</p>}
+
+                {depositStatus === 'paid' && (
+                  <div className="mt-3 pt-3 border-t border-white/[0.06]">
+                    <span className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono font-bold block mb-2">
+                      Balance, final 50%
+                    </span>
+                    <button
+                      onClick={sendBalance}
+                      disabled={balanceBusy || !email.trim()}
+                      className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-emerald-400 hover:bg-emerald-300 disabled:opacity-40 transition-colors"
+                    >
+                      {balanceBusy ? 'Working…' : 'Send balance invoice'}
+                    </button>
+                    {balanceMsg && <p className="text-emerald-300/90 text-xs font-body mt-2">{balanceMsg}</p>}
+                  </div>
+                )}
 
                 <div className="mt-3 pt-3 border-t border-white/[0.06]">
                   <button
