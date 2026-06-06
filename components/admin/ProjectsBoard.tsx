@@ -85,6 +85,105 @@ const STATUS_DOT: Record<string, string> = {
 const inp =
   'bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 w-full';
 
+type ClientFile = { id: string; label: string; url: string; kind: string };
+const FILE_KINDS = ['site', 'link', 'repo', 'doc', 'design', 'download', 'invoice'];
+
+/** Manage the launch deliverables (links + files) a client sees in their portal. */
+function ProjectFiles({ email }: { email: string }) {
+  const [files, setFiles] = useState<ClientFile[]>([]);
+  const [form, setForm] = useState({ label: '', url: '', kind: 'site' });
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  const load = useCallback(async () => {
+    try {
+      const r = await fetch(`/api/admin/files?email=${encodeURIComponent(email)}`);
+      const j = await r.json().catch(() => null);
+      if (r.ok && j) setFiles(j.files || []);
+    } catch {
+      /* offline */
+    }
+  }, [email]);
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const add = async () => {
+    if (!form.label.trim() || !form.url.trim() || busy) return;
+    setBusy(true);
+    setErr('');
+    try {
+      const r = await fetch('/api/admin/files', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_email: email, ...form }),
+      });
+      const j = await r.json().catch(() => null);
+      if (!r.ok) setErr((j && j.error) || 'Could not add.');
+      else {
+        setForm({ label: '', url: '', kind: form.kind });
+        load();
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const remove = async (id: string) => {
+    try {
+      await fetch(`/api/admin/files/${id}`, { method: 'DELETE' });
+      load();
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return (
+    <div>
+      <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono block mb-1.5">
+        Files &amp; links (the client sees these in their portal)
+      </label>
+      {files.length > 0 && (
+        <div className="space-y-1.5 mb-2.5">
+          {files.map((f) => (
+            <div key={f.id} className="flex items-center gap-2 rounded-lg bg-white/[0.02] border border-white/[0.06] px-3 py-2">
+              <span className="text-[8px] uppercase tracking-[0.15em] font-mono font-bold text-mustard-300/80 w-16 flex-shrink-0">{f.kind}</span>
+              <div className="min-w-0 flex-1">
+                <span className="block text-sm text-white/85 font-body truncate">{f.label}</span>
+                <a href={f.url} target="_blank" rel="noopener noreferrer" className="block text-[11px] text-white/40 font-mono truncate hover:text-mustard-300">{f.url}</a>
+              </div>
+              <button onClick={() => remove(f.id)} className="text-white/25 hover:text-red-300 text-xs px-1 flex-shrink-0" aria-label="Remove">✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="flex flex-col sm:flex-row gap-2">
+        <select
+          value={form.kind}
+          onChange={(e) => setForm({ ...form, kind: e.target.value })}
+          className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-2 py-2 text-sm text-white focus:outline-none focus:border-mustard-500/40 sm:w-32"
+        >
+          {FILE_KINDS.map((k) => (
+            <option key={k} value={k} className="bg-neutral-900">
+              {k}
+            </option>
+          ))}
+        </select>
+        <input value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} placeholder="Label (e.g. Live site)" className={inp} />
+        <input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://…" className={inp} />
+        <button
+          onClick={add}
+          disabled={busy || !form.label.trim() || !form.url.trim()}
+          className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors whitespace-nowrap"
+        >
+          Add
+        </button>
+      </div>
+      {err && <p className="text-red-300 text-xs font-body mt-2">{err}</p>}
+    </div>
+  );
+}
+
 export default function ProjectsBoard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -432,6 +531,8 @@ export default function ProjectsBoard() {
                                   ))}
                                 </div>
                               </div>
+
+                              {d.client_email && <ProjectFiles email={d.client_email} />}
 
                               <div className="flex items-center gap-2 pt-1">
                                 <button
