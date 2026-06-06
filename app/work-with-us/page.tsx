@@ -100,6 +100,12 @@ export default function WorkWithUsPage() {
             <p className="text-[#161616]/50 text-sm font-body italic">
               Pick the path that sounds like your situation. We quote after a free discovery call.
             </p>
+            <Link
+              href="/sample-proposal"
+              className="inline-block mt-5 px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+            >
+              See a sample proposal →
+            </Link>
           </div>
 
           {/* Engagements */}
