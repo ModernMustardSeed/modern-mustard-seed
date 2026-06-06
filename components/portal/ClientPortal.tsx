@@ -232,8 +232,9 @@ export default function ClientPortal() {
                       if (!cd) return null;
                       const launched = p.status === 'launched';
                       return (
+                        <>
                         <div
-                          className={`flex items-center justify-between gap-4 rounded-xl border px-4 py-3 mb-4 ${
+                          className={`flex items-center justify-between gap-4 rounded-xl border px-4 py-3 ${launched ? 'mb-4' : 'mb-2'} ${
                             launched
                               ? 'border-emerald-500/30 bg-emerald-500/10'
                               : cd.past
@@ -261,6 +262,10 @@ export default function ClientPortal() {
                             </div>
                           )}
                         </div>
+                        {!launched && (
+                          <LaunchDateRequest projectId={p.id} onRequested={() => setRequestRefresh((n) => n + 1)} />
+                        )}
+                        </>
                       );
                     })()}
 
@@ -489,6 +494,90 @@ function ReviewCard({ googleReviewUrl }: { googleReviewUrl: string | null }) {
           >
             {sending ? 'Sending…' : 'Submit review'}
           </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+/* Propose a different launch date. Routed to Sarah to approve; on approval the
+   project's launch date updates and the client gets a confirmation email. */
+function LaunchDateRequest({ projectId, onRequested }: { projectId: string; onRequested: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [date, setDate] = useState('');
+  const [reason, setReason] = useState('');
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState(false);
+  const [err, setErr] = useState('');
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!date || sending) return;
+    setSending(true);
+    setErr('');
+    try {
+      const res = await fetch('/api/portal/launch-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId, date, reason }),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) setErr((j && j.error) || 'Could not send.');
+      else {
+        setDone(true);
+        setOpen(false);
+        onRequested();
+      }
+    } catch {
+      setErr('Network error.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  if (done) {
+    return <p className="text-emerald-300/90 font-body text-xs mb-4">Date change requested. Sarah will confirm it shortly.</p>;
+  }
+
+  return (
+    <div className="mb-4">
+      {!open ? (
+        <button
+          onClick={() => setOpen(true)}
+          className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-mustard-400/80 hover:text-mustard-300"
+        >
+          Request a different date →
+        </button>
+      ) : (
+        <form onSubmit={submit} className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+          <span className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono block mb-2">Propose a new launch date</span>
+          <div className="flex flex-col sm:flex-row gap-2 mb-2">
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-mustard-500/40"
+            />
+            <input
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Reason (optional)"
+              className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40"
+            />
+          </div>
+          {err && <p className="text-red-300 text-xs font-body mb-2">{err}</p>}
+          <div className="flex items-center gap-2">
+            <button
+              type="submit"
+              disabled={sending || !date}
+              className="px-5 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-cream-50 bg-brass rounded-lg disabled:opacity-50 hover:shadow-[0_0_20px_rgba(255,107,53,0.4)] transition-all"
+            >
+              {sending ? 'Sending…' : 'Send request'}
+            </button>
+            <button type="button" onClick={() => setOpen(false)} className="text-[10px] uppercase tracking-[0.2em] font-mono text-white/40 hover:text-white/70">
+              Cancel
+            </button>
+          </div>
         </form>
       )}
     </div>

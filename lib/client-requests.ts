@@ -13,8 +13,9 @@ export async function createClientRequest(args: {
   email: string;
   name?: string | null;
   body: string;
-  source?: 'note' | 'chatbot';
+  source?: 'note' | 'chatbot' | 'launch_date';
   projectId?: string | null;
+  proposedDate?: string | null;
 }): Promise<{ ok: boolean; id?: string; error?: string }> {
   const body = (args.body || '').trim();
   if (!body) return { ok: false, error: 'Empty message' };
@@ -22,7 +23,7 @@ export async function createClientRequest(args: {
   if (!supabase) return { ok: false, error: 'Database not configured' };
 
   const email = args.email.toLowerCase().trim();
-  const source = args.source === 'chatbot' ? 'chatbot' : 'note';
+  const source = args.source === 'chatbot' ? 'chatbot' : args.source === 'launch_date' ? 'launch_date' : 'note';
 
   let id: string | undefined;
   let projectName: string | undefined;
@@ -52,7 +53,14 @@ export async function createClientRequest(args: {
 
     const { data, error } = await supabase
       .from('client_requests')
-      .insert({ client_email: email, client_name: name ?? null, project_id: projectId, body: body.slice(0, 4000), source })
+      .insert({
+        client_email: email,
+        client_name: name ?? null,
+        project_id: projectId,
+        body: body.slice(0, 4000),
+        source,
+        proposed_date: args.proposedDate ?? null,
+      })
       .select('id')
       .single();
     if (error || !data) return { ok: false, error: 'Could not save your message' };

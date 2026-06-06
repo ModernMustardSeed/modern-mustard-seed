@@ -182,12 +182,12 @@ export async function GET() {
   // ── Client messages (change requests / notes from the portal) ─────
   const messages: {
     newCount: number;
-    items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string }>;
+    items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string; proposed_date: string | null }>;
   } = { newCount: 0, items: [] };
   try {
     const { data: reqs } = await supabase
       .from('client_requests')
-      .select('id, client_email, client_name, body, source, status, created_at')
+      .select('id, client_email, client_name, body, source, status, created_at, proposed_date')
       .order('created_at', { ascending: false })
       .limit(50);
     if (reqs) {
@@ -215,6 +215,7 @@ export async function GET() {
           source: (r.source as string) || 'note',
           status: (r.status as string) || 'new',
           created_at: r.created_at as string,
+          proposed_date: (r.proposed_date as string | null) ?? null,
         }));
     }
   } catch {

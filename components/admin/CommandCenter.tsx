@@ -17,7 +17,7 @@ type Overview = {
   leads: { total: number; byStatus: Record<string, number>; byType: Record<string, number>; new7d: number; new30d: number };
   bookings: { upcoming: Array<{ name: string | null; email: string; whenIso: string; display: string; leadId: string }>; monthCount: number };
   proposals?: { open: number; openValue: number; accepted: number; acceptedValue: number };
-  messages?: { newCount: number; items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string }> };
+  messages?: { newCount: number; items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string; proposed_date: string | null }> };
   followups?: Array<{ kind: string; title: string; detail: string; days: number }>;
   attention: Array<{ kind: string; title: string; detail: string; whenIso: string; leadId?: string; severity: 'high' | 'medium' }>;
   recentOrders: Array<{ name: string | null; email: string; product_name: string; price_paid_cents: number; created_at: string }>;
@@ -148,6 +148,23 @@ export default function CommandCenter() {
     }
   };
 
+  const approveLaunch = async (id: string) => {
+    try {
+      await fetch(`/api/admin/requests/${id}/approve-launch`, { method: 'POST' });
+      load();
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const fmtDate = (d: string) => {
+    try {
+      return new Date(`${d}T00:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch {
+      return d;
+    }
+  };
+
   const saveTargets = async () => {
     setSavingTargets(true);
     try {
@@ -274,6 +291,14 @@ export default function CommandCenter() {
                           <p className="text-white/70 font-body text-[13px] leading-relaxed whitespace-pre-wrap">{m.body}</p>
                         </div>
                         <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                          {m.source === 'launch_date' && m.proposed_date && m.status !== 'done' && (
+                            <button
+                              onClick={() => approveLaunch(m.id)}
+                              className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#080c16] bg-emerald-400 hover:bg-emerald-300 rounded px-2.5 py-1 whitespace-nowrap"
+                            >
+                              Approve {fmtDate(m.proposed_date)}
+                            </button>
+                          )}
                           <a href={`mailto:${m.email}?subject=${encodeURIComponent('Re: your note')}`} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-mustard-400 hover:text-mustard-300">Reply</a>
                           <button onClick={() => markRequest(m.id, 'done')} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-white/40 hover:text-emerald-300">Mark done</button>
                         </div>

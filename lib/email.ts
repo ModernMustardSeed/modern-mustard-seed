@@ -568,12 +568,12 @@ export function clientMessageEmail({
   fromName?: string;
   fromEmail: string;
   body: string;
-  source: 'note' | 'chatbot';
+  source: 'note' | 'chatbot' | 'launch_date';
   projectName?: string;
   adminUrl: string;
 }): string {
   const who = fromName?.trim() || fromEmail;
-  const via = source === 'chatbot' ? 'via Mr. Mustard Seed' : 'from their portal';
+  const via = source === 'chatbot' ? 'via Mr. Mustard Seed' : source === 'launch_date' ? 'a launch date request' : 'from their portal';
   const safe = body.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const inner =
     headline(`New message from ${who}`) +
