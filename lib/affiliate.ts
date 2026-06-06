@@ -1,5 +1,7 @@
 import { getSupabase } from './supabase';
 import { normalizeEmail } from './client-auth';
+import { SITE } from './seo';
+import { products } from '@/data/products';
 
 /**
  * Affiliate engine core. 50 percent on every product sale, 10 percent of build
@@ -93,17 +95,52 @@ export async function recordProductCommission(args: {
 
   const amount = Math.round(args.amountCents * COMMISSION_PRODUCT_RATE);
   try {
-    await client.from('commissions').insert({
-      affiliate_code: affiliate.code,
-      affiliate_email: affiliate.email,
-      order_email: normalizeEmail(args.orderEmail),
-      product_slug: args.productSlug,
-      kind: 'product',
-      amount_cents: amount,
-      status: 'pending',
-      stripe_session_id: args.stripeSessionId,
-    });
+    const { data, error } = await client
+      .from('commissions')
+      .insert({
+        affiliate_code: affiliate.code,
+        affiliate_email: affiliate.email,
+        order_email: normalizeEmail(args.orderEmail),
+        product_slug: args.productSlug,
+        kind: 'product',
+        amount_cents: amount,
+        status: 'pending',
+        stripe_session_id: args.stripeSessionId,
+      })
+      .select('id')
+      .single();
+    // Only celebrate a genuinely new commission (a duplicate webhook throws on
+    // the unique stripe_session_id index, so this never double-emails).
+    if (!error && data) {
+      await notifyEarnings({ affiliate, amountCents: amount, productSlug: args.productSlug });
+    }
   } catch {
     // Unique index on stripe_session_id makes a duplicate webhook a no-op.
+  }
+}
+
+/** "You just earned $X" email to the partner. Best effort, never blocks payment. */
+async function notifyEarnings(args: { affiliate: Affiliate; amountCents: number; productSlug: string }): Promise<void> {
+  if (!process.env.RESEND_API_KEY || !args.affiliate.email) return;
+  try {
+    const { Resend } = await import('resend');
+    const { affiliateEarningsEmail } = await import('./email');
+    const product = products.find((p) => p.slug === args.productSlug)?.name;
+    const amount = `$${(args.amountCents / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: args.affiliate.email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `You just earned ${amount} with Modern Mustard Seed`,
+      html: affiliateEarningsEmail({
+        toName: args.affiliate.name || undefined,
+        amount,
+        product,
+        dashboardUrl: `${SITE.url}/partners/hq`,
+      }),
+    });
+  } catch (err) {
+    console.error('notifyEarnings failed', err);
   }
 }

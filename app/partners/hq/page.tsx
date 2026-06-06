@@ -7,6 +7,7 @@ import { getAffiliateByEmail } from '@/lib/affiliate';
 import { getSupabase } from '@/lib/supabase';
 import { products } from '@/data/products';
 import AffiliateLinks from '@/components/partners/AffiliateLinks';
+import MarketingKit from '@/components/partners/MarketingKit';
 
 export const metadata = buildMetadata({ title: 'Partner Dashboard', path: '/partners/hq', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -102,6 +103,9 @@ export default async function PartnerHQ() {
             <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-4">Your links</span>
             <AffiliateLinks links={links} />
             <p className="text-white/35 font-body text-xs mt-4">Add <span className="font-mono text-mustard-300">?ref={code}</span> to any page to track it. Last touch within 60 days wins.</p>
+            <div className="mt-6">
+              <MarketingKit code={code} firstName={firstName} siteUrl={SITE.url} primaryUrl={`${SITE.url}/audit?ref=${code}`} />
+            </div>
           </div>
 
           <div className="space-y-6">

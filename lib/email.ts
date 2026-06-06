@@ -556,6 +556,29 @@ export function reviewRequestEmail({
   return shell({ preheader: 'Your build is live. A quick favor?', subtitle: 'It is live', inner });
 }
 
+/** Fires the moment a referred sale clears. The partner just made money. */
+export function affiliateEarningsEmail({
+  toName,
+  amount,
+  product,
+  dashboardUrl,
+}: {
+  toName?: string;
+  amount: string;
+  product?: string;
+  dashboardUrl: string;
+}): string {
+  const first = toName?.trim()?.split(/\s+/)[0];
+  const inner =
+    headline(first ? `${first}, you just earned ${amount}` : `You just earned ${amount}`) +
+    lede(product ? `Someone you sent bought ${product}.` : 'A referral of yours just bought.') +
+    paragraph(`That is <strong>${amount}</strong> in commission${product ? ` on ${product}` : ''}. It becomes payable once the refund window passes, then it goes out on the next payout run. Nothing for you to do.`) +
+    ctaBlock({ label: 'See your dashboard', url: dashboardUrl }) +
+    paragraph('Thank you for sharing what we build. It genuinely means the world to a small studio. Keep going.') +
+    signature('Sarah');
+  return shell({ preheader: `You earned ${amount}.`, subtitle: 'You earned a commission', inner });
+}
+
 /* ────────────────────────── PROGRAM ACCESS (Terminal / Idea to Spec) ────────────────────────── */
 
 /** Delivery email for a $497 program purchase. Carries a passwordless link
