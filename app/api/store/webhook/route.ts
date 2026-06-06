@@ -27,6 +27,7 @@ import { createMagicToken } from '@/lib/client-auth';
 import { insertLead } from '@/lib/supabase';
 import { recordProductCommission } from '@/lib/affiliate';
 import { provisionFromProposal } from '@/lib/proposal-provision';
+import { sendReviewNudge } from '@/lib/review-nudge';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -242,6 +243,9 @@ async function handleBalancePaid(session: Stripe.Checkout.Session, email: string
     .from('proposals')
     .update({ balance_status: 'paid', balance_paid_at: new Date().toISOString() })
     .eq('id', proposalId);
+
+  // Paid in full = delivered. Ask for a review (deduped).
+  await sendReviewNudge({ email: email || (p?.client_email as string), name: name || (p?.client_name as string) });
 
   if (process.env.RESEND_API_KEY) {
     try {

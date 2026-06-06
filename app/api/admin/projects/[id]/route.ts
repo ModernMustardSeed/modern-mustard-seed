@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
+import { sendReviewNudge } from '@/lib/review-nudge';
 
 export const runtime = 'nodejs';
 
@@ -38,6 +39,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     console.error('project update error', error);
     return NextResponse.json({ error: 'Could not update project' }, { status: 500 });
   }
+
+  // Marking a project launched = delivered. Ask the client for a review (deduped).
+  if (update.status === 'launched') {
+    const { data: proj } = await supabase.from('projects').select('client_email').eq('id', id).maybeSingle();
+    if (proj?.client_email) await sendReviewNudge({ email: proj.client_email as string });
+  }
+
   return NextResponse.json({ ok: true });
 }
 

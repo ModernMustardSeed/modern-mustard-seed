@@ -532,6 +532,30 @@ export function balanceInvoiceEmail({
   return shell({ preheader: `Final balance for ${label}`, subtitle: 'Balance due', inner });
 }
 
+/** Post-delivery ask for a review. Sent once when a build is paid in full or launched. */
+export function reviewRequestEmail({
+  toName,
+  reviewUrl,
+  portalUrl,
+}: {
+  toName?: string;
+  reviewUrl: string;
+  portalUrl?: string;
+}): string {
+  const first = toName?.trim()?.split(/\s+/)[0];
+  const inner =
+    headline(first ? `${first}, it is live and it is yours` : 'It is live and it is yours') +
+    lede('One small favor, if you have 30 seconds.') +
+    paragraph('It was a joy building this with you. If you are happy with how it turned out, a short review helps the next small business find a partner who will ship for them. It genuinely makes a difference for a small studio.') +
+    ctaBlock({ label: 'Leave a review', url: reviewUrl }) +
+    (portalUrl
+      ? paragraph(`<span style="font-size:13px;color:${C.muted}">Everything we built lives in your portal: <a href="${portalUrl}" style="color:${C.gold}">${portalUrl}</a></span>`)
+      : '') +
+    paragraph('Thank you for trusting me with it. I am here whenever you want to build the next thing.') +
+    signature('Sarah');
+  return shell({ preheader: 'Your build is live. A quick favor?', subtitle: 'It is live', inner });
+}
+
 /* ────────────────────────── PROGRAM ACCESS (Terminal / Idea to Spec) ────────────────────────── */
 
 /** Delivery email for a $497 program purchase. Carries a passwordless link
