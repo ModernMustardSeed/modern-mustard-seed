@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import FeaturedSites from '@/components/FeaturedSites';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { listContent } from '@/lib/content';
@@ -38,7 +39,11 @@ export default function WorkIndex() {
               Each case study is a teardown. The problem, the build, the stack, the outcome. What it was. How we built it. What it does now.
             </p>
           </div>
+        </div>
 
+        <FeaturedSites />
+
+        <div className="relative max-w-6xl mx-auto px-6 md:px-8 mt-20">
           {studies.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
               {studies.map((s) => (
