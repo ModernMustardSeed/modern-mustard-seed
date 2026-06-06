@@ -57,6 +57,23 @@ export async function GET(req: Request) {
     /* ignore */
   }
 
+  try {
+    const { data: reqs } = await supabase
+      .from('client_requests')
+      .select('body, source, created_at')
+      .ilike('client_email', email);
+    for (const r of reqs ?? []) {
+      events.push({
+        when: r.created_at as string,
+        kind: 'message',
+        label: r.source === 'chatbot' ? 'Message via Mr. Mustard Seed' : 'Client message',
+        detail: (r.body as string)?.slice(0, 140),
+      });
+    }
+  } catch {
+    /* ignore */
+  }
+
   events.sort((a, b) => new Date(b.when).getTime() - new Date(a.when).getTime());
   return NextResponse.json({ events });
 }

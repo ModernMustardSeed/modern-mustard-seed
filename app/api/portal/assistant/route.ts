@@ -3,6 +3,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { displayForIso } from '@/lib/booking';
+import { createClientRequest } from '@/lib/client-requests';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -21,12 +22,32 @@ Your job:
 - If they bought a playbook (PDF), help them get the most from it and answer questions about applying it.
 - Offer a short guided tour of their portal when they arrive or ask for one.
 - When useful, suggest booking a call (their portal has a booking button) or point them to the right section.
+- Pass messages to Sarah. When the client wants a change, an edit, a fix, has feedback, or asks you to tell Sarah something, use the send_note_to_sarah tool. Capture exactly what they want, with all the specifics they gave. After it succeeds, confirm warmly in one sentence that you have passed it to Sarah and she will follow up. Never claim you sent something to Sarah unless you actually used the tool.
 
 Voice:
 - Warm, brief, direct. No em dashes anywhere. Use periods, commas, parentheses.
 - 2 to 5 sentences. Plain words.
 - You only know THIS client's account. If they ask about something you cannot see, say so plainly and suggest they email sarah@modernmustardseed.com.
 - Never invent project details, dates, prices, or files that are not in the context. If it is not in the context, say you are not sure and Sarah can confirm.`;
+
+const TOOLS: Anthropic.Tool[] = [
+  {
+    name: 'send_note_to_sarah',
+    description:
+      "Send the client's change request, edit, fix, feedback, or note to Sarah Scarano. Use this whenever the client wants something changed about their project or wants to tell Sarah something directly.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          description:
+            "A clear, complete restatement of what the client wants Sarah to know or do, written in the client's voice. Include every specific they gave (pages, copy, colors, dates, etc.).",
+        },
+      },
+      required: ['message'],
+    },
+  },
+];
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
@@ -79,22 +100,63 @@ export async function POST(req: Request) {
   const contextBlock = ctx.join('\n');
 
   const anthropic = new Anthropic({ apiKey });
+  const system: Anthropic.TextBlockParam[] = [
+    { type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
+    { type: 'text', text: `Here is everything you know about this client (and nothing about anyone else):\n\n${contextBlock}` },
+  ];
+  const convo: Anthropic.MessageParam[] = incoming.map((m) => ({ role: m.role, content: m.content.slice(0, 2000) }));
+
+  const textOf = (blocks: Anthropic.ContentBlock[]) =>
+    blocks.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('').trim();
+
   try {
-    const response = await anthropic.messages.create({
+    let response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 600,
-      system: [
-        { type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
-        { type: 'text', text: `Here is everything you know about this client (and nothing about anyone else):\n\n${contextBlock}` },
-      ],
-      messages: incoming.map((m) => ({ role: m.role, content: m.content.slice(0, 2000) })),
+      max_tokens: 700,
+      system,
+      tools: TOOLS,
+      messages: convo,
     });
-    const reply = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('')
-      .trim();
-    return NextResponse.json({ reply: reply || 'Tell me a little more and I will help.' });
+
+    let noteSent = false;
+
+    // Resolve up to two rounds of tool calls (a client rarely sends more).
+    for (let round = 0; round < 2 && response.stop_reason === 'tool_use'; round++) {
+      const toolUses = response.content.filter((b): b is Anthropic.ToolUseBlock => b.type === 'tool_use');
+      const results: Anthropic.ToolResultBlockParam[] = [];
+      for (const tu of toolUses) {
+        if (tu.name === 'send_note_to_sarah') {
+          const message = (tu.input as { message?: string })?.message?.trim() || '';
+          const r = message ? await createClientRequest({ email, body: message, source: 'chatbot' }) : { ok: false };
+          if (r.ok) noteSent = true;
+          results.push({
+            type: 'tool_result',
+            tool_use_id: tu.id,
+            content: r.ok
+              ? 'Sent to Sarah. She has it and will follow up.'
+              : 'Could not send right now. Ask the client to try again or email sarah@modernmustardseed.com.',
+            is_error: !r.ok,
+          });
+        } else {
+          results.push({ type: 'tool_result', tool_use_id: tu.id, content: 'Unknown tool.', is_error: true });
+        }
+      }
+      convo.push({ role: 'assistant', content: response.content });
+      convo.push({ role: 'user', content: results });
+      response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 700,
+        system,
+        tools: TOOLS,
+        messages: convo,
+      });
+    }
+
+    const reply = textOf(response.content);
+    return NextResponse.json({
+      reply: reply || (noteSent ? 'Done. I passed that along to Sarah and she will follow up.' : 'Tell me a little more and I will help.'),
+      noteSent,
+    });
   } catch (err) {
     console.error('portal assistant error', err);
     return NextResponse.json({ reply: 'I hit a snag. Try again, or email sarah@modernmustardseed.com.' });

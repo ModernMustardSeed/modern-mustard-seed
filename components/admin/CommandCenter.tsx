@@ -17,6 +17,7 @@ type Overview = {
   leads: { total: number; byStatus: Record<string, number>; byType: Record<string, number>; new7d: number; new30d: number };
   bookings: { upcoming: Array<{ name: string | null; email: string; whenIso: string; display: string; leadId: string }>; monthCount: number };
   proposals?: { open: number; openValue: number; accepted: number; acceptedValue: number };
+  messages?: { newCount: number; items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string }> };
   followups?: Array<{ kind: string; title: string; detail: string; days: number }>;
   attention: Array<{ kind: string; title: string; detail: string; whenIso: string; leadId?: string; severity: 'high' | 'medium' }>;
   recentOrders: Array<{ name: string | null; email: string; product_name: string; price_paid_cents: number; created_at: string }>;
@@ -134,6 +135,19 @@ export default function CommandCenter() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
+  const markRequest = async (id: string, status: 'read' | 'done') => {
+    try {
+      await fetch(`/api/admin/requests/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      load();
+    } catch {
+      /* ignore */
+    }
+  };
+
   const saveTargets = async () => {
     setSavingTargets(true);
     try {
@@ -233,6 +247,42 @@ export default function CommandCenter() {
                 </div>
               </Link>
             </div>
+
+            {/* Client messages (change requests / notes from portals) */}
+            {data.messages && data.messages.items.length > 0 && (
+              <div className="glass-card p-5 mb-6 border-mustard-500/30">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="relative flex h-2 w-2">
+                    {data.messages.newCount > 0 && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mustard-400 opacity-70" />}
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-mustard-400" />
+                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-300 font-mono font-bold">Client messages</span>
+                  {data.messages.newCount > 0 && (
+                    <span className="text-[9px] font-mono font-bold text-[#080c16] bg-mustard-400 rounded-full px-2 py-0.5">{data.messages.newCount} new</span>
+                  )}
+                </div>
+                <div className="space-y-2.5">
+                  {data.messages.items.map((m) => (
+                    <div key={m.id} className={`rounded-lg border px-4 py-3 ${m.status === 'new' ? 'bg-mustard-500/[0.06] border-mustard-500/25' : 'bg-white/[0.02] border-white/[0.05]'}`}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-white/90 font-sans text-sm font-semibold truncate">{m.name ?? m.email}</span>
+                            {m.source === 'chatbot' && <span className="text-[8px] uppercase tracking-[0.15em] font-mono text-white/35 border border-white/10 rounded px-1.5 py-0.5">via Mr. Mustard</span>}
+                            <span className="text-white/30 font-mono text-[10px] whitespace-nowrap">{timeAgo(m.created_at)}</span>
+                          </div>
+                          <p className="text-white/70 font-body text-[13px] leading-relaxed whitespace-pre-wrap">{m.body}</p>
+                        </div>
+                        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                          <a href={`mailto:${m.email}?subject=${encodeURIComponent('Re: your note')}`} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-mustard-400 hover:text-mustard-300">Reply</a>
+                          <button onClick={() => markRequest(m.id, 'done')} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-white/40 hover:text-emerald-300">Mark done</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Follow-up radar */}
             {data.followups && data.followups.length > 0 && (

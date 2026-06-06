@@ -556,6 +556,35 @@ export function reviewRequestEmail({
   return shell({ preheader: 'Your build is live. A quick favor?', subtitle: 'It is live', inner });
 }
 
+/** Internal heads-up to Sarah when a client sends a note or change request from their portal. */
+export function clientMessageEmail({
+  fromName,
+  fromEmail,
+  body,
+  source,
+  projectName,
+  adminUrl,
+}: {
+  fromName?: string;
+  fromEmail: string;
+  body: string;
+  source: 'note' | 'chatbot';
+  projectName?: string;
+  adminUrl: string;
+}): string {
+  const who = fromName?.trim() || fromEmail;
+  const via = source === 'chatbot' ? 'via Mr. Mustard Seed' : 'from their portal';
+  const safe = body.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const inner =
+    headline(`New message from ${who}`) +
+    lede(`A client just sent you a change request or note ${via}.`) +
+    paragraph(`<strong>${who}</strong> &lt;${fromEmail}&gt;${projectName ? ` &middot; ${projectName}` : ''}`) +
+    paragraph(`<span style="display:block;border-left:3px solid ${C.gold};padding:12px 16px;background:${C.panel};border-radius:8px;white-space:pre-wrap">${safe}</span>`) +
+    ctaBlock({ label: 'Open the command center', url: adminUrl }) +
+    paragraph(`<span style="font-size:13px;color:${C.muted}">Reply to this email to respond to ${who} directly.</span>`);
+  return shell({ preheader: `${who}: ${body.slice(0, 80)}`, subtitle: 'New client message', inner });
+}
+
 /** Fires the moment a referred sale clears. The partner just made money. */
 export function affiliateEarningsEmail({
   toName,

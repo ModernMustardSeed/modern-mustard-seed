@@ -66,6 +66,7 @@ export default function ClientPortal() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [payingBalance, setPayingBalance] = useState(false);
+  const [requestRefresh, setRequestRefresh] = useState(0);
 
   const payBalance = async () => {
     if (payingBalance) return;
@@ -243,6 +244,11 @@ export default function ClientPortal() {
                   );
                 })}
 
+                {/* Send a change, edit, or note to Sarah */}
+                {(data.audience === 'client' || data.audience === 'both' || data.audience === 'guest') && (
+                  <RequestsCard refreshKey={requestRefresh} onSubmitted={() => setRequestRefresh((n) => n + 1)} />
+                )}
+
                 {/* Downloads (PDF buyers) */}
                 {data.orders.length > 0 && (
                   <div className="glass-card p-6">
@@ -308,7 +314,7 @@ export default function ClientPortal() {
               {/* AI guide */}
               <div className="lg:col-span-1">
                 <div className="lg:sticky lg:top-24">
-                  <PortalAssistant firstName={firstName} audience={data.audience} />
+                  <PortalAssistant firstName={firstName} audience={data.audience} onNoteSent={() => setRequestRefresh((n) => n + 1)} />
                 </div>
               </div>
             </div>
@@ -411,6 +417,117 @@ function ReviewCard({ googleReviewUrl }: { googleReviewUrl: string | null }) {
   );
 }
 
+/* Send a change, edit, or note to Sarah. Posts to the portal, notifies Sarah,
+   shows the client's running history with status. */
+type ClientRequest = { id: string; body: string; source: 'note' | 'chatbot'; status: 'new' | 'read' | 'done'; created_at: string };
+const REQ_STATUS: Record<string, { label: string; cls: string }> = {
+  new: { label: 'Sent', cls: 'text-mustard-300 border-mustard-500/30 bg-mustard-500/10' },
+  read: { label: 'Seen by Sarah', cls: 'text-blue-200 border-blue-500/30 bg-blue-500/10' },
+  done: { label: 'Done', cls: 'text-emerald-200 border-emerald-500/30 bg-emerald-500/10' },
+};
+
+function RequestsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubmitted: () => void }) {
+  const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
+  const [err, setErr] = useState('');
+  const [justSent, setJustSent] = useState(false);
+  const [history, setHistory] = useState<ClientRequest[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/portal/requests');
+        const j = await res.json().catch(() => null);
+        if (alive && res.ok && Array.isArray(j?.requests)) setHistory(j.requests);
+      } catch {
+        /* leave history as-is */
+      }
+    })();
+    return () => { alive = false; };
+  }, [refreshKey]);
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const body = text.trim();
+    if (!body || sending) return;
+    setSending(true);
+    setErr('');
+    try {
+      const res = await fetch('/api/portal/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body }),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) {
+        setErr((j && j.error) || 'Could not send.');
+      } else {
+        setText('');
+        setJustSent(true);
+        setTimeout(() => setJustSent(false), 4000);
+        onSubmitted();
+      }
+    } catch {
+      setErr('Network error.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="glass-card p-6 border-mustard-500/20">
+      <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-400 font-mono font-bold block mb-1">
+        Requests and notes
+      </span>
+      <p className="text-white/45 font-body text-xs mb-4">
+        Send a change, an edit, or anything on your mind. It goes straight to Sarah. You can also just tell Mr. Mustard Seed and he will pass it along.
+      </p>
+
+      <form onSubmit={submit}>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={3}
+          placeholder="e.g. Can we change the hero headline to ‘Faith over fear’ and swap the homepage photo?"
+          className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 resize-y mb-3"
+        />
+        {err && <p className="text-red-300 text-xs font-body mb-3">{err}</p>}
+        {justSent && <p className="text-emerald-300/90 text-xs font-body mb-3">Sent to Sarah. She will follow up.</p>}
+        <button
+          type="submit"
+          disabled={sending || !text.trim()}
+          className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-cream-50 bg-brass rounded-lg disabled:opacity-50 hover:shadow-[0_0_25px_rgba(255,107,53,0.4)] transition-all"
+        >
+          {sending ? 'Sending…' : 'Send to Sarah'}
+        </button>
+      </form>
+
+      {history.length > 0 && (
+        <div className="mt-6 pt-5 border-t border-white/[0.06]">
+          <span className="text-[9px] uppercase tracking-[0.25em] text-white/35 font-mono block mb-3">Your requests</span>
+          <div className="space-y-2.5">
+            {history.map((r) => {
+              const s = REQ_STATUS[r.status] ?? REQ_STATUS.new;
+              return (
+                <div key={r.id} className="rounded-lg bg-white/[0.02] border border-white/[0.05] px-3 py-2.5">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="text-white/75 font-body text-[13px] leading-relaxed flex-1">{r.body}</p>
+                    <span className={`flex-shrink-0 text-[8px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded border ${s.cls}`}>{s.label}</span>
+                  </div>
+                  {r.source === 'chatbot' && (
+                    <span className="text-[9px] uppercase tracking-[0.15em] text-white/25 font-mono mt-1.5 inline-block">via Mr. Mustard Seed</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* Download row: fetches a fresh signed link from the existing store endpoint. */
 function DownloadRow({ sessionId, productName }: { sessionId: string; productName: string }) {
   const [busy, setBusy] = useState(false);
@@ -450,10 +567,10 @@ function DownloadRow({ sessionId, productName }: { sessionId: string; productNam
 }
 
 /* In-portal AI guide with a one-tap guided tour. */
-function PortalAssistant({ firstName, audience }: { firstName: string; audience: string }) {
+function PortalAssistant({ firstName, audience, onNoteSent }: { firstName: string; audience: string; onNoteSent?: () => void }) {
   const greeting: Msg = {
     role: 'assistant',
-    text: `Hi ${firstName}. I am your Mustard Seed guide. I can walk you through your portal, explain where your project stands, or help with anything Sarah built. Want the quick tour?`,
+    text: `Hi ${firstName}. I am Mr. Mustard Seed, your guide. I can walk you through your portal, explain where your project stands, or pass a change or note straight to Sarah. Just tell me what you need.`,
   };
   const [messages, setMessages] = useState<Msg[]>([greeting]);
   const [input, setInput] = useState('');
@@ -477,6 +594,7 @@ function PortalAssistant({ firstName, audience }: { firstName: string; audience:
       });
       const json = await res.json();
       setMessages((m) => [...m, { role: 'assistant', text: json.reply || 'Tell me a bit more.' }]);
+      if (json.noteSent) onNoteSent?.();
     } catch {
       setMessages((m) => [...m, { role: 'assistant', text: 'I hit a snag. Try again in a moment.' }]);
     } finally {
@@ -487,8 +605,8 @@ function PortalAssistant({ firstName, audience }: { firstName: string; audience:
   const onSubmit = (e: FormEvent) => { e.preventDefault(); void send(input); };
 
   const quick = audience === 'buyer'
-    ? ['Give me the tour', 'Help me use my playbook', 'What should I do first?']
-    : ['Give me the tour', "What's my project status?", 'How do I book a call?'];
+    ? ['Give me the tour', 'Help me use my playbook', 'Send Sarah a note']
+    : ['Give me the tour', "What's my project status?", 'Request a change'];
 
   return (
     <div className="glass-card flex flex-col h-[560px] overflow-hidden border-mustard-500/20">

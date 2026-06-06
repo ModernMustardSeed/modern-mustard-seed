@@ -13,7 +13,7 @@ export const runtime = 'nodejs';
  */
 
 type Attention = {
-  kind: 'lead' | 'call' | 'buyer';
+  kind: 'lead' | 'call' | 'buyer' | 'message';
   title: string;
   detail: string;
   whenIso: string;
@@ -179,6 +179,48 @@ export async function GET() {
     // ignore
   }
 
+  // ── Client messages (change requests / notes from the portal) ─────
+  const messages: {
+    newCount: number;
+    items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string }>;
+  } = { newCount: 0, items: [] };
+  try {
+    const { data: reqs } = await supabase
+      .from('client_requests')
+      .select('id, client_email, client_name, body, source, status, created_at')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (reqs) {
+      for (const r of reqs) {
+        if (r.status === 'new') {
+          messages.newCount += 1;
+          const who = (r.client_name as string) || (r.client_email as string);
+          attention.push({
+            kind: 'message',
+            title: `New message from ${who}`,
+            detail: (r.body as string)?.slice(0, 90) || '',
+            whenIso: r.created_at as string,
+            severity: 'high',
+          });
+        }
+      }
+      messages.items = reqs
+        .filter((r) => r.status !== 'done')
+        .slice(0, 8)
+        .map((r) => ({
+          id: r.id as string,
+          email: r.client_email as string,
+          name: (r.client_name as string | null) ?? null,
+          body: r.body as string,
+          source: (r.source as string) || 'note',
+          status: (r.status as string) || 'new',
+          created_at: r.created_at as string,
+        }));
+    }
+  } catch {
+    // client_requests not migrated yet
+  }
+
   attention.sort((a, b) => {
     if (a.severity !== b.severity) return a.severity === 'high' ? -1 : 1;
     return new Date(a.whenIso).getTime() - new Date(b.whenIso).getTime();
@@ -251,6 +293,7 @@ export async function GET() {
     leads: { total: leadsTotal, byStatus, byType, new7d, new30d },
     bookings: { upcoming, monthCount: upcoming.filter((u) => new Date(u.whenIso) >= monthStart).length },
     proposals,
+    messages,
     followups: followups.slice(0, 6),
     attention: attention.slice(0, 8),
     recentOrders,
