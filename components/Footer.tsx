@@ -17,6 +17,7 @@ export default function Footer() {
       links: [
         { label: 'The Work', href: '/work' },
         { label: 'How it Works', href: '/work-with-us' },
+        { label: 'What You Get', href: '/playbook' },
         { label: 'Book a Call', href: '/book' },
         { label: 'Join the Build Queue', href: '/build-queue' },
         { label: 'AI-Proof Your Business', href: '/ai-proof' },
