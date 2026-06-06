@@ -117,6 +117,12 @@ export default function Footer() {
           >
             Client Portal
           </Link>
+          <Link
+            href="/partners/hq"
+            className="text-[10px] uppercase tracking-[0.15em] text-white/20 hover:text-mustard-400 transition-colors font-mono font-bold"
+          >
+            Partner Login
+          </Link>
           <a
             href="/review"
             className="text-[10px] uppercase tracking-[0.15em] text-white/20 hover:text-mustard-400 transition-colors font-mono font-bold"
