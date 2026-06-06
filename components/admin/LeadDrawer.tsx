@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { LeadRow, LeadStatus } from '@/lib/supabase';
+import { launchCountdown } from '@/lib/launch';
 
 const STATUS_OPTIONS: LeadStatus[] = ['new', 'replied', 'booked', 'won', 'lost', 'archived'];
 
@@ -26,20 +27,27 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<LeadStatus>('new');
   const [events, setEvents] = useState<TimelineEvent[]>([]);
+  const [launch, setLaunch] = useState<{ date: string; projectName: string; launched: boolean } | null>(null);
 
   useEffect(() => {
     if (lead) {
       setNotes(lead.notes ?? '');
       setStatus(lead.status);
       setEvents([]);
+      setLaunch(null);
       if (lead.email) {
         fetch(`/api/admin/timeline?email=${encodeURIComponent(lead.email)}`)
           .then((r) => r.json())
-          .then((j) => setEvents(j.events || []))
+          .then((j) => {
+            setEvents(j.events || []);
+            setLaunch(j.launch || null);
+          })
           .catch(() => setEvents([]));
       }
     }
   }, [lead]);
+
+  const cd = launch ? launchCountdown(launch.date) : null;
 
   if (!lead) return null;
 
@@ -120,6 +128,39 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
         </div>
 
         <div className="px-6 py-6 space-y-7">
+          {/* Launch countdown */}
+          {cd && (
+            <div
+              className={`rounded-xl border px-5 py-4 flex items-center justify-between gap-4 ${
+                launch?.launched
+                  ? 'border-emerald-500/30 bg-emerald-500/10'
+                  : cd.past
+                    ? 'border-red-500/30 bg-red-500/10'
+                    : 'border-mustard-500/30 bg-mustard-500/10'
+              }`}
+            >
+              <div>
+                <span className="text-[9px] uppercase tracking-[0.3em] text-white/45 font-mono font-bold block mb-1">
+                  {launch?.launched ? 'Launched' : 'Launch'}
+                </span>
+                <p className="font-sans font-semibold text-white text-sm">
+                  {launch?.launched ? `${launch.projectName} is live` : cd.label}
+                </p>
+                <p className="text-white/45 font-mono text-[11px] mt-0.5">{cd.date}</p>
+              </div>
+              {!launch?.launched && (
+                <div className="flex flex-col items-center flex-shrink-0">
+                  <span className={`font-display text-3xl font-semibold leading-none ${cd.past ? 'text-red-300' : 'text-mustard-300'}`}>
+                    {cd.days < 0 ? Math.abs(cd.days) : cd.days}
+                  </span>
+                  <span className="text-[8px] uppercase tracking-[0.25em] text-white/40 font-mono mt-1">
+                    {cd.past ? 'days late' : cd.days === 1 ? 'day' : 'days'}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Status */}
           <div>
             <label className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium block mb-2.5">

@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { launchCountdown } from '@/lib/launch';
 
 /**
  * The client workspace. One screen scoped to the signed-in client: their
@@ -226,7 +227,42 @@ export default function ClientPortal() {
                       <ProgressRing value={p.progress} />
                     </div>
                     {p.summary && <p className="text-white/60 font-body text-sm leading-relaxed mb-4">{p.summary}</p>}
-                    {p.launchTarget && <p className="text-white/35 font-mono text-[11px] mb-2">Launch target: {p.launchTarget}</p>}
+                    {(() => {
+                      const cd = launchCountdown(p.launchTarget);
+                      if (!cd) return null;
+                      const launched = p.status === 'launched';
+                      return (
+                        <div
+                          className={`flex items-center justify-between gap-4 rounded-xl border px-4 py-3 mb-4 ${
+                            launched
+                              ? 'border-emerald-500/30 bg-emerald-500/10'
+                              : cd.past
+                                ? 'border-red-500/25 bg-red-500/[0.07]'
+                                : 'border-mustard-500/25 bg-mustard-500/[0.07]'
+                          }`}
+                        >
+                          <div>
+                            <span className="text-[9px] uppercase tracking-[0.3em] text-white/45 font-mono font-bold block mb-0.5">
+                              {launched ? 'Launched' : 'Launch'}
+                            </span>
+                            <p className="font-sans font-semibold text-white text-sm">
+                              {launched ? 'It is live 🎉' : cd.label}
+                            </p>
+                            <p className="text-white/40 font-mono text-[11px] mt-0.5">{cd.date}</p>
+                          </div>
+                          {!launched && (
+                            <div className="flex flex-col items-center flex-shrink-0">
+                              <span className={`font-display text-3xl font-semibold leading-none ${cd.past ? 'text-red-300' : 'text-mustard-300'}`}>
+                                {cd.days < 0 ? Math.abs(cd.days) : cd.days}
+                              </span>
+                              <span className="text-[8px] uppercase tracking-[0.25em] text-white/40 font-mono mt-1">
+                                {cd.past ? 'days late' : cd.days === 1 ? 'day' : 'days'}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
 
                     {p.milestones.length > 0 && (
                       <div className="space-y-2.5 mt-5">

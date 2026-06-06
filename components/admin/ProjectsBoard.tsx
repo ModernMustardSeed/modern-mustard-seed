@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import AdminHeader from './AdminHeader';
+import { launchCountdown } from '@/lib/launch';
 
 type Milestone = { title: string; detail?: string; done?: boolean; due?: string };
 type Deliverables = { audit: boolean; proposalSigned: boolean; depositPaid: boolean; balancePaid: boolean; launched: boolean };
@@ -297,11 +298,24 @@ export default function ProjectsBoard() {
                               </div>
                               <span className="text-[9px] text-white/35 font-mono">{p.progress}%</span>
                             </div>
-                            {p.launch_target && (
-                              <span className="flex-shrink-0 text-[10px] text-white/40 font-mono hidden md:inline">
-                                {p.launch_target}
-                              </span>
-                            )}
+                            {(() => {
+                              const cd = launchCountdown(p.launch_target);
+                              if (!cd || p.status === 'launched') return null;
+                              return (
+                                <span
+                                  title={`Launches ${cd.date}`}
+                                  className={`flex-shrink-0 text-[9px] uppercase tracking-[0.12em] font-mono font-bold px-2 py-0.5 rounded border hidden md:inline ${
+                                    cd.past
+                                      ? 'text-red-300 border-red-500/30 bg-red-500/10'
+                                      : cd.days <= 7
+                                        ? 'text-mustard-200 border-mustard-500/40 bg-mustard-500/10'
+                                        : 'text-white/45 border-white/15 bg-white/[0.02]'
+                                  }`}
+                                >
+                                  {cd.past ? `${cd.short} late` : `T-${cd.days}`}
+                                </span>
+                              );
+                            })()}
                             <select
                               value={p.status}
                               onChange={(e) => quickPatch(p.id, { status: e.target.value })}

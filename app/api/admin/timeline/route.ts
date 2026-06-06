@@ -48,10 +48,18 @@ export async function GET(req: Request) {
     /* ignore */
   }
 
+  let launch: { date: string; projectName: string; launched: boolean } | null = null;
   try {
-    const { data: projects } = await supabase.from('projects').select('name, created_at').ilike('client_email', email);
+    const { data: projects } = await supabase
+      .from('projects')
+      .select('name, created_at, launch_target, status')
+      .ilike('client_email', email);
     for (const pr of projects ?? []) {
       events.push({ when: pr.created_at as string, kind: 'project', label: `Project created: ${pr.name as string}` });
+      const target = pr.launch_target as string | null;
+      if (target && (!launch || target < launch.date)) {
+        launch = { date: target, projectName: pr.name as string, launched: pr.status === 'launched' };
+      }
     }
   } catch {
     /* ignore */
@@ -93,5 +101,5 @@ export async function GET(req: Request) {
   }
 
   events.sort((a, b) => new Date(b.when).getTime() - new Date(a.when).getTime());
-  return NextResponse.json({ events });
+  return NextResponse.json({ events, launch });
 }
