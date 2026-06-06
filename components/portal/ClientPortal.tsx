@@ -327,6 +327,9 @@ export default function ClientPortal() {
                   </div>
                 )}
 
+                {/* Credentials & access (encrypted vault) */}
+                <CredentialsCard />
+
                 {/* Send a change, edit, or note to Sarah */}
                 {(data.audience === 'client' || data.audience === 'both' || data.audience === 'guest') && (
                   <RequestsCard refreshKey={requestRefresh} onSubmitted={() => setRequestRefresh((n) => n + 1)} />
@@ -496,6 +499,109 @@ function ReviewCard({ googleReviewUrl }: { googleReviewUrl: string | null }) {
           </button>
         </form>
       )}
+    </div>
+  );
+}
+
+/* Credentials & access: the client's own launch logins, encrypted at rest,
+   masked until they reveal or copy. Never emailed. */
+type PortalCredential = { id: string; label: string; username: string | null; url: string | null };
+function CredentialsCard() {
+  const [items, setItems] = useState<PortalCredential[]>([]);
+  const [revealed, setRevealed] = useState<Record<string, string>>({});
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/portal/credentials')
+      .then((r) => r.json())
+      .then((j) => {
+        if (alive && Array.isArray(j?.credentials)) setItems(j.credentials);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const reveal = async (id: string) => {
+    if (revealed[id] !== undefined) {
+      setRevealed((r) => {
+        const n = { ...r };
+        delete n[id];
+        return n;
+      });
+      return;
+    }
+    try {
+      const r = await fetch(`/api/portal/credentials/${id}/reveal`);
+      const j = await r.json().catch(() => null);
+      if (r.ok && typeof j?.secret === 'string') setRevealed((m) => ({ ...m, [id]: j.secret }));
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const copy = async (id: string) => {
+    let v = revealed[id];
+    if (v === undefined) {
+      try {
+        const r = await fetch(`/api/portal/credentials/${id}/reveal`);
+        const j = await r.json().catch(() => null);
+        if (r.ok && typeof j?.secret === 'string') v = j.secret;
+      } catch {
+        return;
+      }
+    }
+    if (v === undefined) return;
+    try {
+      await navigator.clipboard.writeText(v);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId((c) => (c === id ? null : c)), 1500);
+    } catch {
+      /* clipboard blocked */
+    }
+  };
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="glass-card p-6">
+      <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-400 font-mono font-bold block mb-1">Credentials &amp; access</span>
+      <p className="text-white/45 font-body text-xs mb-4">Your launch logins, encrypted and private to you. Reveal or copy when you need them.</p>
+      <div className="space-y-2">
+        {items.map((c) => (
+          <div key={c.id} className="rounded-lg bg-white/[0.02] border border-white/[0.05] px-3 py-2.5">
+            <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <span className="block text-sm text-white/85 font-body truncate">{c.label}</span>
+                {(c.username || c.url) && (
+                  <span className="block text-[11px] text-white/40 font-mono truncate">
+                    {c.username || ''}
+                    {c.username && c.url ? ' · ' : ''}
+                    {c.url ? (
+                      <a href={c.url} target="_blank" rel="noopener noreferrer" className="hover:text-mustard-300">
+                        {c.url}
+                      </a>
+                    ) : (
+                      ''
+                    )}
+                  </span>
+                )}
+              </div>
+              <button onClick={() => reveal(c.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-mustard-300 hover:text-mustard-200 flex-shrink-0">
+                {revealed[c.id] !== undefined ? 'Hide' : 'Reveal'}
+              </button>
+              <button onClick={() => copy(c.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-white/50 hover:text-white/80 flex-shrink-0">
+                {copiedId === c.id ? 'Copied' : 'Copy'}
+              </button>
+            </div>
+            <div className="mt-1.5 font-mono text-[12px] text-mustard-200/90 break-all">
+              {revealed[c.id] !== undefined ? revealed[c.id] : '••••••••••••'}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -184,6 +184,153 @@ function ProjectFiles({ email }: { email: string }) {
   );
 }
 
+type Credential = { id: string; label: string; username: string | null; url: string | null };
+
+/** Encrypted credentials vault for a client's launch access. Secrets are masked
+ *  until revealed, copied not emailed. */
+function CredentialsVault({ email }: { email: string }) {
+  const [items, setItems] = useState<Credential[]>([]);
+  const [form, setForm] = useState({ label: '', username: '', url: '', secret: '' });
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const [revealed, setRevealed] = useState<Record<string, string>>({});
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const r = await fetch(`/api/admin/credentials?email=${encodeURIComponent(email)}`);
+      const j = await r.json().catch(() => null);
+      if (r.ok && j) setItems(j.credentials || []);
+    } catch {
+      /* offline */
+    }
+  }, [email]);
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const add = async () => {
+    if (!form.label.trim() || !form.secret || busy) return;
+    setBusy(true);
+    setErr('');
+    try {
+      const r = await fetch('/api/admin/credentials', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_email: email, ...form }),
+      });
+      const j = await r.json().catch(() => null);
+      if (!r.ok) setErr((j && j.error) || 'Could not save.');
+      else {
+        setForm({ label: '', username: '', url: '', secret: '' });
+        load();
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const reveal = async (id: string) => {
+    if (revealed[id] !== undefined) {
+      setRevealed((r) => {
+        const n = { ...r };
+        delete n[id];
+        return n;
+      });
+      return;
+    }
+    try {
+      const r = await fetch(`/api/admin/credentials/${id}/reveal`);
+      const j = await r.json().catch(() => null);
+      if (r.ok && typeof j?.secret === 'string') setRevealed((m) => ({ ...m, [id]: j.secret }));
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const copy = async (id: string) => {
+    let val = revealed[id];
+    if (val === undefined) {
+      try {
+        const r = await fetch(`/api/admin/credentials/${id}/reveal`);
+        const j = await r.json().catch(() => null);
+        if (r.ok && typeof j?.secret === 'string') val = j.secret;
+      } catch {
+        return;
+      }
+    }
+    if (val === undefined) return;
+    try {
+      await navigator.clipboard.writeText(val);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId((c) => (c === id ? null : c)), 1500);
+    } catch {
+      /* clipboard blocked */
+    }
+  };
+
+  const remove = async (id: string) => {
+    try {
+      await fetch(`/api/admin/credentials/${id}`, { method: 'DELETE' });
+      load();
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return (
+    <div>
+      <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono block mb-1.5">
+        Credentials vault (encrypted · client can reveal in their portal)
+      </label>
+      {items.length > 0 && (
+        <div className="space-y-1.5 mb-2.5">
+          {items.map((c) => (
+            <div key={c.id} className="rounded-lg bg-white/[0.02] border border-white/[0.06] px-3 py-2">
+              <div className="flex items-center gap-2">
+                <div className="min-w-0 flex-1">
+                  <span className="block text-sm text-white/85 font-body truncate">{c.label}</span>
+                  <span className="block text-[11px] text-white/40 font-mono truncate">
+                    {c.username || ''}
+                    {c.username && c.url ? ' · ' : ''}
+                    {c.url || ''}
+                  </span>
+                </div>
+                <button onClick={() => reveal(c.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-mustard-300 hover:text-mustard-200 flex-shrink-0">
+                  {revealed[c.id] !== undefined ? 'Hide' : 'Reveal'}
+                </button>
+                <button onClick={() => copy(c.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-white/50 hover:text-white/80 flex-shrink-0">
+                  {copiedId === c.id ? 'Copied' : 'Copy'}
+                </button>
+                <button onClick={() => remove(c.id)} className="text-white/25 hover:text-red-300 text-xs px-1 flex-shrink-0" aria-label="Remove">✕</button>
+              </div>
+              <div className="mt-1.5 font-mono text-[12px] text-mustard-200/90 break-all">
+                {revealed[c.id] !== undefined ? revealed[c.id] : '••••••••••••'}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="grid sm:grid-cols-2 gap-2">
+        <input value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} placeholder="Label (e.g. Shopify admin)" className={inp} />
+        <input value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} placeholder="Username / email (optional)" className={inp} />
+        <input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="Login URL (optional)" className={inp} />
+        <input value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} placeholder="Password / key" type="password" autoComplete="new-password" className={inp} />
+      </div>
+      <div className="mt-2">
+        <button
+          onClick={add}
+          disabled={busy || !form.label.trim() || !form.secret}
+          className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+        >
+          {busy ? 'Saving…' : 'Add credential'}
+        </button>
+        {err && <span className="text-red-300 text-xs font-body ml-3">{err}</span>}
+      </div>
+    </div>
+  );
+}
+
 export default function ProjectsBoard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -533,6 +680,7 @@ export default function ProjectsBoard() {
                               </div>
 
                               {d.client_email && <ProjectFiles email={d.client_email} />}
+                              {d.client_email && <CredentialsVault email={d.client_email} />}
 
                               <div className="flex items-center gap-2 pt-1">
                                 <button
