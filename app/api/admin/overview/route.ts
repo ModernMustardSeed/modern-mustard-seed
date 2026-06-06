@@ -204,11 +204,15 @@ export async function GET() {
     // targets table not migrated yet
   }
 
-  // ── Proposals ─────────────────────────────────────────────────────
+  // ── Proposals + follow-up radar ────────────────────────────────────
   const proposals = { open: 0, openValue: 0, accepted: 0, acceptedValue: 0 };
+  const followups: Array<{ kind: string; title: string; detail: string; days: number }> = [];
   try {
-    const { data: props } = await supabase.from('proposals').select('status, one_time_total');
+    const { data: props } = await supabase
+      .from('proposals')
+      .select('client_name, client_company, status, one_time_total, updated_at, signed_at, deposit_status');
     if (props) {
+      const nowMs = now.getTime();
       for (const p of props) {
         const s = (p.status as string) || 'draft';
         const v = Number(p.one_time_total) || 0;
@@ -219,11 +223,22 @@ export async function GET() {
           proposals.accepted += 1;
           proposals.acceptedValue += v;
         }
+        const who = (p.client_company as string) || (p.client_name as string) || 'a client';
+        const days = Math.floor((nowMs - new Date(p.updated_at as string).getTime()) / 86400000);
+        // Sent, not signed, going stale.
+        if (s === 'sent' && !p.signed_at && days >= 3) {
+          followups.push({ kind: 'proposal', title: `Proposal to ${who} unsigned`, detail: `Sent ${days} days ago, no signature yet.`, days });
+        }
+        // Signed, deposit not paid.
+        if (p.signed_at && p.deposit_status !== 'paid' && days >= 2) {
+          followups.push({ kind: 'deposit', title: `${who} signed, no deposit`, detail: `Signed ${days} days ago, deposit not paid.`, days });
+        }
       }
     }
   } catch {
     // proposals table not migrated yet
   }
+  followups.sort((a, b) => b.days - a.days);
 
   return NextResponse.json({
     generatedAt: now.toISOString(),
@@ -236,6 +251,7 @@ export async function GET() {
     leads: { total: leadsTotal, byStatus, byType, new7d, new30d },
     bookings: { upcoming, monthCount: upcoming.filter((u) => new Date(u.whenIso) >= monthStart).length },
     proposals,
+    followups: followups.slice(0, 6),
     attention: attention.slice(0, 8),
     recentOrders,
     recentLeads,

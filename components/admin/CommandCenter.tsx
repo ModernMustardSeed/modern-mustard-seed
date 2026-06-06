@@ -17,6 +17,7 @@ type Overview = {
   leads: { total: number; byStatus: Record<string, number>; byType: Record<string, number>; new7d: number; new30d: number };
   bookings: { upcoming: Array<{ name: string | null; email: string; whenIso: string; display: string; leadId: string }>; monthCount: number };
   proposals?: { open: number; openValue: number; accepted: number; acceptedValue: number };
+  followups?: Array<{ kind: string; title: string; detail: string; days: number }>;
   attention: Array<{ kind: string; title: string; detail: string; whenIso: string; leadId?: string; severity: 'high' | 'medium' }>;
   recentOrders: Array<{ name: string | null; email: string; product_name: string; price_paid_cents: number; created_at: string }>;
   recentLeads: Array<{ id: string; name: string | null; email: string; type: string; status: string; created_at: string }>;
@@ -232,6 +233,34 @@ export default function CommandCenter() {
                 </div>
               </Link>
             </div>
+
+            {/* Follow-up radar */}
+            {data.followups && data.followups.length > 0 && (
+              <Link
+                href="/admin/proposals"
+                className="block glass-card p-5 mb-6 border-amber-500/30 hover:border-amber-500/50 transition-colors"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-amber-300 font-mono font-bold">
+                    Follow-up radar
+                  </span>
+                  <span className="text-[9px] text-white/30 font-mono">{data.followups.length} need a nudge</span>
+                </div>
+                <div className="space-y-2">
+                  {data.followups.map((f, i) => (
+                    <div key={i} className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <span className="block text-sm font-sans font-semibold text-white/90 truncate">{f.title}</span>
+                        <span className="block text-[11px] text-white/45 font-body">{f.detail}</span>
+                      </div>
+                      <span className="flex-shrink-0 text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-amber-300/80">
+                        {f.days}d
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </Link>
+            )}
 
             {/* AI brief */}
             <div className="glass-card p-6 mb-6 border-mustard-500/20">
