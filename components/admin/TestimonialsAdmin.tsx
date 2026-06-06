@@ -33,8 +33,12 @@ export default function TestimonialsAdmin() {
     try {
       const res = await fetch('/api/admin/testimonials');
       const j = await res.json().catch(() => null);
-      if (res.ok && j) setRows(j.testimonials || []);
-      else setError((j && j.error) || 'Failed to load');
+      if (res.ok && j) {
+        const list: Row[] = j.testimonials || [];
+        // Pending submissions float to the top so they get reviewed.
+        list.sort((a, b) => (a.status === 'pending' ? -1 : 0) - (b.status === 'pending' ? -1 : 0));
+        setRows(list);
+      } else setError((j && j.error) || 'Failed to load');
     } catch {
       setError('Network error');
     } finally {
@@ -138,9 +142,14 @@ export default function TestimonialsAdmin() {
         ) : (
           <div className="space-y-3">
             {rows.map((r) => (
-              <div key={r.id} className="glass-card p-5">
+              <div key={r.id} className={`glass-card p-5 ${r.status === 'pending' ? 'border-mustard-500/40' : ''}`}>
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
+                    {r.status === 'pending' && (
+                      <span className="text-[8px] uppercase tracking-[0.2em] font-mono font-bold text-mustard-300 bg-mustard-500/15 border border-mustard-500/40 rounded px-2 py-0.5 mr-2">
+                        Pending
+                      </span>
+                    )}
                     <span className="font-sans font-semibold text-white/90">{r.name}</span>
                     {(r.role || r.company) && (
                       <span className="text-white/40 text-sm font-body ml-2">{[r.role, r.company].filter(Boolean).join(', ')}</span>
@@ -148,12 +157,21 @@ export default function TestimonialsAdmin() {
                     <span className="text-mustard-300 text-xs ml-2">{'★'.repeat(r.rating)}</span>
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
-                    <button
-                      onClick={() => patch(r.id, { status: r.status === 'published' ? 'hidden' : 'published' })}
-                      className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold ${r.status === 'published' ? 'text-emerald-300' : 'text-white/40'}`}
-                    >
-                      {r.status === 'published' ? 'Published' : 'Hidden'}
-                    </button>
+                    {r.status === 'pending' ? (
+                      <button
+                        onClick={() => patch(r.id, { status: 'published' })}
+                        className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-emerald-300 hover:text-emerald-200"
+                      >
+                        Approve + publish
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => patch(r.id, { status: r.status === 'published' ? 'hidden' : 'published' })}
+                        className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold ${r.status === 'published' ? 'text-emerald-300' : 'text-white/40'}`}
+                      >
+                        {r.status === 'published' ? 'Published' : 'Hidden'}
+                      </button>
+                    )}
                     <button onClick={() => del(r.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono text-white/30 hover:text-red-300">
                       Delete
                     </button>

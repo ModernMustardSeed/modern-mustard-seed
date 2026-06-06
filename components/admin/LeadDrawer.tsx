@@ -12,15 +12,32 @@ type Props = {
   onDelete: (id: string) => void;
 };
 
+type TimelineEvent = { when: string; label: string; detail?: string; kind: string };
+
+const EVENT_DOT: Record<string, string> = {
+  signed: 'bg-blue-400',
+  paid: 'bg-emerald-400',
+  project: 'bg-mustard-400',
+  proposal: 'bg-white/40',
+};
+
 export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props) {
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<LeadStatus>('new');
+  const [events, setEvents] = useState<TimelineEvent[]>([]);
 
   useEffect(() => {
     if (lead) {
       setNotes(lead.notes ?? '');
       setStatus(lead.status);
+      setEvents([]);
+      if (lead.email) {
+        fetch(`/api/admin/timeline?email=${encodeURIComponent(lead.email)}`)
+          .then((r) => r.json())
+          .then((j) => setEvents(j.events || []))
+          .catch(() => setEvents([]));
+      }
     }
   }, [lead]);
 
@@ -151,6 +168,27 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
               </h3>
               <div className="glass-card p-5 whitespace-pre-wrap text-white/80 text-sm font-body leading-relaxed">
                 {lead.message ?? lead.idea_description}
+              </div>
+            </div>
+          )}
+
+          {/* Activity timeline */}
+          {events.length > 0 && (
+            <div>
+              <h3 className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium mb-3">
+                Activity
+              </h3>
+              <div className="space-y-3 border-l border-white/[0.08] pl-4">
+                {events.map((e, i) => (
+                  <div key={i} className="relative">
+                    <span className={`absolute -left-[21px] top-1.5 h-2 w-2 rounded-full ${EVENT_DOT[e.kind] ?? 'bg-white/40'}`} />
+                    <p className="text-white/85 font-body text-sm">
+                      {e.label}
+                      {e.detail ? <span className="text-white/45"> · {e.detail}</span> : ''}
+                    </p>
+                    <p className="text-white/30 font-mono text-[11px]">{new Date(e.when).toLocaleString()}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}

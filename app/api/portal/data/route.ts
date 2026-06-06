@@ -123,5 +123,7 @@ export async function GET() {
   const isBuyer = orders.length > 0;
   const audience = isClient && isBuyer ? 'both' : isClient ? 'client' : isBuyer ? 'buyer' : 'guest';
 
-  return NextResponse.json({ email, client, projects, files, orders, bookings, audience, billing });
+  const googleReviewUrl = process.env.GOOGLE_REVIEW_URL || null;
+
+  return NextResponse.json({ email, client, projects, files, orders, bookings, audience, billing, googleReviewUrl });
 }

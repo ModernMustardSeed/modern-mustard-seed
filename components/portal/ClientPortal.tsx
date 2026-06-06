@@ -28,6 +28,7 @@ type PortalData = {
     balancePaid: boolean;
     signed: boolean;
   } | null;
+  googleReviewUrl: string | null;
 };
 
 const money = (n: number) => `$${n.toLocaleString('en-US')}`;
@@ -269,6 +270,11 @@ export default function ClientPortal() {
                   </div>
                 )}
 
+                {/* Leave a review (clients) */}
+                {(data.audience === 'client' || data.audience === 'both') && (
+                  <ReviewCard googleReviewUrl={data.googleReviewUrl} />
+                )}
+
                 {/* Calls */}
                 <div className="glass-card p-6">
                   <div className="flex items-center justify-between mb-4">
@@ -309,6 +315,98 @@ export default function ClientPortal() {
           </>
         ) : null}
       </main>
+    </div>
+  );
+}
+
+/* Leave-a-review card. Submits to moderation; Sarah approves before it goes public. */
+function ReviewCard({ googleReviewUrl }: { googleReviewUrl: string | null }) {
+  const [quote, setQuote] = useState('');
+  const [rating, setRating] = useState(5);
+  const [outcome, setOutcome] = useState('');
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState(false);
+  const [err, setErr] = useState('');
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!quote.trim() || sending) return;
+    setSending(true);
+    setErr('');
+    try {
+      const res = await fetch('/api/portal/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quote, rating, outcome }),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) setErr((j && j.error) || 'Could not submit.');
+      else setDone(true);
+    } catch {
+      setErr('Network error.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="glass-card p-6 border-mustard-500/20">
+      <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-400 font-mono font-bold block mb-1">
+        Leave a review
+      </span>
+      {done ? (
+        <div className="py-3">
+          <p className="text-white/85 font-body text-sm mb-1">Thank you. Sarah reviews each one before it goes live on the site.</p>
+          {googleReviewUrl && (
+            <a
+              href={googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-3 px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-cream-50 bg-brass rounded-lg hover:shadow-[0_0_25px_rgba(255,107,53,0.4)] transition-all"
+            >
+              Also post it on Google →
+            </a>
+          )}
+        </div>
+      ) : (
+        <form onSubmit={submit} className="mt-2">
+          <p className="text-white/45 font-body text-xs mb-4">A line or two about working together means the world, and helps the next person find us.</p>
+          <div className="flex items-center gap-1.5 mb-3">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setRating(n)}
+                aria-label={`${n} stars`}
+                className={`text-2xl leading-none ${n <= rating ? 'text-mustard-400' : 'text-white/20'} hover:text-mustard-300 transition-colors`}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+          <textarea
+            value={quote}
+            onChange={(e) => setQuote(e.target.value)}
+            rows={3}
+            placeholder="What was it like working with Modern Mustard Seed?"
+            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 resize-y mb-3"
+          />
+          <input
+            value={outcome}
+            onChange={(e) => setOutcome(e.target.value)}
+            placeholder="A result, if you have one (e.g. 30% more booked jobs)"
+            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 mb-3"
+          />
+          {err && <p className="text-red-300 text-xs font-body mb-3">{err}</p>}
+          <button
+            type="submit"
+            disabled={sending || !quote.trim()}
+            className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-cream-50 bg-brass rounded-lg disabled:opacity-50 hover:shadow-[0_0_25px_rgba(255,107,53,0.4)] transition-all"
+          >
+            {sending ? 'Sending…' : 'Submit review'}
+          </button>
+        </form>
+      )}
     </div>
   );
 }
