@@ -13,3 +13,6 @@ export const navLinks = [
 ];
 
 export const bookingUrl = '/?book=1';
+
+// Google Business Profile review link. Shareable cleanly via /review.
+export const googleReviewUrl = 'https://g.page/r/CQPWYcgFAJByEAI/review';

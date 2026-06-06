@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { displayForIso } from '@/lib/booking';
+import { googleReviewUrl as GOOGLE_REVIEW_FALLBACK } from '@/data/socials';
 
 export const runtime = 'nodejs';
 
@@ -123,7 +124,7 @@ export async function GET() {
   const isBuyer = orders.length > 0;
   const audience = isClient && isBuyer ? 'both' : isClient ? 'client' : isBuyer ? 'buyer' : 'guest';
 
-  const googleReviewUrl = process.env.GOOGLE_REVIEW_URL || null;
+  const googleReviewUrl = process.env.GOOGLE_REVIEW_URL || GOOGLE_REVIEW_FALLBACK;
 
   return NextResponse.json({ email, client, projects, files, orders, bookings, audience, billing, googleReviewUrl });
 }
