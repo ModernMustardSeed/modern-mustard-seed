@@ -42,7 +42,7 @@ export function buildMetadata({ title, description, path = '/', image, noindex }
       description: desc,
       url,
       siteName: SITE.name,
-      images: [{ url: ogImage, width: 1200, height: 630, alt: SITE.name }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: SITE.name, type: 'image/png' }],
       locale: 'en_US',
       type: 'website',
     },
