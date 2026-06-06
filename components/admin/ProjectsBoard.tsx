@@ -29,9 +29,9 @@ function DeliverablesStrip({ d, email, onLaunch }: { d: Deliverables; email: str
 
   const items: { label: string; done: boolean; href?: string; onClick?: () => void; hint: string }[] = [
     { label: 'Audit', done: d.audit, href: `/admin/audit?email=${encodeURIComponent(email)}`, hint: 'Run and save an audit' },
-    { label: 'Signed', done: d.proposalSigned, href: '/admin/proposals', hint: 'Send a proposal for signature' },
-    { label: 'Deposit', done: d.depositPaid, href: '/admin/proposals', hint: 'Send the deposit invoice' },
-    { label: 'Balance', done: d.balancePaid, href: '/admin/proposals', hint: 'Send the balance invoice' },
+    { label: 'Signed', done: d.proposalSigned, href: `/admin/proposals?email=${encodeURIComponent(email)}`, hint: 'Send a proposal for signature' },
+    { label: 'Deposit', done: d.depositPaid, href: `/admin/proposals?email=${encodeURIComponent(email)}`, hint: 'Send the deposit invoice' },
+    { label: 'Balance', done: d.balancePaid, href: `/admin/proposals?email=${encodeURIComponent(email)}`, hint: 'Send the balance invoice' },
     { label: 'Launched', done: d.launched, onClick: onLaunch, hint: 'Mark this project launched' },
   ];
 

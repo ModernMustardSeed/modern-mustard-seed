@@ -93,6 +93,10 @@ export default function ProposalBuilder() {
   const [sendingProposal, setSendingProposal] = useState(false);
   const [proposalSent, setProposalSent] = useState(false);
 
+  // Deep-link focus: /admin/proposals?email=... auto-opens that client's proposal.
+  const [focusEmail, setFocusEmail] = useState<string | null>(null);
+  const [focusHandled, setFocusHandled] = useState(false);
+
   // Deposit (money loop)
   const [depositAmount, setDepositAmount] = useState<number | ''>('');
   const [depositStatus, setDepositStatus] = useState('unpaid');
@@ -224,6 +228,12 @@ export default function ProposalBuilder() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     loadList();
+    try {
+      const em = new URLSearchParams(window.location.search).get('email');
+      if (em) setFocusEmail(em.toLowerCase());
+    } catch {
+      /* no query */
+    }
   }, []);
 
   const buildPayload = () => ({
@@ -368,6 +378,17 @@ export default function ProposalBuilder() {
       /* ignore */
     }
   };
+
+  // Once the saved list is in, open the focused client's latest proposal (or
+  // prefill a new one for them if they have none yet). Runs only once.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!focusEmail || focusHandled || list.length === 0) return;
+    setFocusHandled(true);
+    const match = list.find((p) => (p.client_email || '').toLowerCase() === focusEmail);
+    if (match) loadProposal(match.id);
+    else setEmail(focusEmail);
+  }, [list, focusEmail, focusHandled]);
 
   const newProposal = () => {
     setCurrentId(null);
