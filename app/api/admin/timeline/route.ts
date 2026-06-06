@@ -58,6 +58,24 @@ export async function GET(req: Request) {
   }
 
   try {
+    const { data: audits } = await supabase
+      .from('saved_audits')
+      .select('url, score, letter, created_at')
+      .ilike('client_email', email);
+    for (const a of audits ?? []) {
+      const score = a.score != null ? `${a.score}/100${a.letter ? ` (${a.letter})` : ''}` : undefined;
+      events.push({
+        when: a.created_at as string,
+        kind: 'audit',
+        label: `Website audit saved${a.url ? `: ${a.url as string}` : ''}`,
+        detail: score,
+      });
+    }
+  } catch {
+    /* ignore */
+  }
+
+  try {
     const { data: reqs } = await supabase
       .from('client_requests')
       .select('body, source, created_at')

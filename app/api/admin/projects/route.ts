@@ -47,6 +47,21 @@ export async function POST(req: Request) {
   }
   const status = typeof body.status === 'string' && STATUSES.includes(body.status) ? body.status : 'discovery';
 
+  // Create or update the client record too, so starting a project also creates
+  // the client (name, company saved against their email).
+  const clientName = String(body.client_name ?? '').trim();
+  const clientCompany = String(body.client_company ?? '').trim();
+  if (clientName || clientCompany) {
+    try {
+      const patch: Record<string, unknown> = { email: client_email };
+      if (clientName) patch.name = clientName;
+      if (clientCompany) patch.company = clientCompany;
+      await supabase.from('clients').upsert(patch, { onConflict: 'email' });
+    } catch (err) {
+      console.error('client upsert (non-fatal)', err);
+    }
+  }
+
   const { data, error } = await supabase
     .from('projects')
     .insert({

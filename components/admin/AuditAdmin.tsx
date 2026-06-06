@@ -60,6 +60,11 @@ export default function AuditAdmin() {
   const [sent, setSent] = useState(false);
   const [sendError, setSendError] = useState('');
 
+  // Save-to-client
+  const [savingAudit, setSavingAudit] = useState(false);
+  const [savedAudit, setSavedAudit] = useState(false);
+  const [saveError, setSaveError] = useState('');
+
   const runAudit = async () => {
     if (!url.trim() || running) return;
     setRunning(true);
@@ -121,6 +126,26 @@ export default function AuditAdmin() {
     }
   };
 
+  const saveToClient = async () => {
+    if (!toEmail.trim() || !report || savingAudit) return;
+    setSavingAudit(true);
+    setSaveError('');
+    try {
+      const res = await fetch('/api/admin/audit/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: toEmail.trim(), name: toName.trim() || undefined, url: auditedUrl, report }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) setSaveError((data && data.error) || 'Could not save.');
+      else setSavedAudit(true);
+    } catch {
+      setSaveError('Network error. Try again.');
+    } finally {
+      setSavingAudit(false);
+    }
+  };
+
   const reset = () => {
     setReport(null);
     setUrl('');
@@ -131,6 +156,8 @@ export default function AuditAdmin() {
     setNote('');
     setSent(false);
     setSendError('');
+    setSavedAudit(false);
+    setSaveError('');
   };
 
   // Hand the audit to the proposal builder: carry the URL, a situation line, a
@@ -358,13 +385,26 @@ export default function AuditAdmin() {
                     are added automatically below it.
                   </p>
                   {sendError && <p className="text-red-300 text-sm font-body mb-3">{sendError}</p>}
-                  <button
-                    onClick={send}
-                    disabled={sending || !toEmail.trim()}
-                    className="px-6 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
-                  >
-                    {sending ? 'Sending…' : 'Send the audit'}
-                  </button>
+                  {saveError && <p className="text-red-300 text-sm font-body mb-3">{saveError}</p>}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button
+                      onClick={send}
+                      disabled={sending || !toEmail.trim()}
+                      className="px-6 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+                    >
+                      {sending ? 'Sending…' : 'Send the audit'}
+                    </button>
+                    <button
+                      onClick={saveToClient}
+                      disabled={savingAudit || savedAudit || !toEmail.trim()}
+                      className="px-6 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-mustard-300 border border-mustard-500/40 hover:bg-mustard-500/10 disabled:opacity-40 transition-colors"
+                    >
+                      {savedAudit ? 'Saved to client ✓' : savingAudit ? 'Saving…' : 'Save to client'}
+                    </button>
+                  </div>
+                  <p className="text-white/30 text-[11px] font-body mt-2">
+                    Save to client keeps this audit on file against their email (with the proposal), so the engagement is tracked to completion.
+                  </p>
                 </>
               )}
             </div>

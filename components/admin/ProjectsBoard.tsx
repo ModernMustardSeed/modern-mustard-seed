@@ -39,7 +39,7 @@ export default function ProjectsBoard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [form, setForm] = useState({ client_email: '', name: '' });
+  const [form, setForm] = useState({ client_email: '', name: '', client_name: '', client_company: '', status: 'discovery' });
   const [adding, setAdding] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Project | null>(null);
@@ -73,7 +73,7 @@ export default function ProjectsBoard() {
         body: JSON.stringify(form),
       });
       if (res.ok) {
-        setForm({ client_email: '', name: '' });
+        setForm({ client_email: '', name: '', client_name: '', client_company: '', status: 'discovery' });
         await load();
       } else {
         const j = await res.json().catch(() => null);
@@ -157,12 +157,24 @@ export default function ProjectsBoard() {
           </div>
         )}
 
-        {/* New project */}
+        {/* New project + client */}
         <div className="glass-card p-5 mb-8">
           <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">
-            New project
+            New project &amp; client
           </span>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="grid sm:grid-cols-2 gap-3 mb-3">
+            <input
+              value={form.client_name}
+              onChange={(e) => setForm({ ...form, client_name: e.target.value })}
+              placeholder="Client name (e.g. Tommy Mantle)"
+              className={inp}
+            />
+            <input
+              value={form.client_company}
+              onChange={(e) => setForm({ ...form, client_company: e.target.value })}
+              placeholder="Company (optional)"
+              className={inp}
+            />
             <input
               value={form.client_email}
               onChange={(e) => setForm({ ...form, client_email: e.target.value })}
@@ -172,19 +184,32 @@ export default function ProjectsBoard() {
             <input
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="Project name"
+              placeholder="Project name (e.g. Website Design)"
               className={inp}
             />
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+            <select
+              value={form.status}
+              onChange={(e) => setForm({ ...form, status: e.target.value })}
+              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-mustard-500/40 sm:w-48"
+            >
+              {STATUSES.map((s) => (
+                <option key={s} value={s} className="bg-neutral-900">
+                  {STATUS_LABEL[s]}
+                </option>
+              ))}
+            </select>
             <button
               onClick={create}
               disabled={adding || !form.client_email.trim() || !form.name.trim()}
               className="px-6 py-2 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors whitespace-nowrap"
             >
-              {adding ? 'Adding…' : 'Add'}
+              {adding ? 'Creating…' : 'Create client + project'}
             </button>
           </div>
           <p className="text-white/30 text-[11px] font-body mt-2">
-            The client sees this in their portal (status, progress, milestones) keyed by their email.
+            Creates the client record and starts their project. They see status, progress, and milestones in their portal, keyed by email.
           </p>
         </div>
 
