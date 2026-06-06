@@ -24,11 +24,14 @@ export async function sendReviewNudge({ email, name }: { email?: string | null; 
     if (projects && projects.some((p) => p.review_requested_at)) return;
 
     const resend = new Resend(process.env.RESEND_API_KEY);
+    // Send 2 days after delivery, so the ask lands once they have lived with it.
+    const scheduledAt = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
     await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
       replyTo: 'sarah@modernmustardseed.com',
       subject: 'Your build is live. A quick favor?',
+      scheduledAt,
       html: reviewRequestEmail({
         toName: name || undefined,
         reviewUrl: process.env.GOOGLE_REVIEW_URL || googleReviewUrl,
