@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import NewsletterSignup from '@/components/NewsletterSignup';
+import EmailPlaybookCTA from '@/components/EmailPlaybookCTA';
 import { JsonLd, breadcrumbJsonLd, howToJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { getAllSlugs, getContent } from '@/lib/content';
@@ -80,6 +81,8 @@ export default async function PlaybookPage({ params }: { params: Params }) {
               options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
             />
           </div>
+
+          <EmailPlaybookCTA slug={slug} title={pb.meta.title} />
         </div>
       </article>
 
