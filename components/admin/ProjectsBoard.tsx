@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
 import AdminHeader from './AdminHeader';
 
 type Milestone = { title: string; detail?: string; done?: boolean; due?: string };
@@ -18,28 +19,48 @@ type Project = {
   deliverables?: Deliverables;
 };
 
-/** At-a-glance completion: audit on file, proposal signed, deposit + balance paid, launched. */
-function DeliverablesStrip({ d }: { d: Deliverables }) {
-  const items: { label: string; done: boolean }[] = [
-    { label: 'Audit', done: d.audit },
-    { label: 'Signed', done: d.proposalSigned },
-    { label: 'Deposit', done: d.depositPaid },
-    { label: 'Balance', done: d.balancePaid },
-    { label: 'Launched', done: d.launched },
+/** At-a-glance completion: audit on file, proposal signed, deposit + balance paid,
+ *  launched. Incomplete chips are actionable: they jump straight to the next step. */
+function DeliverablesStrip({ d, email, onLaunch }: { d: Deliverables; email: string; onLaunch: () => void }) {
+  const base =
+    'inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.12em] font-mono font-bold px-2 py-0.5 rounded border transition-colors';
+  const doneCls = 'text-emerald-200 border-emerald-500/30 bg-emerald-500/10';
+  const todoCls = 'text-white/45 border-white/15 bg-white/[0.02] hover:text-mustard-200 hover:border-mustard-500/40 cursor-pointer';
+
+  const items: { label: string; done: boolean; href?: string; onClick?: () => void; hint: string }[] = [
+    { label: 'Audit', done: d.audit, href: `/admin/audit?email=${encodeURIComponent(email)}`, hint: 'Run and save an audit' },
+    { label: 'Signed', done: d.proposalSigned, href: '/admin/proposals', hint: 'Send a proposal for signature' },
+    { label: 'Deposit', done: d.depositPaid, href: '/admin/proposals', hint: 'Send the deposit invoice' },
+    { label: 'Balance', done: d.balancePaid, href: '/admin/proposals', hint: 'Send the balance invoice' },
+    { label: 'Launched', done: d.launched, onClick: onLaunch, hint: 'Mark this project launched' },
   ];
+
   return (
     <div className="flex flex-wrap gap-1.5 mt-2.5">
-      {items.map((it) => (
-        <span
-          key={it.label}
-          className={`inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.12em] font-mono font-bold px-2 py-0.5 rounded border ${
-            it.done ? 'text-emerald-200 border-emerald-500/30 bg-emerald-500/10' : 'text-white/30 border-white/10 bg-white/[0.02]'
-          }`}
-        >
-          <span>{it.done ? '✓' : '–'}</span>
-          {it.label}
-        </span>
-      ))}
+      {items.map((it) => {
+        if (it.done) {
+          return (
+            <span key={it.label} className={`${base} ${doneCls}`}>
+              <span>✓</span>
+              {it.label}
+            </span>
+          );
+        }
+        if (it.onClick) {
+          return (
+            <button key={it.label} onClick={it.onClick} title={it.hint} className={`${base} ${todoCls}`}>
+              <span>→</span>
+              {it.label}
+            </button>
+          );
+        }
+        return (
+          <Link key={it.label} href={it.href!} title={it.hint} className={`${base} ${todoCls}`}>
+            <span>→</span>
+            {it.label}
+          </Link>
+        );
+      })}
     </div>
   );
 }
@@ -294,7 +315,16 @@ export default function ProjectsBoard() {
                             </select>
                           </div>
 
-                          {p.deliverables && <DeliverablesStrip d={p.deliverables} />}
+                          {p.deliverables && (
+                            <DeliverablesStrip
+                              d={p.deliverables}
+                              email={p.client_email}
+                              onLaunch={async () => {
+                                await quickPatch(p.id, { status: 'launched' });
+                                load();
+                              }}
+                            />
+                          )}
 
                           {/* Expanded editor */}
                           {expanded && d && (

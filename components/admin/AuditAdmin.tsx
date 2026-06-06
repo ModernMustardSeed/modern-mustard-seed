@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from './AdminHeader';
 
@@ -64,6 +64,19 @@ export default function AuditAdmin() {
   const [savingAudit, setSavingAudit] = useState(false);
   const [savedAudit, setSavedAudit] = useState(false);
   const [saveError, setSaveError] = useState('');
+
+  // Prefill the client from a deliverables-strip link (/admin/audit?email=&name=).
+  useEffect(() => {
+    try {
+      const q = new URLSearchParams(window.location.search);
+      const em = q.get('email');
+      const nm = q.get('name');
+      if (em) setToEmail(em);
+      if (nm) setToName(nm);
+    } catch {
+      /* no query */
+    }
+  }, []);
 
   const runAudit = async () => {
     if (!url.trim() || running) return;
