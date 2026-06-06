@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import AdminHeader from './AdminHeader';
 
 type Milestone = { title: string; detail?: string; done?: boolean; due?: string };
+type Deliverables = { audit: boolean; proposalSigned: boolean; depositPaid: boolean; balancePaid: boolean; launched: boolean };
 type Project = {
   id: string;
   client_email: string;
@@ -14,7 +15,34 @@ type Project = {
   milestones: Milestone[];
   launch_target: string | null;
   updated_at?: string;
+  deliverables?: Deliverables;
 };
+
+/** At-a-glance completion: audit on file, proposal signed, deposit + balance paid, launched. */
+function DeliverablesStrip({ d }: { d: Deliverables }) {
+  const items: { label: string; done: boolean }[] = [
+    { label: 'Audit', done: d.audit },
+    { label: 'Signed', done: d.proposalSigned },
+    { label: 'Deposit', done: d.depositPaid },
+    { label: 'Balance', done: d.balancePaid },
+    { label: 'Launched', done: d.launched },
+  ];
+  return (
+    <div className="flex flex-wrap gap-1.5 mt-2.5">
+      {items.map((it) => (
+        <span
+          key={it.label}
+          className={`inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.12em] font-mono font-bold px-2 py-0.5 rounded border ${
+            it.done ? 'text-emerald-200 border-emerald-500/30 bg-emerald-500/10' : 'text-white/30 border-white/10 bg-white/[0.02]'
+          }`}
+        >
+          <span>{it.done ? '✓' : '–'}</span>
+          {it.label}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 const STATUSES = ['discovery', 'building', 'review', 'launched', 'paused'];
 const STATUS_LABEL: Record<string, string> = {
@@ -265,6 +293,8 @@ export default function ProjectsBoard() {
                               ))}
                             </select>
                           </div>
+
+                          {p.deliverables && <DeliverablesStrip d={p.deliverables} />}
 
                           {/* Expanded editor */}
                           {expanded && d && (

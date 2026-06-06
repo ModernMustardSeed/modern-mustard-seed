@@ -120,11 +120,38 @@ export async function GET() {
     /* ignore */
   }
 
+  // Latest saved website audit for this client (so they see the value on file).
+  let audit: { url: string | null; score: number | null; letter: string | null; headline: string | null; fixes: Array<{ title: string; how: string }> } | null = null;
+  try {
+    const { data } = await supabase
+      .from('saved_audits')
+      .select('url, score, letter, headline, report, created_at')
+      .eq('client_email', email)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (data) {
+      const rep = (data.report ?? {}) as { top_three_fixes?: Array<{ title?: string; how?: string; why?: string }> };
+      const fixes = Array.isArray(rep.top_three_fixes)
+        ? rep.top_three_fixes.slice(0, 3).map((f) => ({ title: String(f.title ?? ''), how: String(f.how ?? f.why ?? '') }))
+        : [];
+      audit = {
+        url: (data.url as string | null) ?? null,
+        score: (data.score as number | null) ?? null,
+        letter: (data.letter as string | null) ?? null,
+        headline: (data.headline as string | null) ?? null,
+        fixes,
+      };
+    }
+  } catch {
+    /* saved_audits not migrated */
+  }
+
   const isClient = !!client || projects.length > 0;
   const isBuyer = orders.length > 0;
   const audience = isClient && isBuyer ? 'both' : isClient ? 'client' : isBuyer ? 'buyer' : 'guest';
 
   const googleReviewUrl = process.env.GOOGLE_REVIEW_URL || GOOGLE_REVIEW_FALLBACK;
 
-  return NextResponse.json({ email, client, projects, files, orders, bookings, audience, billing, googleReviewUrl });
+  return NextResponse.json({ email, client, projects, files, orders, bookings, audience, billing, audit, googleReviewUrl });
 }

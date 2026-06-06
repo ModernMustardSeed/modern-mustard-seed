@@ -23,7 +23,50 @@ export async function GET() {
     console.error('projects list error', error);
     return NextResponse.json({ error: 'Could not load projects' }, { status: 500 });
   }
-  return NextResponse.json({ projects: data ?? [] });
+
+  const projects = data ?? [];
+
+  // Enrich each project with deliverable status (audit on file, proposal signed,
+  // deposit + balance paid, launched) so the board shows completeness at a glance.
+  const auditEmails = new Set<string>();
+  const propMap = new Map<string, { signed: boolean; depositPaid: boolean; balancePaid: boolean }>();
+  try {
+    const { data: audits } = await supabase.from('saved_audits').select('client_email');
+    for (const a of audits ?? []) auditEmails.add(String(a.client_email ?? '').toLowerCase());
+  } catch {
+    /* saved_audits not migrated */
+  }
+  try {
+    const { data: props } = await supabase.from('proposals').select('client_email, signed_at, deposit_status, balance_status');
+    for (const pr of props ?? []) {
+      const e = String(pr.client_email ?? '').toLowerCase();
+      if (!e) continue;
+      const cur = propMap.get(e) ?? { signed: false, depositPaid: false, balancePaid: false };
+      if (pr.signed_at) cur.signed = true;
+      if (pr.deposit_status === 'paid') cur.depositPaid = true;
+      if (pr.balance_status === 'paid') cur.balancePaid = true;
+      propMap.set(e, cur);
+    }
+  } catch {
+    /* proposals not migrated */
+  }
+
+  const enriched = projects.map((p) => {
+    const e = String(p.client_email ?? '').toLowerCase();
+    const prop = propMap.get(e);
+    return {
+      ...p,
+      deliverables: {
+        audit: auditEmails.has(e),
+        proposalSigned: !!prop?.signed,
+        depositPaid: !!prop?.depositPaid,
+        balancePaid: !!prop?.balancePaid,
+        launched: p.status === 'launched',
+      },
+    };
+  });
+
+  return NextResponse.json({ projects: enriched });
 }
 
 /** Create a project. The client portal reads this same table by client_email. */

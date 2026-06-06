@@ -28,6 +28,13 @@ type PortalData = {
     balancePaid: boolean;
     signed: boolean;
   } | null;
+  audit: {
+    url: string | null;
+    score: number | null;
+    letter: string | null;
+    headline: string | null;
+    fixes: Array<{ title: string; how: string }>;
+  } | null;
   googleReviewUrl: string | null;
 };
 
@@ -243,6 +250,41 @@ export default function ClientPortal() {
                   </div>
                   );
                 })}
+
+                {/* Saved website audit */}
+                {data.audit && (data.audit.score != null || data.audit.headline) && (
+                  <div className="glass-card p-6">
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                      <div>
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-400 font-mono font-bold block mb-1">Your website audit</span>
+                        {data.audit.url && <span className="text-white/40 font-mono text-[11px]">{data.audit.url}</span>}
+                      </div>
+                      {data.audit.score != null && (
+                        <div className="flex flex-col items-center flex-shrink-0">
+                          <span className="font-display text-3xl font-semibold text-white leading-none">{data.audit.score}</span>
+                          <span className="text-[8px] uppercase tracking-[0.3em] text-white/40 font-mono mt-1">/100</span>
+                          {data.audit.letter && <span className="mt-1 px-2 py-0.5 rounded-full border border-mustard-500/40 text-mustard-300 font-display italic text-xs">{data.audit.letter}</span>}
+                        </div>
+                      )}
+                    </div>
+                    {data.audit.headline && (
+                      <p className="font-display italic text-white/80 text-base leading-snug mb-4">&ldquo;{data.audit.headline}&rdquo;</p>
+                    )}
+                    {data.audit.fixes.length > 0 && (
+                      <>
+                        <span className="text-[9px] uppercase tracking-[0.25em] text-white/35 font-mono block mb-2">Top fixes</span>
+                        <div className="space-y-2">
+                          {data.audit.fixes.map((f, i) => (
+                            <div key={i} className="rounded-lg bg-white/[0.02] border border-white/[0.05] px-3 py-2.5">
+                              <p className="text-white/85 font-body text-sm font-medium">{i + 1}. {f.title}</p>
+                              {f.how && <p className="text-white/45 font-body text-xs mt-1 leading-relaxed">{f.how}</p>}
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
 
                 {/* Send a change, edit, or note to Sarah */}
                 {(data.audience === 'client' || data.audience === 'both' || data.audience === 'guest') && (
