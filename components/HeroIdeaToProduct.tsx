@@ -56,7 +56,10 @@ export default function HeroIdeaToProduct() {
           You bring the seed
           <br />
           we build the{' '}
-          <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
+          <span
+            className="inline-block text-[#F5B700] text-6xl md:text-8xl lg:text-9xl align-baseline leading-[0.9]"
+            style={{ WebkitTextStroke: '2.5px #161616' }}
+          >
             tree
           </span>
         </h1>
