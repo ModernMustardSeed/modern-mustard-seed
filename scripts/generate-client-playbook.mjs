@@ -1,7 +1,7 @@
 // Generates the client-facing "What You Get" playbook PDF (a sales asset).
 // Run from the project root:  node scripts/generate-client-playbook.mjs
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -9,6 +9,8 @@ const INK = rgb(0.086, 0.086, 0.086);
 const BODY = rgb(0.227, 0.216, 0.2);
 const MUTED = rgb(0.54, 0.515, 0.47);
 const YELLOW = rgb(0.96, 0.717, 0);
+const RED = rgb(0.878, 0.188, 0.118);
+const WHITE = rgb(1, 1, 1);
 
 const C = [
   { cover: true },
@@ -78,6 +80,7 @@ const doc = await PDFDocument.create();
 const reg = await doc.embedFont(StandardFonts.Helvetica);
 const bold = await doc.embedFont(StandardFonts.HelveticaBold);
 const ital = await doc.embedFont(StandardFonts.HelveticaOblique);
+const logo = await doc.embedPng(readFileSync('public/brand/logo-lockup.png'));
 
 const W = 612, H = 792, M = 56, contentW = W - 2 * M;
 let page, y;
@@ -126,13 +129,26 @@ const h1 = (text) => {
 for (const block of C) {
   if (block.cover) {
     newPage();
-    page.drawRectangle({ x: 0, y: H - 130, width: W, height: 130, color: YELLOW });
-    page.drawRectangle({ x: 0, y: H - 134, width: W, height: 4, color: INK });
-    page.drawText('MODERN MUSTARD SEED', { x: M, y: H - 72, size: 13, font: bold, color: INK });
-    page.drawText('What You Get', { x: M, y: H - 108, size: 28, font: bold, color: INK });
-    y = H - 195;
-    para('A founder-led studio that turns your idea into real, shipped software. Here is exactly what working together looks like, from the first free audit to launch and beyond.', { size: 12, color: INK, gap: 10 });
-    para('You bring the seed. We build the tree.', { size: 11, font: ital, color: MUTED });
+    // Comic frame.
+    page.drawRectangle({ x: 12, y: 12, width: W - 24, height: H - 24, color: WHITE, borderColor: INK, borderWidth: 6 });
+    const center = (text, font, size, yy, color) => {
+      const w = font.widthOfTextAtSize(text, size);
+      page.drawText(text, { x: (W - w) / 2, y: yy, size, font, color });
+    };
+    // Logo lockup (mascot + wordmark), centered near the top.
+    const logoH = 158;
+    const logoW = logo.width * (logoH / logo.height);
+    page.drawImage(logo, { x: (W - logoW) / 2, y: H - 80 - logoH, width: logoW, height: logoH });
+    // Eyebrow + title with a yellow marker swipe behind it.
+    center('MODERN MUSTARD SEED', bold, 12, H - 80 - logoH - 34, RED);
+    const titleY = H - 80 - logoH - 82;
+    const titleW = bold.widthOfTextAtSize('What You Get', 34);
+    page.drawRectangle({ x: (W - titleW) / 2 - 14, y: titleY - 6, width: titleW + 28, height: 40, color: YELLOW });
+    center('What You Get', bold, 34, titleY, INK);
+    y = titleY - 56;
+    para('A founder-led studio that turns your idea into real, shipped software. Here is exactly what working together looks like, from the first free audit to launch and beyond.', { size: 12, color: INK, gap: 12, indent: 24 });
+    y -= 4;
+    para('You bring the seed. We build the tree.', { size: 12, font: ital, color: MUTED, indent: 24 });
     continue;
   }
   if (block.h1) h1(block.h1);
@@ -142,6 +158,8 @@ for (const block of C) {
 }
 
 const bytes = await doc.save();
-const out = path.join(os.homedir(), 'Downloads', 'Modern-Mustard-Seed-What-You-Get.pdf');
-writeFileSync(out, bytes);
-console.log('Wrote', out, '(' + bytes.length + ' bytes)');
+const hosted = path.join('public', 'downloads', 'modern-mustard-seed-playbook.pdf');
+const local = path.join(os.homedir(), 'Downloads', 'Modern-Mustard-Seed-What-You-Get.pdf');
+writeFileSync(hosted, bytes);
+writeFileSync(local, bytes);
+console.log('Wrote', hosted, 'and', local, '(' + bytes.length + ' bytes)');
