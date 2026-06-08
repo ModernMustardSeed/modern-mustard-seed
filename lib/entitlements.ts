@@ -1,5 +1,6 @@
 import { getSupabase } from './supabase';
 import { normalizeEmail } from './client-auth';
+import { getAffiliateByEmail } from './affiliate';
 import { products } from '@/data/products';
 
 /** Every product an affiliate gets free: the two programs plus the playbooks. */
@@ -53,19 +54,51 @@ export async function grantAllProducts(email: string, source = 'affiliate'): Pro
   await Promise.all(ALL_PRODUCT_SLUGS.map((slug) => grantEntitlement(email, slug, source)));
 }
 
-/** Does this email have access to this product? */
+/**
+ * Does this email have access to this product?
+ *
+ * Two ways to be entitled:
+ *  1. A direct entitlement row (a buyer, or an affiliate already granted).
+ *  2. Being an approved affiliate, who gets free access to everything.
+ *
+ * Case 2 is a self-heal. The grant at approval time is a one-time write that can
+ * be missed (a partner approved before the entitlement system existed, or a
+ * transient failure during approval). Rather than depend on that single write,
+ * we treat approved-affiliate status as authoritative for free access and
+ * backfill the rows on first access, so the next load is a fast direct hit.
+ * This guarantees no approved partner ever sees a dead PDF or a course that
+ * bounces to the marketing page.
+ */
 export async function hasEntitlement(email: string, slug: string): Promise<boolean> {
   const client = getSupabase();
   if (!client) return false;
+  const normEmail = normalizeEmail(email);
+
   try {
     const { data } = await client
       .from('entitlements')
       .select('id')
-      .eq('email', normalizeEmail(email))
+      .eq('email', normEmail)
       .eq('product_slug', slug)
       .maybeSingle();
-    return !!data;
+    if (data) return true;
   } catch {
-    return false;
+    /* fall through to the affiliate check */
   }
+
+  // Self-heal: an approved affiliate is entitled to every free product.
+  if (ALL_PRODUCT_SLUGS.includes(slug)) {
+    try {
+      const aff = await getAffiliateByEmail(normEmail);
+      if (aff && aff.status === 'approved') {
+        // Backfill all rows now (idempotent) so future loads hit the fast path.
+        await grantAllProducts(normEmail, 'affiliate');
+        return true;
+      }
+    } catch {
+      /* not an affiliate, or lookup failed */
+    }
+  }
+
+  return false;
 }
