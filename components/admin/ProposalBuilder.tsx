@@ -439,15 +439,22 @@ export default function ProposalBuilder() {
 
   const [subBusy, setSubBusy] = useState(false);
   const [subMsg, setSubMsg] = useState('');
-  const createSubscription = async () => {
+  const createSubscription = async (setup?: number) => {
     if (!currentId || subBusy) return;
     setSubBusy(true);
     setSubMsg('');
     try {
-      const res = await fetch(`/api/admin/proposals/${currentId}/subscription`, { method: 'POST' });
+      const res = await fetch(`/api/admin/proposals/${currentId}/subscription`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(setup && setup > 0 ? { setup } : {}),
+      });
       const j = await res.json().catch(() => null);
       if (!res.ok || !j?.url) setSubMsg((j && j.error) || 'Could not create the plan link.');
-      else setSubMsg(j.emailed ? 'Monthly plan link created and emailed to the client.' : 'Plan link created. No client email on file.');
+      else {
+        const kind = setup && setup > 0 ? 'Hybrid (setup + monthly)' : 'Monthly plan';
+        setSubMsg(j.emailed ? `${kind} link created and emailed to the client.` : `${kind} link created. No client email on file.`);
+      }
     } catch {
       setSubMsg('Network error.');
     } finally {
@@ -967,14 +974,26 @@ export default function ProposalBuilder() {
                   <span className="text-white/80 font-mono text-sm">{money(monthly)}/mo</span>
                   {hasVariable && <span className="text-white/35 text-[11px] font-body">includes variable compute, billed at cost</span>}
                 </div>
-                <button
-                  onClick={createSubscription}
-                  disabled={subBusy || !email.trim()}
-                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white bg-blue-500/80 hover:bg-blue-500 disabled:opacity-40 transition-colors"
-                >
-                  {subBusy ? 'Working…' : 'Create + email plan link'}
-                </button>
-                {!email.trim() && <span className="text-white/30 text-[11px] font-body ml-2">add a client email first</span>}
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => createSubscription()}
+                    disabled={subBusy || !email.trim()}
+                    className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white bg-blue-500/80 hover:bg-blue-500 disabled:opacity-40 transition-colors"
+                  >
+                    {subBusy ? 'Working…' : 'Create + email plan link'}
+                  </button>
+                  {oneTime > 0 && (
+                    <button
+                      onClick={() => createSubscription(oneTime)}
+                      disabled={subBusy || !email.trim()}
+                      title={`First invoice includes a ${money(oneTime)} setup, then ${money(monthly)}/mo`}
+                      className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white border border-blue-500/40 hover:bg-blue-500/10 disabled:opacity-40 transition-colors"
+                    >
+                      Hybrid: {money(oneTime)} setup + {money(monthly)}/mo
+                    </button>
+                  )}
+                </div>
+                {!email.trim() && <span className="text-white/30 text-[11px] font-body mt-2 block">add a client email first</span>}
                 {subMsg && <p className="text-blue-300/90 text-xs font-body mt-2">{subMsg}</p>}
               </div>
             )}

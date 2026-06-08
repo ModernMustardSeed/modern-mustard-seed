@@ -278,9 +278,10 @@ async function handleSubscriptionStarted(session: Stripe.Checkout.Session) {
   const proposalId = session.metadata?.proposal_id;
   if (!proposalId) return;
   const subId = typeof session.subscription === 'string' ? session.subscription : null;
+  const customerId = typeof session.customer === 'string' ? session.customer : null;
   await supabase
     .from('proposals')
-    .update({ subscription_status: 'active', stripe_subscription_id: subId, subscription_started_at: new Date().toISOString() })
+    .update({ subscription_status: 'active', stripe_subscription_id: subId, stripe_customer_id: customerId, subscription_started_at: new Date().toISOString() })
     .eq('id', proposalId);
   await provisionFromProposal(proposalId);
 

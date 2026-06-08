@@ -109,6 +109,16 @@ export default function ClientPortal() {
     }
   };
 
+  const managePlan = async () => {
+    try {
+      const res = await fetch('/api/portal/billing-portal', { method: 'POST' });
+      const j = await res.json().catch(() => null);
+      if (j?.url) window.location.href = j.url;
+    } catch {
+      /* ignore */
+    }
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -251,7 +261,12 @@ export default function ClientPortal() {
                           )}
                         </div>
                         {data.billing.subscriptionStatus === 'active' ? (
-                          <p className="mt-2 text-emerald-300/80 font-body text-xs">Your plan is active. Thank you. Cancel anytime, just reach out.</p>
+                          <div className="mt-2">
+                            <p className="text-emerald-300/80 font-body text-xs mb-2">Your plan is active. Thank you.</p>
+                            <button onClick={managePlan} className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-mustard-400 hover:text-mustard-300">
+                              Manage plan (card, cancel) ↗
+                            </button>
+                          </div>
                         ) : (
                           <button
                             onClick={startPlan}

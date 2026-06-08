@@ -21,7 +21,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   const { id } = await params;
-  const body = (await req.json().catch(() => ({}))) as { amount?: number };
+  const body = (await req.json().catch(() => ({}))) as { amount?: number; setup?: number };
 
   const { data: p } = await supabase.from('proposals').select('*').eq('id', id).maybeSingle();
   if (!p) return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
@@ -30,26 +30,40 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!amount || amount < 1) {
     return NextResponse.json({ error: 'This proposal has no monthly amount. Add a monthly service first.' }, { status: 400 });
   }
+  // Optional one-time setup fee, billed on the first invoice (the hybrid model).
+  const setup = Math.max(0, Math.round(body.setup ?? 0));
 
   const stripe = getStripe();
   if (!stripe) return NextResponse.json({ error: 'Stripe is not configured.' }, { status: 503 });
 
   const label = labelFor(p);
+  const lineItems: Array<Record<string, unknown>> = [
+    {
+      price_data: {
+        currency: 'usd',
+        product_data: { name: `Monthly plan — ${label}` },
+        unit_amount: amount * 100,
+        recurring: { interval: 'month' },
+      },
+      quantity: 1,
+    },
+  ];
+  if (setup > 0) {
+    lineItems.push({
+      price_data: {
+        currency: 'usd',
+        product_data: { name: `Setup to begin — ${label}` },
+        unit_amount: setup * 100,
+      },
+      quantity: 1,
+    });
+  }
   try {
     const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: { name: `Monthly plan — ${label}` },
-            unit_amount: amount * 100,
-            recurring: { interval: 'month' },
-          },
-          quantity: 1,
-        },
-      ],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      line_items: lineItems as any,
       success_url: `${SITE.url}/portal?plan=started`,
       cancel_url: `${SITE.url}/portal?plan=cancelled`,
       ...(p.client_email ? { customer_email: p.client_email as string } : {}),
