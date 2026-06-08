@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { launchCountdown } from '@/lib/launch';
 import HelpGuide from '@/components/HelpGuide';
 import { CLIENT_HELP } from '@/lib/help-content';
+import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 
 /**
  * The client workspace. One screen scoped to the signed-in client: their
@@ -77,6 +78,7 @@ export default function ClientPortal() {
   const [error, setError] = useState('');
   const [payingBalance, setPayingBalance] = useState(false);
   const [requestRefresh, setRequestRefresh] = useState(0);
+  const [intakeStatus, setIntakeStatus] = useState('in_progress');
 
   const payBalance = async () => {
     if (payingBalance) return;
@@ -126,7 +128,7 @@ export default function ClientPortal() {
             </div>
           </div>
           <nav className="flex items-center gap-2">
-            <HelpGuide guide={CLIENT_HELP} />
+            <HelpGuide guide={CLIENT_HELP} nudge={{ storageKey: 'mms_portal_tour_v1', text: 'New here? Take the 1-minute tour.' }} />
             <Link href="/?book=1" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 hover:text-mustard-300 px-4 py-2">Book a call</Link>
             <button onClick={logout} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Sign out</button>
           </nav>
@@ -158,6 +160,16 @@ export default function ClientPortal() {
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Main column */}
               <div className="lg:col-span-2 space-y-6">
+                {/* Getting started checklist */}
+                {(data.audience === 'client' || data.audience === 'both') && (
+                  <OnboardingChecklist
+                    signed={!!data.billing?.signed}
+                    depositPaid={!!data.billing?.depositPaid}
+                    intakeSubmitted={intakeStatus === 'submitted'}
+                    onStartIntake={() => document.getElementById('intake-card')?.scrollIntoView({ behavior: 'smooth' })}
+                  />
+                )}
+
                 {/* Billing */}
                 {data.billing && data.billing.oneTime > 0 && (
                   <div className="glass-card p-6 border-mustard-500/25">
@@ -294,6 +306,11 @@ export default function ClientPortal() {
                   </div>
                   );
                 })}
+
+                {/* Project intake */}
+                {(data.audience === 'client' || data.audience === 'both') && (
+                  <OnboardingIntake onStatus={setIntakeStatus} />
+                )}
 
                 {/* Saved website audit */}
                 {data.audit && (data.audit.score != null || data.audit.headline) && (

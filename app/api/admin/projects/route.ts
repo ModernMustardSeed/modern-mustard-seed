@@ -29,12 +29,19 @@ export async function GET() {
   // Enrich each project with deliverable status (audit on file, proposal signed,
   // deposit + balance paid, launched) so the board shows completeness at a glance.
   const auditEmails = new Set<string>();
+  const intakeEmails = new Set<string>();
   const propMap = new Map<string, { signed: boolean; depositPaid: boolean; balancePaid: boolean }>();
   try {
     const { data: audits } = await supabase.from('saved_audits').select('client_email');
     for (const a of audits ?? []) auditEmails.add(String(a.client_email ?? '').toLowerCase());
   } catch {
     /* saved_audits not migrated */
+  }
+  try {
+    const { data: intakes } = await supabase.from('client_intake').select('client_email, status').eq('status', 'submitted');
+    for (const it of intakes ?? []) intakeEmails.add(String(it.client_email ?? '').toLowerCase());
+  } catch {
+    /* client_intake not migrated */
   }
   try {
     const { data: props } = await supabase.from('proposals').select('client_email, signed_at, deposit_status, balance_status');
@@ -58,6 +65,7 @@ export async function GET() {
       ...p,
       deliverables: {
         audit: auditEmails.has(e),
+        intake: intakeEmails.has(e),
         proposalSigned: !!prop?.signed,
         depositPaid: !!prop?.depositPaid,
         balancePaid: !!prop?.balancePaid,

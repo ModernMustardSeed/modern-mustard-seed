@@ -271,6 +271,41 @@ export const SERVICES: Service[] = [
     variable: true,
   },
   {
+    id: 'build_operate_retainer',
+    group: 'Retainers & Subscriptions',
+    name: 'Build & Operate Retainer',
+    description:
+      'A monthly engagement instead of a large upfront build. We build, iterate, and operate it month to month. For clients who would rather subscribe than pay a big build fee at once.',
+    scope: [
+      'Ongoing build and iteration on your product or system',
+      'We run and maintain what is live, with oversight and tuning',
+      'A standing block of priority hours each month',
+      'Month to month, cancel with notice. You own everything built',
+    ],
+    priceMin: 2000,
+    priceMax: null,
+    unit: 'monthly_from',
+    status: 'recommended',
+    note: 'Use instead of, or alongside, a one-time build fee.',
+  },
+  {
+    id: 'care_plan',
+    group: 'Retainers & Subscriptions',
+    name: 'Care Plan',
+    description:
+      'Keep what we built healthy after launch. Updates, small changes, monitoring, and support, on a predictable monthly fee.',
+    scope: [
+      'Updates, dependency and security upkeep',
+      'A monthly allowance for small changes and fixes',
+      'Uptime and error monitoring',
+      'Priority support and a monthly check-in',
+    ],
+    priceMin: 250,
+    priceMax: 900,
+    unit: 'monthly',
+    status: 'recommended',
+  },
+  {
     id: 'single_skill',
     group: 'Claude Skills',
     name: 'Single Skill',
@@ -409,6 +444,14 @@ export const PATHS: Path[] = [
     when: 'A clear vision for a product or tool, ready to ship.',
     serviceIds: ['strategy_intensive', 'idea_to_product', 'software_compute'],
     rationale: 'Scope and sequence it first (credited toward the build), then build and ship in 30 days.',
+  },
+  {
+    id: 'prefers_monthly',
+    label: 'Prefers monthly to a big upfront',
+    when: 'Wants to start without a large build fee, or wants us to keep building and running it.',
+    serviceIds: ['build_operate_retainer', 'software_compute'],
+    rationale:
+      'Run it as a monthly engagement. We build, iterate, and operate it month to month, with compute billed at cost. Add a one-time setup fee only if the first push warrants it.',
   },
 ];
 

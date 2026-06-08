@@ -79,7 +79,7 @@ export default async function PartnerHQ() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <HelpGuide guide={PARTNER_HELP} />
+            <HelpGuide guide={PARTNER_HELP} nudge={{ storageKey: 'mms_partner_tour_v1', text: 'New here? See how your dashboard works.' }} />
             <span className="font-mono text-mustard-300 text-sm">{code}</span>
           </div>
         </div>

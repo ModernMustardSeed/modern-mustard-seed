@@ -6,7 +6,7 @@ import AdminHeader from './AdminHeader';
 import { launchCountdown } from '@/lib/launch';
 
 type Milestone = { title: string; detail?: string; done?: boolean; due?: string };
-type Deliverables = { audit: boolean; proposalSigned: boolean; depositPaid: boolean; balancePaid: boolean; launched: boolean };
+type Deliverables = { audit: boolean; intake: boolean; proposalSigned: boolean; depositPaid: boolean; balancePaid: boolean; launched: boolean };
 type Project = {
   id: string;
   client_email: string;
@@ -28,8 +28,10 @@ function DeliverablesStrip({ d, email, onLaunch }: { d: Deliverables; email: str
   const doneCls = 'text-emerald-200 border-emerald-500/30 bg-emerald-500/10';
   const todoCls = 'text-white/45 border-white/15 bg-white/[0.02] hover:text-mustard-200 hover:border-mustard-500/40 cursor-pointer';
 
+  const staticCls = 'text-white/40 border-white/12 bg-white/[0.02]';
   const items: { label: string; done: boolean; href?: string; onClick?: () => void; hint: string }[] = [
     { label: 'Audit', done: d.audit, href: `/admin/audit?email=${encodeURIComponent(email)}`, hint: 'Run and save an audit' },
+    { label: 'Intake', done: d.intake, hint: 'Client fills this in their portal' },
     { label: 'Signed', done: d.proposalSigned, href: `/admin/proposals?email=${encodeURIComponent(email)}`, hint: 'Send a proposal for signature' },
     { label: 'Deposit', done: d.depositPaid, href: `/admin/proposals?email=${encodeURIComponent(email)}`, hint: 'Send the deposit invoice' },
     { label: 'Balance', done: d.balancePaid, href: `/admin/proposals?email=${encodeURIComponent(email)}`, hint: 'Send the balance invoice' },
@@ -55,11 +57,19 @@ function DeliverablesStrip({ d, email, onLaunch }: { d: Deliverables; email: str
             </button>
           );
         }
+        if (it.href) {
+          return (
+            <Link key={it.label} href={it.href} title={it.hint} className={`${base} ${todoCls}`}>
+              <span>→</span>
+              {it.label}
+            </Link>
+          );
+        }
         return (
-          <Link key={it.label} href={it.href!} title={it.hint} className={`${base} ${todoCls}`}>
-            <span>→</span>
+          <span key={it.label} title={it.hint} className={`${base} ${staticCls}`}>
+            <span>–</span>
             {it.label}
-          </Link>
+          </span>
         );
       })}
     </div>
@@ -327,6 +337,61 @@ function CredentialsVault({ email }: { email: string }) {
         </button>
         {err && <span className="text-red-300 text-xs font-body ml-3">{err}</span>}
       </div>
+    </div>
+  );
+}
+
+type IntakeSection = { key: string; title: string; fields: { key: string; label: string }[] };
+/** Read-only view of a client's onboarding intake answers. */
+function ProjectIntake({ email }: { email: string }) {
+  const [sections, setSections] = useState<IntakeSection[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<string>('none');
+
+  useEffect(() => {
+    fetch(`/api/admin/intake?email=${encodeURIComponent(email)}`)
+      .then((r) => r.json())
+      .then((j) => {
+        if (Array.isArray(j?.sections)) setSections(j.sections);
+        if (j?.answers) setAnswers(j.answers);
+        if (j?.status) setStatus(j.status);
+      })
+      .catch(() => {});
+  }, [email]);
+
+  const filled = Object.values(answers).filter((v) => (v ?? '').toString().trim()).length;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono">Client intake</label>
+        <span className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded border ${status === 'submitted' ? 'text-emerald-200 border-emerald-500/30 bg-emerald-500/10' : status === 'in_progress' ? 'text-mustard-200 border-mustard-500/30 bg-mustard-500/10' : 'text-white/35 border-white/12'}`}>
+          {status === 'submitted' ? 'Submitted' : status === 'in_progress' ? 'In progress' : 'Not started'}
+        </span>
+      </div>
+      {filled === 0 ? (
+        <p className="text-white/35 font-body text-xs">No answers yet. The client fills this in their portal.</p>
+      ) : (
+        <div className="space-y-3">
+          {sections.map((sec) => {
+            const rows = sec.fields.filter((f) => (answers[f.key] ?? '').toString().trim());
+            if (rows.length === 0) return null;
+            return (
+              <div key={sec.key} className="rounded-lg bg-white/[0.02] border border-white/[0.06] px-3 py-2.5">
+                <span className="text-[9px] uppercase tracking-[0.2em] text-mustard-300/80 font-mono font-bold block mb-1.5">{sec.title}</span>
+                <dl className="space-y-1.5">
+                  {rows.map((f) => (
+                    <div key={f.key}>
+                      <dt className="text-white/40 font-body text-[11px]">{f.label}</dt>
+                      <dd className="text-white/85 font-body text-[13px] whitespace-pre-wrap">{answers[f.key]}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -679,6 +744,7 @@ export default function ProjectsBoard() {
                                 </div>
                               </div>
 
+                              {d.client_email && <ProjectIntake email={d.client_email} />}
                               {d.client_email && <ProjectFiles email={d.client_email} />}
                               {d.client_email && <CredentialsVault email={d.client_email} />}
 
