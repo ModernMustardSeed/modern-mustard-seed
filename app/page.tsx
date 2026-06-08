@@ -9,7 +9,6 @@ import AiProofPromo from '@/components/AiProofPromo';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import CelebrationVideo from '@/components/CelebrationVideo';
 import HeroVideo from '@/components/HeroVideo';
-import FeaturedSites from '@/components/FeaturedSites';
 import Testimonials from '@/components/Testimonials';
 import YourSiteWorksForYou from '@/components/YourSiteWorksForYou';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
@@ -110,7 +109,6 @@ export default function HomePage() {
         <EraOfEntrepreneur />
         <StartingPoints />
         <YourSiteWorksForYou />
-        <FeaturedSites />
         <WhatAreYouBuilding />
         <WhatGetsBuilt />
         <Testimonials />
