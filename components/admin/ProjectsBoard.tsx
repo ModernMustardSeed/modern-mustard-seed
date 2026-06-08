@@ -747,6 +747,16 @@ export default function ProjectsBoard() {
                               {d.client_email && <ProjectIntake email={d.client_email} />}
                               {d.client_email && <ProjectFiles email={d.client_email} />}
                               {d.client_email && <CredentialsVault email={d.client_email} />}
+                              {d.client_email && (
+                                <div>
+                                  <Link
+                                    href={`/admin/builds?email=${encodeURIComponent(d.client_email)}`}
+                                    className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-mustard-300 border border-mustard-500/40 rounded-full px-4 py-2 hover:bg-mustard-500/10 transition-colors"
+                                  >
+                                    ⚡ Queue a build (Claude Code)
+                                  </Link>
+                                </div>
+                              )}
 
                               <div className="flex items-center gap-2 pt-1">
                                 <button

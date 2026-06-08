@@ -12,7 +12,7 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * tab row so nothing overlaps or overflows.
  */
 
-type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'call' | 'proposals' | 'projects' | 'reviews';
+type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'call' | 'proposals' | 'projects' | 'builds' | 'reviews';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
   { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
@@ -20,6 +20,7 @@ const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'call', label: 'Call', href: '/admin/intake-call' },
   { key: 'proposals', label: 'Proposals', href: '/admin/proposals' },
   { key: 'projects', label: 'Projects', href: '/admin/projects' },
+  { key: 'builds', label: 'Builds', href: '/admin/builds' },
   { key: 'reviews', label: 'Reviews', href: '/admin/testimonials' },
   { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
   { key: 'partners', label: 'Partners', href: '/admin/partners' },
