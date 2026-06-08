@@ -4,7 +4,8 @@ export const runtime = 'edge';
 export const size = { width: 180, height: 180 };
 export const contentType = 'image/png';
 
-const BRASS = 'linear-gradient(135deg, #E8C88A 0%, #F0D090 35%, #C8964E 75%, #C86A45 100%)';
+// Just the mustard seed (golden teardrop + sprout), no text.
+const SEED_SVG = `<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="seedGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFE16A"/><stop offset="45%" stop-color="#F4C518"/><stop offset="100%" stop-color="#D69A0E"/></linearGradient><linearGradient id="leafGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFD83A"/><stop offset="100%" stop-color="#E2A60C"/></linearGradient></defs><g stroke="#1c1205" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M32 17 C 22 21, 16 31, 16 41 C 16 52, 24 58, 32 58 C 40 58, 48 52, 48 41 C 48 31, 42 21, 32 17 Z" fill="url(#seedGold)"/><path d="M32 18 L 32 11" fill="none"/><path d="M32 12 C 27 6, 20 4, 14 6 C 18 12, 26 14, 32 12 Z" fill="url(#leafGold)"/><path d="M32 12 C 37 5, 45 3, 51 6 C 47 12, 38 15, 32 12 Z" fill="url(#leafGold)"/></g><ellipse cx="26" cy="31" rx="4.2" ry="6.8" fill="#FFFFFF" opacity="0.32" transform="rotate(-20 26 31)"/></svg>`;
 
 export default function AppleIcon() {
   return new ImageResponse(
@@ -48,22 +49,14 @@ export default function AppleIcon() {
             display: 'flex',
           }}
         />
-        <div
-          style={{
-            display: 'flex',
-            fontSize: 84,
-            fontWeight: 700,
-            letterSpacing: -4,
-            lineHeight: 1,
-            backgroundImage: BRASS,
-            backgroundClip: 'text',
-            color: 'transparent',
-            fontStyle: 'italic',
-            zIndex: 2,
-          }}
-        >
-          MMS
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          width={120}
+          height={120}
+          src={`data:image/svg+xml;base64,${btoa(SEED_SVG)}`}
+          alt="Modern Mustard Seed"
+          style={{ zIndex: 2 }}
+        />
       </div>
     ),
     { ...size }
