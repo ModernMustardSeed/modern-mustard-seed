@@ -115,7 +115,7 @@ export default function YourSiteWorksForYou() {
             One build. One operator. One engine.
           </p>
           <p className="text-[#3a3733] text-sm md:text-base font-body leading-relaxed mb-10">
-            Shipped in 30 days. Yours forever. Most full-service builds fall between $8,500 and $22,000 depending on scope and the depth of the AI work. Audits free.
+            Shipped in 30 days. Yours forever. Start with a free audit, then we scope the build around what moves your numbers.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
