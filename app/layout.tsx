@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import MagneticCursor from '@/components/MagneticCursor';
 import MustardSeedChat from '@/components/MustardSeedChat';
 import RefCapture from '@/components/RefCapture';
+import AnalyticsScripts from '@/components/AnalyticsScripts';
 import HideOnAppShell from '@/components/HideOnAppShell';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MagneticCursor />
         <MustardSeedChat />
         <RefCapture />
+        <AnalyticsScripts />
         <Analytics />
         <SpeedInsights />
         <noscript>

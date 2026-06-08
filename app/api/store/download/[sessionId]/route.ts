@@ -69,6 +69,8 @@ export async function GET(
   return NextResponse.json({
     itemName: item.name,
     customerEmail: session.customer_details?.email ?? session.customer_email,
+    amountTotal: session.amount_total != null ? session.amount_total / 100 : null,
+    currency: (session.currency || 'usd').toUpperCase(),
     downloads,
   });
 }

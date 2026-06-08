@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { bookingUrl, socials } from '@/data/socials';
+import { trackLead } from '@/lib/analytics';
 
 type Props = {
   defaultPackage?: string;
@@ -34,6 +35,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
 
       if (res.ok) {
         setSubmitted(true);
+        trackLead({ source: defaultPackage ? `contact-${defaultPackage}` : 'contact-form' });
       } else {
         setError('Something went wrong. Please try again.');
       }

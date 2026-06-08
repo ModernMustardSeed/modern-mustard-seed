@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, FormEvent } from 'react';
+import { trackBooking } from '@/lib/analytics';
 
 type Slot = { startIso: string; display: string; shortLabel: string };
 
@@ -45,8 +46,10 @@ export default function BookCall() {
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (res.ok) setDone(data.display);
-      else setError(data.error ?? 'Something went wrong.');
+      if (res.ok) {
+        setDone(data.display);
+        trackBooking({ source: 'book-call' });
+      } else setError(data.error ?? 'Something went wrong.');
     } catch {
       setError('Network error. Try again.');
     } finally {

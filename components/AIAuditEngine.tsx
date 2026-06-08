@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { trackLead } from '@/lib/analytics';
 import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
@@ -528,6 +529,7 @@ const AIAuditEngine: React.FC = () => {
     setAuditResult(null);
     setAuditError(null);
     saveLead('audit-start');
+    trackLead({ source: 'ai-audit' });
 
     const phases = [1, 2, 3, 4, 5];
     for (const p of phases) {

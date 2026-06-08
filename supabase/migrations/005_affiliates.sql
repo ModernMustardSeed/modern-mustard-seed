@@ -1,23 +1,16 @@
--- Modern Mustard Seed — affiliate and sales engine
--- Run once in the Supabase SQL Editor. Powers /partners, /partners/hq, the
--- back-office sales management, and commission attribution. Tenancy by email
--- and by referral code. Service-role access only, so RLS stays off.
-
--- Affiliates. Pending until Sarah approves; approval generates the code.
 create table if not exists public.affiliates (
   id uuid primary key default gen_random_uuid(),
   email text not null unique,
   name text,
-  code text unique,                  -- the referral code, set on approval
-  promote_where text,                -- where they will promote
-  audience text,                     -- size and shape of their audience
-  why text,                          -- why they want in
-  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  code text unique,
+  promote_where text,
+  audience text,
+  why text,
+  status text not null default 'pending',
   created_at timestamptz default now(),
   approved_at timestamptz
 );
 
--- Referral clicks, for the dashboard numbers.
 create table if not exists public.affiliate_clicks (
   id uuid primary key default gen_random_uuid(),
   code text not null,
@@ -25,17 +18,15 @@ create table if not exists public.affiliate_clicks (
   created_at timestamptz default now()
 );
 
--- Commissions. Product (50%) or build (10%). Earned (payable) once the refund
--- window passes, clawed back on refund.
 create table if not exists public.commissions (
   id uuid primary key default gen_random_uuid(),
   affiliate_code text not null,
   affiliate_email text not null,
   order_email text,
   product_slug text,
-  kind text not null default 'product' check (kind in ('product', 'build')),
+  kind text not null default 'product',
   amount_cents int not null default 0,
-  status text not null default 'pending' check (status in ('pending', 'payable', 'paid', 'clawed_back')),
+  status text not null default 'pending',
   stripe_session_id text,
   created_at timestamptz default now()
 );

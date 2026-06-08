@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { trackPurchase } from '@/lib/analytics';
 
 type Download = { name: string; url: string };
 
@@ -32,8 +33,22 @@ export default function SuccessClient({ slug }: { slug: string }) {
           setState({ status: 'error', message: err.error || 'Failed to load download.' });
           return;
         }
-        const data = (await r.json()) as { downloads: Download[]; customerEmail: string | null };
+        const data = (await r.json()) as {
+          downloads: Download[];
+          customerEmail: string | null;
+          amountTotal: number | null;
+          currency?: string;
+          itemName?: string;
+        };
         setState({ status: 'ready', downloads: data.downloads, email: data.customerEmail });
+        if (data.amountTotal != null) {
+          trackPurchase({
+            value: data.amountTotal,
+            currency: data.currency,
+            id: sessionId ?? undefined,
+            itemName: data.itemName,
+          });
+        }
       })
       .catch(() => setState({ status: 'error', message: 'Network error. Try refreshing.' }));
   }, [sessionId, slug]);

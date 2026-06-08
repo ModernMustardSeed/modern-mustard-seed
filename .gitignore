@@ -45,3 +45,4 @@ next-env.d.ts
 # Social drafts (private notes, not deployed)
 
 .env*.local
+.vercel
