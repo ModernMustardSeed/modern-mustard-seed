@@ -31,11 +31,11 @@ const SYSTEM_PROMPT = `You are Mustard Seed, the AI assistant for Modern Mustard
 4. Use your tools to capture the lead, propose call slots, or book a call when the moment is right.
 
 # What Modern Mustard Seed offers
-- **Seed Site** ($2,500 to $5,000, 14 days): beautiful 3-5 page site, brand, mobile-optimized, booking or payments, SEO foundation, full handoff. Entry tier. Recommend this when the visitor just needs a real online home and is not ready for the full engine.
-- **Full-Service Business Build** ($8,500 to $22,000, 30 days): brand, production-grade site, bespoke booking services with embedded CRM (Zoho, HubSpot, Acuity, or custom), personalized client care software, a Mustard Seed AI chatbot like this one embedded on their site, an AI sales-development rep capturing every lead 24/7, built-in funnels and lead magnets live on day one, vertical apps when they fit (restaurant ordering apps, ecommerce shops, custom courses, academies, rendering studios, ad command centers, zero-to-one MVPs), back-office dashboard, and AI agents embedded on the site and in the back office.
-- **Idea to Product** ($15,000 to $45,000+, 30 days): MVP for founders with a new product idea. Full-stack engineering plus AI integration plus a branded launch site.
-- **AI-Proof Your Business** ($5,000 to $15,000, 8 to 12 weeks): defensive engagement for existing operators. Audit, harden, re-equip.
-- **Fractional AI Partner** (from $1,500/month, 3-month minimum): ongoing strategy and build retainer.
+- **Seed Site** (14 days, quoted after a free discovery call): beautiful 3-5 page site, brand, mobile-optimized, booking or payments, SEO foundation, full handoff. Entry tier. Recommend this when the visitor just needs a real online home and is not ready for the full engine.
+- **Full-Service Business Build** (30 days, quoted after a free discovery call): brand, production-grade site, bespoke booking services with embedded CRM (Zoho, HubSpot, Acuity, or custom), personalized client care software, a Mustard Seed AI chatbot like this one embedded on their site, an AI sales-development rep capturing every lead 24/7, built-in funnels and lead magnets live on day one, vertical apps when they fit (restaurant ordering apps, ecommerce shops, custom courses, academies, rendering studios, ad command centers, zero-to-one MVPs), back-office dashboard, and AI agents embedded on the site and in the back office.
+- **Idea to Product** (30 days, quoted after a free discovery call): MVP for founders with a new product idea. Full-stack engineering plus AI integration plus a branded launch site.
+- **AI-Proof Your Business** (8 to 12 weeks, quoted after a free discovery call): defensive engagement for existing operators. Audit, harden, re-equip.
+- **Fractional AI Partner** (monthly retainer, 3-month minimum): ongoing strategy and build retainer.
 - **Free AI Audit** at modernmustardseed.com/audit: a 60-second AI readiness scan.
 - **Free Website Audit** at modernmustardseed.com/website-audit: drop a URL, Claude grades the site 0-100 across brand, trust, SEO, GEO, AI features, conversion, and design, returns a letter grade and a prioritized to-do list. Recommend this whenever a visitor mentions their existing site or asks how to improve it.
 
@@ -52,7 +52,7 @@ At modernmustardseed.com/store. Seven production-tested workbooks Sarah wrote, $
 - **Builder Bundle** ($197, save $71) — Shopify + Claude Code + Brand + GEO
 - **Complete Library** ($247, save $115) — all seven
 
-Use the store as a self-serve alternative when a visitor seems too early-stage, too budget-constrained, or just curious for a $2,500+ engagement. Always link the full URL: modernmustardseed.com/store/[slug].
+Use the store as a self-serve alternative when a visitor seems too early-stage, too budget-constrained, or just curious for a full service engagement. Always link the full URL: modernmustardseed.com/store/[slug].
 
 # Booking discovery calls
 You can book a 30-minute discovery call with Sarah directly through this chat. Do not link to Zoho. Do not say "go to my booking link." Use your tools.
@@ -70,6 +70,7 @@ If the visitor declines to share an email, do not capture. Recommend the free We
 
 # Hard rules
 - Never invent prices, timelines, or features beyond what is documented above.
+- Do not quote dollar prices for services. Every engagement is quoted after a free discovery call. If a visitor asks what something costs, explain that pricing is scoped and quoted on a free call, and offer to book one.
 - Never claim specific work that has not shipped. If you do not know, say "I am not sure; Sarah can confirm."
 - Do not recommend competitors.
 - If asked about your tech, you are powered by Anthropic Claude.
@@ -155,31 +156,31 @@ type OfferKey = 'seed-site' | 'full-service' | 'idea-to-product' | 'ai-proof' | 
 const OFFER_MAP: Record<OfferKey, { name: string; price: string; why: string; href: string } | null> = {
   'seed-site': {
     name: 'Seed Site',
-    price: '$2,500 to $5,000 · 14 days',
+    price: '14 days, quoted after a free discovery call',
     why: 'Beautiful, fast, brand-aligned site. A real online home, no engine yet.',
     href: 'https://modernmustardseed.com/work-with-us#seed-site',
   },
   'full-service': {
     name: 'Full-Service Business Build',
-    price: '$8,500 to $22,000 · 30 days',
+    price: '30 days, quoted after a free discovery call',
     why: 'Site + bespoke booking with CRM + AI SDR + funnels + back office + embedded agents.',
     href: 'https://modernmustardseed.com/work-with-us#online-presence',
   },
   'idea-to-product': {
     name: 'Idea to Product',
-    price: '$15,000 to $45,000+ · 30 days',
+    price: '30 days, quoted after a free discovery call',
     why: 'MVP for founders with a new product idea. Full-stack engineering plus AI plus launch.',
     href: 'https://modernmustardseed.com/work-with-us#idea-to-product',
   },
   'ai-proof': {
     name: 'AI-Proof Your Business',
-    price: '$5,000 to $15,000 · 8 to 12 weeks',
+    price: '8 to 12 weeks, quoted after a free discovery call',
     why: 'Defensive engagement for existing operators. Audit, harden, re-equip.',
     href: 'https://modernmustardseed.com/work-with-us#ai-proof',
   },
   fractional: {
     name: 'Fractional AI Partner',
-    price: 'From $1,500/month · 3-month minimum',
+    price: 'Monthly retainer, 3-month minimum',
     why: 'Ongoing strategy and build retainer for established operators.',
     href: 'https://modernmustardseed.com/work-with-us#fractional',
   },

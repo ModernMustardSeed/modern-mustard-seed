@@ -65,7 +65,7 @@ const PRODUCT_FAQS = (productName: string, priceUsd: number) => [
   },
   {
     q: 'Can the playbook credit be applied to a Modern Mustard Seed build?',
-    a: `Yes. The $${priceUsd} you spend on this playbook is credited toward any Seed Site ($2,500 to $5,000) or Full-Service Business Build ($8,500 to $22,000). Mention it on your discovery call.`,
+    a: `Yes. The $${priceUsd} you spend on this playbook is credited toward any Seed Site or Full-Service Business Build. Mention it on your discovery call.`,
   },
 ];
 

@@ -92,9 +92,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: '$15,000 to $25,000 for a deal analyzer build',
+      typicalRange: 'Quoted after a free AI Audit',
       body:
-        'A custom deal analyzer like the PTG build typically runs $15K to $25K depending on data sources and the depth of the underwriting model. Virtual staging tools fall in $5K to $12K. A full investor OS that includes deal analysis, sourcing, follow-up, and reporting can reach $35K to $45K. The free AI Audit is the right first step. We tell you in 60 minutes which build is highest leverage for your model and what it would cost. Every project is quoted in writing before any work begins. Most investors split into milestone payments so the cost lines up with deal flow.',
+        'A custom deal analyzer like the PTG build is scoped to your data sources and the depth of the underwriting model. Virtual staging tools come in lighter, and a full investor OS that includes deal analysis, sourcing, follow-up, and reporting is the larger build. The free AI Audit is the right first step. We tell you in 60 minutes which build is highest leverage for your model and what it would cost. Every project is quoted in writing before any work begins. Most investors split into milestone payments so the cost lines up with deal flow.',
     },
     faqs: [
       {
@@ -103,7 +103,7 @@ export const industries: Industry[] = [
       },
       {
         q: 'How much does it cost to build a custom AI deal analyzer?',
-        a: 'A production-grade AI deal analyzer like the PTG build typically costs $15,000 to $25,000 to build, depending on the data sources you want connected (RentCast, ATTOM, MLS, Zillow scraping) and the depth of the underwriting model. Shipping timeline is 30 days from kickoff. You own the code, the database, and the AI prompts when it is done. There is no SaaS subscription on the underlying tool because you are not renting it. Most investors recoup the build cost on the first deal it surfaces or saves.',
+        a: 'A production-grade AI deal analyzer like the PTG build is scoped to the data sources you want connected (RentCast, ATTOM, MLS, Zillow scraping) and the depth of the underwriting model. Shipping timeline is 30 days from kickoff. You own the code, the database, and the AI prompts when it is done. There is no SaaS subscription on the underlying tool because you are not renting it. Most investors recoup the build cost on the first deal it surfaces or saves.',
       },
       {
         q: 'How is this different from DealCheck, PropStream, or Privy?',
@@ -187,9 +187,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: '$7,500 to $15,000 for a single-purpose AI agent tool',
+      typicalRange: 'Quoted after a free AI Audit',
       body:
-        'A single-purpose AI tool like a listing description generator or a buyer follow-up voice agent typically runs $7,500 to $15,000. A custom virtual staging platform branded to your brokerage starts at $15,000. A full agent OS that combines staging, descriptions, CMA, and a follow-up voice agent reaches $25,000 to $40,000. Start with the free AI Audit. We tell you in 60 minutes which tool would move your numbers fastest, what it would cost, and how fast we can ship it. Every quote is fixed and in writing before any work begins.',
+        'A single-purpose AI tool like a listing description generator or a buyer follow-up voice agent is the entry point. A custom virtual staging platform branded to your brokerage is a step up, and a full agent OS that combines staging, descriptions, CMA, and a follow-up voice agent is the largest build. Start with the free AI Audit. We tell you in 60 minutes which tool would move your numbers fastest, what it would cost, and how fast we can ship it. Every quote is fixed and in writing before any work begins.',
     },
     faqs: [
       {
@@ -214,7 +214,7 @@ export const industries: Industry[] = [
       },
       {
         q: 'How much does a custom AI tool cost compared to monthly software?',
-        a: 'A custom AI tool typically runs $7,500 to $15,000 for a single-purpose build. Brokerage software adds up to $3,000 to $7,000 per year depending on the stack. The break-even on a custom build is usually under two years, and at the end you own the tool instead of renting it. The bigger win is that the custom tool is yours: branded to your business, tuned to your market, and changed when your strategy changes.',
+        a: 'A custom AI tool is a one-time build you own. Brokerage software adds up to $3,000 to $7,000 per year depending on the stack. The break-even on a custom build is usually under two years, and at the end you own the tool instead of renting it. The bigger win is that the custom tool is yours: branded to your business, tuned to your market, and changed when your strategy changes.',
       },
       {
         q: 'Will this work for luxury listings?',
@@ -282,9 +282,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: '$5,000 to $15,000 for a voice agent build',
+      typicalRange: 'Quoted after a free AI Audit',
       body:
-        'A production voice agent typically runs $5K to $15K depending on integrations (calendar, CRM, dispatch software). A full service-business OS that combines a voice agent, lead follow-up, review generation, and dispatch assistance lands in $20K to $40K. The free AI Audit is the right place to start. We will tell you in 60 minutes how much revenue you are losing to missed calls and slow follow-up, what to fix first, and what the payback period looks like. Most service businesses pay back the build inside 60 to 120 days from missed-call recovery alone.',
+        'A production voice agent is scoped to your integrations (calendar, CRM, dispatch software). A full service-business OS that combines a voice agent, lead follow-up, review generation, and dispatch assistance is the larger build. The free AI Audit is the right place to start. We will tell you in 60 minutes how much revenue you are losing to missed calls and slow follow-up, what to fix first, and what the payback period looks like. Most service businesses pay back the build inside 60 to 120 days from missed-call recovery alone.',
     },
     faqs: [
       {
@@ -317,7 +317,7 @@ export const industries: Industry[] = [
       },
       {
         q: 'How long until the voice agent pays for itself?',
-        a: 'Most service businesses pay back the build cost in 60 to 120 days. The math is simple: average missed-call rate of 24%, average ticket size of $400, average closing rate on recovered calls of 30%. A business doing 200 inbound calls a month was missing 48 of them, recovering 14 to 15 with the voice agent, and booking $5,600 to $6,000 a month of previously-lost revenue. On a $12,000 build, that is 60 to 90 days to payback.',
+        a: 'Most service businesses pay back the build cost in 60 to 120 days. The math is simple: average missed-call rate of 24%, average ticket size of $400, average closing rate on recovered calls of 30%. A business doing 200 inbound calls a month was missing 48 of them, recovering 14 to 15 with the voice agent, and booking $5,600 to $6,000 a month of previously-lost revenue. That puts payback at 60 to 90 days for most builds.',
       },
     ],
     cta: {
@@ -389,9 +389,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: '$15,000 to $45,000+ depending on scope',
+      typicalRange: 'Quoted after a free AI Audit',
       body:
-        'A headless Shopify storefront with custom design typically runs $15K to $35K. A custom AI design studio like CXC Studio runs $20K to $45K depending on the number of generation modes and the depth of the brand guardrails. A combined apparel OS that includes storefront, design studio, AI photography, and email automation reaches $40K to $60K. The free AI Audit is the right first step. We tell you which build is highest leverage for your current revenue stage, what it would cost, and how fast we can ship it. Every quote is fixed and in writing before any work begins.',
+        'A headless Shopify storefront with custom design is the foundation. A custom AI design studio like CXC Studio scales with the number of generation modes and the depth of the brand guardrails. A combined apparel OS that includes storefront, design studio, AI photography, and email automation is the largest build. The free AI Audit is the right first step. We tell you which build is highest leverage for your current revenue stage, what it would cost, and how fast we can ship it. Every quote is fixed and in writing before any work begins.',
     },
     faqs: [
       {
@@ -486,9 +486,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: '$15,000 to $45,000 depending on scope',
+      typicalRange: 'Quoted after a free AI Audit',
       body:
-        'A personal brand site plus newsletter pipeline runs $5K to $12K. A focused AI content engine or capture app starts at $15K. A full custom solo OS like Olive Shoot lands in $25K to $45K depending on integrations and the depth of the agentic logic. The free AI Audit is the right place to start. We will tell you in 60 minutes which build would give you the most leverage on the time you actually have, what it would cost, and how fast we can ship it.',
+        'A personal brand site plus newsletter pipeline is the entry point. A focused AI content engine or capture app is a step up. A full custom solo OS like Olive Shoot is the largest build, scaling with integrations and the depth of the agentic logic. The free AI Audit is the right place to start. We will tell you in 60 minutes which build would give you the most leverage on the time you actually have, what it would cost, and how fast we can ship it.',
     },
     faqs: [
       {
@@ -497,7 +497,7 @@ export const industries: Industry[] = [
       },
       {
         q: 'What does a custom solo OS cost versus 12 SaaS subscriptions?',
-        a: 'A typical solopreneur spends $300 to $700 a month on SaaS subscriptions across Notion, Airtable, Calendly, ConvertKit, Stripe, an analytics tool, a project tool, a social scheduler, and a CRM. That is $4,000 to $8,000 a year, every year, forever. A custom solo OS costs $25,000 to $45,000 once and runs on $30 a month in hosting and database fees. Break-even is usually 4 to 6 years on cost alone, faster if you value owning the system.',
+        a: 'A typical solopreneur spends $300 to $700 a month on SaaS subscriptions across Notion, Airtable, Calendly, ConvertKit, Stripe, an analytics tool, a project tool, a social scheduler, and a CRM. That is $4,000 to $8,000 a year, every year, forever. A custom solo OS is a one-time build that runs on $30 a month in hosting and database fees. Break-even is usually 4 to 6 years on cost alone, faster if you value owning the system.',
       },
       {
         q: 'Can I run my podcast and newsletter from it?',
@@ -581,9 +581,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: '$5,000 to $25,000 depending on scope',
+      typicalRange: 'Quoted after a free AI Audit',
       body:
-        'A single-purpose AI tool like an intake bot or proposal generator typically runs $5K to $10K. A custom content engine sits in $10K to $20K. A full consultant OS that combines intake, content, proposals, and a follow-up voice agent reaches $25K to $40K. Start with the free AI Audit. We will tell you in 60 minutes which task in your week is bleeding the most hours, what to automate first, and what the payback period looks like. Most consultants recover the build cost inside the first quarter from reclaimed calendar time alone.',
+        'A single-purpose AI tool like an intake bot or proposal generator is the entry point. A custom content engine is a step up. A full consultant OS that combines intake, content, proposals, and a follow-up voice agent is the largest build. Start with the free AI Audit. We will tell you in 60 minutes which task in your week is bleeding the most hours, what to automate first, and what the payback period looks like. Most consultants recover the build cost inside the first quarter from reclaimed calendar time alone.',
     },
     faqs: [
       {
