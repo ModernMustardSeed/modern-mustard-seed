@@ -437,6 +437,24 @@ export default function ProposalBuilder() {
     }
   };
 
+  const [subBusy, setSubBusy] = useState(false);
+  const [subMsg, setSubMsg] = useState('');
+  const createSubscription = async () => {
+    if (!currentId || subBusy) return;
+    setSubBusy(true);
+    setSubMsg('');
+    try {
+      const res = await fetch(`/api/admin/proposals/${currentId}/subscription`, { method: 'POST' });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.url) setSubMsg((j && j.error) || 'Could not create the plan link.');
+      else setSubMsg(j.emailed ? 'Monthly plan link created and emailed to the client.' : 'Plan link created. No client email on file.');
+    } catch {
+      setSubMsg('Network error.');
+    } finally {
+      setSubBusy(false);
+    }
+  };
+
   const [balanceBusy, setBalanceBusy] = useState(false);
   const [balanceMsg, setBalanceMsg] = useState('');
   const sendBalance = async () => {
@@ -934,6 +952,30 @@ export default function ProposalBuilder() {
                     <span className="text-white/30 text-[11px] font-body ml-2">add a client email first</span>
                   )}
                 </div>
+              </div>
+            )}
+
+            {currentId && monthly > 0 && (
+              <div className="glass-card p-5 border-blue-500/20">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-blue-300/80 font-mono font-bold block mb-1">
+                  Monthly plan
+                </span>
+                <p className="text-white/40 text-xs font-body mb-3">
+                  Bill the monthly total as a recurring Stripe subscription. The client can also start it from their portal.
+                </p>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-white/80 font-mono text-sm">{money(monthly)}/mo</span>
+                  {hasVariable && <span className="text-white/35 text-[11px] font-body">includes variable compute, billed at cost</span>}
+                </div>
+                <button
+                  onClick={createSubscription}
+                  disabled={subBusy || !email.trim()}
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white bg-blue-500/80 hover:bg-blue-500 disabled:opacity-40 transition-colors"
+                >
+                  {subBusy ? 'Working…' : 'Create + email plan link'}
+                </button>
+                {!email.trim() && <span className="text-white/30 text-[11px] font-body ml-2">add a client email first</span>}
+                {subMsg && <p className="text-blue-300/90 text-xs font-body mt-2">{subMsg}</p>}
               </div>
             )}
           </div>

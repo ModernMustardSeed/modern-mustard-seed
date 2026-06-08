@@ -31,6 +31,8 @@ type PortalData = {
     balanceDue: number;
     balancePaid: boolean;
     signed: boolean;
+    monthly: number;
+    subscriptionStatus: string;
   } | null;
   audit: {
     url: string | null;
@@ -77,6 +79,7 @@ export default function ClientPortal() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [payingBalance, setPayingBalance] = useState(false);
+  const [startingPlan, setStartingPlan] = useState(false);
   const [requestRefresh, setRequestRefresh] = useState(0);
   const [intakeStatus, setIntakeStatus] = useState('in_progress');
 
@@ -90,6 +93,19 @@ export default function ClientPortal() {
       else setPayingBalance(false);
     } catch {
       setPayingBalance(false);
+    }
+  };
+
+  const startPlan = async () => {
+    if (startingPlan) return;
+    setStartingPlan(true);
+    try {
+      const res = await fetch('/api/portal/start-subscription', { method: 'POST' });
+      const j = await res.json().catch(() => null);
+      if (j?.url) window.location.href = j.url;
+      else setStartingPlan(false);
+    } catch {
+      setStartingPlan(false);
     }
   };
 
@@ -171,7 +187,7 @@ export default function ClientPortal() {
                 )}
 
                 {/* Billing */}
-                {data.billing && data.billing.oneTime > 0 && (
+                {data.billing && (data.billing.oneTime > 0 || data.billing.monthly > 0) && (
                   <div className="glass-card p-6 border-mustard-500/25">
                     <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-400 font-mono font-bold block mb-4">
                       Your engagement
@@ -222,6 +238,30 @@ export default function ClientPortal() {
                       >
                         Download signed proposal ↗
                       </a>
+                    )}
+
+                    {data.billing.monthly > 0 && (
+                      <div className="mt-5 pt-4 border-t border-white/[0.06]">
+                        <div className="flex items-center justify-between">
+                          <span className="text-white/55 font-body text-sm">Monthly plan</span>
+                          {data.billing.subscriptionStatus === 'active' ? (
+                            <span className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-emerald-300">Active ✓</span>
+                          ) : (
+                            <span className="text-white font-sans font-bold">{money(data.billing.monthly)}/mo</span>
+                          )}
+                        </div>
+                        {data.billing.subscriptionStatus === 'active' ? (
+                          <p className="mt-2 text-emerald-300/80 font-body text-xs">Your plan is active. Thank you. Cancel anytime, just reach out.</p>
+                        ) : (
+                          <button
+                            onClick={startPlan}
+                            disabled={startingPlan}
+                            className="mt-3 w-full py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-cream-50 bg-brass rounded-lg disabled:opacity-50 hover:shadow-[0_0_30px_rgba(255,107,53,0.4)] transition-all"
+                          >
+                            {startingPlan ? 'Opening checkout…' : `Start monthly plan ${money(data.billing.monthly)}/mo`}
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
                 )}

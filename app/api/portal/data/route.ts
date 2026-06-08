@@ -58,11 +58,13 @@ export async function GET() {
     balanceDue: number;
     balancePaid: boolean;
     signed: boolean;
+    monthly: number;
+    subscriptionStatus: string;
   } | null = null;
   try {
     const { data } = await supabase
       .from('proposals')
-      .select('one_time_total, deposit_amount, deposit_status, balance_status, signed_at, status')
+      .select('one_time_total, monthly_total, deposit_amount, deposit_status, balance_status, signed_at, status, subscription_status')
       .eq('client_email', email)
       .in('status', ['accepted', 'sent'])
       .order('updated_at', { ascending: false })
@@ -78,6 +80,8 @@ export async function GET() {
         balanceDue: Math.max(0, oneTime - deposit),
         balancePaid: data.balance_status === 'paid',
         signed: !!data.signed_at,
+        monthly: Number(data.monthly_total) || 0,
+        subscriptionStatus: (data.subscription_status as string) || 'none',
       };
     }
   } catch {

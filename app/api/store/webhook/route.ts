@@ -269,6 +269,96 @@ async function handleBalancePaid(session: Stripe.Checkout.Session, email: string
   }
 }
 
+/** A monthly subscription checkout completed. Mark the plan active, link the
+ *  subscription to the proposal, and make sure the project exists. Revenue is
+ *  recorded per cycle via invoice.paid, so we do not record it here. */
+async function handleSubscriptionStarted(session: Stripe.Checkout.Session) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  const proposalId = session.metadata?.proposal_id;
+  if (!proposalId) return;
+  const subId = typeof session.subscription === 'string' ? session.subscription : null;
+  await supabase
+    .from('proposals')
+    .update({ subscription_status: 'active', stripe_subscription_id: subId, subscription_started_at: new Date().toISOString() })
+    .eq('id', proposalId);
+  await provisionFromProposal(proposalId);
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const { data: p } = await supabase.from('proposals').select('client_name, client_email').eq('id', proposalId).maybeSingle();
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to: 'sarah@modernmustardseed.com',
+        subject: 'Monthly plan started',
+        html: leadNotification({
+          type: 'Contact',
+          name: (p?.client_name as string) || 'client',
+          email: (p?.client_email as string) || 'unknown',
+          fields: [{ label: 'Proposal', value: proposalId }],
+          message: 'A client started their monthly plan. Recurring revenue is live.',
+          suggestedAction: 'Keep building and running it.',
+        }),
+      });
+    } catch (err) {
+      console.error('subscription start notify failed', err);
+    }
+  }
+}
+
+/** Each paid subscription invoice (including the first) records recurring revenue. */
+async function handleInvoicePaid(invoice: Stripe.Invoice) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  // Only subscription invoices.
+  const subId = typeof (invoice as { subscription?: unknown }).subscription === 'string'
+    ? ((invoice as { subscription?: string }).subscription as string)
+    : null;
+  if (!subId) return;
+  const amount = invoice.amount_paid ?? 0;
+  if (amount < 1) return;
+  const email = invoice.customer_email || 'client@unknown';
+  const proposalId = (invoice as { subscription_details?: { metadata?: Record<string, string> } }).subscription_details?.metadata?.proposal_id || null;
+
+  try {
+    await supabase.from('orders').insert({
+      stripe_session_id: invoice.id,
+      product_name: 'Monthly plan',
+      item_type: 'subscription',
+      price_paid_cents: amount,
+      currency: invoice.currency ?? 'usd',
+      email,
+      name: invoice.customer_name ?? null,
+      status: 'paid',
+    });
+  } catch (err) {
+    console.error('subscription invoice order insert failed (may be duplicate)', err);
+  }
+
+  // Ensure the proposal is marked active (covers the first-invoice race).
+  try {
+    if (proposalId) {
+      await supabase.from('proposals').update({ subscription_status: 'active', stripe_subscription_id: subId }).eq('id', proposalId);
+    } else {
+      await supabase.from('proposals').update({ subscription_status: 'active' }).eq('stripe_subscription_id', subId);
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+/** A subscription was canceled. Mark the proposal so the portal reflects it. */
+async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  try {
+    await supabase.from('proposals').update({ subscription_status: 'canceled' }).eq('stripe_subscription_id', sub.id);
+  } catch {
+    /* ignore */
+  }
+}
+
 /** On refund, claw back the affiliate commission for that purchase. */
 async function handleRefundClawback(stripe: ReturnType<typeof getStripe>, charge: Stripe.Charge) {
   if (!stripe) return;
@@ -316,6 +406,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true, kind: 'refund' });
   }
 
+  // Recurring subscription revenue, per paid invoice.
+  if (event.type === 'invoice.paid' || event.type === 'invoice.payment_succeeded') {
+    await handleInvoicePaid(event.data.object as Stripe.Invoice);
+    return NextResponse.json({ received: true, kind: 'invoice' });
+  }
+  if (event.type === 'customer.subscription.deleted') {
+    await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+    return NextResponse.json({ received: true, kind: 'subscription_canceled' });
+  }
+
   if (event.type !== 'checkout.session.completed') {
     return NextResponse.json({ received: true, ignored: event.type });
   }
@@ -336,6 +436,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'balance') {
     await handleBalancePaid(session, email ?? null, name ?? null);
     return NextResponse.json({ received: true, kind: 'balance' });
+  }
+
+  // ── Monthly subscription started ──
+  if (session.metadata?.kind === 'subscription') {
+    await handleSubscriptionStarted(session);
+    return NextResponse.json({ received: true, kind: 'subscription' });
   }
 
   if (!slug || !email) {

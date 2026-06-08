@@ -12,11 +12,12 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * tab row so nothing overlaps or overflows.
  */
 
-type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'proposals' | 'projects' | 'reviews';
+type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'call' | 'proposals' | 'projects' | 'reviews';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
   { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
   { key: 'audit', label: 'Audit', href: '/admin/audit' },
+  { key: 'call', label: 'Call', href: '/admin/intake-call' },
   { key: 'proposals', label: 'Proposals', href: '/admin/proposals' },
   { key: 'projects', label: 'Projects', href: '/admin/projects' },
   { key: 'reviews', label: 'Reviews', href: '/admin/testimonials' },

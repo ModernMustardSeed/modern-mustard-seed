@@ -255,11 +255,12 @@ function statusPill(label: string, bg: string, fg: string): string {
 /* ────────────────────────── MAGIC LINK (portal sign-in) ────────────────────────── */
 
 /** Passwordless sign-in email for the client portal. */
-export function magicLinkEmail({ firstName, url }: { firstName?: string; url: string }): string {
+export function magicLinkEmail({ firstName, url, note }: { firstName?: string; url: string; note?: string }): string {
   const name = firstName?.trim();
   const inner =
     headline(name ? `Welcome back, ${name}` : 'Sign in to your portal') +
     lede('One tap and you are in. No password to remember.') +
+    (note ? paragraph(`<strong>${note}</strong>`) : '') +
     paragraph('Use the button below to open your Modern Mustard Seed workspace. For your security the link expires in 20 minutes and can be used once.') +
     ctaBlock({ label: 'Open my portal', url }) +
     paragraph(`<span style="font-size:13px;color:${C.muted}">If the button does not work, paste this link into your browser:<br><a href="${url}" style="color:${C.gold};word-break:break-all">${url}</a></span>`) +
@@ -554,6 +555,30 @@ export function reviewRequestEmail({
     paragraph('Thank you for trusting me with it. I am here whenever you want to build the next thing.') +
     signature('Sarah');
   return shell({ preheader: 'Your build is live. A quick favor?', subtitle: 'It is live', inner });
+}
+
+/** Start-your-monthly-plan invoice. Recurring subscription, cancel anytime. */
+export function subscriptionInvoiceEmail({
+  toName,
+  label,
+  amountUsd,
+  payUrl,
+}: {
+  toName?: string;
+  label: string;
+  amountUsd: number;
+  payUrl: string;
+}): string {
+  const first = toName?.trim()?.split(/\s+/)[0];
+  const amt = `$${amountUsd.toLocaleString('en-US')}`;
+  const inner =
+    headline(first ? `${first}, start your monthly plan` : 'Start your monthly plan') +
+    lede(`${amt} per month for ${label}.`) +
+    paragraph('This is a recurring monthly plan. The first payment starts it, and it renews automatically each month. You can cancel anytime, just let me know.') +
+    ctaBlock({ label: `Start plan, ${amt}/mo`, url: payUrl }) +
+    paragraph(`<span style="font-size:13px;color:${C.muted}">Secure checkout by Stripe. Questions about scope or billing? Just reply to this email.</span>`) +
+    signature('Sarah');
+  return shell({ preheader: `Start your ${amt}/mo plan`, subtitle: 'Your monthly plan', inner });
 }
 
 /** Internal heads-up to Sarah when a client sends a note or change request from their portal. */

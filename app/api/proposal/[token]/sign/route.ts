@@ -92,7 +92,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
             to: p.client_email as string,
             replyTo: 'sarah@modernmustardseed.com',
             subject: 'Your project space is live',
-            html: magicLinkEmail({ firstName: name.split(' ')[0], url: portalUrl }),
+            html: magicLinkEmail({
+              firstName: name.split(' ')[0],
+              url: portalUrl,
+              note: 'When you are in, take a couple of minutes to complete your project intake. It is the first thing in your portal, and it gives us everything we need to start.',
+            }),
           });
         } catch (err) {
           console.error('sign: portal link failed', err);
