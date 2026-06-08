@@ -581,6 +581,27 @@ export function subscriptionInvoiceEmail({
   return shell({ preheader: `Start your ${amt}/mo plan`, subtitle: 'Your monthly plan', inner });
 }
 
+/** A subscription payment failed. Ask the client to update their card. */
+export function subscriptionPaymentFailedEmail({
+  toName,
+  label,
+  manageUrl,
+}: {
+  toName?: string;
+  label: string;
+  manageUrl: string;
+}): string {
+  const first = toName?.trim()?.split(/\s+/)[0];
+  const inner =
+    headline(first ? `${first}, a quick payment hiccup` : 'A quick payment hiccup') +
+    lede(`We could not process this month's payment for ${label}.`) +
+    paragraph('It happens, usually an expired or replaced card. Update your payment method and we will retry automatically. Nothing is interrupted yet.') +
+    ctaBlock({ label: 'Update payment method', url: manageUrl }) +
+    paragraph(`<span style="font-size:13px;color:${C.muted}">Open your portal, then tap Manage plan. Questions? Just reply to this email.</span>`) +
+    signature('Sarah');
+  return shell({ preheader: 'Update your payment method', subtitle: 'Payment needs attention', inner });
+}
+
 /** Internal heads-up to Sarah when a client sends a note or change request from their portal. */
 export function clientMessageEmail({
   fromName,

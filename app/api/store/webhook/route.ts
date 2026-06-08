@@ -21,7 +21,8 @@ import { getSupabase } from '@/lib/supabase';
 import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/data/products';
 import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
-import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification } from '@/lib/email';
+import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification, subscriptionPaymentFailedEmail } from '@/lib/email';
+import { SITE } from '@/lib/seo';
 import { grantEntitlement, PROGRAM_ASSETS, isProgramSlug, type ProgramSlug } from '@/lib/entitlements';
 import { createMagicToken } from '@/lib/client-auth';
 import { insertLead } from '@/lib/supabase';
@@ -349,6 +350,59 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
   }
 }
 
+/** A subscription payment failed. Flag past-due and nudge the client to update their card. */
+async function handleInvoiceFailed(invoice: Stripe.Invoice) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  const subId = typeof (invoice as { subscription?: unknown }).subscription === 'string'
+    ? ((invoice as { subscription?: string }).subscription as string)
+    : null;
+  if (!subId) return;
+
+  let proposal: { id?: string; client_name?: string | null; client_email?: string | null; client_company?: string | null } | null = null;
+  try {
+    const { data } = await supabase
+      .from('proposals')
+      .select('id, client_name, client_email, client_company')
+      .eq('stripe_subscription_id', subId)
+      .maybeSingle();
+    proposal = data;
+    await supabase.from('proposals').update({ subscription_status: 'past_due' }).eq('stripe_subscription_id', subId);
+  } catch {
+    /* ignore */
+  }
+
+  const email = invoice.customer_email || (proposal?.client_email as string) || null;
+  if (process.env.RESEND_API_KEY && email) {
+    const label = (proposal?.client_company as string) || (proposal?.client_name as string) || 'your plan';
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to: email,
+        replyTo: 'sarah@modernmustardseed.com',
+        subject: 'Quick payment hiccup on your plan',
+        html: subscriptionPaymentFailedEmail({ toName: (proposal?.client_name as string) || undefined, label, manageUrl: `${SITE.url}/portal` }),
+      });
+      await resend.emails.send({
+        from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to: 'sarah@modernmustardseed.com',
+        subject: `Subscription payment failed: ${label}`,
+        html: leadNotification({
+          type: 'Contact',
+          name: (proposal?.client_name as string) || 'client',
+          email,
+          fields: [{ label: 'Status', value: 'past_due' }],
+          message: 'A subscription payment failed. The client was asked to update their card.',
+          suggestedAction: 'Follow up if it does not recover.',
+        }),
+      });
+    } catch (err) {
+      console.error('payment failed email error', err);
+    }
+  }
+}
+
 /** A subscription was canceled. Mark the proposal so the portal reflects it. */
 async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
   const supabase = getSupabase();
@@ -411,6 +465,10 @@ export async function POST(req: Request) {
   if (event.type === 'invoice.paid' || event.type === 'invoice.payment_succeeded') {
     await handleInvoicePaid(event.data.object as Stripe.Invoice);
     return NextResponse.json({ received: true, kind: 'invoice' });
+  }
+  if (event.type === 'invoice.payment_failed') {
+    await handleInvoiceFailed(event.data.object as Stripe.Invoice);
+    return NextResponse.json({ received: true, kind: 'invoice_failed' });
   }
   if (event.type === 'customer.subscription.deleted') {
     await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);

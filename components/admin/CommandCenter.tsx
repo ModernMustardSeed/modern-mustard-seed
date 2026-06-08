@@ -17,6 +17,7 @@ type Overview = {
   leads: { total: number; byStatus: Record<string, number>; byType: Record<string, number>; new7d: number; new30d: number };
   bookings: { upcoming: Array<{ name: string | null; email: string; whenIso: string; display: string; leadId: string }>; monthCount: number };
   proposals?: { open: number; openValue: number; accepted: number; acceptedValue: number };
+  mrr?: { monthly: number; activePlans: number };
   messages?: { newCount: number; items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string; proposed_date: string | null }> };
   followups?: Array<{ kind: string; title: string; detail: string; days: number }>;
   attention: Array<{ kind: string; title: string; detail: string; whenIso: string; leadId?: string; severity: 'high' | 'medium' }>;
@@ -206,7 +207,7 @@ export default function CommandCenter() {
         ) : (
           <>
             {/* KPI row */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+            <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-6">
               <div className="glass-card p-5">
                 <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">Revenue this month</div>
                 <div className="font-sans text-3xl font-semibold text-white mt-1.5">{money(data.revenue.month)}</div>
@@ -225,6 +226,12 @@ export default function CommandCenter() {
                 <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">Sales this month</div>
                 <div className="font-sans text-3xl font-semibold text-white mt-1.5">{data.revenue.monthCount}</div>
                 <div className="text-[10px] text-white/35 font-mono mt-2">{data.revenue.allTimeCount} all time</div>
+              </div>
+
+              <div className="glass-card p-5 border-emerald-500/20">
+                <div className="text-[9px] uppercase tracking-[0.3em] text-emerald-300/70 font-mono font-medium">MRR</div>
+                <div className="font-sans text-3xl font-semibold text-white mt-1.5">{money(data.mrr?.monthly ?? 0)}</div>
+                <div className="text-[10px] text-white/35 font-mono mt-2">{data.mrr?.activePlans ?? 0} active plan{(data.mrr?.activePlans ?? 0) === 1 ? '' : 's'}</div>
               </div>
 
               <div className="glass-card p-5">

@@ -249,14 +249,20 @@ export async function GET() {
 
   // ── Proposals + follow-up radar ────────────────────────────────────
   const proposals = { open: 0, openValue: 0, accepted: 0, acceptedValue: 0 };
+  let mrr = 0;
+  let activePlans = 0;
   const followups: Array<{ kind: string; title: string; detail: string; days: number }> = [];
   try {
     const { data: props } = await supabase
       .from('proposals')
-      .select('client_name, client_company, status, one_time_total, updated_at, signed_at, deposit_status');
+      .select('client_name, client_company, status, one_time_total, monthly_total, subscription_status, updated_at, signed_at, deposit_status');
     if (props) {
       const nowMs = now.getTime();
       for (const p of props) {
+        if (p.subscription_status === 'active') {
+          mrr += Number(p.monthly_total) || 0;
+          activePlans += 1;
+        }
         const s = (p.status as string) || 'draft';
         const v = Number(p.one_time_total) || 0;
         if (s === 'draft' || s === 'sent') {
@@ -294,6 +300,7 @@ export async function GET() {
     leads: { total: leadsTotal, byStatus, byType, new7d, new30d },
     bookings: { upcoming, monthCount: upcoming.filter((u) => new Date(u.whenIso) >= monthStart).length },
     proposals,
+    mrr: { monthly: mrr, activePlans },
     messages,
     followups: followups.slice(0, 6),
     attention: attention.slice(0, 8),
