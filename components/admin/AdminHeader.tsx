@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import HelpGuide from '@/components/HelpGuide';
+import { ADMIN_HELP } from '@/lib/help-content';
 
 /**
  * Shared admin header. One responsive bar across the command center, pipeline,
@@ -55,6 +57,7 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
             </Link>
           ))}
           <span className="w-px h-5 bg-white/10 mx-1.5" aria-hidden />
+          <HelpGuide guide={ADMIN_HELP} />
           {onRefresh && (
             <button onClick={onRefresh} className="whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg text-white/45 hover:text-white/80 hover:bg-white/[0.04] transition-colors">
               Refresh

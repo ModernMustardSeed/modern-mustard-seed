@@ -4,6 +4,8 @@ import { useEffect, useState, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { launchCountdown } from '@/lib/launch';
+import HelpGuide from '@/components/HelpGuide';
+import { CLIENT_HELP } from '@/lib/help-content';
 
 /**
  * The client workspace. One screen scoped to the signed-in client: their
@@ -123,7 +125,8 @@ export default function ClientPortal() {
               <h1 className="font-sans text-xl font-bold text-white tracking-tight mt-1">Your Portal</h1>
             </div>
           </div>
-          <nav className="flex items-center gap-1">
+          <nav className="flex items-center gap-2">
+            <HelpGuide guide={CLIENT_HELP} />
             <Link href="/?book=1" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 hover:text-mustard-300 px-4 py-2">Book a call</Link>
             <button onClick={logout} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 px-4 py-2">Sign out</button>
           </nav>

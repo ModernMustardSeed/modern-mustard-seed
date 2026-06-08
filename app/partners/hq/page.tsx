@@ -8,6 +8,8 @@ import { getSupabase } from '@/lib/supabase';
 import { products } from '@/data/products';
 import AffiliateLinks from '@/components/partners/AffiliateLinks';
 import MarketingKit from '@/components/partners/MarketingKit';
+import HelpGuide from '@/components/HelpGuide';
+import { PARTNER_HELP } from '@/lib/help-content';
 
 export const metadata = buildMetadata({ title: 'Partner Dashboard', path: '/partners/hq', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -76,7 +78,10 @@ export default async function PartnerHQ() {
               <h1 className="font-sans text-xl font-bold text-white tracking-tight mt-1">Partner Dashboard</h1>
             </div>
           </div>
-          <span className="font-mono text-mustard-300 text-sm">{code}</span>
+          <div className="flex items-center gap-3">
+            <HelpGuide guide={PARTNER_HELP} />
+            <span className="font-mono text-mustard-300 text-sm">{code}</span>
+          </div>
         </div>
       </header>
 
