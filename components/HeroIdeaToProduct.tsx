@@ -54,12 +54,12 @@ export default function HeroIdeaToProduct() {
         {/* Headline */}
         <h1 className="opacity-0 animate-fade-in-up font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.03] text-[#161616]">
           You bring the{' '}
-          <span className="inline-block align-middle mx-1 rounded-[10px] border-[3px] border-[#161616] bg-[#F5B700] px-3 md:px-4 py-1 text-[0.6em] leading-none font-sans font-extrabold uppercase tracking-tight text-[#161616] shadow-[4px_4px_0_0_#161616]">
+          <span className="inline-block align-middle mx-1.5 -rotate-[6deg] rounded-[10px] border-[3px] border-[#161616] bg-[#F5B700] px-3 md:px-4 py-1 text-[0.6em] leading-none font-sans font-black uppercase tracking-tight text-[#161616] shadow-[3px_3px_0_0_#161616,6px_6px_0_0_#1E50C8]">
             seed
           </span>
           <br />
           we build the{' '}
-          <span className="inline-block align-middle mx-1 rounded-[10px] border-[3px] border-[#161616] bg-[#F5B700] px-3 md:px-4 py-1 text-[0.6em] leading-none font-sans font-extrabold uppercase tracking-tight text-[#161616] shadow-[4px_4px_0_0_#161616]">
+          <span className="inline-block align-middle mx-1.5 -rotate-[6deg] rounded-[10px] border-[3px] border-[#161616] bg-[#F5B700] px-3 md:px-4 py-1 text-[0.6em] leading-none font-sans font-black uppercase tracking-tight text-[#161616] shadow-[3px_3px_0_0_#161616,6px_6px_0_0_#1E50C8]">
             tree
           </span>
         </h1>
