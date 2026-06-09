@@ -222,6 +222,15 @@ export async function GET() {
     // client_requests not migrated yet
   }
 
+  // ── Approvals waiting ─────────────────────────────────────────────
+  let approvalsPending = 0;
+  try {
+    const { count } = await supabase.from('approvals').select('id', { count: 'exact', head: true }).eq('status', 'pending');
+    approvalsPending = count ?? 0;
+  } catch {
+    // approvals not migrated yet
+  }
+
   attention.sort((a, b) => {
     if (a.severity !== b.severity) return a.severity === 'high' ? -1 : 1;
     return new Date(a.whenIso).getTime() - new Date(b.whenIso).getTime();
@@ -301,6 +310,7 @@ export async function GET() {
     bookings: { upcoming, monthCount: upcoming.filter((u) => new Date(u.whenIso) >= monthStart).length },
     proposals,
     mrr: { monthly: mrr, activePlans },
+    approvals: { pending: approvalsPending },
     messages,
     followups: followups.slice(0, 6),
     attention: attention.slice(0, 8),

@@ -18,6 +18,7 @@ type Overview = {
   bookings: { upcoming: Array<{ name: string | null; email: string; whenIso: string; display: string; leadId: string }>; monthCount: number };
   proposals?: { open: number; openValue: number; accepted: number; acceptedValue: number };
   mrr?: { monthly: number; activePlans: number };
+  approvals?: { pending: number };
   messages?: { newCount: number; items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string; proposed_date: string | null }> };
   followups?: Array<{ kind: string; title: string; detail: string; days: number }>;
   attention: Array<{ kind: string; title: string; detail: string; whenIso: string; leadId?: string; severity: 'high' | 'medium' }>;
@@ -271,6 +272,22 @@ export default function CommandCenter() {
                 </div>
               </Link>
             </div>
+
+            {/* Approvals waiting */}
+            {(data.approvals?.pending ?? 0) > 0 && (
+              <Link href="/admin/approvals" className="block glass-card p-5 mb-6 border-mustard-500/40 hover:border-mustard-500/60 transition-colors">
+                <div className="flex items-center gap-3">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mustard-400 opacity-70" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-mustard-400" />
+                  </span>
+                  <span className="text-sm font-sans font-bold text-white">
+                    {data.approvals!.pending} draft{data.approvals!.pending === 1 ? '' : 's'} waiting for your approval
+                  </span>
+                  <span className="ml-auto text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-mustard-300">Review →</span>
+                </div>
+              </Link>
+            )}
 
             {/* Client messages (change requests / notes from portals) */}
             {data.messages && data.messages.items.length > 0 && (
