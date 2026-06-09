@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { navLinks, socials } from '@/data/socials';
 
@@ -53,6 +53,7 @@ const MENU_GROUPS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname() || '/';
 
   useEffect(() => {
@@ -66,18 +67,23 @@ export default function Navbar() {
     setMenuOpen(false);
   }, [pathname]);
 
-  // Lock body scroll and wire Escape-to-close while the menu is open.
+  // Lock body scroll, manage focus, and wire Escape-to-close while open.
   useEffect(() => {
     if (!menuOpen) return;
-    const prev = document.body.style.overflow;
+    const prevFocused = document.activeElement as HTMLElement | null;
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    // Move focus into the menu so keyboard + screen-reader users land here.
+    closeBtnRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setMenuOpen(false);
     };
     window.addEventListener('keydown', onKey);
     return () => {
-      document.body.style.overflow = prev;
+      document.body.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKey);
+      // Return focus to wherever it was before opening.
+      prevFocused?.focus?.();
     };
   }, [menuOpen]);
 
@@ -203,6 +209,7 @@ export default function Navbar() {
                 Menu
               </span>
               <button
+                ref={closeBtnRef}
                 type="button"
                 onClick={() => setMenuOpen(false)}
                 aria-label="Close menu"
@@ -212,14 +219,42 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Grouped links */}
-            <div className="grid grid-cols-2 gap-x-6 gap-y-9">
-              {MENU_GROUPS.map((group) => (
+            {/* Featured: Work With Us gets visual priority. */}
+            <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] p-6 md:p-7 mb-8">
+              <span className="block text-[11px] uppercase tracking-[0.32em] text-[#E0301E] font-mono font-bold mb-1.5">
+                {MENU_GROUPS[0].heading}
+              </span>
+              <p className="font-display italic font-bold text-[#161616] text-base md:text-lg leading-snug mb-5">
+                Bring your idea. We build it real in 30 days.
+              </p>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+                {MENU_GROUPS[0].links.map((link) => {
+                  const active = pathname === link.href;
+                  return (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        className={`font-display font-black text-xl md:text-2xl tracking-tight leading-snug transition-colors ${
+                          active ? 'text-[#E0301E]' : 'text-[#161616] hover:text-[#E0301E]'
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Secondary groups */}
+            <div className="grid grid-cols-2 gap-x-6 gap-y-8">
+              {MENU_GROUPS.slice(1).map((group) => (
                 <div key={group.heading}>
-                  <span className="block text-[10px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold mb-3.5">
+                  <span className="block text-[10px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold mb-3">
                     {group.heading}
                   </span>
-                  <ul className="flex flex-col gap-2.5">
+                  <ul className="flex flex-col gap-2">
                     {group.links.map((link) => {
                       const active = pathname === link.href;
                       return (
@@ -227,7 +262,7 @@ export default function Navbar() {
                           <Link
                             href={link.href}
                             onClick={() => setMenuOpen(false)}
-                            className={`font-display font-black text-lg md:text-xl tracking-tight leading-snug transition-colors ${
+                            className={`font-display font-black text-base md:text-lg tracking-tight leading-snug transition-colors ${
                               active ? 'text-[#E0301E]' : 'text-[#161616] hover:text-[#E0301E]'
                             }`}
                           >
