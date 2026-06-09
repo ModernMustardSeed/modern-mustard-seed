@@ -8,9 +8,10 @@
  */
 
 import Script from 'next/script';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { GA4_ID, GOOGLE_ADS_ID, META_PIXEL_ID } from '@/lib/analytics';
+import { getConsent } from '@/lib/consent';
 
 function PageViews() {
   const pathname = usePathname();
@@ -35,7 +36,17 @@ function PageViews() {
 }
 
 export default function AnalyticsScripts() {
+  // Consent gate: nothing non-essential loads until the visitor accepts.
+  const [granted, setGranted] = useState(false);
+  useEffect(() => {
+    setGranted(getConsent() === 'granted');
+    const onChange = (e: Event) => setGranted((e as CustomEvent).detail === 'granted');
+    window.addEventListener('mms-consent-change', onChange);
+    return () => window.removeEventListener('mms-consent-change', onChange);
+  }, []);
+
   const hasGoogle = Boolean(GA4_ID || GOOGLE_ADS_ID);
+  if (!granted) return null;
   if (!hasGoogle && !META_PIXEL_ID) return null;
 
   return (
@@ -48,7 +59,7 @@ export default function AnalyticsScripts() {
             src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID || GOOGLE_ADS_ID}`}
           />
           <Script id="gtag-init" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());${
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('consent','update',{ad_storage:'granted',analytics_storage:'granted',ad_user_data:'granted',ad_personalization:'granted'});gtag('js',new Date());${
               GA4_ID ? `gtag('config','${GA4_ID}',{send_page_view:false});` : ''
             }${GOOGLE_ADS_ID ? `gtag('config','${GOOGLE_ADS_ID}');` : ''}`}
           </Script>

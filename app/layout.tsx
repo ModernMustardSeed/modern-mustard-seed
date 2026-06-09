@@ -7,6 +7,8 @@ import MagneticCursor from '@/components/MagneticCursor';
 import MustardSeedChat from '@/components/MustardSeedChat';
 import RefCapture from '@/components/RefCapture';
 import AnalyticsScripts from '@/components/AnalyticsScripts';
+import CookieConsent from '@/components/CookieConsent';
+import Script from 'next/script';
 import HideOnAppShell from '@/components/HideOnAppShell';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
@@ -32,6 +34,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
         <JsonLd data={siteGraphJsonLd} />
+        {/* Google Consent Mode v2: default everything non-essential to denied
+            until the visitor accepts. Belt-and-suspenders with the hard gate. */}
+        <Script id="consent-default" strategy="beforeInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=window.gtag||gtag;gtag('consent','default',{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});`}
+        </Script>
       </head>
       <body className="bg-[#080c16] text-white selection:bg-mustard-500/30 selection:text-white">
         <div className="relative z-30">
@@ -45,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MustardSeedChat />
         <RefCapture />
         <AnalyticsScripts />
+        <CookieConsent />
         <Analytics />
         <SpeedInsights />
         <noscript>

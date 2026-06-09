@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { socials } from '@/data/socials';
+import CookiePreferencesLink from '@/components/CookiePreferencesLink';
 
 export default function Footer() {
   const linkSections = [
@@ -130,6 +131,7 @@ export default function Footer() {
           >
             Review on Google
           </a>
+          <CookiePreferencesLink />
         </div>
 
         <p className="text-[10px] text-white/15 font-mono tracking-wider">
