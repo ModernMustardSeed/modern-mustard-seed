@@ -27,7 +27,7 @@ export default function Footer() {
     {
       title: 'Free Tools',
       links: [
-        { label: 'AI Audit', href: '/audit' },
+        { label: 'Bottleneck Breaker', href: '/audit' },
         { label: 'Website Audit', href: '/website-audit' },
       ],
     },

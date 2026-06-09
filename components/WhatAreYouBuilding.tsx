@@ -59,11 +59,11 @@ const INTENTS: Intent[] = [
     key: 'audit',
     chip: 'I am not sure yet',
     emoji: '✦',
-    title: 'Start with a free AI audit',
-    body: 'Drop your site URL and get a personalized read on where AI could save you time or earn you money. Five minutes. No call. No spam.',
+    title: 'Run the Bottleneck Breaker',
+    body: 'Drop your site URL and we will find the one thing quietly costing you the most, then show exactly how to break it. 60 seconds. No call. No spam.',
     playbookSlug: 'scope-an-ai-project',
     playbookTitle: 'How to Scope an AI Project in 90 Minutes',
-    engagement: 'Free AI Audit — five-minute teardown',
+    engagement: 'Bottleneck Breaker, a 60-second teardown',
   },
 ];
 
@@ -149,7 +149,7 @@ export default function WhatAreYouBuilding() {
                 href={selected.key === 'audit' ? '/audit' : `/build-queue?intent=${selected.key}`}
                 className="flex-1 text-center px-8 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                {selected.key === 'audit' ? 'Run the free audit' : 'Reserve a queue slot'}
+                {selected.key === 'audit' ? 'Run the Bottleneck Breaker' : 'Reserve a queue slot'}
               </Link>
               <Link
                 href={`/playbooks/${selected.playbookSlug}`}

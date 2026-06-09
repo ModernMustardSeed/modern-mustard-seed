@@ -1,52 +1,50 @@
-import AIAuditEngine from '@/components/AIAuditEngine';
+import BottleneckBreaker from '@/components/BottleneckBreaker';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'Free AI Audit',
+  title: 'Bottleneck Breaker',
   description:
-    'Drop your website URL. Our AI audit engine analyzes your business and returns AI opportunities, ROI projections, and quick wins in 60 seconds. Free.',
+    'Drop your website. The Bottleneck Breaker finds the one thing quietly costing your business the most, and shows exactly how to break it. Free, 60 seconds.',
   path: '/audit',
 });
 
-const auditFaq = [
+const breakerFaq = [
   {
-    q: 'What is the free AI audit?',
-    a: 'A 60-second AI-powered analysis of any business. Drop a website URL and the audit engine returns a ranked list of AI opportunities, ROI projections, and quick wins specific to that business. The audit is free, no email required to see the result.',
+    q: 'What is the Bottleneck Breaker?',
+    a: 'A free 60-second analysis of any business. Drop a website URL and it finds your biggest bottleneck, the one thing quietly costing you the most, then shows the highest-leverage fixes, the time and money it is worth, and where to start. No email gate to see the result.',
   },
   {
-    q: 'How does the AI audit work?',
-    a: 'The audit engine scrapes the public website, infers the business model, maps it against a catalog of AI use cases that have shipped before, and returns the highest-leverage opportunities with revenue or time-saving estimates. Powered by Anthropic Claude.',
+    q: 'How does it work?',
+    a: 'It reads your public website, infers your business model, maps it against fixes that have shipped before, and returns your bottlenecks, the services that break them, ROI estimates, and quick wins. Powered by Anthropic Claude.',
   },
   {
-    q: 'Is the audit really free?',
-    a: 'Yes. No credit card, no upsell. The audit is a free 60-second read on a business. If the result is useful and the business wants the AI work built, the next step is a paid discovery call.',
+    q: 'Is it really free?',
+    a: 'Yes. No credit card, no upsell. It is a free read on your business. If the result is useful and you want the work built, the next step is a free discovery call.',
   },
   {
-    q: 'What kinds of businesses can be audited?',
-    a: 'Any business with a public website. The audit is most useful for service businesses, professional firms, retail operators, regional brands, and SaaS or product companies. Anyone with operations that AI can compress.',
+    q: 'What kinds of businesses does it work for?',
+    a: 'Any business with a public website. It is most useful for service businesses, professional firms, retail operators, regional brands, and SaaS or product companies, anyone with operations that AI and good software can compress.',
   },
   {
-    q: 'What happens after I run the audit?',
-    a: 'The audit returns a downloadable report and a suggested next step. Most businesses follow up with a free 30-minute discovery call to scope the highest-priority AI build. No obligation.',
+    q: 'What happens after I run it?',
+    a: 'You see your bottlenecks and the plan to break them on screen, and can have it emailed to you. Most businesses follow up with a free 30-minute call to scope the highest-priority build. No obligation.',
   },
 ];
 
-export default function AuditPage() {
+export default function BottleneckBreakerPage() {
   return (
     <>
       <JsonLd
         data={[
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },
-            { name: 'AI Audit', url: '/audit' },
+            { name: 'Bottleneck Breaker', url: '/audit' },
           ]),
-          faqJsonLd(auditFaq),
+          faqJsonLd(breakerFaq),
         ]}
       />
-      <div className="relative bg-[#161616] pt-28 md:pt-32">
-        <AIAuditEngine />
-      </div>
+      <BottleneckBreaker />
     </>
   );
 }
