@@ -67,7 +67,7 @@ export default function LandingPage() {
                 href="/audit"
                 className="inline-block w-full sm:w-auto px-9 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.3)] hover:shadow-[0_0_44px_rgba(255,107,53,0.5)] hover:-translate-y-0.5 transition-all"
               >
-                Run the Free AI Audit
+                Run the Bottleneck Breaker
               </Link>
               <Link
                 href="/book"

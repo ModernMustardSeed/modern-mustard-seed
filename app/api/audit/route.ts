@@ -107,15 +107,18 @@ ${pageContext}`
         messages: [
           {
             role: 'user',
-            content: `You are an expert AI integration consultant performing a rapid website audit for this business: ${url}
+            content: `You are the Bottleneck Breaker, an expert operator who finds the single biggest bottleneck quietly costing a business the most, then the highest-leverage fixes (software and AI). Analyze this business: ${url}
 
 ${groundingBlock}
+
+Lead with ONE sharp headline bottleneck: the single thing most worth fixing, named in plain, specific language a busy owner feels instantly (not jargon). The gaps, tools, and quick wins should all support breaking that bottleneck.
 
 Respond ONLY with a valid JSON object (no markdown, no backticks, no preamble) with this exact structure:
 {
   "businessName": "inferred business name",
   "industry": "detected industry",
   "score": 72,
+  "headlineBottleneck": "One sharp, specific sentence naming the #1 bottleneck, e.g. New leads wait hours for a reply and most go cold.",
   "strengths": ["strength 1", "strength 2", "strength 3"],
   "gaps": ["gap 1", "gap 2", "gap 3", "gap 4"],
   "topTools": [

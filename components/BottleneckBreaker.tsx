@@ -20,6 +20,7 @@ type AuditResult = {
   businessName: string;
   industry: string;
   score: number;
+  headlineBottleneck?: string;
   strengths: string[];
   gaps: string[];
   topTools: { name: string; impact: number; reason: string }[];
@@ -175,8 +176,8 @@ export default function BottleneckBreaker() {
               <div className="flex items-center gap-5">
                 <ScoreRing score={result.score} />
                 <div className="min-w-0">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-1">{result.businessName} · {result.industry}</span>
-                  <p className="font-display text-xl md:text-2xl font-black leading-snug">{result.competitiveEdge}</p>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-1">{result.businessName} · Your #1 bottleneck</span>
+                  <p className="font-display text-xl md:text-2xl font-black leading-snug">{result.headlineBottleneck || result.competitiveEdge}</p>
                 </div>
               </div>
             </div>

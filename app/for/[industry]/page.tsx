@@ -102,7 +102,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
               href="/audit"
               className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.2)] hover:shadow-[0_0_40px_rgba(255,107,53,0.35)] transition-all"
             >
-              Run the Free AI Audit
+              Run the Bottleneck Breaker
             </Link>
             <a
               href={bookingUrl}
@@ -229,7 +229,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
                 href="/audit"
                 className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(255,107,53,0.25)] transition-all"
               >
-                Free AI Audit
+                Bottleneck Breaker
               </Link>
             </div>
           </div>
@@ -281,7 +281,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
                 href="/audit"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.25)] hover:shadow-[0_0_40px_rgba(255,107,53,0.45)] transition-all"
               >
-                Run the Free AI Audit
+                Run the Bottleneck Breaker
               </Link>
               <Link
                 href="/build-queue"

@@ -18,7 +18,7 @@ const collectionJsonLd = {
   url: `${SITE.url}/for`,
   name: 'Industries Modern Mustard Seed Builds For',
   description:
-    'Specialty AI tools, apps, and sites for six core industries. Each industry page documents what we build, real receipts, pricing, and a free AI Audit funnel.',
+    'Specialty AI tools, apps, and sites for six core industries. Each industry page documents what we build, real receipts, pricing, and a free Bottleneck Breaker funnel.',
   isPartOf: { '@id': `${SITE.url}/#website` },
   hasPart: industries.map((i) => ({
     '@type': 'WebPage',
@@ -86,7 +86,7 @@ export default function ForIndex() {
               href="/audit"
               className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.25)] hover:shadow-[0_0_40px_rgba(255,107,53,0.45)] transition-all"
             >
-              Not sure which fits? Run the Free AI Audit.
+              Not sure which fits? Run the Bottleneck Breaker.
             </Link>
           </div>
         </div>
