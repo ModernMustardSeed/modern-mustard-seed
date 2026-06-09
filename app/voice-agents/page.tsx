@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import MissedCallCalculator from '@/components/MissedCallCalculator';
+import VoiceTalkButton from '@/components/VoiceTalkButton';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -154,6 +155,11 @@ export default function VoiceAgentsPage() {
                 Book a Call
               </Link>
             </div>
+          </div>
+
+          {/* Live demo: talk to the actual agent (renders when Vapi env is set) */}
+          <div className="mb-16">
+            <VoiceTalkButton />
           </div>
 
           {/* Speed-to-lead stat band */}
