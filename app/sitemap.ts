@@ -14,6 +14,7 @@ const STATIC_PATHS = [
   '/build-queue',
   '/work',
   '/services',
+  '/voice-agents',
   '/work-with-us',
   '/blog',
   '/playbooks',

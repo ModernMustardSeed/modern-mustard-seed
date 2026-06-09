@@ -63,6 +63,45 @@
     background-size: 18px 18px;
   }
 
+  /* Pop-art range slider (used by the missed-call calculator). */
+  .mms-range {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    border-radius: 999px;
+    background: #fff;
+    border: 2px solid #161616;
+    outline: none;
+    cursor: pointer;
+  }
+  .mms-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #f5b700;
+    border: 2px solid #161616;
+    box-shadow: 2px 2px 0 0 #161616;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .mms-range::-webkit-slider-thumb:hover {
+    transform: translateY(-1px);
+  }
+  .mms-range::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #f5b700;
+    border: 2px solid #161616;
+    box-shadow: 2px 2px 0 0 #161616;
+    cursor: pointer;
+  }
+  .mms-range:focus-visible {
+    box-shadow: 0 0 0 3px rgba(245, 183, 0, 0.4);
+  }
+
   ::selection {
     background-color: rgba(200, 150, 78, 0.35);
     color: #f5f0e8;

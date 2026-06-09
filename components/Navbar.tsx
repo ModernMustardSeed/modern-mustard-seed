@@ -14,6 +14,7 @@ const MENU_GROUPS = [
     links: [
       { label: 'How It Works', href: '/work-with-us' },
       { label: 'Services', href: '/services' },
+      { label: 'Voice Agents', href: '/voice-agents' },
       { label: 'Idea to Spec', href: '/idea-to-spec' },
       { label: 'The Terminal', href: '/the-terminal' },
       { label: 'AI-Proof Your Business', href: '/ai-proof' },
