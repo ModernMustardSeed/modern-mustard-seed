@@ -7,7 +7,7 @@ type Msg = { role: 'assistant' | 'user'; text: string };
 
 const GREETING: Msg = {
   role: 'assistant',
-  text: "Hi. I'm Mustard Seed. What is the pain point in your business right now? Let's name it.",
+  text: "Hi. I'm Mr. Mustard. What is the pain point in your business right now? Let's name it.",
 };
 
 // Quick-start prompts the visitor can click instead of typing from scratch.
@@ -132,7 +132,7 @@ export default function MustardSeedChat() {
       {open && (
         <div
           role="dialog"
-          aria-label="Mustard Seed chat"
+          aria-label="Mr. Mustard chat"
           className="fixed bottom-24 right-6 z-[81] w-[calc(100vw-3rem)] sm:w-[420px] max-h-[72vh] flex flex-col rounded-2xl border border-gold-light/30 bg-midnight-700/95 backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.55)] overflow-hidden"
         >
           {/* Header */}
@@ -144,7 +144,7 @@ export default function MustardSeedChat() {
                   Modern Mustard Seed
                 </span>
                 <span className="block font-display italic text-xl text-cream-50 font-medium tracking-tight mt-1">
-                  Mustard Seed
+                  Mr. Mustard
                 </span>
               </div>
               <button
@@ -243,7 +243,7 @@ export default function MustardSeedChat() {
                       void send(e as unknown as FormEvent);
                     }
                   }}
-                  placeholder={sending ? 'Mustard Seed is thinking…' : 'Type your pain point. Enter to send.'}
+                  placeholder={sending ? 'Mr. Mustard is thinking…' : 'Type your pain point. Enter to send.'}
                   disabled={sending}
                   rows={2}
                   maxLength={1500}

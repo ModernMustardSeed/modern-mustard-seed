@@ -53,12 +53,24 @@ export default function HeroIdeaToProduct() {
 
         {/* Headline */}
         <h1 className="opacity-0 animate-fade-in-up font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.03] text-[#161616]">
-          You bring the seed
+          You bring the{' '}
+          <span
+            className="inline-block text-[#F5B700] text-5xl md:text-7xl lg:text-8xl align-baseline leading-[0.9]"
+            style={{
+              textShadow:
+                '0 0 14px rgba(245,183,0,0.75), 0 0 30px rgba(245,183,0,0.55), 0 0 60px rgba(224,48,30,0.30)',
+            }}
+          >
+            seed
+          </span>
           <br />
           we build the{' '}
           <span
-            className="inline-block text-[#F5B700] text-6xl md:text-8xl lg:text-9xl align-baseline leading-[0.9]"
-            style={{ WebkitTextStroke: '2.5px #161616' }}
+            className="inline-block text-[#F5B700] text-5xl md:text-7xl lg:text-8xl align-baseline leading-[0.9]"
+            style={{
+              textShadow:
+                '0 0 14px rgba(245,183,0,0.75), 0 0 30px rgba(245,183,0,0.55), 0 0 60px rgba(224,48,30,0.30)',
+            }}
           >
             tree
           </span>

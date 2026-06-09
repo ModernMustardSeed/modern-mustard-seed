@@ -8,9 +8,9 @@ import Link from 'next/link';
 const FEATURES = [
   {
     eyebrow: '01',
-    title: 'Mustard Seed chatbot embedded',
+    title: 'A custom AI chatbot, trained on your business',
     body:
-      "Our own AI, trained on your business, living in the corner of your site. Greets every visitor, answers questions in your brand voice, qualifies the lead, and captures the pain point. The chatbot you see on this site is the one we will build for you.",
+      "Your own AI concierge, built from the ground up on your offers, your content, your voice, and your knowledge base. It greets every visitor, answers questions exactly the way you would, qualifies the lead, and captures the pain point. Not a generic widget and not a copy of ours. Mr. Mustard on this site is ours. Yours is built the same way, trained entirely on you.",
   },
   {
     eyebrow: '02',
@@ -87,7 +87,7 @@ export default function YourSiteWorksForYou() {
             Not just sit there looking nice
           </p>
           <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed mb-5">
-            A Modern Mustard Seed build is not a brochure. It is a working business engine. Bespoke booking with embedded CRM. Personalized client care software. Mustard Seed AI chatbot on the page. Ordering apps for restaurants. Ecommerce shops. Custom courses, academies, rendering studios, ad command centers. Zero-to-one software for the founder building something new.
+            A Modern Mustard Seed build is not a brochure. It is a working business engine. Bespoke booking with embedded CRM. Personalized client care software. A custom AI chatbot trained on your own business. Ordering apps for restaurants. Ecommerce shops. Custom courses, academies, rendering studios, ad command centers. Zero-to-one software for the founder building something new.
           </p>
           <p className="font-display italic font-bold text-xl md:text-2xl text-[#E0301E] leading-snug">
             What is your pain point? Let us fix it.
