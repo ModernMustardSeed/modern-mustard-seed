@@ -225,7 +225,7 @@ export default function Navbar() {
                 {MENU_GROUPS[0].heading}
               </span>
               <p className="font-display italic font-bold text-[#161616] text-base md:text-lg leading-snug mb-5">
-                Bring your idea. We build it real in 30 days.
+                Bring your idea. We bring it to life in 30 days.
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                 {MENU_GROUPS[0].links.map((link) => {

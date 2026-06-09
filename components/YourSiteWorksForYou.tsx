@@ -7,61 +7,56 @@ import Link from 'next/link';
  */
 const FEATURES = [
   {
-    eyebrow: '01',
     title: 'A custom AI chatbot, trained on your business',
     body:
       "Your own AI concierge, built from the ground up on your offers, your content, your voice, and your knowledge base. It greets every visitor, answers questions exactly the way you would, qualifies the lead, and captures the pain point. Not a generic widget and not a copy of ours. Mr. Mustard on this site is ours. Yours is built the same way, trained entirely on you.",
   },
   {
-    eyebrow: '02',
     title: 'AI SDR built in',
     body:
       'A sales-development rep that lives inside your site, captures every lead the moment it lands, qualifies it against your real criteria, and routes it into your inbox or CRM with notes. 24/7. Never sleeps. Never lets a warm lead go cold.',
   },
   {
-    eyebrow: '03',
+    title: 'Voice agents that answer the phone',
+    body:
+      'A 24/7 AI receptionist that picks up every call in a natural, human voice, books appointments, answers your FAQs, and routes the urgent ones straight to you. It never takes a sick day and costs less than a part-time hire. Missed calls stop being lost revenue.',
+  },
+  {
     title: 'Bespoke booking services with embedded CRM',
     body:
       'Real-time availability, calendar booking, automated reminders, and a CRM that captures every interaction in one place. Zoho, HubSpot, Acuity, or a custom build. The booking flow and the customer record are one system, not eight tabs.',
   },
   {
-    eyebrow: '04',
     title: 'Personalized client care software',
     body:
       'Intake forms that ask the right thing. Onboarding sequences that walk a new client through your process. Status updates that fire automatically. Retention flows that bring them back. Software that treats clients the way you would if you had ten more hours a day.',
   },
   {
-    eyebrow: '05',
     title: 'Funnels and lead magnets, live on day one',
     body:
       'Not coming-soon. Live. The site ships with a primary funnel, a secondary funnel for the slower buyer, and at least one lead magnet that converts strangers into your email list. Tested before launch.',
   },
   {
-    eyebrow: '06',
     title: 'Verticals: shops, restaurants, academies, studios, command centers',
     body:
       'Ordering apps for restaurants. Ecommerce for shops. Custom courses and academies. Rendering studios. Ad command centers. Zero-to-one software for founders building something new. The engine adapts to the vertical. The pattern stays the same.',
   },
   {
-    eyebrow: '07',
     title: 'A back office that surfaces the right thing',
     body:
       'One dashboard. Leads, revenue, content queue, social schedule, ops, and inventory in one view. Replace the eight tools you are paying for and barely using. Built for the way you actually work.',
   },
   {
-    eyebrow: '08',
     title: 'AI agents on the site AND inside the back office',
     body:
       'Public-facing agents that answer questions, qualify leads, take orders, and recommend next steps. Internal agents that draft your follow-ups, summarize your week, and triage your inbox. The same brain, on both sides of the wall.',
   },
   {
-    eyebrow: '09',
     title: 'Innovation as the default, not the upsell',
     body:
       'We ship the build using the latest models, the latest patterns, the latest infrastructure (Next.js 16, Vercel, Anthropic, Gemini, Vapi, multi-agent orchestration). What is bleeding-edge today is the baseline of every engagement.',
   },
   {
-    eyebrow: '10',
     title: 'It is yours, fully',
     body:
       'No vendor lock-in, no per-seat fee, no agency retainer required. The code, the database, the deploy, the AI prompts, and every account are transferred to you the day we launch. Hire any other engineer later. Or call us back when you grow.',
@@ -87,7 +82,7 @@ export default function YourSiteWorksForYou() {
             Not just sit there looking nice
           </p>
           <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed mb-5">
-            A Modern Mustard Seed build is not a brochure. It is a working business engine. Bespoke booking with embedded CRM. Personalized client care software. A custom AI chatbot trained on your own business. Ordering apps for restaurants. Ecommerce shops. Custom courses, academies, rendering studios, ad command centers. Zero-to-one software for the founder building something new.
+            A Modern Mustard Seed build is not a brochure. It is a working business engine. Bespoke booking with embedded CRM. Personalized client care software. A custom AI chatbot trained on your own business. Voice agents that answer the phone 24/7. Ordering apps for restaurants. Ecommerce shops. Custom courses, academies, rendering studios, ad command centers. Zero-to-one software for the founder building something new.
           </p>
           <p className="font-display italic font-bold text-xl md:text-2xl text-[#E0301E] leading-snug">
             What is your pain point? Let us fix it.
@@ -96,10 +91,10 @@ export default function YourSiteWorksForYou() {
 
         {/* Feature grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-20">
-          {FEATURES.map((f) => (
+          {FEATURES.map((f, i) => (
             <div key={f.title} className="pop-card p-8 md:p-10 hover:-translate-y-1 transition-transform duration-300">
               <span className="font-display text-3xl md:text-4xl font-black text-[#F5B700] tracking-tight block mb-4" style={{ WebkitTextStroke: '1.5px #161616' }}>
-                {f.eyebrow}
+                {String(i + 1).padStart(2, '0')}
               </span>
               <h3 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-3 leading-snug">
                 {f.title}
