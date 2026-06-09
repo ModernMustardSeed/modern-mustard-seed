@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
-import { scanFollowups } from '@/lib/approvals';
+import { scanFollowups, scanNurture } from '@/lib/approvals';
 
 export const runtime = 'nodejs';
 
@@ -17,10 +17,10 @@ export async function GET() {
   return NextResponse.json({ pending: pending ?? [], recent: recent ?? [] });
 }
 
-/** Run the producers (currently the follow-up operator) to create drafts. */
+/** Run the producers (follow-up + nurture operators) to create drafts. */
 export async function POST() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const created = await scanFollowups();
-  return NextResponse.json({ ok: true, created });
+  const [f, n] = await Promise.all([scanFollowups(), scanNurture()]);
+  return NextResponse.json({ ok: true, created: f + n });
 }

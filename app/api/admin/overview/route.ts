@@ -222,6 +222,15 @@ export async function GET() {
     // client_requests not migrated yet
   }
 
+  // ── Capacity: active projects in flight ───────────────────────────
+  let activeProjects = 0;
+  try {
+    const { count } = await supabase.from('projects').select('id', { count: 'exact', head: true }).in('status', ['discovery', 'building', 'review']);
+    activeProjects = count ?? 0;
+  } catch {
+    // projects not present
+  }
+
   // ── Approvals waiting ─────────────────────────────────────────────
   let approvalsPending = 0;
   try {
@@ -260,11 +269,12 @@ export async function GET() {
   const proposals = { open: 0, openValue: 0, accepted: 0, acceptedValue: 0 };
   let mrr = 0;
   let activePlans = 0;
+  let committed = 0; // money owed: signed-unpaid deposits + paid-deposit balances
   const followups: Array<{ kind: string; title: string; detail: string; days: number }> = [];
   try {
     const { data: props } = await supabase
       .from('proposals')
-      .select('client_name, client_company, status, one_time_total, monthly_total, subscription_status, updated_at, signed_at, deposit_status');
+      .select('client_name, client_company, status, one_time_total, monthly_total, subscription_status, updated_at, signed_at, deposit_status, balance_status, deposit_amount');
     if (props) {
       const nowMs = now.getTime();
       for (const p of props) {
@@ -272,6 +282,10 @@ export async function GET() {
           mrr += Number(p.monthly_total) || 0;
           activePlans += 1;
         }
+        const oneTime = Number(p.one_time_total) || 0;
+        const depAmt = Math.round(Number(p.deposit_amount) || oneTime * 0.5);
+        if (p.signed_at && p.deposit_status !== 'paid') committed += depAmt;
+        else if (p.deposit_status === 'paid' && p.balance_status !== 'paid') committed += Math.max(0, oneTime - depAmt);
         const s = (p.status as string) || 'draft';
         const v = Number(p.one_time_total) || 0;
         if (s === 'draft' || s === 'sent') {
@@ -310,6 +324,8 @@ export async function GET() {
     bookings: { upcoming, monthCount: upcoming.filter((u) => new Date(u.whenIso) >= monthStart).length },
     proposals,
     mrr: { monthly: mrr, activePlans },
+    cashflow: { committed, openPipeline: proposals.openValue, mrr },
+    capacity: { active: activeProjects, limit: Number(process.env.WIP_LIMIT) || 5 },
     approvals: { pending: approvalsPending },
     messages,
     followups: followups.slice(0, 6),

@@ -19,6 +19,7 @@ const TYPES = ['website', 'app', 'tool', 'software', 'brand_bible', 'other'];
 const STATUS_CLS: Record<string, string> = {
   requested: 'text-mustard-200 border-mustard-500/40 bg-mustard-500/10',
   building: 'text-blue-200 border-blue-400/40 bg-blue-500/10',
+  ready: 'text-purple-200 border-purple-400/40 bg-purple-500/10',
   delivered: 'text-emerald-200 border-emerald-400/40 bg-emerald-500/10',
   failed: 'text-red-300 border-red-400/40 bg-red-500/10',
   canceled: 'text-white/40 border-white/12 bg-white/5',

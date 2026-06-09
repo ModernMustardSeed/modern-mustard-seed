@@ -18,6 +18,8 @@ type Overview = {
   bookings: { upcoming: Array<{ name: string | null; email: string; whenIso: string; display: string; leadId: string }>; monthCount: number };
   proposals?: { open: number; openValue: number; accepted: number; acceptedValue: number };
   mrr?: { monthly: number; activePlans: number };
+  cashflow?: { committed: number; openPipeline: number; mrr: number };
+  capacity?: { active: number; limit: number };
   approvals?: { pending: number };
   messages?: { newCount: number; items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string; proposed_date: string | null }> };
   followups?: Array<{ kind: string; title: string; detail: string; days: number }>;
@@ -272,6 +274,39 @@ export default function CommandCenter() {
                 </div>
               </Link>
             </div>
+
+            {/* Cashflow + capacity */}
+            {(data.cashflow || data.capacity) && (
+              <div className="glass-card p-5 mb-6">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-4">Cashflow &amp; capacity</span>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <div className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono">Committed (owed)</div>
+                    <div className="font-sans text-2xl font-semibold text-white mt-1">{money(data.cashflow?.committed ?? 0)}</div>
+                    <div className="text-[10px] text-white/35 font-mono mt-1">signed, not yet paid</div>
+                  </div>
+                  <div>
+                    <div className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono">Open pipeline</div>
+                    <div className="font-sans text-2xl font-semibold text-white mt-1">{money(data.cashflow?.openPipeline ?? 0)}</div>
+                    <div className="text-[10px] text-white/35 font-mono mt-1">proposals out</div>
+                  </div>
+                  <div>
+                    <div className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono">MRR</div>
+                    <div className="font-sans text-2xl font-semibold text-white mt-1">{money(data.cashflow?.mrr ?? 0)}</div>
+                    <div className="text-[10px] text-white/35 font-mono mt-1">recurring / mo</div>
+                  </div>
+                  <div>
+                    <div className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono">In flight (WIP)</div>
+                    <div className={`font-sans text-2xl font-semibold mt-1 ${(data.capacity?.active ?? 0) >= (data.capacity?.limit ?? 5) ? 'text-red-300' : 'text-white'}`}>
+                      {data.capacity?.active ?? 0}<span className="text-white/30 text-lg">/{data.capacity?.limit ?? 5}</span>
+                    </div>
+                    <div className={`text-[10px] font-mono mt-1 ${(data.capacity?.active ?? 0) >= (data.capacity?.limit ?? 5) ? 'text-red-300/80' : 'text-white/35'}`}>
+                      {(data.capacity?.active ?? 0) >= (data.capacity?.limit ?? 5) ? 'at capacity, sell carefully' : 'active builds'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Approvals waiting */}
             {(data.approvals?.pending ?? 0) > 0 && (

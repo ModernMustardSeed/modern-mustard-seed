@@ -113,26 +113,25 @@ async function process_(job) {
       return;
     }
 
-    await supabase.from('build_requests').update({
-      status: 'delivered',
-      result,
-      delivered_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }).eq('id', job.id);
+    // Built, but NOT delivered to the client yet. Mark "ready" and create an
+    // approval so Sarah reviews + edits before it reaches the client.
+    await supabase.from('build_requests').update({ status: 'ready', result, updated_at: new Date().toISOString() }).eq('id', job.id);
 
-    // Close the loop: post the live link to the client's portal.
-    if (result.live_url) {
-      const url = /^https?:\/\//i.test(result.live_url) ? result.live_url : `https://${result.live_url}`;
-      try {
-        await supabase.from('client_files').insert({
-          client_email: job.client_email,
-          label: job.title || 'Delivered build',
-          url,
-          kind: job.deliverable_type === 'brand_bible' ? 'doc' : 'site',
-        });
-      } catch (e) { log('client_files insert failed', e.message); }
-    }
-    log('DELIVERED', job.id, result.live_url || '(no url)');
+    const live = result.live_url || '';
+    const body = `Hi,\n\nYour ${job.title} is ready.${live ? `\n\nYou can see it live here: ${live}` : ''}\n\nTake a look and tell me any tweaks. I am glad to adjust anything.\n\nWith you,\nSarah`;
+    try {
+      await supabase.from('approvals').insert({
+        type: 'build_delivery',
+        title: `Build ready: ${job.title}`,
+        to_email: job.client_email,
+        subject: `Your ${job.title} is ready`,
+        body,
+        context: { buildId: job.id, liveUrl: result.live_url, repoUrl: result.repo_url, notes: result.summary, deliverableType: job.deliverable_type },
+        source: 'build-worker',
+        dedupe_key: `build:${job.id}`,
+      });
+    } catch (e) { log('approval insert failed', e.message); }
+    log('READY (awaiting your approval)', job.id, result.live_url || '(no url)');
   } catch (e) {
     await supabase.from('build_requests').update({ status: 'failed', error: String(e?.message || e), updated_at: new Date().toISOString() }).eq('id', job.id);
     log('ERROR', job.id, e?.message);

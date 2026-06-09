@@ -95,7 +95,7 @@ export default function ApprovalsInbox() {
             Everything the system drafts lands here. Edit anything, then approve to send or reject. Nothing goes out without you.
           </p>
           <button onClick={scan} disabled={scanning} className="flex-shrink-0 px-5 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors">
-            {scanning ? 'Scanning…' : 'Scan for follow-ups'}
+            {scanning ? 'Scanning…' : 'Scan for drafts'}
           </button>
         </div>
         {note && <p className="text-mustard-300/90 text-sm font-body mb-5">{note}</p>}
@@ -104,7 +104,7 @@ export default function ApprovalsInbox() {
           <p className="text-white/40 text-sm font-body">Loading…</p>
         ) : pending.length === 0 ? (
           <div className="glass-card p-8 text-center">
-            <p className="text-white/55 font-body text-sm">Nothing waiting on you. Tap “Scan for follow-ups” to draft nudges for stale proposals.</p>
+            <p className="text-white/55 font-body text-sm">Nothing waiting on you. Tap “Scan for drafts” to draft follow-ups for stale proposals and nurtures for new leads.</p>
           </div>
         ) : (
           <div className="space-y-4">

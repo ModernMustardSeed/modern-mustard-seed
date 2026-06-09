@@ -102,9 +102,113 @@ export async function executeApproval(row: ApprovalRow): Promise<string | null> 
         /* ignore */
       }
     }
+    // Move a nurtured lead out of "new" so it is not re-drafted.
+    const leadId = row.context?.leadId as string | undefined;
+    if (supabase && leadId) {
+      try {
+        await supabase.from('leads').update({ status: 'replied' }).eq('id', leadId).eq('status', 'new');
+      } catch {
+        /* ignore */
+      }
+    }
     return null;
   }
+
+  // Build delivery: post the finished build to the client and close the build out.
+  if (row.type === 'build_delivery') {
+    const supabase = getSupabase();
+    if (!supabase) return 'Database not configured.';
+    const ctx = row.context as { buildId?: string; liveUrl?: string; repoUrl?: string; notes?: string; deliverableType?: string };
+    const live = (ctx.liveUrl || '').trim();
+    if (ctx.buildId) {
+      await supabase
+        .from('build_requests')
+        .update({ status: 'delivered', delivered_at: new Date().toISOString(), result: { live_url: live || null, repo_url: ctx.repoUrl || null, notes: ctx.notes || null }, updated_at: new Date().toISOString() })
+        .eq('id', ctx.buildId);
+    }
+    if (live && row.to_email) {
+      try {
+        const url = /^https?:\/\//i.test(live) ? live : `https://${live}`;
+        await supabase.from('client_files').insert({
+          client_email: row.to_email,
+          label: row.title || 'Delivered build',
+          url,
+          kind: ctx.deliverableType === 'brand_bible' ? 'doc' : 'site',
+        });
+      } catch (err) {
+        console.error('build delivery -> client_files failed', err);
+      }
+    }
+    // Send the (editable) delivery note to the client.
+    if (row.to_email && process.env.RESEND_API_KEY && row.body.trim()) {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: row.to_email,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: row.subject || 'Your build is ready',
+          html: clientEmail({ preheader: 'Your build is ready', greeting: row.to_name ? `Hi ${row.to_name.split(' ')[0]},` : undefined, body: textToHtml(row.body), cta: live ? { label: 'View it live', url: /^https?:\/\//i.test(live) ? live : `https://${live}` } : undefined }),
+        });
+      } catch (err) {
+        console.error('build delivery email failed', err);
+      }
+    }
+    return null;
+  }
+
   return `No executor for type "${row.type}".`;
+}
+
+/** The nurture operator: draft a warm first-touch for new top-of-funnel leads. */
+export async function scanNurture(): Promise<number> {
+  const supabase = getSupabase();
+  if (!supabase) return 0;
+  let created = 0;
+  const since = new Date(Date.now() - 30 * 86400000).toISOString();
+  try {
+    const { data: leads } = await supabase
+      .from('leads')
+      .select('id, type, status, name, email, business_name, audit_score, source, created_at')
+      .eq('status', 'new')
+      .neq('source', 'mustard-seed-booking')
+      .gte('created_at', since)
+      .limit(100);
+    for (const l of leads ?? []) {
+      const email = l.email as string;
+      if (!email) continue;
+      const first = ((l.name as string) || '').split(' ')[0] || 'there';
+      const biz = (l.business_name as string) || '';
+      let subject = 'Following up';
+      let body = '';
+      if (l.type === 'audit') {
+        subject = 'Your website audit, and the fix I would start with';
+        body = `Hi ${first},\n\nThanks for running the audit on your site. I looked at the results${l.audit_score != null ? ` (you scored ${l.audit_score}/100)` : ''}, and there is one fix that would move the needle fastest. I am glad to walk you through it, or just take it off your plate.\n\nWant a quick plan? Reply here, or grab a time: ${SITE.url}/book`;
+      } else if (l.type === 'build-queue') {
+        subject = 'Your build idea';
+        body = `Hi ${first},\n\nThank you for sharing your idea${biz ? ` for ${biz}` : ''}. I read every submission personally, and I already have a sense of how I would approach it and what it would take to ship.\n\nCan we grab 20 minutes so I can walk you through the plan? ${SITE.url}/book`;
+      } else {
+        subject = 'Following up';
+        body = `Hi ${first},\n\nThank you for reaching out. I wanted to follow up personally and see how I can help${biz ? ` ${biz}` : ''}. If it is useful, here is my calendar: ${SITE.url}/book\n\nOr just reply and tell me what you are working on.`;
+      }
+      const ok = await createApproval({
+        type: 'outreach',
+        title: `Nurture: ${(l.name as string) || email} (${l.type})`,
+        toEmail: email,
+        toName: (l.name as string) || null,
+        subject,
+        body,
+        context: { leadId: l.id },
+        source: 'nurture-operator',
+        dedupeKey: `nurture:${l.id}`,
+        dedupeWindowDays: 30,
+      });
+      if (ok) created += 1;
+    }
+  } catch (err) {
+    console.error('scanNurture error', err);
+  }
+  return created;
 }
 
 /** The follow-up operator: draft nudges for stale proposals (unsigned, or signed-no-deposit). */
