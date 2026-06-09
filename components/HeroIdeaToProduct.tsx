@@ -54,24 +54,12 @@ export default function HeroIdeaToProduct() {
         {/* Headline */}
         <h1 className="opacity-0 animate-fade-in-up font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.03] text-[#161616]">
           You bring the{' '}
-          <span
-            className="inline-block text-[#F5B700] text-5xl md:text-7xl lg:text-8xl align-baseline leading-[0.9]"
-            style={{
-              textShadow:
-                '0 0 14px rgba(245,183,0,0.75), 0 0 30px rgba(245,183,0,0.55), 0 0 60px rgba(224,48,30,0.30)',
-            }}
-          >
+          <span className="inline-block align-middle mx-1 rounded-[10px] border-[3px] border-[#161616] bg-[#F5B700] px-3 md:px-4 py-1 text-[0.6em] leading-none font-sans font-extrabold uppercase tracking-tight text-[#161616] shadow-[4px_4px_0_0_#161616]">
             seed
           </span>
           <br />
           we build the{' '}
-          <span
-            className="inline-block text-[#F5B700] text-5xl md:text-7xl lg:text-8xl align-baseline leading-[0.9]"
-            style={{
-              textShadow:
-                '0 0 14px rgba(245,183,0,0.75), 0 0 30px rgba(245,183,0,0.55), 0 0 60px rgba(224,48,30,0.30)',
-            }}
-          >
+          <span className="inline-block align-middle mx-1 rounded-[10px] border-[3px] border-[#161616] bg-[#F5B700] px-3 md:px-4 py-1 text-[0.6em] leading-none font-sans font-extrabold uppercase tracking-tight text-[#161616] shadow-[4px_4px_0_0_#161616]">
             tree
           </span>
         </h1>
