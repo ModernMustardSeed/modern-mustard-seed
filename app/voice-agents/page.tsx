@@ -8,7 +8,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'AI Voice Agents That Answer Every Call',
   description:
-    'A 24/7 AI voice agent that picks up every call in a natural human voice, books appointments, answers FAQs, and routes urgent calls to you. Speed to lead, on autopilot. Stop losing customers to voicemail.',
+    'A 24/7 AI voice agent that picks up every call in a natural human voice, books appointments, answers FAQs, and routes urgent calls to you. Talking websites and phones that answer themselves. Stop losing customers to voicemail.',
   path: '/voice-agents',
 });
 
@@ -128,7 +128,7 @@ export default function VoiceAgentsPage() {
           {/* Hero */}
           <div className="text-center mb-16">
             <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
-              AI Voice Agents · Answer 24/7
+              AI Voice Agents · Talking Websites · 24/7
             </span>
             <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6 leading-[1.05]">
               Plug the{' '}
@@ -159,6 +159,9 @@ export default function VoiceAgentsPage() {
 
           {/* Live demo: talk to the actual agent (renders when Vapi env is set) */}
           <div className="mb-16">
+            <p className="text-center text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold mb-4">
+              Yes, this is a talking website. Say hi.
+            </p>
             <VoiceTalkButton />
           </div>
 

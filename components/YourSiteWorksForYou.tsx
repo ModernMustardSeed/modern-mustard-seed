@@ -19,7 +19,7 @@ const FEATURES = [
   {
     title: 'Voice agents that answer the phone',
     body:
-      'A 24/7 AI receptionist that picks up every call in a natural, human voice, books appointments, answers your FAQs, and routes the urgent ones straight to you. It never takes a sick day and costs less than a part-time hire. Missed calls stop being lost revenue.',
+      'A 24/7 AI receptionist that picks up every call in a natural, human voice, books appointments, answers your FAQs, and routes the urgent ones straight to you. It never takes a sick day and costs less than a part-time hire. Missed calls stop being lost revenue. Want it on your site too? We make talking websites.',
   },
   {
     title: 'Bespoke booking services with embedded CRM',
