@@ -28,8 +28,20 @@ export default function MustardSeedChat() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [captured, setCaptured] = useState(false);
+  // First-visit teaser bubble above the launcher. Shows once per visitor.
+  const [showGreet, setShowGreet] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const GREET_KEY = 'mrmustard_greeted_v1';
+  const dismissGreet = () => {
+    setShowGreet(false);
+    try {
+      window.localStorage.setItem(GREET_KEY, '1');
+    } catch {
+      // localStorage blocked (private mode); fine, just hide for this session.
+    }
+  };
 
   useEffect(() => {
     if (open) endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,6 +50,38 @@ export default function MustardSeedChat() {
   useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open]);
+
+  // Once the visitor opens the chat (any way), retire the teaser for good.
+  useEffect(() => {
+    if (open) dismissGreet();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // First-visit auto-greet: pop the teaser ~4s in, only if they have not been
+  // greeted before and are not deep-linking straight into booking.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let greeted = false;
+    try {
+      greeted = window.localStorage.getItem(GREET_KEY) === '1';
+    } catch {
+      greeted = false;
+    }
+    if (greeted) return;
+    const wantsBooking =
+      /[?&]book=1\b/.test(window.location.search) || window.location.hash === '#book';
+    if (wantsBooking) return;
+    const t = window.setTimeout(() => {
+      try {
+        if (window.localStorage.getItem(GREET_KEY) === '1') return;
+      } catch {
+        // ignore
+      }
+      setShowGreet(true);
+    }, 4000);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Open straight into booking when a "Book a call" CTA anywhere on the site
   // (or in an email) links to ?book=1 / #book, or dispatches `mustardseed:book`.
@@ -110,6 +154,43 @@ export default function MustardSeedChat() {
 
   return (
     <>
+      {/* First-visit teaser bubble. Sits above the launcher, leads with the
+          free-playbook value-add, dismissible, shown once per visitor. */}
+      {showGreet && !open && (
+        <div className="fixed bottom-28 right-6 z-[79] w-[262px] sm:w-[296px] animate-fade-in-up">
+          <div className="relative rounded-2xl border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616] px-4 py-3.5">
+            <button
+              type="button"
+              onClick={dismissGreet}
+              aria-label="Dismiss Mr. Mustard"
+              className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-[#161616] text-white text-sm leading-none flex items-center justify-center border-2 border-white hover:scale-110 transition-transform"
+            >
+              ×
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              className="block w-full text-left"
+            >
+              <p className="font-display font-black text-[#161616] text-[15px] leading-snug mb-1">
+                Not sure where to start?
+              </p>
+              <p className="font-body text-[13px] text-[#3a3733] leading-snug">
+                Tell me your biggest bottleneck. I&apos;ll map you a free 5-step playbook in 60 seconds.
+              </p>
+              <span className="mt-2.5 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.18em] font-mono font-bold text-[#E0301E]">
+                Ask Mr. Mustard &rarr;
+              </span>
+            </button>
+            {/* Speech-bubble tail pointing down toward the launcher */}
+            <span
+              aria-hidden="true"
+              className="absolute -bottom-[7px] right-10 w-3 h-3 bg-white border-r-2 border-b-2 border-[#161616] rotate-45"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Floating launcher */}
       <button
         type="button"
