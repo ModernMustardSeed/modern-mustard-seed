@@ -160,6 +160,58 @@ export async function executeApproval(row: ApprovalRow): Promise<string | null> 
   return `No executor for type "${row.type}".`;
 }
 
+/** The expansion operator: after a build launches, draft an upsell (next build
+ *  or a Care Plan) for clients who do not already have an active monthly plan. */
+export async function scanExpansion(): Promise<number> {
+  const supabase = getSupabase();
+  if (!supabase) return 0;
+  let created = 0;
+  try {
+    const { data: projects } = await supabase.from('projects').select('id, client_email, name, status').eq('status', 'launched');
+    for (const pr of projects ?? []) {
+      const email = (pr.client_email as string) || '';
+      if (!email) continue;
+      // Skip if they already have an active plan.
+      let hasPlan = false;
+      try {
+        const { data: sub } = await supabase.from('proposals').select('id').ilike('client_email', email).eq('subscription_status', 'active').limit(1);
+        hasPlan = !!(sub && sub.length);
+      } catch { /* ignore */ }
+      if (hasPlan) continue;
+
+      let name: string | null = null;
+      try {
+        const { data: c } = await supabase.from('clients').select('name').eq('email', email).maybeSingle();
+        name = (c?.name as string) || null;
+      } catch { /* ignore */ }
+      const first = (name || '').split(' ')[0] || 'there';
+
+      const ok = await createApproval({
+        type: 'expansion',
+        title: `Expansion: ${name || email} (${pr.name as string} is live)`,
+        toEmail: email,
+        toName: name,
+        subject: 'Now that it is live, what is next?',
+        body: `Hi ${first},\n\nIt has been great seeing ${pr.name as string} live. Two thoughts on where I would go from here:\n\n1) A Care Plan to keep it healthy, with updates, small changes, and monitoring on a simple monthly fee.\n2) The next build. I have a few ideas for what would compound on what we just shipped.\n\nWant me to put together a quick plan for either? Just reply, or grab a time: ${SITE.url}/book`,
+        context: { projectId: pr.id },
+        source: 'expansion-operator',
+        dedupeKey: `expansion:${pr.id}`,
+        dedupeWindowDays: 60,
+      });
+      if (ok) created += 1;
+    }
+  } catch (err) {
+    console.error('scanExpansion error', err);
+  }
+  return created;
+}
+
+/** Run every producer. Returns total drafts created. */
+export async function runAllProducers(): Promise<number> {
+  const [a, b, c] = await Promise.all([scanFollowups(), scanNurture(), scanExpansion()]);
+  return a + b + c;
+}
+
 /** The nurture operator: draft a warm first-touch for new top-of-funnel leads. */
 export async function scanNurture(): Promise<number> {
   const supabase = getSupabase();

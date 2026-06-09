@@ -28,6 +28,10 @@
     {
       "path": "/api/cron/booking-reminders",
       "schedule": "0 14 * * 3,4"
+    },
+    {
+      "path": "/api/cron/operator",
+      "schedule": "0 13 * * 1-5"
     }
   ]
 }

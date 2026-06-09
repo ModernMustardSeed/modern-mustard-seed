@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
-import { scanFollowups, scanNurture } from '@/lib/approvals';
+import { runAllProducers } from '@/lib/approvals';
 
 export const runtime = 'nodejs';
 
@@ -21,6 +21,6 @@ export async function GET() {
 export async function POST() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const [f, n] = await Promise.all([scanFollowups(), scanNurture()]);
-  return NextResponse.json({ ok: true, created: f + n });
+  const created = await runAllProducers();
+  return NextResponse.json({ ok: true, created });
 }
