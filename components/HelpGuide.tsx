@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { HelpGuideContent } from '@/lib/help-content';
 
 /**
@@ -18,6 +19,8 @@ export default function HelpGuide({
 }) {
   const [open, setOpen] = useState(false);
   const [showNudge, setShowNudge] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // One-time first-visit nudge. Shows once, then never again (localStorage).
   useEffect(() => {
@@ -76,7 +79,7 @@ export default function HelpGuide({
         )}
       </span>
 
-      {open && (
+      {open && mounted && createPortal(
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
           role="dialog"
@@ -118,7 +121,8 @@ export default function HelpGuide({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
