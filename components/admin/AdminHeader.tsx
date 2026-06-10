@@ -12,9 +12,10 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * tab row so nothing overlaps or overflows.
  */
 
-type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'call' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews';
+type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'call' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
+  { key: 'calendar', label: 'Calendar', href: '/admin/calendar' },
   { key: 'approvals', label: 'Approvals', href: '/admin/approvals' },
   { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
   { key: 'audit', label: 'Audit', href: '/admin/audit' },
@@ -34,14 +35,14 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
   };
 
   return (
-    <header className="border-b border-white/[0.06] sticky top-0 z-30 bg-[#080c16]/92 backdrop-blur-md">
+    <header className="border-b-2 border-[#161616] sticky top-0 z-30 bg-[#FBF6EA]/95 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-5 md:px-6 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-8 w-auto" priority />
             <div>
-              <span className="text-[9px] uppercase tracking-[0.4em] text-mustard-400 font-mono font-bold block">Modern Mustard Seed</span>
-              <h1 className="font-sans text-lg font-bold text-white tracking-tight">{title}</h1>
+              <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block">Modern Mustard Seed</span>
+              <h1 className="font-sans text-lg font-bold text-[#161616] tracking-tight">{title}</h1>
             </div>
           </div>
         </div>
@@ -52,21 +53,23 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
               key={t.key}
               href={t.href}
               aria-current={active === t.key ? 'page' : undefined}
-              className={`whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg transition-colors ${
-                active === t.key ? 'bg-mustard-500/15 text-mustard-300' : 'text-white/45 hover:text-white/80 hover:bg-white/[0.04]'
+              className={`whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 transition-colors ${
+                active === t.key
+                  ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[2px_2px_0_0_#161616]'
+                  : 'border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05]'
               }`}
             >
               {t.label}
             </Link>
           ))}
-          <span className="w-px h-5 bg-white/10 mx-1.5" aria-hidden />
+          <span className="w-px h-5 bg-[#161616]/15 mx-1.5" aria-hidden />
           <HelpGuide guide={ADMIN_HELP} />
           {onRefresh && (
-            <button onClick={onRefresh} className="whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg text-white/45 hover:text-white/80 hover:bg-white/[0.04] transition-colors">
+            <button onClick={onRefresh} className="whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05] transition-colors">
               Refresh
             </button>
           )}
-          <button onClick={logout} className="whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg text-white/45 hover:text-white/80 hover:bg-white/[0.04] transition-colors">
+          <button onClick={logout} className="whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05] transition-colors">
             Sign out
           </button>
         </nav>

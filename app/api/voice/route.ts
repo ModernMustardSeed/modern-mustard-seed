@@ -13,6 +13,21 @@ import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
 import { randomUUID } from 'node:crypto';
 
+/** Resend's SDK returns {error} instead of throwing. Surface every failure. */
+async function sendLoud(
+  resend: Resend,
+  label: string,
+  payload: Parameters<Resend['emails']['send']>[0]
+): Promise<boolean> {
+  const { data, error } = await resend.emails.send(payload);
+  if (error) {
+    console.error(`voice email FAILED [${label}]`, JSON.stringify(error));
+    return false;
+  }
+  console.log(`voice email sent [${label}]`, data?.id);
+  return true;
+}
+
 /**
  * Vapi server webhook for Mr. Mustard, the MMS voice agent.
  *
@@ -124,7 +139,7 @@ async function bookSlot(input: {
       });
       const icsAttachment = { filename: 'discovery-call.ics', content: Buffer.from(ics) };
 
-      await resend.emails.send({
+      await sendLoud(resend, 'booking-notify-sarah', {
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',
         replyTo: email,
@@ -140,7 +155,7 @@ async function bookSlot(input: {
         attachments: [icsAttachment],
       });
 
-      await resend.emails.send({
+      await sendLoud(resend, 'booking-confirm-visitor', {
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
@@ -197,7 +212,7 @@ async function captureLead(input: {
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
       const resend = new Resend(apiKey);
-      await resend.emails.send({
+      await sendLoud(resend, 'lead-notify-sarah', {
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',
         replyTo: email,
@@ -215,7 +230,7 @@ async function captureLead(input: {
           suggestedAction: 'Speed to lead. Reply or call back today while it is warm.',
         }),
       });
-      await resend.emails.send({
+      await sendLoud(resend, 'lead-followup-visitor', {
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
@@ -265,7 +280,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
     const durationSeconds = Math.round(Number(message.durationSeconds ?? 0)) || undefined;
 
     const resend = new Resend(apiKey);
-    await resend.emails.send({
+    await sendLoud(resend, 'end-of-call-report', {
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',
       subject: `Mr. Mustard call summary · ${callerNumber}`,
