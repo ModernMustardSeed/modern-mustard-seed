@@ -24,15 +24,15 @@ export default async function PartnerHQ() {
 
   if (!affiliate || affiliate.status !== 'approved' || !affiliate.code) {
     return (
-      <div className="min-h-screen bg-[#080c16] text-white flex items-center justify-center px-6">
-        <div className="glass-card p-10 max-w-md text-center">
-          <h1 className="font-display text-2xl font-semibold text-cream-50 mb-3">Partner dashboard</h1>
-          <p className="text-white/55 font-body text-sm mb-6">
+      <div className="min-h-screen bg-[#FBF6EA] halftone-bg text-[#161616] flex items-center justify-center px-6">
+        <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-10 max-w-md text-center">
+          <h1 className="font-display text-2xl font-semibold text-[#161616] mb-3">Partner dashboard</h1>
+          <p className="text-[#3A3733] font-body text-sm mb-6">
             {affiliate?.status === 'pending'
               ? 'Your application is in. Sarah reviews every one personally and you will get a warm welcome the moment you are approved.'
               : `You are signed in as ${session.email}, but this account is not a partner yet.`}
           </p>
-          <Link href="/partners" className="inline-block px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-cream-50 bg-brass rounded-full">Apply to partner</Link>
+          <Link href="/partners" className="inline-block px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">Apply to partner</Link>
         </div>
       </div>
     );
@@ -68,26 +68,26 @@ export default async function PartnerHQ() {
   const firstName = affiliate.name?.split(' ')[0] || 'partner';
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white">
-      <header className="border-b border-white/[0.06] sticky top-0 z-30 bg-[#080c16]/90 backdrop-blur-md">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
+      <header className="border-b-2 border-[#161616] sticky top-0 z-30 bg-[#FBF6EA]/95 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" priority />
             <div>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-400 font-mono font-bold block">Modern Mustard Seed</span>
-              <h1 className="font-sans text-xl font-bold text-white tracking-tight mt-1">Partner Dashboard</h1>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block">Modern Mustard Seed</span>
+              <h1 className="font-sans text-xl font-bold text-[#161616] tracking-tight mt-1">Partner Dashboard</h1>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <HelpGuide guide={PARTNER_HELP} nudge={{ storageKey: 'mms_partner_tour_v1', text: 'New here? See how your dashboard works.' }} />
-            <span className="font-mono text-mustard-300 text-sm">{code}</span>
+            <span className="font-mono text-[#E0301E] text-sm">{code}</span>
           </div>
         </div>
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <h2 className="font-display text-3xl font-semibold text-cream-50 mb-1">Welcome, {firstName}.</h2>
-        <p className="text-white/55 font-body mb-8">Share what you believe in. We are rooting for you.</p>
+        <h2 className="font-display text-3xl font-semibold text-[#161616] mb-1">Welcome, {firstName}.</h2>
+        <p className="text-[#3A3733] font-body mb-8">Share what you believe in. We are rooting for you.</p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           {[
@@ -96,49 +96,49 @@ export default async function PartnerHQ() {
             { label: 'Payable now', value: money(earn.payable) },
             { label: 'Earned all time', value: money(earn.pending + earn.payable + earn.paid) },
           ].map((s) => (
-            <div key={s.label} className="glass-card p-4">
-              <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono">{s.label}</div>
-              <div className="font-sans text-2xl font-semibold text-white mt-1">{s.value}</div>
+            <div key={s.label} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-4">
+              <div className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono">{s.label}</div>
+              <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{s.value}</div>
             </div>
           ))}
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          <div className="glass-card p-6">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-4">Your links</span>
+          <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-4">Your links</span>
             <AffiliateLinks links={links} />
-            <p className="text-white/35 font-body text-xs mt-4">Add <span className="font-mono text-mustard-300">?ref={code}</span> to any page to track it. Last touch within 60 days wins.</p>
+            <p className="text-[#161616]/60 font-body text-xs mt-4">Add <span className="font-mono text-[#E0301E]">?ref={code}</span> to any page to track it. Last touch within 60 days wins.</p>
             <div className="mt-6">
               <MarketingKit code={code} firstName={firstName} siteUrl={SITE.url} primaryUrl={`${SITE.url}/audit?ref=${code}`} />
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="glass-card p-6">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">Earnings</span>
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">Earnings</span>
               <div className="space-y-2.5">
                 <Row label="Pending (within refund window)" value={money(earn.pending)} />
                 <Row label="Payable (ready to pay out)" value={money(earn.payable)} accent />
                 <Row label="Paid" value={money(earn.paid)} />
               </div>
             </div>
-            <div className="glass-card p-6">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">Free access to everything</span>
-              <p className="text-white/55 font-body text-sm mb-4">Every product is yours, free, so you can learn them and speak to them honestly.</p>
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">Free access to everything</span>
+              <p className="text-[#3A3733] font-body text-sm mb-4">Every product is yours, free, so you can learn them and speak to them honestly.</p>
               <div className="mb-4">
-                <span className="text-[9px] uppercase tracking-[0.25em] text-white/35 font-mono block mb-2">Programs (live tools)</span>
+                <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-2">Programs (live tools)</span>
                 <div className="flex flex-wrap gap-2">
-                  <Link href="/the-terminal/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-cream-100 border border-cream-100/25 rounded-full hover:border-cream-100/50">The Terminal HQ</Link>
-                  <Link href="/idea-to-spec/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-cream-100 border border-cream-100/25 rounded-full hover:border-cream-100/50">Idea to Spec HQ</Link>
+                  <Link href="/the-terminal/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">The Terminal HQ</Link>
+                  <Link href="/idea-to-spec/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">Idea to Spec HQ</Link>
                 </div>
               </div>
               <div>
-                <span className="text-[9px] uppercase tracking-[0.25em] text-white/35 font-mono block mb-2">Playbooks (download)</span>
+                <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-2">Playbooks (download)</span>
                 <div className="space-y-1">
                   {products.map((p) => (
-                    <a key={p.slug} href={`/api/programs/download/${p.slug}`} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06] transition-colors group">
-                      <span className="text-white/75 font-body text-sm group-hover:text-white">{p.name}</span>
-                      <span className="text-[9px] uppercase tracking-[0.2em] text-mustard-400/70 font-mono">PDF ↓</span>
+                    <a key={p.slug} href={`/api/programs/download/${p.slug}`} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-[#161616]/[0.04] border border-transparent hover:border-[#161616]/15 transition-colors group">
+                      <span className="text-[#161616]/80 font-body text-sm group-hover:text-[#161616]">{p.name}</span>
+                      <span className="text-[9px] uppercase tracking-[0.2em] text-[#1E50C8] font-mono">PDF ↓</span>
                     </a>
                   ))}
                 </div>
@@ -147,9 +147,9 @@ export default async function PartnerHQ() {
           </div>
         </div>
 
-        <div className="glass-card p-6 mt-6">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">How you get paid</span>
-          <p className="text-white/55 font-body text-sm leading-relaxed">
+        <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 mt-6">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">How you get paid</span>
+          <p className="text-[#3A3733] font-body text-sm leading-relaxed">
             You earn 50 percent on every product sale and 10 percent of any build you send our way. A commission becomes payable once the refund window passes. Payouts run on a schedule. One honest rule for everyone. Please always tell your audience you earn a commission. It keeps this trustworthy, which is the whole point.
           </p>
         </div>
@@ -161,8 +161,8 @@ export default async function PartnerHQ() {
 function Row({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-white/55 font-body text-sm">{label}</span>
-      <span className={`font-mono text-sm font-semibold ${accent ? 'text-emerald-300' : 'text-white/80'}`}>{value}</span>
+      <span className="text-[#3A3733] font-body text-sm">{label}</span>
+      <span className={`font-mono text-sm font-semibold ${accent ? 'text-emerald-700' : 'text-[#161616]/80'}`}>{value}</span>
     </div>
   );
 }

@@ -35,12 +35,12 @@ type Summary = {
 };
 
 const STATUS_BADGE: Record<string, string> = {
-  draft: 'text-white/50 border-white/15 bg-white/5',
-  sent: 'text-mustard-200 border-mustard-500/40 bg-mustard-500/10',
-  signed: 'text-blue-200 border-blue-400/40 bg-blue-500/10',
-  paid: 'text-emerald-200 border-emerald-400/40 bg-emerald-500/10',
-  accepted: 'text-blue-200 border-blue-400/40 bg-blue-500/10',
-  declined: 'text-white/40 border-white/10 bg-white/5',
+  draft: 'text-[#161616]/65 border-[#161616]/20 bg-[#161616]/[0.06]',
+  sent: 'text-amber-800 border-amber-800/25 bg-amber-100',
+  signed: 'text-[#1E50C8] border-[#1E50C8]/30 bg-blue-100',
+  paid: 'text-emerald-800 border-emerald-800/25 bg-emerald-100',
+  accepted: 'text-[#1E50C8] border-[#1E50C8]/30 bg-blue-100',
+  declined: 'text-[#161616]/45 border-[#161616]/15 bg-[#161616]/[0.04]',
 };
 const STATUSES = ['draft', 'sent', 'accepted', 'declined'];
 
@@ -53,7 +53,7 @@ function progressLabel(p: Summary): string {
 }
 
 const inp =
-  'bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 w-full';
+  'bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] w-full';
 
 function lineToService(l: Line): Service | undefined {
   return byId(l.id);
@@ -584,7 +584,7 @@ export default function ProposalBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <style jsx global>{`
         @media print {
           body * {
@@ -611,7 +611,7 @@ export default function ProposalBuilder() {
       <AdminHeader active="proposals" title="Proposal Builder" />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <p className="text-white/45 text-sm font-body mb-6 max-w-2xl print:hidden">
+        <p className="text-[#161616]/60 text-sm font-body mb-6 max-w-2xl print:hidden">
           Build a proposal from your notes or an audit. Pick a path or add services, edit scope and
           price, draft the words with AI, then copy it or print to PDF. Nothing here is emailed or
           stored. It is your workspace for writing the proposal.
@@ -622,14 +622,14 @@ export default function ProposalBuilder() {
           <div className="space-y-5 print:hidden">
             {/* Saved proposals */}
             {list.length > 0 && (
-              <div className="glass-card p-5">
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
                     Saved proposals ({list.length})
                   </span>
                   <button
                     onClick={newProposal}
-                    className="text-[10px] uppercase tracking-[0.15em] font-mono text-mustard-300 hover:text-mustard-200"
+                    className="text-[10px] uppercase tracking-[0.15em] font-mono text-[#1E50C8] hover:text-[#161616]"
                   >
                     + New
                   </button>
@@ -640,16 +640,16 @@ export default function ProposalBuilder() {
                       key={p.id}
                       className={`p-2.5 rounded-lg border ${
                         currentId === p.id
-                          ? 'border-mustard-500/40 bg-mustard-500/10'
-                          : 'border-white/[0.06] bg-white/[0.02]'
+                          ? 'border-[#161616] bg-[#FFF8E6]'
+                          : 'border-[#161616]/15 bg-[#FFFDF6]'
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         <button onClick={() => loadProposal(p.id)} className="flex-1 min-w-0 text-left">
-                          <span className="block text-sm font-sans font-medium text-white/90 truncate">
+                          <span className="block text-sm font-sans font-medium text-[#161616] truncate">
                             {p.client_company || p.client_name || p.site_url || 'Untitled'}
                           </span>
-                          <span className="block text-[11px] text-white/35 font-mono">
+                          <span className="block text-[11px] text-[#161616]/50 font-mono">
                             {p.one_time_total ? money(p.one_time_total) : '—'}
                             {p.monthly_total ? ` · ${money(p.monthly_total)}/mo` : ''}
                           </span>
@@ -667,7 +667,7 @@ export default function ProposalBuilder() {
                         {p.share_token && (
                           <button
                             onClick={() => copyLink(p)}
-                            className="text-[9px] uppercase tracking-[0.15em] font-mono text-white/40 hover:text-mustard-300"
+                            className="text-[9px] uppercase tracking-[0.15em] font-mono text-[#161616]/55 hover:text-[#161616]"
                           >
                             {copiedId === p.id ? 'Copied' : 'Copy link'}
                           </button>
@@ -676,14 +676,14 @@ export default function ProposalBuilder() {
                           <button
                             onClick={() => resendProposal(p.id)}
                             disabled={resendId === p.id}
-                            className="text-[9px] uppercase tracking-[0.15em] font-mono text-emerald-300/80 hover:text-emerald-200 disabled:opacity-50"
+                            className="text-[9px] uppercase tracking-[0.15em] font-mono text-emerald-700 hover:text-emerald-800 disabled:opacity-50"
                           >
                             {resendId === p.id ? 'Sending…' : p.signed_at ? 'Resend' : 'Send'}
                           </button>
                         )}
                         <button
                           onClick={() => deleteProposal(p.id)}
-                          className="ml-auto text-[9px] uppercase tracking-[0.15em] font-mono text-white/25 hover:text-red-300"
+                          className="ml-auto text-[9px] uppercase tracking-[0.15em] font-mono text-[#161616]/40 hover:text-[#E0301E]"
                           aria-label="Delete proposal"
                         >
                           Delete
@@ -696,8 +696,8 @@ export default function ProposalBuilder() {
             )}
 
             {/* Client */}
-            <div className="glass-card p-5">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">
                 Client
               </span>
               <div className="grid sm:grid-cols-2 gap-3 mb-3">
@@ -716,8 +716,8 @@ export default function ProposalBuilder() {
             </div>
 
             {/* Notes / audit */}
-            <div className="glass-card p-5">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">
                 Your notes / paste an audit
               </span>
               <textarea
@@ -730,11 +730,11 @@ export default function ProposalBuilder() {
             </div>
 
             {/* Paths */}
-            <div className="glass-card p-5">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-1">
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-1">
                 Start from a path
               </span>
-              <p className="text-white/35 text-xs font-body mb-3">
+              <p className="text-[#161616]/45 text-xs font-body mb-3">
                 Pick the situation that fits. It seeds the services and a rationale you can edit.
               </p>
               <div className="grid sm:grid-cols-2 gap-2">
@@ -742,24 +742,24 @@ export default function ProposalBuilder() {
                   <button
                     key={p.id}
                     onClick={() => applyPath(p.id)}
-                    className="text-left p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] hover:border-mustard-500/40 transition-colors"
+                    className="text-left p-3 rounded-lg bg-[#FFFDF6] border border-[#161616]/15 hover:border-[#F5B700] transition-colors"
                   >
-                    <span className="block text-sm font-sans font-semibold text-white/90">{p.label}</span>
-                    <span className="block text-[11px] text-white/40 font-body mt-0.5 leading-snug">{p.when}</span>
+                    <span className="block text-sm font-sans font-semibold text-[#161616]">{p.label}</span>
+                    <span className="block text-[11px] text-[#161616]/45 font-body mt-0.5 leading-snug">{p.when}</span>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Service menu */}
-            <div className="glass-card p-5">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">
                 Add services
               </span>
               <div className="space-y-4">
                 {GROUPS.map((g) => (
                   <div key={g}>
-                    <span className="text-[9px] uppercase tracking-[0.25em] text-mustard-400/70 font-mono font-bold block mb-1.5">
+                    <span className="text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-bold block mb-1.5">
                       {g}
                     </span>
                     <div className="space-y-1.5">
@@ -772,15 +772,15 @@ export default function ProposalBuilder() {
                             disabled={added}
                             className={`w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg border text-left transition-colors ${
                               added
-                                ? 'border-mustard-500/30 bg-mustard-500/10 cursor-default'
-                                : 'border-white/[0.06] bg-white/[0.02] hover:border-mustard-500/40'
+                                ? 'border-[#F5B700] bg-[#FFF8E6] cursor-default'
+                                : 'border-[#161616]/15 bg-[#FFFDF6] hover:border-[#F5B700]'
                             }`}
                           >
                             <span className="min-w-0">
-                              <span className="block text-sm font-sans font-medium text-white/90 truncate">{s.name}</span>
-                              <span className="block text-[11px] text-white/35 font-mono">{listPrice(s)}</span>
+                              <span className="block text-sm font-sans font-medium text-[#161616] truncate">{s.name}</span>
+                              <span className="block text-[11px] text-[#161616]/50 font-mono">{listPrice(s)}</span>
                             </span>
-                            <span className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-mustard-300 flex-shrink-0">
+                            <span className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#1E50C8] flex-shrink-0">
                               {added ? 'Added' : '+ Add'}
                             </span>
                           </button>
@@ -794,37 +794,37 @@ export default function ProposalBuilder() {
 
             {/* Selected line items, editable */}
             {lines.length > 0 && (
-              <div className="glass-card p-5">
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
                     Selected ({lines.length})
                   </span>
                   <button
                     onClick={draft}
                     disabled={drafting}
-                    className="px-4 py-1.5 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+                    className="px-4 py-1.5 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] hover:bg-[#FFD23F] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all"
                   >
                     {drafting ? 'Drafting…' : 'Draft words with AI'}
                   </button>
                 </div>
-                {draftError && <p className="text-red-300 text-sm font-body mb-3">{draftError}</p>}
+                {draftError && <p className="text-[#E0301E] text-sm font-body mb-3">{draftError}</p>}
                 <div className="space-y-3">
                   {lines.map((l) => {
                     const s = lineToService(l);
                     if (!s) return null;
                     return (
-                      <div key={l.id} className="bg-white/[0.02] border border-white/[0.06] rounded-lg p-3">
+                      <div key={l.id} className="bg-[#FFFDF6] border border-[#161616]/15 rounded-lg p-3">
                         <div className="flex items-start justify-between gap-3 mb-2">
-                          <span className="text-sm font-sans font-semibold text-white/90">{s.name}</span>
+                          <span className="text-sm font-sans font-semibold text-[#161616]">{s.name}</span>
                           <button
                             onClick={() => remove(l.id)}
-                            className="text-[10px] uppercase tracking-[0.15em] font-mono text-white/30 hover:text-red-300"
+                            className="text-[10px] uppercase tracking-[0.15em] font-mono text-[#161616]/45 hover:text-[#E0301E]"
                           >
                             Remove
                           </button>
                         </div>
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-[10px] uppercase tracking-[0.15em] text-white/35 font-mono">
+                          <span className="text-[10px] uppercase tracking-[0.15em] text-[#161616]/50 font-mono">
                             {isRecurring(s.unit) ? '$/mo' : isHourly(s.unit) ? '$/hr' : '$'}
                           </span>
                           <input
@@ -835,7 +835,7 @@ export default function ProposalBuilder() {
                           />
                           {isHourly(s.unit) && (
                             <>
-                              <span className="text-[10px] uppercase tracking-[0.15em] text-white/35 font-mono">hrs</span>
+                              <span className="text-[10px] uppercase tracking-[0.15em] text-[#161616]/50 font-mono">hrs</span>
                               <input
                                 type="number"
                                 value={l.qty}
@@ -844,7 +844,7 @@ export default function ProposalBuilder() {
                               />
                             </>
                           )}
-                          <span className="text-xs text-mustard-300 font-mono ml-auto">{linePriceLabel(s, l)}</span>
+                          <span className="text-xs text-[#161616] font-mono ml-auto">{linePriceLabel(s, l)}</span>
                         </div>
                         <input
                           value={l.framing}
@@ -867,16 +867,16 @@ export default function ProposalBuilder() {
 
             {/* Deposit (money loop) */}
             {currentId && (
-              <div className="glass-card p-5 border-emerald-500/20">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-emerald-300/80 font-mono font-bold block mb-1">
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-emerald-700 font-mono font-bold block mb-1">
                   Deposit
                 </span>
-                <p className="text-white/40 text-xs font-body mb-3">
+                <p className="text-[#161616]/45 text-xs font-body mb-3">
                   Generate a Stripe deposit link and email it to the client. A paid deposit records to
                   revenue and wins the linked lead.
                 </p>
                 <div className="flex flex-wrap items-center gap-2 mb-3">
-                  <span className="text-[10px] uppercase tracking-[0.15em] text-white/35 font-mono">$</span>
+                  <span className="text-[10px] uppercase tracking-[0.15em] text-[#161616]/50 font-mono">$</span>
                   <input
                     type="number"
                     value={depositAmount}
@@ -884,16 +884,16 @@ export default function ProposalBuilder() {
                     placeholder={String(Math.round(oneTime * 0.5))}
                     className={`${inp} max-w-[150px]`}
                   />
-                  <span className="text-[11px] text-white/35 font-mono">
+                  <span className="text-[11px] text-[#161616]/50 font-mono">
                     50% = {money(Math.round(oneTime * 0.5))}
                   </span>
                   <span
                     className={`ml-auto px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] font-mono font-bold border rounded ${
                       depositStatus === 'paid'
-                        ? 'text-emerald-200 border-emerald-400/40 bg-emerald-500/10'
+                        ? 'text-emerald-800 border-emerald-800/25 bg-emerald-100'
                         : depositStatus === 'link_sent'
-                          ? 'text-blue-200 border-blue-400/40 bg-blue-500/10'
-                          : 'text-white/50 border-white/15 bg-white/5'
+                          ? 'text-[#1E50C8] border-[#1E50C8]/30 bg-blue-100'
+                          : 'text-[#161616]/65 border-[#161616]/20 bg-[#161616]/[0.06]'
                     }`}
                   >
                     {depositStatus.replace('_', ' ')}
@@ -903,7 +903,7 @@ export default function ProposalBuilder() {
                   <button
                     onClick={generateDeposit}
                     disabled={depositBusy || depositStatus === 'paid'}
-                    className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+                    className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] hover:bg-[#FFD23F] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all"
                   >
                     {depositBusy ? 'Working…' : depositStatus === 'link_sent' ? 'Regenerate + email' : 'Create + email link'}
                   </button>
@@ -911,7 +911,7 @@ export default function ProposalBuilder() {
                     <button
                       onClick={markDepositPaid}
                       disabled={depositBusy}
-                      className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/70 border border-white/15 hover:border-white/30 disabled:opacity-40 transition-colors"
+                      className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold bg-white text-[#161616] border-2 border-[#161616] hover:bg-[#FFF8E6] disabled:opacity-40 transition-colors"
                     >
                       Mark paid
                     </button>
@@ -923,62 +923,62 @@ export default function ProposalBuilder() {
                       href={depositUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-mustard-300 hover:text-mustard-200"
+                      className="text-[#1E50C8] hover:text-[#161616]"
                     >
                       {depositUrl}
                     </a>
                   </p>
                 )}
-                {depositMsg && <p className="text-emerald-300/90 text-xs font-body mt-2">{depositMsg}</p>}
+                {depositMsg && <p className="text-emerald-700 text-xs font-body mt-2">{depositMsg}</p>}
 
                 {depositStatus === 'paid' && (
-                  <div className="mt-3 pt-3 border-t border-white/[0.06]">
-                    <span className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono font-bold block mb-2">
+                  <div className="mt-3 pt-3 border-t border-[#161616]/10">
+                    <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono font-bold block mb-2">
                       Balance, final 50%
                     </span>
                     <button
                       onClick={sendBalance}
                       disabled={balanceBusy || !email.trim()}
-                      className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-emerald-400 hover:bg-emerald-300 disabled:opacity-40 transition-colors"
+                      className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white bg-emerald-600 hover:bg-emerald-500 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] disabled:opacity-40 transition-all"
                     >
                       {balanceBusy ? 'Working…' : 'Send balance invoice'}
                     </button>
-                    {balanceMsg && <p className="text-emerald-300/90 text-xs font-body mt-2">{balanceMsg}</p>}
+                    {balanceMsg && <p className="text-emerald-700 text-xs font-body mt-2">{balanceMsg}</p>}
                   </div>
                 )}
 
-                <div className="mt-3 pt-3 border-t border-white/[0.06]">
+                <div className="mt-3 pt-3 border-t border-[#161616]/10">
                   <button
                     onClick={startProject}
                     disabled={!email.trim() || startingProject}
-                    className="text-[10px] uppercase tracking-[0.18em] font-mono font-bold text-emerald-300 hover:text-emerald-200 disabled:opacity-40"
+                    className="text-[10px] uppercase tracking-[0.18em] font-mono font-bold text-emerald-700 hover:text-emerald-800 disabled:opacity-40"
                   >
                     {startingProject ? 'Starting…' : 'Start a project from this →'}
                   </button>
                   {!email.trim() && (
-                    <span className="text-white/30 text-[11px] font-body ml-2">add a client email first</span>
+                    <span className="text-[#161616]/45 text-[11px] font-body ml-2">add a client email first</span>
                   )}
                 </div>
               </div>
             )}
 
             {currentId && monthly > 0 && (
-              <div className="glass-card p-5 border-blue-500/20">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-blue-300/80 font-mono font-bold block mb-1">
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#1E50C8] font-mono font-bold block mb-1">
                   Monthly plan
                 </span>
-                <p className="text-white/40 text-xs font-body mb-3">
+                <p className="text-[#161616]/45 text-xs font-body mb-3">
                   Bill the monthly total as a recurring Stripe subscription. The client can also start it from their portal.
                 </p>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-white/80 font-mono text-sm">{money(monthly)}/mo</span>
-                  {hasVariable && <span className="text-white/35 text-[11px] font-body">includes variable compute, billed at cost</span>}
+                  <span className="text-[#161616] font-mono text-sm">{money(monthly)}/mo</span>
+                  {hasVariable && <span className="text-[#161616]/45 text-[11px] font-body">includes variable compute, billed at cost</span>}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => createSubscription()}
                     disabled={subBusy || !email.trim()}
-                    className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white bg-blue-500/80 hover:bg-blue-500 disabled:opacity-40 transition-colors"
+                    className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white bg-[#1E50C8] hover:bg-blue-700 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] disabled:opacity-40 transition-all"
                   >
                     {subBusy ? 'Working…' : 'Create + email plan link'}
                   </button>
@@ -987,14 +987,14 @@ export default function ProposalBuilder() {
                       onClick={() => createSubscription(oneTime)}
                       disabled={subBusy || !email.trim()}
                       title={`First invoice includes a ${money(oneTime)} setup, then ${money(monthly)}/mo`}
-                      className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white border border-blue-500/40 hover:bg-blue-500/10 disabled:opacity-40 transition-colors"
+                      className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#1E50C8] bg-white border-2 border-[#1E50C8] hover:bg-blue-50 disabled:opacity-40 transition-all"
                     >
                       Hybrid: {money(oneTime)} setup + {money(monthly)}/mo
                     </button>
                   )}
                 </div>
-                {!email.trim() && <span className="text-white/30 text-[11px] font-body mt-2 block">add a client email first</span>}
-                {subMsg && <p className="text-blue-300/90 text-xs font-body mt-2">{subMsg}</p>}
+                {!email.trim() && <span className="text-[#161616]/45 text-[11px] font-body mt-2 block">add a client email first</span>}
+                {subMsg && <p className="text-[#1E50C8] text-xs font-body mt-2">{subMsg}</p>}
               </div>
             )}
           </div>
@@ -1006,24 +1006,24 @@ export default function ProposalBuilder() {
                 <button
                   onClick={save}
                   disabled={saving || !lines.length}
-                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] hover:bg-[#FFD23F] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all"
                 >
                   {saving ? 'Saving…' : saved ? 'Saved' : currentId ? 'Update' : 'Save'}
                 </button>
                 <select
                   value={status}
                   onChange={(e) => changeStatus(e.target.value)}
-                  className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-2 py-2 text-xs text-white focus:outline-none focus:border-mustard-500/40"
+                  className="bg-white border-2 border-[#161616] rounded-lg px-2 py-2 text-xs text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
                 >
                   {STATUSES.map((s) => (
-                    <option key={s} value={s} className="bg-neutral-900">
+                    <option key={s} value={s} className="bg-white">
                       {s}
                     </option>
                   ))}
                 </select>
                 <button
                   onClick={newProposal}
-                  className="px-3 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/60 border border-white/15 hover:border-white/30 transition-colors"
+                  className="px-3 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold bg-white text-[#161616] border-2 border-[#161616] hover:bg-[#FFF8E6] transition-colors"
                 >
                   New
                 </button>
@@ -1031,27 +1031,27 @@ export default function ProposalBuilder() {
                   onClick={sendProposal}
                   disabled={!currentId || !email.trim() || sendingProposal}
                   title={!email.trim() ? 'Add a client email first' : !currentId ? 'Save first' : ''}
-                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#080c16] bg-emerald-400 hover:bg-emerald-300 disabled:opacity-40 transition-colors"
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-white bg-emerald-600 hover:bg-emerald-500 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] disabled:opacity-40 transition-all"
                 >
                   {sendingProposal ? 'Sending…' : proposalSent ? 'Sent ✓' : 'Send for signature'}
                 </button>
-                <span className="w-px h-5 bg-white/10 mx-1" aria-hidden />
+                <span className="w-px h-5 bg-[#161616]/15 mx-1" aria-hidden />
                 <button
                   onClick={() => window.print()}
                   disabled={!lines.length}
-                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/70 border border-white/15 hover:border-white/30 disabled:opacity-40 transition-colors"
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold bg-white text-[#161616] border-2 border-[#161616] hover:bg-[#FFF8E6] disabled:opacity-40 transition-colors"
                 >
                   Print / PDF
                 </button>
                 <button
                   onClick={copyMarkdown}
                   disabled={!lines.length}
-                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/70 border border-white/15 hover:border-white/30 disabled:opacity-40 transition-colors"
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold bg-white text-[#161616] border-2 border-[#161616] hover:bg-[#FFF8E6] disabled:opacity-40 transition-colors"
                 >
                   {copied ? 'Copied' : 'Copy markdown'}
                 </button>
               </div>
-              {saveError && <p className="text-red-300 text-xs font-body">{saveError}</p>}
+              {saveError && <p className="text-[#E0301E] text-xs font-body">{saveError}</p>}
             </div>
 
             <div className="proposal-doc bg-[#FBF8F2] text-[#1B2436] rounded-xl overflow-hidden">

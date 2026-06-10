@@ -13,20 +13,20 @@ const TYPE_LABEL: Record<LeadType, string> = {
 };
 
 const TYPE_COLOR: Record<LeadType, string> = {
-  'build-queue': 'border-mustard-500/40 text-mustard-300/90',
-  audit: 'border-amber-500/40 text-amber-300/90',
-  contact: 'border-emerald-500/40 text-emerald-300/90',
-  newsletter: 'border-white/20 text-white/60',
+  'build-queue': 'border-[#161616]/30 text-[#161616] bg-[#F5B700]/20',
+  audit: 'border-amber-800/25 text-amber-800 bg-amber-100',
+  contact: 'border-emerald-800/25 text-emerald-800 bg-emerald-100',
+  newsletter: 'border-[#161616]/20 text-[#161616]/65 bg-[#161616]/[0.06]',
 };
 
 const STATUS_OPTIONS: LeadStatus[] = ['new', 'replied', 'booked', 'won', 'lost', 'archived'];
 const STATUS_COLOR: Record<LeadStatus, string> = {
-  new: 'bg-mustard-500/15 text-mustard-200 border-mustard-500/30',
-  replied: 'bg-blue-500/10 text-blue-200 border-blue-500/30',
-  booked: 'bg-emerald-500/15 text-emerald-200 border-emerald-500/30',
-  won: 'bg-emerald-500/25 text-emerald-100 border-emerald-500/40',
-  lost: 'bg-red-500/10 text-red-200 border-red-500/30',
-  archived: 'bg-white/5 text-white/40 border-white/10',
+  new: 'bg-[#F5B700]/20 text-[#161616] border-[#161616]/30',
+  replied: 'bg-blue-100 text-[#1E50C8] border-[#1E50C8]/30',
+  booked: 'bg-emerald-100 text-emerald-800 border-emerald-800/25',
+  won: 'bg-emerald-200 text-emerald-900 border-emerald-800/30',
+  lost: 'bg-red-100 text-[#E0301E] border-[#E0301E]/30',
+  archived: 'bg-[#161616]/[0.06] text-[#161616]/45 border-[#161616]/15',
 };
 
 export default function AdminDashboard() {
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="pipeline" title="Pipeline" onRefresh={load} />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
@@ -94,11 +94,11 @@ export default function AdminDashboard() {
             { label: 'Booked', value: stats.booked },
             { label: 'Won', value: stats.won },
           ].map((s) => (
-            <div key={s.label} className="glass-card p-4">
-              <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">
+            <div key={s.label} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-4">
+              <div className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium">
                 {s.label}
               </div>
-              <div className="font-sans text-2xl font-semibold text-white mt-1">{s.value}</div>
+              <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{s.value}</div>
             </div>
           ))}
         </div>
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-6 items-end">
           <div className="flex-1 min-w-[200px]">
-            <label className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium block mb-1.5">
+            <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium block mb-1.5">
               Search
             </label>
             <input
@@ -114,43 +114,43 @@ export default function AdminDashboard() {
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && load()}
               placeholder="Name, email, company, message..."
-              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-mustard-500/40"
+              className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-2.5 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
             />
           </div>
           <div>
-            <label className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium block mb-1.5">
+            <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium block mb-1.5">
               Type
             </label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value as LeadType | '')}
-              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-mustard-500/40"
+              className="bg-white border-2 border-[#161616] rounded-lg px-4 py-2.5 text-sm text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
             >
-              <option value="" className="bg-neutral-900">All types</option>
-              <option value="build-queue" className="bg-neutral-900">Build Queue</option>
-              <option value="audit" className="bg-neutral-900">AI Audit</option>
-              <option value="contact" className="bg-neutral-900">Contact</option>
-              <option value="newsletter" className="bg-neutral-900">Newsletter</option>
+              <option value="" className="bg-white">All types</option>
+              <option value="build-queue" className="bg-white">Build Queue</option>
+              <option value="audit" className="bg-white">AI Audit</option>
+              <option value="contact" className="bg-white">Contact</option>
+              <option value="newsletter" className="bg-white">Newsletter</option>
             </select>
           </div>
           <div>
-            <label className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium block mb-1.5">
+            <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium block mb-1.5">
               Status
             </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as LeadStatus | '')}
-              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-mustard-500/40"
+              className="bg-white border-2 border-[#161616] rounded-lg px-4 py-2.5 text-sm text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
             >
-              <option value="" className="bg-neutral-900">All statuses</option>
+              <option value="" className="bg-white">All statuses</option>
               {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s} className="bg-neutral-900">{s}</option>
+                <option key={s} value={s} className="bg-white">{s}</option>
               ))}
             </select>
           </div>
           <button
             onClick={load}
-            className="px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg hover:shadow-[0_0_20px_rgba(255,107,53,0.2)] transition-all"
+            className="px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
           >
             Apply
           </button>
@@ -158,33 +158,33 @@ export default function AdminDashboard() {
 
         {/* List */}
         {error && (
-          <div className="glass-card p-5 mb-6 border-red-500/30">
-            <p className="text-red-300 text-sm font-body">{error}</p>
-            <p className="text-white/40 text-xs font-body mt-2">
+          <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-6">
+            <p className="text-[#E0301E] text-sm font-body">{error}</p>
+            <p className="text-[#161616]/60 text-xs font-body mt-2">
               If this is the first time loading: run the SQL migration in Supabase. See SETUP.md.
             </p>
           </div>
         )}
         {loading ? (
-          <p className="text-center text-white/40 py-12 font-body italic">Loading...</p>
+          <p className="text-center text-[#161616]/45 py-12 font-body italic">Loading...</p>
         ) : leads.length === 0 ? (
-          <div className="glass-card p-12 text-center">
-            <p className="text-white/60 font-body mb-2">No leads yet.</p>
-            <p className="text-white/30 text-sm font-body">
+          <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-12 text-center">
+            <p className="text-[#161616]/60 font-body mb-2">No leads yet.</p>
+            <p className="text-[#161616]/45 text-sm font-body">
               The moment someone submits the contact form, joins the build queue, runs an audit, or subscribes, they will land here.
             </p>
           </div>
         ) : (
-          <div className="glass-card overflow-hidden">
+          <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/[0.06]">
-                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono font-medium px-4 py-3">Type</th>
-                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono font-medium px-4 py-3">Name</th>
-                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono font-medium px-4 py-3">Email</th>
-                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono font-medium px-4 py-3">Summary</th>
-                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono font-medium px-4 py-3">Status</th>
-                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono font-medium px-4 py-3">When</th>
+                <tr className="border-b border-[#161616]/15">
+                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-medium px-4 py-3">Type</th>
+                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-medium px-4 py-3">Name</th>
+                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-medium px-4 py-3">Email</th>
+                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-medium px-4 py-3">Summary</th>
+                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-medium px-4 py-3">Status</th>
+                  <th className="text-left text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-medium px-4 py-3">When</th>
                 </tr>
               </thead>
               <tbody>
@@ -192,24 +192,24 @@ export default function AdminDashboard() {
                   <tr
                     key={l.id}
                     onClick={() => setSelected(l)}
-                    className="border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer transition-colors"
+                    className="border-b border-[#161616]/10 hover:bg-[#161616]/[0.04] cursor-pointer transition-colors"
                   >
                     <td className="px-4 py-3.5">
                       <span className={`inline-block text-[9px] uppercase tracking-[0.2em] font-mono font-semibold px-2.5 py-1 rounded border ${TYPE_COLOR[l.type]}`}>
                         {TYPE_LABEL[l.type]}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-white/90 font-body">{l.name ?? <span className="text-white/30">—</span>}</td>
-                    <td className="px-4 py-3.5 text-white/60 font-body text-xs">{l.email}</td>
-                    <td className="px-4 py-3.5 text-white/55 font-body text-xs max-w-xs truncate">
-                      {l.business_name || l.company || l.message?.slice(0, 80) || l.idea_description?.slice(0, 80) || <span className="text-white/25">—</span>}
+                    <td className="px-4 py-3.5 text-[#161616] font-body">{l.name ?? <span className="text-[#161616]/45">—</span>}</td>
+                    <td className="px-4 py-3.5 text-[#161616]/60 font-body text-xs">{l.email}</td>
+                    <td className="px-4 py-3.5 text-[#161616]/60 font-body text-xs max-w-xs truncate">
+                      {l.business_name || l.company || l.message?.slice(0, 80) || l.idea_description?.slice(0, 80) || <span className="text-[#161616]/45">—</span>}
                     </td>
                     <td className="px-4 py-3.5">
                       <span className={`inline-block text-[9px] uppercase tracking-[0.15em] font-mono font-semibold px-2.5 py-1 rounded border ${STATUS_COLOR[l.status]}`}>
                         {l.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-white/40 font-mono text-xs whitespace-nowrap">
+                    <td className="px-4 py-3.5 text-[#161616]/45 font-mono text-xs whitespace-nowrap">
                       {new Date(l.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
                     </td>
                   </tr>

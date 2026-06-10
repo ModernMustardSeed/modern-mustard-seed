@@ -124,6 +124,16 @@
     box-shadow: 0 0 0 3px rgba(245, 183, 0, 0.4);
   }
 
+  /* Hide scrollbars on overflow rows that manage their own affordance
+     (admin tab nav). Referenced by className="no-scrollbar". */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   ::selection {
     background-color: rgba(200, 150, 78, 0.35);
     color: #f5f0e8;

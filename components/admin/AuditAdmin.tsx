@@ -28,13 +28,13 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const PRIORITY_STYLES: Record<string, string> = {
-  high: 'text-red-300 border-red-400/40 bg-red-500/10',
-  medium: 'text-mustard-200 border-mustard-500/40 bg-mustard-500/10',
-  low: 'text-emerald-200 border-emerald-400/40 bg-emerald-500/10',
+  high: 'text-[#E0301E] border-[#E0301E]/30 bg-red-100',
+  medium: 'text-amber-800 border-amber-800/25 bg-amber-100',
+  low: 'text-emerald-800 border-emerald-800/25 bg-emerald-100',
 };
 
 const inp =
-  'bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 w-full';
+  'bg-white border-2 border-[#161616] rounded-lg px-3 py-2.5 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] w-full';
 
 function hostOf(url: string): string {
   try {
@@ -221,18 +221,18 @@ export default function AuditAdmin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="audit" title="Website Audit" />
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <p className="text-white/45 text-sm font-body mb-6 max-w-2xl">
+        <p className="text-[#3A3733] text-sm font-body mb-6 max-w-2xl">
           Run the same audit visitors get, then email it to a lead as a personal, one-off offer.
           This does not enter anyone into a drip. It is a single email with the audit, the to-do
           list, and your booking link.
         </p>
 
         {/* Run */}
-        <div className="glass-card p-5 md:p-6 mb-6">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">
+        <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 md:p-6 mb-6">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">
             Run an audit
           </span>
           <div className="flex flex-col sm:flex-row gap-3">
@@ -250,12 +250,12 @@ export default function AuditAdmin() {
             <button
               onClick={runAudit}
               disabled={running || !url.trim()}
-              className="px-6 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors whitespace-nowrap"
+              className="px-6 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all whitespace-nowrap"
             >
               {running ? 'Auditing…' : 'Run audit'}
             </button>
           </div>
-          {runError && <p className="text-red-300 text-sm font-body mt-3">{runError}</p>}
+          {runError && <p className="text-[#E0301E] text-sm font-body mt-3">{runError}</p>}
         </div>
 
         {report && (
@@ -264,72 +264,72 @@ export default function AuditAdmin() {
             <div className="flex justify-end mb-3">
               <button
                 onClick={toProposal}
-                className="px-5 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-mustard-300 border border-mustard-500/40 hover:bg-mustard-500/10 transition-colors"
+                className="px-5 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] hover:bg-[#FFF8E6] transition-all"
               >
                 Build a proposal from this audit →
               </button>
             </div>
 
             {/* Report summary */}
-            <div className="glass-card p-5 md:p-6 mb-6">
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 md:p-6 mb-6">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-400/80 font-mono font-bold block mb-1">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-1">
                     {hostOf(auditedUrl)}
                   </span>
-                  <p className="font-display italic text-lg md:text-xl text-cream-50 leading-snug max-w-xl">
+                  <p className="font-display italic text-lg md:text-xl text-[#161616] leading-snug max-w-xl">
                     &ldquo;{report.headline}&rdquo;
                   </p>
                 </div>
                 <div className="flex flex-col items-center flex-shrink-0">
-                  <span className="font-display text-4xl font-semibold text-white leading-none">
+                  <span className="font-display text-4xl font-semibold text-[#161616] leading-none">
                     {report.overall_score}
                   </span>
-                  <span className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono mt-1">
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono mt-1">
                     /100
                   </span>
-                  <span className="mt-1.5 px-2 py-0.5 rounded-full border border-mustard-500/40 text-mustard-300 font-display italic text-sm">
+                  <span className="mt-1.5 px-2 py-0.5 rounded-full border border-[#161616] bg-[#F5B700] text-[#161616] font-display italic text-sm">
                     {report.letter_grade}
                   </span>
                 </div>
               </div>
 
-              <p className="text-white/60 text-sm font-body leading-relaxed whitespace-pre-line mb-5">
+              <p className="text-[#3A3733] text-sm font-body leading-relaxed whitespace-pre-line mb-5">
                 {report.overall_analysis}
               </p>
 
               {/* Categories */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
                 {Object.entries(report.categories).map(([key, cat]) => (
-                  <div key={key} className="bg-white/[0.02] border border-white/[0.05] rounded-lg p-3">
+                  <div key={key} className="bg-[#FFFDF6] border border-[#161616]/15 rounded-lg p-3">
                     <div className="flex items-baseline justify-between">
-                      <span className="text-[10px] uppercase tracking-[0.15em] text-white/45 font-mono">
+                      <span className="text-[10px] uppercase tracking-[0.15em] text-[#161616]/50 font-mono">
                         {CATEGORY_LABELS[key] ?? key}
                       </span>
-                      <span className="text-sm font-mono font-bold text-mustard-300">{cat.letter}</span>
+                      <span className="text-sm font-mono font-bold text-[#E0301E]">{cat.letter}</span>
                     </div>
-                    <div className="font-sans text-lg font-semibold text-white">{cat.score}</div>
+                    <div className="font-sans text-lg font-semibold text-[#161616]">{cat.score}</div>
                   </div>
                 ))}
               </div>
 
               {/* Top fixes */}
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-2">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-2">
                 Top three fixes
               </span>
               <div className="space-y-2 mb-5">
                 {report.top_three_fixes.map((f, i) => (
-                  <div key={i} className="bg-white/[0.02] border border-white/[0.05] rounded-lg p-3">
-                    <p className="text-sm font-sans font-semibold text-white/90">
+                  <div key={i} className="bg-[#FFFDF6] border border-[#161616]/15 rounded-lg p-3">
+                    <p className="text-sm font-sans font-semibold text-[#161616]">
                       {i + 1}. {f.title}
                     </p>
-                    <p className="text-xs text-white/50 font-body mt-1 leading-relaxed">{f.how}</p>
+                    <p className="text-xs text-[#161616]/60 font-body mt-1 leading-relaxed">{f.how}</p>
                   </div>
                 ))}
               </div>
 
               {/* To-do */}
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-2">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-2">
                 Full to-do ({report.full_todo.length})
               </span>
               <div className="space-y-1.5">
@@ -340,31 +340,31 @@ export default function AuditAdmin() {
                     >
                       {t.priority}
                     </span>
-                    <span className="text-xs text-white/65 font-body leading-relaxed">{t.task}</span>
+                    <span className="text-xs text-[#3A3733] font-body leading-relaxed">{t.task}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Email to a lead */}
-            <div className="glass-card p-5 md:p-6 mb-10 border-mustard-500/20">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-400/80 font-mono font-bold block mb-1">
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] ring-2 ring-[#F5B700] p-5 md:p-6 mb-10">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-1">
                 Email this audit
               </span>
-              <p className="text-white/45 text-xs font-body mb-4">
+              <p className="text-[#161616]/60 text-xs font-body mb-4">
                 Sends one personalized email (audit + to-do list + your booking link). No drip, no
                 auto-follow-up.
               </p>
 
               {sent ? (
                 <div className="text-center py-6">
-                  <p className="font-display italic text-xl text-mustard-300 mb-2">Sent.</p>
-                  <p className="text-white/55 text-sm font-body mb-5">
+                  <p className="font-display italic text-xl text-[#161616] mb-2">Sent.</p>
+                  <p className="text-[#3A3733] text-sm font-body mb-5">
                     {toEmail} has the audit. Reply-to is set to you.
                   </p>
                   <button
                     onClick={reset}
-                    className="text-[10px] uppercase tracking-[0.25em] text-white/50 hover:text-white/80 font-mono"
+                    className="text-[10px] uppercase tracking-[0.25em] text-[#161616]/55 hover:text-[#161616] font-mono"
                   >
                     Audit another site
                   </button>
@@ -393,29 +393,29 @@ export default function AuditAdmin() {
                     placeholder="Your personal note at the top of the email"
                     className={`${inp} resize-y leading-relaxed`}
                   />
-                  <p className="text-white/30 text-[11px] font-body mt-1.5 mb-4">
+                  <p className="text-[#161616]/45 text-[11px] font-body mt-1.5 mb-4">
                     This note sits at the top in your voice. The score, fixes, and full to-do list
                     are added automatically below it.
                   </p>
-                  {sendError && <p className="text-red-300 text-sm font-body mb-3">{sendError}</p>}
-                  {saveError && <p className="text-red-300 text-sm font-body mb-3">{saveError}</p>}
+                  {sendError && <p className="text-[#E0301E] text-sm font-body mb-3">{sendError}</p>}
+                  {saveError && <p className="text-[#E0301E] text-sm font-body mb-3">{saveError}</p>}
                   <div className="flex flex-wrap items-center gap-3">
                     <button
                       onClick={send}
                       disabled={sending || !toEmail.trim()}
-                      className="px-6 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+                      className="px-6 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all"
                     >
                       {sending ? 'Sending…' : 'Send the audit'}
                     </button>
                     <button
                       onClick={saveToClient}
                       disabled={savingAudit || savedAudit || !toEmail.trim()}
-                      className="px-6 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-mustard-300 border border-mustard-500/40 hover:bg-mustard-500/10 disabled:opacity-40 transition-colors"
+                      className="px-6 py-2.5 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] hover:bg-[#FFF8E6] disabled:opacity-40 transition-all"
                     >
                       {savedAudit ? 'Saved to client ✓' : savingAudit ? 'Saving…' : 'Save to client'}
                     </button>
                   </div>
-                  <p className="text-white/30 text-[11px] font-body mt-2">
+                  <p className="text-[#161616]/45 text-[11px] font-body mt-2">
                     Save to client keeps this audit on file against their email (with the proposal), so the engagement is tracked to completion.
                   </p>
                 </>

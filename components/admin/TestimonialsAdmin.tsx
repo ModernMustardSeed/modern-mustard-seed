@@ -17,7 +17,7 @@ type Row = {
 };
 
 const inp =
-  'bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 w-full';
+  'bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] w-full';
 const empty = { name: '', role: '', company: '', quote: '', outcome: '', rating: 5 };
 
 export default function TestimonialsAdmin() {
@@ -93,23 +93,23 @@ export default function TestimonialsAdmin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="reviews" title="Reviews" onRefresh={load} />
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <p className="text-white/45 text-sm font-body mb-6 max-w-2xl">
+        <p className="text-[#3A3733] text-sm font-body mb-6 max-w-2xl">
           Published reviews appear on the homepage with star schema for search and AI. Add real
           client quotes here. Nothing shows on the site until you publish at least one.
         </p>
 
         {error && (
-          <div className="glass-card p-4 mb-6 border-red-500/30">
-            <p className="text-red-300 text-sm font-body">{error}</p>
+          <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-4 mb-6">
+            <p className="text-[#E0301E] text-sm font-body">{error}</p>
           </div>
         )}
 
         {/* Add */}
-        <div className="glass-card p-5 mb-8">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">
+        <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-8">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">
             Add a review
           </span>
           <div className="grid sm:grid-cols-3 gap-3 mb-3">
@@ -122,13 +122,13 @@ export default function TestimonialsAdmin() {
             <input value={form.outcome} onChange={(e) => setForm({ ...form, outcome: e.target.value })} placeholder="Outcome chip (e.g. 30% more jobs)" className={inp} />
             <select value={form.rating} onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })} className={inp}>
               {[5, 4, 3].map((n) => (
-                <option key={n} value={n} className="bg-neutral-900">{n} stars</option>
+                <option key={n} value={n} className="bg-white">{n} stars</option>
               ))}
             </select>
             <button
               onClick={add}
               disabled={adding || !form.name.trim() || !form.quote.trim()}
-              className="px-6 py-2 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+              className="px-6 py-2 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all"
             >
               {adding ? 'Adding…' : 'Add review'}
             </button>
@@ -136,49 +136,49 @@ export default function TestimonialsAdmin() {
         </div>
 
         {loading ? (
-          <p className="text-white/40 text-sm font-body">Loading…</p>
+          <p className="text-[#161616]/60 text-sm font-body">Loading…</p>
         ) : rows.length === 0 ? (
-          <p className="text-white/40 text-sm font-body">No reviews yet. Add your first above.</p>
+          <p className="text-[#161616]/60 text-sm font-body">No reviews yet. Add your first above.</p>
         ) : (
           <div className="space-y-3">
             {rows.map((r) => (
-              <div key={r.id} className={`glass-card p-5 ${r.status === 'pending' ? 'border-mustard-500/40' : ''}`}>
+              <div key={r.id} className={`bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 ${r.status === 'pending' ? 'ring-2 ring-[#F5B700]' : ''}`}>
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
                     {r.status === 'pending' && (
-                      <span className="text-[8px] uppercase tracking-[0.2em] font-mono font-bold text-mustard-300 bg-mustard-500/15 border border-mustard-500/40 rounded px-2 py-0.5 mr-2">
+                      <span className="text-[8px] uppercase tracking-[0.2em] font-mono font-bold text-[#161616] bg-[#F5B700] border border-[#161616] rounded px-2 py-0.5 mr-2">
                         Pending
                       </span>
                     )}
-                    <span className="font-sans font-semibold text-white/90">{r.name}</span>
+                    <span className="font-sans font-semibold text-[#161616]">{r.name}</span>
                     {(r.role || r.company) && (
-                      <span className="text-white/40 text-sm font-body ml-2">{[r.role, r.company].filter(Boolean).join(', ')}</span>
+                      <span className="text-[#161616]/60 text-sm font-body ml-2">{[r.role, r.company].filter(Boolean).join(', ')}</span>
                     )}
-                    <span className="text-mustard-300 text-xs ml-2">{'★'.repeat(r.rating)}</span>
+                    <span className="text-amber-500 text-xs ml-2">{'★'.repeat(r.rating)}</span>
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
                     {r.status === 'pending' ? (
                       <button
                         onClick={() => patch(r.id, { status: 'published' })}
-                        className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-emerald-300 hover:text-emerald-200"
+                        className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-emerald-700 hover:text-emerald-800"
                       >
                         Approve + publish
                       </button>
                     ) : (
                       <button
                         onClick={() => patch(r.id, { status: r.status === 'published' ? 'hidden' : 'published' })}
-                        className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold ${r.status === 'published' ? 'text-emerald-300' : 'text-white/40'}`}
+                        className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold ${r.status === 'published' ? 'text-emerald-700' : 'text-[#161616]/45'}`}
                       >
                         {r.status === 'published' ? 'Published' : 'Hidden'}
                       </button>
                     )}
-                    <button onClick={() => del(r.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono text-white/30 hover:text-red-300">
+                    <button onClick={() => del(r.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono text-[#161616]/45 hover:text-[#E0301E]">
                       Delete
                     </button>
                   </div>
                 </div>
-                <p className="text-white/65 text-sm font-body leading-relaxed">&ldquo;{r.quote}&rdquo;</p>
-                {r.outcome && <p className="text-mustard-300/80 text-xs font-mono mt-2">{r.outcome}</p>}
+                <p className="text-[#3A3733] text-sm font-body leading-relaxed">&ldquo;{r.quote}&rdquo;</p>
+                {r.outcome && <p className="text-[#E0301E] text-xs font-mono mt-2">{r.outcome}</p>}
               </div>
             ))}
           </div>

@@ -32,11 +32,11 @@ type Overview = {
 
 const STATUS_ORDER = ['new', 'replied', 'booked', 'won', 'lost'] as const;
 const STATUS_COLOR: Record<string, string> = {
-  new: 'bg-mustard-500',
+  new: 'bg-[#F5B700]',
   replied: 'bg-blue-500',
   booked: 'bg-emerald-500',
   won: 'bg-emerald-400',
-  lost: 'bg-red-500/70',
+  lost: 'bg-[#E0301E]/70',
 };
 
 function money(n: number) {
@@ -59,21 +59,21 @@ function renderBrief(text: string) {
     const inline = (s: string) =>
       s.split(/(\*\*[^*]+\*\*)/g).map((part, j) =>
         part.startsWith('**') && part.endsWith('**') ? (
-          <strong key={j} className="text-cream-50 font-semibold">{part.slice(2, -2)}</strong>
+          <strong key={j} className="text-[#161616] font-semibold">{part.slice(2, -2)}</strong>
         ) : (
           <span key={j}>{part}</span>
         )
       );
-    if (line.startsWith('## ')) return <h4 key={i} className="text-cream-50 font-sans font-semibold text-sm mt-3 mb-1">{inline(line.slice(3))}</h4>;
+    if (line.startsWith('## ')) return <h4 key={i} className="text-[#161616] font-sans font-semibold text-sm mt-3 mb-1">{inline(line.slice(3))}</h4>;
     if (line.startsWith('- ') || line.startsWith('* ')) {
       return (
         <div key={i} className="flex gap-2.5 mb-2">
-          <span className="text-gold-light mt-1.5 text-[8px]">●</span>
-          <p className="text-white/75 text-[13px] font-body leading-relaxed flex-1">{inline(line.replace(/^[-*]\s/, ''))}</p>
+          <span className="text-[#E0301E] mt-1.5 text-[8px]">●</span>
+          <p className="text-[#3A3733] text-[13px] font-body leading-relaxed flex-1">{inline(line.replace(/^[-*]\s/, ''))}</p>
         </div>
       );
     }
-    return <p key={i} className="text-white/75 text-[13px] font-body leading-relaxed mb-2">{inline(line)}</p>;
+    return <p key={i} className="text-[#3A3733] text-[13px] font-body leading-relaxed mb-2">{inline(line)}</p>;
   });
 }
 
@@ -193,82 +193,82 @@ export default function CommandCenter() {
   const pct = (val: number, goal: number) => (goal > 0 ? Math.min(100, Math.round((val / goal) * 100)) : 0);
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="overview" title="Command Center" onRefresh={load} />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         {error && (
-          <div className="glass-card p-5 mb-6 border-red-500/30">
-            <p className="text-red-300 text-sm font-body">{error}</p>
+          <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-6">
+            <p className="text-[#E0301E] text-sm font-body">{error}</p>
           </div>
         )}
 
         {loading ? (
-          <p className="text-center text-white/40 py-20 font-body italic">Loading the cockpit...</p>
+          <p className="text-center text-[#161616]/45 py-20 font-body italic">Loading the cockpit...</p>
         ) : !data ? (
-          <p className="text-center text-white/40 py-20 font-body italic">No data.</p>
+          <p className="text-center text-[#161616]/45 py-20 font-body italic">No data.</p>
         ) : (
           <>
             {/* KPI row */}
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-6">
-              <div className="glass-card p-5">
-                <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">Revenue this month</div>
-                <div className="font-sans text-3xl font-semibold text-white mt-1.5">{money(data.revenue.month)}</div>
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+                <div className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium">Revenue this month</div>
+                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{money(data.revenue.month)}</div>
                 {t && t.revenue > 0 && (
                   <div className="mt-3">
-                    <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-mustard-600 to-mustard-400" style={{ width: `${pct(data.revenue.month, t.revenue)}%` }} />
+                    <div className="h-1.5 rounded-full bg-[#161616]/10 overflow-hidden">
+                      <div className="h-full bg-[#F5B700]" style={{ width: `${pct(data.revenue.month, t.revenue)}%` }} />
                     </div>
-                    <div className="text-[10px] text-white/35 font-mono mt-1.5">{pct(data.revenue.month, t.revenue)}% of {money(t.revenue)} goal</div>
+                    <div className="text-[10px] text-[#161616]/45 font-mono mt-1.5">{pct(data.revenue.month, t.revenue)}% of {money(t.revenue)} goal</div>
                   </div>
                 )}
-                <div className="text-[10px] text-white/35 font-mono mt-2">{money(data.revenue.allTime)} all time</div>
+                <div className="text-[10px] text-[#161616]/45 font-mono mt-2">{money(data.revenue.allTime)} all time</div>
               </div>
 
-              <div className="glass-card p-5">
-                <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">Sales this month</div>
-                <div className="font-sans text-3xl font-semibold text-white mt-1.5">{data.revenue.monthCount}</div>
-                <div className="text-[10px] text-white/35 font-mono mt-2">{data.revenue.allTimeCount} all time</div>
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+                <div className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium">Sales this month</div>
+                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{data.revenue.monthCount}</div>
+                <div className="text-[10px] text-[#161616]/45 font-mono mt-2">{data.revenue.allTimeCount} all time</div>
               </div>
 
-              <div className="glass-card p-5 border-emerald-500/20">
-                <div className="text-[9px] uppercase tracking-[0.3em] text-emerald-300/70 font-mono font-medium">MRR</div>
-                <div className="font-sans text-3xl font-semibold text-white mt-1.5">{money(data.mrr?.monthly ?? 0)}</div>
-                <div className="text-[10px] text-white/35 font-mono mt-2">{data.mrr?.activePlans ?? 0} active plan{(data.mrr?.activePlans ?? 0) === 1 ? '' : 's'}</div>
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+                <div className="text-[9px] uppercase tracking-[0.3em] text-emerald-700 font-mono font-medium">MRR</div>
+                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{money(data.mrr?.monthly ?? 0)}</div>
+                <div className="text-[10px] text-[#161616]/45 font-mono mt-2">{data.mrr?.activePlans ?? 0} active plan{(data.mrr?.activePlans ?? 0) === 1 ? '' : 's'}</div>
               </div>
 
-              <div className="glass-card p-5">
-                <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">New leads (7d)</div>
-                <div className="font-sans text-3xl font-semibold text-white mt-1.5">{data.leads.new7d}</div>
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+                <div className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium">New leads (7d)</div>
+                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{data.leads.new7d}</div>
                 {t && t.leads > 0 && (
                   <div className="mt-3">
-                    <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
+                    <div className="h-1.5 rounded-full bg-[#161616]/10 overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-blue-600 to-blue-400" style={{ width: `${pct(data.leads.new30d, t.leads)}%` }} />
                     </div>
-                    <div className="text-[10px] text-white/35 font-mono mt-1.5">{data.leads.new30d}/{t.leads} this month</div>
+                    <div className="text-[10px] text-[#161616]/45 font-mono mt-1.5">{data.leads.new30d}/{t.leads} this month</div>
                   </div>
                 )}
-                <div className="text-[10px] text-white/35 font-mono mt-2">{data.leads.total} total in pipeline</div>
+                <div className="text-[10px] text-[#161616]/45 font-mono mt-2">{data.leads.total} total in pipeline</div>
               </div>
 
-              <div className="glass-card p-5">
-                <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">Upcoming calls</div>
-                <div className="font-sans text-3xl font-semibold text-white mt-1.5">{data.bookings.upcoming.length}</div>
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+                <div className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium">Upcoming calls</div>
+                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{data.bookings.upcoming.length}</div>
                 {t && t.calls > 0 && (
                   <div className="mt-3">
-                    <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
+                    <div className="h-1.5 rounded-full bg-[#161616]/10 overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400" style={{ width: `${pct(data.bookings.monthCount, t.calls)}%` }} />
                     </div>
-                    <div className="text-[10px] text-white/35 font-mono mt-1.5">{data.bookings.monthCount}/{t.calls} this month</div>
+                    <div className="text-[10px] text-[#161616]/45 font-mono mt-1.5">{data.bookings.monthCount}/{t.calls} this month</div>
                   </div>
                 )}
-                <div className="text-[10px] text-white/35 font-mono mt-2">Wed and Thu slots</div>
+                <div className="text-[10px] text-[#161616]/45 font-mono mt-2">Wed and Thu slots</div>
               </div>
 
-              <Link href="/admin/proposals" className="glass-card p-5 hover:border-mustard-500/30 transition-colors col-span-2 lg:col-span-1">
-                <div className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium">Open proposals</div>
-                <div className="font-sans text-3xl font-semibold text-white mt-1.5">{data.proposals?.open ?? 0}</div>
-                <div className="text-[10px] text-white/35 font-mono mt-2">
+              <Link href="/admin/proposals" className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 hover:bg-[#FFF8E6] transition-colors col-span-2 lg:col-span-1">
+                <div className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium">Open proposals</div>
+                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{data.proposals?.open ?? 0}</div>
+                <div className="text-[10px] text-[#161616]/45 font-mono mt-2">
                   {money(data.proposals?.openValue ?? 0)} outstanding
                   {data.proposals?.accepted ? ` · ${money(data.proposals.acceptedValue)} accepted` : ''}
                 </div>
@@ -277,30 +277,30 @@ export default function CommandCenter() {
 
             {/* Cashflow + capacity */}
             {(data.cashflow || data.capacity) && (
-              <div className="glass-card p-5 mb-6">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-4">Cashflow &amp; capacity</span>
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-6">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-4">Cashflow &amp; capacity</span>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <div className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono">Committed (owed)</div>
-                    <div className="font-sans text-2xl font-semibold text-white mt-1">{money(data.cashflow?.committed ?? 0)}</div>
-                    <div className="text-[10px] text-white/35 font-mono mt-1">signed, not yet paid</div>
+                    <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono">Committed (owed)</div>
+                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{money(data.cashflow?.committed ?? 0)}</div>
+                    <div className="text-[10px] text-[#161616]/45 font-mono mt-1">signed, not yet paid</div>
                   </div>
                   <div>
-                    <div className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono">Open pipeline</div>
-                    <div className="font-sans text-2xl font-semibold text-white mt-1">{money(data.cashflow?.openPipeline ?? 0)}</div>
-                    <div className="text-[10px] text-white/35 font-mono mt-1">proposals out</div>
+                    <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono">Open pipeline</div>
+                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{money(data.cashflow?.openPipeline ?? 0)}</div>
+                    <div className="text-[10px] text-[#161616]/45 font-mono mt-1">proposals out</div>
                   </div>
                   <div>
-                    <div className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono">MRR</div>
-                    <div className="font-sans text-2xl font-semibold text-white mt-1">{money(data.cashflow?.mrr ?? 0)}</div>
-                    <div className="text-[10px] text-white/35 font-mono mt-1">recurring / mo</div>
+                    <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono">MRR</div>
+                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{money(data.cashflow?.mrr ?? 0)}</div>
+                    <div className="text-[10px] text-[#161616]/45 font-mono mt-1">recurring / mo</div>
                   </div>
                   <div>
-                    <div className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono">In flight (WIP)</div>
-                    <div className={`font-sans text-2xl font-semibold mt-1 ${(data.capacity?.active ?? 0) >= (data.capacity?.limit ?? 5) ? 'text-red-300' : 'text-white'}`}>
-                      {data.capacity?.active ?? 0}<span className="text-white/30 text-lg">/{data.capacity?.limit ?? 5}</span>
+                    <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono">In flight (WIP)</div>
+                    <div className={`font-sans text-2xl font-semibold mt-1 ${(data.capacity?.active ?? 0) >= (data.capacity?.limit ?? 5) ? 'text-[#E0301E]' : 'text-[#161616]'}`}>
+                      {data.capacity?.active ?? 0}<span className="text-[#161616]/45 text-lg">/{data.capacity?.limit ?? 5}</span>
                     </div>
-                    <div className={`text-[10px] font-mono mt-1 ${(data.capacity?.active ?? 0) >= (data.capacity?.limit ?? 5) ? 'text-red-300/80' : 'text-white/35'}`}>
+                    <div className={`text-[10px] font-mono mt-1 ${(data.capacity?.active ?? 0) >= (data.capacity?.limit ?? 5) ? 'text-[#E0301E]/80' : 'text-[#161616]/45'}`}>
                       {(data.capacity?.active ?? 0) >= (data.capacity?.limit ?? 5) ? 'at capacity, sell carefully' : 'active builds'}
                     </div>
                   </div>
@@ -310,56 +310,56 @@ export default function CommandCenter() {
 
             {/* Approvals waiting */}
             {(data.approvals?.pending ?? 0) > 0 && (
-              <Link href="/admin/approvals" className="block glass-card p-5 mb-6 border-mustard-500/40 hover:border-mustard-500/60 transition-colors">
+              <Link href="/admin/approvals" className="block bg-[#FFF8E6] border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-6 hover:shadow-[5px_5px_0_0_#161616] transition-all">
                 <div className="flex items-center gap-3">
                   <span className="relative flex h-2.5 w-2.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mustard-400 opacity-70" />
-                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-mustard-400" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F5B700] opacity-70" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#F5B700]" />
                   </span>
-                  <span className="text-sm font-sans font-bold text-white">
+                  <span className="text-sm font-sans font-bold text-[#161616]">
                     {data.approvals!.pending} draft{data.approvals!.pending === 1 ? '' : 's'} waiting for your approval
                   </span>
-                  <span className="ml-auto text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-mustard-300">Review →</span>
+                  <span className="ml-auto text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#E0301E]">Review →</span>
                 </div>
               </Link>
             )}
 
             {/* Client messages (change requests / notes from portals) */}
             {data.messages && data.messages.items.length > 0 && (
-              <div className="glass-card p-5 mb-6 border-mustard-500/30">
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-6">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="relative flex h-2 w-2">
-                    {data.messages.newCount > 0 && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mustard-400 opacity-70" />}
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-mustard-400" />
+                    {data.messages.newCount > 0 && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F5B700] opacity-70" />}
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[#F5B700]" />
                   </span>
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-mustard-300 font-mono font-bold">Client messages</span>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Client messages</span>
                   {data.messages.newCount > 0 && (
-                    <span className="text-[9px] font-mono font-bold text-[#080c16] bg-mustard-400 rounded-full px-2 py-0.5">{data.messages.newCount} new</span>
+                    <span className="text-[9px] font-mono font-bold text-[#161616] bg-[#F5B700] border border-[#161616]/30 rounded-full px-2 py-0.5">{data.messages.newCount} new</span>
                   )}
                 </div>
                 <div className="space-y-2.5">
                   {data.messages.items.map((m) => (
-                    <div key={m.id} className={`rounded-lg border px-4 py-3 ${m.status === 'new' ? 'bg-mustard-500/[0.06] border-mustard-500/25' : 'bg-white/[0.02] border-white/[0.05]'}`}>
+                    <div key={m.id} className={`rounded-lg border px-4 py-3 ${m.status === 'new' ? 'bg-[#FFF8E6] border-[#F5B700]' : 'bg-[#FFFDF6] border-[#161616]/15'}`}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-white/90 font-sans text-sm font-semibold truncate">{m.name ?? m.email}</span>
-                            {m.source === 'chatbot' && <span className="text-[8px] uppercase tracking-[0.15em] font-mono text-white/35 border border-white/10 rounded px-1.5 py-0.5">via Mr. Mustard</span>}
-                            <span className="text-white/30 font-mono text-[10px] whitespace-nowrap">{timeAgo(m.created_at)}</span>
+                            <span className="text-[#161616] font-sans text-sm font-semibold truncate">{m.name ?? m.email}</span>
+                            {m.source === 'chatbot' && <span className="text-[8px] uppercase tracking-[0.15em] font-mono text-[#161616]/50 border border-[#161616]/20 rounded px-1.5 py-0.5">via Mr. Mustard</span>}
+                            <span className="text-[#161616]/45 font-mono text-[10px] whitespace-nowrap">{timeAgo(m.created_at)}</span>
                           </div>
-                          <p className="text-white/70 font-body text-[13px] leading-relaxed whitespace-pre-wrap">{m.body}</p>
+                          <p className="text-[#3A3733] font-body text-[13px] leading-relaxed whitespace-pre-wrap">{m.body}</p>
                         </div>
                         <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                           {m.source === 'launch_date' && m.proposed_date && m.status !== 'done' && (
                             <button
                               onClick={() => approveLaunch(m.id)}
-                              className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#080c16] bg-emerald-400 hover:bg-emerald-300 rounded px-2.5 py-1 whitespace-nowrap"
+                              className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-white bg-emerald-600 hover:bg-emerald-700 border border-[#161616]/20 rounded px-2.5 py-1 whitespace-nowrap"
                             >
                               Approve {fmtDate(m.proposed_date)}
                             </button>
                           )}
-                          <a href={`mailto:${m.email}?subject=${encodeURIComponent('Re: your note')}`} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-mustard-400 hover:text-mustard-300">Reply</a>
-                          <button onClick={() => markRequest(m.id, 'done')} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-white/40 hover:text-emerald-300">Mark done</button>
+                          <a href={`mailto:${m.email}?subject=${encodeURIComponent('Re: your note')}`} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#1E50C8]/80">Reply</a>
+                          <button onClick={() => markRequest(m.id, 'done')} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616]/55 hover:text-emerald-700">Mark done</button>
                         </div>
                       </div>
                     </div>
@@ -372,22 +372,22 @@ export default function CommandCenter() {
             {data.followups && data.followups.length > 0 && (
               <Link
                 href="/admin/proposals"
-                className="block glass-card p-5 mb-6 border-amber-500/30 hover:border-amber-500/50 transition-colors"
+                className="block bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-6 hover:bg-[#FFF8E6] transition-colors"
               >
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-amber-300 font-mono font-bold">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-amber-800 font-mono font-bold">
                     Follow-up radar
                   </span>
-                  <span className="text-[9px] text-white/30 font-mono">{data.followups.length} need a nudge</span>
+                  <span className="text-[9px] text-[#161616]/45 font-mono">{data.followups.length} need a nudge</span>
                 </div>
                 <div className="space-y-2">
                   {data.followups.map((f, i) => (
                     <div key={i} className="flex items-center justify-between gap-3">
                       <div className="min-w-0">
-                        <span className="block text-sm font-sans font-semibold text-white/90 truncate">{f.title}</span>
-                        <span className="block text-[11px] text-white/45 font-body">{f.detail}</span>
+                        <span className="block text-sm font-sans font-semibold text-[#161616] truncate">{f.title}</span>
+                        <span className="block text-[11px] text-[#161616]/60 font-body">{f.detail}</span>
                       </div>
-                      <span className="flex-shrink-0 text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-amber-300/80">
+                      <span className="flex-shrink-0 text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-amber-700">
                         {f.days}d
                       </span>
                     </div>
@@ -397,25 +397,25 @@ export default function CommandCenter() {
             )}
 
             {/* AI brief */}
-            <div className="glass-card p-6 mb-6 border-mustard-500/20">
+            <div className="bg-[#FFF8E6] border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 mb-6">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2.5">
                   <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-light opacity-70" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-gold-light" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F5B700] opacity-70" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[#F5B700]" />
                   </span>
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-gold-light/90 font-mono font-bold">Your daily brief</span>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Your daily brief</span>
                 </div>
                 <button
                   onClick={() => data && genBrief(data)}
                   disabled={briefLoading}
-                  className="text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-white/40 hover:text-white/70 disabled:opacity-40"
+                  className="text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616]/55 hover:text-[#161616] disabled:opacity-40"
                 >
                   {briefLoading ? 'Thinking...' : 'Regenerate'}
                 </button>
               </div>
               {briefLoading && !brief ? (
-                <p className="text-white/40 font-body italic text-sm">Reading your numbers...</p>
+                <p className="text-[#161616]/45 font-body italic text-sm">Reading your numbers...</p>
               ) : (
                 <div className="max-w-none">{renderBrief(brief || 'No brief yet.')}</div>
               )}
@@ -423,23 +423,23 @@ export default function CommandCenter() {
 
             <div className="grid lg:grid-cols-3 gap-6 mb-6">
               {/* Needs attention */}
-              <div className="lg:col-span-2 glass-card p-6">
+              <div className="lg:col-span-2 bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold">Needs attention</span>
-                  <span className="text-[10px] text-white/30 font-mono">{data.attention.length} items</span>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Needs attention</span>
+                  <span className="text-[10px] text-[#161616]/45 font-mono">{data.attention.length} items</span>
                 </div>
                 {data.attention.length === 0 ? (
-                  <p className="text-white/40 font-body italic text-sm py-6 text-center">All clear. Nothing waiting on you.</p>
+                  <p className="text-[#161616]/45 font-body italic text-sm py-6 text-center">All clear. Nothing waiting on you.</p>
                 ) : (
                   <div className="space-y-2.5">
                     {data.attention.map((a, i) => (
-                      <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.05]">
-                        <span className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${a.severity === 'high' ? 'bg-red-400' : 'bg-mustard-400'}`} />
+                      <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-[#FFFDF6] border border-[#161616]/15">
+                        <span className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${a.severity === 'high' ? 'bg-[#E0301E]' : 'bg-[#F5B700]'}`} />
                         <div className="flex-1 min-w-0">
-                          <p className="text-white/90 font-body text-sm font-medium truncate">{a.title}</p>
-                          <p className="text-white/45 font-body text-xs truncate mt-0.5">{a.detail}</p>
+                          <p className="text-[#161616] font-body text-sm font-medium truncate">{a.title}</p>
+                          <p className="text-[#161616]/60 font-body text-xs truncate mt-0.5">{a.detail}</p>
                         </div>
-                        <span className="text-white/30 font-mono text-[10px] whitespace-nowrap">{a.kind === 'call' ? 'call' : timeAgo(a.whenIso)}</span>
+                        <span className="text-[#161616]/45 font-mono text-[10px] whitespace-nowrap">{a.kind === 'call' ? 'call' : timeAgo(a.whenIso)}</span>
                       </div>
                     ))}
                   </div>
@@ -447,16 +447,16 @@ export default function CommandCenter() {
               </div>
 
               {/* Upcoming calls */}
-              <div className="glass-card p-6">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-4">Upcoming calls</span>
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-4">Upcoming calls</span>
                 {data.bookings.upcoming.length === 0 ? (
-                  <p className="text-white/40 font-body italic text-sm py-6 text-center">No calls booked yet.</p>
+                  <p className="text-[#161616]/45 font-body italic text-sm py-6 text-center">No calls booked yet.</p>
                 ) : (
                   <div className="space-y-3">
                     {data.bookings.upcoming.slice(0, 6).map((b, i) => (
-                      <div key={i} className="border-l-2 border-emerald-500/40 pl-3">
-                        <p className="text-white/90 font-body text-sm font-medium">{b.name ?? b.email}</p>
-                        <p className="text-emerald-300/80 font-mono text-[11px] mt-0.5">{b.display}</p>
+                      <div key={i} className="border-l-2 border-emerald-600 pl-3">
+                        <p className="text-[#161616] font-body text-sm font-medium">{b.name ?? b.email}</p>
+                        <p className="text-emerald-700 font-mono text-[11px] mt-0.5">{b.display}</p>
                       </div>
                     ))}
                   </div>
@@ -466,21 +466,21 @@ export default function CommandCenter() {
 
             <div className="grid lg:grid-cols-3 gap-6 mb-6">
               {/* Revenue chart */}
-              <div className="lg:col-span-2 glass-card p-6">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-5">Revenue, last 6 months</span>
+              <div className="lg:col-span-2 bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-5">Revenue, last 6 months</span>
                 <div style={{ width: '100%', height: 200 }}>
                   <ResponsiveContainer>
                     <BarChart data={data.revenueSeries} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
-                      <XAxis dataKey="month" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <XAxis dataKey="month" tick={{ fill: 'rgba(22,22,22,0.55)', fontSize: 11 }} axisLine={false} tickLine={false} />
                       <Tooltip
-                        cursor={{ fill: 'rgba(255,255,255,0.04)' }}
-                        contentStyle={{ background: '#0f1422', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 12 }}
-                        labelStyle={{ color: 'rgba(255,255,255,0.6)' }}
+                        cursor={{ fill: 'rgba(22,22,22,0.05)' }}
+                        contentStyle={{ background: '#ffffff', border: '2px solid #161616', borderRadius: 8, fontSize: 12 }}
+                        labelStyle={{ color: 'rgba(22,22,22,0.6)' }}
                         formatter={(value) => [money(Number(value)), 'Revenue']}
                       />
                       <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
                         {data.revenueSeries.map((_, i) => (
-                          <Cell key={i} fill={i === data.revenueSeries.length - 1 ? '#C8964E' : 'rgba(200,150,78,0.4)'} />
+                          <Cell key={i} fill={i === data.revenueSeries.length - 1 ? '#F5B700' : 'rgba(245,183,0,0.4)'} />
                         ))}
                       </Bar>
                     </BarChart>
@@ -489,8 +489,8 @@ export default function CommandCenter() {
               </div>
 
               {/* Pipeline */}
-              <div className="glass-card p-6">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-5">Pipeline</span>
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-5">Pipeline</span>
                 <div className="space-y-3">
                   {STATUS_ORDER.map((s) => {
                     const count = data.leads.byStatus[s] ?? 0;
@@ -498,10 +498,10 @@ export default function CommandCenter() {
                     return (
                       <div key={s}>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-white/60 font-body text-xs capitalize">{s}</span>
-                          <span className="text-white/80 font-mono text-xs font-semibold">{count}</span>
+                          <span className="text-[#161616]/60 font-body text-xs capitalize">{s}</span>
+                          <span className="text-[#161616] font-mono text-xs font-semibold">{count}</span>
                         </div>
-                        <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                        <div className="h-1.5 rounded-full bg-[#161616]/10 overflow-hidden">
                           <div className={`h-full ${STATUS_COLOR[s]}`} style={{ width: `${(count / max) * 100}%` }} />
                         </div>
                       </div>
@@ -513,21 +513,21 @@ export default function CommandCenter() {
 
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Recent sales */}
-              <div className="lg:col-span-2 glass-card p-6">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-4">Recent sales</span>
+              <div className="lg:col-span-2 bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-4">Recent sales</span>
                 {data.recentOrders.length === 0 ? (
-                  <p className="text-white/40 font-body italic text-sm py-6 text-center">No sales recorded yet.</p>
+                  <p className="text-[#161616]/45 font-body italic text-sm py-6 text-center">No sales recorded yet.</p>
                 ) : (
                   <div className="space-y-1">
                     {data.recentOrders.map((o, i) => (
-                      <div key={i} className="flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-0">
+                      <div key={i} className="flex items-center justify-between py-2.5 border-b border-[#161616]/10 last:border-0">
                         <div className="min-w-0 flex-1">
-                          <p className="text-white/85 font-body text-sm truncate">{o.product_name}</p>
-                          <p className="text-white/40 font-body text-xs truncate">{o.name ?? o.email}</p>
+                          <p className="text-[#3A3733] font-body text-sm truncate">{o.product_name}</p>
+                          <p className="text-[#161616]/45 font-body text-xs truncate">{o.name ?? o.email}</p>
                         </div>
                         <div className="text-right ml-4">
-                          <p className="text-emerald-300 font-mono text-sm font-semibold">{money(Math.round(o.price_paid_cents / 100))}</p>
-                          <p className="text-white/30 font-mono text-[10px]">{timeAgo(o.created_at)}</p>
+                          <p className="text-emerald-700 font-mono text-sm font-semibold">{money(Math.round(o.price_paid_cents / 100))}</p>
+                          <p className="text-[#161616]/45 font-mono text-[10px]">{timeAgo(o.created_at)}</p>
                         </div>
                       </div>
                     ))}
@@ -536,11 +536,11 @@ export default function CommandCenter() {
               </div>
 
               {/* Targets editor */}
-              <div className="glass-card p-6">
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold">Monthly targets</span>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Monthly targets</span>
                   {!editTargets && (
-                    <button onClick={() => setEditTargets(true)} className="text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 hover:text-mustard-300">
+                    <button onClick={() => setEditTargets(true)} className="text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#1E50C8] hover:text-[#1E50C8]/80">
                       {t ? 'Edit' : 'Set'}
                     </button>
                   )}
@@ -553,32 +553,32 @@ export default function CommandCenter() {
                       { label: 'Calls', val: tCalls, set: setTCalls },
                     ].map((f) => (
                       <div key={f.label}>
-                        <label className="text-[9px] uppercase tracking-[0.25em] text-white/40 font-mono block mb-1">{f.label}</label>
+                        <label className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">{f.label}</label>
                         <input
                           type="number"
                           value={f.val}
                           onChange={(e) => f.set(e.target.value)}
-                          className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-mustard-500/40"
+                          className="w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
                         />
                       </div>
                     ))}
                     <div className="flex gap-2 pt-1">
-                      <button onClick={saveTargets} disabled={savingTargets} className="flex-1 px-3 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-mustard-500/80 hover:bg-mustard-500 rounded-lg disabled:opacity-50">
+                      <button onClick={saveTargets} disabled={savingTargets} className="flex-1 px-3 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-50">
                         {savingTargets ? 'Saving...' : 'Save'}
                       </button>
-                      <button onClick={() => setEditTargets(false)} className="px-3 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-white/50 hover:text-white/80">
+                      <button onClick={() => setEditTargets(false)} className="px-3 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616]/55 hover:text-[#161616]">
                         Cancel
                       </button>
                     </div>
                   </div>
                 ) : t ? (
                   <div className="space-y-3">
-                    <div className="flex justify-between"><span className="text-white/50 font-body text-sm">Revenue</span><span className="text-white/85 font-mono text-sm">{money(t.revenue)}</span></div>
-                    <div className="flex justify-between"><span className="text-white/50 font-body text-sm">New leads</span><span className="text-white/85 font-mono text-sm">{t.leads}</span></div>
-                    <div className="flex justify-between"><span className="text-white/50 font-body text-sm">Calls</span><span className="text-white/85 font-mono text-sm">{t.calls}</span></div>
+                    <div className="flex justify-between"><span className="text-[#161616]/60 font-body text-sm">Revenue</span><span className="text-[#161616] font-mono text-sm">{money(t.revenue)}</span></div>
+                    <div className="flex justify-between"><span className="text-[#161616]/60 font-body text-sm">New leads</span><span className="text-[#161616] font-mono text-sm">{t.leads}</span></div>
+                    <div className="flex justify-between"><span className="text-[#161616]/60 font-body text-sm">Calls</span><span className="text-[#161616] font-mono text-sm">{t.calls}</span></div>
                   </div>
                 ) : (
-                  <p className="text-white/40 font-body italic text-sm">No targets set. Tap Set to define your monthly goals and track progress.</p>
+                  <p className="text-[#161616]/45 font-body italic text-sm">No targets set. Tap Set to define your monthly goals and track progress.</p>
                 )}
               </div>
             </div>

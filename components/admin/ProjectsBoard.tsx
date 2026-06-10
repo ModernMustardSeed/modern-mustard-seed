@@ -25,10 +25,10 @@ type Project = {
 function DeliverablesStrip({ d, email, onLaunch }: { d: Deliverables; email: string; onLaunch: () => void }) {
   const base =
     'inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.12em] font-mono font-bold px-2 py-0.5 rounded border transition-colors';
-  const doneCls = 'text-emerald-200 border-emerald-500/30 bg-emerald-500/10';
-  const todoCls = 'text-white/45 border-white/15 bg-white/[0.02] hover:text-mustard-200 hover:border-mustard-500/40 cursor-pointer';
+  const doneCls = 'text-emerald-800 border-emerald-800/25 bg-emerald-100';
+  const todoCls = 'text-[#161616]/55 border-[#161616]/20 bg-[#FFFDF6] hover:text-[#161616] hover:border-[#F5B700] cursor-pointer';
 
-  const staticCls = 'text-white/40 border-white/12 bg-white/[0.02]';
+  const staticCls = 'text-[#161616]/45 border-[#161616]/15 bg-[#FFFDF6]';
   const items: { label: string; done: boolean; href?: string; onClick?: () => void; hint: string }[] = [
     { label: 'Audit', done: d.audit, href: `/admin/audit?email=${encodeURIComponent(email)}`, hint: 'Run and save an audit' },
     { label: 'Intake', done: d.intake, hint: 'Client fills this in their portal' },
@@ -86,14 +86,14 @@ const STATUS_LABEL: Record<string, string> = {
 };
 const STATUS_DOT: Record<string, string> = {
   discovery: 'bg-blue-400',
-  building: 'bg-mustard-400',
+  building: 'bg-[#F5B700]',
   review: 'bg-purple-400',
   launched: 'bg-emerald-400',
-  paused: 'bg-white/30',
+  paused: 'bg-[#161616]/30',
 };
 
 const inp =
-  'bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 w-full';
+  'bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] w-full';
 
 type ClientFile = { id: string; label: string; url: string; kind: string };
 const FILE_KINDS = ['site', 'link', 'repo', 'doc', 'design', 'download', 'invoice'];
@@ -150,19 +150,19 @@ function ProjectFiles({ email }: { email: string }) {
 
   return (
     <div>
-      <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono block mb-1.5">
+      <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1.5">
         Files &amp; links (the client sees these in their portal)
       </label>
       {files.length > 0 && (
         <div className="space-y-1.5 mb-2.5">
           {files.map((f) => (
-            <div key={f.id} className="flex items-center gap-2 rounded-lg bg-white/[0.02] border border-white/[0.06] px-3 py-2">
-              <span className="text-[8px] uppercase tracking-[0.15em] font-mono font-bold text-mustard-300/80 w-16 flex-shrink-0">{f.kind}</span>
+            <div key={f.id} className="flex items-center gap-2 rounded-lg bg-[#FFFDF6] border border-[#161616]/15 px-3 py-2">
+              <span className="text-[8px] uppercase tracking-[0.15em] font-mono font-bold text-[#E0301E] w-16 flex-shrink-0">{f.kind}</span>
               <div className="min-w-0 flex-1">
-                <span className="block text-sm text-white/85 font-body truncate">{f.label}</span>
-                <a href={f.url} target="_blank" rel="noopener noreferrer" className="block text-[11px] text-white/40 font-mono truncate hover:text-mustard-300">{f.url}</a>
+                <span className="block text-sm text-[#3A3733] font-body truncate">{f.label}</span>
+                <a href={f.url} target="_blank" rel="noopener noreferrer" className="block text-[11px] text-[#161616]/50 font-mono truncate hover:text-[#1E50C8]">{f.url}</a>
               </div>
-              <button onClick={() => remove(f.id)} className="text-white/25 hover:text-red-300 text-xs px-1 flex-shrink-0" aria-label="Remove">✕</button>
+              <button onClick={() => remove(f.id)} className="text-[#161616]/40 hover:text-[#E0301E] text-xs px-1 flex-shrink-0" aria-label="Remove">✕</button>
             </div>
           ))}
         </div>
@@ -171,10 +171,10 @@ function ProjectFiles({ email }: { email: string }) {
         <select
           value={form.kind}
           onChange={(e) => setForm({ ...form, kind: e.target.value })}
-          className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-2 py-2 text-sm text-white focus:outline-none focus:border-mustard-500/40 sm:w-32"
+          className="bg-white border-2 border-[#161616] rounded-lg px-2 py-2 text-sm text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700] sm:w-32"
         >
           {FILE_KINDS.map((k) => (
-            <option key={k} value={k} className="bg-neutral-900">
+            <option key={k} value={k} className="bg-white">
               {k}
             </option>
           ))}
@@ -184,12 +184,12 @@ function ProjectFiles({ email }: { email: string }) {
         <button
           onClick={add}
           disabled={busy || !form.label.trim() || !form.url.trim()}
-          className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors whitespace-nowrap"
+          className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] hover:bg-[#FFD23F] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all whitespace-nowrap"
         >
           Add
         </button>
       </div>
-      {err && <p className="text-red-300 text-xs font-body mt-2">{err}</p>}
+      {err && <p className="text-[#E0301E] text-xs font-body mt-2">{err}</p>}
     </div>
   );
 }
@@ -290,31 +290,31 @@ function CredentialsVault({ email }: { email: string }) {
 
   return (
     <div>
-      <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono block mb-1.5">
+      <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1.5">
         Credentials vault (encrypted · client can reveal in their portal)
       </label>
       {items.length > 0 && (
         <div className="space-y-1.5 mb-2.5">
           {items.map((c) => (
-            <div key={c.id} className="rounded-lg bg-white/[0.02] border border-white/[0.06] px-3 py-2">
+            <div key={c.id} className="rounded-lg bg-[#FFFDF6] border border-[#161616]/15 px-3 py-2">
               <div className="flex items-center gap-2">
                 <div className="min-w-0 flex-1">
-                  <span className="block text-sm text-white/85 font-body truncate">{c.label}</span>
-                  <span className="block text-[11px] text-white/40 font-mono truncate">
+                  <span className="block text-sm text-[#3A3733] font-body truncate">{c.label}</span>
+                  <span className="block text-[11px] text-[#161616]/50 font-mono truncate">
                     {c.username || ''}
                     {c.username && c.url ? ' · ' : ''}
                     {c.url || ''}
                   </span>
                 </div>
-                <button onClick={() => reveal(c.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-mustard-300 hover:text-mustard-200 flex-shrink-0">
+                <button onClick={() => reveal(c.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-[#1E50C8] hover:text-[#161616] flex-shrink-0">
                   {revealed[c.id] !== undefined ? 'Hide' : 'Reveal'}
                 </button>
-                <button onClick={() => copy(c.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-white/50 hover:text-white/80 flex-shrink-0">
+                <button onClick={() => copy(c.id)} className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-[#161616]/55 hover:text-[#161616] flex-shrink-0">
                   {copiedId === c.id ? 'Copied' : 'Copy'}
                 </button>
-                <button onClick={() => remove(c.id)} className="text-white/25 hover:text-red-300 text-xs px-1 flex-shrink-0" aria-label="Remove">✕</button>
+                <button onClick={() => remove(c.id)} className="text-[#161616]/40 hover:text-[#E0301E] text-xs px-1 flex-shrink-0" aria-label="Remove">✕</button>
               </div>
-              <div className="mt-1.5 font-mono text-[12px] text-mustard-200/90 break-all">
+              <div className="mt-1.5 font-mono text-[12px] text-[#161616] break-all">
                 {revealed[c.id] !== undefined ? revealed[c.id] : '••••••••••••'}
               </div>
             </div>
@@ -331,11 +331,11 @@ function CredentialsVault({ email }: { email: string }) {
         <button
           onClick={add}
           disabled={busy || !form.label.trim() || !form.secret}
-          className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+          className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] hover:bg-[#FFD23F] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all"
         >
           {busy ? 'Saving…' : 'Add credential'}
         </button>
-        {err && <span className="text-red-300 text-xs font-body ml-3">{err}</span>}
+        {err && <span className="text-[#E0301E] text-xs font-body ml-3">{err}</span>}
       </div>
     </div>
   );
@@ -364,26 +364,26 @@ function ProjectIntake({ email }: { email: string }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono">Client intake</label>
-        <span className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded border ${status === 'submitted' ? 'text-emerald-200 border-emerald-500/30 bg-emerald-500/10' : status === 'in_progress' ? 'text-mustard-200 border-mustard-500/30 bg-mustard-500/10' : 'text-white/35 border-white/12'}`}>
+        <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono">Client intake</label>
+        <span className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded border ${status === 'submitted' ? 'text-emerald-800 border-emerald-800/25 bg-emerald-100' : status === 'in_progress' ? 'text-amber-800 border-amber-800/25 bg-amber-100' : 'text-[#161616]/45 border-[#161616]/15'}`}>
           {status === 'submitted' ? 'Submitted' : status === 'in_progress' ? 'In progress' : 'Not started'}
         </span>
       </div>
       {filled === 0 ? (
-        <p className="text-white/35 font-body text-xs">No answers yet. The client fills this in their portal.</p>
+        <p className="text-[#161616]/45 font-body text-xs">No answers yet. The client fills this in their portal.</p>
       ) : (
         <div className="space-y-3">
           {sections.map((sec) => {
             const rows = sec.fields.filter((f) => (answers[f.key] ?? '').toString().trim());
             if (rows.length === 0) return null;
             return (
-              <div key={sec.key} className="rounded-lg bg-white/[0.02] border border-white/[0.06] px-3 py-2.5">
-                <span className="text-[9px] uppercase tracking-[0.2em] text-mustard-300/80 font-mono font-bold block mb-1.5">{sec.title}</span>
+              <div key={sec.key} className="rounded-lg bg-[#FFFDF6] border border-[#161616]/15 px-3 py-2.5">
+                <span className="text-[9px] uppercase tracking-[0.2em] text-[#E0301E] font-mono font-bold block mb-1.5">{sec.title}</span>
                 <dl className="space-y-1.5">
                   {rows.map((f) => (
                     <div key={f.key}>
-                      <dt className="text-white/40 font-body text-[11px]">{f.label}</dt>
-                      <dd className="text-white/85 font-body text-[13px] whitespace-pre-wrap">{answers[f.key]}</dd>
+                      <dt className="text-[#161616]/45 font-body text-[11px]">{f.label}</dt>
+                      <dd className="text-[#3A3733] font-body text-[13px] whitespace-pre-wrap">{answers[f.key]}</dd>
                     </div>
                   ))}
                 </dl>
@@ -509,18 +509,18 @@ export default function ProjectsBoard() {
   const setD = (patch: Partial<Project>) => setDraft((d) => (d ? { ...d, ...patch } : d));
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="projects" title="Projects" onRefresh={load} />
       <main className="max-w-7xl mx-auto px-6 py-8">
         {error && (
-          <div className="glass-card p-4 mb-6 border-red-500/30">
-            <p className="text-red-300 text-sm font-body">{error}</p>
+          <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-4 mb-6">
+            <p className="text-[#E0301E] text-sm font-body">{error}</p>
           </div>
         )}
 
         {/* New project + client */}
-        <div className="glass-card p-5 mb-8">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">
+        <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-8">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">
             New project &amp; client
           </span>
           <div className="grid sm:grid-cols-2 gap-3 mb-3">
@@ -553,10 +553,10 @@ export default function ProjectsBoard() {
             <select
               value={form.status}
               onChange={(e) => setForm({ ...form, status: e.target.value })}
-              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-mustard-500/40 sm:w-48"
+              className="bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700] sm:w-48"
             >
               {STATUSES.map((s) => (
-                <option key={s} value={s} className="bg-neutral-900">
+                <option key={s} value={s} className="bg-white">
                   {STATUS_LABEL[s]}
                 </option>
               ))}
@@ -564,20 +564,20 @@ export default function ProjectsBoard() {
             <button
               onClick={create}
               disabled={adding || !form.client_email.trim() || !form.name.trim()}
-              className="px-6 py-2 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors whitespace-nowrap"
+              className="px-6 py-2 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] hover:bg-[#FFD23F] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all whitespace-nowrap"
             >
               {adding ? 'Creating…' : 'Create client + project'}
             </button>
           </div>
-          <p className="text-white/30 text-[11px] font-body mt-2">
+          <p className="text-[#161616]/45 text-[11px] font-body mt-2">
             Creates the client record and starts their project. They see status, progress, and milestones in their portal, keyed by email.
           </p>
         </div>
 
         {loading ? (
-          <p className="text-white/40 text-sm font-body">Loading…</p>
+          <p className="text-[#161616]/60 text-sm font-body">Loading…</p>
         ) : projects.length === 0 ? (
-          <p className="text-white/40 text-sm font-body">No projects yet. Add one above, or start one from a paid proposal.</p>
+          <p className="text-[#161616]/60 text-sm font-body">No projects yet. Add one above, or start one from a paid proposal.</p>
         ) : (
           <div className="space-y-8">
             {STATUSES.map((st) => {
@@ -587,7 +587,7 @@ export default function ProjectsBoard() {
                 <div key={st}>
                   <div className="flex items-center gap-2 mb-3">
                     <span className={`h-2 w-2 rounded-full ${STATUS_DOT[st]}`} />
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
                       {STATUS_LABEL[st]} ({inLane.length})
                     </span>
                   </div>
@@ -596,18 +596,18 @@ export default function ProjectsBoard() {
                       const expanded = openId === p.id;
                       const d = expanded ? draft : null;
                       return (
-                        <div key={p.id} className="glass-card p-4">
+                        <div key={p.id} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-4">
                           {/* Compact row */}
                           <div className="flex items-center gap-3">
                             <button onClick={() => open(p)} className="flex-1 min-w-0 text-left">
-                              <span className="block text-sm font-sans font-semibold text-white/90 truncate">{p.name}</span>
-                              <span className="block text-[11px] text-white/40 font-mono truncate">{p.client_email}</span>
+                              <span className="block text-sm font-sans font-semibold text-[#161616] truncate">{p.name}</span>
+                              <span className="block text-[11px] text-[#161616]/50 font-mono truncate">{p.client_email}</span>
                             </button>
                             <div className="flex-shrink-0 w-28 hidden sm:block">
-                              <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
-                                <div className="h-full bg-gradient-to-r from-mustard-600 to-mustard-400" style={{ width: `${p.progress}%` }} />
+                              <div className="h-1.5 rounded-full bg-[#161616]/10 overflow-hidden">
+                                <div className="h-full bg-[#F5B700]" style={{ width: `${p.progress}%` }} />
                               </div>
-                              <span className="text-[9px] text-white/35 font-mono">{p.progress}%</span>
+                              <span className="text-[9px] text-[#161616]/50 font-mono">{p.progress}%</span>
                             </div>
                             {(() => {
                               const cd = launchCountdown(p.launch_target);
@@ -617,10 +617,10 @@ export default function ProjectsBoard() {
                                   title={`Launches ${cd.date}`}
                                   className={`flex-shrink-0 text-[9px] uppercase tracking-[0.12em] font-mono font-bold px-2 py-0.5 rounded border hidden md:inline ${
                                     cd.past
-                                      ? 'text-red-300 border-red-500/30 bg-red-500/10'
+                                      ? 'text-[#E0301E] border-[#E0301E]/30 bg-red-100'
                                       : cd.days <= 7
-                                        ? 'text-mustard-200 border-mustard-500/40 bg-mustard-500/10'
-                                        : 'text-white/45 border-white/15 bg-white/[0.02]'
+                                        ? 'text-amber-800 border-amber-800/25 bg-amber-100'
+                                        : 'text-[#161616]/55 border-[#161616]/20 bg-[#FFFDF6]'
                                   }`}
                                 >
                                   {cd.past ? `${cd.short} late` : `T-${cd.days}`}
@@ -630,10 +630,10 @@ export default function ProjectsBoard() {
                             <select
                               value={p.status}
                               onChange={(e) => quickPatch(p.id, { status: e.target.value })}
-                              className="flex-shrink-0 bg-white/[0.03] border border-white/[0.08] rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-mustard-500/40"
+                              className="flex-shrink-0 bg-white border-2 border-[#161616] rounded-lg px-2 py-1.5 text-xs text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
                             >
                               {STATUSES.map((s) => (
-                                <option key={s} value={s} className="bg-neutral-900">
+                                <option key={s} value={s} className="bg-white">
                                   {STATUS_LABEL[s]}
                                 </option>
                               ))}
@@ -653,18 +653,18 @@ export default function ProjectsBoard() {
 
                           {/* Expanded editor */}
                           {expanded && d && (
-                            <div className="mt-4 pt-4 border-t border-white/[0.06] space-y-3">
+                            <div className="mt-4 pt-4 border-t border-[#161616]/10 space-y-3">
                               <div className="grid sm:grid-cols-2 gap-3">
                                 <div>
-                                  <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono block mb-1">Name</label>
+                                  <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1">Name</label>
                                   <input value={d.name} onChange={(e) => setD({ name: e.target.value })} className={inp} />
                                 </div>
                                 <div>
-                                  <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono block mb-1">Client email</label>
+                                  <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1">Client email</label>
                                   <input value={d.client_email} onChange={(e) => setD({ client_email: e.target.value })} className={inp} />
                                 </div>
                                 <div>
-                                  <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono block mb-1">Progress %</label>
+                                  <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1">Progress %</label>
                                   <input
                                     type="number"
                                     min={0}
@@ -675,7 +675,7 @@ export default function ProjectsBoard() {
                                   />
                                 </div>
                                 <div>
-                                  <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono block mb-1">Launch target</label>
+                                  <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1">Launch target</label>
                                   <input
                                     type="date"
                                     value={d.launch_target ?? ''}
@@ -686,7 +686,7 @@ export default function ProjectsBoard() {
                               </div>
 
                               <div>
-                                <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono block mb-1">Summary</label>
+                                <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1">Summary</label>
                                 <textarea
                                   value={d.summary ?? ''}
                                   onChange={(e) => setD({ summary: e.target.value })}
@@ -698,10 +698,10 @@ export default function ProjectsBoard() {
                               {/* Milestones */}
                               <div>
                                 <div className="flex items-center justify-between mb-1.5">
-                                  <label className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-mono">Milestones</label>
+                                  <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono">Milestones</label>
                                   <button
                                     onClick={() => setD({ milestones: [...d.milestones, { title: '', done: false }] })}
-                                    className="text-[10px] uppercase tracking-[0.15em] font-mono text-mustard-300 hover:text-mustard-200"
+                                    className="text-[10px] uppercase tracking-[0.15em] font-mono text-[#1E50C8] hover:text-[#161616]"
                                   >
                                     + Add
                                   </button>
@@ -716,7 +716,7 @@ export default function ProjectsBoard() {
                                           setD({ milestones: ms });
                                         }}
                                         className={`h-5 w-5 rounded flex-shrink-0 flex items-center justify-center text-[10px] ${
-                                          m.done ? 'bg-emerald-500/80 text-white' : 'border border-white/20 text-transparent'
+                                          m.done ? 'bg-emerald-600 text-white border border-[#161616]/20' : 'border border-[#161616]/30 text-transparent'
                                         }`}
                                         aria-label="Toggle done"
                                       >
@@ -730,11 +730,11 @@ export default function ProjectsBoard() {
                                           setD({ milestones: ms });
                                         }}
                                         placeholder="Milestone"
-                                        className={`${inp} ${m.done ? 'line-through text-white/40' : ''}`}
+                                        className={`${inp} ${m.done ? 'line-through text-[#161616]/40' : ''}`}
                                       />
                                       <button
                                         onClick={() => setD({ milestones: d.milestones.filter((_, j) => j !== i) })}
-                                        className="text-white/25 hover:text-red-300 text-xs px-1 flex-shrink-0"
+                                        className="text-[#161616]/40 hover:text-[#E0301E] text-xs px-1 flex-shrink-0"
                                         aria-label="Remove milestone"
                                       >
                                         ✕
@@ -751,7 +751,7 @@ export default function ProjectsBoard() {
                                 <div>
                                   <Link
                                     href={`/admin/builds?email=${encodeURIComponent(d.client_email)}`}
-                                    className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-mustard-300 border border-mustard-500/40 rounded-full px-4 py-2 hover:bg-mustard-500/10 transition-colors"
+                                    className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-4 py-2 shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                                   >
                                     ⚡ Queue a build (Claude Code)
                                   </Link>
@@ -762,19 +762,19 @@ export default function ProjectsBoard() {
                                 <button
                                   onClick={saveDraft}
                                   disabled={savingId === d.id}
-                                  className="px-5 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 disabled:opacity-40 transition-colors"
+                                  className="px-5 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] hover:bg-[#FFD23F] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all"
                                 >
                                   {savingId === d.id ? 'Saving…' : 'Save changes'}
                                 </button>
                                 <button
                                   onClick={() => open(p)}
-                                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-white/60 border border-white/15 hover:border-white/30 transition-colors"
+                                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold bg-white text-[#161616] border-2 border-[#161616] hover:bg-[#FFF8E6] transition-colors"
                                 >
                                   Cancel
                                 </button>
                                 <button
                                   onClick={() => del(p.id)}
-                                  className="ml-auto text-[10px] uppercase tracking-[0.15em] font-mono text-white/30 hover:text-red-300"
+                                  className="ml-auto text-[10px] uppercase tracking-[0.15em] font-mono text-[#161616]/45 hover:text-[#E0301E]"
                                 >
                                   Delete
                                 </button>

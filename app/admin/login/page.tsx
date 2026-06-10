@@ -37,20 +37,20 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-[#080c16]">
-      <form onSubmit={submit} className="w-full max-w-sm glass-card p-8 md:p-10">
+    <div className="min-h-screen flex items-center justify-center px-6 bg-[#FBF6EA] halftone-bg">
+      <form onSubmit={submit} className="w-full max-w-sm bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8 md:p-10">
         <div className="text-center mb-8">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium block mb-3">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-medium block mb-3">
             Modern Mustard Seed
           </span>
-          <h1 className="font-sans text-2xl font-semibold text-white tracking-tight">
+          <h1 className="font-sans text-2xl font-semibold text-[#161616] tracking-tight">
             Admin
           </h1>
         </div>
 
         <div className="space-y-5">
           <div>
-            <label className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-mono font-bold block mb-2">
+            <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-bold block mb-2">
               Email
             </label>
             <input
@@ -59,12 +59,12 @@ function LoginForm() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-4 py-3 text-sm text-white font-body placeholder-white/15 focus:outline-none focus:border-mustard-500/30"
+              className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
               placeholder="sarah@modernmustardseed.com"
             />
           </div>
           <div>
-            <label className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-mono font-bold block mb-2">
+            <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-bold block mb-2">
               Password
             </label>
             <input
@@ -73,15 +73,15 @@ function LoginForm() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-4 py-3 text-sm text-white font-body placeholder-white/15 focus:outline-none focus:border-mustard-500/30"
+              className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
               placeholder="Password"
             />
           </div>
-          {error && <p className="text-red-400 text-sm font-body text-center">{error}</p>}
+          {error && <p className="text-[#E0301E] text-sm font-body text-center">{error}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg disabled:opacity-50 hover:shadow-[0_0_30px_rgba(255,107,53,0.25)] transition-all"
+            className="w-full py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-50 transition-all"
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>

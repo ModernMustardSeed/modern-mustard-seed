@@ -16,10 +16,10 @@ type Props = {
 type TimelineEvent = { when: string; label: string; detail?: string; kind: string };
 
 const EVENT_DOT: Record<string, string> = {
-  signed: 'bg-blue-400',
-  paid: 'bg-emerald-400',
-  project: 'bg-mustard-400',
-  proposal: 'bg-white/40',
+  signed: 'bg-[#1E50C8]',
+  paid: 'bg-emerald-600',
+  project: 'bg-[#F5B700]',
+  proposal: 'bg-[#161616]/40',
 };
 
 export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props) {
@@ -98,29 +98,29 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
 
   return (
     <div className="fixed inset-0 z-50 flex">
-      <div className="flex-1 bg-night-900/60 backdrop-blur-sm" onClick={onClose} />
-      <aside className="w-full max-w-xl bg-[#0f0c08] border-l border-white/[0.06] overflow-y-auto">
-        <div className="sticky top-0 bg-[#0f0c08]/95 backdrop-blur-md border-b border-white/[0.06] px-6 py-5 flex justify-between items-start">
+      <div className="flex-1 bg-[#161616]/40 backdrop-blur-sm" onClick={onClose} />
+      <aside className="w-full max-w-xl bg-[#FBF6EA] border-l-2 border-[#161616] overflow-y-auto">
+        <div className="sticky top-0 bg-[#FBF6EA]/95 backdrop-blur-md border-b-2 border-[#161616] px-6 py-5 flex justify-between items-start">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-semibold text-mustard-400">
+              <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-semibold text-[#E0301E]">
                 {lead.type.replace('-', ' ')}
               </span>
-              <span className="text-white/20 text-xs">·</span>
-              <span className="text-xs text-white/40 font-mono">
+              <span className="text-[#161616]/45 text-xs">·</span>
+              <span className="text-xs text-[#161616]/50 font-mono">
                 {new Date(lead.created_at).toLocaleString()}
               </span>
             </div>
-            <h2 className="font-sans text-2xl font-semibold text-white tracking-tight">
+            <h2 className="font-sans text-2xl font-semibold text-[#161616] tracking-tight">
               {lead.name ?? lead.email}
             </h2>
-            <a href={`mailto:${lead.email}`} className="text-mustard-400 text-sm font-body hover:text-mustard-300">
+            <a href={`mailto:${lead.email}`} className="text-[#1E50C8] text-sm font-body hover:text-[#161616]">
               {lead.email}
             </a>
           </div>
           <button
             onClick={onClose}
-            className="text-white/40 hover:text-white text-xl leading-none w-8 h-8 flex items-center justify-center"
+            className="text-[#161616]/45 hover:text-[#161616] text-xl leading-none w-8 h-8 flex items-center justify-center"
             aria-label="Close"
           >
             ×
@@ -133,27 +133,27 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
             <div
               className={`rounded-xl border px-5 py-4 flex items-center justify-between gap-4 ${
                 launch?.launched
-                  ? 'border-emerald-500/30 bg-emerald-500/10'
+                  ? 'border-emerald-800/25 bg-emerald-100'
                   : cd.past
-                    ? 'border-red-500/30 bg-red-500/10'
-                    : 'border-mustard-500/30 bg-mustard-500/10'
+                    ? 'border-[#E0301E]/30 bg-red-100'
+                    : 'border-[#F5B700] bg-[#FFF8E6]'
               }`}
             >
               <div>
-                <span className="text-[9px] uppercase tracking-[0.3em] text-white/45 font-mono font-bold block mb-1">
+                <span className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-bold block mb-1">
                   {launch?.launched ? 'Launched' : 'Launch'}
                 </span>
-                <p className="font-sans font-semibold text-white text-sm">
+                <p className="font-sans font-semibold text-[#161616] text-sm">
                   {launch?.launched ? `${launch.projectName} is live` : cd.label}
                 </p>
-                <p className="text-white/45 font-mono text-[11px] mt-0.5">{cd.date}</p>
+                <p className="text-[#161616]/60 font-mono text-[11px] mt-0.5">{cd.date}</p>
               </div>
               {!launch?.launched && (
                 <div className="flex flex-col items-center flex-shrink-0">
-                  <span className={`font-display text-3xl font-semibold leading-none ${cd.past ? 'text-red-300' : 'text-mustard-300'}`}>
+                  <span className={`font-display text-3xl font-semibold leading-none ${cd.past ? 'text-[#E0301E]' : 'text-[#161616]'}`}>
                     {cd.days < 0 ? Math.abs(cd.days) : cd.days}
                   </span>
-                  <span className="text-[8px] uppercase tracking-[0.25em] text-white/40 font-mono mt-1">
+                  <span className="text-[8px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono mt-1">
                     {cd.past ? 'days late' : cd.days === 1 ? 'day' : 'days'}
                   </span>
                 </div>
@@ -163,7 +163,7 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
 
           {/* Status */}
           <div>
-            <label className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium block mb-2.5">
+            <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium block mb-2.5">
               Status
             </label>
             <div className="flex flex-wrap gap-2">
@@ -174,8 +174,8 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
                   disabled={saving}
                   className={`text-[10px] uppercase tracking-[0.15em] font-mono font-semibold px-3 py-1.5 rounded border transition-all ${
                     status === s
-                      ? 'bg-mustard-500/20 text-mustard-200 border-mustard-500/40'
-                      : 'bg-white/[0.02] text-white/40 border-white/[0.08] hover:border-white/20'
+                      ? 'bg-[#F5B700] text-[#161616] border-[#161616]'
+                      : 'bg-white text-[#161616]/55 border-[#161616]/20 hover:border-[#161616]'
                   }`}
                 >
                   {s}
@@ -187,14 +187,14 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
           {/* Fields */}
           {fields.length > 0 && (
             <div>
-              <h3 className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium mb-3">
+              <h3 className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium mb-3">
                 Details
               </h3>
               <dl className="space-y-2.5">
                 {fields.map((f) => (
                   <div key={f.label} className="grid grid-cols-3 gap-3 text-sm">
-                    <dt className="text-white/40 font-mono text-xs uppercase tracking-wider pt-0.5">{f.label}</dt>
-                    <dd className="col-span-2 text-white/85 font-body break-words">{f.value}</dd>
+                    <dt className="text-[#161616]/50 font-mono text-xs uppercase tracking-wider pt-0.5">{f.label}</dt>
+                    <dd className="col-span-2 text-[#3A3733] font-body break-words">{f.value}</dd>
                   </div>
                 ))}
               </dl>
@@ -204,10 +204,10 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
           {/* Message body */}
           {(lead.message || lead.idea_description) && (
             <div>
-              <h3 className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium mb-3">
+              <h3 className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium mb-3">
                 What they wrote
               </h3>
-              <div className="glass-card p-5 whitespace-pre-wrap text-white/80 text-sm font-body leading-relaxed">
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 whitespace-pre-wrap text-[#3A3733] text-sm font-body leading-relaxed">
                 {lead.message ?? lead.idea_description}
               </div>
             </div>
@@ -216,18 +216,18 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
           {/* Activity timeline */}
           {events.length > 0 && (
             <div>
-              <h3 className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium mb-3">
+              <h3 className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium mb-3">
                 Activity
               </h3>
-              <div className="space-y-3 border-l border-white/[0.08] pl-4">
+              <div className="space-y-3 border-l border-[#161616]/15 pl-4">
                 {events.map((e, i) => (
                   <div key={i} className="relative">
-                    <span className={`absolute -left-[21px] top-1.5 h-2 w-2 rounded-full ${EVENT_DOT[e.kind] ?? 'bg-white/40'}`} />
-                    <p className="text-white/85 font-body text-sm">
+                    <span className={`absolute -left-[21px] top-1.5 h-2 w-2 rounded-full ${EVENT_DOT[e.kind] ?? 'bg-[#161616]/40'}`} />
+                    <p className="text-[#3A3733] font-body text-sm">
                       {e.label}
-                      {e.detail ? <span className="text-white/45"> · {e.detail}</span> : ''}
+                      {e.detail ? <span className="text-[#161616]/60"> · {e.detail}</span> : ''}
                     </p>
-                    <p className="text-white/30 font-mono text-[11px]">{new Date(e.when).toLocaleString()}</p>
+                    <p className="text-[#161616]/45 font-mono text-[11px]">{new Date(e.when).toLocaleString()}</p>
                   </div>
                 ))}
               </div>
@@ -236,7 +236,7 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
 
           {/* Notes */}
           <div>
-            <label className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-mono font-medium block mb-2.5">
+            <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium block mb-2.5">
               Your notes
             </label>
             <textarea
@@ -244,28 +244,28 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
               onChange={(e) => setNotes(e.target.value)}
               rows={5}
               placeholder="Private notes. What did you reply with? What is the next step?"
-              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 font-body resize-none focus:outline-none focus:border-mustard-500/30"
+              className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] placeholder-[#161616]/30 font-body resize-none focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
             />
             <button
               onClick={saveNotes}
               disabled={saving}
-              className="mt-2 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-lg px-5 py-2.5 disabled:opacity-50 hover:shadow-[0_0_20px_rgba(255,107,53,0.2)] transition-all"
+              className="mt-2 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg px-5 py-2.5 shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
             >
               {saving ? 'Saving...' : 'Save notes'}
             </button>
           </div>
 
           {/* Quick actions */}
-          <div className="flex flex-wrap gap-3 pt-4 border-t border-white/[0.05]">
+          <div className="flex flex-wrap gap-3 pt-4 border-t border-[#161616]/10">
             <a
               href={`mailto:${lead.email}`}
-              className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 border border-mustard-500/30 rounded-lg px-5 py-2.5 hover:bg-mustard-500/10 transition-all"
+              className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-white border-2 border-[#161616] rounded-lg px-5 py-2.5 hover:bg-[#FFF8E6] transition-all"
             >
               Reply via email
             </a>
             <button
               onClick={remove}
-              className="text-[11px] uppercase tracking-[0.2em] font-sans font-medium text-red-400/60 border border-red-500/20 rounded-lg px-5 py-2.5 hover:bg-red-500/10 hover:text-red-300 transition-all"
+              className="text-[11px] uppercase tracking-[0.2em] font-sans font-medium text-[#E0301E] bg-white border-2 border-[#E0301E] rounded-lg px-5 py-2.5 hover:bg-red-50 transition-all"
             >
               Delete
             </button>

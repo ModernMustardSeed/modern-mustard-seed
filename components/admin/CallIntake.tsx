@@ -11,7 +11,7 @@ import { PATHS } from '@/data/proposal-menu';
  * the audit handoff uses).
  */
 const inp =
-  'bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-mustard-500/40 w-full';
+  'bg-white border-2 border-[#161616] rounded-lg px-3 py-2.5 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] w-full';
 
 export default function CallIntake() {
   const router = useRouter();
@@ -72,7 +72,7 @@ export default function CallIntake() {
 
   const field = (label: string, key: keyof typeof f, opts?: { area?: boolean; placeholder?: string }) => (
     <div>
-      <label className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono block mb-1.5">{label}</label>
+      <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1.5">{label}</label>
       {opts?.area ? (
         <textarea rows={3} value={f[key]} onChange={(e) => set(key, e.target.value)} placeholder={opts?.placeholder} className={`${inp} resize-y`} />
       ) : (
@@ -82,53 +82,53 @@ export default function CallIntake() {
   );
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="call" title="Log a Call" />
       <main className="max-w-3xl mx-auto px-6 py-8">
-        <p className="text-white/45 text-sm font-body mb-6 max-w-2xl">
+        <p className="text-[#3A3733] text-sm font-body mb-6 max-w-2xl">
           Capture the scope on the call. When you are done, build the proposal straight from it. Pair this with the discovery call script for the questions to ask.
         </p>
 
         <div className="space-y-5">
-          <div className="glass-card p-5">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block mb-3">Client</span>
+          <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">Client</span>
             <div className="grid sm:grid-cols-2 gap-3">
               {field('Name', 'name', { placeholder: 'Their name' })}
               {field('Email', 'email', { placeholder: 'their@email.com' })}
               {field('Business / site', 'url', { placeholder: 'theirsite.com' })}
               <div>
-                <label className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono block mb-1.5">Likely path</label>
-                <select value={f.pathId} onChange={(e) => set('pathId', e.target.value)} className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-mustard-500/40 w-full">
-                  <option value="" className="bg-neutral-900">Not sure yet</option>
+                <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1.5">Likely path</label>
+                <select value={f.pathId} onChange={(e) => set('pathId', e.target.value)} className="bg-white border-2 border-[#161616] rounded-lg px-3 py-2.5 text-sm text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700] w-full">
+                  <option value="" className="bg-white">Not sure yet</option>
                   {PATHS.map((p) => (
-                    <option key={p.id} value={p.id} className="bg-neutral-900">{p.label}</option>
+                    <option key={p.id} value={p.id} className="bg-white">{p.label}</option>
                   ))}
                 </select>
               </div>
             </div>
           </div>
 
-          <div className="glass-card p-5 space-y-3">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block">Discovery</span>
+          <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 space-y-3">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block">Discovery</span>
             {field('Problem / why now', 'problem', { area: true })}
             {field('Desired outcome / what success looks like', 'outcome', { area: true })}
             {field('Must-haves for v1', 'mustHaves', { area: true })}
             {field('Out of scope', 'outOfScope', { placeholder: 'What we are explicitly not doing' })}
           </div>
 
-          <div className="glass-card p-5 space-y-3">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono font-bold block">Money, timeline, access</span>
+          <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 space-y-3">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block">Money, timeline, access</span>
             <div className="grid sm:grid-cols-2 gap-3">
               {field('Budget range', 'budget', { placeholder: 'e.g. $5k to $10k' })}
               {field('Timeline / deadline', 'timeline', { placeholder: 'e.g. live by Aug 1' })}
             </div>
             <div>
-              <label className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono block mb-1.5">Preferred model</label>
-              <select value={f.model} onChange={(e) => set('model', e.target.value)} className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-mustard-500/40 w-full">
-                <option value="unsure" className="bg-neutral-900">Unsure</option>
-                <option value="one-time build fee" className="bg-neutral-900">One-time build fee</option>
-                <option value="monthly subscription" className="bg-neutral-900">Monthly subscription</option>
-                <option value="hybrid (setup + monthly)" className="bg-neutral-900">Hybrid (setup + monthly)</option>
+              <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono block mb-1.5">Preferred model</label>
+              <select value={f.model} onChange={(e) => set('model', e.target.value)} className="bg-white border-2 border-[#161616] rounded-lg px-3 py-2.5 text-sm text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700] w-full">
+                <option value="unsure" className="bg-white">Unsure</option>
+                <option value="one-time build fee" className="bg-white">One-time build fee</option>
+                <option value="monthly subscription" className="bg-white">Monthly subscription</option>
+                <option value="hybrid (setup + monthly)" className="bg-white">Hybrid (setup + monthly)</option>
               </select>
             </div>
             {field('Access / tools / data notes', 'access', { area: true, placeholder: 'Domain, accounts, CRM, where data lives, who grants access' })}
@@ -138,7 +138,7 @@ export default function CallIntake() {
 
           <button
             onClick={buildProposal}
-            className="px-6 py-3 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#080c16] bg-mustard-400 hover:bg-mustard-300 transition-colors"
+            className="px-6 py-3 rounded-lg text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
           >
             Build proposal from this call →
           </button>
