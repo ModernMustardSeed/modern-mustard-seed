@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import MagneticLink from './MagneticLink';
+import MrMustardHeroCTA from './MrMustardHeroCTA';
 
 // Pop-art hero. Cream + halftone, the logo-with-mascot front and center, bold
 // black comic type, and the lion video moved down to a framed band at the
@@ -88,6 +89,9 @@ export default function HeroIdeaToProduct() {
             See the Work
           </Link>
         </div>
+
+        {/* Mr. Mustard: live voice or chat, visitor's choice */}
+        <MrMustardHeroCTA />
 
         {/* Scripture card */}
         <div className="opacity-0 animate-fade-in-up-delay-3 mt-12 max-w-2xl mx-auto">

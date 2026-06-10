@@ -99,8 +99,14 @@ export default function MustardSeedChat() {
       /[?&]book=1\b/.test(window.location.search) || window.location.hash === '#book';
     if (wantsBooking) startBooking();
     const handler = () => startBooking();
+    // Plain open (no booking kick) for "chat with Mr. Mustard" CTAs anywhere.
+    const openHandler = () => setOpen(true);
     window.addEventListener('mustardseed:book', handler);
-    return () => window.removeEventListener('mustardseed:book', handler);
+    window.addEventListener('mustardseed:open', openHandler);
+    return () => {
+      window.removeEventListener('mustardseed:book', handler);
+      window.removeEventListener('mustardseed:open', openHandler);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
