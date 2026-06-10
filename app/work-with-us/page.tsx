@@ -9,7 +9,7 @@ import { bookingUrl } from '@/data/socials';
 export const metadata = buildMetadata({
   title: 'How We Work',
   description:
-    'Four engagement structures aligned with how clients actually start: Full-Service Business Build (site + AI SDR + funnels + back office + embedded AI agents), Idea to Product, AI-Proof Your Business, and Fractional AI Partner. Fixed scope, fixed timeline, quoted per project.',
+    'Five engagement structures aligned with how clients actually start: Seed Site, Full-Service Business Build (site + AI SDR + funnels + back office + embedded AI agents), Idea to Product, AI-Proof Your Business, and Fractional AI Partner. Fixed scope, fixed timeline, quoted per project.',
   path: '/work-with-us',
 });
 
@@ -89,7 +89,7 @@ export default function WorkWithUsPage() {
               How We Work
             </span>
             <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.1] mb-6">
-              Four ways to{' '}
+              Five ways to{' '}
               <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
                 engage
               </span>

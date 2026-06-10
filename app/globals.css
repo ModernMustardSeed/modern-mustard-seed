@@ -63,6 +63,28 @@
     background-size: 18px 18px;
   }
 
+  /* Horizontal card scroller (engagements on /work-with-us). Pop-art
+     scrollbar: ink track line, mustard thumb with ink border. */
+  .mms-hscroll {
+    scrollbar-width: thin;
+    scrollbar-color: #f5b700 rgba(22, 22, 22, 0.08);
+  }
+  .mms-hscroll::-webkit-scrollbar {
+    height: 10px;
+  }
+  .mms-hscroll::-webkit-scrollbar-track {
+    background: rgba(22, 22, 22, 0.08);
+    border-radius: 999px;
+  }
+  .mms-hscroll::-webkit-scrollbar-thumb {
+    background: #f5b700;
+    border: 2px solid #161616;
+    border-radius: 999px;
+  }
+  .mms-hscroll::-webkit-scrollbar-thumb:hover {
+    background: #ffd23f;
+  }
+
   /* Pop-art range slider (used by the missed-call calculator). */
   .mms-range {
     -webkit-appearance: none;
