@@ -13,26 +13,45 @@ import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
 import { randomUUID } from 'node:crypto';
 
-/** Resend's SDK returns {error} instead of throwing. Surface every failure. */
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Resend's SDK returns {error} instead of throwing. Surface every failure,
+ * and retry once on a rate-limit (Resend allows ~2 req/sec, and a booking
+ * fires two emails back to back, so the second can 429).
+ */
 async function sendLoud(
   resend: Resend,
   label: string,
   payload: Parameters<Resend['emails']['send']>[0]
 ): Promise<{ ok: boolean; id?: string; error?: string }> {
-  try {
-    const { data, error } = await resend.emails.send(payload);
-    if (error) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const { data, error } = await resend.emails.send(payload);
+      if (!error) {
+        console.log(`voice email sent [${label}]`, data?.id);
+        return { ok: true, id: data?.id };
+      }
       const msg = JSON.stringify(error);
+      const rateLimited = /rate.?limit|too many|429/i.test(msg);
+      if (rateLimited && attempt === 0) {
+        console.warn(`voice email rate-limited [${label}], retrying`);
+        await sleep(700);
+        continue;
+      }
       console.error(`voice email FAILED [${label}]`, msg);
       return { ok: false, error: msg };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (attempt === 0) {
+        await sleep(700);
+        continue;
+      }
+      console.error(`voice email THREW [${label}]`, msg);
+      return { ok: false, error: msg };
     }
-    console.log(`voice email sent [${label}]`, data?.id);
-    return { ok: true, id: data?.id };
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error(`voice email THREW [${label}]`, msg);
-    return { ok: false, error: msg };
   }
+  return { ok: false, error: 'exhausted retries' };
 }
 
 /**
@@ -128,6 +147,7 @@ async function bookSlot(input: {
   }
 
   // Calendar invites to both sides.
+  let emailStatus: { sarah?: string; client?: string } = { sarah: 'skipped', client: 'skipped' };
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     try {
@@ -180,14 +200,18 @@ async function bookSlot(input: {
       console.log(
         `BOOKING EMAILS SUMMARY | sarah=${rSarah.ok ? rSarah.id : 'FAIL:' + rSarah.error} | client[${email}]=${rClient.ok ? rClient.id : 'FAIL:' + rClient.error}`
       );
+      emailStatus = { sarah: rSarah.ok ? rSarah.id : `FAIL:${rSarah.error}`, client: rClient.ok ? rClient.id : `FAIL:${rClient.error}` };
     } catch (err) {
       console.error('voice booking email failed', err);
+      emailStatus = { sarah: 'THREW', client: 'THREW' };
     }
   }
 
   return JSON.stringify({
     ok: true,
     display,
+    // Webhook-only diagnostic (caller already holds the shared secret).
+    _emails: emailStatus,
     instruction: `Booked. Confirm warmly and briefly: the call is ${display}, the calendar invite is already in their inbox, and Sarah will see them there. Then ask if there is anything else.`,
   });
 }
