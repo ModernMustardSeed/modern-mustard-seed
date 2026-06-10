@@ -185,11 +185,11 @@ const assistant = {
     tools: TOOLS,
   },
   voice: {
-    provider: '11labs',
-    // Adam: warm, friendly male. Swap voiceId in the Vapi dashboard to taste.
-    voiceId: env('VAPI_VOICE_ID') || 'pNInz6obpgDQGcFmaJgB',
-    stability: 0.45,
-    similarityBoost: 0.75,
+    // Vapi-native voice: bundled, no external 11labs plan required.
+    // (11labs voices need a paid ElevenLabs account connected to the Vapi org,
+    // otherwise calls drop with pipeline-error-eleven-labs-blocked-free-plan.)
+    provider: env('VAPI_VOICE_PROVIDER') || 'vapi',
+    voiceId: env('VAPI_VOICE_ID') || 'Elliot',
   },
   transcriber: {
     provider: 'deepgram',
