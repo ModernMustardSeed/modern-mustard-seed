@@ -18,14 +18,21 @@ async function sendLoud(
   resend: Resend,
   label: string,
   payload: Parameters<Resend['emails']['send']>[0]
-): Promise<boolean> {
-  const { data, error } = await resend.emails.send(payload);
-  if (error) {
-    console.error(`voice email FAILED [${label}]`, JSON.stringify(error));
-    return false;
+): Promise<{ ok: boolean; id?: string; error?: string }> {
+  try {
+    const { data, error } = await resend.emails.send(payload);
+    if (error) {
+      const msg = JSON.stringify(error);
+      console.error(`voice email FAILED [${label}]`, msg);
+      return { ok: false, error: msg };
+    }
+    console.log(`voice email sent [${label}]`, data?.id);
+    return { ok: true, id: data?.id };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`voice email THREW [${label}]`, msg);
+    return { ok: false, error: msg };
   }
-  console.log(`voice email sent [${label}]`, data?.id);
-  return true;
 }
 
 /**
@@ -139,7 +146,7 @@ async function bookSlot(input: {
       });
       const icsAttachment = { filename: 'discovery-call.ics', content: Buffer.from(ics) };
 
-      await sendLoud(resend, 'booking-notify-sarah', {
+      const rSarah = await sendLoud(resend, 'booking-notify-sarah', {
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',
         replyTo: email,
@@ -155,7 +162,7 @@ async function bookSlot(input: {
         attachments: [icsAttachment],
       });
 
-      await sendLoud(resend, 'booking-confirm-visitor', {
+      const rClient = await sendLoud(resend, 'booking-confirm-visitor', {
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
@@ -169,6 +176,10 @@ async function bookSlot(input: {
         }),
         attachments: [icsAttachment],
       });
+
+      console.log(
+        `BOOKING EMAILS SUMMARY | sarah=${rSarah.ok ? rSarah.id : 'FAIL:' + rSarah.error} | client[${email}]=${rClient.ok ? rClient.id : 'FAIL:' + rClient.error}`
+      );
     } catch (err) {
       console.error('voice booking email failed', err);
     }

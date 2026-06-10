@@ -334,7 +334,8 @@ async function executeBookSlot(input: {
       });
       const icsAttachment = { filename: 'discovery-call.ics', content: Buffer.from(ics) };
 
-      await resend.emails.send({
+      // Resend returns {error} without throwing, so capture both results.
+      const rSarah = await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',
         replyTo: email,
@@ -350,7 +351,7 @@ async function executeBookSlot(input: {
         attachments: [icsAttachment],
       });
 
-      await resend.emails.send({
+      const rClient = await resend.emails.send({
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
@@ -364,6 +365,10 @@ async function executeBookSlot(input: {
         }),
         attachments: [icsAttachment],
       });
+
+      console.log(
+        `CHAT BOOKING EMAILS | sarah=${rSarah.error ? 'FAIL:' + JSON.stringify(rSarah.error) : rSarah.data?.id} | client[${email}]=${rClient.error ? 'FAIL:' + JSON.stringify(rClient.error) : rClient.data?.id}`
+      );
     } catch (err) {
       console.error('booking email failed', err);
     }
