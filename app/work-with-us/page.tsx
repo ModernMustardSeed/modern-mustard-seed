@@ -2,6 +2,7 @@ import Link from 'next/link';
 import PricingTable from '@/components/PricingTable';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import MrMustardHeroCTA from '@/components/MrMustardHeroCTA';
+import PortalShowcase from '@/components/PortalShowcase';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { pricingFaq } from '@/data/pricing';
@@ -146,6 +147,9 @@ export default function WorkWithUsPage() {
               ))}
             </div>
           </div>
+
+          {/* Proof: the client portal every build ships with */}
+          <PortalShowcase />
 
           {/* Principles */}
           <div className="max-w-5xl mx-auto px-6 md:px-8 py-12">

@@ -88,6 +88,20 @@ await page.addInitScript(() => {
     document.body.appendChild(c);
   });
 
+  // The portal chat auto-scrolls via endRef.scrollIntoView, which also drags
+  // the WINDOW down and slides the sticky guide out of frame mid-answer.
+  // Redirect it to scroll only the chat's own overflow container.
+  const origScrollIntoView = Element.prototype.scrollIntoView;
+  Element.prototype.scrollIntoView = function (...args) {
+    let el = this.parentElement;
+    while (el) {
+      const oy = getComputedStyle(el).overflowY;
+      if (oy === 'auto' || oy === 'scroll') { el.scrollTop = el.scrollHeight; return; }
+      el = el.parentElement;
+    }
+    return origScrollIntoView.apply(this, args);
+  };
+
   const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   window.__cursorTo = (x, y, ms = 700) => new Promise((done) => {
     const c = document.getElementById('demo-cursor');
