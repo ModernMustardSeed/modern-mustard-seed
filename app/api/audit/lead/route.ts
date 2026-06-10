@@ -116,12 +116,12 @@ export async function POST(req: Request) {
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
       replyTo: 'sarah@modernmustardseed.com',
-      subject: 'Your AI Audit is ready',
+      subject: 'Your Bottleneck Breaker results are ready',
       html: clientEmail({
         preheader: 'Your readout is on the site. Here is what to do with it.',
         greeting: `Hi ${firstName},`,
         body:
-          p('Thanks for running the AI Audit. You should be looking at your readout on the site right now.') +
+          p('Thanks for running the Bottleneck Breaker. You should be looking at your readout on the site right now.') +
           p('Here is what I would do with the audit result over the next week:') +
           `<ol style="margin:0 0 18px;padding-left:22px;color:#e9e1cf;line-height:1.75;font-size:16px">
             <li style="margin-bottom:10px">Look at your top three quick wins. Pick the one with the highest impact and the lowest dependency on anyone else.</li>

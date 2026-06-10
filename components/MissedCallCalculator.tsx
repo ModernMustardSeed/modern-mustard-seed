@@ -2,6 +2,7 @@
 
 import { useMemo, useState, FormEvent } from 'react';
 import Link from 'next/link';
+import { trackLead } from '@/lib/analytics';
 
 // The signature interactive moment for the voice-agents page. A live
 // missed-call revenue calculator that doubles as the lead magnet: it shows
@@ -56,6 +57,7 @@ export default function MissedCallCalculator() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error || 'Something went wrong');
       }
+      trackLead({ source: 'voice-agents-calculator', value: Math.round(monthly) });
       setStatus('done');
     } catch (err) {
       setStatus('error');

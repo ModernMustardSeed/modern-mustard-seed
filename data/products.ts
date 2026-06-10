@@ -299,7 +299,7 @@ export const bundles: Bundle[] = [
     slug: 'complete-library',
     name: 'The Complete Library',
     pitch:
-      'Everything Modern Mustard Seed knows about building, running, and growing AI-native businesses. Seven playbooks. 240+ pages. One price.',
+      'Everything Modern Mustard Seed knows about building, running, and growing AI-native businesses. Every playbook in the library. 240+ pages. One price.',
     priceUsd: 247,
     savings: 115,
     individualTotal: 362,

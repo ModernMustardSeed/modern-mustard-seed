@@ -2,6 +2,7 @@ import Link from 'next/link';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import MissedCallCalculator from '@/components/MissedCallCalculator';
 import VoiceTalkButton from '@/components/VoiceTalkButton';
+import MrMustardHeroCTA from '@/components/MrMustardHeroCTA';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -293,10 +294,15 @@ export default function VoiceAgentsPage() {
             </div>
           </div>
 
-          <NewsletterSignup
-            headline="Speed-to-lead plays. Weekly."
-            subhead="How small businesses stop the leak with AI, automation, and faster follow-up. Free to read. Free to copy."
-          />
+          {/* Last word: talk it out with Mr. Mustard, voice or chat */}
+          <MrMustardHeroCTA location="voice-agents" />
+
+          <div className="mt-16">
+            <NewsletterSignup
+              headline="Speed-to-lead plays. Weekly."
+              subhead="How small businesses stop the leak with AI, automation, and faster follow-up. Free to read. Free to copy."
+            />
+          </div>
         </div>
       </div>
     </>

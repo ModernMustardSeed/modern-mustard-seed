@@ -147,7 +147,7 @@ export default async function WorkDetail({ params }: { params: Params }) {
                 href="/audit"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Run Free AI Audit
+                Run the Bottleneck Breaker
               </Link>
             </div>
           </div>

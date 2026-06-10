@@ -6,9 +6,9 @@ import { products, bundles, isComingSoon } from '@/data/products';
 import { programs } from '@/data/programs';
 
 export const metadata: Metadata = buildMetadata({
-  title: 'The Playbook Store. Workbooks for builders and operators',
+  title: 'The Store. Playbooks and courses for builders and operators',
   description:
-    'Seven production-tested playbooks from Modern Mustard Seed. AI strategy, Claude Code, Shopify builds, brand systems, AI sales, and GEO. From $47. Instant PDF delivery.',
+    'Production-tested playbooks and courses from Modern Mustard Seed. AI strategy, Claude Code, Shopify builds, brand systems, AI sales, and GEO. From $47. Instant delivery, growing library.',
   path: '/store',
 });
 
@@ -51,7 +51,7 @@ export default function StorePage() {
 
         <header className="max-w-5xl mx-auto px-6 md:px-8 pt-12 md:pt-20 pb-12 text-center">
           <span className="text-[10px] uppercase tracking-[0.45em] text-[#E0301E] font-mono font-bold mb-7 block">
-            The Playbook Store
+            The Store
           </span>
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[1.02] mb-7">
             The same systems behind our{' '}
@@ -60,10 +60,10 @@ export default function StorePage() {
             </span>
           </h1>
           <p className="font-display italic font-bold text-2xl md:text-3xl text-[#161616] leading-snug mb-5">
-            Seven playbooks. From $47
+            Playbooks and courses. From $47
           </p>
           <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-2">
-            Production-tested workbooks built from 40+ shipped AI products. AI strategy. Claude Code. Shopify builds. Brand systems. AI sales. GEO and AI commerce. Instant PDF download after purchase.
+            Production-tested workbooks and courses built from 40+ shipped AI products. AI strategy. Claude Code. Shopify builds. Brand systems. AI sales. GEO and AI commerce. A growing library, with new drops added as we ship.
           </p>
           <p className="text-[#161616]/45 text-xs font-mono uppercase tracking-[0.25em]">
             Authored by Sarah Scarano. Built by Modern Mustard Seed
@@ -116,7 +116,7 @@ export default function StorePage() {
                     {featured.pitch}
                   </p>
                   <p className="text-[#161616]/55 text-xs font-mono uppercase tracking-[0.25em]">
-                    7 playbooks · 240+ pages · ${featured.priceUsd}
+                    Every playbook · 240+ pages · ${featured.priceUsd}
                   </p>
                 </div>
                 <div className="md:text-right">

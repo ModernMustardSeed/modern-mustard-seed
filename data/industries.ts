@@ -92,9 +92,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: 'Quoted after a free AI Audit',
+      typicalRange: 'Quoted after a free Bottleneck Breaker',
       body:
-        'A custom deal analyzer like the PTG build is scoped to your data sources and the depth of the underwriting model. Virtual staging tools come in lighter, and a full investor OS that includes deal analysis, sourcing, follow-up, and reporting is the larger build. The free AI Audit is the right first step. We tell you in 60 minutes which build is highest leverage for your model and what it would cost. Every project is quoted in writing before any work begins. Most investors split into milestone payments so the cost lines up with deal flow.',
+        'A custom deal analyzer like the PTG build is scoped to your data sources and the depth of the underwriting model. Virtual staging tools come in lighter, and a full investor OS that includes deal analysis, sourcing, follow-up, and reporting is the larger build. The free Bottleneck Breaker is the right first step. We tell you in 60 minutes which build is highest leverage for your model and what it would cost. Every project is quoted in writing before any work begins. Most investors split into milestone payments so the cost lines up with deal flow.',
     },
     faqs: [
       {
@@ -129,7 +129,7 @@ export const industries: Industry[] = [
     cta: {
       headline: 'Stop losing deals to slow underwriting',
       body:
-        'Run the free AI Audit. Sixty seconds. We will tell you exactly which AI tool would compress your investing workflow the most, what it would cost, and how fast we could ship it.',
+        'Run the free Bottleneck Breaker. Sixty seconds. We will tell you exactly which AI tool would compress your investing workflow the most, what it would cost, and how fast we could ship it.',
     },
   },
 
@@ -187,9 +187,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: 'Quoted after a free AI Audit',
+      typicalRange: 'Quoted after a free Bottleneck Breaker',
       body:
-        'A single-purpose AI tool like a listing description generator or a buyer follow-up voice agent is the entry point. A custom virtual staging platform branded to your brokerage is a step up, and a full agent OS that combines staging, descriptions, CMA, and a follow-up voice agent is the largest build. Start with the free AI Audit. We tell you in 60 minutes which tool would move your numbers fastest, what it would cost, and how fast we can ship it. Every quote is fixed and in writing before any work begins.',
+        'A single-purpose AI tool like a listing description generator or a buyer follow-up voice agent is the entry point. A custom virtual staging platform branded to your brokerage is a step up, and a full agent OS that combines staging, descriptions, CMA, and a follow-up voice agent is the largest build. Start with the free Bottleneck Breaker. We tell you in 60 minutes which tool would move your numbers fastest, what it would cost, and how fast we can ship it. Every quote is fixed and in writing before any work begins.',
     },
     faqs: [
       {
@@ -224,7 +224,7 @@ export const industries: Industry[] = [
     cta: {
       headline: 'Fight back with better tools',
       body:
-        'Run the free AI Audit. We will tell you which AI tool would protect your listings, your time, and your commission split the fastest.',
+        'Run the free Bottleneck Breaker. We will tell you which AI tool would protect your listings, your time, and your commission split the fastest.',
     },
   },
 
@@ -282,9 +282,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: 'Quoted after a free AI Audit',
+      typicalRange: 'Quoted after a free Bottleneck Breaker',
       body:
-        'A production voice agent is scoped to your integrations (calendar, CRM, dispatch software). A full service-business OS that combines a voice agent, lead follow-up, review generation, and dispatch assistance is the larger build. The free AI Audit is the right place to start. We will tell you in 60 minutes how much revenue you are losing to missed calls and slow follow-up, what to fix first, and what the payback period looks like. Most service businesses pay back the build inside 60 to 120 days from missed-call recovery alone.',
+        'A production voice agent is scoped to your integrations (calendar, CRM, dispatch software). A full service-business OS that combines a voice agent, lead follow-up, review generation, and dispatch assistance is the larger build. The free Bottleneck Breaker is the right place to start. We will tell you in 60 minutes how much revenue you are losing to missed calls and slow follow-up, what to fix first, and what the payback period looks like. Most service businesses pay back the build inside 60 to 120 days from missed-call recovery alone.',
     },
     faqs: [
       {
@@ -323,7 +323,7 @@ export const industries: Industry[] = [
     cta: {
       headline: 'Stop bleeding revenue to voicemail',
       body:
-        'Run the free AI Audit. We will tell you how much revenue you are losing to missed calls, slow follow-up, and unstaffed evenings. Then we tell you what to build first.',
+        'Run the free Bottleneck Breaker. We will tell you how much revenue you are losing to missed calls, slow follow-up, and unstaffed evenings. Then we tell you what to build first.',
     },
   },
 
@@ -389,9 +389,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: 'Quoted after a free AI Audit',
+      typicalRange: 'Quoted after a free Bottleneck Breaker',
       body:
-        'A headless Shopify storefront with custom design is the foundation. A custom AI design studio like CXC Studio scales with the number of generation modes and the depth of the brand guardrails. A combined apparel OS that includes storefront, design studio, AI photography, and email automation is the largest build. The free AI Audit is the right first step. We tell you which build is highest leverage for your current revenue stage, what it would cost, and how fast we can ship it. Every quote is fixed and in writing before any work begins.',
+        'A headless Shopify storefront with custom design is the foundation. A custom AI design studio like CXC Studio scales with the number of generation modes and the depth of the brand guardrails. A combined apparel OS that includes storefront, design studio, AI photography, and email automation is the largest build. The free Bottleneck Breaker is the right first step. We tell you which build is highest leverage for your current revenue stage, what it would cost, and how fast we can ship it. Every quote is fixed and in writing before any work begins.',
     },
     faqs: [
       {
@@ -426,7 +426,7 @@ export const industries: Industry[] = [
     cta: {
       headline: 'Ship faster than your competition',
       body:
-        'Run the free AI Audit. We will tell you what to build first, how fast we can ship it, and how much faster your next drop could go live.',
+        'Run the free Bottleneck Breaker. We will tell you what to build first, how fast we can ship it, and how much faster your next drop could go live.',
     },
   },
 
@@ -486,9 +486,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: 'Quoted after a free AI Audit',
+      typicalRange: 'Quoted after a free Bottleneck Breaker',
       body:
-        'A personal brand site plus newsletter pipeline is the entry point. A focused AI content engine or capture app is a step up. A full custom solo OS like Olive Shoot is the largest build, scaling with integrations and the depth of the agentic logic. The free AI Audit is the right place to start. We will tell you in 60 minutes which build would give you the most leverage on the time you actually have, what it would cost, and how fast we can ship it.',
+        'A personal brand site plus newsletter pipeline is the entry point. A focused AI content engine or capture app is a step up. A full custom solo OS like Olive Shoot is the largest build, scaling with integrations and the depth of the agentic logic. The free Bottleneck Breaker is the right place to start. We will tell you in 60 minutes which build would give you the most leverage on the time you actually have, what it would cost, and how fast we can ship it.',
     },
     faqs: [
       {
@@ -523,7 +523,7 @@ export const industries: Industry[] = [
     cta: {
       headline: 'Stop renting your business from 12 SaaS companies',
       body:
-        'Run the free AI Audit. We will tell you which piece of your solo stack is most worth owning, what it would cost to build, and how fast we can ship it.',
+        'Run the free Bottleneck Breaker. We will tell you which piece of your solo stack is most worth owning, what it would cost to build, and how fast we can ship it.',
     },
   },
 
@@ -581,9 +581,9 @@ export const industries: Industry[] = [
       ],
     },
     pricing: {
-      typicalRange: 'Quoted after a free AI Audit',
+      typicalRange: 'Quoted after a free Bottleneck Breaker',
       body:
-        'A single-purpose AI tool like an intake bot or proposal generator is the entry point. A custom content engine is a step up. A full consultant OS that combines intake, content, proposals, and a follow-up voice agent is the largest build. Start with the free AI Audit. We will tell you in 60 minutes which task in your week is bleeding the most hours, what to automate first, and what the payback period looks like. Most consultants recover the build cost inside the first quarter from reclaimed calendar time alone.',
+        'A single-purpose AI tool like an intake bot or proposal generator is the entry point. A custom content engine is a step up. A full consultant OS that combines intake, content, proposals, and a follow-up voice agent is the largest build. Start with the free Bottleneck Breaker. We will tell you in 60 minutes which task in your week is bleeding the most hours, what to automate first, and what the payback period looks like. Most consultants recover the build cost inside the first quarter from reclaimed calendar time alone.',
     },
     faqs: [
       {
@@ -618,7 +618,7 @@ export const industries: Industry[] = [
     cta: {
       headline: 'Get your calendar back',
       body:
-        'Run the free AI Audit. We will tell you which task in your week is bleeding the most hours, what to automate first, and how fast we can ship it.',
+        'Run the free Bottleneck Breaker. We will tell you which task in your week is bleeding the most hours, what to automate first, and how fast we can ship it.',
     },
   },
 ];

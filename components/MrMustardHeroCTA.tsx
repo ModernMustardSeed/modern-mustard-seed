@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import type Vapi from '@vapi-ai/web';
+import { trackEvent } from '@/lib/analytics';
 
 /**
  * Hero unit: talk to Mr. Mustard, your way. One pop-art card, two doors:
@@ -17,7 +18,7 @@ const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
 
 type CallState = 'idle' | 'connecting' | 'live' | 'error';
 
-export default function MrMustardHeroCTA() {
+export default function MrMustardHeroCTA({ location = 'hero' }: { location?: string }) {
   const [state, setState] = useState<CallState>('idle');
   const [speaking, setSpeaking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +34,7 @@ export default function MrMustardHeroCTA() {
 
   const startCall = async () => {
     if (!canCall || state === 'connecting' || state === 'live') return;
+    trackEvent('mustard_talk_live', { location });
     setError(null);
     setState('connecting');
     try {
@@ -71,6 +73,7 @@ export default function MrMustardHeroCTA() {
   };
 
   const openChat = () => {
+    trackEvent('mustard_chat_open', { location });
     window.dispatchEvent(new Event('mustardseed:open'));
   };
 

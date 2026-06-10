@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import PricingTable from '@/components/PricingTable';
 import NewsletterSignup from '@/components/NewsletterSignup';
+import MrMustardHeroCTA from '@/components/MrMustardHeroCTA';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { pricingFaq } from '@/data/pricing';
@@ -260,6 +261,9 @@ export default function WorkWithUsPage() {
                 </a>
               </div>
             </div>
+
+            {/* Or just ask him directly: voice or chat */}
+            <MrMustardHeroCTA location="work-with-us" />
           </div>
 
           <div className="px-6 md:px-8 py-20">

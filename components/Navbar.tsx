@@ -24,7 +24,7 @@ const MENU_GROUPS = [
   {
     heading: 'Free Tools',
     links: [
-      { label: 'Free AI Audit', href: '/audit' },
+      { label: 'Bottleneck Breaker', href: '/audit' },
       { label: 'Website Audit', href: '/website-audit' },
       { label: 'Free Playbooks', href: '/playbooks' },
     ],
@@ -34,7 +34,7 @@ const MENU_GROUPS = [
     links: [
       { label: 'The Work', href: '/work' },
       { label: 'Blog', href: '/blog' },
-      { label: 'Playbook Store', href: '/store' },
+      { label: 'Store', href: '/store' },
       { label: 'For Your Industry', href: '/for' },
     ],
   },

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useRef, useEffect, FormEvent } from 'react';
+import { trackLead, trackBooking } from '@/lib/analytics';
 
 type Msg = { role: 'assistant' | 'user'; text: string };
 
@@ -135,6 +136,12 @@ export default function MustardSeedChat() {
       if (!res.ok) throw new Error(data?.error || 'Send failed');
 
       setMessages((m) => [...m, { role: 'assistant', text: data.reply || 'Tell me more.' }]);
+      // Fire conversion tracking once, the moment the chat reports it.
+      if (data.booked && !captured) {
+        trackBooking({ source: 'mr-mustard-chat' });
+      } else if (data.leadCaptured && !captured) {
+        trackLead({ source: 'mr-mustard-chat' });
+      }
       if (data.leadCaptured) setCaptured(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Send failed');

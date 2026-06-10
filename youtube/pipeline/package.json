@@ -1,0 +1,15 @@
+{
+  "name": "mms-youtube-pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Faceless video production pipeline for @modernmustardseed (Higgsfield CLI + ElevenLabs cloned voice + ffmpeg)",
+  "bin": { "produce": "./produce.mjs" },
+  "scripts": {
+    "produce": "node produce.mjs"
+  },
+  "dependencies": {
+    "yaml": "^2.5.0"
+  },
+  "engines": { "node": ">=20" }
+}

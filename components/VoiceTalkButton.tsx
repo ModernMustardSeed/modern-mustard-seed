@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type Vapi from '@vapi-ai/web';
+import { trackEvent } from '@/lib/analytics';
 
 /**
  * Live in-browser voice call with Mr. Mustard via Vapi.
@@ -35,6 +36,7 @@ export default function VoiceTalkButton() {
 
   const start = async () => {
     if (state === 'connecting' || state === 'live') return;
+    trackEvent('mustard_talk_live', { location: 'voice-agents-widget' });
     setError(null);
     setState('connecting');
     try {
