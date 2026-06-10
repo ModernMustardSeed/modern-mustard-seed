@@ -179,7 +179,10 @@ const assistant = {
   firstMessage: FIRST_MESSAGE,
   model: {
     provider: env('VAPI_MODEL_PROVIDER') || 'anthropic',
-    model: env('VAPI_MODEL') || 'claude-3-5-sonnet-20241022',
+    // claude-3-5-sonnet-20241022 is RETIRED upstream: Vapi accepts it at
+    // config time but calls die with providerfault-anthropic-llm-failed
+    // the moment the model is invoked. Keep this current.
+    model: env('VAPI_MODEL') || 'claude-sonnet-4-6',
     temperature: 0.7,
     messages: [{ role: 'system', content: SYSTEM_PROMPT }],
     tools: TOOLS,
