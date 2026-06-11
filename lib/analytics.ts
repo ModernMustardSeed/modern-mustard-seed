@@ -42,9 +42,37 @@ function gtagEvent(name: string, params: Params = {}) {
   window.gtag('event', name, params);
 }
 
-function fbqTrack(name: string, params: Params = {}) {
+function fbqTrack(name: string, params: Params = {}, eventId?: string) {
   if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
-  window.fbq('track', name, params);
+  // Pass eventID so the server Conversions API event with the same id dedupes.
+  if (eventId) window.fbq('track', name, params, { eventID: eventId });
+  else window.fbq('track', name, params);
+}
+
+/** A fresh event id for Pixel <-> Conversions API dedup. */
+export function newEventId(): string {
+  try {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  } catch {
+    /* fall through */
+  }
+  return `evt-${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+}
+
+/** Read Meta's _fbp / _fbc cookies so the server can pass them to the CAPI. */
+export function getFbCookies(): { fbp: string | null; fbc: string | null } {
+  if (typeof document === 'undefined') return { fbp: null, fbc: null };
+  const read = (n: string) => {
+    const m = document.cookie.match(new RegExp(`(?:^|;\\s*)${n}=([^;]+)`));
+    return m ? decodeURIComponent(m[1]) : null;
+  };
+  return { fbp: read('_fbp'), fbc: read('_fbc') };
+}
+
+/** Everything a form needs to dedup a server conversion against this client event. */
+export function metaDedup(): { metaEventId: string; fbp: string | null; fbc: string | null } {
+  const { fbp, fbc } = getFbCookies();
+  return { metaEventId: newEventId(), fbp, fbc };
 }
 
 function adsConversion(label: string, params: Params = {}) {
@@ -52,20 +80,25 @@ function adsConversion(label: string, params: Params = {}) {
   gtagEvent('conversion', { send_to: `${GOOGLE_ADS_ID}/${label}`, ...params });
 }
 
-/** A captured lead: contact form submit or AI-audit lead capture. */
-export function trackLead(detail: { source: string; value?: number } = { source: 'unknown' }) {
+/** A captured lead: contact form submit or AI-audit lead capture. Returns the
+ *  Meta event id so the caller can send the matching server CAPI event. */
+export function trackLead(detail: { source: string; value?: number; eventId?: string } = { source: 'unknown' }) {
   const value = detail.value ?? 0;
+  const eventId = detail.eventId ?? newEventId();
   gtagEvent('generate_lead', { event_source: detail.source, value, currency: 'USD' });
   adsConversion(ADS_LABELS.lead, { value, currency: 'USD' });
-  fbqTrack('Lead', { content_name: detail.source, value, currency: 'USD' });
+  fbqTrack('Lead', { content_name: detail.source, value, currency: 'USD' }, eventId);
+  return eventId;
 }
 
 /** A booked discovery call: the highest-intent top-of-funnel conversion. */
-export function trackBooking(detail: { source?: string } = {}) {
+export function trackBooking(detail: { source?: string; eventId?: string } = {}) {
   const source = detail.source ?? 'book';
+  const eventId = detail.eventId ?? newEventId();
   gtagEvent('schedule', { event_source: source });
   adsConversion(ADS_LABELS.booking);
-  fbqTrack('Schedule', { content_name: source });
+  fbqTrack('Schedule', { content_name: source }, eventId);
+  return eventId;
 }
 
 /** A completed store purchase. value is in whole currency units (dollars). */
@@ -74,8 +107,10 @@ export function trackPurchase(detail: {
   currency?: string;
   id?: string;
   itemName?: string;
+  eventId?: string;
 }) {
   const currency = detail.currency ?? 'USD';
+  const eventId = detail.eventId ?? detail.id ?? newEventId();
   gtagEvent('purchase', {
     transaction_id: detail.id,
     value: detail.value,
@@ -87,7 +122,8 @@ export function trackPurchase(detail: {
     currency,
     transaction_id: detail.id,
   });
-  fbqTrack('Purchase', { value: detail.value, currency, content_name: detail.itemName });
+  fbqTrack('Purchase', { value: detail.value, currency, content_name: detail.itemName }, eventId);
+  return eventId;
 }
 
 /** Escape hatch for any other custom GA4 event. */

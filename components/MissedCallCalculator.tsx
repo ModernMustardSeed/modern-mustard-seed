@@ -2,7 +2,7 @@
 
 import { useMemo, useState, FormEvent } from 'react';
 import Link from 'next/link';
-import { trackLead } from '@/lib/analytics';
+import { trackLead, metaDedup } from '@/lib/analytics';
 
 // The signature interactive moment for the voice-agents page. A live
 // missed-call revenue calculator that doubles as the lead magnet: it shows
@@ -39,10 +39,12 @@ export default function MissedCallCalculator() {
     setStatus('sending');
     setError(null);
     try {
+      const dedup = metaDedup();
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          ...dedup,
           name: name.trim() || 'Voice agent calculator lead',
           email: email.trim(),
           source: 'voice-agents-calculator',
@@ -57,7 +59,7 @@ export default function MissedCallCalculator() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error || 'Something went wrong');
       }
-      trackLead({ source: 'voice-agents-calculator', value: Math.round(monthly) });
+      trackLead({ source: 'voice-agents-calculator', value: Math.round(monthly), eventId: dedup.metaEventId });
       setStatus('done');
     } catch (err) {
       setStatus('error');

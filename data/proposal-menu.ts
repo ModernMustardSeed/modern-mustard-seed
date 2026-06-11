@@ -58,6 +58,13 @@ export const STATUS_LEGEND: Record<ServiceStatus, string> = {
   recommended: 'Suggested starting range based on comparable work. Confirm before locking.',
 };
 
+/* ───────────────────────────────────────────────────────────────────────
+ * EDIT PRICES HERE. Single source of truth for the proposal builder. To
+ * change a price, edit `priceMin` / `priceMax` on a service below (one number
+ * = exact; min+max = a range, proposals default to the midpoint). All are
+ * `status: 'set'` (locked/firm). Save + redeploy and it is live everywhere.
+ * Leave `unit` unless the billing shape changes. Locked 2026-06-11; edit freely.
+ * ─────────────────────────────────────────────────────────────────────── */
 export const SERVICES: Service[] = [
   {
     id: 'idea_to_product',
@@ -114,7 +121,7 @@ export const SERVICES: Service[] = [
     priceMin: 750,
     priceMax: 1500,
     unit: 'fixed',
-    status: 'session_set',
+    status: 'set',
   },
   {
     id: 'onsite_geo',
@@ -132,7 +139,7 @@ export const SERVICES: Service[] = [
     priceMin: 1500,
     priceMax: 3500,
     unit: 'fixed',
-    status: 'session_set',
+    status: 'set',
     requires: 'code or admin access',
   },
   {
@@ -152,7 +159,7 @@ export const SERVICES: Service[] = [
     priceMin: 3500,
     priceMax: 8000,
     unit: 'fixed',
-    status: 'session_set',
+    status: 'set',
     note: 'Open-ended above 8k for larger sites.',
   },
   {
@@ -169,7 +176,7 @@ export const SERVICES: Service[] = [
     priceMin: 300,
     priceMax: 750,
     unit: 'monthly',
-    status: 'session_set',
+    status: 'set',
   },
   {
     id: 'single_automation',
@@ -184,7 +191,7 @@ export const SERVICES: Service[] = [
     priceMin: 2500,
     priceMax: null,
     unit: 'fixed_from',
-    status: 'recommended',
+    status: 'set',
   },
   {
     id: 'custom_ai_system',
@@ -201,7 +208,7 @@ export const SERVICES: Service[] = [
     priceMin: 5000,
     priceMax: 20000,
     unit: 'fixed',
-    status: 'recommended',
+    status: 'set',
   },
   {
     id: 'mcp_integration',
@@ -216,7 +223,7 @@ export const SERVICES: Service[] = [
     priceMin: 2500,
     priceMax: null,
     unit: 'fixed_from',
-    status: 'recommended',
+    status: 'set',
   },
   {
     id: 'ai_agent_build',
@@ -233,7 +240,7 @@ export const SERVICES: Service[] = [
     priceMin: 5000,
     priceMax: 12000,
     unit: 'fixed',
-    status: 'recommended',
+    status: 'set',
   },
   {
     id: 'agent_operation',
@@ -248,7 +255,7 @@ export const SERVICES: Service[] = [
     priceMin: 300,
     priceMax: null,
     unit: 'monthly_from',
-    status: 'recommended',
+    status: 'set',
     variable: true,
   },
   {
@@ -267,7 +274,7 @@ export const SERVICES: Service[] = [
     priceMin: 50,
     priceMax: 500,
     unit: 'monthly',
-    status: 'recommended',
+    status: 'set',
     variable: true,
   },
   {
@@ -285,7 +292,7 @@ export const SERVICES: Service[] = [
     priceMin: 2000,
     priceMax: null,
     unit: 'monthly_from',
-    status: 'recommended',
+    status: 'set',
     note: 'Use instead of, or alongside, a one-time build fee.',
   },
   {
@@ -303,7 +310,7 @@ export const SERVICES: Service[] = [
     priceMin: 250,
     priceMax: 900,
     unit: 'monthly',
-    status: 'recommended',
+    status: 'set',
   },
   {
     id: 'single_skill',
@@ -318,7 +325,7 @@ export const SERVICES: Service[] = [
     priceMin: 1500,
     priceMax: 3500,
     unit: 'fixed',
-    status: 'recommended',
+    status: 'set',
   },
   {
     id: 'skill_suite',
@@ -333,7 +340,7 @@ export const SERVICES: Service[] = [
     priceMin: 5000,
     priceMax: null,
     unit: 'fixed_from',
-    status: 'recommended',
+    status: 'set',
   },
   {
     id: 'funnel_build',
@@ -349,7 +356,7 @@ export const SERVICES: Service[] = [
     priceMin: 2500,
     priceMax: 6000,
     unit: 'fixed',
-    status: 'recommended',
+    status: 'set',
   },
   {
     id: 'strategy_intensive',
@@ -365,7 +372,7 @@ export const SERVICES: Service[] = [
     priceMin: 1200,
     priceMax: 1200,
     unit: 'fixed',
-    status: 'recommended',
+    status: 'set',
   },
   {
     id: 'advisory',

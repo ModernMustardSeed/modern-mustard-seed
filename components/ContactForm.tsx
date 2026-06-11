@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { bookingUrl, socials } from '@/data/socials';
-import { trackLead } from '@/lib/analytics';
+import { trackLead, metaDedup } from '@/lib/analytics';
 
 type Props = {
   defaultPackage?: string;
@@ -27,15 +27,19 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
     setError('');
 
     try {
+      const dedup = metaDedup();
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, source: defaultPackage }),
+        body: JSON.stringify({ ...formData, source: defaultPackage, ...dedup }),
       });
 
       if (res.ok) {
         setSubmitted(true);
-        trackLead({ source: defaultPackage ? `contact-${defaultPackage}` : 'contact-form' });
+        trackLead({
+          source: defaultPackage ? `contact-${defaultPackage}` : 'contact-form',
+          eventId: dedup.metaEventId,
+        });
       } else {
         setError('Something went wrong. Please try again.');
       }

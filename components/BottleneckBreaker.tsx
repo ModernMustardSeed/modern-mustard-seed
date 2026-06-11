@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
-import { trackLead } from '@/lib/analytics';
+import { trackLead, metaDedup } from '@/lib/analytics';
 
 /**
  * Bottleneck Breaker. One clean flow: drop your site, the engine finds the one
@@ -58,19 +58,23 @@ export default function BottleneckBreaker() {
   const [error, setError] = useState<string | null>(null);
   const [reportSent, setReportSent] = useState(false);
 
+  // One dedup id for the whole lead session, so the Pixel Lead and the (up to
+  // three) server CAPI Lead calls all collapse to a single Meta conversion.
+  const [meta] = useState(metaDedup);
+
   const saveLead = useCallback(
     async (source: string, extra?: { industry?: string; company?: string }) => {
       try {
         await fetch('/api/audit/lead', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, auditUrl: url || undefined, source, ...extra }),
+          body: JSON.stringify({ name, email, auditUrl: url || undefined, source, ...extra, ...meta }),
         });
       } catch {
         /* best effort */
       }
     },
-    [name, email, url]
+    [name, email, url, meta]
   );
 
   const run = useCallback(async () => {
@@ -79,7 +83,7 @@ export default function BottleneckBreaker() {
     setResult(null);
     setError(null);
     saveLead('bottleneck-start');
-    trackLead({ source: 'bottleneck-breaker' });
+    trackLead({ source: 'bottleneck-breaker', eventId: meta.metaEventId });
 
     for (let i = 0; i < PHASES.length; i++) {
       setPhase(i);
@@ -99,7 +103,7 @@ export default function BottleneckBreaker() {
       setError('We could not reach the engine. Your details are saved and Sarah will follow up personally.');
     }
     setLoading(false);
-  }, [name, email, url, loading, saveLead]);
+  }, [name, email, url, loading, saveLead, meta]);
 
   const emailReport = useCallback(() => {
     saveLead('bottleneck-report', result ? { industry: result.industry, company: result.businessName } : undefined);

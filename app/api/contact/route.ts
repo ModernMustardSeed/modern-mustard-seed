@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { clientEmail, leadNotification, p } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
+import { trackServerConversion } from '@/lib/meta-capi';
 
 export const runtime = 'nodejs';
 
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Email not configured' }, { status: 500 });
     }
     const resend = new Resend(apiKey);
-    const { name, email, message, source } = await req.json();
+    const { name, email, message, source, metaEventId, fbp, fbc } = await req.json();
 
     if (!name || !email || !message) {
       return NextResponse.json(
@@ -27,6 +28,17 @@ export async function POST(req: Request) {
       email,
       message,
       source: source ?? null,
+    });
+
+    // Meta Conversions API (server-side), deduped against the browser Pixel
+    // via the shared metaEventId. No-op until the Meta env vars are set.
+    await trackServerConversion(req, {
+      eventName: 'Lead',
+      email,
+      eventId: metaEventId,
+      fbp,
+      fbc,
+      customData: { lead_source: source || 'contact-form' },
     });
 
     const firstName = String(name).split(' ')[0];

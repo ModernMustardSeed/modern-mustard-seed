@@ -11,6 +11,7 @@ import { insertLead, getSupabase } from '@/lib/supabase';
 import { getNextAvailableSlots, isSlotAvailable, displayForIso } from '@/lib/booking';
 import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
+import { sendMetaEvent } from '@/lib/meta-capi';
 import { randomUUID } from 'node:crypto';
 
 export const runtime = 'nodejs';
@@ -252,6 +253,13 @@ async function executeCaptureLead(input: {
         }),
       });
     }
+    await sendMetaEvent({
+      eventName: 'Lead',
+      eventId: `chat-lead-${email}-${Math.round(Date.now() / 1000)}`,
+      email,
+      eventSourceUrl: 'https://modernmustardseed.com/',
+      customData: { lead_source: 'mr-mustard-chat' },
+    });
     return 'Playbook email sent. Confirm briefly to the visitor in 1 to 2 sentences and mention that Day 2 of the playbook arrives in 48 hours.';
   } catch (err) {
     console.error('capture_lead failed', err);
@@ -373,6 +381,14 @@ async function executeBookSlot(input: {
       console.error('booking email failed', err);
     }
   }
+
+  await sendMetaEvent({
+    eventName: 'Schedule',
+    eventId: `chat-book-${input.startIso}-${email}`,
+    email,
+    eventSourceUrl: 'https://modernmustardseed.com/',
+    customData: { lead_source: 'mr-mustard-chat', booking_time: input.startIso },
+  });
 
   return JSON.stringify({
     ok: true,

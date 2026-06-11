@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { clientEmail, leadNotification, p, callout } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
+import { trackServerConversion } from '@/lib/meta-capi';
 
 export const runtime = 'nodejs';
 
@@ -15,6 +16,9 @@ type LeadPayload = {
   source?: string;
   score?: number;
   summary?: string;
+  metaEventId?: string;
+  fbp?: string;
+  fbc?: string;
 };
 
 function daysFromNow(d: number): string {
@@ -66,7 +70,7 @@ export async function POST(req: Request) {
     const resend = new Resend(apiKey);
 
     const body = (await req.json()) as LeadPayload;
-    const { name, email, phone, company, industry, auditUrl, source, score, summary } = body;
+    const { name, email, phone, company, industry, auditUrl, source, score, summary, metaEventId, fbp, fbc } = body;
 
     if (!name || !email) {
       return NextResponse.json({ error: 'Name and email are required' }, { status: 400 });
@@ -74,6 +78,16 @@ export async function POST(req: Request) {
 
     const firstName = name.split(' ')[0];
     const playbook = pickPlaybook(industry);
+
+    await trackServerConversion(req, {
+      eventName: 'Lead',
+      email,
+      phone,
+      eventId: metaEventId,
+      fbp,
+      fbc,
+      customData: { lead_source: source || 'bottleneck-breaker' },
+    });
 
     await insertLead({
       type: 'audit',

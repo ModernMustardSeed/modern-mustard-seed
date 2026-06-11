@@ -11,6 +11,7 @@ import { insertLead, getSupabase } from '@/lib/supabase';
 import { getNextAvailableSlots, isSlotAvailable, displayForIso } from '@/lib/booking';
 import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
+import { sendMetaEvent } from '@/lib/meta-capi';
 import { randomUUID } from 'node:crypto';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -207,6 +208,16 @@ async function bookSlot(input: {
     }
   }
 
+  // Meta CAPI: a booked call is the highest-value conversion, and it happens
+  // entirely server-side (no browser Pixel can see a voice booking).
+  await sendMetaEvent({
+    eventName: 'Schedule',
+    eventId: `voice-book-${input.startIso}-${email}`,
+    email,
+    eventSourceUrl: 'https://modernmustardseed.com/voice-agents',
+    customData: { lead_source: 'mr-mustard-voice', booking_time: input.startIso },
+  });
+
   return JSON.stringify({
     ok: true,
     display,
@@ -286,6 +297,13 @@ async function captureLead(input: {
         }),
       });
     }
+    await sendMetaEvent({
+      eventName: 'Lead',
+      eventId: `voice-lead-${email}-${Math.round(Date.now() / 1000)}`,
+      email,
+      eventSourceUrl: 'https://modernmustardseed.com/voice-agents',
+      customData: { lead_source: 'mr-mustard-voice' },
+    });
     return JSON.stringify({
       ok: true,
       instruction:
