@@ -77,7 +77,12 @@ function renderBrief(text: string) {
   });
 }
 
-export default function CommandCenter() {
+export default function CommandCenter({ user }: { user?: { name: string; role: 'owner' | 'staff' } }) {
+  const showMoney = (user?.role ?? 'owner') === 'owner';
+  // Mask dollar figures for non-owner staff. Counts and pipeline stay visible.
+  const m = (n: number) => (showMoney ? money(n) : '••••');
+  const firstName = (user?.name || '').split(' ')[0];
+
   const [data, setData] = useState<Overview | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -135,9 +140,10 @@ export default function CommandCenter() {
   }, [load]);
 
   useEffect(() => {
-    if (data && !brief && !briefLoading) genBrief(data);
+    // The brief summarizes revenue, so only the owner generates and sees it.
+    if (showMoney && data && !brief && !briefLoading) genBrief(data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, showMoney]);
 
   const markRequest = async (id: string, status: 'read' | 'done') => {
     try {
@@ -197,6 +203,22 @@ export default function CommandCenter() {
       <AdminHeader active="overview" title="Command Center" onRefresh={load} />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
+        {firstName && (
+          <div className="mb-5">
+            <h2 className="font-display text-xl font-bold text-[#161616] tracking-tight">
+              Welcome back, {firstName}.
+            </h2>
+            {!showMoney && (
+              <p className="text-[#161616]/55 font-body text-sm mt-0.5">
+                New here? Start with the{' '}
+                <Link href="/admin/onboarding" className="text-[#1E50C8] font-semibold hover:text-[#161616]">
+                  onboarding guide
+                </Link>
+                . Revenue figures are hidden on your login.
+              </p>
+            )}
+          </div>
+        )}
         {error && (
           <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-6">
             <p className="text-[#E0301E] text-sm font-body">{error}</p>
@@ -213,16 +235,16 @@ export default function CommandCenter() {
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-6">
               <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
                 <div className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium">Revenue this month</div>
-                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{money(data.revenue.month)}</div>
+                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{m(data.revenue.month)}</div>
                 {t && t.revenue > 0 && (
                   <div className="mt-3">
                     <div className="h-1.5 rounded-full bg-[#161616]/10 overflow-hidden">
                       <div className="h-full bg-[#F5B700]" style={{ width: `${pct(data.revenue.month, t.revenue)}%` }} />
                     </div>
-                    <div className="text-[10px] text-[#161616]/45 font-mono mt-1.5">{pct(data.revenue.month, t.revenue)}% of {money(t.revenue)} goal</div>
+                    <div className="text-[10px] text-[#161616]/45 font-mono mt-1.5">{pct(data.revenue.month, t.revenue)}% of {m(t.revenue)} goal</div>
                   </div>
                 )}
-                <div className="text-[10px] text-[#161616]/45 font-mono mt-2">{money(data.revenue.allTime)} all time</div>
+                <div className="text-[10px] text-[#161616]/45 font-mono mt-2">{m(data.revenue.allTime)} all time</div>
               </div>
 
               <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
@@ -233,7 +255,7 @@ export default function CommandCenter() {
 
               <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
                 <div className="text-[9px] uppercase tracking-[0.3em] text-emerald-700 font-mono font-medium">MRR</div>
-                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{money(data.mrr?.monthly ?? 0)}</div>
+                <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{m(data.mrr?.monthly ?? 0)}</div>
                 <div className="text-[10px] text-[#161616]/45 font-mono mt-2">{data.mrr?.activePlans ?? 0} active plan{(data.mrr?.activePlans ?? 0) === 1 ? '' : 's'}</div>
               </div>
 
@@ -269,8 +291,8 @@ export default function CommandCenter() {
                 <div className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium">Open proposals</div>
                 <div className="font-sans text-3xl font-semibold text-[#161616] mt-1.5">{data.proposals?.open ?? 0}</div>
                 <div className="text-[10px] text-[#161616]/45 font-mono mt-2">
-                  {money(data.proposals?.openValue ?? 0)} outstanding
-                  {data.proposals?.accepted ? ` · ${money(data.proposals.acceptedValue)} accepted` : ''}
+                  {m(data.proposals?.openValue ?? 0)} outstanding
+                  {data.proposals?.accepted ? ` · ${m(data.proposals.acceptedValue)} accepted` : ''}
                 </div>
               </Link>
             </div>
@@ -282,17 +304,17 @@ export default function CommandCenter() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono">Committed (owed)</div>
-                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{money(data.cashflow?.committed ?? 0)}</div>
+                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{m(data.cashflow?.committed ?? 0)}</div>
                     <div className="text-[10px] text-[#161616]/45 font-mono mt-1">signed, not yet paid</div>
                   </div>
                   <div>
                     <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono">Open pipeline</div>
-                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{money(data.cashflow?.openPipeline ?? 0)}</div>
+                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{m(data.cashflow?.openPipeline ?? 0)}</div>
                     <div className="text-[10px] text-[#161616]/45 font-mono mt-1">proposals out</div>
                   </div>
                   <div>
                     <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono">MRR</div>
-                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{money(data.cashflow?.mrr ?? 0)}</div>
+                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1">{m(data.cashflow?.mrr ?? 0)}</div>
                     <div className="text-[10px] text-[#161616]/45 font-mono mt-1">recurring / mo</div>
                   </div>
                   <div>
@@ -396,7 +418,8 @@ export default function CommandCenter() {
               </Link>
             )}
 
-            {/* AI brief */}
+            {/* AI brief (owner only: it summarizes revenue and cashflow) */}
+            {showMoney && (
             <div className="bg-[#FFF8E6] border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 mb-6">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2.5">
@@ -420,6 +443,7 @@ export default function CommandCenter() {
                 <div className="max-w-none">{renderBrief(brief || 'No brief yet.')}</div>
               )}
             </div>
+            )}
 
             <div className="grid lg:grid-cols-3 gap-6 mb-6">
               {/* Needs attention */}
@@ -464,8 +488,9 @@ export default function CommandCenter() {
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-6 mb-6">
-              {/* Revenue chart */}
+            <div className={`grid gap-6 mb-6 ${showMoney ? 'lg:grid-cols-3' : 'lg:grid-cols-1'}`}>
+              {/* Revenue chart (owner only) */}
+              {showMoney && (
               <div className="lg:col-span-2 bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
                 <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-5">Revenue, last 6 months</span>
                 <div style={{ width: '100%', height: 200 }}>
@@ -487,6 +512,7 @@ export default function CommandCenter() {
                   </ResponsiveContainer>
                 </div>
               </div>
+              )}
 
               {/* Pipeline */}
               <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
@@ -511,6 +537,7 @@ export default function CommandCenter() {
               </div>
             </div>
 
+            {showMoney && (
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Recent sales */}
               <div className="lg:col-span-2 bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
@@ -582,6 +609,7 @@ export default function CommandCenter() {
                 )}
               </div>
             </div>
+            )}
           </>
         )}
       </main>

@@ -12,7 +12,7 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * tab row so nothing overlaps or overflows.
  */
 
-type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'call' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar';
+type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'call' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
   { key: 'calendar', label: 'Calendar', href: '/admin/calendar' },
@@ -26,6 +26,7 @@ const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'reviews', label: 'Reviews', href: '/admin/testimonials' },
   { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
   { key: 'partners', label: 'Partners', href: '/admin/partners' },
+  { key: 'onboarding', label: 'Onboarding', href: '/admin/onboarding' },
 ];
 
 export default function AdminHeader({ active, title, onRefresh }: { active: Tab; title: string; onRefresh?: () => void }) {

@@ -34,10 +34,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Email and password required' }, { status: 400 });
   }
 
-  if (!checkCredentials(email, password)) {
+  const user = checkCredentials(email, password);
+  if (!user) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   }
 
-  await setSessionCookie(email);
+  await setSessionCookie(user.email);
   return NextResponse.json({ success: true });
 }

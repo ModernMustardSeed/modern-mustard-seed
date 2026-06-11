@@ -56,6 +56,61 @@ function timingSafeEqualStr(a: string, b: string): boolean {
   return diff === 0;
 }
 
+// ── Team + roles ─────────────
+//
+// The owner (Sarah) is the ADMIN_EMAIL / ADMIN_PASSWORD pair. Additional staff
+// (e.g. an assistant) are configured in the ADMIN_TEAM env var so each person
+// logs in as themselves. Format: one user per line (or separated by ";;"), each
+//   email|password|Full Name|role
+// where role is "owner" or "staff" (defaults to staff). Example:
+//   ADMIN_TEAM="polly@modernmustardseed.com|TempPass!|Polly Thompson|staff"
+// Roles are resolved at read time, so existing sessions keep working.
+
+export type AdminRole = 'owner' | 'staff';
+export type AdminUser = { email: string; name: string; role: AdminRole };
+
+function ownerUser(): AdminUser | null {
+  const email = process.env.ADMIN_EMAIL;
+  if (!email) return null;
+  return { email: email.toLowerCase().trim(), name: process.env.ADMIN_NAME || 'Sarah Scarano', role: 'owner' };
+}
+
+type TeamCredential = AdminUser & { password: string };
+
+function parseTeam(): TeamCredential[] {
+  const raw = process.env.ADMIN_TEAM;
+  if (!raw) return [];
+  return raw
+    .split(/;;|\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [email, password, name, role] = line.split('|').map((s) => (s ?? '').trim());
+      if (!email || !password) return null;
+      return {
+        email: email.toLowerCase(),
+        password,
+        name: name || email.split('@')[0],
+        role: role === 'owner' ? 'owner' : 'staff',
+      } as TeamCredential;
+    })
+    .filter((u): u is TeamCredential => u !== null);
+}
+
+/** Everyone who can sign in, owner first. Used to resolve names + roles. */
+export function listAdminUsers(): AdminUser[] {
+  const owner = ownerUser();
+  const team = parseTeam().map(({ password: _pw, ...u }) => u);
+  return [...(owner ? [owner] : []), ...team];
+}
+
+/** Resolve the full user (name + role) for a signed-in session email. */
+export function resolveAdminUser(email: string): AdminUser {
+  const e = email.toLowerCase().trim();
+  const match = listAdminUsers().find((u) => u.email === e);
+  return match ?? { email: e, name: e.split('@')[0], role: 'staff' };
+}
+
 // ── Public API ─────────────
 
 export type Session = { email: string; expires: number };
@@ -85,14 +140,29 @@ export async function verifyToken(token: string): Promise<Session | null> {
   }
 }
 
-export function checkCredentials(email: string, password: string): boolean {
+/** Validate a sign-in. Returns the matched user (owner or staff) or null. */
+export function checkCredentials(email: string, password: string): AdminUser | null {
+  const e = email.toLowerCase().trim();
+
+  // Owner: the original ADMIN_EMAIL / ADMIN_PASSWORD pair.
   const adminEmail = process.env.ADMIN_EMAIL;
   const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminEmail || !adminPassword) return false;
-  return (
-    timingSafeEqualStr(email.toLowerCase().trim(), adminEmail.toLowerCase().trim()) &&
+  if (
+    adminEmail &&
+    adminPassword &&
+    timingSafeEqualStr(e, adminEmail.toLowerCase().trim()) &&
     timingSafeEqualStr(password, adminPassword)
-  );
+  ) {
+    return { email: e, name: process.env.ADMIN_NAME || 'Sarah Scarano', role: 'owner' };
+  }
+
+  // Team members from ADMIN_TEAM.
+  for (const u of parseTeam()) {
+    if (timingSafeEqualStr(e, u.email) && timingSafeEqualStr(password, u.password)) {
+      return { email: u.email, name: u.name, role: u.role };
+    }
+  }
+  return null;
 }
 
 export async function setSessionCookie(email: string): Promise<void> {
@@ -117,6 +187,13 @@ export async function getSession(): Promise<Session | null> {
   const token = c.get(COOKIE_NAME)?.value;
   if (!token) return null;
   return verifyToken(token);
+}
+
+/** The signed-in admin with their resolved name + role, or null. */
+export async function getAdminUser(): Promise<AdminUser | null> {
+  const session = await getSession();
+  if (!session) return null;
+  return resolveAdminUser(session.email);
 }
 
 export { COOKIE_NAME };
