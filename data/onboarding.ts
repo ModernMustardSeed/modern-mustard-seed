@@ -355,7 +355,7 @@ export const MODULES: GuideModule[] = [
         heading: 'Your logins',
         bullets: [
           'Admin command center: your own email and password at /admin (Sarah sets this up for you).',
-          'Company email on the modernmustardseed.com domain (Google Workspace).',
+          'Company email on the modernmustardseed.com domain, hosted on Zoho Mail. You sign in at mail.zoho.com.',
           'The social accounts and our posting tool, so you can schedule content.',
           'Read access to the calendar so you can book and confirm calls.',
         ],
