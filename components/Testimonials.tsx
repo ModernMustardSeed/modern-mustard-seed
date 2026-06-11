@@ -70,31 +70,54 @@ export default async function Testimonials() {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
-        {rows.map((r) => (
-          <figure key={r.id} className="pop-card p-7 flex flex-col">
-            <div className="text-[#F5B700] text-sm mb-3" aria-hidden="true" style={{ WebkitTextStroke: '0.5px #161616' }}>
-              {'★'.repeat(Math.max(1, Math.min(5, r.rating || 5)))}
-            </div>
-            <blockquote className="text-[#161616] font-body text-[15px] leading-relaxed flex-1">
-              &ldquo;{r.quote}&rdquo;
-            </blockquote>
-            {r.outcome && (
-              <p className="mt-4 inline-block self-start text-[11px] uppercase tracking-[0.15em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-3 py-1">
-                {r.outcome}
-              </p>
-            )}
-            <figcaption className="mt-4 pt-4 border-t-2 border-[#161616]/10">
-              <span className="block font-display font-black text-[#161616]">{r.name}</span>
-              {(r.role || r.company) && (
-                <span className="block text-[12px] text-[#3a3733] font-body">
-                  {[r.role, r.company].filter(Boolean).join(', ')}
-                </span>
-              )}
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+      {rows.length > 3 ? (
+        <>
+          <div className="max-w-6xl mx-auto mb-3 flex items-center justify-end">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold inline-flex items-center gap-2">
+              Scroll
+              <span aria-hidden="true" className="text-sm leading-none">&rarr;</span>
+            </span>
+          </div>
+          <div className="mms-hscroll flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-6 max-w-6xl mx-auto items-stretch">
+            {rows.map((r) => (
+              <div key={r.id} className="snap-start shrink-0 w-[82vw] sm:w-[360px] flex">
+                {testimonialCard(r)}
+              </div>
+            ))}
+            <div aria-hidden="true" className="shrink-0 w-px" />
+          </div>
+        </>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+          {rows.map((r) => testimonialCard(r))}
+        </div>
+      )}
     </section>
+  );
+}
+
+function testimonialCard(r: Row) {
+  return (
+    <figure key={r.id} className="pop-card p-7 flex flex-col w-full h-full">
+      <div className="text-[#F5B700] text-sm mb-3" aria-hidden="true" style={{ WebkitTextStroke: '0.5px #161616' }}>
+        {'★'.repeat(Math.max(1, Math.min(5, r.rating || 5)))}
+      </div>
+      <blockquote className="text-[#161616] font-body text-[15px] leading-relaxed flex-1">
+        &ldquo;{r.quote}&rdquo;
+      </blockquote>
+      {r.outcome && (
+        <p className="mt-4 inline-block self-start text-[11px] uppercase tracking-[0.15em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-3 py-1">
+          {r.outcome}
+        </p>
+      )}
+      <figcaption className="mt-4 pt-4 border-t-2 border-[#161616]/10">
+        <span className="block font-display font-black text-[#161616]">{r.name}</span>
+        {(r.role || r.company) && (
+          <span className="block text-[12px] text-[#3a3733] font-body">
+            {[r.role, r.company].filter(Boolean).join(', ')}
+          </span>
+        )}
+      </figcaption>
+    </figure>
   );
 }

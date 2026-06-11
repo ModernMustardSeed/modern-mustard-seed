@@ -16,8 +16,10 @@ export default function Footer() {
     {
       title: 'Work With Us',
       links: [
-        { label: 'The Work', href: '/work' },
         { label: 'How it Works', href: '/work-with-us' },
+        { label: 'Services', href: '/services' },
+        { label: 'Voice Agents', href: '/voice-agents' },
+        { label: 'The Work', href: '/work' },
         { label: 'What You Get', href: '/playbook' },
         { label: 'Book a Call', href: '/book' },
         { label: 'Join the Build Queue', href: '/build-queue' },
@@ -28,6 +30,7 @@ export default function Footer() {
     {
       title: 'Free Tools',
       links: [
+        { label: 'New Business Checklist', href: '/launch-checklist' },
         { label: 'Bottleneck Breaker', href: '/audit' },
         { label: 'Website Audit', href: '/website-audit' },
       ],

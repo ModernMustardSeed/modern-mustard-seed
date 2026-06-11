@@ -24,6 +24,7 @@ const MENU_GROUPS = [
   {
     heading: 'Free Tools',
     links: [
+      { label: 'New Business Checklist', href: '/launch-checklist' },
       { label: 'Bottleneck Breaker', href: '/audit' },
       { label: 'Website Audit', href: '/website-audit' },
       { label: 'Free Playbooks', href: '/playbooks' },

@@ -35,9 +35,16 @@ export default function WhatGetsBuilt() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto mb-12">
+      <div className="max-w-6xl mx-auto mb-3 flex items-center justify-end">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold inline-flex items-center gap-2">
+          Scroll
+          <span aria-hidden="true" className="text-sm leading-none">&rarr;</span>
+        </span>
+      </div>
+      <div className="mms-hscroll flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-6 max-w-6xl mx-auto mb-10 items-stretch">
         {studies.map((s) => (
-          <TiltCard key={s.slug}>
+          <div key={s.slug} className="snap-start shrink-0 w-[80vw] sm:w-[330px] md:w-[345px] flex">
+          <TiltCard className="w-full">
             <Link
               href={`/work/${s.slug}`}
               className="group pop-card p-6 flex flex-col hover:-translate-y-1 transition-transform duration-300 h-full"
@@ -70,7 +77,9 @@ export default function WhatGetsBuilt() {
               )}
             </Link>
           </TiltCard>
+          </div>
         ))}
+        <div aria-hidden="true" className="shrink-0 w-px" />
       </div>
 
       <div className="flex justify-center">

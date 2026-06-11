@@ -89,19 +89,33 @@ export default function YourSiteWorksForYou() {
           </p>
         </div>
 
-        {/* Feature grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-20">
+        {/* Scroll hint */}
+        <div className="mb-5 flex items-center justify-between">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold">
+            {FEATURES.length} capabilities
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold inline-flex items-center gap-2">
+            Scroll
+            <span aria-hidden="true" className="text-sm leading-none">&rarr;</span>
+          </span>
+        </div>
+
+        {/* Feature scroller (was a tall 2-col grid) */}
+        <div className="mms-hscroll flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-6 mb-16 items-stretch">
           {FEATURES.map((f, i) => (
-            <div key={f.title} className="pop-card p-8 md:p-10 hover:-translate-y-1 transition-transform duration-300">
-              <span className="font-display text-3xl md:text-4xl font-black text-[#F5B700] tracking-tight block mb-4" style={{ WebkitTextStroke: '1.5px #161616' }}>
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <h3 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-3 leading-snug">
-                {f.title}
-              </h3>
-              <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">{f.body}</p>
+            <div key={f.title} className="snap-start shrink-0 w-[82vw] sm:w-[360px] md:w-[380px] flex">
+              <div className="pop-card p-8 md:p-9 w-full hover:-translate-y-1 transition-transform duration-300">
+                <span className="font-display text-3xl md:text-4xl font-black text-[#F5B700] tracking-tight block mb-4" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-3 leading-snug">
+                  {f.title}
+                </h3>
+                <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">{f.body}</p>
+              </div>
             </div>
           ))}
+          <div aria-hidden="true" className="shrink-0 w-px" />
         </div>
 
         {/* CTA */}
