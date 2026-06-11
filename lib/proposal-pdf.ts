@@ -1,4 +1,6 @@
-import { PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont } from 'pdf-lib';
+import { PDFDocument, rgb, type PDFPage, type PDFFont } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
+import { PLAYFAIR_700_B64, DMSANS_400_B64, DMSANS_700_B64 } from './proposal-fonts';
 import { byId, isRecurring, isHourly, formatMoney as money, TERMS, type Service } from '@/data/proposal-menu';
 
 type Line = { id: string; price: number; qty: number; scope?: string[]; framing?: string };
@@ -55,9 +57,14 @@ function wrap(text: string, font: PDFFont, size: number, maxWidth: number): stri
 /** Render a branded PDF of a (signed) proposal. Returns the PDF bytes. */
 export async function renderProposalPdf(p: ProposalRecord): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
-  const reg = await doc.embedFont(StandardFonts.Helvetica);
-  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
-  const ital = await doc.embedFont(StandardFonts.HelveticaOblique);
+  doc.registerFontkit(fontkit);
+  // Brand fonts: DM Sans for body/labels, Playfair Display for the display
+  // moments (title, service names, money, signature, scripture). `ital` is
+  // aliased to the Playfair display face so existing display calls pick it up.
+  const reg = await doc.embedFont(Buffer.from(DMSANS_400_B64, 'base64'), { subset: true });
+  const bold = await doc.embedFont(Buffer.from(DMSANS_700_B64, 'base64'), { subset: true });
+  const ital = await doc.embedFont(Buffer.from(PLAYFAIR_700_B64, 'base64'), { subset: true });
+  const display = ital;
 
   const W = 612;
   const H = 792;
@@ -164,12 +171,12 @@ export async function renderProposalPdf(p: ProposalRecord): Promise<Uint8Array> 
     if (!s) continue;
     ensure(40);
     const priceLabel = linePriceLabel(s, l);
-    const priceW = bold.widthOfTextAtSize(priceLabel, 11);
-    page.drawText(s.name, { x: M, y: y - 12, size: 12, font: bold, color: INK });
-    page.drawText(priceLabel, { x: W - M - priceW, y: y - 12, size: 11, font: bold, color: INK });
+    const priceW = display.widthOfTextAtSize(priceLabel, 12);
+    page.drawText(s.name, { x: M, y: y - 12, size: 14, font: display, color: INK });
+    page.drawText(priceLabel, { x: W - M - priceW, y: y - 12, size: 12, font: display, color: INK });
     y -= 22;
     if (s.variable) {
-      page.drawText('at cost, varies with usage', { x: M, y: y - 9, size: 8.5, font: ital, color: MUTED });
+      page.drawText('at cost, varies with usage', { x: M, y: y - 9, size: 8.5, font: reg, color: MUTED });
       y -= 14;
     }
     if (l.framing) para(l.framing, { size: 10, color: BODY, gap: 4 });
@@ -190,10 +197,9 @@ export async function renderProposalPdf(p: ProposalRecord): Promise<Uint8Array> 
   y -= 14;
   const row = (label: string, value: string, big = false) => {
     page.drawText(label, { x: M, y: y - 12, size: big ? 12 : 11, font: reg, color: BODY });
-    const vf = big ? bold : bold;
-    const vw = vf.widthOfTextAtSize(value, big ? 15 : 12);
-    page.drawText(value, { x: W - M - vw, y: y - 12, size: big ? 15 : 12, font: vf, color: INK });
-    y -= big ? 24 : 20;
+    const vw = display.widthOfTextAtSize(value, big ? 18 : 13);
+    page.drawText(value, { x: W - M - vw, y: y - 12, size: big ? 18 : 13, font: display, color: INK });
+    y -= big ? 26 : 20;
   };
   if (oneTime > 0) {
     row('Project total', money(oneTime), true);
