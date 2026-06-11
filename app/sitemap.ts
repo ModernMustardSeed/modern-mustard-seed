@@ -20,6 +20,7 @@ const STATIC_PATHS = [
   '/playbooks',
   '/audit',
   '/website-audit',
+  '/launch-checklist',
   '/ai-proof',
   '/for',
   '/about',
@@ -41,7 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ? 1.0
         : path === '/the-terminal' || path === '/idea-to-spec'
           ? 0.95
-          : path === '/work' || path === '/audit'
+          : path === '/work' || path === '/audit' || path === '/launch-checklist'
             ? 0.9
             : 0.7,
   }));

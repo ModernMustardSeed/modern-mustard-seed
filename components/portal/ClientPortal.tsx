@@ -7,6 +7,7 @@ import { launchCountdown } from '@/lib/launch';
 import HelpGuide from '@/components/HelpGuide';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
+import LaunchChecklist from '@/components/portal/LaunchChecklist';
 
 /**
  * The client workspace. One screen scoped to the signed-in client: their
@@ -361,6 +362,9 @@ export default function ClientPortal() {
                   </div>
                   );
                 })}
+
+                {/* Launch checklist: every step to get open, online, and selling */}
+                <LaunchChecklist email={data.email} />
 
                 {/* Project intake */}
                 {(data.audience === 'client' || data.audience === 'both') && (
