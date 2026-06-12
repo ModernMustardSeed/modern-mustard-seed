@@ -144,8 +144,18 @@ const config: Config = {
         'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
         'ken-burns': 'kenBurns 32s ease-in-out infinite alternate',
         'shimmer': 'shimmer 3.5s ease-in-out infinite',
+        'pop-in': 'popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        'eq': 'eqBar 0.8s ease-in-out infinite',
       },
       keyframes: {
+        popIn: {
+          '0%': { opacity: '0', transform: 'translateY(16px) scale(0.96)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+        eqBar: {
+          '0%, 100%': { transform: 'scaleY(0.3)' },
+          '50%': { transform: 'scaleY(1)' },
+        },
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },

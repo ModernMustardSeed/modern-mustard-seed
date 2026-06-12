@@ -291,7 +291,7 @@ export default function MustardSeedChat() {
                 Not sure where to start?
               </p>
               <p className="font-body text-[13px] text-[#3a3733] leading-snug">
-                Tell me your biggest bottleneck. I&apos;ll map you a free 5-step playbook in 60 seconds.
+                Talk to me live or type it out. I&apos;ll find your bottleneck and map you a free 5-step playbook in 60 seconds.
               </p>
               <span className="mt-2.5 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.18em] font-mono font-bold text-[#E0301E]">
                 Ask Mr. Mustard &rarr;
@@ -329,43 +329,55 @@ export default function MustardSeedChat() {
         <div
           role="dialog"
           aria-label="Talk to Mr. Mustard"
-          className="fixed bottom-24 right-6 z-[81] w-[calc(100vw-3rem)] sm:w-[340px] rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] overflow-hidden"
+          className="fixed bottom-24 right-6 z-[81] w-[calc(100vw-3rem)] sm:w-[340px] rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] overflow-hidden opacity-0 animate-pop-in"
         >
-          <div className="flex items-start justify-between px-5 pt-5">
-            <div className="flex items-center gap-3">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FBF6EA] border-2 border-[#161616] overflow-hidden shrink-0">
-                <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
-              </span>
-              <div>
-                <p className="font-display font-black text-[#161616] text-base leading-tight">
-                  How do you want to talk?
-                </p>
-                <p className="font-body text-xs text-[#3a3733] leading-snug mt-0.5">
-                  Mr. Mustard does both. Your pick.
-                </p>
+          {/* Halftone header band */}
+          <div className="relative bg-[#FBF6EA] border-b-2 border-[#161616] px-5 pt-4 pb-4 overflow-hidden">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: 'radial-gradient(rgba(245,183,0,0.35) 1.2px, transparent 1.3px)',
+                backgroundSize: '14px 14px',
+              }}
+            />
+            <div className="relative flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white border-2 border-[#161616] overflow-hidden shrink-0">
+                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
+                </span>
+                <div>
+                  <span className="block text-[8px] uppercase tracking-[0.35em] text-[#E0301E] font-mono font-bold mb-0.5">
+                    Your AI right hand
+                  </span>
+                  <p className="font-display font-black text-[#161616] text-lg leading-tight">
+                    How do you want to talk?
+                  </p>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={toggleOpen}
+                aria-label="Close"
+                className="w-7 h-7 -mt-1 -mr-1 rounded-full text-[#161616]/50 hover:text-[#161616] hover:rotate-90 transition-all duration-200 flex items-center justify-center text-xl leading-none shrink-0"
+              >
+                ×
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={toggleOpen}
-              aria-label="Close"
-              className="w-7 h-7 -mt-1 -mr-1 rounded-full text-[#161616]/50 hover:text-[#161616] transition-colors flex items-center justify-center text-xl leading-none shrink-0"
-            >
-              ×
-            </button>
           </div>
-          <div className="flex flex-col gap-2.5 px-5 py-5">
+
+          <div className="flex flex-col gap-2.5 px-5 pt-5 pb-3">
             {canCall ? (
               <button
                 type="button"
                 onClick={chooseVoice}
-                className="flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616] transition-all text-left"
+                className="group flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#161616] active:translate-y-0 active:shadow-[2px_2px_0_0_#161616] transition-all text-left"
               >
                 <span className="flex flex-col leading-tight">
                   <span className="font-sans font-extrabold text-[#161616] text-sm">Talk live</span>
                   <span className="font-body text-[11px] text-[#161616]/70 mt-0.5">A real voice call, right here</span>
                 </span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 transition-transform duration-200 group-hover:scale-110 group-hover:-rotate-6">
                   <rect x="9" y="3" width="6" height="11" rx="3" fill="#161616" />
                   <path d="M5 11a7 7 0 0 0 14 0" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" fill="none" />
                   <path d="M12 18v3" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" />
@@ -374,13 +386,13 @@ export default function MustardSeedChat() {
             ) : (
               <Link
                 href="/voice-agents"
-                className="flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616] transition-all text-left"
+                className="group flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#161616] transition-all text-left"
               >
                 <span className="flex flex-col leading-tight">
                   <span className="font-sans font-extrabold text-[#161616] text-sm">Talk live</span>
                   <span className="font-body text-[11px] text-[#161616]/70 mt-0.5">Hear the voice agent in action</span>
                 </span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 transition-transform duration-200 group-hover:scale-110 group-hover:-rotate-6">
                   <rect x="9" y="3" width="6" height="11" rx="3" fill="#161616" />
                   <path d="M5 11a7 7 0 0 0 14 0" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" fill="none" />
                   <path d="M12 18v3" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" />
@@ -390,17 +402,21 @@ export default function MustardSeedChat() {
             <button
               type="button"
               onClick={chooseChat}
-              className="flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl bg-white border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616] transition-all text-left"
+              className="group flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl bg-white border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#161616] hover:bg-[#FBF6EA] active:translate-y-0 active:shadow-[2px_2px_0_0_#161616] transition-all text-left"
             >
               <span className="flex flex-col leading-tight">
                 <span className="font-sans font-extrabold text-[#161616] text-sm">Chat</span>
                 <span className="font-body text-[11px] text-[#161616]/70 mt-0.5">Type it out, get a 5-step playbook</span>
               </span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6">
                 <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H9l-4.2 3.6A.7.7 0 0 1 3.6 19V5.5z" fill="none" stroke="#161616" strokeWidth="2" strokeLinejoin="round" transform="translate(0.4 0.5)" />
               </svg>
             </button>
           </div>
+
+          <p className="px-5 pb-4 text-center text-[9px] uppercase tracking-[0.25em] text-[#161616]/40 font-mono font-medium">
+            Free &middot; No signup &middot; He books real calls
+          </p>
         </div>
       )}
 
@@ -409,51 +425,98 @@ export default function MustardSeedChat() {
         <div
           role="dialog"
           aria-label="Mr. Mustard live call"
-          className="fixed bottom-24 right-6 z-[81] w-[calc(100vw-3rem)] sm:w-[340px] rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] overflow-hidden"
+          className="fixed bottom-24 right-6 z-[81] w-[calc(100vw-3rem)] sm:w-[340px] rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] overflow-hidden opacity-0 animate-pop-in"
         >
-          <div className="flex items-start justify-between px-5 pt-5">
-            <div className="flex items-center gap-3">
-              <div className="relative shrink-0">
-                {callState === 'live' && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 rounded-full bg-[#F5B700] opacity-40 animate-ping"
-                    style={{ animationDuration: '1.6s' }}
-                  />
+          {/* Status band */}
+          <div className="relative bg-[#FBF6EA] border-b-2 border-[#161616] px-5 py-3 overflow-hidden">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: 'radial-gradient(rgba(245,183,0,0.35) 1.2px, transparent 1.3px)',
+                backgroundSize: '14px 14px',
+              }}
+            />
+            <div className="relative flex items-center justify-between">
+              <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#161616]">
+                {callState === 'live' ? (
+                  <>
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E0301E] opacity-70" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-[#E0301E]" />
+                    </span>
+                    <span className="text-[#E0301E]">Live call</span>
+                  </>
+                ) : callState === 'connecting' ? (
+                  <span className="text-[#161616]/60">Connecting&hellip;</span>
+                ) : (
+                  <span className="text-[#161616]/60">Call over</span>
                 )}
-                <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[#FBF6EA] border-2 border-[#161616] overflow-hidden">
-                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
-                </span>
-              </div>
-              <div>
-                <p className="font-display font-black text-[#161616] text-base leading-tight">
-                  {callState === 'live'
-                    ? speaking
-                      ? 'Mr. Mustard is talking…'
-                      : 'He is listening. Go ahead.'
-                    : callState === 'connecting'
-                      ? 'Connecting…'
-                      : 'Call ended'}
-                </p>
-                <p className="font-body text-xs text-[#3a3733] leading-snug mt-0.5">
-                  {callState === 'live'
-                    ? 'Ask anything. He can book your call with Sarah.'
-                    : callState === 'connecting'
-                      ? 'Allow the mic if your browser asks.'
-                      : 'Good talk. Want to go again?'}
-                </p>
-                {callError && <p className="text-[#E0301E] text-[11px] font-mono mt-1">{callError}</p>}
-              </div>
+              </span>
+              <button
+                type="button"
+                onClick={toggleOpen}
+                aria-label="Close"
+                className="w-7 h-7 -mr-1 rounded-full text-[#161616]/50 hover:text-[#161616] hover:rotate-90 transition-all duration-200 flex items-center justify-center text-xl leading-none"
+              >
+                ×
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={toggleOpen}
-              aria-label="Close"
-              className="w-7 h-7 -mt-1 -mr-1 rounded-full text-[#161616]/50 hover:text-[#161616] transition-colors flex items-center justify-center text-xl leading-none shrink-0"
-            >
-              ×
-            </button>
           </div>
+
+          {/* Mascot + comic voice meter */}
+          <div className="px-5 pt-6 pb-2 text-center">
+            <div className="relative inline-block">
+              {callState === 'live' && (
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-full bg-[#F5B700] opacity-40 animate-ping"
+                  style={{ animationDuration: '1.6s' }}
+                />
+              )}
+              <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-[#FBF6EA] border-2 border-[#161616] overflow-hidden mx-auto">
+                <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-12 w-auto" />
+              </span>
+            </div>
+
+            {/* The voice meter: dances when he talks, breathes while he listens */}
+            <div className="flex items-end justify-center gap-[5px] h-9 mt-4" aria-hidden="true">
+              {[14, 24, 32, 36, 30, 20, 12].map((h, i) => (
+                <span
+                  key={i}
+                  className={`w-1.5 rounded-full origin-bottom transition-colors duration-300 ${
+                    callState === 'live'
+                      ? `animate-eq ${speaking ? 'bg-[#F5B700]' : 'bg-[#161616]/25'}`
+                      : 'bg-[#161616]/15 scale-y-[0.3]'
+                  }`}
+                  style={{
+                    height: h,
+                    animationDelay: `${i * 110}ms`,
+                    animationDuration: speaking ? '0.65s' : '2.2s',
+                  }}
+                />
+              ))}
+            </div>
+
+            <p className="font-display font-black text-[#161616] text-xl leading-tight mt-3">
+              {callState === 'live'
+                ? speaking
+                  ? 'Mr. Mustard is talking…'
+                  : 'He is listening. Go ahead.'
+                : callState === 'connecting'
+                  ? 'Waking him up…'
+                  : 'Good talk.'}
+            </p>
+            <p className="font-body text-xs text-[#3a3733] leading-snug mt-1 max-w-[260px] mx-auto">
+              {callState === 'live'
+                ? 'Ask anything. He can book your call with Sarah.'
+                : callState === 'connecting'
+                  ? 'Allow the mic if your browser asks.'
+                  : 'Want to go again, or switch to chat?'}
+            </p>
+            {callError && <p className="text-[#E0301E] text-[11px] font-mono mt-2">{callError}</p>}
+          </div>
+
           <div className="flex gap-2.5 px-5 py-5">
             {callState === 'live' || callState === 'connecting' ? (
               <button
@@ -462,7 +525,7 @@ export default function MustardSeedChat() {
                   endCall();
                   setMode('choose');
                 }}
-                className="flex-1 px-5 py-3 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-white bg-[#E0301E] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="flex-1 px-5 py-3 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-white bg-[#E0301E] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616] transition-all"
               >
                 End call
               </button>
@@ -470,7 +533,7 @@ export default function MustardSeedChat() {
               <button
                 type="button"
                 onClick={() => void startCall()}
-                className="flex-1 px-5 py-3 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="flex-1 px-5 py-3 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616] transition-all"
               >
                 Call again
               </button>
@@ -481,7 +544,7 @@ export default function MustardSeedChat() {
                 endCall();
                 chooseChat();
               }}
-              className="flex-1 px-5 py-3 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+              className="flex-1 px-5 py-3 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616] transition-all"
             >
               Chat instead
             </button>
@@ -494,48 +557,60 @@ export default function MustardSeedChat() {
         <div
           role="dialog"
           aria-label="Mr. Mustard chat"
-          className="fixed bottom-24 right-6 z-[81] w-[calc(100vw-3rem)] sm:w-[420px] max-h-[72vh] flex flex-col rounded-2xl border border-gold-light/30 bg-midnight-700/95 backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.55)] overflow-hidden"
+          className="fixed bottom-24 right-6 z-[81] w-[calc(100vw-3rem)] sm:w-[420px] max-h-[72vh] flex flex-col rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] overflow-hidden opacity-0 animate-pop-in"
         >
           {/* Header */}
-          <div className="relative px-5 py-4 border-b border-gold-light/15 bg-midnight-800/80">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-light/60 to-transparent" />
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="block text-[9px] uppercase tracking-[0.4em] text-gold-light/85 font-mono font-bold">
-                  Modern Mustard Seed
+          <div className="relative px-5 py-3.5 border-b-2 border-[#161616] bg-[#FBF6EA] overflow-hidden">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: 'radial-gradient(rgba(245,183,0,0.35) 1.2px, transparent 1.3px)',
+                backgroundSize: '14px 14px',
+              }}
+            />
+            <div className="relative flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white border-2 border-[#161616] overflow-hidden shrink-0">
+                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-8 w-auto" />
                 </span>
-                <span className="block font-display italic text-xl text-cream-50 font-medium tracking-tight mt-1">
-                  Mr. Mustard
-                </span>
+                <div>
+                  <span className="block text-[8px] uppercase tracking-[0.35em] text-[#E0301E] font-mono font-bold">
+                    Modern Mustard Seed
+                  </span>
+                  <span className="block font-display font-black text-lg text-[#161616] tracking-tight leading-tight">
+                    Mr. Mustard
+                  </span>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close chat"
-                className="w-8 h-8 rounded-full border border-cream-100/15 text-cream-100/60 hover:text-cream-50 hover:border-cream-100/35 transition-colors flex items-center justify-center text-lg leading-none"
+                className="w-8 h-8 rounded-full text-[#161616]/50 hover:text-[#161616] hover:rotate-90 transition-all duration-200 flex items-center justify-center text-xl leading-none"
               >
                 ×
               </button>
             </div>
             {captured && (
-              <p className="mt-3 text-[10px] tracking-[0.25em] uppercase text-gold-light/85 font-mono font-medium">
+              <p className="relative mt-2 text-[9px] tracking-[0.25em] uppercase text-[#E0301E] font-mono font-bold">
                 ● Lead captured. Sarah is on it.
               </p>
             )}
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-5 py-5 space-y-3">
+          <div className="flex-1 overflow-y-auto px-5 py-5 space-y-3 bg-white">
             {messages.map((m, i) => (
               <div
                 key={i}
                 className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[88%] px-4 py-3 rounded-2xl text-sm font-body leading-relaxed whitespace-pre-wrap ${
+                  className={`max-w-[88%] px-4 py-3 rounded-2xl text-sm font-body leading-relaxed whitespace-pre-wrap border-2 border-[#161616] text-[#161616] ${
                     m.role === 'assistant'
-                      ? 'bg-midnight-600/70 border border-gold-light/15 text-cream-100/95 rounded-bl-md'
-                      : 'bg-brass text-cream-50 rounded-br-md'
+                      ? 'bg-[#FBF6EA] rounded-bl-md'
+                      : 'bg-[#F5B700] rounded-br-md'
                   }`}
                 >
                   {m.text}
@@ -550,15 +625,15 @@ export default function MustardSeedChat() {
                 <button
                   type="button"
                   onClick={startBooking}
-                  className="w-full flex items-center justify-between gap-3 px-4 py-3.5 rounded-xl bg-brass campfire-glow border border-gold-light/40 text-cream-50 hover:shadow-[0_0_30px_rgba(255,107,53,0.5)] transition-all mb-4"
+                  className="w-full flex items-center justify-between gap-3 px-4 py-3.5 rounded-xl bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#161616] transition-all mb-4"
                 >
                   <span className="flex flex-col text-left leading-tight">
-                    <span className="font-display italic text-base font-medium tracking-tight">Book a call with Sarah</span>
-                    <span className="text-[10px] uppercase tracking-[0.22em] font-mono font-semibold text-cream-50/80 mt-0.5">30 min · Wed &amp; Thu · pick a time here</span>
+                    <span className="font-display font-black text-base text-[#161616] tracking-tight">Book a call with Sarah</span>
+                    <span className="text-[9px] uppercase tracking-[0.22em] font-mono font-bold text-[#161616]/65 mt-0.5">30 min · Wed &amp; Thu · pick a time here</span>
                   </span>
-                  <span className="text-lg leading-none">&rarr;</span>
+                  <span className="text-lg leading-none text-[#161616]">&rarr;</span>
                 </button>
-                <span className="block text-[9px] uppercase tracking-[0.35em] text-cream-100/45 font-mono font-medium mb-2.5">
+                <span className="block text-[9px] uppercase tracking-[0.35em] text-[#161616]/45 font-mono font-bold mb-2.5">
                   Or start with
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -567,7 +642,7 @@ export default function MustardSeedChat() {
                       key={s}
                       type="button"
                       onClick={() => void sendText(s)}
-                      className="text-left px-3 py-2 rounded-xl text-[12px] font-body leading-snug bg-midnight-900/55 border border-gold-light/15 text-cream-100/85 hover:bg-midnight-900/80 hover:border-gold-light/40 hover:text-cream-50 transition-all"
+                      className="text-left px-3 py-2 rounded-xl text-[12px] font-body leading-snug bg-white border-2 border-[#161616]/20 text-[#161616]/80 hover:border-[#161616] hover:bg-[#FBF6EA] hover:text-[#161616] transition-all"
                     >
                       {s}
                     </button>
@@ -578,11 +653,11 @@ export default function MustardSeedChat() {
 
             {sending && (
               <div className="flex justify-start">
-                <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-midnight-600/70 border border-gold-light/15">
+                <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-[#FBF6EA] border-2 border-[#161616]">
                   <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-gold-light/85 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-gold-light/85 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-gold-light/85 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#161616]/70 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#161616]/70 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#161616]/70 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
@@ -591,7 +666,7 @@ export default function MustardSeedChat() {
           </div>
 
           {/* Input area */}
-          <div className="border-t border-cream-100/[0.06] px-4 py-4 bg-midnight-800/40">
+          <div className="border-t-2 border-[#161616] px-4 py-4 bg-[#FBF6EA]">
             {!captured ? (
               <form onSubmit={send} className="flex flex-col gap-2">
                 <textarea
@@ -608,23 +683,23 @@ export default function MustardSeedChat() {
                   disabled={sending}
                   rows={2}
                   maxLength={1500}
-                  className="w-full px-3 py-2.5 rounded-lg bg-midnight-900/70 border border-cream-100/10 text-cream-100 placeholder:text-cream-100/35 font-body text-sm resize-none focus:outline-none focus:border-gold-light/50 disabled:opacity-50"
+                  className="w-full px-3 py-2.5 rounded-lg bg-white border-2 border-[#161616]/15 text-[#161616] placeholder:text-[#161616]/35 font-body text-sm resize-none focus:outline-none focus:border-[#F5B700] disabled:opacity-50 transition-colors"
                 />
                 {error && (
-                  <p className="text-rust-light text-xs font-mono">{error}</p>
+                  <p className="text-[#E0301E] text-xs font-mono">{error}</p>
                 )}
                 <div className="flex items-center justify-between">
                   <button
                     type="button"
                     onClick={reset}
-                    className="text-[10px] uppercase tracking-[0.2em] text-cream-100/45 hover:text-cream-100/85 font-mono transition-colors"
+                    className="text-[10px] uppercase tracking-[0.2em] text-[#161616]/45 hover:text-[#161616] font-mono font-bold transition-colors"
                   >
                     Start over
                   </button>
                   <button
                     type="submit"
                     disabled={sending || !input.trim()}
-                    className="px-5 py-2 rounded-full bg-brass text-cream-50 text-[10px] uppercase tracking-[0.2em] font-sans font-bold disabled:opacity-40 hover:shadow-[0_0_20px_rgba(255,107,53,0.5)] transition-all"
+                    className="px-5 py-2 rounded-full bg-[#F5B700] border-2 border-[#161616] text-[#161616] text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold shadow-[2px_2px_0_0_#161616] disabled:opacity-40 disabled:shadow-none hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#161616] transition-all"
                   >
                     {sending ? '…' : 'Send →'}
                   </button>
@@ -632,13 +707,13 @@ export default function MustardSeedChat() {
               </form>
             ) : (
               <div className="flex flex-col gap-2">
-                <p className="text-cream-100/75 text-xs font-body leading-relaxed">
+                <p className="text-[#161616]/75 text-xs font-body leading-relaxed">
                   Want to keep talking, or start fresh?
                 </p>
                 <button
                   type="button"
                   onClick={reset}
-                  className="w-full px-4 py-2.5 rounded-full border border-cream-100/20 text-cream-100/75 hover:text-cream-50 hover:border-cream-100/40 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold transition-all"
+                  className="w-full px-4 py-2.5 rounded-full bg-white border-2 border-[#161616] text-[#161616] hover:bg-[#FBF6EA] text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#161616] transition-all"
                 >
                   Start a new conversation
                 </button>
