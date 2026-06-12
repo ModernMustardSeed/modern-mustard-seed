@@ -66,8 +66,8 @@ export default function HeroIdeaToProduct() {
         </h1>
 
         <p className="opacity-0 animate-fade-in-up-delay mt-6 text-base md:text-xl font-body text-[#3a3733] max-w-2xl mx-auto leading-relaxed">
-          Apps, sites, and specialty AI tools for founders, operators, and small business owners who
-          finally have a partner to ship what they have been carrying. Built in 30 days. Yours, fully.
+          You finally have a partner. One who can build with you what you have been carrying alone.
+          Apps, sites, and specialty AI tools, live in 30 days and yours from day one.
         </p>
 
         <p className="opacity-0 animate-fade-in-up-delay-2 mt-3 text-sm md:text-base font-body font-bold text-[#E0301E] max-w-2xl mx-auto">
