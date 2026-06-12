@@ -32,18 +32,18 @@ export default function CelebrationVideo() {
         </span>
 
         <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.01em] leading-[1.02] text-[#FBF6EA] mb-8">
-          You finally have a{' '}
+          Your idea deserves to{' '}
           <span className="text-[#F5B700] italic" style={{ WebkitTextStroke: '2px #FBF6EA' }}>
-            partner
+            ship
           </span>
         </h2>
 
         <p className="font-display italic font-bold text-2xl md:text-3xl text-[#FBF6EA]/95 leading-snug mb-6 max-w-2xl mx-auto">
-          One who can build with you what you have been carrying alone.
+          Stop sitting on it. Start launching it.
         </p>
 
         <p className="text-[#FBF6EA]/80 text-base md:text-lg font-body leading-relaxed mb-12 max-w-2xl mx-auto">
-          Your dream does not need to wait for a co-founder, a hire, or a perfect time. It needs a partner who can ship. Now booking new builds. Yours, fully, when we are done.
+          No co-founder, no team, no perfect timing required. Bring what you have and we will build the rest. Now booking new builds.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

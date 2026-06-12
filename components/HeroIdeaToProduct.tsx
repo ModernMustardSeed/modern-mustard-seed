@@ -66,7 +66,6 @@ export default function HeroIdeaToProduct() {
         </h1>
 
         <p className="opacity-0 animate-fade-in-up-delay mt-6 text-base md:text-xl font-body text-[#3a3733] max-w-2xl mx-auto leading-relaxed">
-          You finally have a partner. One who can build with you what you have been carrying alone.
           Apps, sites, and specialty AI tools for founders, operators, and small business owners.
         </p>
 
