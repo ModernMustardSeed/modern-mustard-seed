@@ -71,7 +71,7 @@ export default function HeroIdeaToProduct() {
         </p>
 
         <p className="opacity-0 animate-fade-in-up-delay-2 mt-3 text-sm md:text-base font-body font-bold text-[#E0301E] max-w-2xl mx-auto">
-          The era of the entrepreneur is here. Bring your idea. We bring it to life.
+          The era of the entrepreneur is here. Bring your idea. We build it. You own it.
         </p>
 
         {/* CTAs */}
