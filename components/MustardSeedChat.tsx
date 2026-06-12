@@ -1,8 +1,10 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState, useRef, useEffect, FormEvent } from 'react';
-import { trackLead, trackBooking } from '@/lib/analytics';
+import type Vapi from '@vapi-ai/web';
+import { trackLead, trackBooking, trackEvent } from '@/lib/analytics';
 
 type Msg = { role: 'assistant' | 'user'; text: string };
 
@@ -22,8 +24,23 @@ const STARTERS = [
   'Help me figure out what to build',
 ];
 
+// Same Vapi assistant the hero card uses. If the env is missing, the voice
+// door gracefully links to /voice-agents instead of a dead control.
+const VAPI_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
+const VAPI_ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+
+type Mode = 'choose' | 'voice' | 'chat';
+type CallState = 'idle' | 'connecting' | 'live' | 'error';
+
 export default function MustardSeedChat() {
   const [open, setOpen] = useState(false);
+  // Visitor picks their door each time they open the launcher: voice or chat.
+  const [mode, setMode] = useState<Mode>('choose');
+  const [callState, setCallState] = useState<CallState>('idle');
+  const [speaking, setSpeaking] = useState(false);
+  const [callError, setCallError] = useState<string | null>(null);
+  const vapiRef = useRef<Vapi | null>(null);
+  const canCall = Boolean(VAPI_PUBLIC_KEY && VAPI_ASSISTANT_ID);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -49,8 +66,80 @@ export default function MustardSeedChat() {
   }, [messages, open, sending]);
 
   useEffect(() => {
-    if (open) inputRef.current?.focus();
-  }, [open]);
+    if (open && mode === 'chat') inputRef.current?.focus();
+  }, [open, mode]);
+
+  // Kill any live call if the widget unmounts.
+  useEffect(() => {
+    return () => {
+      vapiRef.current?.stop();
+    };
+  }, []);
+
+  const startCall = async () => {
+    if (!canCall || callState === 'connecting' || callState === 'live') return;
+    trackEvent('mustard_talk_live', { location: 'widget' });
+    setCallError(null);
+    setCallState('connecting');
+    try {
+      if (!vapiRef.current) {
+        const { default: VapiClient } = await import('@vapi-ai/web');
+        const vapi = new VapiClient(VAPI_PUBLIC_KEY as string);
+        vapi.on('call-start', () => setCallState('live'));
+        vapi.on('call-end', () => {
+          setCallState('idle');
+          setSpeaking(false);
+        });
+        vapi.on('speech-start', () => setSpeaking(true));
+        vapi.on('speech-end', () => setSpeaking(false));
+        vapi.on('error', (e: unknown) => {
+          console.error('vapi error', e);
+          setCallState('error');
+          setCallError('Call dropped. Try again?');
+        });
+        vapiRef.current = vapi;
+      }
+      await vapiRef.current.start(VAPI_ASSISTANT_ID as string);
+    } catch (err) {
+      console.error('vapi start failed', err);
+      setCallState('error');
+      setCallError(
+        err instanceof Error && /denied|permission/i.test(err.message)
+          ? 'Mic blocked. Allow it and try again.'
+          : 'Could not start the call. Try again.'
+      );
+    }
+  };
+
+  const endCall = () => {
+    vapiRef.current?.stop();
+    setCallState('idle');
+    setSpeaking(false);
+  };
+
+  const chooseVoice = () => {
+    setMode('voice');
+    void startCall();
+  };
+
+  const chooseChat = () => {
+    trackEvent('mustard_chat_open', { location: 'widget' });
+    setMode('chat');
+  };
+
+  // Launcher toggle. Closing hangs up any live call; reopening lands on the
+  // chooser unless a chat conversation is already going.
+  const toggleOpen = () => {
+    setOpen((o) => {
+      if (o) {
+        endCall();
+        if (mode === 'voice') setMode('choose');
+        return false;
+      }
+      if (mode !== 'chat' || messages.length === 1) setMode('choose');
+      return true;
+    });
+  };
 
   // Once the visitor opens the chat (any way), retire the teaser for good.
   useEffect(() => {
@@ -89,6 +178,7 @@ export default function MustardSeedChat() {
   const bookingKickedRef = useRef(false);
   const startBooking = () => {
     setOpen(true);
+    setMode('chat');
     if (bookingKickedRef.current || sending) return;
     bookingKickedRef.current = true;
     void sendText('I would like to book a discovery call with Sarah.');
@@ -101,7 +191,10 @@ export default function MustardSeedChat() {
     if (wantsBooking) startBooking();
     const handler = () => startBooking();
     // Plain open (no booking kick) for "chat with Mr. Mustard" CTAs anywhere.
-    const openHandler = () => setOpen(true);
+    const openHandler = () => {
+      setOpen(true);
+      setMode('chat');
+    };
     window.addEventListener('mustardseed:book', handler);
     window.addEventListener('mustardseed:open', openHandler);
     return () => {
@@ -207,9 +300,9 @@ export default function MustardSeedChat() {
       {/* Floating launcher */}
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggleOpen}
         aria-expanded={open}
-        aria-label={open ? 'Close Mr. Mustard chat' : 'Talk to Mr. Mustard'}
+        aria-label={open ? 'Close Mr. Mustard' : 'Talk to Mr. Mustard'}
         className="fixed bottom-6 right-6 z-[80] group"
       >
         <div className="relative flex items-center gap-2 pl-2 pr-4 py-2 rounded-full bg-[#F5B700] border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] group-hover:shadow-[6px_6px_0_0_#161616] group-hover:-translate-y-0.5 transition-all">
@@ -222,8 +315,173 @@ export default function MustardSeedChat() {
         </div>
       </button>
 
+      {/* Door chooser: live voice or chat, their pick */}
+      {open && mode === 'choose' && (
+        <div
+          role="dialog"
+          aria-label="Talk to Mr. Mustard"
+          className="fixed bottom-24 right-6 z-[81] w-[calc(100vw-3rem)] sm:w-[340px] rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] overflow-hidden"
+        >
+          <div className="flex items-start justify-between px-5 pt-5">
+            <div className="flex items-center gap-3">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FBF6EA] border-2 border-[#161616] overflow-hidden shrink-0">
+                <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
+              </span>
+              <div>
+                <p className="font-display font-black text-[#161616] text-base leading-tight">
+                  How do you want to talk?
+                </p>
+                <p className="font-body text-xs text-[#3a3733] leading-snug mt-0.5">
+                  Mr. Mustard does both. Your pick.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={toggleOpen}
+              aria-label="Close"
+              className="w-7 h-7 -mt-1 -mr-1 rounded-full text-[#161616]/50 hover:text-[#161616] transition-colors flex items-center justify-center text-xl leading-none shrink-0"
+            >
+              ×
+            </button>
+          </div>
+          <div className="flex flex-col gap-2.5 px-5 py-5">
+            {canCall ? (
+              <button
+                type="button"
+                onClick={chooseVoice}
+                className="flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616] transition-all text-left"
+              >
+                <span className="flex flex-col leading-tight">
+                  <span className="font-sans font-extrabold text-[#161616] text-sm">Talk live</span>
+                  <span className="font-body text-[11px] text-[#161616]/70 mt-0.5">A real voice call, right here</span>
+                </span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
+                  <rect x="9" y="3" width="6" height="11" rx="3" fill="#161616" />
+                  <path d="M5 11a7 7 0 0 0 14 0" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+                  <path d="M12 18v3" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" />
+                </svg>
+              </button>
+            ) : (
+              <Link
+                href="/voice-agents"
+                className="flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616] transition-all text-left"
+              >
+                <span className="flex flex-col leading-tight">
+                  <span className="font-sans font-extrabold text-[#161616] text-sm">Talk live</span>
+                  <span className="font-body text-[11px] text-[#161616]/70 mt-0.5">Hear the voice agent in action</span>
+                </span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
+                  <rect x="9" y="3" width="6" height="11" rx="3" fill="#161616" />
+                  <path d="M5 11a7 7 0 0 0 14 0" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+                  <path d="M12 18v3" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" />
+                </svg>
+              </Link>
+            )}
+            <button
+              type="button"
+              onClick={chooseChat}
+              className="flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl bg-white border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616] transition-all text-left"
+            >
+              <span className="flex flex-col leading-tight">
+                <span className="font-sans font-extrabold text-[#161616] text-sm">Chat</span>
+                <span className="font-body text-[11px] text-[#161616]/70 mt-0.5">Type it out, get a 5-step playbook</span>
+              </span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
+                <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H9l-4.2 3.6A.7.7 0 0 1 3.6 19V5.5z" fill="none" stroke="#161616" strokeWidth="2" strokeLinejoin="round" transform="translate(0.4 0.5)" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Live voice panel */}
+      {open && mode === 'voice' && (
+        <div
+          role="dialog"
+          aria-label="Mr. Mustard live call"
+          className="fixed bottom-24 right-6 z-[81] w-[calc(100vw-3rem)] sm:w-[340px] rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] overflow-hidden"
+        >
+          <div className="flex items-start justify-between px-5 pt-5">
+            <div className="flex items-center gap-3">
+              <div className="relative shrink-0">
+                {callState === 'live' && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-full bg-[#F5B700] opacity-40 animate-ping"
+                    style={{ animationDuration: '1.6s' }}
+                  />
+                )}
+                <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[#FBF6EA] border-2 border-[#161616] overflow-hidden">
+                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
+                </span>
+              </div>
+              <div>
+                <p className="font-display font-black text-[#161616] text-base leading-tight">
+                  {callState === 'live'
+                    ? speaking
+                      ? 'Mr. Mustard is talking…'
+                      : 'He is listening. Go ahead.'
+                    : callState === 'connecting'
+                      ? 'Connecting…'
+                      : 'Call ended'}
+                </p>
+                <p className="font-body text-xs text-[#3a3733] leading-snug mt-0.5">
+                  {callState === 'live'
+                    ? 'Ask anything. He can book your call with Sarah.'
+                    : callState === 'connecting'
+                      ? 'Allow the mic if your browser asks.'
+                      : 'Good talk. Want to go again?'}
+                </p>
+                {callError && <p className="text-[#E0301E] text-[11px] font-mono mt-1">{callError}</p>}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={toggleOpen}
+              aria-label="Close"
+              className="w-7 h-7 -mt-1 -mr-1 rounded-full text-[#161616]/50 hover:text-[#161616] transition-colors flex items-center justify-center text-xl leading-none shrink-0"
+            >
+              ×
+            </button>
+          </div>
+          <div className="flex gap-2.5 px-5 py-5">
+            {callState === 'live' || callState === 'connecting' ? (
+              <button
+                type="button"
+                onClick={() => {
+                  endCall();
+                  setMode('choose');
+                }}
+                className="flex-1 px-5 py-3 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-white bg-[#E0301E] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+              >
+                End call
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => void startCall()}
+                className="flex-1 px-5 py-3 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+              >
+                Call again
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                endCall();
+                chooseChat();
+              }}
+              className="flex-1 px-5 py-3 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+            >
+              Chat instead
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Chat panel */}
-      {open && (
+      {open && mode === 'chat' && (
         <div
           role="dialog"
           aria-label="Mr. Mustard chat"
