@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useRef, useEffect, FormEvent } from 'react';
+import { usePathname } from 'next/navigation';
 import type Vapi from '@vapi-ai/web';
 import { trackLead, trackBooking, trackEvent } from '@/lib/analytics';
 
@@ -33,6 +34,12 @@ type Mode = 'choose' | 'voice' | 'chat';
 type CallState = 'idle' | 'connecting' | 'live' | 'error';
 
 export default function MustardSeedChat() {
+  // The marketing chat is for visitors. Hide it inside the logged-in app shell
+  // (admin, client portal, partner HQ) where it would only cover real content.
+  const pathname = usePathname() || '';
+  const isAppShell =
+    pathname.startsWith('/admin') || pathname.startsWith('/portal') || pathname.endsWith('/hq');
+
   const [open, setOpen] = useState(false);
   // Visitor picks their door each time they open the launcher: voice or chat.
   const [mode, setMode] = useState<Mode>('choose');
@@ -257,6 +264,8 @@ export default function MustardSeedChat() {
     setError(null);
     setCaptured(false);
   };
+
+  if (isAppShell) return null;
 
   return (
     <>

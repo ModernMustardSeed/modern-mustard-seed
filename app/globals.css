@@ -26,7 +26,6 @@
   html, body {
     width: 100%;
     max-width: 100vw;
-    overflow-x: hidden;
     background-color: #080c16;
     color: #f5f0e8;
     font-family: 'DM Sans', system-ui, sans-serif;
@@ -34,6 +33,14 @@
        problem). Keep letters as typed, sitewide. */
     font-variant-ligatures: none;
     font-feature-settings: 'liga' 0, 'clig' 0, 'dlig' 0;
+  }
+
+  /* Clip horizontal overflow on the body only. Putting overflow-x on <html>
+     turns the root into its own scroll container, which breaks normal vertical
+     scrolling on long pages in iOS Safari (the onboarding hub is very tall).
+     On the body it still prevents sideways scroll without that side effect. */
+  body {
+    overflow-x: hidden;
   }
 
   html {

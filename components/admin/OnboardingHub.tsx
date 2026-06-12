@@ -68,7 +68,7 @@ export default function OnboardingHub({ name }: { name?: string }) {
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="onboarding" title="Onboarding" />
 
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-4xl mx-auto px-6 pt-8 pb-20">
         {/* Intro */}
         <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#161616] p-7 md:p-9 mb-6">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-3">
