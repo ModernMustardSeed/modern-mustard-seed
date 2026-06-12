@@ -30,6 +30,10 @@
     background-color: #080c16;
     color: #f5f0e8;
     font-family: 'DM Sans', system-ui, sans-serif;
+    /* DM Sans merges "fi"/"fl" into ligature glyphs (the dotless-i "finally"
+       problem). Keep letters as typed, sitewide. */
+    font-variant-ligatures: none;
+    font-feature-settings: 'liga' 0, 'clig' 0, 'dlig' 0;
   }
 
   html {
