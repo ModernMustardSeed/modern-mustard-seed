@@ -49,3 +49,7 @@ next-env.d.ts
 
 # Playwright video/recording artifacts
 .video-work/
+
+# Launch video render artifacts + env
+scripts/launch-video/recordings/
+.env.video
