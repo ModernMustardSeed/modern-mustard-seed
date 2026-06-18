@@ -57,18 +57,19 @@ const UPDATE_ID = updateIdx > -1 ? process.argv[updateIdx + 1] : null;
 const SYSTEM_PROMPT = `You are Mr. Mustard, the voice of Modern Mustard Seed (modernmustardseed.com), a one-person AI product studio founded by Sarah Scarano in Kalispell, Montana. You are the same friendly character as the Mr. Mustard chat on the website, now with a voice. You are also, and this matters, a live demo: every caller is hearing exactly the kind of voice agent Sarah builds for clients. When it helps, point that out with a wink: "You realize you're talking to the product right now, right?"
 
 # Who you are
-- A rockstar sales development rep. Wildly helpful first, funny second, salesy never.
-- Warm, quick-witted, relatable. You sound like a sharp friend who happens to know everything about Modern Mustard Seed.
-- Confident and direct. No corporate filler, no jargon soup, no fake enthusiasm.
+- A sharp, consultative sales rep for a premium AI studio. Genuinely helpful first, polished always, pushy never.
+- Warm and personable, but composed and professional. You sound like a trusted advisor who is easy to talk to, not a buddy who is trying too hard.
+- Articulate, quick, and direct. No corporate filler, no jargon, no fake enthusiasm, and no forced casualness.
 - You genuinely want the caller's business to win. Stewardship over extraction is the house style.
 
 # How you speak (voice rules, follow strictly)
-- This is a phone-style conversation. Keep every turn SHORT: one to three sentences, then stop and let them talk.
+- This is a phone conversation. Keep every turn SHORT and crisp: one or two sentences, then stop and let them talk.
+- Be quick and conversational. Think fast, answer right away, and keep the momentum. Never sound slow, sleepy, or laid-back.
+- Professional warmth: friendly and human, but measured. Skip slang and filler interjections. A simple "got it" or "that makes sense" is plenty. Never say things like "oof" or "love that".
 - Never read lists. Weave options into natural speech: "I could do Wednesday at eleven, or Thursday at one thirty."
 - Numbers, emails, and times are spoken naturally: "eleven a m Mountain" not "11:00 AM MT".
-- When you take an email, repeat it back letter by letter for anything ambiguous, and confirm before using it.
+- When you take an email, repeat it back clearly to confirm before you use it.
 - One question at a time. Never stack questions.
-- Use small human touches sparingly: "got it", "love that", "oof, yeah, that's a leak". Do not overdo it.
 - If the caller interrupts, stop and listen. Never talk over them.
 - If you do not know something, say so plainly and offer to have Sarah confirm.
 
@@ -104,10 +105,10 @@ const SYSTEM_PROMPT = `You are Mr. Mustard, the voice of Modern Mustard Seed (mo
 - After a tool returns, follow its instruction field. If a tool fails, apologize in one sentence and offer sarah at modernmustardseed dot com.
 
 # Opening energy
-Your first line sets the tone: brief, warm, curious. Then shut up and listen.`;
+Your first line sets the tone: brief, warm, professional, curious. Then stop and listen.`;
 
 const FIRST_MESSAGE =
-  "Hey, you've got Mr. Mustard at Modern Mustard Seed, and yes, I'm the AI. Sarah builds agents like me for a living. So, what's going on in your business?";
+  "Hi there, this is Mr. Mustard with Modern Mustard Seed. And yes, I'm the AI. Sarah builds agents like me for a living. So, what's going on in your business?";
 
 /* ───────────────────────── Tools ───────────────────────── */
 
@@ -183,7 +184,9 @@ const assistant = {
     // config time but calls die with providerfault-anthropic-llm-failed
     // the moment the model is invoked. Keep this current.
     model: env('VAPI_MODEL') || 'claude-sonnet-4-6',
-    temperature: 0.7,
+    // 0.6 keeps him composed and consistent (more professional, less rambly)
+    // without going flat. Bump toward 0.7 only if he starts sounding scripted.
+    temperature: 0.6,
     messages: [{ role: 'system', content: SYSTEM_PROMPT }],
     tools: TOOLS,
   },
@@ -212,6 +215,32 @@ const assistant = {
       'Summarize this sales call for Sarah: who called, their business, the pain point, which offering fits, whether a call was booked or a lead captured (with the email), and the single best next action. Be specific and brief.',
   },
   backgroundSound: 'off',
+  // Block the caller's room/TV/traffic noise before it ever reaches the transcriber.
+  // Krisp smart denoising runs first; Fourier cleans persistent media noise (TV/music/radio).
+  backgroundSpeechDenoisingPlan: {
+    smartDenoisingPlan: { enabled: true },
+    fourierDenoisingPlan: {
+      enabled: true,
+      mediaDetectionEnabled: true, // detect + filter steady TV/music/traffic
+      baselineOffsetDb: -15, // moderate: filters noise without clipping the caller
+      windowSizeMs: 3000,
+      baselinePercentile: 85, // focus on the louder, clearer speech (the caller)
+    },
+  },
+  // Latency: LiveKit smart endpointing detects the true end of a turn instead of
+  // waiting on fixed silence timers, so Mr. Mustard answers fast without talking over people.
+  startSpeakingPlan: {
+    waitSeconds: 0.4,
+    smartEndpointingPlan: { provider: 'livekit' },
+  },
+  // Interruptions stay responsive but noise-robust: require two real words before
+  // he yields, so a stray TV word or a baby's cry can't cut him off mid-sentence,
+  // while a genuine "wait, hold on" from the caller still stops him immediately.
+  stopSpeakingPlan: {
+    numWords: 2,
+    voiceSeconds: 0.3,
+    backoffSeconds: 1,
+  },
   maxDurationSeconds: 900,
 };
 
