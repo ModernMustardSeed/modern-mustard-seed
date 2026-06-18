@@ -283,12 +283,14 @@ export function affiliateWelcomeEmail({
   url: string;
 }): string {
   const name = firstName?.trim();
+  const loginUrl = `${SITE}/portal/login`;
   const inner =
     headline(name ? `Welcome to the team, ${name}` : 'Welcome to the team') +
     lede('You are in, and I am genuinely glad you are here.') +
     paragraph('Your partner account is live. You now have free access to every Modern Mustard Seed product, so you can learn them and speak to them honestly, and you earn 50 percent on every product sale and 10 percent of any build you send our way.') +
     valueCallout('Your referral code', `<span style="font-family:${SERIF};font-size:22px;color:${C.ink};font-weight:600;letter-spacing:1px">${escape(code)}</span><br><span style="font-size:13px;color:${C.muted}">Add it to any link, for example ${escape(SITE)}/the-terminal?ref=${escape(code)}</span>`) +
-    ctaBlock({ label: 'Open my partner dashboard', url }) +
+    ctaBlock({ label: 'Open my partner dashboard', url }, { label: 'Sign in anytime', url: loginUrl }) +
+    paragraph(`<span style="font-size:13px;color:${C.muted}">That button is a one-tap sign-in and it expires in 20 minutes. You can sign in fresh anytime: go to <a href="${loginUrl}" style="color:${C.gold};font-weight:600">modernmustardseed.com/portal/login</a>, enter the email this was sent to, and we email you a new link. No password, ever.</span>`) +
     paragraph('Inside you will find your links with one-tap copy, your numbers and earnings, and free access to every product. Share what you believe in, tell your audience the truth (including that you earn a commission), and we will root for you the whole way.') +
     signature('Sarah');
   return shell({ preheader: 'Your Modern Mustard Seed partner account is live', subtitle: 'Partner Program', inner });
