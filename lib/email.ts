@@ -824,7 +824,7 @@ export function bookingConfirmationEmail({
       `<ul style="margin:0;padding-left:18px;line-height:1.8">
         <li>Bring the URL of your current site, if you have one.</li>
         <li>Bring the one thing slowing the business down the most.</li>
-        <li>Have a rough budget in mind. We can scope around any range.</li>
+        <li>Bring the outcome you are hoping for. We will map the path to it together.</li>
       </ul>`
     )}
     ${painSummary ? `<tr><td style="padding:24px 44px 0">

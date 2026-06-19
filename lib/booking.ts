@@ -13,10 +13,14 @@ export type Slot = {
   startIso: string;
   /** Canonical: UTC end, ISO 8601 with Z. */
   endIso: string;
-  /** Pretty display in Mountain Time, e.g. "Tuesday, June 10, 11:00 AM MT". */
+  /** Pretty display in Mountain Time, e.g. "Tuesday, June 10, 9:00 AM MT". */
   display: string;
   /** Short label for inline chat. */
   shortLabel: string;
+  /** Day only, e.g. "Tuesday, June 10". Lets the UI group times under a day. */
+  dayLabel: string;
+  /** Time only in Mountain Time, e.g. "9:00 AM". */
+  timeLabel: string;
 };
 
 const MT_ZONE = 'America/Denver';
@@ -50,7 +54,7 @@ function inBlackout(dateStr: string): boolean {
   return availability.blackoutRanges.some(({ fromDate, toDate }) => dateStr >= fromDate && dateStr <= toDate);
 }
 
-function formatMt(start: Date): { display: string; shortLabel: string } {
+function formatMt(start: Date): { display: string; shortLabel: string; dayLabel: string; timeLabel: string } {
   const long = new Intl.DateTimeFormat('en-US', {
     timeZone: MT_ZONE,
     weekday: 'long',
@@ -67,7 +71,18 @@ function formatMt(start: Date): { display: string; shortLabel: string } {
     hour: 'numeric',
     minute: '2-digit',
   }).format(start);
-  return { display: `${long} MT`, shortLabel: `${short} MT` };
+  const dayLabel = new Intl.DateTimeFormat('en-US', {
+    timeZone: MT_ZONE,
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  }).format(start);
+  const timeLabel = new Intl.DateTimeFormat('en-US', {
+    timeZone: MT_ZONE,
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(start);
+  return { display: `${long} MT`, shortLabel: `${short} MT`, dayLabel, timeLabel };
 }
 
 /** Generate the universe of candidate slots within the lookahead. */
@@ -112,6 +127,8 @@ function candidateSlots(now: Date): Slot[] {
           endIso: end.toISOString(),
           display: fmt.display,
           shortLabel: fmt.shortLabel,
+          dayLabel: fmt.dayLabel,
+          timeLabel: fmt.timeLabel,
         });
       }
     }
@@ -138,13 +155,63 @@ async function bookedStartTimes(): Promise<Set<string>> {
   }
 }
 
-/** Next N available 30-minute slots, deduped against existing bookings. */
+/**
+ * Pick up to `n` times from one day's open slots.
+ *
+ * The day is split into `n` even buckets (e.g. a morning half and an afternoon
+ * half) and one time is taken from each, so the offer always spans the day. The
+ * pick inside each bucket is rotated by `dayIndex`, so consecutive days surface
+ * different times (Tue 9:00, Wed 9:30, Thu 10:00) rather than the same bookends
+ * every day. Together with the fixed count, that means the visitor sees a
+ * natural, varied handful that never reveals how many slots are actually open.
+ */
+function pickForDay<T>(items: T[], n: number, dayIndex: number): T[] {
+  if (n <= 0) return [];
+  if (items.length <= n) return items;
+  const out: T[] = [];
+  for (let i = 0; i < n; i++) {
+    const start = Math.floor((i * items.length) / n);
+    const end = Math.floor(((i + 1) * items.length) / n) - 1; // inclusive
+    const span = end - start;
+    const idx = start + (span > 0 ? dayIndex % (span + 1) : 0);
+    out.push(items[idx]);
+  }
+  return out;
+}
+
+/**
+ * A curated spread of open slots: up to `proposePerDay` times on each of the
+ * next `proposeDays` days that have any availability, deduped against existing
+ * bookings.
+ *
+ * We deliberately do NOT return every open slot. The shape is always the same
+ * (a couple of times across a few days) whether the week is wide open or nearly
+ * full, so the spread never reveals how booked Sarah's calendar is, while still
+ * giving the visitor a genuine choice of both day and time.
+ */
 export async function getNextAvailableSlots(): Promise<Slot[]> {
   if (!availability.enabled) return [];
   const candidates = candidateSlots(new Date());
   const booked = await bookedStartTimes();
   const open = candidates.filter((s) => !booked.has(s.startIso));
-  return open.slice(0, availability.proposeCount);
+
+  // Group by Mountain-Time day (open is already chronological, and dayLabel is
+  // unique per calendar day within the lookahead window).
+  const byDay = new Map<string, Slot[]>();
+  for (const s of open) {
+    const list = byDay.get(s.dayLabel);
+    if (list) list.push(s);
+    else byDay.set(s.dayLabel, [s]);
+  }
+
+  const result: Slot[] = [];
+  let days = 0;
+  for (const daySlots of byDay.values()) {
+    if (days >= availability.proposeDays) break;
+    result.push(...pickForDay(daySlots, availability.proposePerDay, days));
+    days++;
+  }
+  return result;
 }
 
 /** Confirm a specific slot is still available. */

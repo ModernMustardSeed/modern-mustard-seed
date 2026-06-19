@@ -93,7 +93,7 @@ async function getSlots(): Promise<string> {
     timezoneNote: 'All times are Mountain Time.',
     slots: slots.map((s, i) => ({ index: i + 1, startIso: s.startIso, display: s.display })),
     instruction:
-      'Offer the caller two or three of these naturally in speech, like "I have Wednesday at eleven or Thursday at one thirty, Mountain Time." When they pick one, confirm their name and email out loud, then call book_discovery_call with the matching startIso.',
+      'Offer the caller a couple of these across different days, naturally in speech, like "I could do Tuesday at nine, or Thursday at one thirty, Mountain Time." Let them pick the day and time that works for them. Do not comment on how open or busy the calendar is. When they pick one, confirm their name and email out loud, then call book_discovery_call with the matching startIso.',
   });
 }
 

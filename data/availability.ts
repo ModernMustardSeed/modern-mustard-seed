@@ -13,12 +13,13 @@
 export const availability = {
   enabled: true,
 
-  // 0 = Sunday … 6 = Saturday. Sarah takes consults Wednesday and Thursday only.
-  workingWeekdays: [3, 4],
+  // 0 = Sunday … 6 = Saturday. Sarah takes consults Tuesday through Friday.
+  workingWeekdays: [2, 3, 4, 5],
 
-  // Local Mountain Time
-  startHour: 11,
-  endHour: 14,
+  // Local Mountain Time. Window is 9:00 AM through 3:00 PM, so the last call
+  // starts at 2:30 PM and ends at 3:00.
+  startHour: 9,
+  endHour: 15,
 
   // Each call is this long
   slotMinutes: 30,
@@ -29,8 +30,13 @@ export const availability = {
   // How far ahead the bot is willing to propose
   maxLookaheadDays: 14,
 
-  // Slots offered per propose_call_slots call
-  proposeCount: 5,
+  // Curated spread offered each time we propose times. We surface a small, fixed
+  // shape (proposePerDay times on each of proposeDays days) instead of dumping
+  // every open slot. Because the shape is always the same, the spread never
+  // betrays how open or how booked the week actually is, and the visitor always
+  // gets a real choice of both day and time.
+  proposeDays: 3,
+  proposePerDay: 2,
 
   // ISO date strings (YYYY-MM-DD) when Sarah is out
   blackoutRanges: [] as { fromDate: string; toDate: string; reason?: string }[],

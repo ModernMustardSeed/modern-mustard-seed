@@ -77,7 +77,7 @@ export default function LandingPage() {
               </Link>
             </div>
             <p className="text-white/40 text-xs font-mono mt-5">
-              No credit card. No obligation. Wednesdays and Thursdays for calls.
+              No credit card. No obligation. Tuesdays through Fridays for calls.
             </p>
           </header>
 

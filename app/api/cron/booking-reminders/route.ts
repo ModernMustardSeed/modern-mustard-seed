@@ -1,8 +1,8 @@
 /**
  * Day-of discovery-call reminders.
  *
- * Runs every Wednesday and Thursday morning via Vercel Cron (the only days
- * Sarah takes consults). Finds bookings scheduled for later today (Mountain
+ * Runs Tuesday through Friday morning via Vercel Cron (the days Sarah takes
+ * consults). Finds bookings scheduled for later today (Mountain
  * Time) that have not yet been reminded and emails the visitor a reminder
  * with the Zoho join link front and center.
  *

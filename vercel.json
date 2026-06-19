@@ -27,7 +27,7 @@
     },
     {
       "path": "/api/cron/booking-reminders",
-      "schedule": "0 14 * * 3,4"
+      "schedule": "0 14 * * 2-5"
     },
     {
       "path": "/api/cron/operator",

@@ -20,7 +20,6 @@ type Body = {
   focus?: string;       // what they want to work on (required)
   current?: string;     // where they are now
   success?: string;     // what success looks like
-  budget?: string;
   timeline?: string;
 };
 
@@ -59,7 +58,6 @@ export async function POST(req: Request) {
     `Focus: ${focus}`,
     body.current ? `Where they are now: ${body.current.trim()}` : '',
     body.success ? `Success looks like: ${body.success.trim()}` : '',
-    body.budget ? `Budget: ${body.budget}` : '',
     body.timeline ? `Timeline: ${body.timeline}` : '',
   ].filter(Boolean).join('\n');
 
@@ -117,7 +115,6 @@ export async function POST(req: Request) {
             { label: 'Focus', value: focus },
             ...(body.current ? [{ label: 'Where they are now', value: body.current.trim() }] : []),
             ...(body.success ? [{ label: 'Success looks like', value: body.success.trim() }] : []),
-            ...(body.budget ? [{ label: 'Budget', value: body.budget }] : []),
             ...(body.timeline ? [{ label: 'Timeline', value: body.timeline }] : []),
           ],
           message: focus,

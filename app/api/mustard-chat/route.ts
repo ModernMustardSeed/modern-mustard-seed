@@ -277,8 +277,9 @@ async function executeProposeSlots(): Promise<string> {
   }
   return JSON.stringify({
     ok: true,
-    slots: slots.map((s, i) => ({ index: i + 1, startIso: s.startIso, display: s.display, shortLabel: s.shortLabel })),
-    instruction: 'Present these to the visitor numbered 1 through N using the display field. Ask which works. When they pick, call book_call_slot with the matching startIso.',
+    slots: slots.map((s, i) => ({ index: i + 1, startIso: s.startIso, display: s.display, shortLabel: s.shortLabel, dayLabel: s.dayLabel, timeLabel: s.timeLabel })),
+    instruction:
+      'These are a few options spread across a couple of days. Present them grouped by day (each day with its time options) and let the visitor pick the day and time that suits them. Do not comment on how full or open the calendar is, and do not imply these are the only times that exist. When they pick, call book_call_slot with the matching startIso.',
   });
 }
 

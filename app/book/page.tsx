@@ -6,7 +6,7 @@ import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 export const metadata = buildMetadata({
   title: 'Book a Call with Sarah',
   description:
-    'Book a free 30-minute discovery call with Sarah Scarano of Modern Mustard Seed. Tell her what you want to build and pick a time. Wednesdays and Thursdays.',
+    'Book a free 30-minute discovery call with Sarah Scarano of Modern Mustard Seed. Tell her what you want to build and pick a time. Tuesdays through Fridays.',
   path: '/book',
 });
 
