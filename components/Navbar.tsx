@@ -92,7 +92,10 @@ export default function Navbar() {
   // App shells (admin, client portal, program HQs) have their own headers.
   // Hide the marketing nav there so it never overlaps them.
   const isAppShell =
-    pathname.startsWith('/admin') || pathname.startsWith('/portal') || pathname.endsWith('/hq');
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/portal') ||
+    pathname.endsWith('/hq') ||
+    pathname === '/partners/playbook';
   if (isAppShell) return null;
 
   return (

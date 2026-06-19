@@ -33,21 +33,21 @@ export default function MarketingKit({
     {
       key: 'x',
       label: 'For X',
-      text: `If you have an idea but no dev team, talk to Modern Mustard Seed. AI-powered audits, custom builds, real software shipped fast. This is who I trust. ${primaryUrl}`,
+      text: `If your website, phone, or systems are a headache, talk to Modern Mustard Seed. Websites, AI assistants, voice agents, and custom software, shipped in about 30 days. This is who I trust. Book a quick call: ${primaryUrl}`,
     },
     {
       key: 'li',
       label: 'For LinkedIn',
-      text: `Most founders sit on great ideas because building software feels out of reach. Modern Mustard Seed closes that gap: a free AI website audit, then custom builds and automation that actually ship. I recommend them without hesitation. Start with the free audit: ${primaryUrl}`,
+      text: `Most small businesses lose money to slow websites, missed messages, and missed calls. Modern Mustard Seed fixes that with websites, AI assistants, voice agents, and custom tools that actually ship, usually in about 30 days. I recommend them without hesitation. Grab a quick call: ${primaryUrl}`,
     },
     {
       key: 'email',
       label: 'For email / DM',
-      text: `Hey, wanted to point you to Modern Mustard Seed. They build custom software and AI tools for small businesses and they are genuinely excellent. There is a free website audit to start, no strings. Here is my link: ${primaryUrl}`,
+      text: `Hey, wanted to point you to Modern Mustard Seed. They build websites, AI assistants, voice agents, and custom software for small businesses and they are genuinely excellent. Easiest start is a quick 15-minute call, no pressure. Here is my link: ${primaryUrl}`,
     },
   ];
 
-  const blurb = `Modern Mustard Seed builds custom software, AI tools, and automation for small businesses. Founder-led, fast, and honest. Start with a free AI website audit.`;
+  const blurb = `Modern Mustard Seed builds websites, AI assistants, voice agents, and custom software for small businesses. Founder-led, fast, and honest. Idea to launched in about 30 days.`;
 
   const shareX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(captions[0].text)}`;
   const shareLI = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(primaryUrl)}`;

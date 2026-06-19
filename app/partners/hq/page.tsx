@@ -59,10 +59,10 @@ export default async function PartnerHQ() {
   }
 
   const links = [
-    { label: 'The Terminal ($497)', url: `${SITE.url}/the-terminal?ref=${code}` },
-    { label: 'Idea to Spec ($497)', url: `${SITE.url}/idea-to-spec?ref=${code}` },
-    { label: 'The Playbook Store', url: `${SITE.url}/store?ref=${code}` },
+    { label: 'Book a call (your money link)', url: `${SITE.url}/book?ref=${code}` },
     { label: 'Done-for-you builds', url: `${SITE.url}/build-queue?ref=${code}` },
+    { label: 'The Terminal ($497)', url: `${SITE.url}/the-terminal?ref=${code}` },
+    { label: 'The Playbook Store', url: `${SITE.url}/store?ref=${code}` },
   ];
 
   const firstName = affiliate.name?.split(' ')[0] || 'partner';
@@ -87,7 +87,19 @@ export default async function PartnerHQ() {
 
       <main className="max-w-5xl mx-auto px-6 py-8">
         <h2 className="font-display text-3xl font-semibold text-[#161616] mb-1">Welcome, {firstName}.</h2>
-        <p className="text-[#3A3733] font-body mb-8">Share what you believe in. We are rooting for you.</p>
+        <p className="text-[#3A3733] font-body mb-6">Open doors, book calls, earn 50% of every build. We are rooting for you.</p>
+
+        {/* The playbook is the main event */}
+        <Link href="/partners/playbook" className="block group mb-8">
+          <div className="bg-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-6 md:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all group-hover:shadow-[8px_8px_0_0_#F5B700] group-hover:-translate-y-0.5">
+            <div>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#F5B700] font-mono font-bold block mb-2">Start here</span>
+              <h3 className="font-display text-2xl font-semibold text-[#FBF6EA]">The Outreach Playbook</h3>
+              <p className="text-[#FBF6EA]/65 font-body text-sm mt-1 max-w-md">Where to find buyers, exactly what to say, a full phone script, and a social strategy. Every script pre-filled with your booking link.</p>
+            </div>
+            <span className="inline-block self-start sm:self-center px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#F5B700] rounded-full whitespace-nowrap">Open the playbook →</span>
+          </div>
+        </Link>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           {[
@@ -109,7 +121,7 @@ export default async function PartnerHQ() {
             <AffiliateLinks links={links} />
             <p className="text-[#161616]/60 font-body text-xs mt-4">Add <span className="font-mono text-[#E0301E]">?ref={code}</span> to any page to track it. Last touch within 60 days wins.</p>
             <div className="mt-6">
-              <MarketingKit code={code} firstName={firstName} siteUrl={SITE.url} primaryUrl={`${SITE.url}/audit?ref=${code}`} />
+              <MarketingKit code={code} firstName={firstName} siteUrl={SITE.url} primaryUrl={`${SITE.url}/book?ref=${code}`} />
             </div>
           </div>
 
@@ -150,7 +162,7 @@ export default async function PartnerHQ() {
         <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 mt-6">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">How you get paid</span>
           <p className="text-[#3A3733] font-body text-sm leading-relaxed">
-            You earn 50 percent on every product sale and 10 percent of any build you send our way. A commission becomes payable once the refund window passes. Payouts run on a schedule. One honest rule for everyone. Please always tell your audience you earn a commission. It keeps this trustworthy, which is the whole point.
+            You earn 50 percent of every build you send our way (websites, AI assistants, voice agents, custom software) and 50 percent on every product sale. The big money is in builds, so lead with those. A commission becomes payable once the refund window passes, then it goes out on the next payout run. One honest rule for everyone. Please always tell people you earn a commission. It keeps this trustworthy, which is the whole point.
           </p>
         </div>
       </main>

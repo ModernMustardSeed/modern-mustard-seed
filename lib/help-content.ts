@@ -64,8 +64,17 @@ export const CLIENT_HELP: HelpGuideContent = {
 
 export const PARTNER_HELP: HelpGuideContent = {
   title: 'Your partner dashboard, explained',
-  intro: 'Everything you need to share what we build and earn on what you refer. Here is how it works.',
+  intro: 'Everything you need to open doors, book calls, and earn 50% of every build you send. Here is how it works.',
   sections: [
+    {
+      title: 'The Outreach Playbook',
+      items: [
+        'Tap the big black card up top to open your full field guide.',
+        'It shows you where to find buyers, exactly what to say, a full phone script, and a social strategy.',
+        'Every script is pre-filled with your booking link, so you copy, reword, and send.',
+        'Download it as a PDF to keep on your phone.',
+      ],
+    },
     {
       title: 'Your links and code',
       items: [
@@ -85,9 +94,9 @@ export const PARTNER_HELP: HelpGuideContent = {
       title: 'Earnings and payouts',
       items: [
         'Track clicks, sales, what is payable now, and what you have earned all time.',
-        'You earn 50% on every product sale and 10% of any build you send.',
+        'You earn 50% of every build you send (websites, AI assistants, voice agents, custom software) and 50% on every product sale.',
         'A commission becomes payable once the refund window passes, then it goes out on the next payout run.',
-        'Please always tell your audience you earn a commission. It keeps this trustworthy.',
+        'Please always tell people you earn a commission. It keeps this trustworthy.',
       ],
     },
     {

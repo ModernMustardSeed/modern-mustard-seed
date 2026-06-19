@@ -59,7 +59,7 @@ export default function PartnersApply() {
       <button type="submit" disabled={sending} className="w-full px-6 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-50">
         {sending ? 'Sending...' : 'Apply to partner'}
       </button>
-      <p className="text-[#161616]/45 font-body text-[11px] text-center">One structure for everyone. 50% on products, 10% of builds, free access to all of it.</p>
+      <p className="text-[#161616]/45 font-body text-[11px] text-center">One structure for everyone. 50% of every build, 50% on products, plus the full Outreach Playbook and your own booking link.</p>
     </form>
   );
 }
