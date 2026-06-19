@@ -30,6 +30,8 @@ export default function AffiliatesAdmin() {
   const [busy, setBusy] = useState<string | null>(null);
   const [failedEmails, setFailedEmails] = useState<Record<string, string>>({});
   const [msg, setMsg] = useState('');
+  const [add, setAdd] = useState({ name: '', email: '', sendWelcome: true });
+  const [adding, setAdding] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -106,6 +108,36 @@ export default function AffiliatesAdmin() {
     finally { setBusy(null); }
   };
 
+  const addPartner = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adding) return;
+    setAdding(true);
+    setMsg('');
+    try {
+      const res = await fetch('/api/admin/affiliates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: add.name.trim(), email: add.email.trim(), sendWelcome: add.sendWelcome }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setMsg(
+          json.alreadyPartner
+            ? `${add.email} is already a partner (code ${json.code}).`
+            : `Partner added. Code ${json.code}.${json.emailSent ? ' Welcome email with login link sent.' : add.sendWelcome ? ' Welcome email could not be sent, use Resend welcome.' : ' No welcome email sent.'}`
+        );
+        setAdd({ name: '', email: '', sendWelcome: true });
+        await load();
+      } else {
+        setMsg(`Could not add: ${json.error ?? res.status}`);
+      }
+    } catch {
+      setMsg('Could not add (network error).');
+    } finally {
+      setAdding(false);
+    }
+  };
+
   const emailFailed = (email: string) => failedEmails[email.toLowerCase()];
 
   const pending = rows.filter((r) => r.status === 'pending');
@@ -165,6 +197,29 @@ export default function AffiliatesAdmin() {
             ))}
           </div>
         )}
+
+        {/* Add a partner directly (no application needed) */}
+        <form onSubmit={addPartner} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-8">
+          <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-1">Add a partner</h2>
+          <p className="text-[#3A3733] font-body text-sm mb-4">Create a partner yourself, already approved. We generate their code, grant free access, and email their login link.</p>
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="flex-1 min-w-[180px]">
+              <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Name</span>
+              <input value={add.name} onChange={(e) => setAdd((a) => ({ ...a, name: e.target.value }))} required placeholder="Jane Builder" className="w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
+            </label>
+            <label className="flex-1 min-w-[200px]">
+              <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Email</span>
+              <input value={add.email} onChange={(e) => setAdd((a) => ({ ...a, email: e.target.value }))} required type="email" placeholder="jane@example.com" className="w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
+            </label>
+            <label className="flex items-center gap-2 pb-2.5 cursor-pointer select-none">
+              <input type="checkbox" checked={add.sendWelcome} onChange={(e) => setAdd((a) => ({ ...a, sendWelcome: e.target.checked }))} className="w-4 h-4 accent-[#F5B700]" />
+              <span className="text-[#3A3733] font-body text-sm">Email login link</span>
+            </label>
+            <button type="submit" disabled={adding} className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-50 whitespace-nowrap">
+              {adding ? 'Adding...' : 'Add partner'}
+            </button>
+          </div>
+        </form>
 
         {loading ? (
           <p className="text-center text-[#161616]/60 py-12 font-body italic">Loading...</p>
