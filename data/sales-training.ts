@@ -151,7 +151,9 @@ export const COLD_CALL = {
     'Smile and stand up. Your energy carries right through the phone.',
     'Every call is a win if it ends in a booked demo, a "call me later," or a texted link. Track those, not just yes\'s.',
     'It is a numbers game. A handful of demos out of twenty calls is a great day. Do not take a no personally.',
+    'Log every business in the Tracker tab as you work it, so we all see activity and never call the same place twice.',
   ],
+  houseRule: 'A few rules that keep us clean and legal: we call BUSINESSES (their public business line), not personal cell numbers, and never numbers on the Do Not Call registry. Always say who you are and why you are calling. If someone asks to not be called again, apologize, mark them "Not interested" in the Tracker, and never call them again. We win by being helpful and welcome, not annoying.',
 };
 
 /** The signature walk-in play: let the voice agent demo itself. */

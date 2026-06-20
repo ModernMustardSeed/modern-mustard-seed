@@ -208,6 +208,10 @@ export default function SalesTraining({ bookDisplay }: { bookDisplay: string }) 
               ))}
             </ul>
           </div>
+          <div className="mt-4 bg-[#FFF8E6] border-2 border-[#9B3022] rounded-2xl p-5">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#9B3022] font-mono font-bold block mb-2">House rule: stay clean and legal</span>
+            <p className="text-[#161616] font-body text-sm leading-relaxed">{COLD_CALL.houseRule}</p>
+          </div>
         </Section>
 
         {/* Voice demo play (signature) */}

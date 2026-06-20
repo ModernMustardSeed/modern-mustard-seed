@@ -52,7 +52,7 @@ export function buildHelpKnowledge(): string {
       .map((s) => `${s.label}: "${s.script}"`)
       .join(' ')} Cold call objections: ${COLD_CALL.objections
       .map((o) => `${o.q} -> ${o.a}`)
-      .join(' ')} Voicemail: "${COLD_CALL.voicemail}" Cold call tips: ${COLD_CALL.tips.join(' ')}\n\nThe signature walk-in voice agent play (let the live voice agent at /voice-agents demo itself and sell the deal): ${VOICE_DEMO_PLAY.steps
+      .join(' ')} Voicemail: "${COLD_CALL.voicemail}" Cold call tips: ${COLD_CALL.tips.join(' ')} House rule (important): ${COLD_CALL.houseRule}\n\nThere is a shared Lead Tracker at /admin/prospects (the Tracker tab) where reps log every business they are working (cold call or walk-in) so the team sees activity and nobody double-calls. Tell reps to add businesses there and update the status as they go.\n\nThe signature walk-in voice agent play (let the live voice agent at /voice-agents demo itself and sell the deal): ${VOICE_DEMO_PLAY.steps
       .map((s) => `${s.label}: "${s.script}"`)
       .join(' ')} Tips: ${VOICE_DEMO_PLAY.tips.join(' ')}\n\nHow to talk about what we sell: ${WHAT_WE_SELL.map(
       (w) => `${w.name} - is: ${w.isWhat} does: ${w.doesWhat} bring up when: ${w.bringUp}`

@@ -247,6 +247,8 @@ export async function buildSalesTrainingPdf(opts: { bookUrl: string }): Promise<
   scriptCard('If you get their voicemail', COLD_CALL.voicemail);
   subHead('Cold call tips');
   bullets(COLD_CALL.tips);
+  subHead('House rule: stay clean and legal');
+  para(COLD_CALL.houseRule, { size: 9.5, gap: 8 });
 
   // Voice demo play
   sectionHeader('Your secret weapon', VOICE_DEMO_PLAY.title);
