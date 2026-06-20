@@ -20,12 +20,21 @@ const collectionJsonLd = {
   description:
     'Specialty AI tools, apps, and sites for six core industries. Each industry page documents what we build, real receipts, pricing, and a free Bottleneck Breaker funnel.',
   isPartOf: { '@id': `${SITE.url}/#website` },
-  hasPart: industries.map((i) => ({
-    '@type': 'WebPage',
-    name: i.metaTitle,
-    url: `${SITE.url}/for/${i.slug}`,
-    description: i.metaDescription,
-  })),
+  hasPart: [
+    ...industries.map((i) => ({
+      '@type': 'WebPage',
+      name: i.metaTitle,
+      url: `${SITE.url}/for/${i.slug}`,
+      description: i.metaDescription,
+    })),
+    {
+      '@type': 'WebPage',
+      name: 'AI for Restaurants. Phone Ordering and Missed-Call Revenue.',
+      url: `${SITE.url}/for/restaurants`,
+      description:
+        'AI voice agents for restaurants that take phone orders, book tables, and save the dinner rush from voicemail. Integrates with Toast, Square, and Clover.',
+    },
+  ],
 };
 
 export default function ForIndex() {
@@ -79,6 +88,25 @@ export default function ForIndex() {
                 </span>
               </Link>
             ))}
+
+            <Link
+              href="/for/restaurants"
+              className="glass-card p-8 md:p-10 hover:border-mustard-500/30 transition-all duration-500 group"
+            >
+              <span className="text-[10px] uppercase tracking-[0.35em] text-mustard-500/70 font-mono font-medium mb-4 block">
+                AI for Restaurants
+              </span>
+              <h2 className="font-sans text-xl md:text-2xl font-semibold text-white tracking-tight mb-4 group-hover:text-mustard-100 transition-colors">
+                Restaurants
+              </h2>
+              <p className="text-white/55 text-sm md:text-base font-body font-light leading-7 mb-5">
+                A voice agent that takes phone orders, books tables, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, plus a commission-free ordering page.
+              </p>
+              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-mustard-400 group-hover:text-mustard-300 transition-colors">
+                Read the playbook
+                <span aria-hidden="true">→</span>
+              </span>
+            </Link>
           </div>
 
           <div className="text-center">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import AdminHeader from './AdminHeader';
+import OutreachSequences from './OutreachSequences';
 
 type Message = { id: string; touch: number; channel: string; subject: string | null; body: string; status: string };
 type Prospect = {
@@ -123,6 +124,9 @@ export default function OutreachAdmin() {
             <button onClick={addProspect} disabled={adding || !form.name.trim()} className="px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all rounded-lg disabled:opacity-50">{adding ? 'Adding...' : 'Add prospect'}</button>
           </div>
         </div>
+
+        {/* Reusable outreach sequences (templates) */}
+        <OutreachSequences />
 
         {/* List */}
         {loading ? (

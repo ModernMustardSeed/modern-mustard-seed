@@ -23,6 +23,7 @@ const STATIC_PATHS = [
   '/launch-checklist',
   '/ai-proof',
   '/for',
+  '/for/restaurants',
   '/about',
   '/contact',
   '/store',
