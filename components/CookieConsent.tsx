@@ -31,7 +31,7 @@ export default function CookieConsent() {
       <div className="max-w-3xl mx-auto rounded-2xl border-[3px] border-[#161616] bg-[#FBF6EA] shadow-[6px_6px_0_0_#161616] p-5 sm:p-6">
         <div className="sm:flex sm:items-center sm:gap-6">
           <div className="flex-1 mb-4 sm:mb-0">
-            <p className="font-display text-lg font-black text-[#161616] mb-1">Cookies, the honest kind</p>
+            <p className="font-display text-lg font-black text-[#161616] mb-1">A quick note on cookies</p>
             <p className="text-[#3a3733] font-body text-sm leading-relaxed">
               We use essential cookies to run the site. With your okay, we also use analytics and advertising cookies to understand what helps. You can change your mind anytime.{' '}
               <Link href="/privacy" className="underline font-semibold text-[#161616] hover:text-[#E0301E]">
