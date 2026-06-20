@@ -9,6 +9,8 @@ import {
   MINDSET,
   SALES_ARC,
   CHANNELS,
+  LEAD_SOURCES,
+  COLD_CALL,
   VOICE_DEMO_PLAY,
   WHAT_WE_SELL,
   OBJECTIONS,
@@ -52,6 +54,8 @@ export default function SalesTraining({ bookDisplay }: { bookDisplay: string }) 
           <div className="mt-5 flex flex-wrap gap-2">
             <a href="#daily" className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">Daily plan</a>
             <a href="#channels" className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">The 3 ways to sell</a>
+            <a href="#leads" className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">Find leads</a>
+            <a href="#coldcall" className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">Cold call script</a>
             <a href="#voice" className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold bg-[#F5B700] border-2 border-[#161616] rounded-full hover:-translate-y-0.5 transition-all">The voice agent play</a>
             <a href="#sell" className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">What we sell</a>
             <a href="#objections" className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">Objections</a>
@@ -70,6 +74,7 @@ export default function SalesTraining({ bookDisplay }: { bookDisplay: string }) 
               </div>
             ))}
           </div>
+          <p className="mt-4 text-[#161616] font-body text-sm bg-[#FFF8E6] border-l-4 border-[#F5B700] rounded-r-xl px-5 py-4 leading-relaxed"><span className="font-bold">Some days, go big: </span>{DAILY_GUIDE.bigPush}</p>
           <div className="mt-4 bg-[#161616] rounded-2xl p-5 shadow-[4px_4px_0_0_#F5B700]">
             <p className="text-[#FBF6EA] font-body leading-relaxed"><span className="text-[#F5B700] font-bold">North star: </span>{DAILY_GUIDE.northStar}</p>
             <p className="text-[#FBF6EA]/60 font-mono text-xs mt-2">Your booking link: {bookDisplay}</p>
@@ -121,6 +126,87 @@ export default function SalesTraining({ bookDisplay }: { bookDisplay: string }) 
                 </ul>
               </div>
             ))}
+          </div>
+        </Section>
+
+        {/* Finding leads */}
+        <Section id="leads" eyebrow="Fill your list" title={LEAD_SOURCES.title}>
+          <p className="text-[#3A3733] font-body mb-5 max-w-2xl">{LEAD_SOURCES.intro}</p>
+          <div className="grid sm:grid-cols-2 gap-3 mb-5">
+            {LEAD_SOURCES.where.map((w) => (
+              <div key={w.name} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[3px_3px_0_0_#161616] p-4">
+                <h3 className="font-sans font-bold text-[#161616] mb-1">{w.name}</h3>
+                <p className="text-[#3A3733] font-body text-sm leading-relaxed">{w.how}</p>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-3">
+            <p className="text-[#161616] font-body text-sm bg-[#FFF8E6] border-l-4 border-[#2D6A4F] rounded-r-xl px-5 py-4 leading-relaxed"><span className="font-bold">Who to target: </span>{LEAD_SOURCES.who}</p>
+            <p className="text-[#161616] font-body text-sm bg-[#FFF8E6] border-l-4 border-[#F5B700] rounded-r-xl px-5 py-4 leading-relaxed"><span className="font-bold">Keep a list: </span>{LEAD_SOURCES.list}</p>
+          </div>
+        </Section>
+
+        {/* Cold call script */}
+        <Section id="coldcall" eyebrow="Calling strangers, made simple" title={COLD_CALL.title}>
+          <p className="text-[#3A3733] font-body mb-5 max-w-2xl">{COLD_CALL.intro}</p>
+          <div className="space-y-3">
+            {COLD_CALL.steps.map((s, i) => (
+              <div key={i} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+                <div className="flex items-center justify-between gap-3 mb-2.5">
+                  <div className="flex items-center gap-3">
+                    <span className="font-display text-xl font-bold text-[#F5B700] leading-none">{i + 1}</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#E0301E] font-mono font-bold">{s.label}</span>
+                  </div>
+                  <button
+                    onClick={() => copy(`cc-${i}`, px(s.script))}
+                    className="px-3 py-1 text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full hover:bg-[#FFD23F] transition-all shrink-0"
+                  >
+                    {copied === `cc-${i}` ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
+                <p className="font-body text-[15px] text-[#161616] leading-relaxed italic">"{px(s.script)}"</p>
+                <p className="font-body text-xs text-[#161616]/55 mt-2.5 border-l-2 border-[#F5B700] pl-3 leading-relaxed">{s.note}</p>
+              </div>
+            ))}
+          </div>
+
+          <h3 className="font-display text-2xl font-semibold mt-8 mb-4">When they push back on a cold call</h3>
+          <div className="space-y-3">
+            {COLD_CALL.objections.map((o, i) => (
+              <details key={i} className="group bg-white border-2 border-[#161616] rounded-2xl shadow-[3px_3px_0_0_#161616] overflow-hidden">
+                <summary className="cursor-pointer list-none px-5 py-4 flex items-center justify-between gap-3 hover:bg-[#FFF8E6] transition-colors">
+                  <span className="font-sans font-bold text-[#161616] text-[15px]">{o.q}</span>
+                  <span className="text-[#F5B700] text-xl font-bold shrink-0 group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <div className="px-5 pb-5 pt-0">
+                  <p className="font-body text-[15px] text-[#3A3733] leading-relaxed italic">"{o.a}"</p>
+                </div>
+              </details>
+            ))}
+          </div>
+
+          <div className="mt-4">
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[3px_3px_0_0_#161616] p-5">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <span className="text-[10px] uppercase tracking-[0.18em] text-[#E0301E] font-mono font-bold">If you get their voicemail</span>
+                <button
+                  onClick={() => copy('cc-vm', px(COLD_CALL.voicemail))}
+                  className="px-3 py-1 text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full hover:bg-[#FFD23F] transition-all shrink-0"
+                >
+                  {copied === 'cc-vm' ? 'Copied' : 'Copy'}
+                </button>
+              </div>
+              <p className="font-body text-[15px] text-[#161616] leading-relaxed italic">"{px(COLD_CALL.voicemail)}"</p>
+            </div>
+          </div>
+
+          <h3 className="font-display text-2xl font-semibold mt-8 mb-4">Cold call tips</h3>
+          <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+            <ul className="space-y-2">
+              {COLD_CALL.tips.map((t) => (
+                <li key={t} className="text-[#3A3733] font-body text-sm flex gap-2 leading-relaxed"><span className="text-[#F5B700] mt-0.5">●</span>{t}</li>
+              ))}
+            </ul>
           </div>
         </Section>
 

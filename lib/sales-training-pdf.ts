@@ -5,6 +5,8 @@ import {
   MINDSET,
   SALES_ARC,
   CHANNELS,
+  LEAD_SOURCES,
+  COLD_CALL,
   VOICE_DEMO_PLAY,
   WHAT_WE_SELL,
   OBJECTIONS,
@@ -188,6 +190,7 @@ export async function buildSalesTrainingPdf(opts: { bookUrl: string }): Promise<
     y -= 15;
     para(b.detail, { size: 9.5, gap: 7, indent: 60 });
   }
+  para(`Some days, go big: ${DAILY_GUIDE.bigPush}`, { size: 9.5, gap: 4 });
   para(`North star: ${DAILY_GUIDE.northStar}`, { size: 9.5, font: ital, color: MUTED, gap: 4 });
   para(`Your booking link: ${opts.bookUrl}`, { size: 9, font: bold, color: GREEN, gap: 8 });
 
@@ -216,6 +219,34 @@ export async function buildSalesTrainingPdf(opts: { bookUrl: string }): Promise<
     para(c.tool, { size: 9.5, color: GREEN, gap: 5 });
     bullets(c.steps);
   }
+
+  // Finding leads
+  sectionHeader('Fill your list', LEAD_SOURCES.title);
+  para(LEAD_SOURCES.intro, { size: 10, gap: 8 });
+  for (const w of LEAD_SOURCES.where) {
+    subHead(w.name);
+    para(w.how, { size: 9.5, gap: 6, indent: 8 });
+  }
+  para(`Who to target: ${LEAD_SOURCES.who}`, { size: 9.5, gap: 5 });
+  para(`Keep a list: ${LEAD_SOURCES.list}`, { size: 9.5, gap: 8 });
+
+  // Cold call script
+  sectionHeader('Calling strangers, made simple', COLD_CALL.title);
+  para(COLD_CALL.intro, { size: 10, gap: 8 });
+  for (const [i, s] of COLD_CALL.steps.entries()) {
+    scriptCard(`${i + 1}. ${s.label}`, s.script);
+    para(s.note, { size: 9, font: ital, color: MUTED, gap: 8, indent: 4 });
+  }
+  subHead('When they push back on a cold call');
+  for (const o of COLD_CALL.objections) {
+    ensure(20);
+    page.drawText(clean(o.q), { x: M, y: y - 10.5, size: 10.5, font: bold, color: INK });
+    y -= 15;
+    scriptCard(null, o.a);
+  }
+  scriptCard('If you get their voicemail', COLD_CALL.voicemail);
+  subHead('Cold call tips');
+  bullets(COLD_CALL.tips);
 
   // Voice demo play
   sectionHeader('Your secret weapon', VOICE_DEMO_PLAY.title);

@@ -1,7 +1,7 @@
 import { ONBOARDING_INTRO, MODULES, GLOSSARY, FIRST_WEEK } from '@/data/onboarding';
 import { LANE_CHEATSHEET, OBJECTIONS as CALL_OBJECTIONS, CALL_GOAL } from '@/data/sales-call-script';
 import { LANES as OUTREACH_LANES } from '@/data/outreach-playbook';
-import { DAILY_GUIDE, SALES_ARC, CHANNELS, VOICE_DEMO_PLAY, WHAT_WE_SELL, OBJECTIONS as TRAIN_OBJECTIONS, MINDSET } from '@/data/sales-training';
+import { DAILY_GUIDE, SALES_ARC, CHANNELS, LEAD_SOURCES, COLD_CALL, VOICE_DEMO_PLAY, WHAT_WE_SELL, OBJECTIONS as TRAIN_OBJECTIONS, MINDSET } from '@/data/sales-training';
 
 /**
  * Composes the internal Mr. Mustard's knowledge base from the same data the
@@ -46,7 +46,13 @@ export function buildHelpKnowledge(): string {
       .map((b) => `${b.title} (${b.time}): ${b.detail}`)
       .join(' ')}\n\nThe sales arc (works everywhere): ${SALES_ARC.steps
       .map((s) => `${s.n}. ${s.label} - ${s.say}`)
-      .join(' ')}\n\nThe three channels: ${CHANNELS.map((c) => `${c.name} (${c.tagline}; ${c.tool})`).join(' | ')}\n\nThe signature walk-in voice agent play (let the live voice agent at /voice-agents demo itself and sell the deal): ${VOICE_DEMO_PLAY.steps
+      .join(' ')}\n\nThe three channels: ${CHANNELS.map((c) => `${c.name} (${c.tagline}; ${c.tool})`).join(' | ')}\n\nFinding leads (where to get businesses to cold call or walk into): ${LEAD_SOURCES.where
+      .map((w) => `${w.name}: ${w.how}`)
+      .join(' ')} Who to target: ${LEAD_SOURCES.who} Keep a simple list: ${LEAD_SOURCES.list}\n\nThe cold call script: ${COLD_CALL.steps
+      .map((s) => `${s.label}: "${s.script}"`)
+      .join(' ')} Cold call objections: ${COLD_CALL.objections
+      .map((o) => `${o.q} -> ${o.a}`)
+      .join(' ')} Voicemail: "${COLD_CALL.voicemail}" Cold call tips: ${COLD_CALL.tips.join(' ')}\n\nThe signature walk-in voice agent play (let the live voice agent at /voice-agents demo itself and sell the deal): ${VOICE_DEMO_PLAY.steps
       .map((s) => `${s.label}: "${s.script}"`)
       .join(' ')} Tips: ${VOICE_DEMO_PLAY.tips.join(' ')}\n\nHow to talk about what we sell: ${WHAT_WE_SELL.map(
       (w) => `${w.name} - is: ${w.isWhat} does: ${w.doesWhat} bring up when: ${w.bringUp}`

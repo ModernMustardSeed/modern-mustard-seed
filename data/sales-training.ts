@@ -20,20 +20,21 @@ export const TRAINING_INTRO = {
   eyebrow: 'Sales training',
   title: 'How to sell, even if you have never done it',
   lede: 'Selling here is not slick or pushy. It is finding someone with a problem we fix, showing them it is fixable, and getting them to a call or a demo. That is a skill anyone can learn, and this is where you learn it.',
-  body: 'You do not need to be technical and you do not need a sales background. You need to be genuinely curious about people\'s businesses and willing to start conversations. The product is excellent and often sells itself once someone sees it (especially the voice agent). Your job is to get it in front of them. Work through this, practice out loud, and you will be booking calls in your first week.',
+  body: 'You do not need to be technical and you do not need a sales background. Some leads come to you warm (from your posts and your link). Most you will go find: businesses you cold call or walk into. Both are in here, with scripts. The product is excellent and often sells itself once someone sees it (especially the voice agent). Your job is to get it in front of them. Work through this, practice out loud, and you will be booking demos in your first week.',
 };
 
 /** The simple daily how-to. Keep it light and repeatable. */
 export const DAILY_GUIDE = {
   title: 'Your simple daily game plan',
-  intro: 'You do not need a complicated system. Do a little across all three channels every day and the bookings come. Aim for about an hour, in any order that fits your day.',
+  intro: 'You do not need a complicated system. Do a little across the channels every day and the bookings come. Aim for about an hour on a normal day, in any order that fits.',
   blocks: [
     { time: '15 min', title: 'Post and engage', detail: 'Put up one helpful post or story, then leave a few genuine comments in groups and on local business pages. Be a friendly face, not an ad. Your booking link is in your bio.' },
-    { time: '20 min', title: 'Reach out', detail: 'Message 5 to 10 people who fit (use the Outreach Playbook). Help first, then offer a call or a quick demo. Follow up with anyone warm from yesterday.' },
-    { time: '20 min', title: 'Talk to people in person', detail: 'On errands or out and about, do one or two friendly walk-ins. Offer the 30-second voice agent demo (see the walk-in play). This is the highest-converting thing you can do.' },
-    { time: '5 min', title: 'Tidy your follow-ups', detail: 'Jot down who you talked to and who to circle back with. A booked call on the calendar is the only thing that counts as done.' },
+    { time: '15 min', title: 'Find leads', detail: 'Add 10 to 20 new local businesses to your call list using Google Maps, Facebook, and the rest (see Finding Leads). A full list is what makes the next step easy.' },
+    { time: '25 min', title: 'Reach out', detail: 'Work your list: a batch of cold calls plus a round of DMs. Help first, then offer a quick demo or a call. Follow up with anyone warm from yesterday.' },
+    { time: '10 min', title: 'Get in front of people', detail: 'When you are out, pop into a business or two with the live voice demo. Tidy your follow-ups at the end: who to circle back with.' },
   ],
-  northStar: 'Your one number that matters: booked calls and demos. Everything above exists to create those. Five real conversations a day beats one perfect post.',
+  bigPush: 'Some days, block 2 to 3 hours for a focused push instead: either a canvassing route (work a whole street or plaza business to business) or a call session (run your list back to back). These blocks are where the big numbers come from.',
+  northStar: 'Your one number that matters: booked demos and calls. Everything above exists to create those. It is a numbers game, so talk to a lot of people. Twenty cold calls or ten doors beats one perfect post.',
 };
 
 /** Mindset for someone new and nervous. */
@@ -71,20 +72,20 @@ export type Channel = {
 
 export const CHANNELS: Channel[] = [
   {
-    key: 'calls',
-    name: 'Selling on calls',
-    tagline: 'Booked discovery calls and demos, by phone or video.',
-    tool: 'Your tool: the Script tab. Open it before and during every call.',
+    key: 'cold-calls',
+    name: 'Cold calls',
+    tagline: 'Call local businesses you found and book a demo.',
+    tool: 'Your tools: the cold call script below and your lead list.',
     steps: [
-      'Most calls come from people you booked through a post, a DM, or a walk-in.',
-      'Follow the call script: open warm, find the problem, reflect it back, show the Modern Mustard Seed way, then book the next step.',
-      'You do not quote prices. For a build, you book Sarah to scope and quote. For a quick win, you can demo the voice agent live right on the call.',
-      'Always confirm the next step on the calendar before you hang up.',
+      'Build a list of local businesses to call (see Finding Leads below).',
+      'Work the list in batches. Keep each call short and friendly, aim for a booked demo.',
+      'Lead with the voice agent: missed calls are lost money, and you can demo it live.',
+      'Expect a lot of no\'s, that is normal. A few demos out of twenty calls is a great session.',
     ],
   },
   {
     key: 'posts',
-    name: 'Selling with posts',
+    name: 'Posts (online)',
     tagline: 'Show up online so the right people come to you.',
     tool: 'Your tool: the Outreach Playbook (in your partner dashboard).',
     steps: [
@@ -96,17 +97,62 @@ export const CHANNELS: Channel[] = [
   },
   {
     key: 'walkins',
-    name: 'Selling with walk-ins',
-    tagline: 'In person, often letting the voice agent sell itself.',
+    name: 'Walk-ins',
+    tagline: 'In person, opportunistic or a planned route.',
     tool: 'Your tool: the live voice demo at modernmustardseed.com/voice-agents on your phone.',
     steps: [
-      'Pick a street or plaza of local businesses (restaurants, salons, contractors, clinics, shops). Go in friendly and low-pressure.',
-      'Your goal is not to sell on the spot. It is to do the 30-second voice agent demo and book a real appointment.',
-      'The voice agent demo is your secret weapon: it shows, it does not tell, and it sells the deal for you (see the play below).',
-      'Leave every place with either a booked demo, their number, or a friendly "come back later." All three are wins.',
+      'Two ways to do it: pop into a business while you are out, OR block 2 to 3 hours and work a whole street or plaza business to business (canvassing).',
+      'For a canvassing session: pick an area, make a loose list, and set a goal (for example, ten doors, two booked demos).',
+      'Your move every time is the 30-second voice agent demo, then book a real appointment (see the play below).',
+      'Leave every place with a booked demo, their number, or a friendly "come back later." All three are wins.',
     ],
   },
 ];
+
+/** Where to find businesses to cold call or walk into. */
+export const LEAD_SOURCES = {
+  title: 'Finding leads: who to call and where to find them',
+  intro: 'Warm leads come to you. Cold leads you go find. Here is how to build a steady list of local businesses to call or visit, all free, no fancy tools.',
+  where: [
+    { name: 'Google Maps', how: 'Search your town plus a type of business ("Kalispell med spa", "Whitefish contractor"). Every result has a name, phone, website, and reviews. This is your main gold mine.' },
+    { name: 'Facebook', how: 'Local business pages and community or buy-sell groups. You can see who is active and what they are struggling with.' },
+    { name: 'Yelp and directories', how: 'Browse local categories for businesses and phone numbers. Chamber of commerce member lists are public too.' },
+    { name: 'Instagram', how: 'Search local hashtags and location tags to find businesses near you, then find their number on their site.' },
+    { name: 'Just look around', how: 'Note businesses on a street you want to canvass, then look them up later for the phone number. Drive-by today, call tomorrow.' },
+    { name: 'Your own network', how: 'People you know who own businesses, or who know owners. A warm intro converts best of all.' },
+  ],
+  who: 'Best fits are businesses that live on the phone and on appointments, the ones that quietly lose money to missed calls: restaurants, salons and spas, contractors and trades, dentists and clinics, auto shops, gyms, real estate. Also anyone with an old or no website.',
+  list: 'Keep a simple list (a spreadsheet or your notes): business name, phone, one thing you noticed (old site? no online booking?), and the date you reached out. That one habit is what makes you consistent instead of random.',
+};
+
+/** The cold call script (distinct from the warm discovery-call script). */
+export const COLD_CALL = {
+  title: 'The cold call script',
+  intro: 'Cold calling sounds scary but it is just a quick, friendly chat. You will get a lot of no\'s and that is completely normal, it is a numbers game. Keep it short, smile (they can hear it), and aim for one thing: a booked demo. Stand up, warm up with a few easy ones, and do them in batches.',
+  steps: [
+    { label: 'Opener (ask permission)', script: 'Hi, is this [business name]? Hey, my name is [your name]. I\'ll be honest, this is a quick cold call, do you have 20 seconds before I let you go?', note: 'Admitting it is a cold call disarms people. The little permission ask earns you a moment instead of a hang-up.' },
+    { label: 'The hook', script: 'Thanks, I appreciate it. I work with a company that builds AI tools for local businesses. The reason I\'m calling is we set up a system that answers your phone and books appointments around the clock, even when you\'re closed or slammed. A lot of [their type of business] lose customers to voicemail without realizing it.', note: 'Lead with the problem (missed calls are lost money) and the voice agent. It is the easiest thing for them to picture.' },
+    { label: 'Find the problem', script: 'Quick question: when you\'re busy or after hours, what happens to your calls right now? Do they mostly go to voicemail?', note: 'Then be quiet and let them answer. Their answer is your opening, and most will admit they miss calls.' },
+    { label: 'The offer (book the demo)', script: 'That\'s exactly what we fix, and the easiest way to get it is to see it. I\'d love to show you a quick live demo where you can actually talk to it and hear it. Takes about ten minutes. Would tomorrow morning or afternoon be better?', note: 'Offer two times instead of asking "are you interested." Assume the demo. Confidence is kind here.' },
+    { label: 'Lock it in', script: 'Perfect. What\'s the best cell or email to send the details to? I\'ll book you for [time] and send a confirmation. Looking forward to it.', note: 'Get the contact, book it, and tell Sarah if it is a strong one so she is ready.' },
+    { label: 'If they are hesitant', script: 'No pressure at all, I know I caught you out of the blue. Can I text you a link so you can hear the demo yourself whenever you have a sec? What\'s a good number?', note: 'A texted /voice-agents link keeps it alive even when they will not book on the spot.' },
+  ],
+  objections: [
+    { q: '"We\'re not interested."', a: 'Totally fair, I caught you cold. Quick thing: is it that you\'ve got the phone side handled, or just a bad time? If you have it handled, mind if I text a link in case it is ever useful?' },
+    { q: '"Just send me an email."', a: 'Happy to. So I send the right thing, what is the bigger headache, the phone, the website, or something else? And the best email? And honestly, ten minutes seeing it live beats any email, want me to hold a slot just in case?' },
+    { q: '"How much does it cost?"', a: 'Good question. It depends on what you need and it is always a flat price, no surprises. The demo is where we figure out the fit and give you a real number. Want me to set one up?' },
+    { q: 'Gatekeeper: "She\'s not available."', a: 'No problem. You might actually be the right person, are you who handles the phones and scheduling? If not, when is a good time to catch [owner]? I\'ll call back then.' },
+    { q: '"We already have a website / system."', a: 'That\'s great. This is really about your phone getting answered and bookings happening 24/7. Worth a ten-minute look? Most people are surprised what it does.' },
+  ],
+  voicemail: 'Hi [name], this is [your name] with Modern Mustard Seed. I help local businesses make sure they never miss a call or a booking, even after hours. I\'d love to show you a quick demo, it is pretty cool. Call or text me back at [your number], or I\'ll try you again. Thanks!',
+  tips: [
+    'Best times to call: mid-morning (10 to 11:30) and mid-afternoon (2 to 4). Avoid the open, lunch, and closing rushes.',
+    'Batch them: do 10 to 20 in one sitting. You find a rhythm and the no\'s stop stinging.',
+    'Smile and stand up. Your energy carries right through the phone.',
+    'Every call is a win if it ends in a booked demo, a "call me later," or a texted link. Track those, not just yes\'s.',
+    'It is a numbers game. A handful of demos out of twenty calls is a great day. Do not take a no personally.',
+  ],
+};
 
 /** The signature walk-in play: let the voice agent demo itself. */
 export const VOICE_DEMO_PLAY = {
@@ -132,7 +178,7 @@ export const VOICE_DEMO_PLAY = {
 export const WHAT_WE_SELL: { name: string; isWhat: string; doesWhat: string; bringUp: string }[] = [
   {
     name: 'Websites',
-    isWhat: 'A professional website that actually brings in business, built and live in about 30 days, and they own it.',
+    isWhat: 'A professional website that actually brings in business, built and live in weeks, not months, and they own it.',
     doesWhat: 'Turns visitors into customers with a clear message, proof, and an easy way to contact or buy. Shows up on Google.',
     bringUp: 'When they say their site is old, embarrassing, DIY, or "brings in nothing," or they have no site at all.',
   },
