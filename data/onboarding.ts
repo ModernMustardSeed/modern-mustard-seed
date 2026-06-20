@@ -1,8 +1,12 @@
 /**
- * New hire onboarding guide. The content for the in-admin Onboarding Hub
- * (components/admin/OnboardingHub) and the printable PDF handbook
- * (lib/onboarding-pdf). Written for a new assistant doing sales and marketing
- * who is new to AI. Plain language, specific to how Modern Mustard Seed works.
+ * Onboarding guide for a Modern Mustard Seed sales and marketing partner. The
+ * content for the in-admin Onboarding Hub (components/admin/OnboardingHub) and
+ * the printable PDF handbook (lib/onboarding-pdf).
+ *
+ * Audience: a commission-based partner whose job is sales and marketing (bring
+ * in clients and promote us), NOT running the admin or operations. They get full
+ * access so they understand how everything works and can speak to it honestly,
+ * but the back office is Sarah's. Written plain, for someone newer to AI.
  *
  * No em dashes anywhere (Sarah's rule). Keep it accurate to the real admin.
  */
@@ -26,7 +30,7 @@ export type GuideModule = {
 
 export const ONBOARDING_INTRO = {
   title: 'Welcome to Modern Mustard Seed',
-  body: 'This is your home base. Work through these modules top to bottom and you will know what we do, how we do it, and exactly what your job is. Tick each one off as you finish. Take your time, and ask questions any time. Nobody expects you to memorize this. It lives here so you can come back to it whenever you need it.',
+  body: 'Welcome to the team. Your job here is sales and marketing: bring in clients and get the word out, and earn a commission on the business you bring in. You are not running the admin or the back office, that part is Sarah\'s. This guide gives you the full picture anyway, because the better you understand how everything works, the more honestly and confidently you can sell it. Work through the modules top to bottom, tick each one off, and come back any time. Nobody expects you to memorize it.',
 };
 
 export const MODULES: GuideModule[] = [
@@ -58,7 +62,7 @@ export const MODULES: GuideModule[] = [
       },
       {
         heading: 'What your first week looks like',
-        body: 'Read these modules. Shadow Sarah on a couple of real tasks. Get your logins working. Start handling the easy, repeatable things (sorting new leads, drafting replies for approval, scheduling, prepping social posts). By the end of week one you should be able to run the morning routine on your own. There is a first-week checklist at the bottom of this guide.',
+        body: 'Read these modules so you really get what we do and who it is for. Get your logins working, including your own partner link. Read the sales call script and the Outreach Playbook. Then start: a few posts, a few real conversations, and your first booked call. The goal of week one is not to learn our back office, it is to get comfortable enough with the offer that you can start bringing in business. There is a first-week checklist at the bottom of this guide.',
       },
     ],
   },
@@ -120,8 +124,8 @@ export const MODULES: GuideModule[] = [
         body: 'Every client gets a login to their own portal on our site. They see their project progress, milestones, a launch countdown, their files, and a button to pay. There is even an AI guide inside it that answers their questions. You will help keep their project status and milestones up to date so the portal always tells the truth.',
       },
       {
-        heading: 'Where the work happens',
-        body: 'Sarah builds in code (this is not a drag-and-drop website builder shop). You do not need to write code. Your world is the admin command center, email, social, and the documents and lists that keep projects and leads moving.',
+        heading: 'Where your work happens',
+        body: 'Sarah builds in code and runs the project once it is sold. You do not write code and you do not manage the build. Your world is out front: social, conversations, outreach, and discovery calls. You bring people to the door and book the call. Sarah scopes, quotes, builds, and delivers. Knowing this whole process cold just makes you better at selling it.',
       },
     ],
   },
@@ -132,40 +136,43 @@ export const MODULES: GuideModule[] = [
     emoji: '💁',
     eyebrow: 'Your job',
     title: 'Your role here',
-    summary: 'Assistant, sales, and marketing. What you own day to day.',
+    summary: 'Sales and marketing. You bring in clients and you earn commission.',
     minutes: 6,
     blocks: [
       {
         heading: 'The shape of your job',
-        body: 'You wear three hats: assistant (protect Sarah\'s time and keep things moving), sales (catch every lead and move them toward a booked call), and marketing (keep us visible and bringing in new leads). The thread through all three is follow-through: nothing falls through the cracks on your watch.',
+        body: 'You have one job with two halves: sales (start conversations with people who need what we build and get them on a call) and marketing (be visible so the right people find us). That is it. You are a commission partner, so the more good business you bring in, the more you earn. You are not an admin and you are not running operations.',
       },
       {
-        heading: 'Assistant: what you own',
+        heading: 'What is yours',
         bullets: [
-          'The inbox and the calendar: triage, schedule, confirm, remind.',
-          'Keeping the admin tidy: lead statuses current, projects updated, nothing stale.',
-          'Prepping things for Sarah to approve quickly (drafts, summaries, options).',
+          'Find and start conversations with potential clients, online and in your network.',
+          'Share your personal booking link so the people you bring in get tracked to you.',
+          'Post and promote: keep us visible and useful so leads come in.',
+          'Book discovery calls, and run the ones you are comfortable with using the call script.',
+          'Tell Sarah about a hot lead so she walks into the call already knowing them.',
         ],
       },
       {
-        heading: 'Sales: what you own',
+        heading: 'What is NOT yours (it is Sarah\'s)',
         bullets: [
-          'Every new lead gets a fast, warm first reply (speed matters, see the sales module).',
-          'Qualify gently, then push toward a booked discovery call.',
-          'Keep the pipeline honest so we always know who needs a nudge.',
+          'Running the back office: triaging the inbox, keeping the pipeline tidy, updating project statuses.',
+          'Quoting prices and writing proposals. You point people to a free call, Sarah quotes.',
+          'Building, delivering, or managing the actual projects.',
+          'You can SEE all of it (you have full access), but do not feel you have to maintain it. Do not let admin work pull you off selling.',
         ],
       },
       {
-        heading: 'Marketing: what you own',
-        bullets: [
-          'Keep a steady drumbeat of social posts and the weekly newsletter going out.',
-          'Promote our free tools (they are lead magnets that feed sales).',
-          'Stay on brand and on voice in everything public.',
-        ],
+        heading: 'Why you still get the full picture',
+        body: 'You have access to everything and this whole guide on purpose. When you understand how we sell, build, and deliver, you can speak about it honestly and answer a prospect\'s real questions. That is what closes. Learn it so you can sell it, not so you can run it.',
+      },
+      {
+        heading: 'How you get paid',
+        body: 'You earn a commission on the business you bring in, tracked through your personal booking link (modernmustardseed.com/book?ref=YOURCODE). Your partner dashboard shows your clicks, your booked business, and what you have earned. Full details, your link, and the social playbook are in the partner welcome email and at /partners/hq.',
       },
       {
         heading: 'The golden rule',
-        body: 'When in doubt, draft it and ask. You are trusted to do a lot on your own, but anything that goes OUT to a client or the public gets a quick human approval first. That one habit keeps us safe and keeps the bar high.',
+        body: 'Anything that goes OUT to a client or the public should sound like us: warm, honest, on brand, no em dashes, never pushy. When in doubt, ask. And never quote a firm price or promise a feature on your own, that is always Sarah\'s call.',
       },
     ],
   },
@@ -174,42 +181,48 @@ export const MODULES: GuideModule[] = [
   {
     id: 'command-center',
     emoji: '🎛️',
-    eyebrow: 'Your main tool',
+    eyebrow: 'Good to understand',
     title: 'The admin command center, tab by tab',
-    summary: 'This is where you will spend most of your day. Here is every tab.',
+    summary: 'You have full access. Here is what each tab does so the business is not a mystery.',
     minutes: 9,
     blocks: [
       {
+        heading: 'Read this for context, not as a to-do list',
+        body: 'You can reach the admin at /admin with your own login, and you can see everything. But running it is Sarah\'s job, not yours. This tour is so you understand how a lead becomes a client and can answer questions confidently. The tabs you will actually live in are Script (your call words) and your partner dashboard. The rest is here for context.',
+      },
+      {
         heading: 'How it is organized',
-        body: 'You reach it at /admin with your own login. Everything is keyed by the client or lead\'s email, so the same person\'s lead, proposal, project, and files all connect. The tabs across the top follow the funnel from first contact to delivery.',
+        body: 'Everything is keyed by the client or lead\'s email, so the same person\'s lead, proposal, project, and files all connect. The tabs across the top follow the funnel from first contact to delivery.',
       },
       {
-        heading: 'Overview',
-        body: 'The dashboard. New leads, upcoming calls, client messages, and a daily AI brief that tells you what to focus on. Start your day here. (Revenue figures may be hidden on your login, that is normal.)',
-      },
-      {
-        heading: 'Calendar and Pipeline',
+        heading: 'Overview, Calendar, Pipeline',
         bullets: [
-          'Calendar: upcoming discovery calls, with a join link and an add-to-calendar button.',
-          'Pipeline: every lead. Click one to open the drawer with their details, status, your private notes, and the full timeline. This is your sales home base.',
+          'Overview: the dashboard. New leads, upcoming calls, and a daily AI brief. A good glance to see what is coming in.',
+          'Calendar: upcoming discovery calls, with a join link. Useful for the calls you are running.',
+          'Pipeline: every lead and what stage they are at. Sarah keeps this current. Look here to see who is in play.',
         ],
       },
       {
-        heading: 'Audit, Proposals, Projects',
+        heading: 'Script, Audit, Proposals, Projects',
         bullets: [
-          'Audit: run a free website grade on any URL to send a lead as a warm opener.',
-          'Proposals: build a fixed-scope quote, draft the wording with AI, and send it for signature and deposit. (Sarah usually owns pricing here, you help prep and send.)',
-          'Projects: create a client and start their project, set status, progress, milestones, and the launch date. Clients see all of this in their portal.',
+          'Script: the sales call script. THIS is your tool. Open it before and during any call.',
+          'Audit: run a free website grade on any URL. A great warm opener to share with a prospect.',
+          'Proposals: where Sarah builds and sends the fixed-price quote. You do not write these.',
+          'Projects: the live builds and client portals. Sarah runs these. You can peek to see how delivery works.',
         ],
       },
       {
         heading: 'Reviews, Outreach, Partners, Onboarding',
         bullets: [
-          'Reviews: approve client reviews to publish them on the site.',
-          'Outreach: a prospect list with AI-drafted messages for you to review and approve.',
-          'Partners: people who refer business to us.',
+          'Reviews: published client reviews. Great social proof to point prospects to.',
+          'Outreach: Sarah\'s prospect list with AI-drafted messages.',
+          'Partners: the referral and partner program (that includes you).',
           'Onboarding: this guide. It lives right here so you can reopen it any time.',
         ],
+      },
+      {
+        heading: 'Anytime you are unsure, ask Mr. Mustard',
+        body: 'See the yellow "Ask Mr. Mustard" button in the bottom-right corner of every admin page. He knows our whole playbook and can explain anything here in plain English. Use him freely while you learn.',
       },
     ],
   },
@@ -224,16 +237,20 @@ export const MODULES: GuideModule[] = [
     minutes: 8,
     blocks: [
       {
-        heading: 'Speed is everything',
-        body: 'The single biggest lever in sales is how fast we reply. A lead who hears back in five minutes is far more likely to book than one who waits a day. When a new lead comes in, your first job is a fast, friendly, human first touch. Draft it, get a quick okay if it is your first week, and send.',
+        heading: 'Your two main tools',
+        body: 'For finding clients, your home base is the Outreach Playbook at /partners/hq (where to look, what to post, and DM scripts, all pre-filled with your link). For a call, your home base is the Script tab. This module is the why behind both.',
       },
       {
-        heading: 'The pipeline stages',
+        heading: 'Speed is everything',
+        body: 'The single biggest lever in sales is how fast you reply. Someone who hears back in five minutes is far more likely to book than one who waits a day. When a conversation gets warm, follow up fast, friendly, and human. Always send them your booking link so it tracks to you.',
+      },
+      {
+        heading: 'The stages, so you can read the pipeline',
         bullets: [
-          'New: just came in, needs a first reply.',
+          'New: just came in.',
           'Replied: we have reached out, waiting on them.',
-          'Booked: discovery call is on the calendar (the goal).',
-          'Won / Lost: closed one way or the other. Keep these honest.',
+          'Booked: discovery call is on the calendar (your goal).',
+          'Won / Lost: closed one way or the other. Sarah keeps these current.',
         ],
       },
       {
@@ -354,10 +371,10 @@ export const MODULES: GuideModule[] = [
       {
         heading: 'Your logins',
         bullets: [
-          'Admin command center: your own email and password at /admin (Sarah sets this up for you).',
-          'Company email on the modernmustardseed.com domain, hosted on Zoho Mail. You sign in at mail.zoho.com.',
+          'Admin command center: your own email and password at /admin (Sarah sets this up for you). Full access, so you can learn the whole business.',
+          'Your partner dashboard at /partners/hq: your booking link, earnings, marketing kit, and the Outreach Playbook. You reach it from the one-click link in your partner welcome email.',
           'The social accounts and our posting tool, so you can schedule content.',
-          'Read access to the calendar so you can book and confirm calls.',
+          'The calendar, so you can book and confirm discovery calls.',
         ],
       },
       {
@@ -409,15 +426,15 @@ export const MODULES: GuideModule[] = [
 // First-day / first-week checklist (tickable in the hub).
 export type FirstWeekItem = { id: string; label: string; detail: string };
 export const FIRST_WEEK: FirstWeekItem[] = [
-  { id: 'fw-login', label: 'Log in to the admin', detail: 'Confirm your /admin email and password work, and change your password if asked.' },
-  { id: 'fw-email', label: 'Get your company email working', detail: 'Send a test email from your you@modernmustardseed.com address.' },
+  { id: 'fw-login', label: 'Log in to the admin', detail: 'Confirm your /admin email and password work. You have full access to look around.' },
+  { id: 'fw-link', label: 'Get your partner link', detail: 'Open your partner welcome email and click through to /partners/hq. Find your personal booking link (book?ref=YOURCODE).' },
   { id: 'fw-read', label: 'Read every module above', detail: 'Top to bottom. Mark each one done as you go.' },
-  { id: 'fw-access', label: 'Send your access list', detail: 'One message to Sarah listing anything you still cannot log into.' },
-  { id: 'fw-tour', label: 'Click through every admin tab', detail: 'Open each tab once so nothing is a mystery. Do not change anything yet.' },
-  { id: 'fw-lead', label: 'Draft one practice lead reply', detail: 'Pick a real new lead, draft a first reply, and show Sarah before sending.' },
-  { id: 'fw-social', label: 'Draft one social post', detail: 'On brand and on voice, no em dashes. Get a quick okay before it posts.' },
-  { id: 'fw-calls', label: 'Book or confirm one call', detail: 'Practice the calendar flow end to end with a real or test booking.' },
-  { id: 'fw-routine', label: 'Run the morning routine solo', detail: 'By the end of week one: check overview, triage new leads, update statuses, prep the day.' },
+  { id: 'fw-playbook', label: 'Read the Outreach Playbook and the call script', detail: 'The Outreach Playbook (in your partner dashboard) and the Script tab are your two main tools.' },
+  { id: 'fw-tour', label: 'Skim the admin tabs', detail: 'Open each tab once so you understand the business. You do not run these, just know what they do.' },
+  { id: 'fw-mustard', label: 'Ask Mr. Mustard a question', detail: 'Use the yellow button in the bottom-right of the admin. Get comfortable leaning on your in-house guide.' },
+  { id: 'fw-social', label: 'Make your first post', detail: 'On brand and on voice, no em dashes. Share something useful with your booking link.' },
+  { id: 'fw-convos', label: 'Start three real conversations', detail: 'Use the Outreach Playbook to find and message people who fit. Help first, link second.' },
+  { id: 'fw-call', label: 'Book your first discovery call', detail: 'Get one prospect onto the calendar. That is the whole game.' },
 ];
 
 // Plain-English glossary of terms she will hear.

@@ -72,7 +72,7 @@ export default function OnboardingHub({ name }: { name?: string }) {
         {/* Intro */}
         <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#161616] p-7 md:p-9 mb-6">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-3">
-            New hire guide
+            Sales & marketing partner guide
           </span>
           <h1 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight mb-3">
             {firstName ? `Welcome, ${firstName}.` : ONBOARDING_INTRO.title}

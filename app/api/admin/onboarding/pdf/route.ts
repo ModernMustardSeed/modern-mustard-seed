@@ -4,7 +4,7 @@ import { buildOnboardingPdf } from '@/lib/onboarding-pdf';
 
 export const runtime = 'nodejs';
 
-/** Branded new-hire Onboarding Handbook PDF. Gated to a signed-in admin. */
+/** Branded Sales & Marketing Partner Handbook PDF. Gated to a signed-in admin. */
 export async function GET() {
   if (!(await getSession())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -15,7 +15,7 @@ export async function GET() {
     return new NextResponse(Buffer.from(bytes), {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'inline; filename="mms-new-hire-handbook.pdf"',
+        'Content-Disposition': 'inline; filename="mms-partner-handbook.pdf"',
         'Cache-Control': 'private, max-age=0, no-store',
       },
     });

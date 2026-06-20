@@ -88,7 +88,7 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
   const drawFooter = () => {
     const fy = M - 18;
     page.drawRectangle({ x: M, y: fy + 16, width: contentW, height: 1, color: HAIR });
-    const foot = 'modernmustardseed.com  ·  New Hire Handbook  ·  Confidential';
+    const foot = 'modernmustardseed.com  ·  Sales & Marketing Partner Handbook  ·  Confidential';
     page.drawText(clean(foot), { x: M, y: fy, size: 8, font: reg, color: MUTED });
     const num = `${pageNo}`;
     const nw = bold.widthOfTextAtSize(num, 8);
@@ -132,10 +132,10 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
   drawSpaced('MODERN MUSTARD SEED', M, bandTop - 50, bold, 10, RED, 3.2);
 
   // Big bold title
-  page.drawText('New Hire Handbook', { x: M, y: bandTop - 102, size: 30, font: bold, color: INK });
+  page.drawText('Partner Handbook', { x: M, y: bandTop - 102, size: 30, font: bold, color: INK });
 
   // Subtitle line
-  page.drawText('Everything you need to get started', { x: M, y: bandTop - 132, size: 13, font: ital, color: BODY });
+  page.drawText('Your sales and marketing guide. Everything you need to bring in clients.', { x: M, y: bandTop - 132, size: 12, font: ital, color: BODY });
 
   // Read-time line
   page.drawText(clean(`About ${TOTAL_MINUTES} minutes to read`), {
@@ -148,7 +148,7 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
 
   // ───────────────────────── Intro ─────────────────────────
   y = bandBottom - 30;
-  if (clean(ONBOARDING_INTRO.title) !== clean('New Hire Handbook')) {
+  if (clean(ONBOARDING_INTRO.title) !== clean('Partner Handbook')) {
     page.drawText(clean(ONBOARDING_INTRO.title), { x: M, y: y - 18, size: 18, font: bold, color: INK });
     y -= 32;
   }
