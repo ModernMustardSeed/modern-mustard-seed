@@ -7,7 +7,7 @@ import ProposalDoc from '@/components/ProposalDoc';
 export const metadata = buildMetadata({
   title: 'See a Sample Proposal',
   description:
-    'A real example of a Modern Mustard Seed proposal. See exactly what you get: clear scope, deliverables, three-bucket pricing, and one-tap sign and pay.',
+    'A real example of a Modern Mustard Seed proposal. See exactly what you get: clear scope, deliverables, and one-tap sign and pay. Every project is quoted individually after a free call.',
   path: '/sample-proposal',
 });
 
@@ -68,6 +68,7 @@ export default function SampleProposalPage() {
           depositDue={depositDue}
           balanceDue={balanceDue}
           hasVariable={hasVariable}
+          hidePrices
         />
 
         {/* Sample sign/pay preview (disabled) */}

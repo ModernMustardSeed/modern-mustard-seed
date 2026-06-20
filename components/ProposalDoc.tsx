@@ -21,10 +21,15 @@ export type ProposalDocProps = {
   depositDue: number;
   balanceDue: number;
   hasVariable: boolean;
+  /** Hide dollar figures (used by the public sample so we never publish hard
+   * prices that scare off a fit before the call). Shows "Quoted per project"
+   * per line and a words-only payment note instead of the totals. */
+  hidePrices?: boolean;
 };
 
-function linePriceLabel(s: Service, l: ProposalLine): string {
+function linePriceLabel(s: Service, l: ProposalLine, hidePrices = false): string {
   if (s.unit === 'free') return 'Included';
+  if (hidePrices) return s.variable ? 'Billed at cost' : 'Quoted per project';
   if (isHourly(s.unit)) return `${money(l.price)}/hr × ${l.qty} = ${money(l.price * l.qty)}`;
   if (isRecurring(s.unit)) return `${money(l.price)}/mo`;
   const base = money(l.price * (l.qty || 1));
@@ -59,6 +64,7 @@ export default function ProposalDoc({
   depositDue,
   balanceDue,
   hasVariable,
+  hidePrices = false,
 }: ProposalDocProps) {
   const situation = prose.situation || situationFallback || '';
 
@@ -120,7 +126,7 @@ export default function ProposalDoc({
                   </span>
                   <span className="text-right whitespace-nowrap">
                     <span className="font-display text-[16px] font-black text-[#161616]">
-                      {linePriceLabel(s, l)}
+                      {linePriceLabel(s, l, hidePrices)}
                     </span>
                     {s.variable && (
                       <span className="block text-[10px] text-[#161616]/45 font-mono uppercase tracking-wider">
@@ -146,6 +152,15 @@ export default function ProposalDoc({
         </div>
 
         {/* Totals */}
+        {hidePrices ? (
+          <div className="mt-7 rounded-xl bg-[#FFF3CC] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] p-5">
+            <p className="text-[14px] text-[#3a3733] font-body leading-relaxed">
+              Every line is quoted per project, in writing, before any work begins. Most builds run on a
+              50% deposit to start and the balance on delivery, with software and compute billed at cost.
+              You will see your exact, fixed numbers on your own proposal after a free call.
+            </p>
+          </div>
+        ) : (
         <div className="mt-7 space-y-4">
           {oneTime > 0 && (
             <>
@@ -184,6 +199,7 @@ export default function ProposalDoc({
             </p>
           )}
         </div>
+        )}
 
         {/* Terms */}
         <div className="mt-8">
