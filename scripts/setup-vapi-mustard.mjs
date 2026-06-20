@@ -229,8 +229,16 @@ const assistant = {
     // Vapi-native voice: bundled, no external 11labs plan required.
     // (11labs voices need a paid ElevenLabs account connected to the Vapi org,
     // otherwise calls drop with pipeline-error-eleven-labs-blocked-free-plan.)
+    // CURRENT (non-legacy) Vapi-native male voices only — the enum also lists
+    // retired ones (Cole/Spencer/Harry/etc.) that 400 on update. Settable male
+    // voices: Elliot (20s, friendly/soothing), Rohan (20s, bright/energetic),
+    // Nico (20s, casual), Kai (30s, friendly/relaxed/approachable),
+    // Sagar (20s, steady/professional), Godfrey (20s, energetic),
+    // Neil (20s, clear/professional), Sid (30s, smooth/deep/laid-back).
+    // Kai = warm, approachable, 30s = advisor credibility, best fit for a
+    // consultative closer. A/B in one shot: VAPI_VOICE_ID=Sid node ... --update <id>.
     provider: env('VAPI_VOICE_PROVIDER') || 'vapi',
-    voiceId: env('VAPI_VOICE_ID') || 'Elliot',
+    voiceId: env('VAPI_VOICE_ID') || 'Kai',
   },
   transcriber: {
     // nova-3 is materially better than nova-2 at exactly what Mr. Mustard kept
