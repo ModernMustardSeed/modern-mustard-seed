@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Fragment } from 'react';
 import AdminHeader from './AdminHeader';
 
 type Row = {
@@ -32,6 +32,8 @@ export default function AffiliatesAdmin() {
   const [msg, setMsg] = useState('');
   const [add, setAdd] = useState({ name: '', email: '', sendWelcome: true });
   const [adding, setAdding] = useState(false);
+  const [buildFor, setBuildFor] = useState<string | null>(null);
+  const [bform, setBform] = useState({ fee: '', client: '', payable: false, notify: true });
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -135,6 +137,39 @@ export default function AffiliatesAdmin() {
       setMsg('Could not add (network error).');
     } finally {
       setAdding(false);
+    }
+  };
+
+  const openBuild = (id: string) => {
+    setBuildFor((cur) => (cur === id ? null : id));
+    setBform({ fee: '', client: '', payable: false, notify: true });
+  };
+
+  const logBuild = async (e: React.FormEvent, id: string) => {
+    e.preventDefault();
+    const fee = parseFloat(bform.fee);
+    if (!fee || fee <= 0) { setMsg('Enter the build fee in dollars.'); return; }
+    setBusy(id);
+    setMsg('');
+    try {
+      const res = await fetch(`/api/admin/affiliates/${id}/build-commission`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ buildFeeUsd: fee, clientLabel: bform.client.trim(), markPayable: bform.payable, notify: bform.notify }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setMsg(`Logged a ${money(json.commissionCents)} build commission (${json.status})${json.emailSent ? ', partner notified' : ''}.`);
+        setBuildFor(null);
+        setBform({ fee: '', client: '', payable: false, notify: true });
+        await load();
+      } else {
+        setMsg(`Could not log: ${json.error ?? res.status}`);
+      }
+    } catch {
+      setMsg('Could not log (network error).');
+    } finally {
+      setBusy(null);
     }
   };
 
@@ -273,7 +308,8 @@ export default function AffiliatesAdmin() {
                   </thead>
                   <tbody>
                     {approved.map((r) => (
-                      <tr key={r.id} className="border-b border-[#161616]/10">
+                      <Fragment key={r.id}>
+                      <tr className="border-b border-[#161616]/10">
                         <td className="px-4 py-3.5">
                           <p className="text-[#161616] font-body">{r.name ?? r.email}{emailFailed(r.email) && <span className="ml-2 inline-block bg-[#F6E2DC] text-[#9A2D14] text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded align-middle">{emailFailed(r.email)}</span>}</p>
                           <p className="text-[#161616]/60 text-xs">{r.email}</p>
@@ -286,6 +322,9 @@ export default function AffiliatesAdmin() {
                         <td className="px-4 py-3.5 text-[#161616]/60 font-mono text-xs">{money(r.paidCents)}</td>
                         <td className="px-4 py-3.5 text-right">
                           <div className="flex flex-col items-end gap-1.5">
+                            <button onClick={() => openBuild(r.id)} className={`text-[10px] uppercase tracking-[0.15em] font-sans font-bold disabled:opacity-50 whitespace-nowrap ${buildFor === r.id ? 'text-[#161616]' : 'text-[#1E50C8] hover:text-[#161616]'}`}>
+                              {buildFor === r.id ? 'Close' : 'Log build $'}
+                            </button>
                             {r.payableCents > 0 && (
                               <button onClick={() => payout(r.id)} disabled={busy === r.id} className="text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-emerald-700 hover:text-emerald-800 disabled:opacity-50 whitespace-nowrap">
                                 {busy === r.id ? '...' : 'Mark paid'}
@@ -300,6 +339,39 @@ export default function AffiliatesAdmin() {
                           </div>
                         </td>
                       </tr>
+                      {buildFor === r.id && (
+                        <tr className="border-b border-[#161616]/10 bg-[#FFF8E6]">
+                          <td colSpan={8} className="px-4 py-4">
+                            <form onSubmit={(e) => logBuild(e, r.id)} className="flex flex-wrap items-end gap-3">
+                              <label className="min-w-[140px]">
+                                <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Build fee ($)</span>
+                                <input value={bform.fee} onChange={(e) => setBform((b) => ({ ...b, fee: e.target.value }))} inputMode="decimal" placeholder="5000" className="w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
+                              </label>
+                              <label className="flex-1 min-w-[160px]">
+                                <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Client / project (optional)</span>
+                                <input value={bform.client} onChange={(e) => setBform((b) => ({ ...b, client: e.target.value }))} placeholder="Acme Co website" className="w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
+                              </label>
+                              <div className="pb-2 text-sm font-body text-[#161616] whitespace-nowrap">
+                                <span className="text-[#161616]/50 text-xs uppercase tracking-[0.15em] font-mono mr-2">Commission (50%)</span>
+                                <span className="font-mono font-bold text-emerald-700">{bform.fee && parseFloat(bform.fee) > 0 ? `$${Math.round(parseFloat(bform.fee) * 0.5).toLocaleString('en-US')}` : '$0'}</span>
+                              </div>
+                              <label className="flex items-center gap-2 pb-2.5 cursor-pointer select-none">
+                                <input type="checkbox" checked={bform.payable} onChange={(e) => setBform((b) => ({ ...b, payable: e.target.checked }))} className="w-4 h-4 accent-[#F5B700]" />
+                                <span className="text-[#3A3733] font-body text-sm whitespace-nowrap">Payable now</span>
+                              </label>
+                              <label className="flex items-center gap-2 pb-2.5 cursor-pointer select-none">
+                                <input type="checkbox" checked={bform.notify} onChange={(e) => setBform((b) => ({ ...b, notify: e.target.checked }))} className="w-4 h-4 accent-[#F5B700]" />
+                                <span className="text-[#3A3733] font-body text-sm whitespace-nowrap">Email partner</span>
+                              </label>
+                              <button type="submit" disabled={busy === r.id} className="px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-50 whitespace-nowrap">
+                                {busy === r.id ? 'Logging...' : 'Log commission'}
+                              </button>
+                            </form>
+                            <p className="text-[#161616]/45 font-body text-xs mt-2">Records 50% of the build fee as this partner&apos;s commission. Left as pending it becomes payable after the {''}14-day window; check &quot;Payable now&quot; for a build that is already settled.</p>
+                          </td>
+                        </tr>
+                      )}
+                      </Fragment>
                     ))}
                   </tbody>
                 </table>
