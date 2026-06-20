@@ -187,7 +187,7 @@ export async function POST(req: Request) {
           `<ol style="margin:0 0 18px;padding-left:22px;color:#e9e1cf;line-height:1.75;font-size:16px">
             <li style="margin-bottom:10px">Ship something themselves using the playbook I sent. Best outcome by far.</li>
             <li style="margin-bottom:10px">Stall. Nothing happens. The audit gets forgotten. Shows up as a regret six months later.</li>
-            <li>Bring me in. We scope it, fix-price it, and ship it in 30 days.</li>
+            <li>Bring me in. We scope it, fix-price it, and ship it in weeks, not months.</li>
           </ol>` +
           p('If you are in camp three, the Build Queue is open and I am booking new builds. I review every entry personally and reply within 3 business days.') +
           p('If you are in camp one, ignore me. Send me a screenshot when it ships. I genuinely want to see it.'),

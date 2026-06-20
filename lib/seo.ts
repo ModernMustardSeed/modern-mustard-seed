@@ -5,7 +5,7 @@ export const SITE = {
   url: 'https://modernmustardseed.com',
   tagline: 'Apps, Sites, and Specialty AI Tools',
   description:
-    'Custom apps, websites, and specialty AI tools for your business. Shipped in 30 days. Now booking new builds.',
+    'Custom apps, websites, and specialty AI tools for your business. Shipped in weeks, not months. Now booking new builds.',
   twitter: '@sarahmscarano',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',

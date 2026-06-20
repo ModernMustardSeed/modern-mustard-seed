@@ -23,7 +23,7 @@ export const personJsonLd = {
   image: `${SITE.url}/opengraph-image`,
   jobTitle: 'Founder, Engineer, and AI Systems Architect',
   description:
-    'Founder of Modern Mustard Seed. Self-taught full-stack engineer and AI systems architect. Ships custom apps, websites, and specialty AI tools in 30 days.',
+    'Founder of Modern Mustard Seed. Self-taught full-stack engineer and AI systems architect. Ships custom apps, websites, and specialty AI tools in weeks, not months.',
   worksFor: { '@id': ORG_ID },
   knowsAbout: [
     'Artificial Intelligence',
@@ -248,7 +248,7 @@ export function aboutPageJsonLd() {
     url: `${SITE.url}/about`,
     name: `About ${SITE.name}`,
     description:
-      'About Modern Mustard Seed, the one-person product studio founded by Sarah Scarano. Faith meets function. Ship custom apps, websites, and specialty AI tools in 30 days.',
+      'About Modern Mustard Seed, the one-person product studio founded by Sarah Scarano. Faith meets function. Ship custom apps, websites, and specialty AI tools in weeks, not months.',
     mainEntity: { '@id': PERSON_ID },
     publisher: { '@id': ORG_ID },
     isPartOf: { '@id': WEBSITE_ID },

@@ -953,7 +953,7 @@ export function sequenceDay5Email(firstName: string): string {
     ${headline(`${firstName}, here is what I would actually build.`)}
     ${paragraph(`<p style="margin:0 0 16px">Most small business owners are running 8 to 12 separate tools (CRM, email, social scheduler, booking, payments, analytics, helpdesk, project tracker). Each one costs $30 to $80 a month. None of them talk to each other cleanly. Every Monday morning the owner opens eight tabs and tries to remember what closed last week.</p>
     <p style="margin:0 0 16px">A Full-Service Business Build replaces that whole stack with one custom system. Your site captures the lead. The AI SDR qualifies it. The booking engine holds the call. The back office shows you what closed, what stalled, and what to work on this week. The AI agents draft your follow-ups in your voice. It all lives on one screen, and you own every piece of it.</p>
-    <p style="margin:0">Most builds run $8,500 to $22,000 and take 30 days. If you want smaller scope (just the site, no AI engine) that is the Seed Site, $2,500 to $5,000 in 14 days.</p>`)}
+    <p style="margin:0">Most builds run $8,500 to $22,000 and take two to four weeks. If you want smaller scope (just the site, no AI engine) that is the Seed Site, $2,500 to $5,000 in about two weeks.</p>`)}
     ${valueCallout('The math that makes this obvious', `12 SaaS subscriptions at $50 a month over 24 months is <strong>$14,400</strong>, and you still own none of it. A Full-Service Business Build at $14,000 lands at the same two-year cost. The difference: at month 25 you keep going on about $30 a month in hosting. Forever.`)}
     ${paragraph(`<p style="margin:0">If any of this fits the shape of your business, the next step is a 30-minute discovery call. I will scope your specific situation and tell you honestly whether we are the right partner.</p>`)}
     ${ctaBlock({ label: 'Book a discovery call', url: BOOKING_URL }, { label: 'Apply to build queue', url: BUILD_QUEUE_URL })}
@@ -1024,7 +1024,7 @@ export function auditFollowupEmail({ firstName, url, score, grade, headline: lin
     preheader = `Your audit: ${score}, grade ${grade}. You are past the basics. Ready for the engine?`;
     offerBlock = auditOffer(
       'Full-Service Business Build',
-      '$8,500 to $22,000 · 30 days',
+      '$8,500 to $22,000 · 2 to 4 weeks',
       'Your foundation is solid. What you need now is the engine: bespoke booking with an embedded CRM, an AI SDR catching every lead, funnels live on day one, a back office that surfaces what matters, and AI agents on both sides of the wall.',
       `${ENGAGEMENTS_URL}#online-presence`
     );

@@ -39,7 +39,7 @@ export const LANES: Lane[] = [
   {
     key: 'websites',
     name: 'Websites',
-    blurb: 'Sites that bring in business, not just sit there looking fine. Idea to launched in about 30 days, and they own it.',
+    blurb: 'Sites that bring in business, not just sit there looking fine. Idea to launched in weeks, not months, and they own it.',
     soundLike: ['"My site is outdated."', '"Built it myself, hate it."', '"It brings in nothing."', '"I need a real website."'],
   },
   {
@@ -161,7 +161,7 @@ export const CALL_OFFER_COMMENTS: { lane: string; cards: string[] }[] = [
   {
     lane: 'Website lane',
     cards: [
-      'A site that just sits there doing nothing is the worst. The team I work with at Modern Mustard Seed builds sites that actually bring people in, usually live in about 30 days, and you own it. I can grab you a quick call to see if it\'s a fit. Link below.',
+      'A site that just sits there doing nothing is the worst. The team I work with at Modern Mustard Seed builds sites that actually bring people in, usually live in weeks, not months, and you own it. I can grab you a quick call to see if it\'s a fit. Link below.',
       'This is fixable. We build websites that bring in business instead of just looking nice. Happy to set you up with a short call so you can see what it would take. I\'ll drop the link.',
     ],
   },
@@ -184,7 +184,7 @@ export const CALL_OFFER_COMMENTS: { lane: string; cards: string[] }[] = [
 export const FIRST_COMMENT = `Here\'s where you can book a quick call and see examples: ${BOOK_TOKEN}. Pick any time that works, no pressure at all.`;
 
 /** Posts and DM scripts. */
-export const PROMO_POST = `Four things we build for small businesses: websites that bring you business, a helper that answers your messages and follows up with leads, a voice that answers your phone and books appointments, and custom tools built for exactly how you work. Idea to launched in about 30 days, flat price, you own it. If one of these is a headache for you right now, comment or DM me and I\'ll grab you a quick call. Link in the comments.`;
+export const PROMO_POST = `Four things we build for small businesses: websites that bring you business, a helper that answers your messages and follows up with leads, a voice that answers your phone and books appointments, and custom tools built for exactly how you work. Idea to launched in weeks, not months, flat price, you own it. If one of these is a headache for you right now, comment or DM me and I\'ll grab you a quick call. Link in the comments.`;
 
 export const DM_SCRIPTS: { context: string; text: string }[] = [
   { context: 'DM opener (after they comment or react)', text: 'Hey [name], saw your post about [their problem]. That\'s right in what we do at Modern Mustard Seed. Mind if I grab you a quick 15-minute call with our founder to see if it\'s a fit? No pressure at all.' },

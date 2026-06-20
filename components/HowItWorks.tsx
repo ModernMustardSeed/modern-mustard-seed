@@ -15,7 +15,7 @@ const steps = [
     number: '03',
     title: 'Launch',
     body:
-      'Live in 30 days or less. Real domain, real product, real customers. We push the deploy together.',
+      'Live in weeks, not months. Real domain, real product, real customers. We push the deploy together.',
   },
   {
     number: '04',
@@ -37,7 +37,7 @@ export default function HowItWorks() {
           How it works
         </span>
         <h2 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-5">
-          Four Steps <span className="text-gradient-mustard">Thirty Days</span>
+          Four Steps, <span className="text-gradient-mustard">A Few Weeks</span>
         </h2>
         <p className="text-white/55 text-base md:text-lg font-body font-light leading-relaxed">
           The same sequence every time. The repeatable part is what makes the speed possible.

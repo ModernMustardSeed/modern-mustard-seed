@@ -37,7 +37,7 @@ const FAQS = [
   },
   {
     q: 'Can you build the A version?',
-    a: 'Yes. The Seed Site engagement (14 days) ships a beautiful site that gets you to a strong baseline. The Full-Service Business Build (30 days) ships the engine: site plus bespoke booking with embedded CRM, AI sales-development rep, funnels, back office, embedded AI agents. Both come with the SEO and GEO foundations we score on baked in from day one. Each is scoped and quoted after a free discovery call.',
+    a: 'Yes. The Seed Site engagement (about two weeks) ships a beautiful site that gets you to a strong baseline. The Full-Service Business Build (two to four weeks) ships the engine: site plus bespoke booking with embedded CRM, AI sales-development rep, funnels, back office, embedded AI agents. Both come with the SEO and GEO foundations we score on baked in from day one. Each is scoped and quoted after a free discovery call.',
   },
   {
     q: 'What if my site fails the audit?',
@@ -197,7 +197,7 @@ export default function WebsiteAuditPage() {
                   Site + bespoke booking with CRM + AI SDR + funnels + back office + embedded agents. The engine.
                 </p>
                 <p className="text-[#161616]/55 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
-                  30 days · quoted after a free call
+                  2 to 4 weeks · quoted after a free call
                 </p>
               </div>
             </div>

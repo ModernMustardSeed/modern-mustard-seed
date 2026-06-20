@@ -16,7 +16,7 @@ export const services: Service[] = [
     short:
       'Custom apps and web software built end to end. Frontend, backend, auth, billing, deployment. Real products that scale.',
     description:
-      'We build the apps and web software your business needs. From idea to shipped product in 30 days. React, Next.js, Supabase, Stripe, Vercel. The same stack we run every business on.',
+      'We build the apps and web software your business needs. From idea to shipped product in weeks, not months. React, Next.js, Supabase, Stripe, Vercel. The same stack we run every business on.',
     outcomes: ['Web apps', 'Mobile apps', 'Custom dashboards'],
     ideal: 'Founders with a clear product vision who need it built once, built right.',
   },

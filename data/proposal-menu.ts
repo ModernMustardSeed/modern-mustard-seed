@@ -69,7 +69,7 @@ export const SERVICES: Service[] = [
   {
     id: 'idea_to_product',
     group: 'Idea to Product',
-    name: 'Idea to Product in 30 Days',
+    name: 'Idea to Product in Weeks',
     description:
       'Sketch to shipped product. Web app, internal tool, agent, or full system. Repo, deploy, documentation, and handoff included.',
     scope: [
@@ -450,7 +450,7 @@ export const PATHS: Path[] = [
     label: 'Has an idea, needs it built',
     when: 'A clear vision for a product or tool, ready to ship.',
     serviceIds: ['strategy_intensive', 'idea_to_product', 'software_compute'],
-    rationale: 'Scope and sequence it first (credited toward the build), then build and ship in 30 days.',
+    rationale: 'Scope and sequence it first (credited toward the build), then build and ship in weeks, not months.',
   },
   {
     id: 'prefers_monthly',

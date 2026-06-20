@@ -17,7 +17,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Apps, Sites, and Specialty AI Tools',
   description:
-    'Custom apps, websites, and specialty AI tools for your business. Shipped in 30 days. Now booking new builds.',
+    'Custom apps, websites, and specialty AI tools for your business. Shipped in weeks, not months. Now booking new builds.',
 });
 
 const homeJsonLd = {
@@ -27,7 +27,7 @@ const homeJsonLd = {
   url: 'https://modernmustardseed.com',
   name: 'Modern Mustard Seed | Apps, Sites, and Specialty AI Tools',
   description:
-    'Custom apps, websites, and specialty AI tools for your business. Shipped in 30 days.',
+    'Custom apps, websites, and specialty AI tools for your business. Shipped in weeks, not months.',
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },
   primaryImageOfPage: {
@@ -45,7 +45,7 @@ const homeJsonLd = {
 const offerJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'Idea to Product in 30 Days',
+  name: 'Idea to Product in Weeks',
   description:
     'Custom apps, websites, software, and specialty AI tools. Fixed scope, fixed timeline. Now booking new builds.',
   provider: { '@id': 'https://modernmustardseed.com/#organization' },
@@ -56,7 +56,7 @@ const offerJsonLd = {
 const homeFaq = faqJsonLd([
   {
     q: 'What does Modern Mustard Seed do?',
-    a: 'Modern Mustard Seed is a one-person product studio that builds custom apps, websites, and specialty AI tools for businesses. Founded by Sarah Scarano, it ships fixed-scope, fixed-timeline products in 30 days. Now booking new builds.',
+    a: 'Modern Mustard Seed is a one-person product studio that builds custom apps, websites, and specialty AI tools for businesses. Founded by Sarah Scarano, it ships fixed-scope, fixed-timeline products in weeks, not months. Now booking new builds.',
   },
   {
     q: 'Who is Sarah Scarano?',
@@ -64,7 +64,7 @@ const homeFaq = faqJsonLd([
   },
   {
     q: 'How long does a build take?',
-    a: 'Thirty days from kickoff to launch. Fixed scope, fixed timeline, fixed quote. Modern Mustard Seed is now booking new builds and gives each engagement focused attention.',
+    a: 'Most builds go live two to four weeks from kickoff, depending on scope. Some, like a voice agent, go live in about two. Fixed scope, fixed timeline, fixed quote. Modern Mustard Seed is now booking new builds and gives each engagement focused attention.',
   },
   {
     q: 'How do I get on the build queue?',

@@ -5,7 +5,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Join the Build Queue',
   description:
-    'Idea to shipped product in 30 days. Now booking new builds. Drop your idea and Sarah will review it personally.',
+    'Idea to shipped product in weeks, not months. Now booking new builds. Drop your idea and Sarah will review it personally.',
   path: '/build-queue',
 });
 
@@ -48,7 +48,7 @@ export default function BuildQueuePage() {
               <span className="block text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">
                 Timeline
               </span>
-              <span className="font-display text-lg font-black text-[#161616]">30 days</span>
+              <span className="font-display text-lg font-black text-[#161616]">2 to 4 weeks</span>
             </div>
             <div className="pop-card p-6">
               <span className="block text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">

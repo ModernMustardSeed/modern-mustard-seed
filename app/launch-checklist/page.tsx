@@ -27,7 +27,7 @@ const checklistFaq = [
   },
   {
     q: 'Can Modern Mustard Seed set it all up for me?',
-    a: 'Yes. That is what we do. We build the website, CRM, AI voice and chat agents, automations, funnels, and ad systems that the checklist describes, properly and fast, usually shipped in 30 days. Most owners use the checklist to get the legal and money basics in place, then hand the digital build to us.',
+    a: 'Yes. That is what we do. We build the website, CRM, AI voice and chat agents, automations, funnels, and ad systems that the checklist describes, properly and fast, usually shipped in weeks, not months. Most owners use the checklist to get the legal and money basics in place, then hand the digital build to us.',
   },
   {
     q: 'What does it cover that a generic startup checklist does not?',
@@ -106,7 +106,7 @@ export default function LaunchChecklistPage() {
                 We build the digital half for you
               </h2>
               <p className="text-[#161616]/75 text-base font-body font-medium mb-7 max-w-xl mx-auto">
-                Website, CRM, AI voice and chat agents, automations, funnels, and ads. The whole stack the checklist describes, built right and shipped in about 30 days. You get the basics in place. We handle the engine.
+                Website, CRM, AI voice and chat agents, automations, funnels, and ads. The whole stack the checklist describes, built right and shipped in weeks, not months. You get the basics in place. We handle the engine.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link

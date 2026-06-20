@@ -7,7 +7,7 @@ import { industries } from '@/data/industries';
 export const metadata = buildMetadata({
   title: 'Industries We Build For',
   description:
-    'Custom AI tools, apps, and sites for real estate investors, real estate agents, service businesses, DTC and apparel brands, solopreneurs, and consultants. Shipped in 30 days.',
+    'Custom AI tools, apps, and sites for real estate investors, real estate agents, service businesses, DTC and apparel brands, solopreneurs, and consultants. Shipped in weeks, not months.',
   path: '/for',
 });
 

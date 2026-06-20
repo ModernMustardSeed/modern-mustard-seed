@@ -25,7 +25,7 @@ const SAMPLE = {
     recommendation:
       'Rebuild the site for AI discovery from the first line, then put an agent on the phones so no call is missed. The software line keeps the agent and tools running, billed at cost.',
     close:
-      'Sign below and we begin the moment the deposit clears. Thirty days later you have a site that gets found and an agent that never misses a call. All of it yours.',
+      'Sign below and we begin the moment the deposit clears. A few weeks later you have a site that gets found and an agent that never misses a call. All of it yours.',
   },
   lines: [
     { id: 'website_build', price: 5750, qty: 1, framing: 'A fast, brand-aligned site built so AI assistants surface Rios Heating & Air when nearby homeowners ask.' },

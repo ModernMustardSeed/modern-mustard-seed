@@ -45,7 +45,7 @@ export const MODULES: GuideModule[] = [
     blocks: [
       {
         heading: 'What Modern Mustard Seed is',
-        body: 'Modern Mustard Seed (MMS) is a small, high-end product studio founded by Sarah Scarano. We build custom apps, websites, and specialty AI tools for businesses, and we ship them fast. The signature offer is "Idea to Product in 30 days." Fixed scope, fixed timeline, fixed price, agreed before any work starts. We take a handful of builds per quarter, on a waitlist, so quality never slips.',
+        body: 'Modern Mustard Seed (MMS) is a small, high-end product studio founded by Sarah Scarano. We build custom apps, websites, and specialty AI tools for businesses, and we ship them fast. The signature offer is "Idea to Product in Weeks." Fixed scope, fixed timeline, fixed price, agreed before any work starts. We take a handful of builds per quarter, on a waitlist, so quality never slips.',
       },
       {
         heading: 'Who Sarah is',
@@ -78,7 +78,7 @@ export const MODULES: GuideModule[] = [
     blocks: [
       {
         heading: 'The one-line version',
-        body: 'We build the custom website, app, or AI tool a business needs, and we ship it in about 30 days. Most agencies take months and disappear into meetings. We scope it tight, build it, and hand it over.',
+        body: 'We build the custom website, app, or AI tool a business needs, and we ship it in weeks, not months. Most agencies take months and disappear into meetings. We scope it tight, build it, and hand it over.',
       },
       {
         heading: 'What we build',
@@ -115,7 +115,7 @@ export const MODULES: GuideModule[] = [
         bullets: [
           '1. Discovery. A short free call to understand the goal, the scope, and the deadline.',
           '2. Proposal. We send a fixed-scope, fixed-price proposal the client signs and pays a deposit on.',
-          '3. Build. We design and build it, usually in about 30 days, keeping the client updated in their portal.',
+          '3. Build. We design and build it, usually in weeks, not months, keeping the client updated in their portal.',
           '4. Launch. We ship it, hand over logins and files, and the client pays the balance. A review request goes out a couple of days later.',
         ],
       },

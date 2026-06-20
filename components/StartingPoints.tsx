@@ -6,7 +6,7 @@ const PATHS = [
     label: 'New to online',
     body:
       'You need a real website, a way to take bookings or payments, and to show up when people search for what you do. We build the whole thing, brand to launch.',
-    outcome: 'Live, paying-customer-grade site in 30 days.',
+    outcome: 'Live, paying-customer-grade site in weeks, not months.',
     forWho: 'Small businesses. Creators. Service pros. Anyone starting fresh.',
   },
   {
@@ -22,7 +22,7 @@ const PATHS = [
     label: 'Building something new',
     body:
       'You have an app, a tool, or a product idea. We design it, build it, brand it, and ship it. End to end. You bring the vision.',
-    outcome: 'Live product, real customers, 30 days.',
+    outcome: 'Live product, real customers, in weeks.',
     forWho: 'Founders. Second-business operators. AI-curious builders.',
   },
 ];

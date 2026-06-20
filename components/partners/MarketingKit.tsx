@@ -33,12 +33,12 @@ export default function MarketingKit({
     {
       key: 'x',
       label: 'For X',
-      text: `If your website, phone, or systems are a headache, talk to Modern Mustard Seed. Websites, AI assistants, voice agents, and custom software, shipped in about 30 days. This is who I trust. Book a quick call: ${primaryUrl}`,
+      text: `If your website, phone, or systems are a headache, talk to Modern Mustard Seed. Websites, AI assistants, voice agents, and custom software, shipped in weeks, not months. This is who I trust. Book a quick call: ${primaryUrl}`,
     },
     {
       key: 'li',
       label: 'For LinkedIn',
-      text: `Most small businesses lose money to slow websites, missed messages, and missed calls. Modern Mustard Seed fixes that with websites, AI assistants, voice agents, and custom tools that actually ship, usually in about 30 days. I recommend them without hesitation. Grab a quick call: ${primaryUrl}`,
+      text: `Most small businesses lose money to slow websites, missed messages, and missed calls. Modern Mustard Seed fixes that with websites, AI assistants, voice agents, and custom tools that actually ship, usually in weeks, not months. I recommend them without hesitation. Grab a quick call: ${primaryUrl}`,
     },
     {
       key: 'email',
@@ -47,7 +47,7 @@ export default function MarketingKit({
     },
   ];
 
-  const blurb = `Modern Mustard Seed builds websites, AI assistants, voice agents, and custom software for small businesses. Founder-led, fast, and honest. Idea to launched in about 30 days.`;
+  const blurb = `Modern Mustard Seed builds websites, AI assistants, voice agents, and custom software for small businesses. Founder-led, fast, and honest. Idea to launched in weeks, not months.`;
 
   const shareX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(captions[0].text)}`;
   const shareLI = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(primaryUrl)}`;

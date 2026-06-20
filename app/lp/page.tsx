@@ -9,15 +9,15 @@ import { buildMetadata } from '@/lib/seo';
  * destination URLs here (add UTMs in the ad platform).
  */
 export const metadata = buildMetadata({
-  title: 'AI That Pays for Itself in 30 Days',
+  title: 'AI That Pays for Itself',
   description:
-    'Custom AI tools, apps, and websites for your business, shipped in 30 days. Start with a free 60-second AI audit. Built with faith, precision, and full-stack execution.',
+    'Custom AI tools, apps, and websites for your business, shipped in weeks, not months. Start with a free 60-second AI audit. Built with faith, precision, and full-stack execution.',
   path: '/lp',
   noindex: true,
 });
 
 const PROOF = [
-  { stat: '30 days', label: 'From kickoff to shipped, not a six-month agency slog.' },
+  { stat: '2-4 weeks', label: 'From kickoff to shipped, not a six-month agency slog.' },
   { stat: '60 sec', label: 'Free AI audit returns real opportunities, no call required.' },
   { stat: 'Full-stack', label: 'One operator who designs, builds, and ships. No handoffs.' },
 ];
@@ -35,8 +35,8 @@ const STEPS = [
   },
   {
     n: '03',
-    title: 'Ship in 30 days',
-    body: 'The build gets designed, built, and launched in weeks. You own the code and the result. Then we measure what it returned.',
+    title: 'Ship in weeks',
+    body: 'The build gets designed, built, and launched in weeks, not months. You own the code and the result. Then we measure what it returned.',
   },
 ];
 
@@ -53,8 +53,8 @@ export default function LandingPage() {
               Modern Mustard Seed
             </span>
             <h1 className="font-sans text-4xl md:text-6xl font-semibold text-white tracking-tight leading-[1.08] mb-6">
-              AI that pays for itself in{' '}
-              <span className="text-gradient-mustard">30 days</span>
+              AI that pays for itself,{' '}
+              <span className="text-gradient-mustard">fast</span>
             </h1>
             <p className="text-white/70 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto mb-10">
               Custom AI tools, apps, and websites for your business. Built by one operator who

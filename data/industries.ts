@@ -43,11 +43,11 @@ export const industries: Industry[] = [
     shortName: 'Investors',
     metaTitle: 'AI Tools for Real Estate Investors. What to Build First.',
     metaDescription:
-      'Custom AI tools for real estate investors. Deal analyzers, virtual staging, off-market sourcing, FSBO command centers. Shipped in 30 days by Modern Mustard Seed.',
+      'Custom AI tools for real estate investors. Deal analyzers, virtual staging, off-market sourcing, FSBO command centers. Shipped in weeks by Modern Mustard Seed.',
     eyebrow: 'AI for Real Estate Investors',
     h1: 'AI Tools for Real Estate Investors. What to Build First',
     lede:
-      'Real estate investing rewards speed and ruthlessness. Most investors spend two hours on the math of every deal that crosses the desk. By the time the underwriting is finished, the deal is gone. AI does not replace your judgment. It compresses the math, the comps, the staging, and the follow-up so you can run ten times the deals through the same brain. We build the specific AI tools active investors actually need: a deal analyzer that takes 90 seconds, virtual staging that finishes in under a minute, off-market sourcing that runs while you sleep, and a FSBO command center for the flips you do not want to hand 3% to an agent. Custom, owned by you, shipped in 30 days.',
+      'Real estate investing rewards speed and ruthlessness. Most investors spend two hours on the math of every deal that crosses the desk. By the time the underwriting is finished, the deal is gone. AI does not replace your judgment. It compresses the math, the comps, the staging, and the follow-up so you can run ten times the deals through the same brain. We build the specific AI tools active investors actually need: a deal analyzer that takes 90 seconds, virtual staging that finishes in under a minute, off-market sourcing that runs while you sleep, and a FSBO command center for the flips you do not want to hand 3% to an agent. Custom, owned by you, shipped in weeks, not months.',
     buildsHeadline: 'What we build for investors',
     builds: [
       {
@@ -84,11 +84,11 @@ export const industries: Industry[] = [
       caseStudyTitle: 'PTG AI Deal Analyzer: 2 Hours of Analysis in 90 Seconds',
       headline: 'Two hours of underwriting in 90 seconds',
       body:
-        'The brief was simple: deal analysis takes 30 minutes per address. I want it to take 30 seconds. The build was the PTG AI Deal Analyzer. You paste an address. Six AI intelligence layers running on RentCast data pull comps, calculate ARV, estimate repair cost, compute Maximum Allowable Offer using the 70% rule, surface fix-and-flip and BRRRR scenarios, and output a one-page underwriting brief. The stack: Next.js, Supabase, RentCast for property data, Anthropic Claude for the underwriting reasoning, Vercel for deploy. Built and shipped in 30 days. The investor went from analyzing four deals a week to forty. Same person. Same hours. Ten times the throughput. This is what specialty AI tools actually do for investors. They do not replace your buy-box, your gut, or your relationships. They compress the parts of the workflow that should never have been manual in the first place.',
+        'The brief was simple: deal analysis takes 30 minutes per address. I want it to take 30 seconds. The build was the PTG AI Deal Analyzer. You paste an address. Six AI intelligence layers running on RentCast data pull comps, calculate ARV, estimate repair cost, compute Maximum Allowable Offer using the 70% rule, surface fix-and-flip and BRRRR scenarios, and output a one-page underwriting brief. The stack: Next.js, Supabase, RentCast for property data, Anthropic Claude for the underwriting reasoning, Vercel for deploy. Built and shipped in a few weeks. The investor went from analyzing four deals a week to forty. Same person. Same hours. Ten times the throughput. This is what specialty AI tools actually do for investors. They do not replace your buy-box, your gut, or your relationships. They compress the parts of the workflow that should never have been manual in the first place.',
       metrics: [
         { label: 'Analysis time', value: '2 hr → 90 sec' },
         { label: 'Deals per week', value: '4 → 40' },
-        { label: 'Build duration', value: '30 days' },
+        { label: 'Build duration', value: '2 to 4 weeks' },
       ],
     },
     pricing: {
@@ -103,7 +103,7 @@ export const industries: Industry[] = [
       },
       {
         q: 'How much does it cost to build a custom AI deal analyzer?',
-        a: 'A production-grade AI deal analyzer like the PTG build is scoped to the data sources you want connected (RentCast, ATTOM, MLS, Zillow scraping) and the depth of the underwriting model. Shipping timeline is 30 days from kickoff. You own the code, the database, and the AI prompts when it is done. There is no SaaS subscription on the underlying tool because you are not renting it. Most investors recoup the build cost on the first deal it surfaces or saves.',
+        a: 'A production-grade AI deal analyzer like the PTG build is scoped to the data sources you want connected (RentCast, ATTOM, MLS, Zillow scraping) and the depth of the underwriting model. Shipping timeline is two to four weeks from kickoff. You own the code, the database, and the AI prompts when it is done. There is no SaaS subscription on the underlying tool because you are not renting it. Most investors recoup the build cost on the first deal it surfaces or saves.',
       },
       {
         q: 'How is this different from DealCheck, PropStream, or Privy?',
@@ -115,7 +115,7 @@ export const industries: Industry[] = [
       },
       {
         q: 'How fast can you ship a working tool?',
-        a: 'Thirty days from kickoff to a live, working deal analyzer. Week one is scope and data source connections. Week two is the underwriting model and AI reasoning layer. Week three is the front-end and the report output. Week four is iteration, edge cases, and your specific market assumptions. You see weekly demos and can request changes mid-build. We do not stop until the underwriting matches what you would do manually.',
+        a: 'A few weeks from kickoff to a live, working deal analyzer. Week one is scope and data source connections. Week two is the underwriting model and AI reasoning layer. Week three is the front-end and the report output. Week four is iteration, edge cases, and your specific market assumptions. You see weekly demos and can request changes mid-build. We do not stop until the underwriting matches what you would do manually.',
       },
       {
         q: 'What if my market is different from the demo?',
@@ -140,11 +140,11 @@ export const industries: Industry[] = [
     shortName: 'Realtors',
     metaTitle: 'AI Tools for Realtors and Real Estate Agents. Win the Next Five Years.',
     metaDescription:
-      'AI virtual staging, listing description generators, voice agents for buyer follow-up. Custom AI tools for real estate agents who refuse to lose listings to AI-powered competition. Built in 30 days.',
+      'AI virtual staging, listing description generators, voice agents for buyer follow-up. Custom AI tools for real estate agents who refuse to lose listings to AI-powered competition. Built in weeks, not months.',
     eyebrow: 'AI for Real Estate Agents',
     h1: 'AI Tools for Realtors. Stop Losing Listings to AI-Powered Competition',
     lede:
-      'Real estate agents are getting squeezed from two directions. Buyers research listings on AI-powered platforms before they ever call you. Sellers test FSBO tools that promise to save the 3% commission with AI-driven listing, pricing, and contract workflows. The agents who win the next five years are the ones who fight back with the same tools, used better. We build the AI that makes your listings convert faster: virtual staging that finishes in under a minute, listing descriptions that read like a $400-an-hour copywriter wrote them, and voice agents that follow up with warm buyers 24/7. Real production tools, owned by you, shipped in 30 days.',
+      'Real estate agents are getting squeezed from two directions. Buyers research listings on AI-powered platforms before they ever call you. Sellers test FSBO tools that promise to save the 3% commission with AI-driven listing, pricing, and contract workflows. The agents who win the next five years are the ones who fight back with the same tools, used better. We build the AI that makes your listings convert faster: virtual staging that finishes in under a minute, listing descriptions that read like a $400-an-hour copywriter wrote them, and voice agents that follow up with warm buyers 24/7. Real production tools, owned by you, shipped in weeks, not months.',
     buildsHeadline: 'What we build for agents',
     builds: [
       {
@@ -183,7 +183,7 @@ export const industries: Industry[] = [
       metrics: [
         { label: 'Staging time', value: 'Under 60 sec' },
         { label: 'Cost vs traditional', value: '$99/mo vs $3K/project' },
-        { label: 'Build duration', value: '30 days' },
+        { label: 'Build duration', value: '2 to 4 weeks' },
       ],
     },
     pricing: {
@@ -235,7 +235,7 @@ export const industries: Industry[] = [
     shortName: 'Service Pros',
     metaTitle: 'AI for Service Businesses. AI Voice Agents and Automation, Built Custom.',
     metaDescription:
-      'AI voice agents that answer 24/7, qualify leads, and book appointments. Custom AI tools for plumbers, HVAC, cleaning, med spas, and contractors. Shipped in 30 days.',
+      'AI voice agents that answer 24/7, qualify leads, and book appointments. Custom AI tools for plumbers, HVAC, cleaning, med spas, and contractors. Shipped in weeks, not months.',
     eyebrow: 'AI for Service Businesses',
     h1: 'AI for Service Businesses. Stop Missing the Calls That Pay the Bills',
     lede:
@@ -334,7 +334,7 @@ export const industries: Industry[] = [
     shortName: 'DTC Brands',
     metaTitle: 'AI for DTC and Apparel Brands. Sketch to Shipped Drop, Faster.',
     metaDescription:
-      'Custom AI design studios, headless storefronts, AI product photography. Apparel and DTC builds shipped in 30 days. From sketch to live storefront in under 60.',
+      'Custom AI design studios, headless storefronts, AI product photography. Apparel and DTC builds shipped in weeks, not months. From sketch to live storefront in under 60.',
     eyebrow: 'AI for DTC and Apparel',
     h1: 'AI for Apparel and DTC Brands. From Sketch to Shipped Drop, Faster',
     lede:

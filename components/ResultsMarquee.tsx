@@ -10,7 +10,7 @@ const RESULTS = [
   { metric: 'Empty room photo', arrow: '→', outcome: 'Staged in 60 seconds', client: 'Luxe Design' },
   { metric: '3 hours of small jobs', arrow: '→', outcome: '30 minutes of review', client: 'Wild Daisy' },
   { metric: '30% missed calls', arrow: '→', outcome: '24/7 coverage', client: 'VoiceStaff' },
-  { metric: 'Idea', arrow: '→', outcome: 'Live product in 30 days', client: 'Olive Shoot' },
+  { metric: 'Idea', arrow: '→', outcome: 'Live product in weeks', client: 'Olive Shoot' },
   { metric: 'One creative director', arrow: '→', outcome: 'Six concepts an afternoon', client: 'CXC Studio' },
 ];
 

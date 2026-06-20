@@ -20,7 +20,7 @@ const INTENTS: Intent[] = [
     chip: 'A website',
     emoji: '◆',
     title: 'A real website that converts',
-    body: 'A custom site that loads fast, looks elite, and actually sells what you do. Built, hosted, and indexed in 30 days. You own it forever.',
+    body: 'A custom site that loads fast, looks elite, and actually sells what you do. Built, hosted, and indexed in weeks, not months. You own it forever.',
     playbookSlug: '30-day-app-build',
     playbookTitle: 'The 30-Day App Build Playbook',
     engagement: 'Online Presence build — fixed scope, fixed quote',

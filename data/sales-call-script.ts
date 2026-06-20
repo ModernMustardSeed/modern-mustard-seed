@@ -74,11 +74,11 @@ export const CALL_STEPS: CallStep[] = [
     label: 'Show the Modern Mustard Seed way',
     goal: 'Give them confidence in how we work, without overselling.',
     say: [
-      'Here is how we work. We build it for you, usually idea to launched in about 30 days. It is a flat price agreed up front, no surprises and no hourly meter. And you own it at the end, the site, the tool, all of it.',
+      'Here is how we work. We build it for you, usually idea to launched in weeks, not months. It is a flat price agreed up front, no surprises and no hourly meter. And you own it at the end, the site, the tool, all of it.',
       'We are founder-led, so you are not handed off to a call center. You work with real people who actually build the thing.',
       'For something like yours, we would [one or two sentences on the approach].',
     ],
-    note: 'Three things land every time: fast (about 30 days), flat price (no surprises), you own it. Say those plainly. Keep the "how" short, they care about the outcome, not the tech.',
+    note: 'Three things land every time: fast (weeks, not months), flat price (no surprises), you own it. Say those plainly. Keep the "how" short, they care about the outcome, not the tech.',
   },
   {
     label: 'The money talk',
@@ -107,7 +107,7 @@ export const LANE_CHEATSHEET: { lane: string; theySay: string; youSay: string }[
   {
     lane: 'Website',
     theySay: 'My site is outdated, I built it myself, it brings in nothing.',
-    youSay: 'A website that actually brings you business, live in about 30 days, and you own it.',
+    youSay: 'A website that actually brings you business, live in weeks, not months, and you own it.',
   },
   {
     lane: 'AI assistant',

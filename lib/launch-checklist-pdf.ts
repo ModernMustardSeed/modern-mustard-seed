@@ -91,7 +91,7 @@ export async function buildLaunchChecklistPdf(verticalId: VerticalId): Promise<U
   const drawFooter = () => {
     const fy = M - 18;
     page.drawRectangle({ x: M, y: fy + 16, width: contentW, height: 1, color: HAIR });
-    const foot = 'modernmustardseed.com  ·  Apps, sites, and AI tools shipped in 30 days  ·  Book a free call';
+    const foot = 'modernmustardseed.com  ·  Apps, sites, and AI tools shipped in weeks, not months  ·  Book a free call';
     page.drawText(clean(foot), { x: M, y: fy, size: 8, font: reg, color: MUTED });
     const num = `${pageNo}`;
     const nw = bold.widthOfTextAtSize(num, 8);
@@ -237,7 +237,7 @@ export async function buildLaunchChecklistPdf(verticalId: VerticalId): Promise<U
   y -= 6;
   page.drawRectangle({ x: M, y: y - 1, width: contentW, height: 2, color: INK });
   y -= 16;
-  page.drawText('Want this done for you in 30 days?', { x: M, y: y - 13, size: 13, font: bold, color: INK });
+  page.drawText('Want this done for you in weeks, not months?', { x: M, y: y - 13, size: 13, font: bold, color: INK });
   y -= 26;
   para(
     'Modern Mustard Seed builds the website, the AI agents, the CRM, and the automations that run a new business, ' +

@@ -61,7 +61,7 @@ export const packages: Engagement[] = [
       'Launch assets (social, email, OG)',
       'Full handoff: repo, accounts, docs, every credential',
     ],
-    timeline: '30 days',
+    timeline: '2 to 4 weeks',
     priceRange: 'Quoted after a free discovery call',
     cta: 'Build my business engine',
     ctaHref: '/contact?package=online-presence',
@@ -70,7 +70,7 @@ export const packages: Engagement[] = [
   {
     id: 'idea-to-product',
     name: 'Idea to Product',
-    tagline: 'Your app, tool, or specialty AI product. Shipped in 30 days',
+    tagline: 'Your app, tool, or specialty AI product. Shipped in weeks, not months',
     description:
       'A full-stack product build for founders with a vision. We design it, build it, brand it, and ship it to production end to end. The deliverable is a live product real customers can use. You own the code, the deploys, and the docs from day one.',
     deliverables: [
@@ -83,7 +83,7 @@ export const packages: Engagement[] = [
       '30 days of post-launch support',
       'Repo + docs + credentials handoff',
     ],
-    timeline: '30 days',
+    timeline: '2 to 4 weeks',
     priceRange: 'Quoted after a free discovery call',
     cta: 'Scope your build',
     ctaHref: '/contact?package=idea-to-product',
