@@ -12,7 +12,7 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * tab row so nothing overlaps or overflows.
  */
 
-type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'call' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual';
+type Tab = 'overview' | 'pipeline' | 'partners' | 'outreach' | 'audit' | 'call' | 'script' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
   { key: 'calendar', label: 'Calendar', href: '/admin/calendar' },
@@ -20,6 +20,7 @@ const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
   { key: 'audit', label: 'Audit', href: '/admin/audit' },
   { key: 'call', label: 'Call', href: '/admin/intake-call' },
+  { key: 'script', label: 'Script', href: '/admin/call-script' },
   { key: 'proposals', label: 'Proposals', href: '/admin/proposals' },
   { key: 'projects', label: 'Projects', href: '/admin/projects' },
   { key: 'builds', label: 'Builds', href: '/admin/builds' },

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import AdminHeader from './AdminHeader';
 import { PATHS } from '@/data/proposal-menu';
 
@@ -86,7 +87,9 @@ export default function CallIntake() {
       <AdminHeader active="call" title="Log a Call" />
       <main className="max-w-3xl mx-auto px-6 py-8">
         <p className="text-[#3A3733] text-sm font-body mb-6 max-w-2xl">
-          Capture the scope on the call. When you are done, build the proposal straight from it. Pair this with the discovery call script for the questions to ask.
+          Capture the scope on the call. When you are done, build the proposal straight from it. Pair this with the{' '}
+          <Link href="/admin/call-script" className="text-[#1E50C8] font-semibold underline underline-offset-2 hover:text-[#161616]">sales call script</Link>{' '}
+          for what to say and the questions to ask.
         </p>
 
         <div className="space-y-5">
