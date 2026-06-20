@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import MissedCallCalculator from '@/components/MissedCallCalculator';
+import RestaurantCalculator from '@/components/RestaurantCalculator';
 import RestaurantVoiceSection from '@/components/RestaurantVoiceSection';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
@@ -174,7 +174,7 @@ export default function RestaurantsPage() {
 
           {/* Calculator (signature interactive moment + lead magnet) */}
           <div id="calculator" className="scroll-mt-28 mb-24">
-            <MissedCallCalculator />
+            <RestaurantCalculator />
           </div>
 
           {/* What we build */}
