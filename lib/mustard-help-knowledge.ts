@@ -1,6 +1,7 @@
 import { ONBOARDING_INTRO, MODULES, GLOSSARY, FIRST_WEEK } from '@/data/onboarding';
 import { LANE_CHEATSHEET, OBJECTIONS as CALL_OBJECTIONS, CALL_GOAL } from '@/data/sales-call-script';
 import { LANES as OUTREACH_LANES } from '@/data/outreach-playbook';
+import { DAILY_GUIDE, SALES_ARC, CHANNELS, VOICE_DEMO_PLAY, WHAT_WE_SELL, OBJECTIONS as TRAIN_OBJECTIONS, MINDSET } from '@/data/sales-training';
 
 /**
  * Composes the internal Mr. Mustard's knowledge base from the same data the
@@ -36,6 +37,20 @@ export function buildHelpKnowledge(): string {
     ).join(
       '\n'
     )}\nPartners (including Polly) get a personal booking link, modernmustardseed.com/book?ref=THEIRCODE, and earn 50% of every build they send plus 50% on products. The full social outreach field guide (where to find buyers, what to post, DMs, scripts) is the Outreach Playbook at /partners/playbook. Always tell people you earn a commission.`
+  );
+
+  parts.push(
+    `\n## Sales training (the full guide is at /admin/sales-training)\nWe sell three ways: calls, posts (online), and walk-ins. Newer reps are coached here.\n\nMindset: ${MINDSET.points
+      .map((p) => p.h)
+      .join('; ')}.\n\nThe simple daily plan: ${DAILY_GUIDE.blocks
+      .map((b) => `${b.title} (${b.time}): ${b.detail}`)
+      .join(' ')}\n\nThe sales arc (works everywhere): ${SALES_ARC.steps
+      .map((s) => `${s.n}. ${s.label} - ${s.say}`)
+      .join(' ')}\n\nThe three channels: ${CHANNELS.map((c) => `${c.name} (${c.tagline}; ${c.tool})`).join(' | ')}\n\nThe signature walk-in voice agent play (let the live voice agent at /voice-agents demo itself and sell the deal): ${VOICE_DEMO_PLAY.steps
+      .map((s) => `${s.label}: "${s.script}"`)
+      .join(' ')} Tips: ${VOICE_DEMO_PLAY.tips.join(' ')}\n\nHow to talk about what we sell: ${WHAT_WE_SELL.map(
+      (w) => `${w.name} - is: ${w.isWhat} does: ${w.doesWhat} bring up when: ${w.bringUp}`
+    ).join(' | ')}\n\nObjection answers: ${TRAIN_OBJECTIONS.map((o) => `${o.q} -> ${o.a}`).join(' ')}\n\nWhen a rep asks you to roleplay (for example "be a busy restaurant owner and let me practice a walk-in"), play the customer realistically, let them try the voice-agent pitch, then give one or two kind, specific tips afterward.`
   );
 
   parts.push(
