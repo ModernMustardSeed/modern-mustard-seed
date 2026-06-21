@@ -10,8 +10,13 @@ import {
   SUGGESTED_CITIES,
   SETUP_SQL,
 } from '@/lib/prospects';
+import { buildLeadScript } from '@/lib/lead-script';
 
 const SUPABASE_SQL_URL = 'https://supabase.com/dashboard/project/qqvohlvhynmtavdbvkha/sql/new';
+
+// Business types for the add form, so a manually added lead also gets a
+// personalized script (the category is stored as the leading token of notes).
+const SCRIPT_TYPES = ['Restaurant', 'Salon / spa', 'Auto service', 'Dentist', 'Clinic', 'Vet', 'Gym', 'Real estate', 'Law firm', 'Insurance', 'Accounting / finance', 'Trade', 'Cleaners', 'Other service'];
 
 const STATUS_STYLE: Record<ProspectStatus, string> = {
   'to-contact': 'bg-white text-[#161616] border-[#161616]/30',
@@ -22,16 +27,18 @@ const STATUS_STYLE: Record<ProspectStatus, string> = {
   'not-interested': 'bg-[#9B3022] text-white border-[#9B3022]',
 };
 
-export default function LeadTracker({ currentEmail, currentName }: { currentEmail: string; currentName: string }) {
+export default function LeadTracker({ currentEmail, currentName, bookDisplay }: { currentEmail: string; currentName: string; bookDisplay: string }) {
   const [rows, setRows] = useState<Prospect[]>([]);
   const [loading, setLoading] = useState(true);
   const [needsSetup, setNeedsSetup] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [scriptFor, setScriptFor] = useState<Prospect | null>(null);
+  const [scriptCopied, setScriptCopied] = useState(false);
 
   // Add form
-  const [add, setAdd] = useState({ business: '', city: 'Kalispell', phone: '', channel: 'cold-call', notes: '' });
+  const [add, setAdd] = useState({ business: '', city: 'Kalispell', phone: '', type: 'Restaurant', channel: 'cold-call', notes: '' });
   const [adding, setAdding] = useState(false);
 
   // Filters
@@ -71,10 +78,12 @@ export default function LeadTracker({ currentEmail, currentName }: { currentEmai
     setAdding(true);
     setError('');
     try {
+      // Store the type as the leading token of notes so the per-lead script is personalized.
+      const composedNotes = [add.type, add.notes.trim()].filter(Boolean).join(' · ');
       const res = await fetch('/api/admin/prospects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(add),
+        body: JSON.stringify({ business: add.business, city: add.city, phone: add.phone, channel: add.channel, notes: composedNotes }),
       });
       const json = await res.json();
       if (json.needsSetup) setNeedsSetup(true);
@@ -113,6 +122,16 @@ export default function LeadTracker({ currentEmail, currentName }: { currentEmai
       await navigator.clipboard.writeText(SETUP_SQL);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const copyText = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setScriptCopied(true);
+      setTimeout(() => setScriptCopied(false), 1800);
     } catch {
       /* ignore */
     }
@@ -197,7 +216,13 @@ export default function LeadTracker({ currentEmail, currentName }: { currentEmai
                   <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Phone</span>
                   <input value={add.phone} onChange={(e) => setAdd((a) => ({ ...a, phone: e.target.value }))} placeholder="(406) 555-0182" className={`${inp} w-full`} />
                 </label>
-                <label className="min-w-[120px]">
+                <label className="min-w-[140px]">
+                  <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Type</span>
+                  <select value={add.type} onChange={(e) => setAdd((a) => ({ ...a, type: e.target.value }))} className={`${inp} w-full`}>
+                    {SCRIPT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </label>
+                <label className="min-w-[110px]">
                   <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">How</span>
                   <select value={add.channel} onChange={(e) => setAdd((a) => ({ ...a, channel: e.target.value }))} className={`${inp} w-full`}>
                     {CHANNELS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
@@ -243,7 +268,7 @@ export default function LeadTracker({ currentEmail, currentName }: { currentEmai
                     {filtered.map((p) => (
                       <tr key={p.id} className="border-b border-[#161616]/10 align-top">
                         <td className="px-4 py-3">
-                          <p className="font-body font-medium text-[#161616]">{p.business}</p>
+                          <button onClick={() => { setScriptFor(p); setScriptCopied(false); }} className="font-body font-medium text-[#161616] text-left hover:text-[#1E50C8] hover:underline underline-offset-2">{p.business}</button>
                           {p.notes && <p className="text-[#161616]/55 text-xs mt-0.5">{p.notes}</p>}
                         </td>
                         <td className="px-4 py-3 text-[#3A3733] font-body">{p.city ?? '-'}</td>
@@ -260,8 +285,9 @@ export default function LeadTracker({ currentEmail, currentName }: { currentEmai
                           </select>
                         </td>
                         <td className="px-4 py-3 text-[#161616]/60 font-body text-xs whitespace-nowrap">{(p.rep_name || p.rep_email).split(' ')[0]}</td>
-                        <td className="px-4 py-3 text-right">
-                          <button onClick={() => remove(p.id)} className="text-[#161616]/35 hover:text-[#9B3022] text-lg leading-none" title="Remove">×</button>
+                        <td className="px-4 py-3 text-right whitespace-nowrap">
+                          <button onClick={() => { setScriptFor(p); setScriptCopied(false); }} className="px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full hover:bg-[#FFD23F] transition-all">Call script</button>
+                          <button onClick={() => remove(p.id)} className="ml-2 text-[#161616]/35 hover:text-[#9B3022] text-lg leading-none align-middle" title="Remove">×</button>
                         </td>
                       </tr>
                     ))}
@@ -271,6 +297,83 @@ export default function LeadTracker({ currentEmail, currentName }: { currentEmai
             )}
           </>
         )}
+
+        {scriptFor && (() => {
+          const s = buildLeadScript(scriptFor, currentName, bookDisplay);
+          const telHref = scriptFor.phone ? `tel:${scriptFor.phone.replace(/[^0-9+]/g, '')}` : null;
+          const quickSet = (status: ProspectStatus) => { updateStatus(scriptFor.id, status); setScriptFor(null); };
+          return (
+            <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-[#161616]/50 backdrop-blur-sm overflow-y-auto" onClick={() => setScriptFor(null)}>
+              <div className="bg-[#FBF6EA] border-2 border-[#161616] rounded-2xl shadow-[8px_8px_0_0_#161616] w-full max-w-2xl my-4" onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="bg-[#161616] rounded-t-2xl px-6 py-4 flex items-start justify-between gap-3">
+                  <div>
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold block">Call script {s.category ? '· ' + s.category : ''}</span>
+                    <h2 className="font-display text-2xl font-semibold text-[#FBF6EA] mt-1">{scriptFor.business}</h2>
+                    <p className="text-[#FBF6EA]/60 font-body text-sm">{scriptFor.city ?? ''}</p>
+                  </div>
+                  <button onClick={() => setScriptFor(null)} className="text-[#FBF6EA]/70 hover:text-[#FBF6EA] text-2xl leading-none px-1" aria-label="Close">×</button>
+                </div>
+
+                <div className="p-6">
+                  {/* Dial + copy */}
+                  <div className="flex flex-wrap items-center gap-2 mb-5">
+                    {telHref ? (
+                      <a href={telHref} className="px-5 py-2.5 text-sm font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all">📞 Call {scriptFor.phone}</a>
+                    ) : (
+                      <span className="text-[#161616]/55 font-body text-sm italic">No phone on file. {scriptFor.notes?.includes('Email:') ? 'Use the email in the notes, or look up the number.' : 'Look the number up on Google Maps, then add it.'}</span>
+                    )}
+                    <button onClick={() => copyText(s.fullText)} className="px-4 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">{scriptCopied ? 'Copied ✓' : 'Copy whole script'}</button>
+                  </div>
+
+                  <p className="text-[#161616]/55 font-body text-xs mb-4">Read it top to bottom. Pause after each part and let them answer. You are not closing, just booking a quick demo.</p>
+
+                  {/* Steps */}
+                  <div className="space-y-2.5">
+                    {s.steps.map((step, i) => (
+                      <div key={i} className="bg-white border-2 border-[#161616] rounded-xl p-4">
+                        <span className="text-[10px] uppercase tracking-[0.18em] text-[#E0301E] font-mono font-bold flex items-center gap-2 mb-1.5"><span className="font-display text-base text-[#F5B700]">{i + 1}</span>{step.label}</span>
+                        <p className="font-body text-[16px] leading-relaxed text-[#161616]">{step.line}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Voicemail */}
+                  <div className="bg-[#FFF8E6] border-2 border-[#161616] rounded-xl p-4 mt-2.5">
+                    <span className="text-[10px] uppercase tracking-[0.18em] text-[#E0301E] font-mono font-bold block mb-1.5">If you get voicemail</span>
+                    <p className="font-body text-[15px] leading-relaxed text-[#161616] italic">{s.voicemail}</p>
+                  </div>
+
+                  {/* Objections */}
+                  <details className="group bg-white border-2 border-[#161616] rounded-xl mt-2.5 overflow-hidden">
+                    <summary className="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-[#FFF8E6]">
+                      <span className="text-[11px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616]">If they push back</span>
+                      <span className="text-[#F5B700] text-xl font-bold group-open:rotate-45 transition-transform">+</span>
+                    </summary>
+                    <div className="px-4 pb-4 space-y-3">
+                      {s.objections.map((o, i) => (
+                        <div key={i}>
+                          <p className="font-sans font-bold text-sm text-[#161616]">{o.q}</p>
+                          <p className="font-body text-sm text-[#3A3733] leading-relaxed italic">"{o.a}"</p>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+
+                  {/* Quick status after the call */}
+                  <div className="mt-5 pt-4 border-t-2 border-[#161616]/10">
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono font-bold block mb-2">After the call, mark it</span>
+                    <div className="flex flex-wrap gap-2">
+                      <button onClick={() => quickSet('contacted')} className="px-4 py-2 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">Contacted</button>
+                      <button onClick={() => quickSet('booked')} className="px-4 py-2 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-white bg-[#2D6A4F] border-2 border-[#2D6A4F] rounded-full hover:opacity-90 transition-all">Booked a demo</button>
+                      <button onClick={() => quickSet('not-interested')} className="px-4 py-2 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-white bg-[#9B3022] border-2 border-[#9B3022] rounded-full hover:opacity-90 transition-all">Not interested</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </main>
     </div>
   );
