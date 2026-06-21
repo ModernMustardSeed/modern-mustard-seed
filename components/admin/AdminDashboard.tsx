@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import LeadDrawer from './LeadDrawer';
 import AdminHeader from './AdminHeader';
+import NewLeadModal from './NewLeadModal';
 import type { LeadRow, LeadType, LeadStatus } from '@/lib/supabase';
 
 const TYPE_LABEL: Record<LeadType, string> = {
@@ -37,6 +38,7 @@ export default function AdminDashboard() {
   const [status, setStatus] = useState<LeadStatus | ''>('');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<LeadRow | null>(null);
+  const [adding, setAdding] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -85,6 +87,16 @@ export default function AdminDashboard() {
       <AdminHeader active="pipeline" title="Pipeline" onRefresh={load} />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Action bar */}
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={() => setAdding(true)}
+            className="px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+          >
+            + New lead
+          </button>
+        </div>
+
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
           {[
@@ -221,6 +233,17 @@ export default function AdminDashboard() {
       </main>
 
       <LeadDrawer lead={selected} onClose={() => setSelected(null)} onUpdate={updateLead} onDelete={removeLead} />
+
+      {adding && (
+        <NewLeadModal
+          onClose={() => setAdding(false)}
+          onCreated={(lead) => {
+            setLeads((prev) => [lead, ...prev]);
+            setAdding(false);
+            setSelected(lead);
+          }}
+        />
+      )}
     </div>
   );
 }

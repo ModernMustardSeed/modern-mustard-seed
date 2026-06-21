@@ -66,7 +66,8 @@ export default function HeroIdeaToProduct() {
         </h1>
 
         <p className="opacity-0 animate-fade-in-up-delay mt-6 text-base md:text-xl font-body text-[#3a3733] max-w-2xl mx-auto leading-relaxed">
-          Apps, sites, and specialty AI tools for founders, operators, and small business owners.
+          Apps, sites, and specialty AI tools for founders, operators, and small business owners.{' '}
+          <span className="font-bold text-[#161616]">Live in as little as 2 weeks.</span>
         </p>
 
         <p className="opacity-0 animate-fade-in-up-delay-2 mt-3 text-sm md:text-base font-body font-bold text-[#E0301E] max-w-2xl mx-auto">
