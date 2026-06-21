@@ -36,6 +36,10 @@ export type LeadRow = {
   suggested_playbook: string | null;
   source: string | null;
   notes: string | null;
+  /** Optional reminder date (migration 026). Powers the daily pipeline digest. */
+  follow_up_at: string | null;
+  /** Optional assignee email/name (migration 026). */
+  owner: string | null;
   created_at: string;
   updated_at: string;
 };

@@ -24,6 +24,19 @@ export async function PATCH(req: Request, { params }: { params: Params }) {
   if (typeof body.notes === 'string') {
     update.notes = body.notes;
   }
+  // Follow-up reminder date (ISO string) or null to clear. Requires migration 026.
+  if (body.follow_up_at === null) {
+    update.follow_up_at = null;
+  } else if (typeof body.follow_up_at === 'string' && body.follow_up_at) {
+    const d = new Date(body.follow_up_at);
+    if (!isNaN(d.getTime())) update.follow_up_at = d.toISOString();
+  }
+  // Owner (assignee). Requires migration 026.
+  if (body.owner === null) {
+    update.owner = null;
+  } else if (typeof body.owner === 'string') {
+    update.owner = body.owner.trim().slice(0, 200) || null;
+  }
   if (Object.keys(update).length === 0) {
     return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
   }

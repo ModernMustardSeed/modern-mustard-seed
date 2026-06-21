@@ -26,6 +26,9 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<LeadStatus>('new');
+  const [followUp, setFollowUp] = useState('');
+  const [owner, setOwner] = useState('');
+  const [intro, setIntro] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [events, setEvents] = useState<TimelineEvent[]>([]);
   const [launch, setLaunch] = useState<{ date: string; projectName: string; launched: boolean } | null>(null);
 
@@ -33,6 +36,9 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
     if (lead) {
       setNotes(lead.notes ?? '');
       setStatus(lead.status);
+      setFollowUp(lead.follow_up_at ? lead.follow_up_at.slice(0, 10) : '');
+      setOwner(lead.owner ?? '');
+      setIntro('idle');
       setEvents([]);
       setLaunch(null);
       if (lead.email) {
@@ -51,7 +57,7 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
 
   if (!lead) return null;
 
-  const patch = async (update: Partial<Pick<LeadRow, 'status' | 'notes'>>) => {
+  const patch = async (update: Partial<Pick<LeadRow, 'status' | 'notes' | 'follow_up_at' | 'owner'>>) => {
     setSaving(true);
     try {
       const res = await fetch(`/api/admin/leads/${lead.id}`, {
@@ -75,6 +81,33 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
 
   const saveNotes = async () => {
     await patch({ notes });
+  };
+
+  const saveFollowUp = (value: string) => {
+    setFollowUp(value);
+    patch({ follow_up_at: value || null });
+  };
+
+  const saveOwner = () => {
+    if ((owner.trim() || null) !== (lead.owner ?? null)) patch({ owner: owner.trim() || null });
+  };
+
+  const sendIntro = async () => {
+    if (intro === 'sending') return;
+    if (!confirm(`Send a warm intro email to ${lead.email}?`)) return;
+    setIntro('sending');
+    try {
+      const res = await fetch(`/api/admin/leads/${lead.id}/intro`, { method: 'POST' });
+      const data = await res.json();
+      if (res.ok && data.lead) {
+        onUpdate(data.lead);
+        setIntro('sent');
+      } else {
+        setIntro('error');
+      }
+    } catch {
+      setIntro('error');
+    }
   };
 
   const remove = async () => {
@@ -184,6 +217,35 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
             </div>
           </div>
 
+          {/* Follow-up + owner */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium block mb-2.5">
+                Follow up by
+              </label>
+              <input
+                type="date"
+                value={followUp}
+                onChange={(e) => saveFollowUp(e.target.value)}
+                disabled={saving}
+                className="w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
+              />
+            </div>
+            <div>
+              <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/50 font-mono font-medium block mb-2.5">
+                Owner
+              </label>
+              <input
+                value={owner}
+                onChange={(e) => setOwner(e.target.value)}
+                onBlur={saveOwner}
+                placeholder="Who owns this?"
+                disabled={saving}
+                className="w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
+              />
+            </div>
+          </div>
+
           {/* Fields */}
           {fields.length > 0 && (
             <div>
@@ -257,11 +319,18 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
 
           {/* Quick actions */}
           <div className="flex flex-wrap gap-3 pt-4 border-t border-[#161616]/10">
+            <button
+              onClick={sendIntro}
+              disabled={intro === 'sending' || intro === 'sent'}
+              className="text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg px-5 py-2.5 shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:hover:translate-y-0 disabled:shadow-[3px_3px_0_0_#161616]"
+            >
+              {intro === 'sending' ? 'Sending...' : intro === 'sent' ? 'Intro sent ✓' : 'Send intro email'}
+            </button>
             <a
               href={`mailto:${lead.email}`}
               className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-white border-2 border-[#161616] rounded-lg px-5 py-2.5 hover:bg-[#FFF8E6] transition-all"
             >
-              Reply via email
+              Reply manually
             </a>
             <button
               onClick={remove}
@@ -270,6 +339,9 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
               Delete
             </button>
           </div>
+          {intro === 'error' && (
+            <p className="text-[#E0301E] text-xs font-body -mt-3">Could not send the intro email. Try again, or reply manually.</p>
+          )}
         </div>
       </aside>
     </div>
