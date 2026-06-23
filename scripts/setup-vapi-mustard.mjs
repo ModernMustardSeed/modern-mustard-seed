@@ -244,12 +244,12 @@ const assistant = {
     // Nico (20s, casual), Kai (30s, friendly/relaxed/approachable),
     // Sagar (20s, steady/professional), Godfrey (20s, energetic),
     // Neil (20s, clear/professional), Sid (30s, smooth/deep/laid-back).
-    // Elliot = the most natural, neutral-accent, clearly-male Vapi voice and the
-    // proven default. Reverted here after Rohan rendered mumbled/garbled and too
-    // high-pitched on a real call. If a deeper/more masculine read is wanted, Sid
-    // (30s, deep-toned) is next. A/B in one shot: VAPI_VOICE_ID=Sid node ... --update <id>.
+    // DEFAULT = Sid (30s, smooth/deep/laid-back). Sarah A/B'd Sid against Elliot on
+    // a real call 2026-06-23 and strongly preferred it ("worked amazingly"), so Sid
+    // is now the keeper. Elliot (the most natural neutral-accent option) is the
+    // fallback if Sid ever reads off: VAPI_VOICE_ID=Elliot node ... --update <id>.
     provider: env('VAPI_VOICE_PROVIDER') || 'vapi',
-    voiceId: env('VAPI_VOICE_ID') || 'Elliot',
+    voiceId: env('VAPI_VOICE_ID') || 'Sid',
   },
   transcriber: {
     // nova-3 is materially better than nova-2 at exactly what Mr. Mustard kept
@@ -300,7 +300,11 @@ const assistant = {
     voiceSeconds: 0.3,
     backoffSeconds: 1,
   },
-  maxDurationSeconds: 900,
+  // 30 min. A real, engaged call hit the old 900s (15 min) cap on 2026-06-23 and
+  // got cut off mid-conversation (endedReason exceeded-max-duration). The silence
+  // timeout already ends idle/abandoned lines, so this ceiling only bounds an
+  // actively-talking call against runaway cost. Bump higher if a real call needs it.
+  maxDurationSeconds: 1800,
 };
 
 /* ───────────────────────── API call ───────────────────────── */
