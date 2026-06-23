@@ -1,46 +1,42 @@
 /**
- * Mr. Mustard brain watchdog.
+ * Voice-agent brain watchdog (whole fleet).
  *
- * Vapi has no native model fallback on Anthropic (it rejects `fallbackModels`),
- * and on 2026-06-23 the live claude-opus-4-6 brain faulted UPSTREAM for a few
- * hours: every call dropped ~30s in with
- * call.in-progress.error-providerfault-anthropic-llm-failed, and a /chat probe
- * hung with HTTP 524. It then recovered on its own. This cron is the safety net.
+ * Vapi has no native model fallback on Anthropic, and on 2026-06-23 the live
+ * claude-opus-4-6 brain faulted UPSTREAM for a few hours: every call dropped
+ * ~30s in with call.in-progress.error-providerfault-anthropic-llm-failed, and a
+ * /chat probe hung with HTTP 524. It recovered on its own. This cron is the
+ * safety net for EVERY monitored agent (see lib/voice-agents.ts).
  *
- * Every 10 minutes it probes the Opus brain in isolation and:
- *   - if Opus is DOWN and the assistant is still on Opus, it fails the assistant
- *     over to the proven-stable Sonnet brain so calls keep connecting;
- *   - if Opus is HEALTHY again and the assistant is on the Sonnet fallback, it
- *     restores Opus.
- * It emails Sarah on every state change and stays silent otherwise (never noise).
+ * Every ~10 minutes it probes each agent's primary brain in isolation and, with
+ * two-probe hysteresis, fails an agent over to its stable fallback when the
+ * primary is down, and restores the primary when it recovers:
+ *   - both probes fail  + agent on primary  -> fail over to fallback
+ *   - both probes pass  + agent on fallback  -> restore primary
+ *   - one pass one fail (flaky)              -> hold, no change
+ * One consolidated email goes to Sarah whenever anything changes; silent
+ * otherwise (never noise).
  *
- * Hysteresis (anti-flap): two back-to-back probes per run. Fail over only when
- * BOTH fail (a single transient blip is ignored). Restore only when BOTH pass
- * (don't flap back to a flaky Opus). One pass + one fail = hold, no action.
+ * Probes use isolated transient /chat assistants (no tools, no webhook), so they
+ * never disturb a live call or fire booking tools. Unique primary models are
+ * probed once per run and shared across agents. Failover swaps ONLY the model
+ * string via GET-merge-PATCH, so each agent's full persona, temperature, and
+ * tools are preserved.
  *
- * Health is read from an isolated transient /chat probe (no tools, no webhook),
- * so probing never disturbs a live call or fires the booking tools. Failover
- * does a GET-merge-PATCH so the full persona, temperature, and tools are
- * preserved and ONLY the model string changes.
- *
- * Auth: Vercel cron secret (Authorization: Bearer ${CRON_SECRET}); Vercel adds
- * it automatically. No-ops cleanly if VAPI_API_KEY is missing.
+ * Trigger: a GitHub Actions schedule pings this route (.github/workflows/
+ * voice-health.yml), because the MMS Vercel project is on Hobby (Vercel cron is
+ * daily-only there). Auth: optional Vercel cron secret (Authorization: Bearer
+ * ${CRON_SECRET}). No-ops cleanly if VAPI_API_KEY is missing.
  */
 
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { leadNotification } from '@/lib/email';
+import { VOICE_AGENTS, type VoiceAgent } from '@/lib/voice-agents';
 
 export const runtime = 'nodejs';
 export const maxDuration = 120;
 
 const VAPI = 'https://api.vapi.ai';
-const ASSISTANT_ID =
-  process.env.VAPI_ASSISTANT_ID ||
-  process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID ||
-  'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee';
-const PRIMARY = process.env.VOICE_PRIMARY_MODEL || 'claude-opus-4-6';
-const FALLBACK = process.env.VOICE_FALLBACK_MODEL || 'claude-sonnet-4-6';
 
 async function vapiFetch(
   path: string,
@@ -66,7 +62,7 @@ async function vapiFetch(
 }
 
 /** Probe a model in isolation via a transient assistant. true = serving now. */
-async function probeModel(model: string, key: string): Promise<boolean> {
+async function probeModel(provider: string, model: string, key: string): Promise<boolean> {
   try {
     const res = await vapiFetch(
       '/chat',
@@ -75,7 +71,7 @@ async function probeModel(model: string, key: string): Promise<boolean> {
         body: JSON.stringify({
           assistant: {
             model: {
-              provider: 'anthropic',
+              provider,
               model,
               messages: [
                 { role: 'system', content: 'You are a health probe. Reply with exactly: OK' },
@@ -94,10 +90,10 @@ async function probeModel(model: string, key: string): Promise<boolean> {
   }
 }
 
-/** Current model string on the live assistant, or null if unreadable. */
-async function currentModel(key: string): Promise<string | null> {
+/** Current model string on an assistant, or null if unreadable. */
+async function currentModel(id: string, key: string): Promise<string | null> {
   try {
-    const res = await vapiFetch(`/assistant/${ASSISTANT_ID}`, { method: 'GET' }, key, 12000);
+    const res = await vapiFetch(`/assistant/${id}`, { method: 'GET' }, key, 12000);
     if (!res.ok) return null;
     const a = await res.json();
     return a?.model?.model ?? null;
@@ -106,17 +102,14 @@ async function currentModel(key: string): Promise<string | null> {
   }
 }
 
-/**
- * Swap ONLY the model string, preserving the full model object (persona,
- * temperature, tools) via GET-merge-PATCH.
- */
-async function swapModel(toModel: string, key: string): Promise<boolean> {
-  const get = await vapiFetch(`/assistant/${ASSISTANT_ID}`, { method: 'GET' }, key, 12000);
+/** Swap ONLY the model string, preserving the full model object (persona, temperature, tools). */
+async function swapModel(id: string, toModel: string, key: string): Promise<boolean> {
+  const get = await vapiFetch(`/assistant/${id}`, { method: 'GET' }, key, 12000);
   if (!get.ok) return false;
   const a = await get.json();
   const model = { ...a.model, model: toModel };
   const patch = await vapiFetch(
-    `/assistant/${ASSISTANT_ID}`,
+    `/assistant/${id}`,
     { method: 'PATCH', body: JSON.stringify({ model }) },
     key,
     20000,
@@ -124,32 +117,37 @@ async function swapModel(toModel: string, key: string): Promise<boolean> {
   return patch.ok;
 }
 
-async function alert(action: 'failover' | 'restore', to: string, from: string): Promise<void> {
+type Change = { label: string; action: 'failover' | 'restore'; from: string; to: string };
+
+async function alertAll(changes: Change[]): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return;
-  const down = action === 'failover';
+  if (!apiKey || changes.length === 0) return;
+  const anyDown = changes.some((c) => c.action === 'failover');
+  const lines = changes.map(
+    (c) =>
+      `${c.action === 'failover' ? 'DOWN' : 'RECOVERED'}: ${c.label} . ${c.from} -> ${c.to}`,
+  );
   try {
     const resend = new Resend(apiKey);
     await resend.emails.send({
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: ['sarah@modernmustardseed.com'],
-      subject: down
-        ? 'Mr. Mustard: Opus brain down, failed over to Sonnet'
-        : 'Mr. Mustard: Opus brain recovered, restored',
+      subject: anyDown
+        ? `Voice agents: ${changes.filter((c) => c.action === 'failover').length} brain(s) down, failed over`
+        : 'Voice agents: brain(s) recovered, restored',
       html: leadNotification({
         type: 'Contact',
-        name: 'Mr. Mustard brain watchdog',
+        name: 'Voice-agent brain watchdog',
         email: 'sarah@modernmustardseed.com',
-        fields: [
-          { label: 'Event', value: down ? 'Opus DOWN, failed over' : 'Opus RECOVERED, restored' },
-          { label: 'Brain now', value: to },
-          { label: 'Was', value: from },
-        ],
-        message: down
-          ? 'The Opus brain (claude-opus-4-6) stopped serving through Vapi, so the watchdog switched Mr. Mustard to the stable Sonnet brain (claude-sonnet-4-6) so calls keep connecting. Calls are working right now. The watchdog restores Opus automatically the moment it is healthy again.'
-          : 'The Opus brain is serving again, so the watchdog restored Mr. Mustard to claude-opus-4-6. Nothing to do.',
-        suggestedAction: down
-          ? 'No action needed. To pin Sonnet yourself, set VOICE_PRIMARY_MODEL=claude-sonnet-4-6 in Vercel.'
+        fields: changes.map((c) => ({
+          label: c.label,
+          value: `${c.action === 'failover' ? 'failed over' : 'restored'} ${c.from} -> ${c.to}`,
+        })),
+        message: anyDown
+          ? `A primary brain stopped serving through Vapi, so the watchdog switched the affected agent(s) to their stable fallback so calls keep connecting. Calls are working now. Each agent is restored automatically the moment its primary brain is healthy again.\n\n${lines.join('\n')}`
+          : `Primary brains are serving again, so the watchdog restored the affected agent(s). Nothing to do.\n\n${lines.join('\n')}`,
+        suggestedAction: anyDown
+          ? 'No action needed. Fleet config lives in lib/voice-agents.ts.'
           : 'All clear.',
       }),
     });
@@ -172,33 +170,51 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: true, note: 'VAPI_API_KEY not set; watchdog idle' });
   }
 
-  const live = await currentModel(key);
+  // Probe each UNIQUE primary model once (two probes, hysteresis), shared across agents.
+  const uniqueModels = [
+    ...new Map(VOICE_AGENTS.map((a) => [`${a.provider}::${a.primary}`, a])).values(),
+  ];
+  const health = new Map<string, 'up' | 'down' | 'flaky'>();
+  await Promise.all(
+    uniqueModels.map(async (a: VoiceAgent) => {
+      const k = `${a.provider}::${a.primary}`;
+      const p1 = await probeModel(a.provider, a.primary, key);
+      const p2 = await probeModel(a.provider, a.primary, key);
+      const passes = (p1 ? 1 : 0) + (p2 ? 1 : 0);
+      health.set(k, passes === 2 ? 'up' : passes === 0 ? 'down' : 'flaky');
+    }),
+  );
 
-  // Two probes, back to back, for hysteresis.
-  const p1 = await probeModel(PRIMARY, key);
-  const p2 = await probeModel(PRIMARY, key);
-  const passes = (p1 ? 1 : 0) + (p2 ? 1 : 0);
-  const opusDown = passes === 0;
-  const opusUp = passes === 2;
+  // Decide + act per agent.
+  const changes: Change[] = [];
+  const agents = await Promise.all(
+    VOICE_AGENTS.map(async (a) => {
+      const live = await currentModel(a.id, key);
+      const h = health.get(`${a.provider}::${a.primary}`) ?? 'flaky';
+      let action: 'none' | 'failover' | 'restore' = 'none';
+      let changedTo: string | null = null;
 
-  let action: 'none' | 'failover' | 'restore' = 'none';
-  let changedTo: string | null = null;
+      if (live === a.primary && h === 'down') {
+        if (await swapModel(a.id, a.fallback, key)) {
+          action = 'failover';
+          changedTo = a.fallback;
+        }
+      } else if (live === a.fallback && h === 'up') {
+        if (await swapModel(a.id, a.primary, key)) {
+          action = 'restore';
+          changedTo = a.primary;
+        }
+      }
 
-  if (live === PRIMARY && opusDown) {
-    if (await swapModel(FALLBACK, key)) {
-      action = 'failover';
-      changedTo = FALLBACK;
-    }
-  } else if (live === FALLBACK && opusUp) {
-    if (await swapModel(PRIMARY, key)) {
-      action = 'restore';
-      changedTo = PRIMARY;
-    }
-  }
+      if (action !== 'none' && changedTo && live) {
+        changes.push({ label: a.label, action, from: live, to: changedTo });
+      }
 
-  if (action !== 'none' && changedTo && live) {
-    await alert(action, changedTo, live);
-  }
+      return { label: a.label, live: changedTo ?? live, primaryHealth: h, action };
+    }),
+  );
 
-  return NextResponse.json({ ok: true, live, opusProbes: passes, action, changedTo });
+  if (changes.length) await alertAll(changes);
+
+  return NextResponse.json({ ok: true, agents, changes: changes.length });
 }
