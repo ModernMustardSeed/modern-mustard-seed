@@ -2,14 +2,16 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HelpGuide from '@/components/HelpGuide';
 import { ADMIN_HELP } from '@/lib/help-content';
 
 /**
- * Shared admin header. One responsive bar across the command center, pipeline,
- * and partners. The marketing nav is hidden on /admin (see Navbar), so this is
- * the only chrome here. On small screens the title stacks above a scrollable
- * tab row so nothing overlaps or overflows.
+ * Shared admin header. One responsive bar across the command center. The tab row
+ * can hold more tabs than fit, so it is a real horizontal scroller that works
+ * without a touchscreen: clickable left/right arrows, mouse-wheel scrolling, and
+ * arrow-key support when focused. Help/Refresh/Sign out are pinned so they are
+ * always reachable no matter where the tabs are scrolled.
  */
 
 type Tab = 'overview' | 'pipeline' | 'tracker' | 'partners' | 'outreach' | 'audit' | 'call' | 'script' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual';
@@ -34,50 +36,117 @@ const TABS: { key: Tab; label: string; href: string }[] = [
 ];
 
 export default function AdminHeader({ active, title, onRefresh }: { active: Tab; title: string; onRefresh?: () => void }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(false);
+
+  const updateArrows = useCallback(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setCanLeft(el.scrollLeft > 4);
+    setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    updateArrows();
+    // Bring the active tab into view so you can always see where you are.
+    const act = el.querySelector('[aria-current="page"]') as HTMLElement | null;
+    if (act) act.scrollIntoView({ block: 'nearest', inline: 'center' });
+    // Mouse wheel scrolls the tabs sideways (older mice only have a vertical wheel).
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        el.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
+    };
+    const onScroll = () => updateArrows();
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', updateArrows);
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', updateArrows);
+    };
+  }, [updateArrows]);
+
+  const nudge = (dir: number) => scrollerRef.current?.scrollBy({ left: dir * 240, behavior: 'smooth' });
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowRight') { nudge(1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { nudge(-1); e.preventDefault(); }
+  };
+
   const logout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
     window.location.href = '/admin/login';
   };
 
+  const hasOverflow = canLeft || canRight;
+  const arrowCls = (enabled: boolean) =>
+    `shrink-0 w-7 h-7 flex items-center justify-center rounded-full border-2 border-[#161616] text-[#161616] text-lg leading-none font-bold transition-all ${
+      enabled ? 'bg-white hover:bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 cursor-pointer' : 'bg-[#161616]/5 text-[#161616]/25 border-[#161616]/20 cursor-default'
+    }`;
+  const actionCls = 'whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05] transition-colors';
+
   return (
     <header className="border-b-2 border-[#161616] sticky top-0 z-30 bg-[#FBF6EA]/95 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-5 md:px-6 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-8 w-auto" priority />
-            <div>
-              <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block">Modern Mustard Seed</span>
-              <h1 className="font-sans text-lg font-bold text-[#161616] tracking-tight">{title}</h1>
-            </div>
+        <div className="flex items-center gap-2.5 shrink-0">
+          <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-8 w-auto" priority />
+          <div>
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block">Modern Mustard Seed</span>
+            <h1 className="font-sans text-lg font-bold text-[#161616] tracking-tight">{title}</h1>
           </div>
         </div>
 
-        <nav className="flex items-center gap-1 -mx-1 px-1 overflow-x-auto no-scrollbar">
-          {TABS.map((t) => (
-            <Link
-              key={t.key}
-              href={t.href}
-              aria-current={active === t.key ? 'page' : undefined}
-              className={`whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 transition-colors ${
-                active === t.key
-                  ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[2px_2px_0_0_#161616]'
-                  : 'border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05]'
-              }`}
-            >
-              {t.label}
-            </Link>
-          ))}
-          <span className="w-px h-5 bg-[#161616]/15 mx-1.5" aria-hidden />
-          <HelpGuide guide={ADMIN_HELP} />
-          {onRefresh && (
-            <button onClick={onRefresh} className="whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05] transition-colors">
-              Refresh
-            </button>
+        <div className="flex items-center gap-1.5 min-w-0 md:flex-1 md:justify-end">
+          {/* Scroll left */}
+          {hasOverflow && (
+            <button type="button" onClick={() => nudge(-1)} disabled={!canLeft} aria-label="Scroll tabs left" className={arrowCls(canLeft)}>‹</button>
           )}
-          <button onClick={logout} className="whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05] transition-colors">
-            Sign out
-          </button>
-        </nav>
+
+          {/* The scrollable tab strip */}
+          <div
+            ref={scrollerRef}
+            tabIndex={0}
+            onKeyDown={onKeyDown}
+            role="tablist"
+            aria-label="Admin sections (use the arrows or arrow keys to see more)"
+            className="flex items-center gap-1 overflow-x-auto no-scrollbar min-w-0 scroll-smooth focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5B700] rounded-lg"
+          >
+            {TABS.map((t) => (
+              <Link
+                key={t.key}
+                href={t.href}
+                aria-current={active === t.key ? 'page' : undefined}
+                className={`whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 transition-colors ${
+                  active === t.key
+                    ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[2px_2px_0_0_#161616]'
+                    : 'border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05]'
+                }`}
+              >
+                {t.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Scroll right */}
+          {hasOverflow && (
+            <button type="button" onClick={() => nudge(1)} disabled={!canRight} aria-label="Scroll tabs right" className={arrowCls(canRight)}>›</button>
+          )}
+
+          {/* Pinned actions: always reachable no matter the scroll position */}
+          <span className="w-px h-5 bg-[#161616]/15 mx-1 shrink-0" aria-hidden />
+          <div className="flex items-center gap-1 shrink-0">
+            <HelpGuide guide={ADMIN_HELP} />
+            {onRefresh && (
+              <button onClick={onRefresh} className={actionCls}>Refresh</button>
+            )}
+            <button onClick={logout} className={actionCls}>Sign out</button>
+          </div>
+        </div>
       </div>
     </header>
   );
