@@ -39,3 +39,4 @@ master
 - Internal links use `next/link`. Outbound links open in new tab with `rel="noopener noreferrer"`.
 - MDX content lives in `content/{blog,work,playbooks}`. Frontmatter is parsed by `lib/content.ts`.
 - Any new public route must also be added to the static path list in `app/sitemap.ts` if it is not content-driven.
+- **Modals/popups must never clip their top on short screens.** A centered overlay whose child can be taller than the viewport will push its top off-screen with no way to scroll up. Always build modal cards as a height-capped flex column: overlay `fixed inset-0 flex items-center justify-center p-4`, card `max-h-[90vh] flex flex-col`, header `shrink-0` (pinned), body `overflow-y-auto`. (Side drawers: full-height `overflow-y-auto` + sticky header. Bottom-anchored panels: `max-h-[..vh]` + internal scroll.) Verify every new modal at a short viewport (e.g. 1100x620).
