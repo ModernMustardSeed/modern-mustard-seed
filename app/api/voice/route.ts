@@ -8,6 +8,7 @@ import {
   p,
 } from '@/lib/email';
 import { insertLead, getSupabase } from '@/lib/supabase';
+import { recallCaller, rememberFromTool, rememberSummary } from '@/lib/voice-memory';
 import { getNextAvailableSlots, isSlotAvailable, displayForIso } from '@/lib/booking';
 import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
@@ -63,14 +64,62 @@ async function sendLoud(
  * ICS invites, and the shared leads inbox. One calendar, one source of truth.
  *
  * Handles:
- *  - tool-calls            → get_available_slots / book_discovery_call / capture_lead
- *  - end-of-call-report    → emails Sarah the call summary + transcript
+ *  - tool-calls            → recall_caller / get_available_slots / book_discovery_call / capture_lead
+ *  - end-of-call-report    → emails Sarah the call summary + transcript, saves caller memory
+ *
+ * Persistent memory: a returning caller is recognized by phone (inbound) or
+ * email (web) via lib/voice-memory. recall_caller reads it at the start of a
+ * call; bookings, lead captures, and the end-of-call summary write it back. All
+ * memory ops degrade gracefully if migration 028 has not been run yet.
  */
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 /* ───────── Tool implementations (mirrors /api/mustard-chat) ───────── */
+
+/**
+ * recall_caller: at the start of a call, check whether we have spoken with this
+ * person before. Matches on the caller's phone (inbound) or an email they give
+ * (web). Returns what we remember so the agent can greet them and pick up the
+ * thread instead of starting cold.
+ */
+async function recallForCall(
+  callerNumber: string | null,
+  input: { email?: string },
+): Promise<string> {
+  const mem = await recallCaller({ phone: callerNumber, email: input?.email });
+  if (!mem) {
+    return JSON.stringify({
+      ok: true,
+      known: false,
+      instruction:
+        'No prior record for this caller. Treat them as new and greet normally. Do not mention that you checked.',
+    });
+  }
+  const remembered: string[] = [];
+  if (mem.name) remembered.push(`their name is ${mem.name}`);
+  if (mem.business) remembered.push(`their business is ${mem.business}`);
+  if (mem.pain_summary) remembered.push(`last time they were focused on: ${mem.pain_summary}`);
+  if (mem.booked) remembered.push('they have already booked a call with Sarah before');
+  if (mem.last_summary) remembered.push(`summary of the last call: ${mem.last_summary}`);
+  return JSON.stringify({
+    ok: true,
+    known: true,
+    caller: {
+      name: mem.name ?? null,
+      business: mem.business ?? null,
+      pain: mem.pain_summary ?? null,
+      booked: !!mem.booked,
+      timesSpoken: mem.call_count ?? null,
+      lastSummary: mem.last_summary ?? null,
+    },
+    instruction:
+      'You have spoken with this caller before. Greet them warmly by name and naturally reference what you remember so it feels like you know them (' +
+      remembered.join('; ') +
+      '). Do NOT re-ask anything you already know. Pick up the thread, then help them with whatever they need today.',
+  });
+}
 
 async function getSlots(): Promise<string> {
   if (!availability.enabled) {
@@ -97,13 +146,16 @@ async function getSlots(): Promise<string> {
   });
 }
 
-async function bookSlot(input: {
-  startIso: string;
-  name: string;
-  email: string;
-  business?: string;
-  painSummary: string;
-}): Promise<string> {
+async function bookSlot(
+  input: {
+    startIso: string;
+    name: string;
+    email: string;
+    business?: string;
+    painSummary: string;
+  },
+  callerNumber?: string | null,
+): Promise<string> {
   const ok = await isSlotAvailable(input.startIso);
   if (!ok) {
     return JSON.stringify({
@@ -218,6 +270,16 @@ async function bookSlot(input: {
     customData: { lead_source: 'mr-mustard-voice', booking_time: input.startIso },
   });
 
+  // Remember this caller for next time (recognized by phone or email).
+  await rememberFromTool({
+    phone: callerNumber,
+    name,
+    email,
+    business,
+    pain: painSummary,
+    booked: true,
+  });
+
   return JSON.stringify({
     ok: true,
     display,
@@ -227,12 +289,15 @@ async function bookSlot(input: {
   });
 }
 
-async function captureLead(input: {
-  name?: string;
-  email: string;
-  painSummary: string;
-  business?: string;
-}): Promise<string> {
+async function captureLead(
+  input: {
+    name?: string;
+    email: string;
+    painSummary: string;
+    business?: string;
+  },
+  callerNumber?: string | null,
+): Promise<string> {
   const name = input.name?.trim() || 'Voice caller';
   const firstName = name.split(' ')[0];
   const email = (input.email || '').trim();
@@ -304,6 +369,16 @@ async function captureLead(input: {
       eventSourceUrl: 'https://modernmustardseed.com/voice-agents',
       customData: { lead_source: 'mr-mustard-voice' },
     });
+    // Remember this caller for next time (recognized by phone or email).
+    await rememberFromTool({
+      phone: callerNumber,
+      name: input.name,
+      email,
+      business,
+      pain: painSummary,
+      booked: false,
+    });
+
     return JSON.stringify({
       ok: true,
       instruction:
@@ -321,17 +396,22 @@ async function captureLead(input: {
 /* ───────── End-of-call report → Sarah's inbox ───────── */
 
 async function handleEndOfCallReport(message: Record<string, unknown>) {
+  const summary = (message.summary as string) || 'No summary generated.';
+  const transcript = (message.transcript as string) || '';
+  const call = (message.call ?? {}) as Record<string, unknown>;
+  const customer = (call.customer ?? {}) as Record<string, unknown>;
+  const phoneNumber = (customer.number as string) || null; // null for web calls
+  const callerNumber = phoneNumber || 'Web call';
+  const endedReason = (message.endedReason as string) || (call.endedReason as string) || '';
+  const durationSeconds = Math.round(Number(message.durationSeconds ?? 0)) || undefined;
+
+  // Save the call summary to persistent memory (phone callers). Runs regardless
+  // of email config so recall keeps working even if Resend is down.
+  await rememberSummary({ phone: phoneNumber, summary });
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
   try {
-    const summary = (message.summary as string) || 'No summary generated.';
-    const transcript = (message.transcript as string) || '';
-    const call = (message.call ?? {}) as Record<string, unknown>;
-    const customer = (call.customer ?? {}) as Record<string, unknown>;
-    const callerNumber = (customer.number as string) || 'Web call';
-    const endedReason = (message.endedReason as string) || (call.endedReason as string) || '';
-    const durationSeconds = Math.round(Number(message.durationSeconds ?? 0)) || undefined;
-
     const resend = new Resend(apiKey);
     await sendLoud(resend, 'end-of-call-report', {
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
@@ -397,6 +477,11 @@ export async function POST(req: Request) {
   const type = message.type as string;
 
   if (type === 'tool-calls') {
+    // The caller's phone number (inbound calls) is the persistent-memory key.
+    const callObj = (message.call ?? {}) as Record<string, unknown>;
+    const customer = (callObj.customer ?? {}) as Record<string, unknown>;
+    const callerNumber = (customer.number as string) || null;
+
     // Vapi sends toolCallList (new) or toolCalls (older payloads). Handle both.
     const rawCalls = (message.toolCallList ?? message.toolCalls ?? []) as VapiToolCall[];
     const results: { toolCallId: string; result: string }[] = [];
@@ -406,12 +491,14 @@ export async function POST(req: Request) {
       const args = parseArgs(call.function?.arguments ?? call.arguments);
       let result: string;
       try {
-        if (fnName === 'get_available_slots') {
+        if (fnName === 'recall_caller') {
+          result = await recallForCall(callerNumber, args as { email?: string });
+        } else if (fnName === 'get_available_slots') {
           result = await getSlots();
         } else if (fnName === 'book_discovery_call') {
-          result = await bookSlot(args as Parameters<typeof bookSlot>[0]);
+          result = await bookSlot(args as Parameters<typeof bookSlot>[0], callerNumber);
         } else if (fnName === 'capture_lead') {
-          result = await captureLead(args as Parameters<typeof captureLead>[0]);
+          result = await captureLead(args as Parameters<typeof captureLead>[0], callerNumber);
         } else {
           result = JSON.stringify({ ok: false, error: `Unknown tool: ${fnName}` });
         }

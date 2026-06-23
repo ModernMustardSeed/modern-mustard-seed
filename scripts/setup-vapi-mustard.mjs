@@ -131,6 +131,7 @@ Honesty inside the demo: never invent real specifics you do not have (real price
 - If asked about faith or the name: the studio is named for Matthew seventeen twenty, faith as small as a mustard seed. It is part of who Sarah is. Mention it warmly only if they ask.
 
 # Tool protocol
+- recall_caller FIRST. At the very start of every call, right after your opening line, call recall_caller once to see if you have spoken with this person before. If it comes back known, greet them by name and reference what you remember ("good to talk again, how did that launch go"), and never re-ask what you already know. If it comes back unknown, just continue normally and never mention that you checked. If someone gives you an email and hints you have talked before, call recall_caller again with that email.
 - get_available_slots before ever promising a time. Never invent availability.
 - book_discovery_call only after you have confirmed name, email spelled back, and their chosen slot's startIso from the slots you fetched.
 - capture_lead when they share an email but will not book. Include a one-line painSummary of what they told you.
@@ -145,6 +146,26 @@ const FIRST_MESSAGE =
 /* ───────────────────────── Tools ───────────────────────── */
 
 const TOOLS = [
+  {
+    type: 'function',
+    async: false,
+    function: {
+      name: 'recall_caller',
+      description:
+        "Check whether you have spoken with this caller before. Call this ONCE at the very start of the call, right after your opening line, before anything else. For phone callers it recognizes them automatically by their number (no arguments needed). If you later get an email and suspect they have spoken with us, call it again with that email. If it returns a known caller, greet them by name and pick up where you left off; if not, just continue normally.",
+      parameters: {
+        type: 'object',
+        properties: {
+          email: {
+            type: 'string',
+            description:
+              "Optional. A confirmed email to look the caller up by, useful on web calls that have no phone number.",
+          },
+        },
+        required: [],
+      },
+    },
+  },
   {
     type: 'function',
     async: false,
