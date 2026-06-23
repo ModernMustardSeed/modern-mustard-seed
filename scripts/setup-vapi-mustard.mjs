@@ -212,13 +212,18 @@ const assistant = {
   firstMessage: FIRST_MESSAGE,
   model: {
     provider: env('VAPI_MODEL_PROVIDER') || 'anthropic',
-    // claude-opus-4-6 is the smartest Anthropic model Vapi currently allows:
-    // its enum tops out here, and opus-4-7 / opus-4-8 are REJECTED at config
-    // time (probe the live enum anytime by PATCHing an invalid model). Opus 4.6
-    // is a real step up from sonnet-4-6 for consultative range, ideation, and
-    // instruction-following, and crucially it STILL accepts `temperature`
-    // (4.7+ remove sampling params and 400 the instant the caller speaks).
-    model: env('VAPI_MODEL') || 'claude-opus-4-6',
+    // DEFAULT = claude-sonnet-4-6 (the proven-stable production model; ran live
+    // ~11 days with zero LLM faults). We were on claude-opus-4-6 for the extra
+    // consultative range, but on 2026-06-23 EVERY live call started dropping with
+    // call.in-progress.error-providerfault-anthropic-llm-failed (~30s in, the moment
+    // the first real model turn fires) and a /chat probe to opus-4-6 hung with an
+    // HTTP 524 gateway timeout. opus-4-6 via Vapi's Anthropic provider was faulting
+    // upstream, so we reverted to sonnet-4-6 to restore service. To retry opus once
+    // it's healthy again: VAPI_MODEL=claude-opus-4-6 node ... --update <id>, then
+    // confirm with a /chat probe (should return 201, not 524) BEFORE trusting it.
+    // (opus-4-7 / opus-4-8 are still REJECTED by Vapi's enum, and 4.7+ also 400 on
+    // `temperature`. claude-haiku-4-5-20251001 is the snappier-but-less-smart lever.)
+    model: env('VAPI_MODEL') || 'claude-sonnet-4-6',
     // 0.7 gives him warmth and natural variety for ideation without rambling;
     // the prompt keeps turns tight. Drop toward 0.6 if he ever gets loose.
     temperature: 0.7,
