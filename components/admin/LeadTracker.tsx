@@ -303,10 +303,10 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
           const telHref = scriptFor.phone ? `tel:${scriptFor.phone.replace(/[^0-9+]/g, '')}` : null;
           const quickSet = (status: ProspectStatus) => { updateStatus(scriptFor.id, status); setScriptFor(null); };
           return (
-            <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-[#161616]/50 backdrop-blur-sm overflow-y-auto" onClick={() => setScriptFor(null)}>
-              <div className="bg-[#FBF6EA] border-2 border-[#161616] rounded-2xl shadow-[8px_8px_0_0_#161616] w-full max-w-2xl my-4" onClick={(e) => e.stopPropagation()}>
-                {/* Header */}
-                <div className="bg-[#161616] rounded-t-2xl px-6 py-4 flex items-start justify-between gap-3">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#161616]/50 backdrop-blur-sm" onClick={() => setScriptFor(null)}>
+              <div className="bg-[#FBF6EA] border-2 border-[#161616] rounded-2xl shadow-[8px_8px_0_0_#161616] w-full max-w-2xl max-h-[92vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+                {/* Header (pinned, always visible) */}
+                <div className="bg-[#161616] rounded-t-2xl px-6 py-4 flex items-start justify-between gap-3 shrink-0">
                   <div>
                     <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold block">Call script {s.category ? '· ' + s.category : ''}</span>
                     <h2 className="font-display text-2xl font-semibold text-[#FBF6EA] mt-1">{scriptFor.business}</h2>
@@ -315,7 +315,7 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
                   <button onClick={() => setScriptFor(null)} className="text-[#FBF6EA]/70 hover:text-[#FBF6EA] text-2xl leading-none px-1" aria-label="Close">×</button>
                 </div>
 
-                <div className="p-6">
+                <div className="p-6 overflow-y-auto">
                   {/* Dial + copy */}
                   <div className="flex flex-wrap items-center gap-2 mb-5">
                     {telHref ? (
