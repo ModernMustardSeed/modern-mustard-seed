@@ -1,0 +1,46 @@
+# Mr. Mustard brain watchdog trigger.
+#
+# Vapi has no native model fallback, and the MMS Vercel project is on the Hobby
+# plan (cron jobs are limited to once per day there), so the every-10-minutes
+# health check is driven from here instead of a Vercel cron. This job just pings
+# the watchdog route; ALL the logic lives server-side in
+# app/api/cron/voice-health/route.ts (probe Opus -> auto-fail-over to Sonnet on a
+# fault -> auto-restore Opus on recovery -> email Sarah on any state change).
+#
+# GitHub's scheduled runs are best-effort and can lag a few minutes under load;
+# that is fine for a watchdog (the 2026-06-23 outage lasted hours). Trigger a run
+# by hand anytime from the Actions tab (workflow_dispatch).
+
+name: voice-health
+
+on:
+  schedule:
+    - cron: "*/10 * * * *" # every 10 minutes (best-effort on GitHub)
+  workflow_dispatch: {} # manual run button
+
+# Don't pile up overlapping pings if a run is slow.
+concurrency:
+  group: voice-health
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping Mr. Mustard watchdog
+        run: |
+          echo "Pinging voice-health watchdog..."
+          BODY=$(curl -sS -m 120 -w $'\n%{http_code}' \
+            "https://modernmustardseed.com/api/cron/voice-health")
+          CODE=$(printf '%s' "$BODY" | tail -n1)
+          JSON=$(printf '%s' "$BODY" | sed '$d')
+          echo "HTTP $CODE"
+          echo "Response: $JSON"
+          # Non-2xx = the watchdog endpoint itself is unreachable; fail the run so
+          # it surfaces in the Actions log (the brain failover still happens
+          # server-side independently when the route does run).
+          if [ "$CODE" -lt 200 ] || [ "$CODE" -ge 300 ]; then
+            echo "::error::voice-health returned HTTP $CODE"
+            exit 1
+          fi

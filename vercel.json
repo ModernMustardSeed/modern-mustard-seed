@@ -36,10 +36,6 @@
     {
       "path": "/api/cron/operator",
       "schedule": "0 13 * * 1-5"
-    },
-    {
-      "path": "/api/cron/voice-health",
-      "schedule": "*/10 * * * *"
     }
   ]
 }
