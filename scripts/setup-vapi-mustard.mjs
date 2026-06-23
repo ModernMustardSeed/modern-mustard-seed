@@ -212,18 +212,22 @@ const assistant = {
   firstMessage: FIRST_MESSAGE,
   model: {
     provider: env('VAPI_MODEL_PROVIDER') || 'anthropic',
-    // DEFAULT = claude-sonnet-4-6 (the proven-stable production model; ran live
-    // ~11 days with zero LLM faults). We were on claude-opus-4-6 for the extra
-    // consultative range, but on 2026-06-23 EVERY live call started dropping with
-    // call.in-progress.error-providerfault-anthropic-llm-failed (~30s in, the moment
-    // the first real model turn fires) and a /chat probe to opus-4-6 hung with an
-    // HTTP 524 gateway timeout. opus-4-6 via Vapi's Anthropic provider was faulting
-    // upstream, so we reverted to sonnet-4-6 to restore service. To retry opus once
-    // it's healthy again: VAPI_MODEL=claude-opus-4-6 node ... --update <id>, then
-    // confirm with a /chat probe (should return 201, not 524) BEFORE trusting it.
-    // (opus-4-7 / opus-4-8 are still REJECTED by Vapi's enum, and 4.7+ also 400 on
-    // `temperature`. claude-haiku-4-5-20251001 is the snappier-but-less-smart lever.)
-    model: env('VAPI_MODEL') || 'claude-sonnet-4-6',
+    // DEFAULT = claude-opus-4-6, the smartest Anthropic model Vapi allows (its enum
+    // tops out here for the 4.x opus line; opus-4-7 / opus-4-8 are REJECTED at config
+    // time, and 4.7+ also 400 on `temperature`). Opus 4.6 is Sarah's chosen brain for
+    // the consultative range + ideation, and it STILL accepts `temperature`.
+    // RESILIENCE: on 2026-06-23 opus-4-6 via Vapi's Anthropic provider faulted UPSTREAM
+    // for a few hours (live calls dropped ~30s in with
+    // call.in-progress.error-providerfault-anthropic-llm-failed; a /chat probe hung with
+    // HTTP 524) then recovered on its own. Because Vapi does NOT support `fallbackModels`
+    // on Anthropic, we guard this with an external watchdog instead:
+    // app/api/voice-health (Vercel cron, every 10 min) probes the brain, auto-fails the
+    // assistant over to VAPI_FALLBACK_MODEL (claude-sonnet-4-6) on a fault, auto-restores
+    // opus when healthy, and emails Sarah on any state change. Manual levers if ever
+    // needed: VAPI_MODEL=claude-sonnet-4-6 (proven-stable fallback) or
+    // claude-opus-4-5-20251101 (also Opus-tier, also verified serving) or
+    // claude-haiku-4-5-20251001 (snappier, less smart).
+    model: env('VAPI_MODEL') || 'claude-opus-4-6',
     // 0.7 gives him warmth and natural variety for ideation without rambling;
     // the prompt keeps turns tight. Drop toward 0.6 if he ever gets loose.
     temperature: 0.7,
