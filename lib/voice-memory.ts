@@ -168,3 +168,50 @@ export async function rememberSummary(args: {
     console.error('rememberSummary failed', err);
   }
 }
+
+export type CallerRow = {
+  id: string;
+  phone: string | null;
+  email: string | null;
+  name: string | null;
+  business: string | null;
+  pain_summary: string | null;
+  last_summary: string | null;
+  booked: boolean | null;
+  call_count: number | null;
+  first_called_at: string | null;
+  last_called_at: string | null;
+};
+
+export type CallerListResult = {
+  ok: boolean;
+  rows: CallerRow[];
+  /** 'no-supabase' | 'table-missing' | 'error' when ok is false. */
+  reason?: string;
+};
+
+/** List caller memories, most recent contact first. Distinguishes a missing table. */
+export async function listCallerMemory(limit = 300): Promise<CallerListResult> {
+  const client = getSupabase();
+  if (!client) return { ok: false, rows: [], reason: 'no-supabase' };
+  try {
+    const { data, error } = await client
+      .from(TABLE)
+      .select(
+        'id,phone,email,name,business,pain_summary,last_summary,booked,call_count,first_called_at,last_called_at',
+      )
+      .order('last_called_at', { ascending: false })
+      .limit(limit);
+    if (error) {
+      // 42P01 = undefined_table (migration 028 not run yet).
+      const reason = /relation .* does not exist|42P01/i.test(JSON.stringify(error))
+        ? 'table-missing'
+        : 'error';
+      return { ok: false, rows: [], reason };
+    }
+    return { ok: true, rows: (data ?? []) as CallerRow[] };
+  } catch (err) {
+    console.error('listCallerMemory failed', err);
+    return { ok: false, rows: [], reason: 'error' };
+  }
+}
