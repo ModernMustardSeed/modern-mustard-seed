@@ -32,6 +32,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { leadNotification } from '@/lib/email';
 import { VOICE_AGENTS, type VoiceAgent } from '@/lib/voice-agents';
+import { getSupabase } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
 export const maxDuration = 120;
@@ -61,8 +62,18 @@ async function vapiFetch(
   }
 }
 
-/** Probe a model in isolation via a transient assistant. true = serving now. */
-async function probeModel(provider: string, model: string, key: string): Promise<boolean> {
+/**
+ * Probe a model in isolation via a transient assistant.
+ * Returns { ok, billing }: a 402 / "wallet balance" failure is a BILLING outage
+ * (the account is out of credits), NOT a model fault, so it must never trigger a
+ * model failover (that just demotes a perfectly good brain while no call can
+ * connect anyway). All other non-2xx (incl. 524 upstream fault) = model down.
+ */
+async function probeModel(
+  provider: string,
+  model: string,
+  key: string,
+): Promise<{ ok: boolean; billing: boolean }> {
   try {
     const res = await vapiFetch(
       '/chat',
@@ -84,9 +95,19 @@ async function probeModel(provider: string, model: string, key: string): Promise
       key,
       18000,
     );
-    return res.ok; // 201 on success; any non-2xx (incl. 524 upstream fault) = unhealthy
+    if (res.ok) return { ok: true, billing: false };
+    let billing = res.status === 402;
+    if (!billing) {
+      try {
+        const body = await res.text();
+        billing = /wallet balance|purchase more credits|insufficient (funds|credit)|upgrade your plan/i.test(body);
+      } catch {
+        /* ignore */
+      }
+    }
+    return { ok: false, billing };
   } catch {
-    return false; // timeout / abort / network = unhealthy
+    return { ok: false, billing: false }; // timeout / abort / network = model unhealthy
   }
 }
 
@@ -156,6 +177,76 @@ async function alertAll(changes: Change[]): Promise<void> {
   }
 }
 
+/**
+ * Low-balance alert. Fires when probes hit a Vapi wallet/billing error, so a
+ * depleted account (which silently takes the whole voice fleet offline) pages
+ * Sarah instead of failing quietly. Deduped to once per 6h via app_state, and
+ * sends a one-time "resolved" note when credits are back. Degrades gracefully if
+ * the app_state table is absent (then it simply alerts each run while down).
+ */
+async function billingAlert(active: boolean): Promise<void> {
+  const sb = getSupabase();
+  let lastAlertIso: string | null = null;
+  let prevActive = false;
+  if (sb) {
+    try {
+      const { data } = await sb.from('app_state').select('value').eq('key', 'voice_billing').maybeSingle();
+      const v = (data?.value ?? null) as { active?: boolean; alerted_at?: string } | null;
+      if (v) { lastAlertIso = v.alerted_at ?? null; prevActive = !!v.active; }
+    } catch {
+      /* table missing or db down: fall through, alert un-deduped */
+    }
+  }
+  const apiKey = process.env.RESEND_API_KEY;
+  const send = async (subject: string, message: string, action: string) => {
+    if (!apiKey) return;
+    try {
+      const resend = new Resend(apiKey);
+      await resend.emails.send({
+        from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to: ['sarah@modernmustardseed.com'],
+        subject,
+        html: leadNotification({
+          type: 'Contact',
+          name: 'Voice-agent billing watchdog',
+          email: 'sarah@modernmustardseed.com',
+          fields: [
+            { label: 'Service', value: 'Vapi (voice agents)' },
+            { label: 'Status', value: active ? 'WALLET EMPTY — fleet offline' : 'Recovered' },
+          ],
+          message,
+          suggestedAction: action,
+        }),
+      });
+    } catch (err) {
+      console.error('billing alert email failed', err);
+    }
+  };
+
+  if (active) {
+    const recently = lastAlertIso && Date.now() - new Date(lastAlertIso).getTime() < 6 * 3600 * 1000;
+    if (!recently) {
+      await send(
+        'URGENT: Vapi wallet empty — your voice agents are DOWN',
+        'Vapi returned a wallet/billing error (HTTP 402) when probing the voice models, so no inbound or outbound calls can connect. The brains are fine; the account is out of credits. The watchdog did NOT demote any agent off its primary brain, because this is billing, not a model fault. Top up at https://dashboard.vapi.ai (Billing).',
+        'Top up Vapi credits now, then turn on auto-recharge so this cannot recur.',
+      );
+      if (sb) {
+        try {
+          await sb.from('app_state').upsert({ key: 'voice_billing', value: { active: true, alerted_at: new Date().toISOString() }, updated_at: new Date().toISOString() });
+        } catch { /* graceful */ }
+      }
+    }
+  } else if (prevActive) {
+    await send('Voice agents: Vapi balance restored', 'The Vapi wallet/billing error has cleared. Inbound and outbound calls can connect again, and each agent is back on its primary brain.', 'All clear.');
+    if (sb) {
+      try {
+        await sb.from('app_state').upsert({ key: 'voice_billing', value: { active: false }, updated_at: new Date().toISOString() });
+      } catch { /* graceful */ }
+    }
+  }
+}
+
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
   if (secret) {
@@ -174,13 +265,18 @@ export async function GET(req: Request) {
   const uniqueModels = [
     ...new Map(VOICE_AGENTS.map((a) => [`${a.provider}::${a.primary}`, a])).values(),
   ];
-  const health = new Map<string, 'up' | 'down' | 'flaky'>();
+  const health = new Map<string, 'up' | 'down' | 'flaky' | 'billing'>();
   await Promise.all(
     uniqueModels.map(async (a: VoiceAgent) => {
       const k = `${a.provider}::${a.primary}`;
       const p1 = await probeModel(a.provider, a.primary, key);
       const p2 = await probeModel(a.provider, a.primary, key);
-      const passes = (p1 ? 1 : 0) + (p2 ? 1 : 0);
+      if (p1.billing || p2.billing) {
+        // Account out of credits: the brain is fine, do NOT fail over.
+        health.set(k, 'billing');
+        return;
+      }
+      const passes = (p1.ok ? 1 : 0) + (p2.ok ? 1 : 0);
       health.set(k, passes === 2 ? 'up' : passes === 0 ? 'down' : 'flaky');
     }),
   );
@@ -216,5 +312,9 @@ export async function GET(req: Request) {
 
   if (changes.length) await alertAll(changes);
 
-  return NextResponse.json({ ok: true, agents, changes: changes.length });
+  // Billing outage is account-level (not per-agent): alert once, never fail over.
+  const billingDown = [...health.values()].includes('billing');
+  await billingAlert(billingDown);
+
+  return NextResponse.json({ ok: true, agents, changes: changes.length, billing: billingDown });
 }
