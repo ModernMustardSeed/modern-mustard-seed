@@ -34,10 +34,13 @@ async function processStep(step: SequenceStep): Promise<{ sent: number; errors: 
       ? { gte: new Date(now - 60 * 3600 * 1000).toISOString(), lte: new Date(now - 36 * 3600 * 1000).toISOString() }
       : { gte: new Date(now - 144 * 3600 * 1000).toISOString(), lte: new Date(now - 96 * 3600 * 1000).toISOString() };
 
+  // Both the chatbot funnel and the cold-call Tracker feed this nurture. Tracker
+  // leads are promoted with source 'tracker' and enter the same Day 2 / Day 5
+  // cadence the moment they become a lead.
   const { data, error } = await client
     .from('leads')
-    .select('id, name, email, notes, source, created_at')
-    .eq('source', 'mustard-seed-chat')
+    .select('id, name, email, notes, source, status, created_at')
+    .in('source', ['mustard-seed-chat', 'tracker'])
     .gte('created_at', range.gte)
     .lte('created_at', range.lte);
 
@@ -55,6 +58,11 @@ async function processStep(step: SequenceStep): Promise<{ sent: number; errors: 
       continue;
     }
     if (!lead.email || !lead.email.includes('@') || lead.email.includes('no-email@chat')) {
+      skipped++;
+      continue;
+    }
+    // Never nurture a tracker lead that already booked, won, or is dead.
+    if (lead.source === 'tracker' && ['booked', 'won', 'lost', 'archived'].includes((lead.status as string | null) ?? '')) {
       skipped++;
       continue;
     }

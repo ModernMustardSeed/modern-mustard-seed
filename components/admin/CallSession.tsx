@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { Prospect, ProspectStatus } from '@/lib/prospects';
-import { buildLeadScript } from '@/lib/lead-script';
+import { categoryLabel } from '@/lib/lead-script';
+import CallCard from './CallCard';
 
 /**
  * The WOW: a focused power-dialer. One lead at a time, full screen, with the
@@ -21,12 +22,14 @@ export default function CallSession({
   repName,
   bookDisplay,
   onStatus,
+  onPatch,
   onClose,
 }: {
   leads: Prospect[];
   repName: string;
   bookDisplay: string;
   onStatus: (id: string, status: ProspectStatus) => void;
+  onPatch: (id: string, patch: Partial<Prospect>) => void;
   onClose: () => void;
 }) {
   const [idx, setIdx] = useState(0);
@@ -77,7 +80,7 @@ export default function CallSession({
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
   }, [outcome, advance, onClose, celebrate, done, leads, idx]);
 
-  const script = lead ? buildLeadScript(lead, repName, bookDisplay) : null;
+  const cat = lead ? categoryLabel(lead.notes) : '';
   const telHref = lead?.phone ? `tel:${lead.phone.replace(/[^0-9+]/g, '')}` : null;
   const pct = total ? Math.round((Math.min(idx, total) / total) * 100) : 0;
 
@@ -119,7 +122,7 @@ export default function CallSession({
         <div className="grow overflow-y-auto">
           <div className="max-w-2xl mx-auto px-5 md:px-8 py-6">
             {/* Lead + dial */}
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block">{lead!.city ?? ''}{script!.category ? ' · ' + script!.category : ''}</span>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block">{lead!.city ?? ''}{cat ? ' · ' + cat : ''}</span>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-[#161616] tracking-tight leading-[1.05] mt-1 mb-4">{lead!.business}</h1>
             {telHref ? (
               <a href={telHref} className="inline-flex items-center gap-2 px-7 py-4 text-lg font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">📞 Call {lead!.phone}</a>
@@ -127,34 +130,18 @@ export default function CallSession({
               <p className="text-[#161616]/55 font-body text-sm italic">No phone on file{lead!.notes?.includes('Email:') ? ' — use the email in the notes.' : ' — look it up on Google Maps.'}</p>
             )}
 
-            <p className="text-[#161616]/50 font-body text-xs mt-5 mb-3">Read it top to bottom. Pause and let them answer. You are just booking a quick demo.</p>
-
-            {/* Script */}
-            <div className="space-y-2.5">
-              {script!.steps.map((step, i) => (
-                <div key={i} className="bg-white border-2 border-[#161616] rounded-xl p-4">
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-[#E0301E] font-mono font-bold flex items-center gap-2 mb-1.5"><span className="font-display text-base text-[#F5B700]">{i + 1}</span>{step.label}</span>
-                  <p className="font-body text-[16px] leading-relaxed text-[#161616]">{step.line}</p>
-                </div>
-              ))}
-              <div className="bg-[#FFF8E6] border-2 border-[#161616] rounded-xl p-4">
-                <span className="text-[10px] uppercase tracking-[0.18em] text-[#E0301E] font-mono font-bold block mb-1.5">If you get voicemail</span>
-                <p className="font-body text-[15px] leading-relaxed text-[#161616] italic">{script!.voicemail}</p>
-              </div>
-              <details className="group bg-white border-2 border-[#161616] rounded-xl overflow-hidden">
-                <summary className="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-[#FFF8E6]">
-                  <span className="text-[11px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616]">If they push back</span>
-                  <span className="text-[#F5B700] text-xl font-bold group-open:rotate-45 transition-transform">+</span>
-                </summary>
-                <div className="px-4 pb-4 space-y-3">
-                  {script!.objections.map((o, i) => (
-                    <div key={i}>
-                      <p className="font-sans font-bold text-sm text-[#161616]">{o.q}</p>
-                      <p className="font-body text-sm text-[#3A3733] leading-relaxed italic">"{o.a}"</p>
-                    </div>
-                  ))}
-                </div>
-              </details>
+            {/* Full call card: site capture, audit, custom AI script, voicemail,
+                objections, follow-up email, booking, pipeline. Keyed to the lead
+                so it remounts fresh as the session advances. */}
+            <div className="mt-5">
+              <CallCard
+                key={lead!.id}
+                prospect={lead!}
+                repName={repName}
+                bookDisplay={bookDisplay}
+                onPatch={onPatch}
+                compact
+              />
             </div>
           </div>
         </div>

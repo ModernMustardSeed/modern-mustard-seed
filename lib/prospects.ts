@@ -8,6 +8,17 @@
 export type ProspectChannel = 'cold-call' | 'walk-in' | 'online' | 'referral';
 export type ProspectStatus = 'to-contact' | 'contacted' | 'demoed' | 'booked' | 'won' | 'not-interested';
 
+/** Cached website-audit report (the same shape lib/website-audit returns). */
+export type ProspectAudit = {
+  overall_score: number;
+  letter_grade: string;
+  headline: string;
+  overall_analysis: string;
+  categories?: Record<string, { score: number; letter: string; notes: string }>;
+  top_three_fixes?: { title: string; why: string; how: string }[];
+  full_todo?: { category: string; priority: string; task: string }[];
+};
+
 export type Prospect = {
   id: string;
   rep_email: string;
@@ -18,6 +29,17 @@ export type Prospect = {
   channel: ProspectChannel;
   status: ProspectStatus;
   notes: string | null;
+  /** Their website (powers the in-Tracker audit and the follow-up email). */
+  website: string | null;
+  /** Their email (powers the follow-up email and the pipeline handoff). */
+  email: string | null;
+  /** Last website-audit result, cached so the script + email can reference it. */
+  audit_score: number | null;
+  audit_url: string | null;
+  audit_json: ProspectAudit | null;
+  audit_at: string | null;
+  /** The leads-pipeline row this prospect was promoted into, if any. */
+  lead_id: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -55,13 +77,31 @@ export const SETUP_SQL = `create table if not exists public.rep_prospects (
   channel text not null default 'cold-call',
   status text not null default 'to-contact',
   notes text,
+  website text,
+  email text,
+  audit_score integer,
+  audit_url text,
+  audit_json jsonb,
+  audit_at timestamptz,
+  lead_id uuid,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
 create index if not exists rep_prospects_rep_idx on public.rep_prospects (rep_email);
 create index if not exists rep_prospects_status_idx on public.rep_prospects (status);
 create index if not exists rep_prospects_city_idx on public.rep_prospects (city);
-alter table public.rep_prospects disable row level security;`;
+create index if not exists rep_prospects_lead_idx on public.rep_prospects (lead_id);
+create index if not exists rep_prospects_email_idx on public.rep_prospects (email);
+alter table public.rep_prospects disable row level security;
+
+-- Already have the table from migration 025? Add the closed-loop columns:
+alter table public.rep_prospects add column if not exists website text;
+alter table public.rep_prospects add column if not exists email text;
+alter table public.rep_prospects add column if not exists audit_score integer;
+alter table public.rep_prospects add column if not exists audit_url text;
+alter table public.rep_prospects add column if not exists audit_json jsonb;
+alter table public.rep_prospects add column if not exists audit_at timestamptz;
+alter table public.rep_prospects add column if not exists lead_id uuid;`;
 
 /** Distinguish "table not created yet" from other DB errors so the UI can guide setup. */
 export function isMissingTableError(err: unknown): boolean {

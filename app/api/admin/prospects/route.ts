@@ -35,7 +35,7 @@ export async function POST(req: Request) {
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
-  let body: { business?: string; city?: string; phone?: string; channel?: string; notes?: string };
+  let body: { business?: string; city?: string; phone?: string; channel?: string; notes?: string; website?: string; email?: string };
   try {
     body = await req.json();
   } catch {
@@ -58,6 +58,8 @@ export async function POST(req: Request) {
         channel,
         status: 'to-contact',
         notes: (body.notes ?? '').trim().slice(0, 2000) || null,
+        website: (body.website ?? '').trim().slice(0, 300) || null,
+        email: (body.email ?? '').trim().toLowerCase().slice(0, 200) || null,
       })
       .select('*')
       .single();
