@@ -50,8 +50,10 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
   const [add, setAdd] = useState({ business: '', city: 'Kalispell', phone: '', website: '', email: '', type: 'Restaurant', channel: 'cold-call', notes: '' });
   const [adding, setAdding] = useState(false);
 
-  // Rows whose website is being auto-audited in the background.
+  // Rows whose website is being auto-audited, and rows whose site/email is
+  // being looked up, in the background.
   const [auditing, setAuditing] = useState<Set<string>>(new Set());
+  const [enriching, setEnriching] = useState<Set<string>>(new Set());
 
   // Patch a single row in place so the table, the call card, and the call
   // session all stay in sync without a full reload.
@@ -82,6 +84,29 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
     } finally {
       setAuditing((s) => { const n = new Set(s); n.delete(p.id); return n; });
     }
+  };
+
+  // The full hands-off arm: find the site + email, then audit it. Runs in the
+  // background the moment a business is added, so the rep just types a name and
+  // city and comes back to a scored, emailable lead.
+  const enrichThenAudit = async (p: Prospect) => {
+    let website = p.website ?? null;
+    if (!website || !p.email) {
+      setEnriching((s) => new Set(s).add(p.id));
+      try {
+        const res = await fetch(`/api/admin/prospects/${p.id}/enrich`, { method: 'POST' });
+        const json = await res.json();
+        if (res.ok) {
+          patchRow(p.id, { website: json.website ?? null, email: json.email ?? null, phone: json.phone ?? p.phone });
+          website = json.website ?? website;
+        }
+      } catch {
+        /* silent: the rep can use "Find site & email" from the card */
+      } finally {
+        setEnriching((s) => { const n = new Set(s); n.delete(p.id); return n; });
+      }
+    }
+    if (website) await autoAudit({ ...p, website });
   };
 
   // Filters
@@ -133,8 +158,8 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
       else if (res.ok) {
         setRows((r) => [json.prospect, ...r]);
         setAdd((a) => ({ ...a, business: '', phone: '', website: '', email: '', notes: '' }));
-        // Arm the new prospect with a website audit in the background.
-        if (json.prospect?.website) void autoAudit(json.prospect);
+        // Find the site + email (if not supplied), then audit, all in the background.
+        void enrichThenAudit(json.prospect);
       } else setError(json.error ?? 'Could not add');
     } catch {
       setError('Network error');
@@ -341,7 +366,9 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
                         <td className="px-4 py-3 text-[#3A3733] font-body">{p.city ?? '-'}</td>
                         <td className="px-4 py-3 font-mono text-xs text-[#3A3733] whitespace-nowrap">{p.phone ?? '-'}</td>
                         <td className="px-4 py-3">
-                          {auditing.has(p.id) ? (
+                          {enriching.has(p.id) ? (
+                            <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-[#2D6A4F] animate-pulse">finding…</span>
+                          ) : auditing.has(p.id) ? (
                             <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-[#1E50C8] animate-pulse">auditing…</span>
                           ) : p.audit_score != null ? (
                             <span className={`text-[10px] font-mono font-bold rounded-full border-2 px-2 py-0.5 ${scoreColor(p.audit_score)}`}>{p.audit_score}</span>

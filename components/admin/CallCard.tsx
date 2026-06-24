@@ -103,9 +103,10 @@ export default function CallCard({
     }
   };
 
-  const runAudit = async () => {
-    const url = contact.website.trim();
+  const runAudit = async (urlArg?: string) => {
+    const url = (urlArg ?? contact.website).trim();
     if (!url) { setMsg({ kind: 'err', text: 'Add their website first.' }); return; }
+    if (url !== contact.website) setContact((c) => ({ ...c, website: url }));
     setAuditLoading(true);
     setMsg(null);
     try {
@@ -128,6 +129,29 @@ export default function CallCard({
       setMsg({ kind: 'err', text: 'Audit hit a network error.' });
     } finally {
       setAuditLoading(false);
+    }
+  };
+
+  // Find the prospect's website + email from its name + city, fill the fields,
+  // and (if a site turns up and we have not audited yet) run the audit too.
+  const [finding, setFinding] = useState(false);
+  const findContact = async () => {
+    setFinding(true);
+    setMsg(null);
+    try {
+      const res = await fetch(`/api/admin/prospects/${id}/enrich`, { method: 'POST' });
+      const json = await res.json();
+      if (res.ok) {
+        setContact({ website: json.website ?? '', email: json.email ?? '' });
+        onPatch(id, { website: json.website ?? null, email: json.email ?? null, phone: json.phone ?? prospect.phone });
+        const bits = [json.website ? 'site' : '', json.email ? 'email' : ''].filter(Boolean);
+        setMsg(bits.length ? { kind: 'ok', text: `Found ${bits.join(' + ')}.` } : { kind: 'err', text: 'Could not find a site or email. Add them manually.' });
+        if (json.website && !audit) await runAudit(json.website);
+      } else setMsg({ kind: 'err', text: json.error ?? 'Lookup failed.' });
+    } catch {
+      setMsg({ kind: 'err', text: 'Lookup hit a network error.' });
+    } finally {
+      setFinding(false);
     }
   };
 
@@ -284,7 +308,8 @@ export default function CallCard({
           <button onClick={saveContact} disabled={savingContact} className={`${pill} bg-white text-[#161616] border-[#161616] hover:bg-[#FFF8E6]`}>{savingContact ? 'Saving...' : 'Save'}</button>
         </div>
         <div className="flex flex-wrap gap-2 mt-3">
-          <button onClick={runAudit} disabled={auditLoading} className={`${pill} bg-[#1E50C8] text-white border-[#1E50C8] hover:opacity-90`}>{auditLoading ? 'Auditing their site...' : audit ? 'Re-run audit' : 'Run website audit'}</button>
+          <button onClick={findContact} disabled={finding} className={`${pill} bg-[#2D6A4F] text-white border-[#2D6A4F] hover:opacity-90`}>{finding ? 'Looking them up...' : '🔎 Find site & email'}</button>
+          <button onClick={() => runAudit()} disabled={auditLoading} className={`${pill} bg-[#1E50C8] text-white border-[#1E50C8] hover:opacity-90`}>{auditLoading ? 'Auditing their site...' : audit ? 'Re-run audit' : 'Run website audit'}</button>
           <button onClick={generateScript} disabled={scriptLoading} className={`${pill} bg-[#161616] text-[#FBF6EA] border-[#161616] hover:opacity-90`}>{scriptLoading ? 'Writing script...' : audit ? '✨ Make script use the audit' : '✨ Make script custom'}</button>
         </div>
       </div>
