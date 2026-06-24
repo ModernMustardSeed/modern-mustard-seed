@@ -28,6 +28,7 @@
     "next": "^16.0.0",
     "next-mdx-remote": "^6.0.0",
     "node-html-parser": "^7.1.0",
+    "node-ical": "^0.26.1",
     "pdf-lib": "^1.17.1",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",

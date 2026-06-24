@@ -7,6 +7,7 @@
 
 import { availability } from '@/data/availability';
 import { getSupabase } from './supabase';
+import { getBusyIntervals, overlapsBusy } from './calendar-busy';
 
 export type Slot = {
   /** Canonical: UTC start, ISO 8601 with Z. */
@@ -192,8 +193,10 @@ function pickForDay<T>(items: T[], n: number, dayIndex: number): T[] {
 export async function getNextAvailableSlots(): Promise<Slot[]> {
   if (!availability.enabled) return [];
   const candidates = candidateSlots(new Date());
-  const booked = await bookedStartTimes();
-  const open = candidates.filter((s) => !booked.has(s.startIso));
+  const [booked, busy] = await Promise.all([bookedStartTimes(), getBusyIntervals()]);
+  const open = candidates.filter(
+    (s) => !booked.has(s.startIso) && !overlapsBusy(Date.parse(s.startIso), Date.parse(s.endIso), busy)
+  );
 
   // Group by Mountain-Time day (open is already chronological, and dayLabel is
   // unique per calendar day within the lookahead window).
@@ -221,9 +224,12 @@ export async function isSlotAvailable(startIso: string): Promise<boolean> {
   if (isNaN(slotStart.getTime())) return false;
   // Within working window?
   const candidates = candidateSlots(new Date());
-  if (!candidates.some((c) => c.startIso === startIso)) return false;
-  const booked = await bookedStartTimes();
-  return !booked.has(startIso);
+  const candidate = candidates.find((c) => c.startIso === startIso);
+  if (!candidate) return false;
+  const [booked, busy] = await Promise.all([bookedStartTimes(), getBusyIntervals()]);
+  if (booked.has(startIso)) return false;
+  // Not colliding with a real calendar event.
+  return !overlapsBusy(Date.parse(candidate.startIso), Date.parse(candidate.endIso), busy);
 }
 
 /** Format a stored ISO string back to its Mountain display label. */

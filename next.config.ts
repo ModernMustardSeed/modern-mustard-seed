@@ -2,6 +2,9 @@ import type { NextConfig } from 'next';
 
 const config: NextConfig = {
   reactStrictMode: true,
+  // node-ical (and its rrule/moment-timezone deps) must run from node_modules
+  // untouched. Bundling it breaks at runtime ("BigInt is not a function").
+  serverExternalPackages: ['node-ical'],
   turbopack: {
     root: __dirname,
   },
