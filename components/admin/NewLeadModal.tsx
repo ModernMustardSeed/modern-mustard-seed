@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import type { LeadRow, LeadType, LeadStatus } from '@/lib/supabase';
+import Modal from '@/components/ui/Modal';
 
 // Simple "add a lead by hand" modal for the admin pipeline. For referrals,
 // walk-ins, and phone calls that never hit a public form. Posts to
@@ -71,28 +72,8 @@ export default function NewLeadModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[120] flex items-start justify-center p-4 sm:p-8 overflow-y-auto bg-[#161616]/60"
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full max-w-lg bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] my-8"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between border-b-2 border-[#161616]/10 px-6 py-4">
-          <span className="text-[11px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
-            New lead
-          </span>
-          <button
-            onClick={onClose}
-            className="text-[#161616]/45 hover:text-[#161616] text-xl leading-none"
-            aria-label="Close"
-          >
-            ×
-          </button>
-        </div>
-
-        <form onSubmit={submit} className="px-6 py-5 space-y-3">
+    <Modal open onClose={onClose} eyebrow="New lead" size="md">
+      <form onSubmit={submit} className="space-y-3">
           <div className="grid sm:grid-cols-2 gap-3">
             <Field label="Name">
               <input value={form.name} onChange={set('name')} placeholder="Jane Builder" className={inp} />
@@ -173,8 +154,7 @@ export default function NewLeadModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </Modal>
   );
 }
 
