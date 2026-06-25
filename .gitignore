@@ -53,3 +53,6 @@ next-env.d.ts
 # Launch video render artifacts + env
 scripts/launch-video/recordings/
 .env.video
+
+# Local lead-data backups (contain contact info, never commit)
+backups/
