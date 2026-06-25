@@ -10,7 +10,9 @@
  *   1. the website already on the prospect (never overwritten)
  *   2. Foursquare Places (if a key is set)
  *   3. OpenStreetMap (Nominatim) website / contact:website tags
- * Email: OSM contact:email tag, else scraped from the site (mailto + regex).
+ * Email: OSM contact:email tag, else scraped from the site (mailto + regex),
+ * else Hunter.io domain search when HUNTER_API_KEY is set (a paid fallback for
+ * sites that hide their email). All three email sources are free except Hunter.
  */
 
 const NOMINATIM = 'https://nominatim.openstreetmap.org/search';
@@ -181,10 +183,43 @@ async function scrapeEmail(website: string): Promise<string | null> {
   return pickBestEmail(collected, siteHost);
 }
 
+const HUNTER = 'https://api.hunter.io/v2/domain-search';
+
+/**
+ * Hunter.io domain search: given a domain, return the best contact email.
+ * Only runs when HUNTER_API_KEY is set and scraping found nothing, so it is a
+ * paid fallback (1 credit per call) for businesses whose site hides its email.
+ * Prefers a role inbox (info@, contact@) over a personal one for cold outreach.
+ */
+async function hunterEmail(domain: string): Promise<string | null> {
+  const key = process.env.HUNTER_API_KEY;
+  if (!key || !domain) return null;
+  try {
+    const res = await fetch(`${HUNTER}?domain=${encodeURIComponent(domain)}&limit=10&api_key=${key}`, {
+      headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as { data?: { emails?: Array<{ value: string; type: string; confidence: number }> } };
+    const emails = (json.data?.emails ?? []).filter((e) => e?.value && !EMAIL_BLOCK.test(e.value));
+    if (!emails.length) return null;
+    emails.sort((a, b) => {
+      const ga = a.type === 'generic' ? 1 : 0;
+      const gb = b.type === 'generic' ? 1 : 0;
+      if (ga !== gb) return gb - ga; // role inbox first
+      return (b.confidence ?? 0) - (a.confidence ?? 0); // then most deliverable
+    });
+    return emails[0].value.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Find a website, phone, and email for a business. Never overwrites a website
  * the prospect already has; fills phone/email only when found. Safe to call with
- * no keys set (uses OSM + a site scrape).
+ * no keys set (uses OSM + a site scrape); uses Hunter as a paid email fallback
+ * when HUNTER_API_KEY is set.
  */
 export async function enrichProspect(input: { business: string; city: string | null; website?: string | null; phone?: string | null }): Promise<EnrichResult> {
   const sources: string[] = [];
@@ -209,6 +244,12 @@ export async function enrichProspect(input: { business: string; city: string | n
   if (!email && website) {
     const scraped = await scrapeEmail(website);
     if (scraped) { email = scraped; sources.push('site'); }
+  }
+  // Paid fallback: Hunter domain search, only when scraping found nothing and a
+  // key is set. Free runs (no key) simply skip this.
+  if (!email && website) {
+    const h = await hunterEmail(hostOf(website));
+    if (h) { email = h; sources.push('hunter'); }
   }
 
   return { website, email, phone, sources };
