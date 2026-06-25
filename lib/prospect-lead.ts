@@ -34,7 +34,7 @@ export function isGoodLeadStatus(status: ProspectStatus): boolean {
 
 export type ConvertResult =
   | { ok: true; leadId: string; created: boolean }
-  | { ok: false; reason: 'no-email' | 'db'; error?: string };
+  | { ok: false; reason: 'no-contact' | 'db'; error?: string };
 
 /**
  * Promote a prospect into the leads pipeline. Idempotent: if the prospect is
@@ -48,8 +48,11 @@ export async function convertProspectToLead(
   prospect: Prospect,
   opts: { status?: string; ownerEmail?: string | null } = {}
 ): Promise<ConvertResult> {
-  const email = prospect.email?.trim().toLowerCase();
-  if (!email) return { ok: false, reason: 'no-email' };
+  // Cold-call prospects are phone-first; an email is a bonus, not a requirement.
+  // A pipeline lead just needs at least one way to reach them.
+  const email = prospect.email?.trim().toLowerCase() || null;
+  const phone = prospect.phone?.trim() || null;
+  if (!email && !phone) return { ok: false, reason: 'no-contact' };
 
   const status = opts.status ?? leadStatusForProspect(prospect.status);
   const owner = opts.ownerEmail ?? prospect.rep_email ?? null;
@@ -74,7 +77,7 @@ export async function convertProspectToLead(
     status,
     email,
     name: null,
-    phone: prospect.phone || null,
+    phone,
     business_name: prospect.business || null,
     audit_url: prospect.website || prospect.audit_url || null,
     audit_score: prospect.audit_score ?? null,
@@ -87,15 +90,20 @@ export async function convertProspectToLead(
     // 1. Already linked? Update that lead in place.
     let leadId = prospect.lead_id ?? null;
     if (!leadId) {
-      // 2. Match an existing lead by email so we never double-enter someone.
-      const { data: existing } = await supabase
-        .from('leads')
-        .select('id')
-        .eq('email', email)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (existing?.id) leadId = existing.id as string;
+      // Match an existing lead so we never double-enter someone: by email when we
+      // have one, otherwise by phone (the cold-call case).
+      const matchCol = email ? 'email' : 'phone';
+      const matchVal = email ?? phone;
+      if (matchVal) {
+        const { data: existing } = await supabase
+          .from('leads')
+          .select('id')
+          .eq(matchCol, matchVal)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (existing?.id) leadId = existing.id as string;
+      }
     }
 
     let created = false;

@@ -42,15 +42,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     if (error) throw error;
 
     // Auto-promote to the pipeline the moment a prospect turns into a good lead.
-    let promotion: { promoted: boolean; leadId?: string; needsEmail?: boolean } = { promoted: false };
+    // Phone-first: a phone OR an email is enough (cold prospects rarely have email).
+    let promotion: { promoted: boolean; leadId?: string; needsContact?: boolean } = { promoted: false };
     if (typeof body.status === 'string' && isGoodLeadStatus(body.status as ProspectStatus)) {
       const prospect = updated as Prospect;
-      if (!prospect.email) {
-        promotion = { promoted: false, needsEmail: true };
-      } else {
-        const res = await convertProspectToLead(supabase, prospect);
-        if (res.ok) promotion = { promoted: true, leadId: res.leadId };
-      }
+      const res = await convertProspectToLead(supabase, prospect);
+      if (res.ok) promotion = { promoted: true, leadId: res.leadId };
+      else if (res.reason === 'no-contact') promotion = { promoted: false, needsContact: true };
     }
 
     return NextResponse.json({ ok: true, prospect: updated, ...promotion });

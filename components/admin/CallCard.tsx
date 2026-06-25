@@ -189,8 +189,8 @@ export default function CallCard({
       if (json.promoted && json.leadId) {
         onPatch(id, { lead_id: json.leadId });
         setMsg({ kind: 'ok', text: 'Sent to the pipeline. It is in the CRM and the follow-up loop now.' });
-      } else if (json.needsEmail) {
-        setMsg({ kind: 'err', text: 'Marked. Add their email to send it into the pipeline.' });
+      } else if (json.needsContact) {
+        setMsg({ kind: 'err', text: 'Marked. Add a phone or email to send it into the pipeline.' });
       }
     } finally {
       setBusy(null);
@@ -217,7 +217,7 @@ export default function CallCard({
   };
 
   const sendToPipeline = async () => {
-    if (!contact.email.trim()) { setMsg({ kind: 'err', text: 'Add their email first.' }); return; }
+    if (!contact.email.trim() && !prospect.phone) { setMsg({ kind: 'err', text: 'Add a phone number or email first.' }); return; }
     setBusy('pl');
     setMsg(null);
     try {
@@ -416,8 +416,10 @@ export default function CallCard({
             </>
           )}
           <button onClick={sendFollowUp} disabled={busy === 'fu'} className={`${pill} bg-[#1E50C8] text-white border-[#1E50C8] hover:opacity-90`}>{busy === 'fu' ? 'Sending...' : audit ? 'Email the audit' : 'Send follow-up'}</button>
-          {!prospect.lead_id && (
+          {!prospect.lead_id ? (
             <button onClick={sendToPipeline} disabled={busy === 'pl'} className={`${pill} bg-[#F5B700] text-[#161616] border-[#161616] hover:bg-[#FFD23F]`}>{busy === 'pl' ? 'Sending...' : 'Send to pipeline'}</button>
+          ) : (
+            <a href="/admin/leads" className={`${pill} bg-[#EAF3EE] text-[#1f4e3a] border-[#2D6A4F] hover:bg-[#d9ebe0] inline-flex items-center`}>✓ In pipeline — view</a>
           )}
         </div>
         {!compact && <p className="text-[#161616]/45 font-body text-[11px] mt-2">Booked or Won moves them into the pipeline automatically. Follow-up and booking both need their email.</p>}
