@@ -28,7 +28,7 @@ export default function AffiliatesAdmin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState<string | null>(null);
-  const [failedEmails, setFailedEmails] = useState<Record<string, string>>({});
+  const [failedEmails, setFailedEmails] = useState<Record<string, { event: string; id?: string }>>({});
   const [msg, setMsg] = useState('');
   const [add, setAdd] = useState({ name: '', email: '', sendWelcome: true });
   const [adding, setAdding] = useState(false);
@@ -50,9 +50,9 @@ export default function AffiliatesAdmin() {
     try {
       const hr = await fetch('/api/admin/email-health');
       const hj = await hr.json();
-      const map: Record<string, string> = {};
+      const map: Record<string, { event: string; id?: string }> = {};
       for (const f of hj.failures ?? []) {
-        for (const to of f.to ?? []) map[String(to).toLowerCase()] = f.last_event;
+        for (const to of f.to ?? []) map[String(to).toLowerCase()] = { event: f.last_event, id: f.id };
       }
       setFailedEmails(map);
     } catch { /* ignore */ }
@@ -173,7 +173,8 @@ export default function AffiliatesAdmin() {
     }
   };
 
-  const emailFailed = (email: string) => failedEmails[email.toLowerCase()];
+  const emailFailed = (email: string) => failedEmails[email.toLowerCase()]?.event;
+  const failedId = (email: string) => failedEmails[email.toLowerCase()]?.id;
 
   const pending = rows.filter((r) => r.status === 'pending');
   const approved = rows.filter((r) => r.status === 'approved');
@@ -191,7 +192,10 @@ export default function AffiliatesAdmin() {
         {failingPartners.length > 0 && (
           <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-8">
             <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">Delivery alerts</h2>
-            <p className="text-[#3A3733] font-body text-sm mb-4">These partners did not receive their last email. Fix the address if it is wrong, then resend their welcome with login link.</p>
+            <p className="text-[#3A3733] font-body text-sm mb-1">These partners did not receive their last email.</p>
+            <p className="text-[#161616]/60 font-body text-xs mb-4 leading-relaxed">
+              <strong className="text-[#161616]">Suppressed</strong> means Resend is blocking this exact address because it bounced or was marked spam before, and resending alone will keep getting blocked. Click <em>Remove from suppression</em> to open it in Resend and click &ldquo;Remove from suppression list,&rdquo; then resend. <strong className="text-[#161616]">Bounced</strong> usually means a typo: fix the address, then resend.
+            </p>
             <div className="space-y-3">
               {failingPartners.map((r) => (
                 <div key={r.id} className="flex items-start justify-between gap-4 flex-wrap border-t border-[#161616]/10 pt-3 first:border-t-0 first:pt-0">
@@ -202,6 +206,11 @@ export default function AffiliatesAdmin() {
                     </p>
                   </div>
                   <div className="flex gap-2 flex-shrink-0">
+                    {emailFailed(r.email) === 'suppressed' && failedId(r.email) && (
+                      <a href={`https://resend.com/emails/${failedId(r.email)}`} target="_blank" rel="noopener noreferrer" className="px-3 py-2 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-white bg-[#E0301E] rounded-lg hover:bg-[#b9261a] whitespace-nowrap">
+                        Remove from suppression →
+                      </a>
+                    )}
                     <button onClick={() => editEmail(r.id, r.email)} disabled={busy === r.id} className="px-3 py-2 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold text-[#161616] border border-[#161616]/25 rounded-lg hover:bg-[#FBF6EA] disabled:opacity-50 whitespace-nowrap">
                       Edit email
                     </button>
