@@ -316,16 +316,25 @@ export type AuditReport = {
  * `note` is Sarah's own message at the top, so each send reads as a real,
  * one-to-one offer rather than a template.
  */
+const TRACK_SITE = 'https://modernmustardseed.com';
+/** A 1x1 open-tracking pixel row, keyed to a prospect id. Email-table safe. */
+function trackPixel(id?: string): string {
+  if (!id) return '';
+  return `<tr><td style="padding:0;height:1px;line-height:1px;font-size:1px"><img src="${TRACK_SITE}/api/track/open?p=${encodeURIComponent(id)}" width="1" height="1" alt="" style="display:block;border:0;width:1px;height:1px"></td></tr>`;
+}
+
 export function auditReportEmail({
   toName,
   url,
   report,
   note,
+  trackId,
 }: {
   toName?: string;
   url: string;
   report: AuditReport;
   note?: string;
+  trackId?: string;
 }): string {
   let domain = url;
   try {
@@ -402,7 +411,8 @@ export function auditReportEmail({
     paragraph(
       `<span style="font-size:14px">Honestly, we would love to help you fix these. Helping local businesses turn their website into something that quietly brings in real work is the thing we do best, and we would be glad to take this whole list off your plate so you can get back to what you actually love doing. Just reply to this email or grab a time above and we will map the fastest path to your A. No pressure either way, and either way I am cheering you on.</span>`
     ) +
-    signature('Sarah');
+    signature('Sarah') +
+    trackPixel(trackId);
 
   return shell({
     preheader: `Your website audit: ${report.overall_score}/100 (${report.letter_grade}). The three fixes that matter most.`,
@@ -693,6 +703,7 @@ type ClientEmailArgs = {
   cta?: { label: string; url: string };
   secondary?: { label: string; url: string };
   signature?: string;
+  trackId?: string;
 };
 
 /** General-purpose outbound customer email. */
@@ -704,12 +715,14 @@ export function clientEmail({
   cta,
   secondary,
   signature: sig = 'Sarah',
+  trackId,
 }: ClientEmailArgs): string {
   const inner = `
     ${greeting ? headline(greeting) : ''}
     <tr><td class="mms-body" style="padding:24px 44px 0;font-family:${SANS};font-size:16px;color:${C.body};line-height:1.72">${body}</td></tr>
     ${cta ? ctaBlock(cta, secondary) : ''}
     ${signature(sig)}
+    ${trackPixel(trackId)}
   `;
   return shell({ preheader, subtitle: eb, inner });
 }

@@ -53,11 +53,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       /* keep raw */
     }
     subject = `A quick audit of ${domain}`;
-    html = auditReportEmail({ url: prospect.website ?? prospect.audit_url ?? domain, report: prospect.audit_json, note: note || undefined });
+    html = auditReportEmail({ url: prospect.website ?? prospect.audit_url ?? domain, report: prospect.audit_json, note: note || undefined, trackId: id });
   } else {
     subject = `Following up from Modern Mustard Seed`;
     html = clientEmail({
       preheader: 'A quick note from Sarah at Modern Mustard Seed.',
+      trackId: id,
       greeting: `Hi there,`,
       body:
         (note
@@ -88,6 +89,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const kind = prospect.audit_json ? 'audit report' : 'intro';
   const update: Record<string, unknown> = {
     notes: `${prevNotes}${prevNotes ? '\n' : ''}[${kind} email sent ${stamp}]`,
+    last_email_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
   if (prospect.status === 'to-contact') update.status = 'contacted';

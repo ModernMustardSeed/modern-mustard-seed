@@ -422,6 +422,11 @@ export default function CallCard({
             <a href="/admin/leads" className={`${pill} bg-[#EAF3EE] text-[#1f4e3a] border-[#2D6A4F] hover:bg-[#d9ebe0] inline-flex items-center`}>✓ In pipeline — view</a>
           )}
         </div>
+        {prospect.email_opened_at ? (
+          <p className="mt-2 inline-flex items-center gap-1.5 text-[12px] font-sans font-bold text-[#1f4e3a] bg-[#EAF3EE] border-2 border-[#2D6A4F] rounded-full px-3 py-1">👁 Opened the email{(prospect.email_open_count ?? 0) > 1 ? ` ${prospect.email_open_count}x` : ''} · {new Date(prospect.email_opened_at).toLocaleDateString()}</p>
+        ) : prospect.last_email_at ? (
+          <p className="mt-2 text-[12px] font-body text-[#161616]/45">Email sent {new Date(prospect.last_email_at).toLocaleDateString()}, not opened yet.</p>
+        ) : null}
         {!compact && <p className="text-[#161616]/45 font-body text-[11px] mt-2">Booked or Won moves them into the pipeline automatically. Follow-up and booking both need their email.</p>}
       </div>
     </>

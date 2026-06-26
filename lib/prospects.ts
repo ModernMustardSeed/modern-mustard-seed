@@ -40,6 +40,10 @@ export type Prospect = {
   audit_at: string | null;
   /** The leads-pipeline row this prospect was promoted into, if any. */
   lead_id: string | null;
+  /** Email open tracking: when the audit/follow-up email was sent + opened. */
+  last_email_at: string | null;
+  email_opened_at: string | null;
+  email_open_count: number | null;
   created_at: string;
   updated_at: string;
 };
