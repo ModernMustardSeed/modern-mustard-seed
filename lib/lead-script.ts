@@ -56,16 +56,38 @@ export function buildLeadScript(p: Prospect, repName: string, bookDisplay: strin
   const category = categoryLabel(p.notes);
   const hook = hookFor(category);
 
-  const steps = [
-    { label: 'Open', line: `Hi, is this ${biz}? Hey, my name is ${first}. I'll be honest, this is a quick cold call, do you have 20 seconds before I let you go?` },
-    { label: 'Why you are calling', line: `Thanks, I appreciate it. I work with a company that builds AI tools for ${city} businesses. The reason I'm calling: for a place like yours, ${hook}. We set up a system that answers your phone and books appointments around the clock, in a natural voice, even when you're closed or slammed.` },
-    { label: 'Find the problem', line: `Quick question: when you're busy or after hours, what happens to your calls right now? Do they mostly go to voicemail?` },
-    { label: 'Offer the demo', line: `That's exactly what we fix, and the easiest way is to hear it. I'd love to show you a quick live demo, you can actually talk to it. Takes about ten minutes. Would tomorrow morning or afternoon be better?` },
-    { label: 'Lock it in', line: `Perfect. What's the best cell or email to send the details to? I'll book you in and send a confirmation. Looking forward to it.` },
-    { label: 'If they hesitate', line: `No pressure at all, I caught you out of the blue. Can I text you a link so you can hear the demo yourself whenever you have a sec? It's ${bookDisplay}.` },
-  ];
+  // If we have audited their site, the script LEADS with the audit (our outreach
+  // mode), referencing the real score and top fix so it is ready with zero work.
+  const audit = p.audit_json;
+  const score = p.audit_score;
+  let domain = p.website || '';
+  try { if (domain) domain = new URL(/^https?:\/\//i.test(domain) ? domain : `https://${domain}`).hostname.replace(/^www\./, ''); } catch { /* keep raw */ }
+  const topFix = audit?.top_three_fixes?.[0];
 
-  const voicemail = `Hi, this is ${first} with Modern Mustard Seed, calling for ${biz}. I help ${city} businesses make sure they never miss a call or a booking, even after hours. I'd love to show you a quick demo, it's pretty cool. Call or text me back, or I'll try you again. Thanks!`;
+  let steps: { label: string; line: string }[];
+  let voicemail: string;
+
+  if (audit && score != null) {
+    steps = [
+      { label: 'Open', line: `Hi, is this ${biz}? Hey, my name is ${first}. I'll be honest, this is a quick cold call, do you have 20 seconds before I let you go?` },
+      { label: 'Why you are calling', line: `Thanks, I appreciate it. I actually took a look at your website${domain ? `, ${domain},` : ''} and ran it through a quick audit. It came back at ${score} out of 100.${audit.headline ? ` The short version: ${audit.headline}` : ''}` },
+      { label: 'The one thing', line: topFix ? `The biggest opportunity I saw was this: ${topFix.title}. ${topFix.why} That one alone is probably costing you business.` : `There are a few high-leverage fixes that would help your site bring in noticeably more business.` },
+      { label: 'Offer the audit', line: `I put together the full breakdown of what to fix first, and it's free. I'd love to walk you through it for about ten minutes, or I can email you the whole report right now. Which is easier for you?` },
+      { label: 'Lock it in', line: `Perfect. What's the best email to send it to? And would tomorrow morning or afternoon be better for a quick call? I'll send the report and a confirmation.` },
+      { label: 'If they hesitate', line: `No pressure at all, I caught you out of the blue. Can I just email you the audit so you can look it over whenever? You can also grab a time here: ${bookDisplay}.` },
+    ];
+    voicemail = `Hi, this is ${first} with Modern Mustard Seed, calling for ${biz}. I ran a quick audit of your website and found a few things that are likely costing you business, it scored ${score} out of 100. I'd love to send you the free breakdown. Call or text me back, or I'll try you again. Thanks!`;
+  } else {
+    steps = [
+      { label: 'Open', line: `Hi, is this ${biz}? Hey, my name is ${first}. I'll be honest, this is a quick cold call, do you have 20 seconds before I let you go?` },
+      { label: 'Why you are calling', line: `Thanks, I appreciate it. I work with a company that builds AI tools for ${city} businesses. The reason I'm calling: for a place like yours, ${hook}. We set up a system that answers your phone and books appointments around the clock, in a natural voice, even when you're closed or slammed.` },
+      { label: 'Find the problem', line: `Quick question: when you're busy or after hours, what happens to your calls right now? Do they mostly go to voicemail?` },
+      { label: 'Offer the demo', line: `That's exactly what we fix, and the easiest way is to hear it. I'd love to show you a quick live demo, you can actually talk to it. Takes about ten minutes. Would tomorrow morning or afternoon be better?` },
+      { label: 'Lock it in', line: `Perfect. What's the best cell or email to send the details to? I'll book you in and send a confirmation. Looking forward to it.` },
+      { label: 'If they hesitate', line: `No pressure at all, I caught you out of the blue. Can I text you a link so you can hear the demo yourself whenever you have a sec? It's ${bookDisplay}.` },
+    ];
+    voicemail = `Hi, this is ${first} with Modern Mustard Seed, calling for ${biz}. I help ${city} businesses make sure they never miss a call or a booking, even after hours. I'd love to show you a quick demo, it's pretty cool. Call or text me back, or I'll try you again. Thanks!`;
+  }
 
   const fullText =
     `Call script for ${biz} (${city})\n\n` +

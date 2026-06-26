@@ -49,7 +49,7 @@ export default function InboxPage() {
             {items.map((it) => (
               <a
                 key={it.id}
-                href="/admin/prospects"
+                href={it.prospect_id ? `/admin/prospects?focus=${it.prospect_id}` : '/admin/prospects'}
                 className={`block rounded-xl border-2 border-[#161616] px-4 py-3 transition-colors hover:bg-[#FFF8E6] ${!it.read ? 'bg-[#FFF8E6] shadow-[3px_3px_0_0_#161616]' : 'bg-white'}`}
               >
                 <div className="flex items-center justify-between gap-2">

@@ -60,6 +60,22 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
   const patchRow = (id: string, patch: Partial<Prospect>) =>
     setRows((r) => r.map((p) => (p.id === id ? { ...p, ...patch } : p)));
 
+  // Deep link from the inbox / alerts: /admin/prospects?focus=<id> opens that
+  // lead's card straight away (once rows are loaded), then clears the param.
+  const [focusHandled, setFocusHandled] = useState(false);
+  useEffect(() => {
+    if (focusHandled || loading || rows.length === 0) return;
+    const focus = new URLSearchParams(window.location.search).get('focus');
+    if (focus) {
+      const target = rows.find((r) => r.id === focus);
+      if (target) {
+        setScriptFor(target);
+        window.history.replaceState({}, '', '/admin/prospects');
+      }
+      setFocusHandled(true);
+    }
+  }, [focusHandled, loading, rows]);
+
   // Fire-and-forget audit the moment a prospect with a website is added, so the
   // card is armed with a score and talking points before the rep ever dials.
   const autoAudit = async (p: Prospect) => {

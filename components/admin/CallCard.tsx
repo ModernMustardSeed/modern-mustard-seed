@@ -59,6 +59,7 @@ export default function CallCard({
   const [replyBusy, setReplyBusy] = useState(false);
   const [aiCalling, setAiCalling] = useState(false);
   const [emailWithCall, setEmailWithCall] = useState(false);
+  const [draftBusy, setDraftBusy] = useState(false);
 
   const id = prospect.id;
   const audit = prospect.audit_json;
@@ -297,6 +298,19 @@ export default function CallCard({
     } finally { setAiCalling(false); }
   };
 
+  const draftReply = async () => {
+    setDraftBusy(true);
+    setMsg(null);
+    try {
+      const r = await fetch(`/api/admin/prospects/${id}/draft-reply`, { method: 'POST' });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok && j.draft) setReply(j.draft);
+      else setMsg({ kind: 'err', text: j.error ?? 'Could not draft a reply.' });
+    } catch {
+      setMsg({ kind: 'err', text: 'Network error.' });
+    } finally { setDraftBusy(false); }
+  };
+
   const loadConv = async () => {
     setConvOpen((v) => !v);
     if (msgs !== null) return;
@@ -526,8 +540,11 @@ export default function CallCard({
                 ))}
               </div>
             )}
-            <textarea value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Write a reply..." rows={3} className={`${inp} w-full`} />
-            <button onClick={sendReply} disabled={replyBusy || !reply.trim()} className={`${pill} mt-2 bg-[#161616] text-[#FBF6EA] border-[#161616] hover:opacity-90`}>{replyBusy ? 'Sending...' : 'Send reply'}</button>
+            <textarea value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Write a reply, or let AI draft one..." rows={3} className={`${inp} w-full`} />
+            <div className="flex flex-wrap gap-2 mt-2">
+              <button onClick={draftReply} disabled={draftBusy} className={`${pill} bg-white text-[#161616] border-[#161616] hover:bg-[#FFF8E6]`}>{draftBusy ? 'Drafting...' : '✨ AI draft'}</button>
+              <button onClick={sendReply} disabled={replyBusy || !reply.trim()} className={`${pill} bg-[#161616] text-[#FBF6EA] border-[#161616] hover:opacity-90`}>{replyBusy ? 'Sending...' : 'Send reply'}</button>
+            </div>
           </div>
         )}
       </div>
