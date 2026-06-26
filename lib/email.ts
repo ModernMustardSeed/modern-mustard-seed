@@ -344,7 +344,7 @@ export function auditReportEmail({
   const noteHtml =
     note && note.trim()
       ? escape(note.trim()).replace(/\n/g, '<br>')
-      : `I ran a full audit on ${escape(domain)} and pulled together what is working, what is not, and the highest-leverage things to fix. The short version is below, the full to-do list is at the bottom.`;
+      : `First off, there is a lot to like about ${escape(domain)}, and it is clear you put real care into your business. I ran a full audit and pulled together what is already working, plus the few highest-leverage things that would help it bring in even more. The short version is below, the full to-do list at the bottom. None of this is meant as criticism, just a friendly roadmap from someone who would genuinely love to see you win.`;
 
   const fixes = (report.top_three_fixes ?? []).slice(0, 3);
   const fixesBlock = fixes.length
@@ -400,7 +400,7 @@ export function auditReportEmail({
     todoBlock +
     ctaBlock({ label: 'Book a 30 min call', url: BOOKING_URL }, { label: 'Run it again anytime', url: WEBSITE_AUDIT_URL }) +
     paragraph(
-      `<span style="font-size:14px">If you want, I can take this whole list off your plate. Just reply to this email or grab a time above, and we will map the fastest path to your A.</span>`
+      `<span style="font-size:14px">Honestly, we would love to help you fix these. Helping local businesses turn their website into something that quietly brings in real work is the thing we do best, and we would be glad to take this whole list off your plate so you can get back to what you actually love doing. Just reply to this email or grab a time above and we will map the fastest path to your A. No pressure either way, and either way I am cheering you on.</span>`
     ) +
     signature('Sarah');
 
