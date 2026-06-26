@@ -14,9 +14,10 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * always reachable no matter where the tabs are scrolled.
  */
 
-type Tab = 'overview' | 'pipeline' | 'tracker' | 'partners' | 'outreach' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual';
+type Tab = 'overview' | 'pipeline' | 'tracker' | 'partners' | 'outreach' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
+  { key: 'inbox', label: 'Inbox', href: '/admin/inbox' },
   { key: 'calendar', label: 'Calendar', href: '/admin/calendar' },
   { key: 'approvals', label: 'Approvals', href: '/admin/approvals' },
   { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
@@ -40,6 +41,17 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(false);
+  const [unread, setUnread] = useState(0);
+
+  // Unread lead-reply count, for the Inbox alert dot.
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/admin/messages?unread=1')
+      .then((r) => (r.ok ? r.json() : { unread: 0 }))
+      .then((j) => { if (alive) setUnread(j.unread ?? 0); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
 
   const updateArrows = useCallback(() => {
     const el = scrollerRef.current;
@@ -129,6 +141,9 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
                 }`}
               >
                 {t.label}
+                {t.key === 'inbox' && unread > 0 && (
+                  <span className="ml-1.5 inline-flex items-center justify-center min-w-[16px] h-4 px-1 text-[9px] font-mono font-bold text-white bg-[#E0301E] rounded-full align-middle">{unread}</span>
+                )}
               </Link>
             ))}
           </div>

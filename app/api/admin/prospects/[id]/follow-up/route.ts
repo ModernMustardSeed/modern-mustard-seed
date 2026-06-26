@@ -83,6 +83,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: 'Email failed to send. Try again.' }, { status: 502 });
   }
 
+  // Log this outbound email on the prospect's correspondence thread.
+  await supabase.from('messages').insert({
+    prospect_id: id, direction: 'outbound', channel: 'email',
+    from_addr: 'sarah@modernmustardseed.com', to_addr: email, subject,
+    snippet: prospect.audit_json ? `Sent the website audit (${prospect.audit_score ?? '?'}/100).` : 'Sent an intro email.',
+    read: true, occurred_at: new Date().toISOString(),
+  });
+
   // Stamp the touch, and nudge to-contact -> contacted so the board reflects it.
   const stamp = new Date().toISOString().slice(0, 10);
   const prevNotes = prospect.notes ?? '';

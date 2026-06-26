@@ -53,6 +53,10 @@ export default function CallCard({
   const [slots, setSlots] = useState<Slot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [bookingIso, setBookingIso] = useState<string | null>(null);
+  const [convOpen, setConvOpen] = useState(false);
+  const [msgs, setMsgs] = useState<Array<{ id: string; direction: string; channel?: string; subject: string | null; snippet: string | null; body: string | null; occurred_at: string }> | null>(null);
+  const [reply, setReply] = useState('');
+  const [replyBusy, setReplyBusy] = useState(false);
 
   const id = prospect.id;
   const audit = prospect.audit_json;
@@ -271,6 +275,36 @@ export default function CallCard({
     }
   };
 
+  const loadConv = async () => {
+    setConvOpen((v) => !v);
+    if (msgs !== null) return;
+    try {
+      const r = await fetch(`/api/admin/prospects/${id}/messages`);
+      const j = await r.json();
+      setMsgs(j.messages ?? []);
+    } catch { setMsgs([]); }
+  };
+  const sendReply = async () => {
+    if (!reply.trim()) return;
+    setReplyBusy(true);
+    setMsg(null);
+    try {
+      const r = await fetch(`/api/admin/prospects/${id}/reply`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: reply }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok) {
+        setMsgs((m) => [...(m ?? []), { id: `tmp-${Date.now()}`, direction: 'outbound', channel: 'email', subject: null, snippet: reply.slice(0, 500), body: reply, occurred_at: new Date().toISOString() }]);
+        setReply('');
+        onPatch(id, { last_email_at: new Date().toISOString() });
+        setMsg({ kind: 'ok', text: 'Reply sent.' });
+      } else setMsg({ kind: 'err', text: j.error ?? 'Reply failed.' });
+    } catch {
+      setMsg({ kind: 'err', text: 'Network error.' });
+    } finally { setReplyBusy(false); }
+  };
+
   return (
     <>
       {msg && (
@@ -428,6 +462,38 @@ export default function CallCard({
           <p className="mt-2 text-[12px] font-body text-[#161616]/45">Email sent {new Date(prospect.last_email_at).toLocaleDateString()}, not opened yet.</p>
         ) : null}
         {!compact && <p className="text-[#161616]/45 font-body text-[11px] mt-2">Booked or Won moves them into the pipeline automatically. Follow-up and booking both need their email.</p>}
+      </div>
+
+      {/* Conversation: full thread (sent, opened, replies) + reply box. */}
+      <div className="bg-white border-2 border-[#161616] rounded-xl mt-4 overflow-hidden">
+        <button onClick={loadConv} className="w-full px-4 py-3 flex items-center justify-between hover:bg-[#FFF8E6]">
+          <span className="text-[11px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616]">💬 Conversation</span>
+          <span className={`text-[#F5B700] text-xl font-bold transition-transform ${convOpen ? 'rotate-45' : ''}`}>+</span>
+        </button>
+        {convOpen && (
+          <div className="px-4 pb-4">
+            {msgs === null ? (
+              <p className="text-[#161616]/55 text-sm italic py-3">Loading...</p>
+            ) : msgs.length === 0 ? (
+              <p className="text-[#161616]/55 text-sm italic py-3">No messages yet. Send the audit or a note to start the thread.</p>
+            ) : (
+              <div className="space-y-2 mb-3 max-h-72 overflow-y-auto">
+                {msgs.map((m) => (
+                  <div key={m.id} className={`rounded-lg border-2 px-3 py-2 text-sm ${m.direction === 'inbound' ? 'bg-[#FFF8E6] border-[#161616]' : 'bg-[#EAF3EE] border-[#2D6A4F] ml-6'}`}>
+                    <div className="flex items-center justify-between gap-2 mb-0.5">
+                      <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-[#E0301E]">{m.direction === 'inbound' ? 'They wrote' : 'You sent'}{m.channel && m.channel !== 'email' ? ` · ${m.channel}` : ''}</span>
+                      <span className="text-[10px] text-[#161616]/45 font-mono">{new Date(m.occurred_at).toLocaleDateString()}</span>
+                    </div>
+                    {m.subject && <p className="font-sans font-bold text-[13px] text-[#161616]">{m.subject}</p>}
+                    <p className="font-body text-[#3A3733] whitespace-pre-wrap">{m.snippet || m.body}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+            <textarea value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Write a reply..." rows={3} className={`${inp} w-full`} />
+            <button onClick={sendReply} disabled={replyBusy || !reply.trim()} className={`${pill} mt-2 bg-[#161616] text-[#FBF6EA] border-[#161616] hover:opacity-90`}>{replyBusy ? 'Sending...' : 'Send reply'}</button>
+          </div>
+        )}
       </div>
     </>
   );
