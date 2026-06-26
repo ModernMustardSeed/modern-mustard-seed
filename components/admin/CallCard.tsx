@@ -57,6 +57,8 @@ export default function CallCard({
   const [msgs, setMsgs] = useState<Array<{ id: string; direction: string; channel?: string; subject: string | null; snippet: string | null; body: string | null; occurred_at: string }> | null>(null);
   const [reply, setReply] = useState('');
   const [replyBusy, setReplyBusy] = useState(false);
+  const [aiCalling, setAiCalling] = useState(false);
+  const [emailWithCall, setEmailWithCall] = useState(false);
 
   const id = prospect.id;
   const audit = prospect.audit_json;
@@ -275,6 +277,26 @@ export default function CallCard({
     }
   };
 
+  const aiCall = async () => {
+    setAiCalling(true);
+    setMsg(null);
+    try {
+      if (emailWithCall && contact.email.trim()) {
+        await ensureEmailSaved();
+        fetch(`/api/admin/prospects/${id}/follow-up`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      }
+      const r = await fetch(`/api/admin/prospects/${id}/ai-call`, { method: 'POST' });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok && j.ok) {
+        onPatch(id, { status: 'contacted' });
+        setMsg({ kind: 'ok', text: `Mr. Mustard is calling ${prospect.phone}. The transcript lands in the thread when the call ends.${emailWithCall && contact.email.trim() ? ' Audit emailed too.' : ''}` });
+      } else if (j.needsSetup) setMsg({ kind: 'err', text: 'Outbound calling is not configured yet (Vapi number/key).' });
+      else setMsg({ kind: 'err', text: j.error ?? 'Could not place the call.' });
+    } catch {
+      setMsg({ kind: 'err', text: 'Network error.' });
+    } finally { setAiCalling(false); }
+  };
+
   const loadConv = async () => {
     setConvOpen((v) => !v);
     if (msgs !== null) return;
@@ -326,6 +348,20 @@ export default function CallCard({
           <button onClick={copyScript} className="px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all">{scriptCopied ? 'Copied ✓' : 'Copy script'}</button>
         </div>
       )}
+
+      {/* Reach out: human dial or Mr. Mustard, optionally email at the same time */}
+      <div className="bg-white border-2 border-[#161616] rounded-xl p-4 mb-4">
+        <span className="text-[10px] uppercase tracking-[0.18em] text-[#E0301E] font-mono font-bold block mb-2">Reach out</span>
+        <div className="flex flex-wrap items-center gap-2">
+          {telHref && <a href={telHref} className={`${pill} bg-[#F5B700] text-[#161616] border-[#161616] hover:bg-[#FFD23F]`}>📞 I&apos;ll call</a>}
+          <button onClick={aiCall} disabled={aiCalling || !prospect.phone} className={`${pill} bg-[#1E50C8] text-white border-[#1E50C8] hover:opacity-90`}>{aiCalling ? 'Dialing...' : '🤖 Mr. Mustard calls'}</button>
+          <label className="inline-flex items-center gap-1.5 text-[12px] font-body text-[#161616]/70 cursor-pointer">
+            <input type="checkbox" checked={emailWithCall} onChange={(e) => setEmailWithCall(e.target.checked)} className="accent-[#F5B700] w-4 h-4" />
+            email the audit at the same time
+          </label>
+        </div>
+        <p className="text-[#161616]/45 font-body text-[11px] mt-2">Mr. Mustard opens by saying he is an AI, pitches the fit, and books a call. The full transcript lands in the Conversation thread when the call ends.</p>
+      </div>
 
       {/* Their site & email */}
       <div className="bg-white border-2 border-[#161616] rounded-xl p-4 mb-4">

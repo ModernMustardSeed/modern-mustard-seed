@@ -405,6 +405,31 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
   const endedReason = (message.endedReason as string) || (call.endedReason as string) || '';
   const durationSeconds = Math.round(Number(message.durationSeconds ?? 0)) || undefined;
 
+  // If this was an outbound Mr. Mustard call to a tracked prospect, log the full
+  // transcript (both sides) onto that lead's correspondence thread so Sarah can
+  // read exactly how it went.
+  const meta = ((call.metadata as Record<string, unknown>) ||
+    ((call.assistantOverrides as Record<string, unknown>)?.metadata as Record<string, unknown>) || {}) as Record<string, unknown>;
+  const prospectId = typeof meta.prospectId === 'string' ? meta.prospectId : null;
+  if (prospectId) {
+    try {
+      const sb = getSupabase();
+      if (sb) {
+        await sb.from('messages').insert({
+          prospect_id: prospectId, direction: 'outbound', channel: 'call',
+          from_addr: 'Mr. Mustard (AI)', to_addr: phoneNumber || 'lead',
+          subject: `AI call${durationSeconds ? ` (${durationSeconds}s)` : ''}${endedReason ? ` · ${endedReason}` : ''}`,
+          snippet: summary.slice(0, 500),
+          body: `Summary: ${summary}\n\n--- Transcript ---\n${transcript}`.slice(0, 20000),
+          read: true, occurred_at: new Date().toISOString(),
+        });
+        await sb.from('rep_prospects').update({ status: 'contacted', updated_at: new Date().toISOString() }).eq('id', prospectId).eq('status', 'to-contact');
+      }
+    } catch (err) {
+      console.error('voice transcript log failed', err);
+    }
+  }
+
   // Save the call summary to persistent memory (phone callers). Runs regardless
   // of email config so recall keeps working even if Resend is down.
   await rememberSummary({ phone: phoneNumber, summary });
