@@ -21,6 +21,10 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   const { data: row, error } = await supabase.from('rep_prospects').select('*').eq('id', id).maybeSingle();
   if (error || !row) return NextResponse.json({ error: 'Prospect not found' }, { status: 404 });
 
+  let domain = (row.website as string | null) || null;
+  try { if (domain) domain = new URL(/^https?:\/\//i.test(domain) ? domain : `https://${domain}`).hostname.replace(/^www\./, ''); } catch { /* keep raw */ }
+  const audit = row.audit_json as { headline?: string; top_three_fixes?: { title?: string }[] } | null;
+
   const prospect: OutboundProspect = {
     id: row.id,
     business: row.business,
@@ -29,6 +33,10 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     notes: row.notes ?? null,
     website: row.website ?? null,
     do_not_call: row.do_not_call ?? false,
+    auditScore: row.audit_score ?? null,
+    auditHeadline: audit?.headline ?? null,
+    auditTopFix: audit?.top_three_fixes?.[0]?.title ?? null,
+    website_domain: domain,
   };
 
   const result = await placeOutboundCall(prospect);
