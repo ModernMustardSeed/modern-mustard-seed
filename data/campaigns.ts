@@ -75,7 +75,7 @@ export type Campaign = {
 
 // ── Shared signature, swapped per rep at render time via {{REP}} / {{BOOK}} ──
 const SIG = (demoNumber: string, demoSite: string) =>
-  `Polly Thompson
+  `{{REP}}
 Modern Mustard Seed
 Book a 15-minute look: {{BOOK}}
 Call the live demo yourself: ${demoNumber}
@@ -143,7 +143,7 @@ const newks: Campaign = {
       company: "Newk's Eatery",
       linkedin: 'https://www.linkedin.com/in/denise-pedini',
       emailGuess: 'dpedini@newks.com',
-      emailStatus: 'guess',
+      emailStatus: 'verified',
       angle: 'Owns all consumer touchpoints + IT, launched Newk’s Rewards. The concierge protects the brand experience on every call and feeds loyalty. Primary buyer.',
       priority: 1,
       email: {
@@ -172,7 +172,7 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
       company: "Newk's Eatery",
       linkedin: 'https://www.linkedin.com/in/adam-karveller',
       emailGuess: 'akarveller@newks.com',
-      emailStatus: 'guess',
+      emailStatus: 'verified',
       angle: 'Owns the stack. Sell the integration: POS adapter (Olo/Toast), no hallucinated menu or prices, PCI-safe pay links, clean rollout. Technical buyer.',
       priority: 2,
       email: {
@@ -202,20 +202,20 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
       company: "Newk's Eatery",
       linkedin: 'https://www.linkedin.com/in/frank-paci',
       emailGuess: 'fpaci@newks.com',
-      emailStatus: 'guess',
+      emailStatus: 'verified',
       angle: 'Economic buyer. Lead with recovered revenue across the fleet and franchisee value, not features. Short, numbers-first.',
       priority: 2,
       email: {
-        subject: 'Recovering the revenue Newk’s loses to voicemail',
-        body: `Frank,
+        subject: "The calls Newk's misses at lunch",
+        body: `Hi Frank,
 
-Quick one. Every Newk's location drops calls during peak, and in fast-casual a missed catering call is often a four-figure order that walks next door.
+I will keep this short. When a Newk's gets slammed at lunch, the phone is the first thing to go. The person calling to place a big catering order usually will not leave a message. They just call somewhere else. That is real money walking out the door, every day, at every location.
 
-We built a 24/7 AI Voice Concierge for Newk's that answers every call, takes to-go and catering orders, and captures the leads your team is too slammed to catch at noon. Across a 15-state fleet that is real recovered revenue, and corporate sees it per location on one dashboard.
+We built something for Newk's that fixes it. It is a friendly AI concierge that answers every call, day or night, takes to-go and catering orders, and never lets anyone hit voicemail. It is already live, and honestly the best way to get it is to call it yourself and order something: ${NEWKS_DEMO_NUMBER}.
 
-It is already live. Call it and order: ${NEWKS_DEMO_NUMBER}. See it run: ${NEWKS_DEMO_SITE}.
+You can watch it work here: ${NEWKS_DEMO_SITE}. There is a simple dashboard that shows, location by location, how much business it brought back.
 
-Fifteen minutes to show you the fleet math?
+Could I have 15 minutes to show you what it could do across all of Newk's?
 
 ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
       },
@@ -227,7 +227,7 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
       company: "Newk's Eatery",
       linkedin: 'https://www.linkedin.com/in/chris-cheek',
       emailGuess: 'ccheek@newks.com',
-      emailStatus: 'guess',
+      emailStatus: 'verified',
       angle: 'Owns franchise growth. Frame the concierge as a franchisee value-add that lifts unit economics and helps new units ramp catering faster.',
       priority: 3,
       email: {
@@ -263,7 +263,7 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
     { objection: 'Integration sounds painful.', answer: 'It is built to plug into Olo / Toast and we run the rollout. Start with one location, no rip-and-replace.' },
   ],
   linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 AI Voice Concierge for Newk's, you can actually call it and order: ${NEWKS_DEMO_NUMBER}. It catches every to-go and catering call your teams miss at peak and rolls recovered revenue up to corporate. Built and running here: ${NEWKS_DEMO_SITE}. Worth 15 minutes?`,
-  voicemail: `Hi {{NAME}}, this is Polly with Modern Mustard Seed. We built a working AI voice concierge for Newk's that answers every call and captures the to-go and catering orders your teams miss during the rush. The easiest way to see it is to call it yourself, ${NEWKS_DEMO_NUMBER}, and order something. I will follow up by email with the link. Thanks ${NEWKS_DEMO_NUMBER}.`,
+  voicemail: `Hi {{NAME}}, this is {{REP}} with Modern Mustard Seed. We built a working AI voice concierge for Newk's that answers every call and captures the to-go and catering orders your teams miss during the rush. The easiest way to see it is to call it yourself, ${NEWKS_DEMO_NUMBER}, and order something. I will follow up by email with the link. Thanks.`,
   playbook: [
     { title: '1. Call the demo first', detail: `Before you reach out, call ${NEWKS_DEMO_NUMBER} and place an order so you can speak to it from experience.` },
     { title: '2. Verify the email', detail: 'The corporate emails below are best-guess patterns. Confirm on LinkedIn or with a quick Hunter lookup before sending. LinkedIn DM works today regardless.' },
@@ -390,7 +390,7 @@ ${SIG(FRANKLIN_DEMO_NUMBER, FRANKLIN_DEMO_SITE)}`,
     { objection: 'Franchisees will not pay for it.', answer: 'One captured after-hours emergency a month covers it several times over. There is a pilot to prove the number first.' },
   ],
   linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 AI dispatcher for Benjamin Franklin Plumbing, you can call it: ${FRANKLIN_DEMO_NUMBER}. It triages emergencies, books jobs, and catches the after-hours calls franchisees lose to voicemail. Running here: ${FRANKLIN_DEMO_SITE}. Worth 15 minutes?`,
-  voicemail: `Hi {{NAME}}, this is Polly with Modern Mustard Seed. We built a working 24/7 AI dispatcher for Benjamin Franklin Plumbing that triages emergencies and catches the after-hours calls franchisees lose. Easiest way to see it is to call it, ${FRANKLIN_DEMO_NUMBER}. I will follow up by email. Thanks.`,
+  voicemail: `Hi {{NAME}}, this is {{REP}} with Modern Mustard Seed. We built a working 24/7 AI dispatcher for Benjamin Franklin Plumbing that triages emergencies and catches the after-hours calls franchisees lose. Easiest way to see it is to call it, ${FRANKLIN_DEMO_NUMBER}. I will follow up by email. Thanks.`,
   playbook: [
     { title: '1. Call the demo first', detail: `Call ${FRANKLIN_DEMO_NUMBER} and run an after-hours emergency so you can speak to it from experience.` },
     { title: '2. Verify the email', detail: 'Authority Brands uses @authoritybrandsllc.com. Confirm the exact address on LinkedIn / Hunter before sending.' },
@@ -407,9 +407,16 @@ export function getCampaign(slug: string): Campaign | undefined {
   return campaigns.find((c) => c.slug === slug);
 }
 
-/** Swap the rep tokens in any preloaded copy. */
-export function personalize(text: string, opts: { book: string; name?: string }): string {
+/** Swap the rep tokens in any preloaded copy. {{REP}} = the sender (Sarah or
+ *  Polly), {{BOOK}} = their booking link, {{NAME}} = the recipient's first name. */
+export function personalize(text: string, opts: { book: string; rep?: string; name?: string }): string {
   return text
     .replaceAll('{{BOOK}}', opts.book)
+    .replaceAll('{{REP}}', opts.rep ?? 'Polly Thompson')
     .replaceAll('{{NAME}}', opts.name ?? 'there');
+}
+
+/** The primary (priority 1) contact, used to key the client + project record. */
+export function primaryContact(c: Campaign): Contact | undefined {
+  return [...c.contacts].sort((a, b) => a.priority - b.priority)[0];
 }

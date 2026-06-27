@@ -1,22 +1,28 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, type ReactNode } from 'react';
 import Link from 'next/link';
 import AdminHeader from './AdminHeader';
 import type { Campaign, Contact } from '@/data/campaigns';
-import { personalize } from '@/data/campaigns';
+import { personalize, primaryContact } from '@/data/campaigns';
 
 /**
- * One account, fully loaded so anyone on the team can run it today: the live
- * demo asset, the pricing, the real decision-makers, and a ready-to-send email
- * per person. Polly (the named lead) owns it; everyone can see it.
+ * One account, fully loaded so anyone on the team can run it today: a one-click
+ * Run sheet, the live demo asset, the pricing, the real decision-makers, and a
+ * ready-to-send email per person. It can be run as Sarah or Polly (the rep
+ * switcher swaps the signature + booking link on every piece of copy).
  *
- * Per-rep state (booking link + each contact's outreach status) lives in
- * localStorage so it works with zero database dependency. Shared cross-device
- * tracking can be layered on later with a table.
+ * The Run sheet creates the real client + project record, so proposals,
+ * deposits, and signatures all flow through the existing admin pipeline. Per-rep
+ * state (rep choice + each contact's outreach status) lives in localStorage.
  */
 
-const DEFAULT_BOOK = 'https://modernmustardseed.com/book?ref=POLLYTHOCN3X'; // Polly = lead
+// Who can run a campaign. Each carries their own booking link so replies attribute
+// to them. Polly is the default (named lead); Sarah can flip it to herself.
+const REPS = [
+  { name: 'Polly Thompson', book: 'https://modernmustardseed.com/book?ref=POLLYTHOCN3X' },
+  { name: 'Sarah Scarano', book: 'https://modernmustardseed.com/book' },
+];
 
 const STATUSES = ['to-send', 'sent', 'replied', 'meeting', 'won', 'no'] as const;
 type OutreachStatus = (typeof STATUSES)[number];
@@ -31,6 +37,16 @@ const STATUS_CLS: Record<OutreachStatus, string> = {
   won: 'bg-emerald-600 text-white border-[#161616]/20',
   no: 'bg-[#161616]/[0.06] text-[#161616]/45 border-[#161616]/15',
 };
+const SENT_SET = new Set<OutreachStatus>(['sent', 'replied', 'meeting', 'won']);
+
+const STATUS_EVENT = 'mms-campaign-status';
+function readContactStatus(slug: string, id: string): OutreachStatus {
+  try {
+    const raw = localStorage.getItem(`mms_campaign_${slug}_${id}`);
+    if (raw) { const v = JSON.parse(raw); if (v?.status) return v.status; }
+  } catch {}
+  return 'to-send';
+}
 
 function StatusBadge({ status }: { status: Campaign['status'] }) {
   const map: Record<Campaign['status'], string> = {
@@ -61,9 +77,151 @@ function CopyBtn({ text, label = 'Copy', className = '' }: { text: string; label
   );
 }
 
+// ── Run sheet: the one-click to-do that runs the account ──────────────────────
+
+type ProjectLite = {
+  id: string; client_email: string; name: string; status: string;
+  deliverables?: { proposalSigned?: boolean; depositPaid?: boolean; balancePaid?: boolean };
+};
+
+function RunSheet({ campaign, rep, onJump }: { campaign: Campaign; rep: { name: string; book: string }; onJump: () => void }) {
+  const primary = primaryContact(campaign);
+  const primaryEmail = (primary?.emailGuess ?? '').toLowerCase();
+  const [project, setProject] = useState<ProjectLite | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [err, setErr] = useState('');
+  const [sentCount, setSentCount] = useState(0);
+
+  const verifiedCount = campaign.contacts.filter((c) => c.emailStatus === 'verified').length;
+  const total = campaign.contacts.length;
+
+  const computeSent = useCallback(() => {
+    setSentCount(campaign.contacts.filter((c) => SENT_SET.has(readContactStatus(campaign.slug, c.id))).length);
+  }, [campaign]);
+
+  useEffect(() => {
+    computeSent();
+    const h = () => computeSent();
+    window.addEventListener(STATUS_EVENT, h);
+    return () => window.removeEventListener(STATUS_EVENT, h);
+  }, [computeSent]);
+
+  const load = useCallback(async () => {
+    if (!primaryEmail) return;
+    try {
+      const r = await fetch('/api/admin/projects');
+      const j = await r.json().catch(() => null);
+      if (r.ok && j) {
+        const match = (j.projects || []).find((p: ProjectLite) => String(p.client_email).toLowerCase() === primaryEmail);
+        setProject(match ?? null);
+      }
+    } catch {}
+  }, [primaryEmail]);
+  useEffect(() => { load(); }, [load]);
+
+  const createProject = async () => {
+    if (!primary || creating) return;
+    setCreating(true); setErr('');
+    try {
+      const r = await fetch('/api/admin/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_email: primaryEmail,
+          name: `${campaign.brand} (${campaign.product})`,
+          client_name: primary.name,
+          client_company: campaign.brand,
+          status: 'discovery',
+          summary: `Outreach campaign: ${campaign.product}. Account lead ${campaign.lead.name}.`,
+        }),
+      });
+      const j = await r.json().catch(() => null);
+      if (!r.ok) setErr((j && j.error) || 'Could not create the project.');
+      else await load();
+    } finally { setCreating(false); }
+  };
+
+  const proposalHref = `/admin/proposals?email=${encodeURIComponent(primaryEmail)}`;
+  const dlv = project?.deliverables ?? {};
+
+  type Step = { id: string; done: boolean; title: string; detail: string; node: ReactNode };
+  const actBtn = (label: string, onClick: () => void, disabled = false) => (
+    <button onClick={onClick} disabled={disabled} className="shrink-0 px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:bg-[#FFD23F] hover:-translate-y-0.5 disabled:opacity-40 disabled:hover:translate-y-0 transition-all">{label}</button>
+  );
+  const linkBtn = (label: string, href: string, disabled = false) => disabled ? (
+    <span title="Create the client + project first" className="shrink-0 px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-extrabold text-[#161616]/40 bg-white border-2 border-[#161616]/25 rounded-lg cursor-not-allowed">{label}</span>
+  ) : (
+    <Link href={href} className="shrink-0 px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-extrabold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:bg-[#FFF8E6] hover:-translate-y-0.5 transition-all">{label}</Link>
+  );
+
+  const steps: Step[] = [
+    {
+      id: 'verify', done: verifiedCount === total && total > 0,
+      title: 'Emails verified',
+      detail: verifiedCount === total ? `All ${total} confirmed via Hunter. Good to send.` : `${verifiedCount} of ${total} confirmed. Confirm the flagged ones on LinkedIn before sending.`,
+      node: <span className="shrink-0 text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-emerald-800">{verifiedCount}/{total} ✓</span>,
+    },
+    {
+      id: 'project', done: !!project,
+      title: project ? 'Client + project created' : 'Create the client + project',
+      detail: project ? `In Projects as “${project.name}”. Their portal account is keyed to ${primaryEmail}.` : `Adds ${campaign.brand} to Projects (client ${primary?.name}, ${primaryEmail}) and opens the proposal pipeline.`,
+      node: project ? linkBtn('Open in Projects', '/admin/projects') : actBtn(creating ? 'Creating…' : 'Create', createProject, creating || !primaryEmail),
+    },
+    {
+      id: 'emails', done: sentCount >= total && total > 0,
+      title: 'Send the intro emails',
+      detail: `${sentCount} of ${total} marked sent. Each opens in your mail app, prefilled and signed as ${rep.name}.`,
+      node: actBtn('Go to emails', onJump),
+    },
+    {
+      id: 'proposal', done: !!dlv.proposalSigned,
+      title: 'Send and sign the proposal',
+      detail: dlv.proposalSigned ? 'Proposal signed.' : 'Build the proposal and send it for e-signature.',
+      node: linkBtn('Open Proposals', proposalHref, !project),
+    },
+    {
+      id: 'deposit', done: !!dlv.depositPaid,
+      title: 'Collect the deposit',
+      detail: dlv.depositPaid ? 'Deposit paid.' : 'Send the deposit invoice from the proposal.',
+      node: linkBtn('Open Proposals', proposalHref, !project),
+    },
+  ];
+
+  const doneCount = steps.filter((s) => s.done).length;
+
+  return (
+    <div className="rounded-3xl border-2 border-[#161616] bg-white shadow-[6px_6px_0_0_#161616] overflow-hidden">
+      <div className="flex items-center justify-between gap-3 px-5 sm:px-6 py-4 border-b-2 border-[#161616] bg-[#F5B700]/15">
+        <div>
+          <h2 className="font-sans text-lg font-extrabold text-[#161616]">Run sheet</h2>
+          <p className="text-[11px] font-body text-[#161616]/55">Review, then click. Nothing sends until you do.</p>
+        </div>
+        <span className="shrink-0 text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-full px-3 py-1">{doneCount}/{steps.length} done</span>
+      </div>
+      <ol className="divide-y divide-[#161616]/10">
+        {steps.map((s, i) => (
+          <li key={s.id} className="flex items-center gap-3 px-5 sm:px-6 py-3.5">
+            <span className={`shrink-0 h-7 w-7 rounded-full border-2 border-[#161616] flex items-center justify-center font-mono text-xs font-bold ${s.done ? 'bg-emerald-500 text-white' : 'bg-white text-[#161616]'}`}>
+              {s.done ? '✓' : i + 1}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className={`font-sans text-sm font-bold ${s.done ? 'text-[#161616]/55 line-through' : 'text-[#161616]'}`}>{s.title}</p>
+              <p className="font-body text-[12px] text-[#161616]/60 leading-snug">{s.detail}</p>
+            </div>
+            {s.node}
+          </li>
+        ))}
+      </ol>
+      {err && <p className="text-[#E0301E] text-xs font-body px-6 pb-3">{err}</p>}
+    </div>
+  );
+}
+
+// ── Contact card ──────────────────────────────────────────────────────────────
+
 const PRIORITY_LABEL: Record<number, string> = { 1: 'Primary', 2: 'Secondary', 3: 'Supporting' };
 
-function ContactCard({ c, slug, book }: { c: Contact; slug: string; book: string }) {
+function ContactCard({ c, slug, rep }: { c: Contact; slug: string; rep: { name: string; book: string } }) {
   const [status, setStatus] = useState<OutreachStatus>('to-send');
   const [note, setNote] = useState('');
   const [open, setOpen] = useState(c.priority === 1);
@@ -82,10 +240,11 @@ function ContactCard({ c, slug, book }: { c: Contact; slug: string; book: string
 
   const persist = useCallback((s: OutreachStatus, n: string) => {
     try { localStorage.setItem(key, JSON.stringify({ status: s, note: n })); } catch {}
+    try { window.dispatchEvent(new Event(STATUS_EVENT)); } catch {}
   }, [key]);
 
-  const subject = personalize(c.email.subject, { book, name: c.name.split(' ')[0] });
-  const body = personalize(c.email.body, { book, name: c.name.split(' ')[0] });
+  const subject = personalize(c.email.subject, { book: rep.book, rep: rep.name, name: c.name.split(' ')[0] });
+  const body = personalize(c.email.body, { book: rep.book, rep: rep.name, name: c.name.split(' ')[0] });
   const mailto = `mailto:${c.emailGuess ?? ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
   return (
@@ -114,7 +273,7 @@ function ContactCard({ c, slug, book }: { c: Contact; slug: string; book: string
           <span className="text-[9px] uppercase tracking-[0.18em] text-[#161616]/45 font-mono">To:</span>
           <span className="font-mono text-xs text-[#161616]">{c.emailGuess ?? 'find via LinkedIn'}</span>
           <span className={`text-[8px] uppercase tracking-[0.12em] font-mono font-bold px-1.5 py-0.5 rounded border ${c.emailStatus === 'verified' ? 'text-emerald-800 border-emerald-800/30 bg-emerald-50' : 'text-amber-800 border-amber-800/30 bg-amber-50'}`}>
-            {c.emailStatus === 'verified' ? 'verified' : 'verify before send'}
+            {c.emailStatus === 'verified' ? 'verified ✓' : 'verify before send'}
           </span>
         </div>
 
@@ -165,16 +324,21 @@ function ContactCard({ c, slug, book }: { c: Contact; slug: string; book: string
   );
 }
 
+// ── Page ──────────────────────────────────────────────────────────────────────
+
 export default function CampaignDetail({ campaign }: { campaign: Campaign }) {
-  const [book, setBook] = useState(DEFAULT_BOOK);
-  const bookKey = 'mms_campaign_book_link';
+  const [repIdx, setRepIdx] = useState(0);
 
   useEffect(() => {
-    try { const v = localStorage.getItem(bookKey); if (v) setBook(v); } catch {}
+    try { const v = localStorage.getItem('mms_campaign_rep'); if (v != null && REPS[Number(v)]) setRepIdx(Number(v)); } catch {}
   }, []);
-  const saveBook = (v: string) => { setBook(v); try { localStorage.setItem(bookKey, v); } catch {} };
+  const setRep = (i: number) => { setRepIdx(i); try { localStorage.setItem('mms_campaign_rep', String(i)); } catch {} };
+  const rep = REPS[repIdx];
 
   const phone = campaign.assets.find((a) => a.kind === 'phone');
+  const jumpToContacts = () => {
+    document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -201,8 +365,30 @@ export default function CampaignDetail({ campaign }: { campaign: Campaign }) {
           </div>
         </div>
 
+        {/* Run as (rep switcher) */}
+        <div className="mt-5 flex items-center gap-3 flex-wrap bg-white border-2 border-[#161616] rounded-2xl shadow-[3px_3px_0_0_#161616] px-4 py-2.5">
+          <span className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono">Running as</span>
+          <div className="flex gap-1.5">
+            {REPS.map((r, i) => (
+              <button
+                key={r.name}
+                onClick={() => setRep(i)}
+                className={`text-[10px] uppercase tracking-[0.12em] font-sans font-bold px-3 py-1.5 rounded-lg border-2 transition-all ${i === repIdx ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[2px_2px_0_0_#161616]' : 'bg-white text-[#161616]/55 border-[#161616]/25 hover:border-[#161616]/60'}`}
+              >
+                {r.name.split(' ')[0]}
+              </button>
+            ))}
+          </div>
+          <span className="text-[10px] font-mono text-[#161616]/45 truncate hidden sm:inline">signs every email · books to {rep.book.replace('https://', '')}</span>
+        </div>
+
+        {/* Run sheet */}
+        <section className="mt-5">
+          <RunSheet campaign={campaign} rep={rep} onJump={jumpToContacts} />
+        </section>
+
         {/* Live assets */}
-        <section className="mt-7">
+        <section className="mt-8">
           <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-3">The live asset (this is the pitch)</h2>
           <div className="flex flex-wrap gap-2.5">
             {campaign.assets.map((a) => (
@@ -277,24 +463,14 @@ export default function CampaignDetail({ campaign }: { campaign: Campaign }) {
         </section>
 
         {/* Contacts */}
-        <section className="mt-9">
-          <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
-            <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Contacts + ready emails</h2>
-            <div className="flex items-center gap-2">
-              <span className="text-[9px] uppercase tracking-[0.18em] text-[#161616]/45 font-mono">Your booking link</span>
-              <input
-                value={book}
-                onChange={(e) => saveBook(e.target.value)}
-                className="bg-white border-2 border-[#161616]/30 rounded-lg px-2.5 py-1 text-[11px] font-mono text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#F5B700] focus:border-[#161616] w-64 max-w-[55vw]"
-              />
-            </div>
-          </div>
+        <section id="contacts" className="mt-9 scroll-mt-24">
+          <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">Contacts + ready emails</h2>
           <p className="text-[#161616]/55 font-body text-xs mb-4">
-            Every email is written and personalized to the person. Tap <strong className="text-[#161616]">Open email</strong> to launch your mail app with it filled in, or <strong className="text-[#161616]">Copy</strong> to paste anywhere. Mark each one as you go. {campaign.lead.name} is the lead on this account.
+            Every email is written and personalized to the person, signed as <strong className="text-[#161616]">{rep.name}</strong>. Tap <strong className="text-[#161616]">Open email</strong> to launch your mail app with it filled in, or <strong className="text-[#161616]">Copy</strong> to paste anywhere. Mark each one as you go.
           </p>
           <div className="space-y-3">
             {[...campaign.contacts].sort((a, b) => a.priority - b.priority).map((c) => (
-              <ContactCard key={c.id} c={c} slug={campaign.slug} book={book} />
+              <ContactCard key={c.id} c={c} slug={campaign.slug} rep={rep} />
             ))}
           </div>
         </section>
@@ -304,16 +480,16 @@ export default function CampaignDetail({ campaign }: { campaign: Campaign }) {
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">LinkedIn DM</h2>
-              <CopyBtn text={personalize(campaign.linkedinDm, { book })} label="Copy" className="!py-1 !text-[9px]" />
+              <CopyBtn text={personalize(campaign.linkedinDm, { book: rep.book, rep: rep.name })} label="Copy" className="!py-1 !text-[9px]" />
             </div>
-            <p className="font-body text-[13px] text-[#3A3733] leading-relaxed whitespace-pre-wrap">{personalize(campaign.linkedinDm, { book })}</p>
+            <p className="font-body text-[13px] text-[#3A3733] leading-relaxed whitespace-pre-wrap">{personalize(campaign.linkedinDm, { book: rep.book, rep: rep.name })}</p>
           </div>
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Voicemail script</h2>
-              <CopyBtn text={personalize(campaign.voicemail, { book })} label="Copy" className="!py-1 !text-[9px]" />
+              <CopyBtn text={personalize(campaign.voicemail, { book: rep.book, rep: rep.name })} label="Copy" className="!py-1 !text-[9px]" />
             </div>
-            <p className="font-body text-[13px] text-[#3A3733] leading-relaxed whitespace-pre-wrap">{personalize(campaign.voicemail, { book })}</p>
+            <p className="font-body text-[13px] text-[#3A3733] leading-relaxed whitespace-pre-wrap">{personalize(campaign.voicemail, { book: rep.book, rep: rep.name })}</p>
             {phone && <a href={phone.href} className="inline-block mt-3 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#161616]">☎ Call the demo: {phone.note?.split(' · ')[0] ?? phone.label}</a>}
           </div>
         </section>
