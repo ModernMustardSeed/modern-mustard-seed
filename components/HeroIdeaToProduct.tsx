@@ -93,6 +93,16 @@ export default function HeroIdeaToProduct() {
         {/* Mr. Mustard: live voice or chat, visitor's choice */}
         <MrMustardHeroCTA />
 
+        {/* Multilingual voice agent highlight */}
+        <div className="opacity-0 animate-fade-in-up-delay-3 mt-6">
+          <Link
+            href="/voice-agents"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[#161616] bg-white text-[11px] font-sans font-bold text-[#161616] shadow-[3px_3px_0_0_#161616] hover:bg-[#F5B700] hover:-translate-y-0.5 transition-all"
+          >
+            <span aria-hidden="true">🌍</span> Our AI voice agents now speak 100+ languages. Hear one →
+          </Link>
+        </div>
+
         {/* Scripture card */}
         <div className="opacity-0 animate-fade-in-up-delay-3 mt-12 max-w-2xl mx-auto">
           <div className="rounded-2xl border-2 border-[#161616] bg-white px-7 py-6 shadow-[5px_5px_0_0_#161616]">

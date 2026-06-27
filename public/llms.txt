@@ -26,6 +26,7 @@ Sarah Scarano is the founder, engineer, strategist, and operator. Self-taught fu
 - **Specialty AI tools.** Industry-specific tools that replace expensive workflows. Real estate, real estate investing, design, content production, legal, healthcare intake, contractor estimating.
 - **Brand and marketing sites.** Production-grade storefronts and marketing sites with design system, copy, animation, SEO foundation.
 - **Agentic systems and automation.** Multi-agent workflows, internal copilots, voice agents when the workflow is phone-driven.
+- **Multilingual AI voice agents.** 24/7 AI phone agents that answer every call in a natural human voice and speak 100+ languages (English, Spanish, French, Portuguese, German, Mandarin, and more), detecting the caller and replying in their language automatically. They book appointments, answer FAQs, qualify leads, and route urgent calls. Live demo at modernmustardseed.com/voice-agents.
 
 ## How we work
 1. **Scope & Sequence.** One paid scoping call. We map what gets built, in what order, with a fixed quote.

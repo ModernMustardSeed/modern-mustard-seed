@@ -8,9 +8,9 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'AI Voice Agents That Answer Every Call',
+  title: 'AI Voice Agents That Answer Every Call, in Any Language',
   description:
-    'A 24/7 AI voice agent that picks up every call in a natural human voice, books appointments, answers FAQs, and routes urgent calls to you. For restaurants, it takes phone orders, books tables, and saves the dinner rush from voicemail. Talking websites and phones that answer themselves. Stop losing customers to voicemail.',
+    'A 24/7 AI voice agent that picks up every call in a natural human voice, books appointments, answers FAQs, and routes urgent calls to you. Now multilingual: it greets and serves callers in 100+ languages (English, Spanish, French, Portuguese, German, Mandarin, and more) and detects the caller automatically. For restaurants, it takes phone orders, books tables, and saves the dinner rush from voicemail. Stop losing customers to voicemail or a language barrier.',
   path: '/voice-agents',
 });
 
@@ -106,6 +106,14 @@ const faq = [
     a: 'That is the entire point. It answers every call, every hour, including the after-hours calls quietly going to voicemail right now.',
   },
   {
+    q: 'Can the voice agent speak other languages?',
+    a: 'Yes. It speaks over 100 languages and detects the caller automatically, then answers in their language. English, Spanish, French, Portuguese, German, Mandarin, and dozens more. Pick a language on the live demo above and talk to it yourself.',
+  },
+  {
+    q: 'Will it switch languages if my customer does?',
+    a: 'Yes. It detects the language the caller is speaking and responds in kind, and it can switch mid-conversation. That means you serve Spanish-speaking and multilingual customers without a second phone line or a bilingual receptionist.',
+  },
+  {
     q: 'Can it take restaurant orders and send them to my kitchen?',
     a: 'Yes. It reads your menu, takes the full takeout or delivery order, repeats it back to the caller, and sends it to your kitchen or POS, with a pay link or card capture if you want payment up front.',
   },
@@ -125,9 +133,9 @@ export default function VoiceAgentsPage() {
             { name: 'AI Voice Agents', url: '/voice-agents' },
           ]),
           serviceJsonLd({
-            name: 'AI Voice Agents',
+            name: 'Multilingual AI Voice Agents',
             description:
-              'Custom 24/7 AI voice agents that answer every call in a natural human voice, book appointments, answer FAQs, qualify leads, and route urgent calls. Built and live in about two weeks.',
+              'Custom 24/7 AI voice agents that answer every call in a natural human voice, in 100+ languages with automatic language detection. They book appointments, answer FAQs, qualify leads, and route urgent calls. Built and live in about two weeks.',
           }),
           faqJsonLd(faq),
         ]}
@@ -170,9 +178,39 @@ export default function VoiceAgentsPage() {
           {/* Live demo: talk to the actual agent (renders when Vapi env is set) */}
           <div className="mb-16">
             <p className="text-center text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold mb-4">
-              Yes, this is a talking website. Say hi.
+              Yes, this is a talking website. Pick a language and say hi.
             </p>
             <VoiceTalkButton />
+          </div>
+
+          {/* Multilingual highlight */}
+          <div className="mb-20 pop-card p-8 md:p-10">
+            <div className="flex flex-col md:flex-row md:items-center gap-8">
+              <div className="flex-1">
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-3">
+                  Speaks 100+ languages
+                </span>
+                <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight leading-[1.1] mb-3">
+                  It answers in your customer&apos;s{' '}
+                  <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                    language
+                  </span>
+                </h2>
+                <p className="text-[#3a3733] text-base font-body leading-7 max-w-xl">
+                  English, Spanish, French, Portuguese, German, Mandarin, and dozens more. Your agent
+                  detects the caller and replies in their language automatically, and can switch
+                  mid-call. No second line, no bilingual hire. Pick a language on the demo above and
+                  hear it for yourself.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 md:max-w-[240px]">
+                {['🇺🇸 English', '🇲🇽 Español', '🇫🇷 Français', '🇧🇷 Português', '🇩🇪 Deutsch', '🇨🇳 中文', '+95 more'].map((t) => (
+                  <span key={t} className="px-3 py-1.5 rounded-full border-2 border-[#161616] bg-white text-xs font-sans font-bold text-[#161616]">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Speed-to-lead stat band */}

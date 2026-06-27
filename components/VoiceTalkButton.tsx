@@ -18,12 +18,37 @@ type CallState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
 
+type Lang = { code: string; label: string; flag: string; voice?: string; dg?: string; first?: string };
+
+// English uses Mr. Mustard's native voice + base (multilingual) prompt. Other
+// languages override the voice (Azure, native-sounding) + transcriber + opener,
+// so the demo actually speaks that language. The base prompt is multilingual, so
+// he keeps the conversation going in whatever language the caller uses.
+const LANGS: Lang[] = [
+  { code: 'en', label: 'English', flag: '🇺🇸' },
+  { code: 'es', label: 'Español', flag: '🇲🇽', voice: 'es-US-AlonsoNeural', dg: 'es', first: '¡Hola! Soy Mr. Mustard, de Modern Mustard Seed. Pregúnteme lo que quiera, o reserve una llamada con Sarah. ¿En qué le puedo ayudar hoy?' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷', voice: 'fr-FR-HenriNeural', dg: 'fr', first: "Bonjour, je suis Mr. Mustard, de Modern Mustard Seed. Posez-moi vos questions ou réservez un appel avec Sarah. Comment puis-je vous aider?" },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪', voice: 'de-DE-ConradNeural', dg: 'de', first: 'Hallo, ich bin Mr. Mustard von Modern Mustard Seed. Fragen Sie mich alles oder buchen Sie einen Termin mit Sarah. Wie kann ich helfen?' },
+  { code: 'pt', label: 'Português', flag: '🇧🇷', voice: 'pt-BR-AntonioNeural', dg: 'pt', first: 'Olá, eu sou o Mr. Mustard, da Modern Mustard Seed. Pergunte o que quiser ou agende uma conversa com a Sarah. Como posso ajudar?' },
+  { code: 'zh', label: '中文', flag: '🇨🇳', voice: 'zh-CN-YunxiNeural', dg: 'zh', first: '您好，我是 Modern Mustard Seed 的 Mr. Mustard。您可以问我任何问题，或预约与 Sarah 的通话。我能帮您做什么？' },
+];
+
+function overridesFor(l: Lang): Record<string, unknown> | undefined {
+  if (!l.voice) return undefined;
+  return {
+    firstMessage: l.first,
+    voice: { provider: 'azure', voiceId: l.voice },
+    transcriber: { provider: 'deepgram', model: 'nova-2', language: l.dg },
+  };
+}
+
 export default function VoiceTalkButton() {
   const [state, setState] = useState<CallState>('idle');
   const [speaking, setSpeaking] = useState(false);
   const [volume, setVolume] = useState(0);
   const [muted, setMuted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lang, setLang] = useState<Lang>(LANGS[0]);
   const vapiRef = useRef<Vapi | null>(null);
 
   useEffect(() => {
@@ -36,7 +61,7 @@ export default function VoiceTalkButton() {
 
   const start = async () => {
     if (state === 'connecting' || state === 'live') return;
-    trackEvent('mustard_talk_live', { location: 'voice-agents-widget' });
+    trackEvent('mustard_talk_live', { location: 'voice-agents-widget', language: lang.code });
     setError(null);
     setState('connecting');
     try {
@@ -60,7 +85,7 @@ export default function VoiceTalkButton() {
         });
         vapiRef.current = vapi;
       }
-      await vapiRef.current.start(ASSISTANT_ID);
+      await vapiRef.current.start(ASSISTANT_ID, overridesFor(lang) as never);
     } catch (err) {
       console.error('vapi start failed', err);
       setState('error');
@@ -189,6 +214,31 @@ export default function VoiceTalkButton() {
           </div>
         )}
       </div>
+
+      {/* Language picker: he speaks your customer's language */}
+      {!isLive && !isConnecting && (
+        <div className="mt-6 pt-5 border-t border-[#FBF6EA]/15">
+          <p className="text-[9px] uppercase tracking-[0.3em] text-[#F5B700]/80 font-mono font-bold mb-2.5 text-center sm:text-left">
+            He speaks your customer&apos;s language. Pick one, then tap the mic.
+          </p>
+          <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+            {LANGS.map((l) => (
+              <button
+                key={l.code}
+                type="button"
+                onClick={() => setLang(l)}
+                className={`px-3.5 py-1.5 rounded-full border-2 text-xs font-sans font-bold transition-all ${
+                  lang.code === l.code
+                    ? 'bg-[#F5B700] text-[#161616] border-[#F5B700]'
+                    : 'bg-transparent text-[#FBF6EA] border-[#FBF6EA]/30 hover:border-[#FBF6EA]'
+                }`}
+              >
+                <span className="mr-1" aria-hidden="true">{l.flag}</span>{l.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
