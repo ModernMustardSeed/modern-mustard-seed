@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { clientEmail, leadNotification, p, callout } from '@/lib/email';
 import { getSupabase } from '@/lib/supabase';
+import { logClientMessage } from '@/lib/client-mail';
 
 export const runtime = 'nodejs';
 
@@ -209,7 +210,26 @@ export async function POST(req: Request) {
       } catch (mailErr) {
         console.error('Intake client email failed:', mailErr);
       }
+
+      // Log the confirmation we sent on the client's correspondence thread.
+      await logClientMessage({
+        direction: 'outbound',
+        fromAddr: 'polly@modernmustardseed.com',
+        toAddr: email,
+        subject: `Got it, ${firstName}. Your brand is in good hands`,
+        body: `Thank you for sharing the heart of ${businessName}. Next: we design three directions, send you a moodboard to choose from, then build the real shoppable store.`,
+      });
     }
+
+    // A submission event so the profile thread shows it landed (and alerts the team).
+    await logClientMessage({
+      direction: 'inbound',
+      channel: 'note',
+      fromAddr: email,
+      toAddr: 'sarah@modernmustardseed.com',
+      subject: `Brand intake submitted: ${businessName}`,
+      body: `${ownerName} submitted the brand intake for ${businessName}. View it in their profile.`,
+    });
 
     return NextResponse.json({ success: true });
   } catch (err) {

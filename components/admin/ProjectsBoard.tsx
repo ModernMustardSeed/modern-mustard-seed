@@ -396,6 +396,205 @@ function ProjectIntake({ email }: { email: string }) {
   );
 }
 
+type BrandIntake = Record<string, unknown> & {
+  assets?: { logoUrl?: string; photoUrls?: string[]; priceListUrl?: string };
+};
+
+/** Auto-populated panel: the brand intake the client submitted at /intake. */
+function ClientBrandIntake({ email }: { email: string }) {
+  const [bi, setBi] = useState<BrandIntake | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/admin/clients/${encodeURIComponent(email)}/brand-intake`)
+      .then((r) => r.json())
+      .then((j) => { setBi(j?.brandIntake ?? null); setLoaded(true); })
+      .catch(() => setLoaded(true));
+  }, [email]);
+
+  if (!loaded || !bi) return null;
+  const a = bi.assets ?? {};
+  const photos = Array.isArray(a.photoUrls) ? a.photoUrls : [];
+  const arr = (v: unknown) => (Array.isArray(v) ? v.join(', ') : '');
+  const str = (v: unknown) => (typeof v === 'string' ? v : '');
+
+  const rows = ([
+    ['Owner', str(bi.ownerName)],
+    ['Location', str(bi.location)],
+    ['Colors', str(bi.brandColors)],
+    ['Vibe', arr(bi.vibeWords)],
+    ['Makes', arr(bi.productTypes)],
+    ['Sizes', str(bi.sizeRange)],
+    ['Fulfillment', str(bi.fulfillment)],
+    ['Catalog', str(bi.catalogSize)],
+    ['Materials', str(bi.materials)],
+    ['Personalization', str(bi.personalization)],
+    ['Sells on', arr(bi.sellsWhere)],
+    ['Has Shopify', str(bi.hasShopify)],
+    ['Domain', [str(bi.domainStatus), str(bi.desiredDomain)].filter(Boolean).join(' · ')],
+    ['Timeline', str(bi.launchTimeline)],
+    ['Instagram', str(bi.instagram)],
+    ['Etsy', str(bi.etsy)],
+    ['Website', str(bi.website)],
+  ] as [string, string][]).filter(([, v]) => v.trim());
+  const longs = ([
+    ['Story', str(bi.story)],
+    ['Voice', str(bi.voice)],
+    ['Inspiration', str(bi.inspiration)],
+    ['Bestsellers', str(bi.bestsellers)],
+    ['Pricing', str(bi.priceNotes)],
+    ['Shipping', str(bi.shipping)],
+    ['Returns', str(bi.returns)],
+    ['Goals', str(bi.goals)],
+    ['Dream customer', str(bi.dreamCustomer)],
+    ['Notes', str(bi.notes)],
+  ] as [string, string][]).filter(([, v]) => v.trim());
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono">Brand intake</label>
+        <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded border text-emerald-800 border-emerald-800/25 bg-emerald-100">Submitted</span>
+      </div>
+      <div className="rounded-lg bg-[#FFFDF6] border border-[#161616]/15 px-3 py-2.5 space-y-3">
+        {a.logoUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={a.logoUrl} alt="logo" className="h-14 object-contain bg-white rounded border border-[#161616]/15 p-1" />
+        )}
+        {rows.length > 0 && (
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+            {rows.map(([k, v]) => (
+              <div key={k}>
+                <dt className="text-[#161616]/45 font-body text-[10px]">{k}</dt>
+                <dd className="text-[#3A3733] font-body text-[12px] break-words">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        {longs.map(([k, v]) => (
+          <div key={k}>
+            <dt className="text-[#161616]/45 font-body text-[10px]">{k}</dt>
+            <dd className="text-[#3A3733] font-body text-[12px] whitespace-pre-wrap break-words">{v}</dd>
+          </div>
+        ))}
+        {a.priceListUrl && (
+          <a href={a.priceListUrl} target="_blank" rel="noopener noreferrer" className="text-[12px] text-[#1E50C8] underline">Price list &rarr;</a>
+        )}
+        {photos.length > 0 && (
+          <div className="grid grid-cols-5 gap-2">
+            {photos.map((u, i) => (
+              <a key={i} href={u} target="_blank" rel="noopener noreferrer" className="block aspect-square rounded overflow-hidden border border-[#161616]/20">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={u} alt={`product ${i + 1}`} className="w-full h-full object-cover" />
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+type ClientMsg = {
+  id: string;
+  direction: string;
+  channel: string;
+  from_addr: string | null;
+  to_addr: string | null;
+  subject: string | null;
+  snippet: string | null;
+  body: string | null;
+  occurred_at: string;
+};
+
+/** Full correspondence thread for a client (sent + received), with a reply box. */
+function ClientCorrespondence({ email }: { email: string }) {
+  const [msgs, setMsgs] = useState<ClientMsg[] | null>(null);
+  const [subject, setSubject] = useState('');
+  const [body, setBody] = useState('');
+  const [sending, setSending] = useState(false);
+  const [err, setErr] = useState('');
+
+  const load = useCallback(() => {
+    fetch(`/api/admin/clients/${encodeURIComponent(email)}/messages`)
+      .then((r) => r.json())
+      .then((j) => setMsgs(j.messages ?? []))
+      .catch(() => setMsgs([]));
+  }, [email]);
+
+  useEffect(() => { load(); }, [load]);
+
+  async function send() {
+    if (!body.trim() || sending) return;
+    setSending(true);
+    setErr('');
+    try {
+      const r = await fetch(`/api/admin/clients/${encodeURIComponent(email)}/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, body }),
+      });
+      const j = await r.json();
+      if (r.ok) { setBody(''); setSubject(''); load(); }
+      else setErr(j.error ?? 'Failed to send.');
+    } catch {
+      setErr('Network error. Try again.');
+    }
+    setSending(false);
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <label className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 font-mono">Correspondence</label>
+        <span className="text-[9px] uppercase tracking-[0.15em] font-mono text-[#161616]/40">{msgs?.length ?? 0} messages</span>
+      </div>
+
+      <div className="rounded-lg bg-[#FFFDF6] border border-[#161616]/15 p-3 space-y-2.5 max-h-72 overflow-y-auto">
+        {msgs === null && <p className="text-[#161616]/40 font-body text-xs">Loading…</p>}
+        {msgs !== null && msgs.length === 0 && (
+          <p className="text-[#161616]/45 font-body text-xs">No emails yet. Sent and received mail will appear here.</p>
+        )}
+        {(msgs ?? []).map((m) => {
+          if (m.channel === 'note') {
+            return (
+              <p key={m.id} className="text-center text-[10px] font-mono text-[#161616]/45 py-0.5">
+                {m.subject || 'Event'} · {new Date(m.occurred_at).toLocaleDateString()}
+              </p>
+            );
+          }
+          const out = m.direction === 'outbound';
+          return (
+            <div key={m.id} className={`flex ${out ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[85%] rounded-lg border-2 border-[#161616] px-3 py-2 ${out ? 'bg-[#FFF3C9]' : 'bg-white'}`}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-[#161616]/55">{out ? 'Sent' : 'Received'}</span>
+                  <span className="text-[9px] font-mono text-[#161616]/35">{new Date(m.occurred_at).toLocaleString()}</span>
+                </div>
+                {m.subject && <p className="text-[12px] font-body font-bold text-[#161616] mb-0.5">{m.subject}</p>}
+                <p className="text-[12px] font-body text-[#3A3733] whitespace-pre-wrap break-words">{m.body || m.snippet}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-2.5 space-y-2">
+        <input value={subject} onChange={(e) => setSubject(e.target.value)} className={inp} placeholder="Subject (optional)" />
+        <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={3} className={`${inp} resize-none`} placeholder={`Write to ${email}…`} />
+        {err && <p className="text-[#E0301E] text-xs font-body font-bold">{err}</p>}
+        <button
+          onClick={send}
+          disabled={sending || !body.trim()}
+          className="px-5 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] hover:bg-[#FFD23F] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 disabled:opacity-40 transition-all"
+        >
+          {sending ? 'Sending…' : 'Send email'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function ProjectsBoard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -745,6 +944,8 @@ export default function ProjectsBoard() {
                               </div>
 
                               {d.client_email && <ProjectIntake email={d.client_email} />}
+                              {d.client_email && <ClientBrandIntake email={d.client_email} />}
+                              {d.client_email && <ClientCorrespondence email={d.client_email} />}
                               {d.client_email && <ProjectFiles email={d.client_email} />}
                               {d.client_email && <CredentialsVault email={d.client_email} />}
                               {d.client_email && (

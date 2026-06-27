@@ -31,7 +31,21 @@ export async function GET(req: Request) {
     const { data: ps } = await sb.from('rep_prospects').select('id,business,city').in('id', ids);
     for (const p of ps ?? []) names.set(p.id, `${p.business}${p.city ? ` (${p.city})` : ''}`);
   }
-  const items = (msgs ?? []).map((m) => ({ ...m, business: m.prospect_id ? names.get(m.prospect_id) ?? 'Unknown' : 'Unknown' }));
+  // Prospect-less inbound mail is from a client; resolve their name by address.
+  const clientAddrs = Array.from(
+    new Set((msgs ?? []).filter((m) => !m.prospect_id && m.from_addr).map((m) => String(m.from_addr).toLowerCase()))
+  );
+  const clientNames = new Map<string, string>();
+  if (clientAddrs.length) {
+    const { data: cs } = await sb.from('clients').select('email,name,company').in('email', clientAddrs);
+    for (const c of cs ?? []) clientNames.set(String(c.email).toLowerCase(), c.company || c.name || String(c.email));
+  }
+  const items = (msgs ?? []).map((m) => ({
+    ...m,
+    business: m.prospect_id
+      ? names.get(m.prospect_id) ?? 'Unknown'
+      : clientNames.get(String(m.from_addr).toLowerCase()) ?? (m.from_addr || 'Unknown'),
+  }));
 
   const { count: unread } = await sb
     .from('messages')

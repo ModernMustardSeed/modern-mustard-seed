@@ -27,6 +27,12 @@ export async function syncZohoInbox(opts: { sinceDays?: number } = {}): Promise<
   const byEmail = new Map<string, { id: string; status: string }>();
   for (const p of prospects || []) byEmail.set(String(p.email).toLowerCase(), { id: p.id, status: p.status });
 
+  // Also ingest mail from known clients. These are keyed by address (no
+  // prospect id), so a client's profile thread can pick them up by from/to.
+  const { data: clientRows } = await sb.from('clients').select('email').not('email', 'is', null);
+  const clientEmails = new Set<string>();
+  for (const c of clientRows || []) clientEmails.add(String(c.email).toLowerCase());
+
   const since = new Date(Date.now() - (opts.sinceDays ?? 14) * 86_400_000);
   const client = new ImapFlow({ host, port: 993, secure: true, auth: { user, pass }, logger: false });
   let fetched = 0, inserted = 0, matched = 0;
@@ -39,7 +45,8 @@ export async function syncZohoInbox(opts: { sinceDays?: number } = {}): Promise<
         const from = msg.envelope?.from?.[0]?.address?.toLowerCase();
         if (!from) continue;
         const match = byEmail.get(from);
-        if (!match) continue; // only correspondence from a known lead
+        const isClient = !match && clientEmails.has(from);
+        if (!match && !isClient) continue; // only mail from a known lead or client
         matched++;
         const messageId = msg.envelope?.messageId || `zoho:${msg.uid}`;
         let text = '';
@@ -51,7 +58,7 @@ export async function syncZohoInbox(opts: { sinceDays?: number } = {}): Promise<
         }
         const snippet = text.replace(/\s+/g, ' ').trim().slice(0, 500);
         const { error } = await sb.from('messages').insert({
-          prospect_id: match.id,
+          prospect_id: match ? match.id : null,
           direction: 'inbound',
           channel: 'email',
           from_addr: from,
@@ -65,7 +72,7 @@ export async function syncZohoInbox(opts: { sinceDays?: number } = {}): Promise<
         });
         if (!error) {
           inserted++;
-          if (match.status === 'to-contact') {
+          if (match && match.status === 'to-contact') {
             await sb.from('rep_prospects').update({ status: 'contacted', updated_at: new Date().toISOString() }).eq('id', match.id);
           }
         }
