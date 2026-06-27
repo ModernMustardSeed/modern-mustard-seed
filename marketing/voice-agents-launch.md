@@ -52,6 +52,35 @@ It remembers callers, speaks 100+ languages, books, takes orders, upsells, and n
 
 ---
 
+## 3 paid ad variants (A/B ready)
+
+Run all three at equal budget, same audience, for 5 to 7 days. Kill the two losers, scale the winner. Works on LinkedIn (single image) and Meta.
+
+**Ad A — Talk to it (demo, memorable)**
+- Primary text: Most AI you see is a screenshot. Ours answers the phone. Call (406) 312-1223 or talk to it on our site. It picks up every call 24/7, speaks 100+ languages, books appointments, and never goes to voicemail.
+- Headline: An AI receptionist you can actually call
+- CTA: Learn more
+- Destination: https://modernmustardseed.com/voice-agents
+- Visual: carousel slide 1 (the cover) or a phone screen mid-call
+
+**Ad B — Stop the leak (speed-to-lead, captures leads)**
+- Primary text: Every call you send to voicemail is a customer who just dialed your competitor. Our AI voice agent answers 24/7, in any language, and calls your web leads back in seconds. Get the field guide.
+- Headline: Stop sending customers to voicemail
+- CTA: Download
+- Destination: https://modernmustardseed.com/voice-agents/whitepaper
+- Visual: carousel slide 2 (the leak) or the overview one-pager
+
+**Ad C — In their language (differentiation)**
+- Primary text: Your competitor only answers in English. Our AI voice agent greets every caller in their language (English, Spanish, French, Mandarin, and 95 more) and books the appointment. No second line, no bilingual hire.
+- Headline: An AI receptionist that speaks 100+ languages
+- CTA: Learn more
+- Destination: https://modernmustardseed.com/voice-agents
+- Visual: carousel slide 4 (100+ languages)
+
+Read the numbers on cost per lead and per booked call, not clicks. Send Ad B traffic to the gated whitepaper so every dollar produces a named lead.
+
+---
+
 ## Carousel slide text (for reference / remixing)
 1. Your phone, answered. Always. (AI voice agents that pick up every call, in any language.)
 2. THE LEAK — Most buyers go with whoever answers first. Voicemail loses.
