@@ -3,6 +3,7 @@ import VoiceTalkButton from '@/components/VoiceTalkButton';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
+import WhitepaperGate from '@/components/WhitepaperGate';
 import { WHITEPAPER as WP } from '@/data/voice-agent-whitepaper';
 
 export const metadata = buildMetadata({
@@ -11,8 +12,6 @@ export const metadata = buildMetadata({
     'A field guide to AI voice agents that answer every call 24/7 in a natural human voice, remember every caller with persistent memory, speak 100+ languages, run inbound and outbound sales, book appointments, take orders, and upsell. By Modern Mustard Seed.',
   path: '/voice-agents/whitepaper',
 });
-
-const PDF = '/downloads/ai-voice-agents-whitepaper.pdf';
 
 const articleJsonLd = {
   '@context': 'https://schema.org',
@@ -63,19 +62,15 @@ export default function WhitepaperPage() {
               <span aria-hidden="true">·</span>
               <span>{WP.readingMinutes} min read</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a
-                href={PDF}
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-              >
-                Download the PDF
-              </a>
-              <Link
-                href="/book"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-              >
-                Book a Call
-              </Link>
+            <div className="max-w-md">
+              <WhitepaperGate />
+              <p className="text-center mt-3 text-sm font-body text-[#161616]/60">
+                or{' '}
+                <Link href="/book" className="text-[#1E50C8] font-bold underline underline-offset-2">
+                  book a call
+                </Link>{' '}
+                and we will walk you through it.
+              </p>
             </div>
           </header>
 
