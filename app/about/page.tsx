@@ -57,6 +57,24 @@ export default function AboutPage() {
             </p>
           </div>
 
+          {/* Signed: SAP (Sarah, Anthony & Polly) */}
+          <div className="mt-14 text-center">
+            <svg viewBox="0 0 250 150" className="w-44 h-auto mx-auto" role="img" aria-label="SAP signature">
+              <path
+                d="M 122 118 C 92 86, 58 78, 64 46 C 70 22, 108 26, 122 58 C 136 26, 174 22, 180 46 C 186 78, 152 86, 118 122 C 150 152, 208 134, 230 104"
+                fill="none"
+                stroke="#E0301E"
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <p className="font-serif italic text-4xl font-bold text-[#161616] -mt-3">SAP</p>
+            <p className="font-body text-sm text-[#161616]/70 mt-1.5">
+              Sarah, Anthony &amp; Polly   ·   Modern Mustard Seed
+            </p>
+          </div>
+
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link href="/work" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
               <span className="block text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">

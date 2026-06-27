@@ -226,14 +226,19 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
   </td></tr>`;
 }
 
-function signature(name: string): string {
-  return `<tr><td style="padding:36px 44px 42px">
+// The SAP signature: an oversized hand-drawn heart that crosses at the bottom
+// into a long tail, then SAP (Sarah, Anthony & Polly). Signs every email. The
+// name arg is kept for call-site compatibility but the signature is always SAP.
+function signature(_name?: string): string {
+  return `<tr><td style="padding:34px 44px 42px">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
       <td style="padding-right:12px;vertical-align:middle"><div style="width:30px;height:2px;background:${C.goldBrand};font-size:0;line-height:0">&nbsp;</div></td>
-      <td style="vertical-align:middle"><span style="font-family:${SANS};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${C.muted};font-weight:700">With faith,</span></td>
+      <td style="vertical-align:middle"><span style="font-family:${SANS};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${C.muted};font-weight:700">With love and faith,</span></td>
     </tr></table>
-    <p class="mms-ink" style="margin:12px 0 0;font-family:${SERIF};font-style:italic;font-size:26px;color:${C.ink};font-weight:600;letter-spacing:-0.2px">${escape(name)}</p>
-    <p style="margin:4px 0 0;font-family:${SANS};font-size:11px;color:${C.gold};letter-spacing:2px;text-transform:uppercase;font-weight:700">Founder, Modern Mustard Seed</p>
+    <img src="https://modernmustardseed.com/brand/sap-heart.png" width="150" height="90" alt="SAP" style="display:block;margin:12px 0 -4px -6px;border:0" />
+    <p class="mms-ink" style="margin:0;font-family:${SERIF};font-style:italic;font-size:30px;color:${C.ink};font-weight:700;letter-spacing:0.5px">SAP</p>
+    <p class="mms-ink" style="margin:5px 0 0;font-family:${SANS};font-size:12px;color:${C.ink};font-weight:600">Sarah, Anthony &amp; Polly</p>
+    <p style="margin:2px 0 0;font-family:${SANS};font-size:11px;color:${C.gold};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
   </td></tr>`;
 }
 
