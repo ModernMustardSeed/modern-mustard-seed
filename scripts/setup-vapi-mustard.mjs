@@ -76,6 +76,11 @@ const SYSTEM_PROMPT = `You are Mr. Mustard, the voice of Modern Mustard Seed (mo
 - If the caller interrupts, stop and listen. Never talk over them.
 - If you do not know something, say so plainly and offer to have Sarah confirm.
 
+# Languages (you are multilingual)
+- You speak many languages fluently (English, Spanish, French, German, Portuguese, Mandarin, Russian, and more).
+- Detect the language the caller is speaking and reply in that same language, naturally, from your very first response. If they greet you in Spanish, you are speaking Spanish.
+- If they switch languages mid-call, switch with them. Match the caller, always.
+
 # Be a strategist, then bridge (this is the heart of the call)
 When a caller asks "how could you help my business," or describes what they do, do NOT jump straight to booking. Help them first.
 1. Ask one sharp question to understand their world: what they do, where the bottleneck or the lost money is.
@@ -248,7 +253,11 @@ const assistant = {
     // needed: VAPI_MODEL=claude-sonnet-4-6 (proven-stable fallback) or
     // claude-opus-4-5-20251101 (also Opus-tier, also verified serving) or
     // claude-haiku-4-5-20251001 (snappier, less smart).
-    model: env('VAPI_MODEL') || 'claude-opus-4-6',
+    // 2026-06-27: switched default opus-4-6 -> claude-sonnet-4-6. Opus felt
+    // exceptionally slow to answer on real calls; Sonnet 4.6 has much lower TTFT
+    // while staying smart enough for the consultative range. claude-haiku-4-5-20251001
+    // is the even-faster lever (VAPI_MODEL) if it ever still drags.
+    model: env('VAPI_MODEL') || 'claude-sonnet-4-6',
     // 0.7 gives him warmth and natural variety for ideation without rambling;
     // the prompt keeps turns tight. Drop toward 0.6 if he ever gets loose.
     temperature: 0.7,
@@ -269,8 +278,14 @@ const assistant = {
     // a real call 2026-06-23 and strongly preferred it ("worked amazingly"), so Sid
     // is now the keeper. Elliot (the most natural neutral-accent option) is the
     // fallback if Sid ever reads off: VAPI_VOICE_ID=Elliot node ... --update <id>.
-    provider: env('VAPI_VOICE_PROVIDER') || 'vapi',
-    voiceId: env('VAPI_VOICE_ID') || 'Sid',
+    // 2026-06-27: switched to an Azure MULTILINGUAL voice so he sounds native in
+    // any language (Spanish, French, etc.), not just English. Vapi-native voices
+    // (Sid/Elliot) are English-first and render other languages with a heavy
+    // accent. en-US-AndrewMultilingualNeural is a warm, natural male voice that
+    // speaks 40+ languages. Revert to the old native voice with
+    // VAPI_VOICE_PROVIDER=vapi VAPI_VOICE_ID=Sid if ever needed.
+    provider: env('VAPI_VOICE_PROVIDER') || 'azure',
+    voiceId: env('VAPI_VOICE_ID') || 'en-US-AndrewMultilingualNeural',
   },
   transcriber: {
     // nova-3 is materially better than nova-2 at exactly what Mr. Mustard kept
@@ -280,7 +295,11 @@ const assistant = {
     // time. Revert instantly with VAPI_TRANSCRIBER_MODEL=nova-2 if a test call sounds off.
     provider: 'deepgram',
     model: env('VAPI_TRANSCRIBER_MODEL') || 'nova-3',
-    language: 'en',
+    // 'multi' = nova-3 multilingual: auto-detects the caller's language and
+    // transcribes it (Spanish, French, etc.), including code-switching mid-call.
+    // Was 'en', which is why a Spanish caller was not understood. Revert with
+    // VAPI_TRANSCRIBER_LANG=en if English-only accuracy ever matters more.
+    language: env('VAPI_TRANSCRIBER_LANG') || 'multi',
   },
   server: {
     url: `${SITE_URL}/api/voice`,

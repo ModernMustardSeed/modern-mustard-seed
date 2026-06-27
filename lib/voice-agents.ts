@@ -37,9 +37,11 @@ export const VOICE_AGENTS: VoiceAgent[] = [
     label: 'Mr. Mustard',
     provider: 'anthropic',
     // Mr. Mustard keeps the documented env override levers from the original
-    // single-agent watchdog; the others are config-only.
-    primary: process.env.VOICE_PRIMARY_MODEL || 'claude-opus-4-6',
-    fallback: process.env.VOICE_FALLBACK_MODEL || 'claude-sonnet-4-6',
+    // single-agent watchdog; the others are config-only. 2026-06-27: primary
+    // moved opus-4-6 -> sonnet-4-6 for much lower call latency (opus felt slow);
+    // fallback haiku-4-5 keeps it fast even during a failover.
+    primary: process.env.VOICE_PRIMARY_MODEL || 'claude-sonnet-4-6',
+    fallback: process.env.VOICE_FALLBACK_MODEL || 'claude-haiku-4-5-20251001',
   },
   {
     id: 'f87500be-5992-4ffa-ad38-8fd18c078b01',
