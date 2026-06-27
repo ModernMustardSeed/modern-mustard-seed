@@ -59,13 +59,12 @@ export default function AboutPage() {
 
           {/* Signed: SAP (Sarah, Anthony & Polly) */}
           <div className="mt-14 text-center">
-            <svg viewBox="0 0 250 150" className="w-44 h-auto mx-auto" role="img" aria-label="SAP signature">
+            <svg viewBox="0 0 200 185" className="w-28 h-auto mx-auto" role="img" aria-label="SAP signature heart">
               <path
-                d="M 122 118 C 92 86, 58 78, 64 46 C 70 22, 108 26, 122 58 C 136 26, 174 22, 180 46 C 186 78, 152 86, 118 122 C 150 152, 208 134, 230 104"
-                fill="none"
-                stroke="#E0301E"
-                strokeWidth="8"
-                strokeLinecap="round"
+                d="M100 165 C 55 130, 18 96, 18 58 C 18 32, 41 16, 65 22 C 83 27, 95 43, 100 59 C 105 43, 117 27, 135 22 C 159 16, 182 32, 182 58 C 182 96, 145 130, 100 165 Z"
+                fill="#FFFFFF"
+                stroke="#161616"
+                strokeWidth="6"
                 strokeLinejoin="round"
               />
             </svg>

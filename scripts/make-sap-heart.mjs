@@ -1,9 +1,10 @@
 import sharp from 'sharp';
 import { writeFileSync, existsSync, mkdirSync } from 'node:fs';
-// Hand-drawn heart that crosses at the bottom and trails into a long tail.
-const PATH = 'M 122 118 C 92 86, 58 78, 64 46 C 70 22, 108 26, 122 58 C 136 26, 174 22, 180 46 C 186 78, 152 86, 118 122 C 150 152, 208 134, 230 104';
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 150"><path d="${PATH}" fill="none" stroke="#E0301E" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const png = await sharp(Buffer.from(svg), { density: 300 }).resize({ width: 480 }).png().toBuffer();
+// Clean hand-drawn heart outline (no tail), white fill with a fine ink outline
+// so it reads as a white heart on both cream/light and dark backgrounds.
+export const HEART_PATH = 'M100 165 C 55 130, 18 96, 18 58 C 18 32, 41 16, 65 22 C 83 27, 95 43, 100 59 C 105 43, 117 27, 135 22 C 159 16, 182 32, 182 58 C 182 96, 145 130, 100 165 Z';
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 185"><path d="${HEART_PATH}" fill="#FFFFFF" stroke="#161616" stroke-width="6" stroke-linejoin="round"/></svg>`;
+const png = await sharp(Buffer.from(svg), { density: 300 }).resize({ width: 420 }).png().toBuffer();
 if (!existsSync('public/brand')) mkdirSync('public/brand', { recursive: true });
 writeFileSync('public/brand/sap-heart.png', png);
-console.log(`sap-heart.png written (${Math.round(png.length / 1024)} KB)`);
+console.log(`sap-heart.png written (${Math.round(png.length / 1024)} KB), white heart outline, no tail`);
