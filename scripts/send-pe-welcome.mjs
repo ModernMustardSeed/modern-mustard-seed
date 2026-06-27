@@ -18,7 +18,7 @@ function loadEnv(key) {
 const resend = new Resend(loadEnv('RESEND_API_KEY') || loadEnv('resend_api_key'));
 
 const TO = 'suellenmatthis1@icloud.com';
-const REPLY_TO = ['thompsonpolly71@gmail.com', 'sarah@modernmustardseed.com'];
+const REPLY_TO = ['polly@modernmustardseed.com', 'sarah@modernmustardseed.com'];
 const INTAKE =
   'https://modernmustardseed.com/intake?brand=P%20%26%20E%20Clothing&owner=Suellen%20Matthis&email=suellenmatthis1@icloud.com';
 

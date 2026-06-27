@@ -46,11 +46,11 @@ export function adminSender(user: { name?: string } | null): {
 } {
   const name = (user?.name ?? '').toLowerCase();
   if (name.includes('polly')) {
-    // Replies go to Polly's inbox AND the app-synced studio inbox, so she gets
-    // her copy and the reply also shows in the in-app correspondence thread.
+    // Replies go to Polly's own inbox AND the app-synced studio inbox, so she
+    // gets her copy and the reply also shows in the in-app correspondence thread.
     return {
       from: 'Polly at Modern Mustard Seed <polly@modernmustardseed.com>',
-      replyTo: ['thompsonpolly71@gmail.com', 'sarah@modernmustardseed.com'],
+      replyTo: ['polly@modernmustardseed.com', 'sarah@modernmustardseed.com'],
       address: 'polly@modernmustardseed.com',
     };
   }

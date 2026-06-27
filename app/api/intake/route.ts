@@ -185,7 +185,7 @@ export async function POST(req: Request) {
         await resend.emails.send({
           from: 'Polly at Modern Mustard Seed <polly@modernmustardseed.com>',
           to: email,
-          replyTo: ['thompsonpolly71@gmail.com', 'sarah@modernmustardseed.com'],
+          replyTo: ['polly@modernmustardseed.com', 'sarah@modernmustardseed.com'],
           subject: `Got it, ${firstName}. Your brand is in good hands`,
           html: clientEmail({
             preheader: 'Thank you. Here is exactly what happens next with your store and website.',
