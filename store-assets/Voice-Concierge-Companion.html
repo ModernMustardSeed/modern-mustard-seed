@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Voice Concierge Business Playbook — Interactive Companion</title>
+<style>
+  :root{
+    --ink:#1a2238; --ink-2:#252e4a; --gold:#c8964e; --gold-d:#a8772f; --cream:#f7f3ea;
+    --paper:#fffdf8; --body:#2b2f3a; --muted:#7b8094; --line:#e7e0d2; --leaf:#4f7a52;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--body);
+    background:radial-gradient(1000px 560px at 88% -10%,rgba(200,150,78,.12),transparent 60%),var(--cream);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:0 22px 80px}
+  header.top{background:var(--ink);color:#fff;padding:46px 0 40px;margin-bottom:34px}
+  header.top .wrap{padding-top:0;padding-bottom:0}
+  .kicker{color:var(--gold);font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
+  h1{font-size:34px;line-height:1.1;margin:12px 0 8px;font-weight:800}
+  header.top p{color:#c9cfdb;max-width:620px;margin:0}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px;position:sticky;top:0;background:var(--cream);padding:14px 0;z-index:5}
+  .tab{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
+  .tab:hover{border-color:var(--gold)}
+  .tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  section.panel{display:none;animation:fade .25s ease}
+  section.panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 1px 2px rgba(26,34,56,.04),0 22px 46px -34px rgba(26,34,56,.3);margin-bottom:20px}
+  h2{font-size:22px;margin:0 0 6px;color:var(--ink);font-weight:800}
+  h2+.sub{color:var(--muted);margin:0 0 20px;font-size:14px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+  .grid{display:grid;gap:18px}
+  @media(min-width:640px){.grid.two{grid-template-columns:1fr 1fr}}
+  .field{margin-bottom:16px}
+  .rngrow{display:flex;justify-content:space-between;align-items:baseline}
+  .rngval{font-weight:800;color:var(--gold-d);font-variant-numeric:tabular-nums}
+  input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:999px;background:var(--line);outline:none;margin-top:8px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:22px;width:22px;border-radius:999px;background:var(--gold);border:3px solid #fff;box-shadow:0 2px 8px rgba(200,150,78,.5);cursor:pointer}
+  input[type=text],input[type=number]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px;font-family:inherit}
+  input:focus{outline:none;border-color:var(--gold)}
+  .result{background:linear-gradient(160deg,#252e4a,var(--ink));color:#fff;border-radius:16px;padding:26px}
+  .result .big{font-size:46px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;margin:6px 0}
+  .result .lbl{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  .rrow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:14px}
+  .rrow:last-child{border:0}
+  .rrow b{font-variant-numeric:tabular-nums}
+  .muted{color:var(--muted);font-size:13px}
+  .check{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer}
+  .check:last-child{border:0}
+  .check input{margin-top:3px;width:18px;height:18px;accent-color:var(--gold);flex:none}
+  .check .t{font-size:14px}
+  .check .t b{color:var(--ink)}
+  .check.done .t{color:var(--muted);text-decoration:line-through}
+  .bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden;margin:4px 0 18px}
+  .bar > i{display:block;height:100%;background:var(--gold);transition:.3s}
+  table.remap{width:100%;border-collapse:collapse;font-size:13px}
+  table.remap th{background:var(--ink);color:#fff;text-align:left;padding:9px;font-size:12px}
+  table.remap td{border-bottom:1px solid var(--line);padding:7px}
+  table.remap input{padding:7px 9px}
+  .swipe{position:relative}
+  .swipe pre{white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:#fbf8f1;border:1px solid var(--line);border-radius:12px;padding:16px;margin:8px 0 0;color:#33373f}
+  .copy{position:absolute;top:34px;right:12px;background:var(--ink);color:#fff;border:0;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer}
+  .copy.ok{background:var(--leaf)}
+  .pill{display:inline-block;background:var(--gold);color:#1a2238;font-weight:700;font-size:11px;padding:3px 10px;border-radius:999px;letter-spacing:.04em}
+  footer{margin-top:30px;color:var(--muted);font-size:13px;text-align:center}
+  a{color:var(--gold-d)}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="kicker">Modern Mustard Seed · Build with Claude</div>
+  <h1>The Voice Concierge Business — Companion</h1>
+  <p>Your working tools: size any prospect in seconds, run the build, remap any vertical, and copy the outreach. Pairs with the PDF guide.</p>
+</div></header>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" data-tab="roi">ROI & Pricing</button>
+    <button class="tab" data-tab="build">Build Checklist</button>
+    <button class="tab" data-tab="remap">Vertical Remap</button>
+    <button class="tab" data-tab="swipe">Swipe Templates</button>
+  </div>
+
+  <!-- ROI -->
+  <section class="panel active" id="roi">
+    <div class="grid two">
+      <div class="card">
+        <h2>Size the prospect</h2>
+        <p class="sub">Drag to match their business. Numbers update live.</p>
+        <div class="field"><div class="rngrow"><label>Calls missed per month</label><span class="rngval" id="v_missed">120</span></div><input type="range" id="missed" min="10" max="600" value="120"></div>
+        <div class="field"><div class="rngrow"><label>Average job / project value</label><span class="rngval" id="v_job">$650</span></div><input type="range" id="job" min="50" max="6000" step="50" value="650"></div>
+        <div class="field"><div class="rngrow"><label>Missed calls that would convert</label><span class="rngval" id="v_conv">45%</span></div><input type="range" id="conv" min="15" max="80" value="45"></div>
+        <div class="field"><div class="rngrow"><label>Locations</label><span class="rngval" id="v_loc">1</span></div><input type="range" id="loc" min="1" max="300" value="1"></div>
+        <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+        <div class="field"><div class="rngrow"><label>Your price per location / month</label><span class="rngval" id="v_price">$549</span></div><input type="range" id="price" min="199" max="2500" step="50" value="549"></div>
+      </div>
+      <div class="result">
+        <div class="lbl">Client revenue recovered / year</div>
+        <div class="big" id="o_annual">$0</div>
+        <div class="muted" style="color:#c9cfdb;margin-bottom:18px">About <b id="o_month">$0</b> a month, recovered from calls that go to voicemail today.</div>
+        <div class="rrow"><span>Your MRR from this client</span><b id="o_mrr">$0</b></div>
+        <div class="rrow"><span>Your annual contract value</span><b id="o_acv">$0</b></div>
+        <div class="rrow"><span>Client ROI on your fee</span><b id="o_roi">0×</b></div>
+        <div class="rrow"><span>Jobs recovered / month</span><b id="o_jobs">0</b></div>
+        <p class="muted" style="color:#aeb6c8;margin:16px 0 0">Pitch line: "You spend the price of a sandwich a day to stop losing <span id="o_unit">$650</span> jobs."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILD -->
+  <section class="panel" id="build">
+    <div class="card">
+      <h2>Build checklist</h2>
+      <p class="sub">From empty folder to a number you can call. Progress saves in this browser.</p>
+      <div class="bar"><i id="prog" style="width:0"></i></div>
+      <div id="checks"></div>
+    </div>
+  </section>
+
+  <!-- REMAP -->
+  <section class="panel" id="remap">
+    <div class="card">
+      <h2>Vertical remap worksheet</h2>
+      <p class="sub">Every vertical maps onto the same skeleton. Fill the blanks for your target, then build it.</p>
+      <table class="remap">
+        <thead><tr><th style="width:24%">Skeleton part</th><th>Your vertical</th></tr></thead>
+        <tbody id="remapRows"></tbody>
+      </table>
+      <p class="muted" style="margin-top:14px">Saved automatically. Reference examples in the PDF: restaurant (menu / order / catering), home services (price list / job / replacement + emergency), painting (services / estimate / whole-home + color visualizer).</p>
+    </div>
+  </section>
+
+  <!-- SWIPE -->
+  <section class="panel" id="swipe"></section>
+
+  <footer>The Voice Concierge Business Playbook · © Modern Mustard Seed · <a href="https://modernmustardseed.com">modernmustardseed.com</a></footer>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const usd=n=>"$"+Math.round(n).toLocaleString();
+// tabs
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');$(t.dataset.tab).classList.add('active');
+});
+// ROI
+const R=['missed','job','conv','loc','price'];
+function roi(){
+  const missed=+$('missed').value,job=+$('job').value,conv=+$('conv').value/100,loc=+$('loc').value,price=+$('price').value;
+  $('v_missed').textContent=missed;$('v_job').textContent=usd(job);$('v_conv').textContent=conv*100+'%';$('v_loc').textContent=loc;$('v_price').textContent=usd(price);
+  const jobsMo=missed*conv, monthly=jobsMo*job*loc, annual=monthly*12;
+  const mrr=price*loc, acv=mrr*12, roiX=mrr>0?(monthly/mrr):0;
+  $('o_annual').textContent=usd(annual);$('o_month').textContent=usd(monthly);
+  $('o_mrr').textContent=usd(mrr);$('o_acv').textContent=usd(acv);
+  $('o_roi').textContent=(roiX>=1?Math.round(roiX):roiX.toFixed(1))+'×';
+  $('o_jobs').textContent=Math.round(jobsMo*loc);$('o_unit').textContent=usd(job);
+}
+R.forEach(id=>$(id).addEventListener('input',roi));roi();
+// BUILD checklist
+const STEPS=[
+ ['Clone the closest proven build','Copy the infra, write only the domain (types, price book, seed, tools, dashboard, landing).'],
+ ['Wire the Vapi tools','One route per tool through the shared handler: services, availability, customer, book, capture, branch info, escalate.'],
+ ['Build green','Install, typecheck, production build until clean. Commit.'],
+ ['Deploy to Vercel','vercel --prod. Note the live URL.'],
+ ['Create the assistant','Run setup-vapi with your key + the deployed URL. Capture the assistant id.'],
+ ['Scope a public key','POST /token restricted to your assistant id (prevents instant call drops).'],
+ ['Provision a phone number','POST /phone-number with a desired area code. Cosmetic for a demo.'],
+ ['Set env + redeploy','Public key, assistant id, app URL, tools base URL, demo phone.'],
+ ['Verify for real','Web /call/web returns 201. Landing shows the number + widget. Screenshot the signature.'],
+ ['Build the outreach','Decision-makers, the demo number, the swipe emails. Send it.'],
+];
+const KEY='vcp-build-v1';let done=JSON.parse(localStorage.getItem(KEY)||'[]');
+const cc=$('checks');
+STEPS.forEach((s,i)=>{
+  const d=document.createElement('label');d.className='check'+(done[i]?' done':'');
+  d.innerHTML=`<input type="checkbox" ${done[i]?'checked':''}><span class="t"><b>${s[0]}.</b> ${s[1]}</span>`;
+  d.querySelector('input').onchange=e=>{done[i]=e.target.checked;localStorage.setItem(KEY,JSON.stringify(done));d.classList.toggle('done',e.target.checked);prog();};
+  cc.appendChild(d);
+});
+function prog(){const n=done.filter(Boolean).length;$('prog').style.width=(n/STEPS.length*100)+'%';}
+prog();
+// REMAP worksheet
+const PARTS=[['Price book','menu / services / repair list'],['Primary action (book)','take order / book estimate / book job'],['Big lead (capture)','catering / whole-home / replacement'],['Signature moment','visualizer / after-hours / promo push'],['"Revenue recovered" stat','orders / estimates / jobs + emergencies'],['Brand voice + colors','their real palette and tone']];
+const RKEY='vcp-remap-v1';const saved=JSON.parse(localStorage.getItem(RKEY)||'{}');
+const rr=$('remapRows');
+PARTS.forEach((p,i)=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><b>${p[0]}</b></td><td><input type="text" placeholder="${p[1]}" data-k="${i}" value="${(saved[i]||'').replace(/"/g,'&quot;')}"></td>`;
+  rr.appendChild(tr);
+});
+rr.querySelectorAll('input').forEach(inp=>inp.oninput=e=>{saved[e.target.dataset.k]=e.target.value;localStorage.setItem(RKEY,JSON.stringify(saved));});
+// SWIPE
+const SW=[
+ ['First email','Subject: I built you a 24/7 AI receptionist. Call it: [number]\n\nHi [name], you know the number that hurts: most callers who hit voicemail just call the next [trade]. I built a working 24/7 voice concierge for [business] and put it on a live demo number. Call [number] and [action]. It books the job and never sleeps.\n\nTo be clear, this is a demo I built so you can hear it, not a live install. See the dashboard: [url]. Worth 15 minutes? And to make it easy: recover more than the fee in 30 days or that month is free.\n\nBest, [you] · Modern Mustard Seed'],
+ ['LinkedIn note','Hi [name], I build AI phone agents for [trade]. I built a working 24/7 concierge for [business] and put it on a live demo number: [number]. Call it and [action]. Books the job, after hours too. Quick look: [url]'],
+ ['Voicemail (~25s)','Hi, this is [you] with Modern Mustard Seed. I build AI receptionists for [trade], and I built a working one for [business]. It answers every call 24/7 and books the job. You can call it yourself at [number] and try it. I would love to show your team the dashboard. Reach me at [cell] or [email]. Thanks.'],
+ ['Objection: "We already have someone answering"','Great, this backs them up, it never sends a caller to voicemail at lunch, after hours, or when the line is busy. It only catches the calls you are losing today. Call the demo and see what it sounds like: [number].'],
+ ['Objection: "AI sounds robotic"','Fair concern. Do not take my word for it, call [number] right now and try to trip it up. Most owners cannot tell. If it is not good enough for your brand, there is no pitch.'],
+ ['Objection: "Too expensive"','It is about [price/30] a day. The average missed call in [trade] is worth [job value]. One recovered job a month pays for it many times over, and the 30-day guarantee means you only keep it if it does.'],
+ ['Discovery questions','1) How many calls a day go to voicemail or the busy signal? 2) What is a booked job worth on average? 3) What happens to an after-hours call today? 4) Who owns the phone, and who would see the dashboard? 5) If we recovered even 10 a month, what is that worth?'],
+];
+const sw=$('swipe');
+SW.forEach((s,i)=>{
+  const c=document.createElement('div');c.className='card swipe';
+  c.innerHTML=`<span class="pill">Swipe</span> <h2 style="display:inline-block;margin-left:8px;font-size:18px">${s[0]}</h2><button class="copy" data-i="${i}">Copy</button><pre id="sw${i}">${s[1].replace(/</g,'&lt;')}</pre>`;
+  sw.appendChild(c);
+});
+sw.querySelectorAll('.copy').forEach(b=>b.onclick=()=>{
+  const t=$('sw'+b.dataset.i).textContent;navigator.clipboard.writeText(t).then(()=>{b.textContent='Copied';b.classList.add('ok');setTimeout(()=>{b.textContent='Copy';b.classList.remove('ok')},1400);});
+});
+</script>
+</body>
+</html>

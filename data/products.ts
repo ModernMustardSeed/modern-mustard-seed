@@ -265,6 +265,40 @@ export const products: Product[] = [
     accentColor: '#0D1B2A',
     recommendFor: ['geo', 'seo', 'ecommerce', 'audit-fail-geo', 'audit-fail-seo'],
   },
+  {
+    slug: 'voice-concierge-business-playbook',
+    name: 'The Voice Concierge Business Playbook',
+    category: 'Build with Claude',
+    pitch:
+      'Build and sell 24/7 AI phone agents to local businesses and franchises as a $500 to $2,500 a month recurring service. The exact system, tech, pricing, and sales scripts we use to ship these.',
+    whatsInside:
+      'The complete business-in-a-box for the biggest unclaimed opportunity in local services: every plumber, painter, restaurant, and clinic is losing money to missed calls, and almost none of them have a voice AI yet. This is the system we use at Modern Mustard Seed to build and sell branded 24/7 voice concierges (the same approach behind our restaurant, home-services, and painting demos). You get the missed-call economics that make the sale obvious, the white-space map of who to target first, the full build runbook (one skeleton, every vertical), the Vapi setup appendix with the exact API calls and gotchas, a pricing and packaging model, the demo-is-the-pitch sales motion, objection handling, and a complete swipe file. It ships with an interactive HTML companion app: an ROI and pricing calculator that sizes any prospect in seconds, a build checklist that saves your progress, a vertical-remap worksheet, and every outreach template with one-tap copy. Built for operators who want a recurring-revenue AI business, not another course.',
+    toc: [
+      'The Opportunity. Why a missed call is the most expensive, and cheapest to fix, problem in local business',
+      'The White Space. Where the money is and who already took the easy seats',
+      'The System. The one skeleton every vertical wears',
+      'The Build Runbook. From empty folder to a number you can call',
+      'Vertical Playbooks. The signature move and pitch for each market',
+      'Pricing and Packaging. What to charge and why one saved job pays for the year',
+      'Selling It. The demo is the pitch, everything else is logistics',
+      'Scale, and Your First 30 Days. Productize the build, then win your first logo',
+      'Appendix A. The Vapi setup, step by step (assistant, scoped key, number, gotchas)',
+      'Appendix B. Objection handling, six lines that turn a no into a call',
+      'Appendix C. The full swipe file (emails, LinkedIn, voicemail, discovery)',
+      'Appendix D. Vertical deep-dives (home services, painting, restaurants, professional)',
+      'Interactive Companion App. ROI + pricing calculator, build checklist, remap worksheet, swipe templates',
+    ],
+    pages: 13,
+    priceUsd: 497,
+    stripePriceId: '',
+    pdfFileName: 'MMS_Voice_Concierge_Business_Playbook.pdf',
+    idealBuyer:
+      'Agencies, builders, and operators who want to launch a high-margin recurring-revenue AI business. People who can sell to local service businesses and franchises and want a proven, templated system instead of starting from scratch.',
+    funnelRole: 'Flagship high-ticket product. The build-a-business offer. Natural upsell from consulting, the AI-Ready Blueprint, and the Claude Code Masterclass.',
+    accentColor: '#1a2238',
+    recommendFor: ['voice-ai', 'agency', 'build-a-business', 'recurring-revenue', 'home-services', 'high-ticket'],
+    comingSoon: true,
+  },
 ];
 
 export const bundles: Bundle[] = [
