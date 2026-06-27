@@ -239,6 +239,7 @@ function signature(_name?: string): string {
     <p class="mms-ink" style="margin:0;font-family:${SERIF};font-style:italic;font-size:30px;color:${C.ink};font-weight:700;letter-spacing:0.5px">SAP</p>
     <p class="mms-ink" style="margin:5px 0 0;font-family:${SANS};font-size:12px;color:${C.ink};font-weight:600">Sarah, Anthony &amp; Polly</p>
     <p style="margin:2px 0 0;font-family:${SANS};font-size:11px;color:${C.gold};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
+    <p class="mms-ink" style="margin:7px 0 0;font-family:${SERIF};font-style:italic;font-size:14px;color:${C.ink};font-weight:600">Do you want your business to thrive?</p>
   </td></tr>`;
 }
 

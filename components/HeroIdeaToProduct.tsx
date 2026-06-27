@@ -52,6 +52,12 @@ export default function HeroIdeaToProduct() {
           />
         </div>
 
+        {/* Tagline kicker: the question the whole brand answers */}
+        <p className="opacity-0 animate-fade-in-up font-display italic text-xl md:text-2xl text-[#161616] mb-4">
+          Do you want your business to{' '}
+          <span className="not-italic font-black text-[#E0301E]">thrive</span>?
+        </p>
+
         {/* Headline */}
         <h1 className="opacity-0 animate-fade-in-up font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.03] text-[#161616]">
           You bring the{' '}

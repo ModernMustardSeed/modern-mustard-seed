@@ -17,7 +17,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Apps, Sites, and Specialty AI Tools',
   description:
-    'Custom apps, websites, and specialty AI tools for your business. Shipped in weeks, not months. Now booking new builds.',
+    'Do you want your business to thrive? Custom apps, websites, and specialty AI tools for your business, shipped in weeks, not months. Now booking new builds.',
 });
 
 const homeJsonLd = {
@@ -27,7 +27,7 @@ const homeJsonLd = {
   url: 'https://modernmustardseed.com',
   name: 'Modern Mustard Seed | Apps, Sites, and Specialty AI Tools',
   description:
-    'Custom apps, websites, and specialty AI tools for your business. Shipped in weeks, not months.',
+    'Do you want your business to thrive? Custom apps, websites, and specialty AI tools for your business, shipped in weeks, not months.',
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },
   primaryImageOfPage: {

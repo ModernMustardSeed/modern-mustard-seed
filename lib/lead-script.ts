@@ -80,7 +80,7 @@ export function buildLeadScript(p: Prospect, repName: string, bookDisplay: strin
   } else {
     steps = [
       { label: 'Open', line: `Hi, is this ${biz}? Hey, my name is ${first}. I'll be honest, this is a quick cold call, do you have 20 seconds before I let you go?` },
-      { label: 'Why you are calling', line: `Thanks, I appreciate it. I work with a company that builds AI tools for ${city} businesses. The reason I'm calling: for a place like yours, ${hook}. We set up a system that answers your phone and books appointments around the clock, in a natural voice, even when you're closed or slammed.` },
+      { label: 'Why you are calling', line: `Thanks, I appreciate it. Quick honest question I ask every owner: do you want your business to thrive? Because the ones that do never let a call slip. I work with a company that builds AI tools for ${city} businesses, and for a place like yours, ${hook}. We set up a system that answers your phone and books appointments around the clock, in a natural voice, even when you're closed or slammed.` },
       { label: 'Find the problem', line: `Quick question: when you're busy or after hours, what happens to your calls right now? Do they mostly go to voicemail?` },
       { label: 'Offer the demo', line: `That's exactly what we fix, and the easiest way is to hear it. I'd love to show you a quick live demo, you can actually talk to it. Takes about ten minutes. Would tomorrow morning or afternoon be better?` },
       { label: 'Lock it in', line: `Perfect. What's the best cell or email to send the details to? I'll book you in and send a confirmation. Looking forward to it.` },
