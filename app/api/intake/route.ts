@@ -164,7 +164,7 @@ export async function POST(req: Request) {
       try {
         await resend.emails.send({
           from: 'Brand Intake <sarah@modernmustardseed.com>',
-          to: 'sarah@modernmustardseed.com',
+          to: ['sarah@modernmustardseed.com', 'thompsonpolly71@gmail.com'],
           replyTo: email,
           subject: `New brand intake: ${businessName}`,
           html: leadNotification({
@@ -182,10 +182,10 @@ export async function POST(req: Request) {
 
       try {
         await resend.emails.send({
-          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          from: 'Polly at Modern Mustard Seed <polly@modernmustardseed.com>',
           to: email,
-          replyTo: 'sarah@modernmustardseed.com',
-          subject: `Got it, ${firstName} — your brand is in good hands`,
+          replyTo: 'thompsonpolly71@gmail.com',
+          subject: `Got it, ${firstName}. Your brand is in good hands`,
           html: clientEmail({
             preheader: 'Thank you. Here is exactly what happens next with your store and website.',
             greeting: `${firstName},`,

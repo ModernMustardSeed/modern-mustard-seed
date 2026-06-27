@@ -39,7 +39,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewp
   </td></tr>
   <tr><td style="padding:14px 40px 0;font-family:Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:${body}">
     <p style="margin:0 0 16px">Hi Suellen,</p>
-    <p style="margin:0 0 16px">I&rsquo;m Polly with Modern Mustard Seed, Sarah&rsquo;s studio, and I will be your point of contact through this whole thing. We are so glad to have you.</p>
+    <p style="margin:0 0 16px">I&rsquo;m Polly with Modern Mustard Seed, and I will be your point of contact through this whole thing. We are so glad to have you.</p>
     <p style="margin:0 0 16px">Here is the happy news. We are going to design and build P &amp; E Clothing a beautiful website and online store, the kind where people can actually shop your baby clothes, bows, and mommy-and-me sets right there on the page. This one is on us. There is no cost to you.</p>
     <p style="margin:0 0 16px">To make it truly yours, I need to learn about your brand, your products, and the heart behind the name. I put together one simple form that walks you through it. It takes about ten minutes, and you can skip anything you are not sure about.</p>
   </td></tr>
@@ -68,7 +68,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewp
 
 const text = `Hi Suellen,
 
-I'm Polly with Modern Mustard Seed, Sarah's studio, and I will be your point of contact through this whole thing. We are so glad to have you.
+I'm Polly with Modern Mustard Seed, and I will be your point of contact through this whole thing. We are so glad to have you.
 
 Here is the happy news. We are going to design and build P & E Clothing a beautiful website and online store, the kind where people can actually shop your baby clothes, bows, and mommy-and-me sets right there on the page. This one is on us. There is no cost to you.
 
@@ -87,7 +87,7 @@ Polly
 Modern Mustard Seed`;
 
 const { data, error } = await resend.emails.send({
-  from: 'Polly at Modern Mustard Seed <sarah@modernmustardseed.com>',
+  from: 'Polly at Modern Mustard Seed <polly@modernmustardseed.com>',
   to: TO,
   replyTo: REPLY_TO,
   subject: "Let's build P & E Clothing a real online home",

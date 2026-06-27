@@ -307,7 +307,7 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
       }
     } catch {
       setStatus('error');
-      setErrorMsg('Network error. Please try again, or email sarah@modernmustardseed.com directly.');
+      setErrorMsg('Network error. Please try again, or email Polly at thompsonpolly71@gmail.com directly.');
     }
   }
 
@@ -531,10 +531,10 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
         disabled={status === 'sending' || anyUploading}
         className="w-full py-5 text-xs uppercase tracking-[0.25em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-xl border-2 border-[#161616] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:translate-y-0"
       >
-        {status === 'sending' ? 'Sending...' : anyUploading ? 'Finishing uploads...' : 'Send it to Sarah'}
+        {status === 'sending' ? 'Sending...' : anyUploading ? 'Finishing uploads...' : 'Send it to Polly'}
       </button>
       <p className="text-center text-[#161616]/45 text-xs font-body italic">
-        No cost, no catch. This build is on the house. You will hear from Sarah personally.
+        No cost, no catch. This build is on the house. You will hear from Polly personally.
       </p>
     </form>
   );
