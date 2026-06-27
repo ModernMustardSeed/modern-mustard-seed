@@ -41,14 +41,16 @@ export async function logClientMessage(args: {
  *  inbox); everyone else sends from the studio address. */
 export function adminSender(user: { name?: string } | null): {
   from: string;
-  replyTo: string;
+  replyTo: string | string[];
   address: string;
 } {
   const name = (user?.name ?? '').toLowerCase();
   if (name.includes('polly')) {
+    // Replies go to Polly's inbox AND the app-synced studio inbox, so she gets
+    // her copy and the reply also shows in the in-app correspondence thread.
     return {
       from: 'Polly at Modern Mustard Seed <polly@modernmustardseed.com>',
-      replyTo: 'thompsonpolly71@gmail.com',
+      replyTo: ['thompsonpolly71@gmail.com', 'sarah@modernmustardseed.com'],
       address: 'polly@modernmustardseed.com',
     };
   }
