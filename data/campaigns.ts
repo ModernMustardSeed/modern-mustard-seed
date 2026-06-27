@@ -147,20 +147,20 @@ const newks: Campaign = {
       angle: 'Owns all consumer touchpoints + IT, launched Newk’s Rewards. The concierge protects the brand experience on every call and feeds loyalty. Primary buyer.',
       priority: 1,
       email: {
-        subject: "Every call to Newk's, answered (you can call the demo right now)",
+        subject: "Newk's Rewards members, recognized on every call",
         body: `Hi Denise,
 
-I run client work at Modern Mustard Seed and I built something for Newk's that I think you will want to hear, literally.
+You built Newk's Rewards, so here is the part I think you will care about most. Call this number and place an order, and it knows you.
 
-Call this number and order a sandwich, or ask about catering: ${NEWKS_DEMO_NUMBER}
+${NEWKS_DEMO_NUMBER}
 
-That is a 24/7 AI Voice Concierge wearing Newk's colors. It answers every call in the guest's language, takes to-go and catering orders, captures catering leads, and never sends a guest to voicemail. It even recognizes a returning caller and offers "the usual," so it compounds Newk's Rewards instead of fighting it.
+That is a 24/7 AI Voice Concierge in Newk's colors. When a Rewards member calls, it recognizes them by their phone number, greets them by name, tells them their points balance, and nudges them toward their next reward, all before they finish ordering. It offers them "the usual," takes to-go and catering orders in the guest's language, and never sends anyone to voicemail.
 
-You own every consumer touchpoint across 15 states. The phone is the one touchpoint that still drops guests on the floor during the lunch and catering rush. This closes that gap, and a fleet dashboard shows corporate the recovered revenue per location.
+The phone is the one touchpoint you own that still drops loyalty members on the floor during the lunch and catering rush. Every missed call is a member who did not earn points and an order that walked next door. This closes that gap, it feeds Rewards instead of fighting it, and a fleet dashboard shows corporate the recovered revenue per location across all 15 states.
 
-The whole thing is live: ${NEWKS_DEMO_SITE}
+It is live right now: ${NEWKS_DEMO_SITE}
 
-Worth 15 minutes? I will walk you through the dashboard and the franchise rollout math.
+Worth 15 minutes? I will show you the member recognition, the dashboard, and the franchise rollout math.
 
 ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
       },
