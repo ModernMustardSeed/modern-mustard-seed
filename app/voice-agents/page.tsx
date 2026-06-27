@@ -204,7 +204,7 @@ export default function VoiceAgentsPage() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 md:max-w-[240px]">
-                {['🇺🇸 English', '🇲🇽 Español', '🇫🇷 Français', '🇧🇷 Português', '🇩🇪 Deutsch', '🇨🇳 中文', '+95 more'].map((t) => (
+                {['🇺🇸 English', '🇲🇽 Español', '🇫🇷 Français', '🇧🇷 Português', '🇩🇪 Deutsch', '🇨🇳 中文', '🇷🇺 Русский', '+95 more'].map((t) => (
                   <span key={t} className="px-3 py-1.5 rounded-full border-2 border-[#161616] bg-white text-xs font-sans font-bold text-[#161616]">
                     {t}
                   </span>

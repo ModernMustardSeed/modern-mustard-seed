@@ -31,6 +31,7 @@ const LANGS: Lang[] = [
   { code: 'de', label: 'Deutsch', flag: '🇩🇪', voice: 'de-DE-ConradNeural', dg: 'de', first: 'Hallo, ich bin Mr. Mustard von Modern Mustard Seed. Fragen Sie mich alles oder buchen Sie einen Termin mit Sarah. Wie kann ich helfen?' },
   { code: 'pt', label: 'Português', flag: '🇧🇷', voice: 'pt-BR-AntonioNeural', dg: 'pt', first: 'Olá, eu sou o Mr. Mustard, da Modern Mustard Seed. Pergunte o que quiser ou agende uma conversa com a Sarah. Como posso ajudar?' },
   { code: 'zh', label: '中文', flag: '🇨🇳', voice: 'zh-CN-YunxiNeural', dg: 'zh', first: '您好，我是 Modern Mustard Seed 的 Mr. Mustard。您可以问我任何问题，或预约与 Sarah 的通话。我能帮您做什么？' },
+  { code: 'ru', label: 'Русский', flag: '🇷🇺', voice: 'ru-RU-DmitryNeural', dg: 'ru', first: 'Здравствуйте! Я Mr. Mustard из Modern Mustard Seed. Спросите меня о чём угодно или запишитесь на звонок с Сарой. Чем могу помочь?' },
 ];
 
 function overridesFor(l: Lang): Record<string, unknown> | undefined {
