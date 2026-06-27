@@ -213,6 +213,16 @@ export default function VoiceAgentsPage() {
             </div>
           </div>
 
+          {/* Whitepaper link */}
+          <div className="text-center mb-20">
+            <Link
+              href="/voice-agents/whitepaper"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-[#161616] bg-white text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] shadow-[4px_4px_0_0_#161616] hover:bg-[#F5B700] hover:-translate-y-0.5 transition-all"
+            >
+              Read the AI voice agent whitepaper →
+            </Link>
+          </div>
+
           {/* Speed-to-lead stat band */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {stats.map((s) => (

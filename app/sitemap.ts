@@ -15,6 +15,7 @@ const STATIC_PATHS = [
   '/work',
   '/services',
   '/voice-agents',
+  '/voice-agents/whitepaper',
   '/work-with-us',
   '/blog',
   '/playbooks',
