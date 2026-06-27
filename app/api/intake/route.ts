@@ -167,7 +167,7 @@ export async function POST(req: Request) {
           from: 'Brand Intake <sarah@modernmustardseed.com>',
           to: ['sarah@modernmustardseed.com', 'thompsonpolly71@gmail.com'],
           replyTo: email,
-          subject: `New brand intake: ${businessName}`,
+          subject: `Intake submitted: ${ownerName} (${businessName})`,
           html: leadNotification({
             type: 'Contact',
             name: ownerName,
