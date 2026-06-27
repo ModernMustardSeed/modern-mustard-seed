@@ -49,9 +49,9 @@ export function adminSender(user: { name?: string } | null): {
     // Replies go to Polly's own inbox AND the app-synced studio inbox, so she
     // gets her copy and the reply also shows in the in-app correspondence thread.
     return {
-      from: 'Polly at Modern Mustard Seed <polly@modernmustardseed.com>',
-      replyTo: ['polly@modernmustardseed.com', 'sarah@modernmustardseed.com'],
-      address: 'polly@modernmustardseed.com',
+      from: 'Polly at Modern Mustard Seed <polly.thompson@modernmustardseed.com>',
+      replyTo: ['polly.thompson@modernmustardseed.com', 'sarah@modernmustardseed.com'],
+      address: 'polly.thompson@modernmustardseed.com',
     };
   }
   const first = (user?.name ?? 'Sarah').trim().split(/\s+/)[0] || 'Sarah';

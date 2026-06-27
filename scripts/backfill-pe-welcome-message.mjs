@@ -50,7 +50,7 @@ if (existing) {
   const { error } = await supabase.from('messages').insert({
     direction: 'outbound',
     channel: 'email',
-    from_addr: 'polly@modernmustardseed.com',
+    from_addr: 'polly.thompson@modernmustardseed.com',
     to_addr: TO,
     subject: SUBJECT,
     snippet: BODY.replace(/\s+/g, ' ').trim().slice(0, 500),
