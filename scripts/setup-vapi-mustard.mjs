@@ -76,11 +76,6 @@ const SYSTEM_PROMPT = `You are Mr. Mustard, the voice of Modern Mustard Seed (mo
 - If the caller interrupts, stop and listen. Never talk over them.
 - If you do not know something, say so plainly and offer to have Sarah confirm.
 
-# Languages (you are multilingual)
-- You speak many languages fluently (English, Spanish, French, German, Portuguese, Mandarin, Russian, and more).
-- Detect the language the caller is speaking and reply in that same language, naturally, from your very first response. If they greet you in Spanish, you are speaking Spanish.
-- If they switch languages mid-call, switch with them. Match the caller, always.
-
 # Be a strategist, then bridge (this is the heart of the call)
 When a caller asks "how could you help my business," or describes what they do, do NOT jump straight to booking. Help them first.
 1. Ask one sharp question to understand their world: what they do, where the bottleneck or the lost money is.
@@ -278,14 +273,13 @@ const assistant = {
     // a real call 2026-06-23 and strongly preferred it ("worked amazingly"), so Sid
     // is now the keeper. Elliot (the most natural neutral-accent option) is the
     // fallback if Sid ever reads off: VAPI_VOICE_ID=Elliot node ... --update <id>.
-    // 2026-06-27: switched to an Azure MULTILINGUAL voice so he sounds native in
-    // any language (Spanish, French, etc.), not just English. Vapi-native voices
-    // (Sid/Elliot) are English-first and render other languages with a heavy
-    // accent. en-US-AndrewMultilingualNeural is a warm, natural male voice that
-    // speaks 40+ languages. Revert to the old native voice with
-    // VAPI_VOICE_PROVIDER=vapi VAPI_VOICE_ID=Sid if ever needed.
-    provider: env('VAPI_VOICE_PROVIDER') || 'azure',
-    voiceId: env('VAPI_VOICE_ID') || 'en-US-AndrewMultilingualNeural',
+    // 2026-06-27: tried Azure multilingual (en-US-AndrewMultilingualNeural) so he
+    // could sound native in any language; Sarah found it worse AND slower (Azure
+    // TTS adds latency on top of the model). Reverted to native Sid. Multilingual
+    // now lives ONLY in the web demo (VoiceTalkButton per-call overrides), not on
+    // the live line. Sarah A/B'd Sid vs Elliot 2026-06-23 and loves Sid.
+    provider: env('VAPI_VOICE_PROVIDER') || 'vapi',
+    voiceId: env('VAPI_VOICE_ID') || 'Sid',
   },
   transcriber: {
     // nova-3 is materially better than nova-2 at exactly what Mr. Mustard kept
@@ -295,11 +289,10 @@ const assistant = {
     // time. Revert instantly with VAPI_TRANSCRIBER_MODEL=nova-2 if a test call sounds off.
     provider: 'deepgram',
     model: env('VAPI_TRANSCRIBER_MODEL') || 'nova-3',
-    // 'multi' = nova-3 multilingual: auto-detects the caller's language and
-    // transcribes it (Spanish, French, etc.), including code-switching mid-call.
-    // Was 'en', which is why a Spanish caller was not understood. Revert with
-    // VAPI_TRANSCRIBER_LANG=en if English-only accuracy ever matters more.
-    language: env('VAPI_TRANSCRIBER_LANG') || 'multi',
+    // English on the live agent = best accuracy for our actual callers. The web
+    // demo overrides this to 'multi' per language to show the multilingual
+    // feature; the live line stays English. Lever: VAPI_TRANSCRIBER_LANG=multi.
+    language: env('VAPI_TRANSCRIBER_LANG') || 'en',
   },
   server: {
     url: `${SITE_URL}/api/voice`,

@@ -20,10 +20,11 @@ const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
 
 type Lang = { code: string; label: string; flag: string; voice?: string; dg?: string; first?: string };
 
-// English uses Mr. Mustard's native voice + base (multilingual) prompt. Other
-// languages override the voice (Azure, native-sounding) + transcriber + opener,
-// so the demo actually speaks that language. The base prompt is multilingual, so
-// he keeps the conversation going in whatever language the caller uses.
+// Multilingual lives HERE, in the demo only (the live phone agent is English +
+// Sid). English uses Mr. Mustard's native voice + base prompt. Other languages
+// override the voice (Azure, native-sounding) + transcriber + opener, so the
+// demo speaks that language; Claude then mirrors the caller's language for the
+// rest of the call (a foreign opener + foreign transcription keep it there).
 const LANGS: Lang[] = [
   { code: 'en', label: 'English', flag: '🇺🇸' },
   { code: 'es', label: 'Español', flag: '🇲🇽', voice: 'es-US-AlonsoNeural', dg: 'es', first: '¡Hola! Soy Mr. Mustard, de Modern Mustard Seed. Pregúnteme lo que quiera, o reserve una llamada con Sarah. ¿En qué le puedo ayudar hoy?' },
