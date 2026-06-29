@@ -372,8 +372,19 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
                       <tr key={p.id} className="border-b border-[#161616]/10 align-top">
                         <td className="px-4 py-3">
                           <button onClick={() => setScriptFor(p)} className="font-body font-medium text-[#161616] text-left hover:text-[#1E50C8] hover:underline underline-offset-2">{p.business}</button>
-                          <div className="flex items-center gap-1.5 mt-1">
-                            {p.website && <span title={p.website} className="text-[#2D6A4F] text-[11px]" aria-label="has website">🌐</span>}
+                          <div className="flex items-center gap-2 mt-1 flex-wrap">
+                            {p.website && (
+                              <a
+                                href={/^https?:\/\//i.test(p.website) ? p.website : `https://${p.website}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                title={`Open ${p.website}`}
+                                className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-[#1E50C8] border border-[#1E50C8]/40 rounded-full px-2 py-0.5 hover:bg-[#1E50C8] hover:text-white transition-colors"
+                              >
+                                🌐 Visit site ↗
+                              </a>
+                            )}
                             {p.email && <span title={p.email} className="text-[#1E50C8] text-[11px]" aria-label="has email">✉</span>}
                             {p.lead_id && <span className="text-[8px] uppercase tracking-[0.15em] font-mono font-bold text-white bg-[#2D6A4F] rounded px-1.5 py-0.5">In pipeline</span>}
                           </div>
