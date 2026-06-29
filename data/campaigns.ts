@@ -92,7 +92,7 @@ const newks: Campaign = {
   slug: 'newks',
   brand: "Newk's Eatery",
   product: 'AI Voice Concierge',
-  lead: { name: 'Polly Thompson', role: 'Account lead' },
+  lead: { name: 'Sarah Scarano', role: 'Account lead' },
   status: 'live',
   headquarters: 'Ridgeland, Mississippi',
   footprint: 'Fast-casual, corporate + franchise, 15 states',
