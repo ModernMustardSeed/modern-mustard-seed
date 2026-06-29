@@ -115,48 +115,52 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 min-w-0 md:flex-1 md:justify-end">
-          {/* Scroll left */}
-          {hasOverflow && (
-            <button type="button" onClick={() => nudge(-1)} disabled={!canLeft} aria-label="Scroll tabs left" className={arrowCls(canLeft)}>‹</button>
-          )}
+        <div className="flex flex-col-reverse md:flex-row md:items-center gap-2 md:gap-1.5 min-w-0 md:flex-1 md:justify-end">
+          {/* Tab strip: full width and swipeable on mobile, flexes on desktop.
+              Arrows are desktop-only (on touch you just swipe). */}
+          <div className="flex items-center gap-1.5 min-w-0 w-full md:w-auto md:flex-1 md:justify-end">
+            {/* Scroll left (desktop only) */}
+            {hasOverflow && (
+              <button type="button" onClick={() => nudge(-1)} disabled={!canLeft} aria-label="Scroll tabs left" className={`hidden md:flex ${arrowCls(canLeft)}`}>‹</button>
+            )}
 
-          {/* The scrollable tab strip */}
-          <div
-            ref={scrollerRef}
-            tabIndex={0}
-            onKeyDown={onKeyDown}
-            role="tablist"
-            aria-label="Admin sections (use the arrows or arrow keys to see more)"
-            className="flex items-center gap-1 overflow-x-auto no-scrollbar min-w-0 scroll-smooth focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5B700] rounded-lg"
-          >
-            {TABS.map((t) => (
-              <Link
-                key={t.key}
-                href={t.href}
-                aria-current={active === t.key ? 'page' : undefined}
-                className={`whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 transition-colors ${
-                  active === t.key
-                    ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[2px_2px_0_0_#161616]'
-                    : 'border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05]'
-                }`}
-              >
-                {t.label}
-                {t.key === 'inbox' && unread > 0 && (
-                  <span className="ml-1.5 inline-flex items-center justify-center min-w-[16px] h-4 px-1 text-[9px] font-mono font-bold text-white bg-[#E0301E] rounded-full align-middle">{unread}</span>
-                )}
-              </Link>
-            ))}
+            <div
+              ref={scrollerRef}
+              tabIndex={0}
+              onKeyDown={onKeyDown}
+              role="tablist"
+              aria-label="Admin sections (swipe, or use the arrows and arrow keys to see more)"
+              className="flex items-center gap-1 overflow-x-auto no-scrollbar min-w-0 w-full md:w-auto scroll-smooth focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5B700] rounded-lg"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
+              {TABS.map((t) => (
+                <Link
+                  key={t.key}
+                  href={t.href}
+                  aria-current={active === t.key ? 'page' : undefined}
+                  className={`whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 transition-colors ${
+                    active === t.key
+                      ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[2px_2px_0_0_#161616]'
+                      : 'border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05]'
+                  }`}
+                >
+                  {t.label}
+                  {t.key === 'inbox' && unread > 0 && (
+                    <span className="ml-1.5 inline-flex items-center justify-center min-w-[16px] h-4 px-1 text-[9px] font-mono font-bold text-white bg-[#E0301E] rounded-full align-middle">{unread}</span>
+                  )}
+                </Link>
+              ))}
+            </div>
+
+            {/* Scroll right (desktop only) */}
+            {hasOverflow && (
+              <button type="button" onClick={() => nudge(1)} disabled={!canRight} aria-label="Scroll tabs right" className={`hidden md:flex ${arrowCls(canRight)}`}>›</button>
+            )}
           </div>
 
-          {/* Scroll right */}
-          {hasOverflow && (
-            <button type="button" onClick={() => nudge(1)} disabled={!canRight} aria-label="Scroll tabs right" className={arrowCls(canRight)}>›</button>
-          )}
-
-          {/* Pinned actions: always reachable no matter the scroll position */}
-          <span className="w-px h-5 bg-[#161616]/15 mx-1 shrink-0" aria-hidden />
-          <div className="flex items-center gap-1 shrink-0">
+          {/* Pinned actions: top-right on mobile, far-right on desktop. */}
+          <div className="flex items-center gap-1 shrink-0 self-end md:self-auto">
+            <span className="hidden md:block w-px h-5 bg-[#161616]/15 mx-1 shrink-0" aria-hidden />
             <HelpGuide guide={ADMIN_HELP} />
             {onRefresh && (
               <button onClick={onRefresh} className={actionCls}>Refresh</button>
