@@ -439,7 +439,145 @@ ${SIG(FRANKLIN_DEMO_NUMBER, FRANKLIN_DEMO_SITE)}`,
   accent: 'from-[#122a52] to-[#c8202f]',
 };
 
-export const campaigns: Campaign[] = [newks, franklin];
+// ============================================================================
+// SERABELLA MEDSPA  —  AI Voice Concierge (medspa vertical demo)
+// ============================================================================
+
+const SERA_DEMO_NUMBER = '(516) 703-0029';
+const SERA_DEMO_SITE = 'serabella-medspa-concierge.vercel.app';
+
+const serabella: Campaign = {
+  slug: 'serabella',
+  brand: 'Serabella MedSpa',
+  product: 'AI Voice Concierge (medspa vertical)',
+  lead: { name: 'Sarah Scarano', role: 'Account lead' },
+  status: 'live',
+  headquarters: 'Modern Mustard Seed flagship demo',
+  footprint: 'Medical aesthetics, multi-location chains + franchises',
+  hook: 'Beauty, always answered. A 24/7 concierge that books the consult, knows your members, and never sends a laser package to voicemail.',
+  theStory: [
+    'About 1 in 3 calls to a busy medspa goes to voicemail, and 67% of bookings happen outside 9 to 5, exactly when the front desk is with a client or closed.',
+    'A new aesthetics client is worth thousands in the first year, and a single laser package or membership is far more. Every missed call is one walking to the medspa down the street.',
+    'The concierge answers every call, books the complimentary consult, recognizes members by name and applies member pricing, and captures the high-value packages (laser, CoolSculpting, Sculptra, memberships).',
+    'It stays in its lane: it never gives medical advice or a diagnosis, it books the consult with a provider. Safe for a medical practice by design.',
+    'The signature is the Glow Plan: a guest picks their goals and a personalized plan, investment, and membership savings assemble live, then it books the consult.',
+    'Serabella is the working demo of the whole thing. Call the number and book a HydraFacial, then watch the front-desk dashboard light up.',
+  ],
+  assets: [
+    { label: 'Live demo site + Glow Plan', href: 'https://serabella-medspa-concierge.vercel.app', kind: 'demo', note: 'Send this link. It is the pitch.' },
+    { label: 'Call the live demo', href: 'tel:+15167030029', kind: 'phone', note: SERA_DEMO_NUMBER + ' · book a HydraFacial, it works' },
+    { label: 'The Glow Plan', href: 'https://serabella-medspa-concierge.vercel.app/glow-plan', kind: 'tool', note: 'The signature interactive' },
+    { label: 'Front Desk dashboard', href: 'https://serabella-medspa-concierge.vercel.app/dashboard', kind: 'dashboard', note: 'Revenue recovered, consults, package pipeline' },
+  ],
+  pricing: [
+    { name: 'Single location', price: '$549', cadence: '/mo', setup: '$750 setup', includes: ['24/7 answering, every call', 'Books the complimentary consult', 'Quotes from your treatment menu', 'Captures package + membership leads', 'Front Desk dashboard'] },
+    { name: 'Multi-location', price: '$449', cadence: '/mo per location', setup: 'Setup waived at 10+ locations', recommended: true, includes: ['Everything in Single', 'Fleet rollup dashboard', 'The Glow Plan on every site', 'Member recognition + pricing', 'Multilingual', 'Priority support'] },
+    { name: 'Group / enterprise', price: 'Custom', includes: ['Every location, one rollout', 'EMR + booking integration', 'Brand-trained voice + guardrails', 'Dedicated success manager', 'Success plan tied to recovered revenue'] },
+  ],
+  contacts: [
+    {
+      id: 'heublein',
+      name: 'Lynn Heublein',
+      title: 'CEO & Co-Founder',
+      company: 'SkinSpirit',
+      linkedin: 'https://www.linkedin.com/in/lynn-heublein',
+      emailGuess: 'lheublein@skinspirit.com',
+      emailStatus: 'guess',
+      angle: '60+ locations, L Catterton-backed, growth-minded. The missed-call leak compounds across every location. Lead with the demo and the fleet dashboard.',
+      priority: 1,
+      email: {
+        subject: 'A 24/7 concierge for SkinSpirit (you can call the demo)',
+        body: `Hi Lynn,
+
+Congratulations on 60 locations. At that scale, the most expensive thing in the building is the call nobody could pick up. About a third of medspa calls go to voicemail, and the caller usually just books the next spa.
+
+We built a working demo of a 24/7 AI voice concierge for the medspa vertical, and the best way to get it is to call it and book a treatment: ${SERA_DEMO_NUMBER}
+
+It answers every call, books the consult, recognizes members by name and applies member pricing, and captures the high-value packages your team is too busy to catch. A fleet dashboard rolls recovered revenue up across every location. It never gives medical advice, it books the consult.
+
+See it (and the Glow Plan): ${SERA_DEMO_SITE}
+
+Worth 15 minutes to show you the SkinSpirit version and the rollout math?
+
+${SIG(SERA_DEMO_NUMBER, SERA_DEMO_SITE)}`,
+      },
+    },
+    {
+      id: 'laseraway',
+      name: 'Marketing leadership',
+      title: 'VP / Head of Marketing (research the name)',
+      company: 'LaserAway',
+      linkedin: 'https://www.linkedin.com/company/laseraway/people/',
+      emailStatus: 'unknown',
+      angle: '200+ centers, KKR-backed, heavy performance marketing. Frame every missed call as wasted ad spend: a paid lead that called and got voicemail. Research the marketing decision-maker on LinkedIn.',
+      priority: 2,
+      email: {
+        subject: 'The paid leads LaserAway loses to voicemail',
+        body: `Hi there,
+
+You spend real money to make the phone ring. When that call hits voicemail, that is paid acquisition walking straight out the door, and in medspa about 1 in 3 calls go unanswered.
+
+We built a working demo of a 24/7 AI voice concierge for the medspa vertical. Call it and book a treatment: ${SERA_DEMO_NUMBER}
+
+It answers every call 24/7, books the consult, recognizes members, and captures the high-value packages, so your ad spend actually converts. See it: ${SERA_DEMO_SITE}
+
+Open to a 15-minute look at the LaserAway version?
+
+${SIG(SERA_DEMO_NUMBER, SERA_DEMO_SITE)}`,
+      },
+    },
+    {
+      id: 'idealimage',
+      name: 'Operations leadership',
+      title: 'VP Operations (research the name)',
+      company: 'Ideal Image',
+      linkedin: 'https://www.linkedin.com/company/ideal-image/people/',
+      emailStatus: 'unknown',
+      angle: '150+ centers, Sentinel-backed. Operations angle: after-hours capture and consistent booking across a large footprint. Research the ops decision-maker on LinkedIn.',
+      priority: 3,
+      email: {
+        subject: 'After-hours bookings, captured across every Ideal Image',
+        body: `Hi there,
+
+Two thirds of medspa bookings happen outside 9 to 5. Across 150+ centers, the after-hours calls you miss are a large, quiet revenue leak.
+
+We built a working demo of a 24/7 AI voice concierge for the medspa vertical. Call it: ${SERA_DEMO_NUMBER}. It answers every call, books the consult, recognizes members, and rolls recovered revenue up across the fleet. See it: ${SERA_DEMO_SITE}.
+
+Worth 15 minutes to see the Ideal Image version and the rollout math?
+
+${SIG(SERA_DEMO_NUMBER, SERA_DEMO_SITE)}`,
+      },
+    },
+  ],
+  talkingPoints: [
+    'Lead with the demo number. Let them call it and book a HydraFacial. The product sells itself in 60 seconds.',
+    'The target universe is multi-location medspa chains and franchises: SkinSpirit, LaserAway, Ideal Image, Milan Laser, SEV Laser, Ever/Body, and the 180+ PE-backed platforms.',
+    'For PE-backed chains, the story is unit economics: recovered revenue per location, rolled up across the fleet.',
+    'For marketing-heavy chains (LaserAway), frame missed calls as wasted ad spend.',
+    'The medical-safety guardrail (books the consult, never gives medical advice) is a feature, not a limitation. Say it early.',
+    'The Glow Plan is the wow and the lead magnet: it captures the lead before a human ever picks up.',
+    'There is a 30-day pilot guarantee. Start one location, prove the number, roll the fleet.',
+  ],
+  objections: [
+    { objection: 'We already have an online booking system.', answer: 'Great, this is for the calls booking software never catches: the after-hours caller, the high-value package question, the member who always phones. It complements your booking, it does not replace it.' },
+    { objection: 'Our front desk answers the phone.', answer: 'During treatments and after hours they cannot, and that is when the big consults call. This answers the ones your team physically cannot get to, 24/7.' },
+    { objection: 'It is a medical practice, AI is risky.', answer: 'It is a concierge, not a clinician. It books the consult and never diagnoses or gives medical advice. Anything clinical goes to a provider. Safe by design, and you can hear it on the demo.' },
+    { objection: 'Will it sound off-brand?', answer: 'Call the demo and judge for yourself. It is warm, discreet, multilingual, and trained on your menu. It never invents a treatment or a price.' },
+  ],
+  linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 AI voice concierge for the medspa vertical, you can actually call it and book a treatment: ${SERA_DEMO_NUMBER}. It books the consult, knows your members, and catches the after-hours packages most spas lose to voicemail. See it: ${SERA_DEMO_SITE}. Worth 15 minutes?`,
+  voicemail: `Hi {{NAME}}, this is {{REP}} with Modern Mustard Seed. We built a working 24/7 AI concierge for medspas that books consults and catches the after-hours calls most spas lose. Easiest way to see it is to call it, ${SERA_DEMO_NUMBER}, and book a treatment. I will follow up by email with the link. Thanks.`,
+  playbook: [
+    { title: '1. Call the demo first', detail: `Call ${SERA_DEMO_NUMBER} and book a HydraFacial so you can speak to it from experience, then build a Glow Plan.` },
+    { title: '2. Pick the target', detail: 'Choose a chain from the target universe (SkinSpirit, LaserAway, Ideal Image, Milan Laser, etc.). One push per chain.' },
+    { title: '3. Research the decision-maker', detail: 'For SkinSpirit start with Lynn Heublein (CEO). For the others, find the marketing or operations leader on LinkedIn and verify the email before sending.' },
+    { title: '4. Send the demo link, not a deck', detail: 'The live site and the call-it number are the pitch. The email is written, just personalize the name.' },
+    { title: '5. Book the 15-minute walkthrough', detail: 'Goal of every touch is one booked call. Use your /book?ref= link so it tracks to you.' },
+    { title: '6. Log it + follow up', detail: 'Mark each contact Sent here, follow up in 3 business days if no reply.' },
+  ],
+  accent: 'from-[#b6894c] to-[#6b3a4b]',
+};
+
+export const campaigns: Campaign[] = [newks, franklin, serabella];
 
 export function getCampaign(slug: string): Campaign | undefined {
   return campaigns.find((c) => c.slug === slug);
