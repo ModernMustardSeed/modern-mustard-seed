@@ -126,7 +126,10 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
   };
 
   // Filters
-  const [scope, setScope] = useState<'mine' | 'all'>('mine');
+  // Default to the shared team view so everyone (Sarah, Polly, Chloe) sees and
+  // can work every lead. "Mine" is a focus toggle, not a wall: all actions
+  // (call, AI call, send audit/email) work on any lead regardless of who owns it.
+  const [scope, setScope] = useState<'mine' | 'all'>('all');
   const [cityFilter, setCityFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [search, setSearch] = useState('');
@@ -230,12 +233,13 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
 
   const callable = useMemo(() => filtered.filter((p) => p.status === 'to-contact'), [filtered]);
 
-  const mine = rows.filter((p) => p.rep_email === currentEmail.toLowerCase());
+  // Stat cards follow the current view: team totals on "Everyone", personal on "Mine".
+  const statBase = scope === 'all' ? rows : rows.filter((p) => p.rep_email === currentEmail.toLowerCase());
   const stats = {
-    toContact: mine.filter((p) => p.status === 'to-contact').length,
-    booked: mine.filter((p) => p.status === 'booked' || p.status === 'won').length,
-    inPipeline: mine.filter((p) => !!p.lead_id).length,
-    total: mine.length,
+    toContact: statBase.filter((p) => p.status === 'to-contact').length,
+    booked: statBase.filter((p) => p.status === 'booked' || p.status === 'won').length,
+    inPipeline: statBase.filter((p) => !!p.lead_id).length,
+    total: statBase.length,
   };
 
   const inp = 'bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700]';
