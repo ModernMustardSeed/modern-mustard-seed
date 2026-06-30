@@ -247,6 +247,21 @@ function ContactCard({ c, slug, rep }: { c: Contact; slug: string; rep: { name: 
   const body = personalize(c.email.body, { book: rep.book, rep: rep.name, name: c.name.split(' ')[0] });
   const mailto = `mailto:${c.emailGuess ?? ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
+  const [openScript, setOpenScript] = useState(false);
+  const first = c.name.split(' ')[0];
+  const cs = c.callScript;
+  const psc = cs && {
+    open: personalize(cs.open, { book: rep.book, rep: rep.name, name: first }),
+    value: personalize(cs.value, { book: rep.book, rep: rep.name, name: first }),
+    close: personalize(cs.close, { book: rep.book, rep: rep.name, name: first }),
+    voicemail: personalize(cs.voicemail, { book: rep.book, rep: rep.name, name: first }),
+    gatekeeper: personalize(cs.gatekeeper, { book: rep.book, rep: rep.name, name: first }),
+  };
+  const fullScript = psc ? `OPEN\n${psc.open}\n\nVALUE\n${psc.value}\n\nCLOSE\n${psc.close}\n\nVOICEMAIL (20s)\n${psc.voicemail}\n\nGATEKEEPER\n${psc.gatekeeper}` : '';
+  const telNum = c.phone?.match(/\(?\d{3}\)?[\s.-]*\d{3}[\s.-]*\d{4}/)?.[0] ?? '';
+  const telHref = telNum ? 'tel:+1' + telNum.replace(/\D/g, '') : '';
+  const phoneRest = c.phone ? c.phone.split('·').slice(1).join('·').trim() : '';
+
   return (
     <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] overflow-hidden">
       <div className="p-4 sm:p-5">
@@ -277,9 +292,24 @@ function ContactCard({ c, slug, rep }: { c: Contact; slug: string; rep: { name: 
           </span>
         </div>
 
-        <button onClick={() => setOpen((o) => !o)} className="mt-3 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#1E50C8] hover:text-[#161616]">
-          {open ? '▲ Hide the email' : '▼ Show the ready email'}
-        </button>
+        {c.phone && (
+          <div className="flex items-center gap-2 flex-wrap mt-2">
+            <span className="text-[9px] uppercase tracking-[0.18em] text-[#161616]/45 font-mono">Call:</span>
+            {telNum && <a href={telHref} className="font-mono text-xs font-bold text-[#1E50C8] hover:text-[#161616]">☎ {telNum}</a>}
+            {phoneRest && <span className="font-body text-[11px] text-[#161616]/55">{phoneRest}</span>}
+          </div>
+        )}
+
+        <div className="flex items-center gap-4 mt-3">
+          <button onClick={() => setOpen((o) => !o)} className="text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#1E50C8] hover:text-[#161616]">
+            {open ? '▲ Hide email' : '▼ Ready email'}
+          </button>
+          {cs && (
+            <button onClick={() => setOpenScript((o) => !o)} className="text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#E0301E] hover:text-[#161616]">
+              {openScript ? '▲ Hide call script' : '▼ Call script'}
+            </button>
+          )}
+        </div>
 
         {open && (
           <div className="mt-3 rounded-xl border-2 border-[#161616]/15 bg-[#FFFDF6] p-3.5">
@@ -296,6 +326,25 @@ function ContactCard({ c, slug, rep }: { c: Contact; slug: string; rep: { name: 
               </div>
             </div>
             <pre className="font-body text-[13px] text-[#3A3733] whitespace-pre-wrap leading-relaxed">{body}</pre>
+          </div>
+        )}
+
+        {openScript && psc && (
+          <div className="mt-3 rounded-xl border-2 border-[#E0301E]/25 bg-[#FFF8F6] p-3.5">
+            <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+              <span className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/45 font-mono">Call script · {first}</span>
+              <div className="flex gap-2 items-center">
+                {telNum && <a href={telHref} className="px-3 py-1 text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:bg-[#FFD23F] transition-all">☎ Call {telNum}</a>}
+                <CopyBtn text={fullScript} label="Copy all" className="!py-1 !text-[9px]" />
+              </div>
+            </div>
+            {([['Open', psc.open], ['Value, in their terms', psc.value], ['Close', psc.close], ['Voicemail (20s)', psc.voicemail], ['Gatekeeper', psc.gatekeeper]] as const).map(([k, v]) => (
+              <div key={k} className="mb-2.5">
+                <span className="text-[9px] uppercase tracking-[0.2em] text-[#E0301E] font-mono font-bold">{k}</span>
+                <p className="font-body text-[13px] text-[#3A3733] leading-relaxed whitespace-pre-wrap mt-0.5">{v}</p>
+              </div>
+            ))}
+            <p className="text-[10px] font-mono text-[#161616]/45 mt-1">Lead with the outcome. Quote pricing only if they ask.</p>
           </div>
         )}
 

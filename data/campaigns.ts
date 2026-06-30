@@ -45,6 +45,12 @@ export type Contact = {
   angle: string;
   priority: 1 | 2 | 3;
   email: PreloadedEmail;
+  /** Number to dial and who to ask for. Direct lines are rarely public at this
+   *  level, so this is usually the corporate main plus the person / department. */
+  phone?: string;
+  /** Tailored phone script: spoken open / value / close, a 20-second voicemail,
+   *  and a gatekeeper line. Personalized with {{REP}} at render. */
+  callScript?: { open: string; value: string; close: string; voicemail: string; gatekeeper: string };
 };
 
 export type PlaybookStep = { title: string; detail: string };
@@ -115,19 +121,19 @@ const newks: Campaign = {
   ],
   pricing: [
     {
-      name: 'Single location',
-      price: '$549',
-      cadence: '/mo',
-      setup: '$750 setup',
+      name: 'Standard (per store)',
+      price: '$799',
+      cadence: '/mo per store',
+      setup: '$1,000 one-time activation',
       includes: ['1,200 answered calls / mo', 'To-go + catering ordering', 'Catering lead capture', 'Returning-guest recognition', 'Operator dashboard', '$0.45 / call over 1,200'],
     },
     {
-      name: 'Multi-location',
-      price: '$499',
-      cadence: '/mo per location',
-      setup: 'Setup waived at 25+ locations',
+      name: 'Fleet (25+ stores)',
+      price: '$749',
+      cadence: '/mo per store',
+      setup: 'Activation waived ($0)',
       recommended: true,
-      includes: ['Everything in Single', 'Fleet rollup dashboard', 'Per-location 86 board + specials push', 'Multilingual (100+ languages)', 'Daily GM briefing', 'Priority support'],
+      includes: ['Requires committing 25+ stores in one agreement', 'Everything in Standard', 'Fleet rollup dashboard', 'Per-location 86 board + specials push', 'Multilingual (100+ languages)', 'Daily GM briefing + priority support'],
     },
     {
       name: 'Enterprise / system-wide',
@@ -144,6 +150,14 @@ const newks: Campaign = {
       linkedin: 'https://www.linkedin.com/in/denise-pedini',
       emailGuess: 'dpedini@newks.com',
       emailStatus: 'verified',
+      phone: '(601) 982-1160 · Newk’s corporate (Jackson MS). Ask for Denise Pedini / Marketing. Best first touch is LinkedIn.',
+      callScript: {
+        open: `Denise, this is {{REP}} with Modern Mustard Seed. I called you specifically because you run both marketing and IT at Newk's, and I built something that sits right at that intersection. A 24/7 voice concierge that answers every Newk's call, takes the order to the kitchen, and captures catering, in the brand voice.`,
+        value: `Every missed call is a guest you paid marketing dollars to create and then lost at the curb. The concierge answers 100 percent of calls, recovers the to-go orders going to voicemail today, and routes catering leads to a manager within the hour. It is a phone host that never calls in sick, so it offsets that labor at every store. And every caller it captures lands in a first-party list that feeds Newk's Rewards instead of competing with it.`,
+        close: `I built a working demo on your Tallahassee store and put it on a live number. Can I get 15 minutes to walk you through the dashboard, or would you rather I stand up a single-store pilot so you watch the recovered-revenue number on real calls?`,
+        voicemail: `Denise, {{REP}} with Modern Mustard Seed. You run marketing and IT at Newk's, so this is your lane. I built a 24/7 voice concierge that answers every Newk's call, takes the order, and captures catering. It recovers the orders going to voicemail and feeds Rewards. Hear it yourself at 803-879-1356, or reach me at [your cell]. Thanks Denise.`,
+        gatekeeper: `Hi, could you point me to Denise Pedini's office or the best way to reach her? I am {{REP}} with Modern Mustard Seed. I built a working voice concierge demo for Newk's, and since Denise runs marketing and IT she is the right person. Is there a direct line or an assistant I should use?`,
+      },
       angle: 'Owns all consumer touchpoints + IT, launched Newk’s Rewards. The concierge protects the brand experience on every call and feeds loyalty. Primary buyer.',
       priority: 1,
       email: {
@@ -173,6 +187,14 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
       linkedin: 'https://www.linkedin.com/in/adam-karveller',
       emailGuess: 'akarveller@newks.com',
       emailStatus: 'verified',
+      phone: '(601) 982-1160 · Newk’s corporate (Jackson MS). Ask for Adam Karveller / IT.',
+      callScript: {
+        open: `Adam, this is {{REP}} with Modern Mustard Seed. I called because I built a working 24/7 voice concierge for Newk's, and I would rather show you the architecture than pitch you. You can call it yourself right now at 803-879-1356 and place a real order.`,
+        value: `The part that matters to you is that it plugs into the stack you already run, it does not replace it. Orders flow through a POS adapter that is Olo and Toast compatible, so it writes to the system you have. It speaks only from your real menu and prices, so there is nothing to hallucinate. Payments are PCI-safe by design, pay-link only, no card numbers spoken or stored. It is multilingual out of the box, and a fleet dashboard rolls up every location. A voice layer, not a rip-and-replace.`,
+        close: `Give me 15 minutes for a technical walkthrough. I will show the call flow, the guardrails, and how a multi-unit rollout actually sequences. Or let me stand up one store and you watch it write to the POS.`,
+        voicemail: `Adam, {{REP}} with Modern Mustard Seed. I built a working voice concierge for Newk's that plugs into your stack, POS adapter for Olo or Toast, real-menu only, PCI-safe pay links. Hear it at 803-879-1356. I would love 15 minutes on the architecture. Reach me at [your cell]. Thanks Adam.`,
+        gatekeeper: `Hi, could you connect me with Adam Karveller's office, or the IT team? I am {{REP}} with Modern Mustard Seed. I built a voice concierge that integrates with Newk's POS stack, and Adam owns that. Is there a direct line or an assistant?`,
+      },
       angle: 'Owns the stack. Sell the integration: POS adapter (Olo/Toast), no hallucinated menu or prices, PCI-safe pay links, clean rollout. Technical buyer.',
       priority: 2,
       email: {
@@ -203,6 +225,14 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
       linkedin: 'https://www.linkedin.com/in/frank-paci',
       emailGuess: 'fpaci@newks.com',
       emailStatus: 'verified',
+      phone: '(601) 982-1160 · Newk’s corporate (Jackson MS). Ask for Frank Paci / executive office. ZoomInfo lists a direct line, but it is paywalled and unverified. Verify before dialing.',
+      callScript: {
+        open: `Frank, this is {{REP}} with Modern Mustard Seed. You have been clear that digital ordering and catering are where Newk's grows, so I will be direct. I built a 24/7 voice concierge that answers every call, takes the order to the kitchen, and captures catering, and I put it on a live number you can call right now.`,
+        value: `The phone is the one ordering channel with no software on it, and it is leaking. Every missed call is a lost order or a lost catering lead. The concierge answers 100 percent of them in the brand voice, recovers that revenue, and offsets the labor of a dedicated phone host at every store. It rolls up across the fleet, so you see recovered revenue per store and brand-wide on one dashboard, with no new payroll.`,
+        close: `I built it on your Tallahassee store. Give me 15 minutes to show you the dashboard, or let me stand up a one-store pilot and you decide from the real number. Should you own the walkthrough, or should I go straight to Denise?`,
+        voicemail: `Frank, {{REP}} with Modern Mustard Seed. You have said digital ordering and catering are the priorities. I built Newk's a 24/7 voice concierge that answers every call, takes the order, and captures catering, on a live number: 803-879-1356. Call it and order. It recovers revenue going to voicemail with no new headcount. Reach me at [your cell]. Thanks Frank.`,
+        gatekeeper: `Hi, I am trying to reach Frank Paci's office. {{REP}} with Modern Mustard Seed. I built a working voice concierge for Newk's that answers every call and captures catering, and I would like 15 minutes with Frank or whoever he points me to. Is there a direct line or an executive assistant I should go through?`,
+      },
       angle: 'Economic buyer. Lead with recovered revenue across the fleet and franchisee value, not features. Short, numbers-first.',
       priority: 2,
       email: {
@@ -228,6 +258,14 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
       linkedin: 'https://www.linkedin.com/in/chris-cheek',
       emailGuess: 'ccheek@newks.com',
       emailStatus: 'verified',
+      phone: '(601) 982-1160 · Newk’s corporate (Jackson MS). Ask for Chris Cheek / Franchise Development.',
+      callScript: {
+        open: `Chris, this is {{REP}} with Modern Mustard Seed, and congrats on the return to Newk's. I am calling because I built something that is really a franchisee-economics play. A 24/7 voice concierge that answers every call and captures the catering leads that get missed in the rush.`,
+        value: `For a franchisee, this is recovered revenue with no added labor, and for a new unit it ramps catering faster, which is the hardest line to grow early. It answers every to-go and catering call, books into the POS, and rolls recovered revenue up so you can show the franchise base exactly what it returns per unit.`,
+        close: `If it is useful, it becomes a system-wide value-add you offer every franchisee. Give me 15 minutes, or let me prove it in one market and bring you the per-unit number.`,
+        voicemail: `Chris, {{REP}} with Modern Mustard Seed. Congrats on the return to Newk's. I built a voice concierge that recovers catering and to-go revenue for franchisees with no added labor, and ramps new units faster. Hear it at 803-879-1356. Worth 15 minutes as a franchise value-add? Reach me at [your cell]. Thanks Chris.`,
+        gatekeeper: `Hi, I am trying to reach Chris Cheek's office, the development team. {{REP}} with Modern Mustard Seed. I built a franchisee value-add for Newk's, a voice concierge, and Chris owns franchise growth. Is there a direct line or an assistant?`,
+      },
       angle: 'Owns franchise growth. Frame the concierge as a franchisee value-add that lifts unit economics and helps new units ramp catering faster.',
       priority: 3,
       email: {
@@ -259,7 +297,7 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
     { objection: 'We already have online ordering.', answer: 'Great, this is for the calls online ordering never catches: the guest driving, the office manager booking catering, the regular who always phones it in. It feeds the same POS.' },
     { objection: 'Our staff answers the phone.', answer: 'During the noon rush they cannot, and that is exactly when the catering calls come in. This answers the ones your team physically cannot get to, 24/7.' },
     { objection: 'Will it sound robotic / hurt the brand?', answer: 'Call the demo and judge for yourself. It is warm, on-brand, multilingual, and it discloses it is an assistant. It will never invent a menu item or a price.' },
-    { objection: 'Sounds expensive at the franchise level.', answer: 'It is $499/mo per location at scale, and one recovered catering order a month more than pays for it. There is a 30-day pilot guarantee.' },
+    { objection: 'Sounds expensive at the franchise level.', answer: 'It is $749/mo per store at fleet scale (25+ stores committed, activation waived), or $799 standard with a $1,000 activation. One recovered catering order a month more than pays for it, and there is a 30-day pilot guarantee.' },
     { objection: 'Integration sounds painful.', answer: 'It is built to plug into Olo / Toast and we run the rollout. Start with one location, no rip-and-replace.' },
   ],
   linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 AI Voice Concierge for Newk's, you can actually call it and order: ${NEWKS_DEMO_NUMBER}. It catches every to-go and catering call your teams miss at peak and rolls recovered revenue up to corporate. Built and running here: ${NEWKS_DEMO_SITE}. Worth 15 minutes?`,
