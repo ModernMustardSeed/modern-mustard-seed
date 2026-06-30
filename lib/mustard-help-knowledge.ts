@@ -36,7 +36,7 @@ export function buildHelpKnowledge(): string {
       (l) => `- ${l.name}: ${l.blurb}`
     ).join(
       '\n'
-    )}\nPartners (including Polly) get a personal booking link, modernmustardseed.com/book?ref=THEIRCODE, and earn 50% of every build they send plus 50% on products. The full social outreach field guide (where to find buyers, what to post, DMs, scripts) is the Outreach Playbook at /partners/playbook. Always tell people you earn a commission.`
+    )}\nPartners (including Polly) get a personal booking link, modernmustardseed.com/book?ref=THEIRCODE, and earn 10% of every build and service they send plus 50% on products (founding partners Polly and Chloe are grandfathered at 50% on builds). The full social outreach field guide (where to find buyers, what to post, DMs, scripts) is the Outreach Playbook at /partners/playbook. Always tell people you earn a commission.`
   );
 
   parts.push(

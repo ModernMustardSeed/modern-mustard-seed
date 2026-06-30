@@ -4,15 +4,17 @@ import { SITE } from './seo';
 import { products } from '@/data/products';
 
 /**
- * Affiliate engine core. 50 percent on every product sale and 50 percent of
- * every build fee. A product commission is created only on a cleared,
- * server-verified payment, and an affiliate can never earn on their own purchase
- * (self-referral block). Build commissions are attributed by Sarah in admin when
- * a referred build is closed and paid.
+ * Affiliate engine core. 50 percent on every product sale and, as of
+ * 2026-06-30, 10 percent of every build/service fee (down from 50%). A product
+ * commission is created only on a cleared, server-verified payment, and an
+ * affiliate can never earn on their own purchase (self-referral block). Build
+ * commissions are attributed by Sarah in admin when a referred build is closed
+ * and paid, and the admin can override the rate per entry to honor founding
+ * partners (Polly, Chloe) who are grandfathered at 50% on builds.
  */
 
 export const COMMISSION_PRODUCT_RATE = 0.5;
-export const COMMISSION_BUILD_RATE = 0.5;
+export const COMMISSION_BUILD_RATE = 0.1;
 
 export type AffiliateStatus = 'pending' | 'approved' | 'rejected';
 export type Affiliate = {

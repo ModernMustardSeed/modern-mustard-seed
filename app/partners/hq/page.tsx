@@ -87,7 +87,7 @@ export default async function PartnerHQ() {
 
       <main className="max-w-5xl mx-auto px-6 py-8">
         <h2 className="font-display text-3xl font-semibold text-[#161616] mb-1">Welcome, {firstName}.</h2>
-        <p className="text-[#3A3733] font-body mb-6">Open doors, book calls, earn 50% of every build. We are rooting for you.</p>
+        <p className="text-[#3A3733] font-body mb-6">Open doors, book calls, earn on every build and product you send. We are rooting for you.</p>
 
         {/* The playbook is the main event */}
         <Link href="/partners/playbook" className="block group mb-8">

@@ -351,7 +351,7 @@ export async function buildOutreachPlaybookPdf(opts: { bookUrl: string; code: st
   // ── Close ──
   sectionHeader('Your job ends at', 'The booked call');
   para(JOB_ENDS.body, { size: 10.5, gap: 12 });
-  callout(`Your money link: ${bookUrl}  -  Open the door, Sarah closes, you earn 50% of every build.`);
+  callout(`Your money link: ${bookUrl}  -  Open the door, Sarah closes, you earn on every build and product.`);
   para('"If you have faith as small as a mustard seed, nothing will be impossible for you." Matthew 17:20', { size: 9, font: ital, color: MUTED, gap: 0 });
 
   drawFooter();

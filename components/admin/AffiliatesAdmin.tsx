@@ -33,7 +33,7 @@ export default function AffiliatesAdmin() {
   const [add, setAdd] = useState({ name: '', email: '', sendWelcome: true });
   const [adding, setAdding] = useState(false);
   const [buildFor, setBuildFor] = useState<string | null>(null);
-  const [bform, setBform] = useState({ fee: '', client: '', payable: false, notify: true });
+  const [bform, setBform] = useState({ fee: '', client: '', payable: false, notify: true, rate: 0.1 });
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -142,7 +142,7 @@ export default function AffiliatesAdmin() {
 
   const openBuild = (id: string) => {
     setBuildFor((cur) => (cur === id ? null : id));
-    setBform({ fee: '', client: '', payable: false, notify: true });
+    setBform({ fee: '', client: '', payable: false, notify: true, rate: 0.1 });
   };
 
   const logBuild = async (e: React.FormEvent, id: string) => {
@@ -155,13 +155,13 @@ export default function AffiliatesAdmin() {
       const res = await fetch(`/api/admin/affiliates/${id}/build-commission`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ buildFeeUsd: fee, clientLabel: bform.client.trim(), markPayable: bform.payable, notify: bform.notify }),
+        body: JSON.stringify({ buildFeeUsd: fee, clientLabel: bform.client.trim(), markPayable: bform.payable, notify: bform.notify, rate: bform.rate }),
       });
       const json = await res.json().catch(() => ({}));
       if (res.ok) {
         setMsg(`Logged a ${money(json.commissionCents)} build commission (${json.status})${json.emailSent ? ', partner notified' : ''}.`);
         setBuildFor(null);
-        setBform({ fee: '', client: '', payable: false, notify: true });
+        setBform({ fee: '', client: '', payable: false, notify: true, rate: 0.1 });
         await load();
       } else {
         setMsg(`Could not log: ${json.error ?? res.status}`);
@@ -360,9 +360,16 @@ export default function AffiliatesAdmin() {
                                 <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Client / project (optional)</span>
                                 <input value={bform.client} onChange={(e) => setBform((b) => ({ ...b, client: e.target.value }))} placeholder="Acme Co website" className="w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
                               </label>
+                              <div className="pb-2">
+                                <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Rate</span>
+                                <div className="inline-flex rounded-lg border-2 border-[#161616] overflow-hidden">
+                                  <button type="button" onClick={() => setBform((b) => ({ ...b, rate: 0.1 }))} className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold ${bform.rate === 0.1 ? 'bg-[#F5B700] text-[#161616]' : 'bg-white text-[#161616]/60'}`}>10% standard</button>
+                                  <button type="button" onClick={() => setBform((b) => ({ ...b, rate: 0.5 }))} className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold border-l-2 border-[#161616] ${bform.rate === 0.5 ? 'bg-[#F5B700] text-[#161616]' : 'bg-white text-[#161616]/60'}`}>50% founding</button>
+                                </div>
+                              </div>
                               <div className="pb-2 text-sm font-body text-[#161616] whitespace-nowrap">
-                                <span className="text-[#161616]/50 text-xs uppercase tracking-[0.15em] font-mono mr-2">Commission (50%)</span>
-                                <span className="font-mono font-bold text-emerald-700">{bform.fee && parseFloat(bform.fee) > 0 ? `$${Math.round(parseFloat(bform.fee) * 0.5).toLocaleString('en-US')}` : '$0'}</span>
+                                <span className="text-[#161616]/50 text-xs uppercase tracking-[0.15em] font-mono mr-2">Commission ({Math.round(bform.rate * 100)}%)</span>
+                                <span className="font-mono font-bold text-emerald-700">{bform.fee && parseFloat(bform.fee) > 0 ? `$${Math.round(parseFloat(bform.fee) * bform.rate).toLocaleString('en-US')}` : '$0'}</span>
                               </div>
                               <label className="flex items-center gap-2 pb-2.5 cursor-pointer select-none">
                                 <input type="checkbox" checked={bform.payable} onChange={(e) => setBform((b) => ({ ...b, payable: e.target.checked }))} className="w-4 h-4 accent-[#F5B700]" />
@@ -376,7 +383,7 @@ export default function AffiliatesAdmin() {
                                 {busy === r.id ? 'Logging...' : 'Log commission'}
                               </button>
                             </form>
-                            <p className="text-[#161616]/45 font-body text-xs mt-2">Records 50% of the build fee as this partner&apos;s commission. Left as pending it becomes payable after the {''}14-day window; check &quot;Payable now&quot; for a build that is already settled.</p>
+                            <p className="text-[#161616]/45 font-body text-xs mt-2">Records the chosen rate of the build/service fee as this partner&apos;s commission. New standard is 10%; use 50% for founding partners (Polly, Chloe) grandfathered at the old rate. Left as pending it becomes payable after the {''}14-day window; check &quot;Payable now&quot; for a build that is already settled.</p>
                           </td>
                         </tr>
                       )}

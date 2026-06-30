@@ -8,7 +8,8 @@ export const runtime = 'nodejs';
 
 /**
  * Attribute a build to a partner. Sarah enters the build fee; we record a
- * commission at COMMISSION_BUILD_RATE (50%) of it. It flows through the same
+ * commission at COMMISSION_BUILD_RATE (10%) of it, or an optional override rate
+ * (e.g. 0.5 for founding partners grandfathered at 50%). It flows through the same
  * ledger as product commissions: pending -> payable (via the commissions cron,
  * or immediately if markPayable) -> paid (via the payout action). The partner's
  * dashboard and the admin earnings columns pick it up automatically.
@@ -20,7 +21,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   const { id } = await params;
-  let body: { buildFeeUsd?: number; clientLabel?: string; markPayable?: boolean; notify?: boolean };
+  let body: { buildFeeUsd?: number; clientLabel?: string; markPayable?: boolean; notify?: boolean; rate?: number };
   try {
     body = await req.json();
   } catch {
@@ -39,7 +40,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: 'Enter the build fee in dollars.' }, { status: 400 });
   }
 
-  const commissionCents = Math.round(fee * 100 * COMMISSION_BUILD_RATE);
+  const rate = typeof body.rate === 'number' && body.rate > 0 && body.rate <= 1 ? body.rate : COMMISSION_BUILD_RATE;
+  const commissionCents = Math.round(fee * 100 * rate);
   if (commissionCents <= 0) return NextResponse.json({ error: 'Commission would be zero.' }, { status: 400 });
 
   const status = body.markPayable ? 'payable' : 'pending';

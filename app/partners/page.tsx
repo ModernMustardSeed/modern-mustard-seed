@@ -2,15 +2,15 @@ import PartnersApply from '@/components/partners/PartnersApply';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'Partner Program. Earn 50% on every build you send',
+  title: 'Partner Program. Earn 10% on builds, 50% on products',
   description:
-    'Become a Modern Mustard Seed partner. Earn 50% on every build we ship (websites, AI assistants, voice agents, custom software) and 50% on every product sale. Get the full Outreach Playbook and your own booking link. Apply today.',
+    'Become a Modern Mustard Seed partner. Earn 10% on every build and service we ship (websites, AI assistants, voice agents, custom software) and 50% on every product sale. Get the full Outreach Playbook and your own booking link. Apply today.',
   path: '/partners',
 });
 
 const PERKS = [
-  { big: '50%', label: 'of every build you send', detail: 'Websites, AI assistants, voice agents, and custom software. Send a client who books a build and earn half the project. This is where the real money is.' },
-  { big: '50%', label: 'on every product sale', detail: 'Every playbook and program pays you half, too. The Terminal and Idea to Spec at $497 pay you $248.50 each. Same rate for everyone.' },
+  { big: '10%', label: 'of every build and service', detail: 'Websites, AI assistants, voice agents, and custom software. Send a client who books a build and earn 10% of the project. Builds run into the thousands, so even one is real money.' },
+  { big: '50%', label: 'on every product sale', detail: 'Every playbook and program pays you half. The Terminal and Idea to Spec at $497 pay you $248.50 each. Same rate for everyone.' },
   { big: 'Playbook', label: 'and your own booking link', detail: 'On approval you get the full Outreach Playbook, free access to every product, and a personal link that books calls straight onto Sarah\'s calendar.' },
 ];
 
@@ -21,10 +21,10 @@ export default function PartnersPage() {
         <div className="relative z-10 max-w-3xl mx-auto">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-6">The Partner Program</span>
           <h1 className="font-display text-5xl md:text-6xl font-bold tracking-tight leading-[1.04] text-[#161616]">
-            Open doors. Earn 50% of every build we ship
+            Open doors. Earn on every build we ship
           </h1>
           <p className="mt-6 text-[#3A3733] text-lg font-body font-light max-w-2xl mx-auto leading-relaxed">
-            Point small businesses to websites, AI assistants, voice agents, and custom software, and earn 50% of every build, plus 50% on every product. You open the door and book the call. Sarah closes. We give you the playbook, the scripts, and your own booking link.
+            Point small businesses to websites, AI assistants, voice agents, and custom software, and earn 10% of every build and service, plus 50% on every product. You open the door and book the call. Sarah closes. We give you the playbook, the scripts, and your own booking link.
           </p>
           <a href="#apply" className="inline-block mt-9 px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">
             Apply to partner
@@ -53,7 +53,7 @@ export default function PartnersPage() {
               { t: 'The Outreach Playbook', d: 'A step-by-step field guide: where to find buyers, what to say, and how to turn a comment into a booked call. Plus a downloadable PDF.' },
               { t: 'Done-for-you scripts', d: 'Helpful comments, DMs, promo posts, and a full phone script, all pre-filled with your link. Copy, reword, send.' },
               { t: 'A social strategy', d: 'How to show up across groups, Facebook, Instagram, and LinkedIn so warm people come to you, with a simple daily routine.' },
-              { t: 'Your own booking link', d: 'A personal link that drops people straight onto Sarah\'s calendar and tracks every build back to you for your 50%.' },
+              { t: 'Your own booking link', d: 'A personal link that drops people straight onto Sarah\'s calendar and tracks every build back to you for your cut.' },
             ].map((x) => (
               <div key={x.t} className="flex gap-3">
                 <span className="text-[#F5B700] text-lg leading-none mt-0.5">●</span>

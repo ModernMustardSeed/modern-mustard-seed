@@ -430,7 +430,7 @@ export default function OutreachPlaybook({
                 </a>
               </div>
             </div>
-            <p className="text-[#FBF6EA]/40 font-mono text-[11px] mt-6">Partner code {code} · 50% of every build · open the door, Sarah closes</p>
+            <p className="text-[#FBF6EA]/40 font-mono text-[11px] mt-6">Partner code {code} · earn on every build · open the door, Sarah closes</p>
           </div>
         </section>
       </main>

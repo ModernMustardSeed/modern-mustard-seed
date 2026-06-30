@@ -4,7 +4,7 @@
  * Powers both the gated web page (`/partners/playbook`) and the generated PDF
  * (`lib/outreach-playbook-pdf.ts`). The whole job: find people who need a build,
  * start a real conversation, and get a call booked on Sarah's calendar. Partners
- * earn 50% of every build they send. Their personal money link is
+ * earn 10% of every build/service they send (founding partners grandfathered at 50%). Their personal money link is
  * `modernmustardseed.com/book?ref=CODE`, written as `{{BOOK}}` below and swapped
  * in per partner at render time.
  *

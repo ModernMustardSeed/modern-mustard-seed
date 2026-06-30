@@ -64,7 +64,7 @@ export const CLIENT_HELP: HelpGuideContent = {
 
 export const PARTNER_HELP: HelpGuideContent = {
   title: 'Your partner dashboard, explained',
-  intro: 'Everything you need to open doors, book calls, and earn 50% of every build you send. Here is how it works.',
+  intro: 'Everything you need to open doors, book calls, and earn on every build and product you send. Here is how it works.',
   sections: [
     {
       title: 'The Outreach Playbook',
@@ -94,7 +94,7 @@ export const PARTNER_HELP: HelpGuideContent = {
       title: 'Earnings and payouts',
       items: [
         'Track clicks, sales, what is payable now, and what you have earned all time.',
-        'You earn 50% of every build you send (websites, AI assistants, voice agents, custom software) and 50% on every product sale.',
+        'You earn 10% on every build and service you send (websites, AI assistants, voice agents, custom software) and 50% on every product sale. Founding partners are grandfathered at their original build rate.',
         'A commission becomes payable once the refund window passes, then it goes out on the next payout run.',
         'Please always tell people you earn a commission. It keeps this trustworthy.',
       ],
