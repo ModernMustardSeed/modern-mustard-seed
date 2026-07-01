@@ -470,8 +470,8 @@ const serabella: Campaign = {
     { label: 'Front Desk dashboard', href: 'https://serabella-medspa-concierge.vercel.app/dashboard', kind: 'dashboard', note: 'Revenue recovered, consults, package pipeline' },
   ],
   pricing: [
-    { name: 'Single location', price: '$549', cadence: '/mo', setup: '$750 setup', includes: ['24/7 answering, every call', 'Books the complimentary consult', 'Quotes from your treatment menu', 'Captures package + membership leads', 'Front Desk dashboard'] },
-    { name: 'Multi-location', price: '$449', cadence: '/mo per location', setup: 'Setup waived at 10+ locations', recommended: true, includes: ['Everything in Single', 'Fleet rollup dashboard', 'The Glow Plan on every site', 'Member recognition + pricing', 'Multilingual', 'Priority support'] },
+    { name: 'Single location', price: '$899', cadence: '/mo', setup: '$1,000 activation', includes: ['24/7 answering, every call', 'Books the complimentary consult', 'Quotes from your treatment menu', 'Captures package + membership leads', 'Front Desk dashboard'] },
+    { name: 'Multi-location', price: '$799', cadence: '/mo per location', setup: 'Activation waived at 10+ locations', recommended: true, includes: ['Everything in Single', 'Fleet rollup dashboard', 'The Glow Plan on every site', 'Member recognition + pricing', 'Multilingual', 'Priority support'] },
     { name: 'Group / enterprise', price: 'Custom', includes: ['Every location, one rollout', 'EMR + booking integration', 'Brand-trained voice + guardrails', 'Dedicated success manager', 'Success plan tied to recovered revenue'] },
   ],
   contacts: [
