@@ -14,9 +14,10 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * always reachable no matter where the tabs are scrolled.
  */
 
-type Tab = 'overview' | 'pipeline' | 'tracker' | 'partners' | 'outreach' | 'campaigns' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'gleaner' | 'pipeline' | 'tracker' | 'partners' | 'outreach' | 'campaigns' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
+  { key: 'gleaner', label: 'Gleaner', href: '/admin/gleaner' },
   { key: 'inbox', label: 'Inbox', href: '/admin/inbox' },
   { key: 'calendar', label: 'Calendar', href: '/admin/calendar' },
   { key: 'approvals', label: 'Approvals', href: '/admin/approvals' },
