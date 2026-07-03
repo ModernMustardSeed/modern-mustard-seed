@@ -17,13 +17,17 @@ export async function GET(req: Request) {
   const nextParam = url.searchParams.get('next');
   const next = nextParam && /^\/[A-Za-z0-9/_-]*$/.test(nextParam) ? nextParam : '/portal';
 
+  // Keep the destination through the error path so a fresh link still lands
+  // the buyer in their HQ instead of the generic portal.
+  const nextQs = next !== '/portal' ? `&next=${encodeURIComponent(next)}` : '';
+
   if (!token) {
-    return NextResponse.redirect(`${origin}/portal/login?error=missing`);
+    return NextResponse.redirect(`${origin}/portal/login?error=missing${nextQs}`);
   }
 
   const session = await verifyMagicToken(token);
   if (!session) {
-    return NextResponse.redirect(`${origin}/portal/login?error=expired`);
+    return NextResponse.redirect(`${origin}/portal/login?error=expired${nextQs}`);
   }
 
   await setClientSessionCookie(session.email);

@@ -3,8 +3,31 @@ import { normalizeEmail } from './client-auth';
 import { getAffiliateByEmail } from './affiliate';
 import { products } from '@/data/products';
 
-/** Every product an affiliate gets free: the two programs plus the playbooks. */
-export const ALL_PRODUCT_SLUGS: string[] = ['the-terminal', 'idea-to-spec', ...products.map((p) => p.slug)];
+/** Every product an affiliate gets free: the programs, MUSTARD MODE, and the playbooks. */
+export const ALL_PRODUCT_SLUGS: string[] = ['the-terminal', 'idea-to-spec', 'mustard-mode', 'mustard-mode-builder', ...products.map((p) => p.slug)];
+
+/** MUSTARD MODE entitlement slugs (Player, Builder, Cabinet). Tier logic lives in lib/mustard-mode.ts. */
+export const MUSTARD_SLUGS = ['mustard-mode', 'mustard-mode-builder', 'mustard-mode-cabinet'] as const;
+export type MustardSlug = (typeof MUSTARD_SLUGS)[number];
+export function isMustardSlug(slug: string): slug is MustardSlug {
+  return (MUSTARD_SLUGS as readonly string[]).includes(slug);
+}
+
+/**
+ * Revoke an entitlement (used when a Cabinet subscription is canceled).
+ * Returns false on failure so callers can escalate (supabase-js reports
+ * errors on the result object, it does not throw).
+ */
+export async function revokeEntitlement(email: string, slug: string): Promise<boolean> {
+  const client = getSupabase();
+  if (!client) return false;
+  const { error } = await client.from('entitlements').delete().eq('email', normalizeEmail(email)).eq('product_slug', slug);
+  if (error) {
+    console.error('revokeEntitlement failed', error.message);
+    return false;
+  }
+  return true;
+}
 
 /**
  * Program entitlements. A buyer (or approved affiliate) is entitled to a
@@ -40,13 +63,10 @@ export function isProgramSlug(slug: string): slug is ProgramSlug {
 export async function grantEntitlement(email: string, slug: string, source = 'purchase'): Promise<void> {
   const client = getSupabase();
   if (!client) return;
-  try {
-    await client
-      .from('entitlements')
-      .upsert({ email: normalizeEmail(email), product_slug: slug, source }, { onConflict: 'email,product_slug' });
-  } catch (err) {
-    console.error('grantEntitlement failed', err);
-  }
+  const { error } = await client
+    .from('entitlements')
+    .upsert({ email: normalizeEmail(email), product_slug: slug, source }, { onConflict: 'email,product_slug' });
+  if (error) console.error('grantEntitlement failed', slug, error.message);
 }
 
 /** Grant free access to every product. Used when an affiliate is approved. */

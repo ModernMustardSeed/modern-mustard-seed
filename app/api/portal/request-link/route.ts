@@ -14,7 +14,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * carries a 20-minute signed token to /api/portal/verify.
  */
 export async function POST(req: Request) {
-  let body: { email?: string };
+  let body: { email?: string; next?: string };
   try {
     body = await req.json();
   } catch {
@@ -25,6 +25,9 @@ export async function POST(req: Request) {
   if (!email || !EMAIL_RE.test(email)) {
     return NextResponse.json({ error: 'Enter a valid email.' }, { status: 400 });
   }
+
+  // Optional post-login destination. Internal paths only, never full URLs.
+  const next = typeof body.next === 'string' && /^\/[a-z0-9\-/_]*$/i.test(body.next) ? body.next : null;
 
   // Best-effort: pull their first name so the email feels personal. Never
   // block on this, and never reveal whether they were found.
@@ -47,7 +50,7 @@ export async function POST(req: Request) {
   try {
     const token = await createMagicToken(email);
     const origin = new URL(req.url).origin || 'https://modernmustardseed.com';
-    const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}`;
+    const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}${next ? `&next=${encodeURIComponent(next)}` : ''}`;
 
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {

@@ -56,3 +56,7 @@ scripts/launch-video/recordings/
 
 # Local lead-data backups (contain contact info, never commit)
 backups/
+
+# Catch-all: never commit env files or local Claude workspace state
+.env*
+.claude/

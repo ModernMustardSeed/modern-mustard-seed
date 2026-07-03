@@ -70,6 +70,39 @@ export default function StorePage() {
           </p>
         </header>
 
+        {/* MUSTARD MODE: the coach-led flagship */}
+        <section className="max-w-5xl mx-auto px-6 md:px-8 mb-16">
+          <Link
+            href="/mustard-mode"
+            className="block bg-[#080C16] border-2 border-[#161616] p-8 md:p-10 transition-transform hover:-translate-y-1 group relative overflow-hidden"
+            style={{ boxShadow: '6px 6px 0 0 #F5B700' }}
+          >
+            <div
+              className="absolute inset-0 opacity-30"
+              style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }}
+              aria-hidden
+            />
+            <div className="relative grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-center">
+              <div>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">
+                  [ MUSTARD MODE: ON ] · New · From $197
+                </span>
+                <h2 className="font-display italic text-3xl md:text-5xl font-black text-white tracking-tight leading-[1.02] mt-3">
+                  One seed. 100x the output.
+                </h2>
+                <p className="text-white/70 font-body text-sm md:text-base mt-3 leading-relaxed max-w-xl">
+                  Your own AI coach. Mr. Mustard trains you through four tracks (Code, Design, Cowork,
+                  Ideate) with a live coach, 28 missions, and the exact prompts. Play your first coaching
+                  session free on the page.
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] group-hover:gap-3 transition-all justify-self-start md:justify-self-end">
+                Insert coin →
+              </span>
+            </div>
+          </Link>
+        </section>
+
         {/* Flagship programs: the two $497 front doors */}
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-16">
           <div className="text-center mb-8">

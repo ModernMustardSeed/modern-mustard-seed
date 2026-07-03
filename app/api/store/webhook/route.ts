@@ -23,7 +23,8 @@ import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
 import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification, subscriptionPaymentFailedEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
-import { grantEntitlement, PROGRAM_ASSETS, isProgramSlug, type ProgramSlug } from '@/lib/entitlements';
+import { grantEntitlement, revokeEntitlement, PROGRAM_ASSETS, isProgramSlug, isMustardSlug, type ProgramSlug } from '@/lib/entitlements';
+import { getMustardLevel } from '@/data/mustard-mode/offer';
 import { createMagicToken } from '@/lib/client-auth';
 import { insertLead } from '@/lib/supabase';
 import { recordProductCommission } from '@/lib/affiliate';
@@ -142,6 +143,130 @@ async function handleProgramPurchase(
     });
   } catch (err) {
     console.error('program access email failed', err);
+  }
+}
+
+/**
+ * A MUSTARD MODE level was purchased (Player, Builder, or the Cabinet
+ * subscription). Grant the entitlement, record the order + buyer, attribute
+ * any affiliate, and email a passwordless access link into the HQ.
+ */
+async function handleMustardPurchase(
+  req: Request,
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null,
+  itemName: string
+) {
+  if (!isMustardSlug(slug)) {
+    console.error('mustard webhook: unknown slug', slug);
+    return;
+  }
+  const level = getMustardLevel(slug);
+  const source = slug === 'mustard-mode-cabinet' ? 'subscription' : 'purchase';
+  await grantEntitlement(email, slug, source);
+
+  const ref = session.metadata?.ref;
+  if (ref) {
+    await recordProductCommission({
+      affiliateCode: ref,
+      orderEmail: email,
+      productSlug: slug,
+      amountCents: session.amount_total ?? (level ? level.priceUsd * 100 : 0),
+      stripeSessionId: session.id,
+    });
+  }
+
+  // Cabinet revenue is recorded per cycle by invoice.paid (including month
+  // one), so only one-time levels insert an order here. Prevents the first
+  // $97 from being double-counted.
+  const supabase = getSupabase();
+  if (supabase && slug !== 'mustard-mode-cabinet') {
+    const { error } = await supabase.from('orders').insert({
+      stripe_session_id: session.id,
+      stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+      product_slug: slug,
+      product_name: itemName,
+      item_type: 'program',
+      price_paid_cents: session.amount_total ?? (level ? level.priceUsd * 100 : 0),
+      currency: session.currency ?? 'usd',
+      email,
+      name: name ?? null,
+      status: 'paid',
+    });
+    if (error) console.error('mustard order insert failed', error.message);
+  }
+  try {
+    await insertLead({ type: 'contact', email, name: name ?? null, source: 'mustard-mode-buyer', status: 'new', notes: `[bought:${slug}]` });
+  } catch (err) {
+    console.error('mustard lead insert failed', err);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const origin = new URL(req.url).origin || 'https://modernmustardseed.com';
+    const token = await createMagicToken(email);
+    const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}&next=/mustard-mode/hq`;
+    const resend = new Resend(apiKey);
+    const firstName = name?.split(' ')[0];
+
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}[MUSTARD MODE: ON] Your coach is waiting`,
+      html: programAccessEmail({
+        firstName,
+        programName: `MUSTARD MODE ${level?.name ?? ''}`.trim(),
+        toolName: 'your HQ (coach, tracks, prompt library)',
+        url,
+      }),
+    });
+
+    await resend.emails.send({
+      from: 'Modern Mustard Seed Store <sarah@modernmustardseed.com>',
+      to: 'sarah@modernmustardseed.com',
+      subject: `New MUSTARD MODE sale. ${itemName}. $${((session.amount_total ?? 0) / 100).toFixed(0)}.`,
+      html: leadNotification({
+        type: 'Contact',
+        name: name ?? 'unknown',
+        email,
+        fields: [
+          { label: 'Level', value: itemName },
+          { label: 'Email', value: email },
+          { label: 'Amount', value: `$${((session.amount_total ?? 0) / 100).toFixed(0)}` },
+        ],
+        message: `Granted entitlement: ${slug}`,
+        suggestedAction: 'Access email sent to the player with their HQ link.',
+      }),
+    });
+  } catch (err) {
+    console.error('mustard access email failed', err);
+  }
+}
+
+/**
+ * A Cabinet subscription was canceled. Revoke the cabinet entitlement so HQ
+ * access follows the subscription (Player/Builder one-time grants are never
+ * touched here).
+ */
+async function handleMustardSubscriptionDeleted(stripe: NonNullable<ReturnType<typeof getStripe>>, sub: Stripe.Subscription) {
+  try {
+    const customerId = typeof sub.customer === 'string' ? sub.customer : sub.customer?.id;
+    if (!customerId) return;
+    const customer = await stripe.customers.retrieve(customerId);
+    const email = !customer.deleted ? customer.email : null;
+    if (!email) return;
+    const revoked = await revokeEntitlement(email, 'mustard-mode-cabinet');
+    if (!revoked) {
+      console.error('mustard cabinet revoke FAILED for subscription', sub.id, '- revoke manually in entitlements');
+      return;
+    }
+    console.log('mustard cabinet revoked for subscription', sub.id);
+  } catch (err) {
+    console.error('mustard cabinet revoke failed', err);
   }
 }
 
@@ -471,7 +596,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true, kind: 'invoice_failed' });
   }
   if (event.type === 'customer.subscription.deleted') {
-    await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+    const sub = event.data.object as Stripe.Subscription;
+    if (sub.metadata?.kind === 'mustard-mode') {
+      await handleMustardSubscriptionDeleted(stripe, sub);
+      return NextResponse.json({ received: true, kind: 'mustard_subscription_canceled' });
+    }
+    await handleSubscriptionDeleted(sub);
     return NextResponse.json({ received: true, kind: 'subscription_canceled' });
   }
 
@@ -506,6 +636,12 @@ export async function POST(req: Request) {
   if (!slug || !email) {
     console.error('Webhook missing slug or email:', session.id);
     return NextResponse.json({ error: 'missing_fields' }, { status: 200 });
+  }
+
+  // ── MUSTARD MODE level purchase (Player, Builder, Cabinet) ──
+  if (session.metadata?.kind === 'mustard-mode') {
+    await handleMustardPurchase(req, session, slug, email, name ?? null, itemName ?? slug);
+    return NextResponse.json({ received: true, kind: 'mustard-mode' });
   }
 
   // ── Flagship $497 program purchase (The Terminal, Idea to Spec, bundle) ──

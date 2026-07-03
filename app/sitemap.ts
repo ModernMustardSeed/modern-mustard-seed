@@ -6,6 +6,7 @@ import { products, bundles } from '@/data/products';
 
 const STATIC_PATHS = [
   '',
+  '/mustard-mode',
   '/the-terminal',
   '/idea-to-spec',
   '/partners',
@@ -42,7 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/build-queue'
         ? 1.0
-        : path === '/the-terminal' || path === '/idea-to-spec'
+        : path === '/mustard-mode' || path === '/the-terminal' || path === '/idea-to-spec'
           ? 0.95
           : path === '/work' || path === '/audit' || path === '/launch-checklist'
             ? 0.9

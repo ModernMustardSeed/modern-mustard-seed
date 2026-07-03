@@ -20,7 +20,7 @@ export default function PortalLogin() {
       const res = await fetch('/api/portal/request-link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), ...(params.get('next') ? { next: params.get('next') } : {}) }),
       });
       const data = await res.json();
       if (res.ok) setSent(true);
