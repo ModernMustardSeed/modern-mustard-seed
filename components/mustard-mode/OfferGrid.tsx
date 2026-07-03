@@ -8,6 +8,7 @@
 import { useState } from 'react';
 import { track } from '@vercel/analytics';
 import { mustardLevels, mustardFaq, MUSTARD } from '@/data/mustard-mode/offer';
+import Reveal from './Reveal';
 
 export default function OfferGrid() {
   const [busy, setBusy] = useState<string | null>(null);
@@ -42,18 +43,22 @@ export default function OfferGrid() {
   return (
     <section id="levels" className="bg-[#FBF6EA] py-20 md:py-28 scroll-mt-16">
       <div className="max-w-6xl mx-auto px-6">
-        <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">Choose your level // Lifetime access on 01 and 02</p>
-        <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02]">
-          Insert coin.
-        </h2>
+        <Reveal variant="eyebrow">
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">Choose your level // Lifetime access on 01 and 02</p>
+        </Reveal>
+        <Reveal variant="slam" delay={120}>
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02]">
+            Insert coin.
+          </h2>
+        </Reveal>
 
         <div className="grid md:grid-cols-3 gap-6 md:gap-5 mt-12 items-stretch">
-          {paid.map((l) => {
+          {paid.map((l, li) => {
             const hot = l.featured;
             return (
+              <Reveal key={l.slug} variant="drop" delay={160 + li * 140} className="h-full">
               <div
-                key={l.slug}
-                className={`relative flex flex-col border-2 border-[#161616] p-7 ${
+                className={`relative flex flex-col h-full border-2 border-[#161616] p-7 ${
                   hot
                     ? 'bg-[#080C16] text-white shadow-[8px_8px_0_0_#F5B700] md:scale-[1.04]'
                     : 'bg-white text-[#161616] shadow-[6px_6px_0_0_#161616]'
@@ -91,6 +96,7 @@ export default function OfferGrid() {
                   {busy === l.slug ? 'Opening checkout…' : l.cta}
                 </button>
               </div>
+              </Reveal>
             );
           })}
         </div>

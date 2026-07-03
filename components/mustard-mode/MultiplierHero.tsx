@@ -11,6 +11,7 @@
  * static halftone + instant terminal under prefers-reduced-motion.
  */
 
+import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { track } from '@vercel/analytics';
 import { routeIntent, ambitionPhrase } from '@/data/mustard-mode/coach';
@@ -132,7 +133,7 @@ export default function MultiplierHero() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const small = w < 768;
-      const spacing = small ? 28 : 22;
+      const spacing = small ? 26 : 20;
       dots = [];
       for (let gx = spacing / 2; gx < w; gx += spacing) {
         for (let gy = spacing / 2; gy < h; gy += spacing) {
@@ -147,7 +148,8 @@ export default function MultiplierHero() {
     };
 
     // Sample the mascot into dot targets, centered right-of-center.
-    const mascot = new Image();
+    // (window.Image: the next/image component import shadows the constructor.)
+    const mascot = new window.Image();
     let mascotReady = false;
     mascot.src = '/brand/mascot.png';
     mascot.onload = () => {
@@ -167,9 +169,11 @@ export default function MultiplierHero() {
       octx.drawImage(mascot, 0, 0, cols, rows);
       const data = octx.getImageData(0, 0, cols, rows).data;
       const targets: { x: number; y: number; color: string }[] = [];
-      const scale = Math.min((h * 0.72) / rows, (w * 0.4) / cols);
-      const ox = w * 0.62 - (cols * scale) / 2;
-      const oy = h * 0.5 - (rows * scale) / 2;
+      // Coalesce where the real mascot will materialize and stay (bottom-right,
+      // the moodboard's spot), so dots-become-coach reads as one continuous act.
+      const scale = Math.min((h * 0.78) / rows, (w * 0.42) / cols);
+      const ox = w * 0.74 - (cols * scale) / 2;
+      const oy = h * 0.56 - (rows * scale) / 2;
       for (let yy = 0; yy < rows; yy++) {
         for (let xx = 0; xx < cols; xx++) {
           const i = (yy * cols + xx) * 4;
@@ -229,7 +233,7 @@ export default function MultiplierHero() {
           if (!inFace) d.color = '#F5B700';
         }
         const blink = inFace && (now - faceStart) > 1400 && (now - faceStart) < 1600;
-        ctx.globalAlpha = inTerminal ? 0.34 : blink ? 0.15 : d.hasTarget && inFace ? 0.95 : 0.55;
+        ctx.globalAlpha = inTerminal ? 0.42 : blink ? 0.15 : d.hasTarget && inFace ? 0.95 : 0.62;
         ctx.fillStyle = d.color;
         ctx.beginPath();
         ctx.arc(d.x, d.y, d.hasTarget && inFace ? d.r * 1.5 : d.r, 0, Math.PI * 2);
@@ -383,6 +387,42 @@ export default function MultiplierHero() {
       {/* Static halftone under everything (the only layer when reduced motion) */}
       <div className="absolute inset-0 halftone-bg opacity-60" aria-hidden />
       {!reduced && <canvas ref={canvasRef} className="absolute inset-0" aria-hidden />}
+
+      {/* Mr. Mustard materializes from the dot coalesce and STAYS: the coach
+          standing beside the machine, exactly like the approved moodboard. */}
+      <style>{`
+        @keyframes mm-materialize {
+          0% { opacity: 0; transform: rotate(-4deg) scale(0.82) translateY(24px); filter: blur(6px); }
+          60% { opacity: 1; filter: blur(0); }
+          80% { transform: rotate(-4deg) scale(1.04) translateY(-6px); }
+          100% { opacity: 1; transform: rotate(-4deg) scale(1) translateY(0); filter: blur(0); }
+        }
+        @keyframes mm-bob {
+          0%, 100% { transform: rotate(-4deg) translateY(0); }
+          50% { transform: rotate(-4deg) translateY(-10px); }
+        }
+        .mm-mascot-live {
+          animation: mm-materialize 900ms cubic-bezier(.22,1.4,.36,1) both, mm-bob 5s ease-in-out 1s infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .mm-mascot-live { animation: none; }
+        }
+      `}</style>
+      {(phase === 'terminal' || reduced) && (
+        <div
+          className="mm-mascot-live pointer-events-none absolute hidden md:block right-[2%] bottom-[-3%] w-[min(26vw,340px)] z-[1]"
+          aria-hidden
+        >
+          <Image
+            src="/brand/mascot.png"
+            alt=""
+            width={885}
+            height={1180}
+            priority={false}
+            className="w-full h-auto drop-shadow-[10px_10px_0_rgba(22,22,22,0.85)]"
+          />
+        </div>
+      )}
 
       <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-16 md:pt-24 md:pb-24 min-h-[92vh] flex flex-col justify-center">
         <p className="font-mono font-bold text-[11px] md:text-xs tracking-[0.18em] text-[#E0301E] uppercase">

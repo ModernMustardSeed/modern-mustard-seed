@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import { tracks } from '@/data/mustard-mode/curriculum';
+import Reveal from './Reveal';
+import ClaudeCodeReplay from './ClaudeCodeReplay';
 
 /** Diagonal mono marquee ticker between sections. */
 export function Ticker({ reverse = false }: { reverse?: boolean }) {
@@ -30,19 +32,46 @@ export function MethodSection() {
   return (
     <section className="bg-[#FBF6EA] py-20 md:py-28">
       <div className="max-w-6xl mx-auto px-6">
-        <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">The method // How it plays</p>
-        <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 max-w-3xl leading-[1.02]">
-          A coach, a game, and a machine that builds.
-        </h2>
+        <Reveal variant="eyebrow">
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">The method // How it plays</p>
+        </Reveal>
+        <Reveal variant="slam" delay={120}>
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 max-w-3xl leading-[1.02]">
+            A coach, a game, and a machine that builds.
+          </h2>
+        </Reveal>
         <div className="grid md:grid-cols-3 gap-6 mt-12">
-          {beats.map((b) => (
-            <div key={b.n} className="pop-card p-7 rounded-none">
-              <span className="font-mono font-bold text-2xl text-[#F5B700]" style={{ textShadow: '1.5px 1.5px 0 #161616' }}>{b.n}</span>
-              <h3 className="font-display font-extrabold text-xl text-[#161616] mt-3">{b.title}</h3>
-              <p className="font-sans text-sm text-[#161616]/75 mt-2 leading-relaxed">{b.body}</p>
-            </div>
+          {beats.map((b, i) => (
+            <Reveal key={b.n} variant="rise" delay={160 + i * 120}>
+              <div className="pop-card p-7 rounded-none h-full">
+                <span className="font-mono font-bold text-2xl text-[#F5B700]" style={{ textShadow: '1.5px 1.5px 0 #161616' }}>{b.n}</span>
+                <h3 className="font-display font-extrabold text-xl text-[#161616] mt-3">{b.title}</h3>
+                <p className="font-sans text-sm text-[#161616]/75 mt-2 leading-relaxed">{b.body}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/** The machine, running: a real Claude Code session replayed in a midnight pane. */
+export function ReplaySection() {
+  return (
+    <section className="bg-[#FBF6EA] pb-20 md:pb-28">
+      <div className="max-w-4xl mx-auto px-6">
+        <Reveal variant="eyebrow">
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">The machine // A real session, replayed</p>
+        </Reveal>
+        <Reveal variant="slam" delay={120}>
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02] mb-10">
+            This is what an evening looks like.
+          </h2>
+        </Reveal>
+        <Reveal variant="rise" delay={200}>
+          <ClaudeCodeReplay />
+        </Reveal>
       </div>
     </section>
   );
@@ -53,8 +82,12 @@ export function TrackRail() {
   return (
     <section className="bg-[#FBF6EA] pb-20 md:pb-28 overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
-        <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">Four tracks // 28 missions // 4 boss fights</p>
-        <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02]">Pick your cabinet.</h2>
+        <Reveal variant="eyebrow">
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">Four tracks // 28 missions // 4 boss fights</p>
+        </Reveal>
+        <Reveal variant="slam" delay={120}>
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02]">Pick your cabinet.</h2>
+        </Reveal>
       </div>
       <div className="mt-10 md:pl-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]">
         <div className="flex flex-col md:flex-row gap-6 px-6 md:px-0 md:overflow-x-auto md:snap-x md:snap-mandatory md:pb-6 md:pr-12 mm-rail">
@@ -108,10 +141,14 @@ export function ProofSection() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div>
-            <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#FFDD55] uppercase">Proof // Not theory</p>
-            <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-white mt-3 leading-[1.02] max-w-2xl">
-              This is the studio&apos;s own operating system.
-            </h2>
+            <Reveal variant="eyebrow">
+              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#FFDD55] uppercase">Proof // Not theory</p>
+            </Reveal>
+            <Reveal variant="slam" delay={120}>
+              <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-white mt-3 leading-[1.02] max-w-2xl">
+                This is the studio&apos;s own operating system.
+              </h2>
+            </Reveal>
           </div>
           <div className="relative w-28 h-28 md:w-36 md:h-36 shrink-0 rotate-[-4deg]">
             <Image src="/brand/mascot.png" alt="Mr. Mustard, your coach" fill sizes="144px" className="object-contain drop-shadow-[4px_4px_0_rgba(245,183,0,0.9)]" />
