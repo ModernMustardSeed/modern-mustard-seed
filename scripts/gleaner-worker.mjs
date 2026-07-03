@@ -268,6 +268,11 @@ async function field(run, vertical) {
   if (aud.code !== 0) await event(run.id, 'warn', 'field', `audit exited ${aud.code}`);
 
   await assertActive(run.id);
+  await event(run.id, 'info', 'field', 'Enriching contacts (Hunter email finder + re-score)');
+  const enr = await runStreaming(`npm run enrich -- --limit ${maxProspects}`, { cwd: HARVEST_DIR, maxMs: FIELD_MAX_MS, runId: run.id, source: 'field' });
+  if (enr.code !== 0) await event(run.id, 'warn', 'field', `enrich exited ${enr.code}`);
+
+  await assertActive(run.id);
   const { data: prospects } = await supabase
     .from('harvest_prospects').select('*')
     .gte('updated_at', stageStart)
