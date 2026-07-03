@@ -1,0 +1,428 @@
+---
+title: "The Fable Mind Playbook"
+description: "How to make any AI coding agent work like a frontier model. The exact skills, hooks, workflows, and verification doctrine we run, free to copy."
+date: "2026-07-02"
+dateModified: "2026-07-02"
+tag: "Agentic Systems"
+author: "Sarah Scarano"
+gated: false
+---
+
+For five days I had access to Claude Fable 5, Anthropic's frontier model. Instead of just burning those days on tasks, I asked it to do something more useful: study how it works, then encode that into my setup so the quality survives after the access ends.
+
+It did. This playbook is the result. Every artifact below is the real file running in my environment right now, and you can install all of it in under ten minutes.
+
+## The core insight
+
+Most of the gap between a frontier model and a smaller one is not intelligence. It is discipline.
+
+The frontier model scouts before it acts. It verifies before it claims. It keeps going until the work is actually done. It attacks its own conclusions before presenting them. A smaller model can do every one of those things too. It just does not do them by default.
+
+So you make them the default. You encode the discipline into the harness (skills, hooks, agents, workflows) instead of hoping the model remembers. The harness does not get lazy. The harness does not have an off day.
+
+We call the result the Fable Mind: a set of five artifacts that make any Claude Code session, on any model, run the way a frontier model runs.
+
+## What you are installing
+
+1. **A doctrine skill** that auto-fires on substantive tasks and enforces the operating loop.
+2. **A guard hook** that reminds the model of the doctrine on every matching prompt, mechanically.
+3. **A skeptic agent** that adversarially attacks high-stakes conclusions before you see them.
+4. **A deep-audit workflow** that runs multi-agent, multi-lens audits with adversarial verification.
+5. **Two workflow recipes** (ship-gate and judge-panel) built on the same pattern.
+
+All of it lives in your `~/.claude` directory. No dependencies, no services, no cost beyond the tokens you already spend.
+
+## Part 1: The doctrine
+
+This is the heart of it. Five stages, run in order, every substantive task.
+
+**1. Scout before you act.** Read the actual files. Run the actual command. Never operate on what you assume the code says. Two minutes of scouting kills twenty minutes of wrong work.
+
+**2. Commit to one plan.** Pick the best approach and state it in one sentence. Option menus are for decisions only the human can make.
+
+**3. Act to completion.** A plan is not a deliverable. Code that "should work" is not a deliverable. Keep going until the thing is done or genuinely blocked.
+
+**4. Verify like a skeptic.** This is the biggest gap between models, and it closes mechanically:
+
+- Exercise the change for real. Hit the endpoint, load the page, run the script. A passing typecheck is not verification.
+- Write the claim list. Every claim in your summary needs one piece of observed evidence. No evidence, no claim.
+- Attack your own work. Ask where a rival engineer would poke to break it in five minutes, then poke there yourself. The usual suspects: empty states, auth edges, timezone math, mobile viewports, first run with no data, env vars missing in prod.
+- For discovery tasks, loop until dry. "Find the issues" means sweep with different lenses until two consecutive passes find nothing new. Stopping after the first handful is the number one audit failure.
+
+**5. Report outcome-first.** The first sentence answers "what happened." Evidence after. Never bury a failure in soft language.
+
+Save this as `~/.claude/skills/fable-mind/SKILL.md`:
+
+```markdown
+---
+name: fable-mind
+description: Frontier operating doctrine for any model. Auto-invoke at the
+  START of any substantive task - building, debugging, auditing, reviewing,
+  researching, deciding, or shipping. Not needed for trivial one-liners.
+---
+
+# Fable Mind
+
+Follow this as discipline, not suggestion. Nothing here requires a bigger
+model. It requires obeying the loop.
+
+## The Operating Loop
+
+1. Scout before you act. Read the real files, run the real commands. Never
+   operate on assumptions about what the code says.
+2. Commit to one plan. State it in one sentence. No option menus for
+   decisions you can make yourself.
+3. Act to completion. A plan is not a deliverable. Keep going until done or
+   genuinely blocked on something only the user can provide.
+4. Verify like a skeptic (below).
+5. Report outcome-first. First sentence = what happened. Then evidence.
+
+## Verification Doctrine
+
+- Exercise, don't inspect. Drive the affected flow for real. Typecheck
+  passing is not verification.
+- Write the claim list. Every claim the summary makes needs one piece of
+  observed evidence, or it gets verified or deleted.
+- Adversarial self-check: where would a rival engineer poke to break this
+  in 5 minutes? Poke there. Usual suspects: empty states, auth edges,
+  timezone math, mobile viewport, first run, env vars missing in prod.
+- Findings must survive a refutation attempt. Can't reproduce or trace it
+  concretely? Label it PLAUSIBLE, not CONFIRMED.
+- Discovery tasks loop until dry: keep sweeping with different lenses until
+  two consecutive passes find nothing new.
+
+## Completion Discipline
+
+- Reversible actions that follow from the request: just do them.
+- Ask first only for destructive ops, real spend, or anything public-facing.
+- If a command fails, diagnose and retry differently before giving up.
+- Before ending: if the last paragraph is a plan, a question you could
+  answer yourself, or "I'll do X next", do X now.
+
+## Explicit Habits
+
+1. Re-read the ask before finishing. Diff the deliverable against every
+   clause of the original message.
+2. Find the second-order requirement. "Fix the bug" also means "make sure
+   it cannot come back." Ship the fix AND the guard.
+3. State assumptions out loud so they can be corrected cheaply.
+4. For high-stakes conclusions, spawn the `skeptic` agent on your own work
+   before presenting it.
+
+## Anti-patterns
+
+- Declaring success from code reading alone.
+- Presenting three options when one is obviously right.
+- Stopping an audit after the first sweep.
+- Long preamble before the answer.
+- Shipping a draft and calling it complete.
+```
+
+## Part 2: The guard hook
+
+Skills rely on the model choosing to invoke them. Hooks do not. A `UserPromptSubmit` hook runs on every prompt you type, and when it matches a substantive-task keyword, it injects the doctrine reminder directly into context. The model cannot forget what the harness keeps putting in front of it.
+
+Save this as `~/.claude/hooks/fable-guard.mjs`:
+
+```js
+#!/usr/bin/env node
+// UserPromptSubmit hook: on substantive-task prompts, inject a reminder
+// to run the fable-mind doctrine and reach for the saved workflows.
+
+let data = "";
+process.stdin.setEncoding("utf8");
+process.stdin.on("data", (c) => (data += c));
+process.stdin.on("end", () => {
+  let prompt = "";
+  try {
+    prompt = String(JSON.parse(data || "{}").prompt || "");
+  } catch {}
+
+  const KW = new RegExp(
+    [
+      "audit", "review", "debug", "investigate", "diagnose", "broken",
+      "fix", "bug", "error", "failing", "research", "compare", "decide",
+      "decision", "should (we|i)", "strategy", "architect", "refactor",
+      "migrate", "deploy", "ship", "launch", "release", "implement",
+      "feature", "integrate", "automate", "optimi[sz]e", "verify", "test",
+    ].join("|"),
+    "i"
+  );
+
+  if (KW.test(prompt)) {
+    const ctx =
+      "FABLE MIND (auto-reminder): substantive task. Invoke the " +
+      "`fable-mind` skill and run its loop: scout the real code, commit " +
+      "to one plan, act to completion, VERIFY like a skeptic (exercise " +
+      "the change, write the claim list, attempt refutation), report " +
+      "outcome-first. Use saved workflows (deep-audit, ship-gate, " +
+      "judge-panel) instead of grinding serially. Spawn the `skeptic` " +
+      "agent on high-stakes conclusions. Never declare done without " +
+      "observed evidence.";
+    process.stdout.write(
+      JSON.stringify({
+        hookSpecificOutput: {
+          hookEventName: "UserPromptSubmit",
+          additionalContext: ctx,
+        },
+      })
+    );
+  }
+  process.exit(0);
+});
+```
+
+Then register it in `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["C:\\Users\\YOU\\.claude\\hooks\\fable-guard.mjs"],
+            "timeout": 10,
+            "statusMessage": "Checking Fable doctrine"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+(On Mac or Linux, the path is `/Users/you/.claude/hooks/fable-guard.mjs`.)
+
+Test it before trusting it:
+
+```bash
+echo '{"prompt":"audit my checkout flow"}' | node ~/.claude/hooks/fable-guard.mjs
+# should print the reminder JSON
+echo '{"prompt":"what time is it"}' | node ~/.claude/hooks/fable-guard.mjs
+# should print nothing
+```
+
+## Part 3: The skeptic agent
+
+The cheapest quality upgrade in this whole playbook. Before any high-stakes conclusion reaches you ("it's fixed", "the migration is safe", "this bug is real"), a separate agent with fresh context tries to break it. Fresh context matters: the skeptic has no investment in the conclusion being true.
+
+Save this as `~/.claude/agents/skeptic.md`:
+
+```markdown
+---
+name: skeptic
+description: Adversarial verifier. Use PROACTIVELY before presenting any
+  high-stakes conclusion (money, customer-facing work, prod data, "it's
+  fixed" claims, audit findings). Give it the claim and the evidence; it
+  tries to break the claim and returns CONFIRMED, REFUTED, or UNPROVEN.
+tools: Read, Grep, Glob, Bash, WebFetch
+---
+
+You are the skeptic. Your only job is to try to break the claim you are
+given. You are not helpful, you are correct.
+
+## Method
+
+1. Restate the claim as something falsifiable. If it cannot be made
+   falsifiable, return UNPROVEN and say why.
+2. List the 3-5 fastest ways the claim could be false (edge inputs, empty
+   state, prod vs local drift, timezone math, auth boundary, mobile
+   viewport, race conditions, missing env vars).
+3. Actually test them. Read the real code, run the real commands, hit the
+   real endpoint. Never judge from the claim's own evidence alone.
+4. Verdict:
+   - CONFIRMED: you attacked it and it held. Say exactly what you tried.
+   - REFUTED: you broke it. Show the reproduction.
+   - UNPROVEN: the evidence does not establish it. Name the missing
+     observation that would settle it.
+
+## Rules
+
+- Default to UNPROVEN when you could not observe the behavior yourself.
+  "The code looks right" is not confirmation.
+- Be brief and concrete. Quoted output beats prose.
+- Never fix anything. You report; the caller fixes.
+```
+
+## Part 4: The deep-audit workflow
+
+This is where it gets fun. Claude Code can run deterministic multi-agent workflows: a script that fans out subagents in parallel, loops until a condition is met, and adversarially verifies everything before it reaches you. The structure is what a frontier model would improvise. Scripting it means a smaller model gets the same structure for free.
+
+The deep-audit workflow runs six finder agents in parallel (one lens each: correctness, security, data integrity, deploy config, UX, performance), keeps sweeping until two consecutive rounds find nothing new, then puts every finding in front of a three-judge adversarial panel. Only findings that survive two of three refutation attempts reach the report.
+
+Save this as `~/.claude/workflows/deep-audit.js`:
+
+```js
+export const meta = {
+  name: 'deep-audit',
+  description: 'Multi-lens issue sweep with loop-until-dry discovery and adversarial verification.',
+  whenToUse: 'Any "audit X" or "find issues in X" request. Pass the target as args.',
+  phases: [
+    { title: 'Scope', detail: 'map the target and pick focus areas' },
+    { title: 'Find', detail: 'parallel finders, one lens each, loop until two dry rounds' },
+    { title: 'Verify', detail: '3-lens adversarial panel per finding' },
+    { title: 'Synthesize', detail: 'rank confirmed findings into an action plan' },
+  ],
+}
+
+const raw = args || 'the project in the current working directory'
+const target = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2)
+
+const FINDINGS_SCHEMA = {
+  type: 'object',
+  required: ['findings'],
+  properties: {
+    findings: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['title', 'file', 'severity', 'evidence', 'failure'],
+        properties: {
+          title: { type: 'string' },
+          file: { type: 'string' },
+          severity: { type: 'string', enum: ['blocker', 'major', 'minor'] },
+          evidence: { type: 'string', description: 'quoted code/output you observed' },
+          failure: { type: 'string', description: 'concrete inputs/state that fail' },
+          fix: { type: 'string' },
+        },
+      },
+    },
+  },
+}
+
+const VERDICT_SCHEMA = {
+  type: 'object',
+  required: ['real', 'reason'],
+  properties: {
+    real: { type: 'boolean', description: 'true only if you could NOT refute it' },
+    reason: { type: 'string' },
+  },
+}
+
+phase('Scope')
+const scope = await agent(
+  `Scout this audit target and return a plan. TARGET:\n${target}\n\n` +
+  `Read the real code (do not guess). Identify entry points, the riskiest ` +
+  `areas (money, auth, data writes, external APIs, webhooks), recent ` +
+  `changes, and the build command. Return a plain-text brief.`,
+  { label: 'scout', phase: 'Scope' }
+)
+
+const LENSES = [
+  'correctness bugs: logic errors, null paths, races, unhandled errors',
+  'security: injection, exposed secrets, auth gaps, unprotected routes',
+  'data integrity: corrupting writes, missing transactions, idempotency gaps',
+  'runtime and deploy: env vars missing in prod, config drift, dead imports',
+  'UX: broken flows, mobile clipping, dead links, empty states',
+  'performance: N+1 queries, unbounded loops, missing indexes',
+]
+
+phase('Find')
+const seen = new Set()
+const all = []
+let dry = 0
+let round = 0
+const key = (f) => `${f.file}::${f.title}`.toLowerCase()
+
+while (dry < 2 && round < 4) {
+  round++
+  const prior = all.length
+    ? `\n\nALREADY FOUND (dig for NEW issues):\n` +
+      all.map((f) => `- ${f.title} (${f.file})`).join('\n')
+    : ''
+  const results = await parallel(
+    LENSES.map((lens, i) => () =>
+      agent(
+        `Audit round ${round}. TARGET:\n${target}\n\nSCOUT:\n${scope}\n\n` +
+        `YOUR LENS: ${lens}${prior}\n\nRead the actual code. Every finding ` +
+        `needs quoted evidence and a concrete failure scenario. Empty is valid.`,
+        { label: `find:r${round}:${i + 1}`, phase: 'Find', schema: FINDINGS_SCHEMA }
+      )
+    )
+  )
+  const fresh = results
+    .filter(Boolean)
+    .flatMap((r) => r.findings || [])
+    .filter((f) => !seen.has(key(f)))
+  if (!fresh.length) { dry++; log(`Round ${round}: dry (${dry}/2)`); continue }
+  dry = 0
+  fresh.forEach((f) => seen.add(key(f)))
+  all.push(...fresh)
+  log(`Round ${round}: ${fresh.length} new findings (${all.length} total)`)
+}
+
+phase('Verify')
+const verified = await parallel(
+  all.map((f) => () =>
+    parallel(
+      ['refute it: trace the code and show why it does NOT fail',
+       'reproduce it: confirm the failure is concretely reachable',
+       'severity: assume it is real and judge blast radius honestly'].map((lens) => () =>
+        agent(
+          `Adversarially verify this finding through ONE lens.\nLENS: ${lens}\n\n` +
+          `FINDING:\n${JSON.stringify(f, null, 2)}\n\nTARGET:\n${target}\n\n` +
+          `Read the actual code. Default to real=false if you cannot trace it.`,
+          { label: 'verify', phase: 'Verify', schema: VERDICT_SCHEMA }
+        )
+      )
+    ).then((votes) => {
+      const v = votes.filter(Boolean)
+      return { ...f, confirmed: v.filter((x) => x.real).length >= 2 }
+    })
+  )
+)
+const confirmed = verified.filter(Boolean).filter((f) => f.confirmed)
+log(`${confirmed.length} confirmed of ${all.length} found`)
+
+phase('Synthesize')
+const order = { blocker: 0, major: 1, minor: 2 }
+confirmed.sort((a, b) => (order[a.severity] ?? 3) - (order[b.severity] ?? 3))
+const summary = await agent(
+  `Write the audit synthesis. Confirmed findings (already adversarially ` +
+  `verified):\n${JSON.stringify(confirmed, null, 2)}\n\nLead with the ` +
+  `overall verdict in one sentence, then the ranked fix plan.`,
+  { label: 'synthesize', phase: 'Synthesize' }
+)
+
+return { verdictSummary: summary, confirmed, rounds: round }
+```
+
+Run it by telling Claude Code: "use a workflow: deep-audit on ./src" (workflows are opt-in by design; they spawn a lot of agents).
+
+## Part 5: Two more recipes on the same skeleton
+
+Once you see the pattern (fan out with distinct lenses, verify adversarially, synthesize), you can build gates for anything. The two we run daily:
+
+**ship-gate** wraps every customer-facing deploy. Phase 1 recons the actual git diff. Phase 2 fans out five parallel sweeps: run the build for real, review the diff for bugs, review it for security, load the changed pages at mobile and desktop widths, and check that every env var the changed code reads exists in production. Phase 3 sends three refuters at every blocker-level finding. Phase 4 returns a one-word verdict: GO or NO-GO, with evidence. Nothing customer-facing ships on a NO-GO.
+
+**judge-panel** is the same skeleton pointed at decisions instead of code. Frame the decision into three or four genuinely distinct options, give each option an advocate agent that steelmans it fully, score every proposal with a critic panel judging through separate lenses (execution risk, upside, reversibility), then synthesize one recommendation that grafts the best ideas from the losers. Use it for architecture choices, pricing, positioning, build-vs-buy. It beats one-shot judgment every time the solution space is wide.
+
+Both are about 100 lines following the deep-audit skeleton above. Build them once, use them forever.
+
+## Installing the whole kit
+
+```bash
+mkdir -p ~/.claude/skills/fable-mind ~/.claude/hooks ~/.claude/agents ~/.claude/workflows
+# save the four files from this playbook into those directories
+# register the hook in ~/.claude/settings.json
+# restart Claude Code so the skill and hook load
+```
+
+Then type "audit this project" and watch the guard fire, the skill load, and the workflow offer itself.
+
+## What changes, honestly
+
+You will notice three things in the first week.
+
+First, fewer confident wrong answers. The claim-list habit and the skeptic agent kill the worst failure mode of AI coding agents, which is a beautiful summary of work that does not actually function.
+
+Second, audits stop being shallow. Loop-until-dry with adversarial verification finds the issues a single pass misses, and refutes the false positives a single pass would have reported.
+
+Third, the quality stops depending on which model you woke up with. That was the whole point. The discipline lives in the files now.
+
+## Want this installed and tuned for your business?
+
+This playbook is the generic kit. The version running in our shop is tuned to our stack, our brands, and our deploy pipeline, and that tuning is where the compounding starts. Modern Mustard Seed builds agentic systems for businesses: AI-run operations, voice agents that answer your phones, custom tools, and setups exactly like this one. [Book a call](/book) or [get a free AI audit of your business](/audit) and we will show you what an agentic operation looks like on your stack.
