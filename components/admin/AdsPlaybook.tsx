@@ -8,6 +8,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
  * Campaign one: "Call Me" (voice agents, call objective).
  * Campaign two: "The Talking Website" (full system pitch, audit funnel).
  * Campaign three: "MUSTARD MODE" (the coaching product, free-play funnel).
+ * Campaign four: "The Fable Mind" (free playbook lead magnet funnel).
  * Everything needed to publish lives on this one page: the cuts per
  * placement, copy-paste ad text, audience, budget, checklists, results.
  */
@@ -117,6 +118,42 @@ const MM_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per free-play email (leads tagged source mustard-mode-free-play in the admin). The true metric: Stripe checkouts on Player/Builder, which land in Orders and email you on every sale.' },
 ];
 
+// ============ Campaign four: The Fable Mind ============
+
+const FM_LANDING = 'https://modernmustardseed.com/playbooks/fable-mind?utm_source=meta&utm_medium=paid&utm_campaign=fablemind';
+
+const FM_COPY_A = `A frontier AI passed through our studio. It could not stay. So we wrote down its mind.
+
+The Fable Mind Playbook is the exact system that makes an everyday AI think like the expensive one: the operating doctrine, the guard hook, the skeptic agent, and the multi-agent audit workflow. The same files running our studio right now.
+
+It is free. Install it in ten minutes and watch your AI stop guessing and start verifying.`;
+
+const FM_COPY_B = `You do not need the expensive AI for everything. You need its discipline.
+
+We had a frontier model encode how it thinks into skills, hooks, and workflows that any model can run. The result: an everyday AI that verifies before it claims, finishes what it starts, and audits like a senior engineer.
+
+The whole playbook is free. Copy, paste, done in ten minutes. And when the big models go to metered pricing, this is how you keep the bill small.`;
+
+const FM_HEADLINE = 'Make any AI think like the big one.';
+const FM_DESCRIPTION = 'The Fable Mind Playbook. Free from Modern Mustard Seed.';
+
+const FM_CUTS = [
+  { file: '/ads/fable-mind-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/fable-mind-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical placements.' },
+  { file: '/ads/fable-mind-16x9.mp4', label: '16:9 — In-stream + site', note: 'Video feeds, search, and the blog/playbook hero.' },
+];
+
+const FM_CHECKLIST = [
+  { id: 'cell', label: 'One cell to start: Campaign objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the playbook UTM link above. Paste Copy Variant 1.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
+  { id: 'audience', label: 'Audience: Advantage+, builder-tilted. Suggestions: Entrepreneurship, Artificial intelligence, Software development, ChatGPT/AI tools, Small business owners. Age 22-60, United States.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled captions are burned in).' },
+  { id: 'organic', label: 'Post the 9:16 cut as an organic Reel + the 4:5 to FB the same day. The blog post (/blog/when-the-frontier-model-visits) is the LinkedIn/X companion. Ask Claude for the drafts.' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the economics angle) and let them fight. Kill the loser at day 6.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers across ALL FOUR commercials pointed at the playbook link. People who watched the service ads are exactly who steals playbooks.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per playbook email (the "Email this to me" captures land in Leads). The truth metric: booked calls and audit requests from playbook readers.' },
+];
+
 function CopyBlock({ title, text }: { title: string; text: string }) {
   const [done, setDone] = useState(false);
   const copy = async () => {
@@ -142,13 +179,14 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
   { key: 'tw', num: '02', label: 'Talking Website', blurb: 'Full system · audit funnel · $10/day' },
   { key: 'mm', num: '03', label: 'MUSTARD MODE', blurb: 'The product · free-play funnel · $10/day' },
-  { key: 'results', num: '📊', label: 'Results', blurb: 'How to read all three together' },
+  { key: 'fm', num: '04', label: 'The Fable Mind', blurb: 'Free playbook · lead magnet · $10/day' },
+  { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
 export default function AdsPlaybook() {
@@ -156,6 +194,7 @@ export default function AdsPlaybook() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [checkedTw, setCheckedTw] = useState<Record<string, boolean>>({});
   const [checkedMm, setCheckedMm] = useState<Record<string, boolean>>({});
+  const [checkedFm, setCheckedFm] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -177,6 +216,8 @@ export default function AdsPlaybook() {
       if (rawTw) setCheckedTw(JSON.parse(rawTw));
       const rawMm = localStorage.getItem('mms-ads-checklist-mm');
       if (rawMm) setCheckedMm(JSON.parse(rawMm));
+      const rawFm = localStorage.getItem('mms-ads-checklist-fm');
+      if (rawFm) setCheckedFm(JSON.parse(rawFm));
     } catch { /* first visit */ }
   }, []);
 
@@ -204,9 +245,18 @@ export default function AdsPlaybook() {
     });
   };
 
+  const toggleFm = (id: string) => {
+    setCheckedFm((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      try { localStorage.setItem('mms-ads-checklist-fm', JSON.stringify(next)); } catch { /* private mode */ }
+      return next;
+    });
+  };
+
   const doneCount = CHECKLIST.filter((c) => checked[c.id]).length;
   const doneCountTw = TW_CHECKLIST.filter((c) => checkedTw[c.id]).length;
   const doneCountMm = MM_CHECKLIST.filter((c) => checkedMm[c.id]).length;
+  const doneCountFm = FM_CHECKLIST.filter((c) => checkedFm[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -214,7 +264,7 @@ export default function AdsPlaybook() {
 
       {/* Campaign switcher */}
       <div className="sticky top-0 z-30 bg-[#FBF6EA]/95 backdrop-blur border-b-2 border-[#161616]">
-        <div className="max-w-7xl mx-auto px-5 md:px-6 py-3 grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="max-w-7xl mx-auto px-5 md:px-6 py-3 grid grid-cols-2 md:grid-cols-5 gap-2">
           {TABS.map((t) => (
             <button
               key={t.key}
@@ -501,19 +551,101 @@ export default function AdsPlaybook() {
         </section>
         </>)}
 
+        {tab === 'fm' && (<>
+        {/* ============ Campaign four: The Fable Mind ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign four</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;The Fable Mind&rdquo; <span className="italic text-[#F5B700]">Steal the mind.</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The lead magnet campaign. A frontier AI hands its mind to the everyday robot, and the viewer
+              gets to steal the same playbook free. Every email capture is a builder-profile lead who now
+              associates MMS with the deepest agentic work in the space. One traffic cell at $10/day,
+              judged on cost per playbook email.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/playbooks/fable-mind" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The playbook (landing)</a>
+              <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads (email captures)</a>
+            </div>
+          </div>
+        </section>
+
+        {/* Fable Mind cuts */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The creative, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Same drill: upload one ad, customize per placement. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {FM_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/fable-mind-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Fable Mind copy */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1 (the story)" text={FM_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2 (the economics)" text={FM_COPY_B} />
+            <CopyBlock title="Headline" text={FM_HEADLINE} />
+            <CopyBlock title="Description" text={FM_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (playbook funnel)" text={FM_LANDING} />
+          </div>
+        </section>
+
+        {/* Fable Mind launch checklist */}
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountFm}/{FM_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {FM_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedFm[item.id]}
+                    onChange={() => toggleFm(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedFm[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
         {tab === 'results' && (<>
         {/* Measurement */}
         <section className="bg-[#161616] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 text-[#FBF6EA]">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">How to read results</span>
           <div className="grid md:grid-cols-3 gap-6 mt-4 text-sm font-sans">
             <p><b className="text-[#F5B700]">Calls:</b> every ad-driven call hits the Mustard line and lands in <a href="/admin/callers" className="underline decoration-[#F5B700]">Callers</a> with a transcript. Bookings email you automatically.</p>
-            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, and mustardmode. MUSTARD MODE free-plays land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a> as source mustard-mode-free-play, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
+            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, and fablemind. MUSTARD MODE free-plays and Fable Mind playbook emails land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
             <p><b className="text-[#F5B700]">Weekly:</b> ask Claude to read Callers against spend and report the true cost per booked discovery call.</p>
           </div>
         </section>
 
         {/* Per-campaign scoreboard shortcuts */}
-        <section className="grid md:grid-cols-3 gap-5">
+        <section className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
           <div className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-6">
             <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">01 · Call Me</span>
             <p className="text-sm text-[#161616]/80 font-sans mt-2">Metric: cost per booked discovery call.</p>
@@ -527,6 +659,11 @@ export default function AdsPlaybook() {
           <div className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-6">
             <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">03 · MUSTARD MODE</span>
             <p className="text-sm text-[#161616]/80 font-sans mt-2">Metric: cost per free-play email, truth = Player/Builder orders.</p>
+            <a href="/admin/leads" className="inline-block mt-3 text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3.5 py-2 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Leads →</a>
+          </div>
+          <div className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-6">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">04 · The Fable Mind</span>
+            <p className="text-sm text-[#161616]/80 font-sans mt-2">Metric: cost per playbook email (utm_campaign=fablemind), truth = calls booked by readers.</p>
             <a href="/admin/leads" className="inline-block mt-3 text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3.5 py-2 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Leads →</a>
           </div>
         </section>
