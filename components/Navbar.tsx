@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
 import { navLinks, socials } from '@/data/socials';
 
@@ -55,8 +56,16 @@ const MENU_GROUPS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  // The layout wraps the nav in a `relative z-30` stacking context, so the
+  // menu overlay must portal to <body> to stack above the floating chat
+  // launcher (z-80) while staying under the cookie banner (z-120).
+  const [mounted, setMounted] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname() || '/';
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -174,13 +183,14 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Full-screen mega-menu overlay */}
+      {/* Full-screen mega-menu overlay (portaled to <body>, see `mounted`) */}
+      {mounted && createPortal(
       <div
         id="site-mega-menu"
         role="dialog"
         aria-modal="true"
         aria-label="Site menu"
-        className={`fixed inset-0 z-[60] transition-all duration-300 ${
+        className={`fixed inset-0 z-[90] transition-all duration-300 ${
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
@@ -318,9 +328,22 @@ export default function Navbar() {
                 ))}
               </div>
             </div>
+
+            {/* Team access */}
+            <div className="mt-7 pt-6 border-t-2 border-[#161616]/15 pb-2">
+              <Link
+                href="/admin"
+                onClick={() => setMenuOpen(false)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+              >
+                <span aria-hidden="true">🔒</span> Admin Login
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
+      )}
     </>
   );
 }

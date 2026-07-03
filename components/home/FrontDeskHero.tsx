@@ -1,33 +1,33 @@
 'use client';
 
 /**
- * THE FRONT DESK. The homepage signature moment, built on the proven
- * MUSTARD MODE dot engine: a living halftone field breathes with the cursor,
- * coalesces into Mr. Mustard, blinks, then snaps into a front-desk terminal
- * that scopes the visitor's idea on the spot (cached intent pool, zero API)
+ * THE FRONT DESK. The homepage signature moment: the pop-art logo lockup
+ * (wordmark + waving mascot) front and center over a living halftone dot
+ * field that breathes with the cursor, plus a front-desk terminal that
+ * scopes the visitor's idea on the spot (cached intent pool, zero API)
  * and routes it: build it for me (Build Queue) or teach me (MUSTARD MODE).
  * An email gate on the personal follow-up keeps lead capture in the hero.
  *
  * Device tiers: full canvas on desktop, calmer field on small screens,
  * static halftone + instant terminal under prefers-reduced-motion.
+ * The lockup is a plain responsive <Image>, so it renders identically on
+ * every device (the old canvas face morph broke on touch screens).
  */
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { track } from '@vercel/analytics';
 import { routeBuild, ideaPhrase } from '@/data/front-desk';
 
-type Phase = 'attract' | 'face' | 'terminal';
+type Phase = 'attract' | 'terminal';
 type PlayState = 'idle' | 'typing' | 'scoped' | 'routed' | 'sending' | 'sent';
 
 type Dot = {
   hx: number; hy: number;   // home (grid)
   x: number; y: number;     // current
-  tx: number; ty: number;   // target (face phase)
   vx: number; vy: number;
   r: number;
-  color: string;
-  hasTarget: boolean;
 };
 
 export default function FrontDeskHero() {
@@ -52,9 +52,8 @@ export default function FrontDeskHero() {
       setPhase('terminal');
       return;
     }
-    const t1 = setTimeout(() => setPhase('face'), 2200);
-    const t2 = setTimeout(() => setPhase('terminal'), 4200);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    const t = setTimeout(() => setPhase('terminal'), 1600);
+    return () => clearTimeout(t);
   }, []);
 
   // Bridge React phase into the canvas loop without re-subscribing RAF.
@@ -78,10 +77,8 @@ export default function FrontDeskHero() {
     let raf = 0;
     const mouse = { x: -9999, y: -9999 };
     let phaseLocal: Phase = 'attract';
-    let faceStart = 0;
 
     syncRef.current = (p: Phase) => {
-      if (p === 'face' && phaseLocal !== 'face') faceStart = performance.now();
       phaseLocal = p;
     };
 
@@ -102,99 +99,42 @@ export default function FrontDeskHero() {
       for (let gx = spacing / 2; gx < w; gx += spacing) {
         for (let gy = spacing / 2; gy < h; gy += spacing) {
           dots.push({
-            hx: gx, hy: gy, x: gx, y: gy, tx: gx, ty: gy,
+            hx: gx, hy: gy, x: gx, y: gy,
             vx: 0, vy: 0, r: small ? 1.5 : 1.8,
-            color: '#F5B700', hasTarget: false,
           });
         }
       }
-      assignFaceTargets();
     };
-
-    // Sample the mascot into dot targets, centered right-of-center.
-    const mascot = new Image();
-    let mascotReady = false;
-    mascot.src = '/brand/mascot.png';
-    mascot.onload = () => {
-      mascotReady = true;
-      assignFaceTargets();
-    };
-
-    function assignFaceTargets() {
-      if (!mascotReady || dots.length === 0) return;
-      const off = document.createElement('canvas');
-      const cols = 56;
-      const rows = Math.round((cols * mascot.height) / mascot.width);
-      off.width = cols;
-      off.height = rows;
-      const octx = off.getContext('2d');
-      if (!octx) return;
-      octx.drawImage(mascot, 0, 0, cols, rows);
-      const data = octx.getImageData(0, 0, cols, rows).data;
-      const targets: { x: number; y: number; color: string }[] = [];
-      const scale = Math.min((h * 0.72) / rows, (w * 0.4) / cols);
-      const ox = w * 0.68 - (cols * scale) / 2;
-      const oy = h * 0.48 - (rows * scale) / 2;
-      for (let yy = 0; yy < rows; yy++) {
-        for (let xx = 0; xx < cols; xx++) {
-          const i = (yy * cols + xx) * 4;
-          if (data[i + 3] > 140) {
-            const rC = data[i], gC = data[i + 1], bC = data[i + 2];
-            const dark = rC + gC + bC < 260;
-            targets.push({ x: ox + xx * scale, y: oy + yy * scale, color: dark ? '#161616' : '#F5B700' });
-          }
-        }
-      }
-      const shuffled = [...dots].sort(() => Math.random() - 0.5);
-      for (let i = 0; i < shuffled.length; i++) {
-        const d = shuffled[i];
-        if (i < targets.length) {
-          d.tx = targets[i].x; d.ty = targets[i].y; d.color = targets[i].color; d.hasTarget = true;
-        } else {
-          d.hasTarget = false;
-        }
-      }
-    }
 
     const draw = (now: number) => {
       ctx.clearRect(0, 0, w, h);
-      const inFace = phaseLocal === 'face';
       const inTerminal = phaseLocal === 'terminal';
 
       for (const d of dots) {
-        if (inFace && d.hasTarget) {
-          d.x += (d.tx - d.x) * 0.08;
-          d.y += (d.ty - d.y) * 0.08;
-        } else if (inFace && !d.hasTarget) {
-          d.x += (d.hx - d.x) * 0.05;
-          d.y += (d.hy - d.y) * 0.05;
-        } else {
-          // attract + terminal: breathe around home, react to cursor
-          const wob = inTerminal ? 1.2 : 2.6;
-          const t = now * 0.001;
-          const bx = d.hx + Math.sin(t * 1.4 + d.hy * 0.05) * wob;
-          const by = d.hy + Math.cos(t * 1.2 + d.hx * 0.05) * wob;
-          const dx = d.x - mouse.x;
-          const dy = d.y - mouse.y;
-          const dist2 = dx * dx + dy * dy;
-          const R = 90;
-          if (dist2 < R * R && dist2 > 0.01) {
-            const dist = Math.sqrt(dist2);
-            const push = ((R - dist) / R) * 6;
-            d.vx += (dx / dist) * push;
-            d.vy += (dy / dist) * push;
-          }
-          d.vx *= 0.85;
-          d.vy *= 0.85;
-          d.x += (bx - d.x) * 0.06 + d.vx;
-          d.y += (by - d.y) * 0.06 + d.vy;
-          if (!inFace) d.color = '#F5B700';
+        // breathe around home, react to cursor
+        const wob = inTerminal ? 1.2 : 2.6;
+        const t = now * 0.001;
+        const bx = d.hx + Math.sin(t * 1.4 + d.hy * 0.05) * wob;
+        const by = d.hy + Math.cos(t * 1.2 + d.hx * 0.05) * wob;
+        const dx = d.x - mouse.x;
+        const dy = d.y - mouse.y;
+        const dist2 = dx * dx + dy * dy;
+        const R = 90;
+        if (dist2 < R * R && dist2 > 0.01) {
+          const dist = Math.sqrt(dist2);
+          const push = ((R - dist) / R) * 6;
+          d.vx += (dx / dist) * push;
+          d.vy += (dy / dist) * push;
         }
-        const blink = inFace && (now - faceStart) > 1400 && (now - faceStart) < 1600;
-        ctx.globalAlpha = inTerminal ? 0.3 : blink ? 0.15 : d.hasTarget && inFace ? 0.95 : 0.55;
-        ctx.fillStyle = d.color;
+        d.vx *= 0.85;
+        d.vy *= 0.85;
+        d.x += (bx - d.x) * 0.06 + d.vx;
+        d.y += (by - d.y) * 0.06 + d.vy;
+
+        ctx.globalAlpha = inTerminal ? 0.3 : 0.55;
+        ctx.fillStyle = '#F5B700';
         ctx.beginPath();
-        ctx.arc(d.x, d.y, d.hasTarget && inFace ? d.r * 1.5 : d.r, 0, Math.PI * 2);
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.globalAlpha = 1;
@@ -297,7 +237,28 @@ export default function FrontDeskHero() {
       <div className="absolute inset-0 halftone-bg opacity-60" aria-hidden />
       {!reduced && <canvas ref={canvasRef} className="absolute inset-0" aria-hidden />}
 
-      <div className="relative max-w-6xl mx-auto px-6 pt-32 pb-16 md:pt-36 md:pb-24 min-h-[92vh] flex flex-col justify-center">
+      <div className="relative max-w-6xl mx-auto px-6 pt-28 pb-16 md:pt-32 md:pb-24 min-h-[92vh] flex flex-col justify-center lg:grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_430px] lg:items-center lg:gap-12">
+        <div>
+        {/* Logo lockup with mascot: mobile, centered above the headline */}
+        <div className="lg:hidden relative w-[230px] sm:w-[280px] mx-auto mb-8">
+          <div
+            aria-hidden="true"
+            className="absolute -inset-10 pointer-events-none"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(245,183,0,0.38) 0%, rgba(245,183,0,0.14) 45%, transparent 68%)',
+            }}
+          />
+          <Image
+            src="/brand/logo-lockup.png"
+            alt="Modern Mustard Seed"
+            width={1135}
+            height={1235}
+            priority
+            className="relative w-full h-auto drop-shadow-[5px_5px_0_rgba(22,22,22,0.14)]"
+          />
+        </div>
+
         {/* Now booking pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-[#161616] bg-white self-start">
           <span className="relative flex h-2 w-2">
@@ -311,7 +272,7 @@ export default function FrontDeskHero() {
 
         <h1
           className={`font-display italic font-extrabold text-[#161616] leading-[0.98] tracking-tight mt-6 max-w-4xl ${
-            headlineThing ? 'text-4xl md:text-5xl lg:text-6xl' : 'text-5xl md:text-7xl lg:text-8xl'
+            headlineThing ? 'text-3xl md:text-4xl xl:text-5xl' : 'text-4xl sm:text-5xl md:text-6xl xl:text-7xl'
           }`}
           aria-live="polite"
         >
@@ -490,6 +451,27 @@ export default function FrontDeskHero() {
         >
           <span aria-hidden="true">◐</span> Our AI voice agents speak 100+ languages. Hear one →
         </Link>
+        </div>
+
+        {/* Logo lockup with mascot: desktop, right column with sunburst glow */}
+        <div className="hidden lg:block relative">
+          <div
+            aria-hidden="true"
+            className="absolute -inset-20 pointer-events-none"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(245,183,0,0.38) 0%, rgba(245,183,0,0.14) 45%, transparent 68%)',
+            }}
+          />
+          <Image
+            src="/brand/logo-lockup.png"
+            alt="Modern Mustard Seed"
+            width={1135}
+            height={1235}
+            priority
+            className="relative w-full h-auto drop-shadow-[8px_8px_0_rgba(22,22,22,0.14)]"
+          />
+        </div>
       </div>
     </section>
   );

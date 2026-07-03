@@ -4,8 +4,8 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 
 /**
  * TheClose. Beat 06: one cinematic midnight band that ends the page.
- * Merges the old CelebrationVideo, the scripture card, the lion HeroVideo,
- * and the NewsletterSignup into a single closing moment: manifesto line,
+ * Merges the scripture card, the Night Shift commercial (HeroVideo), and
+ * the NewsletterSignup into a single closing moment: manifesto line,
  * scripture with the mustard seed lit up, the ask, the film, the list.
  */
 export default function TheClose() {

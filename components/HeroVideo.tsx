@@ -2,9 +2,10 @@
 
 import { useRef, useState } from 'react';
 
-// Contained, comic-framed hero video with an optional soundtrack. Lives at the
-// bottom of the hero now (no longer the backdrop). Autoplays muted; one tap
-// brings the music in, since browsers block autoplay with audio.
+// Contained, comic-framed film: the Night Shift commercial (the 3D mustard
+// seed mascot spot). Lives in TheClose at the bottom of the homepage.
+// Autoplays muted; one tap brings the sound in, since browsers block
+// autoplay with audio.
 export default function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
@@ -31,7 +32,7 @@ export default function HeroVideo() {
         aria-hidden="true"
         style={{ backgroundColor: '#161616' }}
       >
-        <source src="/video/hero-seed.mp4" type="video/mp4" />
+        <source src="/video/night-shift-16x9.mp4" type="video/mp4" />
       </video>
 
       <button
