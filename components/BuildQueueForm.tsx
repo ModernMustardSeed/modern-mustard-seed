@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type FormState = {
   name: string;
@@ -36,6 +36,14 @@ export default function BuildQueueForm() {
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Prefill the idea from the homepage Front Desk handoff (?idea=...).
+  useEffect(() => {
+    const idea = new URLSearchParams(window.location.search).get('idea');
+    if (idea) {
+      setForm((f) => (f.ideaDescription ? f : { ...f, ideaDescription: idea.slice(0, 600) }));
+    }
+  }, []);
 
   const update = <K extends keyof FormState>(field: K, value: FormState[K]) => {
     setForm((f) => ({ ...f, [field]: value }));

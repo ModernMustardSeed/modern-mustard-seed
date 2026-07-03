@@ -1,16 +1,9 @@
-import HeroIdeaToProduct from '@/components/HeroIdeaToProduct';
-import FlagshipPrograms from '@/components/FlagshipPrograms';
-import ResultsMarquee from '@/components/ResultsMarquee';
-import EraOfEntrepreneur from '@/components/EraOfEntrepreneur';
-import StartingPoints from '@/components/StartingPoints';
-import WhatAreYouBuilding from '@/components/WhatAreYouBuilding';
-import WhatGetsBuilt from '@/components/WhatGetsBuilt';
-import AiProofPromo from '@/components/AiProofPromo';
-import NewsletterSignup from '@/components/NewsletterSignup';
-import CelebrationVideo from '@/components/CelebrationVideo';
-import HeroVideo from '@/components/HeroVideo';
-import Testimonials from '@/components/Testimonials';
-import YourSiteWorksForYou from '@/components/YourSiteWorksForYou';
+import FrontDeskHero from '@/components/home/FrontDeskHero';
+import HomeTicker from '@/components/home/HomeTicker';
+import ProofBand from '@/components/home/ProofBand';
+import BuildCabinet from '@/components/home/BuildCabinet';
+import ThreeDoors from '@/components/home/ThreeDoors';
+import TheClose from '@/components/home/TheClose';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -83,6 +76,10 @@ const homeFaq = faqJsonLd([
     a: 'Yes. You receive the repository, the live deployment, and the documentation. You own the product outright.',
   },
   {
+    q: 'What is MUSTARD MODE?',
+    a: 'MUSTARD MODE is the coach-led way to master Claude and Claude Code. Mr. Mustard, a live AI coach, trains you through four tracks (Code, Design, Cowork, Ideate) with 28 missions, a prompt library, and a progress HUD. The first coaching session is free at modernmustardseed.com/mustard-mode, and paid levels start at $197 once with lifetime access.',
+  },
+  {
     q: 'What is the AI-Proof Your Business offer?',
     a: 'A defensive engagement for existing businesses with revenue to protect. Modern Mustard Seed audits the moat, hardens the operation with AI on the front lines and in the back office, and re-equips the team. Quoted per business after a free discovery call.',
   },
@@ -96,40 +93,24 @@ const homeFaq = faqJsonLd([
   },
 ]);
 
+/**
+ * Homepage: six beats, Studio Arcade direction (approved 2026-07-02).
+ * 01 Front Desk hero · 02 ticker · 03 proof band · 04 Build Cabinet ·
+ * 05 Three Doors + free audit · 06 the close.
+ */
 export default function HomePage() {
   return (
     <>
       <JsonLd data={[homeJsonLd, offerJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} />
-      <HeroIdeaToProduct />
+      <FrontDeskHero />
 
-      {/* Light pop-art base for the whole homepage body */}
       <main className="relative bg-[#FBF6EA] text-[#161616]">
-        <FlagshipPrograms />
-        <ResultsMarquee />
-        <EraOfEntrepreneur />
-        <StartingPoints />
-        <YourSiteWorksForYou />
-        <WhatAreYouBuilding />
-        <WhatGetsBuilt />
-        <Testimonials />
-        <AiProofPromo />
-
-        {/* Celebration video close: partnership + dreams to fullness */}
-        <CelebrationVideo />
-
-        <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16">
-          <NewsletterSignup />
-        </section>
-
-        {/* Lion video, at the very bottom of the page */}
-        <section className="w-full px-6 md:px-16 lg:px-24 xl:px-32 pb-20 border-t-4 border-[#161616]">
-          <div className="max-w-4xl mx-auto text-center pt-16">
-            <span className="text-[10px] uppercase tracking-[0.35em] text-[#E0301E] font-mono font-bold block mb-3">
-              Watch
-            </span>
-            <HeroVideo />
-          </div>
-        </section>
+        <HomeTicker />
+        <ProofBand />
+        <BuildCabinet />
+        <HomeTicker reverse />
+        <ThreeDoors />
+        <TheClose />
       </main>
     </>
   );

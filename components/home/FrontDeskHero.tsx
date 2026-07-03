@@ -1,0 +1,496 @@
+'use client';
+
+/**
+ * THE FRONT DESK. The homepage signature moment, built on the proven
+ * MUSTARD MODE dot engine: a living halftone field breathes with the cursor,
+ * coalesces into Mr. Mustard, blinks, then snaps into a front-desk terminal
+ * that scopes the visitor's idea on the spot (cached intent pool, zero API)
+ * and routes it: build it for me (Build Queue) or teach me (MUSTARD MODE).
+ * An email gate on the personal follow-up keeps lead capture in the hero.
+ *
+ * Device tiers: full canvas on desktop, calmer field on small screens,
+ * static halftone + instant terminal under prefers-reduced-motion.
+ */
+
+import Link from 'next/link';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { track } from '@vercel/analytics';
+import { routeBuild, ideaPhrase } from '@/data/front-desk';
+
+type Phase = 'attract' | 'face' | 'terminal';
+type PlayState = 'idle' | 'typing' | 'scoped' | 'routed' | 'sending' | 'sent';
+
+type Dot = {
+  hx: number; hy: number;   // home (grid)
+  x: number; y: number;     // current
+  tx: number; ty: number;   // target (face phase)
+  vx: number; vy: number;
+  r: number;
+  color: string;
+  hasTarget: boolean;
+};
+
+export default function FrontDeskHero() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const [phase, setPhase] = useState<Phase>('attract');
+  const [reduced, setReduced] = useState(false);
+
+  const [play, setPlay] = useState<PlayState>('idle');
+  const [idea, setIdea] = useState('');
+  const [headlineThing, setHeadlineThing] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
+  const [email, setEmail] = useState('');
+  const [emailErr, setEmailErr] = useState<string | null>(null);
+  const [sentText, setSentText] = useState('');
+
+  // ── Motion preference + phase choreography ──────────────────────────
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduced(mq.matches);
+    if (mq.matches) {
+      setPhase('terminal');
+      return;
+    }
+    const t1 = setTimeout(() => setPhase('face'), 2200);
+    const t2 = setTimeout(() => setPhase('terminal'), 4200);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  // Bridge React phase into the canvas loop without re-subscribing RAF.
+  const syncRef = useRef<(p: Phase) => void>(() => {});
+  useEffect(() => {
+    syncRef.current(phase);
+  }, [phase]);
+
+  // ── The dot field (same engine as /mustard-mode) ────────────────────
+  useEffect(() => {
+    if (reduced) return;
+    const canvas = canvasRef.current;
+    const wrap = wrapRef.current;
+    if (!canvas || !wrap) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let dots: Dot[] = [];
+    let w = 0;
+    let h = 0;
+    let raf = 0;
+    const mouse = { x: -9999, y: -9999 };
+    let phaseLocal: Phase = 'attract';
+    let faceStart = 0;
+
+    syncRef.current = (p: Phase) => {
+      if (p === 'face' && phaseLocal !== 'face') faceStart = performance.now();
+      phaseLocal = p;
+    };
+
+    const build = () => {
+      const rect = wrap.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = rect.width;
+      h = rect.height;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const small = w < 768;
+      const spacing = small ? 26 : 18;
+      dots = [];
+      for (let gx = spacing / 2; gx < w; gx += spacing) {
+        for (let gy = spacing / 2; gy < h; gy += spacing) {
+          dots.push({
+            hx: gx, hy: gy, x: gx, y: gy, tx: gx, ty: gy,
+            vx: 0, vy: 0, r: small ? 1.5 : 1.8,
+            color: '#F5B700', hasTarget: false,
+          });
+        }
+      }
+      assignFaceTargets();
+    };
+
+    // Sample the mascot into dot targets, centered right-of-center.
+    const mascot = new Image();
+    let mascotReady = false;
+    mascot.src = '/brand/mascot.png';
+    mascot.onload = () => {
+      mascotReady = true;
+      assignFaceTargets();
+    };
+
+    function assignFaceTargets() {
+      if (!mascotReady || dots.length === 0) return;
+      const off = document.createElement('canvas');
+      const cols = 56;
+      const rows = Math.round((cols * mascot.height) / mascot.width);
+      off.width = cols;
+      off.height = rows;
+      const octx = off.getContext('2d');
+      if (!octx) return;
+      octx.drawImage(mascot, 0, 0, cols, rows);
+      const data = octx.getImageData(0, 0, cols, rows).data;
+      const targets: { x: number; y: number; color: string }[] = [];
+      const scale = Math.min((h * 0.72) / rows, (w * 0.4) / cols);
+      const ox = w * 0.68 - (cols * scale) / 2;
+      const oy = h * 0.48 - (rows * scale) / 2;
+      for (let yy = 0; yy < rows; yy++) {
+        for (let xx = 0; xx < cols; xx++) {
+          const i = (yy * cols + xx) * 4;
+          if (data[i + 3] > 140) {
+            const rC = data[i], gC = data[i + 1], bC = data[i + 2];
+            const dark = rC + gC + bC < 260;
+            targets.push({ x: ox + xx * scale, y: oy + yy * scale, color: dark ? '#161616' : '#F5B700' });
+          }
+        }
+      }
+      const shuffled = [...dots].sort(() => Math.random() - 0.5);
+      for (let i = 0; i < shuffled.length; i++) {
+        const d = shuffled[i];
+        if (i < targets.length) {
+          d.tx = targets[i].x; d.ty = targets[i].y; d.color = targets[i].color; d.hasTarget = true;
+        } else {
+          d.hasTarget = false;
+        }
+      }
+    }
+
+    const draw = (now: number) => {
+      ctx.clearRect(0, 0, w, h);
+      const inFace = phaseLocal === 'face';
+      const inTerminal = phaseLocal === 'terminal';
+
+      for (const d of dots) {
+        if (inFace && d.hasTarget) {
+          d.x += (d.tx - d.x) * 0.08;
+          d.y += (d.ty - d.y) * 0.08;
+        } else if (inFace && !d.hasTarget) {
+          d.x += (d.hx - d.x) * 0.05;
+          d.y += (d.hy - d.y) * 0.05;
+        } else {
+          // attract + terminal: breathe around home, react to cursor
+          const wob = inTerminal ? 1.2 : 2.6;
+          const t = now * 0.001;
+          const bx = d.hx + Math.sin(t * 1.4 + d.hy * 0.05) * wob;
+          const by = d.hy + Math.cos(t * 1.2 + d.hx * 0.05) * wob;
+          const dx = d.x - mouse.x;
+          const dy = d.y - mouse.y;
+          const dist2 = dx * dx + dy * dy;
+          const R = 90;
+          if (dist2 < R * R && dist2 > 0.01) {
+            const dist = Math.sqrt(dist2);
+            const push = ((R - dist) / R) * 6;
+            d.vx += (dx / dist) * push;
+            d.vy += (dy / dist) * push;
+          }
+          d.vx *= 0.85;
+          d.vy *= 0.85;
+          d.x += (bx - d.x) * 0.06 + d.vx;
+          d.y += (by - d.y) * 0.06 + d.vy;
+          if (!inFace) d.color = '#F5B700';
+        }
+        const blink = inFace && (now - faceStart) > 1400 && (now - faceStart) < 1600;
+        ctx.globalAlpha = inTerminal ? 0.3 : blink ? 0.15 : d.hasTarget && inFace ? 0.95 : 0.55;
+        ctx.fillStyle = d.color;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.hasTarget && inFace ? d.r * 1.5 : d.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      raf = requestAnimationFrame(draw);
+    };
+
+    const onMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+    const onLeave = () => { mouse.x = -9999; mouse.y = -9999; };
+
+    build();
+    raf = requestAnimationFrame(draw);
+    window.addEventListener('resize', build);
+    wrap.addEventListener('mousemove', onMove);
+    wrap.addEventListener('mouseleave', onLeave);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', build);
+      wrap.removeEventListener('mousemove', onMove);
+      wrap.removeEventListener('mouseleave', onLeave);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduced]);
+
+  // ── Type-on effect helper ───────────────────────────────────────────
+  const typeOn = useCallback((full: string, setter: (s: string) => void, done?: () => void) => {
+    let i = 0;
+    const tick = () => {
+      i += 1 + Math.floor(Math.random() * 2);
+      setter(full.slice(0, i));
+      if (i < full.length) {
+        setTimeout(tick, 14);
+      } else {
+        setter(full);
+        done?.();
+      }
+    };
+    tick();
+  }, []);
+
+  // ── Front desk flow ─────────────────────────────────────────────────
+  const submitIdea = useCallback(() => {
+    const a = idea.trim();
+    if (a.length < 3 || play !== 'idle') return;
+    const intent = routeBuild(a);
+    const thing = ideaPhrase(a);
+    setPlay('typing');
+    setHeadlineThing(intent.headline.replace('{thing}', thing));
+    track('front_desk_played', { intent: intent.key });
+    setTimeout(() => {
+      setPlay('scoped');
+      typeOn(intent.reply, setReplyText, () => setPlay('routed'));
+    }, 350);
+  }, [idea, play, typeOn]);
+
+  const submitEmail = useCallback(async () => {
+    const e = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
+      setEmailErr('A real email unlocks the scope.');
+      return;
+    }
+    setEmailErr(null);
+    setPlay('sending');
+    track('front_desk_email');
+    try {
+      const res = await fetch('/api/front-desk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idea: idea.trim(), email: e }),
+      });
+      if (!res.ok) throw new Error('failed');
+      typeOn(
+        'Locked in. Sarah reads every idea herself and replies within 3 business days with a personal scope. Talk soon.',
+        setSentText,
+        () => setPlay('sent')
+      );
+    } catch {
+      typeOn(
+        'The desk hiccuped, but your idea is safe. Drop it in the Build Queue below and Sarah will pick it up from there.',
+        setSentText,
+        () => setPlay('sent')
+      );
+    }
+  }, [email, idea, typeOn]);
+
+  const buildHref = idea.trim()
+    ? `/build-queue?idea=${encodeURIComponent(idea.trim().slice(0, 300))}`
+    : '/build-queue';
+
+  return (
+    <section
+      ref={wrapRef}
+      className="relative overflow-hidden bg-[#FBF6EA] border-b-4 border-[#161616]"
+      aria-label="Modern Mustard Seed. Your idea, live in weeks."
+    >
+      {/* Static halftone under everything (the only layer when reduced motion) */}
+      <div className="absolute inset-0 halftone-bg opacity-60" aria-hidden />
+      {!reduced && <canvas ref={canvasRef} className="absolute inset-0" aria-hidden />}
+
+      <div className="relative max-w-6xl mx-auto px-6 pt-32 pb-16 md:pt-36 md:pb-24 min-h-[92vh] flex flex-col justify-center">
+        {/* Now booking pill */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-[#161616] bg-white self-start">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E0301E] opacity-70" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#E0301E]" />
+          </span>
+          <span className="text-[10px] tracking-[0.25em] uppercase font-mono font-bold text-[#161616]">
+            Now booking new builds
+          </span>
+        </div>
+
+        <h1
+          className={`font-display italic font-extrabold text-[#161616] leading-[0.98] tracking-tight mt-6 max-w-4xl ${
+            headlineThing ? 'text-4xl md:text-5xl lg:text-6xl' : 'text-5xl md:text-7xl lg:text-8xl'
+          }`}
+          aria-live="polite"
+        >
+          {headlineThing ? (
+            <span>{headlineThing}</span>
+          ) : (
+            <span>
+              Your idea,{' '}
+              <span
+                className="not-italic font-mono text-[#F5B700]"
+                style={{ textShadow: '3px 3px 0 #161616, -1px -1px 0 #161616, 1px -1px 0 #161616, -1px 1px 0 #161616' }}
+              >
+                live
+              </span>
+              <br />
+              in weeks. Not months.
+            </span>
+          )}
+        </h1>
+
+        <p className="font-sans text-base md:text-lg text-[#161616]/80 max-w-2xl mt-6">
+          Apps, sites, voice agents, and specialty AI tools for founders, operators, and small
+          business owners. You bring the seed. We build the tree. You own it all.
+        </p>
+
+        {/* The front desk terminal */}
+        <div
+          className={`mt-10 max-w-2xl transition-all duration-700 ${
+            phase === 'terminal' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 pointer-events-none'
+          }`}
+        >
+          <div className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] overflow-hidden">
+            <div className="flex items-center gap-2 bg-[#0F1422] px-4 py-2.5 border-b border-white/10">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#E0301E]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#3fbf6b]" />
+              <span className="font-mono text-[10px] text-[#5C7188] ml-2">mr-mustard — front desk</span>
+            </div>
+            <div className="p-5 font-mono text-[13px] md:text-sm leading-relaxed text-[#d7dbe6]">
+              <div>
+                <span className="text-[#5C7188]">$ </span>
+                <span className="text-[#FFDD55]">[MODERN MUSTARD SEED]</span>
+                <span className="text-[#5C7188]"> // the front desk is open</span>
+              </div>
+              <div className="mt-1 text-[#7aa2ff]">TYPE YOUR IDEA. Mr. Mustard scopes it on the spot.</div>
+
+              {play === 'idle' || play === 'typing' ? (
+                <form
+                  className="mt-3 flex items-center gap-2"
+                  onSubmit={(e) => { e.preventDefault(); submitIdea(); }}
+                >
+                  <span className="text-[#5C7188]">&gt;</span>
+                  <input
+                    value={idea}
+                    onChange={(e) => setIdea(e.target.value)}
+                    placeholder="a booking app for my dog grooming shop"
+                    maxLength={300}
+                    aria-label="What do you want built?"
+                    className="flex-1 bg-transparent outline-none text-white placeholder:text-[#5C7188]/70 caret-[#F5B700]"
+                  />
+                  <button
+                    type="submit"
+                    disabled={idea.trim().length < 3 || play === 'typing'}
+                    className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#F5B700] text-[#161616] border border-[#161616] px-3 py-1.5 disabled:opacity-40 hover:translate-y-[1px] transition-transform"
+                  >
+                    Enter
+                  </button>
+                </form>
+              ) : (
+                <div className="mt-3">
+                  <span className="text-[#5C7188]">&gt; </span>
+                  <span className="text-white">{idea}</span>
+                </div>
+              )}
+
+              {replyText && (
+                <div className="mt-4">
+                  <span className="text-[#FFDD55] font-bold">MR.MUSTARD: </span>
+                  <span className="whitespace-pre-wrap">{replyText}</span>
+                  {play === 'scoped' && <span className="inline-block w-2 h-4 bg-[#F5B700] align-[-2px] animate-pulse ml-0.5" />}
+                </div>
+              )}
+
+              {(play === 'routed' || play === 'sending' || play === 'sent') && (
+                <div className="mt-4">
+                  {play === 'routed' && (
+                    <>
+                      <div className="flex flex-wrap gap-3">
+                        <Link
+                          href={buildHref}
+                          onClick={() => track('front_desk_route', { route: 'build' })}
+                          className="font-sans font-bold bg-[#F5B700] text-[#161616] border-2 border-[#161616] shadow-[4px_4px_0_0_#F5B700] px-5 py-2.5 text-sm hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#F5B700] transition-all"
+                        >
+                          Build it for me →
+                        </Link>
+                        <Link
+                          href="/mustard-mode"
+                          onClick={() => track('front_desk_route', { route: 'learn' })}
+                          className="font-sans font-bold bg-transparent text-white border-2 border-white/40 px-5 py-2.5 text-sm hover:border-[#FFDD55] hover:text-[#FFDD55] transition-colors"
+                        >
+                          Teach me: MUSTARD MODE
+                        </Link>
+                      </div>
+                      <form
+                        className="mt-4 border border-white/15 bg-white/5 p-3"
+                        onSubmit={(e) => { e.preventDefault(); void submitEmail(); }}
+                      >
+                        <p className="text-[#d7dbe6]/80 text-[12px]">
+                          Or leave your email and Sarah sends a personal scope for this exact idea. No spam, no drip sequence.
+                        </p>
+                        <div className="mt-2 flex items-center gap-2">
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="you@yourbusiness.com"
+                            aria-label="Email for your personal scope"
+                            className="flex-1 bg-[#080C16] border border-white/20 px-3 py-2 outline-none text-white placeholder:text-[#5C7188]/70 focus:border-[#F5B700]"
+                          />
+                          <button
+                            type="submit"
+                            className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#F5B700] text-[#161616] border border-[#161616] px-3 py-2"
+                          >
+                            Send my scope
+                          </button>
+                        </div>
+                        {emailErr && <p className="text-[#ff6b5e] text-[11px] mt-1">{emailErr}</p>}
+                      </form>
+                    </>
+                  )}
+                  {(play === 'sending' || play === 'sent') && (
+                    <div>
+                      <span className="text-[#FFDD55] font-bold">MR.MUSTARD: </span>
+                      <span className="whitespace-pre-wrap">{sentText}</span>
+                      {play === 'sending' && <span className="inline-block w-2 h-4 bg-[#F5B700] align-[-2px] animate-pulse ml-0.5" />}
+                      {play === 'sent' && (
+                        <div className="mt-3">
+                          <Link
+                            href={buildHref}
+                            className="font-mono text-[11px] font-bold text-[#FFDD55] underline underline-offset-4"
+                          >
+                            Skip the wait: reserve a Build Queue slot now →
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+          <p className="font-mono text-[10px] text-[#161616]/50 mt-2 tracking-wide">
+            FIXED SCOPE. FIXED QUOTE. YOU OWN THE CODE, THE DEPLOY, AND EVERY ACCOUNT.
+          </p>
+        </div>
+
+        {/* CTAs */}
+        <div className="mt-8 flex flex-col sm:flex-row gap-3.5">
+          <Link
+            href="/build-queue"
+            className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:shadow-[6px_6px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+          >
+            Join the Build Queue
+          </Link>
+          <Link
+            href="/work"
+            className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:shadow-[6px_6px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+          >
+            See the Work
+          </Link>
+        </div>
+
+        <Link
+          href="/voice-agents"
+          className="mt-5 self-start inline-flex items-center gap-2 font-mono text-[11px] font-bold text-[#161616]/70 hover:text-[#E0301E] transition-colors"
+        >
+          <span aria-hidden="true">◐</span> Our AI voice agents speak 100+ languages. Hear one →
+        </Link>
+      </div>
+    </section>
+  );
+}

@@ -168,8 +168,10 @@ export default function MustardSeedChat() {
     const wantsBooking =
       /[?&]book=1\b/.test(window.location.search) || window.location.hash === '#book';
     if (wantsBooking) return;
-    // MUSTARD MODE's hero terminal IS the greeting. Never cover it with the teaser.
+    // MUSTARD MODE's hero terminal IS the greeting, and the homepage Front Desk
+    // terminal is its own front desk. Never cover either with the teaser.
     if (window.location.pathname.startsWith('/mustard-mode')) return;
+    if (window.location.pathname === '/') return;
     const t = window.setTimeout(() => {
       try {
         if (window.localStorage.getItem(GREET_KEY) === '1') return;
