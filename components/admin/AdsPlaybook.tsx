@@ -7,6 +7,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
  * Meta Ads launch playbook for the Mr. Mustard commercials.
  * Campaign one: "Call Me" (voice agents, call objective).
  * Campaign two: "The Talking Website" (full system pitch, audit funnel).
+ * Campaign three: "MUSTARD MODE" (the coaching product, free-play funnel).
  * Everything needed to publish lives on this one page: the cuts per
  * placement, copy-paste ad text, audience, budget, checklists, results.
  */
@@ -78,6 +79,44 @@ const CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge with the scale rules below. Check Callers for booked calls from the ad line.' },
 ];
 
+// ============ Campaign three: MUSTARD MODE ============
+
+const MM_LANDING = 'https://modernmustardseed.com/mustard-mode?utm_source=meta&utm_medium=paid&utm_campaign=mustardmode';
+
+const MM_COPY_A = `Your software dreams have a coach now.
+
+MUSTARD MODE is a personal AI coach that trains you to build real things with Claude: apps, websites, designs, whole businesses. Four tracks. 28 missions. The exact prompts a working studio runs every day.
+
+No computer science degree. Just the Claude subscription you may already have.
+
+Your first coaching session is free, right on the page. Type what you want to build and watch what happens.`;
+
+const MM_COPY_B = `Everyone tells you AI will change everything. Nobody shows you the reps.
+
+MUSTARD MODE does. A live AI coach (his name is Mr. Mustard), four tracks (Code, Design, Cowork, Ideate), 28 hands-on missions that each end with something real shipped, and the prompt library to run it all.
+
+Play your first coaching session free on the page. If five minutes with the coach does not convince you, keep your money.`;
+
+const MM_HEADLINE = 'One seed. 100x the output.';
+const MM_DESCRIPTION = 'Your own AI coach for Claude. First session free, on the page.';
+
+const MM_CUTS = [
+  { file: '/ads/mustard-mode-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/mustard-mode-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical placements.' },
+  { file: '/ads/mustard-mode-16x9.mp4', label: '16:9 — In-stream + site', note: 'Video feeds, search, and the landing hero.' },
+];
+
+const MM_CHECKLIST = [
+  { id: 'cell', label: 'One cell to start: Campaign objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the MUSTARD MODE UTM link above. Paste Copy Variant 1.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
+  { id: 'audience', label: 'Audience: Advantage+, but consumer-tilted vs the service campaigns. Suggestions: Entrepreneurship, Side project, Web development, ChatGPT/AI tools, Online courses. Age 22-55, United States.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled captions are burned in).' },
+  { id: 'organic', label: 'Post the 9:16 cut as an organic Reel + the 4:5 to FB the same day (the launch post drafts are already written, ask Claude).' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 and let them fight. Kill the loser at day 6.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers across ALL THREE commercials pointed at the MUSTARD MODE link. Builders who watched the service ads are this product’s warmest audience.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per free-play email (leads tagged source mustard-mode-free-play in the admin). The true metric: Stripe checkouts on Player/Builder, which land in Orders and email you on every sale.' },
+];
+
 function CopyBlock({ title, text }: { title: string; text: string }) {
   const [done, setDone] = useState(false);
   const copy = async () => {
@@ -106,6 +145,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
 export default function AdsPlaybook() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [checkedTw, setCheckedTw] = useState<Record<string, boolean>>({});
+  const [checkedMm, setCheckedMm] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     try {
@@ -113,6 +153,8 @@ export default function AdsPlaybook() {
       if (raw) setChecked(JSON.parse(raw));
       const rawTw = localStorage.getItem('mms-ads-checklist-tw');
       if (rawTw) setCheckedTw(JSON.parse(rawTw));
+      const rawMm = localStorage.getItem('mms-ads-checklist-mm');
+      if (rawMm) setCheckedMm(JSON.parse(rawMm));
     } catch { /* first visit */ }
   }, []);
 
@@ -132,8 +174,17 @@ export default function AdsPlaybook() {
     });
   };
 
+  const toggleMm = (id: string) => {
+    setCheckedMm((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      try { localStorage.setItem('mms-ads-checklist-mm', JSON.stringify(next)); } catch { /* private mode */ }
+      return next;
+    });
+  };
+
   const doneCount = CHECKLIST.filter((c) => checked[c.id]).length;
   const doneCountTw = TW_CHECKLIST.filter((c) => checkedTw[c.id]).length;
+  const doneCountMm = MM_CHECKLIST.filter((c) => checkedMm[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA]">
@@ -319,12 +370,92 @@ export default function AdsPlaybook() {
           </ol>
         </section>
 
+        {/* ============ Campaign three: MUSTARD MODE ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign three</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;MUSTARD MODE&rdquo; <span className="italic text-[#F5B700]">[ ON ]</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The product campaign. The angle: the ad IS the demo, again. The commercial sells the coach,
+              the landing page delivers a real free coaching session in the first five minutes, and the
+              email that saves the run is the lead. One traffic cell at $10/day into the free-play funnel,
+              judged on cost per free-play email, with Player and Builder checkouts as the truth.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/mustard-mode" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The landing (free play)</a>
+              <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads (free plays)</a>
+            </div>
+          </div>
+        </section>
+
+        {/* MUSTARD MODE cuts */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The creative, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Same drill: upload one ad, customize per placement. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {MM_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/mustard-mode-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* MUSTARD MODE copy */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1 (the coach)" text={MM_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2 (the reps)" text={MM_COPY_B} />
+            <CopyBlock title="Headline" text={MM_HEADLINE} />
+            <CopyBlock title="Description" text={MM_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (free-play funnel)" text={MM_LANDING} />
+          </div>
+        </section>
+
+        {/* MUSTARD MODE launch checklist */}
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountMm}/{MM_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {MM_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedMm[item.id]}
+                    onChange={() => toggleMm(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedMm[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+
         {/* Measurement */}
         <section className="bg-[#161616] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 text-[#FBF6EA]">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">How to read results</span>
           <div className="grid md:grid-cols-3 gap-6 mt-4 text-sm font-sans">
             <p><b className="text-[#F5B700]">Calls:</b> every ad-driven call hits the Mustard line and lands in <a href="/admin/callers" className="underline decoration-[#F5B700]">Callers</a> with a transcript. Bookings email you automatically.</p>
-            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme and utm_campaign=talkingwebsite. Conversions get exact once the pixel vars are set.</p>
+            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, and mustardmode. MUSTARD MODE free-plays land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a> as source mustard-mode-free-play, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
             <p><b className="text-[#F5B700]">Weekly:</b> ask Claude to read Callers against spend and report the true cost per booked discovery call.</p>
           </div>
         </section>
