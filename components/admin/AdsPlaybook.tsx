@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 
 /**
- * Meta Ads launch playbook for the "Call Me" Mr. Mustard commercial.
- * Everything needed to publish the campaign lives on this one page:
- * the three cuts (per placement), copy-paste ad text, audience, budget,
- * the pixel prerequisite, the day-one checklist, and how to read results.
+ * Meta Ads launch playbook for the Mr. Mustard commercials.
+ * Campaign one: "Call Me" (voice agents, call objective).
+ * Campaign two: "The Talking Website" (full system pitch, audit funnel).
+ * Everything needed to publish lives on this one page: the cuts per
+ * placement, copy-paste ad text, audience, budget, checklists, results.
  */
 
 const PHONE = '(406) 312-1223';
@@ -30,6 +31,39 @@ const CUTS = [
   { file: '/ads/call-me-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
   { file: '/ads/call-me-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical placements.' },
   { file: '/ads/call-me-16x9.mp4', label: '16:9 — In-stream + site', note: 'Video feeds, search, and the website hero.' },
+];
+
+const TW_LANDING = 'https://modernmustardseed.com/audit?utm_source=meta&utm_medium=paid&utm_campaign=talkingwebsite';
+
+const TW_COPY_A = `Your website looks great. But does it DO anything?
+
+The new websites talk. They greet every visitor, answer every question, and close the sale while you sleep. And behind the pretty face: a full CRM, automated follow-up, marketing funnels, even an ad studio that makes the ads for you.
+
+We build them. Start with a free AI audit of your current site and see exactly what it is leaving on the table.`;
+
+const TW_COPY_B = `Most websites are brochures. Yours could be a salesperson.
+
+A Modern Mustard Seed build comes with everything baked in: an AI website that talks to visitors, a CRM that captures every lead, automated follow-up, funnels that convert, and an ad studio for the marketing. One system. It sells for you.
+
+Get the free AI audit and see what your current site is missing.`;
+
+const TW_HEADLINE = 'Your website should sell for you.';
+const TW_DESCRIPTION = 'AI website + CRM + funnels + ad studio. Built by Modern Mustard Seed.';
+
+const TW_CUTS = [
+  { file: '/ads/talking-website-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/talking-website-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical placements.' },
+  { file: '/ads/talking-website-16x9.mp4', label: '16:9 — In-stream + site', note: 'Video feeds, search, and the website hero.' },
+];
+
+const TW_CHECKLIST = [
+  { id: 'cell', label: 'Cell C: Campaign objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the audit UTM link above. Paste Copy Variant 1.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
+  { id: 'audience', label: 'Audience: same Advantage+ setup as Call Me (small business owner interests, age 25-60, United States nationwide).' },
+  { id: 'captions', label: 'Decline Meta auto-captions (the video has styled captions burned in).' },
+  { id: 'organic', label: 'Post the 4:5 cut organically on FB + IG the same day (free reach, warms the page). Ask Claude for the drafts.' },
+  { id: 'retarget', label: 'Day 3-4: add a retargeting ad set of 50% video viewers from BOTH commercials, pointed at the audit link. Works without the pixel.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per audit lead. Audit submissions land in the admin inbox tagged utm_campaign=talkingwebsite.' },
 ];
 
 const CHECKLIST = [
@@ -71,11 +105,14 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
 
 export default function AdsPlaybook() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [checkedTw, setCheckedTw] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem('mms-ads-checklist');
       if (raw) setChecked(JSON.parse(raw));
+      const rawTw = localStorage.getItem('mms-ads-checklist-tw');
+      if (rawTw) setCheckedTw(JSON.parse(rawTw));
     } catch { /* first visit */ }
   }, []);
 
@@ -87,7 +124,16 @@ export default function AdsPlaybook() {
     });
   };
 
+  const toggleTw = (id: string) => {
+    setCheckedTw((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      try { localStorage.setItem('mms-ads-checklist-tw', JSON.stringify(next)); } catch { /* private mode */ }
+      return next;
+    });
+  };
+
   const doneCount = CHECKLIST.filter((c) => checked[c.id]).length;
+  const doneCountTw = TW_CHECKLIST.filter((c) => checkedTw[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA]">
@@ -199,12 +245,86 @@ export default function AdsPlaybook() {
           </ol>
         </section>
 
+        {/* ============ Campaign two: The Talking Website ============ */}
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Campaign two</span>
+          <h2 className="font-display text-3xl md:text-4xl font-extrabold text-[#161616] mt-2">
+            &ldquo;The Talking Website&rdquo; <span className="italic text-[#E0301E]">has arrived</span>
+          </h2>
+          <p className="text-[#161616]/75 mt-3 max-w-3xl font-sans">
+            The full-system pitch: AI website, CRM, funnels, and ad studio, all baked in, it sells for you.
+            One traffic cell at $10/day feeding the free AI audit funnel. Judge on cost per audit lead.
+          </p>
+          <div className="flex flex-wrap gap-3 mt-5">
+            <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Ads Manager</a>
+            <a href="/audit" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">The audit funnel (landing)</a>
+          </div>
+        </section>
+
+        {/* Talking Website cuts */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The creative, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Same drill: upload one ad, customize per placement. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {TW_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/talking-website-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Talking Website copy */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1" text={TW_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2" text={TW_COPY_B} />
+            <CopyBlock title="Headline" text={TW_HEADLINE} />
+            <CopyBlock title="Description" text={TW_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (audit funnel)" text={TW_LANDING} />
+          </div>
+        </section>
+
+        {/* Talking Website launch checklist */}
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountTw}/{TW_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {TW_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedTw[item.id]}
+                    onChange={() => toggleTw(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedTw[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+
         {/* Measurement */}
         <section className="bg-[#161616] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 text-[#FBF6EA]">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">How to read results</span>
           <div className="grid md:grid-cols-3 gap-6 mt-4 text-sm font-sans">
             <p><b className="text-[#F5B700]">Calls:</b> every ad-driven call hits the Mustard line and lands in <a href="/admin/callers" className="underline decoration-[#F5B700]">Callers</a> with a transcript. Bookings email you automatically.</p>
-            <p><b className="text-[#F5B700]">Site:</b> Cell B traffic shows in GA4 + the first-party beacon under utm_campaign=callme. Conversions get exact once the pixel vars are set.</p>
+            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme and utm_campaign=talkingwebsite. Conversions get exact once the pixel vars are set.</p>
             <p><b className="text-[#F5B700]">Weekly:</b> ask Claude to read Callers against spend and report the true cost per booked discovery call.</p>
           </div>
         </section>
