@@ -63,6 +63,9 @@ const GLEANER_EMAIL = env.GLEANER_EMAIL || 'sarah@modernmustardseed.com';
 const SCOUT_MAX_MS = Number(env.SCOUT_MAX_MS || 15 * 60 * 1000);
 const FIELD_MAX_MS = Number(env.FIELD_MAX_MS || 30 * 60 * 1000);
 const FORGE_MAX_MS = Number(env.FORGE_MAX_MS || 55 * 60 * 1000);
+// A mid-stage run whose updated_at is older than this is stranded (its worker
+// died). The heartbeat below keeps healthy runs fresher than this bar.
+const STALE_MS = Number(env.GLEANER_STALE_MS || 10 * 60 * 1000);
 const WORKER = os.hostname();
 
 const log = (...a) => console.log(new Date().toISOString(), '[gleaner]', ...a);
@@ -101,6 +104,55 @@ async function claimRun() {
     .eq('id', data.id).eq('status', 'queued')
     .select('*').maybeSingle();
   return claimed || null;
+}
+
+const MID_STAGES = ['scouting', 'fielding', 'forging', 'courting'];
+
+/** A run stuck mid-stage with a stale heartbeat lost its worker. Reclaim it and
+ *  resume from the stage it died in (stage boundaries are the checkpoints). */
+async function reclaimStranded() {
+  const cutoff = new Date(Date.now() - STALE_MS).toISOString();
+  const { data } = await supabase
+    .from('gleaner_runs').select('*')
+    .in('status', MID_STAGES).lt('updated_at', cutoff)
+    .order('created_at', { ascending: true })
+    .limit(1).maybeSingle();
+  if (!data) return null;
+  const { data: claimed } = await supabase
+    .from('gleaner_runs')
+    .update({ worker: WORKER, updated_at: nowIso() })
+    .eq('id', data.id).eq('updated_at', data.updated_at)
+    .select('*').maybeSingle();
+  if (!claimed) return null; // someone else won the race or it just heartbeat
+  await event(claimed.id, 'warn', 'system', `Worker was interrupted; resuming from stage "${claimed.status}".`);
+  return { run: claimed, resumeFrom: claimed.status };
+}
+
+/** Re-load vertical intelligence without re-scouting (resume path). */
+async function loadVertical(run) {
+  const { data: v } = await supabase.from('gleaner_verticals').select('*').eq('slug', run.vertical_slug).maybeSingle();
+  return v || { slug: run.vertical_slug, name: run.vertical_slug, search_terms: run.vertical_slug, demo_template: 'custom' };
+}
+
+/** Re-derive the qualified list from prospects the run's field stage touched,
+ *  without re-sweeping (resume path). Anchored on started_at, same bar as field(). */
+async function loadQualified(run) {
+  // harvest_prospects carries no run id, so anchor on the run's geo (what its
+  // field stage discovered into) plus the run window. Without the geo filter,
+  // any older prospect touched since started_at leaks into the gate summary.
+  let query = supabase
+    .from('harvest_prospects').select('*')
+    .gte('updated_at', run.started_at || run.created_at)
+    .in('status', ['scored', 'qualified', 'drafted', 'queued'])
+    .order('composite', { ascending: false })
+    .limit(100);
+  if (run.geo) query = query.eq('geo', run.geo);
+  const { data: prospects } = await query;
+  // 'drafted'/'queued' means an earlier pass already courted them; they are
+  // still this run's qualified set for the gate summary.
+  return (prospects || []).filter(
+    (p) => ['qualified', 'drafted', 'queued'].includes(p.status) || (p.composite ?? 0) >= 60
+  );
 }
 
 // ---------- process runners ----------
@@ -386,8 +438,33 @@ async function forge(run, vertical, qualified) {
     return 0;
   }
   await setRun(run.id, { status: 'forging', stage_detail: `forging ${Math.min(maxDemos, qualified.length)} demo(s)` });
-  const targets = qualified.slice(0, maxDemos);
+
+  // Resume-safety: demos this run already produced (or half-produced before an
+  // interruption) count toward the cap and never forge twice, which matters
+  // because forgeOne provisions real Vapi numbers.
+  const { data: existingDemos } = await supabase.from('gleaner_demos').select('*').eq('run_id', run.id);
+  const settled = new Set();
   let built = 0;
+  for (const d of existingDemos || []) {
+    if (d.status === 'ready' && d.demo_url) { settled.add(d.prospect_id); built += 1; continue; }
+    if ((d.status === 'queued' || d.status === 'forging') && d.build_request_id) {
+      const { data: reqRow } = await supabase.from('build_requests').select('status,result').eq('id', d.build_request_id).maybeSingle();
+      const r = reqRow?.result;
+      if (reqRow?.status === 'ready' && r?.live_url) {
+        await supabase.from('gleaner_demos').update({
+          status: 'ready', demo_url: r.live_url, phone: r.phone || null, dashboard_url: r.dashboard_url || null,
+          repo_url: r.repo_url || null, vapi_assistant_id: r.vapi_assistant_id || null, notes: r.summary || null,
+        }).eq('id', d.id);
+        await event(run.id, 'ok', 'forge', `RECOVERED finished build for ${d.brand_name}: ${r.live_url}`, { demoId: d.id });
+        settled.add(d.prospect_id); built += 1;
+      } else {
+        await supabase.from('gleaner_demos').update({ status: 'failed', notes: 'stranded by an interrupted worker; superseded' }).eq('id', d.id);
+        await event(run.id, 'warn', 'forge', `${d.brand_name} demo was stranded mid-forge; will re-forge if capacity allows.`, { demoId: d.id });
+      }
+    }
+  }
+
+  const targets = qualified.filter((p) => !settled.has(p.id)).slice(0, Math.max(0, maxDemos - built));
   for (const prospect of targets) {
     await assertActive(run.id);
     if (await forgeOne(run, vertical, prospect)) built += 1;
@@ -402,15 +479,19 @@ async function forge(run, vertical, qualified) {
 async function court(run, qualified) {
   await assertActive(run.id);
   await setRun(run.id, { status: 'courting', stage_detail: 'drafting outreach (drafts only)' });
-  const stageStart = nowIso();
   const limit = Math.min(qualified.length || 10, 10);
   await event(run.id, 'info', 'court', `Drafting compliant outreach for up to ${limit} prospects (nothing sends without you)`);
   const res = await runStreaming(`npm run outreach -- --limit ${limit}`, { cwd: HARVEST_DIR, maxMs: FIELD_MAX_MS, runId: run.id, source: 'court' });
   if (res.code !== 0) await event(run.id, 'warn', 'court', `outreach drafting exited ${res.code}`);
 
-  const { count: drafts } = await supabase
-    .from('outreach_messages').select('id', { count: 'exact', head: true })
-    .eq('kind', 'harvest').eq('status', 'draft').gte('created_at', stageStart);
+  // Count drafts by THIS run's prospects, not by time window: on a resumed run
+  // the drafting happened in an earlier pass and a time anchor would report 0.
+  const prospectIds = qualified.map((p) => p.id);
+  const { count: drafts } = prospectIds.length
+    ? await supabase
+        .from('outreach_messages').select('id', { count: 'exact', head: true })
+        .eq('kind', 'harvest').eq('status', 'draft').in('prospect_id', prospectIds)
+    : { count: 0 };
 
   const { data: demos } = await supabase.from('gleaner_demos').select('*').eq('run_id', run.id);
   const live = (demos || []).filter((d) => d.demo_url);
@@ -445,13 +526,24 @@ async function court(run, qualified) {
 
 // ---------- the run ----------
 
-async function processRun(run) {
-  log('claimed run', run.id, run.vertical_slug, run.geo);
+const STAGE_ORDER = { scouting: 0, fielding: 1, forging: 2, courting: 3 };
+
+async function processRun(run, resumeFrom = null) {
+  log(resumeFrom ? `resumed run (from ${resumeFrom})` : 'claimed run', run.id, run.vertical_slug, run.geo);
+  const from = STAGE_ORDER[resumeFrom] ?? 0;
+  // Lane passthrough: a run configured for the chain lane flips harvest's mode
+  // for every child process this run shells out to.
+  env.HARVEST_MODE = run.config?.mode === 'chain' ? 'chain' : 'smb';
+  // Heartbeat so a live run never looks stranded to another worker.
+  const heartbeat = setInterval(() => { setRun(run.id, {}).catch(() => {}); }, 2 * 60 * 1000);
   try {
-    const vertical = await scout(run);
+    const vertical = from <= 0 ? await scout(run) : await loadVertical(run);
     const freshRun = { ...run, vertical_slug: run.vertical_slug === 'auto' ? vertical.slug : run.vertical_slug };
-    const { qualified } = await field(freshRun, vertical);
-    await forge(freshRun, vertical, qualified);
+    const qualified = from <= 1
+      ? (await field(freshRun, vertical)).qualified
+      : await loadQualified(freshRun);
+    if (from > 1) await event(run.id, 'info', 'field', `Resume: re-read ${qualified.length} qualified prospects from the swept field.`);
+    if (from <= 2) await forge(freshRun, vertical, qualified);
     await court(freshRun, qualified);
     await setRun(run.id, { status: 'gated', stage_detail: 'awaiting your review', finished_at: nowIso() });
     log('run gated', run.id);
@@ -464,10 +556,17 @@ async function processRun(run) {
     await setRun(run.id, { status: 'failed', error: String(e?.message || e), finished_at: nowIso() });
     await event(run.id, 'error', 'system', `Run failed: ${String(e?.message || e)}`);
     log('RUN FAILED', run.id, e?.message);
+  } finally {
+    clearInterval(heartbeat);
   }
 }
 
 async function tick() {
+  const stranded = await reclaimStranded();
+  if (stranded) {
+    await processRun(stranded.run, stranded.resumeFrom);
+    return true;
+  }
   const run = await claimRun();
   if (!run) return false;
   await processRun(run);
@@ -477,7 +576,7 @@ async function tick() {
 log('gleaner worker up.', 'harvest:', HARVEST_DIR, '| builds:', BUILDS_DIR, '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
 if (ONCE) {
   const did = await tick();
-  if (!did) log('no queued runs.');
+  if (!did) log('no queued or stranded runs.');
   process.exit(0);
 } else {
   // eslint-disable-next-line no-constant-condition
