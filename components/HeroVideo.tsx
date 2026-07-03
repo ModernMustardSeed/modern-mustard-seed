@@ -1,14 +1,48 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { track } from '@vercel/analytics';
 
 // Contained, comic-framed film: the Night Shift commercial (the 3D mustard
 // seed mascot spot). Lives in TheClose at the bottom of the homepage.
 // Autoplays muted; one tap brings the sound in, since browsers block
-// autoplay with audio.
+// autoplay with audio. Tracks view / sound-on / watched-through so the
+// spot's pull toward "Book a call" is measurable.
 export default function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
+  const viewed = useRef(false);
+  const watched = useRef(false);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    // The video autoplays on page load, so a real "view" is the film band
+    // actually scrolled into the viewport, not playback starting.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (viewed.current || !entries.some((e) => e.isIntersecting)) return;
+        viewed.current = true;
+        track('commercial_view');
+      },
+      { threshold: 0.5 }
+    );
+    io.observe(v);
+    // The film loops, so 'ended' never fires. Count a watch-through the
+    // first time playback crosses 90% of the runtime while on screen.
+    const onTime = () => {
+      if (watched.current || !viewed.current || !v.duration) return;
+      if (v.currentTime / v.duration > 0.9) {
+        watched.current = true;
+        track('commercial_watched');
+      }
+    };
+    v.addEventListener('timeupdate', onTime);
+    return () => {
+      io.disconnect();
+      v.removeEventListener('timeupdate', onTime);
+    };
+  }, []);
 
   function toggleSound() {
     const v = videoRef.current;
@@ -16,7 +50,10 @@ export default function HeroVideo() {
     const next = !muted;
     v.muted = next;
     setMuted(next);
-    if (!next) v.play().catch(() => {});
+    if (!next) {
+      track('commercial_sound_on');
+      v.play().catch(() => {});
+    }
   }
 
   return (

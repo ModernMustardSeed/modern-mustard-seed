@@ -5,6 +5,20 @@ import { insertLead } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
 
+// Soft per-instance IP throttle, same pattern as mustard-mode/free-play.
+// Each submission inserts a lead and emails Sarah, so cap the blast radius.
+const ipHits = new Map<string, { count: number; reset: number }>();
+function ipAllowed(ip: string): boolean {
+  const now = Date.now();
+  const hit = ipHits.get(ip);
+  if (!hit || now > hit.reset) {
+    ipHits.set(ip, { count: 1, reset: now + 60 * 60 * 1000 });
+    return true;
+  }
+  hit.count += 1;
+  return hit.count <= 5;
+}
+
 /**
  * Front Desk lead capture (homepage hero terminal). A visitor typed an idea,
  * got the instant scope, and left an email for the personal follow-up.
@@ -12,6 +26,11 @@ export const runtime = 'nodejs';
  */
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (!ipAllowed(ip)) {
+      return NextResponse.json({ error: 'Easy there. Try again in a bit.' }, { status: 429 });
+    }
+
     const body = (await req.json()) as { idea?: string; email?: string };
     const idea = (body.idea ?? '').trim().slice(0, 600);
     const email = (body.email ?? '').trim().toLowerCase();
