@@ -34,7 +34,7 @@ export default function BuildQueuePage() {
               Drop Your Idea
             </h1>
             <p className="text-[#3a3733] text-lg font-body leading-relaxed max-w-xl mx-auto mb-3">
-              Whether you need your first real website or a custom AI tool, drop the idea below. Sarah reads every entry and replies within 3 business days.
+              Whether you need your first real website or a custom AI tool, drop the idea below. Sarah reads every entry and replies fast, usually the same day.
             </p>
             <p className="text-[#161616]/50 text-sm font-body leading-relaxed max-w-xl mx-auto">
               You do not need to know what to call it. You do not need to know anything about AI. Tell us what you are trying to do and we will figure out the rest together.

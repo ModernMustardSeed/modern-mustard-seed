@@ -246,7 +246,7 @@ export default function WorkWithUsPage() {
                 Not sure which engagement fits?
               </h3>
               <p className="text-[#161616]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">
-                Drop your idea on the Build Queue. Sarah reads every entry and replies within 3 business days with a fit-check and a recommendation. No pressure, no decks.
+                Drop your idea on the Build Queue. Sarah reads every entry and replies fast, usually the same day, with a fit-check and a recommendation. No pressure, no decks.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link

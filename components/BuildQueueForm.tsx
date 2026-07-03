@@ -81,7 +81,7 @@ export default function BuildQueueForm() {
           You&rsquo;re on the list
         </h2>
         <p className="text-[#161616]/80 text-base md:text-lg font-body font-medium max-w-md mx-auto leading-relaxed">
-          Sarah reviews every entry. You&rsquo;ll hear back within 3 business days.
+          Sarah reviews every entry personally and gets back to you fast, usually the same day.
         </p>
       </div>
     );
@@ -198,7 +198,7 @@ export default function BuildQueueForm() {
       </button>
 
       <p className="text-center text-[#161616]/45 text-xs font-body italic">
-        Sarah reviews every entry personally. You will hear back within 3 business days.
+        Sarah reviews every entry personally and replies fast, usually the same day.
       </p>
     </form>
   );

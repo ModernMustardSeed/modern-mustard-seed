@@ -64,7 +64,7 @@ export async function POST(req: Request) {
             email,
             fields: [{ label: 'Source', value: 'Homepage hero terminal' }],
             message: idea,
-            suggestedAction: 'Send the personal scope within 3 business days',
+            suggestedAction: 'Send the personal scope fast, same day if you can',
           }),
         });
       } catch (err) {

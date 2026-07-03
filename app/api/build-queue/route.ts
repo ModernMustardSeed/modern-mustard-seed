@@ -103,7 +103,7 @@ export async function POST(req: Request) {
           { label: 'Suggested playbook', value: playbook.title },
         ],
         message: ideaDescription,
-        suggestedAction: 'Reply within 3 business days',
+        suggestedAction: 'Reply personally, same day if you can',
       }),
     });
 
@@ -113,13 +113,13 @@ export async function POST(req: Request) {
       replyTo: 'sarah@modernmustardseed.com',
       subject: `You're on the list, ${firstName}`,
       html: clientEmail({
-        preheader: 'I read every entry personally. Reply within 3 business days.',
+        preheader: 'I read every entry personally and reply fast, usually the same day.',
         greeting: `${firstName},`,
         body:
           p(`Got your Build Queue entry for <strong>${businessName}</strong>. I read every one personally.`) +
           p('Here is what happens next:') +
           `<ol style="margin:0 0 18px;padding-left:22px;color:#e9e1cf;line-height:1.75;font-size:16px">
-            <li style="margin-bottom:10px"><strong style="color:#fff">Within 3 business days</strong>, I will email you back personally with next steps.</li>
+            <li style="margin-bottom:10px"><strong style="color:#fff">Fast, usually the same day</strong>, I will email you back personally with next steps.</li>
             <li>If we are a fit, the next step is a 30-minute scoping call. You leave that call with a fixed scope, fixed timeline, and a fixed quote. No decks.</li>
           </ol>` +
           p('While you wait, the playbook I would point you at first based on what you submitted:') +

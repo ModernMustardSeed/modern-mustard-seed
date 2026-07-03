@@ -61,7 +61,7 @@ const homeFaq = faqJsonLd([
   },
   {
     q: 'How do I get on the build queue?',
-    a: 'Submit your idea at modernmustardseed.com/build-queue. Sarah reviews every submission personally and replies within 3 business days.',
+    a: 'Submit your idea at modernmustardseed.com/build-queue. Sarah reviews every submission personally and replies fast, usually the same day. Every client also gets Mr. Mustard, the studio AI, on call 24/7 for questions between conversations.',
   },
   {
     q: 'What does it cost?',

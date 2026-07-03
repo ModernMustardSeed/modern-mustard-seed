@@ -210,7 +210,7 @@ export default function FrontDeskHero() {
       });
       if (!res.ok) throw new Error('failed');
       typeOn(
-        'Locked in. Sarah reads every idea herself and replies within 3 business days with a personal scope. Talk soon.',
+        'Locked in. I read every idea myself and get back to you fast, usually the same day, with a personal scope. And the moment we are working together, Mr. Mustard is on call for you 24/7. Talk soon.',
         setSentText,
         () => setPlay('sent')
       );

@@ -13,7 +13,7 @@ const DOORS = [
     name: 'Build With Us',
     pitch:
       'Idea to shipped product. We design, build, brand, and launch it end to end. Fixed scope, fixed quote, live in 2 to 4 weeks. You own everything on launch day.',
-    points: ['Apps, sites, voice agents, AI tools', 'Sarah reads every submission personally', 'Replies within 3 business days'],
+    points: ['Apps, sites, voice agents, AI tools', 'Sarah answers you personally, and fast', 'Plus Mr. Mustard, on call 24/7'],
     cta: 'Join the Build Queue',
     href: '/build-queue',
     featured: true,
