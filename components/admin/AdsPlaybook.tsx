@@ -132,7 +132,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
         <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">{title}</span>
         <button
           onClick={copy}
-          className="text-[11px] uppercase tracking-[0.18em] font-sans font-bold px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
+          className="text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
         >
           {done ? 'Copied!' : 'Copy'}
         </button>
@@ -142,10 +142,32 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
+type AdsTab = 'callme' | 'tw' | 'mm' | 'results';
+
+const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
+  { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
+  { key: 'tw', num: '02', label: 'Talking Website', blurb: 'Full system · audit funnel · $10/day' },
+  { key: 'mm', num: '03', label: 'MUSTARD MODE', blurb: 'The product · free-play funnel · $10/day' },
+  { key: 'results', num: '📊', label: 'Results', blurb: 'How to read all three together' },
+];
+
 export default function AdsPlaybook() {
+  const [tab, setTab] = useState<AdsTab>('callme');
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [checkedTw, setCheckedTw] = useState<Record<string, boolean>>({});
   const [checkedMm, setCheckedMm] = useState<Record<string, boolean>>({});
+
+  // Remember the campaign you were working in.
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('mms-ads-tab') as AdsTab | null;
+      if (saved && TABS.some((t) => t.key === saved)) setTab(saved);
+    } catch { /* first visit */ }
+  }, []);
+  const switchTab = (t: AdsTab) => {
+    setTab(t);
+    try { localStorage.setItem('mms-ads-tab', t); } catch { /* private mode */ }
+  };
 
   useEffect(() => {
     try {
@@ -187,10 +209,34 @@ export default function AdsPlaybook() {
   const doneCountMm = MM_CHECKLIST.filter((c) => checkedMm[c.id]).length;
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="ads" title="Meta Ads" />
 
+      {/* Campaign switcher */}
+      <div className="sticky top-0 z-30 bg-[#FBF6EA]/95 backdrop-blur border-b-2 border-[#161616]">
+        <div className="max-w-7xl mx-auto px-5 md:px-6 py-3 grid grid-cols-2 md:grid-cols-4 gap-2">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => switchTab(t.key)}
+              className={`text-left border-2 border-[#161616] px-3.5 py-2.5 transition-all ${
+                tab === t.key
+                  ? 'bg-[#161616] text-white shadow-[3px_3px_0_0_#F5B700]'
+                  : 'bg-white text-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5'
+              }`}
+            >
+              <span className={`font-mono font-bold text-[10px] tracking-[0.2em] block ${tab === t.key ? 'text-[#FFDD55]' : 'text-[#E0301E]'}`}>
+                {t.num === '📊' ? 'RESULTS' : `CAMPAIGN ${t.num}`}
+              </span>
+              <span className="font-sans font-extrabold text-sm block mt-0.5">{t.label}</span>
+              <span className={`font-sans text-[11px] hidden md:block ${tab === t.key ? 'text-white/60' : 'text-[#161616]/55'}`}>{t.blurb}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <main className="max-w-7xl mx-auto px-5 md:px-6 py-8 space-y-10">
+        {tab === 'callme' && (<>
         {/* Hero strip */}
         <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Campaign one</span>
@@ -202,9 +248,9 @@ export default function AdsPlaybook() {
             and books the discovery call himself. Two cells, $25/day total, judge on cost per booked call.
           </p>
           <div className="flex flex-wrap gap-3 mt-5">
-            <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Ads Manager</a>
-            <a href="https://business.facebook.com/events_manager2" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Events Manager (Pixel)</a>
-            <a href="/admin/callers" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Callers (results)</a>
+            <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Ads Manager</a>
+            <a href="https://business.facebook.com/events_manager2" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Events Manager (Pixel)</a>
+            <a href="/admin/callers" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Callers (results)</a>
           </div>
         </section>
 
@@ -221,7 +267,7 @@ export default function AdsPlaybook() {
                     <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
                     <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
                   </div>
-                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
                 </div>
               </div>
             ))}
@@ -295,7 +341,9 @@ export default function AdsPlaybook() {
             ))}
           </ol>
         </section>
+        </>)}
 
+        {tab === 'tw' && (<>
         {/* ============ Campaign two: The Talking Website ============ */}
         <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Campaign two</span>
@@ -307,8 +355,8 @@ export default function AdsPlaybook() {
             One traffic cell at $10/day feeding the free AI audit funnel. Judge on cost per audit lead.
           </p>
           <div className="flex flex-wrap gap-3 mt-5">
-            <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Ads Manager</a>
-            <a href="/audit" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">The audit funnel (landing)</a>
+            <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Ads Manager</a>
+            <a href="/audit" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">The audit funnel (landing)</a>
           </div>
         </section>
 
@@ -325,7 +373,7 @@ export default function AdsPlaybook() {
                     <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
                     <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
                   </div>
-                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
                 </div>
               </div>
             ))}
@@ -369,7 +417,9 @@ export default function AdsPlaybook() {
             ))}
           </ol>
         </section>
+        </>)}
 
+        {tab === 'mm' && (<>
         {/* ============ Campaign three: MUSTARD MODE ============ */}
         <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
           <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
@@ -405,7 +455,7 @@ export default function AdsPlaybook() {
                     <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
                     <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
                   </div>
-                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
                 </div>
               </div>
             ))}
@@ -449,7 +499,9 @@ export default function AdsPlaybook() {
             ))}
           </ol>
         </section>
+        </>)}
 
+        {tab === 'results' && (<>
         {/* Measurement */}
         <section className="bg-[#161616] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 text-[#FBF6EA]">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">How to read results</span>
@@ -459,6 +511,26 @@ export default function AdsPlaybook() {
             <p><b className="text-[#F5B700]">Weekly:</b> ask Claude to read Callers against spend and report the true cost per booked discovery call.</p>
           </div>
         </section>
+
+        {/* Per-campaign scoreboard shortcuts */}
+        <section className="grid md:grid-cols-3 gap-5">
+          <div className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-6">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">01 · Call Me</span>
+            <p className="text-sm text-[#161616]/80 font-sans mt-2">Metric: cost per booked discovery call.</p>
+            <a href="/admin/callers" className="inline-block mt-3 text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3.5 py-2 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Callers →</a>
+          </div>
+          <div className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-6">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">02 · Talking Website</span>
+            <p className="text-sm text-[#161616]/80 font-sans mt-2">Metric: cost per audit lead (utm_campaign=talkingwebsite).</p>
+            <a href="/admin/inbox" className="inline-block mt-3 text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3.5 py-2 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Inbox →</a>
+          </div>
+          <div className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-6">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">03 · MUSTARD MODE</span>
+            <p className="text-sm text-[#161616]/80 font-sans mt-2">Metric: cost per free-play email, truth = Player/Builder orders.</p>
+            <a href="/admin/leads" className="inline-block mt-3 text-[11px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3.5 py-2 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Open Leads →</a>
+          </div>
+        </section>
+        </>)}
       </main>
     </div>
   );
