@@ -593,7 +593,10 @@ export default function MultiplierHero() {
             </div>
           </div>
           <p className="font-mono text-[10px] text-[#161616]/50 mt-2 tracking-wide">
-            FREE PLAY = 1 LIVE COACHING RUN + THE STARTER PROMPT SAMPLER. NO CARD.
+            FREE PLAY = 1 LIVE COACHING RUN + THE STARTER PROMPT SAMPLER. NO CARD.{' '}
+            <a href="/mustard-mode/start-here" className="underline underline-offset-2 hover:text-[#1E50C8]">
+              NEVER USED CLAUDE OR A TERMINAL? START HERE FIRST →
+            </a>
           </p>
         </div>
 

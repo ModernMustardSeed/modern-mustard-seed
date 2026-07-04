@@ -7,6 +7,7 @@ import { products, bundles } from '@/data/products';
 const STATIC_PATHS = [
   '',
   '/mustard-mode',
+  '/mustard-mode/start-here',
   '/the-terminal',
   '/idea-to-spec',
   '/partners',
@@ -23,6 +24,7 @@ const STATIC_PATHS = [
   '/audit',
   '/website-audit',
   '/launch-checklist',
+  '/prompt-playbook',
   '/ai-proof',
   '/for',
   '/for/restaurants',
@@ -45,7 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ? 1.0
         : path === '/mustard-mode' || path === '/the-terminal' || path === '/idea-to-spec'
           ? 0.95
-          : path === '/work' || path === '/audit' || path === '/launch-checklist'
+          : path === '/work' || path === '/audit' || path === '/launch-checklist' || path === '/prompt-playbook'
             ? 0.9
             : 0.7,
   }));

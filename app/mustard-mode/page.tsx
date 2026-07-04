@@ -3,7 +3,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { MUSTARD, mustardLevels, mustardFaq } from '@/data/mustard-mode/offer';
 import MultiplierHero from '@/components/mustard-mode/MultiplierHero';
 import OfferGrid from '@/components/mustard-mode/OfferGrid';
-import { MethodSection, ReplaySection, TrackRail, ProofSection, Ticker } from '@/components/mustard-mode/LandingSections';
+import { MethodSection, ReplaySection, TrackRail, ProofSection, EraOfEntrepreneur, IntegritySection, Ticker } from '@/components/mustard-mode/LandingSections';
 
 export const metadata = buildMetadata({
   title: MUSTARD.metaTitle,
@@ -57,6 +57,8 @@ export default function MustardModePage() {
       <ReplaySection />
       <TrackRail />
       <ProofSection />
+      <EraOfEntrepreneur />
+      <IntegritySection />
       <Ticker reverse />
       <OfferGrid />
 

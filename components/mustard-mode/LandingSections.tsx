@@ -1,7 +1,26 @@
+'use client';
+
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { tracks } from '@/data/mustard-mode/curriculum';
 import Reveal from './Reveal';
 import ClaudeCodeReplay from './ClaudeCodeReplay';
+
+const ERA_WORDS = ['founders', 'operators', 'makers', 'second-act dreamers', 'small-town builders', 'first-time creators'];
+
+/** Rotates through ERA_WORDS every 2.4s. Isolated so only this bit re-renders. */
+function RotatingWord() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setI((n) => (n + 1) % ERA_WORDS.length), 2400);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span key={i} className="inline-block font-display italic font-black text-[#F5B700] text-2xl md:text-3xl tracking-tight">
+      {ERA_WORDS[i]}
+    </span>
+  );
+}
 
 /** Diagonal mono marquee ticker between sections. */
 export function Ticker({ reverse = false }: { reverse?: boolean }) {
@@ -122,6 +141,112 @@ export function TrackRail() {
                 <span className="font-mono text-[10px] font-bold px-2 py-1 text-[#161616]/50">+{t.missions.length - 3} more</span>
               </div>
             </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * The manifesto beat. Revives "The Era of the Entrepreneur" (the studio's
+ * original brand manifesto) rewritten for MUSTARD MODE: the emotional peak
+ * right before the ask, not a generic pep talk. Rotating word + halftone
+ * field, dark canvas so it reads as a distinct beat from the cream sections
+ * around it.
+ */
+export function EraOfEntrepreneur() {
+  return (
+    <section className="relative bg-[#080C16] border-y-2 border-[#161616] py-24 md:py-32 overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-[0.14]"
+        style={{ backgroundImage: 'radial-gradient(#F5B700 1.6px, transparent 1.8px)', backgroundSize: '20px 20px' }}
+        aria-hidden
+      />
+      <div className="relative max-w-4xl mx-auto px-6 text-center">
+        <Reveal variant="eyebrow">
+          <p className="font-mono font-bold text-[11px] tracking-[0.28em] text-[#E0301E] uppercase">A manifesto</p>
+        </Reveal>
+        <Reveal variant="slam" delay={100}>
+          <h2 className="font-display italic font-extrabold text-white leading-[0.98] tracking-tight text-4xl md:text-6xl lg:text-7xl mt-5">
+            The <span className="text-[#F5B700]">era</span> of the <span className="text-[#F5B700]">entrepreneur</span>
+          </h2>
+        </Reveal>
+        <Reveal variant="rise" delay={220}>
+          <p className="font-sans text-lg md:text-xl text-white/85 max-w-2xl mx-auto mt-8 leading-relaxed">
+            One person with a coach and Claude can now build what used to take a team of fifty.
+          </p>
+          <p className="font-sans font-bold text-white/60 max-w-xl mx-auto mt-3">
+            That is the era we are in. MUSTARD MODE exists to hand you the tools and the reps.
+          </p>
+        </Reveal>
+        <Reveal variant="rise" delay={340}>
+          <div className="text-xl md:text-2xl font-sans text-white/70 mt-10 flex items-center justify-center flex-wrap gap-x-3 gap-y-2">
+            <span>Built for</span>
+            <span className="inline-block min-w-[210px] text-left">
+              <RotatingWord />
+            </span>
+          </div>
+        </Reveal>
+        <Reveal variant="drop" delay={440}>
+          <a
+            href="#levels"
+            className="inline-block mt-10 font-sans font-bold bg-[#F5B700] text-[#161616] border-2 border-[#161616] shadow-[5px_5px_0_0_#FFDD55] px-8 py-3.5 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#FFDD55] transition-all"
+          >
+            Get your tools
+          </a>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Trust, not preaching. The coach's stance on honest AI use, right before
+ * the offer: what MUSTARD MODE teaches you to build with, not to fake.
+ */
+export function IntegritySection() {
+  const principles = [
+    {
+      t: 'You own what you ship',
+      d: 'Claude writes the code. You make the calls. Every mission ends with you understanding what you built well enough to explain it, not just paste it.',
+    },
+    {
+      t: 'Say when AI built it',
+      d: 'If a client, a boss, or a reader would care that AI was in the loop, tell them. Speed is not a reason to be quiet about how the work got made.',
+    },
+    {
+      t: 'Amplify skill, never replace judgment',
+      d: 'The coach exists to make your taste and your standards travel faster, not to make them optional. A tool that thinks for you stops working the day you need it most.',
+    },
+  ];
+  return (
+    <section className="bg-[#FBF6EA] py-20 md:py-24">
+      <div className="max-w-5xl mx-auto px-6">
+        <Reveal variant="eyebrow">
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">Where we stand</p>
+        </Reveal>
+        <Reveal variant="slam" delay={100}>
+          <h2 className="font-display italic font-extrabold text-4xl md:text-5xl text-[#161616] mt-3 max-w-2xl leading-[1.05]">
+            Integrity in AI is not a footnote here.
+          </h2>
+        </Reveal>
+        <Reveal variant="rise" delay={200}>
+          <p className="font-sans text-[#161616]/75 max-w-2xl mt-5 leading-relaxed">
+            A coach who only cared about speed would teach you shortcuts. Ours cares about the name on the
+            work. MUSTARD MODE is built on three rules that do not bend, whether you are shipping a hobby
+            project or something your business depends on.
+          </p>
+        </Reveal>
+        <div className="grid md:grid-cols-3 gap-6 mt-10">
+          {principles.map((p, i) => (
+            <Reveal key={p.t} variant="rise" delay={260 + i * 120}>
+              <div className="pop-card rounded-none p-6 h-full">
+                <span className="font-mono font-bold text-[10px] tracking-wider text-[#1E50C8]">[ 0{i + 1} ]</span>
+                <h3 className="font-display font-extrabold text-lg text-[#161616] mt-2">{p.t}</h3>
+                <p className="font-sans text-[13px] text-[#161616]/75 mt-2 leading-relaxed">{p.d}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>
