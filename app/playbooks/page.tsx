@@ -40,6 +40,33 @@ export default function PlaybooksPage() {
             </p>
           </div>
 
+          {/* Featured interactive tool */}
+          <Link
+            href="/prompt-playbook"
+            className="group block pop-card-yellow p-8 md:p-10 mb-12 hover:-translate-y-1 transition-transform duration-300"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-[8px] uppercase tracking-[0.18em] font-mono font-bold text-white bg-[#161616] rounded-full px-2.5 py-1">
+                Interactive tool
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-bold">
+                Never used AI? Start here
+              </span>
+            </div>
+            <h2 className="font-display text-2xl md:text-4xl font-black text-[#161616] tracking-tight mb-3 leading-[1.05]">
+              The AI Prompt Playbook
+            </h2>
+            <p className="text-[#161616]/75 text-sm md:text-base font-body leading-7 max-w-2xl">
+              Pick your niche and get a full set of ready-to-paste AI prompts, rewritten for your exact business. Copy one,
+              paste it into a free tool like Claude or ChatGPT, and watch it write for you. Email yourself the branded PDF
+              to keep.
+            </p>
+            <span className="inline-flex items-center gap-1.5 mt-5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616]">
+              Open the playbook
+              <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+            </span>
+          </Link>
+
           {playbooks.length === 0 ? (
             <p className="text-center text-[#161616]/40 font-body italic">
               First playbooks shipping this month. Subscribe to get notified.
