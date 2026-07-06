@@ -1,0 +1,562 @@
+'use client';
+
+import Link from 'next/link';
+import Papa from 'papaparse';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import AdminHeader from '@/components/admin/AdminHeader';
+import Modal from '@/components/ui/Modal';
+import { NICHES, NICHE_LABELS, LEAD_STATUSES, STATUS_LABELS, formatPhone, fmtMoney, phoneKey } from '@/lib/outbound';
+import type { Niche, OutboundLead, Rep } from '@/lib/outbound';
+import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, api, card, btnPrimary, btnGhost, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
+
+type SortKey = 'business_name' | 'contact_name' | 'phone' | 'niche' | 'city' | 'status' | 'owner' | 'avg_job_value' | 'created_at';
+
+const EMPTY_FORM = {
+  business_name: '',
+  contact_name: '',
+  phone: '',
+  email: '',
+  website: '',
+  niche: 'other' as Niche,
+  city: '',
+  state: '',
+  avg_job_value: '',
+  est_missed_calls_week: '',
+  source: '',
+  owner_rep_id: '',
+  notes: '',
+  dnc_checked: false,
+};
+
+/** Fuzzy CSV header → leads column mapping. */
+const HEADER_MAP: [RegExp, string][] = [
+  [/^(business|company|biz)/, 'business_name'],
+  [/^name$/, 'business_name'],
+  [/(contact|owner|first.?name|person)/, 'contact_name'],
+  [/(phone|tel|mobile|number)/, 'phone'],
+  [/email/, 'email'],
+  [/(website|url|site|web|domain)/, 'website'],
+  [/(niche|categor|industr|vertical|type)/, 'niche'],
+  [/city|town/, 'city'],
+  [/^(state|st|region|province)$/, 'state'],
+  [/(avg.?job|job.?value|ticket|avg.?sale|value)/, 'avg_job_value'],
+  [/miss/, 'est_missed_calls_week'],
+  [/source/, 'source'],
+  [/note/, 'notes'],
+];
+
+function guessNiche(raw: string): Niche | null {
+  const v = raw.toLowerCase();
+  if (!v) return null;
+  if ((NICHES as readonly string[]).includes(v)) return v as Niche;
+  if (/dent|medspa|med spa|aesthet|spa|chiro|clinic/.test(v)) return 'dental_medspa';
+  if (/real|realt|broker|property/.test(v)) return 'real_estate';
+  if (/rest|cafe|food|pizza|grill|bar/.test(v)) return 'restaurant';
+  if (/hvac|plumb|roof|electric|landscap|paint|clean|pest|garage|home|contractor|handyman|tree|excavat/.test(v)) return 'home_service';
+  return null;
+}
+
+type ImportPreview = {
+  rows: Record<string, string>[];
+  mapped: { [k: string]: string | null };
+  headers: string[];
+  fileName: string;
+};
+
+export default function OutboundLeads() {
+  const [leads, setLeads] = useState<OutboundLead[]>([]);
+  const [reps, setReps] = useState<Rep[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const { toasts, push } = useToasts();
+
+  // Filters
+  const [q, setQ] = useState('');
+  const [status, setStatus] = useState('');
+  const [niche, setNiche] = useState('');
+  const [owner, setOwner] = useState('');
+  const [unscrubbedOnly, setUnscrubbedOnly] = useState(false);
+  const [sort, setSort] = useState<SortKey>('created_at');
+  const [dir, setDir] = useState<'asc' | 'desc'>('desc');
+
+  // Add modal
+  const [addOpen, setAddOpen] = useState(false);
+  const [form, setForm] = useState({ ...EMPTY_FORM });
+  const [saving, setSaving] = useState(false);
+
+  // Import modal
+  const [importOpen, setImportOpen] = useState(false);
+  const [preview, setPreview] = useState<ImportPreview | null>(null);
+  const [importNiche, setImportNiche] = useState<Niche>('home_service');
+  const [importOwner, setImportOwner] = useState('');
+  const [importSource, setImportSource] = useState('csv-import');
+  const [importing, setImporting] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [l, r] = await Promise.all([
+        api<{ leads: OutboundLead[] }>('/api/admin/outbound/leads'),
+        api<{ reps: Rep[] }>('/api/admin/outbound/reps'),
+      ]);
+      setLeads(l.leads);
+      setReps(r.reps);
+      setError('');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not load leads.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const repName = useCallback((id: string | null) => reps.find((r) => r.id === id)?.name ?? '', [reps]);
+
+  const visible = useMemo(() => {
+    let rows = leads;
+    if (status) rows = rows.filter((l) => l.status === status);
+    if (niche) rows = rows.filter((l) => l.niche === niche);
+    if (owner) rows = rows.filter((l) => l.owner_rep_id === owner);
+    if (unscrubbedOnly) rows = rows.filter((l) => !l.dnc_checked);
+    if (q.trim()) {
+      const needle = q.trim().toLowerCase();
+      rows = rows.filter((l) =>
+        [l.business_name, l.contact_name, l.phone, l.city, l.email].some((v) => v?.toLowerCase().includes(needle)),
+      );
+    }
+    const mul = dir === 'asc' ? 1 : -1;
+    return [...rows].sort((a, b) => {
+      const va = sort === 'owner' ? repName(a.owner_rep_id) : (a[sort] ?? '');
+      const vb = sort === 'owner' ? repName(b.owner_rep_id) : (b[sort] ?? '');
+      if (typeof va === 'number' || typeof vb === 'number') return (Number(va) - Number(vb)) * mul;
+      return String(va).localeCompare(String(vb)) * mul;
+    });
+  }, [leads, status, niche, owner, unscrubbedOnly, q, sort, dir, repName]);
+
+  const clickSort = (key: SortKey) => {
+    if (sort === key) setDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    else {
+      setSort(key);
+      setDir(key === 'created_at' || key === 'avg_job_value' ? 'desc' : 'asc');
+    }
+  };
+
+  const patchLead = async (id: string, patch: Partial<OutboundLead>, note?: string) => {
+    const before = leads;
+    setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, ...patch } : l)));
+    try {
+      const { lead } = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${id}`, { method: 'PATCH', body: JSON.stringify(patch) });
+      setLeads((ls) => ls.map((l) => (l.id === id ? lead : l)));
+      if (note) push(note);
+    } catch (e) {
+      setLeads(before);
+      push(e instanceof Error ? e.message : 'Update failed.', 'error');
+    }
+  };
+
+  const removeLead = async (l: OutboundLead) => {
+    if (!window.confirm(`Delete ${l.business_name}? Call history for it goes too.`)) return;
+    const before = leads;
+    setLeads((ls) => ls.filter((x) => x.id !== l.id));
+    try {
+      await api(`/api/admin/outbound/leads/${l.id}`, { method: 'DELETE' });
+      push('Lead deleted.');
+    } catch (e) {
+      setLeads(before);
+      push(e instanceof Error ? e.message : 'Delete failed.', 'error');
+    }
+  };
+
+  const submitAdd = async () => {
+    setSaving(true);
+    try {
+      const { lead } = await api<{ lead: OutboundLead }>('/api/admin/outbound/leads', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...form,
+          owner_rep_id: form.owner_rep_id || null,
+          avg_job_value: form.avg_job_value || null,
+          est_missed_calls_week: form.est_missed_calls_week || null,
+        }),
+      });
+      setLeads((ls) => [lead, ...ls]);
+      setAddOpen(false);
+      setForm({ ...EMPTY_FORM });
+      push(`${lead.business_name} added.`);
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Could not add the lead.', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onFile = (file: File) => {
+    Papa.parse<Record<string, string>>(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (res) => {
+        const headers = res.meta.fields ?? [];
+        const mapped: Record<string, string | null> = {};
+        for (const h of headers) {
+          const norm = h.toLowerCase().replace(/[^a-z ]/g, '').trim();
+          mapped[h] = HEADER_MAP.find(([re]) => re.test(norm))?.[1] ?? null;
+        }
+        setPreview({ rows: res.data, mapped, headers, fileName: file.name });
+      },
+      error: () => push('Could not parse that CSV.', 'error'),
+    });
+  };
+
+  const importRows = useMemo(() => {
+    if (!preview) return [];
+    const seen = new Set<string>();
+    const out: Record<string, unknown>[] = [];
+    for (const raw of preview.rows) {
+      const row: Record<string, string> = {};
+      for (const [header, col] of Object.entries(preview.mapped)) {
+        if (col && raw[header] != null) row[col] = String(raw[header]).trim();
+      }
+      if (!row.business_name || !row.phone) continue;
+      const key = phoneKey(row.phone);
+      if (key.length < 7 || seen.has(key)) continue;
+      seen.add(key);
+      out.push({
+        ...row,
+        niche: guessNiche(row.niche ?? '') ?? importNiche,
+        owner_rep_id: importOwner || null,
+        source: row.source || importSource || 'csv-import',
+      });
+    }
+    return out;
+  }, [preview, importNiche, importOwner, importSource]);
+
+  const runImport = async () => {
+    if (importRows.length === 0) return;
+    setImporting(true);
+    try {
+      const res = await api<{ inserted: number; skipped: number }>('/api/admin/outbound/leads/import', {
+        method: 'POST',
+        body: JSON.stringify({ rows: importRows }),
+      });
+      push(`Imported ${res.inserted} leads (${res.skipped} duplicates skipped).`);
+      setImportOpen(false);
+      setPreview(null);
+      void load();
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Import failed.', 'error');
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const th = (key: SortKey, label: string, right = false) => (
+    <th
+      onClick={() => clickSort(key)}
+      className={`px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] font-oswald font-medium text-[#1a1815]/50 cursor-pointer select-none hover:text-[#1a1815] whitespace-nowrap ${right ? 'text-right' : 'text-left'}`}
+    >
+      {label} {sort === key ? (dir === 'asc' ? '↑' : '↓') : ''}
+    </th>
+  );
+
+  const selectCls = 'bg-white border-2 border-[#1a1815]/20 rounded-lg px-2 py-1.5 font-sans text-xs text-[#1a1815] outline-none focus:border-[#b58a2a]';
+
+  return (
+    <div className="min-h-screen bg-[#f7f3e9]">
+      <AdminHeader active="outbound" title="Outbound · Leads" onRefresh={() => void load()} />
+      <main className="max-w-7xl mx-auto px-5 md:px-6 py-8">
+        <OutboundNav
+          active="leads"
+          right={
+            <div className="flex items-center gap-2">
+              <button onClick={() => setImportOpen(true)} className={btnGhost}>Import CSV</button>
+              <button onClick={() => setAddOpen(true)} className={btnPrimary}>Add lead</button>
+            </div>
+          }
+        />
+
+        {error && (
+          <div className={`${card} p-5 mb-6 border-[#a03123] shadow-[5px_5px_0_0_#a03123]`}>
+            <p className="font-sans text-sm text-[#a03123] font-medium">{error}</p>
+          </div>
+        )}
+
+        {/* Filters */}
+        <div className={`${card} p-4 mb-5 flex flex-wrap items-center gap-2.5`}>
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search business, contact, phone, city" className={`${inputCls} !w-64 !py-2`} />
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className={selectCls} aria-label="Filter by status">
+            <option value="">All statuses</option>
+            {LEAD_STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
+          </select>
+          <select value={niche} onChange={(e) => setNiche(e.target.value)} className={selectCls} aria-label="Filter by niche">
+            <option value="">All niches</option>
+            {NICHES.map((n) => <option key={n} value={n}>{NICHE_LABELS[n]}</option>)}
+          </select>
+          <select value={owner} onChange={(e) => setOwner(e.target.value)} className={selectCls} aria-label="Filter by rep">
+            <option value="">All reps</option>
+            {reps.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+          </select>
+          <label className="flex items-center gap-1.5 font-sans text-xs text-[#1a1815]/70 cursor-pointer ml-1">
+            <input type="checkbox" checked={unscrubbedOnly} onChange={(e) => setUnscrubbedOnly(e.target.checked)} className="accent-[#a03123] w-4 h-4" />
+            DNC unscrubbed only
+          </label>
+          <span className="ml-auto font-oswald text-sm text-[#1a1815]/50 uppercase tracking-[0.1em]">{visible.length} leads</span>
+        </div>
+
+        {/* Table */}
+        <div className={`${card} overflow-hidden`}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm font-sans min-w-[980px]">
+              <thead className="border-b-2 border-[#1a1815]/10 bg-[#f7f3e9]/60">
+                <tr>
+                  {th('business_name', 'Business')}
+                  {th('contact_name', 'Contact')}
+                  {th('phone', 'Phone')}
+                  {th('niche', 'Niche')}
+                  {th('city', 'City')}
+                  {th('status', 'Status')}
+                  {th('owner', 'Rep')}
+                  {th('avg_job_value', 'Job value', true)}
+                  <th className="px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] font-oswald font-medium text-[#1a1815]/50 text-center">DNC ok</th>
+                  <th className="px-3 py-2.5" />
+                </tr>
+              </thead>
+              <tbody>
+                {loading && (
+                  <tr><td colSpan={10} className="px-4 py-10 text-center text-[#1a1815]/40">Loading the list...</td></tr>
+                )}
+                {!loading && visible.length === 0 && (
+                  <tr>
+                    <td colSpan={10} className="px-4 py-12 text-center">
+                      <p className="font-oswald uppercase text-lg text-[#1a1815]/50">No leads match</p>
+                      <p className="text-xs text-[#1a1815]/50 mt-1">Import a CSV or add your first lead to start dialing.</p>
+                    </td>
+                  </tr>
+                )}
+                {visible.map((l) => (
+                  <tr key={l.id} className="border-t border-[#1a1815]/[0.07] hover:bg-[#b58a2a]/[0.05] transition-colors">
+                    <td className="px-3 py-2.5">
+                      <Link href={`/admin/outbound/call/${l.id}`} className="font-semibold text-[#1a1815] hover:text-[#b58a2a] transition-colors">
+                        {l.business_name}
+                      </Link>
+                    </td>
+                    <td className="px-3 py-2.5 text-[#1a1815]/70">{l.contact_name ?? ''}</td>
+                    <td className="px-3 py-2.5 whitespace-nowrap text-[#1a1815]/70">{formatPhone(l.phone)}</td>
+                    <td className="px-3 py-2.5"><NicheChip niche={l.niche} /></td>
+                    <td className="px-3 py-2.5 text-[#1a1815]/70">{l.city ?? ''}</td>
+                    <td className="px-3 py-2.5">
+                      <select
+                        value={l.status}
+                        onChange={(e) => void patchLead(l.id, { status: e.target.value as OutboundLead['status'] }, 'Status updated.')}
+                        className={`${selectCls} !text-[11px]`}
+                        aria-label={`Status for ${l.business_name}`}
+                      >
+                        {LEAD_STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
+                      </select>
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <select
+                        value={l.owner_rep_id ?? ''}
+                        onChange={(e) => void patchLead(l.id, { owner_rep_id: e.target.value || null }, 'Rep assigned.')}
+                        className={`${selectCls} !text-[11px]`}
+                        aria-label={`Rep for ${l.business_name}`}
+                      >
+                        <option value="">Unassigned</option>
+                        {reps.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+                      </select>
+                    </td>
+                    <td className="px-3 py-2.5 text-right font-oswald tabular-nums">{l.avg_job_value ? fmtMoney(Number(l.avg_job_value)) : ''}</td>
+                    <td className="px-3 py-2.5 text-center">
+                      <input
+                        type="checkbox"
+                        checked={l.dnc_checked}
+                        onChange={(e) => void patchLead(l.id, { dnc_checked: e.target.checked }, e.target.checked ? 'Marked DNC-scrubbed.' : 'Marked unscrubbed.')}
+                        className="accent-[#3f5d34] w-4 h-4 cursor-pointer"
+                        aria-label={`DNC scrubbed for ${l.business_name}`}
+                      />
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link href={`/admin/outbound/call/${l.id}`} className={`${btnPrimary} !px-3 !py-1.5 !text-xs`}>Call</Link>
+                        <button onClick={() => void removeLead(l)} className="text-[#1a1815]/30 hover:text-[#a03123] transition-colors px-1" aria-label={`Delete ${l.business_name}`}>
+                          ✕
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      {/* Add lead modal */}
+      <Modal open={addOpen} onClose={() => setAddOpen(false)} eyebrow="Outbound" title="Add lead" subtitle="One business, straight onto the dial list." size="lg">
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="sm:col-span-2">
+            <label className={labelCls}>Business name *</label>
+            <input className={inputCls} value={form.business_name} onChange={(e) => setForm({ ...form, business_name: e.target.value })} placeholder="Flathead Roofing Co." />
+          </div>
+          <div>
+            <label className={labelCls}>Contact name</label>
+            <input className={inputCls} value={form.contact_name} onChange={(e) => setForm({ ...form, contact_name: e.target.value })} placeholder="Bruce" />
+          </div>
+          <div>
+            <label className={labelCls}>Phone *</label>
+            <input className={inputCls} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="(406) 555-0134" />
+          </div>
+          <div>
+            <label className={labelCls}>Email</label>
+            <input className={inputCls} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="owner@business.com" />
+          </div>
+          <div>
+            <label className={labelCls}>Website</label>
+            <input className={inputCls} value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="business.com" />
+          </div>
+          <div>
+            <label className={labelCls}>Niche</label>
+            <select className={inputCls} value={form.niche} onChange={(e) => setForm({ ...form, niche: e.target.value as Niche })}>
+              {NICHES.map((n) => <option key={n} value={n}>{NICHE_LABELS[n]}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>Rep</label>
+            <select className={inputCls} value={form.owner_rep_id} onChange={(e) => setForm({ ...form, owner_rep_id: e.target.value })}>
+              <option value="">Unassigned</option>
+              {reps.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>City</label>
+            <input className={inputCls} value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="Kalispell" />
+          </div>
+          <div>
+            <label className={labelCls}>State</label>
+            <input className={inputCls} value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} placeholder="MT" />
+          </div>
+          <div>
+            <label className={labelCls}>Avg job value ($)</label>
+            <input className={inputCls} inputMode="decimal" value={form.avg_job_value} onChange={(e) => setForm({ ...form, avg_job_value: e.target.value })} placeholder="450" />
+          </div>
+          <div>
+            <label className={labelCls}>Est. missed calls / week</label>
+            <input className={inputCls} inputMode="numeric" value={form.est_missed_calls_week} onChange={(e) => setForm({ ...form, est_missed_calls_week: e.target.value })} placeholder="5" />
+          </div>
+          <div>
+            <label className={labelCls}>Source</label>
+            <input className={inputCls} value={form.source} onChange={(e) => setForm({ ...form, source: e.target.value })} placeholder="google-maps" />
+          </div>
+          <div className="sm:col-span-2">
+            <label className={labelCls}>Notes</label>
+            <textarea className={`${inputCls} min-h-[70px]`} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+          </div>
+          <label className="sm:col-span-2 flex items-center gap-2 font-sans text-sm text-[#1a1815]/75 cursor-pointer">
+            <input type="checkbox" checked={form.dnc_checked} onChange={(e) => setForm({ ...form, dnc_checked: e.target.checked })} className="accent-[#3f5d34] w-4 h-4" />
+            Checked against the DNC registry
+          </label>
+        </div>
+        <div className="flex justify-end gap-2 mt-5">
+          <button onClick={() => setAddOpen(false)} className={btnGhost}>Cancel</button>
+          <button onClick={() => void submitAdd()} disabled={saving || !form.business_name.trim() || form.phone.replace(/\D/g, '').length < 7} className={btnPrimary}>
+            {saving ? 'Saving...' : 'Add lead'}
+          </button>
+        </div>
+      </Modal>
+
+      {/* Import CSV modal */}
+      <Modal
+        open={importOpen}
+        onClose={() => { setImportOpen(false); setPreview(null); }}
+        eyebrow="Outbound"
+        title="Import leads from CSV"
+        subtitle="Headers are auto-mapped. Duplicate phone numbers are skipped."
+        size="xl"
+      >
+        {!preview && (
+          <div
+            className="border-2 border-dashed border-[#1a1815]/30 rounded-2xl p-10 text-center cursor-pointer hover:border-[#b58a2a] hover:bg-[#b58a2a]/[0.04] transition-colors"
+            onClick={() => fileRef.current?.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) onFile(f); }}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter') fileRef.current?.click(); }}
+          >
+            <p className="font-oswald uppercase text-lg text-[#1a1815]/70">Drop a CSV here or click to browse</p>
+            <p className="font-sans text-xs text-[#1a1815]/50 mt-1.5">Columns we understand: business, contact, phone, email, website, niche, city, state, job value, missed calls, source, notes.</p>
+            <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.target.value = ''; }} />
+          </div>
+        )}
+
+        {preview && (
+          <div>
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <span className="font-sans text-sm font-semibold text-[#1a1815]">{preview.fileName}</span>
+              <span className="font-sans text-xs text-[#1a1815]/55">{preview.rows.length} rows · {importRows.length} importable after dedupe</span>
+              <button onClick={() => setPreview(null)} className="font-sans text-xs text-[#b58a2a] font-semibold hover:text-[#1a1815]">Pick a different file</button>
+            </div>
+
+            <div className="grid sm:grid-cols-3 gap-3 mb-4">
+              <div>
+                <label className={labelCls}>Default niche (when unmapped)</label>
+                <select className={inputCls} value={importNiche} onChange={(e) => setImportNiche(e.target.value as Niche)}>
+                  {NICHES.map((n) => <option key={n} value={n}>{NICHE_LABELS[n]}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls}>Assign to rep</label>
+                <select className={inputCls} value={importOwner} onChange={(e) => setImportOwner(e.target.value)}>
+                  <option value="">Unassigned</option>
+                  {reps.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls}>Source tag</label>
+                <input className={inputCls} value={importSource} onChange={(e) => setImportSource(e.target.value)} />
+              </div>
+            </div>
+
+            <div className="overflow-x-auto border-2 border-[#1a1815]/10 rounded-xl">
+              <table className="w-full text-xs font-sans min-w-[720px]">
+                <thead className="bg-[#f7f3e9]">
+                  <tr>
+                    {preview.headers.map((h) => (
+                      <th key={h} className="px-3 py-2 text-left">
+                        <span className="block font-semibold text-[#1a1815]">{h}</span>
+                        <span className={`block text-[10px] font-oswald uppercase tracking-[0.1em] ${preview.mapped[h] ? 'text-[#3f5d34]' : 'text-[#a03123]/70'}`}>
+                          {preview.mapped[h] ? `→ ${preview.mapped[h]}` : 'ignored'}
+                        </span>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {preview.rows.slice(0, 8).map((row, i) => (
+                    <tr key={i} className="border-t border-[#1a1815]/[0.07]">
+                      {preview.headers.map((h) => (
+                        <td key={h} className="px-3 py-1.5 text-[#1a1815]/70 whitespace-nowrap max-w-[180px] truncate">{row[h]}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-5">
+              <button onClick={() => { setImportOpen(false); setPreview(null); }} className={btnGhost}>Cancel</button>
+              <button onClick={() => void runImport()} disabled={importing || importRows.length === 0} className={btnPrimary}>
+                {importing ? 'Importing...' : `Import ${importRows.length} leads`}
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      <ToastHost toasts={toasts} />
+    </div>
+  );
+}

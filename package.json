@@ -31,6 +31,7 @@
     "next-mdx-remote": "^6.0.0",
     "node-html-parser": "^7.1.0",
     "node-ical": "^0.26.1",
+    "papaparse": "^5.5.4",
     "pdf-lib": "^1.17.1",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
@@ -41,12 +42,14 @@
     "resend": "^6.9.4",
     "shiki": "^1.24.0",
     "stripe": "^17.4.0",
-    "three": "^0.184.0"
+    "three": "^0.184.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/mailparser": "^3.4.6",
     "@types/mdx": "^2.0.13",
     "@types/node": "^22.14.0",
+    "@types/papaparse": "^5.5.2",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/three": "^0.184.1",

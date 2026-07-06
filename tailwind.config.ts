@@ -15,6 +15,7 @@ const config: Config = {
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', '"Space Mono"', 'monospace'],
         display: ['"Playfair Display"', '"Cormorant Garamond"', 'Georgia', 'serif'],
+        oswald: ['Oswald', '"DM Sans"', 'sans-serif'],
       },
       colors: {
         // Legacy "mustard" tokens REMAPPED to Campfire Brass so every existing

@@ -14,7 +14,7 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * always reachable no matter where the tabs are scrolled.
  */
 
-type Tab = 'overview' | 'gleaner' | 'pipeline' | 'tracker' | 'partners' | 'outreach' | 'campaigns' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'outreach' | 'campaigns' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
   { key: 'gleaner', label: 'Gleaner', href: '/admin/gleaner' },
@@ -30,6 +30,7 @@ const TABS: { key: Tab; label: string; href: string }[] = [
   { key: 'callers', label: 'Callers', href: '/admin/callers' },
   { key: 'training', label: 'Training', href: '/admin/sales-training' },
   { key: 'tracker', label: 'Tracker', href: '/admin/prospects' },
+  { key: 'outbound', label: 'Outbound', href: '/admin/outbound' },
   { key: 'proposals', label: 'Proposals', href: '/admin/proposals' },
   { key: 'projects', label: 'Projects', href: '/admin/projects' },
   { key: 'builds', label: 'Builds', href: '/admin/builds' },
