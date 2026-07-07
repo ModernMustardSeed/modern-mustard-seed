@@ -29,6 +29,7 @@ type Candidate = {
   last_open_at: string | null;
   email_open_count: number;
   demo_url: string | null;
+  source: string | null;
   created_at: string;
 };
 
@@ -46,7 +47,7 @@ export async function GET() {
     guard.supabase
       .from('outbound_leads')
       .select(
-        'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, email_open_count, demo_url, created_at',
+        'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, email_open_count, demo_url, source, created_at',
       )
       .in('status', ['new', 'contacted', 'callback'])
       .limit(600),
@@ -126,6 +127,12 @@ export async function GET() {
       if (l.audit_score != null) {
         score += Math.max(0, 100 - l.audit_score) * 2;
         if (reason === 'fresh' && l.audit_score <= 50) reason = 'worst_audit';
+      }
+      // Review-mined leads carry public proof that customers cannot reach
+      // them, the exact wound we treat: hotter than a cold start.
+      if (l.source === 'review-mining') {
+        score += 180;
+        if (reason === 'fresh') reason = 'review_pain';
       }
       if (l.status === 'new') score += 50;
 

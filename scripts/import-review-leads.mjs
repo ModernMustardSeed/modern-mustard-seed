@@ -46,6 +46,16 @@ const phoneKey = (p) => {
   return d.length === 11 && d.startsWith('1') ? d.slice(1) : d;
 };
 
+// Finder agents sometimes hand back HTML-entity-encoded text from review pages.
+const decode = (s) =>
+  String(s ?? '')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;|&apos;|&#x27;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ');
+
 const MOUNTAIN_PACIFIC = new Set(['MT', 'ID', 'WY', 'UT', 'CO', 'WA', 'OR', 'CA', 'NV', 'AZ', 'NM', 'AK', 'HI']);
 const NICHES = new Set(['home_service', 'dental_medspa', 'real_estate', 'restaurant', 'other']);
 
@@ -70,12 +80,12 @@ for (const l of input) {
   if (known.has(key)) { dupes++; continue; }
   known.add(key);
   const state = String(l.state ?? '').trim().toUpperCase().slice(0, 2);
-  const quote = String(l.review_quote ?? '').replace(/\s+/g, ' ').trim().slice(0, 300);
-  const source = String(l.review_source ?? 'review').trim();
+  const quote = decode(l.review_quote).replace(/\s+/g, ' ').replace(/"/g, "'").trim().slice(0, 300);
+  const source = decode(l.review_source).trim();
   const url = l.review_url ? ` ${String(l.review_url).trim()}` : '';
   rows.push({
-    business_name: String(l.business_name).trim().slice(0, 200),
-    contact_name: l.contact_name ? String(l.contact_name).trim().slice(0, 200) : null,
+    business_name: decode(l.business_name).trim().slice(0, 200),
+    contact_name: l.contact_name ? decode(l.contact_name).trim().slice(0, 200) : null,
     phone: String(l.phone).trim(),
     email: l.email ? String(l.email).trim().toLowerCase().slice(0, 200) : null,
     website: l.website ? String(l.website).trim().slice(0, 300) : null,

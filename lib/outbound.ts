@@ -112,6 +112,7 @@ export type HeatReason =
   | 'callback_due'
   | 'retry_due'
   | 'worst_audit'
+  | 'review_pain'
   | 'fresh';
 
 export const HEAT_LABELS: Record<HeatReason, string> = {
@@ -121,6 +122,7 @@ export const HEAT_LABELS: Record<HeatReason, string> = {
   callback_due: 'Callback due',
   retry_due: 'Retry due',
   worst_audit: 'Painful audit',
+  review_pain: 'Customers cannot reach them',
   fresh: 'Fresh lead',
 };
 
