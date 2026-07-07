@@ -37,6 +37,9 @@ export default function ScreenTestExperience() {
   const apiDone = useRef(false);
   const logDone = useRef(false);
   const pendingResult = useRef<TestResult | null>(null);
+  // Run token: a failed submit leaves ~10s of pending log timers; bumping this
+  // makes every stale callback a no-op so a quick retry never interleaves.
+  const runSeq = useRef(0);
 
   // Restore a prior screen test for returning visitors.
   useEffect(() => {
@@ -75,15 +78,20 @@ export default function ScreenTestExperience() {
   }, [revealBoard]);
 
   const runLog = useCallback(() => {
+    const myRun = ++runSeq.current;
     const lines = screenTestScript.map((l) => l.replace('{business}', form.business.trim()));
     setLogLines([]);
     let at = 400;
     lines.forEach((line, idx) => {
       if (idx === lines.length - 1) at += 500;
-      window.setTimeout(() => setLogLines((prev) => [...prev, line]), at);
+      window.setTimeout(() => { if (runSeq.current === myRun) setLogLines((prev) => [...prev, line]); }, at);
       at += 1150;
     });
-    window.setTimeout(() => { logDone.current = true; maybeReveal(); }, at + 600);
+    window.setTimeout(() => {
+      if (runSeq.current !== myRun) return;
+      logDone.current = true;
+      maybeReveal();
+    }, at + 600);
   }, [form.business, maybeReveal]);
 
   const roll = async (e: React.FormEvent) => {
@@ -125,6 +133,7 @@ export default function ScreenTestExperience() {
           (data?.error === 'rate_limited'
             ? 'Easy there. The studio takes a breather between takes. Try again in a bit.'
             : 'The studio lights flickered. Give it another try in a minute.');
+        runSeq.current += 1; // cancel this run's pending log timers
         setStage('intake');
         setSubmitting(false);
         setError(msg);
@@ -138,6 +147,7 @@ export default function ScreenTestExperience() {
       apiDone.current = true;
       maybeReveal();
     } catch {
+      runSeq.current += 1; // cancel this run's pending log timers
       setStage('intake');
       setSubmitting(false);
       setError('The studio lost its connection. Check your network and try again.');

@@ -1,0 +1,41 @@
+# Cold-text campaign drainer.
+#
+# Sends the next batch of every actively-sending SMS campaign. Quiet hours are
+# enforced per recipient server-side (app/api/cron/sms-drain -> drainBatch), so
+# out-of-window leads simply stay queued until they are in their local 9a-8p
+# window. Driven from GitHub Actions because the MMS Vercel project is on Hobby
+# (Vercel cron is daily-only there). No-ops cleanly when Twilio is unconfigured.
+# Trigger by hand anytime from the Actions tab (workflow_dispatch).
+
+name: sms-drain
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # every 5 minutes (best-effort on GitHub)
+  workflow_dispatch: {}
+
+concurrency:
+  group: sms-drain
+  cancel-in-progress: false
+
+jobs:
+  drain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping sms-drain
+        run: |
+          echo "Pinging sms-drain..."
+          BODY=$(curl -sS -m 120 -w $'\n%{http_code}' \
+            ${CRON_SECRET:+-H "Authorization: Bearer $CRON_SECRET"} \
+            "https://modernmustardseed.com/api/cron/sms-drain")
+          CODE=$(printf '%s' "$BODY" | tail -n1)
+          JSON=$(printf '%s' "$BODY" | sed '$d')
+          echo "HTTP $CODE"
+          echo "Response: $JSON"
+          if [ "$CODE" -lt 200 ] || [ "$CODE" -ge 300 ]; then
+            echo "::error::sms-drain returned HTTP $CODE"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}

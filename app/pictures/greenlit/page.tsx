@@ -25,7 +25,7 @@ export default function GreenlitPage() {
     {
       n: '3',
       title: 'Opening night, in your inbox',
-      body: `THE SPOT arrives ${PICTURES.deliveryPromiseSpot}, THE PREMIERE ${PICTURES.deliveryPromisePremiere}: every cut, the poster frame, full commercial rights, yours forever.`,
+      body: 'THE SPOT arrives within 2 business days, THE PREMIERE within 3: every cut, the poster frame, full commercial rights, yours forever.',
     },
   ];
 

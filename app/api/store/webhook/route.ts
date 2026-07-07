@@ -656,7 +656,8 @@ async function handleSidekickPurchase(
   name: string | null
 ) {
   const tier = getSidekickTier(slug);
-  const business = escapeHtmlSafe(session.metadata?.business || '');
+  const businessRaw = (session.metadata?.business || '').trim();
+  const business = escapeHtmlSafe(businessRaw);
   const firstName = name?.split(' ')[0];
   const safeName = name ? escapeHtmlSafe(name) : null;
 
@@ -667,7 +668,7 @@ async function handleSidekickPurchase(
       name: name ?? null,
       source: 'sidekick-buyer',
       status: 'new',
-      notes: `[bought:${slug}]${business ? ` business: ${business}` : ''} PROVISION within 7 days`,
+      notes: `[bought:${slug}]${businessRaw ? ` business: ${businessRaw}` : ''} PROVISION within 7 days`,
     });
   } catch (err) {
     console.error('sidekick lead insert failed', err);
@@ -681,7 +682,7 @@ async function handleSidekickPurchase(
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',
-      subject: `PROVISION ${tier?.name ?? 'SIDEKICK'}: ${business || email}`,
+      subject: `PROVISION ${tier?.name ?? 'SIDEKICK'}: ${businessRaw || email}`,
       html: clientEmail({
         preheader: 'A Sidekick was kept. Install within 7 days.',
         eyebrow: 'SIDEKICK ORDER',
@@ -731,7 +732,9 @@ async function handlePicturesPurchase(
   name: string | null
 ) {
   const tier = getPicturesTier(slug);
-  const business = escapeHtmlSafe(session.metadata?.business || '');
+  // Raw for plain-text contexts (email subject, CRM notes); escaped for HTML bodies.
+  const businessRaw = (session.metadata?.business || '').trim();
+  const business = escapeHtmlSafe(businessRaw);
   const runId = session.metadata?.run_id || '';
   const firstName = name?.split(' ')[0];
   const isSub = tier?.mode === 'subscription';
@@ -760,7 +763,7 @@ async function handlePicturesPurchase(
       name: name ?? null,
       source: 'pictures-buyer',
       status: 'new',
-      notes: `[bought:${slug}]${business ? ` business: ${business}` : ''} PRODUCE (run ${runId || 'no screen test'})`,
+      notes: `[bought:${slug}]${businessRaw ? ` business: ${businessRaw}` : ''} PRODUCE (run ${runId || 'no screen test'})`,
     });
   } catch (err) {
     console.error('pictures lead insert failed', err);
@@ -783,7 +786,7 @@ async function handlePicturesPurchase(
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',
-      subject: `PRODUCE ${tier?.name ?? 'PICTURES'}: ${business || email}`,
+      subject: `PRODUCE ${tier?.name ?? 'PICTURES'}: ${businessRaw || email}`,
       html: clientEmail({
         preheader: 'A commercial was greenlit. Pipeline runbook: ~/launch-studio.',
         eyebrow: 'MUSTARD PICTURES ORDER',
