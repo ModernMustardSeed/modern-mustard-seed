@@ -49,6 +49,11 @@ function ipAllowed(ip: string): boolean {
   return hit.count <= 5;
 }
 
+/** Escape user-typed values before they ride inside notification email HTML. */
+function esc(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 async function notifySarah(subject: string, lines: string[]) {
   const key = (process.env.RESEND_API_KEY || '').trim();
   if (!key) return;
@@ -165,6 +170,8 @@ async function handleForge(
 
   const forged = await forgeCall(profile, runId, 'web');
   if (!forged.ok) {
+    // Release every claim so a transient Vapi outage never locks this visitor out.
+    await releaseKey(supabase, 'email', email);
     console.error('sidekick forge failed', forged.error);
     return NextResponse.json({ error: 'forge_offline' }, { status: 503 });
   }
@@ -184,9 +191,9 @@ async function handleForge(
   }
 
   void notifySarah(`SIDEKICK FORGED: ${business} (${city})`, [
-    `<strong>${ownerName}</strong> just forged a Sidekick for <strong>${business}</strong> (${getVertical(verticalId).label}, ${city}).`,
-    `Email: ${email}`,
-    `Taught him: ${services.slice(0, 300)}`,
+    `<strong>${esc(ownerName)}</strong> just forged a Sidekick for <strong>${esc(business)}</strong> (${getVertical(verticalId).label}, ${esc(city)}).`,
+    `Email: ${esc(email)}`,
+    `Taught him: ${esc(services.slice(0, 300))}`,
     `Run ${runId}. Transcript lands in the Vapi dashboard under metadata kind=sidekick-demo.`,
   ]);
 
@@ -236,7 +243,7 @@ async function handleRing(
     if (rang.billing) {
       // Kill switch: the wallet is empty. Sarah hears about it immediately.
       void notifySarah('SIDEKICK KILL SWITCH: Vapi wallet problem', [
-        `A demo ring to ${to} for ${run.business} failed with a billing error: ${rang.error}`,
+        `A demo ring to ${to} for ${esc(run.business)} failed with a billing error: ${esc(rang.error)}`,
         'Top up at dashboard.vapi.ai. Inbound Mr. Mustard is likely down too.',
       ]);
     }

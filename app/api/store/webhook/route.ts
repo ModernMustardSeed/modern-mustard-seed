@@ -574,8 +574,9 @@ async function handleSidekickPurchase(
   name: string | null
 ) {
   const tier = getSidekickTier(slug);
-  const business = session.metadata?.business || '';
+  const business = escapeHtmlSafe(session.metadata?.business || '');
   const firstName = name?.split(' ')[0];
+  const safeName = name ? escapeHtmlSafe(name) : null;
 
   try {
     await insertLead({
@@ -603,7 +604,7 @@ async function handleSidekickPurchase(
         preheader: 'A Sidekick was kept. Install within 7 days.',
         eyebrow: 'SIDEKICK ORDER',
         greeting: 'He got hired.',
-        body: `<p><strong>${name ?? email}</strong> just kept their Sidekick${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${tier.setupUsd} setup + $${tier.monthlyUsd}/mo, ${tier.minutesCap} min cap` : slug}).</p><p>Email: ${email}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=sidekick-demo.</p>`,
+        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just kept their Sidekick${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${tier.setupUsd} setup + $${tier.monthlyUsd}/mo, ${tier.minutesCap} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=sidekick-demo.</p>`,
         signature: 'The Forge',
       }),
     });
@@ -621,7 +622,7 @@ async function handleSidekickPurchase(
         preheader: 'He starts within 7 days. Here is what happens next.',
         eyebrow: tier?.name ?? 'SIDEKICK',
         greeting: firstName ? `${firstName}, he got the job.` : 'He got the job.',
-        body: `<p>Your Sidekick${business ? ` for <strong>${business}</strong>` : ''} is officially hired. Here is exactly what happens next:</p><p><strong>1.</strong> Within one business day, I will email you personally to confirm the details he learned in the forge and how you want your line handled (new local number, or forwarding your existing one).</p><p><strong>2.</strong> I hand-tune his training, wire up bookings and call summaries, and test him on real scenarios.</p><p><strong>3.</strong> Within 7 days he is live, answering ${business ? escapeHtmlSafe(business) : 'your business'} around the clock. ${tier ? `Your plan includes ${tier.minutesCap} answered minutes a month; at the cap he switches to message-taking, so there is never a surprise bill.` : ''}</p><p>Month to month, cancel anytime, and your setup fee is credited in full toward any custom build over $2,500 if you ever go bigger.</p>`,
+        body: `<p>Your Sidekick${business ? ` for <strong>${business}</strong>` : ''} is officially hired. Here is exactly what happens next:</p><p><strong>1.</strong> Within one business day, I will email you personally to confirm the details he learned in the forge and how you want your line handled (new local number, or forwarding your existing one).</p><p><strong>2.</strong> I hand-tune his training, wire up bookings and call summaries, and test him on real scenarios.</p><p><strong>3.</strong> Within 7 days he is live, answering ${business || 'your business'} around the clock. ${tier ? `Your plan includes ${tier.minutesCap} answered minutes a month; at the cap he switches to message-taking, so there is never a surprise bill.` : ''}</p><p>Month to month, cancel anytime, and your setup fee is credited in full toward any custom build over $2,500 if you ever go bigger.</p>`,
         cta: { label: 'Reply to this email with questions', url: 'mailto:sarah@modernmustardseed.com' },
         signature: 'Sarah',
       }),
@@ -649,7 +650,7 @@ async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
         preheader: 'A Sidekick subscription ended.',
         eyebrow: 'SIDEKICK OFFBOARD',
         greeting: 'A Sidekick clocked out.',
-        body: `<p>Subscription ${sub.id}${sub.metadata?.business ? ` (business: <strong>${sub.metadata.business}</strong>)` : ''} was canceled.</p><p>Decommission the line: unassign or park the Vapi number, archive the assistant, and send the goodbye note.</p>`,
+        body: `<p>Subscription ${sub.id}${sub.metadata?.business ? ` (business: <strong>${escapeHtmlSafe(sub.metadata.business)}</strong>)` : ''} was canceled.</p><p>Decommission the line: unassign or park the Vapi number, archive the assistant, and send the goodbye note.</p>`,
         signature: 'The Forge',
       }),
     });
