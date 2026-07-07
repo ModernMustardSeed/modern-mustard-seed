@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 
 type Folder = 'inbox' | 'sent';
@@ -27,6 +27,7 @@ type FullEmail = ListItem & {
   message_id: string | null;
 };
 type MailboxInfo = { address: string; name: string } | null;
+type Compose = { to: string; cc: string; subject: string; text: string; inReplyTo?: string; references?: string };
 
 const CARD = 'rounded-xl border-2 border-[#161616]';
 const BTN = 'rounded-lg border-2 border-[#161616] bg-white px-3.5 py-2 text-[12px] font-sans font-bold uppercase tracking-[0.12em] text-[#161616] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform';
@@ -42,8 +43,9 @@ export default function InboxPage() {
   const [q, setQ] = useState('');
   const [open, setOpen] = useState<FullEmail | null>(null);
   const [syncing, setSyncing] = useState(false);
-  const [compose, setCompose] = useState<null | { to: string; cc: string; subject: string; text: string; inReplyTo?: string; references?: string }>(null);
+  const [compose, setCompose] = useState<Compose | null>(null);
   const [sending, setSending] = useState(false);
+  const composeRef = useRef<HTMLTextAreaElement>(null);
 
   const load = useCallback(async () => {
     try {
@@ -90,8 +92,19 @@ export default function InboxPage() {
     } finally { setSending(false); }
   };
 
+  // Focus the compose body once it has mounted, cursor at the very top so a
+  // reply is typed ABOVE the quoted original (setTimeout waits out React's render).
+  const focusCompose = () => {
+    setTimeout(() => {
+      const el = composeRef.current;
+      if (el) { el.focus(); el.setSelectionRange(0, 0); }
+    }, 0);
+  };
+
+  const openCompose = (c: Compose) => { setCompose(c); focusCompose(); };
+
   const startReply = (e: FullEmail) => {
-    setCompose({
+    openCompose({
       to: e.from_addr || '',
       cc: '',
       subject: /^re:/i.test(e.subject || '') ? (e.subject || '') : `Re: ${e.subject || ''}`,
@@ -125,7 +138,7 @@ export default function InboxPage() {
               ))}
             </div>
             <button onClick={sync} disabled={syncing || !configured} className={BTN}>{syncing ? 'Syncing…' : 'Refresh mail'}</button>
-            <button onClick={() => setCompose({ to: '', cc: '', subject: '', text: '' })} disabled={!configured} className={BTN_GO}>Compose</button>
+            <button onClick={() => openCompose({ to: '', cc: '', subject: '', text: '' })} disabled={!configured} className={BTN_GO}>Compose</button>
           </div>
         </div>
 
@@ -200,7 +213,7 @@ export default function InboxPage() {
 
       {/* Compose / reply overlay (modal-safe: capped height, pinned header, scrolling body) */}
       {compose && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" onClick={() => !sending && setCompose(null)}>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40" onClick={() => !sending && setCompose(null)}>
           <div className={`${CARD} bg-white w-full max-w-2xl max-h-[90vh] flex flex-col shadow-[6px_6px_0_0_#161616]`} onClick={(e) => e.stopPropagation()}>
             <div className="shrink-0 flex items-center justify-between border-b-2 border-[#161616] px-5 py-3">
               <h3 className="font-display text-xl font-bold text-[#161616]">{compose.inReplyTo ? 'Reply' : 'New message'}</h3>
@@ -214,7 +227,7 @@ export default function InboxPage() {
                 className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
               <input value={compose.subject} onChange={(e) => setCompose({ ...compose, subject: e.target.value })} placeholder="Subject"
                 className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
-              <textarea value={compose.text} onChange={(e) => setCompose({ ...compose, text: e.target.value })} rows={12} placeholder="Write your message…"
+              <textarea ref={composeRef} value={compose.text} onChange={(e) => setCompose({ ...compose, text: e.target.value })} rows={12} placeholder="Write your message…"
                 className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
             </div>
             <div className="shrink-0 flex items-center justify-end gap-2 border-t-2 border-[#161616] px-5 py-3">
