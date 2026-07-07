@@ -42,7 +42,9 @@ export default function MustardSeedChat() {
     // The Sidekick Forge IS a live voice surface; a second Mustard would compete with the demo.
     pathname.startsWith('/sidekick') ||
     // The Screen Test is a theater; the launcher would cover the reveal and tiers.
-    pathname.startsWith('/pictures');
+    pathname.startsWith('/pictures') ||
+    // The Press Run's proof and review table own the lower-right corner too.
+    pathname.startsWith('/press');
 
   const [open, setOpen] = useState(false);
   // Visitor picks their door each time they open the launcher: voice or chat.

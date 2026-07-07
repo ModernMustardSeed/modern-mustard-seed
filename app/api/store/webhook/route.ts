@@ -25,6 +25,9 @@ import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccess
 import { getSidekickTier } from '@/data/sidekick';
 import { getPicturesTier, PICTURES } from '@/data/pictures';
 import { getPicturesRun } from '@/lib/pictures-store';
+import { getPressTier } from '@/data/press';
+import { getPressRun, consumeHandPressSlot } from '@/lib/press-store';
+import { renderPressPdf } from '@/lib/press-pdf';
 import { SITE } from '@/lib/seo';
 import { grantEntitlement, revokeEntitlement, PROGRAM_ASSETS, isProgramSlug, isMustardSlug, type ProgramSlug } from '@/lib/entitlements';
 import { getMustardLevel } from '@/data/mustard-mode/offer';
@@ -819,6 +822,123 @@ async function handlePicturesPurchase(
   }
 }
 
+/**
+ * A MUSTARD PRESS order landed. THE PIECE fulfills INSTANTLY: the clean PDF
+ * is generated here and attached to the buyer's email (the success page also
+ * serves it via session_id). KIT and HAND PRESS notify Sarah to produce, and
+ * HAND PRESS consumes one of the five weekly slots.
+ */
+async function handlePressPurchase(
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null
+) {
+  const tier = getPressTier(slug);
+  const businessRaw = (session.metadata?.business || '').trim();
+  const business = escapeHtmlSafe(businessRaw);
+  const runId = session.metadata?.run_id || '';
+  const firstName = name?.split(' ')[0];
+
+  const supabase = getSupabase();
+  if (supabase) {
+    const { error } = await supabase.from('orders').insert({
+      stripe_session_id: session.id,
+      stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+      product_slug: slug,
+      product_name: `MUSTARD PRESS ${tier?.name ?? slug}`,
+      item_type: 'program',
+      price_paid_cents: session.amount_total ?? (tier ? tier.priceUsd * 100 : 0),
+      currency: session.currency ?? 'usd',
+      email,
+      name: name ?? null,
+      status: 'paid',
+    });
+    if (error) console.error('press order insert failed', error.message);
+  }
+
+  try {
+    await insertLead({
+      type: 'contact',
+      email,
+      name: name ?? null,
+      source: 'press-buyer',
+      status: 'new',
+      notes: `[bought:${slug}]${businessRaw ? ` business: ${businessRaw}` : ''}${slug === 'press-piece' ? ' fulfilled instantly' : ' PRODUCE'} (run ${runId || 'none'})`,
+    });
+  } catch (err) {
+    console.error('press lead insert failed', err);
+  }
+
+  if (slug === 'press-handpress' && supabase) {
+    const used = await consumeHandPressSlot(supabase);
+    if (used !== null) console.log('press hand-press slot consumed:', used, 'this week');
+  }
+
+  const run = runId && supabase ? await getPressRun(supabase, runId) : null;
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = new Resend(apiKey);
+
+  // Sarah: FYI for PIECE (instant), PRODUCE brief for KIT / HAND PRESS.
+  try {
+    const produce = slug !== 'press-piece';
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: 'sarah@modernmustardseed.com',
+      subject: `${produce ? 'PRODUCE' : 'SOLD'} ${tier?.name ?? 'PRESS'}: ${businessRaw || email}`,
+      html: clientEmail({
+        preheader: produce ? 'A Press order needs your hands.' : 'A Piece sold and fulfilled itself.',
+        eyebrow: 'MUSTARD PRESS ORDER',
+        greeting: produce ? 'Ink up.' : 'The press paid for itself again.',
+        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> bought <strong>${tier?.name ?? slug}</strong>${business ? ` for <strong>${business}</strong>` : ''} ($${tier?.priceUsd ?? '?'}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p>${
+          produce
+            ? `<p>${slug === 'press-handpress' ? 'HAND PRESS: email them within one business day to book the working session. One weekly slot consumed.' : 'KIT: assemble the matching set within 2 business days.'}</p>${run ? `<pre style="white-space:pre-wrap;font-family:inherit;font-size:12px">${escapeHtmlSafe(JSON.stringify(run.catalog, null, 1).slice(0, 2000))}</pre>` : '<p>No run on file; start from their reply.</p>'}`
+            : '<p>Clean PDF generated and attached to their receipt email automatically. Nothing to do (that is the point).</p>'
+        }`,
+        signature: 'The Press',
+      }),
+    });
+  } catch (err) {
+    console.error('press produce email failed', err);
+  }
+
+  // Buyer email. THE PIECE ships the clean PDF right here.
+  try {
+    let attachments: { filename: string; content: string }[] | undefined;
+    if (slug === 'press-piece' && run) {
+      const bytes = await renderPressPdf(run.profile, run.catalog, { watermark: false });
+      const fileSlug = run.profile.business.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'piece';
+      attachments = [{ filename: `${fileSlug}-print-ready.pdf`, content: Buffer.from(bytes).toString('base64') }];
+    }
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}${slug === 'press-piece' ? 'your print-ready file is attached' : 'your press order is confirmed'}`,
+      html: clientEmail({
+        preheader: slug === 'press-piece' ? 'The watermark is lifted. Print it anywhere.' : 'Here is what happens next.',
+        eyebrow: `MUSTARD PRESS ${tier?.name ?? ''}`.trim(),
+        greeting: firstName ? `${firstName}, hot off the press.` : 'Hot off the press.',
+        body:
+          slug === 'press-piece'
+            ? `<p>Your clean, print-ready file${business ? ` for <strong>${business}</strong>` : ''} is attached, and you can re-download it anytime from the button below. Full commercial rights, yours forever.</p><p>Print it at any local shop, on the office printer, or upload it to an online printer. If anything looks off, reply and Sarah will make it right.</p>`
+            : slug === 'press-kit'
+              ? `<p>Your KIT${business ? ` for <strong>${business}</strong>` : ''} is on the bench: the piece plus a matching flyer, business card, and window piece, assembled by hand and delivered within 2 business days. One revision pass is included; reply with any must-haves.</p>`
+              : `<p>You claimed one of this week's five Hand Press slots${business ? ` for <strong>${business}</strong>` : ''}. Sarah will email you within one business day to book the working session (your offer, your prices, what to feature, what to charge more for), then set two concept directions before the final files.</p>`,
+        cta: slug === 'press-piece' && runId
+          ? { label: 'Re-download the clean file', url: `https://modernmustardseed.com/api/press/pdf?session_id=${encodeURIComponent(session.id)}` }
+          : { label: 'Reply with any must-have details', url: 'mailto:sarah@modernmustardseed.com' },
+        signature: 'Sarah',
+      }),
+      ...(attachments ? { attachments } : {}),
+    });
+  } catch (err) {
+    console.error('press buyer email failed', err);
+  }
+}
+
 /** A Season Pass ended: stop monthly production. */
 async function handlePicturesSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -967,6 +1087,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'pictures') {
     await handlePicturesPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'pictures' });
+  }
+
+  // ── MUSTARD PRESS order (PIECE instant, KIT, HAND PRESS) ──
+  if (session.metadata?.kind === 'press') {
+    await handlePressPurchase(session, slug, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'press' });
   }
 
   // ── Flagship $497 program purchase (The Terminal, Idea to Spec, bundle) ──
