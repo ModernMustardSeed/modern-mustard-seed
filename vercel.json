@@ -39,7 +39,7 @@
     },
     {
       "path": "/api/cron/outbound-audits",
-      "schedule": "30 * * * *"
+      "schedule": "30 13 * * *"
     },
     {
       "path": "/api/cron/outbound-cadence",
