@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react';
 import type { Prospect, ProspectStatus } from '@/lib/prospects';
 import { buildLeadScript, type LeadScript } from '@/lib/lead-script';
-import AuditReport, { siteHref } from './AuditReport';
 
 /**
  * The closed-loop call card: everything a rep needs on one prospect, in one
@@ -60,11 +59,7 @@ export default function CallCard({
   const [replyBusy, setReplyBusy] = useState(false);
   const [aiCalling, setAiCalling] = useState(false);
   const [emailWithCall, setEmailWithCall] = useState(false);
-  const [textOpen, setTextOpen] = useState(false);
-  const [textBody, setTextBody] = useState('');
-  const [textBusy, setTextBusy] = useState(false);
   const [draftBusy, setDraftBusy] = useState(false);
-  const [showFullAudit, setShowFullAudit] = useState(false);
 
   const id = prospect.id;
   const audit = prospect.audit_json;
@@ -303,41 +298,6 @@ export default function CallCard({
     } finally { setAiCalling(false); }
   };
 
-  const openText = async () => {
-    if (textOpen) { setTextOpen(false); return; }
-    setTextOpen(true);
-    setMsg(null);
-    if (!textBody) {
-      try {
-        const r = await fetch(`/api/admin/prospects/${id}/text`);
-        const j = await r.json().catch(() => ({}));
-        if (j.body) setTextBody(j.body);
-        if (j.configured === false) setMsg({ kind: 'err', text: 'Texting is not wired yet (add the Twilio credentials).' });
-      } catch { /* leave blank */ }
-    }
-  };
-  const sendText = async (ignoreQuietHours = false) => {
-    if (!textBody.trim()) return;
-    setTextBusy(true);
-    setMsg(null);
-    try {
-      const r = await fetch(`/api/admin/prospects/${id}/text`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: textBody, ignoreQuietHours }),
-      });
-      const j = await r.json().catch(() => ({}));
-      if (r.ok) {
-        onPatch(id, { status: 'contacted', last_sms_at: new Date().toISOString() } as Partial<typeof prospect>);
-        setMsg({ kind: 'ok', text: `Text sent to ${prospect.phone}. Their reply lands in the Conversation thread.` });
-        setTextOpen(false);
-      } else if (r.status === 409 && j.error === 'quiet-hours') {
-        if (confirm(`${j.message}\n\nSend it now anyway?`)) { setTextBusy(false); return sendText(true); }
-      } else setMsg({ kind: 'err', text: j.error ?? 'Could not send the text.' });
-    } catch {
-      setMsg({ kind: 'err', text: 'Network error.' });
-    } finally { setTextBusy(false); }
-  };
-
   const draftReply = async () => {
     setDraftBusy(true);
     setMsg(null);
@@ -409,42 +369,17 @@ export default function CallCard({
         <div className="flex flex-wrap items-center gap-2">
           {telHref && <a href={telHref} className={`${pill} bg-[#F5B700] text-[#161616] border-[#161616] hover:bg-[#FFD23F]`}>📞 I&apos;ll call</a>}
           <button onClick={aiCall} disabled={aiCalling || !prospect.phone} className={`${pill} bg-[#1E50C8] text-white border-[#1E50C8] hover:opacity-90`}>{aiCalling ? 'Dialing...' : '🤖 Mr. Mustard calls'}</button>
-          <button onClick={openText} disabled={!prospect.phone} className={`${pill} bg-[#2D6A4F] text-white border-[#2D6A4F] hover:opacity-90`}>💬 {textOpen ? 'Hide text' : 'Text them'}</button>
           <label className="inline-flex items-center gap-1.5 text-[12px] font-body text-[#161616]/70 cursor-pointer">
             <input type="checkbox" checked={emailWithCall} onChange={(e) => setEmailWithCall(e.target.checked)} className="accent-[#F5B700] w-4 h-4" />
             email the audit at the same time
           </label>
         </div>
-        {textOpen && (
-          <div className="mt-3 rounded-xl border-2 border-[#161616] bg-[#FFFDF6] p-3">
-            <span className="text-[10px] uppercase tracking-[0.18em] text-[#2D6A4F] font-mono font-bold block mb-1.5">Personalized text (Cahill)</span>
-            <textarea value={textBody} onChange={(e) => setTextBody(e.target.value)} rows={4}
-              placeholder={prospect.phone ? 'Loading a personalized draft...' : 'No phone on file.'}
-              className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
-            <div className="flex items-center justify-between gap-2 mt-2">
-              <span className="text-[11px] font-mono text-[#161616]/45">{textBody.length} chars. STOP replies are auto-honored.</span>
-              <button onClick={() => sendText(false)} disabled={textBusy || !textBody.trim()} className={`${pill} bg-[#161616] text-[#FBF6EA] border-[#161616] hover:opacity-90`}>{textBusy ? 'Sending...' : 'Send text'}</button>
-            </div>
-          </div>
-        )}
         <p className="text-[#161616]/45 font-body text-[11px] mt-2">Mr. Mustard opens by saying he is an AI, pitches the fit, and books a call. The full transcript lands in the Conversation thread when the call ends.</p>
       </div>
 
       {/* Their site & email */}
       <div className="bg-white border-2 border-[#161616] rounded-xl p-4 mb-4">
-        <div className="flex items-center justify-between gap-2 mb-2">
-          <span className="text-[10px] uppercase tracking-[0.18em] text-[#E0301E] font-mono font-bold">Their site & email</span>
-          {contact.website.trim() && (
-            <a
-              href={siteHref(contact.website.trim())}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-[#1E50C8] border border-[#1E50C8]/40 rounded-full px-2 py-0.5 hover:bg-[#1E50C8] hover:text-white transition-colors"
-            >
-              🌐 See the live site ↗
-            </a>
-          )}
-        </div>
+        <span className="text-[10px] uppercase tracking-[0.18em] text-[#E0301E] font-mono font-bold block mb-2">Their site & email</span>
         <div className="flex flex-wrap items-end gap-2">
           <label className="flex-1 min-w-[180px]">
             <span className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/45 font-mono block mb-1">Website</span>
@@ -482,29 +417,6 @@ export default function CallCard({
                 <li key={i} className="text-sm text-[#3A3733] font-body"><span className="font-bold text-[#161616]">{i + 1}. {f.title}.</span> {f.why}</li>
               ))}
             </ol>
-            <div className="flex flex-wrap gap-2 mt-3">
-              <button
-                onClick={() => setShowFullAudit((v) => !v)}
-                className="px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full hover:bg-[#FFD23F] transition-all"
-              >
-                {showFullAudit ? 'Hide the full audit' : 'See the whole audit'}
-              </button>
-              {(prospect.audit_url ?? prospect.website) && (
-                <a
-                  href={siteHref((prospect.audit_url ?? prospect.website)!)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-white bg-[#1E50C8] border-2 border-[#1E50C8] rounded-full hover:opacity-90 transition-all"
-                >
-                  🌐 See the live site ↗
-                </a>
-              )}
-            </div>
-            {showFullAudit && (
-              <div className="mt-3">
-                <AuditReport audit={audit} variant="inline" />
-              </div>
-            )}
           </div>
         </details>
       )}
