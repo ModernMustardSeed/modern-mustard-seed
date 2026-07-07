@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { getConsent, setConsent } from '@/lib/consent';
 
@@ -11,6 +12,7 @@ import { getConsent, setConsent } from '@/lib/consent';
  */
 export default function CookieConsent() {
   const [show, setShow] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (getConsent() === null) setShow(true);
@@ -19,7 +21,9 @@ export default function CookieConsent() {
     return () => window.removeEventListener('mms-consent-open', reopen);
   }, []);
 
-  if (!show) return null;
+  // Never float the public cookie notice over the staff admin app — it is a
+  // logged-in tool, and a bottom-anchored banner was covering admin controls.
+  if (!show || pathname?.startsWith('/admin')) return null;
 
   const decide = (v: 'granted' | 'denied') => {
     setConsent(v);
