@@ -51,6 +51,11 @@ function esc(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+/** Email subject headers must never carry newlines or control characters. */
+function cleanHeader(s: string): string {
+  return s.replace(/[\r\n\t\x00-\x1f\x7f]+/g, ' ').trim();
+}
+
 type Body = {
   mode?: 'create' | 'update';
   business?: string;
@@ -76,13 +81,21 @@ export async function POST(req: Request) {
 
   if (body.website) return NextResponse.json({ ok: true, runId: 'pressed' });
 
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  if (!ipAllowed(ip)) return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
-
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'press_dark' }, { status: 503 });
 
+  // Edits are exempt from the create throttle: they cost no model spend and
+  // are already capped at 20 per unguessable run. Throttling them locked a
+  // buyer out of their own price review (ship-gate finding).
   if (body.mode === 'update') return handleUpdate(supabase, body);
+
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  if (!ipAllowed(ip)) {
+    return NextResponse.json(
+      { error: 'rate_limited', message: 'The press cools between runs. Give it a few minutes and pull the lever again.' },
+      { status: 429 }
+    );
+  }
   return handleCreate(supabase, body, ip);
 }
 
@@ -159,7 +172,7 @@ async function handleCreate(
     /* non-fatal */
   }
 
-  await notifySarah(`PRESS PROOF: ${business} (${city})`, [
+  await notifySarah(`PRESS PROOF: ${cleanHeader(business)} (${cleanHeader(city)})`, [
     `<strong>${esc(ownerName)}</strong> ran a proof for <strong>${esc(business)}</strong> (${esc(city)}). Email: ${esc(email)}. Run ${runId}.`,
     `${catalog.sections.length} sections, ${itemCount} priced items. This lead handed over their whole catalog; that is a discovery call pre-written.`,
     `<pre style="white-space:pre-wrap;font-family:inherit;font-size:12px">${esc(JSON.stringify(catalog, null, 1).slice(0, 2400))}</pre>`,
@@ -219,7 +232,7 @@ async function emailProof(to: string, ownerName: string, business: string, runId
       from: 'Mr. Mustard at MUSTARD PRESS <hello@modernmustardseed.com>',
       to,
       replyTo: 'sarah@modernmustardseed.com',
-      subject: `${firstName}, your proof is off the press`,
+      subject: `${cleanHeader(firstName)}, your proof is off the press`,
       html: clientEmail({
         preheader: `${business}, typeset. The watermarked proof is yours to keep.`,
         eyebrow: 'MUSTARD PRESS',

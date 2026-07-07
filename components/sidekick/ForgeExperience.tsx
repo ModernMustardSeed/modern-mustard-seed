@@ -469,7 +469,8 @@ export default function ForgeExperience() {
       )}
 
       {/* ─── KEEP HIM (always present below the forge) ─── */}
-      <div id="keep" className="pt-14 md:pt-20">
+      {/* Breaks out of the intake column so the pricing row gets full width. */}
+      <div id="keep" className="pt-14 md:pt-20 md:relative md:left-1/2 md:-translate-x-1/2 md:w-[min(100vw-2.5rem,56rem)]">
         <div className="text-center mb-8">
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3">[ Keep him ]</p>
           <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">

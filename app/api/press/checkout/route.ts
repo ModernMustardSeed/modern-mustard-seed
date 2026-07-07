@@ -9,7 +9,7 @@ import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { getPressTier, PRESS } from '@/data/press';
 import { getSupabase } from '@/lib/supabase';
-import { handPressSlotsUsed } from '@/lib/press-store';
+import { handPressSlotsClaimed } from '@/lib/press-store';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   if (tier.slug === 'press-handpress') {
     const supabase = getSupabase();
     if (!supabase) return NextResponse.json({ error: 'press_dark' }, { status: 503 });
-    const used = await handPressSlotsUsed(supabase);
+    const used = await handPressSlotsClaimed(supabase, PRESS.weeklyHandPressSlots);
     if (used === null) return NextResponse.json({ error: 'press_dark' }, { status: 503 });
     if (used >= PRESS.weeklyHandPressSlots) {
       return NextResponse.json(

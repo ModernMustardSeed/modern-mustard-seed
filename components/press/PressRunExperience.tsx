@@ -183,7 +183,12 @@ export default function PressRunExperience() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.proofHtml) {
-        setError(data?.message || 'That edit did not take. Try once more.');
+        setError(
+          data?.message ||
+            (data?.error === 'rate_limited'
+              ? 'The press cools between runs. Give it a few minutes, your edits are still here.'
+              : 'That edit did not take. Try once more.')
+        );
         setSaving(false);
         return;
       }
@@ -367,7 +372,8 @@ export default function PressRunExperience() {
       )}
 
       {/* ─── THE TIERS ─── */}
-      <div id="roll" className="pt-14 md:pt-20">
+      {/* Breaks out of the intake column so the money row gets full width. */}
+      <div id="roll" className="pt-14 md:pt-20 md:relative md:left-1/2 md:-translate-x-1/2 md:w-[min(100vw-2.5rem,64rem)]">
         <div className="text-center mb-8">
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3">[ Off the press ]</p>
           <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">

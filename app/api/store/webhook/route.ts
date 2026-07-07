@@ -25,7 +25,7 @@ import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccess
 import { getSidekickTier } from '@/data/sidekick';
 import { getPicturesTier, PICTURES } from '@/data/pictures';
 import { getPicturesRun } from '@/lib/pictures-store';
-import { getPressTier } from '@/data/press';
+import { getPressTier, PRESS } from '@/data/press';
 import { getPressRun, consumeHandPressSlot } from '@/lib/press-store';
 import { renderPressPdf } from '@/lib/press-pdf';
 import { SITE } from '@/lib/seo';
@@ -871,8 +871,31 @@ async function handlePressPurchase(
   }
 
   if (slug === 'press-handpress' && supabase) {
-    const used = await consumeHandPressSlot(supabase);
-    if (used !== null) console.log('press hand-press slot consumed:', used, 'this week');
+    const slot = await consumeHandPressSlot(supabase, PRESS.weeklyHandPressSlots);
+    if (slot === 'sold_out') {
+      // Paid after the week filled (checkout race). Sarah refunds by hand.
+      try {
+        const alertKey = process.env.RESEND_API_KEY;
+        if (alertKey) {
+          await new Resend(alertKey).emails.send({
+            from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+            to: 'sarah@modernmustardseed.com',
+            subject: `HAND PRESS OVERSOLD: ${businessRaw || email}`,
+            html: clientEmail({
+              preheader: 'A sixth Hand Press slot was paid this week.',
+              eyebrow: 'MUSTARD PRESS OVERSOLD',
+              greeting: 'The week filled mid-checkout.',
+              body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> paid for THE HAND PRESS after the five weekly slots were claimed (Stripe session ${session.id}).</p><p>Either honor it as a sixth (your call) or refund from the Stripe dashboard and offer next week's first slot.</p>`,
+              signature: 'The Press',
+            }),
+          });
+        }
+      } catch (err) {
+        console.error('press oversold alert failed', err);
+      }
+    } else if (slot !== null) {
+      console.log('press hand-press slot consumed:', slot, 'of', PRESS.weeklyHandPressSlots);
+    }
   }
 
   const run = runId && supabase ? await getPressRun(supabase, runId) : null;
@@ -881,13 +904,27 @@ async function handlePressPurchase(
   if (!apiKey) return;
   const resend = new Resend(apiKey);
 
+  // Generate the PIECE's clean PDF FIRST so both emails tell the truth about
+  // it. A render failure must never eat the paying customer's receipt.
+  let attachments: { filename: string; content: string }[] | undefined;
+  if (slug === 'press-piece' && run) {
+    try {
+      const bytes = await renderPressPdf(run.profile, run.catalog, { watermark: false });
+      const fileSlug = run.profile.business.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'piece';
+      attachments = [{ filename: `${fileSlug}-print-ready.pdf`, content: Buffer.from(bytes).toString('base64') }];
+    } catch (err) {
+      console.error('press clean pdf render failed (receipt still sends)', err);
+    }
+  }
+  const attached = Boolean(attachments);
+
   // Sarah: FYI for PIECE (instant), PRODUCE brief for KIT / HAND PRESS.
   try {
     const produce = slug !== 'press-piece';
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',
-      subject: `${produce ? 'PRODUCE' : 'SOLD'} ${tier?.name ?? 'PRESS'}: ${businessRaw || email}`,
+      subject: `${produce ? 'PRODUCE' : 'SOLD'} ${tier?.name ?? 'PRESS'}: ${cleanHeader(businessRaw) || email}`,
       html: clientEmail({
         preheader: produce ? 'A Press order needs your hands.' : 'A Piece sold and fulfilled itself.',
         eyebrow: 'MUSTARD PRESS ORDER',
@@ -895,7 +932,9 @@ async function handlePressPurchase(
         body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> bought <strong>${tier?.name ?? slug}</strong>${business ? ` for <strong>${business}</strong>` : ''} ($${tier?.priceUsd ?? '?'}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p>${
           produce
             ? `<p>${slug === 'press-handpress' ? 'HAND PRESS: email them within one business day to book the working session. One weekly slot consumed.' : 'KIT: assemble the matching set within 2 business days.'}</p>${run ? `<pre style="white-space:pre-wrap;font-family:inherit;font-size:12px">${escapeHtmlSafe(JSON.stringify(run.catalog, null, 1).slice(0, 2000))}</pre>` : '<p>No run on file; start from their reply.</p>'}`
-            : '<p>Clean PDF generated and attached to their receipt email automatically. Nothing to do (that is the point).</p>'
+            : attached
+              ? '<p>Clean PDF generated and attached to their receipt email automatically. Nothing to do (that is the point).</p>'
+              : '<p>HEADS UP: the clean PDF failed to render for the receipt email. Their re-download link still works if the run is intact; check the logs and send the file by hand if they reply.</p>'
         }`,
         signature: 'The Press',
       }),
@@ -904,31 +943,25 @@ async function handlePressPurchase(
     console.error('press produce email failed', err);
   }
 
-  // Buyer email. THE PIECE ships the clean PDF right here.
+  // Buyer receipt. Always sends; the attachment rides along when it exists.
   try {
-    let attachments: { filename: string; content: string }[] | undefined;
-    if (slug === 'press-piece' && run) {
-      const bytes = await renderPressPdf(run.profile, run.catalog, { watermark: false });
-      const fileSlug = run.profile.business.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'piece';
-      attachments = [{ filename: `${fileSlug}-print-ready.pdf`, content: Buffer.from(bytes).toString('base64') }];
-    }
     await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
       replyTo: 'sarah@modernmustardseed.com',
-      subject: `${firstName ? `${firstName}, ` : ''}${slug === 'press-piece' ? 'your print-ready file is attached' : 'your press order is confirmed'}`,
+      subject: `${firstName ? `${cleanHeader(firstName)}, ` : ''}${slug === 'press-piece' ? (attached ? 'your print-ready file is attached' : 'your print-ready file is ready to download') : 'your press order is confirmed'}`,
       html: clientEmail({
         preheader: slug === 'press-piece' ? 'The watermark is lifted. Print it anywhere.' : 'Here is what happens next.',
         eyebrow: `MUSTARD PRESS ${tier?.name ?? ''}`.trim(),
         greeting: firstName ? `${firstName}, hot off the press.` : 'Hot off the press.',
         body:
           slug === 'press-piece'
-            ? `<p>Your clean, print-ready file${business ? ` for <strong>${business}</strong>` : ''} is attached, and you can re-download it anytime from the button below. Full commercial rights, yours forever.</p><p>Print it at any local shop, on the office printer, or upload it to an online printer. If anything looks off, reply and Sarah will make it right.</p>`
+            ? `<p>Your clean, print-ready file${business ? ` for <strong>${business}</strong>` : ''} is ${attached ? 'attached, and you can also re-download it' : 'ready at the button below, yours to download'} anytime. Full commercial rights, yours forever.</p><p>Print it at any local shop, on the office printer, or upload it to an online printer. If anything looks off, reply and Sarah will make it right.</p>`
             : slug === 'press-kit'
               ? `<p>Your KIT${business ? ` for <strong>${business}</strong>` : ''} is on the bench: the piece plus a matching flyer, business card, and window piece, assembled by hand and delivered within 2 business days. One revision pass is included; reply with any must-haves.</p>`
               : `<p>You claimed one of this week's five Hand Press slots${business ? ` for <strong>${business}</strong>` : ''}. Sarah will email you within one business day to book the working session (your offer, your prices, what to feature, what to charge more for), then set two concept directions before the final files.</p>`,
         cta: slug === 'press-piece' && runId
-          ? { label: 'Re-download the clean file', url: `https://modernmustardseed.com/api/press/pdf?session_id=${encodeURIComponent(session.id)}` }
+          ? { label: attached ? 'Re-download the clean file' : 'Download the clean file', url: `https://modernmustardseed.com/api/press/pdf?session_id=${encodeURIComponent(session.id)}` }
           : { label: 'Reply with any must-have details', url: 'mailto:sarah@modernmustardseed.com' },
         signature: 'Sarah',
       }),
@@ -937,6 +970,11 @@ async function handlePressPurchase(
   } catch (err) {
     console.error('press buyer email failed', err);
   }
+}
+
+/** Email subject headers must never carry newlines or control characters. */
+function cleanHeader(s: string): string {
+  return s.replace(/[\r\n\t\x00-\x1f\x7f]+/g, ' ').trim();
 }
 
 /** A Season Pass ended: stop monthly production. */

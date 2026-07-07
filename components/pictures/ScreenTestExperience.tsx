@@ -295,7 +295,8 @@ export default function ScreenTestExperience() {
       )}
 
       {/* ─── ROLL FILM: the tiers ─── */}
-      <div id="roll" className="pt-14 md:pt-20">
+      {/* Breaks out of the intake column so the tier row gets full width. */}
+      <div id="roll" className="pt-14 md:pt-20 md:relative md:left-1/2 md:-translate-x-1/2 md:w-[min(100vw-2.5rem,64rem)]">
         <div className="text-center mb-8">
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3">[ Roll film ]</p>
           <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">

@@ -25,10 +25,14 @@ export async function parseCatalog(raw: string): Promise<PressCatalog | null> {
     const anthropic = new Anthropic({ apiKey });
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-5',
-      max_tokens: 2200,
+      max_tokens: 4000,
       system: PARSE_SYSTEM,
       messages: [{ role: 'user', content: raw }],
     });
+    if (response.stop_reason === 'max_tokens') {
+      console.error('press parse truncated at max_tokens');
+      return null;
+    }
     const text = response.content
       .filter((b): b is Anthropic.TextBlock => b.type === 'text')
       .map((b) => b.text)
@@ -70,7 +74,7 @@ export function sanitizeCatalog(input: unknown): PressCatalog | null {
 }
 
 function esc(s: string): string {
-  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 /** The BISTRO proof, self-contained HTML (US Letter proportions, 816x1056). */

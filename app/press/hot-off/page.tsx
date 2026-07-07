@@ -30,7 +30,7 @@ export default async function HotOffPage({ searchParams }: { searchParams: Promi
             Paid, pressed, and yours.
           </h1>
           <p className="font-body text-[#161616]/70 mt-4 max-w-md mx-auto leading-relaxed">
-            Order confirmed. A copy is also on its way to your inbox with the file attached, plus this download link for whenever you need it again.
+            Order confirmed, and your receipt with next steps is on its way to your inbox. Bought THE PIECE? Your clean file is one button away.
           </p>
           {sessionId ? <HotOffDownload sessionId={sessionId} /> : null}
         </div>

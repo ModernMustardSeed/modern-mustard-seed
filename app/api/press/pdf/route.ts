@@ -16,7 +16,23 @@ import { getStripe } from '@/lib/stripe';
 export const runtime = 'nodejs';
 export const maxDuration = 30;
 
+// Unauthenticated route where every hit costs a Stripe read or a PDF render;
+// give it its own generous per-instance throttle.
+const ipHits = new Map<string, { count: number; reset: number }>();
+function ipAllowed(ip: string): boolean {
+  const now = Date.now();
+  const hit = ipHits.get(ip);
+  if (!hit || now > hit.reset) {
+    ipHits.set(ip, { count: 1, reset: now + 60 * 60 * 1000 });
+    return true;
+  }
+  hit.count += 1;
+  return hit.count <= 30;
+}
+
 export async function GET(req: Request) {
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  if (!ipAllowed(ip)) return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
   const url = new URL(req.url);
   const runIdParam = (url.searchParams.get('runId') || '').trim();
   const sessionId = (url.searchParams.get('session_id') || '').trim();

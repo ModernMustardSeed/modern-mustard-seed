@@ -96,19 +96,34 @@ export async function bumpPressDaily(db: KV): Promise<number | null> {
   return bumpCounter(db, dayKey());
 }
 
-/** HAND PRESS slots used this week (read-only). */
-export async function handPressSlotsUsed(db: KV): Promise<number | null> {
-  const { data, error } = await db.from('app_state').select('value').eq('key', weekKey()).maybeSingle();
-  if (error) {
-    console.error('press slots read failed', error.message);
-    return null;
+/**
+ * Consume a HAND PRESS slot ATOMICALLY (called from the webhook on paid
+ * orders): claims press:slot:<week>:<n> rows, first free of the 5 wins. A
+ * 'sold_out' return means the week oversold between checkout and payment;
+ * the caller alerts Sarah to refund by hand.
+ */
+export async function consumeHandPressSlot(db: KV, cap: number): Promise<number | 'sold_out' | null> {
+  const wk = weekKey();
+  for (let n = 1; n <= cap; n += 1) {
+    const res = await claim(db, `${wk}:${n}`, { at: new Date().toISOString() });
+    if (res === 'claimed') return n;
+    if (res === 'error') return null;
   }
-  return (data?.value as { count?: number } | null)?.count ?? 0;
+  return 'sold_out';
 }
 
-/** Consume a HAND PRESS slot (called from the webhook on paid orders). */
-export async function consumeHandPressSlot(db: KV): Promise<number | null> {
-  return bumpCounter(db, weekKey());
+/** Slots used this week, counted from the atomic claim rows. */
+export async function handPressSlotsClaimed(db: KV, cap: number): Promise<number | null> {
+  const wk = weekKey();
+  const { count, error } = await db
+    .from('app_state')
+    .select('key', { count: 'exact', head: true })
+    .like('key', `${wk}:%`);
+  if (error) {
+    console.error('press slot count failed', error.message);
+    return null;
+  }
+  return Math.min(count ?? 0, cap);
 }
 
 export async function savePressRun(db: KV, runId: string, run: PressRun): Promise<boolean> {
