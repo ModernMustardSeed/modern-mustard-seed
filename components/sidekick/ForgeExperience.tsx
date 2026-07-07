@@ -157,6 +157,13 @@ export default function ForgeExperience() {
         setError(msg);
         return;
       }
+      if (!data?.runId || !data?.call?.firstMessage) {
+        // Honeypot decoy or malformed payload: end gracefully, never render a broken stage.
+        setStage('intake');
+        setSubmitting(false);
+        setError('The forge sputtered. Give it another try in a minute.');
+        return;
+      }
       setForged(data as ForgeResponse);
       try { localStorage.setItem('mms_sidekick_forge', JSON.stringify({ forged: data, form: f })); } catch { /* fine */ }
       trackEvent('sidekick_forged', { vertical: f.vertical });

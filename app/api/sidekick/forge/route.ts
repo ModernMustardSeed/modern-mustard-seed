@@ -22,6 +22,8 @@ import { forgeCall, ringDemoCall, toE164, type SidekickProfile } from '@/lib/sid
 import {
   claimEmail,
   claimPhone,
+  claimRing,
+  releaseRing,
   releaseKey,
   bumpDailyCount,
   saveRun,
@@ -150,7 +152,7 @@ async function handleForge(
   }
   if (todayCount > GLOBAL_DAILY_CAP) {
     await releaseKey(supabase, 'email', email);
-    void notifySarah('SIDEKICK FORGE: daily cap reached', [
+    await notifySarah('SIDEKICK FORGE: daily cap reached', [
       `The forge hit its ${GLOBAL_DAILY_CAP}-demo daily cap. Latest attempt: ${business} (${email}).`,
       'Raise GLOBAL_DAILY_CAP in app/api/sidekick/forge/route.ts if this is good traffic.',
     ]);
@@ -190,7 +192,7 @@ async function handleForge(
     /* non-fatal */
   }
 
-  void notifySarah(`SIDEKICK FORGED: ${business} (${city})`, [
+  await notifySarah(`SIDEKICK FORGED: ${business} (${city})`, [
     `<strong>${esc(ownerName)}</strong> just forged a Sidekick for <strong>${esc(business)}</strong> (${getVertical(verticalId).label}, ${esc(city)}).`,
     `Email: ${esc(email)}`,
     `Taught him: ${esc(services.slice(0, 300))}`,
@@ -215,10 +217,22 @@ async function handleRing(
     return NextResponse.json({ error: 'already_rang', message: 'He already made his one demo call. Keep him and he makes the rest on your line.' }, { status: 402 });
   }
 
-  // Cap: one ring per phone number, ever. Atomic (pk claim), fails closed.
+  // Cap A: one ring per RUN, atomic. Concurrent requests on the same runId
+  // cannot fan out to N numbers (the phoneCallId check above is check-then-act).
+  const ringClaim = await claimRing(supabase, runId);
+  if (ringClaim === 'error') return NextResponse.json({ error: 'forge_offline' }, { status: 503 });
+  if (ringClaim === 'taken') {
+    return NextResponse.json({ error: 'already_rang', message: 'He already made his one demo call. Keep him and he makes the rest on your line.' }, { status: 402 });
+  }
+
+  // Cap B: one ring per phone number, ever. Atomic (pk claim), fails closed.
   const phoneClaim = await claimPhone(supabase, to, runId);
-  if (phoneClaim === 'error') return NextResponse.json({ error: 'forge_offline' }, { status: 503 });
+  if (phoneClaim === 'error') {
+    await releaseRing(supabase, runId);
+    return NextResponse.json({ error: 'forge_offline' }, { status: 503 });
+  }
   if (phoneClaim === 'taken') {
+    await releaseRing(supabase, runId);
     return NextResponse.json({ error: 'already_rang', message: 'This number already met its Sidekick. Ready for the real thing?' }, { status: 402 });
   }
 
@@ -234,15 +248,19 @@ async function handleRing(
   const forged = await forgeCall(profile, runId, 'phone');
   if (!forged.ok) {
     await releaseKey(supabase, 'phone', to);
+    await releaseRing(supabase, runId);
     return NextResponse.json({ error: 'forge_offline' }, { status: 503 });
   }
 
   const rang = await ringDemoCall(forged.call, to);
   if (!rang.ok) {
     await releaseKey(supabase, 'phone', to);
+    await releaseRing(supabase, runId);
     if (rang.billing) {
       // Kill switch: the wallet is empty. Sarah hears about it immediately.
-      void notifySarah('SIDEKICK KILL SWITCH: Vapi wallet problem', [
+      // Awaited on purpose: Vercel may freeze the function after the response,
+      // and this is the alert that also means inbound Mr. Mustard is down.
+      await notifySarah('SIDEKICK KILL SWITCH: Vapi wallet problem', [
         `A demo ring to ${to} for ${esc(run.business)} failed with a billing error: ${esc(rang.error)}`,
         'Top up at dashboard.vapi.ai. Inbound Mr. Mustard is likely down too.',
       ]);

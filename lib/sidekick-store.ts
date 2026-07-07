@@ -52,6 +52,16 @@ export async function claimPhone(db: KV, e164: string, runId: string): Promise<C
   return claim(db, phoneKey(e164), { runId, at: new Date().toISOString() });
 }
 
+/** One ring per RUN, atomically. Closes the concurrent-request fan-out on a single runId. */
+export async function claimRing(db: KV, runId: string): Promise<ClaimResult> {
+  return claim(db, `sidekick:ring:${runId}`, { at: new Date().toISOString() });
+}
+
+export async function releaseRing(db: KV, runId: string): Promise<void> {
+  const { error } = await db.from('app_state').delete().eq('key', `sidekick:ring:${runId}`);
+  if (error) console.error('sidekick ring release failed', error.message);
+}
+
 /** Release a claim we made but could not honor (e.g. the run insert failed). */
 export async function releaseKey(db: KV, kind: 'email' | 'phone', id: string): Promise<void> {
   const key = kind === 'email' ? emailKey(id) : phoneKey(id);

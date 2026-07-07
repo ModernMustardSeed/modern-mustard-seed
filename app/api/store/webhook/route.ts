@@ -485,6 +485,47 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     : null;
   if (!subId) return;
 
+  // Sidekick renewals get their own recovery note (the /portal link below is
+  // for proposal clients and means nothing to a Sidekick buyer).
+  const subMeta = (invoice as { subscription_details?: { metadata?: Record<string, string> } }).subscription_details?.metadata;
+  if (subMeta?.kind === 'sidekick') {
+    const skEmail = invoice.customer_email;
+    if (process.env.RESEND_API_KEY && skEmail) {
+      const business = escapeHtmlSafe(subMeta.business || 'your business');
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: skEmail,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: 'Quick payment hiccup on your Sidekick',
+          html: clientEmail({
+            preheader: 'Your card needs a quick update so he stays on the phones.',
+            eyebrow: 'SIDEKICK',
+            greeting: 'A quick card hiccup.',
+            body: `<p>The monthly payment for ${business}'s Sidekick did not go through. It happens (expired card, bank hiccup, gremlin).</p><p>Stripe will retry automatically, or just reply to this email and I will send a fresh payment link. He stays on the phones in the meantime.</p>`,
+            signature: 'Sarah',
+          }),
+        });
+        await resend.emails.send({
+          from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+          to: 'sarah@modernmustardseed.com',
+          subject: `SIDEKICK payment failed: ${subMeta.business || skEmail}`,
+          html: clientEmail({
+            preheader: 'A Sidekick renewal failed.',
+            eyebrow: 'SIDEKICK DUNNING',
+            greeting: 'A renewal bounced.',
+            body: `<p>Subscription ${subId}${subMeta.business ? ` (business: <strong>${business}</strong>)` : ''} failed to renew for ${escapeHtmlSafe(skEmail)}.</p><p>Stripe retries on its own. If it does not recover in a few days, pause the line before the minutes leak.</p>`,
+            signature: 'The Forge',
+          }),
+        });
+      } catch (err) {
+        console.error('sidekick dunning email failed', err);
+      }
+    }
+    return;
+  }
+
   let proposal: { id?: string; client_name?: string | null; client_email?: string | null; client_company?: string | null } | null = null;
   try {
     const { data } = await supabase

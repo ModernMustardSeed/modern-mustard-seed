@@ -27,3 +27,8 @@ create index if not exists sidekick_runs_created_idx on sidekick_runs (created_a
 
 alter table sidekick_runs enable row level security;
 -- No anon policies on purpose: only the service role (the site server) touches this.
+
+-- Ship-gate hardening: app_state carries the Sidekick cap claims + visitor
+-- PII and was created with RLS DISABLED (030). Lock it; the service role
+-- bypasses RLS so nothing else changes.
+alter table public.app_state enable row level security;
