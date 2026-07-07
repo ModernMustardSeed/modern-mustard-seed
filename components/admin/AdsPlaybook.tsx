@@ -191,6 +191,64 @@ const SK_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads tagged source sidekick-forge in the admin). The truth metric: Keep Him subscriptions, which email you on every sale, and booked calls from demo transcripts.' },
 ];
 
+// ============ Campaigns six-eight: Pictures, Press, GEO (image creative) ============
+
+const PX_LANDING = 'https://modernmustardseed.com/pictures?utm_source=meta&utm_medium=paid&utm_campaign=pictures';
+const PX_COPY_A = `Most small businesses have never seen their story through a director's eyes.\n\nTake the free Screen Test: tell Mr. Mustard what you do and what you are proud of, and sixty seconds later you have a director's treatment for YOUR commercial: the logline, six shots, three taglines. Keep it either way.\n\nLove it? The finished cinematic spot is $197 and lands in about two days.`;
+const PX_COPY_B = `A commercial used to cost $5,000 and a film crew.\n\nOurs start with a free Screen Test (your storyboard, directed on the spot) and finish at $197: three cuts, captions, score, full rights, delivered in about two business days. The same pipeline that makes our own spots.`;
+const PX_HEADLINE = 'Your commercial, storyboarded free in 60 seconds.';
+const PX_DESCRIPTION = 'The free Screen Test at MUSTARD PICTURES.';
+const PX_IMAGES = [
+  { file: '/ads/pictures-45.png', label: '4:5 — Feed', note: 'The workhorse feed placement.' },
+  { file: '/ads/pictures-sq.png', label: '1:1 — Square', note: 'Right column, marketplace, catalog.' },
+  { file: '/ads/sidekick-9x16.mp4', label: '9:16 video — borrow The Graduate', note: 'Until Pictures has its own spot, the studio-brand video warms the same audience.' },
+];
+const PX_CHECKLIST = [
+  { id: 'cell', label: 'One Traffic cell at $10/day → the Screen Test UTM link. Paste Copy Variant 1, Learn More button.' },
+  { id: 'placements', label: 'Upload the 4:5 image, customize 1:1 for right-column placements.' },
+  { id: 'audience', label: 'Advantage+, owner-tilted: Small business owners, Video marketing, Advertising, Restaurant/salon/home-services interests. Age 25-65, US.' },
+  { id: 'organic', label: 'Post the 4:5 card organically to FB/IG same day (drafts in social-drafts/studio-departments-launch.md).' },
+  { id: 'abtest', label: 'Day 3: duplicate with Copy Variant 2 (the price-anchor angle). Kill the loser day 6.' },
+  { id: 'review', label: 'Judge on cost per Screen Test (leads tagged pictures-screen-test). Truth metric: SPOT/PREMIERE orders.' },
+];
+
+const PR_LANDING = 'https://modernmustardseed.com/press?utm_source=meta&utm_medium=paid&utm_campaign=press';
+const PR_COPY_A = `That menu taped to your counter? Ouch.\n\nPaste your price list at MUSTARD PRESS, exactly as it is, typos and all, and watch it become a print-ready page in about a minute. Free proof, every price preserved exactly. The clean file is $97, instant.`;
+const PR_COPY_B = `The most-handled marketing a local business owns is the price list, and it is usually the ugliest.\n\nOur press typesets yours while you watch: real type, dot leaders, your prices exactly as written, reviewed by you before anything is final. Free proof. $97 for the clean print-ready file.`;
+const PR_HEADLINE = 'Your price list, typeset like it matters. Free proof.';
+const PR_DESCRIPTION = 'Paste it messy. Print it beautiful. MUSTARD PRESS.';
+const PR_IMAGES = [
+  { file: '/ads/press-45.png', label: '4:5 — Feed', note: 'Before/after energy: the paste becomes the page.' },
+  { file: '/ads/press-sq.png', label: '1:1 — Square', note: 'The Ouch card. Strong stop-scroll.' },
+  { file: '/press/sample-salon.png', label: 'Extra proof sample', note: 'Salon proof for carousel slot 2 (pair with the diner).' },
+];
+const PR_CHECKLIST = [
+  { id: 'cell', label: 'One Traffic cell at $10/day → the press UTM link. Copy Variant 1, Learn More button.' },
+  { id: 'carousel', label: 'Best format: carousel (Ouch card → diner proof → salon proof → CTA card).' },
+  { id: 'audience', label: 'Advantage+, local-owner tilted: Restaurant owners, Salon owners, Menu, Small business. Age 25-65, US.' },
+  { id: 'organic', label: 'Post the 4:5 card + a sample proof organically same day.' },
+  { id: 'outreach', label: 'The 2-cent play: run a warm contact\'s REAL menu through /press and email them their own proof.' },
+  { id: 'review', label: 'Judge on cost per proof run (leads tagged press-proof; each carries their full price catalog). Truth metric: $97 PIECE orders, which fulfill themselves.' },
+];
+
+const GEO_LANDING = 'https://modernmustardseed.com/website-audit?utm_source=meta&utm_medium=paid&utm_campaign=geodesk';
+const GEO_COPY_A = `Ask ChatGPT about businesses like yours. Are you in the answer?\n\nAI engines answer your customers' questions by reading structured signals most local sites never installed. Our free audit grades yours in 60 seconds, seven categories, brutal honesty included.\n\nIf you score low: the $297 Fix Pack writes every missing signal for your site, ready to paste, with re-scans to prove the climb.`;
+const GEO_COPY_B = `We graded five local businesses this week: one D, three F's, and one site that had been silently hijacked by spam without the owner knowing.\n\nYour website gets found (or not) by AI now. The free 60-second audit tells you where you stand. The fixes are a copy-paste away.`;
+const GEO_HEADLINE = 'Is your business invisible to ChatGPT?';
+const GEO_DESCRIPTION = 'Free AI-findability grade in 60 seconds.';
+const GEO_IMAGES = [
+  { file: '/ads/geo-45.png', label: '4:5 — Feed', note: 'The F stamp. Fear + fix in one card.' },
+  { file: '/ads/geo-sq.png', label: '1:1 — Square', note: 'Right column and marketplace.' },
+];
+const GEO_CHECKLIST = [
+  { id: 'cell', label: 'One Traffic cell at $10/day → the audit UTM link. Copy Variant 1, Learn More button.' },
+  { id: 'audience', label: 'Advantage+, broad small-business: Small business owners, Marketing, SEO, ChatGPT interest. Age 25-65, US.' },
+  { id: 'honest', label: 'COPY LAW: never promise rankings or "get recommended by ChatGPT." Sell the grade, the installed signals, the monitoring. This is a ship-gate rule, keep it in ad edits too.' },
+  { id: 'organic', label: 'Organic angle that always works: post a (permission-granted or anonymized) real report card screenshot.' },
+  { id: 'abtest', label: 'Day 3: Copy Variant 2 (the local-graded-five story). Kill the loser day 6.' },
+  { id: 'review', label: 'Judge on cost per audit run. Truth metric: Fix Pack orders (instant fulfillment) and Watch subscriptions.' },
+];
+
 function CopyBlock({ title, text }: { title: string; text: string }) {
   const [done, setDone] = useState(false);
   const copy = async () => {
@@ -216,7 +274,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -224,8 +282,97 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'mm', num: '03', label: 'MUSTARD MODE', blurb: 'The product · free-play funnel · $10/day' },
   { key: 'fm', num: '04', label: 'The Fable Mind', blurb: 'Free playbook · lead magnet · $10/day' },
   { key: 'sk', num: '05', label: 'Sidekick Forge', blurb: 'Instant demo · forge funnel · $15/day' },
+  { key: 'px', num: '06', label: 'Pictures', blurb: 'Screen Test funnel · image ads · $10/day' },
+  { key: 'pr', num: '07', label: 'Press', blurb: 'Proof funnel · image ads · $10/day' },
+  { key: 'geo', num: '08', label: 'GEO Desk', blurb: 'Audit funnel · image ads · $10/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
+
+/** Image-creative campaign tab (Pictures / Press / GEO share this shape). */
+function ImageCampaign({
+  num, title, tagline, blurb, landingLabel, landingHref, images, copyA, copyALabel, copyB, copyBLabel, headline, description, landing, checklist, checked, onToggle, done,
+}: {
+  num: string; title: string; tagline: string; blurb: string;
+  landingLabel: string; landingHref: string;
+  images: { file: string; label: string; note: string }[];
+  copyA: string; copyALabel: string; copyB: string; copyBLabel: string;
+  headline: string; description: string; landing: string;
+  checklist: { id: string; label: string }[];
+  checked: Record<string, boolean>; onToggle: (id: string) => void; done: number;
+}) {
+  return (<>
+    <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+      <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+      <div className="relative">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign {num}</span>
+        <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+          &ldquo;{title}&rdquo; <span className="italic text-[#F5B700]">{tagline}</span>
+        </h2>
+        <p className="text-white/75 mt-3 max-w-3xl font-sans">{blurb}</p>
+        <div className="flex flex-wrap gap-3 mt-5">
+          <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+          <a href={landingHref} className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">{landingLabel}</a>
+          <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads</a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The creative</h3>
+      <p className="text-sm text-[#161616]/65 mb-5 font-sans">Image ads (no video needed for this funnel). Right-click to save.</p>
+      <div className="grid md:grid-cols-3 gap-5">
+        {images.map((c) => (
+          <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+            {c.file.endsWith('.mp4') ? (
+              <video controls preload="metadata" className="w-full border border-[#161616] bg-black" src={c.file} />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={c.file} alt={c.label} className="w-full border border-[#161616]" />
+            )}
+            <div className="mt-3 flex items-center justify-between gap-2">
+              <div>
+                <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+              </div>
+              <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+      <div className="grid md:grid-cols-2 gap-5">
+        <CopyBlock title={copyALabel} text={copyA} />
+        <CopyBlock title={copyBLabel} text={copyB} />
+        <CopyBlock title="Headline" text={headline} />
+        <CopyBlock title="Description" text={description} />
+        <CopyBlock title="Landing link with UTM" text={landing} />
+      </div>
+    </section>
+
+    <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+      <div className="flex items-center justify-between gap-3 mb-5">
+        <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+        <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{done}/{checklist.length}</span>
+      </div>
+      <ol className="space-y-3">
+        {checklist.map((item, i) => (
+          <li key={item.id}>
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input type="checkbox" checked={!!checked[item.id]} onChange={() => onToggle(item.id)} className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0" />
+              <span className={`text-sm font-sans leading-relaxed ${checked[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                {item.label}
+              </span>
+            </label>
+          </li>
+        ))}
+      </ol>
+    </section>
+  </>);
+}
 
 export default function AdsPlaybook() {
   const [tab, setTab] = useState<AdsTab>('callme');
@@ -234,6 +381,9 @@ export default function AdsPlaybook() {
   const [checkedMm, setCheckedMm] = useState<Record<string, boolean>>({});
   const [checkedFm, setCheckedFm] = useState<Record<string, boolean>>({});
   const [checkedSk, setCheckedSk] = useState<Record<string, boolean>>({});
+  const [checkedPx, setCheckedPx] = useState<Record<string, boolean>>({});
+  const [checkedPr, setCheckedPr] = useState<Record<string, boolean>>({});
+  const [checkedGeo, setCheckedGeo] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -259,8 +409,25 @@ export default function AdsPlaybook() {
       if (rawFm) setCheckedFm(JSON.parse(rawFm));
       const rawSk = localStorage.getItem('mms-ads-checklist-sk');
       if (rawSk) setCheckedSk(JSON.parse(rawSk));
+      const rawPx = localStorage.getItem('mms-ads-checklist-px');
+      if (rawPx) setCheckedPx(JSON.parse(rawPx));
+      const rawPr = localStorage.getItem('mms-ads-checklist-pr');
+      if (rawPr) setCheckedPr(JSON.parse(rawPr));
+      const rawGeo = localStorage.getItem('mms-ads-checklist-geo');
+      if (rawGeo) setCheckedGeo(JSON.parse(rawGeo));
     } catch { /* first visit */ }
   }, []);
+
+  const mkToggle = (key: string, set: React.Dispatch<React.SetStateAction<Record<string, boolean>>>) => (id: string) => {
+    set((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      try { localStorage.setItem(key, JSON.stringify(next)); } catch { /* private mode */ }
+      return next;
+    });
+  };
+  const togglePx = mkToggle('mms-ads-checklist-px', setCheckedPx);
+  const togglePr = mkToggle('mms-ads-checklist-pr', setCheckedPr);
+  const toggleGeo = mkToggle('mms-ads-checklist-geo', setCheckedGeo);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -307,6 +474,9 @@ export default function AdsPlaybook() {
   const doneCountMm = MM_CHECKLIST.filter((c) => checkedMm[c.id]).length;
   const doneCountFm = FM_CHECKLIST.filter((c) => checkedFm[c.id]).length;
   const doneCountSk = SK_CHECKLIST.filter((c) => checkedSk[c.id]).length;
+  const doneCountPx = PX_CHECKLIST.filter((c) => checkedPx[c.id]).length;
+  const doneCountPr = PR_CHECKLIST.filter((c) => checkedPr[c.id]).length;
+  const doneCountGeo = GEO_CHECKLIST.filter((c) => checkedGeo[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -764,6 +934,39 @@ export default function AdsPlaybook() {
           </ol>
         </section>
         </>)}
+
+        {tab === 'px' && (
+          <ImageCampaign
+            num="six" title="The Screen Test" tagline="Direct their commercial free."
+            blurb="The Pictures funnel: a free Screen Test writes the visitor's storyboard and taglines on the spot; SPOT $197 / PREMIERE $497 convert at the reveal. Every test is a transcript-grade lead. One traffic cell at $10/day, judged on cost per Screen Test."
+            landingLabel="The Screen Test (landing)" landingHref="/pictures"
+            images={PX_IMAGES} copyA={PX_COPY_A} copyALabel="Primary text — Variant 1 (the story)" copyB={PX_COPY_B} copyBLabel="Primary text — Variant 2 (the price anchor)"
+            headline={PX_HEADLINE} description={PX_DESCRIPTION} landing={PX_LANDING}
+            checklist={PX_CHECKLIST} checked={checkedPx} onToggle={togglePx} done={doneCountPx}
+          />
+        )}
+
+        {tab === 'pr' && (
+          <ImageCampaign
+            num="seven" title="Hot Off The Press" tagline="Their menu, typeset free."
+            blurb="The Press funnel: paste a price list, get a print-ready proof free; the $97 PIECE fulfills itself instantly. Every proof captures the visitor's entire price catalog as a lead. One traffic cell at $10/day, judged on cost per proof run."
+            landingLabel="The Press (landing)" landingHref="/press"
+            images={PR_IMAGES} copyA={PR_COPY_A} copyALabel="Primary text — Variant 1 (the Ouch)" copyB={PR_COPY_B} copyBLabel="Primary text — Variant 2 (the most-handled marketing)"
+            headline={PR_HEADLINE} description={PR_DESCRIPTION} landing={PR_LANDING}
+            checklist={PR_CHECKLIST} checked={checkedPr} onToggle={togglePr} done={doneCountPr}
+          />
+        )}
+
+        {tab === 'geo' && (
+          <ImageCampaign
+            num="eight" title="Invisible to ChatGPT" tagline="Grade them, then fix them."
+            blurb="The GEO Desk funnel: the free audit grades AI-findability (most local sites score D or F); the $297 Fix Pack fulfills itself instantly and THE WATCH renews monthly. Copy law: sell the grade and installed signals, never ranking promises. One traffic cell at $10/day, judged on cost per audit run."
+            landingLabel="The audit (landing)" landingHref="/website-audit"
+            images={GEO_IMAGES} copyA={GEO_COPY_A} copyALabel="Primary text — Variant 1 (are you in the answer)" copyB={GEO_COPY_B} copyBLabel="Primary text — Variant 2 (we graded five locals)"
+            headline={GEO_HEADLINE} description={GEO_DESCRIPTION} landing={GEO_LANDING}
+            checklist={GEO_CHECKLIST} checked={checkedGeo} onToggle={toggleGeo} done={doneCountGeo}
+          />
+        )}
 
         {tab === 'results' && (<>
         {/* Measurement */}

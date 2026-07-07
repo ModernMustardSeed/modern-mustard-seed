@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  body { background: #444; display: flex; flex-direction: column; gap: 40px; padding: 40px; font-family: 'DM Sans', sans-serif; }
+  .card { position: relative; overflow: hidden; border: 14px solid #161616; }
+  .sq { width: 1080px; height: 1080px; }
+  .p45 { width: 1080px; height: 1350px; }
+  .halftone { position: absolute; inset: 0; background-image: radial-gradient(#F5B700 2.4px, transparent 2.6px); background-size: 30px 30px; opacity: .3; }
+  .halftone.dark { background-image: radial-gradient(rgba(245,183,0,.5) 2px, transparent 2.4px); opacity: .35; }
+  .wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px; padding: 70px; text-align: center; }
+  .chip { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 30px; letter-spacing: 6px; padding: 14px 30px; border: 4px solid #161616; }
+  h1 { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 88px; line-height: 1.04; letter-spacing: -1px; }
+  h1 em { font-style: italic; color: #E0301E; }
+  .sub { font-size: 36px; line-height: 1.4; max-width: 850px; }
+  .cta { background: #F5B700; border: 4px solid #161616; box-shadow: 10px 10px 0 0 #161616; font-weight: 700; font-size: 40px; padding: 22px 48px; color: #161616; }
+  .url { font-family: 'JetBrains Mono', monospace; font-size: 30px; letter-spacing: 3px; font-weight: 700; }
+  .mascot { width: 200px; border-radius: 999px; border: 6px solid #161616; background: #F5B700; }
+  .stamp { transform: rotate(-8deg); border: 8px solid #E0301E; border-radius: 18px; padding: 20px 44px; }
+  .stamp b { font-family: 'Playfair Display', serif; font-size: 150px; font-weight: 900; color: #E0301E; line-height: 1; }
+  .stamp span { display: block; font-family: 'JetBrains Mono', monospace; font-size: 24px; letter-spacing: 4px; color: #E0301E; font-weight: 700; }
+  .proofimg { width: 620px; border: 8px solid #161616; box-shadow: 16px 16px 0 0 #161616; transform: rotate(-3deg); }
+  .tight h1 { font-size: 62px; }
+  .tight .proofimg { width: 430px; }
+  .tight .cta { font-size: 32px; padding: 16px 36px; }
+  .tight .wrap { gap: 22px; padding: 50px; }
+  .p45.roomy .proofimg { width: 520px; }
+  .p45 h1 { font-size: 76px; }
+</style>
+</head>
+<body>
+
+  <!-- PICTURES square -->
+  <div class="card sq" id="pictures-sq" style="background:#161616;color:#FBF6EA">
+    <div class="halftone dark"></div>
+    <div class="wrap">
+      <div class="chip" style="background:#E0301E;color:#FBF6EA;border-color:#FBF6EA">[ MUSTARD PICTURES ]</div>
+      <h1 style="color:#FBF6EA">Your business deserves<br><em style="color:#F5B700">a better trailer.</em></h1>
+      <p class="sub" style="color:rgba(251,246,234,.75)">Free Screen Test: your commercial's storyboard and taglines, directed on the spot.</p>
+      <div class="cta">Take the free Screen Test</div>
+      <p class="url" style="color:#F5B700">modernmustardseed.com/pictures</p>
+    </div>
+  </div>
+
+  <!-- PICTURES 4:5 -->
+  <div class="card p45" id="pictures-45" style="background:#161616;color:#FBF6EA">
+    <div class="halftone dark"></div>
+    <div class="wrap">
+      <img class="mascot" src="../../public/brand/mascot.png" alt="">
+      <div class="chip" style="background:#E0301E;color:#FBF6EA;border-color:#FBF6EA">[ MUSTARD PICTURES ]</div>
+      <h1 style="color:#FBF6EA">Your business deserves<br><em style="color:#F5B700">a better trailer.</em></h1>
+      <p class="sub" style="color:rgba(251,246,234,.75)">He directs your commercial free: logline, six shots, three taglines. Filmed for $197 if you love it.</p>
+      <div class="cta">Take the free Screen Test</div>
+      <p class="url" style="color:#F5B700">modernmustardseed.com/pictures</p>
+    </div>
+  </div>
+
+  <!-- PRESS square -->
+  <div class="card sq tight" id="press-sq" style="background:#FBF6EA;color:#161616">
+    <div class="halftone"></div>
+    <div class="wrap" style="gap:26px">
+      <h1>That menu taped to<br>your counter? <em>Ouch.</em></h1>
+      <img class="proofimg" src="../../public/press/sample-diner.png" alt="">
+      <div class="cta">Free typeset proof in 60 seconds</div>
+      <p class="url" style="color:#1E50C8">modernmustardseed.com/press</p>
+    </div>
+  </div>
+
+  <!-- PRESS 4:5 -->
+  <div class="card p45 roomy" id="press-45" style="background:#FBF6EA;color:#161616">
+    <div class="halftone"></div>
+    <div class="wrap" style="gap:28px">
+      <div class="chip" style="background:#161616;color:#F5B700">[ MUSTARD PRESS ]</div>
+      <h1>Paste your price list.<br><em>Watch it become this.</em></h1>
+      <img class="proofimg" src="../../public/press/sample-diner.png" alt="">
+      <div class="cta">Run the free proof</div>
+      <p class="url" style="color:#1E50C8">modernmustardseed.com/press</p>
+    </div>
+  </div>
+
+  <!-- GEO square -->
+  <div class="card sq" id="geo-sq" style="background:#FBF6EA;color:#161616">
+    <div class="halftone"></div>
+    <div class="wrap">
+      <div class="stamp"><b>F</b><span>AI FINDABILITY</span></div>
+      <h1>Is your business<br><em>invisible to ChatGPT?</em></h1>
+      <p class="sub" style="color:#3a3733">AI answers your customers' questions every day. The free audit grades whether you are in the conversation.</p>
+      <div class="cta">Get your free grade</div>
+      <p class="url" style="color:#1E50C8">modernmustardseed.com/website-audit</p>
+    </div>
+  </div>
+
+  <!-- GEO 4:5 -->
+  <div class="card p45" id="geo-45" style="background:#FBF6EA;color:#161616">
+    <div class="halftone"></div>
+    <div class="wrap">
+      <img class="mascot" src="../../public/brand/mascot.png" alt="">
+      <div class="stamp"><b>F</b><span>AI FINDABILITY</span></div>
+      <h1>Is your business<br><em>invisible to ChatGPT?</em></h1>
+      <p class="sub" style="color:#3a3733">Free 60-second grade. Then every missing signal, written for your site, ready to paste.</p>
+      <div class="cta">Get your free grade</div>
+      <p class="url" style="color:#1E50C8">modernmustardseed.com/website-audit</p>
+    </div>
+  </div>
+
+</body>
+</html>
