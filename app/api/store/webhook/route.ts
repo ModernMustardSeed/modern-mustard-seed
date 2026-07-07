@@ -23,6 +23,8 @@ import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
 import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification, subscriptionPaymentFailedEmail, clientEmail } from '@/lib/email';
 import { getSidekickTier } from '@/data/sidekick';
+import { getPicturesTier, PICTURES } from '@/data/pictures';
+import { getPicturesRun } from '@/lib/pictures-store';
 import { SITE } from '@/lib/seo';
 import { grantEntitlement, revokeEntitlement, PROGRAM_ASSETS, isProgramSlug, isMustardSlug, type ProgramSlug } from '@/lib/entitlements';
 import { getMustardLevel } from '@/data/mustard-mode/offer';
@@ -526,6 +528,45 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     return;
   }
 
+  // Season Pass renewals likewise get their own recovery note.
+  if (subMeta?.kind === 'pictures') {
+    const pxEmail = invoice.customer_email;
+    if (process.env.RESEND_API_KEY && pxEmail) {
+      const business = escapeHtmlSafe(subMeta.business || 'your business');
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: pxEmail,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: 'Quick payment hiccup on your Season Pass',
+          html: clientEmail({
+            preheader: 'A quick card update keeps the monthly spots coming.',
+            eyebrow: 'MUSTARD PICTURES',
+            greeting: 'A quick card hiccup.',
+            body: `<p>The monthly payment for ${business}'s Season Pass did not go through (expired card, bank hiccup, gremlin).</p><p>Stripe retries automatically, or reply to this email and I will send a fresh payment link so this month's spot ships on time.</p>`,
+            signature: 'Sarah',
+          }),
+        });
+        await resend.emails.send({
+          from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+          to: 'sarah@modernmustardseed.com',
+          subject: `SEASON PASS payment failed: ${subMeta.business || pxEmail}`,
+          html: clientEmail({
+            preheader: 'A Season Pass renewal failed.',
+            eyebrow: 'PICTURES DUNNING',
+            greeting: 'A renewal bounced.',
+            body: `<p>Subscription ${subId}${subMeta.business ? ` (business: <strong>${business}</strong>)` : ''} failed to renew for ${escapeHtmlSafe(pxEmail)}.</p><p>Hold this month's production until it recovers.</p>`,
+            signature: 'The Studio',
+          }),
+        });
+      } catch (err) {
+        console.error('pictures dunning email failed', err);
+      }
+    }
+    return;
+  }
+
   let proposal: { id?: string; client_name?: string | null; client_email?: string | null; client_company?: string | null } | null = null;
   try {
     const { data } = await supabase
@@ -677,6 +718,127 @@ function escapeHtmlSafe(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+/**
+ * A MUSTARD PICTURES order landed. One-time tiers insert the order here
+ * (subscription cycles are recorded by invoice.paid); Sarah gets the full
+ * production brief (the buyer's Screen Test storyboard), the buyer gets the
+ * "you're in production" welcome.
+ */
+async function handlePicturesPurchase(
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null
+) {
+  const tier = getPicturesTier(slug);
+  const business = escapeHtmlSafe(session.metadata?.business || '');
+  const runId = session.metadata?.run_id || '';
+  const firstName = name?.split(' ')[0];
+  const isSub = tier?.mode === 'subscription';
+
+  const supabase = getSupabase();
+  if (supabase && !isSub) {
+    const { error } = await supabase.from('orders').insert({
+      stripe_session_id: session.id,
+      stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+      product_slug: slug,
+      product_name: `MUSTARD PICTURES ${tier?.name ?? slug}`,
+      item_type: 'program',
+      price_paid_cents: session.amount_total ?? (tier ? tier.priceUsd * 100 : 0),
+      currency: session.currency ?? 'usd',
+      email,
+      name: name ?? null,
+      status: 'paid',
+    });
+    if (error) console.error('pictures order insert failed', error.message);
+  }
+
+  try {
+    await insertLead({
+      type: 'contact',
+      email,
+      name: name ?? null,
+      source: 'pictures-buyer',
+      status: 'new',
+      notes: `[bought:${slug}]${business ? ` business: ${business}` : ''} PRODUCE (run ${runId || 'no screen test'})`,
+    });
+  } catch (err) {
+    console.error('pictures lead insert failed', err);
+  }
+
+  // The production brief: pull their Screen Test so Sarah can start rolling.
+  let brief = 'No Screen Test on file (bought cold). Reply to the buyer for intake, then run the studio pipeline.';
+  if (runId && supabase) {
+    const run = await getPicturesRun(supabase, runId);
+    if (run) {
+      brief = `<p><strong>Their story:</strong> ${escapeHtmlSafe(run.profile.story)}</p><pre style="white-space:pre-wrap;font-family:inherit">${escapeHtmlSafe(run.storyboard)}</pre>${run.frameUrl ? `<p>Approved hero frame: <a href="${run.frameUrl}">frame</a></p>` : '<p>No hero frame yet (darkroom). Generate during production.</p>'}`;
+    }
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = new Resend(apiKey);
+
+  try {
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: 'sarah@modernmustardseed.com',
+      subject: `PRODUCE ${tier?.name ?? 'PICTURES'}: ${business || email}`,
+      html: clientEmail({
+        preheader: 'A commercial was greenlit. Pipeline runbook: ~/launch-studio.',
+        eyebrow: 'MUSTARD PICTURES ORDER',
+        greeting: 'Lights. Camera.',
+        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> greenlit <strong>${tier?.name ?? slug}</strong>${business ? ` for <strong>${business}</strong>` : ''} ($${tier?.priceUsd ?? '?'}${isSub ? '/mo' : ''}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise: ${slug === 'pictures-premiere' ? PICTURES.deliveryPromisePremiere : PICTURES.deliveryPromiseSpot}. Pipeline: clone ~/launch-studio/projects/sidekick-commercial, swap the shots for their storyboard below.</p>${brief}`,
+        signature: 'The Studio',
+      }),
+    });
+  } catch (err) {
+    console.error('pictures produce email failed', err);
+  }
+
+  try {
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}your commercial is in production`,
+      html: clientEmail({
+        preheader: 'Greenlit. Here is what happens next.',
+        eyebrow: `MUSTARD PICTURES ${tier?.name ?? ''}`.trim(),
+        greeting: firstName ? `${firstName}, you're in production.` : "You're in production.",
+        body: `<p>Your commercial${business ? ` for <strong>${business}</strong>` : ''} is officially greenlit. Here is how it goes:</p><p><strong>1.</strong> Mr. Mustard shoots from your approved treatment${runId ? '' : ' (I will email you a short intake first since you bought without a Screen Test)'}.</p><p><strong>2.</strong> I personally review every frame before it ships. Nothing leaves the studio that I would not run for my own business.</p><p><strong>3.</strong> ${isSub ? 'Your first spot lands within 2 business days, then a fresh one every month.' : `Delivery ${slug === 'pictures-premiere' ? PICTURES.deliveryPromisePremiere : PICTURES.deliveryPromiseSpot} to this email: the cuts, the poster frame, and everything ready to upload.`}</p><p>The files are yours forever, full commercial rights. Questions or a detail you want in the film? Just reply, it reaches me directly.</p>`,
+        cta: { label: 'Reply with any must-have details', url: 'mailto:sarah@modernmustardseed.com' },
+        signature: 'Sarah',
+      }),
+    });
+  } catch (err) {
+    console.error('pictures welcome email failed', err);
+  }
+}
+
+/** A Season Pass ended: stop monthly production. */
+async function handlePicturesSubscriptionDeleted(sub: Stripe.Subscription) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const resend = new Resend(apiKey);
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: 'sarah@modernmustardseed.com',
+      subject: `SEASON PASS CANCELED: ${sub.metadata?.business || sub.id}`,
+      html: clientEmail({
+        preheader: 'A Pictures Season Pass ended.',
+        eyebrow: 'MUSTARD PICTURES OFFBOARD',
+        greeting: 'A season wrapped.',
+        body: `<p>Subscription ${sub.id}${sub.metadata?.business ? ` (business: <strong>${escapeHtmlSafe(sub.metadata.business)}</strong>)` : ''} was canceled. No more monthly spots; send the wrap-party goodbye note.</p>`,
+        signature: 'The Studio',
+      }),
+    });
+  } catch (err) {
+    console.error('pictures offboard email failed', err);
+  }
+}
+
 /** A Sidekick subscription ended: Sarah decommissions the line by hand. */
 async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -745,6 +907,10 @@ export async function POST(req: Request) {
       await handleSidekickSubscriptionDeleted(sub);
       return NextResponse.json({ received: true, kind: 'sidekick_subscription_canceled' });
     }
+    if (sub.metadata?.kind === 'pictures') {
+      await handlePicturesSubscriptionDeleted(sub);
+      return NextResponse.json({ received: true, kind: 'pictures_subscription_canceled' });
+    }
     await handleSubscriptionDeleted(sub);
     return NextResponse.json({ received: true, kind: 'subscription_canceled' });
   }
@@ -792,6 +958,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'sidekick') {
     await handleSidekickPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'sidekick' });
+  }
+
+  // ── MUSTARD PICTURES order (SPOT, PREMIERE, or SEASON PASS start) ──
+  if (session.metadata?.kind === 'pictures') {
+    await handlePicturesPurchase(session, slug, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'pictures' });
   }
 
   // ── Flagship $497 program purchase (The Terminal, Idea to Spec, bundle) ──

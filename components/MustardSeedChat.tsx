@@ -40,7 +40,9 @@ export default function MustardSeedChat() {
   const isAppShell =
     pathname.startsWith('/admin') || pathname.startsWith('/portal') || pathname.endsWith('/hq') ||
     // The Sidekick Forge IS a live voice surface; a second Mustard would compete with the demo.
-    pathname.startsWith('/sidekick');
+    pathname.startsWith('/sidekick') ||
+    // The Screen Test is a theater; the launcher would cover the reveal and tiers.
+    pathname.startsWith('/pictures');
 
   const [open, setOpen] = useState(false);
   // Visitor picks their door each time they open the launcher: voice or chat.
@@ -175,6 +177,8 @@ export default function MustardSeedChat() {
     if (window.location.pathname.startsWith('/mustard-mode')) return;
     // The Sidekick Forge has its own live voice agent on stage. No teaser.
     if (window.location.pathname.startsWith('/sidekick')) return;
+    // The Screen Test is a theater; no teaser bubble over the reveal.
+    if (window.location.pathname.startsWith('/pictures')) return;
     if (window.location.pathname === '/') return;
     const t = window.setTimeout(() => {
       try {

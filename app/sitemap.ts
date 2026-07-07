@@ -7,6 +7,7 @@ import { products, bundles } from '@/data/products';
 const STATIC_PATHS = [
   '',
   '/sidekick',
+  '/pictures',
   '/mustard-mode',
   '/mustard-mode/start-here',
   '/the-terminal',
@@ -46,7 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/build-queue'
         ? 1.0
-        : path === '/sidekick' || path === '/mustard-mode' || path === '/the-terminal' || path === '/idea-to-spec'
+        : path === '/sidekick' || path === '/pictures' || path === '/mustard-mode' || path === '/the-terminal' || path === '/idea-to-spec'
           ? 0.95
           : path === '/work' || path === '/audit' || path === '/launch-checklist' || path === '/prompt-playbook'
             ? 0.9
