@@ -61,12 +61,12 @@ export default async function OpengraphImage() {
           <div style={{ display: 'flex', flexDirection: 'column', marginTop: 30, gap: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', width: 540 }}>
               <span style={{ fontSize: 24, fontWeight: 700, color: INK }}>Huckleberry Pancakes</span>
-              <span style={{ flex: 1, borderBottom: `3px dotted ${GOLD}`, margin: '0 10px' }} />
+              <span style={{ flex: 1, borderBottom: `3px dashed ${GOLD}`, margin: '0 10px' }} />
               <span style={{ fontSize: 24, fontWeight: 700, color: INK }}>$9.50</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', width: 540 }}>
               <span style={{ fontSize: 24, fontWeight: 700, color: INK }}>Water Heater Install</span>
-              <span style={{ flex: 1, borderBottom: `3px dotted ${GOLD}`, margin: '0 10px' }} />
+              <span style={{ flex: 1, borderBottom: `3px dashed ${GOLD}`, margin: '0 10px' }} />
               <span style={{ fontSize: 24, fontWeight: 700, color: INK }}>from $1450</span>
             </div>
           </div>
