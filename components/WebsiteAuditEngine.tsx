@@ -115,6 +115,12 @@ export default function WebsiteAuditEngine() {
       }
       setReport(data.report);
       setAuditedUrl(data.url);
+      // Let the GEO DESK section below react to the live grade.
+      try {
+        const detail = { url: data.url, grade: data.report.letter_grade, score: data.report.overall_score };
+        window.dispatchEvent(new CustomEvent('mms-audit-done', { detail }));
+        localStorage.setItem('mms_last_audit', JSON.stringify(detail));
+      } catch { /* non-fatal */ }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Audit failed');
     } finally {

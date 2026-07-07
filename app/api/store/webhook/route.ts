@@ -28,6 +28,9 @@ import { getPicturesRun } from '@/lib/pictures-store';
 import { getPressTier, PRESS } from '@/data/press';
 import { getPressRun, consumeHandPressSlot } from '@/lib/press-store';
 import { renderPressPdf } from '@/lib/press-pdf';
+import { getGeoTier } from '@/data/geo';
+import { saveGeoPack, saveGeoWatch, deleteGeoWatch } from '@/lib/geo-store';
+import { generateArtifacts } from '@/lib/geo-fix-pack';
 import { SITE } from '@/lib/seo';
 import { grantEntitlement, revokeEntitlement, PROGRAM_ASSETS, isProgramSlug, isMustardSlug, type ProgramSlug } from '@/lib/entitlements';
 import { getMustardLevel } from '@/data/mustard-mode/offer';
@@ -531,6 +534,44 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     return;
   }
 
+  // GEO Watch renewals get their own recovery note.
+  if (subMeta?.kind === 'geo') {
+    const gEmail = invoice.customer_email;
+    if (process.env.RESEND_API_KEY && gEmail) {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: gEmail,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: 'Quick payment hiccup on your Watch',
+          html: clientEmail({
+            preheader: 'A quick card update keeps the monthly re-grades coming.',
+            eyebrow: 'GEO DESK',
+            greeting: 'A quick card hiccup.',
+            body: `<p>The monthly payment for your site Watch did not go through (expired card, bank hiccup, gremlin).</p><p>Stripe retries automatically, or reply and I will send a fresh payment link so this month's re-grade ships on time.</p>`,
+            signature: 'Sarah',
+          }),
+        });
+        await resend.emails.send({
+          from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+          to: 'sarah@modernmustardseed.com',
+          subject: `GEO WATCH payment failed: ${gEmail}`,
+          html: clientEmail({
+            preheader: 'A Watch renewal failed.',
+            eyebrow: 'GEO DUNNING',
+            greeting: 'A renewal bounced.',
+            body: `<p>Subscription ${subId} failed to renew for ${escapeHtmlSafe(gEmail)}. Stripe retries on its own; pause the watch row if it does not recover.</p>`,
+            signature: 'The Desk',
+          }),
+        });
+      } catch (err) {
+        console.error('geo dunning email failed', err);
+      }
+    }
+    return;
+  }
+
   // Season Pass renewals likewise get their own recovery note.
   if (subMeta?.kind === 'pictures') {
     const pxEmail = invoice.customer_email;
@@ -977,6 +1018,156 @@ function cleanHeader(s: string): string {
   return s.replace(/[\r\n\t\x00-\x1f\x7f]+/g, ' ').trim();
 }
 
+/**
+ * A GEO DESK order landed. Fix Pack / Full Desk generate the pack right here
+ * (the pack page also lazily regenerates, so a failure here never strands the
+ * buyer). Full Desk and the Watch subs create monitoring rows for the daily
+ * cron. Installed gets a PRODUCE email to Sarah.
+ */
+async function handleGeoPurchase(
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null
+) {
+  const tier = getGeoTier(slug);
+  const url = (session.metadata?.url || '').trim();
+  const firstName = name?.split(' ')[0];
+  const isSub = tier?.mode === 'subscription';
+  const supabase = getSupabase();
+
+  if (supabase && !isSub) {
+    const { error } = await supabase.from('orders').insert({
+      stripe_session_id: session.id,
+      stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+      product_slug: slug,
+      product_name: `GEO DESK ${tier?.name ?? slug}`,
+      item_type: 'program',
+      price_paid_cents: session.amount_total ?? (tier ? tier.priceUsd * 100 : 0),
+      currency: session.currency ?? 'usd',
+      email,
+      name: name ?? null,
+      status: 'paid',
+    });
+    if (error) console.error('geo order insert failed', error.message);
+  }
+
+  try {
+    await insertLead({
+      type: 'contact',
+      email,
+      name: name ?? null,
+      source: 'geo-buyer',
+      status: 'new',
+      notes: `[bought:${slug}] url: ${url}${slug === 'geo-installed' ? ' INSTALL within 1 business day contact' : ''}`,
+    });
+  } catch (err) {
+    console.error('geo lead insert failed', err);
+  }
+
+  // Generate the pack for pack-bearing tiers (page regenerates lazily if this fails).
+  let packGrade: string | null = null;
+  if (supabase && url && ['geo-fixpack', 'geo-fulldesk', 'geo-installed'].includes(slug)) {
+    try {
+      const generated = await generateArtifacts(url);
+      if (generated) {
+        packGrade = generated.grade;
+        await saveGeoPack(supabase, session.id, {
+          url,
+          email,
+          business: generated.business,
+          artifacts: generated.artifacts,
+          generatedAt: new Date().toISOString(),
+          rerunsUsed: 0,
+          lastScore: generated.score,
+          lastGrade: generated.grade,
+        });
+      }
+    } catch (err) {
+      console.error('geo pack generation failed (page will lazy-generate)', err);
+    }
+  }
+
+  // Monitoring rows: Full Desk gets 90 days; Watch subs run until canceled.
+  if (supabase && url) {
+    const inThirty = new Date(Date.now() + 30 * 86400_000).toISOString();
+    if (slug === 'geo-fulldesk') {
+      await saveGeoWatch(supabase, session.id, {
+        urls: [url],
+        email,
+        kind: 'fulldesk',
+        nextAt: inThirty,
+        expiresAt: new Date(Date.now() + 90 * 86400_000).toISOString(),
+        lastScores: {},
+        createdAt: new Date().toISOString(),
+      });
+    }
+    if (isSub && typeof session.subscription === 'string') {
+      await saveGeoWatch(supabase, session.subscription, {
+        urls: [url],
+        email,
+        kind: slug === 'geo-watchpro' ? 'watchpro' : 'watch',
+        nextAt: new Date().toISOString(), // baseline report on the next cron pass
+        expiresAt: null,
+        lastScores: {},
+        createdAt: new Date().toISOString(),
+      });
+    }
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = new Resend(apiKey);
+
+  try {
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: 'sarah@modernmustardseed.com',
+      subject: `${slug === 'geo-installed' ? 'INSTALL' : 'SOLD'} GEO ${tier?.name ?? slug}: ${url || email}`,
+      html: clientEmail({
+        preheader: slug === 'geo-installed' ? 'A white-glove install booked.' : 'The desk sold a pack.',
+        eyebrow: 'GEO DESK ORDER',
+        greeting: slug === 'geo-installed' ? 'White glove time.' : 'The examiner collected.',
+        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> bought <strong>${tier?.name ?? slug}</strong> for <strong>${escapeHtmlSafe(url)}</strong> ($${tier?.priceUsd ?? '?'}${isSub ? '/mo' : ''}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.${packGrade ? ` Pack generated; current grade ${packGrade}.` : ''}</p>${
+          slug === 'geo-installed'
+            ? '<p>Contact within one business day to schedule the install. Their pack is on the pack page under this session id.</p>'
+            : isSub
+              ? '<p>Monitoring row created; the daily cron sends their baseline within 24h. WATCH PRO: reply to their welcome asking for their other sites, then add urls to the geo:watch row.</p>'
+              : '<p>Nothing to do; the pack self-delivered.</p>'
+        }`,
+        signature: 'The Desk',
+      }),
+    });
+  } catch (err) {
+    console.error('geo sarah email failed', err);
+  }
+
+  try {
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}${isSub ? 'the Watch is on your site' : slug === 'geo-installed' ? 'your install is booked' : 'your GEO Fix Pack is ready'}`,
+      html: clientEmail({
+        preheader: isSub ? 'First re-grade lands within a day.' : 'Open your pack; everything is ready to paste.',
+        eyebrow: `GEO DESK ${tier?.name ?? ''}`.trim(),
+        greeting: firstName ? `${firstName}, consider it graded.` : 'Consider it graded.',
+        body: isSub
+          ? `<p>THE WATCH is now on <strong>${escapeHtmlSafe(url)}</strong>. Your baseline graded report lands within a day, then a fresh re-grade every month: score deltas, what moved, what to fix, and drift alerts if anything breaks.</p>${slug === 'geo-watchpro' ? '<p>WATCH PRO covers up to three sites: reply with the other two and they join the watch.</p>' : ''}<p>Month to month, cancel anytime. We report honestly; nobody can promise what AI engines will say, and we never will.</p>`
+          : slug === 'geo-installed'
+            ? `<p>Your white-glove install for <strong>${escapeHtmlSafe(url)}</strong> is booked. I will email you within one business day to schedule it; after the install you get a before/after graded report with every signal verified live.</p>`
+            : `<p>Your Fix Pack for <strong>${escapeHtmlSafe(url)}</strong> is generated and waiting: llms.txt, ai.txt, structured data, meta rewrites, and your citable FAQ block, each with a copy button and a step-by-step install guide matched to your platform.</p><p>You have ${3} re-scans included: install, re-scan, and watch the grade climb.</p>`,
+        cta: isSub || slug === 'geo-installed'
+          ? { label: 'Reply with questions anytime', url: 'mailto:sarah@modernmustardseed.com' }
+          : { label: 'Open your Fix Pack', url: `https://modernmustardseed.com/geo/pack?session_id=${encodeURIComponent(session.id)}` },
+        signature: 'Sarah',
+      }),
+    });
+  } catch (err) {
+    console.error('geo buyer email failed', err);
+  }
+}
+
 /** A Season Pass ended: stop monthly production. */
 async function handlePicturesSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -1072,6 +1263,11 @@ export async function POST(req: Request) {
       await handlePicturesSubscriptionDeleted(sub);
       return NextResponse.json({ received: true, kind: 'pictures_subscription_canceled' });
     }
+    if (sub.metadata?.kind === 'geo') {
+      const db = getSupabase();
+      if (db) await deleteGeoWatch(db, sub.id);
+      return NextResponse.json({ received: true, kind: 'geo_subscription_canceled' });
+    }
     await handleSubscriptionDeleted(sub);
     return NextResponse.json({ received: true, kind: 'subscription_canceled' });
   }
@@ -1131,6 +1327,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'press') {
     await handlePressPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'press' });
+  }
+
+  // ── GEO DESK order (fix pack, full desk, watch subs, installed) ──
+  if (session.metadata?.kind === 'geo') {
+    await handleGeoPurchase(session, slug, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'geo' });
   }
 
   // ── Flagship $497 program purchase (The Terminal, Idea to Spec, bundle) ──

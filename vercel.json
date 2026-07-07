@@ -48,6 +48,10 @@
     {
       "path": "/api/cron/pilot-usage",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/cron/geo-watch",
+      "schedule": "20 14 * * *"
     }
   ]
 }

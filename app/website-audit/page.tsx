@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import WebsiteAuditEngine from '@/components/WebsiteAuditEngine';
+import GeoDesk from '@/components/geo/GeoDesk';
+import { geoFaqAdditions } from '@/data/geo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 
@@ -73,7 +75,7 @@ export default function WebsiteAuditPage() {
             description:
               'Free AI-graded website audit. Score 0-100, letter grade, per-category breakdown, prioritized to-do list to get to an A.',
           }),
-          faqJsonLd(FAQS),
+          faqJsonLd([...FAQS, ...geoFaqAdditions]),
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },
             { name: 'Website Audit', url: '/website-audit' },
@@ -106,6 +108,9 @@ export default function WebsiteAuditPage() {
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-24">
           <WebsiteAuditEngine />
         </section>
+
+        {/* GEO DESK: the conversion module on the graded report */}
+        <GeoDesk />
 
         {/* What we score */}
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-24">
