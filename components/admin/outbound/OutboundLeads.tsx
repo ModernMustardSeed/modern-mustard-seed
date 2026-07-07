@@ -368,7 +368,7 @@ export default function OutboundLeads() {
                         {reps.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
                       </select>
                     </td>
-                    <td className="px-3 py-2.5 text-right font-oswald tabular-nums">{l.avg_job_value ? fmtMoney(Number(l.avg_job_value)) : ''}</td>
+                    <td className="px-3 py-2.5 text-right font-oswald tabular-nums text-[#1a1815]">{l.avg_job_value ? fmtMoney(Number(l.avg_job_value)) : ''}</td>
                     <td className="px-3 py-2.5 text-center">
                       <input
                         type="checkbox"
