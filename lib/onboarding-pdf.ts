@@ -1,8 +1,8 @@
 import { PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont } from 'pdf-lib';
 import {
-  ONBOARDING_INTRO,
-  MODULES,
-  FIRST_WEEK,
+  PROGRAM,
+  PHASES,
+  FIELD_MISSIONS,
   GLOSSARY,
   TOTAL_MINUTES,
 } from '@/data/onboarding';
@@ -88,7 +88,7 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
   const drawFooter = () => {
     const fy = M - 18;
     page.drawRectangle({ x: M, y: fy + 16, width: contentW, height: 1, color: HAIR });
-    const foot = 'modernmustardseed.com  ·  Sales & Marketing Partner Handbook  ·  Confidential';
+    const foot = 'modernmustardseed.com  ·  The Right Hand Program  ·  Confidential';
     page.drawText(clean(foot), { x: M, y: fy, size: 8, font: reg, color: MUTED });
     const num = `${pageNo}`;
     const nw = bold.widthOfTextAtSize(num, 8);
@@ -132,13 +132,13 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
   drawSpaced('MODERN MUSTARD SEED', M, bandTop - 50, bold, 10, RED, 3.2);
 
   // Big bold title
-  page.drawText('Partner Handbook', { x: M, y: bandTop - 102, size: 30, font: bold, color: INK });
+  page.drawText(clean(PROGRAM.name), { x: M, y: bandTop - 102, size: 30, font: bold, color: INK });
 
   // Subtitle line
-  page.drawText('Your sales and marketing guide. Everything you need to bring in clients.', { x: M, y: bandTop - 132, size: 12, font: ital, color: BODY });
+  page.drawText('Your training to become the right hand of the business.', { x: M, y: bandTop - 132, size: 12, font: ital, color: BODY });
 
   // Read-time line
-  page.drawText(clean(`About ${TOTAL_MINUTES} minutes to read`), {
+  page.drawText(clean(`Six phases · about ${TOTAL_MINUTES} minutes of reading, plus the missions`), {
     x: M,
     y: bandTop - 158,
     size: 10,
@@ -148,11 +148,10 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
 
   // ───────────────────────── Intro ─────────────────────────
   y = bandBottom - 30;
-  if (clean(ONBOARDING_INTRO.title) !== clean('Partner Handbook')) {
-    page.drawText(clean(ONBOARDING_INTRO.title), { x: M, y: y - 18, size: 18, font: bold, color: INK });
-    y -= 32;
-  }
-  para(ONBOARDING_INTRO.body, { size: 10.5, color: BODY, gap: 14 });
+  page.drawText(clean(PROGRAM.promiseTitle), { x: M, y: y - 18, size: 18, font: bold, color: INK });
+  y -= 32;
+  para(PROGRAM.promise, { size: 10.5, color: BODY, gap: 8 });
+  para(PROGRAM.personalLead, { size: 10.5, font: ital, color: MUTED, gap: 14 });
 
   // ───────────────────────── Modules ─────────────────────────
   const moduleHeader = (eyebrow: string, n: number, title: string, summary: string, minutes: number) => {
@@ -176,7 +175,7 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
 
   const blockIndent = 14;
 
-  const drawBlock = (block: (typeof MODULES)[number]['blocks'][number]) => {
+  const drawBlock = (block: (typeof PHASES)[number]['modules'][number]['blocks'][number]) => {
     if (block.heading) {
       ensure(13 * 1.4 + 4);
       page.drawText(clean(block.heading), { x: M, y: y - 11.5, size: 11.5, font: bold, color: INK });
@@ -202,6 +201,19 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
       }
       y -= 4;
     }
+    if (block.callout) {
+      const size = 9.5;
+      const lines = wrap(block.callout, ital, size, contentW - blockIndent - 6);
+      ensure(size * 1.4 * lines.length + 4);
+      // Left mustard rule for the callout
+      page.drawRectangle({ x: M + blockIndent - 4, y: y - size * 1.4 * lines.length + 2, width: 2.5, height: size * 1.4 * lines.length, color: YELLOW });
+      lines.forEach((ln) => {
+        ensure(size * 1.4);
+        page.drawText(ln, { x: M + blockIndent + 4, y: y - size, size, font: ital, color: BODY });
+        y -= size * 1.4;
+      });
+      y -= 6;
+    }
     if (block.links && block.links.length) {
       for (const lk of block.links) {
         const label = clean(`${lk.label}: ${lk.url}`);
@@ -218,10 +230,51 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
     }
   };
 
-  MODULES.forEach((mod, idx) => {
-    moduleHeader(mod.eyebrow, idx + 1, mod.title, mod.summary, mod.minutes);
-    mod.blocks.forEach(drawBlock);
-    y -= 6;
+  // Render a phase divider band.
+  const phaseDivider = (num: number, codename: string, phaseName: string, goal: string, rank: string) => {
+    ensure(72);
+    y -= 10;
+    page.drawRectangle({ x: M, y: y - 2, width: contentW, height: 2, color: INK });
+    y -= 16;
+    drawSpaced(clean(`PHASE ${String(num).padStart(2, '0')}  ·  ${codename.toUpperCase()}`), M, y - 9, bold, 8.5, RED, 2.2);
+    const rankTag = clean(`EARNS: ${rank.toUpperCase()}`);
+    const rankW = bold.widthOfTextAtSize(rankTag, 8.5);
+    page.drawText(rankTag, { x: W - M - rankW, y: y - 9, size: 8.5, font: bold, color: LINK });
+    y -= 24;
+    page.drawText(clean(phaseName), { x: M, y: y - 20, size: 21, font: bold, color: INK });
+    y -= 32;
+    para(goal, { size: 10, font: ital, color: MUTED, gap: 10 });
+  };
+
+  // Render a module's mission callout.
+  const drawMission = (mission: { do: string; why?: string }) => {
+    const size = 10;
+    ensure(size * 1.4 * 2 + 10);
+    y -= 2;
+    drawSpaced('YOUR MISSION', M + blockIndent, y - 9, bold, 8, RED, 1.8);
+    y -= 15;
+    const doLines = wrap(mission.do, bold, size, contentW - blockIndent - 6);
+    doLines.forEach((ln) => {
+      ensure(size * 1.4);
+      page.drawText(ln, { x: M + blockIndent, y: y - size, size, font: bold, color: INK });
+      y -= size * 1.4;
+    });
+    if (mission.why) {
+      para(mission.why, { size: 9, font: ital, color: MUTED, gap: 4, indent: blockIndent });
+    }
+    y -= 8;
+  };
+
+  let moduleNo = 0;
+  PHASES.forEach((phase) => {
+    phaseDivider(phase.num, phase.codename, phase.name, phase.goal, phase.rank);
+    phase.modules.forEach((mod) => {
+      moduleNo += 1;
+      moduleHeader(mod.eyebrow, moduleNo, mod.title, mod.summary, mod.minutes);
+      mod.blocks.forEach(drawBlock);
+      if (mod.mission) drawMission(mod.mission);
+      y -= 6;
+    });
   });
 
   // ───────────────────────── Your first week ─────────────────────────
@@ -236,14 +289,16 @@ export async function buildOnboardingPdf(): Promise<Uint8Array> {
     y -= 30;
   };
 
-  sectionHeader('Get rolling', 'Your first week');
-  for (const it of FIRST_WEEK) {
+  sectionHeader('The mission log', 'Your first ten days');
+  for (const it of FIELD_MISSIONS) {
     const labelSize = 11;
     const boxIndent = 22;
-    // Make sure the label plus one line of detail fit together.
-    ensure(labelSize + 4 + 10 * 1.4);
+    // Make sure the day, label, and one line of detail fit together.
+    ensure(labelSize + 4 + 10 * 1.4 + 10);
     const boxY = y - labelSize - 1;
     page.drawRectangle({ x: M, y: boxY, width: 11, height: 11, borderColor: INK, borderWidth: 1.4 });
+    drawSpaced(clean(it.day).toUpperCase(), M + boxIndent, y - 8, bold, 7.5, RED, 1.4);
+    y -= 12;
     page.drawText(clean(it.label), { x: M + boxIndent, y: y - labelSize, size: labelSize, font: bold, color: INK });
     y -= labelSize * 1.3 + 1;
     para(it.detail, { size: 9.5, color: MUTED, gap: 6, indent: boxIndent });

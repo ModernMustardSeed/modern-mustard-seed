@@ -6,5 +6,5 @@ export const metadata = buildMetadata({ title: 'Onboarding', noindex: true });
 
 export default async function AdminOnboardingPage() {
   const user = await getAdminUser();
-  return <OnboardingHub name={user?.name} />;
+  return <OnboardingHub name={user?.name} email={user?.email} role={user?.role} />;
 }

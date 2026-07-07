@@ -1,4 +1,4 @@
-import { ONBOARDING_INTRO, MODULES, GLOSSARY, FIRST_WEEK } from '@/data/onboarding';
+import { PROGRAM, MODULES, GLOSSARY, FIELD_MISSIONS } from '@/data/onboarding';
 import { LANE_CHEATSHEET, OBJECTIONS as CALL_OBJECTIONS, CALL_GOAL } from '@/data/sales-call-script';
 import { LANES as OUTREACH_LANES } from '@/data/outreach-playbook';
 import { DAILY_GUIDE, SALES_ARC, CHANNELS, LEAD_SOURCES, COLD_CALL, VOICE_DEMO_PLAY, WHAT_WE_SELL, OBJECTIONS as TRAIN_OBJECTIONS, MINDSET } from '@/data/sales-training';
@@ -12,7 +12,7 @@ import { DAILY_GUIDE, SALES_ARC, CHANNELS, LEAD_SOURCES, COLD_CALL, VOICE_DEMO_P
 export function buildHelpKnowledge(): string {
   const parts: string[] = [];
 
-  parts.push(`# Modern Mustard Seed: the full operating knowledge\n\n${ONBOARDING_INTRO.body}`);
+  parts.push(`# Modern Mustard Seed: the full operating knowledge\n\n${PROGRAM.promise}`);
 
   for (const m of MODULES) {
     const lines: string[] = [`\n## ${m.title}\n_${m.summary}_`];
@@ -20,8 +20,10 @@ export function buildHelpKnowledge(): string {
       if (b.heading) lines.push(`\n### ${b.heading}`);
       if (b.body) lines.push(b.body);
       if (b.bullets?.length) for (const bl of b.bullets) lines.push(`- ${bl}`);
+      if (b.callout) lines.push(b.callout);
       if (b.links?.length) for (const lk of b.links) lines.push(`- ${lk.label}: ${lk.url}`);
     }
+    if (m.mission) lines.push(`Mission: ${m.mission.do}${m.mission.why ? ` (${m.mission.why})` : ''}`);
     parts.push(lines.join('\n'));
   }
 
@@ -64,7 +66,7 @@ export function buildHelpKnowledge(): string {
   );
 
   parts.push(
-    `\n## Your first week\n${FIRST_WEEK.map((f) => `- ${f.label}: ${f.detail}`).join('\n')}`
+    `\n## The mission log: their first ten days\n${FIELD_MISSIONS.map((f) => `- ${f.day} - ${f.label}: ${f.detail}`).join('\n')}`
   );
 
   return parts.join('\n');
