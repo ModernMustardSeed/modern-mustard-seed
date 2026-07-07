@@ -3,14 +3,21 @@ import { normalizeEmail } from './client-auth';
 import { getAffiliateByEmail } from './affiliate';
 import { products } from '@/data/products';
 
-/** Every product an affiliate gets free: the programs, MUSTARD MODE, and the playbooks. */
-export const ALL_PRODUCT_SLUGS: string[] = ['the-terminal', 'idea-to-spec', 'mustard-mode', 'mustard-mode-builder', ...products.map((p) => p.slug)];
+/** Every product an affiliate gets free: the programs, MUSTARD MODE, the Launch Kit, and the playbooks. */
+export const ALL_PRODUCT_SLUGS: string[] = ['the-terminal', 'idea-to-spec', 'mustard-mode', 'mustard-mode-builder', 'mustard-launch-kit', ...products.map((p) => p.slug)];
 
 /** MUSTARD MODE entitlement slugs (Player, Builder, Cabinet). Tier logic lives in lib/mustard-mode.ts. */
 export const MUSTARD_SLUGS = ['mustard-mode', 'mustard-mode-builder', 'mustard-mode-cabinet'] as const;
 export type MustardSlug = (typeof MUSTARD_SLUGS)[number];
 export function isMustardSlug(slug: string): slug is MustardSlug {
   return (MUSTARD_SLUGS as readonly string[]).includes(slug);
+}
+
+/** MUSTARD LAUNCH entitlement slugs (Kit one-time, Room subscription). Tier logic lives in lib/mustard-launch.ts. */
+export const LAUNCH_SLUGS = ['mustard-launch-kit', 'mustard-launch-room'] as const;
+export type LaunchSlug = (typeof LAUNCH_SLUGS)[number];
+export function isLaunchSlug(slug: string): slug is LaunchSlug {
+  return (LAUNCH_SLUGS as readonly string[]).includes(slug);
 }
 
 /**

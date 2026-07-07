@@ -31,8 +31,9 @@ import { renderPressPdf } from '@/lib/press-pdf';
 import { getGeoTier } from '@/data/geo';
 import { saveGeoWatch, deleteGeoWatch, claimGeoWebhook } from '@/lib/geo-store';
 import { SITE } from '@/lib/seo';
-import { grantEntitlement, revokeEntitlement, PROGRAM_ASSETS, isProgramSlug, isMustardSlug, type ProgramSlug } from '@/lib/entitlements';
+import { grantEntitlement, revokeEntitlement, PROGRAM_ASSETS, isProgramSlug, isMustardSlug, isLaunchSlug, type ProgramSlug } from '@/lib/entitlements';
 import { getMustardLevel } from '@/data/mustard-mode/offer';
+import { getLaunchTierRow } from '@/data/mustard-launch';
 import { createMagicToken } from '@/lib/client-auth';
 import { insertLead } from '@/lib/supabase';
 import { recordProductCommission } from '@/lib/affiliate';
@@ -275,6 +276,128 @@ async function handleMustardSubscriptionDeleted(stripe: NonNullable<ReturnType<t
     console.log('mustard cabinet revoked for subscription', sub.id);
   } catch (err) {
     console.error('mustard cabinet revoke failed', err);
+  }
+}
+
+/**
+ * A MUSTARD LAUNCH tier was purchased (the Launch Kit one-time, or the Launch
+ * Room subscription). Grant the entitlement, record the order + buyer, attribute
+ * any affiliate, and email a passwordless access link into the Launch Deck.
+ */
+async function handleLaunchPurchase(
+  req: Request,
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null,
+  itemName: string
+) {
+  if (!isLaunchSlug(slug)) {
+    console.error('launch webhook: unknown slug', slug);
+    return;
+  }
+  const tier = getLaunchTierRow(slug);
+  const source = slug === 'mustard-launch-room' ? 'subscription' : 'purchase';
+  await grantEntitlement(email, slug, source);
+
+  const ref = session.metadata?.ref;
+  if (ref) {
+    await recordProductCommission({
+      affiliateCode: ref,
+      orderEmail: email,
+      productSlug: slug,
+      amountCents: session.amount_total ?? (tier ? tier.priceUsd * 100 : 0),
+      stripeSessionId: session.id,
+    });
+  }
+
+  // Room revenue is recorded per cycle by invoice.paid (including month one), so
+  // only the one-time Kit inserts an order here. Prevents a double count.
+  const supabase = getSupabase();
+  if (supabase && slug !== 'mustard-launch-room') {
+    const { error } = await supabase.from('orders').insert({
+      stripe_session_id: session.id,
+      stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+      product_slug: slug,
+      product_name: itemName,
+      item_type: 'program',
+      price_paid_cents: session.amount_total ?? (tier ? tier.priceUsd * 100 : 0),
+      currency: session.currency ?? 'usd',
+      email,
+      name: name ?? null,
+      status: 'paid',
+    });
+    if (error) console.error('launch order insert failed', error.message);
+  }
+  try {
+    await insertLead({ type: 'contact', email, name: name ?? null, source: 'mustard-launch-buyer', status: 'new', notes: `[bought:${slug}]` });
+  } catch (err) {
+    console.error('launch lead insert failed', err);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const origin = new URL(req.url).origin || 'https://modernmustardseed.com';
+    const token = await createMagicToken(email);
+    const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}&next=/mustard-launch/hq`;
+    const resend = new Resend(apiKey);
+    const firstName = name?.split(' ')[0];
+
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}you are cleared for launch`,
+      html: programAccessEmail({
+        firstName,
+        programName: `MUSTARD LAUNCH ${tier?.name ?? ''}`.trim(),
+        toolName: 'your Launch Deck (your Kit, the mission map, and your coach)',
+        url,
+      }),
+    });
+
+    await resend.emails.send({
+      from: 'Modern Mustard Seed Store <sarah@modernmustardseed.com>',
+      to: 'sarah@modernmustardseed.com',
+      subject: `New MUSTARD LAUNCH sale. ${itemName}. $${((session.amount_total ?? 0) / 100).toFixed(0)}.`,
+      html: leadNotification({
+        type: 'Contact',
+        name: name ?? 'unknown',
+        email,
+        fields: [
+          { label: 'Tier', value: itemName },
+          { label: 'Email', value: email },
+          { label: 'Amount', value: `$${((session.amount_total ?? 0) / 100).toFixed(0)}` },
+        ],
+        message: `Granted entitlement: ${slug}`,
+        suggestedAction: 'Access email sent to the founder with their Launch Deck link.',
+      }),
+    });
+  } catch (err) {
+    console.error('launch access email failed', err);
+  }
+}
+
+/**
+ * A Launch Room subscription was canceled. Revoke the room entitlement so Deck
+ * access follows the subscription (the one-time Kit grant is never touched).
+ */
+async function handleLaunchSubscriptionDeleted(stripe: NonNullable<ReturnType<typeof getStripe>>, sub: Stripe.Subscription) {
+  try {
+    const customerId = typeof sub.customer === 'string' ? sub.customer : sub.customer?.id;
+    if (!customerId) return;
+    const customer = await stripe.customers.retrieve(customerId);
+    const email = !customer.deleted ? customer.email : null;
+    if (!email) return;
+    const revoked = await revokeEntitlement(email, 'mustard-launch-room');
+    if (!revoked) {
+      console.error('launch room revoke FAILED for subscription', sub.id, '- revoke manually in entitlements');
+      return;
+    }
+    console.log('launch room revoked for subscription', sub.id);
+  } catch (err) {
+    console.error('launch room revoke failed', err);
   }
 }
 
@@ -1242,6 +1365,10 @@ export async function POST(req: Request) {
       await handleMustardSubscriptionDeleted(stripe, sub);
       return NextResponse.json({ received: true, kind: 'mustard_subscription_canceled' });
     }
+    if (sub.metadata?.kind === 'mustard-launch') {
+      await handleLaunchSubscriptionDeleted(stripe, sub);
+      return NextResponse.json({ received: true, kind: 'launch_subscription_canceled' });
+    }
     if (sub.metadata?.kind === 'sidekick') {
       await handleSidekickSubscriptionDeleted(sub);
       return NextResponse.json({ received: true, kind: 'sidekick_subscription_canceled' });
@@ -1296,6 +1423,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'mustard-mode') {
     await handleMustardPurchase(req, session, slug, email, name ?? null, itemName ?? slug);
     return NextResponse.json({ received: true, kind: 'mustard-mode' });
+  }
+
+  // ── MUSTARD LAUNCH purchase (the Launch Kit, or the Launch Room sub) ──
+  if (session.metadata?.kind === 'mustard-launch') {
+    await handleLaunchPurchase(req, session, slug, email, name ?? null, itemName ?? slug);
+    return NextResponse.json({ received: true, kind: 'mustard-launch' });
   }
 
   // ── SIDEKICK subscription started (setup fee rides the first invoice) ──
