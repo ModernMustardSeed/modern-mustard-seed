@@ -20,8 +20,22 @@ export const frontDeskIntents: FrontDeskIntent[] = [
     key: 'voice',
     match: ['voice', 'phone', 'call', 'receptionist', 'answering', 'after hours', 'missed call'],
     reply:
-      "Scoped. A 24/7 AI voice agent on your own number: books appointments, answers your FAQs in a natural human voice, routes the urgent calls to you. Speaks 100+ languages. We ship these in about 2 weeks, fixed quote before work starts. Want it built, or want to learn to build it yourself?",
+      "Scoped. A 24/7 AI voice agent on your own number: books appointments, answers your FAQs in a natural human voice, routes the urgent calls to you. Speaks 100+ languages. Fastest way to believe it: forge a free demo trained on YOUR business at modernmustardseed.com/sidekick and talk to it in sixty seconds. Want it built, or want to learn to build it yourself?",
     headline: 'Your {thing}, answering by week two.',
+  },
+  {
+    key: 'press',
+    match: ['menu', 'price list', 'price sheet', 'rate sheet', 'flyer', 'business card', 'yard sign'],
+    reply:
+      "Scoped, and there's a shortcut: MUSTARD PRESS typesets your actual price list into a print-ready page while you watch, free, every price exactly as you wrote it. Run it at modernmustardseed.com/press. The clean file is $97, instant. Bigger brand system? That's THE KIT, or we design the whole presence.",
+    headline: 'Your {thing}, print-ready today.',
+  },
+  {
+    key: 'pictures',
+    match: ['commercial', 'video ad', 'promo video', 'tv ad', 'advertisement', 'video for my'],
+    reply:
+      "Scoped, and the studio does this one on the spot: MUSTARD PICTURES writes your commercial's storyboard and taglines free at modernmustardseed.com/pictures (the Screen Test). Love it? The finished cinematic spot is $197 and lands in about two days, three cuts, ready to run.",
+    headline: 'Your {thing}, in theaters this week.',
   },
   {
     key: 'store',
