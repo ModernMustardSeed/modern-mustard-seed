@@ -1,0 +1,51 @@
+---
+title: "The Panel and the Golden Set: How We Make AI Do Senior-Level Work"
+description: "Two features we built into our AI setup: a panel that argues a decision from every side before recommending one, and a golden set that grades the work against a known-good bar. The difference between using AI and running an AI operation."
+date: "2026-07-07"
+dateModified: "2026-07-07"
+tag: "Agentic Systems"
+author: "Sarah Scarano"
+---
+
+Most people use AI like a vending machine. Ask a question, take the first answer, move on. That is fine for trivia. It is a terrible way to run a business, because the first answer from any model is the safe, average, agreeable one, and the safe answer is usually wrong about the things that actually matter.
+
+The setup we run at Modern Mustard Seed does two things a vending machine cannot. It argues with itself before it decides, and it grades its own work against a known-good bar before it ships. Internally we call these the panel and the golden set. Here is how each one works, and why they change the output.
+
+## The Panel: decisions by debate, not by vibes
+
+When there is a real decision on the table (which pricing model, which architecture, build or buy, how to position an offer) I do not ask the AI what it thinks. One AI opinion regresses to the mean. It reaches for the most common answer in its training and hands it back with confidence.
+
+Instead I convene a panel. It runs in four moves.
+
+1. **Frame.** One agent restates the decision in a single sentence and lays out three or four genuinely distinct options, including one non-obvious one, plus the criteria that actually decide it.
+2. **Propose.** A separate advocate is assigned to each option and told to steelman it. Not to be balanced. To win by being right. Each one argues its case as hard as it can, with a concrete plan, honest risks, and the first move.
+3. **Judge.** A panel of critics scores every proposal, but each critic looks through one lens only. One weighs execution risk (what breaks, what stalls, what depends on things outside my control). One weighs revenue and upside (what actually moves money, on what timeline). One weighs reversibility (how cheap is it to be wrong). They are told to be stingy. "Fine" is not the bar.
+4. **Synthesize.** A final agent makes one call, resolves the fatal flaw the panel found in the winner, and grafts the single best idea out of every option that lost.
+
+Why it works: the advocates surface the option you would not have considered, the lenses catch the flaw you would have hit in month two, and the synthesis steals the good part of the losing ideas instead of throwing them out. It is a decision meeting with no ego, no politics, and no one protecting their turf. What comes out is not "here is a reasonable answer." It is "here is the call, here is the flaw we already fixed, and here are the three things worth keeping from the options we rejected."
+
+## The Golden Set: grading against a known-good bar
+
+The second feature answers a harder question. How do you know your AI's work is still good today?
+
+Model quality is not constant. Providers swap versions, tighten limits, change tiers, and access windows open and close without notice. The frightening version of that is not the AI getting obviously dumber. It is the AI getting slightly dumber and you finding out when a client does.
+
+So we built a golden set. Ten tasks pulled straight from the real business: a product description for the apparel brand, a cold email, a pricing memo, a bug diagnosis, a design critique, a feature scope. For each one, the best version of the model on its best day wrote a golden answer, and we wrote a rubric worth 100 points.
+
+Then the test runs like an exam with the answer key sealed. A fresh agent gets the task with no access to the golden. It cannot see the answer, so it cannot cheat toward it. It produces its own work from scratch. Only then does a second agent, a skeptic whose whole job is to be hard to impress, open the golden and the rubric and grade the result criterion by criterion. When it is unsure, it scores lower.
+
+The number tells me which part of the system is slipping, on which model, the same day it slips, instead of a month later in a client's inbox. And there is one rule I hold above the rest: the golden is a calibration anchor, not gospel. More than once the fresh agent beat the golden, and the honest move was to raise the golden, not the score. A stale reference is worse than no reference at all.
+
+## These are not AI tricks. They are management practices.
+
+None of this is exotic. A panel is a decision meeting run properly. A golden set is a QA rubric. What is new is that both now run in software, in minutes, for the price of a few tokens, on demand, as many times as I want.
+
+Here is the part that surprised me. Most of the gap between an expensive frontier model and a cheaper one is not raw intelligence. It is discipline. The expensive model argues before it decides and verifies before it claims. A cheaper model is capable of both. It just will not do them by default, the same way a talented junior will not run a preflight checklist unless the checklist exists. So we made the checklists exist. The discipline stops living in the model and starts living in the system, and systems do not have off days.
+
+## Why this matters if you are running a business
+
+This is the actual work we do at Modern Mustard Seed. Not "AI tips." We build operations where the decisions are stress-tested and the output is graded before anyone sees it. A voice agent answering the phone at 2am is only worth having if its quality holds when the model underneath it changes. An audit engine is only worth trusting if it can argue itself out of the wrong conclusion. The panel and the golden set are how you get there, and they are two pieces of a larger kit that turns a language model into something that behaves like a team.
+
+I published the whole thing as a free playbook: the doctrine, the skeptic agent, the workflows, and the recipes. Copy-paste, no dependencies. [Get the Fable Mind Playbook, free.](/playbooks/fable-mind)
+
+And if you would rather have this built into your operation, tuned to your stack, and pointed at your revenue, [book a call](/book). That is what we build.
