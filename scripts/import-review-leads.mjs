@@ -60,7 +60,7 @@ const MOUNTAIN_PACIFIC = new Set(['MT', 'ID', 'WY', 'UT', 'CO', 'WA', 'OR', 'CA'
 const NICHES = new Set(['home_service', 'dental_medspa', 'real_estate', 'restaurant', 'other']);
 
 const [{ data: existing, error: exErr }, { data: reps, error: repErr }] = await Promise.all([
-  sb.from('outbound_leads').select('phone').limit(20000),
+  sb.from('outbound_leads').select('phone, business_name, state').limit(20000),
   sb.from('outbound_reps').select('id, name'),
 ]);
 if (exErr || repErr) {
@@ -68,6 +68,9 @@ if (exErr || repErr) {
   process.exit(1);
 }
 const known = new Set((existing ?? []).map((l) => phoneKey(l.phone)).filter((k) => k.length >= 7));
+// Same business can surface twice with different lines; one row per shop.
+const nameKey = (n, s) => `${String(n ?? '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 40)}|${String(s ?? '').toUpperCase().slice(0, 2)}`;
+const knownNames = new Set((existing ?? []).map((l) => nameKey(l.business_name, l.state)));
 const polly = (reps ?? []).find((r) => r.name === 'Polly')?.id ?? null;
 const sarah = (reps ?? []).find((r) => r.name === 'Sarah')?.id ?? null;
 
@@ -77,8 +80,10 @@ const rows = [];
 for (const l of input) {
   const key = phoneKey(l.phone);
   if (key.length !== 10) { badPhone++; continue; }
-  if (known.has(key)) { dupes++; continue; }
+  const nk = nameKey(decode(l.business_name), l.state);
+  if (known.has(key) || knownNames.has(nk)) { dupes++; continue; }
   known.add(key);
+  knownNames.add(nk);
   const state = String(l.state ?? '').trim().toUpperCase().slice(0, 2);
   const quote = decode(l.review_quote).replace(/\s+/g, ' ').replace(/"/g, "'").trim().slice(0, 300);
   const source = decode(l.review_source).trim();
