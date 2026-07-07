@@ -29,8 +29,7 @@ import { getPressTier, PRESS } from '@/data/press';
 import { getPressRun, consumeHandPressSlot } from '@/lib/press-store';
 import { renderPressPdf } from '@/lib/press-pdf';
 import { getGeoTier } from '@/data/geo';
-import { saveGeoPack, saveGeoWatch, deleteGeoWatch } from '@/lib/geo-store';
-import { generateArtifacts } from '@/lib/geo-fix-pack';
+import { saveGeoWatch, deleteGeoWatch, claimGeoWebhook } from '@/lib/geo-store';
 import { SITE } from '@/lib/seo';
 import { grantEntitlement, revokeEntitlement, PROGRAM_ASSETS, isProgramSlug, isMustardSlug, type ProgramSlug } from '@/lib/entitlements';
 import { getMustardLevel } from '@/data/mustard-mode/offer';
@@ -1036,6 +1035,12 @@ async function handleGeoPurchase(
   const isSub = tier?.mode === 'subscription';
   const supabase = getSupabase();
 
+  // Idempotency: Stripe retries this event; only the first attempt acts.
+  if (supabase) {
+    const once = await claimGeoWebhook(supabase, session.id);
+    if (once === 'taken') return;
+  }
+
   if (supabase && !isSub) {
     const { error } = await supabase.from('orders').insert({
       stripe_session_id: session.id,
@@ -1065,30 +1070,12 @@ async function handleGeoPurchase(
     console.error('geo lead insert failed', err);
   }
 
-  // Generate the pack for pack-bearing tiers (page regenerates lazily if this fails).
-  let packGrade: string | null = null;
-  if (supabase && url && ['geo-fixpack', 'geo-fulldesk', 'geo-installed'].includes(slug)) {
-    try {
-      const generated = await generateArtifacts(url);
-      if (generated) {
-        packGrade = generated.grade;
-        await saveGeoPack(supabase, session.id, {
-          url,
-          email,
-          business: generated.business,
-          artifacts: generated.artifacts,
-          generatedAt: new Date().toISOString(),
-          rerunsUsed: 0,
-          lastScore: generated.score,
-          lastGrade: generated.grade,
-        });
-      }
-    } catch (err) {
-      console.error('geo pack generation failed (page will lazy-generate)', err);
-    }
-  }
+  // Pack generation deliberately does NOT happen here: Stripe fails webhook
+  // responses slower than ~20s, and the pipeline takes minutes. The pack page
+  // triggers /api/geo/generate (300s budget, idempotent) on first open.
 
-  // Monitoring rows: Full Desk gets 90 days; Watch subs run until canceled.
+  // Monitoring rows: Full Desk gets 100 days (3 monthly re-grades fit with
+  // margin); Watch subs run until canceled.
   if (supabase && url) {
     const inThirty = new Date(Date.now() + 30 * 86400_000).toISOString();
     if (slug === 'geo-fulldesk') {
@@ -1097,7 +1084,7 @@ async function handleGeoPurchase(
         email,
         kind: 'fulldesk',
         nextAt: inThirty,
-        expiresAt: new Date(Date.now() + 90 * 86400_000).toISOString(),
+        expiresAt: new Date(Date.now() + 100 * 86400_000).toISOString(),
         lastScores: {},
         createdAt: new Date().toISOString(),
       });
@@ -1128,7 +1115,7 @@ async function handleGeoPurchase(
         preheader: slug === 'geo-installed' ? 'A white-glove install booked.' : 'The desk sold a pack.',
         eyebrow: 'GEO DESK ORDER',
         greeting: slug === 'geo-installed' ? 'White glove time.' : 'The examiner collected.',
-        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> bought <strong>${tier?.name ?? slug}</strong> for <strong>${escapeHtmlSafe(url)}</strong> ($${tier?.priceUsd ?? '?'}${isSub ? '/mo' : ''}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.${packGrade ? ` Pack generated; current grade ${packGrade}.` : ''}</p>${
+        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> bought <strong>${tier?.name ?? slug}</strong> for <strong>${escapeHtmlSafe(url)}</strong> ($${tier?.priceUsd ?? '?'}${isSub ? '/mo' : ''}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p>${
           slug === 'geo-installed'
             ? '<p>Contact within one business day to schedule the install. Their pack is on the pack page under this session id.</p>'
             : isSub
@@ -1156,7 +1143,7 @@ async function handleGeoPurchase(
           ? `<p>THE WATCH is now on <strong>${escapeHtmlSafe(url)}</strong>. Your baseline graded report lands within a day, then a fresh re-grade every month: score deltas, what moved, what to fix, and drift alerts if anything breaks.</p>${slug === 'geo-watchpro' ? '<p>WATCH PRO covers up to three sites: reply with the other two and they join the watch.</p>' : ''}<p>Month to month, cancel anytime. We report honestly; nobody can promise what AI engines will say, and we never will.</p>`
           : slug === 'geo-installed'
             ? `<p>Your white-glove install for <strong>${escapeHtmlSafe(url)}</strong> is booked. I will email you within one business day to schedule it; after the install you get a before/after graded report with every signal verified live.</p>`
-            : `<p>Your Fix Pack for <strong>${escapeHtmlSafe(url)}</strong> is generated and waiting: llms.txt, ai.txt, structured data, meta rewrites, and your citable FAQ block, each with a copy button and a step-by-step install guide matched to your platform.</p><p>You have ${3} re-scans included: install, re-scan, and watch the grade climb.</p>`,
+            : `<p>Your Fix Pack for <strong>${escapeHtmlSafe(url)}</strong> is ready to open: llms.txt, ai.txt, structured data, meta rewrites, and your citable FAQ block, each with a copy button and an install guide matched to your platform. It finishes writing itself on first open (about a minute; it reads your live site).</p><p>You have 3 re-scans included: install, re-scan, and watch the grade climb.</p>`,
         cta: isSub || slug === 'geo-installed'
           ? { label: 'Reply with questions anytime', url: 'mailto:sarah@modernmustardseed.com' }
           : { label: 'Open your Fix Pack', url: `https://modernmustardseed.com/geo/pack?session_id=${encodeURIComponent(session.id)}` },

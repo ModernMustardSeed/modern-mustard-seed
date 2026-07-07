@@ -21,7 +21,10 @@ function normalizeUrl(raw: string): string | null {
     const u = new URL(/^https?:\/\//i.test(t) ? t : `https://${t}`);
     if (!['http:', 'https:'].includes(u.protocol)) return null;
     if (!u.hostname.includes('.')) return null;
-    return u.toString();
+    const normalized = u.toString();
+    // Reject rather than truncate: a sliced URL would generate a wrong pack.
+    if (normalized.length > 190) return null;
+    return normalized;
   } catch {
     return null;
   }

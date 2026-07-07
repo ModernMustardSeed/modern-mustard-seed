@@ -1,9 +1,9 @@
 import { buildMetadata } from '@/lib/seo';
 import { getStripe } from '@/lib/stripe';
 import { getSupabase } from '@/lib/supabase';
-import { getGeoPack, saveGeoPack, type GeoPack } from '@/lib/geo-store';
-import { generateArtifacts } from '@/lib/geo-fix-pack';
+import { getGeoPack, type GeoPack } from '@/lib/geo-store';
 import PackViewer from '@/components/geo/PackViewer';
+import PackGenerating from '@/components/geo/PackGenerating';
 import Link from 'next/link';
 
 export const metadata = buildMetadata({
@@ -52,30 +52,17 @@ export default async function GeoPackPage({ searchParams }: { searchParams: Prom
     return fail('This plan is watch-only.', 'THE WATCH delivers by email every month. Your first re-grade is on its way.');
   }
 
-  const url = session.metadata?.url || '';
-  let pack: GeoPack | null = await getGeoPack(supabase, sessionId);
+  const pack: GeoPack | null = await getGeoPack(supabase, sessionId);
 
-  if (!pack && url) {
-    // Lazy generation: the webhook usually got here first, but the pack page
-    // can always rebuild from the paid session (resilient by design).
-    const generated = await generateArtifacts(url);
-    if (generated) {
-      pack = {
-        url,
-        email: session.customer_details?.email || '',
-        business: generated.business,
-        artifacts: generated.artifacts,
-        generatedAt: new Date().toISOString(),
-        rerunsUsed: 0,
-        lastScore: generated.score,
-        lastGrade: generated.grade,
-      };
-      await saveGeoPack(supabase, sessionId, pack);
-    }
-  }
-
+  // Generation runs client-triggered in its own long-budget function
+  // (/api/geo/generate) so neither this render nor the Stripe webhook ever
+  // carries a multi-minute pipeline (ship-gate blocker fix).
   if (!pack) {
-    return fail('Your pack is still on the press.', 'Give it one minute and refresh. If it keeps happening, reply to your receipt and Sarah will hand-deliver it.');
+    return (
+      <div className="bg-[#FBF6EA] text-[#161616] min-h-screen">
+        <PackGenerating sessionId={sessionId} />
+      </div>
+    );
   }
 
   return (

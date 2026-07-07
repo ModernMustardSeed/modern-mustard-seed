@@ -38,7 +38,7 @@ export async function parseCatalog(raw: string): Promise<PressCatalog | null> {
       .map((b) => b.text)
       .join('')
       .trim()
-      .replace(/^```json?\s*|\s*```$/g, '');
+      .replace(/^```(?:json)?\s*|\s*```$/g, '');
     const parsed = JSON.parse(text) as PressCatalog;
     return sanitizeCatalog(parsed);
   } catch (err) {

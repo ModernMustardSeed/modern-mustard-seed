@@ -71,7 +71,7 @@ export async function generateArtifacts(url: string): Promise<{ artifacts: GeoAr
       .map((b) => b.text)
       .join('')
       .trim()
-      .replace(/^```json?\s*|\s*```$/g, '');
+      .replace(/^```(?:json)?\s*|\s*```$/g, '');
     const gen = JSON.parse(text) as Omit<GeoArtifacts, 'platform' | 'installSteps'>;
     if (!gen.llmsTxt || !gen.aiTxt || !Array.isArray(gen.jsonLd)) return null;
 

@@ -12,7 +12,7 @@ import { generateArtifacts } from '@/lib/geo-fix-pack';
 import { GEO } from '@/data/geo';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 const ipHits = new Map<string, { count: number; reset: number }>();
 function ipAllowed(ip: string): boolean {
@@ -63,17 +63,24 @@ export async function POST(req: Request) {
     );
   }
 
+  // Meter BEFORE the expensive work (parallel requests cannot blow the cap),
+  // refund the credit on scan failure.
+  const metered = { ...pack, rerunsUsed: (pack.rerunsUsed ?? 0) + 1 };
+  if (!(await saveGeoPack(supabase, sessionId, metered))) {
+    return NextResponse.json({ error: 'desk_dark' }, { status: 503 });
+  }
+
   const generated = await generateArtifacts(pack.url);
   if (!generated) {
+    await saveGeoPack(supabase, sessionId, pack); // refund the credit
     return NextResponse.json({ error: 'scan_failed', message: 'The site would not scan just now (it happens: slow hosts, firewalls). Your re-scan was NOT used; try again in a few minutes.' }, { status: 502 });
   }
 
   const next = {
-    ...pack,
+    ...metered,
     artifacts: generated.artifacts,
     business: generated.business || pack.business,
     generatedAt: new Date().toISOString(),
-    rerunsUsed: (pack.rerunsUsed ?? 0) + 1,
     lastScore: generated.score,
     lastGrade: generated.grade,
   };

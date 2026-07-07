@@ -28,11 +28,13 @@ function prescription(grade: string): string {
 export default function GeoDesk() {
   const [last, setLast] = useState<LastAudit | null>(null);
   const [urlInput, setUrlInput] = useState('');
+  const [welcome, setWelcome] = useState(false);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem('mms_last_audit');
       if (saved) setLast(JSON.parse(saved) as LastAudit);
+      if (new URLSearchParams(window.location.search).get('geo') === 'welcome') setWelcome(true);
     } catch { /* fresh */ }
     const onDone = (e: Event) => {
       const detail = (e as CustomEvent).detail as LastAudit;
@@ -50,6 +52,13 @@ export default function GeoDesk() {
   return (
     <section id="geo-desk" className="py-16 md:py-24 border-t-2 border-[#161616] bg-[#FBF6EA]">
       <div className="max-w-5xl mx-auto px-5">
+        {welcome && (
+          <div className="max-w-2xl mx-auto mb-10 rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-6 text-center shadow-[5px_5px_0_0_#161616]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#161616] font-bold mb-1.5">[ ORDER CONFIRMED ]</p>
+            <p className="font-display text-xl font-black text-[#161616]">The desk has your site.</p>
+            <p className="font-body text-sm text-[#161616]/75 mt-2">Your receipt and next steps are in your inbox. Watch subscribers: the baseline re-grade lands within a day. White glove: Sarah emails within one business day.</p>
+          </div>
+        )}
         <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3 text-center">{GEO.wordmark}</p>
         <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
           Be the answer AI gives.
@@ -61,14 +70,16 @@ export default function GeoDesk() {
         {/* The examiner's verdict */}
         <div className="max-w-2xl mx-auto mt-10">
           {last ? (
-            <div className="relative rounded-2xl border-[3px] border-[#161616] bg-white p-7 shadow-[8px_8px_0_0_#161616]">
-              <div className="flex items-start gap-5">
+            <div className="relative rounded-2xl border-[3px] border-[#161616] bg-white p-6 sm:p-7 shadow-[8px_8px_0_0_#161616]">
+              {/* flex-wrap: the stamp drops to its own row on narrow screens
+                  instead of pushing the viewport (ship-gate 375px blocker). */}
+              <div className="flex flex-wrap items-start gap-4 sm:gap-5">
                 <Image src="/brand/mascot.png" alt="Mr. Mustard, examiner" width={56} height={56} className="rounded-full border-2 border-[#161616] bg-[#F5B700] shrink-0" />
-                <div className="flex-1">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">The examiner&apos;s verdict · {last.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</p>
+                <div className="flex-1 min-w-[11rem]">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold break-words">The examiner&apos;s verdict · {last.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</p>
                   <p className="font-body text-[15px] text-[#161616]/80 leading-relaxed mt-2">{prescription(last.grade)}</p>
                 </div>
-                <div className="shrink-0 -rotate-6 rounded-lg border-[3px] border-[#E0301E] px-4 py-2 text-center" aria-label={`Grade ${last.grade}`}>
+                <div className="shrink-0 -rotate-6 rounded-lg border-[3px] border-[#E0301E] px-4 py-2 text-center mx-auto sm:mx-0" aria-label={`Grade ${last.grade}`}>
                   <span className="font-display text-4xl font-black text-[#E0301E] leading-none">{last.grade}</span>
                   <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-[#E0301E]/80 mt-0.5">{last.score}/100</span>
                 </div>

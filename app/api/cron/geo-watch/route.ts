@@ -1,23 +1,46 @@
 /**
  * The GEO Watch: daily cron (Hobby plan = daily only) that re-grades every
- * watched site that is due (monthly cadence per site), emails the owner the
- * delta in plain words, and flags drift loudly. Processes a bounded batch per
- * run so a pile-up can never blow the function budget.
+ * watched site that is due (monthly cadence anchored to createdAt), emails
+ * the owner the delta in plain words, and flags drift loudly.
+ *
+ * Hardened per ship-gate: each watch is LEASED (nextAt pushed forward with a
+ * verified write) BEFORE any auditing or emailing, so a crash, a concurrent
+ * run, or an unauthenticated re-trigger can never double-audit or
+ * double-email. Optional CRON_SECRET gate when the env is set.
  */
 
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { getSupabase } from '@/lib/supabase';
-import { dueGeoWatches, saveGeoWatch } from '@/lib/geo-store';
+import { dueGeoWatches, saveGeoWatch, type GeoWatch } from '@/lib/geo-store';
 import { runWebsiteAudit } from '@/lib/website-audit';
 import { clientEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const maxDuration = 300;
 
-const BATCH = 5;
+const BATCH = 4; // watches per run; each can hold up to 3 URLs (~30s per audit)
 
-export async function GET() {
+function esc(s: string): string {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/** Monthly cadence anchored to createdAt so cycles never drift past expiry. */
+function nextAnchored(watch: GeoWatch): { nextAt: string; cycles: number } {
+  const created = new Date(watch.createdAt).getTime();
+  const cycles = (watch.cycles ?? 0) + 1;
+  return { nextAt: new Date(created + (cycles + 1) * 30 * 86400_000).toISOString(), cycles };
+}
+
+export async function GET(req: Request) {
+  const secret = (process.env.CRON_SECRET || '').trim();
+  if (secret) {
+    const url = new URL(req.url);
+    if (url.searchParams.get('key') !== secret && req.headers.get('authorization') !== `Bearer ${secret}`) {
+      return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
+    }
+  }
+
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ ok: false, error: 'no_store' }, { status: 503 });
 
@@ -26,6 +49,15 @@ export async function GET() {
   const results: Record<string, string> = {};
 
   for (const { id, watch } of due) {
+    // LEASE FIRST: push nextAt forward before any expensive/side-effect work.
+    // If the lease write fails, skip: better a late report than a double one.
+    const { nextAt, cycles } = nextAnchored(watch);
+    const leased = await saveGeoWatch(supabase, id, { ...watch, nextAt, cycles });
+    if (!leased) {
+      results[id] = 'lease_failed';
+      continue;
+    }
+
     const lines: string[] = [];
     const nextScores: Record<string, number> = { ...watch.lastScores };
     let drift = false;
@@ -33,7 +65,7 @@ export async function GET() {
     for (const url of watch.urls.slice(0, 3)) {
       const audit = await runWebsiteAudit(url);
       if (!audit.ok) {
-        lines.push(`<p><strong>${url}</strong>: could not be scanned this month (${audit.error}). We will retry next cycle; if your site is down, that is worth a look today.</p>`);
+        lines.push(`<p><strong>${esc(url)}</strong>: could not be scanned this month (${esc(audit.error)}). We will retry next cycle; if your site is down, that is worth a look today.</p>`);
         drift = true;
         continue;
       }
@@ -45,7 +77,7 @@ export async function GET() {
       if (delta != null && delta < -5) drift = true;
       const topFix = audit.report.top_three_fixes?.[0];
       lines.push(
-        `<p><strong>${url}</strong>: <strong>${audit.report.letter_grade} (${score}/100)</strong>, ${deltaText}.<br/>${audit.report.headline ?? ''}${topFix ? `<br/>Next best fix: <em>${topFix.title}</em>` : ''}</p>`
+        `<p><strong>${esc(url)}</strong>: <strong>${esc(audit.report.letter_grade)} (${score}/100)</strong>, ${deltaText}.<br/>${esc(audit.report.headline ?? '')}${topFix ? `<br/>Next best fix: <em>${esc(topFix.title)}</em>` : ''}</p>`
       );
     }
 
@@ -70,11 +102,7 @@ export async function GET() {
       }
     }
 
-    await saveGeoWatch(supabase, id, {
-      ...watch,
-      lastScores: nextScores,
-      nextAt: new Date(Date.now() + 30 * 86400_000).toISOString(),
-    });
+    await saveGeoWatch(supabase, id, { ...watch, lastScores: nextScores, nextAt, cycles });
     results[id] = 'sent';
   }
 

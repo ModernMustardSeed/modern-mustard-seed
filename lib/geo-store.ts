@@ -36,16 +36,30 @@ export type GeoWatch = {
   email: string;
   kind: 'watch' | 'watchpro' | 'fulldesk';
   nextAt: string;
-  /** null = until canceled; fulldesk gets createdAt + 90 days */
+  /** null = until canceled; fulldesk gets createdAt + 100 days (3 cycles fit) */
   expiresAt: string | null;
   lastScores: Record<string, number>;
   createdAt: string;
+  /** Completed monthly cycles; cadence anchors to createdAt + n*30d. */
+  cycles?: number;
 };
 
 type KV = SupabaseClient;
 
 const packKey = (sessionId: string) => `geo:pack:${sessionId}`;
 const watchKey = (id: string) => `geo:watch:${id}`;
+
+/**
+ * Atomic once-per-session guard for the Stripe webhook (retries must not
+ * duplicate orders, leads, watch rows, or emails). PK conflict = already done.
+ */
+export async function claimGeoWebhook(db: KV, sessionId: string): Promise<'claimed' | 'taken' | 'error'> {
+  const { error } = await db.from('app_state').insert({ key: `geo:done:${sessionId}`, value: { at: new Date().toISOString() } });
+  if (!error) return 'claimed';
+  if (error.code === '23505') return 'taken';
+  console.error('geo webhook claim failed', error.message);
+  return 'error';
+}
 
 export async function getGeoPack(db: KV, sessionId: string): Promise<GeoPack | null> {
   if (!/^cs_(live|test)_[A-Za-z0-9]+$/.test(sessionId)) return null;
