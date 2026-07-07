@@ -340,6 +340,36 @@ export function AuditIntelCard({ lead, onRun, auditing }: { lead: OutboundLead; 
   );
 }
 
+/* ------------------------------- review ammo ------------------------------- */
+
+/**
+ * Review-mined leads carry their qualifying complaint in notes as
+ * `REVIEWS: "quote" (source url)`. Surface it as opener ammo: the prospect's
+ * own customers making the pitch.
+ */
+export function ReviewAmmoCard({ lead }: { lead: OutboundLead }) {
+  const m = lead.notes?.match(/^REVIEWS:\s*(.+)/s);
+  if (!m) return null;
+  const body = m[1].trim();
+  const quote = body.match(/"([^"]{10,300})"/)?.[1];
+  const source = body.match(/\(([^)]+)\)/)?.[1];
+  if (!quote) return null;
+  return (
+    <div className="bg-[#fffdf8] border-2 border-[#a03123] rounded-2xl shadow-[5px_5px_0_0_#a03123] p-5">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="w-6 h-6 rounded-full bg-[#a03123] text-[#f7f3e9] font-oswald font-bold text-xs flex items-center justify-center">!</span>
+        <span className="text-[11px] uppercase tracking-[0.24em] font-oswald font-semibold text-[#a03123]">Their customers said it first</span>
+      </div>
+      <blockquote className="font-sans text-[15px] leading-relaxed text-[#1a1815] italic">&ldquo;{quote}&rdquo;</blockquote>
+      {source && <cite className="not-italic block text-[10px] font-oswald uppercase tracking-[0.14em] text-[#1a1815]/40 mt-1">{source}</cite>}
+      <p className="font-sans text-[13px] text-[#1a1815]/65 mt-3">
+        <span className="font-oswald uppercase tracking-[0.1em] text-[11px] text-[#a03123] font-semibold mr-1.5">Read it back:</span>
+        &ldquo;I was reading your reviews before I called, and one said <mark className="rounded px-1 py-0.5 bg-[#a03123]/10 text-[#1a1815] font-medium not-italic">{quote.length > 90 ? `${quote.slice(0, 90)}…` : quote}</mark>. That&apos;s the exact call I catch.&rdquo;
+      </p>
+    </div>
+  );
+}
+
 /* -------------------------------- thread ---------------------------------- */
 
 const CHANNEL_ICON: Record<string, string> = { email: '✉', call: '☎', open: '👁', booking: '📅', note: '✎' };

@@ -9,7 +9,7 @@ import { NICHE_LABELS, OUTCOME_LABELS, denverIso, formatPhone, fmtMoney, monthly
 import type { CallLog, CallOutcome, Niche, OutboundLead, Pilot, Rep, Script } from '@/lib/outbound';
 import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow, getDialSession, setDialSession, bumpDialSession, SeedBurst } from '@/components/admin/outbound/ui';
 import type { DialSession } from '@/components/admin/outbound/ui';
-import { ReachOutDeck, AuditIntelCard, ThreadPanel } from '@/components/admin/outbound/OutboundReachOut';
+import { ReachOutDeck, AuditIntelCard, ReviewAmmoCard, ThreadPanel } from '@/components/admin/outbound/OutboundReachOut';
 
 /** Company callback line read out in the voicemail script (Mr. Mustard's number). */
 const MMS_LINE = '(406) 312-1223';
@@ -500,6 +500,7 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
             <div className="grid lg:grid-cols-12 gap-5 items-start">
               {/* a. Script rail */}
               <section className="lg:col-span-5 space-y-4">
+                <ReviewAmmoCard lead={lead} />
                 <AuditIntelCard lead={lead} onRun={() => void runAudit()} auditing={auditing} />
                 {([
                   ['opener', 'Opener'],
