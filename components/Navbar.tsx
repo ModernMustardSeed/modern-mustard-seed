@@ -11,15 +11,6 @@ import { navLinks, socials } from '@/data/socials';
 // (admin, portals, and program HQs run their own shells).
 const MENU_GROUPS = [
   {
-    heading: 'The Studio Departments',
-    links: [
-      { label: 'Sidekick Forge · free AI receptionist demo', href: '/sidekick' },
-      { label: 'Mustard Pictures · free commercial screen test', href: '/pictures' },
-      { label: 'Mustard Press · free typeset menu proof', href: '/press' },
-      { label: 'Mustard Mode · learn Claude with a coach', href: '/mustard-mode' },
-    ],
-  },
-  {
     heading: 'Work With Us',
     links: [
       { label: 'How It Works', href: '/work-with-us' },
@@ -47,6 +38,15 @@ const MENU_GROUPS = [
       { label: 'Blog', href: '/blog' },
       { label: 'Store', href: '/store' },
       { label: 'For Your Industry', href: '/for' },
+    ],
+  },
+  {
+    heading: 'The Studio Departments',
+    links: [
+      { label: 'Sidekick Forge · free AI receptionist demo', href: '/sidekick' },
+      { label: 'Mustard Pictures · free commercial screen test', href: '/pictures' },
+      { label: 'Mustard Press · free typeset menu proof', href: '/press' },
+      { label: 'Mustard Mode · learn Claude with a coach', href: '/mustard-mode' },
     ],
   },
   {
