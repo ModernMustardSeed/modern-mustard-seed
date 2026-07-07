@@ -38,7 +38,9 @@ export default function MustardSeedChat() {
   // (admin, client portal, partner HQ) where it would only cover real content.
   const pathname = usePathname() || '';
   const isAppShell =
-    pathname.startsWith('/admin') || pathname.startsWith('/portal') || pathname.endsWith('/hq');
+    pathname.startsWith('/admin') || pathname.startsWith('/portal') || pathname.endsWith('/hq') ||
+    // The Sidekick Forge IS a live voice surface; a second Mustard would compete with the demo.
+    pathname.startsWith('/sidekick');
 
   const [open, setOpen] = useState(false);
   // Visitor picks their door each time they open the launcher: voice or chat.
@@ -171,6 +173,8 @@ export default function MustardSeedChat() {
     // MUSTARD MODE's hero terminal IS the greeting, and the homepage Front Desk
     // terminal is its own front desk. Never cover either with the teaser.
     if (window.location.pathname.startsWith('/mustard-mode')) return;
+    // The Sidekick Forge has its own live voice agent on stage. No teaser.
+    if (window.location.pathname.startsWith('/sidekick')) return;
     if (window.location.pathname === '/') return;
     const t = window.setTimeout(() => {
       try {

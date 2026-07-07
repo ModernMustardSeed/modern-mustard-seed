@@ -1,0 +1,173 @@
+/**
+ * The static story around the Forge: how it works, what he handles (and
+ * honestly does not), FAQ, and the cross-links. Server-rendered.
+ */
+
+import Link from 'next/link';
+import Image from 'next/image';
+import { SIDEKICK, sidekickBoundaries, sidekickFaq } from '@/data/sidekick';
+
+export function HowItWorks() {
+  const steps = [
+    {
+      n: '01',
+      title: 'Tell him about your business',
+      body: 'Sixty seconds of intake: what you do, what you charge, what customers ask. That is all Mr. Mustard needs to start the drills.',
+    },
+    {
+      n: '02',
+      title: 'Watch the forge run',
+      body: 'Greeting drills, booking reps, one furious caller for composure. Your Sidekick graduates trained on YOUR business, not a script.',
+    },
+    {
+      n: '03',
+      title: 'Talk to him. Live.',
+      body: 'He answers in the browser as your front desk, or he calls your cell so you feel exactly what your customers will feel. Then decide if he gets the job.',
+    },
+  ];
+  return (
+    <section className="py-16 md:py-24" aria-labelledby="how-heading">
+      <div className="max-w-5xl mx-auto px-5">
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3 text-center">[ How the forge works ]</p>
+        <h2 id="how-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
+          Interview to hired in one visit.
+        </h2>
+        <div className="grid md:grid-cols-3 gap-6 mt-12">
+          {steps.map((s) => (
+            <div key={s.n} className="rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">
+              <p className="font-display italic text-4xl font-black text-[#F5B700]" aria-hidden="true">{s.n}</p>
+              <h3 className="font-display text-xl font-black text-[#161616] mt-3">{s.title}</h3>
+              <p className="font-body text-sm text-[#161616]/70 leading-relaxed mt-2.5">{s.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function Boundaries() {
+  return (
+    <section className="py-16 md:py-24 bg-[#161616]" aria-labelledby="boundaries-heading">
+      <div className="max-w-5xl mx-auto px-5">
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#F5B700] font-bold mb-3 text-center">[ The honest part ]</p>
+        <h2 id="boundaries-heading" className="font-display text-3xl md:text-5xl font-black text-[#FBF6EA] tracking-tight text-center leading-[1.05]">
+          What he handles. What he hands to you.
+        </h2>
+        <p className="font-body text-[#FBF6EA]/60 text-center max-w-2xl mx-auto mt-4">
+          A receptionist who never bluffs is worth more than one who always answers. This table is part of the deal, in writing.
+        </p>
+        <div className="grid md:grid-cols-2 gap-6 mt-12">
+          <div className="rounded-2xl border-2 border-[#F5B700] bg-[#161616] p-7">
+            <h3 className="font-mono text-xs uppercase tracking-[0.28em] font-bold text-[#F5B700] mb-5">He handles</h3>
+            <ul className="space-y-3">
+              {sidekickBoundaries.handles.map((line) => (
+                <li key={line} className="flex gap-3 font-body text-[14.5px] text-[#FBF6EA]/85 leading-snug">
+                  <span className="text-[#F5B700] font-black" aria-hidden="true">✓</span>
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-2xl border-2 border-[#FBF6EA]/25 bg-[#161616] p-7">
+            <h3 className="font-mono text-xs uppercase tracking-[0.28em] font-bold text-[#FBF6EA]/60 mb-5">He routes to you (on purpose)</h3>
+            <ul className="space-y-3">
+              {sidekickBoundaries.routes.map((line) => (
+                <li key={line} className="flex gap-3 font-body text-[14.5px] text-[#FBF6EA]/70 leading-snug">
+                  <span className="text-[#FBF6EA]/45 font-black" aria-hidden="true">→</span>
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function Faq() {
+  return (
+    <section className="py-16 md:py-24" aria-labelledby="faq-heading">
+      <div className="max-w-3xl mx-auto px-5">
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3 text-center">[ Asked constantly ]</p>
+        <h2 id="faq-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
+          Fair questions, straight answers.
+        </h2>
+        <div className="mt-10 space-y-3">
+          {sidekickFaq.map((f) => (
+            <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616] open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
+              <summary className="cursor-pointer list-none px-5 py-4 font-sans font-bold text-[15px] text-[#161616] flex items-center justify-between gap-4">
+                {f.q}
+                <span className="font-display text-xl text-[#F5B700] group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
+              </summary>
+              <p className="px-5 pb-5 font-body text-sm text-[#161616]/70 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function MeetTheTrainer() {
+  return (
+    <section className="py-16 md:py-24 bg-white border-y-2 border-[#161616]" aria-labelledby="trainer-heading">
+      <div className="max-w-4xl mx-auto px-5 flex flex-col md:flex-row items-center gap-10">
+        <div className="relative flex-shrink-0">
+          <div className="absolute inset-0 translate-x-2 translate-y-2 rounded-2xl bg-[#F5B700] border-2 border-[#161616]" aria-hidden="true" />
+          <Image
+            src="/brand/mascot.png"
+            alt="Mr. Mustard, the AI who trains every Sidekick"
+            width={220}
+            height={220}
+            className="relative rounded-2xl border-2 border-[#161616] bg-[#FBF6EA]"
+          />
+        </div>
+        <div className="text-center md:text-left">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3">[ The trainer ]</p>
+          <h2 id="trainer-heading" className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight leading-[1.05]">
+            Every Sidekick trains under Mr. Mustard.
+          </h2>
+          <p className="font-body text-[#161616]/70 leading-relaxed mt-4">
+            He answers Modern Mustard Seed&apos;s own phones, books Sarah&apos;s calendar, and has taken more curveballs than any receptionist in Montana.
+            Don&apos;t take our word for it. Interview the trainer himself, day or night, at{' '}
+            <a href="tel:+14063121223" className="font-bold text-[#1E50C8] underline underline-offset-2 whitespace-nowrap">{SIDEKICK.phoneLine}</a>.
+          </p>
+          <p className="font-body text-sm text-[#161616]/55 mt-3">
+            Yes, that is a real number. Yes, he answers. Ask him anything, including what his trainees can do for you.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function CrossSell() {
+  return (
+    <section className="py-16 md:py-20">
+      <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-2 gap-6">
+        <div className="rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">Bigger phones?</p>
+          <h3 className="font-display text-xl font-black text-[#161616] mt-1.5">The full custom concierge</h3>
+          <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
+            Franchises and high-volume lines get a fully custom build: your voice, your systems, your integrations. This is the big-league version of what you just met.
+          </p>
+          <Link href="/voice-agents" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+            Explore voice agents →
+          </Link>
+        </div>
+        <div className="rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">Rather build?</p>
+          <h3 className="font-display text-xl font-black text-[#161616] mt-1.5">Learn the method in MUSTARD MODE</h3>
+          <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
+            Mr. Mustard also coaches humans. Learn Claude and ship your own tools with the same trainer who forged your Sidekick.
+          </p>
+          <Link href="/mustard-mode" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+            [ MUSTARD MODE: ON ] →
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}

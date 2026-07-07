@@ -21,7 +21,8 @@ import { getSupabase } from '@/lib/supabase';
 import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/data/products';
 import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
-import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification, subscriptionPaymentFailedEmail } from '@/lib/email';
+import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification, subscriptionPaymentFailedEmail, clientEmail } from '@/lib/email';
+import { getSidekickTier } from '@/data/sidekick';
 import { SITE } from '@/lib/seo';
 import { grantEntitlement, revokeEntitlement, PROGRAM_ASSETS, isProgramSlug, isMustardSlug, type ProgramSlug } from '@/lib/entitlements';
 import { getMustardLevel } from '@/data/mustard-mode/offer';
@@ -560,6 +561,103 @@ async function handleRefundClawback(stripe: ReturnType<typeof getStripe>, charge
   }
 }
 
+/**
+ * A Sidekick was kept. Revenue (setup + month one) is recorded by the
+ * invoice.paid handler like every other subscription, so this only records
+ * the buyer, tells Sarah to PROVISION, and welcomes the client. Fulfillment
+ * is hand-installed within 7 days.
+ */
+async function handleSidekickPurchase(
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null
+) {
+  const tier = getSidekickTier(slug);
+  const business = session.metadata?.business || '';
+  const firstName = name?.split(' ')[0];
+
+  try {
+    await insertLead({
+      type: 'contact',
+      email,
+      name: name ?? null,
+      source: 'sidekick-buyer',
+      status: 'new',
+      notes: `[bought:${slug}]${business ? ` business: ${business}` : ''} PROVISION within 7 days`,
+    });
+  } catch (err) {
+    console.error('sidekick lead insert failed', err);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = new Resend(apiKey);
+
+  try {
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: 'sarah@modernmustardseed.com',
+      subject: `PROVISION ${tier?.name ?? 'SIDEKICK'}: ${business || email}`,
+      html: clientEmail({
+        preheader: 'A Sidekick was kept. Install within 7 days.',
+        eyebrow: 'SIDEKICK ORDER',
+        greeting: 'He got hired.',
+        body: `<p><strong>${name ?? email}</strong> just kept their Sidekick${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${tier.setupUsd} setup + $${tier.monthlyUsd}/mo, ${tier.minutesCap} min cap` : slug}).</p><p>Email: ${email}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=sidekick-demo.</p>`,
+        signature: 'The Forge',
+      }),
+    });
+  } catch (err) {
+    console.error('sidekick provision email failed', err);
+  }
+
+  try {
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}your Sidekick got the job`,
+      html: clientEmail({
+        preheader: 'He starts within 7 days. Here is what happens next.',
+        eyebrow: tier?.name ?? 'SIDEKICK',
+        greeting: firstName ? `${firstName}, he got the job.` : 'He got the job.',
+        body: `<p>Your Sidekick${business ? ` for <strong>${business}</strong>` : ''} is officially hired. Here is exactly what happens next:</p><p><strong>1.</strong> Within one business day, I will email you personally to confirm the details he learned in the forge and how you want your line handled (new local number, or forwarding your existing one).</p><p><strong>2.</strong> I hand-tune his training, wire up bookings and call summaries, and test him on real scenarios.</p><p><strong>3.</strong> Within 7 days he is live, answering ${business ? escapeHtmlSafe(business) : 'your business'} around the clock. ${tier ? `Your plan includes ${tier.minutesCap} answered minutes a month; at the cap he switches to message-taking, so there is never a surprise bill.` : ''}</p><p>Month to month, cancel anytime, and your setup fee is credited in full toward any custom build over $2,500 if you ever go bigger.</p>`,
+        cta: { label: 'Reply to this email with questions', url: 'mailto:sarah@modernmustardseed.com' },
+        signature: 'Sarah',
+      }),
+    });
+  } catch (err) {
+    console.error('sidekick welcome email failed', err);
+  }
+}
+
+function escapeHtmlSafe(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/** A Sidekick subscription ended: Sarah decommissions the line by hand. */
+async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const resend = new Resend(apiKey);
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: 'sarah@modernmustardseed.com',
+      subject: `SIDEKICK CANCELED: ${sub.metadata?.business || sub.id}`,
+      html: clientEmail({
+        preheader: 'A Sidekick subscription ended.',
+        eyebrow: 'SIDEKICK OFFBOARD',
+        greeting: 'A Sidekick clocked out.',
+        body: `<p>Subscription ${sub.id}${sub.metadata?.business ? ` (business: <strong>${sub.metadata.business}</strong>)` : ''} was canceled.</p><p>Decommission the line: unassign or park the Vapi number, archive the assistant, and send the goodbye note.</p>`,
+        signature: 'The Forge',
+      }),
+    });
+  } catch (err) {
+    console.error('sidekick offboard email failed', err);
+  }
+}
+
 export async function POST(req: Request) {
   const stripe = getStripe();
   const secret = STRIPE_WEBHOOK_SECRET();
@@ -600,6 +698,10 @@ export async function POST(req: Request) {
     if (sub.metadata?.kind === 'mustard-mode') {
       await handleMustardSubscriptionDeleted(stripe, sub);
       return NextResponse.json({ received: true, kind: 'mustard_subscription_canceled' });
+    }
+    if (sub.metadata?.kind === 'sidekick') {
+      await handleSidekickSubscriptionDeleted(sub);
+      return NextResponse.json({ received: true, kind: 'sidekick_subscription_canceled' });
     }
     await handleSubscriptionDeleted(sub);
     return NextResponse.json({ received: true, kind: 'subscription_canceled' });
@@ -642,6 +744,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'mustard-mode') {
     await handleMustardPurchase(req, session, slug, email, name ?? null, itemName ?? slug);
     return NextResponse.json({ received: true, kind: 'mustard-mode' });
+  }
+
+  // ── SIDEKICK subscription started (setup fee rides the first invoice) ──
+  if (session.metadata?.kind === 'sidekick') {
+    await handleSidekickPurchase(session, slug, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'sidekick' });
   }
 
   // ── Flagship $497 program purchase (The Terminal, Idea to Spec, bundle) ──

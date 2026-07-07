@@ -183,6 +183,30 @@ export default function VoiceAgentsPage() {
             <VoiceTalkButton />
           </div>
 
+          {/* The Sidekick Forge: hear one trained on YOUR business */}
+          <div className="mb-20 pop-card p-8 md:p-10 bg-[#F5B700]">
+            <div className="flex flex-col md:flex-row md:items-center gap-6">
+              <div className="flex-1">
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-3">
+                  New · The Sidekick Forge
+                </span>
+                <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight leading-[1.1] mb-3">
+                  Now hear one trained on YOUR business.
+                </h2>
+                <p className="text-[#161616]/75 text-base font-body leading-7 max-w-xl">
+                  Mr. Mustard forges a personalized AI receptionist for your business in about
+                  sixty seconds, then it talks to you live, or calls your cell. Free, no card.
+                </p>
+              </div>
+              <Link
+                href="/sidekick"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-[#161616] bg-[#161616] text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all whitespace-nowrap"
+              >
+                Forge mine, free →
+              </Link>
+            </div>
+          </div>
+
           {/* Multilingual highlight */}
           <div className="mb-20 pop-card p-8 md:p-10">
             <div className="flex flex-col md:flex-row md:items-center gap-8">
