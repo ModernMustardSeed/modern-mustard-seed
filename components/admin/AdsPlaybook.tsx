@@ -154,6 +154,43 @@ const FM_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per playbook email (the "Email this to me" captures land in Leads). The truth metric: booked calls and audit requests from playbook readers.' },
 ];
 
+// ============ Campaign five: The Sidekick Forge ============
+
+const SK_LANDING = 'https://modernmustardseed.com/sidekick?utm_source=meta&utm_medium=paid&utm_campaign=sidekick';
+
+const SK_COPY_A = `Right now, someone is calling your business. Nobody's answering.
+
+So we built the Sidekick Forge. Tell Mr. Mustard about your business (what you do, what you charge, what customers ask) and sixty seconds later your own AI receptionist graduates and talks to you. Live. In your browser. He can even call your cell.
+
+The demo is free, no card. If you love him, he's answering your real phone 24/7 this week: hard-capped minutes, month to month, never a surprise bill.`;
+
+const SK_COPY_B = `The average small business misses 4 in 10 calls. Every missed call dials your competitor next.
+
+Your Sidekick answers every one: books appointments, takes clean messages, flags emergencies to your cell, and sends you a summary of every call. Trained on YOUR business in sixty seconds, live on your real line within a week.
+
+Hear yours before you pay a cent. The forge is free and it is honestly just fun.`;
+
+const SK_HEADLINE = 'Hear YOUR AI receptionist in 60 seconds.';
+const SK_DESCRIPTION = 'Free demo. He talks. You decide. From Modern Mustard Seed.';
+
+const SK_CUTS = [
+  { file: '/ads/sidekick-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/sidekick-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical placements.' },
+  { file: '/ads/sidekick-16x9.mp4', label: '16:9 — In-stream + site', note: 'Video feeds, search, and the landing hero.' },
+];
+
+const SK_CHECKLIST = [
+  { id: 'cell', label: 'One cell to start: Campaign objective Traffic (switch to Conversions once the pixel is live). Budget $15/day. Learn More button → the forge UTM link above. Paste Copy Variant 1.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
+  { id: 'audience', label: 'Audience: Advantage+, local-owner tilted. Suggestions: Small business owners, Restaurant owners, Home services, Salon owners, Missed call/answering service interest. Age 25-65, United States.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled captions are burned in).' },
+  { id: 'organic', label: 'Post the 9:16 cut as an organic Reel + the 4:5 to FB the same day. Launch drafts are in social-drafts/sidekick-launch.md (ask Claude to fetch them).' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the missed-calls math) and let them fight. Kill the loser at day 6.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers across all five commercials pointed at the forge. Call Me viewers are the hottest overlap.' },
+  { id: 'capwatch', label: 'The free forge is capped at 20 demos/day globally. If ads fill the cap (email alert fires), raise GLOBAL_DAILY_CAP in app/api/sidekick/forge/route.ts before scaling spend.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads tagged source sidekick-forge in the admin). The truth metric: Keep Him subscriptions, which email you on every sale, and booked calls from demo transcripts.' },
+];
+
 function CopyBlock({ title, text }: { title: string; text: string }) {
   const [done, setDone] = useState(false);
   const copy = async () => {
@@ -179,13 +216,14 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
   { key: 'tw', num: '02', label: 'Talking Website', blurb: 'Full system · audit funnel · $10/day' },
   { key: 'mm', num: '03', label: 'MUSTARD MODE', blurb: 'The product · free-play funnel · $10/day' },
   { key: 'fm', num: '04', label: 'The Fable Mind', blurb: 'Free playbook · lead magnet · $10/day' },
+  { key: 'sk', num: '05', label: 'Sidekick Forge', blurb: 'Instant demo · forge funnel · $15/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -195,6 +233,7 @@ export default function AdsPlaybook() {
   const [checkedTw, setCheckedTw] = useState<Record<string, boolean>>({});
   const [checkedMm, setCheckedMm] = useState<Record<string, boolean>>({});
   const [checkedFm, setCheckedFm] = useState<Record<string, boolean>>({});
+  const [checkedSk, setCheckedSk] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -218,6 +257,8 @@ export default function AdsPlaybook() {
       if (rawMm) setCheckedMm(JSON.parse(rawMm));
       const rawFm = localStorage.getItem('mms-ads-checklist-fm');
       if (rawFm) setCheckedFm(JSON.parse(rawFm));
+      const rawSk = localStorage.getItem('mms-ads-checklist-sk');
+      if (rawSk) setCheckedSk(JSON.parse(rawSk));
     } catch { /* first visit */ }
   }, []);
 
@@ -253,10 +294,19 @@ export default function AdsPlaybook() {
     });
   };
 
+  const toggleSk = (id: string) => {
+    setCheckedSk((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      try { localStorage.setItem('mms-ads-checklist-sk', JSON.stringify(next)); } catch { /* private mode */ }
+      return next;
+    });
+  };
+
   const doneCount = CHECKLIST.filter((c) => checked[c.id]).length;
   const doneCountTw = TW_CHECKLIST.filter((c) => checkedTw[c.id]).length;
   const doneCountMm = MM_CHECKLIST.filter((c) => checkedMm[c.id]).length;
   const doneCountFm = FM_CHECKLIST.filter((c) => checkedFm[c.id]).length;
+  const doneCountSk = SK_CHECKLIST.filter((c) => checkedSk[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -633,13 +683,95 @@ export default function AdsPlaybook() {
         </section>
         </>)}
 
+        {tab === 'sk' && (<>
+        {/* ============ Campaign five: The Sidekick Forge ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign five</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;The Graduate&rdquo; <span className="italic text-[#F5B700]">The demo IS the product.</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The forge funnel. Mr. Mustard trains a Sidekick in the spot; the viewer forges their own
+              for free and HEARS it answer as their business. Every demo is a transcript-attached lead
+              at roughly 45 cents of voice cost, and Keep Him subscriptions convert at the moment of
+              peak delight. One traffic cell at $15/day, judged on cost per forged demo.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/sidekick" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The forge (landing)</a>
+              <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads (forged demos)</a>
+            </div>
+          </div>
+        </section>
+
+        {/* Sidekick cuts */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The creative, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Same drill: upload one ad, customize per placement. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {SK_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/sidekick-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Sidekick copy */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1 (the story)" text={SK_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2 (the missed-calls math)" text={SK_COPY_B} />
+            <CopyBlock title="Headline" text={SK_HEADLINE} />
+            <CopyBlock title="Description" text={SK_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (forge funnel)" text={SK_LANDING} />
+          </div>
+        </section>
+
+        {/* Sidekick launch checklist */}
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountSk}/{SK_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {SK_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedSk[item.id]}
+                    onChange={() => toggleSk(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedSk[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
         {tab === 'results' && (<>
         {/* Measurement */}
         <section className="bg-[#161616] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 text-[#FBF6EA]">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">How to read results</span>
           <div className="grid md:grid-cols-3 gap-6 mt-4 text-sm font-sans">
             <p><b className="text-[#F5B700]">Calls:</b> every ad-driven call hits the Mustard line and lands in <a href="/admin/callers" className="underline decoration-[#F5B700]">Callers</a> with a transcript. Bookings email you automatically.</p>
-            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, and fablemind. MUSTARD MODE free-plays and Fable Mind playbook emails land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
+            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, fablemind, and sidekick. MUSTARD MODE free-plays, Fable Mind playbook emails, and forged Sidekick demos land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
             <p><b className="text-[#F5B700]">Weekly:</b> ask Claude to read Callers against spend and report the true cost per booked discovery call.</p>
           </div>
         </section>
