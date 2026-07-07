@@ -55,6 +55,24 @@ export async function POST(req: Request) {
       update.next_action_at = input.next_action_at ?? null;
     } else if (input.outcome === 'not_interested' && current !== 'won' && current !== 'lost') {
       update.status = 'lost';
+    } else if (input.outcome === 'no_answer' || input.outcome === 'voicemail') {
+      // The cadence: unanswered dials self-schedule. Two retries two days
+      // apart, then the lead parks for the cadence cron (one audit email,
+      // then a suggested Mr. Mustard attempt). No lead rots silently.
+      const { count } = await guard.supabase
+        .from('outbound_call_logs')
+        .select('id', { count: 'exact', head: true })
+        .eq('lead_id', input.lead_id)
+        .in('outcome', ['no_answer', 'voicemail']);
+      const attempts = count ?? 1; // includes the log just written
+      if (current === 'new') update.status = 'contacted';
+      if (attempts < 3) {
+        update.next_action_at = new Date(Date.now() + 2 * 86400000).toISOString();
+        update.next_action = `Retry #${attempts + 1}`;
+      } else {
+        update.next_action_at = new Date(Date.now() + 86400000).toISOString();
+        update.next_action = 'Cadence: audit email, then Mr. Mustard';
+      }
     } else if (current === 'new') {
       update.status = 'contacted';
     }

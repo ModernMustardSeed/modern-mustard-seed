@@ -48,6 +48,38 @@ export function ReachOutDeck({
   const [note, setNote] = useState('');
   const [enriching, setEnriching] = useState(false);
   const [promoting, setPromoting] = useState(false);
+  const [forging, setForging] = useState(false);
+  const [sendingDemo, setSendingDemo] = useState(false);
+
+  const forgeDemo = async () => {
+    setForging(true);
+    push('Forging their AI receptionist...');
+    try {
+      const res = await api<{ demo_url: string; lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-demo`, { method: 'POST' });
+      if (res.lead) onLead(res.lead);
+      push('Demo forged. It answers as their business now.');
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Forge failed.', 'error');
+    } finally {
+      setForging(false);
+    }
+  };
+
+  const sendDemo = async () => {
+    setSendingDemo(true);
+    try {
+      const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/follow-up`, {
+        method: 'POST',
+        body: JSON.stringify({ includeDemo: true }),
+      });
+      onLead(res.lead);
+      push('Demo link sent. The pixel will tell you when they open it.');
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Send failed.', 'error');
+    } finally {
+      setSendingDemo(false);
+    }
+  };
 
   const enrich = async () => {
     setEnriching(true);
@@ -179,6 +211,21 @@ export function ReachOutDeck({
           <span className={`${chip} bg-[#3f5d34]/12 text-[#3f5d34] border-[#3f5d34]/50 cursor-default`} title={lead.email_opened_at ? `First opened ${new Date(lead.email_opened_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Denver' })} MT` : undefined}>
             ✓ Opened {lead.email_open_count}x
           </span>
+        )}
+
+        {lead.demo_url ? (
+          <>
+            <a href={lead.demo_url} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged receptionist, live">
+              ▶ Demo live ↗
+            </a>
+            <button onClick={() => void sendDemo()} disabled={sendingDemo || !lead.email} className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`} title={lead.email ? 'Email them their demo link' : 'No email on file yet'}>
+              {sendingDemo ? 'Sending…' : '✉ Send demo'}
+            </button>
+          </>
+        ) : (
+          <button onClick={() => void forgeDemo()} disabled={forging} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title="Build their branded AI receptionist demo in seconds">
+            {forging ? 'Forging…' : '⚒ Forge demo'}
+          </button>
         )}
 
         {lead.pipeline_lead_id ? (

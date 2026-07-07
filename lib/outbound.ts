@@ -64,7 +64,7 @@ export type OutboundAudit = {
   overall_score: number;
   letter_grade: string;
   headline: string;
-  overall_analysis?: string;
+  overall_analysis: string;
   categories?: Record<string, { score: number; letter: string; notes: string }>;
   top_three_fixes?: { title: string; why: string; how: string }[];
   full_todo?: { category: string; priority: string; task: string }[];
@@ -97,8 +97,31 @@ export type OutboundLead = {
   email_opened_at: string | null;
   email_open_count: number;
   last_email_at: string | null;
+  last_open_at: string | null;
+  demo_url: string | null;
+  demo_run_id: string | null;
   created_at: string;
   updated_at: string;
+};
+
+/** Why a lead is where it is in the heat-ranked queue. */
+export type HeatReason =
+  | 'replied'
+  | 'reading_now'
+  | 'opened_recently'
+  | 'callback_due'
+  | 'retry_due'
+  | 'worst_audit'
+  | 'fresh';
+
+export const HEAT_LABELS: Record<HeatReason, string> = {
+  replied: 'Replied',
+  reading_now: 'Reading your audit now',
+  opened_recently: 'Opened the email',
+  callback_due: 'Callback due',
+  retry_due: 'Retry due',
+  worst_audit: 'Painful audit',
+  fresh: 'Fresh lead',
 };
 
 export type ThreadMessage = {
@@ -137,6 +160,7 @@ export type Pilot = {
   convert_price: number | null;
   rev_share_pct: number | null;
   monthly_floor: number | null;
+  vapi_assistant_id: string | null;
   status: 'running' | 'won' | 'lost';
   notes: string | null;
   lead?: Pick<OutboundLead, 'id' | 'business_name' | 'contact_name' | 'phone' | 'niche' | 'city' | 'avg_job_value'>;
@@ -238,6 +262,7 @@ export const pilotPatchSchema = z.object({
   convert_price: optionalNumber(),
   rev_share_pct: optionalNumber(15),
   monthly_floor: optionalNumber(),
+  vapi_assistant_id: optionalText(80),
   status: z.enum(['running', 'won', 'lost']).optional(),
   notes: optionalText(2000),
   ends_at: optionalText(60),

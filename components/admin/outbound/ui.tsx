@@ -226,6 +226,83 @@ export function NicheChip({ niche }: { niche: string }) {
   );
 }
 
+/* ------------------------------ dial session ------------------------------ */
+
+export type DialSession = { startedAt: number; dials: number; demos: number };
+const SESSION_KEY = 'mms_outbound_session';
+
+export function getDialSession(): DialSession | null {
+  try {
+    const raw = window.localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw) as DialSession;
+    return typeof s.startedAt === 'number' ? s : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setDialSession(s: DialSession | null): void {
+  if (s) window.localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+  else window.localStorage.removeItem(SESSION_KEY);
+}
+
+export function bumpDialSession(kind: 'dial' | 'demo'): DialSession | null {
+  const s = getDialSession();
+  if (!s) return null;
+  const next = { ...s, dials: s.dials + 1, demos: s.demos + (kind === 'demo' ? 1 : 0) };
+  setDialSession(next);
+  return next;
+}
+
+/* -------------------------------- heat chip -------------------------------- */
+
+export function HeatChip({ reason, lastOpenAt, auditScore }: { reason: string; lastOpenAt?: string | null; auditScore?: number | null }) {
+  const base = 'inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-md border text-[9px] uppercase tracking-[0.12em] font-oswald font-bold';
+  if (reason === 'replied') return <span className={`${base} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815]`}>Replied</span>;
+  if (reason === 'reading_now') return <span className={`${base} bg-[#a03123] text-[#f7f3e9] border-[#1a1815] animate-pulse`}>🔥 Reading your audit NOW</span>;
+  if (reason === 'opened_recently') {
+    const hrs = lastOpenAt ? Math.max(1, Math.round((Date.now() - new Date(lastOpenAt).getTime()) / 3600000)) : null;
+    return <span className={`${base} bg-[#b58a2a]/20 text-[#7a5c1a] border-[#b58a2a]/60`}>Opened {hrs ? `${hrs}h ago` : 'recently'}</span>;
+  }
+  if (reason === 'callback_due') return <span className={`${base} bg-[#b58a2a] text-[#1a1815] border-[#1a1815]`}>Callback due</span>;
+  if (reason === 'retry_due') return <span className={`${base} bg-transparent text-[#7a5c1a] border-[#b58a2a]/60`}>Retry due</span>;
+  if (reason === 'worst_audit') return <span className={`${base} bg-[#a03123]/10 text-[#a03123] border-[#a03123]/50`}>Audit {auditScore ?? '?'}/100</span>;
+  return <span className={`${base} bg-[#1a1815]/[0.05] text-[#1a1815]/50 border-[#1a1815]/20`}>Fresh</span>;
+}
+
+/* -------------------------------- seed burst ------------------------------- */
+
+/** One-shot celebration when a demo lands. Render with a changing key. */
+export function SeedBurst() {
+  const seeds = [0, 1, 2, 3, 4, 5, 6];
+  return (
+    <div className="pointer-events-none fixed inset-0 z-[160] flex items-center justify-center" aria-hidden>
+      <style>{`
+        @keyframes mms-seed-pop {
+          0% { transform: translate(0, 0) scale(0.4); opacity: 0; }
+          20% { opacity: 1; }
+          100% { transform: translate(var(--dx), var(--dy)) scale(1.3); opacity: 0; }
+        }
+      `}</style>
+      {seeds.map((i) => (
+        <span
+          key={i}
+          className="absolute text-4xl"
+          style={{
+            animation: 'mms-seed-pop 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            animationDelay: `${i * 60}ms`,
+            ['--dx' as never]: `${Math.cos((i / seeds.length) * Math.PI * 2) * 160}px`,
+            ['--dy' as never]: `${Math.sin((i / seeds.length) * Math.PI * 2) * 120 - 60}px`,
+          }}
+        >
+          {i % 2 === 0 ? '🌱' : '✨'}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 /* --------------------------------- fetch ---------------------------------- */
 
 export async function api<T>(path: string, init?: RequestInit): Promise<T> {

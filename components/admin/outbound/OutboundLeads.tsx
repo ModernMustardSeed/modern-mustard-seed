@@ -84,6 +84,10 @@ export default function OutboundLeads() {
   const [form, setForm] = useState({ ...EMPTY_FORM });
   const [saving, setSaving] = useState(false);
 
+  // Bulk DNC scrub
+  const [scrubOpen, setScrubOpen] = useState(false);
+  const [scrubbing, setScrubbing] = useState(false);
+
   // Import modal
   const [importOpen, setImportOpen] = useState(false);
   const [preview, setPreview] = useState<ImportPreview | null>(null);
@@ -112,6 +116,11 @@ export default function OutboundLeads() {
 
   useEffect(() => {
     void load();
+    // Deep-link support (?dnc=unchecked) without useSearchParams, so no
+    // Suspense boundary is needed (same pattern as the Tracker's ?focus=).
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('dnc') === 'unchecked') {
+      setUnscrubbedOnly(true);
+    }
   }, [load]);
 
   const repName = useCallback((id: string | null) => reps.find((r) => r.id === id)?.name ?? '', [reps]);
@@ -253,6 +262,23 @@ export default function OutboundLeads() {
     }
   };
 
+  const visibleUnscrubbed = useMemo(() => visible.filter((l) => !l.dnc_checked && !['won', 'lost', 'dnc'].includes(l.status)), [visible]);
+
+  const runScrub = async () => {
+    setScrubbing(true);
+    try {
+      const ids = visibleUnscrubbed.map((l) => l.id);
+      const res = await api<{ updated: number }>('/api/admin/outbound/leads/bulk-scrub', { method: 'POST', body: JSON.stringify({ ids }) });
+      setLeads((ls) => ls.map((l) => (ids.includes(l.id) ? { ...l, dnc_checked: true } : l)));
+      setScrubOpen(false);
+      push(`${res.updated} leads marked DNC-scrubbed. Mr. Mustard is unlocked for them.`);
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Bulk scrub failed.', 'error');
+    } finally {
+      setScrubbing(false);
+    }
+  };
+
   const th = (key: SortKey, label: string, right = false) => (
     <th
       onClick={() => clickSort(key)}
@@ -303,6 +329,11 @@ export default function OutboundLeads() {
             <input type="checkbox" checked={unscrubbedOnly} onChange={(e) => setUnscrubbedOnly(e.target.checked)} className="accent-[#a03123] w-4 h-4" />
             DNC unscrubbed only
           </label>
+          {visibleUnscrubbed.length > 0 && (
+            <button onClick={() => setScrubOpen(true)} className={`${btnGhost} !px-3 !py-1.5 !text-xs !border-[#a03123] !text-[#a03123] !shadow-[2px_2px_0_0_#a03123]`}>
+              🔒 Scrub visible ({visibleUnscrubbed.length})
+            </button>
+          )}
           <span className="ml-auto font-oswald text-sm text-[#1a1815]/50 uppercase tracking-[0.1em]">{visible.length} leads</span>
         </div>
 
@@ -572,6 +603,19 @@ export default function OutboundLeads() {
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Bulk DNC scrub attestation */}
+      <Modal open={scrubOpen} onClose={() => setScrubOpen(false)} eyebrow="House rule" title={`Mark ${visibleUnscrubbed.length} leads as DNC-scrubbed`} subtitle="This unlocks Mr. Mustard for the whole batch." size="sm" headerTone="dark">
+        <p className="font-sans text-sm text-[#1a1815]/75 leading-relaxed">
+          Confirm the batch: these are business lines you checked against the National Do Not Call registry (sole proprietors can be registered), and anyone who asked not to be called has been marked DNC individually. The filtered view right now is <strong>{visibleUnscrubbed.length}</strong> unscrubbed leads.
+        </p>
+        <div className="flex justify-end gap-2 mt-5">
+          <button onClick={() => setScrubOpen(false)} className={btnGhost}>Cancel</button>
+          <button onClick={() => void runScrub()} disabled={scrubbing} className={btnPrimary}>
+            {scrubbing ? 'Scrubbing…' : 'I checked them, unlock the batch'}
+          </button>
+        </div>
       </Modal>
 
       <ToastHost toasts={toasts} />

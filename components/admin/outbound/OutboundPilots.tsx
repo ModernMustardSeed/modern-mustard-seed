@@ -190,6 +190,32 @@ export default function OutboundPilots() {
 
                 {p.notes && <p className="font-sans text-xs text-[#1a1815]/55 mt-3 line-clamp-2">{p.notes}</p>}
 
+                <div className="mt-3">
+                  <label className={labelCls}>
+                    Vapi assistant id{' '}
+                    {p.vapi_assistant_id ? (
+                      <span className="normal-case tracking-normal text-[#3f5d34] font-semibold">· auto-counting nightly</span>
+                    ) : (
+                      <span className="normal-case tracking-normal text-[#1a1815]/40">· paste it and the receipts count themselves</span>
+                    )}
+                  </label>
+                  <input
+                    defaultValue={p.vapi_assistant_id ?? ''}
+                    placeholder="asst_… from the Vapi dashboard"
+                    onBlur={(e) => {
+                      const v = e.target.value.trim();
+                      if (v !== (p.vapi_assistant_id ?? '')) void patchPilot(p.id, { vapi_assistant_id: v || null }, v ? 'Auto-counting armed.' : 'Auto-counting off.');
+                    }}
+                    className={`${inputCls} !py-2 !text-xs font-mono`}
+                  />
+                  {p.calls_caught > 0 && p.lead?.avg_job_value && (
+                    <p className="font-sans text-[11px] text-[#1a1815]/50 mt-1.5">
+                      {p.calls_caught} calls caught × {fmtMoney(Number(p.lead.avg_job_value))} avg job ≈{' '}
+                      <strong className="text-[#3f5d34]">{fmtMoney(p.calls_caught * Number(p.lead.avg_job_value))}</strong> of work touched
+                    </p>
+                  )}
+                </div>
+
                 <div className="flex items-center gap-2 mt-4 pt-4 border-t-2 border-[#1a1815]/[0.08]">
                   <button onClick={() => setConvertFor(p)} className={`${btnPrimary} flex-1 !py-2.5`}>Convert</button>
                   <button onClick={() => markLost(p)} className={`${btnDanger} !py-2.5`}>Lost</button>

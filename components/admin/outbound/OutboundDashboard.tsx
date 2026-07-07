@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { formatPhone, fmtMoney } from '@/lib/outbound';
-import type { Rep } from '@/lib/outbound';
-import { GoalRing, OutboundNav, StatusChip, NicheChip, useCountUp, api, card, btnPrimary, btnGhost, eyebrow } from '@/components/admin/outbound/ui';
+import type { HeatReason, Rep } from '@/lib/outbound';
+import { GoalRing, OutboundNav, StatusChip, NicheChip, HeatChip, useCountUp, api, card, btnPrimary, btnGhost, eyebrow, setDialSession } from '@/components/admin/outbound/ui';
 
 type Stat = { dials: number; conversations: number; demos_booked: number };
 type QueueLead = {
@@ -19,12 +20,19 @@ type QueueLead = {
   owner_rep_id: string | null;
   dnc_checked: boolean;
   next_action_at: string | null;
+  next_action: string | null;
+  audit_score: number | null;
+  last_open_at: string | null;
+  email_open_count: number;
+  heat: number;
+  reason: HeatReason;
 };
 type Overview = {
   reps: Rep[];
   today: Record<string, Stat>;
   week: Record<string, Stat>;
   queue: QueueLead[];
+  lockedUnscrubbed: number;
   pilots: { running: number; totalRecovered: number; endingSoon: { id: string; ends_at: string; business_name: string }[] };
   day: string;
 };
@@ -35,22 +43,34 @@ export default function OutboundDashboard() {
   const [data, setData] = useState<Overview | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const load = useCallback(async (background = false) => {
+    if (!background) setLoading(true);
     try {
       setData(await api<Overview>('/api/admin/outbound/overview'));
       setError('');
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not load the cockpit.');
+      if (!background) setError(e instanceof Error ? e.message : 'Could not load the cockpit.');
     } finally {
-      setLoading(false);
+      if (!background) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     void load();
+    // Speed-to-open: refresh every minute so "reading your audit right now"
+    // surfaces while it is still true.
+    const t = window.setInterval(() => void load(true), 60000);
+    return () => window.clearInterval(t);
   }, [load]);
+
+  const startSession = () => {
+    const first = data?.queue[0];
+    if (!first) return;
+    setDialSession({ startedAt: Date.now(), dials: 0, demos: 0 });
+    router.push(`/admin/outbound/call/${first.id}`);
+  };
 
   const recovered = useCountUp(data?.pilots.totalRecovered ?? 0, 900);
 
@@ -62,12 +82,25 @@ export default function OutboundDashboard() {
           active="dashboard"
           right={
             data?.queue[0] ? (
-              <Link href={`/admin/outbound/call/${data.queue[0].id}`} className={btnPrimary}>
-                Start dialing ({data.queue.length} in queue)
-              </Link>
+              <button onClick={startSession} className={btnPrimary}>
+                ▶ Start session ({data.queue.length} hot)
+              </button>
             ) : undefined
           }
         />
+
+        {(data?.lockedUnscrubbed ?? 0) > 0 && (
+          <Link
+            href="/admin/outbound/leads?dnc=unchecked"
+            className="flex items-center gap-2.5 mb-5 px-4 py-3 rounded-2xl border-2 border-[#a03123]/50 bg-[#a03123]/[0.06] hover:border-[#a03123] transition-colors"
+          >
+            <span className="text-lg" aria-hidden>🔒</span>
+            <span className="font-sans text-sm text-[#1a1815]/80">
+              <strong className="font-oswald text-base text-[#a03123]">{data?.lockedUnscrubbed}</strong> leads are locked away from Mr. Mustard until they are DNC-scrubbed.
+            </span>
+            <span className="ml-auto font-oswald uppercase tracking-[0.1em] text-xs font-semibold text-[#a03123]">Scrub them →</span>
+          </Link>
+        )}
 
         {error && (
           <div className={`${card} p-5 mb-6 border-[#a03123] shadow-[5px_5px_0_0_#a03123]`}>
@@ -135,13 +168,15 @@ export default function OutboundDashboard() {
               </div>
             )}
             <ul className="divide-y divide-[#1a1815]/[0.08]">
-              {(data?.queue ?? []).map((l) => {
+              {(data?.queue ?? []).map((l, idx) => {
                 const overdue = l.next_action_at && new Date(l.next_action_at).getTime() < Date.now();
                 return (
-                  <li key={l.id} className="px-5 py-3.5 flex items-center gap-3 hover:bg-[#b58a2a]/[0.06] transition-colors">
+                  <li key={l.id} className={`px-5 py-3.5 flex items-center gap-3 hover:bg-[#b58a2a]/[0.06] transition-colors ${l.reason === 'reading_now' ? 'bg-[#a03123]/[0.05]' : ''}`}>
+                    <span className="font-oswald text-sm text-[#1a1815]/30 w-5 text-right shrink-0">{idx + 1}</span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-sans font-semibold text-sm text-[#1a1815] truncate">{l.business_name}</span>
+                        <HeatChip reason={l.reason} lastOpenAt={l.last_open_at} auditScore={l.audit_score} />
                         <StatusChip status={l.status} />
                         {!l.dnc_checked && (
                           <span className="text-[9px] uppercase tracking-[0.14em] font-oswald font-semibold text-[#a03123] border border-[#a03123]/40 rounded-md px-1.5 py-0.5">
@@ -153,7 +188,8 @@ export default function OutboundDashboard() {
                         <span>{formatPhone(l.phone)}</span>
                         {l.city && <span>· {l.city}</span>}
                         <NicheChip niche={l.niche} />
-                        {l.next_action_at && (
+                        {l.audit_score != null && l.reason !== 'worst_audit' && <span className="font-oswald">audit {l.audit_score}</span>}
+                        {l.next_action_at && (l.status === 'callback' || l.status === 'contacted') && (
                           <span className={overdue ? 'text-[#a03123] font-semibold' : ''}>
                             {overdue ? 'Overdue' : 'Due'} {new Date(l.next_action_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Denver' })} MT
                           </span>

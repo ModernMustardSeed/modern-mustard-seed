@@ -1,12 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { NICHE_LABELS, OUTCOME_LABELS, denverIso, formatPhone, fmtMoney, monthlyLeak } from '@/lib/outbound';
 import type { CallLog, CallOutcome, Niche, OutboundLead, Pilot, Rep, Script } from '@/lib/outbound';
-import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
+import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow, getDialSession, setDialSession, bumpDialSession, SeedBurst } from '@/components/admin/outbound/ui';
+import type { DialSession } from '@/components/admin/outbound/ui';
 import { ReachOutDeck, AuditIntelCard, ThreadPanel } from '@/components/admin/outbound/OutboundReachOut';
 
 /** Company callback line read out in the voicemail script (Mr. Mustard's number). */
@@ -94,6 +96,10 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
   const [logging, setLogging] = useState(false);
   const [threadOpen, setThreadOpen] = useState(false);
   const [auditing, setAuditing] = useState(false);
+  const [session, setSessionState] = useState<DialSession | null>(null);
+  const [sessionTick, setSessionTick] = useState(0);
+  const [burst, setBurst] = useState(0);
+  const router = useRouter();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -137,6 +143,34 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     const t = window.setInterval(() => setElapsed(Math.floor((Date.now() - startedAt) / 1000)), 1000);
     return () => window.clearInterval(t);
   }, [startedAt]);
+
+  // Dial-session strip: hydrate from localStorage, tick the clock.
+  useEffect(() => {
+    setSessionState(getDialSession());
+    const t = window.setInterval(() => setSessionTick((x) => x + 1), 15000);
+    return () => window.clearInterval(t);
+  }, []);
+
+  const nextLeadIdRef = useRef<string | null>(null);
+
+  const advanceToNext = useCallback(
+    (delayMs: number) => {
+      const nextId = nextLeadIdRef.current;
+      if (!nextId) return;
+      window.setTimeout(() => router.push(`/admin/outbound/call/${nextId}`), delayMs);
+    },
+    [router],
+  );
+
+  const endSession = useCallback(() => {
+    const s = getDialSession();
+    setDialSession(null);
+    setSessionState(null);
+    if (s) {
+      const mins = Math.max(1, Math.round((Date.now() - s.startedAt) / 60000));
+      push(`Session done: ${s.dials} dials and ${s.demos} demos in ${mins} min. 🌱`);
+    }
+  }, [push]);
 
   const pickRep = (id: string) => {
     setRepId(id);
@@ -230,6 +264,13 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
             ? 'Callback saved to the queue.'
             : `Logged: ${OUTCOME_LABELS[outcome]}.`,
       );
+      // Session bookkeeping: tally, celebrate demos, and keep the treadmill
+      // moving (demo advances are orchestrated by the modal so the forge can
+      // finish first).
+      const bumped = bumpDialSession(outcome === 'demo_booked' ? 'demo' : 'dial');
+      if (bumped) setSessionState(bumped);
+      if (outcome === 'demo_booked') setBurst((b) => b + 1);
+      else if (bumped) advanceToNext(1100);
     } catch (e) {
       setTodayStats(prevStats);
       push(e instanceof Error ? e.message : 'Could not log that call.', 'error');
@@ -259,6 +300,21 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     }
   }, [lead, push]);
 
+  const handleDemoBooked = async (iso: string, notes: string, forge: boolean) => {
+    await logOutcome('demo_booked', { next_action_at: iso, next_action: 'Demo', disposition: notes || undefined });
+    if (forge && lead && !lead.demo_url) {
+      try {
+        push('Forging their AI receptionist demo...');
+        const res = await api<{ demo_url: string; lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-demo`, { method: 'POST' });
+        if (res.lead) setLead(res.lead);
+        push('Demo forged. Send them the link before the meeting.');
+      } catch (e) {
+        push(e instanceof Error ? e.message : 'Forge failed, you can retry from the deck.', 'error');
+      }
+    }
+    if (getDialSession()) advanceToNext(2200);
+  };
+
   const startPilot = async () => {
     if (!lead) return;
     try {
@@ -272,6 +328,9 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
   };
 
   const nextLead = queue.find((qq) => qq.id !== leadId);
+  useEffect(() => {
+    nextLeadIdRef.current = nextLead?.id ?? null;
+  }, [nextLead]);
 
   // Keyboard shortcuts for the dial floor. Armed only while the call timer is
   // running so a brushed keyboard can never log phantom outcomes.
@@ -312,6 +371,36 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
             ) : undefined
           }
         />
+
+        {session && (
+          <div className="mb-5 bg-[#1a1815] border-2 border-[#1a1815] rounded-2xl shadow-[4px_4px_0_0_#3f5d34] px-5 py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <span className="text-[10px] uppercase tracking-[0.3em] font-oswald font-semibold text-[#3f5d34]" style={{ color: '#8fb37f' }}>
+              ● Session live
+            </span>
+            {(() => {
+              void sessionTick;
+              const mins = Math.max(1, (Date.now() - session.startedAt) / 60000);
+              const pace = Math.round((session.dials / mins) * 60);
+              return (
+                <>
+                  <span className="font-oswald text-[#f7f3e9] text-lg leading-none">
+                    {session.dials} <span className="text-xs text-[#f7f3e9]/50 uppercase">dials</span>
+                  </span>
+                  <span className="font-oswald text-[#f7f3e9] text-lg leading-none">
+                    {session.demos} <span className="text-xs text-[#f7f3e9]/50 uppercase">demos</span>
+                  </span>
+                  <span className="font-oswald text-[#b58a2a] text-lg leading-none">
+                    {pace} <span className="text-xs text-[#f7f3e9]/50 uppercase">per hr pace</span>
+                  </span>
+                  <span className="font-sans text-xs text-[#f7f3e9]/45">{Math.round(mins)} min in · outcomes auto-advance to the next hottest lead</span>
+                </>
+              );
+            })()}
+            <button onClick={endSession} className="ml-auto text-[10px] uppercase tracking-[0.18em] font-oswald font-semibold text-[#f7f3e9]/60 hover:text-[#f7f3e9] border-2 border-[#f7f3e9]/30 hover:border-[#f7f3e9] rounded-lg px-3 py-1.5 transition-colors">
+              End session
+            </button>
+          </div>
+        )}
 
         {error && (
           <div className={`${card} p-5 mb-6 border-[#a03123] shadow-[5px_5px_0_0_#a03123]`}>
@@ -598,8 +687,10 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
         </div>
       )}
 
+      {burst > 0 && <SeedBurst key={burst} />}
+
       {/* Demo booked modal */}
-      <DemoModal open={demoOpen} onClose={() => setDemoOpen(false)} onSave={(iso, notes) => { setDemoOpen(false); void logOutcome('demo_booked', { next_action_at: iso, next_action: 'Demo', disposition: notes || undefined }); }} />
+      <DemoModal open={demoOpen} onClose={() => setDemoOpen(false)} hasDemo={Boolean(lead?.demo_url)} onSave={(iso, notes, forge) => { setDemoOpen(false); void handleDemoBooked(iso, notes, forge); }} />
       {/* Callback modal */}
       <CallbackModal open={cbOpen} onClose={() => setCbOpen(false)} onSave={(iso, note) => { setCbOpen(false); void logOutcome('callback', { next_action_at: iso, next_action: note || 'Callback' }); }} />
 
@@ -625,11 +716,12 @@ function nextHourPlus(hours: number): { date: string; time: string } {
   return { date: `${get('year')}-${get('month')}-${get('day')}`, time: `${String(Number(get('hour')) % 24).padStart(2, '0')}:00` };
 }
 
-function DemoModal({ open, onClose, onSave }: { open: boolean; onClose: () => void; onSave: (iso: string, notes: string) => void }) {
+function DemoModal({ open, onClose, onSave, hasDemo }: { open: boolean; onClose: () => void; onSave: (iso: string, notes: string, forge: boolean) => void; hasDemo: boolean }) {
   const init = nextHourPlus(3);
   const [date, setDate] = useState(init.date);
   const [time, setTime] = useState(init.time);
   const [notes, setNotes] = useState('');
+  const [forge, setForge] = useState(true);
   return (
     <Modal open={open} onClose={onClose} eyebrow="The win" title="Demo booked" subtitle="Lock the slot while they are still warm." size="sm" headerTone="dark">
       <div className="grid grid-cols-2 gap-3">
@@ -646,11 +738,17 @@ function DemoModal({ open, onClose, onSave }: { open: boolean; onClose: () => vo
           <textarea className={`${inputCls} min-h-[70px]`} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Partner joining, wants to hear the AI live, build demo from their site first." />
         </div>
       </div>
+      {!hasDemo && (
+        <label className="flex items-center gap-2 font-sans text-sm text-[#1a1815]/75 cursor-pointer mt-3">
+          <input type="checkbox" checked={forge} onChange={(e) => setForge(e.target.checked)} className="accent-[#3f5d34] w-4 h-4" />
+          Forge their AI demo now, so they can talk to it before the meeting
+        </label>
+      )}
       <div className="flex justify-end gap-2 mt-4">
         <button onClick={onClose} className={btnGhost}>Cancel</button>
         <button
           onClick={() => {
-            onSave(denverIso(date, time || '10:00'), notes);
+            onSave(denverIso(date, time || '10:00'), notes, !hasDemo && forge);
             setNotes('');
           }}
           disabled={!date}

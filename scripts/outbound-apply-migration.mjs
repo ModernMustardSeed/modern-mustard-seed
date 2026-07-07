@@ -35,7 +35,7 @@ if (!token) {
   process.exit(1);
 }
 
-for (const file of ['035_outbound.sql', '038_outbound_unified.sql']) {
+for (const file of ['035_outbound.sql', '038_outbound_unified.sql', '039_outbound_engine.sql']) {
   const sql = readFileSync(path.join(process.cwd(), 'supabase', 'migrations', file), 'utf8');
   console.log(`Applying ${file} via Management API to`, REF, '...');
   const res = await fetch(`https://api.supabase.com/v1/projects/${REF}/database/query`, {
