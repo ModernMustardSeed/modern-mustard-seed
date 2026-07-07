@@ -59,6 +59,17 @@ export type Rep = {
   active: boolean;
 };
 
+/** Shape of the cached website audit (matches lib/website-audit.ts report). */
+export type OutboundAudit = {
+  overall_score: number;
+  letter_grade: string;
+  headline: string;
+  overall_analysis?: string;
+  categories?: Record<string, { score: number; letter: string; notes: string }>;
+  top_three_fixes?: { title: string; why: string; how: string }[];
+  full_todo?: { category: string; priority: string; task: string }[];
+};
+
 export type OutboundLead = {
   id: string;
   business_name: string;
@@ -78,8 +89,29 @@ export type OutboundLead = {
   dnc_checked: boolean;
   next_action_at: string | null;
   notes: string | null;
+  audit_score: number | null;
+  audit_url: string | null;
+  audit_json: OutboundAudit | null;
+  audit_at: string | null;
+  pipeline_lead_id: string | null;
+  email_opened_at: string | null;
+  email_open_count: number;
+  last_email_at: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type ThreadMessage = {
+  id: string;
+  direction: 'inbound' | 'outbound';
+  channel: string;
+  from_addr: string | null;
+  to_addr: string | null;
+  subject: string | null;
+  snippet: string | null;
+  body: string | null;
+  read: boolean;
+  occurred_at: string;
 };
 
 export type CallLog = {

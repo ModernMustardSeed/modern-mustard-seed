@@ -7,6 +7,7 @@ import Modal from '@/components/ui/Modal';
 import { NICHE_LABELS, OUTCOME_LABELS, denverIso, formatPhone, fmtMoney, monthlyLeak } from '@/lib/outbound';
 import type { CallLog, CallOutcome, Niche, OutboundLead, Pilot, Rep, Script } from '@/lib/outbound';
 import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
+import { ReachOutDeck, AuditIntelCard, ThreadPanel } from '@/components/admin/outbound/OutboundReachOut';
 
 /** Company callback line read out in the voicemail script (Mr. Mustard's number). */
 const MMS_LINE = '(406) 312-1223';
@@ -91,6 +92,8 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
   const [demoOpen, setDemoOpen] = useState(false);
   const [cbOpen, setCbOpen] = useState(false);
   const [logging, setLogging] = useState(false);
+  const [threadOpen, setThreadOpen] = useState(false);
+  const [auditing, setAuditing] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -235,6 +238,27 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     }
   };
 
+  const runAudit = useCallback(async () => {
+    if (!lead?.website) {
+      push('No website on file yet. Try "Find site & email" first.', 'error');
+      return;
+    }
+    setAuditing(true);
+    push('Auditing their website. Takes about half a minute.');
+    try {
+      const res = await api<{ lead?: OutboundLead; report: { overall_score: number } }>(`/api/admin/outbound/leads/${lead.id}/audit`, {
+        method: 'POST',
+        body: JSON.stringify({}),
+      });
+      if (res.lead) setLead(res.lead);
+      push(`Audit done: ${Math.round(res.report.overall_score)}/100. Lead with it.`);
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Audit failed.', 'error');
+    } finally {
+      setAuditing(false);
+    }
+  }, [lead, push]);
+
   const startPilot = async () => {
     if (!lead) return;
     try {
@@ -344,6 +368,15 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
                 </div>
               </div>
 
+              <ReachOutDeck
+                lead={lead}
+                onLead={setLead}
+                push={push}
+                onOpenThread={() => setThreadOpen(true)}
+                auditing={auditing}
+                onRunAudit={() => void runAudit()}
+              />
+
               <div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t-2 border-[#1a1815]/[0.08]">
                 <span className="text-[10px] uppercase tracking-[0.2em] font-oswald font-medium text-[#1a1815]/50">Dialing as</span>
                 <div className="flex items-center gap-1.5">
@@ -378,6 +411,7 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
             <div className="grid lg:grid-cols-12 gap-5 items-start">
               {/* a. Script rail */}
               <section className="lg:col-span-5 space-y-4">
+                <AuditIntelCard lead={lead} onRun={() => void runAudit()} auditing={auditing} />
                 {([
                   ['opener', 'Opener'],
                   ['hook_bad', 'Bad news'],
@@ -568,6 +602,9 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
       <DemoModal open={demoOpen} onClose={() => setDemoOpen(false)} onSave={(iso, notes) => { setDemoOpen(false); void logOutcome('demo_booked', { next_action_at: iso, next_action: 'Demo', disposition: notes || undefined }); }} />
       {/* Callback modal */}
       <CallbackModal open={cbOpen} onClose={() => setCbOpen(false)} onSave={(iso, note) => { setCbOpen(false); void logOutcome('callback', { next_action_at: iso, next_action: note || 'Callback' }); }} />
+
+      {/* Conversation thread */}
+      {lead && <ThreadPanel lead={lead} open={threadOpen} onClose={() => setThreadOpen(false)} push={push} />}
 
       <ToastHost toasts={toasts} />
     </div>

@@ -33,6 +33,9 @@ export type OutboundProspect = {
   auditHeadline?: string | null;
   auditTopFix?: string | null;
   website_domain?: string | null;
+  /** Which thread the end-of-call transcript should land on. Defaults to the
+   *  Tracker's prospectId; the Outbound Cockpit passes 'outboundLeadId'. */
+  metadataKey?: 'prospectId' | 'outboundLeadId';
 };
 
 export type OutboundResult =
@@ -173,7 +176,7 @@ export async function placeOutboundCall(p: OutboundProspect): Promise<OutboundRe
         assistantOverrides: {
           firstMessage: outboundFirstMessage(p),
           model,
-          metadata: { prospectId: p.id, business: p.business, mode: 'outbound' },
+          metadata: { [p.metadataKey ?? 'prospectId']: p.id, business: p.business, mode: 'outbound' },
         },
       }),
     });

@@ -37,7 +37,12 @@ export async function GET(req: Request) {
   if (p && UUID.test(p)) {
     try {
       const sb = getSupabase();
-      if (sb) await sb.rpc('record_email_open', { pid: p });
+      if (sb) {
+        // The id may belong to rep_prospects OR outbound_leads; fire both
+        // recorders, only the owning table's row updates.
+        await sb.rpc('record_email_open', { pid: p });
+        await sb.rpc('record_outbound_email_open', { oid: p });
+      }
     } catch {
       /* tracking must never break the pixel */
     }

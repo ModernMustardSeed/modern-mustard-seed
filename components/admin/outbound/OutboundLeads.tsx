@@ -9,7 +9,7 @@ import { NICHES, NICHE_LABELS, LEAD_STATUSES, STATUS_LABELS, formatPhone, fmtMon
 import type { Niche, OutboundLead, Rep } from '@/lib/outbound';
 import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, api, card, btnPrimary, btnGhost, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
 
-type SortKey = 'business_name' | 'contact_name' | 'phone' | 'niche' | 'city' | 'status' | 'owner' | 'avg_job_value' | 'created_at';
+type SortKey = 'business_name' | 'contact_name' | 'phone' | 'niche' | 'city' | 'status' | 'owner' | 'avg_job_value' | 'audit_score' | 'created_at';
 
 const EMPTY_FORM = {
   business_name: '',
@@ -141,7 +141,7 @@ export default function OutboundLeads() {
     if (sort === key) setDir((d) => (d === 'asc' ? 'desc' : 'asc'));
     else {
       setSort(key);
-      setDir(key === 'created_at' || key === 'avg_job_value' ? 'desc' : 'asc');
+      setDir(key === 'created_at' || key === 'avg_job_value' || key === 'audit_score' ? 'desc' : 'asc');
     }
   };
 
@@ -309,7 +309,7 @@ export default function OutboundLeads() {
         {/* Table */}
         <div className={`${card} overflow-hidden`}>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm font-sans min-w-[980px]">
+            <table className="w-full text-sm font-sans min-w-[1060px]">
               <thead className="border-b-2 border-[#1a1815]/10 bg-[#f7f3e9]/60">
                 <tr>
                   {th('business_name', 'Business')}
@@ -320,17 +320,18 @@ export default function OutboundLeads() {
                   {th('status', 'Status')}
                   {th('owner', 'Rep')}
                   {th('avg_job_value', 'Job value', true)}
+                  {th('audit_score', 'Score', true)}
                   <th className="px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] font-oswald font-medium text-[#1a1815]/50 text-center">DNC ok</th>
                   <th className="px-3 py-2.5" />
                 </tr>
               </thead>
               <tbody>
                 {loading && (
-                  <tr><td colSpan={10} className="px-4 py-10 text-center text-[#1a1815]/40">Loading the list...</td></tr>
+                  <tr><td colSpan={11} className="px-4 py-10 text-center text-[#1a1815]/40">Loading the list...</td></tr>
                 )}
                 {!loading && visible.length === 0 && (
                   <tr>
-                    <td colSpan={10} className="px-4 py-12 text-center">
+                    <td colSpan={11} className="px-4 py-12 text-center">
                       <p className="font-oswald uppercase text-lg text-[#1a1815]/50">No leads match</p>
                       <p className="text-xs text-[#1a1815]/50 mt-1">Import a CSV or add your first lead to start dialing.</p>
                     </td>
@@ -369,6 +370,23 @@ export default function OutboundLeads() {
                       </select>
                     </td>
                     <td className="px-3 py-2.5 text-right font-oswald tabular-nums text-[#1a1815]">{l.avg_job_value ? fmtMoney(Number(l.avg_job_value)) : ''}</td>
+                    <td className="px-3 py-2.5 text-right">
+                      {l.audit_score != null && (
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-md border font-oswald font-semibold text-xs tabular-nums ${
+                            l.audit_score >= 80
+                              ? 'text-[#3f5d34] border-[#3f5d34]/50 bg-[#3f5d34]/10'
+                              : l.audit_score >= 60
+                                ? 'text-[#7a5c1a] border-[#b58a2a]/60 bg-[#b58a2a]/12'
+                                : 'text-[#a03123] border-[#a03123]/50 bg-[#a03123]/8'
+                          }`}
+                          title={l.email_open_count > 0 ? `Audit ${l.audit_score}/100 · email opened ${l.email_open_count}x` : `Audit ${l.audit_score}/100`}
+                        >
+                          {l.audit_score}
+                          {l.email_open_count > 0 && <span className="ml-1">👁</span>}
+                        </span>
+                      )}
+                    </td>
                     <td className="px-3 py-2.5 text-center">
                       <input
                         type="checkbox"

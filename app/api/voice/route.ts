@@ -411,19 +411,27 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
   const meta = ((call.metadata as Record<string, unknown>) ||
     ((call.assistantOverrides as Record<string, unknown>)?.metadata as Record<string, unknown>) || {}) as Record<string, unknown>;
   const prospectId = typeof meta.prospectId === 'string' ? meta.prospectId : null;
-  if (prospectId) {
+  const outboundLeadId = typeof meta.outboundLeadId === 'string' ? meta.outboundLeadId : null;
+  if (prospectId || outboundLeadId) {
     try {
       const sb = getSupabase();
       if (sb) {
+        // outbound_lead_id only when set, so this insert keeps working on a
+        // database that has not applied migration 038 yet.
         await sb.from('messages').insert({
-          prospect_id: prospectId, direction: 'outbound', channel: 'call',
+          prospect_id: prospectId, ...(outboundLeadId ? { outbound_lead_id: outboundLeadId } : {}), direction: 'outbound', channel: 'call',
           from_addr: 'Mr. Mustard (AI)', to_addr: phoneNumber || 'lead',
           subject: `AI call${durationSeconds ? ` (${durationSeconds}s)` : ''}${endedReason ? ` · ${endedReason}` : ''}`,
           snippet: summary.slice(0, 500),
           body: `Summary: ${summary}\n\n--- Transcript ---\n${transcript}`.slice(0, 20000),
           read: true, occurred_at: new Date().toISOString(),
         });
-        await sb.from('rep_prospects').update({ status: 'contacted', updated_at: new Date().toISOString() }).eq('id', prospectId).eq('status', 'to-contact');
+        if (prospectId) {
+          await sb.from('rep_prospects').update({ status: 'contacted', updated_at: new Date().toISOString() }).eq('id', prospectId).eq('status', 'to-contact');
+        }
+        if (outboundLeadId) {
+          await sb.from('outbound_leads').update({ status: 'contacted' }).eq('id', outboundLeadId).eq('status', 'new');
+        }
       }
     } catch (err) {
       console.error('voice transcript log failed', err);

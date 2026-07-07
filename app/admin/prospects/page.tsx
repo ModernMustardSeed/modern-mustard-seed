@@ -17,5 +17,16 @@ export default async function ProspectsPage() {
     if (aff?.status === 'approved' && aff.code) bookDisplay = `${siteDisplay}/book?ref=${aff.code}`;
   }
 
-  return <LeadTracker currentEmail={user?.email ?? ''} currentName={user?.name ?? ''} bookDisplay={bookDisplay} />;
+  return (
+    <>
+      <div className="bg-[#1a1815] text-[#f7f3e9] px-5 py-2.5 text-center text-sm font-sans">
+        The dial floor moved to{' '}
+        <a href="/admin/outbound" className="font-bold text-[#b58a2a] underline underline-offset-2">
+          Outbound
+        </a>
+        : goals, scripts, audits, Mr. Mustard, email, and pilots in one screen. This Tracker stays for browsing the old list.
+      </div>
+      <LeadTracker currentEmail={user?.email ?? ''} currentName={user?.name ?? ''} bookDisplay={bookDisplay} />
+    </>
+  );
 }

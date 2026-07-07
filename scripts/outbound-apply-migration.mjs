@@ -35,29 +35,41 @@ if (!token) {
   process.exit(1);
 }
 
-const sql = readFileSync(path.join(process.cwd(), 'supabase', 'migrations', '035_outbound.sql'), 'utf8');
-console.log('Applying 035_outbound.sql via Management API to', REF, '...');
-const res = await fetch(`https://api.supabase.com/v1/projects/${REF}/database/query`, {
-  method: 'POST',
-  headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-  body: JSON.stringify({ query: sql }),
-});
-const body = await res.text();
-if (!res.ok) {
-  console.error('Migration FAILED:', res.status, body.slice(0, 500));
-  process.exit(1);
+for (const file of ['035_outbound.sql', '038_outbound_unified.sql']) {
+  const sql = readFileSync(path.join(process.cwd(), 'supabase', 'migrations', file), 'utf8');
+  console.log(`Applying ${file} via Management API to`, REF, '...');
+  const res = await fetch(`https://api.supabase.com/v1/projects/${REF}/database/query`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: sql }),
+  });
+  const body = await res.text();
+  if (!res.ok) {
+    console.error('Migration FAILED:', res.status, body.slice(0, 500));
+    process.exit(1);
+  }
+  console.log('  applied.', body.slice(0, 120) || '(empty result, as expected for DDL)');
 }
-console.log('Migration applied. API said:', body.slice(0, 200) || '(empty result, as expected for DDL)');
 
-// Verify through PostgREST with the service key.
+// Verify through PostgREST with the service key. The audit_score select also
+// proves the 037 columns landed.
 const SUPABASE_URL = env.SUPABASE_URL || env.supabase_url;
 const KEY = env.SUPABASE_SERVICE_ROLE_KEY || env.supabase_service_role_key;
-for (const table of ['outbound_reps', 'outbound_leads', 'outbound_call_logs', 'outbound_pilots', 'outbound_scripts', 'outbound_daily_rep_stats']) {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&limit=1`, {
+const checks = [
+  ['outbound_reps', '*'],
+  ['outbound_leads', 'id,audit_score,pipeline_lead_id,email_open_count'],
+  ['outbound_call_logs', '*'],
+  ['outbound_pilots', '*'],
+  ['outbound_scripts', '*'],
+  ['outbound_daily_rep_stats', '*'],
+  ['messages', 'id,outbound_lead_id'],
+];
+for (const [table, select] of checks) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=${select}&limit=1`, {
     headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, Prefer: 'count=exact' },
   });
   const count = r.headers.get('content-range');
   console.log(r.ok ? `  OK ${table} (rows ${count})` : `  MISSING ${table}: ${r.status}`);
   if (!r.ok) process.exit(1);
 }
-console.log('\nOutbound tables are live. Open /admin/outbound and start dialing.');
+console.log('\nOutbound tables are live. Next: node scripts/migrate-prospects-to-outbound.mjs --apply');

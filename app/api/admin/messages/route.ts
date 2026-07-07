@@ -17,7 +17,7 @@ export async function GET(req: Request) {
   const unreadOnly = new URL(req.url).searchParams.get('unread') === '1';
   let q = sb
     .from('messages')
-    .select('id,prospect_id,from_addr,subject,snippet,read,occurred_at')
+    .select('id,prospect_id,outbound_lead_id,from_addr,subject,snippet,read,occurred_at')
     .eq('direction', 'inbound')
     .order('occurred_at', { ascending: false })
     .limit(100);
@@ -31,9 +31,16 @@ export async function GET(req: Request) {
     const { data: ps } = await sb.from('rep_prospects').select('id,business,city').in('id', ids);
     for (const p of ps ?? []) names.set(p.id, `${p.business}${p.city ? ` (${p.city})` : ''}`);
   }
-  // Prospect-less inbound mail is from a client; resolve their name by address.
+  // Outbound Cockpit leads resolve from their own table.
+  const outIds = Array.from(new Set((msgs ?? []).map((m) => m.outbound_lead_id).filter(Boolean)));
+  const outNames = new Map<string, string>();
+  if (outIds.length) {
+    const { data: ls } = await sb.from('outbound_leads').select('id,business_name,city').in('id', outIds);
+    for (const l of ls ?? []) outNames.set(l.id, `${l.business_name}${l.city ? ` (${l.city})` : ''}`);
+  }
+  // Unmatched inbound mail is from a client; resolve their name by address.
   const clientAddrs = Array.from(
-    new Set((msgs ?? []).filter((m) => !m.prospect_id && m.from_addr).map((m) => String(m.from_addr).toLowerCase()))
+    new Set((msgs ?? []).filter((m) => !m.prospect_id && !m.outbound_lead_id && m.from_addr).map((m) => String(m.from_addr).toLowerCase()))
   );
   const clientNames = new Map<string, string>();
   if (clientAddrs.length) {
@@ -44,7 +51,9 @@ export async function GET(req: Request) {
     ...m,
     business: m.prospect_id
       ? names.get(m.prospect_id) ?? 'Unknown'
-      : clientNames.get(String(m.from_addr).toLowerCase()) ?? (m.from_addr || 'Unknown'),
+      : m.outbound_lead_id
+        ? outNames.get(m.outbound_lead_id) ?? 'Unknown'
+        : clientNames.get(String(m.from_addr).toLowerCase()) ?? (m.from_addr || 'Unknown'),
   }));
 
   const { count: unread } = await sb
