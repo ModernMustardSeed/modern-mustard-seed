@@ -248,8 +248,8 @@ export function aboutPageJsonLd() {
     url: `${SITE.url}/about`,
     name: `About ${SITE.name}`,
     description:
-      'About Modern Mustard Seed, the one-person product studio founded by Sarah Scarano. Faith meets function. Ship custom apps, websites, and specialty AI tools in weeks, not months.',
-    mainEntity: { '@id': PERSON_ID },
+      'About Modern Mustard Seed, a small AI studio that builds custom apps, websites, AI voice and chat agents, and specialty AI tools for businesses. Faith meets function. Shipped in weeks, not months.',
+    mainEntity: { '@id': ORG_ID },
     publisher: { '@id': ORG_ID },
     isPartOf: { '@id': WEBSITE_ID },
     inLanguage: 'en-US',
