@@ -7,59 +7,50 @@ import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
 import { navLinks, socials } from '@/data/socials';
 
-// Comprehensive site map for the hamburger mega-menu. Public pages only
-// (admin, portals, and program HQs run their own shells).
+// Curated site map for the hamburger menu: fewer, clearer doors. Everything
+// dropped here (Idea to Spec, AI-Proof, industries, legal) stays reachable
+// through Services, the footer, and in-page cross-links.
 const MENU_GROUPS = [
   {
     heading: 'Work With Us',
     links: [
       { label: 'How It Works', href: '/work-with-us' },
       { label: 'Services', href: '/services' },
-      { label: 'Voice Agents', href: '/voice-agents' },
-      { label: 'Idea to Spec', href: '/idea-to-spec' },
-      { label: 'The Terminal', href: '/the-terminal' },
-      { label: 'AI-Proof Your Business', href: '/ai-proof' },
+      { label: 'The Work', href: '/work' },
       { label: 'Join the Build Queue', href: '/build-queue' },
     ],
   },
   {
     heading: 'Free Tools',
     links: [
-      { label: 'New Business Checklist', href: '/launch-checklist' },
       { label: 'Bottleneck Breaker', href: '/audit' },
-      { label: 'Website Audit', href: '/website-audit' },
+      { label: 'Launch Checklist', href: '/launch-checklist' },
+      { label: 'Prompt Playbook', href: '/prompt-playbook' },
       { label: 'Free Playbooks', href: '/playbooks' },
-    ],
-  },
-  {
-    heading: 'Explore',
-    links: [
-      { label: 'The Work', href: '/work' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Store', href: '/store' },
-      { label: 'For Your Industry', href: '/for' },
-    ],
-  },
-  {
-    heading: 'The Studio Departments',
-    links: [
-      { label: 'Sidekick Forge · free AI receptionist demo', href: '/sidekick' },
-      { label: 'Mustard Pictures · free commercial screen test', href: '/pictures' },
-      { label: 'Mustard Press · free typeset menu proof', href: '/press' },
-      { label: 'Mustard Mode · learn Claude with a coach', href: '/mustard-mode' },
     ],
   },
   {
     heading: 'Company',
     links: [
       { label: 'About', href: '/about' },
+      { label: 'Blog', href: '/blog' },
+      { label: 'Store', href: '/store' },
       { label: 'Contact', href: '/contact' },
-      { label: 'Partners', href: '/partners' },
       { label: 'Client Portal', href: '/portal' },
-      { label: 'Privacy', href: '/privacy' },
-      { label: 'Terms', href: '/terms' },
     ],
   },
+];
+
+// The Studio Departments: every door opens free. Rendered as the signature
+// ink panel near the bottom of the drawer (names in Title Case, descriptors
+// in tracked mono caps; never a lowercase opener).
+const DEPARTMENTS = [
+  { name: 'Sidekick Forge', tag: 'FREE RECEPTIONIST DEMO', href: '/sidekick' },
+  { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },
+  { name: 'Mustard Press', tag: 'FREE TYPESET PROOF', href: '/press' },
+  { name: 'GEO Desk', tag: 'FREE AI-FINDABILITY GRADE', href: '/website-audit' },
+  { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
+  { name: 'Mustard Launch', tag: 'YOUR AI LAUNCH COACH', href: '/mustard-launch' },
 ];
 
 export default function Navbar() {
@@ -298,6 +289,48 @@ export default function Navbar() {
                   </ul>
                 </div>
               ))}
+            </div>
+
+            {/* The Studio Departments: the signature ink panel */}
+            <div className="relative mt-9 rounded-2xl border-2 border-[#161616] bg-[#161616] shadow-[5px_5px_0_0_#F5B700] overflow-hidden">
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage: 'radial-gradient(rgba(245,183,0,0.35) 1.3px, transparent 1.4px)',
+                  backgroundSize: '18px 18px',
+                }}
+              />
+              <div className="relative p-6 md:p-7">
+                <span className="block text-[10px] uppercase tracking-[0.32em] text-[#F5B700] font-mono font-bold mb-4">
+                  The Studio Departments · Every Door Opens Free
+                </span>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                  {DEPARTMENTS.map((d) => {
+                    const active = pathname === d.href;
+                    return (
+                      <li key={d.href}>
+                        <Link
+                          href={d.href}
+                          onClick={() => setMenuOpen(false)}
+                          className="group block"
+                        >
+                          <span
+                            className={`block font-display font-black text-lg md:text-xl tracking-tight leading-snug transition-colors ${
+                              active ? 'text-[#F5B700]' : 'text-[#FBF6EA] group-hover:text-[#F5B700]'
+                            }`}
+                          >
+                            {d.name}
+                          </span>
+                          <span className="block font-mono text-[9px] uppercase tracking-[0.24em] text-[#F5B700]/75 mt-0.5">
+                            {d.tag}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
 
             {/* Primary CTAs */}
