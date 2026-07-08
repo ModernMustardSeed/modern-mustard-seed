@@ -75,6 +75,8 @@ export default function OutboundLeads() {
   const [status, setStatus] = useState('');
   const [niche, setNiche] = useState('');
   const [owner, setOwner] = useState('');
+  const [stateF, setStateF] = useState('');
+  const [cityF, setCityF] = useState('');
   const [unscrubbedOnly, setUnscrubbedOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>('created_at');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
@@ -118,18 +120,46 @@ export default function OutboundLeads() {
     void load();
     // Deep-link support (?dnc=unchecked) without useSearchParams, so no
     // Suspense boundary is needed (same pattern as the Tracker's ?focus=).
-    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('dnc') === 'unchecked') {
-      setUnscrubbedOnly(true);
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('dnc') === 'unchecked') setUnscrubbedOnly(true);
+      const st = params.get('state');
+      if (st) setStateF(st.toUpperCase().slice(0, 2));
     }
   }, [load]);
 
   const repName = useCallback((id: string | null) => reps.find((r) => r.id === id)?.name ?? '', [reps]);
+
+  // Geography filters: options derive from the live list, city narrows to the
+  // chosen state, and picking a new state clears a city that no longer fits.
+  const stateOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const l of leads) if (l.state) counts.set(l.state, (counts.get(l.state) ?? 0) + 1);
+    return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [leads]);
+
+  const cityOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const l of leads) {
+      if (!l.city) continue;
+      if (stateF && l.state !== stateF) continue;
+      counts.set(l.city, (counts.get(l.city) ?? 0) + 1);
+    }
+    return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [leads, stateF]);
+
+  const pickState = (s: string) => {
+    setStateF(s);
+    if (cityF && s && !leads.some((l) => l.state === s && l.city === cityF)) setCityF('');
+  };
 
   const visible = useMemo(() => {
     let rows = leads;
     if (status) rows = rows.filter((l) => l.status === status);
     if (niche) rows = rows.filter((l) => l.niche === niche);
     if (owner) rows = rows.filter((l) => l.owner_rep_id === owner);
+    if (stateF) rows = rows.filter((l) => l.state === stateF);
+    if (cityF) rows = rows.filter((l) => l.city === cityF);
     if (unscrubbedOnly) rows = rows.filter((l) => !l.dnc_checked);
     if (q.trim()) {
       const needle = q.trim().toLowerCase();
@@ -144,7 +174,7 @@ export default function OutboundLeads() {
       if (typeof va === 'number' || typeof vb === 'number') return (Number(va) - Number(vb)) * mul;
       return String(va).localeCompare(String(vb)) * mul;
     });
-  }, [leads, status, niche, owner, unscrubbedOnly, q, sort, dir, repName]);
+  }, [leads, status, niche, owner, stateF, cityF, unscrubbedOnly, q, sort, dir, repName]);
 
   const clickSort = (key: SortKey) => {
     if (sort === key) setDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -324,6 +354,14 @@ export default function OutboundLeads() {
           <select value={owner} onChange={(e) => setOwner(e.target.value)} className={selectCls} aria-label="Filter by rep">
             <option value="">All reps</option>
             {reps.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+          </select>
+          <select value={stateF} onChange={(e) => pickState(e.target.value)} className={selectCls} aria-label="Filter by state">
+            <option value="">All states</option>
+            {stateOptions.map(([s, n]) => <option key={s} value={s}>{s} ({n})</option>)}
+          </select>
+          <select value={cityF} onChange={(e) => setCityF(e.target.value)} className={selectCls} aria-label="Filter by city">
+            <option value="">All cities</option>
+            {cityOptions.map(([c, n]) => <option key={c} value={c}>{c} ({n})</option>)}
           </select>
           <label className="flex items-center gap-1.5 font-sans text-xs text-[#1a1815]/70 cursor-pointer ml-1">
             <input type="checkbox" checked={unscrubbedOnly} onChange={(e) => setUnscrubbedOnly(e.target.checked)} className="accent-[#a03123] w-4 h-4" />

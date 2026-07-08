@@ -21,7 +21,11 @@ export async function GET(req: Request) {
   const sort = SORTABLE.has(sortParam) ? sortParam : 'created_at';
   const asc = url.searchParams.get('dir') === 'asc';
 
-  let query = guard.supabase.from('outbound_leads').select('*').limit(1000);
+  // Explicit columns, no audit_json: the full report is kilobytes per row and
+  // belongs to the single-lead cockpit fetch, not a 3000-row list.
+  const LIST_COLUMNS =
+    'id, business_name, contact_name, phone, email, website, niche, city, state, avg_job_value, est_missed_calls_week, close_rate_pct, status, source, owner_rep_id, dnc_checked, next_action_at, next_action, notes, audit_score, audit_url, audit_at, pipeline_lead_id, email_opened_at, email_open_count, last_email_at, last_open_at, demo_url, demo_run_id, created_at, updated_at';
+  let query = guard.supabase.from('outbound_leads').select(LIST_COLUMNS).limit(3000);
   if (status && (LEAD_STATUSES as readonly string[]).includes(status)) query = query.eq('status', status as LeadStatus);
   if (niche && (NICHES as readonly string[]).includes(niche)) query = query.eq('niche', niche as Niche);
   if (owner) query = query.eq('owner_rep_id', owner);
