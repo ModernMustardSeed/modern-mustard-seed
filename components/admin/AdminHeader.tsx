@@ -139,7 +139,7 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
               const isOpen = openGroup === group.name;
               const showDot = group.name === 'Desk' && unread > 0;
               return (
-                <div key={group.name} className="relative">
+                <div key={group.name} className="md:relative">
                   <button
                     type="button"
                     aria-expanded={isOpen}
@@ -157,7 +157,12 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
                   {isOpen && (
                     <div
                       role="menu"
-                      className="absolute right-0 md:right-auto md:left-0 top-[calc(100%+6px)] z-40 min-w-[13rem] rounded-xl border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616] py-2"
+                      // Mobile: the group wrapper is `static`, so this anchors to the
+                      // full-width <nav> and drops a full-width panel that always fits
+                      // the viewport (the old `right-0` grew a fixed-width menu leftward
+                      // off the screen for left-positioned buttons). Desktop (md+): the
+                      // wrapper is `relative`, so it drops under its own button.
+                      className="absolute left-0 right-0 md:right-auto md:left-0 top-[calc(100%+6px)] z-40 md:min-w-[13rem] max-h-[70vh] overflow-y-auto rounded-xl border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616] py-2"
                     >
                       {group.items.map((item) => (
                         <Link
