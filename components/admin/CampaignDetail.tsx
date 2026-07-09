@@ -21,8 +21,8 @@ import { personalize, primaryContact } from '@/data/campaigns';
 // attribute to them) and their own studio (Zoho) mailbox, which is the address
 // their emails send from. Polly is the default (named lead); Sarah can flip it.
 const REPS = [
-  { name: 'Polly Thompson', first: 'Polly', fromEmail: 'polly.thompson@modernmustardseed.com', book: 'https://modernmustardseed.com/book?ref=POLLYTHOCN3X' },
-  { name: 'Sarah Scarano', first: 'Sarah', fromEmail: 'sarah@modernmustardseed.com', book: 'https://modernmustardseed.com/book' },
+  { name: 'Sarah Scarano', first: 'Sarah', fromEmail: 'sarah@modernmustardseed.com', cell: '(406) 250-6076', book: 'https://modernmustardseed.com/book' },
+  { name: 'Polly Thompson', first: 'Polly', fromEmail: 'polly.thompson@modernmustardseed.com', cell: '', book: 'https://modernmustardseed.com/book?ref=POLLYTHOCN3X' },
 ];
 type Rep = (typeof REPS)[number];
 
@@ -251,8 +251,8 @@ function ContactCard({ c, slug, rep, product, brand }: { c: Contact; slug: strin
   // The email draft is editable so the rep can tweak it or try an AI rewrite. It
   // resets to the personalized template whenever the rep changes (the {{REP}} and
   // {{BOOK}} tokens depend on who is running the campaign).
-  const origSubject = personalize(c.email.subject, { book: rep.book, rep: rep.name, name: first });
-  const origBody = personalize(c.email.body, { book: rep.book, rep: rep.name, name: first });
+  const origSubject = personalize(c.email.subject, { book: rep.book, rep: rep.name, name: first, cell: rep.cell });
+  const origBody = personalize(c.email.body, { book: rep.book, rep: rep.name, name: first, cell: rep.cell });
   const [subject, setSubject] = useState(origSubject);
   const [body, setBody] = useState(origBody);
   const [prevDraft, setPrevDraft] = useState<{ subject: string; body: string } | null>(null);
@@ -279,7 +279,7 @@ function ContactCard({ c, slug, rep, product, brand }: { c: Contact; slug: strin
       const r = await fetch('/api/admin/campaigns/rewrite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject, body, context: { name: first, title: c.title, company: c.company, product, brand, hook: c.angle, rep: rep.name } }),
+        body: JSON.stringify({ subject, body, context: { name: first, title: c.title, company: c.company, product, brand, hook: c.angle, rep: rep.name, cell: rep.cell } }),
       });
       const j = await r.json().catch(() => null);
       if (!r.ok || !j?.ok) setMsg({ kind: 'err', text: (j && j.error) || 'Rewrite failed. Try again.' });
@@ -329,11 +329,11 @@ function ContactCard({ c, slug, rep, product, brand }: { c: Contact; slug: strin
   const [openScript, setOpenScript] = useState(false);
   const cs = c.callScript;
   const psc = cs && {
-    open: personalize(cs.open, { book: rep.book, rep: rep.name, name: first }),
-    value: personalize(cs.value, { book: rep.book, rep: rep.name, name: first }),
-    close: personalize(cs.close, { book: rep.book, rep: rep.name, name: first }),
-    voicemail: personalize(cs.voicemail, { book: rep.book, rep: rep.name, name: first }),
-    gatekeeper: personalize(cs.gatekeeper, { book: rep.book, rep: rep.name, name: first }),
+    open: personalize(cs.open, { book: rep.book, rep: rep.name, name: first, cell: rep.cell }),
+    value: personalize(cs.value, { book: rep.book, rep: rep.name, name: first, cell: rep.cell }),
+    close: personalize(cs.close, { book: rep.book, rep: rep.name, name: first, cell: rep.cell }),
+    voicemail: personalize(cs.voicemail, { book: rep.book, rep: rep.name, name: first, cell: rep.cell }),
+    gatekeeper: personalize(cs.gatekeeper, { book: rep.book, rep: rep.name, name: first, cell: rep.cell }),
   };
   const fullScript = psc ? `OPEN\n${psc.open}\n\nVALUE\n${psc.value}\n\nCLOSE\n${psc.close}\n\nVOICEMAIL (20s)\n${psc.voicemail}\n\nGATEKEEPER\n${psc.gatekeeper}` : '';
   const telNum = c.phone?.match(/\(?\d{3}\)?[\s.-]*\d{3}[\s.-]*\d{4}/)?.[0] ?? '';
@@ -417,7 +417,7 @@ function ContactCard({ c, slug, rep, product, brand }: { c: Contact; slug: strin
               value={body}
               onChange={(e) => setBody(e.target.value)}
               aria-label="Email body"
-              rows={Math.min(20, Math.max(8, body.split('\n').length + 1))}
+              rows={Math.min(14, Math.max(8, body.split('\n').length + 1))}
               className="w-full font-body text-[13px] text-[#3A3733] bg-white border-2 border-[#161616]/20 rounded-lg px-3 py-2.5 leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-[#F5B700] focus:border-[#161616]"
             />
 
@@ -522,9 +522,13 @@ export default function CampaignDetail({ campaign }: { campaign: Campaign }) {
   const [repIdx, setRepIdx] = useState(0);
 
   useEffect(() => {
-    try { const v = localStorage.getItem('mms_campaign_rep'); if (v != null && REPS[Number(v)]) setRepIdx(Number(v)); } catch {}
+    try {
+      const v = localStorage.getItem('mms_campaign_rep');
+      const i = REPS.findIndex((r) => r.name === v);
+      if (i >= 0) setRepIdx(i);
+    } catch {}
   }, []);
-  const setRep = (i: number) => { setRepIdx(i); try { localStorage.setItem('mms_campaign_rep', String(i)); } catch {} };
+  const setRep = (i: number) => { setRepIdx(i); try { localStorage.setItem('mms_campaign_rep', REPS[i].name); } catch {} };
   const rep = REPS[repIdx];
 
   const phone = campaign.assets.find((a) => a.kind === 'phone');
@@ -672,16 +676,16 @@ export default function CampaignDetail({ campaign }: { campaign: Campaign }) {
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">LinkedIn DM</h2>
-              <CopyBtn text={personalize(campaign.linkedinDm, { book: rep.book, rep: rep.name })} label="Copy" className="!py-1 !text-[9px]" />
+              <CopyBtn text={personalize(campaign.linkedinDm, { book: rep.book, rep: rep.name, cell: rep.cell })} label="Copy" className="!py-1 !text-[9px]" />
             </div>
-            <p className="font-body text-[13px] text-[#3A3733] leading-relaxed whitespace-pre-wrap">{personalize(campaign.linkedinDm, { book: rep.book, rep: rep.name })}</p>
+            <p className="font-body text-[13px] text-[#3A3733] leading-relaxed whitespace-pre-wrap">{personalize(campaign.linkedinDm, { book: rep.book, rep: rep.name, cell: rep.cell })}</p>
           </div>
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Voicemail script</h2>
-              <CopyBtn text={personalize(campaign.voicemail, { book: rep.book, rep: rep.name })} label="Copy" className="!py-1 !text-[9px]" />
+              <CopyBtn text={personalize(campaign.voicemail, { book: rep.book, rep: rep.name, cell: rep.cell })} label="Copy" className="!py-1 !text-[9px]" />
             </div>
-            <p className="font-body text-[13px] text-[#3A3733] leading-relaxed whitespace-pre-wrap">{personalize(campaign.voicemail, { book: rep.book, rep: rep.name })}</p>
+            <p className="font-body text-[13px] text-[#3A3733] leading-relaxed whitespace-pre-wrap">{personalize(campaign.voicemail, { book: rep.book, rep: rep.name, cell: rep.cell })}</p>
             {phone && <a href={phone.href} className="inline-block mt-3 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#161616]">☎ Call the demo: {phone.note?.split(' · ')[0] ?? phone.label}</a>}
           </div>
         </section>

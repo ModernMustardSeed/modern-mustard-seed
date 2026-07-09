@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   let payload: {
     subject?: string;
     body?: string;
-    context?: { name?: string; title?: string; company?: string; product?: string; brand?: string; hook?: string; rep?: string; instruction?: string };
+    context?: { name?: string; title?: string; company?: string; product?: string; brand?: string; hook?: string; rep?: string; cell?: string; instruction?: string };
   };
   try {
     payload = await req.json();
@@ -36,7 +36,9 @@ export async function POST(req: Request) {
   const ctx = payload.context ?? {};
   const rep = ctx.rep || 'Sarah Scarano';
 
-  const system = `You are ${rep} of Modern Mustard Seed, a small AI studio. You write cold B2B outreach that books meetings. Voice: warm, sharp, founder to founder, specific, no hype, no jargon, short paragraphs. NO em dashes ever (use periods, commas, parentheses). It must read like a personal note to one real decision maker, never a mass blast. Keep it the same length or shorter than the original, and keep the same goal (earn a short demo or call). Do NOT invent facts, prices, or features that are not in the original. Sign it as ${rep.split(' ')[0]}. Output format, exactly: the first line is "Subject: <the new subject>", then one blank line, then the email body. Output nothing else.`;
+  const cell = (ctx.cell ?? '').trim();
+  const signLine = cell ? `Sign it as ${rep.split(' ')[0]} and keep the cell number ${cell} in the sign-off.` : `Sign it as ${rep.split(' ')[0]}.`;
+  const system = `You are ${rep} of Modern Mustard Seed, a small AI studio. You write cold B2B outreach that books meetings. Voice: warm, sharp, founder to founder, specific, no hype, no jargon, short paragraphs. NO em dashes ever (use periods, commas, parentheses). It must read like a personal note to one real decision maker, never a mass blast. Keep it the same length or shorter than the original, and keep the same goal (earn a short demo or call). Do NOT invent facts, prices, or features that are not in the original. ${signLine} Output format, exactly: the first line is "Subject: <the new subject>", then one blank line, then the email body. Output nothing else.`;
 
   const user = `Rewrite this outreach email as a genuinely different take: a fresh opening or angle, same intent. Keep it personalized to the recipient.
 
