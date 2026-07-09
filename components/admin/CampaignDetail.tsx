@@ -17,12 +17,14 @@ import { personalize, primaryContact } from '@/data/campaigns';
  * state (rep choice + each contact's outreach status) lives in localStorage.
  */
 
-// Who can run a campaign. Each carries their own booking link so replies attribute
-// to them. Polly is the default (named lead); Sarah can flip it to herself.
+// Who can run a campaign. Each carries their own booking link (so replies
+// attribute to them) and their own studio (Zoho) mailbox, which is the address
+// their emails send from. Polly is the default (named lead); Sarah can flip it.
 const REPS = [
-  { name: 'Polly Thompson', book: 'https://modernmustardseed.com/book?ref=POLLYTHOCN3X' },
-  { name: 'Sarah Scarano', book: 'https://modernmustardseed.com/book' },
+  { name: 'Polly Thompson', first: 'Polly', fromEmail: 'polly.thompson@modernmustardseed.com', book: 'https://modernmustardseed.com/book?ref=POLLYTHOCN3X' },
+  { name: 'Sarah Scarano', first: 'Sarah', fromEmail: 'sarah@modernmustardseed.com', book: 'https://modernmustardseed.com/book' },
 ];
+type Rep = (typeof REPS)[number];
 
 const STATUSES = ['to-send', 'sent', 'replied', 'meeting', 'won', 'no'] as const;
 type OutreachStatus = (typeof STATUSES)[number];
@@ -84,7 +86,7 @@ type ProjectLite = {
   deliverables?: { proposalSigned?: boolean; depositPaid?: boolean; balancePaid?: boolean };
 };
 
-function RunSheet({ campaign, rep, onJump }: { campaign: Campaign; rep: { name: string; book: string }; onJump: () => void }) {
+function RunSheet({ campaign, rep, onJump }: { campaign: Campaign; rep: Rep; onJump: () => void }) {
   const primary = primaryContact(campaign);
   const primaryEmail = (primary?.emailGuess ?? '').toLowerCase();
   const [project, setProject] = useState<ProjectLite | null>(null);
@@ -170,7 +172,7 @@ function RunSheet({ campaign, rep, onJump }: { campaign: Campaign; rep: { name: 
     {
       id: 'emails', done: sentCount >= total && total > 0,
       title: 'Send the intro emails',
-      detail: `${sentCount} of ${total} marked sent. Each opens in your mail app, prefilled and signed as ${rep.name}.`,
+      detail: `${sentCount} of ${total} marked sent. Send each straight from ${rep.fromEmail}, or open it in your mail app. Every one is prefilled and signed as ${rep.name}.`,
       node: actBtn('Go to emails', onJump),
     },
     {
@@ -221,7 +223,7 @@ function RunSheet({ campaign, rep, onJump }: { campaign: Campaign; rep: { name: 
 
 const PRIORITY_LABEL: Record<number, string> = { 1: 'Primary', 2: 'Secondary', 3: 'Supporting' };
 
-function ContactCard({ c, slug, rep }: { c: Contact; slug: string; rep: { name: string; book: string } }) {
+function ContactCard({ c, slug, rep, product, brand }: { c: Contact; slug: string; rep: Rep; product: string; brand: string }) {
   const [status, setStatus] = useState<OutreachStatus>('to-send');
   const [note, setNote] = useState('');
   const [open, setOpen] = useState(c.priority === 1);
@@ -243,12 +245,88 @@ function ContactCard({ c, slug, rep }: { c: Contact; slug: string; rep: { name: 
     try { window.dispatchEvent(new Event(STATUS_EVENT)); } catch {}
   }, [key]);
 
-  const subject = personalize(c.email.subject, { book: rep.book, rep: rep.name, name: c.name.split(' ')[0] });
-  const body = personalize(c.email.body, { book: rep.book, rep: rep.name, name: c.name.split(' ')[0] });
-  const mailto = `mailto:${c.emailGuess ?? ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const first = c.name.split(' ')[0];
+  const toEmail = c.emailGuess ?? '';
+
+  // The email draft is editable so the rep can tweak it or try an AI rewrite. It
+  // resets to the personalized template whenever the rep changes (the {{REP}} and
+  // {{BOOK}} tokens depend on who is running the campaign).
+  const origSubject = personalize(c.email.subject, { book: rep.book, rep: rep.name, name: first });
+  const origBody = personalize(c.email.body, { book: rep.book, rep: rep.name, name: first });
+  const [subject, setSubject] = useState(origSubject);
+  const [body, setBody] = useState(origBody);
+  const [prevDraft, setPrevDraft] = useState<{ subject: string; body: string } | null>(null);
+  const [rewriting, setRewriting] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [confirmSend, setConfirmSend] = useState(false);
+  const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+  useEffect(() => {
+    setSubject(origSubject);
+    setBody(origBody);
+    setPrevDraft(null);
+    setConfirmSend(false);
+    setMsg(null);
+  }, [origSubject, origBody]);
+  const edited = subject !== origSubject || body !== origBody;
+
+  const mailto = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  const rewrite = async () => {
+    if (rewriting) return;
+    setRewriting(true);
+    setMsg(null);
+    try {
+      const r = await fetch('/api/admin/campaigns/rewrite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, body, context: { name: first, title: c.title, company: c.company, product, brand, hook: c.angle, rep: rep.name } }),
+      });
+      const j = await r.json().catch(() => null);
+      if (!r.ok || !j?.ok) setMsg({ kind: 'err', text: (j && j.error) || 'Rewrite failed. Try again.' });
+      else {
+        setPrevDraft({ subject, body });
+        setSubject(j.subject);
+        setBody(j.body);
+        setMsg({ kind: 'ok', text: 'A fresh draft from AI. Edit it, keep it, or undo.' });
+      }
+    } catch {
+      setMsg({ kind: 'err', text: 'Rewrite failed. Try again.' });
+    } finally {
+      setRewriting(false);
+    }
+  };
+
+  const undoRewrite = () => {
+    if (prevDraft) { setSubject(prevDraft.subject); setBody(prevDraft.body); setPrevDraft(null); setMsg(null); }
+  };
+  const resetDraft = () => { setSubject(origSubject); setBody(origBody); setPrevDraft(null); setMsg(null); };
+
+  const doSend = async () => {
+    if (sending) return;
+    setSending(true);
+    setMsg(null);
+    try {
+      const r = await fetch('/api/admin/campaigns/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: toEmail, fromEmail: rep.fromEmail, subject, body }),
+      });
+      const j = await r.json().catch(() => null);
+      if (!r.ok || !j?.ok) setMsg({ kind: 'err', text: (j && j.error) || 'Send failed.' });
+      else {
+        setConfirmSend(false);
+        setStatus('sent');
+        persist('sent', note);
+        setMsg({ kind: 'ok', text: `Sent from ${rep.fromEmail}. A copy is in your inbox.` });
+      }
+    } catch {
+      setMsg({ kind: 'err', text: 'Send failed.' });
+    } finally {
+      setSending(false);
+    }
+  };
 
   const [openScript, setOpenScript] = useState(false);
-  const first = c.name.split(' ')[0];
   const cs = c.callScript;
   const psc = cs && {
     open: personalize(cs.open, { book: rep.book, rep: rep.name, name: first }),
@@ -292,6 +370,12 @@ function ContactCard({ c, slug, rep }: { c: Contact; slug: string; rep: { name: 
           </span>
         </div>
 
+        <div className="flex items-center gap-2 flex-wrap mt-1.5">
+          <span className="text-[9px] uppercase tracking-[0.18em] text-[#161616]/45 font-mono">From:</span>
+          <span className="font-mono text-xs text-[#161616]">{rep.fromEmail}</span>
+          <span className="text-[8px] uppercase tracking-[0.12em] font-mono text-[#161616]/40">your Zoho mailbox</span>
+        </div>
+
         {c.phone && (
           <div className="flex items-center gap-2 flex-wrap mt-2">
             <span className="text-[9px] uppercase tracking-[0.18em] text-[#161616]/45 font-mono">Call:</span>
@@ -313,19 +397,78 @@ function ContactCard({ c, slug, rep }: { c: Contact; slug: string; rep: { name: 
 
         {open && (
           <div className="mt-3 rounded-xl border-2 border-[#161616]/15 bg-[#FFFDF6] p-3.5">
+            {/* Subject (editable) */}
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <span className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/45 font-mono">Subject</span>
               <CopyBtn text={subject} label="Copy subject" className="!py-1 !text-[9px]" />
             </div>
-            <p className="font-sans text-sm font-semibold text-[#161616] mb-3">{subject}</p>
+            <input
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              aria-label="Email subject"
+              className="w-full font-sans text-sm font-semibold text-[#161616] bg-white border-2 border-[#161616]/20 rounded-lg px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-[#F5B700] focus:border-[#161616]"
+            />
+            {/* Body (editable) */}
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <span className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/45 font-mono">Body</span>
-              <div className="flex gap-2">
-                <CopyBtn text={body} label="Copy body" className="!py-1 !text-[9px]" />
-                <a href={mailto} className="px-3 py-1 text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:bg-[#FFD23F] transition-all">Open in email</a>
-              </div>
+              <CopyBtn text={body} label="Copy body" className="!py-1 !text-[9px]" />
             </div>
-            <pre className="font-body text-[13px] text-[#3A3733] whitespace-pre-wrap leading-relaxed">{body}</pre>
+            <textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              aria-label="Email body"
+              rows={Math.min(20, Math.max(8, body.split('\n').length + 1))}
+              className="w-full font-body text-[13px] text-[#3A3733] bg-white border-2 border-[#161616]/20 rounded-lg px-3 py-2.5 leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-[#F5B700] focus:border-[#161616]"
+            />
+
+            {/* Toolbar: rewrite / undo / reset / open / send */}
+            <div className="flex flex-wrap items-center gap-2 mt-3">
+              <button
+                onClick={rewrite}
+                disabled={rewriting}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-extrabold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:bg-[#FFF8E6] hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0 transition-all"
+              >
+                {rewriting ? '✍️ Rewriting…' : '✨ Rewrite with AI'}
+              </button>
+              {prevDraft && (
+                <button onClick={undoRewrite} className="px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold text-[#161616]/70 bg-white border-2 border-[#161616]/30 rounded-lg hover:border-[#161616] transition-all">Undo</button>
+              )}
+              {edited && (
+                <button onClick={resetDraft} className="px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold text-[#161616]/70 bg-white border-2 border-[#161616]/30 rounded-lg hover:border-[#161616] transition-all">Reset to original</button>
+              )}
+              <span className="flex-1 min-w-[8px]" />
+              <a href={mailto} className="px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:bg-[#FFF8E6] transition-all">Open in mail app</a>
+              <button
+                onClick={() => { setConfirmSend(true); setMsg(null); }}
+                disabled={!toEmail}
+                title={toEmail ? '' : 'No email address on file for this contact'}
+                className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:bg-[#FFD23F] hover:-translate-y-0.5 disabled:opacity-40 disabled:hover:translate-y-0 transition-all"
+              >
+                Send from {rep.first}&apos;s Zoho
+              </button>
+            </div>
+
+            {/* Inline confirm before a real send */}
+            {confirmSend && (
+              <div className="mt-3 rounded-lg border-2 border-[#161616] bg-white p-3">
+                <p className="font-body text-[13px] text-[#161616] leading-snug">
+                  Send this now to <strong>{c.name}</strong> ({toEmail || 'no address'}) as <strong>{rep.fromEmail}</strong>? A copy goes to your inbox.
+                </p>
+                {c.emailStatus !== 'verified' && (
+                  <p className="font-body text-[12px] text-amber-800 mt-1">Heads up: this address is not verified, so it may bounce. Confirm it on LinkedIn first if you are unsure.</p>
+                )}
+                <div className="flex items-center gap-2 mt-2.5">
+                  <button onClick={doSend} disabled={sending} className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-extrabold text-white bg-emerald-600 border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:bg-emerald-500 disabled:opacity-50 transition-all">
+                    {sending ? 'Sending…' : 'Yes, send it'}
+                  </button>
+                  <button onClick={() => setConfirmSend(false)} disabled={sending} className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold text-[#161616]/70 bg-white border-2 border-[#161616]/30 rounded-lg hover:border-[#161616] transition-all">Cancel</button>
+                </div>
+              </div>
+            )}
+
+            {msg && (
+              <p className={`mt-2.5 font-body text-[12px] ${msg.kind === 'ok' ? 'text-emerald-700' : 'text-[#E0301E]'}`}>{msg.text}</p>
+            )}
           </div>
         )}
 
@@ -428,7 +571,7 @@ export default function CampaignDetail({ campaign }: { campaign: Campaign }) {
               </button>
             ))}
           </div>
-          <span className="text-[10px] font-mono text-[#161616]/45 truncate hidden sm:inline">signs every email · books to {rep.book.replace('https://', '')}</span>
+          <span className="text-[10px] font-mono text-[#161616]/45 truncate hidden sm:inline">sends from {rep.fromEmail} · books to {rep.book.replace('https://', '')}</span>
         </div>
 
         {/* Run sheet */}
@@ -519,7 +662,7 @@ export default function CampaignDetail({ campaign }: { campaign: Campaign }) {
           </p>
           <div className="space-y-3">
             {[...campaign.contacts].sort((a, b) => a.priority - b.priority).map((c) => (
-              <ContactCard key={c.id} c={c} slug={campaign.slug} rep={rep} />
+              <ContactCard key={c.id} c={c} slug={campaign.slug} rep={rep} product={campaign.product} brand={campaign.brand} />
             ))}
           </div>
         </section>

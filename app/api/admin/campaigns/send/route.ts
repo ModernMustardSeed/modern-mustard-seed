@@ -1,0 +1,64 @@
+import { NextResponse } from 'next/server';
+import { Resend } from 'resend';
+import { getSession } from '@/lib/admin-auth';
+
+export const runtime = 'nodejs';
+export const maxDuration = 20;
+
+/**
+ * Send a campaign outreach email straight from the rep's studio (Zoho) mailbox
+ * identity via Resend. From = the rep's own address (sarah@ or polly.thompson@),
+ * reply-to that same address so replies land back in their Zoho inbox (and get
+ * ingested by the Zoho sync), and bcc that address so a copy is filed in their
+ * mailbox for the record. The From identity is allowlisted so only the two known
+ * studio mailboxes can be used. Admin-gated. The rep reviews and confirms in the
+ * UI before this is called.
+ */
+const ALLOWED_FROM: Record<string, string> = {
+  'sarah@modernmustardseed.com': 'Sarah at Modern Mustard Seed',
+  'polly.thompson@modernmustardseed.com': 'Polly at Modern Mustard Seed',
+};
+
+const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
+export async function POST(req: Request) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  if (!apiKey) return NextResponse.json({ error: 'Email is not configured (RESEND_API_KEY missing).' }, { status: 500 });
+
+  let p: { to?: string; fromEmail?: string; subject?: string; body?: string };
+  try {
+    p = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Bad request' }, { status: 400 });
+  }
+
+  const to = String(p.to ?? '').trim();
+  const fromEmail = String(p.fromEmail ?? '').trim().toLowerCase();
+  const subject = String(p.subject ?? '').trim();
+  const body = String(p.body ?? '').trim();
+
+  if (!isEmail(to)) return NextResponse.json({ error: 'The recipient email looks invalid.' }, { status: 400 });
+  const fromName = ALLOWED_FROM[fromEmail];
+  if (!fromName) return NextResponse.json({ error: 'That from-address is not allowed.' }, { status: 400 });
+  if (!subject) return NextResponse.json({ error: 'The subject is empty.' }, { status: 400 });
+  if (!body) return NextResponse.json({ error: 'The body is empty.' }, { status: 400 });
+
+  try {
+    const resend = new Resend(apiKey);
+    const { data, error } = await resend.emails.send({
+      from: `${fromName} <${fromEmail}>`,
+      to,
+      replyTo: fromEmail,
+      bcc: fromEmail,
+      subject,
+      text: body,
+    });
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true, id: data?.id ?? null });
+  } catch (e) {
+    return NextResponse.json({ error: e instanceof Error ? e.message : 'Send failed' }, { status: 500 });
+  }
+}
