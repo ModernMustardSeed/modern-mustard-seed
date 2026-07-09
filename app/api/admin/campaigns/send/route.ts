@@ -57,7 +57,30 @@ export async function POST(req: Request) {
       text: body,
     });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ ok: true, id: data?.id ?? null });
+
+    // Resend accepts the API call even when it then SUPPRESSES the address (a
+    // recipient on the account suppression list from an earlier bounce). That
+    // status is set right away, so read it back and report the truth instead of
+    // a false "sent". Best-effort: if the status check fails, assume it queued.
+    const id = data?.id ?? null;
+    let status: string | undefined;
+    if (id) {
+      try {
+        await new Promise((r) => setTimeout(r, 900));
+        const got = await resend.emails.get(id);
+        status = (got.data as { last_event?: string } | null)?.last_event;
+      } catch {
+        /* status check is best-effort */
+      }
+    }
+    if (status && ['suppressed', 'bounced', 'complained'].includes(status)) {
+      const why =
+        status === 'suppressed'
+          ? `${to} is on your Resend suppression list (usually from an earlier bounce), so Resend blocked it. Remove it in the Resend dashboard under Suppressions, then try again.`
+          : `the address ${status} it. Check that ${to} is correct.`;
+      return NextResponse.json({ ok: false, status, error: `Not delivered: ${why}` });
+    }
+    return NextResponse.json({ ok: true, id, status: status ?? 'queued' });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Send failed' }, { status: 500 });
   }

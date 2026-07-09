@@ -317,7 +317,7 @@ function ContactCard({ c, slug, rep, product, brand }: { c: Contact; slug: strin
         setConfirmSend(false);
         setStatus('sent');
         persist('sent', note);
-        setMsg({ kind: 'ok', text: `Sent from ${rep.fromEmail}. A copy is in your inbox.` });
+        setMsg({ kind: 'ok', text: `Sent from ${rep.fromEmail}. Delivering now.` });
       }
     } catch {
       setMsg({ kind: 'err', text: 'Send failed.' });
