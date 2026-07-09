@@ -343,11 +343,40 @@ export function AuditIntelCard({ lead, onRun, auditing }: { lead: OutboundLead; 
 /* ------------------------------- review ammo ------------------------------- */
 
 /**
- * Review-mined leads carry their qualifying complaint in notes as
- * `REVIEWS: "quote" (source url)`. Surface it as opener ammo: the prospect's
- * own customers making the pitch.
+ * Mined leads carry their qualifying evidence in notes: review-mined ones as
+ * `REVIEWS: "quote" (source url)`, website-mined ones as
+ * `WEBSITE: none|broken — what we observed (url)`. Surface either as opener
+ * ammo at the top of the script rail.
  */
 export function ReviewAmmoCard({ lead }: { lead: OutboundLead }) {
+  const site = lead.notes?.match(/^WEBSITE:\s*(none|broken)\s*[—-]\s*(.+)/s);
+  if (site) {
+    const mode = site[1] as 'none' | 'broken';
+    const body = site[2].trim();
+    const url = body.match(/\((https?:\/\/[^)]+)\)\s*$/)?.[1];
+    const evidence = body.replace(/\((https?:\/\/[^)]+)\)\s*$/, '').trim();
+    return (
+      <div className="bg-[#fffdf8] border-2 border-[#b58a2a] rounded-2xl shadow-[5px_5px_0_0_#b58a2a] p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="w-6 h-6 rounded-full bg-[#b58a2a] text-[#1a1815] font-oswald font-bold text-xs flex items-center justify-center">◎</span>
+          <span className="text-[11px] uppercase tracking-[0.24em] font-oswald font-semibold text-[#7a5c1a]">
+            {mode === 'none' ? 'They have no website' : 'Their website is broken'}
+          </span>
+        </div>
+        <p className="font-sans text-[15px] leading-relaxed text-[#1a1815]">{evidence}</p>
+        {url && (
+          <a href={url} target="_blank" rel="noopener noreferrer" className="text-[11px] font-oswald uppercase tracking-[0.12em] text-[#b58a2a] hover:text-[#1a1815] transition-colors">
+            See their current presence ↗
+          </a>
+        )}
+        <p className="font-sans text-[13px] text-[#1a1815]/65 mt-3">
+          <span className="font-oswald uppercase tracking-[0.1em] text-[11px] text-[#7a5c1a] font-semibold mr-1.5">Read it back:</span>
+          &ldquo;I went looking for your website before I called and {mode === 'none' ? "couldn't find one, just the Facebook page" : 'what came up is not doing you any favors'}. Every customer who Googles you hits the same wall. I build sites for businesses like yours, and I can have a draft of YOURS to show you by the end of the week.&rdquo;
+        </p>
+      </div>
+    );
+  }
+
   const m = lead.notes?.match(/^REVIEWS:\s*(.+)/s);
   if (!m) return null;
   const body = m[1].trim();

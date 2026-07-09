@@ -269,6 +269,7 @@ export function HeatChip({ reason, lastOpenAt, auditScore }: { reason: string; l
   if (reason === 'retry_due') return <span className={`${base} bg-transparent text-[#7a5c1a] border-[#b58a2a]/60`}>Retry due</span>;
   if (reason === 'worst_audit') return <span className={`${base} bg-[#a03123]/10 text-[#a03123] border-[#a03123]/50`}>Audit {auditScore ?? '?'}/100</span>;
   if (reason === 'review_pain') return <span className={`${base} bg-[#a03123]/10 text-[#a03123] border-[#a03123]/50`}>★ Customers can&apos;t reach them</span>;
+  if (reason === 'no_website') return <span className={`${base} bg-[#b58a2a]/20 text-[#7a5c1a] border-[#b58a2a]/60`}>◎ No real website</span>;
   return <span className={`${base} bg-[#1a1815]/[0.05] text-[#1a1815]/50 border-[#1a1815]/20`}>Fresh</span>;
 }
 

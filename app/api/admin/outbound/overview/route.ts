@@ -134,6 +134,12 @@ export async function GET() {
         score += 180;
         if (reason === 'fresh') reason = 'review_pain';
       }
+      // Website-mined leads verifiably have no (working) site: a build pitch
+      // with the evidence already in hand.
+      if (l.source === 'website-mining') {
+        score += 170;
+        if (reason === 'fresh') reason = 'no_website';
+      }
       if (l.status === 'new') score += 50;
 
       return { ...l, heat: Math.round(score), reason };
