@@ -249,6 +249,85 @@ const GEO_CHECKLIST = [
   { id: 'review', label: 'Judge on cost per audit run. Truth metric: Fix Pack orders (instant fulfillment) and Watch subscriptions.' },
 ];
 
+// ============ Campaign nine: The Good News (brand film, the Mustard family) ============
+
+const GN_LANDING = 'https://modernmustardseed.com/audit?utm_source=meta&utm_medium=paid&utm_campaign=goodnews';
+
+const GN_COPY_A = `You want the good news, or the bad news?
+
+Bad news first: every call your business misses, every lead that slips through the cracks, is revenue walking out the door. And chasing all of it yourself costs you the nights, the weekends, the dinners you meant to be home for.
+
+Here's the good news. We build the systems that catch it all: a website that sells, an AI voice agent that answers every call day and night, and custom software that does the busywork for you. The revenue you were leaking comes back. And you get your life back.
+
+Start with a free AI audit and see exactly what your business is leaving on the table.`;
+
+const GN_COPY_B = `Your business should grow while you're at the dinner table, not because you skipped it again.
+
+Modern Mustard Seed builds the systems that run it for you: a website that sells around the clock, an AI voice agent that answers every call day and night, and custom software that automates the work you keep doing by hand. You recover the revenue you were leaking, and you finally get your evenings back.
+
+See what yours is missing. The AI audit is free, and it takes about a minute.`;
+
+const GN_HEADLINE = 'Grow your business. Get your life back.';
+const GN_DESCRIPTION = 'AI websites, voice agents, and custom software. Built by Modern Mustard Seed.';
+
+const GN_CUTS = [
+  { file: '/ads/good-news-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/good-news-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/good-news-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and the website hero.' },
+];
+
+const GN_CHECKLIST = [
+  { id: 'cell', label: 'Cell A (Meta): Campaign objective Traffic (switch to Conversions once the pixel is live). Budget $15/day. Learn More button → the audit UTM link above. Paste Copy Variant 1 (the good-news / bad-news story).' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The video has spoken dialogue AND burned-in captions, so it lands sound-on and muted.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled caption pills are already burned in).' },
+  { id: 'audience', label: 'Audience: Advantage+, broad. This is the brand film, keep it wide. Suggestions: Small business owners, Business owner, Restaurant owner, Home services, Entrepreneurship. Age 25-60, United States.' },
+  { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same audit landing, swap the link to utm_source=google. Objective: Leads or Traffic.' },
+  { id: 'organic', label: 'Post the 4:5 to FB, the 9:16 as an IG Reel + a YouTube Short the same day (free reach, and this one is made to be shared). Ask Claude for the launch drafts.' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the time-back angle) and let them fight. Kill the loser at day 6.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at the audit link. This brand film is the top of the funnel that warms every other campaign (Call Me, Sidekick, the audit).' },
+  { id: 'review', label: 'Day 5-7: judge on cost per audit lead (utm_campaign=goodnews, lands in Leads + the admin Inbox). Truth metric: booked discovery calls from those leads.' },
+];
+
+// ============ Campaign ten: Find Your Horizon (partner recruiting, the yacht) ============
+
+const PY_LANDING = 'https://modernmustardseed.com/partners?utm_source=meta&utm_medium=paid&utm_campaign=partneryacht';
+
+const PY_COPY_A = `How does a little seed end up on a yacht in the Mediterranean?
+
+He sells the one thing every business on earth suddenly needs: an AI website, a voice agent that answers the phone, and custom software that runs the busywork. Modern Mustard Seed builds all of it. You just open the door.
+
+Refer a client, we build it, you earn: up to 50% on our products, and recurring income every month on the ones that renew. You make the introductions from anywhere. We do the work.
+
+Become a partner and come find your own horizon.`;
+
+const PY_COPY_B = `Everyone knows AI is the wave. Almost nobody is positioned to sell it.
+
+You could be. Modern Mustard Seed builds the AI websites, voice agents, and custom software every local business now needs, and we pay our partners generously to open the doors: up to 50% on products, recurring monthly income on subscriptions, and commission on every build.
+
+No coding. No inventory. No overhead. You make the introduction, we deliver, you get paid, again and again.
+
+Become a partner. This is the part where you get your time and your money back.`;
+
+const PY_HEADLINE = 'Sell what every business now needs.';
+const PY_DESCRIPTION = 'Become a Modern Mustard Seed partner. Up to 50% + recurring income.';
+
+const PY_CUTS = [
+  { file: '/ads/partner-yacht-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/partner-yacht-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/partner-yacht-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and the partners page hero.' },
+];
+
+const PY_CHECKLIST = [
+  { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the partners UTM link above. Paste Copy Variant 1 (the yacht dream).' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot talks AND has burned-in captions.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled caption pills are already burned in).' },
+  { id: 'audience', label: 'AUDIENCE IS DIFFERENT: this recruits future partners, not customers. Advantage+, tilted to Affiliate marketing, Entrepreneurship, Side hustle, Freelance, Digital marketing, Sales, and relationship sellers (real estate, insurance). Age 22-55, United States.' },
+  { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same /partners landing, swap the link to utm_source=google.' },
+  { id: 'organic', label: 'Post the 9:16 as an IG Reel + YouTube Short and the 4:5 to FB. Then DM it to the warm partner-target board (docs/partner-targets.md, 75+ verified). Ask Claude for the outreach drafts (Sarah approves every send).' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the why-now / positioning angle) and let them fight. Kill the loser at day 6.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per partner application (applicants land in /admin/partners). Truth metric: approved partners who then drive booked calls via their /book?ref=CODE link. The whole program goal is appointments on Sarah\'s calendar.' },
+];
+
 function CopyBlock({ title, text }: { title: string; text: string }) {
   const [done, setDone] = useState(false);
   const copy = async () => {
@@ -274,7 +353,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -285,6 +364,8 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'px', num: '06', label: 'Pictures', blurb: 'Screen Test funnel · image ads · $10/day' },
   { key: 'pr', num: '07', label: 'Press', blurb: 'Proof funnel · image ads · $10/day' },
   { key: 'geo', num: '08', label: 'GEO Desk', blurb: 'Audit funnel · image ads · $10/day' },
+  { key: 'gn', num: '09', label: 'The Good News', blurb: 'Brand film · the family · all 3 offerings · $15/day' },
+  { key: 'py', num: '10', label: 'Find Your Horizon', blurb: 'Partner recruiting · the yacht · $10/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -384,6 +465,8 @@ export default function AdsPlaybook() {
   const [checkedPx, setCheckedPx] = useState<Record<string, boolean>>({});
   const [checkedPr, setCheckedPr] = useState<Record<string, boolean>>({});
   const [checkedGeo, setCheckedGeo] = useState<Record<string, boolean>>({});
+  const [checkedGn, setCheckedGn] = useState<Record<string, boolean>>({});
+  const [checkedPy, setCheckedPy] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -415,6 +498,10 @@ export default function AdsPlaybook() {
       if (rawPr) setCheckedPr(JSON.parse(rawPr));
       const rawGeo = localStorage.getItem('mms-ads-checklist-geo');
       if (rawGeo) setCheckedGeo(JSON.parse(rawGeo));
+      const rawGn = localStorage.getItem('mms-ads-checklist-gn');
+      if (rawGn) setCheckedGn(JSON.parse(rawGn));
+      const rawPy = localStorage.getItem('mms-ads-checklist-py');
+      if (rawPy) setCheckedPy(JSON.parse(rawPy));
     } catch { /* first visit */ }
   }, []);
 
@@ -428,6 +515,8 @@ export default function AdsPlaybook() {
   const togglePx = mkToggle('mms-ads-checklist-px', setCheckedPx);
   const togglePr = mkToggle('mms-ads-checklist-pr', setCheckedPr);
   const toggleGeo = mkToggle('mms-ads-checklist-geo', setCheckedGeo);
+  const toggleGn = mkToggle('mms-ads-checklist-gn', setCheckedGn);
+  const togglePy = mkToggle('mms-ads-checklist-py', setCheckedPy);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -477,6 +566,8 @@ export default function AdsPlaybook() {
   const doneCountPx = PX_CHECKLIST.filter((c) => checkedPx[c.id]).length;
   const doneCountPr = PR_CHECKLIST.filter((c) => checkedPr[c.id]).length;
   const doneCountGeo = GEO_CHECKLIST.filter((c) => checkedGeo[c.id]).length;
+  const doneCountGn = GN_CHECKLIST.filter((c) => checkedGn[c.id]).length;
+  const doneCountPy = PY_CHECKLIST.filter((c) => checkedPy[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -968,13 +1059,181 @@ export default function AdsPlaybook() {
           />
         )}
 
+        {tab === 'gn' && (<>
+        {/* ============ Campaign nine: The Good News ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign nine · the brand film</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;The Good News&rdquo; <span className="italic text-[#F5B700]">Mr. Mustard &amp; family</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The heart of the funnel. A talking, animated commercial: Mr. Mustard tells you the good news and the
+              bad news from his own kitchen, surrounded by his family, and the whole pitch lands on one promise,
+              recover the revenue you are leaking and get your evenings back. It sells all three offerings at once
+              (websites, voice agents, custom software) and warms every other campaign on this page. One traffic
+              cell at $15/day into the free AI audit, judged on cost per audit lead. Runs on Meta and, via the 16:9
+              cut, on Google / YouTube too.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/audit" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The audit funnel (landing)</a>
+              <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads (audit requests)</a>
+            </div>
+          </div>
+        </section>
+
+        {/* The Good News cuts */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Upload one ad, then customize per placement. The spot has spoken dialogue and burned-in captions. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {GN_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/good-news-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* The Good News copy */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1 (the story)" text={GN_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2 (the time back)" text={GN_COPY_B} />
+            <CopyBlock title="Headline" text={GN_HEADLINE} />
+            <CopyBlock title="Description" text={GN_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (audit funnel)" text={GN_LANDING} />
+          </div>
+        </section>
+
+        {/* The Good News launch checklist */}
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountGn}/{GN_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {GN_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedGn[item.id]}
+                    onChange={() => toggleGn(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedGn[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'py' && (<>
+        {/* ============ Campaign ten: Find Your Horizon (partner recruiting) ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign ten · partner recruiting</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;Find Your Horizon&rdquo; <span className="italic text-[#F5B700]">the yacht</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The recruiting film. Mr. Mustard and family on a Mediterranean yacht, because partnering with MMS
+              buys back your time and your money. It sells the partner program itself: refer the AI websites,
+              voice agents, and software every business now needs, earn up to 50% on products plus recurring
+              income on subscriptions, and let the studio do the work. This one targets FUTURE PARTNERS, not
+              customers. One traffic cell at $10/day into the /partners apply page, judged on cost per partner
+              application. Runs on Meta and, via the 16:9 cut, on Google / YouTube.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/partners" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The partners page (landing)</a>
+              <a href="/admin/partners" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Applicants (results)</a>
+            </div>
+          </div>
+        </section>
+
+        {/* Find Your Horizon cuts */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Upload one ad, then customize per placement. The spot has spoken dialogue and burned-in captions. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {PY_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/partner-yacht-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Find Your Horizon copy */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1 (the yacht dream)" text={PY_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2 (why now)" text={PY_COPY_B} />
+            <CopyBlock title="Headline" text={PY_HEADLINE} />
+            <CopyBlock title="Description" text={PY_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (partners page)" text={PY_LANDING} />
+          </div>
+        </section>
+
+        {/* Find Your Horizon launch checklist */}
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountPy}/{PY_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {PY_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedPy[item.id]}
+                    onChange={() => togglePy(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedPy[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
         {tab === 'results' && (<>
         {/* Measurement */}
         <section className="bg-[#161616] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 text-[#FBF6EA]">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">How to read results</span>
           <div className="grid md:grid-cols-3 gap-6 mt-4 text-sm font-sans">
             <p><b className="text-[#F5B700]">Calls:</b> every ad-driven call hits the Mustard line and lands in <a href="/admin/callers" className="underline decoration-[#F5B700]">Callers</a> with a transcript. Bookings email you automatically.</p>
-            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, fablemind, and sidekick. MUSTARD MODE free-plays, Fable Mind playbook emails, and forged Sidekick demos land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
+            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, fablemind, sidekick, and goodnews. MUSTARD MODE free-plays, Fable Mind playbook emails, and forged Sidekick demos land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
             <p><b className="text-[#F5B700]">Weekly:</b> ask Claude to read Callers against spend and report the true cost per booked discovery call.</p>
           </div>
         </section>
