@@ -54,7 +54,8 @@ const decode = (s) =>
     .replace(/&nbsp;/g, ' ');
 const nameKey = (n, s) => `${String(n ?? '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 40)}|${String(s ?? '').toUpperCase().slice(0, 2)}`;
 
-const MOUNTAIN_PACIFIC = new Set(['MT', 'ID', 'WY', 'UT', 'CO', 'WA', 'OR', 'CA', 'NV', 'AZ', 'NM', 'AK', 'HI']);
+// Ownership rule (2026-07-09): Polly works the South, Sarah the rest.
+const SOUTH = new Set(['AL', 'AR', 'MS', 'LA', 'GA', 'TN', 'FL', 'TX', 'OK', 'NC', 'SC', 'VA', 'WV', 'KY']);
 const NICHES = new Set(['home_service', 'dental_medspa', 'real_estate', 'restaurant', 'other']);
 
 const [{ data: existing, error: exErr }, { data: reps, error: repErr }] = await Promise.all([
@@ -98,7 +99,7 @@ for (const l of input) {
     close_rate_pct: null,
     status: 'new',
     source: 'website-mining',
-    owner_rep_id: MOUNTAIN_PACIFIC.has(state) ? polly : sarah,
+    owner_rep_id: SOUTH.has(state) ? polly : sarah,
     dnc_checked: false,
     next_action_at: null,
     next_action: null,
