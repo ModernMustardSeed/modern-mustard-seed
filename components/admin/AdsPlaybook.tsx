@@ -274,6 +274,7 @@ const GN_CUTS = [
   { file: '/ads/good-news-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
   { file: '/ads/good-news-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
   { file: '/ads/good-news-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and the website hero.' },
+  { file: '/ads/good-news-short-9x16.mp4', label: '9:16 — Short cut (~:20)', note: 'Punchy hook + payoff + CTA. For Reels / Stories / Shorts A-B tests.' },
 ];
 
 const GN_CHECKLIST = [
@@ -315,6 +316,7 @@ const PY_CUTS = [
   { file: '/ads/partner-yacht-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
   { file: '/ads/partner-yacht-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
   { file: '/ads/partner-yacht-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and the partners page hero.' },
+  { file: '/ads/partner-yacht-short-9x16.mp4', label: '9:16 — Short cut (~:20)', note: 'Punchy hook + payoff + CTA. For Reels / Stories / Shorts A-B tests.' },
 ];
 
 const PY_CHECKLIST = [
