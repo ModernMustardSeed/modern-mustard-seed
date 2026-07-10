@@ -35,7 +35,7 @@ export async function GET(req: Request) {
 
   let query = sb
     .from('emails')
-    .select('id,folder,direction,from_addr,from_name,to_addrs,subject,snippet,is_read,starred,has_attachments,prospect_id,occurred_at')
+    .select('id,folder,direction,from_addr,from_name,to_addrs,subject,snippet,is_read,starred,has_attachments,prospect_id,occurred_at,status,provider,delivered_at')
     .eq('mailbox', box.address)
     .eq('folder', folder)
     .order('occurred_at', { ascending: false })

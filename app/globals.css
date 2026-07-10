@@ -47,6 +47,26 @@
     scroll-behavior: smooth;
   }
 
+  /* Admin is a LIGHT surface, but the site-wide body color is near-white
+     (#f5f0e8) for the dark marketing pages. Tailwind's preflight makes form
+     controls `color: inherit`, so any admin <input>/<textarea> without an
+     explicit text color inherited the near-white color = white text in a white
+     box (illegible). Set a dark-ink default + light color-scheme for every
+     control inside the admin shell. Explicit Tailwind text-* utilities still
+     win (utilities layer > base), and no admin control uses light text. */
+  .admin-shell {
+    color-scheme: light;
+  }
+  .admin-shell input,
+  .admin-shell textarea,
+  .admin-shell select {
+    color: #161616;
+  }
+  .admin-shell input::placeholder,
+  .admin-shell textarea::placeholder {
+    color: rgba(22, 22, 22, 0.4);
+  }
+
   /* ── Pop-art building blocks (comic cards, halftone, sticker shadows) ── */
   .pop-card {
     background: #ffffff;

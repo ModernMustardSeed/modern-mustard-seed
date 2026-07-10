@@ -19,17 +19,47 @@ type ListItem = {
   has_attachments: boolean;
   prospect_id: string | null;
   occurred_at: string;
+  status: string | null;
+  provider: string | null;
+  delivered_at: string | null;
 };
 type FullEmail = ListItem & {
   body_text: string | null;
   body_html: string | null;
   cc_addrs: string | null;
   message_id: string | null;
+  status_detail: string | null;
 };
 type MailboxInfo = { address: string; name: string } | null;
 type Compose = { to: string; cc: string; subject: string; text: string; inReplyTo?: string; references?: string };
 
 const CARD = 'rounded-xl border-2 border-[#161616]';
+
+/**
+ * Delivery-truth chip for a Sent item. 'sent' = the provider accepted it (not
+ * yet confirmed at the inbox); 'delivered' = the recipient server took it;
+ * bounced/blocked/spam are hard failures. Never render "delivered" from an
+ * accept alone — that was the old lie.
+ */
+const DELIVERY: Record<string, { label: string; cls: string }> = {
+  delivered: { label: 'Delivered', cls: 'text-white bg-[#1F7A3D] border-[#161616]' },
+  sent: { label: 'Sent', cls: 'text-[#161616] bg-[#FFE08A] border-[#161616]' },
+  queued: { label: 'Queued', cls: 'text-[#161616] bg-[#EDE7D6] border-[#161616]' },
+  delivery_delayed: { label: 'Delayed', cls: 'text-[#161616] bg-[#FFE08A] border-[#161616]' },
+  bounced: { label: 'Bounced', cls: 'text-white bg-[#E0301E] border-[#161616]' },
+  suppressed: { label: 'Blocked', cls: 'text-white bg-[#E0301E] border-[#161616]' },
+  complained: { label: 'Spam', cls: 'text-white bg-[#E0301E] border-[#161616]' },
+  failed: { label: 'Failed', cls: 'text-white bg-[#E0301E] border-[#161616]' },
+};
+function DeliveryChip({ status }: { status: string | null }) {
+  const d = DELIVERY[status || ''];
+  if (!d) return null;
+  return (
+    <span className={`text-[8px] uppercase tracking-wider rounded-full border px-1.5 py-0.5 ${d.cls}`}>
+      {d.label}
+    </span>
+  );
+}
 const BTN = 'rounded-lg border-2 border-[#161616] bg-white px-3.5 py-2 text-[12px] font-sans font-bold uppercase tracking-[0.12em] text-[#161616] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform';
 const BTN_GO = BTN.replace('bg-white', 'bg-[#F5B700]');
 
@@ -153,7 +183,7 @@ export default function InboxPage() {
             <div className={`${CARD} bg-white shadow-[4px_4px_0_0_#161616] overflow-hidden`}>
               <div className="p-3 border-b-2 border-[#161616]">
                 <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search mail…"
-                  className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
+                  className="w-full rounded-lg border-2 border-[#161616] bg-white text-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
               </div>
               <div className="max-h-[70vh] overflow-y-auto divide-y divide-[#161616]/10">
                 {items === null ? (
@@ -173,6 +203,7 @@ export default function InboxPage() {
                       <p className={`truncate text-[13px] mt-0.5 ${it.is_read ? 'text-[#161616]/75' : 'text-[#161616] font-semibold'}`}>{it.subject || '(no subject)'}</p>
                       <p className="truncate text-[12px] text-[#3A3733]/70 font-body">{it.snippet}</p>
                       <div className="flex items-center gap-1.5 mt-1">
+                        {folder === 'sent' && <DeliveryChip status={it.status} />}
                         {!it.is_read && <span className="text-[8px] uppercase tracking-wider text-white bg-[#E0301E] rounded-full px-1.5 py-0.5">new</span>}
                         {it.prospect_id && <span className="text-[8px] uppercase tracking-wider text-[#161616] bg-[#F5B700] border border-[#161616] rounded-full px-1.5 py-0.5">lead</span>}
                         {it.has_attachments && <span className="text-[10px] text-[#161616]/40">📎</span>}
@@ -194,7 +225,16 @@ export default function InboxPage() {
                     <span><b className="text-[#161616]">From:</b> {open.from_name ? `${open.from_name} <${open.from_addr}>` : open.from_addr}</span>
                     <span><b className="text-[#161616]">To:</b> {open.to_addrs}</span>
                     <span>{new Date(open.occurred_at).toLocaleString()}</span>
+                    {open.folder === 'sent' && open.status && (
+                      <span className="flex items-center gap-1.5">
+                        <b className="text-[#161616]">Delivery:</b>
+                        <DeliveryChip status={open.status} />
+                      </span>
+                    )}
                   </div>
+                  {open.folder === 'sent' && open.status_detail && DELIVERY[open.status || '']?.label !== 'Delivered' && (
+                    <p className="-mt-2 mb-4 text-[12px] text-[#E0301E] font-body">{open.status_detail}</p>
+                  )}
                   <div className="flex gap-2 mb-4">
                     <button onClick={() => startReply(open)} className={BTN_GO}>Reply</button>
                     {open.prospect_id && <a href={`/admin/prospects?focus=${open.prospect_id}`} className={BTN}>Open lead</a>}
@@ -222,13 +262,13 @@ export default function InboxPage() {
             <div className="overflow-y-auto px-5 py-4 space-y-3">
               {mailbox && <p className="text-[11px] font-mono text-[#161616]/50">From: {mailbox.name} &lt;{mailbox.address}&gt;</p>}
               <input value={compose.to} onChange={(e) => setCompose({ ...compose, to: e.target.value })} placeholder="To"
-                className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
+                className="w-full rounded-lg border-2 border-[#161616] bg-white text-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
               <input value={compose.cc} onChange={(e) => setCompose({ ...compose, cc: e.target.value })} placeholder="Cc (optional)"
-                className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
+                className="w-full rounded-lg border-2 border-[#161616] bg-white text-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
               <input value={compose.subject} onChange={(e) => setCompose({ ...compose, subject: e.target.value })} placeholder="Subject"
-                className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
+                className="w-full rounded-lg border-2 border-[#161616] bg-white text-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
               <textarea ref={composeRef} value={compose.text} onChange={(e) => setCompose({ ...compose, text: e.target.value })} rows={12} placeholder="Write your message…"
-                className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
+                className="w-full rounded-lg border-2 border-[#161616] bg-white text-[#161616] px-3 py-2 text-sm font-body leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
             </div>
             <div className="shrink-0 flex items-center justify-end gap-2 border-t-2 border-[#161616] px-5 py-3">
               <button onClick={() => setCompose(null)} disabled={sending} className={BTN}>Cancel</button>

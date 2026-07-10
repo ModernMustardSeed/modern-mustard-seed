@@ -1,6 +1,6 @@
-import { Resend } from 'resend';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { auditReportEmail, clientEmail, escape } from '@/lib/email';
+import { sendViaResend } from '@/lib/send-email';
 import type { OutboundLead } from '@/lib/outbound';
 
 /**
@@ -66,19 +66,20 @@ export async function sendOutboundEmail(
         trackId: lead.id,
       });
 
-  try {
-    const resend = new Resend(apiKey);
-    const { error: sendErr } = await resend.emails.send({
-      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
-      to: lead.email,
-      replyTo: 'sarah@modernmustardseed.com',
-      subject,
-      html,
-    });
-    if (sendErr) return { ok: false, status: 500, error: sendErr.message };
-  } catch (e) {
-    return { ok: false, status: 500, error: e instanceof Error ? e.message : 'Send failed' };
-  }
+  // One tracked path: refuses suppressed recipients (honest failure instead of a
+  // phantom success), records the send into the Sent folder as status='sent',
+  // and lets the Resend webhook confirm delivery. `lead.email` is a primary
+  // recipient, so a suppressed address returns ok:false here and the lead is NOT
+  // marked contacted below.
+  const sent = await sendViaResend({
+    from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+    to: lead.email,
+    replyTo: 'sarah@modernmustardseed.com',
+    subject,
+    html,
+    mailbox: 'sarah@modernmustardseed.com',
+  });
+  if (!sent.ok) return { ok: false, status: 500, error: sent.error };
 
   await supabase.from('messages').insert({
     outbound_lead_id: lead.id,
