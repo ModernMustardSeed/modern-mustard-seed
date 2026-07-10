@@ -15,6 +15,15 @@ import { products } from '@/data/products';
 
 export const COMMISSION_PRODUCT_RATE = 0.5;
 export const COMMISSION_BUILD_RATE = 0.1;
+/** Producer tier: partners who actually close builds are bumped here (set per
+ *  entry in admin via the build-commission rate override). */
+export const COMMISSION_BUILD_PRODUCER_RATE = 0.2;
+/** Recurring share of every referred subscription invoice (Sidekick and any
+ *  other ref-tagged subscription), paid for up to COMMISSION_SUBSCRIPTION_MONTHS
+ *  paid invoices per referred account. This is the influencer magnet: a partner
+ *  keeps earning every month the business they referred stays subscribed. */
+export const COMMISSION_SUBSCRIPTION_RATE = 0.25;
+export const COMMISSION_SUBSCRIPTION_MONTHS = 12;
 
 export type AffiliateStatus = 'pending' | 'approved' | 'rejected';
 export type Affiliate = {
@@ -123,13 +132,79 @@ export async function recordProductCommission(args: {
   }
 }
 
+/**
+ * Record a recurring commission on a referred subscription invoice. Called once
+ * per paid invoice (idempotent by invoice id via the unique stripe_session_id
+ * index), at COMMISSION_SUBSCRIPTION_RATE of the amount paid, for up to
+ * COMMISSION_SUBSCRIPTION_MONTHS invoices per referred subscription. Blocks
+ * self-referral. This is what lets a partner earn every month a business they
+ * referred keeps paying (the reason an influencer promotes recurring offers).
+ */
+export async function recordSubscriptionCommission(args: {
+  affiliateCode: string;
+  orderEmail: string;
+  subscriptionId: string;
+  invoiceId: string;
+  amountCents: number;
+  /** e.g. 'sidekick' — used only for the partner's earnings email label. */
+  kind?: string;
+}): Promise<void> {
+  const client = getSupabase();
+  if (!client || !args.subscriptionId || !args.invoiceId) return;
+  const affiliate = await getAffiliateByCode(args.affiliateCode);
+  if (!affiliate || !affiliate.code) return;
+
+  // Self-referral guard.
+  if (normalizeEmail(args.orderEmail) === normalizeEmail(affiliate.email)) return;
+
+  // Cap the recurring window: count prior subscription commissions for this
+  // exact subscription (encoded in product_slug) and stop after the window.
+  const subTag = `sub:${args.subscriptionId}`;
+  try {
+    const { count } = await client
+      .from('commissions')
+      .select('id', { count: 'exact', head: true })
+      .eq('kind', 'subscription')
+      .eq('product_slug', subTag);
+    if ((count ?? 0) >= COMMISSION_SUBSCRIPTION_MONTHS) return;
+  } catch {
+    // If the count fails we still attempt the insert; the unique invoice index
+    // prevents double-paying the same invoice.
+  }
+
+  const amount = Math.round(args.amountCents * COMMISSION_SUBSCRIPTION_RATE);
+  if (amount <= 0) return;
+  try {
+    const { data, error } = await client
+      .from('commissions')
+      .insert({
+        affiliate_code: affiliate.code,
+        affiliate_email: affiliate.email,
+        order_email: normalizeEmail(args.orderEmail),
+        product_slug: subTag,
+        kind: 'subscription',
+        amount_cents: amount,
+        status: 'pending',
+        stripe_session_id: args.invoiceId,
+      })
+      .select('id')
+      .single();
+    if (!error && data) {
+      const label = args.kind === 'sidekick' ? 'a Sidekick subscription' : 'a recurring subscription';
+      await notifyEarnings({ affiliate, amountCents: amount, productSlug: subTag, label });
+    }
+  } catch {
+    // Duplicate invoice (retried webhook) throws on the unique index: a no-op.
+  }
+}
+
 /** "You just earned $X" email to the partner. Best effort, never blocks payment. */
-async function notifyEarnings(args: { affiliate: Affiliate; amountCents: number; productSlug: string }): Promise<void> {
+async function notifyEarnings(args: { affiliate: Affiliate; amountCents: number; productSlug: string; label?: string }): Promise<void> {
   if (!process.env.RESEND_API_KEY || !args.affiliate.email) return;
   try {
     const { Resend } = await import('resend');
     const { affiliateEarningsEmail } = await import('./email');
-    const product = products.find((p) => p.slug === args.productSlug)?.name;
+    const product = args.label ?? products.find((p) => p.slug === args.productSlug)?.name;
     const amount = `$${(args.amountCents / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({

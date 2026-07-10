@@ -59,10 +59,10 @@ export default async function PartnerHQ() {
   }
 
   const links = [
-    { label: 'Book a call (your money link)', url: `${SITE.url}/book?ref=${code}` },
+    { label: 'The Playbook Store (50% on every sale)', url: `${SITE.url}/store?ref=${code}` },
+    { label: 'Hire an AI receptionist (recurring)', url: `${SITE.url}/sidekick?ref=${code}` },
+    { label: 'Book a build with Sarah', url: `${SITE.url}/book?ref=${code}` },
     { label: 'Done-for-you builds', url: `${SITE.url}/build-queue?ref=${code}` },
-    { label: 'The Terminal ($497)', url: `${SITE.url}/the-terminal?ref=${code}` },
-    { label: 'The Playbook Store', url: `${SITE.url}/store?ref=${code}` },
   ];
 
   const firstName = affiliate.name?.split(' ')[0] || 'partner';
@@ -87,7 +87,7 @@ export default async function PartnerHQ() {
 
       <main className="max-w-5xl mx-auto px-6 py-8">
         <h2 className="font-display text-3xl font-semibold text-[#161616] mb-1">Welcome, {firstName}.</h2>
-        <p className="text-[#3A3733] font-body mb-6">Open doors, book calls, earn on every build and product you send. We are rooting for you.</p>
+        <p className="text-[#3A3733] font-body mb-6">Share the playbooks, earn half on every sale, and keep earning every month a business you refer stays on. We are rooting for you.</p>
 
         {/* The playbook is the main event */}
         <Link href="/partners/playbook" className="block group mb-8">
@@ -161,8 +161,14 @@ export default async function PartnerHQ() {
 
         <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 mt-6">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">How you get paid</span>
+          <div className="space-y-2.5 mb-4">
+            <Row label="Every product and bundle you sell" value="50%" accent />
+            <Row label="Referred AI receptionist, every month it stays on" value="25% (up to 12 mo)" accent />
+            <Row label="Builds and services you send our way" value="10%" />
+            <Row label="Builds once you are closing regularly (Producer)" value="up to 20%" />
+          </div>
           <p className="text-[#3A3733] font-body text-sm leading-relaxed">
-            You earn 50 percent of every build you send our way (websites, AI assistants, voice agents, custom software) and 50 percent on every product sale. The big money is in builds, so lead with those. A commission becomes payable once the refund window passes, then it goes out on the next payout run. One honest rule for everyone. Please always tell people you earn a commission. It keeps this trustworthy, which is the whole point.
+            Products are the easiest place to start: share a playbook, earn half the moment someone buys. The receptionist keeps paying you every month the business stays subscribed. Builds are the biggest single checks, and once you are closing them we move you to Producer rates. A commission becomes payable once the refund window passes, then it goes out on the next payout run. Founding partners keep their original terms. Please always tell people you earn a commission. It keeps this trustworthy, which is the whole point.
           </p>
         </div>
       </main>

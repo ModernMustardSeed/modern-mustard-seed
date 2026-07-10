@@ -27,6 +27,13 @@ export async function POST(req: Request) {
   const tier = getSidekickTier((body.tier || '').trim());
   if (!tier) return NextResponse.json({ error: 'unknown_item' }, { status: 404 });
 
+  // Affiliate attribution: read the first-party mms_ref cookie (set by
+  // RefCapture on any ?ref= arrival) so a referred subscription pays the
+  // partner a recurring share on every invoice, not just at signup. Stored on
+  // subscription metadata below so it rides every renewal.
+  const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
+  const ref = (cookieRef ? decodeURIComponent(cookieRef[1]) : '').trim().slice(0, 64) || undefined;
+
   const setupPrice = process.env[tier.setupPriceEnv];
   const monthlyPrice = process.env[tier.monthlyPriceEnv];
   if (!setupPrice || !monthlyPrice) {
@@ -46,6 +53,7 @@ export async function POST(req: Request) {
     item_name: tier.name,
     ...(body.business ? { business: body.business.trim().slice(0, 80) } : {}),
     ...(body.runId ? { run_id: body.runId.trim().slice(0, 64) } : {}),
+    ...(ref ? { ref } : {}),
   };
 
   try {

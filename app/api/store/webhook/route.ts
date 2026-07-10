@@ -36,7 +36,7 @@ import { getMustardLevel } from '@/data/mustard-mode/offer';
 import { getLaunchTierRow } from '@/data/mustard-launch';
 import { createMagicToken } from '@/lib/client-auth';
 import { insertLead } from '@/lib/supabase';
-import { recordProductCommission } from '@/lib/affiliate';
+import { recordProductCommission, recordSubscriptionCommission } from '@/lib/affiliate';
 import { provisionFromProposal } from '@/lib/proposal-provision';
 import { sendReviewNudge } from '@/lib/review-nudge';
 
@@ -577,7 +577,23 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
   const amount = invoice.amount_paid ?? 0;
   if (amount < 1) return;
   const email = invoice.customer_email || 'client@unknown';
-  const proposalId = (invoice as { subscription_details?: { metadata?: Record<string, string> } }).subscription_details?.metadata?.proposal_id || null;
+  const subMetaAll = (invoice as { subscription_details?: { metadata?: Record<string, string> } }).subscription_details?.metadata;
+  const proposalId = subMetaAll?.proposal_id || null;
+
+  // Recurring affiliate commission: any referred subscription (its metadata
+  // carries a ref) pays the partner a share of THIS invoice, for a capped
+  // window, idempotent by invoice id. This is what makes a referred Sidekick
+  // subscription pay the partner every month, not just at signup.
+  if (subMetaAll?.ref && invoice.id) {
+    await recordSubscriptionCommission({
+      affiliateCode: subMetaAll.ref,
+      orderEmail: email,
+      subscriptionId: subId,
+      invoiceId: invoice.id,
+      amountCents: amount,
+      kind: subMetaAll.kind,
+    });
+  }
 
   try {
     await supabase.from('orders').insert({
@@ -1467,6 +1483,19 @@ export async function POST(req: Request) {
   if (!item) {
     console.error('Webhook unknown slug:', slug);
     return NextResponse.json({ error: 'unknown_item' }, { status: 200 });
+  }
+
+  // Affiliate attribution: 50% product commission on a referred store sale
+  // (playbooks + bundles). Idempotent by session id, blocks self-referral.
+  const storeRef = session.metadata?.ref;
+  if (storeRef) {
+    await recordProductCommission({
+      affiliateCode: storeRef,
+      orderEmail: email,
+      productSlug: slug,
+      amountCents: session.amount_total ?? item.priceUsd * 100,
+      stripeSessionId: session.id,
+    });
   }
 
   // Resolve all PDFs to deliver (single product = 1, bundle = N)

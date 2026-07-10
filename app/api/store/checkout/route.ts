@@ -19,7 +19,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  let body: { slug?: string };
+  let body: { slug?: string; ref?: string };
   try {
     body = await req.json();
   } catch {
@@ -28,6 +28,13 @@ export async function POST(req: Request) {
 
   const slug = (body.slug || '').trim();
   if (!slug) return NextResponse.json({ error: 'missing_slug' }, { status: 400 });
+
+  // Affiliate attribution: prefer an explicit ref, else read the first-party
+  // mms_ref cookie (set by RefCapture on any ?ref= arrival, sent on this
+  // same-origin request). Stamped into session + payment metadata so the
+  // webhook can pay the 50% product commission.
+  const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
+  const ref = ((body.ref || (cookieRef ? decodeURIComponent(cookieRef[1]) : '')) || '').trim().slice(0, 64) || undefined;
 
   const product = getProductBySlug(slug);
   const bundle = getBundleBySlug(slug);
@@ -62,11 +69,13 @@ export async function POST(req: Request) {
         slug,
         item_name: item.name,
         item_type: product ? 'product' : 'bundle',
+        ...(ref ? { ref } : {}),
       },
       payment_intent_data: {
         metadata: {
           slug,
           item_name: item.name,
+          ...(ref ? { ref } : {}),
         },
       },
       custom_text: {
