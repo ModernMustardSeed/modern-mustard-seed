@@ -225,6 +225,38 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
           </div>
         )}
 
+        {/* Jump-to shortcuts. Ads Playbook (the commercials) is the first, mustard-filled
+            pill so the video campaigns are one obvious click from the home screen instead
+            of buried in the Market dropdown. */}
+        <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-4 mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-[9px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Jump to</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/admin/ads"
+              className="text-[11px] uppercase tracking-[0.16em] font-sans font-bold text-[#161616] px-3.5 py-2 rounded-lg border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
+            >
+              🎬 Ads Playbook · videos
+            </Link>
+            {[
+              { href: '/admin/leads', label: 'Leads' },
+              { href: '/admin/outbound', label: 'Outbound' },
+              { href: '/admin/campaigns', label: 'Campaigns' },
+              { href: '/admin/approvals', label: 'Approvals' },
+              { href: '/admin/inbox', label: 'Inbox' },
+            ].map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="text-[11px] uppercase tracking-[0.16em] font-sans font-semibold text-[#161616]/65 px-3.5 py-2 rounded-lg border-2 border-[#161616]/15 bg-[#FBF6EA] hover:border-[#161616] hover:text-[#161616] transition-colors"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
         {loading ? (
           <p className="text-center text-[#161616]/45 py-20 font-body italic">Loading the cockpit...</p>
         ) : !data ? (
