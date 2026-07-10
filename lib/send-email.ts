@@ -128,3 +128,107 @@ export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
 
   return droppedBcc.length ? { ok: true, id, droppedBcc } : { ok: true, id };
 }
+
+/**
+ * A drop-in replacement for `new Resend(process.env.RESEND_API_KEY)`.
+ *
+ * Returns a client whose `.emails.send(...)` is instrumented: it runs the same
+ * suppression gate and records every send to the Sent store, then returns
+ * Resend's normal `{ data, error }` shape — so existing call sites keep working
+ * unchanged, but a suppressed recipient comes back as an ERROR (not a phantom
+ * success) and a status='suppressed' row is written for proof. Every other
+ * method (emails.get, batch, etc.) passes straight through.
+ *
+ * Use this instead of `new Resend(...)` everywhere a transactional/outreach
+ * email is sent, so the whole app shares one honest, logged send path.
+ */
+export function resendClient(): Resend {
+  const real = new Resend(cleanKey(process.env.RESEND_API_KEY));
+
+  const instrumentedSend = async (
+    payload: Parameters<typeof real.emails.send>[0],
+    options?: Parameters<typeof real.emails.send>[1],
+  ): ReturnType<typeof real.emails.send> => {
+    const p = payload as {
+      from: string;
+      to: string | string[];
+      cc?: string | string[];
+      bcc?: string | string[];
+      subject?: string;
+      html?: string;
+      text?: string;
+    };
+    const to = arr(p.to);
+    const cc = arr(p.cc);
+    const bcc = arr(p.bcc);
+    const from = p.from || '';
+    const mailbox = bareAddr(from);
+
+    const supp = await activeSuppressions([...to, ...cc, ...bcc]);
+    const blocked = [...to, ...cc].map(normEmail).filter((a) => supp.has(a));
+    if (blocked.length) {
+      const why = blocked.map((a) => `${a} (${supp.get(a)?.reason || 'suppressed'})`).join(', ');
+      // Proof row: we did NOT send, and we say why.
+      await recordSentEmail({
+        mailbox,
+        provider: 'resend',
+        from_addr: mailbox,
+        from_name: from.replace(/<[^>]+>/, '').trim() || null,
+        to: to.join(', '),
+        cc: cc.join(', ') || null,
+        subject: p.subject || '(no subject)',
+        text: p.text ?? null,
+        html: p.html ?? null,
+        status: 'suppressed',
+        statusDetail: `blocked before send: ${why}`,
+      });
+      return {
+        data: null,
+        error: { name: 'validation_error', message: `Recipient suppressed: ${why}` },
+      } as Awaited<ReturnType<typeof real.emails.send>>;
+    }
+
+    // Strip a suppressed bcc so it can't drop the whole message.
+    const keptBcc = bcc.filter((a) => !supp.has(normEmail(a)));
+    const outPayload = bcc.length !== keptBcc.length ? { ...p, bcc: keptBcc } : payload;
+
+    const res = await real.emails.send(
+      outPayload as Parameters<typeof real.emails.send>[0],
+      options,
+    );
+    if (res.data?.id && !res.error) {
+      await recordSentEmail({
+        mailbox,
+        provider: 'resend',
+        providerMessageId: res.data.id,
+        from_addr: mailbox,
+        from_name: from.replace(/<[^>]+>/, '').trim() || null,
+        to: to.join(', '),
+        cc: cc.join(', ') || null,
+        bcc: keptBcc.join(', ') || null,
+        subject: p.subject || '(no subject)',
+        text: p.text ?? null,
+        html: p.html ?? null,
+        status: 'sent',
+      });
+    }
+    return res;
+  };
+
+  return new Proxy(real, {
+    get(target, prop, recv) {
+      if (prop === 'emails') {
+        const emails = target.emails;
+        return new Proxy(emails, {
+          get(et, ep, er) {
+            if (ep === 'send') return instrumentedSend;
+            const v = Reflect.get(et, ep, er);
+            return typeof v === 'function' ? v.bind(et) : v;
+          },
+        });
+      }
+      const v = Reflect.get(target, prop, recv);
+      return typeof v === 'function' ? v.bind(target) : v;
+    },
+  });
+}
