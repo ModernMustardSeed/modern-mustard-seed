@@ -161,15 +161,19 @@ export async function recordSubscriptionCommission(args: {
   // exact subscription (encoded in product_slug) and stop after the window.
   const subTag = `sub:${args.subscriptionId}`;
   try {
-    const { count } = await client
+    const { count, error: countErr } = await client
       .from('commissions')
       .select('id', { count: 'exact', head: true })
       .eq('kind', 'subscription')
       .eq('product_slug', subTag);
+    // Fail closed on money: if we cannot trust the count we do NOT risk paying
+    // past the window. supabase-js returns query errors in `error` (it does not
+    // throw), so a missed `countErr` check here would silently bypass the cap.
+    // A skipped month is recoverable; an overpayment is not.
+    if (countErr) return;
     if ((count ?? 0) >= COMMISSION_SUBSCRIPTION_MONTHS) return;
   } catch {
-    // If the count fails we still attempt the insert; the unique invoice index
-    // prevents double-paying the same invoice.
+    return; // count unavailable -> fail closed rather than over-pay
   }
 
   const amount = Math.round(args.amountCents * COMMISSION_SUBSCRIPTION_RATE);
