@@ -330,6 +330,48 @@ const PY_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per partner application (applicants land in /admin/partners). Truth metric: approved partners who then drive booked calls via their /book?ref=CODE link. The whole program goal is appointments on Sarah\'s calendar.' },
 ];
 
+// ============ Campaign eleven: The Dinner Rush (restaurant vertical, bilingual voice agent) ============
+
+const RS_LANDING = 'https://modernmustardseed.com/for/restaurants?utm_source=meta&utm_medium=paid&utm_campaign=dinnerrush';
+
+const RS_COPY_A = `Friday night. Every table is full. And the phone will not stop ringing.
+
+Every missed call is a table you did not book, or a regular who gave up and called somewhere else. You cannot cook the pasta and answer the phone. Nobody can.
+
+So let our AI answer every call and book every table for you, day and night, in English AND in Italian, or whatever language your guests speak. You cook. It books.
+
+Hear it live and see what your restaurant is missing.`;
+
+const RS_COPY_B = `Your best table is the one you never booked, because nobody could get to the phone during the rush.
+
+Modern Mustard Seed builds AI voice agents for restaurants that answer every call, take reservations and to-go orders, and handle the dinner rush without missing a ring. Bilingual out of the box, so the call that comes in Italian gets answered in Italian.
+
+You run the kitchen. It runs the phone. Buonissimo.
+
+Hear a live demo in 60 seconds.`;
+
+const RS_HEADLINE = 'You cook. He books. In any language.';
+const RS_DESCRIPTION = 'AI voice agents for restaurants. Answer every call, book every table.';
+
+const RS_CUTS = [
+  { file: '/ads/restaurant-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/restaurant-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/restaurant-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and the restaurants page hero.' },
+  { file: '/ads/restaurant-short-9x16.mp4', label: '9:16 — Short cut (~:20)', note: 'Punchy hook + payoff + CTA. For Reels / Stories / Shorts A-B tests.' },
+];
+
+const RS_CHECKLIST = [
+  { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Leads/Calls once the pixel is live). Budget $10/day. Learn More button → the restaurants UTM link above. Paste Copy Variant 1 (the dinner-rush story).' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot talks (English + Italian in beat 3) AND has burned-in captions.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled caption pills are already burned in).' },
+  { id: 'audience', label: 'Audience: Advantage+, restaurant-owner tilted. Suggestions: Restaurant owners, Restaurant, Food service, Hospitality, Small business owners. Age 25-65, United States. Worth a test layer for Italian / ethnic-restaurant interests given the bilingual angle.' },
+  { id: 'demo', label: 'Strong alt CTA for a voice ad: point a second cell at /voice-agents where they can HEAR the live agent (the ad is the demo). Same creative, utm_campaign=dinnerrush-demo.' },
+  { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same landing, swap the link to utm_source=google.' },
+  { id: 'organic', label: 'Post the 9:16 as an IG Reel + YouTube Short and the 4:5 to FB. The 2-cent play: run a real local restaurant\'s number through a demo agent and send the owner a clip. Ask Claude for the outreach drafts.' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the versatility / bilingual angle) and let them fight. Kill the loser at day 6.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per lead (utm_campaign=dinnerrush, lands in Leads + the admin Inbox). Truth metric: booked demos and restaurant voice-agent subscriptions.' },
+];
+
 function CopyBlock({ title, text }: { title: string; text: string }) {
   const [done, setDone] = useState(false);
   const copy = async () => {
@@ -355,7 +397,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -368,6 +410,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'geo', num: '08', label: 'GEO Desk', blurb: 'Audit funnel · image ads · $10/day' },
   { key: 'gn', num: '09', label: 'The Good News', blurb: 'Brand film · the family · all 3 offerings · $15/day' },
   { key: 'py', num: '10', label: 'Find Your Horizon', blurb: 'Partner recruiting · the yacht · $10/day' },
+  { key: 'rest', num: '11', label: 'The Dinner Rush', blurb: 'Restaurants · bilingual voice agent · $10/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -469,6 +512,7 @@ export default function AdsPlaybook() {
   const [checkedGeo, setCheckedGeo] = useState<Record<string, boolean>>({});
   const [checkedGn, setCheckedGn] = useState<Record<string, boolean>>({});
   const [checkedPy, setCheckedPy] = useState<Record<string, boolean>>({});
+  const [checkedRs, setCheckedRs] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -504,6 +548,8 @@ export default function AdsPlaybook() {
       if (rawGn) setCheckedGn(JSON.parse(rawGn));
       const rawPy = localStorage.getItem('mms-ads-checklist-py');
       if (rawPy) setCheckedPy(JSON.parse(rawPy));
+      const rawRs = localStorage.getItem('mms-ads-checklist-rest');
+      if (rawRs) setCheckedRs(JSON.parse(rawRs));
     } catch { /* first visit */ }
   }, []);
 
@@ -519,6 +565,7 @@ export default function AdsPlaybook() {
   const toggleGeo = mkToggle('mms-ads-checklist-geo', setCheckedGeo);
   const toggleGn = mkToggle('mms-ads-checklist-gn', setCheckedGn);
   const togglePy = mkToggle('mms-ads-checklist-py', setCheckedPy);
+  const toggleRs = mkToggle('mms-ads-checklist-rest', setCheckedRs);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -570,6 +617,7 @@ export default function AdsPlaybook() {
   const doneCountGeo = GEO_CHECKLIST.filter((c) => checkedGeo[c.id]).length;
   const doneCountGn = GN_CHECKLIST.filter((c) => checkedGn[c.id]).length;
   const doneCountPy = PY_CHECKLIST.filter((c) => checkedPy[c.id]).length;
+  const doneCountRs = RS_CHECKLIST.filter((c) => checkedRs[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -1219,6 +1267,89 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedPy[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'rest' && (<>
+        {/* ============ Campaign eleven: The Dinner Rush ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign eleven · restaurants</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;The Dinner Rush&rdquo; <span className="italic text-[#F5B700]">you cook, he books</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The restaurant vertical. The Mustards run an Italian trattoria in chef coats, the phone will not stop,
+              and the AI voice agent books every table for them, in English AND Italian (the bilingual demo is the
+              signature beat). It shows the voice agent AND its versatility for any language. Targets restaurant
+              owners. One traffic cell at $10/day into /for/restaurants, judged on cost per lead. Runs on Meta and,
+              via the 16:9 cut, on Google / YouTube.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/for/restaurants" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Restaurants page (landing)</a>
+              <a href="/voice-agents" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Live demo (hear it)</a>
+            </div>
+          </div>
+        </section>
+
+        {/* The Dinner Rush cuts */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Upload one ad, then customize per placement. The spot has spoken dialogue (English + Italian) and burned-in captions. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {RS_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/restaurant-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* The Dinner Rush copy */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1 (the rush)" text={RS_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2 (the versatility)" text={RS_COPY_B} />
+            <CopyBlock title="Headline" text={RS_HEADLINE} />
+            <CopyBlock title="Description" text={RS_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (restaurants page)" text={RS_LANDING} />
+          </div>
+        </section>
+
+        {/* The Dinner Rush launch checklist */}
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountRs}/{RS_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {RS_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedRs[item.id]}
+                    onChange={() => toggleRs(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedRs[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>
