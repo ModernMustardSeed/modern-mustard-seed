@@ -362,9 +362,22 @@ export default function AffiliatesAdmin() {
                               </label>
                               <div className="pb-2">
                                 <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Rate</span>
-                                <div className="inline-flex rounded-lg border-2 border-[#161616] overflow-hidden">
-                                  <button type="button" onClick={() => setBform((b) => ({ ...b, rate: 0.1 }))} className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold ${bform.rate === 0.1 ? 'bg-[#F5B700] text-[#161616]' : 'bg-white text-[#161616]/60'}`}>10% standard</button>
-                                  <button type="button" onClick={() => setBform((b) => ({ ...b, rate: 0.5 }))} className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold border-l-2 border-[#161616] ${bform.rate === 0.5 ? 'bg-[#F5B700] text-[#161616]' : 'bg-white text-[#161616]/60'}`}>50% founding</button>
+                                <div className="inline-flex flex-wrap rounded-lg border-2 border-[#161616] overflow-hidden">
+                                  {([
+                                    { r: 0.1, label: '10% standard' },
+                                    { r: 0.15, label: '15% producer' },
+                                    { r: 0.2, label: '20% producer' },
+                                    { r: 0.5, label: '50% founding' },
+                                  ] as const).map((opt, i) => (
+                                    <button
+                                      key={opt.r}
+                                      type="button"
+                                      onClick={() => setBform((b) => ({ ...b, rate: opt.r }))}
+                                      className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold ${i > 0 ? 'border-l-2 border-[#161616]' : ''} ${bform.rate === opt.r ? 'bg-[#F5B700] text-[#161616]' : 'bg-white text-[#161616]/60'}`}
+                                    >
+                                      {opt.label}
+                                    </button>
+                                  ))}
                                 </div>
                               </div>
                               <div className="pb-2 text-sm font-body text-[#161616] whitespace-nowrap">
@@ -383,7 +396,7 @@ export default function AffiliatesAdmin() {
                                 {busy === r.id ? 'Logging...' : 'Log commission'}
                               </button>
                             </form>
-                            <p className="text-[#161616]/45 font-body text-xs mt-2">Records the chosen rate of the build/service fee as this partner&apos;s commission. New standard is 10%; use 50% for founding partners (Polly, Chloe) grandfathered at the old rate. Left as pending it becomes payable after the {''}14-day window; check &quot;Payable now&quot; for a build that is already settled.</p>
+                            <p className="text-[#161616]/45 font-body text-xs mt-2">Records the chosen rate of the build/service fee as this partner&apos;s commission. Standard is 10%; use 15% or 20% for Producers who close builds regularly, and 50% for founding partners (Polly, Chloe) grandfathered at the old rate. Left as pending it becomes payable after the {''}14-day window; check &quot;Payable now&quot; for a build that is already settled.</p>
                           </td>
                         </tr>
                       )}
