@@ -10,7 +10,10 @@ import { join } from 'node:path';
 
 const TO = process.argv[2] || 'wildhopehouse@gmail.com';
 const SITE = 'https://modernmustardseed.com';
-const LANDING = `${SITE}/partners?utm_source=email&utm_medium=campaign&utm_campaign=partneryacht`;
+// Clean links, no "utm_medium=campaign". Gmail reads those params and they are
+// one of the surest ways to get filed under Promotions. A bare /partners link
+// reads as a personal note, not a blast.
+const LANDING = `${SITE}/partners`;
 const VIDEO = `${SITE}/ads/partner-yacht-16x9.mp4`;
 const POSTER = `${SITE}/ads/partner-yacht-poster.png`;
 const CELL = '(406) 250-6076';
@@ -81,7 +84,7 @@ const html = `<!doctype html>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         ${tier('50%', 'On every product', 'Share a playbook or bundle and earn half, the moment someone buys.')}
         ${tier('25%', 'Every month', 'Put a business on a 24/7 AI receptionist and earn a quarter of their bill, every month, for a year.')}
-        ${tier('to 20%', 'On builds', 'Send a bigger client who needs a real build and earn on the project, up to 20% as a Producer.')}
+        ${tier('10-20%', 'On all builds', 'Send a bigger client who needs a real build and earn on the project, from 10% up to 20% as a Producer.')}
       </table>
     </td></tr>
 
@@ -110,6 +113,28 @@ const html = `<!doctype html>
 </table>
 </body></html>`;
 
+// A real text/plain alternative. A multipart email with a genuine text part
+// reads as personal mail, not a promo blast, and is one of the strongest
+// signals for landing in the Primary tab rather than Promotions.
+const text = `Sell what every business now needs.
+
+How does a little seed end up on a yacht in the Mediterranean? He sells the one thing every business on earth suddenly needs: an AI website, a voice agent that answers the phone, and custom software that runs the busywork. Modern Mustard Seed builds all of it. You just open the door.
+
+Refer a client, we build it, you earn. No coding, no inventory, no overhead. You make the introductions from anywhere, we do the work, and you get paid, again and again:
+
+- 50% on every product. Share a playbook or bundle and earn half, the moment someone buys.
+- 25% every month. Put a business on a 24/7 AI receptionist and earn a quarter of their bill, every month, for a year.
+- 10-20% on all builds. Send a bigger client who needs a real build and earn on the project, from 10% up to 20% as a Producer.
+
+Watch the 60-second film: ${VIDEO}
+Become a partner: ${LANDING}
+
+You bring the trust. We do the work and pay you well. Come find your own horizon.
+
+Sarah
+Sarah Scarano, Modern Mustard Seed
+Questions? Text me directly: ${CELL}`;
+
 // Always dump a local copy for visual review; --dump exits before sending.
 const previewPath = join(tmpdir(), 'partner-yacht-email.html');
 try {
@@ -133,8 +158,11 @@ const res = await fetch('https://api.resend.com/emails', {
     from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
     to: [TO],
     reply_to: 'sarah@modernmustardseed.com',
-    subject: 'Sell what every business now needs',
+    // A personal, 1:1 subject (names a real person, no hype words) tabs to
+    // Primary far more reliably than a salesy "Sell what every business needs".
+    subject: 'A partner idea from Sarah at Modern Mustard Seed',
     html,
+    text,
   }),
 });
 const json = await res.json().catch(() => ({}));

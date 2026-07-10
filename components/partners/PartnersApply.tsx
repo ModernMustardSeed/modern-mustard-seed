@@ -5,6 +5,7 @@ import { useState, FormEvent } from 'react';
 export default function PartnersApply() {
   const [form, setForm] = useState({ name: '', email: '', promoteWhere: '', audience: '', why: '' });
   const [sent, setSent] = useState(false);
+  const [already, setAlready] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
 
@@ -23,14 +24,36 @@ export default function PartnersApply() {
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (res.ok) setSent(true);
-      else setError(data.error ?? 'Something went wrong.');
+      if (res.ok) {
+        setAlready(Boolean(data.alreadyPartner));
+        setSent(true);
+      } else setError(data.error ?? 'Something went wrong.');
     } catch {
       setError('Network error. Try again.');
     } finally {
       setSending(false);
     }
   };
+
+  if (sent && already) {
+    return (
+      <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8 text-center max-w-lg mx-auto">
+        <div className="w-12 h-12 rounded-full bg-[#F5B700]/20 border border-[#161616]/25 flex items-center justify-center mx-auto mb-5">
+          <span className="text-[#161616] text-xl">★</span>
+        </div>
+        <h3 className="font-display text-2xl font-semibold text-[#161616] mb-2">You're already a partner</h3>
+        <p className="text-[#3A3733] font-body text-sm leading-relaxed mb-5">
+          Good news, this email is already an approved partner. Nothing to re-apply for. Sign in to grab your link, your free access, and the Outreach Playbook.
+        </p>
+        <a
+          href="/portal/login"
+          className="inline-block px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+        >
+          Sign in to your dashboard
+        </a>
+      </div>
+    );
+  }
 
   if (sent) {
     return (
@@ -40,7 +63,7 @@ export default function PartnersApply() {
         </div>
         <h3 className="font-display text-2xl font-semibold text-[#161616] mb-2">You're on the list</h3>
         <p className="text-[#3A3733] font-body text-sm leading-relaxed">
-          Thank you for wanting to share this. Sarah reviews every application personally. When you're approved, you'll get a warm welcome with your links, free access to everything, and a passwordless way into your dashboard.
+          Thank you for wanting to share this. Check your inbox for a note from me confirming it arrived. Sarah reviews every application personally, and when you're approved you'll get a warm welcome with your links, free access to everything, and a passwordless way into your dashboard.
         </p>
       </div>
     );
