@@ -51,6 +51,8 @@ const sb = (table, method, body, headers = {}) =>
     body: body ? JSON.stringify(body) : undefined,
   });
 
+const rcp = (v) => (Array.isArray(v) ? v : v ? [v] : []);
+
 // Collapse to the latest event per recipient so a since-corrected address isn't
 // re-suppressed. (List is newest-first; first occurrence wins.)
 const latestDrop = new Map(); // email -> {reason, detail, id}
@@ -59,7 +61,7 @@ let statusSynced = 0;
 for (const e of arr) {
   const ev = e.last_event;
   if (!ev) continue;
-  const tos = Array.isArray(e.to) ? e.to : e.to ? [e.to] : [];
+  const tos = rcp(e.to);
 
   // 1. Sync status onto any logged send we can match by Resend id.
   const patch = { status: ev, status_detail: DROP.has(ev) ? ev : null };
@@ -72,20 +74,26 @@ for (const e of arr) {
   );
   if (up.ok) statusSynced++;
 
-  // 2. Track drops for the suppression mirror (latest event per address).
-  // ONLY when the address was the sole recipient — a dropped multi-recipient
-  // email is ambiguous (Resend drops the whole message if ANY recipient is
-  // suppressed), so a group send would otherwise falsely block the innocent
-  // co-recipients (e.g. Polly caught on a digest addressed alongside sarah@).
-  const sole = tos.length === 1;
-  if (DROP.has(ev) && sole) {
-    const k = norm(tos[0]);
-    if (k && !latestDrop.has(k)) latestDrop.set(k, { reason: ev, detail: ev, id: e.id });
-  } else if (sole) {
-    // A newer non-drop event for this address clears the intent to suppress.
-    const k = norm(tos[0]);
-    if (k && !latestDrop.has(k)) latestDrop.set(k, null);
+  // 2. Track drops for the suppression mirror. Only block on an UNAMBIGUOUS
+  // drop: an email with exactly one recipient across to+cc+bcc. The list API
+  // hides bcc, so a "suppressed" event on a single-`to` email may actually have
+  // been dropped because of a suppressed BCC (the Newk's outreach bcc'd the
+  // already-suppressed sarah@ — that must NOT blacklist the Newk's execs).
+  // Fetch the full recipient set to be sure before blocking anyone.
+  if (!DROP.has(ev)) {
+    if (tos.length === 1) {
+      const k = norm(tos[0]);
+      if (k && !latestDrop.has(k)) latestDrop.set(k, null); // a clean event clears intent
+    }
+    continue;
   }
+  const det = await fetch(`https://api.resend.com/emails/${e.id}`, {
+    headers: { Authorization: `Bearer ${RESEND_KEY}` },
+  }).then((x) => (x.ok ? x.json() : null), () => null);
+  const all = det ? [...rcp(det.to), ...rcp(det.cc), ...rcp(det.bcc)] : tos;
+  if (all.length !== 1) continue; // ambiguous (co-recipient/bcc could be the cause) — never block
+  const k = norm(all[0]);
+  if (k && !latestDrop.has(k)) latestDrop.set(k, { reason: ev, detail: ev, id: e.id });
 }
 
 const toSuppress = [...latestDrop.entries()].filter(([, v]) => v);

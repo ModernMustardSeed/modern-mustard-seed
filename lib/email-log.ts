@@ -149,14 +149,30 @@ export async function markDeliveryByProviderId(
 ): Promise<void> {
   const sb = getSupabase();
   if (!sb || !providerId) return;
-  const patch: Record<string, unknown> = { status, status_detail: detail ?? null };
   const now = new Date().toISOString();
-  if (status === 'delivered') patch.delivered_at = now;
+
+  // 'opened' is orthogonal — stamp the time without touching status.
   if (status === 'opened') {
-    // Don't overwrite a real terminal status with 'opened'; just stamp the time.
-    delete patch.status;
-    delete patch.status_detail;
-    patch.opened_at = now;
+    await sb
+      .from('emails')
+      .update({ opened_at: now })
+      .eq('provider_message_id', providerId)
+      .is('opened_at', null)
+      .then(() => {}, () => {});
+    return;
   }
-  await sb.from('emails').update(patch).eq('provider_message_id', providerId).then(() => {}, () => {});
+
+  const patch: Record<string, unknown> = { status, status_detail: detail ?? null };
+  if (status === 'delivered') patch.delivered_at = now;
+
+  // Never regress. Svix delivers events out of order and retries, so a late
+  // 'sent'/'delivered' must not overwrite a real 'bounced'/'complained', and a
+  // late 'delivery_delayed'/'sent' must not downgrade a 'delivered'. A terminal
+  // drop is authoritative and always wins.
+  let q = sb.from('emails').update(patch).eq('provider_message_id', providerId);
+  if (!DROP_EVENTS.has(status)) {
+    q = q.not('status', 'in', `(${[...DROP_EVENTS].join(',')})`);
+    if (status !== 'delivered') q = q.neq('status', 'delivered');
+  }
+  await q.then(() => {}, () => {});
 }
