@@ -89,17 +89,25 @@ export default async function PartnerHQ() {
         <h2 className="font-display text-3xl font-semibold text-[#161616] mb-1">Welcome, {firstName}.</h2>
         <p className="text-[#3A3733] font-body mb-6">Share the playbooks, earn half on every sale, and keep earning every month a business you refer stays on. We are rooting for you.</p>
 
-        {/* The playbook is the main event */}
-        <Link href="/partners/playbook" className="block group mb-8">
-          <div className="bg-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-6 md:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all group-hover:shadow-[8px_8px_0_0_#F5B700] group-hover:-translate-y-0.5">
-            <div>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#F5B700] font-mono font-bold block mb-2">Start here</span>
-              <h3 className="font-display text-2xl font-semibold text-[#FBF6EA]">The Outreach Playbook</h3>
-              <p className="text-[#FBF6EA]/65 font-body text-sm mt-1 max-w-md">Where to find buyers, exactly what to say, a full phone script, and a social strategy. Every script pre-filled with your booking link.</p>
+        {/* Start-here tools: the promo kit (copy-paste posts) and the field guide */}
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <Link href="/partners/promote" className="block group">
+            <div className="h-full bg-[#F5B700] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#161616] group-hover:-translate-y-0.5">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-2">Fastest start</span>
+              <h3 className="font-display text-2xl font-semibold text-[#161616]">Your Promo Kit</h3>
+              <p className="text-[#161616]/70 font-body text-sm mt-1">Ready-to-post copy for every offer, your link already baked in. Copy, reword, post.</p>
+              <span className="inline-block mt-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] border-b-2 border-[#161616]">Open the kit →</span>
             </div>
-            <span className="inline-block self-start sm:self-center px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#F5B700] rounded-full whitespace-nowrap">Open the playbook →</span>
-          </div>
-        </Link>
+          </Link>
+          <Link href="/partners/playbook" className="block group">
+            <div className="h-full bg-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#F5B700] group-hover:-translate-y-0.5">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#F5B700] font-mono font-bold block mb-2">Go deeper</span>
+              <h3 className="font-display text-2xl font-semibold text-[#FBF6EA]">The Outreach Playbook</h3>
+              <p className="text-[#FBF6EA]/65 font-body text-sm mt-1">Where to find buyers, a full phone script, and a social strategy. Every script pre-filled with your link.</p>
+              <span className="inline-block mt-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#F5B700] border-b-2 border-[#F5B700]">Open the playbook →</span>
+            </div>
+          </Link>
+        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           {[
