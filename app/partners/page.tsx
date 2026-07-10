@@ -67,8 +67,8 @@ export default function PartnersPage() {
           </div>
         </div>
 
-        {/* Framed brand film: the Sidekick "Graduate" spot (the AI receptionist
-            partners earn recurring on). On-brand comic frame + hard shadow. */}
+        {/* Framed brand film: the "Find Your Horizon" partner-recruiting spot
+            (Mr. Mustard and family on the Mediterranean yacht). Comic frame + shadow. */}
         <div className="relative z-10 max-w-4xl mx-auto mt-14">
           <div className="rounded-3xl overflow-hidden border-[3px] border-[#161616] bg-[#161616] shadow-[10px_10px_0_0_#161616]">
             <video
@@ -78,10 +78,11 @@ export default function PartnersPage() {
               loop
               playsInline
               preload="metadata"
+              poster="/ads/partner-yacht-poster.png"
               aria-hidden="true"
               style={{ backgroundColor: '#161616' }}
             >
-              <source src="/video/sidekick-16x9.mp4" type="video/mp4" />
+              <source src="/ads/partner-yacht-16x9.mp4" type="video/mp4" />
             </video>
           </div>
         </div>
