@@ -165,7 +165,8 @@ export async function GET() {
     today: todayByRep,
     week: weekByRep,
     queue,
-    lockedUnscrubbed: lockedRes.count ?? 0,
+    // DNC scrubbing is an owner task; a part-time caller shouldn't see a scary "locked" counter.
+    lockedUnscrubbed: scopeRepId ? 0 : (lockedRes.count ?? 0),
     pilots: {
       running: pilots.length,
       totalRecovered,
