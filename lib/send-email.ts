@@ -18,6 +18,7 @@
  */
 import { Resend } from 'resend';
 import { activeSuppressions, normEmail, recordSentEmail } from '@/lib/email-log';
+import { sendViaZoho, zohoConfigured } from '@/lib/zoho-send';
 
 export type TrackedSend = {
   from: string; // "Display Name <addr@domain>" or "addr@domain"
@@ -157,15 +158,60 @@ export function resendClient(): Resend {
       subject?: string;
       html?: string;
       text?: string;
+      replyTo?: string;
     };
     const to = arr(p.to);
     const cc = arr(p.cc);
     const bcc = arr(p.bcc);
     const from = p.from || '';
     const mailbox = bareAddr(from);
+    const fromName = from.replace(/<[^>]+>/, '').trim() || null;
 
-    const supp = await activeSuppressions([...to, ...cc, ...bcc]);
-    const blocked = [...to, ...cc].map(normEmail).filter((a) => supp.has(a));
+    // Internal notifications (to a @modernmustardseed.com mailbox) go through
+    // Zoho so they land reliably and are never caught by Resend's suppression
+    // list. External recipients keep going via Resend below. A purely-external
+    // send never touches Zoho — that path is byte-for-byte unchanged.
+    const INTERNAL = '@modernmustardseed.com';
+    const internalTo = to.filter((a) => normEmail(a).endsWith(INTERNAL));
+    const externalTo = to.filter((a) => !normEmail(a).endsWith(INTERNAL));
+    const useZoho = internalTo.length > 0 && zohoConfigured();
+
+    if (useZoho) {
+      const z = await sendViaZoho({
+        to: internalTo,
+        subject: p.subject || '(no subject)',
+        html: p.html,
+        text: p.text,
+        fromName: fromName || undefined,
+        replyTo: p.replyTo,
+      });
+      await recordSentEmail({
+        mailbox: z.from || mailbox,
+        provider: 'zoho',
+        providerMessageId: z.messageId || null,
+        from_addr: z.from || mailbox,
+        from_name: z.fromName || fromName,
+        to: internalTo.join(', '),
+        subject: p.subject || '(no subject)',
+        text: p.text ?? null,
+        html: p.html ?? null,
+        status: z.ok ? 'sent' : 'failed',
+        statusDetail: z.ok ? null : z.error || 'zoho send failed',
+      });
+      if (externalTo.length === 0) {
+        return (z.ok
+          ? { data: { id: z.messageId || 'zoho' }, error: null }
+          : { data: null, error: { name: 'application_error', message: z.error || 'internal send failed' } }
+        ) as Awaited<ReturnType<typeof real.emails.send>>;
+      }
+    }
+
+    // Resend handles only the external recipients (or all recipients when Zoho
+    // is not in play).
+    const resendTo = useZoho ? externalTo : to;
+
+    const supp = await activeSuppressions([...resendTo, ...cc, ...bcc]);
+    const blocked = [...resendTo, ...cc].map(normEmail).filter((a) => supp.has(a));
     if (blocked.length) {
       const why = blocked.map((a) => `${a} (${supp.get(a)?.reason || 'suppressed'})`).join(', ');
       // Proof row: we did NOT send, and we say why.
@@ -173,8 +219,8 @@ export function resendClient(): Resend {
         mailbox,
         provider: 'resend',
         from_addr: mailbox,
-        from_name: from.replace(/<[^>]+>/, '').trim() || null,
-        to: to.join(', '),
+        from_name: fromName,
+        to: resendTo.join(', '),
         cc: cc.join(', ') || null,
         subject: p.subject || '(no subject)',
         text: p.text ?? null,
@@ -190,7 +236,7 @@ export function resendClient(): Resend {
 
     // Strip a suppressed bcc so it can't drop the whole message.
     const keptBcc = bcc.filter((a) => !supp.has(normEmail(a)));
-    const outPayload = bcc.length !== keptBcc.length ? { ...p, bcc: keptBcc } : payload;
+    const outPayload = { ...p, to: resendTo, bcc: keptBcc };
 
     const res = await real.emails.send(
       outPayload as Parameters<typeof real.emails.send>[0],
@@ -202,8 +248,8 @@ export function resendClient(): Resend {
         provider: 'resend',
         providerMessageId: res.data.id,
         from_addr: mailbox,
-        from_name: from.replace(/<[^>]+>/, '').trim() || null,
-        to: to.join(', '),
+        from_name: fromName,
+        to: resendTo.join(', '),
         cc: cc.join(', ') || null,
         bcc: keptBcc.join(', ') || null,
         subject: p.subject || '(no subject)',
