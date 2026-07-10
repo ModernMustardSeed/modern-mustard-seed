@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireOutboundAdmin, parseBody } from '@/lib/outbound-server';
+import { requireOutboundAdmin, parseBody, outboundRepScope } from '@/lib/outbound-server';
 import { leadInputSchema, LEAD_STATUSES, NICHES, phoneKey } from '@/lib/outbound';
 import type { LeadStatus, Niche } from '@/lib/outbound';
 
@@ -25,10 +25,14 @@ export async function GET(req: Request) {
   // belongs to the single-lead cockpit fetch, not a 3000-row list.
   const LIST_COLUMNS =
     'id, business_name, contact_name, phone, email, website, niche, city, state, avg_job_value, est_missed_calls_week, close_rate_pct, status, source, owner_rep_id, dnc_checked, next_action_at, next_action, notes, audit_score, audit_url, audit_at, pipeline_lead_id, email_opened_at, email_open_count, last_email_at, last_open_at, demo_url, demo_run_id, created_at, updated_at';
+  // A 'caller' rep only ever sees their own leads, whatever the owner param says.
+  const { scopeRepId } = await outboundRepScope(guard.supabase);
+
   let query = guard.supabase.from('outbound_leads').select(LIST_COLUMNS).limit(3000);
   if (status && (LEAD_STATUSES as readonly string[]).includes(status)) query = query.eq('status', status as LeadStatus);
   if (niche && (NICHES as readonly string[]).includes(niche)) query = query.eq('niche', niche as Niche);
-  if (owner) query = query.eq('owner_rep_id', owner);
+  if (scopeRepId) query = query.eq('owner_rep_id', scopeRepId);
+  else if (owner) query = query.eq('owner_rep_id', owner);
   if (dnc === 'unchecked') query = query.eq('dnc_checked', false);
   if (q) {
     const safe = q.replace(/[%,()]/g, ' ').trim();

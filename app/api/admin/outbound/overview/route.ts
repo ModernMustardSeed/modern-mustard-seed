@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireOutboundAdmin } from '@/lib/outbound-server';
+import { requireOutboundAdmin, outboundRepScope } from '@/lib/outbound-server';
 import { denverToday, denverWeekStart } from '@/lib/outbound';
 import type { DailyRepStat, HeatReason } from '@/lib/outbound';
 
@@ -41,30 +41,37 @@ export async function GET() {
   const weekStart = denverWeekStart();
   const now = Date.now();
 
-  const [repsRes, statsRes, candRes, unreadRes, pilotsRes, lockedRes] = await Promise.all([
-    guard.supabase.from('outbound_reps').select('*').eq('active', true).order('name'),
+  // A 'caller' rep (part-time helper) sees only their own leads/dashboard; owners see the whole floor.
+  const { reps, scopeRepId } = await outboundRepScope(guard.supabase);
+
+  let candQuery = guard.supabase
+    .from('outbound_leads')
+    .select(
+      'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, email_open_count, demo_url, source, created_at',
+    )
+    .in('status', ['new', 'contacted', 'callback']);
+  if (scopeRepId) candQuery = candQuery.eq('owner_rep_id', scopeRepId);
+
+  let lockedQuery = guard.supabase
+    .from('outbound_leads')
+    .select('id', { count: 'exact', head: true })
+    .eq('dnc_checked', false)
+    .in('status', ['new', 'contacted', 'callback']);
+  if (scopeRepId) lockedQuery = lockedQuery.eq('owner_rep_id', scopeRepId);
+
+  const [statsRes, candRes, unreadRes, pilotsRes, lockedRes] = await Promise.all([
     guard.supabase.from('outbound_daily_rep_stats').select('*').gte('day', weekStart),
-    guard.supabase
-      .from('outbound_leads')
-      .select(
-        'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, email_open_count, demo_url, source, created_at',
-      )
-      .in('status', ['new', 'contacted', 'callback'])
-      .limit(600),
+    candQuery.limit(600),
     guard.supabase.from('messages').select('outbound_lead_id').eq('direction', 'inbound').eq('read', false).not('outbound_lead_id', 'is', null),
     guard.supabase
       .from('outbound_pilots')
       .select('*, lead:outbound_leads(id, business_name)')
       .eq('status', 'running')
       .order('ends_at', { ascending: true }),
-    guard.supabase
-      .from('outbound_leads')
-      .select('id', { count: 'exact', head: true })
-      .eq('dnc_checked', false)
-      .in('status', ['new', 'contacted', 'callback']),
+    lockedQuery,
   ]);
 
-  for (const res of [repsRes, statsRes, candRes, unreadRes, pilotsRes]) {
+  for (const res of [statsRes, candRes, unreadRes, pilotsRes]) {
     if (res.error) return NextResponse.json({ error: res.error.message }, { status: 500 });
   }
 
@@ -154,7 +161,7 @@ export async function GET() {
   const endingSoon = pilots.filter((p) => new Date(p.ends_at).getTime() <= soonCutoff);
 
   return NextResponse.json({
-    reps: repsRes.data ?? [],
+    reps,
     today: todayByRep,
     week: weekByRep,
     queue,

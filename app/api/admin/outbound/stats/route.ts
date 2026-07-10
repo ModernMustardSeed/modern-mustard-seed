@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireOutboundAdmin } from '@/lib/outbound-server';
+import { requireOutboundAdmin, outboundRepScope } from '@/lib/outbound-server';
 import { denverToday, denverWeekStart } from '@/lib/outbound';
 import type { DailyRepStat } from '@/lib/outbound';
 
@@ -13,11 +13,10 @@ export async function GET() {
   const today = denverToday();
   const weekStart = denverWeekStart();
 
-  const [{ data: reps, error: repErr }, { data: rows, error: statErr }] = await Promise.all([
-    guard.supabase.from('outbound_reps').select('*').eq('active', true).order('name'),
+  const [{ reps }, { data: rows, error: statErr }] = await Promise.all([
+    outboundRepScope(guard.supabase),
     guard.supabase.from('outbound_daily_rep_stats').select('*').gte('day', weekStart),
   ]);
-  if (repErr) return NextResponse.json({ error: repErr.message }, { status: 500 });
   if (statErr) return NextResponse.json({ error: statErr.message }, { status: 500 });
 
   const zero = { dials: 0, conversations: 0, demos_booked: 0 };

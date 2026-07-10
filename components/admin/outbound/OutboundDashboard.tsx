@@ -126,7 +126,7 @@ export default function OutboundDashboard() {
                     Goals hit
                   </span>
                 )}
-                <span className={eyebrow}>{rep.role === 'player-coach' ? 'Player coach' : 'Primary rep'}</span>
+                <span className={eyebrow}>{rep.role === 'player-coach' ? 'Player coach' : rep.role === 'caller' ? 'Caller' : 'Primary rep'}</span>
                 <h2 className="font-oswald font-semibold uppercase text-3xl text-[#1a1815] tracking-tight mt-0.5">{rep.name}</h2>
                 <div className="flex items-center justify-around mt-4">
                   <GoalRing value={today.dials} goal={rep.daily_dial_goal} label="Dials today" />

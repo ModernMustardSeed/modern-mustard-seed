@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { getSession } from '@/lib/admin-auth';
+import { getSession, resolveAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import type { ZodType } from 'zod';
 
@@ -14,6 +14,33 @@ export async function requireOutboundAdmin(): Promise<{ supabase: SupabaseClient
   const supabase = getSupabase();
   if (!supabase) return { error: NextResponse.json({ error: 'Database not configured' }, { status: 500 }) };
   return { supabase };
+}
+
+type OutboundRep = { id: string; name: string; role: string; [k: string]: unknown };
+
+/**
+ * Resolve who is looking at the dial floor. A rep whose role is 'caller' (e.g. a
+ * part-time helper) is scoped to ONLY their own leads and their own dashboard, so
+ * they are not buried in the whole team's 1,000-lead queue. Owners / primary reps
+ * see the full shared floor exactly as before. Matches the logged-in admin name to
+ * a rep the same way the cockpit's rep switcher does.
+ */
+export async function outboundRepScope(
+  supabase: SupabaseClient,
+): Promise<{ reps: OutboundRep[]; scopeRepId: string | null; isCaller: boolean }> {
+  const [session, repsRes] = await Promise.all([
+    getSession(),
+    supabase.from('outbound_reps').select('*').eq('active', true).order('name'),
+  ]);
+  const reps = (repsRes.data ?? []) as OutboundRep[];
+  const me = session ? resolveAdminUser(session.email) : null;
+  const myRep = me ? reps.find((r) => me.name.toLowerCase().includes(String(r.name).toLowerCase())) : null;
+  const isCaller = !!myRep && myRep.role === 'caller';
+  return {
+    reps: isCaller ? [myRep as OutboundRep] : reps,
+    scopeRepId: isCaller ? (myRep as OutboundRep).id : null,
+    isCaller,
+  };
 }
 
 /** Parse a JSON body against a zod schema. Returns data or a 400 response. */
