@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSession } from '@/lib/admin-auth';
 
 export const runtime = 'nodejs';
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   if (!body) return NextResponse.json({ error: 'The body is empty.' }, { status: 400 });
 
   try {
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     const { data, error } = await resend.emails.send({
       from: `${fromName} <${fromEmail}>`,
       to,

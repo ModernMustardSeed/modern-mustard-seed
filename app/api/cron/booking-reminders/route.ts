@@ -13,7 +13,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { displayForIso, mtDayBoundsUtc } from '@/lib/booking';
 import { availability } from '@/data/availability';
@@ -37,7 +37,7 @@ export async function GET(req: Request) {
   const client = getSupabase();
   if (!client) return NextResponse.json({ ok: true, sent: 0, note: 'supabase not configured' });
 
-  const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+  const resend = process.env.RESEND_API_KEY ? resendClient() : null;
 
   const now = new Date();
   const { endUtc } = mtDayBoundsUtc(now);
@@ -76,7 +76,7 @@ export async function GET(req: Request) {
 
     try {
       if (resend) {
-        await resend.emails.send({
+        const { error: sendError } = await resend.emails.send({
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: email,
           replyTo: 'sarah@modernmustardseed.com',
@@ -87,6 +87,11 @@ export async function GET(req: Request) {
             conferenceLink: availability.conferenceLink || undefined,
           }),
         });
+        if (sendError) {
+          console.error(`booking reminder failed for ${email}`, sendError);
+          errors++;
+          continue;
+        }
       }
       await client
         .from('leads')

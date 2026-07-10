@@ -13,7 +13,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { listAdminUsers } from '@/lib/admin-auth';
 import { leadNotification } from '@/lib/email';
@@ -114,7 +114,7 @@ export async function GET(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
   let sent = 0;
   if (apiKey) {
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     const { error } = await resend.emails.send({
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: recipients(),

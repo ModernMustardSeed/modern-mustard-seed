@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { auditFollowupEmail, leadNotification } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
 
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
       const fields = [
         { label: 'Audited URL', value: url },
         ...(score !== null ? [{ label: 'Score', value: `${score}/100` }] : []),

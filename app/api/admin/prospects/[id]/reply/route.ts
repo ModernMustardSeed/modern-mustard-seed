@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { clientEmail, p } from '@/lib/email';
@@ -31,7 +31,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const subject = (payload.subject ?? '').trim() || `Re: Modern Mustard Seed${prospect.business ? ` and ${prospect.business}` : ''}`;
   const html = clientEmail({ body: p(body.replace(/\n/g, '<br>')), trackId: id });
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
   const { error: sendErr } = await resend.emails.send({
     from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
     to,

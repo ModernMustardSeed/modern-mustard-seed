@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { clientEmail, p as emailP } from '@/lib/email';
 import { SITE } from '@/lib/seo';
@@ -76,8 +76,8 @@ export async function executeApproval(row: ApprovalRow): Promise<string | null> 
     if (!row.to_email) return 'No recipient email.';
     if (!process.env.RESEND_API_KEY) return 'Email is not configured.';
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
+      const resend = resendClient();
+      const { error } = await resend.emails.send({
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: row.to_email,
         replyTo: 'sarah@modernmustardseed.com',
@@ -88,6 +88,10 @@ export async function executeApproval(row: ApprovalRow): Promise<string | null> 
           body: textToHtml(row.body),
         }),
       });
+      if (error) {
+        console.error('approval send failed', error);
+        return 'Could not send.';
+      }
     } catch (err) {
       console.error('approval send failed', err);
       return 'Could not send.';
@@ -142,7 +146,7 @@ export async function executeApproval(row: ApprovalRow): Promise<string | null> 
     // Send the (editable) delivery note to the client.
     if (row.to_email && process.env.RESEND_API_KEY && row.body.trim()) {
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
+        const resend = resendClient();
         await resend.emails.send({
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: row.to_email,

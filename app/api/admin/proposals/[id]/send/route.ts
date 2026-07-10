@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
@@ -38,14 +38,18 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 
   try {
-    const resend = new Resend(apiKey);
-    await resend.emails.send({
+    const resend = resendClient();
+    const { error } = await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: p.client_email as string,
       replyTo: 'sarah@modernmustardseed.com',
       subject: 'Your proposal from Modern Mustard Seed',
       html: proposalSendEmail({ toName: (p.client_name as string) || undefined, url, note: body.note }),
     });
+    if (error) {
+      console.error('proposal send email failed', error);
+      return NextResponse.json({ error: 'Could not send the email. Try again.' }, { status: 502 });
+    }
   } catch (err) {
     console.error('proposal send email failed', err);
     return NextResponse.json({ error: 'Could not send the email. Try again.' }, { status: 502 });

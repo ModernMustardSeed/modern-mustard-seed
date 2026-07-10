@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getStripe } from '@/lib/stripe';
@@ -56,15 +56,19 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     let emailed = false;
     if (p.client_email && process.env.RESEND_API_KEY) {
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
+        const resend = resendClient();
+        const { error } = await resend.emails.send({
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: p.client_email as string,
           replyTo: 'sarah@modernmustardseed.com',
           subject: `Final balance for ${label}`,
           html: balanceInvoiceEmail({ toName: (p.client_name as string) || undefined, label, amountUsd: amount, payUrl: checkout.url }),
         });
-        emailed = true;
+        if (error) {
+          console.error('balance email failed', error);
+        } else {
+          emailed = true;
+        }
       } catch (err) {
         console.error('balance email failed', err);
       }

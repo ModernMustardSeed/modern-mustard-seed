@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { getSession } from '@/lib/admin-auth';
 import { auditReportEmail, type AuditReport } from '@/lib/email';
+import { resendClient } from '@/lib/send-email';
 
 export const runtime = 'nodejs';
 
@@ -48,14 +48,18 @@ export async function POST(req: Request) {
   }
 
   try {
-    const resend = new Resend(apiKey);
-    await resend.emails.send({
+    const resend = resendClient();
+    const { error } = await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to,
       replyTo: 'sarah@modernmustardseed.com',
       subject: `Your website audit, ${domain}`,
       html: auditReportEmail({ toName: name, url, report, note }),
     });
+    if (error) {
+      console.error('admin/audit/send error', error);
+      return NextResponse.json({ error: 'Could not send the email. Please try again.' }, { status: 500 });
+    }
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('admin/audit/send error', err);

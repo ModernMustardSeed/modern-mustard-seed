@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getStripe } from '@/lib/stripe';
@@ -72,8 +72,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     let emailed = false;
     if (p.client_email && process.env.RESEND_API_KEY) {
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
+        const resend = resendClient();
+        const { error } = await resend.emails.send({
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: p.client_email as string,
           replyTo: 'sarah@modernmustardseed.com',
@@ -85,6 +85,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
             payUrl: checkout.url,
           }),
         });
+        if (error) throw error;
         emailed = true;
       } catch (err) {
         console.error('deposit email failed', err);

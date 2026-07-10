@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
 import { provisionFromProposal } from '@/lib/proposal-provision';
@@ -39,7 +39,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     // Notify Sarah, send the client a signed PDF + pay link, and a portal link.
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
 
       // Render the signed proposal PDF (best-effort).
       let pdf: Buffer | null = null;

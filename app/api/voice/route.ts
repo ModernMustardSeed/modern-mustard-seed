@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import {
   clientEmail,
   bookingConfirmationEmail,
@@ -204,7 +205,7 @@ async function bookSlot(
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     try {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
       const ics = buildIcsInvite({
         uid: `${randomUUID()}@modernmustardseed.com`,
         startUtc: new Date(input.startIso),
@@ -322,7 +323,7 @@ async function captureLead(
 
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
       await sendLoud(resend, 'lead-notify-sarah', {
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',
@@ -445,7 +446,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
   try {
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     await sendLoud(resend, 'end-of-call-report', {
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',

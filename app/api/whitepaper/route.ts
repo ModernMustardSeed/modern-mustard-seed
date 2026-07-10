@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { clientEmail, p } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     const AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID;
     if (AUDIENCE_ID) {
       try { await resend.contacts.create({ email, unsubscribed: false, audienceId: AUDIENCE_ID }); } catch (e) { console.warn('whitepaper audience add', e); }

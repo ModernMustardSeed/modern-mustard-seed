@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { getClientSession } from '@/lib/client-auth';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { leadNotification } from '@/lib/email';
 
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
 
   if (process.env.RESEND_API_KEY) {
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',

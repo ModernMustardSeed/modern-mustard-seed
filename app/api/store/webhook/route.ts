@@ -15,7 +15,7 @@
 
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getStripe, STRIPE_WEBHOOK_SECRET } from '@/lib/stripe';
 import { getSupabase } from '@/lib/supabase';
 import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/data/products';
@@ -117,7 +117,7 @@ async function handleProgramPurchase(
     const assets = PROGRAM_ASSETS[landing];
     const token = await createMagicToken(email);
     const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}&next=/${landing}/hq`;
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     const firstName = name?.split(' ')[0];
 
     await resend.emails.send({
@@ -218,7 +218,7 @@ async function handleMustardPurchase(
     const origin = new URL(req.url).origin || 'https://modernmustardseed.com';
     const token = await createMagicToken(email);
     const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}&next=/mustard-mode/hq`;
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     const firstName = name?.split(' ')[0];
 
     await resend.emails.send({
@@ -341,7 +341,7 @@ async function handleLaunchPurchase(
     const origin = new URL(req.url).origin || 'https://modernmustardseed.com';
     const token = await createMagicToken(email);
     const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}&next=/mustard-launch/hq`;
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     const firstName = name?.split(' ')[0];
 
     await resend.emails.send({
@@ -448,7 +448,7 @@ async function handleDepositPaid(session: Stripe.Checkout.Session, email: string
 
   if (process.env.RESEND_API_KEY) {
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',
@@ -506,7 +506,7 @@ async function handleBalancePaid(session: Stripe.Checkout.Session, email: string
 
   if (process.env.RESEND_API_KEY) {
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',
@@ -545,7 +545,7 @@ async function handleSubscriptionStarted(session: Stripe.Checkout.Session) {
   if (process.env.RESEND_API_KEY) {
     try {
       const { data: p } = await supabase.from('proposals').select('client_name, client_email').eq('id', proposalId).maybeSingle();
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: 'sarah@modernmustardseed.com',
@@ -639,7 +639,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     if (process.env.RESEND_API_KEY && skEmail) {
       const business = escapeHtmlSafe(subMeta.business || 'your business');
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
+        const resend = resendClient();
         await resend.emails.send({
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: skEmail,
@@ -677,7 +677,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     const gEmail = invoice.customer_email;
     if (process.env.RESEND_API_KEY && gEmail) {
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
+        const resend = resendClient();
         await resend.emails.send({
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: gEmail,
@@ -716,7 +716,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     if (process.env.RESEND_API_KEY && pxEmail) {
       const business = escapeHtmlSafe(subMeta.business || 'your business');
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
+        const resend = resendClient();
         await resend.emails.send({
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: pxEmail,
@@ -766,7 +766,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
   if (process.env.RESEND_API_KEY && email) {
     const label = (proposal?.client_company as string) || (proposal?.client_name as string) || 'your plan';
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resend = resendClient();
       await resend.emails.send({
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
@@ -858,7 +858,7 @@ async function handleSidekickPurchase(
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
 
   try {
     await resend.emails.send({
@@ -962,7 +962,7 @@ async function handlePicturesPurchase(
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
 
   try {
     await resend.emails.send({
@@ -1056,7 +1056,7 @@ async function handlePressPurchase(
       try {
         const alertKey = process.env.RESEND_API_KEY;
         if (alertKey) {
-          await new Resend(alertKey).emails.send({
+          await resendClient().emails.send({
             from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
             to: 'sarah@modernmustardseed.com',
             subject: `HAND PRESS OVERSOLD: ${businessRaw || email}`,
@@ -1081,7 +1081,7 @@ async function handlePressPurchase(
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
 
   // Generate the PIECE's clean PDF FIRST so both emails tell the truth about
   // it. A render failure must never eat the paying customer's receipt.
@@ -1243,7 +1243,7 @@ async function handleGeoPurchase(
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
 
   try {
     await resend.emails.send({
@@ -1299,7 +1299,7 @@ async function handlePicturesSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
   try {
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',
@@ -1322,7 +1322,7 @@ async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
   try {
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',
@@ -1570,7 +1570,7 @@ export async function POST(req: Request) {
 
   // 3. Send delivery email + Sarah notification
   if (process.env.RESEND_API_KEY) {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = resendClient();
     const firstName = name?.split(' ')[0] || 'there';
     try {
       await resend.emails.send({

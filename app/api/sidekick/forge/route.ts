@@ -16,7 +16,7 @@
 
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase, insertLead } from '@/lib/supabase';
 import { forgeCall, ringDemoCall, toE164, type SidekickProfile } from '@/lib/sidekick';
 import {
@@ -60,7 +60,7 @@ async function notifySarah(subject: string, lines: string[]) {
   const key = (process.env.RESEND_API_KEY || '').trim();
   if (!key) return;
   try {
-    const resend = new Resend(key);
+    const resend = resendClient();
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
       to: 'sarah@modernmustardseed.com',

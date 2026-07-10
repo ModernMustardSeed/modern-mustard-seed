@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { randomUUID } from 'node:crypto';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
@@ -78,7 +78,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     try {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
       const ics = buildIcsInvite({
         uid: `${randomUUID()}@modernmustardseed.com`,
         startUtc: new Date(startIso),

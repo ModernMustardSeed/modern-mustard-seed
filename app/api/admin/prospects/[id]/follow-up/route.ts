@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { auditReportEmail, clientEmail, p } from '@/lib/email';
@@ -70,7 +70,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     });
   }
 
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
   const { error: sendErr } = await resend.emails.send({
     from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
     to: email,

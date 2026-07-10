@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { isSlotAvailable, displayForIso } from '@/lib/booking';
 import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     try {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
       const ics = buildIcsInvite({
         uid: `${randomUUID()}@modernmustardseed.com`,
         startUtc: new Date(startIso),

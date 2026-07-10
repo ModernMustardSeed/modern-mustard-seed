@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
 import { clientEmail, escape } from '@/lib/email';
 
@@ -41,7 +41,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
   });
 
   try {
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     const { error: sendErr } = await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: lead.email,

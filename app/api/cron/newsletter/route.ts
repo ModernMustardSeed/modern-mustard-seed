@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { listContent } from '@/lib/content';
+import { resendClient } from '@/lib/send-email';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -41,7 +41,7 @@ export async function GET(req: Request) {
       { status: 500 }
     );
   }
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
 
   const playbooks = listContent('playbooks');
   if (playbooks.length === 0) {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { clientEmail, leadNotification, p, callout } from '@/lib/email';
 import { getSupabase } from '@/lib/supabase';
 import { logClientMessage } from '@/lib/client-mail';
@@ -112,7 +112,7 @@ export async function POST(req: Request) {
     // ── 2. Email the team (primary, guaranteed delivery of every answer) ──
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
 
       const fields: { label: string; value: string; isLink?: boolean }[] = [
         { label: 'Owner', value: ownerName },

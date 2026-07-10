@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { getSession, getAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { clientEmail, p } from '@/lib/email';
 import { adminSender, logClientMessage } from '@/lib/client-mail';
+import { resendClient } from '@/lib/send-email';
 
 export const runtime = 'nodejs';
 
@@ -31,7 +31,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ email: 
   const subject = (payload.subject ?? '').trim() || 'A note from Modern Mustard Seed';
   const html = clientEmail({ body: p(body.replace(/\n/g, '<br>')) });
 
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
   const { error: sendErr } = await resend.emails.send({
     from: sender.from,
     to,

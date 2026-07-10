@@ -10,7 +10,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { dueGeoWatches, saveGeoWatch, type GeoWatch } from '@/lib/geo-store';
 import { runWebsiteAudit } from '@/lib/website-audit';
@@ -83,7 +83,7 @@ export async function GET(req: Request) {
 
     if (resendKey && lines.length) {
       try {
-        const resend = new Resend(resendKey);
+        const resend = resendClient();
         await resend.emails.send({
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: watch.email,

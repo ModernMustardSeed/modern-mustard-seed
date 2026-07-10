@@ -3,6 +3,7 @@ import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { COMMISSION_BUILD_RATE, type Affiliate } from '@/lib/affiliate';
 import { SITE } from '@/lib/seo';
+import { resendClient } from '@/lib/send-email';
 
 export const runtime = 'nodejs';
 
@@ -67,11 +68,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   let emailSent = false;
   if (body.notify !== false && process.env.RESEND_API_KEY && aff.email) {
     try {
-      const { Resend } = await import('resend');
       const { affiliateEarningsEmail } = await import('@/lib/email');
       const amount = `$${(commissionCents / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
+      const resend = resendClient();
+      const { error } = await resend.emails.send({
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: aff.email,
         replyTo: 'sarah@modernmustardseed.com',
@@ -83,7 +83,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
           dashboardUrl: `${SITE.url.replace(/\/$/, '')}/partners/hq`,
         }),
       });
-      emailSent = true;
+      if (error) {
+        console.error('build commission notify failed', error);
+      } else {
+        emailSent = true;
+      }
     } catch (err) {
       console.error('build commission notify failed', err);
     }

@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { createMagicToken } from './client-auth';
 import { affiliateWelcomeEmail } from './email';
 
@@ -25,7 +25,7 @@ export async function sendAffiliateWelcome(
   try {
     const token = await createMagicToken(aff.email);
     const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}&next=/partners/hq`;
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     const { data, error } = await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: aff.email,

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { clientEmail, leadNotification, p, callout } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
 
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     if (!apiKey) {
       return NextResponse.json({ error: 'Email not configured' }, { status: 500 });
     }
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
 
     const body = await req.json();
     const { name, email, businessName, ideaDescription, revenueRange, timeline } = body as Record<string, string>;

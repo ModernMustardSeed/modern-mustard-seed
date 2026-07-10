@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
 import { googleReviewUrl } from '@/data/socials';
@@ -23,10 +23,10 @@ export async function sendReviewNudge({ email, name }: { email?: string | null; 
       .ilike('client_email', addr);
     if (projects && projects.some((p) => p.review_requested_at)) return;
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = resendClient();
     // Send 2 days after delivery, so the ask lands once they have lived with it.
     const scheduledAt = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
       replyTo: 'sarah@modernmustardseed.com',
@@ -38,6 +38,10 @@ export async function sendReviewNudge({ email, name }: { email?: string | null; 
         portalUrl: `${SITE.url}/portal`,
       }),
     });
+    if (error) {
+      console.error('sendReviewNudge failed', error);
+      return;
+    }
 
     // Mark all of the client's projects so we never ask twice.
     if (projects && projects.length) {

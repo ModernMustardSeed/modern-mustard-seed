@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { clientEmail, leadNotification, p } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
 
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     if (!apiKey) {
       return NextResponse.json({ error: 'Email not configured' }, { status: 500 });
     }
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     const AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID;
 
     const { email, firstName } = await req.json();
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     });
 
     // Subscriber welcome
-    await resend.emails.send({
+    const { error: welcomeError } = await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
       replyTo: 'sarah@modernmustardseed.com',
@@ -62,6 +62,10 @@ export async function POST(req: Request) {
         secondary: { label: 'See recent work', url: 'https://modernmustardseed.com/work' },
       }),
     });
+
+    if (welcomeError) {
+      return NextResponse.json({ error: 'Subscription failed' }, { status: 500 });
+    }
 
     // Sarah notification
     await resend.emails.send({

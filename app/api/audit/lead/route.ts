@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { clientEmail, leadNotification, p, callout } from '@/lib/email';
+import { resendClient } from '@/lib/send-email';
 import { insertLead } from '@/lib/supabase';
 import { trackServerConversion } from '@/lib/meta-capi';
 
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     if (!apiKey) {
       return NextResponse.json({ error: 'Email not configured' }, { status: 500 });
     }
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
 
     const body = (await req.json()) as LeadPayload;
     const { name, email, phone, company, industry, auditUrl, source, score, summary, metaEventId, fbp, fbc } = body;

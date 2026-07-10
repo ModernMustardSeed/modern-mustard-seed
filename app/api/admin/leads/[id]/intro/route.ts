@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { clientEmail, p } from '@/lib/email';
+import { resendClient } from '@/lib/send-email';
 
 export const runtime = 'nodejs';
 
@@ -31,7 +31,7 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return NextResponse.json({ error: 'Email is not configured.' }, { status: 500 });
 
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
   const { error: sendErr } = await resend.emails.send({
     from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
     to: email,

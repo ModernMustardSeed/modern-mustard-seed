@@ -2,6 +2,7 @@ import { getSupabase } from './supabase';
 import { normalizeEmail } from './client-auth';
 import { SITE } from './seo';
 import { products } from '@/data/products';
+import { resendClient } from '@/lib/send-email';
 
 /**
  * Affiliate engine core. 50 percent on every product sale and, as of
@@ -206,11 +207,10 @@ export async function recordSubscriptionCommission(args: {
 async function notifyEarnings(args: { affiliate: Affiliate; amountCents: number; productSlug: string; label?: string }): Promise<void> {
   if (!process.env.RESEND_API_KEY || !args.affiliate.email) return;
   try {
-    const { Resend } = await import('resend');
     const { affiliateEarningsEmail } = await import('./email');
     const product = args.label ?? products.find((p) => p.slug === args.productSlug)?.name;
     const amount = `$${(args.amountCents / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = resendClient();
     await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: args.affiliate.email,

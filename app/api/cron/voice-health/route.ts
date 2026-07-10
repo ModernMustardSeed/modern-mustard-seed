@@ -29,7 +29,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { leadNotification } from '@/lib/email';
 import { VOICE_AGENTS, type VoiceAgent } from '@/lib/voice-agents';
 import { getSupabase } from '@/lib/supabase';
@@ -149,7 +149,7 @@ async function alertAll(changes: Change[]): Promise<void> {
       `${c.action === 'failover' ? 'DOWN' : 'RECOVERED'}: ${c.label} . ${c.from} -> ${c.to}`,
   );
   try {
-    const resend = new Resend(apiKey);
+    const resend = resendClient();
     await resend.emails.send({
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: ['sarah@modernmustardseed.com'],
@@ -201,7 +201,7 @@ async function billingAlert(active: boolean): Promise<void> {
   const send = async (subject: string, message: string, action: string) => {
     if (!apiKey) return;
     try {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: ['sarah@modernmustardseed.com'],

@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
 import { clientMessageEmail } from '@/lib/email';
@@ -69,7 +69,7 @@ export async function createClientRequest(args: {
     // Notify Sarah. Never block the save on email.
     if (process.env.RESEND_API_KEY) {
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
+        const resend = resendClient();
         await resend.emails.send({
           from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: 'sarah@modernmustardseed.com',

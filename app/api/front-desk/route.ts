@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { leadNotification } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
+import { resendClient } from '@/lib/send-email';
 
 export const runtime = 'nodejs';
 
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
       try {
-        const resend = new Resend(apiKey);
+        const resend = resendClient();
         await resend.emails.send({
           from: 'Front Desk <sarah@modernmustardseed.com>',
           to: 'sarah@modernmustardseed.com',

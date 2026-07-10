@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
 import { CADENCE_WAIT_DAYS, personalizeTouch } from '@/lib/outreach';
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'db_not_configured' }, { status: 500 });
 
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
   let advanced = 0;
 
   try {
@@ -67,7 +67,11 @@ export async function GET(req: Request) {
       const html = `${body.replace(/\n/g, '<br>')}<br><br><span style="font-size:12px;color:#888"><a href="${unsub}">Unsubscribe</a> and I will never contact you again.</span>`;
 
       try {
-        await resend.emails.send({ from, to: p.contact as string, replyTo: 'sarah@modernmustardseed.com', subject, html });
+        const { error } = await resend.emails.send({ from, to: p.contact as string, replyTo: 'sarah@modernmustardseed.com', subject, html });
+        if (error) {
+          console.error('cadence send failed for', p.id, error);
+          continue;
+        }
         await supabase.from('outreach_messages').insert({ prospect_id: p.id, touch: nextTouch, channel: 'email', subject, body, status: 'sent', sent_at: new Date().toISOString() });
         advanced += 1;
       } catch (err) {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
@@ -47,16 +47,20 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
       if (canAutoSend) {
         try {
-          const resend = new Resend(process.env.RESEND_API_KEY);
+          const resend = resendClient();
           const unsub = `${SITE.url}/api/outreach/unsubscribe?c=${encodeURIComponent(prospect.contact as string)}`;
           const html = `${(message.body as string).replace(/\n/g, '<br>')}<br><br><span style="font-size:12px;color:#888">You are receiving this because of your public work. <a href="${unsub}">Unsubscribe</a> and I will never contact you again.</span>`;
-          await resend.emails.send({
+          const { error: sendError } = await resend.emails.send({
             from,
             to: prospect.contact as string,
             replyTo: 'sarah@modernmustardseed.com',
             subject: (message.subject as string) || 'A partner idea',
             html,
           });
+          if (sendError) {
+            console.error('outreach send failed', sendError);
+            return NextResponse.json({ error: 'Send failed. Set OUTREACH_FROM to a verified separate domain.' }, { status: 502 });
+          }
           await supabase.from('outreach_messages').update({ status: 'sent', sent_at: new Date().toISOString() }).eq('id', body.messageId);
           await supabase.from('prospects').update({ status: 'sent' }).eq('id', id);
           return NextResponse.json({ ok: true, sent: true });

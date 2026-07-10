@@ -13,7 +13,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { sequenceDay2Email, sequenceDay5Email } from '@/lib/email';
 
@@ -25,7 +25,7 @@ type SequenceStep = 'd2' | 'd5';
 async function processStep(step: SequenceStep): Promise<{ sent: number; errors: number; skipped: number }> {
   const client = getSupabase();
   if (!client) return { sent: 0, errors: 0, skipped: 0 };
-  const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+  const resend = process.env.RESEND_API_KEY ? resendClient() : null;
 
   // Day 2 window: 36h to 60h ago. Day 5 window: 96h to 144h ago.
   const now = Date.now();
@@ -75,13 +75,14 @@ async function processStep(step: SequenceStep): Promise<{ sent: number; errors: 
           step === 'd2'
             ? `${firstName}, one move you can make today.`
             : `${firstName}, here is what I would actually build.`;
-        await resend.emails.send({
+        const { error: sendError } = await resend.emails.send({
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: lead.email,
           replyTo: 'sarah@modernmustardseed.com',
           subject,
           html,
         });
+        if (sendError) throw sendError;
       }
       await client
         .from('leads')

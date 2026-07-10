@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import { marked } from 'marked';
 import { getContent } from '@/lib/content';
 import { clientEmail, p } from '@/lib/email';
@@ -35,10 +35,10 @@ export async function POST(req: Request) {
   const contentHtml = await marked.parse(pb.body);
   const url = `https://modernmustardseed.com/playbooks/${slug}`;
   const greetingName = firstName || email.split('@')[0];
-  const resend = new Resend(apiKey);
+  const resend = resendClient();
 
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
       replyTo: 'sarah@modernmustardseed.com',
@@ -53,6 +53,10 @@ export async function POST(req: Request) {
         secondary: { label: 'Browse more playbooks', url: 'https://modernmustardseed.com/playbooks' },
       }),
     });
+    if (error) {
+      console.error('playbook email send failed', error);
+      return NextResponse.json({ error: 'Could not send. Try again in a moment.' }, { status: 500 });
+    }
   } catch (err) {
     console.error('playbook email send failed', err);
     return NextResponse.json({ error: 'Could not send. Try again in a moment.' }, { status: 500 });

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { Resend } from 'resend';
+import { resendClient } from '@/lib/send-email';
 import {
   playbookEmail,
   bookingConfirmationEmail,
@@ -218,7 +218,7 @@ async function executeCaptureLead(input: {
 
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
       const fields = [
         { label: 'Email', value: email },
         ...(business ? [{ label: 'Business', value: business }] : []),
@@ -328,7 +328,7 @@ async function executeBookSlot(input: {
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     try {
-      const resend = new Resend(apiKey);
+      const resend = resendClient();
       const ics = buildIcsInvite({
         uid: `${randomUUID()}@modernmustardseed.com`,
         startUtc: new Date(input.startIso),
