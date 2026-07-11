@@ -93,6 +93,48 @@ export async function forgeLeadVoiceDemo(supabase: SupabaseClient, lead: Outboun
 }
 
 /**
+ * The BUSINESS OS demo config, frozen at forge time. No worker, no tokens:
+ * /demo/os/[id] is one polished template app, and this config is everything
+ * that personalizes it (real name, trade, city, phone, mined review pain,
+ * audit score). See data/demo-os.ts for the per-trade sample data.
+ */
+export type OsDemoConfig = {
+  business: string;
+  ownerFirst: string | null;
+  niche: Niche;
+  tradeLabel: string;
+  city: string | null;
+  state: string | null;
+  phone: string;
+  evidenceQuote: string | null;
+  evidenceSource: string | null;
+  websiteMode: 'none' | 'broken' | null;
+  auditScore: number | null;
+};
+
+export function buildOsConfig(lead: OutboundLead): OsDemoConfig {
+  const niche = (lead.niche ?? 'other') as Niche;
+  const notes = lead.notes ?? '';
+  const review = notes.match(/^REVIEWS:\s*(.+)/ms);
+  const quote = review?.[1].match(/"([^"]{10,300})"/)?.[1] ?? null;
+  const source = review?.[1].match(/\(([^)]+)\)/)?.[1] ?? null;
+  const site = notes.match(/^WEBSITE:\s*(none|broken)/m);
+  return {
+    business: lead.business_name,
+    ownerFirst: lead.contact_name?.trim().split(/\s+/)[0] || null,
+    niche,
+    tradeLabel: NICHE_LABELS[niche],
+    city: lead.city,
+    state: lead.state,
+    phone: lead.phone,
+    evidenceQuote: quote,
+    evidenceSource: source,
+    websiteMode: (site?.[1] as 'none' | 'broken' | undefined) ?? null,
+    auditScore: lead.audit_score,
+  };
+}
+
+/**
  * The lead facts the demo-site worker hands to headless Claude Code. Facts
  * only: the build directive (design standard, content rules) lives in the
  * worker so it is versioned in one place. Evidence lines (REVIEWS / WEBSITE

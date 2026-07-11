@@ -50,10 +50,26 @@ export function ReachOutDeck({
   const [promoting, setPromoting] = useState(false);
   const [forging, setForging] = useState(false);
   const [forgingSite, setForgingSite] = useState(false);
+  const [forgingOs, setForgingOs] = useState(false);
   const [sendingDemo, setSendingDemo] = useState(false);
 
   const siteForging = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
+  const osReady = lead.os_demo_status === 'ready' && Boolean(lead.os_demo_url);
+  const demoCount = [Boolean(lead.demo_url), siteReady, osReady].filter(Boolean).length;
+
+  const forgeOs = async () => {
+    setForgingOs(true);
+    try {
+      const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-os`, { method: 'POST' });
+      if (res.lead) onLead(res.lead);
+      push('Business OS forged. Their whole back office, one link.');
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'OS forge failed.', 'error');
+    } finally {
+      setForgingOs(false);
+    }
+  };
 
   const forgeDemo = async () => {
     setForging(true);
@@ -110,12 +126,12 @@ export function ReachOutDeck({
     try {
       const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/follow-up`, {
         method: 'POST',
-        body: JSON.stringify({ includeDemo: Boolean(lead.demo_url), includeSite: siteReady }),
+        body: JSON.stringify({ includeDemo: Boolean(lead.demo_url), includeSite: siteReady, includeOs: osReady }),
       });
       onLead(res.lead);
       push(
-        siteReady && lead.demo_url
-          ? 'Both demos sent: the website and the receptionist. The pixel will tell you when they open it.'
+        demoCount > 1
+          ? `All ${demoCount} demos sent in one email. The pixel will tell you when they open it.`
           : 'Demo link sent. The pixel will tell you when they open it.',
       );
     } catch (e) {
@@ -286,9 +302,19 @@ export function ReachOutDeck({
           </button>
         )}
 
-        {(lead.demo_url || siteReady) && (
-          <button onClick={() => void sendDemo()} disabled={sendingDemo || !lead.email} className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`} title={lead.email ? (siteReady && lead.demo_url ? 'Email them the website and the receptionist in one send' : 'Email them their demo link') : 'No email on file yet'}>
-            {sendingDemo ? 'Sending…' : siteReady && lead.demo_url ? '✉ Send both demos' : '✉ Send demo'}
+        {osReady ? (
+          <a href={lead.os_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#1a1815] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#b58a2a]`} title="Their forged business command center: CRM, reviews, ads, automations, AI assistant">
+            ⚙ OS live ↗
+          </a>
+        ) : (
+          <button onClick={() => void forgeOs()} disabled={forgingOs} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title={`For the "I can't manage the volume" lead: forge their business command center instantly (CRM, reviews, ads, automations, AI assistant)`}>
+            {forgingOs ? 'Forging…' : '⚙ Forge business OS'}
+          </button>
+        )}
+
+        {demoCount > 0 && (
+          <button onClick={() => void sendDemo()} disabled={sendingDemo || !lead.email} className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`} title={lead.email ? (demoCount > 1 ? 'Email every forged demo in one send' : 'Email them their demo link') : 'No email on file yet'}>
+            {sendingDemo ? 'Sending…' : demoCount > 1 ? `✉ Send all ${demoCount} demos` : '✉ Send demo'}
           </button>
         )}
 

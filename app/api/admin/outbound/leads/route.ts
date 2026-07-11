@@ -24,7 +24,7 @@ export async function GET(req: Request) {
   // Explicit columns, no audit_json: the full report is kilobytes per row and
   // belongs to the single-lead cockpit fetch, not a 3000-row list.
   const LIST_COLUMNS =
-    'id, business_name, contact_name, phone, email, website, niche, city, state, avg_job_value, est_missed_calls_week, close_rate_pct, status, source, owner_rep_id, dnc_checked, next_action_at, next_action, notes, audit_score, audit_url, audit_at, pipeline_lead_id, email_opened_at, email_open_count, last_email_at, last_open_at, demo_url, demo_run_id, site_demo_id, site_demo_url, site_demo_status, created_at, updated_at';
+    'id, business_name, contact_name, phone, email, website, niche, city, state, avg_job_value, est_missed_calls_week, close_rate_pct, status, source, owner_rep_id, dnc_checked, next_action_at, next_action, notes, audit_score, audit_url, audit_at, pipeline_lead_id, email_opened_at, email_open_count, last_email_at, last_open_at, demo_url, demo_run_id, site_demo_id, site_demo_url, site_demo_status, os_demo_id, os_demo_url, os_demo_status, created_at, updated_at';
   // A 'caller' rep only ever sees their own leads, whatever the owner param says.
   const { scopeRepId } = await outboundRepScope(guard.supabase);
 

@@ -103,6 +103,9 @@ export type OutboundLead = {
   site_demo_id: string | null;
   site_demo_url: string | null;
   site_demo_status: SiteDemoStatus | null;
+  os_demo_id: string | null;
+  os_demo_url: string | null;
+  os_demo_status: 'ready' | null;
   created_at: string;
   updated_at: string;
 };
