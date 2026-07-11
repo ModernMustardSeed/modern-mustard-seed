@@ -43,12 +43,20 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
     .maybeSingle();
   if (!lead) return fallback;
 
+  // Pick the welcome film that matches what is forged: the trifecta when the
+  // suite is (mostly) complete, otherwise the single-demo cut. The website
+  // film mentions the phone-answering, so it also covers voice+site pairs.
+  const hasSite = lead.site_demo_status === 'ready' || lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
+  const hasOs = lead.os_demo_status === 'ready';
+  const film = hasSite && hasOs ? 'demo-welcome' : hasSite ? 'demo-welcome-site' : hasOs ? 'demo-welcome-os' : 'demo-welcome-voice';
+
   return (
     <DemoHub
       business={lead.business_name}
       ownerFirst={lead.contact_name?.trim().split(/\s+/)[0] ?? null}
       niche={(lead.niche ?? 'other') as Niche}
       city={lead.city}
+      film={film}
       voiceUrl={lead.demo_url}
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}

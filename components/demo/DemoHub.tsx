@@ -52,6 +52,7 @@ export default function DemoHub({
   ownerFirst,
   niche,
   city,
+  film = 'demo-welcome',
   voiceUrl,
   siteUrl,
   sitePending,
@@ -61,6 +62,8 @@ export default function DemoHub({
   ownerFirst: string | null;
   niche: Niche;
   city: string | null;
+  /** Which welcome film matches the forged set (trifecta or a single cut). */
+  film?: 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os';
   voiceUrl: string | null;
   siteUrl: string | null;
   sitePending: string | null;
@@ -158,9 +161,9 @@ export default function DemoHub({
             <video
               controls
               preload="metadata"
-              poster="/video/demo-welcome-poster.jpg"
+              poster={`/video/${film}-poster.jpg`}
               className="w-full aspect-video bg-[#161616]"
-              src="/video/demo-welcome.mp4"
+              src={`/video/${film}.mp4`}
             />
             <p className="font-body text-[13px] text-[#161616]/60 px-4 py-3">
               Thirty seconds from Mr. Mustard on what is in the box.
