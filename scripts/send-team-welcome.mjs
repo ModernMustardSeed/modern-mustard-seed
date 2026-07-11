@@ -31,7 +31,7 @@ const CELL = '(406) 250-6076';
 const RECIPIENTS = [
   { first: 'Sarah', name: 'Sarah', email: 'makeourcitypretty@gmail.com', code: 'MAKEOURCITY', login: 'makeourcitypretty@gmail.com' },
   { first: 'Polly', name: 'Polly Thompson', email: 'polly.thompson@modernmustardseed.com', code: 'POLLY', login: 'polly.thompson@modernmustardseed.com' },
-  { first: 'Easton', name: 'Easton Parker', email: 'easton12parrot@icloud.com', code: 'EASTON', login: 'easton12parrot@icloud.com' },
+  { first: 'Easton', name: 'Easton Parker', email: 'easton12parrot@gmail.com', code: 'EASTON', login: 'easton12parrot@gmail.com' },
   { first: 'Anthony', name: 'Anthony Scarano', email: 'bizyai2023@gmail.com', code: 'ANTH6YSR', login: 'bizyai2023@gmail.com' },
 ];
 

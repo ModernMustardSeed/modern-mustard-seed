@@ -54,7 +54,7 @@ console.log('Migration applied.');
 const people = [
   { email: 'makeourcitypretty@gmail.com', name: 'Sarah Scarano', role: 'owner', title: 'Founder', affiliate_code: 'MAKEOURCITY', rep_name: 'Sarah', notify_email: 'makeourcitypretty@gmail.com' },
   { email: 'polly.thompson@modernmustardseed.com', name: 'Polly Thompson', role: 'owner', title: 'Partner + Sales', affiliate_code: 'POLLY', rep_name: 'Polly', notify_email: null },
-  { email: 'easton12parrot@icloud.com', name: 'Easton Parker', role: 'staff', title: 'Partner + Caller', affiliate_code: 'EASTON', rep_name: 'Easton', notify_email: null },
+  { email: 'easton12parrot@gmail.com', name: 'Easton Parker', role: 'staff', title: 'Partner + Caller', affiliate_code: 'EASTON', rep_name: 'Easton', notify_email: null },
   { email: 'bizyai2023@gmail.com', name: 'Anthony Scarano', role: 'owner', title: 'Partner', affiliate_code: 'ANTH6YSR', rep_name: 'Anthony', notify_email: null },
 ];
 
