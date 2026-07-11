@@ -902,6 +902,112 @@ function escapeHtmlSafe(s: string): string {
 }
 
 /**
+ * A DEMO ORDER landed: someone bought straight off their forged demo
+ * (voice / site / OS / bundle, monthly + setup on the first invoice).
+ * Flip the lifecycle row to paid, mark the outbound lead won, note the
+ * thread, and fire the provision + welcome emails. Revenue itself is
+ * recorded per paid invoice by handleInvoicePaid (subscription rule).
+ */
+async function handleDemoOrderPaid(
+  session: Stripe.Checkout.Session,
+  email: string | null,
+  name: string | null
+) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  const orderId = session.metadata?.demo_order_id;
+  const hubId = session.metadata?.hub_demo_id;
+  const label = session.metadata?.item_name || 'Demo order';
+  if (!orderId) {
+    console.error('demo-order webhook missing demo_order_id:', session.id);
+    return;
+  }
+
+  const subId = typeof session.subscription === 'string' ? session.subscription : null;
+  const { data: order } = await supabase
+    .from('demo_orders')
+    .update({
+      status: 'paid',
+      stripe_subscription_id: subId,
+      stripe_customer_id: typeof session.customer === 'string' ? session.customer : null,
+      ...(email ? { email } : {}),
+      ...(name ? { name } : {}),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', orderId)
+    .select('id,outbound_lead_id,business_name,products,setup_cents,monthly_cents,phone')
+    .maybeSingle();
+
+  const intakeUrl = `${SITE.url}/demo/order/${hubId}/thanks?session_id=${session.id}`;
+  const products = Array.isArray(order?.products) ? (order?.products as string[]).join(', ') : '';
+  const money = order ? `$${Math.round((order.setup_cents || 0) / 100)} setup + $${Math.round((order.monthly_cents || 0) / 100)}/mo` : '';
+
+  // Mark the dial-floor lead WON and note the thread so the cockpit shows it.
+  if (order?.outbound_lead_id) {
+    try {
+      await supabase
+        .from('outbound_leads')
+        .update({ status: 'won', next_action: 'Deliver demo order within 7 days' })
+        .eq('id', order.outbound_lead_id);
+      await supabase.from('messages').insert({
+        outbound_lead_id: order.outbound_lead_id,
+        direction: 'inbound',
+        channel: 'note',
+        subject: 'ORDERED from the demo hub',
+        body: `${label} (${products}) — ${money}. Stripe ${session.id}. Deliver within 7 days.`,
+        snippet: `ORDERED: ${label}`,
+      });
+    } catch (err) {
+      console.error('demo-order lead update failed', err);
+    }
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = resendClient();
+  const business = escapeHtmlSafe(order?.business_name || '');
+  const firstName = name?.split(' ')[0];
+
+  try {
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      subject: `DEMO ORDER: ${order?.business_name || email || session.id} bought ${products || 'a demo'}`,
+      html: clientEmail({
+        preheader: 'A demo just sold itself. Release within 7 days.',
+        eyebrow: 'DEMO ORDER',
+        greeting: 'The demo closed the deal.',
+        body: `<p><strong>${escapeHtmlSafe(name || email || 'A prospect')}</strong>${business ? ` at <strong>${business}</strong>` : ''} ordered straight from their demo hub.</p><p>Ordered: <strong>${escapeHtmlSafe(label)}</strong> (${money}).</p><p>Their customization intake ${order ? 'is' : 'will be'} attached to the order in the cockpit; promise on the page is released within 7 days.</p><p>Stripe session: ${session.id}.</p>`,
+        signature: 'The Demo Hub',
+      }),
+    });
+  } catch (err) {
+    console.error('demo-order provision email failed', err);
+  }
+
+  if (email) {
+    try {
+      await resend.emails.send({
+        from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to: email,
+        replyTo: 'sarah@modernmustardseed.com',
+        subject: `${firstName ? `${firstName}, ` : ''}it's yours. Here is what happens next`,
+        html: clientEmail({
+          preheader: 'We customize everything and release it within 7 days.',
+          eyebrow: 'ORDER CONFIRMED',
+          greeting: firstName ? `${firstName}, welcome aboard.` : 'Welcome aboard.',
+          body: `<p>Your <strong>${escapeHtmlSafe(label)}</strong> is officially in production. What you saw in the demo becomes the real thing, customized to ${business || 'your business'}.</p><p><strong>1.</strong> Tell us the details with the two-minute form below (hours, services, how you want things worded).</p><p><strong>2.</strong> We customize by hand and test everything on real scenarios.</p><p><strong>3.</strong> Within 7 days it is live. Month to month, cancel anytime, never a surprise bill.</p>`,
+          cta: { label: 'Fill in your details (2 minutes)', url: intakeUrl },
+          signature: 'Sarah',
+        }),
+      });
+    } catch (err) {
+      console.error('demo-order welcome email failed', err);
+    }
+  }
+}
+
+/**
  * A MUSTARD PICTURES order landed. One-time tiers insert the order here
  * (subscription cycles are recorded by invoice.paid); Sarah gets the full
  * production brief (the buyer's Screen Test storyboard), the buyer gets the
@@ -1398,6 +1504,16 @@ export async function POST(req: Request) {
       if (db) await deleteGeoWatch(db, sub.id);
       return NextResponse.json({ received: true, kind: 'geo_subscription_canceled' });
     }
+    if (sub.metadata?.kind === 'demo-order') {
+      const db = getSupabase();
+      if (db) {
+        await db
+          .from('demo_orders')
+          .update({ status: 'canceled', updated_at: new Date().toISOString() })
+          .eq('stripe_subscription_id', sub.id);
+      }
+      return NextResponse.json({ received: true, kind: 'demo_order_canceled' });
+    }
     await handleSubscriptionDeleted(sub);
     return NextResponse.json({ received: true, kind: 'subscription_canceled' });
   }
@@ -1428,6 +1544,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'subscription') {
     await handleSubscriptionStarted(session);
     return NextResponse.json({ received: true, kind: 'subscription' });
+  }
+
+  // ── DEMO ORDER: bought straight off a forged demo (no slug; id in metadata) ──
+  if (session.metadata?.kind === 'demo-order') {
+    await handleDemoOrderPaid(session, email ?? null, name ?? null);
+    return NextResponse.json({ received: true, kind: 'demo-order' });
   }
 
   if (!slug || !email) {

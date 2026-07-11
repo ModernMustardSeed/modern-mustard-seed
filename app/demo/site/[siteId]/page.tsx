@@ -92,7 +92,7 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
   let call: ForgedCall | null = null;
   const { data: lead } = await sb
     .from('outbound_leads')
-    .select('demo_run_id, business_name, city')
+    .select('demo_run_id, business_name, city, hub_demo_url')
     .eq('id', site.lead_id)
     .maybeSingle();
   if (lead?.demo_run_id) {
@@ -103,5 +103,6 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
     }
   }
 
-  return <SiteDemoShell html={site.html} business={site.business_name} call={call} />;
+  const orderUrl = lead?.hub_demo_url ? `${lead.hub_demo_url}#order` : null;
+  return <SiteDemoShell html={site.html} business={site.business_name} call={call} orderUrl={orderUrl} />;
 }

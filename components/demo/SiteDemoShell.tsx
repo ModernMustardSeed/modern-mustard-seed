@@ -16,10 +16,13 @@ export default function SiteDemoShell({
   html,
   business,
   call,
+  orderUrl,
 }: {
   html: string;
   business: string;
   call: ForgedCall | null;
+  /** the hub's order section; buying happens there, one tap away */
+  orderUrl?: string | null;
 }) {
   const [showIntro, setShowIntro] = useState(false);
   const [voiceState, setVoiceState] = useState<VoiceState>('idle');
@@ -88,12 +91,11 @@ export default function SiteDemoShell({
         {/* Keep the corner quiet while the orientation card is up. */}
         {!showIntro && (
           <a
-            href="https://modernmustardseed.com/book"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={orderUrl || 'https://modernmustardseed.com/book'}
+            {...(orderUrl ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
             className="bg-white/95 text-[#161616] border-2 border-[#161616] rounded-full px-3.5 py-1.5 font-sans font-bold uppercase tracking-[0.08em] text-[10px] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
           >
-            Demo by Modern Mustard Seed · Want it real?
+            {orderUrl ? 'Want it real? Order it here →' : 'Demo by Modern Mustard Seed · Want it real?'}
           </a>
         )}
       </div>

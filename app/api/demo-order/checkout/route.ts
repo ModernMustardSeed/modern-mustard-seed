@@ -1,0 +1,146 @@
+/**
+ * Stripe Checkout for ordering straight from a forged demo.
+ *
+ * Subscription mode: recurring monthly line + one-time setup line on the first
+ * invoice (inline price_data, no pre-created prices). Month to month, cancel
+ * anytime, no trials. Sarah customizes and releases within 7 days.
+ *
+ * Attribution: mms_ref cookie wins (the sharing partner), else the lead's
+ * owning rep's partner code, mirrored into subscription metadata so the 25%
+ * recurring commission rides every invoice (existing invoice.paid handler).
+ */
+
+import { NextResponse } from 'next/server';
+import { getStripe } from '@/lib/stripe';
+import { getSupabase } from '@/lib/supabase';
+import { quoteDemoOrder, formatUsd } from '@/lib/demo-order';
+import { SITE } from '@/lib/seo';
+
+export const runtime = 'nodejs';
+export const maxDuration = 30;
+
+export async function POST(req: Request) {
+  let body: { hubId?: string; products?: string[] };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'invalid_body' }, { status: 400 });
+  }
+
+  const hubId = (body.hubId || '').trim();
+  if (!/^[0-9a-f-]{36}$/i.test(hubId)) {
+    return NextResponse.json({ error: 'bad_hub' }, { status: 400 });
+  }
+  const quote = quoteDemoOrder(Array.isArray(body.products) ? body.products : []);
+  if (!quote) return NextResponse.json({ error: 'no_products' }, { status: 400 });
+
+  const supabase = getSupabase();
+  if (!supabase) return NextResponse.json({ error: 'db_not_configured' }, { status: 503 });
+  const stripe = getStripe();
+  if (!stripe) return NextResponse.json({ error: 'stripe_not_configured' }, { status: 503 });
+
+  const { data: lead } = await supabase
+    .from('outbound_leads')
+    .select('id,business_name,contact_name,email,phone,hub_demo_url,owner_rep_id,outbound_reps(name)')
+    .eq('hub_demo_id', hubId)
+    .maybeSingle();
+  if (!lead) return NextResponse.json({ error: 'unknown_demo' }, { status: 404 });
+
+  // Attribution: sharing partner's cookie first, else the owning rep's code.
+  const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
+  let ref = (cookieRef ? decodeURIComponent(cookieRef[1]) : '').trim().slice(0, 64);
+  const repName = (lead as { outbound_reps?: { name?: string } | null }).outbound_reps?.name;
+  if (!ref && repName) {
+    const { data: tm } = await supabase
+      .from('team_members')
+      .select('affiliate_code')
+      .eq('rep_name', repName)
+      .maybeSingle();
+    ref = (tm?.affiliate_code || '').trim();
+  }
+
+  // The lifecycle row first (pending), so the webhook can flip it to paid.
+  const { data: order, error: insErr } = await supabase
+    .from('demo_orders')
+    .insert({
+      outbound_lead_id: lead.id,
+      hub_demo_id: hubId,
+      business_name: lead.business_name,
+      products: quote.products,
+      setup_cents: quote.setupCents,
+      monthly_cents: quote.monthlyCents,
+      email: lead.email || null,
+      name: lead.contact_name || null,
+      phone: lead.phone || null,
+      ref: ref || null,
+      status: 'pending',
+    })
+    .select('id')
+    .single();
+  if (insErr || !order) {
+    console.error('demo_orders insert failed:', insErr?.message);
+    return NextResponse.json({ error: 'order_failed' }, { status: 500 });
+  }
+
+  const metadata = {
+    kind: 'demo-order',
+    demo_order_id: order.id,
+    hub_demo_id: hubId,
+    item_name: `${quote.label} — ${lead.business_name || 'your business'}`,
+    products: quote.products.join(','),
+    ...(ref ? { ref } : {}),
+  };
+
+  const lineItems: Array<Record<string, unknown>> = [
+    {
+      price_data: {
+        currency: 'usd',
+        product_data: { name: `${quote.label} — monthly` },
+        unit_amount: quote.monthlyCents,
+        recurring: { interval: 'month' },
+      },
+      quantity: 1,
+    },
+    {
+      price_data: {
+        currency: 'usd',
+        product_data: { name: `${quote.label} — one-time setup & customization` },
+        unit_amount: quote.setupCents,
+      },
+      quantity: 1,
+    },
+  ];
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      line_items: lineItems as any,
+      success_url: `${SITE.url}/demo/order/${hubId}/thanks?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: lead.hub_demo_url || `${SITE.url}/demo/hub/${hubId}`,
+      ...(lead.email ? { customer_email: lead.email as string } : {}),
+      allow_promotion_codes: true,
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
+      billing_address_collection: 'auto',
+      metadata,
+      subscription_data: { metadata },
+      custom_text: {
+        submit: {
+          message: `Month to month, cancel anytime. ${formatUsd(quote.setupCents)} one-time setup covers your customization; we release everything within 7 days. No trials, no surprise bills.`,
+        },
+      },
+    });
+    if (!session.url) return NextResponse.json({ error: 'no_url' }, { status: 500 });
+
+    await supabase.from('demo_orders').update({ stripe_session_id: session.id }).eq('id', order.id);
+    return NextResponse.json({ url: session.url });
+  } catch (err) {
+    console.error('demo-order checkout error:', err instanceof Error ? err.message : err);
+    return NextResponse.json(
+      { error: 'stripe_error', message: 'Checkout hiccuped. Try again in a minute or call (406) 312-1223.' },
+      { status: 500 }
+    );
+  }
+}

@@ -42,7 +42,7 @@ export default async function OsDemoPage({ params }: { params: Promise<{ osId: s
 
   // Resurrect the lead's voice demo for the widget.
   let call: ForgedCall | null = null;
-  const { data: lead } = await sb.from('outbound_leads').select('demo_run_id').eq('id', demo.lead_id).maybeSingle();
+  const { data: lead } = await sb.from('outbound_leads').select('demo_run_id, hub_demo_url').eq('id', demo.lead_id).maybeSingle();
   if (lead?.demo_run_id) {
     const run = await getRun(sb, lead.demo_run_id);
     if (run) {
@@ -51,5 +51,6 @@ export default async function OsDemoPage({ params }: { params: Promise<{ osId: s
     }
   }
 
-  return <OsDemoApp osId={demo.id} config={demo.config as OsDemoConfig} call={call} />;
+  const orderUrl = lead?.hub_demo_url ? `${lead.hub_demo_url}#order` : null;
+  return <OsDemoApp osId={demo.id} config={demo.config as OsDemoConfig} call={call} orderUrl={orderUrl} />;
 }

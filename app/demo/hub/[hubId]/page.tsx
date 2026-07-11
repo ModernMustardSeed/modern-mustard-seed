@@ -52,6 +52,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
 
   return (
     <DemoHub
+      hubId={hubId}
       business={lead.business_name}
       ownerFirst={lead.contact_name?.trim().split(/\s+/)[0] ?? null}
       niche={(lead.niche ?? 'other') as Niche}

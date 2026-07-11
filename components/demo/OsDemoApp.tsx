@@ -3,16 +3,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ForgedCall } from '@/lib/sidekick';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
-import { OS_PRESETS, OS_AUTOMATIONS } from '@/data/demo-os';
+import { OS_AUTOMATIONS } from '@/data/demo-os';
 import type { OsAd, OsCustomer } from '@/data/demo-os';
+import { resolveTrade } from '@/data/demo-os-trades';
 import DemoVoiceWidget from '@/components/demo/DemoVoiceWidget';
 
 /**
  * The forged BUSINESS OS demo: one template command center that renders as
  * THEIR software from the frozen per-lead config. Midnight operations deck:
  * dark slate, one trade accent, sample data labeled honestly. Modules: Today,
- * Customers (CRM), Reviews, Ads, Automations, plus the live AI assistant
- * (capped) and the voice receptionist widget. The pitch is the product.
+ * the trade-specific SIGNATURE BOARD (claims, dispatch, recalls... resolved
+ * per detected trade), Customers (CRM), Reviews, Ads, Automations, plus the
+ * live AI assistant (capped) and the voice receptionist widget. The pitch is
+ * the product.
  */
 
 const INK = '#0e1220';
@@ -22,7 +25,11 @@ const LINE = 'rgba(232,236,248,0.09)';
 const TEXT = '#e8ecf8';
 const DIM = 'rgba(232,236,248,0.55)';
 
-type Tab = 'today' | 'customers' | 'reviews' | 'ads' | 'automations' | 'assistant';
+type Tab = 'today' | 'signature' | 'customers' | 'reviews' | 'ads' | 'automations' | 'assistant';
+
+const ASSISTANT_ICON = 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z';
+const SIGNATURE_ICON =
+  'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z';
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'today', label: 'Today', icon: 'M3 13h8V3H3v10zm10 8h8V11h-8v10zM3 21h8v-6H3v6zm10-18v6h8V3h-8z' },
@@ -61,10 +68,13 @@ export default function OsDemoApp({
   osId,
   config,
   call,
+  orderUrl,
 }: {
   osId: string;
   config: OsDemoConfig;
   call: ForgedCall | null;
+  /** the hub's order section; buying happens there, one tap away */
+  orderUrl?: string | null;
 }) {
   const preset = OS_PRESETS[config.niche] ?? OS_PRESETS.other;
   const accent = preset.accent;
@@ -208,9 +218,8 @@ export default function OsDemoApp({
           Demo · sample data
         </span>
         <a
-          href="https://modernmustardseed.com/book"
-          target="_blank"
-          rel="noopener noreferrer"
+          href={orderUrl || 'https://modernmustardseed.com/book'}
+          {...(orderUrl ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
           className="hidden sm:inline-block shrink-0 text-[11px] font-bold uppercase tracking-[0.1em] rounded-full px-3.5 py-1.5"
           style={{ background: accent, color: INK }}
         >

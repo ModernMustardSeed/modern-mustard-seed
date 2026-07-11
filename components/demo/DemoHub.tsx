@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Niche } from '@/lib/outbound';
+import MakeItRealCTA from '@/components/demo/MakeItRealCTA';
+import type { DemoProductKey } from '@/lib/demo-order';
 
 /**
  * The Demo Suite hub, prospect-facing and unapologetically adorable: Mr.
@@ -48,6 +50,7 @@ function useTyped(text: string, speed = 28): string {
 }
 
 export default function DemoHub({
+  hubId,
   business,
   ownerFirst,
   niche,
@@ -58,6 +61,7 @@ export default function DemoHub({
   sitePending,
   osUrl,
 }: {
+  hubId: string;
   business: string;
   ownerFirst: string | null;
   niche: Niche;
@@ -238,27 +242,19 @@ export default function DemoHub({
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="text-center pb-6 animate-[hubIn_.5s_ease-out_both]">
-          <h2 className="font-display text-2xl font-bold">Want to keep all of it?</h2>
-          <p className="font-body text-[#161616]/70 mt-2 max-w-md mx-auto">
-            Ten minutes with Sarah and the whole suite goes live on your real phone line, your real domain, your real business.
-          </p>
-          <div className="flex items-center justify-center gap-3 mt-5 flex-wrap">
-            <a
-              href="https://modernmustardseed.com/book"
-              className="bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-7 py-3.5 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
-            >
-              Book the 10 minutes
-            </a>
-            <a
-              href="tel:+14063121223"
-              className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-7 py-3.5 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
-            >
-              Or call us: (406) 312-1223
-            </a>
-          </div>
-          <p className="font-mono text-[11px] text-[#161616]/40 mt-8">
+        {/* Order it right here */}
+        <MakeItRealCTA
+          hubId={hubId}
+          business={business}
+          forged={[
+            voiceUrl ? ('voice' as DemoProductKey) : null,
+            siteUrl || sitePending ? ('site' as DemoProductKey) : null,
+            osUrl ? ('os' as DemoProductKey) : null,
+          ].filter(Boolean) as DemoProductKey[]}
+        />
+
+        <section className="text-center pb-6">
+          <p className="font-mono text-[11px] text-[#161616]/40">
             Demos built with care by Modern Mustard Seed · Kalispell, MT · Yes, an AI answers our phone too. Try it.
           </p>
         </section>
