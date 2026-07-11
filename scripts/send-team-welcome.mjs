@@ -17,8 +17,10 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const SITE = 'https://modernmustardseed.com';
-const VIDEO = `${SITE}/ads/partner-yacht-16x9.mp4`;
-const POSTER = `${SITE}/ads/partner-yacht-poster.png`;
+// The bespoke "Welcome to the Family" film: Mr. & Mrs. Mustard welcoming a new
+// teammate home (cabin, three talking beats, learn + earn + belong).
+const VIDEO = `${SITE}/video/team-welcome-16x9.mp4`;
+const POSTER = `${SITE}/video/team-welcome-poster.png`;
 const CELL = '(406) 250-6076';
 
 // The team. Each gets their real partner code + a tracked link.

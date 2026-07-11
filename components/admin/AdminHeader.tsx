@@ -15,7 +15,7 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
 type Item = { key: Tab; label: string; href: string };
 
@@ -55,6 +55,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'onboarding', label: 'Onboarding', href: '/admin/onboarding' },
       { key: 'reviews', label: 'Reviews', href: '/admin/testimonials' },
       { key: 'partners', label: 'Partners', href: '/admin/partners' },
+      { key: 'team', label: 'Team', href: '/admin/team' },
     ],
   },
   {

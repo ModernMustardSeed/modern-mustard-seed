@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
 import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts';
 import AdminHeader from './AdminHeader';
+import ActivityFeed from './ActivityFeed';
 
 /**
  * The owner command center. One screen to run the business: revenue, sales,
@@ -240,6 +241,7 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
               🎬 Ads Playbook · videos
             </Link>
             {[
+              { href: '/admin/team', label: 'Team' },
               { href: '/admin/leads', label: 'Leads' },
               { href: '/admin/outbound', label: 'Outbound' },
               { href: '/admin/campaigns', label: 'Campaigns' },
@@ -255,6 +257,12 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
               </Link>
             ))}
           </div>
+        </div>
+
+        {/* Live activity: new partners, leads, and sales as they happen, so the
+            owner sees it here without going to email. */}
+        <div className="mb-6">
+          <ActivityFeed showMoney={showMoney} />
         </div>
 
         {loading ? (
