@@ -52,18 +52,20 @@
      controls `color: inherit`, so any admin <input>/<textarea> without an
      explicit text color inherited the near-white color = white text in a white
      box (illegible). Set a dark-ink default + light color-scheme for every
-     control inside the admin shell. Explicit Tailwind text-* utilities still
-     win (utilities layer > base), and no admin control uses light text. */
+     control inside the admin shell. The element half of the selector rides in
+     :where() so the whole rule is exactly one class worth of specificity
+     (0-1-0): stronger than preflight's `input { color: inherit }` (0-0-1),
+     but only TIED with text-* utilities, and utilities win the tie because
+     they are emitted after base. The previous `.admin-shell input` (0-1-1)
+     out-ranked utilities and forced near-black text onto the outbound revenue
+     calculator's cream inputs on the ink panel (black on black). */
   .admin-shell {
     color-scheme: light;
   }
-  .admin-shell input,
-  .admin-shell textarea,
-  .admin-shell select {
+  .admin-shell :where(input, textarea, select) {
     color: #161616;
   }
-  .admin-shell input::placeholder,
-  .admin-shell textarea::placeholder {
+  .admin-shell :where(input, textarea)::placeholder {
     color: rgba(22, 22, 22, 0.4);
   }
 
