@@ -26,6 +26,7 @@ const STATIC_PATHS = [
   '/blog',
   '/playbooks',
   '/audit',
+  '/demos',
   '/website-audit',
   '/launch-checklist',
   '/prompt-playbook',

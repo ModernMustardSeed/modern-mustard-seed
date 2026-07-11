@@ -251,7 +251,7 @@ const GEO_CHECKLIST = [
 
 // ============ Campaign nine: The Good News (brand film, the Mustard family) ============
 
-const GN_LANDING = 'https://modernmustardseed.com/audit?utm_source=meta&utm_medium=paid&utm_campaign=goodnews';
+const GN_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medium=paid&utm_campaign=goodnews';
 
 const GN_COPY_A = `You want the good news, or the bad news?
 
@@ -332,7 +332,7 @@ const PY_CHECKLIST = [
 
 // ============ Campaign eleven: The Dinner Rush (restaurant vertical, bilingual voice agent) ============
 
-const RS_LANDING = 'https://modernmustardseed.com/for/restaurants?utm_source=meta&utm_medium=paid&utm_campaign=dinnerrush';
+const RS_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medium=paid&utm_campaign=dinnerrush';
 
 const RS_COPY_A = `Friday night. Every table is full. And the phone will not stop ringing.
 
