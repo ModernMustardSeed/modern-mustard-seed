@@ -125,26 +125,27 @@ export default function SiteDemoShell({
     <div className="fixed inset-0 bg-[#161616]">
       <iframe title={`${business} demo website`} srcDoc={html} className="w-full h-full border-0 bg-white" />
 
-      {/* Orientation, once: what this is and what the gold button does. */}
-      {showIntro && ready && state === 'idle' && (
-        <div className="fixed bottom-24 right-4 z-50 max-w-[300px] bg-[#161616] border-2 border-[#F5B700] rounded-2xl shadow-[5px_5px_0_0_rgba(0,0,0,0.5)] p-4 animate-[demoIntro_.45s_ease-out]">
-          <p className="font-sans font-bold uppercase tracking-[0.14em] text-[10px] text-[#F5B700]">Your demo, {business}</p>
-          <p className="font-body text-[13px] leading-relaxed text-[#FBF6EA]/90 mt-1.5">
-            This whole website is a working draft we built for you. One more thing: it answers its own phone.
-            Tap the gold button and pretend you are a customer calling in.
-          </p>
-          <button
-            onClick={dismissIntro}
-            className="mt-3 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-lg px-3 py-1.5 font-sans font-bold uppercase tracking-[0.08em] text-[11px]"
-          >
-            Got it
-          </button>
-          <style>{`@keyframes demoIntro{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}`}</style>
-        </div>
-      )}
-
-      {/* The receptionist, living on the site it answers for. */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
+      {/* The receptionist, living on the site it answers for. One column,
+          bottom-right: orientation card, then the call pill, then the credit
+          chip. A single flex stack so nothing can ever overlap, at any
+          viewport. */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2 max-w-[min(320px,calc(100vw-2rem))]">
+        {showIntro && ready && state === 'idle' && (
+          <div className="bg-[#161616] border-2 border-[#F5B700] rounded-2xl shadow-[5px_5px_0_0_rgba(0,0,0,0.5)] p-4 animate-[demoIntro_.45s_ease-out]">
+            <p className="font-sans font-bold uppercase tracking-[0.14em] text-[10px] text-[#F5B700]">Your demo, {business}</p>
+            <p className="font-body text-[13px] leading-relaxed text-[#FBF6EA]/90 mt-1.5">
+              This whole website is a working draft we built for you. One more thing: it answers its own phone.
+              Tap the gold button and pretend you are a customer calling in.
+            </p>
+            <button
+              onClick={dismissIntro}
+              className="mt-3 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-lg px-3 py-1.5 font-sans font-bold uppercase tracking-[0.08em] text-[11px]"
+            >
+              Got it
+            </button>
+            <style>{`@keyframes demoIntro{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}`}</style>
+          </div>
+        )}
         {state === 'live' ? (
           <div className="bg-[#161616] border-2 border-[#F5B700] rounded-2xl shadow-[4px_4px_0_0_rgba(0,0,0,0.45)] px-4 py-3 flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700] animate-pulse" />
@@ -173,18 +174,21 @@ export default function SiteDemoShell({
           </button>
         ) : null}
         {error && (
-          <p className="bg-white border-2 border-[#161616] rounded-lg px-3 py-1.5 font-body text-[11px] text-[#E0301E] font-semibold max-w-[260px] text-right">
+          <p className="bg-white border-2 border-[#161616] rounded-lg px-3 py-1.5 font-body text-[11px] text-[#E0301E] font-semibold text-right">
             {error}
           </p>
         )}
-        <a
-          href="https://modernmustardseed.com/book"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-white/95 text-[#161616] border-2 border-[#161616] rounded-full px-3.5 py-1.5 font-sans font-bold uppercase tracking-[0.08em] text-[10px] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
-        >
-          Demo by Modern Mustard Seed · Want it real?
-        </a>
+        {/* Keep the corner quiet while the orientation card is up. */}
+        {!showIntro && (
+          <a
+            href="https://modernmustardseed.com/book"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white/95 text-[#161616] border-2 border-[#161616] rounded-full px-3.5 py-1.5 font-sans font-bold uppercase tracking-[0.08em] text-[10px] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
+          >
+            Demo by Modern Mustard Seed · Want it real?
+          </a>
+        )}
       </div>
     </div>
   );
