@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { ForgedCall } from '@/lib/sidekick';
+import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+const VOICE = DEMO_PRODUCTS.voice;
 
 type CallState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 
@@ -18,11 +20,15 @@ export default function DemoCallExperience({
   city,
   call,
   forgeError,
+  orderUrl,
 }: {
   business: string;
   city: string | null;
   call: ForgedCall | null;
   forgeError: string | null;
+  /** The lead's own hub order card. Present for every forged lead; null only for
+   *  legacy runs forged before the hub existed. */
+  orderUrl?: string | null;
 }) {
   const [state, setState] = useState<CallState>('idle');
   const [error, setError] = useState('');
@@ -156,20 +162,45 @@ export default function DemoCallExperience({
           )}
         </div>
 
-        <div className="mt-8 text-center">
-          <p className="font-body text-[#161616]/70">
-            Want it answering your real phone line, catching the calls you miss, free for the first 30 days?
-          </p>
-          <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
-            <a href="/book" className="bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
-              Book the 10-minute setup call
+        {orderUrl ? (
+          <div className="mt-8 bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-7 text-center">
+            <p className="font-sans font-bold uppercase tracking-[0.1em] text-[11px] text-[#F5B700]">Make it real</p>
+            <p className="font-display text-2xl md:text-3xl font-bold text-[#FBF6EA] mt-2 leading-tight">
+              Put it on {business}&apos;s real number
+            </p>
+            <p className="font-body text-[#FBF6EA]/70 mt-3 max-w-md mx-auto">
+              {formatUsd(VOICE.setupCents)} to set it up, then {formatUsd(VOICE.monthlyCents)} a month. Month to
+              month, cancel anytime, answering your line within a week.
+            </p>
+            <a
+              href={orderUrl}
+              className="inline-block mt-5 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-8 py-3.5 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-transform"
+            >
+              Make it real →
             </a>
-            <a href="/sidekick" className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
-              See pricing
-            </a>
+            <p className="font-body text-[12px] text-[#FBF6EA]/50 mt-4">
+              Takes you back to your demo suite, where you can add your website and command center too.{' '}
+              <a href="/book" className="underline hover:text-[#F5B700]">
+                Prefer to talk it through first?
+              </a>
+            </p>
           </div>
-          <p className="font-mono text-[11px] text-[#161616]/40 mt-6">Demo calls cap at 4 minutes. Built by Modern Mustard Seed, Kalispell MT.</p>
-        </div>
+        ) : (
+          <div className="mt-8 text-center">
+            <p className="font-body text-[#161616]/70">
+              Want it answering your real phone line, catching every call you miss?
+            </p>
+            <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
+              <a href="/book" className="bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
+                Book the 10-minute setup call
+              </a>
+              <a href="/sidekick" className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
+                See pricing
+              </a>
+            </div>
+          </div>
+        )}
+        <p className="font-mono text-[11px] text-[#161616]/40 mt-6 text-center">Demo calls cap at 4 minutes. Built by Modern Mustard Seed, Kalispell MT.</p>
       </main>
     </div>
   );

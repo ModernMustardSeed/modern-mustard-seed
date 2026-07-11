@@ -18,7 +18,7 @@ export default async function SidekickDemoPage({ params }: { params: Promise<{ r
   const sb = getSupabase();
   const run = sb ? await getRun(sb, runId) : null;
 
-  if (!run) {
+  if (!sb || !run) {
     return (
       <div className="min-h-screen bg-[#FBF6EA] flex items-center justify-center px-6">
         <div className="max-w-md text-center bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8">
@@ -39,12 +39,24 @@ export default async function SidekickDemoPage({ params }: { params: Promise<{ r
 
   const forged = await forgeCall(run, runId, 'web');
 
+  // Send them back to THEIR order card (this pack's pricing), not the generic
+  // Sidekick page. Every forged lead has a hub; legacy runs may not, and those
+  // fall back to the old CTA.
+  const { data: lead } = await sb
+    .from('outbound_leads')
+    .select('hub_demo_url')
+    .eq('demo_run_id', runId)
+    .limit(1)
+    .maybeSingle();
+  const orderUrl = lead?.hub_demo_url ? `${lead.hub_demo_url}#order` : null;
+
   return (
     <DemoCallExperience
       business={run.business}
       city={run.city}
       call={forged.ok ? forged.call : null}
       forgeError={forged.ok ? null : forged.error || 'The demo line is warming up. Try again in a minute.'}
+      orderUrl={orderUrl}
     />
   );
 }

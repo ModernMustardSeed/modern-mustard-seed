@@ -98,14 +98,17 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  // App shells (admin, client portal, program HQs) have their own headers.
-  // Hide the marketing nav there so it never overlaps them.
+  // App shells (admin, client portal, program HQs) have their own headers, and
+  // forged demos are single-offer sales pages. Hide the marketing nav on both
+  // so it never overlaps them or sells a competing offer. The voice demo still
+  // lives at the legacy /sidekick/demo/ path.
   const isAppShell =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/portal') ||
     pathname.endsWith('/hq') ||
     pathname === '/partners/playbook' ||
-    pathname.startsWith('/demo/');
+    pathname.startsWith('/demo/') ||
+    pathname.startsWith('/sidekick/demo/');
   if (isAppShell) return null;
 
   return (
