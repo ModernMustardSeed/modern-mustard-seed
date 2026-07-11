@@ -153,18 +153,24 @@ function runClaude(dir) {
     delete claudeEnv.ANTHROPIC_API_KEY;
     delete claudeEnv.ANTHROPIC_AUTH_TOKEN;
 
-    // The directive is far past the Windows 8K command-line limit, so it
-    // rides as a file; the -p prompt stays one short line.
+    // The directive rides as a file (it is far past the Windows 8K
+    // command-line limit), and the short prompt goes in via STDIN: with
+    // shell:true node joins argv UNQUOTED, so a prompt passed as an argument
+    // reaches claude as only its first word (run 1 got "You", run 2 got
+    // "Read"), and any newline in it truncates the rest of the command line
+    // including --permission-mode. Stdin is immune to all of it.
     writeFileSync(path.join(dir, 'DIRECTIVE.md'), DIRECTIVE);
     const prompt = 'Read DIRECTIVE.md in this directory and follow it exactly. It tells you to read BRIEF.md and build index.html here.';
     // stream-json + verbose so the log shows live progress instead of 25
     // silent minutes; strict-mcp-config skips the global MCP servers (slow
     // cold starts, an extra hang source) since the build only needs core
     // tools (Read/Write/Bash/WebFetch).
-    const args = ['-p', prompt, '--permission-mode', PERMISSION, '--output-format', 'stream-json', '--verbose', '--strict-mcp-config'];
+    const args = ['-p', '--permission-mode', PERMISSION, '--output-format', 'stream-json', '--verbose', '--strict-mcp-config'];
     if (env.DEMO_SITE_MODEL) args.push('--model', env.DEMO_SITE_MODEL);
     log('running:', CLAUDE_BIN, '-p <directive>', '--permission-mode', PERMISSION, 'in', dir);
     const child = spawn(CLAUDE_BIN, args, { cwd: dir, env: claudeEnv, shell: process.platform === 'win32' });
+    child.stdin.write(prompt);
+    child.stdin.end();
     let out = '';
     const keep = (s) => { out = (out + s).slice(-200000); };
     const timer = setTimeout(() => { try { child.kill('SIGKILL'); } catch {} resolve({ code: 124, out: out + '\n[timeout]' }); }, MAX_RUNTIME_MS);

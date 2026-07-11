@@ -79,7 +79,10 @@ function runClaude(dir) {
       'If there is a deployable surface, deploy it to Vercel and capture the URL.',
       'When finished, write a file named RESULT.json with keys: live_url (string or null), repo_url (string or null), summary (string, one or two sentences).',
     ].join(' ');
-    const args = ['-p', prompt, '--permission-mode', PERMISSION];
+    // Prompt goes in via STDIN: with shell:true node joins argv UNQUOTED, so
+    // a prompt passed as an argument reaches claude as only its first word
+    // ("You"). The briefs on disk masked this for months.
+    const args = ['-p', '--permission-mode', PERMISSION];
     if (env.BUILD_MODEL) args.push('--model', env.BUILD_MODEL);
     // Subscription only: .env.local carries ANTHROPIC_API_KEY for the site's
     // metered features, and a present key would silently switch the CLI to
@@ -87,8 +90,10 @@ function runClaude(dir) {
     const claudeEnv = { ...env };
     delete claudeEnv.ANTHROPIC_API_KEY;
     delete claudeEnv.ANTHROPIC_AUTH_TOKEN;
-    log('running:', CLAUDE_BIN, '-p <prompt>', '--permission-mode', PERMISSION, 'in', dir);
+    log('running:', CLAUDE_BIN, '-p <stdin prompt>', '--permission-mode', PERMISSION, 'in', dir);
     const child = spawn(CLAUDE_BIN, args, { cwd: dir, env: claudeEnv, shell: process.platform === 'win32' });
+    child.stdin.write(prompt);
+    child.stdin.end();
     let out = '';
     const timer = setTimeout(() => { try { child.kill('SIGKILL'); } catch {} resolve({ code: 124, out: out + '\n[timeout]' }); }, MAX_RUNTIME_MS);
     child.stdout.on('data', (d) => { out += d.toString(); process.stdout.write(d); });
