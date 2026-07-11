@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { checkCredentials, setSessionCookie } from '@/lib/admin-auth';
+import { checkTeamCredentials } from '@/lib/team-password';
 
 export const runtime = 'nodejs';
 
@@ -34,7 +35,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Email and password required' }, { status: 400 });
   }
 
-  const user = await checkCredentials(email, password);
+  // Env credentials first (owner + legacy ADMIN_TEAM), then the DB team_members
+  // (unified identity). The DB check is node-only and kept out of admin-auth.
+  const user = checkCredentials(email, password) ?? (await checkTeamCredentials(email, password));
   if (!user) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   }

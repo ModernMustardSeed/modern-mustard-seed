@@ -1,11 +1,9 @@
 /**
- * DB-backed team identity. One row per teammate ties their admin login, partner
- * code, and outbound rep together (see migration 045). This module is NODE-ONLY
- * (it uses node:crypto for scrypt) and must never be imported at the top level of
- * a file that the edge middleware bundles. admin-auth.ts reaches it through a
- * dynamic import inside async functions, so the edge bundle stays clean.
+ * DB-backed team identity, QUERY side only (migration 045). This module is
+ * reachable from admin-auth.ts (which the edge middleware imports), so it must
+ * stay edge-safe: NO node:crypto, NO node-only APIs. Password hashing/verifying
+ * lives in lib/team-password.ts, which only node routes import.
  */
-import { scryptSync, randomBytes, timingSafeEqual } from 'node:crypto';
 import { getSupabase } from '@/lib/supabase';
 
 export type TeamRole = 'owner' | 'staff';
@@ -26,30 +24,9 @@ function normEmail(e: string): string {
   return (e || '').trim().toLowerCase();
 }
 
-/** scrypt hash as "salt:hash" (both hex). */
-export function hashPassword(password: string): string {
-  const salt = randomBytes(16);
-  const hash = scryptSync(password, salt, 64);
-  return `${salt.toString('hex')}:${hash.toString('hex')}`;
-}
-
-/** Constant-time verify against a stored "salt:hash". */
-export function verifyPassword(password: string, stored: string | null | undefined): boolean {
-  if (!stored) return false;
-  const [saltHex, hashHex] = stored.split(':');
-  if (!saltHex || !hashHex) return false;
-  try {
-    const salt = Buffer.from(saltHex, 'hex');
-    const expected = Buffer.from(hashHex, 'hex');
-    const actual = scryptSync(password, salt, expected.length);
-    return actual.length === expected.length && timingSafeEqual(actual, expected);
-  } catch {
-    return false;
-  }
-}
-
-/** Active teammate by login email, or null. */
-export async function getTeamMemberByEmail(email: string): Promise<TeamMember | null> {
+/** Active teammate by login email (includes password_hash for the credential
+ *  check in team-password.ts), or null. */
+export async function getTeamMemberByEmail(email: string): Promise<(TeamMember & { password_hash?: string | null }) | null> {
   const sb = getSupabase();
   if (!sb) return null;
   try {
@@ -59,7 +36,7 @@ export async function getTeamMemberByEmail(email: string): Promise<TeamMember | 
       .eq('email', normEmail(email))
       .eq('active', true)
       .maybeSingle();
-    return (data as TeamMember) ?? null;
+    return (data as TeamMember & { password_hash?: string | null }) ?? null;
   } catch {
     return null;
   }
@@ -78,18 +55,4 @@ export async function listTeamMembers(): Promise<TeamMember[]> {
   } catch {
     return [];
   }
-}
-
-/**
- * Validate a DB team login. Returns the member (minus secrets) on a correct
- * password, else null. Safe against unknown emails and null hashes.
- */
-export async function checkTeamCredentials(
-  email: string,
-  password: string,
-): Promise<{ email: string; name: string; role: TeamRole } | null> {
-  const m = await getTeamMemberByEmail(email);
-  if (!m || !m.active) return null;
-  if (!verifyPassword(password, (m as TeamMember & { password_hash?: string }).password_hash)) return null;
-  return { email: m.email, name: m.name, role: m.role === 'owner' ? 'owner' : 'staff' };
 }

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
-import { listTeamMembers, hashPassword } from '@/lib/team-members';
+import { listTeamMembers } from '@/lib/team-members';
+import { hashPassword } from '@/lib/team-password';
 import { denverToday, denverWeekStart } from '@/lib/outbound';
 
 export const runtime = 'nodejs';

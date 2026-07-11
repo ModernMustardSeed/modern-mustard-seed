@@ -166,12 +166,13 @@ export async function verifyToken(token: string): Promise<Session | null> {
 }
 
 /**
- * Validate a sign-in against, in order: the env owner (ADMIN_EMAIL/PASSWORD),
- * any legacy env team (ADMIN_TEAM), and the DB team_members table (the unified
- * identity, migration 045). Returns the matched user or null. Async so the DB
- * teammates work; the env checks stay synchronous and unchanged.
+ * Validate a sign-in against the ENV credentials only (ADMIN_EMAIL/PASSWORD and
+ * legacy ADMIN_TEAM). Synchronous and edge-safe. The DB team_members check
+ * (which needs node:crypto to verify the password) lives in lib/team-password.ts
+ * and is called separately by the login route, so node:crypto never reaches the
+ * edge middleware bundle through this file.
  */
-export async function checkCredentials(email: string, password: string): Promise<AdminUser | null> {
+export function checkCredentials(email: string, password: string): AdminUser | null {
   const e = email.toLowerCase().trim();
 
   // Owner: the original ADMIN_EMAIL / ADMIN_PASSWORD pair.
@@ -191,16 +192,6 @@ export async function checkCredentials(email: string, password: string): Promise
     if (timingSafeEqualStr(e, u.email) && timingSafeEqualStr(password, u.password)) {
       return { email: u.email, name: u.name, role: u.role };
     }
-  }
-
-  // DB team members (unified identity). Node-only module via dynamic import so
-  // the edge middleware bundle never pulls in node:crypto.
-  try {
-    const { checkTeamCredentials } = await import('@/lib/team-members');
-    const m = await checkTeamCredentials(e, password);
-    if (m) return m;
-  } catch {
-    /* DB unavailable -> no match */
   }
   return null;
 }
