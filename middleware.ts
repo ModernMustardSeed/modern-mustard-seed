@@ -22,7 +22,8 @@ export async function middleware(req: NextRequest) {
   }
 
   // ── Admin ──
-  if (path === '/admin/login') return NextResponse.next();
+  // Login page and the passwordless magic-link handler are public.
+  if (path === '/admin/login' || path === '/admin/magic') return NextResponse.next();
   const token = req.cookies.get(COOKIE_NAME)?.value;
   const session = token ? await verifyToken(token) : null;
   if (!session) {

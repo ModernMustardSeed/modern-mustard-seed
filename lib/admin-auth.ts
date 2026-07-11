@@ -152,6 +152,8 @@ export async function verifyToken(token: string): Promise<Session | null> {
     const [payloadB64, sig] = token.split('.');
     if (!payloadB64 || !sig) return null;
     const payload = base64UrlToString(payloadB64);
+    // A magic sign-in token must never be accepted as a session cookie.
+    if (payload.startsWith('magic:')) return null;
     const expected = await hmacSign(payload);
     if (!timingSafeEqualStr(sig, expected)) return null;
     const idx = payload.lastIndexOf(':');
@@ -194,6 +196,57 @@ export function checkCredentials(email: string, password: string): AdminUser | n
     }
   }
   return null;
+}
+
+// ── Passwordless magic sign-in ─────────────
+//
+// The simple, no-password way in: a teammate asks for a link, we email a short
+// lived signed token, clicking it mints a normal session. The token is a
+// distinct `magic:` payload so it can never be replayed as a session cookie
+// (verifyToken rejects the magic prefix), and it is verified against the known
+// team at click time so a removed teammate's link stops working.
+
+const MAGIC_MINUTES = 20;
+
+export async function createMagicToken(email: string): Promise<string> {
+  const e = email.toLowerCase().trim();
+  const expires = Date.now() + MAGIC_MINUTES * 60 * 1000;
+  const payload = `magic:${e}:${expires}`;
+  const sig = await hmacSign(payload);
+  return `${stringToBase64Url(payload)}.${sig}`;
+}
+
+/** Returns the email if the magic token is valid and unexpired, else null. */
+export async function verifyMagicToken(token: string): Promise<string | null> {
+  try {
+    const [payloadB64, sig] = token.split('.');
+    if (!payloadB64 || !sig) return null;
+    const payload = base64UrlToString(payloadB64);
+    if (!payload.startsWith('magic:')) return null;
+    const expected = await hmacSign(payload);
+    if (!timingSafeEqualStr(sig, expected)) return null;
+    const rest = payload.slice('magic:'.length);
+    const idx = rest.lastIndexOf(':');
+    if (idx < 0) return null;
+    const email = rest.slice(0, idx);
+    const expires = Number(rest.slice(idx + 1));
+    if (!email || !expires || Date.now() > expires) return null;
+    return email;
+  } catch {
+    return null;
+  }
+}
+
+/** Is this email allowed to sign in (env owner, legacy ADMIN_TEAM, or DB team)? */
+export async function isKnownAdmin(email: string): Promise<boolean> {
+  const e = email.toLowerCase().trim();
+  if (listAdminUsers().some((u) => u.email === e)) return true;
+  try {
+    const { getTeamMemberByEmail } = await import('@/lib/team-members');
+    return !!(await getTeamMemberByEmail(e));
+  } catch {
+    return false;
+  }
 }
 
 export async function setSessionCookie(email: string): Promise<void> {

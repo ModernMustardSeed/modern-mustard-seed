@@ -27,22 +27,11 @@ const CELL = '(406) 250-6076';
 // email they sign into admin with (their ONE identity); Sarah keeps her existing
 // owner login so hers is null.
 const RECIPIENTS = [
-  { first: 'Sarah', name: 'Sarah', email: 'makeourcitypretty@gmail.com', code: 'MAKEOURCITY', login: null },
+  { first: 'Sarah', name: 'Sarah', email: 'makeourcitypretty@gmail.com', code: 'MAKEOURCITY', login: 'makeourcitypretty@gmail.com' },
   { first: 'Polly', name: 'Polly Thompson', email: 'polly.thompson@modernmustardseed.com', code: 'POLLY', login: 'polly.thompson@modernmustardseed.com' },
   { first: 'Easton', name: 'Easton Parker', email: 'easton12parrot@icloud.com', code: 'EASTON', login: 'easton12parrot@icloud.com' },
   { first: 'Anthony', name: 'Anthony Scarano', email: 'bizyai2023@gmail.com', code: 'ANTH6YSR', login: 'bizyai2023@gmail.com' },
 ];
-
-// Merge in the temp passwords the seed wrote (local, gitignored). Without it the
-// email still sends, just without the credential line.
-try {
-  const raw = readFileSync(new URL('../.team-credentials.json', import.meta.url), 'utf8');
-  const creds = JSON.parse(raw);
-  for (const r of RECIPIENTS) {
-    const c = creds.find((x) => (x.email || '').toLowerCase() === (r.login || '').toLowerCase());
-    if (c) r.password = c.password;
-  }
-} catch { /* no creds file yet */ }
 
 function envKey(name) {
   try {
@@ -127,15 +116,14 @@ function buildHtml(r) {
       </table>
     </td></tr>
 
-    ${r.login && r.password ? `<!-- login -->
+    ${r.login ? `<!-- login -->
     <tr><td style="padding:12px 32px 4px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${ink};border:2px solid ${ink};border-radius:12px;">
-        <tr><td style="padding:16px 22px;">
+        <tr><td style="padding:18px 22px;">
           <div style="font-family:${mono};font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${gold};font-weight:bold;">Your one login</div>
-          <div style="font-family:${sans};font-size:14px;color:${cream};margin-top:7px;">Email: <strong>${r.login}</strong></div>
-          <div style="font-family:${sans};font-size:14px;color:${cream};margin-top:2px;">Password: <strong style="font-family:${mono};">${r.password}</strong></div>
-          <a href="${SITE}/admin/login" style="display:inline-block;margin-top:12px;font-family:${sans};font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:${ink};background:${gold};border:2px solid ${cream};border-radius:999px;padding:10px 20px;text-decoration:none;">Sign in to your command center &rarr;</a>
-          <div style="font-family:${sans};font-size:11px;color:rgba(251,246,234,0.65);margin-top:9px;">This one login runs everything: your dial floor, your partner earnings, the ads. Keep it safe, and ask Sarah to reset it anytime.</div>
+          <div style="font-family:${sans};font-size:14px;color:${cream};margin-top:7px;">No password to remember. Tap the button, we email you a one-tap link, and you are in. That is it.</div>
+          <a href="${SITE}/admin/login?email=${encodeURIComponent(r.login)}" style="display:inline-block;margin-top:13px;font-family:${sans};font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:${ink};background:${gold};border:2px solid ${cream};border-radius:999px;padding:11px 22px;text-decoration:none;">Sign in to your command center &rarr;</a>
+          <div style="font-family:${sans};font-size:11px;color:rgba(251,246,234,0.65);margin-top:10px;">This one login runs everything: your dial floor, your partner earnings, and the ads.</div>
         </td></tr>
       </table>
     </td></tr>` : ''}
@@ -194,11 +182,10 @@ Watch the family's welcome: ${VIDEO}
 
 YOUR PARTNER CODE: ${r.code}
 Your tracked link (share it anywhere): ${refLink}
-${r.login && r.password ? `
+${r.login ? `
 YOUR ONE LOGIN (runs everything: dial floor, earnings, ads)
-  Email: ${r.login}
-  Password: ${r.password}
-  Sign in: ${SITE}/admin/login
+  No password. Sign in and we email you a one-tap link:
+  ${SITE}/admin/login?email=${encodeURIComponent(r.login)}
 ` : ''}
 WHAT YOU EARN
 - 50% on every product, the moment someone buys.
