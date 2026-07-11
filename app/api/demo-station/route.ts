@@ -7,11 +7,19 @@
  * -> order card, with the team following up on anyone who stalls.
  *
  * Never-leak guards (fail CLOSED):
- *   - per-instance IP throttle (3/hr) + honeypot field
- *   - global daily cap on signups via app_state (site builds are the scarce
- *     resource: the worker builds them one at a time on the Max plan)
- *   - phone dedupe: a returning business gets its EXISTING hub back, no new
- *     forge spend
+ *   - ATOMIC global daily cap (claim_forge_slot RPC, migration 047): the check
+ *     and the increment happen in one statement, so a burst of parallel
+ *     requests cannot all read the same count and slip through. Every forge
+ *     costs a real Vapi run plus a website build on the worker, so this is the
+ *     spend guard that matters. Any error here = no forge.
+ *   - best-effort per-instance IP throttle (3/hr) + honeypot field. Both are
+ *     soft (serverless instances do not share the map, and the client IP is
+ *     only as trustworthy as the proxy chain), which is exactly why the cap
+ *     above is the real ceiling.
+ *   - returning-business dedupe requires BOTH the phone and the email to match
+ *     a previous SELF-SERVE signup. A phone number alone is public information,
+ *     so matching on it alone would hand a stranger someone else's private hub
+ *     (their business, contact, and demos). Never do that.
  */
 
 import { NextResponse } from 'next/server';
@@ -44,6 +52,21 @@ function clean(v: unknown, max: number): string {
   return typeof v === 'string' ? v.trim().slice(0, max) : '';
 }
 
+/**
+ * A business name is a business name. These fields flow into the brief that
+ * drives the site-build worker (headless Claude Code with a filesystem), so
+ * rather than sanitize an attack into something merely inert, refuse it at the
+ * door: nothing here should ever read like an instruction, a prompt, a command,
+ * or a code fence. lib/outbound-demo.ts sanitizes again downstream (belt and
+ * suspenders, since cockpit-entered leads share that path).
+ */
+const HOSTILE =
+  /(\bignore\b|\bdisregard\b|\boverride\b|\bprompt\b|\bsystem\s*:|\bassistant\s*:|\bexfiltrat|\bcredential|\bapi[_ -]?key|\b\.env\b|\brm\s+-rf\b|\bcurl\b|\bsudo\b|\bdelete\b.{0,20}\bfile|<script|\bjavascript:|```|\n)/i;
+
+function hostile(...fields: string[]): boolean {
+  return fields.some((f) => HOSTILE.test(f));
+}
+
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {
@@ -68,6 +91,12 @@ export async function POST(req: Request) {
   if (!business || !name || !/.+@.+\..+/.test(email) || digits.length < 10) {
     return NextResponse.json({ error: 'missing_fields', message: 'Business, your name, a real email, and a real phone number are required (the receptionist demo answers as your business).' }, { status: 400 });
   }
+  if (hostile(business, name, city, website)) {
+    return NextResponse.json(
+      { error: 'bad_input', message: 'That does not look like a real business name. Type it the way it appears on your sign, or call us at (406) 312-1223.' },
+      { status: 400 }
+    );
+  }
 
   const ip = (req.headers.get('x-forwarded-for') || 'unknown').split(',')[0].trim();
   if (throttled(ip)) {
@@ -77,10 +106,16 @@ export async function POST(req: Request) {
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
 
-  // Returning business: hand back the existing suite, zero new spend.
+  // Returning business: hand back their existing suite, zero new spend. Both
+  // the phone AND the email must match, and only a previous SELF-SERVE signup
+  // qualifies. Phone-only matching would turn this route into a lookup service
+  // for other people's private hubs (a phone number is public; the pairing with
+  // the email is not, and cockpit-sourced prospects never came here at all).
   const { data: existing } = await supabase
     .from('outbound_leads')
-    .select('*')
+    .select('hub_demo_url')
+    .eq('source', 'demo-station')
+    .eq('email', email)
     .like('phone', `%${digits.slice(-10)}%`)
     .limit(1)
     .maybeSingle();
@@ -88,18 +123,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, url: existing.hub_demo_url, returning: true });
   }
 
-  // Global daily cap, fail CLOSED: any error counting = no forge.
-  const dayKey = `demostation:day:${new Date().toISOString().slice(0, 10)}`;
-  const { data: capRow, error: capReadErr } = await supabase.from('app_state').select('value').eq('key', dayKey).maybeSingle();
-  if (capReadErr) return NextResponse.json({ error: 'capacity', message: 'The forge is at capacity today. Leave your number at (406) 312-1223 and we will build yours by hand.' }, { status: 503 });
-  const used = Number((capRow?.value as { n?: number } | null)?.n ?? 0);
-  if (used >= DAILY_CAP) {
-    return NextResponse.json({ error: 'capacity', message: 'The forge hit today\'s limit. Come back tomorrow morning, or call (406) 312-1223 and we will save your spot.' }, { status: 503 });
+  // Global daily cap, ATOMIC and fail CLOSED: one statement checks and claims
+  // the slot (migration 047), so a parallel burst cannot all pass the check.
+  const capMessage = 'The forge hit today\'s limit. Come back tomorrow morning, or call (406) 312-1223 and we will save your spot.';
+  const { data: claimed, error: capErr } = await supabase.rpc('claim_forge_slot', {
+    p_key: `demostation:day:${new Date().toISOString().slice(0, 10)}`,
+    p_cap: DAILY_CAP,
+  });
+  if (capErr || claimed !== true) {
+    if (capErr) console.error('demo-station cap claim failed:', capErr.message);
+    return NextResponse.json({ error: 'capacity', message: capMessage }, { status: 503 });
   }
-  const { error: capWriteErr } = capRow
-    ? await supabase.from('app_state').update({ value: { n: used + 1 } }).eq('key', dayKey)
-    : await supabase.from('app_state').insert({ key: dayKey, value: { n: 1 } });
-  if (capWriteErr) return NextResponse.json({ error: 'capacity' }, { status: 503 });
 
   // The lead: this is the funnel's spine. source 'demo-station' marks it
   // self-serve; unassigned, so the whole floor sees it in the queue.

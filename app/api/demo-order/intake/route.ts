@@ -57,12 +57,17 @@ export async function POST(req: Request) {
   if (!order) return NextResponse.json({ error: 'unknown_order' }, { status: 404 });
   if (order.status === 'canceled') return NextResponse.json({ error: 'order_canceled' }, { status: 409 });
 
+  // Only the FIRST intake notifies. A resubmit still updates the answers (the
+  // buyer may be correcting a typo) but must not let anyone holding the link
+  // re-fire Sarah's inbox and the cockpit thread on a loop.
+  const firstIntake = order.status === 'paid' || order.status === 'pending';
+
   const { error: upErr } = await supabase
     .from('demo_orders')
     .update({
       intake: answers,
       intake_at: new Date().toISOString(),
-      ...(order.status === 'paid' || order.status === 'pending' ? { status: 'intake_done' } : {}),
+      ...(firstIntake ? { status: 'intake_done' } : {}),
       updated_at: new Date().toISOString(),
     })
     .eq('id', order.id);
@@ -71,9 +76,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'save_failed' }, { status: 500 });
   }
 
+  // A correction is saved above, but only the first submission is announced.
+  if (!firstIntake) return NextResponse.json({ ok: true, updated: true });
+
   const lines = Object.entries(answers)
     .map(([k, v]) => `<p><strong>${FIELD_LABELS[k]}:</strong> ${esc(v)}</p>`)
     .join('');
+  const safeBusiness = esc(order.business_name || 'A buyer');
 
   if (order.outbound_lead_id) {
     try {
@@ -96,11 +105,11 @@ export async function POST(req: Request) {
       await resend.emails.send({
         from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
         to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
-        subject: `INTAKE IN: ${order.business_name || 'demo order'} (${Array.isArray(order.products) ? (order.products as string[]).join(', ') : ''})`,
+        subject: `INTAKE IN: ${(order.business_name || 'demo order').replace(/[\r\n]/g, ' ')} (${Array.isArray(order.products) ? (order.products as string[]).join(', ') : ''})`,
         html: clientEmail({
           preheader: 'Customization details for a paid demo order.',
           eyebrow: 'DEMO ORDER INTAKE',
-          greeting: `${order.business_name || 'A buyer'} filled in their details.`,
+          greeting: `${safeBusiness} filled in their details.`,
           body: `${lines}<p>The 7-day release clock is running. Everything is also on the lead's thread in the cockpit.</p>`,
           signature: 'The Demo Hub',
         }),
