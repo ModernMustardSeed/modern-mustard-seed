@@ -222,7 +222,7 @@ async function bookSlot(
 
       const rSarah = await sendLoud(resend, 'booking-notify-sarah', {
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         replyTo: email,
         subject: `Voice booking: ${name} · ${shortLabel}`,
         html: bookingNotificationEmail({
@@ -326,7 +326,7 @@ async function captureLead(
       const resend = resendClient();
       await sendLoud(resend, 'lead-notify-sarah', {
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         replyTo: email,
         subject: `Voice lead: ${name}`,
         html: leadNotification({
@@ -449,7 +449,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
     const resend = resendClient();
     await sendLoud(resend, 'end-of-call-report', {
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-      to: 'sarah@modernmustardseed.com',
+      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
       subject: `Mr. Mustard call summary · ${callerNumber}`,
       html: leadNotification({
         type: 'Contact',

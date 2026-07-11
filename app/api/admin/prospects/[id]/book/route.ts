@@ -95,7 +95,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         replyTo: email,
         subject: `Booked from Tracker: ${prospect.business} . ${shortLabel}`,
         html: leadNotification({

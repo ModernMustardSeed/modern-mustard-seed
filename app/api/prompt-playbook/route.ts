@@ -87,7 +87,7 @@ export async function POST(req: Request) {
     try {
       await resend.emails.send({
         from: 'AI Prompt Playbook <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         subject: `New playbook lead: ${firstName} (${niche.label})`,
         html: `<p>New lead from the AI Prompt Playbook lead magnet.</p>
 <ul>

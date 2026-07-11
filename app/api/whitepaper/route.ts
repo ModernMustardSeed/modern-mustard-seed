@@ -78,7 +78,7 @@ export async function POST(req: Request) {
     try {
       await resend.emails.send({
         from: 'Whitepaper <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         subject: `New whitepaper lead: ${firstName}`,
         html: `<p>New lead from the AI voice agent whitepaper.</p><ul><li><strong>Name:</strong> ${name ?? 'not given'}</li><li><strong>Email:</strong> ${email}</li><li><strong>Phone:</strong> ${phone ?? 'not given'}</li></ul><p>Speed to lead: a quick call or a Mr. Mustard callback while it is warm.</p>`,
       });

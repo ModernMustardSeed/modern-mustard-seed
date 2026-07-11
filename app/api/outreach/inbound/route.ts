@@ -61,7 +61,7 @@ export async function POST(req: Request) {
       const snippet = String(data.text || data.subject || payload.subject || '').slice(0, 600);
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         replyTo: from,
         subject: `A prospect replied: ${prospect.name}`,
         html: leadNotification({

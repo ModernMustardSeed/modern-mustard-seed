@@ -63,7 +63,7 @@ async function notifySarah(subject: string, lines: string[]) {
     const resend = resendClient();
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: 'sarah@modernmustardseed.com',
+      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
       subject,
       html: `<div style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.6">${lines
         .map((l) => `<p style="margin:0 0 8px">${l}</p>`)

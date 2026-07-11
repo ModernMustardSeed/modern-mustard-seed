@@ -3,6 +3,7 @@ import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { normalizeEmail } from '@/lib/client-auth';
 import { clientEmail, leadNotification, p } from '@/lib/email';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 const CELL = '(406) 250-6076';
 
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
     try {
       const { error } = await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: OWNER_NOTIFY_TO,
         replyTo: email,
         subject: `New partner application: ${name}`,
         text:

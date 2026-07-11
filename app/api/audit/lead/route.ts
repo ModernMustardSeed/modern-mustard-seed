@@ -105,7 +105,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: 'AI Audit Leads <sarah@modernmustardseed.com>',
-      to: 'sarah@modernmustardseed.com',
+      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
       replyTo: email,
       subject: `Audit Lead: ${name}${company ? ` (${company})` : ''}`,
       html: leadNotification({

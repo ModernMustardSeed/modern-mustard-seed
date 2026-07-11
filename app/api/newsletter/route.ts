@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     // Sarah notification
     await resend.emails.send({
       from: 'Newsletter Signups <sarah@modernmustardseed.com>',
-      to: 'sarah@modernmustardseed.com',
+      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
       subject: `New subscriber: ${greetingName}`,
       html: leadNotification({
         type: 'Newsletter',

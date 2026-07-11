@@ -86,7 +86,7 @@ export async function POST(req: Request) {
     try {
       await resend.emails.send({
         from: 'Launch Checklist <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         subject: `New checklist lead: ${firstName} (${vertical.label})`,
         html: `<p>New lead from the Launch Checklist lead magnet.</p>
 <ul>

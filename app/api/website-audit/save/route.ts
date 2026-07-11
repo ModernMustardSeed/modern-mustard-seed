@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         replyTo: email,
         subject: `Website audit lead: ${url}${score !== null ? ` (${score}/${grade ?? ''})` : ''}`,
         html: leadNotification({

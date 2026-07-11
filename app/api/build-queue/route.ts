@@ -89,7 +89,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: 'Build Queue <sarah@modernmustardseed.com>',
-      to: 'sarah@modernmustardseed.com',
+      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
       replyTo: email,
       subject: `Build Queue: ${businessName} (${timelineLabel})`,
       html: leadNotification({

@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         subject: `New review from ${name} (pending approval)`,
         html: leadNotification({
           type: 'Contact',

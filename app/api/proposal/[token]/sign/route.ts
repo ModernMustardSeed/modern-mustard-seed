@@ -107,7 +107,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
       try {
         await resend.emails.send({
           from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-          to: 'sarah@modernmustardseed.com',
+          to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
           subject: `Proposal signed by ${name}`,
           html: leadNotification({
             type: 'Contact',

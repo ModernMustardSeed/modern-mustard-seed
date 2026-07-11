@@ -226,7 +226,7 @@ async function executeCaptureLead(input: {
       ];
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         replyTo: email,
         subject: `Mustard Seed chat: ${name}`,
         html: leadNotification({
@@ -346,7 +346,7 @@ async function executeBookSlot(input: {
       // Resend returns {error} without throwing, so capture both results.
       const rSarah = await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
         replyTo: email,
         subject: `Booked: ${name} · ${shortLabel}`,
         html: bookingNotificationEmail({

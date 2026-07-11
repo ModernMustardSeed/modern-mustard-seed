@@ -55,7 +55,7 @@ export async function POST(req: Request) {
         const resend = resendClient();
         await resend.emails.send({
           from: 'Front Desk <sarah@modernmustardseed.com>',
-          to: 'sarah@modernmustardseed.com',
+          to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
           replyTo: email,
           subject: `Front Desk: new scoped idea (${email})`,
           html: leadNotification({
