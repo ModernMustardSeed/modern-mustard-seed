@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { auditReportEmail, clientEmail, escape } from '@/lib/email';
+import { auditReportEmail, clientEmail, demoFilmCard, escape } from '@/lib/email';
 import { sendViaResend } from '@/lib/send-email';
 import { ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
@@ -66,15 +66,24 @@ export async function sendOutboundEmail(
     .join('');
 
   const n = [withDemo, withSite, withOs].filter(Boolean).length;
+  // Same film the hub picks for this forged set (see app/demo/hub/[hubId]).
+  const film = withSite && withOs ? 'demo-welcome' : withSite ? 'demo-welcome-site' : withOs ? 'demo-welcome-os' : 'demo-welcome-voice';
   const suiteBlock = includeAny
     ? `<p>${
         n > 1
           ? `We went ahead and built ${escape(lead.business_name)} <strong>${n === 3 ? 'three' : 'two'} working demos</strong>. Not mockups, the real thing, already answering to your name:`
           : 'We went ahead and built you something. Not a mockup, the real thing, already answering to your name:'
       }</p>` +
+      (hub
+        ? demoFilmCard({
+            film,
+            href: hub,
+            caption: `Twenty seconds from Mr. Mustard on what we built ${lead.business_name}.`,
+          })
+        : '') +
       rows +
       (hub
-        ? `<p style="margin-top:16px">The easiest way in is the suite page: everything in one place, plus a 20-second video from Mr. Mustard and a calculator that shows what missed calls have been costing you.</p>`
+        ? `<p style="margin-top:16px">The easiest way in is the suite page: everything in one place, plus the video above and a calculator that shows what missed calls have been costing you.</p>`
         : '')
     : '';
 
@@ -107,8 +116,8 @@ export async function sendOutboundEmail(
             opts.note
               ? escape(opts.note)
               : includeAny
-                ? `Why free? Because showing beats telling. I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss, and the demos make the case better than I can. The first 30 days on your real line are free too.`
-                : `I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss. I build an AI receptionist that answers every call in two rings, books the job, and texts you the details. The first 30 days are free, so you see exactly what it catches before you pay a dollar.`
+                ? `Why build it for free? Because showing beats telling. I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss, and the demos make the case better than I can. If you want it on your real line, the button inside sets it up in a week. No trial to sign up for, no card to test it: you already have the real thing in front of you.`
+                : `I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss. I build an AI receptionist that answers every call in two rings, books the job, and texts you the details. I would rather show you than pitch you, so tell me the word and I will build you a working one to try.`
           }</p>` +
           (hasAudit && lead.audit_score != null && !includeAny
             ? `<p>I also ran your website through a quick audit. It came back at ${lead.audit_score}/100. Happy to walk you through the breakdown on a 10-minute call.</p>`

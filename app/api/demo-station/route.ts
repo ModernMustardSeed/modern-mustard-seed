@@ -27,7 +27,7 @@ import { getSupabase } from '@/lib/supabase';
 import { forgeLeadVoiceDemo, buildOsConfig, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead, Niche } from '@/lib/outbound';
 import { resendClient } from '@/lib/send-email';
-import { clientEmail } from '@/lib/email';
+import { clientEmail, demoFilmCard } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -215,7 +215,14 @@ export async function POST(req: Request) {
           preheader: 'Your receptionist and command center are ready now; the website lands within the hour.',
           eyebrow: 'YOUR DEMO SUITE',
           greeting: `${first}, it is happening.`,
-          body: `<p>Your AI receptionist and your command center are <strong>ready right now</strong>, and a designer is building ${business} a complete demo website as you read this (usually within the hour).</p><p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>`,
+          body:
+            `<p>Your AI receptionist and your command center are <strong>ready right now</strong>, and a designer is building ${business} a complete demo website as you read this (usually within the hour).</p>` +
+            demoFilmCard({
+              film: 'demo-welcome',
+              href: lead.hub_demo_url,
+              caption: `Twenty seconds from Mr. Mustard on what we built ${business}.`,
+            }) +
+            `<p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>`,
           cta: { label: 'Open your Demo Suite', url: lead.hub_demo_url },
           signature: 'Sarah',
         }),

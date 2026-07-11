@@ -39,14 +39,16 @@ function useCountUp(target: number, ms = 900): number {
   return v;
 }
 
-function useTyped(text: string, speed = 28): string {
+/** Types the line out, and reports when it is finished so the caret can leave.
+ *  A caret that keeps blinking after the sentence lands reads like a bug. */
+function useTyped(text: string, speed = 28): { shown: string; typing: boolean } {
   const [n, setN] = useState(0);
   useEffect(() => {
     setN(0);
     const t = window.setInterval(() => setN((v) => (v >= text.length ? v : v + 1)), speed);
     return () => window.clearInterval(t);
   }, [text, speed]);
-  return text.slice(0, n);
+  return { shown: text.slice(0, n), typing: n < text.length };
 }
 
 export default function DemoHub({
@@ -73,7 +75,7 @@ export default function DemoHub({
   sitePending: string | null;
   osUrl: string | null;
 }) {
-  const bubble = useTyped(`Hi${ownerFirst ? ` ${ownerFirst}` : ''}! We made ${business} some presents. Open them!`);
+  const { shown: bubble, typing } = useTyped(`Hi${ownerFirst ? ` ${ownerFirst}` : ''}! We made ${business} some presents. Open them!`);
 
   /* ------------------------------ calculator ------------------------------ */
   const job = AVG_JOB[niche] ?? AVG_JOB.other;
@@ -146,7 +148,10 @@ export default function DemoHub({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/brand/mascot.png" alt="Mr. Mustard" width={110} height={110} className="animate-[hubBob_3.2s_ease-in-out_infinite]" />
             <div className="relative bg-white border-2 border-[#161616] rounded-2xl rounded-bl-none shadow-[4px_4px_0_0_#161616] px-4 py-3 mb-6 text-left max-w-[300px]">
-              <p className="font-body text-[15px] leading-snug min-h-[42px]">{bubble}<span className="animate-pulse">▍</span></p>
+              <p className="font-body text-[15px] leading-snug min-h-[42px]">
+                {bubble}
+                {typing && <span className="animate-pulse">▍</span>}
+              </p>
             </div>
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-bold mt-4 leading-tight">

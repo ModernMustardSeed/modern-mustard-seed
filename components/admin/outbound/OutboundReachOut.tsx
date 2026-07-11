@@ -360,7 +360,7 @@ export function ReachOutDeck({
         <p className="font-sans text-sm text-[#1a1815]/70 leading-relaxed">
           {lead.audit_json
             ? `The full branded report for ${lead.business_name} (score ${lead.audit_score}/100), with your note on top so it reads one-to-one.`
-            : 'A warm intro: the missed-calls problem, the free 30 days, and a demo link.'}
+            : 'A warm intro: the missed-calls problem, the demos we already built them, and a link in. No free trial is offered or implied.'}
         </p>
         <div className="mt-3">
           <label className={labelCls}>Personal note (optional)</label>

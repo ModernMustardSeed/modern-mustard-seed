@@ -699,6 +699,36 @@ export function programAccessEmail({
   return shell({ preheader: `Your ${programName} access is ready`, subtitle: programName, inner });
 }
 
+/* ────────────────────────── DEMO FILM CARD ────────────────────────── */
+
+/** The welcome films that ship with a forged Demo Suite. Keep in sync with the
+ *  `film` prop on components/demo/DemoHub. */
+export type DemoFilm = 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os';
+
+/**
+ * Mr. Mustard's welcome film, as an email-safe card.
+ *
+ * No mail client plays inline <video> reliably (Gmail and Outlook strip it
+ * outright), so we ship the real poster frame as a big linked image with a play
+ * badge drawn in HTML, and the click lands on the hub where the film actually
+ * plays. Fixed pixel width + max-width:100% is the one pattern Outlook honors.
+ */
+export function demoFilmCard({ film, href, caption }: { film: DemoFilm; href: string; caption?: string }): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0"><tr><td align="center">
+    <a href="${escape(href)}" style="text-decoration:none;color:${C.ink}">
+      <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border:2px solid ${C.ink};border-radius:14px;overflow:hidden;background:${C.ink}">
+        <tr><td style="line-height:0">
+          <img src="${SITE}/video/${film}-poster.jpg" width="516" alt="Press play: a 20-second welcome from Mr. Mustard" style="display:block;width:100%;max-width:516px;height:auto;border:0" />
+        </td></tr>
+        <tr><td align="center" style="padding:12px 16px;background:${C.goldBrand}">
+          <span style="font-family:${SANS};font-size:13px;font-weight:bold;color:${C.ink};letter-spacing:.08em;text-transform:uppercase">&#9654;&nbsp; Play the welcome film</span>
+        </td></tr>
+      </table>
+    </a>
+    ${caption ? `<p style="margin:8px 0 0;font-family:${SANS};font-size:12px;color:${C.muted}">${escape(caption)}</p>` : ''}
+  </td></tr></table>`;
+}
+
 /* ────────────────────────── CLIENT EMAIL (general) ────────────────────────── */
 
 type ClientEmailArgs = {
