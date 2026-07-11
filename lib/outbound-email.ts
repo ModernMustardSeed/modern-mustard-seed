@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { auditReportEmail, clientEmail, escape } from '@/lib/email';
 import { sendViaResend } from '@/lib/send-email';
+import { ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
 
 /**
@@ -13,12 +14,19 @@ import type { OutboundLead } from '@/lib/outbound';
  */
 export async function sendOutboundEmail(
   supabase: SupabaseClient,
-  lead: OutboundLead,
+  leadInput: OutboundLead,
   opts: { note?: string; includeDemo?: boolean; includeSite?: boolean; includeOs?: boolean; source?: string } = {},
 ): Promise<{ ok: true; lead: OutboundLead } | { ok: false; status: number; error: string }> {
-  if (!lead.email) return { ok: false, status: 400, error: 'No email on file. Run "Find site & email" first.' };
+  let lead = leadInput;
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return { ok: false, status: 500, error: 'Email is not configured (RESEND_API_KEY missing).' };
+
+  // Demo sends lead with the SUITE HUB: one adorable link that fronts
+  // everything, so mint it if it is missing.
+  if (opts.includeDemo || opts.includeSite || opts.includeOs) {
+    lead = await ensureDemoHub(supabase, lead);
+  }
+  if (!lead.email) return { ok: false, status: 400, error: 'No email on file. Run "Find site & email" first.' };
 
   let domain = lead.website || '';
   try {
@@ -34,18 +42,41 @@ export async function sendOutboundEmail(
   const withOs = Boolean(opts.includeOs && lead.os_demo_status === 'ready' && lead.os_demo_url);
   const includeAny = withDemo || withSite || withOs;
 
-  const siteBlock = withSite
-    ? `<p><strong>I built ${escape(lead.business_name)} a brand-new website.</strong> A real working draft, designed for your business${withDemo ? ', with your AI receptionist living right on it (tap the gold button in the corner and talk to it)' : ''}. See it here: <a href="${escape(lead.site_demo_url!)}">${escape(lead.site_demo_url!)}</a></p>`
+  // The suite block: one card per demo (email-safe table rows) under a short
+  // human intro, with the hub as the single golden door above them.
+  const hub = lead.hub_demo_url;
+  const demoRow = (icon: string, title: string, desc: string, url: string) =>
+    `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:10px 0"><tr>
+      <td style="border:2px solid #161616;border-radius:14px;padding:14px 16px;background:#ffffff">
+        <p style="margin:0;font-size:15px;color:#161616"><strong>${icon} ${escape(title)}</strong></p>
+        <p style="margin:4px 0 8px;font-size:13px;color:#5a564f;line-height:1.55">${desc}</p>
+        <a href="${escape(url)}" style="font-size:13px;font-weight:bold;color:#8a6a1f">Open it &rarr;</a>
+      </td>
+    </tr></table>`;
+
+  const rows = [
+    withDemo &&
+      demoRow('🎙', 'Your AI receptionist', `It answers as ${escape(lead.business_name)}, right now, in your browser. Pretend you are a customer and try to stump it.`, lead.demo_url!),
+    withSite &&
+      demoRow('🌐', 'Your new website', `A real working draft designed for your business${withDemo ? ', with the receptionist living on it (gold button, bottom corner)' : ''}.`, lead.site_demo_url!),
+    withOs &&
+      demoRow('⚙️', 'Your command center', 'Your day, customers, reviews, ads, and automations, with an AI assistant that already knows the board. Nothing to install.', lead.os_demo_url!),
+  ]
+    .filter(Boolean)
+    .join('');
+
+  const n = [withDemo, withSite, withOs].filter(Boolean).length;
+  const suiteBlock = includeAny
+    ? `<p>${
+        n > 1
+          ? `We went ahead and built ${escape(lead.business_name)} <strong>${n === 3 ? 'three' : 'two'} working demos</strong>. Not mockups, the real thing, already answering to your name:`
+          : 'We went ahead and built you something. Not a mockup, the real thing, already answering to your name:'
+      }</p>` +
+      rows +
+      (hub
+        ? `<p style="margin-top:16px">The easiest way in is the suite page: everything in one place, plus a 20-second video from Mr. Mustard and a calculator that shows what missed calls have been costing you.</p>`
+        : '')
     : '';
-  const osBlock = withOs
-    ? `<p><strong>${withSite ? 'And I built the back office too.' : `I built ${escape(lead.business_name)} a command center.`}</strong> Your day, your customers, your reviews, your ads, all running themselves, with an AI assistant that already knows the board. Click around, nothing to install: <a href="${escape(lead.os_demo_url!)}">${escape(lead.os_demo_url!)}</a></p>`
-    : '';
-  const demoBlock =
-    withDemo && !withSite && !withOs
-      ? `<p><strong>I already built your receptionist.</strong> It answers as ${escape(lead.business_name)}, right now. Talk to it here, it takes 60 seconds: <a href="${escape(lead.demo_url!)}">${escape(lead.demo_url!)}</a></p>`
-      : withDemo && (withSite || withOs)
-        ? `<p>Prefer to meet the receptionist on its own first? Same one, direct line: <a href="${escape(lead.demo_url!)}">${escape(lead.demo_url!)}</a></p>`
-        : '';
 
   const hasAudit = Boolean(lead.audit_json);
   const subject = withSite && withOs
@@ -71,25 +102,29 @@ export async function sendOutboundEmail(
     : clientEmail({
         greeting: first ? `Hi ${first},` : 'Hi there,',
         body:
-          siteBlock +
-          osBlock +
-          demoBlock +
+          suiteBlock +
           `<p>${
             opts.note
               ? escape(opts.note)
-              : `I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss. I build an AI receptionist that answers every call in two rings, books the job, and texts you the details. The first 30 days are free, so you see exactly what it catches before you pay a dollar.`
+              : includeAny
+                ? `Why free? Because showing beats telling. I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss, and the demos make the case better than I can. The first 30 days on your real line are free too.`
+                : `I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss. I build an AI receptionist that answers every call in two rings, books the job, and texts you the details. The first 30 days are free, so you see exactly what it catches before you pay a dollar.`
           }</p>` +
-          (hasAudit && lead.audit_score != null
+          (hasAudit && lead.audit_score != null && !includeAny
             ? `<p>I also ran your website through a quick audit. It came back at ${lead.audit_score}/100. Happy to walk you through the breakdown on a 10-minute call.</p>`
             : ''),
-        cta: { label: 'Book a 10-minute demo', url: 'https://modernmustardseed.com/book' },
-        secondary: withSite && lead.site_demo_url
-          ? { label: 'See your new website', url: lead.site_demo_url }
-          : withOs && lead.os_demo_url
-            ? { label: 'Open your command center', url: lead.os_demo_url }
-            : withDemo && lead.demo_url
-              ? { label: 'Talk to your receptionist', url: lead.demo_url }
-              : { label: 'Run the free Website Audit', url: 'https://modernmustardseed.com/website-audit' },
+        cta: includeAny && hub
+          ? { label: 'Open your Demo Suite', url: hub }
+          : { label: 'Book a 10-minute demo', url: 'https://modernmustardseed.com/book' },
+        secondary: includeAny && hub
+          ? { label: 'Book 10 minutes with Sarah', url: 'https://modernmustardseed.com/book' }
+          : withSite && lead.site_demo_url
+            ? { label: 'See your new website', url: lead.site_demo_url }
+            : withOs && lead.os_demo_url
+              ? { label: 'Open your command center', url: lead.os_demo_url }
+              : withDemo && lead.demo_url
+                ? { label: 'Talk to your receptionist', url: lead.demo_url }
+                : { label: 'Run the free Website Audit', url: 'https://modernmustardseed.com/website-audit' },
         trackId: lead.id,
       });
 

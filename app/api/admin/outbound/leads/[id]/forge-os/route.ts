@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { forgeLeadVoiceDemo, buildOsConfig } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, buildOsConfig, ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
 
@@ -27,7 +27,7 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   const l = lead as OutboundLead;
 
   if (l.os_demo_status === 'ready' && l.os_demo_url) {
-    return NextResponse.json({ ok: true, lead: l, existing: true });
+    return NextResponse.json({ ok: true, lead: await ensureDemoHub(guard.supabase, l), existing: true });
   }
 
   let current = l;
@@ -64,5 +64,6 @@ export async function POST(_req: Request, { params }: { params: Params }) {
     occurred_at: new Date().toISOString(),
   });
 
-  return NextResponse.json({ ok: true, lead: updated });
+  const withHub = await ensureDemoHub(guard.supabase, updated as OutboundLead);
+  return NextResponse.json({ ok: true, lead: withHub });
 }

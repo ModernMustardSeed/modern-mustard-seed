@@ -93,6 +93,28 @@ export async function forgeLeadVoiceDemo(supabase: SupabaseClient, lead: Outboun
 }
 
 /**
+ * Every lead with at least one demo gets a DEMO SUITE HUB: one shareable page
+ * (/demo/hub/<hubId>) fronting whatever is forged, the welcome video, and the
+ * Recovery Calculator. Minted lazily by every forge route and the send path;
+ * renders live from the lead row so later forges appear on their own.
+ */
+export async function ensureDemoHub(supabase: SupabaseClient, lead: OutboundLead): Promise<OutboundLead> {
+  if (lead.hub_demo_id && lead.hub_demo_url) return lead;
+  const hubId = randomUUID();
+  const { data } = await supabase
+    .from('outbound_leads')
+    .update({ hub_demo_id: hubId, hub_demo_url: `${SITE.url}/demo/hub/${hubId}` })
+    .eq('id', lead.id)
+    .is('hub_demo_id', null)
+    .select()
+    .maybeSingle();
+  if (data) return data as OutboundLead;
+  // Another request minted it first; read it back.
+  const { data: fresh } = await supabase.from('outbound_leads').select('*').eq('id', lead.id).single();
+  return (fresh ?? lead) as OutboundLead;
+}
+
+/**
  * The BUSINESS OS demo config, frozen at forge time. No worker, no tokens:
  * /demo/os/[id] is one polished template app, and this config is everything
  * that personalizes it (real name, trade, city, phone, mined review pain,

@@ -313,9 +313,15 @@ export function ReachOutDeck({
         )}
 
         {demoCount > 0 && (
-          <button onClick={() => void sendDemo()} disabled={sendingDemo || !lead.email} className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`} title={lead.email ? (demoCount > 1 ? 'Email every forged demo in one send' : 'Email them their demo link') : 'No email on file yet'}>
+          <button onClick={() => void sendDemo()} disabled={sendingDemo || !lead.email} className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`} title={lead.email ? (demoCount > 1 ? 'One polished email: the Demo Suite hub + every forged demo' : 'Email them their demo link') : 'No email on file yet'}>
             {sendingDemo ? 'Sending…' : demoCount > 1 ? `✉ Send all ${demoCount} demos` : '✉ Send demo'}
           </button>
+        )}
+
+        {lead.hub_demo_url && (
+          <a href={lead.hub_demo_url} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#f7f3e9] text-[#7a5c1a] border-[#b58a2a]/60 hover:border-[#b58a2a] hover:-translate-y-0.5`} title="Their Demo Suite hub: all demos + Mr. Mustard video + the Recovery Calculator. This is the link the email leads with.">
+            ▦ Suite ↗
+          </a>
         )}
 
         {lead.pipeline_lead_id ? (

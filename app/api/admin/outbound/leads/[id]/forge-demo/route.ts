@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { forgeLeadVoiceDemo } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, ensureDemoHub } from '@/lib/outbound-demo';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -24,5 +24,6 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   const forged = await forgeLeadVoiceDemo(guard.supabase, lead);
   if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: forged.status });
 
-  return NextResponse.json({ ok: true, demo_url: forged.demoUrl, lead: forged.lead, existing: forged.existing });
+  const withHub = await ensureDemoHub(guard.supabase, forged.lead);
+  return NextResponse.json({ ok: true, demo_url: forged.demoUrl, lead: withHub, existing: forged.existing });
 }

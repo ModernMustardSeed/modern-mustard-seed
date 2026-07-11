@@ -106,6 +106,8 @@ export type OutboundLead = {
   os_demo_id: string | null;
   os_demo_url: string | null;
   os_demo_status: 'ready' | null;
+  hub_demo_id: string | null;
+  hub_demo_url: string | null;
   created_at: string;
   updated_at: string;
 };
