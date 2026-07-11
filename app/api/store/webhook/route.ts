@@ -672,6 +672,46 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     return;
   }
 
+  // Demo-order renewals get their own note (the generic /portal dunning link
+  // below is for proposal clients and means nothing to a demo-order buyer).
+  if (subMeta?.kind === 'demo-order') {
+    const dEmail = invoice.customer_email;
+    if (process.env.RESEND_API_KEY && dEmail) {
+      const what = escapeHtmlSafe(subMeta.item_name || 'your system');
+      try {
+        const resend = resendClient();
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: dEmail,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: 'Quick payment hiccup on your monthly',
+          html: clientEmail({
+            preheader: 'Your card needs a quick update. Nothing switches off today.',
+            eyebrow: 'PAYMENT',
+            greeting: 'A quick card hiccup.',
+            body: `<p>This month's payment for ${what} did not go through. It happens (expired card, bank hiccup, gremlin).</p><p>Stripe will retry on its own, or reply to this email and I will send a fresh payment link. Nothing switches off in the meantime.</p>`,
+            signature: 'Sarah',
+          }),
+        });
+        await resend.emails.send({
+          from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+          to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+          subject: `DEMO ORDER payment failed: ${subMeta.item_name || dEmail}`,
+          html: clientEmail({
+            preheader: 'A demo-order renewal failed.',
+            eyebrow: 'DEMO ORDER DUNNING',
+            greeting: 'A renewal bounced.',
+            body: `<p>Subscription ${subId} (${what}) failed to renew for ${escapeHtmlSafe(dEmail)}.</p><p>Stripe retries on its own. If it does not recover in a few days, pause their receptionist minutes before they leak.</p>`,
+            signature: 'The Demo Hub',
+          }),
+        });
+      } catch (err) {
+        console.error('demo-order dunning email failed', err);
+      }
+    }
+    return;
+  }
+
   // GEO Watch renewals get their own recovery note.
   if (subMeta?.kind === 'geo') {
     const gEmail = invoice.customer_email;
@@ -923,6 +963,12 @@ async function handleDemoOrderPaid(
     return;
   }
 
+  // IDEMPOTENT: Stripe retries, and the dashboard can resend an event by hand.
+  // Only a real pending -> paid transition may write, or a replay would regress
+  // an intake_done order back to paid (buyer sees the empty form again, cockpit
+  // state lost), resurrect a canceled order as live, and re-fire BOTH emails.
+  // The .eq('status','pending') filter makes the transition the lock: a replay
+  // matches no row, returns null, and falls through to the no-op below.
   const subId = typeof session.subscription === 'string' ? session.subscription : null;
   const { data: order } = await supabase
     .from('demo_orders')
@@ -935,8 +981,15 @@ async function handleDemoOrderPaid(
       updated_at: new Date().toISOString(),
     })
     .eq('id', orderId)
+    .eq('status', 'pending')
     .select('id,outbound_lead_id,business_name,products,setup_cents,monthly_cents,phone')
     .maybeSingle();
+
+  if (!order) {
+    // Already processed (replay) or the row is gone. Never re-email.
+    console.log('demo-order webhook: no pending row for', orderId, '(replay or already handled)');
+    return;
+  }
 
   const intakeUrl = `${SITE.url}/demo/order/${hubId}/thanks?session_id=${session.id}`;
   const products = Array.isArray(order?.products) ? (order?.products as string[]).join(', ') : '';

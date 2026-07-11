@@ -55,12 +55,21 @@ export async function POST(req: Request) {
     .eq('stripe_session_id', sessionId)
     .maybeSingle();
   if (!order) return NextResponse.json({ error: 'unknown_order' }, { status: 404 });
-  if (order.status === 'canceled') return NextResponse.json({ error: 'order_canceled' }, { status: 409 });
+
+  // MONEY GATE: a Stripe session id is not proof of payment (checkout mints it
+  // BEFORE the card is charged). Only a paid order may file intake, or an
+  // abandoned checkout could start our 7-day delivery clock for free.
+  if (order.status !== 'paid' && order.status !== 'intake_done' && order.status !== 'delivered') {
+    return NextResponse.json(
+      { error: 'not_paid', message: 'We have not seen the payment land yet. Give it a minute and refresh, or call (406) 312-1223.' },
+      { status: 409 }
+    );
+  }
 
   // Only the FIRST intake notifies. A resubmit still updates the answers (the
   // buyer may be correcting a typo) but must not let anyone holding the link
   // re-fire Sarah's inbox and the cockpit thread on a loop.
-  const firstIntake = order.status === 'paid' || order.status === 'pending';
+  const firstIntake = order.status === 'paid';
 
   const { error: upErr } = await supabase
     .from('demo_orders')

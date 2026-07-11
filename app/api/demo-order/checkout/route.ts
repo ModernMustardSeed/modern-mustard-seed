@@ -46,9 +46,39 @@ export async function POST(req: Request) {
     .maybeSingle();
   if (!lead) return NextResponse.json({ error: 'unknown_demo' }, { status: 404 });
 
+  // NEVER double-bill: a buyer who reopens their hub link must not be able to
+  // mint a second live subscription. Existing live order = send them to their
+  // intake instead of a new checkout.
+  const { data: live } = await supabase
+    .from('demo_orders')
+    .select('id, stripe_session_id, status')
+    .eq('hub_demo_id', hubId)
+    .in('status', ['paid', 'intake_done', 'delivered'])
+    .limit(1)
+    .maybeSingle();
+  if (live) {
+    return NextResponse.json(
+      {
+        error: 'already_ordered',
+        message: 'You already have an order with us. Check your email for the confirmation, or call (406) 312-1223 and we will sort it out on the spot.',
+        url: live.stripe_session_id ? `${SITE.url}/demo/order/${hubId}/thanks?session_id=${live.stripe_session_id}` : null,
+      },
+      { status: 409 }
+    );
+  }
+
   // Attribution: sharing partner's cookie first, else the owning rep's code.
+  // A malformed cookie ("%") would throw a URIError out of decodeURIComponent
+  // and 500 the money path, so a bad ref degrades to no ref, never to a crash.
   const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
-  let ref = (cookieRef ? decodeURIComponent(cookieRef[1]) : '').trim().slice(0, 64);
+  let ref = '';
+  if (cookieRef) {
+    try {
+      ref = decodeURIComponent(cookieRef[1]).trim().slice(0, 64);
+    } catch {
+      ref = cookieRef[1].replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64);
+    }
+  }
   const repName = (lead as { outbound_reps?: { name?: string } | null }).outbound_reps?.name;
   if (!ref && repName) {
     const { data: tm } = await supabase

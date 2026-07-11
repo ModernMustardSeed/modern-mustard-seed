@@ -229,15 +229,17 @@ export default function OsDemoApp({
           <p className="text-[10px] uppercase tracking-[0.18em] leading-tight" style={{ color: DIM }}>Command Center{place ? ` · ${place}` : ''}</p>
         </div>
         <span
-          className="ml-auto shrink-0 text-[10px] uppercase tracking-[0.16em] font-bold rounded-full px-3 py-1 border"
+          className="ml-auto hidden sm:inline-block shrink-0 text-[10px] uppercase tracking-[0.16em] font-bold rounded-full px-3 py-1 border"
           style={{ color: accent, borderColor: accent, background: preset.accentSoft }}
         >
           Demo · sample data
         </span>
+        {/* The order path must exist on a phone too: most prospects open this
+            from a text message. Keep it visible at every width. */}
         <a
           href={orderUrl || 'https://modernmustardseed.com/book'}
           {...(orderUrl ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
-          className="hidden sm:inline-block shrink-0 text-[11px] font-bold uppercase tracking-[0.1em] rounded-full px-3.5 py-1.5"
+          className="ml-auto sm:ml-0 shrink-0 text-[11px] font-bold uppercase tracking-[0.1em] rounded-full px-3.5 py-1.5 whitespace-nowrap"
           style={{ background: accent, color: INK }}
         >
           Make it real
