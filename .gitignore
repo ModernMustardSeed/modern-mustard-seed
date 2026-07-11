@@ -60,3 +60,6 @@ backups/
 # Catch-all: never commit env files or local Claude workspace state
 .env*
 .claude/
+
+# Local team login credentials written by scripts/setup-team.mjs (never commit)
+.team-credentials.json

@@ -94,8 +94,16 @@ if (!sres.ok) { console.error('Seed FAILED:', sres.status, (await sres.text()).s
 const seeded = await sres.json();
 console.log(`Seeded ${seeded.length} team members.`);
 
-// 3) credentials
-console.log('\n=== LOGIN CREDENTIALS (share via the welcome email) ===');
+// 3) credentials. Write a LOCAL (gitignored) file so the welcome email can
+//    include each person's login without anyone re-typing a password.
+const creds = people.filter((p) => p.password).map((p) => ({ email: p.email, password: p.password }));
+try {
+  const { writeFileSync } = await import('node:fs');
+  writeFileSync(path.join(process.cwd(), '.team-credentials.json'), JSON.stringify(creds, null, 2));
+  console.log('\nWrote .team-credentials.json (gitignored) for the welcome email.');
+} catch {}
+
+console.log('\n=== LOGIN CREDENTIALS (also in the welcome email) ===');
 for (const p of people) {
   console.log(`  ${p.name.padEnd(16)} ${p.email.padEnd(38)} ${p.password ? 'pw: ' + p.password : '(keeps existing owner login)'}`);
 }
