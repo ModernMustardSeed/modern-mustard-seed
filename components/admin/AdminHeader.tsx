@@ -15,11 +15,12 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
 type Item = { key: Tab; label: string; href: string };
 
 const OVERVIEW: Item = { key: 'overview', label: 'Overview', href: '/admin' };
+const MY_PROJECTS: Item = { key: 'portfolio', label: 'My Projects', href: '/admin/portfolio' };
 
 const GROUPS: { name: string; items: Item[] }[] = [
   {
@@ -132,6 +133,15 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
               className={chipCls(active === 'overview')}
             >
               {OVERVIEW.label}
+            </Link>
+
+            <Link
+              href={MY_PROJECTS.href}
+              aria-current={active === 'portfolio' ? 'page' : undefined}
+              onClick={() => setOpenGroup(null)}
+              className={chipCls(active === 'portfolio')}
+            >
+              {MY_PROJECTS.label}
             </Link>
 
             {GROUPS.map((group) => {
