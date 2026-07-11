@@ -4,22 +4,37 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 /**
- * A gentle first-login tour for a part-time caller (role 'staff'), so they land,
- * find Outbound, and start dialing without being overwhelmed by the whole admin.
- * Owners never see it. Keyed by email in localStorage, so it shows once.
+ * First-login welcome tour for the team-partners (Sarah, Polly, Easton, Anthony,
+ * and anyone added after). Everyone on the team is BOTH a partner (they earn on
+ * what they refer) and an operator (they call, post, and book for us), so the
+ * tour points at the handful of places that matter: the dial floor, their
+ * partner earnings, the ads to post, and the academy that trains the rest.
+ *
+ * Shows once per person (keyed by email in localStorage), for every role. Owners
+ * can skip in one tap. Pop-art cabin brand tokens, inline-styled so it renders
+ * correctly the instant the admin shell mounts.
  */
-export default function WelcomeTour({ name, email, role }: { name: string; email: string; role: string }) {
+
+const INK = '#161616';
+const CREAM = '#FBF6EA';
+const GOLD = '#F5B700';
+const RED = '#E0301E';
+const BLUE = '#1E50C8';
+const SERIF = "'Playfair Display', Georgia, 'Times New Roman', serif";
+const SANS = "'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+const MONO = "'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace";
+
+export default function WelcomeTour({ name, email }: { name: string; email: string; role?: string }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const first = (name || 'there').trim().split(/\s+/)[0];
   const key = `mms_welcome_dismissed_${(email || '').toLowerCase()}`;
 
   useEffect(() => {
-    if (role !== 'staff') return; // owners (Sarah, Polly, Chloe) don't get the tour
     try {
       if (!window.localStorage.getItem(key)) setOpen(true);
     } catch {}
-  }, [role, key]);
+  }, [key]);
 
   const dismiss = () => {
     try {
@@ -32,24 +47,29 @@ export default function WelcomeTour({ name, email, role }: { name: string; email
 
   const steps = [
     {
-      badge: '🌱 Welcome',
-      title: `Hey ${first}, welcome to the team.`,
-      body: 'This is your Modern Mustard Seed home base. You are here to make friendly calls to local businesses whenever you have some free time. No quotas, no pressure. This quick tour takes 20 seconds.',
+      badge: '🌱 Welcome to the family',
+      title: `Hey ${first}, welcome to the Mustard family.`,
+      body: 'You are a Modern Mustard Seed partner and part of the team now. That means you get to learn and earn: call for us, post for us, and bring us deals, and you earn on everything you refer. This 30-second tour shows you where the important things live.',
     },
     {
-      badge: 'Step 1',
-      title: 'Your one spot: Outbound.',
-      body: 'In the top menu, open the "Sales" group and click Outbound. That is your dial floor, the only page you really need. Everything for calling lives there.',
+      badge: 'Your dial floor',
+      title: 'Outbound is where the work happens.',
+      body: 'On your admin home, use the gold "Jump to" row and tap Outbound. That is your dial floor: your leads, the exact words to say on screen, one-tap outcome buttons, and a way to book a demo or a call. No quotas, just friendly calls when you have time.',
     },
     {
-      badge: 'Step 2',
-      title: 'Your 200 Kansas City leads are loaded.',
-      body: 'They are all local KC businesses, picked just for you. Tap a phone number to call, open with "Hi, I am Easton, I am local here in Kansas City," then tap one outcome button (Convo, Callback, No answer). The words to say are right on the screen. Just read them.',
+      badge: 'How you earn',
+      title: 'Your partner code pays you, forever.',
+      body: 'You earn on everything you send us: 50% on every product, 25% of the monthly bill for a year on any business you put on an AI receptionist, and 10 to 20% on custom builds. Your personal code and link are in your welcome email, and every partner code lives under Partners.',
     },
     {
-      badge: 'Step 3',
-      title: 'Two helpers, then you are set.',
-      body: 'The gold "Ask Mr. Mustard" button (bottom right of any page) answers any question, any time. The Training tab has simple tips if you want them. One rule: call business lines only, and if anyone asks you to stop, thank them and mark "Not interested." That is it.',
+      badge: 'Post for us',
+      title: 'Ready-made ads, yours to share.',
+      body: 'In the "Jump to" row, open Ads Playbook. Those are the Mr. Mustard commercials, cut and ready to post. Sharing them gets you (and us) seen, and you can carry your own link so a post can turn into a check.',
+    },
+    {
+      badge: 'Everything else',
+      title: 'Your academy and a helper on every page.',
+      body: 'The Onboarding academy trains you step by step and ranks you up as you go. Inbox and Campaigns run the pipeline. And the gold "Ask Mr. Mustard" button in the bottom-right answers any question, any time. One rule on calls: business lines only, and if anyone asks you to stop, thank them and mark "Not interested."',
     },
   ];
 
@@ -66,7 +86,7 @@ export default function WelcomeTour({ name, email, role }: { name: string; email
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        background: 'rgba(26,24,21,0.55)',
+        background: 'rgba(22,22,22,0.55)',
         backdropFilter: 'blur(2px)',
         display: 'flex',
         alignItems: 'center',
@@ -79,39 +99,39 @@ export default function WelcomeTour({ name, email, role }: { name: string; email
         onClick={(e) => e.stopPropagation()}
         style={{
           width: '100%',
-          maxWidth: 460,
+          maxWidth: 470,
           maxHeight: '90vh',
           overflowY: 'auto',
-          background: '#f7f3e9',
-          color: '#1a1815',
-          border: '2px solid #1a1815',
+          background: CREAM,
+          color: INK,
+          border: `2px solid ${INK}`,
           borderRadius: 18,
-          boxShadow: '6px 6px 0 #1a1815',
+          boxShadow: `7px 7px 0 ${INK}`,
           padding: '28px 26px 22px',
         }}
       >
         <div
           style={{
             display: 'inline-block',
-            fontFamily: 'Oswald, sans-serif',
+            fontFamily: MONO,
             textTransform: 'uppercase',
-            letterSpacing: '0.14em',
-            fontSize: 12,
-            fontWeight: 600,
-            color: '#7a5c1a',
-            background: '#b58a2a22',
-            border: '1px solid #b58a2a66',
+            letterSpacing: '0.16em',
+            fontSize: 11,
+            fontWeight: 700,
+            color: INK,
+            background: GOLD,
+            border: `2px solid ${INK}`,
             borderRadius: 999,
             padding: '4px 12px',
-            marginBottom: 14,
+            marginBottom: 16,
           }}
         >
           {s.badge}
         </div>
-        <h2 style={{ fontFamily: 'Oswald, sans-serif', fontSize: 25, lineHeight: 1.15, margin: '0 0 12px', fontWeight: 600 }}>
+        <h2 style={{ fontFamily: SERIF, fontSize: 26, lineHeight: 1.14, margin: '0 0 12px', fontWeight: 700 }}>
           {s.title}
         </h2>
-        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 15.5, lineHeight: 1.6, margin: 0, color: '#1a1815cc' }}>
+        <p style={{ fontFamily: SANS, fontSize: 15.5, lineHeight: 1.62, margin: 0, color: '#3A3733' }}>
           {s.body}
         </p>
 
@@ -123,7 +143,7 @@ export default function WelcomeTour({ name, email, role }: { name: string; email
                 height: 5,
                 flex: 1,
                 borderRadius: 999,
-                background: i <= step ? '#3f5d34' : '#1a181522',
+                background: i <= step ? RED : 'rgba(22,22,22,0.14)',
                 transition: 'background 0.2s',
               }}
             />
@@ -134,13 +154,13 @@ export default function WelcomeTour({ name, email, role }: { name: string; email
           <button
             onClick={dismiss}
             style={{
-              fontFamily: 'Oswald, sans-serif',
+              fontFamily: MONO,
               textTransform: 'uppercase',
               letterSpacing: '0.08em',
-              fontSize: 12.5,
+              fontSize: 12,
               background: 'transparent',
               border: 'none',
-              color: '#1a181588',
+              color: 'rgba(22,22,22,0.55)',
               cursor: 'pointer',
               padding: '8px 4px',
             }}
@@ -150,47 +170,53 @@ export default function WelcomeTour({ name, email, role }: { name: string; email
 
           {last ? (
             <Link
-              href="/admin/outbound"
+              href="/admin/onboarding"
               onClick={dismiss}
               style={{
-                fontFamily: 'Oswald, sans-serif',
+                fontFamily: MONO,
                 textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                fontSize: 14,
-                fontWeight: 600,
-                background: '#b58a2a',
-                color: '#1a1815',
-                border: '2px solid #1a1815',
+                letterSpacing: '0.08em',
+                fontSize: 13,
+                fontWeight: 700,
+                background: GOLD,
+                color: INK,
+                border: `2px solid ${INK}`,
                 borderRadius: 12,
                 padding: '11px 20px',
                 textDecoration: 'none',
-                boxShadow: '3px 3px 0 #1a1815',
+                boxShadow: `3px 3px 0 ${INK}`,
               }}
             >
-              Take me to Outbound →
+              Start my onboarding →
             </Link>
           ) : (
             <button
               onClick={() => setStep((x) => x + 1)}
               style={{
-                fontFamily: 'Oswald, sans-serif',
+                fontFamily: MONO,
                 textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                fontSize: 14,
-                fontWeight: 600,
-                background: '#1a1815',
-                color: '#f7f3e9',
-                border: '2px solid #1a1815',
+                letterSpacing: '0.08em',
+                fontSize: 13,
+                fontWeight: 700,
+                background: INK,
+                color: CREAM,
+                border: `2px solid ${INK}`,
                 borderRadius: 12,
                 padding: '11px 22px',
                 cursor: 'pointer',
-                boxShadow: '3px 3px 0 #b58a2a',
+                boxShadow: `3px 3px 0 ${GOLD}`,
               }}
             >
               Next
             </button>
           )}
         </div>
+
+        {step === 0 && (
+          <p style={{ fontFamily: SANS, fontSize: 12, color: 'rgba(22,22,22,0.45)', margin: '14px 0 0', textAlign: 'center' }}>
+            You can reopen this anytime from <Link href="/admin/onboarding" style={{ color: BLUE, fontWeight: 600 }}>Onboarding</Link>.
+          </p>
+        )}
       </div>
     </div>
   );
