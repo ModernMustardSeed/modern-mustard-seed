@@ -37,8 +37,15 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'reviews', label: 'Reviews', icon: 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z' },
   { id: 'ads', label: 'Ads', icon: 'M18 11v2h4v-2h-4zm-2 6.61c.96.71 2.21 1.65 3.2 2.39.4-.53.8-1.07 1.2-1.6-.99-.74-2.24-1.68-3.2-2.4-.4.54-.8 1.08-1.2 1.61zM20.4 5.6c-.4-.53-.8-1.07-1.2-1.6-.99.74-2.24 1.68-3.2 2.4.4.53.8 1.07 1.2 1.6.96-.72 2.21-1.65 3.2-2.4zM4 9c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v4h2v-4h1l5 3V6L8 9H4zm11.5 3c0-1.33-.58-2.53-1.5-3.35v6.69c.92-.81 1.5-2.01 1.5-3.34z' },
   { id: 'automations', label: 'Automations', icon: 'M7 2v11h3v9l7-12h-4l4-8z' },
-  { id: 'assistant', label: 'Assistant', icon: 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z' },
+  { id: 'assistant', label: 'Assistant', icon: ASSISTANT_ICON },
 ];
+
+/** Tag chip colors for the signature board, tone -> [text, bg]. */
+const TONE: Record<'hot' | 'won' | 'wait', [string, string]> = {
+  hot: ['#e08585', 'rgba(224,133,133,0.12)'],
+  won: ['#7dc98f', 'rgba(125,201,143,0.12)'],
+  wait: ['#d9b95c', 'rgba(217,185,92,0.12)'],
+};
 
 function useCountUp(target: number, ms = 1600): number {
   const [v, setV] = useState(0);
@@ -76,9 +83,15 @@ export default function OsDemoApp({
   /** the hub's order section; buying happens there, one tap away */
   orderUrl?: string | null;
 }) {
-  const preset = OS_PRESETS[config.niche] ?? OS_PRESETS.other;
+  const preset = resolveTrade(config);
   const accent = preset.accent;
   const [tab, setTab] = useState<Tab>('today');
+
+  // The signature board slots in right after Today, labeled per trade.
+  const tabs = useMemo<{ id: Tab; label: string; icon: string }[]>(
+    () => [TABS[0], { id: 'signature', label: preset.signature.tabLabel, icon: SIGNATURE_ICON }, ...TABS.slice(1)],
+    [preset.signature.tabLabel],
+  );
   const [toast, setToast] = useState('');
   const toastTimer = useRef<number | undefined>(undefined);
 
@@ -103,8 +116,12 @@ export default function OsDemoApp({
 
   /* --------------------------- automations state -------------------------- */
   const automations = useMemo(
-    () => OS_AUTOMATIONS.map((a) => ({ ...a, desc: a.desc.replace(/\{job\}/g, preset.jobWord) })),
-    [preset.jobWord],
+    () =>
+      [...preset.extraAutomations, ...OS_AUTOMATIONS].map((a) => ({
+        ...a,
+        desc: a.desc.replace(/\{job\}/g, preset.jobWord),
+      })),
+    [preset.extraAutomations, preset.jobWord],
   );
   const [armed, setArmed] = useState<boolean[]>(automations.map((a) => a.on));
 
@@ -140,7 +157,7 @@ export default function OsDemoApp({
   const [msgs, setMsgs] = useState<Msg[]>([
     {
       role: 'assistant',
-      content: `Morning${config.ownerFirst ? `, ${config.ownerFirst}` : ''}! I can see the whole board: today's ${preset.jobWord}s, the pipeline, and the three calls I caught overnight. Ask me anything, or tell me to draft a text, a reply, or a review response.`,
+      content: `Morning${config.ownerFirst ? `, ${config.ownerFirst}` : ''}! I can see the whole board: today's ${preset.jobWord}s, the ${preset.signature.title.toLowerCase()}, the pipeline, and the three calls I caught overnight. Ask me anything, or tell me to draft a text, a reply, or a review response.`,
     },
   ]);
   const [draft, setDraft] = useState('');
@@ -230,7 +247,7 @@ export default function OsDemoApp({
       <div className="flex-1 flex min-h-0">
         {/* Sidebar (desktop) */}
         <nav className="hidden md:flex flex-col gap-1 w-52 shrink-0 p-3 border-r" style={{ borderColor: LINE }}>
-          {TABS.map((t) => (
+          {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
@@ -305,18 +322,76 @@ export default function OsDemoApp({
               </div>
 
               <button
+                onClick={() => setTab('signature')}
+                className="mt-3 w-full rounded-2xl border-2 p-4 text-left flex items-center justify-between gap-3 animate-[osIn_.5s_ease-out_.5s_both] hover:brightness-110 transition-all"
+                style={{ background: preset.accentSoft, borderColor: accent }}
+              >
+                <span className="min-w-0">
+                  <span className="block text-[10px] uppercase tracking-[0.22em] font-bold" style={{ color: accent }}>
+                    {preset.signature.title}
+                  </span>
+                  <span className="block text-[13px] mt-1" style={{ color: DIM }}>
+                    {preset.signature.metricLabel}
+                  </span>
+                </span>
+                <span className="shrink-0 text-right">
+                  <span className="block font-mono text-2xl font-bold" style={{ color: TEXT }}>{preset.signature.metricValue}</span>
+                  <span className="block text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: accent }}>Open the board →</span>
+                </span>
+              </button>
+
+              <button
                 onClick={() => setTab('assistant')}
                 className="mt-3 w-full rounded-2xl border p-4 text-left flex items-center gap-3 animate-[osIn_.5s_ease-out_.55s_both] hover:brightness-110 transition-all"
                 style={{ background: PANEL_SOFT, borderColor: LINE }}
               >
                 <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: preset.accentSoft }}>
-                  <Icon d={TABS[5].icon} color={accent} />
+                  <Icon d={ASSISTANT_ICON} color={accent} />
                 </span>
                 <span>
                   <span className="block text-[13px] font-semibold" style={{ color: TEXT }}>Ask your assistant anything</span>
                   <span className="block text-[12px]" style={{ color: DIM }}>&ldquo;What does my day look like?&rdquo; &ldquo;Draft a reply to Greg.&rdquo; It knows the whole board.</span>
                 </span>
               </button>
+            </div>
+          )}
+
+          {tab === 'signature' && (
+            <div className="max-w-3xl">
+              {sectionTitle(preset.signature.title, preset.signature.sub)}
+              <div className="rounded-2xl border-2 p-4 mb-3 flex items-center justify-between gap-4 animate-[osIn_.5s_ease-out_both]" style={{ borderColor: accent, background: preset.accentSoft }}>
+                <p className="text-[11px] uppercase tracking-[0.22em] font-bold" style={{ color: accent }}>{preset.signature.metricLabel}</p>
+                <p className="font-mono text-3xl font-bold" style={{ color: TEXT }}>{preset.signature.metricValue}</p>
+              </div>
+              <div className="space-y-2.5">
+                {preset.signature.rows.map((r, i) => {
+                  const [toneText, toneBg] = TONE[r.tone];
+                  return (
+                    <div
+                      key={r.title}
+                      className="rounded-2xl border p-4 flex items-center gap-4 animate-[osIn_.4s_ease-out_both]"
+                      style={{ background: PANEL, borderColor: LINE, animationDelay: `${120 + i * 70}ms` }}
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[14px] font-semibold" style={{ color: TEXT }}>{r.title}</p>
+                        <p className="text-[12px] leading-relaxed mt-0.5" style={{ color: DIM }}>{r.sub}</p>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className="font-mono text-[15px] font-bold" style={{ color: TEXT }}>
+                          {typeof r.amount === 'number' ? `$${r.amount.toLocaleString()}` : r.amount}
+                        </p>
+                        <span
+                          className="inline-block mt-1 text-[10px] font-bold uppercase tracking-[0.1em] rounded-full px-2.5 py-0.5"
+                          style={{ color: toneText, background: toneBg }}
+                        >
+                          {r.tag}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-[12px] mt-3 animate-[osIn_.4s_ease-out_.5s_both]" style={{ color: DIM }}>{preset.signature.footer}</p>
             </div>
           )}
 
@@ -501,7 +576,7 @@ export default function OsDemoApp({
 
       {/* Bottom tab bar (mobile) */}
       <nav className="md:hidden shrink-0 flex border-t" style={{ borderColor: LINE, background: PANEL }}>
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)} className="flex-1 flex flex-col items-center gap-1 py-2.5" style={{ color: tab === t.id ? accent : DIM }}>
             <Icon d={t.icon} size={19} />
             <span className="text-[9px] font-semibold uppercase tracking-wide">{t.label}</span>
