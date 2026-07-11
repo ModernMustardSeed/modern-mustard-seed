@@ -104,11 +104,36 @@ export function listAdminUsers(): AdminUser[] {
   return [...(owner ? [owner] : []), ...team];
 }
 
-/** Resolve the full user (name + role) for a signed-in session email. */
+/**
+ * Resolve the full user (name + role) for a signed-in session email, env only.
+ * Synchronous, safe for the few display-only call sites. For anything that gates
+ * access or must recognize a DB teammate, use resolveAdminUserAsync.
+ */
 export function resolveAdminUser(email: string): AdminUser {
   const e = email.toLowerCase().trim();
   const match = listAdminUsers().find((u) => u.email === e);
   return match ?? { email: e, name: e.split('@')[0], role: 'staff' };
+}
+
+/**
+ * Resolve a signed-in user across BOTH the env team and the DB team_members
+ * table (the unified identity, migration 045). The DB module is node-only and
+ * pulled in via dynamic import so the edge middleware never bundles it. An
+ * unknown email falls back to least privilege ('staff'), so a lookup miss can
+ * only ever under-grant, never over-grant.
+ */
+export async function resolveAdminUserAsync(email: string): Promise<AdminUser> {
+  const e = email.toLowerCase().trim();
+  const envMatch = listAdminUsers().find((u) => u.email === e);
+  if (envMatch) return envMatch;
+  try {
+    const { getTeamMemberByEmail } = await import('@/lib/team-members');
+    const m = await getTeamMemberByEmail(e);
+    if (m) return { email: m.email, name: m.name, role: m.role === 'owner' ? 'owner' : 'staff' };
+  } catch {
+    /* DB unavailable -> fall through to least privilege */
+  }
+  return { email: e, name: e.split('@')[0], role: 'staff' };
 }
 
 // ── Public API ─────────────
@@ -140,8 +165,13 @@ export async function verifyToken(token: string): Promise<Session | null> {
   }
 }
 
-/** Validate a sign-in. Returns the matched user (owner or staff) or null. */
-export function checkCredentials(email: string, password: string): AdminUser | null {
+/**
+ * Validate a sign-in against, in order: the env owner (ADMIN_EMAIL/PASSWORD),
+ * any legacy env team (ADMIN_TEAM), and the DB team_members table (the unified
+ * identity, migration 045). Returns the matched user or null. Async so the DB
+ * teammates work; the env checks stay synchronous and unchanged.
+ */
+export async function checkCredentials(email: string, password: string): Promise<AdminUser | null> {
   const e = email.toLowerCase().trim();
 
   // Owner: the original ADMIN_EMAIL / ADMIN_PASSWORD pair.
@@ -156,11 +186,21 @@ export function checkCredentials(email: string, password: string): AdminUser | n
     return { email: e, name: process.env.ADMIN_NAME || 'Sarah Scarano', role: 'owner' };
   }
 
-  // Team members from ADMIN_TEAM.
+  // Team members from ADMIN_TEAM (legacy env).
   for (const u of parseTeam()) {
     if (timingSafeEqualStr(e, u.email) && timingSafeEqualStr(password, u.password)) {
       return { email: u.email, name: u.name, role: u.role };
     }
+  }
+
+  // DB team members (unified identity). Node-only module via dynamic import so
+  // the edge middleware bundle never pulls in node:crypto.
+  try {
+    const { checkTeamCredentials } = await import('@/lib/team-members');
+    const m = await checkTeamCredentials(e, password);
+    if (m) return m;
+  } catch {
+    /* DB unavailable -> no match */
   }
   return null;
 }
@@ -193,7 +233,7 @@ export async function getSession(): Promise<Session | null> {
 export async function getAdminUser(): Promise<AdminUser | null> {
   const session = await getSession();
   if (!session) return null;
-  return resolveAdminUser(session.email);
+  return resolveAdminUserAsync(session.email);
 }
 
 export { COOKIE_NAME };

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { getSession, resolveAdminUser } from '@/lib/admin-auth';
+import { getSession, resolveAdminUserAsync } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import type { ZodType } from 'zod';
 
@@ -33,7 +33,7 @@ export async function outboundRepScope(
     supabase.from('outbound_reps').select('*').eq('active', true).order('name'),
   ]);
   const reps = (repsRes.data ?? []) as OutboundRep[];
-  const me = session ? resolveAdminUser(session.email) : null;
+  const me = session ? await resolveAdminUserAsync(session.email) : null;
   const myRep = me ? reps.find((r) => me.name.toLowerCase().includes(String(r.name).toLowerCase())) : null;
   const isCaller = !!myRep && myRep.role === 'caller';
   return {
