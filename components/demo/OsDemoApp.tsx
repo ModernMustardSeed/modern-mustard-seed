@@ -31,13 +31,14 @@ const ASSISTANT_ICON = 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1
 const SIGNATURE_ICON =
   'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z';
 
-const TABS: { id: Tab; label: string; icon: string }[] = [
+/** `short` is the bottom-tab-bar label; 7 tabs at 375px cannot fit the long ones. */
+const TABS: { id: Tab; label: string; icon: string; short?: string }[] = [
   { id: 'today', label: 'Today', icon: 'M3 13h8V3H3v10zm10 8h8V11h-8v10zM3 21h8v-6H3v6zm10-18v6h8V3h-8z' },
   { id: 'customers', label: 'Customers', icon: 'M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05C16.19 13.89 17 15.02 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z' },
   { id: 'reviews', label: 'Reviews', icon: 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z' },
   { id: 'ads', label: 'Ads', icon: 'M18 11v2h4v-2h-4zm-2 6.61c.96.71 2.21 1.65 3.2 2.39.4-.53.8-1.07 1.2-1.6-.99-.74-2.24-1.68-3.2-2.4-.4.54-.8 1.08-1.2 1.61zM20.4 5.6c-.4-.53-.8-1.07-1.2-1.6-.99.74-2.24 1.68-3.2 2.4.4.53.8 1.07 1.2 1.6.96-.72 2.21-1.65 3.2-2.4zM4 9c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v4h2v-4h1l5 3V6L8 9H4zm11.5 3c0-1.33-.58-2.53-1.5-3.35v6.69c.92-.81 1.5-2.01 1.5-3.34z' },
-  { id: 'automations', label: 'Automations', icon: 'M7 2v11h3v9l7-12h-4l4-8z' },
-  { id: 'assistant', label: 'Assistant', icon: ASSISTANT_ICON },
+  { id: 'automations', label: 'Automations', short: 'Auto', icon: 'M7 2v11h3v9l7-12h-4l4-8z' },
+  { id: 'assistant', label: 'Assistant', short: 'AI', icon: ASSISTANT_ICON },
 ];
 
 /** Tag chip colors for the signature board, tone -> [text, bg]. */
@@ -88,7 +89,7 @@ export default function OsDemoApp({
   const [tab, setTab] = useState<Tab>('today');
 
   // The signature board slots in right after Today, labeled per trade.
-  const tabs = useMemo<{ id: Tab; label: string; icon: string }[]>(
+  const tabs = useMemo<{ id: Tab; label: string; icon: string; short?: string }[]>(
     () => [TABS[0], { id: 'signature', label: preset.signature.tabLabel, icon: SIGNATURE_ICON }, ...TABS.slice(1)],
     [preset.signature.tabLabel],
   );
@@ -579,9 +580,9 @@ export default function OsDemoApp({
       {/* Bottom tab bar (mobile) */}
       <nav className="md:hidden shrink-0 flex border-t" style={{ borderColor: LINE, background: PANEL }}>
         {tabs.map((t) => (
-          <button key={t.id} onClick={() => setTab(t.id)} className="flex-1 flex flex-col items-center gap-1 py-2.5" style={{ color: tab === t.id ? accent : DIM }}>
+          <button key={t.id} onClick={() => setTab(t.id)} className="flex-1 min-w-0 flex flex-col items-center gap-1 py-2.5" style={{ color: tab === t.id ? accent : DIM }}>
             <Icon d={t.icon} size={19} />
-            <span className="text-[9px] font-semibold uppercase tracking-wide">{t.label}</span>
+            <span className="text-[9px] font-semibold uppercase tracking-wide truncate max-w-full px-0.5">{t.short ?? t.label}</span>
           </button>
         ))}
       </nav>

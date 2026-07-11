@@ -34,6 +34,11 @@ https://modernmustardseed.com
 ## Branch
 master
 
+## Deploy Hygiene (incident 2026-07-11: domain 404'd DEPLOYMENT_NOT_FOUND for ~1 hour)
+- NEVER run `vercel alias set/rm` or `vercel domains add/rm` on this project. The production domain must stay a project domain that Vercel flips atomically when a build goes Ready. Hand-managed aliases point at queued builds and take the site DOWN for the whole build.
+- Do not stack production deploys. Before `vercel --prod`, run `vercel ls` and wait if a production build is already Queued/Building. Batch your changes into one deploy instead of deploying per commit.
+- If the site 404s with `X-Vercel-Error: DEPLOYMENT_NOT_FOUND`: diagnose with `curl -sI https://modernmustardseed.com` → `vercel ls` → `vercel domains inspect modernmustardseed.com` → `vercel alias ls | grep mustardseed`. Only re-attach (`vercel domains add modernmustardseed.com`) if the inspect table shows NO project AND no build is in flight.
+
 ## Conventions
 - No em dashes in user-facing prose (Sarah's rule).
 - Internal links use `next/link`. Outbound links open in new tab with `rel="noopener noreferrer"`.
