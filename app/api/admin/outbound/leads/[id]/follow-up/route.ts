@@ -23,15 +23,17 @@ export async function POST(req: Request, { params }: { params: Params }) {
 
   let note: string | undefined;
   let includeDemo = false;
+  let includeSite = false;
   try {
-    const body = (await req.json()) as { note?: string; includeDemo?: boolean };
+    const body = (await req.json()) as { note?: string; includeDemo?: boolean; includeSite?: boolean };
     if (typeof body.note === 'string' && body.note.trim()) note = body.note.trim().slice(0, 2000);
     includeDemo = body.includeDemo === true;
+    includeSite = body.includeSite === true;
   } catch {
     /* empty body is fine */
   }
 
-  const result = await sendOutboundEmail(guard.supabase, lead, { note, includeDemo });
+  const result = await sendOutboundEmail(guard.supabase, lead, { note, includeDemo, includeSite });
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
   return NextResponse.json({ ok: true, lead: result.lead });
 }

@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "indexnow": "node scripts/indexnow.mjs",
-    "indexnow:all": "node scripts/indexnow.mjs --from-sitemap"
+    "indexnow:all": "node scripts/indexnow.mjs --from-sitemap",
+    "demo-site-worker": "node scripts/demo-site-worker.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",

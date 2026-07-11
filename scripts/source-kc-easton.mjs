@@ -143,7 +143,7 @@ async function upsertRep() {
       'Content-Type': 'application/json',
       Prefer: 'resolution=merge-duplicates,return=representation',
     },
-    body: JSON.stringify([{ name: 'Easton', role: 'caller', daily_dial_goal: 20, daily_demo_goal: 1, active: true }]),
+    body: JSON.stringify([{ name: 'Easton', role: 'caller', daily_dial_goal: 25, daily_demo_goal: 1, active: true }]),
   });
   if (!res.ok) throw new Error(`rep upsert ${res.status}: ${(await res.text()).slice(0, 300)}`);
   const j = await res.json();

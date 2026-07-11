@@ -100,9 +100,15 @@ export type OutboundLead = {
   last_open_at: string | null;
   demo_url: string | null;
   demo_run_id: string | null;
+  site_demo_id: string | null;
+  site_demo_url: string | null;
+  site_demo_status: SiteDemoStatus | null;
   created_at: string;
   updated_at: string;
 };
+
+/** Lifecycle of the forged demo WEBSITE (built by the local demo-site worker). */
+export type SiteDemoStatus = 'queued' | 'building' | 'ready' | 'failed';
 
 /** Why a lead is where it is in the heat-ranked queue. */
 export type HeatReason =

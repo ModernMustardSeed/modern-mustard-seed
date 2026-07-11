@@ -6,6 +6,6 @@ import { usePathname } from 'next/navigation';
  *  layout: admin, the client portal, and program HQs. */
 export default function HideOnAppShell({ children }: { children: React.ReactNode }) {
   const p = usePathname() || '/';
-  if (p.startsWith('/admin') || p.startsWith('/portal') || p.endsWith('/hq')) return null;
+  if (p.startsWith('/admin') || p.startsWith('/portal') || p.endsWith('/hq') || p.startsWith('/demo/')) return null;
   return <>{children}</>;
 }

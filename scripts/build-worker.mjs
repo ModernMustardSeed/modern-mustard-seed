@@ -81,8 +81,14 @@ function runClaude(dir) {
     ].join(' ');
     const args = ['-p', prompt, '--permission-mode', PERMISSION];
     if (env.BUILD_MODEL) args.push('--model', env.BUILD_MODEL);
+    // Subscription only: .env.local carries ANTHROPIC_API_KEY for the site's
+    // metered features, and a present key would silently switch the CLI to
+    // API billing. Strip it so the logged-in Max plan is the only auth.
+    const claudeEnv = { ...env };
+    delete claudeEnv.ANTHROPIC_API_KEY;
+    delete claudeEnv.ANTHROPIC_AUTH_TOKEN;
     log('running:', CLAUDE_BIN, '-p <prompt>', '--permission-mode', PERMISSION, 'in', dir);
-    const child = spawn(CLAUDE_BIN, args, { cwd: dir, env, shell: process.platform === 'win32' });
+    const child = spawn(CLAUDE_BIN, args, { cwd: dir, env: claudeEnv, shell: process.platform === 'win32' });
     let out = '';
     const timer = setTimeout(() => { try { child.kill('SIGKILL'); } catch {} resolve({ code: 124, out: out + '\n[timeout]' }); }, MAX_RUNTIME_MS);
     child.stdout.on('data', (d) => { out += d.toString(); process.stdout.write(d); });

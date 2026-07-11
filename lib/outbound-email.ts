@@ -6,14 +6,15 @@ import type { OutboundLead } from '@/lib/outbound';
 /**
  * The one way an outbound lead gets emailed: the branded audit report when an
  * audit exists, a warm intro otherwise, optionally leading with their forged
- * demo link. Sends from Sarah's address (replies flow back through the Zoho
- * sync onto the thread), embeds the open-tracking pixel, logs the message row,
- * and stamps last_email_at. Used by the follow-up route and the cadence cron.
+ * demo links (the voice receptionist, the demo website, or both). Sends from
+ * Sarah's address (replies flow back through the Zoho sync onto the thread),
+ * embeds the open-tracking pixel, logs the message row, and stamps
+ * last_email_at. Used by the follow-up route and the cadence cron.
  */
 export async function sendOutboundEmail(
   supabase: SupabaseClient,
   lead: OutboundLead,
-  opts: { note?: string; includeDemo?: boolean; source?: string } = {},
+  opts: { note?: string; includeDemo?: boolean; includeSite?: boolean; source?: string } = {},
 ): Promise<{ ok: true; lead: OutboundLead } | { ok: false; status: number; error: string }> {
   if (!lead.email) return { ok: false, status: 400, error: 'No email on file. Run "Find site & email" first.' };
   const apiKey = process.env.RESEND_API_KEY;
@@ -27,19 +28,31 @@ export async function sendOutboundEmail(
   }
 
   const first = lead.contact_name?.trim().split(/\s+/)[0];
+  // Only offer what actually exists and is live; a queued site never ships.
+  const withDemo = Boolean(opts.includeDemo && lead.demo_url);
+  const withSite = Boolean(opts.includeSite && lead.site_demo_status === 'ready' && lead.site_demo_url);
+  const includeAny = withDemo || withSite;
+
+  const siteBlock = withSite
+    ? `<p><strong>I built ${escape(lead.business_name)} a brand-new website.</strong> A real working draft, designed for your business${withDemo ? ', with your AI receptionist living right on it (tap the gold button in the corner and talk to it)' : ''}. See it here: <a href="${escape(lead.site_demo_url!)}">${escape(lead.site_demo_url!)}</a></p>`
+    : '';
   const demoBlock =
-    opts.includeDemo && lead.demo_url
-      ? `<p><strong>I already built your receptionist.</strong> It answers as ${escape(lead.business_name)}, right now. Talk to it here, it takes 60 seconds: <a href="${escape(lead.demo_url)}">${escape(lead.demo_url)}</a></p>`
-      : '';
+    withDemo && !withSite
+      ? `<p><strong>I already built your receptionist.</strong> It answers as ${escape(lead.business_name)}, right now. Talk to it here, it takes 60 seconds: <a href="${escape(lead.demo_url!)}">${escape(lead.demo_url!)}</a></p>`
+      : withDemo && withSite
+        ? `<p>Prefer to meet the receptionist on its own first? Same one, direct line: <a href="${escape(lead.demo_url!)}">${escape(lead.demo_url!)}</a></p>`
+        : '';
 
   const hasAudit = Boolean(lead.audit_json);
-  const subject = opts.includeDemo && lead.demo_url
-    ? `Your AI receptionist is ready to meet you, ${lead.business_name}`
-    : hasAudit
-      ? `A quick audit of ${domain || lead.business_name}`
-      : 'Following up from Modern Mustard Seed';
+  const subject = withSite
+    ? `I built ${lead.business_name} a new website${withDemo ? ' (and it answers the phone)' : ''}`
+    : withDemo
+      ? `Your AI receptionist is ready to meet you, ${lead.business_name}`
+      : hasAudit
+        ? `A quick audit of ${domain || lead.business_name}`
+        : 'Following up from Modern Mustard Seed';
 
-  const html = lead.audit_json && !opts.includeDemo
+  const html = lead.audit_json && !includeAny
     ? auditReportEmail({
         toName: lead.contact_name ?? undefined,
         url: lead.audit_url || lead.website || '',
@@ -50,6 +63,7 @@ export async function sendOutboundEmail(
     : clientEmail({
         greeting: first ? `Hi ${first},` : 'Hi there,',
         body:
+          siteBlock +
           demoBlock +
           `<p>${
             opts.note
@@ -60,9 +74,11 @@ export async function sendOutboundEmail(
             ? `<p>I also ran your website through a quick audit. It came back at ${lead.audit_score}/100. Happy to walk you through the breakdown on a 10-minute call.</p>`
             : ''),
         cta: { label: 'Book a 10-minute demo', url: 'https://modernmustardseed.com/book' },
-        secondary: opts.includeDemo && lead.demo_url
-          ? { label: 'Talk to your receptionist', url: lead.demo_url }
-          : { label: 'Run the free Website Audit', url: 'https://modernmustardseed.com/website-audit' },
+        secondary: withSite && lead.site_demo_url
+          ? { label: 'See your new website', url: lead.site_demo_url }
+          : withDemo && lead.demo_url
+            ? { label: 'Talk to your receptionist', url: lead.demo_url }
+            : { label: 'Run the free Website Audit', url: 'https://modernmustardseed.com/website-audit' },
         trackId: lead.id,
       });
 
@@ -88,11 +104,15 @@ export async function sendOutboundEmail(
     from_addr: 'sarah@modernmustardseed.com',
     to_addr: lead.email,
     subject,
-    snippet: opts.includeDemo && lead.demo_url
-      ? 'Sent their forged demo link.'
-      : hasAudit
-        ? `Sent the website audit (${lead.audit_score ?? '?'}/100).`
-        : `Sent an intro email${opts.source ? ` (${opts.source})` : ''}.`,
+    snippet: withSite && withDemo
+      ? 'Sent both forged demos: the website and the receptionist.'
+      : withSite
+        ? 'Sent their forged demo website.'
+        : withDemo
+          ? 'Sent their forged demo link.'
+          : hasAudit
+            ? `Sent the website audit (${lead.audit_score ?? '?'}/100).`
+            : `Sent an intro email${opts.source ? ` (${opts.source})` : ''}.`,
     read: true,
     occurred_at: new Date().toISOString(),
   });

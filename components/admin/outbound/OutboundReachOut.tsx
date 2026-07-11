@@ -49,7 +49,11 @@ export function ReachOutDeck({
   const [enriching, setEnriching] = useState(false);
   const [promoting, setPromoting] = useState(false);
   const [forging, setForging] = useState(false);
+  const [forgingSite, setForgingSite] = useState(false);
   const [sendingDemo, setSendingDemo] = useState(false);
+
+  const siteForging = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
+  const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
 
   const forgeDemo = async () => {
     setForging(true);
@@ -65,15 +69,55 @@ export function ReachOutDeck({
     }
   };
 
+  const forgeSite = async () => {
+    setForgingSite(true);
+    push('Queuing their demo website at the forge...');
+    try {
+      const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-site`, { method: 'POST' });
+      if (res.lead) onLead(res.lead);
+      push('Website queued. The forge builds it in the background; the chip flips to live when it is done.');
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Website forge failed.', 'error');
+    } finally {
+      setForgingSite(false);
+    }
+  };
+
+  // While the forge works, watch for the flip to ready (the build runs on the
+  // worker machine, minutes not seconds).
+  const siteStatusRef = useRef(lead.site_demo_status);
+  siteStatusRef.current = lead.site_demo_status;
+  useEffect(() => {
+    if (!siteForging) return;
+    const t = window.setInterval(async () => {
+      try {
+        const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}`);
+        if (res.lead.site_demo_status !== siteStatusRef.current) {
+          onLead(res.lead);
+          if (res.lead.site_demo_status === 'ready') push('Their new website is live. Send it while the call is still warm.');
+          if (res.lead.site_demo_status === 'failed') push('The website forge hit a snag. Retry from the deck.', 'error');
+        }
+      } catch {
+        /* transient; next tick retries */
+      }
+    }, 20000);
+    return () => window.clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lead.id, siteForging]);
+
   const sendDemo = async () => {
     setSendingDemo(true);
     try {
       const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/follow-up`, {
         method: 'POST',
-        body: JSON.stringify({ includeDemo: true }),
+        body: JSON.stringify({ includeDemo: Boolean(lead.demo_url), includeSite: siteReady }),
       });
       onLead(res.lead);
-      push('Demo link sent. The pixel will tell you when they open it.');
+      push(
+        siteReady && lead.demo_url
+          ? 'Both demos sent: the website and the receptionist. The pixel will tell you when they open it.'
+          : 'Demo link sent. The pixel will tell you when they open it.',
+      );
     } catch (e) {
       push(e instanceof Error ? e.message : 'Send failed.', 'error');
     } finally {
@@ -214,17 +258,37 @@ export function ReachOutDeck({
         )}
 
         {lead.demo_url ? (
-          <>
-            <a href={lead.demo_url} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged receptionist, live">
-              ▶ Demo live ↗
-            </a>
-            <button onClick={() => void sendDemo()} disabled={sendingDemo || !lead.email} className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`} title={lead.email ? 'Email them their demo link' : 'No email on file yet'}>
-              {sendingDemo ? 'Sending…' : '✉ Send demo'}
-            </button>
-          </>
+          <a href={lead.demo_url} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged receptionist, live">
+            ▶ Demo live ↗
+          </a>
         ) : (
           <button onClick={() => void forgeDemo()} disabled={forging} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title="Build their branded AI receptionist demo in seconds">
             {forging ? 'Forging…' : '⚒ Forge demo'}
+          </button>
+        )}
+
+        {siteReady ? (
+          <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged demo website, receptionist on board">
+            🌐 Website live ↗
+          </a>
+        ) : siteForging ? (
+          <span className={`${chip} bg-[#b58a2a]/15 text-[#7a5c1a] border-[#b58a2a]/60 cursor-default animate-pulse`} title="The forge is building it in the background. This flips to live on its own.">
+            🌐 Website forging…
+          </span>
+        ) : (
+          <button
+            onClick={() => void forgeSite()}
+            disabled={forgingSite}
+            className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`}
+            title={lead.site_demo_status === 'failed' ? 'Last build failed. Forge it again.' : 'Build them a full demo website with their AI receptionist living on it (runs in the background)'}
+          >
+            {forgingSite ? 'Queuing…' : lead.site_demo_status === 'failed' ? '🌐 Retry website' : '🌐 Forge website'}
+          </button>
+        )}
+
+        {(lead.demo_url || siteReady) && (
+          <button onClick={() => void sendDemo()} disabled={sendingDemo || !lead.email} className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`} title={lead.email ? (siteReady && lead.demo_url ? 'Email them the website and the receptionist in one send' : 'Email them their demo link') : 'No email on file yet'}>
+            {sendingDemo ? 'Sending…' : siteReady && lead.demo_url ? '✉ Send both demos' : '✉ Send demo'}
           </button>
         )}
 

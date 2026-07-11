@@ -302,12 +302,14 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
 
   const handleDemoBooked = async (iso: string, notes: string, forge: boolean) => {
     await logOutcome('demo_booked', { next_action_at: iso, next_action: 'Demo', disposition: notes || undefined });
-    if (forge && lead && !lead.demo_url) {
+    if (forge && lead) {
       try {
-        push('Forging their AI receptionist demo...');
-        const res = await api<{ demo_url: string; lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-demo`, { method: 'POST' });
+        push('Forging their AI receptionist and queuing their demo website...');
+        // forge-site forges the voice demo first, then queues the website
+        // build on the worker. One call, both demos.
+        const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-site`, { method: 'POST' });
         if (res.lead) setLead(res.lead);
-        push('Demo forged. Send them the link before the meeting.');
+        push('Receptionist forged; the website builds itself in the background. Send both before the meeting.');
       } catch (e) {
         push(e instanceof Error ? e.message : 'Forge failed, you can retry from the deck.', 'error');
       }
@@ -691,7 +693,12 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
       {burst > 0 && <SeedBurst key={burst} />}
 
       {/* Demo booked modal */}
-      <DemoModal open={demoOpen} onClose={() => setDemoOpen(false)} hasDemo={Boolean(lead?.demo_url)} onSave={(iso, notes, forge) => { setDemoOpen(false); void handleDemoBooked(iso, notes, forge); }} />
+      <DemoModal
+        open={demoOpen}
+        onClose={() => setDemoOpen(false)}
+        hasDemo={Boolean(lead?.demo_url) && Boolean(lead?.site_demo_status && lead.site_demo_status !== 'failed')}
+        onSave={(iso, notes, forge) => { setDemoOpen(false); void handleDemoBooked(iso, notes, forge); }}
+      />
       {/* Callback modal */}
       <CallbackModal open={cbOpen} onClose={() => setCbOpen(false)} onSave={(iso, note) => { setCbOpen(false); void logOutcome('callback', { next_action_at: iso, next_action: note || 'Callback' }); }} />
 
@@ -742,7 +749,7 @@ function DemoModal({ open, onClose, onSave, hasDemo }: { open: boolean; onClose:
       {!hasDemo && (
         <label className="flex items-center gap-2 font-sans text-sm text-[#1a1815]/75 cursor-pointer mt-3">
           <input type="checkbox" checked={forge} onChange={(e) => setForge(e.target.checked)} className="accent-[#3f5d34] w-4 h-4" />
-          Forge their AI demo now, so they can talk to it before the meeting
+          Forge their AI demo and their demo website now, so they can see both before the meeting
         </label>
       )}
       <div className="flex justify-end gap-2 mt-4">

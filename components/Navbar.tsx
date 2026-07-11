@@ -104,7 +104,8 @@ export default function Navbar() {
     pathname.startsWith('/admin') ||
     pathname.startsWith('/portal') ||
     pathname.endsWith('/hq') ||
-    pathname === '/partners/playbook';
+    pathname === '/partners/playbook' ||
+    pathname.startsWith('/demo/');
   if (isAppShell) return null;
 
   return (

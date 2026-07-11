@@ -105,6 +105,21 @@ export default function DemoCallExperience({
       </div>
 
       <main className="max-w-2xl mx-auto px-6 py-10">
+        {ready && state === 'idle' && (
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            {[
+              ['1', 'Tap the button', 'It answers out loud, right in your browser.'],
+              ['2', 'Play the customer', 'Ask for a quote, hours, or to book something.'],
+              ['3', 'Watch it work', 'It takes the details like your best front desk hire.'],
+            ].map(([n, t, d]) => (
+              <div key={n} className="bg-white border-2 border-[#161616] rounded-xl p-3.5 text-center">
+                <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-[#F5B700] border-2 border-[#161616] font-sans font-bold text-sm text-[#161616]">{n}</span>
+                <p className="font-sans font-bold uppercase tracking-[0.08em] text-[11px] text-[#161616] mt-2">{t}</p>
+                <p className="font-body text-[11px] text-[#161616]/60 mt-1 leading-snug hidden sm:block">{d}</p>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8 text-center">
           {!ready && (
             <p className="font-body text-[#E0301E] font-semibold">{forgeError ?? 'The demo line is warming up. Refresh in a minute.'}</p>
