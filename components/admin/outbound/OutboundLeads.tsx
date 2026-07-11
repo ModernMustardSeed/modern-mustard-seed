@@ -83,8 +83,6 @@ export default function OutboundLeads() {
 
   // Add modal
   const [addOpen, setAddOpen] = useState(false);
-  const [form, setForm] = useState({ ...EMPTY_FORM });
-  const [saving, setSaving] = useState(false);
 
   // Bulk DNC scrub
   const [scrubOpen, setScrubOpen] = useState(false);
@@ -207,29 +205,6 @@ export default function OutboundLeads() {
     } catch (e) {
       setLeads(before);
       push(e instanceof Error ? e.message : 'Delete failed.', 'error');
-    }
-  };
-
-  const submitAdd = async () => {
-    setSaving(true);
-    try {
-      const { lead } = await api<{ lead: OutboundLead }>('/api/admin/outbound/leads', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...form,
-          owner_rep_id: form.owner_rep_id || null,
-          avg_job_value: form.avg_job_value || null,
-          est_missed_calls_week: form.est_missed_calls_week || null,
-        }),
-      });
-      setLeads((ls) => [lead, ...ls]);
-      setAddOpen(false);
-      setForm({ ...EMPTY_FORM });
-      push(`${lead.business_name} added.`);
-    } catch (e) {
-      push(e instanceof Error ? e.message : 'Could not add the lead.', 'error');
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -482,77 +457,16 @@ export default function OutboundLeads() {
       </main>
 
       {/* Add lead modal */}
-      <Modal open={addOpen} onClose={() => setAddOpen(false)} eyebrow="Outbound" title="Add lead" subtitle="One business, straight onto the dial list." size="lg">
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="sm:col-span-2">
-            <label className={labelCls}>Business name *</label>
-            <input className={inputCls} value={form.business_name} onChange={(e) => setForm({ ...form, business_name: e.target.value })} placeholder="Flathead Roofing Co." />
-          </div>
-          <div>
-            <label className={labelCls}>Contact name</label>
-            <input className={inputCls} value={form.contact_name} onChange={(e) => setForm({ ...form, contact_name: e.target.value })} placeholder="Bruce" />
-          </div>
-          <div>
-            <label className={labelCls}>Phone *</label>
-            <input className={inputCls} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="(406) 555-0134" />
-          </div>
-          <div>
-            <label className={labelCls}>Email</label>
-            <input className={inputCls} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="owner@business.com" />
-          </div>
-          <div>
-            <label className={labelCls}>Website</label>
-            <input className={inputCls} value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="business.com" />
-          </div>
-          <div>
-            <label className={labelCls}>Niche</label>
-            <select className={inputCls} value={form.niche} onChange={(e) => setForm({ ...form, niche: e.target.value as Niche })}>
-              {NICHES.map((n) => <option key={n} value={n}>{NICHE_LABELS[n]}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className={labelCls}>Rep</label>
-            <select className={inputCls} value={form.owner_rep_id} onChange={(e) => setForm({ ...form, owner_rep_id: e.target.value })}>
-              <option value="">Unassigned</option>
-              {reps.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className={labelCls}>City</label>
-            <input className={inputCls} value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="Kalispell" />
-          </div>
-          <div>
-            <label className={labelCls}>State</label>
-            <input className={inputCls} value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} placeholder="MT" />
-          </div>
-          <div>
-            <label className={labelCls}>Avg job value ($)</label>
-            <input className={inputCls} inputMode="decimal" value={form.avg_job_value} onChange={(e) => setForm({ ...form, avg_job_value: e.target.value })} placeholder="450" />
-          </div>
-          <div>
-            <label className={labelCls}>Est. missed calls / week</label>
-            <input className={inputCls} inputMode="numeric" value={form.est_missed_calls_week} onChange={(e) => setForm({ ...form, est_missed_calls_week: e.target.value })} placeholder="5" />
-          </div>
-          <div>
-            <label className={labelCls}>Source</label>
-            <input className={inputCls} value={form.source} onChange={(e) => setForm({ ...form, source: e.target.value })} placeholder="google-maps" />
-          </div>
-          <div className="sm:col-span-2">
-            <label className={labelCls}>Notes</label>
-            <textarea className={`${inputCls} min-h-[70px]`} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
-          </div>
-          <label className="sm:col-span-2 flex items-center gap-2 font-sans text-sm text-[#1a1815]/75 cursor-pointer">
-            <input type="checkbox" checked={form.dnc_checked} onChange={(e) => setForm({ ...form, dnc_checked: e.target.checked })} className="accent-[#3f5d34] w-4 h-4" />
-            Checked against the DNC registry
-          </label>
-        </div>
-        <div className="flex justify-end gap-2 mt-5">
-          <button onClick={() => setAddOpen(false)} className={btnGhost}>Cancel</button>
-          <button onClick={() => void submitAdd()} disabled={saving || !form.business_name.trim() || form.phone.replace(/\D/g, '').length < 7} className={btnPrimary}>
-            {saving ? 'Saving...' : 'Add lead'}
-          </button>
-        </div>
-      </Modal>
+      <AddLeadModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        reps={reps}
+        onAdded={(lead) => {
+          setLeads((ls) => [lead, ...ls]);
+          push(`${lead.business_name} added.`);
+        }}
+        onError={(msg) => push(msg, 'error')}
+      />
 
       {/* Import CSV modal */}
       <Modal
@@ -658,5 +572,123 @@ export default function OutboundLeads() {
 
       <ToastHost toasts={toasts} />
     </div>
+  );
+}
+
+/**
+ * Own component with local form state on purpose: with ~1,000 leads loaded,
+ * keeping the form state in the page meant every keystroke re-rendered the
+ * whole table. Here a keystroke re-renders only the modal.
+ */
+function AddLeadModal({
+  open,
+  onClose,
+  reps,
+  onAdded,
+  onError,
+}: {
+  open: boolean;
+  onClose: () => void;
+  reps: Rep[];
+  onAdded: (lead: OutboundLead) => void;
+  onError: (msg: string) => void;
+}) {
+  const [form, setForm] = useState({ ...EMPTY_FORM });
+  const [saving, setSaving] = useState(false);
+
+  const submit = async () => {
+    setSaving(true);
+    try {
+      const { lead } = await api<{ lead: OutboundLead }>('/api/admin/outbound/leads', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...form,
+          owner_rep_id: form.owner_rep_id || null,
+          avg_job_value: form.avg_job_value || null,
+          est_missed_calls_week: form.est_missed_calls_week || null,
+        }),
+      });
+      onAdded(lead);
+      onClose();
+      setForm({ ...EMPTY_FORM });
+    } catch (e) {
+      onError(e instanceof Error ? e.message : 'Could not add the lead.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} eyebrow="Outbound" title="Add lead" subtitle="One business, straight onto the dial list." size="lg">
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div className="sm:col-span-2">
+          <label className={labelCls}>Business name *</label>
+          <input className={inputCls} value={form.business_name} onChange={(e) => setForm({ ...form, business_name: e.target.value })} placeholder="Flathead Roofing Co." />
+        </div>
+        <div>
+          <label className={labelCls}>Contact name</label>
+          <input className={inputCls} value={form.contact_name} onChange={(e) => setForm({ ...form, contact_name: e.target.value })} placeholder="Bruce" />
+        </div>
+        <div>
+          <label className={labelCls}>Phone *</label>
+          <input className={inputCls} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="(406) 555-0134" />
+        </div>
+        <div>
+          <label className={labelCls}>Email</label>
+          <input className={inputCls} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="owner@business.com" />
+        </div>
+        <div>
+          <label className={labelCls}>Website</label>
+          <input className={inputCls} value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="business.com" />
+        </div>
+        <div>
+          <label className={labelCls}>Niche</label>
+          <select className={inputCls} value={form.niche} onChange={(e) => setForm({ ...form, niche: e.target.value as Niche })}>
+            {NICHES.map((n) => <option key={n} value={n}>{NICHE_LABELS[n]}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className={labelCls}>Rep</label>
+          <select className={inputCls} value={form.owner_rep_id} onChange={(e) => setForm({ ...form, owner_rep_id: e.target.value })}>
+            <option value="">Unassigned</option>
+            {reps.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className={labelCls}>City</label>
+          <input className={inputCls} value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="Kalispell" />
+        </div>
+        <div>
+          <label className={labelCls}>State</label>
+          <input className={inputCls} value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} placeholder="MT" />
+        </div>
+        <div>
+          <label className={labelCls}>Avg job value ($)</label>
+          <input className={inputCls} inputMode="decimal" value={form.avg_job_value} onChange={(e) => setForm({ ...form, avg_job_value: e.target.value })} placeholder="450" />
+        </div>
+        <div>
+          <label className={labelCls}>Est. missed calls / week</label>
+          <input className={inputCls} inputMode="numeric" value={form.est_missed_calls_week} onChange={(e) => setForm({ ...form, est_missed_calls_week: e.target.value })} placeholder="5" />
+        </div>
+        <div>
+          <label className={labelCls}>Source</label>
+          <input className={inputCls} value={form.source} onChange={(e) => setForm({ ...form, source: e.target.value })} placeholder="google-maps" />
+        </div>
+        <div className="sm:col-span-2">
+          <label className={labelCls}>Notes</label>
+          <textarea className={`${inputCls} min-h-[70px]`} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+        </div>
+        <label className="sm:col-span-2 flex items-center gap-2 font-sans text-sm text-[#1a1815]/75 cursor-pointer">
+          <input type="checkbox" checked={form.dnc_checked} onChange={(e) => setForm({ ...form, dnc_checked: e.target.checked })} className="accent-[#3f5d34] w-4 h-4" />
+          Checked against the DNC registry
+        </label>
+      </div>
+      <div className="flex justify-end gap-2 mt-5">
+        <button onClick={onClose} className={btnGhost}>Cancel</button>
+        <button onClick={() => void submit()} disabled={saving || !form.business_name.trim() || form.phone.replace(/\D/g, '').length < 7} className={btnPrimary}>
+          {saving ? 'Saving...' : 'Add lead'}
+        </button>
+      </div>
+    </Modal>
   );
 }

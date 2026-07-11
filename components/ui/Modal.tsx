@@ -35,6 +35,14 @@ export default function Modal({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Callers pass inline `onClose` arrows, so the prop identity changes every
+  // parent render. Route it through a ref so the open/close effect below can
+  // depend on `open` alone; with `onClose` in its deps, the effect re-ran on
+  // every parent render and its focus handling stole focus from whichever
+  // input was being typed in (one character per click in the add-lead form).
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   useEffect(() => {
     if (!open) return;
     const prevFocus = document.activeElement as HTMLElement | null;
@@ -42,7 +50,7 @@ export default function Modal({
     document.body.style.overflow = 'hidden';
     cardRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onCloseRef.current();
     };
     document.addEventListener('keydown', onKey);
     return () => {
@@ -50,7 +58,7 @@ export default function Modal({
       document.body.style.overflow = prevOverflow;
       prevFocus?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
