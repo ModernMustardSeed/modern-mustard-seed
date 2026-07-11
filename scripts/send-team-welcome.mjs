@@ -11,6 +11,8 @@
  *   node scripts/send-team-welcome.mjs --dump               # write a preview, no send
  *   node scripts/send-team-welcome.mjs --send <email>       # send to one recipient
  *   node scripts/send-team-welcome.mjs --all                # send to all four
+ *   ... --send <email> --to <inbox>                         # test: that person's
+ *       personalized email, delivered to a different inbox instead
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -217,13 +219,16 @@ if (args.includes('--dump')) {
   process.exit(0);
 }
 
+const toIdx = process.argv.indexOf('--to');
+const deliverTo = toIdx >= 0 ? process.argv[toIdx + 1] : null;
+
 async function send(r) {
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: 'The Mustard Family <sarah@modernmustardseed.com>',
-      to: [r.email],
+      to: [deliverTo || r.email],
       reply_to: 'sarah@modernmustardseed.com',
       subject: `Welcome to the Mustard family, ${r.first}`,
       html: buildHtml(r),
@@ -231,9 +236,9 @@ async function send(r) {
     }),
   });
   const json = await res.json().catch(() => ({}));
-  if (res.ok) console.log(`SENT to ${r.first} <${r.email}>  id: ${json.id || '(none)'}`);
+  if (res.ok) console.log(`SENT ${r.first}'s welcome to <${deliverTo || r.email}>  id: ${json.id || '(none)'}`);
   else {
-    console.error(`FAILED ${r.email} (${res.status}):`, JSON.stringify(json));
+    console.error(`FAILED ${deliverTo || r.email} (${res.status}):`, JSON.stringify(json));
     process.exitCode = 1;
   }
 }
