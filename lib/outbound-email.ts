@@ -78,7 +78,7 @@ export async function sendOutboundEmail(
         ? demoFilmCard({
             film,
             href: hub,
-            caption: `Twenty seconds from Mr. Mustard on what we built ${lead.business_name}.`,
+            caption: `Thirty seconds from Mr. Mustard on what we built ${lead.business_name}.`,
           })
         : '') +
       rows +

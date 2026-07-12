@@ -220,7 +220,7 @@ export async function POST(req: Request) {
             demoFilmCard({
               film: 'demo-welcome',
               href: lead.hub_demo_url,
-              caption: `Twenty seconds from Mr. Mustard on what we built ${business}.`,
+              caption: `Thirty seconds from Mr. Mustard on what we built ${business}.`,
             }) +
             `<p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>`,
           cta: { label: 'Open your Demo Suite', url: lead.hub_demo_url },
