@@ -28,10 +28,41 @@ const FAQ = [
   },
 ];
 
+const PIECES = [
+  {
+    icon: '🎙',
+    title: 'AI Receptionist',
+    desc: 'Call it. Pretend you are a customer. Try to stump it. It answers as YOUR business, day or night, and books the job.',
+    price: DEMO_PRODUCTS.voice,
+    tone: 'ink' as const,
+  },
+  {
+    icon: '🌐',
+    title: 'Your New Website',
+    desc: 'Designed from scratch for your trade, your town, your phone number. A real working draft, not a template tour.',
+    price: DEMO_PRODUCTS.site,
+    tone: 'gold' as const,
+  },
+  {
+    icon: '⚙',
+    title: 'Command Center',
+    desc: 'Your day, customers, reviews, and ads on one board, with an AI that reads the whole thing back to you.',
+    price: DEMO_PRODUCTS.os,
+    tone: 'white' as const,
+  },
+];
+
 /**
  * THE DEMO STATION: the ad-funnel front door. Ads land here, the visitor
  * forges their own three-demo suite, the hub sells the keep, and the dial
- * floor follows up on everyone who stalls. Pop-art MMS system throughout.
+ * floor follows up on everyone who stalls.
+ *
+ * Layout law here (learned the hard way): this page is a CONVERSION page, so
+ * it is deliberately asymmetric and top-heavy. The film carries the hero (flat
+ * color blocks read as a template), the form sits at the top of the fold on
+ * desktop instead of below three cards, and every card is a flex column with
+ * its price pill pinned to a common baseline so the buttons never float at
+ * ragged heights.
  */
 export default function DemosPage() {
   return (
@@ -51,78 +82,186 @@ export default function DemosPage() {
         }}
       />
 
-      {/* Hero */}
+      {/* ── Hero: headline left, the forge itself right. Never a centered column. ── */}
       <header className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-3xl mx-auto px-6 pt-12 pb-12 text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold">The Demo Station</span>
-          <h1 className="font-display text-4xl md:text-6xl font-bold mt-4 leading-[1.05]">
-            We build your business <em className="italic text-[#E0301E]">three free demos.</em> Right now.
-          </h1>
-          <p className="font-body text-[17px] text-[#161616]/70 mt-5 max-w-xl mx-auto">
-            An AI receptionist that answers as your business. A brand-new website. A command center with your name on
-            the door. Real, working, and personalized to you, not a slideshow. Keep what you love from{' '}
-            {formatUsd(DEMO_PRODUCTS.site.monthlyCents)} a month.
-          </p>
+        <div className="max-w-6xl mx-auto px-6 pt-12 pb-14 lg:pt-16 lg:pb-16">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+            {/* The pitch */}
+            <div className="lg:col-span-6 xl:col-span-5">
+              <span className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold">
+                The Demo Station
+              </span>
+              <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
+                We build your business{' '}
+                <em className="italic text-[#E0301E]">three free demos.</em> Right now.
+              </h1>
+              <p className="font-body text-[17px] text-[#161616]/70 mt-5 leading-relaxed">
+                A receptionist that answers as your business. A brand-new website. A command center with your name on
+                the door. Real and working, personalized to you, not a slideshow.
+              </p>
+
+              <ul className="mt-6 space-y-2.5">
+                {[
+                  'No card. No meeting. No sales call to sit through.',
+                  'The first two are ready in about twenty seconds.',
+                  `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo. Or keep nothing.`,
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#161616]/80">
+                    <span
+                      aria-hidden
+                      className="mt-[3px] shrink-0 grid place-items-center h-5 w-5 rounded-md bg-[#F5B700] border-2 border-[#161616] text-[11px] font-bold leading-none"
+                    >
+                      ✓
+                    </span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href="#forge"
+                className="mt-8 inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform lg:hidden"
+              >
+                Forge my three demos →
+              </a>
+            </div>
+
+            {/* The proof: the film. Real motion beats another color block. */}
+            <div className="lg:col-span-6 xl:col-span-7">
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[8px_8px_0_0_#161616] overflow-hidden">
+                <video
+                  controls
+                  preload="metadata"
+                  poster="/video/demo-welcome-poster.jpg"
+                  src="/video/demo-welcome.mp4"
+                  className="w-full aspect-video bg-[#161616]"
+                />
+                <div className="flex items-center gap-3 px-4 py-3 border-t-2 border-[#161616]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/brand/mascot.png" alt="" width={34} height={34} className="shrink-0" />
+                  <p className="font-body text-[13px] text-[#161616]/70 leading-snug">
+                    Thirty seconds from Mr. Mustard on exactly what lands in your hub.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-10 space-y-12">
-        {/* The three things */}
-        <section className="grid sm:grid-cols-3 gap-4">
-          {[
-            { icon: '🎙', title: 'AI Receptionist', desc: 'Call it. Pretend you are a customer. Try to stump it. It answers as YOUR business, 24/7.', price: DEMO_PRODUCTS.voice },
-            { icon: '🌐', title: 'Your New Website', desc: 'Designed from scratch for your trade, your town, your phone number. Not a template tour.', price: DEMO_PRODUCTS.site },
-            { icon: '⚙', title: 'Command Center', desc: 'Your day, customers, reviews, and ads on one board, with an AI that reads it to you.', price: DEMO_PRODUCTS.os },
-          ].map((c) => (
-            <div key={c.title} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#161616] p-5">
-              <span className="text-3xl">{c.icon}</span>
-              <h2 className="font-display text-xl font-bold mt-2">{c.title}</h2>
-              <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed">{c.desc}</p>
-              <p className="font-mono text-[12px] font-bold text-[#161616] mt-3 bg-[#F5B700] border-2 border-[#161616] rounded-full px-3 py-1 inline-block">
-                free demo · keep for {formatUsd(c.price.monthlyCents)}/mo
+      <main className="max-w-6xl mx-auto px-6 py-12 lg:py-16 space-y-16">
+        {/* ── The form. The whole point of the page, so it does not hide below cards. ── */}
+        <section id="forge" className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start scroll-mt-8">
+          <div className="lg:col-span-5">
+            <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">Start the forge</span>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 leading-[1.08]">
+              Sixty seconds of you. Twenty seconds of us.
+            </h2>
+            <p className="font-body text-[15px] text-[#161616]/70 mt-4 leading-relaxed">
+              The phone number matters: your receptionist demo answers as your business, so we build it against a real
+              line. Nothing is charged and nobody calls you unless you ask.
+            </p>
+            <div className="mt-6 bg-[#161616] rounded-2xl border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">What lands</p>
+              <p className="font-body text-[14px] text-[#FBF6EA]/80 mt-2 leading-relaxed">
+                One private hub link with all three demos inside, plus a calculator that shows what the calls you miss
+                are already costing you.
               </p>
             </div>
-          ))}
-        </section>
-
-        {/* The form */}
-        <section id="forge">
-          <div className="text-center mb-5">
-            <h2 className="font-display text-3xl font-bold">Sixty seconds of you, twenty seconds of us</h2>
-            <p className="font-body text-[#161616]/70 mt-2">
-              The phone number matters: your receptionist demo answers as your business.
-            </p>
           </div>
-          <DemoStation />
+          <div className="lg:col-span-7">
+            <DemoStation />
+          </div>
         </section>
 
-        {/* How it works */}
-        <section className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#B58A2A] p-6 sm:p-8">
+        {/* ── The three pieces. Flex columns, pills pinned to one baseline. ── */}
+        <section>
+          <h2 className="font-display text-3xl sm:text-4xl font-bold">What actually shows up</h2>
+          <p className="font-body text-[15px] text-[#161616]/70 mt-2 max-w-2xl">
+            Three working things with your name on them. Play with all of them, keep any of them, or keep none.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-5 mt-7">
+            {PIECES.map((c) => (
+              <div
+                key={c.title}
+                className={`flex flex-col border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 ${
+                  c.tone === 'ink'
+                    ? 'bg-[#161616] text-[#FBF6EA]'
+                    : c.tone === 'gold'
+                      ? 'bg-[#F5B700] text-[#161616]'
+                      : 'bg-white text-[#161616]'
+                }`}
+              >
+                <span className="text-3xl leading-none">{c.icon}</span>
+                <h3 className="font-display text-xl font-bold mt-3 leading-tight">{c.title}</h3>
+                <p
+                  className={`font-body text-[13.5px] mt-2 leading-relaxed ${
+                    c.tone === 'ink' ? 'text-[#FBF6EA]/70' : 'text-[#161616]/70'
+                  }`}
+                >
+                  {c.desc}
+                </p>
+                {/* mt-auto is the fix for the ragged buttons: every pill sits on one line. */}
+                <p
+                  className={`mt-auto pt-5 font-mono text-[12px] font-bold ${
+                    c.tone === 'gold' ? 'text-[#161616]' : c.tone === 'ink' ? 'text-[#F5B700]' : 'text-[#161616]'
+                  }`}
+                >
+                  Free demo
+                  <span className={c.tone === 'ink' ? 'text-[#FBF6EA]/40' : 'text-[#161616]/40'}> · </span>
+                  keep for {formatUsd(c.price.monthlyCents)}/mo
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="font-body text-[14px] text-[#161616]/60 mt-5">
+            Want all three? The whole system is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order
+            it right from your hub.
+          </p>
+        </section>
+
+        {/* ── How it works ── */}
+        <section className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[8px_8px_0_0_#F5B700] p-7 sm:p-10">
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">How it works</span>
-          <div className="grid sm:grid-cols-3 gap-6 mt-4">
+          <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               { n: '1', t: 'You tell us who you are', d: 'Sixty seconds, the form above. No card, no meeting.' },
-              { n: '2', t: 'The forge builds', d: 'Receptionist and command center in seconds; your website lands within the hour at your private hub.' },
-              { n: '3', t: 'Keep what you love', d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for the whole system. Live within 7 days.` },
+              { n: '2', t: 'The forge builds', d: 'Receptionist and command center in seconds. Your website is designed by hand-tuned AI and lands at your hub within the hour.' },
+              {
+                n: '3',
+                t: 'Keep what you love',
+                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for the whole system. Live within 7 days.`,
+              },
             ].map((s) => (
-              <div key={s.n}>
-                <span className="font-display text-4xl font-bold text-[#F5B700]">{s.n}</span>
-                <h3 className="font-display text-lg font-bold text-[#FBF6EA] mt-1">{s.t}</h3>
-                <p className="font-body text-[13px] text-[#FBF6EA]/65 mt-1.5 leading-relaxed">{s.d}</p>
+              <div key={s.n} className="flex gap-4 sm:block">
+                <span className="font-display text-5xl font-bold text-[#F5B700] leading-none shrink-0">{s.n}</span>
+                <div className="sm:mt-3">
+                  <h3 className="font-display text-lg font-bold text-[#FBF6EA] leading-tight">{s.t}</h3>
+                  <p className="font-body text-[13.5px] text-[#FBF6EA]/65 mt-1.5 leading-relaxed">{s.d}</p>
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* FAQ */}
-        <section>
-          <h2 className="font-display text-2xl font-bold mb-4">Fair questions</h2>
-          <div className="space-y-3">
+        {/* ── FAQ ── */}
+        <section className="grid lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-4">
+            <h2 className="font-display text-3xl font-bold">Fair questions</h2>
+            <p className="font-body text-[14px] text-[#161616]/60 mt-3">
+              Still stuck? Call us at{' '}
+              <a href="tel:+14063121223" className="font-bold text-[#1E50C8] underline underline-offset-2">
+                (406) 312-1223
+              </a>
+              . Yes, an AI answers our phone too. Try to stump it.
+            </p>
+          </div>
+          <div className="lg:col-span-8 space-y-3">
             {FAQ.map((f) => (
               <details key={f.q} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 group">
-                <summary className="font-sans font-bold cursor-pointer list-none flex justify-between items-center">
+                <summary className="font-sans font-bold cursor-pointer list-none flex justify-between items-center gap-4">
                   {f.q}
-                  <span className="text-[#E0301E] group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+                  <span className="text-[#E0301E] group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
                 </summary>
                 <p className="font-body text-[14px] text-[#161616]/70 mt-3 leading-relaxed">{f.a}</p>
               </details>
@@ -130,8 +269,8 @@ export default function DemosPage() {
           </div>
         </section>
 
-        <p className="font-mono text-[11px] text-[#161616]/40 text-center pb-8">
-          Modern Mustard Seed · Kalispell, MT · (406) 312-1223 · Yes, an AI answers our phone too. Try it.
+        <p className="font-mono text-[11px] text-[#161616]/40 text-center pb-4">
+          Modern Mustard Seed · Kalispell, MT · (406) 312-1223
         </p>
       </main>
     </div>

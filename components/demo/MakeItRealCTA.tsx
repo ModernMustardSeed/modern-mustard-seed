@@ -76,7 +76,7 @@ export default function MakeItRealCTA({
 
   return (
     <section id="order" className="animate-[hubIn_.5s_ease-out_both]">
-      <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#B58A2A] p-6 sm:p-8">
+      <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-6 sm:p-8">
         <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">Make it real</span>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#FBF6EA] mt-2">
           Keep it. Order right here, live within a week.
@@ -97,7 +97,7 @@ export default function MakeItRealCTA({
                 aria-pressed={on}
                 className={`w-full text-left rounded-2xl border-2 p-4 flex items-start gap-4 transition-all ${
                   on
-                    ? 'border-[#F5B700] bg-[#F5B700]/10'
+                    ? 'border-[#F5B700] bg-[#242424]'
                     : 'border-[#FBF6EA]/20 bg-white/5 opacity-75 hover:opacity-100'
                 }`}
               >
@@ -135,7 +135,8 @@ export default function MakeItRealCTA({
           </p>
         ) : null}
 
-        <div className="mt-6 rounded-2xl border-2 border-[#F5B700] bg-[#F5B700]/10 p-5 text-center">
+        {/* Neutral lifted ink. A translucent mustard fill over ink reads brown. */}
+        <div className="mt-6 rounded-2xl border-2 border-[#F5B700] bg-[#1F1F1F] p-5 text-center">
           {quote ? (
             <>
               <p className="font-sans text-[11px] uppercase tracking-[0.2em] font-bold text-[#F5B700]">{quote.label}</p>

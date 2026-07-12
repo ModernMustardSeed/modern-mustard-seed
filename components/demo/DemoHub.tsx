@@ -204,7 +204,7 @@ export default function DemoHub({
 
         {/* Recovery Calculator */}
         <section className="animate-[hubIn_.5s_ease-out_both]">
-          <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#B58A2A] p-6 sm:p-8">
+          <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-6 sm:p-8">
             <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">The Recovery Calculator</span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#FBF6EA] mt-2">What are missed calls costing {business}?</h2>
             <p className="font-body text-[14px] text-[#FBF6EA]/60 mt-2">Slide to match your week. Estimates, but honest ones.</p>
@@ -230,7 +230,9 @@ export default function DemoHub({
               ))}
             </div>
 
-            <div className="mt-6 rounded-2xl border-2 border-[#F5B700] bg-[#F5B700]/10 p-5 text-center">
+            {/* Neutral lifted ink, never a mustard wash: translucent mustard over
+                ink mixes to a muddy brown, which is off-brand. Border carries the gold. */}
+            <div className="mt-6 rounded-2xl border-2 border-[#F5B700] bg-[#1F1F1F] p-5 text-center">
               <p className="font-sans text-[11px] uppercase tracking-[0.2em] font-bold text-[#F5B700]">Leaking every month</p>
               <p className="font-display text-5xl sm:text-6xl font-bold text-[#FBF6EA] mt-1 tabular-nums">${shown.toLocaleString()}</p>
               <p className="font-body text-[14px] text-[#FBF6EA]/70 mt-2">
