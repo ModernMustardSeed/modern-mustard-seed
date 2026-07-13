@@ -400,6 +400,30 @@ const UNV_CUTS = [
   { file: '/ads/unveiling-short-9x16.mp4', label: '9:16 — Short cut (~:20)', note: 'Punchy hook + offer + CTA. For Reels / Stories / Shorts A-B tests.' },
 ];
 
+const UNV_FB_POST = `Tonight, an unveiling. 🥂
+
+Most companies ask you to pay first and imagine the rest. We flipped it.
+
+Tell us about your business (60 seconds, that is the whole form) and we build your demos first: a real working website, an AI receptionist that answers actual calls, and a command center with your business inside it. Your name on all three. Free to see working.
+
+If you love them, we make them real. If not, it cost you a minute.
+
+Mr. and Mrs. Mustard will show you around the gallery. 🌱
+
+Your unveiling is waiting: modernmustardseed.com/demos?utm_source=facebook&utm_medium=organic&utm_campaign=unveiling`;
+
+const UNV_IG_CAPTION = `Tonight, an unveiling 🥂
+
+We build your demos FIRST. A real website. An AI receptionist that answers actual calls. A command center with your business inside it.
+
+Free to see working. You only pay to make them real.
+
+60 seconds at modernmustardseed.com/demos (link in bio) and Mr. & Mrs. Mustard will meet you at the gallery doors. 🌱
+
+#smallbusiness #aireceptionist #websitedesign #entrepreneur #automation`;
+
+const UNV_IG_STORY = `We built something for you. No, really. For you. 🥂 Sixty seconds → your website, your AI receptionist, your command center. Working demos, free. Sticker link → modernmustardseed.com/demos`;
+
 const UNV_CHECKLIST = [
   { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $15/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the unveiling story).' },
   { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot has spoken dialogue AND burned-in captions, so it lands sound-on and muted.' },
@@ -407,7 +431,7 @@ const UNV_CHECKLIST = [
   { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" or "free website" in any edit. The demo was the trial.' },
   { id: 'audience', label: 'Audience: Advantage+, broad small-business. Suggestions: Small business owners, Business owner, Home services, Restaurant owner, Contractors, Entrepreneurship. Age 25-65, United States.' },
   { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same /demos landing, swap the link to utm_source=google.' },
-  { id: 'organic', label: 'Post the 4:5 to FB and the 9:16 as an IG Reel + a YouTube Short the same day (free reach). Ask Claude for the launch drafts (Sarah approves every post).' },
+  { id: 'organic', label: 'Post the 4:5 to FB and the 9:16 as an IG Reel + a YouTube Short the same day (free reach). The FB post, IG caption, and IG Story line are ready to paste in the "Organic launch posts" section below.' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the test-drive angle) and let them fight. Kill the loser at day 6.' },
   { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at the same /demos link. Anyone who watched the unveiling but did not forge gets the second knock.' },
   { id: 'review', label: 'Day 5-7: judge on cost per forged demo (station_submit / station_forged in Vercel Analytics, leads land in the cockpit under source=demo-station). Truth metric: paid demo orders on the hub order card.' },
@@ -1460,6 +1484,17 @@ export default function AdsPlaybook() {
             <CopyBlock title="Headline" text={UNV_HEADLINE} />
             <CopyBlock title="Description" text={UNV_DESCRIPTION} />
             <CopyBlock title="Landing link with UTM (the Demo Station)" text={UNV_LANDING} />
+          </div>
+        </section>
+
+        {/* The Unveiling organic launch posts */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">Organic launch posts</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Free reach on launch day: the 4:5 cut goes to Facebook with the first block, the 9:16 goes up as an IG Reel with the second. The Story line rides a frame of the film with a link sticker. IG links are not clickable in captions, so keep /demos in the bio.</p>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Facebook post (pairs with the 4:5 cut)" text={UNV_FB_POST} />
+            <CopyBlock title="Instagram Reel caption (pairs with the 9:16 cut)" text={UNV_IG_CAPTION} />
+            <CopyBlock title="Instagram Story overlay + sticker (frame of the film)" text={UNV_IG_STORY} />
           </div>
         </section>
 
