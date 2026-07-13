@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { sendOutboundEmail } from '@/lib/outbound-email';
+import { demoStationDrip } from '@/lib/demo-drip';
 import type { OutboundLead } from '@/lib/outbound';
 
 export const runtime = 'nodejs';
@@ -13,7 +14,12 @@ export const dynamic = 'force-dynamic';
  * attempt for a human to fire; the AI never cold-calls on a timer
  * (compliance stays human-shaped). Capped at 10 sends per run; leads without
  * an email park quietly with a note.
+ *
+ * ALSO runs the DEMO-STATION DRIP (lib/demo-drip.ts): self-serve forgers who
+ * have not bought get a three-touch sequence that stops the moment they buy,
+ * reply, or a rep moves the lead.
  */
+
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
   if (secret) {
@@ -72,5 +78,7 @@ export async function GET(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true, due: due?.length ?? 0, sent, parked });
+  const drip = await demoStationDrip(sb);
+
+  return NextResponse.json({ ok: true, due: due?.length ?? 0, sent, parked, drip });
 }

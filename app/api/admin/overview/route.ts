@@ -19,6 +19,11 @@ type Attention = {
   whenIso: string;
   leadId?: string;
   severity: 'high' | 'medium';
+  /** Tie-breaker inside a severity band, high wins. The rail is oldest-first
+   *  (staleness is the whole point of nagging), which would bury the one thing
+   *  that is urgent BECAUSE it is new: a self-serve signup who is on their hub
+   *  right now. Anything time-critical on arrival sets this. */
+  priority?: number;
 };
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -113,8 +118,23 @@ export async function GET() {
         if (created >= ago7) new7d += 1;
         if (created >= ago30) new30d += 1;
 
+        // A Demo Station signup is the hottest lead we get: they came off an ad,
+        // typed their own details, and are playing with the demos we just forged
+        // them. No 24h grace period, no waiting for them to go cold.
+        if (status === 'new' && l.source === 'demo-station') {
+          const hours = Math.round((now.getTime() - created.getTime()) / 3600000);
+          attention.push({
+            kind: 'lead',
+            title: `Forged their own demos: ${(l.business_name as string) || l.name || l.email}`,
+            detail: hours < 1 ? 'Just now, self-serve from /demos. Call while they are still on the page.' : `${hours}h ago, self-serve from /demos. No order yet.`,
+            whenIso: l.created_at as string,
+            leadId: l.id as string,
+            severity: 'high',
+            priority: 2,
+          });
+        }
         // Attention: a genuinely new lead sitting unreplied for over 24h.
-        if (status === 'new' && created < ago24 && l.source !== 'mustard-seed-booking') {
+        else if (status === 'new' && created < ago24 && l.source !== 'mustard-seed-booking') {
           const hours = Math.round((now.getTime() - created.getTime()) / 3600000);
           attention.push({
             kind: l.source === 'store-buyer' ? 'buyer' : 'lead',
@@ -242,6 +262,7 @@ export async function GET() {
 
   attention.sort((a, b) => {
     if (a.severity !== b.severity) return a.severity === 'high' ? -1 : 1;
+    if ((a.priority ?? 0) !== (b.priority ?? 0)) return (b.priority ?? 0) - (a.priority ?? 0);
     return new Date(a.whenIso).getTime() - new Date(b.whenIso).getTime();
   });
 

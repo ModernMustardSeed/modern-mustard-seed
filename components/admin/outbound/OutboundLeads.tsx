@@ -11,6 +11,15 @@ import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, api, card, bt
 
 type SortKey = 'business_name' | 'contact_name' | 'phone' | 'niche' | 'city' | 'status' | 'owner' | 'avg_job_value' | 'audit_score' | 'created_at';
 
+/** Friendly names for the sources we generate ourselves; anything else (a CSV's
+ *  own source column, say) shows its raw value. */
+const SOURCE_LABELS: Record<string, string> = {
+  'demo-station': 'Self-serve demos',
+  'review-mining': 'Review-mined',
+  'website-mining': 'No website',
+  'csv-import': 'CSV import',
+};
+
 const EMPTY_FORM = {
   business_name: '',
   contact_name: '',
@@ -77,6 +86,7 @@ export default function OutboundLeads() {
   const [owner, setOwner] = useState('');
   const [stateF, setStateF] = useState('');
   const [cityF, setCityF] = useState('');
+  const [sourceF, setSourceF] = useState('');
   const [unscrubbedOnly, setUnscrubbedOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>('created_at');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
@@ -123,6 +133,8 @@ export default function OutboundLeads() {
       if (params.get('dnc') === 'unchecked') setUnscrubbedOnly(true);
       const st = params.get('state');
       if (st) setStateF(st.toUpperCase().slice(0, 2));
+      const src = params.get('source');
+      if (src) setSourceF(src);
     }
   }, [load]);
 
@@ -146,6 +158,12 @@ export default function OutboundLeads() {
     return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
   }, [leads, stateF]);
 
+  const sourceOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const l of leads) if (l.source) counts.set(l.source, (counts.get(l.source) ?? 0) + 1);
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  }, [leads]);
+
   const pickState = (s: string) => {
     setStateF(s);
     if (cityF && s && !leads.some((l) => l.state === s && l.city === cityF)) setCityF('');
@@ -158,6 +176,7 @@ export default function OutboundLeads() {
     if (owner) rows = rows.filter((l) => l.owner_rep_id === owner);
     if (stateF) rows = rows.filter((l) => l.state === stateF);
     if (cityF) rows = rows.filter((l) => l.city === cityF);
+    if (sourceF) rows = rows.filter((l) => l.source === sourceF);
     if (unscrubbedOnly) rows = rows.filter((l) => !l.dnc_checked);
     if (q.trim()) {
       const needle = q.trim().toLowerCase();
@@ -172,7 +191,7 @@ export default function OutboundLeads() {
       if (typeof va === 'number' || typeof vb === 'number') return (Number(va) - Number(vb)) * mul;
       return String(va).localeCompare(String(vb)) * mul;
     });
-  }, [leads, status, niche, owner, stateF, cityF, unscrubbedOnly, q, sort, dir, repName]);
+  }, [leads, status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, q, sort, dir, repName]);
 
   const clickSort = (key: SortKey) => {
     if (sort === key) setDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -337,6 +356,12 @@ export default function OutboundLeads() {
           <select value={cityF} onChange={(e) => setCityF(e.target.value)} className={selectCls} aria-label="Filter by city">
             <option value="">All cities</option>
             {cityOptions.map(([c, n]) => <option key={c} value={c}>{c} ({n})</option>)}
+          </select>
+          <select value={sourceF} onChange={(e) => setSourceF(e.target.value)} className={selectCls} aria-label="Filter by source">
+            <option value="">All sources</option>
+            {sourceOptions.map(([s, n]) => (
+              <option key={s} value={s}>{SOURCE_LABELS[s] ?? s} ({n})</option>
+            ))}
           </select>
           <label className="flex items-center gap-1.5 font-sans text-xs text-[#1a1815]/70 cursor-pointer ml-1">
             <input type="checkbox" checked={unscrubbedOnly} onChange={(e) => setUnscrubbedOnly(e.target.checked)} className="accent-[#a03123] w-4 h-4" />

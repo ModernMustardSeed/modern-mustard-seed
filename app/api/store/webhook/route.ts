@@ -18,6 +18,7 @@ import type Stripe from 'stripe';
 import { resendClient } from '@/lib/send-email';
 import { getStripe, STRIPE_WEBHOOK_SECRET } from '@/lib/stripe';
 import { getSupabase } from '@/lib/supabase';
+import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/data/products';
 import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
@@ -998,10 +999,12 @@ async function handleDemoOrderPaid(
   // Mark the dial-floor lead WON and note the thread so the cockpit shows it.
   if (order?.outbound_lead_id) {
     try {
-      await supabase
+      const { data: wonLead } = await supabase
         .from('outbound_leads')
         .update({ status: 'won', next_action: 'Deliver demo order within 7 days' })
-        .eq('id', order.outbound_lead_id);
+        .eq('id', order.outbound_lead_id)
+        .select('*')
+        .maybeSingle();
       await supabase.from('messages').insert({
         outbound_lead_id: order.outbound_lead_id,
         direction: 'inbound',
@@ -1010,6 +1013,12 @@ async function handleDemoOrderPaid(
         body: `${label} (${products}) — ${money}. Stripe ${session.id}. Deliver within 7 days.`,
         snippet: `ORDERED: ${label}`,
       });
+      // Carry the win into the CRM pipeline, or the command center would still
+      // be nagging about an "unreplied lead" who has already paid.
+      if (wonLead) {
+        const synced = await syncLeadToPipeline(supabase, wonLead, { source: 'demo-station' });
+        if (!synced.ok) console.error('demo-order pipeline sync failed:', synced.error);
+      }
     } catch (err) {
       console.error('demo-order lead update failed', err);
     }

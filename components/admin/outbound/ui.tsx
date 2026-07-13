@@ -261,6 +261,7 @@ export function HeatChip({ reason, lastOpenAt, auditScore }: { reason: string; l
   const base = 'inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-md border text-[9px] uppercase tracking-[0.12em] font-oswald font-bold';
   if (reason === 'replied') return <span className={`${base} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815]`}>Replied</span>;
   if (reason === 'reading_now') return <span className={`${base} bg-[#a03123] text-[#f7f3e9] border-[#1a1815] animate-pulse`}>🔥 Reading your audit NOW</span>;
+  if (reason === 'self_serve') return <span className={`${base} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] animate-pulse`}>⚡ Forged their own demos</span>;
   if (reason === 'opened_recently') {
     const hrs = lastOpenAt ? Math.max(1, Math.round((Date.now() - new Date(lastOpenAt).getTime()) / 3600000)) : null;
     return <span className={`${base} bg-[#b58a2a]/20 text-[#7a5c1a] border-[#b58a2a]/60`}>Opened {hrs ? `${hrs}h ago` : 'recently'}</span>;

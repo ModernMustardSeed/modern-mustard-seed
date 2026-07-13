@@ -33,6 +33,7 @@ type Overview = {
   week: Record<string, Stat>;
   queue: QueueLead[];
   lockedUnscrubbed: number;
+  selfServe?: { today: number; waiting: number };
   pilots: { running: number; totalRecovered: number; endingSoon: { id: string; ends_at: string; business_name: string }[] };
   day: string;
 };
@@ -88,6 +89,27 @@ export default function OutboundDashboard() {
             ) : undefined
           }
         />
+
+        {/* Self-serve arrivals. The best news the floor gets, so it says so
+            before anything else: these people came off an ad, forged their own
+            suite, and are on their hub right now. */}
+        {(data?.selfServe?.waiting ?? 0) > 0 && (
+          <Link
+            href="/admin/outbound/leads?source=demo-station"
+            className="flex items-center gap-3 mb-5 px-4 py-3.5 rounded-2xl border-2 border-[#1a1815] bg-[#b58a2a] shadow-[4px_4px_0_0_#1a1815] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1a1815] transition-all"
+          >
+            <span className="text-lg" aria-hidden>⚡</span>
+            <span className="font-sans text-sm text-[#1a1815]">
+              <strong className="font-oswald text-base">{data?.selfServe?.waiting}</strong>{' '}
+              {data?.selfServe?.waiting === 1 ? 'owner forged their own demos' : 'owners forged their own demos'} and{' '}
+              {data?.selfServe?.waiting === 1 ? 'is' : 'are'} waiting on a call.
+              {(data?.selfServe?.today ?? 0) > 0 && (
+                <span className="text-[#1a1815]/70"> {data?.selfServe?.today} in the last 24 hours.</span>
+              )}
+            </span>
+            <span className="ml-auto font-oswald uppercase tracking-[0.1em] text-xs font-semibold text-[#1a1815] shrink-0">Work them →</span>
+          </Link>
+        )}
 
         {(data?.lockedUnscrubbed ?? 0) > 0 && (
           <Link

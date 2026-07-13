@@ -119,6 +119,7 @@ export type SiteDemoStatus = 'queued' | 'building' | 'ready' | 'failed';
 export type HeatReason =
   | 'replied'
   | 'reading_now'
+  | 'self_serve'
   | 'opened_recently'
   | 'callback_due'
   | 'retry_due'
@@ -130,6 +131,7 @@ export type HeatReason =
 export const HEAT_LABELS: Record<HeatReason, string> = {
   replied: 'Replied',
   reading_now: 'Reading your audit now',
+  self_serve: 'Forged their own demos',
   opened_recently: 'Opened the email',
   callback_due: 'Callback due',
   retry_due: 'Retry due',

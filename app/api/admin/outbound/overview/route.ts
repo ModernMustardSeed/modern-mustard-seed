@@ -44,12 +44,20 @@ export async function GET() {
   // A 'caller' rep (part-time helper) sees only their own leads/dashboard; owners see the whole floor.
   const { reps, scopeRepId } = await outboundRepScope(guard.supabase);
 
+  // ORDER MATTERS, and it is not cosmetic. This query is capped, and an
+  // UNORDERED capped select hands back an arbitrary slice: with 1,198 active
+  // leads against the old cap of 600, the rows that fell off were the newest
+  // ones, so a Demo Station signup never reached the queue at all no matter how
+  // hot it scored. Newest-first means any future overflow sheds the OLDEST cold
+  // leads instead. If the active floor ever nears this cap, do not just raise
+  // it: split the fetch (due callbacks + signals first, then fresh).
   let candQuery = guard.supabase
     .from('outbound_leads')
     .select(
       'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, email_open_count, demo_url, source, created_at',
     )
-    .in('status', ['new', 'contacted', 'callback']);
+    .in('status', ['new', 'contacted', 'callback'])
+    .order('created_at', { ascending: false });
   if (scopeRepId) candQuery = candQuery.eq('owner_rep_id', scopeRepId);
 
   let lockedQuery = guard.supabase
@@ -61,7 +69,7 @@ export async function GET() {
 
   const [statsRes, candRes, unreadRes, pilotsRes, lockedRes] = await Promise.all([
     guard.supabase.from('outbound_daily_rep_stats').select('*').gte('day', weekStart),
-    candQuery.limit(600),
+    candQuery.limit(5000),
     guard.supabase.from('messages').select('outbound_lead_id').eq('direction', 'inbound').eq('read', false).not('outbound_lead_id', 'is', null),
     guard.supabase
       .from('outbound_pilots')
@@ -135,6 +143,15 @@ export async function GET() {
         score += Math.max(0, 100 - l.audit_score) * 2;
         if (reason === 'fresh' && l.audit_score <= 50) reason = 'worst_audit';
       }
+      // A self-serve Demo Station signup is the hottest cold lead that exists:
+      // they came from an ad, typed their own details, and are (or just were)
+      // playing with their demos. Outranks everything except a live reply for
+      // the first two days, then stays elevated until someone works it.
+      if (l.source === 'demo-station') {
+        const ageHrs = (now - new Date(l.created_at).getTime()) / 3600000;
+        score += ageHrs <= 48 ? 900 : 300;
+        if (reason === 'fresh') reason = 'self_serve';
+      }
       // Review-mined leads carry public proof that customers cannot reach
       // them, the exact wound we treat: hotter than a cold start.
       if (l.source === 'review-mining') {
@@ -155,6 +172,15 @@ export async function GET() {
     .sort((a, b) => b.heat - a.heat || a.created_at.localeCompare(b.created_at))
     .slice(0, 40);
 
+  // Self-serve signups get their own counter on the dashboard. A heat chip
+  // buried in the queue is not an arrival notice, and these are the leads that
+  // go cold fastest: they are on their hub RIGHT NOW.
+  const cands = (candRes.data ?? []) as Candidate[];
+  const selfServe = {
+    today: cands.filter((l) => l.source === 'demo-station' && now - new Date(l.created_at).getTime() <= 86400000).length,
+    waiting: cands.filter((l) => l.source === 'demo-station' && l.status === 'new').length,
+  };
+
   const pilots = pilotsRes.data ?? [];
   const totalRecovered = pilots.reduce((sum, p) => sum + Number(p.revenue_recovered ?? 0), 0);
   const soonCutoff = now + 3 * 86400000;
@@ -167,6 +193,7 @@ export async function GET() {
     queue,
     // DNC scrubbing is an owner task; a part-time caller shouldn't see a scary "locked" counter.
     lockedUnscrubbed: scopeRepId ? 0 : (lockedRes.count ?? 0),
+    selfServe,
     pilots: {
       running: pilots.length,
       totalRecovered,

@@ -25,6 +25,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { forgeLeadVoiceDemo, buildOsConfig, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
+import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import type { OutboundLead, Niche } from '@/lib/outbound';
 import { resendClient } from '@/lib/send-email';
 import { clientEmail, demoFilmCard } from '@/lib/email';
@@ -225,6 +226,17 @@ export async function POST(req: Request) {
   lead = await ensureDemoHub(supabase, lead);
   if (!lead.hub_demo_url) {
     return NextResponse.json({ error: 'forge_failed' }, { status: 500 });
+  }
+
+  // Into the CRM pipeline too, or the command center never sees them: /admin
+  // counts, charts, and its needs-attention rail all read public.leads, not the
+  // dial floor. Fail-soft, because a pipeline hiccup must never cost the owner
+  // the demos they just forged.
+  try {
+    const synced = await syncLeadToPipeline(supabase, lead, { source: 'demo-station' });
+    if (!synced.ok) console.error('demo-station pipeline sync failed:', synced.error);
+  } catch (err) {
+    console.error('demo-station pipeline sync threw', err);
   }
 
   // Their return path + our heads-up.
