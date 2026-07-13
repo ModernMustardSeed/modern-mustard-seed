@@ -59,8 +59,12 @@ export default function DemoCallExperience({
     try {
       if (!vapiRef.current) {
         const { default: Vapi } = await import('@vapi-ai/web');
+        const { hardenMicPath } = await import('@/lib/vapi-web');
         const vapi = new Vapi(PUBLIC_KEY);
-        vapi.on('call-start', () => setState('live'));
+        vapi.on('call-start', () => {
+          setState('live');
+          hardenMicPath(vapi);
+        });
         vapi.on('call-end', () => setState('ended'));
         vapi.on('error', () => {
           setState('error');

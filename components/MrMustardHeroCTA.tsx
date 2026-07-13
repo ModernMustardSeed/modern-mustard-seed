@@ -40,8 +40,12 @@ export default function MrMustardHeroCTA({ location = 'hero' }: { location?: str
     try {
       if (!vapiRef.current) {
         const { default: VapiClient } = await import('@vapi-ai/web');
+        const { hardenMicPath } = await import('@/lib/vapi-web');
         const vapi = new VapiClient(PUBLIC_KEY as string);
-        vapi.on('call-start', () => setState('live'));
+        vapi.on('call-start', () => {
+          setState('live');
+          hardenMicPath(vapi);
+        });
         vapi.on('call-end', () => {
           setState('idle');
           setSpeaking(false);

@@ -99,8 +99,12 @@ export default function MustardSeedChat() {
     try {
       if (!vapiRef.current) {
         const { default: VapiClient } = await import('@vapi-ai/web');
+        const { hardenMicPath } = await import('@/lib/vapi-web');
         const vapi = new VapiClient(VAPI_PUBLIC_KEY as string);
-        vapi.on('call-start', () => setCallState('live'));
+        vapi.on('call-start', () => {
+          setCallState('live');
+          hardenMicPath(vapi);
+        });
         vapi.on('call-end', () => {
           setCallState('idle');
           setSpeaking(false);

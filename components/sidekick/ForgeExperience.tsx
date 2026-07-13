@@ -185,8 +185,12 @@ export default function ForgeExperience() {
     try {
       if (!vapiRef.current) {
         const { default: VapiClient } = await import('@vapi-ai/web');
+        const { hardenMicPath } = await import('@/lib/vapi-web');
         const vapi = new VapiClient(PUBLIC_KEY);
-        vapi.on('call-start', () => setCallState('live'));
+        vapi.on('call-start', () => {
+          setCallState('live');
+          hardenMicPath(vapi);
+        });
         vapi.on('call-end', () => {
           setCallState('ended');
           setSpeaking(false);
