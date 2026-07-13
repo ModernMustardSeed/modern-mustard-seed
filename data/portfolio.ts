@@ -282,6 +282,14 @@ export const PORTFOLIO: PortfolioCategory[] = [
         blurb: 'Golden Hour Grit direction, storm-ready, receptionist built in. Honors founder Sidney Hall; his son Andrew leads the company now.',
         tags: ['demo-build', 'roofing'],
       },
+      {
+        name: 'Chinatown Restaurant',
+        url: 'https://chinatown-kalispell.vercel.app',
+        owner: 'Chinatown Restaurant, Kalispell',
+        status: 'live',
+        blurb: 'Midnight lacquer ticket direction for the Kalispell Chinese kitchen. Their real 150-item menu with every dish photographed, a thermal-receipt ordering flow, and a live AI host that takes orders in English, Mandarin, Cantonese, or Spanish. Lead on the dial floor: (406) 755-2401, kalispellchinatown@gmail.com.',
+        tags: ['demo-build', 'restaurant', 'voice', 'multilingual'],
+      },
     ],
   },
   {
