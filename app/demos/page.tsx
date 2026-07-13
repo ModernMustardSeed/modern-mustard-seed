@@ -82,9 +82,13 @@ export default function DemosPage() {
         }}
       />
 
-      {/* ── Hero: headline left, the forge itself right. Never a centered column. ── */}
+      {/* ── Hero: headline left, the forge itself right. Never a centered column. ──
+           The site Navbar is FIXED, and its height CHANGES with width (70px on
+           phone and desktop, 84px at ~1024, 102px around 768 where it wraps), so
+           hero padding must clear the worst case before it starts breathing.
+           Measured: this keeps a 64-96px gap under the nav at every breakpoint. */}
       <header className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-6xl mx-auto px-6 pt-12 pb-14 lg:pt-16 lg:pb-16">
+        <div className="max-w-6xl mx-auto px-6 pt-32 pb-14 md:pt-40 lg:pb-20">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
             {/* The pitch */}
             <div className="lg:col-span-6 xl:col-span-5">
