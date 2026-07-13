@@ -23,8 +23,8 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
   voice: {
     key: 'voice',
     name: 'AI Receptionist',
-    setupCents: 29700,
-    monthlyCents: 19700,
+    setupCents: 39700,
+    monthlyCents: 29700,
     blurb: 'The voice that answered your demo, on your real number, 24/7.',
     finePrint: '250 answered minutes a month, then message-taking mode. Never a surprise bill.',
   },
@@ -45,11 +45,18 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
   },
 };
 
+/**
+ * The bundle must stay ABOVE the priciest single piece by a real margin, or the
+ * a la carte prices become irrational and we leak revenue on every bundle. With
+ * the receptionist at $297/mo, a $397/mo bundle would have handed over the
+ * website and the command center for $100. Sarah set this on 2026-07-12:
+ * $194 off setup and $44/mo off the a la carte total ($1,391 + $591/mo).
+ */
 export const DEMO_BUNDLE = {
   key: 'bundle' as const,
   name: 'The Whole System',
-  setupCents: 99700,
-  monthlyCents: 39700,
+  setupCents: 119700,
+  monthlyCents: 54700,
   blurb: 'Receptionist + website + command center, one system, one login.',
 };
 

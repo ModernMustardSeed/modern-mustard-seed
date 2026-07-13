@@ -4,6 +4,7 @@ import { forgeCall } from '@/lib/sidekick';
 import { buildMetadata } from '@/lib/seo';
 import type { ForgedCall } from '@/lib/sidekick';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
+import { themeFromSiteHtml } from '@/lib/site-palette';
 import OsDemoApp from '@/components/demo/OsDemoApp';
 
 export const metadata = buildMetadata({ title: 'Your Business Command Center Demo', noindex: true });
@@ -51,6 +52,19 @@ export default async function OsDemoPage({ params }: { params: Promise<{ osId: s
     }
   }
 
+  // Wear the same clothes as THEIR website, so the suite reads as one product.
+  // The site is often still building when they first open this, so the house
+  // midnight deck is the fallback and the theme simply improves on reload.
+  const { data: site } = await sb
+    .from('outbound_demo_sites')
+    .select('html')
+    .eq('lead_id', demo.lead_id)
+    .eq('status', 'ready')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const theme = themeFromSiteHtml(site?.html);
+
   const orderUrl = lead?.hub_demo_url ? `${lead.hub_demo_url}#order` : null;
-  return <OsDemoApp osId={demo.id} config={demo.config as OsDemoConfig} call={call} orderUrl={orderUrl} />;
+  return <OsDemoApp osId={demo.id} config={demo.config as OsDemoConfig} call={call} orderUrl={orderUrl} theme={theme} />;
 }

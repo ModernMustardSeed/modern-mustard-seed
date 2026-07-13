@@ -130,21 +130,26 @@ export default function DemosPage() {
               </a>
             </div>
 
-            {/* The proof: the film. Real motion beats another color block. */}
+            {/* The proof: the film. Real motion beats another color block.
+                This is the STATION's own film (the forge), not the Demo Suite's
+                welcome film. Different audience: cold ad traffic who have never
+                heard of us, versus someone who already has their demos. Served
+                from the 3.4MB web cut, not the 23MB master: this page is the
+                landing pad for paid mobile traffic. */}
             <div className="lg:col-span-6 xl:col-span-7">
               <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[8px_8px_0_0_#161616] overflow-hidden">
                 <video
                   controls
                   preload="metadata"
-                  poster="/video/demo-welcome-poster.jpg"
-                  src="/video/demo-welcome.mp4"
+                  poster="/video/demos-landing-poster.jpg"
+                  src="/video/demos-landing-web.mp4"
                   className="w-full aspect-video bg-[#161616]"
                 />
                 <div className="flex items-center gap-3 px-4 py-3 border-t-2 border-[#161616]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/brand/mascot.png" alt="" width={34} height={34} className="shrink-0" />
                   <p className="font-body text-[13px] text-[#161616]/70 leading-snug">
-                    Thirty seconds from Mr. Mustard on exactly what lands in your hub.
+                    Thirty seconds at the forge: what we build you, and why it costs nothing.
                   </p>
                 </div>
               </div>

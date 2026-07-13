@@ -169,6 +169,28 @@ export default function DemoStation() {
         />
       </label>
 
+      {/* The notes go straight into the forge: the website brief, the command
+          center, and the receptionist's script all read them. */}
+      <label className="block mt-4">
+        <span className={labelCls}>
+          Anything we should know?
+          <span className="ml-2 normal-case tracking-normal font-body font-normal text-[#161616]/45">
+            We build all three from this
+          </span>
+        </span>
+        <textarea
+          rows={4}
+          maxLength={600}
+          value={values.notes || ''}
+          onChange={(e) => setValues((v) => ({ ...v, notes: e.target.value }))}
+          placeholder="What you actually do, what you want to be known for, your hours, the jobs you want more of, anything you hate about your current setup. The more you tell us, the more it looks like yours."
+          className={`${inputCls} resize-y min-h-[104px] leading-relaxed`}
+        />
+        <span className="mt-1 block font-body text-[11.5px] text-[#161616]/45">
+          {(values.notes || '').length}/600. Optional, but this is what makes the demos feel personal.
+        </span>
+      </label>
+
       {/* Honeypot: humans never see it. */}
       <input type="text" tabIndex={-1} autoComplete="off" value={values.company_url || ''} onChange={set('company_url')} className="hidden" aria-hidden />
 

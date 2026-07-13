@@ -67,6 +67,16 @@ function hostile(...fields: string[]): boolean {
   return fields.some((f) => HOSTILE.test(f));
 }
 
+/**
+ * The owner's free-text notes are the ONE field where a newline is legitimate
+ * (it is a textarea), so HOSTILE above would reject every honest multi-line
+ * answer. Same guard minus the newline clause. The notes still feed the site
+ * brief, which drives headless Claude Code, so this is the boundary that
+ * matters and lib/outbound-demo.ts sanitizes again on the way in.
+ */
+const HOSTILE_NOTES =
+  /(\bignore\b.{0,30}\b(previous|prior|above|instruction|rule|prompt)|\bdisregard\b.{0,30}\b(previous|prior|above|instruction|rule|prompt)|\bsystem\s*:|\bassistant\s*:|\bexfiltrat|\bcredential|\bapi[_ -]?key|\b\.env\b|\brm\s+-rf\b|\bsudo\b|<script|\bjavascript:|```)/i;
+
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {
@@ -86,6 +96,7 @@ export async function POST(req: Request) {
   const city = clean(body.city, 60);
   const state = clean(body.state, 30).toUpperCase().slice(0, 2);
   const website = clean(body.website, 200);
+  const notes = clean(body.notes, 600);
   const niche = (NICHES.includes(body.niche as Niche) ? body.niche : 'other') as Niche;
 
   if (!business || !name || !/.+@.+\..+/.test(email) || digits.length < 10) {
@@ -94,6 +105,12 @@ export async function POST(req: Request) {
   if (hostile(business, name, city, website)) {
     return NextResponse.json(
       { error: 'bad_input', message: 'That does not look like a real business name. Type it the way it appears on your sign, or call us at (406) 312-1223.' },
+      { status: 400 }
+    );
+  }
+  if (notes && HOSTILE_NOTES.test(notes)) {
+    return NextResponse.json(
+      { error: 'bad_input', message: 'Those notes did not look like a description of a business. Tell us what you do in plain words, or call us at (406) 312-1223.' },
       { status: 400 }
     );
   }
@@ -150,7 +167,16 @@ export async function POST(req: Request) {
       niche,
       status: 'new',
       source: 'demo-station',
-      notes: `SELF-SERVE: forged their own demo suite from ${SITE.url}/demos.${website ? '' : '\nWEBSITE: none — they came without one.'}`,
+      // OWNER NOTES is a parsed convention (see buildSiteBrief / buildOsConfig /
+      // forgeLeadVoiceDemo in lib/outbound-demo.ts): everything the owner told us
+      // in their own words drives all three demos, so it must survive here.
+      notes: [
+        `SELF-SERVE: forged their own demo suite from ${SITE.url}/demos.`,
+        website ? null : 'WEBSITE: none, they came without one.',
+        notes ? `OWNER NOTES: ${notes}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n'),
       next_action: 'Self-serve signup: call while the demos are hot',
     })
     .select('*')
