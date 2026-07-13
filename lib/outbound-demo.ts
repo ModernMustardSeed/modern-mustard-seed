@@ -4,7 +4,7 @@ import { forgeCall } from '@/lib/sidekick';
 import { saveRun } from '@/lib/sidekick-store';
 import { NICHE_LABELS } from '@/lib/outbound';
 import type { Niche, OutboundLead } from '@/lib/outbound';
-import { detectTrade, TRADE_PRESETS } from '@/data/demo-os-trades';
+import { detectTrade, TRADE_PRESETS, VOICE_SERVICES } from '@/data/demo-os-trades';
 import type { OsTradeKey } from '@/data/demo-os-trades';
 import { SITE } from '@/lib/seo';
 
@@ -51,13 +51,14 @@ export async function forgeLeadVoiceDemo(supabase: SupabaseClient, lead: Outboun
 
   const niche = (lead.niche ?? 'other') as Niche;
   const notesLine = (lead.notes ?? '').split('\n')[0].slice(0, 120);
-  const tradeLabel = TRADE_PRESETS[leadTrade(lead)].label;
+  const trade = leadTrade(lead);
+  const tradeLabel = TRADE_PRESETS[trade].label;
   const profile = {
     business: lead.business_name,
     verticalId: SIDEKICK_VERTICAL[niche] ?? 'professional',
     city: lead.city || 'your area',
     ownerName: lead.contact_name || 'the owner',
-    services: `${tradeLabel} work: answer every call, quote the basics, capture the job details, and book the appointment.${notesLine ? ` Context: ${notesLine}` : ''}`,
+    services: `${tradeLabel} work, typically: ${VOICE_SERVICES[trade]}. Answer every call, speak the trade's language, capture the job details, and book the appointment. Never quote exact prices; offer to have the owner confirm pricing.${notesLine ? ` Context: ${notesLine}` : ''}`,
     // Cockpit-forged demos get the clear outbound script: Sarah sent them the
     // link, they did not forge anything, so no "you just built me" framing.
     flow: 'outbound' as const,

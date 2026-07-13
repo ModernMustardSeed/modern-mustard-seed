@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import DemoHub from '@/components/demo/DemoHub';
+import { detectTrade } from '@/data/demo-os-trades';
 import type { Niche } from '@/lib/outbound';
 
 export const metadata = buildMetadata({ title: 'Your Demo Suite', noindex: true });
@@ -38,10 +39,13 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
 
   const { data: lead } = await sb
     .from('outbound_leads')
-    .select('business_name, contact_name, niche, city, state, demo_url, site_demo_url, site_demo_status, os_demo_url, os_demo_status')
+    .select('business_name, contact_name, niche, notes, website, city, state, demo_url, site_demo_url, site_demo_status, os_demo_url, os_demo_status')
     .eq('hub_demo_id', hubId)
     .maybeSingle();
   if (!lead) return fallback;
+
+  const niche = (lead.niche ?? 'other') as Niche;
+  const trade = detectTrade([lead.business_name, lead.notes ?? '', lead.website ?? ''].join(' '), niche);
 
   // Pick the welcome film that matches what is forged: the trifecta when the
   // suite is (mostly) complete, otherwise the single-demo cut. The website
@@ -55,7 +59,8 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       hubId={hubId}
       business={lead.business_name}
       ownerFirst={lead.contact_name?.trim().split(/\s+/)[0] ?? null}
-      niche={(lead.niche ?? 'other') as Niche}
+      niche={niche}
+      trade={trade}
       city={lead.city}
       film={film}
       voiceUrl={lead.demo_url}

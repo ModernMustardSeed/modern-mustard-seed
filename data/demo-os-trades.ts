@@ -139,6 +139,52 @@ export function resolveTrade(config: { trade?: string | null; business: string; 
 }
 
 /* ------------------------------------------------------------------------ */
+/* Voice + calculator wiring: the same trade knowledge, consumed by the      */
+/* forged receptionist (services menu spoken on calls) and the hub's         */
+/* Recovery Calculator (slider label + default ticket). Typical TRADE        */
+/* services only, never invented facts about the specific business.          */
+/* ------------------------------------------------------------------------ */
+
+export const VOICE_SERVICES: Record<OsTradeKey, string> = {
+  roofing: 'Roof repairs, full replacements, storm and hail damage inspections, insurance claim help, and emergency tarping',
+  hvac: 'AC and furnace repair, full system replacements, mini-splits, and seasonal tune-ups on a maintenance plan',
+  plumbing: 'Emergency leaks and bursts, water heaters, drain clearing, remodel plumbing, and fixture repairs',
+  electrical: 'Panel upgrades, EV chargers, troubleshooting and safety checks, lighting, and permitted wiring work',
+  restoration: 'Emergency water extraction and dry-outs, fire and smoke cleanup, mold remediation, and insurance claim documentation, dispatched around the clock',
+  septic: 'Septic pump-outs, inspections for home sales, drain field assessments, and riser installs',
+  towing: 'Emergency towing, roadside assistance, lockouts, winch-outs, and flatbed transport, around the clock',
+  locksmith: 'Home, car, and business lockouts, rekeys, master key systems, smart locks, and safes, day or night',
+  garage_door: 'Broken spring rescues, opener repairs and installs, off-track doors, and full door replacements',
+  tree_service: 'Tree removals, trimming, stump grinding, storm damage response, and hazard assessments',
+  landscaping: 'Weekly mowing routes, seasonal cleanups, mulch, irrigation, sod, and patio and hardscape builds',
+  pool_spa: 'Weekly pool service routes, green pool rescues, heater and pump repairs, and openings and closings',
+  pest_control: 'Ants, wasps, spiders, mice, and termites, with one-time treatments and quarterly protection plans',
+  painting: 'Interior and exterior repaints, cabinet refinishing, deck staining, and free color consults with every estimate',
+  moving: 'Local and long-distance moves, packing, office moves, and specialty items like pianos and safes',
+  cleaning: 'Weekly and biweekly home cleaning, deep cleans, move-out cleans, and commercial contracts',
+  auto_repair: 'Diagnostics, brakes, AC, transmissions, tires, and fleet service, with photo-backed estimates',
+  medspa: 'Tox and filler, laser treatments, facials, memberships, and consults for new clients',
+  dental: 'Cleanings and exams, crowns, whitening, implants, dental emergencies, and an in-house plan for the uninsured',
+  vet: 'Wellness exams, vaccines, urgent sick visits, dental cleanings, and new puppy and kitten plans',
+  attorney: 'Case evaluations, urgent matters answered day and night, and consultations booked with the attorney',
+  wedding: 'Weddings, receptions, private parties, and corporate events, with tours, date holds, and tastings',
+  salon: 'Cuts, color, balayage, barbering, bridal parties, and standing appointments',
+  cafe_bakery: 'Custom cakes and celebration orders, wedding tastings, wholesale standing orders, and the daily case',
+  restaurant: 'Reservations, large parties, catering and event trays, takeout orders, and menu questions',
+  real_estate: 'Buyer and seller consultations, showings, home value requests, and relocation help',
+  home_services: 'Repairs, installs, emergency calls, quotes, and scheduled maintenance',
+  professional: 'Appointments, quotes, service questions, and follow-ups',
+};
+
+/** Calculator ticket word when the pipeline jobWord reads wrong as a dollar unit. */
+export const TICKET_WORD: Partial<Record<OsTradeKey, string>> = {
+  attorney: 'case',
+  real_estate: 'commission',
+  restaurant: 'ticket',
+  towing: 'tow',
+};
+
+/* ------------------------------------------------------------------------ */
 /* The library. All figures are honest sample data; the app labels them.    */
 /* ------------------------------------------------------------------------ */
 

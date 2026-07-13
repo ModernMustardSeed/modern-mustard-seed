@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Niche } from '@/lib/outbound';
+import { TRADE_PRESETS, TICKET_WORD } from '@/data/demo-os-trades';
+import type { OsTradeKey } from '@/data/demo-os-trades';
 import MakeItRealCTA from '@/components/demo/MakeItRealCTA';
 import type { DemoProductKey } from '@/lib/demo-order';
 
@@ -12,6 +14,7 @@ import type { DemoProductKey } from '@/lib/demo-order';
  * dollar leak they can feel. Pop-art MMS system: cream, ink borders, gold.
  */
 
+/** Legacy niche fallback for hubs rendered without a detected trade. */
 const AVG_JOB: Record<Niche, { label: string; value: number }> = {
   restaurant: { label: 'average ticket', value: 65 },
   home_service: { label: 'average job', value: 450 },
@@ -19,6 +22,13 @@ const AVG_JOB: Record<Niche, { label: string; value: number }> = {
   real_estate: { label: 'average commission', value: 7500 },
   other: { label: 'average sale', value: 250 },
 };
+
+/** Round a slider ceiling to something a human would pick. */
+function niceMax(v: number): number {
+  const raw = v * 2.5;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  return Math.ceil(raw / mag) * mag;
+}
 
 function useCountUp(target: number, ms = 900): number {
   const [v, setV] = useState(target);
@@ -56,6 +66,7 @@ export default function DemoHub({
   business,
   ownerFirst,
   niche,
+  trade,
   city,
   film = 'demo-welcome',
   voiceUrl,
@@ -67,6 +78,8 @@ export default function DemoHub({
   business: string;
   ownerFirst: string | null;
   niche: Niche;
+  /** Specific detected trade; when present the calculator speaks it. */
+  trade?: OsTradeKey;
   city: string | null;
   /** Which welcome film matches the forged set (trifecta or a single cut). */
   film?: 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os';
@@ -78,21 +91,30 @@ export default function DemoHub({
   const { shown: bubble, typing } = useTyped(`Hi${ownerFirst ? ` ${ownerFirst}` : ''}! We made ${business} some presents. Open them!`);
 
   /* ------------------------------ calculator ------------------------------ */
-  const job = AVG_JOB[niche] ?? AVG_JOB.other;
+  const tp = trade ? TRADE_PRESETS[trade] : null;
+  const job = tp
+    ? { label: `average ${TICKET_WORD[trade!] ?? tp.jobWord}`, value: tp.avgTicket }
+    : (AVG_JOB[niche] ?? AVG_JOB.other);
+  const sliderMax = niceMax(job.value);
   const [missed, setMissed] = useState(7);
   const [close, setClose] = useState(45);
   const [avg, setAvg] = useState(job.value);
   const leak = Math.round(missed * 4.33 * (close / 100) * avg);
   const caught = Math.round(leak * 0.75);
   const shown = useCountUp(leak);
+  // The trade line lands hardest: dollars restated as whole jobs lost.
+  const lostJobs = tp && tp.avgTicket >= 400 ? Math.round(leak / tp.avgTicket) : 0;
+  const jobNoun = tp ? (TICKET_WORD[trade!] ?? tp.jobWord) : '';
   const reaction =
-    leak >= 8000
-      ? "That's someone's salary walking out the door."
-      : leak >= 3000
-        ? "That's a truck payment. Every month."
-        : leak >= 1000
-          ? 'That would cover this whole suite many times over.'
-          : 'Even this adds up to real money over a year.';
+    lostJobs >= 1
+      ? `That is ${lostJobs} ${jobNoun}${lostJobs === 1 ? '' : 's'} a month handed to whoever picks up the phone.`
+      : leak >= 8000
+        ? "That's someone's salary walking out the door."
+        : leak >= 3000
+          ? "That's a truck payment. Every month."
+          : leak >= 1000
+            ? 'That would cover this whole suite many times over.'
+            : 'Even this adds up to real money over a year.';
 
   const doors = useMemo(
     () =>
@@ -213,7 +235,7 @@ export default function DemoHub({
               {[
                 { label: 'Calls you miss per week', value: missed, set: setMissed, min: 1, max: 40, fmt: (v: number) => String(v) },
                 { label: 'Would have hired you', value: close, set: setClose, min: 10, max: 90, fmt: (v: number) => `${v}%` },
-                { label: `Your ${job.label}`, value: avg, set: setAvg, min: 20, max: niche === 'real_estate' ? 20000 : 3000, fmt: (v: number) => `$${v.toLocaleString()}` },
+                { label: `Your ${job.label}`, value: avg, set: setAvg, min: 20, max: tp ? sliderMax : niche === 'real_estate' ? 20000 : 3000, fmt: (v: number) => `$${v.toLocaleString()}` },
               ].map((s) => (
                 <label key={s.label} className="block">
                   <span className="font-sans text-[11px] uppercase tracking-[0.14em] font-bold text-[#FBF6EA]/70">{s.label}</span>
