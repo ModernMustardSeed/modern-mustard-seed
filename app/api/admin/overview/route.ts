@@ -128,13 +128,23 @@ export async function GET() {
         // and has now forged their own demos is still a self-serve signup, and
         // is in fact the hottest kind: they already know us. That is not a
         // hypothetical, it is how the first real one (Kyler's Lawncare) came in.
-        const selfServe = l.source === 'demo-station' || /^SELF-SERVE:/m.test(String(l.notes ?? ''));
+        const bornHere = l.source === 'demo-station';
+        const selfServe = bornHere || /^SELF-SERVE:/m.test(String(l.notes ?? ''));
         if (status === 'new' && selfServe) {
           const hours = Math.round((now.getTime() - created.getTime()) / 3600000);
+          // created_at is only the forge time when the station CREATED this row.
+          // On a pre-existing contact it is the day we first met them, so quoting
+          // it here would put a confidently wrong age on the one line Sarah reads
+          // to decide who to call. Say nothing rather than say something false.
+          const detail = !bornHere
+            ? 'Forged their own demos at /demos. No order yet.'
+            : hours < 1
+              ? 'Just now, self-serve from /demos. Call while they are still on the page.'
+              : `${hours}h ago, self-serve from /demos. No order yet.`;
           attention.push({
             kind: 'lead',
             title: `Forged their own demos: ${(l.business_name as string) || l.name || l.email}`,
-            detail: hours < 1 ? 'Just now, self-serve from /demos. Call while they are still on the page.' : `${hours}h ago, self-serve from /demos. No order yet.`,
+            detail,
             whenIso: l.created_at as string,
             leadId: l.id as string,
             severity: 'high',
