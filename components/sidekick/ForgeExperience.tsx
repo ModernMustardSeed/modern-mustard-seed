@@ -19,7 +19,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import type Vapi from '@vapi-ai/web';
 import { trackEvent } from '@/lib/analytics';
-import { SIDEKICK, sidekickVerticals, sidekickTiers, getVertical, forgeScript } from '@/data/sidekick';
+import { SIDEKICK, sidekickVerticals, sidekickTiers, getVertical, forgeScript, sidekickUsd } from '@/data/sidekick';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -532,8 +532,8 @@ function PricingCard({ tier, business, runId }: { tier: (typeof sidekickTiers)[n
       <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">{tier.chip}</p>
       <h3 className="font-display text-2xl font-black text-[#161616] mt-1.5">{tier.name}</h3>
       <p className="mt-3">
-        <span className="font-display text-4xl font-black text-[#161616]">${tier.monthlyUsd}</span>
-        <span className="font-body text-sm text-[#161616]/60">/mo + ${tier.setupUsd} setup</span>
+        <span className="font-display text-4xl font-black text-[#161616]">${sidekickUsd(tier.monthlyCents)}</span>
+        <span className="font-body text-sm text-[#161616]/60">/mo + ${sidekickUsd(tier.setupCents)} setup</span>
       </p>
       <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">{tier.pitch}</p>
       <ul className="mt-5 space-y-2.5 flex-1">

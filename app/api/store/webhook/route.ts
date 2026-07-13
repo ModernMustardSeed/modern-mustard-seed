@@ -22,7 +22,7 @@ import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/d
 import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
 import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification, subscriptionPaymentFailedEmail, clientEmail } from '@/lib/email';
-import { getSidekickTier } from '@/data/sidekick';
+import { getSidekickTier, sidekickUsd } from '@/data/sidekick';
 import { getPicturesTier, PICTURES } from '@/data/pictures';
 import { getPicturesRun } from '@/lib/pictures-store';
 import { getPressTier, PRESS } from '@/data/press';
@@ -909,7 +909,7 @@ async function handleSidekickPurchase(
         preheader: 'A Sidekick was kept. Install within 7 days.',
         eyebrow: 'SIDEKICK ORDER',
         greeting: 'He got hired.',
-        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just kept their Sidekick${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${tier.setupUsd} setup + $${tier.monthlyUsd}/mo, ${tier.minutesCap} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=sidekick-demo.</p>`,
+        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just kept their Sidekick${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${sidekickUsd(tier.setupCents)} setup + $${sidekickUsd(tier.monthlyCents)}/mo, ${tier.minutesCap} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=sidekick-demo.</p>`,
         signature: 'The Forge',
       }),
     });

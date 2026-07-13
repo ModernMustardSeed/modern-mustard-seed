@@ -1,5 +1,5 @@
 import { buildMetadata, SITE } from '@/lib/seo';
-import { SIDEKICK, sidekickTiers, sidekickFaq } from '@/data/sidekick';
+import { SIDEKICK, sidekickTiers, sidekickFaq, sidekickUsd } from '@/data/sidekick';
 import ForgeExperience from '@/components/sidekick/ForgeExperience';
 import { HowItWorks, Boundaries, Faq, MeetTheTrainer, CrossSell } from '@/components/sidekick/SidekickSections';
 
@@ -23,11 +23,11 @@ export default function SidekickPage() {
         offers: sidekickTiers.map((t) => ({
           '@type': 'Offer',
           name: t.name,
-          price: t.monthlyUsd,
+          price: sidekickUsd(t.monthlyCents),
           priceCurrency: 'USD',
           priceSpecification: {
             '@type': 'UnitPriceSpecification',
-            price: t.monthlyUsd,
+            price: sidekickUsd(t.monthlyCents),
             priceCurrency: 'USD',
             billingIncrement: 1,
             unitText: 'MONTH',

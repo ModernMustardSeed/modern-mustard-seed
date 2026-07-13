@@ -25,23 +25,19 @@ function projectedMonthly(p: Pilot): number {
 
 export default function OutboundPilots() {
   const [pilots, setPilots] = useState<Pilot[]>([]);
-  const [leads, setLeads] = useState<OutboundLead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { toasts, push } = useToasts();
 
-  const [startOpen, setStartOpen] = useState(false);
   const [convertFor, setConvertFor] = useState<Pilot | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [p, l] = await Promise.all([
-        api<{ pilots: Pilot[] }>('/api/admin/outbound/pilots'),
-        api<{ leads: OutboundLead[] }>('/api/admin/outbound/leads'),
-      ]);
+      // The full leads list used to be fetched here purely to populate the
+      // retired "start a free pilot" picker. Nothing reads it now.
+      const p = await api<{ pilots: Pilot[] }>('/api/admin/outbound/pilots');
       setPilots(p.pilots);
-      setLeads(l.leads);
       setError('');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not load pilots.');
@@ -79,19 +75,15 @@ export default function OutboundPilots() {
     void patchPilot(p.id, { status: 'lost' }, 'Pilot marked lost.');
   };
 
-  const eligibleLeads = useMemo(() => {
-    const inPilot = new Set(pilots.filter((p) => p.status === 'running').map((p) => p.lead_id));
-    return leads.filter((l) => !inPilot.has(l.id) && !['pilot_live', 'won', 'lost', 'dnc'].includes(l.status));
-  }, [leads, pilots]);
-
   return (
     <div className="min-h-screen bg-[#f7f3e9]">
       <AdminHeader active="outbound" title="Outbound · Pilots" onRefresh={() => void load()} />
       <main className="max-w-7xl mx-auto px-5 md:px-6 py-8">
-        <OutboundNav
-          active="pilots"
-          right={<button onClick={() => setStartOpen(true)} className={btnPrimary}>Start a pilot</button>}
-        />
+        {/* NO FREE TRIALS (Sarah, 2026-07-12). The "Start a pilot" button handed
+            out 30 free days, which is exactly the thing we killed everywhere else.
+            Existing pilots stay visible and convertible; no new ones can be
+            started, and the API refuses it too (this is not just a hidden button). */}
+        <OutboundNav active="pilots" />
 
         {error && (
           <div className={`${card} p-5 mb-6 border-[#a03123] shadow-[5px_5px_0_0_#a03123]`}>
@@ -122,7 +114,9 @@ export default function OutboundPilots() {
           <div className={`${card} p-10 text-center mb-8`}>
             <p className="font-oswald uppercase text-xl text-[#1a1815]/50">No pilots running</p>
             <p className="font-sans text-sm text-[#1a1815]/55 mt-1.5 max-w-md mx-auto">
-              Book demos in the <Link href="/admin/outbound" className="text-[#b58a2a] font-semibold">cockpit</Link>, then start the 30-day free pilot here. The pilot is the close.
+              Free pilots are retired. The <strong>demo</strong> is the free part now: forge their suite in the{' '}
+              <Link href="/admin/outbound" className="text-[#b58a2a] font-semibold">cockpit</Link>, send it, and close on setup plus monthly.
+              Anything still running below stays here until it converts.
             </p>
           </div>
         )}
@@ -252,18 +246,6 @@ export default function OutboundPilots() {
         )}
       </main>
 
-      <StartPilotModal
-        open={startOpen}
-        onClose={() => setStartOpen(false)}
-        leads={eligibleLeads}
-        onStarted={(p) => {
-          setPilots((ps) => [p, ...ps]);
-          setStartOpen(false);
-          push(`Pilot started for ${p.lead?.business_name ?? 'the lead'}. 30 days on the clock.`);
-        }}
-        onError={(m) => push(m, 'error')}
-      />
-
       <ConvertModal
         pilot={convertFor}
         onClose={() => setConvertFor(null)}
@@ -276,63 +258,6 @@ export default function OutboundPilots() {
 
       <ToastHost toasts={toasts} />
     </div>
-  );
-}
-
-function StartPilotModal({
-  open,
-  onClose,
-  leads,
-  onStarted,
-  onError,
-}: {
-  open: boolean;
-  onClose: () => void;
-  leads: OutboundLead[];
-  onStarted: (p: Pilot) => void;
-  onError: (m: string) => void;
-}) {
-  const [leadId, setLeadId] = useState('');
-  const [notes, setNotes] = useState('');
-  const [busy, setBusy] = useState(false);
-
-  const start = async () => {
-    if (!leadId) return;
-    setBusy(true);
-    try {
-      const { pilot } = await api<{ pilot: Pilot }>('/api/admin/outbound/pilots', { method: 'POST', body: JSON.stringify({ lead_id: leadId, notes: notes || null }) });
-      onStarted(pilot);
-      setLeadId('');
-      setNotes('');
-    } catch (e) {
-      onError(e instanceof Error ? e.message : 'Could not start the pilot.');
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <Modal open={open} onClose={onClose} eyebrow="The hook" title="Start a 30-day free pilot" subtitle="Free for 30 days, then we look at the receipts together." size="sm">
-      <div className="space-y-3">
-        <div>
-          <label className={labelCls}>Business</label>
-          <select className={inputCls} value={leadId} onChange={(e) => setLeadId(e.target.value)}>
-            <option value="">Pick a lead</option>
-            {leads.map((l) => (
-              <option key={l.id} value={l.id}>{l.business_name}{l.city ? ` (${l.city})` : ''}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className={labelCls}>Notes</label>
-          <textarea className={`${inputCls} min-h-[64px]`} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Demo went great, wants the after-hours catch first." />
-        </div>
-      </div>
-      <div className="flex justify-end gap-2 mt-4">
-        <button onClick={onClose} className={btnGhost}>Cancel</button>
-        <button onClick={() => void start()} disabled={busy || !leadId} className={btnSeed}>{busy ? 'Starting...' : 'Start the clock'}</button>
-      </div>
-    </Modal>
   );
 }
 

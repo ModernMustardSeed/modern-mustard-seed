@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireOutboundAdmin, parseBody } from '@/lib/outbound-server';
-import { pilotInputSchema } from '@/lib/outbound';
+import { requireOutboundAdmin } from '@/lib/outbound-server';
 
 export const runtime = 'nodejs';
 
@@ -18,42 +17,25 @@ export async function GET() {
   return NextResponse.json({ pilots: data });
 }
 
-/** Start a 30-day free pilot for a lead and mark the lead pilot_live. */
-export async function POST(req: Request) {
+/**
+ * RETIRED. This started a 30-day FREE pilot, which is a free trial, and Sarah
+ * killed free trials on 2026-07-12. The free thing is the DEMO: we build them a
+ * working receptionist, website and command center at no cost, and going live is
+ * setup + monthly from day one.
+ *
+ * The route is kept and refuses, rather than deleted, because a hidden button is
+ * not a closed door: anything that can still POST here (an old tab, a bookmarked
+ * fetch, a future UI) would otherwise keep minting free months. Existing pilots
+ * are untouched and still convert through PATCH.
+ */
+export async function POST() {
   const guard = await requireOutboundAdmin();
   if ('error' in guard) return guard.error;
-
-  const parsed = await parseBody(req, pilotInputSchema);
-  if ('error' in parsed) return parsed.error;
-  const input = parsed.data;
-
-  const { data: lead, error: leadErr } = await guard.supabase
-    .from('outbound_leads')
-    .select('id, business_name')
-    .eq('id', input.lead_id)
-    .single();
-  if (leadErr || !lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
-
-  const started = new Date();
-  const ends = new Date(started.getTime() + 30 * 86400000);
-
-  const { data: pilot, error } = await guard.supabase
-    .from('outbound_pilots')
-    .insert({
-      lead_id: input.lead_id,
-      started_at: started.toISOString(),
-      ends_at: ends.toISOString(),
-      pricing_model: input.pricing_model,
-      convert_price: input.convert_price,
-      rev_share_pct: input.rev_share_pct ?? 15,
-      monthly_floor: input.monthly_floor,
-      notes: input.notes,
-    })
-    .select(`*, ${LEAD_JOIN}`)
-    .single();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-  await guard.supabase.from('outbound_leads').update({ status: 'pilot_live' }).eq('id', input.lead_id);
-
-  return NextResponse.json({ pilot });
+  return NextResponse.json(
+    {
+      error: 'pilots_retired',
+      message: 'Free pilots are retired. The demo is the free part. Send them the Demo Suite and close on setup + monthly.',
+    },
+    { status: 410 },
+  );
 }

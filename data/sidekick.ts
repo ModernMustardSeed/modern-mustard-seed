@@ -98,31 +98,43 @@ export function getVertical(id: string): SidekickVertical {
   return sidekickVerticals.find((v) => v.id === id) || sidekickVerticals[sidekickVerticals.length - 1];
 }
 
+/**
+ * PRICE LIVES HERE, IN CENTS, AND NOWHERE ELSE.
+ *
+ * This used to carry display-only dollars plus the NAME of a Stripe price env
+ * var, which meant the number on the page and the number Stripe charged were two
+ * unrelated facts. Editing the page would have silently kept billing the old
+ * amount. Checkout now builds inline price_data from these cents (the same
+ * pattern lib/demo-order.ts uses), so the advertised price IS the charged price.
+ */
 export type SidekickTier = {
   slug: 'sidekick' | 'sidekick-pro';
   name: string;
   chip: string;
-  setupUsd: number;
-  monthlyUsd: number;
+  setupCents: number;
+  monthlyCents: number;
   minutesCap: number;
-  setupPriceEnv: string;
-  monthlyPriceEnv: string;
   pitch: string;
   includes: string[];
   cta: string;
   featured?: boolean;
 };
 
+/** Display helper, so no surface can invent its own formatting. */
+export function sidekickUsd(cents: number): number {
+  return Math.round(cents / 100);
+}
+
 export const sidekickTiers: SidekickTier[] = [
   {
     slug: 'sidekick',
     name: 'SIDEKICK',
     chip: '[ ON THE PHONES ]',
-    setupUsd: 297,
-    monthlyUsd: 197,
+    // Matches DEMO_PRODUCTS.voice in lib/demo-order.ts. It is the SAME product,
+    // so it must not be cheaper here than in the demo funnel (Sarah, 2026-07-12).
+    setupCents: 39700,
+    monthlyCents: 29700,
     minutesCap: 250,
-    setupPriceEnv: 'STRIPE_PRICE_SIDEKICK_SETUP',
-    monthlyPriceEnv: 'STRIPE_PRICE_SIDEKICK_MONTHLY',
     pitch: 'The Sidekick you just met, answering your real phone around the clock.',
     includes: [
       'Your own local number, or we forward your existing line',
@@ -139,11 +151,11 @@ export const sidekickTiers: SidekickTier[] = [
     slug: 'sidekick-pro',
     name: 'SIDEKICK PRO',
     chip: '[ RUNS THE DESK ]',
-    setupUsd: 497,
-    monthlyUsd: 397,
+    // Must stay strictly above SIDEKICK. Base moving to $397/$297 compressed the
+    // Pro premium to +$100/+$100 (it was +$200/+$200). Flagged to Sarah.
+    setupCents: 49700,
+    monthlyCents: 39700,
     minutesCap: 600,
-    setupPriceEnv: 'STRIPE_PRICE_SIDEKICK_PRO_SETUP',
-    monthlyPriceEnv: 'STRIPE_PRICE_SIDEKICK_PRO_MONTHLY',
     pitch: 'For phones that actually ring. More minutes, a memory, and a monthly tune-up.',
     includes: [
       'Everything in SIDEKICK',

@@ -1,6 +1,7 @@
 /**
- * Stripe Checkout for keeping your Sidekick.
- *   SIDEKICK      $297 setup + $197/mo   (250 min hard cap)
+ * Stripe Checkout for keeping your Sidekick. Amounts come from data/sidekick.ts
+ * (cents), never from env price IDs, so the page and the charge cannot diverge.
+ *   SIDEKICK      $397 setup + $297/mo   (250 min hard cap)
  *   SIDEKICK PRO  $497 setup + $397/mo   (600 min hard cap)
  *
  * Subscription mode with the one-time setup fee on the first invoice. No
@@ -34,16 +35,6 @@ export async function POST(req: Request) {
   const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
   const ref = (cookieRef ? decodeURIComponent(cookieRef[1]) : '').trim().slice(0, 64) || undefined;
 
-  const setupPrice = process.env[tier.setupPriceEnv];
-  const monthlyPrice = process.env[tier.monthlyPriceEnv];
-  if (!setupPrice || !monthlyPrice) {
-    console.error('sidekick checkout not configured:', tier.setupPriceEnv, tier.monthlyPriceEnv);
-    return NextResponse.json(
-      { error: 'not_configured', message: 'Checkout is warming up. Email sarah@modernmustardseed.com and she will open the door by hand today.' },
-      { status: 503 }
-    );
-  }
-
   const stripe = getStripe();
   if (!stripe) return NextResponse.json({ error: 'stripe_not_configured' }, { status: 503 });
 
@@ -60,9 +51,35 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
+      // Inline price_data, built from data/sidekick.ts. Prices used to come from
+      // Stripe price IDs in env while the page rendered its own hardcoded dollars,
+      // so the two could silently disagree and we would advertise one number and
+      // charge another. One source of truth now. The setup fee is a non-recurring
+      // line, so it rides invoice #1 only (same shape as the demo-order checkout).
       line_items: [
-        { price: monthlyPrice, quantity: 1 },
-        { price: setupPrice, quantity: 1 },
+        {
+          quantity: 1,
+          price_data: {
+            currency: 'usd',
+            unit_amount: tier.monthlyCents,
+            recurring: { interval: 'month' },
+            product_data: {
+              name: `${tier.name} (${tier.minutesCap} answered minutes/mo)`,
+              description: tier.pitch,
+            },
+          },
+        },
+        {
+          quantity: 1,
+          price_data: {
+            currency: 'usd',
+            unit_amount: tier.setupCents,
+            product_data: {
+              name: `${tier.name} setup (one time)`,
+              description: 'Hand-installed by Sarah within 7 days. Credited toward any custom build over $2,500.',
+            },
+          },
+        },
       ],
       success_url: `${SITE.url}/sidekick/welcome?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE.url}/sidekick#keep`,
