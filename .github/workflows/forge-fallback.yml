@@ -1,0 +1,55 @@
+# Demo-site forge failsafe.
+#
+# Demo websites are built by headless Claude Code on Sarah's workstation, which
+# only runs while that machine is awake. /demos is an ad funnel now, so a lead
+# who signs up at 2am must not be left watching a page promise them a website in
+# twenty minutes, forever. This picks up any queued build the workstation is not
+# going to get to and builds it on the metered API instead.
+#
+# It runs HERE, not as a Vercel cron, for two reasons that are already scars in
+# this repo: the MMS Vercel project is on Hobby (sub-daily crons are rejected at
+# BUILD time and once killed the git integration outright), and Hobby functions
+# cap at 300s while a real site takes ~4 minutes to generate. A runner has
+# neither limit, and this repo is public, so the minutes are free.
+#
+# Spend is hard-capped in the script (claim_forge_slot, fails closed) and the job
+# no-ops cheaply when the workstation is up and the queue is clear. Trigger a run
+# by hand anytime from the Actions tab (workflow_dispatch).
+
+name: forge-fallback
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # every 5 minutes (best-effort on GitHub)
+  workflow_dispatch: {}
+
+concurrency:
+  group: forge-fallback
+  cancel-in-progress: false
+
+jobs:
+  forge:
+    runs-on: ubuntu-latest
+    # A site build runs ~4 minutes. 20 leaves room for a slow one without ever
+    # letting a wedged run bill forever.
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # 24 for native TS type-stripping: the script imports lib/site-forge-api.ts
+          # directly, so the design law stays in one typechecked place.
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Forge any stranded demo site
+        run: node scripts/forge-fallback.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+          FORGE_FALLBACK_DAILY_CAP: "6"
