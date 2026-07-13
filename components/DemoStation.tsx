@@ -81,7 +81,10 @@ export default function DemoStation() {
             </p>
           ))}
         </div>
-        <p className="font-body text-[13px] text-[#FBF6EA]/55 mt-5">Twenty seconds, give or take. Do not close the tab.</p>
+        <p className="font-body text-[13px] text-[#FBF6EA]/55 mt-5">
+          Twenty seconds for the first two. Your website keeps building after this (about twenty minutes) and lands at
+          your hub on its own.
+        </p>
       </div>
     );
   }

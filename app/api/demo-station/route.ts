@@ -238,11 +238,11 @@ export async function POST(req: Request) {
         replyTo: 'sarah@modernmustardseed.com',
         subject: `${first}, ${business}'s demos are being forged right now`,
         html: clientEmail({
-          preheader: 'Your receptionist and command center are ready now; the website lands within the hour.',
+          preheader: 'Your receptionist and command center are ready now; your website lands in about twenty minutes.',
           eyebrow: 'YOUR DEMO SUITE',
           greeting: `${first}, it is happening.`,
           body:
-            `<p>Your AI receptionist and your command center are <strong>ready right now</strong>, and a designer is building ${business} a complete demo website as you read this (usually within the hour).</p>` +
+            `<p>Your AI receptionist and your command center are <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template: it usually lands about twenty minutes after you signed up, and it shows up at the same hub on its own.</p>` +
             demoFilmCard({
               film: 'demo-welcome',
               href: lead.hub_demo_url,

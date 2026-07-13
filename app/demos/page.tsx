@@ -20,7 +20,7 @@ const FAQ = [
   },
   {
     q: 'How fast?',
-    a: 'The receptionist and the command center are ready in about twenty seconds. The website is designed by hand-tuned AI and usually lands within the hour; it appears at your hub on its own.',
+    a: 'Two of the three are ready in about twenty seconds: your receptionist and your command center. The website is different, because it is designed from scratch rather than filled into a template, and that usually takes about twenty minutes. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
   },
   {
     q: 'What happens if I want to keep something?',
@@ -107,7 +107,7 @@ export default function DemosPage() {
               <ul className="mt-6 space-y-2.5">
                 {[
                   'No card. No meeting. No sales call to sit through.',
-                  'The first two are ready in about twenty seconds.',
+                  'Two are ready in twenty seconds. Your website takes about twenty minutes.',
                   `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo. Or keep nothing.`,
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#161616]/80">
@@ -164,17 +164,27 @@ export default function DemosPage() {
           <div className="lg:col-span-5">
             <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">Start the forge</span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 leading-[1.08]">
-              Sixty seconds of you. Twenty seconds of us.
+              Sixty seconds of you. Then the forge does the rest.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/70 mt-4 leading-relaxed">
               The phone number matters: your receptionist demo answers as your business, so we build it against a real
               line. Nothing is charged and nobody calls you unless you ask.
             </p>
             <div className="mt-6 bg-[#161616] rounded-2xl border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">What lands</p>
-              <p className="font-body text-[14px] text-[#FBF6EA]/80 mt-2 leading-relaxed">
-                One private hub link with all three demos inside, plus a calculator that shows what the calls you miss
-                are already costing you.
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">What lands, and when</p>
+              <ul className="mt-3 space-y-2">
+                {[
+                  ['Right away', 'Your receptionist and your command center, live in about twenty seconds.'],
+                  ['About twenty minutes', 'Your website, designed from scratch (not a template), landing at the same hub.'],
+                ].map(([when, what]) => (
+                  <li key={when} className="font-body text-[14px] text-[#FBF6EA]/80 leading-relaxed">
+                    <span className="font-sans font-bold uppercase tracking-[0.08em] text-[11px] text-[#F5B700] block">{when}</span>
+                    {what}
+                  </li>
+                ))}
+              </ul>
+              <p className="font-body text-[12.5px] text-[#FBF6EA]/55 mt-3 leading-relaxed">
+                Close the tab if you like. We email you the second the website lands.
               </p>
             </div>
           </div>
@@ -235,7 +245,7 @@ export default function DemosPage() {
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               { n: '1', t: 'You tell us who you are', d: 'Sixty seconds, the form above. No card, no meeting.' },
-              { n: '2', t: 'The forge builds', d: 'Receptionist and command center in seconds. Your website is designed by hand-tuned AI and lands at your hub within the hour.' },
+              { n: '2', t: 'The forge builds', d: 'Receptionist and command center in about twenty seconds. Your website is designed from scratch, so it takes about twenty minutes, and it lands at the same hub on its own.' },
               {
                 n: '3',
                 t: 'Keep what you love',
