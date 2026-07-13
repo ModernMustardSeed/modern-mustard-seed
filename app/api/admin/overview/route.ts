@@ -103,7 +103,7 @@ export async function GET() {
   try {
     const { data: leads } = await supabase
       .from('leads')
-      .select('id, type, status, name, email, message, idea_description, business_name, source, timeline, created_at')
+      .select('id, type, status, name, email, message, idea_description, business_name, source, notes, timeline, created_at')
       .order('created_at', { ascending: false })
       .limit(500);
 
@@ -121,7 +121,15 @@ export async function GET() {
         // A Demo Station signup is the hottest lead we get: they came off an ad,
         // typed their own details, and are playing with the demos we just forged
         // them. No 24h grace period, no waiting for them to go cold.
-        if (status === 'new' && l.source === 'demo-station') {
+        //
+        // Match the notes marker as well as the source, because source records
+        // how we FIRST met someone and is never overwritten (that would erase
+        // real attribution). Somebody who arrived months ago on a contact form
+        // and has now forged their own demos is still a self-serve signup, and
+        // is in fact the hottest kind: they already know us. That is not a
+        // hypothetical, it is how the first real one (Kyler's Lawncare) came in.
+        const selfServe = l.source === 'demo-station' || /^SELF-SERVE:/m.test(String(l.notes ?? ''));
+        if (status === 'new' && selfServe) {
           const hours = Math.round((now.getTime() - created.getTime()) / 3600000);
           attention.push({
             kind: 'lead',
