@@ -6,11 +6,9 @@
  * (in the browser, or it calls their cell). The free demo is hard-capped;
  * the conversion is "Keep Him": a productized, hard-capped monthly Sidekick.
  *
- * Stripe price ids come from env, never code:
- *   STRIPE_PRICE_SIDEKICK_SETUP        ($297 one-time)
- *   STRIPE_PRICE_SIDEKICK_MONTHLY     ($197/mo)
- *   STRIPE_PRICE_SIDEKICK_PRO_SETUP    ($497 one-time)
- *   STRIPE_PRICE_SIDEKICK_PRO_MONTHLY ($397/mo)
+ * Price lives in `sidekickTiers` below, in cents, and nowhere else. Checkout
+ * builds inline Stripe price_data from it, so the env price ids this file used
+ * to name (STRIPE_PRICE_SIDEKICK_*) are dead and no longer read anywhere.
  */
 
 export const SIDEKICK = {
@@ -151,10 +149,12 @@ export const sidekickTiers: SidekickTier[] = [
     slug: 'sidekick-pro',
     name: 'SIDEKICK PRO',
     chip: '[ RUNS THE DESK ]',
-    // Must stay strictly above SIDEKICK. Base moving to $397/$297 compressed the
-    // Pro premium to +$100/+$100 (it was +$200/+$200). Flagged to Sarah.
-    setupCents: 49700,
-    monthlyCents: 39700,
+    // Must stay strictly above SIDEKICK, and by enough that the upgrade reads as a
+    // different tier rather than a rounding error. Base moved to $397/$297, which
+    // squeezed the premium to +$100/+$100, so Pro moves with it and restores the
+    // original +$200/+$200 gap (Sarah, 2026-07-13).
+    setupCents: 59700,
+    monthlyCents: 49700,
     minutesCap: 600,
     pitch: 'For phones that actually ring. More minutes, a memory, and a monthly tune-up.',
     includes: [

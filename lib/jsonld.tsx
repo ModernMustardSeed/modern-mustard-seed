@@ -40,6 +40,7 @@ export const personJsonLd = {
     'Full-stack development',
   ],
   sameAs: [
+    'https://www.facebook.com/modernmustardseed',
     'https://x.com/sarahmscarano',
     'https://www.linkedin.com/in/sarahmscarano/',
     'https://github.com/ModernMustardSeed',

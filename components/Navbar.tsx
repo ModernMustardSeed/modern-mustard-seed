@@ -5,7 +5,15 @@ import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
-import { navLinks, socials } from '@/data/socials';
+import { navLinks, socials, facebookUrl } from '@/data/socials';
+
+function FacebookMark() {
+  return (
+    <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
+      <path d="M14.02 22v-8.94h3l.45-3.48h-3.45V7.36c0-1.01.28-1.69 1.72-1.69h1.85V2.56A24.6 24.6 0 0 0 15.9 2.4c-2.67 0-4.5 1.63-4.5 4.63v2.55H8.4v3.48h3v8.94h2.62Z" />
+    </svg>
+  );
+}
 
 // Curated site map for the hamburger menu: fewer, clearer doors. Everything
 // dropped here (Idea to Spec, AI-Proof, industries, legal) stays reachable
@@ -133,14 +141,21 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-4 md:gap-6">
-            {/* Existing inline desktop nav stays exactly as it was. */}
-            <div className="hidden md:flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-4 xl:gap-6">
+            {/* The inline link row rides at xl. Free Demos made it five links next to
+                two pills, which wrapped the bar to two rows (and 102px tall) from 768
+                to 1279. Below xl the row folds into the hamburger, and the two doors
+                that earn their keep (Free Demos, Book a Call) stay out as pills. */}
+            <div className="hidden xl:flex items-center gap-6">
               {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="text-[11px] uppercase tracking-[0.2em] text-[#161616]/70 hover:text-[#E0301E] transition-colors font-body font-bold"
+                  className={`text-[11px] uppercase tracking-[0.2em] transition-colors font-body font-bold ${
+                    link.href === '/demos'
+                      ? 'text-[#E0301E] hover:text-[#161616]'
+                      : 'text-[#161616]/70 hover:text-[#E0301E]'
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -158,6 +173,26 @@ export default function Navbar() {
                 Book a Call
               </Link>
             </div>
+
+            {/* Between the phone and the full row, Free Demos is the door that pays. */}
+            <Link
+              href="/demos"
+              className="hidden sm:inline-flex xl:hidden items-center px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+            >
+              Free Demos
+            </Link>
+
+            {/* Facebook: the company page, one tap from every screen. */}
+            <a
+              href={facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Modern Mustard Seed on Facebook"
+              title="Modern Mustard Seed on Facebook"
+              className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#161616] bg-white text-[#1E50C8] shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:bg-[#FFF8E6] transition-all"
+            >
+              <FacebookMark />
+            </a>
 
             {/* Hamburger: top right, ALL breakpoints, opens the full menu. */}
             <button
@@ -237,6 +272,24 @@ export default function Navbar() {
                 ×
               </button>
             </div>
+
+            {/* Free Demos: the door the ads point at. On phones the nav pill is
+                hidden, so this is where it lives. */}
+            <Link
+              href="/demos"
+              onClick={() => setMenuOpen(false)}
+              className="group block rounded-2xl border-2 border-[#161616] bg-[#F5B700] shadow-[5px_5px_0_0_#161616] p-5 md:p-6 mb-5 hover:-translate-y-0.5 transition-transform"
+            >
+              <span className="block text-[10px] uppercase tracking-[0.32em] text-[#161616]/70 font-mono font-bold mb-1.5">
+                Free · No Card · No Meeting
+              </span>
+              <span className="block font-display font-black text-2xl md:text-3xl tracking-tight text-[#161616] leading-snug">
+                Free Demos <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
+              </span>
+              <span className="block font-body text-[13px] text-[#161616]/75 mt-1 leading-relaxed">
+                An AI receptionist, a command center, and a new website. All three built for your business.
+              </span>
+            </Link>
 
             {/* Featured: Work With Us gets visual priority. */}
             <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] p-6 md:p-7 mb-8">
