@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import AdminHeader from './AdminHeader';
 import {
@@ -13,6 +14,7 @@ import {
 import Modal from '@/components/ui/Modal';
 import CallSession from './CallSession';
 import CallCard from './CallCard';
+import AuditReport, { siteHref } from './AuditReport';
 
 const SUPABASE_SQL_URL = 'https://supabase.com/dashboard/project/qqvohlvhynmtavdbvkha/sql/new';
 
@@ -44,6 +46,7 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
   const [busy, setBusy] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [scriptFor, setScriptFor] = useState<Prospect | null>(null);
+  const [auditFor, setAuditFor] = useState<Prospect | null>(null);
   const [sessionOpen, setSessionOpen] = useState(false);
 
   // Add form
@@ -246,9 +249,21 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
-      <AdminHeader active="tracker" title="Lead Tracker" />
+      <AdminHeader active="tracker" title="Lead Tracker (Archive)" />
 
       <main className="max-w-6xl mx-auto px-6 py-8">
+        {/* The Tracker's prospects were all migrated onto the Outbound floor
+            (audits, emails, and phone numbers included). This page stays as a
+            read-anytime archive and as the target of old inbox deep links. */}
+        <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#F5B700] p-5 mb-6 flex flex-wrap items-center justify-between gap-3">
+          <p className="font-body text-sm text-[#FBF6EA] max-w-2xl">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#F5B700] font-bold mr-2">Archive</span>
+            The Tracker moved. Every prospect here (with their audits, emails, and numbers) now lives on the Outbound floor, which is where dialing happens. This archive stays for old links and history.
+          </p>
+          <Link href="/admin/outbound" className="shrink-0 px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
+            Go to Outbound →
+          </Link>
+        </div>
         <p className="text-[#3A3733] font-body mb-6 max-w-2xl">
           Your shared prospecting list. Add the businesses you are working, update each as you go, and check here before you call so two of us never hit the same place twice.
         </p>
@@ -379,7 +394,7 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
                           <div className="flex items-center gap-2 mt-1 flex-wrap">
                             {p.website && (
                               <a
-                                href={/^https?:\/\//i.test(p.website) ? p.website : `https://${p.website}`}
+                                href={siteHref(p.website)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={(e) => e.stopPropagation()}
@@ -402,7 +417,21 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
                           ) : auditing.has(p.id) ? (
                             <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-[#1E50C8] animate-pulse">auditing…</span>
                           ) : p.audit_score != null ? (
-                            <span className={`text-[10px] font-mono font-bold rounded-full border-2 px-2 py-0.5 ${scoreColor(p.audit_score)}`}>{p.audit_score}</span>
+                            <button
+                              onClick={() => setAuditFor(p)}
+                              title="See the whole audit"
+                              className={`text-[10px] font-mono font-bold rounded-full border-2 px-2 py-0.5 cursor-pointer hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#161616] transition-all ${scoreColor(p.audit_score)}`}
+                            >
+                              {p.audit_score} ↗
+                            </button>
+                          ) : p.website ? (
+                            <button
+                              onClick={() => void autoAudit(p)}
+                              title={`Audit ${p.website}`}
+                              className="text-[9px] uppercase tracking-[0.12em] font-mono font-bold text-[#1E50C8] border border-[#1E50C8]/40 rounded-full px-2 py-0.5 hover:bg-[#1E50C8] hover:text-white transition-colors"
+                            >
+                              Run audit
+                            </button>
                           ) : (
                             <span className="text-[#161616]/30 text-xs">-</span>
                           )}
@@ -451,6 +480,28 @@ export default function LeadTracker({ currentEmail, currentName, bookDisplay }: 
                 bookDisplay={bookDisplay}
                 onPatch={patchRow}
               />
+            </Modal>
+          );
+        })()}
+
+        {auditFor && (() => {
+          // Render from the live row so a just-finished audit shows without a reload.
+          const live = rows.find((r) => r.id === auditFor.id) ?? auditFor;
+          return (
+            <Modal
+              open
+              onClose={() => setAuditFor(null)}
+              headerTone="dark"
+              size="xl"
+              eyebrow="Website audit"
+              title={live.business}
+              subtitle={live.audit_url ?? live.website ?? undefined}
+            >
+              {live.audit_json ? (
+                <AuditReport audit={live.audit_json} url={live.audit_url ?? live.website} auditedAt={live.audit_at} />
+              ) : (
+                <p className="text-[#161616]/55 font-body text-sm italic py-6 text-center">No audit on file yet. Run one from the row or the call card.</p>
+              )}
             </Modal>
           );
         })()}

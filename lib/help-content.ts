@@ -116,7 +116,7 @@ export const PARTNER_HELP: HelpGuideContent = {
 
 export const ADMIN_HELP: HelpGuideContent = {
   title: 'Command center, explained',
-  intro: 'How to run the whole business from here. Each tab is a step in the funnel, and everything is keyed by the client email.',
+  intro: 'The daily drivers are pinned up top: Outbound (the dial floor), Pipeline (every lead), and Partner Hub (your code, posts, playbooks, and free programs). Everything else lives in the Clients, Marketing, and Desk menus.',
   sections: [
     {
       title: 'Overview',
@@ -127,9 +127,24 @@ export const ADMIN_HELP: HelpGuideContent = {
       ],
     },
     {
+      title: 'Outbound',
+      items: [
+        'The one dial floor. Your queue, the words to say, one-tap outcomes, audits, emails, demos, and pilots all live here.',
+        'The old Tracker prospects were merged in (audits, emails, and numbers included). The Tracker page remains as a read-only archive.',
+      ],
+    },
+    {
       title: 'Pipeline',
       items: [
         'Every lead. Click one to open the drawer: details, status, your private notes, the launch countdown, and the full activity timeline.',
+      ],
+    },
+    {
+      title: 'Partner Hub',
+      items: [
+        'Your partner code and money link, every teammate’s code, and your own clicks and earnings.',
+        'What to Post: ready-made swipe copy for every offer with your link already injected, plus the commercials.',
+        'Playbooks, the training courses, and free access to every program (Mustard Mode, Mustard Launch, Idea to Spec, The Terminal, the store).',
       ],
     },
     {
@@ -157,11 +172,11 @@ export const ADMIN_HELP: HelpGuideContent = {
       ],
     },
     {
-      title: 'Reviews, Outreach, Partners',
+      title: 'Reviews, Outreach, Partner Admin',
       items: [
-        'Reviews: approve client-submitted reviews to publish them on the site.',
-        'Outreach: prospect list and AI-drafted messages for your approval.',
-        'Partners: approve applicants and manage affiliates.',
+        'Reviews (Clients menu): approve client-submitted reviews to publish them on the site.',
+        'Outreach (Marketing menu): prospect list and AI-drafted messages for your approval.',
+        'Partner Admin (Desk menu): approve applicants and manage the outside affiliates. Your own partner life lives in Partner Hub.',
       ],
     },
     {

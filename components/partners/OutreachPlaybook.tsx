@@ -47,11 +47,19 @@ export default function OutreachPlaybook({
   firstName,
   bookDisplay,
   bookHref,
+  backHref = '/partners/hq',
+  backLabel = '← Dashboard',
+  pdfHref = '/api/partners/playbook/pdf',
 }: {
   code: string;
   firstName: string;
   bookDisplay: string;
   bookHref: string;
+  /** Where the header back link points (admin team reads this from /admin/hq). */
+  backHref?: string;
+  backLabel?: string;
+  /** The PDF endpoint matching the session that gates the page. */
+  pdfHref?: string;
 }) {
   const [copied, setCopied] = useState<string | null>(null);
   const copy = async (key: string, text: string) => {
@@ -71,12 +79,12 @@ export default function OutreachPlaybook({
       <header className="border-b-2 border-[#161616] sticky top-0 z-40 bg-[#FBF6EA]/95 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Link href="/partners/hq" className="text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#1E50C8] hover:text-[#161616] transition-colors">← Dashboard</Link>
+            <Link href={backHref} className="text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#1E50C8] hover:text-[#161616] transition-colors">{backLabel}</Link>
             <span className="hidden sm:block h-4 w-px bg-[#161616]/20" />
             <h1 className="font-sans text-base sm:text-lg font-bold tracking-tight">The Outreach Playbook</h1>
           </div>
           <a
-            href="/api/partners/playbook/pdf"
+            href={pdfHref}
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-all"

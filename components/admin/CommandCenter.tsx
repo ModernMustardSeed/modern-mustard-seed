@@ -241,11 +241,11 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
               🎬 Ads Playbook · videos
             </Link>
             {[
+              { href: '/admin/outbound', label: 'Outbound' },
+              { href: '/admin/leads', label: 'Pipeline' },
+              { href: '/admin/hq', label: 'Partner Hub' },
               { href: '/admin/delivery', label: 'Delivery' },
               { href: '/admin/team', label: 'Team' },
-              { href: '/admin/leads', label: 'Leads' },
-              { href: '/admin/outbound', label: 'Outbound' },
-              { href: '/admin/campaigns', label: 'Campaigns' },
               { href: '/admin/approvals', label: 'Approvals' },
               { href: '/admin/inbox', label: 'Inbox' },
             ].map((l) => (

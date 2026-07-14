@@ -59,12 +59,12 @@ export default function WelcomeTour({ name, email }: { name: string; email: stri
     {
       badge: 'How you earn',
       title: 'Your partner code pays you, forever.',
-      body: 'You earn on everything you send us: 50% on every product, 25% of the monthly bill for a year on any business you put on an AI receptionist, and 10 to 20% on custom builds. Your personal code and link are in your welcome email, and every partner code lives under Partners.',
+      body: 'You earn on everything you send us: 50% on every product, 25% of the monthly bill for a year on any business you put on an AI receptionist, and 10 to 20% on custom builds. Open Partner Hub in the top bar: your code, your link, your earnings, and every teammate’s code live there.',
     },
     {
       badge: 'Post for us',
       title: 'Ready-made ads, yours to share.',
-      body: 'In the "Jump to" row, open Ads Playbook. Those are the Mr. Mustard commercials, cut and ready to post. Sharing them gets you (and us) seen, and you can carry your own link so a post can turn into a check.',
+      body: 'Partner Hub has ready-to-post copy for every offer with your link already in it, plus the Mr. Mustard commercials under Ads Playbook. Copy, lightly reword so it sounds like you, and post. A post with your link can turn into a check.',
     },
     {
       badge: 'Everything else',

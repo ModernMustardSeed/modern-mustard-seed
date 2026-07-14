@@ -7,55 +7,50 @@ import HelpGuide from '@/components/HelpGuide';
 import { ADMIN_HELP } from '@/lib/help-content';
 
 /**
- * Shared admin header. The old 24-tab horizontal scroller became five calm
- * top-level items: Overview plus four grouped dropdowns (Sell, Market,
- * Deliver, Desk). Every page key and href is unchanged, so `active` props
- * across the command center keep working. Dropdowns open on click, close on
+ * Shared admin header. The daily drivers are pinned as top-level chips
+ * (Overview, Outbound, Pipeline, Partner Hub) and everything else lives in
+ * three grouped dropdowns (Clients, Marketing, Desk). Every page key keeps
+ * working; keys with no nav home (tracker, script, training) belong to pages
+ * that are reachable from elsewhere (the Tracker archive, the Partner Hub's
+ * Learn section) and simply light no chip. Dropdowns open on click, close on
  * outside click, Esc, or navigation; the group holding the active page wears
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
 type Item = { key: Tab; label: string; href: string };
 
-const OVERVIEW: Item = { key: 'overview', label: 'Overview', href: '/admin' };
-const MY_PROJECTS: Item = { key: 'portfolio', label: 'My Projects', href: '/admin/portfolio' };
+const PINNED: Item[] = [
+  { key: 'overview', label: 'Overview', href: '/admin' },
+  { key: 'outbound', label: 'Outbound', href: '/admin/outbound' },
+  { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
+  { key: 'hq', label: 'Partner Hub', href: '/admin/hq' },
+];
 
 const GROUPS: { name: string; items: Item[] }[] = [
   {
-    name: 'Sell',
+    name: 'Clients',
     items: [
-      { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
-      { key: 'tracker', label: 'Tracker', href: '/admin/prospects' },
-      { key: 'outbound', label: 'Outbound', href: '/admin/outbound' },
-      { key: 'callers', label: 'Callers', href: '/admin/callers' },
+      { key: 'delivery', label: 'Delivery', href: '/admin/delivery' },
+      { key: 'projects', label: 'Projects', href: '/admin/projects' },
+      { key: 'proposals', label: 'Proposals', href: '/admin/proposals' },
       { key: 'call', label: 'Intake Call', href: '/admin/intake-call' },
-      { key: 'script', label: 'Call Script', href: '/admin/call-script' },
-      { key: 'training', label: 'Sales Training', href: '/admin/sales-training' },
-      { key: 'audit', label: 'Audit Desk', href: '/admin/audit' },
+      { key: 'builds', label: 'Builds', href: '/admin/builds' },
+      { key: 'intakes', label: 'Intakes', href: '/admin/intakes' },
+      { key: 'reviews', label: 'Reviews', href: '/admin/testimonials' },
+      { key: 'portfolio', label: 'My Projects', href: '/admin/portfolio' },
     ],
   },
   {
-    name: 'Market',
+    name: 'Marketing',
     items: [
       { key: 'ads', label: 'Ads Playbook', href: '/admin/ads' },
       { key: 'campaigns', label: 'Campaigns', href: '/admin/campaigns' },
-      { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
       { key: 'texting', label: 'Texting', href: '/admin/texting' },
       { key: 'gleaner', label: 'Gleaner', href: '/admin/gleaner' },
-    ],
-  },
-  {
-    name: 'Deliver',
-    items: [
-      { key: 'proposals', label: 'Proposals', href: '/admin/proposals' },
-      { key: 'projects', label: 'Projects', href: '/admin/projects' },
-      { key: 'builds', label: 'Builds', href: '/admin/builds' },
-      { key: 'onboarding', label: 'Onboarding', href: '/admin/onboarding' },
-      { key: 'reviews', label: 'Reviews', href: '/admin/testimonials' },
-      { key: 'partners', label: 'Partners', href: '/admin/partners' },
-      { key: 'team', label: 'Team', href: '/admin/team' },
+      { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
+      { key: 'audit', label: 'Audit Desk', href: '/admin/audit' },
     ],
   },
   {
@@ -64,6 +59,10 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'inbox', label: 'Inbox', href: '/admin/inbox' },
       { key: 'calendar', label: 'Calendar', href: '/admin/calendar' },
       { key: 'approvals', label: 'Approvals', href: '/admin/approvals' },
+      { key: 'team', label: 'Team', href: '/admin/team' },
+      { key: 'partners', label: 'Partner Admin', href: '/admin/partners' },
+      { key: 'callers', label: 'Callers', href: '/admin/callers' },
+      { key: 'onboarding', label: 'Academy', href: '/admin/onboarding' },
       { key: 'manual', label: 'Manual', href: '/admin/manual' },
     ],
   },
@@ -107,12 +106,12 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
   };
 
   const chipCls = (isActive: boolean) =>
-    `whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 transition-colors ${
+    `whitespace-nowrap text-[11px] uppercase tracking-[0.12em] font-sans font-semibold px-2.5 py-2 rounded-lg border-2 transition-colors ${
       isActive
         ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[2px_2px_0_0_#161616]'
         : 'border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05]'
     }`;
-  const actionCls = 'whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3.5 py-2 rounded-lg border-2 border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05] transition-colors';
+  const actionCls = 'whitespace-nowrap text-[11px] uppercase tracking-[0.12em] font-sans font-semibold px-2.5 py-2 rounded-lg border-2 border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05] transition-colors';
 
   return (
     <header className="border-b-2 border-[#161616] sticky top-0 z-30 bg-[#FBF6EA]/95 backdrop-blur-md">
@@ -127,23 +126,17 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
 
         <div className="flex flex-col-reverse md:flex-row md:items-center gap-2 md:gap-1.5 min-w-0 md:flex-1 md:justify-end">
           <nav ref={navRef} aria-label="Admin sections" className="relative flex items-center flex-wrap gap-1 w-full md:w-auto md:justify-end">
-            <Link
-              href={OVERVIEW.href}
-              aria-current={active === 'overview' ? 'page' : undefined}
-              onClick={() => setOpenGroup(null)}
-              className={chipCls(active === 'overview')}
-            >
-              {OVERVIEW.label}
-            </Link>
-
-            <Link
-              href={MY_PROJECTS.href}
-              aria-current={active === 'portfolio' ? 'page' : undefined}
-              onClick={() => setOpenGroup(null)}
-              className={chipCls(active === 'portfolio')}
-            >
-              {MY_PROJECTS.label}
-            </Link>
+            {PINNED.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                aria-current={active === item.key ? 'page' : undefined}
+                onClick={() => setOpenGroup(null)}
+                className={chipCls(active === item.key)}
+              >
+                {item.label}
+              </Link>
+            ))}
 
             {GROUPS.map((group) => {
               const holdsActive = group.items.some((i) => i.key === active);
