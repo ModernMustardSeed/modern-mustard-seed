@@ -20,14 +20,41 @@ const FIELD_LABELS: Record<string, string> = {
   brand: 'Look and feel',
   contact: 'Best contact',
   notes: 'Anything else',
+  // Their real presence. These are what turn a demo into THEIR site, and what
+  // feeds the SEO and GEO work: a Google Business Profile is the single highest
+  // leverage local-search asset a small business owns.
+  gbp: 'Google Business Profile',
+  facebook: 'Facebook',
+  instagram: 'Instagram',
+  competitors: 'Who they compete with',
+  audience: 'Who their customer is',
 };
+
+/** Uploaded files (logo, photos, product or menu lists) that came with the intake. */
+type Asset = { url: string; name: string; kind: 'logo' | 'photo' | 'product' | 'file' };
+const ASSET_KINDS = ['logo', 'photo', 'product', 'file'] as const;
+const MAX_ASSETS = 24;
 
 function esc(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+/**
+ * Only accept URLs we ourselves minted. The client posts back the URLs it got from
+ * /api/intake/upload, and an attacker holding a link could otherwise smuggle any
+ * URL into Sarah's inbox and the client portal as a trusted "asset".
+ */
+function isOurUpload(url: string): boolean {
+  try {
+    const u = new URL(url);
+    return u.protocol === 'https:' && u.hostname.endsWith('.supabase.co') && u.pathname.includes('/storage/v1/object/');
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(req: Request) {
-  let body: { hubId?: string; sessionId?: string; answers?: Record<string, string> };
+  let body: { hubId?: string; sessionId?: string; answers?: Record<string, string>; assets?: Asset[] };
   try {
     body = await req.json();
   } catch {
@@ -45,12 +72,23 @@ export async function POST(req: Request) {
     if (FIELD_LABELS[k] && typeof v === 'string' && v.trim()) answers[k] = v.trim().slice(0, 1500);
   }
 
+  const assets: Asset[] = (Array.isArray(body.assets) ? body.assets : [])
+    .filter(
+      (a): a is Asset =>
+        !!a &&
+        typeof a.url === 'string' &&
+        isOurUpload(a.url) &&
+        (ASSET_KINDS as readonly string[]).includes(a.kind),
+    )
+    .slice(0, MAX_ASSETS)
+    .map((a) => ({ url: a.url, name: String(a.name ?? 'file').slice(0, 120), kind: a.kind }));
+
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'db_not_configured' }, { status: 503 });
 
   const { data: order } = await supabase
     .from('demo_orders')
-    .select('id, outbound_lead_id, business_name, products, status')
+    .select('id, outbound_lead_id, business_name, products, status, client_email, project_id')
     .eq('hub_demo_id', hubId)
     .eq('stripe_session_id', sessionId)
     .maybeSingle();
@@ -74,7 +112,7 @@ export async function POST(req: Request) {
   const { error: upErr } = await supabase
     .from('demo_orders')
     .update({
-      intake: answers,
+      intake: { ...answers, assets },
       intake_at: new Date().toISOString(),
       ...(firstIntake ? { status: 'intake_done' } : {}),
       updated_at: new Date().toISOString(),
@@ -85,12 +123,67 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'save_failed' }, { status: 500 });
   }
 
+  // Their logo and photos belong in the portal, not only in an inbox. This is the
+  // whole reason uploads exist: the build needs the real brand, and the client
+  // needs to see that we actually received it.
+  if (order.client_email && assets.length) {
+    try {
+      const { data: already } = await supabase
+        .from('client_files')
+        .select('url')
+        .eq('client_email', order.client_email);
+      const seen = new Set((already ?? []).map((f) => f.url as string));
+      const fresh = assets.filter((a) => !seen.has(a.url));
+      if (fresh.length) {
+        await supabase.from('client_files').insert(
+          fresh.map((a) => ({
+            client_email: order.client_email,
+            label: a.kind === 'logo' ? `Your logo (${a.name})` : a.kind === 'product' ? `Products / menu (${a.name})` : `Photo: ${a.name}`,
+            url: a.url,
+            kind: 'design',
+          })),
+        );
+      }
+    } catch (err) {
+      console.error('demo-order intake: client_files insert failed', err);
+    }
+  }
+
+  // Tick the one milestone that was theirs to do, so the portal reflects reality
+  // the moment they hit send.
+  if (firstIntake && order.project_id) {
+    try {
+      const { data: proj } = await supabase
+        .from('projects')
+        .select('milestones, progress')
+        .eq('id', order.project_id)
+        .maybeSingle();
+      const ms = Array.isArray(proj?.milestones) ? (proj!.milestones as Array<{ title: string; done?: boolean }>) : [];
+      if (ms.length) {
+        ms[0] = { ...ms[0], done: true };
+        await supabase
+          .from('projects')
+          .update({ milestones: ms, status: 'building', progress: Math.max(20, Number(proj?.progress ?? 0)) })
+          .eq('id', order.project_id);
+      }
+    } catch (err) {
+      console.error('demo-order intake: milestone update failed', err);
+    }
+  }
+
   // A correction is saved above, but only the first submission is announced.
   if (!firstIntake) return NextResponse.json({ ok: true, updated: true });
 
-  const lines = Object.entries(answers)
-    .map(([k, v]) => `<p><strong>${FIELD_LABELS[k]}:</strong> ${esc(v)}</p>`)
-    .join('');
+  const assetLines = assets.length
+    ? `<p><strong>Files they sent (${assets.length}):</strong></p>` +
+      assets
+        .map((a) => `<p style="margin:2px 0">${esc(a.kind)}: <a href="${esc(a.url)}">${esc(a.name)}</a></p>`)
+        .join('')
+    : '';
+  const lines =
+    Object.entries(answers)
+      .map(([k, v]) => `<p><strong>${FIELD_LABELS[k]}:</strong> ${esc(v)}</p>`)
+      .join('') + assetLines;
   const safeBusiness = esc(order.business_name || 'A buyer');
 
   if (order.outbound_lead_id) {
@@ -100,8 +193,10 @@ export async function POST(req: Request) {
         direction: 'inbound',
         channel: 'note',
         subject: 'Demo order intake (customization details)',
-        body: Object.entries(answers).map(([k, v]) => `${FIELD_LABELS[k]}: ${v}`).join('\n'),
-        snippet: 'Customization intake received',
+        body:
+          Object.entries(answers).map(([k, v]) => `${FIELD_LABELS[k]}: ${v}`).join('\n') +
+          (assets.length ? `\n\nFiles (${assets.length}):\n${assets.map((a) => `${a.kind}: ${a.url}`).join('\n')}` : ''),
+        snippet: `Customization intake received${assets.length ? ` (+${assets.length} files)` : ''}`,
       });
     } catch (err) {
       console.error('demo-order intake thread note failed', err);
