@@ -28,6 +28,7 @@ jobs:
         run: |
           echo "Pinging zoho-sync..."
           BODY=$(curl -sS -m 120 -w $'\n%{http_code}' \
+            ${CRON_SECRET:+-H "Authorization: Bearer $CRON_SECRET"} \
             "https://modernmustardseed.com/api/cron/zoho-sync")
           CODE=$(printf '%s' "$BODY" | tail -n1)
           JSON=$(printf '%s' "$BODY" | sed '$d')
@@ -37,3 +38,5 @@ jobs:
             echo "::error::zoho-sync returned HTTP $CODE"
             exit 1
           fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
