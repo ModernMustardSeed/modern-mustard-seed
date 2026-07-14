@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
-import { quoteDomain, buyDomain, publishSite, attachDomain, normalizeDomain, type Contact } from '@/lib/vercel-platform';
+import { quoteDomain, buyDomain, publishSite, attachDomain, normalizeDomain, projectSlug, type Contact } from '@/lib/vercel-platform';
+import { seoFiles, type SiteFacts } from '@/lib/site-seo';
 import { resendClient } from '@/lib/send-email';
 import { clientEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
@@ -141,8 +142,52 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
     case 'publish': {
       if (!project.site_html) return NextResponse.json({ error: 'Seed the site from their demo first.' }, { status: 400 });
 
+      // Everything we know about them, gathered once. The SEO record is built from
+      // FACTS: their intake, their order, their lead. Never a guess (see lib/site-seo).
+      const { data: order } = await sb
+        .from('demo_orders')
+        .select('intake, phone, outbound_lead_id')
+        .eq('project_id', projectId)
+        .maybeSingle();
+      const intake = (order?.intake ?? {}) as Record<string, unknown>;
+      const str = (k: string) => (typeof intake[k] === 'string' ? (intake[k] as string) : undefined);
+
+      let lead: { city?: string | null; state?: string | null; phone?: string | null; niche?: string | null } | null = null;
+      if (order?.outbound_lead_id) {
+        const { data } = await sb
+          .from('outbound_leads')
+          .select('city, state, phone, niche')
+          .eq('id', order.outbound_lead_id)
+          .maybeSingle();
+        lead = data;
+      }
+      const assets = Array.isArray(intake.assets) ? (intake.assets as Array<{ url: string; kind: string }>) : [];
+      const logo = assets.find((a) => a.kind === 'logo')?.url;
+
+      // With no custom domain yet, the site still needs to know its own address or the
+      // canonical tag would point at nothing. Vercel serves it at <project>.vercel.app.
+      const slug = projectSlug(business, projectId);
+      const domain = (project.site_domain as string | null) ?? `${slug}.vercel.app`;
+
+      const facts: SiteFacts = {
+        business,
+        domain,
+        phone: str('contact')?.match(/[\d().+-]{7,}/)?.[0] ?? order?.phone ?? lead?.phone ?? null,
+        city: lead?.city ?? null,
+        state: lead?.state ?? null,
+        street: null,
+        zip: null,
+        services: str('services') ?? null,
+        hours: str('hours') ?? null,
+        trade: lead?.niche ?? null,
+        gbp: str('gbp') ?? null,
+        facebook: str('facebook') ?? null,
+        instagram: str('instagram') ?? null,
+        logoUrl: logo ?? null,
+      };
+
       const pub = await publishSite({
-        html: project.site_html as string,
+        files: seoFiles(facts, project.site_html as string),
         business,
         key: projectId,
         projectId: (project.site_vercel_project_id as string | null) ?? null,

@@ -34,7 +34,9 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
     setupCents: 49700,
     monthlyCents: 9700,
     blurb: 'The site you just toured, customized to your business and put live on your domain.',
-    finePrint: 'Hosting, care, and small changes included.',
+    // The two free edits are now a real, counted thing (claim_revision, migration 049),
+    // so the offer may finally say so out loud. Domain, hosting and care are ours.
+    finePrint: 'Two free edits before it goes live. Your domain, hosting, and care included.',
   },
   os: {
     key: 'os',

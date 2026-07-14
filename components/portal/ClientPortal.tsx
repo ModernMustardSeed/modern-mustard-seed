@@ -372,6 +372,9 @@ export default function ClientPortal() {
                   <OnboardingIntake onStatus={setIntakeStatus} />
                 )}
 
+                {/* Connect Google: the listing matters more than the website. */}
+                <ConnectionsCard />
+
                 {/* Launch checklist, now a door rather than the whole room. */}
                 <LaunchChecklistCard email={data.email} />
 
@@ -910,6 +913,113 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
           {sending ? 'Sending…' : spent ? 'Send a change request' : 'Send this edit'}
         </button>
       </form>
+    </div>
+  );
+}
+
+/**
+ * CONNECT YOUR GOOGLE.
+ *
+ * The alternative, and what this replaces, was asking a small business owner for their
+ * Google PASSWORD so Sarah could paste it into a vault. That hands over their email,
+ * their reviews, and their ad account all at once, with no way to revoke it. A scoped
+ * OAuth grant they can cut off themselves is the honest way to ask.
+ *
+ * The pitch is not "authorize an integration". It is: this is what gets you found.
+ */
+type Integration = {
+  provider: 'google';
+  accountEmail: string | null;
+  accountName: string | null;
+  status: 'connected' | 'revoked' | 'error';
+  connectedAt: string;
+};
+
+function ConnectionsCard() {
+  const [integrations, setIntegrations] = useState<Integration[]>([]);
+  const [available, setAvailable] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const load = async () => {
+    try {
+      const res = await fetch('/api/portal/integrations');
+      const j = await res.json().catch(() => null);
+      if (res.ok) {
+        setIntegrations((j?.integrations ?? []) as Integration[]);
+        setAvailable(Boolean(j?.available));
+      }
+    } finally {
+      setLoaded(true);
+    }
+  };
+
+  useEffect(() => { load(); }, []);
+
+  if (!loaded || !available) return null;
+
+  const google = integrations.find((i) => i.provider === 'google');
+  const live = google?.status === 'connected';
+
+  const disconnect = async () => {
+    if (!confirm('Disconnect Google? We will lose access to your business listing and your stats.')) return;
+    setBusy(true);
+    try {
+      await fetch('/api/portal/integrations', { method: 'DELETE' });
+      await load();
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+      <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-1">
+        Getting you found
+      </span>
+      <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">
+        {live ? 'Google is connected' : 'Connect your Google'}
+      </h3>
+
+      {live ? (
+        <>
+          <p className="text-[#161616]/65 font-body text-sm mb-3">
+            Connected as <strong>{google?.accountEmail ?? 'your Google account'}</strong>. We keep your business listing
+            accurate and watch how the site is doing. We never post as you, and you can cut this off any time, here or
+            from your Google account.
+          </p>
+          <button
+            type="button"
+            onClick={disconnect}
+            disabled={busy}
+            className="px-5 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-transform"
+          >
+            {busy ? 'Disconnecting…' : 'Disconnect'}
+          </button>
+        </>
+      ) : (
+        <>
+          <p className="text-[#161616]/65 font-body text-sm mb-1">
+            {google?.status === 'revoked'
+              ? 'Your Google connection was cut off. Reconnect and we will pick right back up.'
+              : 'Your Google Business Profile is the listing people see on Maps and in search, and it is what the AI assistants read when someone asks who does this near you. It matters more than the website.'}
+          </p>
+          <ul className="text-[#161616]/65 font-body text-sm mb-4 mt-2 space-y-1">
+            <li>· Keep your hours, phone, and services correct everywhere at once</li>
+            <li>· See whether the site is actually bringing you calls</li>
+            <li>· Let the receptionist book straight into your calendar</li>
+          </ul>
+          <a
+            href="/api/oauth/google/start"
+            className="inline-block px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
+          >
+            {google?.status === 'revoked' ? 'Reconnect Google' : 'Connect Google'}
+          </a>
+          <p className="text-[#161616]/45 font-body text-xs mt-3">
+            We never get your password, and we never post as you.
+          </p>
+        </>
+      )}
     </div>
   );
 }

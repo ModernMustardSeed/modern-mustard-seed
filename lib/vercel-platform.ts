@@ -81,6 +81,8 @@ export type DomainQuote = {
   domain: string;
   available: boolean;
   priceUsd: number | null;
+  /** What it costs EVERY year after the first. Often higher than the intro price. */
+  renewalUsd: number | null;
   years: number;
   /** False when we will not sell it with one click: too expensive, or not for sale. */
   buyable: boolean;
@@ -106,32 +108,41 @@ export async function quoteDomain(domain: string): Promise<DomainQuote | { error
   const avail = await api<{ available: boolean }>(cfg, `/v1/registrar/domains/${encodeURIComponent(name)}/availability`);
   if (!avail.ok) return { error: avail.error };
   if (!avail.data.available) {
-    return { domain: name, available: false, priceUsd: null, years: 1, buyable: false, reason: 'Someone already owns it.' };
+    return { domain: name, available: false, priceUsd: null, renewalUsd: null, years: 1, buyable: false, reason: 'Someone already owns it.' };
   }
 
-  const price = await api<{ price?: number; years?: number }>(cfg, `/v1/registrar/domains/${encodeURIComponent(name)}/price`);
+  // The field is `purchasePrice`, NOT `price`. Verified against the live API: a real
+  // response is {"years":1,"purchasePrice":11.25,"renewalPrice":11.25,...}. Reading
+  // `price` returns undefined for every domain on earth, which would have made the buy
+  // button permanently say "we could not get a price".
+  const price = await api<{ purchasePrice?: number; renewalPrice?: number; years?: number }>(
+    cfg,
+    `/v1/registrar/domains/${encodeURIComponent(name)}/price`,
+  );
   if (!price.ok) {
-    return { domain: name, available: true, priceUsd: null, years: 1, buyable: false, reason: 'Available, but we could not get a price. Buy it manually.' };
+    return { domain: name, available: true, priceUsd: null, renewalUsd: null, years: 1, buyable: false, reason: 'Available, but we could not get a price. Buy it manually.' };
   }
 
-  const priceUsd = typeof price.data.price === 'number' ? price.data.price : null;
+  const priceUsd = typeof price.data.purchasePrice === 'number' ? price.data.purchasePrice : null;
+  const renewalUsd = typeof price.data.renewalPrice === 'number' ? price.data.renewalPrice : null;
   const years = typeof price.data.years === 'number' && price.data.years > 0 ? price.data.years : 1;
 
   if (priceUsd == null) {
-    return { domain: name, available: true, priceUsd: null, years, buyable: false, reason: 'No price came back. Buy it manually.' };
+    return { domain: name, available: true, priceUsd: null, renewalUsd, years, buyable: false, reason: 'No price came back. Buy it manually.' };
   }
   if (priceUsd > MAX_DOMAIN_USD) {
     return {
       domain: name,
       available: true,
       priceUsd,
+      renewalUsd,
       years,
       buyable: false,
       reason: `Premium name at $${priceUsd}. Over the $${MAX_DOMAIN_USD} one-click ceiling, so this one needs a conversation.`,
     };
   }
 
-  return { domain: name, available: true, priceUsd, years, buyable: true };
+  return { domain: name, available: true, priceUsd, renewalUsd, years, buyable: true };
 }
 
 export type Contact = {
@@ -201,14 +212,16 @@ export function projectSlug(business: string, suffix: string): string {
  * deployment is a single inline file: no build step, no framework, nothing to break.
  */
 export async function publishSite(args: {
-  html: string;
+  /** index.html plus its SEO companions (robots.txt, sitemap.xml, llms.txt, ai.txt). */
+  files: Array<{ file: string; data: string }>;
   business: string;
   key: string;
   projectId?: string | null;
 }): Promise<{ ok: true; projectId: string; projectName: string; url: string } | { ok: false; error: string }> {
   const cfg = vercelConfig();
   if (!cfg) return { ok: false, error: 'Publishing is not configured yet (VERCEL_TOKEN / VERCEL_TEAM_ID).' };
-  if (!args.html || args.html.length < 500) return { ok: false, error: 'There is no site to publish.' };
+  const index = args.files.find((f) => f.file === 'index.html');
+  if (!index || index.data.length < 500) return { ok: false, error: 'There is no site to publish.' };
 
   const name = projectSlug(args.business, args.key);
 
@@ -237,13 +250,11 @@ export async function publishSite(args: {
       name,
       project: projectId,
       target: 'production',
-      files: [
-        {
-          file: 'index.html',
-          data: Buffer.from(args.html, 'utf8').toString('base64'),
-          encoding: 'base64',
-        },
-      ],
+      files: args.files.map((f) => ({
+        file: f.file,
+        data: Buffer.from(f.data, 'utf8').toString('base64'),
+        encoding: 'base64',
+      })),
       projectSettings: { framework: null, buildCommand: null, installCommand: null, outputDirectory: null },
     }),
   });

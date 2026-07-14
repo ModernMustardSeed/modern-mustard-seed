@@ -11,7 +11,7 @@ import { useCallback, useEffect, useState } from 'react';
  * intake and files, a domain, and the button that puts it on the internet.
  */
 
-type Quote = { domain: string; available: boolean; priceUsd: number | null; years: number; buyable: boolean; reason?: string };
+type Quote = { domain: string; available: boolean; priceUsd: number | null; renewalUsd: number | null; years: number; buyable: boolean; reason?: string };
 type Project = {
   name: string;
   status: string;
@@ -319,7 +319,11 @@ function DeliveryRow({
                     <div className="flex items-center justify-between gap-3 flex-wrap">
                       <p className="font-body text-[13.5px] text-[#161616]">
                         <strong>{quote.domain}</strong> is free. ${quote.priceUsd} for {quote.years} year
-                        {quote.years === 1 ? '' : 's'}.
+                        {quote.years === 1 ? '' : 's'}
+                        {quote.renewalUsd != null && quote.renewalUsd !== quote.priceUsd
+                          ? `, then $${quote.renewalUsd}/yr to renew`
+                          : ''}
+                        .
                       </p>
                       <button type="button" onClick={doBuy} disabled={!!busy} className={BTN}>
                         {busy === 'buy' ? 'Buying…' : `Buy it for $${quote.priceUsd}`}
