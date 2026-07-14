@@ -7,7 +7,9 @@
  * track: the assistant greets you, hears literal silence for the whole call,
  * and hangs up with `silence-timed-out` or
  * `call.in-progress.error-assistant-did-not-receive-customer-audio`. From the
- * prospect's side the demo looks broken. It talks, then ignores you.
+ * prospect's side the demo looks broken. It talks, then ignores you. The
+ * failure is intermittent and machine-dependent, which is what made it so easy
+ * to miss: the same demo works on one laptop and is stone deaf on the next.
  *
  * Observed 2026-07-13 on the Hall Roofing demo: mic delivering audio at 0.31
  * peak RMS in the page, Vapi transcript containing zero user turns. Turning the
@@ -15,11 +17,16 @@
  *
  * The SDK only falls back to `type: 'none'` if Krisp raises an
  * `audio-processor-error`. The failure we hit is silent, so nothing fires and
- * the call dies quietly. We do not need noise cancellation for a browser demo,
- * so we turn it off outright.
+ * the call dies quietly. We do not need Krisp for a browser demo: the browser's
+ * own WebRTC pipeline still gives us echoCancellation, noiseSuppression and
+ * autoGainControl (verified true on the live mic track after this runs), so
+ * turning Krisp off does not expose us to speakerphone echo.
  *
  * `call` is the SDK's internal DailyCall. It is TS-private but present at
- * runtime, and this is the only way to reach updateInputSettings.
+ * runtime in the npm, Turbopack and esm.sh builds. Because we depend on an
+ * internal, the SDK version is PINNED EXACTLY in package.json: a minor bump
+ * that renames this property would otherwise silently make every demo go deaf
+ * again. If it ever does change, the warning below is how we find out.
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -34,19 +41,35 @@ async function setProcessorNone(vapi: any): Promise<boolean> {
 /**
  * Disable Krisp so the caller is actually heard.
  *
- * The SDK enables the processor during its own start sequence, so a single
- * call here can lose the race and be overwritten. We retry across the window in
- * which the SDK finishes joining. Best effort by design: a failure here must
- * never take the call down, since a call with noise cancellation still stands a
- * chance, but a thrown error is a guaranteed dead demo.
+ * The SDK enables the processor during its own start sequence, so we retry
+ * across the window in which it finishes joining. Best effort by design: a
+ * throw here must never take the call down, since a call with noise
+ * cancellation still stands a chance while a crashed call is a dead demo.
+ *
+ * If every attempt fails we shout, because that means the SDK internals moved
+ * and the demos are about to go deaf.
  */
 export function hardenMicPath(vapi: unknown): void {
   const attempts = [0, 400, 1200, 2500];
-  for (const delay of attempts) {
+  let landed = false;
+
+  attempts.forEach((delay, i) => {
     window.setTimeout(() => {
-      void setProcessorNone(vapi as any).catch(() => {
-        /* processor may not be attached yet; a later attempt covers it */
-      });
+      void setProcessorNone(vapi as any)
+        .then((ok) => {
+          if (ok) landed = true;
+        })
+        .catch(() => {
+          /* processor may not be attached yet; a later attempt covers it */
+        })
+        .finally(() => {
+          if (i === attempts.length - 1 && !landed) {
+            console.warn(
+              '[vapi] Could not disable the Krisp noise processor. The SDK internals may have changed. ' +
+                'Callers may not be heard. See lib/vapi-web.ts.',
+            );
+          }
+        });
     }, delay);
-  }
+  });
 }
