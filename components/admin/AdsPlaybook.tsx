@@ -437,6 +437,88 @@ const UNV_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per forged demo (station_submit / station_forged in Vercel Analytics, leads land in the cockpit under source=demo-station). Truth metric: paid demo orders on the hub order card.' },
 ];
 
+// ============ Campaign thirteen: The Unveiling: Restaurants (demo funnel vertical) ============
+
+const UR_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medium=paid&utm_campaign=unveilingrest';
+
+const UR_COPY_A = `Tonight's tasting menu was made for one table. Yours.
+
+Tell us about your restaurant (60 seconds, that is the whole form) and we build your demos first: a website that makes people hungry, an AI host that answers every call and books every table even during the dinner rush, and a command center that runs the house. Your restaurant's name on all three. Free to see working.
+
+If you love them, we make them real. If not, dinner was on us.
+
+Your table is already set.`;
+
+const UR_COPY_B = `Friday night. Every table full. The phone ringing into nothing.
+
+Every missed call is a four-top eating somewhere else right now. So before you pay us anything, we build your fix and let you taste it: your website, your AI host answering a real call for YOUR restaurant, your command center with the whole house in it.
+
+Sixty seconds to tell us about your place. The demos are on the house.
+
+See them working. Then make them real.`;
+
+const UR_HEADLINE = 'We build yours first. On the house.';
+const UR_DESCRIPTION = 'A website, an AI host, and a command center, built for your restaurant before you pay.';
+
+const UR_CUTS = [
+  { file: '/ads/unveiling-rest-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/unveiling-rest-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/unveiling-rest-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and the demos page hero.' },
+  { file: '/ads/unveiling-rest-short-9x16.mp4', label: '9:16 — Short cut (~:20)', note: 'Punchy hook + offer + CTA. For Reels / Stories / Shorts A-B tests.' },
+];
+
+const UR_CHECKLIST = [
+  { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the tasting story).' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot has spoken dialogue AND burned-in captions.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled caption pills are already burned in).' },
+  { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" or "free website" in any edit.' },
+  { id: 'audience', label: 'Audience: Advantage+, restaurant-owner tilted. Suggestions: Restaurant owners, Restaurant, Food service, Hospitality, Small business owners. Age 25-65, United States.' },
+  { id: 'sibling', label: 'Mind Campaign 11 (The Dinner Rush): same audience, different offer. Do not run both cold cells at once. Either alternate weeks, or run Dinner Rush as the voice-only angle and this as the full-suite angle and let cost per lead pick the winner.' },
+  { id: 'organic', label: 'Organic: post the 9:16 as a Reel and share the 4:5 into local restaurant-owner FB groups where you are a member. Add the trattoria clip to the /for/restaurants page hero rotation.' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the Friday-night phone) and let them fight. Kill the loser at day 6.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=unveilingrest). Truth metric: paid demo orders on the hub order card.' },
+];
+
+// ============ Campaign fourteen: The Unveiling: Roofers (demo funnel vertical) ============
+
+const UF_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medium=paid&utm_campaign=unveilingroof';
+
+const UF_COPY_A = `We climbed onto the roof for this one.
+
+Tell us about your roofing company (60 seconds, that is the whole form) and we build your demos first: a website that wins the click before your competitor's does, a receptionist that catches every call while your hands are full of shingles, and a command center that runs the crew: estimates, jobs, the money. Your company's name on all three. Free to see working.
+
+Love them? We make them real. If not, it cost you a coffee break.
+
+We left the ladder out for you.`;
+
+const UF_COPY_B = `You cannot answer the phone forty feet up a ladder. But somebody is calling a roofer right now.
+
+Whoever picks up first usually wins the job. So we built the fix, and we will build YOURS free before you pay a cent: your website, your AI receptionist answering a real call, your command center tracking every estimate and every dollar.
+
+Sixty seconds to tell us about your company. See your demos working, then make them real.`;
+
+const UF_HEADLINE = 'Every call caught. Even on the roof.';
+const UF_DESCRIPTION = 'A website, an AI receptionist, and a command center, built for your roofing company before you pay.';
+
+const UF_CUTS = [
+  { file: '/ads/unveiling-roof-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/unveiling-roof-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/unveiling-roof-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and the demos page hero.' },
+  { file: '/ads/unveiling-roof-short-9x16.mp4', label: '9:16 — Short cut (~:20)', note: 'Punchy hook + offer + CTA. For Reels / Stories / Shorts A-B tests.' },
+];
+
+const UF_CHECKLIST = [
+  { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the rooftop reveal).' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot has spoken dialogue AND burned-in captions.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled caption pills are already burned in).' },
+  { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" or "free website" in any edit.' },
+  { id: 'audience', label: 'Audience: Advantage+, contractor tilted. Suggestions: Roofing, Roofer, Construction, General contractor, Home improvement, Small business owners. Age 25-60, United States.' },
+  { id: 'seasonal', label: 'Seasonality: roofing demand spikes after storms and in re-roof season. Keep a saved duplicate of this cell you can 3x for a week when a hail event hits a metro you can serve remotely.' },
+  { id: 'organic', label: 'Organic: post the 9:16 as a Reel and share the 4:5 into roofing and contractor FB groups where you are a member. This one is also a natural DM opener for cockpit roofing leads.' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (forty feet up) and let them fight. Kill the loser at day 6.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=unveilingroof). Truth metric: paid demo orders on the hub order card.' },
+];
+
 function CopyBlock({ title, text }: { title: string; text: string }) {
   const [done, setDone] = useState(false);
   const copy = async () => {
@@ -462,7 +544,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -477,6 +559,8 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'py', num: '10', label: 'Find Your Horizon', blurb: 'Partner recruiting · the yacht · $10/day' },
   { key: 'rest', num: '11', label: 'The Dinner Rush', blurb: 'Restaurants · bilingual voice agent · $10/day' },
   { key: 'unv', num: '12', label: 'The Unveiling', blurb: 'Demo funnel · the gallery · $15/day' },
+  { key: 'unvr', num: '13', label: 'Unveiling: Restaurants', blurb: 'Demo funnel · the chef\'s table · $10/day' },
+  { key: 'unvf', num: '14', label: 'Unveiling: Roofers', blurb: 'Demo funnel · the rooftop reveal · $10/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -580,6 +664,8 @@ export default function AdsPlaybook() {
   const [checkedPy, setCheckedPy] = useState<Record<string, boolean>>({});
   const [checkedRs, setCheckedRs] = useState<Record<string, boolean>>({});
   const [checkedUnv, setCheckedUnv] = useState<Record<string, boolean>>({});
+  const [checkedUnvr, setCheckedUnvr] = useState<Record<string, boolean>>({});
+  const [checkedUnvf, setCheckedUnvf] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -619,6 +705,10 @@ export default function AdsPlaybook() {
       if (rawRs) setCheckedRs(JSON.parse(rawRs));
       const rawUnv = localStorage.getItem('mms-ads-checklist-unv');
       if (rawUnv) setCheckedUnv(JSON.parse(rawUnv));
+      const rawUnvr = localStorage.getItem('mms-ads-checklist-unvr');
+      if (rawUnvr) setCheckedUnvr(JSON.parse(rawUnvr));
+      const rawUnvf = localStorage.getItem('mms-ads-checklist-unvf');
+      if (rawUnvf) setCheckedUnvf(JSON.parse(rawUnvf));
     } catch { /* first visit */ }
   }, []);
 
@@ -636,6 +726,8 @@ export default function AdsPlaybook() {
   const togglePy = mkToggle('mms-ads-checklist-py', setCheckedPy);
   const toggleRs = mkToggle('mms-ads-checklist-rest', setCheckedRs);
   const toggleUnv = mkToggle('mms-ads-checklist-unv', setCheckedUnv);
+  const toggleUnvr = mkToggle('mms-ads-checklist-unvr', setCheckedUnvr);
+  const toggleUnvf = mkToggle('mms-ads-checklist-unvf', setCheckedUnvf);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -689,6 +781,8 @@ export default function AdsPlaybook() {
   const doneCountPy = PY_CHECKLIST.filter((c) => checkedPy[c.id]).length;
   const doneCountRs = RS_CHECKLIST.filter((c) => checkedRs[c.id]).length;
   const doneCountUnv = UNV_CHECKLIST.filter((c) => checkedUnv[c.id]).length;
+  const doneCountUnvr = UR_CHECKLIST.filter((c) => checkedUnvr[c.id]).length;
+  const doneCountUnvf = UF_CHECKLIST.filter((c) => checkedUnvf[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -1515,6 +1609,166 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedUnv[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'unvr' && (<>
+        {/* ============ Campaign thirteen: The Unveiling: Restaurants ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign thirteen · demo funnel, restaurant vertical</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;The Unveiling: Restaurants&rdquo; <span className="italic text-[#F5B700]">the chef&rsquo;s table</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The gallery walks into the dining room. Mr. Mustard in chef whites and Mrs. Mustard in her hostess
+              apron lift silver cloches off three courses in a candlelit dining room after close: the restaurant&rsquo;s
+              website, an AI host that answers and books through the dinner rush, and the command center that runs
+              the house. Same funnel promise, built free first, and the closing line writes itself: your table is
+              already set. One traffic cell at $10/day into /demos, judged on cost per forged demo.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Upload one ad, then customize per placement. The spot has spoken dialogue and burned-in captions. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {UR_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/unveiling-rest-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1 (the tasting story)" text={UR_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2 (the Friday-night phone)" text={UR_COPY_B} />
+            <CopyBlock title="Headline" text={UR_HEADLINE} />
+            <CopyBlock title="Description" text={UR_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (the Demo Station)" text={UR_LANDING} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountUnvr}/{UR_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {UR_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedUnvr[item.id]}
+                    onChange={() => toggleUnvr(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedUnvr[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'unvf' && (<>
+        {/* ============ Campaign fourteen: The Unveiling: Roofers ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign fourteen · demo funnel, roofing vertical</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;The Unveiling: Roofers&rdquo; <span className="italic text-[#F5B700]">the rooftop reveal</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The unveiling climbs onto the roof. Hard hats, tool belts, a shingle ridge at sunrise, and three
+              reveals under canvas tarps: the company&rsquo;s website, a receptionist that catches every call while
+              they are forty feet up a ladder, and the command center that runs the crew (estimates, jobs, the
+              money). Ends on a thermos toast and &ldquo;we left the ladder out for you.&rdquo; One traffic cell at $10/day
+              into /demos, judged on cost per forged demo.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Upload one ad, then customize per placement. The spot has spoken dialogue and burned-in captions. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {UF_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/unveiling-roof-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1 (the rooftop reveal)" text={UF_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2 (forty feet up)" text={UF_COPY_B} />
+            <CopyBlock title="Headline" text={UF_HEADLINE} />
+            <CopyBlock title="Description" text={UF_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (the Demo Station)" text={UF_LANDING} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountUnvf}/{UF_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {UF_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedUnvf[item.id]}
+                    onChange={() => toggleUnvf(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedUnvf[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>
