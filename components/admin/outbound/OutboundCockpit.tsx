@@ -434,6 +434,22 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
                     {lead.contact_name ? `${lead.contact_name} · ` : ''}{formatPhone(lead.phone)}
                     {lead.website ? <> · <a href={lead.website.startsWith('http') ? lead.website : `https://${lead.website}`} target="_blank" rel="noopener noreferrer" className="text-[#b58a2a] hover:underline">site ↗</a></> : null}
                   </p>
+                  {/* The address every email on this page goes to. It used to be invisible. */}
+                  <p className="font-sans text-sm mt-0.5">
+                    {lead.email ? (
+                      <>
+                        <span className="text-[10px] uppercase tracking-[0.18em] font-oswald font-semibold text-[#1a1815]/45 mr-1.5">Email</span>
+                        <a href={`mailto:${lead.email}`} className="font-medium text-[#1a1815] hover:text-[#b58a2a] transition-colors break-all">{lead.email}</a>
+                        {lead.last_email_at && (
+                          <span className="text-[#1a1815]/45 ml-2">
+                            last sent {new Date(lead.last_email_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Denver' })} MT
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-[#a03123]/80 font-medium">No email on file. Run &ldquo;Find site &amp; email&rdquo; before you can write them.</span>
+                    )}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
                   <div className="text-right mr-1 hidden sm:block">

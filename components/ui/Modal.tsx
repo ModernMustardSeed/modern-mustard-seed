@@ -12,6 +12,14 @@ import { useEffect, useRef } from 'react';
 
 type Size = 'sm' | 'md' | 'lg' | 'xl';
 
+/**
+ * Open-modal stack. When one modal opens on top of another (the outbound thread
+ * opening the proof-of-send receipt), Escape must close ONLY the top one.
+ * Without this, every mounted modal hears the same document keydown and they all
+ * close together.
+ */
+const openStack: symbol[] = [];
+
 export default function Modal({
   open,
   onClose,
@@ -49,11 +57,16 @@ export default function Modal({
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     cardRef.current?.focus();
+    const token = Symbol('modal');
+    openStack.push(token);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCloseRef.current();
+      // Only the top-most modal answers Escape.
+      if (e.key === 'Escape' && openStack[openStack.length - 1] === token) onCloseRef.current();
     };
     document.addEventListener('keydown', onKey);
     return () => {
+      const i = openStack.indexOf(token);
+      if (i >= 0) openStack.splice(i, 1);
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = prevOverflow;
       prevFocus?.focus?.();

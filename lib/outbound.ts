@@ -141,6 +141,14 @@ export const HEAT_LABELS: Record<HeatReason, string> = {
   fresh: 'Fresh lead',
 };
 
+/** What the provider says happened to a sent email. 'sent' only means Resend accepted it. */
+export type MessageDelivery = {
+  status: string | null;
+  detail: string | null;
+  delivered_at: string | null;
+  opened_at: string | null;
+};
+
 export type ThreadMessage = {
   id: string;
   direction: 'inbound' | 'outbound';
@@ -152,6 +160,19 @@ export type ThreadMessage = {
   body: string | null;
   read: boolean;
   occurred_at: string;
+  status?: string | null;
+  /** The Resend message id. Present on every email we sent; the key to its proof. */
+  external_id?: string | null;
+  delivery?: MessageDelivery | null;
+};
+
+/** The exact email a lead is about to receive, or already did. */
+export type EmailPreview = {
+  to: string;
+  from: string;
+  subject: string;
+  html: string;
+  summary?: string;
 };
 
 export type CallLog = {

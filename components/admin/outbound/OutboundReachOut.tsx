@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Modal from '@/components/ui/Modal';
 import { formatPhone } from '@/lib/outbound';
-import type { OutboundLead, ThreadMessage } from '@/lib/outbound';
+import type { EmailPreview, MessageDelivery, OutboundLead, ThreadMessage } from '@/lib/outbound';
 import { api, btnGhost, btnPrimary, btnSeed, inputCls, labelCls } from '@/components/admin/outbound/ui';
 
 /**
@@ -43,15 +43,14 @@ export function ReachOutDeck({
   const [aiOpen, setAiOpen] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
   const [alsoEmail, setAlsoEmail] = useState(false);
-  const [emailOpen, setEmailOpen] = useState(false);
-  const [emailBusy, setEmailBusy] = useState(false);
-  const [note, setNote] = useState('');
+  // Nothing leaves without Sarah seeing it: both the outreach email and the demo
+  // send open the same composer, which previews the real html before it ships.
+  const [composer, setComposer] = useState<'outreach' | 'demos' | null>(null);
   const [enriching, setEnriching] = useState(false);
   const [promoting, setPromoting] = useState(false);
   const [forging, setForging] = useState(false);
   const [forgingSite, setForgingSite] = useState(false);
   const [forgingOs, setForgingOs] = useState(false);
-  const [sendingDemo, setSendingDemo] = useState(false);
 
   const siteForging = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
@@ -121,26 +120,6 @@ export function ReachOutDeck({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lead.id, siteForging]);
 
-  const sendDemo = async () => {
-    setSendingDemo(true);
-    try {
-      const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/follow-up`, {
-        method: 'POST',
-        body: JSON.stringify({ includeDemo: Boolean(lead.demo_url), includeSite: siteReady, includeOs: osReady }),
-      });
-      onLead(res.lead);
-      push(
-        demoCount > 1
-          ? `All ${demoCount} demos sent in one email. The pixel will tell you when they open it.`
-          : 'Demo link sent. The pixel will tell you when they open it.',
-      );
-    } catch (e) {
-      push(e instanceof Error ? e.message : 'Send failed.', 'error');
-    } finally {
-      setSendingDemo(false);
-    }
-  };
-
   const enrich = async () => {
     setEnriching(true);
     push('Hunting for their site and email...');
@@ -196,24 +175,6 @@ export function ReachOutDeck({
     }
   };
 
-  const sendEmail = async () => {
-    setEmailBusy(true);
-    try {
-      const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/follow-up`, {
-        method: 'POST',
-        body: JSON.stringify({ note: note || undefined }),
-      });
-      onLead(res.lead);
-      push(lead.audit_json ? 'Audit report sent. The pixel will tell you when they open it.' : 'Intro email sent.');
-      setEmailOpen(false);
-      setNote('');
-    } catch (e) {
-      push(e instanceof Error ? e.message : 'Send failed.', 'error');
-    } finally {
-      setEmailBusy(false);
-    }
-  };
-
   const opened = lead.email_open_count > 0;
 
   return (
@@ -231,10 +192,10 @@ export function ReachOutDeck({
         </button>
 
         <button
-          onClick={() => setEmailOpen(true)}
-          disabled={!lead.email || emailBusy}
+          onClick={() => setComposer('outreach')}
+          disabled={!lead.email}
           className={`${chip} bg-[#b58a2a]/15 text-[#7a5c1a] border-[#b58a2a]/60 hover:border-[#b58a2a] hover:-translate-y-0.5`}
-          title={lead.email ? (lead.audit_json ? 'Email them the full audit report' : 'Send a warm intro email') : 'No email on file yet'}
+          title={lead.email ? `Read it before it goes, then send to ${lead.email}` : 'No email on file yet'}
         >
           ✉ {lead.audit_json ? 'Email the audit' : 'Email intro'}
         </button>
@@ -313,8 +274,13 @@ export function ReachOutDeck({
         )}
 
         {demoCount > 0 && (
-          <button onClick={() => void sendDemo()} disabled={sendingDemo || !lead.email} className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`} title={lead.email ? (demoCount > 1 ? 'One polished email: the Demo Suite hub + every forged demo' : 'Email them their demo link') : 'No email on file yet'}>
-            {sendingDemo ? 'Sending…' : demoCount > 1 ? `✉ Send all ${demoCount} demos` : '✉ Send demo'}
+          <button
+            onClick={() => setComposer('demos')}
+            disabled={!lead.email}
+            className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`}
+            title={lead.email ? `Read it before it goes, then send to ${lead.email}` : 'No email on file yet'}
+          >
+            {demoCount > 1 ? `✉ Send all ${demoCount} demos` : '✉ Send demo'}
           </button>
         )}
 
@@ -355,23 +321,341 @@ export function ReachOutDeck({
         </div>
       </Modal>
 
-      {/* Email confirm */}
-      <Modal open={emailOpen} onClose={() => setEmailOpen(false)} eyebrow="Reach out" title={lead.audit_json ? 'Email the audit report' : 'Send the intro email'} subtitle={`To ${lead.email ?? ''}, from sarah@modernmustardseed.com`} size="sm">
-        <p className="font-sans text-sm text-[#1a1815]/70 leading-relaxed">
-          {lead.audit_json
-            ? `The full branded report for ${lead.business_name} (score ${lead.audit_score}/100), with your note on top so it reads one-to-one.`
-            : 'A warm intro: the missed-calls problem, the demos we already built them, and a link in. No free trial is offered or implied.'}
-        </p>
-        <div className="mt-3">
-          <label className={labelCls}>Personal note (optional)</label>
-          <textarea className={`${inputCls} min-h-[80px]`} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Great talking just now. Here is the breakdown I mentioned." />
-        </div>
-        <div className="flex justify-end gap-2 mt-4">
-          <button onClick={() => setEmailOpen(false)} className={btnGhost}>Cancel</button>
-          <button onClick={() => void sendEmail()} disabled={emailBusy} className={btnSeed}>{emailBusy ? 'Sending…' : 'Send it'}</button>
-        </div>
-      </Modal>
+      <EmailComposer
+        lead={lead}
+        mode={composer}
+        onClose={() => setComposer(null)}
+        onLead={onLead}
+        push={push}
+        onSent={onOpenThread}
+      />
     </>
+  );
+}
+
+/* ------------------------------ email composer ----------------------------- */
+
+/**
+ * The send desk. Nothing goes out unseen: it renders the EXACT html the send
+ * path will hand Resend (same builder, tracking pixel stripped so previewing
+ * cannot fake an open), names the recipient in full, and only then offers Send.
+ * On success it reports the address it actually went to and the Resend message
+ * id, which is the receipt you can look up later in the thread.
+ */
+function EmailComposer({
+  lead,
+  mode,
+  onClose,
+  onLead,
+  push,
+  onSent,
+}: {
+  lead: OutboundLead;
+  mode: 'outreach' | 'demos' | null;
+  onClose: () => void;
+  onLead: (l: OutboundLead) => void;
+  push: Push;
+  onSent: () => void;
+}) {
+  const [note, setNote] = useState('');
+  const [preview, setPreview] = useState<EmailPreview | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+
+  const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
+  const osReady = lead.os_demo_status === 'ready' && Boolean(lead.os_demo_url);
+  const opts =
+    mode === 'demos'
+      ? { includeDemo: Boolean(lead.demo_url), includeSite: siteReady, includeOs: osReady }
+      : {};
+
+  // Reset per open so a previous lead's draft can never be sent to this one.
+  useEffect(() => {
+    if (!mode) {
+      setNote('');
+      setPreview(null);
+      setError(null);
+    }
+  }, [mode]);
+
+  // Re-render the preview as the note is typed (debounced): the note is part of
+  // the email body, so a preview that ignored it would be a lie.
+  useEffect(() => {
+    if (!mode) return;
+    let alive = true;
+    const t = window.setTimeout(async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await api<EmailPreview>(`/api/admin/outbound/leads/${lead.id}/preview-email`, {
+          method: 'POST',
+          body: JSON.stringify({ ...opts, note: note.trim() || undefined }),
+        });
+        if (alive) setPreview(res);
+      } catch (e) {
+        if (alive) setError(e instanceof Error ? e.message : 'Could not build the preview.');
+      } finally {
+        if (alive) setLoading(false);
+      }
+    }, preview ? 500 : 0);
+    return () => {
+      alive = false;
+      window.clearTimeout(t);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, note, lead.id]);
+
+  const send = async () => {
+    setSending(true);
+    try {
+      const res = await api<{ lead: OutboundLead; to: string; messageId: string }>(
+        `/api/admin/outbound/leads/${lead.id}/follow-up`,
+        { method: 'POST', body: JSON.stringify({ ...opts, note: note.trim() || undefined }) },
+      );
+      onLead(res.lead);
+      push(`Sent to ${res.to}. Open the thread to watch it land.`);
+      onClose();
+      onSent();
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Send failed.', 'error');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const demoCount = [Boolean(lead.demo_url), siteReady, osReady].filter(Boolean).length;
+  const title =
+    mode === 'demos'
+      ? demoCount > 1
+        ? `Send all ${demoCount} demos`
+        : 'Send their demo'
+      : lead.audit_json
+        ? 'Email the audit report'
+        : 'Send the intro email';
+
+  return (
+    <Modal
+      open={mode !== null}
+      onClose={onClose}
+      eyebrow="Read it before it goes"
+      title={title}
+      size="xl"
+      footer={
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <span className="mr-auto font-sans text-xs text-[#161616]/55">
+            {loading ? 'Rebuilding the preview…' : preview ? 'This is the email, exactly as they will get it.' : ''}
+          </span>
+          <button onClick={onClose} className={btnGhost}>Cancel</button>
+          <button onClick={() => void send()} disabled={sending || loading || !preview} className={btnSeed}>
+            {sending ? 'Sending…' : preview ? `Send to ${preview.to}` : 'Send it'}
+          </button>
+        </div>
+      }
+    >
+      {/* The envelope: who it is really going to, in full, before anything else. */}
+      <div className="rounded-xl border-2 border-[#1a1815] bg-[#fffdf8] p-4 space-y-1.5">
+        <EnvelopeRow label="To">
+          <span className="font-sans text-[15px] font-semibold text-[#1a1815] break-all">{preview?.to ?? lead.email ?? 'No email on file'}</span>
+          {lead.contact_name && <span className="font-sans text-sm text-[#1a1815]/55"> ({lead.contact_name})</span>}
+        </EnvelopeRow>
+        <EnvelopeRow label="From">
+          <span className="font-sans text-sm text-[#1a1815]/70 break-all">{preview?.from ?? 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>'}</span>
+        </EnvelopeRow>
+        <EnvelopeRow label="Subject">
+          <span className="font-sans text-sm font-semibold text-[#1a1815]">{preview?.subject ?? (loading ? 'Building…' : '—')}</span>
+        </EnvelopeRow>
+      </div>
+
+      <div className="mt-4">
+        <label className={labelCls}>Personal note (optional, appears in the body)</label>
+        <textarea
+          className={`${inputCls} min-h-[70px]`}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Great talking just now. Here is the breakdown I mentioned."
+        />
+      </div>
+
+      {error && (
+        <p className="font-sans text-sm text-[#a03123] font-medium mt-3 border-2 border-[#a03123] rounded-xl p-3 bg-[#a03123]/[0.06]">{error}</p>
+      )}
+
+      <div className="mt-4">
+        <div className="flex items-center justify-between gap-2 mb-1.5">
+          <label className={`${labelCls} !mb-0`}>The email itself</label>
+          <span className="font-sans text-[11px] text-[#1a1815]/45">Open-tracking pixel hidden so this preview cannot fake an open.</span>
+        </div>
+        <div className="rounded-xl border-2 border-[#1a1815] overflow-hidden bg-white">
+          {preview ? (
+            <iframe
+              // sandbox="" = no scripts, no forms, no navigation. It is a picture of the mail.
+              sandbox=""
+              srcDoc={preview.html}
+              title="Email preview"
+              className="w-full h-[46vh] min-h-[300px] bg-white block"
+            />
+          ) : (
+            <div className="h-[46vh] min-h-[300px] flex items-center justify-center font-oswald uppercase text-sm text-[#1a1815]/40">
+              {error ? 'No preview' : 'Building the email…'}
+            </div>
+          )}
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+function EnvelopeRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-baseline gap-2">
+      <span className="w-[62px] shrink-0 text-[10px] uppercase tracking-[0.2em] font-oswald font-semibold text-[#1a1815]/45">{label}</span>
+      <span className="min-w-0">{children}</span>
+    </div>
+  );
+}
+
+/* ----------------------------- delivery proof ------------------------------ */
+
+const DELIVERY_LOOK: Record<string, { label: string; cls: string; hint: string }> = {
+  delivered: {
+    label: '✓ Delivered',
+    cls: 'bg-[#3f5d34]/12 text-[#3f5d34] border-[#3f5d34]/50',
+    hint: 'Their mail server accepted it. This is real delivery, not just "we tried".',
+  },
+  sent: {
+    label: '↗ Accepted by Resend',
+    cls: 'bg-[#b58a2a]/15 text-[#7a5c1a] border-[#b58a2a]/60',
+    hint: 'Resend took the message. Delivery to their inbox is not confirmed yet. Open it to check with Resend live.',
+  },
+  queued: { label: '· Queued', cls: 'bg-[#1a1815]/[0.06] text-[#1a1815]/60 border-[#1a1815]/25', hint: 'Waiting at the provider.' },
+  delivery_delayed: {
+    label: '⏳ Delayed',
+    cls: 'bg-[#b58a2a]/15 text-[#7a5c1a] border-[#b58a2a]/60',
+    hint: 'Their server is deferring it. Resend keeps retrying.',
+  },
+  bounced: { label: '✕ Bounced', cls: 'bg-[#a03123]/10 text-[#a03123] border-[#a03123]/50', hint: 'It did NOT reach them. The address is now suppressed.' },
+  complained: { label: '✕ Marked spam', cls: 'bg-[#a03123]/10 text-[#a03123] border-[#a03123]/50', hint: 'They marked it as spam. Stop emailing this address.' },
+  suppressed: { label: '✕ Blocked', cls: 'bg-[#a03123]/10 text-[#a03123] border-[#a03123]/50', hint: 'Suppressed before sending. Nothing was delivered.' },
+  failed: { label: '✕ Failed', cls: 'bg-[#a03123]/10 text-[#a03123] border-[#a03123]/50', hint: 'The provider could not send it.' },
+};
+
+export function DeliveryChip({ delivery }: { delivery: MessageDelivery }) {
+  const look = DELIVERY_LOOK[delivery.status ?? 'sent'] ?? DELIVERY_LOOK.sent;
+  const when = delivery.delivered_at
+    ? new Date(delivery.delivered_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Denver' })
+    : null;
+  return (
+    <span
+      className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-md border text-[9px] uppercase tracking-[0.12em] font-oswald font-bold ${look.cls}`}
+      title={[look.hint, when ? `Delivered ${when} MT` : null, delivery.detail].filter(Boolean).join(' · ')}
+    >
+      {look.label}
+    </span>
+  );
+}
+
+/**
+ * The receipt. Pulls the stored copy of what went out AND asks Resend live for
+ * its own last_event, so "did it actually send" is answered by the provider,
+ * not by our optimism.
+ */
+function SentEmailViewer({ lead, mid, onClose }: { lead: OutboundLead; mid: string | null; onClose: () => void }) {
+  type Sent = {
+    subject: string;
+    to: string;
+    from: string;
+    sentAt: string;
+    html: string | null;
+    status: string;
+    lastEvent: string | null;
+    statusDetail: string | null;
+    deliveredAt: string | null;
+    openedAt: string | null;
+    providerError: string | null;
+  };
+  const [data, setData] = useState<Sent | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    if (!mid) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api<Sent>(`/api/admin/outbound/leads/${lead.id}/sent-email?mid=${encodeURIComponent(mid)}`);
+      setData(res);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not load the email.');
+    } finally {
+      setLoading(false);
+    }
+  }, [lead.id, mid]);
+
+  useEffect(() => {
+    if (mid) {
+      setData(null);
+      void load();
+    }
+  }, [mid, load]);
+
+  const look = data ? DELIVERY_LOOK[data.status] ?? DELIVERY_LOOK.sent : null;
+  const fmt = (iso: string | null) =>
+    iso ? `${new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Denver' })} MT` : null;
+
+  return (
+    <Modal
+      open={mid !== null}
+      onClose={onClose}
+      eyebrow="Proof of send"
+      title="The email that went out"
+      subtitle={data ? `To ${data.to} · ${fmt(data.sentAt)}` : undefined}
+      size="xl"
+      footer={
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <span className="mr-auto font-sans text-xs text-[#161616]/55 break-all">Resend id {mid}</span>
+          <button onClick={() => void load()} disabled={loading} className={btnGhost}>
+            {loading ? 'Checking…' : 'Re-check with Resend'}
+          </button>
+          <button onClick={onClose} className={btnPrimary}>Close</button>
+        </div>
+      }
+    >
+      {error && <p className="font-sans text-sm text-[#a03123] font-medium border-2 border-[#a03123] rounded-xl p-3 bg-[#a03123]/[0.06]">{error}</p>}
+
+      {data && look && (
+        <div className={`rounded-xl border-2 p-4 ${look.cls.replace(/text-\[[^\]]+\]/, 'text-[#1a1815]')}`}>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-oswald font-bold uppercase tracking-[0.1em] text-sm">{look.label}</span>
+            {data.lastEvent && (
+              <span className="font-sans text-xs text-[#1a1815]/60">
+                Resend&apos;s own last event: <strong>{data.lastEvent}</strong>
+              </span>
+            )}
+          </div>
+          <p className="font-sans text-sm text-[#1a1815]/75 mt-1.5 leading-relaxed">{look.hint}</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-1 mt-2 font-sans text-xs text-[#1a1815]/60">
+            {fmt(data.deliveredAt) && <span>Delivered {fmt(data.deliveredAt)}</span>}
+            {fmt(data.openedAt) && <span>Opened {fmt(data.openedAt)}</span>}
+            {data.statusDetail && <span className="text-[#a03123] font-medium">{data.statusDetail}</span>}
+            {data.providerError && <span className="text-[#a03123]">Live check unavailable: {data.providerError}</span>}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-4">
+        <p className="font-sans text-[13px] font-semibold text-[#1a1815] mb-1.5">{data?.subject ?? ''}</p>
+        <div className="rounded-xl border-2 border-[#1a1815] overflow-hidden bg-white">
+          {data?.html ? (
+            <iframe sandbox="" srcDoc={data.html} title="Sent email" className="w-full h-[48vh] min-h-[300px] bg-white block" />
+          ) : (
+            <div className="h-[48vh] min-h-[300px] flex items-center justify-center font-oswald uppercase text-sm text-[#1a1815]/40">
+              {loading ? 'Loading the email…' : 'No stored copy of this one.'}
+            </div>
+          )}
+        </div>
+      </div>
+    </Modal>
   );
 }
 
@@ -514,6 +798,7 @@ export function ThreadPanel({
   const [reply, setReply] = useState('');
   const [drafting, setDrafting] = useState(false);
   const [sending, setSending] = useState(false);
+  const [viewing, setViewing] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const load = useCallback(async () => {
@@ -568,7 +853,15 @@ export function ThreadPanel({
   };
 
   return (
-    <Modal open={open} onClose={onClose} eyebrow="Correspondence" title={lead.business_name} subtitle="Every email, AI call transcript, and reply in one thread." size="xl">
+    <>
+    <Modal
+      open={open}
+      onClose={onClose}
+      eyebrow="Correspondence"
+      title={lead.business_name}
+      subtitle={lead.email ? `Every email, AI call transcript, and reply. Mailing ${lead.email}.` : 'Every email, AI call transcript, and reply in one thread.'}
+      size="xl"
+    >
       <div className="space-y-3 min-h-[120px]">
         {messages === null && <p className="font-oswald uppercase text-sm text-[#1a1815]/40 text-center py-6">Loading the thread...</p>}
         {messages?.length === 0 && (
@@ -590,6 +883,21 @@ export function ThreadPanel({
                   {new Date(m.occurred_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Denver' })} MT
                 </span>
               </div>
+              {/* The receipt line: who it went to, what the provider says happened, and the email itself. */}
+              {m.direction === 'outbound' && m.channel === 'email' && (
+                <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                  {m.to_addr && <span className="font-sans text-[11px] text-[#1a1815]/60 break-all">To {m.to_addr}</span>}
+                  {m.delivery && <DeliveryChip delivery={m.delivery} />}
+                  {m.external_id && (
+                    <button
+                      onClick={() => setViewing(m.external_id!)}
+                      className="text-[10px] uppercase tracking-[0.12em] font-oswald font-bold text-[#7a5c1a] border border-[#b58a2a]/60 hover:border-[#b58a2a] hover:bg-[#b58a2a]/10 rounded-md px-1.5 py-0.5 transition-colors"
+                    >
+                      View the email ↗
+                    </button>
+                  )}
+                </div>
+              )}
               {m.subject && <p className="font-sans font-semibold text-[13px] text-[#1a1815] mt-1">{m.subject}</p>}
               {m.body && m.body.length > 260 ? (
                 <details className="mt-0.5">
@@ -624,5 +932,9 @@ export function ThreadPanel({
         </div>
       </div>
     </Modal>
+    {/* Sibling, not a child: a nested overlay would let a click on the receipt's
+        backdrop bubble up and close the thread underneath it too. */}
+    <SentEmailViewer lead={lead} mid={viewing} onClose={() => setViewing(null)} />
+    </>
   );
 }

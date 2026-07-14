@@ -4,22 +4,49 @@ import { sendViaResend } from '@/lib/send-email';
 import { ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
 
+export const OUTBOUND_FROM = 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>';
+export const OUTBOUND_REPLY_TO = 'sarah@modernmustardseed.com';
+
+export type OutboundEmailOpts = {
+  note?: string;
+  includeDemo?: boolean;
+  includeSite?: boolean;
+  includeOs?: boolean;
+  source?: string;
+};
+
+export type BuiltOutboundEmail = {
+  /** The lead as it stands after any hub minting the build required. */
+  lead: OutboundLead;
+  to: string;
+  from: string;
+  replyTo: string;
+  subject: string;
+  /** Exactly the bytes Resend will be handed, pixel and all. */
+  html: string;
+  /** One line naming what this send is; reused as the thread snippet. */
+  summary: string;
+};
+
+type BuildResult = { ok: true; email: BuiltOutboundEmail } | { ok: false; status: number; error: string };
+
 /**
- * The one way an outbound lead gets emailed: the branded audit report when an
- * audit exists, a warm intro otherwise, optionally leading with their forged
- * demo links (the voice receptionist, the demo website, or both). Sends from
- * Sarah's address (replies flow back through the Zoho sync onto the thread),
- * embeds the open-tracking pixel, logs the message row, and stamps
- * last_email_at. Used by the follow-up route and the cadence cron.
+ * Compose the outbound email WITHOUT sending it.
+ *
+ * Split out from the send so the cockpit can show Sarah the real thing before it
+ * leaves: /preview-email renders this exact html (minus the tracking pixel) and
+ * sendOutboundEmail hands this exact html to Resend. One builder, so a preview
+ * can never drift from what actually ships.
+ *
+ * The only write it performs is minting the demo hub, which is idempotent and is
+ * required for the hub link in the body to be real.
  */
-export async function sendOutboundEmail(
+export async function buildOutboundEmail(
   supabase: SupabaseClient,
   leadInput: OutboundLead,
-  opts: { note?: string; includeDemo?: boolean; includeSite?: boolean; includeOs?: boolean; source?: string } = {},
-): Promise<{ ok: true; lead: OutboundLead } | { ok: false; status: number; error: string }> {
+  opts: OutboundEmailOpts = {},
+): Promise<BuildResult> {
   let lead = leadInput;
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return { ok: false, status: 500, error: 'Email is not configured (RESEND_API_KEY missing).' };
 
   // Demo sends lead with the SUITE HUB: one adorable link that fronts
   // everything, so mint it if it is missing.
@@ -137,33 +164,72 @@ export async function sendOutboundEmail(
         trackId: lead.id,
       });
 
+  const summary = includeAny
+    ? `Sent forged demos: ${[withSite && 'website', withOs && 'business OS', withDemo && 'receptionist'].filter(Boolean).join(' + ')}.`
+    : hasAudit
+      ? `Sent the website audit (${lead.audit_score ?? '?'}/100).`
+      : `Sent an intro email${opts.source ? ` (${opts.source})` : ''}.`;
+
+  return {
+    ok: true,
+    email: { lead, to: lead.email, from: OUTBOUND_FROM, replyTo: OUTBOUND_REPLY_TO, subject, html, summary },
+  };
+}
+
+export type SendOutboundResult =
+  | { ok: true; lead: OutboundLead; to: string; subject: string; messageId: string }
+  | { ok: false; status: number; error: string };
+
+/**
+ * The one way an outbound lead gets emailed: the branded audit report when an
+ * audit exists, a warm intro otherwise, optionally leading with their forged
+ * demo links (the voice receptionist, the demo website, or both). Sends from
+ * Sarah's address (replies flow back through the Zoho sync onto the thread),
+ * embeds the open-tracking pixel, logs the message row WITH the Resend message
+ * id so delivery is provable, and stamps last_email_at. Used by the follow-up
+ * route and the cadence cron.
+ */
+export async function sendOutboundEmail(
+  supabase: SupabaseClient,
+  leadInput: OutboundLead,
+  opts: OutboundEmailOpts = {},
+): Promise<SendOutboundResult> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return { ok: false, status: 500, error: 'Email is not configured (RESEND_API_KEY missing).' };
+
+  const built = await buildOutboundEmail(supabase, leadInput, opts);
+  if (!built.ok) return built;
+  const { lead, to, from, replyTo, subject, html, summary } = built.email;
+
   // One tracked path: refuses suppressed recipients (honest failure instead of a
   // phantom success), records the send into the Sent folder as status='sent',
   // and lets the Resend webhook confirm delivery. `lead.email` is a primary
   // recipient, so a suppressed address returns ok:false here and the lead is NOT
   // marked contacted below.
   const sent = await sendViaResend({
-    from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
-    to: lead.email,
-    replyTo: 'sarah@modernmustardseed.com',
+    from,
+    to,
+    replyTo,
     subject,
     html,
-    mailbox: 'sarah@modernmustardseed.com',
+    mailbox: OUTBOUND_REPLY_TO,
   });
   if (!sent.ok) return { ok: false, status: 500, error: sent.error };
 
+  // external_id carries the Resend message id onto the thread. That is the join
+  // key the cockpit uses to prove the send: the Sent viewer pulls the stored html
+  // and the live last_event from Resend by this id, and the delivery webhook
+  // upgrades 'sent' to 'delivered'/'bounced' against the same id in `emails`.
   await supabase.from('messages').insert({
     outbound_lead_id: lead.id,
     direction: 'outbound',
     channel: 'email',
-    from_addr: 'sarah@modernmustardseed.com',
-    to_addr: lead.email,
+    status: 'sent',
+    external_id: sent.id,
+    from_addr: OUTBOUND_REPLY_TO,
+    to_addr: to,
     subject,
-    snippet: includeAny
-      ? `Sent forged demos: ${[withSite && 'website', withOs && 'business OS', withDemo && 'receptionist'].filter(Boolean).join(' + ')}.`
-      : hasAudit
-        ? `Sent the website audit (${lead.audit_score ?? '?'}/100).`
-        : `Sent an intro email${opts.source ? ` (${opts.source})` : ''}.`,
+    snippet: summary,
     read: true,
     occurred_at: new Date().toISOString(),
   });
@@ -172,5 +238,5 @@ export async function sendOutboundEmail(
   if (lead.status === 'new') update.status = 'contacted';
   const { data: updated } = await supabase.from('outbound_leads').update(update).eq('id', lead.id).select().single();
 
-  return { ok: true, lead: (updated ?? lead) as OutboundLead };
+  return { ok: true, lead: (updated ?? lead) as OutboundLead, to, subject, messageId: sent.id };
 }

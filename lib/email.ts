@@ -329,6 +329,27 @@ function trackPixel(id?: string): string {
   return `<tr><td style="padding:0;height:1px;line-height:1px;font-size:1px"><img src="${TRACK_SITE}/api/track/open?p=${encodeURIComponent(id)}" width="1" height="1" alt="" style="display:block;border:0;width:1px;height:1px"></td></tr>`;
 }
 
+/**
+ * Remove the open-tracking pixel from a message body.
+ *
+ * MANDATORY before rendering any outbound email inside the admin (the send
+ * preview, the Sent viewer). The pixel is a real <img> pointing at
+ * /api/track/open?p=<leadId>; a browser that renders it counts an open and
+ * stamps email_opened_at, so previewing our own email would tell the cockpit the
+ * prospect read it. Strip it and the preview is honest.
+ */
+export function stripTrackingPixels(html: string): string {
+  return (
+    html
+      // The pixel's own <tr> wrapper, matched only when the row itself carries
+      // the pixel (the tempered `(?!<\/tr>)` can't run past the row boundary, so
+      // ordinary spacer rows survive and the preview keeps the real spacing).
+      .replace(/<tr>(?:(?!<\/tr>)[\s\S])*?\/api\/track\/open(?:(?!<\/tr>)[\s\S])*?<\/tr>/gi, '')
+      // Any stray pixel that was not wrapped in a row.
+      .replace(/<img[^>]*\/api\/track\/open[^>]*>/gi, '')
+  );
+}
+
 export function auditReportEmail({
   toName,
   url,

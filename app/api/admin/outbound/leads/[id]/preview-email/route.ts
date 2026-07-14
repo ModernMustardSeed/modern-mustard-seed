@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { sendOutboundEmail } from '@/lib/outbound-email';
+import { buildOutboundEmail } from '@/lib/outbound-email';
+import { stripTrackingPixels } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -8,10 +9,13 @@ export const maxDuration = 30;
 type Params = Promise<{ id: string }>;
 
 /**
- * Email the lead: the branded audit report when one exists, a warm intro
- * otherwise, or the forged-demo invite when includeDemo is set. Logging,
- * pixel, and last_email_at all live in lib/outbound-email.ts (shared with the
- * cadence cron).
+ * Render the exact email this lead is about to receive, WITHOUT sending it.
+ *
+ * Same builder the send uses (lib/outbound-email.ts), so the preview cannot
+ * drift from what ships. Two deliberate differences:
+ *   - the open-tracking pixel is stripped, because rendering it in the admin
+ *     would count as the prospect opening their own email;
+ *   - nothing is logged and last_email_at is untouched.
  */
 export async function POST(req: Request, { params }: { params: Params }) {
   const guard = await requireOutboundAdmin();
@@ -35,9 +39,17 @@ export async function POST(req: Request, { params }: { params: Params }) {
     /* empty body is fine */
   }
 
-  const result = await sendOutboundEmail(guard.supabase, lead, { note, includeDemo, includeSite, includeOs });
-  if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
-  // to + messageId come back so the cockpit can name the recipient in its
-  // confirmation and deep-link the send in the Sent viewer.
-  return NextResponse.json({ ok: true, lead: result.lead, to: result.to, subject: result.subject, messageId: result.messageId });
+  const built = await buildOutboundEmail(guard.supabase, lead, { note, includeDemo, includeSite, includeOs });
+  if (!built.ok) return NextResponse.json({ error: built.error }, { status: built.status });
+
+  const { to, from, replyTo, subject, html, summary } = built.email;
+  return NextResponse.json({
+    to,
+    from,
+    replyTo,
+    subject,
+    summary,
+    html: stripTrackingPixels(html),
+    lead: built.email.lead,
+  });
 }

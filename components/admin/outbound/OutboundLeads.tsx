@@ -413,7 +413,15 @@ export default function OutboundLeads() {
                         {l.business_name}
                       </Link>
                     </td>
-                    <td className="px-3 py-2.5 text-[#1a1815]/70">{l.contact_name ?? ''}</td>
+                    <td className="px-3 py-2.5 text-[#1a1815]/70">
+                      {l.contact_name ?? ''}
+                      {/* The address the Email button would actually use. */}
+                      {l.email ? (
+                        <span className="block text-[11px] text-[#1a1815]/45 break-all" title={`Emails go to ${l.email}`}>✉ {l.email}</span>
+                      ) : (
+                        <span className="block text-[11px] text-[#1a1815]/30" title="No email on file. Open the lead and run Find site & email.">No email</span>
+                      )}
+                    </td>
                     <td className="px-3 py-2.5 whitespace-nowrap text-[#1a1815]/70">{formatPhone(l.phone)}</td>
                     <td className="px-3 py-2.5"><NicheChip niche={l.niche} /></td>
                     <td className="px-3 py-2.5 text-[#1a1815]/70">{l.city ?? ''}</td>
