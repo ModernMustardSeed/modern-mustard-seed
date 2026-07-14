@@ -5,8 +5,19 @@ import { resendClient } from '@/lib/send-email';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
-// Weekly newsletter cron. Picks a playbook on rotation and broadcasts it
-// to the Resend audience. Schedule via vercel.json crons (Tuesdays 10am UTC).
+// Weekly newsletter. Picks a playbook on rotation and broadcasts it to the
+// Resend audience.
+//
+// ⚠️ DELIBERATELY NOT SCHEDULED. Do not put this back in vercel.json crons
+// without Sarah saying so. It ran Tuesdays 17:00 UTC, but CRON_SECRET was never
+// set in production, so it 401'd on every invocation and quietly never sent. The
+// moment the secret was set (2026-07-14) this became a live weekly broadcast to
+// the whole list, on a rotation nobody had reviewed. Sarah wants to set the
+// newsletter up deliberately, so the schedule is removed until she does.
+//
+// The only other thing standing between this route and a real send is an unset
+// RESEND_AUDIENCE_ID, which is an accident, not a guard. Adding that env var
+// while a schedule exists is enough to mail the entire audience.
 //
 // Required env:
 //   RESEND_API_KEY
