@@ -519,6 +519,47 @@ const UF_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=unveilingroof). Truth metric: paid demo orders on the hub order card.' },
 ];
 
+// ============ Campaign fifteen: Take the Bridge (demo funnel, retro starship) ============
+
+const BR_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medium=paid&utm_campaign=takethebridge';
+
+const BR_COPY_A = `Captain's log: the owner is still answering his own phone, patching his own website at midnight, and running the books from memory.
+
+There is a better way to fly. Tell us about your business (sixty seconds, that is the whole form) and we build your demos first: a website worth putting on the big screen, an AI receptionist that answers every hail (day, night, or warp speed), and a command center that runs the whole business from one chair.
+
+All three. Free. Working. Before you pay a cent.
+
+Set a course. Your bridge is waiting.`;
+
+const BR_COPY_B = `Every great captain has a crew. You have been flying solo.
+
+Modern Mustard Seed builds yours: a website that sells while you sleep, an AI receptionist that never leaves its post, and a command center that puts jobs, orders, and money on one screen. We build all three for your business first, free, and you see them working before any money changes hands.
+
+Take the bridge. It takes sixty seconds.`;
+
+const BR_HEADLINE = 'Take the bridge of your business.';
+const BR_DESCRIPTION = 'A website, an AI receptionist, and a command center. Built free first, for any business.';
+
+const BR_CUTS = [
+  { file: '/ads/bridge-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/bridge-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/bridge-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and the demos page hero.' },
+  { file: '/ads/bridge-short-9x16.mp4', label: '9:16 — Short cut (~:20)', note: 'Punchy hook + offer + CTA. For Reels / Stories / Shorts A-B tests.' },
+];
+
+const BR_CHECKLIST = [
+  { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the captain\'s log).' },
+  { id: 'challenger', label: 'This is a CHALLENGER to Campaign 12 (same broad audience, same /demos landing, different creative). Do not run both cold cells at once: A/B them for a week and keep the cheaper cost per forged demo.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot has spoken dialogue AND burned-in captions.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled caption pills are already burned in).' },
+  { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" in any edit.' },
+  { id: 'audience', label: 'Audience: Advantage+, broad small-business. The creative self-selects the nostalgia crowd (skews men 30-60). Worth one test ad set layered with Science fiction, Space exploration, Classic television, Retro gaming interests.' },
+  { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same /demos landing, swap the link to utm_source=google.' },
+  { id: 'organic', label: 'Organic: this one is built to be shared. Post the 9:16 as a Reel + YouTube Short and the 4:5 to FB the same day. Ask Claude for launch drafts (Sarah approves every post).' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the crew angle) and let them fight. Kill the loser at day 6.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=takethebridge). Truth metric: paid demo orders on the hub order card.' },
+];
+
 function CopyBlock({ title, text }: { title: string; text: string }) {
   const [done, setDone] = useState(false);
   const copy = async () => {
@@ -544,7 +585,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -561,6 +602,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'unv', num: '12', label: 'The Unveiling', blurb: 'Demo funnel · the gallery · $15/day' },
   { key: 'unvr', num: '13', label: 'Unveiling: Restaurants', blurb: 'Demo funnel · the chef\'s table · $10/day' },
   { key: 'unvf', num: '14', label: 'Unveiling: Roofers', blurb: 'Demo funnel · the rooftop reveal · $10/day' },
+  { key: 'brg', num: '15', label: 'Take the Bridge', blurb: 'Demo funnel · retro starship · $10/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -666,6 +708,7 @@ export default function AdsPlaybook() {
   const [checkedUnv, setCheckedUnv] = useState<Record<string, boolean>>({});
   const [checkedUnvr, setCheckedUnvr] = useState<Record<string, boolean>>({});
   const [checkedUnvf, setCheckedUnvf] = useState<Record<string, boolean>>({});
+  const [checkedBrg, setCheckedBrg] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -709,6 +752,8 @@ export default function AdsPlaybook() {
       if (rawUnvr) setCheckedUnvr(JSON.parse(rawUnvr));
       const rawUnvf = localStorage.getItem('mms-ads-checklist-unvf');
       if (rawUnvf) setCheckedUnvf(JSON.parse(rawUnvf));
+      const rawBrg = localStorage.getItem('mms-ads-checklist-brg');
+      if (rawBrg) setCheckedBrg(JSON.parse(rawBrg));
     } catch { /* first visit */ }
   }, []);
 
@@ -728,6 +773,7 @@ export default function AdsPlaybook() {
   const toggleUnv = mkToggle('mms-ads-checklist-unv', setCheckedUnv);
   const toggleUnvr = mkToggle('mms-ads-checklist-unvr', setCheckedUnvr);
   const toggleUnvf = mkToggle('mms-ads-checklist-unvf', setCheckedUnvf);
+  const toggleBrg = mkToggle('mms-ads-checklist-brg', setCheckedBrg);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -783,6 +829,7 @@ export default function AdsPlaybook() {
   const doneCountUnv = UNV_CHECKLIST.filter((c) => checkedUnv[c.id]).length;
   const doneCountUnvr = UR_CHECKLIST.filter((c) => checkedUnvr[c.id]).length;
   const doneCountUnvf = UF_CHECKLIST.filter((c) => checkedUnvf[c.id]).length;
+  const doneCountBrg = BR_CHECKLIST.filter((c) => checkedBrg[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -1769,6 +1816,87 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedUnvf[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'brg' && (<>
+        {/* ============ Campaign fifteen: Take the Bridge (retro starship) ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign fifteen · demo funnel, the nostalgia play</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;Take the Bridge&rdquo; <span className="italic text-[#F5B700]">the retro starship</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The nostalgia spot. Captain Mr. Mustard and Mrs. Mustard on the bridge of an original retro
+              starship (1960s jewel-button consoles, a captain&rsquo;s chair, a warp-streak finale, and zero
+              franchise IP): the website goes up on the big screen, the receptionist answers every hail, and
+              the command center IS the bridge. Built to catch the eye of the guy who grew up on space
+              adventures and now owns a business. Same demo-funnel promise, all built free first. One traffic
+              cell at $10/day into /demos as a CHALLENGER to Campaign 12, judged on cost per forged demo.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Upload one ad, then customize per placement. The spot has spoken dialogue and burned-in captions. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {BR_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/bridge-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text — Variant 1 (the captain's log)" text={BR_COPY_A} />
+            <CopyBlock title="Primary text — Variant 2 (the crew)" text={BR_COPY_B} />
+            <CopyBlock title="Headline" text={BR_HEADLINE} />
+            <CopyBlock title="Description" text={BR_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (the Demo Station)" text={BR_LANDING} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountBrg}/{BR_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {BR_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedBrg[item.id]}
+                    onChange={() => toggleBrg(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedBrg[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>
