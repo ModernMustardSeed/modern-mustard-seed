@@ -363,13 +363,17 @@ export default function ClientPortal() {
                   );
                 })}
 
-                {/* Launch checklist: every step to get open, online, and selling */}
-                <LaunchChecklist email={data.email} />
+                {/* The two free edits. Sits right under the project because it is
+                    the thing they act on while the build is in front of them. */}
+                <RevisionsCard refreshKey={requestRefresh} onSubmitted={() => setRequestRefresh((n) => n + 1)} />
 
                 {/* Project intake */}
                 {(data.audience === 'client' || data.audience === 'both') && (
                   <OnboardingIntake onStatus={setIntakeStatus} />
                 )}
+
+                {/* Launch checklist, now a door rather than the whole room. */}
+                <LaunchChecklistCard email={data.email} />
 
                 {/* Saved website audit */}
                 {data.audit && (data.audit.score != null || data.audit.headline) && (
@@ -771,12 +775,192 @@ function LaunchDateRequest({ projectId, onRequested }: { projectId: string; onRe
 
 /* Send a change, edit, or note to Sarah. Posts to the portal, notifies Sarah,
    shows the client's running history with status. */
-type ClientRequest = { id: string; body: string; source: 'note' | 'chatbot'; status: 'new' | 'read' | 'done'; created_at: string };
+type ClientRequest = {
+  id: string;
+  body: string;
+  source: 'note' | 'chatbot' | 'launch_date' | 'revision';
+  status: 'new' | 'read' | 'done';
+  created_at: string;
+  reply_body?: string | null;
+  replied_at?: string | null;
+  revision_number?: number | null;
+};
 const REQ_STATUS: Record<string, { label: string; cls: string }> = {
   new: { label: 'Sent', cls: 'text-[#161616] border-[#161616]/30 bg-[#F5B700]/20' },
   read: { label: 'Seen by Sarah', cls: 'text-[#1E50C8] border-[#1E50C8]/30 bg-blue-100' },
   done: { label: 'Done', cls: 'text-emerald-800 border-emerald-800/25 bg-emerald-100' },
 };
+
+/**
+ * YOUR TWO FREE EDITS.
+ *
+ * The offer promises two free edits before the site goes live, and until now that
+ * promise lived only in the sales copy: no counter, no ledger, no way for either
+ * side to know whether this was the first edit or the fifth. The count is spent
+ * server-side by claim_revision() (one atomic statement, fails closed), so this
+ * card only ever reports what is true.
+ *
+ * Running out is not a wall. The words still reach Sarah, as a change request she
+ * prices. Swallowing what a paying customer typed would be the worst outcome here.
+ */
+type RevisionState = { id: string; name: string; included: number; used: number; remaining: number; closed: boolean };
+
+function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubmitted: () => void }) {
+  const [state, setState] = useState<RevisionState | null>(null);
+  const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
+  const [err, setErr] = useState('');
+  const [note, setNote] = useState('');
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/portal/revision');
+        const j = await res.json().catch(() => null);
+        if (alive && res.ok && j?.project) setState(j.project as RevisionState);
+      } catch {
+        /* no budget, no card */
+      }
+    })();
+    return () => { alive = false; };
+  }, [refreshKey]);
+
+  if (!state) return null;
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const body = text.trim();
+    if (!body || sending) return;
+    setSending(true);
+    setErr('');
+    setNote('');
+    try {
+      const res = await fetch('/api/portal/revision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body }),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) {
+        setErr((j && j.error) || 'Could not send.');
+      } else {
+        setText('');
+        setNote(
+          j.exhausted
+            ? (j.message as string) || 'Sent to Sarah as a change request.'
+            : `Edit ${j.revisionNumber} of ${state.included} is with Sarah. ${j.remaining === 0 ? 'That was your last free one.' : `${j.remaining} free edit${j.remaining === 1 ? '' : 's'} left.`}`,
+        );
+        setState((s) => (s ? { ...s, used: Math.min(s.included, s.used + (j.exhausted ? 0 : 1)), remaining: Math.max(0, s.remaining - (j.exhausted ? 0 : 1)) } : s));
+        onSubmitted();
+      }
+    } catch {
+      setErr('Network error.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const spent = state.remaining === 0;
+
+  return (
+    <div className={`border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 ${spent ? 'bg-white' : 'bg-[#F5B700]/12'}`}>
+      <div className="flex items-start justify-between gap-4 mb-1">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Your free edits</span>
+        <div className="flex gap-1.5 flex-shrink-0" aria-label={`${state.used} of ${state.included} edits used`}>
+          {Array.from({ length: state.included }).map((_, i) => (
+            <span
+              key={i}
+              className={`w-7 h-2.5 rounded-full border-2 border-[#161616] ${i < state.used ? 'bg-[#161616]' : 'bg-white'}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">
+        {state.closed
+          ? 'Your site is live'
+          : spent
+            ? 'Both free edits are used'
+            : `${state.remaining} free edit${state.remaining === 1 ? '' : 's'} left`}
+      </h3>
+      <p className="text-[#161616]/65 font-body text-sm mb-4">
+        {state.closed
+          ? 'The free-edit window runs up to launch. Changes from here are quoted first, and they are usually small.'
+          : spent
+            ? 'Send the change anyway. Sarah will come back with a price before anyone touches anything, so nothing is a surprise.'
+            : 'Look at what we built and tell us what to change. Be as picky as you like. We do it, you look again.'}
+      </p>
+
+      <form onSubmit={submit}>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={3}
+          placeholder="e.g. Swap the hero photo for our storefront, use our green, and put the phone number bigger at the top."
+          className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] resize-y mb-3"
+        />
+        {err && <p className="text-[#E0301E] text-xs font-body mb-3">{err}</p>}
+        {note && <p className="text-emerald-700 text-xs font-body mb-3">{note}</p>}
+        <button
+          type="submit"
+          disabled={sending || !text.trim()}
+          className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+        >
+          {sending ? 'Sending…' : spent ? 'Send a change request' : 'Send this edit'}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+/**
+ * The launch checklist is genuinely good, but it is for someone STARTING a
+ * business, and most people here are not. It was the tallest thing on the page by
+ * a wide margin, so it read as the point of the portal. It is now a door: one line
+ * with its own progress, opened only by people who want it.
+ */
+function LaunchChecklistCard({ email }: { email: string }) {
+  const [open, setOpen] = useState(false);
+
+  if (open) {
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="mb-2 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#161616]/60 hover:text-[#161616] transition-colors"
+        >
+          &larr; Hide the checklist
+        </button>
+        <LaunchChecklist email={email} />
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => setOpen(true)}
+      className="w-full text-left bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 hover:shadow-[6px_6px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+    >
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-1">
+            Starting a business?
+          </span>
+          <h3 className="font-display text-lg font-semibold text-[#161616]">The Launch Checklist</h3>
+          <p className="text-[#161616]/60 font-body text-xs mt-0.5">
+            Every step to get open, online, and selling. Licenses, taxes, getting found. Open it only if you need it.
+          </p>
+        </div>
+        <span className="flex-shrink-0 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] px-4 py-2">
+          Open
+        </span>
+      </div>
+    </button>
+  );
+}
 
 function RequestsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubmitted: () => void }) {
   const [text, setText] = useState('');
@@ -869,6 +1053,18 @@ function RequestsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubmi
                   </div>
                   {r.source === 'chatbot' && (
                     <span className="text-[9px] uppercase tracking-[0.15em] text-[#161616]/45 font-mono mt-1.5 inline-block">via Mr. Mustard Seed</span>
+                  )}
+                  {r.source === 'revision' && r.revision_number != null && (
+                    <span className="text-[9px] uppercase tracking-[0.15em] text-[#161616]/45 font-mono mt-1.5 inline-block">Free edit {r.revision_number}</span>
+                  )}
+                  {/* Sarah's answer, in the portal. Before this her replies went out
+                      as plain email and were invisible here, so the thread the client
+                      saw was permanently one-sided. */}
+                  {r.reply_body && (
+                    <div className="mt-2.5 pt-2.5 border-t border-[#161616]/10">
+                      <span className="text-[9px] uppercase tracking-[0.2em] text-[#E0301E] font-mono font-bold block mb-1">Sarah replied</span>
+                      <p className="text-[#3A3733] font-body text-[13px] leading-relaxed whitespace-pre-wrap">{r.reply_body}</p>
+                    </div>
                   )}
                 </div>
               );

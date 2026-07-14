@@ -632,12 +632,19 @@ export function clientMessageEmail({
   fromName?: string;
   fromEmail: string;
   body: string;
-  source: 'note' | 'chatbot' | 'launch_date';
+  source: 'note' | 'chatbot' | 'launch_date' | 'revision';
   projectName?: string;
   adminUrl: string;
 }): string {
   const who = fromName?.trim() || fromEmail;
-  const via = source === 'chatbot' ? 'via Mr. Mustard Seed' : source === 'launch_date' ? 'a launch date request' : 'from their portal';
+  const via =
+    source === 'chatbot'
+      ? 'via Mr. Mustard Seed'
+      : source === 'launch_date'
+        ? 'a launch date request'
+        : source === 'revision'
+          ? 'ONE OF THEIR TWO FREE EDITS'
+          : 'from their portal';
   const safe = body.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const inner =
     headline(`New message from ${who}`) +

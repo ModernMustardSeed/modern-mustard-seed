@@ -13,9 +13,10 @@ export async function createClientRequest(args: {
   email: string;
   name?: string | null;
   body: string;
-  source?: 'note' | 'chatbot' | 'launch_date';
+  source?: 'note' | 'chatbot' | 'launch_date' | 'revision';
   projectId?: string | null;
   proposedDate?: string | null;
+  revisionNumber?: number | null;
 }): Promise<{ ok: boolean; id?: string; error?: string }> {
   const body = (args.body || '').trim();
   if (!body) return { ok: false, error: 'Empty message' };
@@ -23,7 +24,8 @@ export async function createClientRequest(args: {
   if (!supabase) return { ok: false, error: 'Database not configured' };
 
   const email = args.email.toLowerCase().trim();
-  const source = args.source === 'chatbot' ? 'chatbot' : args.source === 'launch_date' ? 'launch_date' : 'note';
+  const ALLOWED = ['note', 'chatbot', 'launch_date', 'revision'] as const;
+  const source = (ALLOWED as readonly string[]).includes(args.source ?? '') ? (args.source as (typeof ALLOWED)[number]) : 'note';
 
   let id: string | undefined;
   let projectName: string | undefined;
@@ -60,6 +62,7 @@ export async function createClientRequest(args: {
         body: body.slice(0, 4000),
         source,
         proposed_date: args.proposedDate ?? null,
+        revision_number: args.revisionNumber ?? null,
       })
       .select('id')
       .single();

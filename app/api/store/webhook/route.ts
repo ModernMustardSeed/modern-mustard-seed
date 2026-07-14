@@ -19,6 +19,7 @@ import { resendClient } from '@/lib/send-email';
 import { getStripe, STRIPE_WEBHOOK_SECRET } from '@/lib/stripe';
 import { getSupabase } from '@/lib/supabase';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
+import { provisionDemoOrder } from '@/lib/demo-provision';
 import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/data/products';
 import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
@@ -983,7 +984,7 @@ async function handleDemoOrderPaid(
     })
     .eq('id', orderId)
     .eq('status', 'pending')
-    .select('id,outbound_lead_id,business_name,products,setup_cents,monthly_cents,phone')
+    .select('id,outbound_lead_id,business_name,products,setup_cents,monthly_cents,phone,email,name,project_id')
     .maybeSingle();
 
   if (!order) {
@@ -1024,6 +1025,28 @@ async function handleDemoOrderPaid(
     }
   }
 
+  // OPEN THEIR PORTAL. Until this existed the funnel simply stopped at the money:
+  // a buyer never became a client or a project, so signing in at /portal showed
+  // them the guest empty state. Best-effort on purpose. If it throws, the money is
+  // already banked and a Stripe retry would re-run the whole handler, so we log and
+  // let the admin screen surface any order that never got a project.
+  let provisioned = false;
+  try {
+    const result = await provisionDemoOrder(supabase, {
+      ...order,
+      email: order.email ?? email,
+      name: order.name ?? name,
+    });
+    if (result.ok) {
+      provisioned = true;
+      console.log('demo-order provisioned:', result.projectId, result.created ? '(new)' : '(existing)');
+    } else {
+      console.error('demo-order provisioning failed:', result.error);
+    }
+  } catch (err) {
+    console.error('demo-order provisioning threw', err);
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
   const resend = resendClient();
@@ -1058,8 +1081,9 @@ async function handleDemoOrderPaid(
           preheader: 'We customize everything and release it within 7 days.',
           eyebrow: 'ORDER CONFIRMED',
           greeting: firstName ? `${firstName}, welcome aboard.` : 'Welcome aboard.',
-          body: `<p>Your <strong>${escapeHtmlSafe(label)}</strong> is officially in production. What you saw in the demo becomes the real thing, customized to ${business || 'your business'}.</p><p><strong>1.</strong> Tell us the details with the two-minute form below (hours, services, how you want things worded).</p><p><strong>2.</strong> We customize by hand and test everything on real scenarios.</p><p><strong>3.</strong> Within 7 days it is live. Month to month, cancel anytime, never a surprise bill.</p>`,
-          cta: { label: 'Fill in your details (2 minutes)', url: intakeUrl },
+          body: `<p>Your <strong>${escapeHtmlSafe(label)}</strong> is officially in production. What you saw in the demo becomes the real thing, customized to ${business || 'your business'}.</p><p><strong>1.</strong> Tell us about your business with the form below: your logo, your photos, your hours, the details only you know.</p><p><strong>2.</strong> We build it for real, then you get <strong>two free edits</strong>. You look at it, tell us what to change, twice, before it ever goes live.</p><p><strong>3.</strong> Within 7 days it is live. Month to month, cancel anytime, never a surprise bill.</p>${provisioned ? `<p>Everything from here happens in <strong>your portal</strong>: your progress, your edits, your files, and a direct line to me. No password to remember, just enter this email address at the door.</p>` : ''}`,
+          cta: { label: 'Start with your details', url: intakeUrl },
+          ...(provisioned ? { secondary: { label: 'Open my portal', url: `${SITE.url}/portal/login` } } : {}),
           signature: 'Sarah',
         }),
       });

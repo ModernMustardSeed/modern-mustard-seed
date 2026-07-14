@@ -35,7 +35,9 @@ export async function GET() {
   try {
     const { data } = await supabase
       .from('client_requests')
-      .select('id, body, source, status, created_at')
+      // reply_body is what makes this a conversation instead of a suggestion box:
+      // Sarah's answer lands back IN the portal, not only in their email.
+      .select('id, body, source, status, created_at, reply_body, replied_at, revision_number')
       .eq('client_email', session.email)
       .order('created_at', { ascending: false })
       .limit(20);
