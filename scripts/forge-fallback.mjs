@@ -68,26 +68,41 @@ process.env.FAL_KEY = env.FAL_KEY || '';
 const sb = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } });
 const log = (...a) => console.log(new Date().toISOString(), ...a);
 
+const isRebuild = (job) => job.kind === 'rebuild';
+
 async function fail(job, message) {
   const msg = String(message).slice(0, 2000);
   await sb
     .from('outbound_demo_sites')
     .update({ status: 'failed', error: msg, updated_at: new Date().toISOString() })
     .eq('id', job.id);
-  await sb.from('outbound_leads').update({ site_demo_status: 'failed' }).eq('id', job.lead_id);
+
+  if (isRebuild(job)) {
+    // A rebuild belongs to someone who already paid, so the failure has to land
+    // on the delivery board, not only in a runner log.
+    await sb
+      .from('projects')
+      .update({ site_build_status: 'failed', site_build_error: msg })
+      .eq('id', job.project_id);
+  } else if (job.lead_id) {
+    await sb.from('outbound_leads').update({ site_demo_status: 'failed' }).eq('id', job.lead_id);
+  }
+
   // Surface it where Sarah actually looks. Mail to her own address is suppressed
   // in Resend, so the lead thread is the honest channel.
-  await sb.from('messages').insert({
-    outbound_lead_id: job.lead_id,
-    direction: 'outbound',
-    channel: 'note',
-    from_addr: 'forge-fallback',
-    to_addr: job.business_name,
-    subject: 'Website demo FAILED (api fallback)',
-    snippet: `The API fallback could not build their site: ${msg.slice(0, 200)}`,
-    read: false,
-    occurred_at: new Date().toISOString(),
-  });
+  if (job.lead_id) {
+    await sb.from('messages').insert({
+      outbound_lead_id: job.lead_id,
+      direction: 'outbound',
+      channel: 'note',
+      from_addr: 'forge-fallback',
+      to_addr: job.business_name,
+      subject: isRebuild(job) ? 'REAL SITE rebuild FAILED (api fallback)' : 'Website demo FAILED (api fallback)',
+      snippet: `The API fallback could not build their site: ${msg.slice(0, 200)}`,
+      read: false,
+      occurred_at: new Date().toISOString(),
+    });
+  }
   log('FAILED', job.id, msg.slice(0, 200));
 }
 
@@ -143,14 +158,23 @@ async function main() {
     .maybeSingle();
   if (!claimed) { log('the workstation claimed it first. standing down.'); return; }
 
-  await sb.from('outbound_leads').update({ site_demo_status: 'building' }).eq('id', claimed.lead_id);
-  log('claimed. forging via the API...');
+  const rebuild = isRebuild(claimed);
+  if (rebuild) {
+    await sb.from('projects').update({ site_build_status: 'building' }).eq('id', claimed.project_id);
+  } else if (claimed.lead_id) {
+    await sb.from('outbound_leads').update({ site_demo_status: 'building' }).eq('id', claimed.lead_id);
+  }
+  log(`claimed. forging ${rebuild ? 'their REAL site' : 'the demo'} via the API...`);
 
   const { forgeSiteWithApi } = await import('../lib/site-forge-api.ts');
   const t0 = Date.now();
   let result;
   try {
-    result = await forgeSiteWithApi(String(claimed.brief ?? ''), String(claimed.business_name ?? 'the business'));
+    result = await forgeSiteWithApi(
+      String(claimed.brief ?? ''),
+      String(claimed.business_name ?? 'the business'),
+      { real: rebuild },
+    );
   } catch (e) {
     await fail(claimed, e?.message || e);
     process.exit(1);
@@ -176,6 +200,36 @@ async function main() {
     await fail(claimed, `could not store the html: ${upErr.message}`);
     process.exit(1);
   }
+
+  if (rebuild) {
+    // The real site never auto-ships. It lands on the delivery board, a human
+    // approves it, and it reveals on the date we chose.
+    const { data: project } = await sb
+      .from('projects')
+      .select('site_published_at')
+      .eq('id', claimed.project_id)
+      .maybeSingle();
+    if (project?.site_published_at) {
+      await fail(claimed, 'their site is already live, so this rebuild was not applied over it');
+      process.exit(1);
+    }
+    const { error: pErr } = await sb
+      .from('projects')
+      .update({
+        site_html: result.html,
+        site_build_status: 'ready',
+        site_build_error: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', claimed.project_id);
+    if (pErr) {
+      await fail(claimed, `could not store the real site: ${pErr.message}`);
+      process.exit(1);
+    }
+    log(`REBUILD READY in ${secs}s: ${SITE_URL}/admin/delivery/${claimed.project_id}/edit | ${result.direction} | hero ${result.hero} | ${Math.round(result.bytes / 1024)}KB`);
+    return;
+  }
+
   await sb.from('outbound_leads').update({ site_demo_status: 'ready' }).eq('id', claimed.lead_id);
 
   const siteUrl = `${SITE_URL}/demo/site/${claimed.id}`;

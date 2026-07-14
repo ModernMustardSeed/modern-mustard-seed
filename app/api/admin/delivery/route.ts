@@ -33,7 +33,7 @@ export async function GET() {
   if (projectIds.length) {
     const { data: projs } = await sb
       .from('projects')
-      .select('id, name, status, progress, revisions_included, revisions_used, demo_site_id, site_html, site_domain, site_live_url, site_published_at, site_domain_source')
+      .select('id, name, status, progress, revisions_included, revisions_used, demo_site_id, site_html, site_domain, site_live_url, site_published_at, site_domain_source, site_build_status, site_build_error, approved_at, approved_by, reveal_at')
       .in('id', projectIds);
     for (const p of projs ?? []) projects.set(p.id as string, p as Record<string, unknown>);
   }
@@ -89,6 +89,13 @@ export async function GET() {
             domainSource: p.site_domain_source,
             liveUrl: p.site_live_url,
             publishedAt: p.site_published_at,
+            // The rebuild: their real site, forged from what they told us after they
+            // paid. And the reveal: who signed it, and the day it goes out.
+            buildStatus: p.site_build_status,
+            buildError: p.site_build_error,
+            approvedAt: p.approved_at,
+            approvedBy: p.approved_by,
+            revealAt: p.reveal_at,
           }
         : null,
       openRequests: o.client_email ? (openByEmail.get(o.client_email) ?? 0) : 0,

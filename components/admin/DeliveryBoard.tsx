@@ -24,6 +24,11 @@ type Project = {
   domainSource: string | null;
   liveUrl: string | null;
   publishedAt: string | null;
+  buildStatus: 'queued' | 'building' | 'ready' | 'failed' | null;
+  buildError: string | null;
+  approvedAt: string | null;
+  approvedBy: string | null;
+  revealAt: string | null;
 };
 type Row = {
   id: string;
@@ -46,6 +51,19 @@ type Row = {
 };
 
 const usd = (c: number) => `$${Math.round(c / 100)}`;
+
+/**
+ * An ISO timestamp as a <input type="datetime-local"> value, in Sarah's timezone.
+ * The input speaks local wall-clock with no zone, so a naive .toISOString().slice()
+ * would silently show a UTC time and she would schedule reveals hours off.
+ */
+function toLocalInput(iso: string | null): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 const CARD = 'bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616]';
 const BTN =
   'px-4 py-2 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-40 hover:-translate-y-0.5 transition-transform';
@@ -78,6 +96,15 @@ export default function DeliveryBoard() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  // A rebuild takes minutes. Poll while one is in flight so the board tells the truth
+  // without Sarah reloading, and stop the moment nothing is building.
+  const building = rows.some((r) => r.project?.buildStatus === 'queued' || r.project?.buildStatus === 'building');
+  useEffect(() => {
+    if (!building) return;
+    const t = setInterval(load, 20_000);
+    return () => clearInterval(t);
+  }, [building, load]);
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] px-6 py-10">
@@ -135,6 +162,7 @@ function DeliveryRow({
   const [domain, setDomain] = useState('');
   const [quote, setQuote] = useState<Quote | null>(null);
   const [dns, setDns] = useState<Array<{ type: string; domain: string; value: string }>>([]);
+  const [reveal, setReveal] = useState(() => toLocalInput(row.project?.revealAt ?? null));
 
   const p = row.project;
 
@@ -194,8 +222,30 @@ function DeliveryRow({
     if (j?.ok) { setMsg(j.seeded ? 'Their real site now starts from the demo they bought.' : 'It already has a site.'); onChanged(); }
   };
 
+  const doRebuild = async () => {
+    if (p?.hasSite && !confirm('Rebuild their site from their intake? This replaces the current draft, including any edits you made here.')) return;
+    const j = await act('rebuild');
+    if (j?.ok) { setMsg('Queued. The forge is rebuilding their real site from what they sent us. It takes a few minutes.'); onChanged(); }
+  };
+
+  const doApprove = async () => {
+    const j = await act('approve', reveal ? { revealAt: new Date(reveal).toISOString() } : {});
+    if (j?.ok) {
+      const when = new Date(j.revealAt as string);
+      setMsg(when.getTime() <= Date.now()
+        ? 'Approved. It goes live on the next hourly pass.'
+        : `Approved. It reveals ${when.toLocaleString()}.`);
+      onChanged();
+    }
+  };
+
+  const doUnapprove = async () => {
+    const j = await act('unapprove');
+    if (j?.ok) { setMsg('Approval pulled. Nothing will go out.'); onChanged(); }
+  };
+
   const doPublish = async () => {
-    if (!confirm('Put this site live? The client gets an email saying they are live.')) return;
+    if (!confirm('Put this site live NOW? The client gets an email saying they are live.')) return;
     const j = await act('publish');
     if (j?.ok) {
       setMsg(`Live at ${j.liveUrl}${j.verified ? '' : ' (domain still needs DNS, see below)'}`);
@@ -225,6 +275,10 @@ function DeliveryRow({
             {row.status === 'paid' && <Chip tone="gold">Waiting on their intake</Chip>}
             {row.status === 'intake_done' && <Chip tone="blue">Intake in, build it</Chip>}
             {row.status === 'delivered' && <Chip tone="green">Delivered</Chip>}
+            {(p?.buildStatus === 'queued' || p?.buildStatus === 'building') && <Chip tone="blue">Rebuilding</Chip>}
+            {p?.buildStatus === 'failed' && <Chip tone="red">Rebuild failed</Chip>}
+            {p?.buildStatus === 'ready' && !p.approvedAt && !p.publishedAt && <Chip tone="gold">Needs your eyes</Chip>}
+            {p?.approvedAt && !p.publishedAt && <Chip tone="green">Approved{p.revealAt ? ` for ${new Date(p.revealAt).toLocaleDateString()}` : ''}</Chip>}
             {row.assetCount > 0 && <Chip tone="plain">{row.assetCount} files</Chip>}
             {row.openRequests > 0 && <Chip tone="red">{row.openRequests} open</Chip>}
             {p && <Chip tone="plain">{p.revisionsUsed}/{p.revisionsIncluded} edits</Chip>}
@@ -355,21 +409,47 @@ function DeliveryRow({
           {/* The site */}
           <div>
             <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">Their site</h4>
+
+            {p?.buildStatus === 'queued' && (
+              <p className="font-body text-[13px] text-[#1E50C8] mb-2">
+                Rebuild queued. The forge picks it up within a minute.
+              </p>
+            )}
+            {p?.buildStatus === 'building' && (
+              <p className="font-body text-[13px] text-[#1E50C8] mb-2">
+                Building their real site from their intake right now. Usually four to twenty minutes.
+              </p>
+            )}
+            {p?.buildStatus === 'failed' && (
+              <p className="font-body text-[13px] text-[#E0301E] mb-2">
+                The rebuild failed: {p.buildError ?? 'no reason recorded'}. Rebuild it, or edit the demo by hand.
+              </p>
+            )}
+
             <div className="flex flex-wrap gap-2 items-center">
-              {!p?.hasSite ? (
+              {!p?.hasSite && (
                 <button type="button" onClick={doSeed} disabled={!!busy || !p?.demoSiteId} className={BTN_QUIET}>
                   {busy === 'seed' ? 'Copying…' : 'Start from their demo'}
                 </button>
-              ) : (
+              )}
+              {row.intakeAt && (
+                <button
+                  type="button"
+                  onClick={doRebuild}
+                  disabled={!!busy || p?.buildStatus === 'queued' || p?.buildStatus === 'building' || Boolean(p?.publishedAt)}
+                  className={p?.hasSite ? BTN_QUIET : BTN}
+                  title={p?.publishedAt ? 'It is already live. Edit it instead.' : 'Forge their real site from their intake'}
+                >
+                  {busy === 'rebuild' ? 'Queueing…' : 'Rebuild from their intake'}
+                </button>
+              )}
+              {p?.hasSite && (
                 <>
-                  <a
-                    href={`/admin/delivery/${row.projectId}/edit`}
-                    className={`${BTN_QUIET} inline-block no-underline`}
-                  >
+                  <a href={`/admin/delivery/${row.projectId}/edit`} className={`${BTN_QUIET} inline-block no-underline`}>
                     Edit the site
                   </a>
                   <button type="button" onClick={doPublish} disabled={!!busy || !platformReady} className={BTN}>
-                    {busy === 'publish' ? 'Publishing…' : p.publishedAt ? 'Publish again' : 'Put it live'}
+                    {busy === 'publish' ? 'Publishing…' : p.publishedAt ? 'Publish again' : 'Reveal it now'}
                   </button>
                 </>
               )}
@@ -379,12 +459,47 @@ function DeliveryRow({
                 </a>
               )}
             </div>
-            {!p?.demoSiteId && !p?.hasSite && (
+            {!p?.demoSiteId && !p?.hasSite && !row.intakeAt && (
               <p className="font-body text-[12.5px] text-[#161616]/55 mt-1.5">
                 No forged demo is linked to this project, so there is nothing to start from.
               </p>
             )}
           </div>
+
+          {/* The reveal. A human signs it, and it goes out on the day we chose. */}
+          {p?.hasSite && !p.publishedAt && (
+            <div>
+              <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">The reveal</h4>
+              <p className="font-body text-[12.5px] text-[#161616]/60 mb-2">
+                Nothing reaches the client until you approve it. Approved sites go live on their date, on the hour.
+              </p>
+              <div className="flex flex-wrap gap-2 items-center">
+                <input
+                  type="datetime-local"
+                  value={reveal}
+                  onChange={(e) => setReveal(e.target.value)}
+                  className="rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-3 py-2 font-body text-[14px] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
+                />
+                <button type="button" onClick={doApprove} disabled={!!busy} className={BTN}>
+                  {busy === 'approve' ? 'Saving…' : p.approvedAt ? 'Reschedule' : 'Approve and schedule'}
+                </button>
+                {p.approvedAt && (
+                  <button type="button" onClick={doUnapprove} disabled={!!busy} className={BTN_QUIET}>
+                    Pull the approval
+                  </button>
+                )}
+              </div>
+              {p.approvedAt ? (
+                <p className="font-body text-[13px] text-emerald-700 mt-2">
+                  Approved by {p.approvedBy ?? 'admin'}. {p.revealAt ? `Goes live ${new Date(p.revealAt).toLocaleString()}.` : 'No date set, so it goes on the next pass.'}
+                </p>
+              ) : (
+                <p className="font-body text-[13px] text-[#161616]/60 mt-2">
+                  Not approved. {p.revealAt ? `Target date is ${new Date(p.revealAt).toLocaleDateString()}, but nothing ships without your approval.` : 'No date yet.'}
+                </p>
+              )}
+            </div>
+          )}
 
           {msg && <p className="font-body text-[13px] text-emerald-700">{msg}</p>}
           {err && <p className="font-body text-[13px] text-[#E0301E]">{err}</p>}

@@ -8,9 +8,20 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { resendClient } from '@/lib/send-email';
 import { clientEmail } from '@/lib/email';
+import { queueRebuild, rebuildInputFor } from '@/lib/site-rebuild';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
+
+/**
+ * How long after the intake their real site goes live, by default.
+ *
+ * The page promises "within 7 days", so this is the number we actually hit, and it
+ * must stay under the promise. Three days beats it and still leaves the work looking
+ * like a studio's rather than a vending machine's. It is a date on the project, not a
+ * hardcoded law: Sarah can pull any project forward or push it back on the board.
+ */
+const REVEAL_DELAY_DAYS = Number(process.env.DEMO_REVEAL_DELAY_DAYS || 3);
 
 const FIELD_LABELS: Record<string, string> = {
   hours: 'Business hours',
@@ -171,6 +182,37 @@ export async function POST(req: Request) {
     }
   }
 
+  // THE REBUILD. Everything above is the truth about their business, and until now
+  // nothing consumed it: the demo was still the demo, guessed from a scraped lead,
+  // and turning it into their real site was a manual job on a 900KB HTML file. So
+  // the forge runs again, immediately, against their real logo, photos and menu.
+  //
+  // It does NOT reach the client. It lands on the delivery board, a human approves
+  // it, and it reveals on the scheduled date. The machine does the work; a person
+  // signs it.
+  if (firstIntake && order.project_id) {
+    try {
+      const input = await rebuildInputFor(supabase, order.project_id);
+      if ('error' in input) {
+        console.error('demo-order intake: cannot queue rebuild:', input.error);
+      } else {
+        const queued = await queueRebuild(supabase, input);
+        if (!queued.ok) console.error('demo-order intake: rebuild queue failed:', queued.error);
+      }
+      // The target date is set now so the board (and Sarah) can see the clock the
+      // buyer is counting on. Publishing still requires approved_at, so a date on
+      // its own can never ship an unreviewed site.
+      const revealAt = new Date(Date.now() + REVEAL_DELAY_DAYS * 24 * 60 * 60 * 1000).toISOString();
+      await supabase
+        .from('projects')
+        .update({ reveal_at: revealAt })
+        .eq('id', order.project_id)
+        .is('reveal_at', null);
+    } catch (err) {
+      console.error('demo-order intake: rebuild queue threw', err);
+    }
+  }
+
   // A correction is saved above, but only the first submission is announced.
   if (!firstIntake) return NextResponse.json({ ok: true, updated: true });
 
@@ -214,7 +256,7 @@ export async function POST(req: Request) {
           preheader: 'Customization details for a paid demo order.',
           eyebrow: 'DEMO ORDER INTAKE',
           greeting: `${safeBusiness} filled in their details.`,
-          body: `${lines}<p>The 7-day release clock is running. Everything is also on the lead's thread in the cockpit.</p>`,
+          body: `${lines}<p>Their real site is already being rebuilt from these details. Review and approve it at <a href="https://modernmustardseed.com/admin/delivery">/admin/delivery</a>. Nothing goes live until you say so.</p>`,
           signature: 'The Demo Hub',
         }),
       });

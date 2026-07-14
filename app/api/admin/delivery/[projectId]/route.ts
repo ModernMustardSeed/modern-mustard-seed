@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
-import { quoteDomain, buyDomain, publishSite, attachDomain, normalizeDomain, projectSlug, type Contact } from '@/lib/vercel-platform';
-import { seoFiles, type SiteFacts } from '@/lib/site-seo';
-import { resendClient } from '@/lib/send-email';
-import { clientEmail } from '@/lib/email';
-import { SITE } from '@/lib/seo';
+import { quoteDomain, buyDomain, attachDomain, normalizeDomain, type Contact } from '@/lib/vercel-platform';
+import { publishProject } from '@/lib/site-publish';
+import { queueRebuild, rebuildInputFor } from '@/lib/site-rebuild';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -43,7 +41,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
   if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   const { projectId } = await params;
-  let body: { action?: string; domain?: string; html?: string; external?: boolean };
+  let body: { action?: string; domain?: string; html?: string; external?: boolean; revealAt?: string };
   try {
     body = await req.json();
   } catch {
@@ -52,12 +50,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
 
   const { data: project } = await sb
     .from('projects')
-    .select('id, name, client_email, demo_site_id, site_html, site_domain, site_vercel_project_id, site_live_url')
+    .select('id, name, client_email, demo_site_id, site_html, site_domain, site_vercel_project_id, site_live_url, site_build_status, approved_at, reveal_at')
     .eq('id', projectId)
     .maybeSingle();
   if (!project) return NextResponse.json({ error: 'No such project' }, { status: 404 });
-
-  const business = String(project.name ?? 'client').replace(/:.*$/, '').trim();
 
   switch (body.action) {
     /* ── What would this domain cost? Never buys. ── */
@@ -138,127 +134,59 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
       return NextResponse.json({ ok: true, bytes: html.length });
     }
 
-    /* ── Put it live. ── */
-    case 'publish': {
-      if (!project.site_html) return NextResponse.json({ error: 'Seed the site from their demo first.' }, { status: 400 });
+    /* ── Rebuild their REAL site from the intake they filled in. ── */
+    case 'rebuild': {
+      const input = await rebuildInputFor(sb, projectId);
+      if ('error' in input) return NextResponse.json({ error: input.error }, { status: 400 });
+      const queued = await queueRebuild(sb, input);
+      if (!queued.ok) return NextResponse.json({ error: queued.error }, { status: 500 });
+      return NextResponse.json({ ok: true, jobId: queued.jobId });
+    }
 
-      // Everything we know about them, gathered once. The SEO record is built from
-      // FACTS: their intake, their order, their lead. Never a guess (see lib/site-seo).
-      const { data: order } = await sb
-        .from('demo_orders')
-        .select('intake, phone, outbound_lead_id')
-        .eq('project_id', projectId)
-        .maybeSingle();
-      const intake = (order?.intake ?? {}) as Record<string, unknown>;
-      const str = (k: string) => (typeof intake[k] === 'string' ? (intake[k] as string) : undefined);
-
-      let lead: { city?: string | null; state?: string | null; phone?: string | null; niche?: string | null } | null = null;
-      if (order?.outbound_lead_id) {
-        const { data } = await sb
-          .from('outbound_leads')
-          .select('city, state, phone, niche')
-          .eq('id', order.outbound_lead_id)
-          .maybeSingle();
-        lead = data;
-      }
-      const assets = Array.isArray(intake.assets) ? (intake.assets as Array<{ url: string; kind: string }>) : [];
-      const logo = assets.find((a) => a.kind === 'logo')?.url;
-
-      // With no custom domain yet, the site still needs to know its own address or the
-      // canonical tag would point at nothing. Vercel serves it at <project>.vercel.app.
-      const slug = projectSlug(business, projectId);
-      const domain = (project.site_domain as string | null) ?? `${slug}.vercel.app`;
-
-      const facts: SiteFacts = {
-        business,
-        domain,
-        phone: str('contact')?.match(/[\d().+-]{7,}/)?.[0] ?? order?.phone ?? lead?.phone ?? null,
-        city: lead?.city ?? null,
-        state: lead?.state ?? null,
-        street: null,
-        zip: null,
-        services: str('services') ?? null,
-        hours: str('hours') ?? null,
-        trade: lead?.niche ?? null,
-        gbp: str('gbp') ?? null,
-        facebook: str('facebook') ?? null,
-        instagram: str('instagram') ?? null,
-        logoUrl: logo ?? null,
-      };
-
-      const pub = await publishSite({
-        files: seoFiles(facts, project.site_html as string),
-        business,
-        key: projectId,
-        projectId: (project.site_vercel_project_id as string | null) ?? null,
-      });
-      if (!pub.ok) return NextResponse.json({ error: pub.error }, { status: 400 });
-
-      let liveUrl = pub.url;
-      let verified = true;
-      let instructions: Array<{ type: string; domain: string; value: string }> = [];
-
-      if (project.site_domain) {
-        const a = await attachDomain(pub.projectId, project.site_domain as string);
-        if (a.ok) {
-          verified = a.verified;
-          instructions = a.instructions;
-          if (a.verified) liveUrl = `https://${project.site_domain}`;
-        }
-      }
+    /**
+     * ── Approve it, and say when it reveals. ──
+     *
+     * This is the human signature. The cron will not publish anything without it, no
+     * matter what date is on the row, so an approval is the only thing that can ever
+     * put a site in front of a client. Approving with a date in the past means "now",
+     * and the cron picks it up on its next pass.
+     */
+    case 'approve': {
+      if (!project.site_html) return NextResponse.json({ error: 'There is no site to approve yet.' }, { status: 400 });
+      const when = body.revealAt ? new Date(body.revealAt) : new Date();
+      if (Number.isNaN(when.getTime())) return NextResponse.json({ error: 'That is not a date.' }, { status: 400 });
 
       await sb
         .from('projects')
         .update({
-          site_vercel_project_id: pub.projectId,
-          site_live_url: liveUrl,
-          site_published_at: new Date().toISOString(),
-          status: 'launched',
-          progress: 100,
+          approved_at: new Date().toISOString(),
+          approved_by: session.email ?? 'admin',
+          reveal_at: when.toISOString(),
         })
         .eq('id', projectId);
+      return NextResponse.json({ ok: true, revealAt: when.toISOString() });
+    }
 
-      // Tell them, in the portal and in their inbox. This is the moment they bought.
-      if (project.client_email && process.env.RESEND_API_KEY) {
-        try {
-          await sb.from('client_files').insert({
-            client_email: project.client_email,
-            label: 'Your live website',
-            url: liveUrl,
-            kind: 'site',
-          });
-        } catch { /* a duplicate file row is not worth failing a launch over */ }
-        try {
-          const resend = resendClient();
-          await resend.emails.send({
-            from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
-            to: project.client_email as string,
-            replyTo: 'sarah@modernmustardseed.com',
-            subject: 'You are live.',
-            html: clientEmail({
-              preheader: 'Your website is live on the internet.',
-              eyebrow: 'LIVE',
-              greeting: 'You are live.',
-              body: `<p>${business} is on the internet, at <a href="${liveUrl}">${liveUrl}</a>.</p><p>It answers its own phone, it works on every screen, and it is yours. Anything you want changed, send it from your portal and I will see it.</p>`,
-              cta: { label: 'See it live', url: liveUrl },
-              secondary: { label: 'My portal', url: `${SITE.url}/portal` },
-              signature: 'Sarah',
-            }),
-          });
-        } catch (err) {
-          console.error('launch email failed', err);
-        }
+    /* ── Take the approval back. Only possible before it is live. ── */
+    case 'unapprove': {
+      await sb.from('projects').update({ approved_at: null, approved_by: null }).eq('id', projectId);
+      return NextResponse.json({ ok: true });
+    }
+
+    /* ── Put it live. Right now, by hand. ── */
+    case 'publish': {
+      const pub = await publishProject(sb, projectId);
+      if (!pub.ok) return NextResponse.json({ error: pub.error }, { status: 400 });
+      // A hand publish IS an approval, recorded as one, so the board never shows a
+      // live site that nobody signed.
+      if (!project.approved_at) {
+        const now = new Date().toISOString();
+        await sb
+          .from('projects')
+          .update({ approved_at: now, approved_by: session.email ?? 'admin', reveal_at: (project.reveal_at as string | null) ?? now })
+          .eq('id', projectId);
       }
-
-      // Only NOW is an order actually delivered. Nothing in this codebase ever set
-      // this status before, which is why it always looked like nothing shipped.
-      await sb
-        .from('demo_orders')
-        .update({ status: 'delivered', delivered_at: new Date().toISOString() })
-        .eq('project_id', projectId)
-        .in('status', ['paid', 'intake_done']);
-
-      return NextResponse.json({ ok: true, liveUrl, previewUrl: pub.url, verified, instructions });
+      return NextResponse.json(pub);
     }
 
     default:

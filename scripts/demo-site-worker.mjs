@@ -28,7 +28,7 @@ import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { cliDirective } from '../lib/site-directive.mjs';
+import { cliDirective, cliRealDirective } from '../lib/site-directive.mjs';
 
 const ONCE = process.argv.includes('--once');
 const POLL_MS = Number(process.env.DEMO_SITE_POLL_MS || 15000);
@@ -76,6 +76,13 @@ const FAL_ENV = path.join(os.homedir(), '.claude', 'fal.env').replace(/\\/g, '/'
 const MEDIA_NOTES = path.join(os.homedir(), '.claude', 'projects', 'C--Users-moder', 'memory', 'media-generation-pipeline.md').replace(/\\/g, '/');
 const DIRECTIVE = cliDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES });
 
+// A REBUILD is the same forge pointed at the truth. Once they pay, they hand us
+// their real logo, real photos, real menu, real hours, and this queue runs again
+// to turn the demo into the site they actually own. It gets a different law: no
+// demo pitch, no invented facts, their own assets, and built to be indexed.
+const REAL_DIRECTIVE = cliRealDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES });
+const isRebuild = (job) => job.kind === 'rebuild';
+
 async function reclaimStranded() {
   const cutoff = new Date(Date.now() - STALE_MS).toISOString();
   const { data } = await supabase
@@ -106,7 +113,7 @@ async function claimNext() {
   return claimed || null;
 }
 
-function runClaude(dir) {
+function runClaude(dir, directive) {
   return new Promise((resolve) => {
     // Subscription only, by construction: a present ANTHROPIC_API_KEY would
     // silently switch the CLI to metered API billing. Strip every key-shaped
@@ -121,7 +128,7 @@ function runClaude(dir) {
     // reaches claude as only its first word (run 1 got "You", run 2 got
     // "Read"), and any newline in it truncates the rest of the command line
     // including --permission-mode. Stdin is immune to all of it.
-    writeFileSync(path.join(dir, 'DIRECTIVE.md'), DIRECTIVE);
+    writeFileSync(path.join(dir, 'DIRECTIVE.md'), directive);
     const prompt = 'Read DIRECTIVE.md in this directory and follow it exactly. It tells you to read BRIEF.md and build index.html here.';
     // stream-json + verbose so the log shows live progress instead of 25
     // silent minutes; strict-mcp-config skips the global MCP servers (slow
@@ -144,24 +151,39 @@ function runClaude(dir) {
 }
 
 async function fail(job, message) {
+  const error = String(message).slice(0, 2000);
   await supabase
     .from('outbound_demo_sites')
-    .update({ status: 'failed', error: String(message).slice(0, 2000), updated_at: new Date().toISOString() })
+    .update({ status: 'failed', error, updated_at: new Date().toISOString() })
     .eq('id', job.id);
-  await supabase.from('outbound_leads').update({ site_demo_status: 'failed' }).eq('id', job.lead_id);
-  log('FAILED', job.id, String(message).slice(0, 200));
+  if (isRebuild(job)) {
+    // A paying client is on the other end of this one, so the failure has to be
+    // visible on the delivery board rather than only in a worker log.
+    await supabase
+      .from('projects')
+      .update({ site_build_status: 'failed', site_build_error: error })
+      .eq('id', job.project_id);
+  } else if (job.lead_id) {
+    await supabase.from('outbound_leads').update({ site_demo_status: 'failed' }).eq('id', job.lead_id);
+  }
+  log('FAILED', job.id, error.slice(0, 200));
 }
 
 async function process_(job) {
-  log('claimed site build', job.id, 'for', job.business_name);
-  await supabase.from('outbound_leads').update({ site_demo_status: 'building' }).eq('id', job.lead_id);
+  const rebuild = isRebuild(job);
+  log('claimed', rebuild ? 'REAL SITE rebuild' : 'site build', job.id, 'for', job.business_name);
+  if (rebuild) {
+    await supabase.from('projects').update({ site_build_status: 'building' }).eq('id', job.project_id);
+  } else if (job.lead_id) {
+    await supabase.from('outbound_leads').update({ site_demo_status: 'building' }).eq('id', job.lead_id);
+  }
 
   const dir = path.join(SITES_DIR, job.id);
   try {
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(path.join(dir, 'BRIEF.md'), job.brief || '');
 
-    const { code, out } = await runClaude(dir);
+    const { code, out } = await runClaude(dir, rebuild ? REAL_DIRECTIVE : DIRECTIVE);
 
     const htmlPath = path.join(dir, 'index.html');
     if (!existsSync(htmlPath)) {
@@ -182,6 +204,12 @@ async function process_(job) {
       await fail(job, `could not store the html: ${upErr.message}`);
       return;
     }
+
+    if (rebuild) {
+      await finishRebuild(job, html);
+      return;
+    }
+
     await supabase.from('outbound_leads').update({ site_demo_status: 'ready' }).eq('id', job.lead_id);
 
     const siteUrl = `${SITE_URL}/demo/site/${job.id}`;
@@ -200,6 +228,48 @@ async function process_(job) {
   } catch (e) {
     await fail(job, e?.message || e);
   }
+}
+
+/**
+ * A finished rebuild becomes the REAL site: projects.site_html, which is what the
+ * editor edits and what publishing ships.
+ *
+ * It does NOT go to the client. Nobody sees it until a human has looked at it and
+ * approved it, and it reveals on the date we chose. That gap is the whole product:
+ * the machine does the work, a person signs it.
+ *
+ * The client's own edits win. If Sarah (or a revision) already wrote site_html and
+ * the site is out the door, an in-flight rebuild landing late must not silently
+ * overwrite it, so we refuse and say so.
+ */
+async function finishRebuild(job, html) {
+  const { data: project } = await supabase
+    .from('projects')
+    .select('id, name, status, site_published_at')
+    .eq('id', job.project_id)
+    .maybeSingle();
+
+  if (project?.site_published_at) {
+    await fail(job, 'their site is already live, so this rebuild was not applied over it (publish a fresh build deliberately instead)');
+    return;
+  }
+
+  const { error } = await supabase
+    .from('projects')
+    .update({
+      site_html: html,
+      site_build_status: 'ready',
+      site_build_error: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', job.project_id);
+  if (error) {
+    await fail(job, `could not store the real site: ${error.message}`);
+    return;
+  }
+
+  log('REBUILD READY', job.id, `project ${job.project_id}`, `(${Math.round(html.length / 1024)}KB)`);
+  log(`review it: ${SITE_URL}/admin/delivery/${job.project_id}/edit`);
 }
 
 /**
