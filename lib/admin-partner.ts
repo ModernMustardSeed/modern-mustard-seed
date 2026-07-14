@@ -24,34 +24,38 @@ async function partnerFromCode(code: string, fallbackName: string): Promise<Admi
 }
 
 /**
+ * Resolve an admin LOGIN to their team_members row. Login email first (the
+ * ONE-identity table), then NAME, for logins whose email is not a
+ * team_members row (the env owner, legacy ADMIN_TEAM entries). Same rule the
+ * outbound reps use to match admins.
+ */
+export async function resolveAdminTeamMember(user: AdminUser): Promise<TeamMember | null> {
+  const member = await getTeamMemberByEmail(user.email);
+  if (member) return member;
+  if (!user.name) return null;
+  try {
+    const members = await listTeamMembers();
+    return (
+      members.find(
+        (m: TeamMember) => m.active && m.name.trim().toLowerCase() === user.name.trim().toLowerCase(),
+      ) ?? null
+    );
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Resolve an admin LOGIN to their partner identity. The two can differ:
  * Polly signs in with a gmail but her affiliate row lives under her
- * @modernmustardseed.com address. Join order:
- *  1. team_members by login email (the ONE-identity table), then its code.
- *  2. team_members by NAME, for the env-owner login whose email is not a
- *     team_members row (same rule the outbound reps use to match admins).
- *  3. affiliates by the login email directly.
+ * @modernmustardseed.com address. Join order: team_members (email, then
+ * name) to its affiliate code, then affiliates by the login email directly.
  */
 export async function resolveAdminPartner(user: AdminUser): Promise<AdminPartner | null> {
-  const member = await getTeamMemberByEmail(user.email);
+  const member = await resolveAdminTeamMember(user);
   if (member?.affiliate_code) {
     const p = await partnerFromCode(member.affiliate_code, member.name || user.name);
     if (p) return p;
-  }
-
-  if (!member && user.name) {
-    try {
-      const members = await listTeamMembers();
-      const byName = members.find(
-        (m: TeamMember) => m.active && m.affiliate_code && m.name.trim().toLowerCase() === user.name.trim().toLowerCase(),
-      );
-      if (byName?.affiliate_code) {
-        const p = await partnerFromCode(byName.affiliate_code, byName.name);
-        if (p) return p;
-      }
-    } catch {
-      /* fall through */
-    }
   }
 
   try {

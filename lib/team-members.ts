@@ -17,6 +17,8 @@ export type TeamMember = {
   affiliate_code: string | null;
   rep_name: string | null;
   notify_email: string | null;
+  /** Direct phone for the team directory (migration 053). */
+  phone: string | null;
   created_at: string;
 };
 
@@ -49,7 +51,7 @@ export async function listTeamMembers(): Promise<TeamMember[]> {
   try {
     const { data } = await sb
       .from('team_members')
-      .select('id,email,name,role,title,active,affiliate_code,rep_name,notify_email,created_at')
+      .select('id,email,name,role,title,active,affiliate_code,rep_name,notify_email,phone,created_at')
       .order('created_at', { ascending: true });
     return (data as TeamMember[]) ?? [];
   } catch {

@@ -1,21 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import AdminHeader from '@/components/admin/AdminHeader';
 import ProductSwipeKit from '@/components/partners/ProductSwipeKit';
+import Modal from '@/components/ui/Modal';
 
 /**
  * Partner Hub: the one tab where every team-partner finds their code, their
- * money link, what to post, the playbooks, the training, and the programs
- * they get free. Signature moment: the money ticket, a tilted mustard stub
- * with your code stamped on it that copies your link in one press.
+ * money link, the team directory (contact info, editable), what to post, the
+ * playbooks, the training, and the programs they get free. Signature moment:
+ * the money ticket, a tilted mustard stub with your code stamped on it that
+ * copies your link in one press.
  */
 
 type Earnings = { sales: number; pending: number; payable: number; paid: number };
-type TeamCode = { name: string; code: string; isYou: boolean };
 type Partner = { code: string; partnerEmail: string; name: string } | null;
+
+type DirectoryRow = {
+  id: string;
+  name: string;
+  role: string;
+  title: string | null;
+  loginEmail: string;
+  partnerEmail: string | null;
+  phone: string | null;
+  notifyEmail: string | null;
+  code: string | null;
+  active: boolean;
+  isYou: boolean;
+  canEdit: boolean;
+};
 
 const SECTIONS = [
   { key: 'post', label: 'What to Post' },
@@ -67,6 +83,222 @@ function CopyChip({ text, label }: { text: string; label: string }) {
   );
 }
 
+/**
+ * Edit-card modal. Local form state on purpose: keystrokes must not
+ * re-render the page (the add-lead-modal focus lesson).
+ */
+function EditCardModal({
+  row,
+  isOwner,
+  onClose,
+  onSaved,
+}: {
+  row: DirectoryRow;
+  isOwner: boolean;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [name, setName] = useState(row.name);
+  const [title, setTitle] = useState(row.title ?? '');
+  const [phone, setPhone] = useState(row.phone ?? '');
+  const [notifyEmail, setNotifyEmail] = useState(row.notifyEmail ?? '');
+  const [loginEmail, setLoginEmail] = useState(row.loginEmail);
+  const [partnerEmail, setPartnerEmail] = useState(row.partnerEmail ?? '');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const save = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      const body: Record<string, string> = { id: row.id, name, title, phone, notify_email: notifyEmail };
+      if (isOwner) {
+        body.login_email = loginEmail;
+        if (row.partnerEmail !== null) body.partner_email = partnerEmail;
+      }
+      const res = await fetch('/api/admin/hq/team', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(j.error || 'Could not save.');
+      onSaved();
+      onClose();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not save.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const field = 'w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700]';
+  const label = 'text-[9px] uppercase tracking-[0.25em] text-[#161616]/55 font-mono font-bold block mb-1';
+
+  return (
+    <Modal open onClose={onClose} headerTone="dark" eyebrow="Team directory" title={`Edit ${row.name.split(' ')[0]}'s card`} subtitle={row.code ? `Partner code ${row.code}` : undefined}>
+      <div className="space-y-4 p-1">
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <span className={label}>Name</span>
+            <input className={field} value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div>
+            <span className={label}>Title</span>
+            <input className={field} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Partner & Caller" />
+          </div>
+          <div>
+            <span className={label}>Phone</span>
+            <input className={field} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(406) 555-0182" inputMode="tel" />
+          </div>
+          <div>
+            <span className={label}>Notification email</span>
+            <input className={field} value={notifyEmail} onChange={(e) => setNotifyEmail(e.target.value)} placeholder="Where alerts land (optional)" inputMode="email" />
+          </div>
+          {isOwner && (
+            <>
+              <div>
+                <span className={label}>Login email (owner only)</span>
+                <input className={field} value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} inputMode="email" />
+                <p className="text-[11px] text-[#161616]/50 font-body mt-1">They sign in with the new address next time.</p>
+              </div>
+              {row.partnerEmail !== null && (
+                <div>
+                  <span className={label}>Partner email (owner only)</span>
+                  <input className={field} value={partnerEmail} onChange={(e) => setPartnerEmail(e.target.value)} inputMode="email" />
+                  <p className="text-[11px] text-[#161616]/50 font-body mt-1">Commissions and free access move with it.</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+        {error && <p className="text-[#E0301E] text-sm font-body">{error}</p>}
+        <div className="flex justify-end gap-2 pt-1">
+          <button type="button" onClick={onClose} className="px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616]/60 bg-white border-2 border-[#161616]/25 rounded-full hover:border-[#161616] hover:text-[#161616] transition-colors">
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={save}
+            disabled={saving}
+            className="px-6 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform disabled:opacity-60 disabled:hover:translate-y-0"
+          >
+            {saving ? 'Saving…' : 'Save card'}
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+/**
+ * The team directory: everyone's code, link, and contact info in one place.
+ * Owners edit anyone; each person edits their own card.
+ */
+function TeamDirectory({ base }: { base: string }) {
+  const [rows, setRows] = useState<DirectoryRow[] | null>(null);
+  const [isOwner, setIsOwner] = useState(false);
+  const [editing, setEditing] = useState<DirectoryRow | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/hq/team');
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.error || 'Could not load the directory.');
+      setRows(j.rows ?? []);
+      setIsOwner(j.role === 'owner');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not load the directory.');
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const contactLine = 'flex items-baseline gap-2 min-w-0';
+  const contactKey = 'shrink-0 w-14 text-[8px] uppercase tracking-[0.2em] text-[#161616]/45 font-mono font-bold';
+  const contactVal = 'font-mono text-[11px] text-[#161616]/85 truncate';
+
+  return (
+    <section className="mb-6">
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <span className="text-[9px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Team directory</span>
+        <span className="text-[10px] font-body text-[#161616]/45">
+          Codes, links, and contact info. {isOwner ? 'You can edit any card.' : 'You can edit your own card.'} Full earnings live on the Team board.
+        </span>
+      </div>
+
+      {error && <p className="text-[#E0301E] text-sm font-body mb-3">{error}</p>}
+      {!rows && !error && <p className="text-[#161616]/45 font-body text-sm italic">Loading the directory…</p>}
+
+      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
+        {(rows ?? []).map((t) => (
+          <div
+            key={t.id}
+            className={`border-2 border-[#161616] rounded-2xl p-4 shadow-[3px_3px_0_0_#161616] flex flex-col gap-2.5 ${t.isYou ? 'bg-[#F5B700]' : 'bg-white'}`}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <div className="font-sans text-sm font-bold truncate">{t.name}{t.isYou ? ' (you)' : ''}</div>
+                <div className="text-[9px] uppercase tracking-[0.18em] font-mono font-bold text-[#161616]/55">
+                  {t.title || (t.role === 'owner' ? 'Owner' : 'Team')}
+                </div>
+              </div>
+              {t.code && <CopyChip text={`${base}/?ref=${t.code}`} label="Link" />}
+            </div>
+
+            {t.code && <div className="font-mono text-lg font-bold tracking-tight truncate leading-none">{t.code}</div>}
+
+            <div className={`space-y-1 border-t-2 pt-2 ${t.isYou ? 'border-[#161616]/25' : 'border-[#161616]/10'}`}>
+              <div className={contactLine}>
+                <span className={contactKey}>Phone</span>
+                {t.phone ? (
+                  <a href={`tel:${t.phone.replace(/[^+\d]/g, '')}`} className={`${contactVal} hover:text-[#1E50C8]`}>{t.phone}</a>
+                ) : (
+                  <span className="font-mono text-[11px] text-[#161616]/35 italic">not set</span>
+                )}
+              </div>
+              <div className={contactLine}>
+                <span className={contactKey}>Login</span>
+                <a href={`mailto:${t.loginEmail}`} className={`${contactVal} hover:text-[#1E50C8]`}>{t.loginEmail}</a>
+              </div>
+              {t.partnerEmail && t.partnerEmail !== t.loginEmail && (
+                <div className={contactLine}>
+                  <span className={contactKey}>Partner</span>
+                  <a href={`mailto:${t.partnerEmail}`} className={`${contactVal} hover:text-[#1E50C8]`}>{t.partnerEmail}</a>
+                </div>
+              )}
+              {t.notifyEmail && t.notifyEmail !== t.loginEmail && (
+                <div className={contactLine}>
+                  <span className={contactKey}>Alerts</span>
+                  <a href={`mailto:${t.notifyEmail}`} className={`${contactVal} hover:text-[#1E50C8]`}>{t.notifyEmail}</a>
+                </div>
+              )}
+            </div>
+
+            {t.canEdit && (
+              <button
+                type="button"
+                onClick={() => setEditing(t)}
+                className="self-start mt-auto px-3.5 py-1.5 text-[9px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-full hover:bg-[#FFF8E6] transition-colors"
+              >
+                Edit card
+              </button>
+            )}
+          </div>
+        ))}
+        {rows && rows.length === 0 && (
+          <p className="col-span-full text-[#161616]/45 font-body text-sm italic">No teammates yet. Add them on the Team board.</p>
+        )}
+      </div>
+
+      {editing && <EditCardModal row={editing} isOwner={isOwner} onClose={() => setEditing(null)} onSaved={() => void load()} />}
+    </section>
+  );
+}
+
 /** The money ticket. Press it, your link is on the clipboard. */
 function MoneyTicket({ code, link }: { code: string; link: string }) {
   const [stamped, setStamped] = useState(false);
@@ -112,14 +344,12 @@ export default function PartnerHub({
   partner,
   clicks,
   earnings,
-  team,
   siteUrl,
 }: {
   firstName: string;
   partner: Partner;
   clicks: number;
   earnings: Earnings;
-  team: TeamCode[];
   siteUrl: string;
 }) {
   const [section, setSection] = useState<SectionKey>('post');
@@ -176,32 +406,8 @@ export default function PartnerHub({
           </div>
         </section>
 
-        {/* ── Everyone's codes ── */}
-        <section className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-[9px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Team codes</span>
-            <span className="text-[10px] font-body text-[#161616]/45">Anyone’s link, one tap. Full earnings live on the Team board.</span>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {team.map((t) => (
-              <div
-                key={t.code}
-                className={`border-2 border-[#161616] rounded-2xl p-4 shadow-[3px_3px_0_0_#161616] ${t.isYou ? 'bg-[#F5B700]' : 'bg-white'}`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="font-sans text-sm font-bold truncate">{t.name}{t.isYou ? ' (you)' : ''}</div>
-                    <div className="font-mono text-lg font-bold tracking-tight truncate">{t.code}</div>
-                  </div>
-                  <CopyChip text={`${base}/?ref=${t.code}`} label="Link" />
-                </div>
-              </div>
-            ))}
-            {team.length === 0 && (
-              <p className="col-span-full text-[#161616]/45 font-body text-sm italic">No team codes yet. Add teammates on the Team board.</p>
-            )}
-          </div>
-        </section>
+        {/* ── The team directory: codes, links, contact info, editable ── */}
+        <TeamDirectory base={base} />
 
         {/* ── Section switcher ── */}
         <nav aria-label="Partner Hub sections" className="flex flex-wrap gap-2 mb-6">
