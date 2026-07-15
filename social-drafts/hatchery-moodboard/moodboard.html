@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mustard Hatchery — Direction Moodboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#FBF6EA; --surface:#F5EDD9; --ink:#161616; --muted:#6b6152;
+    --accent:#B54423; --gold:#F5B700; --amber:#E8A542; --line:#e3d8bd;
+    --font-display:'Playfair Display',serif; --font-body:'DM Sans',sans-serif;
+    --font-cert:'Cormorant Garamond',serif; --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.6;
+       -webkit-font-smoothing:antialiased;padding:clamp(1.5rem,5vw,4rem);
+       background-image:radial-gradient(rgba(245,183,0,.10) 1px, transparent 1px);background-size:22px 22px}
+  .wrap{max-width:1180px;margin:0 auto;display:grid;gap:clamp(2rem,4vw,3.2rem)}
+  .eyebrow{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1{font-family:var(--font-display);font-weight:800;font-size:clamp(2.6rem,7vw,4.6rem);line-height:1.02;letter-spacing:-.02em}
+  h2{font-family:var(--font-display);font-size:1.5rem;font-weight:600;margin-bottom:.2rem}
+  .card{background:var(--surface);border:2px solid var(--ink);border-radius:18px;padding:clamp(1.25rem,2.5vw,2rem);
+        box-shadow:5px 5px 0 0 var(--ink)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem}
+  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem}
+  .logo-row{display:flex;gap:1.25rem;flex-wrap:wrap}
+  .logo-tile{flex:1;min-width:220px;display:grid;place-items:center;height:150px;border-radius:14px;border:2px solid var(--ink)}
+  .logo-tile.light{background:var(--bg)}
+  .logo-tile.dark{background:var(--ink)}
+  .logo-mark{font-family:var(--font-display);font-size:1.7rem;font-weight:800;letter-spacing:.01em}
+  .logo-mark small{display:block;font-family:var(--font-mono);font-size:.55rem;letter-spacing:.34em;font-weight:700;color:var(--accent);text-align:center;margin-top:.3rem}
+  .logo-tile.dark .logo-mark{color:var(--gold)}
+  .egg{font-size:2.6rem}
+  .swatch{height:96px;border-radius:12px;border:2px solid var(--ink);display:flex;align-items:flex-end;padding:.6rem}
+  .swatch span{font-family:var(--font-mono);font-size:.62rem;background:rgba(255,255,255,.92);padding:.18rem .45rem;border-radius:5px;font-weight:700;letter-spacing:.06em}
+  .specimen-display{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;letter-spacing:-.02em;font-weight:800}
+  .specimen-cert{font-family:var(--font-cert);font-style:italic;font-size:1.35rem;color:var(--muted)}
+  .specimen-body{font-size:1rem;color:var(--muted);max-width:46ch}
+  .imgref{aspect-ratio:4/5;border-radius:12px;border:2px solid var(--ink);object-fit:cover;width:100%;box-shadow:3px 3px 0 0 var(--ink)}
+  .hero{position:relative;border-radius:20px;overflow:hidden;min-height:440px;display:flex;align-items:flex-end;border:2px solid var(--ink);box-shadow:6px 6px 0 0 var(--ink)}
+  .hero-img{position:absolute;inset:0;background:url('ref1.png') center/cover}
+  .hero-scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(12,9,4,.82),transparent 55%)}
+  .hero-inner{position:relative;padding:clamp(1.5rem,4vw,3rem);color:#fff;max-width:640px}
+  .hero-inner h1{color:#FBF6EA;font-size:clamp(2.2rem,5vw,3.6rem)}
+  .btn{display:inline-block;background:var(--gold);color:var(--ink);font-weight:700;padding:.85rem 1.7rem;border-radius:999px;
+       text-decoration:none;margin-top:1.1rem;border:2px solid var(--ink);box-shadow:3px 3px 0 0 rgba(0,0,0,.55);
+       font-family:var(--font-body);text-transform:uppercase;font-size:.72rem;letter-spacing:.18em}
+  .countdown{display:inline-flex;gap:.5rem;margin-top:1rem}
+  .countdown b{font-family:var(--font-mono);background:rgba(251,246,234,.14);border:1px solid rgba(251,246,234,.4);color:#FBF6EA;border-radius:8px;padding:.35rem .6rem;font-size:.9rem}
+  .atoms{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+  .btn-ghost{border:2px solid var(--ink);color:var(--ink);background:transparent;padding:.7rem 1.3rem;border-radius:999px;font-weight:700;font-family:var(--font-body);text-transform:uppercase;font-size:.7rem;letter-spacing:.16em}
+  .field{border:2px solid var(--ink);background:var(--bg);border-radius:10px;padding:.7rem 1rem;color:var(--muted);min-width:220px;font-family:var(--font-body)}
+  .link{color:var(--accent);font-weight:700;text-underline-offset:4px}
+  .note{font-size:.9rem;color:var(--muted)}
+  .statement{font-family:var(--font-cert);font-size:clamp(1.4rem,3vw,2rem);line-height:1.35;font-style:italic}
+  .seal{display:inline-grid;place-items:center;width:54px;height:54px;border-radius:999px;background:var(--accent);color:#FBF6EA;font-family:var(--font-cert);font-style:italic;font-size:1.4rem;border:2px solid var(--ink);box-shadow:2px 2px 0 0 var(--ink);transform:rotate(-8deg)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Direction Moodboard — for Sarah's approval</p>
+    <h1>Mustard Hatchery</h1>
+    <p class="statement">"A storybook heirloom hatchery: the official mascot of your business, born by candlelight, with a phone number the whole town can call."</p>
+    <p class="note">Tender, warm, a little magical. References: vintage children's book etchings, letterpress birth certificates, and the glow of a shop window the night before something wonderful. The one unforgettable thing: a scheduled, public Birth Day where the egg cracks live and the character answers its own phone.</p>
+  </header>
+
+  <section class="card">
+    <p class="eyebrow">Logo / Wordmark</p>
+    <div class="logo-row" style="margin-top:1rem">
+      <div class="logo-tile light"><span class="logo-mark">Mustard Hatchery<small>EST. THE DAY YOURS IS BORN</small></span></div>
+      <div class="logo-tile dark"><span class="logo-mark">Mustard Hatchery<small style="color:var(--gold)">BY MODERN MUSTARD SEED</small></span></div>
+      <div class="logo-tile light"><span class="egg">🥚<span class="seal" style="margin-left:-18px;vertical-align:top">h</span></span></div>
+    </div>
+    <p class="note" style="margin-top:.8rem">Playfair wordmark over a mono whisper-line, with the cracked-egg-and-wax-seal monogram. Favicon and OG derive from the sealed egg. Lives inside the MMS family (same cream, ink, and mustard) but softer: serifs lead, candlelight replaces pop-art punch.</p>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <p class="eyebrow">Typography</p>
+      <h2 style="margin-top:.6rem">Playfair Display + DM Sans, Cormorant for the certificate voice</h2>
+      <p class="specimen-display" style="margin:.6rem 0">Every shop deserves a mascot.</p>
+      <p class="specimen-cert" style="margin-bottom:.6rem">Born the fourteenth of July, at seven in the evening, before family and regulars.</p>
+      <p class="specimen-body">Your bakery has a name, a menu, and a phone number. Now it has a someone. We write their story, draw their face, give them a voice, and throw them a birthday in front of everyone you know.</p>
+    </section>
+    <section class="card">
+      <p class="eyebrow">Color</p>
+      <div class="grid4" style="margin-top:.8rem">
+        <div class="swatch" style="background:#FBF6EA"><span>Cream #FBF6EA</span></div>
+        <div class="swatch" style="background:#161616"><span style="color:#161616">Ink #161616</span></div>
+        <div class="swatch" style="background:#F5B700"><span>Yolk gold #F5B700</span></div>
+        <div class="swatch" style="background:#E8A542"><span>Candle amber #E8A542</span></div>
+        <div class="swatch" style="background:#B54423"><span>Wax seal #B54423</span></div>
+      </div>
+      <p class="note" style="margin-top:.8rem">The MMS cream/ink/gold family, warmed: amber candlelight where the admin uses pop-red, and a wax-seal rust for ceremony. Dark is reserved for night scenes (the reveal).</p>
+    </section>
+  </div>
+
+  <section class="card">
+    <p class="eyebrow">Imagery direction — candlelit storybook, one light story</p>
+    <div class="grid4" style="margin-top:1rem">
+      <img class="imgref" src="ref1.png" alt="The hatching" />
+      <img class="imgref" src="ref2.png" alt="First Glimpse sonogram" />
+      <img class="imgref" src="ref3.png" alt="Birth certificate and model sheet" />
+      <img class="imgref" src="ref4.png" alt="Birth Day shop window" />
+    </div>
+    <p class="note" style="margin-top:.8rem">All imagery generated per character in this exact grade: warm amber against ink, etching linework, halftone paper. Left to right, the actual funnel: the hatching (hero + reveal film), the free First Glimpse "sonogram," the deliverables flat-lay (bible, certificate, model sheet), and the Birth Day storefront. Motion lives in the egg: wobble, crack, light spill.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow" style="margin-bottom:.8rem">Sample hero — the direction, living</p>
+    <div class="hero">
+      <div class="hero-img"></div>
+      <div class="hero-scrim"></div>
+      <div class="hero-inner">
+        <p class="eyebrow" style="color:#F5B700">Modern Mustard Seed presents</p>
+        <h1>Your business is about to be born.</h1>
+        <p style="color:#FBF6EA;opacity:.85;margin-top:.5rem;font-size:1.05rem">Your official mascot: a story, a face, a voice, and their own phone number. Hatched in front of everyone who loves your shop.</p>
+        <div class="countdown"><b>03</b><b>:</b><b>14</b><b>:</b><b>52</b><b>:</b><b>07</b></div>
+        <a class="btn" href="#">Claim a Founding Egg — $497</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <p class="eyebrow">UI atoms</p>
+      <div class="atoms" style="margin-top:1rem">
+        <a class="btn" href="#" style="margin-top:0">Claim a Founding Egg</a>
+        <button class="btn-ghost">Hear a heartbeat</button>
+        <input class="field" placeholder="Your shop's name" />
+        <a class="link" href="#">Meet a born character →</a>
+      </div>
+    </section>
+    <section class="card">
+      <p class="eyebrow">Motion + the unforgettable thing</p>
+      <p class="note" style="margin-top:1rem">Candle-flicker ambience on dark sections. The egg wobbles gently on hover, hairline cracks spread on scroll, and at zero the reveal page splits open in a spill of gold light. The free First Glimpse pulses to a real heartbeat loop.</p>
+      <p class="statement" style="margin-top:.8rem;font-size:1.15rem">★ The Birth Day: a countdown page the whole town watches, the egg cracks on schedule, and the first thing the character does is answer its own phone.</p>
+    </section>
+  </div>
+
+  <footer class="note" style="text-align:center;padding-top:1rem">
+    Approve this direction (or send edits) and the Founding 5 presale page gets built on it. — Mustard Hatchery, by Modern Mustard Seed
+  </footer>
+</div>
+</body>
+</html>
