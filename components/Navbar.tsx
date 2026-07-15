@@ -151,11 +151,7 @@ export default function Navbar() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className={`text-[11px] uppercase tracking-[0.2em] transition-colors font-body font-bold ${
-                    link.href === '/demos'
-                      ? 'text-[#E0301E] hover:text-[#161616]'
-                      : 'text-[#161616]/70 hover:text-[#E0301E]'
-                  }`}
+                  className="text-[11px] uppercase tracking-[0.2em] transition-colors font-body font-bold text-[#161616]/70 hover:text-[#E0301E]"
                 >
                   {link.label}
                 </Link>
