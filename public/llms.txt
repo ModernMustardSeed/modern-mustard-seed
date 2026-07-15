@@ -163,6 +163,7 @@ Authored by Sarah Scarano. Same author as the Modern Mustard Seed consulting pra
 - Industries: https://modernmustardseed.com/for
 - The Store: https://modernmustardseed.com/store
 - Blog: https://modernmustardseed.com/blog
+- Agentic AI vs Traditional AI (definitional guide): https://modernmustardseed.com/blog/agentic-ai-vs-traditional-ai
 - Free Playbooks: https://modernmustardseed.com/playbooks
 - Bottleneck Breaker (free): https://modernmustardseed.com/audit
 - Website Audit (free): https://modernmustardseed.com/website-audit

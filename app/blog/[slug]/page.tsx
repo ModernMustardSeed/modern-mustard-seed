@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import NewsletterSignup from '@/components/NewsletterSignup';
-import { JsonLd, blogPostingJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
+import { JsonLd, blogPostingJsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { getAllSlugs, getContent } from '@/lib/content';
 
@@ -48,6 +48,9 @@ export default async function BlogPost({ params }: { params: Params }) {
             { name: 'Blog', url: '/blog' },
             { name: post.meta.title, url: `/blog/${slug}` },
           ]),
+          // Posts that carry FAQ frontmatter also answer as a FAQPage (GEO:
+          // AI engines lift clean question-answer pairs far more readily).
+          ...(post.meta.faq?.length ? [faqJsonLd(post.meta.faq)] : []),
         ]}
       />
       <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-20">
@@ -90,6 +93,24 @@ export default async function BlogPost({ params }: { params: Params }) {
               options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
             />
           </div>
+
+          {/* Visible FAQ, rendered from the same frontmatter that feeds the
+              FAQPage schema, so markup and page content never drift apart. */}
+          {post.meta.faq && post.meta.faq.length > 0 && (
+            <section className="mt-14 pt-10 border-t-2 border-[#161616]/10">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-6">
+                Questions, answered
+              </span>
+              <div className="space-y-5">
+                {post.meta.faq.map((f) => (
+                  <div key={f.q} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+                    <h2 className="font-sans text-lg font-bold text-[#161616] mb-2">{f.q}</h2>
+                    <p className="text-[#3a3733] font-body leading-relaxed">{f.a}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </article>
 

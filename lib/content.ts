@@ -18,6 +18,8 @@ export type ContentMeta = {
   dateModified?: string;
   draft?: boolean;
   gated?: boolean;
+  /** Optional FAQ pairs; blog posts with these emit FAQPage JSON-LD (GEO). */
+  faq?: { q: string; a: string }[];
   // case study specific
   client?: string;
   metrics?: { label: string; value: string }[];
@@ -58,6 +60,7 @@ export function getContent(type: ContentType, slug: string): { meta: ContentMeta
       dateModified: data.dateModified ?? data.updated ?? data.date ?? new Date().toISOString().slice(0, 10),
       draft: data.draft ?? false,
       gated: data.gated ?? false,
+      faq: Array.isArray(data.faq) ? data.faq : undefined,
       client: data.client,
       metrics: data.metrics,
       stack: data.stack,
