@@ -109,6 +109,22 @@ export default async function PartnerHQ() {
           </Link>
         </div>
 
+        {/* The forge: the strongest play a partner has */}
+        <Link href="/partners/hq/forge" className="block group mb-8">
+          <div className="halftone-bg bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#161616] group-hover:-translate-y-0.5 md:flex md:items-center md:justify-between md:gap-6">
+            <div>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-2">Forge under your flag</span>
+              <h3 className="font-display text-2xl font-semibold text-[#161616]">Mint a demo suite for a business you know</h3>
+              <p className="text-[#161616]/70 font-body text-sm mt-1 max-w-xl">
+                Give us their name and website; we forge their AI receptionist, a designed-from-scratch site, and a command center demo, presented by you. If they buy, your commission records itself.
+              </p>
+            </div>
+            <span className="inline-block mt-4 md:mt-0 shrink-0 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616]">
+              ⚒ Open the forge
+            </span>
+          </div>
+        </Link>
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           {[
             { label: 'Clicks', value: String(clicks) },

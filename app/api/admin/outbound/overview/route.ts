@@ -27,9 +27,11 @@ type Candidate = {
   next_action: string | null;
   audit_score: number | null;
   last_open_at: string | null;
+  last_seen_at: string | null;
   email_open_count: number;
   demo_url: string | null;
   source: string | null;
+  origin: string | null;
   created_at: string;
 };
 
@@ -54,7 +56,7 @@ export async function GET() {
   let candQuery = guard.supabase
     .from('outbound_leads')
     .select(
-      'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, email_open_count, demo_url, source, created_at',
+      'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, last_seen_at, email_open_count, demo_url, source, origin, created_at',
     )
     .in('status', ['new', 'contacted', 'callback'])
     .order('created_at', { ascending: false });
@@ -111,6 +113,14 @@ export async function GET() {
         reason = 'replied';
       }
 
+      // Live presence beats from the demo hub (054): they are LOOKING AT their
+      // own suite this minute. Only a live reply outranks a live viewer; a
+      // human dialing at this exact peak is the whole point of the beat.
+      if (l.last_seen_at && now - new Date(l.last_seen_at).getTime() <= 15 * 60000) {
+        score += 850;
+        if (reason === 'fresh') reason = 'watching_now';
+      }
+
       if (l.last_open_at) {
         const minsAgo = (now - new Date(l.last_open_at).getTime()) / 60000;
         if (minsAgo <= 15) {
@@ -163,6 +173,20 @@ export async function GET() {
       if (l.source === 'website-mining') {
         score += 170;
         if (reason === 'fresh') reason = 'no_website';
+      }
+      // Partner-minted suites (054) are warm intros: someone the owner trusts
+      // asked for this build by name. Same curve as self-serve; the hand-off
+      // conversation is happening in the first two days or not at all.
+      if (l.source === 'partner-forge') {
+        const ageHrs = (now - new Date(l.created_at).getTime()) / 3600000;
+        score += ageHrs <= 48 ? 900 : 300;
+        if (reason === 'fresh') reason = 'partner_forge';
+      }
+      // Rep pre-forges surface gently: the minting rep planned the dial, the
+      // queue just needs to not lose it.
+      if (l.source === 'rep-forge') {
+        score += 200;
+        if (reason === 'fresh') reason = 'rep_forge';
       }
       if (l.status === 'new') score += 50;
 

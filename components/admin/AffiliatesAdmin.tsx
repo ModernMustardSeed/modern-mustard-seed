@@ -17,8 +17,25 @@ type Row = {
   pendingCents: number;
   payableCents: number;
   paidCents: number;
+  can_forge?: boolean;
+  forge_daily_cap?: number;
+  forge_weekly_cap?: number;
+  forge_qa_approved?: number;
 };
 type Totals = { partners: number; pending: number; payableCents: number; salesCents: number };
+
+type QaPending = {
+  leadId: string;
+  business: string;
+  contact: string | null;
+  city: string | null;
+  state: string | null;
+  website: string | null;
+  createdAt: string;
+  hubUrl: string | null;
+  siteStatus: string | null;
+  partner: { name: string | null; email: string; code: string | null; approved: number; lift: number } | null;
+};
 
 const money = (c: number) => `$${Math.round(c / 100).toLocaleString('en-US')}`;
 
@@ -34,6 +51,7 @@ export default function AffiliatesAdmin() {
   const [adding, setAdding] = useState(false);
   const [buildFor, setBuildFor] = useState<string | null>(null);
   const [bform, setBform] = useState({ fee: '', client: '', payable: false, notify: true, rate: 0.1 });
+  const [qa, setQa] = useState<QaPending[]>([]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -45,6 +63,13 @@ export default function AffiliatesAdmin() {
       else setError(json.error ?? 'Failed to load');
     } catch { setError('Network error'); }
     finally { setLoading(false); }
+
+    // Forge QA strip (best effort; the table must load regardless).
+    try {
+      const qr = await fetch('/api/admin/outbound/forge-qa');
+      const qj = await qr.json();
+      setQa(qr.ok ? qj.pending ?? [] : []);
+    } catch { /* ignore */ }
 
     // Live delivery health from Resend (best effort, never blocks the page).
     try {
@@ -140,6 +165,58 @@ export default function AffiliatesAdmin() {
     }
   };
 
+  const forgeAccess = async (id: string, action: 'grant' | 'revoke') => {
+    setBusy(id);
+    setMsg('');
+    try {
+      const res = await fetch(`/api/admin/affiliates/${id}/forge-access`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+      const json = await res.json().catch(() => ({}));
+      setMsg(res.ok ? (action === 'grant' ? 'Forge lit for this partner.' : 'Forge access revoked.') : `Could not update: ${json.error ?? res.status}`);
+      await load();
+    } catch { setMsg('Could not update (network error).'); }
+    finally { setBusy(null); }
+  };
+
+  const editForgeCaps = async (r: Row) => {
+    const daily = window.prompt('Forges per day for this partner (0-10)', String(r.forge_daily_cap ?? 3));
+    if (daily == null) return;
+    const weekly = window.prompt('Forges per week (0-30)', String(r.forge_weekly_cap ?? 10));
+    if (weekly == null) return;
+    setBusy(r.id);
+    setMsg('');
+    try {
+      const res = await fetch(`/api/admin/affiliates/${r.id}/forge-access`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'set-caps', dailyCap: Number(daily), weeklyCap: Number(weekly) }),
+      });
+      const json = await res.json().catch(() => ({}));
+      setMsg(res.ok ? `Caps set: ${json.dailyCap}/day, ${json.weeklyCap}/week.` : `Could not update: ${json.error ?? res.status}`);
+      await load();
+    } catch { setMsg('Could not update (network error).'); }
+    finally { setBusy(null); }
+  };
+
+  const approveQa = async (leadId: string) => {
+    setBusy(leadId);
+    setMsg('');
+    try {
+      const res = await fetch('/api/admin/outbound/forge-qa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId, action: 'approve' }),
+      });
+      const json = await res.json().catch(() => ({}));
+      setMsg(res.ok ? `Released.${json.partnerNotified ? ' Partner got their hand-off email.' : ''}` : `Could not release: ${json.error ?? res.status}`);
+      await load();
+    } catch { setMsg('Could not release (network error).'); }
+    finally { setBusy(null); }
+  };
+
   const openBuild = (id: string) => {
     setBuildFor((cur) => (cur === id ? null : id));
     setBform({ fee: '', client: '', payable: false, notify: true, rate: 0.1 });
@@ -188,6 +265,42 @@ export default function AffiliatesAdmin() {
         {error && <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-6"><p className="text-[#E0301E] text-sm font-body">{error}</p></div>}
 
         {msg && <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-4 mb-6"><p className="text-[#161616] text-sm font-body">{msg}</p></div>}
+
+        {/* Forge QA strip: a partner's first three mints wait for a human eye. */}
+        {qa.length > 0 && (
+          <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-8">
+            <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">Forge QA: polish pass</h2>
+            <p className="text-[#3A3733] font-body text-sm mb-4">
+              Partner-minted suites waiting for review. Open the hub, check the demos read right, then release: releasing sends the partner their hand-off email. Three releases and that partner&apos;s future mints flow free.
+            </p>
+            <div className="space-y-3">
+              {qa.map((q) => (
+                <div key={q.leadId} className="flex items-start justify-between gap-4 flex-wrap border-t border-[#161616]/10 pt-3 first:border-t-0 first:pt-0">
+                  <div className="min-w-0">
+                    <p className="text-[#161616] font-body font-medium">
+                      {q.business}
+                      <span className="text-[#161616]/60 text-sm"> · {[q.city, q.state].filter(Boolean).join(', ') || 'no city'}</span>
+                      {q.siteStatus && <span className="ml-2 inline-block bg-[#FBF6EA] border border-[#161616]/30 text-[#161616]/70 text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded align-middle">site {q.siteStatus}</span>}
+                    </p>
+                    <p className="text-[#161616]/60 font-body text-xs mt-0.5">
+                      Minted by {q.partner ? `${q.partner.name ?? q.partner.email} (${q.partner.approved}/${q.partner.lift} released)` : 'unknown partner'} · {new Date(q.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 flex-shrink-0">
+                    {q.hubUrl && (
+                      <a href={q.hubUrl} target="_blank" rel="noopener noreferrer" className="px-3 py-2 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold text-[#161616] border border-[#161616]/25 rounded-lg hover:bg-[#FBF6EA] whitespace-nowrap">
+                        Open hub
+                      </a>
+                    )}
+                    <button onClick={() => approveQa(q.leadId)} disabled={busy === q.leadId} className="px-3 py-2 text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform disabled:opacity-50 whitespace-nowrap">
+                      {busy === q.leadId ? '...' : 'Release to partner'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {failingPartners.length > 0 && (
           <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-8">
@@ -306,11 +419,11 @@ export default function AffiliatesAdmin() {
             {approved.length === 0 ? (
               <p className="text-[#161616]/60 font-body text-sm italic">No active partners yet.</p>
             ) : (
-              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] overflow-hidden">
+              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[#161616]/15">
-                      {['Partner', 'Code', 'Clicks', 'Sales', 'Pending', 'Payable', 'Paid', ''].map((h, i) => (
+                      {['Partner', 'Code', 'Clicks', 'Sales', 'Pending', 'Payable', 'Paid', 'Forge', ''].map((h, i) => (
                         <th key={i} className="text-left text-[9px] uppercase tracking-[0.2em] text-[#E0301E] font-mono font-medium px-4 py-3">{h}</th>
                       ))}
                     </tr>
@@ -329,6 +442,25 @@ export default function AffiliatesAdmin() {
                         <td className="px-4 py-3.5 text-[#161616]/60 font-mono text-xs">{money(r.pendingCents)}</td>
                         <td className="px-4 py-3.5 text-emerald-700 font-mono text-xs font-semibold">{money(r.payableCents)}</td>
                         <td className="px-4 py-3.5 text-[#161616]/60 font-mono text-xs">{money(r.paidCents)}</td>
+                        <td className="px-4 py-3.5">
+                          <div className="flex flex-col gap-1">
+                            {r.can_forge ? (
+                              <>
+                                <span className="inline-block w-fit bg-[#F5B700] border border-[#161616] text-[#161616] text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded">⚒ Lit</span>
+                                <button onClick={() => editForgeCaps(r)} disabled={busy === r.id} className="text-left text-[10px] font-mono text-[#1E50C8] hover:text-[#161616] disabled:opacity-50 whitespace-nowrap">
+                                  {r.forge_daily_cap ?? 3}/d · {r.forge_weekly_cap ?? 10}/w
+                                </button>
+                                <button onClick={() => forgeAccess(r.id, 'revoke')} disabled={busy === r.id} className="text-left text-[10px] uppercase tracking-[0.12em] font-sans font-semibold text-[#161616]/40 hover:text-[#E0301E] disabled:opacity-50 whitespace-nowrap">
+                                  Revoke
+                                </button>
+                              </>
+                            ) : (
+                              <button onClick={() => forgeAccess(r.id, 'grant')} disabled={busy === r.id} className="text-left text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#161616] disabled:opacity-50 whitespace-nowrap">
+                                Light forge
+                              </button>
+                            )}
+                          </div>
+                        </td>
                         <td className="px-4 py-3.5 text-right">
                           <div className="flex flex-col items-end gap-1.5">
                             <button onClick={() => openBuild(r.id)} className={`text-[10px] uppercase tracking-[0.15em] font-sans font-bold disabled:opacity-50 whitespace-nowrap ${buildFor === r.id ? 'text-[#161616]' : 'text-[#1E50C8] hover:text-[#161616]'}`}>
@@ -350,7 +482,7 @@ export default function AffiliatesAdmin() {
                       </tr>
                       {buildFor === r.id && (
                         <tr className="border-b border-[#161616]/10 bg-[#FFF8E6]">
-                          <td colSpan={8} className="px-4 py-4">
+                          <td colSpan={9} className="px-4 py-4">
                             <form onSubmit={(e) => logBuild(e, r.id)} className="flex flex-wrap items-end gap-3">
                               <label className="min-w-[140px]">
                                 <span className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono block mb-1">Build fee ($)</span>

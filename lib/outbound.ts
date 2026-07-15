@@ -108,9 +108,19 @@ export type OutboundLead = {
   os_demo_status: 'ready' | null;
   hub_demo_id: string | null;
   hub_demo_url: string | null;
+  affiliate_id: string | null;
+  origin: ForgeOrigin | null;
+  forge_qa: ForgeQaStatus | null;
+  last_seen_at: string | null;
   created_at: string;
   updated_at: string;
 };
+
+/** Who minted a forged suite for this lead (054). Null = mined/self-serve/manual. */
+export type ForgeOrigin = 'rep' | 'partner';
+
+/** QA hold on a partner's first three mints; null once lifted or never held. */
+export type ForgeQaStatus = 'pending' | 'approved';
 
 /** Lifecycle of the forged demo WEBSITE (built by the local demo-site worker). */
 export type SiteDemoStatus = 'queued' | 'building' | 'ready' | 'failed';
@@ -118,8 +128,11 @@ export type SiteDemoStatus = 'queued' | 'building' | 'ready' | 'failed';
 /** Why a lead is where it is in the heat-ranked queue. */
 export type HeatReason =
   | 'replied'
+  | 'watching_now'
   | 'reading_now'
   | 'self_serve'
+  | 'partner_forge'
+  | 'rep_forge'
   | 'opened_recently'
   | 'callback_due'
   | 'retry_due'
@@ -130,8 +143,11 @@ export type HeatReason =
 
 export const HEAT_LABELS: Record<HeatReason, string> = {
   replied: 'Replied',
+  watching_now: 'On their demo right now',
   reading_now: 'Reading your audit now',
   self_serve: 'Forged their own demos',
+  partner_forge: 'Partner-minted warm intro',
+  rep_forge: 'Pre-forged by the team',
   opened_recently: 'Opened the email',
   callback_due: 'Callback due',
   retry_due: 'Retry due',

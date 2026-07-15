@@ -14,6 +14,7 @@ import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { getSupabase } from '@/lib/supabase';
 import { quoteDemoOrder, formatUsd } from '@/lib/demo-order';
+import { recordDemoEvent } from '@/lib/demo-events';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
 
   const { data: lead } = await supabase
     .from('outbound_leads')
-    .select('id,business_name,contact_name,email,phone,hub_demo_url,owner_rep_id,outbound_reps(name)')
+    .select('id,business_name,contact_name,email,phone,hub_demo_url,owner_rep_id,affiliate_id,origin,outbound_reps(name)')
     .eq('hub_demo_id', hubId)
     .maybeSingle();
   if (!lead) return NextResponse.json({ error: 'unknown_demo' }, { status: 404 });
@@ -67,9 +68,11 @@ export async function POST(req: Request) {
     );
   }
 
-  // Attribution: sharing partner's cookie first, else the owning rep's code.
-  // A malformed cookie ("%") would throw a URIError out of decodeURIComponent
-  // and 500 the money path, so a bad ref degrades to no ref, never to a crash.
+  // Attribution: sharing partner's cookie first, then the minting partner
+  // frozen on the lead (partner-wielded forge, 054), then the owning rep's
+  // code. A malformed cookie ("%") would throw a URIError out of
+  // decodeURIComponent and 500 the money path, so a bad ref degrades to no
+  // ref, never to a crash.
   const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
   let ref = '';
   if (cookieRef) {
@@ -78,6 +81,14 @@ export async function POST(req: Request) {
     } catch {
       ref = cookieRef[1].replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64);
     }
+  }
+  if (!ref && lead.affiliate_id) {
+    const { data: aff } = await supabase
+      .from('affiliates')
+      .select('code, status')
+      .eq('id', lead.affiliate_id)
+      .maybeSingle();
+    if (aff?.status === 'approved' && aff.code) ref = (aff.code as string).trim();
   }
   const repName = (lead as { outbound_reps?: { name?: string } | null }).outbound_reps?.name;
   if (!ref && repName) {
@@ -165,6 +176,14 @@ export async function POST(req: Request) {
     if (!session.url) return NextResponse.json({ error: 'no_url' }, { status: 500 });
 
     await supabase.from('demo_orders').update({ stripe_session_id: session.id }).eq('id', order.id);
+    await recordDemoEvent(supabase, {
+      event: 'checkout_started',
+      leadId: lead.id,
+      hubId,
+      origin: (lead as { origin?: string | null }).origin ?? null,
+      affiliateId: (lead as { affiliate_id?: string | null }).affiliate_id ?? null,
+      meta: { products: quote.products.join(','), ref: ref || null },
+    });
     return NextResponse.json({ url: session.url });
   } catch (err) {
     console.error('demo-order checkout error:', err instanceof Error ? err.message : err);

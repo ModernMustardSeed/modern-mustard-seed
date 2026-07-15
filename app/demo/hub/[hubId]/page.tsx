@@ -2,6 +2,7 @@ import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import DemoHub from '@/components/demo/DemoHub';
 import { detectTrade } from '@/data/demo-os-trades';
+import { recordDemoEvent } from '@/lib/demo-events';
 import type { Niche } from '@/lib/outbound';
 
 export const metadata = buildMetadata({ title: 'Your Demo Suite', noindex: true });
@@ -39,10 +40,38 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
 
   const { data: lead } = await sb
     .from('outbound_leads')
-    .select('business_name, contact_name, niche, notes, website, city, state, demo_url, site_demo_url, site_demo_status, os_demo_url, os_demo_status')
+    .select('id, business_name, contact_name, niche, notes, website, city, state, demo_url, site_demo_url, site_demo_status, os_demo_url, os_demo_status, affiliate_id, origin, last_seen_at')
     .eq('hub_demo_id', hubId)
     .maybeSingle();
   if (!lead) return fallback;
+
+  // "Presented by {Partner} with Modern Mustard Seed": the minting partner's
+  // first name, only while their affiliate row is still approved.
+  let presenter: string | null = null;
+  if (lead.affiliate_id && lead.origin === 'partner') {
+    const { data: aff } = await sb
+      .from('affiliates')
+      .select('name, status')
+      .eq('id', lead.affiliate_id)
+      .maybeSingle();
+    // Full name, not a first-word split: partner identities can be company
+    // names ("Make Our City Pretty" must never render as "Make").
+    if (aff?.status === 'approved' && aff.name) presenter = (aff.name as string).trim().slice(0, 60);
+  }
+
+  // Telemetry, fail-soft by construction (recordDemoEvent never throws).
+  // Throttled on the same presence stamp the beat maintains, so a reload loop
+  // on this public URL cannot insert unbounded rows (ship-gate finding).
+  const seenRecently = lead.last_seen_at && Date.now() - new Date(lead.last_seen_at).getTime() < 60_000;
+  if (!seenRecently) {
+    await recordDemoEvent(sb, {
+      event: 'hub_viewed',
+      leadId: lead.id,
+      hubId,
+      origin: lead.origin,
+      affiliateId: lead.affiliate_id,
+    });
+  }
 
   const niche = (lead.niche ?? 'other') as Niche;
   const trade = detectTrade([lead.business_name, lead.notes ?? '', lead.website ?? ''].join(' '), niche);
@@ -67,6 +96,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}
       osUrl={lead.os_demo_status === 'ready' ? lead.os_demo_url : null}
+      presenter={presenter}
     />
   );
 }

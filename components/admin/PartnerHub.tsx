@@ -406,6 +406,27 @@ export default function PartnerHub({
           </div>
         </section>
 
+        {/* ── The forge: mint a suite for a business you know ── */}
+        <section className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#F5B700] overflow-hidden mb-6">
+          <div className="p-6 md:p-7 grid md:grid-cols-[1fr_auto] gap-6 items-center">
+            <div className="min-w-0">
+              <span className="text-[10px] uppercase tracking-[0.35em] text-[#F5B700] font-mono font-bold block mb-2">Forge under your flag</span>
+              <h3 className="font-display text-2xl md:text-3xl font-bold text-[#FBF6EA] leading-tight">
+                Know a business that needs this? Walk in with it already built.
+              </h3>
+              <p className="mt-2 text-[#FBF6EA]/70 font-body text-sm leading-relaxed max-w-xl">
+                Two minutes mints their whole suite: receptionist, website, command center, hub. The lead lands on the dial floor pre-forged and your code rides the checkout.
+              </p>
+            </div>
+            <Link
+              href="/admin/hq/forge"
+              className="shrink-0 px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-transform"
+            >
+              ⚒ Open the forge
+            </Link>
+          </div>
+        </section>
+
         {/* ── The team directory: codes, links, contact info, editable ── */}
         <TeamDirectory base={base} />
 

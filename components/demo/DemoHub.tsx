@@ -73,6 +73,7 @@ export default function DemoHub({
   siteUrl,
   sitePending,
   osUrl,
+  presenter,
 }: {
   hubId: string;
   business: string;
@@ -87,8 +88,27 @@ export default function DemoHub({
   siteUrl: string | null;
   sitePending: string | null;
   osUrl: string | null;
+  /** Partner who minted this suite ("Presented by X with Modern Mustard Seed"). */
+  presenter?: string | null;
 }) {
   const { shown: bubble, typing } = useTyped(`Hi${ownerFirst ? ` ${ownerFirst}` : ''}! We made ${business} some presents. Open them!`);
+
+  // Presence beat: while the hub is open the dial floor sees "watching right
+  // now". Bounded server-side (one stamp a minute), silent on any failure.
+  useEffect(() => {
+    const beat = () => {
+      if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
+      const url = `/api/demo-hub/${hubId}/beat`;
+      try {
+        if (!navigator.sendBeacon(url)) void fetch(url, { method: 'POST', keepalive: true }).catch(() => {});
+      } catch {
+        void fetch(url, { method: 'POST', keepalive: true }).catch(() => {});
+      }
+    };
+    beat();
+    const t = window.setInterval(beat, 45_000);
+    return () => window.clearInterval(t);
+  }, [hubId]);
 
   /* ------------------------------ calculator ------------------------------ */
   const tp = trade ? TRADE_PRESETS[trade] : null;
@@ -165,7 +185,9 @@ export default function DemoHub({
       {/* Hero */}
       <header className="halftone-bg border-b-2 border-[#161616]">
         <div className="max-w-3xl mx-auto px-6 pt-10 pb-12 text-center">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold">Modern Mustard Seed presents</span>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold">
+            {presenter ? `Presented by ${presenter} with Modern Mustard Seed` : 'Modern Mustard Seed presents'}
+          </span>
           <div className="flex items-end justify-center gap-4 mt-6">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/brand/mascot.png" alt="Mr. Mustard" width={110} height={110} className="animate-[hubBob_3.2s_ease-in-out_infinite]" />
@@ -180,7 +202,9 @@ export default function DemoHub({
             The {business} Demo Suite
           </h1>
           <p className="font-body text-[#161616]/70 mt-3 max-w-xl mx-auto">
-            Built for you{city ? ` in ${city}` : ''}, free, no strings. Everything below is real and working. Go play.
+            {presenter
+              ? `${presenter} asked us to build this for you${city ? ` in ${city}` : ''}. Free, no strings. Everything below is real and working. Go play.`
+              : `Built for you${city ? ` in ${city}` : ''}, free, no strings. Everything below is real and working. Go play.`}
           </p>
         </div>
       </header>
