@@ -946,6 +946,82 @@ function escapeHtmlSafe(s: string): string {
 }
 
 /**
+ * A SWITCHBOARD franchise deal closed (subscription: per-location monthly + a
+ * one-time build on the first invoice). Recurring revenue is recorded per
+ * invoice by handleInvoicePaid like every subscription; here we record the buyer
+ * and tell Sarah to PROVISION the whole chain.
+ */
+async function handleSwitchboardPurchase(
+  session: Stripe.Checkout.Session,
+  email: string,
+  name: string | null
+) {
+  const businessRaw = (session.metadata?.business || '').trim();
+  const business = escapeHtmlSafe(businessRaw);
+  const locations = session.metadata?.locations || '?';
+  const perLoc = session.metadata?.per_location || '?';
+  const firstName = name?.split(' ')[0];
+
+  try {
+    await insertLead({
+      type: 'contact',
+      email,
+      name: name ?? businessRaw ?? null,
+      source: 'switchboard-buyer',
+      status: 'won',
+      notes: `[switchboard] ${businessRaw || 'a brand'} · ${locations} locations at $${perLoc}/mo each. PROVISION the whole chain: brand voice template + master routing + Command Board.`,
+    });
+  } catch (err) {
+    console.error('switchboard lead insert failed', err);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = resendClient();
+
+  try {
+    await resend.emails.send({
+      from: 'The Switchboard <hello@modernmustardseed.com>',
+      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      subject: `SWITCHBOARD SOLD: ${businessRaw || email} · ${locations} locations`,
+      html: leadNotification({
+        type: 'Contact',
+        name: name ?? businessRaw ?? 'A brand',
+        email,
+        fields: [
+          { label: 'Brand', value: businessRaw || 'not given' },
+          { label: 'Locations', value: String(locations) },
+          { label: 'Per location', value: `$${perLoc}/mo` },
+          { label: 'First invoice', value: `$${((session.amount_total ?? 0) / 100).toFixed(0)}` },
+        ],
+        message: 'A multi-location brand bought the Switchboard. PROVISION the whole chain.',
+        suggestedAction: 'Build the brand voice template, wire master routing, and open their Command Board.',
+      }),
+    });
+  } catch (err) {
+    console.error('switchboard sale notify failed', err);
+  }
+
+  try {
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}your Switchboard is on`,
+      html: clientEmail({
+        preheader: 'One voice, every location. Here is what happens next.',
+        eyebrow: 'THE SWITCHBOARD',
+        greeting: firstName ? `${firstName}, every door is covered now.` : 'Every door is covered now.',
+        body: `<p>You just put one AI concierge on all ${locations} locations of <strong>${business || 'your brand'}</strong>. Here is what happens next:</p><p><strong>1.</strong> Within one business day I reach out to map your brand voice, hours, and booking rules.</p><p><strong>2.</strong> We build one concierge template and clone it to every location, with the master number routing.</p><p><strong>3.</strong> Your Command Board goes live, and you watch the recovered revenue climb across every location.</p>`,
+        signature: 'Sarah',
+      }),
+    });
+  } catch (err) {
+    console.error('switchboard welcome email failed', err);
+  }
+}
+
+/**
  * A MUSTARD HATCHERY hatch was purchased ($497, flat and evergreen). Record the
  * order + buyer with a hand-numbered certificate, tell Sarah to BIRTH the
  * mascot, and welcome the founder. Generation itself is hand-run.
@@ -1734,6 +1810,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'demo-order') {
     await handleDemoOrderPaid(session, email ?? null, name ?? null);
     return NextResponse.json({ received: true, kind: 'demo-order' });
+  }
+
+  // ── SWITCHBOARD franchise deal (subscription, per-location, no slug) ──
+  if (session.metadata?.kind === 'switchboard') {
+    if (email) await handleSwitchboardPurchase(session, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'switchboard' });
   }
 
   if (!slug || !email) {
