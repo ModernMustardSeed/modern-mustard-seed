@@ -27,6 +27,22 @@ const sb = createClient(env.SUPABASE_URL || env.supabase_url, env.SUPABASE_SERVI
 });
 const HUNTER = env.HUNTER_API_KEY;
 
+/**
+ * fetch with a manually-cleared timeout. AbortSignal.timeout() leaves a libuv
+ * timer handle that crashes Node on Windows ("Assertion failed:
+ * !(handle->flags & UV_HANDLE_CLOSING), async.c") partway through a long run.
+ * A cleared AbortController avoids the dangling handle.
+ */
+async function fetchWithTimeout(url, opts = {}, ms = 12000) {
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), ms);
+  try {
+    return await fetch(url, { ...opts, signal: ac.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
 const BAD = /(example|sentry|wixpress|godaddy|placeholder|schema|\.png|\.jpg|\.gif|\.webp|\.css|\.js)/i;
 
@@ -41,11 +57,10 @@ function normUrl(site) {
 
 async function fetchText(url) {
   try {
-    const res = await fetch(url, {
+    const res = await fetchWithTimeout(url, {
       redirect: 'follow',
-      signal: AbortSignal.timeout(12000),
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MMS-enrich/1.0)' },
-    });
+    }, 12000);
     if (!res.ok) return '';
     return (await res.text()).slice(0, 400_000);
   } catch {
@@ -79,9 +94,7 @@ async function hunterEmail(site) {
   if (!base) return null;
   const domain = new URL(base).hostname.replace(/^www\./, '');
   try {
-    const res = await fetch(`https://api.hunter.io/v2/domain-search?domain=${domain}&limit=5&api_key=${HUNTER}`, {
-      signal: AbortSignal.timeout(12000),
-    });
+    const res = await fetchWithTimeout(`https://api.hunter.io/v2/domain-search?domain=${domain}&limit=5&api_key=${HUNTER}`, {}, 12000);
     if (!res.ok) return null;
     const j = await res.json();
     const emails = j?.data?.emails ?? [];
