@@ -46,7 +46,9 @@ export default function MustardSeedChat() {
     // The Press Run's proof and review table own the lower-right corner too.
     pathname.startsWith('/press') ||
     // Forged demo websites are the PROSPECT's site; their own receptionist owns the corner.
-    pathname.startsWith('/demo/');
+    pathname.startsWith('/demo/') ||
+    // Hatchery reveal pages belong to the mascot; Huck owns his own corner.
+    pathname.startsWith('/hatchery/');
 
   const [open, setOpen] = useState(false);
   // Visitor picks their door each time they open the launcher: voice or chat.

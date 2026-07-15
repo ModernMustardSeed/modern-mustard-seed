@@ -14,6 +14,7 @@ export default function HideOnAppShell({ children }: { children: React.ReactNode
     p.startsWith('/portal') ||
     p.endsWith('/hq') ||
     p.startsWith('/demo/') ||
+    p.startsWith('/hatchery/') ||
     p.startsWith('/sidekick/demo/')
   )
     return null;

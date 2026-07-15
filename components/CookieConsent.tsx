@@ -24,7 +24,7 @@ export default function CookieConsent() {
   // Never float the public cookie notice over the staff admin app — it is a
   // logged-in tool, and a bottom-anchored banner was covering admin controls.
   // Same for forged demo websites (/demo/): that page belongs to the prospect.
-  if (!show || pathname?.startsWith('/admin') || pathname?.startsWith('/demo/')) return null;
+  if (!show || pathname?.startsWith('/admin') || pathname?.startsWith('/demo/') || pathname?.startsWith('/hatchery/')) return null;
 
   const decide = (v: 'granted' | 'denied') => {
     setConsent(v);
