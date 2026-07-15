@@ -1,17 +1,17 @@
 import Link from 'next/link';
 import { buildMetadata } from '@/lib/seo';
-import { HUCK, FOUNDING } from '@/data/hatchery';
+import { HUCK } from '@/data/hatchery';
 
 export const metadata = buildMetadata({
-  title: 'Your Founding Egg is claimed — The Mustard Hatchery',
+  title: 'Your mascot is on its way — The Mustard Hatchery',
   description: 'Thank you. Your business is about to be born.',
   noindex: true,
 });
 
 /**
- * Stripe success destination for a claimed Founding Egg. Deliberately calm and
+ * Stripe success destination for a claimed hatch. Deliberately calm and
  * ceremonial: the money is banked, the fulfillment email is already sent by the
- * webhook, and this page just tells the founder what happens next.
+ * webhook, and this page just tells the buyer what happens next.
  */
 export default function ClaimedPage() {
   return (
@@ -29,7 +29,7 @@ export default function ClaimedPage() {
         <div className="mt-8 text-left rounded-2xl border-2 border-[#F5B700]/40 bg-[#FBF6EA]/5 p-6 space-y-4">
           {[
             ['You approve the direction', 'Nothing is drawn until you love it.'],
-            ['We hatch your mascot', 'Bible, model sheet, hatching film, hand-numbered certificate, and a live phone line.'],
+            ['We hatch your mascot', 'Storybook, model sheet, hatching film, hand-numbered certificate, and a live phone line.'],
             ['Birth Day', 'The egg cracks in public and your mascot answers its own phone for everyone you invite.'],
           ].map(([t, d], i) => (
             <div key={t} className="flex gap-4">
@@ -48,7 +48,7 @@ export default function ClaimedPage() {
         </p>
 
         <p className="mt-6 text-xs text-[#FBF6EA]/50">
-          Ignite-or-refund still stands: if fewer than {FOUNDING.igniteFloor} founding eggs are claimed by {FOUNDING.closesLabel}, your payment is refunded in full, automatically.
+          Nothing is drawn until you approve the direction. You are in good hands.
         </p>
 
         <div className="mt-8">

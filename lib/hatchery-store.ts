@@ -1,11 +1,10 @@
 /**
- * Durable MUSTARD HATCHERY state on the existing app_state k/v table, same
- * atomic-claim spine as press/sidekick/pictures (a text-PK insert conflict IS
- * the cap). Keeps the Founding 5 honestly limited without a new table or DDL.
+ * Durable MUSTARD HATCHERY state on the existing app_state k/v table (no new
+ * table, no DDL). Same atomic-claim spine as press/sidekick/pictures.
  *
  * Keys:
- *   hatchery:founding:<n>     one per Founding Egg, n = 1..CAP (first free wins)
  *   hatchery:glimpse:<email>  claimed the moment a free First Glimpse is granted
+ *   hatchery:count            monotonic tally, drives the hand-numbered certificate
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -22,37 +21,7 @@ async function claim(db: KV, key: string, value: Record<string, unknown>): Promi
   return 'error';
 }
 
-const seatKey = (n: number) => `hatchery:founding:${n}`;
 const glimpseKey = (email: string) => `hatchery:glimpse:${email.trim().toLowerCase()}`;
-
-/**
- * Consume one Founding Egg ATOMICALLY (called from the Stripe webhook on a paid
- * order): claims hatchery:founding:1..CAP, first free of the CAP wins. A
- * 'sold_out' return means the five sold between checkout and payment, and the
- * caller alerts Sarah to refund that overflow by hand (ignite-or-refund keeps
- * the risk on us, never the buyer).
- */
-export async function consumeFoundingSeat(db: KV, cap: number): Promise<number | 'sold_out' | null> {
-  for (let n = 1; n <= cap; n += 1) {
-    const res = await claim(db, seatKey(n), { at: new Date().toISOString() });
-    if (res === 'claimed') return n;
-    if (res === 'error') return null;
-  }
-  return 'sold_out';
-}
-
-/** Founding Eggs claimed so far, counted from the atomic claim rows. */
-export async function foundingSeatsClaimed(db: KV, cap: number): Promise<number | null> {
-  const { count, error } = await db
-    .from('app_state')
-    .select('key', { count: 'exact', head: true })
-    .like('key', 'hatchery:founding:%');
-  if (error) {
-    console.error('hatchery seat count failed', error.message);
-    return null;
-  }
-  return Math.min(count ?? 0, cap);
-}
 
 /**
  * Grant a free First Glimpse to an email, once and only once (the lead magnet is
@@ -60,4 +29,28 @@ export async function foundingSeatsClaimed(db: KV, cap: number): Promise<number 
  */
 export async function claimGlimpse(db: KV, email: string): Promise<ClaimResult> {
   return claim(db, glimpseKey(email), { at: new Date().toISOString() });
+}
+
+/**
+ * The next hand-numbered Birth Certificate number. A simple monotonic counter,
+ * NOT a cap: the offer is evergreen, this just keeps the heirloom numbering
+ * (No. 001, 002, ...). Best-effort; returns null on error and the webhook falls
+ * back to no number rather than blocking a paid order.
+ */
+export async function nextHatchNumber(db: KV): Promise<number | null> {
+  const key = 'hatchery:count';
+  const { data, error } = await db.from('app_state').select('value').eq('key', key).maybeSingle();
+  if (error) {
+    console.error('hatchery count read failed', error.message);
+    return null;
+  }
+  const count = ((data?.value as { count?: number } | null)?.count ?? 0) + 1;
+  const { error: upErr } = await db
+    .from('app_state')
+    .upsert({ key, value: { count }, updated_at: new Date().toISOString() });
+  if (upErr) {
+    console.error('hatchery count bump failed', upErr.message);
+    return null;
+  }
+  return count;
 }

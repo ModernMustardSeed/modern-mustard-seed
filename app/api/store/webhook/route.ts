@@ -29,8 +29,8 @@ import { getPicturesTier, PICTURES } from '@/data/pictures';
 import { getPicturesRun } from '@/lib/pictures-store';
 import { getPressTier, PRESS } from '@/data/press';
 import { getPressRun, consumeHandPressSlot } from '@/lib/press-store';
-import { getHatcheryTier, FOUNDING, HUCK } from '@/data/hatchery';
-import { consumeFoundingSeat } from '@/lib/hatchery-store';
+import { getHatcheryTier, HATCH, HUCK } from '@/data/hatchery';
+import { nextHatchNumber } from '@/lib/hatchery-store';
 import { renderPressPdf } from '@/lib/press-pdf';
 import { getGeoTier } from '@/data/geo';
 import { saveGeoWatch, deleteGeoWatch, claimGeoWebhook } from '@/lib/geo-store';
@@ -946,11 +946,9 @@ function escapeHtmlSafe(s: string): string {
 }
 
 /**
- * A MUSTARD HATCHERY Founding Egg was claimed. Consume one of the five seats
- * ATOMICALLY (fail closed: a 'sold_out' means the five sold between checkout and
- * payment, so we shout at Sarah to refund that overflow by hand, ignite-or-refund
- * keeps the risk on us). Record the order + buyer, tell Sarah to BIRTH the
- * mascot, and welcome the founder. Generation itself is hand-run after ignition.
+ * A MUSTARD HATCHERY hatch was purchased ($497, flat and evergreen). Record the
+ * order + buyer with a hand-numbered certificate, tell Sarah to BIRTH the
+ * mascot, and welcome the founder. Generation itself is hand-run.
  */
 async function handleHatcheryPurchase(
   session: Stripe.Checkout.Session,
@@ -964,39 +962,34 @@ async function handleHatcheryPurchase(
   const firstName = name?.split(' ')[0];
 
   const supabase = getSupabase();
-  let seat: number | 'sold_out' | null = null;
+  let num: number | null = null;
   if (supabase) {
-    seat = await consumeFoundingSeat(supabase, FOUNDING.cap);
-    if (seat === 'sold_out') {
-      console.error('HATCHERY OVERSOLD: paid seat beyond the cap for', email, session.id, '- refund by hand');
-    }
-    if (seat !== 'sold_out' && seat !== null) {
-      const { error } = await supabase.from('orders').insert({
-        stripe_session_id: session.id,
-        stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
-        product_slug: slug,
-        product_name: `The Mustard Hatchery — ${tier?.name ?? 'Founding Egg'} (No. ${String(seat).padStart(3, '0')})`,
-        item_type: 'program',
-        price_paid_cents: session.amount_total ?? FOUNDING.priceUsd * 100,
-        currency: session.currency ?? 'usd',
-        email,
-        name: name ?? null,
-        status: 'paid',
-      });
-      if (error) console.error('hatchery order insert failed', error.message);
-    }
+    num = await nextHatchNumber(supabase);
+    const { error } = await supabase.from('orders').insert({
+      stripe_session_id: session.id,
+      stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+      product_slug: slug,
+      product_name: `The Mustard Hatchery — ${tier?.name ?? 'The Hatch'}${num ? ` (No. ${String(num).padStart(3, '0')})` : ''}`,
+      item_type: 'program',
+      price_paid_cents: session.amount_total ?? HATCH.priceUsd * 100,
+      currency: session.currency ?? 'usd',
+      email,
+      name: name ?? null,
+      status: 'paid',
+    });
+    if (error) console.error('hatchery order insert failed', error.message);
   }
 
-  const seatLabel = typeof seat === 'number' ? `Founding Certificate No. ${String(seat).padStart(3, '0')}` : 'OVERFLOW (refund by hand)';
+  const certLabel = num ? `Birth Certificate No. ${String(num).padStart(3, '0')}` : 'a hand-numbered Birth Certificate';
 
   try {
     await insertLead({
       type: 'contact',
       email,
       name: name ?? null,
-      source: 'hatchery-founding',
+      source: 'hatchery-buyer',
       status: 'new',
-      notes: `[bought:${slug}] ${seatLabel}.${businessRaw ? ` business: ${businessRaw}.` : ''} BIRTH this mascot: get direction approval, then schedule the Birth Day.`,
+      notes: `[bought:${slug}] ${certLabel}.${businessRaw ? ` business: ${businessRaw}.` : ''} BIRTH this mascot: get direction approval, then schedule the Birth Day.`,
     });
   } catch (err) {
     console.error('hatchery lead insert failed', err);
@@ -1010,45 +1003,41 @@ async function handleHatcheryPurchase(
     await resend.emails.send({
       from: 'The Mustard Hatchery <hello@modernmustardseed.com>',
       to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
-      subject: `BIRTH a mascot: ${businessRaw || email} claimed ${seatLabel}`,
+      subject: `BIRTH a mascot: ${businessRaw || email} (${certLabel})`,
       html: leadNotification({
         type: 'Contact',
         name: name ?? businessRaw ?? 'A founder',
         email,
         fields: [
           { label: 'Business', value: businessRaw || 'not given' },
-          { label: 'Seat', value: seatLabel },
-          { label: 'Amount', value: `$${((session.amount_total ?? FOUNDING.priceUsd * 100) / 100).toFixed(0)}` },
+          { label: 'Certificate', value: certLabel },
+          { label: 'Amount', value: `$${((session.amount_total ?? HATCH.priceUsd * 100) / 100).toFixed(0)}` },
           { label: 'Email', value: email },
         ],
-        message: seat === 'sold_out'
-          ? 'This paid seat is BEYOND the five. Refund it by hand today (ignite-or-refund).'
-          : 'A Founding Egg is claimed. Confirm the direction with them before any art is made, then schedule the Birth Day.',
-        suggestedAction: seat === 'sold_out' ? 'Refund in Stripe, then apologize warmly.' : 'Reply to start their Character Bible direction.',
+        message: 'A mascot was purchased. Confirm the direction with them before any art is made, then schedule the Birth Day.',
+        suggestedAction: 'Reply to start their Character Storybook direction.',
       }),
     });
   } catch (err) {
     console.error('hatchery birth email failed', err);
   }
 
-  if (seat !== 'sold_out') {
-    try {
-      await resend.emails.send({
-        from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: email,
-        replyTo: 'sarah@modernmustardseed.com',
-        subject: `${firstName ? `${firstName}, ` : ''}your Founding Egg is claimed`,
-        html: clientEmail({
-          preheader: 'Here is exactly what happens between now and your Birth Day.',
-          eyebrow: 'THE MUSTARD HATCHERY',
-          greeting: firstName ? `${firstName}, the egg is yours.` : 'The egg is yours.',
-          body: `<p>You just claimed <strong>${escapeHtmlSafe(seatLabel)}</strong>${business ? ` for <strong>${business}</strong>` : ''}. You are one of only five founding businesses to give their shop its own mascot.</p><p>Here is what happens next:</p><p><strong>1.</strong> Within one business day I email you personally to learn your shop, so your mascot grows out of your real story.</p><p><strong>2.</strong> I send you a direction to approve. Nothing is drawn until you love it.</p><p><strong>3.</strong> We schedule your Birth Day. The egg cracks live, the film plays, and your mascot answers its own phone in front of everyone you invite.</p><p>Ignite-or-refund still stands: if fewer than ${FOUNDING.igniteFloor} founding eggs are claimed by ${FOUNDING.closesLabel}, your payment is refunded in full, automatically. You risk nothing to be first.</p><p>Want to feel it before then? Call Huck, our pilot mascot, at ${HUCK.phone}.</p>`,
-          signature: 'Sarah',
-        }),
-      });
-    } catch (err) {
-      console.error('hatchery welcome email failed', err);
-    }
+  try {
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}your mascot is on its way`,
+      html: clientEmail({
+        preheader: 'Here is exactly what happens between now and your Birth Day.',
+        eyebrow: 'THE MUSTARD HATCHERY',
+        greeting: firstName ? `${firstName}, it is happening.` : 'It is happening.',
+        body: `<p>You just hatched a mascot for <strong>${business || 'your business'}</strong>${num ? ` (${escapeHtmlSafe(certLabel)})` : ''}. Here is what happens next:</p><p><strong>1.</strong> Within one business day I email you personally to learn your shop, so your mascot grows out of your real story.</p><p><strong>2.</strong> I send you a direction to approve. Nothing is drawn until you love it.</p><p><strong>3.</strong> We schedule your Birth Day. The egg cracks live, the film plays, and your mascot answers its own phone in front of everyone you invite.</p><p>Want to feel it before then? Call Huck, our pilot mascot, at ${HUCK.phone}.</p>`,
+        signature: 'Sarah',
+      }),
+    });
+  } catch (err) {
+    console.error('hatchery welcome email failed', err);
   }
 }
 
@@ -1782,7 +1771,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true, kind: 'press' });
   }
 
-  // ── MUSTARD HATCHERY Founding Egg (presale, five seats, ignite-or-refund) ──
+  // ── MUSTARD HATCHERY hatch ($497 one-time, evergreen) ──
   if (session.metadata?.kind === 'hatchery') {
     await handleHatcheryPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'hatchery' });

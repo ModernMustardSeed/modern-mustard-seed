@@ -1,19 +1,15 @@
 /**
- * Stripe Checkout for a MUSTARD HATCHERY Founding Egg ($497 one-time).
+ * Stripe Checkout to hatch a mascot ($497 one-time, flat and evergreen).
  *
- * Uses inline price_data so the presale ships without any Stripe dashboard
- * setup. Seats are hard-capped at FOUNDING.cap: we refuse here the moment the
- * five are claimed (soft gate), and the webhook consumes the seat atomically on
- * payment (hard gate). Fulfillment is presale-first and ignite-or-refund, so a
- * rare oversell between checkout and payment is refunded by hand, never the
- * buyer's problem.
+ * Uses inline price_data so it ships without any Stripe dashboard setup. No seat
+ * cap, no countdown, no price that climbs: the trust lever is approval, not
+ * scarcity (you approve the direction before any art is made). Fulfillment is
+ * hand-run; the webhook records the order and tells Sarah to birth the mascot.
  */
 
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
-import { getSupabase } from '@/lib/supabase';
-import { getHatcheryTier, FOUNDING, HATCHERY } from '@/data/hatchery';
-import { foundingSeatsClaimed } from '@/lib/hatchery-store';
+import { getHatcheryTier, HATCH, HATCHERY } from '@/data/hatchery';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -27,22 +23,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'invalid_body' }, { status: 400 });
   }
 
-  // Only the Founding Egg is buyable on the presale (care plans open post-birth).
-  const tier = getHatcheryTier((body.tier || 'hatchery-founding-egg').trim());
-  if (!tier || tier.slug !== 'hatchery-founding-egg') {
+  // Only The Hatch is buyable up front (care plans open post-birth).
+  const tier = getHatcheryTier((body.tier || 'hatchery-hatch').trim());
+  if (!tier || tier.slug !== 'hatchery-hatch') {
     return NextResponse.json({ error: 'unknown_item' }, { status: 404 });
-  }
-
-  // Soft cap: refuse the sixth buyer before they ever see Stripe.
-  const supabase = getSupabase();
-  if (supabase) {
-    const claimed = await foundingSeatsClaimed(supabase, FOUNDING.cap);
-    if (claimed !== null && claimed >= FOUNDING.cap) {
-      return NextResponse.json(
-        { error: 'sold_out', message: 'All five Founding Eggs are claimed. Email sarah@modernmustardseed.com to join the next hatch.' },
-        { status: 409 },
-      );
-    }
   }
 
   const stripe = getStripe();
@@ -64,10 +48,10 @@ export async function POST(req: Request) {
         {
           price_data: {
             currency: 'usd',
-            unit_amount: FOUNDING.priceUsd * 100,
+            unit_amount: HATCH.priceUsd * 100,
             product_data: {
-              name: `${HATCHERY.wordmark} — Founding Egg`,
-              description: `One of five. Your business's official mascot, fully hatched and unveiled on a public Birth Day. Founding price ${'$'}${FOUNDING.priceUsd} (regularly ${'$'}${FOUNDING.regularUsd}).`,
+              name: `${HATCHERY.wordmark} — ${tier.name}`,
+              description: 'Your business’s official mascot, fully hatched and unveiled on a public Birth Day. One-time, $497.',
             },
           },
           quantity: 1,
@@ -83,7 +67,7 @@ export async function POST(req: Request) {
       payment_intent_data: { metadata },
       custom_text: {
         submit: {
-          message: `Ignite-or-refund: if fewer than ${FOUNDING.igniteFloor} eggs are claimed by ${FOUNDING.closesLabel}, your payment is refunded in full, automatically. You approve the direction before any art is made.`,
+          message: 'You approve the direction before any art is made. Nothing is drawn until you love it.',
         },
       },
     });

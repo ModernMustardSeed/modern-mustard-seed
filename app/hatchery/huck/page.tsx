@@ -11,8 +11,8 @@ export const metadata = buildMetadata({
  * THE PILOT BIRTH: Huck's reveal page, the felt-experience artifact for the
  * Mustard Hatchery (storybook heirloom direction, approved 2026-07-14).
  * The Huckleberry Scoop is fictional and says so; Huck is an AI mascot
- * character and says so. This page doubles as the demo for the Founding 5
- * presale. Deliberately dependency-free: one server component, pure CSS.
+ * character and says so. This page doubles as the proof for the Hatchery
+ * offer. Deliberately dependency-free: one server component, pure CSS.
  */
 export default function HuckRevealPage() {
   return (
@@ -89,7 +89,7 @@ export default function HuckRevealPage() {
           </div>
         </section>
 
-        {/* model sheet + bible excerpt */}
+        {/* model sheet + storybook excerpt */}
         <section className="mt-14 grid md:grid-cols-[1.15fr_1fr] gap-6 items-start">
           <figure className="rounded-2xl overflow-hidden border-2 border-[#FBF6EA]/25">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -99,7 +99,7 @@ export default function HuckRevealPage() {
             </figcaption>
           </figure>
           <div className="bg-[#FBF6EA]/5 border border-[#FBF6EA]/15 rounded-2xl p-6">
-            <p className="text-[10px] uppercase tracking-[0.35em] text-[#F5B700] font-mono font-bold">From his Character Bible</p>
+            <p className="text-[10px] uppercase tracking-[0.35em] text-[#F5B700] font-mono font-bold">From his Character Storybook</p>
             <blockquote className="mt-4 space-y-4 text-[#FBF6EA]/85" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1.15rem', lineHeight: 1.55 }}>
               <p>
                 &ldquo;Picked on a September morning up the Jewel Basin trail, Huck rolled off the scale, under the counter, and refused to be weighed. The founder laughed so hard she gave him a name instead of a price.&rdquo;
@@ -109,7 +109,7 @@ export default function HuckRevealPage() {
               </p>
             </blockquote>
             <p className="mt-5 text-sm text-[#FBF6EA]/60">
-              Every hatched mascot ships with a full Character Bible, this model sheet, the hatching film, a hand-numbered Birth Certificate, and their own phone line.
+              Every hatched mascot ships with a full Character Storybook, this model sheet, the hatching film, a hand-numbered Birth Certificate, and their own phone line.
             </p>
           </div>
         </section>

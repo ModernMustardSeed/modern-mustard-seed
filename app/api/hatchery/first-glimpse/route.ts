@@ -2,8 +2,7 @@
  * The free First Glimpse: the /hatchery lead magnet. A visitor drops their shop
  * name and email to reserve a hand-made "first sketch" of what their mascot
  * could be. This captures the lead (hard-capped one per email forever) and
- * pings Sarah to make the glimpse by hand. No generation spend runs before the
- * Founding 5 ignites; the glimpse is fulfilled by a human.
+ * pings Sarah to make the glimpse by hand. The glimpse is fulfilled by a human.
  */
 
 import { NextResponse } from 'next/server';
@@ -72,7 +71,7 @@ export async function POST(req: Request) {
             { label: 'Email', value: email },
           ],
           message: 'Someone wants to see what their mascot could be. Make them a First Glimpse sketch by hand and send it.',
-          suggestedAction: 'Reply with a candlelit first sketch, then invite them to claim a Founding Egg.',
+          suggestedAction: 'Reply with a candlelit first sketch, then invite them to hatch their mascot.',
         }),
       });
     } catch (err) {

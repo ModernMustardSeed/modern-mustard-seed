@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { HATCHERY, HUCK, FOUNDING, hatcheryTiers, hatcheryFaq } from '@/data/hatchery';
+import { HATCHERY, HUCK, HATCH, hatcheryTiers, hatcheryFaq } from '@/data/hatchery';
 import HuckVoiceWidget from '@/components/hatchery/HuckVoiceWidget';
-import { Countdown, ClaimEgg, FirstGlimpse } from '@/components/hatchery/HatcheryInteractive';
+import { ClaimEgg, FirstGlimpse } from '@/components/hatchery/HatcheryInteractive';
 
 export const metadata = buildMetadata({
   title: HATCHERY.metaTitle,
@@ -10,7 +10,7 @@ export const metadata = buildMetadata({
   path: '/hatchery',
 });
 
-const founding = hatcheryTiers[0];
+const hatch = hatcheryTiers[0];
 const carePlans = hatcheryTiers.slice(1);
 
 export default function HatcheryPage() {
@@ -26,11 +26,10 @@ export default function HatcheryPage() {
         areaServed: 'US',
         offers: {
           '@type': 'Offer',
-          name: 'Founding Egg',
-          price: FOUNDING.priceUsd,
+          name: 'The Hatch',
+          price: HATCH.priceUsd,
           priceCurrency: 'USD',
-          priceValidUntil: FOUNDING.closesAt.slice(0, 10),
-          availability: 'https://schema.org/LimitedAvailability',
+          availability: 'https://schema.org/InStock',
           url: `${SITE.url}/hatchery#claim`,
         },
       },
@@ -38,8 +37,8 @@ export default function HatcheryPage() {
         '@type': 'HowTo',
         name: 'How your business gets its own mascot',
         step: [
-          { '@type': 'HowToStep', name: 'Claim a Founding Egg', text: 'Reserve one of five founding seats. You approve the direction before any art is made.' },
-          { '@type': 'HowToStep', name: 'We hatch your mascot', text: 'We write the Character Bible, draw the model sheet, film the hatching, and give your mascot its own live phone line.' },
+          { '@type': 'HowToStep', name: 'Claim your hatch', text: 'Start the hatch for $497. You approve the direction before any art is made.' },
+          { '@type': 'HowToStep', name: 'We hatch your mascot', text: 'We write the Character Storybook, draw the model sheet, film the hatching, and give your mascot its own live phone line.' },
           { '@type': 'HowToStep', name: 'Birth Day', text: 'On a scheduled, public Birth Day the egg cracks live and your mascot answers its own phone for everyone you know.' },
         ],
       },
@@ -79,11 +78,6 @@ export default function HatcheryPage() {
           <p className="mt-6 max-w-xl text-lg md:text-xl text-[#FBF6EA]/85" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)' }}>
             Your official mascot: a story, a face, a voice, and their own phone number. Hatched by candlelight, in front of everyone who loves your shop.
           </p>
-
-          <div className="mt-9">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#FBF6EA]/55 mb-3">The founding eggs close in</p>
-            <Countdown targetIso={FOUNDING.closesAt} />
-          </div>
 
           <div id="claim" className="mt-10 scroll-mt-24">
             <ClaimEgg variant="gold" />
@@ -132,8 +126,8 @@ export default function HatcheryPage() {
             </p>
             <ol className="mt-7 space-y-4">
               {[
-                ['Claim', 'Reserve one of five Founding Eggs. You approve the direction before a single line is drawn.'],
-                ['Hatch', 'We write the bible, draw the model sheet, film the hatching, and light up the phone line.'],
+                ['Claim', 'Start the hatch. You approve the direction before a single line is drawn.'],
+                ['Hatch', 'We write the storybook, draw the model sheet, film the hatching, and light up the phone line.'],
                 ['Birth Day', 'The countdown hits zero, the egg cracks in public, and your mascot says its first hello.'],
               ].map(([step, text], i) => (
                 <li key={step} className="flex gap-4">
@@ -153,12 +147,12 @@ export default function HatcheryPage() {
         </div>
       </section>
 
-      {/* ───────────────────  WHAT IS BORN (the Founding Egg)  ─────────────────── */}
+      {/* ───────────────────  WHAT IS BORN (the hatch)  ─────────────────── */}
       <section className="border-b-2 border-[#161616] bg-[#F5EDD9]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
           <figure className="order-2 md:order-1 rounded-2xl overflow-hidden border-2 border-[#161616] shadow-[6px_6px_0_0_#B54423]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/hatchery/deliverables-flatlay.png" alt="The heirloom flat-lay: Character Bible, hand-numbered Birth Certificate, and model sheet" className="w-full block" />
+            <img src="/hatchery/deliverables-flatlay.png" alt="The heirloom flat-lay: Character Storybook, hand-numbered Birth Certificate, and model sheet" className="w-full block" />
           </figure>
           <div className="order-1 md:order-2">
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#B54423] font-bold">What is born</p>
@@ -166,16 +160,19 @@ export default function HatcheryPage() {
               Everything a real someone needs.
             </h2>
             <p className="mt-4 text-[#6b6152] leading-relaxed" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1.2rem' }}>
-              {founding.tagline} One Founding Egg brings home:
+              {hatch.tagline} One hatch brings home:
             </p>
             <ul className="mt-6 space-y-3">
-              {founding.includes.map((line) => (
+              {hatch.includes.map((line) => (
                 <li key={line} className="flex gap-3 text-[#161616]">
                   <span className="flex-shrink-0 mt-1 text-[#E8A542]" aria-hidden="true">&#10022;</span>
                   <span className="text-[15px] leading-relaxed">{line}</span>
                 </li>
               ))}
             </ul>
+            <p className="mt-6 font-mono text-sm uppercase tracking-[0.2em] text-[#161616]">
+              ${HATCH.priceUsd}, one time. The price does not climb.
+            </p>
           </div>
         </div>
       </section>
@@ -226,7 +223,7 @@ export default function HatcheryPage() {
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#B54423] font-bold">After the Birth Day</p>
             <h2 className="mt-4 font-display text-3xl md:text-5xl font-bold leading-[1.05] text-[#161616]">Keep them alive, or let them rest.</h2>
             <p className="mt-4 text-[#6b6152] leading-relaxed" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1.2rem' }}>
-              The Founding Egg is yours forever. If you want your mascot to keep drawing, filming, and answering, two gentle plans keep them going. Stop anytime and they simply hibernate. You never lose a thing.
+              The hatch is yours forever. If you want your mascot to keep drawing, filming, and answering, two gentle plans keep them going. Stop anytime and they simply hibernate. You never lose a thing.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 gap-6">
@@ -278,12 +275,12 @@ export default function HatcheryPage() {
       {/* ───────────────────  FINAL CTA  ─────────────────── */}
       <section className="bg-[#0d0a05] text-[#FBF6EA]">
         <div className="max-w-3xl mx-auto px-6 py-16 md:py-24 text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#F5B700] font-bold">Five eggs. One town at a time.</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#F5B700] font-bold">The official mascot of your business</p>
           <h2 className="mt-4 font-display text-3xl md:text-5xl font-bold leading-[1.05]">
             Every shop deserves a someone.
           </h2>
           <p className="mt-4 max-w-xl mx-auto text-[#FBF6EA]/80" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1.2rem' }}>
-            Be one of the first five businesses to give theirs a name, a face, a voice, and a birthday. If we do not fill three eggs, you get every dollar back.
+            Give yours a name, a face, a voice, and a birthday. One time, $497, and you approve the direction before we draw a thing.
           </p>
           <div className="mt-9 flex justify-center">
             <ClaimEgg variant="gold" />
