@@ -218,8 +218,8 @@ function valueCallout(label: string, html: string): string {
 function ctaBlock(primary: { label: string; url: string }, secondary?: { label: string; url: string }): string {
   return `<tr><td style="padding:32px 44px 0" align="left">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-      <td bgcolor="${C.goldBrand}" style="background:${C.goldBrand};border:2px solid ${C.ink};border-radius:10px">
-        <a href="${primary.url}" style="display:inline-block;color:${C.ink};text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:16px 30px;font-family:${SANS}">${escape(primary.label)}</a>
+      <td bgcolor="${C.goldBrand}" style="background:${C.goldBrand};border:2px solid ${C.ink};border-radius:999px">
+        <a href="${primary.url}" style="display:inline-block;color:${C.ink};text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:15px 34px;font-family:${SANS}">${escape(primary.label)}</a>
       </td>
       ${secondary ? `<td style="padding-left:18px"><a href="${secondary.url}" style="display:inline-block;color:${C.gold};text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;padding:16px 4px;font-family:${SANS}">${escape(secondary.label)} &rarr;</a></td>` : ''}
     </tr></table>
