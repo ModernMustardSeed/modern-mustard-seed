@@ -19,7 +19,11 @@ import { ADMIN_HELP } from '@/lib/help-content';
 
 type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
-type Item = { key: Tab; label: string; href: string };
+// `external: true` marks a public-facing offer page that opens in a new tab, so
+// clicking it from the admin never loses the team member's place. These items
+// never light an active chip (they are not admin routes), so their keys sit
+// outside the Tab union.
+type Item = { key: Tab | string; label: string; href: string; external?: boolean };
 
 const PINNED: Item[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
@@ -28,7 +32,23 @@ const PINNED: Item[] = [
   { key: 'hq', label: 'Partner Hub', href: '/admin/hq' },
 ];
 
+// Every live customer-facing offer, one launcher. Ordered flagship-first so the
+// team can open, share, or demo any program in a click. All open in a new tab.
+const PROGRAMS: Item[] = [
+  { key: 'p-demos', label: 'Demos', href: '/demos', external: true },
+  { key: 'p-sidekick', label: 'Sidekick', href: '/sidekick', external: true },
+  { key: 'p-mode', label: 'Mustard Mode', href: '/mustard-mode', external: true },
+  { key: 'p-launch', label: 'Mustard Launch', href: '/mustard-launch', external: true },
+  { key: 'p-pictures', label: 'Mustard Pictures', href: '/pictures', external: true },
+  { key: 'p-press', label: 'Mustard Press', href: '/press', external: true },
+  { key: 'p-audit', label: 'Website Audit', href: '/website-audit', external: true },
+  { key: 'p-spec', label: 'Idea to Spec', href: '/idea-to-spec', external: true },
+  { key: 'p-terminal', label: 'The Terminal', href: '/the-terminal', external: true },
+  { key: 'p-store', label: 'Store', href: '/store', external: true },
+];
+
 const GROUPS: { name: string; items: Item[] }[] = [
+  { name: 'Programs', items: PROGRAMS },
   {
     name: 'Clients',
     items: [
@@ -173,6 +193,7 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
                           key={item.key}
                           href={item.href}
                           role="menuitem"
+                          {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                           aria-current={active === item.key ? 'page' : undefined}
                           onClick={() => setOpenGroup(null)}
                           className={`flex items-center justify-between gap-3 px-4 py-2 text-[12px] uppercase tracking-[0.14em] font-sans font-semibold transition-colors ${
@@ -180,6 +201,9 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
                           }`}
                         >
                           {item.label}
+                          {item.external && (
+                            <span aria-hidden="true" className="text-[#161616]/35 text-[11px]">↗</span>
+                          )}
                           {item.key === 'inbox' && unread > 0 && (
                             <span className="inline-flex items-center justify-center min-w-[16px] h-4 px-1 text-[9px] font-mono font-bold text-white bg-[#E0301E] rounded-full">{unread}</span>
                           )}
