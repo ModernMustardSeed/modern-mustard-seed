@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/seo';
+import HuckVoiceWidget from '@/components/hatchery/HuckVoiceWidget';
 
 export const metadata = buildMetadata({
   title: 'Meet Huck — Born at the Mustard Hatchery',
@@ -80,6 +81,11 @@ export default function HuckRevealPage() {
             <p className="mt-2 text-sm text-[#161616]/70" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontStyle: 'italic' }}>
               Ask him how he got his name. Tell him yours.
             </p>
+          </div>
+
+          {/* ...or talk to him right here, no phone required */}
+          <div className="mt-8 max-w-xl mx-auto text-left">
+            <HuckVoiceWidget />
           </div>
         </section>
 
