@@ -1,0 +1,11 @@
+We shipped something I have wanted for months: a forge our partners can hold.
+
+Here is the problem it solves. The best leads in local business are not on lists. They are the restaurant owner your bookkeeper already trusts, the roofer your insurance agent talks to every week. Those introductions never scale because the introducer has nothing in their hands.
+
+Now they do. A partner types in a business they personally know, and our agent system builds that business a complete demo suite: an AI receptionist that answers as them, a website designed from scratch off their real menu and reviews, and a command center demo. It arrives presented by the partner, free for the owner, no strings.
+
+If the owner buys, the partner's commission records itself. 50% on products, 25% of every invoice for a year on subscriptions. No spreadsheets, no chasing anyone for credit.
+
+The whole thing is capped, reviewed (a human checks every new partner's first three mints), and honest by construction: demos are built only from the business's own public information, and any owner can ask us to take theirs down.
+
+We are lighting forges for partners one at a time. If you sit across the desk from small business owners all day, I would love to put one in your hands: modernmustardseed.com/partners
