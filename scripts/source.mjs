@@ -68,6 +68,7 @@ const FRANCHISE = [
   'starbucks','dutch bros','dunkin','mcdonald','subway','dominos',"domino's",'pizza hut','taco bell','chipotle','panera','wendy','burger king','kfc',"arby's","sonic",'dairy queen',"culver's",'five guys','panda express',"jimmy john",'wingstop','little caesars','papa john',"marco's",'firehouse subs','jamba','smoothie king','jersey mike','qdoba','del taco','carl\'s jr','in-n-out','whataburger','popeyes','chick-fil-a','raising cane',
   "applebee's",'chili','olive garden','ihop','denny','red lobster','outback','texas roadhouse','buffalo wild',
   'wells fargo','chase','bank of america','us bank','pnc bank','truist','regions bank','first interstate','glacier bank',
+  'office depot','officemax','staples','publix','h-e-b','kroger','food lion','winn-dixie','hard rock','cheesecake factory','p.f. chang','pf chang','red robin','cracker barrel','waffle house','red lobster','longhorn steakhouse','buffalo wild wings','pizza ranch','cold stone','baskin','krispy kreme','tim hortons','wingstreet','hooters','twin peaks',
 ];
 
 // Reject template placeholders + junk, aligned with enrich-outbound's hardened filter.
