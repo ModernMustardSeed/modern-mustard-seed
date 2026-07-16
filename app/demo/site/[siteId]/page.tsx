@@ -52,7 +52,10 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
     return <Card title="This demo has moved on" body="We could not find that website demo. Want one built for your business? That is exactly what we do." cta />;
   }
 
-  if (site.status === 'queued' || site.status === 'building') {
+  // A re-forge in flight must never take a lead's working demo down: if a
+  // finished site already exists, keep serving it and let the new build land
+  // silently. The drafting-table screen is only for a FIRST build.
+  if ((site.status === 'queued' || site.status === 'building') && !site.html) {
     const { data: waitingLead } = await sb
       .from('outbound_leads')
       .select('demo_url')
@@ -84,7 +87,9 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
     );
   }
 
-  if (site.status !== 'ready' || !site.html) {
+  // No html at all (first build failed): the snag card. If an OLD site exists,
+  // serve it no matter what state a newer build is in.
+  if (!site.html) {
     return <Card title="This demo needs a re-forge" body="The build hit a snag. Ask us to forge it again and it will be here in about twenty minutes." cta />;
   }
 
