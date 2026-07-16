@@ -134,6 +134,7 @@ export async function buildOutboundEmail(
         report: lead.audit_json,
         note: opts.note,
         trackId: lead.id,
+        reportUrl: `https://modernmustardseed.com/audit/${lead.id}`,
       })
     : clientEmail({
         greeting: first ? `Hi ${first},` : 'Hi there,',

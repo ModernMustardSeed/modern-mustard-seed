@@ -90,7 +90,7 @@ export async function queueLeadSiteEdit(
  */
 export async function queueProjectEdit(
   sb: SupabaseClient,
-  input: { projectId: string; leadId: string | null; business: string; currentHtml: string; instruction: string; requestedBy: string; paid?: boolean },
+  input: { projectId: string; leadId: string | null; business: string; currentHtml: string; instruction: string; requestedBy: string; paid?: boolean; care?: boolean },
 ): Promise<EditQueueResult> {
   const { data: existing } = await sb
     .from('outbound_demo_sites')
@@ -126,6 +126,7 @@ export async function queueProjectEdit(
       edit_requested_at: new Date().toISOString(),
       edit_error: null,
       edit_paid: input.paid === true,
+      edit_care: input.care === true,
     })
     .eq('id', input.projectId);
 
@@ -134,3 +135,13 @@ export async function queueProjectEdit(
 
 /** One self-serve edit, bought once the two free ones are used. Small and profitable. */
 export const PAID_EDIT_PRICE_CENTS = 2900;
+
+/**
+ * THE CARE PLAN. $97/mo makes every edit included and none of them counted. To
+ * honor the never-leak-revenue rule (hard-cap EVERY plan, fail closed), "unlimited"
+ * is a generous fair-use HARD CAP per rolling period; at the cap an edit becomes a
+ * note to Sarah, never a silent overage of forge spend.
+ */
+export const CARE_PLAN_PRICE_CENTS = 9700;
+export const CARE_EDITS_CAP = 20;
+export const CARE_PERIOD_DAYS = 30;

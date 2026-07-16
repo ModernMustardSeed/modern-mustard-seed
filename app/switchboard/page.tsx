@@ -4,6 +4,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { SWITCHBOARD, PRICE_TIERS, BUILD_FEE_USD, whatShips, howItWorks, faq, quoteFor, usd } from '@/data/switchboard';
 import CommandBoard from '@/components/switchboard/CommandBoard';
 import SwitchboardMotion from '@/components/switchboard/SwitchboardMotion';
+import SwitchboardExperiment from '@/components/switchboard/SwitchboardExperiment';
 
 export const metadata = buildMetadata({
   title: SWITCHBOARD.metaTitle,
@@ -53,9 +54,14 @@ export default function SwitchboardPage() {
     <div id="top" className="bg-[#FBF6EA] text-[#161616]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SwitchboardMotion />
+      <SwitchboardExperiment />
+
+      {/* Top three sections are a flex column so the A/B can float the board above the
+          hero (variant B) by CSS order alone. DOM order stays hero-first for SEO. */}
+      <div className="flex flex-col">
 
       {/* ───────────────  HERO  ─────────────── */}
-      <section className="relative overflow-hidden border-b-2 border-[#161616] text-[#FBF6EA]">
+      <section className="sb-slot-hero relative overflow-hidden border-b-2 border-[#161616] text-[#FBF6EA]">
         {/* Cinematic backdrop: every location glowing, wired to one hub. */}
         <div aria-hidden className="absolute inset-0">
           <Image src="/switchboard/command-hero.jpg" alt="" fill priority sizes="100vw" className="object-cover object-center" />
@@ -91,7 +97,7 @@ export default function SwitchboardPage() {
       </section>
 
       {/* ───────────────  TRY IT LIVE (real callable concierge)  ─────────────── */}
-      <section className="border-b-2 border-[#161616] bg-[#F5B700]">
+      <section className="sb-slot-try border-b-2 border-[#161616] bg-[#F5B700]">
         <div className="max-w-5xl mx-auto px-6 py-10 md:py-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
           <div className="flex-1">
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#161616]/70">{SWITCHBOARD.demoLine.label}</p>
@@ -110,7 +116,7 @@ export default function SwitchboardPage() {
       </section>
 
       {/* ───────────────  THE COMMAND BOARD (signature + lead magnet)  ─────────────── */}
-      <section id="board" className="border-b-2 border-[#161616] bg-[#161616] scroll-mt-20">
+      <section id="board" className="sb-slot-board border-b-2 border-[#161616] bg-[#161616] scroll-mt-20">
         <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
           <div className="text-center max-w-2xl mx-auto mb-9 text-[#FBF6EA]">
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#F5B700] font-bold">The Command Board</p>
@@ -122,6 +128,8 @@ export default function SwitchboardPage() {
           <CommandBoard />
         </div>
       </section>
+
+      </div>{/* end reorderable top-three flex column */}
 
       {/* ───────────────  WHAT SHIPS  ─────────────── */}
       <section className="border-b-2 border-[#161616]">

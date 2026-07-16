@@ -39,7 +39,7 @@ export async function POST(req: Request) {
 
   const { data: proj } = await sb
     .from('projects')
-    .select('id, name, client_email, site_html, site_html_draft, site_published_at, edit_status, edit_paid, revisions_used, revisions_included')
+    .select('id, name, client_email, site_html, site_html_draft, site_published_at, edit_status, edit_paid, edit_care, care_edits_used, revisions_used, revisions_included')
     .ilike('client_email', session.email)
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     }
     await sb
       .from('projects')
-      .update({ site_html: proj.site_html_draft, site_html_draft: null, edit_status: null, edit_error: null, edit_paid: false })
+      .update({ site_html: proj.site_html_draft, site_html_draft: null, edit_status: null, edit_error: null, edit_paid: false, edit_care: false })
       .eq('id', proj.id);
 
     let published = false;
@@ -107,24 +107,30 @@ export async function POST(req: Request) {
       instruction,
       requestedBy: session.email,
       paid: Boolean(proj.edit_paid), // an adjust keeps the edit's paid/free nature; it never re-charges
+      care: Boolean(proj.edit_care), // and keeps its Care nature, so a later discard refunds correctly
     });
     if (!queued.ok) return NextResponse.json({ error: queued.error }, { status: 400 });
     return NextResponse.json({ ok: true, adjusting: true });
   }
 
-  /* ── DISCARD: drop the draft. Refund a free edit; a bought one is spent. ── */
+  /* ── DISCARD: drop the draft. Refund what it cost: a Care edit, a free edit, or
+        nothing for a bought one. ── */
   if (action === 'discard') {
-    const wasFree = !proj.edit_paid;
+    const isCare = Boolean(proj.edit_care);
+    const wasFree = !proj.edit_paid && !isCare; // a plain two-free-edits revision
     await sb
       .from('projects')
       .update({
         site_html_draft: null,
         edit_status: null,
         edit_error: null,
+        edit_care: false,
+        // Give back exactly the budget it drew from, never the wrong one.
+        ...(isCare ? { care_edits_used: Math.max(0, Number(proj.care_edits_used ?? 0) - 1) } : {}),
         ...(wasFree ? { revisions_used: Math.max(0, Number(proj.revisions_used ?? 0) - 1) } : {}),
       })
       .eq('id', proj.id);
-    return NextResponse.json({ ok: true, refunded: wasFree });
+    return NextResponse.json({ ok: true, refunded: wasFree || isCare });
   }
 
   return NextResponse.json({ error: 'Unknown action.' }, { status: 400 });

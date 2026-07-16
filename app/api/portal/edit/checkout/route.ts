@@ -81,6 +81,7 @@ export async function POST(req: Request) {
       success_url: `${SITE.url}/portal?edit=purchased`,
       cancel_url: `${SITE.url}/portal`,
       customer_email: session.email,
+      allow_promotion_codes: true,
       metadata: { kind: 'paid-edit', project_id: proj.id as string, client_email: session.email, instruction },
       payment_intent_data: { metadata: { kind: 'paid-edit', project_id: proj.id as string } },
     });

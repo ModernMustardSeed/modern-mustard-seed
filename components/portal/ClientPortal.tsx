@@ -806,7 +806,7 @@ const REQ_STATUS: Record<string, { label: string; cls: string }> = {
  * Running out is not a wall. The words still reach Sarah, as a change request she
  * prices. Swallowing what a paying customer typed would be the worst outcome here.
  */
-type RevisionState = { id: string; name: string; included: number; used: number; remaining: number; closed: boolean; hasSite: boolean; published: boolean };
+type RevisionState = { id: string; name: string; included: number; used: number; remaining: number; closed: boolean; hasSite: boolean; published: boolean; carePlan: boolean; careUsed: number; careCap: number; paidCount: number };
 type EditState = { status: 'queued' | 'building' | 'ready' | 'failed'; instruction: string | null; paid: boolean };
 const money2 = (cents: number) => `$${Math.round(cents / 100)}`;
 
@@ -822,6 +822,7 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
   const [state, setState] = useState<RevisionState | null>(null);
   const [edit, setEdit] = useState<EditState | null>(null);
   const [priceCents, setPriceCents] = useState(2900);
+  const [carePriceCents, setCarePriceCents] = useState(9700);
   const [text, setText] = useState('');
   const [adjustText, setAdjustText] = useState('');
   const [adjustOpen, setAdjustOpen] = useState(false);
@@ -840,6 +841,7 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
         setEdit((j?.edit as EditState | null) ?? null);
         if (j?.edit) setJustPurchased(false); // the paid edit landed
         if (typeof j?.editPriceCents === 'number') setPriceCents(j.editPriceCents);
+        if (typeof j?.carePlanPriceCents === 'number') setCarePriceCents(j.carePlanPriceCents);
       }
     } catch {
       /* leave state as-is */
@@ -856,6 +858,17 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
     setJustPurchased(true);
     let n = 0;
     const t = setInterval(() => { n += 1; load(); if (n >= 12) { clearInterval(t); setJustPurchased(false); } }, 4000);
+    return () => clearInterval(t);
+  }, [load]);
+
+  // Just back from starting the Care Plan: poll a few times so the card flips to the
+  // active state as soon as the subscription webhook lands.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (new URLSearchParams(window.location.search).get('care') !== 'active') return;
+    setNote('Your Care Plan is on. Every edit is included now.');
+    let n = 0;
+    const t = setInterval(() => { n += 1; load(); if (n >= 10) clearInterval(t); }, 3000);
     return () => clearInterval(t);
   }, [load]);
 
@@ -924,6 +937,19 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
       const j = await res.json().catch(() => null);
       if (res.ok && j?.url) { window.location.href = j.url as string; }
       else { setErr((j && j.error) || 'Could not start checkout.'); setBusy(null); }
+    } catch { setErr('Network error.'); setBusy(null); }
+  };
+
+  // Turn on the Care Plan: unlimited edits, one monthly price.
+  const startCarePlan = async () => {
+    if (busy) return;
+    setBusy('care');
+    setErr('');
+    try {
+      const res = await fetch('/api/portal/care-plan/checkout', { method: 'POST' });
+      const j = await res.json().catch(() => null);
+      if (res.ok && j?.url) { window.location.href = j.url as string; }
+      else { setErr((j && j.error) || 'Could not start the Care Plan.'); setBusy(null); }
     } catch { setErr('Network error.'); setBusy(null); }
   };
 
@@ -1047,51 +1073,108 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
     );
   }
 
-  // ── No edit in flight: free edit, or buy one, or (closed / no site) send a note. ──
+  // ── No edit in flight: care plan, free edit, buy one, or send a note. ──
   const canBuy = spent && state.hasSite && !state.closed;
+  const editTextarea = (
+    <textarea
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      rows={3}
+      placeholder="e.g. Swap the hero photo for our storefront, use our green, and make the phone number bigger at the top."
+      className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] resize-y mb-3"
+    />
+  );
+
+  // CARE PLAN ACTIVE: every edit included. No pips, no price, no buy button.
+  if (state.carePlan) {
+    return (
+      <div className="border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 bg-[#F5B700]/12">
+        <div className="flex items-center justify-between gap-3 mb-1">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Care Plan · active</span>
+          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-mono font-bold text-emerald-700">
+            <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" /><span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" /></span>
+            Unlimited
+          </span>
+        </div>
+        <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">Every edit is included.</h3>
+        <p className="text-[#161616]/65 font-body text-sm mb-4">
+          Change your site as often as you like. We make it within minutes, you preview it right here, then you ship it yourself.{state.careUsed > 0 ? ` ${state.careUsed} edit${state.careUsed === 1 ? '' : 's'} this month.` : ''}
+        </p>
+        <form onSubmit={submitFree}>
+          {editTextarea}
+          {err && <p className="text-[#E0301E] text-xs font-body mb-3">{err}</p>}
+          {note && <p className="text-emerald-700 text-xs font-body mb-3">{note}</p>}
+          <button
+            type="submit"
+            disabled={!!busy || !text.trim()}
+            className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+          >
+            {busy === 'submit' ? 'Sending…' : 'Make this edit'}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  // Show the Care Plan upsell the moment editing starts to cost: free edits spent,
+  // the site is live, or they have already bought at least one edit.
+  const showUpsell = canBuy || state.closed || state.paidCount > 0;
 
   return (
-    <div className={`border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 ${spent ? 'bg-white' : 'bg-[#F5B700]/12'}`}>
-      <div className="flex items-start justify-between gap-4 mb-1">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">{canBuy ? 'Edit your site' : 'Your free edits'}</span>
-        <div className="flex gap-1.5 flex-shrink-0" aria-label={`${state.used} of ${state.included} edits used`}>
-          {Array.from({ length: state.included }).map((_, i) => (
-            <span key={i} className={`w-7 h-2.5 rounded-full border-2 border-[#161616] ${i < state.used ? 'bg-[#161616]' : 'bg-white'}`} />
-          ))}
+    <div className="space-y-4">
+      <div className={`border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 ${spent ? 'bg-white' : 'bg-[#F5B700]/12'}`}>
+        <div className="flex items-start justify-between gap-4 mb-1">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">{canBuy ? 'Edit your site' : 'Your free edits'}</span>
+          <div className="flex gap-1.5 flex-shrink-0" aria-label={`${state.used} of ${state.included} edits used`}>
+            {Array.from({ length: state.included }).map((_, i) => (
+              <span key={i} className={`w-7 h-2.5 rounded-full border-2 border-[#161616] ${i < state.used ? 'bg-[#161616]' : 'bg-white'}`} />
+            ))}
+          </div>
         </div>
+
+        <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">
+          {state.closed ? 'Your site is live' : canBuy ? 'Want another change?' : spent ? 'Both free edits are used' : `${state.remaining} free edit${state.remaining === 1 ? '' : 's'} left`}
+        </h3>
+        <p className="text-[#161616]/65 font-body text-sm mb-4">
+          {state.closed
+            ? 'Type any change below. It comes back to you as a preview before anything goes live.'
+            : canBuy
+              ? `Your two free edits are used. Buy one more for ${money2(priceCents)} and it works the same way: we make it, you preview it, you ship it.`
+              : spent
+                ? 'Send the change anyway. Sarah will come back with a price before anyone touches anything.'
+                : 'Tell us what to change. We make it within minutes, you preview it right here, then you ship it yourself.'}
+        </p>
+
+        <form onSubmit={canBuy || state.closed ? buyEdit : submitFree}>
+          {editTextarea}
+          {err && <p className="text-[#E0301E] text-xs font-body mb-3">{err}</p>}
+          {note && <p className="text-emerald-700 text-xs font-body mb-3">{note}</p>}
+          <button
+            type="submit"
+            disabled={!!busy || !text.trim()}
+            className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+          >
+            {busy === 'buy' ? 'Opening checkout…' : busy === 'submit' ? 'Sending…' : canBuy || state.closed ? `Buy this edit · ${money2(priceCents)}` : 'Make this edit'}
+          </button>
+        </form>
       </div>
 
-      <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">
-        {state.closed ? 'Your site is live' : canBuy ? 'Want another change?' : spent ? 'Both free edits are used' : `${state.remaining} free edit${state.remaining === 1 ? '' : 's'} left`}
-      </h3>
-      <p className="text-[#161616]/65 font-body text-sm mb-4">
-        {state.closed
-          ? 'Type any change below. It comes back to you as a preview before anything goes live.'
-          : canBuy
-            ? `Your two free edits are used. Buy one more for ${money2(priceCents)} and it works the same way: we make it, you preview it, you ship it.`
-            : spent
-              ? 'Send the change anyway. Sarah will come back with a price before anyone touches anything.'
-              : 'Tell us what to change. We make it within minutes, you preview it right here, then you ship it yourself.'}
-      </p>
-
-      <form onSubmit={canBuy || state.closed ? buyEdit : submitFree}>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={3}
-          placeholder="e.g. Swap the hero photo for our storefront, use our green, and make the phone number bigger at the top."
-          className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] resize-y mb-3"
-        />
-        {err && <p className="text-[#E0301E] text-xs font-body mb-3">{err}</p>}
-        {note && <p className="text-emerald-700 text-xs font-body mb-3">{note}</p>}
-        <button
-          type="submit"
-          disabled={!!busy || !text.trim()}
-          className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-        >
-          {busy === 'buy' ? 'Opening checkout…' : busy === 'submit' ? 'Sending…' : canBuy || state.closed ? `Buy this edit · ${money2(priceCents)}` : 'Make this edit'}
-        </button>
-      </form>
+      {showUpsell && (
+        <div className="border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#1E50C8] p-5 bg-[#161616] text-[#FBF6EA]">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">Editing a lot?</span>
+          <h4 className="font-display text-lg font-semibold mt-1 mb-1">Go unlimited with the Care Plan.</h4>
+          <p className="text-[#FBF6EA]/70 font-body text-sm mb-3">
+            {money2(carePriceCents)}/mo, every edit included, none of them counted.{state.paidCount > 0 ? ` You have spent ${money2(state.paidCount * priceCents)} on edits so far.` : ''} Cancel anytime.
+          </p>
+          <button
+            onClick={startCarePlan}
+            disabled={busy === 'care'}
+            className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#FBF6EA] rounded-lg shadow-[3px_3px_0_0_#FBF6EA] disabled:opacity-50 hover:-translate-y-0.5 transition-all"
+          >
+            {busy === 'care' ? 'Opening checkout…' : `Get the Care Plan · ${money2(carePriceCents)}/mo`}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -17,7 +17,7 @@ export const maxDuration = 20;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
-  let body: { email?: string; business?: string; locations?: number; ticket?: number; recoveredMonthly?: number };
+  let body: { email?: string; business?: string; locations?: number; ticket?: number; recoveredMonthly?: number; variant?: string };
   try {
     body = await req.json();
   } catch {
@@ -28,6 +28,8 @@ export async function POST(req: Request) {
   const business = (body.business || '').trim().slice(0, 120);
   const locations = Math.max(1, Math.min(9999, Math.round(Number(body.locations) || 1)));
   const recovered = Math.max(0, Math.round(Number(body.recoveredMonthly) || 0));
+  // Which hero A/B variant this lead saw (blank if none): tags the lead for conversion.
+  const variant = body.variant === 'A' || body.variant === 'B' ? body.variant : '';
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json({ error: 'invalid_email' }, { status: 400 });
   }
@@ -41,7 +43,7 @@ export async function POST(req: Request) {
       name: business || null,
       source: 'switchboard',
       status: 'new',
-      notes: `[switchboard] ${business || 'a brand'} · ${locations} locations · quote ${usd(quote.monthlyUsd)}/mo (${usd(quote.perLocationUsd)}/loc) + ${usd(quote.buildUsd)} build · projected recovered ${usd(recovered)}/mo. Mint proposal at /admin/switchboard.`,
+      notes: `[switchboard]${variant ? ` [hero:${variant}]` : ''} ${business || 'a brand'} · ${locations} locations · quote ${usd(quote.monthlyUsd)}/mo (${usd(quote.perLocationUsd)}/loc) + ${usd(quote.buildUsd)} build · projected recovered ${usd(recovered)}/mo. Mint proposal at /admin/switchboard.`,
     });
   } catch (err) {
     console.error('switchboard lead insert failed', err);

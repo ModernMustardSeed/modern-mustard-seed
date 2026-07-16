@@ -930,6 +930,16 @@ export function AuditReportModal({
   const fixes = audit.top_three_fixes ?? [];
   const todo = audit.full_todo ?? [];
   const auditedOn = lead.audit_at ? new Date(lead.audit_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : null;
+  const [copied, setCopied] = useState(false);
+  const copyLink = () => {
+    try {
+      navigator.clipboard.writeText(`${window.location.origin}/audit/${lead.id}`);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard unavailable */
+    }
+  };
 
   return (
     <Modal
@@ -951,9 +961,15 @@ export function AuditReportModal({
             {audit.headline && <p className="font-oswald font-semibold text-lg text-[#1a1815] leading-tight">{audit.headline}</p>}
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-[12px] text-[#1a1815]/55 font-sans">
               {domain && <span>{domain}</span>}
+              <a href={`/audit/${lead.id}`} target="_blank" rel="noopener noreferrer" className="font-oswald uppercase tracking-[0.1em] text-[11px] font-semibold text-[#b58a2a] hover:text-[#1a1815] transition-colors">
+                Open the shareable report ↗
+              </a>
+              <button onClick={copyLink} className="font-oswald uppercase tracking-[0.1em] text-[11px] font-semibold text-[#b58a2a] hover:text-[#1a1815] transition-colors">
+                {copied ? 'Copied!' : 'Copy link to text them'}
+              </button>
               {lead.audit_url && (
-                <a href={lead.audit_url} target="_blank" rel="noopener noreferrer" className="font-oswald uppercase tracking-[0.1em] text-[11px] font-semibold text-[#b58a2a] hover:text-[#1a1815] transition-colors">
-                  Open shareable report ↗
+                <a href={lead.audit_url} target="_blank" rel="noopener noreferrer" className="hover:text-[#1a1815] underline decoration-[#1a1815]/25 underline-offset-2">
+                  View the audited site ↗
                 </a>
               )}
               {auditedOn && <span>Audited {auditedOn}</span>}

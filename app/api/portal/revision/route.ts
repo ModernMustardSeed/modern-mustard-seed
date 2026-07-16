@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { createClientRequest } from '@/lib/client-requests';
-import { queueProjectEdit, PAID_EDIT_PRICE_CENTS } from '@/lib/site-edit';
+import { queueProjectEdit, PAID_EDIT_PRICE_CENTS, CARE_PLAN_PRICE_CENTS, CARE_EDITS_CAP, CARE_PERIOD_DAYS } from '@/lib/site-edit';
 
 export const runtime = 'nodejs';
 
@@ -33,7 +33,7 @@ export async function GET() {
   // Light columns only: never ship site_html / site_html_draft on a poll (megabytes).
   const { data: proj } = await sb
     .from('projects')
-    .select('id, name, revisions_included, revisions_used, status, site_published_at, edit_status, edit_instruction, edit_paid')
+    .select('id, name, revisions_included, revisions_used, status, site_published_at, edit_status, edit_instruction, edit_paid, care_plan, care_edits_used, care_period_start, paid_edits_count')
     .ilike('client_email', session.email)
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
@@ -53,6 +53,14 @@ export async function GET() {
   const included = Number(proj.revisions_included ?? 0);
   const used = Number(proj.revisions_used ?? 0);
   const editStatus = (proj.edit_status as string | null) ?? null;
+
+  // Care Plan: show this rolling window's usage. A lapsed window reads as 0 used
+  // (the atomic claim resets it on the next edit anyway).
+  const carePlan = Boolean(proj.care_plan);
+  const carePeriodStart = proj.care_period_start ? new Date(proj.care_period_start as string).getTime() : 0;
+  const careLapsed = !carePeriodStart || Date.now() - carePeriodStart >= CARE_PERIOD_DAYS * 86400000;
+  const careUsed = carePlan && !careLapsed ? Number(proj.care_edits_used ?? 0) : 0;
+
   return NextResponse.json({
     project: {
       id: proj.id,
@@ -65,6 +73,10 @@ export async function GET() {
       closed: proj.status === 'launched',
       hasSite,
       published: Boolean(proj.site_published_at),
+      carePlan,
+      careUsed,
+      careCap: CARE_EDITS_CAP,
+      paidCount: Number(proj.paid_edits_count ?? 0),
     },
     // The in-flight edit, so the card can show "building" then the preview + ship.
     // 'ready' means the worker wrote a draft (edit_status is only ready with a draft).
@@ -72,6 +84,7 @@ export async function GET() {
       ? { status: editStatus, instruction: (proj.edit_instruction as string | null) ?? null, paid: Boolean(proj.edit_paid) }
       : null,
     editPriceCents: PAID_EDIT_PRICE_CENTS,
+    carePlanPriceCents: CARE_PLAN_PRICE_CENTS,
   });
 }
 
@@ -94,7 +107,7 @@ export async function POST(req: Request) {
 
   const { data: proj } = await sb
     .from('projects')
-    .select('id, name, revisions_included, revisions_used, status, site_html, site_published_at, edit_status')
+    .select('id, name, revisions_included, revisions_used, status, site_html, site_published_at, edit_status, care_plan')
     .ilike('client_email', session.email)
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
@@ -106,6 +119,57 @@ export async function POST(req: Request) {
     const note = await createClientRequest({ email: session.email, body: text, source: 'note' });
     if (!note.ok) return NextResponse.json({ error: note.error ?? 'Could not send.' }, { status: 500 });
     return NextResponse.json({ ok: true, exhausted: true, sentAsNote: true });
+  }
+
+  // A shared helper: record the change and auto-apply it to a DRAFT (never the live
+  // site) when a real site exists. Used by both the Care Plan and free-edit paths.
+  const applyEdit = async (revisionNumber: number, care: boolean) => {
+    const result = await createClientRequest({ email: session.email, body: text, source: 'revision', projectId: proj.id as string, revisionNumber });
+    if (!result.ok) return { ok: false as const, error: result.error ?? 'Could not send.' };
+    let applying = false;
+    if (typeof proj.site_html === 'string' && proj.site_html.length > 500) {
+      const { data: order } = await sb
+        .from('demo_orders')
+        .select('outbound_lead_id, business_name')
+        .eq('project_id', proj.id)
+        .maybeSingle();
+      const queued = await queueProjectEdit(sb, {
+        projectId: proj.id as string,
+        leadId: (order?.outbound_lead_id as string | null) ?? null,
+        business: String(order?.business_name ?? proj.name ?? 'the business'),
+        currentHtml: proj.site_html as string,
+        instruction: text,
+        requestedBy: session.email,
+        care,
+      });
+      applying = queued.ok;
+    }
+    return { ok: true as const, id: result.id, applying };
+  };
+
+  // ── CARE PLAN: every edit included. Spend a fair-use care edit (atomic, capped). ──
+  if (proj.care_plan) {
+    const { data: careClaim, error: careErr } = await sb.rpc('claim_care_edit', {
+      p_project_id: proj.id,
+      p_cap: CARE_EDITS_CAP,
+      p_period_days: CARE_PERIOD_DAYS,
+    });
+    const cn = typeof careClaim === 'number' ? careClaim : -1;
+    if (careErr || cn < 1) {
+      if (careErr) console.error('claim_care_edit failed:', careErr.message);
+      // Over the fair-use cap for the window: keep the words, tell the truth.
+      const note = await createClientRequest({ email: session.email, body: text, source: 'note', projectId: proj.id as string });
+      if (!note.ok) return NextResponse.json({ error: note.error ?? 'Could not send.' }, { status: 500 });
+      return NextResponse.json({
+        ok: true,
+        exhausted: true,
+        sentAsNote: true,
+        message: `You have reached this month's fair-use limit of ${CARE_EDITS_CAP} edits. I sent this one to Sarah, and your included edits reset next month.`,
+      });
+    }
+    const applied = await applyEdit(cn, true);
+    if (!applied.ok) return NextResponse.json({ error: applied.error }, { status: 500 });
+    return NextResponse.json({ ok: true, care: true, applying: applied.applying, id: applied.id });
   }
 
   const { data: claimed, error: capErr } = await sb.rpc('claim_revision', { p_project_id: proj.id });

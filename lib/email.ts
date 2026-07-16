@@ -356,12 +356,14 @@ export function auditReportEmail({
   report,
   note,
   trackId,
+  reportUrl,
 }: {
   toName?: string;
   url: string;
   report: AuditReport;
   note?: string;
   trackId?: string;
+  reportUrl?: string;
 }): string {
   let domain = url;
   try {
@@ -434,7 +436,10 @@ export function auditReportEmail({
     (report.overall_analysis ? paragraph(escape(report.overall_analysis).replace(/\n/g, '<br><br>')) : '') +
     fixesBlock +
     todoBlock +
-    ctaBlock({ label: 'Book a 30 min call', url: BOOKING_URL }, { label: 'Run it again anytime', url: WEBSITE_AUDIT_URL }) +
+    ctaBlock(
+      { label: 'Book a 30 min call', url: BOOKING_URL },
+      reportUrl ? { label: 'Open your report page', url: reportUrl } : { label: 'Run it again anytime', url: WEBSITE_AUDIT_URL },
+    ) +
     paragraph(
       `<span style="font-size:14px">Honestly, we would love to help you fix these. Helping local businesses turn their website into something that quietly brings in real work is the thing we do best, and we would be glad to take this whole list off your plate so you can get back to what you actually love doing. Just reply to this email or grab a time above and we will map the fastest path to your A. No pressure either way, and either way I am cheering you on.</span>`
     ) +

@@ -111,12 +111,14 @@ export default function CommandBoard() {
     if (state === 'sending') return;
     setState('sending');
     setMsg(null);
-    trackEvent('switchboard_projection', { locations, ticket });
+    // Which hero A/B variant this visitor saw, so the lead is attributable.
+    const variant = (typeof document !== 'undefined' && document.cookie.match(/(?:^|;\s*)sb_variant=([AB])/)?.[1]) || '';
+    trackEvent('switchboard_projection', { locations, ticket, variant });
     try {
       const res = await fetch('/api/switchboard/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, business: name, locations, ticket, recoveredMonthly, monthlyUsd: quote.monthlyUsd }),
+        body: JSON.stringify({ email, business: name, locations, ticket, recoveredMonthly, monthlyUsd: quote.monthlyUsd, variant }),
       });
       const data = await res.json();
       if (res.ok) {

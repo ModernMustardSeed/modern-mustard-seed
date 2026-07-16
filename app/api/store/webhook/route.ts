@@ -794,6 +794,33 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     return;
   }
 
+  // Care Plan renewals get their own note (the generic /portal dunning below is fine
+  // too, but a Care Plan client should hear it in their own words).
+  if (subMeta?.kind === 'care-plan') {
+    const cEmail = invoice.customer_email;
+    if (process.env.RESEND_API_KEY && cEmail) {
+      try {
+        const resend = resendClient();
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: cEmail,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: 'Quick payment hiccup on your Care Plan',
+          html: clientEmail({
+            preheader: 'A quick card update keeps your edits included.',
+            eyebrow: 'THE CARE PLAN',
+            greeting: 'A quick card hiccup.',
+            body: `<p>This month's Care Plan payment did not go through (expired card, bank hiccup, gremlin).</p><p>Stripe retries automatically, or reply and I will send a fresh link. Your edits stay included in the meantime.</p>`,
+            signature: 'Sarah',
+          }),
+        });
+      } catch (err) {
+        console.error('care-plan dunning email failed', err);
+      }
+    }
+    return;
+  }
+
   let proposal: { id?: string; client_name?: string | null; client_email?: string | null; client_company?: string | null } | null = null;
   try {
     const { data } = await supabase
@@ -1072,6 +1099,12 @@ async function handlePaidEditPurchase(session: Stripe.Checkout.Session) {
     return;
   }
 
+  // Count it, so the portal can say "you have spent $X on edits" and offer the Care
+  // Plan. A read-then-write is fine here: paid edits arrive one cleared payment at a
+  // time, never concurrently for the same project.
+  const { data: cur } = await sb.from('projects').select('paid_edits_count').eq('id', projectId).maybeSingle();
+  await sb.from('projects').update({ paid_edits_count: Number(cur?.paid_edits_count ?? 0) + 1 }).eq('id', projectId);
+
   if (process.env.RESEND_API_KEY) {
     try {
       await resendClient().emails.send({
@@ -1088,6 +1121,96 @@ async function handlePaidEditPurchase(session: Stripe.Checkout.Session) {
         }),
       });
     } catch { /* never block the queue on email */ }
+  }
+}
+
+/**
+ * A client started their CARE PLAN ($97/mo). Turn it on for their project, store the
+ * subscription + customer ids (so the cancel webhook finds the row), and open a fresh
+ * fair-use window. Recurring revenue is recorded per invoice by handleInvoicePaid
+ * like every subscription. Welcome them and tell Sarah.
+ */
+async function handleCarePlanStarted(session: Stripe.Checkout.Session, email: string | null, name: string | null) {
+  const projectId = session.metadata?.project_id;
+  if (!projectId) {
+    console.error('care-plan webhook missing project_id');
+    return;
+  }
+  const sb = getSupabase();
+  if (!sb) return;
+  const subId = typeof session.subscription === 'string' ? session.subscription : null;
+  const customerId = typeof session.customer === 'string' ? session.customer : null;
+
+  const { data: proj, error } = await sb
+    .from('projects')
+    .update({
+      care_plan: true,
+      care_sub_id: subId,
+      care_customer_id: customerId,
+      care_edits_used: 0,
+      care_period_start: new Date().toISOString(),
+    })
+    .eq('id', projectId)
+    .select('name, client_email')
+    .maybeSingle();
+  if (error) {
+    console.error('care-plan activate failed', error.message, '- sub', subId, 'must be reconciled by hand');
+    return;
+  }
+  const business = String(proj?.name ?? 'their site').replace(/:.*$/, '').trim();
+  const to = email || (proj?.client_email as string) || null;
+  const firstName = name?.split(' ')[0];
+
+  if (!process.env.RESEND_API_KEY) return;
+  const resend = resendClient();
+  try {
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      subject: `CARE PLAN started: ${business}`,
+      html: leadNotification({
+        type: 'Contact',
+        name: business,
+        email: to ?? 'a client',
+        fields: [{ label: 'Plan', value: 'Care Plan · $97/mo' }, { label: 'Project', value: projectId }],
+        message: 'A client turned on the Care Plan. Every edit is included now, recurring revenue is live.',
+        suggestedAction: 'Their edits still land as drafts they preview and ship; oversee on /admin/delivery.',
+      }),
+    });
+  } catch (err) {
+    console.error('care-plan notify failed', err);
+  }
+  if (to) {
+    try {
+      await resend.emails.send({
+        from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to,
+        replyTo: 'sarah@modernmustardseed.com',
+        subject: `${firstName ? `${firstName}, ` : ''}your Care Plan is on`,
+        html: clientEmail({
+          preheader: 'Every edit is included now. Change your site as often as you like.',
+          eyebrow: 'THE CARE PLAN',
+          greeting: firstName ? `${firstName}, you are covered.` : 'You are covered.',
+          body: `<p>Your Care Plan for <strong>${escapeHtmlSafe(business)}</strong> is active. From today, every edit is included, and none of them count against anything.</p><p>It works exactly the way it did before: type the change in your portal, we build it in minutes, you preview it and ship it yourself. The only difference is you never pay per edit again. Month to month, cancel anytime.</p>`,
+          cta: { label: 'Make an edit', url: `${SITE.url}/portal` },
+          signature: 'Sarah',
+        }),
+      });
+    } catch (err) {
+      console.error('care-plan welcome failed', err);
+    }
+  }
+}
+
+/** A Care Plan was canceled. Turn it off so edits go back to the two-free / pay-per
+ *  model. The forever-included window simply stops; nothing already shipped changes. */
+async function handleCarePlanDeleted(sub: Stripe.Subscription) {
+  const sb = getSupabase();
+  if (!sb) return;
+  try {
+    await sb.from('projects').update({ care_plan: false }).eq('care_sub_id', sub.id);
+  } catch (err) {
+    console.error('care-plan deactivate failed', err);
   }
 }
 
@@ -1844,6 +1967,10 @@ export async function POST(req: Request) {
       }
       return NextResponse.json({ received: true, kind: 'demo_order_canceled' });
     }
+    if (sub.metadata?.kind === 'care-plan') {
+      await handleCarePlanDeleted(sub);
+      return NextResponse.json({ received: true, kind: 'care_plan_canceled' });
+    }
     await handleSubscriptionDeleted(sub);
     return NextResponse.json({ received: true, kind: 'subscription_canceled' });
   }
@@ -1886,6 +2013,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'switchboard') {
     if (email) await handleSwitchboardPurchase(session, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'switchboard' });
+  }
+
+  // ── CARE PLAN ($97/mo, portal subscription, no slug) ──
+  if (session.metadata?.kind === 'care-plan') {
+    await handleCarePlanStarted(session, email ?? null, name ?? null);
+    return NextResponse.json({ received: true, kind: 'care-plan' });
   }
 
   if (!slug || !email) {
