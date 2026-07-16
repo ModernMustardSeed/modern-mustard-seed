@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { SWITCHBOARD, PRICE_TIERS, BUILD_FEE_USD, whatShips, howItWorks, faq, quoteFor, usd } from '@/data/switchboard';
 import CommandBoard from '@/components/switchboard/CommandBoard';
+import SwitchboardMotion from '@/components/switchboard/SwitchboardMotion';
 
 export const metadata = buildMetadata({
   title: SWITCHBOARD.metaTitle,
@@ -50,33 +52,40 @@ export default function SwitchboardPage() {
   return (
     <div id="top" className="bg-[#FBF6EA] text-[#161616]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <SwitchboardMotion />
 
       {/* ───────────────  HERO  ─────────────── */}
-      <section className="relative overflow-hidden border-b-2 border-[#161616] text-[#FBF6EA]" style={{ background: 'radial-gradient(120% 130% at 82% -10%, #14203a, #05070d 62%)' }}>
-        <div className="max-w-5xl mx-auto px-6 pt-20 md:pt-28 pb-16 md:pb-20">
-          <span className="inline-block font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-full px-3 py-1">
+      <section className="relative overflow-hidden border-b-2 border-[#161616] text-[#FBF6EA]">
+        {/* Cinematic backdrop: every location glowing, wired to one hub. */}
+        <div aria-hidden className="absolute inset-0">
+          <Image src="/switchboard/command-hero.jpg" alt="" fill priority sizes="100vw" className="object-cover object-center" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(5,7,13,.95) 0%, rgba(5,7,13,.82) 38%, rgba(5,7,13,.34) 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 130% at 50% 128%, rgba(5,7,13,.9), transparent 58%)' }} />
+        </div>
+        <div className="relative max-w-5xl mx-auto px-6 pt-24 md:pt-36 pb-20 md:pb-28">
+          <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-full px-3 py-1 shadow-[3px_3px_0_0_rgba(0,0,0,.4)]">
             For franchises &amp; multi-location brands
           </span>
-          <h1 className="mt-6 font-display font-extrabold leading-[0.98] tracking-tight text-4xl md:text-6xl lg:text-7xl">
-            One voice answers<br className="hidden md:block" /> for all of them.
+          <h1 className="mt-6 font-display font-extrabold leading-[0.95] tracking-tight text-5xl md:text-7xl lg:text-[5.5rem]" style={{ textShadow: '0 2px 40px rgba(0,0,0,.5)' }}>
+            One voice answers<br className="hidden md:block" /> for <span className="text-[#F5B700]">all</span> of them.
           </h1>
-          <p className="mt-6 max-w-xl text-lg md:text-xl text-[#FBF6EA]/85 font-body">
+          <p className="mt-6 max-w-xl text-lg md:text-xl text-[#FBF6EA]/90 font-body">
             Give every location a 24/7 AI concierge in one on-brand voice, and watch the recovered revenue from all of them on a single Command Board.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a href="#board" className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5">
               See your locations on the board
             </a>
-            <Link href={SWITCHBOARD.walkthroughPath} className="rounded-full border-2 border-[#FBF6EA]/60 px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] text-[#FBF6EA] transition-all hover:bg-[#FBF6EA] hover:text-[#161616]">
+            <Link href={SWITCHBOARD.walkthroughPath} className="rounded-full border-2 border-[#FBF6EA]/60 bg-[#05070d]/30 backdrop-blur-sm px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] text-[#FBF6EA] transition-all hover:bg-[#FBF6EA] hover:text-[#161616]">
               Book a walkthrough
             </Link>
           </div>
-          <p className="mt-5 font-body text-sm text-[#FBF6EA]/70">
+          <p className="mt-5 font-body text-sm text-[#FBF6EA]/75">
             Or hear it right now:{' '}
             <a href={`tel:${SWITCHBOARD.demoLine.number}`} className="font-bold text-[#F5B700] underline decoration-2 underline-offset-2 hover:text-white">
               call {SWITCHBOARD.demoLine.display}
             </a>
-            <span className="text-[#FBF6EA]/50"> and a live AI concierge answers as a location would.</span>
+            <span className="text-[#FBF6EA]/55"> and a live AI concierge answers as a location would.</span>
           </p>
         </div>
       </section>
@@ -121,7 +130,7 @@ export default function SwitchboardPage() {
           <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] max-w-3xl">
             Built once. Cloned to every door.
           </h2>
-          <div className="mt-10 grid md:grid-cols-2 gap-5">
+          <div className="mt-10 grid md:grid-cols-2 gap-5 sb-reveal">
             {whatShips.map((s, i) => (
               <div key={s.title} className="rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] flex gap-4">
                 <span className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F5B700] border-2 border-[#161616] grid place-items-center font-mono font-bold text-sm">{i + 1}</span>
@@ -144,7 +153,7 @@ export default function SwitchboardPage() {
             <p className="mt-4 text-[#5c554a] font-body">The more locations, the lower the price at each door. One {usd(BUILD_FEE_USD)} build covers the brand voice template, the Command Board, and the rollout.</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sb-reveal">
             {PRICE_TIERS.map((t, i) => (
               <div key={t.label} className={`rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] ${i === 2 ? 'ring-4 ring-[#F5B700]' : ''}`}>
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#5c554a]">{t.label}</p>
@@ -177,7 +186,7 @@ export default function SwitchboardPage() {
         <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold text-center">How it works</p>
           <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#161616] text-center max-w-2xl mx-auto">Live across the whole chain in weeks.</h2>
-          <div className="mt-10 grid md:grid-cols-3 gap-5">
+          <div className="mt-10 grid md:grid-cols-3 gap-5 sb-reveal">
             {howItWorks.map((s, i) => (
               <div key={s.step} className="rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616]">
                 <span className="font-mono font-bold text-[#F5B700] text-3xl">{String(i + 1).padStart(2, '0')}</span>

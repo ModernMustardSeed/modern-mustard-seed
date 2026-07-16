@@ -90,7 +90,7 @@ export async function queueLeadSiteEdit(
  */
 export async function queueProjectEdit(
   sb: SupabaseClient,
-  input: { projectId: string; leadId: string | null; business: string; currentHtml: string; instruction: string; requestedBy: string },
+  input: { projectId: string; leadId: string | null; business: string; currentHtml: string; instruction: string; requestedBy: string; paid?: boolean },
 ): Promise<EditQueueResult> {
   const { data: existing } = await sb
     .from('outbound_demo_sites')
@@ -125,8 +125,12 @@ export async function queueProjectEdit(
       edit_requested_by: input.requestedBy,
       edit_requested_at: new Date().toISOString(),
       edit_error: null,
+      edit_paid: input.paid === true,
     })
     .eq('id', input.projectId);
 
   return { ok: true, jobId: job.id as string };
 }
+
+/** One self-serve edit, bought once the two free ones are used. Small and profitable. */
+export const PAID_EDIT_PRICE_CENTS = 2900;

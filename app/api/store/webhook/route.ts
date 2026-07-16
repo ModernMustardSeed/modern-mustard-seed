@@ -20,6 +20,7 @@ import { getStripe, STRIPE_WEBHOOK_SECRET } from '@/lib/stripe';
 import { getSupabase } from '@/lib/supabase';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import { provisionDemoOrder } from '@/lib/demo-provision';
+import { queueProjectEdit } from '@/lib/site-edit';
 import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/data/products';
 import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
@@ -1022,6 +1023,75 @@ async function handleSwitchboardPurchase(
 }
 
 /**
+ * A client bought ONE self-serve website edit ($29), after their two free ones.
+ * Payment has cleared, so queue the edit now: it builds into a draft, and the
+ * client previews and ships it themselves from their portal. paid:true so a
+ * discard never refunds a free revision they did not spend.
+ */
+async function handlePaidEditPurchase(session: Stripe.Checkout.Session) {
+  const projectId = session.metadata?.project_id;
+  const instruction = (session.metadata?.instruction || '').trim();
+  const clientEmailAddr = session.metadata?.client_email || null;
+  if (!projectId || !instruction) {
+    console.error('paid-edit webhook missing project_id or instruction');
+    return;
+  }
+  const sb = getSupabase();
+  if (!sb) return;
+
+  const { data: project } = await sb
+    .from('projects')
+    .select('id, name, site_html, edit_status')
+    .eq('id', projectId)
+    .maybeSingle();
+  if (!project?.site_html) {
+    console.error('paid-edit: project has no site to edit', projectId);
+    return;
+  }
+  // Do not stack on an edit already moving (a double webhook, or a race).
+  if (project.edit_status === 'queued' || project.edit_status === 'building') return;
+
+  const { data: order } = await sb
+    .from('demo_orders')
+    .select('outbound_lead_id, business_name')
+    .eq('project_id', projectId)
+    .maybeSingle();
+
+  const business = String(order?.business_name ?? project.name ?? 'the business').replace(/:.*$/, '').trim();
+  const queued = await queueProjectEdit(sb, {
+    projectId: String(project.id),
+    leadId: (order?.outbound_lead_id as string | null) ?? null,
+    business,
+    currentHtml: project.site_html as string,
+    instruction,
+    requestedBy: clientEmailAddr ?? 'client',
+    paid: true,
+  });
+  if (!queued.ok) {
+    console.error('paid-edit queue failed', queued.error);
+    return;
+  }
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      await resendClient().emails.send({
+        from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to: 'sarah@modernmustardseed.com',
+        subject: `Paid edit ($29): ${business}`,
+        html: leadNotification({
+          type: 'Contact',
+          name: business,
+          email: clientEmailAddr ?? 'a client',
+          fields: [{ label: 'Edit', value: instruction.slice(0, 300) }],
+          message: 'A client bought a self-serve edit. The forge is building it into a draft for them to preview and ship.',
+          suggestedAction: 'It publishes when they ship it. Oversee on /admin/delivery.',
+        }),
+      });
+    } catch { /* never block the queue on email */ }
+  }
+}
+
+/**
  * A MUSTARD HATCHERY hatch was purchased ($497, flat and evergreen). Record the
  * order + buyer with a hand-numbered certificate, tell Sarah to BIRTH the
  * mascot, and welcome the founder. Generation itself is hand-run.
@@ -1857,6 +1927,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'hatchery') {
     await handleHatcheryPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'hatchery' });
+  }
+
+  // ── Self-serve website edit ($29 one-time, after the two free ones) ──
+  if (session.metadata?.kind === 'paid-edit') {
+    await handlePaidEditPurchase(session);
+    return NextResponse.json({ received: true, kind: 'paid-edit' });
   }
 
   // ── GEO DESK order (fix pack, full desk, watch subs, installed) ──

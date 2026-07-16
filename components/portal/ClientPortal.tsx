@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef, FormEvent } from 'react';
+import { useCallback, useEffect, useState, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { launchCountdown } from '@/lib/launch';
@@ -806,113 +806,290 @@ const REQ_STATUS: Record<string, { label: string; cls: string }> = {
  * Running out is not a wall. The words still reach Sarah, as a change request she
  * prices. Swallowing what a paying customer typed would be the worst outcome here.
  */
-type RevisionState = { id: string; name: string; included: number; used: number; remaining: number; closed: boolean };
+type RevisionState = { id: string; name: string; included: number; used: number; remaining: number; closed: boolean; hasSite: boolean; published: boolean };
+type EditState = { status: 'queued' | 'building' | 'ready' | 'failed'; instruction: string | null; paid: boolean };
+const money2 = (cents: number) => `$${Math.round(cents / 100)}`;
 
+/**
+ * SELF-SERVE EDITS. You talk, your site changes, you watch it happen.
+ *
+ * Submit an edit and the forge applies it to a copy within minutes. You PREVIEW
+ * the change here, then ship it yourself, adjust it again free, or throw it away.
+ * The first two are free. After that, buy one at a time. Sarah keeps oversight on
+ * her side, but you never wait on her for the happy path.
+ */
 function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubmitted: () => void }) {
   const [state, setState] = useState<RevisionState | null>(null);
+  const [edit, setEdit] = useState<EditState | null>(null);
+  const [priceCents, setPriceCents] = useState(2900);
   const [text, setText] = useState('');
-  const [sending, setSending] = useState(false);
+  const [adjustText, setAdjustText] = useState('');
+  const [adjustOpen, setAdjustOpen] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState('');
   const [note, setNote] = useState('');
+  const [justPurchased, setJustPurchased] = useState(false);
 
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch('/api/portal/revision');
+      const j = await res.json().catch(() => null);
+      if (res.ok) {
+        if (j?.project) setState(j.project as RevisionState);
+        setEdit((j?.edit as EditState | null) ?? null);
+        if (j?.edit) setJustPurchased(false); // the paid edit landed
+        if (typeof j?.editPriceCents === 'number') setPriceCents(j.editPriceCents);
+      }
+    } catch {
+      /* leave state as-is */
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load, refreshKey]);
+
+  // Just back from paying for an edit: the webhook queues it a beat later, so poll
+  // until it shows up instead of flashing the buy form at someone who just paid.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (new URLSearchParams(window.location.search).get('edit') !== 'purchased') return;
+    setJustPurchased(true);
+    let n = 0;
+    const t = setInterval(() => { n += 1; load(); if (n >= 12) { clearInterval(t); setJustPurchased(false); } }, 4000);
+    return () => clearInterval(t);
+  }, [load]);
+
+  // While the forge is building the change, poll so it flips to the preview on its own.
+  useEffect(() => {
+    if (edit?.status === 'queued' || edit?.status === 'building') {
+      const t = setInterval(load, 8000);
+      return () => clearInterval(t);
+    }
+  }, [edit?.status, load]);
+
+  // Pull the draft to show the moment it is ready.
   useEffect(() => {
     let alive = true;
-    (async () => {
-      try {
-        const res = await fetch('/api/portal/revision');
-        const j = await res.json().catch(() => null);
-        if (alive && res.ok && j?.project) setState(j.project as RevisionState);
-      } catch {
-        /* no budget, no card */
-      }
-    })();
+    if (edit?.status === 'ready') {
+      fetch('/api/portal/edit/preview')
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j) => { if (alive && j?.html) setPreview(j.html as string); })
+        .catch(() => {});
+    } else {
+      setPreview(null);
+      setAdjustOpen(false);
+    }
     return () => { alive = false; };
-  }, [refreshKey]);
+  }, [edit?.status]);
 
   if (!state) return null;
 
-  const submit = async (e: FormEvent) => {
+  const inFlight = Boolean(edit);
+  const spent = state.remaining === 0;
+
+  // Submit a FREE edit (auto-applies to a draft when a site exists).
+  const submitFree = async (e: FormEvent) => {
     e.preventDefault();
     const body = text.trim();
-    if (!body || sending) return;
-    setSending(true);
+    if (!body || busy) return;
+    setBusy('submit');
     setErr('');
     setNote('');
     try {
       const res = await fetch('/api/portal/revision', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ body }),
       });
       const j = await res.json().catch(() => null);
-      if (!res.ok || !j?.ok) {
-        setErr((j && j.error) || 'Could not send.');
-      } else {
+      if (!res.ok || !j?.ok) { setErr((j && j.error) || 'Could not send.'); }
+      else {
         setText('');
-        setNote(
-          j.exhausted
-            ? (j.message as string) || 'Sent to Sarah as a change request.'
-            : j.applying
-              ? `On it. We are making that change now. It lands after Sarah takes a quick look, so nothing changes on your live site until it is right. ${j.remaining === 0 ? 'That was your last free edit.' : `${j.remaining} free edit${j.remaining === 1 ? '' : 's'} left.`}`
-              : `Edit ${j.revisionNumber} of ${state.included} is with Sarah. ${j.remaining === 0 ? 'That was your last free one.' : `${j.remaining} free edit${j.remaining === 1 ? '' : 's'} left.`}`,
-        );
-        setState((s) => (s ? { ...s, used: Math.min(s.included, s.used + (j.exhausted ? 0 : 1)), remaining: Math.max(0, s.remaining - (j.exhausted ? 0 : 1)) } : s));
+        if (j.applying) { await load(); }
+        else setNote(j.exhausted ? ((j.message as string) || 'Sent to Sarah as a change request.') : 'Sent to Sarah.');
         onSubmitted();
       }
-    } catch {
-      setErr('Network error.');
-    } finally {
-      setSending(false);
-    }
+    } catch { setErr('Network error.'); } finally { setBusy(null); }
   };
 
-  const spent = state.remaining === 0;
+  // Buy ONE edit once the free ones are gone.
+  const buyEdit = async (e: FormEvent) => {
+    e.preventDefault();
+    const instruction = text.trim();
+    if (!instruction || busy) return;
+    setBusy('buy');
+    setErr('');
+    try {
+      const res = await fetch('/api/portal/edit/checkout', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ instruction }),
+      });
+      const j = await res.json().catch(() => null);
+      if (res.ok && j?.url) { window.location.href = j.url as string; }
+      else { setErr((j && j.error) || 'Could not start checkout.'); setBusy(null); }
+    } catch { setErr('Network error.'); setBusy(null); }
+  };
+
+  const act = async (action: 'ship' | 'adjust' | 'discard', instruction?: string) => {
+    setBusy(action);
+    setErr('');
+    setNote('');
+    try {
+      const res = await fetch('/api/portal/edit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, instruction }),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) { setErr((j && j.error) || 'That did not work.'); }
+      else {
+        if (action === 'ship') setNote(j.published ? 'Shipped. Your change is live now.' : 'Looks great. It is set into your site, ready for launch.');
+        setAdjustText('');
+        await load();
+        onSubmitted();
+      }
+    } catch { setErr('Network error.'); } finally { setBusy(null); }
+  };
+
+  // ── The in-flight edit takes over the card: building, then preview + ship. ──
+  if (inFlight && edit) {
+    return (
+      <div className="border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 bg-[#F5B700]/12">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Your edit</span>
+
+        {(edit.status === 'queued' || edit.status === 'building') && (
+          <div className="mt-2">
+            <div className="flex items-center gap-3">
+              <span className="relative flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F5B700] opacity-70" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-[#F5B700]" />
+              </span>
+              <h3 className="font-display text-xl font-semibold text-[#161616]">Making your change now</h3>
+            </div>
+            {edit.instruction && <p className="text-[#161616]/70 font-body text-sm mt-2 italic">&ldquo;{edit.instruction}&rdquo;</p>}
+            <p className="text-[#161616]/60 font-body text-sm mt-2">
+              This usually takes a few minutes. Nothing on your live site changes until you look at it and ship it. This card updates itself.
+            </p>
+          </div>
+        )}
+
+        {edit.status === 'failed' && (
+          <div className="mt-2">
+            <h3 className="font-display text-xl font-semibold text-[#161616]">That one did not take</h3>
+            <p className="text-[#161616]/65 font-body text-sm mt-1 mb-3">Try describing it a different way, and we will run it again. This one is on us.</p>
+            <button onClick={() => act('discard')} disabled={!!busy} className="px-5 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50">
+              {busy === 'discard' ? '…' : 'Start over'}
+            </button>
+            {err && <p className="text-[#E0301E] text-xs font-body mt-2">{err}</p>}
+          </div>
+        )}
+
+        {edit.status === 'ready' && (
+          <div className="mt-2">
+            <h3 className="font-display text-xl font-semibold text-[#161616]">Here is your change</h3>
+            {edit.instruction && <p className="text-[#161616]/70 font-body text-sm mt-1 italic">&ldquo;{edit.instruction}&rdquo;</p>}
+            <p className="text-[#161616]/60 font-body text-sm mt-1 mb-3">
+              Take a look. Ship it and it goes {state.published ? 'live' : 'into your site for launch'}, keep adjusting it free until it is right, or throw it away.
+            </p>
+            <div className="rounded-xl border-2 border-[#161616] overflow-hidden bg-white mb-4">
+              {preview ? (
+                <iframe sandbox="" srcDoc={preview} title="Your edited site" className="w-full h-[380px] bg-white block" />
+              ) : (
+                <div className="h-[380px] grid place-items-center font-mono uppercase text-xs text-[#161616]/40">Loading your preview…</div>
+              )}
+            </div>
+
+            {adjustOpen ? (
+              <div className="mb-3">
+                <textarea
+                  value={adjustText}
+                  onChange={(e) => setAdjustText(e.target.value)}
+                  rows={2}
+                  placeholder="What else should change? e.g. make the button green instead."
+                  className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] resize-y mb-2"
+                />
+                <div className="flex gap-2">
+                  <button onClick={() => act('adjust', adjustText.trim())} disabled={!!busy || !adjustText.trim()} className="px-5 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50">
+                    {busy === 'adjust' ? 'Adjusting…' : 'Adjust it'}
+                  </button>
+                  <button onClick={() => setAdjustOpen(false)} className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-mono text-[#161616]/55 hover:text-[#161616]">Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => act('ship')} disabled={!!busy} className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">
+                  {busy === 'ship' ? 'Shipping…' : state.published ? 'Ship it live' : 'Looks great, ship it'}
+                </button>
+                <button onClick={() => setAdjustOpen(true)} disabled={!!busy} className="px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50">
+                  Adjust it
+                </button>
+                <button onClick={() => act('discard')} disabled={!!busy} className="px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-mono text-[#161616]/55 hover:text-[#E0301E] transition-colors">
+                  {busy === 'discard' ? '…' : 'Discard'}
+                </button>
+              </div>
+            )}
+            {err && <p className="text-[#E0301E] text-xs font-body mt-2">{err}</p>}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Just paid, webhook still catching up: reassure rather than reshow the buy form.
+  if (justPurchased && !edit) {
+    return (
+      <div className="border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 bg-[#F5B700]/12">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Your edit</span>
+        <div className="flex items-center gap-3 mt-2">
+          <span className="relative flex h-3 w-3">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F5B700] opacity-70" />
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-[#F5B700]" />
+          </span>
+          <h3 className="font-display text-xl font-semibold text-[#161616]">Payment received. Starting your edit…</h3>
+        </div>
+        <p className="text-[#161616]/60 font-body text-sm mt-2">This takes a few seconds to kick off, then a few minutes to build. This card updates itself.</p>
+      </div>
+    );
+  }
+
+  // ── No edit in flight: free edit, or buy one, or (closed / no site) send a note. ──
+  const canBuy = spent && state.hasSite && !state.closed;
 
   return (
     <div className={`border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 ${spent ? 'bg-white' : 'bg-[#F5B700]/12'}`}>
       <div className="flex items-start justify-between gap-4 mb-1">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Your free edits</span>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">{canBuy ? 'Edit your site' : 'Your free edits'}</span>
         <div className="flex gap-1.5 flex-shrink-0" aria-label={`${state.used} of ${state.included} edits used`}>
           {Array.from({ length: state.included }).map((_, i) => (
-            <span
-              key={i}
-              className={`w-7 h-2.5 rounded-full border-2 border-[#161616] ${i < state.used ? 'bg-[#161616]' : 'bg-white'}`}
-            />
+            <span key={i} className={`w-7 h-2.5 rounded-full border-2 border-[#161616] ${i < state.used ? 'bg-[#161616]' : 'bg-white'}`} />
           ))}
         </div>
       </div>
 
       <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">
-        {state.closed
-          ? 'Your site is live'
-          : spent
-            ? 'Both free edits are used'
-            : `${state.remaining} free edit${state.remaining === 1 ? '' : 's'} left`}
+        {state.closed ? 'Your site is live' : canBuy ? 'Want another change?' : spent ? 'Both free edits are used' : `${state.remaining} free edit${state.remaining === 1 ? '' : 's'} left`}
       </h3>
       <p className="text-[#161616]/65 font-body text-sm mb-4">
         {state.closed
-          ? 'The free-edit window runs up to launch. Changes from here are quoted first, and they are usually small.'
-          : spent
-            ? 'Send the change anyway. Sarah will come back with a price before anyone touches anything, so nothing is a surprise.'
-            : 'Look at what we built and tell us what to change. Be as picky as you like. We do it, you look again.'}
+          ? 'Type any change below. It comes back to you as a preview before anything goes live.'
+          : canBuy
+            ? `Your two free edits are used. Buy one more for ${money2(priceCents)} and it works the same way: we make it, you preview it, you ship it.`
+            : spent
+              ? 'Send the change anyway. Sarah will come back with a price before anyone touches anything.'
+              : 'Tell us what to change. We make it within minutes, you preview it right here, then you ship it yourself.'}
       </p>
 
-      <form onSubmit={submit}>
+      <form onSubmit={canBuy || state.closed ? buyEdit : submitFree}>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={3}
-          placeholder="e.g. Swap the hero photo for our storefront, use our green, and put the phone number bigger at the top."
+          placeholder="e.g. Swap the hero photo for our storefront, use our green, and make the phone number bigger at the top."
           className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] resize-y mb-3"
         />
         {err && <p className="text-[#E0301E] text-xs font-body mb-3">{err}</p>}
         {note && <p className="text-emerald-700 text-xs font-body mb-3">{note}</p>}
         <button
           type="submit"
-          disabled={sending || !text.trim()}
+          disabled={!!busy || !text.trim()}
           className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
         >
-          {sending ? 'Sending…' : spent ? 'Send a change request' : 'Send this edit'}
+          {busy === 'buy' ? 'Opening checkout…' : busy === 'submit' ? 'Sending…' : canBuy || state.closed ? `Buy this edit · ${money2(priceCents)}` : 'Make this edit'}
         </button>
       </form>
     </div>

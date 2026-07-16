@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { createClientRequest } from '@/lib/client-requests';
-import { queueProjectEdit } from '@/lib/site-edit';
+import { queueProjectEdit, PAID_EDIT_PRICE_CENTS } from '@/lib/site-edit';
 
 export const runtime = 'nodejs';
 
@@ -30,9 +30,10 @@ export async function GET() {
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ project: null });
 
+  // Light columns only: never ship site_html / site_html_draft on a poll (megabytes).
   const { data: proj } = await sb
     .from('projects')
-    .select('id, name, revisions_included, revisions_used, status')
+    .select('id, name, revisions_included, revisions_used, status, site_published_at, edit_status, edit_instruction, edit_paid')
     .ilike('client_email', session.email)
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
@@ -41,8 +42,17 @@ export async function GET() {
 
   if (!proj) return NextResponse.json({ project: null });
 
+  // Does a real site exist to edit? A cheap count, not the html itself.
+  const { count: siteCount } = await sb
+    .from('projects')
+    .select('id', { count: 'exact', head: true })
+    .eq('id', proj.id)
+    .not('site_html', 'is', null);
+  const hasSite = (siteCount ?? 0) > 0;
+
   const included = Number(proj.revisions_included ?? 0);
   const used = Number(proj.revisions_used ?? 0);
+  const editStatus = (proj.edit_status as string | null) ?? null;
   return NextResponse.json({
     project: {
       id: proj.id,
@@ -53,7 +63,15 @@ export async function GET() {
       // Once it is launched the free-edit window is over by definition; the offer
       // says "before it goes live".
       closed: proj.status === 'launched',
+      hasSite,
+      published: Boolean(proj.site_published_at),
     },
+    // The in-flight edit, so the card can show "building" then the preview + ship.
+    // 'ready' means the worker wrote a draft (edit_status is only ready with a draft).
+    edit: editStatus
+      ? { status: editStatus, instruction: (proj.edit_instruction as string | null) ?? null, paid: Boolean(proj.edit_paid) }
+      : null,
+    editPriceCents: PAID_EDIT_PRICE_CENTS,
   });
 }
 
