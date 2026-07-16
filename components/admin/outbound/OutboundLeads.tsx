@@ -5,7 +5,7 @@ import Papa from 'papaparse';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
-import { NICHES, NICHE_LABELS, LEAD_STATUSES, STATUS_LABELS, formatPhone, fmtMoney, phoneKey } from '@/lib/outbound';
+import { NICHES, NICHE_LABELS, LEAD_STATUSES, STATUS_LABELS, formatPhone, fmtMoney, phoneKey, isEmail } from '@/lib/outbound';
 import type { Niche, OutboundLead, Rep } from '@/lib/outbound';
 import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, api, card, btnPrimary, btnGhost, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
 
@@ -269,6 +269,7 @@ export default function OutboundLeads() {
         if (col && raw[header] != null) row[col] = String(raw[header]).trim();
       }
       if (!row.business_name || !row.phone) continue;
+      if (!isEmail(row.email)) continue; // a lead needs an email AND a phone
       const key = phoneKey(row.phone);
       if (key.length < 7 || seen.has(key)) continue;
       seen.add(key);
@@ -286,11 +287,14 @@ export default function OutboundLeads() {
     if (importRows.length === 0) return;
     setImporting(true);
     try {
-      const res = await api<{ inserted: number; skipped: number }>('/api/admin/outbound/leads/import', {
+      const res = await api<{ inserted: number; skipped: number; skippedNoEmail?: number }>('/api/admin/outbound/leads/import', {
         method: 'POST',
         body: JSON.stringify({ rows: importRows }),
       });
-      push(`Imported ${res.inserted} leads (${res.skipped} duplicates skipped).`);
+      const parts = [`Imported ${res.inserted} leads`];
+      if (res.skipped) parts.push(`${res.skipped} duplicates skipped`);
+      if (res.skippedNoEmail) parts.push(`${res.skippedNoEmail} skipped for no email`);
+      push(`${parts.join(' · ')}.`);
       setImportOpen(false);
       setPreview(null);
       void load();
@@ -526,7 +530,7 @@ export default function OutboundLeads() {
         onClose={() => { setImportOpen(false); setPreview(null); }}
         eyebrow="Outbound"
         title="Import leads from CSV"
-        subtitle="Headers are auto-mapped. Duplicate phone numbers are skipped."
+        subtitle="Headers are auto-mapped. Every lead needs an email and a phone; rows missing either, or duplicates, are skipped."
         size="xl"
       >
         {!preview && (
@@ -686,7 +690,7 @@ function AddLeadModal({
           <input className={inputCls} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="(406) 555-0134" />
         </div>
         <div>
-          <label className={labelCls}>Email</label>
+          <label className={labelCls}>Email *</label>
           <input className={inputCls} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="owner@business.com" />
         </div>
         <div>
@@ -737,7 +741,7 @@ function AddLeadModal({
       </div>
       <div className="flex justify-end gap-2 mt-5">
         <button onClick={onClose} className={btnGhost}>Cancel</button>
-        <button onClick={() => void submit()} disabled={saving || !form.business_name.trim() || form.phone.replace(/\D/g, '').length < 7} className={btnPrimary}>
+        <button onClick={() => void submit()} disabled={saving || !form.business_name.trim() || form.phone.replace(/\D/g, '').length < 7 || !isEmail(form.email)} className={btnPrimary}>
           {saving ? 'Saving...' : 'Add lead'}
         </button>
       </div>

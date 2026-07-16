@@ -280,6 +280,18 @@ export const leadInputSchema = z.object({
 });
 export type LeadInput = z.infer<typeof leadInputSchema>;
 
+/** Every lead needs a real inbox. Used to gate manual adds and CSV imports. */
+export const isEmail = (v: string | null | undefined): boolean => !!v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
+/** Stricter than leadInputSchema: a lead is not a lead without an email AND a
+ *  phone (phone is already required above). Manual single adds use this. */
+export const leadCreateSchema = leadInputSchema.extend({
+  email: trimmed(200)
+    .min(3, 'Every lead needs an email address.')
+    .refine((v) => isEmail(v), 'Enter a valid email — a lead needs both an email and a phone.'),
+});
+export type LeadCreate = z.infer<typeof leadCreateSchema>;
+
 export const leadPatchSchema = leadInputSchema.partial().extend({
   next_action_at: optionalText(60),
 });
