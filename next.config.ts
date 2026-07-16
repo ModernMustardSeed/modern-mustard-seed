@@ -2,6 +2,11 @@ import type { NextConfig } from 'next';
 
 const config: NextConfig = {
   reactStrictMode: true,
+  // Dev-only: without this, hitting the dev server as 127.0.0.1 (how most of
+  // our scripts and Playwright runs address it) gets /_next dev resources
+  // BLOCKED as cross-origin, and pages render but never hydrate: no errors,
+  // React just stays dead. Costs nothing in production.
+  allowedDevOrigins: ['127.0.0.1', 'localhost'],
   // node-ical (and its rrule/moment-timezone deps) must run from node_modules
   // untouched. Bundling it breaks at runtime ("BigInt is not a function").
   serverExternalPackages: ['node-ical'],
