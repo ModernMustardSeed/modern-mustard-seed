@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { ForgedCall } from '@/lib/sidekick';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
 import { OS_AUTOMATIONS } from '@/data/demo-os';
@@ -27,6 +28,8 @@ import DemoVoiceWidget from '@/components/demo/DemoVoiceWidget';
 type Tab = 'today' | 'signature' | 'customers' | 'money' | 'reviews' | 'ads' | 'automations' | 'assistant';
 
 const ASSISTANT_ICON = 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z';
+const PHONE_ICON =
+  'M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z';
 const SIGNATURE_ICON =
   'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z';
 
@@ -83,6 +86,11 @@ function hash(s: string): number {
 }
 
 const SOURCES: LeadSource[] = ['Receptionist', 'Website', 'Google', 'Referral'];
+
+function phoneFor(name: string): string {
+  const h = hash(name);
+  return `(${200 + (h % 700)}) ${100 + (h % 900)}-${1000 + (h % 9000)}`;
+}
 const AGES = ['9 min ago', '42 min ago', '2 hours ago', 'yesterday', '2 days ago', 'last week'];
 
 /** New calls the receptionist can catch on demand, so the owner can watch the
@@ -109,20 +117,78 @@ function enrich(c: OsCustomer, i: number): CrmLead {
   };
 }
 
+/** Count-up that animates FROM its previous value, so a mid-session bump
+ *  (a caught call landing) reads as an odometer tick, not a reset to zero. */
 function useCountUp(target: number, ms = 1600): number {
   const [v, setV] = useState(0);
+  const fromRef = useRef(0);
   useEffect(() => {
+    const from = fromRef.current;
     let raf = 0;
     const t0 = performance.now();
     const tick = (t: number) => {
       const p = Math.min(1, (t - t0) / ms);
-      setV(Math.round(target * (1 - Math.pow(1 - p, 3))));
+      const val = Math.round(from + (target - from) * (1 - Math.pow(1 - p, 3)));
+      setV(val);
+      fromRef.current = val;
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [target, ms]);
   return v;
+}
+
+/** Deterministic 12-point revenue sparkline; seeded by name so the server and
+ *  the browser draw the same line (hydration rule as everywhere in this file). */
+function Spark({ seed, accent }: { seed: string; accent: string }) {
+  const d = useMemo(() => {
+    const pts: number[] = [];
+    for (let i = 0; i < 12; i++) pts.push(26 - i * 1.4 - (hash(seed + i) % 6));
+    const step = 120 / 11;
+    return pts.map((y, i) => `${i === 0 ? 'M' : 'L'}${(i * step).toFixed(1)},${y.toFixed(1)}`).join(' ');
+  }, [seed]);
+  return (
+    <svg width="120" height="32" viewBox="0 0 120 32" fill="none" aria-hidden className="mt-1.5">
+      <path d={`${d} L120,32 L0,32 Z`} fill={accent} opacity="0.12" stroke="none" />
+      <path d={d} stroke={accent} strokeWidth="2" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'osDraw 1.6s ease-out .3s forwards' }} />
+    </svg>
+  );
+}
+
+/** A one-shot particle burst for the moment a job is WON. Pure CSS transforms,
+ *  removed from the tree by its owner after ~1s. */
+function WinBurst({ x, y, accent, text }: { x: number; y: number; accent: string; text: string }) {
+  const bits = Array.from({ length: 18 }, (_, i) => {
+    const a = (i / 18) * Math.PI * 2 + (i % 3) * 0.23;
+    const dist = 46 + (i % 5) * 16;
+    return {
+      dx: Math.cos(a) * dist,
+      dy: Math.sin(a) * dist - 24,
+      color: i % 3 === 0 ? text : accent,
+      size: 5 + (i % 3) * 2,
+      round: i % 2 === 0,
+    };
+  });
+  return (
+    <div className="fixed z-[90] pointer-events-none" style={{ left: x, top: y }} aria-hidden>
+      {bits.map((b, i) => (
+        <span
+          key={i}
+          className="absolute block"
+          style={{
+            width: b.size,
+            height: b.size,
+            background: b.color,
+            borderRadius: b.round ? '50%' : 1,
+            ['--dx' as string]: `${b.dx}px`,
+            ['--dy' as string]: `${b.dy}px`,
+            animation: `osBurst .85s cubic-bezier(.15,.65,.35,1) ${i * 12}ms forwards`,
+          } as CSSProperties}
+        />
+      ))}
+    </div>
+  );
 }
 
 function Icon({ d, size = 18, color }: { d: string; size?: number; color?: string }) {
@@ -174,7 +240,9 @@ export default function OsDemoApp({
   };
 
   const place = [config.city, config.state].filter(Boolean).join(', ');
-  const revenue = useCountUp(preset.weekRevenue);
+  /** Dollars added to the odometer by calls caught during THIS session. */
+  const [bonus, setBonus] = useState(0);
+  const revenue = useCountUp(preset.weekRevenue + bonus);
 
   /* ------------------------------ CRM state ------------------------------ */
   // Enrich the preset leads into real CRM records. Everything derived is derived
@@ -190,13 +258,18 @@ export default function OsDemoApp({
   const patch = (id: string, up: Partial<CrmLead>) =>
     setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, ...up } : l)));
 
-  const move = (id: string, dir: 1 | -1) => {
+  const move = (id: string, dir: 1 | -1, at?: { x: number; y: number }) => {
     const l = leads.find((x) => x.id === id);
     if (!l) return;
     const next = Math.max(0, Math.min(3, l.stage + dir)) as OsCustomer['stage'];
     if (next === l.stage) return;
     patch(id, { stage: next, lost: false });
-    say(`${l.name} moved to ${preset.stages[next]}.`);
+    if (next === 3) {
+      fireBurst(at?.x ?? window.innerWidth / 2, at?.y ?? 160);
+      say(`${l.name} won. $${l.value.toLocaleString()} on the board.`);
+    } else {
+      say(`${l.name} moved to ${preset.stages[next]}.`);
+    }
   };
 
   const markLost = (id: string) => {
@@ -215,24 +288,93 @@ export default function OsDemoApp({
     say('Note saved to the record.');
   };
 
-  // The receptionist catching a call IS the product. Let them watch one land.
-  const [callIn, setCallIn] = useState(false);
-  const catchCall = () => {
-    const inbound = INBOUND_POOL[leads.length % INBOUND_POOL.length];
-    const fresh = enrich(
-      { name: inbound.name, need: inbound.need.replace(/\{job\}/g, preset.jobWord), value: preset.avgTicket, stage: 0 },
-      leads.length + 97,
-    );
-    fresh.source = 'Receptionist';
-    fresh.age = 'just now';
-    fresh.notes = [{ when: 'just now', text: `Answered by your AI receptionist. Caller asked about ${preset.jobWord} work and left a number.` }];
-    setCallIn(true);
-    window.setTimeout(() => {
+  /* --------------------------- live-call theater --------------------------- */
+  // The receptionist catching a call IS the product, so the demo performs it:
+  // a call rings in on its own a few seconds after the owner arrives, the AI
+  // answers it in front of them, and the lead lands in the pipeline while the
+  // rescued-revenue odometer ticks up. Deterministic content only (pool order +
+  // name hashes): Math.random would desync the replay and hydration.
+  type TheaterPhase = 'ring' | 'answer' | 'filed';
+  const [theater, setTheater] = useState<{ n: number; phase: TheaterPhase; openAfter: boolean } | null>(null);
+  const theaterRef = useRef(theater);
+  theaterRef.current = theater;
+  const [typedCount, setTypedCount] = useState(0);
+  const [callsCaught, setCallsCaught] = useState(0);
+  const [justLanded, setJustLanded] = useState<string | null>(null);
+
+  const inboundOf = (n: number) => INBOUND_POOL[n % INBOUND_POOL.length];
+  const script = useMemo(() => {
+    if (!theater) return '';
+    const inbound = inboundOf(theater.n);
+    return [
+      `AI · Good evening, ${config.business}. How can I help?`,
+      `${inbound.name.split(' ')[0]} · ${inbound.need.replace(/\{job\}/g, preset.jobWord)}.`,
+    ].join('\n');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [theater?.n, config.business, preset.jobWord]);
+
+  const runTheater = (openAfter = false) => {
+    if (theaterRef.current) return;
+    setTypedCount(0);
+    setTheater({ n: callsCaught, phase: 'ring', openAfter });
+  };
+  const runTheaterRef = useRef(runTheater);
+  runTheaterRef.current = runTheater;
+
+  // A call arrives on its own shortly after they land, then occasionally after.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ts = [6500, 64000, 128000].map((ms) => window.setTimeout(() => runTheaterRef.current(false), ms));
+    return () => ts.forEach((t) => window.clearTimeout(t));
+  }, []);
+
+  // Phase clock: ring 1.5s, then the transcript types, then filed lingers 2.4s.
+  useEffect(() => {
+    if (!theater) return;
+    if (theater.phase === 'ring') {
+      const t = window.setTimeout(() => setTheater((th) => (th ? { ...th, phase: 'answer' } : th)), 1500);
+      return () => window.clearTimeout(t);
+    }
+    if (theater.phase === 'answer') {
+      const iv = window.setInterval(() => setTypedCount((c) => Math.min(c + 1, script.length)), 22);
+      return () => window.clearInterval(iv);
+    }
+    const t = window.setTimeout(() => setTheater(null), 2400);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [theater?.phase, script.length]);
+
+  // Transcript finished typing: file the lead, tick the odometer, celebrate.
+  useEffect(() => {
+    if (!theater || theater.phase !== 'answer' || script.length === 0 || typedCount < script.length) return;
+    const t = window.setTimeout(() => {
+      const inbound = inboundOf(theater.n);
+      const fresh = enrich(
+        { name: inbound.name, need: inbound.need.replace(/\{job\}/g, preset.jobWord), value: preset.avgTicket, stage: 0 },
+        leads.length + 97,
+      );
+      fresh.source = 'Receptionist';
+      fresh.age = 'just now';
+      fresh.notes = [{ when: 'just now', text: `Answered by your AI receptionist. Caller asked about ${preset.jobWord} work and left a number.` }];
       setLeads((ls) => [fresh, ...ls]);
-      setCallIn(false);
-      setOpenLead(fresh.id);
+      setCallsCaught((n) => n + 1);
+      setBonus((b) => b + fresh.value);
+      setJustLanded(fresh.id);
+      window.setTimeout(() => setJustLanded(null), 2600);
+      setTheater((th) => (th ? { ...th, phase: 'filed' } : th));
+      if (theater.openAfter) setOpenLead(fresh.id);
       say(`${fresh.name} called. Your receptionist took it and filed the lead.`);
-    }, 1400);
+    }, 650);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [theater, typedCount, script.length]);
+
+  /* ------------------------------ win bursts ------------------------------ */
+  const [bursts, setBursts] = useState<{ id: number; x: number; y: number }[]>([]);
+  const fireBurst = (x: number, y: number) => {
+    const id = Date.now() + Math.floor(x);
+    setBursts((b) => [...b, { id, x, y }]);
+    window.setTimeout(() => setBursts((b) => b.filter((q) => q.id !== id)), 1100);
   };
 
   const visible = useMemo(() => {
@@ -348,10 +490,10 @@ export default function OsDemoApp({
   };
 
   /* ------------------------------- rendering ------------------------------ */
-  const stat = (label: string, value: string, sub: string, i: number, pulse = false) => (
+  const stat = (label: string, value: string, sub: string, i: number, pulse = false, extra?: ReactNode) => (
     <div
       key={label}
-      className="rounded-2xl p-4 border animate-[osIn_.5s_ease-out_both]"
+      className="rounded-2xl p-4 border animate-[osIn_.5s_ease-out_both] transition-transform hover:-translate-y-0.5"
       style={{ background: PANEL, borderColor: LINE, animationDelay: `${i * 90}ms` }}
     >
       <div className="flex items-center gap-2">
@@ -359,6 +501,7 @@ export default function OsDemoApp({
         <p className="text-[10px] uppercase tracking-[0.22em] font-semibold" style={{ color: DIM }}>{label}</p>
       </div>
       <p className="font-mono text-3xl font-bold mt-1.5" style={{ color: TEXT }}>{value}</p>
+      {extra}
       <p className="text-[12px] mt-1" style={{ color: DIM }}>{sub}</p>
     </div>
   );
@@ -372,7 +515,16 @@ export default function OsDemoApp({
 
   return (
     <div className="fixed inset-0 flex flex-col font-sans" style={{ background: INK }}>
-      <style>{`@keyframes osIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}`}</style>
+      <style>{`
+@keyframes osIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes osSlide{from{opacity:0;transform:translateY(-16px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes osShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg)}75%{transform:rotate(14deg)}}
+@keyframes osBurst{to{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}}
+@keyframes osTicker{to{transform:translateX(-50%)}}
+@keyframes osDraw{to{stroke-dashoffset:0}}
+@keyframes osLand{from{opacity:0;transform:translateY(-10px) scale(.92)}60%{transform:translateY(2px) scale(1.02)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+`}</style>
 
       {/* Top bar */}
       <header className="shrink-0 flex items-center gap-3 px-4 sm:px-6 h-14 border-b" style={{ borderColor: LINE }}>
@@ -440,8 +592,37 @@ export default function OsDemoApp({
                   While you slept, your receptionist answered {preset.overnightCalls.length} calls. Here is your day, already sorted.
                 </p>
               </div>
+              {/* The live wire: the receptionist's night, streaming. One glance
+                  says "this thing is awake even when I am not". */}
+              <div
+                className="rounded-xl border mb-3 flex items-center gap-2.5 px-3 py-2 overflow-hidden animate-[osIn_.5s_ease-out_.1s_both]"
+                style={{ background: PANEL, borderColor: LINE }}
+              >
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: accent }} />
+                  <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: accent }} />
+                </span>
+                <span className="text-[9px] uppercase tracking-[0.2em] font-bold shrink-0" style={{ color: accent }}>Live wire</span>
+                <div
+                  className="relative flex-1 overflow-hidden"
+                  style={{ maskImage: 'linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)', WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)' }}
+                >
+                  <div className="flex w-max" style={{ animation: 'osTicker 32s linear infinite' }}>
+                    {[0, 1].map((k) => (
+                      <div key={k} className="flex gap-8 pr-8" aria-hidden={k === 1}>
+                        {preset.overnightCalls.map((c) => (
+                          <span key={`${k}-${c.time}`} className="text-[11px] font-mono whitespace-nowrap" style={{ color: DIM }}>
+                            <span style={{ color: TEXT }}>{c.time}</span> · {c.caller} · {c.need} → <span style={{ color: accent }}>{c.outcome}</span>
+                          </span>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                {stat('Rescued this week', `$${revenue.toLocaleString()}`, 'booked from calls + follow-ups', 0)}
+                {stat('Rescued this week', `$${revenue.toLocaleString()}`, 'booked from calls + follow-ups', 0, false, <Spark seed={config.business} accent={accent} />)}
                 {stat('Caught overnight', String(preset.overnightCalls.length), 'answered by your AI, zero missed', 1, true)}
                 {stat(`${preset.jobWord.charAt(0).toUpperCase() + preset.jobWord.slice(1)}s today`, String(preset.todayJobs.length), 'confirmed and reminded', 2)}
                 {stat('Waiting on you', String(live.filter((l) => l.stage === 1).length), 'quotes to send, one tap each', 3)}
@@ -577,12 +758,12 @@ export default function OsDemoApp({
                   style={{ background: PANEL, borderColor: LINE, color: TEXT }}
                 />
                 <button
-                  onClick={catchCall}
-                  disabled={callIn}
+                  onClick={() => runTheater(true)}
+                  disabled={theater !== null}
                   className="rounded-xl px-4 py-2.5 text-[12px] font-bold uppercase tracking-[0.08em] disabled:opacity-60 transition-transform hover:-translate-y-0.5"
                   style={{ background: accent, color: accentInk }}
                 >
-                  {callIn ? 'Phone ringing...' : '＋ Catch a live call'}
+                  {theater ? 'Phone ringing...' : '＋ Catch a live call'}
                 </button>
               </div>
 
@@ -601,7 +782,13 @@ export default function OsDemoApp({
                           <div
                             key={l.id}
                             className="rounded-xl border p-2.5 transition-transform hover:-translate-y-0.5"
-                            style={{ background: PANEL_SOFT, borderColor: l.source === 'Receptionist' ? accent : LINE }}
+                            style={{
+                              background: PANEL_SOFT,
+                              borderColor: l.source === 'Receptionist' ? accent : LINE,
+                              ...(justLanded === l.id
+                                ? { animation: 'osLand .7s cubic-bezier(.2,.9,.3,1.2) both', boxShadow: `0 0 0 3px ${accentSoft}, 0 10px 30px -12px ${accent}` }
+                                : {}),
+                            }}
                           >
                             <button onClick={() => setOpenLead(l.id)} className="w-full text-left">
                               <p className="text-[13px] font-semibold" style={{ color: TEXT }}>{l.name}</p>
@@ -615,7 +802,7 @@ export default function OsDemoApp({
                             </button>
                             {l.stage < 3 && (
                               <button
-                                onClick={() => move(l.id, 1)}
+                                onClick={(e) => move(l.id, 1, { x: e.clientX, y: e.clientY })}
                                 className="mt-2 w-full rounded-lg border text-[10px] uppercase tracking-[0.1em] font-bold py-1.5"
                                 style={{ borderColor: LINE, color: DIM }}
                               >
@@ -959,7 +1146,7 @@ export default function OsDemoApp({
                     {preset.stages[selected.stage]}
                   </span>
                   <button
-                    onClick={() => move(selected.id, 1)}
+                    onClick={(e) => move(selected.id, 1, { x: e.clientX, y: e.clientY })}
                     disabled={selected.stage === 3}
                     className="rounded-lg border px-3 py-2 text-[13px] font-bold disabled:opacity-40"
                     style={{ borderColor: LINE, color: TEXT }}
@@ -1018,6 +1205,65 @@ export default function OsDemoApp({
           {toast}
         </div>
       )}
+
+      {/* Incoming-call theater. Top of the screen (the bottom-right corner
+          belongs to the voice widget), honest about being simulated. */}
+      {theater && (
+        <div
+          className="fixed top-3 right-3 left-3 sm:left-auto sm:w-[380px] z-[80] rounded-2xl border-2 shadow-2xl overflow-hidden animate-[osSlide_.4s_cubic-bezier(.2,.9,.3,1.15)_both]"
+          style={{ background: PANEL, borderColor: accent }}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center gap-3 p-3.5">
+            <span
+              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+              style={{
+                background: theater.phase === 'ring' ? accent : accentSoft,
+                animation: theater.phase === 'ring' ? 'osShake .5s ease-in-out infinite' : undefined,
+              }}
+            >
+              <Icon d={PHONE_ICON} color={theater.phase === 'ring' ? accentInk : accent} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-bold leading-tight" style={{ color: TEXT }}>
+                {theater.phase === 'ring' ? 'Incoming call' : theater.phase === 'answer' ? 'Your AI receptionist answered' : 'Booked and filed to Customers'}
+              </p>
+              <p className="text-[11px] font-mono mt-0.5" style={{ color: theater.phase === 'filed' ? accent : DIM }}>
+                {theater.phase === 'filed'
+                  ? `+$${preset.avgTicket.toLocaleString()} potential · zero rings missed`
+                  : `${phoneFor(inboundOf(theater.n).name)} · after hours`}
+              </p>
+            </div>
+            <span className="shrink-0 text-[9px] uppercase tracking-[0.14em] font-bold rounded-full px-2 py-0.5 border" style={{ color: DIM, borderColor: LINE }}>
+              Simulated
+            </span>
+          </div>
+          {theater.phase !== 'ring' && (
+            <div className="px-3.5 pb-3.5 space-y-1">
+              {script
+                .slice(0, theater.phase === 'filed' ? script.length : typedCount)
+                .split('\n')
+                .map((line, i) => (
+                  <p key={i} className="text-[12px] leading-relaxed font-mono" style={{ color: i === 0 ? accent : TEXT }}>
+                    {line}
+                  </p>
+                ))}
+            </div>
+          )}
+          <div className="h-0.5 w-full" style={{ background: LINE }}>
+            <div
+              className="h-full transition-all duration-500"
+              style={{ background: accent, width: theater.phase === 'ring' ? '18%' : theater.phase === 'answer' ? '64%' : '100%' }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Win celebration bursts */}
+      {bursts.map((b) => (
+        <WinBurst key={b.id} x={b.x} y={b.y} accent={accent} text={TEXT} />
+      ))}
 
       {/* The receptionist, one floor down from the corner tabs on mobile. */}
       <div className="fixed bottom-16 md:bottom-4 right-4 z-40">
