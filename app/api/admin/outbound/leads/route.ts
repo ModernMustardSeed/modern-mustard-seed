@@ -28,21 +28,38 @@ export async function GET(req: Request) {
   // A 'caller' rep only ever sees their own leads, whatever the owner param says.
   const { scopeRepId } = await outboundRepScope(guard.supabase);
 
-  let query = guard.supabase.from('outbound_leads').select(LIST_COLUMNS).limit(3000);
-  if (status && (LEAD_STATUSES as readonly string[]).includes(status)) query = query.eq('status', status as LeadStatus);
-  if (niche && (NICHES as readonly string[]).includes(niche)) query = query.eq('niche', niche as Niche);
-  if (scopeRepId) query = query.eq('owner_rep_id', scopeRepId);
-  else if (owner) query = query.eq('owner_rep_id', owner);
-  if (dnc === 'unchecked') query = query.eq('dnc_checked', false);
-  if (q) {
-    const safe = q.replace(/[%,()]/g, ' ').trim();
-    if (safe) query = query.or(`business_name.ilike.%${safe}%,contact_name.ilike.%${safe}%,phone.ilike.%${safe}%,city.ilike.%${safe}%`);
-  }
-  query = query.order(sort, { ascending: asc, nullsFirst: false });
+  // Build a fresh, identically-filtered query per page. Supabase/PostgREST caps
+  // every response at `max_rows` (1000 by default), so a single `.limit(3000)`
+  // was silently returning only the newest 1000 rows — which, after a big import,
+  // are all fresh "new" leads and push every worked/contacted lead out of view.
+  // We page through in 1000-row chunks so the whole list reaches the client,
+  // where the existing filters/search run. Ordered by the sort column with `id`
+  // as a stable tiebreaker so range paging can't skip or duplicate a row.
+  const buildQuery = () => {
+    let query = guard.supabase.from('outbound_leads').select(LIST_COLUMNS);
+    if (status && (LEAD_STATUSES as readonly string[]).includes(status)) query = query.eq('status', status as LeadStatus);
+    if (niche && (NICHES as readonly string[]).includes(niche)) query = query.eq('niche', niche as Niche);
+    if (scopeRepId) query = query.eq('owner_rep_id', scopeRepId);
+    else if (owner) query = query.eq('owner_rep_id', owner);
+    if (dnc === 'unchecked') query = query.eq('dnc_checked', false);
+    if (q) {
+      const safe = q.replace(/[%,()]/g, ' ').trim();
+      if (safe) query = query.or(`business_name.ilike.%${safe}%,contact_name.ilike.%${safe}%,phone.ilike.%${safe}%,city.ilike.%${safe}%`);
+    }
+    return query.order(sort, { ascending: asc, nullsFirst: false }).order('id', { ascending: true });
+  };
 
-  const { data, error } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ leads: data });
+  const PAGE = 1000;
+  const MAX_LEADS = 20000; // hard ceiling; well above today's ~2.2k, guards a runaway loop
+  const leads: unknown[] = [];
+  for (let from = 0; from < MAX_LEADS; from += PAGE) {
+    const { data, error } = await buildQuery().range(from, from + PAGE - 1);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (!data || data.length === 0) break;
+    leads.push(...data);
+    if (data.length < PAGE) break;
+  }
+  return NextResponse.json({ leads });
 }
 
 export async function POST(req: Request) {
