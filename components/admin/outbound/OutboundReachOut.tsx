@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Modal from '@/components/ui/Modal';
 import { formatPhone } from '@/lib/outbound';
-import type { EmailPreview, MessageDelivery, OutboundLead, ThreadMessage } from '@/lib/outbound';
+import type { EmailPreview, MessageDelivery, OutboundAudit, OutboundLead, ThreadMessage } from '@/lib/outbound';
 import { api, btnGhost, btnPrimary, btnSeed, inputCls, labelCls } from '@/components/admin/outbound/ui';
 
 /**
@@ -20,6 +20,25 @@ export function scoreTone(score: number): { fg: string; bg: string } {
   if (score >= 80) return { fg: '#3f5d34', bg: 'rgba(63,93,52,0.12)' };
   if (score >= 60) return { fg: '#7a5c1a', bg: 'rgba(181,138,42,0.16)' };
   return { fg: '#a03123', bg: 'rgba(160,49,35,0.10)' };
+}
+
+/** Humanize an audit category key ("seo_geo" -> "SEO GEO", "mobile_ux" -> "Mobile UX"). */
+const AUDIT_ACRONYMS = new Set(['seo', 'geo', 'ai', 'ux', 'ui', 'cta', 'url', 'faq', 'llm']);
+function prettyCategory(key: string): string {
+  return key
+    .replace(/[_-]+/g, ' ')
+    .split(' ')
+    .filter(Boolean)
+    .map((w) => (AUDIT_ACRONYMS.has(w.toLowerCase()) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(' ');
+}
+
+/** Priority badge colors for the full punch list. */
+function priorityTone(priority: string): { fg: string; bg: string; label: string } {
+  const p = priority.toLowerCase();
+  if (/high|critical|urgent|p0|p1/.test(p)) return { fg: '#a03123', bg: 'rgba(160,49,35,0.10)', label: priority };
+  if (/med|p2/.test(p)) return { fg: '#7a5c1a', bg: 'rgba(181,138,42,0.16)', label: priority };
+  return { fg: '#3f5d34', bg: 'rgba(63,93,52,0.12)', label: priority };
 }
 
 const chip =
@@ -818,6 +837,7 @@ function SentEmailViewer({ lead, mid, onClose }: { lead: OutboundLead; mid: stri
 /* ------------------------------ audit intel ------------------------------- */
 
 export function AuditIntelCard({ lead, onRun, auditing }: { lead: OutboundLead; onRun: () => void; auditing: boolean }) {
+  const [showFull, setShowFull] = useState(false);
   const audit = lead.audit_json;
   if (!audit || lead.audit_score == null) {
     return (
@@ -847,32 +867,173 @@ export function AuditIntelCard({ lead, onRun, auditing }: { lead: OutboundLead; 
   const topFix = audit.top_three_fixes?.[0];
 
   return (
-    <div className="bg-[#fffdf8] border-2 border-[#1a1815] rounded-2xl shadow-[5px_5px_0_0_#1a1815] p-5 relative">
-      <div className="flex items-center gap-2 mb-2.5">
-        <span className="w-6 h-6 rounded-full bg-[#b58a2a] text-[#1a1815] font-oswald font-bold text-xs flex items-center justify-center">★</span>
-        <span className="text-[11px] uppercase tracking-[0.24em] font-oswald font-semibold text-[#1a1815]/60">Audit intel · your ammo</span>
-      </div>
-      <div className="flex items-start gap-4">
-        <div className="shrink-0 w-[74px] h-[74px] rounded-2xl border-2 flex flex-col items-center justify-center" style={{ background: tone.bg, borderColor: tone.fg }}>
-          <span className="font-oswald font-bold text-3xl leading-none" style={{ color: tone.fg }}>{lead.audit_score}</span>
-          <span className="font-oswald text-[10px] uppercase tracking-[0.1em]" style={{ color: tone.fg }}>{audit.letter_grade || '/100'}</span>
+    <>
+      <div className="bg-[#fffdf8] border-2 border-[#1a1815] rounded-2xl shadow-[5px_5px_0_0_#1a1815] p-5 relative">
+        <div className="flex items-center gap-2 mb-2.5">
+          <span className="w-6 h-6 rounded-full bg-[#b58a2a] text-[#1a1815] font-oswald font-bold text-xs flex items-center justify-center">★</span>
+          <span className="text-[11px] uppercase tracking-[0.24em] font-oswald font-semibold text-[#1a1815]/60">Audit intel · your ammo</span>
+          <button
+            onClick={() => setShowFull(true)}
+            className="ml-auto shrink-0 font-oswald uppercase tracking-[0.12em] text-[11px] font-semibold text-[#b58a2a] hover:text-[#1a1815] transition-colors"
+          >
+            Read the full audit →
+          </button>
         </div>
-        <div className="min-w-0">
-          <p className="font-sans text-[15px] leading-relaxed text-[#1a1815]">
-            &ldquo;I actually took a look at your website{domain ? <>, <strong>{domain}</strong>,</> : null} and ran it through a quick audit. It came back at{' '}
-            <mark className="rounded px-1 py-0.5 font-semibold bg-[#b58a2a]/25">{lead.audit_score} out of 100</mark>.
-            {audit.headline ? ` The short version: ${audit.headline}` : ''}&rdquo;
-          </p>
-          {topFix && (
-            <p className="font-sans text-[13px] text-[#1a1815]/65 mt-2">
-              <span className="font-oswald uppercase tracking-[0.1em] text-[11px] text-[#b58a2a] font-semibold mr-1.5">Then:</span>
-              &ldquo;The biggest thing I saw: {topFix.title}. {topFix.why}&rdquo;
+        <div className="flex items-start gap-4">
+          <div className="shrink-0 w-[74px] h-[74px] rounded-2xl border-2 flex flex-col items-center justify-center" style={{ background: tone.bg, borderColor: tone.fg }}>
+            <span className="font-oswald font-bold text-3xl leading-none" style={{ color: tone.fg }}>{lead.audit_score}</span>
+            <span className="font-oswald text-[10px] uppercase tracking-[0.1em]" style={{ color: tone.fg }}>{audit.letter_grade || '/100'}</span>
+          </div>
+          <div className="min-w-0">
+            <p className="font-sans text-[15px] leading-relaxed text-[#1a1815]">
+              &ldquo;I actually took a look at your website{domain ? <>, <strong>{domain}</strong>,</> : null} and ran it through a quick audit. It came back at{' '}
+              <mark className="rounded px-1 py-0.5 font-semibold bg-[#b58a2a]/25">{lead.audit_score} out of 100</mark>.
+              {audit.headline ? ` The short version: ${audit.headline}` : ''}&rdquo;
             </p>
-          )}
-          <p className="font-sans text-[12px] text-[#1a1815]/45 mt-2 italic">Close the loop: &ldquo;Want the full breakdown? What&apos;s the best email for it?&rdquo;</p>
+            {topFix && (
+              <p className="font-sans text-[13px] text-[#1a1815]/65 mt-2">
+                <span className="font-oswald uppercase tracking-[0.1em] text-[11px] text-[#b58a2a] font-semibold mr-1.5">Then:</span>
+                &ldquo;The biggest thing I saw: {topFix.title}. {topFix.why}&rdquo;
+              </p>
+            )}
+            <button onClick={() => setShowFull(true)} className="font-sans text-[12px] text-[#b58a2a] font-semibold hover:text-[#1a1815] transition-colors mt-2 underline decoration-[#b58a2a]/40 underline-offset-2">
+              Read the whole breakdown yourself →
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      <AuditReportModal open={showFull} onClose={() => setShowFull(false)} lead={lead} audit={audit} domain={domain} />
+    </>
+  );
+}
+
+/* ------------------------- full audit report modal ------------------------ */
+
+/** The complete website audit, readable in the cockpit: overall analysis, every
+ *  category with its score + notes, all three fixes (with the "how"), and the
+ *  full punch list. The little intel card is the call script; this is the report. */
+export function AuditReportModal({
+  open,
+  onClose,
+  lead,
+  audit,
+  domain,
+}: {
+  open: boolean;
+  onClose: () => void;
+  lead: OutboundLead;
+  audit: OutboundAudit;
+  domain: string;
+}) {
+  const tone = scoreTone(lead.audit_score ?? audit.overall_score);
+  const categories = audit.categories ? Object.entries(audit.categories) : [];
+  const fixes = audit.top_three_fixes ?? [];
+  const todo = audit.full_todo ?? [];
+  const auditedOn = lead.audit_at ? new Date(lead.audit_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : null;
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      eyebrow="Website audit"
+      title={`${domain || lead.business_name} · ${lead.audit_score ?? Math.round(audit.overall_score)}/100`}
+      subtitle={audit.headline || undefined}
+      size="xl"
+    >
+      <div className="space-y-6">
+        {/* Score banner */}
+        <div className="flex items-center gap-4 rounded-2xl border-2 p-4" style={{ background: tone.bg, borderColor: tone.fg }}>
+          <div className="shrink-0 w-[68px] h-[68px] rounded-xl border-2 flex flex-col items-center justify-center bg-[#fffdf8]" style={{ borderColor: tone.fg }}>
+            <span className="font-oswald font-bold text-3xl leading-none" style={{ color: tone.fg }}>{lead.audit_score ?? Math.round(audit.overall_score)}</span>
+            <span className="font-oswald text-[10px] uppercase tracking-[0.1em]" style={{ color: tone.fg }}>{audit.letter_grade || '/100'}</span>
+          </div>
+          <div className="min-w-0">
+            {audit.headline && <p className="font-oswald font-semibold text-lg text-[#1a1815] leading-tight">{audit.headline}</p>}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-[12px] text-[#1a1815]/55 font-sans">
+              {domain && <span>{domain}</span>}
+              {lead.audit_url && (
+                <a href={lead.audit_url} target="_blank" rel="noopener noreferrer" className="font-oswald uppercase tracking-[0.1em] text-[11px] font-semibold text-[#b58a2a] hover:text-[#1a1815] transition-colors">
+                  Open shareable report ↗
+                </a>
+              )}
+              {auditedOn && <span>Audited {auditedOn}</span>}
+            </div>
+          </div>
+        </div>
+
+        {/* Overall analysis */}
+        {audit.overall_analysis && (
+          <section>
+            <h4 className="font-oswald uppercase tracking-[0.16em] text-[12px] text-[#b58a2a] font-semibold mb-1.5">The read</h4>
+            <p className="font-sans text-[14px] text-[#1a1815]/85 leading-relaxed whitespace-pre-line">{audit.overall_analysis}</p>
+          </section>
+        )}
+
+        {/* Category breakdown */}
+        {categories.length > 0 && (
+          <section>
+            <h4 className="font-oswald uppercase tracking-[0.16em] text-[12px] text-[#b58a2a] font-semibold mb-2.5">Category breakdown</h4>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {categories.map(([key, c]) => {
+                const t = scoreTone(c.score);
+                return (
+                  <div key={key} className="border-2 border-[#1a1815]/12 rounded-xl p-3.5">
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <span className="font-oswald uppercase tracking-[0.1em] text-[12px] text-[#1a1815] font-semibold">{prettyCategory(key)}</span>
+                      <span className="font-oswald font-bold text-[13px] px-2 py-0.5 rounded-md border tabular-nums" style={{ color: t.fg, background: t.bg, borderColor: t.fg }}>
+                        {c.score}{c.letter ? ` · ${c.letter}` : ''}
+                      </span>
+                    </div>
+                    {c.notes && <p className="font-sans text-[13px] text-[#1a1815]/70 leading-relaxed">{c.notes}</p>}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* Top three fixes */}
+        {fixes.length > 0 && (
+          <section>
+            <h4 className="font-oswald uppercase tracking-[0.16em] text-[12px] text-[#b58a2a] font-semibold mb-2.5">The biggest fixes</h4>
+            <ol className="space-y-3">
+              {fixes.map((f, i) => (
+                <li key={i} className="border-l-4 border-[#b58a2a] pl-3.5">
+                  <p className="font-oswald font-semibold text-[15px] text-[#1a1815] leading-snug">{i + 1}. {f.title}</p>
+                  {f.why && <p className="font-sans text-[13px] text-[#1a1815]/70 mt-1 leading-relaxed"><span className="font-semibold text-[#1a1815]">Why it matters:</span> {f.why}</p>}
+                  {f.how && <p className="font-sans text-[13px] text-[#1a1815]/70 mt-0.5 leading-relaxed"><span className="font-semibold text-[#1a1815]">How to fix it:</span> {f.how}</p>}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {/* Full punch list */}
+        {todo.length > 0 && (
+          <section>
+            <h4 className="font-oswald uppercase tracking-[0.16em] text-[12px] text-[#b58a2a] font-semibold mb-2.5">Full punch list ({todo.length})</h4>
+            <ul className="space-y-2">
+              {todo.map((t, i) => {
+                const pt = priorityTone(t.priority || '');
+                return (
+                  <li key={i} className="flex items-start gap-2.5 text-[13px] font-sans">
+                    {t.priority && (
+                      <span className="shrink-0 font-oswald uppercase tracking-[0.08em] text-[10px] font-bold px-1.5 py-0.5 rounded border mt-0.5" style={{ color: pt.fg, background: pt.bg, borderColor: pt.fg }}>
+                        {pt.label}
+                      </span>
+                    )}
+                    <span className="text-[#1a1815]/80 leading-relaxed">
+                      {t.category && <span className="text-[#1a1815]/45">{prettyCategory(t.category)}: </span>}
+                      {t.task}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+      </div>
+    </Modal>
   );
 }
 
