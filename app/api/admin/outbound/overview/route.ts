@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireOutboundAdmin, outboundRepScope } from '@/lib/outbound-server';
+import { requireOutboundAdmin, outboundRepScope, fetchAllRows } from '@/lib/outbound-server';
 import { denverToday, denverWeekStart } from '@/lib/outbound';
 import type { DailyRepStat, HeatReason } from '@/lib/outbound';
 
@@ -46,21 +46,26 @@ export async function GET() {
   // A 'caller' rep (part-time helper) sees only their own leads/dashboard; owners see the whole floor.
   const { reps, scopeRepId } = await outboundRepScope(guard.supabase);
 
-  // ORDER MATTERS, and it is not cosmetic. This query is capped, and an
-  // UNORDERED capped select hands back an arbitrary slice: with 1,198 active
-  // leads against the old cap of 600, the rows that fell off were the newest
-  // ones, so a Demo Station signup never reached the queue at all no matter how
-  // hot it scored. Newest-first means any future overflow sheds the OLDEST cold
-  // leads instead. If the active floor ever nears this cap, do not just raise
-  // it: split the fetch (due callbacks + signals first, then fresh).
-  let candQuery = guard.supabase
-    .from('outbound_leads')
-    .select(
-      'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, last_seen_at, email_open_count, demo_url, source, origin, created_at',
-    )
-    .in('status', ['new', 'contacted', 'callback'])
-    .order('created_at', { ascending: false });
-  if (scopeRepId) candQuery = candQuery.eq('owner_rep_id', scopeRepId);
+  // We page through EVERY active candidate (fetchAllRows), not a capped slice.
+  // The old single-request `.limit(5000)` was silently truncated to PostgREST's
+  // 1000-row cap: once the floor passed 1000 active leads, a due callback or a
+  // hot signal on an older lead could never reach the queue no matter how it
+  // scored. Ordered newest-first with an `id` tiebreaker so range paging is
+  // stable. If the ACTIVE floor ever grows into the tens of thousands, optimize
+  // by splitting the fetch (due callbacks + signals first, then a fresh slice)
+  // rather than pulling the whole set every 60s poll.
+  const makeCandQuery = () => {
+    let qb = guard.supabase
+      .from('outbound_leads')
+      .select(
+        'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, last_seen_at, email_open_count, demo_url, source, origin, created_at',
+      )
+      .in('status', ['new', 'contacted', 'callback'])
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: true });
+    if (scopeRepId) qb = qb.eq('owner_rep_id', scopeRepId);
+    return qb;
+  };
 
   let lockedQuery = guard.supabase
     .from('outbound_leads')
@@ -71,7 +76,7 @@ export async function GET() {
 
   const [statsRes, candRes, unreadRes, pilotsRes, lockedRes] = await Promise.all([
     guard.supabase.from('outbound_daily_rep_stats').select('*').gte('day', weekStart),
-    candQuery.limit(5000),
+    fetchAllRows<Candidate>(makeCandQuery),
     guard.supabase.from('messages').select('outbound_lead_id').eq('direction', 'inbound').eq('read', false).not('outbound_lead_id', 'is', null),
     guard.supabase
       .from('outbound_pilots')

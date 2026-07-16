@@ -20,6 +20,16 @@ const SOURCE_LABELS: Record<string, string> = {
   'csv-import': 'CSV import',
 };
 
+/** Worked-first ordering: leads you've invested in (contacted, callback, demo'd,
+ *  pilot, won) float above raw "new" imports; dead leads (lost, dnc) sink. Keeps
+ *  a big fresh import from ever burying the relationships you've already built. */
+const STATUS_RANK: Record<string, number> = {
+  won: 0, pilot_live: 0, demo_booked: 0, callback: 0, contacted: 0,
+  new: 1,
+  lost: 2, dnc: 2,
+};
+const rankOf = (s: string) => STATUS_RANK[s] ?? 1;
+
 const EMPTY_FORM = {
   business_name: '',
   contact_name: '',
@@ -88,6 +98,7 @@ export default function OutboundLeads() {
   const [cityF, setCityF] = useState('');
   const [sourceF, setSourceF] = useState('');
   const [unscrubbedOnly, setUnscrubbedOnly] = useState(false);
+  const [workedFirst, setWorkedFirst] = useState(true);
   const [sort, setSort] = useState<SortKey>('created_at');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
 
@@ -186,12 +197,16 @@ export default function OutboundLeads() {
     }
     const mul = dir === 'asc' ? 1 : -1;
     return [...rows].sort((a, b) => {
+      if (workedFirst) {
+        const r = rankOf(a.status) - rankOf(b.status);
+        if (r !== 0) return r; // worked leads on top, then fresh, then dead — column sort orders within each group
+      }
       const va = sort === 'owner' ? repName(a.owner_rep_id) : (a[sort] ?? '');
       const vb = sort === 'owner' ? repName(b.owner_rep_id) : (b[sort] ?? '');
       if (typeof va === 'number' || typeof vb === 'number') return (Number(va) - Number(vb)) * mul;
       return String(va).localeCompare(String(vb)) * mul;
     });
-  }, [leads, status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, q, sort, dir, repName]);
+  }, [leads, status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, workedFirst, q, sort, dir, repName]);
 
   const clickSort = (key: SortKey) => {
     if (sort === key) setDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -366,6 +381,10 @@ export default function OutboundLeads() {
           <label className="flex items-center gap-1.5 font-sans text-xs text-[#1a1815]/70 cursor-pointer ml-1">
             <input type="checkbox" checked={unscrubbedOnly} onChange={(e) => setUnscrubbedOnly(e.target.checked)} className="accent-[#a03123] w-4 h-4" />
             DNC unscrubbed only
+          </label>
+          <label className="flex items-center gap-1.5 font-sans text-xs text-[#1a1815]/70 cursor-pointer" title="Keep contacted, callback, demo'd, pilot and won leads above raw new imports.">
+            <input type="checkbox" checked={workedFirst} onChange={(e) => setWorkedFirst(e.target.checked)} className="accent-[#3f5d34] w-4 h-4" />
+            Worked leads first
           </label>
           {visibleUnscrubbed.length > 0 && (
             <button onClick={() => setScrubOpen(true)} className={`${btnGhost} !px-3 !py-1.5 !text-xs !border-[#a03123] !text-[#a03123] !shadow-[2px_2px_0_0_#a03123]`}>

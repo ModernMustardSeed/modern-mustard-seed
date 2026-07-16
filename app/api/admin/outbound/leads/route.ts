@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireOutboundAdmin, parseBody, outboundRepScope } from '@/lib/outbound-server';
+import { requireOutboundAdmin, parseBody, outboundRepScope, fetchAllRows } from '@/lib/outbound-server';
 import { leadInputSchema, LEAD_STATUSES, NICHES, phoneKey } from '@/lib/outbound';
 import type { LeadStatus, Niche } from '@/lib/outbound';
 
@@ -49,16 +49,8 @@ export async function GET(req: Request) {
     return query.order(sort, { ascending: asc, nullsFirst: false }).order('id', { ascending: true });
   };
 
-  const PAGE = 1000;
-  const MAX_LEADS = 20000; // hard ceiling; well above today's ~2.2k, guards a runaway loop
-  const leads: unknown[] = [];
-  for (let from = 0; from < MAX_LEADS; from += PAGE) {
-    const { data, error } = await buildQuery().range(from, from + PAGE - 1);
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    if (!data || data.length === 0) break;
-    leads.push(...data);
-    if (data.length < PAGE) break;
-  }
+  const { data: leads, error } = await fetchAllRows(buildQuery);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ leads });
 }
 
@@ -69,10 +61,14 @@ export async function POST(req: Request) {
   const parsed = await parseBody(req, leadInputSchema);
   if ('error' in parsed) return parsed.error;
 
-  // Dedupe on phone before inserting.
+  // Dedupe on phone before inserting. Phone formats vary, so we normalize in JS
+  // rather than SQL — which means checking the WHOLE table, not just the newest
+  // 1000 rows PostgREST would hand back by default (older dupes must still catch).
   const key = phoneKey(parsed.data.phone);
   if (key.length >= 7) {
-    const { data: existing } = await guard.supabase.from('outbound_leads').select('id, phone, business_name').limit(5000);
+    const { data: existing } = await fetchAllRows<{ id: string; phone: string; business_name: string }>(
+      () => guard.supabase.from('outbound_leads').select('id, phone, business_name').order('id', { ascending: true }),
+    );
     const dupe = (existing ?? []).find((l) => phoneKey(l.phone) === key);
     if (dupe) {
       return NextResponse.json({ error: `That phone number is already on the list (${dupe.business_name}).`, duplicate_id: dupe.id }, { status: 409 });

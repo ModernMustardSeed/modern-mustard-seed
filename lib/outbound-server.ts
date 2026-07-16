@@ -43,6 +43,33 @@ export async function outboundRepScope(
   };
 }
 
+/**
+ * Fetch EVERY row a query would return, working around PostgREST's `max_rows`
+ * cap (1000 by default) which silently truncates `.limit()` / `.range()`. Pass a
+ * factory that builds a FRESH, fully filtered + ordered query on each call (a
+ * Supabase query builder is single-use). The ordering MUST include a stable
+ * tiebreaker (e.g. `.order('id')`) or range paging can skip / duplicate rows.
+ */
+type Rangeable<T> = {
+  range: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>;
+};
+export async function fetchAllRows<T>(
+  makeQuery: () => Rangeable<T>,
+  opts: { page?: number; max?: number } = {},
+): Promise<{ data: T[]; error: null } | { data: null; error: { message: string } }> {
+  const page = opts.page ?? 1000;
+  const max = opts.max ?? 20000; // hard ceiling; guards a runaway loop
+  const rows: T[] = [];
+  for (let from = 0; from < max; from += page) {
+    const { data, error } = await makeQuery().range(from, from + page - 1);
+    if (error) return { data: null, error };
+    if (!data || data.length === 0) break;
+    rows.push(...data);
+    if (data.length < page) break;
+  }
+  return { data: rows, error: null };
+}
+
 /** Parse a JSON body against a zod schema. Returns data or a 400 response. */
 export async function parseBody<T>(req: Request, schema: ZodType<T>): Promise<{ data: T } | { error: NextResponse }> {
   let raw: unknown;
