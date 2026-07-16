@@ -1,21 +1,32 @@
 /**
  * THE upgraded lead sourcer. Supersedes source-leads(-osm).mjs / source-trades.mjs.
- * One command, a clean "City, ST", and every lead is born the way we want it:
+ * One command, a clean "City, ST", and every lead is born reachable and useful.
  *
- *   WEBSITE + PHONE required (auditable + reachable), and an EMAIL found INLINE
- *   at source (homepage/contact scrape first, Hunter.io domain-search fallback),
- *   so leads arrive ready to email, not "we'll enrich later" (which never runs).
+ * PHONE is always required (a lead we can't call is not a lead). Beyond that,
+ * three discovery modes decide WHAT we go after:
+ *
+ *   default   → has a website + phone. Auditable incumbents. Email found INLINE
+ *               at source (homepage/contact scrape, then Hunter.io fallback).
+ *   --no-site → has a phone but NO website at all. These need a site built from
+ *               scratch: the strongest MMS pitch, nothing to compete with. No
+ *               domain means no email to find, so they're phone-first by design.
+ *   --needy   → has a website, but bias HARD toward the outdated ones (stale
+ *               copyright, not mobile-friendly, no HTTPS). Oversamples, scores
+ *               every site, keeps the weak ones, drops the pristine.
+ *   --mix     → half no-site, half outdated-site in one run (implies --needy).
  *
  * Lands leads DIRECTLY on the outbound floor (outbound_leads), deduped against
  * the WHOLE table (paginated, not a capped 1000), assigned to a rep, niche
  * mapped, "needs us" weakness flagged, chains removed, variety-capped per type.
- * Email is PREFERRED not required (Sarah's split rule): a website+phone lead with
- * no findable email is still kept, just flagged and sorted last.
+ * Email is PREFERRED not required (Sarah's split rule): a lead with no findable
+ * email is still kept, just flagged.
  *
  * Dry-run by default (prints the quality report); pass --apply to write.
  *
  * Run:  node scripts/source.mjs "Kalispell, MT" 80
  *       node scripts/source.mjs "Kalispell, MT" 80 --owner Polly --apply
+ *       node scripts/source.mjs "Savannah, GA" 60 --owner Polly --no-site --apply
+ *       node scripts/source.mjs "Savannah, GA" 60 --owner Polly --mix --apply
  */
 import { readFileSync } from 'node:fs';
 
@@ -41,6 +52,10 @@ const argv = process.argv.slice(2);
 const flags = argv.filter((a) => a.startsWith('--'));
 const positional = argv.filter((a) => !a.startsWith('--'));
 const APPLY = flags.includes('--apply');
+const NO_SITE = flags.includes('--no-site'); // businesses with NO website (need one built)
+const MIX = flags.includes('--mix');         // half no-site, half outdated-site
+const NEEDY = flags.includes('--needy') || MIX; // bias the has-website pool toward stale/weak sites
+const PER_LABEL_CAP = 12;                     // variety cap per business type, per run
 const PLACE = positional[0] || 'Kalispell, MT';
 const TARGET = Number(positional[1] || 80);
 const OWNER_ARG = (argv.find((a, i) => argv[i - 1] === '--owner') || 'Sarah').trim();
@@ -142,8 +157,27 @@ async function geocode(place) {
   return { south: +b[0], north: +b[1], west: +b[2], east: +b[3], display: j[0].display_name };
 }
 
-async function overpass(bbox) {
-  const q = `[out:json][timeout:90];(nwr["website"]["phone"]["amenity"~"^(restaurant|cafe|fast_food|bar|pub|dentist|clinic|doctors|veterinary|pharmacy|spa)$"](${bbox});nwr["website"]["phone"]["shop"](${bbox});nwr["website"]["phone"]["craft"](${bbox});nwr["website"]["phone"]["office"](${bbox});nwr["website"]["phone"]["healthcare"](${bbox}););out tags 800;`;
+// Real, local, callable business categories. The only thing that changes between
+// the two discovery modes is whether we require a website tag or its ABSENCE.
+const BIZ_SELECTORS = [
+  '["amenity"~"^(restaurant|cafe|fast_food|bar|pub|dentist|clinic|doctors|veterinary|pharmacy|spa)$"]',
+  '["shop"]',
+  '["craft"]',
+  '["office"]',
+  '["healthcare"]',
+];
+// Match either phone key (phone / contact:phone) with any non-empty value.
+const PHONE_SEL = '[~"^(phone|contact:phone)$"~"."]';
+
+function buildQuery(bbox, mode) {
+  // mode 'site'   → has a website + phone (auditable incumbents, some outdated)
+  // mode 'nosite' → has a phone but NO website at all (needs one built)
+  const web = mode === 'nosite' ? '[!"website"][!"contact:website"][!"url"]' : '["website"]';
+  const parts = BIZ_SELECTORS.map((sel) => `nwr${web}${PHONE_SEL}${sel}(${bbox});`).join('');
+  return `[out:json][timeout:90];(${parts});out tags 800;`;
+}
+
+async function overpass(query) {
   // Overpass mirrors 504/429 under load; try several with a backoff so a transient
   // outage doesn't return an empty run.
   const mirrors = [
@@ -155,7 +189,7 @@ async function overpass(bbox) {
   for (let attempt = 0; attempt < 2; attempt++) {
     for (const url of mirrors) {
       try {
-        const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': UA }, body: `data=${encodeURIComponent(q)}`, signal: AbortSignal.timeout(90000) });
+        const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': UA }, body: `data=${encodeURIComponent(query)}`, signal: AbortSignal.timeout(90000) });
         if (!res.ok) { console.warn(`overpass ${url}: ${res.status}`); continue; }
         const j = await res.json();
         if (j.elements?.length) return j.elements;
@@ -164,6 +198,45 @@ async function overpass(bbox) {
     if (attempt === 0) { console.warn('all mirrors soft-failed, backing off 8s...'); await sleep(8000); }
   }
   return [];
+}
+
+// Select fresh, deduped, chain-free, variety-capped leads from an OSM element set.
+// requireWebsite=true keeps only businesses with a site; false keeps only those
+// WITHOUT one. Mutates the shared seen* sets so pools don't collide.
+function pickFrom(els, { limit, requireWebsite, seenNames, seenPhones }) {
+  const capByLabel = {};
+  const picked = [];
+  for (const el of els) {
+    if (picked.length >= limit) break;
+    const t = el.tags || {};
+    const name = t.name; if (!name) continue;
+    const website = t.website || t['contact:website'] || t.url || null;
+    const phone = t.phone || t['contact:phone'];
+    if (!phone) continue;
+    if (requireWebsite && !website) continue;
+    if (!requireWebsite && website) continue;
+    const n = norm(name), digits = digitsOf(phone);
+    if (seenNames.has(n) || (digits && seenPhones.has(digits)) || FRANCHISE.some((f) => n.includes(norm(f)))) continue;
+    const label = labelFor(t);
+    capByLabel[label] = capByLabel[label] || 0;
+    if (capByLabel[label] >= PER_LABEL_CAP) continue;
+    seenNames.add(n); if (digits) seenPhones.add(digits); capByLabel[label]++;
+    picked.push({ business: name, phone, website, email: t.email || t['contact:email'] || null, label, weak: [] });
+  }
+  return picked;
+}
+
+// Score every has-website lead's site (weakness signals) and find its email.
+// We ALWAYS scrape so --needy can rank by how outdated the site is, even when
+// OSM already handed us an email.
+async function enrich(list) {
+  await pool(list, 6, async (p) => {
+    if (p.email && EMAIL_BLOCK.test(p.email)) p.email = null;
+    const r = await scrapeSite(p.website);
+    p.weak = r.weak;
+    if (!p.email) p.email = r.email;
+    if (!p.email) p.email = await hunterEmail(p.website);
+  });
 }
 
 // ── email: scrape then Hunter (inline) ───────────────────────────
@@ -252,42 +325,47 @@ async function main() {
   const bbox = `${geo.south},${geo.west},${geo.north},${geo.east}`;
   console.log(`Geocoded → ${geo.display}`);
 
-  const els = await overpass(bbox);
-  console.log(`OSM: ${els.length} businesses with website + phone tags`);
-  if (!els.length) { console.log('Nothing found in that area.'); return; }
-
   const owner = await resolveOwner(OWNER_ARG);
   const { names: seenNames, phones: seenPhones } = await floorKeys();
   console.log(`Floor dedupe set: ${seenNames.size} names / ${seenPhones.size} phones already on outbound_leads`);
 
-  const capByLabel = {};
+  // How the target splits across the two discovery modes.
+  const wantNoSite = NO_SITE ? TARGET : MIX ? Math.round(TARGET / 2) : 0;
+  const wantSite = NO_SITE ? 0 : MIX ? TARGET - wantNoSite : TARGET;
+  const mode = NO_SITE ? 'no-website only' : MIX ? 'mix (no-site + outdated-site)' : NEEDY ? 'outdated-site biased' : 'has-website';
+  console.log(`Mode: ${mode} → ${wantSite} has-website, ${wantNoSite} no-website`);
+
   const picked = [];
-  for (const el of els) {
-    if (picked.length >= TARGET) break;
-    const t = el.tags || {};
-    const name = t.name; if (!name) continue;
-    const website = t.website || t['contact:website'] || t.url;
-    const phone = t.phone || t['contact:phone'];
-    if (!website || !phone) continue;
-    const n = norm(name), digits = digitsOf(phone);
-    if (seenNames.has(n) || (digits && seenPhones.has(digits)) || FRANCHISE.some((f) => n.includes(norm(f)))) continue;
-    const label = labelFor(t);
-    capByLabel[label] = capByLabel[label] || 0;
-    if (capByLabel[label] >= 10) continue; // variety cap per type
-    seenNames.add(n); if (digits) seenPhones.add(digits); capByLabel[label]++;
-    picked.push({ business: name, phone, website, email: t.email || t['contact:email'] || null, label });
+
+  // ── has-website pool (incumbents; --needy biases toward the outdated) ──
+  if (wantSite > 0) {
+    const els = await overpass(buildQuery(bbox, 'site'));
+    console.log(`OSM (has-website): ${els.length} businesses with website + phone`);
+    // Oversample when we want outdated ones so we can keep the weak sites and
+    // drop the pristine after scoring them.
+    const pickLimit = NEEDY ? Math.min(els.length, wantSite * 3) : wantSite;
+    const poolRows = pickFrom(els, { limit: pickLimit, requireWebsite: true, seenNames, seenPhones });
+    console.log(`  picked ${poolRows.length} has-website candidates${NEEDY ? ' (oversampled to keep the outdated ones)' : ''}`);
+    console.log(`  scoring sites + finding emails (scrape → Hunter)...`);
+    await enrich(poolRows);
+    poolRows.sort((a, b) => {
+      if (NEEDY) { const wa = a.weak?.length ? 1 : 0, wb = b.weak?.length ? 1 : 0; if (wa !== wb) return wb - wa; }
+      return (b.email ? 1 : 0) - (a.email ? 1 : 0);
+    });
+    picked.push(...poolRows.slice(0, wantSite));
   }
-  console.log(`Picked ${picked.length} fresh leads (deduped, chains removed, capped per type)`);
 
-  console.log(`Finding emails inline (scrape → Hunter) for ${picked.length}...`);
-  await pool(picked, 6, async (p) => {
-    if (p.email && EMAIL_BLOCK.test(p.email)) p.email = null;
-    if (!p.email) { const r = await scrapeSite(p.website); p.email = r.email; p.weak = r.weak; }
-    if (!p.email) p.email = await hunterEmail(p.website);
-  });
+  // ── no-website pool (need a site built; the strongest MMS pitch) ──
+  if (wantNoSite > 0) {
+    const els = await overpass(buildQuery(bbox, 'nosite'));
+    console.log(`OSM (no-website): ${els.length} businesses with a phone but NO website`);
+    const poolRows = pickFrom(els, { limit: wantNoSite, requireWebsite: false, seenNames, seenPhones });
+    for (const p of poolRows) { p.email = null; p.weak = ['no website']; } // phone-first; no domain to email
+    console.log(`  picked ${poolRows.length} no-website leads (phone-first, flagged "no website")`);
+    picked.push(...poolRows);
+  }
 
-  // Prefer email+phone: complete leads first, incomplete (kept, flagged) last.
-  picked.sort((a, b) => (b.email ? 1 : 0) - (a.email ? 1 : 0));
+  if (!picked.length) { console.log('\nNothing fresh found in that area for that mode.\n'); return; }
 
   const rows = picked.map((p) => {
     const need = p.weak?.length ? ` · needs us: ${p.weak.join(', ')}` : '';
@@ -296,7 +374,7 @@ async function main() {
       contact_name: null,
       phone: String(p.phone).slice(0, 40),
       email: p.email ? String(p.email).slice(0, 200) : null,
-      website: String(p.website).slice(0, 300),
+      website: p.website ? String(p.website).slice(0, 300) : null,
       niche: nicheFor(p.label),
       city: CITY.slice(0, 120),
       state: STATE,
@@ -308,17 +386,19 @@ async function main() {
     };
   });
 
+  const noSiteN = rows.filter((r) => !r.website).length;
   const withEmail = rows.filter((r) => r.email).length;
   const flagged = rows.filter((r) => /needs us/.test(r.notes)).length;
   console.log(`\n── Quality ──`);
-  console.log(`  ${rows.length} leads · 100% website + phone`);
+  console.log(`  ${rows.length} leads · every one has a phone`);
+  console.log(`  no website (needs one built): ${noSiteN}`);
+  console.log(`  has website: ${rows.length - noSiteN}`);
   console.log(`  with email: ${withEmail}/${rows.length} (${rows.length ? Math.round((withEmail / rows.length) * 100) : 0}%)  ← inline scrape + Hunter`);
-  console.log(`  no email (kept, flagged, sorted last): ${rows.length - withEmail}`);
-  console.log(`  "needs us" weakness flagged: ${flagged}`);
+  console.log(`  "needs us" flagged (no site / stale / not mobile / no HTTPS): ${flagged}`);
   console.log(`  assigned to: ${owner.name}${owner.id ? '' : ' (rep not found — owner_rep_id null)'}`);
   if (rows.length) {
     console.log(`\n  sample:`);
-    for (const r of rows.slice(0, 8)) console.log(`   ${r.email ? '✉ ' : '  '}${r.business_name} · ${r.phone} · ${r.email || 'no email'}`);
+    for (const r of rows.slice(0, 8)) console.log(`   ${r.email ? '✉ ' : '  '}${r.business_name} · ${r.phone} · ${r.email || 'no email'}${r.website ? '' : ' [no site]'}`);
   }
 
   if (!APPLY) {
