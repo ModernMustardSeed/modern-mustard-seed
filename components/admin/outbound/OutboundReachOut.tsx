@@ -320,6 +320,15 @@ export function ReachOutDeck({
           </a>
         )}
 
+        {lead.hub_view_count > 0 && (
+          <span
+            className={`${chip} bg-[#3f5d34]/12 text-[#3f5d34] border-[#3f5d34]/50 cursor-default`}
+            title={`This lead opened their Demo Suite hub ${lead.hub_view_count} time${lead.hub_view_count === 1 ? '' : 's'}. They are warm. Call while it is fresh.`}
+          >
+            👁 Suite opened {lead.hub_view_count}x
+          </span>
+        )}
+
         {lead.pipeline_lead_id ? (
           <a href="/admin/leads" className={`${chip} bg-transparent text-[#1a1815]/50 border-[#1a1815]/20 hover:text-[#1a1815]`}>In pipeline ↗</a>
         ) : (
@@ -328,6 +337,8 @@ export function ReachOutDeck({
           </button>
         )}
       </div>
+
+      <LeadNotes lead={lead} onLead={onLead} push={push} />
 
       {/* Mr. Mustard confirm */}
       <Modal open={aiOpen} onClose={() => setAiOpen(false)} eyebrow="AI wingman" title="Mr. Mustard makes the call" subtitle={`${lead.business_name} · ${formatPhone(lead.phone)}`} size="sm" headerTone="dark">
@@ -362,6 +373,71 @@ export function ReachOutDeck({
 
       <ReforgeModal lead={lead} open={reforgeOpen} onClose={() => setReforgeOpen(false)} onLead={onLead} push={push} />
     </>
+  );
+}
+
+/* -------------------------------- notes ----------------------------------- */
+
+/**
+ * Sarah's own notes on a lead. Kept apart from `notes` (the mining ammo the call
+ * script parses), so jotting here never clobbers a REVIEWS:/WEBSITE: opener. Saves
+ * on blur, and offers an explicit Save while there are unsaved edits. Resets when the
+ * cockpit moves to another lead so a note can never land on the wrong one.
+ */
+function LeadNotes({ lead, onLead, push }: { lead: OutboundLead; onLead: (l: OutboundLead) => void; push: Push }) {
+  const [text, setText] = useState(lead.rep_notes ?? '');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setText(lead.rep_notes ?? '');
+    setSaved(false);
+  }, [lead.id, lead.rep_notes]);
+
+  const dirty = text !== (lead.rep_notes ?? '');
+
+  const save = async () => {
+    if (!dirty || saving) return;
+    setSaving(true);
+    try {
+      const body = text.trim() ? text.trim() : null;
+      const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ rep_notes: body }),
+      });
+      if (res.lead) onLead(res.lead);
+      setSaved(true);
+      window.setTimeout(() => setSaved(false), 1800);
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Could not save the note.', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="mt-4 pt-4 border-t-2 border-[#1a1815]/[0.08]">
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="text-[10px] uppercase tracking-[0.2em] font-oswald font-medium text-[#1a1815]/50">✎ Notes</span>
+        {saved && <span className="text-[10px] uppercase tracking-[0.14em] font-oswald font-semibold text-[#3f5d34]">Saved</span>}
+        {dirty && !saved && <span className="text-[10px] uppercase tracking-[0.14em] font-oswald font-semibold text-[#b58a2a]">Unsaved</span>}
+      </div>
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onBlur={() => void save()}
+        rows={2}
+        placeholder="Jot anything about this lead: what they said, who the decision maker is, when to follow up. Saves when you click away."
+        className={`${inputCls} min-h-[54px] text-[13px]`}
+      />
+      {dirty && (
+        <div className="mt-1.5">
+          <button onClick={() => void save()} disabled={saving} className={`${btnGhost} !py-1 !px-3 !text-xs`}>
+            {saving ? 'Saving…' : 'Save note'}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -89,6 +89,10 @@ export type OutboundLead = {
   dnc_checked: boolean;
   next_action_at: string | null;
   notes: string | null;
+  // Sarah's own freeform notes, kept apart from `notes` (which carries mining ammo).
+  rep_notes: string | null;
+  // How many times this lead opened their Demo Suite hub (mirrors email_open_count).
+  hub_view_count: number;
   audit_score: number | null;
   audit_url: string | null;
   audit_json: OutboundAudit | null;
@@ -294,6 +298,7 @@ export type LeadCreate = z.infer<typeof leadCreateSchema>;
 
 export const leadPatchSchema = leadInputSchema.partial().extend({
   next_action_at: optionalText(60),
+  rep_notes: optionalText(8000),
 });
 export type LeadPatch = z.infer<typeof leadPatchSchema>;
 

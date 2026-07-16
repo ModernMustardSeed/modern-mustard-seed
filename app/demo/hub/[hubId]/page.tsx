@@ -71,6 +71,9 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       origin: lead.origin,
       affiliateId: lead.affiliate_id,
     });
+    // Bump the fast counter the cockpit reads (atomic; throttled by the same stamp,
+    // so a reload loop cannot inflate it). Fire-and-forget: telemetry never blocks.
+    try { await sb.rpc('bump_hub_view', { p_lead_id: lead.id }); } catch { /* never block the hub */ }
   }
 
   const niche = (lead.niche ?? 'other') as Niche;
