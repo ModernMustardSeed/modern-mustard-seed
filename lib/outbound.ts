@@ -70,6 +70,14 @@ export type OutboundAudit = {
   full_todo?: { category: string; priority: string; task: string }[];
 };
 
+/** An additional way into the business, beyond the primary contact on the lead. */
+export type LeadContact = {
+  label: string | null;
+  name: string | null;
+  phone: string | null;
+  email: string | null;
+};
+
 export type OutboundLead = {
   id: string;
   business_name: string;
@@ -93,6 +101,9 @@ export type OutboundLead = {
   rep_notes: string | null;
   // How many times this lead opened their Demo Suite hub (mirrors email_open_count).
   hub_view_count: number;
+  // Extra ways into the business beyond the primary contact: owner cell, front desk,
+  // billing email, a second decision maker. Each is { label, name, phone, email }.
+  extra_contacts: LeadContact[];
   audit_score: number | null;
   audit_url: string | null;
   audit_json: OutboundAudit | null;
@@ -296,9 +307,19 @@ export const leadCreateSchema = leadInputSchema.extend({
 });
 export type LeadCreate = z.infer<typeof leadCreateSchema>;
 
+/** One additional contact on a lead. Every field optional, but the UI keeps only
+ *  rows that carry a phone or an email (a label with nothing to reach is noise). */
+export const leadContactSchema = z.object({
+  label: optionalText(60),
+  name: optionalText(120),
+  phone: optionalText(40),
+  email: optionalText(200),
+});
+
 export const leadPatchSchema = leadInputSchema.partial().extend({
   next_action_at: optionalText(60),
   rep_notes: optionalText(8000),
+  extra_contacts: z.array(leadContactSchema).max(20).optional(),
 });
 export type LeadPatch = z.infer<typeof leadPatchSchema>;
 

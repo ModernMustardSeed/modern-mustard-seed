@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Modal from '@/components/ui/Modal';
 import { formatPhone } from '@/lib/outbound';
-import type { EmailPreview, MessageDelivery, OutboundAudit, OutboundLead, ThreadMessage } from '@/lib/outbound';
-import { api, btnGhost, btnPrimary, btnSeed, inputCls, labelCls } from '@/components/admin/outbound/ui';
+import type { EmailPreview, LeadContact, MessageDelivery, OutboundAudit, OutboundLead, ThreadMessage } from '@/lib/outbound';
+import { api, btnGhost, btnPrimary, btnSeed, card, eyebrow, inputCls, labelCls } from '@/components/admin/outbound/ui';
 
 /**
  * Every way to reach a lead, in one strip: Mr. Mustard AI calls, the audit
@@ -338,8 +338,6 @@ export function ReachOutDeck({
         )}
       </div>
 
-      <LeadNotes lead={lead} onLead={onLead} push={push} />
-
       {/* Mr. Mustard confirm */}
       <Modal open={aiOpen} onClose={() => setAiOpen(false)} eyebrow="AI wingman" title="Mr. Mustard makes the call" subtitle={`${lead.business_name} · ${formatPhone(lead.phone)}`} size="sm" headerTone="dark">
         <p className="font-sans text-sm text-[#1a1815]/75 leading-relaxed">
@@ -373,6 +371,152 @@ export function ReachOutDeck({
 
       <ReforgeModal lead={lead} open={reforgeOpen} onClose={() => setReforgeOpen(false)} onLead={onLead} push={push} />
     </>
+  );
+}
+
+/* ------------------------------- lead file -------------------------------- */
+
+/**
+ * THE LEAD FILE. One clearly-labelled panel for everything about who this lead is:
+ * the primary contact (name / phone / email, all editable in place, so a better
+ * number or address just gets typed in), any ADDITIONAL ways into the business
+ * (owner's cell, front desk, billing email, a second decision maker), and Sarah's
+ * own notes. Everything saves as you go. The header up top stays a glance; this is
+ * where you edit.
+ */
+export function LeadFile({ lead, onLead, push }: { lead: OutboundLead; onLead: (l: OutboundLead) => void; push: Push }) {
+  const [name, setName] = useState(lead.contact_name ?? '');
+  const [phone, setPhone] = useState(lead.phone ?? '');
+  const [email, setEmail] = useState(lead.email ?? '');
+  const [contacts, setContacts] = useState<LeadContact[]>(lead.extra_contacts ?? []);
+  const [saving, setSaving] = useState(false);
+  const [savedKey, setSavedKey] = useState<string | null>(null);
+
+  // A ref mirrors the contacts so a blur handler always saves the latest array,
+  // never a stale closure captured when the input was focused.
+  const contactsRef = useRef(contacts);
+  contactsRef.current = contacts;
+
+  useEffect(() => {
+    setName(lead.contact_name ?? '');
+    setPhone(lead.phone ?? '');
+    setEmail(lead.email ?? '');
+    setContacts(lead.extra_contacts ?? []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lead.id]);
+
+  const flashSaved = (key: string) => {
+    setSavedKey(key);
+    window.setTimeout(() => setSavedKey((k) => (k === key ? null : k)), 1400);
+  };
+
+  const patch = async (key: string, body: Record<string, unknown>) => {
+    setSaving(true);
+    try {
+      const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}`, { method: 'PATCH', body: JSON.stringify(body) });
+      if (res.lead) onLead(res.lead);
+      flashSaved(key);
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Could not save.', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Primary fields: save on blur, only when actually changed. Phone stays required.
+  const savePrimary = (field: 'name' | 'phone' | 'email') => {
+    if (field === 'name') {
+      const v = name.trim();
+      if (v !== (lead.contact_name ?? '')) void patch('name', { contact_name: v || null });
+    } else if (field === 'phone') {
+      const v = phone.trim();
+      if (v !== (lead.phone ?? '')) {
+        if (v.replace(/\D/g, '').length < 7) {
+          push('That phone number looks too short.', 'error');
+          setPhone(lead.phone ?? '');
+          return;
+        }
+        void patch('phone', { phone: v });
+      }
+    } else {
+      const v = email.trim();
+      if (v !== (lead.email ?? '')) void patch('email', { email: v || null });
+    }
+  };
+
+  // Additional contacts: edit locally, save the whole (cleaned) array on blur / remove.
+  const saveContacts = (next: LeadContact[]) => {
+    const clean = next
+      .map((c) => ({
+        label: (c.label ?? '').trim() || null,
+        name: (c.name ?? '').trim() || null,
+        phone: (c.phone ?? '').trim() || null,
+        email: (c.email ?? '').trim() || null,
+      }))
+      .filter((c) => c.phone || c.email || c.name);
+    void patch('contacts', { extra_contacts: clean });
+  };
+  const setContact = (i: number, field: keyof LeadContact, value: string) =>
+    setContacts((cs) => cs.map((c, idx) => (idx === i ? { ...c, [field]: value } : c)));
+  const addContact = () => setContacts((cs) => [...cs, { label: '', name: '', phone: '', email: '' }]);
+  const removeContact = (i: number) => {
+    const next = contactsRef.current.filter((_, idx) => idx !== i);
+    setContacts(next);
+    saveContacts(next);
+  };
+
+  const Saved = ({ k }: { k: string }) =>
+    savedKey === k ? <span className="text-[10px] uppercase tracking-[0.14em] font-oswald font-semibold text-[#3f5d34] ml-2">Saved</span> : null;
+
+  return (
+    <section className={`${card} p-5 md:p-6 mb-6`}>
+      <div className="flex items-center gap-2.5 mb-4">
+        <span className={eyebrow}>Lead file</span>
+        {saving && <span className="text-[10px] uppercase tracking-[0.14em] font-oswald text-[#1a1815]/40">Saving…</span>}
+      </div>
+
+      {/* Primary contact, editable in place. */}
+      <div className="grid sm:grid-cols-3 gap-3">
+        <div>
+          <label className={labelCls}>Contact name<Saved k="name" /></label>
+          <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} onBlur={() => savePrimary('name')} placeholder="Who you ask for" />
+        </div>
+        <div>
+          <label className={labelCls}>Phone<Saved k="phone" /></label>
+          <input className={inputCls} value={phone} onChange={(e) => setPhone(e.target.value)} onBlur={() => savePrimary('phone')} placeholder="(406) 555-0199" inputMode="tel" />
+        </div>
+        <div>
+          <label className={labelCls}>Email<Saved k="email" /></label>
+          <input className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={() => savePrimary('email')} placeholder="name@business.com" inputMode="email" />
+        </div>
+      </div>
+
+      {/* Additional contacts. */}
+      <div className="mt-5 pt-4 border-t-2 border-[#1a1815]/[0.08]">
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <span className="text-[10px] uppercase tracking-[0.2em] font-oswald font-medium text-[#1a1815]/50">More ways in<Saved k="contacts" /></span>
+          <button onClick={addContact} className="text-[11px] uppercase tracking-[0.12em] font-oswald font-semibold text-[#b58a2a] hover:text-[#1a1815] transition-colors">+ Add contact</button>
+        </div>
+        {contacts.length === 0 ? (
+          <p className="font-sans text-[13px] text-[#1a1815]/45">Another number or email? An owner&apos;s cell, the front desk, a billing contact, a second decision maker. Add it here.</p>
+        ) : (
+          <div className="space-y-2">
+            {contacts.map((c, i) => (
+              <div key={i} className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-2 sm:items-center">
+                <input className={`${inputCls} !py-2`} value={c.label ?? ''} onChange={(e) => setContact(i, 'label', e.target.value)} onBlur={() => saveContacts(contactsRef.current)} placeholder="Role (e.g. Owner cell)" />
+                <input className={`${inputCls} !py-2`} value={c.name ?? ''} onChange={(e) => setContact(i, 'name', e.target.value)} onBlur={() => saveContacts(contactsRef.current)} placeholder="Name" />
+                <input className={`${inputCls} !py-2`} value={c.phone ?? ''} onChange={(e) => setContact(i, 'phone', e.target.value)} onBlur={() => saveContacts(contactsRef.current)} placeholder="Phone" inputMode="tel" />
+                <input className={`${inputCls} !py-2`} value={c.email ?? ''} onChange={(e) => setContact(i, 'email', e.target.value)} onBlur={() => saveContacts(contactsRef.current)} placeholder="Email" inputMode="email" />
+                <button onClick={() => removeContact(i)} title="Remove this contact" aria-label="Remove this contact" className="justify-self-end sm:justify-self-auto w-9 h-9 shrink-0 rounded-lg border-2 border-[#a03123]/40 text-[#a03123] hover:bg-[#a03123]/10 transition-colors font-bold leading-none">×</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Notes. */}
+      <LeadNotes lead={lead} onLead={onLead} push={push} />
+    </section>
   );
 }
 
