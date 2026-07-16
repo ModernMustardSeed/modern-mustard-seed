@@ -30,6 +30,7 @@ import type { OutboundLead, Niche } from '@/lib/outbound';
 import { resendClient } from '@/lib/send-email';
 import { clientEmail, demoFilmCard } from '@/lib/email';
 import { SITE } from '@/lib/seo';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -271,7 +272,7 @@ export async function POST(req: Request) {
     try {
       await resend.emails.send({
         from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `SELF-SERVE FORGE: ${business} (${city || state || 'unknown'})`,
         html: clientEmail({
           preheader: 'Someone forged their own suite from an ad.',

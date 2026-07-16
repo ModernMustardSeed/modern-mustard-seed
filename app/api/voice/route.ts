@@ -15,6 +15,7 @@ import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
 import { sendMetaEvent } from '@/lib/meta-capi';
 import { randomUUID } from 'node:crypto';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -222,7 +223,7 @@ async function bookSlot(
 
       const rSarah = await sendLoud(resend, 'booking-notify-sarah', {
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         replyTo: email,
         subject: `Voice booking: ${name} · ${shortLabel}`,
         html: bookingNotificationEmail({
@@ -326,7 +327,7 @@ async function captureLead(
       const resend = resendClient();
       await sendLoud(resend, 'lead-notify-sarah', {
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         replyTo: email,
         subject: `Voice lead: ${name}`,
         html: leadNotification({
@@ -449,7 +450,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
     const resend = resendClient();
     await sendLoud(resend, 'end-of-call-report', {
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `Mr. Mustard call summary · ${callerNumber}`,
       html: leadNotification({
         type: 'Contact',

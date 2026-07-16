@@ -3,6 +3,7 @@ import { clientEmail, leadNotification, p, callout } from '@/lib/email';
 import { resendClient } from '@/lib/send-email';
 import { insertLead } from '@/lib/supabase';
 import { trackServerConversion } from '@/lib/meta-capi';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 
@@ -105,7 +106,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: 'AI Audit Leads <sarah@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       replyTo: email,
       subject: `Audit Lead: ${name}${company ? ` (${company})` : ''}`,
       html: leadNotification({

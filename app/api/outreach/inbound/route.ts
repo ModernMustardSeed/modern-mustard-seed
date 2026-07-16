@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { leadNotification } from '@/lib/email';
 import { resendClient } from '@/lib/send-email';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
       const snippet = String(data.text || data.subject || payload.subject || '').slice(0, 600);
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         replyTo: from,
         subject: `A prospect replied: ${prospect.name}`,
         html: leadNotification({

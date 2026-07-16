@@ -9,6 +9,7 @@ import { getSupabase } from '@/lib/supabase';
 import { resendClient } from '@/lib/send-email';
 import { clientEmail } from '@/lib/email';
 import { queueRebuild, rebuildInputFor } from '@/lib/site-rebuild';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -250,7 +251,7 @@ export async function POST(req: Request) {
       const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `INTAKE IN: ${(order.business_name || 'demo order').replace(/[\r\n]/g, ' ')} (${Array.isArray(order.products) ? (order.products as string[]).join(', ') : ''})`,
         html: clientEmail({
           preheader: 'Customization details for a paid demo order.',

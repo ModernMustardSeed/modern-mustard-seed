@@ -6,6 +6,7 @@ import { buildIcsInvite } from '@/lib/ics';
 import { getSupabase } from '@/lib/supabase';
 import { bookingConfirmationEmail, leadNotification } from '@/lib/email';
 import { randomUUID } from 'node:crypto';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -102,7 +103,7 @@ export async function POST(req: Request) {
 
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         replyTo: email,
         subject: `Booked: ${name} . ${shortLabel}`,
         html: leadNotification({

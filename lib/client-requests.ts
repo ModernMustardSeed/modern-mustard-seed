@@ -2,6 +2,7 @@ import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
 import { clientMessageEmail } from '@/lib/email';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 /**
  * Record a change request / note from a client and notify Sarah. Used by both
@@ -75,7 +76,7 @@ export async function createClientRequest(args: {
         const resend = resendClient();
         await resend.emails.send({
           from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-          to: 'sarah@modernmustardseed.com',
+          to: OWNER_NOTIFY_TO,
           replyTo: email,
           subject: `New message from ${name || email}`,
           html: clientMessageEmail({

@@ -11,4 +11,8 @@
  *
  * Use OWNER_NOTIFY_TO as the `to:` on any internal owner-notification email.
  */
-export const OWNER_NOTIFY_TO = ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'];
+export const OWNER_NOTIFY_TO = [
+  'sarah@modernmustardseed.com',
+  'makeourcitypretty@gmail.com',
+  'wildhopehouse@gmail.com',
+];

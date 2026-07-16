@@ -29,6 +29,7 @@ import {
 } from '@/lib/press-store';
 import { clientEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -211,7 +212,7 @@ async function notifySarah(subject: string, lines: string[]) {
     const resend = resendClient();
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject,
       html: `<div style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.6">${lines
         .map((l) => `<p style="margin:0 0 10px">${l}</p>`)

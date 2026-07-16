@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
 import { leadNotification } from '@/lib/email';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 
@@ -51,7 +52,7 @@ export async function POST(req: Request) {
       const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `New review from ${name} (pending approval)`,
         html: leadNotification({
           type: 'Contact',

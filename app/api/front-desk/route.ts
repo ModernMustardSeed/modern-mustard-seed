@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { leadNotification } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
 import { resendClient } from '@/lib/send-email';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
         const resend = resendClient();
         await resend.emails.send({
           from: 'Front Desk <sarah@modernmustardseed.com>',
-          to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+          to: OWNER_NOTIFY_TO,
           replyTo: email,
           subject: `Front Desk: new scoped idea (${email})`,
           html: leadNotification({

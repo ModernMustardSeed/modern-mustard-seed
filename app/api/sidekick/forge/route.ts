@@ -32,6 +32,7 @@ import {
   type SidekickRun,
 } from '@/lib/sidekick-store';
 import { SIDEKICK, getVertical } from '@/data/sidekick';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -63,7 +64,7 @@ async function notifySarah(subject: string, lines: string[]) {
     const resend = resendClient();
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject,
       html: `<div style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.6">${lines
         .map((l) => `<p style="margin:0 0 8px">${l}</p>`)

@@ -31,6 +31,7 @@ import type { OutboundLead, Niche, ForgeOrigin } from '@/lib/outbound';
 import { resendClient } from '@/lib/send-email';
 import { clientEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const PARTNER_FORGE_GLOBAL_DAILY_CAP = 20;
 export const PARTNER_FORGE_QA_LIFT = 3;
@@ -367,7 +368,7 @@ export async function mintForgedSuite(
     try {
       await resend.emails.send({
         from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `${origin === 'partner' ? 'PARTNER' : 'REP'} FORGE: ${business} (${minter.name}${qaHeld ? ', QA HOLD' : ''})`,
         html: clientEmail({
           preheader: `${minter.name} minted a suite for ${business}.`,

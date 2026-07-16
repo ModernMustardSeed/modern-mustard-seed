@@ -4,6 +4,7 @@ import { clientEmail, p } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
 import { nicheById } from '@/data/prompt-playbook';
 import { SITE } from '@/lib/seo';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 
@@ -87,7 +88,7 @@ export async function POST(req: Request) {
     try {
       await resend.emails.send({
         from: 'AI Prompt Playbook <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `New playbook lead: ${firstName} (${niche.label})`,
         html: `<p>New lead from the AI Prompt Playbook lead magnet.</p>
 <ul>

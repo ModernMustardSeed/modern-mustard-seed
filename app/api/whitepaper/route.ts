@@ -3,6 +3,7 @@ import { resendClient } from '@/lib/send-email';
 import { clientEmail, p } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 
@@ -78,7 +79,7 @@ export async function POST(req: Request) {
     try {
       await resend.emails.send({
         from: 'Whitepaper <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `New whitepaper lead: ${firstName}`,
         html: `<p>New lead from the AI voice agent whitepaper.</p><ul><li><strong>Name:</strong> ${name ?? 'not given'}</li><li><strong>Email:</strong> ${email}</li><li><strong>Phone:</strong> ${phone ?? 'not given'}</li></ul><p>Speed to lead: a quick call or a Mr. Mustard callback while it is warm.</p>`,
       });

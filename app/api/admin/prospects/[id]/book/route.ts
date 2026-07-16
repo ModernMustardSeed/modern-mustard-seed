@@ -9,6 +9,7 @@ import { buildIcsInvite } from '@/lib/ics';
 import { bookingConfirmationEmail, leadNotification } from '@/lib/email';
 import { convertProspectToLead } from '@/lib/prospect-lead';
 import type { Prospect } from '@/lib/prospects';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -95,7 +96,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         replyTo: email,
         subject: `Booked from Tracker: ${prospect.business} . ${shortLabel}`,
         html: leadNotification({

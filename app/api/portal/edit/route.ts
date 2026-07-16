@@ -6,6 +6,7 @@ import { publishProject } from '@/lib/site-publish';
 import { resendClient } from '@/lib/send-email';
 import { clientMessageEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
         const resend = resendClient();
         await resend.emails.send({
           from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-          to: 'sarah@modernmustardseed.com',
+          to: OWNER_NOTIFY_TO,
           replyTo: proj.client_email as string,
           subject: `${business} shipped their own edit`,
           html: clientMessageEmail({

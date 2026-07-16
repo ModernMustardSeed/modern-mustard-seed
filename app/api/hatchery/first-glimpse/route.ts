@@ -11,6 +11,7 @@ import { insertLead } from '@/lib/supabase';
 import { claimGlimpse } from '@/lib/hatchery-store';
 import { resendClient } from '@/lib/send-email';
 import { leadNotification } from '@/lib/email';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 20;
@@ -60,7 +61,7 @@ export async function POST(req: Request) {
       const resend = resendClient();
       await resend.emails.send({
         from: 'The Mustard Hatchery <hello@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `First Glimpse requested: ${business || email}`,
         html: leadNotification({
           type: 'Contact',

@@ -4,6 +4,7 @@ import { clientEmail, p } from '@/lib/email';
 import { insertLead } from '@/lib/supabase';
 import { verticalById } from '@/data/launch-checklist';
 import { SITE } from '@/lib/seo';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 
@@ -86,7 +87,7 @@ export async function POST(req: Request) {
     try {
       await resend.emails.send({
         from: 'Launch Checklist <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `New checklist lead: ${firstName} (${vertical.label})`,
         html: `<p>New lead from the Launch Checklist lead magnet.</p>
 <ul>

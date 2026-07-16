@@ -44,6 +44,7 @@ import { insertLead } from '@/lib/supabase';
 import { recordProductCommission, recordSubscriptionCommission } from '@/lib/affiliate';
 import { provisionFromProposal } from '@/lib/proposal-provision';
 import { sendReviewNudge } from '@/lib/review-nudge';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -140,7 +141,7 @@ async function handleProgramPurchase(
 
     await resend.emails.send({
       from: 'Modern Mustard Seed Store <sarah@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `New program sale. ${itemName}. $${((session.amount_total ?? 49700) / 100).toFixed(0)}.`,
       html: leadNotification({
         type: 'Contact',
@@ -241,7 +242,7 @@ async function handleMustardPurchase(
 
     await resend.emails.send({
       from: 'Modern Mustard Seed Store <sarah@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `New MUSTARD MODE sale. ${itemName}. $${((session.amount_total ?? 0) / 100).toFixed(0)}.`,
       html: leadNotification({
         type: 'Contact',
@@ -364,7 +365,7 @@ async function handleLaunchPurchase(
 
     await resend.emails.send({
       from: 'Modern Mustard Seed Store <sarah@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `New MUSTARD LAUNCH sale. ${itemName}. $${((session.amount_total ?? 0) / 100).toFixed(0)}.`,
       html: leadNotification({
         type: 'Contact',
@@ -456,7 +457,7 @@ async function handleDepositPaid(session: Stripe.Checkout.Session, email: string
       const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `Deposit paid. ${session.metadata?.item_name || 'Deposit'}. $${((session.amount_total ?? 0) / 100).toFixed(0)}.`,
         html: leadNotification({
           type: 'Contact',
@@ -514,7 +515,7 @@ async function handleBalancePaid(session: Stripe.Checkout.Session, email: string
       const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `Balance paid in full. $${((session.amount_total ?? 0) / 100).toFixed(0)}.`,
         html: leadNotification({
           type: 'Contact',
@@ -553,7 +554,7 @@ async function handleSubscriptionStarted(session: Stripe.Checkout.Session) {
       const resend = resendClient();
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: 'Monthly plan started',
         html: leadNotification({
           type: 'Contact',
@@ -660,7 +661,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
         });
         await resend.emails.send({
           from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-          to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+          to: OWNER_NOTIFY_TO,
           subject: `SIDEKICK payment failed: ${subMeta.business || skEmail}`,
           html: clientEmail({
             preheader: 'A Sidekick renewal failed.',
@@ -700,7 +701,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
         });
         await resend.emails.send({
           from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-          to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+          to: OWNER_NOTIFY_TO,
           subject: `DEMO ORDER payment failed: ${subMeta.item_name || dEmail}`,
           html: clientEmail({
             preheader: 'A demo-order renewal failed.',
@@ -738,7 +739,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
         });
         await resend.emails.send({
           from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-          to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+          to: OWNER_NOTIFY_TO,
           subject: `GEO WATCH payment failed: ${gEmail}`,
           html: clientEmail({
             preheader: 'A Watch renewal failed.',
@@ -777,7 +778,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
         });
         await resend.emails.send({
           from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-          to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+          to: OWNER_NOTIFY_TO,
           subject: `SEASON PASS payment failed: ${subMeta.business || pxEmail}`,
           html: clientEmail({
             preheader: 'A Season Pass renewal failed.',
@@ -848,7 +849,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
       });
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `Subscription payment failed: ${label}`,
         html: leadNotification({
           type: 'Contact',
@@ -935,7 +936,7 @@ async function handleSidekickPurchase(
   try {
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `PROVISION ${tier?.name ?? 'SIDEKICK'}: ${businessRaw || email}`,
       html: clientEmail({
         preheader: 'A Sidekick was kept. Install within 7 days.',
@@ -1010,7 +1011,7 @@ async function handleSwitchboardPurchase(
   try {
     await resend.emails.send({
       from: 'The Switchboard <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `SWITCHBOARD SOLD: ${businessRaw || email} · ${locations} locations`,
       html: leadNotification({
         type: 'Contact',
@@ -1109,7 +1110,7 @@ async function handlePaidEditPurchase(session: Stripe.Checkout.Session) {
     try {
       await resendClient().emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: 'sarah@modernmustardseed.com',
+        to: OWNER_NOTIFY_TO,
         subject: `Paid edit ($29): ${business}`,
         html: leadNotification({
           type: 'Contact',
@@ -1166,7 +1167,7 @@ async function handleCarePlanStarted(session: Stripe.Checkout.Session, email: st
   try {
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `CARE PLAN started: ${business}`,
       html: leadNotification({
         type: 'Contact',
@@ -1271,7 +1272,7 @@ async function handleHatcheryPurchase(
   try {
     await resend.emails.send({
       from: 'The Mustard Hatchery <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `BIRTH a mascot: ${businessRaw || email} (${certLabel})`,
       html: leadNotification({
         type: 'Contact',
@@ -1423,7 +1424,7 @@ async function handleDemoOrderPaid(
   try {
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `DEMO ORDER: ${order?.business_name || email || session.id} bought ${products || 'a demo'}`,
       html: clientEmail({
         preheader: 'A demo just sold itself. Release within 7 days.',
@@ -1526,7 +1527,7 @@ async function handlePicturesPurchase(
   try {
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `PRODUCE ${tier?.name ?? 'PICTURES'}: ${businessRaw || email}`,
       html: clientEmail({
         preheader: 'A commercial was greenlit. Pipeline runbook: ~/launch-studio.',
@@ -1617,7 +1618,7 @@ async function handlePressPurchase(
         if (alertKey) {
           await resendClient().emails.send({
             from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-            to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+            to: OWNER_NOTIFY_TO,
             subject: `HAND PRESS OVERSOLD: ${businessRaw || email}`,
             html: clientEmail({
               preheader: 'A sixth Hand Press slot was paid this week.',
@@ -1661,7 +1662,7 @@ async function handlePressPurchase(
     const produce = slug !== 'press-piece';
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `${produce ? 'PRODUCE' : 'SOLD'} ${tier?.name ?? 'PRESS'}: ${cleanHeader(businessRaw) || email}`,
       html: clientEmail({
         preheader: produce ? 'A Press order needs your hands.' : 'A Piece sold and fulfilled itself.',
@@ -1807,7 +1808,7 @@ async function handleGeoPurchase(
   try {
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `${slug === 'geo-installed' ? 'INSTALL' : 'SOLD'} GEO ${tier?.name ?? slug}: ${url || email}`,
       html: clientEmail({
         preheader: slug === 'geo-installed' ? 'A white-glove install booked.' : 'The desk sold a pack.',
@@ -1861,7 +1862,7 @@ async function handlePicturesSubscriptionDeleted(sub: Stripe.Subscription) {
     const resend = resendClient();
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `SEASON PASS CANCELED: ${sub.metadata?.business || sub.id}`,
       html: clientEmail({
         preheader: 'A Pictures Season Pass ended.',
@@ -1884,7 +1885,7 @@ async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
     const resend = resendClient();
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-      to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+      to: OWNER_NOTIFY_TO,
       subject: `SIDEKICK CANCELED: ${sub.metadata?.business || sub.id}`,
       html: clientEmail({
         preheader: 'A Sidekick subscription ended.',
@@ -2190,7 +2191,7 @@ export async function POST(req: Request) {
       });
       await resend.emails.send({
         from: 'Modern Mustard Seed Store <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         subject: `New store sale. ${item.name}. $${item.priceUsd}.`,
         html: storeOrderNotificationEmail({
           name: name ?? 'unknown',

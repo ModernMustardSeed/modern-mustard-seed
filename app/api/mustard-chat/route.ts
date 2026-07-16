@@ -13,6 +13,7 @@ import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
 import { sendMetaEvent } from '@/lib/meta-capi';
 import { randomUUID } from 'node:crypto';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -226,7 +227,7 @@ async function executeCaptureLead(input: {
       ];
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         replyTo: email,
         subject: `Mustard Seed chat: ${name}`,
         html: leadNotification({
@@ -346,7 +347,7 @@ async function executeBookSlot(input: {
       // Resend returns {error} without throwing, so capture both results.
       const rSarah = await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+        to: OWNER_NOTIFY_TO,
         replyTo: email,
         subject: `Booked: ${name} · ${shortLabel}`,
         html: bookingNotificationEmail({

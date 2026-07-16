@@ -6,6 +6,7 @@ import { provisionFromProposal } from '@/lib/proposal-provision';
 import { createMagicToken } from '@/lib/client-auth';
 import { leadNotification, magicLinkEmail, proposalSignedEmail } from '@/lib/email';
 import { renderProposalPdf } from '@/lib/proposal-pdf';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
 
@@ -107,7 +108,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
       try {
         await resend.emails.send({
           from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-          to: ['sarah@modernmustardseed.com', 'makeourcitypretty@gmail.com'],
+          to: OWNER_NOTIFY_TO,
           subject: `Proposal signed by ${name}`,
           html: leadNotification({
             type: 'Contact',
