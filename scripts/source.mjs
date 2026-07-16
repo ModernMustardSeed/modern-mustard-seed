@@ -143,13 +143,24 @@ async function geocode(place) {
 
 async function overpass(bbox) {
   const q = `[out:json][timeout:90];(nwr["website"]["phone"]["amenity"~"^(restaurant|cafe|fast_food|bar|pub|dentist|clinic|doctors|veterinary|pharmacy|spa)$"](${bbox});nwr["website"]["phone"]["shop"](${bbox});nwr["website"]["phone"]["craft"](${bbox});nwr["website"]["phone"]["office"](${bbox});nwr["website"]["phone"]["healthcare"](${bbox}););out tags 800;`;
-  for (const url of ['https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass-api.de/api/interpreter']) {
-    try {
-      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': UA }, body: `data=${encodeURIComponent(q)}`, signal: AbortSignal.timeout(90000) });
-      if (!res.ok) { console.warn(`overpass ${url}: ${res.status}`); continue; }
-      const j = await res.json();
-      if (j.elements?.length) return j.elements;
-    } catch (e) { console.warn(`overpass ${url} err: ${e.message}`); }
+  // Overpass mirrors 504/429 under load; try several with a backoff so a transient
+  // outage doesn't return an empty run.
+  const mirrors = [
+    'https://overpass-api.de/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter',
+    'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+    'https://overpass.osm.jp/api/interpreter',
+  ];
+  for (let attempt = 0; attempt < 2; attempt++) {
+    for (const url of mirrors) {
+      try {
+        const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': UA }, body: `data=${encodeURIComponent(q)}`, signal: AbortSignal.timeout(90000) });
+        if (!res.ok) { console.warn(`overpass ${url}: ${res.status}`); continue; }
+        const j = await res.json();
+        if (j.elements?.length) return j.elements;
+      } catch (e) { console.warn(`overpass ${url} err: ${e.message}`); }
+    }
+    if (attempt === 0) { console.warn('all mirrors soft-failed, backing off 8s...'); await sleep(8000); }
   }
   return [];
 }
