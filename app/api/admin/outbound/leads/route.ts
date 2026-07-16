@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin, parseBody, outboundRepScope, fetchAllRows } from '@/lib/outbound-server';
-import { leadCreateSchema, LEAD_STATUSES, NICHES, phoneKey } from '@/lib/outbound';
+import { leadInputSchema, LEAD_STATUSES, NICHES, phoneKey } from '@/lib/outbound';
 import type { LeadStatus, Niche } from '@/lib/outbound';
 
 export const runtime = 'nodejs';
@@ -58,7 +58,9 @@ export async function POST(req: Request) {
   const guard = await requireOutboundAdmin();
   if ('error' in guard) return guard.error;
 
-  const parsed = await parseBody(req, leadCreateSchema);
+  // Manual single add: email is PREFERRED, not required (Sarah's "split" rule) —
+  // a human adding one lead is never blocked. The CSV import stays strict.
+  const parsed = await parseBody(req, leadInputSchema);
   if ('error' in parsed) return parsed.error;
 
   // Dedupe on phone before inserting. Phone formats vary, so we normalize in JS

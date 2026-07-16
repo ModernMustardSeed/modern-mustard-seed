@@ -690,8 +690,11 @@ function AddLeadModal({
           <input className={inputCls} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="(406) 555-0134" />
         </div>
         <div>
-          <label className={labelCls}>Email *</label>
+          <label className={labelCls}>Email (recommended)</label>
           <input className={inputCls} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="owner@business.com" />
+          {!isEmail(form.email) && (
+            <p className="mt-1 text-[11px] text-[#7a5c1a] font-sans">Leads with an email convert far better. Add one if you can, but you can save without it.</p>
+          )}
         </div>
         <div>
           <label className={labelCls}>Website</label>
@@ -741,7 +744,7 @@ function AddLeadModal({
       </div>
       <div className="flex justify-end gap-2 mt-5">
         <button onClick={onClose} className={btnGhost}>Cancel</button>
-        <button onClick={() => void submit()} disabled={saving || !form.business_name.trim() || form.phone.replace(/\D/g, '').length < 7 || !isEmail(form.email)} className={btnPrimary}>
+        <button onClick={() => void submit()} disabled={saving || !form.business_name.trim() || form.phone.replace(/\D/g, '').length < 7} className={btnPrimary}>
           {saving ? 'Saving...' : 'Add lead'}
         </button>
       </div>

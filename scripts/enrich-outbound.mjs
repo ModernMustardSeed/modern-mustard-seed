@@ -44,7 +44,7 @@ async function fetchWithTimeout(url, opts = {}, ms = 12000) {
 }
 
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
-const BAD = /(example|sentry|wixpress|godaddy|placeholder|schema|\.png|\.jpg|\.gif|\.webp|\.css|\.js)/i;
+const BAD = /(example|sentry|wixpress|godaddy|placeholder|schema|your@|youremail|yourname|yourdomain|@email\.com|@domain\.|@yourcompany|firstname|lastname|name@|sample@|test@test|user@|\.png|\.jpg|\.gif|\.webp|\.css|\.js)/i;
 
 function normUrl(site) {
   if (!site) return null;
