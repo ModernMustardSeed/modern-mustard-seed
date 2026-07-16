@@ -87,7 +87,11 @@ const FRANCHISE = [
 ];
 
 // Reject template placeholders + junk, aligned with enrich-outbound's hardened filter.
-const EMAIL_BLOCK = /\.(png|jpe?g|gif|svg|webp|ico|css|js)$|sentry|wixpress|\.wix\.com|example\.|yourdomain|domain\.com|@email\.com|your@|youremail|yourname|firstname|lastname|name@|sample@|test@|user@|noreply|no-reply|donotreply|googleapis|cloudflare|schema\.org|w3\.org|godaddy|squarespace|\.wixsite/i;
+// `modernmustardseed` + the url-encoding artifacts (%2f, %28, u003d) block a real
+// bug: our own User-Agent carries sarah@modernmustardseed.com, and a page that
+// reflects the UA (error echo, access log) would otherwise be scraped back as the
+// lead's email. Never capture our own address, and never trust an encoded fragment.
+const EMAIL_BLOCK = /\.(png|jpe?g|gif|svg|webp|ico|css|js)$|sentry|wixpress|\.wix\.com|example\.|yourdomain|domain\.com|@email\.com|your@|youremail|yourname|firstname|lastname|name@|sample@|test@|user@|noreply|no-reply|donotreply|googleapis|cloudflare|schema\.org|w3\.org|godaddy|squarespace|\.wixsite|modernmustardseed|sourcer|%2[f8]|u003d/i;
 const ROLE = /^(info|contact|hello|office|sales|admin|support|frontdesk|reception|booking|hi|service|scheduling)@/i;
 
 function bestEmail(list, host) {

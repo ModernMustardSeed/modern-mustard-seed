@@ -32,6 +32,7 @@ type Candidate = {
   demo_url: string | null;
   source: string | null;
   origin: string | null;
+  website: string | null;
   created_at: string;
 };
 
@@ -58,7 +59,7 @@ export async function GET() {
     let qb = guard.supabase
       .from('outbound_leads')
       .select(
-        'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, last_seen_at, email_open_count, demo_url, source, origin, created_at',
+        'id, business_name, contact_name, phone, niche, city, status, owner_rep_id, dnc_checked, next_action_at, next_action, audit_score, last_open_at, last_seen_at, email_open_count, demo_url, source, origin, website, created_at',
       )
       .in('status', ['new', 'contacted', 'callback'])
       .order('created_at', { ascending: false })
@@ -173,9 +174,11 @@ export async function GET() {
         score += 180;
         if (reason === 'fresh') reason = 'review_pain';
       }
-      // Website-mined leads verifiably have no (working) site: a build pitch
-      // with the evidence already in hand.
-      if (l.source === 'website-mining') {
+      // No-website leads verifiably have no site: a build pitch with the
+      // evidence already in hand. Covers the legacy 'website-mining' tag AND
+      // sourced leads that landed with a blank website (the --no-site sourcer),
+      // so both surface hot under the same "No real website" reason.
+      if (l.source === 'website-mining' || (l.source === 'sourced' && !l.website?.trim())) {
         score += 170;
         if (reason === 'fresh') reason = 'no_website';
       }

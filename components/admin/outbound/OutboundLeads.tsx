@@ -30,6 +30,28 @@ const STATUS_RANK: Record<string, number> = {
 };
 const rankOf = (s: string) => STATUS_RANK[s] ?? 1;
 
+/** Saved views: one-click segments for the highest-intent lead types. "No
+ *  website" and "Outdated site" are the leads that most need us and close
+ *  fastest; the sourcer flags them (website blank, or a "needs us:" note). */
+type ViewKey = 'all' | 'no_site' | 'outdated' | 'needs';
+const VIEWS: { key: ViewKey; label: string; desc: string }[] = [
+  { key: 'all', label: 'All leads', desc: 'Everything on the floor.' },
+  { key: 'no_site', label: 'No website', desc: 'Has a phone but no website at all. Pitch: build them one from scratch.' },
+  { key: 'outdated', label: 'Outdated site', desc: 'Has a website, but it is stale, not mobile-friendly, or has no HTTPS. Pitch: redesign.' },
+  { key: 'needs', label: 'Needs us', desc: 'No site or a weak site. The whole "needs help" segment in one view.' },
+];
+const hasSite = (l: OutboundLead) => !!(l.website && l.website.trim());
+const isWeak = (l: OutboundLead) => /needs us/i.test(l.notes ?? '');
+const matchesView = (l: OutboundLead, v: ViewKey) =>
+  v === 'all' ? true : v === 'no_site' ? !hasSite(l) : v === 'outdated' ? hasSite(l) && isWeak(l) : !hasSite(l) || isWeak(l);
+
+/** Small per-row cue so a caller knows which pitch a lead is: build vs redesign. */
+function siteFlag(l: OutboundLead): { label: string; tone: 'red' | 'amber' } | null {
+  if (!hasSite(l)) return { label: 'No site', tone: 'red' };
+  if (isWeak(l)) return { label: 'Stale site', tone: 'amber' };
+  return null;
+}
+
 const EMPTY_FORM = {
   business_name: '',
   contact_name: '',
@@ -99,8 +121,12 @@ export default function OutboundLeads() {
   const [sourceF, setSourceF] = useState('');
   const [unscrubbedOnly, setUnscrubbedOnly] = useState(false);
   const [workedFirst, setWorkedFirst] = useState(true);
+  const [view, setView] = useState<ViewKey>('all');
   const [sort, setSort] = useState<SortKey>('created_at');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
+  // Armed after the first render so the URL-sync effect never clobbers the
+  // params the mount reader just loaded (both run in the same initial commit).
+  const urlWriteArmed = useRef(false);
 
   // Add modal
   const [addOpen, setAddOpen] = useState(false);
@@ -137,8 +163,9 @@ export default function OutboundLeads() {
 
   useEffect(() => {
     void load();
-    // Deep-link support (?dnc=unchecked) without useSearchParams, so no
-    // Suspense boundary is needed (same pattern as the Tracker's ?focus=).
+    // Deep-link support (?view=no_site&owner=...) without useSearchParams, so no
+    // Suspense boundary is needed (same pattern as the Tracker's ?focus=). This
+    // is what makes a saved view a real, bookmarkable/shareable link.
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       if (params.get('dnc') === 'unchecked') setUnscrubbedOnly(true);
@@ -146,8 +173,31 @@ export default function OutboundLeads() {
       if (st) setStateF(st.toUpperCase().slice(0, 2));
       const src = params.get('source');
       if (src) setSourceF(src);
+      const ow = params.get('owner');
+      if (ow) setOwner(ow);
+      const sc = params.get('status');
+      if (sc) setStatus(sc);
+      const vw = params.get('view');
+      if (vw && VIEWS.some((v) => v.key === vw)) setView(vw as ViewKey);
     }
   }, [load]);
+
+  // Reflect the view-defining filters back into the URL so the current view can
+  // be bookmarked or texted to a rep. replaceState keeps it out of history.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!urlWriteArmed.current) { urlWriteArmed.current = true; return; }
+    const p = new URLSearchParams(window.location.search);
+    const set = (k: string, val: string) => (val ? p.set(k, val) : p.delete(k));
+    set('view', view === 'all' ? '' : view);
+    set('owner', owner);
+    set('status', status);
+    set('state', stateF);
+    set('city', cityF);
+    set('source', sourceF);
+    const qs = p.toString();
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+  }, [view, owner, status, stateF, cityF, sourceF]);
 
   const repName = useCallback((id: string | null) => reps.find((r) => r.id === id)?.name ?? '', [reps]);
 
@@ -180,7 +230,10 @@ export default function OutboundLeads() {
     if (cityF && s && !leads.some((l) => l.state === s && l.city === cityF)) setCityF('');
   };
 
-  const visible = useMemo(() => {
+  // Everything EXCEPT the saved-view filter. The view chips filter this set and
+  // show their counts against it, so a chip count reflects the current
+  // rep/state/search selection (e.g. "No website (37)" for Polly).
+  const base = useMemo(() => {
     let rows = leads;
     if (status) rows = rows.filter((l) => l.status === status);
     if (niche) rows = rows.filter((l) => l.niche === niche);
@@ -195,6 +248,20 @@ export default function OutboundLeads() {
         [l.business_name, l.contact_name, l.phone, l.city, l.email].some((v) => v?.toLowerCase().includes(needle)),
       );
     }
+    return rows;
+  }, [leads, status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, q]);
+
+  const viewCounts = useMemo(() => {
+    const counts = { all: base.length, no_site: 0, outdated: 0, needs: 0 } as Record<ViewKey, number>;
+    for (const l of base) {
+      if (!hasSite(l)) { counts.no_site++; counts.needs++; }
+      else if (isWeak(l)) { counts.outdated++; counts.needs++; }
+    }
+    return counts;
+  }, [base]);
+
+  const visible = useMemo(() => {
+    const rows = base.filter((l) => matchesView(l, view));
     const mul = dir === 'asc' ? 1 : -1;
     return [...rows].sort((a, b) => {
       if (workedFirst) {
@@ -206,7 +273,7 @@ export default function OutboundLeads() {
       if (typeof va === 'number' || typeof vb === 'number') return (Number(va) - Number(vb)) * mul;
       return String(va).localeCompare(String(vb)) * mul;
     });
-  }, [leads, status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, workedFirst, q, sort, dir, repName]);
+  }, [base, view, workedFirst, sort, dir, repName]);
 
   const clickSort = (key: SortKey) => {
     if (sort === key) setDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -354,7 +421,30 @@ export default function OutboundLeads() {
         )}
 
         {/* Filters */}
-        <div className={`${card} p-4 mb-5 flex flex-wrap items-center gap-2.5`}>
+        <div className={`${card} p-4 mb-5`}>
+          {/* Saved views: one-click segments for the highest-intent lead types */}
+          <div className="flex flex-wrap items-center gap-2 mb-3 pb-3 border-b-2 border-[#1a1815]/10">
+            <span className={`${eyebrow} mr-1`}>Saved views</span>
+            {VIEWS.map((v) => {
+              const active = view === v.key;
+              return (
+                <button
+                  key={v.key}
+                  onClick={() => setView(v.key)}
+                  title={v.desc}
+                  className={`px-3 py-1.5 rounded-lg border-2 font-oswald uppercase tracking-[0.08em] text-[11px] transition-colors ${
+                    active
+                      ? 'bg-[#1a1815] text-[#f7f3e9] border-[#1a1815] shadow-[2px_2px_0_0_#b58a2a]'
+                      : 'bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#b58a2a] hover:text-[#1a1815]'
+                  }`}
+                >
+                  {v.label}
+                  <span className={`ml-1.5 tabular-nums ${active ? 'text-[#f7b32b]' : 'text-[#1a1815]/40'}`}>{viewCounts[v.key]}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex flex-wrap items-center gap-2.5">
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search business, contact, phone, city" className={`${inputCls} !w-64 !py-2`} />
           <select value={status} onChange={(e) => setStatus(e.target.value)} className={selectCls} aria-label="Filter by status">
             <option value="">All statuses</option>
@@ -396,6 +486,7 @@ export default function OutboundLeads() {
             </button>
           )}
           <span className="ml-auto font-oswald text-sm text-[#1a1815]/50 uppercase tracking-[0.1em]">{visible.length} leads</span>
+          </div>
         </div>
 
         {/* Table */}
@@ -435,6 +526,21 @@ export default function OutboundLeads() {
                       <Link href={`/admin/outbound/call/${l.id}`} className="font-semibold text-[#1a1815] hover:text-[#b58a2a] transition-colors">
                         {l.business_name}
                       </Link>
+                      {(() => {
+                        const f = siteFlag(l);
+                        return f ? (
+                          <span
+                            className={`block w-fit mt-0.5 px-1.5 py-0.5 rounded font-oswald uppercase tracking-[0.08em] text-[9px] border ${
+                              f.tone === 'red'
+                                ? 'bg-[#a03123]/10 text-[#a03123] border-[#a03123]/30'
+                                : 'bg-[#b58a2a]/12 text-[#7a5c1a] border-[#b58a2a]/40'
+                            }`}
+                            title={f.tone === 'red' ? 'No website on file. Pitch: build them one.' : 'Weak or outdated site. Pitch: redesign.'}
+                          >
+                            {f.label}
+                          </span>
+                        ) : null;
+                      })()}
                     </td>
                     <td className="px-3 py-2.5 text-[#1a1815]/70">
                       {l.contact_name ?? ''}

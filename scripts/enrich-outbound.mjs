@@ -44,7 +44,9 @@ async function fetchWithTimeout(url, opts = {}, ms = 12000) {
 }
 
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
-const BAD = /(example|sentry|wixpress|godaddy|placeholder|schema|your@|youremail|yourname|yourdomain|@email\.com|@domain\.|@yourcompany|firstname|lastname|name@|sample@|test@test|user@|\.png|\.jpg|\.gif|\.webp|\.css|\.js)/i;
+// modernmustardseed + encoding artifacts: our UA carries our own email, so a page
+// reflecting the UA must never be scraped back as the lead's address.
+const BAD = /(example|sentry|wixpress|godaddy|placeholder|schema|your@|youremail|yourname|yourdomain|@email\.com|@domain\.|@yourcompany|firstname|lastname|name@|sample@|test@test|user@|modernmustardseed|sourcer|%2[f8]|u003d|\.png|\.jpg|\.gif|\.webp|\.css|\.js)/i;
 
 function normUrl(site) {
   if (!site) return null;
