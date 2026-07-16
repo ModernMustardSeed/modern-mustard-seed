@@ -28,7 +28,7 @@ import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { cliDirective, cliRealDirective } from '../lib/site-directive.mjs';
+import { cliDirective, cliRealDirective, cliEditDirective } from '../lib/site-directive.mjs';
 
 const ONCE = process.argv.includes('--once');
 const POLL_MS = Number(process.env.DEMO_SITE_POLL_MS || 15000);
@@ -81,7 +81,14 @@ const DIRECTIVE = cliDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES });
 // to turn the demo into the site they actually own. It gets a different law: no
 // demo pitch, no invented facts, their own assets, and built to be indexed.
 const REAL_DIRECTIVE = cliRealDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES });
+// An EDIT is neither a build nor a rebuild: it takes a finished site (base_html) and
+// one instruction (brief) and returns the same site with that one change made. It
+// powers the admin reforge-from-prompt and the client portal's auto-applied edits.
+const EDIT_DIRECTIVE = cliEditDirective();
 const isRebuild = (job) => job.kind === 'rebuild';
+const isEdit = (job) => job.kind === 'edit';
+/** A client's edit belongs to a paid project and lands in a draft for approval. */
+const isProjectEdit = (job) => isEdit(job) && Boolean(job.project_id);
 
 async function reclaimStranded() {
   const cutoff = new Date(Date.now() - STALE_MS).toISOString();
@@ -156,7 +163,14 @@ async function fail(job, message) {
     .from('outbound_demo_sites')
     .update({ status: 'failed', error, updated_at: new Date().toISOString() })
     .eq('id', job.id);
-  if (isRebuild(job)) {
+  if (isProjectEdit(job)) {
+    // A paying client asked for this edit. Surface it on the delivery board, and do
+    // NOT touch their live site or their draft.
+    await supabase
+      .from('projects')
+      .update({ edit_status: 'failed', edit_error: error })
+      .eq('id', job.project_id);
+  } else if (isRebuild(job)) {
     // A paying client is on the other end of this one, so the failure has to be
     // visible on the delivery board rather than only in a worker log.
     await supabase
@@ -171,8 +185,12 @@ async function fail(job, message) {
 
 async function process_(job) {
   const rebuild = isRebuild(job);
-  log('claimed', rebuild ? 'REAL SITE rebuild' : 'site build', job.id, 'for', job.business_name);
-  if (rebuild) {
+  const edit = isEdit(job);
+  const kindLabel = edit ? 'site EDIT' : rebuild ? 'REAL SITE rebuild' : 'site build';
+  log('claimed', kindLabel, job.id, 'for', job.business_name);
+  if (isProjectEdit(job)) {
+    await supabase.from('projects').update({ edit_status: 'building' }).eq('id', job.project_id);
+  } else if (rebuild) {
     await supabase.from('projects').update({ site_build_status: 'building' }).eq('id', job.project_id);
   } else if (job.lead_id) {
     await supabase.from('outbound_leads').update({ site_demo_status: 'building' }).eq('id', job.lead_id);
@@ -182,8 +200,11 @@ async function process_(job) {
   try {
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(path.join(dir, 'BRIEF.md'), job.brief || '');
+    // An edit needs the site it is editing on disk beside the change request.
+    if (edit) writeFileSync(path.join(dir, 'CURRENT.html'), job.base_html || '');
 
-    const { code, out } = await runClaude(dir, rebuild ? REAL_DIRECTIVE : DIRECTIVE);
+    const directive = edit ? EDIT_DIRECTIVE : rebuild ? REAL_DIRECTIVE : DIRECTIVE;
+    const { code, out } = await runClaude(dir, directive);
 
     const htmlPath = path.join(dir, 'index.html');
     if (!existsSync(htmlPath)) {
@@ -193,6 +214,13 @@ async function process_(job) {
     const html = readFileSync(htmlPath, 'utf8');
     if (html.length < 1500 || !/<\/html>/i.test(html)) {
       await fail(job, `index.html looks incomplete (${html.length} bytes, claude exited ${code})`);
+      return;
+    }
+
+    // A client's edit lands in a draft for approval; it must NOT be written onto the
+    // job's html and served, and it must NOT touch the live site. Route it first.
+    if (isProjectEdit(job)) {
+      await finishClientEdit(job, html);
       return;
     }
 
@@ -219,15 +247,40 @@ async function process_(job) {
       channel: 'note',
       from_addr: 'cockpit',
       to_addr: job.business_name,
-      subject: 'Website demo live',
-      snippet: `Their demo website is live at ${siteUrl} (AI receptionist on board).`,
+      subject: edit ? 'Website demo updated' : 'Website demo live',
+      snippet: edit
+        ? `Their demo website was reforged from your prompt. Live at ${siteUrl}`
+        : `Their demo website is live at ${siteUrl} (AI receptionist on board).`,
       read: true,
       occurred_at: new Date().toISOString(),
     });
-    log('READY', job.id, siteUrl, `(${Math.round(html.length / 1024)}KB)`);
+    log(edit ? 'EDITED' : 'READY', job.id, siteUrl, `(${Math.round(html.length / 1024)}KB)`);
   } catch (e) {
     await fail(job, e?.message || e);
   }
+}
+
+/**
+ * A finished CLIENT edit becomes the DRAFT, never the live site. It lands in
+ * projects.site_html_draft with edit_status 'ready', and a human approves it on
+ * /admin/delivery before anything reaches the client's domain. The whole guardrail
+ * is that an agent's edit can never publish itself.
+ */
+async function finishClientEdit(job, html) {
+  const { error } = await supabase
+    .from('projects')
+    .update({ site_html_draft: html, edit_status: 'ready', edit_error: null, updated_at: new Date().toISOString() })
+    .eq('id', job.project_id);
+  if (error) {
+    await fail(job, `could not store the edited draft: ${error.message}`);
+    return;
+  }
+  await supabase
+    .from('outbound_demo_sites')
+    .update({ status: 'ready', html, error: null, built_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+    .eq('id', job.id);
+  log('CLIENT EDIT READY', job.id, `project ${job.project_id}`, `(${Math.round(html.length / 1024)}KB)`);
+  log(`review it: ${SITE_URL}/admin/delivery`);
 }
 
 /**

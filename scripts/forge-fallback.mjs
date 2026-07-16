@@ -69,6 +69,8 @@ const sb = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: fal
 const log = (...a) => console.log(new Date().toISOString(), ...a);
 
 const isRebuild = (job) => job.kind === 'rebuild';
+const isEdit = (job) => job.kind === 'edit';
+const isProjectEdit = (job) => isEdit(job) && Boolean(job.project_id);
 
 async function fail(job, message) {
   const msg = String(message).slice(0, 2000);
@@ -77,7 +79,12 @@ async function fail(job, message) {
     .update({ status: 'failed', error: msg, updated_at: new Date().toISOString() })
     .eq('id', job.id);
 
-  if (isRebuild(job)) {
+  if (isProjectEdit(job)) {
+    await sb
+      .from('projects')
+      .update({ edit_status: 'failed', edit_error: msg })
+      .eq('id', job.project_id);
+  } else if (isRebuild(job)) {
     // A rebuild belongs to someone who already paid, so the failure has to land
     // on the delivery board, not only in a runner log.
     await sb
@@ -159,22 +166,35 @@ async function main() {
   if (!claimed) { log('the workstation claimed it first. standing down.'); return; }
 
   const rebuild = isRebuild(claimed);
-  if (rebuild) {
+  const edit = isEdit(claimed);
+  const projectEdit = isProjectEdit(claimed);
+  if (projectEdit) {
+    await sb.from('projects').update({ edit_status: 'building' }).eq('id', claimed.project_id);
+  } else if (rebuild) {
     await sb.from('projects').update({ site_build_status: 'building' }).eq('id', claimed.project_id);
   } else if (claimed.lead_id) {
     await sb.from('outbound_leads').update({ site_demo_status: 'building' }).eq('id', claimed.lead_id);
   }
-  log(`claimed. forging ${rebuild ? 'their REAL site' : 'the demo'} via the API...`);
+  log(`claimed. ${edit ? 'editing their site' : rebuild ? 'forging their REAL site' : 'forging the demo'} via the API...`);
 
-  const { forgeSiteWithApi } = await import('../lib/site-forge-api.ts');
   const t0 = Date.now();
   let result;
   try {
-    result = await forgeSiteWithApi(
-      String(claimed.brief ?? ''),
-      String(claimed.business_name ?? 'the business'),
-      { real: rebuild },
-    );
+    if (edit) {
+      const { editSiteWithApi } = await import('../lib/site-forge-api.ts');
+      result = await editSiteWithApi(
+        String(claimed.base_html ?? ''),
+        String(claimed.brief ?? ''),
+        String(claimed.business_name ?? 'the business'),
+      );
+    } else {
+      const { forgeSiteWithApi } = await import('../lib/site-forge-api.ts');
+      result = await forgeSiteWithApi(
+        String(claimed.brief ?? ''),
+        String(claimed.business_name ?? 'the business'),
+        { real: rebuild },
+      );
+    }
   } catch (e) {
     await fail(claimed, e?.message || e);
     process.exit(1);
@@ -199,6 +219,20 @@ async function main() {
   if (upErr) {
     await fail(claimed, `could not store the html: ${upErr.message}`);
     process.exit(1);
+  }
+
+  // A CLIENT edit lands in a draft for approval, and never touches the live site.
+  if (projectEdit) {
+    const { error: pErr } = await sb
+      .from('projects')
+      .update({ site_html_draft: result.html, edit_status: 'ready', edit_error: null, updated_at: new Date().toISOString() })
+      .eq('id', claimed.project_id);
+    if (pErr) {
+      await fail(claimed, `could not store the edited draft: ${pErr.message}`);
+      process.exit(1);
+    }
+    log(`CLIENT EDIT READY in ${secs}s: ${SITE_URL}/admin/delivery | ${Math.round(result.bytes / 1024)}KB`);
+    return;
   }
 
   if (rebuild) {
@@ -239,13 +273,15 @@ async function main() {
     channel: 'note',
     from_addr: 'forge-fallback',
     to_addr: claimed.business_name,
-    subject: 'Website demo live (api fallback)',
-    snippet: `Built on the API because the workstation was ${workerAlive ? 'backed up' : 'offline'}. Live at ${siteUrl}.`,
+    subject: edit ? 'Website demo updated (api fallback)' : 'Website demo live (api fallback)',
+    snippet: edit
+      ? `Reforged from your prompt on the API because the workstation was ${workerAlive ? 'backed up' : 'offline'}. Live at ${siteUrl}.`
+      : `Built on the API because the workstation was ${workerAlive ? 'backed up' : 'offline'}. Live at ${siteUrl}.`,
     read: true,
     occurred_at: new Date().toISOString(),
   });
 
-  log(`READY in ${secs}s: ${siteUrl} | ${result.direction} | hero ${result.hero} | ${Math.round(result.bytes / 1024)}KB`);
+  log(`${edit ? 'EDITED' : 'READY'} in ${secs}s: ${siteUrl} | ${result.direction} | hero ${result.hero} | ${Math.round(result.bytes / 1024)}KB`);
 }
 
 await main();

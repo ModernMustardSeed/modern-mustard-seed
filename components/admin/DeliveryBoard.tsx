@@ -29,6 +29,12 @@ type Project = {
   approvedAt: string | null;
   approvedBy: string | null;
   revealAt: string | null;
+  editStatus: 'queued' | 'building' | 'ready' | 'failed' | null;
+  editInstruction: string | null;
+  editRequestedBy: string | null;
+  editRequestedAt: string | null;
+  editError: string | null;
+  hasDraft: boolean;
 };
 type Row = {
   id: string;
@@ -97,9 +103,15 @@ export default function DeliveryBoard() {
 
   useEffect(() => { load(); }, [load]);
 
-  // A rebuild takes minutes. Poll while one is in flight so the board tells the truth
-  // without Sarah reloading, and stop the moment nothing is building.
-  const building = rows.some((r) => r.project?.buildStatus === 'queued' || r.project?.buildStatus === 'building');
+  // A rebuild or a client edit takes minutes. Poll while one is in flight so the board
+  // tells the truth without Sarah reloading, and stop the moment nothing is working.
+  const building = rows.some(
+    (r) =>
+      r.project?.buildStatus === 'queued' ||
+      r.project?.buildStatus === 'building' ||
+      r.project?.editStatus === 'queued' ||
+      r.project?.editStatus === 'building',
+  );
   useEffect(() => {
     if (!building) return;
     const t = setInterval(load, 20_000);
@@ -254,6 +266,23 @@ function DeliveryRow({
     }
   };
 
+  const doEditApprove = async () => {
+    if (!confirm(p?.publishedAt
+      ? 'Approve this edit and push it to their LIVE site now? The client gets the launch email.'
+      : 'Approve this edit? It becomes their real site, ready to reveal.')) return;
+    const j = await act('edit-approve');
+    if (j?.ok) {
+      setMsg(j.published ? `Approved and live${j.liveUrl ? ` at ${j.liveUrl}` : ''}.` : 'Approved. It is now their real site.');
+      onChanged();
+    }
+  };
+
+  const doEditDiscard = async () => {
+    if (!confirm('Throw this edit away? The client gets their free edit back.')) return;
+    const j = await act('edit-discard');
+    if (j?.ok) { setMsg('Edit discarded. Their free edit was refunded.'); onChanged(); }
+  };
+
   const intake = row.intake ?? {};
   const answers = Object.entries(intake).filter(([k, v]) => k !== 'assets' && typeof v === 'string' && v);
   const assets = Array.isArray((intake as Record<string, unknown>).assets)
@@ -277,6 +306,9 @@ function DeliveryRow({
             {row.status === 'delivered' && <Chip tone="green">Delivered</Chip>}
             {(p?.buildStatus === 'queued' || p?.buildStatus === 'building') && <Chip tone="blue">Rebuilding</Chip>}
             {p?.buildStatus === 'failed' && <Chip tone="red">Rebuild failed</Chip>}
+            {(p?.editStatus === 'queued' || p?.editStatus === 'building') && <Chip tone="blue">Client edit building</Chip>}
+            {p?.editStatus === 'ready' && <Chip tone="gold">Client edit to approve</Chip>}
+            {p?.editStatus === 'failed' && <Chip tone="red">Client edit failed</Chip>}
             {p?.buildStatus === 'ready' && !p.approvedAt && !p.publishedAt && <Chip tone="gold">Needs your eyes</Chip>}
             {p?.approvedAt && !p.publishedAt && <Chip tone="green">Approved{p.revealAt ? ` for ${new Date(p.revealAt).toLocaleDateString()}` : ''}</Chip>}
             {row.assetCount > 0 && <Chip tone="plain">{row.assetCount} files</Chip>}
@@ -465,6 +497,61 @@ function DeliveryRow({
               </p>
             )}
           </div>
+
+          {/* A client's auto-applied edit, waiting on a human signature. Nothing an AI
+              edited can reach their live site until Sarah approves it here. */}
+          {p?.editStatus && (
+            <div className="rounded-xl border-2 border-[#161616] bg-[#F5B700]/[0.08] p-4">
+              <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">
+                Client edit {p.editStatus === 'ready' ? 'ready for you' : p.editStatus === 'failed' ? 'failed' : 'building'}
+              </h4>
+              {p.editInstruction && (
+                <p className="font-body text-[13.5px] text-[#161616] mb-1">
+                  <span className="text-[#161616]/55">They asked: </span>&ldquo;{p.editInstruction}&rdquo;
+                </p>
+              )}
+              {p.editRequestedBy && (
+                <p className="font-mono text-[11px] text-[#161616]/50 mb-2">
+                  from {p.editRequestedBy}
+                  {p.editRequestedAt ? ` · ${new Date(p.editRequestedAt).toLocaleString()}` : ''}
+                </p>
+              )}
+
+              {(p.editStatus === 'queued' || p.editStatus === 'building') && (
+                <p className="font-body text-[13px] text-[#1E50C8]">
+                  The forge is applying their change to a copy of their site. Usually a few minutes. It will not touch anything live.
+                </p>
+              )}
+              {p.editStatus === 'failed' && (
+                <p className="font-body text-[13px] text-[#E0301E]">
+                  The edit could not be applied: {p.editError ?? 'no reason recorded'}. Discard it to give them their edit back, or edit the site by hand.
+                </p>
+              )}
+              {p.editStatus === 'ready' && (
+                <div className="flex flex-wrap gap-2 items-center mt-1">
+                  <a
+                    href={`/admin/delivery/${row.projectId}/edit-preview`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${BTN_QUIET} inline-block no-underline`}
+                  >
+                    Preview the edit ↗
+                  </a>
+                  <button type="button" onClick={doEditApprove} disabled={!!busy || (Boolean(p.publishedAt) && !platformReady)} className={BTN}>
+                    {busy === 'edit-approve' ? 'Approving…' : p.publishedAt ? 'Approve and push live' : 'Approve'}
+                  </button>
+                  <button type="button" onClick={doEditDiscard} disabled={!!busy} className={BTN_QUIET}>
+                    {busy === 'edit-discard' ? 'Discarding…' : 'Discard'}
+                  </button>
+                </div>
+              )}
+              {p.editStatus === 'failed' && (
+                <button type="button" onClick={doEditDiscard} disabled={!!busy} className={`${BTN_QUIET} mt-1`}>
+                  {busy === 'edit-discard' ? 'Discarding…' : 'Discard and refund'}
+                </button>
+              )}
+            </div>
+          )}
 
           {/* The reveal. A human signs it, and it goes out on the day we chose. */}
           {p?.hasSite && !p.publishedAt && (

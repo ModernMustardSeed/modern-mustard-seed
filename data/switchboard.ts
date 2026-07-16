@@ -16,8 +16,16 @@ export const SWITCHBOARD = {
   promise:
     'Every location gets a 24/7 AI concierge in one on-brand voice. You get one board that shows the money it saved across all of them.',
   statement: 'One voice answers for all of them.',
-  // A live home-services concierge to hear on the phone (book a walkthrough is the primary CTA).
   walkthroughPath: '/book',
+  // A REAL, live AI concierge a prospect can call right now to hear how a location
+  // answers, before a dollar is spent. This is our live home-services concierge
+  // (a plumbing location), which is exactly the multi-location trades buyer we want.
+  demoLine: {
+    number: '+18044801564',
+    display: '(804) 480-1564',
+    label: 'Hear a location answer',
+    note: 'Call it. A live AI concierge answers as a home-services location would, around the clock. Be a customer and try to stump it.',
+  },
 } as const;
 
 /** One-time franchise build: brand voice template + master Command Board + rollout. */

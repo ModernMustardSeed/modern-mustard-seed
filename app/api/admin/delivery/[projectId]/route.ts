@@ -50,7 +50,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
 
   const { data: project } = await sb
     .from('projects')
-    .select('id, name, client_email, demo_site_id, site_html, site_domain, site_vercel_project_id, site_live_url, site_build_status, approved_at, reveal_at')
+    .select('id, name, client_email, demo_site_id, site_html, site_domain, site_vercel_project_id, site_live_url, site_published_at, site_build_status, approved_at, reveal_at, site_html_draft, edit_status, revisions_used')
     .eq('id', projectId)
     .maybeSingle();
   if (!project) return NextResponse.json({ error: 'No such project' }, { status: 404 });
@@ -171,6 +171,50 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
     case 'unapprove': {
       await sb.from('projects').update({ approved_at: null, approved_by: null }).eq('id', projectId);
       return NextResponse.json({ ok: true });
+    }
+
+    /**
+     * ── Approve a client's auto-applied edit. ──
+     *
+     * The client typed a change in their portal, the forge built it into a draft, and
+     * nothing has touched their live site. This is the signature: the draft becomes the
+     * real site, and if the site was already live it is republished so the change is out.
+     * Approving an AI edit is the ONLY thing that can put it in front of the client.
+     */
+    case 'edit-approve': {
+      if (!project.site_html_draft) return NextResponse.json({ error: 'There is no edited draft to approve.' }, { status: 400 });
+      await sb
+        .from('projects')
+        .update({ site_html: project.site_html_draft, site_html_draft: null, edit_status: null, edit_error: null })
+        .eq('id', projectId);
+
+      // If they were already live, push the change out now. If not, it just becomes the
+      // site that the normal reveal flow will publish.
+      if (project.site_published_at) {
+        const pub = await publishProject(sb, projectId);
+        if (!pub.ok) return NextResponse.json({ error: pub.error }, { status: 400 });
+        return NextResponse.json({ ok: true, published: true, liveUrl: pub.liveUrl });
+      }
+      return NextResponse.json({ ok: true, published: false });
+    }
+
+    /**
+     * ── Throw the edit away. ──
+     *
+     * The AI edit was wrong or unwanted. Drop the draft, and give the free edit back:
+     * a client should not lose one of their two edits to a draft nobody kept.
+     */
+    case 'edit-discard': {
+      await sb
+        .from('projects')
+        .update({
+          site_html_draft: null,
+          edit_status: null,
+          edit_error: null,
+          revisions_used: Math.max(0, Number(project.revisions_used ?? 0) - 1),
+        })
+        .eq('id', projectId);
+      return NextResponse.json({ ok: true, refunded: true });
     }
 
     /* ── Put it live. Right now, by hand. ── */

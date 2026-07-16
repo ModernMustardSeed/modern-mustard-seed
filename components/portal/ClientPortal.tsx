@@ -852,7 +852,9 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
         setNote(
           j.exhausted
             ? (j.message as string) || 'Sent to Sarah as a change request.'
-            : `Edit ${j.revisionNumber} of ${state.included} is with Sarah. ${j.remaining === 0 ? 'That was your last free one.' : `${j.remaining} free edit${j.remaining === 1 ? '' : 's'} left.`}`,
+            : j.applying
+              ? `On it. We are making that change now. It lands after Sarah takes a quick look, so nothing changes on your live site until it is right. ${j.remaining === 0 ? 'That was your last free edit.' : `${j.remaining} free edit${j.remaining === 1 ? '' : 's'} left.`}`
+              : `Edit ${j.revisionNumber} of ${state.included} is with Sarah. ${j.remaining === 0 ? 'That was your last free one.' : `${j.remaining} free edit${j.remaining === 1 ? '' : 's'} left.`}`,
         );
         setState((s) => (s ? { ...s, used: Math.min(s.included, s.used + (j.exhausted ? 0 : 1)), remaining: Math.max(0, s.remaining - (j.exhausted ? 0 : 1)) } : s));
         onSubmitted();

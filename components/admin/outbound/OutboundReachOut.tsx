@@ -51,6 +51,7 @@ export function ReachOutDeck({
   const [forging, setForging] = useState(false);
   const [forgingSite, setForgingSite] = useState(false);
   const [forgingOs, setForgingOs] = useState(false);
+  const [reforgeOpen, setReforgeOpen] = useState(false);
 
   const siteForging = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
@@ -275,6 +276,16 @@ export function ReachOutDeck({
 
         {demoCount > 0 && (
           <button
+            onClick={() => setReforgeOpen(true)}
+            className={`${chip} bg-[#1a1815]/[0.04] text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815] hover:-translate-y-0.5`}
+            title="Change any demo from a prompt: edit the website, remap the command center, or rewrite the receptionist"
+          >
+            ✎ Reforge from a prompt
+          </button>
+        )}
+
+        {demoCount > 0 && (
+          <button
             onClick={() => setComposer('demos')}
             disabled={!lead.email}
             className={`${chip} bg-white text-[#3f5d34] border-[#3f5d34]/60 hover:border-[#3f5d34]`}
@@ -329,7 +340,152 @@ export function ReachOutDeck({
         push={push}
         onSent={onOpenThread}
       />
+
+      <ReforgeModal lead={lead} open={reforgeOpen} onClose={() => setReforgeOpen(false)} onLead={onLead} push={push} />
     </>
+  );
+}
+
+/* ------------------------------- reforge ---------------------------------- */
+
+type ReforgeTarget = 'site' | 'os' | 'voice';
+
+/**
+ * REFORGE FROM A PROMPT. One box, one sentence, any of the lead's three demos
+ * rebuilt with that change: edit the website (preserves everything, changes only
+ * what you asked), remap the command center's config, or rewrite the receptionist's
+ * script. The website edit runs on the forge in the background; the chip flips back
+ * to live on its own, same as a fresh build.
+ */
+const REFORGE_TARGETS: { key: ReforgeTarget; label: string; hint: string }[] = [
+  { key: 'site', label: 'Website', hint: 'Edit their demo website. Preserves the design, changes only what you ask.' },
+  { key: 'os', label: 'Command center', hint: 'Remap the business OS demo: trade, owner, city, phone, the pain quote.' },
+  { key: 'voice', label: 'Receptionist', hint: 'Rewrite the AI receptionist with your instruction folded into its script.' },
+];
+
+const PLACEHOLDERS: Record<ReforgeTarget, string> = {
+  site: 'e.g. Make the hero photo a night shot, add a booking button under it, and use their green throughout.',
+  os: 'e.g. The owner is Jake, they are a plumber in Nashville, and the phone is (615) 555-0199.',
+  voice: 'e.g. Open by mentioning they are family-owned since 1998, and always offer a free estimate.',
+};
+
+function ReforgeModal({
+  lead, open, onClose, onLead, push,
+}: { lead: OutboundLead; open: boolean; onClose: () => void; onLead: (l: OutboundLead) => void; push: Push }) {
+  const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
+  const siteBusy = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
+  const osReady = lead.os_demo_status === 'ready' && Boolean(lead.os_demo_url);
+  const voiceReady = Boolean(lead.demo_url);
+
+  const available: Record<ReforgeTarget, boolean> = { site: siteReady, os: osReady, voice: voiceReady };
+  const firstAvailable = (['site', 'voice', 'os'] as ReforgeTarget[]).find((t) => available[t]) ?? 'voice';
+
+  const [target, setTarget] = useState<ReforgeTarget>(firstAvailable);
+  const [text, setText] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  // Reset to a sensible target each time it opens; the lead may have changed.
+  useEffect(() => {
+    if (open) {
+      setTarget(firstAvailable);
+      setText('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const submit = async () => {
+    const instruction = text.trim();
+    if (!instruction || busy) return;
+    setBusy(true);
+    try {
+      const res = await api<{ lead?: OutboundLead; already?: boolean }>(`/api/admin/outbound/leads/${lead.id}/reforge`, {
+        method: 'POST',
+        body: JSON.stringify({ target, instruction }),
+      });
+      if (res.lead) onLead(res.lead);
+      push(
+        target === 'site'
+          ? 'Website reforge queued. The forge applies your change in the background; the chip flips to live when it lands.'
+          : target === 'voice'
+            ? 'Receptionist reforged. It answers with your change now.'
+            : 'Command center remapped from your prompt.',
+      );
+      onClose();
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Reforge failed.', 'error');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const meta = REFORGE_TARGETS.find((t) => t.key === target)!;
+  const disabledTarget = !available[target];
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      eyebrow="Reforge from a prompt"
+      title="Change a demo in one sentence"
+      subtitle={lead.business_name}
+      size="lg"
+      footer={
+        <div className="flex items-center justify-end gap-2">
+          <button onClick={onClose} className={btnGhost}>Cancel</button>
+          <button onClick={() => void submit()} disabled={busy || !text.trim() || disabledTarget} className={btnSeed}>
+            {busy ? 'Reforging…' : 'Reforge it'}
+          </button>
+        </div>
+      }
+    >
+      <div className="flex flex-wrap gap-2">
+        {REFORGE_TARGETS.map((t) => {
+          const on = target === t.key;
+          const canUse = available[t.key];
+          return (
+            <button
+              key={t.key}
+              onClick={() => setTarget(t.key)}
+              className={`px-3.5 py-2 rounded-xl border-2 font-oswald font-semibold uppercase tracking-[0.08em] text-xs transition-all ${
+                on ? 'bg-[#1a1815] text-[#f7f3e9] border-[#1a1815]' : 'bg-white text-[#1a1815]/70 border-[#1a1815]/30 hover:border-[#1a1815]'
+              }`}
+              title={canUse ? t.hint : 'This demo has not been forged yet.'}
+            >
+              {t.label}{!canUse && ' ·'}
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="font-sans text-[13px] text-[#1a1815]/60 mt-3">{meta.hint}</p>
+
+      {target === 'site' && siteBusy && (
+        <p className="font-sans text-sm text-[#7a5c1a] font-medium mt-2">Their website is building right now. Wait for it to go live, then reforge.</p>
+      )}
+      {disabledTarget && !siteBusy && (
+        <p className="font-sans text-sm text-[#a03123] font-medium mt-2">
+          {target === 'os' ? 'No command center demo yet. Forge one first.' : target === 'site' ? 'No website demo yet. Forge one first.' : 'No receptionist demo yet. Forge one first.'}
+        </p>
+      )}
+
+      <div className="mt-4">
+        <label className={labelCls}>What should change?</label>
+        <textarea
+          className={`${inputCls} min-h-[110px]`}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={PLACEHOLDERS[target]}
+          disabled={disabledTarget}
+        />
+      </div>
+      <p className="font-sans text-[12px] text-[#1a1815]/45 mt-2">
+        {target === 'site'
+          ? 'The forge edits their existing site. Everything you do not mention stays exactly as it is.'
+          : target === 'voice'
+            ? 'This rebuilds the receptionist. The demo link stays the same.'
+            : 'Instant. The command center re-renders with the new details.'}
+      </p>
+    </Modal>
   );
 }
 

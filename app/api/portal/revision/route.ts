@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { createClientRequest } from '@/lib/client-requests';
+import { queueProjectEdit } from '@/lib/site-edit';
 
 export const runtime = 'nodejs';
 
@@ -75,7 +76,7 @@ export async function POST(req: Request) {
 
   const { data: proj } = await sb
     .from('projects')
-    .select('id, revisions_included, revisions_used, status')
+    .select('id, name, revisions_included, revisions_used, status, site_html, site_published_at, edit_status')
     .ilike('client_email', session.email)
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
@@ -130,11 +131,34 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: result.error ?? 'Could not send.' }, { status: 500 });
   }
 
+  // AUTO-APPLY IT, but never to the live site. When their real site already exists,
+  // queue the edit against a copy: the forge builds it into a draft, and it reaches
+  // their domain only after Sarah approves it on the delivery board. If the site is
+  // not built yet, there is nothing to edit against, so it stays a request for Sarah.
+  let applying = false;
+  if (typeof proj.site_html === 'string' && proj.site_html.length > 500) {
+    const { data: order } = await sb
+      .from('demo_orders')
+      .select('outbound_lead_id, business_name')
+      .eq('project_id', proj.id)
+      .maybeSingle();
+    const queued = await queueProjectEdit(sb, {
+      projectId: proj.id as string,
+      leadId: (order?.outbound_lead_id as string | null) ?? null,
+      business: String(order?.business_name ?? proj.name ?? 'the business'),
+      currentHtml: proj.site_html as string,
+      instruction: text,
+      requestedBy: session.email,
+    });
+    applying = queued.ok;
+  }
+
   const included = Number(proj.revisions_included ?? 0);
   return NextResponse.json({
     ok: true,
     revisionNumber: n,
     remaining: Math.max(0, included - n),
     id: result.id,
+    applying,
   });
 }

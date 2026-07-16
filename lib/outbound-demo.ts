@@ -44,8 +44,14 @@ export type VoiceForgeResult =
  * 4-minute call cap still applies. Idempotent: an existing demo is returned
  * as-is.
  */
-export async function forgeLeadVoiceDemo(supabase: SupabaseClient, lead: OutboundLead): Promise<VoiceForgeResult> {
-  if (lead.demo_url && lead.demo_run_id) {
+export async function forgeLeadVoiceDemo(
+  supabase: SupabaseClient,
+  lead: OutboundLead,
+  opts?: { instruction?: string | null; force?: boolean },
+): Promise<VoiceForgeResult> {
+  // Reforge-from-prompt passes force:true to rebuild the receptionist with a new
+  // instruction folded in; without it, an existing demo is returned untouched.
+  if (!opts?.force && lead.demo_url && lead.demo_run_id) {
     return { ok: true, lead, demoUrl: lead.demo_url, existing: true };
   }
 
@@ -56,12 +62,14 @@ export async function forgeLeadVoiceDemo(supabase: SupabaseClient, lead: Outboun
   const owner = ownerNotes(lead, 400);
   const trade = leadTrade(lead);
   const tradeLabel = TRADE_PRESETS[trade].label;
+  // An admin reforge instruction, when present, steers the receptionist directly.
+  const instruction = (opts?.instruction ?? '').trim().slice(0, 600);
   const profile = {
     business: lead.business_name,
     verticalId: SIDEKICK_VERTICAL[niche] ?? 'professional',
     city: lead.city || 'your area',
     ownerName: lead.contact_name || 'the owner',
-    services: `${tradeLabel} work, typically: ${VOICE_SERVICES[trade]}. Answer every call, speak the trade's language, capture the job details, and book the appointment. Never quote exact prices; offer to have the owner confirm pricing.${owner ? ` What the owner says about the business, in their own words (use it, it is why the caller chose them): ${owner}` : ''}`,
+    services: `${tradeLabel} work, typically: ${VOICE_SERVICES[trade]}. Answer every call, speak the trade's language, capture the job details, and book the appointment. Never quote exact prices; offer to have the owner confirm pricing.${owner ? ` What the owner says about the business, in their own words (use it, it is why the caller chose them): ${owner}` : ''}${instruction ? ` Additional instructions for how you should handle calls: ${instruction}` : ''}`,
     // Cockpit-forged demos get the clear outbound script: Sarah sent them the
     // link, they did not forge anything, so no "you just built me" framing.
     flow: 'outbound' as const,
@@ -96,8 +104,10 @@ export async function forgeLeadVoiceDemo(supabase: SupabaseClient, lead: Outboun
     channel: 'note',
     from_addr: 'cockpit',
     to_addr: lead.business_name,
-    subject: 'Demo forged',
-    snippet: `Their AI receptionist is live at ${demoUrl}`,
+    subject: opts?.force ? 'Receptionist reforged' : 'Demo forged',
+    snippet: opts?.force
+      ? `Their AI receptionist was reforged from your prompt. Live at ${demoUrl}`
+      : `Their AI receptionist is live at ${demoUrl}`,
     read: true,
     occurred_at: new Date().toISOString(),
   });

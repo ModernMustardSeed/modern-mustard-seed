@@ -71,6 +71,32 @@ export default function SwitchboardPage() {
               Book a walkthrough
             </Link>
           </div>
+          <p className="mt-5 font-body text-sm text-[#FBF6EA]/70">
+            Or hear it right now:{' '}
+            <a href={`tel:${SWITCHBOARD.demoLine.number}`} className="font-bold text-[#F5B700] underline decoration-2 underline-offset-2 hover:text-white">
+              call {SWITCHBOARD.demoLine.display}
+            </a>
+            <span className="text-[#FBF6EA]/50"> and a live AI concierge answers as a location would.</span>
+          </p>
+        </div>
+      </section>
+
+      {/* ───────────────  TRY IT LIVE (real callable concierge)  ─────────────── */}
+      <section className="border-b-2 border-[#161616] bg-[#F5B700]">
+        <div className="max-w-5xl mx-auto px-6 py-10 md:py-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
+          <div className="flex-1">
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#161616]/70">{SWITCHBOARD.demoLine.label}</p>
+            <h2 className="mt-2 font-display text-2xl md:text-3xl font-extrabold text-[#161616] leading-[1.05]">
+              Don&apos;t take our word for it. Call one.
+            </h2>
+            <p className="mt-2 text-[#161616]/75 font-body text-[15px] leading-relaxed max-w-xl">{SWITCHBOARD.demoLine.note}</p>
+          </div>
+          <a
+            href={`tel:${SWITCHBOARD.demoLine.number}`}
+            className="flex-shrink-0 inline-flex items-center gap-3 rounded-full border-2 border-[#161616] bg-[#161616] text-[#F5B700] px-7 py-4 font-sans font-extrabold text-base uppercase tracking-[0.1em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5"
+          >
+            <span aria-hidden="true">☎</span> {SWITCHBOARD.demoLine.display}
+          </a>
         </div>
       </section>
 
@@ -197,6 +223,12 @@ export default function SwitchboardPage() {
               Book a walkthrough
             </Link>
           </div>
+          <p className="mt-6 font-body text-sm text-[#FBF6EA]/70">
+            Or call a live one:{' '}
+            <a href={`tel:${SWITCHBOARD.demoLine.number}`} className="font-bold text-[#F5B700] underline decoration-2 underline-offset-2 hover:text-white">
+              {SWITCHBOARD.demoLine.display}
+            </a>
+          </p>
           <p className="mt-8 text-xs text-[#FBF6EA]/50 max-w-lg mx-auto">
             Each location is answered by an AI concierge in your brand voice, and it says so. The Switchboard, by Modern Mustard Seed, Kalispell, Montana.
           </p>
