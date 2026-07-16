@@ -25,7 +25,7 @@
  */
 import { createClient } from '@supabase/supabase-js';
 import { spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { cliDirective, cliRealDirective, cliEditDirective } from '../lib/site-directive.mjs';
@@ -199,6 +199,11 @@ async function process_(job) {
   const dir = path.join(SITES_DIR, job.id);
   try {
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    // A lead-demo edit re-uses this row's dir, which still holds the previous
+    // build's index.html. Clear it first, or a headless run that failed to write a
+    // new one would leave the stale file and we would store the OLD site as "edited".
+    const htmlPath = path.join(dir, 'index.html');
+    if (existsSync(htmlPath)) rmSync(htmlPath, { force: true });
     writeFileSync(path.join(dir, 'BRIEF.md'), job.brief || '');
     // An edit needs the site it is editing on disk beside the change request.
     if (edit) writeFileSync(path.join(dir, 'CURRENT.html'), job.base_html || '');
@@ -206,7 +211,6 @@ async function process_(job) {
     const directive = edit ? EDIT_DIRECTIVE : rebuild ? REAL_DIRECTIVE : DIRECTIVE;
     const { code, out } = await runClaude(dir, directive);
 
-    const htmlPath = path.join(dir, 'index.html');
     if (!existsSync(htmlPath)) {
       await fail(job, `no index.html produced (claude exited ${code}): ${out.slice(-500)}`);
       return;
