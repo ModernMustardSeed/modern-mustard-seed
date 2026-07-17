@@ -74,7 +74,10 @@ export async function POST(req: Request, { params }: { params: Params }) {
   if (target === 'site') {
     const queued = await queueLeadSiteEdit(guard.supabase, l, instruction);
     if (!queued.ok) return NextResponse.json({ error: queued.error }, { status: 400 });
-    await note('Website reforge queued', `Reforging their website from your prompt: "${instruction.slice(0, 160)}"`);
+    // The FULL instruction goes in the note. It is the only durable copy once the row's
+    // brief is overwritten by a later reforge or a fresh forge (learned 2026-07-16, when
+    // Polly's instructions survived only because the failed edit row still held them).
+    await note('Website reforge queued', `Reforging their website from your prompt: "${instruction}"`);
     const { data: fresh } = await guard.supabase.from('outbound_leads').select('*').eq('id', l.id).single();
     return NextResponse.json({ ok: true, target, already: queued.already ?? false, lead: (fresh ?? l) as OutboundLead });
   }
@@ -92,7 +95,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
     .eq('id', l.os_demo_id);
   if (upErr) return NextResponse.json({ error: upErr.message }, { status: 500 });
 
-  await note('Business OS reforged', `Their command center was remapped from your prompt: "${instruction.slice(0, 160)}"`);
+  await note('Business OS reforged', `Their command center was remapped from your prompt: "${instruction}"`);
   return NextResponse.json({ ok: true, target, lead: l });
 }
 
