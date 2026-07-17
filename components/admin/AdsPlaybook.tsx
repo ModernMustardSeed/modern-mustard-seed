@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 
 /**
@@ -679,6 +679,22 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
+/**
+ * Campaigns are GROUPED, not laid out flat. Sixteen three-line cards in a
+ * five-column grid ate four rows of the viewport before a single word of the
+ * playbook showed, and because the grid was `sticky top-0` like AdminHeader is,
+ * it slid straight over the header on scroll. House rule: once a nav passes ~6
+ * items, group it (same call as /admin going from a 24-tab scroller to grouped
+ * dropdowns). Keys are single-sourced from TABS above, so a new campaign only
+ * needs its key added to the right group.
+ */
+const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
+  { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone'] },
+  { name: 'Product Offers', keys: ['mm', 'sk', 'px', 'pr', 'geo'] },
+  { name: 'Brand + Verticals', keys: ['callme', 'tw', 'gn', 'rest'] },
+  { name: 'Partners + Magnets', keys: ['fm', 'py'] },
+];
+
 /** Image-creative campaign tab (Pictures / Press / GEO share this shape). */
 function ImageCampaign({
   num, title, tagline, blurb, landingLabel, landingHref, images, copyA, copyALabel, copyB, copyBLabel, headline, description, landing, checklist, checked, onToggle, done,
@@ -795,6 +811,35 @@ export default function AdsPlaybook() {
     setTab(t);
     try { localStorage.setItem('mms-ads-tab', t); } catch { /* private mode */ }
   };
+
+  // Grouped campaign nav, same interaction contract as AdminHeader's dropdowns.
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const current = TABS.find((t) => t.key === tab) ?? TABS[0];
+
+  const chipCls = (isActive: boolean) =>
+    `whitespace-nowrap text-[11px] uppercase tracking-[0.12em] font-sans font-semibold px-2.5 py-2 rounded-lg border-2 transition-colors ${
+      isActive
+        ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[2px_2px_0_0_#161616]'
+        : 'border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05]'
+    }`;
+
+  // Close the open dropdown on outside click or Escape.
+  useEffect(() => {
+    if (!openGroup) return;
+    const onDown = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) setOpenGroup(null);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenGroup(null);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [openGroup]);
 
   useEffect(() => {
     try {
@@ -913,26 +958,71 @@ export default function AdsPlaybook() {
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="ads" title="Meta Ads" />
 
-      {/* Campaign switcher */}
-      <div className="sticky top-0 z-30 bg-[#FBF6EA]/95 backdrop-blur border-b-2 border-[#161616]">
-        <div className="max-w-7xl mx-auto px-5 md:px-6 py-3 grid grid-cols-2 md:grid-cols-5 gap-2">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => switchTab(t.key)}
-              className={`text-left border-2 border-[#161616] px-3.5 py-2.5 transition-all ${
-                tab === t.key
-                  ? 'bg-[#161616] text-white shadow-[3px_3px_0_0_#F5B700]'
-                  : 'bg-white text-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5'
-              }`}
-            >
-              <span className={`font-mono font-bold text-[10px] tracking-[0.2em] block ${tab === t.key ? 'text-[#FFDD55]' : 'text-[#E0301E]'}`}>
-                {t.num === '📊' ? 'RESULTS' : `CAMPAIGN ${t.num}`}
-              </span>
-              <span className="font-sans font-extrabold text-sm block mt-0.5">{t.label}</span>
-              <span className={`font-sans text-[11px] hidden md:block ${tab === t.key ? 'text-white/60' : 'text-[#161616]/55'}`}>{t.blurb}</span>
+      {/* Campaign switcher — one calm row. NOT sticky: AdminHeader already owns
+          top-0, and a second sticky bar at the same offset painted over it. */}
+      <div className="bg-[#FBF6EA] border-b-2 border-[#161616]">
+        <div className="max-w-7xl mx-auto px-5 md:px-6 py-2.5 flex flex-col md:flex-row md:items-center gap-2.5 md:gap-4">
+          {/* Where you are, so the grouped nav never leaves you guessing. */}
+          <div className="min-w-0 shrink-0">
+            <span className="font-mono font-bold text-[9px] tracking-[0.3em] text-[#E0301E] block">
+              {current.num === '📊' ? 'RESULTS' : `CAMPAIGN ${current.num}`}
+            </span>
+            <span className="font-sans font-extrabold text-sm text-[#161616] block truncate">{current.label}</span>
+          </div>
+
+          <nav ref={navRef} aria-label="Campaigns" className="relative flex items-center flex-wrap gap-1 md:ml-auto md:justify-end">
+            {CAMPAIGN_GROUPS.map((group) => {
+              const holdsActive = group.keys.includes(tab);
+              const isOpen = openGroup === group.name;
+              return (
+                <div key={group.name} className="md:relative">
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-haspopup="menu"
+                    onClick={() => setOpenGroup(isOpen ? null : group.name)}
+                    className={chipCls(holdsActive)}
+                  >
+                    {group.name}
+                    <span aria-hidden="true" className={`ml-1 inline-block text-[9px] transition-transform ${isOpen ? 'rotate-180' : ''}`}>▾</span>
+                  </button>
+
+                  {isOpen && (
+                    <div
+                      role="menu"
+                      // Mirrors AdminHeader: mobile drops a full-width panel off the
+                      // static wrapper so it always fits; md+ anchors under its button.
+                      className="absolute left-0 right-0 md:right-auto md:left-0 top-[calc(100%+6px)] z-40 md:min-w-[19rem] max-h-[70vh] overflow-y-auto rounded-xl border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616] py-2"
+                    >
+                      {group.keys.map((key) => {
+                        const t = TABS.find((x) => x.key === key);
+                        if (!t) return null;
+                        const isActive = tab === key;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            role="menuitem"
+                            aria-current={isActive ? 'page' : undefined}
+                            onClick={() => { switchTab(key); setOpenGroup(null); }}
+                            className={`w-full text-left px-3.5 py-2 transition-colors ${isActive ? 'bg-[#F5B700]/25' : 'hover:bg-[#161616]/[0.05]'}`}
+                          >
+                            <span className="font-mono font-bold text-[9px] tracking-[0.2em] text-[#E0301E] block">CAMPAIGN {t.num}</span>
+                            <span className="font-sans font-extrabold text-sm text-[#161616] block">{t.label}</span>
+                            <span className="font-sans text-[11px] text-[#161616]/55 block">{t.blurb}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            <button type="button" onClick={() => { switchTab('results'); setOpenGroup(null); }} className={chipCls(tab === 'results')}>
+              Results
             </button>
-          ))}
+          </nav>
         </div>
       </div>
 
