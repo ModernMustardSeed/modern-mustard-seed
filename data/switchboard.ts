@@ -94,6 +94,10 @@ export const faq: { q: string; a: string }[] = [
     a: 'Yes, and it says so. Each location is answered by an AI concierge in your brand voice that qualifies callers and books appointments around the clock. It will happily tell any caller it is an AI. It is your brand answering, consistently, at every door.',
   },
   {
+    q: 'Can it take orders or book through our systems?',
+    a: 'Yes. The concierge hands work to whatever your locations already run: orders straight into your POS or online ordering, appointments into your booking or scheduling tool, and every call onto the Command Board. Wiring those connections is part of the one-time franchise build, so from day one it fits how your business already works.',
+  },
+  {
     q: 'What does one number for every location mean?',
     a: 'You get one master number your whole brand can advertise. When someone calls, they are routed to the right location automatically, or you can keep each location on its own line. Either way, every call is answered and every booking lands on the Command Board.',
   },

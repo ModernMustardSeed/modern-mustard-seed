@@ -72,7 +72,7 @@ export default function SwitchboardPage() {
 
           {/* ───────────────  HERO — bright exchange  ─────────────── */}
           <section className="sb-slot-hero relative overflow-hidden border-b-2 border-[#161616] halftone-bg">
-            <div className="relative max-w-6xl mx-auto px-6 pt-20 md:pt-28 pb-14 md:pb-20">
+            <div className="relative z-[2] max-w-6xl mx-auto px-6 pt-20 md:pt-28 pb-14 md:pb-20">
               <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
                 <div className="lg:col-span-7">
                   <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-white text-[#E0301E] border-2 border-[#161616] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#161616]">
@@ -124,7 +124,7 @@ export default function SwitchboardPage() {
 
           {/* ───────────────  TRY IT LIVE (real callable concierge)  ─────────────── */}
           <section className="sb-slot-try border-b-2 border-[#161616] bg-[#F5B700]">
-            <div className="max-w-5xl mx-auto px-6 py-10 md:py-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
+            <div className="relative z-[2] max-w-5xl mx-auto px-6 py-10 md:py-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
               <div className="flex-1">
                 <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#161616]/70">{SWITCHBOARD.demoLine.label}</p>
                 <h2 className="mt-2 font-display text-2xl md:text-3xl font-extrabold text-[#161616] leading-[1.05]">
@@ -143,15 +143,22 @@ export default function SwitchboardPage() {
 
           {/* ───────────────  THE COMMAND BOARD (signature + lead magnet)  ─────────────── */}
           <section id="board" className="sb-slot-board border-b-2 border-[#161616] halftone-bg scroll-mt-20">
-            <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
+            <div className="relative z-[2] max-w-5xl mx-auto px-6 py-16 md:py-24">
               <div className="text-center max-w-2xl mx-auto mb-10">
                 <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold">The Command Board</p>
                 <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#161616]">
-                  The only dark thing on this page. On purpose.
+                  Every call answered. Every booking captured. One board.
                 </h2>
                 <p className="mt-4 text-[#5c554a] font-body leading-relaxed">
-                  Enter your brand and location count. This is the board your team logs into, and the recovered revenue is a live estimate, not a guess pulled from the air.
+                  The concierge answers every location and hands the work to the systems you already run: orders straight into your POS, appointments into your booking or scheduling tool, whatever your business requires. Enter your brand and location count to see your board live. The recovered revenue is an estimate from your own numbers, not a guess pulled from the air.
                 </p>
+                <div className="mt-5 flex flex-wrap justify-center gap-2">
+                  {['Orders → Your POS', 'Appointments → Your Scheduler', 'After-Hours → Answered', 'Rollups → One Board'].map((chip) => (
+                    <span key={chip} className="font-mono text-[10px] uppercase tracking-[0.14em] font-bold bg-white border-2 border-[#161616] rounded-full px-3 py-1.5 shadow-[2px_2px_0_0_#161616]">
+                      {chip}
+                    </span>
+                  ))}
+                </div>
               </div>
               <CommandBoard />
             </div>
@@ -161,7 +168,7 @@ export default function SwitchboardPage() {
 
         {/* ───────────────  WHAT SHIPS  ─────────────── */}
         <section data-cable-stop className="border-b-2 border-[#161616]">
-          <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
+          <div className="relative z-[2] max-w-6xl mx-auto px-6 py-16 md:py-24">
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold">What ships, per franchise</p>
             <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] max-w-3xl">
               Built once. Cloned to every door.
@@ -195,7 +202,7 @@ export default function SwitchboardPage() {
 
         {/* ───────────────  PRICING  ─────────────── */}
         <section data-cable-stop className="border-b-2 border-[#161616] bg-[#F5F0E8]">
-          <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
+          <div className="relative z-[2] max-w-5xl mx-auto px-6 py-16 md:py-24">
             <div className="text-center max-w-2xl mx-auto mb-10">
               <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold">Pricing</p>
               <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#161616]">Per location. Cheaper as you grow.</h2>
@@ -240,7 +247,7 @@ export default function SwitchboardPage() {
 
         {/* ───────────────  HOW IT WORKS  ─────────────── */}
         <section data-cable-stop className="border-b-2 border-[#161616]">
-          <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
+          <div className="relative z-[2] max-w-5xl mx-auto px-6 py-16 md:py-24">
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold text-center">How it works</p>
             <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#161616] text-center max-w-2xl mx-auto">Live across the whole chain in weeks.</h2>
             <div className="mt-10 grid md:grid-cols-3 gap-5 sb-reveal">
@@ -259,7 +266,7 @@ export default function SwitchboardPage() {
 
         {/* ───────────────  FAQ  ─────────────── */}
         <section data-cable-stop className="border-b-2 border-[#161616] bg-[#F5F0E8]">
-          <div className="max-w-3xl mx-auto px-6 py-16 md:py-24">
+          <div className="relative z-[2] max-w-3xl mx-auto px-6 py-16 md:py-24">
             <h2 className="font-display text-3xl md:text-4xl font-extrabold text-[#161616] mb-8 text-center">Questions, answered plainly.</h2>
             <div className="space-y-4">
               {faq.map((f) => (
@@ -278,7 +285,7 @@ export default function SwitchboardPage() {
         {/* ───────────────  FINAL CTA — the cable plugs in here  ─────────────── */}
         <section data-cable-stop className="bg-[#F5B700] relative overflow-hidden">
           <div aria-hidden className="absolute inset-0 opacity-[0.14]" style={{ backgroundImage: 'radial-gradient(#161616 1.5px, transparent 1.6px)', backgroundSize: '18px 18px' }} />
-          <div className="relative max-w-3xl mx-auto px-6 py-16 md:py-24 text-center">
+          <div className="relative z-[2] max-w-3xl mx-auto px-6 py-16 md:py-24 text-center">
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#161616]/70 font-bold">One brand. Every door. One board.</p>
             <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#161616]">Never miss a call at any location again.</h2>
             <p className="mt-4 max-w-xl mx-auto text-[#161616]/80 font-body">

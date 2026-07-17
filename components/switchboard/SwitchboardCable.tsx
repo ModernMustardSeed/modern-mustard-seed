@@ -6,10 +6,11 @@ import { useEffect, useRef, useState } from 'react';
  * The Patch-Cable Connect: the page's signature moment. One gold patch cable
  * draws itself down the page as you scroll, weaving through the side gutters,
  * crossing the page at each section marked `data-cable-stop`, and ending in a
- * plug at the last stop. Pure decoration layered OVER the section backgrounds
- * (the gutters are empty at the widths where it shows), so it never fights the
- * content: pointer-events none, aria-hidden, desktop only (>= 1180px), fully
- * drawn for reduced-motion, and absent entirely without JS.
+ * plug at the last stop. Pure decoration painted ABOVE the section backgrounds
+ * but BELOW every section's content (the cable sits at z-1; each section's
+ * inner container is relative z-2), so text always reads even where the cable
+ * crosses it: pointer-events none, aria-hidden, desktop only (>= 1180px),
+ * fully drawn for reduced-motion, and absent entirely without JS.
  */
 export default function SwitchboardCable() {
   const [path, setPath] = useState<string | null>(null);
@@ -106,7 +107,7 @@ export default function SwitchboardCable() {
   const off = 1 - Math.min(1, Math.max(0, progress));
 
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 z-[6] hidden xl:block" style={{ overflow: 'hidden' }}>
+    <div aria-hidden className="pointer-events-none absolute inset-0 z-[1] hidden xl:block" style={{ overflow: 'hidden' }}>
       <svg width={size.w} height={size.h} viewBox={`0 0 ${size.w} ${size.h}`} className="absolute inset-0">
         {/* jack the cable leaves from */}
         <circle cx={path.split(' ')[1]} cy={path.split(' ')[2]} r="13" fill="#161616" />
