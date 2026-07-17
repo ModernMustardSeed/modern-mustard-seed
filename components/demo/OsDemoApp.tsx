@@ -123,6 +123,20 @@ const INBOUND_POOL = [
   { name: 'Karen L.', need: 'Repeat customer, needs another {job} booked' },
 ];
 
+/** Sample 5-star reviews for the Reviews wall. Universal wording that reads true
+ *  for any trade once {job}/{biz} interpolate. Names + dates are hash-derived so
+ *  the server and client agree (hydration law). Honest sample; the real build
+ *  pulls the business's actual Google reviews once they connect Google. */
+const REVIEW_POOL = [
+  { name: 'Jenna R.', when: '2 days ago', text: 'Called after hours and actually got a real answer. {biz} had someone out first thing the next morning. Fair price, no surprises. This is who we call now.' },
+  { name: 'Marcus D.', when: '5 days ago', text: 'Best {job} experience we have had. On time, tidy, and they explained everything before doing it. You can tell {biz} takes pride in the work.' },
+  { name: 'The Alvarez Family', when: '1 week ago', text: 'Second time using {biz} and the same great service both times. Honest, professional, and they stand behind what they do. Our whole street uses them now.' },
+  { name: 'Priya S.', when: '2 weeks ago', text: 'I comparison shopped three places. {biz} was the only one that picked up, gave me a straight answer, and showed up when they said. Worth every penny.' },
+];
+
+const REVIEW_REPLY = (biz: string) =>
+  `Thank you so much for the kind words! It was a pleasure working with you, and we are grateful you chose ${biz}. We are always here whenever you need us.`;
+
 function enrich(c: OsCustomer, i: number): CrmLead {
   const h = hash(c.name);
   const area = 200 + (h % 700);
@@ -309,6 +323,7 @@ export default function OsDemoApp({
   /** Invoices born from jobs finished THIS session; they join the derived set. */
   const [jobInvoices, setJobInvoices] = useState<{ id: string; name: string; need: string; amount: number; paid: boolean; age: number }[]>([]);
   const [reviewBonus, setReviewBonus] = useState(0);
+  const [repliedReviews, setRepliedReviews] = useState<number[]>([]);
 
   const advanceJob = (id: string, at?: { x: number; y: number }) => {
     const j = jobs.find((x) => x.id === id);
@@ -1117,17 +1132,50 @@ export default function OsDemoApp({
             </div>
           )}
 
-          {tab === 'reviews' && (
+          {tab === 'reviews' && (() => {
+            // Deterministic rating summary, seeded by business name (hydration law).
+            const rh = hash(config.business + 'reviews');
+            const count = 84 + (rh % 140);
+            const rating = (48 + (rh % 2)) / 10; // 4.8 or 4.9
+            const thisMonth = 6 + (rh % 12) + reviewBonus;
+            const stars = (n: number, size = 16) =>
+              [0, 1, 2, 3, 4].map((i) => (
+                <svg key={i} width={size} height={size} viewBox="0 0 24 24" fill={i < Math.round(n) ? accent : LINE} aria-hidden>
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                </svg>
+              ));
+            return (
             <div className="max-w-3xl">
-              {sectionTitle('Reviews', 'Turn finished work into Google stars, automatically.')}
+              {sectionTitle('Reviews', 'Your reputation, working for you. New stars chased automatically, every review answered.')}
+
+              {/* Rating summary: the number a customer sees on Google, front and center. */}
+              <div className="rounded-2xl border-2 p-5 mb-3 flex flex-wrap items-center gap-x-8 gap-y-3 animate-[osIn_.5s_ease-out_both]" style={{ borderColor: accent, background: accentSoft }}>
+                <div>
+                  <p className="font-mono text-4xl font-bold leading-none" style={{ color: TEXT }}>{rating.toFixed(1)}</p>
+                  <div className="flex items-center gap-1 mt-1.5">{stars(rating, 18)}</div>
+                  <p className="text-[11px] mt-1.5" style={{ color: DIM }}>{count} Google reviews</p>
+                </div>
+                <div className="h-12 w-px hidden sm:block" style={{ background: LINE }} />
+                <div>
+                  <p className="font-mono text-2xl font-bold" style={{ color: accent }}>+{thisMonth}</p>
+                  <p className="text-[12px]" style={{ color: DIM }}>new this month, on autopilot</p>
+                </div>
+                <div className="ml-auto text-right">
+                  <p className="text-[11px]" style={{ color: DIM }}>Response rate</p>
+                  <p className="font-mono text-2xl font-bold" style={{ color: TEXT }}>100%</p>
+                </div>
+              </div>
+
               {config.evidenceQuote && (
-                <div className="rounded-2xl border-2 p-4 mb-3 animate-[osIn_.5s_ease-out_both]" style={{ borderColor: '#c25454', background: 'rgba(194,84,84,0.08)' }}>
-                  <p className="text-[10px] uppercase tracking-[0.22em] font-bold" style={{ color: '#e08585' }}>What customers say today</p>
+                <div className="rounded-2xl border-2 p-4 mb-3 animate-[osIn_.5s_ease-out_.08s_both]" style={{ borderColor: '#c25454', background: 'rgba(194,84,84,0.08)' }}>
+                  <p className="text-[10px] uppercase tracking-[0.22em] font-bold" style={{ color: '#e08585' }}>What customers said before</p>
                   <p className="text-[14px] italic leading-relaxed mt-2" style={{ color: TEXT }}>&ldquo;{config.evidenceQuote}&rdquo;</p>
                   {config.evidenceSource && <p className="text-[10px] uppercase tracking-[0.14em] mt-1.5" style={{ color: DIM }}>{config.evidenceSource}</p>}
-                  <p className="text-[13px] mt-3" style={{ color: DIM }}>This is the review the system below makes sure nobody ever writes again.</p>
+                  <p className="text-[13px] mt-3" style={{ color: DIM }}>The wall below is what replaces it once every finished {preset.jobWord} asks for a star.</p>
                 </div>
               )}
+
+              {/* The 5-star chase */}
               <div className="rounded-2xl border p-4 animate-[osIn_.5s_ease-out_.15s_both]" style={{ background: PANEL, borderColor: LINE }}>
                 <p className="text-[10px] uppercase tracking-[0.22em] font-semibold" style={{ color: accent }}>The 5-star chase</p>
                 <p className="text-[13px] mt-2" style={{ color: DIM }}>
@@ -1139,21 +1187,60 @@ export default function OsDemoApp({
                     <span className="underline" style={{ color: accent }}>g.page/r/{config.business.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 18)}</span>
                   </p>
                 </div>
-                <div className="flex items-center gap-4 mt-4">
-                  <div className="flex items-center gap-1.5">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <svg key={i} width="18" height="18" viewBox="0 0 24 24" fill={accent} aria-hidden>
-                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-[12px]" style={{ color: DIM }}>
-                    {3 + reviewBonus} requests queued from this week&apos;s finished {preset.jobWord}s (sample{reviewBonus > 0 ? ` + ${reviewBonus} you just finished` : ''})
-                  </p>
-                </div>
+                <p className="text-[12px] mt-3" style={{ color: DIM }}>
+                  {3 + reviewBonus} requests queued from this week&apos;s finished {preset.jobWord}s (sample{reviewBonus > 0 ? ` + ${reviewBonus} you just finished` : ''})
+                </p>
               </div>
+
+              {/* The wall: recent 5-star reviews, each answered in one tap. */}
+              <p className="text-[10px] uppercase tracking-[0.22em] font-bold mt-5 mb-2.5" style={{ color: DIM }}>Recent reviews</p>
+              <div className="space-y-2.5">
+                {REVIEW_POOL.map((r, i) => {
+                  const replied = repliedReviews.includes(i);
+                  const text = r.text.replace(/\{biz\}/g, config.business).replace(/\{job\}/g, preset.jobWord);
+                  return (
+                    <div key={r.name} className="rounded-2xl border p-4 animate-[osIn_.4s_ease-out_both]" style={{ background: PANEL, borderColor: LINE, animationDelay: `${i * 60}ms` }}>
+                      <div className="flex items-start gap-3">
+                        <span className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[13px] shrink-0" style={{ background: accentSoft, color: accent }}>
+                          {r.name.charAt(0)}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-[13.5px] font-semibold" style={{ color: TEXT }}>{r.name}</p>
+                            <div className="flex items-center gap-0.5">{stars(5, 13)}</div>
+                            <span className="text-[11px]" style={{ color: DIM }}>· {r.when}</span>
+                          </div>
+                          <p className="text-[13px] leading-relaxed mt-1.5" style={{ color: DIM }}>{text}</p>
+
+                          {replied ? (
+                            <div className="mt-2.5 ml-3 pl-3 border-l-2" style={{ borderColor: accent }}>
+                              <p className="text-[10px] uppercase tracking-[0.16em] font-bold" style={{ color: accent }}>{config.business} replied</p>
+                              <p className="text-[12.5px] leading-relaxed mt-1" style={{ color: TEXT }}>{REVIEW_REPLY(config.business)}</p>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                setRepliedReviews((s) => [...s, i]);
+                                say('Reply drafted and posted to Google. Every review gets a warm, on-brand answer.');
+                              }}
+                              className="mt-2.5 text-[11px] font-bold uppercase tracking-[0.08em] rounded-lg px-3 py-1.5 border"
+                              style={{ borderColor: accent, color: accent }}
+                            >
+                              ✦ Draft a reply
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-[12px] mt-3" style={{ color: DIM }}>
+                Sample reviews. Connect your Google in the portal and this wall fills with your real ones, each answered automatically.
+              </p>
             </div>
-          )}
+            );
+          })()}
 
           {tab === 'automations' && (
             <div className="max-w-3xl">
