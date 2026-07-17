@@ -11,6 +11,7 @@ const STATIC_PATHS = [
   '/press',
   '/hatchery',
   '/switchboard',
+  '/world',
   '/mustard-launch',
   '/mustard-mode',
   '/mustard-mode/start-here',
@@ -52,7 +53,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/build-queue'
         ? 1.0
-        : path === '/sidekick' || path === '/pictures' || path === '/press' || path === '/hatchery' || path === '/switchboard' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/the-terminal' || path === '/idea-to-spec'
+        : path === '/sidekick' || path === '/pictures' || path === '/press' || path === '/hatchery' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/the-terminal' || path === '/idea-to-spec'
           ? 0.95
           : path === '/work' || path === '/audit' || path === '/launch-checklist' || path === '/prompt-playbook'
             ? 0.9
