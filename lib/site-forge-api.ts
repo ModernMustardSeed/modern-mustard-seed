@@ -42,49 +42,73 @@ function extract(tag: 'DIRECTION' | 'HERO_PROMPT', html: string): string {
 }
 
 /**
- * Paint the hero with fal.ai. Best-effort by contract: the fal wallet has run
- * dry before, and a missing photo must never cost us the whole site. The
- * directive requires the hero slot to look deliberate on a failed image, so the
- * fallback is a transparent pixel over the brand-colored backdrop.
+ * Paint the hero with fal.ai.
+ *
+ * The hero is the build, so this retries: most failures here are transient (a
+ * 90s timeout, a 429, a 5xx), and one extra attempt is far cheaper than a lead
+ * opening a demo with no photo in it.
+ *
+ * It still cannot be allowed to cost us the whole site, so a genuine failure
+ * (dry wallet, dead key) resolves to a transparent pixel. That is only safe
+ * because the API directive requires rich inline SVG scene art to be built
+ * BEHIND the hero image: when the photo does not arrive, the scene art shows
+ * through instead of a blank brand-colored box. Change one without the other
+ * and a dry wallet ships an empty hero.
  */
 async function paintHero(prompt: string): Promise<{ dataUri: string; painted: boolean }> {
   const TRANSPARENT =
     'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
   const key = process.env.FAL_KEY;
-  if (!key || !prompt) return { dataUri: TRANSPARENT, painted: false };
+  // apiRealDirective asks for the literal "none" when their own photos carry the
+  // hero. "none" is truthy, so without this a real build burns a fal generation
+  // on the prompt "none" and throws the result away.
+  const wanted = prompt.trim();
+  if (!key || !wanted || /^none\.?$/i.test(wanted)) return { dataUri: TRANSPARENT, painted: false };
 
-  try {
-    const res = await fetch(`https://fal.run/${FAL_MODEL}`, {
-      method: 'POST',
-      headers: { Authorization: `Key ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        prompt: `${prompt}. Editorial commercial photography, natural light, no text, no lettering, no watermark, no logos, no close-up faces.`,
-        image_size: { width: 1536, height: 864 },
-        num_images: 1,
-      }),
-      signal: AbortSignal.timeout(90_000),
-    });
-    if (!res.ok) {
-      console.error('forge-fallback: fal returned', res.status, (await res.text()).slice(0, 200));
-      return { dataUri: TRANSPARENT, painted: false };
-    }
-    const json = (await res.json()) as { images?: Array<{ url?: string; content_type?: string }> };
-    const url = json.images?.[0]?.url;
-    if (!url) return { dataUri: TRANSPARENT, painted: false };
+  const ATTEMPTS = 3;
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+    try {
+      const res = await fetch(`https://fal.run/${FAL_MODEL}`, {
+        method: 'POST',
+        headers: { Authorization: `Key ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: `${wanted}. Editorial commercial photography, natural light, no text, no lettering, no watermark, no logos, no close-up faces.`,
+          image_size: { width: 1536, height: 864 },
+          num_images: 1,
+        }),
+        signal: AbortSignal.timeout(90_000),
+      });
+      if (!res.ok) {
+        const body = (await res.text()).slice(0, 200);
+        console.error(`forge-fallback: fal returned ${res.status} (attempt ${attempt}/${ATTEMPTS})`, body);
+        // A locked or empty wallet will not heal on a retry; anything else might.
+        if (res.status === 401 || res.status === 403) break;
+        if (/exhausted balance|user is locked/i.test(body)) break;
+        if (attempt < ATTEMPTS) { await new Promise((r) => setTimeout(r, attempt * 4000)); continue; }
+        break;
+      }
+      const json = (await res.json()) as { images?: Array<{ url?: string; content_type?: string }> };
+      const url = json.images?.[0]?.url;
+      if (!url) { if (attempt < ATTEMPTS) continue; break; }
 
-    const img = await fetch(url, { signal: AbortSignal.timeout(45_000) });
-    if (!img.ok) return { dataUri: TRANSPARENT, painted: false };
-    const buf = Buffer.from(await img.arrayBuffer());
-    if (buf.byteLength > HERO_MAX_BYTES) {
-      console.error(`forge-fallback: hero too heavy (${buf.byteLength} bytes), shipping without it`);
-      return { dataUri: TRANSPARENT, painted: false };
+      const img = await fetch(url, { signal: AbortSignal.timeout(45_000) });
+      if (!img.ok) { if (attempt < ATTEMPTS) continue; break; }
+      const buf = Buffer.from(await img.arrayBuffer());
+      if (buf.byteLength > HERO_MAX_BYTES) {
+        // Deterministic for this image, but a re-roll is usually lighter.
+        console.error(`forge-fallback: hero too heavy (${buf.byteLength} bytes, attempt ${attempt}/${ATTEMPTS})`);
+        if (attempt < ATTEMPTS) continue;
+        break;
+      }
+      const mime = json.images?.[0]?.content_type || img.headers.get('content-type') || 'image/jpeg';
+      return { dataUri: `data:${mime};base64,${buf.toString('base64')}`, painted: true };
+    } catch (e) {
+      console.error(`forge-fallback: hero paint failed (attempt ${attempt}/${ATTEMPTS}):`, (e as Error)?.message);
+      if (attempt < ATTEMPTS) { await new Promise((r) => setTimeout(r, attempt * 4000)); continue; }
     }
-    const mime = json.images?.[0]?.content_type || img.headers.get('content-type') || 'image/jpeg';
-    return { dataUri: `data:${mime};base64,${buf.toString('base64')}`, painted: true };
-  } catch (e) {
-    console.error('forge-fallback: hero paint failed:', (e as Error)?.message);
-    return { dataUri: TRANSPARENT, painted: false };
   }
+  console.error('forge-fallback: HERO NOT PAINTED, falling back to the page\'s inline SVG scene art');
+  return { dataUri: TRANSPARENT, painted: false };
 }
 
 /**
