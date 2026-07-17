@@ -125,19 +125,28 @@ export async function POST(req: Request) {
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
 
-  // Returning business: hand back their existing suite, zero new spend. Both
-  // the phone AND the email must match, and only a previous SELF-SERVE signup
-  // qualifies. Phone-only matching would turn this route into a lookup service
-  // for other people's private hubs (a phone number is public; the pairing with
-  // the email is not, and cockpit-sourced prospects never came here at all).
-  const { data: existing } = await supabase
+  // Returning business: hand back their existing suite, zero new spend. The
+  // match must be the SAME BUSINESS coming back: email AND phone AND business
+  // name all agree, and only a previous SELF-SERVE signup qualifies. Phone-only
+  // matching would turn this route into a lookup service for other people's
+  // private hubs (a phone number is public; the pairing is not). And the same
+  // owner forging a DIFFERENT business must get that business's own forge, not
+  // whichever suite their contact info built first: that exact bug sent a new
+  // submission to the old Glacier Peak Plumbing test hub (2026-07-17). Phones
+  // compare digits-only (the old raw LIKE also missed dash-formatted rows).
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const { data: priors } = await supabase
     .from('outbound_leads')
-    .select('hub_demo_url')
+    .select('hub_demo_url, business_name, phone')
     .eq('source', 'demo-station')
     .eq('email', email)
-    .like('phone', `%${digits.slice(-10)}%`)
-    .limit(1)
-    .maybeSingle();
+    .limit(50);
+  const existing = (priors ?? []).find(
+    (p) =>
+      p.hub_demo_url &&
+      (p.phone ?? '').replace(/\D/g, '').slice(-10) === digits.slice(-10) &&
+      norm(p.business_name ?? '') === norm(business),
+  );
   if (existing?.hub_demo_url) {
     return NextResponse.json({ ok: true, url: existing.hub_demo_url, returning: true });
   }
