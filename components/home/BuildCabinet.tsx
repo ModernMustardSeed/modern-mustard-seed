@@ -90,7 +90,7 @@ export default function BuildCabinet() {
                   >
                     [ BUILD 0{i + 1}/04 ]
                   </span>
-                  <span className="font-mono font-bold text-[10px] text-[#161616]/50">LIVE IN WEEKS</span>
+                  <span className="font-mono font-bold text-[10px] text-[#5c554a]">LIVE IN WEEKS</span>
                 </div>
                 <h3 className="font-display italic font-extrabold text-3xl text-[#161616] mt-4">{c.name}</h3>
                 <p className="font-sans text-sm text-[#161616]/75 mt-2 leading-relaxed flex-1">{c.pitch}</p>
@@ -115,7 +115,7 @@ export default function BuildCabinet() {
                     <p className="font-display font-black text-lg text-[#161616] mt-1 group-hover:text-[#E0301E] transition-colors">
                       {metric.value}
                     </p>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/45 mt-0.5">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#5c554a] mt-0.5">
                       {metric.label} · {receipt.title.split(':')[0]} →
                     </p>
                   </Link>
