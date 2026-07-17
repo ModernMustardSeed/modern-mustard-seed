@@ -25,6 +25,10 @@ type PortalData = {
   orders: Array<{ sessionId: string; productName: string; createdAt: string }>;
   bookings: Array<{ whenIso: string; display: string }>;
   audience: 'client' | 'buyer' | 'both' | 'guest';
+  /** True when a project was provisioned from a demo purchase. Such clients are
+   *  onboarded by the demo intake, not the proposal/deposit/intake flow, so the
+   *  proposal-based onboarding is suppressed for them. */
+  isDemoClient?: boolean;
   billing: {
     oneTime: number;
     deposit: number;
@@ -187,8 +191,11 @@ export default function ClientPortal() {
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Main column */}
               <div className="lg:col-span-2 space-y-6">
-                {/* Getting started checklist */}
-                {(data.audience === 'client' || data.audience === 'both') && (
+                {/* Getting started checklist. The proposal->deposit->intake
+                    onboarding belongs to the bespoke agency engagement, so it is
+                    hidden for demo-funnel buyers (they onboard via the demo intake,
+                    and an unrelated proposal on their email must not bleed in). */}
+                {(data.audience === 'client' || data.audience === 'both') && !data.isDemoClient && (
                   <OnboardingChecklist
                     signed={!!data.billing?.signed}
                     depositPaid={!!data.billing?.depositPaid}
@@ -197,8 +204,9 @@ export default function ClientPortal() {
                   />
                 )}
 
-                {/* Billing */}
-                {data.billing && (data.billing.oneTime > 0 || data.billing.monthly > 0) && (
+                {/* Billing (proposal deposit/balance). Demo buyers pay by Stripe
+                    subscription, not a proposal deposit, so this is hidden for them. */}
+                {!data.isDemoClient && data.billing && (data.billing.oneTime > 0 || data.billing.monthly > 0) && (
                   <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
                     <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-4">
                       Your engagement
@@ -367,8 +375,10 @@ export default function ClientPortal() {
                     the thing they act on while the build is in front of them. */}
                 <RevisionsCard refreshKey={requestRefresh} onSubmitted={() => setRequestRefresh((n) => n + 1)} />
 
-                {/* Project intake */}
-                {(data.audience === 'client' || data.audience === 'both') && (
+                {/* Project intake (old scope-aware, proposal-driven). Demo buyers
+                    do their intake through the demo flow, so this is hidden for them
+                    (else it reads a different table and reads as "not done yet"). */}
+                {(data.audience === 'client' || data.audience === 'both') && !data.isDemoClient && (
                   <OnboardingIntake onStatus={setIntakeStatus} />
                 )}
 

@@ -29,13 +29,19 @@ export async function GET() {
   }
 
   let projects: Array<{ id: string; name: string; status: string; summary: string | null; progress: number; milestones: Array<{ title: string; detail?: string; done?: boolean; due?: string }>; launchTarget: string | null }> = [];
+  // A demo-funnel client (project provisioned from a demo_order) is onboarded by
+  // the DEMO intake, not the old proposal->deposit->intake flow. We use this to
+  // suppress the proposal-based onboarding, which otherwise bleeds a stale or
+  // unrelated proposal into a self-serve buyer's portal.
+  let isDemoClient = false;
   try {
     const { data } = await supabase
       .from('projects')
-      .select('id, name, status, summary, progress, milestones, launch_target')
+      .select('id, name, status, summary, progress, milestones, launch_target, demo_order_id')
       .eq('client_email', email)
       .order('created_at', { ascending: false });
     if (data) {
+      isDemoClient = data.some((p) => p.demo_order_id != null);
       projects = data.map((p) => ({
         id: p.id as string,
         name: p.name as string,
@@ -157,5 +163,5 @@ export async function GET() {
 
   const googleReviewUrl = process.env.GOOGLE_REVIEW_URL || GOOGLE_REVIEW_FALLBACK;
 
-  return NextResponse.json({ email, client, projects, files, orders, bookings, audience, billing, audit, googleReviewUrl });
+  return NextResponse.json({ email, client, projects, files, orders, bookings, audience, isDemoClient, billing, audit, googleReviewUrl });
 }
