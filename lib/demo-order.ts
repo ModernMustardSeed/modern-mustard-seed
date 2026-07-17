@@ -48,17 +48,21 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
 };
 
 /**
- * The bundle must stay ABOVE the priciest single piece by a real margin, or the
- * a la carte prices become irrational and we leak revenue on every bundle. With
- * the receptionist at $297/mo, a $397/mo bundle would have handed over the
- * website and the command center for $100. Sarah set this on 2026-07-12:
- * $194 off setup and $44/mo off the a la carte total ($1,391 + $591/mo).
+ * The bundle must stay ABOVE the priciest single piece AND above every
+ * two-pack, or the a la carte prices become irrational and we leak revenue on
+ * every bundle. Sarah re-set this on 2026-07-17: $997 + $497/mo, a real
+ * discount on the whole suite ($394 off the $1,391 a la carte setup, $94/mo
+ * off the $591/mo total). Ladder check at these numbers: the bundle sits $3
+ * above the priciest pair on BOTH axes (voice+OS $494/mo, site+OS $994 setup),
+ * which is deliberate: "the third piece is basically free" is the pitch, and
+ * no subset ever costs more than the whole. Re-run this check every time a
+ * single price moves.
  */
 export const DEMO_BUNDLE = {
   key: 'bundle' as const,
   name: 'The Whole System',
-  setupCents: 119700,
-  monthlyCents: 54700,
+  setupCents: 99700,
+  monthlyCents: 49700,
   blurb: 'Receptionist + website + command center, one system, one login.',
 };
 
