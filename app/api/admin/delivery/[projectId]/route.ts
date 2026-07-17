@@ -21,18 +21,38 @@ export const dynamic = 'force-dynamic';
  * page. It renews automatically, because a client's website dying over a lapsed
  * domain is the worst thing this system could do to them.
  */
-const REGISTRANT: Contact = {
-  firstName: 'Sarah',
-  lastName: 'Scarano',
-  email: 'sarah@modernmustardseed.com',
-  phone: '+1.4063121223',
-  address1: process.env.MMS_ADDRESS1 || '',
-  city: process.env.MMS_CITY || 'Kalispell',
-  state: process.env.MMS_STATE || 'MT',
-  zip: process.env.MMS_ZIP || '',
-  country: 'US',
-  companyName: 'Modern Mustard Seed',
-};
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+/** Where the saved registrant address lives (no migration: app_state is a KV). */
+const REGISTRANT_KEY = 'platform:registrant';
+
+/**
+ * The domain registrant is Modern Mustard Seed (Sarah buys on the client's
+ * behalf). A registrar legally requires a real postal address; we read it from
+ * app_state so it can be set once in the delivery UI without an env var and a
+ * redeploy, falling back to the MMS_* env vars if those were set the old way.
+ */
+async function getRegistrant(sb: SupabaseClient): Promise<Contact> {
+  let saved: Partial<Contact> = {};
+  try {
+    const { data } = await sb.from('app_state').select('value').eq('key', REGISTRANT_KEY).maybeSingle();
+    if (data?.value && typeof data.value === 'object') saved = data.value as Partial<Contact>;
+  } catch {
+    /* app_state unreadable: fall back to env */
+  }
+  return {
+    firstName: 'Sarah',
+    lastName: 'Scarano',
+    email: 'sarah@modernmustardseed.com',
+    phone: saved.phone || process.env.MMS_PHONE || '+1.4063121223',
+    address1: saved.address1 || process.env.MMS_ADDRESS1 || '',
+    city: saved.city || process.env.MMS_CITY || 'Kalispell',
+    state: saved.state || process.env.MMS_STATE || 'MT',
+    zip: saved.zip || process.env.MMS_ZIP || '',
+    country: 'US',
+    companyName: 'Modern Mustard Seed',
+  };
+}
 
 export async function POST(req: Request, { params }: { params: Promise<{ projectId: string }> }) {
   const session = await getSession();
@@ -41,7 +61,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
   if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   const { projectId } = await params;
-  let body: { action?: string; domain?: string; html?: string; external?: boolean; revealAt?: string };
+  let body: { action?: string; domain?: string; html?: string; external?: boolean; revealAt?: string; address1?: string; city?: string; state?: string; zip?: string; phone?: string };
   try {
     body = await req.json();
   } catch {
@@ -63,11 +83,29 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
       return NextResponse.json({ quote: q });
     }
 
+    /* ── Save the MMS registrant address once, so buying works with no redeploy. ── */
+    case 'save-registrant': {
+      const address1 = String(body.address1 ?? '').trim().slice(0, 120);
+      const city = String(body.city ?? '').trim().slice(0, 60);
+      const state = String(body.state ?? '').trim().toUpperCase().slice(0, 2);
+      const zip = String(body.zip ?? '').trim().slice(0, 10);
+      const phone = String(body.phone ?? '').trim().slice(0, 20);
+      if (!address1 || !city || !state || !zip) {
+        return NextResponse.json({ error: 'Street, city, state, and ZIP are all required to register domains.' }, { status: 400 });
+      }
+      const value: Record<string, string> = { address1, city, state, zip };
+      if (phone) value.phone = phone;
+      const { error } = await sb.from('app_state').upsert({ key: REGISTRANT_KEY, value });
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ ok: true });
+    }
+
     /* ── Buy it, and point it at their site in the same breath. ── */
     case 'buy': {
+      const REGISTRANT = await getRegistrant(sb);
       if (!REGISTRANT.address1 || !REGISTRANT.zip) {
         return NextResponse.json(
-          { error: 'A registrar needs a real postal address. Set MMS_ADDRESS1 / MMS_CITY / MMS_STATE / MMS_ZIP before buying.' },
+          { error: 'needs-registrant', message: 'One-time setup: add your business mailing address so we can register domains for clients.' },
           { status: 400 },
         );
       }

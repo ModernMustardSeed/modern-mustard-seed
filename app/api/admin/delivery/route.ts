@@ -110,10 +110,24 @@ export async function GET() {
     };
   });
 
+  // Is the MMS registrant address on file? Buying a domain needs it, and it can
+  // be set once from the delivery UI (app_state) instead of an env redeploy.
+  let registrantSet = Boolean(process.env.MMS_ADDRESS1 && process.env.MMS_ZIP);
+  if (!registrantSet) {
+    try {
+      const { data } = await sb.from('app_state').select('value').eq('key', 'platform:registrant').maybeSingle();
+      const v = data?.value as { address1?: string; zip?: string } | null;
+      registrantSet = Boolean(v?.address1 && v?.zip);
+    } catch {
+      /* leave false */
+    }
+  }
+
   return NextResponse.json({
     rows,
     // Say plainly whether the buy/publish buttons can work at all, rather than
     // letting Sarah discover it by clicking one during a client call.
     platformReady: Boolean(vercelConfig()),
+    registrantSet,
   });
 }

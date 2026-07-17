@@ -76,6 +76,25 @@ const BTN =
 const BTN_QUIET =
   'px-4 py-2 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-40 hover:-translate-y-0.5 transition-transform';
 
+/** Copy a DNS record to the clipboard so Sarah can paste it straight to a client. */
+function CopyBtn({ text }: { text: string }) {
+  const [done, setDone] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        navigator.clipboard?.writeText(text).then(() => {
+          setDone(true);
+          setTimeout(() => setDone(false), 1500);
+        });
+      }}
+      className="shrink-0 text-[9px] uppercase tracking-[0.12em] font-mono font-bold text-[#1E50C8] hover:text-[#161616] border border-[#1E50C8]/40 rounded px-2 py-1"
+    >
+      {done ? 'Copied' : 'Copy'}
+    </button>
+  );
+}
+
 const LABELS: Record<string, string> = {
   hours: 'Hours', services: 'Services', greeting: 'Phone greeting', domain: 'Domain they want',
   brand: 'Look and feel', contact: 'Best contact', notes: 'Notes', gbp: 'Google Business Profile',
@@ -85,6 +104,7 @@ const LABELS: Record<string, string> = {
 export default function DeliveryBoard() {
   const [rows, setRows] = useState<Row[]>([]);
   const [platformReady, setPlatformReady] = useState(true);
+  const [registrantSet, setRegistrantSet] = useState(true);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState<string | null>(null);
 
@@ -95,6 +115,7 @@ export default function DeliveryBoard() {
       if (res.ok && Array.isArray(j?.rows)) {
         setRows(j.rows as Row[]);
         setPlatformReady(Boolean(j.platformReady));
+        setRegistrantSet(Boolean(j.registrantSet));
       }
     } finally {
       setLoading(false);
@@ -156,6 +177,7 @@ export default function DeliveryBoard() {
                 onToggle={() => setOpen(open === r.id ? null : r.id)}
                 onChanged={load}
                 platformReady={platformReady}
+                registrantSet={registrantSet}
               />
             ))}
           </div>
@@ -166,8 +188,8 @@ export default function DeliveryBoard() {
 }
 
 function DeliveryRow({
-  row, open, onToggle, onChanged, platformReady,
-}: { row: Row; open: boolean; onToggle: () => void; onChanged: () => void; platformReady: boolean }) {
+  row, open, onToggle, onChanged, platformReady, registrantSet,
+}: { row: Row; open: boolean; onToggle: () => void; onChanged: () => void; platformReady: boolean; registrantSet: boolean }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -175,6 +197,8 @@ function DeliveryRow({
   const [quote, setQuote] = useState<Quote | null>(null);
   const [dns, setDns] = useState<Array<{ type: string; domain: string; value: string }>>([]);
   const [reveal, setReveal] = useState(() => toLocalInput(row.project?.revealAt ?? null));
+  const [showAddr, setShowAddr] = useState(false);
+  const [addr, setAddr] = useState({ address1: '', city: '', state: '', zip: '', phone: '' });
 
   const p = row.project;
 
@@ -210,12 +234,25 @@ function DeliveryRow({
 
   const doBuy = async () => {
     if (!quote?.buyable) return;
-    if (!confirm(`Buy ${quote.domain} for $${quote.priceUsd}? This charges the Vercel account now.`)) return;
+    // No address on file yet: open the one-time form instead of a dead error.
+    if (!registrantSet) { setShowAddr(true); return; }
+    if (!confirm(`Buy ${quote.domain} for $${quote.priceUsd} and register it to Modern Mustard Seed? This charges the Vercel account now.`)) return;
     const j = await act('buy', { domain: quote.domain });
     if (j?.ok) {
-      setMsg(`Bought ${j.domain} for $${j.paidUsd}. It renews automatically.`);
+      setMsg(`Bought ${j.domain} for $${j.paidUsd}. It renews automatically, and it is already pointed at their site.`);
       setQuote(null);
       setDomain('');
+      onChanged();
+    } else if (err === 'needs-registrant') {
+      setShowAddr(true);
+    }
+  };
+
+  const doSaveAddr = async () => {
+    const j = await act('save-registrant', addr);
+    if (j?.ok) {
+      setShowAddr(false);
+      setMsg('Business address saved. You can buy domains now.');
       onChanged();
     }
   };
@@ -223,7 +260,7 @@ function DeliveryRow({
   const doExisting = async () => {
     const j = await act('use-existing', { domain });
     if (j?.ok) {
-      setMsg(j.verified ? `${j.domain} is pointed at their site.` : `${j.domain} saved. They must add the DNS records below.`);
+      setMsg(j.verified ? `${j.domain} is pointed at their site and live.` : `${j.domain} saved. Add the two records below at their domain provider and it goes live automatically.`);
       if (Array.isArray(j.instructions)) setDns(j.instructions);
       onChanged();
     }
@@ -366,36 +403,45 @@ function DeliveryRow({
             </div>
           )}
 
-          {/* The domain */}
+          {/* Get them online. Two plain paths: point the domain they already own,
+              or buy them a new one. We do the wiring either way. */}
           <div>
-            <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">Their domain</h4>
+            <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">Get them online</h4>
             {p?.domain ? (
               <p className="font-body text-[13.5px] text-[#161616] mb-2">
-                <strong>{p.domain}</strong>{' '}
+                On <strong>{p.domain}</strong>{' '}
                 <span className="text-[#161616]/55">({p.domainSource === 'bought' ? 'we bought it, auto-renews' : 'they own it'})</span>
+                {p.publishedAt ? ' · live' : ''}
               </p>
             ) : (
               <p className="font-body text-[13px] text-[#161616]/55 mb-2">
                 {typeof intake.domain === 'string' && intake.domain
                   ? `They asked for: ${String(intake.domain)}`
-                  : 'No domain yet.'}
+                  : 'No domain yet. Point the one they own, or buy them one.'}
               </p>
             )}
 
-            <div className="flex flex-wrap gap-2 items-center">
+            <div className="rounded-xl border-2 border-[#161616]/15 bg-[#FBF6EA] p-3">
               <input
                 type="text"
                 value={domain}
-                onChange={(e) => { setDomain(e.target.value); setQuote(null); }}
+                onChange={(e) => { setDomain(e.target.value); setQuote(null); setDns([]); }}
                 placeholder="theirbusiness.com"
-                className="flex-1 min-w-[220px] rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-3 py-2 font-body text-[14px] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
+                className="w-full rounded-lg border-2 border-[#161616] bg-white px-3 py-2 font-body text-[14px] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
               />
-              <button type="button" onClick={doQuote} disabled={!domain || !!busy || !platformReady} className={BTN_QUIET}>
-                {busy === 'quote' ? 'Checking…' : 'Check it'}
-              </button>
-              <button type="button" onClick={doExisting} disabled={!domain || !!busy} className={BTN_QUIET}>
-                They own it
-              </button>
+              <div className="grid sm:grid-cols-2 gap-2 mt-2">
+                {/* Path 1: they already own it */}
+                <button type="button" onClick={doExisting} disabled={!domain || !!busy || !platformReady} className={`${BTN_QUIET} justify-center text-center`}>
+                  {busy === 'use-existing' ? 'Pointing…' : 'They already own this →'}
+                </button>
+                {/* Path 2: buy it for them */}
+                <button type="button" onClick={doQuote} disabled={!domain || !!busy || !platformReady} className={`${BTN_QUIET} justify-center text-center`}>
+                  {busy === 'quote' ? 'Checking…' : 'Is it available to buy?'}
+                </button>
+              </div>
+              <p className="font-body text-[11.5px] text-[#161616]/45 mt-2">
+                Either way we do the wiring. Point one they own and we hand them the two records to add; buy a new one and it goes live on its own.
+              </p>
             </div>
 
             {quote && (
@@ -412,28 +458,50 @@ function DeliveryRow({
                         .
                       </p>
                       <button type="button" onClick={doBuy} disabled={!!busy} className={BTN}>
-                        {busy === 'buy' ? 'Buying…' : `Buy it for $${quote.priceUsd}`}
+                        {busy === 'buy' ? 'Buying…' : registrantSet ? `Buy it for $${quote.priceUsd}` : 'Buy it (add your address first)'}
                       </button>
                     </div>
                   ) : (
                     <p className="font-body text-[13.5px] text-[#161616]/75">{quote.reason}</p>
                   )
                 ) : (
-                  <p className="font-body text-[13.5px] text-[#161616]/75">Taken. Try another.</p>
+                  <p className="font-body text-[13.5px] text-[#161616]/75">Taken. Try another, or point the one they already own.</p>
                 )}
+              </div>
+            )}
+
+            {/* One-time: the MMS mailing address a registrar legally requires. */}
+            {showAddr && (
+              <div className="mt-2.5 rounded-lg border-2 border-[#F5B700] bg-[#FFF8E6] px-3 py-3">
+                <p className="font-sans text-[11px] uppercase tracking-[0.14em] font-bold text-[#161616] mb-1">One-time: your business mailing address</p>
+                <p className="font-body text-[12px] text-[#161616]/65 mb-2.5">A registrar requires a real postal contact. We register domains to Modern Mustard Seed on your clients&rsquo; behalf. Saved once, used for every future domain.</p>
+                <input value={addr.address1} onChange={(e) => setAddr((a) => ({ ...a, address1: e.target.value }))} placeholder="Street address" className="w-full rounded-lg border-2 border-[#161616] bg-white px-3 py-2 font-body text-[13.5px] mb-2" />
+                <div className="grid grid-cols-3 gap-2">
+                  <input value={addr.city} onChange={(e) => setAddr((a) => ({ ...a, city: e.target.value }))} placeholder="City" className="col-span-1 rounded-lg border-2 border-[#161616] bg-white px-3 py-2 font-body text-[13.5px]" />
+                  <input value={addr.state} onChange={(e) => setAddr((a) => ({ ...a, state: e.target.value.toUpperCase().slice(0, 2) }))} placeholder="ST" maxLength={2} className="col-span-1 rounded-lg border-2 border-[#161616] bg-white px-3 py-2 font-body text-[13.5px] uppercase" />
+                  <input value={addr.zip} onChange={(e) => setAddr((a) => ({ ...a, zip: e.target.value }))} placeholder="ZIP" className="col-span-1 rounded-lg border-2 border-[#161616] bg-white px-3 py-2 font-body text-[13.5px]" />
+                </div>
+                <button type="button" onClick={doSaveAddr} disabled={busy === 'save-registrant' || !addr.address1 || !addr.city || !addr.state || !addr.zip} className={`${BTN} mt-2.5`}>
+                  {busy === 'save-registrant' ? 'Saving…' : 'Save address'}
+                </button>
               </div>
             )}
 
             {dns.length > 0 && (
               <div className="mt-2.5 rounded-lg border-2 border-[#1E50C8]/40 bg-blue-50 px-3 py-2.5">
-                <p className="font-sans text-[11px] uppercase tracking-[0.14em] font-bold text-[#1E50C8] mb-1">
-                  They need to add these records
+                <p className="font-sans text-[11px] uppercase tracking-[0.14em] font-bold text-[#1E50C8] mb-1.5">
+                  Add these at their domain provider (GoDaddy, Namecheap, wherever they bought it)
                 </p>
-                {dns.map((d, i) => (
-                  <p key={i} className="font-mono text-[11.5px] text-[#161616] break-all">
-                    {d.type} · {d.domain} · {d.value}
-                  </p>
-                ))}
+                <div className="space-y-1.5">
+                  {dns.map((d, i) => (
+                    <div key={i} className="flex items-center gap-2 rounded-lg bg-white border-2 border-[#161616]/15 px-2.5 py-1.5">
+                      <span className="font-mono text-[11px] font-bold text-[#1E50C8] shrink-0 w-10">{d.type}</span>
+                      <span className="font-mono text-[11.5px] text-[#161616] break-all flex-1 min-w-0">{d.domain} → {d.value}</span>
+                      <CopyBtn text={`${d.type}  ${d.domain}  ${d.value}`} />
+                    </div>
+                  ))}
+                </div>
+                <p className="font-body text-[11.5px] text-[#161616]/55 mt-1.5">It can take a few minutes to a few hours after they add these. It flips to live on its own.</p>
               </div>
             )}
           </div>
