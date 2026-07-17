@@ -109,5 +109,5 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
   }
 
   const orderUrl = lead?.hub_demo_url ? `${lead.hub_demo_url}#order` : null;
-  return <SiteDemoShell html={site.html} business={site.business_name} call={call} orderUrl={orderUrl} />;
+  return <SiteDemoShell siteId={site.id} business={site.business_name} call={call} orderUrl={orderUrl} />;
 }

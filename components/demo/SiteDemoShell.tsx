@@ -13,12 +13,12 @@ import DemoVoiceWidget, { type VoiceState } from '@/components/demo/DemoVoiceWid
  * at, because most of them have never met a website that answers its phone.
  */
 export default function SiteDemoShell({
-  html,
+  siteId,
   business,
   call,
   orderUrl,
 }: {
-  html: string;
+  siteId: string;
   business: string;
   call: ForgedCall | null;
   /** the hub's order section; buying happens there, one tap away */
@@ -57,7 +57,10 @@ export default function SiteDemoShell({
 
   return (
     <div className="fixed inset-0 bg-[#161616]">
-      <iframe title={`${business} demo website`} srcDoc={html} className="w-full h-full border-0 bg-white" />
+      {/* A real src (not srcdoc) so the site's own #anchor nav links are
+          same-document jumps; under srcdoc they resolved against the parent
+          URL and reloaded the wrapper instead of scrolling. */}
+      <iframe title={`${business} demo website`} src={`/demo/site/${siteId}/raw`} className="w-full h-full border-0 bg-white" />
 
       {/* The receptionist, living on the site it answers for. One column,
           bottom-right: orientation card, then the call pill, then the credit
