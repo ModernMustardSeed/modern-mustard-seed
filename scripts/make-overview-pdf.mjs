@@ -2,7 +2,7 @@
  * Modern Mustard Seed overview one-pager. Replaces the old languages-only sheet
  * with what the studio does as a whole: AI voice agents, websites, AI
  * optimization, custom software, with the voice agent as the hero. Dark hero
- * band, four offering cards, a Mr. Mustard strip, SAP heart sign-off. For
+ * band, four offering cards, a Mr. Mustard strip, heart sign-off. For
  * LinkedIn / email / ads. Run: node scripts/make-overview-pdf.mjs
  */
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
@@ -79,14 +79,13 @@ y -= 18;
 t('BOOK', M, y, 10, bold, RED, 2); t('modernmustardseed.com/book', M + 50, y, 12.5, bold, INK);
 y -= 30;
 
-// SAP heart sign-off
+// Heart sign-off, ", Sarah" set toward the bottom of the heart
 try {
   if (existsSync('public/brand/sap-heart.png')) {
     const hp = await doc.embedPng(readFileSync('public/brand/sap-heart.png'));
     const hh = 54, hw = (hp.width / hp.height) * hh;
     page.drawImage(hp, { x: M, y: y - hh, width: hw, height: hh });
-    t('SAP', M + hw + 6, y - 26, 20, ital, INK);
-    t('Sarah, Anthony & Polly', M + hw + 6, y - 42, 10, reg, BODY);
+    t(', Sarah', M + hw + 6, y - 40, 20, ital, INK);
   }
 } catch {}
 t('sarah@modernmustardseed.com   ·   modernmustardseed.com', W - M - reg.widthOfTextAtSize('sarah@modernmustardseed.com   ·   modernmustardseed.com', 9), 32, 9, reg, MUTED);

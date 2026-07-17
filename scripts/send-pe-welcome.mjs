@@ -56,8 +56,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewp
   <tr><td style="padding:26px 40px 38px">
     <div style="border-top:1px solid #e7e0cf;padding-top:18px">
       <img src="https://modernmustardseed.com/brand/sap-heart.png" width="64" height="60" alt="" style="display:block;border:0;margin:0 0 4px -2px" />
-      <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:18px;color:${ink};font-weight:700">SAP</p>
-      <p style="margin:4px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:12px;color:${ink};font-weight:600">Sarah, Anthony &amp; Polly</p>
+      <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:18px;color:${ink};font-weight:700">Sarah</p>
       <p style="margin:2px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#b88a00;font-weight:700">Modern Mustard Seed</p>
     </div>
   </td></tr>

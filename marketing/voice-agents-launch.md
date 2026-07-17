@@ -33,7 +33,7 @@ Our AI voice agent detects the caller and replies in their language, English, Sp
 **5. Founder note**
 I built an AI receptionist that I would actually want answering my own phone.
 It remembers callers, speaks 100+ languages, books, takes orders, upsells, and never sleeps. It is live on our site so you can talk to it. Swipe for the breakdown, then come say hi.
-- SAP
+- ♥, Sarah
 
 ---
 

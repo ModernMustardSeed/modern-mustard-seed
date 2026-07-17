@@ -114,7 +114,7 @@ export async function POST(req: Request) {
           `Thank you for applying to partner with Modern Mustard Seed. I review every application personally, usually within a day. ` +
           `When you're approved you'll get your own referral link, free access to everything so you only recommend what you've used, and the full Outreach Playbook with your link already in it.\n\n` +
           `Want to talk it through first? Just reply to this email, or text me directly at ${CELL}.\n\n` +
-          `With love and faith,\nSarah\nModern Mustard Seed`,
+          `♥, Sarah\nModern Mustard Seed`,
         html: clientEmail({
           preheader: 'I got your partner application, and I review every one personally.',
           eyebrow: 'Partner Program',

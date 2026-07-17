@@ -226,19 +226,16 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
   </td></tr>`;
 }
 
-// The SAP signature: an oversized hand-drawn heart that crosses at the bottom
-// into a long tail, then SAP (Sarah, Anthony & Polly). Signs every email. The
-// name arg is kept for call-site compatibility but the signature is always SAP.
+// Sarah's signature: a hand-drawn heart with ", Sarah" set beside it, aligned
+// toward the bottom of the heart. Signs every email. The name arg is kept for
+// call-site compatibility; the sign-off is always the heart + Sarah.
 function signature(_name?: string): string {
   return `<tr><td style="padding:34px 44px 42px">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-      <td style="padding-right:12px;vertical-align:middle"><div style="width:30px;height:2px;background:${C.goldBrand};font-size:0;line-height:0">&nbsp;</div></td>
-      <td style="vertical-align:middle"><span style="font-family:${SANS};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${C.muted};font-weight:700">With love and faith,</span></td>
+      <td style="vertical-align:bottom"><img src="https://modernmustardseed.com/brand/sap-heart.png" width="62" height="57" alt="With love" style="display:block;border:0" /></td>
+      <td style="vertical-align:bottom;padding:0 0 9px 3px"><span class="mms-ink" style="font-family:${SERIF};font-style:italic;font-size:30px;color:${C.ink};font-weight:700;letter-spacing:0.3px">, Sarah</span></td>
     </tr></table>
-    <img src="https://modernmustardseed.com/brand/sap-heart.png" width="84" height="78" alt="SAP" style="display:block;margin:12px 0 2px -2px;border:0" />
-    <p class="mms-ink" style="margin:0;font-family:${SERIF};font-style:italic;font-size:30px;color:${C.ink};font-weight:700;letter-spacing:0.5px">SAP</p>
-    <p class="mms-ink" style="margin:5px 0 0;font-family:${SANS};font-size:12px;color:${C.ink};font-weight:600">Sarah, Anthony &amp; Polly</p>
-    <p style="margin:2px 0 0;font-family:${SANS};font-size:11px;color:${C.gold};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
+    <p style="margin:14px 0 0;font-family:${SANS};font-size:11px;color:${C.gold};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
     <p class="mms-ink" style="margin:7px 0 0;font-family:${SERIF};font-style:italic;font-size:14px;color:${C.ink};font-weight:600">Do you want your business to thrive?</p>
   </td></tr>`;
 }

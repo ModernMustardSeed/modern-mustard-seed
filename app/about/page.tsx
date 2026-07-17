@@ -170,19 +170,21 @@ export default function AboutPage() {
             </p>
           </div>
 
-          {/* ─── Signed: SAP (Sarah, Anthony & Polly) ─── */}
+          {/* ─── Signed: Sarah ─── */}
           <div className="mt-16 text-center">
-            <svg viewBox="0 0 200 185" className="w-28 h-auto mx-auto" role="img" aria-label="SAP signature heart">
-              <path
-                d="M100 165 C 55 130, 18 96, 18 58 C 18 32, 41 16, 65 22 C 83 27, 95 43, 100 59 C 105 43, 117 27, 135 22 C 159 16, 182 32, 182 58 C 182 96, 145 130, 100 165 Z"
-                fill="#FFFFFF"
-                stroke="#161616"
-                strokeWidth="6"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <p className="font-serif italic text-4xl font-bold text-[#161616] -mt-3">SAP</p>
-            <p className="font-body text-sm text-[#161616]/70 mt-1.5">Sarah, Anthony &amp; Polly   ·   Modern Mustard Seed</p>
+            <div className="flex items-end justify-center gap-1">
+              <svg viewBox="0 0 200 185" className="w-24 h-auto" role="img" aria-label="With love">
+                <path
+                  d="M100 165 C 55 130, 18 96, 18 58 C 18 32, 41 16, 65 22 C 83 27, 95 43, 100 59 C 105 43, 117 27, 135 22 C 159 16, 182 32, 182 58 C 182 96, 145 130, 100 165 Z"
+                  fill="#FFFFFF"
+                  stroke="#161616"
+                  strokeWidth="6"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="font-serif italic text-4xl font-bold text-[#161616] pb-3">, Sarah</span>
+            </div>
+            <p className="font-body text-sm text-[#161616]/70 mt-2">Modern Mustard Seed</p>
           </div>
 
           {/* ─── CTAs ─── */}

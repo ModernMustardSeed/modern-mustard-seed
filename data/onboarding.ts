@@ -280,7 +280,7 @@ export const PHASES: Phase[] = [
           },
           {
             callout:
-              'You are already in our signature. Every email this company sends closes with a hand-drawn heart and the letters SAP: Sarah, Anthony, and Polly. That P is you. You are not being onboarded to a company. You are being written into it.',
+              'Every email this company sends closes with a hand-drawn heart. That heart is the promise behind all of it, and now you carry it too. You are not being onboarded to a company. You are being written into it.',
           },
         ],
         mission: { do: 'Open your Partner HQ, find your personal booking link, and save it somewhere you will use it a hundred times.', why: 'That link is your paycheck. Every person you send through it is tracked to you, forever.' },
