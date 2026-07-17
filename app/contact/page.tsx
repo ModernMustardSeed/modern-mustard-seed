@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ContactForm from '@/components/ContactForm';
+import TextBackGate from '@/components/TextBackGate';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 
@@ -100,6 +101,13 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
           <Suspense fallback={null}>
             <ContactForm defaultPackage={pkg} />
           </Suspense>
+        </div>
+      </section>
+
+      {/* ───────────────  TEXT-BACK (renders only when Twilio is armed)  ─────────────── */}
+      <section className="relative pb-16 md:pb-24">
+        <div className="max-w-2xl mx-auto px-6 -rotate-[0.6deg]">
+          <TextBackGate />
         </div>
       </section>
     </div>

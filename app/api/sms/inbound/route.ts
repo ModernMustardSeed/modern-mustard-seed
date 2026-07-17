@@ -1,6 +1,7 @@
 import twilio from 'twilio';
 import { getSupabase } from '@/lib/supabase';
 import { normalizePhone, isStopKeyword, addOptOut } from '@/lib/sms';
+import { fetchAllRows } from '@/lib/outbound-server';
 
 export const runtime = 'nodejs';
 
@@ -50,12 +51,21 @@ export async function POST(req: Request) {
     return twiml();
   }
 
-  // 2) A real reply. Match the number to a lead and thread it.
+  // 2) A real reply. Match the number to a lead and thread it. Both worlds:
+  // the legacy Tracker (rep_prospects) AND the dial floor (outbound_leads),
+  // so a text-back visitor's reply lands in the cockpit thread. Whole-table
+  // paged read on purpose: a capped unordered select silently sheds rows.
   const { data: leads } = await sb.from('rep_prospects').select('id,phone,status').not('phone', 'is', null);
   const lead = (leads || []).find((l) => normalizePhone(l.phone as string) === from);
+  const digitsOf = (v: string | null) => (v ?? '').replace(/\D/g, '').slice(-10);
+  const { data: floorRows } = await fetchAllRows<{ id: string; phone: string | null }>(
+    () => sb.from('outbound_leads').select('id, phone').order('id', { ascending: true }),
+  );
+  const floorLead = (floorRows ?? []).find((r) => digitsOf(r.phone) === digitsOf(from));
 
   await sb.from('messages').insert({
     prospect_id: lead ? lead.id : null,
+    outbound_lead_id: floorLead ? floorLead.id : null,
     direction: 'inbound',
     channel: 'sms',
     from_addr: from,
