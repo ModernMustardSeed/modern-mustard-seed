@@ -10,7 +10,7 @@ import { useEffect, useState, useCallback } from 'react';
 
 type ActivityEvent = {
   id: string;
-  kind: 'partner' | 'lead' | 'sale';
+  kind: 'partner' | 'lead' | 'sale' | 'client';
   emoji: string;
   title: string;
   detail: string;
@@ -33,6 +33,7 @@ const ACCENT: Record<ActivityEvent['kind'], string> = {
   partner: '#1E50C8',
   lead: '#F5B700',
   sale: '#E0301E',
+  client: '#1a6b39',
 };
 
 export default function ActivityFeed({ showMoney = true }: { showMoney?: boolean }) {

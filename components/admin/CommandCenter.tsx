@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts';
 import AdminHeader from './AdminHeader';
 import ActivityFeed from './ActivityFeed';
+import { fireConfetti } from '@/lib/confetti';
 
 /**
  * The owner command center. One screen to run the business: revenue, sales,
@@ -23,6 +24,13 @@ type Overview = {
   capacity?: { active: number; limit: number };
   approvals?: { pending: number };
   messages?: { newCount: number; items: Array<{ id: string; email: string; name: string | null; body: string; source: string; status: string; created_at: string; proposed_date: string | null }> };
+  clients?: {
+    new7d: number;
+    new30d: number;
+    total: number;
+    latestIso: string | null;
+    recent: Array<{ email: string; name: string | null; company: string | null; createdAt: string; isDemo: boolean; headline: string }>;
+  };
   followups?: Array<{ kind: string; title: string; detail: string; days: number }>;
   attention: Array<{ kind: string; title: string; detail: string; whenIso: string; leadId?: string; severity: 'high' | 'medium' }>;
   recentOrders: Array<{ name: string | null; email: string; product_name: string; price_paid_cents: number; created_at: string }>;
@@ -95,6 +103,7 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
   const [tLeads, setTLeads] = useState('');
   const [tCalls, setTCalls] = useState('');
   const [savingTargets, setSavingTargets] = useState(false);
+  const [justCelebrated, setJustCelebrated] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -145,6 +154,23 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
     if (showMoney && data && !brief && !briefLoading) genBrief(data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, showMoney]);
+
+  // Confetti the moment a NEW client comes aboard: fire when the newest client
+  // is newer than the last one we celebrated (remembered per browser). First
+  // ever view treats "seen" as 48h ago, so a genuinely fresh client still gets
+  // its moment, but an existing roster does not fire on the very first load.
+  useEffect(() => {
+    const latest = data?.clients?.latestIso;
+    if (!latest || typeof window === 'undefined') return;
+    const KEY = 'mms_client_seen';
+    const seen = localStorage.getItem(KEY) || new Date(Date.now() - 48 * 3600e3).toISOString();
+    if (new Date(latest).getTime() > new Date(seen).getTime()) {
+      fireConfetti();
+      setJustCelebrated(true);
+      window.setTimeout(() => setJustCelebrated(false), 5000);
+    }
+    localStorage.setItem(KEY, latest);
+  }, [data?.clients?.latestIso]);
 
   const markRequest = async (id: string, status: 'read' | 'done') => {
     try {
@@ -272,6 +298,41 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
           <p className="text-center text-[#161616]/45 py-20 font-body italic">No data.</p>
         ) : (
           <>
+            {/* New client, worth a party. Shows while the newest client is fresh
+                (within a week); the confetti above fires once per new arrival. */}
+            {data.clients && data.clients.recent.length > 0 && (() => {
+              const newest = data.clients.recent[0];
+              const freshDays = (Date.now() - new Date(newest.createdAt).getTime()) / 86400000;
+              if (freshDays > 7) return null;
+              const bigName = newest.company || newest.name || 'A new client';
+              const others = Math.max(0, data.clients.new7d - 1);
+              return (
+                <div className={`mb-6 rounded-2xl border-2 border-[#161616] bg-[#F5B700] shadow-[6px_6px_0_0_#161616] p-5 flex items-center gap-4 ${justCelebrated ? 'animate-[ccPop_.5s_ease-out]' : ''}`}>
+                  <style>{`@keyframes ccPop{0%{transform:scale(.96)}55%{transform:scale(1.015)}100%{transform:scale(1)}}`}</style>
+                  <span className="text-4xl sm:text-5xl shrink-0" aria-hidden>🎉</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">
+                      New client{justCelebrated ? ' · just now!' : ''}
+                    </p>
+                    <p className="font-display text-2xl sm:text-3xl font-extrabold text-[#161616] mt-0.5 leading-tight truncate">
+                      {bigName} came aboard.
+                    </p>
+                    <p className="font-body text-[13px] text-[#161616]/75 mt-1">
+                      {newest.headline}
+                      {newest.isDemo ? ' · via the demo funnel' : ''}.
+                      {others > 0 ? ` And ${others} more new this week.` : ''} {data.clients.new30d} new this month.
+                    </p>
+                  </div>
+                  <Link
+                    href="/admin/delivery"
+                    className="shrink-0 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-xl px-4 sm:px-5 py-3 font-sans font-bold uppercase tracking-[0.1em] text-[12px] sm:text-[13px] shadow-[3px_3px_0_0_#FFFDF6] hover:-translate-y-0.5 transition-transform whitespace-nowrap"
+                  >
+                    Open Delivery →
+                  </Link>
+                </div>
+              );
+            })()}
+
             {/* KPI row */}
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-6">
               <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">

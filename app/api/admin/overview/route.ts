@@ -260,6 +260,65 @@ export async function GET() {
     // client_requests not migrated yet
   }
 
+  // ── New clients (the win worth celebrating) ───────────────────────
+  // A row in `clients` is the canonical "they came aboard" moment: the demo
+  // funnel mints one on a paid order (via provisionDemoOrder), and the agency
+  // flow mints one too. This block powers the dashboard's new-client banner +
+  // confetti, so Sarah knows the instant she has a new client, not only when
+  // she opens /admin/delivery.
+  const clients: {
+    new7d: number;
+    new30d: number;
+    total: number;
+    latestIso: string | null;
+    recent: Array<{ email: string; name: string | null; company: string | null; createdAt: string; isDemo: boolean; headline: string }>;
+  } = { new7d: 0, new30d: 0, total: 0, latestIso: null, recent: [] };
+  try {
+    const { data: cl } = await supabase
+      .from('clients')
+      .select('email, name, company, created_at')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (cl && cl.length) {
+      clients.total = cl.length;
+      clients.latestIso = (cl[0].created_at as string) ?? null;
+      for (const c of cl) {
+        const created = new Date(c.created_at as string);
+        if (created >= ago7) clients.new7d += 1;
+        if (created >= ago30) clients.new30d += 1;
+      }
+      // Enrich the few most recent with their project (a headline like
+      // "Wild Hope Realty: the whole system" + whether they came via the demo).
+      const head = cl.slice(0, 6);
+      const emails = head.map((c) => c.email as string);
+      const projByEmail = new Map<string, { name: string; demo_order_id: string | null }>();
+      if (emails.length) {
+        const { data: projs } = await supabase
+          .from('projects')
+          .select('client_email, name, demo_order_id, created_at')
+          .in('client_email', emails)
+          .order('created_at', { ascending: false });
+        for (const p of projs ?? []) {
+          const key = p.client_email as string;
+          if (!projByEmail.has(key)) projByEmail.set(key, { name: p.name as string, demo_order_id: (p.demo_order_id as string | null) ?? null });
+        }
+      }
+      clients.recent = head.map((c) => {
+        const p = projByEmail.get(c.email as string);
+        return {
+          email: c.email as string,
+          name: (c.name as string | null) ?? null,
+          company: (c.company as string | null) ?? null,
+          createdAt: c.created_at as string,
+          isDemo: !!p?.demo_order_id,
+          headline: p?.name || (c.company as string) || (c.name as string) || 'New client',
+        };
+      });
+    }
+  } catch {
+    // clients table not migrated yet
+  }
+
   // ── Capacity: active projects in flight ───────────────────────────
   let activeProjects = 0;
   try {
@@ -367,6 +426,7 @@ export async function GET() {
     capacity: { active: activeProjects, limit: Number(process.env.WIP_LIMIT) || 5 },
     approvals: { pending: approvalsPending },
     messages,
+    clients,
     followups: followups.slice(0, 6),
     attention: attention.slice(0, 8),
     recentOrders,

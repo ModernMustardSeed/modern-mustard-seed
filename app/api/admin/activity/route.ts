@@ -14,7 +14,7 @@ export const runtime = 'nodejs';
 
 export type ActivityEvent = {
   id: string;
-  kind: 'partner' | 'lead' | 'sale';
+  kind: 'partner' | 'lead' | 'sale' | 'client';
   emoji: string;
   title: string;
   detail: string;
@@ -31,10 +31,11 @@ export async function GET() {
 
   const events: ActivityEvent[] = [];
 
-  const [partnersRes, leadsRes, ordersRes] = await Promise.all([
+  const [partnersRes, leadsRes, ordersRes, clientsRes] = await Promise.all([
     supabase.from('affiliates').select('id,email,name,status,promote_where,created_at').order('created_at', { ascending: false }).limit(12),
     supabase.from('leads').select('id,email,name,type,status,created_at').order('created_at', { ascending: false }).limit(14),
     supabase.from('orders').select('id,email,name,product_name,price_paid_cents,created_at,status').eq('status', 'paid').order('created_at', { ascending: false }).limit(14),
+    supabase.from('clients').select('email,name,company,created_at').order('created_at', { ascending: false }).limit(12),
   ]);
 
   for (const a of partnersRes.data ?? []) {
@@ -73,6 +74,18 @@ export async function GET() {
       email: o.email as string,
       whenIso: o.created_at as string,
       amountCents: Number(o.price_paid_cents) || 0,
+    });
+  }
+
+  for (const c of clientsRes.data ?? []) {
+    events.push({
+      id: `client-${c.email}`,
+      kind: 'client',
+      emoji: '🎉',
+      title: 'New client aboard',
+      detail: `${(c.company as string) || (c.name as string) || c.email} joined`,
+      email: c.email as string,
+      whenIso: c.created_at as string,
     });
   }
 
