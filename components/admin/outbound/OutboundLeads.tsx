@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Papa from 'papaparse';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { NICHES, NICHE_LABELS, LEAD_STATUSES, STATUS_LABELS, formatPhone, fmtMoney, phoneKey, isEmail } from '@/lib/outbound';
@@ -51,6 +51,12 @@ function siteFlag(l: OutboundLead): { label: string; tone: 'red' | 'amber' } | n
   if (isWeak(l)) return { label: 'Stale site', tone: 'amber' };
   return null;
 }
+
+/** The table renders heavy rows (two populated <select>s each). On a floor of
+ *  thousands, rendering the whole filtered set stalls the main thread on every
+ *  keystroke. Cap the DOM to a scannable window; the count and the view chips
+ *  still reflect the full set, and searching narrows below the cap immediately. */
+const RENDER_CAP = 200;
 
 const EMPTY_FORM = {
   business_name: '',
@@ -127,6 +133,10 @@ export default function OutboundLeads() {
   // Armed after the first render so the URL-sync effect never clobbers the
   // params the mount reader just loaded (both run in the same initial commit).
   const urlWriteArmed = useRef(false);
+  // Keep the search box responsive on a big floor: the expensive filtered render
+  // reads the DEFERRED query, so keystrokes update the input instantly and the
+  // table re-renders at lower priority instead of blocking the main thread.
+  const deferredQ = useDeferredValue(q);
 
   // Add modal
   const [addOpen, setAddOpen] = useState(false);
@@ -242,14 +252,14 @@ export default function OutboundLeads() {
     if (cityF) rows = rows.filter((l) => l.city === cityF);
     if (sourceF) rows = rows.filter((l) => l.source === sourceF);
     if (unscrubbedOnly) rows = rows.filter((l) => !l.dnc_checked);
-    if (q.trim()) {
-      const needle = q.trim().toLowerCase();
+    if (deferredQ.trim()) {
+      const needle = deferredQ.trim().toLowerCase();
       rows = rows.filter((l) =>
         [l.business_name, l.contact_name, l.phone, l.city, l.email].some((v) => v?.toLowerCase().includes(needle)),
       );
     }
     return rows;
-  }, [leads, status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, q]);
+  }, [leads, status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, deferredQ]);
 
   const viewCounts = useMemo(() => {
     const counts = { all: base.length, no_site: 0, outdated: 0, needs: 0 } as Record<ViewKey, number>;
@@ -274,6 +284,10 @@ export default function OutboundLeads() {
       return String(va).localeCompare(String(vb)) * mul;
     });
   }, [base, view, workedFirst, sort, dir, repName]);
+
+  // Only the first RENDER_CAP rows hit the DOM. `visible` stays the full set for
+  // the count, the view chips, and the bulk-scrub target.
+  const shown = useMemo(() => (visible.length > RENDER_CAP ? visible.slice(0, RENDER_CAP) : visible), [visible]);
 
   const clickSort = (key: SortKey) => {
     if (sort === key) setDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -520,7 +534,7 @@ export default function OutboundLeads() {
                     </td>
                   </tr>
                 )}
-                {visible.map((l) => (
+                {shown.map((l) => (
                   <tr key={l.id} className="border-t border-[#1a1815]/[0.07] hover:bg-[#b58a2a]/[0.05] transition-colors">
                     <td className="px-3 py-2.5">
                       <Link href={`/admin/outbound/call/${l.id}`} className="font-semibold text-[#1a1815] hover:text-[#b58a2a] transition-colors">
@@ -612,6 +626,15 @@ export default function OutboundLeads() {
                     </td>
                   </tr>
                 ))}
+                {!loading && visible.length > RENDER_CAP && (
+                  <tr>
+                    <td colSpan={11} className="px-4 py-4 text-center bg-[#f7f3e9]/60 border-t-2 border-[#1a1815]/10">
+                      <p className="font-oswald uppercase tracking-[0.12em] text-xs text-[#1a1815]/55">
+                        Showing the first {RENDER_CAP} of {visible.length}. Search or filter to narrow the list.
+                      </p>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
