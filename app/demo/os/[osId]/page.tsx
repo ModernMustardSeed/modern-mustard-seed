@@ -4,7 +4,7 @@ import { forgeCall } from '@/lib/sidekick';
 import { buildMetadata } from '@/lib/seo';
 import type { ForgedCall } from '@/lib/sidekick';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
-import { themeFromSiteHtml } from '@/lib/site-palette';
+import { extractPalette, themeFromPalette } from '@/lib/site-palette';
 import OsDemoApp from '@/components/demo/OsDemoApp';
 
 export const metadata = buildMetadata({ title: 'Your Business Command Center Demo', noindex: true });
@@ -63,8 +63,13 @@ export default async function OsDemoPage({ params }: { params: Promise<{ osId: s
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle();
-  const theme = themeFromSiteHtml(site?.html);
+  // Palette order of trust: their forged website's declared palette, then the
+  // brand color captured from their REAL site at forge time (on the house
+  // midnight canvas), then the house deck.
+  const cfg = demo.config as OsDemoConfig;
+  const palette = extractPalette(site?.html) ?? (cfg.brandColor ? { bg: '#0e1220', accent: cfg.brandColor } : null);
+  const theme = themeFromPalette(palette);
 
   const orderUrl = lead?.hub_demo_url ? `${lead.hub_demo_url}#order` : null;
-  return <OsDemoApp osId={demo.id} config={demo.config as OsDemoConfig} call={call} orderUrl={orderUrl} theme={theme} />;
+  return <OsDemoApp osId={demo.id} config={cfg} call={call} orderUrl={orderUrl} theme={theme} />;
 }

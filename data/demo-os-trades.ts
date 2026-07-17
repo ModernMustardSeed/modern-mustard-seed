@@ -126,16 +126,22 @@ export function detectTrade(corpus: string, niche: Niche): OsTradeKey {
 }
 
 /**
- * Resolve the preset for a frozen config. Configs forged after this layer
+ * Resolve the trade KEY for a frozen config. Configs forged after this layer
  * carry `trade`; older ones are re-detected from the business name so every
- * existing demo upgrades itself at render time with no re-forge.
+ * existing demo upgrades itself at render time with no re-forge. Anything that
+ * keys per-trade data (price books, presets) must go through THIS, never read
+ * config.trade raw: a legacy config without the field would silently get the
+ * generic fallback while the rest of the app renders the detected trade.
  */
+export function resolveTradeKey(config: { trade?: string | null; business: string; niche: Niche }): OsTradeKey {
+  return config.trade && config.trade in TRADE_PRESETS
+    ? (config.trade as OsTradeKey)
+    : detectTrade(config.business, config.niche);
+}
+
+/** Resolve the full preset for a frozen config. */
 export function resolveTrade(config: { trade?: string | null; business: string; niche: Niche }): OsTradePreset {
-  const key =
-    config.trade && config.trade in TRADE_PRESETS
-      ? (config.trade as OsTradeKey)
-      : detectTrade(config.business, config.niche);
-  return TRADE_PRESETS[key];
+  return TRADE_PRESETS[resolveTradeKey(config)];
 }
 
 /* ------------------------------------------------------------------------ */

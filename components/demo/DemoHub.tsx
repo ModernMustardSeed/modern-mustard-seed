@@ -161,7 +161,7 @@ export default function DemoHub({
           href: osUrl,
           icon: '⚙',
           title: 'Your command center',
-          desc: 'Your day, customers, reviews, ads, and automations, with an AI assistant that knows the board.',
+          desc: 'Send branded quotes that get signed on the spot, run the day, launch growth campaigns, chase invoices. Your whole business, one screen.',
           tone: 'ink' as const,
           cta: 'Open it',
         },

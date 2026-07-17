@@ -5,27 +5,42 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { ForgedCall } from '@/lib/sidekick';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
 import { OS_AUTOMATIONS } from '@/data/demo-os';
-import type { OsAd, OsCustomer } from '@/data/demo-os';
+import type { OsCustomer } from '@/data/demo-os';
 import { resolveTrade } from '@/data/demo-os-trades';
 import { DEFAULT_OS_THEME } from '@/lib/site-palette';
 import type { OsTheme } from '@/lib/site-palette';
 import DemoVoiceWidget from '@/components/demo/DemoVoiceWidget';
+import { BizMark, Icon, OsProvider, hash, useCountUp } from '@/components/demo/os/os-kit';
+import QuotesTab from '@/components/demo/os/QuotesTab';
+import type { SignedQuote } from '@/components/demo/os/QuotesTab';
+import JobsTab from '@/components/demo/os/JobsTab';
+import type { OsJobItem } from '@/components/demo/os/JobsTab';
+import CampaignsTab from '@/components/demo/os/CampaignsTab';
 
 /**
  * The forged BUSINESS OS demo: one template command center that renders as
- * THEIR software from the frozen per-lead config. Midnight operations deck:
- * dark slate, one trade accent, sample data labeled honestly. Modules: Today,
- * the trade-specific SIGNATURE BOARD (claims, dispatch, recalls... resolved
- * per detected trade), Customers (CRM), Reviews, Ads, Automations, plus the
- * live AI assistant (capped) and the voice receptionist widget. The pitch is
- * the product.
+ * THEIR software from the frozen per-lead config, wearing THEIR brand (logo +
+ * colors captured at forge time, palette borrowed from their forged website).
+ * Modules: Today, the trade-specific SIGNATURE BOARD, Customers (CRM), Quotes
+ * (branded proposal generator), Jobs (run sheet), Campaigns (growth plays +
+ * ad studio), Money, Books, Reviews, Automations, and the live AI assistant
+ * (capped), plus the voice receptionist widget. The pitch is the product, and
+ * the modules feed each other: a signed quote books a job, a finished job
+ * invoices itself and queues the review chase.
  */
 
-/* Palette lives in lib/site-palette.ts now: the command center re-skins itself
-   to the business's OWN forged website, so the two demos read as one product.
-   The house midnight deck is the fallback while the site is still building. */
-
-type Tab = 'today' | 'signature' | 'customers' | 'money' | 'reviews' | 'ads' | 'automations' | 'assistant';
+type Tab =
+  | 'today'
+  | 'signature'
+  | 'customers'
+  | 'quotes'
+  | 'jobs'
+  | 'campaigns'
+  | 'money'
+  | 'books'
+  | 'reviews'
+  | 'automations'
+  | 'assistant';
 
 const ASSISTANT_ICON = 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z';
 const PHONE_ICON =
@@ -33,16 +48,31 @@ const PHONE_ICON =
 const SIGNATURE_ICON =
   'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z';
 
-/** `short` is the bottom-tab-bar label; 7 tabs at 375px cannot fit the long ones. */
+/** `short` is the bottom-tab-bar label; long ones cannot share a 375px row. */
 const TABS: { id: Tab; label: string; icon: string; short?: string }[] = [
   { id: 'today', label: 'Today', icon: 'M3 13h8V3H3v10zm10 8h8V11h-8v10zM3 21h8v-6H3v6zm10-18v6h8V3h-8z' },
-  { id: 'customers', label: 'Customers', icon: 'M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05C16.19 13.89 17 15.02 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z' },
+  { id: 'quotes', label: 'Quotes', icon: 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z' },
+  { id: 'jobs', label: 'Jobs', icon: 'M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z' },
+  { id: 'customers', label: 'Customers', short: 'CRM', icon: 'M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05C16.19 13.89 17 15.02 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z' },
+  { id: 'campaigns', label: 'Campaigns', short: 'Grow', icon: 'M18 11v2h4v-2h-4zm-2 6.61c.96.71 2.21 1.65 3.2 2.39.4-.53.8-1.07 1.2-1.6-.99-.74-2.24-1.68-3.2-2.4-.4.54-.8 1.08-1.2 1.61zM20.4 5.6c-.4-.53-.8-1.07-1.2-1.6-.99.74-2.24 1.68-3.2 2.4.4.53.8 1.07 1.2 1.6.96-.72 2.21-1.65 3.2-2.4zM4 9c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v4h2v-4h1l5 3V6L8 9H4zm11.5 3c0-1.33-.58-2.53-1.5-3.35v6.69c.92-.81 1.5-2.01 1.5-3.34z' },
   { id: 'money', label: 'Money', icon: 'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z' },
+  { id: 'books', label: 'Books', icon: 'M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z' },
   { id: 'reviews', label: 'Reviews', icon: 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z' },
-  { id: 'ads', label: 'Ads', icon: 'M18 11v2h4v-2h-4zm-2 6.61c.96.71 2.21 1.65 3.2 2.39.4-.53.8-1.07 1.2-1.6-.99-.74-2.24-1.68-3.2-2.4-.4.54-.8 1.08-1.2 1.61zM20.4 5.6c-.4-.53-.8-1.07-1.2-1.6-.99.74-2.24 1.68-3.2 2.4.4.53.8 1.07 1.2 1.6.96-.72 2.21-1.65 3.2-2.4zM4 9c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v4h2v-4h1l5 3V6L8 9H4zm11.5 3c0-1.33-.58-2.53-1.5-3.35v6.69c.92-.81 1.5-2.01 1.5-3.34z' },
   { id: 'automations', label: 'Automations', short: 'Auto', icon: 'M7 2v11h3v9l7-12h-4l4-8z' },
   { id: 'assistant', label: 'Assistant', short: 'AI', icon: ASSISTANT_ICON },
 ];
+
+/** Sidebar groups (house rule: group any nav past ~6 items). The signature
+ *  board is inserted into the first group at render, labeled per trade. */
+const SECTIONS: { label: string; ids: Tab[] }[] = [
+  { label: 'Run the day', ids: ['today', 'signature', 'jobs'] },
+  { label: 'Win the work', ids: ['customers', 'quotes'] },
+  { label: 'Grow', ids: ['campaigns', 'reviews'] },
+  { label: 'Back office', ids: ['money', 'books', 'automations', 'assistant'] },
+];
+
+/** The four tabs that ride the mobile bottom bar; the rest live behind More. */
+const PRIMARY_TABS: Tab[] = ['today', 'signature', 'quotes', 'customers'];
 
 /** Tag chip colors, tone -> [text, bg]. Two sets: the pale-on-dark versions
  *  vanish on a light site, and the deep-on-light versions vanish on a dark one,
@@ -73,17 +103,8 @@ type CrmLead = OsCustomer & {
   lost?: boolean;
 };
 
-/** Stable string hash. The CRM derives phone numbers, sources and ages from the
- *  lead's name, and it must produce the SAME answer on the server and in the
- *  browser or React tears the tree down on hydration. Never Math.random() here. */
-function hash(s: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return Math.abs(h);
-}
+/* hash + useCountUp live in os-kit now (shared with the module tabs); the
+   hydration law stands: everything derived must be deterministic. */
 
 const SOURCES: LeadSource[] = ['Receptionist', 'Website', 'Google', 'Referral'];
 
@@ -115,28 +136,6 @@ function enrich(c: OsCustomer, i: number): CrmLead {
     age: AGES[h % AGES.length],
     notes: [],
   };
-}
-
-/** Count-up that animates FROM its previous value, so a mid-session bump
- *  (a caught call landing) reads as an odometer tick, not a reset to zero. */
-function useCountUp(target: number, ms = 1600): number {
-  const [v, setV] = useState(0);
-  const fromRef = useRef(0);
-  useEffect(() => {
-    const from = fromRef.current;
-    let raf = 0;
-    const t0 = performance.now();
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - t0) / ms);
-      const val = Math.round(from + (target - from) * (1 - Math.pow(1 - p, 3)));
-      setV(val);
-      fromRef.current = val;
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [target, ms]);
-  return v;
 }
 
 /** Deterministic 12-point revenue sparkline; seeded by name so the server and
@@ -191,14 +190,6 @@ function WinBurst({ x, y, accent, text }: { x: number; y: number; accent: string
   );
 }
 
-function Icon({ d, size = 18, color }: { d: string; size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill={color ?? 'currentColor'} aria-hidden>
-      <path d={d} />
-    </svg>
-  );
-}
-
 export default function OsDemoApp({
   osId,
   config,
@@ -226,9 +217,9 @@ export default function OsDemoApp({
     () => [TABS[0], { id: 'signature', label: preset.signature.tabLabel, icon: SIGNATURE_ICON }, ...TABS.slice(1)],
     [preset.signature.tabLabel],
   );
-  // Mobile: four on the bar, the rest behind More.
-  const primaryTabs = tabs.slice(0, 4);
-  const moreTabs = tabs.slice(4);
+  // Mobile: four ride the bar, the rest live behind More.
+  const primaryTabs = tabs.filter((t) => PRIMARY_TABS.includes(t.id));
+  const moreTabs = tabs.filter((t) => !PRIMARY_TABS.includes(t.id));
   const [moreOpen, setMoreOpen] = useState(false);
   const [toast, setToast] = useState('');
   const toastTimer = useRef<number | undefined>(undefined);
@@ -286,6 +277,76 @@ export default function OsDemoApp({
     patch(id, { notes: [{ when: 'just now', text }, ...(l?.notes ?? [])] });
     setNoteDraft('');
     say('Note saved to the record.');
+  };
+
+  /* ------------------------------ jobs board ------------------------------ */
+  // The run sheet starts from the trade's day (first job already on site) plus
+  // the scheduled work sitting in the pipeline. Values derive deterministically
+  // from the title hash: the hydration law of this whole file.
+  const [jobs, setJobs] = useState<OsJobItem[]>(() => [
+    ...preset.todayJobs.map((j, i) => ({
+      id: `tj-${i}`,
+      title: j.title,
+      who: j.who,
+      when: j.time,
+      day: 'Today' as const,
+      value: Math.max(60, Math.round((preset.avgTicket * (40 + (hash(j.title) % 85))) / 100)),
+      status: (i === 0 ? 2 : 0) as OsJobItem['status'],
+    })),
+    ...preset.customers
+      .filter((c) => c.stage === 2)
+      .slice(0, 2)
+      .map((c, i) => ({
+        id: `sj-${i}`,
+        title: c.need,
+        who: c.name,
+        when: i === 0 ? 'Tomorrow' : 'Thursday',
+        day: 'Scheduled' as const,
+        value: c.value,
+        status: 0 as OsJobItem['status'],
+      })),
+  ]);
+  /** Invoices born from jobs finished THIS session; they join the derived set. */
+  const [jobInvoices, setJobInvoices] = useState<{ id: string; name: string; need: string; amount: number; paid: boolean; age: number }[]>([]);
+  const [reviewBonus, setReviewBonus] = useState(0);
+
+  const advanceJob = (id: string, at?: { x: number; y: number }) => {
+    const j = jobs.find((x) => x.id === id);
+    if (!j || j.status >= 3) return;
+    const next = (j.status + 1) as OsJobItem['status'];
+    setJobs((js) => js.map((x) => (x.id === id ? { ...x, status: next } : x)));
+    if (next === 1) say(`${j.who} just got the text: "Your crew is on the way." ETA shared live.`);
+    if (next === 2) say('On site. The clock, the job photos, and the paper trail start now.');
+    if (next === 3) {
+      setJobInvoices((inv) => [{ id: `job-${id}`, name: j.who, need: j.title, amount: j.value, paid: false, age: 0 }, ...inv]);
+      setReviewBonus((b) => b + 1);
+      fireBurst(at?.x ?? window.innerWidth / 2, at?.y ?? 200);
+      say(`Done. The invoice reached ${j.who} before the truck left, and the review ask is queued.`);
+    }
+  };
+
+  /* A signed quote is the closed loop: the client lands in the pipeline as
+     booked work and the job appears on the schedule by itself. */
+  const quoteSigned = (q: SignedQuote) => {
+    setLeads((ls) => {
+      const existing = ls.find((l) => l.name === q.client);
+      if (existing) {
+        return ls.map((l) =>
+          l.name === q.client
+            ? { ...l, stage: 2 as OsCustomer['stage'], value: q.total, need: q.title, lost: false, notes: [{ when: 'just now', text: `Signed the $${q.total.toLocaleString()} ${preset.jobWord} quote.` }, ...l.notes] }
+            : l,
+        );
+      }
+      const fresh = enrich({ name: q.client, need: q.title, value: q.total, stage: 2 }, ls.length + 41);
+      fresh.age = 'just now';
+      fresh.notes = [{ when: 'just now', text: `Signed the $${q.total.toLocaleString()} quote from the Quotes desk.` }];
+      return [fresh, ...ls];
+    });
+    setJobs((js) => [
+      ...js,
+      { id: `qj-${js.length}`, title: q.title, who: q.client, when: 'Tomorrow', day: 'Scheduled', value: q.total, status: 0, fromQuote: true },
+    ]);
+    say(`${q.client} signed. Booked, scheduled, and on the Jobs board.`);
   };
 
   /* --------------------------- live-call theater --------------------------- */
@@ -395,10 +456,12 @@ export default function OsDemoApp({
   // Invoices are not separate sample data: they ARE the won work. Every dollar
   // here traces back to a card in the pipeline, so the story stays coherent.
   const invoices = useMemo(
-    () =>
-      live
+    () => [
+      // Jobs finished this session invoice themselves and land on top.
+      ...jobInvoices,
+      ...live
         .filter((l) => l.stage === 3)
-        .map((l, i) => ({
+        .map((l) => ({
           id: l.id,
           name: l.name,
           need: l.need,
@@ -407,12 +470,63 @@ export default function OsDemoApp({
           paid: hash(l.name) % 3 !== 0,
           age: 2 + (hash(l.name) % 26),
         })),
-    [live],
+    ],
+    [live, jobInvoices],
   );
   const outstanding = invoices.filter((i) => !i.paid);
   const collected = invoices.filter((i) => i.paid).reduce((s, i) => s + i.amount, 0);
   const owed = outstanding.reduce((s, i) => s + i.amount, 0);
   const [chased, setChased] = useState<string[]>([]);
+
+  /* ------------------------------ bookkeeping ------------------------------ */
+  // A monthly profit-and-loss the owner recognizes, derived deterministically
+  // from the trade's weekly revenue (never Math.random -> server and client
+  // agree, no hydration tear). Honestly labeled sample: their real books sync
+  // the day we connect their invoicing and bank feed.
+  const books = useMemo(() => {
+    const income = Math.max(1, Math.round((preset.weekRevenue * 52) / 12));
+    const CATS: { label: string; pct: number }[] = [
+      { label: 'Materials & supplies', pct: 0.22 },
+      { label: 'Crew & payroll', pct: 0.19 },
+      { label: 'Vehicle & fuel', pct: 0.08 },
+      { label: 'Insurance & licensing', pct: 0.05 },
+      { label: 'Software & phone', pct: 0.03 },
+      { label: 'Marketing & ads', pct: 0.06 },
+    ];
+    const expenses = CATS.map((c) => ({ label: c.label, amount: Math.round(income * c.pct) }));
+    const spent = expenses.reduce((s, e) => s + e.amount, 0);
+    const profit = income - spent;
+    const taxSetAside = Math.max(0, Math.round(profit * 0.25));
+    const take = profit - taxSetAside;
+    const margin = income > 0 ? Math.round((profit / income) * 100) : 0;
+    // A recent ledger: real income lines from the won jobs, interleaved with the
+    // trade's typical expense line items (a single transaction each, not the
+    // whole monthly category total).
+    const incomeLines = invoices.slice(0, 5).map((inv, i) => ({
+      id: `in-${inv.id}`,
+      dir: 'in' as const,
+      label: inv.name,
+      cat: `${preset.jobWord.charAt(0).toUpperCase() + preset.jobWord.slice(1)} paid`,
+      amount: inv.amount,
+      day: 1 + i * 4,
+    }));
+    const EXP_LINES = [
+      { label: 'Supply house', cat: 'Materials & supplies', of: 3 },
+      { label: 'Fuel + vehicle', cat: 'Vehicle & fuel', of: 2 },
+      { label: 'Payroll run', cat: 'Crew & payroll', of: 2 },
+      { label: 'Liability policy', cat: 'Insurance & licensing', of: 1 },
+    ];
+    const expLines = EXP_LINES.map((e, i) => ({
+      id: `ex-${i}`,
+      dir: 'out' as const,
+      label: e.label,
+      cat: e.cat,
+      amount: Math.round((expenses.find((x) => x.label === e.cat)?.amount ?? 0) / e.of),
+      day: 3 + i * 5,
+    }));
+    const ledger = [...incomeLines, ...expLines].sort((a, b) => a.day - b.day);
+    return { income, expenses, spent, profit, taxSetAside, take, margin, ledger };
+  }, [preset.weekRevenue, preset.jobWord, invoices]);
 
   /* --------------------------- automations state -------------------------- */
   const automations = useMemo(
@@ -424,33 +538,6 @@ export default function OsDemoApp({
     [preset.extraAutomations, preset.jobWord],
   );
   const [armed, setArmed] = useState<boolean[]>(automations.map((a) => a.on));
-
-  /* ------------------------------- ad maker ------------------------------- */
-  const fill = (s: string) => s.replace(/\{biz\}/g, config.business).replace(/\{city\}/g, config.city || 'your town');
-  const [ads, setAds] = useState<OsAd[]>(preset.ads.map((a) => ({ headline: fill(a.headline), body: fill(a.body) })));
-  const [adBusy, setAdBusy] = useState(false);
-  const newAd = async () => {
-    setAdBusy(true);
-    try {
-      const res = await fetch(`/api/demo-os/${osId}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'ad' }),
-      });
-      const j = (await res.json()) as { reply?: string; error?: string };
-      const lines = (j.reply ?? '').split('\n').map((l) => l.trim()).filter(Boolean);
-      if (lines.length >= 2) {
-        setAds((a) => [{ headline: lines[0], body: lines.slice(1).join(' ') }, ...a]);
-        say('Fresh angle written.');
-      } else {
-        say(j.error ?? 'The ad desk is busy. Try again.');
-      }
-    } catch {
-      say('The ad desk is busy. Try again.');
-    } finally {
-      setAdBusy(false);
-    }
-  };
 
   /* -------------------------------- chat --------------------------------- */
   type Msg = { role: 'user' | 'assistant'; content: string };
@@ -514,6 +601,7 @@ export default function OsDemoApp({
   );
 
   return (
+    <OsProvider value={{ osId, config, preset, theme, TONE, say, fireBurst }}>
     <div className="fixed inset-0 flex flex-col font-sans" style={{ background: INK }}>
       <style>{`
 @keyframes osIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -523,17 +611,23 @@ export default function OsDemoApp({
 @keyframes osTicker{to{transform:translateX(-50%)}}
 @keyframes osDraw{to{stroke-dashoffset:0}}
 @keyframes osLand{from{opacity:0;transform:translateY(-10px) scale(.92)}60%{transform:translateY(2px) scale(1.02)}to{opacity:1;transform:none}}
+@keyframes osPaper{from{opacity:0;transform:translateY(34px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes osStamp{from{opacity:0;transform:rotate(-7deg) scale(2.1)}to{opacity:1;transform:rotate(-7deg) scale(1)}}
+@keyframes osSign{to{stroke-dashoffset:0}}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 `}</style>
 
+      {/* A quiet aurora off their accent, so the deck reads branded even before
+          the first module loads. Pure decoration, zero interaction cost. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-44"
+        style={{ background: `radial-gradient(58% 120% at 50% 0%, ${accentSoft}, transparent 70%)` }}
+      />
+
       {/* Top bar */}
-      <header className="shrink-0 flex items-center gap-3 px-4 sm:px-6 h-14 border-b" style={{ borderColor: LINE }}>
-        <span
-          className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm shrink-0"
-          style={{ background: accent, color: accentInk }}
-        >
-          {config.business.charAt(0)}
-        </span>
+      <header className="relative shrink-0 flex items-center gap-3 px-4 sm:px-6 h-14 border-b" style={{ borderColor: LINE }}>
+        <BizMark size={32} radius={10} />
         <div className="min-w-0">
           <p className="font-bold text-[15px] leading-tight truncate" style={{ color: TEXT }}>{config.business}</p>
           <p className="text-[10px] uppercase tracking-[0.18em] leading-tight" style={{ color: DIM }}>Command Center{place ? ` · ${place}` : ''}</p>
@@ -557,18 +651,31 @@ export default function OsDemoApp({
       </header>
 
       <div className="flex-1 flex min-h-0">
-        {/* Sidebar (desktop) */}
-        <nav className="hidden md:flex flex-col gap-1 w-52 shrink-0 p-3 border-r" style={{ borderColor: LINE }}>
-          {tabs.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] font-semibold transition-colors"
-              style={tab === t.id ? { background: PANEL_SOFT, color: TEXT } : { color: DIM }}
-            >
-              <Icon d={t.icon} color={tab === t.id ? accent : undefined} />
-              {t.label}
-            </button>
+        {/* Sidebar (desktop), grouped so eleven modules read as four thoughts. */}
+        <nav className="hidden md:flex flex-col w-52 shrink-0 p-3 border-r overflow-y-auto" style={{ borderColor: LINE }}>
+          {SECTIONS.map((sec, si) => (
+            <div key={sec.label} className={si === 0 ? '' : 'mt-4'}>
+              <p className="px-3 pb-1.5 text-[9px] uppercase tracking-[0.24em] font-bold" style={{ color: DIM, opacity: 0.75 }}>
+                {sec.label}
+              </p>
+              {sec.ids.map((id) => {
+                const t = tabs.find((x) => x.id === id);
+                if (!t) return null;
+                const on = tab === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setTab(t.id)}
+                    className="relative w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] font-semibold transition-colors"
+                    style={on ? { background: PANEL_SOFT, color: TEXT } : { color: DIM }}
+                  >
+                    {on && <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full" style={{ background: accent }} />}
+                    <Icon d={t.icon} color={on ? accent : undefined} />
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
           ))}
           <div className="mt-auto rounded-xl p-3 border" style={{ borderColor: LINE, background: PANEL }}>
             <p className="text-[11px] leading-relaxed" style={{ color: DIM }}>
@@ -680,6 +787,30 @@ export default function OsDemoApp({
                   <span className="block text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: accent }}>Open the board →</span>
                 </span>
               </button>
+
+              {/* The two moves an owner makes between jobs: send paper, make noise. */}
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                <button
+                  onClick={() => setTab('quotes')}
+                  className="rounded-2xl border p-4 text-left animate-[osIn_.5s_ease-out_.52s_both] hover:brightness-110 transition-all"
+                  style={{ background: PANEL, borderColor: LINE }}
+                >
+                  <span className="block text-[10px] uppercase tracking-[0.2em] font-bold" style={{ color: accent }}>Quote desk</span>
+                  <span className="block text-[12.5px] mt-1" style={{ color: DIM }}>
+                    Build a quote from your price book and send it in your brand.
+                  </span>
+                </button>
+                <button
+                  onClick={() => setTab('campaigns')}
+                  className="rounded-2xl border p-4 text-left animate-[osIn_.5s_ease-out_.56s_both] hover:brightness-110 transition-all"
+                  style={{ background: PANEL, borderColor: LINE }}
+                >
+                  <span className="block text-[10px] uppercase tracking-[0.2em] font-bold" style={{ color: accent }}>Campaigns</span>
+                  <span className="block text-[12.5px] mt-1" style={{ color: DIM }}>
+                    A play is running right now. See what it booked.
+                  </span>
+                </button>
+              </div>
 
               <button
                 onClick={() => setTab('assistant')}
@@ -830,6 +961,12 @@ export default function OsDemoApp({
             </div>
           )}
 
+          {tab === 'quotes' && <QuotesTab onSigned={quoteSigned} goToJobs={() => setTab('jobs')} />}
+
+          {tab === 'jobs' && <JobsTab jobs={jobs} advance={advanceJob} />}
+
+          {tab === 'campaigns' && <CampaignsTab />}
+
           {tab === 'money' && (
             <div className="max-w-3xl">
               {sectionTitle('Money', `Every finished ${preset.jobWord} becomes an invoice. Chase the late ones with one tap.`)}
@@ -859,7 +996,9 @@ export default function OsDemoApp({
                         {inv.paid ? (
                           <span className="text-[10px] uppercase tracking-[0.12em] font-bold" style={{ color: TONE.won[0] }}>Paid</span>
                         ) : (
-                          <span className="text-[10px] uppercase tracking-[0.12em] font-bold" style={{ color: TONE.hot[0] }}>{inv.age} days out</span>
+                          <span className="text-[10px] uppercase tracking-[0.12em] font-bold" style={{ color: TONE.hot[0] }}>
+                            {inv.age === 0 ? 'just sent' : `${inv.age} days out`}
+                          </span>
                         )}
                       </div>
                       {!inv.paid && (
@@ -881,6 +1020,99 @@ export default function OsDemoApp({
               )}
               <p className="text-[12px] mt-3" style={{ color: DIM }}>
                 Sample figures, drawn from the work you closed in Customers.
+              </p>
+            </div>
+          )}
+
+          {tab === 'books' && (
+            <div className="max-w-4xl">
+              {sectionTitle('Books', 'Your month at a glance: money in, money out, and what to set aside before the taxman knocks.')}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+                {stat('Money in', `$${books.income.toLocaleString()}`, 'this month', 0)}
+                {stat('Money out', `$${books.spent.toLocaleString()}`, `${books.expenses.length} expense categories`, 1)}
+                {stat('Profit', `$${books.profit.toLocaleString()}`, `${books.margin}% margin`, 2, books.profit > 0)}
+                {stat('Set aside for taxes', `$${books.taxSetAside.toLocaleString()}`, '25% of profit, tucked away', 3)}
+              </div>
+
+              <div className="grid md:grid-cols-5 gap-4 mb-5">
+                {/* Where the money went */}
+                <div className="md:col-span-3 rounded-2xl border p-5" style={{ background: PANEL, borderColor: LINE }}>
+                  <p className="text-[11px] uppercase tracking-[0.2em] font-semibold mb-4" style={{ color: DIM }}>Where it went</p>
+                  <div className="space-y-3">
+                    {books.expenses.map((e, i) => {
+                      const pct = Math.round((e.amount / books.spent) * 100);
+                      return (
+                        <div key={e.label} className="animate-[osIn_.4s_ease-out_both]" style={{ animationDelay: `${i * 50}ms` }}>
+                          <div className="flex items-baseline justify-between mb-1">
+                            <span className="text-[13px]" style={{ color: TEXT }}>{e.label}</span>
+                            <span className="font-mono text-[13px]" style={{ color: DIM }}>${e.amount.toLocaleString()} · {pct}%</span>
+                          </div>
+                          <div className="h-2 rounded-full overflow-hidden" style={{ background: PANEL_SOFT }}>
+                            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: accent }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* The tax vault + take-home */}
+                <div className="md:col-span-2 rounded-2xl border p-5 flex flex-col" style={{ background: accentSoft, borderColor: accent }}>
+                  <p className="text-[11px] uppercase tracking-[0.2em] font-semibold" style={{ color: accent }}>Tax vault</p>
+                  <p className="font-mono text-3xl font-bold mt-2" style={{ color: TEXT }}>${books.taxSetAside.toLocaleString()}</p>
+                  <p className="text-[12.5px] mt-1.5 leading-relaxed" style={{ color: DIM }}>
+                    Every time a {preset.jobWord} is paid, we skim 25% into a separate tax bucket, so April is never a surprise.
+                  </p>
+                  <div className="mt-auto pt-4 flex items-baseline justify-between border-t" style={{ borderColor: LINE }}>
+                    <span className="text-[12px]" style={{ color: DIM }}>Your take-home</span>
+                    <span className="font-mono text-lg font-bold" style={{ color: TEXT }}>${books.take.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recent ledger */}
+              <div className="rounded-2xl border overflow-hidden" style={{ background: PANEL, borderColor: LINE }}>
+                <p className="text-[11px] uppercase tracking-[0.2em] font-semibold px-5 pt-4 pb-2" style={{ color: DIM }}>Recent activity</p>
+                <div className="divide-y" style={{ borderColor: LINE }}>
+                  {books.ledger.map((t, i) => (
+                    <div key={t.id} className="flex items-center gap-3 px-5 py-3 animate-[osIn_.4s_ease-out_both]" style={{ animationDelay: `${i * 40}ms` }}>
+                      <span
+                        className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-mono text-[15px] font-bold"
+                        style={{ background: PANEL_SOFT, color: t.dir === 'in' ? TONE.won[0] : TONE.hot[0] }}
+                        aria-hidden="true"
+                      >
+                        {t.dir === 'in' ? '+' : '−'}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13.5px] font-semibold truncate" style={{ color: TEXT }}>{t.label}</p>
+                        <p className="text-[11.5px]" style={{ color: DIM }}>{t.cat} · {t.day}d ago</p>
+                      </div>
+                      <span className="font-mono text-[14px] font-bold shrink-0" style={{ color: t.dir === 'in' ? TONE.won[0] : TEXT }}>
+                        {t.dir === 'in' ? '+' : '−'}${t.amount.toLocaleString()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5 mt-4">
+                <button
+                  onClick={() => say('This month exported to PDF. In the live version it lands in your email and your accountant folder.')}
+                  className="rounded-xl px-4 py-2.5 text-[12px] font-bold uppercase tracking-[0.06em]"
+                  style={{ background: accent, color: accentInk }}
+                >
+                  Export this month
+                </button>
+                <button
+                  onClick={() => say('Sent to your accountant. Live, this shares a clean read-only P&L every month automatically.')}
+                  className="rounded-xl px-4 py-2.5 text-[12px] font-bold uppercase tracking-[0.06em] border"
+                  style={{ borderColor: LINE, color: TEXT, background: PANEL }}
+                >
+                  Send to my accountant
+                </button>
+              </div>
+              <p className="text-[12px] mt-3" style={{ color: DIM }}>
+                Sample month for a {preset.jobWord} business. Your real books sync the day we connect your invoicing and bank feed.
               </p>
             </div>
           )}
@@ -915,44 +1147,11 @@ export default function OsDemoApp({
                       </svg>
                     ))}
                   </div>
-                  <p className="text-[12px]" style={{ color: DIM }}>3 requests queued from this week&apos;s finished {preset.jobWord}s (sample)</p>
+                  <p className="text-[12px]" style={{ color: DIM }}>
+                    {3 + reviewBonus} requests queued from this week&apos;s finished {preset.jobWord}s (sample{reviewBonus > 0 ? ` + ${reviewBonus} you just finished` : ''})
+                  </p>
                 </div>
               </div>
-            </div>
-          )}
-
-          {tab === 'ads' && (
-            <div className="max-w-3xl">
-              {sectionTitle('Ad maker', 'Ready-to-run ads for Facebook and Instagram, written in your voice.')}
-              <button
-                onClick={() => void newAd()}
-                disabled={adBusy}
-                className="mb-3 rounded-xl px-4 py-2.5 text-[13px] font-bold uppercase tracking-[0.08em] transition-transform hover:-translate-y-0.5 disabled:opacity-60"
-                style={{ background: accent, color: accentInk }}
-              >
-                {adBusy ? 'Writing…' : '✦ Write me a new angle'}
-              </button>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {ads.map((ad, i) => (
-                  <div key={`${ad.headline}-${i}`} className="rounded-2xl border overflow-hidden animate-[osIn_.4s_ease-out_both]" style={{ background: PANEL, borderColor: LINE }}>
-                    <div className="p-3 flex items-center gap-2 border-b" style={{ borderColor: LINE }}>
-                      <span className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold" style={{ background: accent, color: accentInk }}>
-                        {config.business.charAt(0)}
-                      </span>
-                      <span className="text-[12px] font-semibold" style={{ color: TEXT }}>{config.business}</span>
-                      <span className="text-[10px] ml-auto" style={{ color: DIM }}>Sponsored</span>
-                    </div>
-                    <div className="p-4" style={{ background: accentSoft }}>
-                      <p className="text-lg font-bold leading-snug" style={{ color: TEXT }}>{ad.headline}</p>
-                    </div>
-                    <div className="p-3">
-                      <p className="text-[13px] leading-relaxed" style={{ color: DIM }}>{ad.body}</p>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.1em] mt-2" style={{ color: accent }}>Call now · {config.phone}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-[12px] mt-3" style={{ color: DIM }}>In the real build these post straight to your pages and every lead lands in Customers, tagged by ad.</p>
             </div>
           )}
 
@@ -1270,5 +1469,6 @@ export default function OsDemoApp({
         <DemoVoiceWidget business={config.business} call={call} label="Your receptionist. Try it" />
       </div>
     </div>
+    </OsProvider>
   );
 }

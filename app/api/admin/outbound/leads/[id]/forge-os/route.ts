@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { forgeLeadVoiceDemo, buildOsConfig, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, buildOsConfig, captureLeadBrand, ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
 
@@ -34,9 +34,13 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   const voice = await forgeLeadVoiceDemo(guard.supabase, l);
   if (voice.ok) current = voice.lead;
 
+  // Their real brand rides in from their live site (logo + theme color), so the
+  // command center opens already wearing their clothes. Fail-soft: nulls fall
+  // back to the monogram + house palette.
+  const brand = await captureLeadBrand(current.website);
   const { data: row, error: insErr } = await guard.supabase
     .from('outbound_demo_os')
-    .insert({ lead_id: current.id, business_name: current.business_name, config: buildOsConfig(current) })
+    .insert({ lead_id: current.id, business_name: current.business_name, config: { ...buildOsConfig(current), ...brand } })
     .select('id')
     .single();
   if (insErr || !row) {

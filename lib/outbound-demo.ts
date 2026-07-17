@@ -157,7 +157,77 @@ export type OsDemoConfig = {
   evidenceSource: string | null;
   websiteMode: 'none' | 'broken' | null;
   auditScore: number | null;
+  /** Their REAL logo, captured from their live site at forge time (fail-soft). */
+  logoUrl?: string | null;
+  /** Their site's declared brand color (theme-color), used when no forged site
+   *  palette exists yet. 6-digit hex. */
+  brandColor?: string | null;
 };
+
+/**
+ * Capture the lead's real brand from their live website: the best logo-ish
+ * icon (apple-touch-icon beats favicon) and the declared theme color. One
+ * fetch, hard timeout, every failure returns nulls; the demo falls back to the
+ * monogram + house palette exactly as before. Never throws.
+ */
+export async function captureLeadBrand(website: string | null | undefined): Promise<{ logoUrl: string | null; brandColor: string | null }> {
+  const none = { logoUrl: null, brandColor: null };
+  const raw = (website ?? '').trim();
+  if (!raw || /facebook\.com|instagram\.com/i.test(raw)) return none;
+  const url = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    const res = await fetch(url, {
+      redirect: 'follow',
+      signal: AbortSignal.timeout(4500),
+      headers: { 'user-agent': 'Mozilla/5.0 (compatible; MMSBrandBot/1.0)' },
+    });
+    if (!res.ok) return none;
+    const html = (await res.text()).slice(0, 400_000);
+    const base = res.url || url;
+
+    // Icon links, best first: apple-touch-icon (usually 180px art), then the
+    // largest sized icon, then any icon. og:image is skipped on purpose (it is
+    // usually a photo, and a photo in a letterhead reads as a mistake).
+    const links: { href: string; score: number }[] = [];
+    for (const m of html.matchAll(/<link\b[^>]*>/gi)) {
+      const tag = m[0];
+      const rel = tag.match(/rel=["']([^"']+)["']/i)?.[1]?.toLowerCase() ?? '';
+      if (!/icon/.test(rel)) continue;
+      const href = tag.match(/href=["']([^"']+)["']/i)?.[1];
+      if (!href || /^data:/i.test(href)) continue;
+      const size = Number(tag.match(/sizes=["'](\d+)x/i)?.[1] ?? 0);
+      const score = (rel.includes('apple') ? 1000 : 0) + size + (/\.svg(\?|$)/i.test(href) ? 500 : 0) - (/\.ico(\?|$)/i.test(href) ? 200 : 0);
+      links.push({ href, score });
+    }
+    links.sort((a, b) => b.score - a.score);
+    let logoUrl: string | null = null;
+    if (links[0]) {
+      try {
+        logoUrl = new URL(links[0].href, base).toString().slice(0, 500);
+      } catch {
+        logoUrl = null;
+      }
+    }
+
+    const theme = html.match(/<meta[^>]+name=["']theme-color["'][^>]*content=["'](#[0-9a-fA-F]{3,6})["']/i)?.[1]
+      ?? html.match(/<meta[^>]+content=["'](#[0-9a-fA-F]{3,6})["'][^>]*name=["']theme-color["']/i)?.[1];
+    let brandColor: string | null = null;
+    if (theme) {
+      let h = theme.replace('#', '');
+      if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+      // Near-white and near-black theme colors are page chrome, not a brand.
+      if (/^[0-9a-f]{6}$/i.test(h)) {
+        const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+        const spread = Math.max(r, g, b) - Math.min(r, g, b);
+        const lum = (r + g + b) / 3;
+        if (spread > 24 && lum > 24 && lum < 235) brandColor = `#${h.toLowerCase()}`;
+      }
+    }
+    return { logoUrl, brandColor };
+  } catch {
+    return none;
+  }
+}
 
 export function buildOsConfig(lead: OutboundLead): OsDemoConfig {
   const niche = (lead.niche ?? 'other') as Niche;

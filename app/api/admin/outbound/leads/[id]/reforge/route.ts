@@ -89,9 +89,14 @@ export async function POST(req: Request, { params }: { params: Params }) {
   const remapped = await remapOsConfig(l, instruction);
   if (!remapped.ok) return NextResponse.json({ error: remapped.error }, { status: 400 });
 
+  // The remap rebuilds config from the lead row, which never carried the
+  // forge-time brand capture; carry the stored logo + brand color forward or a
+  // reforge would silently strip them.
+  const { data: osRow } = await guard.supabase.from('outbound_demo_os').select('config').eq('id', l.os_demo_id).maybeSingle();
+  const prior = (osRow?.config ?? {}) as { logoUrl?: string | null; brandColor?: string | null };
   const { error: upErr } = await guard.supabase
     .from('outbound_demo_os')
-    .update({ config: remapped.config })
+    .update({ config: { ...remapped.config, logoUrl: prior.logoUrl ?? null, brandColor: prior.brandColor ?? null } })
     .eq('id', l.os_demo_id);
   if (upErr) return NextResponse.json({ error: upErr.message }, { status: 500 });
 
