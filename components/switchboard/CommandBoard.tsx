@@ -139,18 +139,28 @@ export default function CommandBoard() {
       {/* faint operations grid behind the board */}
       <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'linear-gradient(#F5B700 1px, transparent 1px), linear-gradient(90deg, #F5B700 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
 
-      {/* live status bar */}
-      <div className="relative flex items-center justify-between gap-3 mb-5">
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2.5 w-2.5">
-            {!reduced && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#3ddc84] opacity-70" />}
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#3ddc84]" />
+      {/* appliance plate + live status bar */}
+      <div className="relative flex items-center justify-between gap-3 mb-5 flex-wrap">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5" aria-hidden="true">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#E0301E] border border-black/40" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#F5B700] border border-black/40" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#3ddc84] border border-black/40" />
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#3ddc84] font-bold">Live · every location answering</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#FBF6EA]/50 font-bold hidden sm:inline">The Switchboard · Unit 001</span>
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#FBF6EA]/45 tabular-nums">
-          {answeredToday.toLocaleString()} answered this session
-        </span>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2.5 w-2.5">
+              {!reduced && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#3ddc84] opacity-70" />}
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#3ddc84]" />
+            </span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#3ddc84] font-bold">Live · every location answering</span>
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#FBF6EA]/45 tabular-nums">
+            {answeredToday.toLocaleString()} answered this session
+          </span>
+        </div>
       </div>
 
       {/* Inputs */}
@@ -205,7 +215,9 @@ export default function CommandBoard() {
           <div className="mt-5 grid gap-1.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(34px, 1fr))' }}>
             {Array.from({ length: tiles }).map((_, i) => {
               const h = heatFor(i);
-              const bg = h === 3 ? '#F5B700' : h === 2 ? 'rgba(245,183,0,.55)' : h === 1 ? 'rgba(245,183,0,.28)' : 'rgba(245,183,0,.10)';
+              // Neutral navy lifts for the cool tiles, solid mustard only when hot:
+              // translucent gold washed over ink mixes to olive-brown (banned).
+              const bg = h === 3 ? '#F5B700' : h === 2 ? '#33406B' : h === 1 ? '#1D2740' : '#121A2C';
               const isPinged = pinged === i;
               return (
                 <div
@@ -236,7 +248,7 @@ export default function CommandBoard() {
 
         {/* the quote + the live feed */}
         <div className="space-y-4">
-          <div className="rounded-xl border border-[#F5B700]/30 bg-[#0f1626] p-5">
+          <div className="rounded-xl border-2 border-[#F5B700] bg-[#0f1626] p-5">
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#F5B700] font-bold">Your Switchboard</p>
             <div className="mt-3 space-y-2.5 text-sm">
               <div className="flex justify-between"><span className="text-[#FBF6EA]/70">Per location</span><span className="font-mono">{usd(quote.perLocationUsd)}/mo</span></div>
@@ -244,7 +256,7 @@ export default function CommandBoard() {
               <div className="flex justify-between text-[#FBF6EA]/60"><span>Per year</span><span className="font-mono">{usd(quote.annualUsd)}</span></div>
               <div className="flex justify-between text-[#FBF6EA]/60 pt-2 border-t border-[#FBF6EA]/10"><span>One-time build</span><span className="font-mono">{usd(quote.buildUsd)}</span></div>
             </div>
-            <div className="mt-4 rounded-lg bg-[#F5B700]/10 border border-[#F5B700]/25 p-3">
+            <div className="mt-4 rounded-lg bg-[#1C2333] border border-[#F5B700] p-3">
               <p className="text-[13px] text-[#FBF6EA]/80 leading-snug">
                 You spend <b className="text-[#F5B700]">{usd(quote.monthlyUsd)}</b> and recover an estimated <b className="text-white">{usd(recoveredMonthly)}</b> a month.
               </p>
@@ -282,7 +294,7 @@ export default function CommandBoard() {
 
       {/* lead capture */}
       {state === 'done' ? (
-        <div className="relative mt-6 rounded-xl border-2 border-[#F5B700] bg-[#F5B700]/10 p-5 text-center">
+        <div className="relative mt-6 rounded-xl border-2 border-[#F5B700] bg-[#1C2333] p-5 text-center">
           <p className="font-display text-xl font-bold text-white">Your projection is on its way.</p>
           <p className="text-[#FBF6EA]/70 text-sm mt-1">{msg} Sarah will reach out to walk your team through the Command Board with your real locations.</p>
         </div>

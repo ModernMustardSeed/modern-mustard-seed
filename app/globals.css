@@ -3,6 +3,27 @@
 @tailwind utilities;
 
 @layer base {
+  /* Metric-compatible fallbacks (capsize-computed) so the webfont swap occupies
+     the exact same space as the final face: no layout shift while Playfair or
+     DM Sans load. These slot into the Tailwind font stacks right after the
+     webfont; the end state is identical, only the loading frame stops moving. */
+  @font-face {
+    font-family: 'Playfair Fallback';
+    src: local('Times New Roman');
+    size-adjust: 111.26%;
+    ascent-override: 97.25%;
+    descent-override: 22.56%;
+    line-gap-override: 0%;
+  }
+  @font-face {
+    font-family: 'DM Sans Fallback';
+    src: local('Arial');
+    size-adjust: 104.53%;
+    ascent-override: 94.9%;
+    descent-override: 29.66%;
+    line-gap-override: 0%;
+  }
+
   :root {
     --midnight: #080c16;
     /* Pop-art mustard. Bright, comic, bold. */

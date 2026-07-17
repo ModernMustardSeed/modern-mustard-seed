@@ -10,11 +10,11 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
-        body: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        sans: ['"DM Sans"', '"DM Sans Fallback"', 'system-ui', 'sans-serif'],
+        body: ['"DM Sans"', '"DM Sans Fallback"', 'system-ui', 'sans-serif'],
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', '"Space Mono"', 'monospace'],
-        display: ['"Playfair Display"', '"Cormorant Garamond"', 'Georgia', 'serif'],
+        display: ['"Playfair Display"', '"Playfair Fallback"', 'Georgia', 'serif'],
         oswald: ['Oswald', '"DM Sans"', 'sans-serif'],
       },
       colors: {
