@@ -5,304 +5,405 @@ import Link from 'next/link';
 import * as THREE from 'three';
 import './world.css';
 
-const clamp = (v: number, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, v));
-const smooth = (a: number, b: number, x: number) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
-
-// texture aspect (w/h) for each clay cutout
 const ASPECT: Record<string, number> = {
-  cloud: 1.333, mountains: 1.778, hq: 1.0, family: 1.406, jetski: 1.25,
-  sailboat: 1.0, garden: 1.778, pine: 0.75, seedwave: 0.818, water: 1.778,
+  mountains: 1.778, hq: 1.0, family: 1.406, jetski: 1.25, sailboat: 1.0,
+  garden: 1.778, pine: 0.75, seedwave: 0.818,
 };
 
+type Landmark = { key: string; eyebrow: string; title: string; body: string; x: number; z: number; r: number };
+const LANDMARKS: Landmark[] = [
+  { key: 'hq', eyebrow: 'Headquarters', title: 'Where your app gets built.', body: 'Apps, websites, and specialty AI tools, shipped in weeks, not months.', x: -46, z: -40, r: 24 },
+  { key: 'gardens', eyebrow: 'The Gardens', title: 'We grow things that grow themselves.', body: 'Lead engines and automations that keep working after we leave.', x: 54, z: -34, r: 24 },
+  { key: 'crew', eyebrow: 'The Crew', title: 'Run it all from your phone.', body: 'Systems so simple your business fits in your pocket. Even the dog gets a day off.', x: 0, z: -86, r: 26 },
+];
+const TOTAL_SEEDS = 12;
+
 export default function WorldExperience() {
-  const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [ready, setReady] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const joyRef = useRef<HTMLDivElement>(null);
+
   const [noWebgl, setNoWebgl] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [seeds, setSeeds] = useState(0);
+  const [landmark, setLandmark] = useState<Landmark | null>(null);
+  const [muted, setMuted] = useState(false);
+  const [showCta, setShowCta] = useState(false);
+  const [won, setWon] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [msg, setMsg] = useState('');
 
+  const api = useRef({ start: () => {}, setMuted: (_m: boolean) => {} });
+
   useEffect(() => {
-    const root = rootRef.current;
-    const canvas = canvasRef.current;
-    if (!root || !canvas) return;
+    const canvas = canvasRef.current!;
+    const root = rootRef.current!;
 
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-    } catch {
-      setNoWebgl(true);
-      return;
-    }
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    } catch { setNoWebgl(true); return; }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.6 : 2));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+    if (isTouch) root.classList.add('is-touch');
+    document.body.style.overflow = 'hidden';
+
+    let W = window.innerWidth, H = window.innerHeight;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(W, H, false);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(isMobile ? 70 : 58, 1, 0.1, 600);
-    scene.fog = new THREE.Fog(0xdfeef0, 42, 240);
+    const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 700);
+    camera.position.set(0, 24, 60);
+    scene.fog = new THREE.Fog(0xa9cfe6, 140, 500);
 
+    // optional bloom (loaded lazily so the build never depends on it)
+    let composer: { render: () => void; setSize: (w: number, h: number) => void } | null = null;
+    (async () => {
+      try {
+        const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }] = await Promise.all([
+          import('three/examples/jsm/postprocessing/EffectComposer.js' as string),
+          import('three/examples/jsm/postprocessing/RenderPass.js' as string),
+          import('three/examples/jsm/postprocessing/UnrealBloomPass.js' as string),
+          import('three/examples/jsm/postprocessing/OutputPass.js' as string),
+        ]);
+        const c = new EffectComposer(renderer);
+        c.addPass(new RenderPass(scene, camera));
+        c.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.1, 0.45, 0.95));
+        c.addPass(new OutputPass());
+        c.setSize(W, H);
+        composer = c as unknown as typeof composer;
+      } catch { composer = null; }
+    })();
+
+    // ---- textures ----
     const loader = new THREE.TextureLoader();
     const tracked: THREE.Texture[] = [];
     const tex = (name: string) => {
       const t = loader.load(`/world/${name}.png`);
       t.colorSpace = THREE.SRGBColorSpace;
       t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-      tracked.push(t);
-      return t;
+      tracked.push(t); return t;
     };
-
-    // ---- sky dome (vertical gradient, colors lerp dawn -> dusk) ----
-    const skyMat = new THREE.ShaderMaterial({
-      side: THREE.BackSide, depthWrite: false, fog: false,
-      uniforms: { top: { value: new THREE.Color('#6fb3e0') }, bottom: { value: new THREE.Color('#eaf1ea') } },
-      vertexShader: 'varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
-      fragmentShader:
-        'uniform vec3 top; uniform vec3 bottom; varying vec3 vP;' +
-        'void main(){ float h = pow(max(normalize(vP + vec3(0.0,30.0,0.0)).y, 0.0), 0.72); gl_FragColor = vec4(mix(bottom, top, h), 1.0); }',
-    });
-    const sky = new THREE.Mesh(new THREE.SphereGeometry(360, 32, 16), skyMat);
-    scene.add(sky);
-
-    const SKY_STOPS = [
-      { p: 0.0, top: '#6fb3e0', bottom: '#e9f1ea' },
-      { p: 0.32, top: '#4d9bde', bottom: '#d3e8f3' },
-      { p: 0.56, top: '#7cb4dd', bottom: '#ffedcb' },
-      { p: 0.8, top: '#eaa257', bottom: '#ffd79c' },
-      { p: 1.0, top: '#39335f', bottom: '#dd8a5c' },
-    ];
-    const cA = new THREE.Color(), cB = new THREE.Color(), cC = new THREE.Color(), cD = new THREE.Color();
-    const skyAt = (p: number) => {
-      let i = 0; while (i < SKY_STOPS.length - 2 && p > SKY_STOPS[i + 1].p) i++;
-      const a = SKY_STOPS[i], b = SKY_STOPS[i + 1];
-      const t = clamp((p - a.p) / (b.p - a.p));
-      cA.set(a.top).lerp(cB.set(b.top), t);
-      cC.set(a.bottom).lerp(cD.set(b.bottom), t);
-      (skyMat.uniforms.top.value as THREE.Color).copy(cA);
-      (skyMat.uniforms.bottom.value as THREE.Color).copy(cC);
-      (scene.fog as THREE.Fog).color.copy(cC);
-    };
-
-    // ---- helpers to build clay standees + soft sprites ----
-    const standees: { m: THREE.Mesh; base: THREE.Vector3; bobA?: number; bobS?: number; ph?: number }[] = [];
-    const sprites: { m: THREE.Mesh; base: THREE.Vector3; kind: string; sp?: number; ph?: number }[] = [];
-
     const canvasTex = (draw: (c: CanvasRenderingContext2D, s: number) => void, size = 128) => {
       const cv = document.createElement('canvas'); cv.width = cv.height = size;
-      const ctx = cv.getContext('2d')!; draw(ctx, size);
+      draw(cv.getContext('2d')!, size);
       const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; tracked.push(t); return t;
     };
-    const puffTex = canvasTex((c, s) => {
+    const glow = canvasTex((c, s) => {
       const g = c.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
-      g.addColorStop(0, 'rgba(255,255,255,0.95)'); g.addColorStop(0.5, 'rgba(255,255,255,0.5)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+      g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.35, 'rgba(255,235,150,.85)'); g.addColorStop(1, 'rgba(255,220,120,0)');
       c.fillStyle = g; c.fillRect(0, 0, s, s);
     });
-    const sunTex = canvasTex((c, s) => {
+    const puff = canvasTex((c, s) => {
       const g = c.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
-      g.addColorStop(0, 'rgba(255,250,230,1)'); g.addColorStop(0.35, 'rgba(255,232,160,0.9)'); g.addColorStop(1, 'rgba(255,220,140,0)');
+      g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(.5, 'rgba(255,255,255,.45)'); g.addColorStop(1, 'rgba(255,255,255,0)');
       c.fillStyle = g; c.fillRect(0, 0, s, s);
     });
-    const birdTex = canvasTex((c, s) => {
-      c.clearRect(0, 0, s, s); c.strokeStyle = 'rgba(40,40,50,0.85)'; c.lineWidth = s * 0.06; c.lineCap = 'round';
-      c.beginPath(); c.moveTo(s * 0.15, s * 0.55); c.quadraticCurveTo(s * 0.4, s * 0.35, s * 0.5, s * 0.55);
-      c.quadraticCurveTo(s * 0.6, s * 0.35, s * 0.85, s * 0.55); c.stroke();
+    const shadowTex = canvasTex((c, s) => {
+      const g = c.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+      g.addColorStop(0, 'rgba(0,0,0,.5)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = g; c.fillRect(0, 0, s, s);
     });
 
-    const flat = (name: string, height: number, pos: [number, number, number],
-      opts: { bill?: boolean; bob?: number; color?: string } = {}) => {
-      const t = tex(name); const w = height * (ASPECT[name] || 1);
-      const mat = new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.5, side: THREE.DoubleSide });
-      if (opts.color) mat.color = new THREE.Color(opts.color);
-      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, height), mat);
-      m.position.set(pos[0], pos[1], pos[2]);
-      scene.add(m);
-      standees.push({ m, base: m.position.clone(), bobA: opts.bob, bobS: opts.bob ? 0.6 + Math.random() * 0.5 : 0, ph: Math.random() * 6 });
-      (m as THREE.Mesh & { _bill?: boolean })._bill = opts.bill;
-      return m;
+    // ---- sky dome + sun ----
+    const skyMat = new THREE.ShaderMaterial({
+      side: THREE.BackSide, depthWrite: false, fog: false,
+      uniforms: { top: { value: new THREE.Color('#3f8fd6') }, bot: { value: new THREE.Color('#eaf3f0') } },
+      vertexShader: 'varying vec3 v; void main(){ v=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+      fragmentShader: 'uniform vec3 top; uniform vec3 bot; varying vec3 v; void main(){ float h=pow(max(normalize(v+vec3(0.,40.,0.)).y,0.0),0.7); gl_FragColor=vec4(mix(bot,top,h),1.0); }',
+    });
+    scene.add(new THREE.Mesh(new THREE.SphereGeometry(420, 32, 16), skyMat));
+
+    const sunDir = new THREE.Vector3(0.4, 0.5, -0.75).normalize();
+    const sun = new THREE.Mesh(new THREE.PlaneGeometry(48, 48),
+      new THREE.MeshBasicMaterial({ map: glow, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+    sun.position.copy(sunDir).multiplyScalar(300); sun.position.y = 170; scene.add(sun);
+
+    // ---- water (real waves in the vertex shader, soft sun streak, no dotted glare) ----
+    const waterGeo = new THREE.PlaneGeometry(560, 560, 200, 200); waterGeo.rotateX(-Math.PI / 2);
+    const waterUnif = { uT: { value: 0 }, uCam: { value: new THREE.Vector3() }, uSun: { value: sunDir.clone() } };
+    const waterMat = new THREE.ShaderMaterial({
+      uniforms: waterUnif,
+      vertexShader:
+        'uniform float uT; varying float vH; varying vec3 vW;' +
+        'float wv(vec2 p){ return sin(p.x*0.12+uT*1.1)*0.55 + cos(p.y*0.15-uT*0.9)*0.45 + sin((p.x+p.y)*0.08+uT*0.6)*0.35; }' +
+        'void main(){ vec3 q=position; float h=wv(q.xz); q.y+=h; vH=h; vec4 wp=modelMatrix*vec4(q,1.0); vW=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }',
+      fragmentShader:
+        'uniform float uT; uniform vec3 uCam; uniform vec3 uSun; varying float vH; varying vec3 vW;' +
+        'void main(){ float c=clamp(vH*0.5+0.5,0.0,1.0);' +
+        'vec3 col=mix(vec3(0.02,0.13,0.30),vec3(0.10,0.40,0.64),c);' +
+        'col+=smoothstep(0.84,1.0,c)*0.16;' +
+        'vec3 vd=normalize(uCam-vW);' +
+        'float glit=pow(max(sin(vW.x*3.1+uT*2.2)*sin(vW.z*3.7-uT*1.8),0.0),40.0)*smoothstep(0.4,0.85,c);' +
+        'col+=glit*vec3(1.0,0.97,0.85)*0.45;' +
+        'float f=pow(1.0-clamp(vd.y,0.0,1.0),4.0); col=mix(col,vec3(0.52,0.70,0.88),f*0.22);' +
+        'gl_FragColor=vec4(col,1.0); }',
+    });
+    scene.add(new THREE.Mesh(waterGeo, waterMat));
+    const waveH = (x: number, z: number, t: number) =>
+      Math.sin(x * 0.12 + t * 1.1) * 0.55 + Math.cos(z * 0.15 - t * 0.9) * 0.45 + Math.sin((x + z) * 0.08 + t * 0.6) * 0.35;
+
+    // ---- billboards (clay standees + scenery) ----
+    const scenery: THREE.Mesh[] = [];
+    const flat = (name: string, height: number, x: number, z: number, y = height / 2, bill = true) => {
+      const m = new THREE.Mesh(
+        new THREE.PlaneGeometry(height * (ASPECT[name] || 1), height),
+        new THREE.MeshBasicMaterial({ map: tex(name), transparent: true, alphaTest: 0.5, side: THREE.DoubleSide }));
+      m.position.set(x, y, z); scene.add(m); if (bill) scenery.push(m); return m;
     };
-    const softSprite = (t: THREE.Texture, size: number, pos: [number, number, number], kind: string,
-      opts: { color?: string; sp?: number; opacity?: number } = {}) => {
-      const mat = new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, fog: kind !== 'sun',
-        color: new THREE.Color(opts.color || '#ffffff'), opacity: opts.opacity ?? 1, blending: kind === 'sun' ? THREE.AdditiveBlending : THREE.NormalBlending });
-      const m = new THREE.Mesh(new THREE.PlaneGeometry(size, size), mat);
-      m.position.set(pos[0], pos[1], pos[2]); m.renderOrder = 20; scene.add(m);
-      sprites.push({ m, base: m.position.clone(), kind, sp: opts.sp, ph: Math.random() * 6 });
-      return m;
-    };
-
-    // ---- ground + water ----
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 500),
-      new THREE.MeshBasicMaterial({ color: new THREE.Color('#83a05c') }));
-    ground.rotation.x = -Math.PI / 2; ground.position.set(0, -0.2, -70); scene.add(ground);
-
-    const waterTex = tex('water'); waterTex.wrapS = waterTex.wrapT = THREE.MirroredRepeatWrapping; waterTex.repeat.set(3, 3);
-    const water = new THREE.Mesh(new THREE.PlaneGeometry(200, 90),
-      new THREE.MeshBasicMaterial({ map: waterTex, color: new THREE.Color('#8fb6d8') }));
-    water.rotation.x = -Math.PI / 2; water.position.set(0, 0.02, -34); scene.add(water);
-
-    // ---- the world (a continuous lakeshore laid out along -Z) ----
-    // mountains: far backdrop, fixed facing camera origin
-    flat('mountains', 78, [0, 24, -120]); flat('mountains', 64, [-96, 20, -128]); flat('mountains', 70, [98, 22, -132]);
-    // headquarters on the shore
-    flat('hq', 24, [-17, 12, -74], { bill: true });
-    // pines scattered on the shores + mountainsides
-    ([[-34, -78], [30, -86], [-26, -62], [40, -96], [-46, -108], [22, -112], [-14, -120], [52, -120]] as [number, number][])
-      .forEach(([x, z], i) => flat('pine', 12 + (i % 3) * 3, [x, (12 + (i % 3) * 3) / 2 - 0.2, z], { bill: true }));
-    // gardens near the path
-    flat('garden', 11, [-11, 5, -92], { bill: true }); flat('garden', 12, [15, 5.5, -98], { bill: true });
-    flat('garden', 9, [2, 4.5, -103], { bill: true });
-    // the crew on the shore (destination) + a couple of hopping sprout-kids
-    flat('family', 16, [0, 8, -113], { bill: true });
-    flat('seedwave', 7, [-9, 3.6, -107], { bill: true, bob: 1.1 });
-    flat('seedwave', 6.4, [10, 3.3, -109], { bill: true, bob: 1.3 });
-    // lake play: sailboat + jet ski, gently bobbing
-    flat('sailboat', 7.5, [19, 3.6, -30], { bill: true, bob: 0.5 });
-    const jetski = flat('jetski', 7, [-15, 2.9, -22], { bill: true, bob: 0.7 });
-
-    // ---- soft life: clouds, sun, birds, spray, smoke ----
-    const clouds: { m: THREE.Mesh; base: THREE.Vector3; sp: number }[] = [];
-    for (let i = 0; i < (isMobile ? 8 : 14); i++) {
-      const x = -70 + Math.random() * 140, y = 26 + Math.random() * 34, z = 30 - Math.random() * 110;
-      const s = 12 + Math.random() * 16;
-      const m = softSprite(puffTex, s, [x, y, z], 'cloud', { opacity: 0.85 });
-      clouds.push({ m, base: m.position.clone(), sp: 0.8 + Math.random() * 1.6 });
+    flat('hq', 26, -46, -40);
+    flat('garden', 12, 54, -34, 5); flat('garden', 10, 48, -30, 4); flat('seedwave', 8, 60, -30, 4);
+    flat('family', 17, 0, -86, 8.5);
+    flat('seedwave', 7, -9, -83, 3.6); flat('seedwave', 6.4, 10, -84, 3.3);
+    for (let i = 0; i < 22; i++) {
+      const a = (i / 22) * Math.PI * 2, R = 96 + (i % 3) * 8, hgt = 12 + (i % 4) * 3;
+      flat('pine', hgt, Math.cos(a) * R, Math.sin(a) * R - 20, hgt / 2);
     }
-    softSprite(sunTex, 120, [70, 96, -180], 'sun', { opacity: 0.95 });
-    const birds: { m: THREE.Mesh; base: THREE.Vector3; sp: number; ph: number }[] = [];
-    if (!reduce) for (let i = 0; i < (isMobile ? 3 : 6); i++) {
-      const m = softSprite(birdTex, 2.2, [-40 + Math.random() * 80, 30 + Math.random() * 18, -30 - Math.random() * 70], 'bird', { opacity: 0.9 });
-      birds.push({ m, base: m.position.clone(), sp: 3 + Math.random() * 3, ph: Math.random() * 6 });
+    for (let i = 0; i < 6; i++) { const a = (-0.5 + i / 5) * 1.7; flat('mountains', 70, Math.sin(a) * 150, -Math.cos(a) * 150 - 30, 22); }
+    flat('sailboat', 8, 34, -14, 4);
+
+    const clouds: THREE.Mesh[] = [];
+    for (let i = 0; i < 12; i++) {
+      const s = 16 + Math.random() * 20;
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(s, s * 0.62),
+        new THREE.MeshBasicMaterial({ map: puff, transparent: true, depthWrite: false, opacity: 0.9 }));
+      m.position.set(-150 + Math.random() * 300, 46 + Math.random() * 44, -150 + Math.random() * 220);
+      m.renderOrder = 2; scene.add(m); clouds.push(m);
     }
-    // jet-ski spray + chimney smoke
-    const spray = softSprite(puffTex, 6, [-15, 2.4, -20], 'spray', { opacity: 0.85 });
-    const smokes: { m: THREE.Mesh; ph: number }[] = [];
-    for (let i = 0; i < 4; i++) smokes.push({ m: softSprite(puffTex, 3.4, [-14, 20 + i * 3, -74], 'smoke', { color: '#e9e2d4', opacity: 0.5 }), ph: i * 1.5 });
 
-    // ---- camera path ----
-    const camPos = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 60, 48), new THREE.Vector3(-5, 44, 22), new THREE.Vector3(-8, 18, -6),
-      new THREE.Vector3(7, 15, -32), new THREE.Vector3(-6, 13, -54), new THREE.Vector3(4, 11, -72),
-      new THREE.Vector3(0, 10, -83), new THREE.Vector3(0, 10, -86),
-    ]);
-    const camTgt = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 36, 12), new THREE.Vector3(3, 22, -14), new THREE.Vector3(6, 6, -38),
-      new THREE.Vector3(-6, 8, -58), new THREE.Vector3(2, 6, -74), new THREE.Vector3(-2, 6, -95),
-      new THREE.Vector3(0, 6, -110), new THREE.Vector3(0, 6, -112),
-    ]);
-    const pos = new THREE.Vector3(), tgt = new THREE.Vector3();
+    // ---- collectibles ----
+    type Coin = { grp: THREE.Group; halo: THREE.Mesh; x: number; z: number; got: boolean; ph: number };
+    const coins: Coin[] = [];
+    for (let i = 0; i < TOTAL_SEEDS; i++) {
+      const a = Math.random() * Math.PI * 2, r = 14 + Math.random() * 60;
+      const x = Math.cos(a) * r, z = Math.sin(a) * r - 20;
+      const grp = new THREE.Group();
+      const seed = new THREE.Mesh(new THREE.PlaneGeometry(4 * ASPECT.seedwave, 4),
+        new THREE.MeshBasicMaterial({ map: tex('seedwave'), transparent: true, alphaTest: 0.5, side: THREE.DoubleSide }));
+      seed.position.y = 2.4;
+      const halo = new THREE.Mesh(new THREE.PlaneGeometry(5, 5),
+        new THREE.MeshBasicMaterial({ map: glow, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: new THREE.Color(0.5, 0.45, 0.24) }));
+      halo.position.y = 2.4;
+      grp.add(halo, seed); grp.position.set(x, 0, z); scene.add(grp);
+      coins.push({ grp, halo, x, z, got: false, ph: Math.random() * 6 });
+    }
 
-    // ---- overlay beats + cta ----
-    const beats = Array.from(root.querySelectorAll<HTMLElement>('.beat'));
-    const ctaEl = root.querySelector<HTMLElement>('.world-cta');
-    const formEl = root.querySelector<HTMLElement>('.world-cta form');
-    const progress = root.querySelector<HTMLElement>('.world-progress');
-    const hint = root.querySelector<HTMLElement>('.world-hint');
+    // ---- player (jet ski) + shadow + spray ----
+    const ski = flat('jetski', 6.5, 0, 0, 3, false);
+    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(9, 6),
+      new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, opacity: 0.5 }));
+    shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.06; scene.add(shadow);
 
-    // ---- sizing ----
-    const resize = () => {
-      const w = window.innerWidth, h = window.innerHeight;
-      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    type P = { m: THREE.Mesh; life: number; vx: number; vy: number; vz: number };
+    const spray: P[] = [];
+    for (let i = 0; i < 46; i++) {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4),
+        new THREE.MeshBasicMaterial({ map: puff, transparent: true, depthWrite: false, opacity: 0.9 }));
+      m.visible = false; m.renderOrder = 3; scene.add(m);
+      spray.push({ m, life: 0, vx: 0, vy: 0, vz: 0 });
+    }
+    let sprayNext = 0;
+
+    // ---- audio (procedural, unlocked on Play) ----
+    let ac: AudioContext | null = null, master: GainNode | null = null, eng: OscillatorNode | null = null,
+      engGain: GainNode | null = null, engFilt: BiquadFilterNode | null = null;
+    const initAudio = () => {
+      if (ac) return;
+      const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      ac = new AC(); master = ac.createGain(); master.gain.value = 0.5; master.connect(ac.destination);
+      const buf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+      const d = buf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      const noise = ac.createBufferSource(); noise.buffer = buf; noise.loop = true;
+      const nf = ac.createBiquadFilter(); nf.type = 'lowpass'; nf.frequency.value = 380;
+      const ng = ac.createGain(); ng.gain.value = 0.06; noise.connect(nf).connect(ng).connect(master); noise.start();
+      eng = ac.createOscillator(); eng.type = 'sawtooth'; eng.frequency.value = 60;
+      engFilt = ac.createBiquadFilter(); engFilt.type = 'lowpass'; engFilt.frequency.value = 500;
+      engGain = ac.createGain(); engGain.gain.value = 0; eng.connect(engFilt).connect(engGain).connect(master); eng.start();
     };
-    resize();
-
-    // ---- scroll -> target progress ----
-    let targetP = 0;
-    let visible = true;
-    const onScroll = () => {
-      const r = root.getBoundingClientRect();
-      targetP = clamp(-r.top / (root.offsetHeight - window.innerHeight));
-      visible = r.bottom > 0 && r.top < window.innerHeight;
+    const chime = () => {
+      if (!ac || !master) return;
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'triangle'; o.frequency.setValueAtTime(660, ac.currentTime); o.frequency.exponentialRampToValueAtTime(990, ac.currentTime + 0.12);
+      g.gain.setValueAtTime(0.0001, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.3);
+      o.connect(g).connect(master); o.start(); o.stop(ac.currentTime + 0.32);
     };
-    onScroll();
 
-    let dp = targetP;
+    // ---- input ----
+    const keys = new Set<string>();
+    const onKey = (e: KeyboardEvent, down: boolean) => {
+      const k = e.key.toLowerCase();
+      if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd'].includes(k)) {
+        if (down) keys.add(k); else keys.delete(k);
+        if (k.startsWith('arrow')) e.preventDefault();
+      }
+    };
+    const kd = (e: KeyboardEvent) => onKey(e, true), ku = (e: KeyboardEvent) => onKey(e, false);
+    window.addEventListener('keydown', kd); window.addEventListener('keyup', ku);
+
+    const joy = { x: 0, y: 0, active: false };
+    const joyEl = joyRef.current;
+    const knob = joyEl?.querySelector<HTMLElement>('.knob');
+    if (joyEl) {
+      const rad = 44;
+      const move = (cx: number, cy: number) => {
+        const r = joyEl.getBoundingClientRect(); let dx = cx - (r.left + r.width / 2), dy = cy - (r.top + r.height / 2);
+        const len = Math.hypot(dx, dy); if (len > rad) { dx = dx / len * rad; dy = dy / len * rad; }
+        joy.x = dx / rad; joy.y = dy / rad; if (knob) knob.style.transform = `translate(${dx}px,${dy}px)`;
+      };
+      joyEl.addEventListener('pointerdown', (e) => { joy.active = true; joyEl.setPointerCapture(e.pointerId); move(e.clientX, e.clientY); });
+      joyEl.addEventListener('pointermove', (e) => { if (joy.active) move(e.clientX, e.clientY); });
+      const end = () => { joy.active = false; joy.x = 0; joy.y = 0; if (knob) knob.style.transform = 'translate(0,0)'; };
+      joyEl.addEventListener('pointerup', end); joyEl.addEventListener('pointercancel', end);
+    }
+
+    // ---- game state ----
+    let playing = false;
+    let px = 0, pz = 0, heading = 0, speed = 0, roll = 0, orbit = 0;
+    let seedN = 0, activeLm: string | null = null, over = false;
+
+    api.current.start = () => { playing = true; initAudio(); };
+    api.current.setMuted = (m: boolean) => { if (master) master.gain.value = m ? 0 : 0.5; };
+
+    const fwd = new THREE.Vector3(), camGoal = new THREE.Vector3(), lookGoal = new THREE.Vector3(), cur = new THREE.Vector3(), tgtDir = new THREE.Vector3();
     const clock = new THREE.Clock();
-    let raf = 0; let first = true;
+    let raf = 0, first = true;
 
-    const tmp = new THREE.Vector3();
     const frame = () => {
       raf = requestAnimationFrame(frame);
-      dp += (targetP - dp) * (reduce ? 1 : 0.07);
-      if (!visible && Math.abs(targetP - dp) < 0.002 && !first) return; // idle when world is off-screen
-      const t = clock.getElapsedTime();
+      const dt = Math.min(clock.getDelta(), 0.05);
+      const t = clock.elapsedTime;
+      waterUnif.uT.value = t;
 
-      skyAt(dp);
-      camPos.getPoint(dp, pos); camTgt.getPoint(dp, tgt);
-      if (!reduce) { pos.x += Math.sin(t * 0.25) * 1.2; pos.y += Math.sin(t * 0.4) * 0.5; }
-      camera.position.copy(pos); camera.lookAt(tgt); sky.position.copy(pos);
+      let thr = 0, turn = 0;
+      if (keys.has('w') || keys.has('arrowup')) thr += 1;
+      if (keys.has('s') || keys.has('arrowdown')) thr -= 1;
+      if (keys.has('a') || keys.has('arrowleft')) turn -= 1;
+      if (keys.has('d') || keys.has('arrowright')) turn += 1;
+      if (joy.active) { thr += -joy.y; turn += joy.x; }
+      thr = Math.max(-1, Math.min(1, thr)); turn = Math.max(-1, Math.min(1, turn));
 
-      // standees: y-billboard toward camera + bob
-      for (const s of standees) {
-        const m = s.m as THREE.Mesh & { _bill?: boolean };
-        if (m._bill) m.rotation.y = Math.atan2(camera.position.x - s.base.x, camera.position.z - s.base.z);
-        if (s.bobA && !reduce) m.position.y = s.base.y + Math.sin(t * (s.bobS || 1) + (s.ph || 0)) * s.bobA;
-      }
-      // soft sprites always face camera
-      for (const s of sprites) s.m.quaternion.copy(camera.quaternion);
-      if (!reduce) {
-        for (const c of clouds) { c.m.position.x = c.base.x + Math.sin(t * 0.05 * c.sp + c.base.z) * 6; }
-        for (const b of birds) { b.m.position.x = b.base.x + ((t * b.sp) % 90) - 45; b.m.scale.y = 0.7 + Math.abs(Math.sin(t * 6 + b.ph)) * 0.6; }
-        waterTex.offset.x = t * 0.012; waterTex.offset.y = Math.sin(t * 0.2) * 0.01;
-        if (jetski) { jetski.position.x = -15 + Math.sin(t * 0.6) * 5; spray.position.set(jetski.position.x + 3, 2.6 + Math.sin(t * 8) * 0.2, jetski.position.z + 1); (spray.material as THREE.MeshBasicMaterial).opacity = 0.55 + Math.abs(Math.sin(t * 5)) * 0.4; }
-        for (const sm of smokes) { const u = ((t * 0.35 + sm.ph) % 4) / 4; sm.m.position.y = 20 + u * 12; (sm.m.material as THREE.MeshBasicMaterial).opacity = 0.5 * (1 - u); sm.m.scale.setScalar(1 + u * 1.6); }
+      if (playing) {
+        speed += thr * 34 * dt; speed *= (1 - 1.4 * dt);
+        speed = Math.max(-11, Math.min(31, speed));
+        heading -= turn * 1.7 * dt * Math.min(Math.abs(speed) / 4, 1) * Math.sign(speed || 1);
+        roll += ((-turn * Math.min(Math.abs(speed) / 20, 1) * 0.4) - roll) * Math.min(1, dt * 8);
+        fwd.set(Math.sin(heading), 0, -Math.cos(heading));
+        px += fwd.x * speed * dt; pz += fwd.z * speed * dt;
+        const rr = Math.hypot(px, pz); if (rr > 86) { px = px / rr * 86; pz = pz / rr * 86; speed *= 0.4; }
+      } else {
+        orbit += dt * 0.06;
       }
 
-      // overlay copy
-      for (const b of beats) {
-        const at = parseFloat(b.dataset.at || '0'), span = parseFloat(b.dataset.span || '0.1');
-        b.style.opacity = String(clamp(1 - Math.abs(dp - at) / span));
-      }
-      if (ctaEl) {
-        const o = smooth(0.86, 0.965, dp); ctaEl.style.opacity = String(o);
-        if (formEl) formEl.style.pointerEvents = o > 0.5 ? 'auto' : 'none';
-      }
-      if (progress) progress.style.width = `${dp * 100}%`;
-      if (hint) hint.style.opacity = String(clamp(1 - dp / 0.06));
+      const py = waveH(px, pz, t) + 3.2 + Math.min(Math.abs(speed) * 0.02, 0.5);
+      ski.position.set(px, py, pz);
+      ski.rotation.set(0, Math.atan2(camera.position.x - px, camera.position.z - pz), roll); // upright, yaw to camera, bank on turn
+      shadow.position.set(px, 0.08, pz);
+      const ssc = 1 + Math.min(Math.abs(speed) / 60, 0.25); shadow.scale.set(ssc, 1, 1);
 
-      renderer.render(scene, camera);
+      if (playing && Math.abs(speed) > 6 && !reduce) {
+        const p = spray[sprayNext % spray.length]; sprayNext++;
+        p.m.visible = true; p.life = 1;
+        p.m.position.set(px - fwd.x * 3 + (Math.random() - 0.5) * 2, 1.4, pz - fwd.z * 3 + (Math.random() - 0.5) * 2);
+        p.vx = -fwd.x * 2 + (Math.random() - 0.5) * 4; p.vz = -fwd.z * 2 + (Math.random() - 0.5) * 4; p.vy = 5 + Math.random() * 4;
+      }
+      for (const p of spray) {
+        if (p.life <= 0) continue;
+        p.life -= dt * 1.6; if (p.life <= 0) { p.m.visible = false; continue; }
+        p.vy -= 12 * dt; p.m.position.x += p.vx * dt; p.m.position.y += p.vy * dt; p.m.position.z += p.vz * dt;
+        p.m.quaternion.copy(camera.quaternion);
+        p.m.scale.setScalar((2 - p.life) * 1.7);
+        (p.m.material as THREE.MeshBasicMaterial).opacity = p.life * 0.45;
+      }
+
+      if (playing) {
+        fwd.set(Math.sin(heading), 0, -Math.cos(heading));
+        camGoal.set(px - fwd.x * 15, 8.5, pz - fwd.z * 15);
+        lookGoal.set(px + fwd.x * 6, 2.5, pz + fwd.z * 6);
+        camera.position.lerp(camGoal, Math.min(1, dt * 3.2));
+        camera.getWorldDirection(cur);
+        tgtDir.copy(lookGoal).sub(camera.position).normalize();
+        cur.lerp(tgtDir, Math.min(1, dt * 4));
+        camera.lookAt(cur.add(camera.position));
+      } else {
+        camera.position.set(Math.cos(orbit) * 78, 26, Math.sin(orbit) * 78 - 20);
+        camera.lookAt(0, 6, -34);
+      }
+      waterUnif.uCam.value.copy(camera.position);
+      for (const cl of clouds) cl.quaternion.copy(camera.quaternion);
+      for (const m of scenery) m.rotation.y = Math.atan2(camera.position.x - m.position.x, camera.position.z - m.position.z);
+
+      for (const c of coins) {
+        if (c.got) continue;
+        c.grp.position.y = waveH(c.x, c.z, t) + Math.sin(t * 2 + c.ph) * 0.4;
+        c.grp.rotation.y += dt * 1.2;
+        c.halo.quaternion.copy(camera.quaternion);
+        if (playing && Math.hypot(px - c.x, pz - c.z) < 5) {
+          c.got = true; c.grp.visible = false; seedN++; setSeeds(seedN); chime();
+          if (seedN >= TOTAL_SEEDS && !over) { over = true; setWon(true); setTimeout(() => setShowCta(true), 1400); }
+        }
+      }
+
+      if (playing) {
+        let near: Landmark | null = null;
+        for (const lm of LANDMARKS) if (Math.hypot(px - lm.x, pz - lm.z) < lm.r) { near = lm; break; }
+        const key = near ? near.key : null;
+        if (key !== activeLm) { activeLm = key; setLandmark(near); }
+      }
+
+      if (engGain && engFilt && eng) {
+        const sp = Math.min(Math.abs(speed) / 31, 1);
+        engGain.gain.value += ((playing ? 0.05 + sp * 0.12 : 0) - engGain.gain.value) * Math.min(1, dt * 6);
+        eng.frequency.value = 55 + sp * 90; engFilt.frequency.value = 400 + sp * 1400;
+      }
+
+      (composer ? composer.render() : renderer.render(scene, camera));
       if (first) { first = false; setReady(true); }
     };
     frame();
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', resize);
+    const onResize = () => {
+      W = window.innerWidth; H = window.innerHeight;
+      renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
+      composer?.setSize(W, H);
+    };
+    window.addEventListener('resize', onResize);
     const onVis = () => { if (document.hidden) cancelAnimationFrame(raf); else { clock.getDelta(); frame(); } };
     document.addEventListener('visibilitychange', onVis);
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', resize);
-      document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('keydown', kd); window.removeEventListener('keyup', ku);
+      window.removeEventListener('resize', onResize); document.removeEventListener('visibilitychange', onVis);
+      document.body.style.overflow = '';
+      try { eng?.stop(); ac?.close(); } catch { /* noop */ }
       scene.traverse((o) => {
-        const mesh = o as THREE.Mesh;
-        if (mesh.geometry) mesh.geometry.dispose();
-        const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
-        if (Array.isArray(mat)) mat.forEach((m) => m.dispose()); else mat?.dispose();
+        const m = o as THREE.Mesh;
+        if (m.geometry) m.geometry.dispose();
+        const mat = m.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(mat)) mat.forEach((x) => x.dispose()); else mat?.dispose();
       });
-      tracked.forEach((t) => t.dispose());
-      renderer.dispose();
+      tracked.forEach((x) => x.dispose()); renderer.dispose();
     };
   }, []);
 
+  function play() { setStarted(true); api.current.start(); }
+  function toggleMute() { const m = !muted; setMuted(m); api.current.setMuted(m); }
+
   async function plant(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.currentTarget; const data = new FormData(form);
-    const name = String(data.get('name') || '').trim();
-    const email = String(data.get('email') || '').trim();
-    const idea = String(data.get('idea') || '').trim();
+    const form = e.currentTarget, data = new FormData(form);
+    const name = String(data.get('name') || '').trim(), email = String(data.get('email') || '').trim(), idea = String(data.get('idea') || '').trim();
     if (!email.includes('@')) { setStatus('error'); setMsg('A real email, please.'); return; }
     setStatus('sending'); setMsg('');
     try {
-      const res = await fetch('/api/world/plant', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, idea }),
-      });
-      const json = await res.json().catch(() => ({}));
-      if (res.ok) { setStatus('done'); setMsg(json.message || 'It is planted. Check your inbox.'); form.reset(); }
-      else { setStatus('error'); setMsg(json.error || 'Something went sideways. Try again.'); }
+      const res = await fetch('/api/world/plant', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, idea }) });
+      const j = await res.json().catch(() => ({}));
+      if (res.ok) { setStatus('done'); setMsg(j.message || 'It is planted. Check your inbox.'); form.reset(); }
+      else { setStatus('error'); setMsg(j.error || 'Something went sideways. Try again.'); }
     } catch { setStatus('error'); setMsg('Network hiccup. Try again.'); }
   }
 
@@ -310,8 +411,7 @@ export default function WorldExperience() {
     return (
       <div className="world-fallback bg-[#0b1a28]">
         <div className="fb-hero" style={{ backgroundImage: 'url(/world/scene-hero.png)' }}>
-          <div className="text-center px-6" style={{ background: 'rgba(8,12,22,.35)', padding: '3rem 2rem', borderRadius: 20 }}>
-            <p className="font-mono text-xs tracking-[0.28em] text-gold-bright uppercase mb-4">Modern Mustard Seed</p>
+          <div className="text-center px-6" style={{ background: 'rgba(8,12,22,.4)', padding: '3rem 2rem', borderRadius: 20 }}>
             <h1 className="font-display font-extrabold text-white text-5xl md:text-7xl leading-none drop-shadow-[0_6px_30px_rgba(0,0,0,0.5)]">The Mustard Seed World</h1>
             <p className="font-sans text-white/90 text-lg mt-5 max-w-lg mx-auto">A studio on the shore of Flathead Lake that builds apps, websites, and AI tools.</p>
             <Link href="/build-queue" className="inline-block mt-7 font-mono font-bold uppercase tracking-wider text-[#161616] bg-gold-400 border-2 border-[#161616] rounded-lg px-6 py-3.5 shadow-[4px_4px_0_0_#161616]">Plant your seed 🌱</Link>
@@ -322,86 +422,73 @@ export default function WorldExperience() {
   }
 
   return (
-    <div className="world" ref={rootRef} style={{ height: '760vh' }}>
-      <div className="world-progress" />
-      <div className="world-stage">
-        <canvas ref={canvasRef} className="world-canvas" />
+    <div className="game-root" ref={rootRef}>
+      <canvas ref={canvasRef} className="game-canvas" />
+      <div className="game-vignette" />
+      <div className="game-grain" />
 
-        <div className="world-overlay">
-          <div className="beat" data-at="0.0" data-span="0.13">
-            <p className="eyebrow text-[11px] md:text-xs text-white/85 font-bold uppercase mb-5">Modern Mustard Seed</p>
-            <h1 className="font-display font-extrabold text-white leading-[0.95] tracking-tight text-[15vw] md:text-[8.5rem]">
-              The Mustard<br />Seed World
-            </h1>
-            <p className="lead font-sans text-white/90 text-lg md:text-2xl mt-6 max-w-xl mx-auto">
-              Fly into the little studio on the shore of Flathead Lake.
-            </p>
-          </div>
-
-          <div className="beat" data-at="0.32" data-span="0.1">
-            <p className="eyebrow text-[11px] text-gold-bright font-bold uppercase mb-4">The Lake</p>
-            <h2 className="font-display font-extrabold text-white leading-[1.02] text-[9vw] md:text-6xl">We work where it feels like play.</h2>
-            <p className="lead font-sans text-white/90 text-base md:text-xl mt-5 max-w-lg mx-auto">Big builds, handled from a jet ski. The best studios make the hard stuff look easy.</p>
-          </div>
-
-          <div className="beat" data-at="0.55" data-span="0.09">
-            <p className="eyebrow text-[11px] text-gold-bright font-bold uppercase mb-4">Headquarters</p>
-            <h2 className="font-display font-extrabold text-white leading-[1.02] text-[9vw] md:text-6xl">Where your app gets built.</h2>
-            <p className="lead font-sans text-white/90 text-base md:text-xl mt-5 max-w-lg mx-auto">Apps, websites, and specialty AI tools. Shipped in weeks, not months, from a cabin with a rooftop garden.</p>
-            <div className="flex flex-wrap gap-2.5 mt-6 justify-center">
-              {['Apps', 'Websites', 'AI Tools'].map((c) => (
-                <span key={c} className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#161616] bg-gold-bright border-2 border-[#161616] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#161616]">{c}</span>
-              ))}
-            </div>
-          </div>
-
-          <div className="beat" data-at="0.72" data-span="0.08">
-            <p className="eyebrow text-[11px] text-gold-bright font-bold uppercase mb-4">The Gardens</p>
-            <h2 className="font-display font-extrabold text-white leading-[1.02] text-[9vw] md:text-6xl">We grow things that grow themselves.</h2>
-            <p className="lead font-sans text-white/90 text-base md:text-xl mt-5 max-w-lg mx-auto">Lead engines, automations, and tools that keep working after we leave. Plant once, harvest for years.</p>
-          </div>
-
-          <div className="beat" data-at="0.84" data-span="0.07">
-            <p className="eyebrow text-[11px] text-gold-bright font-bold uppercase mb-4">The Crew</p>
-            <h2 className="font-display font-extrabold text-white leading-[1.02] text-[9vw] md:text-6xl">Run the whole thing from your phone.</h2>
-            <p className="lead font-sans text-white/90 text-base md:text-xl mt-5 max-w-lg mx-auto">Systems so simple your business fits in your pocket. Even the dog gets a day off.</p>
+      <div className="hud" style={{ opacity: started ? 1 : 0, transition: 'opacity .6s' }}>
+        <div className="hud-top">
+          <Link href="/" className="hud-brand"><img src="/mascot.png" alt="" /> Modern Mustard Seed</Link>
+          <div className="hud-right">
+            <button className="hud-chip" style={{ cursor: 'pointer', background: '#F5B700', color: '#161616', border: '2px solid #161616', fontFamily: '"JetBrains Mono",monospace', textTransform: 'uppercase', letterSpacing: '.05em' }} onClick={() => setShowCta(true)}>🌱 Plant your seed</button>
+            <button className="hud-btn" onClick={toggleMute} aria-label="Toggle sound">{muted ? '🔇' : '🔊'}</button>
           </div>
         </div>
+        <div className="objective">{won ? 'You did it. Now plant your own.' : `Collect the mustard seeds  ·  ${seeds}/${TOTAL_SEEDS}`}</div>
+        <div className="hud-seeds"><span style={{ fontSize: 26 }}>🌱</span><span className="seed-count">{seeds}<small>/{TOTAL_SEEDS}</small></span></div>
 
-        {/* CTA */}
-        <div className="world-cta">
-          <div className="world-cta-inner">
-            <p className="eyebrow font-mono text-[11px] text-gold-bright font-bold uppercase tracking-[0.28em] mb-3 text-center">Your turn</p>
-            <h2 className="font-display font-extrabold text-white leading-[1.0] text-[13vw] md:text-7xl text-center drop-shadow-[0_6px_34px_rgba(0,0,0,0.5)]">Plant your seed.</h2>
-            <p className="lead font-sans text-white/90 text-base md:text-lg mt-4 mb-7 text-center drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">Tell us what you want to grow. Sarah reads every one and usually replies the same day.</p>
-
-            {status === 'done' ? (
-              <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-7 text-center pointer-events-auto">
-                <div className="text-4xl mb-2">🌱</div>
-                <p className="font-display font-extrabold text-2xl text-[#161616]">It is planted.</p>
-                <p className="font-sans text-[#3a3a3a] mt-1">{msg}</p>
-                <Link href="/work" className="inline-block mt-4 font-mono text-xs font-bold uppercase tracking-wider text-pop-blue underline underline-offset-4">See what we have grown →</Link>
-              </div>
-            ) : (
-              <form onSubmit={plant} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 md:p-7 text-left">
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <input name="name" placeholder="Your name" className="font-sans w-full rounded-lg border-2 border-[#161616] px-4 py-3 text-[#161616] placeholder-[#8a8a8a] focus:outline-none focus:ring-2 focus:ring-gold-400" />
-                  <input name="email" type="email" required placeholder="you@business.com" className="font-sans w-full rounded-lg border-2 border-[#161616] px-4 py-3 text-[#161616] placeholder-[#8a8a8a] focus:outline-none focus:ring-2 focus:ring-gold-400" />
-                </div>
-                <input name="idea" placeholder="What do you want to grow?" className="font-sans w-full mt-3 rounded-lg border-2 border-[#161616] px-4 py-3 text-[#161616] placeholder-[#8a8a8a] focus:outline-none focus:ring-2 focus:ring-gold-400" />
-                <button type="submit" disabled={status === 'sending'} className="mt-4 w-full font-mono font-bold uppercase tracking-wider text-[#161616] bg-gold-400 border-2 border-[#161616] rounded-lg px-5 py-3.5 shadow-[4px_4px_0_0_#161616] transition-transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60">
-                  {status === 'sending' ? 'Planting…' : 'Plant it 🌱'}
-                </button>
-                {status === 'error' && <p className="font-sans text-pop-red text-sm mt-3">{msg}</p>}
-                <p className="font-sans text-[13px] text-[#5a5a5a] mt-4">Ready to go all in? <Link href="/build-queue" className="text-pop-blue font-semibold underline underline-offset-2">Start a full project →</Link></p>
-              </form>
-            )}
-          </div>
+        <div className={`landmark${landmark ? ' show' : ''}`}>
+          {landmark && (<>
+            <div className="lm-eyebrow">{landmark.eyebrow}</div>
+            <h3>{landmark.title}</h3>
+            <p>{landmark.body}</p>
+          </>)}
         </div>
 
-        <div className="world-hint"><span>SCROLL TO FLY ↓</span></div>
-        {!ready && <div className="world-loading" style={{ opacity: ready ? 0 : 1 }}>SHAPING THE CLAY…</div>}
+        <div className="controls-hint"><b>W A S D</b> / arrows to drive</div>
+        <div className="joystick" ref={joyRef}><div className="knob" /></div>
       </div>
+
+      <div className={`title-card${started ? ' hide' : ''}`}>
+        <div className="tc-eyebrow">Modern Mustard Seed</div>
+        <h1>The Mustard<br />Seed World</h1>
+        <p className="tc-sub">Take the wheel and explore our little studio on the shore of Flathead Lake.</p>
+        <button className="play-btn" onClick={play} disabled={!ready}>{ready ? '▶  Enter the world' : 'Loading…'}</button>
+        <div className="tc-controls">Drive with <b>W A S D</b> or arrows · collect the seeds</div>
+      </div>
+
+      <div className={`cta-panel${showCta ? ' show' : ''}`}>
+        <div className="cta-card">
+          <button className="hud-btn" style={{ position: 'absolute', top: -8, right: -8, zIndex: 2 }} onClick={() => setShowCta(false)} aria-label="Close">✕</button>
+          <p className="font-mono text-[11px] text-gold-bright font-bold uppercase tracking-[0.28em] mb-3 text-center">Your turn</p>
+          <h2 className="font-display font-extrabold text-white leading-[1.0] text-4xl md:text-6xl text-center drop-shadow-[0_6px_34px_rgba(0,0,0,0.5)]">Plant your seed.</h2>
+          <p className="font-sans text-white/90 text-base mt-3 mb-6 text-center">Tell us what you want to grow. Sarah reads every one and usually replies the same day.</p>
+          {status === 'done' ? (
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-7 text-center">
+              <div className="text-4xl mb-2">🌱</div>
+              <p className="font-display font-extrabold text-2xl text-[#161616]">It is planted.</p>
+              <p className="font-sans text-[#3a3a3a] mt-1">{msg}</p>
+              <Link href="/work" className="inline-block mt-4 font-mono text-xs font-bold uppercase tracking-wider text-pop-blue underline underline-offset-4">See what we have grown →</Link>
+            </div>
+          ) : (
+            <form onSubmit={plant} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 md:p-7 text-left">
+              <div className="grid sm:grid-cols-2 gap-3">
+                <input name="name" placeholder="Your name" className="font-sans w-full rounded-lg border-2 border-[#161616] px-4 py-3 text-[#161616] placeholder-[#8a8a8a] focus:outline-none focus:ring-2 focus:ring-gold-400" />
+                <input name="email" type="email" required placeholder="you@business.com" className="font-sans w-full rounded-lg border-2 border-[#161616] px-4 py-3 text-[#161616] placeholder-[#8a8a8a] focus:outline-none focus:ring-2 focus:ring-gold-400" />
+              </div>
+              <input name="idea" placeholder="What do you want to grow?" className="font-sans w-full mt-3 rounded-lg border-2 border-[#161616] px-4 py-3 text-[#161616] placeholder-[#8a8a8a] focus:outline-none focus:ring-2 focus:ring-gold-400" />
+              <button type="submit" disabled={status === 'sending'} className="mt-4 w-full font-mono font-bold uppercase tracking-wider text-[#161616] bg-gold-400 border-2 border-[#161616] rounded-lg px-5 py-3.5 shadow-[4px_4px_0_0_#161616] transition-transform hover:-translate-y-0.5 disabled:opacity-60">
+                {status === 'sending' ? 'Planting…' : 'Plant it 🌱'}
+              </button>
+              {status === 'error' && <p className="font-sans text-pop-red text-sm mt-3">{msg}</p>}
+              <p className="font-sans text-[13px] text-[#5a5a5a] mt-4">Ready to go all in? <Link href="/build-queue" className="text-pop-blue font-semibold underline underline-offset-2">Start a full project →</Link></p>
+            </form>
+          )}
+        </div>
+      </div>
+
+      {!ready && <div className="tc-loading">SHAPING THE CLAY…</div>}
     </div>
   );
 }
