@@ -58,7 +58,7 @@ export default function WorldExperience() {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 700);
     camera.position.set(0, 24, 60);
-    scene.fog = new THREE.Fog(0xa9cfe6, 140, 500);
+    scene.fog = new THREE.Fog(0xe7c49a, 120, 470); // warm golden-hour haze
 
     // optional bloom (loaded lazily so the build never depends on it)
     let composer: { render: () => void; setSize: (w: number, h: number) => void } | null = null;
@@ -72,7 +72,7 @@ export default function WorldExperience() {
         ]);
         const c = new EffectComposer(renderer);
         c.addPass(new RenderPass(scene, camera));
-        c.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.1, 0.45, 0.95));
+        c.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.07, 0.4, 0.92));
         c.addPass(new OutputPass());
         c.setSize(W, H);
         composer = c as unknown as typeof composer;
@@ -112,40 +112,52 @@ export default function WorldExperience() {
     // ---- sky dome + sun ----
     const skyMat = new THREE.ShaderMaterial({
       side: THREE.BackSide, depthWrite: false, fog: false,
-      uniforms: { top: { value: new THREE.Color('#3f8fd6') }, bot: { value: new THREE.Color('#eaf3f0') } },
+      uniforms: { top: { value: new THREE.Color('#38538c') }, mid: { value: new THREE.Color('#e79a6a') }, bot: { value: new THREE.Color('#ffd79a') } },
       vertexShader: 'varying vec3 v; void main(){ v=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
-      fragmentShader: 'uniform vec3 top; uniform vec3 bot; varying vec3 v; void main(){ float h=pow(max(normalize(v+vec3(0.,40.,0.)).y,0.0),0.7); gl_FragColor=vec4(mix(bot,top,h),1.0); }',
+      fragmentShader: 'uniform vec3 top; uniform vec3 mid; uniform vec3 bot; varying vec3 v; void main(){ float h=max(normalize(v+vec3(0.,35.,0.)).y,0.0); vec3 c=h<0.28?mix(bot,mid,h/0.28):mix(mid,top,pow((h-0.28)/0.72,0.6)); gl_FragColor=vec4(c,1.0); }',
     });
     scene.add(new THREE.Mesh(new THREE.SphereGeometry(420, 32, 16), skyMat));
 
-    const sunDir = new THREE.Vector3(0.4, 0.5, -0.75).normalize();
-    const sun = new THREE.Mesh(new THREE.PlaneGeometry(48, 48),
-      new THREE.MeshBasicMaterial({ map: glow, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
-    sun.position.copy(sunDir).multiplyScalar(300); sun.position.y = 170; scene.add(sun);
+    // low, warm golden-hour sun
+    const sunDir = new THREE.Vector3(0.5, 0.14, -0.85).normalize();
+    const sun = new THREE.Mesh(new THREE.PlaneGeometry(96, 96),
+      new THREE.MeshBasicMaterial({ map: glow, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: new THREE.Color(1.0, 0.78, 0.5) }));
+    sun.position.copy(sunDir).multiplyScalar(340); scene.add(sun);
 
-    // ---- water (real waves in the vertex shader, soft sun streak, no dotted glare) ----
-    const waterGeo = new THREE.PlaneGeometry(560, 560, 200, 200); waterGeo.rotateX(-Math.PI / 2);
-    const waterUnif = { uT: { value: 0 }, uCam: { value: new THREE.Vector3() }, uSun: { value: sunDir.clone() } };
-    const waterMat = new THREE.ShaderMaterial({
-      uniforms: waterUnif,
-      vertexShader:
-        'uniform float uT; varying float vH; varying vec3 vW;' +
-        'float wv(vec2 p){ return sin(p.x*0.12+uT*1.1)*0.55 + cos(p.y*0.15-uT*0.9)*0.45 + sin((p.x+p.y)*0.08+uT*0.6)*0.35; }' +
-        'void main(){ vec3 q=position; float h=wv(q.xz); q.y+=h; vH=h; vec4 wp=modelMatrix*vec4(q,1.0); vW=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }',
-      fragmentShader:
-        'uniform float uT; uniform vec3 uCam; uniform vec3 uSun; varying float vH; varying vec3 vW;' +
-        'void main(){ float c=clamp(vH*0.5+0.5,0.0,1.0);' +
-        'vec3 col=mix(vec3(0.02,0.13,0.30),vec3(0.10,0.40,0.64),c);' +
-        'col+=smoothstep(0.84,1.0,c)*0.16;' +
-        'vec3 vd=normalize(uCam-vW);' +
-        'float glit=pow(max(sin(vW.x*3.1+uT*2.2)*sin(vW.z*3.7-uT*1.8),0.0),40.0)*smoothstep(0.4,0.85,c);' +
-        'col+=glit*vec3(1.0,0.97,0.85)*0.45;' +
-        'float f=pow(1.0-clamp(vd.y,0.0,1.0),4.0); col=mix(col,vec3(0.52,0.70,0.88),f*0.22);' +
-        'gl_FragColor=vec4(col,1.0); }',
-    });
-    scene.add(new THREE.Mesh(waterGeo, waterMat));
-    const waveH = (x: number, z: number, t: number) =>
-      Math.sin(x * 0.12 + t * 1.1) * 0.55 + Math.cos(z * 0.15 - t * 0.9) * 0.45 + Math.sin((x + z) * 0.08 + t * 0.6) * 0.35;
+    // ---- water: three.js Water (planar reflections) + a procedural ripple normal map ----
+    const normalTex = (() => {
+      const s = 256, cv = document.createElement('canvas'); cv.width = cv.height = s;
+      const ctx = cv.getContext('2d')!; const img = ctx.createImageData(s, s);
+      const Hf = (x: number, y: number) => {
+        const fx = x / s * Math.PI * 2, fy = y / s * Math.PI * 2;
+        return Math.sin(fx * 3) * 0.5 + Math.cos(fy * 4) * 0.4 + Math.sin((fx + fy) * 2 + 1.0) * 0.3 + Math.sin(fx * 6 - fy * 5) * 0.2;
+      };
+      for (let y = 0; y < s; y++) for (let x = 0; x < s; x++) {
+        const nx = Hf((x - 1 + s) % s, y) - Hf((x + 1) % s, y), ny = Hf(x, (y - 1 + s) % s) - Hf(x, (y + 1) % s);
+        const len = Math.hypot(nx, ny, 1); const i = (y * s + x) * 4;
+        img.data[i] = (nx / len * 0.5 + 0.5) * 255; img.data[i + 1] = (ny / len * 0.5 + 0.5) * 255; img.data[i + 2] = (1 / len * 0.5 + 0.5) * 255; img.data[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      const t = new THREE.CanvasTexture(cv); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.NoColorSpace; tracked.push(t); return t;
+    })();
+    let placeholder: THREE.Mesh | null = new THREE.Mesh(new THREE.PlaneGeometry(620, 620),
+      new THREE.MeshBasicMaterial({ color: new THREE.Color('#123a4a') }));
+    placeholder.rotation.x = -Math.PI / 2; scene.add(placeholder);
+    let waterTime: { value: number } | null = null;
+    (async () => {
+      try {
+        const { Water } = await import('three/examples/jsm/objects/Water.js' as string);
+        const w = new Water(new THREE.PlaneGeometry(620, 620), {
+          textureWidth: isTouch ? 256 : 512, textureHeight: isTouch ? 256 : 512,
+          waterNormals: normalTex, sunDirection: sunDir.clone(),
+          sunColor: 0xcf9a52, waterColor: 0x123c4e, distortionScale: 2.6, fog: true,
+        });
+        w.rotation.x = -Math.PI / 2;
+        if (placeholder) { scene.remove(placeholder); placeholder.geometry.dispose(); (placeholder.material as THREE.Material).dispose(); placeholder = null; }
+        scene.add(w); waterTime = w.material.uniforms['time'];
+      } catch { /* keep flat placeholder */ }
+    })();
+    const surf = (t: number) => Math.sin(t * 1.4) * 0.13; // gentle bob on the (visually flat) water
 
     // ---- billboards (clay standees + scenery) ----
     const scenery: THREE.Mesh[] = [];
@@ -276,7 +288,7 @@ export default function WorldExperience() {
       raf = requestAnimationFrame(frame);
       const dt = Math.min(clock.getDelta(), 0.05);
       const t = clock.elapsedTime;
-      waterUnif.uT.value = t;
+      if (waterTime) waterTime.value += dt * 0.55;
 
       let thr = 0, turn = 0;
       if (keys.has('w') || keys.has('arrowup')) thr += 1;
@@ -298,7 +310,7 @@ export default function WorldExperience() {
         orbit += dt * 0.06;
       }
 
-      const py = waveH(px, pz, t) + 3.2 + Math.min(Math.abs(speed) * 0.02, 0.5);
+      const py = 3.0 + surf(t) + Math.min(Math.abs(speed) * 0.02, 0.5);
       ski.position.set(px, py, pz);
       ski.rotation.set(0, Math.atan2(camera.position.x - px, camera.position.z - pz), roll); // upright, yaw to camera, bank on turn
       shadow.position.set(px, 0.08, pz);
@@ -332,13 +344,12 @@ export default function WorldExperience() {
         camera.position.set(Math.cos(orbit) * 78, 26, Math.sin(orbit) * 78 - 20);
         camera.lookAt(0, 6, -34);
       }
-      waterUnif.uCam.value.copy(camera.position);
       for (const cl of clouds) cl.quaternion.copy(camera.quaternion);
       for (const m of scenery) m.rotation.y = Math.atan2(camera.position.x - m.position.x, camera.position.z - m.position.z);
 
       for (const c of coins) {
         if (c.got) continue;
-        c.grp.position.y = waveH(c.x, c.z, t) + Math.sin(t * 2 + c.ph) * 0.4;
+        c.grp.position.y = surf(t) + Math.sin(t * 2 + c.ph) * 0.4;
         c.grp.rotation.y += dt * 1.2;
         c.halo.quaternion.copy(camera.quaternion);
         if (playing && Math.hypot(px - c.x, pz - c.z) < 5) {
@@ -425,6 +436,7 @@ export default function WorldExperience() {
     <div className="game-root" ref={rootRef}>
       <canvas ref={canvasRef} className="game-canvas" />
       <div className="game-vignette" />
+      <div className="game-warm" />
       <div className="game-grain" />
 
       <div className="hud" style={{ opacity: started ? 1 : 0, transition: 'opacity .6s' }}>
