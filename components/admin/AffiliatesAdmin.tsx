@@ -37,6 +37,33 @@ type QaPending = {
   partner: { name: string | null; email: string; code: string | null; approved: number; lift: number } | null;
 };
 
+type FlywheelPartner = {
+  id: string;
+  name: string | null;
+  email: string;
+  code: string | null;
+  canForge: boolean;
+  mints: number;
+  hubOpens: number;
+  checkouts: number;
+  installs: number;
+  mrrCents: number;
+  activated: boolean;
+};
+type Flywheel = {
+  totals: {
+    recruited: number;
+    activated: number;
+    mints: number;
+    hubOpens: number;
+    checkouts: number;
+    installs: number;
+    mrrCents: number;
+    repMints: number;
+  };
+  partners: FlywheelPartner[];
+};
+
 const money = (c: number) => `$${Math.round(c / 100).toLocaleString('en-US')}`;
 
 export default function AffiliatesAdmin() {
@@ -52,6 +79,7 @@ export default function AffiliatesAdmin() {
   const [buildFor, setBuildFor] = useState<string | null>(null);
   const [bform, setBform] = useState({ fee: '', client: '', payable: false, notify: true, rate: 0.1 });
   const [qa, setQa] = useState<QaPending[]>([]);
+  const [fly, setFly] = useState<Flywheel | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -63,6 +91,13 @@ export default function AffiliatesAdmin() {
       else setError(json.error ?? 'Failed to load');
     } catch { setError('Network error'); }
     finally { setLoading(false); }
+
+    // Partner Flywheel telemetry (best effort; the table must load regardless).
+    try {
+      const flr = await fetch('/api/admin/partners/flywheel');
+      const flj = await flr.json();
+      setFly(flr.ok && flj.totals ? (flj as Flywheel) : null);
+    } catch { /* ignore */ }
 
     // Forge QA strip (best effort; the table must load regardless).
     try {
@@ -265,6 +300,88 @@ export default function AffiliatesAdmin() {
         {error && <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-6"><p className="text-[#E0301E] text-sm font-body">{error}</p></div>}
 
         {msg && <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-4 mb-6"><p className="text-[#161616] text-sm font-body">{msg}</p></div>}
+
+        {/* The Partner Flywheel: the whole engine in one read, at the top. */}
+        {fly && (() => {
+          const t = fly.totals;
+          const stages = [
+            { label: 'Recruited', value: t.recruited },
+            { label: 'Activated', value: t.activated },
+            { label: 'Mints', value: t.mints },
+            { label: 'Hub Opens', value: t.hubOpens },
+            { label: 'Checkouts', value: t.checkouts },
+            { label: 'Installs', value: t.installs },
+          ];
+          const maxStage = Math.max(1, ...stages.map((s) => s.value));
+          return (
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-8">
+              <div className="flex items-baseline justify-between gap-3 flex-wrap mb-1">
+                <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">The Partner Flywheel</h2>
+                {t.repMints > 0 && (
+                  <span className="text-[#161616]/50 font-mono text-[10px] uppercase tracking-[0.15em]">
+                    {t.repMints.toLocaleString('en-US')} team-minted (not a partner)
+                  </span>
+                )}
+              </div>
+              <p className="text-[#3A3733] font-body text-sm mb-4">
+                Recruited to activated to mints to hub opens to checkouts to installs to recurring revenue. Mid-funnel counts partner-minted suites only; installs and MRR are real paid orders credited to a partner&apos;s code.
+              </p>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
+                {stages.map((s) => (
+                  <div key={s.label} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[3px_3px_0_0_#161616] p-3.5 flex flex-col">
+                    <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono">{s.label}</div>
+                    <div className="font-sans text-2xl font-semibold text-[#161616] mt-1 leading-none">{s.value.toLocaleString('en-US')}</div>
+                    <div className="mt-3 h-1.5 rounded-full bg-[#161616]/10 overflow-hidden">
+                      <div className="h-full bg-[#161616] rounded-full" style={{ width: `${Math.max(s.value > 0 ? 6 : 0, Math.round((s.value / maxStage) * 100))}%` }} />
+                    </div>
+                  </div>
+                ))}
+                <div className="bg-[#FFF8E6] border-2 border-[#161616] rounded-2xl shadow-[3px_3px_0_0_#161616] p-3.5 flex flex-col">
+                  <div className="text-[9px] uppercase tracking-[0.25em] text-[#161616]/50 font-mono">MRR</div>
+                  <div className="font-sans text-2xl font-semibold text-[#161616] mt-1 leading-none">{money(t.mrrCents)}</div>
+                  <div className="mt-3 text-[9px] uppercase tracking-[0.18em] text-[#161616]/40 font-mono">Attributed / mo</div>
+                </div>
+              </div>
+
+              {fly.partners.length === 0 ? (
+                <p className="text-[#161616]/60 font-body text-sm italic">No partners have the forge lit yet. Light a partner&apos;s forge below and their funnel lands here.</p>
+              ) : (
+                <div className="overflow-x-auto -mx-1 px-1">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-[#161616]/15">
+                        {['Partner', 'Code', 'Mints', 'Hub Opens', 'Checkouts', 'Installs', 'MRR'].map((h, i) => (
+                          <th key={i} className={`text-[9px] uppercase tracking-[0.2em] text-[#E0301E] font-mono font-medium px-3 py-2.5 ${i < 2 ? 'text-left' : 'text-right'}`}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fly.partners.map((p) => (
+                        <tr key={p.id} className="border-b border-[#161616]/10 last:border-b-0">
+                          <td className="px-3 py-3">
+                            <p className="text-[#161616] font-body flex items-center gap-2">
+                              {p.name ?? p.email}
+                              {p.canForge && <span className="inline-block bg-[#F5B700] border border-[#161616] text-[#161616] text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded">Lit</span>}
+                              {p.activated && <span className="inline-block bg-emerald-100 border border-emerald-700/40 text-emerald-800 text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded">Active</span>}
+                            </p>
+                            <p className="text-[#161616]/60 text-xs">{p.email}</p>
+                          </td>
+                          <td className="px-3 py-3"><span className="font-mono text-[#E0301E] text-xs">{p.code ?? '—'}</span></td>
+                          <td className="px-3 py-3 text-right font-mono text-xs text-[#161616] font-semibold">{p.mints.toLocaleString('en-US')}</td>
+                          <td className="px-3 py-3 text-right font-mono text-xs text-[#3A3733]">{p.hubOpens.toLocaleString('en-US')}</td>
+                          <td className="px-3 py-3 text-right font-mono text-xs text-[#3A3733]">{p.checkouts.toLocaleString('en-US')}</td>
+                          <td className="px-3 py-3 text-right font-mono text-xs text-[#161616] font-semibold">{p.installs.toLocaleString('en-US')}</td>
+                          <td className="px-3 py-3 text-right font-mono text-xs text-emerald-700 font-semibold">{money(p.mrrCents)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Forge QA strip: a partner's first three mints wait for a human eye. */}
         {qa.length > 0 && (
