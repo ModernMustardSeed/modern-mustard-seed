@@ -39,6 +39,7 @@ export default function FrontDeskHero() {
   const [play, setPlay] = useState<PlayState>('idle');
   const [idea, setIdea] = useState('');
   const [headlineThing, setHeadlineThing] = useState<string | null>(null);
+  const [intentCta, setIntentCta] = useState<{ label: string; href: string } | null>(null);
   const [replyText, setReplyText] = useState('');
   const [email, setEmail] = useState('');
   const [emailErr, setEmailErr] = useState<string | null>(null);
@@ -52,7 +53,10 @@ export default function FrontDeskHero() {
       setPhase('terminal');
       return;
     }
-    const t = setTimeout(() => setPhase('terminal'), 1600);
+    // On phones the terminal starts below the fold, so the attract pause
+    // just delays the page's main interaction. Cut it to a beat.
+    const small = window.matchMedia('(max-width: 767px)').matches;
+    const t = setTimeout(() => setPhase('terminal'), small ? 600 : 1600);
     return () => clearTimeout(t);
   }, []);
 
@@ -65,6 +69,10 @@ export default function FrontDeskHero() {
   // ── The dot field (same engine as /mustard-mode) ────────────────────
   useEffect(() => {
     if (reduced) return;
+    // The field is a cursor instrument; on touch it is ambient-only and the
+    // static halftone underneath carries the texture. Skip the RAF loop and
+    // save the battery.
+    if (window.matchMedia('(pointer: coarse)').matches) return;
     const canvas = canvasRef.current;
     const wrap = wrapRef.current;
     if (!canvas || !wrap) return;
@@ -138,7 +146,7 @@ export default function FrontDeskHero() {
         ctx.fill();
       }
       ctx.globalAlpha = 1;
-      raf = requestAnimationFrame(draw);
+      if (running) raf = requestAnimationFrame(draw);
     };
 
     const onMove = (e: MouseEvent) => {
@@ -148,12 +156,28 @@ export default function FrontDeskHero() {
     };
     const onLeave = () => { mouse.x = -9999; mouse.y = -9999; };
 
+    // Pause the loop entirely while the hero is scrolled out of view.
+    let running = true;
+    const vis = new IntersectionObserver((entries) => {
+      const on = entries.some((e) => e.isIntersecting);
+      if (on && !running) {
+        running = true;
+        raf = requestAnimationFrame(draw);
+      } else if (!on && running) {
+        running = false;
+        cancelAnimationFrame(raf);
+      }
+    });
+    vis.observe(wrap);
+
     build();
     raf = requestAnimationFrame(draw);
     window.addEventListener('resize', build);
     wrap.addEventListener('mousemove', onMove);
     wrap.addEventListener('mouseleave', onLeave);
     return () => {
+      running = false;
+      vis.disconnect();
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', build);
       wrap.removeEventListener('mousemove', onMove);
@@ -186,6 +210,7 @@ export default function FrontDeskHero() {
     const thing = ideaPhrase(a);
     setPlay('typing');
     setHeadlineThing(intent.headline.replace('{thing}', thing));
+    setIntentCta(intent.cta ?? null);
     track('front_desk_played', { intent: intent.key });
     setTimeout(() => {
       setPlay('scoped');
@@ -237,10 +262,10 @@ export default function FrontDeskHero() {
       <div className="absolute inset-0 halftone-bg opacity-60" aria-hidden />
       {!reduced && <canvas ref={canvasRef} className="absolute inset-0" aria-hidden />}
 
-      <div className="relative max-w-6xl mx-auto px-6 pt-28 pb-16 md:pt-32 md:pb-24 min-h-[92vh] flex flex-col justify-center lg:grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_430px] lg:items-center lg:gap-12">
+      <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-16 md:pt-32 md:pb-24 min-h-[92vh] flex flex-col justify-center lg:grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_430px] lg:items-center lg:gap-12">
         <div>
         {/* Logo lockup with mascot: mobile, centered above the headline */}
-        <div className="lg:hidden relative w-[230px] sm:w-[280px] mx-auto mb-8">
+        <div className="lg:hidden relative w-[170px] sm:w-[240px] mx-auto mb-7">
           <div
             aria-hidden="true"
             className="absolute -inset-10 pointer-events-none"
@@ -270,10 +295,10 @@ export default function FrontDeskHero() {
           </span>
         </div>
 
+        {/* One size for both states: the old font-size swap reflowed the whole
+            column the moment a visitor pressed Enter. */}
         <h1
-          className={`font-display italic font-extrabold text-[#161616] leading-[0.98] tracking-tight mt-6 max-w-4xl ${
-            headlineThing ? 'text-3xl md:text-4xl xl:text-5xl' : 'text-4xl sm:text-5xl md:text-6xl xl:text-7xl'
-          }`}
+          className="font-display italic font-extrabold text-[#161616] leading-[0.98] tracking-tight mt-6 max-w-4xl text-4xl sm:text-5xl md:text-6xl xl:text-7xl"
           aria-live="polite"
         >
           {headlineThing ? (
@@ -318,7 +343,7 @@ export default function FrontDeskHero() {
                 <span className="text-[#FFDD55]">[MODERN MUSTARD SEED]</span>
                 <span className="text-[#5C7188]"> // the front desk is open</span>
               </div>
-              <div className="mt-1 text-[#7aa2ff]">TYPE YOUR IDEA. Mr. Mustard scopes it on the spot.</div>
+              <div className="mt-1 text-[#7aa2ff]">PLANT YOUR IDEA. Mr. Mustard scopes it on the spot.</div>
 
               {play === 'idle' || play === 'typing' ? (
                 <form
@@ -332,12 +357,12 @@ export default function FrontDeskHero() {
                     placeholder="a booking app for my dog grooming shop"
                     maxLength={300}
                     aria-label="What do you want built?"
-                    className="flex-1 bg-transparent outline-none text-white placeholder:text-[#5C7188]/70 caret-[#F5B700]"
+                    className="flex-1 bg-transparent outline-none text-base sm:text-sm text-white placeholder:text-[#5C7188]/70 caret-[#F5B700]"
                   />
                   <button
                     type="submit"
                     disabled={idea.trim().length < 3 || play === 'typing'}
-                    className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#F5B700] text-[#161616] border border-[#161616] px-3 py-1.5 disabled:opacity-40 hover:translate-y-[1px] transition-transform"
+                    className="min-h-[44px] font-mono font-bold text-[11px] uppercase tracking-wider bg-[#F5B700] text-[#161616] border border-[#161616] px-3 py-1.5 disabled:opacity-40 hover:translate-y-[1px] transition-transform"
                   >
                     Enter
                   </button>
@@ -361,20 +386,33 @@ export default function FrontDeskHero() {
                 <div className="mt-4">
                   {play === 'routed' && (
                     <>
-                      <div className="flex flex-wrap gap-3">
+                      <div className="flex flex-wrap items-center gap-3">
+                        {intentCta && (
+                          <Link
+                            href={intentCta.href}
+                            onClick={() => track('front_desk_route', { route: 'tool' })}
+                            className="min-h-[44px] inline-flex items-center font-sans font-bold bg-[#F5B700] text-[#161616] border-2 border-[#161616] shadow-[4px_4px_0_0_#F5B700] px-5 py-2.5 text-sm hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#F5B700] transition-all"
+                          >
+                            {intentCta.label} →
+                          </Link>
+                        )}
                         <Link
                           href={buildHref}
                           onClick={() => track('front_desk_route', { route: 'build' })}
-                          className="font-sans font-bold bg-[#F5B700] text-[#161616] border-2 border-[#161616] shadow-[4px_4px_0_0_#F5B700] px-5 py-2.5 text-sm hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#F5B700] transition-all"
+                          className={`min-h-[44px] inline-flex items-center font-sans font-bold border-2 px-5 py-2.5 text-sm transition-all ${
+                            intentCta
+                              ? 'bg-transparent text-white border-white/40 hover:border-[#FFDD55] hover:text-[#FFDD55]'
+                              : 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[4px_4px_0_0_#F5B700] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#F5B700]'
+                          }`}
                         >
                           Build it for me →
                         </Link>
                         <Link
                           href="/mustard-mode"
                           onClick={() => track('front_desk_route', { route: 'learn' })}
-                          className="font-sans font-bold bg-transparent text-white border-2 border-white/40 px-5 py-2.5 text-sm hover:border-[#FFDD55] hover:text-[#FFDD55] transition-colors"
+                          className="min-h-[44px] inline-flex items-center font-mono font-bold text-[11px] uppercase tracking-wider text-[#FFDD55] underline underline-offset-4 hover:text-white transition-colors"
                         >
-                          Teach me: MUSTARD MODE
+                          Teach me instead
                         </Link>
                       </div>
                       <form
@@ -384,18 +422,18 @@ export default function FrontDeskHero() {
                         <p className="text-[#d7dbe6]/80 text-[12px]">
                           Or leave your email and Sarah sends a personal scope for this exact idea. No spam, no drip sequence.
                         </p>
-                        <div className="mt-2 flex items-center gap-2">
+                        <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2">
                           <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="you@yourbusiness.com"
                             aria-label="Email for your personal scope"
-                            className="flex-1 bg-[#080C16] border border-white/20 px-3 py-2 outline-none text-white placeholder:text-[#5C7188]/70 focus:border-[#F5B700]"
+                            className="flex-1 bg-[#080C16] border border-white/20 px-3 py-2.5 outline-none text-base sm:text-sm text-white placeholder:text-[#5C7188]/70 focus:border-[#F5B700]"
                           />
                           <button
                             type="submit"
-                            className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#F5B700] text-[#161616] border border-[#161616] px-3 py-2"
+                            className="min-h-[44px] w-full sm:w-auto whitespace-nowrap font-mono font-bold text-[11px] uppercase tracking-wider bg-[#F5B700] text-[#161616] border border-[#161616] px-4 py-2"
                           >
                             Send my scope
                           </button>
@@ -425,13 +463,22 @@ export default function FrontDeskHero() {
               )}
             </div>
           </div>
-          <p className="font-mono text-[10px] text-[#161616]/50 mt-2 tracking-wide">
-            FIXED SCOPE. FIXED QUOTE. YOU OWN THE CODE, THE DEPLOY, AND EVERY ACCOUNT.
-          </p>
+          {/* Proof strip: the trust line, legible instead of 10px at 50%. */}
+          <div className="mt-3 flex flex-wrap gap-2">
+            {['40+ products shipped', 'Fixed quote before work starts', 'You own the code'].map((chip) => (
+              <span
+                key={chip}
+                className="font-mono text-[10px] uppercase tracking-[0.12em] font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-full px-3 py-1.5 shadow-[2px_2px_0_0_#161616]"
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* CTAs */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-3.5">
+        {/* CTAs. Once the terminal has routed, it carries its own next steps,
+            so on phones this duplicate pair steps aside. */}
+        <div className={`mt-8 flex-col sm:flex-row gap-3.5 ${play === 'idle' || play === 'typing' ? 'flex' : 'hidden sm:flex'}`}>
           <Link
             href="/build-queue"
             className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:shadow-[6px_6px_0_0_#161616] hover:-translate-y-0.5 transition-all"
@@ -439,19 +486,27 @@ export default function FrontDeskHero() {
             Join the Build Queue
           </Link>
           <Link
-            href="/work"
+            href="/book"
             className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:shadow-[6px_6px_0_0_#161616] hover:-translate-y-0.5 transition-all"
           >
-            See the Work
+            Book a Free Call
           </Link>
         </div>
 
-        <Link
-          href="/voice-agents"
-          className="mt-5 self-start inline-flex items-center gap-2 font-mono text-[11px] font-bold text-[#161616]/70 hover:text-[#E0301E] transition-colors"
-        >
-          <span aria-hidden="true">◐</span> Our AI voice agents speak 100+ languages. Hear one →
-        </Link>
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-1">
+          <Link
+            href="/work"
+            className="inline-flex items-center min-h-[44px] font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#161616]/70 hover:text-[#E0301E] transition-colors"
+          >
+            See the Work →
+          </Link>
+          <Link
+            href="/voice-agents"
+            className="inline-flex items-center gap-2 min-h-[44px] font-mono text-[11px] font-bold text-[#161616]/70 hover:text-[#E0301E] transition-colors"
+          >
+            <span aria-hidden="true">◐</span> Our AI voice agents speak 100+ languages. Hear one →
+          </Link>
+        </div>
         </div>
 
         {/* Logo lockup with mascot: desktop, right column with sunburst glow */}

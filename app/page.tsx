@@ -1,5 +1,6 @@
 import FrontDeskHero from '@/components/home/FrontDeskHero';
 import HomeTicker from '@/components/home/HomeTicker';
+import HomeVine from '@/components/home/HomeVine';
 import ProofBand from '@/components/home/ProofBand';
 import BuildCabinet from '@/components/home/BuildCabinet';
 import ThreeDoors from '@/components/home/ThreeDoors';
@@ -46,7 +47,7 @@ const offerJsonLd = {
   areaServed: 'Worldwide',
 };
 
-const homeFaq = faqJsonLd([
+const HOME_FAQ = [
   {
     q: 'What does Modern Mustard Seed do?',
     a: 'Modern Mustard Seed is a one-person product studio that builds custom apps, websites, and specialty AI tools for businesses. Founded by Sarah Scarano, it ships fixed-scope, fixed-timeline products in weeks, not months. Now booking new builds.',
@@ -91,7 +92,13 @@ const homeFaq = faqJsonLd([
     q: 'Do I need to know AI to work with Modern Mustard Seed?',
     a: 'No. The studio is built for everyone, from a small business owner who needs their first real website to a founder shipping a custom AI tool. The discovery call translates your goal into a scoped build.',
   },
-]);
+  {
+    q: 'Why is it called Modern Mustard Seed?',
+    a: 'The name comes from the mustard seed parable in Matthew 13: the smallest seed in the field grows into a tree the birds perch in. Every build here starts seed-sized, and that is the plan.',
+  },
+];
+
+const homeFaq = faqJsonLd(HOME_FAQ);
 
 /**
  * Homepage: six beats, Studio Arcade direction (approved 2026-07-02).
@@ -104,13 +111,40 @@ export default function HomePage() {
       <JsonLd data={[homeJsonLd, offerJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} />
       <FrontDeskHero />
 
-      <main className="relative bg-[#FBF6EA] text-[#161616]">
+      {/* The Growing Vine draws down this whole container as you scroll:
+          seed under the hero, a leaf pair at each data-vine-stop boundary,
+          two perched birds at the close (Matthew 13:32). */}
+      <main id="mm-vine-host" className="relative bg-[#FBF6EA] text-[#161616]">
+        <HomeVine />
         <HomeTicker />
-        <ProofBand />
-        <BuildCabinet />
+        <div data-vine-stop><ProofBand /></div>
+        <div data-vine-stop><BuildCabinet /></div>
         <HomeTicker reverse />
-        <ThreeDoors />
-        <TheClose />
+        <div data-vine-stop><ThreeDoors /></div>
+        <div data-vine-stop>
+          <section className="relative bg-[#F5F0E8] border-t-2 border-[#161616] py-20 md:py-28">
+            <div className="relative max-w-3xl mx-auto px-6">
+              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase text-center">
+                Straight answers // No sales call required
+              </p>
+              <h2 className="font-display italic font-extrabold text-4xl md:text-5xl text-[#161616] mt-3 leading-[1.02] text-center">
+                Questions, answered plainly.
+              </h2>
+              <div className="mt-10 space-y-4">
+                {HOME_FAQ.map((f) => (
+                  <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white p-5 open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
+                    <summary className="font-display text-lg font-bold text-[#161616] cursor-pointer list-none flex items-center justify-between gap-4">
+                      {f.q}
+                      <span className="flex-shrink-0 text-[#E0301E] transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                    </summary>
+                    <p className="mt-3 text-[#5c554a] leading-relaxed font-body">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
+        <div data-vine-stop><TheClose /></div>
       </main>
     </>
   );

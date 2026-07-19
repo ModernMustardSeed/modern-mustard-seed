@@ -30,7 +30,12 @@ export default function Footer() {
         { label: 'Voice Agents', href: '/voice-agents' },
         { label: 'The Work', href: '/work' },
         { label: 'What You Get', href: '/playbook' },
-        { label: 'Book a Call', href: '/book' },
+      ],
+    },
+    {
+      title: 'Get Started',
+      links: [
+        { label: 'Book a Free Call', href: '/book' },
         { label: 'Join the Build Queue', href: '/build-queue' },
         { label: 'AI-Proof Your Business', href: '/ai-proof' },
         { label: 'Partner Program', href: '/partners' },
@@ -69,16 +74,16 @@ export default function Footer() {
           </h2>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/book"
+              href="/build-queue"
               className="rounded-full border-2 border-[#161616] bg-[#161616] text-[#F5B700] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,.3)] transition-all hover:-translate-y-0.5"
             >
-              Get on the book
+              Join the Build Queue
             </Link>
             <Link
-              href="/build-queue"
+              href="/book"
               className="rounded-full border-2 border-[#161616] bg-white text-[#161616] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              Join the Build Queue
+              Book a Free Call
             </Link>
           </div>
         </div>
@@ -102,10 +107,13 @@ export default function Footer() {
           <p className="mt-3 text-center font-mono text-[9px] uppercase tracking-[0.4em] font-bold text-[#8f6600]">
             Matthew 13:31-32
           </p>
+          <p className="mt-3 text-center font-body text-[13px] text-[#5c554a]">
+            Every build here starts seed-sized. That is the plan.
+          </p>
         </div>
 
         {/* Link columns */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 max-w-6xl mx-auto mb-12 pb-12 border-b-2 border-dashed border-[#161616]/25">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-6xl mx-auto mb-12 pb-12 border-b-2 border-dashed border-[#161616]/25">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
               <span className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#161616] bg-[#F5B700]">

@@ -24,7 +24,7 @@ const DOORS = [
     pitch:
       'Learn to run Claude like the studio does. A personal AI coach, four tracks, 28 missions, and the exact prompts. Your first coaching session is free, right on the page.',
     points: ['Mr. Mustard, your live AI coach', 'Code, Design, Cowork, Ideate', 'From $197 once, lifetime access'],
-    cta: 'Play your free credit',
+    cta: 'Try a free coaching session',
     href: '/mustard-mode',
     featured: false,
   },
@@ -131,7 +131,7 @@ export default function ThreeDoors() {
               href="/book"
               className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
             >
-              Book a free call
+              Book a Free Call
             </Link>
           </div>
         </div>

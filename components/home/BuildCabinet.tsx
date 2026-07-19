@@ -152,9 +152,9 @@ export default function BuildCabinet() {
 
       <div className="max-w-6xl mx-auto px-6 mt-8 flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
         <p className="font-sans text-sm text-[#161616]/70 max-w-xl">
-          <span className="font-bold text-[#161616]">It is yours, fully.</span> The repo, the
-          database, the deploy, the prompts, and every account transfer to you on launch day. No
-          lock-in, no retainer required.
+          <span className="font-bold text-[#161616]">It is yours, fully.</span> You bring the seed,
+          we build the tree, and on launch day we hand it over: the repo, the database, the deploy,
+          the prompts, every account. No lock-in, no retainer required.
         </p>
         <Link
           href="/work"

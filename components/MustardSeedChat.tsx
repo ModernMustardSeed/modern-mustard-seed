@@ -338,11 +338,13 @@ export default function MustardSeedChat() {
         aria-label={open ? 'Close Mr. Mustard' : 'Talk to Mr. Mustard'}
         className="fixed bottom-6 right-6 z-[80] group"
       >
-        <div className="relative flex items-center gap-2 pl-2 pr-4 py-2 rounded-full bg-[#F5B700] border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] group-hover:shadow-[6px_6px_0_0_#161616] group-hover:-translate-y-0.5 transition-all">
+        {/* Compact mascot-only bubble below sm: the full label used to span 62%
+            of a phone viewport and sit on the hero terminal's email capture. */}
+        <div className="relative flex items-center gap-2 p-1.5 sm:pl-2 sm:pr-4 sm:py-2 rounded-full bg-[#F5B700] border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] group-hover:shadow-[6px_6px_0_0_#161616] group-hover:-translate-y-0.5 transition-all">
           <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white border-2 border-[#161616] overflow-hidden">
             <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
           </span>
-          <span className="font-sans text-sm md:text-base text-[#161616] font-extrabold tracking-tight">
+          <span className="hidden sm:inline font-sans text-sm md:text-base text-[#161616] font-extrabold tracking-tight">
             Talk to Mr. Mustard now
           </span>
         </div>

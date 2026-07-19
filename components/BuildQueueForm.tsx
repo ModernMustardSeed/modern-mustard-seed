@@ -120,10 +120,9 @@ export default function BuildQueueForm() {
 
       <div>
         <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2">
-          Business or idea name
+          Business or idea name (optional)
         </label>
         <input
-          required
           type="text"
           value={form.businessName}
           onChange={(e) => update('businessName', e.target.value)}
@@ -146,13 +145,15 @@ export default function BuildQueueForm() {
         />
       </div>
 
+      <p className="border-t-2 border-dashed border-[#161616]/20 pt-5 text-[12px] font-body text-[#5c554a]">
+        Optional, but 30 more seconds here helps Sarah prep your scope before she replies.
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2">
-            Current revenue range
+            Current revenue range (optional)
           </label>
           <select
-            required
             value={form.revenueRange}
             onChange={(e) => update('revenueRange', e.target.value)}
             className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow"
@@ -167,10 +168,9 @@ export default function BuildQueueForm() {
         </div>
         <div>
           <label className="text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2">
-            Timeline urgency
+            Timeline urgency (optional)
           </label>
           <select
-            required
             value={form.timeline}
             onChange={(e) => update('timeline', e.target.value)}
             className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow"

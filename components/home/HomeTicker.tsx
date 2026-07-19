@@ -5,6 +5,7 @@ export default function HomeTicker({ reverse = false }: { reverse?: boolean }) {
     <div className="relative overflow-hidden border-y-2 border-[#161616] bg-[#F5B700] py-2.5 select-none" aria-hidden>
       <style>{`
         @keyframes mm-home-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .mm-home-marquee:hover { animation-play-state: paused; }
         @media (prefers-reduced-motion: reduce) { .mm-home-marquee { animation: none !important; } }
       `}</style>
       <div

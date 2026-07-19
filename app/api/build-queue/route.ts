@@ -68,13 +68,13 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, email, businessName, ideaDescription, revenueRange, timeline } = body as Record<string, string>;
 
-    if (!name || !email || !businessName || !ideaDescription || !revenueRange || !timeline) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
+    if (!name || !email || !ideaDescription) {
+      return NextResponse.json({ error: 'Name, email, and the idea are required' }, { status: 400 });
     }
 
     const firstName = name.split(' ')[0];
-    const revenueLabel = REVENUE_LABELS[revenueRange] ?? revenueRange;
-    const timelineLabel = TIMELINE_LABELS[timeline] ?? timeline;
+    const revenueLabel = revenueRange ? (REVENUE_LABELS[revenueRange] ?? revenueRange) : 'Not shared';
+    const timelineLabel = timeline ? (TIMELINE_LABELS[timeline] ?? timeline) : 'Not shared';
     const playbook = pickPlaybook(ideaDescription);
 
     await insertLead({
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
       from: 'Build Queue <sarah@modernmustardseed.com>',
       to: OWNER_NOTIFY_TO,
       replyTo: email,
-      subject: `Build Queue: ${businessName} (${timelineLabel})`,
+      subject: `Build Queue: ${businessName || name} (${timelineLabel})`,
       html: leadNotification({
         type: 'Build Queue',
         name,

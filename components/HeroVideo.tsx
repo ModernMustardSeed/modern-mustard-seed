@@ -17,8 +17,19 @@ export default function HeroVideo() {
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    // The video autoplays on page load, so a real "view" is the film band
-    // actually scrolled into the viewport, not playback starting.
+    // The film is preload="none" so the page load never pays for it (the
+    // source is ~2.5MB, the old eager 1080p was 22MB). Start fetching and
+    // playing only when the band approaches the viewport.
+    const loader = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        loader.disconnect();
+        v.play().catch(() => {});
+      },
+      { rootMargin: '800px 0px' }
+    );
+    loader.observe(v);
+    // A real "view" is the film band actually on screen, not fetch starting.
     const io = new IntersectionObserver(
       (entries) => {
         if (viewed.current || !entries.some((e) => e.isIntersecting)) return;
@@ -61,15 +72,14 @@ export default function HeroVideo() {
       <video
         ref={videoRef}
         className="w-full aspect-video object-cover block"
-        autoPlay
         muted
         loop
         playsInline
-        preload="auto"
+        preload="none"
         aria-hidden="true"
         style={{ backgroundColor: '#161616' }}
       >
-        <source src="/video/night-shift-16x9.mp4" type="video/mp4" />
+        <source src="/video/night-shift-960.mp4" type="video/mp4" />
       </video>
 
       <button

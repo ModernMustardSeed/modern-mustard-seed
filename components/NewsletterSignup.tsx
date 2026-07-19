@@ -42,7 +42,7 @@ export default function NewsletterSignup({
   };
 
   const inputCls =
-    'flex-1 bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body placeholder-[#161616]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow';
+    'flex-1 bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-base sm:text-sm text-[#161616] font-body placeholder-[#161616]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow';
   const btnCls =
     'px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-lg border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-50';
 
