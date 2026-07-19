@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Forge Under Your Flag — Modern Mustard Seed Partner Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: letter; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { background: #FBF6EA; color: #161616; }
+  body { font-family: 'DM Sans', system-ui, sans-serif; }
+
+  .sheet {
+    position: relative;
+    width: 8.5in;
+    height: 10.85in;
+    padding: 0.62in 0.7in;
+    background: #FBF6EA;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+  }
+  .sheet:last-child { page-break-after: auto; }
+
+  /* Pop-art motifs */
+  .halftone {
+    position: absolute;
+    background-image: radial-gradient(#161616 1.5px, transparent 1.6px);
+    background-size: 13px 13px;
+    opacity: 0.10;
+    pointer-events: none;
+  }
+  .blot {
+    position: absolute;
+    border-radius: 999px;
+    border: 2.5px solid #161616;
+    pointer-events: none;
+  }
+
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 8pt; letter-spacing: 0.34em; text-transform: uppercase; color: #E0301E; font-weight: 700; }
+  .eyebrow.ink { color: #161616; }
+  .kicker-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .kicker-row .r { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; letter-spacing: 0.28em; text-transform: uppercase; color: #161616; opacity: 0.55; }
+
+  h1 { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; letter-spacing: -0.015em; line-height: 0.98; }
+  h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; letter-spacing: -0.01em; line-height: 1.02; }
+  h3 { font-family: 'DM Sans', sans-serif; font-weight: 700; }
+  p { font-weight: 400; color: #262320; }
+  .lede { font-weight: 400; color: #3A3733; }
+
+  .rule { height: 5px; background: #F5B700; border: 2px solid #161616; border-radius: 3px; }
+
+  .card { background: #FFFFFF; border: 2px solid #161616; border-radius: 15px; box-shadow: 4px 4px 0 0 #161616; }
+  .card.mustard { background: #F5B700; }
+  .card.ink { background: #161616; color: #FBF6EA; }
+
+  .tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 7pt; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; border: 2px solid #161616; border-radius: 999px; padding: 3px 9px; }
+
+  .mono-label { font-family: 'JetBrains Mono', monospace; font-size: 8pt; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; }
+  .num { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; line-height: 0.9; }
+
+  a { color: #1E50C8; text-decoration: none; }
+  .foot { margin-top: auto; font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; letter-spacing: 0.12em; color: #5a544d; border-top: 2px solid #161616; padding-top: 9px; display: flex; justify-content: space-between; }
+
+  /* ---------- COVER (page 1) ---------- */
+  .cover-title { font-size: 58pt; margin-top: 0.28in; }
+  .cover-sub { font-size: 13pt; line-height: 1.5; max-width: 5.7in; margin-top: 0.2in; }
+  .ticket {
+    margin-top: 0.34in;
+    border: 2.5px solid #161616;
+    border-radius: 16px;
+    background: #F5B700;
+    box-shadow: 6px 6px 0 0 #161616;
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+  }
+  .ticket .stub {
+    width: 1.55in;
+    border-right: 2.5px dashed #161616;
+    background: #161616;
+    color: #F5B700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.12in;
+  }
+  .ticket .body { padding: 0.2in 0.26in; flex: 1; }
+
+  /* ---------- STEP CARDS ---------- */
+  .steps { display: flex; flex-direction: column; gap: 0.16in; }
+  .step { display: flex; gap: 0.22in; align-items: stretch; }
+  .step .idx {
+    width: 0.9in; flex-shrink: 0;
+    background: #161616; color: #F5B700;
+    border: 2px solid #161616; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 4px 4px 0 0 #161616;
+  }
+  .step .idx span { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 34pt; }
+  .step .txt { flex: 1; padding: 0.16in 0.2in; }
+
+  /* ---------- LADDER ---------- */
+  .ladder { display: flex; flex-direction: column; gap: 0.14in; }
+  .rung { display: flex; align-items: center; gap: 0.24in; padding: 0.16in 0.22in; }
+  .rung .rate { width: 1.85in; flex-shrink: 0; }
+  .rung .rate .n { font-size: 32pt; }
+  .divider-dot { width: 7px; height: 7px; border-radius: 999px; background: #161616; }
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1: COVER ============ -->
+<section class="sheet">
+  <div class="halftone" style="top:-0.3in; right:-0.3in; width:3.6in; height:3.6in;"></div>
+  <div class="blot" style="bottom:1.1in; left:-0.7in; width:2.2in; height:2.2in; border-color:#E0301E; opacity:0.25;"></div>
+
+  <div class="kicker-row" style="position:relative;">
+    <span class="eyebrow">Modern Mustard Seed</span>
+    <span class="r">The Partner Program</span>
+  </div>
+
+  <div style="position:relative; margin-top:1.5in;">
+    <span class="tag" style="background:#FFFFFF;">Forge Under Your Flag</span>
+    <h1 class="cover-title">Put your name on<br>the whole build.</h1>
+    <p class="lede cover-sub">
+      A finished AI demo suite, for a business you already know, presented by you. You type in one business. A full suite appears with your flag on it. You forward three lines. When they buy, the commission is yours, and it tracks itself.
+    </p>
+
+    <div class="ticket">
+      <div class="stub">
+        <span class="mono-label" style="color:#F5B700; font-size:7pt; letter-spacing:0.16em;">Partner Forge</span>
+        <span class="num" style="font-size:30pt; color:#F5B700; margin-top:6px;">01</span>
+        <span class="mono-label" style="color:#F5B700; opacity:0.7; font-size:6.5pt; letter-spacing:0.14em; margin-top:6px;">Admit One Build</span>
+      </div>
+      <div class="body">
+        <h3 style="font-size:13pt; margin-bottom:4px;">One mint. One warm business. One ledger.</h3>
+        <p style="font-size:10.5pt; line-height:1.4;">
+          The forge is the same machine our team uses to build a live demo before a sales call. In your hands, it turns a name you trust into a suite that sells itself, with your commission stamped into every checkout from the first click.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>modernmustardseed.com/partners</span>
+    <span>A field guide for partners · v1.0</span>
+  </div>
+</section>
+
+<!-- ============ PAGE 2: WHAT IT IS + HOW A MINT WORKS ============ -->
+<section class="sheet">
+  <div class="halftone" style="bottom:-0.3in; left:-0.3in; width:3.2in; height:3.2in;"></div>
+
+  <div class="kicker-row">
+    <span class="eyebrow">What the Partner Forge is</span>
+    <span class="r">02</span>
+  </div>
+  <div class="rule" style="margin-top:10px; width:2.2in;"></div>
+
+  <h2 style="font-size:28pt; margin-top:0.22in;">You bring the trust.<br>We do the whole build.</h2>
+  <p class="lede" style="font-size:11.5pt; line-height:1.5; margin-top:0.14in; max-width:6.1in;">
+    Most partner programs hand you a link and wish you luck. The Partner Forge hands you a finished product. You already know business owners who are losing calls, running an ugly website, or drowning in busywork. Now you can hand each of them a real, working demo built for their business, with your name on the front, in about two minutes of your time.
+  </p>
+
+  <div style="margin-top:0.28in;">
+    <span class="mono-label" style="color:#E0301E;">How a mint works</span>
+  </div>
+
+  <div class="steps" style="margin-top:0.16in;">
+    <div class="step">
+      <div class="idx"><span>1</span></div>
+      <div class="card txt">
+        <h3 style="font-size:12.5pt; margin-bottom:3px;">Type in a business you know</h3>
+        <p style="font-size:10.5pt; line-height:1.42;">Their name, a phone number, and their website or Facebook page. That is the whole form. The forge builds only from their real, public information, so you are never inventing anything.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx"><span>2</span></div>
+      <div class="card txt">
+        <h3 style="font-size:12.5pt; margin-bottom:3px;">A finished suite appears, under your flag</h3>
+        <p style="font-size:10.5pt; line-height:1.42;">An AI receptionist that answers as their business, a website designed from scratch, and a command center demo. The hub reads "Presented by you, with Modern Mustard Seed." Your referral code is stamped into every checkout on it.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx"><span>3</span></div>
+      <div class="card txt">
+        <h3 style="font-size:12.5pt; margin-bottom:3px;">Forward three lines</h3>
+        <p style="font-size:10.5pt; line-height:1.42;">We email you the link and a short, honest hand-off you can send in your own words. They see it real, not as a pitch. If they buy, the commission lands on your ledger automatically. You never touch billing.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mustard" style="margin-top:0.24in; padding:0.18in 0.24in;">
+    <span class="mono-label" style="font-size:7.5pt;">See one that is already live</span>
+    <p style="font-size:10.5pt; line-height:1.4; margin-top:4px; font-weight:500;">
+      A real suite the forge minted, start to finish (receptionist, website, and command center):<br>
+      <span style="font-family:'JetBrains Mono',monospace; font-size:9.5pt; font-weight:700;">modernmustardseed.com/demo/hub/6cda89d9-1803-4247-9d00-e58d8938f6a6</span>
+    </p>
+  </div>
+
+  <div class="foot">
+    <span>Forge Under Your Flag</span>
+    <span>Modern Mustard Seed</span>
+  </div>
+</section>
+
+<!-- ============ PAGE 3: WHAT YOU EARN + GUARDRAILS ============ -->
+<section class="sheet">
+  <div class="halftone" style="top:-0.3in; right:-0.3in; width:3.2in; height:3.2in;"></div>
+
+  <div class="kicker-row">
+    <span class="eyebrow">What you earn, and the honest limits</span>
+    <span class="r">03</span>
+  </div>
+  <div class="rule" style="margin-top:10px; width:2.2in;"></div>
+
+  <h2 style="font-size:27pt; margin-top:0.2in;">One structure. The same for everyone.</h2>
+  <p class="lede" style="font-size:11pt; line-height:1.48; margin-top:0.1in; max-width:6.1in;">
+    Our prices are fixed and public, and so is what you earn. No tiers you have to negotiate, no fine print that quietly shrinks your cut.
+  </p>
+
+  <div class="ladder" style="margin-top:0.2in;">
+    <div class="card rung">
+      <div class="rate"><div class="num n" style="color:#1E50C8;">50%</div><div class="mono-label" style="font-size:7pt; opacity:0.6; margin-top:2px;">On every product</div></div>
+      <span class="divider-dot"></span>
+      <p style="font-size:10.5pt; line-height:1.4;">Every playbook, bundle, and program pays half the moment someone buys. A $197 bundle pays you about $98. Same rate for everyone.</p>
+    </div>
+    <div class="card rung">
+      <div class="rate"><div class="num n" style="color:#F5B700;">25%</div><div class="mono-label" style="font-size:7pt; opacity:0.6; margin-top:2px;">Recurring, monthly</div></div>
+      <span class="divider-dot"></span>
+      <p style="font-size:10.5pt; line-height:1.4;">Put a business on a 24/7 AI receptionist and earn a quarter of every monthly invoice, for the first twelve months. This is the part that compounds.</p>
+    </div>
+    <div class="card rung">
+      <div class="rate"><div class="num n" style="color:#E0301E;">10&ndash;20%</div><div class="mono-label" style="font-size:7pt; opacity:0.6; margin-top:2px;">On custom builds</div></div>
+      <span class="divider-dot"></span>
+      <p style="font-size:10.5pt; line-height:1.4;">Send a business that needs a real build and earn 10% of the project, moving up to 20% once you are closing them regularly. These are the biggest checks.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:0.26in;">
+    <span class="mono-label" style="color:#E0301E;">The honest guardrails</span>
+  </div>
+  <div class="card ink" style="margin-top:0.12in; padding:0.2in 0.24in;">
+    <ul style="list-style:none; display:flex; flex-direction:column; gap:9px;">
+      <li style="font-size:10pt; line-height:1.4; display:flex; gap:9px;"><span style="color:#F5B700; font-weight:700;">&#9679;</span><span><strong style="color:#FBF6EA;">Caps, on purpose.</strong> New partners start at three mints a day and ten a week. It keeps the forge for businesses you truly know, not scraped lists.</span></li>
+      <li style="font-size:10pt; line-height:1.4; display:flex; gap:9px;"><span style="color:#F5B700; font-weight:700;">&#9679;</span><span><strong style="color:#FBF6EA;">Your first three mints get a human look.</strong> They are held for a quick quality pass before the hand-off email goes out. After three clean ones, that hold lifts.</span></li>
+      <li style="font-size:10pt; line-height:1.4; display:flex; gap:9px;"><span style="color:#F5B700; font-weight:700;">&#9679;</span><span><strong style="color:#FBF6EA;">First touch wins.</strong> If a business is already in our pipeline, the forge will not let you claim it. Great instinct, just pick another one you know.</span></li>
+      <li style="font-size:10pt; line-height:1.4; display:flex; gap:9px;"><span style="color:#F5B700; font-weight:700;">&#9679;</span><span><strong style="color:#FBF6EA;">Demos are samples, and disclosure is the trust.</strong> Every suite carries the Modern Mustard Seed mark, a business can ask us to take theirs down anytime, and you always say plainly that you earn a commission.</span></li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    <span>Commissions become payable 14 days after the sale</span>
+    <span>Ledger visible on Partner HQ</span>
+  </div>
+</section>
+
+<!-- ============ PAGE 4: HOW TO START ============ -->
+<section class="sheet">
+  <div class="blot" style="top:-0.6in; right:-0.6in; width:2.6in; height:2.6in; border-color:#F5B700; opacity:0.6;"></div>
+  <div class="halftone" style="bottom:-0.3in; left:-0.3in; width:3in; height:3in;"></div>
+
+  <div class="kicker-row">
+    <span class="eyebrow">How to start</span>
+    <span class="r">04</span>
+  </div>
+  <div class="rule" style="margin-top:10px; width:2.2in;"></div>
+
+  <h2 style="font-size:28pt; margin-top:0.2in;">You could forge your<br>first one this week.</h2>
+
+  <div class="steps" style="margin-top:0.24in;">
+    <div class="step">
+      <div class="idx"><span>1</span></div>
+      <div class="card txt">
+        <h3 style="font-size:12.5pt; margin-bottom:3px;">Apply to the partner program</h3>
+        <p style="font-size:10.5pt; line-height:1.42;">It takes about a minute at modernmustardseed.com/partners. Sarah reviews every application herself. Approved partners get their link, free access to everything, and the field guide the same day.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx"><span>2</span></div>
+      <div class="card txt">
+        <h3 style="font-size:12.5pt; margin-bottom:3px;">Sarah lights your forge</h3>
+        <p style="font-size:10.5pt; line-height:1.42;">Forge access is switched on per partner. Once it is on, the mint form lives inside your Partner HQ, right next to your link and your ledger.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx"><span>3</span></div>
+      <div class="card txt">
+        <h3 style="font-size:12.5pt; margin-bottom:3px;">Mint one, then forward the hand-off</h3>
+        <p style="font-size:10.5pt; line-height:1.42;">Type in a business you know. We build the suite and email you the link with three lines to send. That is the whole loop, and it pays you every time it closes.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card ink" style="margin-top:0.3in; padding:0.26in 0.3in; text-align:center;">
+    <span class="mono-label" style="color:#F5B700; font-size:8pt;">Become a partner</span>
+    <h2 style="font-size:22pt; color:#FBF6EA; margin-top:8px;">Recommend tools you believe in.<br>Get paid for years.</h2>
+    <p style="font-size:11pt; color:#FBF6EA; opacity:0.8; margin-top:8px;">Start your application at</p>
+    <p style="font-family:'JetBrains Mono',monospace; font-size:13pt; font-weight:700; color:#F5B700; margin-top:4px;">modernmustardseed.com/partners</p>
+  </div>
+
+  <p style="font-size:9.5pt; line-height:1.5; margin-top:0.2in; color:#3A3733; text-align:center;">
+    The one-page agreement lives at <span style="font-family:'JetBrains Mono',monospace; font-size:8.5pt;">/downloads/mms-partner-forge-agreement.pdf</span>.<br>
+    Questions go straight to Sarah at sarah@modernmustardseed.com or (406) 250-6076.
+  </p>
+
+  <div class="foot">
+    <span>Modern Mustard Seed · Kalispell, Montana</span>
+    <span>Forge Under Your Flag · v1.0</span>
+  </div>
+</section>
+
+</body>
+</html>

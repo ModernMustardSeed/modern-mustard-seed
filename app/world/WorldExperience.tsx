@@ -84,7 +84,7 @@ export default function WorldExperience() {
     const loader = new THREE.TextureLoader();
     const tracked: THREE.Texture[] = [];
     const tex = (name: string) => {
-      const t = loader.load(`/world/${name}.png`);
+      const t = loader.load(`/world/${name}.webp`);
       t.colorSpace = THREE.SRGBColorSpace;
       t.anisotropy = renderer.capabilities.getMaxAnisotropy();
       tracked.push(t); return t;
@@ -475,7 +475,7 @@ export default function WorldExperience() {
   if (noWebgl) {
     return (
       <div className="world-fallback bg-[#0b1a28]">
-        <div className="fb-hero" style={{ backgroundImage: 'url(/world/scene-hero.png)' }}>
+        <div className="fb-hero" style={{ backgroundImage: 'url(/world/scene-hero.webp)' }}>
           <div className="text-center px-6" style={{ background: 'rgba(8,12,22,.4)', padding: '3rem 2rem', borderRadius: 20 }}>
             <h1 className="font-display font-extrabold text-white text-5xl md:text-7xl leading-none drop-shadow-[0_6px_30px_rgba(0,0,0,0.5)]">The Mustard Seed World</h1>
             <p className="font-sans text-white/90 text-lg mt-5 max-w-lg mx-auto">A studio on the shore of Flathead Lake that builds apps, websites, and AI tools.</p>

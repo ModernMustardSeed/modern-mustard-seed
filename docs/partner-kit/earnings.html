@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Partner Earnings — Modern Mustard Seed Partner Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: letter; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { background: #FBF6EA; color: #161616; }
+  body { font-family: 'DM Sans', system-ui, sans-serif; }
+
+  .sheet {
+    position: relative;
+    width: 8.5in;
+    height: 10.85in;
+    padding: 0.6in 0.7in;
+    background: #FBF6EA;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .halftone {
+    position: absolute;
+    background-image: radial-gradient(#161616 1.5px, transparent 1.6px);
+    background-size: 13px 13px;
+    opacity: 0.09;
+    pointer-events: none;
+  }
+
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 8pt; letter-spacing: 0.32em; text-transform: uppercase; color: #E0301E; font-weight: 700; }
+  .kicker-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .kicker-row .r { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; letter-spacing: 0.26em; text-transform: uppercase; color: #161616; opacity: 0.55; }
+
+  h1 { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; letter-spacing: -0.015em; line-height: 0.98; }
+  h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; }
+  h3 { font-family: 'DM Sans', sans-serif; font-weight: 700; }
+  p { font-weight: 400; color: #262320; }
+  .lede { color: #3A3733; }
+  .rule { height: 5px; background: #F5B700; border: 2px solid #161616; border-radius: 3px; }
+  .mono-label { font-family: 'JetBrains Mono', monospace; font-size: 8pt; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; }
+  .num { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; line-height: 0.9; }
+
+  .card { background: #FFFFFF; border: 2px solid #161616; border-radius: 15px; box-shadow: 4px 4px 0 0 #161616; }
+
+  /* Commission table */
+  table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 0.14in; border: 2px solid #161616; border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 9px 13px; border-bottom: 1.5px solid #161616; }
+  tr:last-child td { border-bottom: none; }
+  th { background: #161616; color: #F5B700; font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; letter-spacing: 0.16em; text-transform: uppercase; }
+  td { font-size: 10pt; background: #FFFFFF; }
+  td.rate { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 15pt; width: 1.5in; }
+
+  /* Worked examples */
+  .examples { display: flex; flex-direction: column; gap: 0.16in; margin-top: 0.16in; }
+  .ex { display: flex; align-items: stretch; overflow: hidden; }
+  .ex .left { width: 2.5in; flex-shrink: 0; background: #161616; color: #FBF6EA; padding: 0.18in 0.22in; display: flex; flex-direction: column; justify-content: center; border-right: 2px solid #161616; }
+  .ex .right { flex: 1; padding: 0.18in 0.24in; display: flex; flex-direction: column; justify-content: center; }
+  .ex .payout { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 30pt; line-height: 0.95; color: #161616; }
+  .chip { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 6.5pt; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; border: 2px solid #F5B700; color: #F5B700; border-radius: 999px; padding: 2px 7px; margin-bottom: 6px; align-self: flex-start; }
+
+  .foot { margin-top: auto; font-family: 'JetBrains Mono', monospace; font-size: 7pt; letter-spacing: 0.1em; color: #5a544d; border-top: 2px solid #161616; padding-top: 8px; }
+</style>
+</head>
+<body>
+<section class="sheet">
+  <div class="halftone" style="top:-0.3in; right:-0.3in; width:3in; height:3in;"></div>
+
+  <div class="kicker-row">
+    <span class="eyebrow">The Partner Forge &middot; What you earn</span>
+    <span class="r">Earnings one-pager</span>
+  </div>
+  <div class="rule" style="margin-top:9px; width:2.1in;"></div>
+
+  <h1 style="font-size:34pt; margin-top:0.16in;">Real math, honest examples.</h1>
+  <p class="lede" style="font-size:11pt; line-height:1.45; margin-top:0.1in; max-width:6.2in;">
+    One structure, the same for every partner. Here is exactly what each kind of sale pays, using current Modern Mustard Seed prices. These are illustrations of the math, not promises of income.
+  </p>
+
+  <table>
+    <tr><th>Sale type</th><th>Your commission</th><th>When it pays</th></tr>
+    <tr><td class="rate" style="color:#1E50C8;">50%</td><td>Every product and program bought through your suite or link</td><td>The moment the sale clears</td></tr>
+    <tr><td class="rate" style="color:#C89000;">25%</td><td>Each monthly invoice on a referred subscription, for the first 12 invoices</td><td>Every month they stay, for a year</td></tr>
+    <tr><td class="rate" style="color:#E0301E;">10&ndash;20%</td><td>Custom builds you bring in (20% at the Producer rate)</td><td>When the build is paid</td></tr>
+  </table>
+
+  <div style="margin-top:0.24in;">
+    <span class="mono-label" style="color:#E0301E;">Three worked examples</span>
+  </div>
+
+  <div class="examples">
+    <!-- Example A: product -->
+    <div class="card ex">
+      <div class="left">
+        <span class="chip">Example &middot; Product</span>
+        <h3 style="font-size:12pt; color:#FBF6EA;">The Builder Bundle</h3>
+        <p style="font-size:9pt; color:#FBF6EA; opacity:0.7; line-height:1.35; margin-top:3px;">A $197 product sale, paid at 50% the instant it clears.</p>
+      </div>
+      <div class="right">
+        <div style="display:flex; align-items:baseline; gap:8px;">
+          <span class="payout">$98.50</span>
+          <span class="mono-label" style="font-size:8pt; opacity:0.55;">to you</span>
+        </div>
+        <p style="font-size:9.5pt; line-height:1.38; margin-top:5px;">$197 &times; 50%. Playbooks run $47 to $67 (about $23 to $34 each), and the Complete Library is $247 (about $123).</p>
+      </div>
+    </div>
+
+    <!-- Example B: recurring -->
+    <div class="card ex">
+      <div class="left">
+        <span class="chip">Example &middot; Recurring</span>
+        <h3 style="font-size:12pt; color:#FBF6EA;">One AI receptionist</h3>
+        <p style="font-size:9pt; color:#FBF6EA; opacity:0.7; line-height:1.35; margin-top:3px;">One business you refer onto a Sidekick receptionist at $297/mo, paid at 25% of each invoice.</p>
+      </div>
+      <div class="right">
+        <div style="display:flex; align-items:baseline; gap:8px;">
+          <span class="payout">$74.25</span>
+          <span class="mono-label" style="font-size:8pt; opacity:0.55;">/mo to you</span>
+        </div>
+        <p style="font-size:9.5pt; line-height:1.38; margin-top:5px;">$297 &times; 25%, every month for the first 12 invoices. That is up to <strong>$891</strong> in the first year from one referral, and it keeps paying while you go find the next one.</p>
+      </div>
+    </div>
+
+    <!-- Example C: build -->
+    <div class="card ex">
+      <div class="left">
+        <span class="chip">Example &middot; Build</span>
+        <h3 style="font-size:12pt; color:#FBF6EA;">A custom build</h3>
+        <p style="font-size:9pt; color:#FBF6EA; opacity:0.7; line-height:1.35; margin-top:3px;">A $3,500 project you bring in, paid at 10% (or 20% once you are a Producer).</p>
+      </div>
+      <div class="right">
+        <div style="display:flex; align-items:baseline; gap:8px;">
+          <span class="payout">$350</span>
+          <span class="mono-label" style="font-size:8pt; opacity:0.55;">to you (up to $700)</span>
+        </div>
+        <p style="font-size:9.5pt; line-height:1.38; margin-top:5px;">$3,500 &times; 10% at the standard rate. Once you are closing builds regularly, the Producer rate of 20% makes the same project pay $700.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">
+    Illustrations only, not income promises. Your earnings depend entirely on what you refer and what those businesses choose to buy, and some may buy nothing. Prices shown are current Modern Mustard Seed prices and can change. Commissions become payable 14 days after the sale (the refund window) and are visible on your Partner HQ ledger at all times. Modern Mustard Seed &middot; modernmustardseed.com &middot; sarah@modernmustardseed.com &middot; v1.0, July 2026.
+  </p>
+</section>
+</body>
+</html>
