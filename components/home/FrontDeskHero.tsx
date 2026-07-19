@@ -239,18 +239,25 @@ export default function FrontDeskHero() {
 
       <div className="relative max-w-6xl mx-auto px-6 pt-28 pb-16 md:pt-32 md:pb-24 min-h-[92vh] flex flex-col justify-center lg:grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_430px] lg:items-center lg:gap-12">
         <div>
-        {/* The studio bench: mobile, framed above the headline */}
-        <figure className="lg:hidden relative rotate-[-1.5deg] rounded-2xl border-[3px] border-[#161616] bg-white p-2 mb-9 max-w-[360px] mx-auto shadow-[6px_6px_0_0_#F5B700]">
-          <Image
-            src="/home/studio-bench.jpg"
-            alt="Pop-art screenprint of the studio bench where an idea becomes a shipped product: a glowing monitor, blueprints, a rotary telephone, and a mustard seedling sprouting on the desk"
-            width={1600}
-            height={1200}
-            priority
-            sizes="360px"
-            className="rounded-xl border-2 border-[#161616] w-full h-auto"
+        {/* Logo lockup with mascot: mobile, centered above the headline */}
+        <div className="lg:hidden relative w-[230px] sm:w-[280px] mx-auto mb-8">
+          <div
+            aria-hidden="true"
+            className="absolute -inset-10 pointer-events-none"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(245,183,0,0.38) 0%, rgba(245,183,0,0.14) 45%, transparent 68%)',
+            }}
           />
-        </figure>
+          <Image
+            src="/brand/logo-lockup.png"
+            alt="Modern Mustard Seed"
+            width={1135}
+            height={1235}
+            priority
+            className="relative w-full h-auto drop-shadow-[5px_5px_0_rgba(22,22,22,0.14)]"
+          />
+        </div>
 
         {/* Now booking pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-[#161616] bg-white self-start">
@@ -447,23 +454,24 @@ export default function FrontDeskHero() {
         </Link>
         </div>
 
-        {/* The studio bench: screenprint anchor, right column (matches the
-            Switchboard / Datebook / Reply Card family). */}
+        {/* Logo lockup with mascot: desktop, right column with sunburst glow */}
         <div className="hidden lg:block relative">
-          <figure className="relative rotate-[-1.5deg] rounded-2xl border-[3px] border-[#161616] bg-white p-2.5 shadow-[9px_9px_0_0_#F5B700]">
-            <Image
-              src="/home/studio-bench.jpg"
-              alt="Pop-art screenprint of the studio bench where an idea becomes a shipped product: a glowing monitor, blueprints, a rotary telephone, and a mustard seedling sprouting on the desk"
-              width={1600}
-              height={1200}
-              priority
-              sizes="(min-width: 1280px) 430px, 380px"
-              className="rounded-xl border-2 border-[#161616] w-full h-auto"
-            />
-            <figcaption className="px-2 pt-2 pb-1 font-mono text-[10px] uppercase tracking-[0.22em] text-[#5c554a] text-center">
-              The bench where the seed ships
-            </figcaption>
-          </figure>
+          <div
+            aria-hidden="true"
+            className="absolute -inset-20 pointer-events-none"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(245,183,0,0.38) 0%, rgba(245,183,0,0.14) 45%, transparent 68%)',
+            }}
+          />
+          <Image
+            src="/brand/logo-lockup.png"
+            alt="Modern Mustard Seed"
+            width={1135}
+            height={1235}
+            priority
+            className="relative w-full h-auto drop-shadow-[8px_8px_0_rgba(22,22,22,0.14)]"
+          />
         </div>
       </div>
     </section>

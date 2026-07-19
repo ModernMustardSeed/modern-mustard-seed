@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getContent } from '@/lib/content';
 
 /**
@@ -55,17 +56,34 @@ const CABINETS = [
 export default function BuildCabinet() {
   return (
     <section className="bg-[#FBF6EA] py-20 md:py-28 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6">
-        <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">
-          What we build // Pick your cabinet
-        </p>
-        <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02] max-w-3xl">
-          One studio. Four machines.
-        </h2>
-        <p className="font-sans text-base text-[#161616]/75 mt-5 max-w-2xl">
-          First real website or fiftieth product, the pattern is the same: fixed scope, fixed quote,
-          live in weeks. You do not need to know AI. You do not need a technical co-founder.
-        </p>
+      <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.05fr_.95fr] gap-10 lg:gap-14 items-center">
+        <div>
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">
+            What we build // Pick your cabinet
+          </p>
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02]">
+            One studio. Four machines.
+          </h2>
+          <p className="font-sans text-base text-[#161616]/75 mt-5 max-w-xl">
+            First real website or fiftieth product, the pattern is the same: fixed scope, fixed quote,
+            live in weeks. You do not need to know AI. You do not need a technical co-founder.
+          </p>
+        </div>
+
+        {/* The studio bench: where the seed ships. */}
+        <figure className="relative rotate-[1.5deg] rounded-2xl border-[3px] border-[#161616] bg-white p-2.5 shadow-[9px_9px_0_0_#F5B700] max-w-[520px] w-full mx-auto lg:mx-0 lg:ml-auto">
+          <Image
+            src="/home/studio-bench.jpg"
+            alt="Pop-art screenprint of the studio bench where an idea becomes a shipped product: a glowing monitor, blueprints, a rotary telephone, and a mustard seedling sprouting on the desk"
+            width={1600}
+            height={1200}
+            sizes="(min-width: 1024px) 40vw, 92vw"
+            className="rounded-xl border-2 border-[#161616] w-full h-auto"
+          />
+          <figcaption className="px-2 pt-2 pb-1 font-mono text-[10px] uppercase tracking-[0.22em] text-[#5c554a] text-center">
+            The bench where the seed ships
+          </figcaption>
+        </figure>
       </div>
 
       <div className="mt-10 md:pl-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]">
