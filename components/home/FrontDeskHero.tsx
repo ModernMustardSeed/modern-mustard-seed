@@ -231,7 +231,7 @@ export default function FrontDeskHero() {
     <section
       ref={wrapRef}
       className="relative overflow-hidden bg-[#FBF6EA] border-b-4 border-[#161616]"
-      aria-label="Modern Mustard Seed. Your idea, live in weeks."
+      aria-label="Modern Mustard Seed. You bring the seed, we build the tree."
     >
       {/* Static halftone under everything (the only layer when reduced motion) */}
       <div className="absolute inset-0 halftone-bg opacity-60" aria-hidden />
@@ -239,23 +239,6 @@ export default function FrontDeskHero() {
 
       <div className="relative max-w-6xl mx-auto px-6 pt-28 pb-16 md:pt-32 md:pb-24 min-h-[92vh] flex flex-col justify-center lg:grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_430px] lg:items-center lg:gap-12">
         <div>
-        {/* Brand masthead: the mascot and the name, back in the hero. */}
-        <div className="flex items-center gap-3 mb-7 justify-center lg:justify-start">
-          <span className="relative h-12 w-12 md:h-14 md:w-14 flex-shrink-0">
-            <Image
-              src="/brand/mascot.png"
-              alt="Modern Mustard Seed mascot"
-              fill
-              sizes="56px"
-              priority
-              className="object-contain drop-shadow-[3px_3px_0_rgba(22,22,22,0.16)]"
-            />
-          </span>
-          <span className="font-display font-extrabold text-xl md:text-2xl tracking-tight text-[#161616] leading-none">
-            Modern Mustard Seed
-          </span>
-        </div>
-
         {/* The studio bench: mobile, framed above the headline */}
         <figure className="lg:hidden relative rotate-[-1.5deg] rounded-2xl border-[3px] border-[#161616] bg-white p-2 mb-9 max-w-[360px] mx-auto shadow-[6px_6px_0_0_#F5B700]">
           <Image
@@ -290,22 +273,23 @@ export default function FrontDeskHero() {
             <span>{headlineThing}</span>
           ) : (
             <span>
-              Your idea,{' '}
+              You bring the seed.
+              <br />
+              We build the{' '}
               <span
                 className="not-italic font-mono text-[#F5B700]"
                 style={{ textShadow: '3px 3px 0 #161616, -1px -1px 0 #161616, 1px -1px 0 #161616, -1px 1px 0 #161616' }}
               >
-                live
+                tree
               </span>
-              <br />
-              in weeks. Not months.
+              .
             </span>
           )}
         </h1>
 
         <p className="font-sans text-base md:text-lg text-[#161616]/80 max-w-2xl mt-6">
           Apps, sites, voice agents, and specialty AI tools for founders, operators, and small
-          business owners. You bring the seed. We build the tree. You own it all.
+          business owners. Shipped in weeks, not months. You own it all.
         </p>
 
         {/* The front desk terminal */}
