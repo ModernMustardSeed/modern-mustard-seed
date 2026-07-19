@@ -496,7 +496,7 @@ export default function WorldExperience() {
 
       <div className="hud" style={{ opacity: started ? 1 : 0, transition: 'opacity .6s' }}>
         <div className="hud-top">
-          <Link href="/" className="hud-brand"><img src="/mascot.png" alt="" /> Modern Mustard Seed</Link>
+          <Link href="/" className="hud-brand"><img src="/world/mascot-hud.webp" alt="" /> Modern Mustard Seed</Link>
           <div className="hud-right">
             <button className="hud-chip" style={{ cursor: 'pointer', background: '#F5B700', color: '#161616', border: '2px solid #161616', fontFamily: '"JetBrains Mono",monospace', textTransform: 'uppercase', letterSpacing: '.05em' }} onClick={() => setShowCta(true)}>🌱 Plant your seed</button>
             <button className="hud-btn" onClick={toggleMute} aria-label="Toggle sound">{muted ? '🔇' : '🔊'}</button>
