@@ -3,6 +3,7 @@ import { listContent } from '@/lib/content';
 import { SITE } from '@/lib/seo';
 import { industries } from '@/data/industries';
 import { products, bundles } from '@/data/products';
+import { liveTradePages } from '@/data/trade-pages';
 
 const STATIC_PATHS = [
   '',
@@ -95,5 +96,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...staticUrls, ...blog, ...studies, ...playbooks, ...industryPages, ...storeItems];
+  const tradePages = liveTradePages().map((t) => ({
+    url: `${SITE.url}/voice-agents/${t.slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.9,
+  }));
+
+  return [...staticUrls, ...blog, ...studies, ...playbooks, ...industryPages, ...storeItems, ...tradePages];
 }
