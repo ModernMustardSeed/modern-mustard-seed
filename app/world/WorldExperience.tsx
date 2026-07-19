@@ -7,7 +7,7 @@ import './world.css';
 
 const ASPECT: Record<string, number> = {
   mountains: 1.778, hq: 1.0, family: 1.406, jetski: 1.25, sailboat: 1.0,
-  garden: 1.778, pine: 0.75, seedwave: 0.818,
+  garden: 1.778, pine: 0.75, seedwave: 0.818, seaplane: 1.333,
 };
 
 type Landmark = { key: string; eyebrow: string; title: string; body: string; x: number; z: number; r: number };
@@ -27,6 +27,7 @@ export default function WorldExperience() {
   const [started, setStarted] = useState(false);
   const [ready, setReady] = useState(false);
   const [seeds, setSeeds] = useState(0);
+  const [combo, setCombo] = useState(0);
   const [landmark, setLandmark] = useState<Landmark | null>(null);
   const [muted, setMuted] = useState(false);
   const [showCta, setShowCta] = useState(false);
@@ -106,6 +107,11 @@ export default function WorldExperience() {
     const shadowTex = canvasTex((c, s) => {
       const g = c.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
       g.addColorStop(0, 'rgba(0,0,0,.5)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = g; c.fillRect(0, 0, s, s);
+    });
+    const beamTex = canvasTex((c, s) => {
+      const g = c.createLinearGradient(0, s, 0, 0);
+      g.addColorStop(0, 'rgba(255,224,150,0.9)'); g.addColorStop(0.45, 'rgba(255,206,120,0.32)'); g.addColorStop(1, 'rgba(255,206,120,0)');
       c.fillStyle = g; c.fillRect(0, 0, s, s);
     });
 
@@ -188,7 +194,7 @@ export default function WorldExperience() {
     }
 
     // ---- collectibles ----
-    type Coin = { grp: THREE.Group; halo: THREE.Mesh; x: number; z: number; got: boolean; ph: number };
+    type Coin = { grp: THREE.Group; halo: THREE.Mesh; beam: THREE.Mesh; x: number; z: number; got: boolean; ph: number };
     const coins: Coin[] = [];
     for (let i = 0; i < TOTAL_SEEDS; i++) {
       const a = Math.random() * Math.PI * 2, r = 14 + Math.random() * 60;
@@ -201,24 +207,28 @@ export default function WorldExperience() {
         new THREE.MeshBasicMaterial({ map: glow, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: new THREE.Color(0.5, 0.45, 0.24) }));
       halo.position.y = 2.4;
       grp.add(halo, seed); grp.position.set(x, 0, z); scene.add(grp);
-      coins.push({ grp, halo, x, z, got: false, ph: Math.random() * 6 });
+      // navigation beam of light rising from the seed, visible across the whole lake
+      const beam = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 80),
+        new THREE.MeshBasicMaterial({ map: beamTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: new THREE.Color(1.0, 0.82, 0.42) }));
+      beam.position.set(x, 38, z); beam.renderOrder = 3; scene.add(beam);
+      coins.push({ grp, halo, beam, x, z, got: false, ph: Math.random() * 6 });
     }
 
-    // ---- player (jet ski) + shadow + spray ----
-    const ski = flat('jetski', 6.5, 0, 0, 3, false);
-    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(9, 6),
-      new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, opacity: 0.5 }));
+    // ---- player: the seaplane ----
+    const ski = flat('seaplane', 10, 0, 0, 12, false);
+    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(13, 8),
+      new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, opacity: 0.45 }));
     shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.06; scene.add(shadow);
 
     type P = { m: THREE.Mesh; life: number; vx: number; vy: number; vz: number };
-    const spray: P[] = [];
-    for (let i = 0; i < 46; i++) {
-      const m = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4),
-        new THREE.MeshBasicMaterial({ map: puff, transparent: true, depthWrite: false, opacity: 0.9 }));
-      m.visible = false; m.renderOrder = 3; scene.add(m);
-      spray.push({ m, life: 0, vx: 0, vy: 0, vz: 0 });
-    }
-    let sprayNext = 0;
+    const mkPool = (n: number, size: number, mat: THREE.MeshBasicMaterial): P[] => {
+      const arr: P[] = [];
+      for (let i = 0; i < n; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(size, size), mat.clone()); m.visible = false; m.renderOrder = 4; scene.add(m); arr.push({ m, life: 0, vx: 0, vy: 0, vz: 0 }); }
+      return arr;
+    };
+    const spray = mkPool(48, 2.6, new THREE.MeshBasicMaterial({ map: puff, transparent: true, depthWrite: false, opacity: 0.9 }));
+    const gold = mkPool(24, 3.2, new THREE.MeshBasicMaterial({ map: glow, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: new THREE.Color(1.0, 0.8, 0.36) }));
+    let sprayNext = 0, goldNext = 0;
 
     // ---- audio (procedural, unlocked on Play) ----
     let ac: AudioContext | null = null, master: GainNode | null = null, eng: OscillatorNode | null = null,
@@ -236,10 +246,11 @@ export default function WorldExperience() {
       engFilt = ac.createBiquadFilter(); engFilt.type = 'lowpass'; engFilt.frequency.value = 500;
       engGain = ac.createGain(); engGain.gain.value = 0; eng.connect(engFilt).connect(engGain).connect(master); eng.start();
     };
-    const chime = () => {
+    const chime = (n = 0) => {
       if (!ac || !master) return;
+      const base = 620 + Math.min(n, 8) * 70;
       const o = ac.createOscillator(), g = ac.createGain();
-      o.type = 'triangle'; o.frequency.setValueAtTime(660, ac.currentTime); o.frequency.exponentialRampToValueAtTime(990, ac.currentTime + 0.12);
+      o.type = 'triangle'; o.frequency.setValueAtTime(base, ac.currentTime); o.frequency.exponentialRampToValueAtTime(base * 1.5, ac.currentTime + 0.12);
       g.gain.setValueAtTime(0.0001, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.3);
       o.connect(g).connect(master); o.start(); o.stop(ac.currentTime + 0.32);
     };
@@ -248,9 +259,9 @@ export default function WorldExperience() {
     const keys = new Set<string>();
     const onKey = (e: KeyboardEvent, down: boolean) => {
       const k = e.key.toLowerCase();
-      if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd'].includes(k)) {
+      if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd', 'shift', ' '].includes(k)) {
         if (down) keys.add(k); else keys.delete(k);
-        if (k.startsWith('arrow')) e.preventDefault();
+        if (k.startsWith('arrow') || k === ' ') e.preventDefault();
       }
     };
     const kd = (e: KeyboardEvent) => onKey(e, true), ku = (e: KeyboardEvent) => onKey(e, false);
@@ -274,8 +285,9 @@ export default function WorldExperience() {
 
     // ---- game state ----
     let playing = false;
-    let px = 0, pz = 0, heading = 0, speed = 0, roll = 0, orbit = 0;
-    let seedN = 0, activeLm: string | null = null, over = false;
+    let px = 0, pz = 0, py = 16, vy = 0, heading = 0, speed = 0, roll = 0, pitch = 0, orbit = 0;
+    let onWater = false, boostAmt = 0, shake = 0;
+    let seedN = 0, activeLm: string | null = null, over = false, comboN = 0, lastGot = -99;
 
     api.current.start = () => { playing = true; initAudio(); };
     api.current.setMuted = (m: boolean) => { if (master) master.gain.value = m ? 0 : 0.5; };
@@ -283,6 +295,16 @@ export default function WorldExperience() {
     const fwd = new THREE.Vector3(), camGoal = new THREE.Vector3(), lookGoal = new THREE.Vector3(), cur = new THREE.Vector3(), tgtDir = new THREE.Vector3();
     const clock = new THREE.Clock();
     let raf = 0, first = true;
+    const speedEl = root.querySelector<HTMLElement>('.speedlines');
+    const addShake = (a: number) => { shake = Math.max(shake, a); };
+    const goldBurst = (x: number, y: number, z: number) => {
+      for (let i = 0; i < 9; i++) { const p = gold[goldNext % gold.length]; goldNext++; const a = Math.random() * 6.283, s = 7 + Math.random() * 9;
+        p.m.visible = true; p.life = 1; p.m.position.set(x, y, z); p.vx = Math.cos(a) * s; p.vz = Math.sin(a) * s; p.vy = 7 + Math.random() * 9; }
+    };
+    const splash = (x: number, z: number) => {
+      for (let i = 0; i < 14; i++) { const p = spray[sprayNext % spray.length]; sprayNext++; const a = Math.random() * 6.283, s = 5 + Math.random() * 9;
+        p.m.visible = true; p.life = 1.2; p.m.position.set(x, 1.6, z); p.vx = Math.cos(a) * s; p.vz = Math.sin(a) * s; p.vy = 7 + Math.random() * 7; }
+    };
 
     const frame = () => {
       raf = requestAnimationFrame(frame);
@@ -297,64 +319,95 @@ export default function WorldExperience() {
       if (keys.has('d') || keys.has('arrowright')) turn += 1;
       if (joy.active) { thr += -joy.y; turn += joy.x; }
       thr = Math.max(-1, Math.min(1, thr)); turn = Math.max(-1, Math.min(1, turn));
+      const boost = playing && (keys.has('shift') || keys.has(' '));
 
       if (playing) {
-        speed += thr * 34 * dt; speed *= (1 - 1.4 * dt);
-        speed = Math.max(-11, Math.min(31, speed));
-        heading -= turn * 1.7 * dt * Math.min(Math.abs(speed) / 4, 1) * Math.sign(speed || 1);
-        roll += ((-turn * Math.min(Math.abs(speed) / 20, 1) * 0.4) - roll) * Math.min(1, dt * 8);
+        boostAmt += ((boost ? 1 : 0) - boostAmt) * Math.min(1, dt * 4);
+        const cruise = 30 + boostAmt * 26;                 // 30..56
+        speed += (cruise - speed) * Math.min(1, dt * 1.3);
+        heading -= turn * 1.85 * dt;                        // steer at any speed
+        roll += ((-turn * 0.55) - roll) * Math.min(1, dt * 6);
+        if (onWater) {
+          py = 2.6 + surf(t); vy = 0;
+          if (thr > 0.2 && speed > 33) { onWater = false; vy = 15; addShake(0.25); }   // take off
+        } else {
+          vy += thr * 30 * dt - 8 * dt;                     // climb / dive + gentle sink
+          vy = Math.max(-42, Math.min(34, vy));
+          py += vy * dt;
+          if (py <= 2.6) { py = 2.6; if (vy < -6) { splash(px, pz); addShake(Math.min(0.7, -vy * 0.02)); } vy = 0; onWater = true; }  // land on water
+          py = Math.min(py, 68);
+        }
+        pitch += ((onWater ? 0 : Math.max(-0.42, Math.min(0.42, vy * 0.013))) - pitch) * Math.min(1, dt * 5);
         fwd.set(Math.sin(heading), 0, -Math.cos(heading));
         px += fwd.x * speed * dt; pz += fwd.z * speed * dt;
-        const rr = Math.hypot(px, pz); if (rr > 86) { px = px / rr * 86; pz = pz / rr * 86; speed *= 0.4; }
-      } else {
-        orbit += dt * 0.06;
-      }
+        const rr = Math.hypot(px, pz); if (rr > 120) { px = px / rr * 120; pz = pz / rr * 120; }
+      } else { orbit += dt * 0.06; }
 
-      const py = 3.0 + surf(t) + Math.min(Math.abs(speed) * 0.02, 0.5);
+      // seaplane transform (billboard yaw-to-camera + pitch + bank)
       ski.position.set(px, py, pz);
-      ski.rotation.set(0, Math.atan2(camera.position.x - px, camera.position.z - pz), roll); // upright, yaw to camera, bank on turn
+      ski.rotation.set(pitch, Math.atan2(camera.position.x - px, camera.position.z - pz), roll);
+      const alt = Math.max(0, (py - 2.6) / 60);
       shadow.position.set(px, 0.08, pz);
-      const ssc = 1 + Math.min(Math.abs(speed) / 60, 0.25); shadow.scale.set(ssc, 1, 1);
+      const ssc = 1 + alt * 3; shadow.scale.set(ssc, ssc, 1);
+      (shadow.material as THREE.MeshBasicMaterial).opacity = 0.45 * (1 - Math.min(alt, 1));
 
-      if (playing && Math.abs(speed) > 6 && !reduce) {
+      // wake spray while taxiing on the water
+      if (playing && onWater && speed > 8 && !reduce) {
         const p = spray[sprayNext % spray.length]; sprayNext++;
         p.m.visible = true; p.life = 1;
-        p.m.position.set(px - fwd.x * 3 + (Math.random() - 0.5) * 2, 1.4, pz - fwd.z * 3 + (Math.random() - 0.5) * 2);
-        p.vx = -fwd.x * 2 + (Math.random() - 0.5) * 4; p.vz = -fwd.z * 2 + (Math.random() - 0.5) * 4; p.vy = 5 + Math.random() * 4;
+        p.m.position.set(px - fwd.x * 5 + (Math.random() - 0.5) * 3, 1.6, pz - fwd.z * 5 + (Math.random() - 0.5) * 3);
+        p.vx = -fwd.x * 2 + (Math.random() - 0.5) * 5; p.vz = -fwd.z * 2 + (Math.random() - 0.5) * 5; p.vy = 5 + Math.random() * 4;
       }
       for (const p of spray) {
         if (p.life <= 0) continue;
-        p.life -= dt * 1.6; if (p.life <= 0) { p.m.visible = false; continue; }
+        p.life -= dt * 1.5; if (p.life <= 0) { p.m.visible = false; continue; }
         p.vy -= 12 * dt; p.m.position.x += p.vx * dt; p.m.position.y += p.vy * dt; p.m.position.z += p.vz * dt;
-        p.m.quaternion.copy(camera.quaternion);
-        p.m.scale.setScalar((2 - p.life) * 1.7);
-        (p.m.material as THREE.MeshBasicMaterial).opacity = p.life * 0.45;
+        p.m.quaternion.copy(camera.quaternion); p.m.scale.setScalar((2 - p.life) * 1.8);
+        (p.m.material as THREE.MeshBasicMaterial).opacity = p.life * 0.5;
+      }
+      for (const p of gold) {
+        if (p.life <= 0) continue;
+        p.life -= dt * 1.4; if (p.life <= 0) { p.m.visible = false; continue; }
+        p.vy -= 10 * dt; p.m.position.x += p.vx * dt; p.m.position.y += p.vy * dt; p.m.position.z += p.vz * dt;
+        p.m.quaternion.copy(camera.quaternion); p.m.scale.setScalar(1 + (1 - p.life) * 2.4);
+        (p.m.material as THREE.MeshBasicMaterial).opacity = p.life;
       }
 
+      // chase camera (flight)
       if (playing) {
         fwd.set(Math.sin(heading), 0, -Math.cos(heading));
-        camGoal.set(px - fwd.x * 15, 8.5, pz - fwd.z * 15);
-        lookGoal.set(px + fwd.x * 6, 2.5, pz + fwd.z * 6);
-        camera.position.lerp(camGoal, Math.min(1, dt * 3.2));
+        const cd = 18 + boostAmt * 4;
+        camGoal.set(px - fwd.x * cd, py + 6 - pitch * 8, pz - fwd.z * cd);
+        lookGoal.set(px + fwd.x * 10, py + 1.5 + pitch * 10, pz + fwd.z * 10);
+        camera.position.lerp(camGoal, Math.min(1, dt * 3.6));
         camera.getWorldDirection(cur);
         tgtDir.copy(lookGoal).sub(camera.position).normalize();
-        cur.lerp(tgtDir, Math.min(1, dt * 4));
+        cur.lerp(tgtDir, Math.min(1, dt * 4.5));
         camera.lookAt(cur.add(camera.position));
+        const fov = 56 + boostAmt * 10 + Math.min(speed / 56, 1) * 4;
+        camera.fov += (fov - camera.fov) * Math.min(1, dt * 3); camera.updateProjectionMatrix();
+        camera.rotateZ(roll * 0.22);
       } else {
-        camera.position.set(Math.cos(orbit) * 78, 26, Math.sin(orbit) * 78 - 20);
-        camera.lookAt(0, 6, -34);
+        camera.position.set(Math.cos(orbit) * 82, 30, Math.sin(orbit) * 82 - 18);
+        camera.lookAt(0, 8, -30);
       }
+      if (shake > 0.002) { camera.position.x += (Math.random() - 0.5) * shake * 2; camera.position.y += (Math.random() - 0.5) * shake * 2; shake *= (1 - Math.min(1, dt * 5)); }
+
       for (const cl of clouds) cl.quaternion.copy(camera.quaternion);
       for (const m of scenery) m.rotation.y = Math.atan2(camera.position.x - m.position.x, camera.position.z - m.position.z);
 
       for (const c of coins) {
         if (c.got) continue;
-        c.grp.position.y = surf(t) + Math.sin(t * 2 + c.ph) * 0.4;
-        c.grp.rotation.y += dt * 1.2;
+        c.grp.position.y = 2.6 + surf(t) + Math.sin(t * 2 + c.ph) * 0.5;
+        c.grp.rotation.y += dt * 1.6;
         c.halo.quaternion.copy(camera.quaternion);
-        if (playing && Math.hypot(px - c.x, pz - c.z) < 5) {
-          c.got = true; c.grp.visible = false; seedN++; setSeeds(seedN); chime();
-          if (seedN >= TOTAL_SEEDS && !over) { over = true; setWon(true); setTimeout(() => setShowCta(true), 1400); }
+        c.beam.rotation.y = Math.atan2(camera.position.x - c.x, camera.position.z - c.z);
+        (c.beam.material as THREE.MeshBasicMaterial).opacity = 0.42 + Math.sin(t * 3 + c.ph) * 0.14;
+        if (playing && Math.hypot(px - c.x, pz - c.z) < 6.5) {
+          c.got = true; c.grp.visible = false; c.beam.visible = false; seedN++; setSeeds(seedN);
+          comboN = (t - lastGot < 3.2) ? comboN + 1 : 1; lastGot = t; setCombo(comboN);
+          chime(comboN); goldBurst(px, py, pz); addShake(0.35);
+          if (seedN >= TOTAL_SEEDS && !over) { over = true; setWon(true); setTimeout(() => setShowCta(true), 1600); }
         }
       }
 
@@ -364,11 +417,12 @@ export default function WorldExperience() {
         const key = near ? near.key : null;
         if (key !== activeLm) { activeLm = key; setLandmark(near); }
       }
+      if (speedEl) speedEl.classList.toggle('on', boost && speed > 40);
 
       if (engGain && engFilt && eng) {
-        const sp = Math.min(Math.abs(speed) / 31, 1);
-        engGain.gain.value += ((playing ? 0.05 + sp * 0.12 : 0) - engGain.gain.value) * Math.min(1, dt * 6);
-        eng.frequency.value = 55 + sp * 90; engFilt.frequency.value = 400 + sp * 1400;
+        const sp = Math.min(speed / 56, 1);
+        engGain.gain.value += ((playing ? 0.06 + sp * 0.14 : 0) - engGain.gain.value) * Math.min(1, dt * 6);
+        eng.frequency.value = 70 + sp * 120; engFilt.frequency.value = 500 + sp * 1600;
       }
 
       (composer ? composer.render() : renderer.render(scene, camera));
@@ -438,6 +492,7 @@ export default function WorldExperience() {
       <div className="game-vignette" />
       <div className="game-warm" />
       <div className="game-grain" />
+      <div className="speedlines" />
 
       <div className="hud" style={{ opacity: started ? 1 : 0, transition: 'opacity .6s' }}>
         <div className="hud-top">
@@ -447,8 +502,8 @@ export default function WorldExperience() {
             <button className="hud-btn" onClick={toggleMute} aria-label="Toggle sound">{muted ? '🔇' : '🔊'}</button>
           </div>
         </div>
-        <div className="objective">{won ? 'You did it. Now plant your own.' : `Collect the mustard seeds  ·  ${seeds}/${TOTAL_SEEDS}`}</div>
-        <div className="hud-seeds"><span style={{ fontSize: 26 }}>🌱</span><span className="seed-count">{seeds}<small>/{TOTAL_SEEDS}</small></span></div>
+        <div className="objective">{won ? 'You did it. Now plant your own.' : `Fly through the light beams  ·  ${seeds}/${TOTAL_SEEDS}`}</div>
+        <div className="hud-seeds"><span style={{ fontSize: 26 }}>🌱</span><span className="seed-count">{seeds}<small>/{TOTAL_SEEDS}</small></span>{combo > 1 && <span className="combo">🔥 x{combo}</span>}</div>
 
         <div className={`landmark${landmark ? ' show' : ''}`}>
           {landmark && (<>
@@ -458,16 +513,16 @@ export default function WorldExperience() {
           </>)}
         </div>
 
-        <div className="controls-hint"><b>W A S D</b> / arrows to drive</div>
+        <div className="controls-hint"><b>W A S D</b> to fly · <b>S</b> dive to land · <b>Shift</b> boost</div>
         <div className="joystick" ref={joyRef}><div className="knob" /></div>
       </div>
 
       <div className={`title-card${started ? ' hide' : ''}`}>
         <div className="tc-eyebrow">Modern Mustard Seed</div>
         <h1>The Mustard<br />Seed World</h1>
-        <p className="tc-sub">Take the wheel and explore our little studio on the shore of Flathead Lake.</p>
-        <button className="play-btn" onClick={play} disabled={!ready}>{ready ? '▶  Enter the world' : 'Loading…'}</button>
-        <div className="tc-controls">Drive with <b>W A S D</b> or arrows · collect the seeds</div>
+        <p className="tc-sub">Fly a little clay seaplane over Flathead Lake, land on the golden water, and chase down the light beams.</p>
+        <button className="play-btn" onClick={play} disabled={!ready}>{ready ? '▶  Take off' : 'Loading…'}</button>
+        <div className="tc-controls">Fly with <b>W A S D</b> or arrows · <b>Shift</b> to boost · dive to touch the water</div>
       </div>
 
       <div className={`cta-panel${showCta ? ' show' : ''}`}>
@@ -500,7 +555,7 @@ export default function WorldExperience() {
         </div>
       </div>
 
-      {!ready && <div className="tc-loading">SHAPING THE CLAY…</div>}
+      {!ready && <div className="tc-loading">WARMING UP THE PROPELLER…</div>}
     </div>
   );
 }

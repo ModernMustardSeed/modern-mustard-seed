@@ -59,6 +59,13 @@
 .is-touch .joystick { display: block; }
 .is-touch .controls-hint { display: none; }
 
+.combo { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 15px; color: #FFDD55; margin-left: 10px; text-shadow: 0 2px 10px rgba(0,0,0,.5); }
+
+.speedlines { position: absolute; inset: 0; pointer-events: none; z-index: 3; opacity: 0; transition: opacity .18s ease;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0) 0deg, rgba(255,255,255,0) 2.1deg, rgba(255,255,255,.16) 2.4deg, rgba(255,255,255,0) 3deg);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 40%, #000 80%); mask: radial-gradient(circle at 50% 50%, transparent 40%, #000 80%); }
+.speedlines.on { opacity: 1; }
+
 .controls-hint { position: absolute; bottom: 26px; right: 26px; z-index: 6; text-align: right;
   font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .1em; color: rgba(255,255,255,.7); text-shadow: 0 1px 6px rgba(0,0,0,.5); }
 .controls-hint b { color: #fff; }
