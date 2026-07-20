@@ -17,7 +17,7 @@ export default function PrivacyPage() {
           <h1 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-2">
             Privacy <span className="text-gradient-mustard">Policy</span>
           </h1>
-          <p className="text-white/40 text-sm font-mono mb-12">Last updated: 2026-06-09</p>
+          <p className="text-white/40 text-sm font-mono mb-12">Last updated: 2026-07-20</p>
 
           <div className="mdx-prose space-y-5">
             <h2>Information we collect</h2>
@@ -27,6 +27,17 @@ export default function PrivacyPage() {
             <h2>How we use it</h2>
             <p>
               To respond to your inquiry, send the newsletters you subscribed to, and improve the site. We do not sell your data, ever. We do not share your contact information with third parties except as needed to deliver our services (e.g. Resend for email delivery).
+            </p>
+            <h2>Text messaging (SMS) and your mobile information</h2>
+            <p>
+              If you give us your mobile number, on our website, on a form, in person, or in the course of working together, you are agreeing to let us text you at that number about the service you asked about. Consent to receive texts is never a condition of any purchase. We never buy, rent, or sell phone numbers.
+            </p>
+            <p>
+              <strong>No mobile information will be shared with third parties or affiliates for marketing or promotional purposes.</strong> Sharing with subcontractors who provide support services, such as our messaging provider Twilio, is permitted solely so the message can be delivered. All other categories exclude text messaging originator opt-in data and consent, and this information will not be shared with any third parties.
+            </p>
+            <p>
+              You can stop the messages at any time by replying STOP to any text from us, and you can reply HELP for help. We keep a record of numbers that have opted out so we do not text them again. Message and data rates may apply, and message frequency varies. Full messaging terms are in our{' '}
+              <a href="/terms">Terms of Service</a>.
             </p>
             <h2>Cookies and tracking</h2>
             <p>

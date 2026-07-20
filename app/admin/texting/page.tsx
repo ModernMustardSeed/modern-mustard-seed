@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
+import { SMS_TEMPLATES, templateByKey, toGsmAscii } from '@/lib/sms-templates';
 
 type Campaign = {
   id: string; name: string; status: string; template_key: string | null;
@@ -175,14 +176,30 @@ function CreateForm({ onDone }: { onDone: () => void }) {
   const [statuses, setStatuses] = useState<string[]>(['to-contact']);
   const [auditedOnly, setAuditedOnly] = useState(false);
   const [limit, setLimit] = useState(200);
-  const [templateKey, setTemplateKey] = useState<'auto' | 'custom'>('auto');
-  const [custom, setCustom] = useState("Hi {{business}}, it's {{sender}} at Modern Mustard Seed. Quick one about your site. Want a free 60-second breakdown? Reply YES. {{book}} Reply STOP to opt out.");
+  const [templateKey, setTemplateKey] = useState<string>('auto');
+  const [custom, setCustom] = useState('');
+  const [link, setLink] = useState('');
   const [quietHours, setQuietHours] = useState(true);
   const [verifyMobile, setVerifyMobile] = useState(false);
   const [saving, setSaving] = useState(false);
   const [result, setResult] = useState<string>('');
 
   const toggle = (s: string) => setStatuses((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
+
+  // Live preview against a sample lead, so the copy is judged the way a real
+  // recipient sees it (tokens filled, link baked in, GSM-safe characters).
+  const tpl = templateByKey(templateKey);
+  const needsLink = Boolean(tpl?.needsLink) || /\{\{\s*link\s*\}\}/i.test(custom);
+  const preview = toGsmAscii(
+    custom
+      .replace(/\{\{\s*business\s*\}\}/gi, 'Glacier Auto')
+      .replace(/\{\{\s*city\s*\}\}/gi, 'Kalispell')
+      .replace(/\{\{\s*sender\s*\}\}/gi, 'Sarah')
+      .replace(/\{\{\s*score\s*\}\}/gi, '62')
+      .replace(/\{\{\s*book\s*\}\}/gi, 'modernmustardseed.com/book')
+      .replace(/\{\{\s*link\s*\}\}/gi, link || 'https://modernmustardseed.com/demos')
+  ).replace(/\s{2,}/g, ' ').trim();
+  const segments = preview.length === 0 ? 0 : preview.length <= 160 ? 1 : Math.ceil(preview.length / 153);
 
   const submit = async () => {
     if (!name.trim()) { setResult('Give it a name.'); return; }
@@ -191,7 +208,9 @@ function CreateForm({ onDone }: { onDone: () => void }) {
       const r = await fetch('/api/admin/sms/campaigns', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name, template_key: templateKey, custom_template: templateKey === 'custom' ? custom : undefined,
+          name, template_key: templateKey,
+          custom_template: templateKey === 'auto' ? undefined : custom,
+          link: link || undefined,
           quiet_hours: quietHours, verify_mobile: verifyMobile,
           audience: { rep_email: rep || undefined, city: city || undefined, statuses, auditedOnly, limit },
         }),
@@ -228,16 +247,44 @@ function CreateForm({ onDone }: { onDone: () => void }) {
 
       <div>
         <span className="text-[12px] font-sans font-bold uppercase tracking-wider text-[#1a1815]">Message</span>
-        <div className="flex gap-2 mt-1 mb-2">
-          <button onClick={() => setTemplateKey('auto')} className={`px-3 py-1.5 rounded-full border-2 border-[#1a1815] text-[12px] font-sans font-bold ${templateKey === 'auto' ? 'bg-[#F5B700]' : 'bg-white'}`}>Auto-personalized (Cahill)</button>
-          <button onClick={() => setTemplateKey('custom')} className={`px-3 py-1.5 rounded-full border-2 border-[#1a1815] text-[12px] font-sans font-bold ${templateKey === 'custom' ? 'bg-[#F5B700]' : 'bg-white'}`}>Custom template</button>
+        <div className="flex flex-wrap gap-2 mt-1 mb-2">
+          {SMS_TEMPLATES.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => { setTemplateKey(t.key); setCustom(t.body); }}
+              className={`px-3 py-1.5 rounded-full border-2 border-[#1a1815] text-[12px] font-sans font-bold ${templateKey === t.key ? 'bg-[#F5B700]' : 'bg-white'}`}
+            >{t.label}</button>
+          ))}
         </div>
+        <p className="text-[12px] font-body text-[#3A3733] bg-[#fffdf6] border-2 border-[#1a1815]/15 rounded-lg p-3 mb-2">{tpl?.hint}</p>
+
         {templateKey === 'auto' ? (
-          <p className="text-[12px] font-body text-[#3A3733] bg-[#fffdf6] border-2 border-[#1a1815]/15 rounded-lg p-3">Each lead gets its own message: if we’ve audited their site it opens with the real score + the free-breakdown offer; otherwise it uses the missed-calls hook for that business type. Sender name, business, city, and opt-out are filled in automatically.</p>
+          <p className="text-[12px] font-body text-[#3A3733]">Sender name, business, city, and the opt-out line are filled in automatically for every lead.</p>
         ) : (
           <>
             <textarea value={custom} onChange={(e) => setCustom(e.target.value)} rows={4} className={FIELD} />
-            <p className="text-[11px] font-mono text-[#1a1815]/50 mt-1">Tokens: {'{{business}} {{city}} {{sender}} {{score}} {{book}}'} · Always keep the opt-out line.</p>
+            <div className="flex flex-wrap items-center gap-3 mt-1">
+              <p className="text-[11px] font-mono text-[#1a1815]/50">Tokens: {'{{business}} {{city}} {{sender}} {{score}} {{book}} {{link}}'}</p>
+              <span className={`text-[11px] font-mono ${segments > 2 ? 'text-[#E0301E]' : 'text-[#1a1815]/50'}`}>{preview.length} chars · {segments} segment{segments === 1 ? '' : 's'}</span>
+              {!/\bstop\b/i.test(custom) && custom.trim() !== '' && (
+                <span className="text-[11px] font-mono text-[#b58a2a]">Opt-out line will be added automatically.</span>
+              )}
+            </div>
+
+            {needsLink && (
+              <label className="block mt-3">
+                <span className="text-[12px] font-sans font-bold uppercase tracking-wider text-[#1a1815]">Link to send</span>
+                <input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://modernmustardseed.com/demos" className={`${FIELD} mt-1`} />
+                <span className="text-[11px] font-mono text-[#1a1815]/50">Baked into every message in place of {'{{link}}'}.</span>
+              </label>
+            )}
+
+            <div className="mt-3">
+              <span className="text-[11px] uppercase tracking-wider font-mono text-[#1a1815]/50">Preview</span>
+              <div className="mt-1 rounded-2xl bg-[#e6f0e0] border-2 border-[#1a1815] px-3.5 py-2.5 max-w-md">
+                <p className="text-[13px] font-body text-[#1a1815] whitespace-pre-wrap">{preview}</p>
+              </div>
+            </div>
           </>
         )}
       </div>

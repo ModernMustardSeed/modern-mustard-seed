@@ -3,6 +3,7 @@ import { getAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { smsConfigured } from '@/lib/sms';
 import { buildRecipients, type Audience } from '@/lib/sms-campaigns';
+import { ensureOptOut, toGsmAscii } from '@/lib/sms-templates';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -28,13 +29,31 @@ export async function POST(req: Request) {
   const name = String(body.name || '').trim();
   if (!name) return NextResponse.json({ error: 'Give the campaign a name.' }, { status: 400 });
   const audience: Audience = body.audience || {};
-  const useCustom = body.template_key === 'custom' && typeof body.custom_template === 'string' && body.custom_template.trim();
+
+  /**
+   * Any preset other than "auto" resolves to a frozen body here: the builder
+   * sends the (possibly hand-edited) preset text, we bake the campaign link in,
+   * force GSM-safe ASCII, and guarantee the STOP line. "auto" alone falls
+   * through to the per-lead Cahill generator in buildRecipients.
+   */
+  const templateKey = String(body.template_key || 'auto');
+  const rawTemplate = typeof body.custom_template === 'string' ? body.custom_template.trim() : '';
+  const link = typeof body.link === 'string' ? body.link.trim() : '';
+  const useCustom = templateKey !== 'auto' && rawTemplate.length > 0;
+
+  if (useCustom && /\{\{\s*link\s*\}\}/i.test(rawTemplate) && !link) {
+    return NextResponse.json({ error: 'That template includes a link. Add the URL or remove the {{link}} token.' }, { status: 400 });
+  }
+
+  const resolvedTemplate = useCustom
+    ? ensureOptOut(toGsmAscii(rawTemplate.replace(/\{\{\s*link\s*\}\}/gi, link)))
+    : null;
 
   const { data: campaign, error } = await sb.from('sms_campaigns').insert({
     name,
     created_by: user.email,
-    template_key: useCustom ? 'custom' : 'auto',
-    custom_template: useCustom ? String(body.custom_template).trim() : null,
+    template_key: useCustom ? templateKey : 'auto',
+    custom_template: resolvedTemplate,
     audience,
     status: 'draft',
     quiet_hours: body.quiet_hours !== false,

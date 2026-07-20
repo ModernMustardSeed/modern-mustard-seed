@@ -22,11 +22,25 @@ export function smsConfigured(): boolean {
   );
 }
 
+/**
+ * Twilio client. Prefers an API key pair (SK.../secret) over the account auth
+ * token: an API key can be revoked and re-minted on its own, so a leaked or
+ * rotated key never forces an account-wide token rotation that would take every
+ * other integration down with it. Falls back to the account token when no key
+ * is set, which keeps older environments working untouched.
+ */
 function client(): Twilio | null {
   if (cached) return cached;
   const sid = process.env.TWILIO_ACCOUNT_SID;
+  if (!sid) return null;
+  const keySid = process.env.TWILIO_API_KEY_SID;
+  const keySecret = process.env.TWILIO_API_KEY_SECRET;
+  if (keySid && keySecret) {
+    cached = twilio(keySid, keySecret, { accountSid: sid });
+    return cached;
+  }
   const token = process.env.TWILIO_AUTH_TOKEN;
-  if (!sid || !token) return null;
+  if (!token) return null;
   cached = twilio(sid, token);
   return cached;
 }

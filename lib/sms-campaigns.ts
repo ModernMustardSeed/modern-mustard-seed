@@ -9,6 +9,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { resolveAdminUser } from '@/lib/admin-auth';
 import { buildLeadText } from '@/lib/lead-text';
 import { normalizePhone, withinQuietHours, lineType, sendSms } from '@/lib/sms';
+import { toGsmAscii } from '@/lib/sms-templates';
 import type { Prospect } from '@/lib/prospects';
 
 const BOOK_URL = 'modernmustardseed.com/book';
@@ -105,12 +106,19 @@ export async function buildRecipients(
 }
 
 function renderTemplate(tpl: string, p: RepRow, sender: string): string {
-  return tpl
-    .replace(/\{\{\s*business\s*\}\}/gi, p.business)
-    .replace(/\{\{\s*city\s*\}\}/gi, p.city || 'town')
-    .replace(/\{\{\s*sender\s*\}\}/gi, sender.split(' ')[0])
-    .replace(/\{\{\s*score\s*\}\}/gi, p.audit_score != null ? String(p.audit_score) : '')
-    .replace(/\{\{\s*book\s*\}\}/gi, BOOK_URL);
+  return toGsmAscii(
+    tpl
+      .replace(/\{\{\s*business\s*\}\}/gi, p.business)
+      .replace(/\{\{\s*city\s*\}\}/gi, p.city || 'town')
+      .replace(/\{\{\s*sender\s*\}\}/gi, sender.split(' ')[0])
+      .replace(/\{\{\s*score\s*\}\}/gi, p.audit_score != null ? String(p.audit_score) : '')
+      .replace(/\{\{\s*book\s*\}\}/gi, BOOK_URL)
+      // {{link}} is normally baked in when the campaign is created; drop any
+      // stray token so a lead never receives literal braces.
+      .replace(/\{\{\s*link\s*\}\}/gi, '')
+  )
+    .replace(/\s{2,}/g, ' ')
+    .trim();
 }
 
 /** Live stats, recomputed from the recipients table. */
