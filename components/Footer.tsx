@@ -18,6 +18,7 @@ export default function Footer() {
       links: [
         { label: 'Sidekick Forge', href: '/sidekick' },
         { label: 'The Switchboard', href: '/switchboard' },
+        { label: 'Mustard Broadcast', href: '/ads' },
         { label: 'Mustard Pictures', href: '/pictures' },
         { label: 'Mustard Press', href: '/press' },
         { label: 'GEO Desk', href: '/website-audit' },

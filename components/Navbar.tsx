@@ -55,6 +55,7 @@ const MENU_GROUPS = [
 const DEPARTMENTS = [
   { name: 'Sidekick Forge', tag: 'FREE RECEPTIONIST DEMO', href: '/sidekick' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
+  { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
   { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },
   { name: 'Mustard Press', tag: 'FREE TYPESET PROOF', href: '/press' },
   { name: 'GEO Desk', tag: 'FREE AI-FINDABILITY GRADE', href: '/website-audit' },

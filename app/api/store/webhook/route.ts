@@ -27,6 +27,7 @@ import { getSignedDownloadUrl } from '@/lib/storage';
 import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification, subscriptionPaymentFailedEmail, clientEmail } from '@/lib/email';
 import { getSidekickTier, sidekickUsd } from '@/data/sidekick';
 import { getPicturesTier, PICTURES } from '@/data/pictures';
+import { getBroadcastTier } from '@/data/ads';
 import { getPicturesRun } from '@/lib/pictures-store';
 import { getPressTier, PRESS } from '@/data/press';
 import { getPressRun, consumeHandPressSlot } from '@/lib/press-store';
@@ -790,6 +791,45 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
         });
       } catch (err) {
         console.error('pictures dunning email failed', err);
+      }
+    }
+    return;
+  }
+
+  // Broadcast renewals: hold the ad management until the card recovers.
+  if (subMeta?.kind === 'ads') {
+    const bEmail = invoice.customer_email;
+    if (process.env.RESEND_API_KEY && bEmail) {
+      const business = escapeHtmlSafe(subMeta.business || 'your business');
+      try {
+        const resend = resendClient();
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: bEmail,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: 'Quick payment hiccup on your Broadcast plan',
+          html: clientEmail({
+            preheader: 'A quick card update keeps your ads running.',
+            eyebrow: 'MUSTARD BROADCAST',
+            greeting: 'A quick card hiccup.',
+            body: `<p>The monthly payment for ${business}'s ad management did not go through (expired card, bank hiccup, gremlin).</p><p>Stripe retries automatically, or reply to this email and I will send a fresh payment link. Your campaigns stay live in the meantime, and your ad spend with Meta and Google is unaffected because it is on your own card.</p>`,
+            signature: 'Sarah',
+          }),
+        });
+        await resend.emails.send({
+          from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+          to: OWNER_NOTIFY_TO,
+          subject: `BROADCAST payment failed: ${subMeta.business || bEmail}`,
+          html: clientEmail({
+            preheader: 'A Broadcast renewal failed.',
+            eyebrow: 'BROADCAST DUNNING',
+            greeting: 'A renewal bounced.',
+            body: `<p>Subscription ${subId}${subMeta.business ? ` (business: <strong>${business}</strong>)` : ''} failed to renew for ${escapeHtmlSafe(bEmail)}.</p><p>Stripe retries on its own. If it does not recover in a few days, pause the weekly management (their ad spend is on their own card, so nothing leaks from ours).</p>`,
+            signature: 'The Broadcast Desk',
+          }),
+        });
+      } catch (err) {
+        console.error('ads dunning email failed', err);
       }
     }
     return;
@@ -1562,6 +1602,80 @@ async function handlePicturesPurchase(
 }
 
 /**
+ * A MUSTARD BROADCAST subscription started (setup fee rode the first
+ * invoice). Sarah gets the production brief with the runbook; the buyer gets
+ * the "you're going on air" welcome with the intake ask. Recurring revenue is
+ * recorded by invoice.paid like every other subscription.
+ */
+async function handleBroadcastPurchase(
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null
+) {
+  const tier = getBroadcastTier(slug);
+  const customBusiness = (session.custom_fields || []).find((f) => f.key === 'business')?.text?.value || '';
+  const businessRaw = (session.metadata?.business || customBusiness || '').trim();
+  const business = escapeHtmlSafe(businessRaw);
+  const firstName = name?.split(' ')[0];
+  const setupUsd = tier ? tier.setupCents / 100 : 0;
+  const monthlyUsd = tier ? tier.monthlyCents / 100 : 0;
+
+  try {
+    await insertLead({
+      type: 'contact',
+      email,
+      name: name ?? null,
+      source: 'ads-buyer',
+      status: 'new',
+      notes: `[bought:${slug}]${businessRaw ? ` business: ${businessRaw}` : ''} BROADCAST ($${setupUsd} setup + $${monthlyUsd}/mo)`,
+    });
+  } catch (err) {
+    console.error('ads lead insert failed', err);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = resendClient();
+
+  try {
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `ON AIR ${tier?.name ?? 'BROADCAST'}: ${businessRaw || email}`,
+      html: clientEmail({
+        preheader: 'A Broadcast plan started. Week one: film, then launch.',
+        eyebrow: 'MUSTARD BROADCAST ORDER',
+        greeting: 'We are on the air.',
+        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> took <strong>${tier?.name ?? slug}</strong>${business ? ` for <strong>${business}</strong>` : ''} ($${setupUsd} setup + $${monthlyUsd}/mo, manages up to $${tier?.spendCapUsd.toLocaleString() ?? '?'} spend).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p><strong>Week-one runbook:</strong> 1) reply for intake if their business details are thin, 2) produce the spot (clone ~/launch-studio/projects/ads-demo-commercial, swap the shots), 3) get frame approval, 4) build the campaign in THEIR ad account (their card, never ours)${tier?.slug === 'ads-primetime' ? ', 5) build the landing page + call tracking, and schedule the quarterly re-shoot' : ''}. Promise on the page: film in 2 business days, live within 7.</p>`,
+        signature: 'The Broadcast Desk',
+      }),
+    });
+  } catch (err) {
+    console.error('ads produce email failed', err);
+  }
+
+  try {
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}you're going on the air`,
+      html: clientEmail({
+        preheader: 'Production has started. One small thing from you, then you are done working.',
+        eyebrow: `MUSTARD BROADCAST ${tier?.name ?? ''}`.trim(),
+        greeting: firstName ? `${firstName}, welcome to the network.` : 'Welcome to the network.',
+        body: `<p>Your Broadcast plan${business ? ` for <strong>${business}</strong>` : ''} is live on my desk. Here is how week one goes:</p><p><strong>1.</strong> Reply to this email with the ten-minute version of your business: what you do, your town, what a great customer looks like, and anything you want in the film.</p><p><strong>2.</strong> Your 30-second commercial lands within 2 business days. You approve every frame before it runs anywhere.</p><p><strong>3.</strong> I build the campaign inside YOUR ad account (your card pays the networks directly, never marked up), and you are live within 7 days.</p><p>From then on: weekly tuning from me, a plain-English report every month, and your phone doing the ringing. Month to month, cancel anytime, and everything we make is yours forever.</p>`,
+        cta: { label: 'Reply with your business details', url: 'mailto:sarah@modernmustardseed.com' },
+        signature: 'Sarah',
+      }),
+    });
+  } catch (err) {
+    console.error('ads welcome email failed', err);
+  }
+}
+
+/**
  * A MUSTARD PRESS order landed. THE PIECE fulfills INSTANTLY: the clean PDF
  * is generated here and attached to the buyer's email (the success page also
  * serves it via session_id). KIT and HAND PRESS notify Sarah to produce, and
@@ -1854,6 +1968,29 @@ async function handleGeoPurchase(
   }
 }
 
+/** A Broadcast plan ended: pause campaigns in the client's account, hand back the keys. */
+async function handleBroadcastSubscriptionDeleted(sub: Stripe.Subscription) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const resend = resendClient();
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `BROADCAST CANCELED: ${sub.metadata?.business || sub.id}`,
+      html: clientEmail({
+        preheader: 'A Broadcast plan ended.',
+        eyebrow: 'BROADCAST OFFBOARD',
+        greeting: 'A station signed off.',
+        body: `<p>Subscription ${sub.id}${sub.metadata?.business ? ` (business: <strong>${escapeHtmlSafe(sub.metadata.business)}</strong>)` : ''} was canceled.</p><p>Offboard checklist: pause the campaigns in THEIR ad account (never delete them, they own everything), remove our access, and send the goodbye note confirming the files, pixel, and audiences all stay theirs.</p>`,
+        signature: 'The Broadcast Desk',
+      }),
+    });
+  } catch (err) {
+    console.error('ads offboard email failed', err);
+  }
+}
+
 /** A Season Pass ended: stop monthly production. */
 async function handlePicturesSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -1958,6 +2095,10 @@ export async function POST(req: Request) {
       if (db) await deleteGeoWatch(db, sub.id);
       return NextResponse.json({ received: true, kind: 'geo_subscription_canceled' });
     }
+    if (sub.metadata?.kind === 'ads') {
+      await handleBroadcastSubscriptionDeleted(sub);
+      return NextResponse.json({ received: true, kind: 'ads_subscription_canceled' });
+    }
     if (sub.metadata?.kind === 'demo-order') {
       const db = getSupabase();
       if (db) {
@@ -2049,6 +2190,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'pictures') {
     await handlePicturesPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'pictures' });
+  }
+
+  // ── MUSTARD BROADCAST plan started (ON AIR, PRIME TIME) ──
+  if (session.metadata?.kind === 'ads') {
+    await handleBroadcastPurchase(session, slug, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'ads' });
   }
 
   // ── MUSTARD PRESS order (PIECE instant, KIT, HAND PRESS) ──

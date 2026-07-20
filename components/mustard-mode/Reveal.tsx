@@ -34,7 +34,10 @@ export default function Reveal({
     }
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        // Also show anything already scrolled past (top above the viewport):
+        // an anchor jump (#packages) lands mid-page and elements at or above
+        // the landing edge would otherwise never intersect and stay invisible.
+        if (entries[0].isIntersecting || entries[0].boundingClientRect.top < 0) {
           setShown(true);
           io.disconnect();
         }
