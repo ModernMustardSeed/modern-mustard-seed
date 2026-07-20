@@ -14,6 +14,19 @@ import CookiePreferencesLink from '@/components/CookiePreferencesLink';
 export default function Footer() {
   const linkSections = [
     {
+      title: 'The Departments',
+      links: [
+        { label: 'Sidekick Forge', href: '/sidekick' },
+        { label: 'The Switchboard', href: '/switchboard' },
+        { label: 'Mustard Pictures', href: '/pictures' },
+        { label: 'Mustard Press', href: '/press' },
+        { label: 'GEO Desk', href: '/website-audit' },
+        { label: 'Mustard Hatchery', href: '/hatchery' },
+        { label: 'Mustard Launch', href: '/mustard-launch' },
+        { label: 'Mustard Mode', href: '/mustard-mode' },
+      ],
+    },
+    {
       title: 'Programs',
       links: [
         { label: 'Idea to Spec', href: '/idea-to-spec' },
@@ -25,9 +38,10 @@ export default function Footer() {
     {
       title: 'Work With Us',
       links: [
-        { label: 'How it Works', href: '/work-with-us' },
+        { label: 'How It Works', href: '/work-with-us' },
         { label: 'Services', href: '/services' },
         { label: 'Voice Agents', href: '/voice-agents' },
+        { label: 'Industries We Build For', href: '/for' },
         { label: 'The Work', href: '/work' },
         { label: 'What You Get', href: '/playbook' },
       ],
@@ -36,6 +50,7 @@ export default function Footer() {
       title: 'Get Started',
       links: [
         { label: 'Book a Free Call', href: '/book' },
+        { label: 'The Demo Station', href: '/demos' },
         { label: 'Join the Build Queue', href: '/build-queue' },
         { label: 'AI-Proof Your Business', href: '/ai-proof' },
         { label: 'Partner Program', href: '/partners' },
@@ -47,11 +62,13 @@ export default function Footer() {
         { label: 'New Business Checklist', href: '/launch-checklist' },
         { label: 'Bottleneck Breaker', href: '/audit' },
         { label: 'Website Audit', href: '/website-audit' },
+        { label: 'Prompt Playbook', href: '/prompt-playbook' },
       ],
     },
     {
       title: 'Company',
       links: [
+        { label: 'The Mustard Seed World', href: '/world' },
         { label: 'Blog', href: '/blog' },
         { label: 'About', href: '/about' },
         { label: 'Contact', href: '/contact' },
@@ -113,8 +130,8 @@ export default function Footer() {
         </div>
 
         {/* Link columns */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-6xl mx-auto mb-12 pb-12 border-b-2 border-dashed border-[#161616]/25">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-8 max-w-6xl mx-auto mb-12 pb-12 border-b-2 border-dashed border-[#161616]/25">
+          <div className="col-span-2 md:col-span-3 xl:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
               <span className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#161616] bg-[#F5B700]">
                 <Image src="/brand/mascot.png" alt="" fill sizes="32px" className="object-contain p-0.5" />

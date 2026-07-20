@@ -54,9 +54,11 @@ const MENU_GROUPS = [
 // in tracked mono caps; never a lowercase opener).
 const DEPARTMENTS = [
   { name: 'Sidekick Forge', tag: 'FREE RECEPTIONIST DEMO', href: '/sidekick' },
+  { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },
   { name: 'Mustard Press', tag: 'FREE TYPESET PROOF', href: '/press' },
   { name: 'GEO Desk', tag: 'FREE AI-FINDABILITY GRADE', href: '/website-audit' },
+  { name: 'Mustard Hatchery', tag: 'FREE FIRST GLIMPSE', href: '/hatchery' },
   { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
   { name: 'Mustard Launch', tag: 'YOUR AI LAUNCH COACH', href: '/mustard-launch' },
 ];
