@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
-import { smsConfigured } from '@/lib/sms';
+import { smsSendable } from '@/lib/sms';
 import { drainBatch } from '@/lib/sms-campaigns';
 
 export const runtime = 'nodejs';
@@ -14,7 +14,7 @@ export const maxDuration = 60;
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getAdminUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!smsConfigured()) return NextResponse.json({ error: 'Texting is not wired yet. Add the Twilio credentials to turn it on.' }, { status: 400 });
+  if (!smsSendable()) return NextResponse.json({ error: 'Carrier registration (A2P 10DLC) is still pending, so every text would be blocked with error 30034. The campaign is saved and will send once it clears.' }, { status: 400 });
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
   const { id } = await params;

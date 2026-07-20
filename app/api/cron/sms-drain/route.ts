@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { smsConfigured } from '@/lib/sms';
+import { smsSendable } from '@/lib/sms';
 import { drainBatch } from '@/lib/sms-campaigns';
 
 export const runtime = 'nodejs';
@@ -18,7 +18,7 @@ export async function GET(req: Request) {
     const auth = req.headers.get('authorization') ?? '';
     if (auth !== `Bearer ${secret}`) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
-  if (!smsConfigured()) return NextResponse.json({ ok: false, note: 'Twilio not configured' });
+  if (!smsSendable()) return NextResponse.json({ ok: false, note: 'A2P 10DLC registration still pending, holding the queue' });
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ ok: false, note: 'Database not configured' });
 

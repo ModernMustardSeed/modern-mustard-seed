@@ -21,6 +21,7 @@ const STATUS_COLOR: Record<string, string> = { draft: '#8A8378', ready: '#3f5d34
 
 export default function TextingPage() {
   const [configured, setConfigured] = useState<boolean | null>(null);
+  const [sendable, setSendable] = useState<boolean>(false);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [detail, setDetail] = useState<{ campaign: Campaign; stats: Stats; recipients: Recipient[] } | null>(null);
@@ -30,6 +31,7 @@ export default function TextingPage() {
     const r = await fetch('/api/admin/sms/campaigns');
     const j = await r.json();
     setConfigured(j.configured ?? false);
+    setSendable(j.sendable ?? false);
     setCampaigns(j.campaigns ?? []);
   }, []);
   useEffect(() => { load(); }, [load]);
@@ -72,6 +74,15 @@ export default function TextingPage() {
             <b>Compliant by design.</b> Every text names the sender + business and ends with an opt-out. Replies of STOP are honored instantly and never texted again. Sends only fire 9a-8p in the lead’s local time. <b>Before your first real send</b>, your Twilio number needs A2P 10DLC brand + campaign registration or carriers will filter it. See the go-live steps below.
           </p>
         </div>
+
+        {configured && !sendable && (
+          <div className={`${CARD} bg-[#fff8e6] px-4 py-3 mb-5 flex items-start gap-3`}>
+            <span className="text-lg">⏳</span>
+            <p className="text-[12px] font-body text-[#3A3733] leading-relaxed">
+              <b>Twilio is wired, carriers are not cleared yet.</b> The number (406) 407-9405, the messaging service, and the webhooks are all live, and the A2P 10DLC brand is approved. The <b>campaign registration is still pending</b>, so carriers reject every send with error 30034. Build and queue campaigns now: they will hold until it clears, and nothing sends by accident in the meantime.
+            </p>
+          </div>
+        )}
 
         {configured === false && (
           <div className={`${CARD} bg-white p-6 shadow-[4px_4px_0_0_#1a1815] max-w-2xl mb-6`}>

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { smsConfigured, normalizePhone, isOptedOut, lineType, sendSms } from '@/lib/sms';
+import { smsSendable, normalizePhone, isOptedOut, lineType, sendSms } from '@/lib/sms';
 import { fetchAllRows } from '@/lib/outbound-server';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import type { OutboundLead } from '@/lib/outbound';
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'bad_phone', message: 'That number does not look complete. Ten digits gets you the text.' }, { status: 400 });
   }
 
-  if (!smsConfigured()) {
+  if (!smsSendable()) {
     return NextResponse.json(
       { error: 'not_ready', message: 'Texting is warming up. Call (406) 312-1223 or email sarah@modernmustardseed.com and a human answers today.' },
       { status: 503 },

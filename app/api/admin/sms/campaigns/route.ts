@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
-import { smsConfigured } from '@/lib/sms';
+import { smsConfigured, smsSendable } from '@/lib/sms';
 import { buildRecipients, type Audience } from '@/lib/sms-campaigns';
 import { ensureOptOut, toGsmAscii } from '@/lib/sms-templates';
 
@@ -15,7 +15,7 @@ export async function GET() {
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
   const { data } = await sb.from('sms_campaigns').select('*').order('created_at', { ascending: false }).limit(50);
-  return NextResponse.json({ configured: smsConfigured(), campaigns: data ?? [] });
+  return NextResponse.json({ configured: smsConfigured(), sendable: smsSendable(), campaigns: data ?? [] });
 }
 
 /** Create a campaign and build its personalized recipient set. */

@@ -17,9 +17,23 @@ let cached: Twilio | null = null;
 export function smsConfigured(): boolean {
   return Boolean(
     process.env.TWILIO_ACCOUNT_SID &&
-    process.env.TWILIO_AUTH_TOKEN &&
+    (process.env.TWILIO_AUTH_TOKEN || (process.env.TWILIO_API_KEY_SID && process.env.TWILIO_API_KEY_SECRET)) &&
     (process.env.TWILIO_MESSAGING_SERVICE_SID || process.env.TWILIO_SMS_FROM)
   );
+}
+
+/**
+ * Credentials being present is NOT the same as carriers accepting our traffic.
+ * Until the A2P 10DLC campaign is APPROVED, every send is accepted by Twilio and
+ * then bounced by the carrier with error 30034, which looks like a broken
+ * product to a visitor. So anything customer-facing gates on this instead:
+ * SMS_A2P_READY is set to 'true' only once the campaign is actually approved.
+ *
+ * Keeping the two checks separate means the admin can build and queue campaigns
+ * today while the public site keeps its working tap-to-text fallback.
+ */
+export function smsSendable(): boolean {
+  return smsConfigured() && process.env.SMS_A2P_READY === 'true';
 }
 
 /**
