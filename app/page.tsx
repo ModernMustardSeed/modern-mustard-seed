@@ -9,9 +9,9 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'Apps, Sites, and Specialty AI Tools',
+  title: 'Websites, Voice Agents, and AI Command Centers',
   description:
-    'Do you want your business to thrive? Custom apps, websites, and specialty AI tools for your business, shipped in weeks, not months. Now booking new builds.',
+    'Do you want your business to thrive? Custom websites, voice agents, and AI command centers, live in about a week. Custom apps and stores too. Now booking new builds.',
 });
 
 const homeJsonLd = {
@@ -19,9 +19,9 @@ const homeJsonLd = {
   '@type': 'WebPage',
   '@id': 'https://modernmustardseed.com/#webpage',
   url: 'https://modernmustardseed.com',
-  name: 'Modern Mustard Seed | Apps, Sites, and Specialty AI Tools',
+  name: 'Modern Mustard Seed | Websites, Voice Agents, and AI Command Centers',
   description:
-    'Do you want your business to thrive? Custom apps, websites, and specialty AI tools for your business, shipped in weeks, not months.',
+    'Do you want your business to thrive? Custom websites, voice agents, and AI command centers, live in about a week. Custom apps and stores too.',
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },
   primaryImageOfPage: {
@@ -39,9 +39,9 @@ const homeJsonLd = {
 const offerJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'Idea to Product in Weeks',
+  name: 'Idea to Product, Fast',
   description:
-    'Custom apps, websites, software, and specialty AI tools. Fixed scope, fixed timeline. Now booking new builds.',
+    'Custom websites, voice agents, and AI command centers live in about a week. Custom apps, software, and stores in weeks. Fixed scope, fixed timeline. Now booking new builds.',
   provider: { '@id': 'https://modernmustardseed.com/#organization' },
   serviceType: 'Custom software development',
   areaServed: 'Worldwide',
@@ -50,7 +50,7 @@ const offerJsonLd = {
 const HOME_FAQ = [
   {
     q: 'What does Modern Mustard Seed do?',
-    a: 'Modern Mustard Seed is a one-person product studio that builds custom apps, websites, and specialty AI tools for businesses. Founded by Sarah Scarano, it ships fixed-scope, fixed-timeline products in weeks, not months. Now booking new builds.',
+    a: 'Modern Mustard Seed is a one-person product studio that builds custom websites, voice agents, AI command centers, and apps for businesses. Founded by Sarah Scarano, it ships fixed-scope, fixed-quote builds fast: websites, voice agents, and command centers go live in about a week. Now booking new builds.',
   },
   {
     q: 'Who is Sarah Scarano?',
@@ -58,7 +58,7 @@ const HOME_FAQ = [
   },
   {
     q: 'How long does a build take?',
-    a: 'Most builds go live two to four weeks from kickoff, depending on scope. Some, like a voice agent, go live in about two. Fixed scope, fixed timeline, fixed quote. Modern Mustard Seed is now booking new builds and gives each engagement focused attention.',
+    a: 'Websites, voice agents, and command centers go live in about a week from kickoff. Custom software, full apps, and online stores are deeper builds and usually take two to four weeks. Fixed scope, fixed timeline, fixed quote. Modern Mustard Seed is now booking new builds and gives each engagement focused attention.',
   },
   {
     q: 'How do I get on the build queue?',
@@ -79,10 +79,6 @@ const HOME_FAQ = [
   {
     q: 'What is MUSTARD MODE?',
     a: 'MUSTARD MODE is the coach-led way to master Claude and Claude Code. Mr. Mustard, a live AI coach, trains you through four tracks (Code, Design, Cowork, Ideate) with 28 missions, a prompt library, and a progress HUD. The first coaching session is free at modernmustardseed.com/mustard-mode, and paid levels start at $197 once with lifetime access.',
-  },
-  {
-    q: 'What is the AI-Proof Your Business offer?',
-    a: 'A defensive engagement for existing businesses with revenue to protect. Modern Mustard Seed audits the moat, hardens the operation with AI on the front lines and in the back office, and re-equips the team. Quoted per business after a free discovery call.',
   },
   {
     q: 'What kinds of products has Modern Mustard Seed built?',

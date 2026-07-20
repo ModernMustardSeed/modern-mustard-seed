@@ -320,8 +320,8 @@ export default function FrontDeskHero() {
         </h1>
 
         <p className="font-sans text-base md:text-lg text-[#161616]/80 max-w-2xl mt-6">
-          Apps, sites, voice agents, and specialty AI tools for founders, operators, and small
-          business owners. Shipped in weeks, not months. You own it all.
+          Websites, voice agents, command centers, and custom apps for founders, operators, and
+          small business owners. Live in as little as a week. You own it all.
         </p>
 
         {/* The front desk terminal */}

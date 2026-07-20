@@ -24,7 +24,7 @@ export const frontDeskIntents: FrontDeskIntent[] = [
     match: ['voice', 'phone', 'call', 'receptionist', 'answering', 'after hours', 'missed call'],
     reply:
       "Seed received. A 24/7 AI voice agent on your own number: books appointments, answers your FAQs in a natural human voice, routes the urgent calls to you. Speaks 100+ languages. Fastest way to believe it: forge a free demo trained on YOUR business at modernmustardseed.com/sidekick and talk to it in sixty seconds. Want it built, or want to learn to build it yourself?",
-    headline: 'Your {thing}, answering by week two.',
+    headline: 'Your {thing}, answering within the week.',
     cta: { label: 'Forge a free voice demo in 60 seconds', href: '/sidekick' },
   },
   {
@@ -54,14 +54,14 @@ export const frontDeskIntents: FrontDeskIntent[] = [
     key: 'site',
     match: ['website', 'site', 'landing', 'page', 'portfolio', 'blog', 'presence', 'seo'],
     reply:
-      "Seed received. Not a brochure, a working engine: elite design, funnels and a lead magnet live on day one, an AI concierge trained on your business, SEO and GEO baked in. Live in 2 to 4 weeks and you own every line of it. Want us to build it, or want to learn to build it yourself?",
-    headline: 'Your {thing}, live in weeks.',
+      "Seed received. Not a brochure, a working engine: elite design, funnels and a lead magnet live on day one, an AI concierge trained on your business, SEO and GEO baked in. Live in about a week and you own every line of it. Want us to build it, or want to learn to build it yourself?",
+    headline: 'Your {thing}, live in about a week.',
   },
   {
     key: 'app',
-    match: ['app', 'application', 'saas', 'software', 'platform', 'booking', 'tracker', 'dashboard', 'crm', 'portal', 'system'],
+    match: ['app', 'application', 'saas', 'software', 'platform', 'booking', 'tracker', 'dashboard', 'command center', 'crm', 'portal', 'system'],
     reply:
-      "Seed received. That's a real product, and smaller than you think. We design it, build it, brand it, and ship it end to end: most builds go live 2 to 4 weeks from kickoff, fixed quote before work starts. You keep the repo, the deploy, and every account. Build it for you, or teach you to build it?",
+      "Seed received. That's a real product, and smaller than you think. We design it, build it, brand it, and ship it end to end: command centers and dashboards land in about a week, deeper software in 2 to 4, fixed quote before work starts. You keep the repo, the deploy, and every account. Build it for you, or teach you to build it?",
     headline: 'Your {thing}, live in weeks.',
   },
   {

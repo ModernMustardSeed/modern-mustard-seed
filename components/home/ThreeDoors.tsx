@@ -1,10 +1,10 @@
 import Link from 'next/link';
 
 /**
- * ThreeDoors. Beat 05: the three ways to engage the studio, plus the free
- * Website Audit strip as the no-risk first step. Absorbs the old
- * FlagshipPrograms and AiProofPromo sections and gives MUSTARD MODE its
- * homepage billing.
+ * ThreeDoors. Beat 05: the ways to engage the studio, plus the free Website
+ * Audit strip as the no-risk first step. Down to two doors (Sarah, 2026-07-19:
+ * the AI-Proof "defend" door came off the homepage; /ai-proof still exists via
+ * the footer). Gives MUSTARD MODE its homepage billing.
  */
 
 const DOORS = [
@@ -12,8 +12,8 @@ const DOORS = [
     chip: '[ DOOR 01 ]',
     name: 'Build With Us',
     pitch:
-      'Idea to shipped product. We design, build, brand, and launch it end to end. Fixed scope, fixed quote, live in 2 to 4 weeks. You own everything on launch day.',
-    points: ['Apps, sites, voice agents, AI tools', 'Sarah answers you personally, and fast', 'Plus Mr. Mustard, on call 24/7'],
+      'Idea to shipped product. We design, build, brand, and launch it end to end. Websites, voice agents, and command centers go live in about a week. Fixed scope, fixed quote, and you own everything on launch day.',
+    points: ['Websites, voice agents, command centers', 'Sarah answers you personally, and fast', 'Plus Mr. Mustard, on call 24/7'],
     cta: 'Join the Build Queue',
     href: '/build-queue',
     featured: true,
@@ -28,16 +28,6 @@ const DOORS = [
     href: '/mustard-mode',
     featured: false,
   },
-  {
-    chip: '[ DOOR 03 ]',
-    name: 'AI-Proof Your Business',
-    pitch:
-      'For owners with revenue to protect. We audit your operation against the AI shift, harden what is exposed, and re-equip your team for the new stack.',
-    points: ['Moat audit + hardening plan', 'AI on the front lines and back office', 'Quoted per business, free discovery call'],
-    cta: 'Defend the moat',
-    href: '/ai-proof',
-    featured: false,
-  },
 ];
 
 const AUDIT_DIMENSIONS = ['Brand', 'Trust', 'SEO', 'GEO', 'AI Features', 'Conversion', 'Design'];
@@ -48,13 +38,13 @@ export default function ThreeDoors() {
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6">
         <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">
-          Three doors // One studio
+          Two doors // One studio
         </p>
         <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02] max-w-3xl">
-          We build it. You learn it.<br />Or we defend it.
+          We build it.<br />Or you learn it.
         </h2>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-12 items-stretch">
+        <div className="grid md:grid-cols-2 gap-6 mt-12 items-stretch">
           {DOORS.map((d) => (
             <div
               key={d.name}

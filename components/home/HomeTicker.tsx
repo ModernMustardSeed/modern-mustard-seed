@@ -1,6 +1,6 @@
 /** Diagonal mono marquee ticker between homepage beats (MUSTARD MODE language). */
 export default function HomeTicker({ reverse = false }: { reverse?: boolean }) {
-  const line = 'APPS // SITES // VOICE AGENTS // AI TOOLS // LIVE IN WEEKS // YOU OWN THE CODE // ';
+  const line = 'SITES // VOICE AGENTS // COMMAND CENTERS // CUSTOM APPS // LIVE IN AS LITTLE AS A WEEK // YOU OWN THE CODE // ';
   return (
     <div className="relative overflow-hidden border-y-2 border-[#161616] bg-[#F5B700] py-2.5 select-none" aria-hidden>
       <style>{`
