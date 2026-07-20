@@ -14,6 +14,7 @@
 
 import { SIDEKICK, getVertical } from '@/data/sidekick';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+import { sidekickVoice, type VoiceGender, type VapiVoice } from '@/lib/sidekick-voice';
 
 const MUSTARD_ASSISTANT_ID = 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee';
 /** Mr. Mustard's own line, (406) 312-1223. Callbacks reach him, which is the point. */
@@ -34,6 +35,8 @@ export type SidekickProfile = {
    * introduce itself clearly instead of assuming they know what a forge is.
    */
   flow?: 'sidekick' | 'outbound';
+  /** Receptionist voice: 'female' or 'male' (default). Rides as a Vapi override. */
+  voice?: VoiceGender;
 };
 
 export type ForgedCall = {
@@ -41,6 +44,8 @@ export type ForgedCall = {
   model: Record<string, unknown>;
   maxDurationSeconds: number;
   metadata: Record<string, string | boolean>;
+  /** The chosen receptionist voice, merged into the Vapi call on both paths. */
+  voice: VapiVoice;
 };
 
 export function sidekickSystemPrompt(p: SidekickProfile): string {
@@ -156,6 +161,7 @@ export async function forgeCall(p: SidekickProfile, runId: string, mode: 'web' |
       model: { ...model, messages: [{ role: 'system', content: sidekickSystemPrompt(p) }] },
       maxDurationSeconds: SIDEKICK.demoSeconds,
       metadata: { kind: 'sidekick-demo', mode, runId, business: p.business.slice(0, 80) },
+      voice: sidekickVoice(p.voice),
     },
   };
 }
@@ -189,6 +195,7 @@ export async function ringDemoCall(call: ForgedCall, toNumber: string): Promise<
           model: call.model,
           maxDurationSeconds: call.maxDurationSeconds,
           metadata: call.metadata,
+          voice: call.voice,
         },
       }),
     });

@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { ForgedCall } from '@/lib/sidekick';
+import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
+import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -27,6 +29,7 @@ export default function DemoVoiceWidget({
   const [state, setStateRaw] = useState<VoiceState>('idle');
   const [error, setError] = useState('');
   const [seconds, setSeconds] = useState(0);
+  const [gender, setGender] = useState<VoiceGender>(() => genderFromVoiceId(call?.voice?.voiceId));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const vapiRef = useRef<any>(null);
 
@@ -76,6 +79,7 @@ export default function DemoVoiceWidget({
         model: call.model,
         maxDurationSeconds: call.maxDurationSeconds,
         metadata: call.metadata,
+        voice: sidekickVoice(gender),
       } as never);
     } catch (err) {
       setState('error');
@@ -102,6 +106,11 @@ export default function DemoVoiceWidget({
 
   return (
     <div className="flex flex-col items-end gap-2">
+      {state !== 'live' && state !== 'connecting' && (
+        <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_rgba(0,0,0,0.45)] px-3 pt-2 pb-2.5">
+          <VoiceGenderToggle value={gender} onChange={setGender} tone="light" />
+        </div>
+      )}
       {state === 'live' ? (
         <div className="bg-[#161616] border-2 border-[#F5B700] rounded-2xl shadow-[4px_4px_0_0_rgba(0,0,0,0.45)] px-4 py-3 flex items-center gap-3">
           <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700] animate-pulse" />

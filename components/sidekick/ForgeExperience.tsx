@@ -20,6 +20,8 @@ import Image from 'next/image';
 import type Vapi from '@vapi-ai/web';
 import { trackEvent } from '@/lib/analytics';
 import { SIDEKICK, sidekickVerticals, sidekickTiers, getVertical, forgeScript, sidekickUsd } from '@/data/sidekick';
+import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
+import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -32,6 +34,7 @@ type ForgedCall = {
   model: Record<string, unknown>;
   maxDurationSeconds: number;
   metadata: Record<string, unknown>;
+  voice?: { provider: string; voiceId: string };
 };
 
 type ForgeResponse = { runId: string; call: ForgedCall; phoneLine: string };
@@ -61,6 +64,9 @@ export default function ForgeExperience() {
   const [ringState, setRingState] = useState<'idle' | 'ringing' | 'rang' | 'error'>('idle');
   const [ringMsg, setRingMsg] = useState<string | null>(null);
 
+  // receptionist voice (female / male), chosen before the call and the ring
+  const [gender, setGender] = useState<VoiceGender>('male');
+
   const forgeApiDone = useRef(false);
   const montageDone = useRef(false);
 
@@ -81,6 +87,12 @@ export default function ForgeExperience() {
       }
     } catch { /* fresh visitor */ }
   }, []);
+
+  // Keep the toggle in sync with whatever voice the forged call carries.
+  useEffect(() => {
+    const vid = forged?.call?.voice?.voiceId;
+    if (vid) setGender(genderFromVoiceId(vid));
+  }, [forged]);
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -213,6 +225,7 @@ export default function ForgeExperience() {
         model: forged.call.model,
         maxDurationSeconds: forged.call.maxDurationSeconds,
         metadata: forged.call.metadata,
+        voice: sidekickVoice(gender),
       } as never);
     } catch (err) {
       console.error('sidekick call start failed', err);
@@ -238,7 +251,7 @@ export default function ForgeExperience() {
       const res = await fetch('/api/sidekick/forge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'phone', runId: forged.runId, phone: cell }),
+        body: JSON.stringify({ mode: 'phone', runId: forged.runId, phone: cell, voice: gender }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -433,6 +446,13 @@ export default function ForgeExperience() {
               )}
             </div>
           </div>
+
+          {/* Pick the voice for both the browser call and the phone ring. */}
+          {!isLive && (
+            <div className="flex justify-center">
+              <VoiceGenderToggle value={gender} onChange={setGender} tone="light" />
+            </div>
+          )}
 
           {/* The encore: he calls your cell */}
           <div className="rounded-2xl border-2 border-[#161616] bg-white p-6 md:p-7 shadow-[6px_6px_0_0_#161616]">

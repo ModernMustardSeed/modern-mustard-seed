@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ForgedCall } from '@/lib/sidekick';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
+import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -33,6 +35,7 @@ export default function DemoCallExperience({
   const [state, setState] = useState<CallState>('idle');
   const [error, setError] = useState('');
   const [seconds, setSeconds] = useState(0);
+  const [gender, setGender] = useState<VoiceGender>(() => genderFromVoiceId(call?.voice?.voiceId));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const vapiRef = useRef<any>(null);
 
@@ -77,6 +80,7 @@ export default function DemoCallExperience({
         model: call.model,
         maxDurationSeconds: call.maxDurationSeconds,
         metadata: call.metadata,
+        voice: sidekickVoice(gender),
       } as never);
     } catch (err) {
       setState('error');
@@ -149,6 +153,9 @@ export default function DemoCallExperience({
                   ? 'That was it answering as your business. Imagine it catching every missed call this week.'
                   : 'Uses your microphone, right in the browser. Try asking for a quote or booking a job.'}
               </p>
+              <div className="mt-5 flex justify-center">
+                <VoiceGenderToggle value={gender} onChange={setGender} tone="light" />
+              </div>
               {error && <p className="font-body text-sm text-[#E0301E] font-semibold mt-2">{error}</p>}
             </>
           )}

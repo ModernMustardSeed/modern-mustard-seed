@@ -87,6 +87,8 @@ type Body = {
   /** phone mode */
   runId?: string;
   phone?: string;
+  /** receptionist voice: 'female' | 'male' (default). */
+  voice?: 'female' | 'male';
   /** honeypot: humans never fill this */
   website?: string;
 };
@@ -244,6 +246,7 @@ async function handleRing(
     ownerName: run.ownerName || 'there',
     services: run.services || '',
     hours: run.hours,
+    voice: body.voice === 'female' ? 'female' : 'male',
   };
 
   const forged = await forgeCall(profile, runId, 'phone');
