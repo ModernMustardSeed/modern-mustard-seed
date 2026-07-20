@@ -24,6 +24,11 @@ const config: NextConfig = {
       { source: '/dashboard', destination: '/', permanent: false },
       { source: '/case-studies', destination: '/work', permanent: true },
       { source: '/case-studies/:slug', destination: '/work/:slug', permanent: true },
+      // The Build Queue page was retired in favor of Book a Call. Any query
+      // (e.g. the ?idea= carried from the home terminal) passes through to
+      // /book automatically, where BookCall prefills it. /api/build-queue is
+      // a distinct path and is not affected by this redirect.
+      { source: '/build-queue', destination: '/book', permanent: true },
     ];
   },
 };

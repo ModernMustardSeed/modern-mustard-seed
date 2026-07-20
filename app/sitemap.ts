@@ -22,7 +22,6 @@ const STATIC_PATHS = [
   '/partners',
   '/playbook',
   '/book',
-  '/build-queue',
   '/work',
   '/services',
   '/voice-agents',
@@ -53,7 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: now,
     changeFrequency: (path === '' ? 'weekly' : 'monthly') as 'weekly' | 'monthly',
     priority:
-      path === '' || path === '/build-queue'
+      path === '' || path === '/book'
         ? 1.0
         : path === '/ads' || path === '/sidekick' || path === '/pictures' || path === '/press' || path === '/hatchery' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/the-terminal' || path === '/idea-to-spec'
           ? 0.95

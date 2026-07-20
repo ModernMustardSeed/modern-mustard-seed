@@ -18,7 +18,7 @@ function isAuthorized(req: Request): boolean {
 function allUrls(): string[] {
   const staticPaths = [
     '',
-    '/build-queue',
+    '/book',
     '/work',
     '/services',
     '/work-with-us',
