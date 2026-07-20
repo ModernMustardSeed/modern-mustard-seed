@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, SITE } from '@/lib/seo';
 import DemoStation from '@/components/DemoStation';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
@@ -65,22 +65,110 @@ const PIECES = [
  * its price pill pinned to a common baseline so the buttons never float at
  * ragged heights.
  */
+/**
+ * The full schema graph for /demos. This page previously carried FAQPage ONLY,
+ * so AI crawlers could read the questions but had no idea what the Demo Station
+ * offers or costs (added 2026-07-20 to match the /sidekick graph).
+ *
+ * Every price is DERIVED from DEMO_PRODUCTS and DEMO_BUNDLE. Never type one
+ * here: see the $197/$297 split that leaked into the trade FAQ schema.
+ */
+function demosJsonLd() {
+  const products = [DEMO_PRODUCTS.voice, DEMO_PRODUCTS.site, DEMO_PRODUCTS.os];
+  const offer = (name: string, monthlyCents: number, setupCents: number, desc: string) => ({
+    '@type': 'Offer' as const,
+    name,
+    description: desc,
+    price: Math.round(monthlyCents / 100),
+    priceCurrency: 'USD',
+    priceSpecification: [
+      {
+        '@type': 'UnitPriceSpecification',
+        price: Math.round(monthlyCents / 100),
+        priceCurrency: 'USD',
+        billingIncrement: 1,
+        unitText: 'MONTH',
+      },
+      {
+        '@type': 'UnitPriceSpecification',
+        priceType: 'https://schema.org/Installment',
+        price: Math.round(setupCents / 100),
+        priceCurrency: 'USD',
+        description: 'One-time setup',
+      },
+    ],
+    url: `${SITE.url}/demos`,
+    availability: 'https://schema.org/InStock',
+  });
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Service',
+        name: 'The Demo Station by Modern Mustard Seed',
+        serviceType: 'Free AI business demos: receptionist, website, and command center',
+        description:
+          'A free self-serve forge. Enter your business once and receive three working demos: an AI receptionist trained on your company, a custom website designed from scratch, and a business command center. No account and no credit card.',
+        provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
+        areaServed: 'US',
+        offers: [
+          ...products.map((p) => offer(p.name, p.monthlyCents, p.setupCents, p.blurb)),
+          offer(
+            DEMO_BUNDLE.name,
+            DEMO_BUNDLE.monthlyCents,
+            DEMO_BUNDLE.setupCents,
+            'All three demos made real, at a discount to buying them separately.',
+          ),
+        ],
+      },
+      {
+        '@type': 'HowTo',
+        name: 'Get three free AI demos built for your business',
+        totalTime: 'PT20M',
+        step: [
+          {
+            '@type': 'HowToStep',
+            name: 'Tell the forge about your business',
+            text: 'Business name, what you do, and where you are. One short form, no account and no card.',
+          },
+          {
+            '@type': 'HowToStep',
+            name: 'Meet your receptionist and command center',
+            text: 'Both are live in about twenty seconds at your private hub. Talk to the receptionist in your browser and try to stump it.',
+          },
+          {
+            '@type': 'HowToStep',
+            name: 'Your website lands',
+            text: 'Designed from scratch rather than filled into a template, so it takes about twenty minutes. It appears at the same hub and we email you when it is ready.',
+          },
+        ],
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: FAQ.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Modern Mustard Seed', item: SITE.url },
+          { '@type': 'ListItem', position: 2, name: 'The Demo Station', item: `${SITE.url}/demos` },
+        ],
+      },
+    ],
+  };
+}
+
 export default function DemosPage() {
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: FAQ.map((f) => ({
-              '@type': 'Question',
-              name: f.q,
-              acceptedAnswer: { '@type': 'Answer', text: f.a },
-            })),
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(demosJsonLd()) }}
       />
 
       {/* ── Hero: headline left, the forge itself right. Never a centered column. ──

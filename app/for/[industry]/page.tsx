@@ -99,8 +99,14 @@ export default async function IndustryPage({ params }: { params: Params }) {
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/audit"
+              href={i.forge.href}
               className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.2)] hover:shadow-[0_0_40px_rgba(255,107,53,0.35)] transition-all"
+            >
+              {i.forge.label}
+            </Link>
+            <Link
+              href="/audit"
+              className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 border border-mustard-500/40 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/60 transition-all"
             >
               Run the Bottleneck Breaker
             </Link>
@@ -108,7 +114,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
               href={bookingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 border border-mustard-500/40 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/60 transition-all"
+              className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/60 border border-white/15 rounded-full hover:bg-white/5 hover:border-white/30 transition-all"
             >
               Book a Discovery Call
             </a>
@@ -276,16 +282,25 @@ export default async function IndustryPage({ params }: { params: Params }) {
             <p className="text-white/65 text-base md:text-lg font-body font-light leading-relaxed mb-8 max-w-2xl mx-auto">
               {i.cta.body}
             </p>
+            <p className="text-white/50 text-sm font-body font-light leading-relaxed mb-7 max-w-xl mx-auto">
+              {i.forge.blurb}
+            </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/audit"
+                href={i.forge.href}
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.25)] hover:shadow-[0_0_40px_rgba(255,107,53,0.45)] transition-all"
+              >
+                {i.forge.label}
+              </Link>
+              <Link
+                href="/audit"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 border border-mustard-500/40 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/60 transition-all"
               >
                 Run the Bottleneck Breaker
               </Link>
               <Link
                 href="/build-queue"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-mustard-400 border border-mustard-500/40 rounded-full hover:bg-mustard-500/10 hover:border-mustard-500/60 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/60 border border-white/15 rounded-full hover:bg-white/5 hover:border-white/30 transition-all"
               >
                 Join the Build Queue
               </Link>
