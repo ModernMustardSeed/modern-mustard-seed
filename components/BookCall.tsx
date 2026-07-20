@@ -22,6 +22,15 @@ export default function BookCall() {
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
+  // Arriving from the home-page terminal ("/book?idea=..."), the visitor already
+  // typed what they want to build. Carry it into the focus field so they never
+  // type it twice. Read from location, not useSearchParams, so this page stays
+  // prerendered (no Suspense boundary needed).
+  useEffect(() => {
+    const idea = new URLSearchParams(window.location.search).get('idea');
+    if (idea) setForm((f) => (f.focus ? f : { ...f, focus: idea.slice(0, 300) }));
+  }, []);
+
   useEffect(() => {
     (async () => {
       try {

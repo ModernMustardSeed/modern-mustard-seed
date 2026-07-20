@@ -54,10 +54,10 @@ export default async function StoreSuccessPage({
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/build-queue"
+                href="/book"
                 className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-semibold text-cream-50 bg-brass rounded-full campfire-glow hover:shadow-[0_0_40px_rgba(255,107,53,0.5)] transition-all text-center"
               >
-                Apply to build queue
+                Book a free call
               </Link>
               <Link
                 href="/work-with-us"

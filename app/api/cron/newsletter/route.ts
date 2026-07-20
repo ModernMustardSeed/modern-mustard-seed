@@ -78,7 +78,7 @@ export async function GET(req: Request) {
     <a href="${playbookUrl}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#F0D090,#C8964E);color:#ffffff;text-decoration:none;font-weight:700;border-radius:999px;font-size:12px;letter-spacing:2px;text-transform:uppercase">Read the playbook</a>
   </p>
   <p style="font-size:14px;color:#777">Free to read. Free to run yourself. The whole point.</p>
-  <p style="font-size:14px;color:#777">If you would rather have us ship the thing for you, the <a href="https://modernmustardseed.com/build-queue" style="color:#C8964E">Build Queue</a> is open and we are booking new builds.</p>
+  <p style="font-size:14px;color:#777">If you would rather have us ship the thing for you, a <a href="https://modernmustardseed.com/book" style="color:#C8964E">free call</a> is the fastest way in, and we are booking new builds.</p>
   <hr style="border:0;border-top:1px solid #eee;margin:32px 0">
   <p style="font-size:12px;color:#888">Modern Mustard Seed. Apps, sites, and specialty AI tools.<br>
   Reply to this email to talk to Sarah directly.</p>

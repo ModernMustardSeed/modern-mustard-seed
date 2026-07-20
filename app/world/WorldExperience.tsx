@@ -479,7 +479,7 @@ export default function WorldExperience() {
           <div className="text-center px-6" style={{ background: 'rgba(8,12,22,.4)', padding: '3rem 2rem', borderRadius: 20 }}>
             <h1 className="font-display font-extrabold text-white text-5xl md:text-7xl leading-none drop-shadow-[0_6px_30px_rgba(0,0,0,0.5)]">The Mustard Seed World</h1>
             <p className="font-sans text-white/90 text-lg mt-5 max-w-lg mx-auto">A studio on the shore of Flathead Lake that builds apps, websites, and AI tools.</p>
-            <Link href="/build-queue" className="inline-block mt-7 font-mono font-bold uppercase tracking-wider text-[#161616] bg-gold-400 border-2 border-[#161616] rounded-lg px-6 py-3.5 shadow-[4px_4px_0_0_#161616]">Plant your seed 🌱</Link>
+            <Link href="/book" className="inline-block mt-7 font-mono font-bold uppercase tracking-wider text-[#161616] bg-gold-400 border-2 border-[#161616] rounded-lg px-6 py-3.5 shadow-[4px_4px_0_0_#161616]">Plant your seed 🌱</Link>
           </div>
         </div>
       </div>
@@ -549,7 +549,7 @@ export default function WorldExperience() {
                 {status === 'sending' ? 'Planting…' : 'Plant it 🌱'}
               </button>
               {status === 'error' && <p className="font-sans text-pop-red text-sm mt-3">{msg}</p>}
-              <p className="font-sans text-[13px] text-[#5a5a5a] mt-4">Ready to go all in? <Link href="/build-queue" className="text-pop-blue font-semibold underline underline-offset-2">Start a full project →</Link></p>
+              <p className="font-sans text-[13px] text-[#5a5a5a] mt-4">Ready to go all in? <Link href="/book" className="text-pop-blue font-semibold underline underline-offset-2">Start a full project →</Link></p>
             </form>
           )}
         </div>

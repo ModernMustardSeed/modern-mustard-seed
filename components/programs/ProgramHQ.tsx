@@ -63,7 +63,7 @@ export default async function ProgramHQ({ slug }: { slug: ProgramSlug }) {
           />
         </div>
         <p className="text-white/35 font-body text-xs mt-4 text-center">
-          Would you rather we build it for you? <Link href="/build-queue" className="text-gold-light hover:text-gold-bright underline underline-offset-4">Join the build queue.</Link>
+          Would you rather we build it for you? <Link href="/book" className="text-gold-light hover:text-gold-bright underline underline-offset-4">Book a free call.</Link>
         </p>
       </div>
     </div>

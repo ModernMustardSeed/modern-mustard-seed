@@ -62,7 +62,7 @@ const SITE = 'https://modernmustardseed.com';
 const BOOKING_URL = `${SITE}/?book=1`;
 const AUDIT_URL = `${SITE}/audit`;
 const WEBSITE_AUDIT_URL = `${SITE}/website-audit`;
-const BUILD_QUEUE_URL = `${SITE}/build-queue`;
+const BOOK_CALL_URL = `${SITE}/book`;
 const WORK_URL = `${SITE}/work`;
 const ENGAGEMENTS_URL = `${SITE}/work-with-us`;
 
@@ -854,7 +854,7 @@ export function playbookEmail({
     ${offerBlock}
     ${ctaBlock(
       { label: 'Run the free Website Audit', url: WEBSITE_AUDIT_URL },
-      { label: 'Apply to build queue', url: BUILD_QUEUE_URL }
+      { label: 'Book a free call', url: BOOK_CALL_URL }
     )}
     ${signature('Sarah')}
     ${nextUpTease ? nextUp(nextUpTease) : ''}
@@ -1035,7 +1035,7 @@ export function sequenceDay5Email(firstName: string): string {
     <p style="margin:0">Most builds run $8,500 to $22,000 and take two to four weeks. If you want smaller scope (just the site, no AI engine) that is the Seed Site, $2,500 to $5,000 in about two weeks.</p>`)}
     ${valueCallout('The math that makes this obvious', `12 SaaS subscriptions at $50 a month over 24 months is <strong>$14,400</strong>, and you still own none of it. A Full-Service Business Build at $14,000 lands at the same two-year cost. The difference: at month 25 you keep going on about $30 a month in hosting. Forever.`)}
     ${paragraph(`<p style="margin:0">If any of this fits the shape of your business, the next step is a 30-minute discovery call. I will scope your specific situation and tell you honestly whether we are the right partner.</p>`)}
-    ${ctaBlock({ label: 'Book a discovery call', url: BOOKING_URL }, { label: 'Apply to build queue', url: BUILD_QUEUE_URL })}
+    ${ctaBlock({ label: 'Book a discovery call', url: BOOKING_URL }, { label: 'See the work', url: WORK_URL })}
     ${signature('Sarah')}
   `;
   return shell({
@@ -1128,7 +1128,7 @@ export function auditFollowupEmail({ firstName, url, score, grade, headline: lin
       ${fixesList(topThreeFixes)}
     </td></tr>
     ${offerBlock}
-    ${ctaBlock({ label: 'See all engagements', url: ENGAGEMENTS_URL }, { label: 'Apply to build queue', url: BUILD_QUEUE_URL })}
+    ${ctaBlock({ label: 'See all engagements', url: ENGAGEMENTS_URL }, { label: 'Book a free call', url: BOOK_CALL_URL })}
     ${signature('Sarah')}
   `;
   return shell({ preheader, subtitle: `Your website audit · Grade ${grade}`, inner });

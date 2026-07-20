@@ -145,7 +145,7 @@ export async function POST(req: Request) {
           </ol>` +
           p('If you want me to walk through your audit personally, the calendar is open below.'),
         cta: { label: 'Book a personal walkthrough', url: 'https://modernmustardseed.com/?book=1' },
-        secondary: { label: 'Join the Build Queue', url: 'https://modernmustardseed.com/build-queue' },
+        secondary: { label: 'Book a Free Call', url: 'https://modernmustardseed.com/book' },
       }),
       scheduledAt: daysFromNow(0),
     });
@@ -169,7 +169,7 @@ export async function POST(req: Request) {
           }) +
           p('It is the same playbook I run on paying clients. Free to read. Free to run yourself.') +
           p('If after reading it you would rather have me run it for you, the Build Queue is the next step.'),
-        cta: { label: 'Join the Build Queue', url: 'https://modernmustardseed.com/build-queue' },
+        cta: { label: 'Book a Free Call', url: 'https://modernmustardseed.com/book' },
       }),
       scheduledAt: daysFromNow(2),
     });
@@ -192,7 +192,7 @@ export async function POST(req: Request) {
           </ol>` +
           p('If you are in camp three, the Build Queue is open and I am booking new builds. I review every entry personally and reply fast, usually the same day.') +
           p('If you are in camp one, ignore me. Send me a screenshot when it ships. I genuinely want to see it.'),
-        cta: { label: 'Join the Build Queue', url: 'https://modernmustardseed.com/build-queue' },
+        cta: { label: 'Book a Free Call', url: 'https://modernmustardseed.com/book' },
       }),
       scheduledAt: daysFromNow(5),
     });

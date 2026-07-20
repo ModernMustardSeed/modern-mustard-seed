@@ -94,10 +94,10 @@ export default function WorkIndex() {
               Now booking new builds. Drop your idea and Sarah will review it personally.
             </p>
             <Link
-              href="/build-queue"
+              href="/book"
               className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.35)] hover:-translate-y-0.5 transition-all"
             >
-              Join the Build Queue
+              Book a Free Call
             </Link>
           </div>
         </div>

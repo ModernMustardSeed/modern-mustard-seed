@@ -66,16 +66,16 @@ export default function TheClose() {
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-12">
           <Link
-            href="/build-queue"
+            href="/book"
             className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(251,246,234,0.4)] hover:-translate-y-0.5 transition-all"
           >
-            Join the Build Queue
+            Book a Free Call
           </Link>
           <Link
-            href="/book"
+            href="/work"
             className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#FBF6EA] bg-transparent border-2 border-[#FBF6EA] rounded-full hover:bg-[#FBF6EA]/10 transition-all"
           >
-            Book a Free Call
+            See The Work
           </Link>
         </div>
 

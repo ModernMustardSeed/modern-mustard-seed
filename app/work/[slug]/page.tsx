@@ -138,10 +138,10 @@ export default async function WorkDetail({ params }: { params: Params }) {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/build-queue"
+                href="/book"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
               >
-                Join the Build Queue
+                Book a Free Call
               </Link>
               <Link
                 href="/audit"

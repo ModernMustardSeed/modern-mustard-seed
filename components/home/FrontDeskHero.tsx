@@ -5,7 +5,7 @@
  * (wordmark + waving mascot) front and center over a living halftone dot
  * field that breathes with the cursor, plus a front-desk terminal that
  * scopes the visitor's idea on the spot (cached intent pool, zero API)
- * and routes it: build it for me (Build Queue) or teach me (MUSTARD MODE).
+ * and routes it: build it for me (book a call) or teach me (MUSTARD MODE).
  * An email gate on the personal follow-up keeps lead capture in the hero.
  *
  * Device tiers: full canvas on desktop, calmer field on small screens,
@@ -241,7 +241,7 @@ export default function FrontDeskHero() {
       );
     } catch {
       typeOn(
-        'The desk hiccuped, but your idea is safe. Drop it in the Build Queue below and Sarah will pick it up from there.',
+        'The desk hiccuped, but your idea is safe. Book a free call below and Sarah will pick it up from there.',
         setSentText,
         () => setPlay('sent')
       );
@@ -249,8 +249,8 @@ export default function FrontDeskHero() {
   }, [email, idea, typeOn]);
 
   const buildHref = idea.trim()
-    ? `/build-queue?idea=${encodeURIComponent(idea.trim().slice(0, 300))}`
-    : '/build-queue';
+    ? `/book?idea=${encodeURIComponent(idea.trim().slice(0, 300))}`
+    : '/book';
 
   return (
     <section
@@ -453,7 +453,7 @@ export default function FrontDeskHero() {
                             href={buildHref}
                             className="font-mono text-[11px] font-bold text-[#FFDD55] underline underline-offset-4"
                           >
-                            Skip the wait: reserve a Build Queue slot now →
+                            Skip the wait: book a free call now →
                           </Link>
                         </div>
                       )}
@@ -480,16 +480,16 @@ export default function FrontDeskHero() {
             so on phones this duplicate pair steps aside. */}
         <div className={`mt-8 flex-col sm:flex-row gap-3.5 ${play === 'idle' || play === 'typing' ? 'flex' : 'hidden sm:flex'}`}>
           <Link
-            href="/build-queue"
+            href="/book"
             className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:shadow-[6px_6px_0_0_#161616] hover:-translate-y-0.5 transition-all"
           >
-            Join the Build Queue
+            Book a Free Call
           </Link>
           <Link
-            href="/book"
+            href="/demos"
             className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:shadow-[6px_6px_0_0_#161616] hover:-translate-y-0.5 transition-all"
           >
-            Book a Free Call
+            See Free Demos
           </Link>
         </div>
 

@@ -61,8 +61,8 @@ const HOME_FAQ = [
     a: 'Websites, voice agents, and command centers go live in about a week from kickoff. Custom software, full apps, and online stores are deeper builds and usually take two to four weeks. Fixed scope, fixed timeline, fixed quote. Modern Mustard Seed is now booking new builds and gives each engagement focused attention.',
   },
   {
-    q: 'How do I get on the build queue?',
-    a: 'Submit your idea at modernmustardseed.com/build-queue. Sarah reviews every submission personally and replies fast, usually the same day. Every client also gets Mr. Mustard, the studio AI, on call 24/7 for questions between conversations.',
+    q: 'How do I get started?',
+    a: 'Book a free 30-minute call at modernmustardseed.com/book. Sarah takes every call herself. Every client also gets Mr. Mustard, the studio AI, on call 24/7 for questions between conversations.',
   },
   {
     q: 'What does it cost?',

@@ -25,7 +25,7 @@ const MENU_GROUPS = [
       { label: 'How It Works', href: '/work-with-us' },
       { label: 'Services', href: '/services' },
       { label: 'The Work', href: '/work' },
-      { label: 'Join the Build Queue', href: '/build-queue' },
+      { label: 'Book a Free Call', href: '/book' },
     ],
   },
   {
@@ -401,11 +401,11 @@ export default function Navbar() {
                 Book a Call
               </Link>
               <Link
-                href="/build-queue"
+                href="/demos"
                 onClick={() => setMenuOpen(false)}
                 className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Join the Build Queue
+                See Free Demos
               </Link>
             </div>
 

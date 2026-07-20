@@ -14,8 +14,8 @@ const DOORS = [
     pitch:
       'Idea to shipped product. We design, build, brand, and launch it end to end. Websites, voice agents, and command centers go live in about a week. Fixed scope, fixed quote, and you own everything on launch day.',
     points: ['Websites, voice agents, command centers', 'Sarah answers you personally, and fast', 'Plus Mr. Mustard, on call 24/7'],
-    cta: 'Join the Build Queue',
-    href: '/build-queue',
+    cta: 'Book a Free Call',
+    href: '/book',
     featured: true,
   },
   {

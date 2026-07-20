@@ -52,7 +52,6 @@ export default function Footer() {
       links: [
         { label: 'Book a Free Call', href: '/book' },
         { label: 'The Demo Station', href: '/demos' },
-        { label: 'Join the Build Queue', href: '/build-queue' },
         { label: 'AI-Proof Your Business', href: '/ai-proof' },
         { label: 'Partner Program', href: '/partners' },
       ],
@@ -92,16 +91,16 @@ export default function Footer() {
           </h2>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/build-queue"
+              href="/book"
               className="rounded-full border-2 border-[#161616] bg-[#161616] text-[#F5B700] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,.3)] transition-all hover:-translate-y-0.5"
             >
-              Join the Build Queue
+              Book a Free Call
             </Link>
             <Link
-              href="/book"
+              href="/demos"
               className="rounded-full border-2 border-[#161616] bg-white text-[#161616] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              Book a Free Call
+              See Free Demos
             </Link>
           </div>
         </div>

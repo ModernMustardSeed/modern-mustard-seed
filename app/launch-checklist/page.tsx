@@ -116,7 +116,7 @@ export default function LaunchChecklistPage() {
                   See how we work
                 </Link>
                 <Link
-                  href="/build-queue"
+                  href="/book"
                   className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.35)] hover:-translate-y-0.5 transition-all"
                 >
                   Tell us what you are building
