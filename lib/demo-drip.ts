@@ -8,6 +8,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { sendViaResend } from '@/lib/send-email';
 import { clientEmail, escape } from '@/lib/email';
+import { SITE } from '@/lib/seo';
 import { leadTrade } from '@/lib/outbound-demo';
 import { TRADE_PRESETS } from '@/data/demo-os-trades';
 import type { OutboundLead } from '@/lib/outbound';
@@ -137,13 +138,22 @@ export async function demoStationDrip(
     if (!dripDue(state.step, ageHrs, sinceLastHrs)) continue;
 
     const mail = dripEmail(raw, state.step);
+    // The demo drip is bulk mail to people who never joined a list, so it needs
+    // a visible opt-out AND the RFC 8058 header. Neither existed before
+    // 2026-07-20, and the unsubscribe route it points at now actually blocks
+    // future sends (the two suppression lists were disconnected until today).
+    const unsub = `${SITE.url}/api/outreach/unsubscribe?c=${encodeURIComponent(raw.email!)}`;
+    const html =
+      mail.html +
+      `<div style="text-align:center;font-size:12px;color:#8a857a;padding:18px 0"><a href="${unsub}" style="color:#8a857a">Unsubscribe</a> and I will never email you again.</div>`;
     const result = await sendViaResend({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: raw.email!,
       replyTo: 'sarah@modernmustardseed.com',
       subject: mail.subject,
-      html: mail.html,
+      html,
       mailbox: 'sarah@modernmustardseed.com',
+      unsubscribeUrl: unsub,
     });
     if (!result.ok) {
       console.error(`demo drip send failed for ${raw.id}: ${result.error}`);

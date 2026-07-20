@@ -275,6 +275,8 @@ export async function sidekickDrip(
       subject: mail.subject,
       html,
       mailbox: 'sarah@modernmustardseed.com',
+      // Bulk mail: emits List-Unsubscribe + one-click POST (RFC 8058).
+      unsubscribeUrl: unsub,
     });
 
     if (!result.ok) {

@@ -20,7 +20,28 @@ export function normEmail(a: string): string {
   return (a || '').trim().toLowerCase();
 }
 
-/** Map of address -> suppression reason for the still-active (unresolved) entries. */
+/**
+ * Map of address -> suppression reason for the still-active entries.
+ *
+ * UNIONS THE TWO SUPPRESSION LISTS (fixed 2026-07-20). They were disconnected,
+ * and the gap meant every unsubscribe click was ignored by every send path:
+ *
+ *  - `email_suppressions`: written ONLY by the Resend bounce/complaint webhook
+ *    (lib/email-log.ts addSuppression). Has `resolved` so a cleared address can
+ *    resume. This was the only list any send path enforced.
+ *  - `suppression`: written by all three UNSUBSCRIBE routes (/api/outreach/
+ *    unsubscribe, /api/harvest/unsubscribe, admin manual opt-out). It was read
+ *    by exactly one function, lib/outreach.ts isSuppressed, which is called only
+ *    from the admin add-prospect form. So a person could click Unsubscribe, be
+ *    told "You will not be contacted again", and keep receiving mail from the
+ *    drips and every transactional path.
+ *
+ * An opt-out is PERMANENT and has no `resolved` column by design: a human said
+ * stop. Only a bounce/complaint is clearable, and only via the Resend dashboard.
+ *
+ * `suppression.contact` also stores social handles, so non-email rows simply
+ * never match an address in `list` and are ignored.
+ */
 export async function activeSuppressions(
   addrs: string[],
 ): Promise<Map<string, { reason: string | null; detail: string | null }>> {
@@ -28,13 +49,39 @@ export async function activeSuppressions(
   const sb = getSupabase();
   const list = [...new Set(addrs.map(normEmail).filter(Boolean))];
   if (!sb || !list.length) return out;
-  const { data } = await sb
-    .from('email_suppressions')
-    .select('email,reason,detail')
-    .in('email', list)
-    .eq('resolved', false);
-  for (const r of data ?? []) out.set(r.email, { reason: r.reason, detail: r.detail });
+
+  const [bounced, optedOut] = await Promise.all([
+    sb.from('email_suppressions').select('email,reason,detail').in('email', list).eq('resolved', false),
+    sb.from('suppression').select('contact,reason').in('contact', list),
+  ]);
+
+  for (const r of bounced.data ?? []) out.set(r.email, { reason: r.reason, detail: r.detail });
+
+  // Opt-outs win: a human asking to be left alone outranks a clearable bounce.
+  for (const r of optedOut.data ?? []) {
+    out.set(normEmail(r.contact as string), {
+      reason: (r.reason as string | null) ?? 'unsubscribed',
+      detail: 'This address opted out. Opt-outs are permanent and cannot be cleared from the Resend dashboard.',
+    });
+  }
+
+  // A read failure must NEVER read as "nobody is suppressed". Throwing makes
+  // callers fail closed: sendViaResend catches this and refuses the send rather
+  // than risking mail to someone who asked to be left alone.
+  if (bounced.error || optedOut.error) {
+    const why = bounced.error?.message ?? optedOut.error?.message ?? 'unknown';
+    throw new SuppressionReadError(why);
+  }
+
   return out;
+}
+
+/** Thrown when the suppression lists cannot be read. Callers must fail closed. */
+export class SuppressionReadError extends Error {
+  constructor(detail: string) {
+    super(`Suppression list unreadable (${detail}). Refusing to send: an unreadable list cannot be treated as empty.`);
+    this.name = 'SuppressionReadError';
+  }
 }
 
 /** Add / refresh a suppression entry (from a bounce, complaint, or reconcile). */

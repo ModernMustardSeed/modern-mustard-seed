@@ -33,7 +33,24 @@ export type TrackedSend = {
   mailbox?: string;
   prospectId?: string | null;
   leadId?: string | null;
+  /**
+   * One-click unsubscribe URL. Set this on ANY bulk or drip mail. It emits
+   * List-Unsubscribe + List-Unsubscribe-Post (RFC 8058), which Gmail and Yahoo
+   * require from bulk senders and which materially protects inbox placement.
+   * Added 2026-07-20; before that no send path in the repo emitted the header.
+   * Leave it unset for one-to-one transactional mail (receipts, replies).
+   */
+  unsubscribeUrl?: string;
 };
+
+/** RFC 8058 one-click unsubscribe headers, or nothing for transactional mail. */
+export function unsubHeaders(url?: string): Record<string, string> | undefined {
+  if (!url) return undefined;
+  return {
+    'List-Unsubscribe': `<${url}>`,
+    'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+  };
+}
 
 export type TrackedResult =
   | { ok: true; id: string; droppedBcc?: string[] }
@@ -64,7 +81,14 @@ export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
   // Suppression gate. A suppressed primary recipient (to/cc) is a hard stop —
   // Resend would drop it anyway; we say so instead of pretending it sent. A
   // suppressed bcc is merely stripped so the real recipients still get the mail.
-  const supp = await activeSuppressions([...to, ...cc, ...bcc]);
+  // An unreadable suppression list fails CLOSED (see SuppressionReadError):
+  // treating it as empty is how you mail someone who unsubscribed.
+  let supp: Awaited<ReturnType<typeof activeSuppressions>>;
+  try {
+    supp = await activeSuppressions([...to, ...cc, ...bcc]);
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : 'Suppression list unreadable. Refusing to send.' };
+  }
   const blockedPrimary = [...to, ...cc].map(normEmail).filter((a) => supp.has(a));
   if (blockedPrimary.length) {
     const why = blockedPrimary
@@ -74,9 +98,9 @@ export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
       ok: false,
       suppressed: blockedPrimary,
       error:
-        `Not sent: ${why} is on the Resend suppression list from a past hard bounce or spam complaint, ` +
-        `so Resend will drop it. Clear it in the Resend dashboard (Emails → the suppressed message → ` +
-        `"Remove from suppression list"), then mark it resolved here to resume sending.`,
+        `Not sent: ${why}. Either the address opted out (permanent, honor it) or Resend suppressed it after a ` +
+        `hard bounce or spam complaint. A bounce can be cleared in the Resend dashboard (Emails → the suppressed ` +
+        `message → "Remove from suppression list") then marked resolved here. An opt-out is never cleared.`,
     };
   }
   const keptBcc = bcc.filter((a) => !supp.has(normEmail(a)));
@@ -91,6 +115,7 @@ export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
     bcc: keptBcc.length ? keptBcc : undefined,
     replyTo: msg.replyTo,
     subject: msg.subject,
+    headers: unsubHeaders(msg.unsubscribeUrl),
   };
   // Resend's CreateEmailOptions is a union that needs a definite html OR text;
   // build the variant explicitly so the type resolves.
@@ -210,7 +235,17 @@ export function resendClient(): Resend {
     // is not in play).
     const resendTo = useZoho ? externalTo : to;
 
-    const supp = await activeSuppressions([...resendTo, ...cc, ...bcc]);
+    // Fail closed on an unreadable list, same rule as sendViaResend.
+    let supp: Awaited<ReturnType<typeof activeSuppressions>>;
+    try {
+      supp = await activeSuppressions([...resendTo, ...cc, ...bcc]);
+    } catch (err) {
+      const why = err instanceof Error ? err.message : 'Suppression list unreadable.';
+      return {
+        data: null,
+        error: { name: 'application_error', message: why },
+      } as Awaited<ReturnType<typeof real.emails.send>>;
+    }
     const blocked = [...resendTo, ...cc].map(normEmail).filter((a) => supp.has(a));
     if (blocked.length) {
       const why = blocked.map((a) => `${a} (${supp.get(a)?.reason || 'suppressed'})`).join(', ');
