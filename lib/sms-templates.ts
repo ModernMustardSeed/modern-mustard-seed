@@ -1,8 +1,13 @@
 /**
  * Preloaded campaign copy. Every template here is written to survive a carrier
- * compliance review: plain ASCII (so it encodes as cheap single-segment GSM-7,
- * never UCS-2), names the sender and the business, stays conversational rather
- * than blast-shaped, and ends with the STOP opt-out line that A2P requires.
+ * compliance review: plain ASCII (GSM-7, which gets 160 chars per segment where
+ * UCS-2 gets only 70), names the sender and the business, stays conversational
+ * rather than blast-shaped, and ends with the STOP opt-out line A2P requires.
+ *
+ * Most of these land at two segments once a real business name is filled in.
+ * That is normal for compliant outreach: identifying the business and carrying
+ * an opt-out costs roughly 80 characters before the pitch starts. The builder
+ * shows a live segment count so the cost is a choice, not a surprise.
  *
  * Templates are the SAME token language the campaign engine renders per lead
  * (see renderTemplate in lib/sms-campaigns.ts), so a preset can be edited in the
@@ -38,9 +43,9 @@ export const SMS_TEMPLATES: SmsTemplate[] = [
     hint: 'Opens with the score we already pulled. Use on audited leads only.',
     needsLink: false,
     body:
-      "Hi {{business}}, it's {{sender}} with Modern Mustard Seed here in {{city}}. " +
-      'We scored your site a {{score}} out of 100 and found a few things costing you calls. ' +
-      'Want the free 60-second breakdown? Reply YES and I will send it over. ' +
+      "Hi {{business}}, it's {{sender}} at Modern Mustard Seed. " +
+      'Your site scored {{score}}/100 and we found a few fixes. ' +
+      'Want the free breakdown? Reply YES. ' +
       OPT_OUT_LINE,
   },
   {
@@ -49,9 +54,9 @@ export const SMS_TEMPLATES: SmsTemplate[] = [
     hint: 'The workhorse cold opener. No audit needed, works on any local business.',
     needsLink: false,
     body:
-      "Hi {{business}}, it's {{sender}} with Modern Mustard Seed. " +
-      'Most shops in {{city}} lose a few jobs a week to calls that go to voicemail after hours. ' +
-      'We build an AI receptionist that answers every one. Worth a look? Reply YES. ' +
+      "Hi {{business}}, it's {{sender}} at Modern Mustard Seed. " +
+      'Calls after hours go to voicemail and cost you jobs. ' +
+      'Our AI answers every one. Worth a look? Reply YES. ' +
       OPT_OUT_LINE,
   },
   {
@@ -60,9 +65,9 @@ export const SMS_TEMPLATES: SmsTemplate[] = [
     hint: 'For leads who asked to see it. Drops a real link they can tap.',
     needsLink: true,
     body:
-      "Hi {{business}}, {{sender}} at Modern Mustard Seed. " +
-      'Here is the demo we put together for you: {{link}} ' +
-      'Give it a tap and reply with what you think. A human answers here. ' +
+      'Hi {{business}}, {{sender}} at Modern Mustard Seed. ' +
+      'Here is the demo we built you: {{link}} ' +
+      'Tap it and reply, a human answers. ' +
       OPT_OUT_LINE,
   },
   {
@@ -71,9 +76,9 @@ export const SMS_TEMPLATES: SmsTemplate[] = [
     hint: 'Straight to the calendar. Best after a reply or a demo view.',
     needsLink: false,
     body:
-      "Hi {{business}}, {{sender}} at Modern Mustard Seed. " +
-      'Happy to walk you through what we would build and what it costs, no pitch. ' +
-      'Grab any slot that works: {{book}} ' +
+      'Hi {{business}}, {{sender}} at Modern Mustard Seed. ' +
+      'Happy to show you what we would build and what it costs, no pitch. ' +
+      'Any slot here: {{book}} ' +
       OPT_OUT_LINE,
   },
   {
@@ -82,9 +87,9 @@ export const SMS_TEMPLATES: SmsTemplate[] = [
     hint: 'Second touch when the first got no reply. Short, easy to ignore or answer.',
     needsLink: false,
     body:
-      "Hi {{business}}, {{sender}} at Modern Mustard Seed again. " +
-      'Circling back once in case this got buried. Still happy to send the free breakdown. ' +
-      'Want it? Reply YES, or tell me to buzz off and I will. ' +
+      'Hi {{business}}, {{sender}} at Modern Mustard Seed again. ' +
+      'Circling back once in case this got buried. ' +
+      'Still want the free breakdown? Reply YES. ' +
       OPT_OUT_LINE,
   },
   {
@@ -93,8 +98,8 @@ export const SMS_TEMPLATES: SmsTemplate[] = [
     hint: 'For leads that went quiet weeks ago. Leads with news, not a nag.',
     needsLink: true,
     body:
-      "Hi {{business}}, {{sender}} at Modern Mustard Seed. " +
-      'We shipped something since we last talked that I think fits you: {{link}} ' +
+      'Hi {{business}}, {{sender}} at Modern Mustard Seed. ' +
+      'We shipped something that fits you: {{link}} ' +
       'Worth two minutes? Reply and I will explain. ' +
       OPT_OUT_LINE,
   },
