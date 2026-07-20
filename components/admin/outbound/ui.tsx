@@ -228,7 +228,15 @@ export function NicheChip({ niche }: { niche: string }) {
 
 /* ------------------------------ dial session ------------------------------ */
 
-export type DialSession = { startedAt: number; dials: number; demos: number };
+/**
+ * A batch is a FROZEN, ordered list of lead ids minted when the rep hits
+ * "Start batch". Freezing matters: the heat queue re-ranks live, so a session
+ * that re-derives "next lead" every time can silently revisit a lead it already
+ * worked or skip one it never did. With a fixed list the rep gets a finite,
+ * finishable stack out of a floor of thousands.
+ */
+export type DialBatch = { leadIds: string[]; repId: string; repName: string };
+export type DialSession = { startedAt: number; dials: number; demos: number; batch?: DialBatch };
 const SESSION_KEY = 'mms_outbound_session';
 
 export function getDialSession(): DialSession | null {
@@ -253,6 +261,24 @@ export function bumpDialSession(kind: 'dial' | 'demo'): DialSession | null {
   const next = { ...s, dials: s.dials + 1, demos: s.demos + (kind === 'demo' ? 1 : 0) };
   setDialSession(next);
   return next;
+}
+
+export type BatchPosition = { index: number; total: number; nextId: string | null; last: boolean };
+
+/**
+ * Where a lead sits inside the active batch. Position is DERIVED from the frozen
+ * id list rather than stored as a cursor, so a refresh, a back button, or a rep
+ * jumping to a lead out of order can never desync the progress counter.
+ * Returns null when there is no batch (a legacy free-roam session).
+ */
+export function batchPosition(session: DialSession | null, leadId: string): BatchPosition | null {
+  const ids = session?.batch?.leadIds;
+  if (!ids?.length) return null;
+  const i = ids.indexOf(leadId);
+  // Lead isn't in this batch (rep navigated away): point back at the top of the
+  // stack rather than pretending the batch is finished.
+  if (i < 0) return { index: -1, total: ids.length, nextId: ids[0] ?? null, last: false };
+  return { index: i, total: ids.length, nextId: ids[i + 1] ?? null, last: i === ids.length - 1 };
 }
 
 /* -------------------------------- heat chip -------------------------------- */

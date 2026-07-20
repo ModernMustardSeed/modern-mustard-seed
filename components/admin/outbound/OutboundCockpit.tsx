@@ -7,7 +7,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { NICHE_LABELS, OUTCOME_LABELS, denverIso, formatPhone, fmtMoney, monthlyLeak } from '@/lib/outbound';
 import type { CallLog, CallOutcome, Niche, OutboundLead, Pilot, Rep, Script } from '@/lib/outbound';
-import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow, getDialSession, setDialSession, bumpDialSession, SeedBurst } from '@/components/admin/outbound/ui';
+import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow, getDialSession, setDialSession, bumpDialSession, batchPosition, SeedBurst } from '@/components/admin/outbound/ui';
 import type { DialSession } from '@/components/admin/outbound/ui';
 import { ReachOutDeck, AuditIntelCard, ReviewAmmoCard, ThreadPanel, LeadFile } from '@/components/admin/outbound/OutboundReachOut';
 
@@ -153,13 +153,29 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
 
   const nextLeadIdRef = useRef<string | null>(null);
 
+  const batchDoneRef = useRef(false);
+
   const advanceToNext = useCallback(
     (delayMs: number) => {
       const nextId = nextLeadIdRef.current;
-      if (!nextId) return;
+      if (!nextId) {
+        // End of the stack. Close the batch out and send the rep home with the
+        // count, rather than silently parking them on the last lead.
+        if (batchDoneRef.current) {
+          window.setTimeout(() => {
+            const s = getDialSession();
+            const worked = s?.batch?.leadIds.length ?? 0;
+            setDialSession(null);
+            setSessionState(null);
+            push(`Batch complete — ${worked} leads worked, ${s?.demos ?? 0} demos. 🌱`);
+            router.push('/admin/outbound');
+          }, delayMs);
+        }
+        return;
+      }
       window.setTimeout(() => router.push(`/admin/outbound/call/${nextId}`), delayMs);
     },
-    [router],
+    [router, push],
   );
 
   const endSession = useCallback(() => {
@@ -168,7 +184,8 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     setSessionState(null);
     if (s) {
       const mins = Math.max(1, Math.round((Date.now() - s.startedAt) / 60000));
-      push(`Session done: ${s.dials} dials and ${s.demos} demos in ${mins} min. 🌱`);
+      const what = s.batch ? 'Batch ended' : 'Session done';
+      push(`${what}: ${s.dials} dials and ${s.demos} demos in ${mins} min. 🌱`);
     }
   }, [push]);
 
@@ -329,10 +346,20 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     }
   };
 
-  const nextLead = queue.find((qq) => qq.id !== leadId);
+  // Batch mode: the rep is walking a frozen, ordered stack, so "next" is the next
+  // id in that list — never a re-derived hottest lead. Outside a batch this falls
+  // back to the original free-roam behaviour (top of the live heat queue).
+  const pos = batchPosition(session, leadId);
+  const batchNext = pos?.nextId ?? null;
+  const batchNextLead = batchNext ? queue.find((qq) => qq.id === batchNext) ?? null : null;
+  const nextLead = pos ? batchNextLead : queue.find((qq) => qq.id !== leadId);
   useEffect(() => {
-    nextLeadIdRef.current = nextLead?.id ?? null;
-  }, [nextLead]);
+    // In a batch the id is authoritative even when the lead isn't in the heat
+    // queue (most assigned leads won't be) — otherwise the stack would stall on
+    // the first cold lead.
+    nextLeadIdRef.current = pos ? batchNext : nextLead?.id ?? null;
+    batchDoneRef.current = !!pos && !batchNext;
+  }, [pos, batchNext, nextLead]);
 
   // Keyboard shortcuts for the dial floor. Armed only while the call timer is
   // running so a brushed keyboard can never log phantom outcomes.
@@ -366,7 +393,11 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
         <OutboundNav
           active="call"
           right={
-            nextLead ? (
+            pos && batchNext ? (
+              <Link href={`/admin/outbound/call/${batchNext}`} className={btnGhost}>
+                Next in batch →
+              </Link>
+            ) : nextLead ? (
               <Link href={`/admin/outbound/call/${nextLead.id}`} className={btnGhost}>
                 Next lead: {nextLead.business_name.slice(0, 24)} →
               </Link>
@@ -377,14 +408,29 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
         {session && (
           <div className="mb-5 bg-[#1a1815] border-2 border-[#1a1815] rounded-2xl shadow-[4px_4px_0_0_#3f5d34] px-5 py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
             <span className="text-[10px] uppercase tracking-[0.3em] font-oswald font-semibold text-[#3f5d34]" style={{ color: '#8fb37f' }}>
-              ● Session live
+              {pos ? `● ${session.batch?.repName ?? ''} batch` : '● Session live'}
             </span>
             {(() => {
               void sessionTick;
               const mins = Math.max(1, (Date.now() - session.startedAt) / 60000);
               const pace = Math.round((session.dials / mins) * 60);
+              // Position is 0-indexed and -1 when the rep has navigated off the
+              // stack; clamp so the counter never reads "Lead 0 of 25".
+              const at = pos ? Math.max(0, pos.index) + 1 : 0;
+              const pct = pos ? Math.round(((pos.index + 1) / pos.total) * 100) : 0;
               return (
                 <>
+                  {pos && (
+                    <span className="flex items-center gap-2.5">
+                      <span className="font-oswald text-[#b58a2a] text-lg leading-none">
+                        {at}
+                        <span className="text-[#f7f3e9]/40"> / {pos.total}</span>
+                      </span>
+                      <span className="hidden sm:block w-28 h-2 rounded-full bg-[#f7f3e9]/15 overflow-hidden" aria-hidden>
+                        <span className="block h-full bg-[#b58a2a] transition-all duration-500" style={{ width: `${pct}%` }} />
+                      </span>
+                    </span>
+                  )}
                   <span className="font-oswald text-[#f7f3e9] text-lg leading-none">
                     {session.dials} <span className="text-xs text-[#f7f3e9]/50 uppercase">dials</span>
                   </span>
@@ -394,12 +440,19 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
                   <span className="font-oswald text-[#b58a2a] text-lg leading-none">
                     {pace} <span className="text-xs text-[#f7f3e9]/50 uppercase">per hr pace</span>
                   </span>
-                  <span className="font-sans text-xs text-[#f7f3e9]/45">{Math.round(mins)} min in · outcomes auto-advance to the next hottest lead</span>
+                  <span className="font-sans text-xs text-[#f7f3e9]/45">
+                    {Math.round(mins)} min in ·{' '}
+                    {pos
+                      ? pos.last
+                        ? 'last one in the stack'
+                        : `${pos.total - Math.max(0, pos.index) - 1} left after this`
+                      : 'outcomes auto-advance to the next hottest lead'}
+                  </span>
                 </>
               );
             })()}
             <button onClick={endSession} className="ml-auto text-[10px] uppercase tracking-[0.18em] font-oswald font-semibold text-[#f7f3e9]/60 hover:text-[#f7f3e9] border-2 border-[#f7f3e9]/30 hover:border-[#f7f3e9] rounded-lg px-3 py-1.5 transition-colors">
-              End session
+              {pos ? 'End batch' : 'End session'}
             </button>
           </div>
         )}

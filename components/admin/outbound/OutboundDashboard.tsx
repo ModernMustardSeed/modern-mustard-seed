@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
+import Modal from '@/components/ui/Modal';
 import { formatPhone, fmtMoney } from '@/lib/outbound';
 import type { HeatReason, Rep } from '@/lib/outbound';
-import { GoalRing, OutboundNav, StatusChip, NicheChip, HeatChip, useCountUp, api, card, btnPrimary, btnGhost, eyebrow, setDialSession } from '@/components/admin/outbound/ui';
+import { GoalRing, OutboundNav, StatusChip, NicheChip, HeatChip, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, eyebrow, labelCls, setDialSession } from '@/components/admin/outbound/ui';
 
 type Stat = { dials: number; conversations: number; demos_booked: number };
 type QueueLead = {
@@ -27,6 +28,7 @@ type QueueLead = {
   heat: number;
   reason: HeatReason;
 };
+type BatchRep = { id: string; name: string; ready: number };
 type Overview = {
   reps: Rep[];
   today: Record<string, Stat>;
@@ -40,7 +42,7 @@ type Overview = {
 
 const ZERO: Stat = { dials: 0, conversations: 0, demos_booked: 0 };
 
-export default function OutboundDashboard() {
+export default function OutboundDashboard({ adminName = '' }: { adminName?: string }) {
   const [data, setData] = useState<Overview | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -73,6 +75,67 @@ export default function OutboundDashboard() {
     router.push(`/admin/outbound/call/${first.id}`);
   };
 
+  // ── batch mode ──
+  // The heat queue is "hottest 40 on the whole floor". A batch is "the next N of
+  // MY leads, frozen in order, finishable". With thousands of leads on the floor
+  // that difference is the whole job for a rep working an assigned list.
+  const [batchOpen, setBatchOpen] = useState(false);
+  const [batchReps, setBatchReps] = useState<BatchRep[]>([]);
+  const [batchRepId, setBatchRepId] = useState('');
+  const [batchSize, setBatchSize] = useState(25);
+  const [minting, setMinting] = useState(false);
+  const [batchErr, setBatchErr] = useState('');
+
+  const openBatch = useCallback(async () => {
+    setBatchOpen(true);
+    setBatchErr('');
+    try {
+      const { reps } = await api<{ reps: BatchRep[] }>('/api/admin/outbound/batch');
+      setBatchReps(reps);
+      // Default to the signed-in rep's OWN leads. Falling back to "whoever holds
+      // the most" would hand a new caller someone else's floor on first login,
+      // which is exactly the mistake a fresh browser would make.
+      const stored = window.localStorage.getItem('mms_outbound_rep');
+      const byName = adminName
+        ? reps.find((r) => adminName.toLowerCase().includes(r.name.toLowerCase()))
+        : undefined;
+      const mine = reps.find((r) => r.id === stored && r.ready > 0);
+      const best = [...reps].sort((a, b) => b.ready - a.ready)[0];
+      setBatchRepId(byName?.id ?? mine?.id ?? best?.id ?? '');
+    } catch (e) {
+      setBatchErr(e instanceof Error ? e.message : 'Could not load reps.');
+    }
+  }, [adminName]);
+
+  const startBatch = useCallback(async () => {
+    if (!batchRepId || minting) return;
+    setMinting(true);
+    setBatchErr('');
+    try {
+      const res = await api<{ leadIds: string[]; rep: { id: string; name: string }; remaining: number }>(
+        '/api/admin/outbound/batch',
+        { method: 'POST', body: JSON.stringify({ rep_id: batchRepId, size: batchSize }) },
+      );
+      if (!res.leadIds.length) {
+        setBatchErr('No workable leads for that rep right now.');
+        return;
+      }
+      setDialSession({
+        startedAt: Date.now(),
+        dials: 0,
+        demos: 0,
+        batch: { leadIds: res.leadIds, repId: res.rep.id, repName: res.rep.name },
+      });
+      router.push(`/admin/outbound/call/${res.leadIds[0]}`);
+    } catch (e) {
+      setBatchErr(e instanceof Error ? e.message : 'Could not build the batch.');
+    } finally {
+      setMinting(false);
+    }
+  }, [batchRepId, batchSize, minting, router]);
+
+  const pickedRep = batchReps.find((r) => r.id === batchRepId) ?? null;
+
   const recovered = useCountUp(data?.pilots.totalRecovered ?? 0, 900);
 
   return (
@@ -82,11 +145,16 @@ export default function OutboundDashboard() {
         <OutboundNav
           active="dashboard"
           right={
-            data?.queue[0] ? (
-              <button onClick={startSession} className={btnPrimary}>
-                ▶ Start session ({data.queue.length} hot)
+            <div className="flex items-center gap-2">
+              <button onClick={() => void openBatch()} className={btnSeed}>
+                ▦ Start batch
               </button>
-            ) : undefined
+              {data?.queue[0] ? (
+                <button onClick={startSession} className={btnPrimary}>
+                  ▶ Start session ({data.queue.length} hot)
+                </button>
+              ) : null}
+            </div>
           }
         />
 
@@ -304,6 +372,88 @@ export default function OutboundDashboard() {
           </div>
         </div>
       </main>
+
+      <Modal
+        open={batchOpen}
+        onClose={() => setBatchOpen(false)}
+        eyebrow="Call batch"
+        title="Build a finishable stack"
+        subtitle="A frozen, ordered slice of one rep's leads. Callbacks that are due come first, then never-touched leads, and inside each the businesses with no real website lead the way."
+        headerTone="dark"
+        size="sm"
+        footer={
+          <div className="flex justify-end gap-2">
+            <button onClick={() => setBatchOpen(false)} className={btnGhost}>
+              Cancel
+            </button>
+            <button onClick={() => void startBatch()} className={btnPrimary} disabled={!batchRepId || minting || (pickedRep?.ready ?? 0) === 0}>
+              {minting ? 'Building…' : `Start ${Math.min(batchSize, pickedRep?.ready ?? batchSize)} calls`}
+            </button>
+          </div>
+        }
+      >
+        <div>
+          <span className={labelCls}>Whose leads</span>
+          <div className="flex flex-wrap gap-1.5">
+            {batchReps.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => setBatchRepId(r.id)}
+                disabled={r.ready === 0}
+                className={`px-3.5 py-2 rounded-lg border-2 font-oswald font-semibold uppercase tracking-[0.1em] text-xs transition-all disabled:opacity-35 disabled:pointer-events-none ${
+                  batchRepId === r.id
+                    ? 'bg-[#1a1815] text-[#b58a2a] border-[#1a1815]'
+                    : 'bg-transparent text-[#1a1815]/55 border-[#1a1815]/25 hover:border-[#1a1815]'
+                }`}
+              >
+                {r.name} <span className="opacity-60">· {r.ready}</span>
+              </button>
+            ))}
+            {!batchReps.length && <span className="font-sans text-sm text-[#1a1815]/45">Loading reps…</span>}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <span className={labelCls}>How many</span>
+          <div className="flex flex-wrap gap-1.5">
+            {[10, 25, 50, 100].map((n) => (
+              <button
+                key={n}
+                onClick={() => setBatchSize(n)}
+                className={`px-3.5 py-2 rounded-lg border-2 font-oswald font-semibold uppercase tracking-[0.1em] text-xs transition-all ${
+                  batchSize === n
+                    ? 'bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815]'
+                    : 'bg-transparent text-[#1a1815]/55 border-[#1a1815]/25 hover:border-[#1a1815]'
+                }`}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {pickedRep && (
+          <p className="mt-4 font-sans text-[13px] leading-relaxed text-[#1a1815]/60">
+            {pickedRep.ready === 0 ? (
+              <>
+                <strong className="text-[#a03123]">{pickedRep.name} has nothing workable right now.</strong> Every lead is either
+                worked, or its callback is not due yet.
+              </>
+            ) : (
+              <>
+                <strong className="text-[#1a1815]">{pickedRep.name}</strong> has{' '}
+                <strong className="text-[#1a1815]">{pickedRep.ready}</strong> workable leads. This takes the next{' '}
+                <strong className="text-[#1a1815]">{Math.min(batchSize, pickedRep.ready)}</strong> and steps through them one at a
+                time. Outcomes advance automatically, and the stack survives a refresh.
+              </>
+            )}
+          </p>
+        )}
+
+        {batchErr && (
+          <p className="mt-3 font-sans text-[13px] text-[#a03123] border-2 border-[#a03123]/30 rounded-xl px-3 py-2">{batchErr}</p>
+        )}
+      </Modal>
     </div>
   );
 }
