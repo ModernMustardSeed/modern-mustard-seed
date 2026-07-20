@@ -18,8 +18,8 @@ export const BROADCAST = {
   metaTitle: 'MUSTARD BROADCAST. We Make Your Commercial and Run Your Ads',
   metaDescription:
     'Done-for-you advertising for local businesses: a cinematic commercial produced for your business, Facebook, Instagram, and Google ads launched and managed weekly, plain-English monthly reports. From $297/mo, month to month. By Modern Mustard Seed.',
-  demoVideo: '/ads/broadcast-demo-16x9.mp4',
-  demoPoster: '/ads/broadcast-demo-poster.jpg',
+  demoVideo: '/ads/broadcast-demo-roofing-16x9.mp4',
+  demoPoster: '/ads/broadcast-demo-roofing-poster.jpg',
 } as const;
 
 export type BroadcastTier = {

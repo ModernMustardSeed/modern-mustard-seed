@@ -26,20 +26,20 @@ export function TimberlineConfession() {
             </Reveal>
             <Reveal variant="slam">
               <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">
-                This company
-                <br /> does not exist.
+                None of these
+                <br /> companies exist.
               </h2>
             </Reveal>
             <Reveal variant="rise" delay={100}>
               <div className="font-body text-[#161616]/75 mt-5 space-y-4 leading-relaxed max-w-xl">
                 <p>
-                  Timberline Lawn Co. is a landscaping company we invented this afternoon to show you the treatment. The mountains are real. The pipeline is real. The mower carved a fictional name into a lawn that has never been mowed.
+                  Ironwood Roofing, Timberline Lawn Co., Glacier Air. We invented all three to show you the treatment. The storm is real, the mountains are real, the pipeline is real. The roof that got hammered at 2 a.m. protects a family who does not exist.
                 </p>
                 <p>
-                  That film took the studio one afternoon: written, shot, scored, and cut. No camera crew, no location fees, no $10,000 production invoice. Which is the entire point:
+                  Each film took the studio one afternoon: written, shot, scored, and cut. No camera crew, no location fees, no $10,000 production invoice. Which is the entire point:
                 </p>
                 <p className="font-sans font-extrabold text-[#161616] text-lg">
-                  If we do this for a company that does not exist, imagine what we do with your real one.
+                  If we do this for companies that do not exist, imagine what we do with your real one.
                 </p>
               </div>
             </Reveal>
@@ -76,7 +76,7 @@ export function TimberlineConfession() {
                   <span className="shrink-0 rounded-lg bg-[#1E50C8] px-4 py-2 font-sans font-bold text-xs text-white">Get Quote</span>
                 </div>
               </div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/50 text-center mt-3">How it looks in the feed</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/50 text-center mt-3">How a spot looks in the feed</p>
             </div>
           </Reveal>
         </div>
@@ -84,6 +84,7 @@ export function TimberlineConfession() {
         {/* Film strip */}
         <Reveal variant="rise" delay={220}>
           <div className="mt-14 border-y-8 border-[#161616] py-3 bg-[#161616]" style={{ borderImage: 'repeating-linear-gradient(90deg, #161616 0 14px, #FBF6EA 14px 22px) 8' }}>
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#FBF6EA]/60 text-center pb-2.5">The Timberline shot list, start to finish</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-3">
               {FILM_STRIP.map((f) => (
                 <figure key={f.src} className="m-0">

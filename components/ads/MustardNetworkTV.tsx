@@ -23,14 +23,14 @@ const CHANNELS: Channel[] = [
   {
     n: '01',
     title: 'Timberline Lawn Co.',
-    note: 'The landscaping demo from the top of this page. The company is fictional. The craft is not.',
+    note: 'Landscaping: the company name mowed into the lawn beneath the peaks. Fictional company, real craft.',
     src: '/ads/broadcast-demo-16x9.mp4',
     poster: '/ads/broadcast-demo-poster.jpg',
   },
   {
     n: '02',
     title: 'Glacier Air Heating + Cooling',
-    note: 'The HVAC demo: the company name spelled in frost on a window while summer bakes outside. Also fictional. Also one afternoon.',
+    note: 'HVAC: the name spelled in frost on the front window while summer bakes outside. Cold you can see.',
     src: '/ads/broadcast-demo-hvac-16x9.mp4',
     poster: '/ads/broadcast-demo-hvac-poster.jpg',
   },

@@ -83,7 +83,7 @@ export default function BroadcastHero() {
                   <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700] inline-block" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#1E50C8] inline-block" />
                 </div>
-                <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#FBF6EA]/80">Mustard Network · CH 01 · Timberline Lawn Co.</p>
+                <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#FBF6EA]/80">Mustard Network · CH 01 · Ironwood Roofing Co.</p>
                 <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#E0301E] font-bold">
                   <span className="w-2 h-2 rounded-full bg-[#E0301E] animate-pulse inline-block" aria-hidden="true" />
                   On Air
@@ -99,7 +99,7 @@ export default function BroadcastHero() {
                 loop
                 playsInline
                 preload="metadata"
-                aria-label="Demo commercial for Timberline Lawn Co., a fictional landscaping company"
+                aria-label="Demo commercial for Ironwood Roofing Co., a fictional roofing company"
               />
               <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#161616] border-t border-[#FBF6EA]/15">
                 <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[#FBF6EA]/60">
