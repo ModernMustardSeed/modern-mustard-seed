@@ -162,7 +162,7 @@ export const OFFER_LADDER: LadderRung[] = [
     price: '$750 to $35,000',
     title: 'Done-for-you builds',
     detail: 'The "we build it for you" branch and the big tickets. Always quoted after a free call, never priced on the spot. This is what most of your booked calls turn into.',
-    examples: ['Seed Site (14 days)', 'Full business build', 'Idea to Product ($15k to $35k)'],
+    examples: ['Seed Site (about a week)', 'Full business build', 'Idea to Product ($15k to $35k)'],
   },
   {
     rung: 6,
@@ -391,7 +391,7 @@ export const PHASES: Phase[] = [
           },
           {
             heading: 'The ranges, so numbers do not scare you',
-            body: 'A simple site starts small and ships in about 14 days. A full business build runs a few weeks. A serious custom product (Idea to Product) runs roughly $15,000 to $35,000. You do not need these numbers to sell. You need them so a big figure never rattles you on a call. Every one of these is a flat, agreed price, with a 50 percent deposit to start.',
+            body: 'A simple site starts small and ships in about a week. A full business build runs one to two weeks. A serious custom product (Idea to Product) runs roughly $15,000 to $35,000. You do not need these numbers to sell. You need them so a big figure never rattles you on a call. Every one of these is a flat, agreed price, with a 50 percent deposit to start.',
           },
           {
             heading: 'The golden rule: you never quote',

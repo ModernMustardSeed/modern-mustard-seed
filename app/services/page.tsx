@@ -67,7 +67,7 @@ export default function ServicesPage() {
               What We <span className="text-gradient-mustard">Build</span>
             </h1>
             <p className="text-white/55 text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
-              Six lines of work. Every one shipped end to end by an operator-engineer who has built the same thing dozens of times. No handoffs, no strategy decks that never become products.
+              Four lines of work. Every one shipped end to end by an operator-engineer who has built the same thing dozens of times. No handoffs, no strategy decks that never become products.
             </p>
           </div>
 

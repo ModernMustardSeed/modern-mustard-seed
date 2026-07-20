@@ -76,7 +76,7 @@ const steps = [
   {
     eyebrow: 'Step 3',
     title: 'It answers from day one',
-    body: 'Live on your number in about two weeks. It is yours, fully, with every call captured from the first ring.',
+    body: 'Live on your number in about a week. It is yours, fully, with every call captured from the first ring.',
   },
 ];
 
@@ -91,7 +91,7 @@ const faq = [
   },
   {
     q: 'How fast can it go live?',
-    a: 'Most voice agents are live on your number in about two weeks, from first conversation to answering real calls.',
+    a: 'Most voice agents are live on your number in about a week, from first conversation to answering real calls.',
   },
   {
     q: 'Does it work with my calendar and CRM?',
@@ -135,7 +135,7 @@ export default function VoiceAgentsPage() {
           serviceJsonLd({
             name: 'Multilingual AI Voice Agents',
             description:
-              'Custom 24/7 AI voice agents that answer every call in a natural human voice, in 100+ languages with automatic language detection. They book appointments, answer FAQs, qualify leads, and route urgent calls. Built and live in about two weeks.',
+              'Custom 24/7 AI voice agents that answer every call in a natural human voice, in 100+ languages with automatic language detection. They book appointments, answer FAQs, qualify leads, and route urgent calls. Built and live in about a week.',
           }),
           faqJsonLd(faq),
         ]}
@@ -307,7 +307,7 @@ export default function VoiceAgentsPage() {
               <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.1]">
                 Live in about{' '}
                 <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
-                  two weeks
+                  a week
                 </span>
               </h2>
             </div>

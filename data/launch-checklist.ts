@@ -450,7 +450,7 @@ export const ITEMS: ChecklistItem[] = [
       'health-beauty-wellness': 'Make booking the hero of the homepage. Every section should funnel toward an appointment.',
     },
     mms: { label: 'We build sites that convert', href: '/work-with-us' },
-    time: '2 to 4 weeks',
+    time: '1 to 4 weeks',
     cost: 'Our core build',
   },
   {

@@ -90,7 +90,7 @@ export const WHITEPAPER = {
     {
       heading: 'How it works',
       body: [
-        'Three steps, and it is live on your number in about two weeks. First, we learn your business: your services, hours, FAQs, the way you talk, and exactly what counts as an emergency. Second, we build and train the agent with a custom voice, your script, and your calendar and CRM wired in, tested against real call flows before it ever picks up. Third, it answers from day one, fully yours, with every call captured from the first ring.',
+        'Three steps, and it is live on your number in about a week. First, we learn your business: your services, hours, FAQs, the way you talk, and exactly what counts as an emergency. Second, we build and train the agent with a custom voice, your script, and your calendar and CRM wired in, tested against real call flows before it ever picks up. Third, it answers from day one, fully yours, with every call captured from the first ring.',
       ],
     },
     {
