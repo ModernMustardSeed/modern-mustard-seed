@@ -15,6 +15,26 @@ export const maxDuration = 60;
  * Auto-send requires OUTREACH_FROM (a separate sending domain) so this never
  * touches the deliverability of buyer and partner mail. Without it, the cron is
  * a safe no-op.
+ *
+ * ⚠️ DELIBERATELY OFF as of 2026-07-20. OUTREACH_FROM is unset in BOTH the local
+ * env and Vercel production, so this has never auto-advanced a single touch.
+ * Do NOT "fix" that by setting the variable, because two things are wrong and
+ * only one of them is the env var:
+ *
+ *  1. CONTENT IS STALE. The three touches in lib/outreach.ts pitch the Claude
+ *     Code course and the idea-to-spec product as the lead offer. Decision-ledger
+ *     entry 4 moved Player/Builder OFF the promoted ladder and entry 5 killed the
+ *     playbook SKU. Turning this on would cold-email strangers about products the
+ *     business has deliberately stopped selling. Rewrite the touches forge-forward
+ *     (lead with "hear your own phone answered in 60 seconds") BEFORE enabling.
+ *  2. DELIVERABILITY. This is cold mail to people with no prior relationship. The
+ *     separate-domain design above is correct and must be honored; sending it from
+ *     modernmustardseed.com would put buyer, client, and invoice mail behind the
+ *     spam reputation of cold outreach.
+ *
+ * The warm follow-up that DOES run lives in lib/demo-drip.ts (demo-station
+ * forgers) and lib/sidekick-drip.ts (sidekick forgers). Those are people who
+ * raised their hand, so they send from the main domain by design.
  */
 function authed(req: Request): boolean {
   const expected = process.env.CRON_SECRET;
@@ -27,7 +47,13 @@ export async function GET(req: Request) {
 
   const from = process.env.OUTREACH_FROM;
   const apiKey = process.env.RESEND_API_KEY;
-  if (!from || !apiKey) return NextResponse.json({ ok: true, disabled: true, reason: 'Set OUTREACH_FROM (separate domain) to enable auto-advance.' });
+  if (!from || !apiKey)
+    return NextResponse.json({
+      ok: true,
+      disabled: true,
+      reason:
+        'Intentionally off. OUTREACH_FROM is unset in local AND production. Enabling needs TWO things, not one: (1) rewrite the three touches in lib/outreach.ts forge-forward, they still pitch products retired by decision-ledger entries 4 and 5, and (2) point OUTREACH_FROM at a SEPARATE verified sending domain so cold mail cannot damage buyer-mail deliverability.',
+    });
 
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'db_not_configured' }, { status: 500 });

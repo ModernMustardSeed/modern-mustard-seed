@@ -187,9 +187,17 @@ async function handleForge(
       type: 'contact',
       email,
       name: ownerName,
+      business_name: business,
+      company: business,
+      industry: verticalId,
       source: 'sidekick-forge',
       status: 'new',
-      notes: `[sidekick] ${business} · ${getVertical(verticalId).label} · ${city} · taught him: ${services.slice(0, 160)}`,
+      // `run=<uuid>` is a MACHINE-READ TOKEN, not prose: lib/sidekick-drip.ts
+      // extracts it to link the follow-up emails back to this exact demo.
+      // Keep it first and keep the shape. (The leads table has no demo_url
+      // column and the Sidekick forge is a no-DDL surface, so the token is
+      // how the run travels with the lead.)
+      notes: `run=${runId} [sidekick] ${business} · ${getVertical(verticalId).label} · ${city} · taught him: ${services.slice(0, 160)}`,
     });
   } catch {
     /* non-fatal */
