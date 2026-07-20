@@ -1,4 +1,5 @@
 import { TRADE_PRESETS, VOICE_SERVICES, TICKET_WORD, type OsTradeKey } from '@/data/demo-os-trades';
+import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
 
 /**
  * The receptionist trade fleet: one landing page per trade at
@@ -53,8 +54,14 @@ export const TRADE_PAGES: TradePage[] = [
 
 export const ALL_TRADE_SLUGS = TRADE_PAGES.map((t) => t.slug);
 
-/** The release gate. Template approval ships the first; Sarah's word ships the fleet. */
-export const LIVE_TRADE_SLUGS: string[] = ['roofers'];
+/**
+ * The release gate. Template approval ships the first; Sarah's word ships the fleet.
+ * FLEET RELEASED 2026-07-20 (Sarah): all 28 trades live. Decision-ledger entry 9
+ * makes the trade fleet substrate law, built unconditionally as the inbound pull
+ * layer. Shipped only after the $197/$297 price split was fixed, so no page
+ * quotes a price Stripe does not charge.
+ */
+export const LIVE_TRADE_SLUGS: string[] = ALL_TRADE_SLUGS;
 
 export const liveTradePages = () => TRADE_PAGES.filter((t) => LIVE_TRADE_SLUGS.includes(t.slug));
 
@@ -89,7 +96,7 @@ export function tradeFaqs(forWord: string, services: string, avgTicket: number, 
     },
     {
       q: 'What does it cost once it is installed?',
-      a: 'Plans start at $197 a month with a hard minute cap, no free trial games, and no per-seat pricing. The right first step is the free forged demo: hear it answer for your business, then decide. Every install is done by a human at Modern Mustard Seed and includes the setup of your services, hours, and booking flow.',
+      a: `Plans start at $${sidekickUsd(sidekickTiers[0].monthlyCents)} a month plus a $${sidekickUsd(sidekickTiers[0].setupCents)} one-time setup, with a hard minute cap, no free trial games, and no per-seat pricing. The right first step is the free forged demo: hear it answer for your business, then decide. Every install is done by a human at Modern Mustard Seed and includes the setup of your services, hours, and booking flow.`,
     },
   ];
 }

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, faqJsonLd, serviceJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { getTradePage, liveTradePages, tradeFaqs, DEMO_LINE } from '@/data/trade-pages';
+import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
 import MissedCallMath from '@/components/voice-agents/MissedCallMath';
 
 /**
@@ -71,10 +72,10 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/demos"
+                  href="/sidekick"
                   className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
                 >
-                  Forge My Free Demo
+                  Ring My Own Phone
                 </Link>
                 <a
                   href={`tel:${DEMO_LINE.tel}`}
@@ -201,7 +202,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               {
                 n: '03',
                 t: 'We Install It',
-                b: 'A human at Modern Mustard Seed wires it to your real line, services, hours, and booking flow. Plans from $197 a month, hard caps, no trial games.',
+                b: `A human at Modern Mustard Seed wires it to your real line, services, hours, and booking flow. Plans from $${sidekickUsd(sidekickTiers[0].monthlyCents)} a month, hard caps, no trial games.`,
               },
             ].map((s) => (
               <div key={s.n} className="rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616]">
@@ -251,10 +252,10 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              href="/demos"
+              href="/sidekick"
               className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              Forge My Free Demo
+              Ring My Own Phone
             </Link>
             <a
               href={`tel:${DEMO_LINE.tel}`}

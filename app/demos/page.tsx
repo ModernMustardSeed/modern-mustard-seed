@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { buildMetadata } from '@/lib/seo';
 import DemoStation from '@/components/DemoStation';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
@@ -167,8 +168,13 @@ export default function DemosPage() {
               Sixty seconds of you. Then the forge does the rest.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/70 mt-4 leading-relaxed">
-              The phone number matters: your receptionist demo answers as your business, so we build it against a real
-              line. Nothing is charged and nobody calls you unless you ask.
+              Your receptionist demo answers as your business, and you talk to it right in your browser. The phone
+              number is how we reach you about the build, nothing more. Nothing is charged and nobody calls you unless
+              you ask. Want it to ring your actual phone instead?{' '}
+              <Link href="/sidekick" className="underline underline-offset-4 font-semibold hover:text-[#E0301E]">
+                Forge it at the Sidekick station
+              </Link>
+              .
             </p>
             <div className="mt-6 bg-[#161616] rounded-2xl border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-5">
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">What lands, and when</p>

@@ -1,13 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
 
 /**
  * The trade page's interactive moment: the visitor's own missed-call math.
  * Monthly leak = missed calls/week x 4.3 weeks x close rate x average ticket.
  * Pure client state, no network, no deps. Sample defaults come from the
  * trade preset and are labeled as editable assumptions, never as claims.
+ *
+ * The price is DERIVED from sidekickTiers, never typed here. This page once
+ * carried a hardcoded $197 while Stripe charged $297 (fixed 2026-07-20); a
+ * quoted price that does not come from the tier table is a revenue bug.
  */
+const ENTRY_MONTHLY = sidekickUsd(sidekickTiers[0].monthlyCents);
 export default function MissedCallMath({
   avgTicket,
   ticketWord,
@@ -114,7 +120,7 @@ export default function MissedCallMath({
           <p className="mt-4 font-body text-sm text-[#FBF6EA]/75 leading-relaxed">
             Your numbers, your math: {missed} missed calls a week, a {closeRate}% close rate, and a $
             {ticket.toLocaleString()} average {ticketWord}. The receptionist answers every one of those calls for
-            $197 a month.
+            ${ENTRY_MONTHLY} a month.
           </p>
         </div>
       </div>

@@ -146,7 +146,7 @@ export const OFFER_LADDER: LadderRung[] = [
     price: '$197 to $997',
     title: 'Productized offers',
     detail: 'A finished, impressive thing at a set price. This is where the monthly plans start too, which is how the business earns while it sleeps.',
-    examples: ['Pictures commercial ($197 / $497)', 'Sidekick ($297 setup + $197/mo)', 'GEO Fix Pack ($297)'],
+    examples: ['Pictures commercial ($197 / $497)', 'Sidekick ($397 setup + $297/mo)', 'GEO Fix Pack ($297)'],
   },
   {
     rung: 4,
@@ -337,7 +337,7 @@ export const PHASES: Phase[] = [
             heading: 'The Sidekick, a 24/7 AI receptionist  ·  /sidekick',
             bullets: [
               'The free wow: it forges a personalized AI receptionist for their business in about 60 seconds, and they talk to it live.',
-              'To keep him: $297 to set up plus $197 a month (250 answered minutes). The Pro is $497 plus $397 a month (600 minutes, caller memory, booking, a monthly tune-up with Sarah).',
+              'To keep him: $397 to set up plus $297 a month (250 answered minutes). The Pro is $597 plus $497 a month (600 minutes, caller memory, booking, a monthly tune-up with Sarah).',
               'Say it like this: "An AI that answers your phone 24/7 in a natural voice and books appointments, even when you are closed or slammed."',
             ],
           },
@@ -887,7 +887,7 @@ export const GLOSSARY: GlossaryTerm[] = [
   { term: 'SEO', def: 'Search Engine Optimization. Making pages show up on Google.' },
   { term: 'Productized offer', def: 'A finished thing sold at a set price (like the $197 commercial), instead of a custom quote.' },
   { term: 'Recurring / subscription', def: 'Income that repeats every month from an ongoing plan. The top of the ladder and the goal.' },
-  { term: 'Setup fee', def: 'A one-time charge to stand up a product (like the $297 to set up a Sidekick), often credited toward a bigger build.' },
+  { term: 'Setup fee', def: 'A one-time charge to stand up a product (like the $397 to set up a Sidekick), often credited toward a bigger build.' },
   { term: 'Retainer', def: 'A monthly fee for ongoing work or support, usually after a project ships.' },
   { term: 'Proposal', def: 'The document that lays out scope and a fixed price for a client to sign and pay a deposit on.' },
   { term: 'Deposit and balance', def: 'Clients pay half up front (deposit) to start and the rest (balance) on delivery.' },
