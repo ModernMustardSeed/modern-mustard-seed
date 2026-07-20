@@ -51,30 +51,45 @@ const argv = process.argv.slice(2);
 const APPLY = argv.includes('--apply');
 const OWNER_ARG = (argv.find((a, i) => argv[i - 1] === '--owner') || 'Anthony').trim();
 
-// Busy western markets. Quotas sum above 400 so ranking has room to drop the weak.
-// Montana is already heavily mined (Bozeman 102 / Kalispell 98 / Billings 77 on the
-// floor), so those quotas lean on the no-website pool that earlier runs skipped.
-// Colorado, Idaho, Washington, Oregon, Nevada, Utah and Wyoming are untouched ground.
+// Round 2, 2026-07-20: high-density metros. Two kinds of city here.
+//
+// The first group we already mined and barely dented — Denver returned 2,520 raw
+// candidates and round 1 took 52 of them, so the per-city quota, not the supply,
+// was the binding constraint. Round 1's leads are on the floor and dedupe skips
+// them automatically, so these quotas reach genuinely new businesses.
+//
+// The second group is dense western metro with ZERO coverage on the floor today:
+// Las Vegas, Portland, Seattle, Albuquerque, Tucson, Sacramento, Tacoma, Ogden,
+// Provo. Phoenix/Scottsdale are deliberately absent, already worked by earlier runs.
 const CITIES = [
-  { place: 'Kalispell, MT', quota: 32 },
-  { place: 'Whitefish, MT', quota: 20 },
-  { place: 'Bozeman, MT', quota: 32 },
-  { place: 'Billings, MT', quota: 32 },
-  { place: 'Missoula, MT', quota: 22 },
-  { place: 'Denver, CO', quota: 55 },
+  // deep pools, previously quota-capped
+  { place: 'Denver, CO', quota: 60 },
   { place: 'Colorado Springs, CO', quota: 40 },
-  { place: 'Fort Collins, CO', quota: 26 },
-  { place: 'Boise, ID', quota: 40 },
-  { place: "Coeur d'Alene, ID", quota: 20 },
-  { place: 'Spokane, WA', quota: 40 },
-  { place: 'Bend, OR', quota: 26 },
-  { place: 'Reno, NV', quota: 32 },
-  { place: 'Salt Lake City, UT', quota: 36 },
-  { place: 'Cheyenne, WY', quota: 18 },
+  { place: 'Salt Lake City, UT', quota: 35 },
+  { place: 'Boise, ID', quota: 30 },
+  { place: 'Spokane, WA', quota: 30 },
+  { place: 'Reno, NV', quota: 25 },
+  // fresh ground
+  { place: 'Las Vegas, NV', quota: 55 },
+  { place: 'Portland, OR', quota: 50 },
+  { place: 'Seattle, WA', quota: 45 },
+  { place: 'Sacramento, CA', quota: 40 },
+  { place: 'Albuquerque, NM', quota: 40 },
+  { place: 'Tucson, AZ', quota: 35 },
+  { place: 'Tacoma, WA', quota: 25 },
+  { place: 'Ogden, UT', quota: 20 },
+  { place: 'Provo, UT', quota: 20 },
 ];
-const GLOBAL_TARGET = 400;
+const GLOBAL_TARGET = 500;
+// Scraping dominates wall-clock (round 1: 3,770 sites, ~50 min). No-website leads
+// need no scraping and score highest anyway, so cap the has-site pool and spread
+// it round-robin across cities rather than letting Denver eat the whole budget.
+const SCRAPE_CAP = 2600;
 const RESTAURANT_SHARE = 0.18; // cap: this is a service-business list, not a menu
 const UA = 'ModernMustardSeed-Sourcer/3.0 (sarah@modernmustardseed.com)';
+// Used only to re-check a site that refused our honest bot UA, so we never
+// mislabel a WAF-protected but perfectly healthy site as broken.
+const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
 const YEAR = 2026;
 
 const norm = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -126,6 +141,33 @@ const FRANCHISE = [
   'enterprise rent', 'hertz', 'avis', 'budget rent', 'national car', 'alamo rent', 'thrifty car', 'dollar rent',
   'office depot', 'officemax', 'staples', 'fastsigns', 'signarama', 'minuteman press', 'alphagraphics', 'sir speedy',
 ];
+
+/**
+ * Not single-owner, and structurally unable to buy from us: franchise car
+ * dealerships (their site is corporate-controlled) and regional health systems
+ * (procurement, not an owner). Both slipped past the chain filter on the first
+ * run because each location appears in only one city.
+ *
+ * The exclusions below are deliberately narrow. An earlier broad pass on
+ * /hospital/ and /\b(marque)\b/ produced false positives that cost real leads:
+ * "Creekside Veterinary Hospital" and "Vista Animal Hospital" are single-owner
+ * vet practices and among the best leads in the set, and "Carl Duke Volvo Repair"
+ * is an independent shop, not a Volvo dealership. So: animal/veterinary always
+ * wins, and a car marque only disqualifies when paired with dealership grammar.
+ */
+const VET_SAFE = /\b(animal|veterinary|vet|pet|equine|canine)\b/i;
+const CAR_MARQUE = /\b(nissan|honda|toyota|ford|chevrolet|chevy|mazda|hyundai|kia|subaru|bmw|mercedes|audi|volkswagen|jeep|dodge|chrysler|gmc|buick|cadillac|lexus|acura|infiniti|volvo|porsche|jaguar|mitsubishi|genesis|lincoln|ram)\b/i;
+const DEALER_GRAMMAR = /\b(motors|motor co|auto group|automotive group|auto mall|auto center|autoplex|dealership|sales & service|of [a-z]+)\b/i;
+const HEALTH_SYSTEM = /\b(health system|regional medical|medical center|emergency (center|room|department)|deaconess|providence health|kaiser|logan health|sacred heart|intermountain|uchealth|banner health|centura|commonspirit|ascension|st\.? ?(luke|joseph|vincent)'?s?\b)/i;
+
+function wrongFit(name) {
+  if (VET_SAFE.test(name)) return false; // vet practices are owner-operated: keep
+  if (HEALTH_SYSTEM.test(name)) return true;
+  if (CAR_MARQUE.test(name) && DEALER_GRAMMAR.test(name)) return true;
+  if (/\b(auto group|automotive group|auto mall|autoplex)\b/i.test(name)) return true;
+  if (/\b(university|college|school district|city of|county of|public library)\b/i.test(name)) return true;
+  return false;
+}
 
 const EMAIL_BLOCK = /\.(png|jpe?g|gif|svg|webp|ico|css|js)$|sentry|wixpress|\.wix\.com|example\.|yourdomain|domain\.com|@email\.com|your@|youremail|yourname|firstname|lastname|name@|sample@|test@|user@|noreply|no-reply|donotreply|googleapis|cloudflare|schema\.org|w3\.org|godaddy|squarespace|\.wixsite|modernmustardseed|sourcer|%2[f8]|u003d/i;
 const ROLE = /^(info|contact|hello|office|sales|admin|support|frontdesk|reception|booking|hi|service|scheduling)@/i;
@@ -279,13 +321,21 @@ async function geocode(place) {
 
 async function scrapeSite(website) {
   const base = website.startsWith('http') ? website : `https://${website}`;
-  let origin = ''; try { origin = new URL(base).origin; } catch { return { email: null, weak: [], dead: true }; }
-  const host = hostOf(base); const collected = []; const weak = []; let home = false; let reached = false;
+  let origin = ''; try { origin = new URL(base).origin; } catch { return { email: null, weak: ['website does not load'], dead: true, blocked: false }; }
+  const host = hostOf(base); const collected = []; const weak = []; let home = false; let reached = false; let blocked = false;
   for (const page of [base, `${origin}/contact`, `${origin}/contact-us`, `${origin}/about`]) {
     try {
-      const res = await fetch(page, { headers: { 'User-Agent': UA, Accept: 'text/html' }, redirect: 'follow', signal: AbortSignal.timeout(10000) });
+      let res = await fetch(page, { headers: { 'User-Agent': UA, Accept: 'text/html' }, redirect: 'follow', signal: AbortSignal.timeout(10000) });
+      // A 403/401/429 to our honest bot UA is a WAF, not a broken site. Retry once
+      // as a browser before concluding anything: telling an owner "your website is
+      // down" when it loads fine for their customers ends the call.
+      if (!res.ok && [401, 403, 429].includes(res.status)) {
+        res = await fetch(page, { headers: { 'User-Agent': BROWSER_UA, Accept: 'text/html,application/xhtml+xml' }, redirect: 'follow', signal: AbortSignal.timeout(12000) }).catch(() => res);
+        if (!res.ok && [401, 403, 429].includes(res.status) && page === base) blocked = true;
+      }
       if (!res.ok) continue;
       reached = true;
+      blocked = false;
       let html = (await res.text()).slice(0, 400000);
       if (!home && page === base) {
         home = true;
@@ -301,14 +351,17 @@ async function scrapeSite(website) {
       for (const m of html.matchAll(/mailto:([^"'?>\s]+)/gi)) collected.push(m[1]);
       for (const m of html.matchAll(/[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/gi)) collected.push(m[0]);
       const b = bestEmail(collected, host);
-      if (b && (hostOf(b.split('@')[1]) === host || ROLE.test(b)) && home) return { email: b, weak, dead: false };
+      if (b && (hostOf(b.split('@')[1]) === host || ROLE.test(b)) && home) return { email: b, weak, dead: false, blocked: false };
     } catch {}
   }
-  return { email: bestEmail(collected, host), weak, dead: !reached };
+  // Always hand back a reason. A lead with a high score and a blank "needs us"
+  // line is a lead the rep has nothing to open on.
+  if (!reached) weak.push(blocked ? 'site blocks automated review — check it live before pitching' : 'website does not load');
+  return { email: bestEmail(collected, host), weak, dead: !reached && !blocked, blocked };
 }
 
 let hunterCalls = 0;
-const HUNTER_CAP = 320; // stay inside the remaining monthly credit balance
+const HUNTER_CAP = 420; // stay inside the ~1,079 credits left before the 7/25 reset
 async function hunterEmail(website) {
   if (!HUNTER || hunterCalls >= HUNTER_CAP) return null;
   const domain = hostOf(website);
@@ -363,7 +416,8 @@ function scoreOf(p) {
   let s = 0;
   if (p.noRealSite) s += 55;              // nothing to compete with, strongest pitch
   if (p.socialOnly) s += 12;              // facebook-page-as-website: extra painful
-  if (p.dead) s += 45;                    // listed site does not even load
+  if (p.dead) s += 45;                    // listed site genuinely does not load
+  if (p.blocked) s += 8;                  // unknown, not broken: never rank it like a dead site
   for (const w of p.weak) {
     if (/^stale/.test(w)) s += 30;
     else if (w === 'not mobile-friendly') s += 28;
@@ -434,10 +488,11 @@ async function main() {
 
   const runNames = new Set(), runPhones = new Set();
   const cand = [];
-  let dropChain = 0, dropDupe = 0, dropOnFloor = 0;
+  let dropChain = 0, dropDupe = 0, dropOnFloor = 0, dropWrongFit = 0;
   for (const p of raw) {
     const n = norm(p.business), d = digitsOf(p.phone);
     if (autoChains.has(n) || FRANCHISE.some((f) => n.includes(norm(f)))) { dropChain++; continue; }
+    if (wrongFit(p.business)) { dropWrongFit++; continue; }
     if (seenNames.has(n) || (d && seenPhones.has(d))) { dropOnFloor++; continue; }
     if (runNames.has(n) || (d && runPhones.has(d))) { dropDupe++; continue; }
     runNames.add(n); if (d) runPhones.add(d);
@@ -450,15 +505,39 @@ async function main() {
       weak: [], dead: false,
     });
   }
-  console.log(`Filtered: ${cand.length} unique fresh candidates (dropped ${dropChain} chain, ${dropOnFloor} already on floor, ${dropDupe} in-run dupes)`);
+  console.log(`Filtered: ${cand.length} unique fresh candidates (dropped ${dropChain} chain, ${dropWrongFit} wrong-fit dealership/health-system, ${dropOnFloor} already on floor, ${dropDupe} in-run dupes)`);
 
   // ── PHASE 3: enrich only the ones with a real site to score ──
-  const toScrape = cand.filter((p) => p.website && !p.socialOnly);
+  // Round-robin the scrape budget across cities so one huge metro cannot starve
+  // the rest. Anything past the cap is dropped: an unscraped has-site lead has no
+  // evidence behind it, and a lead with no reason to call is not a lead.
+  const scrapable = cand.filter((p) => p.website && !p.socialOnly);
+  const byCityQueue = new Map();
+  for (const p of scrapable) {
+    if (!byCityQueue.has(p.city)) byCityQueue.set(p.city, []);
+    byCityQueue.get(p.city).push(p);
+  }
+  const toScrape = [];
+  const queues = [...byCityQueue.values()];
+  for (let i = 0; toScrape.length < Math.min(SCRAPE_CAP, scrapable.length); i++) {
+    let progressed = false;
+    for (const q of queues) {
+      if (i < q.length) { toScrape.push(q[i]); progressed = true; if (toScrape.length >= SCRAPE_CAP) break; }
+    }
+    if (!progressed) break;
+  }
+  const skipped = scrapable.length - toScrape.length;
+  const keep = new Set(toScrape);
+  for (let i = cand.length - 1; i >= 0; i--) {
+    const p = cand[i];
+    if (p.website && !p.socialOnly && !keep.has(p)) cand.splice(i, 1);
+  }
+  if (skipped > 0) console.log(`\nScrape budget ${SCRAPE_CAP}: dropped ${skipped} has-site candidates unreviewed (no evidence = not a lead)`);
   console.log(`\nScoring ${toScrape.length} live sites (weakness signals + email: scrape → Hunter)...`);
   let done = 0;
   await pool(toScrape, 8, async (p) => {
     const r = await scrapeSite(p.website);
-    p.weak = r.weak; p.dead = r.dead;
+    p.weak = r.weak; p.dead = r.dead; p.blocked = r.blocked;
     if (p.email && EMAIL_BLOCK.test(p.email)) p.email = null;
     if (!p.email) p.email = r.email;
     if (!p.email && !r.dead) p.email = await hunterEmail(p.website);
@@ -507,7 +586,7 @@ async function main() {
       city: p.city.slice(0, 120),
       state: p.state,
       status: 'new',
-      source: 'western-aplus-2026-07',
+      source: 'western-aplus-2026-07b',
       owner_rep_id: owner.id,
       dnc_checked: false,
       notes: `${p.label} · ${p.city}${p.state ? `, ${p.state}` : ''} · A+ score ${p.score}${need}`.slice(0, 2000),
