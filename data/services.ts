@@ -36,9 +36,9 @@ export const services: Service[] = [
     icon: '🎨',
     title: 'Brand & Marketing Sites',
     short:
-      'Production-grade marketing sites. Design system, copy, animation, SEO foundation, launch assets.',
+      'Production-grade marketing sites. Design system, copy, animation, SEO foundation, launch assets. Live in about a week.',
     description:
-      'A site that looks like the brand you are trying to be, not the brand you were. Headless commerce, WebGL hero treatments, structured data, performance budgets, all of it. Ships with launch copy and the social assets.',
+      'A site that looks like the brand you are trying to be, not the brand you were. Headless commerce, WebGL hero treatments, structured data, performance budgets, all of it. Ships with launch copy and the social assets, live in about a week.',
     outcomes: ['Brand identity', 'Marketing site', 'Launch assets'],
     ideal: 'Founders launching something they want to last.',
   },
@@ -49,7 +49,7 @@ export const services: Service[] = [
     short:
       'Multi-agent workflows, internal copilots, end-to-end automation. Replace the human glue with software that runs itself.',
     description:
-      'Most businesses run on a stack of disconnected tools and human glue. We replace the glue. Trigger.dev for orchestration, Claude for reasoning, custom agents tuned for your specific operation. Voice agents available when the workflow is phone-driven.',
+      'Most businesses run on a stack of disconnected tools and human glue. We replace the glue. Trigger.dev for orchestration, Claude for reasoning, custom agents tuned for your specific operation. Voice agents and command centers go live in about a week.',
     outcomes: ['Workflow automation', 'Multi-agent systems', 'Voice agents'],
     ideal: 'Operations-heavy businesses ready to take the small jobs off the operator plate.',
   },

@@ -19,9 +19,9 @@ export const packages: Engagement[] = [
   {
     id: 'seed-site',
     name: 'Seed Site',
-    tagline: 'A beautiful site that gets you online for real, in 14 days',
+    tagline: 'A beautiful site that gets you online for real, in about a week',
     description:
-      'For when you do not need an engine yet. You need a storefront. A clean, fast, brand-aligned site that loads in under two seconds, looks like a real business, and converts the visitors you already have. No AI agents, no SDR, no back office. Just the site you needed years ago, shipped in two weeks. Step up to a Full-Service Business Build whenever you are ready.',
+      'For when you do not need an engine yet. You need a storefront. A clean, fast, brand-aligned site that loads in under two seconds, looks like a real business, and converts the visitors you already have. No AI agents, no SDR, no back office. Just the site you needed years ago, shipped in about a week. Step up to a Full-Service Business Build whenever you are ready.',
     deliverables: [
       'Brand identity (logo, colors, type, voice)',
       '3 to 5 page production-grade site',
@@ -33,7 +33,7 @@ export const packages: Engagement[] = [
       'Launch assets (social, email, OG image)',
       'Full handoff: repo, accounts, every credential',
     ],
-    timeline: '14 days',
+    timeline: 'About a week',
     priceRange: 'Quoted after a free discovery call',
     cta: 'Plant my Seed Site',
     ctaHref: '/contact?package=seed-site',
@@ -61,7 +61,7 @@ export const packages: Engagement[] = [
       'Launch assets (social, email, OG)',
       'Full handoff: repo, accounts, docs, every credential',
     ],
-    timeline: '2 to 4 weeks',
+    timeline: '1 to 2 weeks',
     priceRange: 'Quoted after a free discovery call',
     cta: 'Build my business engine',
     ctaHref: '/contact?package=online-presence',
@@ -140,6 +140,10 @@ export const pricingFaq = [
   {
     q: 'How does pricing work?',
     a: 'Every engagement is quoted after a free discovery call. We propose a flat fee tied to a defined deliverable and a tight timeline, no hourly billing. You will know the full cost and timeline before any work begins.',
+  },
+  {
+    q: 'How fast will my build go live?',
+    a: 'Websites, voice agents, and command centers go live in about a week from kickoff. Custom apps, software, and online stores usually take two to four weeks. AI-Proof engagements run longer because they cover a whole operation. You see the exact timeline in your quote before work begins.',
   },
   {
     q: 'I do not know much about AI. Is this still for me?',

@@ -17,6 +17,10 @@ const servicesFaq = [
     a: 'Four lines of work: custom apps and web software, specialty AI tools tailored to a specific industry, brand and marketing sites, and agentic systems with multi-agent workflows and voice agents. Every service is shipped end to end by Sarah Scarano, the founder and sole engineer.',
   },
   {
+    q: 'How fast can you ship?',
+    a: 'Websites, voice agents, and command centers go live in about a week from kickoff. Custom apps, software, and online stores usually take two to four weeks. Every engagement is fixed scope with a fixed timeline you see before work begins.',
+  },
+  {
     q: 'Do you build mobile apps as well as web apps?',
     a: 'Yes. Mobile apps for iOS and Android are built in one codebase using Expo and React Native. The same engagement structure applies as for web apps.',
   },

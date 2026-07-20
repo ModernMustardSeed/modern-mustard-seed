@@ -33,8 +33,8 @@ const SYSTEM_PROMPT = `You are Mr. Mustard, the AI assistant for Modern Mustard 
 4. Use your tools to capture the lead, propose call slots, or book a call when the moment is right.
 
 # What Modern Mustard Seed offers
-- **Seed Site** (14 days, quoted after a free discovery call): beautiful 3-5 page site, brand, mobile-optimized, booking or payments, SEO foundation, full handoff. Entry tier. Recommend this when the visitor just needs a real online home and is not ready for the full engine.
-- **Full-Service Business Build** (two to four weeks, quoted after a free discovery call): brand, production-grade site, bespoke booking services with embedded CRM (Zoho, HubSpot, Acuity, or custom), personalized client care software, a custom AI chatbot trained entirely on their own business (built the same way I am, but for them) embedded on their site, an AI sales-development rep capturing every lead 24/7, 24/7 AI voice agents that answer the phone in a natural voice (book appointments, answer FAQs, route urgent calls), built-in funnels and lead magnets live on day one, vertical apps when they fit (restaurant ordering apps, ecommerce shops, custom courses, academies, rendering studios, ad command centers, zero-to-one MVPs), back-office dashboard, and AI agents embedded on the site and in the back office.
+- **Seed Site** (about a week, quoted after a free discovery call): beautiful 3-5 page site, brand, mobile-optimized, booking or payments, SEO foundation, full handoff. Entry tier. Recommend this when the visitor just needs a real online home and is not ready for the full engine.
+- **Full-Service Business Build** (one to two weeks, quoted after a free discovery call): brand, production-grade site, bespoke booking services with embedded CRM (Zoho, HubSpot, Acuity, or custom), personalized client care software, a custom AI chatbot trained entirely on their own business (built the same way I am, but for them) embedded on their site, an AI sales-development rep capturing every lead 24/7, 24/7 AI voice agents that answer the phone in a natural voice (book appointments, answer FAQs, route urgent calls), built-in funnels and lead magnets live on day one, vertical apps when they fit (restaurant ordering apps, ecommerce shops, custom courses, academies, rendering studios, ad command centers, zero-to-one MVPs), back-office dashboard, and AI agents embedded on the site and in the back office.
 - **Idea to Product** (two to four weeks, quoted after a free discovery call): MVP for founders with a new product idea. Full-stack engineering plus AI integration plus a branded launch site.
 - **AI-Proof Your Business** (8 to 12 weeks, quoted after a free discovery call): defensive engagement for existing operators. Audit, harden, re-equip.
 - **Fractional AI Partner** (monthly retainer, 3-month minimum): ongoing strategy and build retainer.
@@ -158,13 +158,13 @@ type OfferKey = 'seed-site' | 'full-service' | 'idea-to-product' | 'ai-proof' | 
 const OFFER_MAP: Record<OfferKey, { name: string; price: string; why: string; href: string } | null> = {
   'seed-site': {
     name: 'Seed Site',
-    price: '14 days, quoted after a free discovery call',
+    price: 'About a week, quoted after a free discovery call',
     why: 'Beautiful, fast, brand-aligned site. A real online home, no engine yet.',
     href: 'https://modernmustardseed.com/work-with-us#seed-site',
   },
   'full-service': {
     name: 'Full-Service Business Build',
-    price: 'Two to four weeks, quoted after a free discovery call',
+    price: 'One to two weeks, quoted after a free discovery call',
     why: 'Site + bespoke booking with CRM + AI SDR + funnels + back office + embedded agents.',
     href: 'https://modernmustardseed.com/work-with-us#online-presence',
   },
