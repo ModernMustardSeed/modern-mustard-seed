@@ -56,6 +56,26 @@ export type TrackedResult =
   | { ok: true; id: string; droppedBcc?: string[] }
   | { ok: false; error: string; suppressed?: string[] };
 
+/**
+ * Staff notification mute (Sarah's call, 2026-07-21). Easton is part-time and
+ * was getting every team-wide notification (the daily pipeline digest and
+ * whatever the next feature adds). Policy: a muted address receives NOTHING
+ * except sign-in links, the emails that carry a magic-link token URL. Enforced
+ * here, in the one choke point all outbound mail passes through, so any future
+ * team-wide send skips a muted teammate without its author having to know the
+ * policy exists. A fully muted send is recorded as status='suppressed' with the
+ * reason, never silently vanished.
+ */
+const MUTED_NOTIFICATION_ADDRS = new Set(['easton12parrot@gmail.com']);
+const LOGIN_LINK_RE = /\/(admin\/magic|(?:api\/)?portal\/verify)\?token=/;
+
+export function applyMute(addrs: string[], body: string): { kept: string[]; muted: string[] } {
+  if (!addrs.length || LOGIN_LINK_RE.test(body)) return { kept: addrs, muted: [] };
+  const muted = addrs.filter((a) => MUTED_NOTIFICATION_ADDRS.has(normEmail(a)));
+  if (!muted.length) return { kept: addrs, muted: [] };
+  return { kept: addrs.filter((a) => !MUTED_NOTIFICATION_ADDRS.has(normEmail(a))), muted };
+}
+
 const arr = (v?: string | string[]): string[] =>
   (Array.isArray(v) ? v : v ? [v] : []).map((s) => s.trim()).filter(Boolean);
 
@@ -73,10 +93,37 @@ export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
   const apiKey = cleanKey(process.env.RESEND_API_KEY);
   if (!apiKey) return { ok: false, error: 'Email is not configured (RESEND_API_KEY missing).' };
 
-  const to = arr(msg.to);
-  const cc = arr(msg.cc);
-  const bcc = arr(msg.bcc);
+  let to = arr(msg.to);
+  let cc = arr(msg.cc);
+  let bcc = arr(msg.bcc);
   if (!to.length) return { ok: false, error: 'No recipient.' };
+
+  // Staff mute: strip muted teammates from every recipient line unless this is
+  // a sign-in-link email. If nobody is left, record the drop and stop here.
+  const muteBody = `${msg.html || ''} ${msg.text || ''}`;
+  const toMute = applyMute(to, muteBody);
+  const allMuted = [...toMute.muted, ...applyMute(cc, muteBody).muted, ...applyMute(bcc, muteBody).muted];
+  if (allMuted.length) {
+    to = toMute.kept;
+    cc = applyMute(cc, muteBody).kept;
+    bcc = applyMute(bcc, muteBody).kept;
+    if (!to.length) {
+      await recordSentEmail({
+        mailbox: msg.mailbox || bareAddr(msg.from),
+        provider: 'resend',
+        from_addr: bareAddr(msg.from),
+        to: allMuted.join(', '),
+        subject: msg.subject,
+        text: msg.text ?? null,
+        html: msg.html ?? null,
+        status: 'suppressed',
+        statusDetail: 'muted: staff notifications are off for this address (sign-in links only)',
+        prospectId: msg.prospectId ?? null,
+        leadId: msg.leadId ?? null,
+      });
+      return { ok: true, id: 'muted' };
+    }
+  }
 
   // Suppression gate. A suppressed primary recipient (to/cc) is a hard stop —
   // Resend would drop it anyway; we say so instead of pretending it sent. A
@@ -185,12 +232,38 @@ export function resendClient(): Resend {
       text?: string;
       replyTo?: string;
     };
-    const to = arr(p.to);
-    const cc = arr(p.cc);
-    const bcc = arr(p.bcc);
+    let to = arr(p.to);
+    let cc = arr(p.cc);
+    let bcc = arr(p.bcc);
     const from = p.from || '';
     const mailbox = bareAddr(from);
     const fromName = from.replace(/<[^>]+>/, '').trim() || null;
+
+    // Staff mute, same policy as sendViaResend: muted teammates only ever get
+    // sign-in links. A fully muted send is recorded and short-circuited.
+    const muteBody = `${p.html || ''} ${p.text || ''}`;
+    const toMute = applyMute(to, muteBody);
+    if (toMute.muted.length || applyMute(cc, muteBody).muted.length || applyMute(bcc, muteBody).muted.length) {
+      const mutedAll = [...toMute.muted, ...applyMute(cc, muteBody).muted, ...applyMute(bcc, muteBody).muted];
+      to = toMute.kept;
+      cc = applyMute(cc, muteBody).kept;
+      bcc = applyMute(bcc, muteBody).kept;
+      if (!to.length) {
+        await recordSentEmail({
+          mailbox,
+          provider: 'resend',
+          from_addr: mailbox,
+          from_name: fromName,
+          to: mutedAll.join(', '),
+          subject: p.subject || '(no subject)',
+          text: p.text ?? null,
+          html: p.html ?? null,
+          status: 'suppressed',
+          statusDetail: 'muted: staff notifications are off for this address (sign-in links only)',
+        });
+        return { data: { id: 'muted' }, error: null } as Awaited<ReturnType<typeof real.emails.send>>;
+      }
+    }
 
     // Internal notifications (to a @modernmustardseed.com mailbox) go through
     // Zoho so they land reliably and are never caught by Resend's suppression
@@ -269,9 +342,10 @@ export function resendClient(): Resend {
       } as Awaited<ReturnType<typeof real.emails.send>>;
     }
 
-    // Strip a suppressed bcc so it can't drop the whole message.
+    // Strip a suppressed bcc so it can't drop the whole message. cc/bcc are
+    // set explicitly so the mute-filtered lists win over the originals in p.
     const keptBcc = bcc.filter((a) => !supp.has(normEmail(a)));
-    const outPayload = { ...p, to: resendTo, bcc: keptBcc };
+    const outPayload = { ...p, to: resendTo, cc: cc.length ? cc : undefined, bcc: keptBcc.length ? keptBcc : undefined };
 
     const res = await real.emails.send(
       outPayload as Parameters<typeof real.emails.send>[0],

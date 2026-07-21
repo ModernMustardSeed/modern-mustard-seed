@@ -39,7 +39,11 @@ type DigestLead = {
 function recipients(): string[] {
   const set = new Set<string>();
   try {
-    listAdminUsers().forEach((u) => set.add(u.email));
+    // Owners only. Part-time staff (Easton) do not get ops digests; they only
+    // ever receive sign-in links (policy also enforced in lib/send-email.ts).
+    listAdminUsers()
+      .filter((u) => u.role === 'owner')
+      .forEach((u) => set.add(u.email));
   } catch {
     /* env not set */
   }
