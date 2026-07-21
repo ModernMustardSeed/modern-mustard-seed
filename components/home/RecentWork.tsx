@@ -17,9 +17,21 @@ type Work = {
   desc: string;
   shot: string;
   tilt: string;
+  /** Featured card: spans both columns with a wide cinematic crop. */
+  wide?: boolean;
 };
 
 const WORK: Work[] = [
+  {
+    name: 'HUCKWILD',
+    domain: 'huckwild.vercel.app',
+    url: 'https://huckwild.vercel.app',
+    tag: 'Beverage brand + launch folio',
+    desc: 'A wild Montana huckleberry drink mix told as a Victorian naturalist folio: an ink-pour film, an antlered guardian of the patch, and a numbered waitlist. Drink the legend.',
+    shot: '/home/work/huckwild.jpg',
+    tilt: '-rotate-[0.4deg]',
+    wide: true,
+  },
   {
     name: 'Wild Hope',
     domain: 'wildhopehq.com',
@@ -99,7 +111,7 @@ export default function RecentWork() {
               href={w.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`group block rounded-2xl border-2 border-[#161616] bg-white shadow-[7px_7px_0_0_#161616] overflow-hidden transition-all duration-200 hover:-translate-y-1.5 hover:shadow-[10px_10px_0_0_#161616] ${w.tilt} hover:rotate-0`}
+              className={`group block rounded-2xl border-2 border-[#161616] bg-white shadow-[7px_7px_0_0_#161616] overflow-hidden transition-all duration-200 hover:-translate-y-1.5 hover:shadow-[10px_10px_0_0_#161616] ${w.tilt} hover:rotate-0 ${w.wide ? 'sm:col-span-2' : ''}`}
             >
               {/* Faux browser chrome */}
               <div className="flex items-center gap-3 px-4 py-2.5 border-b-2 border-[#161616] bg-[#FBF6EA]">
@@ -114,13 +126,13 @@ export default function RecentWork() {
               </div>
 
               {/* Live screenshot */}
-              <div className="relative aspect-[16/10] overflow-hidden bg-[#F5F0E8]">
+              <div className={`relative overflow-hidden bg-[#F5F0E8] ${w.wide ? 'aspect-[16/10] sm:aspect-[21/9]' : 'aspect-[16/10]'}`}>
                 <Image
                   src={w.shot}
                   alt={`The ${w.name} website, built by Modern Mustard Seed`}
                   fill
-                  sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 560px"
-                  className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
+                  sizes={w.wide ? '(max-width: 640px) 90vw, 1120px' : '(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 560px'}
+                  className={`object-cover transition-transform duration-500 group-hover:scale-[1.04] ${w.wide ? 'object-[center_58%]' : 'object-top'}`}
                 />
               </div>
 

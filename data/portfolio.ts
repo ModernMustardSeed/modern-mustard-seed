@@ -63,6 +63,13 @@ export const PORTFOLIO: PortfolioCategory[] = [
         tags: ['Wild Hope', 'hospitality'],
       },
       {
+        name: 'HUCKWILD',
+        url: 'https://huckwild.vercel.app',
+        status: 'live',
+        blurb: 'Wild Montana huckleberry drink mix as a Victorian naturalist folio. Ink-pour film hero, the Huckalope legend, scroll-driven ink staining, and a numbered Patch 001 waitlist.',
+        tags: ['HUCKWILD', 'beverage', 'brand launch'],
+      },
+      {
         name: 'Wild Hope HQ',
         url: 'https://wildhopehq.com',
         status: 'live',
