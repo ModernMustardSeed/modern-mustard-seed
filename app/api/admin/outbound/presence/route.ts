@@ -11,12 +11,14 @@ export const runtime = 'nodejs';
  * dashboard on a short interval so presence feels live without re-running the
  * whole heat queue every time.
  *
- * "Online" mirrors the codebase's existing 15-minute lead-presence window, but
- * tightened to 2 minutes: a caller heartbeats every ~20s while the cockpit is
- * open, so 2 minutes means "actually at the desk," not "was here this quarter
- * hour." Anyone past that shows their last position instead of a live one.
+ * "Online" is a 4-minute window: a caller heartbeats every ~20s while the
+ * cockpit is open, so 4 minutes keeps them showing as live across a genuine
+ * pause — reading a script, a slow ring-out, jotting a note, a quick tab-away —
+ * without the dot flickering off the moment they stop clicking. Anyone past that
+ * shows their last position instead of a live one. Drives both the online dot
+ * (GET) and the double-dial collision check (POST), so one constant tunes both.
  */
-const ONLINE_MS = 2 * 60 * 1000;
+const ONLINE_MS = 4 * 60 * 1000;
 
 export async function GET() {
   const guard = await requireOutboundAdmin();
