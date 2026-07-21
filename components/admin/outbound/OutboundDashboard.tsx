@@ -29,6 +29,28 @@ type QueueLead = {
   reason: HeatReason;
 };
 type BatchRep = { id: string; name: string; ready: number };
+type RepPresence = {
+  id: string;
+  name: string;
+  role: string;
+  online: boolean;
+  last_seen_at: string | null;
+  current_lead: { id: string; business_name: string } | null;
+  batch: { cursor: number; total: number } | null;
+  dials_today: number;
+  is_me: boolean;
+};
+type ResumeInfo = {
+  repId: string;
+  repName: string;
+  leadIds: string[];
+  cursor: number;
+  resumeLeadId: string;
+  position: number;
+  total: number;
+  remaining: number;
+  lastLead: { id: string; business_name: string } | null;
+};
 type Overview = {
   reps: Rep[];
   today: Record<string, Stat>;
@@ -41,6 +63,17 @@ type Overview = {
 };
 
 const ZERO: Stat = { dials: 0, conversations: 0, demos_booked: 0 };
+
+/** Compact "3m / 2h / 1d ago" for a last-seen timestamp. */
+function timeAgo(iso: string): string {
+  const s = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+  if (s < 60) return 'just now';
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
 
 export default function OutboundDashboard({ adminName = '' }: { adminName?: string }) {
   const [data, setData] = useState<Overview | null>(null);
@@ -68,12 +101,44 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
     return () => window.clearInterval(t);
   }, [load]);
 
-  const startSession = () => {
-    const first = data?.queue[0];
-    if (!first) return;
-    setDialSession({ startedAt: Date.now(), dials: 0, demos: 0 });
-    router.push(`/admin/outbound/call/${first.id}`);
-  };
+  // ── live floor: presence + resume ──
+  // Presence is its own light poll (every 20s) so the online dots and "on: X"
+  // labels feel live without re-running the heat queue. Resume tells the signed-in
+  // rep exactly where they left off.
+  const [presence, setPresence] = useState<RepPresence[]>([]);
+  const [meId, setMeId] = useState<string | null>(null);
+  const [resume, setResume] = useState<ResumeInfo | null>(null);
+
+  const loadFloor = useCallback(async () => {
+    try {
+      const [pres, bat] = await Promise.all([
+        api<{ presence: RepPresence[]; meId: string | null }>('/api/admin/outbound/presence'),
+        api<{ resume: ResumeInfo | null }>('/api/admin/outbound/batch'),
+      ]);
+      setPresence(pres.presence);
+      setMeId(pres.meId);
+      setResume(bat.resume);
+    } catch {
+      /* floor is ambient; a hiccup shouldn't error the whole page */
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadFloor();
+    const t = window.setInterval(() => void loadFloor(), 20000);
+    return () => window.clearInterval(t);
+  }, [loadFloor]);
+
+  const pickUpWhereLeftOff = useCallback(() => {
+    if (!resume) return;
+    setDialSession({
+      startedAt: Date.now(),
+      dials: 0,
+      demos: 0,
+      batch: { leadIds: resume.leadIds, repId: resume.repId, repName: resume.repName },
+    });
+    router.push(`/admin/outbound/call/${resume.resumeLeadId}`);
+  }, [resume, router]);
 
   // ── batch mode ──
   // The heat queue is "hottest 40 on the whole floor". A batch is "the next N of
@@ -146,14 +211,14 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
           active="dashboard"
           right={
             <div className="flex items-center gap-2">
-              <button onClick={() => void openBatch()} className={btnSeed}>
-                ▦ Start batch
-              </button>
-              {data?.queue[0] ? (
-                <button onClick={startSession} className={btnPrimary}>
-                  ▶ Start session ({data.queue.length} hot)
+              {resume ? (
+                <button onClick={pickUpWhereLeftOff} className={btnPrimary} title={resume.lastLead ? `Last on ${resume.lastLead.business_name}` : undefined}>
+                  ⏱ Pick up where you left off ({resume.position}/{resume.total})
                 </button>
               ) : null}
+              <button onClick={() => void openBatch()} className={resume ? btnGhost : btnSeed}>
+                ▦ Start batch
+              </button>
             </div>
           }
         />
@@ -209,15 +274,76 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
             }
             const today = data?.today[rep.id] ?? ZERO;
             const bothMet = today.dials >= rep.daily_dial_goal && today.demos_booked >= rep.daily_demo_goal;
+            const pres = presence.find((p) => p.id === rep.id);
+            const isMe = meId ? meId === rep.id : false;
+            const online = pres?.online ?? false;
             return (
-              <div key={rep.id} className={`${card} p-6 relative overflow-hidden ${bothMet ? 'border-[#3f5d34] shadow-[5px_5px_0_0_#3f5d34]' : ''}`}>
-                {bothMet && (
-                  <span className="absolute top-4 right-4 px-2.5 py-1 rounded-lg bg-[#3f5d34] text-[#f7f3e9] border-2 border-[#1a1815] text-[10px] uppercase tracking-[0.18em] font-oswald font-semibold">
-                    Goals hit
-                  </span>
-                )}
+              <div
+                key={rep.id}
+                className={`${card} p-6 relative overflow-hidden transition-shadow ${
+                  isMe
+                    ? 'border-[#b58a2a] shadow-[6px_6px_0_0_#b58a2a]'
+                    : bothMet
+                      ? 'border-[#3f5d34] shadow-[5px_5px_0_0_#3f5d34]'
+                      : ''
+                }`}
+              >
+                <div className="absolute top-4 right-4 flex items-center gap-2">
+                  {bothMet && (
+                    <span className="px-2.5 py-1 rounded-lg bg-[#3f5d34] text-[#f7f3e9] border-2 border-[#1a1815] text-[10px] uppercase tracking-[0.18em] font-oswald font-semibold">
+                      Goals hit
+                    </span>
+                  )}
+                  {isMe && (
+                    <span className="px-2.5 py-1 rounded-lg bg-[#b58a2a] text-[#1a1815] border-2 border-[#1a1815] text-[10px] uppercase tracking-[0.18em] font-oswald font-bold">
+                      You
+                    </span>
+                  )}
+                </div>
                 <span className={eyebrow}>{rep.role === 'player-coach' ? 'Player coach' : rep.role === 'caller' ? 'Caller' : 'Primary rep'}</span>
-                <h2 className="font-oswald font-semibold uppercase text-3xl text-[#1a1815] tracking-tight mt-0.5">{rep.name}</h2>
+                <div className="flex items-center gap-2.5 mt-0.5">
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full shrink-0 border border-[#1a1815]/30 ${online ? 'bg-[#3f5d34] animate-pulse' : 'bg-[#1a1815]/20'}`}
+                    title={online ? 'Online now' : pres?.last_seen_at ? `Last seen ${timeAgo(pres.last_seen_at)}` : 'Offline'}
+                    aria-hidden
+                  />
+                  <h2 className="font-oswald font-semibold uppercase text-3xl text-[#1a1815] tracking-tight">{rep.name}</h2>
+                </div>
+
+                {/* What this caller is doing right now */}
+                <div className="mt-2 min-h-[1.25rem]">
+                  {pres?.current_lead ? (
+                    <Link
+                      href={`/admin/outbound/call/${pres.current_lead.id}`}
+                      className="inline-flex items-center gap-1.5 font-sans text-[13px] text-[#1a1815]/70 hover:text-[#b58a2a] transition-colors"
+                    >
+                      <span className="text-[#a03123]">●</span> On now: <span className="font-semibold">{pres.current_lead.business_name}</span> →
+                    </Link>
+                  ) : online ? (
+                    <span className="font-sans text-[13px] text-[#1a1815]/45">On the floor, between calls</span>
+                  ) : pres?.last_seen_at ? (
+                    <span className="font-sans text-[13px] text-[#1a1815]/40">Last active {timeAgo(pres.last_seen_at)}</span>
+                  ) : (
+                    <span className="font-sans text-[13px] text-[#1a1815]/30">Not on the floor yet today</span>
+                  )}
+                </div>
+
+                {/* Batch progress: where they are in their frozen stack */}
+                {pres?.batch && (
+                  <div className="mt-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] uppercase tracking-[0.18em] font-oswald font-medium text-[#1a1815]/50">Batch progress</span>
+                      <span className="font-oswald text-xs text-[#1a1815]/70">{pres.batch.cursor} / {pres.batch.total}</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-[#1a1815]/[0.08] overflow-hidden">
+                      <div
+                        className="h-full bg-[#b58a2a] transition-all duration-700"
+                        style={{ width: `${Math.round((pres.batch.cursor / pres.batch.total) * 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-around mt-4">
                   <GoalRing value={today.dials} goal={rep.daily_dial_goal} label="Dials today" />
                   <GoalRing value={today.demos_booked} goal={rep.daily_demo_goal} label="Demos today" size={96} />
@@ -226,6 +352,16 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
                     <span className="text-[10px] uppercase tracking-[0.22em] font-oswald font-medium text-[#1a1815]/55">Convos</span>
                   </div>
                 </div>
+
+                {/* My own card gets an inline resume shortcut */}
+                {isMe && resume && (
+                  <button
+                    onClick={pickUpWhereLeftOff}
+                    className="mt-4 w-full flex items-center justify-center gap-2 bg-[#1a1815] text-[#b58a2a] border-2 border-[#1a1815] rounded-xl px-4 py-2.5 font-oswald font-semibold uppercase tracking-[0.08em] text-sm shadow-[3px_3px_0_0_#b58a2a] hover:-translate-y-0.5 transition-all"
+                  >
+                    ⏱ Pick up where you left off · {resume.position}/{resume.total}
+                  </button>
+                )}
               </div>
             );
           })}

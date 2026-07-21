@@ -16,7 +16,7 @@ export async function requireOutboundAdmin(): Promise<{ supabase: SupabaseClient
   return { supabase };
 }
 
-type OutboundRep = { id: string; name: string; role: string; [k: string]: unknown };
+export type OutboundRep = { id: string; name: string; role: string; [k: string]: unknown };
 
 /**
  * Resolve who is looking at the dial floor. A rep whose role is 'caller' (e.g. a
@@ -41,6 +41,22 @@ export async function outboundRepScope(
     scopeRepId: isCaller ? (myRep as OutboundRep).id : null,
     isCaller,
   };
+}
+
+/**
+ * Which rep is making this request? Unlike `outboundRepScope` (whose scopeRepId is
+ * null for owners on purpose), this resolves the signed-in admin to their rep row
+ * for ANY role, so presence and "pick up where you left off" work for Sarah and
+ * Polly too, not only part-time callers. Same name-substring match the cockpit's
+ * rep switcher uses. Returns null when the admin isn't a rep at all.
+ */
+export async function resolveRequestRep(supabase: SupabaseClient): Promise<OutboundRep | null> {
+  const session = await getSession();
+  if (!session) return null;
+  const me = await resolveAdminUserAsync(session.email);
+  const { data } = await supabase.from('outbound_reps').select('*').eq('active', true);
+  const reps = (data ?? []) as OutboundRep[];
+  return reps.find((r) => me.name.toLowerCase().includes(String(r.name).toLowerCase())) ?? null;
 }
 
 /**

@@ -98,6 +98,7 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
   const [auditing, setAuditing] = useState(false);
   const [session, setSessionState] = useState<DialSession | null>(null);
   const [sessionTick, setSessionTick] = useState(0);
+  const [alsoOnLead, setAlsoOnLead] = useState<string[]>([]);
   const [burst, setBurst] = useState(0);
   const router = useRouter();
 
@@ -150,6 +151,36 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     const t = window.setInterval(() => setSessionTick((x) => x + 1), 15000);
     return () => window.clearInterval(t);
   }, []);
+
+  // Presence heartbeat: tell the floor which lead I'm on, every ~20s while this
+  // cockpit is open. This is what powers the online dot, the "on: <business>"
+  // label, the no-double-dial guard, and the server-side batch cursor that makes
+  // "pick up where you left off" land exactly here. Fire once immediately so the
+  // board updates the instant a caller opens a lead.
+  useEffect(() => {
+    const beat = () => {
+      void api<{ onSameLead?: string[] }>('/api/admin/outbound/presence', { method: 'POST', body: JSON.stringify({ lead_id: leadId }) })
+        .then((r) => setAlsoOnLead(r.onSameLead ?? []))
+        .catch(() => {});
+    };
+    beat();
+    const t = window.setInterval(beat, 20000);
+    // On leave, clear my current lead so the board doesn't show me parked on a
+    // lead I walked away from (keepalive so it still fires during navigation).
+    const clear = () => {
+      try {
+        navigator.sendBeacon?.(
+          '/api/admin/outbound/presence',
+          new Blob([JSON.stringify({ clear: true })], { type: 'application/json' }),
+        );
+      } catch {}
+    };
+    window.addEventListener('pagehide', clear);
+    return () => {
+      window.clearInterval(t);
+      window.removeEventListener('pagehide', clear);
+    };
+  }, [leadId]);
 
   const nextLeadIdRef = useRef<string | null>(null);
 
@@ -347,12 +378,26 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
   };
 
   // Batch mode: the rep is walking a frozen, ordered stack, so "next" is the next
-  // id in that list — never a re-derived hottest lead. Outside a batch this falls
-  // back to the original free-roam behaviour (top of the live heat queue).
+  // id in that list — never a re-derived hottest lead.
   const pos = batchPosition(session, leadId);
   const batchNext = pos?.nextId ?? null;
   const batchNextLead = batchNext ? queue.find((qq) => qq.id === batchNext) ?? null : null;
-  const nextLead = pos ? batchNextLead : queue.find((qq) => qq.id !== leadId);
+
+  // Free-roam mode (no batch): "next" is the genuinely next lead in the leads
+  // table's stable order, NOT the hottest. Using the heat queue here made the
+  // button loop (hottest-that-isn't-current bounced A<->B forever). Fetched from
+  // /next-lead so it walks forward through the whole floor deterministically.
+  const [freeNext, setFreeNext] = useState<{ id: string; business_name: string } | null>(null);
+  useEffect(() => {
+    if (pos) return; // batch drives its own next
+    let live = true;
+    api<{ next: { id: string; business_name: string } | null }>(`/api/admin/outbound/next-lead?after=${leadId}`)
+      .then((r) => { if (live) setFreeNext(r.next); })
+      .catch(() => { if (live) setFreeNext(null); });
+    return () => { live = false; };
+  }, [leadId, pos]);
+
+  const nextLead = pos ? batchNextLead : freeNext;
   useEffect(() => {
     // In a batch the id is authoritative even when the lead isn't in the heat
     // queue (most assigned leads won't be) — otherwise the stack would stall on
@@ -454,6 +499,16 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
             <button onClick={endSession} className="ml-auto text-[10px] uppercase tracking-[0.18em] font-oswald font-semibold text-[#f7f3e9]/60 hover:text-[#f7f3e9] border-2 border-[#f7f3e9]/30 hover:border-[#f7f3e9] rounded-lg px-3 py-1.5 transition-colors">
               {pos ? 'End batch' : 'End session'}
             </button>
+          </div>
+        )}
+
+        {alsoOnLead.length > 0 && (
+          <div className="mb-5 flex items-center gap-2.5 bg-[#a03123] border-2 border-[#1a1815] rounded-2xl shadow-[4px_4px_0_0_#1a1815] px-5 py-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#f7f3e9] animate-pulse shrink-0" aria-hidden />
+            <p className="font-sans text-sm text-[#f7f3e9]">
+              <span className="font-oswald font-semibold uppercase tracking-[0.08em]">{alsoOnLead.join(' & ')}</span>{' '}
+              {alsoOnLead.length > 1 ? 'are' : 'is'} on this same lead right now. Check before you dial so you don&apos;t double-call.
+            </p>
           </div>
         )}
 

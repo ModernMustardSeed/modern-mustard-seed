@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { requireOutboundAdmin, parseBody, outboundRepScope, fetchAllRows } from '@/lib/outbound-server';
+import { requireOutboundAdmin, parseBody, outboundRepScope, resolveRequestRep, fetchAllRows } from '@/lib/outbound-server';
 
 export const runtime = 'nodejs';
 
@@ -46,19 +46,22 @@ export async function GET() {
   if ('error' in guard) return guard.error;
 
   const { scopeRepId, reps } = await outboundRepScope(guard.supabase);
+  const me = await resolveRequestRep(guard.supabase);
   const { data, error } = await fetchAllRows(() =>
     guard.supabase
       .from('outbound_leads')
-      .select('id, status, owner_rep_id, next_action_at, created_at, website, dnc_checked')
+      .select('id, status, owner_rep_id, next_action_at, created_at, website, dnc_checked, business_name')
       .in('status', BATCH_STATUSES)
       .order('id', { ascending: true }),
   );
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   const now = Date.now();
-  const rows = (data ?? []) as (Row & { owner_rep_id: string | null })[];
+  const rows = (data ?? []) as (Row & { owner_rep_id: string | null; business_name: string })[];
   const counts: Record<string, number> = {};
+  const byId: Record<string, (typeof rows)[number]> = {};
   for (const l of rows) {
+    byId[l.id] = l;
     if (!l.owner_rep_id) continue;
     if (scopeRepId && l.owner_rep_id !== scopeRepId) continue;
     const due = l.next_action_at ? new Date(l.next_action_at).getTime() <= now + 60 * 60000 : false;
@@ -66,8 +69,50 @@ export async function GET() {
     if (workable) counts[l.owner_rep_id] = (counts[l.owner_rep_id] ?? 0) + 1;
   }
 
+  // The signed-in rep's saved batch, so the dashboard can offer "pick up where
+  // you left off." Only surface it if leads in it are still workable — a batch
+  // that's been fully worked or reassigned shouldn't dangle a stale resume button.
+  let resume: null | {
+    repId: string;
+    repName: string;
+    leadIds: string[];
+    cursor: number;
+    resumeLeadId: string;
+    position: number;
+    total: number;
+    remaining: number;
+    lastLead: { id: string; business_name: string } | null;
+  } = null;
+  if (me && Array.isArray(me.batch_lead_ids) && (me.batch_lead_ids as string[]).length) {
+    const leadIds = me.batch_lead_ids as string[];
+    // Leads still on this rep and still in a workable status.
+    const stillWorkable = leadIds.filter((id) => {
+      const l = byId[id];
+      return l && l.owner_rep_id === me.id;
+    });
+    if (stillWorkable.length) {
+      const cursor = Math.min(Number(me.batch_cursor) || 0, leadIds.length - 1);
+      const resumeLeadId = (me.current_lead_id as string) && byId[me.current_lead_id as string]
+        ? (me.current_lead_id as string)
+        : leadIds[cursor];
+      const lead = byId[resumeLeadId];
+      resume = {
+        repId: me.id,
+        repName: me.name,
+        leadIds,
+        cursor,
+        resumeLeadId,
+        position: leadIds.indexOf(resumeLeadId) + 1,
+        total: leadIds.length,
+        remaining: stillWorkable.length,
+        lastLead: lead ? { id: lead.id, business_name: lead.business_name } : null,
+      };
+    }
+  }
+
   return NextResponse.json({
     reps: reps.map((r) => ({ id: r.id, name: r.name, ready: counts[r.id] ?? 0 })),
+    resume,
   });
 }
 
@@ -122,9 +167,24 @@ export async function POST(req: Request) {
     .map((x) => x.l);
 
   const batch = ordered.slice(0, size);
+  const leadIds = batch.map((l) => l.id);
+
+  // Persist the frozen stack on the rep so "pick up where you left off" survives a
+  // closed tab, a different machine, or a logout. Reset the cursor and stamp the
+  // start so the session timer and progress read from zero.
+  await guard.supabase
+    .from('outbound_reps')
+    .update({
+      batch_lead_ids: leadIds,
+      batch_started_at: new Date().toISOString(),
+      batch_cursor: 0,
+      current_lead_id: leadIds[0] ?? null,
+      last_seen_at: new Date().toISOString(),
+    })
+    .eq('id', repId);
 
   return NextResponse.json({
-    leadIds: batch.map((l) => l.id),
+    leadIds,
     rep: { id: rep.id, name: rep.name },
     remaining: ordered.length,
     unscrubbed: batch.filter((l) => !l.dnc_checked).length,
