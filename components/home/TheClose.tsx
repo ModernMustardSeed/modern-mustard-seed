@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import HeroVideo from '@/components/HeroVideo';
 import NewsletterSignup from '@/components/NewsletterSignup';
 
 /**
  * TheClose. Beat 06: one cinematic midnight band that ends the page.
- * Merges the scripture card, the "Let's build the tree" brand film (HeroVideo), and
- * the NewsletterSignup into a single closing moment: manifesto line,
- * scripture with the mustard seed lit up, the ask, the film, the list.
+ * Merges the scripture card and the NewsletterSignup into a single closing
+ * moment: manifesto line, scripture with the mustard seed lit up, the ask,
+ * the list. (The brand film moved up to its own main stage, HomeFilmStage,
+ * right after the hero.)
  */
 export default function TheClose() {
   return (
@@ -77,14 +77,6 @@ export default function TheClose() {
           >
             See The Work
           </Link>
-        </div>
-
-        {/* The film */}
-        <div className="mt-16 max-w-3xl mx-auto">
-          <span className="font-mono font-bold text-[10px] uppercase tracking-[0.35em] text-[#F5B700]/70 block mb-4">
-            Watch
-          </span>
-          <HeroVideo />
         </div>
 
         {/* The list */}

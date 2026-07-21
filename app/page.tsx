@@ -1,6 +1,7 @@
 import FrontDeskHero from '@/components/home/FrontDeskHero';
 import HomeTicker from '@/components/home/HomeTicker';
 import HomeVine from '@/components/home/HomeVine';
+import HomeFilmStage from '@/components/home/HomeFilmStage';
 import ProofBand from '@/components/home/ProofBand';
 import BuildCabinet from '@/components/home/BuildCabinet';
 import ThreeDoors from '@/components/home/ThreeDoors';
@@ -114,6 +115,7 @@ export default function HomePage() {
       <main id="mm-vine-host" className="relative bg-[#FBF6EA] text-[#161616]">
         <HomeVine />
         <HomeTicker />
+        <div data-vine-stop><HomeFilmStage /></div>
         <div data-vine-stop><ProofBand /></div>
         <div data-vine-stop><BuildCabinet /></div>
         <HomeTicker reverse />
