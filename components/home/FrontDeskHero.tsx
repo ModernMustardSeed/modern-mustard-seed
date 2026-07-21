@@ -262,7 +262,9 @@ export default function FrontDeskHero() {
       <div className="absolute inset-0 halftone-bg opacity-60" aria-hidden />
       {!reduced && <canvas ref={canvasRef} className="absolute inset-0" aria-hidden />}
 
-      <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-16 md:pt-32 md:pb-24 min-h-[92vh] flex flex-col justify-center lg:grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_430px] lg:items-center lg:gap-12">
+      {/* The Forge Wire strip above carries the navbar clearance, so the
+          hero's own top padding is rhythm, not offset. */}
+      <div className="relative max-w-6xl mx-auto px-6 pt-12 pb-16 md:pt-16 md:pb-24 min-h-[86vh] flex flex-col justify-center lg:grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_430px] lg:items-center lg:gap-12">
         <div>
         {/* Logo lockup with mascot: mobile, centered above the headline */}
         <div className="lg:hidden relative w-[170px] sm:w-[240px] mx-auto mb-7">

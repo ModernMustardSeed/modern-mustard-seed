@@ -1,4 +1,5 @@
 import FrontDeskHero from '@/components/home/FrontDeskHero';
+import DemoForgeStrip from '@/components/home/DemoForgeStrip';
 import HomeTicker from '@/components/home/HomeTicker';
 import HomeVine from '@/components/home/HomeVine';
 import HomeFilmStage from '@/components/home/HomeFilmStage';
@@ -107,6 +108,7 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[homeJsonLd, offerJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} />
+      <DemoForgeStrip />
       <FrontDeskHero />
 
       {/* The Growing Vine draws down this whole container as you scroll:
