@@ -117,12 +117,12 @@ export default function DemoForgeStrip() {
           {line}
           <span className="mm-forge-caret inline-block w-[7px] -mb-[2px] border-b-2 border-[#FFDD55] ml-0.5" style={{ animation: 'mm-forge-caret 1s step-end infinite' }} />
         </span>
-        <span aria-hidden className="md:hidden min-w-0 flex-1 truncate font-mono text-[11px] font-medium text-[#F5B700]">
+        <span aria-hidden className="hidden sm:block md:hidden min-w-0 flex-1 truncate font-mono text-[11px] font-medium text-[#F5B700]">
           Your demo, built free, before you pay a cent
         </span>
 
         {/* the ask */}
-        <span className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-[#F5B700] px-3.5 md:px-5 py-1.5 font-sans text-[10px] md:text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#161616] shadow-[0_0_0_1px_#161616,3px_3px_0_0_rgba(245,183,0,0.25)] transition-all group-hover:-translate-y-[1px] group-hover:gap-2.5">
+        <span className="ml-auto shrink-0 inline-flex items-center gap-1.5 rounded-full bg-[#F5B700] px-3.5 md:px-5 py-1.5 font-sans text-[10px] md:text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#161616] shadow-[0_0_0_1px_#161616,3px_3px_0_0_rgba(245,183,0,0.25)] transition-all group-hover:-translate-y-[1px] group-hover:gap-2.5">
           <span className="hidden sm:inline">See Yours Built</span>
           <span className="sm:hidden">See Yours</span>
           <span aria-hidden>→</span>
