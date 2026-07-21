@@ -16,6 +16,7 @@ export default function Footer() {
     {
       title: 'The Departments',
       links: [
+        { label: 'Celebrate', href: '/celebrate' },
         { label: 'Sidekick Forge', href: '/sidekick' },
         { label: 'The Switchboard', href: '/switchboard' },
         { label: 'Mustard Broadcast', href: '/ads' },

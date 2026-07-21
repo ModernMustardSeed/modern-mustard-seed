@@ -54,6 +54,7 @@ const MENU_GROUPS = [
 // ink panel near the bottom of the drawer (names in Title Case, descriptors
 // in tracked mono caps; never a lowercase opener).
 const DEPARTMENTS = [
+  { name: 'Celebrate', tag: 'GIFTING ON AUTOPILOT', href: '/celebrate' },
   { name: 'Sidekick Forge', tag: 'FREE RECEPTIONIST DEMO', href: '/sidekick' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
