@@ -8,6 +8,7 @@ import { getSupabase } from '@/lib/supabase';
 import { products } from '@/data/products';
 import AffiliateLinks from '@/components/partners/AffiliateLinks';
 import MarketingKit from '@/components/partners/MarketingKit';
+import PayoutForm from '@/components/partners/PayoutForm';
 import HelpGuide from '@/components/HelpGuide';
 import { PARTNER_HELP } from '@/lib/help-content';
 
@@ -183,8 +184,11 @@ export default async function PartnerHQ() {
           </div>
         </div>
 
-        <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 mt-6">
+        <div id="get-paid" className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 mt-6">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">How you get paid</span>
+          <div className="mb-5">
+            <PayoutForm method={affiliate.payout_method ?? null} details={affiliate.payout_details ?? null} />
+          </div>
           <div className="space-y-2.5 mb-4">
             <Row label="Every product and bundle you sell" value="50%" accent />
             <Row label="Referred AI receptionist, every month it stays on" value="25% (up to 12 mo)" accent />

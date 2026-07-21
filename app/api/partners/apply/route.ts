@@ -91,9 +91,10 @@ export async function POST(req: Request) {
             { label: 'Email', value: email },
             { label: 'Promotes where', value: body.promoteWhere || 'n/a' },
             { label: 'Audience', value: body.audience || 'n/a' },
+            { label: 'Approve here', value: 'https://modernmustardseed.com/admin/partners', isLink: true },
           ],
           message: body.why || '',
-          suggestedAction: 'Review and approve in the back office at /admin/partners.',
+          suggestedAction: 'One click on Approve sends their welcome email, their code, and free access to everything.',
         }),
       });
       if (error) console.error('partner apply: owner notification failed', email, error);

@@ -38,6 +38,9 @@ export type Affiliate = {
   why: string | null;
   created_at: string;
   approved_at: string | null;
+  payout_method: string | null;
+  payout_details: string | null;
+  payout_updated_at: string | null;
 };
 
 /** A readable, unique-enough referral code from a name or email. */

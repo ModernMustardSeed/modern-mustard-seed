@@ -32,7 +32,7 @@ type Overview = {
     recent: Array<{ email: string; name: string | null; company: string | null; createdAt: string; isDemo: boolean; headline: string }>;
   };
   followups?: Array<{ kind: string; title: string; detail: string; days: number }>;
-  attention: Array<{ kind: string; title: string; detail: string; whenIso: string; leadId?: string; severity: 'high' | 'medium' }>;
+  attention: Array<{ kind: string; title: string; detail: string; whenIso: string; leadId?: string; href?: string; severity: 'high' | 'medium' }>;
   recentOrders: Array<{ name: string | null; email: string; product_name: string; price_paid_cents: number; created_at: string }>;
   recentLeads: Array<{ id: string; name: string | null; email: string; type: string; status: string; created_at: string }>;
   revenueSeries: Array<{ month: string; revenue: number }>;
@@ -558,16 +558,28 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
                   <p className="text-[#161616]/45 font-body italic text-sm py-6 text-center">All clear. Nothing waiting on you.</p>
                 ) : (
                   <div className="space-y-2.5">
-                    {data.attention.map((a, i) => (
-                      <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-[#FFFDF6] border border-[#161616]/15">
-                        <span className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${a.severity === 'high' ? 'bg-[#E0301E]' : 'bg-[#F5B700]'}`} />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[#161616] font-body text-sm font-medium truncate">{a.title}</p>
-                          <p className="text-[#161616]/60 font-body text-xs truncate mt-0.5">{a.detail}</p>
+                    {data.attention.map((a, i) => {
+                      const inner = (
+                        <>
+                          <span className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${a.severity === 'high' ? 'bg-[#E0301E]' : 'bg-[#F5B700]'}`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[#161616] font-body text-sm font-medium truncate">{a.title}</p>
+                            <p className="text-[#161616]/60 font-body text-xs truncate mt-0.5">{a.detail}</p>
+                          </div>
+                          <span className="text-[#161616]/45 font-mono text-[10px] whitespace-nowrap">{a.kind === 'call' ? 'call' : timeAgo(a.whenIso)}</span>
+                          {a.href && <span className="text-[#1E50C8] font-mono text-[10px] whitespace-nowrap self-center">→</span>}
+                        </>
+                      );
+                      return a.href ? (
+                        <Link key={i} href={a.href} className="flex items-start gap-3 p-3 rounded-lg bg-[#FFFDF6] border border-[#161616]/15 hover:border-[#161616]/40 hover:bg-[#FFF8E6] transition-colors">
+                          {inner}
+                        </Link>
+                      ) : (
+                        <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-[#FFFDF6] border border-[#161616]/15">
+                          {inner}
                         </div>
-                        <span className="text-[#161616]/45 font-mono text-[10px] whitespace-nowrap">{a.kind === 'call' ? 'call' : timeAgo(a.whenIso)}</span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

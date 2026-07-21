@@ -294,7 +294,8 @@ export function affiliateWelcomeEmail({
     valueCallout('Your referral code', `<span style="font-family:${SERIF};font-size:22px;color:${C.ink};font-weight:600;letter-spacing:1px">${escape(code)}</span><br><span style="font-size:13px;color:${C.muted}">Add it to any link, for example ${escape(SITE)}/the-terminal?ref=${escape(code)}</span>`) +
     ctaBlock({ label: 'Open my partner dashboard', url }, { label: 'Sign in anytime', url: loginUrl }) +
     paragraph(`<span style="font-size:13px;color:${C.muted}">That button is a one-tap sign-in and it expires in 20 minutes. You can sign in fresh anytime: go to <a href="${loginUrl}" style="color:${C.gold};font-weight:600">modernmustardseed.com/portal/login</a>, enter the email this was sent to, and we email you a new link. No password, ever.</span>`) +
-    paragraph('Inside you will find your links with one-tap copy, your numbers and earnings, and free access to every product. Share what you believe in, tell your audience the truth (including that you earn a commission), and we will root for you the whole way.') +
+    paragraph('Inside you will find your links with one-tap copy, your numbers and earnings, and free access to every product. First stop: the How You Get Paid card at the bottom of your dashboard. Tell us where to send your money (PayPal, Venmo, Zelle, whatever works), so your first payout never waits on a back-and-forth.') +
+    paragraph('Share what you believe in, tell your audience the truth (including that you earn a commission), and we will root for you the whole way.') +
     signature('Sarah');
   return shell({ preheader: 'Your Modern Mustard Seed partner account is live', subtitle: 'Partner Program', inner });
 }

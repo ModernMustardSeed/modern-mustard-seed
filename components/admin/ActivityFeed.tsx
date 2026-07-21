@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
 
 /**
@@ -34,6 +35,14 @@ const ACCENT: Record<ActivityEvent['kind'], string> = {
   lead: '#F5B700',
   sale: '#E0301E',
   client: '#1a6b39',
+};
+
+/** Where clicking an event takes you: the admin page where you can actually
+ *  act on it (approve the partner, work the lead). Kinds without a clear home
+ *  stay unlinked rather than linking somewhere wrong. */
+const KIND_HREF: Partial<Record<ActivityEvent['kind'], string>> = {
+  partner: '/admin/partners',
+  lead: '/admin/leads',
 };
 
 export default function ActivityFeed({ showMoney = true }: { showMoney?: boolean }) {
@@ -86,29 +95,42 @@ export default function ActivityFeed({ showMoney = true }: { showMoney?: boolean
             <p className="text-[#161616]/50 font-body text-sm">Quiet for now. New partners, leads, and sales will appear here the moment they happen.</p>
           </div>
         ) : (
-          events.map((e) => (
-            <div key={e.id} className="flex items-start gap-3 px-5 py-3 hover:bg-[#FFFDF6] transition-colors">
-              <span
-                className="shrink-0 w-8 h-8 rounded-lg border-2 border-[#161616] flex items-center justify-center text-sm"
-                style={{ background: `${ACCENT[e.kind]}22` }}
-                aria-hidden
-              >
-                {e.emoji}
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-sans font-bold text-[13px] text-[#161616]">{e.title}</span>
-                  {typeof e.amountCents === 'number' && e.amountCents > 0 && (
-                    <span className="font-mono text-[11px] font-bold text-[#E0301E]">
-                      {showMoney ? `+$${(e.amountCents / 100).toLocaleString('en-US')}` : '+$•••'}
-                    </span>
-                  )}
+          events.map((e) => {
+            const href = KIND_HREF[e.kind];
+            const inner = (
+              <>
+                <span
+                  className="shrink-0 w-8 h-8 rounded-lg border-2 border-[#161616] flex items-center justify-center text-sm"
+                  style={{ background: `${ACCENT[e.kind]}22` }}
+                  aria-hidden
+                >
+                  {e.emoji}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-sans font-bold text-[13px] text-[#161616]">{e.title}</span>
+                    {typeof e.amountCents === 'number' && e.amountCents > 0 && (
+                      <span className="font-mono text-[11px] font-bold text-[#E0301E]">
+                        {showMoney ? `+$${(e.amountCents / 100).toLocaleString('en-US')}` : '+$•••'}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[12.5px] text-[#3A3733] font-body leading-snug truncate">{e.detail}</p>
                 </div>
-                <p className="text-[12.5px] text-[#3A3733] font-body leading-snug truncate">{e.detail}</p>
+                <span className="shrink-0 font-mono text-[10px] text-[#161616]/40 mt-0.5">{timeAgo(e.whenIso)}</span>
+                {href && <span className="shrink-0 text-[#1E50C8] font-mono text-[10px] mt-0.5">→</span>}
+              </>
+            );
+            return href ? (
+              <Link key={e.id} href={href} className="flex items-start gap-3 px-5 py-3 hover:bg-[#FFF8E6] transition-colors">
+                {inner}
+              </Link>
+            ) : (
+              <div key={e.id} className="flex items-start gap-3 px-5 py-3 hover:bg-[#FFFDF6] transition-colors">
+                {inner}
               </div>
-              <span className="shrink-0 font-mono text-[10px] text-[#161616]/40 mt-0.5">{timeAgo(e.whenIso)}</span>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </section>

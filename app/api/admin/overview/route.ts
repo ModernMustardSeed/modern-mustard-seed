@@ -13,11 +13,14 @@ export const runtime = 'nodejs';
  */
 
 type Attention = {
-  kind: 'lead' | 'call' | 'buyer' | 'message';
+  kind: 'lead' | 'call' | 'buyer' | 'message' | 'partner';
   title: string;
   detail: string;
   whenIso: string;
   leadId?: string;
+  /** Where clicking the item takes you (e.g. a partner application goes to
+   *  Partner Admin, where the Approve button lives). */
+  href?: string;
   severity: 'high' | 'medium';
   /** Tie-breaker inside a severity band, high wins. The rail is oldest-first
    *  (staleness is the whole point of nagging), which would bury the one thing
@@ -326,6 +329,33 @@ export async function GET() {
     activeProjects = count ?? 0;
   } catch {
     // projects not present
+  }
+
+  // ── Partner applications waiting ──────────────────────────────────
+  // A human asked to sell for us and is waiting on a yes. That outranks
+  // everything else on the rail, and the item links straight to the Approve
+  // button in Partner Admin.
+  try {
+    const { data: pendingPartners } = await supabase
+      .from('affiliates')
+      .select('id, name, email, promote_where, audience, created_at')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .limit(10);
+    for (const a of pendingPartners ?? []) {
+      const where = (a.promote_where as string) || (a.audience as string) || '';
+      attention.push({
+        kind: 'partner',
+        title: `Partner application: ${(a.name as string) || (a.email as string)}`,
+        detail: `${where ? `Promotes on ${where}. ` : ''}Click to approve, their welcome email and package go out on your yes.`,
+        whenIso: a.created_at as string,
+        href: '/admin/partners',
+        severity: 'high',
+        priority: 3,
+      });
+    }
+  } catch {
+    // affiliates not migrated yet
   }
 
   // ── Approvals waiting ─────────────────────────────────────────────

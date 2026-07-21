@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, Fragment } from 'react';
 import AdminHeader from './AdminHeader';
+import { payoutMethodLabel } from '@/lib/payout-methods';
 
 type Row = {
   id: string;
@@ -21,6 +22,8 @@ type Row = {
   forge_daily_cap?: number;
   forge_weekly_cap?: number;
   forge_qa_approved?: number;
+  payout_method?: string | null;
+  payout_details?: string | null;
 };
 type Totals = { partners: number; pending: number; payableCents: number; salesCents: number };
 
@@ -552,6 +555,11 @@ export default function AffiliatesAdmin() {
                         <td className="px-4 py-3.5">
                           <p className="text-[#161616] font-body">{r.name ?? r.email}{emailFailed(r.email) && <span className="ml-2 inline-block bg-[#F6E2DC] text-[#9A2D14] text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded align-middle">{emailFailed(r.email)}</span>}</p>
                           <p className="text-[#161616]/60 text-xs">{r.email}</p>
+                          {r.payout_method && r.payout_details ? (
+                            <p className="text-emerald-700 text-[11px] font-mono mt-0.5">Pays via {payoutMethodLabel(r.payout_method)}: {r.payout_details}</p>
+                          ) : r.payableCents > 0 ? (
+                            <p className="mt-0.5"><span className="inline-block bg-[#FFF3D6] border border-[#B98A00]/40 text-[#7A5B00] text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded">No payout info yet</span></p>
+                          ) : null}
                         </td>
                         <td className="px-4 py-3.5"><span className="font-mono text-[#E0301E] text-xs">{r.code}</span></td>
                         <td className="px-4 py-3.5 text-[#3A3733] font-mono text-xs">{r.clicks}</td>
