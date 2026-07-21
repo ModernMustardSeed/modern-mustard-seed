@@ -62,6 +62,13 @@ export const PORTFOLIO: PortfolioCategory[] = [
         blurb: "Wild Hope's boutique brand. The micro resort's presence on the lake.",
         tags: ['Wild Hope', 'hospitality'],
       },
+      {
+        name: 'Wild Hope HQ',
+        url: 'https://wildhopehq.com',
+        status: 'live',
+        blurb: 'The retreat village on Flathead Lake, told as a Book of Hours for wild horses. Night-to-dawn scroll, seventeen in-house oil plates, and the Offertory: write your wildest hope, watch it become a galloping horse of gold, and seal it in wax until arrival.',
+        tags: ['Wild Hope', 'hospitality', 'flagship design'],
+      },
     ],
   },
   {
