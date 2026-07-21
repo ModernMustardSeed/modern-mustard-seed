@@ -26,7 +26,7 @@ export async function POST() {
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
-  const { data: proj } = await sb
+  const { data: proj, error: projErr } = await sb
     .from('projects')
     .select('id, name, care_plan')
     .ilike('client_email', session.email)
@@ -34,6 +34,12 @@ export async function POST() {
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle();
+  // A query error must not masquerade as "no project found" and block a paying
+  // client with a misleading message. Surface it as a real failure.
+  if (projErr) {
+    console.error('care-plan project lookup failed', projErr.message);
+    return NextResponse.json({ error: 'Could not start checkout. Please try again in a minute.' }, { status: 500 });
+  }
   if (!proj) return NextResponse.json({ error: 'No project found.' }, { status: 404 });
   if (proj.care_plan) return NextResponse.json({ error: 'Your Care Plan is already active.' }, { status: 400 });
 

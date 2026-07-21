@@ -1,0 +1,50 @@
+# Demo checkout watchdog trigger.
+#
+# The MMS Vercel project is on the Hobby plan (cron jobs run once per day there),
+# so this every-15-minutes probe of the checkout money path is driven from here
+# instead of a Vercel cron, exactly like voice-health. This job just pings the
+# route; ALL the logic lives server-side in app/api/cron/checkout-health/route.ts
+# (probe env + the exact lead-lookup embed + demo_orders + a real Stripe session,
+# then email Sarah on failure and return HTTP 500 so a red run surfaces here too).
+#
+# Why this exists: on 2026-07-21 every demo checkout silently 404'd for days after
+# a schema change made a Supabase embed ambiguous. Never again without an alert.
+#
+# GitHub's scheduled runs are best-effort and can lag a few minutes; fine for a
+# watchdog. Trigger a run by hand anytime from the Actions tab (workflow_dispatch).
+
+name: checkout-health
+
+on:
+  schedule:
+    - cron: "*/15 * * * *" # every 15 minutes (best-effort on GitHub)
+  workflow_dispatch: {} # manual run button
+
+# Don't pile up overlapping pings if a run is slow.
+concurrency:
+  group: checkout-health
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping checkout watchdog
+        run: |
+          echo "Pinging checkout-health watchdog..."
+          BODY=$(curl -sS -m 60 -w $'\n%{http_code}' \
+            ${CRON_SECRET:+-H "Authorization: Bearer $CRON_SECRET"} \
+            "https://modernmustardseed.com/api/cron/checkout-health")
+          CODE=$(printf '%s' "$BODY" | tail -n1)
+          JSON=$(printf '%s' "$BODY" | sed '$d')
+          echo "HTTP $CODE"
+          echo "Response: $JSON"
+          # Non-2xx = a checkout money-path check failed (the route already emailed
+          # Sarah). Fail the run so it also shows red in the Actions tab.
+          if [ "$CODE" -lt 200 ] || [ "$CODE" -ge 300 ]; then
+            echo "::error::checkout-health returned HTTP $CODE (a checkout check failed)"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}

@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Keep a single edit under ${MAX_META} characters. For a bigger change, send it to Sarah as a note.` }, { status: 400 });
   }
 
-  const { data: proj } = await sb
+  const { data: proj, error: projErr } = await sb
     .from('projects')
     .select('id, name, edit_status')
     .ilike('client_email', session.email)
@@ -45,6 +45,12 @@ export async function POST(req: Request) {
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle();
+  // A query error must not masquerade as "no project found" and block a paying
+  // client with a misleading message. Surface it as a real failure.
+  if (projErr) {
+    console.error('portal edit-checkout project lookup failed', projErr.message);
+    return NextResponse.json({ error: 'Could not start checkout. Please try again in a minute.' }, { status: 500 });
+  }
   if (!proj) return NextResponse.json({ error: 'No project found.' }, { status: 404 });
 
   // One at a time: a ready/queued/building edit must be dealt with first.
