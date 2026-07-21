@@ -42,11 +42,29 @@ export type SidekickProfile = {
 export type ForgedCall = {
   firstMessage: string;
   model: Record<string, unknown>;
+  /** Per-demo transcriber with the business name keyterm-boosted (see demoTranscriber). */
+  transcriber: Record<string, unknown>;
   maxDurationSeconds: number;
   metadata: Record<string, string | boolean>;
   /** The chosen receptionist voice, merged into the Vapi call on both paths. */
   voice: VapiVoice;
 };
+
+/**
+ * Voice craft shared by every forged demo persona. Each line exists because a
+ * real call produced the failure it forbids (2026-07-21: a phone readback that
+ * ADDED a digit, an email spelled with hyphens that TTS read aloud as "minus",
+ * a 9-digit number accepted without challenge, and a three-in-a-row "could you
+ * say that again" loop).
+ */
+const VOICE_CRAFT = `
+
+# Getting details right (hard rules, each has failed on a real call)
+- If you did not catch something, ask again ONCE at most. Still unclear? Take your best good-faith read of it and keep the conversation moving. Never ask someone to repeat themselves twice in a row.
+- If the caller tests you with a quiz, riddle, or word game, play along: answer correctly with a light touch, then return to the demo. Passing their test IS the demo working.
+- Phone numbers: a US number has exactly ten digits. If you heard fewer or more, say so and take it again. Read numbers back ONE DIGIT AT A TIME ("four, zero, six"), and never add, drop, or guess a digit you did not clearly hear.
+- Emails: capture the part before the at sign, then the domain. Spell it back one character at a time separated by commas and brief pauses, never hyphens or dashes (the voice engine reads "-" aloud as "minus"). Confirm any digits on their own before confirming the whole address.
+- The recall_caller tool is not for demo calls: skip it entirely, and never say "just a sec" or "hold on" unless you are actually fetching calendar slots or booking.`;
 
 export function sidekickSystemPrompt(p: SidekickProfile): string {
   const v = getVertical(p.verticalId);
@@ -70,7 +88,7 @@ ${p.hours ? `- Hours: ${p.hours}` : '- Hours: not given yet. If asked, take a me
 - If asked what you are: a fully AI receptionist, proudly, trained by Mr. Mustard on the same stack that answers Modern Mustard Seed's own phones.
 - Turns are 1 to 2 sentences. Warm, natural, zero pushiness. No em dashes, ever.
 - When booking with Sarah: confirm name and email out loud, spell the email back letter by letter, and get an explicit yes BEFORE calling the booking tool. All times Mountain Time.
-- As the call winds down, sign off with your maker's mark, once and lightly: this demo was forged at modernmustardseed dot com slash sidekick.`;
+- As the call winds down, sign off with your maker's mark, once and lightly: this demo was forged at modernmustardseed dot com slash sidekick.${VOICE_CRAFT}`;
 }
 
 /**
@@ -100,14 +118,34 @@ ${p.hours ? `- Hours: ${p.hours}` : '- Hours: unknown. If asked while role-playi
 - Turns are 1 to 2 sentences. Warm, natural, zero pushiness. Never rush them; if they just want to poke at you, let them, that IS the demo working.
 - If they ask what it costs: this demo is free, and putting me on their real line is ${formatUsd(DEMO_PRODUCTS.voice.setupCents)} one time to set up plus ${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)} a month, month to month, cancel anytime. Those are the ONLY two numbers you may say. There is no free trial: this demo is the trial. Point them at the Make It Real button below you, or offer to book Sarah.
 - When booking with Sarah: confirm name and email out loud, spell the email back letter by letter, and get an explicit yes BEFORE calling the booking tool. All times Mountain Time.
-- As the call winds down, one light sign-off: this demo was built by Modern Mustard Seed, modernmustardseed dot com.`;
+- As the call winds down, one light sign-off: this demo was built by Modern Mustard Seed, modernmustardseed dot com.${VOICE_CRAFT}`;
 }
 
 export function sidekickFirstMessage(p: SidekickProfile): string {
   if (p.flow === 'outbound') {
-    return `Hi! Quick heads up, I'm not a person. I'm the AI receptionist Sarah at Modern Mustard Seed built as a free demo for ${p.business}. If your phone rang after hours, I'm how it could get answered. Want to test me? Pretend you're a customer calling ${p.business} and ask me anything.`;
+    // Wording matters here: the old line "I'm the AI receptionist Sarah at
+    // Modern Mustard Seed built..." was spoken as if the receptionist were
+    // NAMED Sarah (heard on the 2026-07-21 Chipman demo call).
+    return `Hi! Quick heads up, I'm not a person. I'm an AI receptionist, a free demo that Sarah at Modern Mustard Seed built for ${p.business}. If your phone rang after hours, I'm how it could get answered. Want to test me? Pretend you're a customer calling ${p.business} and ask me anything.`;
   }
   return `Hi ${p.ownerName}! Thank you for calling ${p.business}... okay, I can't keep a straight face. It's me, your brand new front desk. Mr. Mustard just finished training me on everything you told him, and you are officially my first call. Want to test me? Pretend you're a customer.`;
+}
+
+/**
+ * Deepgram nova-3 keyterm boosting for demo calls: the words this call is
+ * guaranteed to contain (the business name, the owner, the city) are exactly
+ * the ones the transcriber mangles without help. Keyterm accepted by Vapi on
+ * nova-3, probed 201 on 2026-07-21.
+ */
+function demoTranscriber(p: SidekickProfile): Record<string, unknown> {
+  const keyterm = [
+    ...new Set(
+      [p.business, p.ownerName, p.city, 'Modern Mustard Seed', 'Sarah']
+        .map((s) => (s || '').trim())
+        .filter(Boolean),
+    ),
+  ].slice(0, 6);
+  return { provider: 'deepgram', model: 'nova-3', language: 'en', numerals: true, keyterm };
 }
 
 // GET /assistant is cached per instance so the forge stays fast and we do not
@@ -159,6 +197,7 @@ export async function forgeCall(p: SidekickProfile, runId: string, mode: 'web' |
     call: {
       firstMessage: sidekickFirstMessage(p),
       model: { ...model, messages: [{ role: 'system', content: sidekickSystemPrompt(p) }] },
+      transcriber: demoTranscriber(p),
       maxDurationSeconds: SIDEKICK.demoSeconds,
       metadata: { kind: 'sidekick-demo', mode, runId, business: p.business.slice(0, 80) },
       voice: sidekickVoice(p.voice),
@@ -193,6 +232,7 @@ export async function ringDemoCall(call: ForgedCall, toNumber: string): Promise<
         assistantOverrides: {
           firstMessage: call.firstMessage,
           model: call.model,
+          transcriber: call.transcriber,
           maxDurationSeconds: call.maxDurationSeconds,
           metadata: call.metadata,
           voice: call.voice,

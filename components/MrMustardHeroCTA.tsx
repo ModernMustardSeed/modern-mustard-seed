@@ -38,28 +38,30 @@ export default function MrMustardHeroCTA({ location = 'hero' }: { location?: str
     setError(null);
     setState('connecting');
     try {
-      if (!vapiRef.current) {
-        const { default: VapiClient } = await import('@vapi-ai/web');
-        const { hardenMicPath } = await import('@/lib/vapi-web');
-        const vapi = new VapiClient(PUBLIC_KEY as string);
-        vapi.on('call-start', () => {
-          setState('live');
-          hardenMicPath(vapi);
-        });
-        vapi.on('call-end', () => {
-          setState('idle');
-          setSpeaking(false);
-        });
-        vapi.on('speech-start', () => setSpeaking(true));
-        vapi.on('speech-end', () => setSpeaking(false));
-        vapi.on('error', (e: unknown) => {
-          console.error('vapi error', e);
-          setState('error');
-          setError('Call dropped. Try again?');
-        });
-        vapiRef.current = vapi;
-      }
-      await vapiRef.current.start(ASSISTANT_ID as string);
+      const { default: VapiClient } = await import('@vapi-ai/web');
+      const { hardenMicPath, teardownVapi } = await import('@/lib/vapi-web');
+      // Fresh instance per call: reusing one across hang-up/redial races
+      // Daily's async teardown and produces deaf or mute calls (teardownVapi).
+      await teardownVapi(vapiRef.current);
+      vapiRef.current = null;
+      const vapi = new VapiClient(PUBLIC_KEY as string);
+      vapi.on('call-start', () => {
+        setState('live');
+        hardenMicPath(vapi);
+      });
+      vapi.on('call-end', () => {
+        setState('idle');
+        setSpeaking(false);
+      });
+      vapi.on('speech-start', () => setSpeaking(true));
+      vapi.on('speech-end', () => setSpeaking(false));
+      vapi.on('error', (e: unknown) => {
+        console.error('vapi error', e);
+        setState('error');
+        setError('Call dropped. Try again?');
+      });
+      vapiRef.current = vapi;
+      await vapi.start(ASSISTANT_ID as string);
     } catch (err) {
       console.error('vapi start failed', err);
       setState('error');

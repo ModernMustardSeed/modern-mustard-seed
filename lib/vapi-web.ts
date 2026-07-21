@@ -49,6 +49,32 @@ async function setProcessorNone(vapi: any): Promise<boolean> {
  * If every attempt fails we shout, because that means the SDK internals moved
  * and the demos are about to go deaf.
  */
+/**
+ * Fully destroy a previous call instance before starting a new one.
+ *
+ * Daily allows only ONE call object per page. The SDK's stop() is async (it
+ * awaits call.destroy()) but flips its `started` flag immediately, so a rapid
+ * hang-up-and-redial can create a second Daily call object while the first is
+ * still tearing down. When that race lands, the new call grabs no mic (Vapi
+ * ends it with `error-assistant-did-not-receive-customer-audio` or
+ * `silence-timed-out`) or plays no output audio (the caller hears nothing).
+ * Observed live 2026-07-21: Sarah redialed within seconds and got one deaf
+ * call and one mute call back to back.
+ *
+ * Every surface now builds a FRESH Vapi instance per call and awaits this
+ * first. The settle delay gives the browser a beat to release the mic and
+ * output devices after destroy resolves.
+ */
+export async function teardownVapi(vapi: unknown): Promise<void> {
+  if (!vapi) return;
+  try {
+    await Promise.resolve((vapi as any).stop());
+  } catch {
+    /* already stopped or never started */
+  }
+  await new Promise((r) => window.setTimeout(r, 150));
+}
+
 export function hardenMicPath(vapi: unknown): void {
   const attempts = [0, 400, 1200, 2500];
   let landed = false;

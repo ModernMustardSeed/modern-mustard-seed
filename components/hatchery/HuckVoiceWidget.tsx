@@ -40,33 +40,33 @@ export default function HuckVoiceWidget() {
       if (!res.ok) throw new Error(`token ${res.status}`);
       const { token, assistantId } = (await res.json()) as { token: string; assistantId: string };
 
-      if (!vapiRef.current) {
-        const { default: VapiClient } = await import('@vapi-ai/web');
-        const { hardenMicPath } = await import('@/lib/vapi-web');
-        const vapi = new VapiClient(token);
-        vapi.on('call-start', () => {
-          setState('live');
-          hardenMicPath(vapi);
-        });
-        vapi.on('call-end', () => {
-          setState('ended');
-          setSpeaking(false);
-          setVolume(0);
-        });
-        vapi.on('speech-start', () => setSpeaking(true));
-        vapi.on('speech-end', () => setSpeaking(false));
-        vapi.on('volume-level', (v: number) => setVolume(v));
-        vapi.on('error', (e: unknown) => {
-          console.error('huck vapi error', e);
-          setState('error');
-          setError('The line dropped. Mind trying again?');
-        });
-        vapiRef.current = vapi;
-      } else {
-        // Re-auth an existing client with a fresh token before restarting.
-        (vapiRef.current as unknown as { setToken?: (t: string) => void }).setToken?.(token);
-      }
-      await vapiRef.current.start(assistantId);
+      const { default: VapiClient } = await import('@vapi-ai/web');
+      const { hardenMicPath, teardownVapi } = await import('@/lib/vapi-web');
+      // Fresh instance per call (with its fresh token): reusing one across
+      // hang-up/redial races Daily's async teardown and produces deaf or mute
+      // calls (teardownVapi).
+      await teardownVapi(vapiRef.current);
+      vapiRef.current = null;
+      const vapi = new VapiClient(token);
+      vapi.on('call-start', () => {
+        setState('live');
+        hardenMicPath(vapi);
+      });
+      vapi.on('call-end', () => {
+        setState('ended');
+        setSpeaking(false);
+        setVolume(0);
+      });
+      vapi.on('speech-start', () => setSpeaking(true));
+      vapi.on('speech-end', () => setSpeaking(false));
+      vapi.on('volume-level', (v: number) => setVolume(v));
+      vapi.on('error', (e: unknown) => {
+        console.error('huck vapi error', e);
+        setState('error');
+        setError('The line dropped. Mind trying again?');
+      });
+      vapiRef.current = vapi;
+      await vapi.start(assistantId);
     } catch (err) {
       console.error('huck voice start failed', err);
       setState('error');

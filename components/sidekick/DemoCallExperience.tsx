@@ -60,24 +60,27 @@ export default function DemoCallExperience({
     setState('connecting');
     setError('');
     try {
-      if (!vapiRef.current) {
-        const { default: Vapi } = await import('@vapi-ai/web');
-        const { hardenMicPath } = await import('@/lib/vapi-web');
-        const vapi = new Vapi(PUBLIC_KEY);
-        vapi.on('call-start', () => {
-          setState('live');
-          hardenMicPath(vapi);
-        });
-        vapi.on('call-end', () => setState('ended'));
-        vapi.on('error', () => {
-          setState('error');
-          setError('The line dropped. Tap to try again.');
-        });
-        vapiRef.current = vapi;
-      }
-      await vapiRef.current.start(ASSISTANT_ID, {
+      const { default: Vapi } = await import('@vapi-ai/web');
+      const { hardenMicPath, teardownVapi } = await import('@/lib/vapi-web');
+      // Fresh instance per call: reusing one across hang-up/redial races
+      // Daily's async teardown and produces deaf or mute calls (teardownVapi).
+      await teardownVapi(vapiRef.current);
+      vapiRef.current = null;
+      const vapi = new Vapi(PUBLIC_KEY);
+      vapi.on('call-start', () => {
+        setState('live');
+        hardenMicPath(vapi);
+      });
+      vapi.on('call-end', () => setState('ended'));
+      vapi.on('error', () => {
+        setState('error');
+        setError('The line dropped. Tap to try again.');
+      });
+      vapiRef.current = vapi;
+      await vapi.start(ASSISTANT_ID, {
         firstMessage: call.firstMessage,
         model: call.model,
+        transcriber: call.transcriber,
         maxDurationSeconds: call.maxDurationSeconds,
         metadata: call.metadata,
         voice: sidekickVoice(gender),

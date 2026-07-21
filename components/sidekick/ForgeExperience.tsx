@@ -32,6 +32,8 @@ type CallState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 type ForgedCall = {
   firstMessage: string;
   model: Record<string, unknown>;
+  /** Optional: runs forged before 2026-07-21 (localStorage restores) predate it. */
+  transcriber?: Record<string, unknown>;
   maxDurationSeconds: number;
   metadata: Record<string, unknown>;
   voice?: { provider: string; voiceId: string };
@@ -195,34 +197,37 @@ export default function ForgeExperience() {
     setCallState('connecting');
     trackEvent('sidekick_call_web_start', { business: form.business });
     try {
-      if (!vapiRef.current) {
-        const { default: VapiClient } = await import('@vapi-ai/web');
-        const { hardenMicPath } = await import('@/lib/vapi-web');
-        const vapi = new VapiClient(PUBLIC_KEY);
-        vapi.on('call-start', () => {
-          setCallState('live');
-          hardenMicPath(vapi);
-        });
-        vapi.on('call-end', () => {
-          setCallState('ended');
-          setSpeaking(false);
-          setVolume(0);
-          trackEvent('sidekick_call_web_end', { business: form.business });
-          document.getElementById('keep')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-        vapi.on('speech-start', () => setSpeaking(true));
-        vapi.on('speech-end', () => setSpeaking(false));
-        vapi.on('volume-level', (v: number) => setVolume(v));
-        vapi.on('error', (e: unknown) => {
-          console.error('sidekick vapi error', e);
-          setCallState('error');
-          setCallError('The line dropped. Mind trying again?');
-        });
-        vapiRef.current = vapi;
-      }
-      await vapiRef.current.start(ASSISTANT_ID, {
+      const { default: VapiClient } = await import('@vapi-ai/web');
+      const { hardenMicPath, teardownVapi } = await import('@/lib/vapi-web');
+      // Fresh instance per call: reusing one across hang-up/redial races
+      // Daily's async teardown and produces deaf or mute calls (teardownVapi).
+      await teardownVapi(vapiRef.current);
+      vapiRef.current = null;
+      const vapi = new VapiClient(PUBLIC_KEY);
+      vapi.on('call-start', () => {
+        setCallState('live');
+        hardenMicPath(vapi);
+      });
+      vapi.on('call-end', () => {
+        setCallState('ended');
+        setSpeaking(false);
+        setVolume(0);
+        trackEvent('sidekick_call_web_end', { business: form.business });
+        document.getElementById('keep')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      vapi.on('speech-start', () => setSpeaking(true));
+      vapi.on('speech-end', () => setSpeaking(false));
+      vapi.on('volume-level', (v: number) => setVolume(v));
+      vapi.on('error', (e: unknown) => {
+        console.error('sidekick vapi error', e);
+        setCallState('error');
+        setCallError('The line dropped. Mind trying again?');
+      });
+      vapiRef.current = vapi;
+      await vapi.start(ASSISTANT_ID, {
         firstMessage: forged.call.firstMessage,
         model: forged.call.model,
+        transcriber: forged.call.transcriber,
         maxDurationSeconds: forged.call.maxDurationSeconds,
         metadata: forged.call.metadata,
         voice: sidekickVoice(gender),

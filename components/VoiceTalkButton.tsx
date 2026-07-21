@@ -67,31 +67,33 @@ export default function VoiceTalkButton() {
     setError(null);
     setState('connecting');
     try {
-      if (!vapiRef.current) {
-        const { default: VapiClient } = await import('@vapi-ai/web');
-        const { hardenMicPath } = await import('@/lib/vapi-web');
-        const vapi = new VapiClient(PUBLIC_KEY);
-        vapi.on('call-start', () => {
-          setState('live');
-          hardenMicPath(vapi);
-        });
-        vapi.on('call-end', () => {
-          setState('ended');
-          setSpeaking(false);
-          setVolume(0);
-          setMuted(false);
-        });
-        vapi.on('speech-start', () => setSpeaking(true));
-        vapi.on('speech-end', () => setSpeaking(false));
-        vapi.on('volume-level', (v: number) => setVolume(v));
-        vapi.on('error', (e: unknown) => {
-          console.error('vapi error', e);
-          setState('error');
-          setError('Call dropped. Mind trying again?');
-        });
-        vapiRef.current = vapi;
-      }
-      await vapiRef.current.start(ASSISTANT_ID, overridesFor(lang) as never);
+      const { default: VapiClient } = await import('@vapi-ai/web');
+      const { hardenMicPath, teardownVapi } = await import('@/lib/vapi-web');
+      // Fresh instance per call: reusing one across hang-up/redial races
+      // Daily's async teardown and produces deaf or mute calls (teardownVapi).
+      await teardownVapi(vapiRef.current);
+      vapiRef.current = null;
+      const vapi = new VapiClient(PUBLIC_KEY);
+      vapi.on('call-start', () => {
+        setState('live');
+        hardenMicPath(vapi);
+      });
+      vapi.on('call-end', () => {
+        setState('ended');
+        setSpeaking(false);
+        setVolume(0);
+        setMuted(false);
+      });
+      vapi.on('speech-start', () => setSpeaking(true));
+      vapi.on('speech-end', () => setSpeaking(false));
+      vapi.on('volume-level', (v: number) => setVolume(v));
+      vapi.on('error', (e: unknown) => {
+        console.error('vapi error', e);
+        setState('error');
+        setError('Call dropped. Mind trying again?');
+      });
+      vapiRef.current = vapi;
+      await vapi.start(ASSISTANT_ID, overridesFor(lang) as never);
     } catch (err) {
       console.error('vapi start failed', err);
       setState('error');

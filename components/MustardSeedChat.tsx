@@ -101,28 +101,30 @@ export default function MustardSeedChat() {
     setCallError(null);
     setCallState('connecting');
     try {
-      if (!vapiRef.current) {
-        const { default: VapiClient } = await import('@vapi-ai/web');
-        const { hardenMicPath } = await import('@/lib/vapi-web');
-        const vapi = new VapiClient(VAPI_PUBLIC_KEY as string);
-        vapi.on('call-start', () => {
-          setCallState('live');
-          hardenMicPath(vapi);
-        });
-        vapi.on('call-end', () => {
-          setCallState('idle');
-          setSpeaking(false);
-        });
-        vapi.on('speech-start', () => setSpeaking(true));
-        vapi.on('speech-end', () => setSpeaking(false));
-        vapi.on('error', (e: unknown) => {
-          console.error('vapi error', e);
-          setCallState('error');
-          setCallError('Call dropped. Try again?');
-        });
-        vapiRef.current = vapi;
-      }
-      await vapiRef.current.start(VAPI_ASSISTANT_ID as string);
+      const { default: VapiClient } = await import('@vapi-ai/web');
+      const { hardenMicPath, teardownVapi } = await import('@/lib/vapi-web');
+      // Fresh instance per call: reusing one across hang-up/redial races
+      // Daily's async teardown and produces deaf or mute calls (teardownVapi).
+      await teardownVapi(vapiRef.current);
+      vapiRef.current = null;
+      const vapi = new VapiClient(VAPI_PUBLIC_KEY as string);
+      vapi.on('call-start', () => {
+        setCallState('live');
+        hardenMicPath(vapi);
+      });
+      vapi.on('call-end', () => {
+        setCallState('idle');
+        setSpeaking(false);
+      });
+      vapi.on('speech-start', () => setSpeaking(true));
+      vapi.on('speech-end', () => setSpeaking(false));
+      vapi.on('error', (e: unknown) => {
+        console.error('vapi error', e);
+        setCallState('error');
+        setCallError('Call dropped. Try again?');
+      });
+      vapiRef.current = vapi;
+      await vapi.start(VAPI_ASSISTANT_ID as string);
     } catch (err) {
       console.error('vapi start failed', err);
       setCallState('error');
