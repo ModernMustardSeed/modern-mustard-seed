@@ -21,13 +21,22 @@ type Work = {
 
 const WORK: Work[] = [
   {
+    name: 'Wild Hope',
+    domain: 'wildhopehq.com',
+    url: 'https://wildhopehq.com',
+    tag: 'Retreat village + brand',
+    desc: 'A Flathead Lake retreat told as a Book of Hours: seventeen original oil paintings, a night-to-dawn scroll, and a booking ledger sealed in wax.',
+    shot: '/home/work/wild-hope.jpg',
+    tilt: '-rotate-[0.8deg]',
+  },
+  {
     name: 'Cross + Covenant',
     domain: 'crossandcovenant.co',
     url: 'https://crossandcovenant.co',
     tag: 'Faith apparel brand',
     desc: 'A direct-to-consumer storefront and fashion house, sketch to live collection in 60 days.',
     shot: '/home/work/cross-covenant.jpg',
-    tilt: '-rotate-[0.8deg]',
+    tilt: 'rotate-[0.8deg]',
   },
   {
     name: 'Fiat Lux Design',
@@ -36,7 +45,7 @@ const WORK: Work[] = [
     tag: 'AI interior staging',
     desc: 'An AI studio that stages any empty room for listing photos in seconds, built for realtors and designers.',
     shot: '/home/work/fiat-lux.jpg',
-    tilt: 'rotate-[0.8deg]',
+    tilt: '-rotate-[0.8deg]',
   },
   {
     name: 'Lago Society',
@@ -55,6 +64,15 @@ const WORK: Work[] = [
     desc: 'A design-build landscaper with an AI yard visualizer and a full back office behind it.',
     shot: '/home/work/dnd-landscaping.jpg',
     tilt: '-rotate-[0.8deg]',
+  },
+  {
+    name: 'Bare Earth',
+    domain: 'bare-earth.vercel.app',
+    url: 'https://bare-earth.vercel.app',
+    tag: 'Estate landscaping + AI office',
+    desc: 'An estate groundskeeper brand with instant quoting, an AI concierge that books walkthroughs, and a command center behind it.',
+    shot: '/home/work/bare-earth.jpg',
+    tilt: 'rotate-[0.8deg]',
   },
 ];
 
