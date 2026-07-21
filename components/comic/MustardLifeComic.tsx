@@ -243,6 +243,7 @@ export default function MustardLifeComic() {
             alt="The Mustard family on the bow of a yacht at golden hour. Mr. Mustard at the wheel in a captain's hat, Mrs. Mustard waving from a deck lounger, the seedling kids watching dolphins."
             fill
             priority
+            quality={70}
             sizes="100vw"
             className="object-cover object-[50%_38%]"
           />
@@ -788,6 +789,7 @@ export default function MustardLifeComic() {
             src="/comic/horizon.webp"
             alt="The Mustard family together at the yacht's bow, gazing at a golden sunset horizon."
             fill
+            quality={70}
             sizes="100vw"
             className="object-cover"
           />
