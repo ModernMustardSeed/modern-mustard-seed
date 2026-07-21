@@ -177,7 +177,7 @@ export default function DemoStation() {
       <label className="block mt-4">
         <span className={labelCls}>
           Anything we should know?
-          <span className="ml-2 normal-case tracking-normal font-body font-normal text-[#161616]/45">
+          <span className="ml-2 normal-case tracking-normal font-body font-normal text-[#161616]/70">
             We build all three from this
           </span>
         </span>
@@ -189,7 +189,7 @@ export default function DemoStation() {
           placeholder="What you actually do, what you want to be known for, your hours, the jobs you want more of, anything you hate about your current setup. The more you tell us, the more it looks like yours."
           className={`${inputCls} resize-y min-h-[104px] leading-relaxed`}
         />
-        <span className="mt-1 block font-body text-[11.5px] text-[#161616]/45">
+        <span className="mt-1 block font-body text-[11.5px] text-[#161616]/70">
           {(values.notes || '').length}/600. Optional, but this is what makes the demos feel personal.
         </span>
       </label>
@@ -204,7 +204,7 @@ export default function DemoStation() {
         Forge my three demos, free →
       </button>
       {phase === 'error' && error ? <p className="font-body text-[13px] text-[#E0301E] text-center mt-3">{error}</p> : null}
-      <p className="font-body text-[12px] text-[#161616]/50 text-center mt-3.5 leading-relaxed">
+      <p className="font-body text-[12px] text-[#161616]/70 text-center mt-3.5 leading-relaxed">
         No card, no meeting, no strings. If you love them:{' '}
         {formatUsd(DEMO_PRODUCTS.site.monthlyCents)} to {formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo per piece, or{' '}
         {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for everything. Month to month.

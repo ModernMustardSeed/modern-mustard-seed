@@ -10,7 +10,8 @@
     "lint": "next lint",
     "indexnow": "node scripts/indexnow.mjs",
     "indexnow:all": "node scripts/indexnow.mjs --from-sitemap",
-    "demo-site-worker": "node scripts/demo-site-worker.mjs"
+    "demo-site-worker": "node scripts/demo-site-worker.mjs",
+    "lighthouse": "node scripts/lighthouse-money-pages.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",
@@ -58,6 +59,7 @@
     "@types/react-dom": "^19.0.0",
     "@types/three": "^0.184.1",
     "autoprefixer": "^10.4.20",
+    "lighthouse": "^13.4.1",
     "playwright": "^1.60.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.17",

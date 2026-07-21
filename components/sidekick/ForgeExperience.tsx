@@ -341,7 +341,7 @@ export default function ForgeExperience() {
           >
             {forgeEnabled ? 'Forge my Sidekick (free, 60 seconds)' : 'The forge is warming up. Check back shortly.'}
           </button>
-          <p className="mt-3 text-center text-[11px] font-mono text-[#161616]/50">
+          <p className="mt-3 text-center text-[11px] font-mono text-[#161616]/70">
             One free forge per business. No card. He talks to you live when he graduates.
           </p>
         </form>
@@ -484,7 +484,7 @@ export default function ForgeExperience() {
             )}
             {ringMsg && <p className="mt-3 text-[#E0301E] text-sm font-body font-semibold">{ringMsg}</p>}
             {ringState !== 'rang' && (
-              <p className="mt-3 text-[11px] font-mono text-[#161616]/45">
+              <p className="mt-3 text-[11px] font-mono text-[#161616]/70">
                 One demo call per number, ever. He calls from {forged.phoneLine} and the whole thing is capped at four minutes.
               </p>
             )}

@@ -321,7 +321,7 @@ export default function DemosPage() {
                   }`}
                 >
                   Free demo
-                  <span className={c.tone === 'ink' ? 'text-[#FBF6EA]/40' : 'text-[#161616]/40'}> · </span>
+                  <span className={c.tone === 'ink' ? 'text-[#FBF6EA]/40' : 'text-[#161616]/70'}> · </span>
                   keep for {formatUsd(c.price.monthlyCents)}/mo
                 </p>
               </div>
@@ -382,7 +382,7 @@ export default function DemosPage() {
           </div>
         </section>
 
-        <p className="font-mono text-[11px] text-[#161616]/40 text-center pb-4">
+        <p className="font-mono text-[11px] text-[#161616]/70 text-center pb-4">
           Modern Mustard Seed · Kalispell, MT · (406) 312-1223
         </p>
       </main>

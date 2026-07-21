@@ -277,8 +277,8 @@ export default function FrontDeskHero() {
           <Image
             src="/brand/logo-lockup.png"
             alt="Modern Mustard Seed"
-            width={1135}
-            height={1235}
+            width={1000}
+            height={1093}
             priority
             className="relative w-full h-auto drop-shadow-[5px_5px_0_rgba(22,22,22,0.14)]"
           />
@@ -522,8 +522,8 @@ export default function FrontDeskHero() {
           <Image
             src="/brand/logo-lockup.png"
             alt="Modern Mustard Seed"
-            width={1135}
-            height={1235}
+            width={1000}
+            height={1093}
             priority
             className="relative w-full h-auto drop-shadow-[8px_8px_0_rgba(22,22,22,0.14)]"
           />

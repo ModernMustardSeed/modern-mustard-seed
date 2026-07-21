@@ -38,8 +38,8 @@ export default function PlaybookPage() {
           <Image
             src="/brand/logo-lockup.png"
             alt="Modern Mustard Seed"
-            width={1135}
-            height={1235}
+            width={1000}
+            height={1093}
             priority
             className="w-full h-auto drop-shadow-[6px_6px_0_rgba(22,22,22,0.14)]"
           />

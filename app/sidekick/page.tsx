@@ -71,7 +71,7 @@ export default function SidekickPage() {
             <p className="font-body text-base md:text-lg text-[#161616]/70 max-w-2xl mx-auto mt-5 leading-relaxed">
               {SIDEKICK.promise}
             </p>
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#161616]/50 mt-5">
+            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#161616]/70 mt-5">
               Free · No card · He talks to you live in about 60 seconds
             </p>
           </div>

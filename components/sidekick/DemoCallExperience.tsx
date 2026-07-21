@@ -211,7 +211,7 @@ export default function DemoCallExperience({
             </div>
           </div>
         )}
-        <p className="font-mono text-[11px] text-[#161616]/40 mt-6 text-center">Demo calls cap at 4 minutes. Built by Modern Mustard Seed, Kalispell MT.</p>
+        <p className="font-mono text-[11px] text-[#161616]/70 mt-6 text-center">Demo calls cap at 4 minutes. Built by Modern Mustard Seed, Kalispell MT.</p>
       </main>
     </div>
   );
