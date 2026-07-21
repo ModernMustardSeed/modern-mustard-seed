@@ -18,7 +18,12 @@ name: checkout-health
 on:
   schedule:
     - cron: "*/15 * * * *" # every 15 minutes (best-effort on GitHub)
-  workflow_dispatch: {} # manual run button
+  workflow_dispatch: # manual run button
+    inputs:
+      selftest:
+        description: "Fire a synthetic failure to test the alert email (does NOT affect real checkout)"
+        type: boolean
+        default: false
 
 # Don't pile up overlapping pings if a run is slow.
 concurrency:
@@ -32,10 +37,15 @@ jobs:
     steps:
       - name: Ping checkout watchdog
         run: |
+          URL="https://modernmustardseed.com/api/cron/checkout-health"
+          if [ "$SELFTEST" = "true" ]; then
+            URL="$URL?selftest=1"
+            echo "SELFTEST run: firing a synthetic failure to verify the alert."
+          fi
           echo "Pinging checkout-health watchdog..."
           BODY=$(curl -sS -m 60 -w $'\n%{http_code}' \
             ${CRON_SECRET:+-H "Authorization: Bearer $CRON_SECRET"} \
-            "https://modernmustardseed.com/api/cron/checkout-health")
+            "$URL")
           CODE=$(printf '%s' "$BODY" | tail -n1)
           JSON=$(printf '%s' "$BODY" | sed '$d')
           echo "HTTP $CODE"
@@ -48,3 +58,4 @@ jobs:
           fi
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SELFTEST: ${{ inputs.selftest }}
