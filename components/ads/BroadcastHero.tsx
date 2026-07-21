@@ -42,10 +42,10 @@ export default function BroadcastHero() {
               <br />
               We run the ads.
               <br />
-              <span className="relative inline-block">
+              <span className="relative inline-block pb-3 md:pb-4">
                 You answer the phone.
-                <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true">
-                  <path d="M2,9 C60,3 240,3 298,8" fill="none" stroke="#F5B700" strokeWidth="6" strokeLinecap="round" />
+                <svg className="absolute bottom-0 left-0 w-full h-2 md:h-2.5 text-[#F5B700]" viewBox="0 0 300 10" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M3,6 C60,2 240,2 297,6" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
                 </svg>
               </span>
             </h1>
