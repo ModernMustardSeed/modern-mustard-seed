@@ -4,7 +4,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 
 /**
  * TheClose. Beat 06: one cinematic midnight band that ends the page.
- * Merges the scripture card, the Night Shift commercial (HeroVideo), and
+ * Merges the scripture card, the "Let's build the tree" brand film (HeroVideo), and
  * the NewsletterSignup into a single closing moment: manifesto line,
  * scripture with the mustard seed lit up, the ask, the film, the list.
  */

@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@vercel/analytics';
 
-// Contained, comic-framed film: the Night Shift commercial (the 3D mustard
-// seed mascot spot). Lives in TheClose at the bottom of the homepage.
-// Autoplays muted; one tap brings the sound in, since browsers block
-// autoplay with audio. Tracks view / sound-on / watched-through so the
-// spot's pull toward "Book a call" is measurable.
+// Contained, comic-framed film: the "Let's build the tree" brand film (the
+// 3D mustard-seed mascot, one desk to a flourishing tree, with on-screen
+// words). Lives in TheClose at the bottom of the homepage. Autoplays muted
+// with a poster; one tap brings the sound in, since browsers block autoplay
+// with audio. Tracks view / sound-on / watched-through so the spot's pull
+// toward "Book a call" is measurable.
 export default function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
@@ -76,10 +77,11 @@ export default function HeroVideo() {
         loop
         playsInline
         preload="none"
+        poster="/video/build-the-tree-poster.jpg"
         aria-hidden="true"
         style={{ backgroundColor: '#161616' }}
       >
-        <source src="/video/night-shift-960.mp4" type="video/mp4" />
+        <source src="/video/build-the-tree-960.mp4" type="video/mp4" />
       </video>
 
       <button
