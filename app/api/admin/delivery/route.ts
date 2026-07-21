@@ -33,7 +33,7 @@ export async function GET() {
   if (projectIds.length) {
     const { data: projs } = await sb
       .from('projects')
-      .select('id, name, status, progress, revisions_included, revisions_used, demo_site_id, site_html, site_domain, site_live_url, site_published_at, site_domain_source, site_build_status, site_build_error, approved_at, approved_by, reveal_at, site_html_draft, edit_status, edit_instruction, edit_requested_by, edit_requested_at, edit_error')
+      .select('id, name, status, progress, revisions_included, revisions_used, demo_site_id, site_html, site_domain, site_live_url, site_published_at, site_domain_source, site_build_status, site_build_error, approved_at, approved_by, reveal_at, site_html_draft, edit_status, edit_instruction, edit_requested_by, edit_requested_at, edit_error, moodboard, moodboard_status, moodboard_note, moodboard_sent_at, moodboard_approved_at')
       .in('id', projectIds);
     for (const p of projs ?? []) projects.set(p.id as string, p as Record<string, unknown>);
   }
@@ -104,6 +104,13 @@ export async function GET() {
             editRequestedAt: p.edit_requested_at,
             editError: p.edit_error,
             hasDraft: Boolean(p.site_html_draft),
+            // The direction board: forged after intake, approved by the client
+            // in their portal before the site goes live.
+            moodboard: p.moodboard ?? null,
+            moodboardStatus: p.moodboard_status ?? 'none',
+            moodboardNote: p.moodboard_note ?? null,
+            moodboardSentAt: p.moodboard_sent_at ?? null,
+            moodboardApprovedAt: p.moodboard_approved_at ?? null,
           }
         : null,
       openRequests: o.client_email ? (openByEmail.get(o.client_email) ?? 0) : 0,

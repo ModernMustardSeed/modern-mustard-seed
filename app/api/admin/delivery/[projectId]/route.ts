@@ -4,6 +4,10 @@ import { getSupabase } from '@/lib/supabase';
 import { quoteDomain, buyDomain, attachDomain, normalizeDomain, type Contact } from '@/lib/vercel-platform';
 import { publishProject } from '@/lib/site-publish';
 import { queueRebuild, rebuildInputFor } from '@/lib/site-rebuild';
+import { generateMoodboard, type MoodboardBrief } from '@/lib/moodboard';
+import { resendClient } from '@/lib/send-email';
+import { clientEmail } from '@/lib/email';
+import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -61,7 +65,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
   if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   const { projectId } = await params;
-  let body: { action?: string; domain?: string; html?: string; external?: boolean; revealAt?: string; address1?: string; city?: string; state?: string; zip?: string; phone?: string };
+  let body: { action?: string; domain?: string; html?: string; external?: boolean; revealAt?: string; address1?: string; city?: string; state?: string; zip?: string; phone?: string; steer?: string; moodboardOverride?: boolean };
   try {
     body = await req.json();
   } catch {
@@ -70,7 +74,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
 
   const { data: project } = await sb
     .from('projects')
-    .select('id, name, client_email, demo_site_id, site_html, site_domain, site_vercel_project_id, site_live_url, site_published_at, site_build_status, approved_at, reveal_at, site_html_draft, edit_status, revisions_used')
+    .select('id, name, client_email, demo_site_id, site_html, site_domain, site_vercel_project_id, site_live_url, site_published_at, site_build_status, approved_at, reveal_at, site_html_draft, edit_status, revisions_used, moodboard, moodboard_status, moodboard_note')
     .eq('id', projectId)
     .maybeSingle();
   if (!project) return NextResponse.json({ error: 'No such project' }, { status: 404 });
@@ -255,8 +259,85 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
       return NextResponse.json({ ok: true, refunded: true });
     }
 
+    /**
+     * ── Forge the direction board. ──
+     *
+     * Built from what they told us at intake (business, trade, town, their
+     * "look and feel" words) elevated by studio taste, with an optional steer
+     * from Sarah. Saves as a DRAFT: nothing reaches the client until she
+     * sends it. Re-forging after a client's change request folds their note in.
+     */
+    case 'moodboard-forge': {
+      const input = await rebuildInputFor(sb, projectId);
+      if ('error' in input) return NextResponse.json({ error: input.error }, { status: 400 });
+      const brief: MoodboardBrief = {
+        businessName: input.business,
+        trade: input.lead?.niche ?? undefined,
+        city: [input.lead?.city, input.lead?.state].filter(Boolean).join(', ') || undefined,
+        services: typeof input.intake.services === 'string' ? input.intake.services : undefined,
+        brandColors: typeof input.intake.brand === 'string' ? input.intake.brand : undefined,
+        notes: [
+          typeof input.intake.audience === 'string' ? `Their customer: ${input.intake.audience}` : '',
+          typeof input.intake.notes === 'string' ? input.intake.notes : '',
+        ].filter(Boolean).join(' | ') || undefined,
+        sarahNote: [
+          String(body.steer ?? '').trim().slice(0, 400),
+          project.moodboard_status === 'changes' && project.moodboard_note
+            ? `The client asked for changes to the last board: ${project.moodboard_note}`
+            : '',
+        ].filter(Boolean).join(' | ') || undefined,
+      };
+      const board = await generateMoodboard(brief);
+      if (!board) return NextResponse.json({ error: 'The forge came back empty. Try again in a moment.' }, { status: 502 });
+      const { error } = await sb
+        .from('projects')
+        .update({ moodboard: board, moodboard_status: 'draft', moodboard_approved_at: null })
+        .eq('id', projectId);
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ ok: true, board });
+    }
+
+    /* ── Send the board to the client's portal, with the email that says so. ── */
+    case 'moodboard-send': {
+      if (!project.moodboard) return NextResponse.json({ error: 'Forge a board first.' }, { status: 400 });
+      const now = new Date().toISOString();
+      const { error } = await sb
+        .from('projects')
+        .update({ moodboard_status: 'sent', moodboard_sent_at: now, moodboard_note: null })
+        .eq('id', projectId);
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+      if (project.client_email && process.env.RESEND_API_KEY) {
+        try {
+          const resend = resendClient();
+          await resend.emails.send({
+            from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+            to: project.client_email as string,
+            replyTo: 'sarah@modernmustardseed.com',
+            subject: 'Your direction board is ready',
+            html: clientEmail({
+              preheader: 'The look, the colors, the feel of your new site. One click to approve.',
+              eyebrow: 'DIRECTION BOARD',
+              greeting: 'Come see the direction.',
+              body: `<p>Before your site goes live, I want you to see exactly where I am taking it: the colors, the letters, the feel, and the one moment your visitors will remember.</p><p>It is waiting in your portal. If you love it, one click approves it and I build. If something is off, tell me right there and I will re-cut it.</p>`,
+              cta: { label: 'See my direction board', url: `${SITE.url}/portal` },
+              signature: 'Sarah',
+            }),
+          });
+        } catch (err) {
+          console.error('moodboard send email failed', err);
+        }
+      }
+      return NextResponse.json({ ok: true });
+    }
+
     /* ── Put it live. Right now, by hand. ── */
     case 'publish': {
+      // A sent-but-unapproved direction board is a promise mid-sentence. Sarah
+      // can override, but never silently.
+      if (['sent', 'changes'].includes(String(project.moodboard_status ?? 'none')) && !body.moodboardOverride) {
+        return NextResponse.json({ error: 'moodboard-pending' }, { status: 409 });
+      }
       const pub = await publishProject(sb, projectId);
       if (!pub.ok) return NextResponse.json({ error: pub.error }, { status: 400 });
       // A hand publish IS an approval, recorded as one, so the board never shows a

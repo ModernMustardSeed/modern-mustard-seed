@@ -48,6 +48,10 @@ export async function GET(req: Request) {
     .lte('reveal_at', new Date().toISOString())
     .is('site_published_at', null)
     .not('site_html', 'is', null)
+    // A direction board the client has not signed yet holds the reveal. Boards
+    // never sent (none/draft) hold nothing, so every pre-board project and any
+    // project Sarah skips the board on behaves exactly as before.
+    .not('moodboard_status', 'in', '(sent,changes)')
     .order('reveal_at', { ascending: true })
     .limit(BATCH);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

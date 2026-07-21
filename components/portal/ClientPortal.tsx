@@ -8,6 +8,7 @@ import HelpGuide from '@/components/HelpGuide';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
+import MoodboardCard from '@/components/portal/MoodboardCard';
 
 /**
  * The client workspace. One screen scoped to the signed-in client: their
@@ -370,6 +371,10 @@ export default function ClientPortal() {
                   </div>
                   );
                 })}
+
+                {/* The direction board: approve the look BEFORE the site goes live.
+                    Self-hiding until Sarah sends one. */}
+                <MoodboardCard />
 
                 {/* The two free edits. Sits right under the project because it is
                     the thing they act on while the build is in front of them. */}

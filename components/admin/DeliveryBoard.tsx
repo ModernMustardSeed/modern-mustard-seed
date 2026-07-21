@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import MoodboardCanvas from '@/components/moodboard/MoodboardCanvas';
+import type { Moodboard as MoodboardPayload } from '@/lib/moodboard-shared';
 
 /**
  * THE DELIVERY BOARD. Everyone who has paid, and what they are waiting on.
@@ -35,6 +37,11 @@ type Project = {
   editRequestedAt: string | null;
   editError: string | null;
   hasDraft: boolean;
+  moodboard: MoodboardPayload | null;
+  moodboardStatus: 'none' | 'draft' | 'sent' | 'changes' | 'approved';
+  moodboardNote: string | null;
+  moodboardSentAt: string | null;
+  moodboardApprovedAt: string | null;
 };
 type Row = {
   id: string;
@@ -199,6 +206,8 @@ function DeliveryRow({
   const [reveal, setReveal] = useState(() => toLocalInput(row.project?.revealAt ?? null));
   const [showAddr, setShowAddr] = useState(false);
   const [addr, setAddr] = useState({ address1: '', city: '', state: '', zip: '', phone: '' });
+  const [showBoard, setShowBoard] = useState(false);
+  const [steer, setSteer] = useState('');
 
   const p = row.project;
 
@@ -293,9 +302,30 @@ function DeliveryRow({
     if (j?.ok) { setMsg('Approval pulled. Nothing will go out.'); onChanged(); }
   };
 
+  const doMoodboardForge = async () => {
+    const j = await act('moodboard-forge', steer.trim() ? { steer: steer.trim() } : {});
+    if (j?.ok) {
+      setMsg('Board forged. Preview it below, then send it when it sings.');
+      setShowBoard(true);
+      setSteer('');
+      onChanged();
+    }
+  };
+
+  const doMoodboardSend = async () => {
+    if (!confirm('Send this direction board to the client? They get an email and it appears in their portal for approval.')) return;
+    const j = await act('moodboard-send');
+    if (j?.ok) {
+      setMsg('Sent. The reveal now waits on their approval.');
+      onChanged();
+    }
+  };
+
   const doPublish = async () => {
     if (!confirm('Put this site live NOW? The client gets an email saying they are live.')) return;
-    const j = await act('publish');
+    const boardPending = p?.moodboardStatus === 'sent' || p?.moodboardStatus === 'changes';
+    if (boardPending && !confirm('Their direction board is NOT approved yet. Put the site live anyway?')) return;
+    const j = await act('publish', boardPending ? { moodboardOverride: true } : {});
     if (j?.ok) {
       setMsg(`Live at ${j.liveUrl}${j.verified ? '' : ' (domain still needs DNS, see below)'}`);
       if (Array.isArray(j.instructions)) setDns(j.instructions);
@@ -346,6 +376,10 @@ function DeliveryRow({
             {(p?.editStatus === 'queued' || p?.editStatus === 'building') && <Chip tone="blue">Client edit building</Chip>}
             {p?.editStatus === 'ready' && <Chip tone="gold">Client edit to approve</Chip>}
             {p?.editStatus === 'failed' && <Chip tone="red">Client edit failed</Chip>}
+            {p?.moodboardStatus === 'draft' && <Chip tone="plain">Board drafted</Chip>}
+            {p?.moodboardStatus === 'sent' && <Chip tone="blue">Board with client</Chip>}
+            {p?.moodboardStatus === 'changes' && <Chip tone="red">Board changes asked</Chip>}
+            {p?.moodboardStatus === 'approved' && <Chip tone="green">Direction approved</Chip>}
             {p?.buildStatus === 'ready' && !p.approvedAt && !p.publishedAt && <Chip tone="gold">Needs your eyes</Chip>}
             {p?.approvedAt && !p.publishedAt && <Chip tone="green">Approved{p.revealAt ? ` for ${new Date(p.revealAt).toLocaleDateString()}` : ''}</Chip>}
             {row.assetCount > 0 && <Chip tone="plain">{row.assetCount} files</Chip>}
@@ -400,6 +434,62 @@ function DeliveryRow({
                   </a>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* The direction board: forge it from their intake, preview it, send it
+              for the client's signature. The reveal waits on that signature. */}
+          {row.hasPortal && (
+            <div>
+              <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">The Direction</h4>
+              {p?.moodboardStatus === 'changes' && p.moodboardNote && (
+                <p className="mb-2 rounded-lg border-2 border-[#E0301E]/40 bg-[#FFF1EF] px-3 py-2 font-body text-[13px] text-[#161616]">
+                  They asked: &ldquo;{p.moodboardNote}&rdquo;. Re-forge below (their note rides along automatically).
+                </p>
+              )}
+              {p?.moodboardStatus === 'approved' && p.moodboardApprovedAt && (
+                <p className="mb-2 font-body text-[13px] text-emerald-700">
+                  Direction signed {new Date(p.moodboardApprovedAt).toLocaleDateString()}. Build exactly that.
+                </p>
+              )}
+              <div className="rounded-xl border-2 border-[#161616]/15 bg-[#FBF6EA] p-3">
+                <input
+                  type="text"
+                  value={steer}
+                  onChange={(e) => setSteer(e.target.value)}
+                  placeholder="Optional steer for the forge: moodier, more heritage, lean into the lake..."
+                  className="w-full rounded-lg border-2 border-[#161616] bg-white px-3 py-2 font-body text-[13px] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
+                />
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <button type="button" onClick={doMoodboardForge} disabled={!!busy || !row.intakeAt} className={`${BTN_QUIET}`}>
+                    {busy === 'moodboard-forge' ? 'Forging…' : p?.moodboard ? 'Forge a new cut' : 'Forge the board'}
+                  </button>
+                  {p?.moodboard && (
+                    <button type="button" onClick={() => setShowBoard((v) => !v)} disabled={!!busy} className={`${BTN_QUIET}`}>
+                      {showBoard ? 'Hide preview' : 'Preview the board'}
+                    </button>
+                  )}
+                  {p?.moodboard && p.moodboardStatus !== 'approved' && (
+                    <button type="button" onClick={doMoodboardSend} disabled={!!busy} className={`${BTN_QUIET} !bg-[#F5B700]`}>
+                      {busy === 'moodboard-send' ? 'Sending…' : p.moodboardStatus === 'sent' ? 'Resend to client' : 'Send to client'}
+                    </button>
+                  )}
+                </div>
+                {!row.intakeAt && (
+                  <p className="mt-2 font-body text-[12px] text-[#161616]/55">Waiting on their intake. The board forges from what they tell us.</p>
+                )}
+              </div>
+              {showBoard && p?.moodboard && (
+                <div className="mt-3">
+                  <MoodboardCanvas
+                    board={p.moodboard}
+                    businessName={row.business || row.name || 'Their business'}
+                    logoUrl={assets.find((a) => a.kind === 'logo')?.url ?? null}
+                    photos={assets.filter((a) => a.kind === 'photo' || a.kind === 'product').map((a) => a.url).slice(0, 4)}
+                    approvedAt={p.moodboardApprovedAt}
+                  />
+                </div>
+              )}
             </div>
           )}
 

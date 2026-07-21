@@ -10,6 +10,7 @@ import AnalyticsScripts from '@/components/AnalyticsScripts';
 import CookieConsent from '@/components/CookieConsent';
 import Script from 'next/script';
 import HideOnAppShell from '@/components/HideOnAppShell';
+import AppNavDock from '@/components/AppNavDock';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </HideOnAppShell>
         </div>
         <MagneticCursor />
+        <AppNavDock />
         <DeferredChat />
         <RefCapture />
         <AnalyticsScripts />
