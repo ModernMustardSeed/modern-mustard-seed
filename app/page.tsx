@@ -3,6 +3,7 @@ import DemoForgeStrip from '@/components/home/DemoForgeStrip';
 import HomeTicker from '@/components/home/HomeTicker';
 import HomeVine from '@/components/home/HomeVine';
 import HomeFilmStage from '@/components/home/HomeFilmStage';
+import RecentWork from '@/components/home/RecentWork';
 import ProofBand from '@/components/home/ProofBand';
 import BuildCabinet from '@/components/home/BuildCabinet';
 import ThreeDoors from '@/components/home/ThreeDoors';
@@ -122,6 +123,7 @@ export default function HomePage() {
         <div data-vine-stop><BuildCabinet /></div>
         <HomeTicker reverse />
         <div data-vine-stop><ThreeDoors /></div>
+        <div data-vine-stop><RecentWork /></div>
         <div data-vine-stop><ComicRack /></div>
         <div data-vine-stop>
           <section className="relative bg-[#F5F0E8] border-t-2 border-[#161616] py-20 md:py-28">
