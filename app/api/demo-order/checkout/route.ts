@@ -40,11 +40,24 @@ export async function POST(req: Request) {
   const stripe = getStripe();
   if (!stripe) return NextResponse.json({ error: 'stripe_not_configured' }, { status: 503 });
 
-  const { data: lead } = await supabase
+  // The embed MUST name its foreign key. outbound_reps now has two relationships
+  // to outbound_leads (owner_rep_id and current_lead_id, added in migration 063),
+  // so a bare `outbound_reps(name)` is ambiguous and PostgREST rejects the whole
+  // query (PGRST201). We want the owning rep, via owner_rep_id.
+  const { data: lead, error: leadErr } = await supabase
     .from('outbound_leads')
-    .select('id,business_name,contact_name,email,phone,hub_demo_url,owner_rep_id,affiliate_id,origin,outbound_reps(name)')
+    .select('id,business_name,contact_name,email,phone,hub_demo_url,owner_rep_id,affiliate_id,origin,outbound_reps!owner_rep_id(name)')
     .eq('hub_demo_id', hubId)
     .maybeSingle();
+  // A query error (schema/relationship change) must NEVER masquerade as "demo
+  // not found" and silently kill every checkout. Surface it as a real failure.
+  if (leadErr) {
+    console.error('demo-order lead lookup failed:', leadErr.message);
+    return NextResponse.json(
+      { error: 'lookup_failed', message: 'Checkout hiccuped. Try again in a minute or call (406) 312-1223.' },
+      { status: 500 }
+    );
+  }
   if (!lead) return NextResponse.json({ error: 'unknown_demo' }, { status: 404 });
 
   // NEVER double-bill: a buyer who reopens their hub link must not be able to
