@@ -50,7 +50,9 @@ export default function MustardSeedChat() {
     // Hatchery reveal pages belong to the mascot; Huck owns his own corner.
     pathname.startsWith('/hatchery/') ||
     // The Mustard Seed World is a full-screen claymation scroll experience.
-    pathname.startsWith('/world');
+    pathname.startsWith('/world') ||
+    // Sarah's private recording booth; nothing may float over the prompter mid-take.
+    pathname.startsWith('/sarah');
 
   const [open, setOpen] = useState(false);
   // Visitor picks their door each time they open the launcher: voice or chat.
