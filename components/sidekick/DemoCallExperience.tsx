@@ -108,7 +108,7 @@ export default function DemoCallExperience({
     <div className="min-h-screen bg-[#FBF6EA]">
       <div className="halftone-bg border-b-2 border-[#161616]">
         <div className="max-w-2xl mx-auto px-6 py-10 text-center">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold">Modern Mustard Seed presents</span>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#C4160B] font-mono font-bold">Modern Mustard Seed presents</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-[#161616] mt-2 leading-tight">
             Meet {business}&apos;s AI receptionist
           </h1>
@@ -136,7 +136,7 @@ export default function DemoCallExperience({
         )}
         <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8 text-center">
           {!ready && (
-            <p className="font-body text-[#E0301E] font-semibold">{forgeError ?? 'The demo line is warming up. Refresh in a minute.'}</p>
+            <p className="font-body text-[#C4160B] font-semibold">{forgeError ?? 'The demo line is warming up. Refresh in a minute.'}</p>
           )}
 
           {ready && state !== 'live' && (
@@ -148,7 +148,7 @@ export default function DemoCallExperience({
               >
                 {state === 'connecting' ? 'Ringing…' : state === 'ended' ? 'Call again' : '🎙 Talk to it'}
               </button>
-              <p className="font-body text-sm text-[#161616]/55 mt-5">
+              <p className="font-body text-sm text-[#161616]/70 mt-5">
                 {state === 'ended'
                   ? 'That was it answering as your business. Imagine it catching every missed call this week.'
                   : 'Uses your microphone, right in the browser. Try asking for a quote or booking a job.'}
@@ -156,7 +156,7 @@ export default function DemoCallExperience({
               <div className="mt-5 flex justify-center">
                 <VoiceGenderToggle value={gender} onChange={setGender} tone="light" />
               </div>
-              {error && <p className="font-body text-sm text-[#E0301E] font-semibold mt-2">{error}</p>}
+              {error && <p className="font-body text-sm text-[#C4160B] font-semibold mt-2">{error}</p>}
             </>
           )}
 

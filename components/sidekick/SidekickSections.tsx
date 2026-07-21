@@ -28,14 +28,14 @@ export function HowItWorks() {
   return (
     <section className="py-16 md:py-24" aria-labelledby="how-heading">
       <div className="max-w-5xl mx-auto px-5">
-        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3 text-center">[ How the forge works ]</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3 text-center">[ How the forge works ]</p>
         <h2 id="how-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
           Interview to hired in one visit.
         </h2>
         <div className="grid md:grid-cols-3 gap-6 mt-12">
           {steps.map((s) => (
             <div key={s.n} className="rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">
-              <p className="font-display italic text-4xl font-black text-[#F5B700]" aria-hidden="true">{s.n}</p>
+              <p className="font-display italic text-4xl font-black text-[#8f6600]" aria-hidden="true">{s.n}</p>
               <h3 className="font-display text-xl font-black text-[#161616] mt-3">{s.title}</h3>
               <p className="font-body text-sm text-[#161616]/70 leading-relaxed mt-2.5">{s.body}</p>
             </div>
@@ -90,7 +90,7 @@ export function Faq() {
   return (
     <section className="py-16 md:py-24" aria-labelledby="faq-heading">
       <div className="max-w-3xl mx-auto px-5">
-        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3 text-center">[ Asked constantly ]</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3 text-center">[ Asked constantly ]</p>
         <h2 id="faq-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
           Fair questions, straight answers.
         </h2>
@@ -125,7 +125,7 @@ export function MeetTheTrainer() {
           />
         </div>
         <div className="text-center md:text-left">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3">[ The trainer ]</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3">[ The trainer ]</p>
           <h2 id="trainer-heading" className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight leading-[1.05]">
             Every Sidekick trains under Mr. Mustard.
           </h2>
@@ -134,7 +134,7 @@ export function MeetTheTrainer() {
             Don&apos;t take our word for it. Interview the trainer himself, day or night, at{' '}
             <a href="tel:+14063121223" className="font-bold text-[#1E50C8] underline underline-offset-2 whitespace-nowrap">{SIDEKICK.phoneLine}</a>.
           </p>
-          <p className="font-body text-sm text-[#161616]/55 mt-3">
+          <p className="font-body text-sm text-[#161616]/70 mt-3">
             Yes, that is a real number. Yes, he answers. Ask him anything, including what his trainees can do for you.
           </p>
         </div>
@@ -148,7 +148,7 @@ export function CrossSell() {
     <section className="py-16 md:py-20">
       <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-2 gap-6">
         <div className="rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">Bigger phones?</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Bigger phones?</p>
           <h3 className="font-display text-xl font-black text-[#161616] mt-1.5">The full custom concierge</h3>
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
             Franchises and high-volume lines get a fully custom build: your voice, your systems, your integrations. This is the big-league version of what you just met.
@@ -158,7 +158,7 @@ export function CrossSell() {
           </Link>
         </div>
         <div className="rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">Rather build?</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Rather build?</p>
           <h3 className="font-display text-xl font-black text-[#161616] mt-1.5">Learn the method in MUSTARD MODE</h3>
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
             Mr. Mustard also coaches humans. Learn Claude and ship your own tools with the same trainer who forged your Sidekick.

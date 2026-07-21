@@ -288,7 +288,7 @@ export default function ForgeExperience() {
           <div className="flex items-center gap-3 mb-5 border-b-2 border-[#161616] pb-4">
             <Image src="/brand/mascot.png" alt="Mr. Mustard" width={46} height={46} className="rounded-full border-2 border-[#161616] bg-[#F5B700]" />
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">Intake · The Forge</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Intake · The Forge</p>
               <p className="font-display text-lg font-black text-[#161616] leading-tight">Tell Mr. Mustard about your business.</p>
             </div>
           </div>
@@ -332,7 +332,7 @@ export default function ForgeExperience() {
           {/* Honeypot: humans never see or fill this. */}
           <input id="sk-website" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
-          {error && <p className="mt-4 text-[#E0301E] text-sm font-body font-semibold">{error}</p>}
+          {error && <p className="mt-4 text-[#C4160B] text-sm font-body font-semibold">{error}</p>}
 
           <button
             type="submit"
@@ -378,7 +378,7 @@ export default function ForgeExperience() {
               </div>
               <div className="px-5 py-4 text-center">
                 <p className="font-display text-2xl md:text-3xl font-black text-[#161616] leading-tight">{form.business.trim()}</p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#161616]/55 mt-1.5">
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#161616]/70 mt-1.5">
                   Trained by Mr. Mustard · Class of one · {form.city.trim()}
                 </p>
               </div>
@@ -458,14 +458,14 @@ export default function ForgeExperience() {
           <div className="rounded-2xl border-2 border-[#161616] bg-white p-6 md:p-7 shadow-[6px_6px_0_0_#161616]">
             {ringState === 'rang' ? (
               <div className="text-center py-2">
-                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold mb-2">Pick up. It&apos;s him.</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold mb-2">Pick up. It&apos;s him.</p>
                 <p className="font-display text-2xl font-black text-[#161616]">Your phone is about to ring from {forged.phoneLine}.</p>
                 <p className="font-body text-sm text-[#161616]/65 mt-2">That number is Mr. Mustard&apos;s own line. Save it. If you miss the call, he does not call twice (he is polite like that).</p>
               </div>
             ) : (
               <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-4">
                 <div className="flex-1">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold mb-1.5">The full effect</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold mb-1.5">The full effect</p>
                   <p className="font-display text-lg md:text-xl font-black text-[#161616] leading-snug mb-3">
                     Want to feel what your customers will feel? He&apos;ll call your cell. Right now.
                   </p>
@@ -482,7 +482,7 @@ export default function ForgeExperience() {
                 </button>
               </div>
             )}
-            {ringMsg && <p className="mt-3 text-[#E0301E] text-sm font-body font-semibold">{ringMsg}</p>}
+            {ringMsg && <p className="mt-3 text-[#C4160B] text-sm font-body font-semibold">{ringMsg}</p>}
             {ringState !== 'rang' && (
               <p className="mt-3 text-[11px] font-mono text-[#161616]/70">
                 One demo call per number, ever. He calls from {forged.phoneLine} and the whole thing is capped at four minutes.
@@ -496,7 +496,7 @@ export default function ForgeExperience() {
       {/* Breaks out of the intake column so the pricing row gets full width. */}
       <div id="keep" className="pt-14 md:pt-20 md:relative md:left-1/2 md:-translate-x-1/2 md:w-[min(100vw-2.5rem,56rem)]">
         <div className="text-center mb-8">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3">[ Keep him ]</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3">[ Keep him ]</p>
           <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">
             He already knows your business.<br className="hidden md:block" /> Put him on the phones.
           </h2>
@@ -553,7 +553,7 @@ function PricingCard({ tier, business, runId }: { tier: (typeof sidekickTiers)[n
           Most kept
         </span>
       )}
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">{tier.chip}</p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">{tier.chip}</p>
       <h3 className="font-display text-2xl font-black text-[#161616] mt-1.5">{tier.name}</h3>
       <p className="mt-3">
         <span className="font-display text-4xl font-black text-[#161616]">${sidekickUsd(tier.monthlyCents)}</span>
@@ -578,7 +578,7 @@ function PricingCard({ tier, business, runId }: { tier: (typeof sidekickTiers)[n
       >
         {busy ? 'Opening checkout…' : tier.cta}
       </button>
-      {msg && <p className="mt-3 text-[#E0301E] text-xs font-body font-semibold">{msg}</p>}
+      {msg && <p className="mt-3 text-[#C4160B] text-xs font-body font-semibold">{msg}</p>}
     </div>
   );
 }

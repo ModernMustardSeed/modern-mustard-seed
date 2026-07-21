@@ -181,12 +181,12 @@ export default function DemosPage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
             {/* The pitch */}
             <div className="lg:col-span-6 xl:col-span-5">
-              <span className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold">
+              <span className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold">
                 The Demo Station
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 We build your business{' '}
-                <em className="italic text-[#E0301E]">three free demos.</em> Right now.
+                <em className="italic text-[#C4160B]">three free demos.</em> Right now.
               </h1>
               <p className="font-body text-[17px] text-[#161616]/70 mt-5 leading-relaxed">
                 A receptionist that answers as your business. A brand-new website. A command center with your name on
@@ -251,7 +251,7 @@ export default function DemosPage() {
         {/* ── The form. The whole point of the page, so it does not hide below cards. ── */}
         <section id="forge" className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start scroll-mt-8">
           <div className="lg:col-span-5">
-            <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">Start the forge</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Start the forge</span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 leading-[1.08]">
               Sixty seconds of you. Then the forge does the rest.
             </h2>
@@ -259,7 +259,7 @@ export default function DemosPage() {
               Your receptionist demo answers as your business, and you talk to it right in your browser. The phone
               number is how we reach you about the build, nothing more. Nothing is charged and nobody calls you unless
               you ask. Want it to ring your actual phone instead?{' '}
-              <Link href="/sidekick" className="underline underline-offset-4 font-semibold hover:text-[#E0301E]">
+              <Link href="/sidekick" className="underline underline-offset-4 font-semibold hover:text-[#C4160B]">
                 Forge it at the Sidekick station
               </Link>
               .
@@ -374,7 +374,7 @@ export default function DemosPage() {
               <details key={f.q} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 group">
                 <summary className="font-sans font-bold cursor-pointer list-none flex justify-between items-center gap-4">
                   {f.q}
-                  <span className="text-[#E0301E] group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
+                  <span className="text-[#C4160B] group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
                 </summary>
                 <p className="font-body text-[14px] text-[#161616]/70 mt-3 leading-relaxed">{f.a}</p>
               </details>

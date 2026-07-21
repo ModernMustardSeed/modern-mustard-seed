@@ -99,7 +99,7 @@ export default function DemoStation() {
           gets the full width instead of sharing a row. */}
       <label className="block">
         <span className={labelCls}>
-          Business name<span className="text-[#E0301E]"> *</span>
+          Business name<span className="text-[#C4160B]"> *</span>
         </span>
         <input
           type="text"
@@ -121,7 +121,7 @@ export default function DemoStation() {
           <label key={f.k} className="block">
             <span className={labelCls}>
               {f.label}
-              {f.required ? <span className="text-[#E0301E]"> *</span> : null}
+              {f.required ? <span className="text-[#C4160B]"> *</span> : null}
             </span>
             <input
               type={f.type || 'text'}
@@ -203,7 +203,7 @@ export default function DemoStation() {
       >
         Forge my three demos, free →
       </button>
-      {phase === 'error' && error ? <p className="font-body text-[13px] text-[#E0301E] text-center mt-3">{error}</p> : null}
+      {phase === 'error' && error ? <p className="font-body text-[13px] text-[#C4160B] text-center mt-3">{error}</p> : null}
       <p className="font-body text-[12px] text-[#161616]/70 text-center mt-3.5 leading-relaxed">
         No card, no meeting, no strings. If you love them:{' '}
         {formatUsd(DEMO_PRODUCTS.site.monthlyCents)} to {formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo per piece, or{' '}

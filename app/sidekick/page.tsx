@@ -64,7 +64,7 @@ export default function SidekickPage() {
       <section className="halftone-bg border-b-2 border-[#161616]">
         <div className="max-w-5xl mx-auto px-5 pt-16 md:pt-24 pb-16 md:pb-24">
           <div className="text-center mb-10 md:mb-14">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-4">[ The Sidekick Forge ]</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-4">[ The Sidekick Forge ]</p>
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[0.98]">
               Your missed calls just met<br className="hidden md:block" /> their worst enemy.
             </h1>

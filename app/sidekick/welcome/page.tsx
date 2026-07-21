@@ -54,7 +54,7 @@ export default function SidekickWelcomePage() {
         <div className="space-y-4">
           {steps.map((s) => (
             <div key={s.n} className="rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] flex gap-5">
-              <span className="font-display italic text-3xl font-black text-[#F5B700] leading-none" aria-hidden="true">{s.n}</span>
+              <span className="font-display italic text-3xl font-black text-[#8f6600] leading-none" aria-hidden="true">{s.n}</span>
               <div>
                 <h2 className="font-display text-lg font-black leading-tight">{s.title}</h2>
                 <p className="font-body text-sm text-[#161616]/70 leading-relaxed mt-1.5">{s.body}</p>
