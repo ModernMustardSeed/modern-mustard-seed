@@ -8,6 +8,7 @@ import { liveTradePages } from '@/data/trade-pages';
 const STATIC_PATHS = [
   '',
   '/ads',
+  '/comic',
   '/sidekick',
   '/pictures',
   '/press',
@@ -56,7 +57,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ? 1.0
         : path === '/ads' || path === '/sidekick' || path === '/pictures' || path === '/press' || path === '/hatchery' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/the-terminal' || path === '/idea-to-spec'
           ? 0.95
-          : path === '/work' || path === '/audit' || path === '/launch-checklist' || path === '/prompt-playbook'
+          : path === '/work' || path === '/audit' || path === '/comic' || path === '/launch-checklist' || path === '/prompt-playbook'
             ? 0.9
             : 0.7,
   }));

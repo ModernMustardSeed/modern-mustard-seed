@@ -41,6 +41,7 @@ const MENU_GROUPS = [
     heading: 'Company',
     links: [
       { label: 'About', href: '/about' },
+      { label: 'Mustard Life Comic', href: '/comic' },
       { label: 'Blog', href: '/blog' },
       { label: 'Store', href: '/store' },
       { label: 'Contact', href: '/contact' },

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
@@ -69,6 +70,41 @@ export default function StorePage() {
             Authored by Sarah Scarano. Built by Modern Mustard Seed
           </p>
         </header>
+
+        {/* MUSTARD LIFE: the whole catalog as a magazine comic */}
+        <section className="max-w-5xl mx-auto px-6 md:px-8 mb-8">
+          <Link
+            href="/comic"
+            className="group flex items-center gap-5 md:gap-7 bg-white border-2 border-[#161616] p-5 md:p-6 transition-transform hover:-translate-y-1"
+            style={{ boxShadow: '6px 6px 0 0 #161616' }}
+          >
+            <span className="relative block w-20 md:w-24 flex-shrink-0 overflow-hidden rounded-md border-2 border-[#161616] rotate-[-3deg] shadow-[3px_3px_0_0_#F5B700] transition-transform group-hover:rotate-0">
+              <span className="relative block aspect-[3/4]">
+                <Image
+                  src="/comic/cover.webp"
+                  alt="Mustard Life magazine cover: the Mustard family yachting at golden hour"
+                  fill
+                  sizes="96px"
+                  className="object-cover"
+                />
+              </span>
+            </span>
+            <span className="min-w-0">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
+                New Issue · Free to Read
+              </span>
+              <span className="block font-display italic text-2xl md:text-3xl font-black text-[#161616] tracking-tight leading-tight mt-1">
+                Mustard Life: the whole catalog, as a comic.
+              </span>
+              <span className="block text-[#3a3733] font-body text-sm mt-1 leading-snug">
+                The family yachts while the AI staff work. Every product, every price, printed in ink.
+              </span>
+            </span>
+            <span aria-hidden className="ml-auto hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] group-hover:gap-3 transition-all flex-shrink-0">
+              Read It →
+            </span>
+          </Link>
+        </section>
 
         {/* MUSTARD LAUNCH: the launch-coach flagship */}
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-8">

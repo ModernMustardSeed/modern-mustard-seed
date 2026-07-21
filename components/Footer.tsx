@@ -69,6 +69,7 @@ export default function Footer() {
       title: 'Company',
       links: [
         { label: 'The Mustard Seed World', href: '/world' },
+        { label: 'Mustard Life Comic', href: '/comic' },
         { label: 'Blog', href: '/blog' },
         { label: 'About', href: '/about' },
         { label: 'Contact', href: '/contact' },

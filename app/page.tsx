@@ -4,6 +4,7 @@ import HomeVine from '@/components/home/HomeVine';
 import ProofBand from '@/components/home/ProofBand';
 import BuildCabinet from '@/components/home/BuildCabinet';
 import ThreeDoors from '@/components/home/ThreeDoors';
+import ComicRack from '@/components/home/ComicRack';
 import TheClose from '@/components/home/TheClose';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
@@ -117,6 +118,7 @@ export default function HomePage() {
         <div data-vine-stop><BuildCabinet /></div>
         <HomeTicker reverse />
         <div data-vine-stop><ThreeDoors /></div>
+        <div data-vine-stop><ComicRack /></div>
         <div data-vine-stop>
           <section className="relative bg-[#F5F0E8] border-t-2 border-[#161616] py-20 md:py-28">
             <div className="relative max-w-3xl mx-auto px-6">
