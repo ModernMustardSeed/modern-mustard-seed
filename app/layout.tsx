@@ -4,7 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MagneticCursor from '@/components/MagneticCursor';
-import MustardSeedChat from '@/components/MustardSeedChat';
+import DeferredChat from '@/components/DeferredChat';
 import RefCapture from '@/components/RefCapture';
 import AnalyticsScripts from '@/components/AnalyticsScripts';
 import CookieConsent from '@/components/CookieConsent';
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </HideOnAppShell>
         </div>
         <MagneticCursor />
-        <MustardSeedChat />
+        <DeferredChat />
         <RefCapture />
         <AnalyticsScripts />
         <CookieConsent />
