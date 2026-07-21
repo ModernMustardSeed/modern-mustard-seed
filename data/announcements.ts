@@ -13,14 +13,9 @@ export type Announcement = {
 };
 
 export const announcements: Announcement[] = [
-  {
-    id: 'newks-campaign-2026-06-27',
-    emoji: '📣',
-    title: "Newk's outreach campaign is loaded and ready to run",
-    body: "Polly is the lead on Newk's. The live demo, pricing, the real decision-makers, and a written email for every one of them are all in Campaigns. Open it, copy the email, send it.",
-    cta: 'Open Campaigns',
-    href: '/admin/campaigns',
-  },
+  // No active announcement. Add the newest at the top to re-show the top-of-admin
+  // banner to the whole team (dismissed per-person by id). The Newk's campaign
+  // notice was retired 2026-07-21 (Sarah).
 ];
 
 /** The single most recent announcement, or null if there are none. */
