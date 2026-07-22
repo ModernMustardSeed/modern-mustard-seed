@@ -1106,8 +1106,599 @@ const META_ADS: PrompterScript[] = [
   },
 ];
 
-/** Episodes first, then Sales Desk, then Meta Ads, then the Shorts bank. */
-export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...SALES_DESK, ...META_ADS, ...TIGHT_CUTS];
+/**
+ * Origin batch ("I built the studio to build the mission"). One themed drop on
+ * the founder story: the long-form origin episode, two shorts, and two Meta ads.
+ * Hand-written and kept here (not in the generated scripts-data.ts) so a future
+ * regeneration can never clobber it. Routed to the right tabs by `kind`.
+ */
+const ORIGIN: PrompterScript[] = [
+  {
+    id: 'ep9-studio-for-the-mission',
+    kind: 'episode',
+    episode: 'Episode 9',
+    session: 'Origin Story',
+    publish: 'Use anytime',
+    pillar: 'STORY',
+    title: 'I Built the Studio to Build the Mission',
+    hook: 'I did not build an AI studio because I love AI. I built it because I had a mission I could not make alone.',
+    directorNote:
+      'This is the origin manifesto. Warm, unhurried, founder to founder. Sit closer to the lens than usual and let it feel like a story, not a lecture. Let the pauses breathe, especially after the cold open and before the mustard seed parable, where you should drop to an almost conversational register, quieter and slower, like you are telling one friend the truth. If you record it in sections, the natural cut points are the section breaks.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'Here is something that sounds backwards. I did not build an AI studio because I am fascinated by AI. I built it because there was a thing I had to make, and I could not make it alone. The studio was never the goal. It was the way I got to the goal.',
+          'I think once you see it in that order, a lot of what feels impossible about building something right now starts to feel possible instead. So let me tell you the whole story, because it is really a story about how one person gets to build like a company.',
+        ],
+      },
+      {
+        heading: 'The Thing I Had to Make',
+        paragraphs: [
+          'Before any of this, there was a brand. A faith apparel line called Cross and Covenant. Clothing that carries something I actually believe, made for people who want to wear their faith without shouting it. That was the thing in my chest. That was the mission I could not shake.',
+          'I did not wake up one day wanting to run a technology company. I woke up wanting to bring that brand into the world, and to do it with the kind of quality that would make someone proud to put it on. And here is where most missions quietly die. Not because they are bad ideas. Because the person carrying them is one person.',
+        ],
+      },
+      {
+        heading: 'The Wall',
+        paragraphs: [
+          'Let me describe the wall, because I think you have stood at it too. To build a real brand you need a designer who can make it look like it belongs in the world. You need a writer who can find the words. You need a marketer who shows up every single day, not once a month when you remember. You need a developer to build the store. You need someone to answer the customer at two in the morning who has a question about sizing.',
+          'That is a team. That is payroll. That is money most founders do not have and cannot afford to risk. So the dream gets smaller. You tell yourself you will do it someday, when you have raised money, when you have hired people, when the timing is right. And someday has a way of never arriving. I stood at that wall for a while. And then I made a different decision.',
+        ],
+      },
+      {
+        heading: 'A Different Decision',
+        paragraphs: [
+          'I stopped trying to hire a team, and I started building one. Not out of people. Out of AI.',
+          'I built a designer that never sleeps. A writer that can draft in my own voice. A marketer that ships something every day without being asked. A developer that can take an idea I have on a Tuesday and hand me back a working online store by the weekend. A receptionist that answers the phone and the messages at any hour, in the tone of my brand, and never takes a day off.',
+          'Each of these is not a person. It is a system I built and taught. A worker made of instructions, and models, and a fair amount of care. And when you put enough of them together, and you give them a shared way of working, you do not have a pile of tools sitting on a shelf. You have a studio. A small company that happens to have one human in it.',
+        ],
+      },
+      {
+        heading: 'What a Studio Actually Is',
+        paragraphs: [
+          'I want to be honest about what that actually looks like, because I think the word AI makes people picture something colder and more magical than the truth. It is not magic. It is a lot of careful work up front. You have to decide how each worker should think. What it is allowed to do on its own, and where it has to stop and hand off to you. Where it fails safe, so it never does the thing you would regret.',
+          'You have to teach it your standards, the same way you would train a new hire, except you only have to teach it once and it never forgets, and it never has a bad morning. I am self taught. I did not come from a technical background. I learned all of this the way most of you would have to learn it, by building the thing in front of me, breaking it, and building it again until it held. So when I tell you this is possible, I am not saying it from a mountaintop. I am saying it from the same ground you are standing on right now.',
+        ],
+      },
+      {
+        heading: 'I Was the First Client',
+        paragraphs: [
+          'Now here is the part that matters most to me, and it is the reason I can look you in the eye about any of this. I did not build this studio for clients and then go looking for someone to test it on. I built it for my own mission, and I pointed the entire thing at my own company first.',
+          'Cross and Covenant was the first client the studio ever had. The store, the words on it, the launch, the daily presence, the growth engine, the little worker that answers customers while I am asleep. All of it built by one person and a staff of AI workers. And it worked. A real product. Real customers. A real brand out in the world with my name behind it.',
+          'So when someone asks me to prove that this approach actually works, I do not reach for a testimonial about a stranger. I point at my own company and I say, I built that this way. I am the proof. I did it to myself before I ever offered to do it for anyone else.',
+        ],
+      },
+      {
+        heading: 'The Part I Did Not Plan',
+        paragraphs: [
+          'That next part I did not plan for. Other founders saw what I had built, and they did not say, that is neat. They said, build mine. A woman with a beautiful product and no team behind it. A man running a service business who is drowning in the phone every single day. People with a real thing to offer and no company around them to offer it well.',
+          'So the studio I forged to build my own mission became a studio that builds for other people\'s missions too. That is Modern Mustard Seed. It is an AI studio that builds businesses, and it exists in the first place because I needed it to exist for myself. The order matters, and I want to say it plainly. The mission came first. The studio was the answer to the mission. And the studio turned out to be useful to a whole lot of other people who are carrying missions of their own and hitting the same wall I hit.',
+        ],
+      },
+      {
+        heading: 'The Mustard Seed',
+        paragraphs: [
+          'I should tell you where the name comes from, because it is not decoration. There is a parable about a mustard seed. The smallest seed a person plants, and it grows into a tree large enough that the birds come and find shelter in its branches. That is the whole idea. Something small, planted in faith, that grows into something big enough to shelter other people.',
+          'I think that is what a business is supposed to be. Not a machine for taking. A tree that shelters. Your family. The people you get to employ one day. The customers you serve. The person who puts on the shirt and feels a little less alone in what they believe.',
+          'I am a Christian, and I build like one. That does not mean I put a verse on everything I make. It means I believe I am a steward of what I have been given, not the owner of it. My job is to take the small thing that is in my hands and grow it into something that shelters. AI, to me, is just leverage. It is a way for one faithful person with a small seed to build something the size of a company. Small faith. Real leverage. Work that shelters.',
+        ],
+      },
+      {
+        heading: 'One Worker Up Close',
+        paragraphs: [
+          'Let me get a little more specific, because I do not want to leave this as a nice idea. Take just one of those workers, the one that answers customers when I am asleep. For a normal small business, that is a person you cannot afford, so the phone rings out and the message sits unread until morning, and by morning the customer has already bought from someone else.',
+          'I built a worker that picks up every time, in the voice of the brand, and either answers the question or takes down exactly what I need to follow up on. That one worker is the difference between a business that leaks and a business that holds. Now stack a dozen of those, each one covering a job you could never have staffed alone, and you start to see why one person with a studio can go toe to toe with a company that has twenty employees.',
+        ],
+      },
+      {
+        heading: 'Is That Cheating',
+        paragraphs: [
+          'Now, some of you are hearing all of this and a quiet objection is forming. Is that not cheating. Is there not something hollow about a company run by machines. I have sat with that question honestly, because I care about the answer.',
+          'Here is where I have landed. The machine never had a heart to begin with. It is not pretending to be a person, and it is not replacing the part of the work that actually needs a person. The vision is mine. The standards are mine. The care about the customer is mine. The reason the thing exists at all is mine. The AI carries the load. I carry the intent.',
+          'Every worker in my company is pointed at exactly what I would want, because I am the one who taught it. That is not less human. In a strange way it is more, because nothing in the company ever drifts away from why I started it.',
+        ],
+      },
+      {
+        heading: 'What This Means for You',
+        paragraphs: [
+          'So let me make this useful to you, because I did not come here just to tell you my story. If you have a thing you were made to build, and the only reason you have not built it is that you do not have a team, I want you to hear this clearly. The team is no longer the thing standing between you and the work. That wall came down, and a lot of people have not noticed yet.',
+          'You do not need to hire a department before you begin. You need to learn to build and lead a staff that is not made of people. You become the founder. The one with the vision, and the standards, and the final say. And you build workers underneath you to carry the weight. That is not a smaller way to build a company. In some ways it is a truer one, because every worker in it is carrying your exact intent and nothing else.',
+        ],
+      },
+      {
+        heading: 'Where to Start',
+        paragraphs: [
+          'If you want somewhere to start, start here. First, get the mission clear enough to say in one sentence. Not the tools, the mission. The actual thing only you can make. Second, write down every job a company would need to bring that thing to life, the designer, the writer, the person on the phone, all of it. Third, build those jobs one at a time, out of AI, and do not move to the next one until the last one actually works.',
+          'That is it. That is how the studio got built. One taught worker at a time, in service of one clear mission. And do not wait for permission. Nobody handed me a company. I built one out of the only material I had, which was a clear picture of what I wanted to make and a willingness to learn how to make it. The picture is the rare part. The building is learnable. I am living proof of that, and I am not special. I just refused to let the wall be the end of the story.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'That is the whole story. I built the studio to build the mission. The mission is still the point. The studio is just how one person gets to build like a hundred.',
+          'If you have got a seed, I would love to help you grow the tree. Come build with me. Build the thing only you can imagine.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'origin-why-the-studio',
+    kind: 'short',
+    episode: 'Origin · Short 1',
+    session: 'Shorts Bank',
+    publish: 'Use anytime',
+    pillar: 'STORY',
+    title: 'Why the Studio Exists',
+    hook: 'People think I started an AI studio because I am a tech person. I am not.',
+    directorNote:
+      'Warm and grounded, like you are answering the question you get asked the most. This is the origin in about ninety seconds, so do not rush the first line, and let "I built the studio to build the mission" land clean near the end. Eyes to the lens the whole way.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'People think I started an AI studio because I am a tech person. I am not. I am self taught, and I started because I had a brand living in my head that I could not get out into the world by myself.',
+        ],
+      },
+      {
+        heading: 'The Wall',
+        paragraphs: [
+          'It is a faith apparel line. Clothing that carries a message I actually believe. And the honest problem was this. One person cannot build a real brand. You need a designer, a marketer, a writer, a developer, and somebody to answer the customer at two in the morning. I could not hire all of them. Almost no founder can.',
+        ],
+      },
+      {
+        heading: 'The Decision',
+        paragraphs: [
+          'So I did the only thing that made sense. I stopped trying to hire a team and I started building one. Out of AI. A designer that never sleeps. A marketer that ships every day. A developer that turns an idea into a working store by the weekend.',
+          'That collection of AI workers became a studio. And the studio built the brand.',
+        ],
+      },
+      {
+        heading: 'The Turn and Close',
+        paragraphs: [
+          'Then something I did not expect happened. Other founders saw it and said, build mine too. So now the same studio I made for my own mission builds businesses for people who have a thing to bring into the world and no team to do it with.',
+          'That is the whole story. I built the studio to build the mission. The mission is still the point. The studio is just how one person gets to build like a company.',
+          'Small seeds become sheltering trees. If you have got the seed, I will show you the rest.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'origin-first-client',
+    kind: 'short',
+    episode: 'Origin · Short 2',
+    session: 'Shorts Bank',
+    publish: 'Use anytime',
+    pillar: 'STORY',
+    title: 'I Was the First Client',
+    hook: 'Before I ever built anything for a client, I built my own company with it.',
+    directorNote:
+      'Quietly confident, a little wry on "I became the case study." The power here is that it is simply true, so underplay it, do not sell it. Slow down and soften on the final three lines.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'Every agency tells you they can build your business. Here is my difference. Before I ever built anything for a client, I built my own.',
+        ],
+      },
+      {
+        heading: 'The Proof',
+        paragraphs: [
+          'I had a brand I believed in and no team to make it real. So I built the team out of AI, and I pointed all of it at my own company first. The store, the words, the launch, the growth engine, the thing that answers customers when I am asleep. All of it, one person and a studio of AI staff.',
+          'It worked. So I did not go write a case study about somebody else. I became the case study.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'That is what I bring to the table now. Not a pitch. A thing I already did to myself, standing here, willing to show you exactly how it was built.',
+          'Most people are waiting for permission, or a budget, or a team, before they start the thing they were made to build. You do not need any of it the way you used to. You need the seed, and a studio.',
+          'I built mine. I will help you build yours. Build the thing only you can imagine.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-origin-built-the-team',
+    kind: 'ad',
+    episode: 'Ad 19',
+    session: 'Meta · Origin 9:16',
+    publish: 'Broad · founders',
+    pillar: 'ADS',
+    title: 'I Built the Team Out of AI',
+    hook: 'I built an entire AI studio for one reason. I had a brand I had to bring into the world and could not afford a team.',
+    directorNote:
+      'Fast, warm, straight to the lens. The hook has to win the first two seconds, so lead with it cold, no intro. Leave a half-beat of air before each Mr. Mustard cut so the edit breathes. End on the invitation, never a pitch.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'I built an entire AI studio for one reason. I had a brand I had to bring into the world, and I could not afford a team to do it.',
+          '(Quick graphic: a single gold seed drops onto dark ground and a thin line of light draws outward from it.)',
+        ],
+      },
+      {
+        heading: 'The Move',
+        paragraphs: [
+          'So I built the team out of AI instead. A designer, a writer, a marketer, somebody to answer the phone. All of it working while I sleep.',
+          '(Mr. Mustard pops in beside her, tips his hat, and gestures at a little team of workers lighting up one by one.)',
+          'I used it to build my own company first. Then other founders saw it and asked me to build theirs.',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'That is what my studio does now. You bring the thing only you can make. We bring the staff to make it real.',
+          '(End card: the mascot, MODERN MUSTARD SEED, and the line COME BUILD WITH ME.)',
+          'If you have been waiting for a team, stop waiting. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-origin-just-you',
+    kind: 'ad',
+    episode: 'Ad 20',
+    session: 'Meta · Origin 9:16',
+    publish: 'Broad · solo founders',
+    pillar: 'ADS',
+    title: 'If It Is Just You',
+    hook: 'If it is just you running the whole thing, this one is for you.',
+    directorNote:
+      'Speak it to one person, the solo founder watching late at night. Warm, direct, no hype. The multiply graphic is the visual payoff, so land "built one out of AI" right on it.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'If it is just you running the whole thing, this one is for you. I know what it is like to have a mission in your chest and nobody on the payroll to help you build it.',
+        ],
+      },
+      {
+        heading: 'The Move',
+        paragraphs: [
+          'So I stopped trying to hire a team, and I built one out of AI. That is my whole studio. And I built my own brand with it before I ever touched a client\'s.',
+          '(Graphic: one small figure standing alone, then it multiplies into a little team of mustard-seed workers around her.)',
+          'Now I do it for other founders. One person, building like a company.',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'You do not need a big team. You need the right one. Let me build yours.',
+          '(Mr. Mustard nods once and tips his hat. End card: MODERN MUSTARD SEED, COME BUILD WITH ME.)',
+        ],
+      },
+    ],
+  },
+];
+
+/**
+ * BEHIND THE BUILD: practical, "show the real sauce" content. How the actual
+ * MMS systems get made, the demo funnel, the app factory, this studio itself,
+ * Fiat Lux, Cross + Covenant, the command center. Hand-written, grounded in the
+ * real builds. Mixed kinds so each slots into its tab (episode / short / ad).
+ * No spoken prices/dates (evergreen); Mr. Mustard/graphics beats in (parens).
+ */
+const BEHIND_THE_BUILD: PrompterScript[] = [
+  {
+    id: 'build-demo-funnel',
+    kind: 'episode',
+    episode: 'Episode 9',
+    session: 'How We Build',
+    publish: 'Use anytime',
+    pillar: 'BUILD',
+    title: 'How I Build a Business a Front Door Overnight',
+    hook: 'A roofing company woke up to a working website, an AI receptionist that already knew their trade, and a dashboard, all built while they slept. They never asked. Here is exactly how.',
+    directorNote:
+      'This is the flagship how-it-works episode, so teach it like you are proud of the machine but not showing off. Slow down on the receipts. The (parens) beats are where I cut in a screen recording of the actual forge, so leave a breath after each one.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'A few weeks ago a roofing company in a state I have never been to woke up to a working website for their business, an AI receptionist that already knew their services, and a simple dashboard showing them what their missed calls were costing. All of it built overnight. They never asked me for it. They never paid a dime.',
+          'I want to walk you through exactly how that gets made, because for me the how is not a secret. The how is the whole business. And if you own a company, there is a lesson in here you can use tomorrow.',
+        ],
+      },
+      {
+        heading: 'Why I Build It for Free',
+        paragraphs: [
+          'Start with the strange part. Why would anyone build a stranger a website and a phone system for free. Because showing beats telling. I could send that roofer a pitch about answering more calls, and it would land in the same graveyard as every other cold email. Or I could hand them their own business, already working, and let it make the argument for me.',
+          'A demo you can click and call is not a sales tactic. It is the most honest thing I can do. It says, here is what is possible for you, this week, not someday. So the entire machine is built around one goal: turn a cold name into a working demo before they have finished their coffee.',
+        ],
+      },
+      {
+        heading: 'Step One, Mine What Is Already Public',
+        paragraphs: [
+          'The system does not start with a blank page. It starts with them. It reads what is already public: their trade, their town, their reviews, and whether they even have a website worth keeping.',
+          'This is the part most people miss. A generic demo is worthless. So the system pulls a real complaint out of their actual reviews, the specific pain a real customer wrote down, and it builds the whole demo to answer that exact thing. When the owner sees it, it does not feel like a template. It feels like someone finally paid attention.',
+          '(Screen record: the cockpit reading a lead, their reviews and trade populating, the demo brief writing itself.)',
+        ],
+      },
+      {
+        heading: 'Step Two, Forge the Three Pieces',
+        paragraphs: [
+          'Then three things get built at once. First, the receptionist. An AI agent gets trained on their services, their hours, and the language of their trade, and it can answer the phone as their business in about a minute. It books the job, it speaks like a person who works there, and it is told to never quote a price it should not.',
+          'Second, the website. While I am asleep, an agent reads the brief, researches what a business like theirs actually needs, writes the copy, designs the layout, builds the whole thing, tests it on a phone, finds its own broken pieces, fixes them, and publishes it to a live address. It runs on a flat monthly plan, not a meter, so building a hundred of these costs me the same as building one.',
+          'Third, the command center. A simple dashboard, included free, where every call, every lead, and every message lands in one place. A website that just sits there is a brochure. A website wired into a command center is a business.',
+          '(Split screen: the receptionist answering a live call, the website assembling itself, the dashboard lighting up. Mr. Mustard runs between all three like a stagehand.)',
+        ],
+      },
+      {
+        heading: 'Step Three, Put It in One Adorable Room',
+        paragraphs: [
+          'All three pieces open from one page. A single suite, built for their business by name, with a calculator right on it that turns their missed calls into a monthly dollar number they can feel. One link does the whole pitch.',
+          'Then a real person, me, sends it with a short video attached. If they look and feel that jolt of, wait, that is my business in there, they reply. And the demo they saw does not get rebuilt. It becomes their real system, and they get a portal to run it.',
+        ],
+      },
+      {
+        heading: 'The Lesson',
+        paragraphs: [
+          'Here is the part for you, whether or not you ever call me. You do not win by working more hours. You win by building the thing that shows instead of tells, and by letting systems do the front of the house so you can do the part only you can do.',
+          'The tools to build all of this are sitting in front of you right now. The only question is whether you will pick them up. I am Sarah, this is Modern Mustard Seed, and this is the machine. Come see it work, the link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'build-the-factory',
+    kind: 'episode',
+    episode: 'Episode 10',
+    session: 'How We Build',
+    publish: 'Use anytime',
+    pillar: 'SYSTEMS',
+    title: 'How One Person Runs Four Companies',
+    hook: 'People think running four companies means I never sleep. It is the opposite. I do not run four companies. I run one factory that runs four companies.',
+    directorNote:
+      'Confident, founder-to-founder, a peer letting you behind the curtain. The Fiat Lux and Cross and Covenant receipts are the proof, say them plainly. Land the "systems with a job description" line, that is the whole episode in one sentence.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'People assume that running four companies by myself means I never sleep. The truth is the opposite. I do not actually run four companies. I run one factory, and the factory runs the companies. Today I am going to show you the factory, because once you see it, you cannot unsee it, and you will start running your own business the same way.',
+        ],
+      },
+      {
+        heading: 'From Doing to Directing',
+        paragraphs: [
+          'The whole shift is this. I stopped being the person who does the work, and I became the person who directs the agents that do the work. That sounds like a small change. It is the entire game.',
+          'An agent is not a chatbot. It does not just answer a question. You give it a goal, and it makes a plan, does the steps, checks its own work, fixes its own mistakes, and hands you the finished thing. So my job stopped being labor and became judgment. Taste. Deciding what is worth building. The machines handle the rest.',
+        ],
+      },
+      {
+        heading: 'The Assembly Line',
+        paragraphs: [
+          'The factory has five stations, and every idea walks through them. You pressure-test the idea until it is either dead or worth building. You design it. You build it. You launch it. And then you install the parts that make it grow on its own.',
+          'The trick is that none of those stations require a big team anymore. They require a clear description. Which brings me to the one sentence I want you to write down.',
+          '(Graphic: a clean five-station line, an idea moving down it and coming out the far end as a finished product. Mr. Mustard stamps each station as it passes.)',
+        ],
+      },
+      {
+        heading: 'Two Real Ones',
+        paragraphs: [
+          'Let me make it real. One of the companies is an AI interior staging studio. You give it a photo of an empty room and it stages it beautifully for a listing, while keeping the actual windows and doors pixel for pixel real. That went from an idea to a live product with its own engine and its own billing in a matter of days, not months.',
+          'Another is a faith apparel house. It has a storefront, an operations system, and a little engine that writes and posts a daily piece of art and encouragement on its own. The brand gets to stay about the meaning, because the machine handles the running. Same factory, completely different businesses.',
+        ],
+      },
+      {
+        heading: 'The One Sentence',
+        paragraphs: [
+          'Here is the sentence. Your bottleneck is not your capacity to work. It is your capacity to specify. Anything you can describe precisely, what it is, what done looks like, and what must never happen, you can now hand to a system. And anything you cannot describe precisely was going to be done badly anyway.',
+          'So the founders who win the next decade are not the ones who grind the hardest. They are the ones who write the clearest job descriptions, for people and for machines. What would you build if building were cheap. It is cheap now. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'build-the-studio',
+    kind: 'episode',
+    episode: 'Episode 11',
+    session: 'How We Build',
+    publish: 'Use anytime',
+    pillar: 'BUILD',
+    title: 'I Built the Studio I Am Filming This On',
+    hook: 'This video is a lesson and the proof of the lesson at the same time. The teleprompter I am reading, the camera rolling, the way this take will edit itself. I built all of it as a web app, in an afternoon.',
+    directorNote:
+      'The most fun, meta episode. Play with the fact that the studio is the subject. Gesture at the setup on "everything you are looking at." Keep the energy of someone who cannot believe they get to build their own tools. Light on jargon, heavy on delight.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'This one is a little strange, because it is a lesson and the proof of the lesson at the same time. Everything you are looking at right now, the teleprompter I am reading these words off of, the camera that is rolling, and the way this exact take is about to record and upload itself, I built. As a web app. In an afternoon. Let me show you, because it is the cleanest example I have of the most useful habit you can build.',
+        ],
+      },
+      {
+        heading: 'Build the Tool You Keep Wishing Existed',
+        paragraphs: [
+          'Here is the habit. When you catch yourself wishing a tool existed, that is not a complaint anymore. It is a to-do item. For most of history, wishing a piece of software existed and having it were separated by a team, a budget, and six months. That gap is basically gone.',
+          'I wanted to start filming a channel. I could have bought five different apps that each did one piece badly. Instead I described the studio I actually wanted, and I built exactly that.',
+        ],
+      },
+      {
+        heading: 'What This Thing Actually Does',
+        paragraphs: [
+          'So here is what I made. The teleprompter scrolls at exactly my reading pace, so I never race it or wait on it. When I hit play, the camera records the take and sends it off on its own, no files to wrangle. I can watch any take back instantly. The notes that are meant for me, and not for you, show up in a color I can never accidentally read out loud. And it can even attach a personal video I record to one specific customer.',
+          'None of that existed as one thing I could buy. So it became one thing I built.',
+          '(Screen record of the actual booth: a script loading, a take recording and uploading, a take replaying, a direction note glowing in a different color.)',
+        ],
+      },
+      {
+        heading: 'Your Version of This',
+        paragraphs: [
+          'Now here is the part that matters for you, because you are probably not building a video studio. You have your own version of this. There is a tool you keep wishing existed for your business. The little app that would take the annoying part off your plate. The thing no software company will ever build, because it is too specific to you.',
+          'That specificity used to be the reason you could not have it. Now it is the reason you can. The most valuable software in your business is the software that is shaped exactly like your business. Go build the thing you keep wishing existed. I am Sarah, and the link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'short-geometry-lock',
+    kind: 'short',
+    episode: 'Short',
+    session: 'Shorts Bank · Real Sauce',
+    publish: 'Use anytime',
+    pillar: 'BUILD',
+    title: 'The Trick That Makes AI Staging Real',
+    hook: 'Most AI home staging looks fake for one reason. It melts the windows.',
+    directorNote:
+      'Nerdy in the best way, the kind of specific that builds trust. Show a real before and after where the window stays perfect. This is a proof-of-craft short, not a sales pitch.',
+    sections: [
+      {
+        heading: 'The Problem',
+        paragraphs: [
+          'Most AI home staging looks fake for one very specific reason. It melts the windows. You ask it to furnish an empty room, and it happily invents new furniture, but it also quietly repaints the view outside, warps the door frame, and bends the trim. Your eye catches it in half a second, and the whole thing reads as a fake.',
+        ],
+      },
+      {
+        heading: 'The Fix',
+        paragraphs: [
+          'So here is what we actually do. Before the AI touches the room, a second model traces the exact windows, doors, and glass in the original photo. The AI restages everything else, the furniture, the light, the styling. Then we composite the real windows and doors back on top, pixel for pixel.',
+          '(Before and after: an empty room becomes beautifully staged, and a callout circles the window staying perfectly, identically real.)',
+        ],
+      },
+      {
+        heading: 'The Point',
+        paragraphs: [
+          'The room gets gorgeous. The view stays honest. That one trick, protecting the parts that must not change, is the whole difference between a toy and a tool. And it is the same principle in every good AI system we build. Let the machine do the heavy lifting, but lock down the parts that have to stay true.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'short-fashion-house',
+    kind: 'short',
+    episode: 'Short',
+    session: 'Shorts Bank · Real Sauce',
+    publish: 'Use anytime',
+    pillar: 'STORY',
+    title: 'We Dressed a Fashion House in AI',
+    hook: 'We ran a whole faith apparel house on AI, and it still feels completely handmade. That tension is the entire point.',
+    directorNote:
+      'Warm, a little reverent about the brand. This is proof that AI and soul are not opposites when you hold the tools right. Show the storefront and a piece of the daily art.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'We run a whole faith apparel house on AI, and it still feels completely handmade. People think those two things fight each other. Held right, they do not.',
+        ],
+      },
+      {
+        heading: 'What the Machine Does',
+        paragraphs: [
+          'The storefront, the product pages, the operations that keep it all moving, a lot of that is run by systems. There is even a little engine that writes and makes a daily piece of art and encouragement, and posts it, on its own, every morning.',
+          '(Show the live storefront, then a piece of the daily devotional art appearing.)',
+        ],
+      },
+      {
+        heading: 'The Point',
+        paragraphs: [
+          'Here is why that matters. Every hour the machine takes off the founder is an hour she gets to spend on the meaning, the message, the actual craft of the thing. The AI does not replace the soul of the brand. It clears the busywork so there is room for the soul. That is the whole trick, in every business. Let the tools carry what does not need you, so you can carry what does.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'short-command-center',
+    kind: 'short',
+    episode: 'Short',
+    session: 'Shorts Bank · Real Sauce',
+    publish: 'Use anytime',
+    pillar: 'SYSTEMS',
+    title: 'The Free Thing Worth the Most',
+    hook: 'The single most valuable thing I hand a client is the one I do not charge for.',
+    directorNote:
+      'Plain and a little proud. Show the command center screen with real-feeling activity landing on it. The generosity is the hook, so do not undersell it.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'The single most valuable thing I hand a business is the one thing I do not charge for. It is a command center.',
+        ],
+      },
+      {
+        heading: 'What It Is',
+        paragraphs: [
+          'One screen. Every call your receptionist answers, transcribed. Every lead your website brings in. Every message, your reviews, your traffic, your money, all in one place you can check from your phone in the truck.',
+          '(Screen record: a live dashboard, a new lead sliding in, a call transcript opening, all on a phone.)',
+        ],
+      },
+      {
+        heading: 'Why Free',
+        paragraphs: [
+          'I include it free with any website or receptionist I build, and people do not believe me. Here is why I do it. A website that just sits there is a brochure. A website wired into a command center is a business you can actually run. I would rather build you the second kind. Fewer apps, nothing falls through the cracks, and your whole front door fits in your pocket.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-watch-how-fast',
+    kind: 'ad',
+    episode: 'Ad 19',
+    session: 'Meta · Reel 9:16',
+    publish: 'Build-in-public · authority',
+    pillar: 'ADS',
+    title: 'Watch How Fast We Build',
+    hook: 'Give me one sentence about your business, and I will have a working demo of it built by morning.',
+    directorNote:
+      'Confident, a little bit of a flex, but earned. This is a build-in-public proof ad. The speed is the whole message, so keep the pace quick and let the finished demo be the mic drop.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Give me one sentence about your business, and I will have a working demo of it built by morning. Not a mockup. A real website and an AI receptionist you can actually call.',
+        ],
+      },
+      {
+        heading: 'The Proof',
+        paragraphs: [
+          'My studio builds these overnight, forged from your own trade and your own reviews, so it already sounds like you. It took my systems about a minute to make the last one.',
+          '(Fast build montage: a sentence typed, a website assembling itself, a phone calling the receptionist and it answering. Mr. Mustard slaps a big BUILT stamp on it.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'Then you open it, you try to break it, and you decide. No contract, nobody chasing you. Want to see yours. The link is below. I am Sarah, Modern Mustard Seed.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-studio-behind-studio',
+    kind: 'ad',
+    episode: 'Ad 20',
+    session: 'Meta · Reel 9:16',
+    publish: 'Build-in-public · authority',
+    pillar: 'ADS',
+    title: 'The Studio Behind the Studio',
+    hook: 'Everything you are about to see, we built ourselves. The receptionist, the website, the dashboard, even the studio this was filmed in.',
+    directorNote:
+      'Meta and proud. The reveal that the studio itself is one of the builds is the punch. Gesture at your own setup on the last beat so it lands that this is all homemade.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Everything you are about to see, we built ourselves. The AI receptionist. The website. The command center. Even the studio this video was filmed in.',
+        ],
+      },
+      {
+        heading: 'The Turn',
+        paragraphs: [
+          'We are a small studio in Montana that builds the systems that run a business, and we build them for our own companies first. So when I hand you one, it is not a theory. It is the exact thing keeping my own lights on.',
+          '(Quick cuts of each build, ending on Sarah gesturing at the actual recording setup around her. Mr. Mustard peeks out from behind the camera.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'If you want the machine without spending two years learning to build it, that is the whole job. Come see what we would build for you. The link is below.',
+        ],
+      },
+    ],
+  },
+];
+
+/** Episodes, how-we-build batch, Sales Desk, Meta Ads, Shorts bank, Origin batch. */
+export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...BEHIND_THE_BUILD, ...SALES_DESK, ...META_ADS, ...TIGHT_CUTS, ...ORIGIN];
 
 /**
  * A whole paragraph wrapped in parentheses is DIRECTION, not a spoken line.
