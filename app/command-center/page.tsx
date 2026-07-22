@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
@@ -144,58 +145,18 @@ export default function CommandCenterPage() {
               </p>
             </div>
 
-            {/* Hero visual: a rendered mini command-center board, not a flat block. */}
+            {/* Hero visual: a real screenshot of a live command center. */}
             <div className="lg:col-span-6 xl:col-span-7">
-              <div className="relative rounded-2xl border-2 border-[#161616] bg-[#161616] shadow-[8px_8px_0_0_#161616] overflow-hidden">
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-0 top-0 h-28"
-                  style={{ background: 'radial-gradient(60% 120% at 50% 0%, rgba(245,183,0,0.16), transparent 70%)' }}
+              <div className="rounded-2xl border-2 border-[#161616] bg-[#161616] shadow-[8px_8px_0_0_#161616] overflow-hidden">
+                <Image
+                  src="/command-center-hero.png"
+                  alt="A roofing company's Business Command Center: three calls caught overnight, today's schedule, rescued revenue, and $61,400 of claim value in motion, all on one board"
+                  width={1280}
+                  height={800}
+                  priority
+                  sizes="(min-width: 1024px) 58vw, 100vw"
+                  className="block w-full h-auto"
                 />
-                {/* top bar */}
-                <div className="relative flex items-center gap-3 px-5 h-14 border-b border-[#FBF6EA]/12">
-                  <span className="h-8 w-8 rounded-lg bg-[#F5B700] text-[#161616] font-black grid place-items-center">S</span>
-                  <div className="leading-tight">
-                    <p className="font-bold text-[14px] text-[#FBF6EA]">Summit Roofing Co</p>
-                    <p className="text-[9px] uppercase tracking-[0.2em] text-[#FBF6EA]/65">Command Center · Kalispell, MT</p>
-                  </div>
-                  <span className="ml-auto text-[9px] uppercase tracking-[0.16em] font-bold rounded-full px-2.5 py-1 border border-[#F5B700] text-[#F5B700]">
-                    Live
-                  </span>
-                </div>
-                {/* live wire */}
-                <div className="relative mx-4 mt-4 rounded-lg border border-[#FBF6EA]/12 bg-[#1F1F1F] flex items-center gap-2 px-3 py-2">
-                  <span className="h-2 w-2 rounded-full bg-[#F5B700] animate-pulse" />
-                  <span className="text-[9px] uppercase tracking-[0.18em] font-bold text-[#F5B700]">Live wire</span>
-                  <span className="text-[11px] font-mono text-[#FBF6EA]/70 truncate">9:12 PM · Rita M. · ceiling leak → booked 7 AM</span>
-                </div>
-                {/* stat tiles */}
-                <div className="relative grid grid-cols-3 gap-3 p-4">
-                  {[
-                    ['Rescued', '$38,400', 'this week'],
-                    ['Caught overnight', '3', 'zero missed'],
-                    ['Reviews', '4.9', '+7 this month'],
-                  ].map(([label, value, sub]) => (
-                    <div key={label} className="rounded-xl border border-[#FBF6EA]/12 bg-[#1F1F1F] p-3">
-                      <p className="text-[8.5px] uppercase tracking-[0.16em] font-bold text-[#FBF6EA]/65">{label}</p>
-                      <p className="font-mono text-lg font-bold text-[#FBF6EA] mt-1 leading-none">{value}</p>
-                      <p className="text-[9px] text-[#FBF6EA]/65 mt-1">{sub}</p>
-                    </div>
-                  ))}
-                </div>
-                {/* module chips */}
-                <div className="relative flex flex-wrap gap-1.5 px-4 pb-5">
-                  {['Today', 'Calls', 'Website', 'Customers', 'Quotes', 'Money', 'Reviews', 'Assistant'].map((m, i) => (
-                    <span
-                      key={m}
-                      className={`text-[10px] font-semibold rounded-md px-2.5 py-1 border ${
-                        i === 1 ? 'bg-[#F5B700] text-[#161616] border-[#F5B700]' : 'text-[#FBF6EA]/70 border-[#FBF6EA]/15'
-                      }`}
-                    >
-                      {m}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
