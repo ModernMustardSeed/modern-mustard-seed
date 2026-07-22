@@ -69,6 +69,7 @@ export default function DemoHub({
   trade,
   city,
   film = 'demo-welcome',
+  personalVideoUrl,
   voiceUrl,
   siteUrl,
   sitePending,
@@ -85,6 +86,9 @@ export default function DemoHub({
   /** Which welcome film matches the forged set (trifecta or a single cut), or
    *  Sarah's personal hello once that film is live. */
   film?: 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os' | 'demo-welcome-sarah';
+  /** A face-to-camera video Sarah recorded for THIS lead. When present it
+   *  replaces the generic welcome film (signed booth URL, .webm). */
+  personalVideoUrl?: string | null;
   voiceUrl: string | null;
   siteUrl: string | null;
   sitePending: string | null;
@@ -162,11 +166,12 @@ export default function DemoHub({
           href: osUrl,
           icon: '⚙',
           title: 'Your command center',
-          desc: 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Included free with your site or receptionist, nothing to install.',
+          desc: 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Comes with your website or receptionist, nothing to install.',
           tone: 'ink' as const,
           cta: 'Open it',
+          badge: 'Included free',
         },
-      ].filter(Boolean) as { href: string; icon: string; title: string; desc: string; tone: 'dark' | 'gold' | 'ink'; cta: string }[],
+      ].filter(Boolean) as { href: string; icon: string; title: string; desc: string; tone: 'dark' | 'gold' | 'ink'; cta: string; badge?: string }[],
     [voiceUrl, siteUrl, sitePending, osUrl, business],
   );
 
@@ -211,18 +216,21 @@ export default function DemoHub({
       </header>
 
       <main className="max-w-3xl mx-auto px-6 py-10 space-y-10">
-        {/* Mr. Mustard video */}
+        {/* Welcome video: Sarah's personal one for this lead if she recorded it,
+            otherwise the matched Mr. Mustard film. */}
         <section className="animate-[hubIn_.5s_ease-out_both]">
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] overflow-hidden">
             <video
               controls
               preload="metadata"
-              poster={`/video/${film}-poster.jpg`}
+              poster={personalVideoUrl ? undefined : `/video/${film}-poster.jpg`}
               className="w-full aspect-video bg-[#161616]"
-              src={`/video/${film}.mp4`}
+              src={personalVideoUrl ?? `/video/${film}.mp4`}
             />
             <p className="font-body text-[13px] text-[#161616]/60 px-4 py-3">
-              Thirty seconds from Mr. Mustard on what is in the box.
+              {personalVideoUrl
+                ? `A personal hello from Sarah, recorded just for ${business}.`
+                : 'Thirty seconds from Mr. Mustard on what is in the box.'}
             </p>
           </div>
         </section>
@@ -235,9 +243,14 @@ export default function DemoHub({
               <a
                 key={d.title}
                 href={d.href}
-                className={`${toneCls[d.tone]} border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#161616] p-5 flex flex-col transition-transform hover:-translate-y-1.5 hover:rotate-[-0.5deg] animate-[hubIn_.5s_ease-out_both]`}
+                className={`${toneCls[d.tone]} relative border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#161616] p-5 flex flex-col transition-transform hover:-translate-y-1.5 hover:rotate-[-0.5deg] animate-[hubIn_.5s_ease-out_both]`}
                 style={{ animationDelay: `${120 + i * 110}ms` }}
               >
+                {d.badge && (
+                  <span className="absolute -top-3 -right-2 z-10 rotate-3 bg-[#E0301E] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-3 py-1 font-sans text-[11px] font-bold uppercase tracking-[0.12em] shadow-[3px_3px_0_0_#161616]">
+                    {d.badge}
+                  </span>
+                )}
                 <span className="text-3xl">{d.icon}</span>
                 <h3 className="font-display text-xl font-bold mt-3 leading-tight">{d.title}</h3>
                 <p className={`font-body text-[13px] leading-relaxed mt-2 flex-1 ${d.tone === 'dark' ? 'text-[#FBF6EA]/75' : 'text-[#161616]/70'}`}>{d.desc}</p>
