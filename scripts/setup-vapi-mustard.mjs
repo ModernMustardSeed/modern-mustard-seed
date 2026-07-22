@@ -276,7 +276,7 @@ const TOOLS = [
             type: 'array',
             items: { type: 'string' },
             description:
-              "Zero or more page keys to include as buttons. Valid keys ONLY: 'book' (book a call with Sarah), 'website-audit' (free website audit), 'bottleneck-breaker' (free 60-second business scan), 'voice-agents' (AI phone agents), 'sidekick' (build your own AI receptionist), 'store' (playbooks and courses), 'work' (the portfolio), 'work-with-us' (ways to work together), 'portal' (client portal sign-in), 'partner-hub' (partner dashboard), 'partners' (partner program), 'home' (the main site). Use only these keys; anything else is dropped.",
+              "Zero or more page keys to include as buttons. Valid keys ONLY: 'book' (book a call with Sarah), 'website-audit' (free website audit), 'bottleneck-breaker' (free 60-second business scan), 'voice-agents' (AI phone agents), 'sidekick' (build your own AI receptionist), 'store' (playbooks and courses), 'work' (the portfolio), 'work-with-us' (ways to work together), 'portal' (client portal sign-in), 'partner-hub' (partner dashboard), 'partners' (partner program), 'home' (the main site). On the internal ADMIN desk line ONLY, you may also send admin screens by key: 'admin-outbound' (dial floor), 'admin-pipeline' (every lead), 'admin-partner-hub', 'admin-delivery', 'admin-proposals', 'admin-campaigns', 'admin-inbox', 'admin-calendar', 'admin-academy' (onboarding), 'admin-audit'. Use only these keys; anything else is dropped, and admin keys are dropped on any non-admin call.",
           },
         },
         required: [],
@@ -372,7 +372,7 @@ const assistant = {
     'This was fun. Check your inbox, and Sarah will take it from here. Talk soon!',
   analysisPlan: {
     summaryPrompt:
-      'Summarize this sales call for Sarah: who called, their business, the pain point, which offering fits, whether a call was booked or a lead captured (with the email), and the single best next action. Be specific and brief.',
+      'Summarize this call for Sarah: who called, their business, the pain point, which offering fits, whether a call was booked or a lead captured (with the email), and the single best next action. If Mr. Mustard emailed anything on the caller\'s behalf during the call (the send_email tool), add a short line naming what was sent and to which address, so Sarah has a record of what went out under her name. Be specific and brief.',
   },
   backgroundSound: 'off',
   // Block the caller's room/TV/traffic noise before it ever reaches the transcriber.

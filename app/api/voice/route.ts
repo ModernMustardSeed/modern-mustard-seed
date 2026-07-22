@@ -422,7 +422,8 @@ const SITE_ROOT = 'https://modernmustardseed.com';
  * appended when the send happens on the partner desk (so a partner who says
  * "email me my store link" gets a link that pays them).
  */
-const RESOURCE_CATALOG: Record<string, { label: string; url: string; ref?: boolean }> = {
+type CatalogEntry = { label: string; url: string; ref?: boolean; admin?: boolean };
+const RESOURCE_CATALOG: Record<string, CatalogEntry> = {
   book: { label: 'Book a call with Sarah', url: `${SITE_ROOT}/book`, ref: true },
   'discovery-call': { label: 'Book a discovery call with Sarah', url: `${SITE_ROOT}/book`, ref: true },
   'website-audit': { label: 'Run your free website audit', url: `${SITE_ROOT}/website-audit` },
@@ -437,6 +438,19 @@ const RESOURCE_CATALOG: Record<string, { label: string; url: string; ref?: boole
   'partner-hub': { label: 'Your partner dashboard', url: `${SITE_ROOT}/partners/hq` },
   partners: { label: 'The partner program', url: `${SITE_ROOT}/partners` },
   home: { label: 'Modern Mustard Seed', url: SITE_ROOT },
+  // Admin-desk-only deep links (auth-gated routes; useless to anyone not signed
+  // into admin, so they are dropped on non-admin calls). Paths mirror the admin
+  // nav in components/admin/AdminHeader.tsx.
+  'admin-outbound': { label: 'The dial floor (Outbound)', url: `${SITE_ROOT}/admin/outbound`, admin: true },
+  'admin-pipeline': { label: 'The pipeline (every lead)', url: `${SITE_ROOT}/admin/leads`, admin: true },
+  'admin-partner-hub': { label: 'Partner Hub', url: `${SITE_ROOT}/admin/hq`, admin: true },
+  'admin-delivery': { label: 'The delivery board', url: `${SITE_ROOT}/admin/delivery`, admin: true },
+  'admin-proposals': { label: 'Proposals', url: `${SITE_ROOT}/admin/proposals`, admin: true },
+  'admin-campaigns': { label: 'Campaigns', url: `${SITE_ROOT}/admin/campaigns`, admin: true },
+  'admin-inbox': { label: 'The team inbox', url: `${SITE_ROOT}/admin/inbox`, admin: true },
+  'admin-calendar': { label: 'The calendar', url: `${SITE_ROOT}/admin/calendar`, admin: true },
+  'admin-academy': { label: 'The Academy (onboarding)', url: `${SITE_ROOT}/admin/onboarding`, admin: true },
+  'admin-audit': { label: 'The Audit Desk', url: `${SITE_ROOT}/admin/audit`, admin: true },
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -483,7 +497,9 @@ async function sendResourceEmail(
   const keys = Array.isArray(input.links) ? input.links : [];
   const resolved = keys
     .map((k) => RESOURCE_CATALOG[String(k || '').trim().toLowerCase()])
-    .filter((r): r is { label: string; url: string; ref?: boolean } => Boolean(r))
+    .filter((r): r is CatalogEntry => Boolean(r))
+    // Admin deep links only resolve on an admin desk call; dropped everywhere else.
+    .filter((r) => !r.admin || ctx.deskKind === 'admin')
     .map((r) => ({ label: r.label, url: refCode && r.ref ? `${r.url}?ref=${refCode}` : r.url }));
 
   const note = (input.note || '').trim();
