@@ -1,5 +1,6 @@
 export type PrompterScript = {
   id: string;
+  kind: 'episode' | 'short';
   episode: string;
   session: string;
   publish: string;
@@ -10,12 +11,16 @@ export type PrompterScript = {
   sections: { heading: string; paragraphs: string[] }[];
 };
 
-export const PROMPTER_SCRIPTS: PrompterScript[] = [
+import { GENERATED } from './scripts-data';
+
+/** The ratified 3-minute originals live on as tight cuts in the Shorts bank. */
+const TIGHT_CUTS: PrompterScript[] = [
   {
     id: 'age-of-agentic-building',
-    episode: 'Episode 1',
-    session: 'Session A · Sat 8/8',
-    publish: 'Publishes Tue 8/18',
+    kind: 'short',
+    episode: 'Tight Cut · Ep 1',
+    session: 'Shorts Bank',
+    publish: 'Use anytime',
     pillar: 'BUILD',
     title: 'The Age of Agentic Building',
     hook: 'Most people are still using AI like a smarter search bar. That is not where the world is anymore.',
@@ -65,9 +70,10 @@ export const PROMPTER_SCRIPTS: PrompterScript[] = [
   },
   {
     id: 'manifesto',
-    episode: 'Episode 2',
-    session: 'Session B · Sat 8/15',
-    publish: 'Publishes Tue 8/25',
+    kind: 'short',
+    episode: 'Tight Cut · Ep 2',
+    session: 'Shorts Bank',
+    publish: 'Use anytime',
     pillar: 'STORY',
     title: 'Why a Christian Founder Is Betting Everything on AI',
     hook: 'I run four companies by myself. People assume that means I never rest. The truth is almost the opposite.',
@@ -112,9 +118,10 @@ export const PROMPTER_SCRIPTS: PrompterScript[] = [
   },
   {
     id: 'is-it-a-sin-to-use-ai',
-    episode: 'Episode 4',
-    session: 'Script Bank · record any block',
-    publish: 'Publishes Tue 9/8',
+    kind: 'short',
+    episode: 'Tight Cut · Ep 4',
+    session: 'Shorts Bank',
+    publish: 'Use anytime',
     pillar: 'STEWARD',
     title: 'Is It a Sin to Use AI?',
     hook: 'A believer asked me if using AI to build a business is cheating God. I sat with that question for a week.',
@@ -159,6 +166,9 @@ export const PROMPTER_SCRIPTS: PrompterScript[] = [
     ],
   },
 ];
+
+/** Episodes first (the 20-minute teaching slate), then the Shorts bank. */
+export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...TIGHT_CUTS];
 
 export function scriptWordCount(s: PrompterScript): number {
   return s.sections

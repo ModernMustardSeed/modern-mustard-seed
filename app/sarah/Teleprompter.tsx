@@ -8,6 +8,7 @@ import {
   scriptEstSeconds,
   fmtTime,
 } from './scripts';
+import { useBoothCamera, SelfView, TakesDrawer } from './booth';
 
 const NIGHT = '#080C16';
 const CREAM = '#FBF6EA';
@@ -70,6 +71,10 @@ export default function Teleprompter() {
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [progress, setProgress] = useState(0);
   const [elapsed, setElapsed] = useState(0);
+  const booth = useBoothCamera();
+  const [showTakes, setShowTakes] = useState(false);
+  const [selfViewOn, setSelfViewOn] = useState(true);
+  const [tab, setTab] = useState<'episode' | 'short'>('episode');
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const columnRef = useRef<HTMLDivElement>(null);
@@ -82,6 +87,10 @@ export default function Teleprompter() {
   const measuresRef = useRef({ totalH: 1, readLineY: 0 });
   const playingRef = useRef(false);
   const speedRef = useRef(1);
+  const activeRef = useRef<PrompterScript | null>(null);
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     setSettings(loadSettings());
@@ -177,14 +186,36 @@ export default function Teleprompter() {
     [measure],
   );
 
+  /** Section label at the current read position, for take file naming. */
+  const currentSectionLabel = useCallback(() => {
+    const col = columnRef.current;
+    const s = activeRef.current;
+    if (!col || !s) return 's01';
+    const { readLineY } = measuresRef.current;
+    const traveled = readLineY - yRef.current;
+    let idx = 0;
+    Array.from(col.querySelectorAll<HTMLElement>('[data-section]')).forEach((el, i) => {
+      if (el.offsetTop <= traveled + 8) idx = i;
+    });
+    const slug = (s.sections[idx]?.heading || 'section')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 24);
+    return `s${String(idx + 1).padStart(2, '0')}-${slug}`;
+  }, []);
+
   const backToLibrary = useCallback(() => {
+    if (booth.recording) booth.stopTake();
     setPlaying(false);
     setCountdown(null);
     setActive(null);
+    setShowTakes(false);
     if (document.fullscreenElement) void document.exitFullscreen();
-  }, []);
+  }, [booth]);
 
   const restart = useCallback(() => {
+    if (booth.recording) booth.stopTake();
     setDone(false);
     setStarted(false);
     setPlaying(false);
@@ -193,13 +224,16 @@ export default function Teleprompter() {
     setElapsed(0);
     elapsedRef.current = 0;
     measure(false);
-  }, [measure]);
+  }, [measure, booth]);
 
   const beginCountdown = useCallback(() => {
     setDone(false);
     setStarted(true);
     setCountdown(3);
-  }, []);
+    // Camera armed: the take rolls from the countdown so nothing gets clipped.
+    const s = activeRef.current;
+    if (booth.ready && !booth.recording && s) booth.startTake(s.id, currentSectionLabel());
+  }, [booth, currentSectionLabel]);
 
   useEffect(() => {
     if (countdown === null) return;
@@ -222,8 +256,21 @@ export default function Teleprompter() {
       return;
     }
     if (countdown !== null) return;
-    setPlaying((p) => !p);
-  }, [done, started, countdown, beginCountdown, restart]);
+    if (playing) {
+      // Pausing ends the take; it uploads itself in the background.
+      if (booth.recording) booth.stopTake();
+      setPlaying(false);
+    } else {
+      const s = activeRef.current;
+      if (booth.ready && !booth.recording && s) booth.startTake(s.id, currentSectionLabel());
+      setPlaying(true);
+    }
+  }, [done, started, countdown, playing, beginCountdown, restart, booth, currentSectionLabel]);
+
+  // Script end also ends the take.
+  useEffect(() => {
+    if (done && booth.recording) booth.stopTake();
+  }, [done, booth]);
 
   const jumpSection = useCallback(
     (dir: 1 | -1) => {
@@ -280,6 +327,10 @@ export default function Teleprompter() {
         setSettings((s) => ({ ...s, fontSize: Math.max(26, s.fontSize - 2) }));
       } else if (e.key.toLowerCase() === 'm') {
         setSettings((s) => ({ ...s, mirror: !s.mirror }));
+      } else if (e.key.toLowerCase() === 'c') {
+        setSelfViewOn((v) => !v);
+      } else if (e.key.toLowerCase() === 't') {
+        setShowTakes((v) => !v);
       } else if (e.key.toLowerCase() === 'f') {
         toggleFullscreen();
       } else if (e.key.toLowerCase() === 'r') {
@@ -309,12 +360,39 @@ export default function Teleprompter() {
             The Prompter
           </h1>
           <p className="mt-4 max-w-xl text-base sm:text-lg" style={{ color: 'rgba(251,246,234,0.72)' }}>
-            Three scripts, loaded and camera-ready. Pick one, hit play, eyes to the lens. The seed on the reading
-            line grows as you go.
+            The whole studio in one room. Pick a script, arm the camera, hit play. Every take records itself and
+            sends itself to Claude for the edit. The seed on the reading line grows as you go.
           </p>
 
-          <div className="mt-10 space-y-6">
-            {PROMPTER_SCRIPTS.map((s) => {
+          <div className="mt-8 flex gap-3">
+            {(
+              [
+                ['episode', 'Episodes'],
+                ['short', 'Shorts Bank'],
+              ] as const
+            ).map(([k, label]) => {
+              const count = PROMPTER_SCRIPTS.filter((s) => s.kind === k).length;
+              const on = tab === k;
+              return (
+                <button
+                  key={k}
+                  onClick={() => setTab(k)}
+                  className="border-2 px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] transition-transform hover:-translate-y-0.5"
+                  style={{
+                    background: on ? GOLD : 'transparent',
+                    borderColor: on ? INK : 'rgba(251,246,234,0.3)',
+                    color: on ? INK : 'rgba(251,246,234,0.75)',
+                    boxShadow: on ? `3px 3px 0 0 ${CREAM}33` : 'none',
+                  }}
+                >
+                  {label} ({count})
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-8 space-y-6">
+            {PROMPTER_SCRIPTS.filter((s) => s.kind === tab).map((s) => {
               const words = scriptWordCount(s);
               return (
                 <button
@@ -363,8 +441,10 @@ export default function Teleprompter() {
 
           <div className="mt-12 border-t pt-6" style={{ borderColor: 'rgba(251,246,234,0.15)' }}>
             <p className="font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.45)' }}>
-              PRIVATE BOOTH · not linked, not indexed. SPACE play/pause · ↑↓ speed · ←→ sections · +/− text size ·
-              M mirror (beam-splitter rig) · F fullscreen · R restart · ESC pause/exit.
+              PRIVATE BOOTH · not linked, not indexed. Arm the camera and every play/pause cycle records a take
+              and sends it to Claude for the edit. SPACE play/pause (and record) · ↑↓ speed · ←→ sections ·
+              +/− text size · M mirror (beam-splitter rig) · C self-view · T takes · F fullscreen · R restart ·
+              ESC pause/exit.
             </p>
           </div>
         </div>
@@ -411,8 +491,44 @@ export default function Teleprompter() {
             {active.episode} · {active.title}
           </div>
         </div>
-        <div className="shrink-0 font-mono text-[12px] tabular-nums" style={{ color: 'rgba(251,246,234,0.8)' }}>
-          {fmtTime(elapsed)} <span style={{ color: 'rgba(251,246,234,0.4)' }}>/ ~{fmtTime(est)}</span>
+        <div className="flex shrink-0 items-center gap-2">
+          {booth.recording && (
+            <span className="flex items-center gap-1.5 border px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em]" style={{ borderColor: '#E0301E', color: '#FBF6EA', background: 'rgba(224,48,30,0.25)' }}>
+              <span className="h-2 w-2 animate-pulse rounded-full" style={{ background: '#E0301E' }} />
+              Rec
+            </span>
+          )}
+          {!booth.enabled ? (
+            <button
+              onClick={() => void booth.enable()}
+              className="border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
+              style={{ borderColor: GOLD, color: GOLD }}
+              aria-label="Enable the booth camera"
+            >
+              Cam On
+            </button>
+          ) : (
+            <button
+              onClick={() => !booth.recording && booth.disable()}
+              className="border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em]"
+              style={{ borderColor: 'rgba(251,246,234,0.3)', color: 'rgba(251,246,234,0.6)' }}
+              aria-label="Turn the camera off"
+              title={booth.recording ? 'Recording; pause first' : 'Turn the camera off'}
+            >
+              Cam Off
+            </button>
+          )}
+          <button
+            onClick={() => setShowTakes((v) => !v)}
+            className="border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
+            style={{ borderColor: 'rgba(251,246,234,0.3)', color: 'rgba(251,246,234,0.8)' }}
+            aria-label="Open the takes drawer (T)"
+          >
+            Takes{booth.takes.length > 0 ? ` (${booth.takes.length})` : ''}
+          </button>
+          <div className="font-mono text-[12px] tabular-nums" style={{ color: 'rgba(251,246,234,0.8)' }}>
+            {fmtTime(elapsed)} <span style={{ color: 'rgba(251,246,234,0.4)' }}>/ ~{fmtTime(est)}</span>
+          </div>
         </div>
       </div>
 
@@ -480,9 +596,30 @@ export default function Teleprompter() {
         <div className="h-[2px] flex-1" style={{ background: `linear-gradient(to right, ${GOLD}, rgba(245,183,0,0.15))` }} />
       </div>
 
-      {/* director's note (pre-roll) */}
+      {/* director's note + camera arm (pre-roll) */}
       {!started && !done && countdown === null && (
         <div className="absolute bottom-24 left-1/2 z-30 w-[min(92vw,640px)] -translate-x-1/2 sm:bottom-28">
+          {!booth.enabled && (
+            <div className="mb-2 flex items-center justify-between gap-3 border-2 px-4 py-2.5" style={{ background: '#0B1019', borderColor: GOLD }}>
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em]" style={{ color: 'rgba(251,246,234,0.8)' }}>
+                Camera is off. Arm it and every take records + sends itself.
+              </p>
+              <button
+                onClick={() => void booth.enable()}
+                className="shrink-0 border-2 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
+                style={{ background: GOLD, borderColor: INK, color: INK }}
+              >
+                Arm Camera
+              </button>
+            </div>
+          )}
+          {booth.camError && (
+            <div className="mb-2 border-2 px-4 py-2" style={{ background: '#E0301E', borderColor: INK }}>
+              <p className="font-mono text-[10px] uppercase tracking-[0.1em]" style={{ color: CREAM }}>
+                Camera blocked: {booth.camError}. Allow camera + mic for this site and try again.
+              </p>
+            </div>
+          )}
           <div className="border-2 p-4 sm:p-5" style={{ background: CREAM, borderColor: INK, boxShadow: `5px 5px 0 0 ${GOLD}` }}>
             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#C4160B]">
               Director&rsquo;s Note
@@ -491,6 +628,10 @@ export default function Teleprompter() {
           </div>
         </div>
       )}
+
+      {/* booth camera self-view + takes */}
+      <SelfView booth={booth} visible={selfViewOn && !done} />
+      <TakesDrawer booth={booth} open={showTakes} onClose={() => setShowTakes(false)} />
 
       {/* countdown */}
       {countdown !== null && countdown > 0 && (
