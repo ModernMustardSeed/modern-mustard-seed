@@ -97,20 +97,28 @@ export const SPEAKING_PIPELINE = {
 
 /**
  * Trim a base assistant's tool list down to what a DEMO (or an internal desk call)
- * actually uses. Mr. Mustard needs all four tools on his own line; a demo only ever
- * books Sarah on the close, so we drop recall_caller and capture_lead. Dropping them,
- * rather than only telling the model to skip them in the prompt, means the demo brain
+ * actually uses. Mr. Mustard keeps his full toolset on his own line; a demo only ever
+ * books Sarah (DEMO_TOOLS), a desk call also emails links (DESK_TOOLS). This is an
+ * ALLOW-list on purpose: the base assistant is edited by other processes and its tool
+ * list drifts (send_email was added to it mid-2026-07-22), so a deny-list would silently
+ * leak each newly added tool into every demo. Removing a tool, not just telling the model
+ * to skip it in the prompt (VOICE_CRAFT already does), means the demo brain
  * can never stall mid-call on a pointless webhook round-trip (dead air the caller reads
  * as lag), and each turn carries a little less tool schema. Booking tools and any
  * structural (non-named) tools are kept untouched.
  */
-const DEMO_DROP_TOOLS = new Set(['recall_caller', 'capture_lead']);
+export const DEMO_TOOLS = new Set(['get_available_slots', 'book_discovery_call']);
+export const DESK_TOOLS = new Set(['get_available_slots', 'book_discovery_call', 'send_email']);
 
-export function demoModel(base: Record<string, unknown>, systemPrompt: string): Record<string, unknown> {
+export function demoModel(
+  base: Record<string, unknown>,
+  systemPrompt: string,
+  keepTools: Set<string> = DEMO_TOOLS,
+): Record<string, unknown> {
   const tools = Array.isArray(base.tools)
     ? (base.tools as Array<Record<string, unknown>>).filter((t) => {
         const name = (t?.function as { name?: string } | undefined)?.name;
-        return !name || !DEMO_DROP_TOOLS.has(name);
+        return !name || keepTools.has(name);
       })
     : base.tools;
   return { ...base, messages: [{ role: 'system', content: systemPrompt }], tools };

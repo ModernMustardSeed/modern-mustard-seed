@@ -16,7 +16,7 @@
  * see the same numbers on the page.
  */
 
-import { getAssistantModel, demoModel, SPEAKING_PIPELINE, VOICE_CRAFT, type ForgedCall } from '@/lib/sidekick';
+import { getAssistantModel, demoModel, DESK_TOOLS, SPEAKING_PIPELINE, VOICE_CRAFT, type ForgedCall } from '@/lib/sidekick';
 import { SIDEKICK_VOICES } from '@/lib/sidekick-voice';
 import { PAID_EDIT_PRICE_CENTS, CARE_PLAN_PRICE_CENTS } from '@/lib/site-edit';
 
@@ -187,7 +187,7 @@ export async function forgeDeskCall(
     ok: true,
     call: {
       firstMessage: DESK_FIRST_MESSAGE[desk]((opts.greetName || 'there').split(' ')[0]),
-      model: demoModel(model, opts.systemPrompt),
+      model: demoModel(model, opts.systemPrompt, DESK_TOOLS),
       transcriber: { provider: 'deepgram', model: 'nova-3', language: 'en', numerals: true, keyterm },
       ...SPEAKING_PIPELINE,
       maxDurationSeconds: DESK_MAX_SECONDS[desk],
