@@ -1,10 +1,10 @@
 export type PrompterScript = {
   id: string;
-  kind: 'episode' | 'short' | 'sales';
+  kind: 'episode' | 'short' | 'sales' | 'ad';
   episode: string;
   session: string;
   publish: string;
-  pillar: 'BUILD' | 'SYSTEMS' | 'STEWARD' | 'STORY' | 'SALES';
+  pillar: 'BUILD' | 'SYSTEMS' | 'STEWARD' | 'STORY' | 'SALES' | 'ADS';
   title: string;
   hook: string;
   directorNote: string;
@@ -427,8 +427,319 @@ const SALES_DESK: PrompterScript[] = [
   },
 ];
 
-/** Episodes first, then the Sales Desk, then the Shorts bank. */
-export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...SALES_DESK, ...TIGHT_CUTS];
+/**
+ * META ADS: face-to-camera paid ads for Facebook + Instagram (Reels 9:16).
+ * Sarah's face IS the brand; Claude edits in Mr. Mustard clips + graphics where
+ * the (parenthetical) DIRECTION beats mark. Rules: hook lands in the first 3
+ * seconds, no spoken prices or dates (evergreen, so a creative never expires),
+ * one clear CTA to the link/number below, warm founder voice, faith where it
+ * fits, no hype. Distinct angles on purpose so Meta can test hook against hook.
+ */
+const META_ADS: PrompterScript[] = [
+  {
+    id: 'ad-missed-call',
+    kind: 'ad',
+    episode: 'Ad 01',
+    session: 'Meta · Reel 9:16',
+    publish: 'Cold · service businesses',
+    pillar: 'ADS',
+    title: 'The Missed-Call Math',
+    hook: 'Your phone rang today while you were up a ladder. That was probably a five hundred dollar job.',
+    directorNote:
+      'The hook is the whole ad. Say the first two lines straight to the lens like you are letting them in on a secret, warm and a touch wry, never salesy. Leave a half-beat of air after the phone line and before the CTA so the Mr. Mustard cuts breathe. Shoot it tight, eyes to the lens.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Your phone rang today while you were up a ladder. That was probably a five hundred dollar job, and it went to a voicemail nobody checks.',
+        ],
+      },
+      {
+        heading: 'The Math',
+        paragraphs: [
+          'More than half the calls to a small business go unanswered. Not because you are lazy. Because you are working. So the work just quietly walks next door.',
+          '(Text slams on screen: 60% OF CALLS GO UNANSWERED. Mr. Mustard peeks over the top of the number, worried.)',
+        ],
+      },
+      {
+        heading: 'The Fix + CTA',
+        paragraphs: [
+          'I build a receptionist that runs on AI. It answers every call in your voice, knows your hours, books the job, and texts you the details before you are back down the ladder.',
+          '(Mr. Mustard clip: he catches a falling phone, taps it once, gives a thumbs up.)',
+          'It never sleeps and it never takes a lunch. There is a number below you can call right now and try to stump. I am Sarah, from a little studio in Montana.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-free-demo',
+    kind: 'ad',
+    episode: 'Ad 02',
+    session: 'Meta · Reel 9:16',
+    publish: 'Cold · curiosity',
+    pillar: 'ADS',
+    title: 'I Already Built You One',
+    hook: 'This is going to sound like a trick, but it is not. My studio already built a working demo for a business like yours.',
+    directorNote:
+      'Disarming and generous, not a pitch. Smile on "try to break it." The whole ad is permission, so the close has to feel genuinely no-pressure. This one runs cold, so the first five seconds carry everything.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'This is going to sound like a trick, but it is not. My studio already built a working demo for a business like yours. Not a slideshow. A real thing you can click and call.',
+        ],
+      },
+      {
+        heading: 'What It Is',
+        paragraphs: [
+          'Depending on what you do, it might be a new website, or an AI receptionist that already knows your services, or both. It took my systems about a minute to make.',
+          '(Split screen: a phone scrolling the demo site, then the receptionist answering a call. Mr. Mustard slaps a big red BUILD button and the demo assembles itself.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'Open the link, give it two minutes, and try to break it. Nothing happens after that unless you want it to. No contract, nobody chasing you around the internet. I just think showing beats telling.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-four-companies',
+    kind: 'ad',
+    episode: 'Ad 03',
+    session: 'Meta · Reel 9:16',
+    publish: 'Broad · founders',
+    pillar: 'ADS',
+    title: 'Four Companies, One Laptop',
+    hook: 'I run four companies. By myself. From a laptop in Montana. People assume that means I never sleep.',
+    directorNote:
+      'Confident and calm, the tone of someone with nothing to prove. This one is aspiration, so let the "it is the opposite" line land with a small knowing smile. Founders are the audience; talk to them like a peer, not a prospect.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'I run four companies. By myself. From a laptop in Montana. People assume that means I never sleep. It is actually the opposite.',
+        ],
+      },
+      {
+        heading: 'The Turn',
+        paragraphs: [
+          'I do not have a big team. I have AI staff that I built. They answer the phones, run the follow up, build the demos, and handle the parts of the business I should not be touching by hand.',
+          '(Mr. Mustard clip: a tiny crew of Mr. Mustards works an assembly line, hats and clipboards, while Sarah sips coffee and watches.)',
+        ],
+      },
+      {
+        heading: 'The Point + CTA',
+        paragraphs: [
+          'That is the whole thing I want you to feel. You do not need more hours, and you do not need more hires. You need systems with a job description. That is what my studio builds.',
+          'If you are one capable person doing the work of ten, come see what that could look like. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-is-it-cheating',
+    kind: 'ad',
+    episode: 'Ad 04',
+    session: 'Meta · Reel 9:16',
+    publish: 'Cold · faith audience',
+    pillar: 'ADS',
+    title: 'Is It Cheating God?',
+    hook: 'A woman messaged me and asked, very seriously, if using AI to build her business was cheating God.',
+    directorNote:
+      'Pastoral, quiet, zero hype. This is a trust piece that disarms the AI skeptic, not a sale. Take the tension seriously before you resolve it. Keep the faith beat reverent, and note the direction: NO Mr. Mustard in that section, it would break the tone. Land the last two lines slowly.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'A woman messaged me and asked, very seriously, if using AI to build her business was cheating God. Like she was getting away with something. I sat with that for a week.',
+        ],
+      },
+      {
+        heading: 'The Principle',
+        paragraphs: [
+          'Here is what I told her. Scripture never condemned the tool. It condemned where you put your trust. A plow is a tool. A printing press is a tool. AI is a lever, a large one, and the parable of the talents is not kind to the man who buried what he was given out of fear.',
+          '(Quiet graphic only: a single mustard seed, then a simple hand-drawn tree growing from it. Keep it reverent. No mascot here.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'So no. It is not a sin to pick up the lever. It might be one to bury it. If you are a builder who has felt that pull and did not know if it was allowed, this is the studio for you. I am Sarah. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-ten-dollar-work',
+    kind: 'ad',
+    episode: 'Ad 05',
+    session: 'Meta · Reel 9:16',
+    publish: 'Broad',
+    pillar: 'ADS',
+    title: 'Stop Doing $10 Work',
+    hook: 'You are paying yourself ten dollars an hour for half of your week, and you are calling it diligence.',
+    directorNote:
+      'Punchy and direct, then warm on the reframe. Drop the energy half a step on "the thousand dollar work only you can do," that is the heart of it. The tier graphics are rapid-fire, so keep your pace crisp through them.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'You are paying yourself ten dollars an hour for half of your week, and you are calling it diligence.',
+        ],
+      },
+      {
+        heading: 'The Reframe',
+        paragraphs: [
+          'Chasing invoices. Retyping the same email. Answering the same three questions all day. That is ten dollar work, and every hour you spend on it is an hour you are not doing the thousand dollar work only you can do.',
+          '(Lower thirds pop as each is named: $10 INBOX, $10 SCHEDULING, $10 FOLLOW-UP. Mr. Mustard sweeps all three into a trash can and dusts off his hands.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'I build the AI systems that take the ten dollar work off your plate, so you can go be the founder. Curious what that would free up in your week? The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-its-just-me',
+    kind: 'ad',
+    episode: 'Ad 06',
+    session: 'Meta · Reel 9:16',
+    publish: 'Warm · retarget',
+    pillar: 'ADS',
+    title: 'You Get Me',
+    hook: 'When you hire most agencies, you get a sales rep, then a handoff, then a junior you never asked for.',
+    directorNote:
+      'This is the trust card, so it has to be true on your face: warm, steady, a little proud of how you run things. It plays to warm leads who are close, so drop the guard and just be the person they would be working with.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'When you hire most agencies, you get a sales rep, then a handoff, then a junior you never asked for. When you work with me, you get me.',
+        ],
+      },
+      {
+        heading: 'Who You Get',
+        paragraphs: [
+          'I am Sarah. I run Modern Mustard Seed out of Kalispell, Montana. When you email, I read it. When something breaks, I fix it. I use AI to do the heavy lifting so a small studio can deliver like a big one, but the judgment and the promises are mine, and I do not delegate those.',
+          '(Mr. Mustard clip: he tips a little hat and hands over a wrench. Homemade, warm, no gloss.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'If you want a real person who actually builds the thing, that is what this is. Come say hi. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-not-techy',
+    kind: 'ad',
+    episode: 'Ad 07',
+    session: 'Meta · Reel 9:16',
+    publish: 'Cold · objection',
+    pillar: 'ADS',
+    title: 'You Do Not Have to Be Techy',
+    hook: 'The number one reason owners tell me they are scared of AI is, I am not a tech person. Good news.',
+    directorNote:
+      'Reassuring and plain, like talking a nervous friend off a ledge. Smile on the EASY button beat. The goal is to remove one specific fear, so do not oversell, just relieve it.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'The number one reason business owners tell me they are scared of AI is, I am not a tech person. Good news. You do not have to be.',
+        ],
+      },
+      {
+        heading: 'The Truth',
+        paragraphs: [
+          'You do not need to know how any of it works under the hood. You need to know what you would hand off if you finally trusted someone to do it right. That part is your job. The building is mine.',
+          '(Mr. Mustard clip: he hands Sarah a giant EASY button; she presses it and a whole little office lights up behind her.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'You bring the business. I bring the machine that runs it. Let me show you what that looks like. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-sounds-like-you',
+    kind: 'ad',
+    episode: 'Ad 08',
+    session: 'Meta · Reel 9:16',
+    publish: 'Cold · service businesses',
+    pillar: 'ADS',
+    title: 'The Robot That Sounds Like You',
+    hook: 'This is your new receptionist. It already knows your hours, your services, and how you like your customers treated.',
+    directorNote:
+      'Playful and proud, like showing off something you made. The live-call section is the proof, so react honestly on camera when the agent answers. Record a real call if you can and I will cut it in clean.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'This is your new receptionist. It already knows your hours, your services, and how you like your customers treated. And I am about to let you call it.',
+        ],
+      },
+      {
+        heading: 'The Demo',
+        paragraphs: [
+          'Ask it anything a real customer would. Are you open Saturday. What do you charge for an estimate. Can I book something for next week. It answers in two rings, day or night, and it never has a bad morning.',
+          '(Screen record of a live call with the agent, captions of the exchange on screen. Mr. Mustard sits in the corner wearing a tiny headset.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'Every answered call is a customer you did not lose. Call the number below and try to stump it. If it feels like your business in there, we should talk.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-small-seeds',
+    kind: 'ad',
+    episode: 'Ad 09',
+    session: 'Meta · Reel 9:16',
+    publish: 'Broad · brand',
+    pillar: 'ADS',
+    title: 'Small Seeds, Real Shelter',
+    hook: 'The name is Modern Mustard Seed. It comes from a parable about the smallest seed that grows into a sheltering tree.',
+    directorNote:
+      'The brand film of the set. Warm, unhurried, a little tender. This one sells nothing hard; it makes people feel who you are so the other ads convert. Let the growth graphic play under your voice and rest on the last line.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'The name is Modern Mustard Seed. It comes from a parable. The smallest of all the seeds, that grows into a tree big enough for the birds to nest in.',
+        ],
+      },
+      {
+        heading: 'The Meaning',
+        paragraphs: [
+          'That is the whole business, honestly. Small, faithful work. Real leverage. Systems that grow into shelter for the family your business carries. I just happen to build that with AI now.',
+          '(Gentle growth graphic: a seed becomes a full tree across the whole ad. Mr. Mustard waters it once, then sits and rests in its shade.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'If you are building something small that you want to grow, come build it with me. Modern Mustard Seed. Kalispell, Montana. The link is below.',
+        ],
+      },
+    ],
+  },
+];
+
+/** Episodes first, then Sales Desk, then Meta Ads, then the Shorts bank. */
+export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...SALES_DESK, ...META_ADS, ...TIGHT_CUTS];
 
 /**
  * A whole paragraph wrapped in parentheses is DIRECTION, not a spoken line.
