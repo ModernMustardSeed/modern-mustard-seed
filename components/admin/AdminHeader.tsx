@@ -17,7 +17,7 @@ import { ADMIN_HELP } from '@/lib/help-content';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -37,6 +37,7 @@ const PINNED: Item[] = [
 const PROGRAMS: Item[] = [
   { key: 'p-demos', label: 'Demos', href: '/demos', external: true },
   { key: 'p-sidekick', label: 'Sidekick', href: '/sidekick', external: true },
+  { key: 'p-chief', label: 'The Chief', href: '/chief', external: true },
   { key: 'p-mode', label: 'Mustard Mode', href: '/mustard-mode', external: true },
   { key: 'p-launch', label: 'Mustard Launch', href: '/mustard-launch', external: true },
   { key: 'p-pictures', label: 'Mustard Pictures', href: '/pictures', external: true },
@@ -57,6 +58,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'proposals', label: 'Proposals', href: '/admin/proposals' },
       { key: 'call', label: 'Intake Call', href: '/admin/intake-call' },
       { key: 'builds', label: 'Builds', href: '/admin/builds' },
+      { key: 'build-log', label: 'Build Log', href: '/admin/build-log' },
       { key: 'intakes', label: 'Intakes', href: '/admin/intakes' },
       { key: 'reviews', label: 'Reviews', href: '/admin/testimonials' },
       { key: 'portfolio', label: 'My Projects', href: '/admin/portfolio' },
