@@ -736,6 +736,281 @@ const META_ADS: PrompterScript[] = [
       },
     ],
   },
+
+  /* ---- Websites + the free, included Command Center (2026-07-22) ---- */
+  {
+    id: 'ad-cc-one-screen',
+    kind: 'ad',
+    episode: 'Ad 10',
+    session: 'Meta · Command Center 9:16',
+    publish: 'Command Center · cold',
+    pillar: 'ADS',
+    title: 'One Screen, Whole Business',
+    hook: 'Most owners run their whole business from seven different places. Texts here, voicemails there, a sticky note on the monitor.',
+    directorNote:
+      'Warm, relieved on their behalf, like you are handing them a solution to a headache they gave up on. The "free, included" line is the moment; say it plainly, no salesy lift. Let the calm land after the chaos of the first beat.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Most owners run their whole business from seven different places. A text here, a voicemail there, a sticky note on the monitor, a lead they swear they will call back.',
+        ],
+      },
+      {
+        heading: 'The Fix',
+        paragraphs: [
+          'So I built one screen that catches all of it. Every call, every message, every new lead, every booking, in one place you can check from your phone out in the truck.',
+          '(Mr. Mustard frantically juggles a phone, a notepad, and a calendar, then sweeps them all into one glowing dashboard that settles and goes calm.)',
+        ],
+      },
+      {
+        heading: 'The Offer + CTA',
+        paragraphs: [
+          'And here is the part I like. It comes free with any website or AI receptionist I build for you. Not a monthly add on. Included.',
+          '(Screen record of the command center, real leads pinging in live. Text on screen: FREE WITH YOUR BUILD.)',
+          'One screen for your whole front door. Want to see it work? The link is below. I am Sarah, Modern Mustard Seed.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-cc-free-part',
+    kind: 'ad',
+    episode: 'Ad 11',
+    session: 'Meta · Command Center 9:16',
+    publish: 'Command Center · curiosity',
+    pillar: 'ADS',
+    title: 'The Free Part Nobody Believes',
+    hook: 'When I build your website, I include something most agencies quietly charge you for every single month.',
+    directorNote:
+      'Playful and a little proud, like you are getting away with being generous. Smile on the price-tag flip. The whole ad is a pattern interrupt on "everything has a monthly fee," so let the word FREE breathe.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'When I build your website, I include something most agencies quietly charge you for every single month. And honestly, people do not believe it is free.',
+        ],
+      },
+      {
+        heading: 'What It Is',
+        paragraphs: [
+          'It is a command center. One dashboard where every lead, call, and message your new site brings in lands in a single place, so nothing slips through the cracks.',
+          '(Mr. Mustard holds a big price tag; it flips over to read FREE. He shrugs, delighted.)',
+        ],
+      },
+      {
+        heading: 'The Why + CTA',
+        paragraphs: [
+          'I include it because a website that just sits there is a brochure. A website wired into a command center is a business. I would rather build you the second kind.',
+          'Free with your build, no catch, no monthly. Come see how it works. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-cc-seven-apps',
+    kind: 'ad',
+    episode: 'Ad 12',
+    session: 'Meta · Command Center 9:16',
+    publish: 'Command Center · pain',
+    pillar: 'ADS',
+    title: 'Seven Apps Down to One',
+    hook: 'Quick question. How many different apps does it take to run your business right now? Be honest.',
+    directorNote:
+      'Conversational, a knowing smile, because everyone is guilty of this. Keep the pace crisp through the app pile-up beat, then exhale on the fix. You are naming a mess they feel every day.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Quick question. How many different apps does it take to run your business right now? Be honest.',
+        ],
+      },
+      {
+        heading: 'The Mess',
+        paragraphs: [
+          'The calendar app, the texting app, the email, the voicemail you never check, the notebook, the other notebook. Every one of them is a place a customer can fall through.',
+          '(Rapid cuts of app icons stacking into a chaotic pile. Mr. Mustard gets buried under them, then pops out the top.)',
+        ],
+      },
+      {
+        heading: 'The Fix + CTA',
+        paragraphs: [
+          'So I put all of it on one screen, a command center, and I include it free with any website or receptionist I build. Leads, calls, messages, bookings, one place, on your phone.',
+          'Fewer apps, nothing dropped. Let me show you. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-cc-front-door',
+    kind: 'ad',
+    episode: 'Ad 13',
+    session: 'Meta · Command Center 9:16',
+    publish: 'Command Center · peace of mind',
+    pillar: 'ADS',
+    title: 'Your Front Door, On Your Phone',
+    hook: 'There is a specific kind of peace that comes from watching your business work while you are doing something else.',
+    directorNote:
+      'Soft, unhurried, aspirational. This one sells a feeling, not a feature. Deliver the opening line slowly and mean it. The lawn-chair beat should feel earned, not lazy.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'There is a specific kind of peace that comes from watching your business work while you are doing something else.',
+        ],
+      },
+      {
+        heading: 'The Center',
+        paragraphs: [
+          'This is your command center. Every lead your website captures, every call your receptionist answers, every message, showing up live, right here, while you are at your kid’s game.',
+          '(Mr. Mustard relaxes in a lawn chair, phone in hand. A gentle notification dings; he smiles as a new lead slides onto the screen.)',
+        ],
+      },
+      {
+        heading: 'The Offer + CTA',
+        paragraphs: [
+          'And it comes free with any website or AI receptionist I build. You just watch the front door fill up.',
+          'Your whole business, on one screen, in your pocket. See it below. I am Sarah, Modern Mustard Seed.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-web-that-works',
+    kind: 'ad',
+    episode: 'Ad 14',
+    session: 'Meta · Websites 9:16',
+    publish: 'Websites · cold',
+    pillar: 'ADS',
+    title: 'A Website That Actually Works',
+    hook: 'Your website should be your hardest working employee. Most of them are a business card that forgot to do anything.',
+    directorNote:
+      'Confident and a little cheeky on the business-card line. This is the core website pitch, so the value-add close (the free command center) should feel like a bonus you are throwing in, not the headline.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Your website should be your hardest working employee. Most of them are just a business card that forgot to do anything.',
+        ],
+      },
+      {
+        heading: 'What I Build',
+        paragraphs: [
+          'I build sites that actually work. They load fast, they look right on a phone, and they are wired to capture the lead, book the job, and answer the customer, not just sit there looking pretty.',
+          '(Split screen: a dusty, static brochure site on the left, a live site capturing a lead on the right. Mr. Mustard swaps the old one out like a lightbulb.)',
+        ],
+      },
+      {
+        heading: 'The Offer + CTA',
+        paragraphs: [
+          'And every site I build comes with a command center, free, so every lead it brings in lands in one place you can watch from your phone.',
+          'A website that earns its keep. Want to see yours? The link is below. I am Sarah, from a studio in Montana.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-web-costing-you',
+    kind: 'ad',
+    episode: 'Ad 15',
+    session: 'Meta · Websites 9:16',
+    publish: 'Websites · pain',
+    pillar: 'ADS',
+    title: 'Your Site Is Costing You',
+    hook: 'Your website might be quietly costing you customers right now, and you would never even know it.',
+    directorNote:
+      'Straight and a touch urgent, but never fear-mongering. The three-second bounce is a real thing owners have never pictured, so paint it. Land the fix warm and matter of fact.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Your website might be quietly costing you customers right now, and you would never even know it.',
+        ],
+      },
+      {
+        heading: 'The Leak',
+        paragraphs: [
+          'If it is slow, if it looks broken on a phone, if there is no easy way to call or book, people leave in about three seconds and go to the competitor whose site just worked.',
+          '(A customer taps a slow, janky site, waits, sighs, and taps away to a competitor. Mr. Mustard winces and covers his eyes.)',
+        ],
+      },
+      {
+        heading: 'The Fix + CTA',
+        paragraphs: [
+          'I rebuild it into something fast and clean that actually turns visitors into calls, and I wire it into a command center, free, so you can see every lead it brings in.',
+          'Stop leaking customers to a bad website. Let me show you better. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-web-by-monday',
+    kind: 'ad',
+    episode: 'Ad 16',
+    session: 'Meta · Websites 9:16',
+    publish: 'Websites · speed',
+    pillar: 'ADS',
+    title: 'Built By Monday',
+    hook: 'Here is something that used to take a web firm a month and a check with a comma in it. I can have it done by Monday.',
+    directorNote:
+      'Brisk and a little amazed at the new math yourself, because it is genuinely wild. The "you approve every word" line is the trust beat; slow down there. Do not state a price; the numbers live on the page.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Here is something that used to take a web firm a month and a check with a comma in it. I can have it done for you by Monday.',
+        ],
+      },
+      {
+        heading: 'How',
+        paragraphs: [
+          'You tell me about your business in a few sentences. My systems do the heavy lifting, I do the taste and the judgment, and you get a real, finished website. You approve every word before it ever goes live.',
+          '(Time-lapse of a website building itself overnight. Mr. Mustard hammers a nail, hangs an OPEN sign, and a coffee cup steams beside him at sunrise.)',
+        ],
+      },
+      {
+        heading: 'The Offer + CTA',
+        paragraphs: [
+          'And it comes with a command center, free, so it is not just a pretty site. It is a business you can run from your phone.',
+          'A finished website, this week, not someday. The link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-web-no-agency',
+    kind: 'ad',
+    episode: 'Ad 17',
+    session: 'Meta · Websites 9:16',
+    publish: 'Websites · positioning',
+    pillar: 'ADS',
+    title: 'The Agency Website, Without the Agency',
+    hook: 'Agencies will charge you a fortune and take three months to build a website. I think that math is broken now.',
+    directorNote:
+      'Assured, founder-to-founder, no chip on the shoulder. You are not trashing agencies, you are telling the truth about the new math. The "you get me" line is the whole pitch; deliver it right down the lens.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Agencies will charge you a fortune and take three months to build a website. I think that math is broken now.',
+        ],
+      },
+      {
+        heading: 'The New Math',
+        paragraphs: [
+          'A small studio with the right AI can build you the same quality in a fraction of the time. And I run it personally, so when you email, you get me, not a junior three people removed from your project.',
+          '(Mr. Mustard, in a tiny hard hat, out-builds a whole cartoon office of suits single-handed, then tips his hat.)',
+        ],
+      },
+      {
+        heading: 'The Offer + CTA',
+        paragraphs: [
+          'Same quality site, a command center included free, and a real human who answers. The plain numbers are always on the page.',
+          'Skip the agency, keep the quality. Come see. The link is below.',
+        ],
+      },
+    ],
+  },
 ];
 
 /** Episodes first, then Sales Desk, then Meta Ads, then the Shorts bank. */
