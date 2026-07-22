@@ -1697,8 +1697,261 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
   },
 ];
 
-/** Episodes, how-we-build batch, Sales Desk, Meta Ads, Shorts bank, Origin batch. */
-export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...BEHIND_THE_BUILD, ...SALES_DESK, ...META_ADS, ...TIGHT_CUTS, ...ORIGIN];
+/** MORE real sauce (round two): interactive tools, the Switchboard, the callable
+ *  voice line, the Gleaner, the World game, the self-drawing comic. Same lingo. */
+const MORE_SAUCE: PrompterScript[] = [
+  {
+    id: 'build-tools-that-sell',
+    kind: 'episode',
+    episode: 'Episode 12',
+    session: 'How We Build',
+    publish: 'Use anytime',
+    pillar: 'SYSTEMS',
+    title: 'The Best Marketing Is a Tool People Want to Use',
+    hook: 'The best ad we ever made was not an ad. It was a little calculator that showed a roofer what his missed calls were costing him. He could not stop playing with it, and by the time he was done, he had sold himself.',
+    directorNote:
+      'Teach this like a secret you are happy to give away. The calculator story is the hook, so let it breathe. The (parens) beats are where I drop in a screen recording of one of our real interactive tools running. Land the "what one number would your customer love to know" question, that is the takeaway.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'The single best piece of marketing my studio has ever made was not an ad. It was a little calculator. It asked a roofing owner three questions and then showed him, in real dollars, what his missed calls were quietly costing him every month. He could not stop moving the sliders. And by the time he was done playing, he had sold himself, and I had not said a word.',
+          'I want to show you why that works, because it is the cheapest and most honest marketing there is, and you can build it for your own business this week.',
+        ],
+      },
+      {
+        heading: 'Ads Interrupt, Tools Invite',
+        paragraphs: [
+          'Here is the whole idea. An ad interrupts someone to talk about you. A tool invites someone to learn about themselves. One of those feels like being sold to. The other one feels like a gift. Guess which one people actually use, and share, and remember.',
+          'When you give someone a tool that tells them something true about their own business, you are not pitching. You are being useful. And useful is the most persuasive thing on earth.',
+        ],
+      },
+      {
+        heading: 'The Machine Behind the Machine',
+        paragraphs: [
+          'So we build these into everything. On a demo site, there is a little estimator, we call it the ballpark machine, that gives a visitor a real ballpark number for their job in about ten seconds. On our website there is an audit that grades your site and hands you the fix list. There is even a calculator that turns your missed calls into a yearly dollar leak you can feel.',
+          'Every one of them does the same job. It gives a stranger a reason to touch your business, and it turns curiosity into a real lead, without ever feeling like a sales pitch.',
+          '(Screen record: a visitor sliding the missed-call calculator, the ballpark estimator spitting out a number, an audit grading a site. Mr. Mustard cranks a little lever labeled INTEREST.)',
+        ],
+      },
+      {
+        heading: 'How We Build Them Fast',
+        paragraphs: [
+          'And this is the part that changed everything. Building a custom interactive tool used to be a real software project, weeks of work. Now I describe the tool I want, an agent builds it, and it goes live on the page. The cost of making a useful little thing collapsed, which means you can afford to make one for every kind of customer you have.',
+          'The tool does not replace your sales. The tool is your best salesperson, working every hour, never pushy, always helpful.',
+        ],
+      },
+      {
+        heading: 'Your Homework',
+        paragraphs: [
+          'So here is the question I want you to sit with. What is the one number your customer would secretly love to know about themselves, that you could show them. What their old website is costing them. How much they are leaving on the table. What their project would ballpark at.',
+          'Find that number, and build the little tool that hands it to them. That tool will outsell every ad you could ever run. I am Sarah, this is Modern Mustard Seed, and the link is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'short-switchboard',
+    kind: 'short',
+    episode: 'Short',
+    session: 'Shorts Bank · Real Sauce',
+    publish: 'Use anytime',
+    pillar: 'SYSTEMS',
+    title: 'How One AI Answers for Fifty Locations',
+    hook: 'A franchise with fifty locations has one nightmare. Fifty phones, and fifty different ways to drop the ball.',
+    directorNote:
+      'Show the command board lighting up with locations. This is a scale story, so let the "built once, runs everywhere" line land with a little awe.',
+    sections: [
+      {
+        heading: 'The Nightmare',
+        paragraphs: [
+          'A business with fifty locations has one quiet nightmare. Fifty phones, fifty front desks, and fifty different ways to drop a customer. Every location is a place where a call gets missed and a sale walks out the door.',
+        ],
+      },
+      {
+        heading: 'The Switchboard',
+        paragraphs: [
+          'So we built one AI concierge that answers for all of them. It knows each location hours and services, it books the job at the right one, and it routes the call like a front desk that never sleeps and never calls in sick.',
+          '(Show a command board of the whole chain, each location lighting up as calls land and get handled.)',
+        ],
+      },
+      {
+        heading: 'The Point',
+        paragraphs: [
+          'And the owner watches the whole chain work from one screen. Built once, running everywhere. That is the thing about good systems. You solve the problem a single time, and then it holds for one location or a hundred. The work does not multiply. The leverage does.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'short-call-the-demo',
+    kind: 'short',
+    episode: 'Short',
+    session: 'Shorts Bank · Real Sauce',
+    publish: 'Use anytime',
+    pillar: 'BUILD',
+    title: 'This Demo Has a Phone Number',
+    hook: 'Most demos you look at. This one you call.',
+    directorNote:
+      'Playful and confident. If you can, actually put a real number on screen and let the call be live. The proof is that it is a real phone call, not a video.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Most demos, you look at. This one, you call. We forge a real AI receptionist for a business, give it a real phone number, and let them dial it right then and there.',
+        ],
+      },
+      {
+        heading: 'The Proof',
+        paragraphs: [
+          'It already knows their services and their hours and speaks like someone who works there. So the pitch is not a slideshow and it is not a promise. It is their future front desk, answering the phone, live, while they are still deciding whether to believe me.',
+          '(Put a real number on screen. Call it on camera and let the agent answer, unedited.)',
+        ],
+      },
+      {
+        heading: 'The Point',
+        paragraphs: [
+          'Nothing beats a thing you can actually touch. A demo you can hold in your hand does the convincing that a thousand words cannot. So whatever you sell, find the version of it that a stranger can try in one minute, and put that in front of them first.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'short-gleaner',
+    kind: 'short',
+    episode: 'Short',
+    session: 'Shorts Bank · Real Sauce',
+    publish: 'Use anytime',
+    pillar: 'SYSTEMS',
+    title: 'The Money Already Sitting in Your Business',
+    hook: 'Before I sell a business anything new, I find the money they already have.',
+    directorNote:
+      'Practical and a little bit like a treasure hunt. This one is pure value, no pitch. The reveal that most businesses leak money out the back is the hook.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Before I ever sell a business something new, I go find the money they already have. Because most businesses are leaking cash out the back door long before they need anything at the front.',
+        ],
+      },
+      {
+        heading: 'What It Finds',
+        paragraphs: [
+          'We built a system for this. It combs through the old leads that never got a second call, the quotes that got sent and never followed up, the customers who quietly drifted away. And it surfaces the revenue that is just sitting there, already earned, waiting for someone to notice.',
+          '(Screen record: a list of dormant leads and unfollowed quotes surfacing, with a running dollar total climbing.)',
+        ],
+      },
+      {
+        heading: 'The Point',
+        paragraphs: [
+          'Almost every owner is sitting on a pile of money they forgot about. The follow-up they never sent. The regular who has not been back in a year. You do not always need more leads. Sometimes you just need to stop letting the ones you already earned slip away.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'short-world-game',
+    kind: 'short',
+    episode: 'Short',
+    session: 'Shorts Bank · Real Sauce',
+    publish: 'Use anytime',
+    pillar: 'STORY',
+    title: 'We Built a Video Game to Explain What We Do',
+    hook: 'We built a little video game where you fly a seaplane over a lake, chasing mustard seeds. On purpose.',
+    directorNote:
+      'Delighted and unashamed about the whimsy. This is a short about joy as strategy. Show a clip of the actual game. Smile the whole way through.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'We built a little video game where you fly a seaplane over a lake, chasing mustard seeds. On purpose. For the company.',
+        ],
+      },
+      {
+        heading: 'Why',
+        paragraphs: [
+          'Because sometimes the best way to explain what you believe is to let someone play it instead of read it. You fly around, you gather the seeds, and at the end it says, plant your seed. Nobody forgets that. Nobody scrolls past that.',
+          '(Show a clip of the actual game, the little clay plane banking over the water, seeds glinting.)',
+        ],
+      },
+      {
+        heading: 'The Point',
+        paragraphs: [
+          'Delight is a strategy. People remember what they got to touch, and they share what made them smile. Everyone else is making another boring ad. You can make the thing people actually want to send to a friend. That is not a waste of time. That is the whole game.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'short-comic',
+    kind: 'short',
+    episode: 'Short',
+    session: 'Shorts Bank · Real Sauce',
+    publish: 'Use anytime',
+    pillar: 'STORY',
+    title: 'Our Brand Draws Its Own Comic',
+    hook: 'Our little mascot has a comic strip. And most weeks, we do not draw it.',
+    directorNote:
+      'Charming and a bit tickled by it. Show a real strip. The lesson, that your business already generates stories, is the useful part.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Our little mascot has his own comic strip. And here is the funny part. Most weeks, we do not actually draw it.',
+        ],
+      },
+      {
+        heading: 'How',
+        paragraphs: [
+          'We built a system that takes the real work we did that week, the thing we shipped, the client we helped, and turns it into a comic strip on its own. Content that makes itself, out of the work we were already doing anyway.',
+          '(Show a real strip appearing panel by panel, drawn from a real build that week.)',
+        ],
+      },
+      {
+        heading: 'The Point',
+        paragraphs: [
+          'Here is the thing most owners miss. Your business generates stories every single day. The save, the fix, the win, the funny mess. You are not short on content. You are short on a system that turns what already happened into something people want to watch. Build that, and you never stare at a blank page again.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ad-tool-that-sells',
+    kind: 'ad',
+    episode: 'Ad 21',
+    session: 'Meta · Reel 9:16',
+    publish: 'Build-in-public · authority',
+    pillar: 'ADS',
+    title: 'The Tool That Sells for You',
+    hook: 'The best salesperson in my business is a calculator. It never sleeps, it never pushes, and people thank me for it.',
+    directorNote:
+      'A little playful flex on the calculator being the best closer. Show a visitor using a real interactive tool and turning into a lead. Keep it quick.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'The best salesperson in my whole business is a calculator. It never sleeps, it never pushes, and people actually thank me for it.',
+        ],
+      },
+      {
+        heading: 'The Turn',
+        paragraphs: [
+          'We build the little interactive tool that turns a curious visitor on your website into a real lead. A quick estimate, an instant answer, a number they wanted to know. They get something useful, and you get someone who just raised their hand.',
+          '(A visitor pokes at a slick on-site calculator, gets a number, and their contact drops into the owner dashboard. Mr. Mustard rings a tiny sold bell.)',
+        ],
+      },
+      {
+        heading: 'CTA',
+        paragraphs: [
+          'It works every hour, on your site, without you. Want one built for your business. The link is below. I am Sarah, Modern Mustard Seed.',
+        ],
+      },
+    ],
+  },
+];
+
+/** Episodes, how-we-build batches, Sales Desk, Meta Ads, Shorts bank, Origin batch. */
+export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...BEHIND_THE_BUILD, ...MORE_SAUCE, ...SALES_DESK, ...META_ADS, ...TIGHT_CUTS, ...ORIGIN];
 
 /**
  * A whole paragraph wrapped in parentheses is DIRECTION, not a spoken line.
