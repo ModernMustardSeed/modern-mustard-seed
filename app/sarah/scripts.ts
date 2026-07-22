@@ -432,6 +432,44 @@ const SALES_DESK: PrompterScript[] = [
       },
     ],
   },
+  {
+    id: 'sales-live-agent-call',
+    kind: 'sales',
+    episode: 'Sales 8',
+    session: 'Screen mode · per lead',
+    publish: 'The extra-mile call',
+    pillar: 'SALES',
+    title: 'I Called Your Receptionist',
+    hook: 'Before you even click anything, I wanted to do something. I am on your new website right now, and I am about to call your receptionist, live.',
+    directorNote:
+      'The extra-mile move: record this fresh for a lead you really want, right before you send their demo. Use SHARE SCREEN and pick the tab with their forged site so the voice agent records cleanly when you call it in the browser. Arm the camera too and Claude tucks your face in the corner. These are anchor lines, not a script: say their business name, actually talk to the agent, let the call be genuinely live. Flubs are good here, they prove it is real. Keep it to about a minute.',
+    sections: [
+      {
+        heading: 'The Open',
+        paragraphs: [
+          'Hi, it is Sarah. Before you even click anything in that email, I wanted to do something for you.',
+          '(Share the tab with their forged website. Say their business name out loud and point at it on the screen.)',
+          'I am on the website my studio built for your business, and I am about to call your new receptionist, live, right here, so you can hear it before you do a single thing.',
+        ],
+      },
+      {
+        heading: 'The Live Call',
+        paragraphs: [
+          'This is not a polished recording. It is me, right now, calling the AI receptionist that already knows your services and your hours. Watch what it does.',
+          '(Start the web call from their site. Ask what a real customer would ask: are you open Saturday, what do you charge for an estimate, can I book something for next week. Then throw it one curveball. React honestly to whatever it says.)',
+          'That just happened, live. No script, no editing, no employee sitting by a phone.',
+        ],
+      },
+      {
+        heading: 'The Close',
+        paragraphs: [
+          'Every call your business gets could be answered exactly like that. In two rings. At lunch, at midnight, while you are on a job with your hands full.',
+          'That took me one minute. Turning it on for your real customers is a short setup, and everything you need to know is on the page below.',
+          'If hearing your own business answer like that gave you a little jolt, hit reply. I would love to build you the rest. I am Sarah.',
+        ],
+      },
+    ],
+  },
 ];
 
 /**
