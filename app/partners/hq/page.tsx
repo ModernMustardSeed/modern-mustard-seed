@@ -10,6 +10,7 @@ import AffiliateLinks from '@/components/partners/AffiliateLinks';
 import MarketingKit from '@/components/partners/MarketingKit';
 import PayoutForm from '@/components/partners/PayoutForm';
 import HelpGuide from '@/components/HelpGuide';
+import MustardDeskCall from '@/components/MustardDeskCall';
 import { PARTNER_HELP } from '@/lib/help-content';
 
 export const metadata = buildMetadata({ title: 'Partner Dashboard', path: '/partners/hq', noindex: true });
@@ -70,6 +71,7 @@ export default async function PartnerHQ() {
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
+      <MustardDeskCall endpoint="/api/partners/desk-call" sublabel="Your partner desk, live" />
       <header className="border-b-2 border-[#161616] sticky top-0 z-30 bg-[#FBF6EA]/95 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">

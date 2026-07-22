@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/lib/seo';
 import MustardHelp from '@/components/admin/MustardHelp';
+import MustardDeskCall from '@/components/MustardDeskCall';
 import AnnouncementBanner from '@/components/admin/AnnouncementBanner';
 import WelcomeTour from '@/components/admin/WelcomeTour';
 import { getAdminUser } from '@/lib/admin-auth';
@@ -17,6 +18,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AnnouncementBanner />
       {children}
       <MustardHelp />
+      {user && (
+        <MustardDeskCall
+          endpoint="/api/admin/desk-call"
+          sublabel="Voice line, live numbers"
+          positionClass="bottom-[4.75rem] right-5"
+        />
+      )}
       {user && <WelcomeTour name={user.name} email={user.email} role={user.role} />}
     </div>
   );

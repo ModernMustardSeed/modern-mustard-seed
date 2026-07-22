@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { launchCountdown } from '@/lib/launch';
 import HelpGuide from '@/components/HelpGuide';
+import MustardDeskCall from '@/components/MustardDeskCall';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
@@ -150,6 +151,9 @@ export default function ClientPortal() {
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
+      {data && data.audience !== 'guest' && (
+        <MustardDeskCall endpoint="/api/portal/desk-call" sublabel="Your concierge, live" />
+      )}
       <header className="border-b-2 border-[#161616] sticky top-0 z-30 bg-[#FBF6EA]/95 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">

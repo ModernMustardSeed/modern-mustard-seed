@@ -57,7 +57,7 @@ export type ForgedCall = {
  * a 9-digit number accepted without challenge, and a three-in-a-row "could you
  * say that again" loop).
  */
-const VOICE_CRAFT = `
+export const VOICE_CRAFT = `
 
 # Getting details right (hard rules, each has failed on a real call)
 - If you did not catch something, ask again ONCE at most. Still unclear? Take your best good-faith read of it and keep the conversation moving. Never ask someone to repeat themselves twice in a row.
@@ -153,7 +153,7 @@ function demoTranscriber(p: SidekickProfile): Record<string, unknown> {
 // on partial model overrides; tools must ride along or booking breaks).
 let assistantCache: { model: Record<string, unknown>; at: number } | null = null;
 
-async function getAssistantModel(apiKey: string): Promise<Record<string, unknown> | null> {
+export async function getAssistantModel(apiKey: string): Promise<Record<string, unknown> | null> {
   if (assistantCache && Date.now() - assistantCache.at < 60_000) return assistantCache.model;
   try {
     const res = await fetch(`https://api.vapi.ai/assistant/${assistantId()}`, {
