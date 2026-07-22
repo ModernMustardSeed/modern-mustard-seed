@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { auditReportEmail, clientEmail, demoFilmCard, escape, SARAH_WELCOME_READY } from '@/lib/email';
+import { auditReportEmail, clientEmail, demoFilmCard, personalVideoCard, escape, SARAH_WELCOME_READY } from '@/lib/email';
 import { sendViaResend } from '@/lib/send-email';
 import { ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
@@ -103,6 +103,13 @@ export async function buildOutboundEmail(
         : withOs
           ? 'demo-welcome-os'
           : 'demo-welcome-voice';
+  // If Sarah recorded a personal video for this lead (founder/<id>.webm in the
+  // booth bucket, attached from the cockpit), it replaces the generic film card
+  // and leads the email. One cheap storage check, only when a card would show.
+  const hasPersonalVideo = Boolean(
+    includeAny && hub && (await supabase.storage.from('booth').createSignedUrl(`founder/${lead.id}.webm`, 60)).data?.signedUrl,
+  );
+
   const suiteBlock = includeAny
     ? `<p>${
         n > 1
@@ -110,13 +117,15 @@ export async function buildOutboundEmail(
           : 'We went ahead and built you something. Not a mockup, the real thing, already answering to your name:'
       }</p>` +
       (hub
-        ? demoFilmCard({
-            film,
-            href: hub,
-            caption: SARAH_WELCOME_READY
-              ? `A quick hello from Sarah on what we built ${lead.business_name}.`
-              : `Thirty seconds from Mr. Mustard on what we built ${lead.business_name}.`,
-          })
+        ? hasPersonalVideo
+          ? personalVideoCard({ href: hub, business: lead.business_name })
+          : demoFilmCard({
+              film,
+              href: hub,
+              caption: SARAH_WELCOME_READY
+                ? `A quick hello from Sarah on what we built ${lead.business_name}.`
+                : `Thirty seconds from Mr. Mustard on what we built ${lead.business_name}.`,
+            })
         : '') +
       rows +
       (hub

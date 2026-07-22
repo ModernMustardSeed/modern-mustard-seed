@@ -77,6 +77,15 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
     try { await sb.rpc('bump_hub_view', { p_lead_id: lead.id }); } catch { /* never block the hub */ }
   }
 
+  // Sarah's personal video for THIS lead, if she attached one from the cockpit
+  // (stored at founder/<leadId>.webm in the private booth bucket). Signed fresh
+  // each render; when absent, the hub falls back to the generic welcome film.
+  let personalVideoUrl: string | null = null;
+  {
+    const { data: pv } = await sb.storage.from('booth').createSignedUrl(`founder/${lead.id}.webm`, 60 * 60 * 3);
+    personalVideoUrl = pv?.signedUrl ?? null;
+  }
+
   const niche = (lead.niche ?? 'other') as Niche;
   const trade = detectTrade([lead.business_name, lead.notes ?? '', lead.website ?? ''].join(' '), niche);
 
@@ -104,6 +113,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       trade={trade}
       city={lead.city}
       film={film}
+      personalVideoUrl={personalVideoUrl}
       voiceUrl={lead.demo_url}
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}

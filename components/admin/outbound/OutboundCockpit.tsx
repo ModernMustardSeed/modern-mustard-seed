@@ -10,6 +10,7 @@ import type { CallLog, CallOutcome, Niche, OutboundLead, Pilot, Rep, Script } fr
 import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow, getDialSession, setDialSession, bumpDialSession, batchPosition, SeedBurst } from '@/components/admin/outbound/ui';
 import type { DialSession } from '@/components/admin/outbound/ui';
 import { ReachOutDeck, AuditIntelCard, ReviewAmmoCard, ThreadPanel, LeadFile } from '@/components/admin/outbound/OutboundReachOut';
+import PersonalVideoCard from '@/components/admin/outbound/PersonalVideoCard';
 
 /** Company callback line read out in the voicemail script (Mr. Mustard's number). */
 const MMS_LINE = '(406) 312-1223';
@@ -646,6 +647,8 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
             </section>
 
             <LeadFile lead={lead} onLead={setLead} push={push} />
+
+            <PersonalVideoCard leadId={lead.id} push={push} />
 
             <div className="grid lg:grid-cols-12 gap-5 items-start">
               {/* a. Script rail */}

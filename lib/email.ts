@@ -768,6 +768,26 @@ export function demoFilmCard({ film, href, caption }: { film: DemoFilm; href: st
   </td></tr></table>`;
 }
 
+/**
+ * When Sarah recorded a face-to-camera video for THIS lead, the film card is
+ * replaced by this one: no poster frame (the personal take has none), just a
+ * warm gold card that says she made it herself and links to the suite where it
+ * plays. Email-safe (table + inline styles, no <video>).
+ */
+export function personalVideoCard({ href, business }: { href: string; business: string }): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0"><tr><td align="center">
+    <a href="${escape(href)}" style="text-decoration:none;color:${C.ink}">
+      <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border:2px solid ${C.ink};border-radius:14px;overflow:hidden;background:${C.goldBrand}">
+        <tr><td align="center" style="padding:24px 20px">
+          <div style="font-family:${SANS};font-size:12px;font-weight:bold;letter-spacing:.14em;text-transform:uppercase;color:${C.ink}">A personal video from Sarah</div>
+          <div style="font-family:${SERIF};font-size:23px;font-style:italic;color:${C.ink};margin-top:10px;line-height:1.3">&#9654;&nbsp; I recorded this one just for ${escape(business)}</div>
+          <div style="font-family:${SANS};font-size:13px;font-weight:bold;color:${C.ink};margin-top:12px">Watch it on your suite &rarr;</div>
+        </td></tr>
+      </table>
+    </a>
+  </td></tr></table>`;
+}
+
 /* ────────────────────────── CLIENT EMAIL (general) ────────────────────────── */
 
 type ClientEmailArgs = {
