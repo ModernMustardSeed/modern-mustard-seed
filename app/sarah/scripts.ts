@@ -1114,11 +1114,11 @@ const META_ADS: PrompterScript[] = [
  */
 const ORIGIN: PrompterScript[] = [
   {
-    id: 'ep9-studio-for-the-mission',
+    id: 'ep13-studio-for-the-mission',
     kind: 'episode',
-    episode: 'Episode 9',
-    session: 'Origin Story',
-    publish: 'Use anytime',
+    episode: 'Episode 13',
+    session: 'Season One Bank',
+    publish: 'Season One',
     pillar: 'STORY',
     title: 'I Built the Studio to Build the Mission',
     hook: 'I did not build an AI studio because I love AI. I built it because I had a mission I could not make alone.',
