@@ -8,6 +8,13 @@ export type PrompterScript = {
   title: string;
   hook: string;
   directorNote: string;
+  /**
+   * Spoken lines, in reading order. CONVENTION: a paragraph that is wholly
+   * wrapped in parentheses — e.g. "(Scroll slowly and point at two things.)" —
+   * is DIRECTION, not a spoken line. The prompter renders those as an amber
+   * "Direction · don't read aloud" block so they can never be read on camera by
+   * accident. Mid-sentence parentheticals (spoken asides) are left alone.
+   */
   sections: { heading: string; paragraphs: string[] }[];
 };
 
@@ -391,7 +398,7 @@ const SALES_DESK: PrompterScript[] = [
         heading: 'Beat 2 · The Website',
         paragraphs: [
           'Let us start with the site. This is built from your real business, your services, your area, your reviews. Watch how it reads on a phone, because that is where your customers are.',
-          'Scroll it slowly. Point at two or three things that are specifically THEIRS, by name. If there is a tool or calculator on the page, run it once on camera.',
+          '(Scroll it slowly. Point at two or three things that are specifically THEIRS, by name. If there is a tool or calculator on the page, run it once on camera.)',
           'Everything here can be tweaked. The photos, the words, the colors. This is the starting point, not the final answer.',
         ],
       },
@@ -399,7 +406,7 @@ const SALES_DESK: PrompterScript[] = [
         heading: 'Beat 3 · The Live Call',
         paragraphs: [
           'Now the part I love. This is your receptionist. It already knows your services and your hours, and I am going to call it right now, no edits, no script.',
-          'Call it. Ask what a new customer would ask: are you open Saturday, what do you charge for an estimate, can I book something. Then ask it one curveball. React honestly to the answers.',
+          '(Call it. Ask what a new customer would ask: are you open Saturday, what do you charge for an estimate, can I book something. Then ask it one curveball. React honestly to the answers.)',
           'Every call like that gets answered in two rings. At lunch, at two in the morning, while you are up a ladder. That is the whole point.',
         ],
       },
@@ -423,9 +430,20 @@ const SALES_DESK: PrompterScript[] = [
 /** Episodes first, then the Sales Desk, then the Shorts bank. */
 export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...SALES_DESK, ...TIGHT_CUTS];
 
+/**
+ * A whole paragraph wrapped in parentheses is DIRECTION, not a spoken line.
+ * Mid-sentence parentheticals (spoken asides) do not match. Single source of
+ * truth for both the prompter render and the spoken-word math.
+ */
+export function isDirectionLine(p: string): boolean {
+  const t = p.trim();
+  return t.length > 2 && t.startsWith('(') && t.endsWith(')');
+}
+
 export function scriptWordCount(s: PrompterScript): number {
   return s.sections
     .flatMap((sec) => sec.paragraphs)
+    .filter((p) => !isDirectionLine(p)) // direction is not spoken
     .join(' ')
     .split(/\s+/)
     .filter(Boolean).length;

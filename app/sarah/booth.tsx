@@ -12,13 +12,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * both sides cleanly. Arm Camera at the same time and a second synced take
  * (-cam) records her face for a picture-in-picture bubble in the edit.
  *
- * The BOOTH CODE is the door key: recording works without it, but uploads are
- * refused server-side unless the code matches (fails closed, so a stranger
- * who finds this page cannot pour files into storage). Entered once, kept in
- * localStorage.
+ * No booth code: /sarah is private (noindex, unlinked, single user). Every take
+ * uploads on its own, is kept in the browser for instant replay this session,
+ * and can be rewatched later from the "Saved in the booth" library, which lists
+ * everything in the bucket. Uploads/deletes are guarded server-side by a
+ * same-origin check.
  */
 
-export type TakeStatus = 'local' | 'needs-code' | 'uploading' | 'sent' | 'failed';
+export type TakeStatus = 'local' | 'uploading' | 'sent' | 'failed';
 
 export type Take = {
   id: string;
@@ -29,10 +30,21 @@ export type Take = {
   seconds: number;
   status: TakeStatus;
   progress: number;
+  /** Object URL kept for the session so the take can be rewatched instantly. */
+  url?: string;
   blob?: Blob;
 };
 
-const CODE_KEY = 'mms-booth-code';
+/** A take already stored in the bucket (this or an earlier session). */
+export type SavedTake = {
+  path: string;
+  scriptId: string;
+  fileName: string;
+  bytes: number;
+  updatedAt: string | null;
+  signedUrl: string | null;
+};
+
 const MAX_TAKE_MS = 25 * 60 * 1000;
 
 function pickMime(): string {
@@ -41,14 +53,6 @@ function pickMime(): string {
     if (MediaRecorder.isTypeSupported(m)) return m;
   }
   return 'video/webm';
-}
-
-function getStoredCode(): string {
-  try {
-    return window.localStorage.getItem(CODE_KEY) || '';
-  } catch {
-    return '';
-  }
 }
 
 export function useBoothCamera() {
@@ -60,7 +64,10 @@ export function useBoothCamera() {
   const [recording, setRecording] = useState(false);
   const [level, setLevel] = useState(0);
   const [takes, setTakes] = useState<Take[]>([]);
-  const [code, setCodeState] = useState('');
+
+  const [library, setLibrary] = useState<SavedTake[]>([]);
+  const [libLoading, setLibLoading] = useState(false);
+  const [libError, setLibError] = useState<string | null>(null);
 
   const camStreamRef = useRef<MediaStream | null>(null);
   const micStreamRef = useRef<MediaStream | null>(null);
@@ -75,10 +82,6 @@ export function useBoothCamera() {
   useEffect(() => {
     takesRef.current = takes;
   }, [takes]);
-
-  useEffect(() => {
-    setCodeState(getStoredCode());
-  }, []);
 
   const attachVideo = useCallback((el: HTMLVideoElement | null) => {
     videoElRef.current = el;
@@ -180,46 +183,58 @@ export function useBoothCamera() {
 
   const canRecord = ready || screenReady;
 
-  const upload = useCallback(async (takeId: string) => {
-    const take = takesRef.current.find((t) => t.id === takeId);
-    if (!take || !take.blob) return;
-    const boothCode = getStoredCode();
-    const patch = (p: Partial<Take>) => setTakes((ts) => ts.map((t) => (t.id === takeId ? { ...t, ...p } : t)));
-
-    if (!boothCode) {
-      patch({ status: 'needs-code' });
-      return;
-    }
-    patch({ status: 'uploading', progress: 0 });
+  /** Pulls the full list of stored takes (with fresh signed playback URLs). */
+  const loadLibrary = useCallback(async () => {
+    setLibLoading(true);
+    setLibError(null);
     try {
-      const res = await fetch('/api/booth/sign', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: boothCode, scriptId: take.scriptId, fileName: take.fileName }),
-      });
-      if (res.status === 401) {
-        patch({ status: 'needs-code' });
-        return;
-      }
-      const json = (await res.json()) as { signedUrl?: string };
-      if (!res.ok || !json.signedUrl) throw new Error('sign failed');
-
-      await new Promise<void>((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('PUT', json.signedUrl as string);
-        xhr.setRequestHeader('Content-Type', take.blob!.type || 'video/webm');
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) patch({ progress: e.loaded / e.total });
-        };
-        xhr.onload = () => (xhr.status < 300 ? resolve() : reject(new Error('HTTP ' + xhr.status)));
-        xhr.onerror = () => reject(new Error('network'));
-        xhr.send(take.blob);
-      });
-      patch({ status: 'sent', progress: 1, blob: undefined });
+      const res = await fetch('/api/booth/list', { method: 'POST' });
+      const json = (await res.json()) as { takes?: SavedTake[]; error?: string };
+      if (!res.ok) throw new Error(json.error || 'list failed');
+      setLibrary(json.takes ?? []);
     } catch {
-      patch({ status: 'failed' });
+      setLibError('Could not load saved takes. Try again.');
+    } finally {
+      setLibLoading(false);
     }
   }, []);
+
+  const upload = useCallback(
+    async (takeId: string) => {
+      const take = takesRef.current.find((t) => t.id === takeId);
+      if (!take || !take.blob) return;
+      const patch = (p: Partial<Take>) => setTakes((ts) => ts.map((t) => (t.id === takeId ? { ...t, ...p } : t)));
+
+      patch({ status: 'uploading', progress: 0 });
+      try {
+        const res = await fetch('/api/booth/sign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scriptId: take.scriptId, fileName: take.fileName }),
+        });
+        const json = (await res.json()) as { signedUrl?: string };
+        if (!res.ok || !json.signedUrl) throw new Error('sign failed');
+
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('PUT', json.signedUrl as string);
+          xhr.setRequestHeader('Content-Type', take.blob!.type || 'video/webm');
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) patch({ progress: e.loaded / e.total });
+          };
+          xhr.onload = () => (xhr.status < 300 ? resolve() : reject(new Error('HTTP ' + xhr.status)));
+          xhr.onerror = () => reject(new Error('network'));
+          xhr.send(take.blob);
+        });
+        // Keep the object URL so it stays instantly rewatchable this session.
+        patch({ status: 'sent', progress: 1, blob: undefined });
+        void loadLibrary();
+      } catch {
+        patch({ status: 'failed' });
+      }
+    },
+    [loadLibrary],
+  );
 
   const recordStream = useCallback(
     (stream: MediaStream, meta: { scriptId: string; label: string; fileName: string }, vbr: number) => {
@@ -244,6 +259,7 @@ export function useBoothCamera() {
           seconds: Math.round((Date.now() - started) / 1000),
           status: 'local',
           progress: 0,
+          url: URL.createObjectURL(blob),
           blob,
         };
         setTakes((ts) => [take, ...ts]);
@@ -300,7 +316,7 @@ export function useBoothCamera() {
     setRecording(false);
   }, []);
 
-  /** Deletes a take everywhere: from the drawer, and from storage if it was sent. */
+  /** Deletes a local session take: from the drawer, and from storage if sent. */
   const deleteTake = useCallback(async (takeId: string): Promise<boolean> => {
     const take = takesRef.current.find((t) => t.id === takeId);
     if (!take) return true;
@@ -309,43 +325,49 @@ export function useBoothCamera() {
         const res = await fetch('/api/booth/delete', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: getStoredCode(), scriptId: take.scriptId, fileName: take.fileName }),
+          body: JSON.stringify({ scriptId: take.scriptId, fileName: take.fileName }),
         });
         if (!res.ok) return false;
       } catch {
         return false;
       }
     }
+    if (take.url) URL.revokeObjectURL(take.url);
     setTakes((ts) => ts.filter((t) => t.id !== takeId));
+    setLibrary((lib) => lib.filter((s) => s.path !== `${take.scriptId}/${take.fileName}`));
     return true;
   }, []);
 
-  const setCode = useCallback(
-    (c: string) => {
-      setCodeState(c);
-      try {
-        window.localStorage.setItem(CODE_KEY, c);
-      } catch {}
-      takesRef.current.filter((t) => t.status === 'needs-code' || t.status === 'failed').forEach((t) => void upload(t.id));
-    },
-    [upload],
-  );
+  /** Deletes a stored take that is only in the library (no local copy). */
+  const deleteSaved = useCallback(async (scriptId: string, fileName: string): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/booth/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scriptId, fileName }),
+      });
+      if (!res.ok) return false;
+    } catch {
+      return false;
+    }
+    setLibrary((lib) => lib.filter((s) => s.path !== `${scriptId}/${fileName}`));
+    return true;
+  }, []);
 
   const download = useCallback((takeId: string) => {
     const take = takesRef.current.find((t) => t.id === takeId);
-    if (!take?.blob) return;
-    const url = URL.createObjectURL(take.blob);
+    const href = take?.url;
+    if (!take || !href) return;
     const a = document.createElement('a');
-    a.href = url;
+    a.href = href;
     a.download = take.fileName;
     a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
   }, []);
 
   useEffect(() => {
     const warn = (e: BeforeUnloadEvent) => {
       const pending = takesRef.current.some(
-        (t) => t.blob && (t.status === 'local' || t.status === 'uploading' || t.status === 'failed' || t.status === 'needs-code'),
+        (t) => t.blob && (t.status === 'local' || t.status === 'uploading' || t.status === 'failed'),
       );
       if (pending) {
         e.preventDefault();
@@ -362,6 +384,7 @@ export function useBoothCamera() {
       disable();
       cleanupScreen();
       micStreamRef.current?.getTracks().forEach((t) => t.stop());
+      takesRef.current.forEach((t) => t.url && URL.revokeObjectURL(t.url));
       if (levelRafRef.current) cancelAnimationFrame(levelRafRef.current);
       void meterCtxRef.current?.close().catch(() => {});
     },
@@ -378,7 +401,9 @@ export function useBoothCamera() {
     recording,
     level,
     takes,
-    code,
+    library,
+    libLoading,
+    libError,
     enable,
     disable,
     enableScreen,
@@ -389,7 +414,8 @@ export function useBoothCamera() {
     retry: upload,
     download,
     deleteTake,
-    setCode,
+    deleteSaved,
+    loadLibrary,
   };
 }
 
@@ -430,13 +456,60 @@ function fmtBytes(b: number): string {
   return Math.max(1, Math.round(b / (1024 * 1024))) + ' MB';
 }
 
+function fmtWhen(iso: string | null): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' ' +
+    d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+}
+
 const STATUS_CHIP: Record<TakeStatus, { text: string; bg: string; fg: string }> = {
   local: { text: 'Saved here', bg: 'rgba(251,246,234,0.15)', fg: CREAM },
-  'needs-code': { text: 'Needs booth code', bg: '#E0301E', fg: CREAM },
   uploading: { text: 'Sending…', bg: GOLD, fg: INK },
   sent: { text: 'Sent to Claude ✓', bg: '#2c7a4b', fg: CREAM },
   failed: { text: 'Failed', bg: '#E0301E', fg: CREAM },
 };
+
+/** Fullscreen playback overlay for rewatching a take. */
+function TakePlayer({ url, name, onClose }: { url: string; name: string; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [onClose]);
+  return (
+    <div
+      className="fixed inset-0 z-[150] flex items-center justify-center p-4"
+      style={{ background: 'rgba(4,7,12,0.92)' }}
+      onClick={onClose}
+    >
+      <div
+        className="flex max-h-[90vh] w-[min(96vw,960px)] flex-col border-2"
+        style={{ borderColor: INK, background: '#05070C', boxShadow: `7px 7px 0 0 ${GOLD}` }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-2.5" style={{ borderBottom: '1px solid rgba(251,246,234,0.15)' }}>
+          <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em]" style={{ color: GOLD }}>
+            Replay · {name}
+          </span>
+          <button onClick={onClose} aria-label="Close player" className="shrink-0 font-mono text-[15px]" style={{ color: CREAM }}>
+            ✕
+          </button>
+        </div>
+        <div className="min-h-0 flex-1 overflow-hidden bg-black">
+          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+          <video src={url} controls autoPlay className="h-full max-h-[78vh] w-full" style={{ background: '#000' }} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function TakesDrawer({
   booth,
@@ -447,12 +520,22 @@ export function TakesDrawer({
   open: boolean;
   onClose: () => void;
 }) {
-  const [codeDraft, setCodeDraft] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [deleteFailed, setDeleteFailed] = useState<string | null>(null);
-  useEffect(() => setCodeDraft(booth.code), [booth.code]);
+  const [player, setPlayer] = useState<{ url: string; name: string } | null>(null);
+
+  // Load the saved-takes library whenever the drawer opens.
+  const { loadLibrary } = booth;
+  useEffect(() => {
+    if (open) void loadLibrary();
+  }, [open, loadLibrary]);
+
   if (!open) return null;
-  const needsCode = !booth.code || booth.takes.some((t) => t.status === 'needs-code');
+
+  // A saved take that also has a local session card is shown only once (local wins).
+  const localPaths = new Set(booth.takes.map((t) => `${t.scriptId}/${t.fileName}`));
+  const savedOnly = booth.library.filter((s) => !localPaths.has(s.path));
+
   return (
     <div className="absolute inset-y-0 right-0 z-40 flex w-[min(94vw,380px)] flex-col border-l-2" style={{ background: '#0B1019', borderColor: 'rgba(251,246,234,0.2)' }}>
       <div className="flex shrink-0 items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid rgba(251,246,234,0.15)' }}>
@@ -464,39 +547,16 @@ export function TakesDrawer({
         </button>
       </div>
 
-      {needsCode && (
-        <div className="shrink-0 px-4 py-3" style={{ borderBottom: '1px solid rgba(251,246,234,0.15)' }}>
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: 'rgba(251,246,234,0.6)' }}>
-            Booth code (one time, unlocks sending)
-          </p>
-          <div className="mt-2 flex gap-2">
-            <input
-              value={codeDraft}
-              onChange={(e) => setCodeDraft(e.target.value)}
-              placeholder="booth code"
-              className="min-w-0 flex-1 border px-2 py-1.5 font-mono text-[12px] outline-none"
-              style={{ background: 'rgba(251,246,234,0.06)', borderColor: 'rgba(251,246,234,0.25)', color: CREAM }}
-            />
-            <button
-              onClick={() => booth.setCode(codeDraft.trim())}
-              className="border-2 px-3 font-mono text-[11px] font-bold uppercase"
-              style={{ background: GOLD, borderColor: INK, color: INK }}
-            >
-              Save
-            </button>
-          </div>
-          <p className="mt-2 text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.45)' }}>
-            The code is the booth&rsquo;s door key. Recording always works, but nothing uploads without it, so a
-            stranger who finds this page cannot fill our storage. Enter it once and it&rsquo;s remembered.
-          </p>
-        </div>
-      )}
-
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
+        {/* This session */}
+        <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(251,246,234,0.5)' }}>
+          This session
+        </p>
         {booth.takes.length === 0 && (
-          <p className="font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.5)' }}>
+          <p className="mb-4 font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.5)' }}>
             No takes yet. Arm the camera (or the screen for a demo walkthrough), hit play, and every take lands
-            here and uploads on its own. Record section by section; short takes upload fast and edit clean.
+            here, uploads on its own, and can be replayed right away. Record section by section; short takes
+            upload fast and edit clean.
           </p>
         )}
         {booth.takes.map((t) => {
@@ -513,12 +573,21 @@ export function TakesDrawer({
                 <span className="px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.08em]" style={{ background: chip.bg, color: chip.fg }}>
                   {t.status === 'uploading' ? `Sending ${Math.round(t.progress * 100)}%` : chip.text}
                 </span>
-                {(t.status === 'failed' || t.status === 'needs-code') && (
+                {t.url && (
+                  <button
+                    onClick={() => setPlayer({ url: t.url as string, name: t.fileName })}
+                    className="font-mono text-[10px] font-bold uppercase underline"
+                    style={{ color: GOLD }}
+                  >
+                    ▶ Watch
+                  </button>
+                )}
+                {t.status === 'failed' && (
                   <button onClick={() => void booth.retry(t.id)} className="font-mono text-[10px] uppercase underline" style={{ color: GOLD }}>
                     Retry
                   </button>
                 )}
-                {t.blob && (
+                {t.url && (
                   <button onClick={() => booth.download(t.id)} className="font-mono text-[10px] uppercase underline" style={{ color: 'rgba(251,246,234,0.7)' }}>
                     Download
                   </button>
@@ -529,7 +598,7 @@ export function TakesDrawer({
                       setConfirmDelete(null);
                       void booth.deleteTake(t.id).then((ok) => setDeleteFailed(ok ? null : t.id));
                     }}
-                    className="font-mono text-[10px] font-bold uppercase underline"
+                    className="ml-auto font-mono text-[10px] font-bold uppercase underline"
                     style={{ color: '#E0301E' }}
                   >
                     Really delete?
@@ -553,7 +622,95 @@ export function TakesDrawer({
             </div>
           );
         })}
+
+        {/* Saved in the booth (the whole bucket) */}
+        <div className="mb-2 mt-5 flex items-center justify-between">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(251,246,234,0.5)' }}>
+            Saved in the booth{savedOnly.length > 0 ? ` (${savedOnly.length})` : ''}
+          </p>
+          <button
+            onClick={() => void booth.loadLibrary()}
+            className="font-mono text-[10px] uppercase underline"
+            style={{ color: 'rgba(251,246,234,0.6)' }}
+          >
+            {booth.libLoading ? 'Loading…' : 'Refresh'}
+          </button>
+        </div>
+        {booth.libError && (
+          <p className="mb-3 font-mono text-[10px] uppercase" style={{ color: '#E0301E' }}>
+            {booth.libError}
+          </p>
+        )}
+        {!booth.libLoading && !booth.libError && savedOnly.length === 0 && (
+          <p className="font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.45)' }}>
+            Every take you record is stored here and can be rewatched anytime, even from another day or machine.
+          </p>
+        )}
+        {savedOnly.map((s) => (
+          <div key={s.path} className="mb-3 border p-3" style={{ borderColor: 'rgba(251,246,234,0.14)', background: 'rgba(251,246,234,0.03)' }}>
+            <p className="truncate font-mono text-[11px]" style={{ color: CREAM }}>
+              {s.fileName}
+            </p>
+            <p className="mt-1 truncate font-mono text-[10px]" style={{ color: 'rgba(251,246,234,0.5)' }}>
+              {s.scriptId} · {fmtBytes(s.bytes)}{s.updatedAt ? ` · ${fmtWhen(s.updatedAt)}` : ''}
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              {s.signedUrl ? (
+                <button
+                  onClick={() => setPlayer({ url: s.signedUrl as string, name: s.fileName })}
+                  className="font-mono text-[10px] font-bold uppercase underline"
+                  style={{ color: GOLD }}
+                >
+                  ▶ Watch
+                </button>
+              ) : (
+                <span className="font-mono text-[10px] uppercase" style={{ color: 'rgba(251,246,234,0.4)' }}>
+                  Link expired · refresh
+                </span>
+              )}
+              {s.signedUrl && (
+                <a
+                  href={s.signedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-[10px] uppercase underline"
+                  style={{ color: 'rgba(251,246,234,0.7)' }}
+                >
+                  Download
+                </a>
+              )}
+              {confirmDelete === s.path ? (
+                <button
+                  onClick={() => {
+                    setConfirmDelete(null);
+                    void booth.deleteSaved(s.scriptId, s.fileName).then((ok) => setDeleteFailed(ok ? null : s.path));
+                  }}
+                  className="ml-auto font-mono text-[10px] font-bold uppercase underline"
+                  style={{ color: '#E0301E' }}
+                >
+                  Really delete?
+                </button>
+              ) : (
+                <button
+                  onClick={() => setConfirmDelete(s.path)}
+                  className="ml-auto font-mono text-[10px] uppercase underline"
+                  style={{ color: 'rgba(251,246,234,0.45)' }}
+                  aria-label={`Delete saved take ${s.fileName}`}
+                >
+                  Delete
+                </button>
+              )}
+              {deleteFailed === s.path && (
+                <span className="font-mono text-[9px] uppercase" style={{ color: '#E0301E' }}>
+                  Delete failed, try again
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
+
+      {player && <TakePlayer url={player.url} name={player.name} onClose={() => setPlayer(null)} />}
     </div>
   );
 }

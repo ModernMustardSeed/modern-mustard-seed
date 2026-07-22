@@ -6,6 +6,7 @@ import {
   type PrompterScript,
   scriptWordCount,
   scriptEstSeconds,
+  isDirectionLine,
   fmtTime,
 } from './scripts';
 import { useBoothCamera, SelfView, TakesDrawer } from './booth';
@@ -43,6 +44,27 @@ function loadSettings(): Settings {
   } catch {
     return DEFAULTS;
   }
+}
+
+/** Direction cue: unmistakably not a spoken line. */
+function DirectionCue({ text, fontSize }: { text: string; fontSize: number }) {
+  const size = Math.max(15, Math.round(fontSize * 0.46));
+  return (
+    <div
+      className="mb-7 border-2 border-dashed px-4 py-3"
+      style={{ borderColor: 'rgba(245,183,0,0.7)', background: 'rgba(245,183,0,0.09)' }}
+    >
+      <span
+        className="mb-1.5 flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em]"
+        style={{ color: GOLD }}
+      >
+        <span aria-hidden="true">▸</span> Direction · don&rsquo;t read aloud
+      </span>
+      <p className="font-serif italic" style={{ color: 'rgba(251,246,234,0.75)', fontSize: size, lineHeight: 1.4 }}>
+        {text}
+      </p>
+    </div>
+  );
 }
 
 /** The seed that grows a sprout as the read progresses. */
@@ -443,10 +465,11 @@ export default function Teleprompter() {
 
           <div className="mt-12 border-t pt-6" style={{ borderColor: 'rgba(251,246,234,0.15)' }}>
             <p className="font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.45)' }}>
-              PRIVATE BOOTH · not linked, not indexed. Arm the camera and every play/pause cycle records a take
-              and sends it to Claude for the edit. SPACE play/pause (and record) · ↑↓ speed · ←→ sections ·
-              +/− text size · M mirror (beam-splitter rig) · C self-view · T takes · F fullscreen · R restart ·
-              ESC pause/exit.
+              PRIVATE BOOTH · not linked, not indexed. Arm the camera and every play/pause cycle records a take,
+              sends it to Claude for the edit, and keeps it to rewatch. Amber &ldquo;Direction&rdquo; blocks are
+              notes from Claude, never read them aloud. SPACE play/pause (and record) · ↑↓ speed · ←→ sections ·
+              +/− text size · M mirror (beam-splitter rig) · C self-view · T takes + replay · F fullscreen ·
+              R restart · ESC pause/exit.
             </p>
           </div>
         </div>
@@ -577,15 +600,19 @@ export default function Teleprompter() {
                 >
                   {sec.heading}
                 </h3>
-                {sec.paragraphs.map((p, j) => (
-                  <p
-                    key={j}
-                    className="mb-7 font-semibold"
-                    style={{ color: CREAM, fontSize: settings.fontSize, lineHeight: 1.45 }}
-                  >
-                    {p}
-                  </p>
-                ))}
+                {sec.paragraphs.map((p, j) =>
+                  isDirectionLine(p) ? (
+                    <DirectionCue key={j} text={p} fontSize={settings.fontSize} />
+                  ) : (
+                    <p
+                      key={j}
+                      className="mb-7 font-semibold"
+                      style={{ color: CREAM, fontSize: settings.fontSize, lineHeight: 1.45 }}
+                    >
+                      {p}
+                    </p>
+                  ),
+                )}
               </section>
             ))}
             <div className="h-8" />
