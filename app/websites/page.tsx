@@ -1,10 +1,14 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+import { workByKey } from '@/data/website-work';
 import EngineToggle from '@/components/websites/EngineToggle';
+import WorkShowcase from '@/components/websites/WorkShowcase';
 
 const site = DEMO_PRODUCTS.site;
+const HERO = workByKey['hall-roofing'];
 
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
@@ -141,9 +145,14 @@ export default function WebsitesPage() {
               </p>
             </div>
 
-            {/* Hero visual: a browser-framed site in engine mode. */}
+            {/* Hero visual: a REAL site we built, in living color. */}
             <div className="lg:col-span-6 xl:col-span-7">
-              <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[8px_8px_0_0_#161616] overflow-hidden">
+              <a
+                href={HERO.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block rounded-2xl border-2 border-[#161616] bg-white shadow-[8px_8px_0_0_#161616] overflow-hidden hover:-translate-y-1 transition-transform"
+              >
                 <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#161616] bg-[#FBF6EA]">
                   <span className="flex gap-1.5">
                     {['#E0301E', '#F5B700', '#8FA98F'].map((c) => (
@@ -151,37 +160,29 @@ export default function WebsitesPage() {
                     ))}
                   </span>
                   <span className="ml-2 flex-1 truncate rounded-full border border-[#161616]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#161616]/65">
-                    summitroofing.co
+                    hallroofing.co
                   </span>
+                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-[#161616]/50 group-hover:text-[#C4160B] transition-colors">Visit →</span>
                 </div>
-                <div className="relative p-7 sm:p-10">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#C4160B] font-bold">Kalispell, MT · Roofing</span>
-                  <p className="font-display italic font-extrabold text-3xl sm:text-4xl text-[#161616] mt-2 leading-tight">Summit Roofing Co</p>
-                  <p className="font-body text-[14px] text-[#161616]/75 mt-2 leading-relaxed max-w-sm">
-                    Storm-ready roofs, done right and documented to the shingle. Serving the Flathead for 18 years.
-                  </p>
-                  <span className="inline-block mt-5 rounded-full border-2 border-[#161616] bg-[#F5B700] px-6 py-3 text-[11px] font-sans font-extrabold uppercase tracking-[0.14em] text-[#161616] shadow-[3px_3px_0_0_#161616]">
-                    Get a free estimate
-                  </span>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {['Licensed & insured', '4.9 ★ Google', 'Insurance claims'].map((t) => (
-                      <span key={t} className="rounded-full border border-[#161616]/25 px-2.5 py-1 font-mono text-[10px] text-[#161616]/70">{t}</span>
-                    ))}
-                  </div>
-
-                  {/* the engine, working */}
-                  <div className="absolute top-5 right-5 max-w-[58%] rounded-xl border-2 border-[#161616] bg-[#161616] px-3.5 py-2.5 shadow-[3px_3px_0_0_#F5B700]">
-                    <p className="font-mono text-[8.5px] uppercase tracking-[0.18em] text-[#F5B700] font-bold">New lead captured</p>
-                    <p className="font-sans text-[12px] font-bold text-[#FBF6EA] mt-0.5 leading-snug">Rita M. → filed to your command center</p>
-                  </div>
-                  <div className="mt-7 flex items-end gap-2 justify-end">
-                    <div className="max-w-[62%] rounded-2xl rounded-br-sm border-2 border-[#161616] bg-white px-3.5 py-2.5 shadow-[3px_3px_0_0_#161616]">
-                      <p className="font-sans text-[12.5px] text-[#161616] leading-snug">Hi! Roof leaking? I can book you in tonight.</p>
-                    </div>
-                    <span className="h-11 w-11 shrink-0 rounded-full border-2 border-[#161616] bg-[#F5B700] grid place-items-center text-xl">🎙</span>
+                <div className="relative">
+                  <Image
+                    src={HERO.img}
+                    alt={`${HERO.name}, a real ${HERO.trade.toLowerCase()} website designed and built by Modern Mustard Seed, with the AI receptionist answering right on the page`}
+                    width={1600}
+                    height={1000}
+                    priority
+                    sizes="(min-width: 1024px) 58vw, 100vw"
+                    className="block w-full h-auto"
+                  />
+                  <div className="absolute top-3 right-3 max-w-[60%] rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-3.5 py-2 shadow-[3px_3px_0_0_#F5B700]">
+                    <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#C4160B] font-bold">New lead captured</p>
+                    <p className="font-sans text-[11.5px] font-bold text-[#161616] mt-0.5 leading-snug">Filed to your command center</p>
                   </div>
                 </div>
-              </div>
+              </a>
+              <p className="font-body text-[13px] text-[#161616]/70 mt-3">
+                A real site we built for {HERO.name}, {HERO.place}. It answers the phone, too.
+              </p>
             </div>
           </div>
         </div>
@@ -330,7 +331,13 @@ export default function WebsitesPage() {
           </div>
         </section>
 
-        {/* ── Close ── */}
+      </main>
+
+      {/* ── Real work: the scrolling reel of sites we shipped ── */}
+      <WorkShowcase />
+
+      {/* ── Close ── */}
+      <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20">
         <section className="relative halftone-bg border-2 border-[#161616] rounded-2xl bg-[#F5B700] p-10 md:p-14 text-center overflow-hidden">
           <div className="relative">
             <h2 className="font-display italic font-extrabold text-3xl md:text-5xl leading-[1.02]">
@@ -348,7 +355,7 @@ export default function WebsitesPage() {
             </Link>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }

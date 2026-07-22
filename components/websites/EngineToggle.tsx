@@ -1,23 +1,24 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { track } from '@vercel/analytics';
+import { workByKey } from '@/data/website-work';
 
 /**
- * The signature moment for /websites: flip the same site between "Brochure"
- * (pretty, dead) and "Engine" (answers the phone, captures the lead, follows up).
- * Makes the whole "not a brochure, a working engine" positioning visceral in one
- * tap. Pop-art cabin styling. One browser frame, two states.
+ * The signature moment for /websites: flip a REAL site we built between "brochure"
+ * (drained to gray, dead) and "engine" (full living color, answering and capturing).
+ * Same beautiful site, one tap apart. Pop-art cabin framing.
  */
 
-type Mode = 'brochure' | 'engine';
+const SITE = workByKey['jr-tree'];
+const DOMAIN = 'jrtreeremoval.com';
 
 const BROCHURE_NOTES = [
   'Looks nice. Does nothing.',
   'A visitor leaves and you never know they came.',
   'The phone rings after hours. Nobody answers.',
 ];
-
 const ENGINE_NOTES = [
   'An AI receptionist answers every call, 24/7.',
   'Every visitor is captured and followed up in seconds.',
@@ -25,21 +26,20 @@ const ENGINE_NOTES = [
 ];
 
 export default function EngineToggle() {
-  const [mode, setMode] = useState<Mode>('engine');
+  const [mode, setMode] = useState<'brochure' | 'engine'>('engine');
   const engine = mode === 'engine';
 
-  const set = (m: Mode) => {
+  const set = (m: 'brochure' | 'engine') => {
     setMode(m);
     track('websites_engine_toggle', { mode: m });
   };
 
   return (
     <div className="grid lg:grid-cols-5 gap-6 items-start">
-      {/* The browser frame */}
+      {/* The real site, framed */}
       <div className="lg:col-span-3">
-        {/* Toggle */}
         <div className="inline-flex items-center rounded-full border-2 border-[#161616] bg-white p-1 shadow-[3px_3px_0_0_#161616] mb-5">
-          {(['brochure', 'engine'] as Mode[]).map((m) => (
+          {(['brochure', 'engine'] as const).map((m) => (
             <button
               key={m}
               type="button"
@@ -63,53 +63,40 @@ export default function EngineToggle() {
               ))}
             </span>
             <span className="ml-2 flex-1 truncate rounded-full border border-[#161616]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#161616]/60">
-              summitroofing.co
+              {DOMAIN}
             </span>
           </div>
 
-          {/* the site itself */}
-          <div className="relative" style={{ transition: 'filter .5s ease' }}>
-            <div
-              className="p-7 sm:p-9"
-              style={{
-                filter: engine ? 'none' : 'grayscale(0.85) opacity(0.72)',
-                transition: 'filter .5s ease',
-              }}
-            >
-              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#C4160B] font-bold">Kalispell, MT · Roofing</span>
-              <p className="font-display italic font-extrabold text-2xl sm:text-3xl text-[#161616] mt-2 leading-tight">
-                Summit Roofing Co
-              </p>
-              <p className="font-body text-[13.5px] text-[#161616]/75 mt-2 leading-relaxed max-w-sm">
-                Storm-ready roofs, done right and documented to the shingle. Serving the Flathead for 18 years.
-              </p>
-              <span className="inline-block mt-4 rounded-full border-2 border-[#161616] bg-[#F5B700] px-5 py-2.5 text-[11px] font-sans font-extrabold uppercase tracking-[0.14em] text-[#161616]">
-                Get a free estimate
-              </span>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {['Licensed & insured', '4.9 ★ Google', 'Insurance claims'].map((t) => (
-                  <span key={t} className="rounded-full border border-[#161616]/25 px-2.5 py-1 font-mono text-[10px] text-[#161616]/70">{t}</span>
-                ))}
-              </div>
-            </div>
+          {/* the real screenshot, drained or alive */}
+          <div className="relative">
+            <Image
+              src={SITE.img}
+              alt={`${SITE.name}, a real ${SITE.trade.toLowerCase()} website designed and built by Modern Mustard Seed`}
+              width={1600}
+              height={1000}
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              className="block w-full h-auto"
+              style={{ filter: engine ? 'none' : 'grayscale(1) contrast(0.92) opacity(0.78)', transition: 'filter .55s ease' }}
+            />
 
-            {/* Engine overlays: receptionist + lead toast */}
-            {engine && (
-              <>
-                <div className="absolute top-4 right-4 max-w-[62%] rounded-xl border-2 border-[#161616] bg-[#161616] px-3.5 py-2.5 shadow-[3px_3px_0_0_#F5B700] animate-[etIn_.45s_ease-out_both]">
-                  <p className="font-mono text-[8.5px] uppercase tracking-[0.18em] text-[#F5B700] font-bold">New lead captured</p>
-                  <p className="font-sans text-[12px] font-bold text-[#FBF6EA] mt-0.5 leading-snug">Rita M. → filed to your command center</p>
-                </div>
-                <div className="absolute bottom-4 right-4 flex items-end gap-2 animate-[etIn_.45s_ease-out_.15s_both]">
-                  <div className="max-w-[58%] rounded-2xl rounded-br-sm border-2 border-[#161616] bg-white px-3.5 py-2.5 shadow-[3px_3px_0_0_#161616]">
-                    <p className="font-sans text-[12px] text-[#161616] leading-snug">Hi! Roof leaking? I can book you in tonight.</p>
-                  </div>
-                  <span className="h-10 w-10 shrink-0 rounded-full border-2 border-[#161616] bg-[#F5B700] grid place-items-center text-lg">🎙</span>
-                </div>
-              </>
+            {/* Engine: the site is working. */}
+            {engine ? (
+              <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#161616] bg-[#161616] px-3.5 py-2.5 shadow-[3px_3px_0_0_#F5B700] animate-[etIn_.45s_ease-out_both]">
+                <p className="font-mono text-[8.5px] uppercase tracking-[0.18em] text-[#F5B700] font-bold">New lead captured</p>
+                <p className="font-sans text-[12px] font-bold text-[#FBF6EA] mt-0.5 leading-snug">Filed to your command center</p>
+              </div>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-[#161616]/10">
+                <span className="rotate-[-4deg] rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-4 py-2 font-mono text-[12px] font-extrabold uppercase tracking-[0.12em] text-[#161616] shadow-[3px_3px_0_0_#161616]">
+                  Pretty. And asleep.
+                </span>
+              </div>
             )}
           </div>
         </div>
+        <p className="font-body text-[12px] text-[#161616]/70 mt-3 text-center">
+          A real site we built for {SITE.name}. Flip it to see the difference.
+        </p>
         <style>{`@keyframes etIn{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}`}</style>
       </div>
 
@@ -135,7 +122,7 @@ export default function EngineToggle() {
           </ul>
           <p className={`mt-5 font-body text-[12.5px] leading-relaxed ${engine ? 'text-[#FBF6EA]/70' : 'text-[#161616]/70'}`}>
             {engine
-              ? 'This is what we build. Same beautiful site, wired to answer, capture, and follow up on its own.'
+              ? 'This is what we build. The same beautiful site, wired to answer, capture, and follow up on its own.'
               : 'Most small-business sites stop here. Pretty, and completely asleep.'}
           </p>
         </div>
