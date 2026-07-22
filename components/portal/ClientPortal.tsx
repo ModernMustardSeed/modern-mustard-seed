@@ -26,6 +26,8 @@ type PortalData = {
   projects: Project[];
   files: Array<{ label: string; url: string; kind: string }>;
   orders: Array<{ sessionId: string; productName: string; createdAt: string }>;
+  /** The unified ownership layer: one card per paid offer, whatever it was. */
+  products?: Array<{ id: string; kind: string; label: string; tier: string | null; status: string; homeUrl: string | null; detail: string | null; createdAt: string }>;
   bookings: Array<{ whenIso: string; display: string }>;
   audience: 'client' | 'buyer' | 'both' | 'guest';
   /** True when a project was provisioned from a demo purchase. Such clients are
@@ -53,6 +55,15 @@ type PortalData = {
 };
 
 const money = (n: number) => `$${n.toLocaleString('en-US')}`;
+
+/** How each unified-product status reads in the "What you own" rail. */
+const PRODUCT_STATUS: Record<string, { label: string; cls: string }> = {
+  provisioning: { label: 'Provisioning', cls: 'bg-[#F5B700]/20 text-[#8f6600] border-[#8f6600]/30' },
+  building: { label: 'In build', cls: 'bg-[#F5B700]/20 text-[#161616] border-[#161616]/30' },
+  in_production: { label: 'In production', cls: 'bg-blue-100 text-[#1E50C8] border-[#1E50C8]/30' },
+  active: { label: 'Active', cls: 'bg-emerald-100 text-emerald-800 border-emerald-800/25' },
+  delivered: { label: 'Ready', cls: 'bg-emerald-100 text-emerald-800 border-emerald-800/25' },
+};
 
 /** Conic progress ring. */
 function ProgressRing({ value }: { value: number }) {
@@ -197,6 +208,48 @@ export default function ClientPortal() {
               </p>
             </div>
 
+            {/* What you own — the unified ownership rail. Every paid offer lands
+                here as a first-class card, so a Chief, Sidekick, commercial, or
+                press buyer with no build project still sees the thing they bought,
+                its status, and a door into it. */}
+            {(data.products?.length ?? 0) > 0 && (
+              <div className="mb-8">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold block mb-4">What you own</span>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {(data.products ?? []).map((p) => {
+                    const s = PRODUCT_STATUS[p.status] ?? PRODUCT_STATUS.active;
+                    const internal = p.homeUrl?.startsWith('/');
+                    const inner = (
+                      <>
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <h3 className="font-sans font-bold text-[#161616] leading-tight truncate">{p.label}</h3>
+                            {p.tier && p.tier !== p.label && (
+                              <span className="text-[11px] font-mono text-[#161616]/55 block mt-0.5 truncate">{p.tier}</span>
+                            )}
+                          </div>
+                          <span className={`shrink-0 text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2.5 py-1 rounded-full border ${s.cls}`}>{s.label}</span>
+                        </div>
+                        {p.detail && <p className="text-[#161616]/70 font-body text-sm mt-3 leading-snug">{p.detail}</p>}
+                        {p.homeUrl && (
+                          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] mt-4 group-hover:text-[#161616] transition-colors">
+                            Open{internal ? ' →' : ' ↗'}
+                          </span>
+                        )}
+                      </>
+                    );
+                    const cardCls = 'group block bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616] transition-all';
+                    if (!p.homeUrl) return <div key={p.id} className={cardCls.replace('hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616] ', '')}>{inner}</div>;
+                    return internal ? (
+                      <Link key={p.id} href={p.homeUrl} className={cardCls}>{inner}</Link>
+                    ) : (
+                      <a key={p.id} href={p.homeUrl} target="_blank" rel="noopener noreferrer" className={cardCls}>{inner}</a>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Main column */}
               <div className="lg:col-span-2 space-y-6">
@@ -204,7 +257,7 @@ export default function ClientPortal() {
                     onboarding belongs to the bespoke agency engagement, so it is
                     hidden for demo-funnel buyers (they onboard via the demo intake,
                     and an unrelated proposal on their email must not bleed in). */}
-                {(data.audience === 'client' || data.audience === 'both') && !data.isDemoClient && (
+                {(data.audience === 'client' || data.audience === 'both') && !data.isDemoClient && data.billing && (
                   <OnboardingChecklist
                     signed={!!data.billing?.signed}
                     depositPaid={!!data.billing?.depositPaid}
@@ -391,7 +444,7 @@ export default function ClientPortal() {
                 {/* Project intake (old scope-aware, proposal-driven). Demo buyers
                     do their intake through the demo flow, so this is hidden for them
                     (else it reads a different table and reads as "not done yet"). */}
-                {(data.audience === 'client' || data.audience === 'both') && !data.isDemoClient && (
+                {(data.audience === 'client' || data.audience === 'both') && !data.isDemoClient && data.billing && (
                   <OnboardingIntake onStatus={setIntakeStatus} />
                 )}
 

@@ -102,17 +102,35 @@ export async function GET() {
     /* client_files table not migrated */
   }
 
+  // Downloadable orders only. `item_type` in ('product','bundle') is a real store
+  // playbook with a signed PDF; specialized offers (pictures, hatchery, press, geo,
+  // program one-times) also write orders rows but have no download, and used to
+  // leak into the portal as a "Download" that failed. They now live in `products`.
   let orders: Array<{ sessionId: string; productName: string; createdAt: string }> = [];
   try {
     const { data } = await supabase
       .from('orders')
-      .select('stripe_session_id, product_name, created_at, status')
+      .select('stripe_session_id, product_name, created_at, status, item_type')
       .eq('email', email)
       .eq('status', 'paid')
+      .in('item_type', ['product', 'bundle'])
       .order('created_at', { ascending: false });
     if (data) orders = data.map((o) => ({ sessionId: o.stripe_session_id as string, productName: o.product_name as string, createdAt: o.created_at as string }));
   } catch {
     /* orders table missing */
+  }
+
+  // What you own: one card per paid offer, whatever it was (the unified layer).
+  let products: Array<{ id: string; kind: string; label: string; tier: string | null; status: string; homeUrl: string | null; detail: string | null; createdAt: string }> = [];
+  try {
+    const { data } = await supabase
+      .from('client_products')
+      .select('id, kind, label, tier, status, home_url, detail, created_at')
+      .eq('client_email', email)
+      .order('created_at', { ascending: false });
+    if (data) products = data.map((p) => ({ id: p.id as string, kind: p.kind as string, label: p.label as string, tier: (p.tier as string | null) ?? null, status: (p.status as string) ?? 'active', homeUrl: (p.home_url as string | null) ?? null, detail: (p.detail as string | null) ?? null, createdAt: p.created_at as string }));
+  } catch {
+    /* client_products not migrated */
   }
 
   let bookings: Array<{ whenIso: string; display: string }> = [];
@@ -157,11 +175,15 @@ export async function GET() {
     /* saved_audits not migrated */
   }
 
+  // Relationship offers (Chief, Sidekick, engagements) write a `clients` row, so
+  // they are recognized as clients here and see the full workspace. Store/playbook
+  // buyers stay `buyer` (correct welcome copy, no agency onboarding); their purchase
+  // still surfaces through the products rail, which is not audience-gated.
   const isClient = !!client || projects.length > 0;
   const isBuyer = orders.length > 0;
   const audience = isClient && isBuyer ? 'both' : isClient ? 'client' : isBuyer ? 'buyer' : 'guest';
 
   const googleReviewUrl = process.env.GOOGLE_REVIEW_URL || GOOGLE_REVIEW_FALLBACK;
 
-  return NextResponse.json({ email, client, projects, files, orders, bookings, audience, isDemoClient, billing, audit, googleReviewUrl });
+  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl });
 }

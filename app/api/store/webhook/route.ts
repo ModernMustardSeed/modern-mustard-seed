@@ -45,6 +45,7 @@ import { createMagicToken } from '@/lib/client-auth';
 import { insertLead } from '@/lib/supabase';
 import { recordProductCommission, recordSubscriptionCommission } from '@/lib/affiliate';
 import { provisionFromProposal } from '@/lib/proposal-provision';
+import { provisionPurchase } from '@/lib/provision';
 import { sendReviewNudge } from '@/lib/review-nudge';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
@@ -2295,6 +2296,14 @@ export async function POST(req: Request) {
   const itemName = session.metadata?.item_name;
   const email = session.customer_details?.email || session.customer_email;
   const name = session.customer_details?.name;
+
+  // ── THE UNIFIED PIPELINE ──
+  // Before any per-kind handler runs, guarantee the universal layer: every paid
+  // offer makes the buyer a real `clients` row and writes one `client_products`
+  // ownership card so the thing they bought shows up in their portal. Idempotent
+  // and best-effort; never fails the money path. The specialized handlers below
+  // still own their deep records (project, entitlement, chief roster, downloads).
+  await provisionPurchase(session);
 
   // ── Proposal deposit (admin money loop) ──
   if (session.metadata?.kind === 'deposit') {

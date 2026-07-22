@@ -185,6 +185,33 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
     }
   };
 
+  // Reply IN the portal, not by mailto. The PATCH writes the answer onto the
+  // request row (the client's portal renders it) AND emails them. Answering
+  // resolves the message, so it drops out of the queue on reload.
+  const [replyOpen, setReplyOpen] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
+  const [replySending, setReplySending] = useState(false);
+
+  const sendReply = async (id: string) => {
+    const reply = replyText.trim();
+    if (!reply) return;
+    setReplySending(true);
+    try {
+      await fetch(`/api/admin/requests/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reply }),
+      });
+      setReplyOpen(null);
+      setReplyText('');
+      load();
+    } catch {
+      /* ignore */
+    } finally {
+      setReplySending(false);
+    }
+  };
+
   const approveLaunch = async (id: string) => {
     try {
       await fetch(`/api/admin/requests/${id}/approve-launch`, { method: 'POST' });
@@ -467,7 +494,7 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-[#161616] font-sans text-sm font-semibold truncate">{m.name ?? m.email}</span>
+                            <Link href={`/admin/clients/${encodeURIComponent(m.email)}`} className="text-[#161616] font-sans text-sm font-semibold truncate hover:text-[#1E50C8] hover:underline">{m.name ?? m.email}</Link>
                             {m.source === 'chatbot' && <span className="text-[8px] uppercase tracking-[0.15em] font-mono text-[#161616]/50 border border-[#161616]/20 rounded px-1.5 py-0.5">via Mr. Mustard</span>}
                             <span className="text-[#161616]/45 font-mono text-[10px] whitespace-nowrap">{timeAgo(m.created_at)}</span>
                           </div>
@@ -482,10 +509,44 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
                               Approve {fmtDate(m.proposed_date)}
                             </button>
                           )}
-                          <a href={`mailto:${m.email}?subject=${encodeURIComponent('Re: your note')}`} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#1E50C8]/80">Reply</a>
+                          <button
+                            onClick={() => { setReplyOpen(replyOpen === m.id ? null : m.id); setReplyText(''); }}
+                            className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#161616]"
+                          >
+                            {replyOpen === m.id ? 'Close' : 'Reply'}
+                          </button>
                           <button onClick={() => markRequest(m.id, 'done')} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616]/55 hover:text-emerald-700">Mark done</button>
                         </div>
                       </div>
+
+                      {/* In-portal reply composer. Lands in their portal thread AND their inbox. */}
+                      {replyOpen === m.id && (
+                        <div className="mt-3 border-t border-[#161616]/10 pt-3">
+                          <textarea
+                            value={replyText}
+                            onChange={(e) => setReplyText(e.target.value)}
+                            rows={3}
+                            autoFocus
+                            placeholder={`Reply to ${m.name ?? m.email}. This lands in their portal and their inbox, from you.`}
+                            className="w-full text-[13px] font-body text-[#161616] bg-[#FFFDF6] border-2 border-[#161616]/20 focus:border-[#161616] rounded-lg px-3 py-2 outline-none resize-y"
+                          />
+                          <div className="flex items-center justify-end gap-2 mt-2">
+                            <button
+                              onClick={() => { setReplyOpen(null); setReplyText(''); }}
+                              className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616]/55 hover:text-[#161616] px-2 py-1.5"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => sendReply(m.id)}
+                              disabled={replySending || !replyText.trim()}
+                              className="text-[9px] uppercase tracking-[0.15em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] px-3 py-1.5 disabled:opacity-45 hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                            >
+                              {replySending ? 'Sending…' : 'Send reply'}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
