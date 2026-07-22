@@ -68,6 +68,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
     name: 'Marketing',
     items: [
       { key: 'ads', label: 'Ads Playbook', href: '/admin/ads' },
+      { key: 'youtube', label: 'Publish to YouTube', href: '/admin/youtube' },
       { key: 'campaigns', label: 'Campaigns', href: '/admin/campaigns' },
       { key: 'texting', label: 'Texting', href: '/admin/texting' },
       { key: 'gleaner', label: 'Gleaner', href: '/admin/gleaner' },
