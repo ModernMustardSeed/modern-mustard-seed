@@ -34,6 +34,12 @@ type ForgedCall = {
   model: Record<string, unknown>;
   /** Optional: runs forged before 2026-07-21 (localStorage restores) predate it. */
   transcriber?: Record<string, unknown>;
+  /** Optional: the snappy pipeline; older localStorage restores predate it and simply
+   *  inherit it from the base assistant, so undefined here is harmless. */
+  startSpeakingPlan?: Record<string, unknown>;
+  stopSpeakingPlan?: Record<string, unknown>;
+  backgroundSpeechDenoisingPlan?: Record<string, unknown>;
+  silenceTimeoutSeconds?: number;
   maxDurationSeconds: number;
   metadata: Record<string, unknown>;
   voice?: { provider: string; voiceId: string };
@@ -228,6 +234,10 @@ export default function ForgeExperience() {
         firstMessage: forged.call.firstMessage,
         model: forged.call.model,
         transcriber: forged.call.transcriber,
+        startSpeakingPlan: forged.call.startSpeakingPlan,
+        stopSpeakingPlan: forged.call.stopSpeakingPlan,
+        backgroundSpeechDenoisingPlan: forged.call.backgroundSpeechDenoisingPlan,
+        silenceTimeoutSeconds: forged.call.silenceTimeoutSeconds,
         maxDurationSeconds: forged.call.maxDurationSeconds,
         metadata: forged.call.metadata,
         voice: sidekickVoice(gender),

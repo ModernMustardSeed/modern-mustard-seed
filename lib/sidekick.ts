@@ -44,11 +44,77 @@ export type ForgedCall = {
   model: Record<string, unknown>;
   /** Per-demo transcriber with the business name keyterm-boosted (see demoTranscriber). */
   transcriber: Record<string, unknown>;
+  /**
+   * Mr. Mustard's endpointing / denoising / stop-speaking pipeline (see
+   * SPEAKING_PIPELINE). Sent on every forged call so the demo feels exactly as
+   * snappy as he does no matter which base assistant it lands on.
+   */
+  startSpeakingPlan: Record<string, unknown>;
+  stopSpeakingPlan: Record<string, unknown>;
+  backgroundSpeechDenoisingPlan: Record<string, unknown>;
+  silenceTimeoutSeconds: number;
   maxDurationSeconds: number;
   metadata: Record<string, string | boolean>;
   /** The chosen receptionist voice, merged into the Vapi call on both paths. */
   voice: VapiVoice;
 };
+
+/**
+ * Mr. Mustard's exact voice pipeline, the settings that make him feel instant and
+ * un-laggy on a real call. Source of truth: scripts/setup-vapi-mustard.mjs, kept in
+ * lockstep with these values.
+ *
+ * We send these on EVERY forged demo call instead of trusting the base assistant to
+ * carry them. Today the demo lands on Mr. Mustard's own fully tuned assistant, so they
+ * would be inherited anyway, but the moment demos move to an isolated subscriber wallet
+ * or a leaner assistant (a planned step before the first paid Sidekick) that inheritance
+ * silently vanishes and every demo goes laggy and half-deaf. Sending them explicitly
+ * makes the demo as good as him BY CONSTRUCTION, on any base assistant.
+ */
+export const SPEAKING_PIPELINE = {
+  // LiveKit smart endpointing detects the true end of a turn instead of waiting on a
+  // fixed silence timer. This is the single biggest perceived-latency win.
+  startSpeakingPlan: { waitSeconds: 0.4, smartEndpointingPlan: { provider: 'livekit' } },
+  // Two real words before he yields: a stray TV word or a cough can't cut him off, while
+  // a genuine "wait, hold on" from the caller still stops him instantly.
+  stopSpeakingPlan: { numWords: 2, voiceSeconds: 0.3, backoffSeconds: 1 },
+  // Krisp then Fourier scrub the caller's room / TV / traffic noise before it reaches the
+  // transcriber, so the demo mishears less and needs fewer "say that again" retries.
+  backgroundSpeechDenoisingPlan: {
+    smartDenoisingPlan: { enabled: true },
+    fourierDenoisingPlan: {
+      enabled: true,
+      mediaDetectionEnabled: true,
+      baselineOffsetDb: -15,
+      windowSizeMs: 3000,
+      baselinePercentile: 85,
+    },
+  },
+  // A thoughtful pause (up to 60s of quiet) never ends the call mid-thought; a truly
+  // abandoned line still closes itself so an idle demo can't burn the wallet.
+  silenceTimeoutSeconds: 60,
+};
+
+/**
+ * Trim a base assistant's tool list down to what a DEMO (or an internal desk call)
+ * actually uses. Mr. Mustard needs all four tools on his own line; a demo only ever
+ * books Sarah on the close, so we drop recall_caller and capture_lead. Dropping them,
+ * rather than only telling the model to skip them in the prompt, means the demo brain
+ * can never stall mid-call on a pointless webhook round-trip (dead air the caller reads
+ * as lag), and each turn carries a little less tool schema. Booking tools and any
+ * structural (non-named) tools are kept untouched.
+ */
+const DEMO_DROP_TOOLS = new Set(['recall_caller', 'capture_lead']);
+
+export function demoModel(base: Record<string, unknown>, systemPrompt: string): Record<string, unknown> {
+  const tools = Array.isArray(base.tools)
+    ? (base.tools as Array<Record<string, unknown>>).filter((t) => {
+        const name = (t?.function as { name?: string } | undefined)?.name;
+        return !name || !DEMO_DROP_TOOLS.has(name);
+      })
+    : base.tools;
+  return { ...base, messages: [{ role: 'system', content: systemPrompt }], tools };
+}
 
 /**
  * Voice craft shared by every forged demo persona. Each line exists because a
@@ -196,8 +262,9 @@ export async function forgeCall(p: SidekickProfile, runId: string, mode: 'web' |
     ok: true,
     call: {
       firstMessage: sidekickFirstMessage(p),
-      model: { ...model, messages: [{ role: 'system', content: sidekickSystemPrompt(p) }] },
+      model: demoModel(model, sidekickSystemPrompt(p)),
       transcriber: demoTranscriber(p),
+      ...SPEAKING_PIPELINE,
       maxDurationSeconds: SIDEKICK.demoSeconds,
       metadata: { kind: 'sidekick-demo', mode, runId, business: p.business.slice(0, 80) },
       voice: sidekickVoice(p.voice),
@@ -233,6 +300,10 @@ export async function ringDemoCall(call: ForgedCall, toNumber: string): Promise<
           firstMessage: call.firstMessage,
           model: call.model,
           transcriber: call.transcriber,
+          startSpeakingPlan: call.startSpeakingPlan,
+          stopSpeakingPlan: call.stopSpeakingPlan,
+          backgroundSpeechDenoisingPlan: call.backgroundSpeechDenoisingPlan,
+          silenceTimeoutSeconds: call.silenceTimeoutSeconds,
           maxDurationSeconds: call.maxDurationSeconds,
           metadata: call.metadata,
           voice: call.voice,
