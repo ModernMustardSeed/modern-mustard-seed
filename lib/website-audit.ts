@@ -332,17 +332,21 @@ export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
     return { ok: false, status: 400, error: 'That URL is not valid.' };
   }
 
-  let pageResp: Response;
-  try {
-    pageResp = await fetch(target.toString(), {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (compatible; MMS-WebsiteAudit/1.0; +https://modernmustardseed.com/website-audit)',
-        Accept: 'text/html,application/xhtml+xml',
-      },
+  const fetchPage = (userAgent: string) =>
+    fetch(target.toString(), {
+      headers: { 'User-Agent': userAgent, Accept: 'text/html,application/xhtml+xml' },
       redirect: 'follow',
       signal: AbortSignal.timeout(15000),
     });
+
+  let pageResp: Response;
+  try {
+    // Identify honestly first; some firewalls (Cloudflare etc.) blanket-403 any
+    // bot UA, so on a block retry once looking like a regular browser.
+    pageResp = await fetchPage('Mozilla/5.0 (compatible; MMS-WebsiteAudit/1.0; +https://modernmustardseed.com/website-audit)');
+    if (pageResp.status === 403 || pageResp.status === 406) {
+      pageResp = await fetchPage('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36');
+    }
   } catch {
     return { ok: false, status: 400, error: 'Could not load that URL. Check it works in a browser and try again.' };
   }
@@ -430,10 +434,14 @@ Return the JSON report.`,
       return { ok: false, status: 429, error: 'Audit is busy. Try again in a moment.' };
     }
     if (err instanceof Anthropic.APIError) {
-      const kind =
-        err.status === 401 ? 'auth (invalid x-api-key)'
-          : err.status === 400 ? 'bad request (likely schema)'
-            : `status ${err.status}`;
+      // A dry wallet or dead key is an ops problem, not a transient snag. Say so
+      // loudly in the logs and give the visitor a message that invites a retry
+      // later instead of "try again" (which will fail identically).
+      if (/credit balance|billing|purchase credits/i.test(err.message) || err.status === 401) {
+        console.error('website-audit: ANTHROPIC ACCOUNT PROBLEM (top up credits or fix the key):', err.message);
+        return { ok: false, status: 503, error: 'The audit engine is down for maintenance. Check back in a bit, or email sarah@modernmustardseed.com.' };
+      }
+      const kind = err.status === 400 ? 'bad request (likely schema)' : `status ${err.status}`;
       console.error(`website-audit: anthropic ${kind}:`, err.message);
     } else {
       console.error('website-audit: unexpected error', err);
