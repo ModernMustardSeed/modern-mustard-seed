@@ -6,8 +6,10 @@ import {
   bookingConfirmationEmail,
   bookingNotificationEmail,
   leadNotification,
+  escape,
   p,
 } from '@/lib/email';
+import { getAffiliateByEmail } from '@/lib/affiliate';
 import { insertLead, getSupabase } from '@/lib/supabase';
 import { recallCaller, rememberFromTool, rememberSummary } from '@/lib/voice-memory';
 import { getNextAvailableSlots, isSlotAvailable, displayForIso, bookingWindow } from '@/lib/booking';
@@ -409,6 +411,137 @@ async function captureLead(
   }
 }
 
+/* ───────── send_email: Mr. Mustard sends a link or note, on the call ───────── */
+
+const SITE_ROOT = 'https://modernmustardseed.com';
+
+/**
+ * The ONLY links Mr. Mustard may email. He picks by key, never by inventing a
+ * URL, so a spoken "send me the voice agents page" can never turn into a 404 or
+ * a made-up address. `ref: true` links get the partner's own referral code
+ * appended when the send happens on the partner desk (so a partner who says
+ * "email me my store link" gets a link that pays them).
+ */
+const RESOURCE_CATALOG: Record<string, { label: string; url: string; ref?: boolean }> = {
+  book: { label: 'Book a call with Sarah', url: `${SITE_ROOT}/book`, ref: true },
+  'discovery-call': { label: 'Book a discovery call with Sarah', url: `${SITE_ROOT}/book`, ref: true },
+  'website-audit': { label: 'Run your free website audit', url: `${SITE_ROOT}/website-audit` },
+  'bottleneck-breaker': { label: 'Find your #1 bottleneck (free 60-second scan)', url: `${SITE_ROOT}/audit` },
+  audit: { label: 'Find your #1 bottleneck (free scan)', url: `${SITE_ROOT}/audit` },
+  'voice-agents': { label: 'AI voice agents that answer your phone', url: `${SITE_ROOT}/voice-agents` },
+  sidekick: { label: 'Build your own AI receptionist', url: `${SITE_ROOT}/sidekick`, ref: true },
+  store: { label: 'The playbook and course store', url: `${SITE_ROOT}/store`, ref: true },
+  work: { label: 'See the work', url: `${SITE_ROOT}/work` },
+  'work-with-us': { label: 'Ways to work with us', url: `${SITE_ROOT}/work-with-us` },
+  portal: { label: 'Sign in to your client portal', url: `${SITE_ROOT}/portal/login` },
+  'partner-hub': { label: 'Your partner dashboard', url: `${SITE_ROOT}/partners/hq` },
+  partners: { label: 'The partner program', url: `${SITE_ROOT}/partners` },
+  home: { label: 'Modern Mustard Seed', url: SITE_ROOT },
+};
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * send_email: the caller asked Mr. Mustard to send them a link or a short note,
+ * and he can now actually do it, live on the call.
+ *
+ * Recipient rules:
+ *   - Internal desk calls (admin / client / partner) carry the signed-in
+ *     person's authenticated email in the call metadata, so "email that to me"
+ *     just works without re-asking. A different address may still be dictated.
+ *   - Public calls (phone line, web demo) have no authenticated identity, so an
+ *     email must be given and confirmed on the call, exactly like a booking.
+ *
+ * Content is constrained to the curated link catalog plus a short spoken note,
+ * sent from Sarah's domain, so this can never become an open spam relay.
+ */
+async function sendResourceEmail(
+  input: { email?: string; subject?: string; note?: string; links?: string[] },
+  ctx: { deskKind: string | null; authedEmail: string | null },
+): Promise<string> {
+  const to = (input.email || '').trim() || (ctx.authedEmail || '').trim();
+  if (!to || !EMAIL_RE.test(to)) {
+    return JSON.stringify({
+      ok: false,
+      error:
+        'No good email to send to yet. Ask for the best address, confirm it by spelling it back, then call send_email again.',
+    });
+  }
+
+  // Partner desk: stamp their referral code onto any ref-eligible link so a
+  // partner who emails themselves the store or booking link earns on it.
+  let refCode: string | null = null;
+  if (ctx.deskKind === 'partner' && ctx.authedEmail) {
+    try {
+      const aff = await getAffiliateByEmail(ctx.authedEmail);
+      if (aff && aff.status === 'approved' && aff.code) refCode = aff.code;
+    } catch {
+      /* ref enrichment is best-effort */
+    }
+  }
+
+  const keys = Array.isArray(input.links) ? input.links : [];
+  const resolved = keys
+    .map((k) => RESOURCE_CATALOG[String(k || '').trim().toLowerCase()])
+    .filter((r): r is { label: string; url: string; ref?: boolean } => Boolean(r))
+    .map((r) => ({ label: r.label, url: refCode && r.ref ? `${r.url}?ref=${refCode}` : r.url }));
+
+  const note = (input.note || '').trim();
+  if (!note && resolved.length === 0) {
+    return JSON.stringify({
+      ok: false,
+      error: 'Nothing to send. Include a short note, one or more links from the known list, or both.',
+    });
+  }
+
+  if (!process.env.RESEND_API_KEY) {
+    return JSON.stringify({
+      ok: false,
+      error: 'Email is not available right now. Give them sarah@modernmustardseed.com and offer to book a call instead.',
+    });
+  }
+
+  const primary = resolved[0];
+  const rest = resolved.slice(1);
+  const restHtml = rest.length
+    ? `<div style="margin-top:6px">${rest
+        .map((l) => `<p style="margin:0 0 10px"><a href="${l.url}" style="color:#C2261A;font-weight:700;text-decoration:none">${escape(l.label)} &rarr;</a></p>`)
+        .join('')}</div>`
+    : '';
+
+  const subject = (input.subject || '').trim() || 'A quick note from Mr. Mustard';
+  const html = clientEmail({
+    preheader: note ? note.slice(0, 120) : 'The link you asked for, from Modern Mustard Seed.',
+    greeting: 'Hi there,',
+    body:
+      (note ? p(escape(note)) : p('Here is what you asked for on our call.')) +
+      restHtml +
+      p('You can just reply to this email and it reaches Sarah directly.'),
+    cta: primary ? { label: primary.label, url: primary.url } : undefined,
+  });
+
+  const resend = resendClient();
+  const r = await sendLoud(resend, 'mr-mustard-send', {
+    from: 'Mr. Mustard at Modern Mustard Seed <sarah@modernmustardseed.com>',
+    to,
+    replyTo: 'sarah@modernmustardseed.com',
+    subject,
+    html,
+  });
+
+  if (!r.ok) {
+    return JSON.stringify({
+      ok: false,
+      error: 'The send did not go through. Apologize briefly and offer sarah@modernmustardseed.com directly.',
+    });
+  }
+  return JSON.stringify({
+    ok: true,
+    instruction:
+      'Sent. Tell them warmly it is on its way to their inbox now (from sarah@modernmustardseed.com), and to peek in spam if it is not there in a minute. Then ask if there is anything else.',
+  });
+}
+
 /* ───────── End-of-call report → Sarah's inbox ───────── */
 
 async function handleEndOfCallReport(message: Record<string, unknown>) {
@@ -531,6 +664,15 @@ export async function POST(req: Request) {
     const customer = (callObj.customer ?? {}) as Record<string, unknown>;
     const callerNumber = (customer.number as string) || null;
 
+    // Call metadata rides along on web/desk calls (forged with assistantOverrides.metadata).
+    // The desk lines carry the surface (admin/client/partner) and the signed-in
+    // person's authenticated email, so send_email can target them without re-asking.
+    const meta = ((callObj.metadata as Record<string, unknown>) ||
+      ((callObj.assistantOverrides as Record<string, unknown>)?.metadata as Record<string, unknown>) ||
+      {}) as Record<string, unknown>;
+    const deskKind = typeof meta.desk === 'string' ? meta.desk : null;
+    const authedEmail = typeof meta.email === 'string' ? meta.email : null;
+
     // Vapi sends toolCallList (new) or toolCalls (older payloads). Handle both.
     const rawCalls = (message.toolCallList ?? message.toolCalls ?? []) as VapiToolCall[];
     const results: { toolCallId: string; result: string }[] = [];
@@ -548,6 +690,8 @@ export async function POST(req: Request) {
           result = await bookSlot(args as Parameters<typeof bookSlot>[0], callerNumber);
         } else if (fnName === 'capture_lead') {
           result = await captureLead(args as Parameters<typeof captureLead>[0], callerNumber);
+        } else if (fnName === 'send_email') {
+          result = await sendResourceEmail(args as Parameters<typeof sendResourceEmail>[0], { deskKind, authedEmail });
         } else {
           result = JSON.stringify({ ok: false, error: `Unknown tool: ${fnName}` });
         }

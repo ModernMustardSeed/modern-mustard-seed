@@ -138,12 +138,21 @@ Honesty inside the demo: never invent real specifics you do not have (real price
 - If the caller is clearly not a fit or just curious, be generous anyway. Point them to the free Bottleneck Breaker or the playbooks. Generosity converts later.
 - If asked about faith or the name: the studio is named for Matthew seventeen twenty, faith as small as a mustard seed. It is part of who Sarah is. Mention it warmly only if they ask.
 
+# You can actually send things (links and emails, live on the call)
+You are a real assistant, not a brochure. When someone wants something in writing, send it to them right then, using send_email.
+- Triggers: "send me the link," "email me that," "text me the details," "can you send that over," or any time a link or a page would help them more than you reading a URL aloud. Offer it proactively when it fits: "want me to email you that link so you have it?"
+- Always get and confirm their email first, spelled back exactly the way you confirm it for a booking. Never send to an address you are not sure of.
+- Only send links to real pages by their key (the send_email tool lists them). NEVER read a long URL aloud and never invent one. If they want something you do not have a link for, offer to book Sarah or take their email so she can send it herself.
+- Keep the note short and warm, in your own voice. Once it is sent, tell them it is on its way to their inbox and to check spam if it is not there in a minute.
+- You can send more than one link at once (for example the free audit plus the booking link). Do not overwhelm them: one or two that actually help.
+
 # Tool protocol
 - recall_caller FIRST, and SILENTLY. It returns instantly, so never say "just a sec", "hold on", or any filler when calling it; just call it and keep talking naturally. Save the brief "one sec" fillers for calendar lookups and booking, where a beat of quiet is natural. At the very start of every call, right after your opening line, call recall_caller once to see if you have spoken with this person before. If it comes back known, greet them by name and reference what you remember ("good to talk again, how did that launch go"), and never re-ask what you already know. If it comes back unknown, just continue normally and never mention that you checked. If someone gives you an email and hints you have talked before, call recall_caller again with that email.
 - get_available_slots before ever promising a time. Never invent availability.
 - Sarah's calendar books up to about four months out. When the caller wants a later week or month, call get_available_slots again with fromDate (YYYY-MM-DD; "sometime in September" means the first of September). Never tell a caller a date is too far ahead without checking, and follow the tool's note field when a stretch is full.
 - book_discovery_call only after you have confirmed name, email spelled back, and their chosen slot's startIso from the slots you fetched.
 - capture_lead when they share an email but will not book. Include a one-line painSummary of what they told you.
+- send_email whenever they ask you to send, email, or text them a link or a note. Confirm the email first, then include only links from the tool's known list. It sends from Sarah's studio address on the spot.
 - After a tool returns, follow its instruction field. If a tool fails, apologize in one sentence and offer sarah at modernmustardseed dot com.
 
 # Opening energy
@@ -240,6 +249,37 @@ const TOOLS = [
           },
         },
         required: ['email', 'painSummary'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    async: false,
+    function: {
+      name: 'send_email',
+      description:
+        "Email the caller a link or a short note, live on the call. Use this whenever someone asks you to 'send me the link', 'email me that', 'text me the details', or wants a page or info they can open later. On the internal desk lines (admin, client portal, partner) the signed-in person's email is already known, so you can send to them without re-asking. On the public phone line and web demo you MUST get and confirm their email first (spell it back, exactly like a booking). Only ever include links from the known list below by their key. NEVER invent or guess a URL: if they want something not on the list, offer to book Sarah or capture their email so she can send it by hand.",
+      parameters: {
+        type: 'object',
+        properties: {
+          email: {
+            type: 'string',
+            description:
+              "Recipient email, confirmed by spelling it back. Optional ONLY on a desk call where the signed-in person wants it sent to themselves; required on every public call.",
+          },
+          subject: { type: 'string', description: 'A short, friendly subject line for the email.' },
+          note: {
+            type: 'string',
+            description: "One or two short warm sentences, in your voice, saying what you are sending and why.",
+          },
+          links: {
+            type: 'array',
+            items: { type: 'string' },
+            description:
+              "Zero or more page keys to include as buttons. Valid keys ONLY: 'book' (book a call with Sarah), 'website-audit' (free website audit), 'bottleneck-breaker' (free 60-second business scan), 'voice-agents' (AI phone agents), 'sidekick' (build your own AI receptionist), 'store' (playbooks and courses), 'work' (the portfolio), 'work-with-us' (ways to work together), 'portal' (client portal sign-in), 'partner-hub' (partner dashboard), 'partners' (partner program), 'home' (the main site). Use only these keys; anything else is dropped.",
+          },
+        },
+        required: [],
       },
     },
   },
@@ -361,11 +401,21 @@ const assistant = {
     voiceSeconds: 0.3,
     backoffSeconds: 1,
   },
-  // 30 min. A real, engaged call hit the old 900s (15 min) cap on 2026-06-23 and
-  // got cut off mid-conversation (endedReason exceeded-max-duration). The silence
-  // timeout already ends idle/abandoned lines, so this ceiling only bounds an
-  // actively-talking call against runaway cost. Bump higher if a real call needs it.
-  maxDurationSeconds: 1800,
+  // NEVER drop a live call. Sarah's rule (2026-07-22): a call ends when everyone
+  // says goodbye and Mr. Mustard hangs up, or when the line goes truly silent,
+  // and NEVER because a timer ran out mid-conversation. So the duration ceiling is
+  // Vapi's maximum (43200s = 12h; the API rejects anything higher). No human
+  // conversation ever reaches it, so an actively-talking caller who wants to keep
+  // riffing never gets cut off. This override rides along on every surface that
+  // forges from this assistant (the desk lines and the demos inherit it unless
+  // they set their own).
+  maxDurationSeconds: 43200,
+  // The real guard against runaway cost is silence, not a stopwatch: an abandoned
+  // line (nobody speaking) ends after 60s of quiet, while someone actively talking
+  // is never silent that long. 60 (up from Vapi's 30s default) is forgiving enough
+  // that a thoughtful pause mid-conversation does not end the call. Applies to the
+  // desk and demo calls too, since they do not override it.
+  silenceTimeoutSeconds: 60,
 };
 
 /* ───────────────────────── API call ───────────────────────── */

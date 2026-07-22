@@ -69,7 +69,7 @@ export default function WelcomeTour({ name, email }: { name: string; email: stri
     {
       badge: 'Everything else',
       title: 'Your academy and a helper on every page.',
-      body: 'The Onboarding academy trains you step by step and ranks you up as you go. Inbox and Campaigns run the pipeline. And the gold "Ask Mr. Mustard" button in the bottom-right answers any question, any time. One rule on calls: business lines only, and if anyone asks you to stop, thank them and mark "Not interested."',
+      body: 'The Onboarding academy trains you step by step and ranks you up as you go. Inbox and Campaigns run the pipeline. And Mr. Mustard is on every page to help: the "Ask Mr. Mustard" chat answers in writing, and the gold "Talk to Mr. Mustard" button in the bottom-right is a live voice line that knows the whole operation and can even email you (or a lead) a link on the spot. One rule on calls: business lines only, and if anyone asks you to stop, thank them and mark "Not interested."',
     },
   ];
 

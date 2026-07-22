@@ -40,10 +40,11 @@ export const CLIENT_HELP: HelpGuideContent = {
       ],
     },
     {
-      title: 'Requests, notes, and Mr. Mustard Seed',
+      title: 'Requests, notes, and Mr. Mustard',
       items: [
         'Use "Requests and notes" to send Sarah a change, an edit, or anything on your mind. You will see each request and its status (Sent, Seen, Done).',
-        'Or just tell Mr. Mustard Seed (the chat on the right) what you need. He can answer questions and pass requests straight to Sarah.',
+        'Or just tell Mr. Mustard (the chat on the right) what you need. He can answer questions and pass requests straight to Sarah.',
+        'Stuck on anything? Tap the gold "Talk to Mr. Mustard" button in the corner and ask him out loud. He knows your account, walks you through anything, and can email you a link on the spot.',
       ],
     },
     {
@@ -106,6 +107,13 @@ export const PARTNER_HELP: HelpGuideContent = {
       ],
     },
     {
+      title: 'Ask Mr. Mustard anytime',
+      items: [
+        'The gold "Talk to Mr. Mustard" button in the corner is a live voice line. Get stuck or want clarity, just ask him: your links, your earnings, or your next best move.',
+        'He can email you your referral links on the spot, already carrying your code, so every click still pays you.',
+      ],
+    },
+    {
       title: 'Signing in',
       items: [
         'No password. Enter your email at the sign-in page and click the magic link. It drops you right here.',
@@ -124,6 +132,7 @@ export const ADMIN_HELP: HelpGuideContent = {
         'Revenue, sales, new leads, and upcoming calls at a glance, with progress toward your monthly targets (tap Set/Edit to change them).',
         'Client messages: change requests and notes from portals. Approve a proposed launch date in one tap, reply, or mark done.',
         'Follow-up radar flags proposals that need a nudge. The daily AI brief tells you what to do today.',
+        'Stuck anywhere? The "Ask Mr. Mustard" chat and the gold "Talk to Mr. Mustard" voice line (bottom-right) know the whole operation, and Mr. Mustard can email you or a lead a link on the spot.',
       ],
     },
     {

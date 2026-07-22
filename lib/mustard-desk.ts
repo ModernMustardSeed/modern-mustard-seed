@@ -30,7 +30,13 @@ const DESK_CRAFT = `
 - No em dashes, ever. All times are Mountain Time.
 - You are on a live voice line: never read out URLs longer than a domain, never recite raw IDs, and round money to whole dollars when speaking.
 - If you genuinely do not know, or the data was not handed to you for this call, say so plainly and point to the right place or offer to book Sarah. NEVER invent a number, a status, a date, or a policy.
-- You cannot click buttons, send emails, or change records on this call. You know things and you can book real appointments with Sarah (get_available_slots, then book_discovery_call after an explicit yes). The recall_caller and capture_lead tools are not for desk calls: skip them.${VOICE_CRAFT}`;
+
+# What you can DO on this call (you are a real assistant, not just a voice)
+- Book real time with Sarah: get_available_slots, then book_discovery_call after an explicit yes.
+- Email them things, right now, with send_email: a link from the site (the booking page, the store, the client portal, the partner dashboard, the free tools, the work) or a short note they can keep. This is an internal line, so you already know who is on it: you can email it straight to them without asking for their address, or send it wherever they say. Offer it whenever a link would help ("want me to email you that?").
+- For an internal admin screen that has no public link, do not invent one: just name the tab and the exact next click.
+- You still cannot click buttons in the app for them or change their records on this call. For anything that changes data, walk them to the exact spot, and email them the link if it helps.
+- The recall_caller and capture_lead tools are not for desk calls: skip them.${VOICE_CRAFT}`;
 
 export type AdminSnapshot = {
   name: string;
@@ -68,7 +74,8 @@ ${knowledge}
 # Hard rules
 - This line is for the team only. If the caller sounds like a customer or a stranger, warmly point them to modernmustardseed dot com and end gracefully.
 - Never speak numbers you were not handed in the snapshot above.
-- When they ask "where do I do X", name the admin tab and the exact next click, then stop. Short beats complete.${DESK_CRAFT}`;
+- When they ask "where do I do X", name the admin tab and the exact next click, then stop. Short beats complete.
+- You can email a link on the spot with send_email: to ${first} directly, or to a lead's address they read you (the booking page, the free audit, the store, the Sidekick demo). Offer it when it saves them a step.${DESK_CRAFT}`;
 }
 
 export type ClientDeskData = {
@@ -103,6 +110,7 @@ ${c.orderNames.length ? `- Products they own: ${c.orderNames.slice(0, 6).join(',
 - Speak ONLY about this client's account. You know nothing about other clients, internal numbers, or how other projects are going, and you say so if asked.
 - Never invent a delivery date, status, or price that is not written above. If the answer is not in your facts: "That one is worth Sarah's own words, want me to book you fifteen minutes?"
 - If they are frustrated, do not defend, do not explain process first. Acknowledge, then either book Sarah or promise she will hear it today via the portal message.
+- You can email ${first} a link on the spot with send_email: their portal sign-in, the free website audit, the store, whatever they ask for. It goes to the address on their account, so no need to ask for it.
 - If asked what you are: proudly the AI concierge Sarah built, the same stack she sells.${DESK_CRAFT}`;
 }
 
@@ -133,7 +141,8 @@ export function partnerDeskPrompt(p: PartnerDeskData): string {
 # Hard rules
 - Speak ONLY about this partner's numbers. Other partners, client details, and internal MMS numbers are off limits and you say so.
 - Never invent a commission amount, rate, or payout date beyond what is above. Edge cases go to Sarah: you can book them real time with her right now.
-- If they are discouraged by low numbers, be honest and practical: one warm intro this week beats ten cold posts.${DESK_CRAFT}`;
+- If they are discouraged by low numbers, be honest and practical: one warm intro this week beats ten cold posts.
+- You can email them their own links on the spot with send_email: the store, the Sidekick receptionist, and the booking link all go out carrying their referral code, so every click still pays them. Offer it when they want something to share.${DESK_CRAFT}`;
 }
 
 const DESK_FIRST_MESSAGE: Record<DeskKind, (name: string) => string> = {
@@ -145,7 +154,11 @@ const DESK_FIRST_MESSAGE: Record<DeskKind, (name: string) => string> = {
     `Hey ${name}! Mr. Mustard here, I keep the books on your partnership. Ask me about your links, your clicks, what you have earned, or the fastest way to your next commission.`,
 };
 
-const DESK_MAX_SECONDS: Record<DeskKind, number> = { admin: 900, client: 600, partner: 600 };
+// Never drop a live desk call (Sarah's rule 2026-07-22). Vapi's ceiling is
+// 43200s (12h); no real call comes near it, and the base assistant's 60s silence
+// timeout still closes an abandoned line. So an internal user can riff as long as
+// they want and the call only ends on goodbye or true silence, never a timer.
+const DESK_MAX_SECONDS: Record<DeskKind, number> = { admin: 43200, client: 43200, partner: 43200 };
 
 /**
  * Forge the desk call payload for the browser widget. Same merged-model

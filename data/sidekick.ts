@@ -3,8 +3,10 @@
  *
  * A visitor tells Mr. Mustard about their business, watches him train a
  * personalized AI front desk in about sixty seconds, then talks to it live
- * (in the browser, or it calls their cell). The free demo is hard-capped;
- * the conversion is "Keep Him": a productized, hard-capped monthly Sidekick.
+ * (in the browser, or it calls their cell). The demo gives them all the room
+ * they want to riff (30 min), and the assistant's 60s silence timeout closes
+ * an abandoned line; the conversion is "Keep Him": a productized, hard-capped
+ * monthly Sidekick.
  *
  * Price lives in `sidekickTiers` below, in cents, and nowhere else. Checkout
  * builds inline Stripe price_data from it, so the env price ids this file used
@@ -21,7 +23,12 @@ export const SIDEKICK = {
   metaDescription:
     'Mr. Mustard trains an AI front desk for YOUR business while you watch, then it talks to you live and can even call your cell. Free demo, no card. Keep him and he answers your real phone 24/7. From Modern Mustard Seed.',
   phoneLine: '(406) 312-1223',
-  demoSeconds: 240,
+  // Room to riff, not a stopwatch (Sarah's rule 2026-07-22). 30 min is far past
+  // any real demo, so an engaged owner is never cut off mid-conversation; the
+  // base assistant's 60s silence timeout still ends a walked-away line. This is
+  // the one fully-anonymous voice surface, so it keeps a ceiling (unlike the
+  // phone line and the internal desks, which run to Vapi's 12h max).
+  demoSeconds: 1800,
   creditNote: 'Your setup fee is credited toward any custom build over $2,500.',
 } as const;
 

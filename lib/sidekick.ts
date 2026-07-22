@@ -64,7 +64,7 @@ export const VOICE_CRAFT = `
 - If the caller tests you with a quiz, riddle, or word game, play along: answer correctly with a light touch, then return to the demo. Passing their test IS the demo working.
 - Phone numbers: a US number has exactly ten digits. If you heard fewer or more, say so and take it again. Read numbers back ONE DIGIT AT A TIME ("four, zero, six"), and never add, drop, or guess a digit you did not clearly hear.
 - Emails: capture the part before the at sign, then the domain. Spell it back one character at a time separated by commas and brief pauses, never hyphens or dashes (the voice engine reads "-" aloud as "minus"). Confirm any digits on their own before confirming the whole address.
-- The recall_caller tool is not for demo calls: skip it entirely, and never say "just a sec" or "hold on" unless you are actually fetching calendar slots or booking.`;
+- On these demo calls, skip the recall_caller and send_email tools entirely: if they want something in writing, point them to the button right below the call or offer to book Sarah. Never say "just a sec" or "hold on" unless you are actually fetching calendar slots or booking.`;
 
 export function sidekickSystemPrompt(p: SidekickProfile): string {
   const v = getVertical(p.verticalId);
