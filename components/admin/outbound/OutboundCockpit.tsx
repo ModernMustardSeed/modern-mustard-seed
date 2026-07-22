@@ -82,6 +82,10 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
 
   const [repId, setRepId] = useState('');
 
+  // Which pitch to lead with. Auto-picked from the lead (no site or a weak audit
+  // => website), overridable live from the toggle in the script rail.
+  const [laneOverride, setLaneOverride] = useState<'voice' | 'website' | null>(null);
+
   // Live revenue calculator (the weapon).
   const [avg, setAvg] = useState(0);
   const [missed, setMissed] = useState(5);
@@ -257,24 +261,42 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     };
   }, [lead, avg, leak]);
 
-  /** Adapted (primary) scripts for a stage: niche match first, then universal. */
+  // Auto-pick the pitch lane from the lead: no website (or a weak audit) means
+  // their front door is the problem, so lead with the site. Otherwise pitch the
+  // phone. The toggle overrides it live.
+  const autoLane: 'voice' | 'website' = useMemo(() => {
+    if (!lead) return 'voice';
+    const noSite = !lead.website || !lead.website.trim();
+    const weakAudit = lead.audit_score != null && lead.audit_score < 60;
+    return noSite || weakAudit ? 'website' : 'voice';
+  }, [lead]);
+  const lane: 'voice' | 'website' = laneOverride ?? autoLane;
+  const laneReason = laneOverride
+    ? 'You set this lane by hand.'
+    : autoLane === 'website'
+      ? !lead?.website || !lead.website.trim()
+        ? 'Auto-picked: no website on file, so lead with the site.'
+        : 'Auto-picked: weak site audit, so lead with the site.'
+      : 'Auto-picked: they have a site, so lead with the phone.';
+
+  /** Adapted (primary) scripts for a stage: lane match, then niche, then universal. */
   const primaryFor = useCallback(
     (stage: Script['stage']) => {
-      const pool = scripts.filter((s) => s.stage === stage && !s.is_verbatim);
+      const pool = scripts.filter((s) => s.stage === stage && !s.is_verbatim && (s.lane === 'shared' || s.lane === lane));
       const nicheHit = pool.filter((s) => s.niche === lead?.niche);
       const universal = pool.filter((s) => s.niche == null);
       return (nicheHit.length > 0 ? nicheHit : universal).sort((a, b) => a.sort_order - b.sort_order);
     },
-    [scripts, lead?.niche],
+    [scripts, lead?.niche, lane],
   );
   const verbatimFor = useCallback(
-    (stage: Script['stage']) => scripts.filter((s) => s.stage === stage && s.is_verbatim).sort((a, b) => a.sort_order - b.sort_order),
-    [scripts],
+    (stage: Script['stage']) => scripts.filter((s) => s.stage === stage && s.is_verbatim && (s.lane === 'shared' || s.lane === lane)).sort((a, b) => a.sort_order - b.sort_order),
+    [scripts, lane],
   );
 
   const objections = useMemo(
-    () => scripts.filter((s) => s.stage === 'objection' && (s.niche == null || s.niche === lead?.niche)).sort((a, b) => Number(a.is_verbatim) - Number(b.is_verbatim) || a.sort_order - b.sort_order),
-    [scripts, lead?.niche],
+    () => scripts.filter((s) => s.stage === 'objection' && (s.lane === 'shared' || s.lane === lane) && (s.niche == null || s.niche === lead?.niche)).sort((a, b) => Number(a.is_verbatim) - Number(b.is_verbatim) || a.sort_order - b.sort_order),
+    [scripts, lead?.niche, lane],
   );
 
   const logOutcome = async (outcome: CallOutcome, extra?: { disposition?: string; next_action?: string; next_action_at?: string }) => {
@@ -628,14 +650,34 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
             <div className="grid lg:grid-cols-12 gap-5 items-start">
               {/* a. Script rail */}
               <section className="lg:col-span-5 space-y-4">
+                {/* Pitch lane: website vs voice, auto-picked from the lead, flippable live. */}
+                <div className={`${card} p-4`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="text-[11px] uppercase tracking-[0.24em] font-oswald font-semibold text-[#1a1815]/60">Pitch lane</span>
+                      <p className="text-[11px] text-[#1a1815]/55 mt-0.5">{laneReason}</p>
+                    </div>
+                    <div className="flex rounded-full border-2 border-[#1a1815] overflow-hidden shrink-0">
+                      {(['website', 'voice'] as const).map((ln) => (
+                        <button
+                          key={ln}
+                          onClick={() => setLaneOverride(ln)}
+                          className={`px-3.5 py-1.5 font-oswald font-semibold uppercase text-xs tracking-wide transition-colors ${lane === ln ? 'bg-[#1a1815] text-[#b58a2a]' : 'bg-transparent text-[#1a1815]/55 hover:text-[#1a1815]'}`}
+                        >
+                          {ln === 'website' ? 'Website' : 'Voice'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
                 <ReviewAmmoCard lead={lead} />
                 <AuditIntelCard lead={lead} onRun={() => void runAudit()} auditing={auditing} />
                 {([
                   ['opener', 'Opener'],
-                  ['hook_bad', 'Bad news'],
-                  ['hook_good', 'Good news'],
+                  ['hook_bad', "Why I'm calling"],
+                  ['hook_good', 'What we do'],
                   ['gap_question', 'The gap question'],
-                  ['revenue_math', 'Revenue math'],
+                  ['revenue_math', 'The math'],
                   ['close', 'The close'],
                 ] as const).map(([stage, label], idx) => {
                   const primary = primaryFor(stage);

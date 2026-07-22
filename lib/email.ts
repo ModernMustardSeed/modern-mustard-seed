@@ -734,7 +734,15 @@ export function programAccessEmail({
 
 /** The welcome films that ship with a forged Demo Suite. Keep in sync with the
  *  `film` prop on components/demo/DemoHub. */
-export type DemoFilm = 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os';
+export type DemoFilm = 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os' | 'demo-welcome-sarah';
+
+/**
+ * Flip to true once Sarah's face-to-camera welcome film is exported to
+ * public/video/demo-welcome-sarah.mp4 (plus demo-welcome-sarah-poster.jpg). When
+ * true, every forged demo email and hub leads with her hello instead of the
+ * Mr. Mustard film. Until then it stays on the mascot films that already ship.
+ */
+export const SARAH_WELCOME_READY = false;
 
 /**
  * Mr. Mustard's welcome film, as an email-safe card.
@@ -749,7 +757,7 @@ export function demoFilmCard({ film, href, caption }: { film: DemoFilm; href: st
     <a href="${escape(href)}" style="text-decoration:none;color:${C.ink}">
       <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border:2px solid ${C.ink};border-radius:14px;overflow:hidden;background:${C.ink}">
         <tr><td style="line-height:0">
-          <img src="${SITE}/video/${film}-poster.jpg" width="516" alt="Press play: a 20-second welcome from Mr. Mustard" style="display:block;width:100%;max-width:516px;height:auto;border:0" />
+          <img src="${SITE}/video/${film}-poster.jpg" width="516" alt="Press play: a short welcome video" style="display:block;width:100%;max-width:516px;height:auto;border:0" />
         </td></tr>
         <tr><td align="center" style="padding:12px 16px;background:${C.goldBrand}">
           <span style="font-family:${SANS};font-size:13px;font-weight:bold;color:${C.ink};letter-spacing:.08em;text-transform:uppercase">&#9654;&nbsp; Play the welcome film</span>

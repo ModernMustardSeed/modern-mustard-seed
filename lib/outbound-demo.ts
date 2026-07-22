@@ -138,6 +138,50 @@ export async function ensureDemoHub(supabase: SupabaseClient, lead: OutboundLead
 }
 
 /**
+ * Forge the lead's BUSINESS OS (command center) demo if it does not exist yet.
+ * Instant and token-free (a config-driven template), so it now rides along free
+ * with every voice and website forge: the command center is included with any
+ * website or receptionist, so every forged suite should show it. Fail-soft: if
+ * the insert hiccups, the lead is returned unchanged and the rest of the suite
+ * still ships. Idempotent: a ready OS demo is returned untouched.
+ */
+export async function ensureOsDemo(supabase: SupabaseClient, lead: OutboundLead): Promise<OutboundLead> {
+  if (lead.os_demo_status === 'ready' && lead.os_demo_url) return lead;
+
+  // Their real brand rides in from their live site (logo + theme color); nulls
+  // fall back to the monogram + house palette.
+  const brand = await captureLeadBrand(lead.website);
+  const { data: row, error: insErr } = await supabase
+    .from('outbound_demo_os')
+    .insert({ lead_id: lead.id, business_name: lead.business_name, config: { ...buildOsConfig(lead), ...brand } })
+    .select('id')
+    .single();
+  if (insErr || !row) return lead; // the OS is a bonus, never block the pair
+
+  const osUrl = `${SITE.url}/demo/os/${row.id}`;
+  const { data: updated } = await supabase
+    .from('outbound_leads')
+    .update({ os_demo_id: row.id, os_demo_url: osUrl, os_demo_status: 'ready' })
+    .eq('id', lead.id)
+    .select()
+    .single();
+
+  await supabase.from('messages').insert({
+    outbound_lead_id: lead.id,
+    direction: 'outbound',
+    channel: 'note',
+    from_addr: 'cockpit',
+    to_addr: lead.business_name,
+    subject: 'Command center included',
+    snippet: `Their command center (free with the site or receptionist) is live at ${osUrl}`,
+    read: true,
+    occurred_at: new Date().toISOString(),
+  });
+
+  return (updated ?? lead) as OutboundLead;
+}
+
+/**
  * The BUSINESS OS demo config, frozen at forge time. No worker, no tokens:
  * /demo/os/[id] is one polished template app, and this config is everything
  * that personalizes it (real name, trade, city, phone, mined review pain,

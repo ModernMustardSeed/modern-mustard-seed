@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { auditReportEmail, clientEmail, demoFilmCard, escape } from '@/lib/email';
+import { auditReportEmail, clientEmail, demoFilmCard, escape, SARAH_WELCOME_READY } from '@/lib/email';
 import { sendViaResend } from '@/lib/send-email';
 import { ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
@@ -87,14 +87,22 @@ export async function buildOutboundEmail(
     withSite &&
       demoRow('🌐', 'Your new website', `A real working draft designed for your business${withDemo ? ', with the receptionist living on it (gold button, bottom corner)' : ''}.`, lead.site_demo_url!),
     withOs &&
-      demoRow('⚙️', 'Your command center', 'Your day, customers, reviews, ads, and automations, with an AI assistant that already knows the board. Nothing to install.', lead.os_demo_url!),
+      demoRow('⚙️', 'Your command center', 'Every call transcribed, your website traffic, customers, reviews, and money on one board, with an AI that knows it all. Included free with your site or receptionist.', lead.os_demo_url!),
   ]
     .filter(Boolean)
     .join('');
 
   const n = [withDemo, withSite, withOs].filter(Boolean).length;
   // Same film the hub picks for this forged set (see app/demo/hub/[hubId]).
-  const film = withSite && withOs ? 'demo-welcome' : withSite ? 'demo-welcome-site' : withOs ? 'demo-welcome-os' : 'demo-welcome-voice';
+  const film = SARAH_WELCOME_READY
+    ? 'demo-welcome-sarah'
+    : withSite && withOs
+      ? 'demo-welcome'
+      : withSite
+        ? 'demo-welcome-site'
+        : withOs
+          ? 'demo-welcome-os'
+          : 'demo-welcome-voice';
   const suiteBlock = includeAny
     ? `<p>${
         n > 1
@@ -105,7 +113,9 @@ export async function buildOutboundEmail(
         ? demoFilmCard({
             film,
             href: hub,
-            caption: `Thirty seconds from Mr. Mustard on what we built ${lead.business_name}.`,
+            caption: SARAH_WELCOME_READY
+              ? `A quick hello from Sarah on what we built ${lead.business_name}.`
+              : `Thirty seconds from Mr. Mustard on what we built ${lead.business_name}.`,
           })
         : '') +
       rows +
@@ -144,7 +154,7 @@ export async function buildOutboundEmail(
             opts.note
               ? escape(opts.note)
               : includeAny
-                ? `Why build it for free? Because showing beats telling. I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss, and the demos make the case better than I can. If you want it on your real line, the button inside sets it up in a week. No trial to sign up for, no card to test it: you already have the real thing in front of you.`
+                ? `Why build it for free? Because showing beats telling. I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss, and the demos make the case better than I can. And the command center that ties it all together, your calls, customers, and follow-ups on one board, now comes free with any website or receptionist, no extra charge. If you want it on your real line, the button inside sets it up in a week. No trial to sign up for, no card to test it: you already have the real thing in front of you.`
                 : `I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss. I build an AI receptionist that answers every call in two rings, books the job, and texts you the details. I would rather show you than pitch you, so tell me the word and I will build you a working one to try.`
           }</p>` +
           (hasAudit && lead.audit_score != null && !includeAny

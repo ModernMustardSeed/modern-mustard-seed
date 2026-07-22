@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { forgeLeadVoiceDemo, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, ensureOsDemo, ensureDemoHub } from '@/lib/outbound-demo';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -24,6 +24,8 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   const forged = await forgeLeadVoiceDemo(guard.supabase, lead);
   if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: forged.status });
 
-  const withHub = await ensureDemoHub(guard.supabase, forged.lead);
+  // The command center comes free with the receptionist, so include it (instant, token-free).
+  const withOs = await ensureOsDemo(guard.supabase, forged.lead);
+  const withHub = await ensureDemoHub(guard.supabase, withOs);
   return NextResponse.json({ ok: true, demo_url: forged.demoUrl, lead: withHub, existing: forged.existing });
 }

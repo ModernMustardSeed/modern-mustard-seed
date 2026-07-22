@@ -4,6 +4,7 @@ import DemoHub from '@/components/demo/DemoHub';
 import { detectTrade } from '@/data/demo-os-trades';
 import { recordDemoEvent } from '@/lib/demo-events';
 import type { Niche } from '@/lib/outbound';
+import { SARAH_WELCOME_READY } from '@/lib/email';
 
 export const metadata = buildMetadata({ title: 'Your Demo Suite', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -84,7 +85,15 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
   // film mentions the phone-answering, so it also covers voice+site pairs.
   const hasSite = lead.site_demo_status === 'ready' || lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
   const hasOs = lead.os_demo_status === 'ready';
-  const film = hasSite && hasOs ? 'demo-welcome' : hasSite ? 'demo-welcome-site' : hasOs ? 'demo-welcome-os' : 'demo-welcome-voice';
+  const film = SARAH_WELCOME_READY
+    ? 'demo-welcome-sarah'
+    : hasSite && hasOs
+      ? 'demo-welcome'
+      : hasSite
+        ? 'demo-welcome-site'
+        : hasOs
+          ? 'demo-welcome-os'
+          : 'demo-welcome-voice';
 
   return (
     <DemoHub

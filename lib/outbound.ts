@@ -18,6 +18,12 @@ export type CallOutcome = (typeof CALL_OUTCOMES)[number];
 export const SCRIPT_STAGES = ['opener', 'hook_bad', 'hook_good', 'gap_question', 'revenue_math', 'close', 'objection', 'voicemail', 'gatekeeper'] as const;
 export type ScriptStage = (typeof SCRIPT_STAGES)[number];
 
+// Which pitch a script belongs to. 'shared' cards (opener, gap, close, objections,
+// voicemail, gatekeeper) show in every lane; the three middle cards (hook_bad,
+// hook_good, revenue_math) come in a 'voice' and a 'website' variant.
+export const SCRIPT_LANES = ['shared', 'voice', 'website'] as const;
+export type ScriptLane = (typeof SCRIPT_LANES)[number];
+
 export const PRICING_MODELS = ['convert_to_setprice', 'rev_share'] as const;
 export type PricingModel = (typeof PRICING_MODELS)[number];
 
@@ -244,6 +250,7 @@ export type Script = {
   is_verbatim: boolean;
   source: string | null;
   sort_order: number;
+  lane: ScriptLane;
 };
 
 export type DailyRepStat = {

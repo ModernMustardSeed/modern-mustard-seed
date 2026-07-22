@@ -82,8 +82,9 @@ export default function DemoHub({
   /** Specific detected trade; when present the calculator speaks it. */
   trade?: OsTradeKey;
   city: string | null;
-  /** Which welcome film matches the forged set (trifecta or a single cut). */
-  film?: 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os';
+  /** Which welcome film matches the forged set (trifecta or a single cut), or
+   *  Sarah's personal hello once that film is live. */
+  film?: 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os' | 'demo-welcome-sarah';
   voiceUrl: string | null;
   siteUrl: string | null;
   sitePending: string | null;
@@ -161,7 +162,7 @@ export default function DemoHub({
           href: osUrl,
           icon: '⚙',
           title: 'Your command center',
-          desc: 'Send branded quotes that get signed on the spot, run the day, launch growth campaigns, chase invoices. Your whole business, one screen.',
+          desc: 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Included free with your site or receptionist, nothing to install.',
           tone: 'ink' as const,
           cta: 'Open it',
         },
