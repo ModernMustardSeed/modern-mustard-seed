@@ -62,6 +62,9 @@ function inlinePriceChecks(): Check[] {
     ...sidekickTiers.map((t, i) => ({ funnel: `sidekick-tier-${i + 1}`, amounts: [t.monthlyCents, t.setupCents] })),
     ...broadcastTiers.map((t, i) => ({ funnel: `ads-tier-${i + 1}`, amounts: [t.monthlyCents, t.setupCents] })),
     { funnel: 'switchboard', amounts: [BUILD_FEE_USD, ...PRICE_TIERS.map((p) => p.perLocationUsd)] },
+    // Every demo piece is individually purchasable, so each has a real positive
+    // price (the command center's is waived at quote time when paired, never $0
+    // in the constants). All are validated.
     ...Object.entries(DEMO_PRODUCTS).map(([k, p]) => ({ funnel: `demo-${k}`, amounts: [p.monthlyCents, p.setupCents] })),
     { funnel: 'demo-bundle', amounts: [DEMO_BUNDLE.monthlyCents, DEMO_BUNDLE.setupCents] },
     { funnel: 'care-plan', amounts: [CARE_PLAN_PRICE_CENTS] },

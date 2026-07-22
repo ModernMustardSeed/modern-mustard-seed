@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, DEMO_ORDER_KEYS, quoteDemoOrder, formatUsd, type DemoProductKey } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, DEMO_ORDER_KEYS, quoteDemoOrder, isCommandCenterFree, formatUsd, type DemoProductKey } from '@/lib/demo-order';
 
 /**
- * "Make it real" — order straight from the demo. Toggle the pieces, watch the
- * monthly total roll like the Recovery Calculator, all three unlocks the
- * bundle, and checkout happens right here (Stripe). Booking stays as a quiet
- * second path for the hesitant.
+ * "Make it real" — order straight from the demo. Toggle any pieces, watch the
+ * monthly total roll like the Recovery Calculator. Each is individually
+ * purchasable; the Business Command Center shows its own price, STRUCK THROUGH
+ * with "Free" the moment the website or receptionist is added (it rides free
+ * with either). Both paid pieces unlock the whole-system bundle. Checkout
+ * happens right here (Stripe); booking stays as a quiet second path.
  */
 
 function useCountUp(target: number, ms = 700): number {
@@ -41,16 +43,20 @@ export default function MakeItRealCTA({
   /** which demos were actually forged; these start selected */
   forged: DemoProductKey[];
 }) {
-  const [picked, setPicked] = useState<DemoProductKey[]>(forged.length ? forged : ['voice']);
+  const seed = DEMO_ORDER_KEYS.filter((k) => forged.includes(k));
+  const [picked, setPicked] = useState<DemoProductKey[]>(seed.length ? seed : ['voice']);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const quote = useMemo(() => quoteDemoOrder(picked), [picked]);
   const monthlyShown = useCountUp(quote ? quote.monthlyCents / 100 : 0);
-  const savings = DEMO_ORDER_KEYS.reduce(
-    (s, k) => ({ setup: s.setup + DEMO_PRODUCTS[k].setupCents, monthly: s.monthly + DEMO_PRODUCTS[k].monthlyCents }),
-    { setup: -DEMO_BUNDLE.setupCents, monthly: -DEMO_BUNDLE.monthlyCents },
-  );
+  const osFree = isCommandCenterFree(picked);
+  // Savings the bundle gives over the two PAID pieces a la carte (command center
+  // is free either way, so it never figures into the bundle discount).
+  const savings = {
+    setup: DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents - DEMO_BUNDLE.setupCents,
+    monthly: DEMO_PRODUCTS.voice.monthlyCents + DEMO_PRODUCTS.site.monthlyCents - DEMO_BUNDLE.monthlyCents,
+  };
 
   const toggle = (k: DemoProductKey) =>
     setPicked((cur) => (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]));
@@ -82,13 +88,15 @@ export default function MakeItRealCTA({
           Keep it. Order right here, live within a week.
         </h2>
         <p className="font-body text-[14px] text-[#FBF6EA]/60 mt-2">
-          Pick your pieces. We customize everything to {business} by hand and release it within 7 days.
+          Pick any piece, or all of it. Add the website or receptionist and your command center is free. We customize
+          everything to {business} by hand and release it within 7 days.
         </p>
 
         <div className="mt-6 space-y-3">
           {DEMO_ORDER_KEYS.map((k) => {
             const p = DEMO_PRODUCTS[k];
             const on = picked.includes(k);
+            const waived = k === 'os' && osFree;
             return (
               <button
                 key={k}
@@ -114,9 +122,20 @@ export default function MakeItRealCTA({
                     <span className="font-display text-lg font-bold text-[#FBF6EA]">
                       {PRODUCT_ICONS[k]} {p.name}
                     </span>
-                    <span className="font-mono text-[13px] font-bold text-[#F5B700] whitespace-nowrap">
-                      {formatUsd(p.monthlyCents)}/mo + {formatUsd(p.setupCents)} setup
-                    </span>
+                    {waived ? (
+                      <span className="font-mono text-[13px] font-bold whitespace-nowrap flex items-baseline gap-2">
+                        <span className="line-through text-[#FBF6EA]/40">
+                          {formatUsd(p.monthlyCents)}/mo + {formatUsd(p.setupCents)} setup
+                        </span>
+                        <span className="text-[#161616] bg-[#F5B700] rounded-full px-2 py-0.5 text-[11px] uppercase tracking-[0.1em]">
+                          Free
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="font-mono text-[13px] font-bold text-[#F5B700] whitespace-nowrap">
+                        {formatUsd(p.monthlyCents)}/mo + {formatUsd(p.setupCents)} setup
+                      </span>
+                    )}
                   </span>
                   <span className="block font-body text-[13px] text-[#FBF6EA]/65 mt-1">{p.blurb}</span>
                   {p.finePrint ? (
@@ -130,8 +149,12 @@ export default function MakeItRealCTA({
 
         {quote?.isBundle ? (
           <p className="mt-4 rounded-xl border-2 border-[#F5B700] bg-[#F5B700] px-4 py-2.5 font-sans text-[13px] font-bold text-[#161616]">
-            Bundle unlocked: the whole system for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
-            (you save {formatUsd(savings.monthly)}/mo and {formatUsd(savings.setup)} on setup).
+            Whole system unlocked: receptionist + website for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
+            (you save {formatUsd(savings.monthly)}/mo and {formatUsd(savings.setup)} on setup), command center free.
+          </p>
+        ) : osFree ? (
+          <p className="mt-4 rounded-xl border-2 border-[#F5B700] bg-[#1F1F1F] px-4 py-2.5 font-sans text-[13px] font-bold text-[#F5B700]">
+            Command center free with your {picked.includes('site') ? 'website' : 'receptionist'}. That is {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo + {formatUsd(DEMO_PRODUCTS.os.setupCents)} setup, on the house.
           </p>
         ) : null}
 
@@ -144,7 +167,7 @@ export default function MakeItRealCTA({
                 ${monthlyShown.toLocaleString()}<span className="text-xl">/mo</span>
               </p>
               <p className="font-body text-[13px] text-[#FBF6EA]/70 mt-1">
-                plus a one-time {formatUsd(quote.setupCents)} setup on your first invoice
+                plus a one-time {formatUsd(quote.setupCents)} setup on your first invoice{osFree ? ', command center free' : ''}
               </p>
               <button
                 type="button"
@@ -160,7 +183,9 @@ export default function MakeItRealCTA({
               {error ? <p className="font-body text-[13px] text-[#FF8550] mt-2">{error}</p> : null}
             </>
           ) : (
-            <p className="font-body text-[14px] text-[#FBF6EA]/70">Pick at least one piece above to see your price.</p>
+            <p className="font-body text-[14px] text-[#FBF6EA]/70">
+              Pick a piece above. Add the website or receptionist and your command center is free.
+            </p>
           )}
         </div>
 

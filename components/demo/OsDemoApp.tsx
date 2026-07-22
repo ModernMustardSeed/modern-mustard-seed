@@ -18,6 +18,8 @@ import type { OsJobItem } from '@/components/demo/os/JobsTab';
 import CampaignsTab from '@/components/demo/os/CampaignsTab';
 import CalendarTab from '@/components/demo/os/CalendarTab';
 import LeadGenTab from '@/components/demo/os/LeadGenTab';
+import CallsTab from '@/components/demo/os/CallsTab';
+import TrafficTab from '@/components/demo/os/TrafficTab';
 import OsTour from '@/components/demo/os/OsTour';
 
 /**
@@ -34,6 +36,7 @@ import OsTour from '@/components/demo/os/OsTour';
 
 type Tab =
   | 'today'
+  | 'calls'
   | 'signature'
   | 'customers'
   | 'quotes'
@@ -41,6 +44,7 @@ type Tab =
   | 'calendar'
   | 'campaigns'
   | 'leadgen'
+  | 'traffic'
   | 'money'
   | 'books'
   | 'reviews'
@@ -56,12 +60,14 @@ const SIGNATURE_ICON =
 /** `short` is the bottom-tab-bar label; long ones cannot share a 375px row. */
 const TABS: { id: Tab; label: string; icon: string; short?: string }[] = [
   { id: 'today', label: 'Today', icon: 'M3 13h8V3H3v10zm10 8h8V11h-8v10zM3 21h8v-6H3v6zm10-18v6h8V3h-8z' },
+  { id: 'calls', label: 'Calls', icon: PHONE_ICON },
   { id: 'quotes', label: 'Quotes', icon: 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z' },
   { id: 'jobs', label: 'Jobs', icon: 'M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z' },
   { id: 'calendar', label: 'Calendar', short: 'Cal', icon: 'M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z' },
   { id: 'customers', label: 'Customers', short: 'CRM', icon: 'M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05C16.19 13.89 17 15.02 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z' },
   { id: 'campaigns', label: 'Campaigns', short: 'Grow', icon: 'M18 11v2h4v-2h-4zm-2 6.61c.96.71 2.21 1.65 3.2 2.39.4-.53.8-1.07 1.2-1.6-.99-.74-2.24-1.68-3.2-2.4-.4.54-.8 1.08-1.2 1.61zM20.4 5.6c-.4-.53-.8-1.07-1.2-1.6-.99.74-2.24 1.68-3.2 2.4.4.53.8 1.07 1.2 1.6.96-.72 2.21-1.65 3.2-2.4zM4 9c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v4h2v-4h1l5 3V6L8 9H4zm11.5 3c0-1.33-.58-2.53-1.5-3.35v6.69c.92-.81 1.5-2.01 1.5-3.34z' },
   { id: 'leadgen', label: 'Lead gen', short: 'Leads', icon: 'M3 4h18v2.6l-7 6.4v6l-4 2v-8L3 6.6V4z' },
+  { id: 'traffic', label: 'Website', short: 'Web', icon: 'M4 9h4v11H4zm6-5h4v16h-4zm6 8h4v8h-4z' },
   { id: 'money', label: 'Money', icon: 'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z' },
   { id: 'books', label: 'Books', icon: 'M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z' },
   { id: 'reviews', label: 'Reviews', icon: 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z' },
@@ -72,9 +78,9 @@ const TABS: { id: Tab; label: string; icon: string; short?: string }[] = [
 /** Sidebar groups (house rule: group any nav past ~6 items). The signature
  *  board is inserted into the first group at render, labeled per trade. */
 const SECTIONS: { label: string; ids: Tab[] }[] = [
-  { label: 'Run the day', ids: ['today', 'signature', 'jobs', 'calendar'] },
+  { label: 'Run the day', ids: ['today', 'calls', 'signature', 'jobs', 'calendar'] },
   { label: 'Win the work', ids: ['customers', 'quotes'] },
-  { label: 'Grow', ids: ['leadgen', 'campaigns', 'reviews'] },
+  { label: 'Grow', ids: ['leadgen', 'traffic', 'campaigns', 'reviews'] },
   { label: 'Back office', ids: ['money', 'books', 'automations', 'assistant'] },
 ];
 
@@ -1010,6 +1016,8 @@ export default function OsDemoApp({
             </div>
           )}
 
+          {tab === 'calls' && <CallsTab />}
+
           {tab === 'quotes' && <QuotesTab onSigned={quoteSigned} goToJobs={() => setTab('jobs')} />}
 
           {tab === 'jobs' && <JobsTab jobs={jobs} advance={advanceJob} />}
@@ -1017,6 +1025,8 @@ export default function OsDemoApp({
           {tab === 'calendar' && <CalendarTab />}
 
           {tab === 'leadgen' && <LeadGenTab />}
+
+          {tab === 'traffic' && <TrafficTab />}
 
           {tab === 'campaigns' && <CampaignsTab />}
 

@@ -206,8 +206,9 @@ export default function DemoStation() {
       {phase === 'error' && error ? <p className="font-body text-[13px] text-[#C4160B] text-center mt-3">{error}</p> : null}
       <p className="font-body text-[12px] text-[#161616]/70 text-center mt-3.5 leading-relaxed">
         No card, no meeting, no strings. If you love them:{' '}
-        {formatUsd(DEMO_PRODUCTS.site.monthlyCents)} to {formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo per piece, or{' '}
-        {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for everything. Month to month.
+        the website or receptionist from {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, the command center from{' '}
+        {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo (free with either), or the whole system for{' '}
+        {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo. Month to month.
       </p>
     </form>
   );

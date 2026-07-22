@@ -6,7 +6,7 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 export const metadata = buildMetadata({
   title: 'The Demo Station: three free AI demos, built for your business',
   description:
-    'Tell us who you are and we forge three working demos, free: an AI receptionist that answers as your business, a brand-new website, and a business command center. Keep what you love from $97/mo.',
+    'Tell us who you are and we forge three working demos, free: an AI receptionist that answers as your business, a brand-new website, and a business command center that comes free with either. Keep what you love from $97/mo.',
   path: '/demos',
 });
 
@@ -17,7 +17,7 @@ const FAQ = [
   },
   {
     q: 'What exactly do I get?',
-    a: 'Three working demos personalized to your business: an AI receptionist you can call and try to stump, a complete demo website designed from scratch, and a business command center with your name on the door. All three live at your private hub link.',
+    a: 'Three working demos personalized to your business: an AI receptionist you can call and try to stump, a complete demo website designed from scratch, and a business command center with your name on the door, wired to your calls and your website traffic. The command center comes free with the website or the receptionist, no build cost and no monthly. All three live at your private hub link.',
   },
   {
     q: 'How fast?',
@@ -47,7 +47,7 @@ const PIECES = [
   {
     icon: '⚙',
     title: 'Command Center',
-    desc: 'Your day, customers, reviews, and ads on one board, with an AI that reads the whole thing back to you.',
+    desc: 'Every call transcribed, your website traffic and leads, customers, reviews, and money on one board, with an AI that reads it all back to you.',
     price: DEMO_PRODUCTS.os,
     tone: 'white' as const,
   },
@@ -109,16 +109,23 @@ function demosJsonLd() {
         name: 'The Demo Station by Modern Mustard Seed',
         serviceType: 'Free AI business demos: receptionist, website, and command center',
         description:
-          'A free self-serve forge. Enter your business once and receive three working demos: an AI receptionist trained on your company, a custom website designed from scratch, and a business command center. No account and no credit card.',
+          'A free self-serve forge. Enter your business once and receive three working demos: an AI receptionist trained on your company, a custom website designed from scratch, and a business command center that comes free with either. No account and no credit card.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         offers: [
-          ...products.map((p) => offer(p.name, p.monthlyCents, p.setupCents, p.blurb)),
+          ...products.map((p) =>
+            offer(
+              p.name,
+              p.monthlyCents,
+              p.setupCents,
+              p.freeWithPaid ? `${p.blurb} Sold on its own, or free with the website or receptionist.` : p.blurb,
+            ),
+          ),
           offer(
             DEMO_BUNDLE.name,
             DEMO_BUNDLE.monthlyCents,
             DEMO_BUNDLE.setupCents,
-            'All three demos made real, at a discount to buying them separately.',
+            'The receptionist and website made real together at a discount, with the command center included free.',
           ),
         ],
       },
@@ -197,7 +204,7 @@ export default function DemosPage() {
                 {[
                   'No card. No meeting. No sales call to sit through.',
                   'Two are ready in twenty seconds. Your website takes about twenty minutes.',
-                  `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo. Or keep nothing.`,
+                  `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, command center free with either. Or keep nothing.`,
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#161616]/80">
                     <span
@@ -322,14 +329,14 @@ export default function DemosPage() {
                 >
                   Free demo
                   <span className={c.tone === 'ink' ? 'text-[#FBF6EA]/40' : 'text-[#161616]/70'}> · </span>
-                  keep for {formatUsd(c.price.monthlyCents)}/mo
+                  {c.price.freeWithPaid ? <>{formatUsd(c.price.monthlyCents)}/mo, free with either</> : <>keep for {formatUsd(c.price.monthlyCents)}/mo</>}
                 </p>
               </div>
             ))}
           </div>
           <p className="font-body text-[14px] text-[#161616]/60 mt-5">
-            Want all three? The whole system is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order
-            it right from your hub.
+            Your command center is free with either piece. Want the receptionist and website together? The whole system
+            is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
           </p>
         </section>
 
@@ -343,7 +350,7 @@ export default function DemosPage() {
               {
                 n: '3',
                 t: 'Keep what you love',
-                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for the whole system. Live within 7 days.`,
+                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for the whole system, command center free with either. Live within 7 days.`,
               },
             ].map((s) => (
               <div key={s.n} className="flex gap-4 sm:block">

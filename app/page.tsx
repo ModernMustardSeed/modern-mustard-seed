@@ -6,6 +6,7 @@ import HomeFilmStage from '@/components/home/HomeFilmStage';
 import RecentWork from '@/components/home/RecentWork';
 import ProofBand from '@/components/home/ProofBand';
 import BuildCabinet from '@/components/home/BuildCabinet';
+import FlagshipOffer from '@/components/home/FlagshipOffer';
 import ThreeDoors from '@/components/home/ThreeDoors';
 import ComicRack from '@/components/home/ComicRack';
 import TheClose from '@/components/home/TheClose';
@@ -120,6 +121,7 @@ export default function HomePage() {
         <HomeTicker />
         <div data-vine-stop><HomeFilmStage /></div>
         <div data-vine-stop><ProofBand /></div>
+        <div data-vine-stop><FlagshipOffer /></div>
         <div data-vine-stop><BuildCabinet /></div>
         <HomeTicker reverse />
         <div data-vine-stop><ThreeDoors /></div>
