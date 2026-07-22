@@ -99,6 +99,13 @@ export default function Teleprompter() {
   const [showTakes, setShowTakes] = useState(false);
   const [selfViewOn, setSelfViewOn] = useState(true);
   const [tab, setTab] = useState<'episode' | 'short' | 'sales' | 'ad'>('episode');
+  const [finals, setFinals] = useState<{ name: string; path: string; signedUrl: string | null }[]>([]);
+  useEffect(() => {
+    fetch('/api/booth/finals', { method: 'POST' })
+      .then((r) => r.json())
+      .then((j) => setFinals(Array.isArray(j.finals) ? j.finals : []))
+      .catch(() => {});
+  }, []);
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const columnRef = useRef<HTMLDivElement>(null);
@@ -466,6 +473,38 @@ export default function Teleprompter() {
           </div>
 
           <div className="mt-12 border-t pt-6" style={{ borderColor: 'rgba(251,246,234,0.15)' }}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: GOLD }}>
+                Finished cuts{finals.length > 0 ? ` (${finals.length})` : ''}
+              </p>
+              <a href="/admin/youtube" className="font-mono text-[11px] uppercase underline" style={{ color: 'rgba(251,246,234,0.82)' }}>
+                Open the publisher →
+              </a>
+            </div>
+            {finals.length === 0 ? (
+              <p className="mt-2 font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.5)' }}>
+                Record a take above, then Claude edits it (Mr. Mustard, the New Day ident, graphics, and the mild
+                polish) and the finished cut lands right here, ready to post to YouTube in one button.
+              </p>
+            ) : (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {finals.map((f) => (
+                  <div key={f.path} className="border p-3" style={{ borderColor: 'rgba(251,246,234,0.18)', background: 'rgba(251,246,234,0.04)' }}>
+                    {f.signedUrl && (
+                      // eslint-disable-next-line jsx-a11y/media-has-caption
+                      <video src={f.signedUrl} controls preload="metadata" className="w-full aspect-video" style={{ background: '#000' }} />
+                    )}
+                    <p className="mt-2 truncate font-mono text-[11px]" style={{ color: CREAM }}>{f.name}</p>
+                    <a href="/admin/youtube" className="font-mono text-[10px] uppercase underline" style={{ color: GOLD }}>
+                      Post it to YouTube →
+                    </a>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-8 border-t pt-6" style={{ borderColor: 'rgba(251,246,234,0.15)' }}>
             <p className="font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.45)' }}>
               PRIVATE BOOTH · not linked, not indexed. Arm the camera and every play/pause cycle records a take,
               sends it to Claude for the edit, and keeps it to rewatch. Amber &ldquo;Direction&rdquo; blocks are
