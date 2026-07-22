@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import AdminHeader from '@/components/admin/AdminHeader';
+import { openWelcomeTour } from '@/components/admin/WelcomeTour';
 import { fireConfetti } from '@/lib/confetti';
 import {
   PHASES,
@@ -173,6 +174,13 @@ export default function OnboardingHub({ name, email }: Props) {
                 >
                   Download the handbook (PDF)
                 </a>
+                <button
+                  type="button"
+                  onClick={openWelcomeTour}
+                  className="px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#FBF6EA] bg-transparent rounded-full border-2 border-[#FBF6EA]/40 hover:border-[#FBF6EA] transition-all"
+                >
+                  Replay welcome tour
+                </button>
               </div>
             </div>
 

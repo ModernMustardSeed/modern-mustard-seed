@@ -24,6 +24,19 @@ const SERIF = "'Playfair Display', Georgia, 'Times New Roman', serif";
 const SANS = "'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 const MONO = "'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace";
 
+/** Fired to re-open the tour from the top. WelcomeTour is mounted in the admin
+ *  layout, so a "Replay tour" link on any admin page can dispatch this. */
+export const WELCOME_TOUR_EVENT = 'mms:welcome-tour:open';
+
+/** Re-open the welcome tour from anywhere in the admin. */
+export function openWelcomeTour() {
+  try {
+    window.dispatchEvent(new Event(WELCOME_TOUR_EVENT));
+  } catch {
+    /* no window (SSR): nothing to open */
+  }
+}
+
 export default function WelcomeTour({ name, email }: { name: string; email: string; role?: string }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
@@ -35,6 +48,16 @@ export default function WelcomeTour({ name, email }: { name: string; email: stri
       if (!window.localStorage.getItem(key)) setOpen(true);
     } catch {}
   }, [key]);
+
+  // A "Replay tour" link anywhere in the admin re-opens it from the first step.
+  useEffect(() => {
+    const reopen = () => {
+      setStep(0);
+      setOpen(true);
+    };
+    window.addEventListener(WELCOME_TOUR_EVENT, reopen);
+    return () => window.removeEventListener(WELCOME_TOUR_EVENT, reopen);
+  }, []);
 
   const dismiss = () => {
     try {
