@@ -22,16 +22,9 @@ type Work = {
 };
 
 const WORK: Work[] = [
-  {
-    name: 'HUCKWILD',
-    domain: 'huckwild.vercel.app',
-    url: 'https://huckwild.vercel.app',
-    tag: 'Beverage brand + launch folio',
-    desc: 'A wild Montana huckleberry drink mix told as a Victorian naturalist folio: an ink-pour film, an antlered guardian of the patch, and a numbered waitlist. Drink the legend.',
-    shot: '/home/work/huckwild.jpg',
-    tilt: '-rotate-[0.4deg]',
-    wide: true,
-  },
+  // HUCKWILD card is parked until the real domain + waitlist are finished
+  // (Sarah, 2026-07-21). Shot stays at /home/work/huckwild.jpg; restore as
+  // the wide featured card when drinkhuckwild.com is live.
   {
     name: 'Wild Hope',
     domain: 'wildhopehq.com',

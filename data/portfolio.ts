@@ -65,8 +65,8 @@ export const PORTFOLIO: PortfolioCategory[] = [
       {
         name: 'HUCKWILD',
         url: 'https://huckwild.vercel.app',
-        status: 'live',
-        blurb: 'Wild Montana huckleberry drink mix as a Victorian naturalist folio. Ink-pour film hero, the Huckalope legend, scroll-driven ink staining, and a numbered Patch 001 waitlist.',
+        status: 'building',
+        blurb: 'Wild Montana huckleberry drink mix as a Victorian naturalist folio. Ink-pour film hero, the Huckalope legend, scroll-driven ink staining, and a numbered Patch 001 waitlist. Parked off the public work strip until the domain and waitlist are finished.',
         tags: ['HUCKWILD', 'beverage', 'brand launch'],
       },
       {
