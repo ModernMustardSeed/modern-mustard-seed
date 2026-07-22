@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from './AdminHeader';
 import type { BuildLogData, Category } from '@/lib/build-log';
@@ -53,6 +53,27 @@ const EYEBROW = 'text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono
 export default function BuildLogConsole({ data }: { data: BuildLogData }) {
   const router = useRouter();
   const { byDate, entries, projectTotals, catTotals, minDate, maxDate, activeDays, featureCount, tokenPresent, reposFailed } = data;
+
+  // Public snapshot control (aggregate-only public page at /build-log)
+  const [snap, setSnap] = useState<{ published: boolean; publishedAt: string | null } | null>(null);
+  const [snapBusy, setSnapBusy] = useState(false);
+  const [origin, setOrigin] = useState('');
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    setOrigin(window.location.origin);
+    fetch('/api/admin/build-log/snapshot').then((r) => (r.ok ? r.json() : null)).then(setSnap).catch(() => {});
+  }, []);
+  const publicUrl = origin ? `${origin}/build-log` : '/build-log';
+  const snapAction = async (action: 'publish' | 'unpublish') => {
+    setSnapBusy(true);
+    try {
+      const r = await fetch('/api/admin/build-log/snapshot', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action }),
+      });
+      if (r.ok) setSnap(await r.json());
+    } finally { setSnapBusy(false); }
+  };
+  const copyUrl = () => { navigator.clipboard?.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 1500); };
 
   const today = useMemo(() => todayStr(), []);
   const initialSel = byDate[today] ? today : (maxDate || today);
@@ -113,6 +134,47 @@ export default function BuildLogConsole({ data }: { data: BuildLogData }) {
           <span className={EYEBROW}>Operating Record · {range}</span>
           <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight mt-1">Everything we shipped, day by day</h2>
           <p className="text-[#161616]/70 mt-1.5 max-w-2xl">Live from commit history across every venture. Pick a date to see exactly what got built.</p>
+        </div>
+
+        {/* public snapshot control */}
+        <div className={`${CARD} p-4 mb-6`}>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="min-w-0">
+              <div className={EYEBROW}>Public Snapshot</div>
+              <p className="text-[13px] text-[#161616]/70 mt-1">
+                {snap?.published
+                  ? 'Live at your public link. Aggregate only (metrics and shape), no commit messages.'
+                  : 'Publish a login-free, aggregate-only version to share with investors. Metrics, heatmap, and per-venture totals only, no commit messages.'}
+              </p>
+              {snap?.published && snap.publishedAt && (
+                <p className="font-mono text-[11px] text-[#161616]/45 mt-1">Snapshot from {new Date(snap.publishedAt).toLocaleString()}</p>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              {snap?.published && (
+                <a href={publicUrl} target="_blank" rel="noopener noreferrer"
+                  className="text-[11px] font-mono px-2.5 py-2 rounded-lg border-2 border-[#161616]/15 hover:border-[#161616] transition-colors">View ↗</a>
+              )}
+              {snap?.published && (
+                <button onClick={copyUrl} className="text-[11px] uppercase tracking-[0.1em] font-sans font-semibold px-3 py-2 rounded-lg border-2 border-[#161616] bg-white hover:bg-[#FBF6EA] transition-colors">
+                  {copied ? 'Copied' : 'Copy link'}
+                </button>
+              )}
+              <button onClick={() => snapAction('publish')} disabled={snapBusy}
+                className="text-[11px] uppercase tracking-[0.1em] font-sans font-bold px-3 py-2 rounded-lg border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-transform">
+                {snapBusy ? 'Working…' : snap?.published ? 'Update snapshot' : 'Publish snapshot'}
+              </button>
+              {snap?.published && (
+                <button onClick={() => snapAction('unpublish')} disabled={snapBusy}
+                  className="text-[11px] uppercase tracking-[0.1em] font-sans font-semibold px-3 py-2 rounded-lg border-2 border-[#161616]/20 text-[#161616]/70 hover:border-[#E0301E] hover:text-[#E0301E] transition-colors">
+                  Take offline
+                </button>
+              )}
+            </div>
+          </div>
+          {snap?.published && (
+            <div className="mt-3 pt-3 border-t border-[#161616]/10 font-mono text-[11px] text-[#161616]/55 break-all">{publicUrl}</div>
+          )}
         </div>
 
         {/* metric ribbon */}

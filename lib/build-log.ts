@@ -7,6 +7,8 @@
 // GITHUB_TOKEN (or GH_TOKEN) with org read access is set in the environment.
 // Without a token the page still renders the public MMS history (the bulk of the work).
 
+import { getSupabase } from "@/lib/supabase";
+
 const OWNER = "ModernMustardSeed";
 
 export const BUILD_LOG_REPOS: { name: string; repo: string }[] = [
@@ -172,4 +174,77 @@ export async function getBuildLogData(): Promise<BuildLogData> {
     reposFailed,
     generatedAt: new Date().toISOString(),
   };
+}
+
+/* ============================ PUBLIC SNAPSHOT ============================ */
+// A sanitized, aggregate-only snapshot for the public /build-log page.
+// Stores NO commit messages, only counts and totals, so nothing sensitive can
+// leak. Persisted in the app_state k/v table under one key; the public page is
+// visible only while `published` is true.
+
+const SNAPSHOT_KEY = "build_log:snapshot";
+
+export interface SnapshotDay { total: number; byProject: [string, number][]; }
+export interface BuildLogSnapshot {
+  publishedAt: string;
+  minDate: string | null;
+  maxDate: string | null;
+  totals: { commits: number; features: number; ventures: number; activeDays: number };
+  projectTotals: [string, number][];
+  catTotals: [Category, number][];
+  dayCounts: Record<string, SnapshotDay>;
+}
+export interface StoredSnapshot { published: boolean; snapshot: BuildLogSnapshot | null; }
+
+export function buildSnapshot(data: BuildLogData): BuildLogSnapshot {
+  const dayCounts: Record<string, SnapshotDay> = {};
+  for (const [date, list] of Object.entries(data.byDate)) {
+    const m = new Map<string, number>();
+    for (const e of list) m.set(e.project, (m.get(e.project) || 0) + 1);
+    dayCounts[date] = { total: list.length, byProject: [...m.entries()].sort((a, b) => b[1] - a[1]) };
+  }
+  return {
+    publishedAt: new Date().toISOString(),
+    minDate: data.minDate,
+    maxDate: data.maxDate,
+    totals: {
+      commits: data.entries.length,
+      features: data.featureCount,
+      ventures: data.projectTotals.length,
+      activeDays: data.activeDays,
+    },
+    projectTotals: data.projectTotals,
+    catTotals: data.catTotals,
+    dayCounts,
+  };
+}
+
+export async function readSnapshot(): Promise<StoredSnapshot> {
+  const sb = getSupabase();
+  if (!sb) return { published: false, snapshot: null };
+  const { data } = await sb.from("app_state").select("value").eq("key", SNAPSHOT_KEY).maybeSingle();
+  const v = data?.value as StoredSnapshot | undefined;
+  return v && typeof v === "object"
+    ? { published: !!v.published, snapshot: v.snapshot ?? null }
+    : { published: false, snapshot: null };
+}
+
+export async function publishSnapshot(): Promise<StoredSnapshot> {
+  const sb = getSupabase();
+  if (!sb) throw new Error("Snapshot storage is not configured.");
+  const live = await getBuildLogData();
+  const value: StoredSnapshot = { published: true, snapshot: buildSnapshot(live) };
+  const { error } = await sb.from("app_state").upsert({ key: SNAPSHOT_KEY, value });
+  if (error) throw new Error(error.message);
+  return value;
+}
+
+export async function setSnapshotPublished(published: boolean): Promise<StoredSnapshot> {
+  const sb = getSupabase();
+  if (!sb) throw new Error("Snapshot storage is not configured.");
+  const cur = await readSnapshot();
+  const value: StoredSnapshot = { published, snapshot: cur.snapshot };
+  const { error } = await sb.from("app_state").upsert({ key: SNAPSHOT_KEY, value });
+  if (error) throw new Error(error.message);
+  return value;
 }
