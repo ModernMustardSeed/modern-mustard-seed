@@ -92,11 +92,21 @@ export default function MoodboardCard() {
             {data.status === 'approved' ? 'This is the direction. Signed.' : 'Before we build: approve the direction.'}
           </p>
         </div>
-        {data.status === 'approved' && data.approvedAt && (
-          <span className="rounded-full border-2 border-emerald-700 px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">
-            Approved {new Date(data.approvedAt).toLocaleDateString()}
-          </span>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {data.status === 'approved' && data.approvedAt && (
+            <span className="rounded-full border-2 border-emerald-700 px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">
+              Approved {new Date(data.approvedAt).toLocaleDateString()}
+            </span>
+          )}
+          <a
+            href="/api/portal/moodboard/pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#161616] transition-all hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#161616]"
+          >
+            Keep the PDF
+          </a>
+        </div>
       </div>
 
       {data.status !== 'approved' && (

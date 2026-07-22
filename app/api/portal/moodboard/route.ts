@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
-import { sanitizeMoodboard } from '@/lib/moodboard-shared';
+import { loadBoardForEmail } from '@/lib/moodboard-data';
 import { resendClient } from '@/lib/send-email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
@@ -23,57 +23,10 @@ export const dynamic = 'force-dynamic';
  * changes keeps holding it. Either way Sarah hears about it immediately.
  */
 
-type Asset = { url?: string; name?: string; kind?: string };
-
 async function boardFor(email: string) {
   const sb = getSupabase();
   if (!sb) return null;
-  const { data: project } = await sb
-    .from('projects')
-    .select('id, name, moodboard, moodboard_status, moodboard_note, moodboard_sent_at, moodboard_approved_at')
-    .eq('client_email', email)
-    .in('moodboard_status', ['sent', 'changes', 'approved'])
-    .order('moodboard_sent_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  if (!project?.moodboard) return null;
-
-  const board = sanitizeMoodboard(project.moodboard);
-  if (!board) return null;
-
-  let businessName = String(project.name ?? 'Your business');
-  let logoUrl: string | null = null;
-  let photos: string[] = [];
-  try {
-    const { data: order } = await sb
-      .from('demo_orders')
-      .select('business_name, intake')
-      .eq('project_id', project.id)
-      .maybeSingle();
-    if (order?.business_name) businessName = String(order.business_name);
-    const assets = (order?.intake as { assets?: Asset[] } | null)?.assets;
-    if (Array.isArray(assets)) {
-      logoUrl = assets.find((a) => a?.kind === 'logo' && typeof a.url === 'string')?.url ?? null;
-      photos = assets
-        .filter((a) => (a?.kind === 'photo' || a?.kind === 'product') && typeof a.url === 'string')
-        .map((a) => a.url as string)
-        .slice(0, 4);
-    }
-  } catch {
-    /* order lookup is garnish, the board still renders */
-  }
-
-  return {
-    projectId: project.id as string,
-    board,
-    status: String(project.moodboard_status),
-    note: (project.moodboard_note as string | null) ?? null,
-    sentAt: (project.moodboard_sent_at as string | null) ?? null,
-    approvedAt: (project.moodboard_approved_at as string | null) ?? null,
-    businessName,
-    logoUrl,
-    photos,
-  };
+  return loadBoardForEmail(sb, email);
 }
 
 export async function GET() {

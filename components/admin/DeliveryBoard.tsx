@@ -469,6 +469,16 @@ function DeliveryRow({
                       {showBoard ? 'Hide preview' : 'Preview the board'}
                     </button>
                   )}
+                  {p?.moodboard && (
+                    <a
+                      href={`/api/admin/delivery/${row.projectId}/moodboard-pdf`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${BTN_QUIET} inline-flex items-center`}
+                    >
+                      Download PDF
+                    </a>
+                  )}
                   {p?.moodboard && p.moodboardStatus !== 'approved' && (
                     <button type="button" onClick={doMoodboardSend} disabled={!!busy} className={`${BTN_QUIET} !bg-[#F5B700]`}>
                       {busy === 'moodboard-send' ? 'Sending…' : p.moodboardStatus === 'sent' ? 'Resend to client' : 'Send to client'}
