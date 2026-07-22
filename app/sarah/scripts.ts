@@ -1301,7 +1301,7 @@ const ORIGIN: PrompterScript[] = [
   {
     id: 'ad-origin-built-the-team',
     kind: 'ad',
-    episode: 'Ad 19',
+    episode: 'Ad 22',
     session: 'Meta · Origin 9:16',
     publish: 'Broad · founders',
     pillar: 'ADS',
@@ -1338,7 +1338,7 @@ const ORIGIN: PrompterScript[] = [
   {
     id: 'ad-origin-just-you',
     kind: 'ad',
-    episode: 'Ad 20',
+    episode: 'Ad 23',
     session: 'Meta · Origin 9:16',
     publish: 'Broad · solo founders',
     pillar: 'ADS',
