@@ -162,7 +162,7 @@ export default function WebsitesPage() {
                   <span className="ml-2 flex-1 truncate rounded-full border border-[#161616]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#161616]/65">
                     hallroofing.co
                   </span>
-                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-[#161616]/50 group-hover:text-[#C4160B] transition-colors">Visit →</span>
+                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-[#161616]/70 group-hover:text-[#C4160B] transition-colors">Visit →</span>
                 </div>
                 <div className="relative">
                   <Image
