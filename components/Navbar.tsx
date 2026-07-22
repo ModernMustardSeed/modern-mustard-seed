@@ -55,7 +55,9 @@ const MENU_GROUPS = [
 // in tracked mono caps; never a lowercase opener).
 const DEPARTMENTS = [
   { name: 'Celebrate', tag: 'GIFTING ON AUTOPILOT', href: '/celebrate' },
+  { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
+  { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },
   { name: 'Sidekick Forge', tag: 'FREE RECEPTIONIST DEMO', href: '/sidekick' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
