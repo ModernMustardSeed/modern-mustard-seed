@@ -17,6 +17,7 @@ export type WorkSite = {
 export const WORK_SITES: WorkSite[] = [
   { key: 'hall-roofing', name: 'Hall Roofing', trade: 'Roofing', place: 'Bonifay, FL', img: '/work-shots/hall-roofing.jpg', url: 'https://hall-roofing-website.vercel.app' },
   { key: 'jr-tree', name: 'JR Tree Removal', trade: 'Tree service', place: 'Mobile, AL', img: '/work-shots/jr-tree.jpg', url: 'https://jr-tree-website.vercel.app' },
+  { key: 'fiat-lux', name: 'Fiat Lux Design', trade: 'AI staging studio', place: 'Real estate staging', img: '/work-shots/fiat-lux.jpg', url: 'https://fiatluxdesign.co' },
   { key: 'chinatown', name: 'Chinatown', trade: 'Restaurant', place: 'Kalispell, MT', img: '/work-shots/chinatown.jpg', url: 'https://chinatown-kalispell.vercel.app' },
   { key: 'wild-hope', name: 'Wild Hope', trade: 'Lake retreat', place: 'Flathead Lake, MT', img: '/work-shots/wild-hope.jpg', url: 'https://wildhopehq.com' },
   { key: 'cross-covenant', name: 'Cross + Covenant', trade: 'Faith apparel', place: 'The storefront', img: '/work-shots/cross-covenant.jpg', url: 'https://crossandcovenant.co' },
