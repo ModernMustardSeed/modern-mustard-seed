@@ -10,6 +10,7 @@ import {
   p,
 } from '@/lib/email';
 import { getAffiliateByEmail } from '@/lib/affiliate';
+import { sendSms } from '@/lib/sms';
 import { insertLead, getSupabase } from '@/lib/supabase';
 import { recallCaller, rememberFromTool, rememberSummary } from '@/lib/voice-memory';
 import { getNextAvailableSlots, isSlotAvailable, displayForIso, bookingWindow } from '@/lib/booking';
@@ -558,6 +559,82 @@ async function sendResourceEmail(
   });
 }
 
+/* ───────── reach_sarah: a caller asked for Sarah; notify her now ───────── */
+
+/** Sarah's real cell, (406) 250-6076. The live transfer rings it; reach_sarah
+ *  also texts it best-effort as a backup heads-up. */
+const SARAH_CELL = '+14062506076';
+
+/**
+ * reach_sarah: the caller wants Sarah personally and either the live transfer
+ * did not connect, the caller preferred a callback, or this is a web/desk call
+ * with no phone leg to bridge. Ping Sarah immediately so she can call back.
+ *
+ * Email is the guaranteed channel (Resend/Zoho to OWNER_NOTIFY_TO). SMS to her
+ * own cell is attempted best-effort: it starts landing the moment the Twilio
+ * A2P registration clears (today it may be carrier-filtered), so the email is
+ * what actually reaches her.
+ */
+async function reachSarah(
+  input: { name?: string; phone?: string; reason?: string },
+  callerNumber: string | null,
+): Promise<string> {
+  const name = (input.name || '').trim() || 'A caller';
+  const phone = (input.phone || '').trim() || callerNumber || '';
+  const reason = (input.reason || '').trim();
+
+  let emailed = false;
+  const apiKey = process.env.RESEND_API_KEY;
+  if (apiKey) {
+    try {
+      const resend = resendClient();
+      const r = await sendLoud(resend, 'reach-sarah', {
+        from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to: OWNER_NOTIFY_TO,
+        replyTo: 'sarah@modernmustardseed.com',
+        subject: `Someone asked for you: ${name}`,
+        html: leadNotification({
+          type: 'Contact',
+          name,
+          email: 'sarah@modernmustardseed.com',
+          fields: [
+            { label: 'Who', value: name },
+            ...(phone ? [{ label: 'Call them back at', value: phone }] : []),
+            { label: 'Source', value: 'Mr. Mustard voice call (they asked for you by name)' },
+          ],
+          message: reason || 'A caller asked to speak with you directly.',
+          suggestedAction: 'They asked for you personally. Call them back as soon as you can.',
+        }),
+      });
+      emailed = r.ok;
+    } catch (err) {
+      console.error('reach_sarah email failed', err);
+    }
+  }
+
+  // Best-effort text to Sarah's cell. Never blocks or fails the tool.
+  try {
+    const body = `Mr. Mustard: ${name}${phone ? ` (${phone})` : ''} asked for you on a call.${reason ? ` Re: ${reason}.` : ''} Call them back when you can.`;
+    const sms = await sendSms(SARAH_CELL, body, { statusCallback: false });
+    console.log(`reach_sarah sms ${sms.ok ? 'queued ' + sms.sid : 'skipped: ' + sms.error}`);
+  } catch (err) {
+    console.error('reach_sarah sms threw', err);
+  }
+
+  if (!emailed) {
+    return JSON.stringify({
+      ok: false,
+      error:
+        'Could not reach Sarah automatically. Take the caller\'s name and number, tell them she will call back today, and give them sarah@modernmustardseed.com.',
+    });
+  }
+  return JSON.stringify({
+    ok: true,
+    instruction:
+      'Sarah has just been notified (email now, and a text as backup). Tell them warmly she will get right back to them, confirm the best number to reach them, and offer to book a specific time with her too.',
+  });
+}
+
 /* ───────── End-of-call report → Sarah's inbox ───────── */
 
 async function handleEndOfCallReport(message: Record<string, unknown>) {
@@ -708,6 +785,8 @@ export async function POST(req: Request) {
           result = await captureLead(args as Parameters<typeof captureLead>[0], callerNumber);
         } else if (fnName === 'send_email') {
           result = await sendResourceEmail(args as Parameters<typeof sendResourceEmail>[0], { deskKind, authedEmail });
+        } else if (fnName === 'reach_sarah') {
+          result = await reachSarah(args as Parameters<typeof reachSarah>[0], callerNumber);
         } else {
           result = JSON.stringify({ ok: false, error: `Unknown tool: ${fnName}` });
         }

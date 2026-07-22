@@ -117,6 +117,10 @@ export function demoModel(
 ): Record<string, unknown> {
   const tools = Array.isArray(base.tools)
     ? (base.tools as Array<Record<string, unknown>>).filter((t) => {
+        // Never expose the live phone transfer on a web/demo/desk call: it would
+        // ring Sarah's personal cell, and a browser call has no phone leg to
+        // bridge anyway. Strip it even though it is a nameless structural tool.
+        if ((t as { type?: string }).type === 'transferCall') return false;
         const name = (t?.function as { name?: string } | undefined)?.name;
         return !name || keepTools.has(name);
       })

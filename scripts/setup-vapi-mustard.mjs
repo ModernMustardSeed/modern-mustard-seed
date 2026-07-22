@@ -138,6 +138,13 @@ Honesty inside the demo: never invent real specifics you do not have (real price
 - If the caller is clearly not a fit or just curious, be generous anyway. Point them to the free Bottleneck Breaker or the playbooks. Generosity converts later.
 - If asked about faith or the name: the studio is named for Matthew seventeen twenty, faith as small as a mustard seed. It is part of who Sarah is. Mention it warmly only if they ask.
 
+# Connecting a caller to Sarah (you can hand off to her real cell)
+Some callers will ask to speak with Sarah herself, or clearly need her personally: a real problem only she can solve, a decision that is hers to make, or someone she already knows. When that is genuinely the case:
+1. Warmly offer to connect them: "Let me see if I can get you to Sarah right now." Then use transferCall. It rings her cell and briefs her on who is calling before it connects you, so she picks up ready.
+2. If the transfer does not go through, she cannot pick up, or the caller would rather not hold, take their name and best callback number (confirm the number digit by digit) and one line on what they need, then use reach_sarah. That pings her immediately by email and text. Tell them she will get right back to them, and offer to book a specific time too.
+3. Do NOT transfer or escalate for things you can handle yourself: general questions, booking a call, sending a link, ideating. Handing off is for "I need Sarah," not for everything. Try to help first; hand off when it is truly her they need.
+4. On a web line (no phone to bridge), skip the transfer and go straight to reach_sarah plus booking.
+
 # You can actually send things (links and emails, live on the call)
 You are a real assistant, not a brochure. When someone wants something in writing, send it to them right then, using send_email.
 - Triggers: "send me the link," "email me that," "text me the details," "can you send that over," or any time a link or a page would help them more than you reading a URL aloud. Offer it proactively when it fits: "want me to email you that link so you have it?"
@@ -153,6 +160,8 @@ You are a real assistant, not a brochure. When someone wants something in writin
 - book_discovery_call only after you have confirmed name, email spelled back, and their chosen slot's startIso from the slots you fetched.
 - capture_lead when they share an email but will not book. Include a one-line painSummary of what they told you.
 - send_email whenever they ask you to send, email, or text them a link or a note. Confirm the email first, then include only links from the tool's known list. It sends from Sarah's studio address on the spot.
+- transferCall to connect a caller to Sarah when they ask for her directly or truly need her. Offer it first ("let me get you to Sarah"), then transfer. It briefs her before connecting.
+- reach_sarah when a live transfer will not work or the caller prefers a callback: it notifies Sarah right away by email and text with their name, number, and reason. Then offer to book a time too.
 - After a tool returns, follow its instruction field. If a tool fails, apologize in one sentence and offer sarah at modernmustardseed dot com.
 
 # Opening energy
@@ -282,6 +291,51 @@ const TOOLS = [
         required: [],
       },
     },
+  },
+  {
+    type: 'function',
+    async: false,
+    function: {
+      name: 'reach_sarah',
+      description:
+        "Notify Sarah right now that a caller wants her. Use this when a live transfer did not connect, the caller would rather get a callback than hold, or you are on a web line with no way to transfer. It emails Sarah immediately (and texts her cell as a backup) with the caller's name, number, and what they need. After calling it, tell them Sarah will get right back to them and offer to book a specific time too.",
+      parameters: {
+        type: 'object',
+        properties: {
+          name: { type: 'string', description: "The caller's name." },
+          phone: { type: 'string', description: 'The best callback number for the caller, confirmed digit by digit.' },
+          reason: { type: 'string', description: 'One line on why they want Sarah, in your words.' },
+        },
+        required: [],
+      },
+    },
+  },
+  // Live warm handoff to Sarah's real cell. This is a Vapi-native structural tool
+  // (no function.name), so it is INTENTIONALLY stripped from every forged web/demo/
+  // desk call by demoModel() in lib/sidekick.ts: it can only ring Sarah's personal
+  // phone from the real inbound line, never from an anonymous browser demo.
+  {
+    type: 'transferCall',
+    destinations: [
+      {
+        type: 'number',
+        number: '+14062506076',
+        message: 'Sure, let me connect you with Sarah right now. One moment.',
+        description:
+          'Transfer the caller to Sarah when they ask to speak with her directly, or clearly need her personally (a real problem only she can solve, a decision that is hers, or an existing relationship). Do NOT transfer for anything you can handle yourself.',
+        transferPlan: {
+          // Warm: Vapi briefs Sarah on who is calling and why before it connects
+          // them, so she never picks up cold.
+          mode: 'warm-transfer-say-summary',
+          summaryPlan: {
+            messages: [
+              { role: 'system', content: 'In one short sentence, tell Sarah who is on the line and why they asked for her, so she can pick up warm.' },
+              { role: 'user', content: 'Here is the call so far:\n\n{{transcript}}' },
+            ],
+          },
+        },
+      },
+    ],
   },
 ];
 
