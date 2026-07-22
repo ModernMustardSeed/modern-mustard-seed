@@ -27,8 +27,12 @@ export const availability = {
   // Don't allow same-day bookings within this many hours of "now"
   minLeadHours: 18,
 
-  // How far ahead the bot is willing to propose
-  maxLookaheadDays: 14,
+  // How far ahead anyone can book (site, chat, voice, admin). Roughly four
+  // months. The curated spread below still proposes the SOONEST days first;
+  // callers reach later weeks by passing a from-date (UI date picker, chat and
+  // voice tools' fromDate). Raising this is safe: slot generation is bounded
+  // and formatters are hoisted in lib/booking.ts.
+  maxLookaheadDays: 120,
 
   // Curated spread offered each time we propose times. We surface a small, fixed
   // shape (proposePerDay times on each of proposeDays days) instead of dumping

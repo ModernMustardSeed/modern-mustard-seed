@@ -26,15 +26,22 @@ export type Slot = {
 
 const MT_ZONE = 'America/Denver';
 
+// Formatters are hoisted: Intl.DateTimeFormat construction is the expensive
+// part (module init only), format calls are cheap. With a ~120-day lookahead
+// the slot walk makes thousands of format calls per request, so building
+// formatters inside the loop would cost whole seconds.
+const OFFSET_FMT = new Intl.DateTimeFormat('en-US', { timeZone: MT_ZONE, timeZoneName: 'shortOffset' });
+const LONG_FMT = new Intl.DateTimeFormat('en-US', { timeZone: MT_ZONE, weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+const SHORT_FMT = new Intl.DateTimeFormat('en-US', { timeZone: MT_ZONE, weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+const DAY_FMT = new Intl.DateTimeFormat('en-US', { timeZone: MT_ZONE, weekday: 'long', month: 'long', day: 'numeric' });
+const TIME_FMT = new Intl.DateTimeFormat('en-US', { timeZone: MT_ZONE, hour: 'numeric', minute: '2-digit' });
+const YMD_FMT = new Intl.DateTimeFormat('en-CA', { timeZone: MT_ZONE, year: 'numeric', month: '2-digit', day: 'numeric', weekday: 'short' });
+
 /** Number of UTC ms that, when added to a UTC instant, gives the Mountain
  * Time instant. Positive during DST (-6 → -360min). Computed via Intl. */
 function mtOffsetMinutes(at: Date): number {
-  const fmt = new Intl.DateTimeFormat('en-US', {
-    timeZone: MT_ZONE,
-    timeZoneName: 'shortOffset',
-  });
   // shortOffset emits like "GMT-6" or "GMT-7"
-  const part = fmt.formatToParts(at).find((p) => p.type === 'timeZoneName')?.value ?? 'GMT-7';
+  const part = OFFSET_FMT.formatToParts(at).find((p) => p.type === 'timeZoneName')?.value ?? 'GMT-7';
   const m = /GMT([+-]\d{1,2})(?::?(\d{2}))?/.exec(part);
   if (!m) return -420;
   const hours = parseInt(m[1], 10);
@@ -56,34 +63,12 @@ function inBlackout(dateStr: string): boolean {
 }
 
 function formatMt(start: Date): { display: string; shortLabel: string; dayLabel: string; timeLabel: string } {
-  const long = new Intl.DateTimeFormat('en-US', {
-    timeZone: MT_ZONE,
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(start);
-  const short = new Intl.DateTimeFormat('en-US', {
-    timeZone: MT_ZONE,
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(start);
-  const dayLabel = new Intl.DateTimeFormat('en-US', {
-    timeZone: MT_ZONE,
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  }).format(start);
-  const timeLabel = new Intl.DateTimeFormat('en-US', {
-    timeZone: MT_ZONE,
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(start);
-  return { display: `${long} MT`, shortLabel: `${short} MT`, dayLabel, timeLabel };
+  return {
+    display: `${LONG_FMT.format(start)} MT`,
+    shortLabel: `${SHORT_FMT.format(start)} MT`,
+    dayLabel: DAY_FMT.format(start),
+    timeLabel: TIME_FMT.format(start),
+  };
 }
 
 /** Generate the universe of candidate slots within the lookahead. */
@@ -96,13 +81,7 @@ function candidateSlots(now: Date): Slot[] {
   for (let dayOffset = 0; dayOffset <= availability.maxLookaheadDays; dayOffset++) {
     const probeUtc = new Date(now.getTime() + dayOffset * 86400 * 1000);
     // Year/month/day in Mountain Time for this probe
-    const mtParts = new Intl.DateTimeFormat('en-CA', {
-      timeZone: MT_ZONE,
-      year: 'numeric',
-      month: '2-digit',
-      day: 'numeric',
-      weekday: 'short',
-    }).formatToParts(probeUtc);
+    const mtParts = YMD_FMT.formatToParts(probeUtc);
     const get = (t: string) => mtParts.find((p) => p.type === t)?.value ?? '';
     const y = parseInt(get('year'), 10);
     const m = parseInt(get('month'), 10);
@@ -180,19 +159,53 @@ function pickForDay<T>(items: T[], n: number, dayIndex: number): T[] {
   return out;
 }
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * The booking window: how far out anyone can book, and the last bookable
+ * Mountain-Time date, for UIs (date-picker max) and agent scripts ("Sarah
+ * books through October 18").
+ */
+export function bookingWindow(now: Date = new Date()): {
+  maxLookaheadDays: number;
+  lastDateStr: string;
+  lastDateLabel: string;
+} {
+  const last = new Date(now.getTime() + availability.maxLookaheadDays * 86400 * 1000);
+  const parts = YMD_FMT.formatToParts(last);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+  return {
+    maxLookaheadDays: availability.maxLookaheadDays,
+    lastDateStr: `${get('year')}-${get('month')}-${get('day')}`,
+    lastDateLabel: DAY_FMT.format(last),
+  };
+}
+
 /**
  * A curated spread of open slots: up to `proposePerDay` times on each of the
- * next `proposeDays` days that have any availability, deduped against existing
- * bookings.
+ * first `proposeDays` days that have any availability, deduped against
+ * existing bookings.
  *
  * We deliberately do NOT return every open slot. The shape is always the same
  * (a couple of times across a few days) whether the week is wide open or nearly
  * full, so the spread never reveals how booked Sarah's calendar is, while still
  * giving the visitor a genuine choice of both day and time.
+ *
+ * `fromDate` (YYYY-MM-DD, Mountain Time) starts the spread at a later date so
+ * people can book weeks or months ahead, up to `maxLookaheadDays`. Invalid or
+ * absent values mean "soonest". A date beyond the window yields [] (callers
+ * explain the window via bookingWindow()).
  */
-export async function getNextAvailableSlots(): Promise<Slot[]> {
+export async function getNextAvailableSlots(fromDate?: string): Promise<Slot[]> {
   if (!availability.enabled) return [];
-  const candidates = candidateSlots(new Date());
+  let candidates = candidateSlots(new Date());
+  const from = (fromDate ?? '').trim();
+  if (from && DATE_RE.test(from)) {
+    const [fy, fm, fd] = from.split('-').map((n) => parseInt(n, 10));
+    const fromIso = mtToUtc(fy, fm, fd, 0, 0).toISOString();
+    // ISO strings in UTC Z-form compare correctly as strings.
+    candidates = candidates.filter((s) => s.startIso >= fromIso);
+  }
   const [booked, busy] = await Promise.all([bookedStartTimes(), getBusyIntervals()]);
   const open = candidates.filter(
     (s) => !booked.has(s.startIso) && !overlapsBusy(Date.parse(s.startIso), Date.parse(s.endIso), busy)

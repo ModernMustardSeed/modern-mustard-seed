@@ -53,6 +53,7 @@ export default function CallCard({
   const [bookOpen, setBookOpen] = useState(false);
   const [slots, setSlots] = useState<Slot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
+  const [bookFrom, setBookFrom] = useState('');
   const [bookingIso, setBookingIso] = useState<string | null>(null);
   const [convOpen, setConvOpen] = useState(false);
   const [msgs, setMsgs] = useState<Array<{ id: string; direction: string; channel?: string; subject: string | null; snippet: string | null; body: string | null; occurred_at: string }> | null>(null);
@@ -245,12 +246,10 @@ export default function CallCard({
     }
   };
 
-  const toggleBooking = async () => {
-    setBookOpen((v) => !v);
-    if (slots.length || slotsLoading) return;
+  const loadBookSlots = async (from?: string) => {
     setSlotsLoading(true);
     try {
-      const res = await fetch('/api/book/slots');
+      const res = await fetch(`/api/book/slots${from ? `?from=${from}` : ''}`);
       const json = await res.json();
       setSlots(json.slots ?? []);
     } catch {
@@ -258,6 +257,12 @@ export default function CallCard({
     } finally {
       setSlotsLoading(false);
     }
+  };
+
+  const toggleBooking = async () => {
+    setBookOpen((v) => !v);
+    if (slots.length || slotsLoading) return;
+    await loadBookSlots(bookFrom || undefined);
   };
 
   const book = async (startIso: string) => {
@@ -558,10 +563,27 @@ export default function CallCard({
         {bookOpen && (
           <div className="px-4 pb-4">
             {!contact.email.trim() && <p className="text-[#9B3022] text-xs font-body mb-2">Add their email above first, so we can send the invite.</p>}
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <label className="text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616]/60">From</label>
+              <input
+                type="date"
+                value={bookFrom}
+                min={new Date().toISOString().slice(0, 10)}
+                aria-label="Show times starting from this date"
+                onChange={(e) => { const v = e.target.value; setBookFrom(v); loadBookSlots(v || undefined); }}
+                className="px-2 py-1.5 text-xs font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-lg"
+              />
+              {bookFrom && (
+                <button onClick={() => { setBookFrom(''); loadBookSlots(); }} className="px-2.5 py-1.5 text-[10px] uppercase tracking-[0.12em] font-sans font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-lg hover:bg-[#FFF8E6]">
+                  Soonest
+                </button>
+              )}
+              <span className="text-[11px] text-[#161616]/50 font-body">Books up to 4 months out</span>
+            </div>
             {slotsLoading ? (
               <p className="text-[#161616]/55 text-sm italic py-3">Loading open times...</p>
             ) : slots.length === 0 ? (
-              <p className="text-[#161616]/55 text-sm italic py-3">No open times right now.</p>
+              <p className="text-[#161616]/55 text-sm italic py-3">No open times {bookFrom ? 'around that date' : 'right now'}.</p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {slots.map((sl) => (

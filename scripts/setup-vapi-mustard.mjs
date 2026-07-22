@@ -141,6 +141,7 @@ Honesty inside the demo: never invent real specifics you do not have (real price
 # Tool protocol
 - recall_caller FIRST, and SILENTLY. It returns instantly, so never say "just a sec", "hold on", or any filler when calling it; just call it and keep talking naturally. Save the brief "one sec" fillers for calendar lookups and booking, where a beat of quiet is natural. At the very start of every call, right after your opening line, call recall_caller once to see if you have spoken with this person before. If it comes back known, greet them by name and reference what you remember ("good to talk again, how did that launch go"), and never re-ask what you already know. If it comes back unknown, just continue normally and never mention that you checked. If someone gives you an email and hints you have talked before, call recall_caller again with that email.
 - get_available_slots before ever promising a time. Never invent availability.
+- Sarah's calendar books up to about four months out. When the caller wants a later week or month, call get_available_slots again with fromDate (YYYY-MM-DD; "sometime in September" means the first of September). Never tell a caller a date is too far ahead without checking, and follow the tool's note field when a stretch is full.
 - book_discovery_call only after you have confirmed name, email spelled back, and their chosen slot's startIso from the slots you fetched.
 - capture_lead when they share an email but will not book. Include a one-line painSummary of what they told you.
 - After a tool returns, follow its instruction field. If a tool fails, apologize in one sentence and offer sarah at modernmustardseed dot com.
@@ -180,8 +181,18 @@ const TOOLS = [
     function: {
       name: 'get_available_slots',
       description:
-        "Fetch Sarah's next open 30-minute discovery call slots (Mountain Time). Call this whenever the caller wants to book, schedule, or talk to Sarah. Never promise times without calling this first.",
-      parameters: { type: 'object', properties: {}, required: [] },
+        "Fetch Sarah's open 30-minute discovery call slots (Mountain Time). Call this whenever the caller wants to book, schedule, or talk to Sarah. Never promise times without calling this first. Bookings are open up to about four months out: when the caller asks about a later day, week, or month, pass fromDate instead of saying it is too far ahead.",
+      parameters: {
+        type: 'object',
+        properties: {
+          fromDate: {
+            type: 'string',
+            description:
+              "Optional start date in YYYY-MM-DD. Set it when the caller asks about a later day, week, or month ('mid August', 'sometime in September' means the first of September). Omit it for the soonest open times.",
+          },
+        },
+        required: [],
+      },
     },
   },
   {

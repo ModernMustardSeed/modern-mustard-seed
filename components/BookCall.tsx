@@ -14,6 +14,9 @@ type StampState = 'none' | 'held' | 'booked';
 export default function BookCall() {
   const [slots, setSlots] = useState<Slot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(true);
+  const [from, setFrom] = useState('');
+  const [lastDate, setLastDate] = useState('');
+  const [lastDateLabel, setLastDateLabel] = useState('');
   const [form, setForm] = useState({ name: '', email: '', business: '', focus: '', current: '', success: '', timeline: '', startIso: '' });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -31,18 +34,24 @@ export default function BookCall() {
     if (idea) setForm((f) => (f.focus ? f : { ...f, focus: idea.slice(0, 300) }));
   }, []);
 
+  const loadSlots = async (fromDate?: string) => {
+    setSlotsLoading(true);
+    try {
+      const res = await fetch(`/api/book/slots${fromDate ? `?from=${fromDate}` : ''}`);
+      const data = await res.json();
+      setSlots(data.slots ?? []);
+      if (data.window?.lastDate) setLastDate(data.window.lastDate);
+      if (data.window?.lastDateLabel) setLastDateLabel(data.window.lastDateLabel);
+    } catch {
+      /* leave empty */
+    } finally {
+      setSlotsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch('/api/book/slots');
-        const data = await res.json();
-        setSlots(data.slots ?? []);
-      } catch {
-        /* leave empty */
-      } finally {
-        setSlotsLoading(false);
-      }
-    })();
+    loadSlots();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submit = async (e: FormEvent) => {
@@ -146,14 +155,25 @@ export default function BookCall() {
               </div>
             ) : slots.length === 0 ? (
               <p className="text-[#5c554a] font-body text-sm">
-                Nothing open this week. Email{' '}
-                <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
-                  sarah@modernmustardseed.com
-                </a>{' '}
-                and we will find a time that works.
+                {from ? (
+                  'Nothing open around that date. Try another week below, or go back to the soonest times.'
+                ) : (
+                  <>
+                    Nothing open right now. Email{' '}
+                    <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+                      sarah@modernmustardseed.com
+                    </a>{' '}
+                    and we will find a time that works.
+                  </>
+                )}
               </p>
             ) : (
               <div className="space-y-5">
+                {from && (
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#1E50C8]" aria-live="polite">
+                    Showing times from {prettyDate(from)}
+                  </p>
+                )}
                 {groupByDay(slots).map(([day, times]) => (
                   <div key={day}>
                     <span className="font-mono text-[9px] uppercase tracking-[0.3em] font-bold text-[#5c554a] block mb-2.5">{day}</span>
@@ -181,6 +201,40 @@ export default function BookCall() {
                 ))}
               </div>
             )}
+
+            {/* Book ahead: jump the spread to any week within the window. */}
+            <div className="mt-6 border-t-2 border-dashed border-[#161616]/25 pt-5">
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em] font-bold text-[#5c554a] block mb-2">
+                Planning ahead? Jump to a date
+              </span>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <input
+                  type="date"
+                  value={from}
+                  min={new Date().toISOString().slice(0, 10)}
+                  max={lastDate || undefined}
+                  aria-label="Show times starting from this date"
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setFrom(v);
+                    if (v) loadSlots(v);
+                  }}
+                  className="rounded-lg border-2 border-[#161616] bg-white px-3 py-2 font-mono text-sm font-bold text-[#161616] focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow"
+                />
+                {from && (
+                  <button
+                    type="button"
+                    onClick={() => { setFrom(''); loadSlots(); }}
+                    className="rounded-full border-2 border-[#161616] bg-white px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#161616] transition-all hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#161616]"
+                  >
+                    Back to soonest
+                  </button>
+                )}
+              </div>
+              <p className="mt-2.5 font-body text-[12px] leading-relaxed text-[#5c554a]">
+                Sarah books up to four months out{lastDateLabel ? ` (through ${lastDateLabel})` : ''}. Tuesdays through Fridays, Mountain Time.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -273,6 +327,13 @@ function CardRow({ label, value, ghost, clamp, mono }: { label: string; value: s
       </p>
     </div>
   );
+}
+
+/** "2026-09-14" → "September 14" (local parse is fine for a display label). */
+function prettyDate(ymd: string): string {
+  const [y, m, d] = ymd.split('-').map((n) => parseInt(n, 10));
+  if (!y || !m || !d) return ymd;
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
 }
 
 /** Group offered slots under their day, preserving chronological order. */

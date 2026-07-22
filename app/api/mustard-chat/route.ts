@@ -8,7 +8,7 @@ import {
   leadNotification,
 } from '@/lib/email';
 import { insertLead, getSupabase } from '@/lib/supabase';
-import { getNextAvailableSlots, isSlotAvailable, displayForIso } from '@/lib/booking';
+import { getNextAvailableSlots, isSlotAvailable, displayForIso, bookingWindow } from '@/lib/booking';
 import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
 import { sendMetaEvent } from '@/lib/meta-capi';
@@ -60,6 +60,7 @@ Use the store as a self-serve alternative when a visitor seems too early-stage, 
 You can book a 30-minute discovery call with Sarah directly through this chat. Do not link to Zoho. Do not say "go to my booking link." Use your tools.
 
 - When the visitor asks to book, schedule, get on a call, hop on a call, or anything similar: call \`propose_call_slots\`. The tool returns the next available slots. You then present them naturally in chat (numbered list, 1-5).
+- Sarah books up to about four months out. If the visitor wants a specific later day, week, or month ("mid August", "sometime in September"), call \`propose_call_slots\` with fromDate set to where they want to start (YYYY-MM-DD). Never tell a visitor a date is too far ahead without checking the tool first.
 - When the visitor picks a specific slot AND has shared their name + email: call \`book_call_slot\` with the chosen iso timestamp. The tool creates the booking and sends calendar invites to both Sarah and the visitor.
 - If the visitor does not have an email yet, ask for it before calling \`book_call_slot\`. The email is required for the calendar invite.
 
@@ -120,8 +121,17 @@ const CAPTURE_LEAD_TOOL = {
 const PROPOSE_SLOTS_TOOL = {
   name: 'propose_call_slots',
   description:
-    'Fetch the next available 30-minute discovery call slots with Sarah. Call this when the visitor wants to book, schedule, or talk on a call. Returns slots you can present in chat. Do NOT promise specific times without calling this tool first.',
-  input_schema: { type: 'object' as const, properties: {}, required: [] },
+    'Fetch available 30-minute discovery call slots with Sarah. Call this when the visitor wants to book, schedule, or talk on a call. Returns slots you can present in chat. Do NOT promise specific times without calling this tool first. Bookings are open up to about four months out: when the visitor asks about a later day, week, or month ("mid August", "sometime in September"), pass fromDate instead of saying it is too far ahead.',
+  input_schema: {
+    type: 'object' as const,
+    properties: {
+      fromDate: {
+        type: 'string',
+        description: 'Optional start date, YYYY-MM-DD. Set it when the visitor wants times from a specific later day, week, or month ("sometime in September" means the first of September). Omit for the soonest open times.',
+      },
+    },
+    required: [],
+  },
 };
 
 const BOOK_SLOT_TOOL = {
@@ -268,16 +278,29 @@ async function executeCaptureLead(input: {
   }
 }
 
-async function executeProposeSlots(): Promise<string> {
+async function executeProposeSlots(fromDate?: string): Promise<string> {
   if (!availability.enabled) {
     return JSON.stringify({ ok: false, error: 'Booking is paused right now. Tell the visitor to email sarah@modernmustardseed.com to book directly.' });
   }
-  const slots = await getNextAvailableSlots();
+  const from = (fromDate ?? '').trim();
+  const validFrom = /^\d{4}-\d{2}-\d{2}$/.test(from) ? from : undefined;
+  const win = bookingWindow();
+  let slots = await getNextAvailableSlots(validFrom);
+  let note = '';
+  if (slots.length === 0 && validFrom) {
+    slots = await getNextAvailableSlots();
+    note =
+      validFrom > win.lastDateStr
+        ? `The visitor asked about ${validFrom}, which is past the booking window; Sarah currently books up to ${win.lastDateLabel}. Say that plainly and offer the times below, or offer to have Sarah schedule it by email.`
+        : `Nothing is open right around ${validFrom}. Offer the nearest open times below instead.`;
+  }
   if (slots.length === 0) {
-    return JSON.stringify({ ok: false, error: 'No slots available in the next two weeks. Tell the visitor you will email Sarah to schedule.' });
+    return JSON.stringify({ ok: false, error: 'No slots are open right now. Tell the visitor you will email Sarah to schedule.' });
   }
   return JSON.stringify({
     ok: true,
+    bookingWindowNote: `Bookings are open up to ${win.lastDateLabel}. For a later week or month, call this tool again with fromDate.`,
+    ...(note ? { note } : {}),
     slots: slots.map((s, i) => ({ index: i + 1, startIso: s.startIso, display: s.display, shortLabel: s.shortLabel, dayLabel: s.dayLabel, timeLabel: s.timeLabel })),
     instruction:
       'These are a few options spread across a couple of days. Present them grouped by day (each day with its time options) and let the visitor pick the day and time that suits them. Do not comment on how full or open the calendar is, and do not imply these are the only times that exist. When they pick, call book_call_slot with the matching startIso.',
@@ -451,7 +474,7 @@ export async function POST(req: Request) {
             resultText = await executeCaptureLead(block.input as Parameters<typeof executeCaptureLead>[0]);
             leadCaptured = true;
           } else if (block.name === 'propose_call_slots') {
-            resultText = await executeProposeSlots();
+            resultText = await executeProposeSlots((block.input as { fromDate?: string }).fromDate);
           } else if (block.name === 'book_call_slot') {
             const r = await executeBookSlot(block.input as Parameters<typeof executeBookSlot>[0]);
             try {

@@ -10,7 +10,7 @@ import {
 } from '@/lib/email';
 import { insertLead, getSupabase } from '@/lib/supabase';
 import { recallCaller, rememberFromTool, rememberSummary } from '@/lib/voice-memory';
-import { getNextAvailableSlots, isSlotAvailable, displayForIso } from '@/lib/booking';
+import { getNextAvailableSlots, isSlotAvailable, displayForIso, bookingWindow } from '@/lib/booking';
 import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
 import { sendMetaEvent } from '@/lib/meta-capi';
@@ -123,7 +123,7 @@ async function recallForCall(
   });
 }
 
-async function getSlots(): Promise<string> {
+async function getSlots(fromDate?: string): Promise<string> {
   if (!availability.enabled) {
     return JSON.stringify({
       ok: false,
@@ -131,17 +131,31 @@ async function getSlots(): Promise<string> {
         'Booking is paused right now. Offer to take their email instead and Sarah will reach out to schedule directly.',
     });
   }
-  const slots = await getNextAvailableSlots();
+  const from = (fromDate ?? '').trim();
+  const validFrom = /^\d{4}-\d{2}-\d{2}$/.test(from) ? from : undefined;
+  const win = bookingWindow();
+  let slots = await getNextAvailableSlots(validFrom);
+  let note = '';
+  if (slots.length === 0 && validFrom) {
+    // Nothing at the asked-for stretch (or it is beyond the window): offer the
+    // nearest real times instead of a dead end.
+    slots = await getNextAvailableSlots();
+    note =
+      validFrom > win.lastDateStr
+        ? `The caller asked about ${validFrom}, which is past the booking window; Sarah currently books up to ${win.lastDateLabel}. Say that plainly and offer the times below, or capture their email so Sarah can schedule it by hand.`
+        : `Nothing is open right around ${validFrom}. Offer the nearest open times below instead.`;
+  }
   if (slots.length === 0) {
     return JSON.stringify({
       ok: false,
-      error:
-        'No slots are open in the next two weeks. Take their email and Sarah will reach out to schedule.',
+      error: 'No slots are open right now. Take their email and Sarah will reach out to schedule.',
     });
   }
   return JSON.stringify({
     ok: true,
     timezoneNote: 'All times are Mountain Time.',
+    bookingWindowNote: `Bookings are open up to ${win.lastDateLabel}. If the caller wants a later week or month, call this tool again with fromDate set to where they want to start.`,
+    ...(note ? { note } : {}),
     slots: slots.map((s, i) => ({ index: i + 1, startIso: s.startIso, display: s.display })),
     instruction:
       'Offer the caller a couple of these across different days, naturally in speech, like "I could do Tuesday at nine, or Thursday at one thirty, Mountain Time." Let them pick the day and time that works for them. Do not comment on how open or busy the calendar is. When they pick one, confirm their name and email out loud, then call book_discovery_call with the matching startIso.',
@@ -529,7 +543,7 @@ export async function POST(req: Request) {
         if (fnName === 'recall_caller') {
           result = await recallForCall(callerNumber, args as { email?: string });
         } else if (fnName === 'get_available_slots') {
-          result = await getSlots();
+          result = await getSlots((args as { fromDate?: string }).fromDate);
         } else if (fnName === 'book_discovery_call') {
           result = await bookSlot(args as Parameters<typeof bookSlot>[0], callerNumber);
         } else if (fnName === 'capture_lead') {
