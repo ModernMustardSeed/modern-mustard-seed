@@ -77,9 +77,9 @@ export default function EngineToggle() {
               }}
             >
               <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#C4160B] font-bold">Kalispell, MT · Roofing</span>
-              <h3 className="font-display italic font-extrabold text-2xl sm:text-3xl text-[#161616] mt-2 leading-tight">
+              <p className="font-display italic font-extrabold text-2xl sm:text-3xl text-[#161616] mt-2 leading-tight">
                 Summit Roofing Co
-              </h3>
+              </p>
               <p className="font-body text-[13.5px] text-[#161616]/75 mt-2 leading-relaxed max-w-sm">
                 Storm-ready roofs, done right and documented to the shingle. Serving the Flathead for 18 years.
               </p>
