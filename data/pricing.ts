@@ -147,11 +147,11 @@ export const pricingFaq = [
   },
   {
     q: 'I do not know much about AI. Is this still for me?',
-    a: 'Yes. The Online Presence Build does not require AI at all. The Idea to Product engagement starts with us figuring out what to build together. You bring the vision and the domain knowledge. We bring the technical decisions.',
+    a: 'Yes. A website or an AI receptionist does not require you to know any AI at all, and a custom build starts with us figuring out what to build together. You bring the vision and the domain knowledge. We bring the technical decisions.',
   },
   {
-    q: 'What if my project does not fit one of these engagements?',
-    a: 'Most do not, exactly. Book a discovery call. We will map your situation against our model and propose a custom scope before any large commitment.',
+    q: 'What if my project does not fit a productized door?',
+    a: 'Many do not, exactly, and that is what the bespoke path is for. Book a discovery call. We will map your situation and propose a custom scope before any large commitment.',
   },
   {
     q: 'Do you offer payment plans?',

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import PricingTable from '@/components/PricingTable';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import MrMustardHeroCTA from '@/components/MrMustardHeroCTA';
 import PortalShowcase from '@/components/PortalShowcase';
@@ -7,11 +6,12 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { pricingFaq } from '@/data/pricing';
 import { bookingUrl } from '@/data/socials';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
 export const metadata = buildMetadata({
   title: 'How We Work',
   description:
-    'Five engagement structures aligned with how clients actually start: Seed Site, Full-Service Business Build (site + AI SDR + funnels + back office + embedded AI agents), Idea to Product, AI-Proof Your Business, and Fractional AI Partner. Fixed scope, fixed timeline, quoted per project.',
+    'How Modern Mustard Seed works: try any productized door free (a website, an AI receptionist, a command center, and more) then keep it monthly, or scope a fully custom build. Fixed scope, fixed timeline, and you own everything on launch day.',
   path: '/work-with-us',
 });
 
@@ -91,16 +91,16 @@ export default function WorkWithUsPage() {
               How We Work
             </span>
             <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.1] mb-6">
-              Five ways to{' '}
+              Two ways in.{' '}
               <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                engage
+                One standard.
               </span>
             </h1>
             <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-3">
-              Every engagement is a fixed scope, a fixed timeline, and a quote you see before anyone writes a line of code. No hourly billing. No surprise scope.
+              Try a productized door free and keep it monthly, or scope a fully custom build. Either way it is a fixed scope, a fixed timeline, and a quote you see before anyone writes a line of code. No hourly billing, no surprise scope.
             </p>
-            <p className="text-[#161616]/50 text-sm font-body italic">
-              Pick the path that sounds like your situation. We quote after a free discovery call.
+            <p className="text-[#161616]/70 text-sm font-body italic">
+              Not sure which fits? We quote after a free discovery call.
             </p>
             <Link
               href="/sample-proposal"
@@ -110,8 +110,86 @@ export default function WorkWithUsPage() {
             </Link>
           </div>
 
-          {/* Engagements */}
-          <PricingTable />
+          {/* Two ways in: productized doors, or a bespoke build */}
+          <section className="max-w-6xl mx-auto px-6 md:px-8">
+            <div className="grid lg:grid-cols-2 gap-6 items-stretch">
+              {/* Path one: productized */}
+              <div className="pop-card p-8 md:p-9 flex flex-col">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Path one // Forge it free</span>
+                <h2 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight mt-2.5 leading-[1.05]">
+                  Productized doors, tried free before you pay.
+                </h2>
+                <p className="text-[#3a3733] text-sm font-body leading-6 mt-3">
+                  Each one opens with a real working demo, built for your business in about twenty seconds. Keep what
+                  you love, month to month, cancel anytime, no trials. Live within a week.
+                </p>
+                <ul className="mt-5 space-y-2.5">
+                  {[
+                    ['🌐', 'Website', `${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo + ${formatUsd(DEMO_PRODUCTS.site.setupCents)} setup`],
+                    ['🎙', 'AI receptionist', `${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo + ${formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup`],
+                    ['⚙', 'Command center', 'Free with either'],
+                    ['✦', 'The whole system', `${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + ${formatUsd(DEMO_BUNDLE.setupCents)} setup`],
+                  ].map(([icon, name, price]) => (
+                    <li key={name} className="flex items-center justify-between gap-3 border-b border-dashed border-[#161616]/15 pb-2.5 last:border-0">
+                      <span className="font-sans font-bold text-[14px] text-[#161616]"><span aria-hidden="true">{icon}</span> {name}</span>
+                      <span className="font-mono font-bold text-[12.5px] text-[#8f6600] text-right whitespace-nowrap">{price}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-[#161616]/70 text-[12.5px] font-body mt-4">
+                  Broadcast, Pictures, Press, the GEO Desk, Launch, and more each open free too.
+                </p>
+                <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                  <Link
+                    href="/demos"
+                    className="text-center px-6 py-3.5 text-[11px] uppercase tracking-[0.16em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                  >
+                    Forge free demos →
+                  </Link>
+                  <Link
+                    href="/services"
+                    className="text-center px-6 py-3.5 text-[11px] uppercase tracking-[0.16em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                  >
+                    See every door
+                  </Link>
+                </div>
+              </div>
+
+              {/* Path two: bespoke */}
+              <div className="pop-card-yellow p-8 md:p-9 flex flex-col">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#161616] font-mono font-bold">Path two // Built to spec</span>
+                <h2 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight mt-2.5 leading-[1.05]">
+                  Bespoke builds, quoted after a free call.
+                </h2>
+                <p className="text-[#161616]/80 text-sm font-body leading-6 mt-3">
+                  When you need more than a productized door: custom software, a tool only your industry has, an online
+                  store, or a system of agents. Fixed scope, fixed quote, and you own all of it.
+                </p>
+                <ul className="mt-5 space-y-2.5">
+                  {[
+                    ['📱', 'Custom apps & software', 'Web and mobile, built end to end'],
+                    ['🛠', 'Specialty AI tools', 'The $3K workflow becomes a $99 tool'],
+                    ['🏪', 'Online stores', 'Headless commerce with an AI concierge'],
+                    ['🤖', 'Agentic systems', 'Multi-agent workflows that run themselves'],
+                  ].map(([icon, name, note]) => (
+                    <li key={name} className="flex items-start gap-2.5">
+                      <span aria-hidden="true" className="text-lg leading-none mt-0.5">{icon}</span>
+                      <span>
+                        <span className="block font-sans font-bold text-[14px] text-[#161616]">{name}</span>
+                        <span className="block font-body text-[12px] text-[#161616]/70 leading-snug">{note}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/book"
+                  className="mt-auto pt-6 inline-block text-center px-6 py-3.5 text-[11px] uppercase tracking-[0.16em] font-sans font-extrabold text-[#F5B700] bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
+                >
+                  Scope a custom build →
+                </Link>
+              </div>
+            </div>
+          </section>
 
           {/* Process */}
           <div className="max-w-6xl mx-auto px-6 md:px-8 py-20">

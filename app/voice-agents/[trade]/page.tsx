@@ -146,8 +146,8 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               <p className="mt-2 font-display text-xl font-extrabold">{preset.signature.title}</p>
               <p className="mt-1 font-body text-sm text-[#5c554a]">{preset.signature.sub}</p>
               <p className="mt-3 font-body text-sm text-[#3d382e]">
-                Every forged demo ships with a full business command center for your trade, and this board is its
-                centerpiece. See it live inside your demo.
+                Every forged demo ships with a full business command center for your trade, and it stays free with your
+                receptionist. This board is its centerpiece. See it live inside your demo.
               </p>
             </div>
           </div>
