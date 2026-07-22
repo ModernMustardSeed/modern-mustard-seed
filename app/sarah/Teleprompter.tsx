@@ -231,9 +231,9 @@ export default function Teleprompter() {
     setDone(false);
     setStarted(true);
     setCountdown(3);
-    // Camera armed: the take rolls from the countdown so nothing gets clipped.
+    // Camera or screen armed: the take rolls from the countdown so nothing gets clipped.
     const s = activeRef.current;
-    if (booth.ready && !booth.recording && s) booth.startTake(s.id, currentSectionLabel());
+    if (booth.canRecord && !booth.recording && s) booth.startTake(s.id, currentSectionLabel());
   }, [booth, currentSectionLabel]);
 
   useEffect(() => {
@@ -263,7 +263,7 @@ export default function Teleprompter() {
       setPlaying(false);
     } else {
       const s = activeRef.current;
-      if (booth.ready && !booth.recording && s) booth.startTake(s.id, currentSectionLabel());
+      if (booth.canRecord && !booth.recording && s) booth.startTake(s.id, currentSectionLabel());
       setPlaying(true);
     }
   }, [done, started, countdown, playing, beginCountdown, restart, booth, currentSectionLabel]);
@@ -520,6 +520,26 @@ export default function Teleprompter() {
               Cam Off
             </button>
           )}
+          {!booth.screenReady ? (
+            <button
+              onClick={() => void booth.enableScreen()}
+              className="border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
+              style={{ borderColor: GOLD, color: GOLD }}
+              aria-label="Share your screen for a demo walkthrough take"
+            >
+              Screen
+            </button>
+          ) : (
+            <button
+              onClick={() => !booth.recording && booth.disableScreen()}
+              className="border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em]"
+              style={{ borderColor: '#7FA98F', color: '#7FA98F' }}
+              aria-label="Stop sharing the screen"
+              title={booth.recording ? 'Recording; pause first' : 'Stop sharing the screen'}
+            >
+              Screen ●
+            </button>
+          )}
           <button
             onClick={() => setShowTakes((v) => !v)}
             className="border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
@@ -601,24 +621,40 @@ export default function Teleprompter() {
       {/* director's note + camera arm (pre-roll) */}
       {!started && !done && countdown === null && (
         <div className="absolute bottom-24 left-1/2 z-30 w-[min(92vw,640px)] -translate-x-1/2 sm:bottom-28">
-          {!booth.enabled && (
-            <div className="mb-2 flex items-center justify-between gap-3 border-2 px-4 py-2.5" style={{ background: '#0B1019', borderColor: GOLD }}>
+          {!booth.canRecord && (
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-3 border-2 px-4 py-2.5" style={{ background: '#0B1019', borderColor: GOLD }}>
               <p className="font-mono text-[10px] uppercase tracking-[0.12em]" style={{ color: 'rgba(251,246,234,0.8)' }}>
-                Camera is off. Arm it and every take records + sends itself.
+                Arm the camera (face takes) or the screen (demo walkthroughs), or both for a face bubble.
               </p>
-              <button
-                onClick={() => void booth.enable()}
-                className="shrink-0 border-2 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
-                style={{ background: GOLD, borderColor: INK, color: INK }}
-              >
-                Arm Camera
-              </button>
+              <span className="flex shrink-0 gap-2">
+                <button
+                  onClick={() => void booth.enable()}
+                  className="border-2 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
+                  style={{ background: GOLD, borderColor: INK, color: INK }}
+                >
+                  Arm Camera
+                </button>
+                <button
+                  onClick={() => void booth.enableScreen()}
+                  className="border-2 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
+                  style={{ background: 'transparent', borderColor: GOLD, color: GOLD }}
+                >
+                  Share Screen
+                </button>
+              </span>
             </div>
           )}
           {booth.camError && (
             <div className="mb-2 border-2 px-4 py-2" style={{ background: '#E0301E', borderColor: INK }}>
               <p className="font-mono text-[10px] uppercase tracking-[0.1em]" style={{ color: CREAM }}>
                 Camera blocked: {booth.camError}. Allow camera + mic for this site and try again.
+              </p>
+            </div>
+          )}
+          {booth.screenError && (
+            <div className="mb-2 border-2 px-4 py-2" style={{ background: '#E0301E', borderColor: INK }}>
+              <p className="font-mono text-[10px] uppercase tracking-[0.1em]" style={{ color: CREAM }}>
+                {booth.screenError}
               </p>
             </div>
           )}

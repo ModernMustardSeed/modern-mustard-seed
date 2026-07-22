@@ -3,9 +3,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
- * The booth camera: records Sarah while the prompter rolls and sends every
- * take straight to the private Supabase `booth` bucket for editing.
- * Recording works without the booth code; UPLOAD requires it (fails closed).
+ * The booth: records Sarah (camera), her screen (demo walkthroughs), or both
+ * at once while the prompter rolls, and sends every take straight to the
+ * private Supabase `booth` bucket for editing.
+ *
+ * Screen mode captures the picked tab/window/screen plus a MIXED audio track
+ * (her mic + the tab's own audio), so a live call with a voice agent records
+ * both sides cleanly. Arm Camera at the same time and a second synced take
+ * (-cam) records her face for a picture-in-picture bubble in the edit.
+ *
+ * The BOOTH CODE is the door key: recording works without it, but uploads are
+ * refused server-side unless the code matches (fails closed, so a stranger
+ * who finds this page cannot pour files into storage). Entered once, kept in
+ * localStorage.
  */
 
 export type TakeStatus = 'local' | 'needs-code' | 'uploading' | 'sent' | 'failed';
@@ -33,21 +43,31 @@ function pickMime(): string {
   return 'video/webm';
 }
 
+function getStoredCode(): string {
+  try {
+    return window.localStorage.getItem(CODE_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
 export function useBoothCamera() {
   const [enabled, setEnabled] = useState(false);
   const [ready, setReady] = useState(false);
   const [camError, setCamError] = useState<string | null>(null);
+  const [screenReady, setScreenReady] = useState(false);
+  const [screenError, setScreenError] = useState<string | null>(null);
   const [recording, setRecording] = useState(false);
   const [level, setLevel] = useState(0);
   const [takes, setTakes] = useState<Take[]>([]);
   const [code, setCodeState] = useState('');
 
-  const streamRef = useRef<MediaStream | null>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<BlobPart[]>([]);
-  const recStartRef = useRef(0);
-  const recMetaRef = useRef<{ scriptId: string; label: string; fileName: string } | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
+  const camStreamRef = useRef<MediaStream | null>(null);
+  const micStreamRef = useRef<MediaStream | null>(null);
+  const screenStreamRef = useRef<MediaStream | null>(null);
+  const mixCtxRef = useRef<AudioContext | null>(null);
+  const activeRecsRef = useRef<MediaRecorder[]>([]);
+  const meterCtxRef = useRef<AudioContext | null>(null);
   const levelRafRef = useRef<number | null>(null);
   const autoStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoElRef = useRef<HTMLVideoElement | null>(null);
@@ -57,24 +77,23 @@ export function useBoothCamera() {
   }, [takes]);
 
   useEffect(() => {
-    try {
-      setCodeState(window.localStorage.getItem(CODE_KEY) || '');
-    } catch {}
+    setCodeState(getStoredCode());
   }, []);
 
   const attachVideo = useCallback((el: HTMLVideoElement | null) => {
     videoElRef.current = el;
-    if (el && streamRef.current) {
-      el.srcObject = streamRef.current;
+    if (el && camStreamRef.current) {
+      el.srcObject = camStreamRef.current;
       void el.play().catch(() => {});
     }
   }, []);
 
   const startMeter = useCallback((stream: MediaStream) => {
     try {
+      if (meterCtxRef.current) return;
       const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       const ctx = new Ctx();
-      audioCtxRef.current = ctx;
+      meterCtxRef.current = ctx;
       const src = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 256;
@@ -106,7 +125,7 @@ export function useBoothCamera() {
         video: { width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: { ideal: 30 } },
         audio: { echoCancellation: true, noiseSuppression: true },
       });
-      streamRef.current = stream;
+      camStreamRef.current = stream;
       if (videoElRef.current) {
         videoElRef.current.srcObject = stream;
         void videoElRef.current.play().catch(() => {});
@@ -120,29 +139,52 @@ export function useBoothCamera() {
   }, [startMeter]);
 
   const disable = useCallback(() => {
-    recorderRef.current?.state === 'recording' && recorderRef.current.stop();
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    streamRef.current = null;
-    if (levelRafRef.current) cancelAnimationFrame(levelRafRef.current);
-    void audioCtxRef.current?.close().catch(() => {});
-    audioCtxRef.current = null;
+    camStreamRef.current?.getTracks().forEach((t) => t.stop());
+    camStreamRef.current = null;
     setReady(false);
     setEnabled(false);
-    setRecording(false);
   }, []);
+
+  const cleanupScreen = useCallback(() => {
+    screenStreamRef.current?.getTracks().forEach((t) => t.stop());
+    screenStreamRef.current = null;
+    setScreenReady(false);
+  }, []);
+
+  const enableScreen = useCallback(async () => {
+    setScreenError(null);
+    try {
+      const disp = await navigator.mediaDevices.getDisplayMedia({
+        video: { frameRate: { ideal: 30 } },
+        audio: true,
+      });
+      const vt = disp.getVideoTracks()[0];
+      if (vt) vt.addEventListener('ended', cleanupScreen);
+      screenStreamRef.current = disp;
+      // Narration needs a mic even when the camera stays off.
+      if (!camStreamRef.current && !micStreamRef.current) {
+        try {
+          micStreamRef.current = await navigator.mediaDevices.getUserMedia({
+            audio: { echoCancellation: true, noiseSuppression: true },
+          });
+          startMeter(micStreamRef.current);
+        } catch {
+          setScreenError('Mic was blocked; the screen take would be silent narration-wise.');
+        }
+      }
+      setScreenReady(true);
+    } catch (err) {
+      setScreenError(err instanceof Error ? err.message : 'Screen share was cancelled.');
+    }
+  }, [cleanupScreen, startMeter]);
+
+  const canRecord = ready || screenReady;
 
   const upload = useCallback(async (takeId: string) => {
     const take = takesRef.current.find((t) => t.id === takeId);
     if (!take || !take.blob) return;
-    const boothCode = (() => {
-      try {
-        return window.localStorage.getItem(CODE_KEY) || '';
-      } catch {
-        return '';
-      }
-    })();
-    const patch = (p: Partial<Take>) =>
-      setTakes((ts) => ts.map((t) => (t.id === takeId ? { ...t, ...p } : t)));
+    const boothCode = getStoredCode();
+    const patch = (p: Partial<Take>) => setTakes((ts) => ts.map((t) => (t.id === takeId ? { ...t, ...p } : t)));
 
     if (!boothCode) {
       patch({ status: 'needs-code' });
@@ -153,11 +195,7 @@ export function useBoothCamera() {
       const res = await fetch('/api/booth/sign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: boothCode,
-          scriptId: take.scriptId,
-          fileName: take.fileName,
-        }),
+        body: JSON.stringify({ code: boothCode, scriptId: take.scriptId, fileName: take.fileName }),
       });
       if (res.status === 401) {
         patch({ status: 'needs-code' });
@@ -177,65 +215,109 @@ export function useBoothCamera() {
         xhr.onerror = () => reject(new Error('network'));
         xhr.send(take.blob);
       });
-      // Sent. Drop the blob so long sessions do not hold gigabytes in memory.
       patch({ status: 'sent', progress: 1, blob: undefined });
     } catch {
       patch({ status: 'failed' });
     }
   }, []);
 
-  const startTake = useCallback(
-    (scriptId: string, label: string) => {
-      const stream = streamRef.current;
-      if (!stream || recorderRef.current?.state === 'recording') return;
-      const n = takesRef.current.filter((t) => t.scriptId === scriptId && t.label === label).length + 1;
-      const fileName = `${label}-take${n}-${Date.now()}.webm`;
-      recMetaRef.current = { scriptId, label, fileName };
-      chunksRef.current = [];
+  const recordStream = useCallback(
+    (stream: MediaStream, meta: { scriptId: string; label: string; fileName: string }, vbr: number) => {
+      const chunks: BlobPart[] = [];
       const rec = new MediaRecorder(stream, {
         mimeType: pickMime(),
-        videoBitsPerSecond: 3_000_000,
+        videoBitsPerSecond: vbr,
         audioBitsPerSecond: 128_000,
       });
-      recorderRef.current = rec;
+      const started = Date.now();
       rec.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
+        if (e.data.size > 0) chunks.push(e.data);
       };
       rec.onstop = () => {
-        const meta = recMetaRef.current;
-        if (!meta) return;
-        const blob = new Blob(chunksRef.current, { type: pickMime().split(';')[0] });
-        chunksRef.current = [];
+        const blob = new Blob(chunks, { type: pickMime().split(';')[0] });
         const take: Take = {
-          id: `${meta.fileName}`,
+          id: meta.fileName,
           scriptId: meta.scriptId,
           fileName: meta.fileName,
           label: meta.label,
           bytes: blob.size,
-          seconds: Math.round((Date.now() - recStartRef.current) / 1000),
+          seconds: Math.round((Date.now() - started) / 1000),
           status: 'local',
           progress: 0,
           blob,
         };
         setTakes((ts) => [take, ...ts]);
-        // Send it to Claude right away.
         setTimeout(() => void upload(take.id), 50);
       };
-      recStartRef.current = Date.now();
       rec.start(1000);
-      setRecording(true);
-      autoStopRef.current = setTimeout(() => {
-        if (recorderRef.current?.state === 'recording') recorderRef.current.stop();
-        setRecording(false);
-      }, MAX_TAKE_MS);
+      activeRecsRef.current.push(rec);
     },
     [upload],
   );
 
+  const startTake = useCallback(
+    (scriptId: string, label: string) => {
+      if (activeRecsRef.current.length > 0) return;
+      const screen = screenStreamRef.current;
+      const cam = camStreamRef.current;
+      if (!screen && !cam) return;
+      const n =
+        takesRef.current.filter((t) => t.scriptId === scriptId && t.label === label && !t.fileName.includes('-cam-')).length + 1;
+      const ts = Date.now();
+
+      if (screen) {
+        // Mix mic narration with the shared tab/system audio into one track.
+        const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        const ctx = new Ctx();
+        mixCtxRef.current = ctx;
+        const dest = ctx.createMediaStreamDestination();
+        const micSource = camStreamRef.current?.getAudioTracks().length ? camStreamRef.current : micStreamRef.current;
+        if (micSource?.getAudioTracks().length) ctx.createMediaStreamSource(new MediaStream(micSource.getAudioTracks())).connect(dest);
+        if (screen.getAudioTracks().length) ctx.createMediaStreamSource(new MediaStream(screen.getAudioTracks())).connect(dest);
+        const mixed = new MediaStream([...screen.getVideoTracks(), ...dest.stream.getAudioTracks()]);
+        recordStream(mixed, { scriptId, label, fileName: `${label}-take${n}-screen-${ts}.webm` }, 4_000_000);
+      }
+      if (cam) {
+        const suffix = screen ? '-cam' : '';
+        recordStream(cam, { scriptId, label, fileName: `${label}-take${n}${suffix}-${ts}.webm` }, 3_000_000);
+      }
+      setRecording(true);
+      autoStopRef.current = setTimeout(() => {
+        activeRecsRef.current.forEach((r) => r.state === 'recording' && r.stop());
+        activeRecsRef.current = [];
+        setRecording(false);
+      }, MAX_TAKE_MS);
+    },
+    [recordStream],
+  );
+
   const stopTake = useCallback(() => {
     if (autoStopRef.current) clearTimeout(autoStopRef.current);
-    if (recorderRef.current?.state === 'recording') recorderRef.current.stop();
+    activeRecsRef.current.forEach((r) => r.state === 'recording' && r.stop());
+    activeRecsRef.current = [];
+    void mixCtxRef.current?.close().catch(() => {});
+    mixCtxRef.current = null;
     setRecording(false);
+  }, []);
+
+  /** Deletes a take everywhere: from the drawer, and from storage if it was sent. */
+  const deleteTake = useCallback(async (takeId: string): Promise<boolean> => {
+    const take = takesRef.current.find((t) => t.id === takeId);
+    if (!take) return true;
+    if (take.status === 'sent') {
+      try {
+        const res = await fetch('/api/booth/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: getStoredCode(), scriptId: take.scriptId, fileName: take.fileName }),
+        });
+        if (!res.ok) return false;
+      } catch {
+        return false;
+      }
+    }
+    setTakes((ts) => ts.filter((t) => t.id !== takeId));
+    return true;
   }, []);
 
   const setCode = useCallback(
@@ -244,10 +326,7 @@ export function useBoothCamera() {
       try {
         window.localStorage.setItem(CODE_KEY, c);
       } catch {}
-      // Retry anything that was waiting on the code.
-      takesRef.current
-        .filter((t) => t.status === 'needs-code' || t.status === 'failed')
-        .forEach((t) => void upload(t.id));
+      takesRef.current.filter((t) => t.status === 'needs-code' || t.status === 'failed').forEach((t) => void upload(t.id));
     },
     [upload],
   );
@@ -277,23 +356,39 @@ export function useBoothCamera() {
     return () => window.removeEventListener('beforeunload', warn);
   }, []);
 
-  useEffect(() => () => disable(), [disable]);
+  useEffect(
+    () => () => {
+      stopTake();
+      disable();
+      cleanupScreen();
+      micStreamRef.current?.getTracks().forEach((t) => t.stop());
+      if (levelRafRef.current) cancelAnimationFrame(levelRafRef.current);
+      void meterCtxRef.current?.close().catch(() => {});
+    },
+    [stopTake, disable, cleanupScreen],
+  );
 
   return {
     enabled,
     ready,
     camError,
+    screenReady,
+    screenError,
+    canRecord,
     recording,
     level,
     takes,
     code,
     enable,
     disable,
+    enableScreen,
+    disableScreen: cleanupScreen,
     attachVideo,
     startTake,
     stopTake,
     retry: upload,
     download,
+    deleteTake,
     setCode,
   };
 }
@@ -353,6 +448,8 @@ export function TakesDrawer({
   onClose: () => void;
 }) {
   const [codeDraft, setCodeDraft] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [deleteFailed, setDeleteFailed] = useState<string | null>(null);
   useEffect(() => setCodeDraft(booth.code), [booth.code]);
   if (!open) return null;
   const needsCode = !booth.code || booth.takes.some((t) => t.status === 'needs-code');
@@ -388,14 +485,18 @@ export function TakesDrawer({
               Save
             </button>
           </div>
+          <p className="mt-2 text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.45)' }}>
+            The code is the booth&rsquo;s door key. Recording always works, but nothing uploads without it, so a
+            stranger who finds this page cannot fill our storage. Enter it once and it&rsquo;s remembered.
+          </p>
         </div>
       )}
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         {booth.takes.length === 0 && (
           <p className="font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.5)' }}>
-            No takes yet. Enable the camera, hit play, and every take lands here and uploads on its own. Record
-            section by section; short takes upload fast and edit clean.
+            No takes yet. Arm the camera (or the screen for a demo walkthrough), hit play, and every take lands
+            here and uploads on its own. Record section by section; short takes upload fast and edit clean.
           </p>
         )}
         {booth.takes.map((t) => {
@@ -408,7 +509,7 @@ export function TakesDrawer({
               <p className="mt-1 font-mono text-[10px]" style={{ color: 'rgba(251,246,234,0.55)' }}>
                 {Math.floor(t.seconds / 60)}:{String(t.seconds % 60).padStart(2, '0')} · {fmtBytes(t.bytes)}
               </p>
-              <div className="mt-2 flex items-center gap-2">
+              <div className="mt-2 flex flex-wrap items-center gap-2">
                 <span className="px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.08em]" style={{ background: chip.bg, color: chip.fg }}>
                   {t.status === 'uploading' ? `Sending ${Math.round(t.progress * 100)}%` : chip.text}
                 </span>
@@ -421,6 +522,32 @@ export function TakesDrawer({
                   <button onClick={() => booth.download(t.id)} className="font-mono text-[10px] uppercase underline" style={{ color: 'rgba(251,246,234,0.7)' }}>
                     Download
                   </button>
+                )}
+                {confirmDelete === t.id ? (
+                  <button
+                    onClick={() => {
+                      setConfirmDelete(null);
+                      void booth.deleteTake(t.id).then((ok) => setDeleteFailed(ok ? null : t.id));
+                    }}
+                    className="font-mono text-[10px] font-bold uppercase underline"
+                    style={{ color: '#E0301E' }}
+                  >
+                    Really delete?
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setConfirmDelete(t.id)}
+                    className="ml-auto font-mono text-[10px] uppercase underline"
+                    style={{ color: 'rgba(251,246,234,0.45)' }}
+                    aria-label={`Delete take ${t.fileName}`}
+                  >
+                    Delete
+                  </button>
+                )}
+                {deleteFailed === t.id && (
+                  <span className="font-mono text-[9px] uppercase" style={{ color: '#E0301E' }}>
+                    Delete failed, try again
+                  </span>
                 )}
               </div>
             </div>

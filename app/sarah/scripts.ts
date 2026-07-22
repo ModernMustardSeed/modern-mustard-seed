@@ -369,6 +369,55 @@ const SALES_DESK: PrompterScript[] = [
       },
     ],
   },
+  {
+    id: 'sales-demo-walkthrough',
+    kind: 'sales',
+    episode: 'Sales 7',
+    session: 'Screen mode · record per lead',
+    publish: 'Send with their demo',
+    pillar: 'SALES',
+    title: 'The Live Demo Walkthrough',
+    hook: 'I am on your actual demo right now, and before we are done I am going to call your new receptionist and you will hear it answer.',
+    directorNote:
+      'Use SHARE SCREEN and pick the demo TAB (sharing the tab captures the voice agent cleanly when you call it in the browser). Arm the camera too and Claude adds your face bubble in the edit. These are anchor lines, not a word-for-word read: say their business name, react honestly to what is on screen, and let the live call be genuinely live. Flubs and pauses are fine, Claude cuts them. One take per beat.',
+    sections: [
+      {
+        heading: 'Beat 1 · The Open',
+        paragraphs: [
+          'Hi, it is Sarah. I am looking at your demo right now, so let me walk you through what my studio built for your business. This is not a mockup, everything you are about to see actually works. And at the end I am going to call your new receptionist, live, and you will hear it answer.',
+        ],
+      },
+      {
+        heading: 'Beat 2 · The Website',
+        paragraphs: [
+          'Let us start with the site. This is built from your real business, your services, your area, your reviews. Watch how it reads on a phone, because that is where your customers are.',
+          'Scroll it slowly. Point at two or three things that are specifically THEIRS, by name. If there is a tool or calculator on the page, run it once on camera.',
+          'Everything here can be tweaked. The photos, the words, the colors. This is the starting point, not the final answer.',
+        ],
+      },
+      {
+        heading: 'Beat 3 · The Live Call',
+        paragraphs: [
+          'Now the part I love. This is your receptionist. It already knows your services and your hours, and I am going to call it right now, no edits, no script.',
+          'Call it. Ask what a new customer would ask: are you open Saturday, what do you charge for an estimate, can I book something. Then ask it one curveball. React honestly to the answers.',
+          'Every call like that gets answered in two rings. At lunch, at two in the morning, while you are up a ladder. That is the whole point.',
+        ],
+      },
+      {
+        heading: 'Beat 4 · Where It All Lands',
+        paragraphs: [
+          'And here is where it comes together. Every call, every message, every lead lands in one place, so nothing falls through the cracks and you can see your whole front door working from your phone.',
+        ],
+      },
+      {
+        heading: 'Beat 5 · The Close',
+        paragraphs: [
+          'So that is your demo. It took my systems about a minute to build, and going live takes a short setup where you approve every word before a real customer ever hears it. The plain numbers are on the page below this video.',
+          'If you want it, reply to this email or grab a time on my calendar, the link is below. And if it is not for you, that is a fine answer too. Either way, you have seen what is possible for your business, this week, not someday.',
+        ],
+      },
+    ],
+  },
 ];
 
 /** Episodes first, then the Sales Desk, then the Shorts bank. */
