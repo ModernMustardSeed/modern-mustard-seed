@@ -26,6 +26,7 @@ import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
 import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification, subscriptionPaymentFailedEmail, clientEmail } from '@/lib/email';
 import { getSidekickTier, sidekickUsd } from '@/data/sidekick';
+import { getChiefTier, chiefUsd } from '@/data/chief';
 import { getPicturesTier, PICTURES } from '@/data/pictures';
 import { getBroadcastTier } from '@/data/ads';
 import { getPicturesRun } from '@/lib/pictures-store';
@@ -679,6 +680,46 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     return;
   }
 
+  // Chief renewals get their own note (the generic /portal dunning link below is
+  // for proposal clients and reads wrong to a Chief buyer).
+  if (subMeta?.kind === 'chief') {
+    const cEmail = invoice.customer_email;
+    if (process.env.RESEND_API_KEY && cEmail) {
+      const business = escapeHtmlSafe(subMeta.business || 'your account');
+      try {
+        const resend = resendClient();
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: cEmail,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: 'Quick payment hiccup with your Chief',
+          html: clientEmail({
+            preheader: 'A quick card update keeps your Chief on duty.',
+            eyebrow: 'THE CHIEF',
+            greeting: 'A quick card hiccup.',
+            body: `<p>The monthly payment for ${business}'s Chief did not go through. It happens (expired card, bank hiccup, gremlin).</p><p>Stripe will retry automatically, or just reply to this email and I will send a fresh payment link. He stays on duty in the meantime.</p>`,
+            signature: 'Sarah',
+          }),
+        });
+        await resend.emails.send({
+          from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+          to: OWNER_NOTIFY_TO,
+          subject: `CHIEF payment failed: ${subMeta.business || cEmail}`,
+          html: clientEmail({
+            preheader: 'A Chief renewal failed.',
+            eyebrow: 'CHIEF DUNNING',
+            greeting: 'A renewal bounced.',
+            body: `<p>Subscription ${subId}${subMeta.business ? ` (business: <strong>${business}</strong>)` : ''} failed to renew for ${escapeHtmlSafe(cEmail)}.</p><p>Stripe retries on its own. If it does not recover in a few days, pause the line and the morning briefing before minutes leak.</p>`,
+            signature: 'The Chief Desk',
+          }),
+        });
+      } catch (err) {
+        console.error('chief dunning email failed', err);
+      }
+    }
+    return;
+  }
+
   // Demo-order renewals get their own note (the generic /portal dunning link
   // below is for proposal clients and means nothing to a demo-order buyer).
   if (subMeta?.kind === 'demo-order') {
@@ -1007,6 +1048,87 @@ async function handleSidekickPurchase(
     });
   } catch (err) {
     console.error('sidekick welcome email failed', err);
+  }
+}
+
+/**
+ * The Chief was hired (subscription: monthly + a one-time setup fee on invoice
+ * #1). Recurring revenue is recorded by handleInvoicePaid like every other
+ * subscription, so this grants portal access to the command center, records the
+ * buyer, tells Sarah to TRAIN the Chief within 7 days, and magic-links the buyer
+ * straight into /chief/hq.
+ */
+async function handleChiefPurchase(
+  req: Request,
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null
+) {
+  const tier = getChiefTier(slug);
+  const businessRaw = (session.metadata?.business || '').trim();
+  const business = escapeHtmlSafe(businessRaw);
+  const firstName = name?.split(' ')[0];
+  const safeName = name ? escapeHtmlSafe(name) : null;
+
+  // Umbrella entitlement gates the command center; the tier row records the plan.
+  await grantEntitlement(email, 'chief', 'purchase');
+  await grantEntitlement(email, slug, 'purchase');
+
+  try {
+    await insertLead({
+      type: 'contact',
+      email,
+      name: name ?? null,
+      source: 'chief-buyer',
+      status: 'new',
+      notes: `[bought:chief:${slug}]${businessRaw ? ` business: ${businessRaw}` : ''} TRAIN within 7 days`,
+    });
+  } catch (err) {
+    console.error('chief lead insert failed', err);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = resendClient();
+
+  try {
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `TRAIN ${tier?.name ?? 'THE CHIEF'}: ${businessRaw || email}`,
+      html: clientEmail({
+        preheader: 'The Chief was hired. Train and provision within 7 days.',
+        eyebrow: 'CHIEF ORDER',
+        greeting: 'He got hired.',
+        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just hired The Chief${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${chiefUsd(tier.setupCents)} setup + $${chiefUsd(tier.monthlyCents)}/mo, ${tier.minutesCap.toLocaleString()} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Next: book the onboarding, load their world (business, calendar, people, voice), forge their per-client Chief persona, and turn on their morning briefing. Live within 7 days.</p>`,
+        signature: 'The Chief Desk',
+      }),
+    });
+  } catch (err) {
+    console.error('chief provision email failed', err);
+  }
+
+  try {
+    const origin = new URL(req.url).origin || 'https://modernmustardseed.com';
+    const token = await createMagicToken(email);
+    const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}&next=/chief/hq`;
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}your Chief reports for duty`,
+      html: clientEmail({
+        preheader: 'Your command center is open. Here is what happens next.',
+        eyebrow: tier?.name ?? 'THE CHIEF',
+        greeting: firstName ? `${firstName}, he reports for duty.` : 'He reports for duty.',
+        body: `<p>Your Chief${business ? ` for <strong>${business}</strong>` : ''} is officially on the payroll. Here is exactly what happens next:</p><p><strong>1.</strong> Within one business day I email you to book a short onboarding and learn how you like things run.</p><p><strong>2.</strong> I hand-train him on your world (your business, your calendar, your people, your voice) and turn on your morning briefing.</p><p><strong>3.</strong> Within 7 days he is live on his own line, ready to call, text, or type with you any hour. ${tier ? `Your plan includes ${tier.minutesCap.toLocaleString()} assistant-minutes a month; at the cap he keeps going on text, so there is never a surprise bill.` : ''}</p><p>Your command center is open right now: your day, your briefings, and one button to reach him.</p>`,
+        cta: { label: 'Open your command center', url },
+        signature: 'Sarah',
+      }),
+    });
+  } catch (err) {
+    console.error('chief welcome email failed', err);
   }
 }
 
@@ -2037,6 +2159,49 @@ async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
   }
 }
 
+/**
+ * A Chief subscription ended. Revoke the command-center entitlement (the sub
+ * metadata carries no email, so we resolve it from the Stripe customer) and
+ * tell Sarah to decommission the line and pause the morning briefing so minutes
+ * cannot leak.
+ */
+async function handleChiefSubscriptionDeleted(stripe: Stripe, sub: Stripe.Subscription) {
+  let email: string | null = null;
+  try {
+    const custId = typeof sub.customer === 'string' ? sub.customer : sub.customer?.id;
+    if (custId) {
+      const cust = await stripe.customers.retrieve(custId);
+      if (cust && !('deleted' in cust && cust.deleted)) email = (cust as Stripe.Customer).email ?? null;
+    }
+  } catch (err) {
+    console.error('chief cancel: customer lookup failed', err);
+  }
+  if (email) {
+    await revokeEntitlement(email, 'chief');
+    if (sub.metadata?.slug) await revokeEntitlement(email, sub.metadata.slug);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const resend = resendClient();
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `CHIEF CANCELED: ${sub.metadata?.business || sub.id}`,
+      html: clientEmail({
+        preheader: 'A Chief subscription ended.',
+        eyebrow: 'CHIEF OFFBOARD',
+        greeting: 'A Chief stood down.',
+        body: `<p>Subscription ${sub.id}${sub.metadata?.business ? ` (business: <strong>${escapeHtmlSafe(sub.metadata.business)}</strong>)` : ''} was canceled${email ? ` for ${escapeHtmlSafe(email)}` : ''}.</p><p>Decommission: pause their morning-briefing routine, park their Vapi line so minutes cannot leak, and archive the persona. Their command-center access is revoked automatically.</p>`,
+        signature: 'The Chief Desk',
+      }),
+    });
+  } catch (err) {
+    console.error('chief offboard email failed', err);
+  }
+}
+
 export async function POST(req: Request) {
   const stripe = getStripe();
   const secret = STRIPE_WEBHOOK_SECRET();
@@ -2085,6 +2250,10 @@ export async function POST(req: Request) {
     if (sub.metadata?.kind === 'sidekick') {
       await handleSidekickSubscriptionDeleted(sub);
       return NextResponse.json({ received: true, kind: 'sidekick_subscription_canceled' });
+    }
+    if (sub.metadata?.kind === 'chief') {
+      await handleChiefSubscriptionDeleted(stripe, sub);
+      return NextResponse.json({ received: true, kind: 'chief_subscription_canceled' });
     }
     if (sub.metadata?.kind === 'pictures') {
       await handlePicturesSubscriptionDeleted(sub);
@@ -2184,6 +2353,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'sidekick') {
     await handleSidekickPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'sidekick' });
+  }
+
+  // ── THE CHIEF subscription started (setup fee rides the first invoice) ──
+  if (session.metadata?.kind === 'chief') {
+    await handleChiefPurchase(req, session, slug, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'chief' });
   }
 
   // ── MUSTARD PICTURES order (SPOT, PREMIERE, or SEASON PASS start) ──

@@ -146,6 +146,28 @@ export function MeetTheTrainer() {
 export function CrossSell() {
   return (
     <section className="py-16 md:py-20">
+      {/* The Chief: the natural graduation from an inbound Sidekick to a personal chief of staff. */}
+      <div className="max-w-5xl mx-auto px-5 mb-6">
+        <div className="rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-7 md:p-9 shadow-[8px_8px_0_0_#161616] flex flex-col md:flex-row md:items-center gap-6">
+          <div className="flex-1">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#161616] font-bold">The other half of Mr. Mustard</p>
+            <h3 className="font-display italic text-2xl md:text-3xl font-black text-[#161616] mt-1.5 leading-[1.05]">
+              Your Sidekick answers your customers. The Chief works for you.
+            </h3>
+            <p className="font-body text-sm text-[#161616]/80 mt-2.5 leading-relaxed max-w-2xl">
+              Meet his big brother: a personal AI chief of staff who runs your calendar, drafts your email, makes your
+              calls, preps your pitches, and wakes you with a verse. Call, text, or type to him any hour. From $597/mo, a
+              fraction of a human assistant.
+            </p>
+          </div>
+          <Link
+            href="/chief"
+            className="shrink-0 self-start md:self-center inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-7 py-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
+          >
+            Meet The Chief →
+          </Link>
+        </div>
+      </div>
       <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-2 gap-6">
         <div className="rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Bigger phones?</p>
