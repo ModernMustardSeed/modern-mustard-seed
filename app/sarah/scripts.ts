@@ -186,32 +186,39 @@ const SALES_DESK: PrompterScript[] = [
     kind: 'sales',
     episode: 'Sales 1',
     session: 'Sales Desk',
-    publish: 'Attach to the demo email',
+    publish: 'Attach to every demo email',
     pillar: 'SALES',
-    title: 'Your Demo Is Ready',
-    hook: 'My little studio built something for your business this week, and I did not want it to arrive without a face attached.',
+    title: 'What I Just Sent You',
+    hook: 'My studio built something for your business this week, and I did not want it to land in your inbox without a face attached.',
     directorNote:
-      'Warm and unhurried, like leaving a voicemail for a neighbor. Smile at "try to stump it." The whole video is permission, not pressure; let the close breathe. This one gets watched by cold leads, so the first five seconds carry everything.',
+      'This is the standard video on every demo email, so it is the first real impression of you. Warm and unhurried, like leaving a voicemail for a neighbor. Keep it mostly your face, graphics minimal, no screen share. The command center line is the new value, so let it land. The close is permission, never pressure, and the first five seconds carry everything.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'Hi, I am Sarah. My little studio built something for your business this week, and I did not want it to arrive without a face attached.',
+          'Hi, I am Sarah. My studio built something for your business this week, and I did not want it to land in your inbox without a face attached. So here is a quick note on what you are looking at.',
         ],
       },
       {
-        heading: 'What It Is',
+        heading: 'What I Sent You',
         paragraphs: [
-          'It is a working demo. Not a slideshow, not a pitch deck. Depending on what we built for you, it might be an AI receptionist that already knows your services and your hours, or a new website, or both. It took my systems about a minute to make, which is honestly part of what I want to show you.',
-          'Here is all I would ask. Open the link below and give it two minutes. If it is the receptionist, call the number and try to stump it. Ask it what you would ask a new hire on their first day. If it is the website, click around on your phone, because that is where your customers are anyway.',
+          'Right below this video is a working demo. Not a slideshow, not a pitch deck. A real thing you can click and call. Depending on what fit your business, it might be a new website, an AI receptionist that already knows your services and your hours, or both.',
+          '(Optional light graphic as she names them: three clean labels appear, WEBSITE, RECEPTIONIST, COMMAND CENTER. Keep it simple, this stays mostly her face.)',
+          'And everything I build comes with one more piece, included free. A command center. One screen where you can see your analytics, read the transcript of every call your receptionist takes, and watch every new lead land, all from your phone.',
+        ],
+      },
+      {
+        heading: 'What To Do',
+        paragraphs: [
+          'All I would ask is two minutes. Open the link, and if there is a receptionist, call the number and try to stump it, the way you would test a new hire on their first day. If there is a website, click around on your phone, because that is where your customers already are.',
           'Nothing happens after that unless you want it to. No contract came attached to this email, and nobody is going to chase you around the internet.',
         ],
       },
       {
         heading: 'Close',
         paragraphs: [
-          'If you look at it and think, that is not for us, that is a completely fine answer, and you can tell me so. But if you feel that little jolt of, wait, that is my business in there, hit reply. That is what I am hoping for.',
-          'Either way, thanks for the two minutes. I am Sarah. Your demo is below.',
+          'If you look and think, that is not for us, that is a completely fine answer, and you can just tell me. But if you feel that little jolt of, wait, that is my business in there, hit reply. That is the whole reason I sent it.',
+          'Either way, thank you for the two minutes. I am Sarah, and your demo is right below.',
         ],
       },
     ],
