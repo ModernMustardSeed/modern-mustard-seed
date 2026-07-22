@@ -23,6 +23,7 @@ const PILLAR_STYLES: Record<PrompterScript['pillar'], string> = {
   SYSTEMS: 'bg-[#cfe0ff] text-[#161616]',
   STEWARD: 'bg-[#f6d9d5] text-[#161616]',
   STORY: 'bg-[#e4ddcf] text-[#161616]',
+  SALES: 'bg-[#E0301E] text-[#FBF6EA]',
 };
 
 type Settings = { speed: number; fontSize: number; mirror: boolean };
@@ -74,7 +75,7 @@ export default function Teleprompter() {
   const booth = useBoothCamera();
   const [showTakes, setShowTakes] = useState(false);
   const [selfViewOn, setSelfViewOn] = useState(true);
-  const [tab, setTab] = useState<'episode' | 'short'>('episode');
+  const [tab, setTab] = useState<'episode' | 'short' | 'sales'>('episode');
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const columnRef = useRef<HTMLDivElement>(null);
@@ -369,6 +370,7 @@ export default function Teleprompter() {
               [
                 ['episode', 'Episodes'],
                 ['short', 'Shorts Bank'],
+                ['sales', 'Sales Desk'],
               ] as const
             ).map(([k, label]) => {
               const count = PROMPTER_SCRIPTS.filter((s) => s.kind === k).length;

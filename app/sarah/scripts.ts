@@ -1,10 +1,10 @@
 export type PrompterScript = {
   id: string;
-  kind: 'episode' | 'short';
+  kind: 'episode' | 'short' | 'sales';
   episode: string;
   session: string;
   publish: string;
-  pillar: 'BUILD' | 'SYSTEMS' | 'STEWARD' | 'STORY';
+  pillar: 'BUILD' | 'SYSTEMS' | 'STEWARD' | 'STORY' | 'SALES';
   title: string;
   hook: string;
   directorNote: string;
@@ -167,8 +167,212 @@ const TIGHT_CUTS: PrompterScript[] = [
   },
 ];
 
-/** Episodes first (the 20-minute teaching slate), then the Shorts bank. */
-export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...TIGHT_CUTS];
+/**
+ * The Sales Desk: evergreen face-to-camera videos for pipeline moments.
+ * Attached to demo emails, sent before sales calls, used in follow-ups.
+ * Rules: NO prices ever spoken (numbers live on the page, so videos never
+ * expire), no lead names, no dates. Warm founder, zero pressure.
+ */
+const SALES_DESK: PrompterScript[] = [
+  {
+    id: 'sales-demo-delivery',
+    kind: 'sales',
+    episode: 'Sales 1',
+    session: 'Sales Desk',
+    publish: 'Attach to the demo email',
+    pillar: 'SALES',
+    title: 'Your Demo Is Ready',
+    hook: 'My little studio built something for your business this week, and I did not want it to arrive without a face attached.',
+    directorNote:
+      'Warm and unhurried, like leaving a voicemail for a neighbor. Smile at "try to stump it." The whole video is permission, not pressure; let the close breathe. This one gets watched by cold leads, so the first five seconds carry everything.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Hi, I am Sarah. My little studio built something for your business this week, and I did not want it to arrive without a face attached.',
+        ],
+      },
+      {
+        heading: 'What It Is',
+        paragraphs: [
+          'It is a working demo. Not a slideshow, not a pitch deck. Depending on what we built for you, it might be an AI receptionist that already knows your services and your hours, or a new website, or both. It took my systems about a minute to make, which is honestly part of what I want to show you.',
+          'Here is all I would ask. Open the link below and give it two minutes. If it is the receptionist, call the number and try to stump it. Ask it what you would ask a new hire on their first day. If it is the website, click around on your phone, because that is where your customers are anyway.',
+          'Nothing happens after that unless you want it to. No contract came attached to this email, and nobody is going to chase you around the internet.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'If you look at it and think, that is not for us, that is a completely fine answer, and you can tell me so. But if you feel that little jolt of, wait, that is my business in there, hit reply. That is what I am hoping for.',
+          'Either way, thanks for the two minutes. I am Sarah. Your demo is below.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sales-pre-call',
+    kind: 'sales',
+    episode: 'Sales 2',
+    session: 'Sales Desk',
+    publish: 'Send before a sales call',
+    pillar: 'SALES',
+    title: 'Before Our Call',
+    hook: 'We have a call on the calendar, so I wanted to say hi before we have officially met.',
+    directorNote:
+      'Confident and calm, the tone of someone with nothing to hide. The fit promise is the trust moment; deliver it looking straight down the lens. Keep the energy conversational, this plays the day before a call.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'Hi, I am Sarah. We have a call on the calendar, so I wanted to say hi before we have officially met.',
+        ],
+      },
+      {
+        heading: 'How the Call Goes',
+        paragraphs: [
+          'Here is how I like these calls to go. You talk first. I want to hear how the phone gets answered today, where the leads leak, and what a full week actually looks like for you. Then I will show you, live, what the system would do about it. Real screens, your actual demo, nothing canned.',
+          'Two things worth doing before we talk. First, if you have not opened your demo yet, give it two minutes. It makes the call twice as useful. Second, jot down the one task you would hand off tomorrow if you trusted someone to do it right. That answer usually turns out to be the whole conversation.',
+          'And one promise going in. If I do not think we are a fit, I will say so on the call. I run this studio by keeping only the clients we genuinely help.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: ['Bring your questions and bring your skepticism, both are welcome here. See you soon.'],
+      },
+    ],
+  },
+  {
+    id: 'sales-post-view',
+    kind: 'sales',
+    episode: 'Sales 3',
+    session: 'Sales Desk',
+    publish: 'Follow-up after demo views',
+    pillar: 'SALES',
+    title: 'You Took a Second Look',
+    hook: 'So you opened the demo. Maybe twice. Something in there either felt like your business, or you are looking for the catch.',
+    directorNote:
+      'Disarming and a little playful at the top, then straight and honest. The "name your hesitation" line is the whole video; slow down for it. No selling voice anywhere, this lands on warm leads who hate being sold to.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'So you opened the demo. Maybe even twice. I am not watching you personally, I promise, but the system does tell me when a demo gets a second look.',
+        ],
+      },
+      {
+        heading: 'The Catch Question',
+        paragraphs: [
+          'A second look usually means one of two things. Either something in there felt like your business, or you are trying to figure out the catch. So let me help with the catch part, because there is not a dramatic one. The demo you saw can go live for your real customers after a short setup, and the plain numbers are always on the page below. I do not do contracts that trap people, and I cap how many setups I take each week, so your install gets real attention.',
+          'And the thing most owners want to know at this point: yes, it can be tweaked. The voice, the greeting, what it says about your services, all of it gets trained on you, and you approve it before it ever talks to a real customer.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'If you have one hesitation, reply and name it. I would rather answer the real question than send you five more emails. And if this is not the season, the demo will keep. It is yours either way.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sales-last-email',
+    kind: 'sales',
+    episode: 'Sales 4',
+    session: 'Sales Desk',
+    publish: 'The gracious last email',
+    pillar: 'SALES',
+    title: 'It Is Okay to Say No',
+    hook: 'This is my last email about your demo, and it is not a guilt trip. Promise.',
+    directorNote:
+      'The most relaxed video of the series. Zero neediness; you are genuinely fine either way, and it has to be true on your face. A small smile at the ladder line. This one earns replies precisely because it is not asking for one.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: ['This is my last email about your demo, and it is not a guilt trip. Promise.'],
+      },
+      {
+        heading: 'Where I Leave It',
+        paragraphs: [
+          'You looked, or maybe you did not, and either way life is loud and you run a business. I built the demo because showing beats telling, not to sign you up for a drip campaign until the end of time.',
+          'So here is where I will leave it. The demo stays yours. If it is three months from now and your front desk person moves away, or you are up a ladder watching your phone ring for the fourth time in an hour and something in you finally snaps, the link below will still work. And I will still be here in Montana, probably drinking coffee, definitely building.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'If you want to close the loop, a one word reply does it. Later and never are both acceptable answers, and I will respect either one. No hard feelings, and grace to you and your business either way. I am Sarah, and this was the last one.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sales-welcome-aboard',
+    kind: 'sales',
+    episode: 'Sales 5',
+    session: 'Sales Desk',
+    publish: 'After purchase, before install',
+    pillar: 'SALES',
+    title: 'Welcome Aboard',
+    hook: 'You said yes, and I want you to hear this from my actual face. Thank you, and welcome.',
+    directorNote:
+      'Genuine gratitude, then crisp clarity. This video kills buyer remorse by making the next steps concrete; deliver the "you have the final say" line like a promise, because it is one.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: ['You said yes, and I want you to hear this from my actual face. Thank you, and welcome.'],
+      },
+      {
+        heading: 'Exactly What Happens Next',
+        paragraphs: [
+          'Here is exactly what happens next, so nothing feels like a black box. First, we set your install slot. I cap installs each week on purpose, because your setup gets real attention, not a queue number.',
+          'Before your slot, you will get a short list from me. The handful of things only you know: how you like your customers greeted, what makes your business yours, and the questions that have to be answered exactly right. Then we train your system on all of it, and you get to hear it and correct it before a single real customer ever does. You have the final say on every word. That review step is not optional. It is the whole point.',
+          'And after you are live, you are not alone. There is a real human loop for changes, and small tweaks are quick.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'You just handed a piece of your business to my little studio, and I do not take that lightly. We build it like it is ours, and we treat it like it is yours. Talk soon.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sales-face-behind',
+    kind: 'sales',
+    episode: 'Sales 6',
+    session: 'Sales Desk',
+    publish: 'Signatures, proposals, anywhere',
+    pillar: 'SALES',
+    title: 'The Face Behind the Studio',
+    hook: 'If we are going to work together, you should know who you are actually dealing with.',
+    directorNote:
+      'The evergreen trust card. Steady, warm, no pitch at all. The parable is said plainly, not preached. This one goes everywhere (email signature, proposals, the site), so record it fresh and rested.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: ['If we are going to work together, you should know who you are actually dealing with.'],
+      },
+      {
+        heading: 'Who You Are Dealing With',
+        paragraphs: [
+          'I am Sarah Scarano. I run Modern Mustard Seed from Kalispell, Montana. I am a self-taught builder, I have shipped software for dozens of industries, contractors and restaurants and roofers and retailers, and I run this studio the way you probably run your shop. Personally. When you email, I read it. When something breaks, I fix it.',
+          'The name comes from a parable about a mustard seed, the smallest of seeds that grows into a tree with room for others in its branches. That is the whole business plan, honestly. Small faithful work, real leverage, built to shelter the people it serves.',
+          'I use AI to do the heavy lifting, so a small studio can deliver like a big one. But the judgment, the taste, and the promise keeping are mine, and I do not delegate those.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'That is who picks up when you call. Whatever we end up building together, that is what stands behind it.',
+        ],
+      },
+    ],
+  },
+];
+
+/** Episodes first, then the Sales Desk, then the Shorts bank. */
+export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...SALES_DESK, ...TIGHT_CUTS];
 
 export function scriptWordCount(s: PrompterScript): number {
   return s.sections
