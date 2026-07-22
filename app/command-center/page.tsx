@@ -157,7 +157,7 @@ export default function CommandCenterPage() {
                   <span className="h-8 w-8 rounded-lg bg-[#F5B700] text-[#161616] font-black grid place-items-center">S</span>
                   <div className="leading-tight">
                     <p className="font-bold text-[14px] text-[#FBF6EA]">Summit Roofing Co</p>
-                    <p className="text-[9px] uppercase tracking-[0.2em] text-[#FBF6EA]/50">Command Center · Kalispell, MT</p>
+                    <p className="text-[9px] uppercase tracking-[0.2em] text-[#FBF6EA]/65">Command Center · Kalispell, MT</p>
                   </div>
                   <span className="ml-auto text-[9px] uppercase tracking-[0.16em] font-bold rounded-full px-2.5 py-1 border border-[#F5B700] text-[#F5B700]">
                     Live
@@ -177,9 +177,9 @@ export default function CommandCenterPage() {
                     ['Reviews', '4.9', '+7 this month'],
                   ].map(([label, value, sub]) => (
                     <div key={label} className="rounded-xl border border-[#FBF6EA]/12 bg-[#1F1F1F] p-3">
-                      <p className="text-[8.5px] uppercase tracking-[0.16em] font-bold text-[#FBF6EA]/50">{label}</p>
+                      <p className="text-[8.5px] uppercase tracking-[0.16em] font-bold text-[#FBF6EA]/65">{label}</p>
                       <p className="font-mono text-lg font-bold text-[#FBF6EA] mt-1 leading-none">{value}</p>
-                      <p className="text-[9px] text-[#FBF6EA]/45 mt-1">{sub}</p>
+                      <p className="text-[9px] text-[#FBF6EA]/65 mt-1">{sub}</p>
                     </div>
                   ))}
                 </div>
@@ -259,7 +259,7 @@ export default function CommandCenterPage() {
               <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">On its own</span>
               <h3 className="font-display italic font-extrabold text-2xl mt-2">Command Center</h3>
               <p className="font-mono font-bold text-[15px] mt-3">
-                {formatUsd(os.monthlyCents)}/mo <span className="text-[#161616]/50">+ {formatUsd(os.setupCents)} setup</span>
+                {formatUsd(os.monthlyCents)}/mo <span className="text-[#161616]/70">+ {formatUsd(os.setupCents)} setup</span>
               </p>
               <p className="font-body text-[13px] text-[#161616]/70 mt-3 leading-relaxed flex-1">
                 The whole back office, wired to your existing phone, site, and customers. Month to month.
@@ -283,7 +283,7 @@ export default function CommandCenterPage() {
               <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">Add a website</span>
               <h3 className="font-display italic font-extrabold text-2xl mt-2">Website + free command center</h3>
               <p className="font-mono font-bold text-[15px] mt-3 text-[#161616]">
-                {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/60">+ {formatUsd(site.setupCents)} setup</span>
+                {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(site.setupCents)} setup</span>
               </p>
               <p className="font-body text-[13px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
                 A new site on your own domain, and the command center rides free. It costs less per month than the
@@ -302,7 +302,7 @@ export default function CommandCenterPage() {
               <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">Everything</span>
               <h3 className="font-display italic font-extrabold text-2xl mt-2">The Whole System</h3>
               <p className="font-mono font-bold text-[15px] mt-3">
-                {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo <span className="text-[#161616]/50">+ {formatUsd(DEMO_BUNDLE.setupCents)} setup</span>
+                {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo <span className="text-[#161616]/70">+ {formatUsd(DEMO_BUNDLE.setupCents)} setup</span>
               </p>
               <p className="font-body text-[13px] text-[#161616]/70 mt-3 leading-relaxed flex-1">
                 Receptionist + website + the command center that ties them together, free. One system, one login.
