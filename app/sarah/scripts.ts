@@ -1056,6 +1056,54 @@ const META_ADS: PrompterScript[] = [
       },
     ],
   },
+  {
+    id: 'ad-business-reimagined',
+    kind: 'ad',
+    episode: 'Ad 18',
+    session: 'Meta · Brand film 9:16',
+    publish: 'Broad · brand anthem + YT trailer',
+    pillar: 'ADS',
+    title: 'Your Business, Reimagined',
+    hook: 'What if running your business did not have to feel this hard?',
+    directorNote:
+      'The brand anthem, the most elevated film in the set. Warm, hopeful, almost a benediction, not a pitch. This one doubles as your YouTube channel trailer: cut a 30 second version for Meta and a 60 to 90 second version for YouTube. Slow down and let the dawn and the quiet land. Mr. Mustard stays light here; the feeling carries it.',
+    sections: [
+      {
+        heading: 'Hook',
+        paragraphs: [
+          'What if it did not have to feel this hard. The late nights. The calls you miss. The quiet feeling that you are the only thing holding all of it together.',
+        ],
+      },
+      {
+        heading: 'The New Day',
+        paragraphs: [
+          'A new day is actually dawning for small business. The tools finally changed. The machine can take the parts that were burning you out, the phones, the follow up, the busywork that ate your evenings and your weekends.',
+          '(B-roll: first light over a small town, a shop sign flipping to OPEN, a phone answering itself while the owner pours coffee. Warm and unhurried. Title card fades up: A NEW DAY.)',
+        ],
+      },
+      {
+        heading: 'What Matters Most',
+        paragraphs: [
+          'Which means you get to go back to what only you can do. The relationships. The craft you are genuinely great at. The wisdom you earned the hard way. That is the part no machine will ever replace, and honestly, it was always the whole point.',
+          '(B-roll: the owner actually present, shaking a hand, teaching an apprentice, at a ball game with the phone in a pocket instead of a hand.)',
+        ],
+      },
+      {
+        heading: 'Let Us Handle the Rest',
+        paragraphs: [
+          'So let us handle the rest. My studio builds the quiet AI systems that run the background of your business, so you get to run the part that matters.',
+          '(Mr. Mustard appears softly, tending the background like a lamplighter, then steps out of frame so the owner is centered.)',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'Your business, reimagined. Not bigger for the sake of bigger. Lighter. Freer. More yours.',
+          'I am Sarah, from Modern Mustard Seed. Come build the new day with me. The link is below.',
+        ],
+      },
+    ],
+  },
 ];
 
 /** Episodes first, then Sales Desk, then Meta Ads, then the Shorts bank. */
