@@ -164,6 +164,31 @@ export default function ChiefPage() {
           </div>
         </section>
 
+        {/* ── The film ── */}
+        <section id="film">
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
+            Meet him // The film
+          </p>
+          <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
+            This is The Chief.
+          </h2>
+          <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed mb-9">
+            He runs your calendar, your inbox, and your calls, and preps your pitch before the big one. Thirty seconds
+            with the assistant who works while you sleep.
+          </p>
+          <div className="rounded-2xl border-2 border-[#161616] bg-[#161616] shadow-[8px_8px_0_0_#161616] overflow-hidden">
+            <video
+              className="block w-full h-auto"
+              controls
+              playsInline
+              preload="none"
+              poster="/video/chief-ad-poster.jpg"
+            >
+              <source src="/video/chief-ad.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </section>
+
         {/* ── Signature moment: A Day With Your Chief ── */}
         <section id="day">
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
