@@ -35,6 +35,12 @@ const POLL_MS = Number(process.env.DEMO_SITE_POLL_MS || 15000);
 const SITES_DIR = process.env.DEMO_SITES_DIR || path.join(os.homedir(), 'mms-demo-sites');
 const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 const PERMISSION = process.env.DEMO_SITE_PERMISSION || 'bypassPermissions';
+// Do not CLAIM a new build when the machine is already low on memory. A headless
+// claude child needs a few hundred MB; starting one under pressure is how the
+// worker got OOM-killed mid-build on 2026-07-23 (0.9GB free), losing the build in
+// flight. Skipping the claim degrades gracefully: the lead waits a poll cycle
+// instead of the whole floor dying. A build already running is never interrupted.
+const MIN_FREE_MEM_MB = Number(process.env.DEMO_SITE_MIN_FREE_MB || 1536);
 // 45, not 35. Under LAW v4 (THE HOUSE: front door + 3 rooms) the builds got
 // bigger, and on 2026-07-23 six of the last eight finished at EXACTLY 35m, which
 // means the cap was ending them rather than the model being done. Two of those
@@ -500,9 +506,25 @@ async function beat() {
   } catch { /* a missed beat just makes the failsafe more eager, never less safe */ }
 }
 
+// Track so we log the pressure once, not on every 15s poll.
+let warnedLowMem = false;
+
 async function tick() {
+  // Bank finished work and free stranded rows first; both are cheap and neither
+  // starts a new build, so they are safe under memory pressure.
   await rescueFinished();
   await reclaimStranded();
+
+  const freeMb = Math.round(os.freemem() / (1024 * 1024));
+  if (freeMb < MIN_FREE_MEM_MB) {
+    if (!warnedLowMem) {
+      log(`low memory (${freeMb}MB free, need ${MIN_FREE_MEM_MB}MB) - holding off claiming a build until it recovers`);
+      warnedLowMem = true;
+    }
+    return false;
+  }
+  if (warnedLowMem) { log(`memory recovered (${freeMb}MB free) - resuming`); warnedLowMem = false; }
+
   const job = await claimNext();
   if (!job) return false;
   await process_(job);
