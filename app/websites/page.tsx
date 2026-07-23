@@ -9,6 +9,7 @@ import WorkShowcase from '@/components/websites/WorkShowcase';
 
 const site = DEMO_PRODUCTS.site;
 const HERO = workByKey['linen-fresh'];
+const STORE = workByKey['cross-covenant'];
 
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
@@ -216,6 +217,89 @@ export default function WebsitesPage() {
                 <p className="font-body text-[13px] text-[#161616]/70 mt-1.5 leading-relaxed">{m.desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* ── Stores: we build those too ── */}
+        <section>
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+            <div className="order-2 lg:order-1">
+              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
+                Online stores // We build those too
+              </p>
+              <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02]">
+                Need to sell? We build the whole store.
+              </h2>
+              <p className="font-body text-[15px] text-[#161616]/75 mt-4 leading-relaxed">
+                A real online store, not a plugin bolted onto a template. Full catalog, cart, and secure checkout,
+                inventory and shipping wired up, and the command center tracking every order the moment it lands.
+                Designed to look like the brand, built to actually sell.
+              </p>
+              <ul className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-3">
+                {[
+                  'Full product catalog + collections',
+                  'Cart + secure checkout',
+                  'Inventory, shipping, and taxes',
+                  'Orders wired to your command center',
+                  'Discounts, email, abandoned-cart',
+                  'You own the store and the data',
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#161616]/80">
+                    <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#C4160B] shrink-0" aria-hidden />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-7 flex items-center gap-3 border-2 border-[#161616] bg-white rounded-xl px-4 py-3 shadow-[4px_4px_0_0_#161616] max-w-md">
+                <span className="font-mono font-bold text-[10px] uppercase tracking-[0.16em] text-[#C4160B] shrink-0">
+                  Priced as its own build
+                </span>
+                <span className="font-body text-[12.5px] text-[#161616]/75 leading-snug">
+                  More than a site. Quoted per catalog after a free call.
+                </span>
+              </div>
+              <div className="mt-7">
+                <Link
+                  href="/book"
+                  className="inline-flex items-center gap-2 bg-[#161616] text-[#F5B700] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
+                >
+                  Scope my store →
+                </Link>
+              </div>
+            </div>
+
+            {/* The store, in living color (display only) */}
+            <div className="order-1 lg:order-2">
+              <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[8px_8px_0_0_#161616] overflow-hidden">
+                <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#161616] bg-[#FBF6EA]">
+                  <span className="flex gap-1.5">
+                    {['#E0301E', '#F5B700', '#8FA98F'].map((c) => (
+                      <span key={c} className="h-3 w-3 rounded-full border border-[#161616]" style={{ background: c }} />
+                    ))}
+                  </span>
+                  <span className="ml-2 flex-1 truncate rounded-full border border-[#161616]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#161616]/65">
+                    crossandcovenant.co
+                  </span>
+                </div>
+                <div className="relative">
+                  <Image
+                    src={STORE.img}
+                    alt="Cross + Covenant, a full online store designed and built by Modern Mustard Seed, with catalog, cart, and checkout wired to the command center"
+                    width={1600}
+                    height={1000}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="block w-full h-auto"
+                  />
+                  <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-3.5 py-2 shadow-[3px_3px_0_0_#F5B700]">
+                    <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#C4160B] font-bold">New order</p>
+                    <p className="font-sans text-[11.5px] font-bold text-[#161616] mt-0.5 leading-snug">Filed to your command center</p>
+                  </div>
+                </div>
+              </div>
+              <p className="font-body text-[13px] text-[#161616]/70 mt-3">
+                A real store we built for Cross + Covenant. 80+ pieces, cart to checkout, orders in the command center.
+              </p>
+            </div>
           </div>
         </section>
 
