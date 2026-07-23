@@ -336,46 +336,85 @@ async function process_(job) {
       return;
     }
 
-    // A client's edit lands in a draft for approval; it must NOT be written onto the
-    // job's html and served, and it must NOT touch the live site. Route it first.
-    if (isProjectEdit(job)) {
-      await finishClientEdit(job, html);
-      return;
-    }
-
-    const { error: upErr } = await supabase
-      .from('outbound_demo_sites')
-      .update({ status: 'ready', html, error: null, built_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-      .eq('id', job.id);
-    if (upErr) {
-      await fail(job, `could not store the html: ${upErr.message}`);
-      return;
-    }
-
-    if (rebuild) {
-      await finishRebuild(job, html);
-      return;
-    }
-
-    await supabase.from('outbound_leads').update({ site_demo_status: 'ready' }).eq('id', job.lead_id);
-
-    const siteUrl = `${SITE_URL}/demo/site/${job.id}`;
-    await supabase.from('messages').insert({
-      outbound_lead_id: job.lead_id,
-      direction: 'outbound',
-      channel: 'note',
-      from_addr: 'cockpit',
-      to_addr: job.business_name,
-      subject: edit ? 'Website demo updated' : 'Website demo live',
-      snippet: edit
-        ? `Their demo website was reforged from your prompt. Live at ${siteUrl}`
-        : `Their demo website is live at ${siteUrl} (AI receptionist on board).`,
-      read: true,
-      occurred_at: new Date().toISOString(),
-    });
-    log(edit ? 'EDITED' : 'READY', job.id, siteUrl, `(${Math.round(html.length / 1024)}KB)`);
+    await storeFinished(job, html);
   } catch (e) {
     await fail(job, e?.message || e);
+  }
+}
+
+/**
+ * Everything that happens once a build has produced valid HTML. Split out of
+ * process_ so a build that finished on disk can still be banked after the worker
+ * that started it is gone (see rescueFinished).
+ */
+async function storeFinished(job, html) {
+  // A client's edit lands in a draft for approval; it must NOT be written onto the
+  // job's html and served, and it must NOT touch the live site. Route it first.
+  if (isProjectEdit(job)) {
+    await finishClientEdit(job, html);
+    return;
+  }
+
+  const { error: upErr } = await supabase
+    .from('outbound_demo_sites')
+    .update({ status: 'ready', html, error: null, built_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+    .eq('id', job.id);
+  if (upErr) {
+    await fail(job, `could not store the html: ${upErr.message}`);
+    return;
+  }
+
+  if (isRebuild(job)) {
+    await finishRebuild(job, html);
+    return;
+  }
+
+  await supabase.from('outbound_leads').update({ site_demo_status: 'ready' }).eq('id', job.lead_id);
+
+  const siteUrl = `${SITE_URL}/demo/site/${job.id}`;
+  await supabase.from('messages').insert({
+    outbound_lead_id: job.lead_id,
+    direction: 'outbound',
+    channel: 'note',
+    from_addr: 'cockpit',
+    to_addr: job.business_name,
+    subject: isEdit(job) ? 'Website demo updated' : 'Website demo live',
+    snippet: isEdit(job)
+      ? `Their demo website was reforged from your prompt. Live at ${siteUrl}`
+      : `Their demo website is live at ${siteUrl} (AI receptionist on board).`,
+    read: true,
+    occurred_at: new Date().toISOString(),
+  });
+  log(isEdit(job) ? 'EDITED' : 'READY', job.id, siteUrl, `(${Math.round(html.length / 1024)}KB)`);
+}
+
+/**
+ * BANK THE WORK OF A WORKER THAT DIED.
+ *
+ * The headless child outlives its parent (that is the whole reason killTree exists),
+ * so when this process is killed mid-build the build keeps going and finishes on
+ * disk, with nobody left to store it. On 2026-07-23 the worker was OOM-killed at
+ * 08:32 with the machine at 0.9GB free; its build finished at 08:56, wrote 394KB and
+ * a clean RESULT.json, and would have been thrown away and rerun from scratch.
+ *
+ * So before claiming anything new, look for rows this host still owns that already
+ * have finished HTML sitting in their build directory, and bank them. Runs before
+ * reclaimStranded so a finished build is never handed to a second worker to redo.
+ */
+async function rescueFinished() {
+  const { data } = await supabase
+    .from('outbound_demo_sites')
+    .select('*')
+    .eq('status', 'building')
+    .eq('worker', WORKER);
+  for (const job of data || []) {
+    const htmlPath = path.join(SITES_DIR, job.id, 'index.html');
+    if (!existsSync(htmlPath)) continue;
+    let html = '';
+    try { html = readFileSync(htmlPath, 'utf8'); } catch { continue; }
+    if (html.length < 1500 || !/<\/html>/i.test(html)) continue;
+    log('rescued a build that finished after the worker died:', job.id, job.business_name);
+    try { await storeFinished(job, html); } catch (e) { log('could not bank', job.id, e?.message); }
   }
 }
 
@@ -462,6 +501,7 @@ async function beat() {
 }
 
 async function tick() {
+  await rescueFinished();
   await reclaimStranded();
   const job = await claimNext();
   if (!job) return false;
