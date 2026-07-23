@@ -8,7 +8,7 @@ import EngineToggle from '@/components/websites/EngineToggle';
 import WorkShowcase from '@/components/websites/WorkShowcase';
 
 const site = DEMO_PRODUCTS.site;
-const HERO = workByKey['hall-roofing'];
+const HERO = workByKey['linen-fresh'];
 
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
@@ -160,7 +160,7 @@ export default function WebsitesPage() {
                     ))}
                   </span>
                   <span className="ml-2 flex-1 truncate rounded-full border border-[#161616]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#161616]/65">
-                    hallroofing.co
+                    linenfreshlv.com
                   </span>
                   <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-[#161616]/70 group-hover:text-[#C4160B] transition-colors">Visit →</span>
                 </div>
