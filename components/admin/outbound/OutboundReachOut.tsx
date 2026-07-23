@@ -69,6 +69,7 @@ export function ReachOutDeck({
   const [promoting, setPromoting] = useState(false);
   const [forging, setForging] = useState(false);
   const [forgingSite, setForgingSite] = useState(false);
+  const [rebuilding, setRebuilding] = useState(false);
   const [forgingOs, setForgingOs] = useState(false);
   const [reforgeOpen, setReforgeOpen] = useState(false);
 
@@ -115,6 +116,28 @@ export function ReachOutDeck({
       push(e instanceof Error ? e.message : 'Website forge failed.', 'error');
     } finally {
       setForgingSite(false);
+    }
+  };
+
+  // "Build it again." No prompt, no new link, no API bill: the same row is re-queued
+  // for the Max-plan worker, which rebuilds from scratch on the current design law and
+  // keeps the photographs the site already has. The finished site keeps serving the
+  // whole time, so this is safe to press on a demo a prospect is already holding.
+  const rebuildSite = async () => {
+    setRebuilding(true);
+    push('Queuing a rebuild on the current design law...');
+    try {
+      const res = await api<{ already?: boolean }>(`/api/admin/outbound/leads/${lead.id}/refresh-site`, { method: 'POST' });
+      onLead({ ...lead, site_demo_status: 'queued' });
+      push(
+        res.already
+          ? 'That rebuild is already in the queue.'
+          : 'Rebuild queued. Same link, same photos. Their current site keeps serving until the new one lands.',
+      );
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Rebuild failed to queue.', 'error');
+    } finally {
+      setRebuilding(false);
     }
   };
 
@@ -265,9 +288,19 @@ export function ReachOutDeck({
         )}
 
         {siteReady ? (
-          <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged demo website, receptionist on board">
-            🌐 Website live ↗
-          </a>
+          <>
+            <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged demo website, receptionist on board">
+              🌐 Website live ↗
+            </a>
+            <button
+              onClick={() => void rebuildSite()}
+              disabled={rebuilding}
+              className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`}
+              title="Build it again from scratch on the current design law. Same link, same photos, no prompt needed. Their finished site keeps serving until the new one lands."
+            >
+              {rebuilding ? 'Queuing…' : '↻ Rebuild'}
+            </button>
+          </>
         ) : siteForging ? (
           <span className={`${chip} bg-[#b58a2a]/15 text-[#7a5c1a] border-[#b58a2a]/60 cursor-default animate-pulse`} title="The forge is building it in the background. This flips to live on its own.">
             🌐 Website forging…

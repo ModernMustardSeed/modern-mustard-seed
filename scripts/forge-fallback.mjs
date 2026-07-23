@@ -128,14 +128,24 @@ async function main() {
   log(`workstation ${workerAlive ? 'ALIVE' : 'not beating'} | rescuing jobs queued before ${cutoff}`);
 
   // Oldest first: whoever has been staring at the countdown longest goes first.
-  const { data: job, error } = await sb
-    .from('outbound_demo_sites')
-    .select('*')
-    .eq('status', 'queued')
-    .lt('created_at', cutoff)
-    .order('created_at', { ascending: true })
-    .limit(1)
-    .maybeSingle();
+  //
+  // worker_only rows are skipped on purpose. Those are housekeeping rebuilds of sites
+  // that are ALREADY LIVE and still being served, queued by Sarah to move them onto a
+  // newer design law. Nobody is standing there watching a countdown, so there is no
+  // reason to spend metered API tokens on one. They wait for the Max-plan worker.
+  //
+  // The worker_only filter is applied defensively: this script runs from GitHub Actions
+  // on every push, so it can go live BEFORE the migration that adds the column has been
+  // applied. A hard failure there would silently stop rescuing real leads, which is the
+  // one thing this file exists to prevent. So if the column is not there yet, fall back
+  // to the unfiltered query and keep working.
+  const pick = (q) => q.eq('status', 'queued').lt('created_at', cutoff).order('created_at', { ascending: true }).limit(1).maybeSingle();
+  const base = () => sb.from('outbound_demo_sites').select('*');
+  let { data: job, error } = await pick(base().eq('worker_only', false));
+  if (error && /worker_only/.test(error.message || '')) {
+    log('worker_only column not migrated yet, rescuing without it');
+    ({ data: job, error } = await pick(base()));
+  }
   if (error) { console.error(error.message); process.exit(1); }
   if (!job) { log('nothing waiting past the grace window. done.'); return; }
 

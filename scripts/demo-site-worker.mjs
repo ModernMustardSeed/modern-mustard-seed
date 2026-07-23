@@ -183,10 +183,57 @@ async function fail(job, message) {
   log('FAILED', job.id, error.slice(0, 200));
 }
 
+/**
+ * A REBUILD KEEPS THE PHOTOGRAPHS.
+ *
+ * Sarah's shots are the best thing on these pages and the fal wallet is not always
+ * funded, so a "rebuild on the current law" must never gamble on regenerating them.
+ * Pull every inlined image out of the previous html onto disk; the design law's
+ * REUSE THEIR PHOTOGRAPHY rule keys off PHOTOS.md being there.
+ */
+function harvestPhotos(dir, html) {
+  const out = path.join(dir, 'photos');
+  if (existsSync(out)) rmSync(out, { recursive: true, force: true });
+  const seen = new Set();
+  const files = [];
+  const re = /data:image\/(jpeg|jpg|png|webp);base64,([A-Za-z0-9+/=]{2000,})/g;
+  let m;
+  while ((m = re.exec(html))) {
+    const b64 = m[2];
+    const key = b64.length + ':' + b64.slice(0, 64);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const ext = m[1] === 'jpg' ? 'jpeg' : m[1];
+    const buf = Buffer.from(b64, 'base64');
+    if (buf.length < 8000) continue; // icons and textures, not photography
+    if (!files.length) mkdirSync(out, { recursive: true });
+    const name = String(files.length + 1).padStart(2, '0') + '.' + (ext === 'jpeg' ? 'jpg' : ext);
+    writeFileSync(path.join(out, name), buf);
+    files.push({ name, kb: Math.round(buf.length / 1024) });
+  }
+  if (!files.length) return 0;
+  writeFileSync(
+    path.join(dir, 'PHOTOS.md'),
+    [
+      '# The photography for this site (APPROVED, reuse it)',
+      '',
+      'These came off the previous build of this exact site. They are the photographs this',
+      'business is getting. Inline them again as compressed JPEG data URIs and design around',
+      'them. Do NOT generate replacements and do NOT fall back to SVG scene art while these',
+      'are sitting here. Crop and grade them freely: three different crops of one strong',
+      'frame is exactly how a triptych gets built. The largest file is almost always the hero.',
+      '',
+      ...files.map((f) => `- photos/${f.name} (${f.kb}KB)`),
+      '',
+    ].join('\n')
+  );
+  return files.length;
+}
+
 async function process_(job) {
   const rebuild = isRebuild(job);
   const edit = isEdit(job);
-  const kindLabel = edit ? 'site EDIT' : rebuild ? 'REAL SITE rebuild' : 'site build';
+  const kindLabel = edit ? 'site EDIT' : rebuild ? 'REAL SITE rebuild' : job.reuse_photos ? 'site REBUILD (photos kept)' : 'site build';
   log('claimed', kindLabel, job.id, 'for', job.business_name);
   if (isProjectEdit(job)) {
     await supabase.from('projects').update({ edit_status: 'building' }).eq('id', job.project_id);
@@ -207,6 +254,11 @@ async function process_(job) {
     writeFileSync(path.join(dir, 'BRIEF.md'), job.brief || '');
     // An edit needs the site it is editing on disk beside the change request.
     if (edit) writeFileSync(path.join(dir, 'CURRENT.html'), job.base_html || '');
+    // A simple rebuild keeps the photography it already has.
+    if (job.reuse_photos && job.html) {
+      const n = harvestPhotos(dir, job.html);
+      log('rebuild: kept', n, 'photograph(s) from the previous build');
+    }
 
     const directive = edit ? EDIT_DIRECTIVE : rebuild ? REAL_DIRECTIVE : DIRECTIVE;
     const { code, out } = await runClaude(dir, directive);
