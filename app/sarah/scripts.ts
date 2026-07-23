@@ -1950,8 +1950,307 @@ const MORE_SAUCE: PrompterScript[] = [
   },
 ];
 
-/** Episodes, how-we-build batches, Sales Desk, Meta Ads, Shorts bank, Origin batch. */
-export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...BEHIND_THE_BUILD, ...MORE_SAUCE, ...SALES_DESK, ...META_ADS, ...TIGHT_CUTS, ...ORIGIN];
+/**
+ * By Request. Five scripts written straight off real 2026 audience research
+ * (not guesses). What the small-business + faith-founder audience keeps asking
+ * for, in their own searches and surveys:
+ *   1. "I want AI, but I do not want to lose the human touch." 79% of people say
+ *      they would rather deal with a human than a bot, and 73% will leave a
+ *      business that offers no human at all (SurveyMonkey, AnswerConnect 2026).
+ *   2. "I feel behind and it all feels technical." The #1 beginner fear; the real
+ *      fix is to stop buying tools for problems you do not have (Lilach Bullock,
+ *      Workfall 2026 non-technical-owner guides).
+ *   3. "How do I actually get more customers with AI?" The single most-searched
+ *      AI question for a local business (MindStudio, Veefly 2026).
+ *   4. "What do I automate first?" Start at your biggest bottleneck, not a shiny
+ *      tool (EntrepreneurLoop, Prime AI 2026).
+ *   5. "I do not trust it." 78% of owners do not fully trust AI even for small
+ *      tasks; accuracy and data are the top two barriers (Capsule, Bluevine 2026).
+ * Each script turns one of those into Sarah's real answer, grounded in the
+ * systems the studio already ships.
+ */
+const AUDIENCE_REQUESTS: PrompterScript[] = [
+  {
+    id: 'human-touch-line',
+    kind: 'episode',
+    episode: 'Episode 14',
+    session: 'By Request · Audience Research',
+    publish: 'Anchor · answers the number-one fear',
+    pillar: 'STEWARD',
+    title: 'How to Use AI Without Losing the Human Touch',
+    hook: 'Almost eight in ten people say they would rather deal with a real person than a bot. And most of them will walk away from a business that gives them no human at all. So here is the question nobody wants to say out loud. How do you use AI without turning your business cold.',
+    directorNote:
+      'This is the one people came for, so slow all the way down and mean it. Warm, level, a little protective of your customer. You are not selling automation here. You are telling a nervous owner they get to keep the part they love. Land hard on the one rule ("robots on the boring moments, you on the human ones") and let the faith beat at the end breathe. Eyes to the lens on every promise.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'Almost eight in ten people say they would rather deal with a real person than a bot. And close to three in four will leave a business entirely if the only thing on offer is AI with no human behind it.',
+          'So if you have been scared that adding AI will make your business feel cold and cheap, you are not being dramatic. You are reading the room correctly.',
+          'Here is the part they do not tell you. The fix is not to avoid AI. The fix is to know exactly where it belongs and where it never does.',
+        ],
+      },
+      {
+        heading: 'The Two Kinds of Moments',
+        paragraphs: [
+          'Every business is made of two kinds of moments. There are the fast, boring ones. Answering the phone at nine at night. Sending the third follow-up. Booking the appointment. Copying the address into the calendar.',
+          'And there are the human ones. The hard question. The upset customer. The person deciding whether to trust you with something that matters to them.',
+          'Here is the thing most people get backwards. For the fast, boring moments, your customer does not want you. They want it handled, right now, without waiting. More than eight in ten people would rather a machine just answer than sit on hold for a human.',
+          'But for the human moments, no tool on earth can stand in for you. And when a business tries, everyone can feel it.',
+        ],
+      },
+      {
+        heading: 'The One Rule',
+        paragraphs: [
+          'So here is the whole rule. Put the robots on the boring moments, and put yourself on the human ones. Never the other way around.',
+          'AI answers the phone so a lead never hits a dead line. AI sends the follow-up you were too busy to send. AI handles the paperwork nobody misses.',
+          'And that buys back the exact hours you were losing. Hours you now spend on the conversation, the handshake, the call where somebody actually needs you.',
+        ],
+      },
+      {
+        heading: 'How I Actually Wire It',
+        paragraphs: [
+          'When I build a system for a business, this is baked in from the first line. The receptionist answers, books, and captures the lead. But the second something is delicate or high stakes, it does not fake its way through. It flags it and hands it to a human.',
+          'It never pretends to be you on the things that should be you. It buys you time. It does not spend your name.',
+          'That is the difference between AI that makes a business feel bigger and AI that makes it feel hollow. It is entirely a choice about where you point it.',
+        ],
+      },
+      {
+        heading: 'The Part That Matters Most',
+        paragraphs: [
+          'I run a faith-driven studio, so let me say the quiet part plainly. The goal was never to remove people from your business. The goal is to remove the grind that was keeping you from people.',
+          'A tool that answers the phone at midnight is not the point. The point is that you get to be fully present for the customer in front of you at noon, instead of drowning in the forty small things pulling at you.',
+          'Used right, AI does not make you less human at work. It gives you room to be more.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'So do not ask whether AI will make you cold. Ask where it belongs. Robots on the boring, you on the human. Get that line right and you keep everything people love about you, at twice the reach.',
+          '(On screen: Modern Mustard Seed. Small faith. Real leverage. Work that shelters.)',
+          'I am Sarah with Modern Mustard Seed. If you want a system built on that exact line, that is the whole thing I do.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'you-are-not-behind',
+    kind: 'episode',
+    episode: 'Episode 15',
+    session: 'By Request · Audience Research',
+    publish: 'Anchor · for the overwhelmed beginner',
+    pillar: 'SYSTEMS',
+    title: 'You Are Not Behind: The First AI Move to Make',
+    hook: 'If it feels like everyone on earth figured out AI except you, I have good news. You are not behind. Most people buying AI tools right now are spending money on problems they do not even have.',
+    directorNote:
+      'Talk to one specific person: a smart, busy owner who feels dumb about this and is embarrassed to admit it. Take the shame off the table in the first ten seconds. Reassuring, not hyped. You are the friend who has already done it telling them it is smaller than they think. Warm eyes, easy pace.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'If it feels like everyone figured out AI except you, take a breath, because that feeling is a lie.',
+          'You are not behind. Here is the truth almost nobody says. A huge number of business owners buying AI tools right now are spending real money on problems they do not even have. Busy does not mean ahead.',
+          'You do not need to catch up on a hundred tools. You need to make one move. Let me give it to you.',
+        ],
+      },
+      {
+        heading: 'The Two Lies',
+        paragraphs: [
+          'Two lies keep good owners frozen. The first is that you are late, and the train already left. It did not. Most small businesses are barely starting, and the ones winning are not the most technical. They are the most practical.',
+          'The second lie is that this is all engineering, and you need to be a tech person. You do not. If you can describe your own business in plain words, you already have the only skill that actually matters here.',
+        ],
+      },
+      {
+        heading: 'The One Real Mistake',
+        paragraphs: [
+          'There is really only one expensive mistake, and it is this. Chasing tools instead of chasing your bottleneck.',
+          'People see a shiny app, buy it, and then go looking for a problem it might solve. That is backwards. That is how you end up paying for six subscriptions and feeling more behind than when you started.',
+          'You do not start with the tool. You start with the leak.',
+        ],
+      },
+      {
+        heading: 'The First Move',
+        paragraphs: [
+          'So here is the whole first move, and it takes one afternoon. Look at your last two weeks and find the single thing that either stole the most hours or cost you the most money.',
+          'Not ten things. One. The task you dread. The call you keep missing. The follow-up you never get to. The same three questions you answer every single day.',
+          'Then you point AI at that one thing, and only that thing, for thirty days. You measure it. If it works, you expand. If it does not, you have lost a month, not a fortune.',
+        ],
+      },
+      {
+        heading: 'What the One Thing Usually Is',
+        paragraphs: [
+          'For most of the businesses I work with, the one thing is almost boring. It is the phone that goes unanswered while they are on a job. It is the lead that never got a second text. It is the invoice that sat for a week.',
+          'None of that is glamorous. All of it is money. And every one of those is a clean, safe place for a first system to earn its keep.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'So stop trying to learn AI. That is too big and it is the wrong goal. Pick your worst bottleneck, aim one system at it, and give it a month. That is not behind. That is exactly on time.',
+          '(On screen: Modern Mustard Seed. Small faith. Real leverage. Work that shelters.)',
+          'I am Sarah with Modern Mustard Seed. If you want help naming the one thing and building the fix, come find me.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'more-customers-with-ai',
+    kind: 'episode',
+    episode: 'Episode 16',
+    session: 'By Request · Audience Research',
+    publish: 'Anchor · the most-searched AI question',
+    pillar: 'BUILD',
+    title: 'How to Actually Get More Customers With AI',
+    hook: 'The most searched AI question for a small business is not which chatbot to buy. It is how do I actually get more customers with this thing. So here is the plain version, with none of the hype.',
+    directorNote:
+      'Confident and useful, like you are handing someone a map. This is your lane, so speak from having done it, not from theory. The big reframe up top ("AI does not find you customers, it stops you from losing the ones you already had") should feel like a small record-scratch. Keep the three leaks crisp and countable.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'The single most searched AI question for a local business is not which chatbot to buy. It is simpler and more honest than that. How do I actually get more customers with this.',
+          'So let me answer it with no hype. And it starts with a reframe that changes everything.',
+        ],
+      },
+      {
+        heading: 'The Reframe',
+        paragraphs: [
+          'AI does not go out and find you new customers. That is the fantasy people are being sold, and it is why so many owners feel let down.',
+          'Here is what it actually does. It stops you from losing the customers you were already getting. Most small businesses are not short on interest. They are leaking it. Every leak you seal shows up as growth.',
+          'So forget magic. Let us go find your three leaks.',
+        ],
+      },
+      {
+        heading: 'Leak One: The Calls You Miss',
+        paragraphs: [
+          'The first leak is the front door. The calls that come in while you are on a job, at dinner, or asleep. For a lot of businesses, more than half of those calls never get answered, and it never shows up on any report.',
+          'A caller who hits your voicemail does not leave a message. They call the next name on the list. That is a customer you paid to attract and then lost in silence.',
+          'AI answers every one of those calls, in your voice and your hours, and books them. That alone is often the biggest new-customer swing a business will ever make.',
+        ],
+      },
+      {
+        heading: 'Leak Two: The Follow-Up You Never Send',
+        paragraphs: [
+          'The second leak is the follow-up. Most sales do not happen on the first touch. They happen on the third, the fourth, the gentle reminder a week later.',
+          'And that is exactly the part a busy owner never gets to. The lead goes cold, not because they said no, but because nobody said anything.',
+          'AI sends the follow-up every time, on schedule, so no interested person ever falls through the cracks again.',
+        ],
+      },
+      {
+        heading: 'Leak Three: The Website That Just Sits There',
+        paragraphs: [
+          'The third leak is your website. For most businesses it is a pretty brochure that answers no questions and asks for nothing. People land, wonder, and leave.',
+          'A site that works actually answers the visitor, captures who they are, and moves them toward a booking. It does the job of a good employee instead of sitting there like a poster.',
+        ],
+      },
+      {
+        heading: 'The Multiplier',
+        paragraphs: [
+          'And here is the one that turns a trickle into a stream. Give people a tool they actually want to touch. A quick estimate. An instant quote. A little calculator that answers the question in their head right now.',
+          'People will hand you their name to use something useful long before they will fill out a boring contact form. That is not a gimmick. That is a lead magnet doing quiet work every single day.',
+        ],
+      },
+      {
+        heading: 'Close',
+        paragraphs: [
+          'So that is the honest answer. AI gets you more customers by sealing three leaks. Answer every call. Follow up every lead. Make the site actually work. Do those three and the growth was there the whole time.',
+          '(On screen: Modern Mustard Seed. Small faith. Real leverage. Work that shelters.)',
+          'I am Sarah with Modern Mustard Seed. Sealing those leaks is the work I do. If you want yours found, reach out.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'first-three-to-automate',
+    kind: 'short',
+    episode: 'Short · By Request',
+    session: 'Shorts Bank',
+    publish: 'Use anytime',
+    pillar: 'SYSTEMS',
+    title: 'The First Three Things to Automate',
+    hook: 'Do not automate everything. Automate these three, in this exact order, and leave the rest alone.',
+    directorNote:
+      'Fast, certain, a little bossy in a good way. This is a list people will screenshot, so count it on your fingers and keep each one to a breath. Hit the last line ("leave the human stuff alone") like a warning you actually mean.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'Do not automate everything. That is how people end up with a cold, broken business. Automate these three, in this exact order.',
+        ],
+      },
+      {
+        heading: 'One: The Front Door',
+        paragraphs: [
+          'First, the front door. The phone and the messages. This is your biggest leak, because a call you miss is a customer who just calls the next name on the list. Get every one of those answered and booked before you touch anything else.',
+        ],
+      },
+      {
+        heading: 'Two: The Follow-Up',
+        paragraphs: [
+          'Second, the follow-up. The second and third touch that nobody has time to send. Most sales live there, and most owners never get to it. Let a system send it every time, on schedule.',
+        ],
+      },
+      {
+        heading: 'Three: The Busywork',
+        paragraphs: [
+          'Third, the busywork. The same email you retype. The scheduling. The invoice that sits for a week. Boring, repeatable, and none of it needs your judgment. That is exactly what to hand off.',
+        ],
+      },
+      {
+        heading: 'The Line You Do Not Cross',
+        paragraphs: [
+          'And here is the line. Leave the human stuff alone. The hard conversation, the upset customer, the real decision. Those stay yours. Automate the grind, not the relationship.',
+          '(On screen: Modern Mustard Seed. Small faith. Real leverage. Work that shelters.)',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'how-to-trust-ai',
+    kind: 'short',
+    episode: 'Short · By Request',
+    session: 'Shorts Bank',
+    publish: 'Use anytime',
+    pillar: 'STEWARD',
+    title: 'How to Trust AI With Your Business',
+    hook: 'Most small business owners do not trust AI with real work. And honestly, they are right not to trust it blindly.',
+    directorNote:
+      'Straight talk, no defensiveness. You are agreeing with the skeptic, not arguing with them, and that is what earns the turn. Slow down on the new definition of trust at the end. It is the whole point of the video.',
+    sections: [
+      {
+        heading: 'Cold Open',
+        paragraphs: [
+          'Almost eight in ten business owners do not fully trust AI, even for small tasks. And I am not here to talk you out of that. Trusting it blindly would be a mistake.',
+        ],
+      },
+      {
+        heading: 'The Real Fear',
+        paragraphs: [
+          'The real fear is simple. That it makes something up, with total confidence, on the one thing that actually mattered. Quotes a price it should not. Promises a date you cannot hit. Says the wrong thing to a real customer.',
+          'That fear is correct. An AI let loose with no rails will absolutely do that.',
+        ],
+      },
+      {
+        heading: 'The Fix Is Guardrails',
+        paragraphs: [
+          'So you do not hand it the keys. You give it guardrails. It works from your real numbers, not a guess. It is not allowed to quote what it should not. And when something is high stakes, it does not wing it. It hands the moment to a human.',
+          'On the things that matter, you approve before a customer ever sees a word.',
+        ],
+      },
+      {
+        heading: 'The New Definition of Trust',
+        paragraphs: [
+          'So here is how to actually trust AI in your business. Trust is not letting it run wild. Trust is this. It does the boring parts perfectly, and it asks before the important ones.',
+          'Build it on a leash, with a human at the top, and it stops being a gamble. It becomes an employee you can actually count on.',
+          '(On screen: Modern Mustard Seed. Small faith. Real leverage. Work that shelters.)',
+        ],
+      },
+    ],
+  },
+];
+
+/** Episodes, how-we-build batches, Sales Desk, Meta Ads, Shorts bank, Origin batch, By Request. */
+export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...BEHIND_THE_BUILD, ...MORE_SAUCE, ...SALES_DESK, ...META_ADS, ...TIGHT_CUTS, ...ORIGIN, ...AUDIENCE_REQUESTS];
 
 /**
  * A whole paragraph wrapped in parentheses is DIRECTION, not a spoken line.
