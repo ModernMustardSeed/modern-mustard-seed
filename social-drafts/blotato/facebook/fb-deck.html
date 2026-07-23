@@ -1,0 +1,1642 @@
+<title>Main Street AI: the Facebook deck</title>
+<style>
+:root{
+  --cream:#FBF6EA; --ink:#161616; --mustard:#F5B700; --red:#C4160B;
+  --blue:#1E50C8; --gold-text:#8f6600; --midnight:#080C16;
+  --bg:var(--cream); --fg:var(--ink); --card:#FFFFFF; --line:var(--ink);
+  --shadow:4px 4px 0 0 var(--ink); --muted:rgba(22,22,22,.68);
+  --hairline:rgba(22,22,22,.14); --dot:rgba(245,183,0,.30);
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:var(--midnight); --fg:#F3EFE4; --card:#11172a; --line:#F5B700;
+    --shadow:4px 4px 0 0 rgba(245,183,0,.85); --muted:rgba(243,239,228,.66);
+    --hairline:rgba(243,239,228,.16); --red:#FF7A6B; --blue:#8FB4FF; --gold-text:#F5B700; --dot:rgba(245,183,0,.16); }
+}
+:root[data-theme="dark"]{ --bg:var(--midnight); --fg:#F3EFE4; --card:#11172a; --line:#F5B700;
+  --shadow:4px 4px 0 0 rgba(245,183,0,.85); --muted:rgba(243,239,228,.66);
+  --hairline:rgba(243,239,228,.16); --red:#FF7A6B; --blue:#8FB4FF; --gold-text:#F5B700; --dot:rgba(245,183,0,.16); }
+:root[data-theme="light"]{ --bg:var(--cream); --fg:var(--ink); --card:#FFFFFF; --line:var(--ink);
+  --shadow:4px 4px 0 0 var(--ink); --muted:rgba(22,22,22,.68);
+  --hairline:rgba(22,22,22,.14); --red:#C4160B; --blue:#1E50C8; --gold-text:#8f6600; --dot:rgba(245,183,0,.30); }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  font-size:17px;line-height:1.55;-webkit-text-size-adjust:100%;
+  background-image:radial-gradient(var(--dot) 1.1px,transparent 1.1px);
+  background-size:18px 18px;background-attachment:fixed;}
+.wrap{max-width:820px;margin:0 auto;padding:28px 18px 96px;}
+
+.masthead{margin-bottom:22px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin:0 0 10px}
+h1{font-size:clamp(30px,7vw,46px);line-height:1.04;margin:0 0 10px;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+.sub{margin:0;color:var(--muted);max-width:60ch}
+.status{margin-top:16px;border:2px solid var(--line);background:var(--card);box-shadow:var(--shadow);padding:12px 14px}
+.status .mini-label{margin-bottom:4px}
+.status p{margin:0;font-size:14.5px}
+
+.tabs{position:sticky;top:0;z-index:30;display:flex;gap:8px;padding:12px 0;
+  background:var(--bg);border-bottom:1px solid var(--hairline);margin:22px 0 20px;overflow-x:auto}
+.tab{flex:0 0 auto;font-family:var(--mono);font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;
+  padding:8px 13px;border:2px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;font-weight:700}
+.tab[aria-selected="true"]{background:var(--mustard);color:var(--ink);box-shadow:var(--shadow)}
+.tab:focus-visible,.btn:focus-visible,.filter:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+.panel[hidden]{display:none}
+.stack{display:flex;flex-direction:column;gap:20px}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.filter{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;padding:6px 11px;
+  border:2px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;font-weight:700}
+.filter[aria-pressed="true"]{background:var(--mustard);color:var(--ink)}
+.progress{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--gold-text);margin-left:auto;font-weight:700}
+
+.card{background:var(--card);border:2px solid var(--line);box-shadow:var(--shadow);padding:20px 18px}
+.card.done{opacity:.5}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--red);font-weight:700}
+.mini-label{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-text);font-weight:700;margin-bottom:6px}
+.warn{color:var(--red);letter-spacing:.09em}
+
+.reel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border:1.5px solid var(--line);font-weight:700;white-space:nowrap}
+.chip-face{background:var(--mustard);color:var(--ink)}
+.chip-screen{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chip-both{background:transparent;color:var(--fg)}
+.chip-time{background:transparent;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip-ask{background:var(--red);color:#fff;border-color:var(--red)}
+.reel-title{font-size:24px;line-height:1.15;margin:10px 0 16px;font-weight:800;letter-spacing:-.015em;text-wrap:balance}
+
+.hook{background:var(--mustard);color:var(--ink);border:2px solid var(--ink);padding:14px 15px;margin-bottom:16px}
+.hook-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.17em;text-transform:uppercase;font-weight:700;opacity:.72;margin-bottom:7px}
+.hook-line{margin:0;font-size:19px;line-height:1.32;font-weight:700}
+.hook-screen{margin-top:10px;padding-top:9px;border-top:1.5px solid rgba(22,22,22,.28);font-size:14px;font-weight:600}
+.hook-screen span{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;opacity:.7;margin-right:6px}
+
+.script p{margin:0 0 13px;font-size:17.5px;line-height:1.62}
+.script p:last-child{margin-bottom:0}
+
+.beats{margin-top:17px;padding-top:15px;border-top:1px solid var(--hairline)}
+.beat-list{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px;counter-reset:b}
+.beat-list li{counter-increment:b;font-size:13.5px;padding:5px 10px;border:1.5px solid var(--hairline);background:var(--bg);line-height:1.35}
+.beat-list li::before{content:counter(b);font-family:var(--mono);font-size:9.5px;color:var(--gold-text);margin-right:7px;font-weight:700}
+
+.caption-block{margin-top:17px;padding-top:15px;border-top:1px solid var(--hairline)}
+.caption-text{margin:0 0 13px;font-size:15.5px;color:var(--muted)}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 14px;
+  border:2px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;font-weight:700}
+.btn:active{transform:translate(2px,2px)}
+.btn-prompt{background:var(--mustard);color:var(--ink);border-color:var(--ink)}
+.shot-toggle{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  display:flex;align-items:center;gap:7px;cursor:pointer;margin-left:auto}
+.shot-toggle input{width:19px;height:19px;accent-color:var(--mustard);cursor:pointer}
+
+.post-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.post-date{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.post-title{font-size:20px;line-height:1.2;margin:9px 0 14px;font-weight:800;letter-spacing:-.012em;text-wrap:balance}
+.post-body p,.copy-body p{margin:0 0 11px;font-size:16px}
+.post-body p:last-child,.copy-body p:last-child{margin-bottom:0}
+.first-comment{margin-top:15px;padding:12px 13px;border:2px dashed var(--hairline);background:var(--bg)}
+.first-comment p{margin:0;font-size:14.5px;color:var(--muted)}
+.post .row{margin-top:15px}
+
+.tactic-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px}
+.tactic label{display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.tactic input{width:20px;height:20px;flex:0 0 auto;margin-top:2px;accent-color:var(--mustard);cursor:pointer}
+.tactic strong{font-weight:800}
+.done-text{text-decoration:line-through;opacity:.55}
+
+.note{font-size:15px;color:var(--muted);margin:0 0 18px;max-width:62ch}
+
+/* teleprompter */
+.prompter{position:fixed;inset:0;z-index:100;background:var(--midnight);color:#F3EFE4;
+  display:none;flex-direction:column;padding:22px 20px 18px}
+.prompter[open]{display:flex}
+.prompter-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex:0 0 auto;
+  padding-bottom:14px;border-bottom:1px solid rgba(243,239,228,.2)}
+.prompter-title{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--mustard);font-weight:700}
+.prompter-body{flex:1 1 auto;overflow-y:auto;padding:22px 0 40px}
+.prompter-hook{background:var(--mustard);color:var(--ink);padding:16px 17px;margin-bottom:26px;font-size:clamp(21px,5.2vw,30px);line-height:1.26;font-weight:800}
+.prompter-body p{font-size:clamp(21px,5vw,30px);line-height:1.5;margin:0 0 24px;font-weight:600}
+.prompter-close{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;border:2px solid var(--mustard);color:var(--mustard);padding:8px 14px;cursor:pointer;font-weight:700}
+.prompter-nav{flex:0 0 auto;display:flex;gap:10px;padding-top:14px;border-top:1px solid rgba(243,239,228,.2)}
+.prompter-nav button{flex:1;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;border:2px solid rgba(243,239,228,.4);color:#F3EFE4;padding:12px;cursor:pointer;font-weight:700}
+.prompter-nav button:disabled{opacity:.3;cursor:default}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(90px);
+  background:var(--ink);color:var(--cream);font-family:var(--mono);font-size:11px;letter-spacing:.11em;
+  text-transform:uppercase;padding:11px 18px;border:2px solid var(--mustard);z-index:200;
+  transition:transform .22s ease;font-weight:700}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:520px){ .wrap{padding:20px 13px 88px} .card{padding:17px 15px} .shot-toggle{margin-left:0} }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <p class="kicker">Modern Mustard Seed · Facebook organic</p>
+    <h1>Main Street AI</h1>
+    <p class="sub">24 Reels, 30 scheduled posts, and the group. Everything you need to shoot a batch and run the lane. Built July 23, 2026.</p>
+    <div class="status">
+      <div class="mini-label">Before anything schedules</div>
+      <p>Blotato only holds your personal Facebook profile, not the MMS Page. Pull the Page ID from Meta Business Suite, reconnect Facebook with Page access, then set <code>FB_PAGE_ID</code>. Reels are posted by hand from the phone either way.</p>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="reels">Reels · 24</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="posts">Posts · 30</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="group">The Group</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="growth">Growth</button>
+  </nav>
+
+  <section class="panel" id="reels" role="tabpanel">
+    <p class="note">Shoot 8 at a time, about 90 minutes. One take each, do not review between takes. Change your shirt between batches. Post natively from the Facebook app so you get trending audio, and never put a link in the caption.</p>
+    <div class="filters">
+      <button class="filter" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter" data-filter="Weeks 1 to 2" aria-pressed="false">Batch 1</button>
+      <button class="filter" data-filter="Weeks 3 to 4" aria-pressed="false">Batch 2</button>
+      <button class="filter" data-filter="Weeks 5 to 6" aria-pressed="false">Batch 3</button>
+      <span class="progress" id="progress">0 / 24 shot</span>
+    </div>
+    <div class="stack">
+<article class="card reel" data-batch="Weeks 1 to 2" data-n="1">
+  <header class="reel-head">
+    <div class="eyebrow">R1 · The Leak</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">30s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">The After-Hours Test</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Call your own business right now. From your cell phone. After hours.</p>
+    <div class="hook-screen"><span>on screen</span> Call your own business. Right now.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Most owners have never done this and most are horrified by what they hear. A phone that rings eleven times. A voicemail box that says the wrong hours. A greeting recorded by an employee who quit in 2023.</p>
+    <p>Your customer does this at 6pm on a Tuesday, standing in a flooded kitchen, and they do not leave a message. They call the next person on the list.</p>
+    <p>That's not a marketing problem. You already paid for that lead. You just dropped it.</p>
+    <p>Go call your business. Tell me what you heard.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Call your own business. Right now.</li><li>Rings 11 times</li><li>Wrong hours on the voicemail</li><li>They don't leave a message. They call the next guy.</li><li>You already PAID for that lead.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Do this today. Call your own business from your cell, after hours, and listen to the whole thing the way a customer would. Then tell me in the comments what you heard. I'll tell you how to fix it. 👇</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="1">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R1"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 1 to 2" data-n="2">
+  <header class="reel-head">
+    <div class="eyebrow">R2 · Steal This</div>
+    <div class="chips">
+      <span class="chip chip-both">BOTH</span>
+      <span class="chip chip-time">35s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Missed-Call Text-Back</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">The single highest-return switch in small business takes four minutes to turn on and almost nobody has done it.</p>
+    <div class="hook-screen"><span>on screen</span> The highest-ROI switch in small business</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>It's called missed-call text-back. When someone calls and you don't pick up, an automatic text goes out inside sixty seconds. &quot;Sorry we missed you, this is Dave's Plumbing, what do you need?&quot;</p>
+    <p>Here's why it works. People who would never leave a voicemail will absolutely answer a text. You just recovered a pile of jobs you were losing without knowing it.</p>
+    <p>Almost every phone system and CRM already does this. You are probably paying for it right now. Go turn it on.</p>
+    <p>That's free. I'm not selling you anything. Go do it.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Missed-call text-back</li><li>Auto-text in 60 seconds</li><li>People who won't leave a voicemail WILL text back</li><li>You already pay for this feature</li><li>4 minutes. Go.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Free one. Missed-call text-back is probably already sitting in the phone system or CRM you pay for every month, switched off. Turn it on this afternoon. Come back and tell me what it caught.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="2">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R2"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 1 to 2" data-n="3">
+  <header class="reel-head">
+    <div class="eyebrow">R3 · Steal This</div>
+    <div class="chips">
+      <span class="chip chip-screen">SCREEN</span>
+      <span class="chip chip-time">25s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">The Review Link Nobody Fixes</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">This is why you have twelve reviews and your competitor has three hundred.</p>
+    <div class="hook-screen"><span>on screen</span> This is why you only have 12 reviews</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>When you ask a happy customer for a review, you send them to your website. They have to find the reviews section, click through to Google, sign in, find the button. Four taps. They quit on tap two.</p>
+    <p>Go to your Google Business Profile, hit &quot;Ask for reviews,&quot; and copy that short link. That one opens the review box directly. One tap, they're typing.</p>
+    <p>Same customers. Same work. One better link. Owners who fix this go from a dozen reviews to a hundred in a season.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>[screen record the actual GBP &quot;Ask for reviews&quot; flow] &quot;4 taps = they quit</li><li>1 tap = they type</li><li>Google Business Profile</li><li>Ask for reviews</li><li>copy link</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Screen recording of the exact fix. Takes 90 seconds. Your review count is not a reflection of your work, it's a reflection of how many taps you're asking for.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="3">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R3"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 1 to 2" data-n="4">
+  <header class="reel-head">
+    <div class="eyebrow">R4 · Straight Talk</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">28s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">You Don't Have a Lead Problem</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">You don't have a lead problem. You have a follow-up problem. And it's costing you more than any ad ever could.</p>
+    <div class="hook-screen"><span>on screen</span> You don't have a lead problem.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Every owner I talk to wants more leads. Then I ask what happened to the last thirty people who asked for a quote and didn't book. Nobody knows. Nobody followed up.</p>
+    <p>The homeowner who requested three quotes hires whoever feels alive first. Most businesses call back in two days. By then it's over.</p>
+    <p>Before you spend another dollar on ads, go text every person who got a quote from you in the last ninety days. Ask one question: &quot;Was it price or timing?&quot;</p>
+    <p>That's the cheapest sales channel you own and it's just sitting there.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>You don't have a lead problem</li><li>You have a FOLLOW-UP problem</li><li>What happened to your last 30 quotes?</li><li>Text them: 'Was it price or timing?'</li><li>Cheapest sales channel you own</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Before you spend another dollar on ads. Go pull your quotes from the last 90 days that never closed and send one text: &quot;Hey, was it price or timing?&quot; Report back what happens, I want to hear it.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="4">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R4"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 1 to 2" data-n="5">
+  <header class="reel-head">
+    <div class="eyebrow">R5 · Under the Hood</div>
+    <div class="chips">
+      <span class="chip chip-screen">SCREEN</span>
+      <span class="chip chip-time">40s</span>
+      <span class="chip chip-ask">ASK 1 of 3 this month</span>
+    </div>
+  </header>
+  <h3 class="reel-title">What an AI Receptionist Actually Sounds Like</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">This is not a demo video. I'm calling an AI receptionist right now and you're going to hear the whole thing.</p>
+    <div class="hook-screen"><span>on screen</span> This is a real AI answering a real call</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>[Place the call on speaker. Let it play. Do not talk over it.]</p>
+    <p>[After it books the appointment]</p>
+    <p>That's it. It answered on the first ring, it knew the hours, it booked the appointment, and it texted the owner the details. It does not take lunch, it does not quit, and it does not get overwhelmed on a Friday.</p>
+    <p>I'm not telling you to buy one. I'm telling you this is what your customer at 8pm is comparing you to now.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Real call. Not a demo.</li><li>live captions of the AI's actual words</li><li>Answered on ring 1</li><li>Booked it</li><li>Texted the owner</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>No editing, no script, just a real call to a real AI receptionist. Whatever you think about AI, this is what your after-hours customer is comparing you to now. Curious what you make of it. 👇</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="5">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R5"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 1 to 2" data-n="6">
+  <header class="reel-head">
+    <div class="eyebrow">R6 · The Leak</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">30s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">The Busier You Get, The More You Lose</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Here's the trap nobody warns you about. The busier your business gets, the more money you lose.</p>
+    <div class="hook-screen"><span>on screen</span> The busier you get, the more money you lose.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Think about it. When you're slow, you answer every call on the first ring. When you're slammed, which is exactly when the calls are worth the most, you're on a roof or under a sink or in somebody's chair. The phone rings out.</p>
+    <p>So your best week is also your leakiest week. Your growth is capped by your own two hands.</p>
+    <p>Every business that broke past this did the same thing. They stopped requiring themselves to be the one who answers.</p>
+    <p>That's it. That's the whole ceiling.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Busier = more money lost</li><li>Slow week: answer every call</li><li>Best week: phone rings out</li><li>Your growth is capped by your two hands</li><li>Stop being the one who answers</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>The Main Street trap. Your best week is your leakiest week. Anyone else feel this one? What's your busiest day and what happens to the phone on it?</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="6">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R6"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 1 to 2" data-n="7">
+  <header class="reel-head">
+    <div class="eyebrow">R7 · Steal This</div>
+    <div class="chips">
+      <span class="chip chip-both">BOTH</span>
+      <span class="chip chip-time">32s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Your 1-Star Reviews Have a Pattern</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Copy every bad review you've ever gotten, paste them into ChatGPT, and ask it one question.</p>
+    <div class="hook-screen"><span>on screen</span> Paste your 1-star reviews into AI. Ask this.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>&quot;What is the single most common complaint across all of these, and what would fix it?&quot;</p>
+    <p>You will get an answer you did not expect. It's almost never the thing you've been defending. It's usually communication. Nobody told them when you'd arrive. Nobody called when you were running late.</p>
+    <p>You've read those reviews one at a time and felt attacked. Read all forty at once and it stops being personal and starts being a checklist.</p>
+    <p>Free, takes ten minutes, and it's the most useful thing AI does for a small business that has nothing to do with chatbots.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Paste ALL your bad reviews into AI</li><li>Ask: what's the ONE pattern?</li><li>It's almost never what you think</li><li>It's usually communication</li><li>10 minutes. Free.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Steal this. It takes ten minutes and it will sting a little. Reading your bad reviews one at a time feels like an attack. Reading forty at once turns it into a checklist. Try it and tell me what your pattern was.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="7">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R7"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 1 to 2" data-n="8">
+  <header class="reel-head">
+    <div class="eyebrow">R8 · Straight Talk</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">30s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Most Small Business Chatbots Are Worse Than Nothing</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">I build AI for small businesses and I'm telling you most of the chatbots on small business websites are worse than having nothing.</p>
+    <div class="hook-screen"><span>on screen</span> Most small business chatbots are worse than nothing.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Here's why. A bubble pops up, it says &quot;Hi! How can I help?&quot; and then it cannot help. It cannot check your calendar, it cannot quote your job, it cannot reach you. It takes an interested customer and gives them a dead end wearing a friendly face.</p>
+    <p>A plain contact form is more honest. At least it does not promise a conversation it cannot have.</p>
+    <p>The test for any AI in your business is one question: can it actually complete something? Book the job, take the order, get the message to a human who calls back. If it can only chat, it's decoration.</p>
+    <p>Decoration does not pay for itself.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Most SMB chatbots are worse than nothing</li><li>'Hi! How can I help?' ...then it can't</li><li>A contact form is more honest</li><li>THE TEST: can it COMPLETE something?</li><li>If it only chats, it's decoration</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>I build this stuff and I'll still say it. If the AI on your site can't book, quote, or reach a human, it's decoration and decoration doesn't pay for itself. Fight me in the comments. 👇</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="8">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R8"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 3 to 4" data-n="9">
+  <header class="reel-head">
+    <div class="eyebrow">R9 · The Leak</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">27s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">The Speed-to-Lead Clock</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Calling a new lead in five minutes instead of thirty is not a small improvement. It's a different business.</p>
+    <div class="hook-screen"><span>on screen</span> 5 minutes vs 30 minutes. It's not close.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>The person who filled out your form filled out two others. They're sitting there with their phone in their hand, actively deciding. That window is minutes wide, not hours.</p>
+    <p>Most small businesses call back the next morning. By then the job is sold, the customer is relieved, and you're the guy who called too late.</p>
+    <p>You do not have to be better. You have to be first. First to respond, first to get paid.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>5 min vs 30 min = a different business</li><li>They filled out 2 other forms</li><li>The window is MINUTES</li><li>You don't have to be better. You have to be FIRST.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Speed-to-lead is the least sexy and most profitable thing in home services. How fast do you actually call a new lead back? Be honest. 👇</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="9">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R9"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 3 to 4" data-n="10">
+  <header class="reel-head">
+    <div class="eyebrow">R10 · Under the Hood</div>
+    <div class="chips">
+      <span class="chip chip-screen">SCREEN</span>
+      <span class="chip chip-time">38s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Turn 100 Invoices Into a Price Book</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Your last hundred invoices are a business plan and you're using them as a filing cabinet.</p>
+    <div class="hook-screen"><span>on screen</span> Your last 100 invoices are a business plan.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Export them. Drop them into AI. Ask it three things.</p>
+    <p>One: what are my ten most common jobs and what did I actually charge for each. Two: which job type takes the most time for the least money. Three: what should my standard price list look like.</p>
+    <p>Nearly every owner who does this finds the same thing. There's one job they keep saying yes to that quietly loses money, and one they under-charge for that customers never blink at.</p>
+    <p>You've been guessing at your prices. The answer was in your own paperwork the whole time.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>[screen record an actual spreadsheet + prompt] &quot;Export your invoices</li><li>Ask: my 10 most common jobs + real prices</li><li>Which job LOSES money?</li><li>There's always one</li><li>The answer was in your own paperwork</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>The most valuable AI use case in your business is boring. It's your invoices. Here's the exact prompt on screen. Try it and tell me which job turned out to be the loser, there's always one.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="10">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R10"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 3 to 4" data-n="11">
+  <header class="reel-head">
+    <div class="eyebrow">R11 · The Leak</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">28s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">The 9:14pm Booking</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Your best client tried to book at 9:14 at night. Your front desk went home at six. She booked somewhere else by 9:16.</p>
+    <div class="hook-screen"><span>on screen</span> She tried to book at 9:14pm. You closed at 6.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>This is the part owners get wrong about after-hours. It's not that the customer will call back tomorrow. It's that the decision was happening right then, on the couch, phone in hand, in a two-minute window.</p>
+    <p>The sale doesn't wait for business hours. It evaporates.</p>
+    <p>Salons, med spas, dental, anything people book for themselves. Look at when your competitors get booked and you'll find a spike after 8pm. That's your money, and you were asleep.</p>
+    <p>The most expensive employee is the one who isn't there at 9pm.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>9:14pm</li><li>Your desk left at 6</li><li>9:16pm: she booked elsewhere</li><li>The sale doesn't wait. It evaporates.</li><li>The most expensive employee is the one who isn't there at 9pm.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>For anyone in salon, spa, dental, or anything people book for themselves: pull your booking data and look at what happens after 8pm. Then look at what happens to the phone. That gap is the whole post.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="11">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R11"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 3 to 4" data-n="12">
+  <header class="reel-head">
+    <div class="eyebrow">R12 · Steal This</div>
+    <div class="chips">
+      <span class="chip chip-both">BOTH</span>
+      <span class="chip chip-time">35s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Your Best Salesperson Is a Script</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Whoever is best on the phone at your company, record three of their calls this week. With their permission. Then do this.</p>
+    <div class="hook-screen"><span>on screen</span> Record your best closer. Steal their brain.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Drop the transcripts into AI and ask: what exactly does this person do that the others don't. What order do they ask questions in. Where do they handle the price objection. What's the exact line they use to book.</p>
+    <p>You'll get a one-page script. That's not a manager's guess about what good looks like. That's what your actual best person actually does, written down.</p>
+    <p>Hand it to everyone else. That's the cheapest training you will ever run, and it beats any sales course because it's already working in your business.</p>
+    <p>Costs nothing. Do it this week.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Record your best closer, 3 calls</li><li>Transcripts</li><li>AI</li><li>What do THEY do that others don't?</li><li>You now have a real script</li><li>Cheapest training you'll ever run</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Free move. Your best salesperson already solved this and nobody wrote it down. Three calls, one prompt, one page. Who's your best phone person and what do they do that nobody else does?</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="12">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R12"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 3 to 4" data-n="13">
+  <header class="reel-head">
+    <div class="eyebrow">R13 · The Leak</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">30s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">The Question You Answer 40 Times a Week</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">There are about eight questions you answer every single week, over and over, and they're eating hours you never billed for.</p>
+    <div class="hook-screen"><span>on screen</span> You answer the same 8 questions all week.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Do you service my area. How much is a basic one. Are you licensed. When can you come out. Do you take card. Can you do it Saturday.</p>
+    <p>Scroll back through your last fifty customer texts and count them. Same eight.</p>
+    <p>Two moves. Put the answers on your website in plain language, not buried in a PDF. And put them where the phone can reach them, so anything answering after hours can handle it without you.</p>
+    <p>You are being paid nothing to be your own FAQ page.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>The same 8 questions. Every week.</li><li>Do you service my area? / How much? / Can you come Saturday?</li><li>Scroll back 50 texts and count</li><li>You're being paid NOTHING to be your own FAQ</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Go scroll back through your last 50 customer texts and count how many are the same eight questions. Post your number below, I want to see how bad this is across industries.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="13">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R13"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 3 to 4" data-n="14">
+  <header class="reel-head">
+    <div class="eyebrow">R14 · Under the Hood</div>
+    <div class="chips">
+      <span class="chip chip-screen">SCREEN</span>
+      <span class="chip chip-time">33s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Photo to Estimate</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Customer texts you a photo of the problem. Instead of driving out there for a free estimate you may not win, do this.</p>
+    <div class="hook-screen"><span>on screen</span> They send a photo. You send a ballpark. In 60 seconds.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>[Screen: drop a photo into AI with a real prompt]</p>
+    <p>Give AI the photo, your price book, and this instruction: &quot;Based on this photo and my standard pricing, draft a ballpark range and the three questions I need answered before I can be exact.&quot;</p>
+    <p>You get a range and the qualifying questions in under a minute. You send it. Now you know if this person is real before you burn a two-hour round trip on a tire-kicker.</p>
+    <p>You're still the one who prices it. AI just stopped you from driving across the county for free.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>[real screen recording] &quot;Photo + your price book + this prompt</li><li>Ballpark range in 60s</li><li>Plus the 3 questions you still need</li><li>Stop driving 2 hours for tire-kickers</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Exact prompt on screen. This one's for anyone who's ever driven 45 minutes to a free estimate for someone who was never going to book. You still set the price. This just filters.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="14">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R14"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 3 to 4" data-n="15">
+  <header class="reel-head">
+    <div class="eyebrow">R15 · Straight Talk</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">26s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">AI Won't Fix a Business That Doesn't Answer</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">I sell AI to small businesses and here's what I tell people who want to buy it for the wrong reason.</p>
+    <div class="hook-screen"><span>on screen</span> AI won't save a business that doesn't answer the phone.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>AI will not fix a business that doesn't answer the phone. It will just help you miss calls faster and more professionally.</p>
+    <p>If your problem is that you never call people back, that's a habit, and no software fixes a habit. If your problem is that you physically cannot be in two places at once, that's capacity, and that's what this stuff is actually for.</p>
+    <p>Be honest with yourself about which one you have. One of them costs money to solve. The other one costs discipline, and it's free.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>AI won't fix a business that doesn't answer</li><li>It'll help you miss calls FASTER</li><li>Habit problem? No software fixes that.</li><li>Capacity problem? That's what it's for.</li><li>One costs money. One costs discipline.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>The honest version from someone who sells this stuff. Half the people who ask me about AI have a discipline problem, not a capacity problem, and I'd rather say it than take the money. Which one is yours?</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="15">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R15"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 3 to 4" data-n="16">
+  <header class="reel-head">
+    <div class="eyebrow">R16 · Steal This</div>
+    <div class="chips">
+      <span class="chip chip-screen">SCREEN</span>
+      <span class="chip chip-time">30s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Reply to Every Review, Automatically</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Every review you never replied to is quietly costing you position in local search.</p>
+    <div class="hook-screen"><span>on screen</span> Unreplied reviews are costing you ranking.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Google says it plainly. Responding to reviews affects local ranking. Most small businesses reply to none of them, or only the angry ones, which is the worst possible pattern.</p>
+    <p>Here's the free version. Once a week, pull your new reviews, drop them into AI, and ask for a short warm reply to each one that mentions the specific thing they said. Read them, fix anything that sounds like a robot, paste them in.</p>
+    <p>Fifteen minutes a week. It moves your ranking and it makes the next person reading those reviews trust you more.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>[screen: reviews</li><li>prompt</li><li>drafted replies] &quot;Google: replying affects local ranking</li><li>Most businesses reply to NONE</li><li>Weekly: reviews</li><li>AI</li><li>warm replies</li><li>READ THEM FIRST</li><li>15 min/week</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Free and it takes fifteen minutes a week. One rule: actually read them before you post. A reply that sounds like a robot is worse than no reply and people can tell instantly.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="16">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R16"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 5 to 6" data-n="17">
+  <header class="reel-head">
+    <div class="eyebrow">R17 · Steal This</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">30s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">The Dead Lead Goldmine</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">There is money sitting in your file of old quotes that never closed and you have never once gone back for it.</p>
+    <div class="hook-screen"><span>on screen</span> There's $20k sitting in your old quotes.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Pull every quote from the last twelve months that never turned into a job. Send one text. Not a sales pitch. This:</p>
+    <p>&quot;Hey, it's Sarah at [business]. We quoted you back in March. Just checking, did you ever get that handled?&quot;</p>
+    <p>That's it. No offer, no discount, no pressure. A real number of them never did get it handled. Life happened, they meant to call you back, they forgot.</p>
+    <p>The people who already trusted you enough to ask for a price are the warmest list you will ever have and it's free.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Your old quotes = money</li><li>Pull 12 months of dead quotes</li><li>'Did you ever get that handled?'</li><li>No pitch. No discount.</li><li>Warmest list you'll ever own</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Do this on a slow afternoon. One text, no pitch, no discount, just &quot;did you ever get that handled?&quot; Come back and tell me what it turned up. This one surprises people.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="17">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R17"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 5 to 6" data-n="18">
+  <header class="reel-head">
+    <div class="eyebrow">R18 · Under the Hood</div>
+    <div class="chips">
+      <span class="chip chip-screen">SCREEN</span>
+      <span class="chip chip-time">32s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Your Website's 3-Second Problem</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Pull up your website on your phone right now, on cell service, not wifi. Count the seconds.</p>
+    <div class="hook-screen"><span>on screen</span> Test your site on cell service, not wifi.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>[Screen record the actual load, count on screen]</p>
+    <p>More than three and you're losing a large share of the people who tapped. They don't wait. They go back and tap the next result, and you paid for that click.</p>
+    <p>It's almost always the same culprit: giant photos nobody compressed. Your web person uploaded the raw camera files.</p>
+    <p>Run your URL through Google PageSpeed Insights. It's free, it takes thirty seconds, and it hands you the actual list. Send that list to whoever built your site.</p>
+    <p>You do not have to understand it. You just have to make somebody fix it.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>[real timed load] &quot;On CELL service, not wifi</li><li>3+ seconds = you're losing them</li><li>It's always the photos</li><li>PageSpeed Insights, free, 30 seconds</li><li>You don't have to understand it. Just make someone fix it.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Test it on cell service, not your office wifi. That's the difference between what you see and what your customer sees. Drop your load time below and I'll tell you if it's a problem.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="18">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R18"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 5 to 6" data-n="19">
+  <header class="reel-head">
+    <div class="eyebrow">R19 · The Leak</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">28s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">The Sunday Paperwork Tax</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">If you spend Sunday doing paperwork, you don't own a business. You bought yourself a second job with worse hours.</p>
+    <div class="hook-screen"><span>on screen</span> You didn't start a business to work Sundays.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Invoices, quotes, scheduling, the texts you didn't answer. It piles up all week and it lands on the one day you were supposed to have.</p>
+    <p>Here's the thing about that pile. Almost none of it requires your judgment. It requires your attention. Those are different, and only one of them has to be you.</p>
+    <p>Pick the single biggest item on your Sunday list and ask one question: does this need me, or does it just need someone.</p>
+    <p>Start there. Not with AI, not with software. With that question.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Sunday paperwork = a second job</li><li>It piles up all week</li><li>Does it need your JUDGMENT or your ATTENTION?</li><li>Only one has to be you</li><li>Start with the question, not the software</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>For every owner who's reading this on a Sunday with a stack of invoices next to them. What's the one thing on your Sunday list you'd hand off first? 👇</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="19">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R19"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 5 to 6" data-n="20">
+  <header class="reel-head">
+    <div class="eyebrow">R20 · Steal This</div>
+    <div class="chips">
+      <span class="chip chip-both">BOTH</span>
+      <span class="chip chip-time">32s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Write the Job Post That Filters</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">If you're drowning in unqualified applicants, that's not a labor market problem. That's a job post problem.</p>
+    <div class="hook-screen"><span>on screen</span> Bad applicants are a job-post problem.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Take your current job post, drop it in AI, and ask: &quot;Rewrite this so the wrong people screen themselves out. Be specific about the hard parts, the schedule, and the pay range.&quot;</p>
+    <p>Most job posts are written to attract everyone. That's the mistake. A good one repels. It says the truck leaves at 6:15am, you'll be in an attic in August, here's the actual number.</p>
+    <p>You'll get fewer applications and better ones, and you'll stop spending your week interviewing people who were never going to take it.</p>
+    <p>Say the hard part out loud. The right person reads it and thinks &quot;finally, someone honest.&quot;</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Bad applicants = bad job post</li><li>Most posts attract EVERYONE</li><li>A good one REPELS</li><li>Truck leaves at 6:15am. Attic in August. Here's the pay.</li><li>Fewer applications. Better ones.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Hiring is brutal right now and most of it is self-inflicted. Say the hard part out loud in the post. What's the one thing about your job you'd warn someone about? That's your first line.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="20">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R20"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 5 to 6" data-n="21">
+  <header class="reel-head">
+    <div class="eyebrow">R21 · The Leak</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">30s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">The Competitor Phone Test</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Call your three biggest competitors tonight, after hours, as a customer. This is the most useful twenty minutes you'll spend this month.</p>
+    <div class="hook-screen"><span>on screen</span> Call your 3 biggest competitors. After hours.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>You're finding out one thing: who answers.</p>
+    <p>Usually it's nobody. Sometimes it's one of them, and that one is quietly eating everybody's after-hours work and nobody in your market has figured out why they're growing.</p>
+    <p>Then remember that your customers run this exact test on you. Every single evening. They just call down the list until somebody picks up.</p>
+    <p>Whoever answers wins. That's not strategy, that's just arithmetic.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Call your 3 competitors. Tonight.</li><li>You're finding out ONE thing: who answers</li><li>Usually nobody. Sometimes one.</li><li>That one is eating the market.</li><li>Your customers run this test on YOU. Every night.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Twenty minutes tonight. Call your three biggest competitors after hours and just listen. Report back what you find, I'm genuinely curious how many actually pick up in your industry.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="21">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R21"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 5 to 6" data-n="22">
+  <header class="reel-head">
+    <div class="eyebrow">R22 · Steal This</div>
+    <div class="chips">
+      <span class="chip chip-screen">SCREEN</span>
+      <span class="chip chip-time">35s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">One Job, Ten Pieces of Content</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">You take before-and-after photos on every job and then do nothing with them. Here's the fix, and it takes four minutes.</p>
+    <div class="hook-screen"><span>on screen</span> One jobsite photo = 10 posts.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>[Screen: photo + prompt]</p>
+    <p>Drop the photo in and say: &quot;I'm a [trade]. Write me a short Facebook post about this job for local homeowners. No hashtags, no hype, write like a person. Then give me three variations.&quot;</p>
+    <p>Now you have a week of posts from one job you already did.</p>
+    <p>The reason this works is that people do not hire you because you posted a tip. They hire you because they saw you actually doing the work, over and over, until you were the obvious person to call.</p>
+    <p>Consistency beats cleverness. The photo is already on your phone.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>[real prompt on screen] &quot;You already take the photos</li><li>Photo + 'write like a person, no hashtags'</li><li>1 job = a week of posts</li><li>People hire you because they SAW you working</li><li>Consistency &gt; cleverness</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Exact prompt on screen. The photos are already on your phone from jobs you already did. This is the lowest-effort marketing in the trades and almost nobody runs it.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="22">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R22"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 5 to 6" data-n="23">
+  <header class="reel-head">
+    <div class="eyebrow">R23 · Straight Talk</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">27s</span>
+      
+    </div>
+  </header>
+  <h3 class="reel-title">Stop Asking AI to Write Your Marketing</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">Stop asking AI to write your marketing. It's the worst thing you can use it for and it's the first thing everyone tries.</p>
+    <div class="hook-screen"><span>on screen</span> Stop asking AI to write your marketing.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Everybody's feed is full of the same beige AI paragraphs now and customers can smell it. You are not going to out-content the internet.</p>
+    <p>Point it at the stuff nobody sees instead. Your invoices. Your calendar. Your missed calls. Your bad reviews. Your quote follow-ups.</p>
+    <p>That's where the money is, and it's boring, which is exactly why nobody's doing it.</p>
+    <p>The best AI use case in your business is not a clever caption. It's the fact that nobody called Mrs. Henderson back.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>Stop using AI for marketing</li><li>Everyone's feed is beige now. Customers can smell it.</li><li>Point it at: invoices / calendar / missed calls / bad reviews</li><li>Boring is where the money is</li><li>Nobody called Mrs. Henderson back.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Hot take from someone who builds AI for small businesses. The good use cases are boring and that's exactly why they're still available. What's the most boring thing in your week? That's probably the answer.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="23">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R23"> Shot</label>
+    </div>
+  </div>
+</article>
+
+<article class="card reel" data-batch="Weeks 5 to 6" data-n="24">
+  <header class="reel-head">
+    <div class="eyebrow">R24 · Under the Hood</div>
+    <div class="chips">
+      <span class="chip chip-face">FACE</span>
+      <span class="chip chip-time">40s</span>
+      <span class="chip chip-ask">ASK 2 of 3 this month</span>
+    </div>
+  </header>
+  <h3 class="reel-title">What I'd Do With Your First 30 Days</h3>
+
+  <div class="hook">
+    <div class="hook-label">Hook · first 1.5 seconds</div>
+    <p class="hook-line">If you handed me your small business for thirty days and told me to find money without spending any, here is exactly what I'd do, in order.</p>
+    <div class="hook-screen"><span>on screen</span> If you gave me your business for 30 days.</div>
+  </div>
+
+  <div class="script" data-script>
+    <p>Week one, I'd find out how many calls you miss. Just the number. Most owners have never seen it and it's the most upsetting number in the business.</p>
+    <p>Week two, I'd turn on missed-call text-back and fix your review link. Both free, both take an afternoon.</p>
+    <p>Week three, I'd text every dead quote from the last year with one question: did you ever get that handled.</p>
+    <p>Week four, I'd read all your bad reviews at once and fix the one thing they all say.</p>
+    <p>Zero dollars. Four afternoons. That's the whole list, and it's more than most businesses do in a year.</p>
+  </div>
+
+  <div class="beats">
+    <div class="mini-label">On-screen text beats</div>
+    <ol class="beat-list"><li>30 days. No budget.</li><li>WK 1: count your missed calls</li><li>WK 2: text-back + review link</li><li>WK 3: text your dead quotes</li><li>WK 4: read all your bad reviews at once</li><li>$0. Four afternoons.</li></ol>
+  </div>
+
+  <div class="caption-block">
+    <div class="mini-label">Caption <span class="warn">no link in the caption</span></div>
+    <p class="caption-text" data-caption>Save this one. Four weeks, zero dollars, four afternoons, and it's more than most businesses do in a year. I do this every week for free in the group, link in the comments. Start with week one and tell me your missed-call number, I promise it's worse than you think.</p>
+    <div class="row">
+      <button class="btn" data-copy>Copy caption</button>
+      <button class="btn btn-prompt" data-prompt="24">Teleprompter</button>
+      <label class="shot-toggle"><input type="checkbox" data-shot="R24"> Shot</label>
+    </div>
+  </div>
+</article></div>
+  </section>
+
+  <section class="panel" id="posts" role="tabpanel" hidden>
+    <p class="note">Scheduled Monday, Thursday and Saturday at 8am Mountain, starting July 27, running through October 3. These fire through Blotato once the Page ID is set. Exactly one of the thirty carries an ask.</p>
+    <div class="stack">
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Thesis</div>
+    <time class="post-date">Mon, Jul 27</time>
+  </header>
+  <h3 class="post-title">Big companies got AI first. That's backwards.</h3>
+  <div class="post-body" data-caption><p>Big companies got AI first. That's backwards.</p><p>It isn't the Fortune 500 that loses a $4,000 job because nobody picked up at 5:15 on a Friday. It's the plumber. The salon. The family restaurant that had two people on and forty phone calls.</p><p>Main Street feels every dropped call in its bank account the same week it happens. And Main Street is the one place that got handed AI last, in the form of a chatbot bubble that can't do anything.</p><p>So I started posting here. Every week I'm going to give away the specific moves that put money back in a small business. Free, no course, no funnel. Some of them involve AI. Half of them are just a switch you already pay for and never turned on.</p><p>Tell me what you do in the comments and I'll tell you where I'd start.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Ritual</div>
+    <time class="post-date">Thu, Jul 30</time>
+  </header>
+  <h3 class="post-title">Comment your industry. I'll give you the one AI move that pays for itself.</h3>
+  <div class="post-body" data-caption><p>Comment your industry below and I'll give you the one AI move I'd make first in your specific business. Free, no pitch, I'm not going to DM you.</p><p>Not &quot;use AI to save time.&quot; An actual move. The thing I'd do on Monday morning if it were my company.</p><p>Roofing is different from a med spa. A two-truck landscaping outfit is different from a twelve-chair salon. Generic advice is why most owners have concluded this stuff isn't for them.</p><p>So tell me: what do you do, how many people, and what's the part of the week that makes you want to quit?</p><p>I answer every one of these. Might take me a day, but I get to all of them.</p></div>
+  <div class="first-comment"><div class="mini-label">Paste as the first comment</div><p>Everything I post here goes deeper in the free group: {{GROUP_URL}}. No pitching, no spam, just the moves that put money back in a small business.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Steal This</div>
+    <time class="post-date">Sat, Aug 1</time>
+  </header>
+  <h3 class="post-title">Five fields on your Google profile that almost nobody fills in.</h3>
+  <div class="post-body" data-caption><p>Your Google Business Profile is the most valuable piece of real estate you own and most owners set it up once in 2021 and never touched it again.</p><p>Five things to fix this afternoon. All free, all take about twenty minutes together.</p><p>1. Services. Not just &quot;plumber.&quot; List every specific job you do, in the words customers use. Water heater replacement. Slab leak. Garbage disposal. Each one is a search someone is typing right now.</p><p>2. Photos. Yours are three years old and there are four of them. Add ten from recent jobs. Profiles with fresh photos get meaningfully more calls, and it's the cheapest thing on this list.</p><p>3. Hours, including holidays. Wrong hours generate one-star reviews from people who drove out to a closed door.</p><p>4. The Q&amp;A section. You can ask and answer your own questions. Nobody knows this. Put your eight most common questions in there yourself.</p><p>5. Products or services with prices, even ranges. &quot;Starting at&quot; is fine. People filter you out for not saying anything far more often than for saying a number.</p><p>Which of the five is worst on yours? Be honest, mine was the photos for years.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">The Leak</div>
+    <time class="post-date">Mon, Aug 3</time>
+  </header>
+  <h3 class="post-title">&quot;We'll get back to you&quot; is where most small business revenue goes to die.</h3>
+  <div class="post-body" data-caption><p>&quot;We'll get back to you.&quot; That sentence is where most small business revenue quietly goes to die.</p><p>Not because anyone lied. Because the person who said it went to the next job, and the note was on a scrap of paper in a truck, and it's Thursday now.</p><p>Here's the three-text sequence that fixes it. Steal it, it costs nothing.</p><p>Text 1, same day: &quot;Hey [name], Sarah from [business]. Great talking with you. Sending the quote over tonight.&quot; (Send it that night. This is the whole trick.)</p><p>Text 2, day 3: &quot;Just making sure that quote landed, any questions on it?&quot;</p><p>Text 3, day 8: &quot;No pressure at all, just closing the loop. Was it price or timing? Genuinely helps me either way.&quot;</p><p>That last one is the one people skip and it's the most valuable. Half of them answer it honestly, and now you know something real about your pricing that no consultant could tell you.</p><p>How many days go by before you follow up on a quote right now? Nobody's judging, I want to see the real spread.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Straight Talk</div>
+    <time class="post-date">Thu, Aug 6</time>
+  </header>
+  <h3 class="post-title">Four things AI genuinely cannot do for your business.</h3>
+  <div class="post-body" data-caption><p>I build AI for small businesses, so here are four things it genuinely cannot do. Anyone telling you otherwise is selling.</p><p>1. It cannot make a judgment call about a customer. Whether to eat the cost on a job that went sideways, whether this person is worth keeping. That's you. That will stay you.</p><p>2. It cannot fix a business that doesn't answer the phone. If the problem is a habit, software just helps you miss things faster and more professionally.</p><p>3. It cannot know your prices, your area, or your standards unless somebody sits down and tells it. The setup is real work. Anyone promising &quot;plug it in, done&quot; has never done it.</p><p>4. It cannot replace being the person people trust. In a small business the owner IS the brand. Automating the parts nobody sees is smart. Automating the relationship is how you lose it.</p><p>What it's actually good at is the boring middle. The calls at 8pm. The follow-up nobody sent. The paperwork on Sunday. The eight questions you answer forty times a week.</p><p>That's not a sexy pitch, but it's the honest one.</p><p>What's the thing you'd never hand to a machine, no matter how good it got?</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Ritual</div>
+    <time class="post-date">Sat, Aug 8</time>
+  </header>
+  <h3 class="post-title">Teardown Tuesday. Drop your business. I'll find the leak on video. Free.</h3>
+  <div class="post-body" data-caption><p>TEARDOWN TUESDAY. Here's how it works.</p><p>Drop your business name and website in the comments. I pick one. Then I pull up your site, your Google profile, and I call your business on camera, live, as a customer.</p><p>Then I tell you exactly where you're losing money and the one thing I'd fix first. On video, free, and you keep the video.</p><p>Two promises. I will never mock anybody, we're on the same side against the problem. And I always give you the free version of the fix, even when there's a paid version.</p><p>Only volunteers. I don't do this to businesses that didn't raise their hand.</p><p>Who wants it? First good one I see, I shoot it tonight.</p></div>
+  <div class="first-comment"><div class="mini-label">Paste as the first comment</div><p>Everything I post here goes deeper in the free group: {{GROUP_URL}}. No pitching, no spam, just the moves that put money back in a small business.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">The Leak</div>
+    <time class="post-date">Mon, Aug 10</time>
+  </header>
+  <h3 class="post-title">Your voicemail greeting was recorded by an employee who quit two years ago.</h3>
+  <div class="post-body" data-caption><p>Go listen to your own voicemail greeting right now. I'll wait.</p><p>Here's what I hear when I call small businesses all day. A greeting recorded by somebody who doesn't work there anymore. Hours that are wrong. A mailbox that's full. A robot voice reading back a phone number because nobody ever recorded anything at all.</p><p>Meanwhile the person calling is standing in a flooded kitchen at 6pm deciding who to give four thousand dollars to.</p><p>Fix it in ten minutes, free:</p><p>Record it yourself, in your voice. Say the business name, say you're sorry you missed them, and then say this: &quot;Text this same number and we'll get right back to you.&quot;</p><p>Then actually watch your texts.</p><p>People who would never leave a voicemail will happily send a text. You just recovered a chunk of the work you were losing, before lunch, for nothing.</p><p>Go listen to yours and tell me how bad it is. I want to hear the worst one.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Steal This</div>
+    <time class="post-date">Thu, Aug 13</time>
+  </header>
+  <h3 class="post-title">Paste your last 50 customer texts into AI and ask it this one question.</h3>
+  <div class="post-body" data-caption><p>Prompt of the week. Copy this exactly.</p><p>Scroll back through your last fifty customer texts. Copy them, paste them into ChatGPT or Claude, and say:</p><p>&quot;These are real messages from my customers. Find the questions I answer most often, ranked. For each one, write the answer in plain language a customer would understand, in my voice based on how I already replied.&quot;</p><p>What you get back is your FAQ page, written for you, in words your actual customers actually use. Not marketing words. Their words.</p><p>Put those answers on your website. Put them in your voicemail greeting. Put them anywhere someone can reach them at 9pm without you.</p><p>Right now you are being paid nothing to personally be your own FAQ page, forty times a week, usually while driving.</p><p>Run it and tell me your number one question. I'm collecting these by industry and the pattern is fascinating.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Straight Talk</div>
+    <time class="post-date">Sat, Aug 15</time>
+  </header>
+  <h3 class="post-title">&quot;You're too expensive&quot; almost never means you're too expensive.</h3>
+  <div class="post-body" data-caption><p>&quot;You're too expensive&quot; almost never means you're too expensive.</p><p>It usually means one of three other things, and they all have a different fix.</p><p>&quot;I don't understand what I'm getting.&quot; Your quote was a number on a line. The guy who won showed them what's included and why the cheap version fails in two years.</p><p>&quot;I don't trust that you'll show up.&quot; Price is the only thing they can compare, so they compare it. Reviews, photos, and answering the phone fix this one, not discounting.</p><p>&quot;I wasn't ready to buy today.&quot; Nothing was wrong with your price. They needed two more weeks and you never followed up, so they bought from whoever was still around when they were ready.</p><p>Almost nobody's real problem is the number. Dropping your price to solve a trust problem just makes you a cheaper business with the same trust problem.</p><p>What's the objection you hear most? I'll tell you which of the three it actually is.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">The Leak</div>
+    <time class="post-date">Mon, Aug 17</time>
+  </header>
+  <h3 class="post-title">The contractor who calls back first wins the job most of the time.</h3>
+  <div class="post-body" data-caption><p>The one who calls back first wins the job most of the time. Not the best one. The first one.</p><p>Here's what people get wrong about this. They think the customer is comparing three quotes carefully over a week. They're not. They filled out three forms in four minutes, they're sitting there with the phone in their hand, and they are actively deciding right now.</p><p>That window is minutes wide.</p><p>Most small businesses call back the next morning. By then somebody else already came out, quoted it, and the customer is relieved it's handled.</p><p>You do not have to be better than your competition. You have to be awake at the same time as your customer.</p><p>Honest question, no judgment: how long does it actually take you to call a new lead back? Not how long you'd like it to take. The real number.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Ritual</div>
+    <time class="post-date">Thu, Aug 20</time>
+  </header>
+  <h3 class="post-title">Win Friday. What worked this week? Big or stupidly small.</h3>
+  <div class="post-body" data-caption><p>WIN FRIDAY. What worked this week?</p><p>Doesn't have to be big. Especially shouldn't be big. Post the small one.</p><p>You finally fixed your review link. You texted an old quote and it turned into a job. You said no to a customer who was going to be a nightmare. You got out of the shop before six once.</p><p>I'll go first: I called eleven businesses this week for a teardown and two of them answered. Two out of eleven. Every time I run this I'm reminded the bar on Main Street is on the floor, and that's genuinely good news for anyone willing to just pick up the phone.</p><p>Your turn. What went right? 👇</p></div>
+  <div class="first-comment"><div class="mini-label">Paste as the first comment</div><p>Everything I post here goes deeper in the free group: {{GROUP_URL}}. No pitching, no spam, just the moves that put money back in a small business.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Steal This</div>
+    <time class="post-date">Sat, Aug 22</time>
+  </header>
+  <h3 class="post-title">Export last month's calendar into AI and ask where your week actually went.</h3>
+  <div class="post-body" data-caption><p>Export last month's calendar to a spreadsheet, drop it into AI, and ask this:</p><p>&quot;Categorize every entry as revenue-generating, admin, or travel. Show me the hours and percentage in each. Then tell me what a normal week actually looks like for me.&quot;</p><p>Almost every owner who runs this finds the same two things. Way more travel than they thought, and one recurring meeting or errand that eats half a day a week and generates nothing.</p><p>You cannot fix a week you've never actually looked at. You've been running on a feeling about where your time goes, and the feeling is wrong in a specific direction: you think you spend more time making money than you do.</p><p>Takes fifteen minutes. Free. It's the most uncomfortable and most useful thing on this list.</p><p>If you run it, come back and post your percentage. I want to see the spread across industries.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">The Leak</div>
+    <time class="post-date">Mon, Aug 24</time>
+  </header>
+  <h3 class="post-title">A restaurant's phone rings 40 times on a Friday. Nobody can pick up.</h3>
+  <div class="post-body" data-caption><p>A busy restaurant's phone rings forty times on a Friday night and almost nobody picks up. Not from laziness. Because the phone and the floor need the same two hands, and the people in front of you are the ones who are already here.</p><p>Every one of those rings was a reservation, a to-go order, or a catering lead. Catering is the one that hurts. That's a four-figure call and it went to whoever answered.</p><p>You cannot hire your way out of a Friday rush. Nobody's staffing an extra body just to sit by a phone.</p><p>The free version: put your reservation link and your online ordering link everywhere the phone is listed, and change your greeting so it tells people that in the first six seconds instead of after a menu tree.</p><p>Restaurant folks, what's the call you hate missing most? I'm guessing catering.</p><p>🍽️</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Straight Talk</div>
+    <time class="post-date">Thu, Aug 27</time>
+  </header>
+  <h3 class="post-title">Stop asking AI to write your marketing. Point it at your invoices.</h3>
+  <div class="post-body" data-caption><p>Stop asking AI to write your marketing. It's the first thing everybody tries and it's the worst thing it does for you.</p><p>Everyone's feed is full of the same beige AI paragraphs now and customers can smell it from across the room. You are not going to out-post the internet, and honestly nobody hired a plumber because of a caption.</p><p>Point it at the stuff nobody sees.</p><p>Your invoices, to find the job type that quietly loses money. Your calendar, to find where the week actually goes. Your missed calls, to find out what a Tuesday costs you. Your bad reviews, all at once, to find the one pattern. Your old quotes, to find the money already sitting there.</p><p>That's where it earns. It's boring, which is exactly why it's still available.</p><p>The best AI use case in your business isn't a clever post. It's the fact that nobody called Mrs. Henderson back.</p><p>Disagree with me. I want to hear it.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Steal This</div>
+    <time class="post-date">Sat, Aug 29</time>
+  </header>
+  <h3 class="post-title">Google says replying to reviews affects your ranking. Most owners reply to none.</h3>
+  <div class="post-body" data-caption><p>Google says plainly that responding to reviews affects your local ranking. Most small businesses reply to none of them, or only the angry ones, which is the worst possible pattern to show a stranger reading your profile.</p><p>Fifteen minutes a week, free:</p><p>Pull the week's new reviews. Drop them into AI and ask for a short, warm, specific reply to each one that mentions the actual thing they said. Then read every single one before you post it and fix anything that sounds like a machine.</p><p>That last part is not optional. A reply that reads like a robot is worse than no reply, and people can tell instantly. &quot;Thank you for your valuable feedback&quot; makes you look like a cable company.</p><p>For the bad ones: acknowledge, don't argue, and take it to a phone call. Anyone reading it later is judging how you handled it, not who was right.</p><p>How many reviews are sitting on your profile right now with no reply? Go look. It's usually more than you'd guess.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">The Leak</div>
+    <time class="post-date">Mon, Aug 31</time>
+  </header>
+  <h3 class="post-title">&quot;I'll just do it myself&quot; is the most expensive sentence in small business.</h3>
+  <div class="post-body" data-caption><p>&quot;I'll just do it myself, it's faster&quot; is the most expensive sentence in small business, and every good operator says it.</p><p>It's true, by the way. It IS faster this one time. That's what makes it so hard to stop.</p><p>But here's the arithmetic. If your work is worth $95 an hour and you spend six hours a week on scheduling, invoicing, and answering the same questions, that's roughly $570 a week you paid yourself to do $18-an-hour work. Call it $27,000 a year.</p><p>You wouldn't hire someone at your rate to do that job. But you hired you.</p><p>The move isn't to hire a person. For most of you it's not the right time and you know it. The move is to ask one question about every task on that list: does this need my judgment, or does it just need my attention?</p><p>Judgment stays. Attention goes.</p><p>What's the one thing you keep doing yourself that you know you shouldn't? 👇</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Ritual</div>
+    <time class="post-date">Thu, Sep 3</time>
+  </header>
+  <h3 class="post-title">Tell me the worst part of your week. I'll tell you if it's fixable.</h3>
+  <div class="post-body" data-caption><p>New version of the Monday question. Tell me the worst part of your week and I'll tell you honestly whether it's fixable, and how.</p><p>Not &quot;what would you automate.&quot; Most owners don't know, and that question makes people feel like they should already have an answer.</p><p>Just tell me the thing you dread. The Sunday invoicing. The scheduling phone tag. The one customer. The quotes you never send. The part where you get home and remember four people you didn't call back.</p><p>I'll give you a straight answer, including &quot;that one's not a software problem&quot; when that's the truth, which is more often than people expect.</p><p>Free, no DM, no pitch. I just find these conversations more useful than anything I could write on my own.</p><p>Go. 👇</p></div>
+  <div class="first-comment"><div class="mini-label">Paste as the first comment</div><p>Everything I post here goes deeper in the free group: {{GROUP_URL}}. No pitching, no spam, just the moves that put money back in a small business.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Steal This</div>
+    <time class="post-date">Sat, Sep 5</time>
+  </header>
+  <h3 class="post-title">Drowning in bad applicants is a job-post problem, not a labor problem.</h3>
+  <div class="post-body" data-caption><p>If you're drowning in unqualified applicants, that's not the labor market. That's your job post.</p><p>Take your current one, paste it into AI, and say: &quot;Rewrite this so the wrong people screen themselves out. Be specific and honest about the hard parts, the schedule, and the pay range.&quot;</p><p>Most job posts are written to attract everybody. That's the whole mistake. A good job post repels.</p><p>It says the truck leaves at 6:15, you will be in an attic in August, we drug test, here is the actual number, and here is what you'll be making in two years if you're good.</p><p>You'll get fewer applications and better ones, and you'll stop burning a week interviewing people who were never going to take it.</p><p>Say the hard part out loud. The right person reads it and thinks &quot;finally, somebody honest.&quot;</p><p>What's the thing about your job you'd warn someone about? That's your opening line.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">The Leak</div>
+    <time class="post-date">Mon, Sep 7</time>
+  </header>
+  <h3 class="post-title">She tried to book at 9:14pm. Your desk left at 6. She booked elsewhere by 9:16.</h3>
+  <div class="post-body" data-caption><p>Your best client tried to book at 9:14 at night. Your front desk went home at six. She booked somewhere else at 9:16.</p><p>This is the part that owners in booking businesses get wrong about after-hours. It's not that she'll call back tomorrow. It's that the decision was happening right then, on the couch, phone in hand, in a two-minute window that opened because she finally had a second to herself.</p><p>The sale doesn't wait for business hours. It evaporates.</p><p>Salons, spas, dental, anything people book for themselves: pull your booking data and look at when requests actually come in. There's a spike after 8pm and it's bigger than you think. Then look at what your phone does during that spike.</p><p>The free move: make sure online booking is one tap from your Instagram bio, your Google profile, and your voicemail greeting. Not buried on a website. One tap.</p><p>The most expensive employee is the one who isn't there at 9pm.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Under the Hood</div>
+    <time class="post-date">Thu, Sep 10</time>
+  </header>
+  <h3 class="post-title">This is what an AI answering your phone actually sounds like now.</h3>
+  <div class="post-body" data-caption><p>Whatever picture you have in your head of &quot;AI answering the phone,&quot; it's probably four years out of date. It's not the press-1-for-billing tree.</p><p>It picks up on the first ring, it knows your hours and your service area, it answers the eight questions you get all week, it books straight into your calendar, and it texts you the details before you're off the ladder.</p><p>I'm not posting this to sell you one. I'm posting it because this is what your customer at 8pm is comparing you to now, whether you like it or not. Somebody in your market already has this and is quietly eating the after-hours work.</p><p>You can call one and hear it yourself. Link in the comments, free, no signup, it just rings your phone and talks to you.</p><p>Then tell me honestly what you thought. I want the skeptical takes too, they're usually the most useful ones.</p></div>
+  <div class="first-comment"><div class="mini-label">Paste as the first comment</div><p>You can call one and hear it: modernmustardseed.com/sidekick. Free, no signup, it just calls you.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy post</button><span class="chip chip-ask">THE ASK</span></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Steal This</div>
+    <time class="post-date">Sat, Sep 12</time>
+  </header>
+  <h3 class="post-title">There's money sitting in your old quotes and you've never gone back for it.</h3>
+  <div class="post-body" data-caption><p>Slow afternoon project that costs nothing and works almost every time.</p><p>Pull every quote from the last twelve months that never turned into a job. Send one text. Not a pitch:</p><p>&quot;Hey, it's Sarah at [business]. We quoted you back in March for the deck. Just checking in, did you ever get that handled?&quot;</p><p>No offer. No discount. No pressure. Just a human closing a loop.</p><p>A real number of them never did get it handled. Life happened, they meant to call you back, they got busy, and now they feel a little bad about it and you just made it easy.</p><p>These people already trusted you enough to invite you out and ask what it would cost. That is the warmest list you will ever own, it's free, and it's sitting in a folder.</p><p>Try it on twenty of them this week and come back and tell me what happened. This one surprises people every time.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Straight Talk</div>
+    <time class="post-date">Mon, Sep 14</time>
+  </header>
+  <h3 class="post-title">Your customers stopped answering the phone. They didn't stop wanting to buy.</h3>
+  <div class="post-body" data-caption><p>Your customers stopped answering unknown numbers. They did not stop wanting to hire you.</p><p>This trips up a lot of good operators. You call back, no answer, you leave a voicemail, nothing, and you conclude the lead was junk. It wasn't. They just don't answer numbers they don't recognize, and neither do you.</p><p>The fix is boring: call, and if there's no answer, immediately text. &quot;Hey [name], Sarah from [business], just tried you about the water heater. Happy to text if that's easier.&quot;</p><p>Response rates on that second step are not close. People who ignored the call will reply to the text in four minutes.</p><p>And when they text back, keep texting. Don't insist on getting them on the phone because that's how you prefer to sell. Sell the way they want to buy.</p><p>Anyone else notice their phone answer rate falling off a cliff the last few years? What are you doing about it?</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">The Leak</div>
+    <time class="post-date">Thu, Sep 17</time>
+  </header>
+  <h3 class="post-title">Load your site on cell service, not office wifi. Count the seconds.</h3>
+  <div class="post-body" data-caption><p>Pull up your own website on your phone right now, on cell service, not your office wifi. Count the seconds until you can actually read something.</p><p>More than three and you're losing a real share of the people who tapped. They don't wait. They hit back and tap the next result, and if that tap came from an ad, you paid for it.</p><p>It's almost always the same cause. Enormous photos nobody compressed. Somebody uploaded the raw files straight off a camera and every visitor on a phone downloads all of it.</p><p>Free fix path: run your URL through Google PageSpeed Insights. Takes thirty seconds and hands you the actual list of what's wrong. Send that list to whoever built your site.</p><p>You do not need to understand any of it. You just need to make somebody fix it.</p><p>Post your load time below and I'll tell you if it's a problem. Test it on cell, not wifi, that's the whole point.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Ritual</div>
+    <time class="post-date">Sat, Sep 19</time>
+  </header>
+  <h3 class="post-title">I call your business on camera and tell you what I heard. Volunteers only.</h3>
+  <div class="post-body" data-caption><p>TEARDOWN TUESDAY. Volunteers only, and I mean that.</p><p>Drop your business below. I'll pick one, pull up your website and Google profile, and call your line on camera as a regular customer. Then I tell you the one thing I'd fix first, and I give you the free version of the fix even when there's a paid version.</p><p>Last week's takeaway, and I'm keeping a tally: I've called nineteen businesses for these now and five answered.</p><p>Five out of nineteen. In a market where everybody says it's slow and leads are expensive.</p><p>The bar is on the floor out here. That's not an insult, it's the single best news in this group, because stepping over it costs almost nothing.</p><p>Who's up? 👇</p></div>
+  <div class="first-comment"><div class="mini-label">Paste as the first comment</div><p>Everything I post here goes deeper in the free group: {{GROUP_URL}}. No pitching, no spam, just the moves that put money back in a small business.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Steal This</div>
+    <time class="post-date">Mon, Sep 21</time>
+  </header>
+  <h3 class="post-title">One jobsite photo is a week of posts. It's already on your phone.</h3>
+  <div class="post-body" data-caption><p>You take before-and-after photos on every job and then do nothing with them. Four-minute fix.</p><p>Drop the photo into AI and say: &quot;I'm a [trade] in [town]. Write a short Facebook post about this job aimed at local homeowners. No hashtags, no hype, write like a normal person talking about their work. Then give me three variations.&quot;</p><p>One job, a week of posts.</p><p>And here's why this beats any clever marketing idea you'll read this month: people don't hire you because you posted a tip. They hire you because they saw you doing the work over and over until you were the obvious person to call when the thing broke.</p><p>Consistency beats cleverness, and the photos are already sitting on your phone from work you already did.</p><p>One rule: read it before you post it and cut anything that sounds like a brochure. If it has the word &quot;solutions&quot; in it, start over.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">The Leak</div>
+    <time class="post-date">Thu, Sep 24</time>
+  </header>
+  <h3 class="post-title">Your best week is also your leakiest week. That's the ceiling.</h3>
+  <div class="post-body" data-caption><p>Here's the trap nobody warns you about when you start a business.</p><p>When you're slow, you answer every call on the first ring. You're helpful, you follow up, you send the quote that night.</p><p>When you're slammed, which is exactly when the calls are worth the most, you're on a roof or under a sink or in somebody's chair, and the phone rings out.</p><p>So your best week is also your leakiest week. And it feels great, because you're busy, and you never see the four jobs that called and went elsewhere.</p><p>That's the ceiling. Your growth is capped by your own two hands, and no amount of hustle raises it, because hustle is what's already using the hands.</p><p>Every business that broke through did the same thing in some form. They stopped requiring themselves to be the one who answers.</p><p>Anyone else feel this one? What's your busiest day of the week and what actually happens to the phone on it?</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Straight Talk</div>
+    <time class="post-date">Sat, Sep 26</time>
+  </header>
+  <h3 class="post-title">What I got wrong about AI for small business.</h3>
+  <div class="post-body" data-caption><p>Things I was wrong about, since this group is supposed to be useful and not a highlight reel.</p><p>I thought owners would want to build it themselves. Give them the prompts, the tools, the how. Most don't, and it's not laziness. It's that a person doing forty things already does not want a forty-first, even a good one. The people who DO want to build it are wonderful and they're maybe one in ten.</p><p>I thought the hard part was the technology. It's not, it hasn't been for a while. The hard part is that a small business's actual knowledge (your prices, your service area, your standards, the way you talk) lives entirely in the owner's head and has never been written down anywhere. That's the real work and no software skips it.</p><p>I thought people wanted to save time. Mostly they want to stop feeling behind. Those sound the same and they are not. Saving an hour on a task you hate feels like nothing if the pile is still there when you look up.</p><p>Still figuring it out. What have you been wrong about in your own business? The good version of that question, not the fake-humble one.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Steal This</div>
+    <time class="post-date">Mon, Sep 28</time>
+  </header>
+  <h3 class="post-title">Record yourself doing the job once. That's your training manual.</h3>
+  <div class="post-body" data-caption><p>You've been meaning to write down how things work here for about four years. Here's how to do it in an afternoon.</p><p>Next time you do the thing, talk through it out loud and record it on your phone. Opening the shop. Running the estimate. Closing out a job. Whatever the new person always gets wrong.</p><p>Then drop the recording into AI and say: &quot;Turn this into a step-by-step checklist a brand new employee could follow, in plain language, and flag anything I skipped or assumed.&quot;</p><p>That last part is the gold. It catches the fifteen things you do automatically and never mention, which is exactly the stuff new hires get wrong and then get yelled at for.</p><p>One afternoon, five recordings, and you have the manual you've been meaning to write since 2022.</p><p>What's the one job at your company that only exists in one person's head? That's the first one to record.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">The Leak</div>
+    <time class="post-date">Thu, Oct 1</time>
+  </header>
+  <h3 class="post-title">Call your three biggest competitors tonight. You're finding out one thing.</h3>
+  <div class="post-body" data-caption><p>Twenty-minute assignment for tonight, and it's the most useful thing you'll do this month.</p><p>Call your three biggest competitors after hours, as a customer. You're finding out exactly one thing: who answers.</p><p>Usually the answer is nobody, and you'll feel a lot better about yourself for about ten seconds.</p><p>Sometimes one of them answers. And that one is quietly eating everybody's evening and weekend work, and the rest of the market is standing around saying it's a slow year.</p><p>Then sit with the second half of this. Your customers run this exact test on you. Every single evening. They don't call you and wait, they call down the list until a human picks up, and then they stop calling.</p><p>Whoever answers wins. That's not strategy, that's arithmetic.</p><p>Do it tonight and report back. How many of your three picked up? I'll collect the results, I want the industry breakdown.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article>
+
+<article class="card post">
+  <header class="post-head">
+    <div class="eyebrow">Under the Hood</div>
+    <time class="post-date">Sat, Oct 3</time>
+  </header>
+  <h3 class="post-title">Thirty days, zero dollars, four afternoons. The whole list.</h3>
+  <div class="post-body" data-caption><p>If you handed me your business for thirty days and said find money without spending any, this is the whole list, in order. Save it.</p><p>WEEK 1. Find out how many calls you actually miss. Just the number, from your phone bill or your carrier app. Most owners have never looked and it is the single most upsetting number in the business.</p><p>WEEK 2. Turn on missed-call text-back (it's already in the system you pay for) and fix your Google review link so it opens the review box in one tap instead of four. Both free, both an afternoon.</p><p>WEEK 3. Text every quote from the last twelve months that never closed. One line: &quot;Did you ever get that handled?&quot; No pitch, no discount.</p><p>WEEK 4. Paste all your bad reviews into AI at once and ask for the single most common pattern. Fix that one thing. It's almost never what you've been defending, it's almost always communication.</p><p>Zero dollars. Four afternoons. And it's more than most businesses will do all year, which is the entire reason it works.</p><p>Start with week one. Post your missed-call number when you find it. I promise you it's worse than you think, and I promise you're not the only one.</p></div>
+  
+  <div class="row"><button class="btn" data-copy>Copy post</button></div>
+</article></div>
+  </section>
+
+  <section class="panel" id="group" role="tabpanel" hidden>
+    <p class="note">Facebook makes you create the group by hand. Paste each block below. Join question three asks for an email, which builds a list Facebook cannot take away from you.</p>
+    <div class="stack">
+<article class="card">
+  <div class="eyebrow">Group name</div>
+  <div class="copy-body" data-caption><p>Main Street AI: AI Hacks for Small Business Owners</p></div>
+  <div class="row"><button class="btn" data-copy>Copy</button></div>
+</article>
+
+<article class="card">
+  <div class="eyebrow">Description</div>
+  <div class="copy-body" data-caption><p>Practical AI for people who run real businesses.</p><p>No theory, no crypto-bro hype, no &quot;10x your mindset.&quot; Just the specific moves that put money back in a small business: the calls you're missing, the follow-ups you're not sending, the paperwork eating your Sunday.</p><p>Free. Always. You'll get:</p><p>• Teardown Tuesday. I take one real member business and find the money leak on video, free</p><p>• Steal This Thursday. One AI move you can run today, no tools, no budget</p><p>• Straight answers when you ask. Post your question, I answer it.</p><p>Run by Sarah at Modern Mustard Seed. We build AI staff for Main Street businesses. But this group is not a sales pitch. If you never buy anything, you should still leave with more money than you came in with.</p><p>Rules in the pinned post. Come in, tell us what you do, and steal everything that isn't nailed down.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy</button></div>
+</article>
+
+<article class="card">
+  <div class="eyebrow">Join questions</div>
+  <div class="copy-body" data-caption><p>1. What's your business, and how long have you been running it? (qualifies real owners, kills spam)</p><p>2. What's the one thing in your week that eats the most time and makes the least money? (this is your content research engine AND your sales intel, forever)</p><p>3. Want the weekly Main Street AI move sent to you? Drop your email. (optional). This builds an owned email list for free. Facebook can change the rules on your group tomorrow. It cannot take your list.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy</button></div>
+</article>
+
+<article class="card">
+  <div class="eyebrow">Rules</div>
+  <div class="copy-body" data-caption><p>1. No pitching in posts. Ever. Not yours, not mine. Answer questions and people will find you.</p><p>2. No link drops without context. Explain the thing, then link it if someone asks.</p><p>3. Real questions get real answers. Ask specific (&quot;my HVAC company misses calls during install days&quot;) not vague (&quot;how do I use AI&quot;).</p><p>4. No DM pitching members. One report and you're out. This rule is why the group stays worth being in.</p><p>5. Share what worked. If you steal something here and it made you money, come back and say so. That's rent.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy</button></div>
+</article>
+
+<article class="card">
+  <div class="eyebrow">Pinned &quot;Start Here&quot; post</div>
+  <div class="copy-body" data-caption><p>Welcome, Main Streeter.</p><p>Here's what this place is for. You run a real business. You keep hearing you should &quot;use AI&quot; and every article you find was written for a software company with a marketing department. This group is the translation.</p><p>Start with these three, in order. They cost nothing and they're the highest-return moves for almost any small business:</p><p>1. Call your own business right now. From your cell phone. After hours. Listen to the whole thing the way a customer would. Most owners have never done this and most are horrified. That is your baseline.</p><p>2. Turn on missed-call text-back. If a call goes unanswered, an automatic text goes out inside 60 seconds: &quot;Sorry we missed you, this is [Business], what do you need?&quot; Almost every phone system and CRM does this and most owners never turned it on. It is the highest-ROI switch in small business.</p><p>3. Fix your review link. Stop sending customers to your homepage. Send them to the link that opens the Google review box directly. That one extra tap is where your reviews go to die.</p><p>Do those three this week. Then post here and tell me what happened.</p><p>Weekly rhythm:</p><p>Tuesday: Teardown Tuesday. Comment your business, I pick one and find the leak on video. Free.</p><p>Thursday: Steal This. One move, run it today.</p><p>Friday: Win Friday. Post what worked this week. Big or small.</p><p>Ask me anything in here. I answer everything.</p></div>
+  <div class="row"><button class="btn" data-copy>Copy</button></div>
+</article></div>
+  </section>
+
+  <section class="panel" id="growth" role="tabpanel" hidden>
+    <p class="note">Mechanical, not creative. Most people skip these and wonder why nothing works. Tick them off as they become habit.</p>
+    <div class="card"><ol class="tactic-list">
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T0">
+  <span><strong>Invite everyone who reacts to your posts to follow the Page</strong> Click the reaction count, then &quot;Invite.&quot; Facebook still lets you do this and it is the most underused free follower source on the platform. 30 seconds per post. Do it on every post that gets more than 5 reactions. This alone can be a few hundred followers in your first month.</span></label>
+</li>
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T1">
+  <span><strong>Own the first 60 minutes</strong> Facebook decides how far to push a post largely on early engagement. Post, then stay on your phone for an hour and reply to every comment. Reply with a question, so they reply again. Two comments from one person is double the signal.</span></label>
+</li>
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T2">
+  <span><strong>Reels: hook in 1.5 seconds</strong> Not 3. The first frame has to make a scrolling thumb stop. Lead with the most surprising fact, not with &quot;Hey guys.&quot;</span></label>
+</li>
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T3">
+  <span><strong>Text on screen, always</strong> Most Facebook video is watched muted, mid-scroll, one-handed. If your point only exists in the audio, it does not exist.</span></label>
+</li>
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T4">
+  <span><strong>20 to 40 seconds</strong> Watch-through rate is the dominant Reels ranking input. A 25-second Reel watched twice beats a 90-second Reel abandoned at 20 seconds. Cut ruthlessly.</span></label>
+</li>
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T5">
+  <span><strong>Post Reels natively from the phone, not through Blotato</strong> Trending audio and the in-app Reels editor are only available in the app, and audio selection is a real distribution lever. Schedule the *text* posts through the API. Shoot and post the Reels by hand.</span></label>
+</li>
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T6">
+  <span><strong>No naked links in the post body</strong> Link in the first comment. Every time. This one costs people 70% of their reach and they never find out.</span></label>
+</li>
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T7">
+  <span><strong>Serve in 10 other groups, 10 minutes a day</strong> This is the entire cold-start plan for weeks 1 through 4. Find groups where SMB owners ask questions. Answer with a genuinely complete answer and no link and no pitch. Your profile does the selling. People click the name of whoever helped them.</span></label>
+</li>
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T8">
+  <span><strong>Go Live once a week, 20 minutes</strong> Facebook pushes Live to followers harder than anything else. Take questions from the Group. This converts members to buyers faster than any post will.</span></label>
+</li>
+<li class="tactic">
+  <label><input type="checkbox" data-shot="T9">
+  <span><strong>Repurpose on a 3-week delay</strong> Every Reel becomes a text post three weeks later. Every text post that outperforms becomes a Reel. Nobody saw it the first time.</span></label>
+</li></ol></div>
+  </section>
+</div>
+
+<div class="prompter" id="prompter" role="dialog" aria-modal="true" aria-label="Teleprompter">
+  <div class="prompter-top">
+    <span class="prompter-title" id="pTitle"></span>
+    <button class="prompter-close" id="pClose">Close</button>
+  </div>
+  <div class="prompter-body" id="pBody"></div>
+  <div class="prompter-nav">
+    <button id="pPrev">Previous</button>
+    <button id="pNext">Next reel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const REELS = [{"n":1,"t":"The After-Hours Test","h":"Call your own business right now. From your cell phone. After hours.","s":["Most owners have never done this and most are horrified by what they hear. A phone that rings eleven times. A voicemail box that says the wrong hours. A greeting recorded by an employee who quit in 2023.","Your customer does this at 6pm on a Tuesday, standing in a flooded kitchen, and they do not leave a message. They call the next person on the list.","That's not a marketing problem. You already paid for that lead. You just dropped it.","Go call your business. Tell me what you heard."]},{"n":2,"t":"Missed-Call Text-Back","h":"The single highest-return switch in small business takes four minutes to turn on and almost nobody has done it.","s":["It's called missed-call text-back. When someone calls and you don't pick up, an automatic text goes out inside sixty seconds. \"Sorry we missed you, this is Dave's Plumbing, what do you need?\"","Here's why it works. People who would never leave a voicemail will absolutely answer a text. You just recovered a pile of jobs you were losing without knowing it.","Almost every phone system and CRM already does this. You are probably paying for it right now. Go turn it on.","That's free. I'm not selling you anything. Go do it."]},{"n":3,"t":"The Review Link Nobody Fixes","h":"This is why you have twelve reviews and your competitor has three hundred.","s":["When you ask a happy customer for a review, you send them to your website. They have to find the reviews section, click through to Google, sign in, find the button. Four taps. They quit on tap two.","Go to your Google Business Profile, hit \"Ask for reviews,\" and copy that short link. That one opens the review box directly. One tap, they're typing.","Same customers. Same work. One better link. Owners who fix this go from a dozen reviews to a hundred in a season."]},{"n":4,"t":"You Don't Have a Lead Problem","h":"You don't have a lead problem. You have a follow-up problem. And it's costing you more than any ad ever could.","s":["Every owner I talk to wants more leads. Then I ask what happened to the last thirty people who asked for a quote and didn't book. Nobody knows. Nobody followed up.","The homeowner who requested three quotes hires whoever feels alive first. Most businesses call back in two days. By then it's over.","Before you spend another dollar on ads, go text every person who got a quote from you in the last ninety days. Ask one question: \"Was it price or timing?\"","That's the cheapest sales channel you own and it's just sitting there."]},{"n":5,"t":"What an AI Receptionist Actually Sounds Like","h":"This is not a demo video. I'm calling an AI receptionist right now and you're going to hear the whole thing.","s":["[Place the call on speaker. Let it play. Do not talk over it.]","[After it books the appointment]","That's it. It answered on the first ring, it knew the hours, it booked the appointment, and it texted the owner the details. It does not take lunch, it does not quit, and it does not get overwhelmed on a Friday.","I'm not telling you to buy one. I'm telling you this is what your customer at 8pm is comparing you to now."]},{"n":6,"t":"The Busier You Get, The More You Lose","h":"Here's the trap nobody warns you about. The busier your business gets, the more money you lose.","s":["Think about it. When you're slow, you answer every call on the first ring. When you're slammed, which is exactly when the calls are worth the most, you're on a roof or under a sink or in somebody's chair. The phone rings out.","So your best week is also your leakiest week. Your growth is capped by your own two hands.","Every business that broke past this did the same thing. They stopped requiring themselves to be the one who answers.","That's it. That's the whole ceiling."]},{"n":7,"t":"Your 1-Star Reviews Have a Pattern","h":"Copy every bad review you've ever gotten, paste them into ChatGPT, and ask it one question.","s":["\"What is the single most common complaint across all of these, and what would fix it?\"","You will get an answer you did not expect. It's almost never the thing you've been defending. It's usually communication. Nobody told them when you'd arrive. Nobody called when you were running late.","You've read those reviews one at a time and felt attacked. Read all forty at once and it stops being personal and starts being a checklist.","Free, takes ten minutes, and it's the most useful thing AI does for a small business that has nothing to do with chatbots."]},{"n":8,"t":"Most Small Business Chatbots Are Worse Than Nothing","h":"I build AI for small businesses and I'm telling you most of the chatbots on small business websites are worse than having nothing.","s":["Here's why. A bubble pops up, it says \"Hi! How can I help?\" and then it cannot help. It cannot check your calendar, it cannot quote your job, it cannot reach you. It takes an interested customer and gives them a dead end wearing a friendly face.","A plain contact form is more honest. At least it does not promise a conversation it cannot have.","The test for any AI in your business is one question: can it actually complete something? Book the job, take the order, get the message to a human who calls back. If it can only chat, it's decoration.","Decoration does not pay for itself."]},{"n":9,"t":"The Speed-to-Lead Clock","h":"Calling a new lead in five minutes instead of thirty is not a small improvement. It's a different business.","s":["The person who filled out your form filled out two others. They're sitting there with their phone in their hand, actively deciding. That window is minutes wide, not hours.","Most small businesses call back the next morning. By then the job is sold, the customer is relieved, and you're the guy who called too late.","You do not have to be better. You have to be first. First to respond, first to get paid."]},{"n":10,"t":"Turn 100 Invoices Into a Price Book","h":"Your last hundred invoices are a business plan and you're using them as a filing cabinet.","s":["Export them. Drop them into AI. Ask it three things.","One: what are my ten most common jobs and what did I actually charge for each. Two: which job type takes the most time for the least money. Three: what should my standard price list look like.","Nearly every owner who does this finds the same thing. There's one job they keep saying yes to that quietly loses money, and one they under-charge for that customers never blink at.","You've been guessing at your prices. The answer was in your own paperwork the whole time."]},{"n":11,"t":"The 9:14pm Booking","h":"Your best client tried to book at 9:14 at night. Your front desk went home at six. She booked somewhere else by 9:16.","s":["This is the part owners get wrong about after-hours. It's not that the customer will call back tomorrow. It's that the decision was happening right then, on the couch, phone in hand, in a two-minute window.","The sale doesn't wait for business hours. It evaporates.","Salons, med spas, dental, anything people book for themselves. Look at when your competitors get booked and you'll find a spike after 8pm. That's your money, and you were asleep.","The most expensive employee is the one who isn't there at 9pm."]},{"n":12,"t":"Your Best Salesperson Is a Script","h":"Whoever is best on the phone at your company, record three of their calls this week. With their permission. Then do this.","s":["Drop the transcripts into AI and ask: what exactly does this person do that the others don't. What order do they ask questions in. Where do they handle the price objection. What's the exact line they use to book.","You'll get a one-page script. That's not a manager's guess about what good looks like. That's what your actual best person actually does, written down.","Hand it to everyone else. That's the cheapest training you will ever run, and it beats any sales course because it's already working in your business.","Costs nothing. Do it this week."]},{"n":13,"t":"The Question You Answer 40 Times a Week","h":"There are about eight questions you answer every single week, over and over, and they're eating hours you never billed for.","s":["Do you service my area. How much is a basic one. Are you licensed. When can you come out. Do you take card. Can you do it Saturday.","Scroll back through your last fifty customer texts and count them. Same eight.","Two moves. Put the answers on your website in plain language, not buried in a PDF. And put them where the phone can reach them, so anything answering after hours can handle it without you.","You are being paid nothing to be your own FAQ page."]},{"n":14,"t":"Photo to Estimate","h":"Customer texts you a photo of the problem. Instead of driving out there for a free estimate you may not win, do this.","s":["[Screen: drop a photo into AI with a real prompt]","Give AI the photo, your price book, and this instruction: \"Based on this photo and my standard pricing, draft a ballpark range and the three questions I need answered before I can be exact.\"","You get a range and the qualifying questions in under a minute. You send it. Now you know if this person is real before you burn a two-hour round trip on a tire-kicker.","You're still the one who prices it. AI just stopped you from driving across the county for free."]},{"n":15,"t":"AI Won't Fix a Business That Doesn't Answer","h":"I sell AI to small businesses and here's what I tell people who want to buy it for the wrong reason.","s":["AI will not fix a business that doesn't answer the phone. It will just help you miss calls faster and more professionally.","If your problem is that you never call people back, that's a habit, and no software fixes a habit. If your problem is that you physically cannot be in two places at once, that's capacity, and that's what this stuff is actually for.","Be honest with yourself about which one you have. One of them costs money to solve. The other one costs discipline, and it's free."]},{"n":16,"t":"Reply to Every Review, Automatically","h":"Every review you never replied to is quietly costing you position in local search.","s":["Google says it plainly. Responding to reviews affects local ranking. Most small businesses reply to none of them, or only the angry ones, which is the worst possible pattern.","Here's the free version. Once a week, pull your new reviews, drop them into AI, and ask for a short warm reply to each one that mentions the specific thing they said. Read them, fix anything that sounds like a robot, paste them in.","Fifteen minutes a week. It moves your ranking and it makes the next person reading those reviews trust you more."]},{"n":17,"t":"The Dead Lead Goldmine","h":"There is money sitting in your file of old quotes that never closed and you have never once gone back for it.","s":["Pull every quote from the last twelve months that never turned into a job. Send one text. Not a sales pitch. This:","\"Hey, it's Sarah at [business]. We quoted you back in March. Just checking, did you ever get that handled?\"","That's it. No offer, no discount, no pressure. A real number of them never did get it handled. Life happened, they meant to call you back, they forgot.","The people who already trusted you enough to ask for a price are the warmest list you will ever have and it's free."]},{"n":18,"t":"Your Website's 3-Second Problem","h":"Pull up your website on your phone right now, on cell service, not wifi. Count the seconds.","s":["[Screen record the actual load, count on screen]","More than three and you're losing a large share of the people who tapped. They don't wait. They go back and tap the next result, and you paid for that click.","It's almost always the same culprit: giant photos nobody compressed. Your web person uploaded the raw camera files.","Run your URL through Google PageSpeed Insights. It's free, it takes thirty seconds, and it hands you the actual list. Send that list to whoever built your site.","You do not have to understand it. You just have to make somebody fix it."]},{"n":19,"t":"The Sunday Paperwork Tax","h":"If you spend Sunday doing paperwork, you don't own a business. You bought yourself a second job with worse hours.","s":["Invoices, quotes, scheduling, the texts you didn't answer. It piles up all week and it lands on the one day you were supposed to have.","Here's the thing about that pile. Almost none of it requires your judgment. It requires your attention. Those are different, and only one of them has to be you.","Pick the single biggest item on your Sunday list and ask one question: does this need me, or does it just need someone.","Start there. Not with AI, not with software. With that question."]},{"n":20,"t":"Write the Job Post That Filters","h":"If you're drowning in unqualified applicants, that's not a labor market problem. That's a job post problem.","s":["Take your current job post, drop it in AI, and ask: \"Rewrite this so the wrong people screen themselves out. Be specific about the hard parts, the schedule, and the pay range.\"","Most job posts are written to attract everyone. That's the mistake. A good one repels. It says the truck leaves at 6:15am, you'll be in an attic in August, here's the actual number.","You'll get fewer applications and better ones, and you'll stop spending your week interviewing people who were never going to take it.","Say the hard part out loud. The right person reads it and thinks \"finally, someone honest.\""]},{"n":21,"t":"The Competitor Phone Test","h":"Call your three biggest competitors tonight, after hours, as a customer. This is the most useful twenty minutes you'll spend this month.","s":["You're finding out one thing: who answers.","Usually it's nobody. Sometimes it's one of them, and that one is quietly eating everybody's after-hours work and nobody in your market has figured out why they're growing.","Then remember that your customers run this exact test on you. Every single evening. They just call down the list until somebody picks up.","Whoever answers wins. That's not strategy, that's just arithmetic."]},{"n":22,"t":"One Job, Ten Pieces of Content","h":"You take before-and-after photos on every job and then do nothing with them. Here's the fix, and it takes four minutes.","s":["[Screen: photo + prompt]","Drop the photo in and say: \"I'm a [trade]. Write me a short Facebook post about this job for local homeowners. No hashtags, no hype, write like a person. Then give me three variations.\"","Now you have a week of posts from one job you already did.","The reason this works is that people do not hire you because you posted a tip. They hire you because they saw you actually doing the work, over and over, until you were the obvious person to call.","Consistency beats cleverness. The photo is already on your phone."]},{"n":23,"t":"Stop Asking AI to Write Your Marketing","h":"Stop asking AI to write your marketing. It's the worst thing you can use it for and it's the first thing everyone tries.","s":["Everybody's feed is full of the same beige AI paragraphs now and customers can smell it. You are not going to out-content the internet.","Point it at the stuff nobody sees instead. Your invoices. Your calendar. Your missed calls. Your bad reviews. Your quote follow-ups.","That's where the money is, and it's boring, which is exactly why nobody's doing it.","The best AI use case in your business is not a clever caption. It's the fact that nobody called Mrs. Henderson back."]},{"n":24,"t":"What I'd Do With Your First 30 Days","h":"If you handed me your small business for thirty days and told me to find money without spending any, here is exactly what I'd do, in order.","s":["Week one, I'd find out how many calls you miss. Just the number. Most owners have never seen it and it's the most upsetting number in the business.","Week two, I'd turn on missed-call text-back and fix your review link. Both free, both take an afternoon.","Week three, I'd text every dead quote from the last year with one question: did you ever get that handled.","Week four, I'd read all your bad reviews at once and fix the one thing they all say.","Zero dollars. Four afternoons. That's the whole list, and it's more than most businesses do in a year."]}];
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+// tabs
+$$('.tab').forEach(tab => tab.addEventListener('click', () => {
+  $$('.tab').forEach(t => t.setAttribute('aria-selected', String(t === tab)));
+  $$('.panel').forEach(p => { p.hidden = p.id !== tab.dataset.tab; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}));
+
+// batch filter
+$$('.filter').forEach(f => f.addEventListener('click', () => {
+  $$('.filter').forEach(x => x.setAttribute('aria-pressed', String(x === f)));
+  const want = f.dataset.filter;
+  $$('.reel').forEach(c => { c.hidden = want !== 'all' && c.dataset.batch !== want; });
+}));
+
+// copy
+$$('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
+  const card = btn.closest('.card');
+  const src = $('[data-caption]', card);
+  const text = src.tagName === 'P' ? src.textContent : $$('p', src).map(p => p.textContent).join('\n\n');
+  navigator.clipboard.writeText(text).then(() => toast('Copied'), () => toast('Copy failed'));
+}));
+
+// persistent checkboxes (shot list + growth habits)
+const KEY = 'msa-fb-checks';
+const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+function refreshProgress(){
+  const shot = REELS.filter(r => saved['R' + r.n]).length;
+  $('#progress').textContent = shot + ' / ' + REELS.length + ' shot';
+}
+$$('[data-shot]').forEach(box => {
+  const id = box.dataset.shot;
+  box.checked = !!saved[id];
+  const paint = () => {
+    const card = box.closest('.card');
+    if (card && card.classList.contains('reel')) card.classList.toggle('done', box.checked);
+    const span = box.parentElement.querySelector('span');
+    if (span) span.classList.toggle('done-text', box.checked);
+  };
+  paint();
+  box.addEventListener('change', () => {
+    saved[id] = box.checked;
+    localStorage.setItem(KEY, JSON.stringify(saved));
+    paint(); refreshProgress();
+  });
+});
+refreshProgress();
+
+// teleprompter
+let pIndex = 0;
+const prompter = $('#prompter');
+function openPrompter(n){
+  pIndex = REELS.findIndex(r => r.n === n);
+  if (pIndex < 0) pIndex = 0;
+  renderPrompter();
+  prompter.setAttribute('open', '');
+  $('#pClose').focus();
+}
+function renderPrompter(){
+  const r = REELS[pIndex];
+  $('#pTitle').textContent = 'R' + r.n + ' · ' + r.t;
+  $('#pBody').innerHTML = '<div class="prompter-hook"></div>' + r.s.map(() => '<p></p>').join('');
+  $('.prompter-hook', $('#pBody')).textContent = r.h;
+  $$('#pBody p').forEach((p, i) => { p.textContent = r.s[i]; });
+  $('#pBody').scrollTop = 0;
+  $('#pPrev').disabled = pIndex === 0;
+  $('#pNext').disabled = pIndex === REELS.length - 1;
+}
+$$('[data-prompt]').forEach(b => b.addEventListener('click', () => openPrompter(+b.dataset.prompt)));
+$('#pClose').addEventListener('click', () => prompter.removeAttribute('open'));
+$('#pPrev').addEventListener('click', () => { if (pIndex > 0) { pIndex--; renderPrompter(); } });
+$('#pNext').addEventListener('click', () => { if (pIndex < REELS.length - 1) { pIndex++; renderPrompter(); } });
+document.addEventListener('keydown', e => {
+  if (!prompter.hasAttribute('open')) return;
+  if (e.key === 'Escape') prompter.removeAttribute('open');
+  if (e.key === 'ArrowRight' && pIndex < REELS.length - 1) { pIndex++; renderPrompter(); }
+  if (e.key === 'ArrowLeft' && pIndex > 0) { pIndex--; renderPrompter(); }
+});
+</script>
