@@ -147,12 +147,7 @@ export default function WebsitesPage() {
 
             {/* Hero visual: a REAL site we built, in living color. */}
             <div className="lg:col-span-6 xl:col-span-7">
-              <a
-                href={HERO.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group block rounded-2xl border-2 border-[#161616] bg-white shadow-[8px_8px_0_0_#161616] overflow-hidden hover:-translate-y-1 transition-transform"
-              >
+              <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[8px_8px_0_0_#161616] overflow-hidden">
                 <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#161616] bg-[#FBF6EA]">
                   <span className="flex gap-1.5">
                     {['#E0301E', '#F5B700', '#8FA98F'].map((c) => (
@@ -162,7 +157,6 @@ export default function WebsitesPage() {
                   <span className="ml-2 flex-1 truncate rounded-full border border-[#161616]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#161616]/65">
                     linenfreshlv.com
                   </span>
-                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-[#161616]/70 group-hover:text-[#C4160B] transition-colors">Visit →</span>
                 </div>
                 <div className="relative">
                   <Image
@@ -179,7 +173,7 @@ export default function WebsitesPage() {
                     <p className="font-sans text-[11.5px] font-bold text-[#161616] mt-0.5 leading-snug">Filed to your command center</p>
                   </div>
                 </div>
-              </a>
+              </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-3">
                 A real site we built for {HERO.name}, {HERO.place}. It answers the phone, too.
               </p>

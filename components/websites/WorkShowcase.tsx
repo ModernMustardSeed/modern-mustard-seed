@@ -22,8 +22,8 @@ export default function WorkShowcase() {
           Sites we have actually shipped.
         </h2>
         <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
-          Every one of these is a real business, live on the web, designed and built by the studio. Hover to slow it
-          down, tap any to visit the real thing.
+          Every one of these is a real business, live on the web, designed and built by the studio. Hover to slow the
+          reel down.
         </p>
       </div>
 
@@ -31,16 +31,12 @@ export default function WorkShowcase() {
       <div className="wsx-wrap relative mt-10">
         <div className="wsx-track flex gap-5 w-max px-6">
           {row.map((s, i) => (
-            <a
+            <div
               key={`${s.key}-${i}`}
-              href={s.url}
-              target="_blank"
-              rel="noopener noreferrer"
               aria-hidden={i >= WORK_SITES.length ? true : undefined}
-              tabIndex={i >= WORK_SITES.length ? -1 : undefined}
-              className="wsx-card group/card block shrink-0 w-[300px] sm:w-[380px]"
+              className="wsx-card shrink-0 w-[300px] sm:w-[380px]"
             >
-              <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[6px_6px_0_0_#161616] overflow-hidden transition-transform group-hover/card:-translate-y-1">
+              <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[6px_6px_0_0_#161616] overflow-hidden">
                 <div className="relative aspect-[16/10] bg-[#161616]">
                   <Image
                     src={s.img}
@@ -50,17 +46,12 @@ export default function WorkShowcase() {
                     className="object-cover object-top"
                   />
                 </div>
-                <div className="flex items-center justify-between gap-3 px-4 py-3 border-t-2 border-[#161616]">
-                  <div className="min-w-0">
-                    <p className="font-display italic font-extrabold text-[15px] text-[#161616] truncate">{s.name}</p>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#8f6600] truncate">{s.trade} · {s.place}</p>
-                  </div>
-                  <span className="shrink-0 font-sans font-bold text-[10px] uppercase tracking-[0.12em] text-[#161616]/70 group-hover/card:text-[#C4160B] transition-colors">
-                    Visit →
-                  </span>
+                <div className="px-4 py-3 border-t-2 border-[#161616]">
+                  <p className="font-display italic font-extrabold text-[15px] text-[#161616] truncate">{s.name}</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#8f6600] truncate">{s.trade} · {s.place}</p>
                 </div>
               </div>
-            </a>
+            </div>
           ))}
         </div>
       </div>
