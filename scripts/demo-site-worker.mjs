@@ -35,11 +35,16 @@ const POLL_MS = Number(process.env.DEMO_SITE_POLL_MS || 15000);
 const SITES_DIR = process.env.DEMO_SITES_DIR || path.join(os.homedir(), 'mms-demo-sites');
 const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 const PERMISSION = process.env.DEMO_SITE_PERMISSION || 'bypassPermissions';
-const MAX_RUNTIME_MS = Number(process.env.DEMO_SITE_MAX_MS || 35 * 60 * 1000);
+// 45, not 35. Under LAW v4 (THE HOUSE: front door + 3 rooms) the builds got
+// bigger, and on 2026-07-23 six of the last eight finished at EXACTLY 35m, which
+// means the cap was ending them rather than the model being done. Two of those
+// landed at 117KB and 135KB with zero photographs: a house cut off mid-furnish and
+// stored anyway, because index.html happened to exist when the axe fell.
+const MAX_RUNTIME_MS = Number(process.env.DEMO_SITE_MAX_MS || 45 * 60 * 1000);
 // Must stay LONGER than MAX_RUNTIME_MS. A stale window shorter than the build
 // timeout means a job that is still legitimately building gets reclaimed and
 // handed to a second worker, and two workers race to write the same row.
-const STALE_MS = Number(process.env.DEMO_SITE_STALE_MS || 45 * 60 * 1000);
+const STALE_MS = Number(process.env.DEMO_SITE_STALE_MS || 60 * 60 * 1000);
 const WORKER = os.hostname();
 const SITE_URL = 'https://modernmustardseed.com';
 
@@ -145,6 +150,32 @@ async function claimNext() {
   return claimed || null;
 }
 
+/**
+ * KILL THE WHOLE TREE, NOT THE SHELL STANDING IN FRONT OF IT.
+ *
+ * spawn() here runs with shell:true on Windows, so child.pid is a `cmd.exe /c`
+ * wrapper and the real claude.exe is its GRANDCHILD. child.kill() reaps the
+ * wrapper and leaves claude.exe running forever, still holding a session against
+ * the Max plan. Those escapees pile up, starve the next build of throughput so it
+ * also times out, and orphan another one: the queue degrades faster the longer it
+ * runs. On 2026-07-23 three escaped builds were alive at once (268m, 130m and 39m
+ * old, each with its own subtree) and the floor had not moved in 877 minutes,
+ * while jobs that should cap at 35m recorded 350m, 139m and 91m.
+ *
+ * taskkill /T walks the tree from the wrapper down. The signal path stays as the
+ * fallback for non-Windows and for a pid that has already gone.
+ */
+function killTree(child) {
+  if (process.platform === 'win32' && child.pid) {
+    try {
+      spawn('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' })
+        .on('error', () => { try { child.kill('SIGKILL'); } catch {} });
+      return;
+    } catch { /* fall through to the signal */ }
+  }
+  try { child.kill('SIGKILL'); } catch {}
+}
+
 function runClaude(dir, directive) {
   return new Promise((resolve) => {
     // Subscription only, by construction: a present ANTHROPIC_API_KEY would
@@ -174,11 +205,17 @@ function runClaude(dir, directive) {
     child.stdin.end();
     let out = '';
     const keep = (s) => { out = (out + s).slice(-200000); };
-    const timer = setTimeout(() => { try { child.kill('SIGKILL'); } catch {} resolve({ code: 124, out: out + '\n[timeout]' }); }, MAX_RUNTIME_MS);
+    const timer = setTimeout(() => { killTree(child); resolve({ code: 124, out: out + '\n[timeout]' }); }, MAX_RUNTIME_MS);
+    // A worker shutdown must not orphan the build either: same escape hatch, same
+    // fix. Without this, every Ctrl-C on a busy floor leaks a live claude.exe.
+    const onExit = () => { killTree(child); };
+    process.once('SIGINT', onExit);
+    process.once('SIGTERM', onExit);
+    const cleanup = () => { process.off('SIGINT', onExit); process.off('SIGTERM', onExit); };
     child.stdout.on('data', (d) => { keep(d.toString()); process.stdout.write(d); });
     child.stderr.on('data', (d) => { keep(d.toString()); process.stderr.write(d); });
-    child.on('close', (code) => { clearTimeout(timer); resolve({ code, out }); });
-    child.on('error', (e) => { clearTimeout(timer); resolve({ code: 1, out: out + '\n' + e.message }); });
+    child.on('close', (code) => { clearTimeout(timer); cleanup(); resolve({ code, out }); });
+    child.on('error', (e) => { clearTimeout(timer); cleanup(); resolve({ code: 1, out: out + '\n' + e.message }); });
   });
 }
 
