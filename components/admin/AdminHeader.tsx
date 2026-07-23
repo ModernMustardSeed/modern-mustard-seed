@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import HelpGuide from '@/components/HelpGuide';
 import { ADMIN_HELP } from '@/lib/help-content';
+import { openWelcomeTour } from '@/components/admin/WelcomeTour';
 
 /**
  * Shared admin header. The daily drivers are pinned as top-level chips
@@ -223,6 +224,7 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
           <div className="flex items-center gap-1 shrink-0 self-end md:self-auto">
             <span className="hidden md:block w-px h-5 bg-[#161616]/15 mx-1 shrink-0" aria-hidden />
             <HelpGuide guide={ADMIN_HELP} />
+            <button onClick={openWelcomeTour} className={actionCls} title="Replay the 30-second welcome tour">Replay tour</button>
             {onRefresh && (
               <button onClick={onRefresh} className={actionCls}>Refresh</button>
             )}

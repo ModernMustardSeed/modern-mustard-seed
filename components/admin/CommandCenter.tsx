@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts';
 import AdminHeader from './AdminHeader';
 import ActivityFeed from './ActivityFeed';
+import { openWelcomeTour } from './WelcomeTour';
 import { fireConfetti } from '@/lib/confetti';
 
 /**
@@ -264,7 +265,11 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
             </h2>
             {!showMoney && (
               <p className="text-[#161616]/55 font-body text-sm mt-0.5">
-                New here? Start with the{' '}
+                New here? Take the{' '}
+                <button type="button" onClick={openWelcomeTour} className="text-[#1E50C8] font-semibold hover:text-[#161616] underline-offset-2 hover:underline">
+                  30-second tour
+                </button>
+                {' '}or start the{' '}
                 <Link href="/admin/onboarding" className="text-[#1E50C8] font-semibold hover:text-[#161616]">
                   onboarding guide
                 </Link>
