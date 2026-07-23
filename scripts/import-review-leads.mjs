@@ -15,6 +15,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
+import { chainBrand } from '../lib/chains.mjs';
 
 const file = process.argv[2];
 const APPLY = process.argv.includes('--apply');
@@ -77,12 +78,18 @@ const sarah = (reps ?? []).find((r) => r.name === 'Sarah')?.id ?? null;
 
 let dupes = 0;
 let badPhone = 0;
+let chains = 0;
+const chainNames = [];
 const rows = [];
 for (const l of input) {
   const key = phoneKey(l.phone);
   if (key.length !== 10) { badPhone++; continue; }
   const nk = nameKey(decode(l.business_name), l.state);
   if (known.has(key) || knownNames.has(nk)) { dupes++; continue; }
+  // A corporate branch cannot buy a website from us: no owner to pitch, no authority
+  // to sign, and brand-mandated web presence. Keep them off the dial floor entirely.
+  const brand = chainBrand(l.business_name ?? l.business ?? l.name ?? '');
+  if (brand) { chains++; chainNames.push(`${l.business_name ?? l.business ?? l.name} (${brand})`); continue; }
   known.add(key);
   knownNames.add(nk);
   const state = String(l.state ?? '').trim().toUpperCase().slice(0, 2);
@@ -120,7 +127,8 @@ for (const r of rows) {
   byState[r.state ?? '?'] = (byState[r.state ?? '?'] ?? 0) + 1;
   byOwner[r.owner_rep_id === polly ? 'Polly' : r.owner_rep_id === sarah ? 'Sarah' : 'unassigned']++;
 }
-console.log(`Input: ${input.length} · importable: ${rows.length} · dupes skipped: ${dupes} · bad phones skipped: ${badPhone}`);
+console.log(`Input: ${input.length} · importable: ${rows.length} · dupes skipped: ${dupes} · bad phones skipped: ${badPhone} · chain locations skipped: ${chains}`);
+if (chains) console.log('  chains:', chainNames.slice(0, 15).join(', ') + (chains > 15 ? ` +${chains - 15} more` : ''));
 console.log('  by niche:', byNiche);
 console.log('  by owner:', byOwner);
 console.log('  with email:', rows.filter((r) => r.email).length, '· with website:', rows.filter((r) => r.website).length);

@@ -74,17 +74,42 @@ const log = (...a) => console.log(new Date().toISOString(), ...a);
  */
 const FAL_ENV = path.join(os.homedir(), '.claude', 'fal.env').replace(/\\/g, '/');
 const MEDIA_NOTES = path.join(os.homedir(), '.claude', 'projects', 'C--Users-moder', 'memory', 'media-generation-pipeline.md').replace(/\\/g, '/');
-const DIRECTIVE = cliDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES });
 
-// A REBUILD is the same forge pointed at the truth. Once they pay, they hand us
-// their real logo, real photos, real menu, real hours, and this queue runs again
-// to turn the demo into the site they actually own. It gets a different law: no
-// demo pitch, no invented facts, their own assets, and built to be indexed.
-const REAL_DIRECTIVE = cliRealDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES });
-// An EDIT is neither a build nor a rebuild: it takes a finished site (base_html) and
-// one instruction (brief) and returns the same site with that one change made. It
-// powers the admin reforge-from-prompt and the client portal's auto-applied edits.
-const EDIT_DIRECTIVE = cliEditDirective();
+/**
+ * THE LAW IS RE-READ FOR EVERY BUILD, not once at startup.
+ *
+ * This used to be three module-level constants, which meant an edit to
+ * lib/site-directive.mjs did NOTHING until somebody restarted the worker. And the
+ * worker can only be restarted safely when the floor is empty, because killing it
+ * mid-build orphans the headless claude child. With a busy queue that is hours, so
+ * in practice every law improvement shipped late, to fewer leads than intended.
+ * That footgun cost a full v4 rollout on 2026-07-22.
+ *
+ * A cache-busting query on the file URL gives a fresh module per job. If the law
+ * ever fails to parse, we fall back to the copy loaded at startup rather than taking
+ * the worker down: a stale law still builds a site, a crashed worker builds nothing.
+ *
+ * A REBUILD is the same forge pointed at the truth (paid client, real assets, no
+ * demo pitch). An EDIT takes a finished site plus one instruction and changes only
+ * that. Both laws ride along here for the same reason.
+ */
+const LAW_URL = new URL('../lib/site-directive.mjs', import.meta.url).href;
+const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective };
+
+async function currentLaw() {
+  let m = STARTUP_LAW;
+  try {
+    m = await import(`${LAW_URL}?v=${Date.now()}`);
+  } catch (e) {
+    log('WARNING: could not reload the design law, using the copy from startup:', e.message);
+    m = STARTUP_LAW;
+  }
+  return {
+    DIRECTIVE: m.cliDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
+    REAL_DIRECTIVE: m.cliRealDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
+    EDIT_DIRECTIVE: m.cliEditDirective(),
+  };
+}
 const isRebuild = (job) => job.kind === 'rebuild';
 const isEdit = (job) => job.kind === 'edit';
 /** A client's edit belongs to a paid project and lands in a draft for approval. */
@@ -260,7 +285,8 @@ async function process_(job) {
       log('rebuild: kept', n, 'photograph(s) from the previous build');
     }
 
-    const directive = edit ? EDIT_DIRECTIVE : rebuild ? REAL_DIRECTIVE : DIRECTIVE;
+    const law = await currentLaw();
+    const directive = edit ? law.EDIT_DIRECTIVE : rebuild ? law.REAL_DIRECTIVE : law.DIRECTIVE;
     const { code, out } = await runClaude(dir, directive);
 
     if (!existsSync(htmlPath)) {
