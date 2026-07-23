@@ -10,8 +10,19 @@
  * Run: node scripts/enrich-prospects.mjs            (free: scrape only)
  *      HUNTER_API_KEY=xxx node scripts/enrich-prospects.mjs   (paid fallback on)
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, rmSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
+import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
+
+// Borrow the live enrichment's judgment rather than keeping a second, staler copy of
+// it here. That divergence is exactly what let this script keep saving wrong sites
+// after the button had already been fixed.
+const BUNDLE = path.join(process.cwd(), '.enrich-lib.mjs');
+execFileSync('npx', ['--no-install', 'esbuild', 'lib/enrich.ts', '--bundle', '--platform=node', '--format=esm', `--outfile=${BUNDLE}`], { stdio: 'pipe', shell: process.platform === 'win32' });
+const { isSameBusiness, badDomain } = await import(pathToFileURL(BUNDLE).href);
+rmSync(BUNDLE, { force: true });
 
 const env = readFileSync(new URL('../.env.local', import.meta.url), 'utf8');
 const get = (k) => { for (const l of env.split(/\r?\n/)) { if (l.toLowerCase().startsWith(k.toLowerCase() + '=')) { let v = l.slice(k.length + 1).trim(); if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1); return v; } } return ''; };
@@ -87,16 +98,27 @@ async function geocode(city) {
   await sleep(1100); // Nominatim politeness (1/sec), only on cache miss
   return out;
 }
+/**
+ * NEVER GUESS. This used to end in `?? results[0]`, so when nothing matched the
+ * business name it returned whatever Foursquare had nearest, and a 40km radius around
+ * a small town is usually a Walmart. That is how "Prefix Coffee" ended up carrying
+ * starbucks.com. The gate is now the same one lib/enrich.ts uses: a scored name match
+ * with a hard floor, then a domain that is plausibly theirs. No match, no answer.
+ */
 async function fsqWebsite(business, center) {
   if (!FSQ_KEY || !center) return null;
-  const p = new URLSearchParams({ query: business, ll: `${center.lat},${center.lon}`, radius: '40000', limit: '5', fields: 'name,tel,website,location' });
+  const p = new URLSearchParams({ query: business, ll: `${center.lat},${center.lon}`, radius: '40000', limit: '10', fields: 'name,tel,website,location' });
   try {
     const res = await fetch(`https://places-api.foursquare.com/places/search?${p}`, { headers: { Authorization: `Bearer ${FSQ_KEY}`, 'X-Places-Api-Version': '2025-06-17', Accept: 'application/json' }, signal: AbortSignal.timeout(10000) });
     if (!res.ok) return null;
     const results = (await res.json()).results ?? [];
-    const target = normName(business);
-    const best = results.find((r) => normName(r.name).includes(target) || target.includes(normName(r.name))) ?? results[0];
-    return best ? { website: best.website ?? null, phone: best.tel ?? null } : null;
+    const best = results.find((r) => r.name && isSameBusiness(business, r.name));
+    if (!best) return null;
+    if (best.website && badDomain(hostOf(best.website))) {
+      // Their listing points at a directory or a chain. Keep the phone, drop the URL.
+      return { website: null, phone: best.tel ?? null };
+    }
+    return { website: best.website ?? null, phone: best.tel ?? null };
   } catch { return null; }
 }
 

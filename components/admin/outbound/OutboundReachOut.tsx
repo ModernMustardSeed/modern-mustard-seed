@@ -167,13 +167,24 @@ export function ReachOutDeck({
     setEnriching(true);
     push('Hunting for their site and email...');
     try {
-      const res = await api<{ lead: OutboundLead; found: { website: string | null; email: string | null } }>(
-        `/api/admin/outbound/leads/${lead.id}/enrich`,
-        { method: 'POST' },
-      );
+      const res = await api<{
+        lead: OutboundLead;
+        found: { website: string | null; email: string | null; confidence: 'high' | 'medium' | null; skipped: string[] };
+      }>(`/api/admin/outbound/leads/${lead.id}/enrich`, { method: 'POST' });
       onLead(res.lead);
       const got = [res.found.website && 'site', res.found.email && 'email'].filter(Boolean).join(' + ');
-      push(got ? `Found their ${got}.` : 'Nothing new found. They may be offline-only.', got ? 'ok' : 'error');
+      if (got) {
+        // A medium-confidence hit is worth a glance before it goes in an email.
+        push(
+          res.found.confidence === 'medium'
+            ? `Found their ${got}, but only a partial match. Worth a look before you send.`
+            : `Found their ${got}.`,
+          'ok',
+        );
+      } else {
+        // Say WHY nothing came back. Silence used to be indistinguishable from a bad guess.
+        push(res.found.skipped?.[0] ?? 'Nothing we could verify as theirs. They may be offline-only.', 'error');
+      }
     } catch (e) {
       push(e instanceof Error ? e.message : 'Lookup failed.', 'error');
     } finally {
