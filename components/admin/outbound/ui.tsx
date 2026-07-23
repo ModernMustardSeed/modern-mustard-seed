@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
@@ -35,33 +36,93 @@ export const eyebrow = 'text-[10px] uppercase tracking-[0.3em] font-oswald font-
 
 /* ---------------------------------- nav ---------------------------------- */
 
-const SUB_TABS = [
-  { href: '/admin/outbound', label: 'Dashboard' },
-  { href: '/admin/outbound/leads', label: 'Leads' },
-  { href: '/admin/outbound/pilots', label: 'Pilots' },
-] as const;
+export type OutboundTab = 'dashboard' | 'leads' | 'forge' | 'pilots' | 'call';
 
-export function OutboundNav({ active, right }: { active: 'dashboard' | 'leads' | 'pilots' | 'call'; right?: React.ReactNode }) {
-  const key = (href: string) => (href.endsWith('/leads') ? 'leads' : href.endsWith('/pilots') ? 'pilots' : 'dashboard');
+const SUB_TABS: { key: OutboundTab; href: string; label: string }[] = [
+  { key: 'dashboard', href: '/admin/outbound', label: 'Dashboard' },
+  { key: 'leads', href: '/admin/outbound/leads', label: 'Leads' },
+  { key: 'forge', href: '/admin/outbound/forge', label: 'Forge' },
+  { key: 'pilots', href: '/admin/outbound/pilots', label: 'Pilots' },
+];
+
+export function OutboundNav({
+  active,
+  right,
+  back,
+  badge,
+}: {
+  active: OutboundTab;
+  right?: React.ReactNode;
+  /** Rendered ahead of the tabs. Every deep screen (a call, a batch) gets a way out. */
+  back?: React.ReactNode;
+  /** Small counters hung on a tab, e.g. how many suites are waiting on the Forge board. */
+  badge?: Partial<Record<OutboundTab, number>>;
+}) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-      <div className="flex items-center gap-2">
-        {SUB_TABS.map((t) => (
-          <Link
-            key={t.href}
-            href={t.href}
-            className={`px-4 py-2 rounded-xl border-2 font-oswald font-semibold uppercase tracking-[0.1em] text-xs transition-all ${
-              active === key(t.href)
-                ? 'bg-[#1a1815] text-[#f7f3e9] border-[#1a1815] shadow-[3px_3px_0_0_#b58a2a]'
-                : 'bg-transparent text-[#1a1815]/60 border-[#1a1815]/20 hover:border-[#1a1815] hover:text-[#1a1815]'
-            }`}
-          >
-            {t.label}
-          </Link>
-        ))}
+      {/* wraps: on a phone the tab row has to fold, not push the page sideways */}
+      <div className="flex flex-wrap items-center gap-2">
+        {back}
+        {SUB_TABS.map((t) => {
+          const n = badge?.[t.key] ?? 0;
+          return (
+            <Link
+              key={t.href}
+              href={t.href}
+              className={`px-4 py-2 rounded-xl border-2 font-oswald font-semibold uppercase tracking-[0.1em] text-xs transition-all ${
+                active === t.key
+                  ? 'bg-[#1a1815] text-[#f7f3e9] border-[#1a1815] shadow-[3px_3px_0_0_#b58a2a]'
+                  : 'bg-transparent text-[#1a1815]/60 border-[#1a1815]/20 hover:border-[#1a1815] hover:text-[#1a1815]'
+              }`}
+            >
+              {t.label}
+              {n > 0 && (
+                <span
+                  className={`ml-1.5 tabular-nums ${active === t.key ? 'text-[#b58a2a]' : 'text-[#b58a2a]'}`}
+                  title={`${n} waiting`}
+                >
+                  {n}
+                </span>
+              )}
+            </Link>
+          );
+        })}
       </div>
       {right}
     </div>
+  );
+}
+
+/**
+ * The way back. A rep deep in a batch (or on a lead they opened from a filtered
+ * list) needs to step BACKWARD, not just onward: `href` walks a known path (the
+ * previous lead in the frozen stack), and with no href we use real browser
+ * history so "back" lands exactly where they came from, falling back to the
+ * floor on a cold open (deep link, refresh, new tab).
+ */
+export function BackButton({ label = 'Back', href, title, fallback = '/admin/outbound' }: { label?: string; href?: string; title?: string; fallback?: string }) {
+  const router = useRouter();
+  const cls =
+    'inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border-2 border-[#1a1815]/25 bg-[#fffdf8] text-[#1a1815]/70 font-oswald font-semibold uppercase tracking-[0.1em] text-xs hover:border-[#1a1815] hover:text-[#1a1815] hover:-translate-y-0.5 transition-all';
+  if (href) {
+    return (
+      <Link href={href} className={cls} title={title}>
+        <span aria-hidden>←</span> {label}
+      </Link>
+    );
+  }
+  return (
+    <button
+      type="button"
+      title={title}
+      className={cls}
+      onClick={() => {
+        if (typeof window !== 'undefined' && window.history.length > 1) router.back();
+        else router.push(fallback);
+      }}
+    >
+      <span aria-hidden>←</span> {label}
+    </button>
   );
 }
 
@@ -263,7 +324,7 @@ export function bumpDialSession(kind: 'dial' | 'demo'): DialSession | null {
   return next;
 }
 
-export type BatchPosition = { index: number; total: number; nextId: string | null; last: boolean };
+export type BatchPosition = { index: number; total: number; nextId: string | null; prevId: string | null; last: boolean };
 
 /**
  * Where a lead sits inside the active batch. Position is DERIVED from the frozen
@@ -277,8 +338,8 @@ export function batchPosition(session: DialSession | null, leadId: string): Batc
   const i = ids.indexOf(leadId);
   // Lead isn't in this batch (rep navigated away): point back at the top of the
   // stack rather than pretending the batch is finished.
-  if (i < 0) return { index: -1, total: ids.length, nextId: ids[0] ?? null, last: false };
-  return { index: i, total: ids.length, nextId: ids[i + 1] ?? null, last: i === ids.length - 1 };
+  if (i < 0) return { index: -1, total: ids.length, nextId: ids[0] ?? null, prevId: null, last: false };
+  return { index: i, total: ids.length, nextId: ids[i + 1] ?? null, prevId: i > 0 ? ids[i - 1] : null, last: i === ids.length - 1 };
 }
 
 /* -------------------------------- heat chip -------------------------------- */

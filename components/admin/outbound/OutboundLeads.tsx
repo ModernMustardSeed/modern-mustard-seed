@@ -7,7 +7,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { NICHES, NICHE_LABELS, LEAD_STATUSES, STATUS_LABELS, formatPhone, fmtMoney, phoneKey, isEmail } from '@/lib/outbound';
 import type { Niche, OutboundLead, Rep } from '@/lib/outbound';
-import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, api, card, btnPrimary, btnGhost, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
+import { OutboundNav, BackButton, StatusChip, NicheChip, ToastHost, useToasts, api, card, btnPrimary, btnGhost, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
 
 type SortKey = 'business_name' | 'contact_name' | 'phone' | 'niche' | 'city' | 'status' | 'owner' | 'avg_job_value' | 'audit_score' | 'created_at';
 
@@ -420,6 +420,7 @@ export default function OutboundLeads() {
       <main className="max-w-7xl mx-auto px-5 md:px-6 py-8">
         <OutboundNav
           active="leads"
+          back={<BackButton label="Back" fallback="/admin/outbound" />}
           right={
             <div className="flex items-center gap-2">
               <button onClick={() => setImportOpen(true)} className={btnGhost}>Import CSV</button>

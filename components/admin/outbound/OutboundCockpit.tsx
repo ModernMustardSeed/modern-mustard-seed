@@ -7,7 +7,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { NICHE_LABELS, OUTCOME_LABELS, denverIso, formatPhone, fmtMoney, monthlyLeak } from '@/lib/outbound';
 import type { CallLog, CallOutcome, Niche, OutboundLead, Pilot, Rep, Script } from '@/lib/outbound';
-import { OutboundNav, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow, getDialSession, setDialSession, bumpDialSession, batchPosition, SeedBurst } from '@/components/admin/outbound/ui';
+import { OutboundNav, BackButton, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow, getDialSession, setDialSession, bumpDialSession, batchPosition, SeedBurst } from '@/components/admin/outbound/ui';
 import type { DialSession } from '@/components/admin/outbound/ui';
 import { ReachOutDeck, AuditIntelCard, ReviewAmmoCard, ThreadPanel, LeadFile } from '@/components/admin/outbound/OutboundReachOut';
 import PersonalVideoCard from '@/components/admin/outbound/PersonalVideoCard';
@@ -405,6 +405,11 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
   const pos = batchPosition(session, leadId);
   const batchNext = pos?.nextId ?? null;
   const batchNextLead = batchNext ? queue.find((qq) => qq.id === batchNext) ?? null : null;
+  // ...and "back" is the id BEFORE it. A batch auto-advances on every outcome, so
+  // without this a misclick, a wrong number, or "wait, what did that guy say?"
+  // stranded the rep: the only way back was to remember the business name and
+  // hunt for it in a floor of thousands.
+  const batchPrev = pos?.prevId ?? null;
 
   // Free-roam mode (no batch): "next" is the genuinely next lead in the leads
   // table's stable order, NOT the hottest. Using the heat queue here made the
@@ -460,6 +465,19 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
       <main className="max-w-7xl mx-auto px-5 md:px-6 py-8">
         <OutboundNav
           active="call"
+          back={
+            batchPrev ? (
+              <BackButton
+                href={`/admin/outbound/call/${batchPrev}`}
+                label={`Back · ${Math.max(0, (pos?.index ?? 0))} of ${pos?.total ?? 0}`}
+                title="Previous lead in this batch"
+              />
+            ) : pos ? (
+              <BackButton href="/admin/outbound" label="Back to floor" title="You are on the first lead in the batch" />
+            ) : (
+              <BackButton label="Back" title="Back to where you came from" fallback="/admin/outbound/leads" />
+            )
+          }
           right={
             pos && batchNext ? (
               <Link href={`/admin/outbound/call/${batchNext}`} className={btnGhost}>
@@ -490,6 +508,23 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
                 <>
                   {pos && (
                     <span className="flex items-center gap-2.5">
+                      {/* Step back through the stack. The counter is derived from the
+                          frozen id list, so walking backward re-reads position
+                          correctly instead of desyncing progress. */}
+                      <Link
+                        href={batchPrev ? `/admin/outbound/call/${batchPrev}` : '#'}
+                        aria-disabled={!batchPrev}
+                        tabIndex={batchPrev ? undefined : -1}
+                        onClick={(e) => { if (!batchPrev) e.preventDefault(); }}
+                        title={batchPrev ? 'Previous lead in this batch' : 'This is the first lead in the batch'}
+                        className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center font-oswald text-sm transition-colors ${
+                          batchPrev
+                            ? 'border-[#f7f3e9]/35 text-[#f7f3e9]/80 hover:border-[#b58a2a] hover:text-[#b58a2a]'
+                            : 'border-[#f7f3e9]/12 text-[#f7f3e9]/20 pointer-events-none'
+                        }`}
+                      >
+                        ←
+                      </Link>
                       <span className="font-oswald text-[#b58a2a] text-lg leading-none">
                         {at}
                         <span className="text-[#f7f3e9]/40"> / {pos.total}</span>

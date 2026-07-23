@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { formatPhone, fmtMoney } from '@/lib/outbound';
-import type { HeatReason, Rep } from '@/lib/outbound';
+import type { ForgeCounts, HeatReason, Rep } from '@/lib/outbound';
 import { GoalRing, OutboundNav, StatusChip, NicheChip, HeatChip, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, eyebrow, labelCls, setDialSession } from '@/components/admin/outbound/ui';
 
 type Stat = { dials: number; conversations: number; demos_booked: number };
@@ -109,15 +109,19 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
   const [meId, setMeId] = useState<string | null>(null);
   const [resume, setResume] = useState<ResumeInfo | null>(null);
 
+  const [forge, setForge] = useState<ForgeCounts | null>(null);
+
   const loadFloor = useCallback(async () => {
     try {
-      const [pres, bat] = await Promise.all([
+      const [pres, bat, fg] = await Promise.all([
         api<{ presence: RepPresence[]; meId: string | null }>('/api/admin/outbound/presence'),
         api<{ resume: ResumeInfo | null }>('/api/admin/outbound/batch'),
+        api<{ counts: ForgeCounts }>('/api/admin/outbound/forge?summary=1'),
       ]);
       setPresence(pres.presence);
       setMeId(pres.meId);
       setResume(bat.resume);
+      setForge(fg.counts);
     } catch {
       /* floor is ambient; a hiccup shouldn't error the whole page */
     }
@@ -209,6 +213,7 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
       <main className="max-w-7xl mx-auto px-5 md:px-6 py-8">
         <OutboundNav
           active="dashboard"
+          badge={{ forge: forge?.uncontacted ?? 0 }}
           right={
             <div className="flex items-center gap-2">
               {resume ? (
@@ -241,6 +246,35 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
               )}
             </span>
             <span className="ml-auto font-oswald uppercase tracking-[0.1em] text-xs font-semibold text-[#1a1815] shrink-0">Work them →</span>
+          </Link>
+        )}
+
+        {/* Work already paid for. A forged suite nobody has called is the most
+            expensive thing on this floor, so it gets a line of its own. */}
+        {((forge?.uncontacted ?? 0) > 0 || (forge?.forging ?? 0) > 0 || (forge?.failed ?? 0) > 0) && (
+          <Link
+            href={`/admin/outbound/forge${(forge?.uncontacted ?? 0) > 0 ? '?stage=uncontacted' : '?stage=forging'}`}
+            className="flex items-center gap-3 mb-5 px-4 py-3.5 rounded-2xl border-2 border-[#1a1815] bg-[#1a1815] shadow-[4px_4px_0_0_#b58a2a] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#b58a2a] transition-all"
+          >
+            <span className="text-lg" aria-hidden>⚒</span>
+            <span className="font-sans text-sm text-[#f7f3e9]">
+              {(forge?.forging ?? 0) > 0 && (
+                <>
+                  <strong className="font-oswald text-base text-[#b58a2a]">{forge?.forging}</strong>{' '}
+                  {forge?.forging === 1 ? 'demo is' : 'demos are'} on the anvil right now.{' '}
+                </>
+              )}
+              {(forge?.uncontacted ?? 0) > 0 && (
+                <>
+                  <strong className="font-oswald text-base text-[#b58a2a]">{forge?.uncontacted}</strong> forged{' '}
+                  {forge?.uncontacted === 1 ? 'suite has' : 'suites have'} never been called or emailed.
+                </>
+              )}
+              {(forge?.failed ?? 0) > 0 && (
+                <span className="text-[#e8a598]"> {forge?.failed} build{forge?.failed === 1 ? '' : 's'} failed.</span>
+              )}
+            </span>
+            <span className="ml-auto font-oswald uppercase tracking-[0.1em] text-xs font-semibold text-[#b58a2a] shrink-0">Open the forge →</span>
           </Link>
         )}
 

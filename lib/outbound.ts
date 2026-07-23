@@ -178,6 +178,76 @@ export const HEAT_LABELS: Record<HeatReason, string> = {
   fresh: 'Fresh lead',
 };
 
+/* --------------------------------- forge ---------------------------------- */
+
+/**
+ * Where a forged lead stands on the workbench. The whole point of the Forge
+ * board is that a forged suite is WORK ALREADY DONE that nobody has spent yet:
+ * 'uncontacted' is the bucket that makes money, because those leads have a full
+ * demo suite built for them and have never been called or emailed.
+ */
+export type ForgeStage = 'forging' | 'failed' | 'uncontacted' | 'waiting' | 'landed' | 'closed';
+
+export const FORGE_STAGE_LABELS: Record<ForgeStage, string> = {
+  forging: 'On the anvil',
+  failed: 'Forge failed',
+  uncontacted: 'Forged, never contacted',
+  waiting: 'Reached out, waiting',
+  landed: 'Landed',
+  closed: 'Closed out',
+};
+
+/** The demo-website build row behind a lead, when one exists. */
+export type ForgeSiteRun = {
+  id: string;
+  status: SiteDemoStatus;
+  kind: string | null;
+  error: string | null;
+  created_at: string;
+  claimed_at: string | null;
+  built_at: string | null;
+};
+
+/** One row on the Forge board: the lead, what is forged for it, and its contact state. */
+export type ForgeRow = {
+  id: string;
+  business_name: string;
+  contact_name: string | null;
+  phone: string;
+  email: string | null;
+  niche: Niche;
+  city: string | null;
+  state: string | null;
+  status: LeadStatus;
+  source: string | null;
+  origin: ForgeOrigin | null;
+  owner_rep_id: string | null;
+  dnc_checked: boolean;
+  audit_score: number | null;
+  demo_url: string | null;
+  site_demo_url: string | null;
+  site_demo_status: SiteDemoStatus | null;
+  os_demo_url: string | null;
+  hub_demo_url: string | null;
+  hub_view_count: number;
+  email_open_count: number;
+  last_email_at: string | null;
+  last_open_at: string | null;
+  next_action_at: string | null;
+  created_at: string;
+  /** When the newest piece of this suite was forged, when we can date it. */
+  forged_at: string | null;
+  /** How many demos are live for this lead (receptionist, website, command center). */
+  asset_count: number;
+  calls: number;
+  last_call_at: string | null;
+  last_outcome: CallOutcome | null;
+  stage: ForgeStage;
+  site: ForgeSiteRun | null;
+};
+
+export type ForgeCounts = Record<ForgeStage, number> & { all: number };
+
 /** What the provider says happened to a sent email. 'sent' only means Resend accepted it. */
 export type MessageDelivery = {
   status: string | null;
