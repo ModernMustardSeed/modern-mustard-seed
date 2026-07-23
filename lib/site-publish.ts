@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { publishSite, attachDomain, projectSlug } from './vercel-platform';
 import { seoFiles, type SiteFacts } from './site-seo';
+import { settleCursorCompanions } from './cursor-companion';
 import { resendClient } from './send-email';
 import { clientEmail } from './email';
 import { SITE } from './seo';
@@ -78,7 +79,7 @@ export async function publishProject(sb: SupabaseClient, projectId: string): Pro
   };
 
   const pub = await publishSite({
-    files: seoFiles(facts, project.site_html as string),
+    files: seoFiles(facts, settleCursorCompanions(project.site_html as string)),
     business,
     key: projectId,
     projectId: (project.site_vercel_project_id as string | null) ?? null,
