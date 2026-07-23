@@ -9,7 +9,7 @@ Platforms: X, LinkedIn, Facebook (page), Instagram.
 ## Setup
 
 1. In Blotato, connect the MMS accounts you want to post from:
-   - X: @sarahmscarano (personal) OR a dedicated MMS handle
+   - X: @modmustardseed (the MMS brand handle, Blotato 22771)
    - LinkedIn: Sarah Scarano (personal) and/or Modern Mustard Seed company page
    - Facebook: Modern Mustard Seed page
    - Instagram: @modernmustardseed

@@ -41,7 +41,7 @@ export const personJsonLd = {
   ],
   sameAs: [
     'https://www.facebook.com/modernmustardseed',
-    'https://x.com/sarahmscarano',
+    'https://x.com/modmustardseed',
     'https://www.linkedin.com/in/sarahmscarano/',
     'https://github.com/ModernMustardSeed',
     'https://instagram.com/modernmustardseed',
@@ -76,7 +76,7 @@ export const orgJsonLd = {
     'Specialty AI for real estate, design, content, and legal',
   ],
   sameAs: [
-    'https://x.com/sarahmscarano',
+    'https://x.com/modmustardseed',
     'https://www.linkedin.com/in/sarahmscarano/',
     'https://github.com/ModernMustardSeed',
     'https://instagram.com/modernmustardseed',

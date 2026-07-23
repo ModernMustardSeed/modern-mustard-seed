@@ -7,7 +7,7 @@ Rules honored: no em dashes, no hedging, IG max 5 hashtags (Blotato ceiling).
 
 ---
 
-## X / Twitter (@sarahmscarano) — attach 16:9 video
+## X / Twitter (@modmustardseed) — attach 16:9 video
 
 I built an arcade where the machine is Claude and the coach is a mustard seed.
 

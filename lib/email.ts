@@ -97,7 +97,7 @@ function header(subtitle?: string): string {
 function footer(showSocial: boolean): string {
   const socialRow = showSocial
     ? `<tr><td align="center" style="padding:0 0 16px">
-        <a href="https://x.com/sarahmscarano" style="color:${C.gold};text-decoration:none;font-family:${SANS};font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700">X</a>
+        <a href="https://x.com/modmustardseed" style="color:${C.gold};text-decoration:none;font-family:${SANS};font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700">X</a>
         <span style="color:${C.ghost};margin:0 12px">&middot;</span>
         <a href="https://www.linkedin.com/in/sarahmscarano/" style="color:${C.gold};text-decoration:none;font-family:${SANS};font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700">LinkedIn</a>
         <span style="color:${C.ghost};margin:0 12px">&middot;</span>

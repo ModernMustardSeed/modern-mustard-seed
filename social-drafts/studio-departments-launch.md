@@ -10,7 +10,7 @@ Video available NOW (no fal needed): the caption cut of The Graduate at /ads/sid
 
 ## MUSTARD PICTURES
 
-### X (@sarahmscarano)
+### X (@modmustardseed)
 My AI studio now does screen tests.
 
 Tell Mr. Mustard about your business and he directs your commercial on the spot: logline, six shots, three taglines. Free, and the treatment is yours to keep.
@@ -40,7 +40,7 @@ IG hashtags (max 5): #smallbusiness #videomarketing #ai #commercial #montana
 
 ## MUSTARD PRESS
 
-### X (@sarahmscarano)
+### X (@modmustardseed)
 Paste your messy price list. Watch it become a print-ready menu in 60 seconds. Free.
 
 Every price exactly as you wrote it, editable before anything is final. The clean file is $97, instant.

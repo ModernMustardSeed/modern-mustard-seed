@@ -1,7 +1,7 @@
 export const socials = [
   { name: 'Facebook', url: 'https://www.facebook.com/modernmustardseed' },
   { name: 'Instagram', url: 'https://instagram.com/modernmustardseed' },
-  { name: 'X', url: 'https://x.com/sarahmscarano' },
+  { name: 'X', url: 'https://x.com/modmustardseed' },
   { name: 'LinkedIn', url: 'https://www.linkedin.com/in/sarahmscarano/' },
   { name: 'GitHub', url: 'https://github.com/ModernMustardSeed' },
 ];

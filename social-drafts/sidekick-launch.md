@@ -6,7 +6,7 @@ Video: sidekick-9x16.mp4 (Reels/Shorts/TikTok-format) or sidekick-16x9.mp4 (X/Li
 
 ---
 
-## X (@sarahmscarano)
+## X (@modmustardseed)
 
 I built a machine that trains an AI receptionist for YOUR business in 60 seconds.
 
