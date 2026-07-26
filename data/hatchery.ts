@@ -16,7 +16,7 @@
 export const HATCHERY = {
   wordmark: 'The Mustard Hatchery',
   by: 'by Modern Mustard Seed',
-  metaTitle: 'The Mustard Hatchery — your business gets its own mascot, born on a Birth Day',
+  metaTitle: 'Custom Mascot Design for Your Business, Born in One Day',
   metaDescription:
     'Modern Mustard Seed births your business its official mascot: a name, a story, a face, a voice, and their own phone number, unveiled on a public Birth Day. $497, one time.',
   promise:

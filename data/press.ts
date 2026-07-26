@@ -20,7 +20,7 @@ export const PRESS = {
   tagline: 'Your prices, typeset like they matter.',
   promise:
     'Paste your price list, menu, or rate sheet exactly as it is, typos and all. Mr. Mustard sets the type before your eyes and hands you a print-ready proof. Free. If you love it, the clean file is yours in one click.',
-  metaTitle: 'MUSTARD PRESS. Your Menu or Price List, Beautifully Typeset in 60 Seconds',
+  metaTitle: 'Menu and Price List Design, Typeset Free in 60 Seconds',
   metaDescription:
     'Paste your price list and get a print-ready menu, rate sheet, or price card typeset on the spot, free watermarked proof included. The clean 300dpi file is $97, instant. By Modern Mustard Seed.',
   weeklyHandPressSlots: 5,

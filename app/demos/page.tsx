@@ -3,10 +3,20 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import DemoStation from '@/components/DemoStation';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
+/**
+ * The title leads with the SEARCHED thing, not the internal product name.
+ *
+ * This page shipped as "The Demo Station: three free AI demos..." which put a
+ * brand term nobody types in the highest-weighted position on the page. Nothing
+ * on the page matched "free AI receptionist demo" or "free website demo for my
+ * business," which is what people and AI answer engines actually ask for. Brand
+ * name stays (buildMetadata appends "| Modern Mustard Seed" and the H1 still
+ * says Demo Station), it just no longer leads. (Retitled 2026-07-25.)
+ */
 export const metadata = buildMetadata({
-  title: 'The Demo Station: three free AI demos, built for your business',
+  title: 'Free AI Receptionist and Website Demo for Your Business',
   description:
-    'Tell us who you are and we forge three working demos, free: an AI receptionist that answers as your business, a brand-new website, and a business command center that comes free with either. Keep what you love from $97/mo.',
+    'Get three working AI demos free, no card and no sales call: an AI receptionist that answers as your business, a custom website built from scratch, and a business command center free with either. Live in about 20 seconds. Keep what you love from $97/mo.',
   path: '/demos',
 });
 

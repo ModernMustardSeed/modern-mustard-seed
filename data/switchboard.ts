@@ -10,7 +10,7 @@
 export const SWITCHBOARD = {
   name: 'The Switchboard',
   by: 'by Modern Mustard Seed',
-  metaTitle: 'The Switchboard — one AI voice concierge for every location of your franchise',
+  metaTitle: 'AI Phone Answering for Multi-Location and Franchise Brands',
   metaDescription:
     'Give every location of your franchise or multi-location brand a 24/7 AI voice concierge in one on-brand voice, and watch the recovered revenue from all of them on a single Command Board. Priced per location, discounted at volume.',
   promise:

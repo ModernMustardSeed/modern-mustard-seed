@@ -10,6 +10,20 @@ export const SITE = {
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',
   ogImage: '/opengraph-image',
+  /**
+   * Local identity. SINGLE SOURCE for every NAP (name, address, phone) signal.
+   * Local search and AI answers both key off a consistent NAP, so never retype
+   * the phone or the city in a schema block: derive it from here.
+   */
+  phone: '(406) 312-1223',
+  phoneE164: '+14063121223',
+  city: 'Kalispell',
+  region: 'MT',
+  regionName: 'Montana',
+  postalCode: '59901',
+  country: 'US',
+  latitude: 48.1958,
+  longitude: -114.3129,
 };
 
 type SeoArgs = {

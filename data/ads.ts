@@ -15,7 +15,7 @@ export const BROADCAST = {
   tagline: 'We make the commercial. We run the ads. You answer the phone.',
   promise:
     'A cinematic commercial produced for your business, launched on Facebook, Instagram, and Google, managed every week, and reported in plain English every month. Your ad spend stays on your card, never marked up. You do the part only you can do: answer the phone.',
-  metaTitle: 'MUSTARD BROADCAST. We Make Your Commercial and Run Your Ads',
+  metaTitle: 'We Make Your Commercial and Run Your Meta and Google Ads',
   metaDescription:
     'Done-for-you advertising for local businesses: a cinematic commercial produced for your business, Facebook, Instagram, and Google ads launched and managed weekly, plain-English monthly reports. From $297/mo, month to month. By Modern Mustard Seed.',
   demoVideo: '/ads/broadcast-demo-roofing-16x9.mp4',

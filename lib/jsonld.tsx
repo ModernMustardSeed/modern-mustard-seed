@@ -3,6 +3,7 @@ import { SITE } from './seo';
 const PERSON_ID = `${SITE.url}/#sarah`;
 const ORG_ID = `${SITE.url}/#organization`;
 const WEBSITE_ID = `${SITE.url}/#website`;
+const LOCAL_ID = `${SITE.url}/#localbusiness`;
 const LOGO_URL = `${SITE.url}/opengraph-image`;
 const OG_IMAGE = {
   '@type': 'ImageObject',
@@ -81,12 +82,121 @@ export const orgJsonLd = {
     'https://github.com/ModernMustardSeed',
     'https://instagram.com/modernmustardseed',
   ],
-  contactPoint: {
-    '@type': 'ContactPoint',
-    email: SITE.email,
-    contactType: 'sales',
-    availableLanguage: 'English',
-    areaServed: 'Worldwide',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: SITE.city,
+    addressRegion: SITE.region,
+    postalCode: SITE.postalCode,
+    addressCountry: SITE.country,
+  },
+  telephone: SITE.phoneE164,
+  email: SITE.email,
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      email: SITE.email,
+      telephone: SITE.phoneE164,
+      contactType: 'sales',
+      availableLanguage: 'English',
+      areaServed: 'Worldwide',
+    },
+    {
+      '@type': 'ContactPoint',
+      telephone: SITE.phoneE164,
+      contactType: 'customer support',
+      availableLanguage: 'English',
+      // The line is answered by an AI receptionist around the clock, which is
+      // literally the product. Saying so in schema is a differentiator, not noise.
+      hoursAvailable: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        opens: '00:00',
+        closes: '23:59',
+      },
+    },
+  ],
+};
+
+/**
+ * The LOCAL entity. Added 2026-07-25.
+ *
+ * Until now the graph described a placeless "Organization" with areaServed
+ * Worldwide, so nothing tied Modern Mustard Seed to Kalispell or the Flathead
+ * Valley. That is the one search territory a small studio can actually win, and
+ * it is what an AI answer engine needs before it will name us in response to
+ * "who builds AI phone agents in Montana." ProfessionalService is a
+ * LocalBusiness subtype, so this carries both meanings at once.
+ *
+ * No streetAddress on purpose: the studio does not take walk-ins, and a fake or
+ * residential street line is worse than none. Locality + region + geo is enough
+ * for local relevance and is honest.
+ */
+export const localBusinessJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': LOCAL_ID,
+  name: SITE.name,
+  alternateName: 'Modern Mustard Seed AI Studio',
+  url: SITE.url,
+  logo: LOGO_URL,
+  image: LOGO_URL,
+  description:
+    'AI studio in Kalispell, Montana building custom websites, 24/7 AI receptionists and voice agents, and business automation for small businesses across the Flathead Valley and nationwide.',
+  telephone: SITE.phoneE164,
+  email: SITE.email,
+  priceRange: '$$',
+  currenciesAccepted: 'USD',
+  paymentAccepted: 'Credit Card',
+  parentOrganization: { '@id': ORG_ID },
+  founder: { '@id': PERSON_ID },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: SITE.city,
+    addressRegion: SITE.region,
+    postalCode: SITE.postalCode,
+    addressCountry: SITE.country,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: SITE.latitude,
+    longitude: SITE.longitude,
+  },
+  areaServed: [
+    { '@type': 'City', name: 'Kalispell' },
+    { '@type': 'City', name: 'Whitefish' },
+    { '@type': 'City', name: 'Columbia Falls' },
+    { '@type': 'City', name: 'Bigfork' },
+    { '@type': 'AdministrativeArea', name: 'Flathead Valley' },
+    { '@type': 'State', name: SITE.regionName },
+    { '@type': 'Country', name: 'United States' },
+  ],
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '00:00',
+    closes: '23:59',
+  },
+  knowsAbout: orgJsonLd.knowsAbout,
+  sameAs: orgJsonLd.sameAs,
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Modern Mustard Seed services',
+    itemListElement: [
+      ['AI receptionist and voice agents', 'A 24/7 AI receptionist that answers every call as your business, books jobs, and texts back missed callers.', '/sidekick'],
+      ['Small business websites', 'Custom websites built from scratch with lead capture, SEO, and an AI receptionist answering on the page.', '/websites'],
+      ['Business Command Center', 'One dashboard for calls, leads, customers, reviews, traffic, and money, with an AI that reads it back to you.', '/command-center'],
+      ['Free AI demos', 'Three working demos built for your business at no cost: receptionist, website, and command center.', '/demos'],
+      ['Website audits', 'A real score and a real to-do list for an existing site, covering SEO and AI answer-engine visibility.', '/website-audit'],
+    ].map(([name, description, path]) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name,
+        description,
+        url: `${SITE.url}${path}`,
+        provider: { '@id': LOCAL_ID },
+      },
+    })),
   },
 };
 
@@ -111,7 +221,7 @@ export const websiteJsonLd = {
 
 export const siteGraphJsonLd = {
   '@context': 'https://schema.org',
-  '@graph': [orgJsonLd, personJsonLd, websiteJsonLd],
+  '@graph': [orgJsonLd, localBusinessJsonLd, personJsonLd, websiteJsonLd],
 };
 
 export function blogPostingJsonLd(args: {
@@ -223,8 +333,14 @@ export function serviceJsonLd(svc: { name: string; description: string }) {
     '@type': 'Service',
     name: svc.name,
     description: svc.description,
-    provider: { '@id': ORG_ID },
-    areaServed: 'Worldwide',
+    // Provided by the LOCAL entity, so every service page inherits the Kalispell
+    // signal instead of floating placelessly under a "Worldwide" organization.
+    provider: { '@id': LOCAL_ID },
+    areaServed: [
+      { '@type': 'AdministrativeArea', name: 'Flathead Valley' },
+      { '@type': 'State', name: SITE.regionName },
+      { '@type': 'Country', name: 'United States' },
+    ],
   };
 }
 

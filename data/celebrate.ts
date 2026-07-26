@@ -18,7 +18,7 @@ export const CELEBRATE = {
   tagline: 'Turn your calendar into a parade.',
   promise:
     'Load your people once and set a budget per person. Real cakes from the bakery down the street, fresh flowers, charcuterie boards, and handwritten cards go out on every date that matters, all year, on autopilot.',
-  metaTitle: 'Celebrate. Birthday Cakes, Flowers, and Gifts on Autopilot from Local Shops',
+  metaTitle: 'Birthday Cakes, Flowers, and Gifts on Autopilot from Local Shops',
   metaDescription:
     'Load every birthday, work anniversary, and milestone once. Celebrate auto-sends real cakes, fresh flowers, and handwritten cards from local makers on the right dates, with a hard-capped budget you set. For teams, clients, and families. A Modern Mustard Seed service.',
   foundingRoute: 'Founding route now boarding: the Flathead Valley, Montana. Every other city rides the waitlist.',

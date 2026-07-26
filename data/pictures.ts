@@ -21,7 +21,7 @@ export const PICTURES = {
   tagline: 'Your business. His camera. One commercial.',
   promise:
     'Tell Mr. Mustard about your business and he directs your commercial on the spot: a full storyboard, your tagline options, and one cinematic frame of the film. Free. If you love it, roll film and the finished spot is yours within days.',
-  metaTitle: 'MUSTARD PICTURES. A Commercial for Your Business, Directed by AI',
+  metaTitle: 'AI Commercial for Your Business. Free Screen Test',
   metaDescription:
     'Get a free Screen Test: Mr. Mustard storyboards a cinematic commercial for YOUR business in 60 seconds, tagline included. Love it? The finished spot ships within days, from $197. By Modern Mustard Seed, the studio behind The Graduate and Night Shift.',
   deliveryPromiseSpot: 'delivered within 2 business days',

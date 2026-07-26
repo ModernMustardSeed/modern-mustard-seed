@@ -28,7 +28,7 @@ export const CHIEF = {
   // The whole offer in one line: the price anchor Sarah asked to lead with.
   anchor:
     'You thought a personal assistant was expensive. A human chief of staff runs $4,000 to $8,000 a month. Yours starts at $597.',
-  metaTitle: 'The Chief. A Personal AI Chief of Staff You Can Call Anytime',
+  metaTitle: 'AI Chief of Staff You Can Call Anytime, 24/7',
   metaDescription:
     'Meet The Chief: a proactive AI chief of staff from Modern Mustard Seed. Call, text, or type any hour. He runs your calendar, drafts and sends email, makes calls, researches anything, runs sales role-play, builds your lead list, and wakes you with scripture and your day. Trained on your business, with a command center included. From $597/mo, a fraction of a human assistant.',
   phoneLineNote: 'He answers in Mr. Mustard’s voice, the same AI who runs our own front desk at (406) 312-1223. Call and hear him yourself.',

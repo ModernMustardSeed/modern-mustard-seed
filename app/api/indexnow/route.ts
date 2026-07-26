@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { listContent } from '@/lib/content';
 import { submitToIndexNow } from '@/lib/indexnow';
 import { SITE } from '@/lib/seo';
+import sitemap from '@/app/sitemap';
 
 export const runtime = 'nodejs';
 
@@ -15,24 +15,19 @@ function isAuthorized(req: Request): boolean {
   return auth === `Bearer ${expected}`;
 }
 
+/**
+ * Every public URL, DERIVED FROM THE SITEMAP.
+ *
+ * This used to be a hand-maintained list of eleven paths, and it silently
+ * rotted. By July 2026 the site had shipped /demos, /sidekick, /websites,
+ * /command-center, /chief, /press, /pictures, /hatchery, /switchboard, /store,
+ * /website-audit and the whole trade-page set, and NOT ONE of them was ever
+ * announced to IndexNow: the weekly cron kept re-submitting the same eleven old
+ * URLs. Deriving from the sitemap means a new page is announced the moment it
+ * is listed, with no second list to keep in sync. (Fixed 2026-07-25.)
+ */
 function allUrls(): string[] {
-  const staticPaths = [
-    '',
-    '/book',
-    '/work',
-    '/services',
-    '/work-with-us',
-    '/blog',
-    '/playbooks',
-    '/audit',
-    '/ai-proof',
-    '/about',
-    '/contact',
-  ];
-  const work = listContent('work').map((s) => `/work/${s.slug}`);
-  const blog = listContent('blog').map((p) => `/blog/${p.slug}`);
-  const playbooks = listContent('playbooks').map((p) => `/playbooks/${p.slug}`);
-  return [...staticPaths, ...work, ...blog, ...playbooks].map((p) => `${SITE.url}${p}`);
+  return sitemap().map((entry) => entry.url);
 }
 
 export async function GET(req: Request) {
