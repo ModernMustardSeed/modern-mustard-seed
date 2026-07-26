@@ -25,6 +25,7 @@ const MENU_GROUPS = [
       { label: 'How It Works', href: '/work-with-us' },
       { label: 'Services', href: '/services' },
       { label: 'The Work', href: '/work' },
+      { label: 'Northwest Montana', href: '/montana' },
       { label: 'Book a Free Call', href: '/book' },
     ],
   },

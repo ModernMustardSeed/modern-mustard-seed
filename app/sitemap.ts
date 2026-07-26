@@ -4,6 +4,7 @@ import { SITE } from '@/lib/seo';
 import { industries } from '@/data/industries';
 import { products, bundles } from '@/data/products';
 import { liveTradePages } from '@/data/trade-pages';
+import { MONTANA_CITIES } from '@/data/montana-cities';
 
 const STATIC_PATHS = [
   '',
@@ -48,6 +49,7 @@ const STATIC_PATHS = [
   '/contact',
   '/store',
   '/sample-proposal',
+  '/montana',
   '/privacy',
   '/terms',
 ];
@@ -111,5 +113,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...staticUrls, ...blog, ...studies, ...playbooks, ...industryPages, ...storeItems, ...tradePages];
+  // Local fleet. High priority: these are the queries we can realistically win.
+  const cityPages = MONTANA_CITIES.map((c) => ({
+    url: `${SITE.url}/montana/${c.slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.9,
+  }));
+
+  return [
+    ...staticUrls,
+    ...blog,
+    ...studies,
+    ...playbooks,
+    ...industryPages,
+    ...storeItems,
+    ...tradePages,
+    ...cityPages,
+  ];
 }

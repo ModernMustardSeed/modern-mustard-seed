@@ -47,6 +47,7 @@ export default function Footer() {
         { label: 'Services', href: '/services' },
         { label: 'Voice Agents', href: '/voice-agents' },
         { label: 'Industries We Build For', href: '/for' },
+        { label: 'Northwest Montana', href: '/montana' },
         { label: 'The Work', href: '/work' },
         { label: 'What You Get', href: '/playbook' },
       ],
