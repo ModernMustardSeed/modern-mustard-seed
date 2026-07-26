@@ -31,6 +31,31 @@ function allUrls(): string[] {
 }
 
 export async function GET(req: Request) {
+  /**
+   * Unauthenticated health check: GET /api/indexnow?health=1
+   *
+   * This exists because the submitter was dead for months and nothing said so.
+   * INDEXNOW_KEY was never set in production, so every weekly cron run bailed
+   * at the first line of submitToIndexNow and returned {ok:false} into a void
+   * nobody read. The failure was invisible from the outside.
+   *
+   * Nothing here is a secret. The IndexNow key is PUBLIC BY DESIGN: the
+   * protocol requires it to be served at /<key>.txt so search engines can
+   * verify ownership. So reporting whether it is configured, and whether it
+   * matches the published key file, leaks nothing and makes the silent failure
+   * loud. keyConfigured false means the weekly cron is a no-op again.
+   */
+  const probe = new URL(req.url);
+  if (probe.searchParams.get('health')) {
+    const key = process.env.INDEXNOW_KEY;
+    return NextResponse.json({
+      keyConfigured: Boolean(key),
+      keyLocation: key ? `${SITE.url}/${key}.txt` : null,
+      cronSecretConfigured: Boolean(process.env.CRON_SECRET),
+      urlsThatWouldSubmit: allUrls().length,
+    });
+  }
+
   if (!isAuthorized(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
