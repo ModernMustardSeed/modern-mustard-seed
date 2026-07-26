@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const REPO = path.resolve(__dirname, '../../..');
 const R = f => readFileSync(path.join(__dirname, f), 'utf8');
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -70,6 +71,35 @@ function parseGroup(md) {
   };
 }
 
+// ------------------------------------------------------------------ start here
+// Parses "## 0. Start here" into blocks of {h, paras[], list:{type,items[]}|null}.
+// Both the standalone deck and the in-app admin page render from this, so the
+// Page-vs-Group explainer lives in exactly one place (the playbook).
+function parseStartHere(md) {
+  const i = md.indexOf('## 0. Start here');
+  if (i === -1) return [];
+  const rest = md.slice(i);
+  const end = rest.indexOf('\n## 1.');
+  const body = end === -1 ? rest : rest.slice(0, end);
+  const parts = body.split(/\n### /).slice(1);
+  return parts.map(part => {
+    const lines = part.split('\n');
+    const h = lines.shift().trim();
+    const paras = [];
+    let list = null;
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line || line === '---') continue;
+      const ol = line.match(/^\d+\.\s+(.*)$/);
+      const ul = line.match(/^-\s+(.*)$/);
+      if (ol) { if (!list) list = { type: 'ol', items: [] }; list.items.push(ol[1]); }
+      else if (ul) { if (!list) list = { type: 'ul', items: [] }; list.items.push(ul[1]); }
+      else paras.push(line);
+    }
+    return { h, paras, list };
+  });
+}
+
 // ------------------------------------------------------------------ growth tactics
 function parseTactics(md) {
   const i = md.indexOf('## 6. The growth tactics');
@@ -88,6 +118,7 @@ const posts = JSON.parse(R('fb-content-bank.json'));
 const playbook = R('FB-PLAYBOOK.md');
 const group = parseGroup(playbook);
 const tactics = parseTactics(playbook);
+const startHere = parseStartHere(playbook);
 
 // post dates: Mon/Thu/Sat starting 2026-07-27
 const POST_DAYS = [1, 4, 6];
@@ -105,9 +136,18 @@ const bad = reels.filter(r => !r.hook || !r.script.length || !r.caption);
 if (bad.length) throw new Error(`Reels missing fields: ${bad.map(b => 'R' + b.n).join(', ')}`);
 if (!group.name || !group.description || !group.pinned) throw new Error('Group copy failed to parse');
 if (tactics.length < 8) throw new Error(`Expected 10 tactics, parsed ${tactics.length}`);
+if (startHere.length < 4) throw new Error(`Expected 4 start-here blocks, parsed ${startHere.length}`);
 
 // ------------------------------------------------------------------ render
 const shotChip = s => s === 'FACE' ? 'face' : s === 'SCREEN' ? 'screen' : 'both';
+const md2html = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+const startHereCards = startHere.map(b => `
+<article class="card start">
+  <h3 class="start-h">${esc(b.h)}</h3>
+  ${b.paras.map(p => `<p class="start-p">${md2html(p)}</p>`).join('\n  ')}
+  ${b.list ? `<${b.list.type} class="start-list">${b.list.items.map(it => `<li>${md2html(it)}</li>`).join('')}</${b.list.type}>` : ''}
+</article>`).join('\n');
 
 const reelCards = reels.map(r => `
 <article class="card reel" data-batch="${esc(r.batch)}" data-n="${r.n}">
@@ -292,6 +332,18 @@ h1{font-size:clamp(30px,7vw,46px);line-height:1.04;margin:0 0 10px;font-weight:8
 
 .note{font-size:15px;color:var(--muted);margin:0 0 18px;max-width:62ch}
 
+.start-h{font-size:20px;line-height:1.2;margin:0 0 12px;font-weight:800;letter-spacing:-.012em;text-wrap:balance}
+.start-p{margin:0 0 12px;font-size:16.5px;line-height:1.6}
+.start-p:last-child{margin-bottom:0}
+.start-list{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.start-list li{position:relative;padding-left:34px;font-size:16px;line-height:1.5}
+ol.start-list li{counter-increment:s}
+ol.start-list li::before{content:counter(s);position:absolute;left:0;top:1px;width:23px;height:23px;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:700;
+  background:var(--mustard);color:var(--ink);border:2px solid var(--ink)}
+ul.start-list li::before{content:"";position:absolute;left:6px;top:9px;width:9px;height:9px;background:var(--mustard);border:2px solid var(--ink)}
+.start-list strong{font-weight:800}
+
 /* teleprompter */
 .prompter{position:fixed;inset:0;z-index:100;background:var(--midnight);color:#F3EFE4;
   display:none;flex-direction:column;padding:22px 20px 18px}
@@ -330,13 +382,19 @@ h1{font-size:clamp(30px,7vw,46px);line-height:1.04;margin:0 0 10px;font-weight:8
   </header>
 
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" aria-selected="true" data-tab="reels">Reels · 24</button>
+    <button class="tab" role="tab" aria-selected="true" data-tab="start">Start Here</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="reels">Reels · 24</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="posts">Posts · 30</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="group">The Group</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="growth">Growth</button>
   </nav>
 
-  <section class="panel" id="reels" role="tabpanel">
+  <section class="panel" id="start" role="tabpanel">
+    <p class="note">Read this once. It answers the two questions everyone has: do I post to my Page or a new group (both, they do different jobs), and how do I get the first members.</p>
+    <div class="stack">${startHereCards}</div>
+  </section>
+
+  <section class="panel" id="reels" role="tabpanel" hidden>
     <p class="note">Shoot 8 at a time, about 90 minutes. One take each, do not review between takes. Change your shirt between batches. Post natively from the Facebook app so you get trending audio, and never put a link in the caption.</p>
     <div class="filters">
       <button class="filter" data-filter="all" aria-pressed="true">All</button>
@@ -468,6 +526,38 @@ document.addEventListener('keydown', e => {
 </script>`;
 
 writeFileSync(path.join(__dirname, 'fb-deck.html'), html);
-console.log(`Built fb-deck.html`);
-console.log(`  ${reels.length} reels, ${posts.length} posts, ${tactics.length} tactics, group copy OK`);
+
+// Emit the typed data file the in-app admin page imports, so /admin/facebook and
+// the standalone deck render from the same source and can never disagree.
+const groupData = [
+  ['Group name', group.name],
+  ['Description', group.description],
+  ['Join questions', group.questions],
+  ['Rules', group.rules],
+  ['Pinned "Start Here" post', group.pinned],
+].map(([label, body]) => ({ label, lines: body.split('\n').filter(Boolean) }));
+
+const data = {
+  built: '2026-07-23',
+  postWindow: { start: dates[0], end: dates[posts.length - 1] },
+  startHere,
+  reels,
+  posts: posts.map((p, i) => ({
+    id: p.id, pillar: p.pillar, headline: p.headline, fb: p.fb,
+    firstComment: p.firstComment || null, cta: !!p.cta,
+    date: dates[i], dateLabel: fmtDate(dates[i]),
+  })),
+  group: groupData,
+  tactics,
+};
+const dataPath = path.join(REPO, 'data', 'facebook-playbook.ts');
+writeFileSync(dataPath,
+  '// AUTO-GENERATED by social-drafts/blotato/facebook/build-artifact.mjs. Do not edit by hand.\n' +
+  '// Source of truth: FB-PLAYBOOK.md, REELS-24.md, fb-content-bank.json.\n' +
+  '// Regenerate: cd social-drafts/blotato/facebook && node build-artifact.mjs\n' +
+  `export const FB_PLAYBOOK = ${JSON.stringify(data, null, 2)} as const;\n` +
+  'export type FbPlaybook = typeof FB_PLAYBOOK;\n');
+
+console.log(`Built fb-deck.html + data/facebook-playbook.ts`);
+console.log(`  ${startHere.length} start-here blocks, ${reels.length} reels, ${posts.length} posts, ${tactics.length} tactics, group copy OK`);
 console.log(`  posts run ${dates[0]} .. ${dates[posts.length - 1]}`);

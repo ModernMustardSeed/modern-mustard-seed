@@ -8,6 +8,36 @@
 
 ---
 
+## 0. Start here: your Page, a new Group, and finding members
+
+### Your Page vs a new Group (you need both)
+They are two different tools with two different jobs, and this is the thing almost everyone gets wrong.
+- **Your business Page is your storefront window.** The Reels and the 30 scheduled posts go here. It is how strangers find you. Facebook shows a plain Page post to roughly 1-2% of your followers, plus whoever a Reel reaches, which is the whole reason Reels matter more than anything else.
+- **A new Group is your living room.** Teardown Tuesday, Steal This Thursday, and Win Friday live here. Members see it in their feed as a group they chose to join, which gets far more reach than a Page post ever will. This is where the community forms and where the buyers come from.
+- **They feed each other.** Every Reel on your Page pins a comment pointing to the Group. Every Group ritual becomes a Reel on your Page. You post to the Page to get found, and you run the Group to turn followers into a community. So yes, start the new Group. It is the part that makes this a community instead of a billboard.
+
+### Where each piece of this deck goes
+- **Reels (24):** your Page, posted by hand from the phone so you get trending audio.
+- **Posts (30):** your Page, auto-scheduled through Blotato once the Page ID is set.
+- **The Group tab:** used once, to create the new Group. Paste the five blocks.
+- **The Growth tab:** your daily habits, most of them done in other people's groups.
+
+### How to find members (in order, fastest first)
+1. **Invite your Page followers, day one.** In Page settings there is a "link a group" option. Link it, then invite your existing followers to join. This is your warmest, fastest seed.
+2. **Pin the Group link on every Reel.** A Reel reaches strangers. The pinned comment sends the ones who found it useful into the Group. This is the engine, and it is why the Reels come first.
+3. **Invite everyone who reacts to a post.** On any Page post with reactions, click the reaction count, then Invite. Most people never do this. It is the single most underused free growth lever on Facebook.
+4. **Serve in 10 other groups, 10 minutes a day (weeks 1 to 4).** Find groups where owners ask questions. Give the single best, most complete answer in the thread, with no link and no pitch. Your profile does the selling. People click the name of whoever just helped them.
+5. **Personally invite your first 20.** Past clients, local owners, business friends. A group needs a floor of 20 to 30 real people before it feels alive and strangers will stay.
+
+### Launch order (do it exactly like this)
+1. **Create the Group first** and link it to your Page. The pinned Reel comments need somewhere to point, so the Group has to exist before you post.
+2. **Paste the five Group blocks** from the Group tab: name, description, join questions, rules, and the pinned "Start Here" post.
+3. **Set FB_PAGE_ID** so the 30 posts can schedule, and set GROUP_URL so the ritual first-comments resolve.
+4. **Batch-shoot Reels 1 to 8** and post R1 on Monday alongside the manifesto text post.
+5. **Invite your Page followers and your first 20** the same day, so the Group is never empty when the first stranger arrives.
+
+---
+
 ## 1. Why Facebook is a different build than LinkedIn and X
 
 The Main Street AI engine already runs on LinkedIn (22982) and X (@modmustardseed, 22771), scheduled through 9/20. Do not copy that lane onto Facebook. Three reasons:

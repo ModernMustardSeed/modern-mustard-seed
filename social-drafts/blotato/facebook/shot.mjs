@@ -18,9 +18,15 @@ for (const [name, w, h, scheme] of [['phone-light', 390, 844, 'light'], ['phone-
   await page.close();
 }
 
-// teleprompter state
+// start-here (default tab) + teleprompter state
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, colorScheme: 'light' });
 await page.goto(url);
+await page.waitForTimeout(250);
+await page.screenshot({ path: path.join(__dirname, 'verify-start.png') });
+const startH = await page.textContent('.start .start-h');
+console.log('start-here first heading:', JSON.stringify(startH));
+await page.click('[data-tab="reels"]');
+await page.waitForTimeout(200);
 await page.click('[data-prompt="1"]');
 await page.waitForTimeout(250);
 await page.screenshot({ path: path.join(__dirname, 'verify-prompter.png') });

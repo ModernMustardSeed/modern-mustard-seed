@@ -299,6 +299,7 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
               🎬 Ads Playbook · videos
             </Link>
             {[
+              { href: '/admin/facebook', label: 'Facebook' },
               { href: '/admin/outbound', label: 'Outbound' },
               { href: '/admin/leads', label: 'Pipeline' },
               { href: '/admin/hq', label: 'Partner Hub' },

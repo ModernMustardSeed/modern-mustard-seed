@@ -110,6 +110,18 @@ h1{font-size:clamp(30px,7vw,46px);line-height:1.04;margin:0 0 10px;font-weight:8
 
 .note{font-size:15px;color:var(--muted);margin:0 0 18px;max-width:62ch}
 
+.start-h{font-size:20px;line-height:1.2;margin:0 0 12px;font-weight:800;letter-spacing:-.012em;text-wrap:balance}
+.start-p{margin:0 0 12px;font-size:16.5px;line-height:1.6}
+.start-p:last-child{margin-bottom:0}
+.start-list{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.start-list li{position:relative;padding-left:34px;font-size:16px;line-height:1.5}
+ol.start-list li{counter-increment:s}
+ol.start-list li::before{content:counter(s);position:absolute;left:0;top:1px;width:23px;height:23px;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:700;
+  background:var(--mustard);color:var(--ink);border:2px solid var(--ink)}
+ul.start-list li::before{content:"";position:absolute;left:6px;top:9px;width:9px;height:9px;background:var(--mustard);border:2px solid var(--ink)}
+.start-list strong{font-weight:800}
+
 /* teleprompter */
 .prompter{position:fixed;inset:0;z-index:100;background:var(--midnight);color:#F3EFE4;
   display:none;flex-direction:column;padding:22px 20px 18px}
@@ -148,13 +160,42 @@ h1{font-size:clamp(30px,7vw,46px);line-height:1.04;margin:0 0 10px;font-weight:8
   </header>
 
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" aria-selected="true" data-tab="reels">Reels · 24</button>
+    <button class="tab" role="tab" aria-selected="true" data-tab="start">Start Here</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="reels">Reels · 24</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="posts">Posts · 30</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="group">The Group</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="growth">Growth</button>
   </nav>
 
-  <section class="panel" id="reels" role="tabpanel">
+  <section class="panel" id="start" role="tabpanel">
+    <p class="note">Read this once. It answers the two questions everyone has: do I post to my Page or a new group (both, they do different jobs), and how do I get the first members.</p>
+    <div class="stack">
+<article class="card start">
+  <h3 class="start-h">Your Page vs a new Group (you need both)</h3>
+  <p class="start-p">They are two different tools with two different jobs, and this is the thing almost everyone gets wrong.</p>
+  <ul class="start-list"><li><strong>Your business Page is your storefront window.</strong> The Reels and the 30 scheduled posts go here. It is how strangers find you. Facebook shows a plain Page post to roughly 1-2% of your followers, plus whoever a Reel reaches, which is the whole reason Reels matter more than anything else.</li><li><strong>A new Group is your living room.</strong> Teardown Tuesday, Steal This Thursday, and Win Friday live here. Members see it in their feed as a group they chose to join, which gets far more reach than a Page post ever will. This is where the community forms and where the buyers come from.</li><li><strong>They feed each other.</strong> Every Reel on your Page pins a comment pointing to the Group. Every Group ritual becomes a Reel on your Page. You post to the Page to get found, and you run the Group to turn followers into a community. So yes, start the new Group. It is the part that makes this a community instead of a billboard.</li></ul>
+</article>
+
+<article class="card start">
+  <h3 class="start-h">Where each piece of this deck goes</h3>
+  
+  <ul class="start-list"><li><strong>Reels (24):</strong> your Page, posted by hand from the phone so you get trending audio.</li><li><strong>Posts (30):</strong> your Page, auto-scheduled through Blotato once the Page ID is set.</li><li><strong>The Group tab:</strong> used once, to create the new Group. Paste the five blocks.</li><li><strong>The Growth tab:</strong> your daily habits, most of them done in other people's groups.</li></ul>
+</article>
+
+<article class="card start">
+  <h3 class="start-h">How to find members (in order, fastest first)</h3>
+  
+  <ol class="start-list"><li><strong>Invite your Page followers, day one.</strong> In Page settings there is a &quot;link a group&quot; option. Link it, then invite your existing followers to join. This is your warmest, fastest seed.</li><li><strong>Pin the Group link on every Reel.</strong> A Reel reaches strangers. The pinned comment sends the ones who found it useful into the Group. This is the engine, and it is why the Reels come first.</li><li><strong>Invite everyone who reacts to a post.</strong> On any Page post with reactions, click the reaction count, then Invite. Most people never do this. It is the single most underused free growth lever on Facebook.</li><li><strong>Serve in 10 other groups, 10 minutes a day (weeks 1 to 4).</strong> Find groups where owners ask questions. Give the single best, most complete answer in the thread, with no link and no pitch. Your profile does the selling. People click the name of whoever just helped them.</li><li><strong>Personally invite your first 20.</strong> Past clients, local owners, business friends. A group needs a floor of 20 to 30 real people before it feels alive and strangers will stay.</li></ol>
+</article>
+
+<article class="card start">
+  <h3 class="start-h">Launch order (do it exactly like this)</h3>
+  
+  <ol class="start-list"><li><strong>Create the Group first</strong> and link it to your Page. The pinned Reel comments need somewhere to point, so the Group has to exist before you post.</li><li><strong>Paste the five Group blocks</strong> from the Group tab: name, description, join questions, rules, and the pinned &quot;Start Here&quot; post.</li><li><strong>Set FB_PAGE_ID</strong> so the 30 posts can schedule, and set GROUP_URL so the ritual first-comments resolve.</li><li><strong>Batch-shoot Reels 1 to 8</strong> and post R1 on Monday alongside the manifesto text post.</li><li><strong>Invite your Page followers and your first 20</strong> the same day, so the Group is never empty when the first stranger arrives.</li></ol>
+</article></div>
+  </section>
+
+  <section class="panel" id="reels" role="tabpanel" hidden>
     <p class="note">Shoot 8 at a time, about 90 minutes. One take each, do not review between takes. Change your shirt between batches. Post natively from the Facebook app so you get trending audio, and never put a link in the caption.</p>
     <div class="filters">
       <button class="filter" data-filter="all" aria-pressed="true">All</button>
