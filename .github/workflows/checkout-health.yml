@@ -3,9 +3,14 @@
 # The MMS Vercel project is on the Hobby plan (cron jobs run once per day there),
 # so this every-15-minutes probe of the checkout money path is driven from here
 # instead of a Vercel cron, exactly like voice-health. This job just pings the
-# route; ALL the logic lives server-side in app/api/cron/checkout-health/route.ts
-# (probe env + the exact lead-lookup embed + demo_orders + a real Stripe session,
-# then email Sarah on failure and return HTTP 500 so a red run surfaces here too).
+# route; ALL the logic lives server-side in lib/checkout-health.ts (probe env +
+# the exact lead-lookup embed + demo_orders + a real Stripe session, then email
+# Sarah on failure and return HTTP 500 so a red run surfaces here too).
+#
+# A red run means a paid funnel is really broken, or Stripe has been unverifiable
+# for several runs straight. A run where Stripe merely throttled the probe stays
+# GREEN and reports `inconclusive` in the JSON: a rate limit is not an outage,
+# and a watchdog that cries wolf gets muted.
 #
 # Why this exists: on 2026-07-21 every demo checkout silently 404'd for days after
 # a schema change made a Supabase embed ambiguous. Never again without an alert.
