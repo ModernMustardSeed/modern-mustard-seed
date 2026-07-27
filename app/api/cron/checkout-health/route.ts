@@ -28,6 +28,15 @@
  * once per hour via app_state key `checkout_health`), plus a recovered note, and
  * returns HTTP 500 so the failure also shows red in the Actions log. `?selftest=1`
  * (bearer-only) fires a synthetic failure to verify the alerts on demand.
+ *
+ * Transient Stripe errors are NOT outages (fixed 2026-07-27). The probe used to
+ * fire ~32 Stripe calls in one unbounded burst, and Stripe's SDK does not retry
+ * 429s (it retries only connection errors, 409 and 5xx), so a single throttled
+ * read paged Sarah with "buyers may be unable to pay" when checkout was fine.
+ * Now: price reads run at bounded concurrency, each retries transient errors with
+ * backoff, and a still-transient failure is INCONCLUSIVE (no page, HTTP 200). It
+ * escalates to a real, paging failure only after ESCALATE_AFTER consecutive runs,
+ * so a genuine sustained Stripe outage still gets through.
  */
 
 import { NextResponse } from 'next/server';
@@ -51,10 +60,58 @@ export const maxDuration = 60;
 
 const OWNER_ALERT_PHONE = process.env.OWNER_ALERT_PHONE || '+14062506076';
 
-type Check = { name: string; ok: boolean; detail?: string };
+/** Max Stripe price reads in flight at once. ~30 at once was tripping Stripe's rate limit. */
+const READ_CONCURRENCY = 4;
+/** Attempts per price read (1 try + 2 retries) before calling it transient. */
+const READ_ATTEMPTS = 3;
+/** Consecutive all-transient runs before a transient failure becomes a paging outage. */
+const ESCALATE_AFTER = 3;
+
+/** `inconclusive`: the check could not be completed (Stripe throttled/unreachable), which is NOT proof a funnel is broken. */
+type Check = { name: string; ok: boolean; detail?: string; inconclusive?: boolean };
 type StripeClient = NonNullable<ReturnType<typeof getStripe>>;
 
 const isPosInt = (n: unknown): boolean => typeof n === 'number' && Number.isInteger(n) && n > 0;
+
+/** Throttled/unreachable/Stripe-side error: tells us nothing about whether the funnel works. */
+function isTransientStripeError(e: unknown): boolean {
+  const err = e as { type?: string; statusCode?: number; code?: string; message?: string } | null;
+  if (!err) return false;
+  if (err.type === 'StripeRateLimitError' || err.type === 'StripeConnectionError' || err.type === 'StripeAPIError') return true;
+  if (err.statusCode === 429 || (typeof err.statusCode === 'number' && err.statusCode >= 500)) return true;
+  if (err.code === 'lock_timeout') return true;
+  return /rate limit|too many requests|timeout|socket hang up|ECONNRESET|ETIMEDOUT|EAI_AGAIN/i.test(err.message ?? '');
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Retry a Stripe read on transient errors only (the SDK itself does not retry 429s). */
+async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (attempt >= READ_ATTEMPTS || !isTransientStripeError(e)) throw e;
+      // 400ms, 800ms, with jitter, so retries of a burst do not re-collide.
+      await sleep(400 * 2 ** (attempt - 1) * (0.5 + Math.random()));
+    }
+  }
+}
+
+/** Map with a bounded number of tasks in flight (keeps us under Stripe's rate limit). */
+async function mapPooled<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const out = new Array<R>(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (true) {
+      const i = next++;
+      if (i >= items.length) return;
+      out[i] = await fn(items[i]);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return out;
+}
 
 /** Inline-priced funnels (amounts come from code constants). Catches price drift. */
 function inlinePriceChecks(): Check[] {
@@ -88,12 +145,20 @@ const ENV_PRICE_FUNNELS: { funnel: string; envs: string[] }[] = [
 ];
 
 /** Confirm a Stripe price id exists and is active (a read; mints no session). */
-async function priceActive(stripe: StripeClient, id: string): Promise<{ ok: boolean; detail?: string }> {
+async function priceActive(stripe: StripeClient, id: string): Promise<{ ok: boolean; detail?: string; transient?: boolean }> {
   try {
-    const p = await stripe.prices.retrieve(id);
+    const p = await withRetry(() => stripe.prices.retrieve(id));
     return p.active ? { ok: true } : { ok: false, detail: `${id} is INACTIVE in Stripe` };
   } catch (e) {
-    return { ok: false, detail: `${id} retrieve failed: ${e instanceof Error ? e.message : String(e)}` };
+    const transient = isTransientStripeError(e);
+    const why = e instanceof Error ? e.message : String(e);
+    return {
+      ok: false,
+      transient,
+      detail: transient
+        ? `${id} could not be verified (Stripe transient: ${why}) — unproven, not a known break`
+        : `${id} retrieve failed: ${why}`,
+    };
   }
 }
 
@@ -124,7 +189,9 @@ async function mintAndExpire(stripe: StripeClient, mode: 'subscription' | 'payme
     }
     return { name, ok: true };
   } catch (e) {
-    return { name, ok: false, detail: e instanceof Error ? e.message : String(e) };
+    const transient = isTransientStripeError(e);
+    const why = e instanceof Error ? e.message : String(e);
+    return { name, ok: false, inconclusive: transient, detail: transient ? `unproven (Stripe transient: ${why})` : why };
   }
 }
 
@@ -162,56 +229,79 @@ async function runChecks(selftest: boolean): Promise<Check[]> {
   }
 
   if (stripe) {
-    // Payment rail (both charge types) + every real Stripe price, in parallel.
     const railP = Promise.all([mintAndExpire(stripe, 'subscription'), mintAndExpire(stripe, 'payment')]);
 
-    const envP = Promise.all(
-      ENV_PRICE_FUNNELS.map(async ({ funnel, envs }): Promise<Check> => {
-        const problems: string[] = [];
-        await Promise.all(
-          envs.map(async (env) => {
-            const id = process.env[env];
-            if (!id) { problems.push(`${env} not set`); return; }
-            const r = await priceActive(stripe, id);
-            if (!r.ok) problems.push(r.detail || `${env} invalid`);
-          }),
-        );
-        return { name: `price:${funnel}`, ok: problems.length === 0, detail: problems.length ? problems.join('; ') : undefined };
-      }),
-    );
+    // Every env-priced and store price read goes through ONE bounded pool, so the
+    // total in-flight count stays under Stripe's rate limit no matter how many
+    // funnels or store products get added later.
+    const tasks = [
+      ...ENV_PRICE_FUNNELS.flatMap(({ funnel, envs }) =>
+        envs.map((env) => ({ check: `price:${funnel}`, label: env, id: process.env[env] })),
+      ),
+      ...[...products, ...bundles]
+        .map((x) => x.stripePriceId)
+        .filter((s): s is string => !!s && s.trim().length > 0)
+        .map((id) => ({ check: 'price:store', label: id, id: id as string | undefined })),
+    ];
 
-    const storeIds = [...products, ...bundles].map((x) => x.stripePriceId).filter((s): s is string => !!s && s.trim().length > 0);
-    const storeP = (async (): Promise<Check> => {
-      const problems: string[] = [];
-      await Promise.all(
-        storeIds.map(async (id) => {
-          const r = await priceActive(stripe, id);
-          if (!r.ok) problems.push(r.detail || `${id} invalid`);
-        }),
-      );
-      return { name: 'price:store', ok: problems.length === 0, detail: problems.length ? problems.join('; ') : undefined };
-    })();
+    const results = await mapPooled(tasks, READ_CONCURRENCY, async (t) => {
+      if (!t.id) return { ...t, ok: false, transient: false, detail: `${t.label} not set` };
+      const r = await priceActive(stripe, t.id);
+      return { ...t, ok: r.ok, transient: !!r.transient, detail: r.detail };
+    });
 
-    const [rail, envChecks, storeCheck] = await Promise.all([railP, envP, storeP]);
-    checks.push(...rail, ...envChecks, storeCheck);
+    // One check per funnel, in the original order. A funnel is only DOWN on a hard
+    // problem (missing/inactive/bad id). If its only problems are transient, the
+    // check is inconclusive: reported, but it does not page and does not 500.
+    const grouped = new Map<string, typeof results>();
+    for (const r of results) {
+      const list = grouped.get(r.check) ?? [];
+      list.push(r);
+      grouped.set(r.check, list);
+    }
+    const priceChecks: Check[] = [...grouped.entries()].map(([name, rs]) => {
+      const hard = rs.filter((r) => !r.ok && !r.transient);
+      const soft = rs.filter((r) => !r.ok && r.transient);
+      const problems = [...hard, ...soft].map((r) => r.detail || `${r.label} invalid`);
+      return {
+        name,
+        ok: problems.length === 0,
+        inconclusive: hard.length === 0 && soft.length > 0,
+        detail: problems.length ? problems.join('; ') : undefined,
+      };
+    });
+
+    checks.push(...(await railP), ...priceChecks);
   }
 
   return checks;
 }
 
-/** Email OWNER + text OWNER_ALERT_PHONE on failure (deduped 60m); recovered note once. */
-async function notify(failures: Check[]): Promise<void> {
-  const down = failures.length > 0;
+/**
+ * Email OWNER + text OWNER_ALERT_PHONE on failure (deduped 60m); recovered note once.
+ * Inconclusive checks (Stripe throttled/unreachable) do not page on their own; they
+ * only escalate after ESCALATE_AFTER consecutive runs, tracked in app_state.
+ * Returns whether this run should be treated as a real outage by the caller.
+ */
+async function notify(failures: Check[], inconclusive: Check[]): Promise<{ down: boolean; escalated: boolean; transientStreak: number }> {
   const sb = getSupabase();
   let alertedAt: string | null = null;
   let prevDown = false;
+  let prevStreak = 0;
   if (sb) {
     try {
       const { data } = await sb.from('app_state').select('value').eq('key', 'checkout_health').maybeSingle();
-      const v = (data?.value ?? null) as { down?: boolean; alerted_at?: string } | null;
-      if (v) { alertedAt = v.alerted_at ?? null; prevDown = !!v.down; }
+      const v = (data?.value ?? null) as { down?: boolean; alerted_at?: string; transient_streak?: number } | null;
+      if (v) { alertedAt = v.alerted_at ?? null; prevDown = !!v.down; prevStreak = v.transient_streak ?? 0; }
     } catch { /* app_state missing: alert un-deduped rather than go silent */ }
   }
+
+  const transientStreak = inconclusive.length > 0 ? prevStreak + 1 : 0;
+  // Stripe throttling for 45+ minutes straight is no longer "transient" — page on it.
+  const escalated = transientStreak >= ESCALATE_AFTER;
+  const effective = escalated ? [...failures, ...inconclusive] : failures;
+  const down = effective.length > 0;
+  const transientOnly = escalated && failures.length === 0;
 
   const apiKey = process.env.RESEND_API_KEY;
   const sendEmail = async (subject: string, message: string, action: string, fields: { label: string; value: string }[]) => {
@@ -237,28 +327,47 @@ async function notify(failures: Check[]): Promise<void> {
     }
   };
 
+  let justAlerted = false;
   if (down) {
     const recently = alertedAt && Date.now() - new Date(alertedAt).getTime() < 60 * 60 * 1000;
     if (!recently) {
-      const names = failures.map((f) => f.name).slice(0, 5).join(', ');
-      await sendEmail(
-        `URGENT: an MMS money path is DOWN (${failures.length})`,
-        `A paid funnel failed the health probe, so buyers may be unable to check out or pay. The failing checks and reasons are below.`,
-        'Fix the failing check below. Run the probe on demand: GET /api/cron/checkout-health with the CRON_SECRET bearer.',
-        failures.map((f) => ({ label: f.name, value: f.detail || 'failed' })),
-      );
-      await sendText(`MMS ALERT: a money path failed the health check (${failures.length}): ${names}. Check email for details. Buyers may be unable to pay.`);
-      if (sb) {
-        try { await sb.from('app_state').upsert({ key: 'checkout_health', value: { down: true, alerted_at: new Date().toISOString() }, updated_at: new Date().toISOString() }); } catch { /* graceful */ }
+      const names = effective.map((f) => f.name).slice(0, 5).join(', ');
+      if (transientOnly) {
+        await sendEmail(
+          `URGENT: MMS money paths UNVERIFIABLE for ${transientStreak} runs`,
+          `Stripe has been throttling or failing the watchdog's reads for ${transientStreak} runs in a row, so no paid funnel can be confirmed working. Checkout is not known to be broken, but it is no longer being watched.`,
+          'Check status.stripe.com and the Vercel logs for /api/cron/checkout-health. If Stripe is healthy, the probe is being rate limited and READ_CONCURRENCY in the route needs to come down.',
+          effective.map((f) => ({ label: f.name, value: f.detail || 'unverifiable' })),
+        );
+        await sendText(`MMS: Stripe has been unreachable/throttled for ${transientStreak} watchdog runs (${names}). Checkout is UNVERIFIED, not confirmed down. Check email.`);
+      } else {
+        await sendEmail(
+          `URGENT: an MMS money path is DOWN (${effective.length})`,
+          `A paid funnel failed the health probe, so buyers may be unable to check out or pay. The failing checks and reasons are below.`,
+          'Fix the failing check below. Run the probe on demand: GET /api/cron/checkout-health with the CRON_SECRET bearer.',
+          effective.map((f) => ({ label: f.name, value: f.detail || 'failed' })),
+        );
+        await sendText(`MMS ALERT: a money path failed the health check (${effective.length}): ${names}. Check email for details. Buyers may be unable to pay.`);
       }
+      justAlerted = true;
     }
   } else if (prevDown) {
     await sendEmail('Recovered: MMS money paths are working again', 'All paid funnels passed the health probe again. Buyers can check out and pay. Nothing to do.', 'All clear.', [{ label: 'Status', value: 'All checks passing' }]);
     await sendText('MMS: recovered. All checkout and pay links are working again.');
-    if (sb) {
-      try { await sb.from('app_state').upsert({ key: 'checkout_health', value: { down: false }, updated_at: new Date().toISOString() }); } catch { /* graceful */ }
-    }
   }
+
+  // Always persist, even on a clean run: the transient streak is what makes a real
+  // sustained Stripe outage escalate instead of staying quiet forever.
+  if (sb) {
+    const value = {
+      down,
+      alerted_at: justAlerted ? new Date().toISOString() : down ? alertedAt : null,
+      transient_streak: transientStreak,
+    };
+    try { await sb.from('app_state').upsert({ key: 'checkout_health', value, updated_at: new Date().toISOString() }); } catch { /* graceful */ }
+  }
+
+  return { down, escalated, transientStreak };
 }
 
 export async function GET(req: Request) {
@@ -272,11 +381,26 @@ export async function GET(req: Request) {
 
   const selftest = new URL(req.url).searchParams.get('selftest') === '1';
   const checks = await runChecks(selftest);
-  const failures = checks.filter((c) => !c.ok);
-  await notify(failures);
+  const failures = checks.filter((c) => !c.ok && !c.inconclusive);
+  const inconclusive = checks.filter((c) => !c.ok && c.inconclusive);
+  if (inconclusive.length) {
+    // Visible in Vercel logs without paging anyone.
+    console.warn('checkout-health inconclusive (Stripe transient):', inconclusive.map((c) => `${c.name}: ${c.detail}`).join(' | '));
+  }
+  const { down, escalated, transientStreak } = await notify(failures, inconclusive);
 
+  // Green unless a funnel is really broken (or Stripe has been unverifiable for
+  // ESCALATE_AFTER runs). A one-off Stripe throttle must not turn the money-path
+  // watchdog into a boy-who-cried-wolf.
   return NextResponse.json(
-    { ok: failures.length === 0, failed: failures.length, checks },
-    { status: failures.length === 0 ? 200 : 500 },
+    {
+      ok: failures.length === 0 && inconclusive.length === 0,
+      failed: failures.length,
+      inconclusive: inconclusive.length,
+      transient_streak: transientStreak,
+      escalated,
+      checks,
+    },
+    { status: down ? 500 : 200 },
   );
 }
