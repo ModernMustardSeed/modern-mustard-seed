@@ -141,12 +141,43 @@ export async function POST(req: Request) {
   // thread; otherwise the visitor becomes a lead, landed as a DUE CALLBACK so
   // the floor actually surfaces them while the thread is warm.
   const now = new Date().toISOString();
+  // The consent record. Carriers can demand the exact language a subscriber
+  // agreed to, when, and from where, so this block is written EVERY time
+  // somebody opts in, on a brand new lead and on one we already had.
+  const consentRecord =
+    `SMS CONSENT ${now} from ${sourceUrl} (ip ${ip})` +
+    (consentText ? `\nCONSENT LANGUAGE SHOWN: ${consentText}` : '');
+  const nextAction = autoSend
+    ? 'They texted from the website: keep the thread going'
+    : 'TEXT THEM FROM YOUR PHONE: they opted in, A2P is still in vetting';
+
   let leadId: string | null = null;
   try {
-    const { data: rows } = await fetchAllRows<{ id: string; phone: string | null }>(
-      () => sb.from('outbound_leads').select('id, phone').order('id', { ascending: true }),
+    const { data: rows } = await fetchAllRows<{ id: string; phone: string | null; status: string | null; notes: string | null }>(
+      () => sb.from('outbound_leads').select('id, phone, status, notes').order('id', { ascending: true }),
     );
-    leadId = (rows ?? []).find((r) => digitsOf(r.phone) === digitsOf(e164))?.id ?? null;
+    // A phone can appear on more than one row (Sarah's own cell sits on several
+    // demo leads). Prefer a lead we already created from a text-back so repeat
+    // opt-ins keep landing on the same thread, otherwise take the first match.
+    const matches = (rows ?? []).filter((r) => digitsOf(r.phone) === digitsOf(e164));
+    const existing = matches.find((r) => (r.notes ?? '').includes('SMS CONSENT')) ?? matches[0] ?? null;
+    leadId = existing?.id ?? null;
+
+    if (existing) {
+      // Never lose the consent just because we had met this number before.
+      await sb
+        .from('outbound_leads')
+        .update({
+          notes: `${existing.notes ? `${existing.notes}\n\n` : ''}TEXTBACK: asked for a text from ${sourceUrl}.${
+            need ? `\nOWNER NOTES: ${need}` : ''
+          }\n${consentRecord}`,
+          next_action: nextAction,
+          next_action_at: now,
+          // Only promote a cold record; never clobber a status Sarah is working.
+          ...(existing.status === 'new' ? { status: 'callback' } : {}),
+        })
+        .eq('id', existing.id);
+    }
 
     if (!leadId) {
       const { data: fresh } = await sb
@@ -158,13 +189,8 @@ export async function POST(req: Request) {
           niche: 'other',
           status: 'callback',
           source: 'textback',
-          notes:
-            `TEXTBACK: asked for a text from ${sourceUrl}.${need ? `\nOWNER NOTES: ${need}` : ''}` +
-            `\nSMS CONSENT ${now} from ${sourceUrl} (ip ${ip})` +
-            (consentText ? `\nCONSENT LANGUAGE SHOWN: ${consentText}` : ''),
-          next_action: autoSend
-            ? 'They texted from the website: keep the thread going'
-            : 'TEXT THEM FROM YOUR PHONE: they opted in, A2P is still in vetting',
+          notes: `TEXTBACK: asked for a text from ${sourceUrl}.${need ? `\nOWNER NOTES: ${need}` : ''}\n${consentRecord}`,
+          next_action: nextAction,
           next_action_at: now,
         })
         .select('*')
