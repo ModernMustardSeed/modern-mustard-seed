@@ -49,7 +49,7 @@ export default function BuildCabinet() {
     <section className="bg-[#FBF6EA] py-20 md:py-28 overflow-hidden">
       <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.05fr_.95fr] gap-10 lg:gap-14 items-center">
         <div>
-          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
             What we build // Pick your cabinet
           </p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02]">
@@ -112,10 +112,10 @@ export default function BuildCabinet() {
                   href={`/work/${c.receiptSlug}`}
                   className="group mt-6 block border-t-2 border-dashed border-[#161616]/20 pt-4"
                 >
-                  <p className="font-mono font-bold text-[10px] tracking-wider text-[#E0301E] uppercase">
+                  <p className="font-mono font-bold text-[10px] tracking-wider text-[#C4160B] uppercase">
                     The receipt
                   </p>
-                  <p className="font-display font-black text-lg text-[#161616] mt-1 group-hover:text-[#E0301E] transition-colors">
+                  <p className="font-display font-black text-lg text-[#161616] mt-1 group-hover:text-[#C4160B] transition-colors">
                     {metric.value}
                   </p>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#5c554a] mt-0.5">
@@ -143,7 +143,7 @@ export default function BuildCabinet() {
         </p>
         <Link
           href="/work"
-          className="inline-flex items-center gap-2 font-mono font-bold text-[11px] uppercase tracking-[0.2em] text-[#161616] hover:text-[#E0301E] transition-colors shrink-0"
+          className="inline-flex items-center gap-2 font-mono font-bold text-[11px] uppercase tracking-[0.2em] text-[#161616] hover:text-[#C4160B] transition-colors shrink-0"
         >
           See all the work →
         </Link>

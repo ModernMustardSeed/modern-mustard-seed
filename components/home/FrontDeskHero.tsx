@@ -498,13 +498,13 @@ export default function FrontDeskHero() {
         <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-1">
           <Link
             href="/work"
-            className="inline-flex items-center min-h-[44px] font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#161616]/70 hover:text-[#E0301E] transition-colors"
+            className="inline-flex items-center min-h-[44px] font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#161616]/70 hover:text-[#C4160B] transition-colors"
           >
             See the Work →
           </Link>
           <Link
             href="/voice-agents"
-            className="inline-flex items-center gap-2 min-h-[44px] font-mono text-[11px] font-bold text-[#161616]/70 hover:text-[#E0301E] transition-colors"
+            className="inline-flex items-center gap-2 min-h-[44px] font-mono text-[11px] font-bold text-[#161616]/70 hover:text-[#C4160B] transition-colors"
           >
             <span aria-hidden="true">◐</span> Our AI voice agents speak 100+ languages. Hear one →
           </Link>

@@ -130,7 +130,7 @@ export default function HomePage() {
         <div data-vine-stop>
           <section className="relative bg-[#F5F0E8] border-t-2 border-[#161616] py-20 md:py-28">
             <div className="relative max-w-3xl mx-auto px-6">
-              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase text-center">
+              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase text-center">
                 Straight answers // No sales call required
               </p>
               <h2 className="font-display italic font-extrabold text-4xl md:text-5xl text-[#161616] mt-3 leading-[1.02] text-center">
@@ -141,7 +141,7 @@ export default function HomePage() {
                   <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white p-5 open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
                     <summary className="font-display text-lg font-bold text-[#161616] cursor-pointer list-none flex items-center justify-between gap-4">
                       {f.q}
-                      <span className="flex-shrink-0 text-[#E0301E] transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                      <span className="flex-shrink-0 text-[#C4160B] transition-transform group-open:rotate-45" aria-hidden="true">+</span>
                     </summary>
                     <p className="mt-3 text-[#5c554a] leading-relaxed font-body">{f.a}</p>
                   </details>

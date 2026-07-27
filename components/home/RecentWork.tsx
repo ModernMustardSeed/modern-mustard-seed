@@ -86,7 +86,7 @@ export default function RecentWork() {
     <section className="relative bg-[#FBF6EA] border-t-2 border-[#161616] py-16 md:py-24 overflow-hidden">
       <div className="relative max-w-6xl mx-auto px-6">
         <div className="text-center mb-12 md:mb-16">
-          <p className="font-mono font-bold text-[11px] uppercase tracking-[0.35em] text-[#E0301E]">
+          <p className="font-mono font-bold text-[11px] uppercase tracking-[0.35em] text-[#C4160B]">
             Live in the wild // Real sites, real businesses
           </p>
           <h2 className="font-display font-black tracking-tight leading-[1.03] text-[#161616] mt-4 text-[clamp(2.25rem,6vw,4rem)]">
@@ -136,7 +136,7 @@ export default function RecentWork() {
                 </p>
                 <h3 className="font-display font-black text-2xl text-[#161616] mt-1.5">{w.name}</h3>
                 <p className="font-body text-sm text-[#161616]/70 leading-relaxed mt-2">{w.desc}</p>
-                <span className="inline-flex items-center gap-1.5 mt-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] text-[#1E50C8] group-hover:text-[#E0301E] transition-colors">
+                <span className="inline-flex items-center gap-1.5 mt-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] text-[#1E50C8] group-hover:text-[#C4160B] transition-colors">
                   Visit the live site
                   <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M7 17 17 7" />

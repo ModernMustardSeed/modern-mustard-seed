@@ -18,7 +18,7 @@ export default function HomeFilmStage() {
       />
 
       <div className="relative max-w-4xl mx-auto px-6 py-16 md:py-24 text-center">
-        <span className="font-mono font-bold text-[10px] uppercase tracking-[0.4em] text-[#E0301E] block">
+        <span className="font-mono font-bold text-[10px] uppercase tracking-[0.4em] text-[#C4160B] block">
           Now showing // The 24-second version
         </span>
         <h2 className="font-display font-black tracking-tight leading-[1.02] text-[#161616] mt-4 text-[clamp(2.25rem,6vw,4rem)]">

@@ -41,7 +41,7 @@ export default function ComicRack() {
 
         {/* The pitch */}
         <div>
-          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.35em] text-[#E0301E]">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.35em] text-[#C4160B]">
             Hot Off the Press // The Family Business Issue
           </p>
           <h2 className="mt-3 font-display text-4xl font-extrabold italic leading-[1.02] text-[#161616] md:text-5xl">

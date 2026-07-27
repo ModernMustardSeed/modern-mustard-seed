@@ -37,7 +37,7 @@ export default function ThreeDoors() {
     <section className="relative bg-[#FBF6EA] py-20 md:py-28 overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6">
-        <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">
+        <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
           Two doors // One studio
         </p>
         <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02] max-w-3xl">
@@ -56,7 +56,7 @@ export default function ThreeDoors() {
             >
               <span
                 className={`font-mono font-bold text-[11px] tracking-[0.14em] ${
-                  d.featured ? 'text-[#161616]' : 'text-[#E0301E]'
+                  d.featured ? 'text-[#161616]' : 'text-[#C4160B]'
                 }`}
               >
                 {d.chip}
@@ -68,7 +68,7 @@ export default function ThreeDoors() {
               <ul className="mt-5 space-y-2 flex-1">
                 {d.points.map((p) => (
                   <li key={p} className="flex items-start gap-2 font-sans text-[13px] font-medium text-[#161616]">
-                    <span className="text-[#E0301E] font-black mt-px" aria-hidden="true">✦</span>
+                    <span className="text-[#C4160B] font-black mt-px" aria-hidden="true">✦</span>
                     {p}
                   </li>
                 ))}
@@ -90,7 +90,7 @@ export default function ThreeDoors() {
         {/* Free audit strip: the no-risk first step */}
         <div className="mt-10 border-2 border-[#161616] bg-white shadow-[6px_6px_0_0_#161616] p-7 md:p-8 md:flex md:items-center md:justify-between gap-8">
           <div className="md:flex-1">
-            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.35em] text-[#E0301E] block">
+            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.35em] text-[#C4160B] block">
               Not sure which door? Start here. Free. 60 seconds.
             </span>
             <h3 className="font-display italic font-extrabold text-2xl md:text-3xl text-[#161616] mt-2">
@@ -130,7 +130,7 @@ export default function ThreeDoors() {
           Rather build it yourself, self-paced? The flagship programs{' '}
           <span className="font-bold text-[#161616]">Idea to Spec</span> and{' '}
           <span className="font-bold text-[#161616]">The Terminal</span> ($497 each) live in the{' '}
-          <Link href="/store" className="text-[#E0301E] font-bold underline underline-offset-4 hover:text-[#161616]">
+          <Link href="/store" className="text-[#C4160B] font-bold underline underline-offset-4 hover:text-[#161616]">
             store
           </Link>
           .
