@@ -165,7 +165,7 @@ export async function POST(req: Request) {
 
     if (existing) {
       // Never lose the consent just because we had met this number before.
-      await sb
+      const { error: upErr } = await sb
         .from('outbound_leads')
         .update({
           notes: `${existing.notes ? `${existing.notes}\n\n` : ''}TEXTBACK: asked for a text from ${sourceUrl}.${
@@ -177,10 +177,13 @@ export async function POST(req: Request) {
           ...(existing.status === 'new' ? { status: 'callback' } : {}),
         })
         .eq('id', existing.id);
+      // supabase-js returns errors instead of throwing, so an unchecked write
+      // fails silently. That is how the missing consent record hid.
+      if (upErr) console.error('textback consent update failed', upErr);
     }
 
     if (!leadId) {
-      const { data: fresh } = await sb
+      const { data: fresh, error: insErr } = await sb
         .from('outbound_leads')
         .insert({
           business_name: name ? `${name} (text-back)` : 'Website text-back',
@@ -195,6 +198,7 @@ export async function POST(req: Request) {
         })
         .select('*')
         .single();
+      if (insErr) console.error('textback lead insert failed', insErr);
       if (fresh) {
         leadId = (fresh as OutboundLead).id;
         try {
