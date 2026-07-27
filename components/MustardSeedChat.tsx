@@ -321,7 +321,7 @@ export default function MustardSeedChat() {
               <p className="font-body text-[13px] text-[#3a3733] leading-snug">
                 Talk to me live or type it out. I&apos;ll find your bottleneck and map you a free 5-step playbook in 60 seconds.
               </p>
-              <span className="mt-2.5 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.18em] font-mono font-bold text-[#E0301E]">
+              <span className="mt-2.5 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.18em] font-mono font-bold text-[#C4160B]">
                 Ask Mr. Mustard &rarr;
               </span>
             </button>
@@ -377,7 +377,7 @@ export default function MustardSeedChat() {
                   <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
                 </span>
                 <div>
-                  <span className="block text-[8px] uppercase tracking-[0.35em] text-[#E0301E] font-mono font-bold mb-0.5">
+                  <span className="block text-[8px] uppercase tracking-[0.35em] text-[#C4160B] font-mono font-bold mb-0.5">
                     Your AI right hand
                   </span>
                   <p className="font-display font-black text-[#161616] text-lg leading-tight">
@@ -475,7 +475,7 @@ export default function MustardSeedChat() {
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E0301E] opacity-70" />
                       <span className="relative inline-flex h-2 w-2 rounded-full bg-[#E0301E]" />
                     </span>
-                    <span className="text-[#E0301E]">Live call</span>
+                    <span className="text-[#C4160B]">Live call</span>
                   </>
                 ) : callState === 'connecting' ? (
                   <span className="text-[#161616]/60">Connecting&hellip;</span>
@@ -544,7 +544,7 @@ export default function MustardSeedChat() {
                   ? 'Allow the mic if your browser asks.'
                   : 'Want to go again, or switch to chat?'}
             </p>
-            {callError && <p className="text-[#E0301E] text-[11px] font-mono mt-2">{callError}</p>}
+            {callError && <p className="text-[#C4160B] text-[11px] font-mono mt-2">{callError}</p>}
           </div>
 
           <div className="flex gap-2.5 px-5 py-5">
@@ -605,7 +605,7 @@ export default function MustardSeedChat() {
                   <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-8 w-auto" />
                 </span>
                 <div>
-                  <span className="block text-[8px] uppercase tracking-[0.35em] text-[#E0301E] font-mono font-bold">
+                  <span className="block text-[8px] uppercase tracking-[0.35em] text-[#C4160B] font-mono font-bold">
                     Modern Mustard Seed
                   </span>
                   <span className="block font-display font-black text-lg text-[#161616] tracking-tight leading-tight">
@@ -623,7 +623,7 @@ export default function MustardSeedChat() {
               </button>
             </div>
             {captured && (
-              <p className="relative mt-2 text-[9px] tracking-[0.25em] uppercase text-[#E0301E] font-mono font-bold">
+              <p className="relative mt-2 text-[9px] tracking-[0.25em] uppercase text-[#C4160B] font-mono font-bold">
                 ● Lead captured. Sarah is on it.
               </p>
             )}
@@ -716,7 +716,7 @@ export default function MustardSeedChat() {
                   className="w-full px-3 py-2.5 rounded-lg bg-white border-2 border-[#161616]/15 text-[#161616] placeholder:text-[#161616]/35 font-body text-sm resize-none focus:outline-none focus:border-[#F5B700] disabled:opacity-50 transition-colors"
                 />
                 {error && (
-                  <p className="text-[#E0301E] text-xs font-mono">{error}</p>
+                  <p className="text-[#C4160B] text-xs font-mono">{error}</p>
                 )}
                 <div className="flex items-center justify-between">
                   <button
