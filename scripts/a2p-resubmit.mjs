@@ -36,6 +36,16 @@ const messageFlow =
   `and no mobile information is shared with third parties or affiliates for marketing or promotional purposes.`
 
 const payload = {
+  // ROOT CAUSE OF THE 3 FAILED VETTINGS (confirmed 2026-07-27). Twilio made
+  // PrivacyPolicyUrl and TermsAndConditionsUrl REQUIRED for every campaign
+  // submitted after 2026-06-30. This campaign was created 2026-07-20 without
+  // them, so it was auto-rejected in ~2 minutes with 30882
+  // (TERMS_AND_CONDITIONS_URL) and 30908 (PRIVACY_POLICY_URL), which are the
+  // literal names of the two missing fields. It had nothing to do with the
+  // sample copy, and nothing to do with the empty business-website field on
+  // the approved brand. Both URLs must be public HTTPS, no login wall.
+  PrivacyPolicyUrl: 'https://modernmustardseed.com/privacy',
+  TermsAndConditionsUrl: 'https://modernmustardseed.com/terms',
   Description:
     'Modern Mustard Seed replies by text to people who entered their own mobile number and gave express written ' +
     'consent on our website opt-in page at ' + OPT_IN_URL + '. Conversational customer care and the demo link they ' +
@@ -47,6 +57,9 @@ const payload = {
   ],
   HasEmbeddedLinks: true,
   HasEmbeddedPhone: true,
+  // Required by the update endpoint even though they never change for us.
+  AgeGated: false,
+  DirectLending: false,
   OptInMessage:
     'You asked for a text from Modern Mustard Seed. Reply here and a human answers. Reply STOP to opt out, HELP for help. Msg and data rates may apply.',
   OptOutMessage:
@@ -95,9 +108,4 @@ const res = await fetch(url, {
 })
 const text = await res.text()
 console.log(`HTTP ${res.status}`)
-try {
-  const j = JSON.parse(text)
-  console.log(JSON.stringify({ sid: j.sid, campaign_status: j.campaign_status, errors: j.errors }, null, 2))
-} catch {
-  console.log(text)
-}
+console.log(text || '(empty body)')
