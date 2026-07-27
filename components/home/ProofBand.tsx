@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { getSupabase } from '@/lib/supabase';
-import { JsonLd } from '@/lib/jsonld';
-import { SITE } from '@/lib/seo';
 
 /**
  * ProofBand. Beat 03: one dark midnight band that carries all the proof.
@@ -52,34 +50,31 @@ async function getTestimonials(): Promise<Row[]> {
 export default async function ProofBand() {
   const rows = await getTestimonials();
 
-  const avg = rows.length
-    ? rows.reduce((s, r) => s + (Number(r.rating) || 5), 0) / rows.length
-    : 0;
-  const jsonLd = rows.length
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        '@id': `${SITE.url}/#organization`,
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: avg.toFixed(1),
-          reviewCount: rows.length,
-          bestRating: 5,
-        },
-        review: rows.map((r) => ({
-          '@type': 'Review',
-          reviewRating: { '@type': 'Rating', ratingValue: r.rating || 5, bestRating: 5 },
-          author: { '@type': 'Person', name: r.name },
-          reviewBody: r.quote,
-        })),
-      }
-    : null;
+  /**
+   * ⚠️ NO aggregateRating / Review MARKUP HERE. Removed 2026-07-27.
+   *
+   * This used to attach AggregateRating and Review nodes to our OWN
+   * Organization @id, built from testimonials we collect and publish
+   * ourselves. That is "self-serving review markup," which Google explicitly
+   * disallows: a business marking up reviews about itself, on its own site, is
+   * not eligible for review rich results, and at worst earns a structured-data
+   * manual action that suppresses rich results SITEWIDE. That would take down
+   * the FAQ results on the guides and the local pages with it.
+   *
+   * It had never actually fired (the testimonials table has no published rows
+   * in production, so jsonLd was always null), which is exactly why it was easy
+   * to miss. It would have gone live silently the first time Sarah published a
+   * testimonial in the admin.
+   *
+   * The testimonials still RENDER. They convert, and that is their job. Ratings
+   * belong on the Google Business Profile, where Google sources them itself and
+   * where they actually feed the local pack.
+   */
 
   const marqueeItems = [...RESULTS, ...RESULTS];
 
   return (
     <section className="relative bg-[#080C16] py-20 md:py-28 border-b-2 border-[#161616] overflow-hidden">
-      {jsonLd && <JsonLd data={jsonLd} />}
       {/* Dim halftone texture */}
       <div
         aria-hidden="true"

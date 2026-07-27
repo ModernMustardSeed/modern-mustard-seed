@@ -181,6 +181,130 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
         </div>
       </section>
 
+      {/* ─────────────── THE PIPELINE + THE DAY ───────────────
+           Added 2026-07-27 to fix a measured near-duplicate problem. The 30
+           trade pages were running 65.8% average body 5-gram overlap at only
+           742 body words each, which is a thin templated cluster big enough to
+           drag site-level quality (compare the /montana city fleet at 41.7%).
+
+           The fix uses trade data that ALREADY EXISTED in TRADE_PRESETS and was
+           simply never rendered here: per-trade customers, pipeline stages, and
+           the day's schedule. Roofing shows hail claims and adjuster meetings,
+           plumbing shows something else entirely, so this is genuinely distinct
+           copy per page rather than padding. Nothing is invented: it is the
+           same sample data the forged demos use, and it is labeled as sample.
+
+           Rendered defensively. Five of the 28 presets lack customers/todayJobs,
+           and a missing field must not 404 a live page. */}
+      {preset.customers?.length ? (
+        <section className="border-b-2 border-[#161616]">
+          <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 grid lg:grid-cols-2 gap-10 lg:gap-14">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">
+                The Board It Fills
+              </p>
+              <h2 className="mt-2 font-display text-3xl md:text-4xl font-extrabold leading-[1.05]">
+                What a {forWord.toLowerCase().replace(/s$/, '')} pipeline looks like by Friday.
+              </h2>
+              <p className="mt-5 font-body text-[16px] text-[#3d382e] leading-relaxed">
+                Every answered call lands on a board built for this trade, moving through the stages you actually
+                use: {preset.stages?.join(', ') || 'lead, scheduled, done'}. You are not translating your work into
+                someone else&rsquo;s software.
+              </p>
+              <div className="mt-7 space-y-3">
+                {preset.customers.slice(0, 4).map((c) => (
+                  <div
+                    key={c.name}
+                    className="rounded-xl border-2 border-[#161616] bg-white p-4 shadow-[3px_3px_0_0_#161616]"
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="font-sans font-bold text-[15px]">{c.name}</span>
+                      <span className="font-mono text-[12px] font-bold text-[#8f6600]">
+                        ${c.value.toLocaleString()}
+                      </span>
+                    </div>
+                    <p className="mt-1 font-body text-[14px] text-[#3d382e]">{c.need}</p>
+                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#161616]/60">
+                      {preset.stages?.[c.stage] ?? 'In progress'}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 font-body text-xs text-[#161616]/60">
+                Sample pipeline for this trade, showing real product behavior.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">
+                The Day It Books
+              </p>
+              <h2 className="mt-2 font-display text-3xl md:text-4xl font-extrabold leading-[1.05]">
+                Calls answered at midnight become tomorrow at 7.
+              </h2>
+              <p className="mt-5 font-body text-[16px] text-[#3d382e] leading-relaxed">
+                The receptionist does not just take a message. It puts the work on the calendar while the caller is
+                still on the phone, which is the only moment they are guaranteed to still be yours.
+              </p>
+              {preset.todayJobs?.length ? (
+                <div className="mt-7 rounded-2xl border-2 border-[#161616] bg-[#161616] p-6 shadow-[6px_6px_0_0_#F5B700]">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#F5B700]">
+                    Today
+                  </p>
+                  <ul className="mt-4 space-y-4">
+                    {preset.todayJobs.map((j) => (
+                      <li key={j.time} className="flex gap-4 border-b border-[#FBF6EA]/15 pb-4 last:border-0 last:pb-0">
+                        <span className="font-mono text-sm font-bold text-[#F5B700] shrink-0 w-12">{j.time}</span>
+                        <div>
+                          <p className="font-sans font-bold text-[#FBF6EA] text-[15px]">{j.title}</p>
+                          <p className="font-body text-sm text-[#FBF6EA]/60">{j.who}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-5 font-body text-xs text-[#FBF6EA]/50">
+                    Sample schedule for this trade.
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* ─────────────── WHAT IT AUTOMATES FOR THIS TRADE ───────────────
+           The single most trade-specific data in the whole preset: roofing gets
+           storm-alert blasts and supplement deadline watches, and no other trade
+           gets anything close. Present on all 28 presets and, until now, never
+           rendered on the page that most needed it. */}
+      {preset.extraAutomations?.length ? (
+        <section className="border-b-2 border-[#161616] bg-white">
+          <div className="max-w-5xl mx-auto px-6 py-14 md:py-20">
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">
+              Beyond The Phone
+            </p>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl font-extrabold leading-[1.05]">
+              Built for how {forWord.toLowerCase()} actually make money.
+            </h2>
+            <p className="mt-4 font-body text-[16px] text-[#3d382e] leading-relaxed max-w-2xl">
+              The receptionist is the front door. Behind it, the command center runs the follow-through that this
+              trade lives on, and it comes free with your receptionist.
+            </p>
+            <div className="mt-8 grid md:grid-cols-3 gap-6">
+              {preset.extraAutomations.map((a) => (
+                <div
+                  key={a.title}
+                  className="rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] p-6 shadow-[5px_5px_0_0_#161616]"
+                >
+                  <h3 className="font-display text-lg font-extrabold leading-tight">{a.title}</h3>
+                  <p className="mt-2.5 font-body text-sm text-[#3d382e] leading-relaxed">{a.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {/* ─────────────── HOW IT STARTS ─────────────── */}
       <section className="border-b-2 border-[#161616] bg-[#F5B700]">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
