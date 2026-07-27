@@ -250,68 +250,34 @@ async function priceChecks(stripe: StripeClient, deadline: Deadline): Promise<Ch
 // ---------------------------------------------------------- payment rail -----
 
 /**
- * The probe reuses two dedicated prices found by lookup_key. It used to pass
- * inline `price_data` on every run, which minted a throwaway Product + Price
- * each time (~192/day of dashboard litter). Created once, then reused forever.
+ * The rail probe prices its sessions inline with `price_data`. Verified 2026-07-27
+ * against live Stripe: inline prices are scoped to the session and never land in
+ * the product catalog (55 products, 58 prices, has_more false, zero probe
+ * leftovers after ~6 days of 15-minute runs), so this leaves nothing behind and
+ * needs no dedicated catalog objects to maintain.
  */
-const PROBE_LOOKUP_KEY: Record<RailMode, string> = {
-  subscription: 'mms_watchdog_probe_monthly',
-  payment: 'mms_watchdog_probe_once',
-};
 const PROBE_AMOUNT_CENTS = 19_700;
 const PROBE_META = { kind: 'health-probe' };
-const probePriceCache = new Map<RailMode, string>();
-
-/** Resolve both probe prices in ONE list call, creating either if it is missing. */
-async function probePrices(stripe: StripeClient, deadline: Deadline): Promise<Record<RailMode, string>> {
-  const modes: RailMode[] = ['subscription', 'payment'];
-  if (modes.every((m) => probePriceCache.has(m))) {
-    return { subscription: probePriceCache.get('subscription')!, payment: probePriceCache.get('payment')! };
-  }
-
-  const existing = await withStripeRetry(
-    () => stripe.prices.list({ lookup_keys: modes.map((m) => PROBE_LOOKUP_KEY[m]), active: true, limit: 10 }, stripeReadOptions),
-    { attempts: READ_ATTEMPTS, deadline, label: 'probe price lookup' },
-  );
-
-  for (const mode of modes) {
-    const wantsRecurring = mode === 'subscription';
-    const hit = existing.data.find((p) => p.lookup_key === PROBE_LOOKUP_KEY[mode] && Boolean(p.recurring) === wantsRecurring);
-    if (hit) {
-      probePriceCache.set(mode, hit.id);
-      continue;
-    }
-    const created = await withStripeRetry(
-      () =>
-        stripe.prices.create(
-          {
-            currency: 'usd',
-            unit_amount: PROBE_AMOUNT_CENTS,
-            lookup_key: PROBE_LOOKUP_KEY[mode],
-            // Reclaim the key if an older probe price was archived by hand.
-            transfer_lookup_key: true,
-            product_data: { name: `MMS watchdog probe (${wantsRecurring ? 'monthly' : 'one-time'}), never sold`, metadata: PROBE_META },
-            metadata: PROBE_META,
-            ...(wantsRecurring ? { recurring: { interval: 'month' as const } } : {}),
-          },
-          stripeReadOptions,
-        ),
-      { attempts: READ_ATTEMPTS, deadline, label: `probe price create (${mode})` },
-    );
-    probePriceCache.set(mode, created.id);
-  }
-
-  return { subscription: probePriceCache.get('subscription')!, payment: probePriceCache.get('payment')! };
-}
 
 /** Mint a real session in the given mode, then expire it (proves the rail + tax). */
-async function mintAndExpire(stripe: StripeClient, mode: RailMode, price: string, deadline: Deadline): Promise<Check> {
+async function mintAndExpire(stripe: StripeClient, mode: RailMode, deadline: Deadline): Promise<Check> {
   const name = `rail:${mode}`;
+  const recurring = mode === 'subscription';
   try {
     const params: Stripe.Checkout.SessionCreateParams = {
       mode,
       payment_method_types: ['card'],
-      line_items: [{ price, quantity: 1 }],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            unit_amount: PROBE_AMOUNT_CENTS,
+            product_data: { name: `Rail probe, ${recurring ? 'monthly' : 'one-time'}` },
+            ...(recurring ? { recurring: { interval: 'month' as const } } : {}),
+          },
+          quantity: 1,
+        },
+      ],
       success_url: 'https://modernmustardseed.com/api/cron/checkout-health',
       cancel_url: 'https://modernmustardseed.com/api/cron/checkout-health',
       automatic_tax: { enabled: true },
@@ -338,32 +304,12 @@ async function mintAndExpire(stripe: StripeClient, mode: RailMode, price: string
   }
 }
 
-/** True when the rail failed because the probe price itself is gone, not because the rail is broken. */
-const probePriceMissing = (checks: Check[]): boolean =>
-  checks.some((c) => !c.ok && !c.inconclusive && /resource_missing|No such price|not active|inactive/i.test(c.detail ?? ''));
-
 /** Rail probe for both charge types, plus the price sweep, together. */
 async function stripeChecks(stripe: StripeClient, deadline: Deadline): Promise<Check[]> {
-  const rail = (async (): Promise<Check[]> => {
-    const mintBoth = async (): Promise<Check[]> => {
-      const price = await probePrices(stripe, deadline);
-      return Promise.all([mintAndExpire(stripe, 'subscription', price.subscription, deadline), mintAndExpire(stripe, 'payment', price.payment, deadline)]);
-    };
-    try {
-      const checks = await mintBoth();
-      // Someone archiving the probe price in the dashboard (it does look like
-      // clutter) must not read as a dead payment rail. Re-resolve once and retry.
-      if (!probePriceMissing(checks)) return checks;
-      probePriceCache.clear();
-      return await mintBoth();
-    } catch (e) {
-      const transient = isTransientStripeError(e);
-      const detail = `probe price unavailable: ${reason(e)}`;
-      return (['subscription', 'payment'] as RailMode[]).map((mode) => ({ name: `rail:${mode}`, ok: false, inconclusive: transient, detail }));
-    }
-  })();
-
-  const [railChecks, prices] = await Promise.all([rail, priceChecks(stripe, deadline)]);
+  const [railChecks, prices] = await Promise.all([
+    Promise.all([mintAndExpire(stripe, 'subscription', deadline), mintAndExpire(stripe, 'payment', deadline)]),
+    priceChecks(stripe, deadline),
+  ]);
   return [...railChecks, ...prices];
 }
 
