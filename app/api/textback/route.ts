@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { smsSendable, normalizePhone, isOptedOut, lineType, sendSms } from '@/lib/sms';
+import { smsConfigured, smsSendable, normalizePhone, isOptedOut, lineType, sendSms } from '@/lib/sms';
 import { fetchAllRows } from '@/lib/outbound-server';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import type { OutboundLead } from '@/lib/outbound';
@@ -69,17 +69,22 @@ export async function POST(req: Request) {
 
   const name = ascii(body.name, 60);
   const need = ascii(body.need, 200);
+  // Consent proof, retained with the lead. Carriers can ask us to produce the
+  // exact language a subscriber agreed to, when, and from where.
+  const consentText = ascii(body.consent_text, 600);
+  const sourceUrl = ascii(body.source_url, 200) || 'https://modernmustardseed.com/contact';
   const e164 = normalizePhone(typeof body.phone === 'string' ? body.phone : '');
   if (!e164) {
     return NextResponse.json({ error: 'bad_phone', message: 'That number does not look complete. Ten digits gets you the text.' }, { status: 400 });
   }
 
-  if (!smsSendable()) {
-    return NextResponse.json(
-      { error: 'not_ready', message: 'Texting is warming up. Call (406) 312-1223 or email sarah@modernmustardseed.com and a human answers today.' },
-      { status: 503 },
-    );
-  }
+  // Two modes. When the A2P campaign is live we text them ourselves within
+  // seconds. While it is still in carrier vetting every automated send is
+  // bounced (error 30034), so instead of dead-ending the visitor we RECORD the
+  // consent, file the lead as a due callback, and page Sarah to text them from
+  // her own phone. The opt-in stays real either way, which matters both for the
+  // visitor and for the carrier reviewer who submits this form themselves.
+  const autoSend = smsSendable();
 
   const ip = (req.headers.get('x-forwarded-for') || 'unknown').split(',')[0].trim();
   if (throttled(ip)) {
@@ -108,7 +113,8 @@ export async function POST(req: Request) {
     );
   }
 
-  if ((await lineType(e164)) === 'landline') {
+  // Lookup needs live Twilio credentials; with none set we simply skip the check.
+  if (smsConfigured() && (await lineType(e164)) === 'landline') {
     return NextResponse.json(
       { error: 'landline', message: 'That looks like a landline, and landlines do not text. Call us instead: (406) 312-1223.' },
       { status: 400 },
@@ -119,13 +125,16 @@ export async function POST(req: Request) {
     `Hey${name ? ` ${name.split(' ')[0]}` : ''}! Sarah's team at Modern Mustard Seed here. You asked for a text from our site` +
     `${need ? ` about: "${need}"` : ''}. What are you working on? Reply here and a human answers. Reply STOP to opt out.`;
 
-  const sent = await sendSms(e164, smsBody);
-  if (!sent.ok) {
-    console.error('textback send failed:', sent.error);
-    return NextResponse.json(
-      { error: 'send_failed', message: 'The text did not go through. Call (406) 312-1223 or email sarah@modernmustardseed.com.' },
-      { status: 502 },
-    );
+  let sent: { ok: boolean; sid?: string | null; status?: string | null; error?: unknown } = { ok: false };
+  if (autoSend) {
+    sent = await sendSms(e164, smsBody);
+    if (!sent.ok) {
+      console.error('textback send failed:', sent.error);
+      return NextResponse.json(
+        { error: 'send_failed', message: 'The text did not go through. Call (406) 312-1223 or email sarah@modernmustardseed.com.' },
+        { status: 502 },
+      );
+    }
   }
 
   // File the conversation. Existing lead with this phone (any source) keeps the
@@ -149,8 +158,13 @@ export async function POST(req: Request) {
           niche: 'other',
           status: 'callback',
           source: 'textback',
-          notes: `TEXTBACK: asked for a text from modernmustardseed.com.${need ? `\nOWNER NOTES: ${need}` : ''}`,
-          next_action: 'They texted from the website: keep the thread going',
+          notes:
+            `TEXTBACK: asked for a text from ${sourceUrl}.${need ? `\nOWNER NOTES: ${need}` : ''}` +
+            `\nSMS CONSENT ${now} from ${sourceUrl} (ip ${ip})` +
+            (consentText ? `\nCONSENT LANGUAGE SHOWN: ${consentText}` : ''),
+          next_action: autoSend
+            ? 'They texted from the website: keep the thread going'
+            : 'TEXT THEM FROM YOUR PHONE: they opted in, A2P is still in vetting',
           next_action_at: now,
         })
         .select('*')
@@ -165,19 +179,24 @@ export async function POST(req: Request) {
       }
     }
 
-    await sb.from('messages').insert({
-      outbound_lead_id: leadId,
-      direction: 'outbound',
-      channel: 'sms',
-      from_addr: process.env.TWILIO_SMS_FROM || 'MMS',
-      to_addr: e164,
-      body: smsBody,
-      snippet: smsBody.slice(0, 500),
-      status: sent.status || 'sent',
-      provider_sid: sent.sid || null,
-      read: true,
-      occurred_at: now,
-    });
+    // Only log an outbound message when one actually left the building. While
+    // A2P is pending nothing was sent, and a fake "sent" row would corrupt the
+    // thread history and our own delivery reporting.
+    if (autoSend) {
+      await sb.from('messages').insert({
+        outbound_lead_id: leadId,
+        direction: 'outbound',
+        channel: 'sms',
+        from_addr: process.env.TWILIO_SMS_FROM || 'MMS',
+        to_addr: e164,
+        body: smsBody,
+        snippet: smsBody.slice(0, 500),
+        status: sent.status || 'sent',
+        provider_sid: sent.sid || null,
+        read: true,
+        occurred_at: now,
+      });
+    }
   } catch (err) {
     // Recording must never claw back a text that already sent.
     console.error('textback record failed', err);
@@ -188,12 +207,18 @@ export async function POST(req: Request) {
       await resendClient().emails.send({
         from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
         to: OWNER_NOTIFY_TO,
-        subject: `TEXT-BACK: ${name || e164} asked for a text from the site`,
+        subject: autoSend
+          ? `TEXT-BACK: ${name || e164} asked for a text from the site`
+          : `TEXT THEM NOW: ${name || e164} opted in on the site`,
         html: clientEmail({
-          preheader: 'A website visitor asked us to text them. The first message already went out.',
+          preheader: autoSend
+            ? 'A website visitor asked us to text them. The first message already went out.'
+            : 'A website visitor opted in to texts. A2P is still in vetting, so text them from your phone.',
           eyebrow: 'TEXT-BACK',
-          greeting: 'The site just started a text thread.',
-          body: `<p><strong>${name || 'A visitor'}</strong> (${e164}) tapped Text me back on modernmustardseed.com${need ? ` and said: &ldquo;${need}&rdquo;` : ''}.</p><p>The opener is sent; their reply lands in the cockpit thread. They are on the dial floor as a due callback.</p>`,
+          greeting: autoSend ? 'The site just started a text thread.' : 'Someone is waiting on a text from you.',
+          body: autoSend
+            ? `<p><strong>${name || 'A visitor'}</strong> (${e164}) tapped Text me back on modernmustardseed.com${need ? ` and said: &ldquo;${need}&rdquo;` : ''}.</p><p>The opener is sent; their reply lands in the cockpit thread. They are on the dial floor as a due callback.</p>`
+            : `<p><strong>${name || 'A visitor'}</strong> (${e164}) opted in to texts at ${sourceUrl}${need ? ` and said: &ldquo;${need}&rdquo;` : ''}.</p><p>Our A2P campaign is still in carrier vetting, so nothing went out automatically. <strong>Text them from your phone</strong> and the thread starts warm. They are on the dial floor as a due callback with the consent record attached.</p>`,
           signature: 'The Text Line',
         }),
       });
@@ -202,5 +227,10 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({
+    ok: true,
+    message: autoSend
+      ? 'Check your phone. The first text is on its way.'
+      : 'You are on the line. Sarah texts you back personally, usually within the hour.',
+  });
 }

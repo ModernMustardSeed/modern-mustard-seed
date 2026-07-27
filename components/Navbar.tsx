@@ -30,6 +30,15 @@ const MENU_GROUPS = [
     ],
   },
   {
+    heading: 'Programs',
+    links: [
+      { label: 'Seed to System', href: '/seed-to-system' },
+      { label: 'One-Person Business Class', href: '/one-person-business' },
+      { label: 'Idea to Spec', href: '/idea-to-spec' },
+      { label: 'The Terminal', href: '/the-terminal' },
+    ],
+  },
+  {
     heading: 'Free Tools',
     links: [
       { label: 'Bottleneck Breaker', href: '/audit' },
@@ -46,6 +55,7 @@ const MENU_GROUPS = [
       { label: 'Blog', href: '/blog' },
       { label: 'Store', href: '/store' },
       { label: 'Contact', href: '/contact' },
+      { label: 'The Text Line', href: '/sms' },
       { label: 'Client Portal', href: '/portal' },
     ],
   },

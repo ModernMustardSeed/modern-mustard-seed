@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { track } from '@vercel/analytics';
 
 /**
@@ -64,14 +65,41 @@ function TapToText({ number }: { number: string }) {
       <a href={href} onClick={() => track('textback_tap')} className={`${CTA} inline-flex items-center justify-center text-center`}>
         Text us now →
       </a>
-      <p className="font-body text-[11.5px] text-[#161616]/50 mt-3 leading-relaxed">
+      <p className="font-body text-[11.5px] text-[#161616]/70 mt-3 leading-relaxed">
         Opens your phone&rsquo;s text app. On a computer? Text or call{' '}
         <a href={`tel:${number}`} className="font-bold text-[#1E50C8] hover:text-[#161616]">
           {display}
         </a>{' '}
-        any time.
+        any time. Rather have us text you first?{' '}
+        <Link href="/sms" className="font-bold text-[#1E50C8] hover:text-[#161616]">
+          Join the Text Line
+        </Link>
+        .
       </p>
+      <Disclosure />
     </div>
+  );
+}
+
+/**
+ * The consent fine print. Lives with every surface that takes a phone number,
+ * because a carrier reviewer can land on any of them. The canonical, fuller
+ * version is on /sms.
+ */
+function Disclosure() {
+  return (
+    <p className="font-body text-[11px] text-[#161616]/70 mt-2.5 leading-relaxed">
+      Message frequency varies. Message and data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a
+      condition of any purchase. See our{' '}
+      <Link href="/privacy" className="font-bold text-[#1E50C8] hover:text-[#161616]">
+        Privacy Policy
+      </Link>{' '}
+      and{' '}
+      <Link href="/terms" className="font-bold text-[#1E50C8] hover:text-[#161616]">
+        Terms
+      </Link>
+      .
+    </p>
   );
 }
 
@@ -81,6 +109,7 @@ function AutoTextBack() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [phase, setPhase] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [error, setError] = useState('');
+  const [confirmation, setConfirmation] = useState('');
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [k]: e.target.value }));
 
@@ -99,6 +128,9 @@ function AutoTextBack() {
       const json = (await res.json()) as { ok?: boolean; message?: string };
       if (!res.ok || !json.ok) throw new Error(json.message || 'The text did not go through. Call (406) 312-1223 instead.');
       track('textback_sent');
+      // The API tells us whether a text actually left, or whether Sarah is
+      // texting them by hand while A2P is in vetting. Never assert the send.
+      setConfirmation(json.message || '');
       setPhase('sent');
     } catch (err) {
       setPhase('error');
@@ -114,9 +146,9 @@ function AutoTextBack() {
           📱
         </span>
         <style>{`@keyframes tbBuzz{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}`}</style>
-        <p className="font-display font-extrabold text-2xl text-[#FBF6EA] mt-3">Check your phone.</p>
+        <p className="font-display font-extrabold text-2xl text-[#FBF6EA] mt-3">You are on the line.</p>
         <p className="font-body text-[14.5px] text-[#FBF6EA]/70 mt-2 max-w-sm mx-auto">
-          The first text is on its way. Reply to it and a human picks up the thread.
+          {confirmation || 'The first text is on its way. Reply to it and a human picks up the thread.'}
         </p>
       </div>
     );
@@ -153,9 +185,11 @@ function AutoTextBack() {
         {phase === 'sending' ? 'Texting you now…' : 'Text me back →'}
       </button>
       {phase === 'error' && error ? <p className="font-body text-[13px] text-[#E0301E] text-center mt-2.5">{error}</p> : null}
-      <p className="font-body text-[11.5px] text-[#161616]/50 mt-3 leading-relaxed">
-        By tapping, you agree to receive a text from Modern Mustard Seed at this number. Reply STOP any time to opt out. Message and data rates may apply.
+      <p className="font-body text-[11.5px] text-[#161616]/70 mt-3 leading-relaxed">
+        By tapping, you agree to receive text messages from Modern Mustard Seed at this number, including messages sent by
+        an automated system.
       </p>
+      <Disclosure />
     </form>
   );
 }
