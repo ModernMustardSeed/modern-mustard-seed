@@ -147,7 +147,7 @@ export default function DemoHub({
         voiceUrl && {
           href: voiceUrl,
           icon: '🎙',
-          title: 'Your AI receptionist',
+          title: 'Your voice agent',
           desc: `It already answers as ${business}. Call it, pretend you are a customer, try to stump it.`,
           tone: 'dark' as const,
           cta: 'Talk to it',
@@ -157,7 +157,7 @@ export default function DemoHub({
           icon: '🌐',
           title: 'Your new website',
           desc: siteUrl
-            ? 'A real, working draft designed for your business. The receptionist lives on it too.'
+            ? 'A real, working draft designed for your business. The voice agent lives on it too.'
             : 'Being forged right now. The page refreshes itself until it is ready.',
           tone: 'gold' as const,
           cta: siteUrl ? 'See it live' : 'Watch it forge',
@@ -166,7 +166,7 @@ export default function DemoHub({
           href: osUrl,
           icon: '⚙',
           title: 'Your command center',
-          desc: 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Comes with your website or receptionist, nothing to install.',
+          desc: 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Comes with your website or voice agent, nothing to install.',
           tone: 'ink' as const,
           cta: 'Open it',
           badge: 'Included free',

@@ -190,7 +190,7 @@ EOF
 read -r -d '' P3_X <<'EOF' || true
 Missed calls = missed revenue.
 
-We built VoiceStaff: an AI voice agent that answers, qualifies, books, and updates the CRM. 24/7 phone coverage without hiring a receptionist.
+We built VoiceStaff: a voice agent that answers, qualifies, books, and updates the CRM. 24/7 phone coverage without hiring a receptionist.
 
 Live case study:
 
@@ -204,7 +204,7 @@ The math is brutal. The average small business misses 24 percent of inbound call
 
 If you average even five missed calls a week and your average ticket is $400, that is $80,000 a year on the floor.
 
-So we built VoiceStaff. A live AI voice agent that:
+So we built VoiceStaff. A live voice agent that:
 
 Answers 24/7 in your brand voice.
 Qualifies the caller against your real criteria.
@@ -226,7 +226,7 @@ Service businesses lose more money to missed calls than to bad reviews.
 
 Average small business misses 24% of inbound calls. 80% of those callers never call back. They call the next business on the list.
 
-We built VoiceStaff for exactly that problem. A live AI voice agent that answers 24/7, qualifies the caller, books the appointment, and logs everything in your CRM. No more missed revenue while you sleep.
+We built VoiceStaff for exactly that problem. A live voice agent that answers 24/7, qualifies the caller, books the appointment, and logs everything in your CRM. No more missed revenue while you sleep.
 
 This is the kind of build we ship in 30 days.
 
@@ -236,7 +236,7 @@ EOF
 read -r -d '' P3_IG <<'EOF' || true
 Missed calls equal missed revenue.
 
-We built VoiceStaff for service businesses bleeding leads to voicemail. AI voice agent. Answers 24/7. Books appointments. Updates the CRM.
+We built VoiceStaff for service businesses bleeding leads to voicemail. voice agent. Answers 24/7. Books appointments. Updates the CRM.
 
 Live case study at the link in bio.
 

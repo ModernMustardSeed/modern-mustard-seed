@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 /**
  * The forged BUSINESS OS demo: one template command center rendered from the
  * per-lead config frozen at forge time. Unlisted (unguessable id, noindex).
- * The lead's forged receptionist rides along as the live call widget.
+ * The lead's forged voice agent rides along as the live call widget.
  */
 export default async function OsDemoPage({ params }: { params: Promise<{ osId: string }> }) {
   const { osId } = await params;

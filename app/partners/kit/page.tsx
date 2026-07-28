@@ -30,7 +30,7 @@ const STEPS = [
     n: '2',
     accent: '#F5B700',
     t: 'A finished suite appears, under your flag',
-    d: 'An AI receptionist that answers as their business, a website designed from scratch, and a command center demo. The hub reads "Presented by you, with Modern Mustard Seed," with your code stamped into every checkout.',
+    d: 'A voice agent that answers as their business, a website designed from scratch, and a command center demo. The hub reads "Presented by you, with Modern Mustard Seed," with your code stamped into every checkout.',
   },
   {
     n: '3',
@@ -42,7 +42,7 @@ const STEPS = [
 
 const EARN = [
   { rate: '50%', accent: '#1E50C8', label: 'On every product', detail: 'Every playbook and bundle, paid the moment they buy.' },
-  { rate: '25%', accent: '#F5B700', label: 'Recurring, monthly', detail: 'A quarter of each AI receptionist invoice, for a full year.' },
+  { rate: '25%', accent: '#F5B700', label: 'Recurring, monthly', detail: 'A quarter of each voice agent invoice, for a full year.' },
   { rate: '10-20%', accent: '#E0301E', label: 'On custom builds', detail: '10% of the project, up to 20% once you are a Producer.' },
 ];
 
@@ -158,7 +158,7 @@ export default function PartnerKitPage() {
             <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616]/40 mb-3">PDF · The math</span>
             <h3 className="font-display text-2xl font-semibold text-[#161616] mb-2">Earnings one-pager</h3>
             <p className="text-[#3A3733] font-body text-sm leading-relaxed flex-1">
-              The real commission structure with honest worked examples: a product sale, a referred AI receptionist, and a custom build, at current prices.
+              The real commission structure with honest worked examples: a product sale, a referred voice agent, and a custom build, at current prices.
             </p>
             <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616]">
               <span className="px-4 py-2 bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616] group-hover:-translate-y-0.5 transition-transform">Download earnings</span>
@@ -177,7 +177,7 @@ export default function PartnerKitPage() {
             <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616]/60 block mb-2">See one that is live</span>
             <h3 className="font-sans font-bold text-[#161616] text-lg mb-1">A real forged suite</h3>
             <p className="text-[#161616]/75 font-body text-sm leading-relaxed">
-              A full suite the forge minted start to finish. Receptionist, website, and command center, all in one hub.
+              A full suite the forge minted start to finish. Voice Agent, website, and command center, all in one hub.
             </p>
           </a>
           <a

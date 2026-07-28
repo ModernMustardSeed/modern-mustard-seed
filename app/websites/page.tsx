@@ -14,13 +14,13 @@ const STORE = workByKey['cross-covenant'];
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
   description:
-    'A website that answers the phone, captures every lead, and runs itself. Elite custom design, an AI receptionist on it, funnels and SEO baked in, and the command center free. Live in about a week from $97/mo. See yours built free.',
+    'A website that answers the phone, captures every lead, and runs itself. Elite custom design, a voice agent on it, funnels and SEO baked in, and the command center free. Live in about a week from $97/mo. See yours built free.',
   path: '/websites',
 });
 
 const INCLUDED = [
   { icon: '🎨', name: 'Elite custom design', desc: 'Designed from scratch for your trade and your town. Not a template anyone else can buy.' },
-  { icon: '🎙', name: 'An AI receptionist on it', desc: 'The site answers the phone 24/7, books the job, and texts you the details. Never a missed call.' },
+  { icon: '🎙', name: 'A voice agent on it', desc: 'The site answers the phone 24/7, books the job, and texts you the details. Never a missed call.' },
   { icon: '⚙', name: 'The command center, free', desc: 'A back office wired to your calls, traffic, customers, and reviews. On the house with your site.' },
   { icon: '🧲', name: 'Funnels + a lead magnet', desc: 'A real capture flow and a reason to opt in, live and converting on day one, not someday.' },
   { icon: '🔎', name: 'SEO + GEO baked in', desc: 'Built to be found on Google and cited by AI search. Metadata, structured data, the works.' },
@@ -30,7 +30,7 @@ const INCLUDED = [
 const FAQ = [
   {
     q: 'What kind of website do you build?',
-    a: 'Not a brochure that sits there, a working engine. Elite custom design, an AI receptionist that answers the phone right on the site, funnels and a lead magnet live on day one, the command center wired behind it free, and SEO plus GEO built in so you get found. It looks like the brand you are trying to be, and it actually runs your business.',
+    a: 'Not a brochure that sits there, a working engine. Elite custom design, a voice agent that answers the phone right on the site, funnels and a lead magnet live on day one, the command center wired behind it free, and SEO plus GEO built in so you get found. It looks like the brand you are trying to be, and it actually runs your business.',
   },
   {
     q: 'How much does a website cost?',
@@ -50,11 +50,11 @@ const FAQ = [
   },
   {
     q: 'Can I see it before I pay?',
-    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in about twenty seconds, plus an AI receptionist and a command center. No card and no meeting. Keep what you love, or walk away.',
+    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in about twenty seconds, plus a voice agent and a command center. No card and no meeting. Keep what you love, or walk away.',
   },
   {
     q: 'What if I already have a website?',
-    a: 'We can rebuild it as a working engine, or wire the parts you are missing (the AI receptionist, the command center, funnels, SEO and GEO) onto what you have. Start with a free demo or a free website audit and we will tell you the highest-leverage move.',
+    a: 'We can rebuild it as a working engine, or wire the parts you are missing (the voice agent, the command center, funnels, SEO and GEO) onto what you have. Start with a free demo or a free website audit and we will tell you the highest-leverage move.',
   },
 ];
 
@@ -65,16 +65,16 @@ function websitesJsonLd() {
       {
         '@type': 'Service',
         name: 'Small Business Website Builds by Modern Mustard Seed',
-        serviceType: 'Custom small-business website design and development (with AI receptionist, funnels, SEO/GEO)',
+        serviceType: 'Custom small-business website design and development (with voice agent, funnels, SEO/GEO)',
         description:
-          'Custom websites that work: elite design, an AI receptionist on the site, funnels and a lead magnet day one, the command center wired behind it free, and SEO plus GEO built in. Live in about a week. You own the code, domain, and accounts.',
+          'Custom websites that work: elite design, a voice agent on the site, funnels and a lead magnet day one, the command center wired behind it free, and SEO plus GEO built in. Live in about a week. You own the code, domain, and accounts.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/websites`,
         offers: {
           '@type': 'Offer',
           name: 'Website',
-          description: 'Custom website with an AI receptionist, funnels, SEO/GEO, and the command center free. Domain, hosting, and care included.',
+          description: 'Custom website with a voice agent, funnels, SEO/GEO, and the command center free. Domain, hosting, and care included.',
           price: Math.round(site.monthlyCents / 100),
           priceCurrency: 'USD',
           priceSpecification: [
@@ -123,7 +123,7 @@ export default function WebsitesPage() {
                 Not a brochure. A website that <em className="italic text-[#C4160B]">works.</em>
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
-                Elite custom design, an AI receptionist answering right on the page, funnels and SEO baked in, and the
+                Elite custom design, a voice agent answering right on the page, funnels and SEO baked in, and the
                 command center wired behind it free. It answers the phone, captures the lead, and follows up while you
                 sleep. From {formatUsd(site.monthlyCents)}/mo, and you own every line.
               </p>
@@ -162,7 +162,7 @@ export default function WebsitesPage() {
                 <div className="relative">
                   <Image
                     src={HERO.img}
-                    alt={`${HERO.name}, a real ${HERO.trade.toLowerCase()} website designed and built by Modern Mustard Seed, with the AI receptionist answering right on the page`}
+                    alt={`${HERO.name}, a real ${HERO.trade.toLowerCase()} website designed and built by Modern Mustard Seed, with the voice agent answering right on the page`}
                     width={1600}
                     height={1000}
                     priority
@@ -327,7 +327,7 @@ export default function WebsitesPage() {
                 {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(site.setupCents)} setup</span>
               </p>
               <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
-                A custom site designed from scratch, an AI receptionist on it, funnels and SEO baked in. Your domain,
+                A custom site designed from scratch, a voice agent on it, funnels and SEO baked in. Your domain,
                 hosting, care, and the command center all included. Month to month, cancel anytime.
               </p>
               <Link
@@ -369,7 +369,7 @@ export default function WebsitesPage() {
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               ['1', 'Forge it free', 'Tell us your business and we design a real working demo site for you in about twenty seconds. Tour it, poke around, no card.'],
-              ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the receptionist and funnels, and put it on your domain by hand.'],
+              ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the voice agent and funnels, and put it on your domain by hand.'],
               ['3', 'Own it, and grow', 'Live in about a week. You get the repo, the domain, and every account. The site answers, captures, and follows up on its own.'],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">

@@ -96,7 +96,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
         url: '/sidekick',
         internal: true,
         status: 'live',
-        blurb: 'Instant AI receptionist. A prospect hears it answer their own phone in one click, then subscribes.',
+        blurb: 'Instant voice agent. A prospect hears it answer their own phone in one click, then subscribes.',
         tags: ['funnel', 'voice', 'subscription'],
       },
       {
@@ -285,7 +285,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
         url: 'https://jr-tree-website.vercel.app',
         owner: 'Jaco',
         status: 'live',
-        blurb: 'Redesigned site in the Arborist Field Dossier direction, with the embedded AI receptionist in the corner.',
+        blurb: 'Redesigned site in the Arborist Field Dossier direction, with the embedded voice agent in the corner.',
         tags: ['demo-build', 'tree-service'],
       },
       {
@@ -293,7 +293,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
         url: 'https://hall-roofing-website.vercel.app',
         owner: 'Andrew Hall',
         status: 'live',
-        blurb: 'Golden Hour Grit direction, storm-ready, receptionist built in. Honors founder Sidney Hall; his son Andrew leads the company now.',
+        blurb: 'Golden Hour Grit direction, storm-ready, voice agent built in. Honors founder Sidney Hall; his son Andrew leads the company now.',
         tags: ['demo-build', 'roofing'],
       },
       {

@@ -20,7 +20,7 @@ export async function GET() {
 /**
  * RETIRED. This started a 30-day FREE pilot, which is a free trial, and Sarah
  * killed free trials on 2026-07-12. The free thing is the DEMO: we build them a
- * working receptionist, website and command center at no cost, and going live is
+ * working voice agent, website and command center at no cost, and going live is
  * setup + monthly from day one.
  *
  * The route is kept and refuses, rather than deleted, because a hidden button is

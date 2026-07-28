@@ -16,7 +16,7 @@ export default function SidekickPage() {
       {
         '@type': 'Service',
         name: 'SIDEKICK by Modern Mustard Seed',
-        serviceType: 'AI phone receptionist for small businesses',
+        serviceType: 'voice agent for small businesses',
         description: SIDEKICK.metaDescription,
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
@@ -38,7 +38,7 @@ export default function SidekickPage() {
       },
       {
         '@type': 'HowTo',
-        name: 'Hear your own AI receptionist in 60 seconds',
+        name: 'Hear your own voice agent in 60 seconds',
         step: [
           { '@type': 'HowToStep', name: 'Tell Mr. Mustard about your business', text: 'Business name, what you do, what customers ask. Sixty seconds of intake.' },
           { '@type': 'HowToStep', name: 'Watch the forge train your Sidekick', text: 'Greeting drills, booking reps, composure tests, personalized to your business.' },

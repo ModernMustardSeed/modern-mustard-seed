@@ -105,7 +105,7 @@ export const orgJsonLd = {
       telephone: SITE.phoneE164,
       contactType: 'customer support',
       availableLanguage: 'English',
-      // The line is answered by an AI receptionist around the clock, which is
+      // The line is answered by a voice agent around the clock, which is
       // literally the product. Saying so in schema is a differentiator, not noise.
       hoursAvailable: {
         '@type': 'OpeningHoursSpecification',
@@ -124,7 +124,7 @@ export const orgJsonLd = {
  * Worldwide, so nothing tied Modern Mustard Seed to Kalispell or the Flathead
  * Valley. That is the one search territory a small studio can actually win, and
  * it is what an AI answer engine needs before it will name us in response to
- * "who builds AI phone agents in Montana." ProfessionalService is a
+ * "who builds voice agents in Montana." ProfessionalService is a
  * LocalBusiness subtype, so this carries both meanings at once.
  *
  * No streetAddress on purpose: the studio does not take walk-ins, and a fake or
@@ -141,7 +141,7 @@ export const localBusinessJsonLd = {
   logo: LOGO_URL,
   image: LOGO_URL,
   description:
-    'AI studio in Kalispell, Montana building custom websites, 24/7 AI receptionists and voice agents, and business automation for small businesses across the Flathead Valley and nationwide.',
+    'AI studio in Kalispell, Montana building custom websites, 24/7 voice agents and voice agents, and business automation for small businesses across the Flathead Valley and nationwide.',
   telephone: SITE.phoneE164,
   email: SITE.email,
   priceRange: '$$',
@@ -182,10 +182,10 @@ export const localBusinessJsonLd = {
     '@type': 'OfferCatalog',
     name: 'Modern Mustard Seed services',
     itemListElement: [
-      ['AI receptionist and voice agents', 'A 24/7 AI receptionist that answers every call as your business, books jobs, and texts back missed callers.', '/sidekick'],
-      ['Small business websites', 'Custom websites built from scratch with lead capture, SEO, and an AI receptionist answering on the page.', '/websites'],
+      ['voice agent and voice agents', 'A 24/7 voice agent that answers every call as your business, books jobs, and texts back missed callers.', '/sidekick'],
+      ['Small business websites', 'Custom websites built from scratch with lead capture, SEO, and a voice agent answering on the page.', '/websites'],
       ['Business Command Center', 'One dashboard for calls, leads, customers, reviews, traffic, and money, with an AI that reads it back to you.', '/command-center'],
-      ['Free AI demos', 'Three working demos built for your business at no cost: receptionist, website, and command center.', '/demos'],
+      ['Free AI demos', 'Three working demos built for your business at no cost: voice agent, website, and command center.', '/demos'],
       ['Website audits', 'A real score and a real to-do list for an existing site, covering SEO and AI answer-engine visibility.', '/website-audit'],
     ].map(([name, description, path]) => ({
       '@type': 'Offer',

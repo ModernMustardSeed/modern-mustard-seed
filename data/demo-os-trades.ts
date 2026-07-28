@@ -146,7 +146,7 @@ export function resolveTrade(config: { trade?: string | null; business: string; 
 
 /* ------------------------------------------------------------------------ */
 /* Voice + calculator wiring: the same trade knowledge, consumed by the      */
-/* forged receptionist (services menu spoken on calls) and the hub's         */
+/* forged voice agent (services menu spoken on calls) and the hub's         */
 /* Recovery Calculator (slider label + default ticket). Typical TRADE        */
 /* services only, never invented facts about the specific business.          */
 /* ------------------------------------------------------------------------ */
@@ -345,7 +345,7 @@ export const TRADE_PRESETS: Record<OsTradeKey, OsTradePreset> = {
         { title: 'Bright Path HOA repipe', sub: 'Walkthrough Thursday, 12 units, decision by the board Friday', amount: 5400, tag: 'Bid out', tone: 'wait' },
         { title: 'Membership drain checks', sub: '31 annual-plan members, 6 due this month', amount: '6 due', tag: 'Book them', tone: 'wait' },
       ],
-      footer: 'In the real build the AI receptionist triages every night call, texts you only the true emergencies, and books the rest for morning.',
+      footer: 'In the real build the voice agent triages every night call, texts you only the true emergencies, and books the rest for morning.',
     },
     extraAutomations: [
       { icon: 'bolt', title: 'Shutoff coach', desc: 'Panicked night callers get walked to the water shutoff by the AI while the on-call text goes out. Less damage, calmer customer, easier job.', on: true },

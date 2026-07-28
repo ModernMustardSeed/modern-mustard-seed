@@ -5,7 +5,7 @@ import type { ForgedCall } from '@/lib/sidekick';
 import DemoVoiceWidget, { type VoiceState } from '@/components/demo/DemoVoiceWidget';
 
 /**
- * Serves a forged demo website full-screen with the lead's AI receptionist
+ * Serves a forged demo website full-screen with the lead's voice agent
  * floating over it, bottom-right: the two demos in one link. The site itself
  * lives in an iframe (srcdoc) so its own styles and scripts stay contained;
  * the call widget lives in the parent so the mic permission is ours. A
@@ -62,7 +62,7 @@ export default function SiteDemoShell({
           URL and reloaded the wrapper instead of scrolling. */}
       <iframe title={`${business} demo website`} src={`/demo/site/${siteId}/raw`} className="w-full h-full border-0 bg-white" />
 
-      {/* The receptionist, living on the site it answers for. One column,
+      {/* The voice agent, living on the site it answers for. One column,
           bottom-right: orientation card, then the call pill, then the credit
           chip. A single flex stack so nothing can ever overlap, at any
           viewport. */}

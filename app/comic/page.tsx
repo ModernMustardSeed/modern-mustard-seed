@@ -17,7 +17,7 @@ const comicJsonLd = {
   name: 'Mustard Life: The Family Business Issue',
   url: `${SITE.url}/comic`,
   description:
-    'A magazine-style comic in which the Mustard family showcases every Modern Mustard Seed product: AI receptionists, websites, command centers, commercials, managed ads, print, launch coaching, GEO, franchise switchboards, mascots, and courses. With real prices and links.',
+    'A magazine-style comic in which the Mustard family showcases every Modern Mustard Seed product: voice agents, websites, command centers, commercials, managed ads, print, launch coaching, GEO, franchise switchboards, mascots, and courses. With real prices and links.',
   author: { '@id': `${SITE.url}/#organization` },
   publisher: { '@id': `${SITE.url}/#organization` },
   image: `${SITE.url}/comic/og.jpg`,
@@ -31,7 +31,7 @@ const offerIndexJsonLd = {
   '@type': 'ItemList',
   name: 'Everything in this issue',
   itemListElement: [
-    { name: 'The Sidekick Forge (AI receptionist)', url: `${SITE.url}/sidekick` },
+    { name: 'The Sidekick Forge (voice agent)', url: `${SITE.url}/sidekick` },
     { name: 'The Demo Station (websites and command centers)', url: `${SITE.url}/demos` },
     { name: 'Mustard Pictures (commercials)', url: `${SITE.url}/pictures` },
     { name: 'Mustard Broadcast (managed ads)', url: `${SITE.url}/ads` },

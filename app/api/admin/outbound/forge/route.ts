@@ -19,7 +19,7 @@ export const runtime = 'nodejs';
 const LEAD_COLS =
   'id, business_name, contact_name, phone, email, niche, city, state, status, source, origin, owner_rep_id, dnc_checked, audit_score, demo_url, demo_run_id, site_demo_id, site_demo_url, site_demo_status, os_demo_id, os_demo_url, hub_demo_id, hub_demo_url, hub_view_count, email_open_count, last_email_at, last_open_at, next_action_at, created_at, updated_at';
 
-/** Anything forged for the lead: receptionist, website, command center, or the suite hub. */
+/** Anything forged for the lead: voice agent, website, command center, or the suite hub. */
 const FORGED_FILTER = 'demo_run_id.not.is.null,site_demo_id.not.is.null,os_demo_id.not.is.null,hub_demo_id.not.is.null';
 
 type LeadRow = Omit<ForgeRow, 'forged_at' | 'asset_count' | 'calls' | 'last_call_at' | 'last_outcome' | 'stage' | 'site'> & {
@@ -152,7 +152,7 @@ export async function GET(req: Request) {
     const callCount = calls?.count ?? 0;
     const emailed = !!l.last_email_at;
 
-    // The receptionist and the hub carry no forge timestamp of their own, so we
+    // The voice agent and the hub carry no forge timestamp of their own, so we
     // date the suite by whatever piece we CAN date and leave it null otherwise
     // rather than inventing a time from the lead's last touch.
     const stamps = [siteRow?.created_at, osByLead.get(l.id)].filter((s): s is string => !!s);

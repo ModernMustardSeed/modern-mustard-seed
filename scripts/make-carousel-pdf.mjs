@@ -1,5 +1,5 @@
 /**
- * LinkedIn carousel for the AI voice agent. A square multi-slide PDF; upload it
+ * LinkedIn carousel for the voice agent. A square multi-slide PDF; upload it
  * to LinkedIn as a document and it becomes a swipeable carousel. Pop-art, one
  * idea per slide. Run: node scripts/make-carousel-pdf.mjs
  */
@@ -46,7 +46,7 @@ function slide({ bg, eyebrow, eyebrowColor, head, headColor, sub, subColor, n })
   let hy = S / 2 + 90;
   for (const ln of wrap('Your phone,\nanswered.\nAlways.', bold, 64, S - 2 * M)) { page.drawText(ln, { x: M, y: hy, size: 64, font: bold, color: WHITE }); hy -= 68; }
   hy -= 16;
-  page.drawText('AI voice agents that pick up every call, in any language.', { x: M, y: hy, size: 22, font: ital, color: rgb(0.85, 0.84, 0.8) });
+  page.drawText('voice agents that pick up every call, in any language.', { x: M, y: hy, size: 22, font: ital, color: rgb(0.85, 0.84, 0.8) });
   page.drawText('swipe ->', { x: M, y: 44, size: 16, font: bold, color: YELLOW, characterSpacing: 2 });
 }
 

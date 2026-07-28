@@ -1,5 +1,5 @@
 /**
- * Multi-page branded PDF of the AI Voice Agent whitepaper. Reads the SAME
+ * Multi-page branded PDF of the Voice Agent whitepaper. Reads the SAME
  * content as the web page (data/voice-agent-whitepaper.ts), so there is one
  * source of truth. Output: public/downloads/ai-voice-agents-whitepaper.pdf +
  * ~/Downloads. Run: node scripts/make-whitepaper-pdf.mjs
@@ -56,7 +56,7 @@ function para(text, { font = reg, size = 11, color = BODY, lead = 16, gap = 8, x
 
 newPage();
 // Cover header
-if (mascot) { const mh = 52, mw = (mascot.width / mascot.height) * mh; page.drawImage(mascot, { x: M, y: y - mh, width: mw, height: mh }); page.drawText('MODERN MUSTARD SEED', { x: M + mw + 12, y: y - 22, size: 11, font: bold, color: RED, characterSpacing: 2 }); page.drawText('AI voice agents that answer every call', { x: M + mw + 12, y: y - 38, size: 10, font: reg, color: BODY }); y -= mh + 16; }
+if (mascot) { const mh = 52, mw = (mascot.width / mascot.height) * mh; page.drawImage(mascot, { x: M, y: y - mh, width: mw, height: mh }); page.drawText('MODERN MUSTARD SEED', { x: M + mw + 12, y: y - 22, size: 11, font: bold, color: RED, characterSpacing: 2 }); page.drawText('voice agents that answer every call', { x: M + mw + 12, y: y - 38, size: 10, font: reg, color: BODY }); y -= mh + 16; }
 page.drawRectangle({ x: M, y: y - 2, width: CW, height: 3, color: INK }); y -= 30;
 page.drawText('WHITEPAPER', { x: M, y, size: 11, font: bold, color: RED, characterSpacing: 3 }); y -= 30;
 for (const ln of wrap(WP.title, bold, 30, CW)) { need(36); page.drawText(ln, { x: M, y, size: 30, font: bold, color: INK }); y -= 34; }

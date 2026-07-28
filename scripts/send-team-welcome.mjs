@@ -135,7 +135,7 @@ function buildHtml(r) {
       <div style="font-family:${mono};font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${red};font-weight:bold;margin-bottom:6px;">What you earn</div>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         ${tier('50%', 'On every product', 'Share a playbook or bundle and earn half, the moment someone buys.')}
-        ${tier('25%', 'Every month', 'Put a business on a 24/7 AI receptionist and earn a quarter of their bill, every month, for a year.')}
+        ${tier('25%', 'Every month', 'Put a business on a 24/7 voice agent and earn a quarter of their bill, every month, for a year.')}
         ${tier('10-20%', 'On all builds', 'Send a bigger client who needs a real build and earn on the project, from 10% up to 20% as a Producer.')}
       </table>
     </td></tr>
@@ -191,7 +191,7 @@ YOUR ONE LOGIN (runs everything: dial floor, earnings, ads)
 ` : ''}
 WHAT YOU EARN
 - 50% on every product, the moment someone buys.
-- 25% of the monthly bill, for a year, on any business you put on an AI receptionist.
+- 25% of the monthly bill, for a year, on any business you put on a voice agent.
 - 10-20% on all builds, from 10% up to 20% as a Producer.
 
 WHERE TO START

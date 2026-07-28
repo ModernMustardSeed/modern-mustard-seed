@@ -15,7 +15,7 @@ const PIECES: { key: 'voice' | 'site' | 'os'; icon: string; name: string; desc: 
   {
     key: 'voice',
     icon: '🎙',
-    name: 'AI Receptionist',
+    name: 'Voice Agent',
     desc: 'Answers your real number 24/7 in a natural voice, books the job, and texts you the details. Never a missed call again.',
     tone: 'ink',
   },
@@ -50,11 +50,11 @@ export default function FlagshipOffer() {
           Our flagship // Built free before you pay a cent
         </p>
         <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02] max-w-3xl">
-          A receptionist, a website,<br />and the brain that runs them.
+          A voice agent, a website,<br />and the brain that runs them.
         </h2>
         <p className="font-body text-[15px] md:text-[17px] text-[#161616]/75 mt-5 max-w-2xl leading-relaxed">
           Tell us your business and we forge all three, free, in about a minute. Keep what you love. Add the website or
-          the receptionist and your command center comes free, so the back office is on the house.
+          the voice agent and your command center comes free, so the back office is on the house.
         </p>
 
         <div className="grid md:grid-cols-3 gap-6 mt-12 items-stretch">
@@ -97,7 +97,7 @@ export default function FlagshipOffer() {
                         {priceLine(c.key)}
                       </span>
                       <span className="block mt-1 text-[#C4160B] font-extrabold text-[15px] not-italic">
-                        Free with your site or receptionist
+                        Free with your site or voice agent
                       </span>
                     </p>
                   ) : (
@@ -121,7 +121,7 @@ export default function FlagshipOffer() {
               The whole system, one login
             </span>
             <h3 className="font-display italic font-extrabold text-2xl md:text-3xl text-[#161616] mt-2">
-              Receptionist + website + free command center
+              Voice Agent + website + free command center
             </h3>
             <p className="font-body text-[14px] text-[#161616]/75 mt-2 leading-relaxed max-w-xl">
               Take both paid pieces for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup,

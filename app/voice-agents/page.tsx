@@ -8,9 +8,9 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'AI Voice Agents That Answer Every Call, in Any Language',
+  title: 'Voice Agents That Answer Every Call, in Any Language',
   description:
-    'A 24/7 AI voice agent that picks up every call in a natural human voice, books appointments, answers FAQs, and routes urgent calls to you. Now multilingual: it greets and serves callers in 100+ languages (English, Spanish, French, Portuguese, German, Mandarin, and more) and detects the caller automatically. For restaurants, it takes phone orders, books tables, and saves the dinner rush from voicemail. Stop losing customers to voicemail or a language barrier.',
+    'A 24/7 voice agent that picks up every call in a natural human voice, books appointments, answers FAQs, and routes urgent calls to you. Now multilingual: it greets and serves callers in 100+ languages (English, Spanish, French, Portuguese, German, Mandarin, and more) and detects the caller automatically. For restaurants, it takes phone orders, books tables, and saves the dinner rush from voicemail. Stop losing customers to voicemail or a language barrier.',
   path: '/voice-agents',
 });
 
@@ -130,12 +130,12 @@ export default function VoiceAgentsPage() {
         data={[
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },
-            { name: 'AI Voice Agents', url: '/voice-agents' },
+            { name: 'Voice Agents', url: '/voice-agents' },
           ]),
           serviceJsonLd({
-            name: 'Multilingual AI Voice Agents',
+            name: 'Multilingual Voice Agents',
             description:
-              'Custom 24/7 AI voice agents that answer every call in a natural human voice, in 100+ languages with automatic language detection. They book appointments, answer FAQs, qualify leads, and route urgent calls. Built and live in about a week.',
+              'Custom 24/7 voice agents that answer every call in a natural human voice, in 100+ languages with automatic language detection. They book appointments, answer FAQs, qualify leads, and route urgent calls. Built and live in about a week.',
           }),
           faqJsonLd(faq),
         ]}
@@ -146,7 +146,7 @@ export default function VoiceAgentsPage() {
           {/* Hero */}
           <div className="text-center mb-16">
             <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
-              AI Voice Agents · Talking Websites · 24/7
+              Voice Agents · Talking Websites · 24/7
             </span>
             <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6 leading-[1.05]">
               Plug the{' '}
@@ -194,7 +194,7 @@ export default function VoiceAgentsPage() {
                   Now hear one trained on YOUR business.
                 </h2>
                 <p className="text-[#161616]/75 text-base font-body leading-7 max-w-xl">
-                  Mr. Mustard forges a personalized AI receptionist for your business in about
+                  Mr. Mustard forges a personalized voice agent for your business in about
                   sixty seconds, then it talks to you live, or calls your cell. Free, no card.
                 </p>
               </div>
@@ -243,7 +243,7 @@ export default function VoiceAgentsPage() {
               href="/voice-agents/whitepaper"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-[#161616] bg-white text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] shadow-[4px_4px_0_0_#161616] hover:bg-[#F5B700] hover:-translate-y-0.5 transition-all"
             >
-              Read the AI voice agent whitepaper →
+              Read the voice agent whitepaper →
             </Link>
           </div>
 
@@ -277,7 +277,7 @@ export default function VoiceAgentsPage() {
                 What it handles
               </span>
               <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.1]">
-                A receptionist that never{' '}
+                A voice agent that never{' '}
                 <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
                   sleeps
                 </span>

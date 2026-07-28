@@ -26,7 +26,7 @@ import {
  * THE FORGE BOARD. Everything with work already invested in it, in one place.
  *
  * Forging a suite is the expensive half of the job, and until now it left no
- * trace you could find later: you forged a receptionist and a website for a
+ * trace you could find later: you forged a voice agent and a website for a
  * business, got pulled away, and the lead sank into a floor of thousands with
  * a finished demo nobody ever showed them. This board keeps that work visible
  * until it has been spent, and leads with the bucket that costs the most:
@@ -411,7 +411,7 @@ export default function OutboundForge() {
                       <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                         {r.demo_url && (
                           <a href={r.demo_url} target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-[0.1em] font-oswald font-semibold px-2 py-1 rounded-md border-2 border-[#3f5d34]/50 bg-[#3f5d34]/10 text-[#3f5d34] hover:border-[#3f5d34] transition-colors">
-                            ☎ Receptionist ↗
+                            ☎ Voice Agent ↗
                           </a>
                         )}
                         {r.site_demo_status === 'ready' && r.site_demo_url && (

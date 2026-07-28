@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
 
 /**
- * Email gate for the AI voice agent whitepaper. Captures the lead into the CRM
+ * Email gate for the voice agent whitepaper. Captures the lead into the CRM
  * (via /api/whitepaper), emails the PDF, and reveals an instant download. Turns
  * the whitepaper into a lead magnet that feeds the speed-to-lead engine.
  */

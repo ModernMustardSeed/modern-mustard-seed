@@ -10,7 +10,7 @@ export const runtime = 'nodejs';
 const PDF_URL = '/downloads/ai-voice-agents-whitepaper.pdf';
 
 /**
- * Lead capture for the AI Voice Agent whitepaper. Records the lead (into the
+ * Lead capture for the Voice Agent whitepaper. Records the lead (into the
  * CRM/tracker), emails them the PDF link plus a booking CTA, adds them to the
  * Resend audience, and pings Sarah. Returns the PDF url so the page can reveal
  * the download immediately. Never throws to the client once the lead is saved.
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       email,
       phone,
       source: 'whitepaper-voice-agents',
-      message: 'Downloaded the AI voice agent whitepaper',
+      message: 'Downloaded the voice agent whitepaper',
     });
   } catch (e) {
     console.error('whitepaper insertLead', e);
@@ -62,12 +62,12 @@ export async function POST(req: Request) {
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
-        subject: 'Your AI Voice Agent whitepaper',
+        subject: 'Your Voice Agent whitepaper',
         html: clientEmail({
-          preheader: 'The full field guide to AI voice agents that answer every call, in any language.',
+          preheader: 'The full field guide to voice agents that answer every call, in any language.',
           greeting: `Hi ${firstName},`,
           body:
-            p('Here is the whitepaper, the full picture of what an AI voice agent can do for your business: answer every call 24/7, remember every caller, speak over 100 languages, run inbound and outbound, book appointments, take orders, and upsell.') +
+            p('Here is the whitepaper, the full picture of what a voice agent can do for your business: answer every call 24/7, remember every caller, speak over 100 languages, run inbound and outbound, book appointments, take orders, and upsell.') +
             p('The best part is you can hear it. Talk to our agent live on the voice-agents page, in the language of your choice, then book a short call and we will scope one to your business.'),
           cta: { label: 'Read the whitepaper (PDF)', url: fullPdfUrl },
           secondary: { label: 'Hear the live demo', url: `${SITE.url}/voice-agents` },
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
         from: 'Whitepaper <sarah@modernmustardseed.com>',
         to: OWNER_NOTIFY_TO,
         subject: `New whitepaper lead: ${firstName}`,
-        html: `<p>New lead from the AI voice agent whitepaper.</p><ul><li><strong>Name:</strong> ${name ?? 'not given'}</li><li><strong>Email:</strong> ${email}</li><li><strong>Phone:</strong> ${phone ?? 'not given'}</li></ul><p>Speed to lead: a quick call or a Mr. Mustard callback while it is warm.</p>`,
+        html: `<p>New lead from the voice agent whitepaper.</p><ul><li><strong>Name:</strong> ${name ?? 'not given'}</li><li><strong>Email:</strong> ${email}</li><li><strong>Phone:</strong> ${phone ?? 'not given'}</li></ul><p>Speed to lead: a quick call or a Mr. Mustard callback while it is warm.</p>`,
       });
     } catch (e) {
       console.warn('whitepaper notify', e);

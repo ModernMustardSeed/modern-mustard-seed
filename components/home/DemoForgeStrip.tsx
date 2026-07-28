@@ -14,11 +14,11 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@vercel/analytics';
 
-const STATIC_LINE = 'we forge your website, receptionist, and command center FREE, before you pay a cent';
+const STATIC_LINE = 'we forge your website, voice agent, and command center FREE, before you pay a cent';
 
 const FORGE_LINES = [
   'forging: a website for a roofing crew... live tour in 61 seconds',
-  'forging: an AI receptionist for a med spa... she answers on the first ring',
+  'forging: a voice agent for a med spa... she answers on the first ring',
   'forging: a command center for a food truck... every order on one screen',
   'forging: the whole system for a dental office... one login runs it all',
   'your business is next. no card, no call, just your name and trade',
@@ -72,7 +72,7 @@ export default function DemoForgeStrip() {
     <Link
       href="/demos"
       onClick={() => track('demo_forge_strip_click')}
-      aria-label="The Demo Forge: we build your website, AI receptionist, and command center free, before you pay a cent. See yours built at the Demo Station."
+      aria-label="The Demo Forge: we build your website, voice agent, and command center free, before you pay a cent. See yours built at the Demo Station."
       className="group relative block w-full overflow-hidden border-b-2 border-[#161616] bg-[#080C16] mt-[66px] md:mt-[70px]"
     >
       <style>{`

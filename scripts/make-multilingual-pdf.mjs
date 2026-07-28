@@ -1,6 +1,6 @@
 /**
  * Branded one-pager: "Your phone now speaks every customer's language."
- * A pop-art MMS sales sheet for the multilingual AI voice agent, for LinkedIn,
+ * A pop-art MMS sales sheet for the multilingual voice agent, for LinkedIn,
  * email, and ads. Writes to public/downloads/ (web-servable) + ~/Downloads.
  *
  * Run: node scripts/make-multilingual-pdf.mjs
@@ -45,7 +45,7 @@ try {
     const mh = 46, mw = (png.width / png.height) * mh;
     page.drawImage(png, { x: M, y: y - mh, width: mw, height: mh });
     text('MODERN MUSTARD SEED', M + mw + 12, y - 20, 11, bold, RED, 2);
-    text('AI voice agents that answer every call', M + mw + 12, y - 36, 10, reg, BODY);
+    text('voice agents that answer every call', M + mw + 12, y - 36, 10, reg, BODY);
     y -= mh + 14;
   }
 } catch { /* skip mascot */ }
@@ -64,7 +64,7 @@ text("customer's language", M + everyW + 8, y + 3, 33, bold, INK);
 y -= 50;
 
 // Subhead
-const sub = 'A 24/7 AI voice agent that picks up every call in a natural human voice, in 100+ languages. It detects the caller and answers in their language, books the appointment, and captures every lead. No voicemail. No language barrier.';
+const sub = 'A 24/7 voice agent that picks up every call in a natural human voice, in 100+ languages. It detects the caller and answers in their language, books the appointment, and captures every lead. No voicemail. No language barrier.';
 const subWords = clean(sub).split(' ');
 let line = ''; const subSize = 12.5; const maxW = W - 2 * M;
 for (const wd of subWords) { const t = line ? line + ' ' + wd : wd; if (reg.widthOfTextAtSize(t, subSize) > maxW) { text(line, M, y, subSize, reg, BODY); y -= 17; line = wd; } else line = t; }

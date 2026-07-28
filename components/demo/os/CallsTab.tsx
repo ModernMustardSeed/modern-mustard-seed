@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { SectionTitle, StatCard, hash, useOs } from './os-kit';
 
 /**
- * CALLS: the receptionist's back office. Every call your AI answered, written
+ * CALLS: the voice agent's back office. Every call your AI answered, written
  * down. This is the voice half of the command center made real: a searchable
  * log with a full transcript on every call, who called, what they needed, and
  * what the AI did about it, with the lead already filed in Customers.
@@ -150,7 +150,7 @@ export default function CallsTab() {
 
   return (
     <div className="max-w-3xl">
-      <SectionTitle title="Calls" sub={`Every call your AI receptionist answered, written down. Open any one for the full transcript. The lead is already filed in Customers.`} />
+      <SectionTitle title="Calls" sub={`Every call your voice agent answered, written down. Open any one for the full transcript. The lead is already filed in Customers.`} />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
         <StatCard label="Calls this week" value={String(total + 11 + (h % 24))} sub="every one answered" i={0} pulse />
@@ -212,7 +212,7 @@ export default function CallsTab() {
                     {r.turns.map((t, ti) => (
                       <div key={ti} className={`max-w-[86%] ${t.who === 'caller' ? 'ml-auto' : ''}`}>
                         <p className="text-[9px] uppercase tracking-[0.14em] font-bold mb-0.5" style={{ color: t.who === 'ai' ? theme.accent : theme.dim, textAlign: t.who === 'caller' ? 'right' : 'left' }}>
-                          {t.who === 'ai' ? 'AI receptionist' : r.caller}
+                          {t.who === 'ai' ? 'voice agent' : r.caller}
                         </p>
                         <div
                           className="rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed border"
@@ -236,7 +236,7 @@ export default function CallsTab() {
       </div>
 
       <p className="text-[12px] mt-3" style={{ color: theme.dim }}>
-        Sample calls. The day your receptionist goes live, this fills with your real calls, each transcribed, searchable, and filed as a lead automatically.
+        Sample calls. The day your voice agent goes live, this fills with your real calls, each transcribed, searchable, and filed as a lead automatically.
       </p>
     </div>
   );

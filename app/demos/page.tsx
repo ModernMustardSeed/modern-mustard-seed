@@ -8,15 +8,15 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
  *
  * This page shipped as "The Demo Station: three free AI demos..." which put a
  * brand term nobody types in the highest-weighted position on the page. Nothing
- * on the page matched "free AI receptionist demo" or "free website demo for my
+ * on the page matched "free voice agent demo" or "free website demo for my
  * business," which is what people and AI answer engines actually ask for. Brand
  * name stays (buildMetadata appends "| Modern Mustard Seed" and the H1 still
  * says Demo Station), it just no longer leads. (Retitled 2026-07-25.)
  */
 export const metadata = buildMetadata({
-  title: 'Free AI Receptionist and Website Demo for Your Business',
+  title: 'Free Voice Agent and Website Demo for Your Business',
   description:
-    'Get three working AI demos free, no card and no sales call: an AI receptionist that answers as your business, a custom website built from scratch, and a business command center free with either. Live in about 20 seconds. Keep what you love from $97/mo.',
+    'Get three working AI demos free, no card and no sales call: a voice agent that answers as your business, a custom website built from scratch, and a business command center free with either. Live in about 20 seconds. Keep what you love from $97/mo.',
   path: '/demos',
 });
 
@@ -27,11 +27,11 @@ const FAQ = [
   },
   {
     q: 'What exactly do I get?',
-    a: 'Three working demos personalized to your business: an AI receptionist you can call and try to stump, a complete demo website designed from scratch, and a business command center with your name on the door, wired to your calls and your website traffic. The command center comes free with the website or the receptionist, no build cost and no monthly. All three live at your private hub link.',
+    a: 'Three working demos personalized to your business: a voice agent you can call and try to stump, a complete demo website designed from scratch, and a business command center with your name on the door, wired to your calls and your website traffic. The command center comes free with the website or the voice agent, no build cost and no monthly. All three live at your private hub link.',
   },
   {
     q: 'How fast?',
-    a: 'Two of the three are ready in about twenty seconds: your receptionist and your command center. The website is different, because it is designed from scratch rather than filled into a template, and that usually takes about twenty minutes. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
+    a: 'Two of the three are ready in about twenty seconds: your voice agent and your command center. The website is different, because it is designed from scratch rather than filled into a template, and that usually takes about twenty minutes. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
   },
   {
     q: 'What happens if I want to keep something?',
@@ -42,7 +42,7 @@ const FAQ = [
 const PIECES = [
   {
     icon: '🎙',
-    title: 'AI Receptionist',
+    title: 'Voice Agent',
     desc: 'Call it. Pretend you are a customer. Try to stump it. It answers as YOUR business, day or night, and books the job.',
     price: DEMO_PRODUCTS.voice,
     tone: 'ink' as const,
@@ -117,9 +117,9 @@ function demosJsonLd() {
       {
         '@type': 'Service',
         name: 'The Demo Station by Modern Mustard Seed',
-        serviceType: 'Free AI business demos: receptionist, website, and command center',
+        serviceType: 'Free AI business demos: voice agent, website, and command center',
         description:
-          'A free self-serve forge. Enter your business once and receive three working demos: an AI receptionist trained on your company, a custom website designed from scratch, and a business command center that comes free with either. No account and no credit card.',
+          'A free self-serve forge. Enter your business once and receive three working demos: a voice agent trained on your company, a custom website designed from scratch, and a business command center that comes free with either. No account and no credit card.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         offers: [
@@ -128,14 +128,14 @@ function demosJsonLd() {
               p.name,
               p.monthlyCents,
               p.setupCents,
-              p.freeWithPaid ? `${p.blurb} Sold on its own, or free with the website or receptionist.` : p.blurb,
+              p.freeWithPaid ? `${p.blurb} Sold on its own, or free with the website or voice agent.` : p.blurb,
             ),
           ),
           offer(
             DEMO_BUNDLE.name,
             DEMO_BUNDLE.monthlyCents,
             DEMO_BUNDLE.setupCents,
-            'The receptionist and website made real together at a discount, with the command center included free.',
+            'The voice agent and website made real together at a discount, with the command center included free.',
           ),
         ],
       },
@@ -151,8 +151,8 @@ function demosJsonLd() {
           },
           {
             '@type': 'HowToStep',
-            name: 'Meet your receptionist and command center',
-            text: 'Both are live in about twenty seconds at your private hub. Talk to the receptionist in your browser and try to stump it.',
+            name: 'Meet your voice agent and command center',
+            text: 'Both are live in about twenty seconds at your private hub. Talk to the voice agent in your browser and try to stump it.',
           },
           {
             '@type': 'HowToStep',
@@ -206,7 +206,7 @@ export default function DemosPage() {
                 <em className="italic text-[#C4160B]">three free demos.</em> Right now.
               </h1>
               <p className="font-body text-[17px] text-[#161616]/70 mt-5 leading-relaxed">
-                A receptionist that answers as your business. A brand-new website. A command center with your name on
+                A voice agent that answers as your business. A brand-new website. A command center with your name on
                 the door. Real and working, personalized to you, not a slideshow.
               </p>
 
@@ -273,7 +273,7 @@ export default function DemosPage() {
               Sixty seconds of you. Then the forge does the rest.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/70 mt-4 leading-relaxed">
-              Your receptionist demo answers as your business, and you talk to it right in your browser. The phone
+              Your voice agent demo answers as your business, and you talk to it right in your browser. The phone
               number is how we reach you about the build, nothing more. Nothing is charged and nobody calls you unless
               you ask. Want it to ring your actual phone instead?{' '}
               <Link href="/sidekick" className="underline underline-offset-4 font-semibold hover:text-[#C4160B]">
@@ -285,7 +285,7 @@ export default function DemosPage() {
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">What lands, and when</p>
               <ul className="mt-3 space-y-2">
                 {[
-                  ['Right away', 'Your receptionist and your command center, live in about twenty seconds.'],
+                  ['Right away', 'Your voice agent and your command center, live in about twenty seconds.'],
                   ['About twenty minutes', 'Your website, designed from scratch (not a template), landing at the same hub.'],
                 ].map(([when, what]) => (
                   <li key={when} className="font-body text-[14px] text-[#FBF6EA]/80 leading-relaxed">
@@ -345,7 +345,7 @@ export default function DemosPage() {
             ))}
           </div>
           <p className="font-body text-[14px] text-[#161616]/60 mt-5">
-            Your command center is free with either piece. Want the receptionist and website together? The whole system
+            Your command center is free with either piece. Want the voice agent and website together? The whole system
             is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
           </p>
         </section>
@@ -356,7 +356,7 @@ export default function DemosPage() {
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               { n: '1', t: 'You tell us who you are', d: 'Sixty seconds, the form above. No card, no meeting.' },
-              { n: '2', t: 'The forge builds', d: 'Receptionist and command center in about twenty seconds. Your website is designed from scratch, so it takes about twenty minutes, and it lands at the same hub on its own.' },
+              { n: '2', t: 'The forge builds', d: 'Voice Agent and command center in about twenty seconds. Your website is designed from scratch, so it takes about twenty minutes, and it lands at the same hub on its own.' },
               {
                 n: '3',
                 t: 'Keep what you love',

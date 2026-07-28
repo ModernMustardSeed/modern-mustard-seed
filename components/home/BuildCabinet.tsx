@@ -27,7 +27,7 @@ const CABINETS = [
     name: 'Voice Agents',
     color: '#F5B700',
     pitch:
-      'A 24/7 AI receptionist that answers every call in a natural human voice, books appointments, and routes the urgent ones to you. Speaks 100+ languages.',
+      'A 24/7 voice agent that answers every call in a natural human voice, books appointments, and routes the urgent ones to you. Speaks 100+ languages.',
     chips: ['24/7 answering', '100+ languages', 'Books appointments'],
     receiptSlug: 'voicestaff',
     intent: 'phone-agent',

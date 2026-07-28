@@ -22,7 +22,7 @@ const STACK = ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Supabase', 'Stripe
 
 // What we make for the businesses we work with.
 const OFFERINGS: { t: string; d: string }[] = [
-  { t: 'AI voice + chat agents', d: 'A 24/7 receptionist that answers the phone and books the job, plus a helper that never lets a lead go cold.' },
+  { t: 'AI voice + chat agents', d: 'A 24/7 voice agent that answers the phone and books the job, plus a helper that never lets a lead go cold.' },
   { t: 'Websites that sell', d: 'Not a brochure. A clear offer, real proof, and an obvious next step, live in weeks and yours to keep.' },
   { t: 'Custom apps + AI tools', d: 'The one clean tool built for exactly how a business runs, instead of five apps held together by a spreadsheet.' },
   { t: 'The Studio', d: 'Instant, self-serve wow: Sidekick, Pictures, Press, and GEO Desk. Free to try, yours in a click.' },

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 // The Sidekick Forge share card: the nameplate badge with the trainer.
 export const runtime = 'nodejs';
 
-export const alt = 'The Sidekick Forge. Hear your own AI receptionist in 60 seconds. Free, from Modern Mustard Seed.';
+export const alt = 'The Sidekick Forge. Hear your own voice agent in 60 seconds. Free, from Modern Mustard Seed.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -66,7 +66,7 @@ export default async function OpengraphImage() {
               Hear YOUR AI
             </span>
             <span style={{ fontSize: 76, fontWeight: 800, fontStyle: 'italic', color: INK, lineHeight: 1.12 }}>
-              receptionist in
+              voice agent in
             </span>
             <span style={{ display: 'flex', alignItems: 'baseline', fontSize: 76, fontWeight: 800, lineHeight: 1.15 }}>
               <span style={{ color: INK, background: MUSTARD, padding: '0 16px', border: `4px solid ${INK}` }}>60 seconds.</span>

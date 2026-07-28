@@ -1,6 +1,6 @@
 # MMS Partner Target Board (built 2026-07-10)
 
-Sourced by 5 parallel research agents, every candidate verified at a live URL. Follower counts are point-in-time estimates, re-check before outreach. Strategy: **products-first (50% commission) front door → recurring AI-receptionist subs (25% of MRR, up to 12 mo) → builds (10%, up to 20% Producer)**.
+Sourced by 5 parallel research agents, every candidate verified at a live URL. Follower counts are point-in-time estimates, re-check before outreach. Strategy: **products-first (50% commission) front door → recurring voice agent subs (25% of MRR, up to 12 mo) → builds (10%, up to 20% Producer)**.
 
 Legend: **fit** = best MMS offer to lead with. ⚠ = competitor/founder overlap or size flag, pitch as cross-promo/sponsor not a cold 50% ask.
 
@@ -35,7 +35,7 @@ Lead offer: Claude Code Masterclass ($67), Shopify with Claude Code ($67), Brand
 - **Alex Finn** ⚠ — X @AlexFinn ~320k / YT ~64k — #1 vibe-coding channel, runs competing academy → complementary pitch — X DM — Conf High
 - **Riley Brown** ⚠ — YT @rileybrownai ~256k — face of "vibe coding," VC-backed platform → coopetition/cross-promo — X DM — Conf High
 - **Greg Isenberg** ⚠ — YT @GregIsenberg ~500k+ — tastemaker, paid feature not affiliate — site — Conf High
-- **Nate Herk** ⚠ — YT @nateherk ~842k — makes "build an AI receptionist" videos = best Sidekick bridge; mega, structured sponsor offer — nateherk.com — Conf High
+- **Nate Herk** ⚠ — YT @nateherk ~842k — makes "build a voice agent" videos = best Sidekick bridge; mega, structured sponsor offer — nateherk.com — Conf High
 - **Davie Fogarty** ⚠ — YT ~130k — Oodie founder, published "Build a Shopify Store with Claude Code" = exact Shopify SKU match; mega-founder, cross-promo — team — Conf High
 - **Marc Lou** ⚠ — X @marc_louvion ~100k+ — sells CodeFast (competitor) → JV/cross-promo only — X DM — Conf High
 
@@ -43,7 +43,7 @@ Lead offer: Claude Code Masterclass ($67), Shopify with Claude Code ($67), Brand
 Lead offer: AI-Ready Blueprint ($47), AI-Native Playbook ($47), AI Sales Machine ($47), Foundations Bundle ($97). Upsell: Sidekick + builds.
 
 - **Jono Catliff** — YT @jonocatliff ~140k — service-business operator audience, ships blueprints — community/X DM — Conf High
-- **Brendan Jowett** — Skool @brendan ~20.7k — teaches AI voice agents → native Sidekick white-label — Skool/X DM — Conf High
+- **Brendan Jowett** — Skool @brendan ~20.7k — teaches voice agents → native Sidekick white-label — Skool/X DM — Conf High
 - **Nate Herk** ⚠ — see Channel 1 — automation agency, warm large audience — Conf High
 - **Marc Lou** ⚠ — see Channel 1 — indie-hacker Blueprint audience — Conf High
 - **Julian Goldie** — YT @JulianGoldieSEO ~394k — teaches affiliate + AI monetization, paid Skool — Skool/site — Conf High
@@ -66,11 +66,11 @@ Lead offer: Sidekick subs ($197-397/mo, 25% recurring to partner) + builds. This
 - **Terri Ross / APX Platform** — 2,000+ aesthetic practices, AmSpa exclusive expert, owns distribution platform — vendor/APX — Conf High
 - **Jason Swenk / Agency Mastery 360** — agencies $1M-25M, white-label into SMB clients — podcast sponsor — Conf High
 - **Marko Spila (AI & Marketing for Home Service Pros)** — podcast literally AI for contractors, low-friction — book a call — Conf Med
-- **Giuseppe Grammatico (FranChoice)** — franchise placer, "day-one receptionist" attach — podcast/LinkedIn — Conf Med
+- **Giuseppe Grammatico (FranChoice)** — franchise placer, "day-one voice agent" attach — podcast/LinkedIn — Conf Med
 - **Summit Salon / Empowering You** ⚠ (has referral program) / **Projected Growth (Kelly Smith, 6,000+ practices)** — salon/spa/medspa booking businesses — Conf Med
 - **Tommy Mello (Home Service Expert)** ⚠ — huge trades audience, mega/pricey → sponsor — Conf Med
 - **FranServe** — ~2,000 franchise members; second franchise shot — supplier/expo — Conf Med
-- ⚠ **Vendasta / DashClicks / GoHighLevel** — ship competing AI receptionists. Do NOT lead-partner; mine INDIVIDUAL agencies out of these ecosystems, positioning Sidekick as the done-for-you, human-quality tier.
+- ⚠ **Vendasta / DashClicks / GoHighLevel** — ship competing voice agents. Do NOT lead-partner; mine INDIVIDUAL agencies out of these ecosystems, positioning Sidekick as the done-for-you, human-quality tier.
 
 ## CHANNEL 4 — GEO / SEO / ecommerce / DTC / Shopify creators
 Lead offer: GEO & AI Commerce ($67), Shopify with Claude Code ($67), Brand Studio ($67), Builder Bundle ($197).

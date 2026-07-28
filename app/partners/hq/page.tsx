@@ -63,7 +63,7 @@ export default async function PartnerHQ() {
 
   const links = [
     { label: 'The Playbook Store (50% on every sale)', url: `${SITE.url}/store?ref=${code}` },
-    { label: 'Hire an AI receptionist (recurring)', url: `${SITE.url}/sidekick?ref=${code}` },
+    { label: 'Hire a voice agent (recurring)', url: `${SITE.url}/sidekick?ref=${code}` },
     { label: 'Book a build with Sarah', url: `${SITE.url}/book?ref=${code}` },
     { label: 'Done-for-you builds', url: `${SITE.url}/build-queue?ref=${code}` },
   ];
@@ -121,7 +121,7 @@ export default async function PartnerHQ() {
               <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-2">Forge under your flag</span>
               <h3 className="font-display text-2xl font-semibold text-[#161616]">Mint a demo suite for a business you know</h3>
               <p className="text-[#161616]/70 font-body text-sm mt-1 max-w-xl">
-                Give us their name and website; we forge their AI receptionist, a designed-from-scratch site, and a command center demo, presented by you. If they buy, your commission records itself.
+                Give us their name and website; we forge their voice agent, a designed-from-scratch site, and a command center demo, presented by you. If they buy, your commission records itself.
               </p>
             </div>
             <span className="inline-block mt-4 md:mt-0 shrink-0 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616]">
@@ -195,12 +195,12 @@ export default async function PartnerHQ() {
           </div>
           <div className="space-y-2.5 mb-4">
             <Row label="Every product and bundle you sell" value="50%" accent />
-            <Row label="Referred AI receptionist, every month it stays on" value="25% (up to 12 mo)" accent />
+            <Row label="Referred voice agent, every month it stays on" value="25% (up to 12 mo)" accent />
             <Row label="Builds and services you send our way" value="10%" />
             <Row label="Builds once you are closing regularly (Producer)" value="up to 20%" />
           </div>
           <p className="text-[#3A3733] font-body text-sm leading-relaxed">
-            Products are the easiest place to start: share a playbook, earn half the moment someone buys. The receptionist keeps paying you every month the business stays subscribed. Builds are the biggest single checks, and once you are closing them we move you to Producer rates. A commission becomes payable once the refund window passes, then it goes out on the next payout run. Founding partners keep their original terms. Please always tell people you earn a commission. It keeps this trustworthy, which is the whole point.
+            Products are the easiest place to start: share a playbook, earn half the moment someone buys. The voice agent keeps paying you every month the business stays subscribed. Builds are the biggest single checks, and once you are closing them we move you to Producer rates. A commission becomes payable once the refund window passes, then it goes out on the next payout run. Founding partners keep their original terms. Please always tell people you earn a commission. It keeps this trustworthy, which is the whole point.
           </p>
         </div>
       </main>

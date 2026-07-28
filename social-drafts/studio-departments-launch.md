@@ -71,7 +71,7 @@ IG hashtags (max 5): #smallbusiness #menudesign #restaurant #localbusiness #mont
 ## LAUNCH EMAIL to the existing list (Resend audience: audit takers, checklist + playbook downloaders, store buyers)
 
 Subject: The studio opened three doors. All free to try.
-Preheader: An AI receptionist, a commercial, and a print-ready menu. Sixty seconds each.
+Preheader: A voice agent, a commercial, and a print-ready menu. Sixty seconds each.
 
 Body:
 
@@ -79,7 +79,7 @@ Hi {firstName|there},
 
 We spent the week building three things you can try free, right now, each in about a minute:
 
-**1. Hear your own AI receptionist.** Tell Mr. Mustard about your business and talk to your trained front desk live, in your browser. It can even call your cell.
+**1. Hear your own voice agent.** Tell Mr. Mustard about your business and talk to your trained front desk live, in your browser. It can even call your cell.
 → modernmustardseed.com/sidekick
 
 **2. Watch your commercial get directed.** The free Screen Test: your logline, six shots, and three taglines, written for YOUR business on the spot.

@@ -44,11 +44,11 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
       subject: `${lead.business_name}, your demos are sitting there warm`,
       snippet: 'Demo drip 1 of 3: come back to the suite.',
       html: clientEmail({
-        preheader: 'The receptionist and command center you forged are still live at your hub.',
+        preheader: 'The voice agent and command center you forged are still live at your hub.',
         greeting: hi,
         body:
-          `<p>Yesterday you forged ${biz} a working AI receptionist and a command center${lead.site_demo_status === 'ready' ? ', and the website you queued is finished too' : ''}. They are still live at your private hub, answering to your name.</p>` +
-          `<p>Two minutes there is worth more than anything I could write here: call the receptionist and try to stump it, then slide the calculator to see what your missed calls have been costing. Most ${tradeWord} owners are surprised by that number.</p>`,
+          `<p>Yesterday you forged ${biz} a working voice agent and a command center${lead.site_demo_status === 'ready' ? ', and the website you queued is finished too' : ''}. They are still live at your private hub, answering to your name.</p>` +
+          `<p>Two minutes there is worth more than anything I could write here: call the voice agent and try to stump it, then slide the calculator to see what your missed calls have been costing. Most ${tradeWord} owners are surprised by that number.</p>`,
         cta,
         secondary,
         trackId: lead.id,
@@ -65,7 +65,7 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
         greeting: hi,
         body:
           `<p>In ${tradeWord}, the caller who gets voicemail does not leave a message. They dial the next name, and that ${escape(trade.jobWord)} is gone before you even knew it rang.</p>` +
-          `<p>The suite you forged for ${biz} exists to end exactly that: the receptionist answers every call in two rings, books the work, and texts you the details, and the command center shows you every one it caught. It is all still live on your hub, next to the calculator and the order card. If you want it on your real line, it is about a week from yes to live.</p>`,
+          `<p>The suite you forged for ${biz} exists to end exactly that: the voice agent answers every call in two rings, books the work, and texts you the details, and the command center shows you every one it caught. It is all still live on your hub, next to the calculator and the order card. If you want it on your real line, it is about a week from yes to live.</p>`,
         cta,
         secondary,
         trackId: lead.id,

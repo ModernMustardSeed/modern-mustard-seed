@@ -506,7 +506,7 @@ export default function FrontDeskHero() {
             href="/voice-agents"
             className="inline-flex items-center gap-2 min-h-[44px] font-mono text-[11px] font-bold text-[#161616]/70 hover:text-[#C4160B] transition-colors"
           >
-            <span aria-hidden="true">◐</span> Our AI voice agents speak 100+ languages. Hear one →
+            <span aria-hidden="true">◐</span> Our voice agents speak 100+ languages. Hear one →
           </Link>
         </div>
         </div>

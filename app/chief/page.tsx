@@ -69,7 +69,7 @@ export default function ChiefPage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-7">
               <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                A new flagship // Not a receptionist. Your right hand.
+                A new flagship // Not a voice agent. Your right hand.
               </span>
               <h1 className="font-display text-[2.7rem] sm:text-6xl xl:text-[4.2rem] font-bold mt-4 leading-[0.98] tracking-tight">
                 Your chief of staff, <em className="italic text-[#C4160B]">on call day and night.</em>

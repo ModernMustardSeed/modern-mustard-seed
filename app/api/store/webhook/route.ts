@@ -750,7 +750,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
             preheader: 'A demo-order renewal failed.',
             eyebrow: 'DEMO ORDER DUNNING',
             greeting: 'A renewal bounced.',
-            body: `<p>Subscription ${subId} (${what}) failed to renew for ${escapeHtmlSafe(dEmail)}.</p><p>Stripe retries on its own. If it does not recover in a few days, pause their receptionist minutes before they leak.</p>`,
+            body: `<p>Subscription ${subId} (${what}) failed to renew for ${escapeHtmlSafe(dEmail)}.</p><p>Stripe retries on its own. If it does not recover in a few days, pause their voice agent minutes before they leak.</p>`,
             signature: 'The Demo Hub',
           }),
         });

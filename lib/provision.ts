@@ -62,7 +62,7 @@ export function productSpecFor(kind: string, session: Stripe.Checkout.Session): 
     case 'sidekick':
       return {
         kind,
-        label: 'Your AI Receptionist',
+        label: 'Your Voice Agent',
         tier: tier ?? 'Sidekick',
         status: 'provisioning',
         homeUrl: '/portal',

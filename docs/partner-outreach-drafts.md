@@ -8,7 +8,7 @@ Structure per contact: pick the channel template, drop in the personalized opene
 
 ## MASTER VALUE PROP (the thing every message is built on)
 - Share genuinely good AI playbooks, earn **50% on every sale** (a $67 playbook pays you $33.50, a $197 bundle pays ~$98).
-- Refer a business that keeps an AI receptionist and earn **25% of what they pay, every month, for a year**.
+- Refer a business that keeps a voice agent and earn **25% of what they pay, every month, for a year**.
 - Send a custom build and earn 10%, up to 20% once you are closing them.
 - You get free access to everything so you only ever recommend what you have actually used, a personal tracked link, and a done-for-you playbook of what to say.
 - One honest rule for everyone. You always tell your audience you earn a commission.
@@ -29,21 +29,21 @@ Personalized openers:
 ## CHANNEL 2 — Solopreneur / agency / AI-native business creators (products-first + upsell)
 
 **DM / email:**
-> Hi [NAME], your take on building a lean AI-powered business lines up with everything we do at Modern Mustard Seed. We make the playbooks (AI-Ready Blueprint, AI-Native Business, AI Sales Machine) and, for the folks in your audience who run real businesses, a 24/7 AI receptionist and custom builds. Partner deal: 50% on the playbooks, plus 25% a month for a year on any business you send that keeps a receptionist. I would give you free access to all of it first. Worth a quick look?
+> Hi [NAME], your take on building a lean AI-powered business lines up with everything we do at Modern Mustard Seed. We make the playbooks (AI-Ready Blueprint, AI-Native Business, AI Sales Machine) and, for the folks in your audience who run real businesses, a 24/7 voice agent and custom builds. Partner deal: 50% on the playbooks, plus 25% a month for a year on any business you send that keeps a voice agent. I would give you free access to all of it first. Worth a quick look?
 
 Personalized openers:
-- **Jono Catliff:** "Your audience runs actual service businesses, which is rare and valuable. The playbooks are the easy front door, but the real money for you is the AI receptionist, 25% of their monthly bill for a year on everyone you refer."
-- **Brendan Jowett:** "Your community already builds voice agents. Ours is a done-for-you receptionist you can refer without building it yourself, and it pays you monthly. Feels complementary, not competitive."
+- **Jono Catliff:** "Your audience runs actual service businesses, which is rare and valuable. The playbooks are the easy front door, but the real money for you is the voice agent, 25% of their monthly bill for a year on everyone you refer."
+- **Brendan Jowett:** "Your community already builds voice agents. Ours is a done-for-you voice agent you can refer without building it yourself, and it pays you monthly. Feels complementary, not competitive."
 
 ## CHANNEL 3 — SMB / local-service / franchise advisors (recurring + builds LEAD)
 
 **Email (these are relationships, be specific and respectful):**
-> Hi [NAME], you have the trust of exactly the businesses we serve at Modern Mustard Seed: [contractors / MSPs / med spas / franchisees] who lose real money to missed calls. We build a 24/7 AI receptionist that answers, books, and takes messages, live on their own number in about a week. I would love to explore a partner arrangement where your [members / clients] get it at a fair rate and you earn 25% of the monthly, for a year, on each one, plus a share on any custom build. A prospect can hear their own branded receptionist answering 60 seconds from now via a free demo, so this is easy to show, not just tell. Open to a short call?
+> Hi [NAME], you have the trust of exactly the businesses we serve at Modern Mustard Seed: [contractors / MSPs / med spas / franchisees] who lose real money to missed calls. We build a 24/7 voice agent that answers, books, and takes messages, live on their own number in about a week. I would love to explore a partner arrangement where your [members / clients] get it at a fair rate and you earn 25% of the monthly, for a year, on each one, plus a share on any custom build. A prospect can hear their own branded voice agent answering 60 seconds from now via a free demo, so this is easy to show, not just tell. Open to a short call?
 
 Personalized openers:
-- **Josh Nelson (Seven Figure Agency):** "Your members are home-services marketing agencies. This is a done-for-you receptionist they can put in front of every contractor client without building it in GHL, and it is a new recurring line for them and for you."
+- **Josh Nelson (Seven Figure Agency):** "Your members are home-services marketing agencies. This is a done-for-you voice agent they can put in front of every contractor client without building it in GHL, and it is a new recurring line for them and for you."
 - **Nigel Moore (The Tech Tribe):** "MSPs resell software for a living. This is a clean new MRR product to put in front of clients they already manage."
-- **Terri Ross (APX):** "Med spas live and die on booking conversion. A branded AI receptionist that books consults 24/7 is a natural recommended vendor inside APX."
+- **Terri Ross (APX):** "Med spas live and die on booking conversion. A branded voice agent that books consults 24/7 is a natural recommended vendor inside APX."
 - **CEO Warrior:** "Every trades owner in your world is losing after-hours emergency calls. This answers them. A member-exclusive rate plus rev-share to you."
 
 ## CHANNEL 4 — GEO / SEO / ecommerce / DTC / Shopify creators (products-first)
@@ -64,7 +64,7 @@ Personalized openers:
 
 Personalized openers:
 - **Ashley June:** "You already did an episode on stewarding AI well as a Christian entrepreneur. These playbooks are the practical next step for the people who heard it and thought 'okay, now how?'"
-- **Lindsay Fletcher:** "Your audience owns local service businesses, so beyond the playbooks, the piece I would really want in your hands is the AI receptionist, it automates the front desk without losing the personal touch you teach."
+- **Lindsay Fletcher:** "Your audience owns local service businesses, so beyond the playbooks, the piece I would really want in your hands is the voice agent, it automates the front desk without losing the personal touch you teach."
 - **Jan Touchberry:** "You frame automation as stewardship and you teach affiliate marketing, so you already believe both halves of this. Would love to have you as a partner."
 
 ---

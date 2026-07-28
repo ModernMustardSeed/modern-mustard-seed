@@ -11,7 +11,7 @@ const site = DEMO_PRODUCTS.site;
 export const metadata = buildMetadata({
   title: 'Business Command Center: the AI back office for your whole business',
   description:
-    'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. $197/mo on its own, free with a website or AI receptionist. See yours built free.',
+    'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. $197/mo on its own, free with a website or voice agent. See yours built free.',
   path: '/command-center',
 });
 
@@ -33,7 +33,7 @@ const FAQ = [
   },
   {
     q: 'How much does it cost?',
-    a: `The command center is ${formatUsd(os.setupCents)} to set up plus ${formatUsd(os.monthlyCents)} a month on its own. It is FREE with either a new website or an AI receptionist, because a website needs a back office and so does a phone line, so its price is waived the moment you add either. Month to month, cancel anytime, no trials.`,
+    a: `The command center is ${formatUsd(os.setupCents)} to set up plus ${formatUsd(os.monthlyCents)} a month on its own. It is FREE with either a new website or a voice agent, because a website needs a back office and so does a phone line, so its price is waived the moment you add either. Month to month, cancel anytime, no trials.`,
   },
   {
     q: 'What does it replace?',
@@ -41,11 +41,11 @@ const FAQ = [
   },
   {
     q: 'How does it get my real data?',
-    a: 'When your AI receptionist goes live, every call flows in with a full transcript and a filed lead. When your website goes live, its traffic and form fills flow in too. Connect your Google for reviews, and your invoicing for the money view. The demo shows sample data; the real build wires your actual calls, site, and customers.',
+    a: 'When your voice agent goes live, every call flows in with a full transcript and a filed lead. When your website goes live, its traffic and form fills flow in too. Connect your Google for reviews, and your invoicing for the money view. The demo shows sample data; the real build wires your actual calls, site, and customers.',
   },
   {
     q: 'Can I buy just the command center?',
-    a: `Yes. You can order the command center on its own for ${formatUsd(os.setupCents)} setup plus ${formatUsd(os.monthlyCents)} a month. If you add a website (${formatUsd(site.monthlyCents)}/mo) or an AI receptionist, the command center comes free, so most owners take a paid piece and get the back office at no extra cost.`,
+    a: `Yes. You can order the command center on its own for ${formatUsd(os.setupCents)} setup plus ${formatUsd(os.monthlyCents)} a month. If you add a website (${formatUsd(site.monthlyCents)}/mo) or a voice agent, the command center comes free, so most owners take a paid piece and get the back office at no extra cost.`,
   },
   {
     q: 'How fast can I have it?',
@@ -66,14 +66,14 @@ function commandCenterJsonLd() {
         name: 'Business Command Center by Modern Mustard Seed',
         serviceType: 'AI business operations dashboard (CRM, call transcripts, website analytics, reviews, invoicing)',
         description:
-          'One AI back-office board that runs the whole business: every call transcribed, website traffic and leads, customers, reviews, invoices, and reports, wired together. Sold standalone or free with a website or AI receptionist.',
+          'One AI back-office board that runs the whole business: every call transcribed, website traffic and leads, customers, reviews, invoices, and reports, wired together. Sold standalone or free with a website or voice agent.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/command-center`,
         offers: {
           '@type': 'Offer',
           name: 'Business Command Center',
-          description: 'Standalone, or free with a website or AI receptionist.',
+          description: 'Standalone, or free with a website or voice agent.',
           price: Math.round(os.monthlyCents / 100),
           priceCurrency: 'USD',
           priceSpecification: [
@@ -124,7 +124,7 @@ export default function CommandCenterPage() {
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired
                 together on one board with an AI that sees all of it. {formatUsd(os.monthlyCents)}/mo on its own.
-                Free with a website or an AI receptionist.
+                Free with a website or a voice agent.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -266,7 +266,7 @@ export default function CommandCenterPage() {
                 {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo <span className="text-[#161616]/70">+ {formatUsd(DEMO_BUNDLE.setupCents)} setup</span>
               </p>
               <p className="font-body text-[13px] text-[#161616]/70 mt-3 leading-relaxed flex-1">
-                Receptionist + website + the command center that ties them together, free. One system, one login.
+                Voice Agent + website + the command center that ties them together, free. One system, one login.
               </p>
               <Link
                 href="/demos"
@@ -330,7 +330,7 @@ export default function CommandCenterPage() {
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Enter your business once and tour a working command center in about twenty seconds. Keep it for
-              {' '}{formatUsd(os.monthlyCents)}/mo, or get it free with a website or receptionist.
+              {' '}{formatUsd(os.monthlyCents)}/mo, or get it free with a website or voice agent.
             </p>
             <Link
               href="/demos"

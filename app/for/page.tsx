@@ -32,7 +32,7 @@ const collectionJsonLd = {
       name: 'AI for Restaurants. Phone Ordering and Missed-Call Revenue.',
       url: `${SITE.url}/for/restaurants`,
       description:
-        'AI voice agents for restaurants that take phone orders, book tables, and save the dinner rush from voicemail. Integrates with Toast, Square, and Clover.',
+        'voice agents for restaurants that take phone orders, book tables, and save the dinner rush from voicemail. Integrates with Toast, Square, and Clover.',
     },
   ],
 };

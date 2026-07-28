@@ -15,7 +15,7 @@ type Params = Promise<{ id: string }>;
  * Code headless on the Max plan (flat subscription cost, never the metered
  * API) to design and build a complete single-file site for the business. The
  * finished page ships at /demo/site/<id> with the lead's forged AI
- * receptionist overlaid as a live call widget, so one link shows them both.
+ * voice agent overlaid as a live call widget, so one link shows them both.
  *
  * This route also forges the VOICE demo first when it is missing, so one
  * click always yields the pair. Idempotent: queued/building/ready runs are

@@ -8,7 +8,7 @@ Video: sidekick-9x16.mp4 (Reels/Shorts/TikTok-format) or sidekick-16x9.mp4 (X/Li
 
 ## X (@modmustardseed)
 
-I built a machine that trains an AI receptionist for YOUR business in 60 seconds.
+I built a machine that trains a voice agent for YOUR business in 60 seconds.
 
 Type what you do. Watch Mr. Mustard drill him. Then he talks to you, live. He can even call your cell.
 
@@ -24,7 +24,7 @@ The average small business misses about 4 in 10 calls. Every one of those caller
 
 So we productized the fix, and we made the demo the product.
 
-Go to the Sidekick Forge, tell Mr. Mustard (our AI) about your business: what you do, what you charge, what customers ask. Sixty seconds later your own AI receptionist graduates and talks to you, live, in your browser. Ask it your hardest customer question. Or have it call your cell so you feel exactly what your customers would feel.
+Go to the Sidekick Forge, tell Mr. Mustard (our AI) about your business: what you do, what you charge, what customers ask. Sixty seconds later your own voice agent graduates and talks to you, live, in your browser. Ask it your hardest customer question. Or have it call your cell so you feel exactly what your customers would feel.
 
 If you love him: $297 setup + $197 a month, live on your real line within 7 days, hard-capped minutes so there is never a surprise bill, cancel anytime. The setup fee credits toward any custom build if you outgrow him.
 
@@ -38,9 +38,9 @@ modernmustardseed.com/sidekick
 
 Your business misses calls every week. Nights, weekends, lunch rush, that one hour everyone calls at once.
 
-Meet your Sidekick: an AI receptionist trained on YOUR business by Mr. Mustard, our in-house AI (yes, the one from the commercials).
+Meet your Sidekick: a voice agent trained on YOUR business by Mr. Mustard, our in-house AI (yes, the one from the commercials).
 
-Try the forge free: tell him about your business and 60 seconds later your own receptionist talks to you, live. He can even call your phone.
+Try the forge free: tell him about your business and 60 seconds later your own voice agent talks to you, live. He can even call your phone.
 
 Keep him and he answers 24/7, books appointments, and sends every call summary to your inbox. Installed by hand within a week.
 
@@ -53,9 +53,9 @@ modernmustardseed.com/sidekick
 Caption:
 He trains front desks. Yours graduates in 60 seconds. 🌱📞
 
-Tell Mr. Mustard about your business, watch the training montage, then TALK to your own AI receptionist, live. He can even call your cell. Free demo, no card.
+Tell Mr. Mustard about your business, watch the training montage, then TALK to your own voice agent, live. He can even call your cell. Free demo, no card.
 
 Link in bio → the Sidekick Forge
 
 Hashtags (5 max per house rule):
-#smallbusiness #ai #receptionist #entrepreneur #montana
+#smallbusiness #voiceagent #entrepreneur #montana

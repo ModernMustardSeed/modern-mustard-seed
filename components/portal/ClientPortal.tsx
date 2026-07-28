@@ -1345,7 +1345,7 @@ function ConnectionsCard() {
           <ul className="text-[#161616]/65 font-body text-sm mb-4 mt-2 space-y-1">
             <li>· Keep your hours, phone, and services correct everywhere at once</li>
             <li>· See whether the site is actually bringing you calls</li>
-            <li>· Let the receptionist book straight into your calendar</li>
+            <li>· Let the voice agent book straight into your calendar</li>
           </ul>
           <a
             href="/api/oauth/google/start"

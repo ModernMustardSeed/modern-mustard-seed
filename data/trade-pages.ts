@@ -2,7 +2,7 @@ import { TRADE_PRESETS, VOICE_SERVICES, TICKET_WORD, type OsTradeKey } from '@/d
 import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
 
 /**
- * The receptionist trade fleet: one landing page per trade at
+ * The voice agent trade fleet: one landing page per trade at
  * /voice-agents/[slug], rendered entirely from the trade intelligence that
  * already powers the forged OS demos (TRADE_PRESETS). No invented facts:
  * ticket values, services, and board names come from the same source the
@@ -17,7 +17,7 @@ import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
 export type TradePage = {
   slug: string;
   key: OsTradeKey;
-  /** Reads naturally after "AI receptionist for ..." */
+  /** Reads naturally after "voice agent for ..." */
   forWord: string;
 };
 
@@ -83,12 +83,12 @@ export function tradeFaqs(forWord: string, services: string, avgTicket: number, 
   const ticket = `$${avgTicket.toLocaleString()}`;
   return [
     {
-      q: `What does an AI receptionist for ${forWord.toLowerCase()} actually handle?`,
+      q: `What does a voice agent for ${forWord.toLowerCase()} actually handle?`,
       a: `It answers every call in seconds, day or night, in a natural voice trained on your business. For this trade that means: ${services.toLowerCase()}. It captures the caller's name, number, and job details, books the appointment or estimate, answers common questions, and texts you a summary the moment the call ends. You stay on the tools; nothing goes to voicemail.`,
     },
     {
       q: 'How fast can I hear it answering for my business?',
-      a: 'About 60 seconds. Modern Mustard Seed forges a free demo trained on your business name and services, and your own phone rings with the receptionist answering as your company. There is no meeting, no setup call, and no card required for the demo. You judge it with your own ears first.',
+      a: 'About 60 seconds. Modern Mustard Seed forges a free demo trained on your business name and services, and your own phone rings with the voice agent answering as your company. There is no meeting, no setup call, and no card required for the demo. You judge it with your own ears first.',
     },
     {
       q: 'What does a missed call really cost?',

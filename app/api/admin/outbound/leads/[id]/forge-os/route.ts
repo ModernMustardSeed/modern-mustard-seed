@@ -15,7 +15,7 @@ type Params = Promise<{ id: string }>;
  * template app personalized by the config frozen here (real name, trade,
  * city, phone, mined review pain, audit score; sample data does the rest).
  * Also makes sure the voice demo exists, since the OS demo features the
- * receptionist as its front door.
+ * voice agent as its front door.
  */
 export async function POST(_req: Request, { params }: { params: Params }) {
   const guard = await requireOutboundAdmin();

@@ -101,11 +101,11 @@
 
 ---
 
-## R5 · What an AI Receptionist Actually Sounds Like
+## R5 · What a Voice Agent Actually Sounds Like
 **Pillar:** Under the Hood · **Shot:** SCREEN · **Length:** 40s
 
 **HOOK (on screen: "This is a real AI answering a real call")**
-> This is not a demo video. I'm calling an AI receptionist right now and you're going to hear the whole thing.
+> This is not a demo video. I'm calling a voice agent right now and you're going to hear the whole thing.
 
 **SCRIPT**
 > [Place the call on speaker. Let it play. Do not talk over it.]
@@ -118,7 +118,7 @@
 
 **ON-SCREEN BEATS:** "Real call. Not a demo." → live captions of the AI's actual words → "Answered on ring 1" → "Booked it" → "Texted the owner"
 
-**CAPTION:** No editing, no script, just a real call to a real AI receptionist. Whatever you think about AI, this is what your after-hours customer is comparing you to now. Curious what you make of it. 👇
+**CAPTION:** No editing, no script, just a real call to a real voice agent. Whatever you think about AI, this is what your after-hours customer is comparing you to now. Curious what you make of it. 👇
 
 **ASK REEL (1 of 3 this month):** pinned comment gets the /sidekick link, phrased as "you can call one yourself here."
 

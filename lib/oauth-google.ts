@@ -21,7 +21,7 @@ import { SITE } from './seo';
  *    This is the single highest leverage local-search asset a small business owns, and
  *    it is what an AI assistant reads when someone asks "who does this near me".
  *  - Analytics: whether the site we built them is actually working.
- *  - Calendar: so the receptionist can book into their real calendar instead of taking
+ *  - Calendar: so the voice agent can book into their real calendar instead of taking
  *    a message.
  *
  * SECRETS: tokens are AES-256-GCM encrypted at rest (lib/crypto.ts), never logged, and

@@ -20,7 +20,7 @@ type Params = Promise<{ id: string }>;
  *     changes only what you asked).
  *   - os: remap their business OS demo's config (trade, owner, city, phone, the pain
  *     quote) from the instruction. Instant, token-cheap.
- *   - voice: rebuild their AI RECEPTIONIST with the instruction folded into its script.
+ *   - voice: rebuild their VOICE AGENT with the instruction folded into its script.
  *
  * The instruction here is Sarah's, from behind the admin gate, so it is trusted. The
  * site path still frames it as data for the builder, which costs nothing and keeps the
@@ -63,7 +63,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
     });
   };
 
-  /* ── VOICE: rebuild the receptionist with the instruction in its script. ── */
+  /* ── VOICE: rebuild the voice agent with the instruction in its script. ── */
   if (target === 'voice') {
     const res = await forgeLeadVoiceDemo(guard.supabase, l, { instruction, force: true });
     if (!res.ok) return NextResponse.json({ error: res.error }, { status: res.status });

@@ -117,11 +117,11 @@ export async function buildOutboundEmail(
 
   const rows = [
     withDemo &&
-      demoRow('🎙', 'Your AI receptionist', `It answers as ${escape(lead.business_name)}, right now, in your browser. Pretend you are a customer and try to stump it.`, lead.demo_url!),
+      demoRow('🎙', 'Your voice agent', `It answers as ${escape(lead.business_name)}, right now, in your browser. Pretend you are a customer and try to stump it.`, lead.demo_url!),
     withSite &&
-      demoRow('🌐', 'Your new website', `A real working draft designed for your business${withDemo ? ', with the receptionist living on it (gold button, bottom corner)' : ''}.`, lead.site_demo_url!),
+      demoRow('🌐', 'Your new website', `A real working draft designed for your business${withDemo ? ', with the voice agent living on it (gold button, bottom corner)' : ''}.`, lead.site_demo_url!),
     withOs &&
-      demoRow('⚙️', 'Your command center', 'Every call transcribed, your website traffic, customers, reviews, and money on one board, with an AI that knows it all. Included free with your site or receptionist.', lead.os_demo_url!),
+      demoRow('⚙️', 'Your command center', 'Every call transcribed, your website traffic, customers, reviews, and money on one board, with an AI that knows it all. Included free with your site or voice agent.', lead.os_demo_url!),
   ]
     .filter(Boolean)
     .join('');
@@ -175,7 +175,7 @@ export async function buildOutboundEmail(
       : withOs
         ? `I built ${lead.business_name} the software that runs the whole shop`
         : withDemo
-          ? `Your AI receptionist is ready to meet you, ${lead.business_name}`
+          ? `Your voice agent is ready to meet you, ${lead.business_name}`
           : hasAudit
             ? `A quick audit of ${domain || lead.business_name}`
             : 'Following up from Modern Mustard Seed';
@@ -197,8 +197,8 @@ export async function buildOutboundEmail(
             opts.note
               ? escape(opts.note)
               : includeAny
-                ? `Why build it for free? Because showing beats telling. I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss, and the demos make the case better than I can. And the command center that ties it all together, your calls, customers, and follow-ups on one board, now comes free with any website or receptionist, no extra charge. If you want it on your real line, the button inside sets it up in a week. No trial to sign up for, no card to test it: you already have the real thing in front of you.`
-                : `I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss. I build an AI receptionist that answers every call in two rings, books the job, and texts you the details. I would rather show you than pitch you, so tell me the word and I will build you a working one to try.`
+                ? `Why build it for free? Because showing beats telling. I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss, and the demos make the case better than I can. And the command center that ties it all together, your calls, customers, and follow-ups on one board, now comes free with any website or voice agent, no extra charge. If you want it on your real line, the button inside sets it up in a week. No trial to sign up for, no card to test it: you already have the real thing in front of you.`
+                : `I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss. I build a voice agent that answers every call in two rings, books the job, and texts you the details. I would rather show you than pitch you, so tell me the word and I will build you a working one to try.`
           }</p>` +
           (hasAudit && lead.audit_score != null && !includeAny
             ? `<p>I also ran your website through a quick audit. It came back at ${lead.audit_score}/100. Happy to walk you through the breakdown on a 10-minute call.</p>`
@@ -213,13 +213,13 @@ export async function buildOutboundEmail(
             : withOs && lead.os_demo_url
               ? { label: 'Open your command center', url: lead.os_demo_url }
               : withDemo && lead.demo_url
-                ? { label: 'Talk to your receptionist', url: lead.demo_url }
+                ? { label: 'Talk to your voice agent', url: lead.demo_url }
                 : { label: 'Run the free Website Audit', url: 'https://modernmustardseed.com/website-audit' },
         trackId: lead.id,
       });
 
   const summary = includeAny
-    ? `Sent forged demos: ${[withSite && 'website', withOs && 'business OS', withDemo && 'receptionist'].filter(Boolean).join(' + ')}.`
+    ? `Sent forged demos: ${[withSite && 'website', withOs && 'business OS', withDemo && 'voice agent'].filter(Boolean).join(' + ')}.`
     : hasAudit
       ? `Sent the website audit (${lead.audit_score ?? '?'}/100).`
       : `Sent an intro email${opts.source ? ` (${opts.source})` : ''}.`;
@@ -248,7 +248,7 @@ export type SendOutboundResult =
 /**
  * The one way an outbound lead gets emailed: the branded audit report when an
  * audit exists, a warm intro otherwise, optionally leading with their forged
- * demo links (the voice receptionist, the demo website, or both). Sends from
+ * demo links (the voice agent, the demo website, or both). Sends from
  * Sarah's address (replies flow back through the Zoho sync onto the thread),
  * embeds the open-tracking pixel, logs the message row WITH the Resend message
  * id so delivery is provable, and stamps last_email_at. Used by the follow-up

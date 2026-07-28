@@ -5,12 +5,12 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
 
 /**
  * The parent of the local fleet. Catches the region-wide query ("web design
- * Flathead Valley", "AI receptionist Montana") and passes authority down to the
+ * Flathead Valley", "voice agent Montana") and passes authority down to the
  * five city pages, which catch the town-level ones.
  */
 
 export const metadata = buildMetadata({
-  title: 'Web Design and AI Receptionists in Northwest Montana',
+  title: 'Web Design and Voice Agents in Northwest Montana',
   description: `A Kalispell studio building custom websites and 24/7 AI phone answering for businesses across the Flathead Valley: ${MONTANA_CITIES.map((c) => c.name).join(', ')}. Three working demos free before you pay. Call ${SITE.phone}.`,
   path: '/montana',
 });
@@ -18,7 +18,7 @@ export const metadata = buildMetadata({
 const FAQ = [
   {
     q: 'Where in Montana are you based?',
-    a: `Kalispell, in the Flathead Valley. We work in person across the valley and remotely with clients in every state. The phone is ${SITE.phone} and it is answered around the clock by the AI receptionist we build for other businesses.`,
+    a: `Kalispell, in the Flathead Valley. We work in person across the valley and remotely with clients in every state. The phone is ${SITE.phone} and it is answered around the clock by the voice agent we build for other businesses.`,
   },
   {
     q: 'Do you only work with Montana businesses?',
@@ -30,7 +30,7 @@ const FAQ = [
   },
   {
     q: 'Can I try it before paying?',
-    a: 'Yes. Enter your business once at the demo station and you get three working demos free: an AI receptionist you can talk to, a website designed from scratch, and a command center. No card, no meeting.',
+    a: 'Yes. Enter your business once at the demo station and you get three working demos free: a voice agent you can talk to, a website designed from scratch, and a command center. No card, no meeting.',
   },
 ];
 
@@ -64,7 +64,7 @@ export default function MontanaPage() {
             The AI studio in your valley, not in your inbox from three time zones away.
           </h1>
           <p className="mt-6 max-w-2xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-            We build custom websites and 24/7 AI receptionists for Northwest Montana businesses, from Polson to the
+            We build custom websites and 24/7 voice agents for Northwest Montana businesses, from Polson to the
             Canadian border. Based in Kalispell. You own everything we build.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">

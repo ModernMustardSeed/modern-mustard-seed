@@ -40,8 +40,8 @@ export type Industry = {
    *
    * Route by what the industry actually loses. Missed-call businesses go to
    * /sidekick (it rings their real phone in about 60 seconds). Build-shaped
-   * businesses go to /demos (receptionist + command center + a custom site).
-   * Never send a DTC brand to a receptionist pitch.
+   * businesses go to /demos (voice agent + command center + a custom site).
+   * Never send a DTC brand to a voice agent pitch.
    */
   forge: { href: '/sidekick' | '/demos'; label: string; blurb: string };
 };
@@ -52,13 +52,13 @@ export const FORGE_CTA = {
     href: '/sidekick' as const,
     label: 'Ring My Own Phone',
     blurb:
-      'Free, no account, no card. Enter your business and in about sixty seconds your phone rings with a receptionist answering as your company.',
+      'Free, no account, no card. Enter your business and in about sixty seconds your phone rings with a voice agent answering as your company.',
   },
   demos: {
     href: '/demos' as const,
     label: 'Forge My Free Demo',
     blurb:
-      'Free, no account, no card. Enter your business once and get a receptionist you can talk to, an operations command center, and a custom website built from scratch.',
+      'Free, no account, no card. Enter your business once and get a voice agent you can talk to, an operations command center, and a custom website built from scratch.',
   },
 };
 
@@ -104,7 +104,7 @@ export const industries: Industry[] = [
       {
         title: 'Lead Follow-Up Automation',
         body:
-          'Inbound seller leads from your bandit signs, mailers, or PPC routed through an AI voice agent that qualifies the lead, books the call, and drops it in your CRM with notes. Same agent fires the text and email sequences for warm leads that have not yet pulled the trigger. No lead dies in voicemail.',
+          'Inbound seller leads from your bandit signs, mailers, or PPC routed through a voice agent that qualifies the lead, books the call, and drops it in your CRM with notes. Same agent fires the text and email sequences for warm leads that have not yet pulled the trigger. No lead dies in voicemail.',
       },
     ],
     receipt: {
@@ -223,7 +223,7 @@ export const industries: Industry[] = [
     faqs: [
       {
         q: 'What AI tools should I be using as a Realtor in 2026?',
-        a: 'The four AI tools every active agent should be running by 2026 are: (1) virtual staging on every empty listing, (2) AI-written listing descriptions on every MLS upload, (3) an AI voice agent for buyer follow-up so no online inquiry dies in your inbox, and (4) a comp comparison tool that turns a seller meeting prep from an hour to ten minutes. Agents who skip these are competing on time and craft they do not have. Agents who run them write more deals from the same database.',
+        a: 'The four AI tools every active agent should be running by 2026 are: (1) virtual staging on every empty listing, (2) AI-written listing descriptions on every MLS upload, (3) a voice agent for buyer follow-up so no online inquiry dies in your inbox, and (4) a comp comparison tool that turns a seller meeting prep from an hour to ten minutes. Agents who skip these are competing on time and craft they do not have. Agents who run them write more deals from the same database.',
       },
       {
         q: 'How does virtual staging AI compare to traditional staging?',
@@ -238,7 +238,7 @@ export const industries: Industry[] = [
         a: 'Brokerage AI tools are useful for the average agent. They cap at the brokerage average. A custom AI tool is shaped to your specific volume, your niche, and your reputation. Top producers outgrow brokerage tools the same way top investors outgrow off-the-shelf analyzers. If you write 25 or more deals a year, the math on a custom build pencils out within a single year of use. If you write fewer, the brokerage tools are probably enough.',
       },
       {
-        q: 'Can the AI voice agent really book showings on my calendar?',
+        q: 'Can the voice agent really book showings on my calendar?',
         a: 'Yes. The voice agent integrates with Google Calendar, Calendly, Acuity, or Follow Up Boss. It checks your availability, books the showing into the right slot, sends the confirmation to the buyer, and drops the lead with notes into your CRM. If the buyer asks something the agent does not know, it routes the call to you or takes a message and emails you. You sound staffed even when you are at a closing.',
       },
       {
@@ -263,20 +263,20 @@ export const industries: Industry[] = [
     forge: FORGE_CTA.sidekick,
     name: 'Service Businesses',
     shortName: 'Service Pros',
-    metaTitle: 'AI for Service Businesses. AI Voice Agents and Automation, Built Custom.',
+    metaTitle: 'AI for Service Businesses. Voice Agents and Automation, Built Custom.',
     metaDescription:
-      'AI voice agents that answer 24/7, qualify leads, and book appointments. Custom AI tools for plumbers, HVAC, cleaning, med spas, and contractors. Shipped in weeks, not months.',
+      'voice agents that answer 24/7, qualify leads, and book appointments. Custom AI tools for plumbers, HVAC, cleaning, med spas, and contractors. Shipped in weeks, not months.',
     eyebrow: 'AI for Service Businesses',
     h1: 'AI for Service Businesses. Stop Missing the Calls That Pay the Bills',
     lede:
-      'The average small service business misses 24% of its inbound calls. Of those callers, 80% never call back. They call the next business on Google. If your average ticket is $400, even five missed calls a week is $80,000 a year on the floor. The fix is not hiring a $40,000-a-year evening receptionist. It is an AI voice agent that picks up 24/7, qualifies the lead, books the appointment, and writes the notes into your CRM. We build them custom. They sound human. They work on day one. And they pay for themselves in the first month.',
+      'The average small service business misses 24% of its inbound calls. Of those callers, 80% never call back. They call the next business on Google. If your average ticket is $400, even five missed calls a week is $80,000 a year on the floor. The fix is not hiring a $40,000-a-year evening voice agent. It is a voice agent that picks up 24/7, qualifies the lead, books the appointment, and writes the notes into your CRM. We build them custom. They sound human. They work on day one. And they pay for themselves in the first month.',
     buildsHeadline: 'What we build for service businesses',
     builds: [
       {
-        title: 'AI Voice Receptionist',
+        title: 'Voice Agent',
         caseStudySlug: 'voicestaff',
         body:
-          'A live AI voice agent on your real business number. Answers in your brand voice. Qualifies callers against your actual service area, ticket size, and emergency policy. Books appointments onto your calendar. Logs the call in your CRM. 24/7. Sounds human enough that callers do not realize they are talking to AI until the call is over.',
+          'A live voice agent on your real business number. Answers in your brand voice. Qualifies callers against your actual service area, ticket size, and emergency policy. Books appointments onto your calendar. Logs the call in your CRM. 24/7. Sounds human enough that callers do not realize they are talking to AI until the call is over.',
       },
       {
         title: 'Lead Follow-Up Workflow',
@@ -301,7 +301,7 @@ export const industries: Industry[] = [
     ],
     receipt: {
       caseStudySlug: 'voicestaff',
-      caseStudyTitle: 'VoiceStaff: AI Voice Agents That Actually Sound Human',
+      caseStudyTitle: 'VoiceStaff: Voice Agents That Actually Sound Human',
       headline: '24/7 phone coverage without a receptionist hire',
       body:
         'VoiceStaff is a production voice agent platform for service businesses. Real phone numbers. Real inbound calls. Real appointments booked. The architecture: Vapi handles the voice layer, Anthropic Claude handles the reasoning, Supabase stores the transcripts and CRM payloads, Trigger.dev orchestrates the follow-up sequences. The result for the businesses running on it: 24/7 phone coverage, zero missed leads, and an interface that lets the owner review every call as a transcript instead of a recording. Setup runs four to six weeks depending on integrations. The voice agent picks up on the first ring, identifies the caller, asks the qualifying questions you would ask, books the appointment in your calendar, and emails you a daily summary of everything it booked, declined, or routed to you. Most clients break even on the build cost inside the first 60 days. Some hit ROI on the first emergency call the agent saves on a Sunday night.',

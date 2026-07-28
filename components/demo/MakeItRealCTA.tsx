@@ -7,7 +7,7 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, DEMO_ORDER_KEYS, quoteDemoOrder, isCommandC
  * "Make it real" — order straight from the demo. Toggle any pieces, watch the
  * monthly total roll like the Recovery Calculator. Each is individually
  * purchasable; the Business Command Center shows its own price, STRUCK THROUGH
- * with "Free" the moment the website or receptionist is added (it rides free
+ * with "Free" the moment the website or voice agent is added (it rides free
  * with either). Both paid pieces unlock the whole-system bundle. Checkout
  * happens right here (Stripe); booking stays as a quiet second path.
  */
@@ -88,7 +88,7 @@ export default function MakeItRealCTA({
           Keep it. Order right here, live within a week.
         </h2>
         <p className="font-body text-[14px] text-[#FBF6EA]/60 mt-2">
-          Pick any piece, or all of it. Add the website or receptionist and your command center is free. We customize
+          Pick any piece, or all of it. Add the website or voice agent and your command center is free. We customize
           everything to {business} by hand and release it within 7 days.
         </p>
 
@@ -149,12 +149,12 @@ export default function MakeItRealCTA({
 
         {quote?.isBundle ? (
           <p className="mt-4 rounded-xl border-2 border-[#F5B700] bg-[#F5B700] px-4 py-2.5 font-sans text-[13px] font-bold text-[#161616]">
-            Whole system unlocked: receptionist + website for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
+            Whole system unlocked: voice agent + website for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
             (you save {formatUsd(savings.monthly)}/mo and {formatUsd(savings.setup)} on setup), command center free.
           </p>
         ) : osFree ? (
           <p className="mt-4 rounded-xl border-2 border-[#F5B700] bg-[#1F1F1F] px-4 py-2.5 font-sans text-[13px] font-bold text-[#F5B700]">
-            Command center free with your {picked.includes('site') ? 'website' : 'receptionist'}. That is {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo + {formatUsd(DEMO_PRODUCTS.os.setupCents)} setup, on the house.
+            Command center free with your {picked.includes('site') ? 'website' : 'voice agent'}. That is {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo + {formatUsd(DEMO_PRODUCTS.os.setupCents)} setup, on the house.
           </p>
         ) : null}
 
@@ -184,7 +184,7 @@ export default function MakeItRealCTA({
             </>
           ) : (
             <p className="font-body text-[14px] text-[#FBF6EA]/70">
-              Pick a piece above. Add the website or receptionist and your command center is free.
+              Pick a piece above. Add the website or voice agent and your command center is free.
             </p>
           )}
         </div>

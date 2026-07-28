@@ -258,7 +258,7 @@ export function IntegritySection() {
 export function ProofSection() {
   const stats = [
     { n: '30+', label: 'products and client systems shipped by this studio with Claude, most by one person' },
-    { n: '4', label: 'live AI voice agents answering real phone numbers, built the same way you will learn' },
+    { n: '4', label: 'live voice agents answering real phone numbers, built the same way you will learn' },
     { n: '1', label: 'method. The one Modern Mustard Seed runs every single day. Now with a coach.' },
   ];
   return (

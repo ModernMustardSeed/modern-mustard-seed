@@ -11,7 +11,7 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 export const metadata = buildMetadata({
   title: 'How We Work',
   description:
-    'How Modern Mustard Seed works: try any productized door free (a website, an AI receptionist, a command center, and more) then keep it monthly, or scope a fully custom build. Fixed scope, fixed timeline, and you own everything on launch day.',
+    'How Modern Mustard Seed works: try any productized door free (a website, a voice agent, a command center, and more) then keep it monthly, or scope a fully custom build. Fixed scope, fixed timeline, and you own everything on launch day.',
   path: '/work-with-us',
 });
 
@@ -126,7 +126,7 @@ export default function WorkWithUsPage() {
                 <ul className="mt-5 space-y-2.5">
                   {[
                     ['🌐', 'Website', `${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo + ${formatUsd(DEMO_PRODUCTS.site.setupCents)} setup`],
-                    ['🎙', 'AI receptionist', `${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo + ${formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup`],
+                    ['🎙', 'voice agent', `${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo + ${formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup`],
                     ['⚙', 'Command center', 'Free with either'],
                     ['✦', 'The whole system', `${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + ${formatUsd(DEMO_BUNDLE.setupCents)} setup`],
                   ].map(([icon, name, price]) => (

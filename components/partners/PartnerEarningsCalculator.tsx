@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 
 /**
  * The signature moment on /partners: makes the commission ladder tangible.
- * Three honest levers (products at 50%, referred receptionists at 25%/mo,
+ * Three honest levers (products at 50%, referred voice agents at 25%/mo,
  * builds at 10%) roll up into a live monthly number, with the recurring piece
  * called out because that is the part that keeps paying. Blended averages, no
  * hype: a partner sees a real, defensible number, not a fantasy.
@@ -12,7 +12,7 @@ import { useState, useEffect, useRef } from 'react';
 
 // Blended partner earnings per unit (conservative, stated on the page).
 const PRODUCT_CUT = 45; // ~50% of a blended ~$90 playbook/bundle order
-const SUB_CUT_MO = 60; //  ~25% of a blended ~$240/mo AI receptionist
+const SUB_CUT_MO = 60; //  ~25% of a blended ~$240/mo voice agent
 const BUILD_CUT = 600; //  ~10% of a blended ~$6,000 build
 
 function useCountUp(target: number, ms = 500) {
@@ -114,7 +114,7 @@ export default function PartnerEarningsCalculator() {
               accent="#1E50C8"
             />
             <Stepper
-              label="Businesses you put on an AI receptionist"
+              label="Businesses you put on a voice agent"
               hint="25% of what they pay, every month, for a year"
               value={subs}
               onChange={setSubs}
@@ -142,11 +142,11 @@ export default function PartnerEarningsCalculator() {
             <div className="mt-5 flex items-start gap-3 bg-[#F5B700] border-2 border-[#161616] rounded-xl p-4">
               <span className="text-lg leading-none" aria-hidden>↻</span>
               <p className="font-body text-sm text-[#161616] leading-snug">
-                <span className="font-bold">{money(shownRecurring)} of that is locked in for the year</span> from the receptionists alone. Recurring keeps paying while you go find the next one.
+                <span className="font-bold">{money(shownRecurring)} of that is locked in for the year</span> from the voice agents alone. Recurring keeps paying while you go find the next one.
               </p>
             </div>
             <p className="text-[#FBF6EA]/45 font-body text-[11px] mt-4 leading-relaxed">
-              Estimates on blended averages (playbook ~$45 to you, receptionist ~$60/mo, build ~$600). Your link, your real numbers, no cap on any of it.
+              Estimates on blended averages (playbook ~$45 to you, voice agent ~$60/mo, build ~$600). Your link, your real numbers, no cap on any of it.
             </p>
           </div>
         </div>

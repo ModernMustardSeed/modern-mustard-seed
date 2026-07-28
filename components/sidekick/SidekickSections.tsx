@@ -59,7 +59,7 @@ export function FreeCommandCenter() {
         <p className="font-body text-[#161616]/70 text-center max-w-2xl mx-auto mt-4 leading-relaxed">
           Every call your Sidekick answers lands transcribed on your Business Command Center, with the caller already
           filed as a lead. That back office is {formatUsd(os.monthlyCents)}/mo on its own, and free with your
-          receptionist. Add a website and the whole system runs on one login.
+          voice agent. Add a website and the whole system runs on one login.
         </p>
 
         {/* The value, made plain */}
@@ -90,7 +90,7 @@ export function FreeCommandCenter() {
             <span className="text-2xl leading-none" aria-hidden="true">🌐</span>
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">Give him a home</span>
             <h3 className="font-display italic font-black text-xl text-[#161616] mt-1">A Website That Works</h3>
-            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Your Sidekick answers right on a site built to capture the lead. Website plus receptionist plus the free command center is the whole system.</p>
+            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Your Sidekick answers right on a site built to capture the lead. Website plus voice agent plus the free command center is the whole system.</p>
             <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span></span>
           </Link>
         </div>
@@ -108,7 +108,7 @@ export function Boundaries() {
           What he handles. What he hands to you.
         </h2>
         <p className="font-body text-[#FBF6EA]/60 text-center max-w-2xl mx-auto mt-4">
-          A receptionist who never bluffs is worth more than one who always answers. This table is part of the deal, in writing.
+          A voice agent who never bluffs is worth more than one who always answers. This table is part of the deal, in writing.
         </p>
         <div className="grid md:grid-cols-2 gap-6 mt-12">
           <div className="rounded-2xl border-2 border-[#F5B700] bg-[#161616] p-7">

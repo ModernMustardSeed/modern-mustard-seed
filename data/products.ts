@@ -270,7 +270,7 @@ export const products: Product[] = [
     name: 'The Voice Concierge Business Playbook',
     category: 'Build with Claude',
     pitch:
-      'Build and sell 24/7 AI phone agents to local businesses and franchises as a $500 to $2,500 a month recurring service. The exact system, tech, pricing, and sales scripts we use to ship these.',
+      'Build and sell 24/7 voice agents to local businesses and franchises as a $500 to $2,500 a month recurring service. The exact system, tech, pricing, and sales scripts we use to ship these.',
     whatsInside:
       'The complete business-in-a-box for the biggest unclaimed opportunity in local services: every plumber, painter, restaurant, and clinic is losing money to missed calls, and almost none of them have a voice AI yet. This is the system we use at Modern Mustard Seed to build and sell branded 24/7 voice concierges (the same approach behind our restaurant, home-services, and painting demos). You get the missed-call economics that make the sale obvious, the white-space map of who to target first, the full build runbook (one skeleton, every vertical), the Vapi setup appendix with the exact API calls and gotchas, a pricing and packaging model, the demo-is-the-pitch sales motion, objection handling, and a complete swipe file. It ships with an interactive HTML companion app: an ROI and pricing calculator that sizes any prospect in seconds, a build checklist that saves your progress, a vertical-remap worksheet, and every outreach template with one-tap copy. Built for operators who want a recurring-revenue AI business, not another course.',
     toc: [

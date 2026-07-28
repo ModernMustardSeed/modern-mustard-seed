@@ -184,7 +184,7 @@ export const OS_PRESETS: Record<Niche, OsPreset> = {
 export const OS_AUTOMATIONS: { icon: string; title: string; desc: string; on: boolean }[] = [
   { icon: 'bolt', title: 'Missed call rescue', desc: 'Any call that slips through gets an instant text-back with your booking link.', on: true },
   { icon: 'star', title: '5-star chase', desc: 'Every finished {job} triggers a friendly review request. Happy customers become Google stars.', on: true },
-  { icon: 'phone', title: '60-second callback', desc: 'A new web lead gets a call from your AI receptionist within a minute, while they are still looking at your site.', on: true },
+  { icon: 'phone', title: '60-second callback', desc: 'A new web lead gets a call from your voice agent within a minute, while they are still looking at your site.', on: true },
   { icon: 'chart', title: 'Friday flight report', desc: 'Every Friday at 5 PM: calls caught, {job}s booked, revenue rescued, texted straight to you.', on: false },
   { icon: 'bell', title: 'No-show shield', desc: 'Tomorrow’s {job}s get a reminder text tonight. Empty slots get offered to the waitlist.', on: false },
   { icon: 'funnel', title: 'Ad-to-schedule pipe', desc: 'Leads from your ads land in Customers automatically, tagged with which ad brought them in.', on: true },

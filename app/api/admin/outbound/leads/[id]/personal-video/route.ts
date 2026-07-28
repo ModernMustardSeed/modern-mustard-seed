@@ -8,7 +8,7 @@ type Params = Promise<{ id: string }>;
 
 /**
  * A lead's PERSONAL VIDEO: the face-to-camera take Sarah records in the booth
- * for one lead ("I Called Your Receptionist"), attached to that lead so it
+ * for one lead ("I Called Your Voice Agent"), attached to that lead so it
  * leads their demo hub and their demo email.
  *
  * No new column: the attachment IS a file at a lead-scoped path in the private

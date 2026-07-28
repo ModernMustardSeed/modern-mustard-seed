@@ -87,7 +87,7 @@ type Body = {
   /** phone mode */
   runId?: string;
   phone?: string;
-  /** receptionist voice: 'female' | 'male' (default). */
+  /** agent voice: 'female' | 'male' (default). */
   voice?: 'female' | 'male';
   /** honeypot: humans never fill this */
   website?: string;

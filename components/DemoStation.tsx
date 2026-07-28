@@ -19,7 +19,7 @@ const NICHE_OPTIONS = [
 ];
 
 const FORGE_LINES = [
-  'Hiring your receptionist...',
+  'Hiring your voice agent...',
   'Teaching her your business...',
   'Wiring your command center...',
   'Briefing the designer on your website...',
@@ -173,7 +173,7 @@ export default function DemoStation() {
       </label>
 
       {/* The notes go straight into the forge: the website brief, the command
-          center, and the receptionist's script all read them. */}
+          center, and the voice agent's script all read them. */}
       <label className="block mt-4">
         <span className={labelCls}>
           Anything we should know?
@@ -206,7 +206,7 @@ export default function DemoStation() {
       {phase === 'error' && error ? <p className="font-body text-[13px] text-[#C4160B] text-center mt-3">{error}</p> : null}
       <p className="font-body text-[12px] text-[#161616]/70 text-center mt-3.5 leading-relaxed">
         No card, no meeting, no strings. If you love them:{' '}
-        the website or receptionist from {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, the command center from{' '}
+        the website or voice agent from {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, the command center from{' '}
         {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo (free with either), or the whole system for{' '}
         {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo. Month to month.
       </p>

@@ -5,15 +5,15 @@ import { SectionTitle, StatCard, hash, useOs } from './os-kit';
 
 /**
  * CALENDAR & BOOKING: the self-contained scheduling system at the heart of the
- * OS. One calendar that three things write into: the AI receptionist (books
+ * OS. One calendar that three things write into: the voice agent (books
  * calls straight in), the website's Book button, and the owner. Sample data is
  * deterministic (hash-seeded, hydration-safe). The pitch is "no double-bookings,
- * ever, and you never touch it" — the receptionist and the website keep it full.
+ * ever, and you never touch it" — the voice agent and the website keep it full.
  */
 
-type Appt = { hour: number; mins: number; title: string; who: string; source: 'Receptionist' | 'Website' | 'You' };
+type Appt = { hour: number; mins: number; title: string; who: string; source: 'Voice Agent' | 'Website' | 'You' };
 
-const SOURCE_ICON: Record<Appt['source'], string> = { Receptionist: '🎙', Website: '🌐', You: '✋' };
+const SOURCE_ICON: Record<Appt['source'], string> = { 'Voice Agent': '🎙', Website: '🌐', You: '✋' };
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]; // 8a–5p working hours
 
@@ -35,16 +35,16 @@ export default function CalendarTab() {
     preset.todayJobs.forEach((j, i) => {
       const hr = parseInt(j.time, 10);
       const clock = hr < 8 ? hr + 12 : hr; // presets use 24h-ish times
-      out.push({ hour: Math.min(17, Math.max(8, clock)), mins: 0, title: j.title, who: j.who, source: i === 0 ? 'Receptionist' : i === 1 ? 'Website' : 'You' });
+      out.push({ hour: Math.min(17, Math.max(8, clock)), mins: 0, title: j.title, who: j.who, source: i === 0 ? 'Voice Agent' : i === 1 ? 'Website' : 'You' });
     });
-    // A couple more the receptionist caught, on open hours.
+    // A couple more the voice agent caught, on open hours.
     const extras: Array<[number, string]> = [
       [9, preset.customers[0]?.name ?? 'New caller'],
       [15, preset.customers[1]?.name ?? 'New caller'],
     ];
     for (const [hr, who] of extras) {
       if (!out.some((a) => a.hour === hr)) {
-        out.push({ hour: hr, mins: 30 * ((h >> hr) % 2), title: `${preset.jobWord[0].toUpperCase()}${preset.jobWord.slice(1)}`, who, source: 'Receptionist' });
+        out.push({ hour: hr, mins: 30 * ((h >> hr) % 2), title: `${preset.jobWord[0].toUpperCase()}${preset.jobWord.slice(1)}`, who, source: 'Voice Agent' });
       }
     }
     return out.sort((a, b) => a.hour * 60 + a.mins - (b.hour * 60 + b.mins));
@@ -56,13 +56,13 @@ export default function CalendarTab() {
 
   const booked = appts.length;
   const openSlots = HOURS.filter((h) => !appts.some((a) => a.hour === h)).length;
-  const byAi = appts.filter((a) => a.source === 'Receptionist').length;
+  const byAi = appts.filter((a) => a.source === 'Voice Agent').length;
   const fillPct = Math.round((booked / (booked + openSlots || 1)) * 100);
 
   const h = hash(config.business + 'cal');
   const NAMES = ['Marisol V.', 'Tyler B.', 'Dev Patel', 'Karen L.', 'Sofia M.', 'Grant W.'];
 
-  // Watch the receptionist drop a booking into an open slot, live.
+  // Watch the voice agent drop a booking into an open slot, live.
   const catchBooking = (at: { x: number; y: number }) => {
     if (busy) return;
     const open = HOURS.filter((hr) => !appts.some((a) => a.hour === hr));
@@ -71,16 +71,16 @@ export default function CalendarTab() {
     const slot = open[(h + appts.length) % open.length];
     const who = NAMES[(h + appts.length) % NAMES.length];
     window.setTimeout(() => {
-      const fresh: Appt = { hour: slot, mins: 0, title: `${preset.jobWord[0].toUpperCase()}${preset.jobWord.slice(1)}`, who, source: 'Receptionist' };
+      const fresh: Appt = { hour: slot, mins: 0, title: `${preset.jobWord[0].toUpperCase()}${preset.jobWord.slice(1)}`, who, source: 'Voice Agent' };
       setAppts((a) => [...a, fresh].sort((x, y) => x.hour - y.hour));
       fireBurst(at.x, at.y);
-      say(`${who} just booked ${label(slot)} through your receptionist. You did not lift a finger.`);
+      say(`${who} just booked ${label(slot)} through your voice agent. You did not lift a finger.`);
       setBusy(false);
     }, 700);
   };
 
   const chip = (src: Appt['source']) => {
-    const on = src === 'Receptionist';
+    const on = src === 'Voice Agent';
     return (
       <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.08em] rounded-full px-2 py-0.5 border" style={{ color: on ? theme.accentInk : theme.dim, background: on ? theme.accent : 'transparent', borderColor: on ? theme.accent : theme.line }}>
         {SOURCE_ICON[src]} {src === 'You' ? 'You' : src}
@@ -90,10 +90,10 @@ export default function CalendarTab() {
 
   return (
     <div className="max-w-3xl">
-      <SectionTitle title="Calendar" sub="One calendar your receptionist, your website, and you all book into. No double-bookings, ever, and you barely touch it." />
+      <SectionTitle title="Calendar" sub="One calendar your voice agent, your website, and you all book into. No double-bookings, ever, and you barely touch it." />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-        <StatCard label="Booked today" value={String(booked)} sub={`${byAi} by your receptionist`} i={0} pulse={byAi > 0} />
+        <StatCard label="Booked today" value={String(booked)} sub={`${byAi} by your voice agent`} i={0} pulse={byAi > 0} />
         <StatCard label="Open slots" value={String(openSlots)} sub="the AI is filling them" i={1} />
         <StatCard label="Filled" value={`${fillPct}%`} sub="of your working day" i={2} />
         <StatCard label="No-shows" value="0" sub="every booking gets reminders" i={3} />
@@ -114,7 +114,7 @@ export default function CalendarTab() {
         </div>
         <div className="flex items-center gap-2 mt-3 flex-wrap">
           <span className="text-[11.5px]" style={{ color: theme.dim }}>Everything writes here:</span>
-          <span className="text-[11px] font-semibold rounded-full px-2.5 py-1 border" style={{ color: theme.text, borderColor: theme.line }}>🎙 Receptionist</span>
+          <span className="text-[11px] font-semibold rounded-full px-2.5 py-1 border" style={{ color: theme.text, borderColor: theme.line }}>🎙 Voice Agent</span>
           <span className="text-[11px] font-semibold rounded-full px-2.5 py-1 border" style={{ color: theme.text, borderColor: theme.line }}>🌐 Website Book button</span>
           <span className="text-[11px] font-semibold rounded-full px-2.5 py-1 border" style={{ color: theme.text, borderColor: theme.line }}>🔗 Text it to anyone</span>
         </div>
@@ -142,7 +142,7 @@ export default function CalendarTab() {
               </div>
               <div className="flex-1 border-l p-1.5" style={{ borderColor: theme.line }}>
                 {a ? (
-                  <div className="rounded-lg px-3 py-2 flex items-center gap-2 animate-[osIn_.35s_ease-out_both]" style={{ background: a.source === 'Receptionist' ? theme.accentSoft : theme.panelSoft, border: `1px solid ${a.source === 'Receptionist' ? theme.accent : theme.line}` }}>
+                  <div className="rounded-lg px-3 py-2 flex items-center gap-2 animate-[osIn_.35s_ease-out_both]" style={{ background: a.source === 'Voice Agent' ? theme.accentSoft : theme.panelSoft, border: `1px solid ${a.source === 'Voice Agent' ? theme.accent : theme.line}` }}>
                     <div className="min-w-0 flex-1">
                       <p className="text-[13px] font-semibold truncate" style={{ color: theme.text }}>{a.title} · {a.who}</p>
                     </div>
@@ -180,7 +180,7 @@ export default function CalendarTab() {
       </div>
 
       <p className="text-[12px] mt-3" style={{ color: theme.dim }}>
-        Sample calendar. In the real build it syncs both ways with your Google Calendar, your receptionist books into it live, and every appointment gets a confirmation and reminder text on its own.
+        Sample calendar. In the real build it syncs both ways with your Google Calendar, your voice agent books into it live, and every appointment gets a confirmation and reminder text on its own.
       </p>
     </div>
   );

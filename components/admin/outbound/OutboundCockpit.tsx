@@ -375,12 +375,12 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     await logOutcome('demo_booked', { next_action_at: iso, next_action: 'Demo', disposition: notes || undefined });
     if (forge && lead) {
       try {
-        push('Forging their AI receptionist and queuing their demo website...');
+        push('Forging their voice agent and queuing their demo website...');
         // forge-site forges the voice demo first, then queues the website
         // build on the worker. One call, both demos.
         const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-site`, { method: 'POST' });
         if (res.lead) setLead(res.lead);
-        push('Receptionist forged; the website builds itself in the background. Send both before the meeting.');
+        push('Voice Agent forged; the website builds itself in the background. Send both before the meeting.');
       } catch (e) {
         push(e instanceof Error ? e.message : 'Forge failed, you can retry from the deck.', 'error');
       }

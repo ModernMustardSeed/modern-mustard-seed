@@ -63,7 +63,7 @@ export function buildRebuildBrief(input: RebuildInput): string {
     'business, ignore that field entirely and build the site without it.',
     '',
     'THIS IS THE PAID, REAL WEBSITE. It goes live on their own domain. Follow the real-site rules:',
-    'no demo pitch, no receptionist sales section, no sample captions, no invented facts.',
+    'no demo pitch, no voice agent sales section, no sample captions, no invented facts.',
     '',
     '## The business',
     `- Name: ${input.business}`,
@@ -99,8 +99,8 @@ export function buildRebuildBrief(input: RebuildInput): string {
     '## What they bought',
     `- ${input.products.join(', ')}`,
     boughtVoice
-      ? '- They DID buy the AI receptionist. Their phone is answered around the clock, so make the number prominent and say plainly that calls are always answered. Do not explain how, do not mention AI, do not brand it.'
-      : '- They did NOT buy the receptionist. Present their phone number normally. No claims about answering.',
+      ? '- They DID buy the voice agent. Their phone is answered around the clock, so make the number prominent and say plainly that calls are always answered. Do not explain how, do not mention AI, do not brand it.'
+      : '- They did NOT buy the voice agent. Present their phone number normally. No claims about answering.',
     '',
     'Do not add a noindex tag and do not add a canonical link. The publisher writes the canonical,',
     'the LocalBusiness schema, the sitemap and the llms.txt from verified facts after you finish.',

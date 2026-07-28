@@ -55,9 +55,9 @@ function milestonesFor(keys: string[]): Array<{ title: string; detail: string; d
     ms.push({ title: 'Live on your domain', detail: 'We put it on your own web address and keep it running.', done: false });
   }
   if (has('voice')) {
-    ms.push({ title: 'Your receptionist goes live', detail: 'The voice from your demo, answering your real number around the clock.', done: false });
+    ms.push({ title: 'Your voice agent goes live', detail: 'The voice from your demo, answering your real number around the clock.', done: false });
   }
-  // The command center rides free with every order (a website and a receptionist
+  // The command center rides free with every order (a website and a voice agent
   // both need a back office), so it is always part of the build, never gated.
   ms.push({ title: 'Your command center, included free', detail: 'Wired to your real calls and transcripts, your website traffic, customers, and reviews.', done: false });
   return ms;
@@ -170,7 +170,7 @@ export async function provisionDemoOrder(sb: SupabaseClient, order: DemoOrderRow
       .maybeSingle();
     const files = [
       lead?.site_demo_url ? { label: 'Your website demo (the one you toured)', url: lead.site_demo_url, kind: 'site' } : null,
-      lead?.demo_url ? { label: 'Your AI receptionist demo', url: lead.demo_url, kind: 'link' } : null,
+      lead?.demo_url ? { label: 'Your voice agent demo', url: lead.demo_url, kind: 'link' } : null,
       lead?.os_demo_url ? { label: 'Your command center demo', url: lead.os_demo_url, kind: 'link' } : null,
     ].filter(Boolean) as Array<{ label: string; url: string; kind: string }>;
     if (files.length) {

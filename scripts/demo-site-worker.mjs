@@ -8,7 +8,7 @@
  * the CLI can only ever use the logged-in subscription, never metered credits.
  *
  * The finished HTML is stored back on the row and served by the site at
- * /demo/site/<id>, where the lead's forged AI receptionist (Sidekick voice
+ * /demo/site/<id>, where the lead's forged voice agent (Sidekick voice
  * demo) is overlaid as a live call widget. One link, both demos.
  *
  * Prereqs on the machine that runs this:
@@ -387,7 +387,7 @@ async function storeFinished(job, html) {
     subject: isEdit(job) ? 'Website demo updated' : 'Website demo live',
     snippet: isEdit(job)
       ? `Their demo website was reforged from your prompt. Live at ${siteUrl}`
-      : `Their demo website is live at ${siteUrl} (AI receptionist on board).`,
+      : `Their demo website is live at ${siteUrl} (voice agent on board).`,
     read: true,
     occurred_at: new Date().toISOString(),
   });

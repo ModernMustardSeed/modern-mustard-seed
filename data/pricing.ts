@@ -147,7 +147,7 @@ export const pricingFaq = [
   },
   {
     q: 'I do not know much about AI. Is this still for me?',
-    a: 'Yes. A website or an AI receptionist does not require you to know any AI at all, and a custom build starts with us figuring out what to build together. You bring the vision and the domain knowledge. We bring the technical decisions.',
+    a: 'Yes. A website or a voice agent does not require you to know any AI at all, and a custom build starts with us figuring out what to build together. You bring the vision and the domain knowledge. We bring the technical decisions.',
   },
   {
     q: 'What if my project does not fit a productized door?',

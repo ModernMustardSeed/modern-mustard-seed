@@ -18,7 +18,7 @@ import { useState } from 'react';
 type Asset = { url: string; name: string; kind: 'logo' | 'photo' | 'product' };
 
 const FIELDS: { key: string; label: string; hint: string; placeholder: string; area?: boolean; products?: string[] }[] = [
-  { key: 'hours', label: 'Your business hours', hint: 'So the receptionist knows when you are open and the site says the truth.', placeholder: 'Mon-Fri 8-5, Sat 9-noon, closed Sunday' },
+  { key: 'hours', label: 'Your business hours', hint: 'So the voice agent knows when you are open and the site says the truth.', placeholder: 'Mon-Fri 8-5, Sat 9-noon, closed Sunday' },
   { key: 'services', label: 'What you sell or do', hint: 'The 3-6 things customers actually call about.', placeholder: 'Water heater replacement, drain cleaning, emergency calls...' },
   { key: 'greeting', label: 'How should the phone be answered?', hint: 'The exact first line, in your words.', placeholder: 'Thanks for calling Rico Roofing, this is Rosie, how can I help?', products: ['voice', 'bundle'] },
   { key: 'domain', label: 'Your website domain', hint: 'The one you own. If you do not have one yet, say so and we will get it for you.', placeholder: 'ricoroofing.com', products: ['site', 'bundle'] },

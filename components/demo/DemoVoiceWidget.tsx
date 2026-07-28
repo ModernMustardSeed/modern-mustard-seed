@@ -13,7 +13,7 @@ export type VoiceState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 /**
  * The one voice call button shared by every forged-demo surface (the demo
  * website overlay and the business OS demo): starts a live web call with the
- * lead's own receptionist. Same Vapi web pattern as DemoCallExperience.
+ * lead's own voice agent. Same Vapi web pattern as DemoCallExperience.
  */
 export default function DemoVoiceWidget({
   business,
@@ -123,7 +123,7 @@ export default function DemoVoiceWidget({
           <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700] animate-pulse" />
           <div className="text-left">
             <p className="font-sans font-bold uppercase tracking-[0.1em] text-[11px] text-[#FBF6EA]">Live · {mmss}</p>
-            <p className="font-body text-[11px] text-[#FBF6EA]/60">{business}&apos;s AI receptionist</p>
+            <p className="font-body text-[11px] text-[#FBF6EA]/60">{business}&apos;s voice agent</p>
           </div>
           <button
             onClick={stop}

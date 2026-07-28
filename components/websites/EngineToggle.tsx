@@ -20,7 +20,7 @@ const BROCHURE_NOTES = [
   'The phone rings after hours. Nobody answers.',
 ];
 const ENGINE_NOTES = [
-  'An AI receptionist answers every call, 24/7.',
+  'A voice agent answers every call, 24/7.',
   'Every visitor is captured and followed up in seconds.',
   'Leads land in your command center while you sleep.',
 ];

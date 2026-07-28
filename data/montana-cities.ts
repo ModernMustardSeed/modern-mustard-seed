@@ -5,7 +5,7 @@ import { SITE } from '@/lib/seo';
  *
  * Why this exists: as of 2026-07-25 the site had ~116 indexable URLs and not ONE
  * of them targeted a place. Every product page competed nationally against
- * venture-funded competitors for terms like "AI receptionist," which is not a
+ * venture-funded competitors for terms like "voice agent," which is not a
  * winnable fight. "Web design Kalispell" and "AI phone answering Whitefish" are.
  *
  * ⚠️ THE DOORWAY-PAGE RULE. Google demotes near-duplicate city pages where only
@@ -163,23 +163,23 @@ export function cityFaqs(city: MontanaCity): { q: string; a: string }[] {
   return [
     {
       q: `Do you actually work with businesses in ${city.name}?`,
-      a: `Yes. Modern Mustard Seed is based in Kalispell, ${city.slug === 'kalispell' ? 'so this is home' : `about a ${driveTime(city)} drive from ${city.name}`}, and we work across the Flathead Valley including ${city.alsoServes.slice(0, 3).join(', ')}. You can call us at ${SITE.phone} and talk to a person, or to the AI receptionist after hours, which is one of the things we build.`,
+      a: `Yes. Modern Mustard Seed is based in Kalispell, ${city.slug === 'kalispell' ? 'so this is home' : `about a ${driveTime(city)} drive from ${city.name}`}, and we work across the Flathead Valley including ${city.alsoServes.slice(0, 3).join(', ')}. You can call us at ${SITE.phone} and talk to a person, or to the voice agent after hours, which is one of the things we build.`,
     },
     {
       q: `How much does a website cost in ${city.name}?`,
       a: `The productized website is $497 to set up and $97 a month, which covers the domain, hosting, care, and the business command center. That is the same price whether you are in ${city.name} or anywhere else: we do not price by zip code. Larger custom builds (booking systems, an embedded CRM, a store) are scoped and quoted after a free call. Month to month, cancel anytime, and no trials.`,
     },
     {
-      q: `Will an AI receptionist sound right for a ${city.name} business?`,
-      a: `It is trained on your business specifically: your services, your hours, your service area, and how you talk about the work. ${city.phoneProblem.split('. ')[0]}. The receptionist answers in that gap. The fastest way to judge it is to hear it, so forge a free demo and it will answer as your business in about a minute.`,
+      q: `Will a voice agent sound right for a ${city.name} business?`,
+      a: `It is trained on your business specifically: your services, your hours, your service area, and how you talk about the work. ${city.phoneProblem.split('. ')[0]}. The voice agent answers in that gap. The fastest way to judge it is to hear it, so forge a free demo and it will answer as your business in about a minute.`,
     },
     {
       q: `What happens to calls that come in after hours in ${city.name}?`,
-      a: `That is exactly the gap this closes. ${city.season} The receptionist answers every hour of every day, books the appointment, takes the message, flags the emergencies, and texts you a summary when the call ends. Nothing goes to voicemail unless you want it to.`,
+      a: `That is exactly the gap this closes. ${city.season} The voice agent answers every hour of every day, books the appointment, takes the message, flags the emergencies, and texts you a summary when the call ends. Nothing goes to voicemail unless you want it to.`,
     },
     {
       q: `Can I see something before I pay anything?`,
-      a: `Yes, and you should. Enter your business once at the demo station and you get three working demos free: an AI receptionist you can talk to, a website designed from scratch for your business, and a command center wired to both. No card, no meeting, no sales call to sit through. Keep what you love or keep nothing.`,
+      a: `Yes, and you should. Enter your business once at the demo station and you get three working demos free: a voice agent you can talk to, a website designed from scratch for your business, and a command center wired to both. No card, no meeting, no sales call to sit through. Keep what you love or keep nothing.`,
     },
   ];
 }

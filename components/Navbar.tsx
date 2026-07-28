@@ -69,7 +69,7 @@ const DEPARTMENTS = [
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
   { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },
-  { name: 'Sidekick Forge', tag: 'FREE RECEPTIONIST DEMO', href: '/sidekick' },
+  { name: 'Sidekick Forge', tag: 'FREE VOICE AGENT DEMO', href: '/sidekick' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
   { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },
@@ -304,7 +304,7 @@ export default function Navbar() {
                 Free Demos <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
               </span>
               <span className="block font-body text-[13px] text-[#161616]/75 mt-1 leading-relaxed">
-                An AI receptionist, a command center, and a new website. All three built for your business.
+                A voice agent, a command center, and a new website. All three built for your business.
               </span>
             </Link>
 

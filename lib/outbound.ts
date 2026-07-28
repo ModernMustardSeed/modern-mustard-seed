@@ -237,7 +237,7 @@ export type ForgeRow = {
   created_at: string;
   /** When the newest piece of this suite was forged, when we can date it. */
   forged_at: string | null;
-  /** How many demos are live for this lead (receptionist, website, command center). */
+  /** How many demos are live for this lead (voice agent, website, command center). */
   asset_count: number;
   calls: number;
   last_call_at: string | null;

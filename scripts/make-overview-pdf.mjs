@@ -1,6 +1,6 @@
 /**
  * Modern Mustard Seed overview one-pager. Replaces the old languages-only sheet
- * with what the studio does as a whole: AI voice agents, websites, AI
+ * with what the studio does as a whole: voice agents, websites, AI
  * optimization, custom software, with the voice agent as the hero. Dark hero
  * band, four offering cards, a Mr. Mustard strip, heart sign-off. For
  * LinkedIn / email / ads. Run: node scripts/make-overview-pdf.mjs
@@ -48,7 +48,7 @@ t('Shipped in weeks, not months. Custom. And you own it.', M, hy, 13, ital, rgb(
 let y = H - heroH - 34;
 t('WHAT WE BUILD', M, y, 10, bold, RED, 3); y -= 22;
 const cards = [
-  ['AI Voice Agents', 'A 24/7 agent that answers every call in a natural voice, in 100+ languages. Books, sells, never sleeps.'],
+  ['Voice Agents', 'A 24/7 agent that answers every call in a natural voice, in 100+ languages. Books, sells, never sleeps.'],
   ['Websites that sell', 'Modern sites that actually bring in business and convert, designed and live in weeks.'],
   ['AI Optimization', 'Get found and chosen by AI search (ChatGPT, Google AI), and automate the busywork that eats your day.'],
   ['Custom Software & Apps', 'One clean tool built for exactly how you work, instead of five apps that almost fit.'],

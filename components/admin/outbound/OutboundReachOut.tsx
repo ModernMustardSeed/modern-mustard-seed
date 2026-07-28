@@ -93,7 +93,7 @@ export function ReachOutDeck({
 
   const forgeDemo = async () => {
     setForging(true);
-    push('Forging their AI receptionist...');
+    push('Forging their voice agent...');
     try {
       const res = await api<{ demo_url: string; lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-demo`, { method: 'POST' });
       if (res.lead) onLead(res.lead);
@@ -289,18 +289,18 @@ export function ReachOutDeck({
         )}
 
         {lead.demo_url ? (
-          <a href={lead.demo_url} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged receptionist, live">
+          <a href={lead.demo_url} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged voice agent, live">
             ▶ Demo live ↗
           </a>
         ) : (
-          <button onClick={() => void forgeDemo()} disabled={forging} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title="Build their branded AI receptionist demo in seconds">
+          <button onClick={() => void forgeDemo()} disabled={forging} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title="Build their branded voice agent demo in seconds">
             {forging ? 'Forging…' : '⚒ Forge demo'}
           </button>
         )}
 
         {siteReady ? (
           <>
-            <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged demo website, receptionist on board">
+            <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged demo website, voice agent on board">
               🌐 Website live ↗
             </a>
             <button
@@ -321,7 +321,7 @@ export function ReachOutDeck({
             onClick={() => void forgeSite()}
             disabled={forgingSite}
             className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`}
-            title={lead.site_demo_status === 'failed' ? 'Last build failed. Forge it again.' : 'Build them a full demo website with their AI receptionist living on it (runs in the background)'}
+            title={lead.site_demo_status === 'failed' ? 'Last build failed. Forge it again.' : 'Build them a full demo website with their voice agent living on it (runs in the background)'}
           >
             {forgingSite ? 'Queuing…' : lead.site_demo_status === 'failed' ? '🌐 Retry website' : '🌐 Forge website'}
           </button>
@@ -341,7 +341,7 @@ export function ReachOutDeck({
           <button
             onClick={() => setReforgeOpen(true)}
             className={`${chip} bg-[#1a1815]/[0.04] text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815] hover:-translate-y-0.5`}
-            title="Change any demo from a prompt: edit the website, remap the command center, or rewrite the receptionist"
+            title="Change any demo from a prompt: edit the website, remap the command center, or rewrite the voice agent"
           >
             ✎ Reforge from a prompt
           </button>
@@ -636,14 +636,14 @@ type ReforgeTarget = 'site' | 'os' | 'voice';
 /**
  * REFORGE FROM A PROMPT. One box, one sentence, any of the lead's three demos
  * rebuilt with that change: edit the website (preserves everything, changes only
- * what you asked), remap the command center's config, or rewrite the receptionist's
+ * what you asked), remap the command center's config, or rewrite the voice agent's
  * script. The website edit runs on the forge in the background; the chip flips back
  * to live on its own, same as a fresh build.
  */
 const REFORGE_TARGETS: { key: ReforgeTarget; label: string; hint: string }[] = [
   { key: 'site', label: 'Website', hint: 'Edit their demo website. Preserves the design, changes only what you ask.' },
   { key: 'os', label: 'Command center', hint: 'Remap the business OS demo: trade, owner, city, phone, the pain quote.' },
-  { key: 'voice', label: 'Receptionist', hint: 'Rewrite the AI receptionist with your instruction folded into its script.' },
+  { key: 'voice', label: 'Voice Agent', hint: 'Rewrite the voice agent with your instruction folded into its script.' },
 ];
 
 const PLACEHOLDERS: Record<ReforgeTarget, string> = {
@@ -690,7 +690,7 @@ function ReforgeModal({
         target === 'site'
           ? 'Website reforge queued. The forge applies your change in the background; the chip flips to live when it lands.'
           : target === 'voice'
-            ? 'Receptionist reforged. It answers with your change now.'
+            ? 'Voice Agent reforged. It answers with your change now.'
             : 'Command center remapped from your prompt.',
       );
       onClose();
@@ -747,7 +747,7 @@ function ReforgeModal({
       )}
       {disabledTarget && !siteBusy && (
         <p className="font-sans text-sm text-[#a03123] font-medium mt-2">
-          {target === 'os' ? 'No command center demo yet. Forge one first.' : target === 'site' ? 'No website demo yet. Forge one first.' : 'No receptionist demo yet. Forge one first.'}
+          {target === 'os' ? 'No command center demo yet. Forge one first.' : target === 'site' ? 'No website demo yet. Forge one first.' : 'No voice agent demo yet. Forge one first.'}
         </p>
       )}
 
@@ -765,7 +765,7 @@ function ReforgeModal({
         {target === 'site'
           ? 'The forge edits their existing site. Everything you do not mention stays exactly as it is.'
           : target === 'voice'
-            ? 'This rebuilds the receptionist. The demo link stays the same.'
+            ? 'This rebuilds the voice agent. The demo link stays the same.'
             : 'Instant. The command center re-renders with the new details.'}
       </p>
     </Modal>

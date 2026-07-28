@@ -132,11 +132,11 @@ export default function StackCalculator() {
 
           {savings > 0 ? (
             <p className="mt-4 rounded-xl border-2 border-[#F5B700] bg-[#F5B700] px-4 py-2.5 font-sans text-[14px] font-extrabold text-[#161616]">
-              You would save {formatUsd(savings * 100)}/mo. And it is free with your website or receptionist.
+              You would save {formatUsd(savings * 100)}/mo. And it is free with your website or voice agent.
             </p>
           ) : (
             <p className="mt-4 rounded-xl border-2 border-[#F5B700] bg-[#1F1F1F] px-4 py-2.5 font-sans text-[13px] font-bold text-[#F5B700]">
-              Add the website or receptionist and the command center is free.
+              Add the website or voice agent and the command center is free.
             </p>
           )}
 

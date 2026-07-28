@@ -97,7 +97,7 @@ export default function PersonalVideoCard({ leadId, push }: { leadId: string; pu
         <span className={eyebrow}>Personal video</span>
       </div>
       <p className="text-[13px] text-[#1a1815]/70 mb-4 leading-relaxed">
-        Record the face-to-camera video for this lead in the booth (the &ldquo;I Called Your Receptionist&rdquo;
+        Record the face-to-camera video for this lead in the booth (the &ldquo;I Called Your Voice Agent&rdquo;
         script), then attach the take here. It leads their demo hub and their demo email.
       </p>
 

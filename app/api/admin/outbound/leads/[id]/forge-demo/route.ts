@@ -8,7 +8,7 @@ export const maxDuration = 30;
 type Params = Promise<{ id: string }>;
 
 /**
- * Forge the lead's own AI receptionist demo (Cahill's close, automated: "in
+ * Forge the lead's own voice agent demo (Cahill's close, automated: "in
  * two hours I'll build the AI on your website, then we call it together").
  * The shareable page at /sidekick/demo/<runId> answers as their business.
  * Logic lives in lib/outbound-demo.ts, shared with the website-demo forge.
@@ -24,7 +24,7 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   const forged = await forgeLeadVoiceDemo(guard.supabase, lead);
   if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: forged.status });
 
-  // The command center comes free with the receptionist, so include it (instant, token-free).
+  // The command center comes free with the voice agent, so include it (instant, token-free).
   const withOs = await ensureOsDemo(guard.supabase, forged.lead);
   const withHub = await ensureDemoHub(guard.supabase, withOs);
   return NextResponse.json({ ok: true, demo_url: forged.demoUrl, lead: withHub, existing: forged.existing });

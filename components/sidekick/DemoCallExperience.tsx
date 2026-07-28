@@ -14,7 +14,7 @@ type CallState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 
 /**
  * The prospect-facing side of a cockpit-forged demo: one big button that
- * starts a live web call with the receptionist already branded as their
+ * starts a live web call with the voice agent already branded as their
  * business. Same Vapi web pattern as the public Sidekick page.
  */
 export default function DemoCallExperience({
@@ -117,7 +117,7 @@ export default function DemoCallExperience({
         <div className="max-w-2xl mx-auto px-6 py-10 text-center">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#C4160B] font-mono font-bold">Modern Mustard Seed presents</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-[#161616] mt-2 leading-tight">
-            Meet {business}&apos;s AI receptionist
+            Meet {business}&apos;s voice agent
           </h1>
           <p className="font-body text-[#161616]/70 mt-3 max-w-lg mx-auto">
             We built it to answer as {business}{city ? ` in ${city}` : ''}: every call picked up in two rings, day or night, jobs booked while you work. Talk to it right now.

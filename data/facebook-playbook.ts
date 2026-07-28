@@ -166,13 +166,13 @@ export const FB_PLAYBOOK = {
     },
     {
       "n": 5,
-      "title": "What an AI Receptionist Actually Sounds Like",
+      "title": "What a Voice Agent Actually Sounds Like",
       "batch": "Weeks 1 to 2",
       "pillar": "Under the Hood",
       "shot": "SCREEN",
       "length": "40s",
       "onScreenHook": "This is a real AI answering a real call",
-      "hook": "This is not a demo video. I'm calling an AI receptionist right now and you're going to hear the whole thing.",
+      "hook": "This is not a demo video. I'm calling a voice agent right now and you're going to hear the whole thing.",
       "script": [
         "[Place the call on speaker. Let it play. Do not talk over it.]",
         "[After it books the appointment]",
@@ -186,7 +186,7 @@ export const FB_PLAYBOOK = {
         "Booked it",
         "Texted the owner"
       ],
-      "caption": "No editing, no script, just a real call to a real AI receptionist. Whatever you think about AI, this is what your after-hours customer is comparing you to now. Curious what you make of it. 👇",
+      "caption": "No editing, no script, just a real call to a real voice agent. Whatever you think about AI, this is what your after-hours customer is comparing you to now. Curious what you make of it. 👇",
       "ask": "1 of 3 this month"
     },
     {

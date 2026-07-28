@@ -71,7 +71,7 @@ doc.save().rect(0, 0, doc.page.width, 8).fill(GOLD).restore();
 doc.fillColor(GOLD).font("Helvetica-Bold").fontSize(12).text("MODERN MUSTARD SEED", LEFT, 120, { characterSpacing: 2 });
 doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(40).text("The Voice Concierge", LEFT, 200, { width: WIDTH });
 doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(40).text("Business Playbook", LEFT, 246, { width: WIDTH });
-doc.fillColor("#c9cfdb").font("Helvetica").fontSize(13).text("Build and sell 24/7 AI phone agents to local businesses and franchises as a $500 to $2,500 a month recurring service. The exact system, tech, pricing, and sales scripts we use.", LEFT, 320, { width: WIDTH - 40, lineGap: 4 });
+doc.fillColor("#c9cfdb").font("Helvetica").fontSize(13).text("Build and sell 24/7 voice agents to local businesses and franchises as a $500 to $2,500 a month recurring service. The exact system, tech, pricing, and sales scripts we use.", LEFT, 320, { width: WIDTH - 40, lineGap: 4 });
 doc.save().roundedRect(LEFT, 430, 250, 44, 8).fill(GOLD).restore();
 doc.fillColor(INK).font("Helvetica-Bold").fontSize(13).text("A done-with-you operator's manual", LEFT + 16, 446);
 doc.fillColor("#8b93a6").font("Helvetica").fontSize(10).text("by Sarah Scarano  ·  modernmustardseed.com", LEFT, 690);
@@ -82,7 +82,7 @@ h1("The Opportunity", "Why a missed phone call is the most expensive problem in 
 p("Every local service business runs on the phone. The plumber, the painter, the restaurant, the clinic, the law office. And every one of them is bleeding money through the same hole: the calls they never answer.", { bold: true });
 p("The numbers are brutal and consistent across verticals. Up to 62% of calls to small home-services businesses go unanswered. 85% of callers who reach voicemail do not leave a message. They simply call the next business on the list. For a home-services contractor, that is $45,000 to $120,000 a year walking out the door. For a multi-location franchise, it is millions.");
 p("A 24/7 AI voice concierge closes that hole. It answers every call in the brand's voice, books the job or the order, captures the big lead, and never sleeps. The technology is finally good enough that a caller often cannot tell. And almost none of these businesses have one yet.");
-callout("The one-sentence pitch", "You install an AI receptionist that answers every call 24/7, books the work, and shows the owner exactly how much revenue it recovered, for a fraction of the cost of one missed job.");
+callout("The one-sentence pitch", "You install a voice agent that answers every call 24/7, books the work, and shows the owner exactly how much revenue it recovered, for a fraction of the cost of one missed job.");
 h2("Why this is a business, not a feature");
 bullet("Recurring revenue. You charge $500 to $2,500 per location per month. Ten locations is a six-figure book off one logo.", "It pays monthly.");
 bullet("The demo sells itself. You hand a prospect a phone number, they call it, and the objection evaporates. No deck survives a live call that just booked them a job.", "It is undeniable.");
@@ -174,7 +174,7 @@ num(3, "Send the one-line pitch with the number. \"I built you a working demo. C
 num(4, "Follow up the hour they call the number. Lead with the stat that matters: one recovered job pays for the year.");
 num(5, "Close with the pilot guarantee and a setup date.");
 h2("Swipe: the first email");
-p("Subject: I built you a 24/7 AI receptionist. Call it: [number]", { bold: true, size: 9.5 });
+p("Subject: I built you a 24/7 voice agent. Call it: [number]", { bold: true, size: 9.5 });
 p("Hi [name], you know the number that hurts: most callers who hit voicemail just call the next [trade]. I built a working 24/7 voice concierge for [business] and put it on a live demo number. Call [number] and [vertical action]. It books the job and never sleeps. It is a demo I built so you can hear it, not a live install. See the dashboard: [url]. Worth 15 minutes? And to make it easy: recover more than the fee in 30 days or that month is free. Best, [you]", { size: 9.5, color: GRAY });
 callout("Run the franchise track in parallel", "One local owner who loves it becomes your reference for the corporate conversation. National franchises buy through vendor programs, so learn the name of theirs and ask to get on the approved list. That single move turns one sale into the whole brand.");
 
@@ -217,13 +217,13 @@ bullet("Start with one location. Prove it there, see the recovered-revenue dashb
 /* ============== 11. SWIPE FILE ============== */
 h1("Appendix C: The Full Swipe File", "Copy, fill the brackets, send. The companion app has these with one-tap copy.");
 doc.font("Helvetica-Bold").fontSize(10).fillColor(INK).text("Email 1 (the opener)", LEFT, doc.y); doc.moveDown(0.2);
-p("Subject: I built you a 24/7 AI receptionist. Call it: [number]\n\nHi [name], you know the number that hurts: most callers who hit voicemail just call the next [trade]. I built a working 24/7 voice concierge for [business] and put it on a live demo number. Call [number] and [action]. It books the job and never sleeps. To be clear, it is a demo I built so you can hear it, not a live install. See the dashboard: [url]. Worth 15 minutes? And to make it easy, recover more than the fee in 30 days or that month is free. Best, [you].", { size: 9.5, color: GRAY });
+p("Subject: I built you a 24/7 voice agent. Call it: [number]\n\nHi [name], you know the number that hurts: most callers who hit voicemail just call the next [trade]. I built a working 24/7 voice concierge for [business] and put it on a live demo number. Call [number] and [action]. It books the job and never sleeps. To be clear, it is a demo I built so you can hear it, not a live install. See the dashboard: [url]. Worth 15 minutes? And to make it easy, recover more than the fee in 30 days or that month is free. Best, [you].", { size: 9.5, color: GRAY });
 doc.font("Helvetica-Bold").fontSize(10).fillColor(INK).text("Email 2 (follow-up, day 4, same thread)", LEFT, doc.y); doc.moveDown(0.2);
 p("Hi [name], following up with the one stat that matters: the average missed call in [trade] is worth [job value]. One recovered job pays for the concierge for months. If it is easier than a meeting, just call [number]. Two minutes tells you more than I can.", { size: 9.5, color: GRAY });
 doc.font("Helvetica-Bold").fontSize(10).fillColor(INK).text("LinkedIn note", LEFT, doc.y); doc.moveDown(0.2);
-p("Hi [name], I build AI phone agents for [trade]. I built a working 24/7 concierge for [business] on a live demo number: [number]. Call it and [action]. Books the job, after hours too. Quick look: [url].", { size: 9.5, color: GRAY });
+p("Hi [name], I build voice agents for [trade]. I built a working 24/7 concierge for [business] on a live demo number: [number]. Call it and [action]. Books the job, after hours too. Quick look: [url].", { size: 9.5, color: GRAY });
 doc.font("Helvetica-Bold").fontSize(10).fillColor(INK).text("Voicemail (~25 seconds)", LEFT, doc.y); doc.moveDown(0.2);
-p("Hi, this is [you] with Modern Mustard Seed. I build AI receptionists for [trade], and I built a working one for [business]. It answers every call 24/7 and books the job. You can call it yourself at [number] and try it. I would love to show your team the dashboard. Reach me at [cell] or [email]. Thanks.", { size: 9.5, color: GRAY });
+p("Hi, this is [you] with Modern Mustard Seed. I build voice agents for [trade], and I built a working one for [business]. It answers every call 24/7 and books the job. You can call it yourself at [number] and try it. I would love to show your team the dashboard. Reach me at [cell] or [email]. Thanks.", { size: 9.5, color: GRAY });
 h2("Discovery questions (on the call)");
 bullet("How many calls a day go to voicemail or a busy signal?");
 bullet("What is a booked job or project worth on average?");

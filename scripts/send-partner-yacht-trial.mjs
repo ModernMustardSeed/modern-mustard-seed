@@ -83,7 +83,7 @@ const html = `<!doctype html>
     <tr><td style="padding:8px 32px 4px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         ${tier('50%', 'On every product', 'Share a playbook or bundle and earn half, the moment someone buys.')}
-        ${tier('25%', 'Every month', 'Put a business on a 24/7 AI receptionist and earn a quarter of their bill, every month, for a year.')}
+        ${tier('25%', 'Every month', 'Put a business on a 24/7 voice agent and earn a quarter of their bill, every month, for a year.')}
         ${tier('10-20%', 'On all builds', 'Send a bigger client who needs a real build and earn on the project, from 10% up to 20% as a Producer.')}
       </table>
     </td></tr>
@@ -123,7 +123,7 @@ How does a little seed end up on a yacht in the Mediterranean? He sells the one 
 Refer a client, we build it, you earn. No coding, no inventory, no overhead. You make the introductions from anywhere, we do the work, and you get paid, again and again:
 
 - 50% on every product. Share a playbook or bundle and earn half, the moment someone buys.
-- 25% every month. Put a business on a 24/7 AI receptionist and earn a quarter of their bill, every month, for a year.
+- 25% every month. Put a business on a 24/7 voice agent and earn a quarter of their bill, every month, for a year.
 - 10-20% on all builds. Send a bigger client who needs a real build and earn on the project, from 10% up to 20% as a Producer.
 
 Watch the 60-second film: ${VIDEO}

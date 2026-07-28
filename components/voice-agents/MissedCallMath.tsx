@@ -119,7 +119,7 @@ export default function MissedCallMath({
           </p>
           <p className="mt-4 font-body text-sm text-[#FBF6EA]/75 leading-relaxed">
             Your numbers, your math: {missed} missed calls a week, a {closeRate}% close rate, and a $
-            {ticket.toLocaleString()} average {ticketWord}. The receptionist answers every one of those calls for
+            {ticket.toLocaleString()} average {ticketWord}. The voice agent answers every one of those calls for
             ${ENTRY_MONTHLY} a month.
           </p>
         </div>

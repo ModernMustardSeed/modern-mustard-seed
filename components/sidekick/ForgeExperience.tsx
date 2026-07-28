@@ -72,7 +72,7 @@ export default function ForgeExperience() {
   const [ringState, setRingState] = useState<'idle' | 'ringing' | 'rang' | 'error'>('idle');
   const [ringMsg, setRingMsg] = useState<string | null>(null);
 
-  // receptionist voice (female / male), chosen before the call and the ring
+  // agent voice (female / male), chosen before the call and the ring
   const [gender, setGender] = useState<VoiceGender>('male');
 
   const forgeApiDone = useRef(false);

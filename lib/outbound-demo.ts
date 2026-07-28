@@ -38,7 +38,7 @@ export type VoiceForgeResult =
   | { ok: false; status: number; error: string };
 
 /**
- * Forge the lead's AI receptionist demo (Cahill's close, automated). Reuses
+ * Forge the lead's voice agent demo (Cahill's close, automated). Reuses
  * the Sidekick forge directly, skipping the public page's per-email and daily
  * caps because this is an internal, admin-triggered run; the platform-side
  * 4-minute call cap still applies. Idempotent: an existing demo is returned
@@ -49,7 +49,7 @@ export async function forgeLeadVoiceDemo(
   lead: OutboundLead,
   opts?: { instruction?: string | null; force?: boolean },
 ): Promise<VoiceForgeResult> {
-  // Reforge-from-prompt passes force:true to rebuild the receptionist with a new
+  // Reforge-from-prompt passes force:true to rebuild the voice agent with a new
   // instruction folded in; without it, an existing demo is returned untouched.
   if (!opts?.force && lead.demo_url && lead.demo_run_id) {
     return { ok: true, lead, demoUrl: lead.demo_url, existing: true };
@@ -58,11 +58,11 @@ export async function forgeLeadVoiceDemo(
   const niche = (lead.niche ?? 'other') as Niche;
   // The owner's OWN words about their business, when we have them. (This used to
   // take notes.split('\n')[0], which after the Demo Station shipped was just our
-  // internal "SELF-SERVE:" marker line, so the receptionist learned nothing.)
+  // internal "SELF-SERVE:" marker line, so the voice agent learned nothing.)
   const owner = ownerNotes(lead, 400);
   const trade = leadTrade(lead);
   const tradeLabel = TRADE_PRESETS[trade].label;
-  // An admin reforge instruction, when present, steers the receptionist directly.
+  // An admin reforge instruction, when present, steers the voice agent directly.
   const instruction = (opts?.instruction ?? '').trim().slice(0, 600);
   const profile = {
     business: lead.business_name,
@@ -104,10 +104,10 @@ export async function forgeLeadVoiceDemo(
     channel: 'note',
     from_addr: 'cockpit',
     to_addr: lead.business_name,
-    subject: opts?.force ? 'Receptionist reforged' : 'Demo forged',
+    subject: opts?.force ? 'Voice Agent reforged' : 'Demo forged',
     snippet: opts?.force
-      ? `Their AI receptionist was reforged from your prompt. Live at ${demoUrl}`
-      : `Their AI receptionist is live at ${demoUrl}`,
+      ? `Their voice agent was reforged from your prompt. Live at ${demoUrl}`
+      : `Their voice agent is live at ${demoUrl}`,
     read: true,
     occurred_at: new Date().toISOString(),
   });
@@ -141,7 +141,7 @@ export async function ensureDemoHub(supabase: SupabaseClient, lead: OutboundLead
  * Forge the lead's BUSINESS OS (command center) demo if it does not exist yet.
  * Instant and token-free (a config-driven template), so it now rides along free
  * with every voice and website forge: the command center is included with any
- * website or receptionist, so every forged suite should show it. Fail-soft: if
+ * website or voice agent, so every forged suite should show it. Fail-soft: if
  * the insert hiccups, the lead is returned unchanged and the rest of the suite
  * still ships. Idempotent: a ready OS demo is returned untouched.
  */
@@ -173,7 +173,7 @@ export async function ensureOsDemo(supabase: SupabaseClient, lead: OutboundLead)
     from_addr: 'cockpit',
     to_addr: lead.business_name,
     subject: 'Command center included',
-    snippet: `Their command center (free with the site or receptionist) is live at ${osUrl}`,
+    snippet: `Their command center (free with the site or voice agent) is live at ${osUrl}`,
     read: true,
     occurred_at: new Date().toISOString(),
   });
@@ -328,7 +328,7 @@ function briefField(raw: string | null | undefined, max = 120): string {
  * What the owner told us about themselves, in their own words, from the Demo
  * Station's notes box (stored on the lead under the `OWNER NOTES:` convention).
  * All three demos read this: the website brief, the command center, and the
- * receptionist's script. It is PUBLIC free text, so it goes through briefField
+ * voice agent's script. It is PUBLIC free text, so it goes through briefField
  * like every other untrusted value, just with more room to breathe.
  */
 export function ownerNotes(lead: OutboundLead, max = 600): string {
@@ -369,7 +369,7 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null):
           .join('; ')}`
       : null,
     evidence ? `- Why they qualified (mined evidence):\n${evidence.slice(0, 1200)}` : null,
-    voiceDemoUrl ? `- Their AI receptionist voice demo (already forged, will be overlaid on the hosted page): ${voiceDemoUrl}` : null,
+    voiceDemoUrl ? `- Their agent voice demo (already forged, will be overlaid on the hosted page): ${voiceDemoUrl}` : null,
     owner
       ? [
           '',

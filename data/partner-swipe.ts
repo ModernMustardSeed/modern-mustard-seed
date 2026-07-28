@@ -65,14 +65,14 @@ export const SWIPE_OFFERS: SwipeOffer[] = [
   },
   {
     key: 'ai-receptionist',
-    name: 'The AI Receptionist (recurring)',
+    name: 'The Voice Agent (recurring)',
     earn: 'You earn 25% of their bill, every month, for a year',
     linkPath: '/sidekick',
     bestFor: 'Anyone with local or service-business owners in their audience.',
     swipes: {
-      x: `Know a business that misses calls? Modern Mustard Seed builds a 24/7 AI receptionist that answers, books, and takes messages on their own number. You can hear a demo of your own in 60 seconds. (I earn a referral cut if you sign up.) {{LINK}}`,
-      social: `Every missed call is a lost customer. If you run a service business (or you know someone who does), this is worth 60 seconds.\n\nModern Mustard Seed builds a 24/7 AI receptionist that answers your phone, books jobs, and takes messages, live on your own number in about a week. You can literally hear a demo of yours answering before you decide anything.\n\nFull transparency: I earn a referral commission if you become a customer. I only put my name on things that actually work, and this one does.\n\n{{LINK}}`,
-      email: `A recommendation for the business owners on this list: Modern Mustard Seed builds a 24/7 AI receptionist that answers your phone, books appointments, and never misses an after-hours call, on your own number, live in about a week. You can hear a personalized demo answer in 60 seconds before you spend a dime. Disclosure: I earn a referral commission if you sign up. I share it because missed calls are real money and this fixes them. {{LINK}}`,
+      x: `Know a business that misses calls? Modern Mustard Seed builds a 24/7 voice agent that answers, books, and takes messages on their own number. You can hear a demo of your own in 60 seconds. (I earn a referral cut if you sign up.) {{LINK}}`,
+      social: `Every missed call is a lost customer. If you run a service business (or you know someone who does), this is worth 60 seconds.\n\nModern Mustard Seed builds a 24/7 voice agent that answers your phone, books jobs, and takes messages, live on your own number in about a week. You can literally hear a demo of yours answering before you decide anything.\n\nFull transparency: I earn a referral commission if you become a customer. I only put my name on things that actually work, and this one does.\n\n{{LINK}}`,
+      email: `A recommendation for the business owners on this list: Modern Mustard Seed builds a 24/7 voice agent that answers your phone, books appointments, and never misses an after-hours call, on your own number, live in about a week. You can hear a personalized demo answer in 60 seconds before you spend a dime. Disclosure: I earn a referral commission if you sign up. I share it because missed calls are real money and this fixes them. {{LINK}}`,
     },
   },
   {

@@ -415,7 +415,7 @@ export default function PartnerHub({
                 Know a business that needs this? Walk in with it already built.
               </h3>
               <p className="mt-2 text-[#FBF6EA]/70 font-body text-sm leading-relaxed max-w-xl">
-                Two minutes mints their whole suite: receptionist, website, command center, hub. The lead lands on the dial floor pre-forged and your code rides the checkout.
+                Two minutes mints their whole suite: voice agent, website, command center, hub. The lead lands on the dial floor pre-forged and your code rides the checkout.
               </p>
             </div>
             <Link

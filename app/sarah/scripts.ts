@@ -202,15 +202,15 @@ const SALES_DESK: PrompterScript[] = [
       {
         heading: 'What I Sent You',
         paragraphs: [
-          'Right below this video is a working demo. Not a slideshow, not a pitch deck. A real thing you can click and call. Depending on what fit your business, it might be a new website, an AI receptionist that already knows your services and your hours, or both.',
-          '(Optional light graphic as she names them: three clean labels appear, WEBSITE, RECEPTIONIST, COMMAND CENTER. Keep it simple, this stays mostly her face.)',
-          'And everything I build comes with one more piece, included free. A command center. One screen where you can see your analytics, read the transcript of every call your receptionist takes, and watch every new lead land, all from your phone.',
+          'Right below this video is a working demo. Not a slideshow, not a pitch deck. A real thing you can click and call. Depending on what fit your business, it might be a new website, a voice agent that already knows your services and your hours, or both.',
+          '(Optional light graphic as she names them: three clean labels appear, WEBSITE, VOICE AGENT, COMMAND CENTER. Keep it simple, this stays mostly her face.)',
+          'And everything I build comes with one more piece, included free. A command center. One screen where you can see your analytics, read the transcript of every call your voice agent takes, and watch every new lead land, all from your phone.',
         ],
       },
       {
         heading: 'What To Do',
         paragraphs: [
-          'All I would ask is two minutes. Open the link, and if there is a receptionist, call the number and try to stump it, the way you would test a new hire on their first day. If there is a website, click around on your phone, because that is where your customers already are.',
+          'All I would ask is two minutes. Open the link, and if there is a voice agent, call the number and try to stump it, the way you would test a new hire on their first day. If there is a website, click around on your phone, because that is where your customers already are.',
           'Nothing happens after that unless you want it to. No contract came attached to this email, and nobody is going to chase you around the internet.',
         ],
       },
@@ -391,14 +391,14 @@ const SALES_DESK: PrompterScript[] = [
     publish: 'Send with their demo',
     pillar: 'SALES',
     title: 'The Live Demo Walkthrough',
-    hook: 'I am on your actual demo right now, and before we are done I am going to call your new receptionist and you will hear it answer.',
+    hook: 'I am on your actual demo right now, and before we are done I am going to call your new voice agent and you will hear it answer.',
     directorNote:
       'Use SHARE SCREEN and pick the demo TAB (sharing the tab captures the voice agent cleanly when you call it in the browser). Arm the camera too and Claude adds your face bubble in the edit. These are anchor lines, not a word-for-word read: say their business name, react honestly to what is on screen, and let the live call be genuinely live. Flubs and pauses are fine, Claude cuts them. One take per beat.',
     sections: [
       {
         heading: 'Beat 1 · The Open',
         paragraphs: [
-          'Hi, it is Sarah. I am looking at your demo right now, so let me walk you through what my studio built for your business. This is not a mockup, everything you are about to see actually works. And at the end I am going to call your new receptionist, live, and you will hear it answer.',
+          'Hi, it is Sarah. I am looking at your demo right now, so let me walk you through what my studio built for your business. This is not a mockup, everything you are about to see actually works. And at the end I am going to call your new voice agent, live, and you will hear it answer.',
         ],
       },
       {
@@ -412,7 +412,7 @@ const SALES_DESK: PrompterScript[] = [
       {
         heading: 'Beat 3 · The Live Call',
         paragraphs: [
-          'Now the part I love. This is your receptionist. It already knows your services and your hours, and I am going to call it right now, no edits, no script.',
+          'Now the part I love. This is your voice agent. It already knows your services and your hours, and I am going to call it right now, no edits, no script.',
           '(Call it. Ask what a new customer would ask: are you open Saturday, what do you charge for an estimate, can I book something. Then ask it one curveball. React honestly to the answers.)',
           'Every call like that gets answered in two rings. At lunch, at two in the morning, while you are up a ladder. That is the whole point.',
         ],
@@ -439,8 +439,8 @@ const SALES_DESK: PrompterScript[] = [
     session: 'Screen mode · per lead',
     publish: 'The extra-mile call',
     pillar: 'SALES',
-    title: 'I Called Your Receptionist',
-    hook: 'Before you even click anything, I wanted to do something. I am on your new website right now, and I am about to call your receptionist, live.',
+    title: 'I Called Your Voice Agent',
+    hook: 'Before you even click anything, I wanted to do something. I am on your new website right now, and I am about to call your voice agent, live.',
     directorNote:
       'The extra-mile move: record this fresh for a lead you really want, right before you send their demo. Use SHARE SCREEN and pick the tab with their forged site so the voice agent records cleanly when you call it in the browser. Arm the camera too and Claude tucks your face in the corner. These are anchor lines, not a script: say their business name, actually talk to the agent, let the call be genuinely live. Flubs are good here, they prove it is real. Keep it to about a minute.',
     sections: [
@@ -449,13 +449,13 @@ const SALES_DESK: PrompterScript[] = [
         paragraphs: [
           'Hi, it is Sarah. Before you even click anything in that email, I wanted to do something for you.',
           '(Share the tab with their forged website. Say their business name out loud and point at it on the screen.)',
-          'I am on the website my studio built for your business, and I am about to call your new receptionist, live, right here, so you can hear it before you do a single thing.',
+          'I am on the website my studio built for your business, and I am about to call your new voice agent, live, right here, so you can hear it before you do a single thing.',
         ],
       },
       {
         heading: 'The Live Call',
         paragraphs: [
-          'This is not a polished recording. It is me, right now, calling the AI receptionist that already knows your services and your hours. Watch what it does.',
+          'This is not a polished recording. It is me, right now, calling the voice agent that already knows your services and your hours. Watch what it does.',
           '(Start the web call from their site. Ask what a real customer would ask: are you open Saturday, what do you charge for an estimate, can I book something for next week. Then throw it one curveball. React honestly to whatever it says.)',
           'That just happened, live. No script, no editing, no employee sitting by a phone.',
         ],
@@ -509,7 +509,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Fix + CTA',
         paragraphs: [
-          'I build a receptionist that runs on AI. It answers every call in your voice, knows your hours, books the job, and texts you the details before you are back down the ladder.',
+          'I build a voice agent that runs on AI. It answers every call in your voice, knows your hours, books the job, and texts you the details before you are back down the ladder.',
           '(Mr. Mustard clip: he catches a falling phone, taps it once, gives a thumbs up.)',
           'It never sleeps and it never takes a lunch. There is a number below you can call right now and try to stump. I am Sarah, from a little studio in Montana.',
         ],
@@ -537,8 +537,8 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'What It Is',
         paragraphs: [
-          'Depending on what you do, it might be a new website, or an AI receptionist that already knows your services, or both. It took my systems about a minute to make.',
-          '(Split screen: a phone scrolling the demo site, then the receptionist answering a call. Mr. Mustard slaps a big red BUILD button and the demo assembles itself.)',
+          'Depending on what you do, it might be a new website, or a voice agent that already knows your services, or both. It took my systems about a minute to make.',
+          '(Split screen: a phone scrolling the demo site, then the voice agent answering a call. Mr. Mustard slaps a big red BUILD button and the demo assembles itself.)',
         ],
       },
       {
@@ -723,14 +723,14 @@ const META_ADS: PrompterScript[] = [
     publish: 'Cold · service businesses',
     pillar: 'ADS',
     title: 'The Robot That Sounds Like You',
-    hook: 'This is your new receptionist. It already knows your hours, your services, and how you like your customers treated.',
+    hook: 'This is your new voice agent. It already knows your hours, your services, and how you like your customers treated.',
     directorNote:
       'Playful and proud, like showing off something you made. The live-call section is the proof, so react honestly on camera when the agent answers. Record a real call if you can and I will cut it in clean.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'This is your new receptionist. It already knows your hours, your services, and how you like your customers treated. And I am about to let you call it.',
+          'This is your new voice agent. It already knows your hours, your services, and how you like your customers treated. And I am about to let you call it.',
         ],
       },
       {
@@ -811,7 +811,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Offer + CTA',
         paragraphs: [
-          'And here is the part I like. It comes free with any website or AI receptionist I build for you. Not a monthly add on. Included.',
+          'And here is the part I like. It comes free with any website or voice agent I build for you. Not a monthly add on. Included.',
           '(Screen record of the command center, real leads pinging in live. Text on screen: FREE WITH YOUR BUILD.)',
           'One screen for your whole front door. Want to see it work? The link is below. I am Sarah, Modern Mustard Seed.',
         ],
@@ -880,7 +880,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Fix + CTA',
         paragraphs: [
-          'So I put all of it on one screen, a command center, and I include it free with any website or receptionist I build. Leads, calls, messages, bookings, one place, on your phone.',
+          'So I put all of it on one screen, a command center, and I include it free with any website or voice agent I build. Leads, calls, messages, bookings, one place, on your phone.',
           'Fewer apps, nothing dropped. Let me show you. The link is below.',
         ],
       },
@@ -907,14 +907,14 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Center',
         paragraphs: [
-          'This is your command center. Every lead your website captures, every call your receptionist answers, every message, showing up live, right here, while you are at your kid’s game.',
+          'This is your command center. Every lead your website captures, every call your voice agent answers, every message, showing up live, right here, while you are at your kid’s game.',
           '(Mr. Mustard relaxes in a lawn chair, phone in hand. A gentle notification dings; he smiles as a new lead slides onto the screen.)',
         ],
       },
       {
         heading: 'The Offer + CTA',
         paragraphs: [
-          'And it comes free with any website or AI receptionist I build. You just watch the front door fill up.',
+          'And it comes free with any website or voice agent I build. You just watch the front door fill up.',
           'Your whole business, on one screen, in your pocket. See it below. I am Sarah, Modern Mustard Seed.',
         ],
       },
@@ -1150,7 +1150,7 @@ const ORIGIN: PrompterScript[] = [
         heading: 'A Different Decision',
         paragraphs: [
           'I stopped trying to hire a team, and I started building one. Not out of people. Out of AI.',
-          'I built a designer that never sleeps. A writer that can draft in my own voice. A marketer that ships something every day without being asked. A developer that can take an idea I have on a Tuesday and hand me back a working online store by the weekend. A receptionist that answers the phone and the messages at any hour, in the tone of my brand, and never takes a day off.',
+          'I built a designer that never sleeps. A writer that can draft in my own voice. A marketer that ships something every day without being asked. A developer that can take an idea I have on a Tuesday and hand me back a working online store by the weekend. A voice agent that answers the phone and the messages at any hour, in the tone of my brand, and never takes a day off.',
           'Each of these is not a person. It is a system I built and taught. A worker made of instructions, and models, and a fair amount of care. And when you put enough of them together, and you give them a shared way of working, you do not have a pile of tools sitting on a shelf. You have a studio. A small company that happens to have one human in it.',
         ],
       },
@@ -1388,14 +1388,14 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
     publish: 'Use anytime',
     pillar: 'BUILD',
     title: 'How I Build a Business a Front Door Overnight',
-    hook: 'A roofing company woke up to a working website, an AI receptionist that already knew their trade, and a dashboard, all built while they slept. They never asked. Here is exactly how.',
+    hook: 'A roofing company woke up to a working website, a voice agent that already knew their trade, and a dashboard, all built while they slept. They never asked. Here is exactly how.',
     directorNote:
       'This is the flagship how-it-works episode, so teach it like you are proud of the machine but not showing off. Slow down on the receipts. The (parens) beats are where I cut in a screen recording of the actual forge, so leave a breath after each one.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'A few weeks ago a roofing company in a state I have never been to woke up to a working website for their business, an AI receptionist that already knew their services, and a simple dashboard showing them what their missed calls were costing. All of it built overnight. They never asked me for it. They never paid a dime.',
+          'A few weeks ago a roofing company in a state I have never been to woke up to a working website for their business, a voice agent that already knew their services, and a simple dashboard showing them what their missed calls were costing. All of it built overnight. They never asked me for it. They never paid a dime.',
           'I want to walk you through exactly how that gets made, because for me the how is not a secret. The how is the whole business. And if you own a company, there is a lesson in here you can use tomorrow.',
         ],
       },
@@ -1417,10 +1417,10 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       {
         heading: 'Step Two, Forge the Three Pieces',
         paragraphs: [
-          'Then three things get built at once. First, the receptionist. An AI agent gets trained on their services, their hours, and the language of their trade, and it can answer the phone as their business in about a minute. It books the job, it speaks like a person who works there, and it is told to never quote a price it should not.',
+          'Then three things get built at once. First, the voice agent. An AI agent gets trained on their services, their hours, and the language of their trade, and it can answer the phone as their business in about a minute. It books the job, it speaks like a person who works there, and it is told to never quote a price it should not.',
           'Second, the website. While I am asleep, an agent reads the brief, researches what a business like theirs actually needs, writes the copy, designs the layout, builds the whole thing, tests it on a phone, finds its own broken pieces, fixes them, and publishes it to a live address. It runs on a flat monthly plan, not a meter, so building a hundred of these costs me the same as building one.',
           'Third, the command center. A simple dashboard, included free, where every call, every lead, and every message lands in one place. A website that just sits there is a brochure. A website wired into a command center is a business.',
-          '(Split screen: the receptionist answering a live call, the website assembling itself, the dashboard lighting up. Mr. Mustard runs between all three like a stagehand.)',
+          '(Split screen: the voice agent answering a live call, the website assembling itself, the dashboard lighting up. Mr. Mustard runs between all three like a stagehand.)',
         ],
       },
       {
@@ -1617,14 +1617,14 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       {
         heading: 'What It Is',
         paragraphs: [
-          'One screen. Every call your receptionist answers, transcribed. Every lead your website brings in. Every message, your reviews, your traffic, your money, all in one place you can check from your phone in the truck.',
+          'One screen. Every call your voice agent answers, transcribed. Every lead your website brings in. Every message, your reviews, your traffic, your money, all in one place you can check from your phone in the truck.',
           '(Screen record: a live dashboard, a new lead sliding in, a call transcript opening, all on a phone.)',
         ],
       },
       {
         heading: 'Why Free',
         paragraphs: [
-          'I include it free with any website or receptionist I build, and people do not believe me. Here is why I do it. A website that just sits there is a brochure. A website wired into a command center is a business you can actually run. I would rather build you the second kind. Fewer apps, nothing falls through the cracks, and your whole front door fits in your pocket.',
+          'I include it free with any website or voice agent I build, and people do not believe me. Here is why I do it. A website that just sits there is a brochure. A website wired into a command center is a business you can actually run. I would rather build you the second kind. Fewer apps, nothing falls through the cracks, and your whole front door fits in your pocket.',
         ],
       },
     ],
@@ -1644,14 +1644,14 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       {
         heading: 'Hook',
         paragraphs: [
-          'Give me one sentence about your business, and I will have a working demo of it built by morning. Not a mockup. A real website and an AI receptionist you can actually call.',
+          'Give me one sentence about your business, and I will have a working demo of it built by morning. Not a mockup. A real website and a voice agent you can actually call.',
         ],
       },
       {
         heading: 'The Proof',
         paragraphs: [
           'My studio builds these overnight, forged from your own trade and your own reviews, so it already sounds like you. It took my systems about a minute to make the last one.',
-          '(Fast build montage: a sentence typed, a website assembling itself, a phone calling the receptionist and it answering. Mr. Mustard slaps a big BUILT stamp on it.)',
+          '(Fast build montage: a sentence typed, a website assembling itself, a phone calling the voice agent and it answering. Mr. Mustard slaps a big BUILT stamp on it.)',
         ],
       },
       {
@@ -1670,14 +1670,14 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
     publish: 'Build-in-public · authority',
     pillar: 'ADS',
     title: 'The Studio Behind the Studio',
-    hook: 'Everything you are about to see, we built ourselves. The receptionist, the website, the dashboard, even the studio this was filmed in.',
+    hook: 'Everything you are about to see, we built ourselves. The voice agent, the website, the dashboard, even the studio this was filmed in.',
     directorNote:
       'Meta and proud. The reveal that the studio itself is one of the builds is the punch. Gesture at your own setup on the last beat so it lands that this is all homemade.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'Everything you are about to see, we built ourselves. The AI receptionist. The website. The command center. Even the studio this video was filmed in.',
+          'Everything you are about to see, we built ourselves. The voice agent. The website. The command center. Even the studio this video was filmed in.',
         ],
       },
       {
@@ -1798,7 +1798,7 @@ const MORE_SAUCE: PrompterScript[] = [
       {
         heading: 'Hook',
         paragraphs: [
-          'Most demos, you look at. This one, you call. We forge a real AI receptionist for a business, give it a real phone number, and let them dial it right then and there.',
+          'Most demos, you look at. This one, you call. We forge a real voice agent for a business, give it a real phone number, and let them dial it right then and there.',
         ],
       },
       {
@@ -2010,7 +2010,7 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
       {
         heading: 'How I Actually Wire It',
         paragraphs: [
-          'When I build a system for a business, this is baked in from the first line. The receptionist answers, books, and captures the lead. But the second something is delicate or high stakes, it does not fake its way through. It flags it and hands it to a human.',
+          'When I build a system for a business, this is baked in from the first line. The voice agent answers, books, and captures the lead. But the second something is delicate or high stakes, it does not fake its way through. It flags it and hands it to a human.',
           'It never pretends to be you on the things that should be you. It buys you time. It does not spend your name.',
           'That is the difference between AI that makes a business feel bigger and AI that makes it feel hollow. It is entirely a choice about where you point it.',
         ],

@@ -18,10 +18,10 @@ export const SIDEKICK = {
   wordmark: '[ SIDEKICK: FORGED ]',
   tagline: 'Your front desk, forged in 60 seconds.',
   promise:
-    'Tell Mr. Mustard about your business. He trains a personalized AI receptionist on the spot, and then you talk to it. Live. If you love it, it answers your real phone 24/7 starting this week.',
+    'Tell Mr. Mustard about your business. He trains a personalized voice agent on the spot, and then you talk to it. Live. If you love it, it answers your real phone 24/7 starting this week.',
   // Intent-first title (2026-07-25). "The Sidekick Forge" has no search demand;
-  // "AI receptionist for small business" does. The brand name still owns the H1.
-  metaTitle: 'AI Receptionist for Small Business. Hear Yours in 60 Seconds',
+  // "voice agent for small business" does. The brand name still owns the H1.
+  metaTitle: 'Voice Agent for Small Business. Hear Yours in 60 Seconds',
   metaDescription:
     'Mr. Mustard trains an AI front desk for YOUR business while you watch, then it talks to you live and can even call your cell. Free demo, no card. Keep him and he answers your real phone 24/7. From Modern Mustard Seed.',
   phoneLine: '(406) 312-1223',

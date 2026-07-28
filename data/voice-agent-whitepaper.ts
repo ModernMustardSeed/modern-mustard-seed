@@ -1,5 +1,5 @@
 /**
- * Single source for the AI Voice Agent whitepaper. Rendered by the web page
+ * Single source for the Voice Agent whitepaper. Rendered by the web page
  * (app/voice-agents/whitepaper) and the downloadable PDF
  * (scripts/make-whitepaper-pdf.mjs). House voice: sharp, founder-to-founder, no
  * em dashes.
@@ -9,7 +9,7 @@ export const WHITEPAPER = {
   slug: 'ai-voice-agents',
   title: 'The Always-On Voice Agent',
   subtitle:
-    'How an AI phone agent answers every call, remembers every caller, speaks 100+ languages, and books real business 24/7, so your phone becomes your best salesperson instead of your biggest leak.',
+    'How a voice agent answers every call, remembers every caller, speaks 100+ languages, and books real business 24/7, so your phone becomes your best salesperson instead of your biggest leak.',
   author: 'Sarah Scarano, Modern Mustard Seed',
   dateISO: '2026-06-27',
   dateLabel: 'June 2026',

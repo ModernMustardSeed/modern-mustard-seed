@@ -21,9 +21,9 @@ export type FrontDeskIntent = {
 export const frontDeskIntents: FrontDeskIntent[] = [
   {
     key: 'voice',
-    match: ['voice', 'phone', 'call', 'receptionist', 'answering', 'after hours', 'missed call'],
+    match: ['voice', 'phone', 'call', 'voice agent', 'answering', 'after hours', 'missed call'],
     reply:
-      "Seed received. A 24/7 AI voice agent on your own number: books appointments, answers your FAQs in a natural human voice, routes the urgent calls to you. Speaks 100+ languages. Fastest way to believe it: forge a free demo trained on YOUR business at modernmustardseed.com/sidekick and talk to it in sixty seconds. Want it built, or want to learn to build it yourself?",
+      "Seed received. A 24/7 voice agent on your own number: books appointments, answers your FAQs in a natural human voice, routes the urgent calls to you. Speaks 100+ languages. Fastest way to believe it: forge a free demo trained on YOUR business at modernmustardseed.com/sidekick and talk to it in sixty seconds. Want it built, or want to learn to build it yourself?",
     headline: 'Your {thing}, answering within the week.',
     cta: { label: 'Forge a free voice demo in 60 seconds', href: '/sidekick' },
   },

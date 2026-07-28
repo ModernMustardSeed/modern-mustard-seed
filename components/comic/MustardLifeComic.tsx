@@ -333,7 +333,7 @@ export default function MustardLifeComic() {
                 </div>
                 <ul className="divide-y divide-dashed divide-[#161616]/20 px-6 py-2">
                   {[
-                    { p: '04', label: 'The Sidekick Forge', note: `AI receptionist, from ${usd(P.sidekick.setupCents)} + ${usd(P.sidekick.monthlyCents)}/mo`, href: '#sidekick' },
+                    { p: '04', label: 'The Sidekick Forge', note: `voice agent, from ${usd(P.sidekick.setupCents)} + ${usd(P.sidekick.monthlyCents)}/mo`, href: '#sidekick' },
                     { p: '06', label: 'Websites and Command Centers', note: `from ${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`, href: '#websites' },
                     { p: '10', label: 'Pictures and Broadcast', note: `commercials from $${P.justCommercial.priceUsd}, managed ads from ${usd(P.onAir.setupCents)}`, href: '#pictures' },
                     { p: '12', label: 'Press, Launch, and the GEO Desk', note: `from $${P.piece.priceUsd}`, href: '#press' },
@@ -480,12 +480,12 @@ export default function MustardLifeComic() {
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#E0301E]">p. 08 · The Bridge</p>
               <p className="mlc-pop font-body text-[15px] leading-relaxed text-[#3a3733]">
                 The Business Command Center wires your calls, website traffic, customers, and reviews into one glowing
-                dashboard, and it rides free with your website or receptionist. Take both and it is one system, one login.
+                dashboard, and it rides free with your website or voice agent. Take both and it is one system, one login.
               </p>
               <PriceTag
                 name={P.os.name}
                 price={`${usd(P.os.setupCents)} + ${usd(P.os.monthlyCents)}/mo`}
-                note={`${P.os.blurb} Free with your website or receptionist.`}
+                note={`${P.os.blurb} Free with your website or voice agent.`}
               />
               <PriceTag
                 name={P.bundle.name}

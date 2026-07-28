@@ -7,7 +7,7 @@ import PathFinder from '@/components/services/PathFinder';
 export const metadata = buildMetadata({
   title: 'Services: everything the studio builds, one desk',
   description:
-    'Websites, AI receptionists, command centers, commercials, ads, and print, plus custom apps, specialty AI tools, stores, and agentic systems. Every door opens with a free demo. Shipped end to end, fixed scope, you own it.',
+    'Websites, voice agents, command centers, commercials, ads, and print, plus custom apps, specialty AI tools, stores, and agentic systems. Every door opens with a free demo. Shipped end to end, fixed scope, you own it.',
   path: '/services',
 });
 
@@ -17,7 +17,7 @@ const rest = DEPARTMENTS.filter((d) => !d.flagship);
 const FAQ = [
   {
     q: 'What does Modern Mustard Seed build?',
-    a: 'Productized doors that each open with a free demo (a website, an AI receptionist, a command center, a commercial, ads, print, a launch plan, and more), plus fully bespoke work: custom web and mobile apps, specialty AI tools, online stores, and agentic systems. Every engagement is shipped end to end by Sarah Scarano, fixed scope and fixed quote, and you own it.',
+    a: 'Productized doors that each open with a free demo (a website, a voice agent, a command center, a commercial, ads, print, a launch plan, and more), plus fully bespoke work: custom web and mobile apps, specialty AI tools, online stores, and agentic systems. Every engagement is shipped end to end by Sarah Scarano, fixed scope and fixed quote, and you own it.',
   },
   {
     q: 'How fast can you ship?',
@@ -96,7 +96,7 @@ export default function ServicesPage() {
             The flagship // Free to try, yours in a week
           </p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
-            A website, a receptionist, and the brain that runs them.
+            A website, a voice agent, and the brain that runs them.
           </h2>
           <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
             The three that work together. Forge all three free in about a minute, and the command center is free with
@@ -255,7 +255,7 @@ export default function ServicesPage() {
               Pick a door. It opens free.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
-              Enter your business once and tour a working website, an AI receptionist, and a command center in about
+              Enter your business once and tour a working website, a voice agent, and a command center in about
               twenty seconds. No card, no meeting.
             </p>
             <Link

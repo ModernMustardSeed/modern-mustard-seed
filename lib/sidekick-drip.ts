@@ -116,10 +116,10 @@ export function sidekickDripEmail(
       subject: `${bizOf(lead)}, your Sidekick is still standing by`,
       snippet: 'Sidekick drip 1 of 3: come back and hear it again.',
       html: clientEmail({
-        preheader: 'The receptionist you trained is still live, answering to your name.',
+        preheader: 'The voice agent you trained is still live, answering to your name.',
         greeting: hi,
         body:
-          `<p>${when} trained a receptionist for ${biz} and heard it answer. It is still live, still knows your services, and still picks up on the second ring.</p>` +
+          `<p>${when} trained a voice agent for ${biz} and heard it answer. It is still live, still knows your services, and still picks up on the second ring.</p>` +
           `<p>If someone else in the business should hear it before you decide, that link is worth more than anything I could write here. Send it to them and let them try to stump it. That is usually the conversation that settles it.</p>`,
         cta,
         secondary,

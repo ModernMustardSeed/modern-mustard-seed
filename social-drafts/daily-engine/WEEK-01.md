@@ -14,7 +14,7 @@ Approve by replying with the day numbers you want live. Edit anything in place.
 
 I shipped a bug that cost me money for a week and I never saw it.
 
-My AI receptionist is $297 a month. Stripe charged $297. My website said $297.
+My voice agent is $297 a month. Stripe charged $297. My website said $297.
 
 But the trade landing pages said $197. So did the FAQ schema. So did the file
 ChatGPT reads to learn about my company.
@@ -63,11 +63,11 @@ if it got it right. I am genuinely curious what the hit rate is.
 ## Day 2 (Tue) — X — the 60 second wow
 
 Type your business name. Sixty seconds later your own phone rings and an AI
-receptionist answers as your company, books a job, and takes a message.
+voice agent answers as your company, books a job, and takes a message.
 
 Free. No account. No card. No sales call.
 
-I built it because "AI receptionist" means nothing until you hear one say your
+I built it because "voice agent" means nothing until you hear one say your
 company's name back to you.
 
 modernmustardseed.com/sidekick
@@ -76,10 +76,10 @@ modernmustardseed.com/sidekick
 
 ## Day 2 (Tue) — LinkedIn — why the demo IS the pitch
 
-I stopped writing sales copy for my AI receptionist. I made it call people instead.
+I stopped writing sales copy for my voice agent. I made it call people instead.
 
 You type your business name. About sixty seconds later your phone rings. You pick
-up and hear a receptionist answering as your company, in a natural voice, trained
+up and hear a voice agent answering as your company, in a natural voice, trained
 on your services. You can try to trip it up. Most people do.
 
 Nothing sells a voice product like a voice.
@@ -134,7 +134,7 @@ crossandcovenant.co
 
 Things I shipped this year as one person in Montana:
 
-- an AI receptionist that calls your phone in 60 seconds
+- a voice agent that calls your phone in 60 seconds
 - a commercial studio that writes and shoots your ad
 - a print shop that typesets your menu
 - a launch coach for new businesses

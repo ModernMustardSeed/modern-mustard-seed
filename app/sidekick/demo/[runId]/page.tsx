@@ -4,12 +4,12 @@ import { forgeCall } from '@/lib/sidekick';
 import { buildMetadata } from '@/lib/seo';
 import DemoCallExperience from '@/components/sidekick/DemoCallExperience';
 
-export const metadata = buildMetadata({ title: 'Your AI Receptionist Demo', noindex: true });
+export const metadata = buildMetadata({ title: 'Your Voice Agent Demo', noindex: true });
 export const dynamic = 'force-dynamic';
 
 /**
  * The shareable forged demo: the cockpit forges a run for a lead, this page
- * resurrects it so the prospect can talk to "their" receptionist before the
+ * resurrects it so the prospect can talk to "their" voice agent before the
  * meeting. Unlisted (unguessable run id, noindex); each call is capped
  * platform-side at 4 minutes.
  */
@@ -24,7 +24,7 @@ export default async function SidekickDemoPage({ params }: { params: Promise<{ r
         <div className="max-w-md text-center bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8">
           <h1 className="font-display text-3xl font-bold text-[#161616]">This demo has moved on</h1>
           <p className="font-body text-[#161616]/70 mt-3">
-            We could not find that receptionist demo. Want one built for your business in about 60 seconds?
+            We could not find that voice agent demo. Want one built for your business in about 60 seconds?
           </p>
           <a
             href="/sidekick"

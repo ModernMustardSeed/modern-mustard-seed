@@ -248,7 +248,7 @@ export default function HatcheryPage() {
           <div className="mt-8 rounded-2xl border-2 border-[#161616] bg-[#F5B700]/15 p-6">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#B54423] font-bold">The real upgrade</p>
             <p className="mt-2 text-[#161616] leading-relaxed" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1.15rem' }}>
-              Your born mascot can become the voice of your whole phone system: a full AI receptionist that answers, qualifies, and books for your business around the clock. The Birth Day is the beginning, not the end.
+              Your born mascot can become the voice of your whole phone system: a full voice agent that answers, qualifies, and books for your business around the clock. The Birth Day is the beginning, not the end.
             </p>
           </div>
         </div>

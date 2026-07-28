@@ -8,7 +8,7 @@ import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
 import MissedCallMath from '@/components/voice-agents/MissedCallMath';
 
 /**
- * The receptionist trade fleet: /voice-agents/[trade].
+ * The voice agent trade fleet: /voice-agents/[trade].
  * Rendered from TRADE_PRESETS (the same source the forged demos use), so the
  * page can never drift from what the product actually says on a call.
  * Only LIVE_TRADE_SLUGS build; everything else 404s until Sarah releases it.
@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: { params: Promise<{ trade: st
   const page = getTradePage(trade);
   if (!page) return buildMetadata({ noindex: true });
   return buildMetadata({
-    title: `AI Receptionist For ${page.forWord}. Hear It Answer Live`,
-    description: `A 24/7 AI receptionist built for ${page.forWord.toLowerCase()}: ${page.services.toLowerCase()}. Forge a free demo trained on your business and hear it answer in 60 seconds.`,
+    title: `Voice Agent For ${page.forWord}. Hear It Answer Live`,
+    description: `A 24/7 voice agent built for ${page.forWord.toLowerCase()}: ${page.services.toLowerCase()}. Forge a free demo trained on your business and hear it answer in 60 seconds.`,
     path: `/voice-agents/${page.slug}`,
   });
 }
@@ -44,8 +44,8 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
       <JsonLd
         data={[
           serviceJsonLd({
-            name: `24/7 AI Receptionist for ${forWord}`,
-            description: `AI phone receptionist for ${forWord.toLowerCase()}: ${services.toLowerCase()}. Answers every call, books the work, texts a summary.`,
+            name: `24/7 Voice Agent for ${forWord}`,
+            description: `voice agent for ${forWord.toLowerCase()}: ${services.toLowerCase()}. Answers every call, books the work, texts a summary.`,
           }),
           faqJsonLd(faqs),
           breadcrumbJsonLd([
@@ -67,7 +67,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                 Every call answered. Every {preset.jobWord} caught.
               </h1>
               <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-                A 24/7 AI receptionist that answers as your company, books the work, and texts you the summary.
+                A 24/7 voice agent that answers as your company, books the work, and texts you the summary.
                 While you are on the roof, under the sink, or with a customer, it is on the phone.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -147,7 +147,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               <p className="mt-1 font-body text-sm text-[#5c554a]">{preset.signature.sub}</p>
               <p className="mt-3 font-body text-sm text-[#3d382e]">
                 Every forged demo ships with a full business command center for your trade, and it stays free with your
-                receptionist. This board is its centerpiece. See it live inside your demo.
+                voice agent. This board is its centerpiece. See it live inside your demo.
               </p>
             </div>
           </div>
@@ -243,7 +243,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                 Calls answered at midnight become tomorrow at 7.
               </h2>
               <p className="mt-5 font-body text-[16px] text-[#3d382e] leading-relaxed">
-                The receptionist does not just take a message. It puts the work on the calendar while the caller is
+                The voice agent does not just take a message. It puts the work on the calendar while the caller is
                 still on the phone, which is the only moment they are guaranteed to still be yours.
               </p>
               {preset.todayJobs?.length ? (
@@ -287,8 +287,8 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               Built for how {forWord.toLowerCase()} actually make money.
             </h2>
             <p className="mt-4 font-body text-[16px] text-[#3d382e] leading-relaxed max-w-2xl">
-              The receptionist is the front door. Behind it, the command center runs the follow-through that this
-              trade lives on, and it comes free with your receptionist.
+              The voice agent is the front door. Behind it, the command center runs the follow-through that this
+              trade lives on, and it comes free with your voice agent.
             </p>
             <div className="mt-8 grid md:grid-cols-3 gap-6">
               {preset.extraAutomations.map((a) => (
@@ -316,7 +316,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               {
                 n: '01',
                 t: 'Forge The Demo',
-                b: 'Type your business name at the demo station. In about 60 seconds a receptionist trained on your company exists.',
+                b: 'Type your business name at the demo station. In about 60 seconds a voice agent trained on your company exists.',
               },
               {
                 n: '02',
@@ -372,7 +372,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
             Your next {preset.jobWord} is calling.
           </h2>
           <p className="mt-4 font-body text-lg text-[#3d382e]">
-            Forge the free demo and hear your own receptionist in about a minute.
+            Forge the free demo and hear your own voice agent in about a minute.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link

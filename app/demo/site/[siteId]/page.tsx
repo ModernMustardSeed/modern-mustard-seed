@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
  * The shareable forged demo WEBSITE: the cockpit queues a build, the local
  * demo-site worker (headless Claude Code on the Max plan) writes the HTML back
  * onto the row, and this page serves it full-screen with the lead's forged AI
- * receptionist overlaid as a live call widget. Unlisted (unguessable id,
+ * voice agent overlaid as a live call widget. Unlisted (unguessable id,
  * noindex). While the forge is still working, a holding page auto-refreshes.
  */
 
@@ -77,7 +77,7 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
               href={waitingLead.demo_url}
               className="inline-block mt-6 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
             >
-              Meanwhile, meet your AI receptionist
+              Meanwhile, meet your voice agent
             </a>
           )}
           <p className="font-mono text-[11px] text-[#FBF6EA]/35 mt-6">Modern Mustard Seed · Kalispell MT</p>

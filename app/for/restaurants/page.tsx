@@ -7,7 +7,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'AI for Restaurants and Franchises. Phone Ordering and Missed-Call Revenue.',
   description:
-    'A 24/7 AI voice agent for restaurants and multi-unit franchise operators that takes phone orders, books tables, captures catering, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, and rolls out per location across your whole footprint. Hear one trained on your restaurant free in about 60 seconds.',
+    'A 24/7 voice agent for restaurants and multi-unit franchise operators that takes phone orders, books tables, captures catering, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, and rolls out per location across your whole footprint. Hear one trained on your restaurant free in about 60 seconds.',
   path: '/for/restaurants',
 });
 
@@ -76,7 +76,7 @@ const faqs = [
     a: 'In almost every franchise system the individual operator owns their own phone line and local vendor decisions, so you can add an AI host at the store or group level without waiting on corporate. A few brands mandate a specific ordering stack from headquarters, so we confirm your exact situation on a short call before anything goes live. Most franchisees start with the free forged demo, hear it answer their own restaurant, and roll it out across their locations from there.',
   },
   {
-    q: 'Can one AI phone agent cover all of my locations?',
+    q: 'Can one voice agent cover all of my locations?',
     a: 'Yes. The host is trained on your brand once and then deployed to each location on its own number, so every store answers in the same voice with its own hours, menu, and specials. You get a single dashboard across the whole footprint that shows calls answered, orders taken, and catering captured per location, so you can see which stores were leaking the most and how much came back.',
   },
 ];
@@ -103,9 +103,9 @@ export default function RestaurantsPage() {
         data={[
           webPageJsonLd,
           serviceJsonLd({
-            name: 'AI Voice Agents and Ordering Systems for Restaurants',
+            name: 'Voice Agents and Ordering Systems for Restaurants',
             description:
-              'Custom 24/7 AI voice agents for restaurants that take phone orders, book tables, recover missed calls, and run commission-free online ordering. Integrates with Toast, Square, Clover, and Olo. Built and live in about two weeks.',
+              'Custom 24/7 voice agents for restaurants that take phone orders, book tables, recover missed calls, and run commission-free online ordering. Integrates with Toast, Square, Clover, and Olo. Built and live in about two weeks.',
           }),
           faqJsonLd(faqs),
           breadcrumbJsonLd([

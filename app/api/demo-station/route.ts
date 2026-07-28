@@ -1,7 +1,7 @@
 /**
  * THE DEMO STATION: self-serve version of the cockpit forge. A business owner
  * lands from an ad, gives us their details, and we forge their whole suite:
- * voice receptionist (instant) + business OS (instant) + website (queued to
+ * voice agent (instant) + business OS (instant) + website (queued to
  * the worker), fronted by their Demo Suite hub. Every signup is a lead on the
  * dial floor (source 'demo-station'), so the funnel is: ad -> station -> hub
  * -> order card, with the team following up on anyone who stalls.
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
   const niche = (NICHES.includes(body.niche as Niche) ? body.niche : 'other') as Niche;
 
   if (!business || !name || !/.+@.+\..+/.test(email) || digits.length < 10) {
-    return NextResponse.json({ error: 'missing_fields', message: 'Business, your name, a real email, and a real phone number are required (the receptionist demo answers as your business).' }, { status: 400 });
+    return NextResponse.json({ error: 'missing_fields', message: 'Business, your name, a real email, and a real phone number are required (the voice agent demo answers as your business).' }, { status: 400 });
   }
   if (hostile(business, name, city, website)) {
     return NextResponse.json(
@@ -260,11 +260,11 @@ export async function POST(req: Request) {
         replyTo: 'sarah@modernmustardseed.com',
         subject: `${first}, ${business}'s demos are being forged right now`,
         html: clientEmail({
-          preheader: 'Your receptionist and command center are ready now; your website lands in about twenty minutes.',
+          preheader: 'Your voice agent and command center are ready now; your website lands in about twenty minutes.',
           eyebrow: 'YOUR DEMO SUITE',
           greeting: `${first}, it is happening.`,
           body:
-            `<p>Your AI receptionist and your command center are <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template: it usually lands about twenty minutes after you signed up, and it shows up at the same hub on its own.</p>` +
+            `<p>Your voice agent and your command center are <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template: it usually lands about twenty minutes after you signed up, and it shows up at the same hub on its own.</p>` +
             demoFilmCard({
               film: 'demo-welcome',
               href: lead.hub_demo_url,

@@ -15,12 +15,12 @@ is answered honestly.
 
 ## Touch 1 (Day 0): The gift
 
-**Subject:** I built {BusinessName} a receptionist that never misses a call
+**Subject:** I built {BusinessName} a voice agent that never misses a call
 
 Hi {OwnerFirst},
 
 I run Modern Mustard Seed, a small AI studio in Kalispell, Montana. Before writing to you I
-built something for {BusinessName}: a working AI receptionist trained on your business. It
+built something for {BusinessName}: a working voice agent trained on your business. It
 answers as your company, books {jobWord}s, and takes messages at 2 AM.
 
 Hear it here (it is already live): {HubUrl}
@@ -41,7 +41,7 @@ Hi {OwnerFirst},
 Quick one. The average {ticketWord} in your trade runs about {AvgTicket}. If {BusinessName}
 misses even a handful of calls a week, that is real money walking to whoever answers next.
 
-The demo I built you shows the receptionist that stops that. Sixty seconds to hear it:
+The demo I built you shows the voice agent that stops that. Sixty seconds to hear it:
 {HubUrl}
 
 {Signature}

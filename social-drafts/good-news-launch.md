@@ -10,7 +10,7 @@ You want the good news, or the bad news?
 
 Bad news first: every call your business misses, every lead that slips through, is revenue that just walked out the door. And catching all of it yourself? That is the late nights, the weekends, the dinners you meant to be home for.
 
-Here is the good news. We build the systems that catch it all. A website that sells. An AI voice agent that answers every call, day or night. Custom software that does the busywork for you. The revenue you were leaking comes back. And you get your life back.
+Here is the good news. We build the systems that catch it all. A website that sells. A voice agent that answers every call, day or night. Custom software that does the busywork for you. The revenue you were leaking comes back. And you get your life back.
 
 Meet the family. Then let us build yours.
 

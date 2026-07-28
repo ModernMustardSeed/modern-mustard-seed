@@ -3,8 +3,8 @@
 import type { VoiceGender } from '@/lib/sidekick-voice';
 
 /**
- * Female / male receptionist voice picker. A tiny segmented control shared by
- * every receptionist demo surface (the forge, the cockpit demo, the on-site
+ * Female / male agent voice picker. A tiny segmented control shared by
+ * every voice agent demo surface (the forge, the cockpit demo, the on-site
  * widget) so anyone can choose the voice before the call. Purely presentational:
  * the parent holds the chosen gender and injects the matching Vapi voice into
  * the call, so flipping this mid-idle costs nothing.
@@ -35,7 +35,7 @@ export default function VoiceGenderToggle({
       <span className={`mb-1.5 font-mono text-[9px] uppercase tracking-[0.28em] font-bold ${labelColor}`}>
         Pick the voice
       </span>
-      <div role="radiogroup" aria-label="Receptionist voice" className={`inline-flex rounded-full border-2 p-0.5 ${track}`}>
+      <div role="radiogroup" aria-label="Agent voice" className={`inline-flex rounded-full border-2 p-0.5 ${track}`}>
         {opts.map((o) => {
           const on = value === o.key;
           return (

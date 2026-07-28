@@ -7,9 +7,9 @@
  *
  * Every piece is individually purchasable. The Business Command Center has its
  * own price ($497 + $197/mo) BUT it is WAIVED (free) whenever a paid piece rides
- * with it, because a website needs a back office and so does a receptionist. So
+ * with it, because a website needs a back office and so does a voice agent. So
  * the command center's price is shown, struck through, the moment the buyer adds
- * the website or the receptionist. Picking both paid pieces = the bundle.
+ * the website or the voice agent. Picking both paid pieces = the bundle.
  *
  * Pricing locked by Sarah 2026-07-11; command center made free-with-either
  * 2026-07-22, kept individually purchasable (price waived when paired).
@@ -32,7 +32,7 @@ export type DemoProduct = {
 export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
   voice: {
     key: 'voice',
-    name: 'AI Receptionist',
+    name: 'Voice Agent',
     setupCents: 39700,
     monthlyCents: 29700,
     blurb: 'The voice that answered your demo, on your real number, 24/7.',
@@ -56,7 +56,7 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
     monthlyCents: 19700,
     freeWithPaid: true,
     blurb: 'Your back office: every call transcribed, your website traffic and leads, customers, reviews, and money on one board.',
-    finePrint: 'Free with your website or receptionist. Buy it on its own, or add either and it is on the house.',
+    finePrint: 'Free with your website or voice agent. Buy it on its own, or add either and it is on the house.',
   },
 };
 
@@ -75,7 +75,7 @@ export const DEMO_BUNDLE = {
   name: 'The Whole System',
   setupCents: 79700,
   monthlyCents: 34900,
-  blurb: 'Receptionist + website, and the command center that ties them together, free. One system, one login.',
+  blurb: 'Voice Agent + website, and the command center that ties them together, free. One system, one login.',
 };
 
 /** Every orderable piece, in display order. Each can be bought on its own. */

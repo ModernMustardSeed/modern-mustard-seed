@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const city = getCity(slug);
   if (!city) return buildMetadata({ noindex: true });
   return buildMetadata({
-    title: `Web Design and AI Receptionists in ${city.nameWithState}`,
+    title: `Web Design and Voice Agents in ${city.nameWithState}`,
     description: `Custom websites and 24/7 AI phone answering for ${city.name}, Montana businesses, built by a studio in the Flathead Valley. See three working demos free before you pay anything. Call ${SITE.phone}.`,
     path: `/montana/${city.slug}`,
   });
@@ -56,7 +56,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
     '@id': `${SITE.url}/montana/${city.slug}#localbusiness`,
     name: `${SITE.name} (serving ${city.name}, Montana)`,
     url: `${SITE.url}/montana/${city.slug}`,
-    description: `Website design, AI receptionists, and business automation for ${city.name}, Montana businesses. Built in the Flathead Valley.`,
+    description: `Website design, voice agents, and business automation for ${city.name}, Montana businesses. Built in the Flathead Valley.`,
     telephone: SITE.phoneE164,
     email: SITE.email,
     image: `${SITE.url}/opengraph-image`,
@@ -109,7 +109,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               </h1>
               <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
                 We are a studio in the Flathead Valley, {city.slug === 'kalispell' ? 'right here in Kalispell' : `a short drive from ${city.name}`}. We
-                build the website and the 24/7 AI receptionist behind it, then hand you the keys. You own everything.
+                build the website and the 24/7 voice agent behind it, then hand you the keys. You own everything.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -126,7 +126,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                 </a>
               </div>
               <p className="mt-6 font-body text-[15px] text-[#161616]/70">
-                Our own line is answered by the AI receptionist we sell. Call it at midnight and try to stump it.
+                Our own line is answered by the voice agent we sell. Call it at midnight and try to stump it.
               </p>
             </div>
 
@@ -199,19 +199,19 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             {[
               {
                 t: 'The Website',
-                b: 'Designed from scratch for your business, not filled into a template. Lead capture, SEO, and an AI receptionist answering right on the page. You own the code, the domain, and every account.',
+                b: 'Designed from scratch for your business, not filled into a template. Lead capture, SEO, and a voice agent answering right on the page. You own the code, the domain, and every account.',
                 p: `${formatUsd(DEMO_PRODUCTS.site.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`,
                 href: '/websites',
               },
               {
-                t: 'The AI Receptionist',
+                t: 'The Voice Agent',
                 b: 'Answers as your business, day or night, books the job, flags the emergencies, and texts you the summary. Trained on your services, your hours, and your service area.',
                 p: `${formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo`,
                 href: '/sidekick',
               },
               {
                 t: 'The Command Center',
-                b: 'Calls, leads, customers, reviews, traffic, and money on one board, with an AI that reads it back to you. Free with the website or the receptionist.',
+                b: 'Calls, leads, customers, reviews, traffic, and money on one board, with an AI that reads it back to you. Free with the website or the voice agent.',
                 p: 'Free with either',
                 href: '/command-center',
               },

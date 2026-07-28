@@ -254,7 +254,7 @@ export const chiefBoundaries = {
 
 export const chiefFaq = [
   {
-    q: 'How is this different from the AI receptionist (Sidekick)?',
+    q: 'How is this different from the voice agent (Sidekick)?',
     a: 'Opposite direction. The Sidekick answers your customers, an inbound front desk for your business. The Chief works for you. He is your outbound, proactive right hand: your calendar, your email, your calls, your research, your prep, your morning briefing. One picks up the phone when the world calls in. The other runs your week.',
   },
   {

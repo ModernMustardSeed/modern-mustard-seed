@@ -7,9 +7,9 @@ import WhitepaperGate from '@/components/WhitepaperGate';
 import { WHITEPAPER as WP } from '@/data/voice-agent-whitepaper';
 
 export const metadata = buildMetadata({
-  title: 'AI Voice Agents Whitepaper: Answer Every Call, in Any Language',
+  title: 'Voice Agents Whitepaper: Answer Every Call, in Any Language',
   description:
-    'A field guide to AI voice agents that answer every call 24/7 in a natural human voice, remember every caller with persistent memory, speak 100+ languages, run inbound and outbound sales, book appointments, take orders, and upsell. By Modern Mustard Seed.',
+    'A field guide to voice agents that answer every call 24/7 in a natural human voice, remember every caller with persistent memory, speak 100+ languages, run inbound and outbound sales, book appointments, take orders, and upsell. By Modern Mustard Seed.',
   path: '/voice-agents/whitepaper',
 });
 
@@ -23,9 +23,9 @@ const articleJsonLd = {
   datePublished: WP.dateISO,
   dateModified: WP.dateISO,
   inLanguage: 'en-US',
-  about: 'AI voice agents for small business',
+  about: 'voice agents for small business',
   keywords:
-    'AI voice agent, AI receptionist, multilingual voice agent, AI SDR, speed to lead, AI phone answering, voice AI for restaurants, persistent memory voice assistant',
+    'voice agent, voice agent, multilingual voice agent, AI SDR, speed to lead, AI phone answering, voice AI for restaurants, persistent memory voice assistant',
   speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', 'h2'] },
   mainEntityOfPage: 'https://modernmustardseed.com/voice-agents/whitepaper',
 };
@@ -37,7 +37,7 @@ export default function WhitepaperPage() {
         data={[
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },
-            { name: 'AI Voice Agents', url: '/voice-agents' },
+            { name: 'Voice Agents', url: '/voice-agents' },
             { name: 'Whitepaper', url: '/voice-agents/whitepaper' },
           ]),
           articleJsonLd,

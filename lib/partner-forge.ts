@@ -137,7 +137,7 @@ export async function mintForgedSuite(
   if (!business || !contact || digits.length < 10) {
     return {
       ok: false, status: 400, error: 'missing_fields',
-      message: 'Business name, the owner\'s name, and a real phone number are required (the receptionist demo answers as their business).',
+      message: 'Business name, the owner\'s name, and a real phone number are required (the voice agent demo answers as their business).',
     };
   }
   const website = validWebsite(websiteRaw);
@@ -420,14 +420,14 @@ export async function sendForgeHandoffEmail(
     replyTo: 'sarah@modernmustardseed.com',
     subject: `${first}, the suite you forged for ${args.business} is live`,
     html: clientEmail({
-      preheader: 'Their receptionist and command center are ready now; the website lands at the same link.',
+      preheader: 'Their voice agent and command center are ready now; the website lands at the same link.',
       eyebrow: 'YOUR FORGE, THEIR FLAG',
       greeting: `${first}, it is ready.`,
       body:
-        `<p>The demo suite you minted for <strong>${args.business}</strong> is live at their private hub. The AI receptionist and the command center are ready right now; the custom website is designed from scratch and lands at the same link about twenty minutes in.</p>` +
+        `<p>The demo suite you minted for <strong>${args.business}</strong> is live at their private hub. The voice agent and the command center are ready right now; the custom website is designed from scratch and lands at the same link about twenty minutes in.</p>` +
         `<p>Hand it off in your own words, or use these three lines:</p>` +
         `<p style="padding:12px 16px;border-left:4px solid #F5B700;background:#FBF6EA;">` +
-        `"${ownerFirst}, I had something built for ${args.business}. A team I trust makes AI receptionists and websites, and I asked them to make yours first so you could see it real, not as a pitch. It is at this link, with your name on it, and it took me two minutes: have a look before you talk to anyone."` +
+        `"${ownerFirst}, I had something built for ${args.business}. A team I trust makes voice agents and websites, and I asked them to make yours first so you could see it real, not as a pitch. It is at this link, with your name on it, and it took me two minutes: have a look before you talk to anyone."` +
         `</p>` +
         `<p>Send them the hub link below. If they buy, the commission lands on your partner ledger automatically.</p>`,
       cta: { label: `Open ${args.business}'s Demo Suite`, url: args.hubUrl },

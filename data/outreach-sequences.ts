@@ -31,7 +31,7 @@ export const outreachSequences: OutreachSequence[] = [
         day: 0,
         channel: 'DM',
         body:
-          "Hi {{firstName}}, came across {{restaurant}} and the menu looks great. Quick one: when you're slammed at dinner, who's actually answering the phone? I build AI phone agents for restaurants that take the order, book the table, and fire it to your POS so the rush never rolls to voicemail. Worth a 2-minute look?",
+          "Hi {{firstName}}, came across {{restaurant}} and the menu looks great. Quick one: when you're slammed at dinner, who's actually answering the phone? I build voice agents for restaurants that take the order, book the table, and fire it to your POS so the rush never rolls to voicemail. Worth a 2-minute look?",
       },
       {
         day: 2,
@@ -40,7 +40,7 @@ export const outreachSequences: OutreachSequence[] = [
         body:
           'Hi {{firstName}},\n\n' +
           'Quick math most {{city}} restaurants never run: 15 missed calls a week at a $32 average ticket is about $1,900 a month walking out the door. During the rush, those are takeout orders and tables going to the place that picked up.\n\n' +
-          'I build AI voice agents that answer every call in a natural voice, take the full order and fire it to your POS (Toast, Square, Clover), book reservations, and recover the calls you miss. Live in about two weeks, on your own number.\n\n' +
+          'I build voice agents that answer every call in a natural voice, take the full order and fire it to your POS (Toast, Square, Clover), book reservations, and recover the calls you miss. Live in about two weeks, on your own number.\n\n' +
           'Here is how it works for restaurants: https://modernmustardseed.com/for/restaurants\n\n' +
           'If it is worth 15 minutes, grab a time here: https://modernmustardseed.com/book\n\n' +
           'Either way, the calculator on that page shows your own number in 30 seconds.\n\n' +

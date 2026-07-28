@@ -18,7 +18,7 @@ export type Dept = {
 
 export const DEPARTMENTS: Dept[] = [
   { key: 'websites', name: 'Websites', tag: 'Free website demo', blurb: 'A site that answers the phone, captures the lead, and follows up. Not a brochure, an engine.', href: '/websites', icon: '🌐', flagship: true },
-  { key: 'sidekick', name: 'AI Receptionist', tag: 'Free receptionist demo', blurb: 'Answers your real number 24/7 in a natural voice, books the job, texts you the details.', href: '/sidekick', icon: '🎙', flagship: true },
+  { key: 'sidekick', name: 'Voice Agent', tag: 'Free voice agent demo', blurb: 'Answers your real number 24/7 in a natural voice, books the job, texts you the details.', href: '/sidekick', icon: '🎙', flagship: true },
   { key: 'command-center', name: 'Command Center', tag: 'The AI back office', blurb: 'One board: calls transcribed, website traffic, customers, reviews, and money, wired together.', href: '/command-center', icon: '⚙', flagship: true },
   { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
   { key: 'ads', name: 'Mustard Broadcast', tag: 'We run your ads', blurb: 'We make the cinematic commercial and run the Meta and Google ads in your own account.', href: '/ads', icon: '📺' },
@@ -39,7 +39,7 @@ export type Goal = { label: string; emoji: string; deptKeys: string[]; note: str
 /** The goal router. Each goal surfaces the right doors. */
 export const GOALS: Goal[] = [
   { label: 'Get more customers', emoji: '📈', deptKeys: ['ads', 'websites', 'geo'], note: 'A site that converts, ads that run in your account, and findability on Google and AI search.' },
-  { label: 'Stop missing calls', emoji: '📞', deptKeys: ['sidekick', 'switchboard'], note: 'An AI receptionist on your real number, day or night. Multi-location? The Switchboard.' },
+  { label: 'Stop missing calls', emoji: '📞', deptKeys: ['sidekick', 'switchboard'], note: 'A voice agent on your real number, day or night. Multi-location? The Switchboard.' },
   { label: 'Run the whole business', emoji: '🧭', deptKeys: ['command-center', 'sidekick', 'websites'], note: 'One command center wired to your calls, your site, and your customers.' },
   { label: 'Get my hours back', emoji: '⏳', deptKeys: ['chief', 'command-center'], note: 'An AI chief of staff who runs your calendar, email, and follow-up, with the back office behind it.' },
   { label: 'Look professional online', emoji: '✨', deptKeys: ['websites', 'pictures', 'press'], note: 'A real website, a cinematic commercial, and print-ready collateral that match.' },

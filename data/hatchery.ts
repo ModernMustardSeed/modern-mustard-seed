@@ -130,6 +130,6 @@ export const hatcheryFaq: { q: string; a: string }[] = [
   },
   {
     q: 'Can my mascot become the voice of my whole phone system?',
-    a: 'Yes. That is the real upgrade. Your born character can become the voice of a full AI receptionist that answers, qualifies, and books for your business around the clock. The Birth Day is the beginning, not the end.',
+    a: 'Yes. That is the real upgrade. Your born character can become the voice of a full voice agent that answers, qualifies, and books for your business around the clock. The Birth Day is the beginning, not the end.',
   },
 ];

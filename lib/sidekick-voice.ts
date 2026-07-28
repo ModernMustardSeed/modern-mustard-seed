@@ -1,5 +1,5 @@
 /**
- * The receptionist voice picker: female or male, one source of truth.
+ * The agent voice picker: female or male, one source of truth.
  *
  * Pure constants and helpers, no server imports, so both the server forge
  * (lib/sidekick.ts, the outbound-call path) and the browser call widgets can

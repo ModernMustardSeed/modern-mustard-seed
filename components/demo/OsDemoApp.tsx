@@ -29,7 +29,7 @@ import OsTour from '@/components/demo/os/OsTour';
  * Modules: Today, the trade-specific SIGNATURE BOARD, Customers (CRM), Quotes
  * (branded proposal generator), Jobs (run sheet), Campaigns (growth plays +
  * ad studio), Money, Books, Reviews, Automations, and the live AI assistant
- * (capped), plus the voice receptionist widget. The pitch is the product, and
+ * (capped), plus the voice agent widget. The pitch is the product, and
  * the modules feed each other: a signed quote books a job, a finished job
  * invoices itself and queues the review chase.
  */
@@ -104,7 +104,7 @@ const TONE_LIGHT: Record<'hot' | 'won' | 'wait', [string, string]> = {
 /* ────────────────────────────── the CRM record ────────────────────────────── */
 
 type CrmNote = { when: string; text: string };
-type LeadSource = 'Receptionist' | 'Website' | 'Google' | 'Referral';
+type LeadSource = 'Voice Agent' | 'Website' | 'Google' | 'Referral';
 
 /** A pipeline card, enriched into something a business owner would recognize. */
 type CrmLead = OsCustomer & {
@@ -119,7 +119,7 @@ type CrmLead = OsCustomer & {
 /* hash + useCountUp live in os-kit now (shared with the module tabs); the
    hydration law stands: everything derived must be deterministic. */
 
-const SOURCES: LeadSource[] = ['Receptionist', 'Website', 'Google', 'Referral'];
+const SOURCES: LeadSource[] = ['Voice Agent', 'Website', 'Google', 'Referral'];
 
 function phoneFor(name: string): string {
   const h = hash(name);
@@ -127,7 +127,7 @@ function phoneFor(name: string): string {
 }
 const AGES = ['9 min ago', '42 min ago', '2 hours ago', 'yesterday', '2 days ago', 'last week'];
 
-/** New calls the receptionist can catch on demand, so the owner can watch the
+/** New calls the voice agent can catch on demand, so the owner can watch the
  *  product work instead of reading about it. `{job}` is filled per trade. */
 const INBOUND_POOL = [
   { name: 'Tyler B.', need: 'Called after hours, wants a quote on a {job}' },
@@ -157,9 +157,9 @@ function enrich(c: OsCustomer, i: number): CrmLead {
     ...c,
     id: `${i}-${c.name}`,
     phone: `(${area}) ${100 + (h % 900)}-${1000 + (h % 9000)}`,
-    // Most leads in a business with an AI receptionist came THROUGH it. That is
+    // Most leads in a business with a voice agent came THROUGH it. That is
     // the whole argument, so weight it rather than distributing evenly.
-    source: h % 5 < 2 ? 'Receptionist' : SOURCES[h % SOURCES.length],
+    source: h % 5 < 2 ? 'Voice Agent' : SOURCES[h % SOURCES.length],
     age: AGES[h % AGES.length],
     notes: [],
   };
@@ -397,7 +397,7 @@ export default function OsDemoApp({
   };
 
   /* --------------------------- live-call theater --------------------------- */
-  // The receptionist catching a call IS the product, so the demo performs it:
+  // The voice agent catching a call IS the product, so the demo performs it:
   // a call rings in on its own a few seconds after the owner arrives, the AI
   // answers it in front of them, and the lead lands in the pipeline while the
   // rescued-revenue odometer ticks up. Deterministic content only (pool order +
@@ -461,9 +461,9 @@ export default function OsDemoApp({
         { name: inbound.name, need: inbound.need.replace(/\{job\}/g, preset.jobWord), value: preset.avgTicket, stage: 0 },
         leads.length + 97,
       );
-      fresh.source = 'Receptionist';
+      fresh.source = 'Voice Agent';
       fresh.age = 'just now';
-      fresh.notes = [{ when: 'just now', text: `Answered by your AI receptionist. Caller asked about ${preset.jobWord} work and left a number.` }];
+      fresh.notes = [{ when: 'just now', text: `Answered by your voice agent. Caller asked about ${preset.jobWord} work and left a number.` }];
       setLeads((ls) => [fresh, ...ls]);
       setCallsCaught((n) => n + 1);
       setBonus((b) => b + fresh.value);
@@ -471,7 +471,7 @@ export default function OsDemoApp({
       window.setTimeout(() => setJustLanded(null), 2600);
       setTheater((th) => (th ? { ...th, phase: 'filed' } : th));
       if (theater.openAfter) setOpenLead(fresh.id);
-      say(`${fresh.name} called. Your receptionist took it and filed the lead.`);
+      say(`${fresh.name} called. Your voice agent took it and filed the lead.`);
     }, 650);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -497,7 +497,7 @@ export default function OsDemoApp({
   const wonCount = live.filter((l) => l.stage === 3).length;
   const closed = wonCount + leads.filter((l) => l.lost).length;
   const winRate = closed ? Math.round((wonCount / closed) * 100) : 0;
-  const caught = leads.filter((l) => l.source === 'Receptionist').length;
+  const caught = leads.filter((l) => l.source === 'Voice Agent').length;
 
   /* -------------------------------- money -------------------------------- */
   // Invoices are not separate sample data: they ARE the won work. Every dollar
@@ -751,10 +751,10 @@ export default function OsDemoApp({
                   Morning{config.ownerFirst ? `, ${config.ownerFirst}` : ''}.
                 </h1>
                 <p className="text-[14px] mt-1" style={{ color: DIM }}>
-                  While you slept, your receptionist answered {preset.overnightCalls.length} calls. Here is your day, already sorted.
+                  While you slept, your voice agent answered {preset.overnightCalls.length} calls. Here is your day, already sorted.
                 </p>
               </div>
-              {/* The live wire: the receptionist's night, streaming. One glance
+              {/* The live wire: the voice agent's night, streaming. One glance
                   says "this thing is awake even when I am not". */}
               <div
                 className="rounded-xl border mb-3 flex items-center gap-2.5 px-3 py-2 overflow-hidden animate-[osIn_.5s_ease-out_.1s_both]"
@@ -785,7 +785,7 @@ export default function OsDemoApp({
 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {stat('Rescued this week', `$${revenue.toLocaleString()}`, 'booked from calls + follow-ups', 0, false, <Spark seed={config.business} accent={accent} />)}
-                {stat('Caught overnight', String(preset.overnightCalls.length), 'answered by your AI, zero missed', 1, true)}
+                {stat('Caught overnight', String(preset.overnightCalls.length), 'answered by your agent, zero missed', 1, true)}
                 {stat(`${preset.jobWord.charAt(0).toUpperCase() + preset.jobWord.slice(1)}s today`, String(preset.todayJobs.length), 'confirmed and reminded', 2)}
                 {stat('Waiting on you', String(live.filter((l) => l.stage === 1).length), 'quotes to send, one tap each', 3)}
               </div>
@@ -931,7 +931,7 @@ export default function OsDemoApp({
                 {stat('Open pipeline', `$${pipelineValue.toLocaleString()}`, `${live.filter((l) => l.stage < 3).length} still in play`, 0)}
                 {stat('Won', `$${wonValue.toLocaleString()}`, `${wonCount} closed`, 1)}
                 {stat('Win rate', `${winRate}%`, `${closed} decided so far`, 2)}
-                {stat('Caught by AI', String(caught), 'calls your receptionist saved', 3, caught > 0)}
+                {stat('Caught by your agent', String(caught), 'calls your voice agent saved', 3, caught > 0)}
               </div>
 
               {/* Toolbar */}
@@ -970,7 +970,7 @@ export default function OsDemoApp({
                             className="rounded-xl border p-2.5 transition-transform hover:-translate-y-0.5"
                             style={{
                               background: PANEL_SOFT,
-                              borderColor: l.source === 'Receptionist' ? accent : LINE,
+                              borderColor: l.source === 'Voice Agent' ? accent : LINE,
                               ...(justLanded === l.id
                                 ? { animation: 'osLand .7s cubic-bezier(.2,.9,.3,1.2) both', boxShadow: `0 0 0 3px ${accentSoft}, 0 10px 30px -12px ${accent}` }
                                 : {}),
@@ -981,8 +981,8 @@ export default function OsDemoApp({
                               <p className="text-[11px] leading-snug mt-0.5" style={{ color: DIM }}>{l.need}</p>
                               <div className="flex items-center justify-between gap-2 mt-1.5">
                                 <span className="font-mono text-[11px] font-bold" style={{ color: accent }}>${l.value.toLocaleString()}</span>
-                                <span className="text-[9px] uppercase tracking-[0.1em] font-bold rounded-full px-2 py-0.5" style={{ color: l.source === 'Receptionist' ? accentInk : DIM, background: l.source === 'Receptionist' ? accent : 'transparent', border: l.source === 'Receptionist' ? 'none' : `1px solid ${LINE}` }}>
-                                  {l.source === 'Receptionist' ? '🎙 AI' : l.source}
+                                <span className="text-[9px] uppercase tracking-[0.1em] font-bold rounded-full px-2 py-0.5" style={{ color: l.source === 'Voice Agent' ? accentInk : DIM, background: l.source === 'Voice Agent' ? accent : 'transparent', border: l.source === 'Voice Agent' ? 'none' : `1px solid ${LINE}` }}>
+                                  {l.source === 'Voice Agent' ? '🎙 Voice Agent' : l.source}
                                 </span>
                               </div>
                             </button>
@@ -1430,7 +1430,7 @@ export default function OsDemoApp({
                 <div className="min-w-0 flex-1">
                   <p className="text-[17px] font-bold leading-tight" style={{ color: TEXT }}>{selected.name}</p>
                   <p className="text-[12px] mt-0.5" style={{ color: DIM }}>
-                    {selected.source === 'Receptionist' ? '🎙 Caught by your AI receptionist' : `Came in via ${selected.source}`} · {selected.age}
+                    {selected.source === 'Voice Agent' ? '🎙 Caught by your voice agent' : `Came in via ${selected.source}`} · {selected.age}
                   </p>
                 </div>
                 <button onClick={() => setOpenLead(null)} className="shrink-0 text-[20px] leading-none px-2" style={{ color: DIM }} aria-label="Close">
@@ -1561,7 +1561,7 @@ export default function OsDemoApp({
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-bold leading-tight" style={{ color: TEXT }}>
-                {theater.phase === 'ring' ? 'Incoming call' : theater.phase === 'answer' ? 'Your AI receptionist answered' : 'Booked and filed to Customers'}
+                {theater.phase === 'ring' ? 'Incoming call' : theater.phase === 'answer' ? 'Your voice agent answered' : 'Booked and filed to Customers'}
               </p>
               <p className="text-[11px] font-mono mt-0.5" style={{ color: theater.phase === 'filed' ? accent : DIM }}>
                 {theater.phase === 'filed'
@@ -1599,9 +1599,9 @@ export default function OsDemoApp({
         <WinBurst key={b.id} x={b.x} y={b.y} accent={accent} text={TEXT} />
       ))}
 
-      {/* The receptionist, one floor down from the corner tabs on mobile. */}
+      {/* The voice agent, one floor down from the corner tabs on mobile. */}
       <div className="fixed bottom-16 md:bottom-4 right-4 z-40">
-        <DemoVoiceWidget business={config.business} call={call} label="Your receptionist. Try it" />
+        <DemoVoiceWidget business={config.business} call={call} label="Your voice agent. Try it" />
       </div>
 
       {/* First-run onboarding tour (drives the tabs as it explains them). */}

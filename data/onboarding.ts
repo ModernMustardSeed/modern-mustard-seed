@@ -130,7 +130,7 @@ export const OFFER_LADDER: LadderRung[] = [
     price: 'Free',
     title: 'Free tools and demos',
     detail: 'Every stranger meets us here. These are your weapons in the field. They cost nothing and they show value before we ask for a dime.',
-    examples: ['Sidekick receptionist demo', 'Pictures Screen Test', 'Press proof', 'Website / AI audit'],
+    examples: ['Sidekick voice agent demo', 'Pictures Screen Test', 'Press proof', 'Website / AI audit'],
   },
   {
     rung: 2,
@@ -230,13 +230,13 @@ export const PHASES: Phase[] = [
         blocks: [
           {
             heading: 'The one sentence that runs the company',
-            body: 'Here is where we are pointed: we put AI staff to work for Main Street businesses, starting with the 24/7 receptionist you can hear answering your own phone sixty seconds from now. Read that again. That is the whole strategy in a line. Big agencies sell six-month projects to big companies. We give the corner salon, the roofer, and the med spa an AI team they can hear working, today, for the price of a slow week.',
+            body: 'Here is where we are pointed: we put AI staff to work for Main Street businesses, starting with the 24/7 voice agent you can hear answering your own phone sixty seconds from now. Read that again. That is the whole strategy in a line. Big agencies sell six-month projects to big companies. We give the corner salon, the roofer, and the med spa an AI team they can hear working, today, for the price of a slow week.',
           },
           {
             heading: 'Why this matters to your job',
             bullets: [
               'The front door is now a free demo, not a sales pitch. You let the product amaze them, then you book the call. That is a far easier job than talking someone into something.',
-              'We lead with the receptionist because every business with a phone loses money to missed calls, and they can hear the fix in one minute. It is the easiest thing on earth to show.',
+              'We lead with the voice agent because every business with a phone loses money to missed calls, and they can hear the fix in one minute. It is the easiest thing on earth to show.',
               'The money is increasingly monthly. A one-time build is great. A tool a client pays for every month is the dream. You will hear the word "recurring" a lot, and it is why the business is durable.',
               'Free tools and productized offers do the heavy lifting of trust. By the time you talk to someone, the work has already spoken for us.',
             ],
@@ -246,7 +246,7 @@ export const PHASES: Phase[] = [
               'The old story was "we build custom software." The new story is "we put AI staff to work for you, and you can hear it right now." Same studio, sharper spear. You are joining at the exact moment it gets easy to sell.',
           },
         ],
-        mission: { do: 'Go to /sidekick, and let Mr. Mustard forge a receptionist for a made-up business. Talk to it out loud.', why: 'This is the single most important thing we make right now. You cannot sell the wow until you have felt it yourself.' },
+        mission: { do: 'Go to /sidekick, and let Mr. Mustard forge a voice agent for a made-up business. Talk to it out loud.', why: 'This is the single most important thing we make right now. You cannot sell the wow until you have felt it yourself.' },
       },
       {
         id: 'your-seat',
@@ -320,7 +320,7 @@ export const PHASES: Phase[] = [
               'The full ladder is laid out visually right here, just below. Do not just read it. Picture where each conversation you have could climb.',
           },
         ],
-        mission: { do: 'Look at the six-rung ladder in this phase and pick the rung you think you will sell the most of at first.', why: 'Spoiler: it is the free receptionist demo on rung one. Knowing where you fish keeps you focused.' },
+        mission: { do: 'Look at the six-rung ladder in this phase and pick the rung you think you will sell the most of at first.', why: 'Spoiler: it is the free voice agent demo on rung one. Knowing where you fish keeps you focused.' },
       },
       {
         id: 'the-storefront',
@@ -334,9 +334,9 @@ export const PHASES: Phase[] = [
             body: 'These four are the heart of the new business. Each one gives a free wow starring our mascot, Mr. Mustard, then turns into a paid product. These are what you demo in the field. Know the free hook and the entry price for each, and you can start any conversation.',
           },
           {
-            heading: 'The Sidekick, a 24/7 AI receptionist  ·  /sidekick',
+            heading: 'The Sidekick, a 24/7 voice agent  ·  /sidekick',
             bullets: [
-              'The free wow: it forges a personalized AI receptionist for their business in about 60 seconds, and they talk to it live.',
+              'The free wow: it forges a personalized voice agent for their business in about 60 seconds, and they talk to it live.',
               'To keep him: $397 to set up plus $297 a month (250 answered minutes). The Pro is $597 plus $497 a month (600 minutes, caller memory, booking, a monthly tune-up with Sarah).',
               'Say it like this: "An AI that answers your phone 24/7 in a natural voice and books appointments, even when you are closed or slammed."',
             ],
@@ -386,7 +386,7 @@ export const PHASES: Phase[] = [
               'Websites that actually sell: a clear offer, real proof, an obvious next step. Live in weeks, and they own it.',
               'Full business systems: a site plus a CRM, an AI assistant, and the back office, all working together.',
               'Custom apps and AI tools: the one clean tool built for exactly how their business runs.',
-              'Voice and chat agents: the receptionist and the website helper, built and tuned for their business.',
+              'Voice and chat agents: the voice agent and the website helper, built and tuned for their business.',
             ],
           },
           {
@@ -498,7 +498,7 @@ export const PHASES: Phase[] = [
           },
           {
             heading: 'Free tools are your best openers',
-            body: 'The free demos and audits are not just products, they are the best reason to reach out. Run someone\'s website through the audit and send the grade. Forge them a receptionist and text the link. You showed value before you asked for anything, which is exactly how trust starts.',
+            body: 'The free demos and audits are not just products, they are the best reason to reach out. Run someone\'s website through the audit and send the grade. Forge them a voice agent and text the link. You showed value before you asked for anything, which is exactly how trust starts.',
             links: [
               { label: 'Website audit', url: '/website-audit', external: false },
               { label: 'Sidekick demo', url: '/sidekick', external: false },
@@ -544,7 +544,7 @@ export const PHASES: Phase[] = [
             heading: 'The shape of the call',
             bullets: [
               'Opener, ask permission: "Hi, my name is [you]. I will be honest, this is a quick cold call, do you have 20 seconds before I let you go?" Admitting it disarms people.',
-              'The hook: "Here is the one question I ask every owner: do you want your business to thrive? Because the ones that do never let a call go unanswered." Then bridge to the receptionist.',
+              'The hook: "Here is the one question I ask every owner: do you want your business to thrive? Because the ones that do never let a call go unanswered." Then bridge to the voice agent.',
               'Find the problem: "When you are slammed or after hours, what happens to your calls? Do they go to voicemail?" Then be quiet and listen.',
               'Book the demo: "That is exactly what we fix, and the easiest way is to see it. Would tomorrow morning or afternoon be better?" Offer two times, do not ask if they are interested.',
               'Lock it in: get the best cell or email, book it, and tell Sarah if it is a strong one.',
@@ -659,7 +659,7 @@ export const PHASES: Phase[] = [
               'Tracker: your list of businesses to call and visit.',
               'Outbound: the calling floor. Leads, audits, and scripts in one place.',
               'Gleaner: revenue recovery, surfacing leads worth another touch.',
-              'Callers: the AI voice agent\'s call history and memory.',
+              'Callers: the voice agent\'s call history and memory.',
             ],
           },
           {
@@ -697,7 +697,7 @@ export const PHASES: Phase[] = [
         blocks: [
           {
             heading: 'One business, start to finish',
-            body: 'A roofer misses calls. You forge them a receptionist demo at a walk-in and text the /voice-agents link. You log them in the Tracker as demoed. You book a call, and they show up in the Pipeline and on the Calendar. Sarah runs the call, notes go in Call, and a fixed quote goes out from Proposals. They pay a deposit, and it becomes a live Project with a client Portal. They launch, leave a Review, and their replies land in the Inbox. Later, Gleaner reminds us to check in about a monthly plan.',
+            body: 'A roofer misses calls. You forge them a voice agent demo at a walk-in and text the /voice-agents link. You log them in the Tracker as demoed. You book a call, and they show up in the Pipeline and on the Calendar. Sarah runs the call, notes go in Call, and a fixed quote goes out from Proposals. They pay a deposit, and it becomes a live Project with a client Portal. They launch, leave a Review, and their replies land in the Inbox. Later, Gleaner reminds us to check in about a monthly plan.',
           },
           {
             heading: 'Why the loop matters to you',
@@ -860,7 +860,7 @@ export const MODULES: GuideModule[] = PHASES.flatMap((p) => p.modules);
 export type FieldMission = { id: string; day: string; label: string; detail: string };
 export const FIELD_MISSIONS: FieldMission[] = [
   { id: 'fm-login', day: 'Day 1', label: 'Get in and get set up', detail: 'Confirm your /admin login works, open your Partner HQ, and save your personal booking link.' },
-  { id: 'fm-feel', day: 'Day 1', label: 'Feel the wow', detail: 'Forge a Sidekick receptionist at /sidekick and talk to it out loud. This is what you sell.' },
+  { id: 'fm-feel', day: 'Day 1', label: 'Feel the wow', detail: 'Forge a Sidekick voice agent at /sidekick and talk to it out loud. This is what you sell.' },
   { id: 'fm-p1p2', day: 'Day 2', label: 'Clear Foundations and the Arsenal', detail: 'Work Phases 1 and 2. You should be able to explain the mission and the ladder to anyone.' },
   { id: 'fm-demos', day: 'Day 3', label: 'Run all four free demos', detail: 'Sidekick, Pictures, Press, and the audit, each on a real local business you can picture.' },
   { id: 'fm-craft', day: 'Day 4', label: 'Learn the craft', detail: 'Work Phase 3, then roleplay a cold walk-in with Mr. Mustard until it feels natural.' },
@@ -879,8 +879,8 @@ export const GLOSSARY: GlossaryTerm[] = [
   { term: 'Lead', def: 'A potential customer who has shown interest. Your job is to turn leads into booked calls.' },
   { term: 'Pipeline', def: 'The list of all leads and what stage each is at, from new to won or lost.' },
   { term: 'Discovery call', def: 'The first short call with a lead to understand what they need before we quote.' },
-  { term: 'Demo', def: 'Showing the product live, usually the voice receptionist. The fastest way to sell it.' },
-  { term: 'Forge', def: 'What the Sidekick does: it builds a personalized AI receptionist for a business in about 60 seconds.' },
+  { term: 'Demo', def: 'Showing the product live, usually the voice agent. The fastest way to sell it.' },
+  { term: 'Forge', def: 'What the Sidekick does: it builds a personalized voice agent for a business in about 60 seconds.' },
   { term: 'Screen Test', def: 'The free Mustard Pictures preview: a storyboard, taglines, and one cinematic frame for a business.' },
   { term: 'Proof', def: 'The free, watermarked version of a Mustard Press typeset page, before they pay to keep it.' },
   { term: 'GEO', def: 'Getting your business cited inside AI answers (ChatGPT, Perplexity), where more people now search.' },

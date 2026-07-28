@@ -7,7 +7,7 @@ within a week.
 ## Pricing (LOCKED by Sarah)
 | Product | Setup (one-time) | Monthly |
 |---|---|---|
-| AI Receptionist (voice) | $297 | $197/mo |
+| Voice Agent (voice) | $297 | $197/mo |
 | Website | $497 | $97/mo |
 | Business OS | $497 | $197/mo |
 | All-three bundle | $997 | $397/mo |
@@ -16,7 +16,7 @@ within a week.
 - Post-checkout: branded intake form immediately (no call required), order +
   intake land in admin, delivery promise: released within 7 days.
 - "Prefer to talk first?" stays as a QUIET secondary link to /book.
-- Never-leak-revenue: no trials, receptionist carries the existing platform
+- Never-leak-revenue: no trials, voice agent carries the existing platform
   call cap; fine print states fair-use caps. Guards fail closed.
 
 ## Build plan (scout findings from Explore agent, 2026-07-11)

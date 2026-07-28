@@ -82,7 +82,7 @@ export default function WelcomeTour({ name, email }: { name: string; email: stri
     {
       badge: 'How you earn',
       title: 'Your partner code pays you, forever.',
-      body: 'You earn on everything you send us: 50% on every product, 25% of the monthly bill for a year on any business you put on an AI receptionist, and 10 to 20% on custom builds. Open Partner Hub in the top bar: your code, your link, your earnings, and every teammate’s code live there.',
+      body: 'You earn on everything you send us: 50% on every product, 25% of the monthly bill for a year on any business you put on a voice agent, and 10 to 20% on custom builds. Open Partner Hub in the top bar: your code, your link, your earnings, and every teammate’s code live there.',
     },
     {
       badge: 'Post for us',
