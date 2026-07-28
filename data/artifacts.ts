@@ -1,0 +1,216 @@
+// The artifact directory: every published Claude artifact (moodboards, decks,
+// calendars, briefings, plans) in one place so they are never lost in a chat
+// again. Rendered by components/admin/ArtifactsDirectory.tsx at /admin/artifacts.
+//
+// This is a curated list, not a live feed (there is no app-side API to Claude's
+// artifact store). To refresh it, ask Claude to "update the artifacts tab" and it
+// re-pulls the published list and appends new entries. Newest first.
+
+export type ArtifactVenture = 'MMS' | 'CXC' | 'Wild Hope' | 'Huckwild' | 'Cross-venture';
+export type ArtifactKind = 'Playbook' | 'Social' | 'Moodboard' | 'Briefing' | 'Guide' | 'Preview' | 'Plan' | 'Build Log';
+
+export type ArtifactEntry = {
+  id: string;
+  title: string;
+  url: string;
+  updated: string; // YYYY-MM-DD
+  venture: ArtifactVenture;
+  kind: ArtifactKind;
+  description: string;
+  pinned?: boolean; // evergreen tools that should float to the top
+};
+
+export const ARTIFACTS: ArtifactEntry[] = [
+  {
+    id: '8d0cc42b-5586-4c2f-8f32-2025b8fcd55e',
+    title: 'The Build Log',
+    url: 'https://claude.ai/code/artifact/8d0cc42b-5586-4c2f-8f32-2025b8fcd55e',
+    updated: '2026-07-23',
+    venture: 'Cross-venture',
+    kind: 'Build Log',
+    description: 'Investor-facing daily work log. A calendar of every commit across the ventures, click a day for the full breakdown. Republish to keep this URL current.',
+    pinned: true,
+  },
+  {
+    id: 'dd63441a-ca02-4216-8e29-a6a03ae7833f',
+    title: 'Main Street AI: the Facebook deck',
+    url: 'https://claude.ai/code/artifact/dd63441a-ca02-4216-8e29-a6a03ae7833f',
+    updated: '2026-07-23',
+    venture: 'MMS',
+    kind: 'Playbook',
+    description: '24 Reel scripts with a teleprompter, 30 scheduled posts, the group setup copy, and the Page-vs-Group guide. Also lives in-app at /admin/facebook.',
+    pinned: true,
+  },
+  {
+    id: 'ab316e03-d701-48f5-ac9e-c5555df41176',
+    title: 'Content Calendar — Main Street AI + Wild Hope',
+    url: 'https://claude.ai/code/artifact/ab316e03-d701-48f5-ac9e-c5555df41176',
+    updated: '2026-07-22',
+    venture: 'MMS',
+    kind: 'Social',
+    description: 'The scheduled LinkedIn + X social calendar for the Main Street AI series and the personal Wild Hope lane, with a date picker.',
+    pinned: true,
+  },
+  {
+    id: '4319bb47-4968-4269-8ca5-b13983d5ff7d',
+    title: 'CXC Daily Drop — Aug to Dec 2026',
+    url: 'https://claude.ai/code/artifact/4319bb47-4968-4269-8ca5-b13983d5ff7d',
+    updated: '2026-07-22',
+    venture: 'CXC',
+    kind: 'Social',
+    description: 'The Cross + Covenant daily devotional and encouragement drop, scheduled across August through December.',
+  },
+  {
+    id: 'dffd08d7-d9a7-422c-a05e-bff30079e457',
+    title: 'Turn On YouTube Auto-Publish',
+    url: 'https://claude.ai/code/artifact/dffd08d7-d9a7-422c-a05e-bff30079e457',
+    updated: '2026-07-22',
+    venture: 'MMS',
+    kind: 'Guide',
+    description: 'Step-by-step guide to switching on YouTube auto-publish for the MMS channel.',
+  },
+  {
+    id: '80069904-3c4b-48a6-bcac-a57c568be353',
+    title: 'MMS Channel Ident · New Day',
+    url: 'https://claude.ai/code/artifact/80069904-3c4b-48a6-bcac-a57c568be353',
+    updated: '2026-07-22',
+    venture: 'MMS',
+    kind: 'Moodboard',
+    description: 'The YouTube channel ident and brand direction for the MMS authority channel.',
+  },
+  {
+    id: '81a78aed-fa51-4883-93e5-d9f009769b56',
+    title: 'CXC Daily Drop — July 22',
+    url: 'https://claude.ai/code/artifact/81a78aed-fa51-4883-93e5-d9f009769b56',
+    updated: '2026-07-22',
+    venture: 'CXC',
+    kind: 'Social',
+    description: 'A single-day Cross + Covenant social drop for July 22.',
+  },
+  {
+    id: '15697ae9-3eb2-45ea-bbb6-9c0917fbd208',
+    title: 'Publisher Layout (Preview)',
+    url: 'https://claude.ai/code/artifact/15697ae9-3eb2-45ea-bbb6-9c0917fbd208',
+    updated: '2026-07-22',
+    venture: 'MMS',
+    kind: 'Preview',
+    description: 'A layout preview for the MMS publisher surface.',
+  },
+  {
+    id: '88b2a1c6-7dcb-45e5-9c68-332ea41cf902',
+    title: 'Your Halo Is Back',
+    url: 'https://claude.ai/code/artifact/88b2a1c6-7dcb-45e5-9c68-332ea41cf902',
+    updated: '2026-07-22',
+    venture: 'MMS',
+    kind: 'Preview',
+    description: 'An MMS creative preview titled "Your Halo Is Back".',
+  },
+  {
+    id: '260d9cd7-afbd-4836-96fd-0cefc582fe0f',
+    title: 'CXC Daily Drop — July 22 (alt)',
+    url: 'https://claude.ai/code/artifact/260d9cd7-afbd-4836-96fd-0cefc582fe0f',
+    updated: '2026-07-22',
+    venture: 'CXC',
+    kind: 'Social',
+    description: 'A second July 22 Cross + Covenant social drop artifact.',
+  },
+  {
+    id: 'fb47f303-0aca-4c8f-b977-39f6bff1564f',
+    title: 'CELEBRATE by MMS · Confetti Pop-Art Parade',
+    url: 'https://claude.ai/code/artifact/fb47f303-0aca-4c8f-b977-39f6bff1564f',
+    updated: '2026-07-21',
+    venture: 'MMS',
+    kind: 'Moodboard',
+    description: 'The direction moodboard for the CELEBRATE parade builder: a confetti pop-art visual world.',
+  },
+  {
+    id: '6e3da9f7-0b62-4ccb-95cc-488bf2726820',
+    title: 'Morning Briefing — July 20, 2026',
+    url: 'https://claude.ai/code/artifact/6e3da9f7-0b62-4ccb-95cc-488bf2726820',
+    updated: '2026-07-20',
+    venture: 'Cross-venture',
+    kind: 'Briefing',
+    description: 'The daily briefing snapshot for July 20: project status, calendar, priorities.',
+  },
+  {
+    id: '0b88b029-6eba-4791-838e-e41f04998535',
+    title: 'Morning Brief · Sunday, July 19 2026',
+    url: 'https://claude.ai/code/artifact/0b88b029-6eba-4791-838e-e41f04998535',
+    updated: '2026-07-19',
+    venture: 'Cross-venture',
+    kind: 'Briefing',
+    description: 'The daily briefing snapshot for July 19.',
+  },
+  {
+    id: '4d7a707b-feb5-4268-813e-37f56d5a1c0a',
+    title: 'The Switchboard — Redesign Direction',
+    url: 'https://claude.ai/code/artifact/4d7a707b-feb5-4268-813e-37f56d5a1c0a',
+    updated: '2026-07-16',
+    venture: 'MMS',
+    kind: 'Moodboard',
+    description: 'The redesign direction moodboard for The Switchboard franchise concierge product.',
+  },
+  {
+    id: '1af06fe3-0ada-4d4d-9de5-9e7f325c0ecc',
+    title: 'HUCKWILD Business Plan',
+    url: 'https://claude.ai/code/artifact/1af06fe3-0ada-4d4d-9de5-9e7f325c0ecc',
+    updated: '2026-07-13',
+    venture: 'Huckwild',
+    kind: 'Plan',
+    description: 'The HUCKWILD business plan.',
+  },
+  {
+    id: 'a48aeb58-d386-496b-a8f9-56a5ee935e41',
+    title: 'HUCKWILD Moodboard',
+    url: 'https://claude.ai/code/artifact/a48aeb58-d386-496b-a8f9-56a5ee935e41',
+    updated: '2026-07-13',
+    venture: 'Huckwild',
+    kind: 'Moodboard',
+    description: 'The HUCKWILD brand direction moodboard.',
+  },
+  {
+    id: '90aacef3-00da-4789-b31a-91f0fe52f68c',
+    title: 'ProofBand Preview',
+    url: 'https://claude.ai/code/artifact/90aacef3-00da-4789-b31a-91f0fe52f68c',
+    updated: '2026-07-09',
+    venture: 'MMS',
+    kind: 'Preview',
+    description: 'A preview of the homepage ProofBand (proof and testimonials strip).',
+  },
+  {
+    id: '2aba8d39-5cc3-4748-abb3-58e9bf8c0df7',
+    title: 'The Franchise Conquest Playbook',
+    url: 'https://claude.ai/code/artifact/2aba8d39-5cc3-4748-abb3-58e9bf8c0df7',
+    updated: '2026-07-07',
+    venture: 'MMS',
+    kind: 'Playbook',
+    description: 'The multi-location franchise conquest playbook behind The Switchboard.',
+  },
+  {
+    id: '9593e912-0251-4fa5-9468-d2e0a313b27a',
+    title: 'Crown of America: Glacier & the Crown of the Continent',
+    url: 'https://claude.ai/code/artifact/9593e912-0251-4fa5-9468-d2e0a313b27a',
+    updated: '2026-07-05',
+    venture: 'Wild Hope',
+    kind: 'Guide',
+    description: 'A feature piece on Glacier and the Crown of the Continent.',
+  },
+  {
+    id: 'ecd4ccc7-529a-43d8-910f-baf3b6d21dff',
+    title: 'MUSTARD MODE — Show Identity Moodboard',
+    url: 'https://claude.ai/code/artifact/ecd4ccc7-529a-43d8-910f-baf3b6d21dff',
+    updated: '2026-07-04',
+    venture: 'MMS',
+    kind: 'Moodboard',
+    description: 'The show-identity moodboard for MUSTARD MODE, the flagship coaching program.',
+  },
+  {
+    id: 'eda4bbc4-ff10-4f61-82a9-ce1526d3abdf',
+    title: 'MUSTARD MODE — Direction Moodboard',
+    url: 'https://claude.ai/code/artifact/eda4bbc4-ff10-4f61-82a9-ce1526d3abdf',
+    updated: '2026-07-03',
+    venture: 'MMS',
+    kind: 'Moodboard',
+    description: 'The original direction moodboard for MUSTARD MODE.',
+  },
+];

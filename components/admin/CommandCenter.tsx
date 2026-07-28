@@ -300,6 +300,7 @@ export default function CommandCenter({ user }: { user?: { name: string; role: '
             </Link>
             {[
               { href: '/admin/facebook', label: 'Facebook' },
+              { href: '/admin/artifacts', label: 'Artifacts' },
               { href: '/admin/outbound', label: 'Outbound' },
               { href: '/admin/leads', label: 'Pipeline' },
               { href: '/admin/hq', label: 'Partner Hub' },
