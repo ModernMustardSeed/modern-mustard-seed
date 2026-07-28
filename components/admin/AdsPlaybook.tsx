@@ -619,6 +619,82 @@ Sixty seconds to start. Link in bio.
 
 const ST_POST_STORY = 'The stone age is over. See your three demos free → modernmustardseed.com/demos';
 
+/* ===================== Campaign 18: The Answer Machine ===================== */
+
+const AM_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medium=paid&utm_campaign=answermachine';
+
+const AM_COPY_A = `Every small business owner tells us the same three things.
+
+I miss calls. Nobody can find me online. I am doing paperwork at midnight.
+
+So we stopped handing out advice about it and built the machine that answers all three.
+
+A website that sells while you sleep. An AI receptionist that answers every call, day or night. A command center that runs the whole business from one screen.
+
+Tell us about your business (sixty seconds, that is the entire form) and we build all three of yours first. Real, working, and yours to look at before you pay anything.
+
+You do not need advice. You need the answer.`;
+
+const AM_COPY_B = `Name the last three problems that cost you money this month.
+
+Odds are it was a call you never got to, a customer who could not find you, and an evening you spent on paperwork instead of with your family.
+
+Every consultant in the world will tell you that. None of them will fix it.
+
+We build the fix and hand it to you first: your website, your AI receptionist, and your command center, all three built for your actual business before you pay a cent.
+
+Sixty seconds to start. Then you decide.`;
+
+const AM_HEADLINE = 'You don’t need advice. You need the answer.';
+const AM_DESCRIPTION = 'A website, an AI receptionist, and a command center. All three built free before you pay.';
+
+const AM_CUTS = [
+  { file: '/ads/answer-machine-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/answer-machine-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/answer-machine-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and the demos page hero.' },
+  { file: '/ads/answer-machine-short-9x16.mp4', label: '9:16 — Short cut (~:20)', note: 'Cold-opens on the machine delivering, and on the phone answering itself.' },
+];
+
+const AM_CHECKLIST = [
+  { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $15/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the same three things).' },
+  { id: 'rotate', label: 'This is a demo-funnel creative on the same broad audience and same /demos landing as Campaign 12 and Campaign 16. Never run three cold demo cells at once: pause 15 (Take the Bridge) and run this against whichever of 12 or 16 is currently cheaper per forged demo.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot has spoken dialogue AND burned-in captions.' },
+  { id: 'captions', label: 'Decline Meta auto-captions (styled caption pills are already burned in).' },
+  { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" in any edit.' },
+  { id: 'hook', label: 'The signature beat is at ~0:17, where the machine delivers and the telephone answers itself out loud in its own voice. If hold-rate dies before then, swap to the SHORT cut (it cold-opens on exactly that beat) as the primary creative.' },
+  { id: 'audience', label: 'Audience: Advantage+, broad small-business. The three problems in beat one are the targeting: anyone who nods at "I miss calls" is the buyer. Resist interest-stacking on the first cell.' },
+  { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same /demos landing, swap the link to utm_source=google.' },
+  { id: 'organic', label: 'Organic: post the 9:16 as a Reel + YouTube Short and the 4:5 to FB the same day. Drafts are in the Organic launch posts section below (Sarah approves every post).' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (name the last three problems) and let them fight. Kill the loser at day 6.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=answermachine). Truth metric: paid demo orders on the hub order card.' },
+];
+
+const AM_POST_FB = `Every small business owner tells us the same three things.
+
+1. I miss calls.
+2. Nobody can find me online.
+3. I am doing paperwork at midnight.
+
+So we stopped handing out advice about it and built the machine that answers all three:
+
+A website that sells while you sleep. An AI receptionist that answers every call, day or night. A command center that runs the whole business from one screen.
+
+Here is the part people do not believe: we build all three for your business before you pay us anything. Telling us about your business takes about sixty seconds.
+
+You do not need advice. You need the answer → modernmustardseed.com/demos`;
+
+const AM_POST_IG = `The same three problems. Every single time.
+
+Missed calls. Invisible online. Paperwork at midnight.
+
+So we built the machine that answers them. Yours gets built free first, and it takes about sixty seconds to start.
+
+Link in bio.
+
+#smallbusiness #businessowner #aiforbusiness #automation #modernmustardseed`;
+
+const AM_POST_STORY = 'Worries in. Answers out. See all three of your demos free → modernmustardseed.com/demos';
+
 const BR_CHECKLIST = [
   { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the captain\'s log).' },
   { id: 'challenger', label: 'This is a CHALLENGER to Campaign 12 (same broad audience, same /demos landing, different creative). Do not run both cold cells at once: A/B them for a week and keep the cheaper cost per forged demo.' },
@@ -717,7 +793,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -737,6 +813,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'brg', num: '15', label: 'Take the Bridge', blurb: 'Demo funnel · retro starship · $10/day' },
   { key: 'stone', num: '16', label: 'The Stone Age Is Over', blurb: 'Demo funnel · the transformation · $15/day' },
   { key: 'chief', num: '17', label: 'The Chief', blurb: 'Product · AI chief of staff · /chief · $15/day' },
+  { key: 'ans', num: '18', label: 'The Answer Machine', blurb: 'Demo funnel · worries in, answers out · $15/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -750,7 +827,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
  * needs its key added to the right group.
  */
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
-  { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone'] },
+  { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo'] },
   { name: 'Brand + Verticals', keys: ['callme', 'tw', 'gn', 'rest'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
@@ -861,6 +938,7 @@ export default function AdsPlaybook() {
   const [checkedBrg, setCheckedBrg] = useState<Record<string, boolean>>({});
   const [checkedStone, setCheckedStone] = useState<Record<string, boolean>>({});
   const [checkedChief, setCheckedChief] = useState<Record<string, boolean>>({});
+  const [checkedAns, setCheckedAns] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -939,6 +1017,8 @@ export default function AdsPlaybook() {
       if (rawStone) setCheckedStone(JSON.parse(rawStone));
       const rawChief = localStorage.getItem('mms-ads-checklist-chief');
       if (rawChief) setCheckedChief(JSON.parse(rawChief));
+      const rawAns = localStorage.getItem('mms-ads-checklist-ans');
+      if (rawAns) setCheckedAns(JSON.parse(rawAns));
     } catch { /* first visit */ }
   }, []);
 
@@ -961,6 +1041,7 @@ export default function AdsPlaybook() {
   const toggleBrg = mkToggle('mms-ads-checklist-brg', setCheckedBrg);
   const toggleStone = mkToggle('mms-ads-checklist-stone', setCheckedStone);
   const toggleChief = mkToggle('mms-ads-checklist-chief', setCheckedChief);
+  const toggleAns = mkToggle('mms-ads-checklist-ans', setCheckedAns);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -1019,6 +1100,7 @@ export default function AdsPlaybook() {
   const doneCountBrg = BR_CHECKLIST.filter((c) => checkedBrg[c.id]).length;
   const doneCountStone = ST_CHECKLIST.filter((c) => checkedStone[c.id]).length;
   const doneCountChief = CH_CHECKLIST.filter((c) => checkedChief[c.id]).length;
+  const doneCountAns = AM_CHECKLIST.filter((c) => checkedAns[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -2312,6 +2394,98 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedChief[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'ans' && (<>
+        {/* ============ Campaign eighteen: The Answer Machine (worries in, answers out) ============ */}
+        <section className="bg-[#2A1A0C] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign eighteen &middot; demo funnel, the objection answered</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;The Answer Machine&rdquo; <span className="italic text-[#F5B700]">worries in, answers out</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The spot that stops selling and starts answering. Mr. Mustard holds up a jar stuffed with the
+              worries every owner hands him (missed calls, invisible online, paperwork at midnight), then the
+              family tips the whole jar into a hand-built brass contraption and pulls the lever. What comes
+              back up the golden beam is the product line: a telephone that answers itself out loud in its own
+              voice, a little storefront that sells, and a panel that runs the business. It closes on an empty
+              jar. The whole thesis in one image: you do not need advice, you need the answer, and we hand it
+              to you built. One cell at $15/day into /demos.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Upload one ad, then customize per placement. The spot has spoken dialogue and burned-in captions. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {AM_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/answer-machine-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text &mdash; Variant 1 (the same three things)" text={AM_COPY_A} />
+            <CopyBlock title="Primary text &mdash; Variant 2 (name the last three problems)" text={AM_COPY_B} />
+            <CopyBlock title="Headline" text={AM_HEADLINE} />
+            <CopyBlock title="Description" text={AM_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (the Demo Station)" text={AM_LANDING} />
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">Organic launch posts</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Same film, no spend. Post the 9:16 as a Reel and the 4:5 to Facebook the same day. Sarah approves every post before it goes out.</p>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Facebook post (4:5 or 16:9 cut)" text={AM_POST_FB} />
+            <CopyBlock title="Instagram Reel caption (9:16 short cut)" text={AM_POST_IG} />
+            <CopyBlock title="Instagram Story line (+ link sticker)" text={AM_POST_STORY} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountAns}/{AM_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {AM_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedAns[item.id]}
+                    onChange={() => toggleAns(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedAns[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>
