@@ -227,7 +227,7 @@ export function domainLabel(host: string): string {
 }
 
 /**
- * A much stronger claim than `domainMatchesName`: the domain label carries the
+ * A much stronger claim than `domainMatchesName`: the domain carries the
  * business's WHOLE name, not just one word of it. "djhallroofing.com" carries
  * all of "Hall Roofing"; "legendaryfl.com" carries only the "legendary" half of
  * "Legendary Automotive" and pads the rest with a state code for a state the
