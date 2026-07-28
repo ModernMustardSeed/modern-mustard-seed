@@ -238,10 +238,17 @@ export function domainLabel(host: string): string {
  * name-only match through the location gate on its own.
  */
 export function domainCarriesFullName(business: string, host: string): boolean {
-  const label = domainLabel(host);
   const joined = toks(business).join('');
-  if (!label || joined.length < 5) return false;
-  return joined === label || label.includes(joined) || joined.includes(label);
+  if (!host || joined.length < 5) return false;
+  // Match against the WHOLE host, dots and hyphens removed, because the name
+  // routinely straddles them: c-quartersmarina.com hyphenates, and prefix.coffee
+  // puts half the name in the TLD (its registrable label is just "prefix").
+  const flat = host.replace(/^www\./, '').replace(/[.-]/g, '');
+  // Deliberately ONE-DIRECTIONAL: the domain must contain the whole name, not
+  // the other way round. The reverse test would accept hall.com for "Hall
+  // Roofing" and legendary.com for "Legendary Automotive", which is the exact
+  // stranger-with-a-shared-word failure this gate exists to stop.
+  return flat.includes(joined);
 }
 
 /* ──────────────────────── candidate sources ──────────────────────── */
