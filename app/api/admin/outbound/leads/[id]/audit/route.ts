@@ -3,7 +3,10 @@ import { requireOutboundAdmin } from '@/lib/outbound-server';
 import { runWebsiteAudit } from '@/lib/website-audit';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// The model call alone measures 36-43s on real prospect sites, so 60 left no
+// room for a slow site to load and the request died as a 504 the rep read as a
+// broken button. The engine caps its own fetch phase; this is the outer wall.
+export const maxDuration = 120;
 
 type Params = Promise<{ id: string }>;
 

@@ -206,10 +206,27 @@ export type AuditResult =
   | { ok: true; url: string; report: WebsiteAuditReport; signals_summary: AuditSignalsSummary }
   | { ok: false; status: number; error: string };
 
-async function fetchAuxFile(origin: string, path: string): Promise<boolean> {
+/**
+ * A hard wall-clock budget for everything that happens BEFORE the model call.
+ *
+ * Measured 2026-07-27 against eight real prospect sites in production: the
+ * Claude call alone takes 36 to 43 seconds. The route's ceiling was 60, so the
+ * page fetch had roughly 17 seconds of headroom and there was nothing enforcing
+ * it. One slow-but-reachable site (15s first try, another 15s on the bot-block
+ * retry, plus 5s of aux files) pushes the whole request past the limit, and a
+ * blown maxDuration is a 504 the rep reads as "the audit button is broken".
+ *
+ * Prospect sites are slow by definition. That is the product: we sell to
+ * businesses whose sites are bad. So the fetch phase is capped rather than
+ * hoped about, and the route ceiling was raised to match reality.
+ */
+const FETCH_BUDGET_MS = 20_000;
+const cap = (until: number, want: number) => Math.max(1500, Math.min(want, until - Date.now()));
+
+async function fetchAuxFile(origin: string, path: string, until: number): Promise<boolean> {
   try {
     const resp = await fetch(`${origin}${path}`, {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(cap(until, 5000)),
       redirect: 'follow',
     });
     return resp.ok;
@@ -332,11 +349,15 @@ export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
     return { ok: false, status: 400, error: 'That URL is not valid.' };
   }
 
+  // Everything up to the model call has to finish inside this window.
+  const until = Date.now() + FETCH_BUDGET_MS;
+
   const fetchPage = (userAgent: string) =>
     fetch(target.toString(), {
       headers: { 'User-Agent': userAgent, Accept: 'text/html,application/xhtml+xml' },
       redirect: 'follow',
-      signal: AbortSignal.timeout(15000),
+      // Half the budget per attempt, so the bot-block retry still fits.
+      signal: AbortSignal.timeout(cap(until, FETCH_BUDGET_MS / 2)),
     });
 
   let pageResp: Response;
@@ -357,19 +378,29 @@ export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
 
   const html = (await pageResp.text()).slice(0, 250_000);
 
-  const [llmsTxt, aiTxt, robotsTxt, sitemapXml] = await Promise.all([
-    fetchAuxFile(target.origin, '/llms.txt'),
-    fetchAuxFile(target.origin, '/.well-known/ai.txt'),
-    fetchAuxFile(target.origin, '/robots.txt'),
-    fetchAuxFile(target.origin, '/sitemap.xml'),
-  ]);
+  // The aux files are a nice-to-have signal, never a reason to blow the budget:
+  // if the page itself ate the window, score without them rather than time out.
+  const [llmsTxt, aiTxt, robotsTxt, sitemapXml] =
+    Date.now() < until - 1500
+      ? await Promise.all([
+          fetchAuxFile(target.origin, '/llms.txt', until),
+          fetchAuxFile(target.origin, '/.well-known/ai.txt', until),
+          fetchAuxFile(target.origin, '/robots.txt', until),
+          fetchAuxFile(target.origin, '/sitemap.xml', until),
+        ])
+      : [false, false, false, false];
 
   const signals = extractSignals(target, html, pageResp.status);
   signals.aux = { llms_txt: llmsTxt, ai_txt: aiTxt, robots_txt: robotsTxt, sitemap_xml: sitemapXml };
 
   try {
     const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
+    // Streamed on purpose. At max_tokens 8000 this call measures 36-43s against
+    // real prospect sites, which is exactly the range where a non-streaming
+    // request risks an HTTP-level timeout with nothing to show for it. Streaming
+    // keeps the connection alive and `finalMessage()` still hands back the whole
+    // message, so the rest of this function is unchanged.
+    const stream = anthropic.messages.stream({
       model: 'claude-opus-4-8',
       max_tokens: 8000,
       output_config: {
@@ -397,6 +428,7 @@ Return the JSON report.`,
         },
       ],
     });
+    const response = await stream.finalMessage();
 
     const textBlock = response.content.find((b) => b.type === 'text');
     if (!textBlock || textBlock.type !== 'text') {

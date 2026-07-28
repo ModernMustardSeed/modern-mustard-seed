@@ -30,6 +30,10 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   const patch: Record<string, unknown> = {};
   if (!lead.website && found.website) patch.website = found.website;
   if (!lead.email && found.email) patch.email = found.email;
+  // Phone was being thrown away here while the prospects route saved it. On a
+  // lead with no number that is the single most useful thing the lookup returns,
+  // and dropping it made a successful lookup read as "found nothing".
+  if (!lead.phone && found.phone) patch.phone = found.phone;
 
   let saved = lead;
   if (Object.keys(patch).length > 0) {

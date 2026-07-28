@@ -4,7 +4,9 @@ import { getSupabase } from '@/lib/supabase';
 import { runWebsiteAudit } from '@/lib/website-audit';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// See the outbound audit route: the model call is 36-43s on real prospect
+// sites, so 60 left no headroom for a slow site to load.
+export const maxDuration = 120;
 
 /**
  * Run a website audit on a prospect's site, right from the call card, and cache

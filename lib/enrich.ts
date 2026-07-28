@@ -226,6 +226,24 @@ export function domainLabel(host: string): string {
   return parts.length > 1 ? parts[parts.length - 2] : host;
 }
 
+/**
+ * A much stronger claim than `domainMatchesName`: the domain label carries the
+ * business's WHOLE name, not just one word of it. "djhallroofing.com" carries
+ * all of "Hall Roofing"; "legendaryfl.com" carries only the "legendary" half of
+ * "Legendary Automotive" and pads the rest with a state code for a state the
+ * lead is not in.
+ *
+ * That distinction is what separates a real find from a same-word stranger when
+ * the source knew nothing about geography, so it is the one thing that lets a
+ * name-only match through the location gate on its own.
+ */
+export function domainCarriesFullName(business: string, host: string): boolean {
+  const label = domainLabel(host);
+  const joined = toks(business).join('');
+  if (!label || joined.length < 5) return false;
+  return joined === label || label.includes(joined) || joined.includes(label);
+}
+
 /* ──────────────────────── candidate sources ──────────────────────── */
 
 type Candidate = {
@@ -234,6 +252,15 @@ type Candidate = {
   phone: string | null;
   locality: string | null;
   source: string;
+  /**
+   * True when the source matched on NAME ALONE and knows nothing about where the
+   * business is. Hunter's company search is the case in point: it offered
+   * superroofers.ca for a Missouri roofer and legendaryfl.com (Legendary FL) for
+   * "Legendary Automotive" in Tucson, Arizona. A name-only match has to prove it
+   * is in the right place before we will save it, so these candidates need the
+   * page to carry their phone number or their city, not just their name.
+   */
+  geoBlind?: boolean;
 };
 
 async function geocodeCenter(city: string, b: Budget): Promise<{ lat: number; lon: number } | null> {
@@ -344,6 +371,7 @@ async function fromHunterCompany(business: string, b: Budget): Promise<Candidate
       phone: null,
       locality: null,
       source: 'hunter:company',
+      geoBlind: true,
     }];
   } catch {
     return [];
@@ -359,16 +387,29 @@ const digits = (s: string) => s.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
  * the single most valuable check here: it is what separates "a domain with their
  * words in it" from "their website".
  */
+type Verdict = {
+  ok: boolean;
+  strong: boolean;
+  reachable: boolean;
+  why: string;
+  /** The individual signals, so callers can demand a higher bar than `ok`. */
+  phoneHit: boolean;
+  nameHit: boolean;
+  cityHit: boolean;
+  labelMatch: boolean;
+};
+
 async function verifySite(
   url: string,
   business: string,
   city: string | null,
   phone: string | null,
   b: Budget,
-): Promise<{ ok: boolean; strong: boolean; reachable: boolean; why: string }> {
+): Promise<Verdict> {
   const host = hostOf(url);
   // A domain built out of their name is already good evidence.
   const labelMatch = domainMatchesName(business, host);
+  const none = { phoneHit: false, nameHit: false, cityHit: false, labelMatch };
 
   let html = '';
   try {
@@ -379,14 +420,14 @@ async function verifySite(
     });
     if (!res.ok) {
       return labelMatch
-        ? { ok: true, strong: false, reachable: false, why: `domain matches the name but the site returned ${res.status}` }
-        : { ok: false, strong: false, reachable: false, why: `site returned ${res.status} and the domain does not match the name` };
+        ? { ok: true, strong: false, reachable: false, why: `domain matches the name but the site returned ${res.status}`, ...none }
+        : { ok: false, strong: false, reachable: false, why: `site returned ${res.status} and the domain does not match the name`, ...none };
     }
     html = (await res.text()).slice(0, 300_000);
   } catch {
     return labelMatch
-      ? { ok: true, strong: false, reachable: false, why: 'domain matches the name but the site did not respond' }
-      : { ok: false, strong: false, reachable: false, why: 'site did not respond and the domain does not match the name' };
+      ? { ok: true, strong: false, reachable: false, why: 'domain matches the name but the site did not respond', ...none }
+      : { ok: false, strong: false, reachable: false, why: 'site did not respond and the domain does not match the name', ...none };
   }
 
   const text = html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
@@ -397,12 +438,17 @@ async function verifySite(
   const nameHit = distinctive.length > 0 && distinctive.every((t) => flat.includes(t));
   const someNameHit = distinctive.some((t) => flat.includes(t));
   const cityHit = Boolean(city && flat.includes(norm(city.split(',')[0])));
+  const sig = { phoneHit, nameHit, cityHit, labelMatch };
 
-  if (phoneHit) return { ok: true, strong: true, reachable: true, why: 'their phone number is on the page' };
-  if (nameHit && (cityHit || labelMatch)) return { ok: true, strong: true, reachable: true, why: 'the page carries their name and location' };
-  if (nameHit) return { ok: true, strong: false, reachable: true, why: 'the page carries their name' };
-  if (labelMatch && someNameHit) return { ok: true, strong: false, reachable: true, why: 'the domain and page partly match their name' };
-  return { ok: false, strong: false, reachable: true, why: 'the page never mentions this business' };
+  if (phoneHit) return { ok: true, strong: true, reachable: true, why: 'their phone number is on the page', ...sig };
+  // Say WHICH corroboration landed. "name and location" used to be printed even
+  // when only the domain label matched, which read as a location check that had
+  // never happened.
+  if (nameHit && cityHit) return { ok: true, strong: true, reachable: true, why: 'the page carries their name and city', ...sig };
+  if (nameHit && labelMatch) return { ok: true, strong: true, reachable: true, why: 'their name is on the page and in the domain', ...sig };
+  if (nameHit) return { ok: true, strong: false, reachable: true, why: 'the page carries their name', ...sig };
+  if (labelMatch && someNameHit) return { ok: true, strong: false, reachable: true, why: 'the domain and page partly match their name', ...sig };
+  return { ok: false, strong: false, reachable: true, why: 'the page never mentions this business', ...sig };
 }
 
 /* ────────────────────────────── email ────────────────────────────── */
@@ -580,6 +626,20 @@ export async function enrichProspect(input: {
       if (bad) { skipped.push(`Ignored ${bad}.`); continue; }
       const v = await verifySite(c.website, input.business, input.city, phone, budget);
       if (!v.ok) { skipped.push(`Ignored ${host}: ${v.why}.`); continue; }
+      // A source that matched on name alone knows nothing about geography, so
+      // its answer has to be pinned to this business somehow: their phone or
+      // their city on the page, or a domain that carries their WHOLE name.
+      // Without this, Hunter handed back legendaryfl.com (a Florida shop) for
+      // "Legendary Automotive" in Tucson, Arizona, at HIGH confidence, because
+      // one word of the name was on the page and in the domain. Same failure
+      // family as the walmart.com incident: a confident answer about the wrong
+      // company. Note djhallroofing.com for "Hall Roofing" in Kalispell still
+      // passes on the whole-name rule, which is why the rule is not just
+      // "phone or city".
+      if (c.geoBlind && !v.phoneHit && !v.cityHit && !domainCarriesFullName(input.business, host)) {
+        skipped.push(`Ignored ${host}: one word of their name matched, but nothing ties it to ${input.city ?? 'their area'}.`);
+        continue;
+      }
       website = c.website;
       siteReachable = v.reachable;
       confidence = v.strong ? 'high' : 'medium';
@@ -587,6 +647,16 @@ export async function enrichProspect(input: {
       break;
     }
   }
+
+  // NOTE: guessing domains from the business name was tried here on 2026-07-27
+  // and removed the same day. Measured across real leads it found ZERO real
+  // sites: the generated addresses that resolved belonged to other companies
+  // entirely (linedup.com, rickert.com, legendary.com, chinatown.com), and it
+  // missed the genuine ones because small businesses hyphenate and abbreviate
+  // (c-quartersmarina.com, carrabellebeachrv.com). It cost seconds per lookup,
+  // bought nothing, and every "hit" it produced was a wrong company the
+  // verification gate then had to throw away. Do not reintroduce it without a
+  // real search API behind it.
 
   // 4. Email, and only ever from a website we trust.
   if (website) {

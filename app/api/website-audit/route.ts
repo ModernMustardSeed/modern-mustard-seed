@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { runWebsiteAudit } from '@/lib/website-audit';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// The model call is 36-43s on a real site; 60 left nothing for a slow one.
+export const maxDuration = 120;
 
 /** Public website-audit endpoint. The engine lives in lib/website-audit so the
  *  in-Tracker audit (admin) can share the exact same scoring. */
