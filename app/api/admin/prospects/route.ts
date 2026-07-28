@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession, getAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
+import { fetchAllRows } from '@/lib/outbound-server';
 import { VALID_CHANNELS, VALID_STATUSES, isMissingTableError } from '@/lib/prospects';
 
 export const runtime = 'nodejs';
@@ -13,11 +14,16 @@ export async function GET() {
   if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
-    const { data, error } = await supabase
-      .from('rep_prospects')
-      .select('*')
-      .order('updated_at', { ascending: false })
-      .limit(2000);
+    // `.limit(2000)` was a lie: PostgREST caps every response at max_rows
+    // (1000), so the newest 1000 came back and the rest silently vanished from
+    // the tracker. Page through in chunks like the dial floor does, with `id`
+    // as a stable tiebreaker so ranges cannot skip or duplicate a row.
+    const { data, error } = await fetchAllRows(() =>
+      supabase
+        .from('rep_prospects')
+        .select('*')
+        .order('updated_at', { ascending: false })
+        .order('id', { ascending: true }));
     if (error) throw error;
     return NextResponse.json({ prospects: data ?? [] });
   } catch (err) {

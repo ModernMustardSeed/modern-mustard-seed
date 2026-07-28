@@ -64,6 +64,10 @@ export type EnrichResult = {
 const NOISE = new Set([
   'the', 'a', 'an', 'of', 'and', 'at', 'for', 'in', 'on', 'llc', 'l', 'inc', 'incorporated',
   'co', 'corp', 'corporation', 'ltd', 'limited', 'lp', 'llp', 'pllc', 'pc', 'pa', 'dba',
+  // The orphaned possessive. norm() turns "Joe's Bar" into "joe s bar", and that
+  // stray "s" was scoring as a shared identity token: "Joe's Bar" matched a
+  // Tokyo Joe's franchise on {joe, s} alone.
+  's',
 ]);
 
 /**
@@ -85,6 +89,13 @@ const GENERIC = new Set([
   'veterinary', 'vet', 'animal', 'pet', 'pets', 'locksmith', 'security', 'solutions',
   'restoration', 'remodeling', 'kitchen', 'bath', 'window', 'windows', 'door', 'doors',
   'super', 'best', 'quality', 'affordable', 'professional', 'american', 'national', 'us',
+  // Filler that reads like a name but identifies nobody. Every one of these was
+  // caught scoring as identity in a batch run: "Cordera Family Dentistry"
+  // matched "Brinton Family Dentistry" on {family, dentistry}, and "a Better
+  // Self Storage" matched "Falcon Self Storage" on {self, storage}.
+  'family', 'self', 'better', 'modern', 'premier', 'elite', 'advanced', 'general',
+  'complete', 'total', 'custom', 'first', 'new', 'old', 'plus', 'pros', 'expert',
+  'experts', 'specialist', 'specialists', 'discount', 'value', 'friendly', 'reliable',
 ]);
 
 function norm(s: string): string {
@@ -111,10 +122,27 @@ function near(a: string, b: string): boolean {
 }
 
 /**
- * How much two business names agree, 0 to 1 (Dice coefficient over identity tokens).
- * Sharing only industry words is explicitly not agreement.
+ * The place a business sits in is not its identity. Half the small businesses in
+ * any town are named after it, so "Indianapolis" tells you nothing about which
+ * Indianapolis business you are looking at.
+ *
+ * Leaving this out is how a batch run matched "Indianapolis Plumbing Co" to
+ * indy.gov (the city government), "Cordera Family Dentistry" to Brinton Family
+ * Dentistry, and "Joe's Bar" to a Tokyo Joe's franchise: each shared exactly one
+ * token with the candidate, and that token was the town or a first name, so it
+ * counted as distinctive and cleared the bar.
  */
-function nameScore(a: string, b: string): { score: number; sharedDistinctive: boolean } {
+export function localTokens(city: string | null | undefined): Set<string> {
+  return new Set(city ? toks(city) : []);
+}
+const NO_LOCAL: ReadonlySet<string> = new Set<string>();
+
+/**
+ * How much two business names agree, 0 to 1 (Dice coefficient over identity tokens).
+ * Sharing only industry words, or only the name of the town they are both in, is
+ * explicitly not agreement.
+ */
+function nameScore(a: string, b: string, local: ReadonlySet<string> = NO_LOCAL): { score: number; sharedDistinctive: boolean } {
   const A = toks(a), B = toks(b);
   if (!A.length || !B.length) return { score: 0, sharedDistinctive: false };
   const used = new Set<number>();
@@ -124,7 +152,7 @@ function nameScore(a: string, b: string): { score: number; sharedDistinctive: bo
       if (used.has(i)) continue;
       if (t === B[i] || near(t, B[i])) {
         used.add(i); hits++;
-        if (!GENERIC.has(t)) distinctive++;
+        if (!GENERIC.has(t) && !local.has(t)) distinctive++;
         break;
       }
     }
@@ -132,9 +160,14 @@ function nameScore(a: string, b: string): { score: number; sharedDistinctive: bo
   return { score: (2 * hits) / (A.length + B.length), sharedDistinctive: distinctive > 0 };
 }
 
-/** The bar every candidate has to clear to be considered the same business at all. */
-export function isSameBusiness(lead: string, candidate: string): boolean {
-  const { score, sharedDistinctive } = nameScore(lead, candidate);
+/**
+ * The bar every candidate has to clear to be considered the same business at all.
+ * Pass the lead's city so a shared town name does not count as identity. A name
+ * that genuinely IS the town ("Kalispell Chiropractic") still matches an exact
+ * counterpart through the 0.85 near-identical route.
+ */
+export function isSameBusiness(lead: string, candidate: string, city?: string | null): boolean {
+  const { score, sharedDistinctive } = nameScore(lead, candidate, localTokens(city));
   if (score >= 0.85) return true;             // near-identical names
   return score >= NAME_FLOOR && sharedDistinctive; // otherwise a real shared word is required
 }
@@ -441,7 +474,12 @@ async function verifySite(
   const flat = norm(text);
   // The phone number on the page is the strongest possible proof of identity.
   const phoneHit = Boolean(phone && digits(phone).length >= 10 && digits(text).includes(digits(phone)));
-  const distinctive = toks(business).filter((t) => !GENERIC.has(t) && t.length > 2);
+  // The town name is not identity here either. Without this, "Indianapolis
+  // Plumbing Co" scored a strong match on indy.gov: the page carried the only
+  // token we were treating as distinctive ("indianapolis") AND the city, which
+  // are the same word.
+  const local = localTokens(city);
+  const distinctive = toks(business).filter((t) => !GENERIC.has(t) && !local.has(t) && t.length > 2);
   const nameHit = distinctive.length > 0 && distinctive.every((t) => flat.includes(t));
   const someNameHit = distinctive.some((t) => flat.includes(t));
   const cityHit = Boolean(city && flat.includes(norm(city.split(',')[0])));
@@ -577,6 +615,42 @@ async function verifyEmail(email: string, b: Budget): Promise<{ ok: boolean; sta
   }
 }
 
+/**
+ * Judge ONE candidate URL for a business, using the same gates the live lookup
+ * uses. For batch importers that already have a candidate from somewhere else
+ * (an OSM `website` tag, a CSV column) and need it verified rather than
+ * trusted.
+ *
+ * Do NOT do this by passing the candidate into `enrichProspect` as `website`:
+ * that field means "the row already has a site we believe", so the pipeline
+ * skips verification entirely and stamps it high confidence. This runs the
+ * checks.
+ */
+export async function verifyCandidateSite(input: {
+  business: string;
+  city: string | null;
+  phone: string | null;
+  url: string;
+}): Promise<{
+  ok: boolean;
+  website: string | null;
+  confidence: 'high' | 'medium' | null;
+  why: string;
+  /** Individual signals, so an UNATTENDED caller can demand more than `ok`. */
+  phoneHit: boolean;
+  cityHit: boolean;
+  nameHit: boolean;
+}> {
+  const none = { phoneHit: false, cityHit: false, nameHit: false };
+  const host = hostOf(input.url);
+  const bad = host ? badDomain(host) : 'not a usable URL';
+  if (bad) return { ok: false, website: null, confidence: null, why: bad, ...none };
+  const v = await verifySite(input.url, input.business, input.city, input.phone, newBudget());
+  const sig = { phoneHit: v.phoneHit, cityHit: v.cityHit, nameHit: v.nameHit };
+  if (!v.ok || !v.reachable) return { ok: false, website: null, confidence: null, why: v.why, ...sig };
+  return { ok: true, website: input.url, confidence: v.strong ? 'high' : 'medium', why: v.why, ...sig };
+}
+
 /* ────────────────────────────── the pipeline ────────────────────────────── */
 
 export async function enrichProspect(input: {
@@ -606,7 +680,7 @@ export async function enrichProspect(input: {
   //    where walmart.com died: "Super Roofers" scores 0 against "Walmart Supercenter",
   //    and there is no longer a `?? results[0]` to fall back on.
   const all = [...fsq, ...osm, ...hunter];
-  const matched = all.filter((c) => c.name && isSameBusiness(input.business, c.name));
+  const matched = all.filter((c) => c.name && isSameBusiness(input.business, c.name, input.city));
   if (all.length && !matched.length) {
     const nearest = all.slice(0, 3).map((c) => c.name).filter(Boolean).join(', ');
     skipped.push(`No listing matched the name. Closest were: ${nearest || 'nothing usable'}.`);
