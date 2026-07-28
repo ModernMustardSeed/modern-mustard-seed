@@ -7,6 +7,40 @@ import type { OutboundLead } from '@/lib/outbound';
 export const OUTBOUND_FROM = 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>';
 export const OUTBOUND_REPLY_TO = 'sarah@modernmustardseed.com';
 
+/**
+ * COLD OUTREACH COMPLIANCE FOOTER.
+ *
+ * This path mails people who never opted in, which makes it commercial email
+ * under CAN-SPAM: it owes the recipient a working opt-out AND a physical postal
+ * address. Until 2026-07-28 it carried neither, and passed no `unsubscribeUrl`
+ * to sendViaResend, so `unsubHeaders()` returned undefined and no RFC 8058
+ * List-Unsubscribe header went out either. Fine for one hand-sent reply,
+ * genuinely risky the moment you mail a batch: Gmail and Yahoo bulk-sender rules
+ * expect one-click unsubscribe, and this rides sarah@modernmustardseed.com, the
+ * same domain real client mail depends on.
+ *
+ * The drip paths (lib/sidekick-drip.ts, lib/demo-drip.ts) already did this
+ * correctly. This just brings the cockpit path in line.
+ *
+ * ⚠️ MMS_POSTAL_ADDRESS is NOT SET. CAN-SPAM wants a street address or a
+ * registered PO box, which cannot be invented, so the footer degrades to the
+ * opt-out line alone until Sarah sets the env var. Set it before any batch send.
+ */
+export const unsubscribeUrlFor = (email: string) =>
+  `https://modernmustardseed.com/api/outreach/unsubscribe?c=${encodeURIComponent(email)}`;
+
+export function complianceFooter(email: string): string {
+  const postal = process.env.MMS_POSTAL_ADDRESS?.trim();
+  const unsub = unsubscribeUrlFor(email);
+  return (
+    `<div style="margin-top:28px;padding-top:14px;border-top:1px solid #e5e0d5;font-size:12px;line-height:1.5;color:#8a8375">` +
+    `<p style="margin:0">You got this because Modern Mustard Seed works with local businesses in your area. ` +
+    `If it is not useful, <a href="${unsub}" style="color:#8a8375">unsubscribe here</a> and I will not email you again.</p>` +
+    (postal ? `<p style="margin:6px 0 0">${escape(postal)}</p>` : '') +
+    `</div>`
+  );
+}
+
 export type OutboundEmailOpts = {
   note?: string;
   includeDemo?: boolean;
@@ -192,7 +226,18 @@ export async function buildOutboundEmail(
 
   return {
     ok: true,
-    email: { lead, to: lead.email, from: OUTBOUND_FROM, replyTo: OUTBOUND_REPLY_TO, subject, html, summary },
+    email: {
+      lead,
+      to: lead.email,
+      from: OUTBOUND_FROM,
+      replyTo: OUTBOUND_REPLY_TO,
+      subject,
+      // Appended here, not inside the send, so the cockpit PREVIEW renders the
+      // exact bytes that ship. buildOutboundEmail and sendOutboundEmail sharing
+      // one builder is the whole point of the read-before-send work.
+      html: html + complianceFooter(lead.email),
+      summary,
+    },
   };
 }
 
@@ -233,6 +278,9 @@ export async function sendOutboundEmail(
     subject,
     html,
     mailbox: OUTBOUND_REPLY_TO,
+    // Emits the RFC 8058 List-Unsubscribe / List-Unsubscribe-Post headers that
+    // Gmail and Yahoo expect from anyone sending in volume.
+    unsubscribeUrl: unsubscribeUrlFor(to),
   });
   if (!sent.ok) return { ok: false, status: 500, error: sent.error };
 
