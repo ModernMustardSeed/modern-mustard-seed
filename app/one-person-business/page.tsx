@@ -96,7 +96,7 @@ export default function OnePersonBusinessPage() {
 
       <section className="border-b-2 border-[#161616] bg-[#F5B700] py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-16">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-[#161616]/60">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-[#161616]">
             Five jobs. No payroll.
           </p>
           <h2 className="mt-4 max-w-4xl font-display text-4xl font-black leading-tight md:text-6xl">
@@ -108,7 +108,7 @@ export default function OnePersonBusinessPage() {
                 key={job.number}
                 className="grid gap-3 py-6 md:grid-cols-[80px_260px_1fr] md:items-center md:gap-8"
               >
-                <span className="font-mono text-sm font-bold text-[#161616]/55">{job.number}</span>
+                <span className="font-mono text-sm font-bold text-[#161616]">{job.number}</span>
                 <h3 className="font-display text-2xl font-black">{job.job}</h3>
                 <p className="font-body leading-relaxed text-[#3A3733]">{job.result}</p>
               </div>
