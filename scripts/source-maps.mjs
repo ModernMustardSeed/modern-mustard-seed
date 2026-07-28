@@ -110,6 +110,10 @@ const FRANCHISE_EXTRA = [
   'aamco', 'midas', 'meineke', 'jiffy lube', 'valvoline', 'firestone', 'goodyear',
   'discount tire', 'les schwab', 'pep boys', 'tires plus', 'monro', 'christian brothers automotive',
   'aspen dental', 'heartland dental', 'western dental', 'banfield', 'vca animal',
+  // Slipped through on the Indianapolis run as "LIME Painting of Indianapolis".
+  'lime painting', 'certapro', 'five star painting', 'wow 1 day painting', 'fresh coat painters',
+  'handyman connection', 'mr. handyman', 'mr handyman', 'house doctors', 'trublue',
+  'dryer vent wizard', 'gutter helmet', 'mosquito squad', 'pestmaster', 'truly nolen',
   'sport clips', 'great clips', 'supercuts', 'massage envy', 'european wax',
   'home depot', "lowe's", 'lowes', 'menards', 'ace hardware', 'sherwin williams', 'sherwin-williams',
 ];
@@ -232,8 +236,37 @@ async function scoreSite(website) {
       if (page === base) homeScored = true;
     }
   }
-  if (!reachable) weak.push('website does not load');
+  // ⚠️ "does not load" IS A CLAIM WE SAY OUT LOUD, so it must survive a retry.
+  // The first Indianapolis run scored 1050 sites at concurrency 8 behind a 9s
+  // timeout and flagged FOUR healthy sites as dead, including a 630KB page that
+  // simply needed longer. Telling an owner their website is down when it is not
+  // ends the call. So: one slow, patient, browser-UA retry before we assert it,
+  // and a status that merely BLOCKS us (401/403/429, a WAF) is explicitly not
+  // evidence of a dead site.
+  if (!reachable) {
+    const second = await confirmUnreachable(base);
+    if (second === 'dead') weak.push('website does not load');
+    else if (second === 'broken') weak.push('website returns an error page');
+    // 'alive' or 'blocked' → assert nothing about reachability
+  }
   return { weak, email: bestEmail(collected, host), reachable };
+}
+
+/** Second opinion on a site that failed the fast pass. Patient, browser-like. */
+async function confirmUnreachable(base) {
+  const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36';
+  try {
+    const res = await fetch(base, {
+      headers: { 'User-Agent': BROWSER_UA, Accept: 'text/html,application/xhtml+xml,*/*' },
+      redirect: 'follow',
+      signal: AbortSignal.timeout(25000),
+    });
+    if (res.status === 401 || res.status === 403 || res.status === 429) return 'blocked';
+    if (res.status >= 500 || res.status === 404 || res.status === 410) return 'broken';
+    return res.ok ? 'alive' : 'broken';
+  } catch {
+    return 'dead'; // still nothing after 25s on a browser UA
+  }
 }
 
 // Mailbox providers a real Main Street business plausibly runs on. An address at
