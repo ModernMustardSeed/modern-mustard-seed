@@ -18,7 +18,11 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const OUT = path.join(HERE, 'cards');
+// --square renders the 1080x1080 cut for X into cards-square/ instead.
+const ARGV = process.argv.slice(2);
+const SQ = ARGV.includes('--square');
+const H = SQ ? 1080 : 1350;
+const OUT = path.join(HERE, SQ ? 'cards-square' : 'cards');
 const ART = path.join(HERE, 'art');
 const SITE = 'modernmustardseed.com/website-audit';
 
@@ -211,10 +215,10 @@ const shell = (body) => `<!doctype html><html><head><meta charset="utf-8">
     --red-dark:#C4160B; --blue:${BLUE}; --gold-dark:#8f6600;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:1080px;height:1350px;overflow:hidden}
+  html,body{width:1080px;height:${H}px;overflow:hidden}
   body{background:var(--cream);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
   .paper{
-    position:relative;width:1080px;height:1350px;padding:60px 62px 54px;
+    position:relative;width:1080px;height:${H}px;padding:60px 62px 54px;
     display:flex;flex-direction:column;background-color:var(--cream);
     background-image:radial-gradient(var(--mustard) 1.6px, transparent 1.7px);
     background-size:15px 15px;
@@ -324,6 +328,36 @@ const shell = (body) => `<!doctype html><html><head><meta charset="utf-8">
     display:block;font-family:'DM Sans',sans-serif;font-weight:700;font-size:30px;
     letter-spacing:-.01em;line-height:1.1;
   }
+${SQ ? `
+  /* ---- 1080x1080 cut for X: same system, tightened to a square ---- */
+  .paper{padding:44px 50px 40px}
+  .eyebrow{gap:14px}
+  .eyebrow b{font-size:17px}
+  .plate{margin:20px 0 0}
+  .plate .frame{border-width:4px;box-shadow:12px 12px 0 0 var(--mustard)}
+  .stat .num{
+    left:-8px;top:-74px;padding:4px 24px 16px;border-width:4px;
+    box-shadow:11px 11px 0 0 var(--ink);font-size:120px;
+  }
+  .kind-stat h1{font-size:47px;line-height:1.05;max-width:none}
+  .kind-stat .body{padding-top:90px}
+  .kind-call h1{font-size:74px}
+  .kind-list h1{font-size:50px}
+  .kicker{font-size:36px;margin-top:6px}
+  .sign{padding:12px 26px 16px;margin-top:16px;border-width:4px;box-shadow:10px 10px 0 0 var(--mustard)}
+  .sign span{font-size:14px;margin-bottom:6px}
+  .sign b{font-size:40px}
+  .sub{font-size:20px;line-height:1.42;margin-top:15px;max-width:none}
+  ol{margin-top:18px;gap:11px}
+  ol li{font-size:19.5px;gap:14px;max-width:none}
+  ol li::before{width:34px;height:34px;font-size:17px;border-width:2px;transform:translateY(5px)}
+  .src{font-size:14px;margin-top:15px}
+  .foot{margin-top:18px}
+  .mark{font-size:15px}
+  .sticker{padding:9px 18px 12px;border-width:3px;box-shadow:7px 7px 0 0 var(--ink)}
+  .sticker small{font-size:13px;letter-spacing:.18em}
+  .sticker strong{font-size:25px}
+` : ''}
 </style></head><body>${body}</body></html>`;
 
 const card = (c) => {
@@ -345,7 +379,11 @@ const card = (c) => {
   const sign = c.bigSign
     ? `<div class="sign"><span>Free audit at modernmustardseed.com</span><b>/website-audit</b></div>`
     : '';
-  const ph = c.kind === 'stat' ? 520 : c.kind === 'list' ? 612 : 484;
+  // Square keeps the same plate width, so holding the portrait heights keeps the
+  // art crop identical between the two cuts. Only the type tightens.
+  const ph = SQ
+    ? c.kind === 'stat' ? 520 : c.kind === 'list' ? 496 : 438
+    : c.kind === 'stat' ? 520 : c.kind === 'list' ? 612 : 484;
 
   return shell(`<div class="paper kind-${c.kind}"><div class="layer">
     <div class="eyebrow"><b>${c.eyebrow}</b><i></i></div>
@@ -369,11 +407,11 @@ const card = (c) => {
 };
 
 // ---------------------------------------------------------------- render
-const only = process.argv.slice(2);
+const only = ARGV.filter((a) => a !== '--square');
 const set = only.length ? CARDS.filter((c) => only.includes(c.id)) : CARDS;
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1080, height: 1350 } });
+const page = await browser.newPage({ viewport: { width: 1080, height: H } });
 for (const c of set) {
   const html = path.join(OUT, `${c.id}.html`);
   fs.writeFileSync(html, card(c));
