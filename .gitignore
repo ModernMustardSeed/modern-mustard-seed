@@ -63,3 +63,4 @@ backups/
 
 # Local team login credentials written by scripts/setup-team.mjs (never commit)
 .team-credentials.json
+scripts/.cache/
