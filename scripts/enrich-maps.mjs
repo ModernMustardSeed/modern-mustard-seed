@@ -92,6 +92,12 @@ let leads = await fetchAll(
   (q) => q.is('website', null).neq('status', 'dnc'),
 );
 leads = leads.filter((l) => phoneKey(l.phone).length >= 10); // the phone IS the proof
+// Resume cleanly: anything already settled on a previous run is not looked up
+// again. A lead with a website is filtered out by the query above; these two
+// markers cover the leads that were settled WITHOUT gaining a website.
+const settled = leads.filter((l) => /NO WEBSITE:|WEB PRESENCE:/.test(String(l.notes ?? ''))).length;
+leads = leads.filter((l) => !/NO WEBSITE:|WEB PRESENCE:/.test(String(l.notes ?? '')));
+if (settled) console.log(`skipping ${settled} lead(s) already settled by an earlier run`);
 if (LIMIT) leads = leads.slice(0, LIMIT);
 console.log(`leads to look up: ${leads.length}${APPLY ? '' : '   (DRY RUN)'}\n`);
 
@@ -110,6 +116,35 @@ async function readPanel() {
     };
   });
 }
+
+/**
+ * ⚠️ WRITE AS WE GO, NEVER AT THE END. The first version of this accumulated
+ * everything in memory and wrote after the loop. It was interrupted at 1091 of
+ * 1154 leads and threw away 289 verified websites plus two hours of pacing,
+ * because none of it had touched the database yet. A run this long is going to
+ * be interrupted sooner or later, so every confirmed lead is persisted the
+ * moment it is confirmed and the run is resumable by construction: leads that
+ * already have a website are not fetched again.
+ */
+async function persistWebsite(lead, website) {
+  const { error } = await sb.from('outbound_leads').update({ website }).eq('id', lead.id);
+  if (error) console.error(`   ! could not save ${lead.business_name}: ${error.message}`);
+  return !error;
+}
+async function persistNote(lead, note, marker) {
+  if (String(lead.notes ?? '').includes(marker)) return false;
+  const notes = [lead.notes, note].filter(Boolean).join(' · ').slice(0, 4000);
+  const { error } = await sb.from('outbound_leads').update({ notes }).eq('id', lead.id);
+  return !error;
+}
+const persistPresence = (lead, url) =>
+  persistNote(lead, `WEB PRESENCE: ${url} (no site of their own)`, 'WEB PRESENCE:');
+/**
+ * "They have no website" is a finding, not a non-result: it is the strongest
+ * build pitch on the floor. Recording it means a re-run skips the lead instead
+ * of re-scraping it, and the segment becomes searchable from the cockpit.
+ */
+const persistNoSite = (lead) => persistNote(lead, 'NO WEBSITE: confirmed on Google Maps', 'NO WEBSITE:');
 
 const results = { written: [], social: [], mismatch: [], nosite: [], noplace: [], blocked: [] };
 let n = 0;
@@ -145,7 +180,13 @@ for (const lead of leads) {
 
   if (!got.h1) { results.blocked.push(lead.business_name); console.log(`${label} BLOCKED (empty panel) — backing off`); await sleep(15000); continue; }
   if (/^results$/i.test(got.h1)) { results.noplace.push(lead.business_name); console.log(`${label} no matching place on Maps`); await sleep(2500); continue; }
-  if (!got.website) { results.nosite.push(lead.business_name); console.log(`${label} confirmed NO website (good pitch)`); await sleep(2500); continue; }
+  if (!got.website) {
+    results.nosite.push(lead.business_name);
+    if (APPLY) await persistNoSite(lead);
+    console.log(`${label} confirmed NO website (good pitch)`);
+    await sleep(2500);
+    continue;
+  }
 
   // THE GATE: Maps' phone for this place must be the lead's phone.
   const mapsPhone = phoneKey((got.phoneItem ?? '').replace(/^phone:tel:/, ''));
@@ -163,12 +204,14 @@ for (const lead of leads) {
     // "you have no real website" is the pitch. Record it, do not file it as a
     // site the audit engine will try to score.
     results.social.push({ lead, url: got.website, why: bad });
+    if (APPLY) await persistPresence(lead, got.website);
     console.log(`${label} social/builder only: ${got.website}`);
     await sleep(2500);
     continue;
   }
 
   results.written.push({ lead, website: got.website });
+  if (APPLY) await persistWebsite(lead, got.website);
   console.log(`${label} ✓ ${got.website}`);
   await sleep(2500);
 }
@@ -185,21 +228,6 @@ console.log(`  no place on Maps    : ${results.noplace.length}`);
 console.log(`  blocked             : ${results.blocked.length}`);
 if (results.mismatch.length) console.log(`\n  rejected on phone:\n    ${results.mismatch.slice(0, 10).join('\n    ')}`);
 
-if (!APPLY) { console.log('\nDRY RUN. Nothing written. Re-run with --apply.'); process.exit(0); }
-
-let w = 0;
-for (const r of results.written) {
-  const { error } = await sb.from('outbound_leads').update({ website: r.website }).eq('id', r.lead.id);
-  if (error) { console.error(`update ${r.lead.business_name}:`, error.message); continue; }
-  w++;
-}
-// Social-only presence goes in the notes, where the ammo card reads it.
-let s = 0;
-for (const r of results.social) {
-  const note = `WEB PRESENCE: ${r.url} (no site of their own)`;
-  if (String(r.lead.notes ?? '').includes('WEB PRESENCE:')) continue;
-  const notes = [r.lead.notes, note].filter(Boolean).join(' · ').slice(0, 4000);
-  const { error } = await sb.from('outbound_leads').update({ notes }).eq('id', r.lead.id);
-  if (!error) s++;
-}
-console.log(`\nWrote ${w} websites and noted ${s} social-only presences.`);
+console.log(APPLY
+  ? `\nAll ${results.written.length} websites and ${results.social.length} presences were saved as they were found.`
+  : '\nDRY RUN. Nothing written. Re-run with --apply.');
