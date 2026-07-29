@@ -65,3 +65,19 @@ jobs:
           if [ -n "${{ inputs.limit }}" ]; then ARGS="$ARGS --limit ${{ inputs.limit }}"; fi
           echo "Running: node scripts/enrich-maps.mjs $ARGS"
           node scripts/enrich-maps.mjs $ARGS
+
+      # Second pass over what the first one refused to write. A phone that
+      # disagrees with Maps is usually OUR number being stale, and a rep dialling
+      # a dead line costs more than this lookup. Runs even if the first step
+      # fails, since the two are independent and both are resumable.
+      - name: Reconcile lead phones against Google Maps
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" != "true" ]; then ARGS="$ARGS --apply"; fi
+          if [ -n "${{ inputs.limit }}" ]; then ARGS="$ARGS --limit ${{ inputs.limit }}"; fi
+          echo "Running: node scripts/fix-lead-phones.mjs $ARGS"
+          node scripts/fix-lead-phones.mjs $ARGS
