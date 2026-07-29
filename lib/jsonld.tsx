@@ -54,7 +54,22 @@ export const orgJsonLd = {
   '@type': 'Organization',
   '@id': ORG_ID,
   name: SITE.name,
-  alternateName: 'MMS',
+  alternateName: ['MMS', 'Modern Mustard Seed AI Studio', 'Modern Mustard Seed Studio'],
+  /**
+   * ENTITY DISAMBIGUATION. Added 2026-07-28.
+   *
+   * "Modern Mustard Seed" collides with one of the densest, oldest namespaces on
+   * the web: the condiment, the mustard plant, the parable in Matthew 13:31, the
+   * Miss Mustard Seed home decor brand, and several Mustard Seed restaurants and
+   * charities. Google resolves us correctly because its own knowledge graph has
+   * first-party signal. Bing and Copilot do not, and answer the food instead.
+   *
+   * disambiguatingDescription is the schema.org property built for exactly this.
+   * It states the category we ARE and explicitly negates the categories we get
+   * confused with, which is what an answer engine needs to pick the right entity.
+   */
+  disambiguatingDescription:
+    'Modern Mustard Seed is an AI product studio and custom software company based in Kalispell, Montana, founded by Sarah Scarano in 2024. It builds custom apps, websites, and 24/7 AI voice agents for small businesses. It is a technology company. It is not a food producer, condiment brand, seed or garden supplier, restaurant, home decor brand, or church, and it is not affiliated with any similarly named business.',
   url: SITE.url,
   logo: {
     '@type': 'ImageObject',
@@ -141,7 +156,7 @@ export const localBusinessJsonLd = {
   logo: LOGO_URL,
   image: LOGO_URL,
   description:
-    'AI studio in Kalispell, Montana building custom websites, 24/7 voice agents and voice agents, and business automation for small businesses across the Flathead Valley and nationwide.',
+    'AI studio in Kalispell, Montana building custom websites, 24/7 AI voice agents, and business automation for small businesses across the Flathead Valley and nationwide.',
   telephone: SITE.phoneE164,
   email: SITE.email,
   priceRange: '$$',
@@ -182,7 +197,7 @@ export const localBusinessJsonLd = {
     '@type': 'OfferCatalog',
     name: 'Modern Mustard Seed services',
     itemListElement: [
-      ['voice agent and voice agents', 'A 24/7 voice agent that answers every call as your business, books jobs, and texts back missed callers.', '/voice-agents/forge'],
+      ['AI voice agents', 'A 24/7 voice agent that answers every call as your business, books jobs, and texts back missed callers.', '/voice-agents/forge'],
       ['Small business websites', 'Custom websites built from scratch with lead capture, SEO, and a voice agent answering on the page.', '/websites'],
       ['Business Command Center', 'One dashboard for calls, leads, customers, reviews, traffic, and money, with an AI that reads it back to you.', '/command-center'],
       ['Free AI demos', 'Three working demos built for your business at no cost: voice agent, website, and command center.', '/demos'],

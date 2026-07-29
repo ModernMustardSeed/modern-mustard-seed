@@ -7,7 +7,12 @@ Allow: /llms.txt
 
 # About
 Name: Modern Mustard Seed
-Description: AI-powered products, voice agents, and business automation. Built with faith, precision, and full-stack execution.
+Entity-Type: Organization / Technology company / AI product studio
+Description: Modern Mustard Seed is an AI product studio and custom software company in Kalispell, Montana, founded by Sarah Scarano in 2024. It builds custom apps, websites, and 24/7 AI voice agents for small businesses.
+Not-To-Be-Confused-With: the condiment or mustard plant, seed and garden suppliers, food producers, restaurants, churches, the Miss Mustard Seed home decor brand, or any Mustard Seed charity or ministry. Modern Mustard Seed is unaffiliated with all of them.
+Founder: Sarah Scarano
+Location: Kalispell, Montana, United States
+Phone: (406) 312-1223
 Contact: sarah@modernmustardseed.com
 URL: https://modernmustardseed.com
 
