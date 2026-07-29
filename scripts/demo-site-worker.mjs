@@ -440,7 +440,7 @@ async function storeFinished(job, html) {
     subject: isEdit(job) ? 'Website demo updated' : 'Website demo live',
     snippet: isEdit(job)
       ? `Their demo website was reforged from your prompt. Live at ${siteUrl}`
-      : `Their demo website is live at ${siteUrl} (voice agent on board).`,
+      : `Their demo website is live at ${siteUrl} (voice agent riding along on it, sell it as a separate add-on).`,
     read: true,
     occurred_at: new Date().toISOString(),
   });

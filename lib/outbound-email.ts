@@ -119,7 +119,7 @@ export async function buildOutboundEmail(
     withDemo &&
       demoRow('🎙', 'Your voice agent', `It answers as ${escape(lead.business_name)}, right now, in your browser. Pretend you are a customer and try to stump it.`, lead.demo_url!),
     withSite &&
-      demoRow('🌐', 'Your new website', `A real working draft designed for your business${withDemo ? ', with the voice agent living on it (gold button, bottom corner)' : ''}.`, lead.site_demo_url!),
+      demoRow('🌐', 'Your new website', `A real working draft designed for your business${withDemo ? '. The gold button in the corner is your voice agent riding along so you can hear it on the page, it is its own add-on' : ''}.`, lead.site_demo_url!),
     withOs &&
       demoRow('⚙️', 'Your command center', 'Every call transcribed, your website traffic, customers, reviews, and money on one board, with an AI that knows it all. Included free with your site or voice agent.', lead.os_demo_url!),
   ]

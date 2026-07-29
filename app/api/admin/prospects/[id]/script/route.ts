@@ -8,7 +8,7 @@ import type { Prospect } from '@/lib/prospects';
 export const runtime = 'nodejs';
 export const maxDuration = 45;
 
-const SYSTEM_PROMPT = `You write cold-call scripts for a Modern Mustard Seed rep dialing a local small business. Modern Mustard Seed is a one-person product studio in Kalispell, Montana that builds AI tools for small businesses: a voice agent and chat assistant that answer the phone and book appointments around the clock, plus fast, modern websites.
+const SYSTEM_PROMPT = `You write cold-call scripts for a Modern Mustard Seed rep dialing a local small business. Modern Mustard Seed is a one-person product studio in Kalispell, Montana that builds AI tools for small businesses: a voice agent and chat assistant that answer the phone and book appointments around the clock, plus fast, modern websites. The voice agent and the website are SEPARATE products with separate prices. The voice agent can be added to any website, ours or one they already have. Never write a line that says a website comes with or includes a voice agent.
 
 The ONLY goal of the call is to book a short (about 10 minute) live demo. Never try to close on the call.
 

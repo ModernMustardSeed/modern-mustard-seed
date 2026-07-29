@@ -300,7 +300,7 @@ export function ReachOutDeck({
 
         {siteReady ? (
           <>
-            <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged demo website, voice agent on board">
+            <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged demo website. The voice agent rides along on it for the demo, but it is a separate product. Do not tell them the site includes it.">
               🌐 Website live ↗
             </a>
             <button
@@ -321,7 +321,7 @@ export function ReachOutDeck({
             onClick={() => void forgeSite()}
             disabled={forgingSite}
             className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`}
-            title={lead.site_demo_status === 'failed' ? 'Last build failed. Forge it again.' : 'Build them a full demo website with their voice agent living on it (runs in the background)'}
+            title={lead.site_demo_status === 'failed' ? 'Last build failed. Forge it again.' : 'Build them a full demo website, with their voice agent riding along on it so they can hear it (runs in the background). The voice agent is still sold separately.'}
           >
             {forgingSite ? 'Queuing…' : lead.site_demo_status === 'failed' ? '🌐 Retry website' : '🌐 Forge website'}
           </button>

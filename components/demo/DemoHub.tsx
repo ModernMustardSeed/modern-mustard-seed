@@ -157,7 +157,7 @@ export default function DemoHub({
           icon: '🌐',
           title: 'Your new website',
           desc: siteUrl
-            ? 'A real, working draft designed for your business. The voice agent lives on it too.'
+            ? 'A real, working draft designed for your business. The gold button is your voice agent riding along so you can try it, and it is its own add-on.'
             : 'Being forged right now. The page refreshes itself until it is ready.',
           tone: 'gold' as const,
           cta: siteUrl ? 'See it live' : 'Watch it forge',
