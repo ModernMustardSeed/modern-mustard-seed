@@ -1,0 +1,116 @@
+# Ship gate. The automated half of ~/.claude/workflows/ship-gate.js.
+#
+# WHY THIS EXISTS: agents generate PRs faster than one person can review them.
+# The cap on shipping is review bandwidth, not code generation. This runs the
+# same standard as the local /ship-gate workflow on every PR so that by the time
+# a change reaches Sarah it has already been built, swept, and adversarially
+# verified, and the only remaining question is whether she wants it.
+#
+# NOT A 1:1 PORT. The local version is a Workflow-tool script: five parallel
+# sweeps, then a 3-vote adversarial panel per blocker. GitHub Actions cannot run
+# the Workflow orchestrator, so this is a single headless agent instructed to
+# spawn those same sweeps and refutation votes as its own subagents. Same rubric,
+# same 2-of-3 confirmation bar, one less layer of guarantee.
+#
+# The `design` sweep is deliberately NOT here. It needs Playwright plus a running
+# dev server, which would add minutes to every single PR. It stays manual via
+# local /ship-gate, and via the `design-review` label below for anything that
+# touches customer-facing UI.
+#
+# Cost shape: this repo is public, so runner minutes are free. Tokens are not, so
+# the model is pinned to Sonnet, turns are capped, docs-only PRs are skipped, and
+# a rapid re-push cancels the in-flight run instead of paying for both.
+
+name: ship-gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    paths-ignore:
+      - "**/*.md"
+      - "content/**" # MDX copy changes ship without a build gate
+      - ".vscode/**"
+      - "LICENSE"
+
+concurrency:
+  # Push twice in a minute and only the newest commit gets gated.
+  group: ship-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      pull-requests: write # post the GO / NO-GO verdict
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # need the base branch present to diff against
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          use_sticky_comment: true # one verdict comment, updated in place
+          track_progress: true
+          claude_args: |
+            --model claude-sonnet-5
+            --allowedTools "Bash,Read,Grep,Glob,Task"
+            --max-turns 60
+          prompt: |
+            You are the pre-deploy ship gate for Modern Mustard Seed, running in CI on a pull request.
+            This is the CI translation of ~/.claude/workflows/ship-gate.js. Hold the same bar.
+
+            STEP 1 — RECON
+            Run `git diff --stat origin/${{ github.base_ref }}...HEAD` then `git diff origin/${{ github.base_ref }}...HEAD`.
+            Establish: which files changed, which user-facing flows they touch, and which env vars the
+            changed code reads. Read the repo CLAUDE.md first, it carries binding conventions
+            (nav completeness, modal top-clipping, deploy hygiene, no em dashes).
+
+            STEP 2 — SWEEP
+            Spawn one subagent per dimension via the Task tool and run them in parallel:
+
+              build    Actually RUN `npm run build`. Any failure, or any NEW warning attributable to
+                       changed code, is a finding with the real command output as evidence. Run any
+                       tests covering the changed files.
+              bugs     Review the DIFF for correctness only: broken logic, null paths, async races,
+                       unhandled errors, edge cases (empty state, first run, mobile viewport,
+                       timezone). Trace every suspicion through the real code before reporting it.
+              security Secrets committed in code, injection, missing auth on new routes, unprotected
+                       admin or API endpoints, webhook signature gaps, Supabase RLS holes on any
+                       table the diff touches.
+              config   Env and config drift. Every env var the changed code reads must be declared
+                       somewhere real. Flag hardcoded localhost URLs, test keys, leftover
+                       console.log, and new public routes missing from sitemap/robots/nav.
+
+            Severity is binary:
+              blocker = would embarrass us in front of a customer, or break users in production.
+              warning = should be fixed soon, does not stop the ship.
+            Evidence must be something you OBSERVED (quoted code, real command output), never
+            something you assumed. An empty findings list is a valid and good answer. Do not
+            manufacture findings to look thorough.
+
+            STEP 3 — VERIFY
+            For every blocker candidate, spawn 3 independent subagents that each genuinely TRY TO
+            REFUTE it by reading the actual code. A blocker survives only if at least 2 of the 3
+            fail to refute it. Discard the rest silently. Warnings skip this step.
+
+            STEP 4 — VERDICT
+            Post exactly one PR comment:
+              - First line, verbatim, one of: `## SHIP GATE: GO` or `## SHIP GATE: NO-GO`
+              - Then one plain sentence saying why.
+              - If NO-GO: the confirmed blockers in priority order, each with `file:line`, the
+                observed evidence, and the fix.
+              - If GO: what was actually checked, then any warnings worth fixing after shipping.
+            No hedging. No em dashes. Write it the way you would brief a founder who is about to
+            press deploy.

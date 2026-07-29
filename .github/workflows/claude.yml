@@ -1,0 +1,74 @@
+# Interactive Claude, summoned by name.
+#
+# Comment "@claude <ask>" on any issue or PR (the GitHub mobile app counts, which
+# is the entire point) and an agent picks it up, does the work on a branch, and
+# opens or updates a PR. This is the phone-first half of the setup: the ask costs
+# one thumb-typed sentence, the review comes back as a normal PR.
+#
+# It deliberately does NOT run on every comment. The `if` guard below checks for
+# the trigger phrase before the runner even boots, so ordinary conversation on a
+# PR is free. This repo is public, so runner minutes are free either way, but the
+# Anthropic tokens are not, and an agent that wakes up on every "lgtm" burns them.
+#
+# Model is left unpinned here on purpose. This path is invoked deliberately by a
+# human, so it should get the strong default. The automatic gate in
+# ship-gate.yml is the one that runs constantly and is pinned down to Sonnet.
+
+name: claude
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+  issues:
+    types: [opened, assigned, labeled]
+
+concurrency:
+  # One agent per issue/PR thread. A second @claude while the first is still
+  # working queues instead of racing it into the same branch.
+  group: claude-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  claude:
+    # Cheap pre-flight: only boot a runner if someone actually said @claude.
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || github.event.label.name == 'claude'))
+    runs-on: ubuntu-latest
+    # A real feature takes a while. 30 is generous without letting a wedged run
+    # bill forever.
+    timeout-minutes: 30
+    permissions:
+      contents: write # push the working branch
+      pull-requests: write # open/update the PR, comment
+      issues: write # comment back on issues
+      id-token: write # OIDC, required by the action
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so the agent can diff against master
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # Pre-install so the agent spends its turns on the task, not on `npm ci`.
+      - run: npm ci
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Collapse the running commentary into one comment instead of a dozen.
+          use_sticky_comment: true
+          claude_args: |
+            --allowedTools "Bash,Read,Write,Edit,Grep,Glob,Task,WebFetch"
+            --max-turns 40
