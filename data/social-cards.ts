@@ -308,6 +308,136 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
     ],
   },
+  {
+    id: 'ai-shift',
+    name: 'The AI Shift',
+    eyebrow: 'Set three · The Signal',
+    blurb:
+      'A deliberate break from the screenprint of the first two sets: near-black broadcast cards, high-voltage lime, and an oscilloscope trace generated per card so no two are alike. A feed is a wall of white. These are the only black thing on the screen.',
+    cta: 'Ten second dare · ask ChatGPT who is best in your town',
+    accent: '#05070A',
+    rules: [
+      'Never say "45% start with AI." BrightLocal found 45% use AI somewhere in the journey. DreamHost found 3% start there. Card 03 exists to say this before someone else does.',
+      'No ranking promises, for Google or for ChatGPT. There is no placement to buy and no lever to pull.',
+      'Disclose that DreamHost sells hosting when you cite their numbers.',
+      'The audit link goes in the FIRST COMMENT, never the post body.',
+      'Never type a website price. Both engagements are quoted after a free call.',
+    ],
+    cards: [
+      {
+        file: '01-the-shift',
+        headline: '45% now use AI to find a local business.',
+        use: 'The opener. Post 2, or run 01 + 02 as a two-image carousel.',
+        alt: 'Near-black card, a lime oscilloscope trace rising behind a giant numeral. Headline: 45 percent now use AI to find a local business. Last year it was six.',
+      },
+      {
+        file: '02-trusted',
+        headline: '42% trust AI as much as a real review.',
+        use: 'The weight card. Pairs with 01 in the carousel.',
+        alt: 'Near-black card with a steady lime signal trace. Headline: 42 percent trust what AI says as much as a real review.',
+      },
+      {
+        file: '03-the-catch',
+        headline: '3% actually start there. Know the difference.',
+        use: 'The trust builder. Post 3, the one most likely to get you invited back.',
+        alt: 'Near-black card, a lime trace decaying to a flat line. Headline: 3 percent actually start there. Know the difference.',
+      },
+      {
+        file: '04-still-your-site',
+        headline: '34% go straight to your site when AI names you.',
+        use: 'The follow-through. Getting recommended is only half of it.',
+        alt: 'Near-black card with a pulsing lime heartbeat trace. Headline: 34 percent go straight to your website the moment AI names you.',
+      },
+      {
+        file: '05-ask-it',
+        headline: 'Ask it about your business.',
+        use: 'The dare. This is the opener for other people’s groups.',
+        alt: 'Near-black card, strong lime pulse, a lime-bordered sign showing the free website audit URL. Headline: Ask it about your business.',
+      },
+      {
+        file: '06-readable',
+        headline: 'Say it plainly. Say it once. Say it where it can be found.',
+        use: 'The explainer. What to actually do, in three boring steps.',
+        alt: 'Near-black card with a lime trace behind a numbered list. Headline: Say it plainly. Say it once. Say it where it can be found.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'The dare',
+        graphic: '05-ask-it',
+        body: [
+          'Here is a ten second test and I would genuinely like to know how it goes for you.',
+          'Open ChatGPT. Type: "who is the best [your trade] in [your town]?"',
+          'Read what comes back. Are you in it? Is a competitor in it? Is the answer three businesses from a town forty minutes away?',
+          'I have been running this for people all week and the results are all over the place. Some folks with terrible websites show up first. Some of the best operators I know are completely invisible. It is not fair and it is not mysterious, it is just what the machine could read.',
+          'Post what you got. If you are missing, I will tell you why for free, and no you do not have to hire anybody to fix most of it.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'If you want the long version, the free audit reads your actual page and scores it: modernmustardseed.com/website-audit',
+            'No card, no email needed to see the result.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'The stat teardown',
+        graphic: '01-the-shift',
+        body: [
+          "Last year, 6% of people used AI to help find a local business. This year it is 45%. That is BrightLocal's 2026 survey of 1,002 US consumers.",
+          'Before anybody panics: most of them are not starting there. Only about 3% open AI first (DreamHost, 2026). They still start on Google. But somewhere in the middle of deciding, nearly half of them are now asking a machine what it thinks.',
+          'Here is the part that actually matters. That machine is reading websites. Not your Facebook page, not your reputation around town, not how good your work is. It reads what is written down and it recommends what it can understand.',
+          'If your site does not say plainly what you do and where you do it, you are not being rejected. You are just not in the room.',
+        ],
+      },
+      {
+        n: 3,
+        title: 'The number everyone is about to get wrong',
+        graphic: '03-the-catch',
+        body: [
+          'There is a stat going around right now that 45% of people use AI to find local businesses, and it is about to get quoted at you by somebody selling something.',
+          'The number is real. BrightLocal, 2026, 1,002 US consumers. But it means "use it somewhere in the process," not "start there." A separate survey the same year put the people who actually open AI first at 3%.',
+          'Both things are true and the difference is the whole story. This is not a fire drill. It is a slow change in how people check you out, and slow changes are the ones you can actually get ahead of.',
+          'I am telling you this because the fastest way to lose a room of business owners is to get caught inflating a number. If I ever quote you something that smells off, ask me for the source. I will have it or I will drop the claim.',
+        ],
+      },
+      {
+        n: 4,
+        title: 'What to actually do about it',
+        graphic: '06-readable',
+        body: [
+          'Every week somebody asks me what they have to do to "show up in AI." Most of the answers being sold are nonsense. Here is the honest version, and it is boring on purpose.',
+          [
+            'Say plainly on your website what you do and which towns you drive to. In words. Not in a logo, not in a slideshow, not in a photo of a truck.',
+            'Make your hours, phone and address match your Google profile exactly. Mismatches make you look closed or fake to anything reading you.',
+            'Write down the questions customers actually ask you. Do you do emergencies. Are you licensed. How fast can you get here. Put the answers in text.',
+          ],
+          'That is most of it. Nobody can promise you a spot in an AI answer, and be careful with anybody who does. What you can do is be readable, and a startling number of local businesses currently are not.',
+        ],
+      },
+    ],
+    replies: [
+      {
+        q: 'Is this not just fear-mongering to sell websites?',
+        a: 'Reasonable suspicion. That is exactly why card three in this set exists to say only 3% of people actually start with AI. If I wanted you scared I would have left that out. The change is real, it is just slower than the headlines.',
+      },
+      {
+        q: 'Do I need something special for AI, like schema or llms.txt?',
+        a: 'Those help and I do use them. But if the page does not plainly say what you do and where, the technical stuff does not save it. Write it in English first.',
+      },
+      {
+        q: 'Will this get me to the top of ChatGPT?',
+        a: 'No, and nobody can promise that. There is no ranking to buy and no lever to pull. You make yourself readable and accurate, and you turn up more often. That is the entire honest claim.',
+      },
+      {
+        q: 'How much do you charge for this?',
+        a: 'The audit is free and gives you the whole to-do list. If you want me to do the work, I scope it on a free call rather than throwing a number in the comments. Plenty of people run the list themselves and never need me.',
+        warn: 'Do NOT type a website price here. Both engagements are quoted after a discovery call.',
+      },
+    ],
+  },
 ];
 
 /** Flatten a post body into the plain text that goes in the composer. */
