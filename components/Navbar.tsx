@@ -65,6 +65,7 @@ const MENU_GROUPS = [
 // ink panel near the bottom of the drawer (names in Title Case, descriptors
 // in tracked mono caps; never a lowercase opener).
 const DEPARTMENTS = [
+  { name: 'The Mustard Tree', tag: 'ONE SEED IN, A WHOLE BUSINESS OUT', href: '/mustard-tree' },
   { name: 'Celebrate', tag: 'GIFTING ON AUTOPILOT', href: '/celebrate' },
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },

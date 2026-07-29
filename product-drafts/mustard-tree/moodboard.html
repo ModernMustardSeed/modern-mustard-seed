@@ -1,0 +1,265 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,700;9..40,800&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#191919;font-family:'DM Sans',sans-serif;width:2160px;height:1420px;overflow:hidden}
+.board{padding:52px 56px;display:flex;flex-direction:column;height:100%;gap:30px}
+.bhead{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex:none}
+.bhead h2{font-weight:800;font-size:40px;letter-spacing:-.03em;color:#F5F5F5}
+.bhead p{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#8A8A8A;margin-top:8px}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:44px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:20px;min-height:0}
+.frame{width:100%;height:786px;overflow:hidden;position:relative;flex:none;box-shadow:0 26px 60px rgba(0,0,0,.55)}
+.frame .c{position:absolute;top:0;left:0;width:1080px;height:1350px;transform:scale(.5824);transform-origin:top left}
+.meta{display:flex;flex-direction:column;gap:10px}
+.meta h3{font-weight:800;font-size:27px;color:#F5F5F5;letter-spacing:-.02em}
+.meta .th{font-size:15px;line-height:1.5;color:#A8A8A8;max-width:46ch}
+.meta .ty{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#6E6E6E}
+.chips{display:flex;gap:7px}
+.chips i{width:30px;height:30px;display:block;border:1px solid rgba(255,255,255,.22)}
+
+/* ---------------- 01 THE GERMINATION ---------------- */
+.ger{background:#FBF6EA;position:relative;overflow:hidden;color:#161616}
+.ger::before{content:'';position:absolute;inset:0;opacity:.5;
+  background-image:radial-gradient(circle,rgba(245,183,0,.30) 18%,transparent 19%);
+  background-size:30px 30px}
+.ger .inner{position:relative;z-index:2;height:100%;padding:58px 56px 50px;display:flex;flex-direction:column}
+.ger .eye{display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:19px;letter-spacing:.2em;flex:none}
+.ger .eye b{color:#C4160B;font-weight:700}
+.ger .eye i{flex:1;height:2px;background:#161616}
+.ger .eye span{color:#161616}
+.ger h1{font-family:'Playfair Display',serif;font-weight:800;font-size:97px;line-height:1.02;letter-spacing:-.02em;margin-top:26px}
+.ger .hero{position:relative;flex:1;margin:6px -10px 0}
+.ger .tree{position:absolute;inset:0;width:100%;height:100%}
+.ger .tag{position:absolute;transform:translate(-50%,-135%);background:#fff;border:3px solid #161616;
+  box-shadow:5px 5px 0 0 #161616;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;
+  letter-spacing:.1em;padding:9px 14px;white-space:nowrap}
+.ger .tag.g{background:#F5B700}
+.ger .plant{font-family:'JetBrains Mono',monospace;font-size:23px;margin-top:10px;color:#161616}
+.ger .plant b{color:#C4160B;letter-spacing:.08em}
+.ger .stages{display:flex;align-items:center;gap:18px;margin-top:22px;font-family:'JetBrains Mono',monospace;
+  font-size:19px;letter-spacing:.18em;color:rgba(22,22,22,.7)}
+.ger .stages em{font-style:normal;color:#8f6600}
+.ger .stages .hot{background:#161616;color:#F5B700;padding:7px 14px}
+.ger .bar{display:flex;justify-content:space-between;border-top:3px solid #161616;padding-top:16px;margin-top:22px;
+  font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:.18em}
+
+/* ---------------- 02 THE FOUNDING ---------------- */
+.fnd{background:#FBF6EA;position:relative;overflow:hidden;color:#161616}
+.fnd .ribbon{position:absolute;top:64px;right:-104px;transform:rotate(35deg);background:#E0301E;color:#FBF6EA;
+  font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;letter-spacing:.16em;
+  padding:12px 110px;z-index:5;border:3px solid #161616;box-shadow:4px 4px 0 0 #161616}
+.fnd .inner{height:100%;padding:58px 56px 50px;display:flex;flex-direction:column}
+.fnd .eye{display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:18px;
+  letter-spacing:.22em;color:#C4160B;font-weight:700;flex:none}
+.fnd .eye i{flex:1;height:2px;background:#161616}
+.fnd .eye span:last-child{color:#161616}
+.fnd .cert{position:relative;margin-top:30px;border:4px solid #161616;outline:3px solid #161616;outline-offset:7px;
+  background:#fff;box-shadow:9px 9px 0 0 #F5B700;padding:44px 48px 52px;text-align:center;flex:none}
+.fnd .pre{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:31px;color:rgba(22,22,22,.75)}
+.fnd h1{font-family:'Playfair Display',serif;font-weight:800;font-size:88px;letter-spacing:-.01em;line-height:1;margin-top:14px}
+.fnd .ital{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:32px;margin-top:16px}
+.fnd .wit{font-family:'JetBrains Mono',monospace;font-size:17px;letter-spacing:.22em;margin-top:20px;color:#8f6600;font-weight:700}
+.fnd .seal{position:absolute;left:-34px;bottom:-40px;width:132px;height:132px;transform:rotate(-12deg);
+  filter:drop-shadow(4px 4px 0 rgba(22,22,22,.9))}
+.fnd .wall{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px;flex:1;align-content:center}
+.fnd .pframe{position:relative;background:#fff;border:3px solid #161616;box-shadow:6px 6px 0 0 #161616;
+  padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px}
+.fnd .pframe svg{width:100%;aspect-ratio:1;display:block;background:#FBF6EA;border:2px solid #161616}
+.fnd .pframe p{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;letter-spacing:.12em;text-align:center}
+.fnd .pframe .star{position:absolute;top:-16px;right:-14px;width:40px;height:40px;background:none;border:0;z-index:3}
+.fnd .bar{display:flex;justify-content:space-between;border-top:3px solid #161616;padding-top:16px;margin-top:30px;
+  font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:.18em}
+
+/* ---------------- 03 THE GREENHOUSE ---------------- */
+.grn{background:#FBF6EA;padding:46px 46px 42px;display:flex;flex-direction:column;color:#161616}
+.grn .pane{flex:1;background:#080C16;border:3px solid #161616;box-shadow:10px 10px 0 0 #F5B700;
+  padding:46px 48px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.grn .pane::before{content:'';position:absolute;inset:0;opacity:.10;
+  background-image:linear-gradient(#5C7188 1px,transparent 1px),linear-gradient(90deg,#5C7188 1px,transparent 1px);
+  background-size:52px 52px}
+.grn .pane>*{position:relative;z-index:2}
+.grn .phead{display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:19px;
+  letter-spacing:.2em;color:#F5B700}
+.grn .phead b{color:#E0301E;font-size:23px}
+.grn .phead i{flex:1;height:1px;background:#5C7188;opacity:.5}
+.grn .phead span:last-child{color:#8A94A6}
+.grn .feed{margin-top:30px;display:flex;flex-direction:column;gap:13px;flex:none}
+.grn .feed p{font-family:'JetBrains Mono',monospace;font-size:21.5px;color:rgba(251,246,234,.88)}
+.grn .feed u{text-decoration:none;color:#5C7188}
+.grn .feed b{color:#F5B700;font-weight:700}
+.grn .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}
+.grn .tile{border:2px solid rgba(92,113,136,.55);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.grn .tile span{font-family:'JetBrains Mono',monospace;font-size:15px;letter-spacing:.14em;color:#8A94A6}
+.grn .tile em{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:700;color:#F5B700}
+.grn .tile em.live{color:#FF6B35}
+.grn .prog{margin-top:30px}
+.grn .track{height:16px;border:2px solid #5C7188;background:rgba(92,113,136,.15)}
+.grn .fill{height:100%;width:94%;background:#F5B700}
+.grn .prog p{font-family:'JetBrains Mono',monospace;font-size:17px;letter-spacing:.16em;color:#8A94A6;margin-top:12px}
+.grn h1{font-family:'Playfair Display',serif;font-weight:800;font-size:72px;line-height:1.04;color:#FBF6EA;
+  margin-top:auto;letter-spacing:-.01em}
+.grn .bar{display:flex;justify-content:space-between;border-top:3px solid #161616;padding-top:14px;margin-top:26px;
+  font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:.18em}
+</style></head><body>
+<div class="board">
+  <div class="bhead">
+    <div>
+      <h2>THE MUSTARD TREE · direction study</h2>
+      <p>One prompt in, a whole business out · three worlds inside the locked MMS pop-art cabin · core emotion: awe</p>
+    </div>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.18em;color:#6E6E6E">MODERN MUSTARD SEED · 2026-07-29</p>
+  </div>
+  <div class="cols">
+    <div class="col">
+        <div class="frame">
+      <div class="c ger">
+        <div class="inner">
+          <div class="eye"><b>THE MUSTARD TREE</b><i></i><span>PLANTING NO. 001</span></div>
+          <h1>One seed in.<br>A whole business out.</h1>
+          <div class="hero">
+            
+  <svg class="tree" viewBox="0 0 1080 800" fill="none">
+    <circle cx="485.4" cy="136.0" r="7.9" fill="#F5B700" opacity="0.94"/><circle cx="608.7" cy="152.6" r="17.5" fill="#E0301E" opacity="0.64"/><circle cx="440.7" cy="222.5" r="15.3" fill="#E0301E" opacity="0.79"/><circle cx="486.3" cy="108.2" r="7.6" fill="#F5B700" opacity="0.83"/><circle cx="609.5" cy="268.1" r="9.1" fill="#F5B700" opacity="0.98"/><circle cx="632.2" cy="79.4" r="8.3" fill="#F5B700" opacity="0.98"/><circle cx="587.7" cy="266.6" r="11.9" fill="#F5B700" opacity="1.00"/><circle cx="726.7" cy="351.1" r="17.4" fill="#F5B700" opacity="0.79"/><circle cx="616.1" cy="315.6" r="11.4" fill="#F5B700" opacity="0.83"/><circle cx="536.2" cy="261.0" r="7.2" fill="#F5B700" opacity="0.80"/><circle cx="655.6" cy="164.7" r="12.1" fill="#F5B700" opacity="0.64"/><circle cx="567.2" cy="320.0" r="15.1" fill="#F5B700" opacity="0.89"/><circle cx="680.3" cy="224.5" r="12.5" fill="#1E50C8" opacity="0.73"/><circle cx="686.9" cy="338.7" r="11.4" fill="#F5B700" opacity="0.77"/><circle cx="624.8" cy="100.7" r="12.0" fill="#F5B700" opacity="0.91"/><circle cx="485.1" cy="129.1" r="14.8" fill="#F5B700" opacity="0.78"/><circle cx="453.1" cy="251.4" r="12.5" fill="#F5B700" opacity="1.00"/><circle cx="549.5" cy="302.0" r="10.7" fill="#F5B700" opacity="0.86"/><circle cx="681.5" cy="260.9" r="15.9" fill="#F5B700" opacity="0.77"/><circle cx="652.5" cy="276.2" r="15.3" fill="#1E50C8" opacity="0.77"/><circle cx="470.8" cy="184.5" r="11.6" fill="#F5B700" opacity="0.63"/><circle cx="526.6" cy="122.3" r="13.6" fill="#F5B700" opacity="0.70"/><circle cx="353.0" cy="165.5" r="17.9" fill="#1E50C8" opacity="0.97"/><circle cx="645.1" cy="217.1" r="10.1" fill="#E0301E" opacity="0.71"/><circle cx="639.2" cy="138.4" r="5.1" fill="#F5B700" opacity="0.78"/><circle cx="515.2" cy="299.4" r="14.9" fill="#F5B700" opacity="0.59"/><circle cx="573.5" cy="228.5" r="13.5" fill="#F5B700" opacity="0.60"/><circle cx="472.3" cy="123.8" r="8.4" fill="#F5B700" opacity="0.92"/><circle cx="573.7" cy="78.1" r="16.3" fill="#F5B700" opacity="0.69"/><circle cx="346.4" cy="227.9" r="16.9" fill="#F5B700" opacity="0.88"/><circle cx="583.9" cy="380.1" r="10.4" fill="#F5B700" opacity="0.85"/><circle cx="514.6" cy="313.4" r="12.3" fill="#F5B700" opacity="1.00"/><circle cx="406.2" cy="133.3" r="11.5" fill="#F5B700" opacity="0.99"/><circle cx="446.6" cy="226.5" r="10.9" fill="#F5B700" opacity="0.55"/><circle cx="555.5" cy="199.8" r="9.0" fill="#F5B700" opacity="0.63"/><circle cx="508.8" cy="157.1" r="16.1" fill="#F5B700" opacity="0.69"/><circle cx="73.7" cy="254.8" r="6.5" fill="#F5B700" opacity="0.79"/><circle cx="144.1" cy="258.7" r="14.7" fill="#F5B700" opacity="0.89"/><circle cx="167.3" cy="305.1" r="15.8" fill="#F5B700" opacity="0.63"/><circle cx="49.1" cy="308.5" r="5.7" fill="#F5B700" opacity="0.97"/><circle cx="174.2" cy="323.3" r="12.8" fill="#F5B700" opacity="0.92"/><circle cx="132.9" cy="237.2" r="10.5" fill="#F5B700" opacity="0.94"/><circle cx="154.8" cy="311.3" r="15.9" fill="#F5B700" opacity="0.70"/><circle cx="153.6" cy="306.9" r="5.9" fill="#F5B700" opacity="0.74"/><circle cx="132.1" cy="311.0" r="12.3" fill="#F5B700" opacity="0.74"/><circle cx="178.3" cy="301.0" r="11.1" fill="#F5B700" opacity="0.84"/><circle cx="189.7" cy="279.4" r="8.0" fill="#E0301E" opacity="0.87"/><circle cx="119.3" cy="377.0" r="5.9" fill="#F5B700" opacity="0.71"/><circle cx="172.5" cy="401.9" r="7.1" fill="#F5B700" opacity="0.84"/><circle cx="44.4" cy="322.9" r="8.1" fill="#F5B700" opacity="0.86"/><circle cx="147.0" cy="331.8" r="7.2" fill="#F5B700" opacity="0.70"/><circle cx="154.9" cy="230.5" r="15.7" fill="#F5B700" opacity="0.69"/><circle cx="123.1" cy="367.8" r="6.1" fill="#F5B700" opacity="0.99"/><circle cx="156.2" cy="315.7" r="14.4" fill="#F5B700" opacity="0.66"/><circle cx="180.3" cy="333.0" r="11.6" fill="#F5B700" opacity="0.92"/><circle cx="213.3" cy="369.3" r="13.5" fill="#F5B700" opacity="0.85"/><circle cx="243.0" cy="312.6" r="6.8" fill="#F5B700" opacity="0.58"/><circle cx="193.1" cy="277.1" r="11.0" fill="#E0301E" opacity="0.72"/><circle cx="112.2" cy="378.0" r="8.0" fill="#F5B700" opacity="0.57"/><circle cx="113.2" cy="282.4" r="6.8" fill="#F5B700" opacity="0.98"/><circle cx="145.5" cy="261.5" r="9.5" fill="#F5B700" opacity="0.56"/><circle cx="122.8" cy="331.7" r="17.0" fill="#F5B700" opacity="0.63"/><circle cx="141.8" cy="301.9" r="7.6" fill="#F5B700" opacity="0.70"/><circle cx="93.0" cy="290.6" r="9.0" fill="#F5B700" opacity="0.81"/><circle cx="157.4" cy="331.0" r="17.9" fill="#F5B700" opacity="0.99"/><circle cx="207.2" cy="319.7" r="5.2" fill="#F5B700" opacity="0.84"/><circle cx="383.6" cy="101.5" r="16.9" fill="#1E50C8" opacity="0.82"/><circle cx="245.5" cy="187.8" r="12.5" fill="#F5B700" opacity="0.55"/><circle cx="226.0" cy="162.6" r="11.2" fill="#F5B700" opacity="0.79"/><circle cx="323.7" cy="205.8" r="5.6" fill="#F5B700" opacity="0.97"/><circle cx="214.1" cy="173.0" r="11.3" fill="#F5B700" opacity="0.90"/><circle cx="353.7" cy="226.6" r="13.8" fill="#F5B700" opacity="0.66"/><circle cx="286.2" cy="128.8" r="6.8" fill="#F5B700" opacity="0.71"/><circle cx="284.3" cy="158.1" r="12.1" fill="#F5B700" opacity="0.93"/><circle cx="228.3" cy="208.8" r="17.3" fill="#F5B700" opacity="0.87"/><circle cx="324.9" cy="182.2" r="16.4" fill="#1E50C8" opacity="0.84"/><circle cx="281.0" cy="159.6" r="12.2" fill="#F5B700" opacity="0.67"/><circle cx="306.1" cy="176.1" r="15.6" fill="#F5B700" opacity="0.82"/><circle cx="274.4" cy="184.4" r="14.1" fill="#F5B700" opacity="0.61"/><circle cx="255.4" cy="146.8" r="7.7" fill="#F5B700" opacity="0.74"/><circle cx="229.6" cy="174.2" r="13.4" fill="#F5B700" opacity="0.87"/><circle cx="233.3" cy="168.8" r="17.5" fill="#F5B700" opacity="0.70"/><circle cx="235.9" cy="170.5" r="17.3" fill="#F5B700" opacity="0.63"/><circle cx="303.3" cy="161.4" r="11.1" fill="#F5B700" opacity="0.75"/><circle cx="229.9" cy="143.2" r="8.9" fill="#F5B700" opacity="0.64"/><circle cx="301.1" cy="160.9" r="15.5" fill="#F5B700" opacity="0.89"/><circle cx="339.9" cy="172.3" r="16.1" fill="#E0301E" opacity="0.86"/><circle cx="220.1" cy="214.4" r="14.4" fill="#F5B700" opacity="0.68"/><circle cx="337.0" cy="141.1" r="11.1" fill="#F5B700" opacity="0.81"/><circle cx="349.0" cy="230.2" r="5.6" fill="#F5B700" opacity="0.89"/><circle cx="204.4" cy="209.7" r="8.5" fill="#F5B700" opacity="0.62"/><circle cx="402.2" cy="176.5" r="16.1" fill="#F5B700" opacity="0.93"/><circle cx="548.5" cy="152.8" r="13.4" fill="#F5B700" opacity="0.99"/><circle cx="477.6" cy="96.5" r="11.8" fill="#F5B700" opacity="0.93"/><circle cx="605.7" cy="63.3" r="13.4" fill="#E0301E" opacity="0.61"/><circle cx="554.6" cy="132.2" r="15.7" fill="#F5B700" opacity="0.60"/><circle cx="533.5" cy="27.1" r="16.4" fill="#F5B700" opacity="0.68"/><circle cx="573.4" cy="162.2" r="11.4" fill="#1E50C8" opacity="0.63"/><circle cx="573.6" cy="104.2" r="14.7" fill="#F5B700" opacity="0.59"/><circle cx="557.7" cy="75.9" r="8.6" fill="#F5B700" opacity="0.75"/><circle cx="556.1" cy="84.6" r="9.4" fill="#F5B700" opacity="0.80"/><circle cx="530.3" cy="20.8" r="5.5" fill="#F5B700" opacity="0.87"/><circle cx="462.5" cy="103.0" r="9.9" fill="#F5B700" opacity="0.97"/><circle cx="557.7" cy="41.5" r="7.6" fill="#F5B700" opacity="0.58"/><circle cx="585.0" cy="60.1" r="13.5" fill="#F5B700" opacity="0.76"/><circle cx="599.8" cy="85.1" r="16.3" fill="#F5B700" opacity="0.77"/><circle cx="578.2" cy="130.0" r="13.7" fill="#F5B700" opacity="0.92"/><circle cx="555.8" cy="59.3" r="10.7" fill="#F5B700" opacity="0.82"/><circle cx="514.2" cy="17.2" r="15.5" fill="#E0301E" opacity="0.55"/><circle cx="577.0" cy="59.4" r="13.2" fill="#1E50C8" opacity="0.75"/><circle cx="468.8" cy="93.7" r="14.5" fill="#F5B700" opacity="0.97"/><circle cx="585.4" cy="51.4" r="7.3" fill="#1E50C8" opacity="0.56"/><circle cx="446.3" cy="91.8" r="13.2" fill="#F5B700" opacity="0.66"/><circle cx="569.7" cy="108.5" r="16.0" fill="#F5B700" opacity="0.75"/><circle cx="526.0" cy="176.0" r="15.6" fill="#E0301E" opacity="1.00"/><circle cx="534.9" cy="78.5" r="11.9" fill="#F5B700" opacity="0.72"/><circle cx="488.4" cy="146.3" r="16.8" fill="#F5B700" opacity="0.67"/><circle cx="549.6" cy="99.1" r="11.2" fill="#F5B700" opacity="0.58"/><circle cx="537.8" cy="92.1" r="8.1" fill="#F5B700" opacity="0.74"/><circle cx="542.3" cy="145.5" r="14.8" fill="#F5B700" opacity="0.82"/><circle cx="538.8" cy="177.5" r="16.2" fill="#F5B700" opacity="0.57"/><circle cx="550.1" cy="160.0" r="7.9" fill="#F5B700" opacity="0.88"/><circle cx="518.5" cy="78.3" r="6.3" fill="#F5B700" opacity="0.87"/><circle cx="884.3" cy="205.8" r="7.0" fill="#F5B700" opacity="0.86"/><circle cx="798.9" cy="153.5" r="12.4" fill="#F5B700" opacity="0.74"/><circle cx="792.9" cy="163.4" r="17.3" fill="#F5B700" opacity="0.63"/><circle cx="777.2" cy="73.3" r="13.0" fill="#1E50C8" opacity="0.65"/><circle cx="753.8" cy="146.6" r="13.6" fill="#F5B700" opacity="0.84"/><circle cx="796.3" cy="162.2" r="12.1" fill="#F5B700" opacity="0.61"/><circle cx="840.9" cy="102.6" r="12.9" fill="#F5B700" opacity="0.71"/><circle cx="823.6" cy="118.1" r="16.7" fill="#E0301E" opacity="0.80"/><circle cx="794.1" cy="195.7" r="7.4" fill="#E0301E" opacity="0.82"/><circle cx="794.5" cy="160.4" r="6.2" fill="#E0301E" opacity="0.71"/><circle cx="805.9" cy="167.2" r="13.5" fill="#F5B700" opacity="0.98"/><circle cx="732.5" cy="110.4" r="13.3" fill="#F5B700" opacity="0.60"/><circle cx="838.2" cy="142.2" r="17.4" fill="#F5B700" opacity="0.59"/><circle cx="791.5" cy="95.8" r="9.1" fill="#F5B700" opacity="0.72"/><circle cx="874.0" cy="198.5" r="8.3" fill="#F5B700" opacity="0.95"/><circle cx="802.7" cy="169.5" r="5.5" fill="#F5B700" opacity="0.85"/><circle cx="791.8" cy="112.5" r="9.8" fill="#F5B700" opacity="0.86"/><circle cx="859.8" cy="209.7" r="11.6" fill="#F5B700" opacity="0.74"/><circle cx="748.1" cy="237.7" r="15.8" fill="#F5B700" opacity="0.72"/><circle cx="741.2" cy="196.7" r="17.9" fill="#F5B700" opacity="0.76"/><circle cx="718.1" cy="149.7" r="12.7" fill="#F5B700" opacity="0.84"/><circle cx="805.8" cy="124.5" r="15.1" fill="#F5B700" opacity="0.57"/><circle cx="807.5" cy="208.2" r="12.5" fill="#F5B700" opacity="0.72"/><circle cx="797.2" cy="163.5" r="16.3" fill="#F5B700" opacity="0.66"/><circle cx="1014.7" cy="276.9" r="16.1" fill="#F5B700" opacity="0.79"/><circle cx="944.4" cy="310.9" r="6.3" fill="#E0301E" opacity="0.86"/><circle cx="943.2" cy="312.0" r="18.0" fill="#F5B700" opacity="0.75"/><circle cx="874.8" cy="283.0" r="7.5" fill="#F5B700" opacity="0.72"/><circle cx="926.7" cy="302.2" r="5.6" fill="#F5B700" opacity="0.81"/><circle cx="952.9" cy="271.9" r="9.4" fill="#F5B700" opacity="0.58"/><circle cx="846.4" cy="320.5" r="16.6" fill="#F5B700" opacity="0.79"/><circle cx="991.8" cy="274.7" r="17.5" fill="#F5B700" opacity="0.68"/><circle cx="928.0" cy="327.8" r="12.8" fill="#F5B700" opacity="0.90"/><circle cx="995.6" cy="301.9" r="12.4" fill="#F5B700" opacity="0.67"/><circle cx="935.2" cy="327.2" r="11.1" fill="#F5B700" opacity="0.79"/><circle cx="914.5" cy="313.2" r="8.8" fill="#1E50C8" opacity="0.58"/><circle cx="1039.8" cy="287.3" r="10.3" fill="#F5B700" opacity="0.68"/><circle cx="878.3" cy="279.5" r="9.4" fill="#F5B700" opacity="0.70"/><circle cx="880.2" cy="254.2" r="9.3" fill="#F5B700" opacity="0.75"/><circle cx="927.8" cy="332.6" r="5.5" fill="#F5B700" opacity="0.76"/><circle cx="936.7" cy="306.6" r="15.5" fill="#F5B700" opacity="0.63"/><circle cx="929.2" cy="257.5" r="6.7" fill="#F5B700" opacity="0.74"/><circle cx="973.9" cy="225.6" r="11.5" fill="#F5B700" opacity="0.98"/><circle cx="898.8" cy="303.0" r="9.2" fill="#F5B700" opacity="0.93"/><circle cx="926.1" cy="272.3" r="6.0" fill="#1E50C8" opacity="0.63"/><circle cx="940.7" cy="241.0" r="15.3" fill="#E0301E" opacity="0.90"/><circle cx="922.8" cy="265.3" r="10.3" fill="#F5B700" opacity="0.62"/><circle cx="942.4" cy="364.0" r="8.2" fill="#F5B700" opacity="0.61"/><circle cx="1003.6" cy="351.4" r="11.7" fill="#F5B700" opacity="0.93"/><circle cx="939.8" cy="365.7" r="13.1" fill="#F5B700" opacity="0.81"/><circle cx="937.6" cy="305.4" r="6.8" fill="#E0301E" opacity="0.66"/><circle cx="872.3" cy="447.8" r="15.3" fill="#F5B700" opacity="0.61"/><circle cx="862.2" cy="511.1" r="5.2" fill="#F5B700" opacity="0.75"/><circle cx="876.2" cy="471.6" r="8.4" fill="#F5B700" opacity="0.56"/><circle cx="905.4" cy="419.7" r="14.9" fill="#1E50C8" opacity="0.59"/><circle cx="842.8" cy="444.2" r="13.5" fill="#F5B700" opacity="0.91"/><circle cx="852.9" cy="449.0" r="17.7" fill="#1E50C8" opacity="0.83"/><circle cx="910.4" cy="393.2" r="14.0" fill="#E0301E" opacity="0.78"/><circle cx="867.6" cy="457.2" r="16.2" fill="#F5B700" opacity="0.99"/><circle cx="847.1" cy="465.1" r="11.3" fill="#F5B700" opacity="0.56"/><circle cx="840.3" cy="477.6" r="10.7" fill="#F5B700" opacity="0.95"/><circle cx="874.8" cy="484.3" r="12.0" fill="#F5B700" opacity="0.90"/><circle cx="874.7" cy="472.7" r="8.9" fill="#F5B700" opacity="0.77"/><circle cx="800.9" cy="471.5" r="11.8" fill="#F5B700" opacity="0.74"/><circle cx="865.8" cy="474.0" r="10.9" fill="#F5B700" opacity="1.00"/><circle cx="871.9" cy="517.8" r="9.1" fill="#1E50C8" opacity="0.67"/><circle cx="864.9" cy="437.7" r="7.6" fill="#F5B700" opacity="0.56"/><circle cx="921.3" cy="440.7" r="6.2" fill="#F5B700" opacity="0.64"/><circle cx="925.7" cy="461.7" r="16.7" fill="#F5B700" opacity="0.86"/><circle cx="817.5" cy="411.1" r="16.5" fill="#1E50C8" opacity="0.70"/><circle cx="879.3" cy="485.1" r="11.3" fill="#E0301E" opacity="0.56"/><circle cx="844.0" cy="445.3" r="15.2" fill="#F5B700" opacity="0.55"/><circle cx="924.9" cy="485.7" r="14.4" fill="#F5B700" opacity="0.93"/><circle cx="836.7" cy="504.9" r="10.8" fill="#F5B700" opacity="0.81"/><circle cx="905.6" cy="466.1" r="8.0" fill="#F5B700" opacity="0.79"/><circle cx="931.1" cy="471.2" r="9.2" fill="#1E50C8" opacity="0.80"/><circle cx="884.0" cy="497.9" r="13.6" fill="#F5B700" opacity="0.78"/><circle cx="830.5" cy="540.0" r="16.8" fill="#E0301E" opacity="0.73"/><circle cx="863.8" cy="479.7" r="16.4" fill="#F5B700" opacity="0.94"/><circle cx="852.8" cy="477.3" r="15.7" fill="#F5B700" opacity="0.92"/><circle cx="875.5" cy="469.7" r="17.5" fill="#F5B700" opacity="0.75"/><circle cx="869.8" cy="472.0" r="6.9" fill="#F5B700" opacity="0.76"/>
+    <path d="M540,742 C526,632 552,576 540,486" stroke="#161616" stroke-width="21" stroke-linecap="round"/>
+    <path d="M540,486 Q347.5,274 155,340" fill="none" stroke="#161616" stroke-width="9" stroke-linecap="round"/><path d="M540,486 Q422.5,124 305,190" fill="none" stroke="#161616" stroke-width="9" stroke-linecap="round"/><path d="M540,486 Q542.5,56 545,122" fill="none" stroke="#161616" stroke-width="9" stroke-linecap="round"/><path d="M540,486 Q666,116 792,182" fill="none" stroke="#161616" stroke-width="9" stroke-linecap="round"/><path d="M540,486 Q739,264 938,330" fill="none" stroke="#161616" stroke-width="9" stroke-linecap="round"/><path d="M540,486 Q706,420 872,498" fill="none" stroke="#161616" stroke-width="9" stroke-linecap="round"/>
+    <path d="M292,132 q6.8999999999999995,-10.35 13.799999999999999,0 q6.8999999999999995,-10.35 13.799999999999999,0" fill="none" stroke="#161616" stroke-width="4" stroke-linecap="round"/> <path d="M760,118 q6,-9 12,0 q6,-9 12,0" fill="none" stroke="#161616" stroke-width="4" stroke-linecap="round"/> <path d="M918,268 q5.1,-7.6499999999999995 10.2,0 q5.1,-7.6499999999999995 10.2,0" fill="none" stroke="#161616" stroke-width="4" stroke-linecap="round"/>
+    <line x1="70" y1="742" x2="1010" y2="742" stroke="#161616" stroke-width="5" stroke-linecap="round"/>
+    <path d="M494,742 Q540,716 586,742" fill="#FBF6EA" stroke="#161616" stroke-width="5"/>
+    <circle cx="540" cy="735" r="11" fill="#F5B700" stroke="#161616" stroke-width="4"/>
+  </svg>
+            <span class="tag " style="left:14.351851851851851%;top:42.5%">THE PLAN</span><span class="tag g" style="left:28.240740740740737%;top:23.75%">THE BRAND</span><span class="tag " style="left:50.46296296296296%;top:15.25%">THE STORE</span><span class="tag g" style="left:73.33333333333333%;top:22.75%">THE SITE</span><span class="tag " style="left:86.85185185185185%;top:41.25%">THE BOOKS</span><span class="tag g" style="left:80.74074074074075%;top:62.25000000000001%">THE MARKETING</span>
+          </div>
+          <p class="plant"><b>PLANTED 11:58 PM</b> ▸ &ldquo;a candle company that smells like Montana&rdquo;</p>
+          <div class="stages">
+            <span>SEED</span><em>→</em><span>SPROUT</span><em>→</em><span>SAPLING</span><em>→</em><span class="hot">COMPANY</span>
+          </div>
+          <div class="bar"><span>MODERN MUSTARD SEED</span><span>MODERNMUSTARDSEED.COM</span></div>
+        </div>
+      </div></div>
+        <div class="meta">
+          <h3>01 · The Germination</h3>
+          <p class="th">Watch it grow. A screenprint mustard tree assembles out of one planted sentence, the business organs stickered on the branches, agents perched as birds. Extends the homepage mid-century family. Awe by time-lapse.</p>
+          <p class="ty">Playfair Display · DM Sans · JetBrains Mono</p>
+          <div class="chips"><i style="background:#FBF6EA"></i><i style="background:#161616"></i><i style="background:#F5B700"></i><i style="background:#E0301E"></i><i style="background:#1E50C8"></i></div>
+        </div>
+      </div><div class="col">
+        <div class="frame">
+      <div class="c fnd">
+        <div class="ribbon">GRAND OPENING · OVERNIGHT</div>
+        <div class="inner">
+          <div class="eye"><span>CERTIFICATE OF FOUNDING</span><i></i><span>NO. 001</span></div>
+          <div class="cert">
+            <p class="pre">Be it known that on this night was established</p>
+            <h1>THE MUSTARD TREE</h1>
+            <p class="ital">grown from a single seed: &ldquo;a candle company that smells like Montana&rdquo;</p>
+            <p class="wit">WITNESSED AND OPERATED BY A STAFF OF SIX</p>
+            <svg class="seal" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="55" fill="#F5B700" stroke="#161616" stroke-width="4"/>
+              <circle cx="60" cy="60" r="41" fill="none" stroke="#161616" stroke-width="2.5"/>
+              <line x1="104" y1="60" x2="111" y2="60" stroke="#161616" stroke-width="2.5"/><line x1="102.500736356719" y1="71.38803798451092" x2="109.26221714074248" y2="73.19977130022856" stroke="#161616" stroke-width="2.5"/><line x1="98.1051177665153" y1="82" x2="104.16729559300637" y2="85.5" stroke="#161616" stroke-width="2.5"/><line x1="91.11269837220809" y1="91.11269837220809" x2="96.06244584051393" y2="96.06244584051393" stroke="#161616" stroke-width="2.5"/><line x1="82" y1="98.10511776651529" x2="85.5" y2="104.16729559300637" stroke="#161616" stroke-width="2.5"/><line x1="71.38803798451092" y1="102.500736356719" x2="73.19977130022856" y2="109.26221714074248" stroke="#161616" stroke-width="2.5"/><line x1="60" y1="104" x2="60" y2="111" stroke="#161616" stroke-width="2.5"/><line x1="48.611962015489084" y1="102.500736356719" x2="46.80022869977144" y2="109.26221714074248" stroke="#161616" stroke-width="2.5"/><line x1="38.000000000000014" y1="98.1051177665153" x2="34.500000000000014" y2="104.16729559300637" stroke="#161616" stroke-width="2.5"/><line x1="28.887301627791913" y1="91.11269837220809" x2="23.937554159486076" y2="96.06244584051393" stroke="#161616" stroke-width="2.5"/><line x1="21.894882233484694" y1="82" x2="15.832704406993628" y2="85.5" stroke="#161616" stroke-width="2.5"/><line x1="17.499263643280997" y1="71.38803798451093" x2="10.737782859257521" y2="73.19977130022858" stroke="#161616" stroke-width="2.5"/><line x1="16" y1="60.00000000000001" x2="9" y2="60.00000000000001" stroke="#161616" stroke-width="2.5"/><line x1="17.49926364328099" y1="48.611962015489105" x2="10.737782859257507" y2="46.800228699771466" stroke="#161616" stroke-width="2.5"/><line x1="21.8948822334847" y1="38" x2="15.832704406993635" y2="34.49999999999999" stroke="#161616" stroke-width="2.5"/><line x1="28.887301627791903" y1="28.887301627791913" x2="23.93755415948607" y2="23.937554159486076" stroke="#161616" stroke-width="2.5"/><line x1="37.99999999999998" y1="21.894882233484708" x2="34.49999999999998" y2="15.832704406993635" stroke="#161616" stroke-width="2.5"/><line x1="48.61196201548909" y1="17.499263643280997" x2="46.80022869977145" y2="10.737782859257514" stroke="#161616" stroke-width="2.5"/><line x1="59.99999999999999" y1="16" x2="59.99999999999999" y2="9" stroke="#161616" stroke-width="2.5"/><line x1="71.38803798451089" y1="17.49926364328099" x2="73.19977130022853" y2="10.737782859257507" stroke="#161616" stroke-width="2.5"/><line x1="82" y1="21.8948822334847" x2="85.5" y2="15.832704406993635" stroke="#161616" stroke-width="2.5"/><line x1="91.11269837220809" y1="28.887301627791903" x2="96.06244584051392" y2="23.93755415948607" stroke="#161616" stroke-width="2.5"/><line x1="98.10511776651529" y1="37.99999999999998" x2="104.16729559300636" y2="34.49999999999998" stroke="#161616" stroke-width="2.5"/><line x1="102.500736356719" y1="48.61196201548909" x2="109.26221714074248" y2="46.800228699771445" stroke="#161616" stroke-width="2.5"/>
+              <ellipse cx="60" cy="63" rx="10" ry="14" fill="#161616"/>
+              <path d="M60,49 Q66,38 60,28" fill="none" stroke="#161616" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="wall">
+  <div class="pframe">
+    <svg class="star" viewBox="0 0 24 24"><polygon points="12,1 15,8.5 23,9 17,14 19,22 12,17.5 5,22 7,14 1,9 9,8.5" fill="#F5B700" stroke="#161616" stroke-width="1.6"/></svg>
+    <svg viewBox="0 0 100 100">
+      <rect x="0" y="0" width="100" height="100" fill="#F5B700" opacity=".13"/>
+      <circle cx="50" cy="36" r="17.5" fill="none" stroke="#F5B700" stroke-width="3.5" opacity=".85"/>
+      <circle cx="50" cy="36" r="13" fill="#161616"/>
+      <path d="M19,92 Q50,56 81,92 L81,100 L19,100 Z" fill="#161616"/>
+    </svg>
+    <p>THE FOUNDER</p>
+  </div>
+  <div class="pframe">
+    
+    <svg viewBox="0 0 100 100">
+      <rect x="0" y="0" width="100" height="100" fill="#E0301E" opacity=".13"/>
+      <circle cx="50" cy="36" r="17.5" fill="none" stroke="#E0301E" stroke-width="3.5" opacity=".85"/>
+      <circle cx="50" cy="36" r="13" fill="#161616"/>
+      <path d="M19,92 Q50,56 81,92 L81,100 L19,100 Z" fill="#161616"/>
+    </svg>
+    <p>THE DESIGNER</p>
+  </div>
+  <div class="pframe">
+    
+    <svg viewBox="0 0 100 100">
+      <rect x="0" y="0" width="100" height="100" fill="#1E50C8" opacity=".13"/>
+      <circle cx="50" cy="36" r="17.5" fill="none" stroke="#1E50C8" stroke-width="3.5" opacity=".85"/>
+      <circle cx="50" cy="36" r="13" fill="#161616"/>
+      <path d="M19,92 Q50,56 81,92 L81,100 L19,100 Z" fill="#161616"/>
+    </svg>
+    <p>THE MARKETER</p>
+  </div>
+  <div class="pframe">
+    
+    <svg viewBox="0 0 100 100">
+      <rect x="0" y="0" width="100" height="100" fill="#F5B700" opacity=".13"/>
+      <circle cx="50" cy="36" r="17.5" fill="none" stroke="#F5B700" stroke-width="3.5" opacity=".85"/>
+      <circle cx="50" cy="36" r="13" fill="#161616"/>
+      <path d="M19,92 Q50,56 81,92 L81,100 L19,100 Z" fill="#161616"/>
+    </svg>
+    <p>THE CLERK</p>
+  </div>
+  <div class="pframe">
+    
+    <svg viewBox="0 0 100 100">
+      <rect x="0" y="0" width="100" height="100" fill="#E0301E" opacity=".13"/>
+      <circle cx="50" cy="36" r="17.5" fill="none" stroke="#E0301E" stroke-width="3.5" opacity=".85"/>
+      <circle cx="50" cy="36" r="13" fill="#161616"/>
+      <path d="M19,92 Q50,56 81,92 L81,100 L19,100 Z" fill="#161616"/>
+    </svg>
+    <p>THE STRATEGIST</p>
+  </div>
+  <div class="pframe">
+    
+    <svg viewBox="0 0 100 100">
+      <rect x="0" y="0" width="100" height="100" fill="#1E50C8" opacity=".13"/>
+      <circle cx="50" cy="36" r="17.5" fill="none" stroke="#1E50C8" stroke-width="3.5" opacity=".85"/>
+      <circle cx="50" cy="36" r="13" fill="#161616"/>
+      <path d="M19,92 Q50,56 81,92 L81,100 L19,100 Z" fill="#161616"/>
+    </svg>
+    <p>THE BUILDER</p>
+  </div></div>
+          <div class="bar"><span>MODERN MUSTARD SEED</span><span>ESTABLISHED OVERNIGHT</span></div>
+        </div>
+      </div></div>
+        <div class="meta">
+          <h3>02 · The Founding</h3>
+          <p class="th">Your company gets born. A certificate of founding, a gold seal, and a portrait wall of the six agents already on staff before sunrise. Personification theater. Awe by &ldquo;I have a staff.&rdquo;</p>
+          <p class="ty">Playfair Display · Cormorant Garamond · JetBrains Mono</p>
+          <div class="chips"><i style="background:#FBF6EA"></i><i style="background:#161616"></i><i style="background:#F5B700"></i><i style="background:#E0301E"></i><i style="background:#1E50C8"></i></div>
+        </div>
+      </div><div class="col">
+        <div class="frame">
+      <div class="c grn">
+        <div class="pane">
+          <div class="phead"><b>●</b><span>THE GREENHOUSE · LIVE</span><i></i><span>03:47 AM</span></div>
+          <div class="feed">
+            <p><u>23:41</u> ▸ <b>THE STRATEGIST</b> wrote the 90-day plan</p><p><u>23:58</u> ▸ <b>THE DESIGNER</b> inked the logo, three marks presented</p><p><u>00:22</u> ▸ <b>THE BUILDER</b> raised the storefront, 14 pages</p><p><u>00:47</u> ▸ <b>THE DESIGNER</b> dressed the store, photography set</p><p><u>01:13</u> ▸ <b>THE CLERK</b> opened the books, accounts live</p><p><u>01:36</u> ▸ <b>THE MARKETER</b> drafted launch week, 12 posts queued</p><p><u>02:04</u> ▸ <b>THE BUILDER</b> wired checkout, taxes, receipts</p><p><u>02:31</u> ▸ <b>THE MARKETER</b> built the welcome email flock</p><p><u>02:58</u> ▸ <b>THE FOUNDER</b> reviewed everything, 3 notes back</p><p><u>03:19</u> ▸ <b>THE BUILDER</b> fixes shipped, all green</p>
+          </div>
+          <div class="tiles">
+            <div class="tile"><span>THE PLAN</span><em>✓ DONE</em></div><div class="tile"><span>THE BRAND</span><em>✓ DONE</em></div><div class="tile"><span>THE STORE</span><em>✓ DONE</em></div><div class="tile"><span>THE SITE</span><em>✓ DONE</em></div><div class="tile"><span>THE BOOKS</span><em>✓ DONE</em></div><div class="tile"><span>THE MARKETING</span><em class="live">● GROWING</em></div>
+          </div>
+          <div class="prog">
+            <div class="track"><div class="fill"></div></div>
+            <p>COMPANY ASSEMBLY 94% · SUNRISE 06:12</p>
+          </div>
+          <h1>One seed in.<br>A whole business out.</h1>
+        </div>
+        <div class="bar"><span>MODERN MUSTARD SEED</span><span>MODERNMUSTARDSEED.COM</span></div>
+      </div></div>
+        <div class="meta">
+          <h3>03 · The Greenhouse</h3>
+          <p class="th">The office never sleeps. A midnight pane framed in cream where the agent office visibly works the night shift, the organs checking off one by one until sunrise. Awe by proof. Credibility maximal.</p>
+          <p class="ty">JetBrains Mono · Playfair Display · DM Sans</p>
+          <div class="chips"><i style="background:#FBF6EA"></i><i style="background:#080C16"></i><i style="background:#F5B700"></i><i style="background:#E0301E"></i><i style="background:#5C7188"></i></div>
+        </div>
+      </div>
+  </div>
+</div>
+</body></html>
