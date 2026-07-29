@@ -67,7 +67,6 @@ export default function DemoHub({
   ownerFirst,
   niche,
   trade,
-  city,
   film = 'demo-welcome',
   personalVideoUrl,
   voiceUrl,
@@ -82,7 +81,6 @@ export default function DemoHub({
   niche: Niche;
   /** Specific detected trade; when present the calculator speaks it. */
   trade?: OsTradeKey;
-  city: string | null;
   /** Which welcome film matches the forged set (trifecta or a single cut), or
    *  Sarah's personal hello once that film is live. */
   film?: 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os' | 'demo-welcome-sarah';
@@ -209,8 +207,8 @@ export default function DemoHub({
           </h1>
           <p className="font-body text-[#161616]/70 mt-3 max-w-xl mx-auto">
             {presenter
-              ? `${presenter} asked us to build this for you${city ? ` in ${city}` : ''}. Free, no strings. Everything below is real and working. Go play.`
-              : `Built for you${city ? ` in ${city}` : ''}, free, no strings. Everything below is real and working. Go play.`}
+              ? `${presenter} asked us to build this for you. Free, nothing to sign, nothing to cancel. Everything below is live and working, not a mockup. Go play.`
+              : `Built from scratch around your business. Free, nothing to sign, nothing to cancel. Everything below is live and working, not a mockup. Go play.`}
           </p>
         </div>
       </header>

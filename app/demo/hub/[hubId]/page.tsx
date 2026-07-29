@@ -111,7 +111,6 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       ownerFirst={lead.contact_name?.trim().split(/\s+/)[0] ?? null}
       niche={niche}
       trade={trade}
-      city={lead.city}
       film={film}
       personalVideoUrl={personalVideoUrl}
       voiceUrl={lead.demo_url}
