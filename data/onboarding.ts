@@ -337,7 +337,7 @@ export const PHASES: Phase[] = [
             heading: 'The Voice Agent, a 24/7 voice agent  ·  /voice-agents/forge',
             bullets: [
               'The free wow: it forges a personalized voice agent for their business in about 60 seconds, and they talk to it live.',
-              'To keep him: $397 to set up plus $397 a month (250 answered minutes). The Pro is $597 plus $497 a month (600 minutes, caller memory, booking, a monthly tune-up with Sarah).',
+              'To keep him: $397 to set up plus $397 a month (500 answered minutes). The Pro is $597 plus $597 a month (1,200 minutes, caller memory, booking, a monthly tune-up with Sarah).',
               'Say it like this: "An AI that answers your phone 24/7 in a natural voice and books appointments, even when you are closed or slammed."',
             ],
           },

@@ -18,6 +18,8 @@
  * All amounts in cents.
  */
 
+import { sidekickTiers } from '@/data/sidekick';
+
 export type DemoProductKey = 'voice' | 'site' | 'os';
 
 export type DemoProduct = {
@@ -38,7 +40,7 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
     setupCents: 39700,
     monthlyCents: 39700,
     blurb: 'The voice that answered your demo, on your real number, 24/7.',
-    finePrint: '250 answered minutes a month, then message-taking mode. Your command center is included free.',
+    finePrint: `${sidekickTiers[0].minutesCap.toLocaleString()} answered minutes a month, then message-taking mode. Your command center is included free.`,
   },
   site: {
     key: 'site',

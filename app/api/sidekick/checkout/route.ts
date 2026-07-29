@@ -64,7 +64,7 @@ export async function POST(req: Request) {
             unit_amount: tier.monthlyCents,
             recurring: { interval: 'month' },
             product_data: {
-              name: `${tier.name} (${tier.minutesCap} answered minutes/mo)`,
+              name: `${tier.name} (${tier.minutesCap.toLocaleString()} answered minutes/mo)`,
               description: tier.pitch,
             },
           },
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
       subscription_data: { metadata },
       custom_text: {
         submit: {
-          message: `Month to month, cancel anytime. ${tier.minutesCap} answered minutes a month, then message-taking mode. Never a surprise bill. Sarah installs your Voice Agent by hand within 7 days, and the setup fee is credited toward any custom build over $2,500.`,
+          message: `Month to month, cancel anytime. ${tier.minutesCap.toLocaleString()} answered minutes a month, then message-taking mode. Never a surprise bill. Sarah installs your Voice Agent by hand within 7 days, and the setup fee is credited toward any custom build over $2,500.`,
         },
       },
     });

@@ -142,12 +142,16 @@ export const sidekickTiers: SidekickTier[] = [
     // Repriced with the funnel 2026-07-29: $397 setup + $397/mo.
     setupCents: 39700,
     monthlyCents: 39700,
-    minutesCap: 250,
+    // 250 -> 500 minutes (Sarah, 2026-07-29). Doubling the cap roughly doubles
+    // the worst-case minute COGS while the price rose 34%, so the worst-case
+    // margin compresses. It is still a HARD cap (message-taking mode at the
+    // ceiling), so the downside is bounded and can never become an overage bill.
+    minutesCap: 500,
     pitch: 'The Voice Agent you just met, answering your real phone around the clock.',
     includes: [
       'Your own local number, or we forward your existing line',
       'Trained on your business by Mr. Mustard, tuned by Sarah',
-      '250 answered minutes a month (that is roughly 100 calls)',
+      '500 answered minutes a month (that is roughly 200 calls)',
       'Every call summarized to your inbox, urgent ones flagged',
       'Books appointments and takes clean messages by name',
       'At the cap he takes messages only. Never a surprise bill.',
@@ -163,18 +167,17 @@ export const sidekickTiers: SidekickTier[] = [
     // different tier rather than a rounding error. Base moved to $397/$297, which
     // squeezed the premium to +$100/+$100, so Pro moves with it and restores the
     // original +$200/+$200 gap (Sarah, 2026-07-13).
-    // ⚠️ 2026-07-29: base monthly rose to $397, so the gap is back down to
-    // +$200 setup / +$100 monthly, and Pro monthly now TIES The Talking Website
-    // ($497/mo for voice alone vs voice + site + command center). Left as-is
-    // because Sarah did not reprice Pro. Raising Pro to $597/mo restores both
-    // the +$200/+$200 gap and the separation from the bundle.
+    // 2026-07-29 (Sarah): base moved to $397/$397 and its cap doubled to 500,
+    // so Pro moved with it. $597/$597 restores the +$200/+$200 gap AND lifts
+    // Pro's monthly clear of The Talking Website ($497/mo), which it briefly
+    // tied. Minutes doubled 600 -> 1,200 to hold the same 2.4x ratio over base.
     setupCents: 59700,
-    monthlyCents: 49700,
-    minutesCap: 600,
+    monthlyCents: 59700,
+    minutesCap: 1200,
     pitch: 'For phones that actually ring. More minutes, a memory, and a monthly tune-up.',
     includes: [
       'Everything in VOICE AGENT',
-      '600 answered minutes a month (roughly 250 calls)',
+      '1,200 answered minutes a month (roughly 500 calls)',
       'Caller memory: regulars get recognized between calls',
       'Booking wired into your real calendar',
       'A monthly 15-minute retrain call with Sarah',

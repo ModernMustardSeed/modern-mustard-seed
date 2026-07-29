@@ -525,7 +525,8 @@ export default function ForgeExperience() {
           ))}
         </div>
         <p className="text-center mt-6 font-body text-sm text-[#161616]/60">
-          Phones ring more than 600 minutes a month? You want the full custom concierge.{' '}
+          Phones ring more than {sidekickTiers[sidekickTiers.length - 1].minutesCap.toLocaleString()}{' '}
+          minutes a month? You want the full custom concierge.{' '}
           <a href="/voice-agents" className="text-[#1E50C8] font-semibold underline underline-offset-2">Start here</a> or book Sarah from the demo call.
         </p>
       </div>

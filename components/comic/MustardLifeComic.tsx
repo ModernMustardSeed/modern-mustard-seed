@@ -400,12 +400,12 @@ export default function MustardLifeComic() {
               <PriceTag
                 name={P.sidekick.name}
                 price={`${usd(P.sidekick.setupCents)} + ${usd(P.sidekick.monthlyCents)}/mo`}
-                note={`${P.sidekick.minutesCap} answered minutes a month. At the cap he takes messages only. Never a surprise bill.`}
+                note={`${P.sidekick.minutesCap.toLocaleString()} answered minutes a month. At the cap he takes messages only. Never a surprise bill.`}
               />
               <PriceTag
                 name={P.sidekickPro.name}
                 price={`${usd(P.sidekickPro.setupCents)} + ${usd(P.sidekickPro.monthlyCents)}/mo`}
-                note={`${P.sidekickPro.minutesCap} minutes, caller memory, real calendar booking, a monthly retrain call with Sarah.`}
+                note={`${P.sidekickPro.minutesCap.toLocaleString()} minutes, caller memory, real calendar booking, a monthly retrain call with Sarah.`}
                 featured
                 delay={120}
               />
