@@ -40,7 +40,14 @@ const PERMISSION = process.env.DEMO_SITE_PERMISSION || 'bypassPermissions';
 // worker got OOM-killed mid-build on 2026-07-23 (0.9GB free), losing the build in
 // flight. Skipping the claim degrades gracefully: the lead waits a poll cycle
 // instead of the whole floor dying. A build already running is never interrupted.
-const MIN_FREE_MEM_MB = Number(process.env.DEMO_SITE_MIN_FREE_MB || 1536);
+// 1200, not 1536. The OOM this guard exists to prevent happened at 0.9GB free, so
+// 1536 was an over-correction: on 2026-07-28 the machine sat at 300-500MB free all
+// day (Edge, Chrome, 17 claude sessions) and the worker declined twelve leads for
+// six hours in conditions where a build needing "a few hundred MB" would have been
+// fine. 1200 keeps ~300MB of headroom over the known-bad point while actually being
+// reachable on a working machine. A guard that never lets anything through is not a
+// safety feature, it is an outage.
+const MIN_FREE_MEM_MB = Number(process.env.DEMO_SITE_MIN_FREE_MB || 1200);
 // 45, not 35. Under LAW v4 (THE HOUSE: front door + 3 rooms) the builds got
 // bigger, and on 2026-07-23 six of the last eight finished at EXACTLY 35m, which
 // means the cap was ending them rather than the model being done. Two of those
