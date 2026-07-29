@@ -706,6 +706,397 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
     ],
   },
+
+  {
+    id: 'reviews',
+    name: 'Now Showing',
+    eyebrow: 'Set six · Reviews',
+    blurb:
+      'Your business treated as the film the whole town is reviewing: engraved plates, a star row, antique gold on bone paper. Runs on the BrightLocal 2026 review cluster, four verified numbers that have never been on a card before.',
+    cta: 'The dare · reply to your oldest unanswered review',
+    accent: '#7A2E2B',
+    rules: [
+      'Every stat card cites BrightLocal 2026 on the art. If someone asks for the source, link the survey itself, never paraphrase a number from memory.',
+      'Never suggest gating reviews (steering only happy customers to Google) or buying them. Both violate platform rules, and one fake review costs more trust than ten honest bad ones.',
+      '05-say-something is the opener for other people’s groups. The stat cards follow once the room is warm.',
+      'Do not run this in the same group in the same week as The Storefront Files. Both lean on the same survey family and back to back it reads like a campaign.',
+      'When you demo a reply to a bad review, write it for the next reader, not the reviewer. Calm, factual, signed with a name.',
+    ],
+    cards: [
+      {
+        file: '01-everyone',
+        headline: '97% read the reviews before they ever walk in.',
+        use: 'The opener. Post 2, or head of the 01 + 02 + 03 carousel.',
+        alt: 'Engraved cinema audience facing a glowing screen on bone paper. Headline: 97 percent read the reviews before they ever walk in.',
+      },
+      {
+        file: '02-four-stars',
+        headline: '68% will not even consider you under four stars.',
+        use: 'The cut line. Middle of the carousel.',
+        alt: 'Engraved star trophy on a marble pedestal under a spotlight. Headline: 68 percent will not even consider you under four stars.',
+      },
+      {
+        file: '03-fresh-ink',
+        headline: '74% only trust reviews from the last three months.',
+        use: 'The recency card, the most surprising number in the set.',
+        alt: 'Engraved bill poster pasting a fresh blank sheet over torn old posters. Headline: 74 percent only trust reviews from the last three months.',
+      },
+      {
+        file: '04-box-office',
+        headline: '71% check Google before they buy the ticket.',
+        use: 'Where the reading happens. Post 2 alternate.',
+        alt: 'Engraved 1930s cinema box office glowing at night. Headline: 71 percent check Google before they buy the ticket.',
+      },
+      {
+        file: '05-say-something',
+        headline: 'Reply to your oldest unanswered review today.',
+        use: 'The dare. This is the one for other people’s groups.',
+        alt: 'Engraved standing microphone in a spotlight on an empty stage. Headline: Reply to your oldest unanswered review today.',
+      },
+      {
+        file: '06-take-two',
+        headline: 'A bad review is not the ending. It is take two.',
+        use: 'The objection killer, for everyone scared of the one angry customer.',
+        alt: 'Engraved blank clapperboard held mid-clap by two hands. Headline: A bad review is not the ending. It is take two.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'The dare',
+        graphic: '05-say-something',
+        body: [
+          'Small challenge for every business owner reading this, and it costs nothing.',
+          'Go find your oldest unanswered review. The one sitting there from two years ago, good or bad, that nobody ever replied to. Answer it today. Two sentences, signed with your name.',
+          'Here is why it is worth ten minutes. 97% of people read reviews before they walk in, and an answered review tells all of them that somebody is home. You are not writing to the person who left it. You are writing to the next hundred people who read it.',
+          'Post below when you have done it, and tell me which one you picked. Bonus points if it was a rough one and you kept it kind.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'If you cannot find your reviews at all, that is a different problem and also fixable. Say so below and I will point you at where they live.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'The stat teardown',
+        graphic: '01-everyone',
+        body: [
+          '97% of people read online reviews for local businesses. Ninety-seven. At that point it is not a marketing channel, it is the front door.',
+          "That number is from BrightLocal's 2026 Local Consumer Review Survey, 1,002 US consumers. Worth saying: BrightLocal sells local-marketing tools, so they benefit from you caring about this. The number still matches what every owner sees in person.",
+          'Two more from the same survey that should change how you spend ten minutes a week:',
+          [
+            '68% will not consider a business under four stars. The filter happens before they read a word.',
+            '74% only trust reviews from the last three months. A wall of old praise reads like an empty room.',
+          ],
+          'The move is boring and it works: one happy customer, one honest ask, every week. Same day as the job, while it is still warm.',
+        ],
+      },
+      {
+        n: 3,
+        title: 'The recency problem',
+        graphic: '03-fresh-ink',
+        body: [
+          'Hard truth about the 47 five-star reviews you earned three years ago: to most readers they are wallpaper.',
+          '74% of consumers say they prioritize reviews from the last three months (BrightLocal, 2026). Reviews age like posters in the rain. The town does not ask what you were. It asks what you are.',
+          'The fix is a habit, not a campaign:',
+          [
+            'Ask in person, same day, while the job is still warm. "Would you mind putting that in a Google review?" works.',
+            'Send the direct review link by text. Every step you remove doubles the odds it happens.',
+            'One a week. Fifty-two fresh reviews a year beats any blitz, and it never looks fake because it is not.',
+          ],
+          'Never pay for reviews and never steer only the happy customers to Google. Both get caught, and both cost more than they give.',
+        ],
+      },
+      {
+        n: 4,
+        title: 'Take two',
+        graphic: '06-take-two',
+        body: [
+          'Every owner I know is scared of the same thing: the one unfair review from the one customer nothing could satisfy.',
+          'Here is what the data and a lot of scar tissue say: the bad review is not what sinks you. The silence after it is.',
+          'A page of perfect five-star reviews reads suspicious. A wall of good ones with one honest scar and a calm, signed reply underneath reads like a real business run by an adult. That reply is take two, and you are directing it.',
+          'The script: thank them for the specifics, fix what was true, correct what was not, sign your name. No lawyer voice, no counterattack. You are talking to the next hundred readers over that reviewer’s shoulder.',
+        ],
+      },
+    ],
+    replies: [
+      {
+        q: 'How do I get more reviews without begging?',
+        a: 'Ask once, in person, the day of the job, and text the direct link so it is one tap. That is not begging, that is making it easy to say the thing they already told you at the door. One a week is plenty.',
+      },
+      {
+        q: 'Can I just buy a few to get started?',
+        a: 'No, and not just because platforms delete them. Fake reviews read fake, the FTC fines for them now, and one caught fake costs more trust than ten honest bad ones. Earn them weekly instead, it compounds.',
+      },
+      {
+        q: 'A competitor left me a fake one-star. Now what?',
+        a: 'Flag it with the platform, then reply once, calm and factual: no record of a job under that name, happy to make it right if this is a real customer, signed. Readers can smell a hit job when the owner stays composed.',
+      },
+      {
+        q: 'Does this really matter for my trade?',
+        a: '97% of consumers read reviews, and trades often have fewer reviews than restaurants, which means each one you have weighs more, not less. Ten fresh ones can own a small market.',
+      },
+    ],
+  },
+
+  {
+    id: 'get-found',
+    name: 'The Metro',
+    eyebrow: 'Set seven · Get Found',
+    blurb:
+      'Being findable, drawn literally: a transit map with a YOU ARE HERE roundel, four route lines, and one stop per card. The whole set is about the Google Business Profile, and everything it recommends is free.',
+    cta: 'Free audit · modernmustardseed.com/website-audit',
+    accent: '#1D4ED8',
+    rules: [
+      'Disclose that DreamHost sells hosting when you cite the 67%. Saying it first beats getting caught.',
+      'No ranking promises, for search or for the map. The honest claim is readable and consistent, never "number one."',
+      'The audit URL rides the card art only, never the post body, so reach stays intact.',
+      '05-search-yourself opens other people’s groups. The stat card is for your own page.',
+      'Everything this set recommends is free. Do not let a comment thread turn it into a pitch. The free-ness is the pitch.',
+    ],
+    cards: [
+      {
+        file: '01-start-here',
+        headline: '67% start at Google when they need someone local.',
+        use: 'The anchor stat. Post 2, or your own page.',
+        alt: 'Transit map card with a you-are-here roundel. Headline: 67 percent start at Google when they need someone local.',
+      },
+      {
+        file: '02-the-pin',
+        headline: 'Your pin says closed. The town reads gone.',
+        use: 'The mismatch card. Post 3.',
+        alt: 'Transit map card. Headline: Your pin says closed, the town reads gone. Hours, address, phone, the same everywhere or invisible.',
+      },
+      {
+        file: '03-the-photos',
+        headline: 'Real photos are proof of life on the map.',
+        use: 'The easiest win. Midweek filler that still teaches.',
+        alt: 'Transit map card. Headline: Real photos are proof of life on the map.',
+      },
+      {
+        file: '04-the-schedule',
+        headline: 'Your reviews ride this line too.',
+        use: 'Bridges into the Now Showing set without repeating it.',
+        alt: 'Transit map card. Headline: Your reviews ride this line too. Ask one happy customer a week.',
+      },
+      {
+        file: '05-search-yourself',
+        headline: 'Search your trade and your town. Incognito.',
+        use: 'The dare. This is the opener for other people’s groups.',
+        alt: 'Transit map card with a you-are-here roundel. Headline: Search your trade and your town, incognito. Are you on the map or under it?',
+      },
+      {
+        file: '06-three-stops',
+        headline: 'Three stops to findable.',
+        use: 'The explainer. Post 4, the save-and-share card.',
+        alt: 'Transit map card with a numbered three step list. Headline: Three stops to findable. All three are free.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'The dare',
+        graphic: '05-search-yourself',
+        body: [
+          'Ten second homework, and some of you are not going to like the result.',
+          'Open an incognito window (so Google stops flattering you), and search your trade plus your town. "Plumber Kalispell." "Roofer Whitefish." Whatever you are, wherever you are.',
+          'Now look. Are you in the map results? Is your pin in the right place? Are your hours right? Is that phone number even yours anymore?',
+          'I ran this for a dozen local businesses this month and about half found something wrong, and every single wrong thing was free to fix.',
+          'Post what you found below, good or bad. If you are missing entirely, say so and I will tell you the likely reason, no charge, no pitch.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'If you want the deeper version, the free audit reads your actual website and grades what the machines see: modernmustardseed.com/website-audit. No card, no email needed to see the result.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'The stat teardown',
+        graphic: '01-start-here',
+        body: [
+          '67% of people start at Google when they need someone local. Not the phone book, not a referral, not your Facebook page. The map and the list under it.',
+          "Number is from DreamHost's 2026 Local Business Trust Index, 1,201 US consumers. They sell hosting, so read it knowing that, but the shape matches what every owner already sees.",
+          'Here is what most people miss: the map does not read your reputation. It reads your data. A great business with a wrong pin, dead hours, and an old phone number looks, to the machine, exactly like a closed one.',
+          'The whole fix is free and takes one honest afternoon. Claim the profile, fill every field, make hours and phone match everywhere they appear. No agency required.',
+        ],
+      },
+      {
+        n: 3,
+        title: 'The mismatch',
+        graphic: '02-the-pin',
+        body: [
+          'A quiet way local businesses lose work: the internet disagrees with itself about them.',
+          'Website says open until six. Google says five. Facebook has the old number. The map pin is on the wrong building. Any one of those seems small, but to every system that decides whether to show you, mismatched facts read as abandoned.',
+          'And to a customer standing in the parking lot at 5:15 because your profile said you were open, it reads worse than abandoned. It reads careless.',
+          'Fifteen minute fix: pick the one true version of your hours, address, and phone. Then make Google, your website, and Facebook all say exactly that. Set a reminder to re-check when the seasons change.',
+        ],
+      },
+      {
+        n: 4,
+        title: 'Three stops',
+        graphic: '06-three-stops',
+        body: [
+          'Everything I know about getting found on the map, compressed to three stops. All free.',
+          [
+            'Claim your Google Business Profile and fill in every single field it offers. Categories, services, service area, all of it. Blank fields are wasted track.',
+            'Match your hours, address, and phone everywhere they appear online. Mismatches make the machines trust you less and the customers trust you never.',
+            'Add new photos and answer your reviews, weekly. Both are proof of life, and the map quietly rewards businesses that look alive.',
+          ],
+          'No agency, no monthly fee, no secret. Whoever does the boring stuff most consistently wins the neighborhood.',
+        ],
+      },
+    ],
+    replies: [
+      {
+        q: 'Can you get me to number one on the map?',
+        a: 'No, and nobody honest can promise that. There is no placement to buy. What you can control is being complete, consistent, and visibly alive, and that alone puts you ahead of most of the street.',
+      },
+      {
+        q: 'I claimed my profile years ago and lost the login.',
+        a: 'Recoverable. Search your business on Google, hit "Own this business?", and follow the verification back. If an old employee or agency owns it, Google has a request-access flow that takes about a week. Worth every minute.',
+      },
+      {
+        q: 'Is this the SEO stuff agencies charge monthly for?',
+        a: 'This layer is the part you can do yourself free, and it is the foundation everything paid sits on. If someone charges you monthly and has not fixed your pin, hours, and photos first, ask them why.',
+      },
+      {
+        q: 'Do I still need a website if the profile is free?',
+        a: 'Yes, for one structural reason: the profile is rented ground on Google’s land, and it links somewhere. When they click through and find nothing, or something from 2014, the trip ends there. The site is the ground you own.',
+      },
+    ],
+  },
+
+  {
+    id: 'ask-mustard',
+    name: 'The Column',
+    eyebrow: 'Set eight · Ask Mustard',
+    blurb:
+      'A newspaper advice column: masthead, drop cap, woodcut spot, one highlighter swipe, and a NEXT WEEK teaser chaining the cards into a serial. No statistics, nothing to defend. The set exists to farm real questions, and every question it farms becomes a future column.',
+    cta: 'Ask yours in the comments',
+    accent: '#C4160B',
+    rules: [
+      'Never type a price in a column or a comment. Column No. 03 is the model for how to answer the money question.',
+      'Reply to every comment the day it lands. An advice column with a silent author is dead on arrival.',
+      'Real questions from the comments become future columns. Get a yes from the asker first, then change the name and the town.',
+      'Keep the columns pitch-free. If someone asks what MMS sells, answer in one plain line and get back to the advice.',
+      'Run one column a week, same day every week, in order. The NEXT WEEK teasers chain them, that is the serial.',
+    ],
+    cards: [
+      {
+        file: '01-every-day',
+        headline: 'Do I have to post every single day?',
+        use: 'Column No. 01. The launch card, run it with the invitation post.',
+        alt: 'Newspaper column card with a woodcut rooster crowing on a fence post. Question: do I have to post every single day? Answer: no, consistency beats frequency.',
+      },
+      {
+        file: '02-tiktok',
+        headline: 'Do I really need to be on TikTok?',
+        use: 'Column No. 02. Permission-to-stop content, widely shared.',
+        alt: 'Newspaper column card with a woodcut television set. Question: does my furnace business need TikTok? Answer: probably not, fish where your customers already are.',
+      },
+      {
+        file: '03-what-it-costs',
+        headline: 'How much should a website cost?',
+        use: 'Column No. 03. The money question, answered without a number.',
+        alt: 'Newspaper column card with a woodcut balance scale. Question: quotes ranged from four hundred to eight grand, what should a website cost? Answer: it depends what the site has to do.',
+      },
+      {
+        file: '04-the-robot',
+        headline: 'Is AI going to replace me?',
+        use: 'Column No. 04. The reassurance card, and quietly the most on-brand.',
+        alt: 'Newspaper column card with a woodcut tin robot tipping a bowler hat. Question: is AI coming for my business? Answer: not the part that matters, it replaces being unreachable.',
+      },
+      {
+        file: '05-the-gloves',
+        headline: 'Talk me down from fighting a nasty review.',
+        use: 'Column No. 05. Pairs with the Now Showing set without repeating it.',
+        alt: 'Newspaper column card with woodcut boxing gloves hanging from a nail. Question: someone torched me in a review, talk me down. Answer: hang the gloves up, your reply is for the next hundred readers.',
+      },
+      {
+        file: '06-slow-season',
+        headline: 'Winter kills my trade. What do I do until spring?',
+        use: 'Column No. 06. The season closer, ends by asking for their questions.',
+        alt: 'Newspaper column card with a woodcut trowel in a mound of soil beside a seedling. Question: what do I do in the dead season? Answer: plant, spring rewards whoever planted in January.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'The launch',
+        graphic: '01-every-day',
+        body: [
+          'Starting something new and slightly ridiculous: an advice column for small business owners. Ask Mustard. You write in, I answer straight, no charge, no pitch.',
+          'Column No. 01 is a question I have heard four times this month: "Do I really have to post every single day?" The full answer is on the card, but the short version is no, and the person who told you otherwise is tired too.',
+          'Here is the deal. Drop your question in the comments. Marketing, websites, reviews, the phone, whatever is bugging you about running the business. I will answer every single one in the comments, and the best ones become future columns with your name changed and your secret safe.',
+          'What have you been wondering that everybody else seems to already know?',
+        ],
+        followUp: {
+          label: 'Working the comments',
+          lines: [
+            'Answer every question the same day, fully, in the comments. The column earns trust by being genuinely free. If a question needs a longer answer, say "this one is becoming next week’s column" and mean it.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'The money question',
+        graphic: '03-what-it-costs',
+        body: [
+          'Column No. 03, and it is the question everyone asks with their guard up: "One guy quoted me four hundred dollars for a website and another quoted eight grand. What should it actually cost?"',
+          'The honest answer fits in one line: it depends what the site has to do, and anyone who quotes you before asking questions is selling a template, not a website.',
+          'Ask both bidders the same three things. What happens when a customer calls? What happens when they want to book? What happens when they want to pay? The right price follows those answers. The wrong one follows silence.',
+          'Got a quote sitting in your inbox right now that smells off? Describe it below (no names) and I will tell you what questions to send back.',
+        ],
+      },
+      {
+        n: 3,
+        title: 'The robot column',
+        graphic: '04-the-robot',
+        body: [
+          'Column No. 04: "Straight up. Is AI coming for my business?"',
+          'I build AI systems for a living, so believe me when I say this is the one question I refuse to answer with hype.',
+          'Not the part of your business that matters. AI cannot crimp a fitting, calm a flooded kitchen at midnight, or earn the handshake that gets you the next three referrals on that street.',
+          'What it replaces is being unreachable. The call that rings out while you are under a sink. The website form nobody answers until Thursday. The after-hours question that becomes somebody else’s customer by morning. The machine holds the door. You still do the work.',
+          'Skeptics especially welcome below. Tell me why it will not work for your trade and I will give you a straight answer, even when the straight answer is "you are right, it will not."',
+        ],
+      },
+      {
+        n: 4,
+        title: 'The season closer',
+        graphic: '06-slow-season',
+        body: [
+          'Column No. 06 lands close to home for half of Montana: "Winter kills my trade for four months. What do I do until spring?"',
+          'Plant. The slow season is when the seed goes in.',
+          [
+            'Rewrite the tired words on your website while nothing is on fire.',
+            'Shoot the photos you never have time to shoot in July.',
+            'Ask for the reviews you never asked for while the good jobs are still fresh in people’s minds.',
+            'Fix the pin, the hours, the old phone number, the whole boring trellis the busy season grows on.',
+          ],
+          'Spring rewards whoever planted in January. Ask anyone who farms.',
+          'That closes the first run of the column. The next run is built from your questions, so leave one below. The strange ones make the best columns.',
+        ],
+      },
+    ],
+    replies: [
+      {
+        q: 'Can you answer mine?',
+        a: 'Yes, that is the whole point. Ask it right here and you will have an answer today. If it is juicy enough to become a column, I will check with you first and change the details.',
+      },
+      {
+        q: 'Is this just a funnel for your services?',
+        a: 'The answers are free and complete whether or not you ever hire anyone, me included. I do build websites and phone systems, and if a question touches that I will say so in one line and keep answering. Fair?',
+      },
+      {
+        q: 'My nephew is right though, daily posting does work.',
+        a: 'For people whose business IS the posting, absolutely. For a furnace repair shop, two honest posts a week sustained for a year beats a daily sprint that dies in March, and the graveyard of abandoned business pages agrees with me.',
+      },
+    ],
+  },
 ];
 
 /** Flatten a post body into the plain text that goes in the composer. */
