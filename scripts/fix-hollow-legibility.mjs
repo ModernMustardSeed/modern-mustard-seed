@@ -47,7 +47,7 @@ const PATCH = `
   /* 26% read as mud over a dark photograph. The fill has to carry the brand
      colour at real strength, with the stroke brighter than the fill so the
      outline still reads as an outline. */
-  color: color-mix(in srgb, var(--accent, #14b8a6) 72%, transparent) !important;
+  color: color-mix(in srgb, var(--accent, #14b8a6) 55%, transparent) !important;
   -webkit-text-stroke-width: 3px !important;
   -webkit-text-stroke-color: color-mix(in srgb, var(--accent, #14b8a6) 100%, white 22%) !important;
   paint-order: stroke fill;
