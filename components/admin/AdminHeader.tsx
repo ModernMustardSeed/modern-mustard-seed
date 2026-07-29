@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'artifacts' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -37,7 +37,7 @@ const PINNED: Item[] = [
 // team can open, share, or demo any program in a click. All open in a new tab.
 const PROGRAMS: Item[] = [
   { key: 'p-demos', label: 'Demos', href: '/demos', external: true },
-  { key: 'p-sidekick', label: 'Sidekick', href: '/sidekick', external: true },
+  { key: 'p-sidekick', label: 'Voice Agent', href: '/voice-agents/forge', external: true },
   { key: 'p-chief', label: 'The Chief', href: '/chief', external: true },
   { key: 'p-mode', label: 'Mustard Mode', href: '/mustard-mode', external: true },
   { key: 'p-launch', label: 'Mustard Launch', href: '/mustard-launch', external: true },
@@ -70,6 +70,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
     items: [
       { key: 'ads', label: 'Ads Playbook', href: '/admin/ads' },
       { key: 'facebook', label: 'Facebook Organic', href: '/admin/facebook' },
+      { key: 'social', label: 'Social Cards', href: '/admin/social-cards' },
       { key: 'artifacts', label: 'Artifacts', href: '/admin/artifacts' },
       { key: 'youtube', label: 'Publish to YouTube', href: '/admin/youtube' },
       { key: 'campaigns', label: 'Campaigns', href: '/admin/campaigns' },
