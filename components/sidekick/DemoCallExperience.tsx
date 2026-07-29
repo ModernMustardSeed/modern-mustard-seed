@@ -15,7 +15,7 @@ type CallState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 /**
  * The prospect-facing side of a cockpit-forged demo: one big button that
  * starts a live web call with the voice agent already branded as their
- * business. Same Vapi web pattern as the public Sidekick page.
+ * business. Same Vapi web pattern as the public Voice Agent page.
  */
 export default function DemoCallExperience({
   business,
@@ -212,7 +212,7 @@ export default function DemoCallExperience({
               <a href="/book" className="bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
                 Book the 10-minute setup call
               </a>
-              <a href="/sidekick" className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
+              <a href="/voice-agents/forge" className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
                 See pricing
               </a>
             </div>

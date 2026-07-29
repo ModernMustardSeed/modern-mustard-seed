@@ -431,7 +431,7 @@ const RESOURCE_CATALOG: Record<string, CatalogEntry> = {
   'bottleneck-breaker': { label: 'Find your #1 bottleneck (free 60-second scan)', url: `${SITE_ROOT}/audit` },
   audit: { label: 'Find your #1 bottleneck (free scan)', url: `${SITE_ROOT}/audit` },
   'voice-agents': { label: 'voice agents that answer your phone', url: `${SITE_ROOT}/voice-agents` },
-  sidekick: { label: 'Build your own voice agent', url: `${SITE_ROOT}/sidekick`, ref: true },
+  sidekick: { label: 'Build your own voice agent', url: `${SITE_ROOT}/voice-agents/forge`, ref: true },
   store: { label: 'The playbook and course store', url: `${SITE_ROOT}/store`, ref: true },
   work: { label: 'See the work', url: `${SITE_ROOT}/work` },
   'work-with-us': { label: 'Ways to work with us', url: `${SITE_ROOT}/work-with-us` },

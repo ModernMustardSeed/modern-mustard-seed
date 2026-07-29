@@ -56,7 +56,7 @@ for (const step of [0, 1, 2]) {
   const m = sidekickDripEmail(lead as never, step);
   ok(`step ${step} has a subject`, m.subject.length > 8, m.subject);
   ok(`step ${step} personalizes the business`, m.html.includes('Acme Plumbing'));
-  ok(`step ${step} deep-links the real run`, m.html.includes(`/sidekick/demo/${RUN}`));
+  ok(`step ${step} deep-links the real run`, m.html.includes(`/voice-agents/forge/demo/${RUN}`));
   ok(`step ${step} has no em dash`, !m.html.includes('—'));
   ok(`step ${step} has no unreplaced placeholder`, !/\[first name\]|\[their/.test(m.html));
 }
@@ -67,7 +67,7 @@ ok(`touch 2 quotes the CURRENT setup ($${setup})`, t2.html.includes(`$${setup} t
 ok('touch 2 does NOT contain the retired $197', !t2.html.includes('$197'));
 
 const noRun = sidekickDripEmail({ ...lead, notes: '[sidekick] legacy lead' } as never, 0);
-ok('legacy lead falls back to /sidekick, no broken URL', noRun.html.includes('/sidekick') && !noRun.html.includes('/sidekick/demo/null'));
+ok('legacy lead falls back to /voice-agents/forge, no broken URL', noRun.html.includes('/voice-agents/forge') && !noRun.html.includes('/voice-agents/forge/demo/null'));
 
 const noName = sidekickDripEmail({ ...lead, name: null, business_name: null, company: null } as never, 0);
 ok('missing name degrades to "Hi there,"', noName.html.includes('Hi there,'));

@@ -39,8 +39,8 @@ export default function MustardSeedChat() {
   const pathname = usePathname() || '';
   const isAppShell =
     pathname.startsWith('/admin') || pathname.startsWith('/portal') || pathname.endsWith('/hq') ||
-    // The Sidekick Forge IS a live voice surface; a second Mustard would compete with the demo.
-    pathname.startsWith('/sidekick') ||
+    // The Voice Agent Forge IS a live voice surface; a second Mustard would compete with the demo.
+    pathname.startsWith('/voice-agents/forge') ||
     // The Screen Test is a theater; the launcher would cover the reveal and tiers.
     pathname.startsWith('/pictures') ||
     // The Press Run's proof and review table own the lower-right corner too.
@@ -191,8 +191,8 @@ export default function MustardSeedChat() {
     // MUSTARD MODE's hero terminal IS the greeting, and the homepage Front Desk
     // terminal is its own front desk. Never cover either with the teaser.
     if (window.location.pathname.startsWith('/mustard-mode')) return;
-    // The Sidekick Forge has its own live voice agent on stage. No teaser.
-    if (window.location.pathname.startsWith('/sidekick')) return;
+    // The Voice Agent Forge has its own live voice agent on stage. No teaser.
+    if (window.location.pathname.startsWith('/voice-agents/forge')) return;
     // The Screen Test is a theater; no teaser bubble over the reveal.
     if (window.location.pathname.startsWith('/pictures')) return;
     if (window.location.pathname === '/') return;

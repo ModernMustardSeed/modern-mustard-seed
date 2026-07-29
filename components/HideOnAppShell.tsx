@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
  *  layout: admin, the client portal, program HQs, and every forged demo
  *  surface. A forged demo is a one-offer sales page; the marketing footer sold
  *  competing offers (a FREE voice agent demo) directly under a paid ask. Note
- *  the voice demo still lives at the legacy /sidekick/demo/ path. */
+ *  the voice demo still lives at the legacy /voice-agents/forge/demo/ path. */
 export default function HideOnAppShell({ children }: { children: React.ReactNode }) {
   const p = usePathname() || '/';
   if (
@@ -15,7 +15,7 @@ export default function HideOnAppShell({ children }: { children: React.ReactNode
     p.endsWith('/hq') ||
     p.startsWith('/demo/') ||
     p.startsWith('/hatchery/') ||
-    p.startsWith('/sidekick/demo/')
+    p.startsWith('/voice-agents/forge/demo/')
   )
     return null;
   return <>{children}</>;

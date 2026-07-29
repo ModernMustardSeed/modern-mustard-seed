@@ -78,7 +78,7 @@ const PIECES = [
 /**
  * The full schema graph for /demos. This page previously carried FAQPage ONLY,
  * so AI crawlers could read the questions but had no idea what the Demo Station
- * offers or costs (added 2026-07-20 to match the /sidekick graph).
+ * offers or costs (added 2026-07-20 to match the /voice-agents/forge graph).
  *
  * Every price is DERIVED from DEMO_PRODUCTS and DEMO_BUNDLE. Never type one
  * here: see the $197/$297 split that leaked into the trade FAQ schema.
@@ -276,8 +276,8 @@ export default function DemosPage() {
               Your voice agent demo answers as your business, and you talk to it right in your browser. The phone
               number is how we reach you about the build, nothing more. Nothing is charged and nobody calls you unless
               you ask. Want it to ring your actual phone instead?{' '}
-              <Link href="/sidekick" className="underline underline-offset-4 font-semibold hover:text-[#C4160B]">
-                Forge it at the Sidekick station
+              <Link href="/voice-agents/forge" className="underline underline-offset-4 font-semibold hover:text-[#C4160B]">
+                Forge it at the Voice Agent station
               </Link>
               .
             </p>

@@ -130,7 +130,7 @@ export const OFFER_LADDER: LadderRung[] = [
     price: 'Free',
     title: 'Free tools and demos',
     detail: 'Every stranger meets us here. These are your weapons in the field. They cost nothing and they show value before we ask for a dime.',
-    examples: ['Sidekick voice agent demo', 'Pictures Screen Test', 'Press proof', 'Website / AI audit'],
+    examples: ['Voice Agent voice agent demo', 'Pictures Screen Test', 'Press proof', 'Website / AI audit'],
   },
   {
     rung: 2,
@@ -146,7 +146,7 @@ export const OFFER_LADDER: LadderRung[] = [
     price: '$197 to $997',
     title: 'Productized offers',
     detail: 'A finished, impressive thing at a set price. This is where the monthly plans start too, which is how the business earns while it sleeps.',
-    examples: ['Pictures commercial ($197 / $497)', 'Sidekick ($397 setup + $297/mo)', 'GEO Fix Pack ($297)'],
+    examples: ['Pictures commercial ($197 / $497)', 'Voice Agent ($397 setup + $297/mo)', 'GEO Fix Pack ($297)'],
   },
   {
     rung: 4,
@@ -246,7 +246,7 @@ export const PHASES: Phase[] = [
               'The old story was "we build custom software." The new story is "we put AI staff to work for you, and you can hear it right now." Same studio, sharper spear. You are joining at the exact moment it gets easy to sell.',
           },
         ],
-        mission: { do: 'Go to /sidekick, and let Mr. Mustard forge a voice agent for a made-up business. Talk to it out loud.', why: 'This is the single most important thing we make right now. You cannot sell the wow until you have felt it yourself.' },
+        mission: { do: 'Go to /voice-agents/forge, and let Mr. Mustard forge a voice agent for a made-up business. Talk to it out loud.', why: 'This is the single most important thing we make right now. You cannot sell the wow until you have felt it yourself.' },
       },
       {
         id: 'your-seat',
@@ -334,7 +334,7 @@ export const PHASES: Phase[] = [
             body: 'These four are the heart of the new business. Each one gives a free wow starring our mascot, Mr. Mustard, then turns into a paid product. These are what you demo in the field. Know the free hook and the entry price for each, and you can start any conversation.',
           },
           {
-            heading: 'The Sidekick, a 24/7 voice agent  ·  /sidekick',
+            heading: 'The Voice Agent, a 24/7 voice agent  ·  /voice-agents/forge',
             bullets: [
               'The free wow: it forges a personalized voice agent for their business in about 60 seconds, and they talk to it live.',
               'To keep him: $397 to set up plus $297 a month (250 answered minutes). The Pro is $597 plus $497 a month (600 minutes, caller memory, booking, a monthly tune-up with Sarah).',
@@ -370,7 +370,7 @@ export const PHASES: Phase[] = [
             body: 'Our coaching arcade. Mr. Mustard is a personal AI coach who teaches anyone to build with Claude, in levels, with missions and XP (a lot like this program). Free first session, then Player at $197, Builder at $397, or the Founders Cabinet at $97 a month. This is the "learn to build it yourself" door, and it is also how YOU will start becoming a builder later in this program.',
           },
         ],
-        mission: { do: 'Visit all four free demos (/sidekick, /pictures, /press, /website-audit) and run one of each on a real local business you can think of.', why: 'You will sell these every day. You should be able to run each one in your sleep before you show a stranger.' },
+        mission: { do: 'Visit all four free demos (/voice-agents/forge, /pictures, /press, /website-audit) and run one of each on a real local business you can think of.', why: 'You will sell these every day. You should be able to run each one in your sleep before you show a stranger.' },
       },
       {
         id: 'the-builds',
@@ -501,7 +501,7 @@ export const PHASES: Phase[] = [
             body: 'The free demos and audits are not just products, they are the best reason to reach out. Run someone\'s website through the audit and send the grade. Forge them a voice agent and text the link. You showed value before you asked for anything, which is exactly how trust starts.',
             links: [
               { label: 'Website audit', url: '/website-audit', external: false },
-              { label: 'Sidekick demo', url: '/sidekick', external: false },
+              { label: 'Voice Agent demo', url: '/voice-agents/forge', external: false },
             ],
           },
           {
@@ -805,7 +805,7 @@ export const PHASES: Phase[] = [
             heading: 'Small real steps you can take now',
             bullets: [
               'Run a full audit and read the whole report. Understand what "good" looks like.',
-              'Forge a few Sidekick demos and notice how the same tool adapts to each business.',
+              'Forge a few Voice Agent demos and notice how the same tool adapts to each business.',
               'Play your free Mustard Mode session and ship the first tiny mission.',
             ],
           },
@@ -860,9 +860,9 @@ export const MODULES: GuideModule[] = PHASES.flatMap((p) => p.modules);
 export type FieldMission = { id: string; day: string; label: string; detail: string };
 export const FIELD_MISSIONS: FieldMission[] = [
   { id: 'fm-login', day: 'Day 1', label: 'Get in and get set up', detail: 'Confirm your /admin login works, open your Partner HQ, and save your personal booking link.' },
-  { id: 'fm-feel', day: 'Day 1', label: 'Feel the wow', detail: 'Forge a Sidekick voice agent at /sidekick and talk to it out loud. This is what you sell.' },
+  { id: 'fm-feel', day: 'Day 1', label: 'Feel the wow', detail: 'Forge a Voice Agent voice agent at /voice-agents/forge and talk to it out loud. This is what you sell.' },
   { id: 'fm-p1p2', day: 'Day 2', label: 'Clear Foundations and the Arsenal', detail: 'Work Phases 1 and 2. You should be able to explain the mission and the ladder to anyone.' },
-  { id: 'fm-demos', day: 'Day 3', label: 'Run all four free demos', detail: 'Sidekick, Pictures, Press, and the audit, each on a real local business you can picture.' },
+  { id: 'fm-demos', day: 'Day 3', label: 'Run all four free demos', detail: 'Voice Agent, Pictures, Press, and the audit, each on a real local business you can picture.' },
   { id: 'fm-craft', day: 'Day 4', label: 'Learn the craft', detail: 'Work Phase 3, then roleplay a cold walk-in with Mr. Mustard until it feels natural.' },
   { id: 'fm-list', day: 'Day 5', label: 'Pick your first ten', detail: 'Open the Tracker, filter to your leads, and choose the first ten businesses you will call.' },
   { id: 'fm-post', day: 'Day 5', label: 'Make your first post', detail: 'On brand, no em dashes, genuinely useful, with your booking link in your bio.' },
@@ -880,14 +880,14 @@ export const GLOSSARY: GlossaryTerm[] = [
   { term: 'Pipeline', def: 'The list of all leads and what stage each is at, from new to won or lost.' },
   { term: 'Discovery call', def: 'The first short call with a lead to understand what they need before we quote.' },
   { term: 'Demo', def: 'Showing the product live, usually the voice agent. The fastest way to sell it.' },
-  { term: 'Forge', def: 'What the Sidekick does: it builds a personalized voice agent for a business in about 60 seconds.' },
+  { term: 'Forge', def: 'What the Voice Agent does: it builds a personalized voice agent for a business in about 60 seconds.' },
   { term: 'Screen Test', def: 'The free Mustard Pictures preview: a storyboard, taglines, and one cinematic frame for a business.' },
   { term: 'Proof', def: 'The free, watermarked version of a Mustard Press typeset page, before they pay to keep it.' },
   { term: 'GEO', def: 'Getting your business cited inside AI answers (ChatGPT, Perplexity), where more people now search.' },
   { term: 'SEO', def: 'Search Engine Optimization. Making pages show up on Google.' },
   { term: 'Productized offer', def: 'A finished thing sold at a set price (like the $197 commercial), instead of a custom quote.' },
   { term: 'Recurring / subscription', def: 'Income that repeats every month from an ongoing plan. The top of the ladder and the goal.' },
-  { term: 'Setup fee', def: 'A one-time charge to stand up a product (like the $397 to set up a Sidekick), often credited toward a bigger build.' },
+  { term: 'Setup fee', def: 'A one-time charge to stand up a product (like the $397 to set up a Voice Agent), often credited toward a bigger build.' },
   { term: 'Retainer', def: 'A monthly fee for ongoing work or support, usually after a project ships.' },
   { term: 'Proposal', def: 'The document that lays out scope and a fixed price for a client to sign and pay a deposit on.' },
   { term: 'Deposit and balance', def: 'Clients pay half up front (deposit) to start and the rest (balance) on delivery.' },

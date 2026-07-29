@@ -31,7 +31,7 @@ const offerIndexJsonLd = {
   '@type': 'ItemList',
   name: 'Everything in this issue',
   itemListElement: [
-    { name: 'The Sidekick Forge (voice agent)', url: `${SITE.url}/sidekick` },
+    { name: 'The Voice Agent Forge (voice agent)', url: `${SITE.url}/voice-agents/forge` },
     { name: 'The Demo Station (websites and command centers)', url: `${SITE.url}/demos` },
     { name: 'Mustard Pictures (commercials)', url: `${SITE.url}/pictures` },
     { name: 'Mustard Broadcast (managed ads)', url: `${SITE.url}/ads` },

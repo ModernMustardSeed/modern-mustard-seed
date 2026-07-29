@@ -18,7 +18,7 @@ export type Dept = {
 
 export const DEPARTMENTS: Dept[] = [
   { key: 'websites', name: 'Websites', tag: 'Free website demo', blurb: 'A site that answers the phone, captures the lead, and follows up. Not a brochure, an engine.', href: '/websites', icon: '🌐', flagship: true },
-  { key: 'sidekick', name: 'Voice Agent', tag: 'Free voice agent demo', blurb: 'Answers your real number 24/7 in a natural voice, books the job, texts you the details.', href: '/sidekick', icon: '🎙', flagship: true },
+  { key: 'sidekick', name: 'Voice Agent', tag: 'Free voice agent demo', blurb: 'Answers your real number 24/7 in a natural voice, books the job, texts you the details.', href: '/voice-agents/forge', icon: '🎙', flagship: true },
   { key: 'command-center', name: 'Command Center', tag: 'The AI back office', blurb: 'One board: calls transcribed, website traffic, customers, reviews, and money, wired together.', href: '/command-center', icon: '⚙', flagship: true },
   { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
   { key: 'ads', name: 'Mustard Broadcast', tag: 'We run your ads', blurb: 'We make the cinematic commercial and run the Meta and Google ads in your own account.', href: '/ads', icon: '📺' },

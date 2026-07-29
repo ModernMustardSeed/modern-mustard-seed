@@ -19,7 +19,7 @@ function isAuthorized(req: Request): boolean {
  * Every public URL, DERIVED FROM THE SITEMAP.
  *
  * This used to be a hand-maintained list of eleven paths, and it silently
- * rotted. By July 2026 the site had shipped /demos, /sidekick, /websites,
+ * rotted. By July 2026 the site had shipped /demos, /voice-agents/forge, /websites,
  * /command-center, /chief, /press, /pictures, /hatchery, /switchboard, /store,
  * /website-audit and the whole trade-page set, and NOT ONE of them was ever
  * announced to IndexNow: the weekly cron kept re-submitting the same eleven old

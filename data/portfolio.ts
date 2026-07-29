@@ -92,8 +92,8 @@ export const PORTFOLIO: PortfolioCategory[] = [
         tags: ['internal', 'ops'],
       },
       {
-        name: 'Sidekick',
-        url: '/sidekick',
+        name: 'Voice Agent',
+        url: '/voice-agents/forge',
         internal: true,
         status: 'live',
         blurb: 'Instant voice agent. A prospect hears it answer their own phone in one click, then subscribes.',

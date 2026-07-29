@@ -72,7 +72,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/sidekick"
+                  href="/voice-agents/forge"
                   className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
                 >
                   Ring My Own Phone
@@ -376,7 +376,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              href="/sidekick"
+              href="/voice-agents/forge"
               className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
               Ring My Own Phone

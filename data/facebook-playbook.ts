@@ -1013,7 +1013,7 @@ export const FB_PLAYBOOK = {
         "You can call one and hear it yourself. Link in the comments, free, no signup, it just rings your phone and talks to you.",
         "Then tell me honestly what you thought. I want the skeptical takes too, they're usually the most useful ones."
       ],
-      "firstComment": "You can call one and hear it: modernmustardseed.com/sidekick. Free, no signup, it just calls you.",
+      "firstComment": "You can call one and hear it: modernmustardseed.com/voice-agents/forge. Free, no signup, it just calls you.",
       "cta": true,
       "date": "2026-09-10",
       "dateLabel": "Thu, Sep 10"

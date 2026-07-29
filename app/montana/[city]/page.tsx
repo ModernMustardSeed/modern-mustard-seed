@@ -207,7 +207,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                 t: 'The Voice Agent',
                 b: 'Answers as your business, day or night, books the job, flags the emergencies, and texts you the summary. Trained on your services, your hours, and your service area.',
                 p: `${formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo`,
-                href: '/sidekick',
+                href: '/voice-agents/forge',
               },
               {
                 t: 'The Command Center',

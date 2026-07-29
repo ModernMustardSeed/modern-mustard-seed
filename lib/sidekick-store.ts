@@ -1,5 +1,5 @@
 /**
- * Durable Sidekick Forge state on the existing app_state key/value table
+ * Durable Voice Agent Forge state on the existing app_state key/value table
  * (migration 030, live in prod), so the forge ships with fail-closed caps and
  * zero new DDL. The text primary key gives us atomic once-per-email and
  * once-per-phone guards for free: a duplicate insert conflicts (23505), which

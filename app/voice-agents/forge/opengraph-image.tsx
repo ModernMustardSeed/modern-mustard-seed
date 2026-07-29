@@ -2,10 +2,10 @@ import { ImageResponse } from 'next/og';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-// The Sidekick Forge share card: the nameplate badge with the trainer.
+// The Voice Agent Forge share card: the nameplate badge with the trainer.
 export const runtime = 'nodejs';
 
-export const alt = 'The Sidekick Forge. Hear your own voice agent in 60 seconds. Free, from Modern Mustard Seed.';
+export const alt = 'The Voice Agent Forge. Hear your own voice agent in 60 seconds. Free, from Modern Mustard Seed.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -59,7 +59,7 @@ export default async function OpengraphImage() {
               letterSpacing: 3,
             }}
           >
-            [ THE SIDEKICK FORGE ]
+            [ THE VOICE AGENT FORGE ]
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', marginTop: 34 }}>
             <span style={{ fontSize: 76, fontWeight: 800, fontStyle: 'italic', color: INK, lineHeight: 1.02 }}>
@@ -76,7 +76,7 @@ export default async function OpengraphImage() {
             Mr. Mustard trains him on YOUR business, then he talks to you. Live. Free.
           </span>
           <span style={{ fontSize: 22, color: INK, fontWeight: 700, marginTop: 22, letterSpacing: 1 }}>
-            modernmustardseed.com/sidekick
+            modernmustardseed.com/voice-agents/forge
           </span>
         </div>
 

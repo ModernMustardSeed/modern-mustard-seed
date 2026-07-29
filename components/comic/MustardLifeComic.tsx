@@ -333,7 +333,7 @@ export default function MustardLifeComic() {
                 </div>
                 <ul className="divide-y divide-dashed divide-[#161616]/20 px-6 py-2">
                   {[
-                    { p: '04', label: 'The Sidekick Forge', note: `voice agent, from ${usd(P.sidekick.setupCents)} + ${usd(P.sidekick.monthlyCents)}/mo`, href: '#sidekick' },
+                    { p: '04', label: 'The Voice Agent Forge', note: `voice agent, from ${usd(P.sidekick.setupCents)} + ${usd(P.sidekick.monthlyCents)}/mo`, href: '#sidekick' },
                     { p: '06', label: 'Websites and Command Centers', note: `from ${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`, href: '#websites' },
                     { p: '10', label: 'Pictures and Broadcast', note: `commercials from $${P.justCommercial.priceUsd}, managed ads from ${usd(P.onAir.setupCents)}`, href: '#pictures' },
                     { p: '12', label: 'Press, Launch, and the GEO Desk', note: `from $${P.piece.priceUsd}`, href: '#press' },
@@ -389,7 +389,7 @@ export default function MustardLifeComic() {
                 </Bubble>
               </div>
               <p className="mlc-pop font-body text-[15px] leading-relaxed text-[#3a3733] max-w-2xl" style={{ transitionDelay: '150ms' }}>
-                The Sidekick answers his line 24 hours a day, books the appointments, flags the urgent calls to
+                The Voice Agent answers his line 24 hours a day, books the appointments, flags the urgent calls to
                 his cell, and sends him a tidy summary of every conversation. Tell Mr. Mustard about your
                 business and he trains one for you while you watch, then it talks to you live. The demo is free
                 and takes about a minute. {SIDEKICK.creditNote}
@@ -410,7 +410,7 @@ export default function MustardLifeComic() {
                 delay={120}
               />
               <div className="mlc-pop flex flex-col gap-3 pt-2" style={{ transitionDelay: '220ms' }}>
-                <Cta href="/sidekick" solid>Forge Yours Free</Cta>
+                <Cta href="/voice-agents/forge" solid>Forge Yours Free</Cta>
                 <p className="font-mono text-[11px] text-[#5c554a] leading-relaxed">
                   Or call Mr. Mustard himself: <a className="font-bold text-[#1E50C8]" href="tel:+14063121223">{SIDEKICK.phoneLine}</a>. He loves visitors.
                 </p>

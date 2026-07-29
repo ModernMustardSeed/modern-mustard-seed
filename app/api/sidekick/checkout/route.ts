@@ -1,8 +1,8 @@
 /**
- * Stripe Checkout for keeping your Sidekick. Amounts come from data/sidekick.ts
+ * Stripe Checkout for keeping your Voice Agent. Amounts come from data/sidekick.ts
  * (cents), never from env price IDs, so the page and the charge cannot diverge.
- *   SIDEKICK      $397 setup + $297/mo   (250 min hard cap)
- *   SIDEKICK PRO  $597 setup + $497/mo   (600 min hard cap)
+ *   VOICE AGENT      $397 setup + $297/mo   (250 min hard cap)
+ *   VOICE AGENT PRO  $597 setup + $497/mo   (600 min hard cap)
  *
  * Subscription mode with the one-time setup fee on the first invoice. No
  * trials, ever (the demo was the trial). Fulfillment is hand-installed by
@@ -81,8 +81,8 @@ export async function POST(req: Request) {
           },
         },
       ],
-      success_url: `${SITE.url}/sidekick/welcome?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE.url}/sidekick#keep`,
+      success_url: `${SITE.url}/voice-agents/forge/welcome?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${SITE.url}/voice-agents/forge#keep`,
       allow_promotion_codes: true,
       automatic_tax: { enabled: true },
       tax_id_collection: { enabled: true },
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
       subscription_data: { metadata },
       custom_text: {
         submit: {
-          message: `Month to month, cancel anytime. ${tier.minutesCap} answered minutes a month, then message-taking mode. Never a surprise bill. Sarah installs your Sidekick by hand within 7 days, and the setup fee is credited toward any custom build over $2,500.`,
+          message: `Month to month, cancel anytime. ${tier.minutesCap} answered minutes a month, then message-taking mode. Never a surprise bill. Sarah installs your Voice Agent by hand within 7 days, and the setup fee is credited toward any custom build over $2,500.`,
         },
       },
     });

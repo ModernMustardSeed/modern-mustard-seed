@@ -10,7 +10,7 @@ type Params = Promise<{ id: string }>;
 /**
  * Forge the lead's own voice agent demo (Cahill's close, automated: "in
  * two hours I'll build the AI on your website, then we call it together").
- * The shareable page at /sidekick/demo/<runId> answers as their business.
+ * The shareable page at /voice-agents/forge/demo/<runId> answers as their business.
  * Logic lives in lib/outbound-demo.ts, shared with the website-demo forge.
  */
 export async function POST(_req: Request, { params }: { params: Params }) {

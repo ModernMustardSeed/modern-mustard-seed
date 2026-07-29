@@ -143,7 +143,7 @@ export default function RestaurantsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/sidekick"
+                href="/voice-agents/forge"
                 className="px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
                 Hear it answer my restaurant, free
@@ -184,7 +184,7 @@ export default function RestaurantsPage() {
                 </p>
               </div>
               <Link
-                href="/sidekick"
+                href="/voice-agents/forge"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-[#161616] bg-[#161616] text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all whitespace-nowrap"
               >
                 Forge mine, free →
@@ -304,7 +304,7 @@ export default function RestaurantsPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
-                  href="/sidekick"
+                  href="/voice-agents/forge"
                   className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#FBF6EA] bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
                 >
                   Forge mine, free →
@@ -423,7 +423,7 @@ export default function RestaurantsPage() {
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/sidekick"
+                href="/voice-agents/forge"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-center"
               >
                 Hear it free →

@@ -591,7 +591,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
 
   // Recurring affiliate commission: any referred subscription (its metadata
   // carries a ref) pays the partner a share of THIS invoice, for a capped
-  // window, idempotent by invoice id. This is what makes a referred Sidekick
+  // window, idempotent by invoice id. This is what makes a referred Voice Agent
   // subscription pay the partner every month, not just at signup.
   if (subMetaAll?.ref && invoice.id) {
     await recordSubscriptionCommission({
@@ -640,8 +640,8 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     : null;
   if (!subId) return;
 
-  // Sidekick renewals get their own recovery note (the /portal link below is
-  // for proposal clients and means nothing to a Sidekick buyer).
+  // Voice Agent renewals get their own recovery note (the /portal link below is
+  // for proposal clients and means nothing to a Voice Agent buyer).
   const subMeta = (invoice as { subscription_details?: { metadata?: Record<string, string> } }).subscription_details?.metadata;
   if (subMeta?.kind === 'sidekick') {
     const skEmail = invoice.customer_email;
@@ -653,22 +653,22 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: skEmail,
           replyTo: 'sarah@modernmustardseed.com',
-          subject: 'Quick payment hiccup on your Sidekick',
+          subject: 'Quick payment hiccup on your Voice Agent',
           html: clientEmail({
             preheader: 'Your card needs a quick update so he stays on the phones.',
-            eyebrow: 'SIDEKICK',
+            eyebrow: 'VOICE AGENT',
             greeting: 'A quick card hiccup.',
-            body: `<p>The monthly payment for ${business}'s Sidekick did not go through. It happens (expired card, bank hiccup, gremlin).</p><p>Stripe will retry automatically, or just reply to this email and I will send a fresh payment link. He stays on the phones in the meantime.</p>`,
+            body: `<p>The monthly payment for ${business}'s Voice Agent did not go through. It happens (expired card, bank hiccup, gremlin).</p><p>Stripe will retry automatically, or just reply to this email and I will send a fresh payment link. He stays on the phones in the meantime.</p>`,
             signature: 'Sarah',
           }),
         });
         await resend.emails.send({
           from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
           to: OWNER_NOTIFY_TO,
-          subject: `SIDEKICK payment failed: ${subMeta.business || skEmail}`,
+          subject: `VOICE AGENT payment failed: ${subMeta.business || skEmail}`,
           html: clientEmail({
-            preheader: 'A Sidekick renewal failed.',
-            eyebrow: 'SIDEKICK DUNNING',
+            preheader: 'A Voice Agent renewal failed.',
+            eyebrow: 'VOICE AGENT DUNNING',
             greeting: 'A renewal bounced.',
             body: `<p>Subscription ${subId}${subMeta.business ? ` (business: <strong>${business}</strong>)` : ''} failed to renew for ${escapeHtmlSafe(skEmail)}.</p><p>Stripe retries on its own. If it does not recover in a few days, pause the line before the minutes leak.</p>`,
             signature: 'The Forge',
@@ -981,7 +981,7 @@ async function handleRefundClawback(stripe: ReturnType<typeof getStripe>, charge
 }
 
 /**
- * A Sidekick was kept. Revenue (setup + month one) is recorded by the
+ * A Voice Agent was kept. Revenue (setup + month one) is recorded by the
  * invoice.paid handler like every other subscription, so this only records
  * the buyer, tells Sarah to PROVISION, and welcomes the client. Fulfillment
  * is hand-installed within 7 days.
@@ -1019,12 +1019,12 @@ async function handleSidekickPurchase(
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
       to: OWNER_NOTIFY_TO,
-      subject: `PROVISION ${tier?.name ?? 'SIDEKICK'}: ${businessRaw || email}`,
+      subject: `PROVISION ${tier?.name ?? 'VOICE AGENT'}: ${businessRaw || email}`,
       html: clientEmail({
-        preheader: 'A Sidekick was kept. Install within 7 days.',
-        eyebrow: 'SIDEKICK ORDER',
+        preheader: 'A Voice Agent was kept. Install within 7 days.',
+        eyebrow: 'VOICE AGENT ORDER',
         greeting: 'He got hired.',
-        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just kept their Sidekick${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${sidekickUsd(tier.setupCents)} setup + $${sidekickUsd(tier.monthlyCents)}/mo, ${tier.minutesCap} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=sidekick-demo.</p>`,
+        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just kept their Voice Agent${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${sidekickUsd(tier.setupCents)} setup + $${sidekickUsd(tier.monthlyCents)}/mo, ${tier.minutesCap} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=sidekick-demo.</p>`,
         signature: 'The Forge',
       }),
     });
@@ -1037,12 +1037,12 @@ async function handleSidekickPurchase(
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
       replyTo: 'sarah@modernmustardseed.com',
-      subject: `${firstName ? `${firstName}, ` : ''}your Sidekick got the job`,
+      subject: `${firstName ? `${firstName}, ` : ''}your Voice Agent got the job`,
       html: clientEmail({
         preheader: 'He starts within 7 days. Here is what happens next.',
-        eyebrow: tier?.name ?? 'SIDEKICK',
+        eyebrow: tier?.name ?? 'VOICE AGENT',
         greeting: firstName ? `${firstName}, he got the job.` : 'He got the job.',
-        body: `<p>Your Sidekick${business ? ` for <strong>${business}</strong>` : ''} is officially hired. Here is exactly what happens next:</p><p><strong>1.</strong> Within one business day, I will email you personally to confirm the details he learned in the forge and how you want your line handled (new local number, or forwarding your existing one).</p><p><strong>2.</strong> I hand-tune his training, wire up bookings and call summaries, and test him on real scenarios.</p><p><strong>3.</strong> Within 7 days he is live, answering ${business || 'your business'} around the clock. ${tier ? `Your plan includes ${tier.minutesCap} answered minutes a month; at the cap he switches to message-taking, so there is never a surprise bill.` : ''}</p><p>Month to month, cancel anytime, and your setup fee is credited in full toward any custom build over $2,500 if you ever go bigger.</p>`,
+        body: `<p>Your Voice Agent${business ? ` for <strong>${business}</strong>` : ''} is officially hired. Here is exactly what happens next:</p><p><strong>1.</strong> Within one business day, I will email you personally to confirm the details he learned in the forge and how you want your line handled (new local number, or forwarding your existing one).</p><p><strong>2.</strong> I hand-tune his training, wire up bookings and call summaries, and test him on real scenarios.</p><p><strong>3.</strong> Within 7 days he is live, answering ${business || 'your business'} around the clock. ${tier ? `Your plan includes ${tier.minutesCap} answered minutes a month; at the cap he switches to message-taking, so there is never a surprise bill.` : ''}</p><p>Month to month, cancel anytime, and your setup fee is credited in full toward any custom build over $2,500 if you ever go bigger.</p>`,
         cta: { label: 'Reply to this email with questions', url: 'mailto:sarah@modernmustardseed.com' },
         signature: 'Sarah',
       }),
@@ -2137,7 +2137,7 @@ async function handlePicturesSubscriptionDeleted(sub: Stripe.Subscription) {
   }
 }
 
-/** A Sidekick subscription ended: Sarah decommissions the line by hand. */
+/** A Voice Agent subscription ended: Sarah decommissions the line by hand. */
 async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
@@ -2146,11 +2146,11 @@ async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
     await resend.emails.send({
       from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
       to: OWNER_NOTIFY_TO,
-      subject: `SIDEKICK CANCELED: ${sub.metadata?.business || sub.id}`,
+      subject: `VOICE AGENT CANCELED: ${sub.metadata?.business || sub.id}`,
       html: clientEmail({
-        preheader: 'A Sidekick subscription ended.',
-        eyebrow: 'SIDEKICK OFFBOARD',
-        greeting: 'A Sidekick clocked out.',
+        preheader: 'A Voice Agent subscription ended.',
+        eyebrow: 'VOICE AGENT OFFBOARD',
+        greeting: 'A Voice Agent clocked out.',
         body: `<p>Subscription ${sub.id}${sub.metadata?.business ? ` (business: <strong>${escapeHtmlSafe(sub.metadata.business)}</strong>)` : ''} was canceled.</p><p>Decommission the line: unassign or park the Vapi number, archive the assistant, and send the goodbye note.</p>`,
         signature: 'The Forge',
       }),
@@ -2358,7 +2358,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true, kind: 'mustard-launch' });
   }
 
-  // ── SIDEKICK subscription started (setup fee rides the first invoice) ──
+  // ── VOICE AGENT subscription started (setup fee rides the first invoice) ──
   if (session.metadata?.kind === 'sidekick') {
     await handleSidekickPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'sidekick' });

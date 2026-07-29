@@ -140,17 +140,17 @@ export default function ChiefPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20 lg:space-y-24">
-        {/* ── The wedge: Sidekick answers your customers. The Chief works for you. ── */}
+        {/* ── The wedge: Voice Agent answers your customers. The Chief works for you. ── */}
         <section className="grid sm:grid-cols-2 gap-5">
           <div className="flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#161616] p-7">
-            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]/55">The Sidekick</span>
+            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]/55">The Voice Agent</span>
             <h3 className="font-display italic font-extrabold text-2xl mt-2">Answers your customers.</h3>
             <p className="font-body text-[14px] text-[#161616]/70 mt-2.5 leading-relaxed flex-1">
               An inbound AI front desk. It picks up your phone when the world calls in, books appointments, and takes
               clean messages 24/7.
             </p>
-            <Link href="/sidekick" className="mt-4 font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#1E50C8] hover:underline underline-offset-4">
-              Meet the Sidekick →
+            <Link href="/voice-agents/forge" className="mt-4 font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#1E50C8] hover:underline underline-offset-4">
+              Meet the Voice Agent →
             </Link>
           </div>
           <div className="flex flex-col border-2 border-[#161616] bg-[#F5B700] rounded-2xl shadow-[6px_6px_0_0_#161616] p-7">

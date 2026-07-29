@@ -20,7 +20,7 @@ export default function Footer() {
         { label: 'The Chief', href: '/chief' },
         { label: 'Command Center', href: '/command-center' },
         { label: 'Websites', href: '/websites' },
-        { label: 'Sidekick Forge', href: '/sidekick' },
+        { label: 'Voice Agent Forge', href: '/voice-agents/forge' },
         { label: 'The Switchboard', href: '/switchboard' },
         { label: 'Mustard Broadcast', href: '/ads' },
         { label: 'Mustard Pictures', href: '/pictures' },

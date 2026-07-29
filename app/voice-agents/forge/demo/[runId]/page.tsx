@@ -27,7 +27,7 @@ export default async function SidekickDemoPage({ params }: { params: Promise<{ r
             We could not find that voice agent demo. Want one built for your business in about 60 seconds?
           </p>
           <a
-            href="/sidekick"
+            href="/voice-agents/forge"
             className="inline-block mt-5 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616]"
           >
             Forge mine now
@@ -40,7 +40,7 @@ export default async function SidekickDemoPage({ params }: { params: Promise<{ r
   const forged = await forgeCall(run, runId, 'web');
 
   // Send them back to THEIR order card (this pack's pricing), not the generic
-  // Sidekick page. Every forged lead has a hub; legacy runs may not, and those
+  // Voice Agent page. Every forged lead has a hub; legacy runs may not, and those
   // fall back to the old CTA.
   const { data: lead } = await sb
     .from('outbound_leads')

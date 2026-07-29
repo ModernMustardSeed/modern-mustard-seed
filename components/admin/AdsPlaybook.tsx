@@ -154,19 +154,19 @@ const FM_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per playbook email (the "Email this to me" captures land in Leads). The truth metric: booked calls and audit requests from playbook readers.' },
 ];
 
-// ============ Campaign five: The Sidekick Forge ============
+// ============ Campaign five: The Voice Agent Forge ============
 
-const SK_LANDING = 'https://modernmustardseed.com/sidekick?utm_source=meta&utm_medium=paid&utm_campaign=sidekick';
+const SK_LANDING = 'https://modernmustardseed.com/voice-agents/forge?utm_source=meta&utm_medium=paid&utm_campaign=sidekick';
 
 const SK_COPY_A = `Right now, someone is calling your business. Nobody's answering.
 
-So we built the Sidekick Forge. Tell Mr. Mustard about your business (what you do, what you charge, what customers ask) and sixty seconds later your own voice agent graduates and talks to you. Live. In your browser. He can even call your cell.
+So we built the Voice Agent Forge. Tell Mr. Mustard about your business (what you do, what you charge, what customers ask) and sixty seconds later your own voice agent graduates and talks to you. Live. In your browser. He can even call your cell.
 
 The demo is free, no card. If you love him, he's answering your real phone 24/7 this week: hard-capped minutes, month to month, never a surprise bill.`;
 
 const SK_COPY_B = `The average small business misses 4 in 10 calls. Every missed call dials your competitor next.
 
-Your Sidekick answers every one: books appointments, takes clean messages, flags emergencies to your cell, and sends you a summary of every call. Trained on YOUR business in sixty seconds, live on your real line within a week.
+Your Voice Agent answers every one: books appointments, takes clean messages, flags emergencies to your cell, and sends you a summary of every call. Trained on YOUR business in sixty seconds, live on your real line within a week.
 
 Hear yours before you pay a cent. The forge is free and it is honestly just fun.`;
 
@@ -285,7 +285,7 @@ const GN_CHECKLIST = [
   { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same audit landing, swap the link to utm_source=google. Objective: Leads or Traffic.' },
   { id: 'organic', label: 'Post the 4:5 to FB, the 9:16 as an IG Reel + a YouTube Short the same day (free reach, and this one is made to be shared). Ask Claude for the launch drafts.' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the time-back angle) and let them fight. Kill the loser at day 6.' },
-  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at the audit link. This brand film is the top of the funnel that warms every other campaign (Call Me, Sidekick, the audit).' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at the audit link. This brand film is the top of the funnel that warms every other campaign (Call Me, Voice Agent, the audit).' },
   { id: 'review', label: 'Day 5-7: judge on cost per audit lead (utm_campaign=goodnews, lands in Leads + the admin Inbox). Truth metric: booked discovery calls from those leads.' },
 ];
 
@@ -800,7 +800,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'tw', num: '02', label: 'Talking Website', blurb: 'Full system · audit funnel · $10/day' },
   { key: 'mm', num: '03', label: 'MUSTARD MODE', blurb: 'The product · free-play funnel · $10/day' },
   { key: 'fm', num: '04', label: 'The Fable Mind', blurb: 'Free playbook · lead magnet · $10/day' },
-  { key: 'sk', num: '05', label: 'Sidekick Forge', blurb: 'Instant demo · forge funnel · $15/day' },
+  { key: 'sk', num: '05', label: 'Voice Agent Forge', blurb: 'Instant demo · forge funnel · $15/day' },
   { key: 'px', num: '06', label: 'Pictures', blurb: 'Screen Test funnel · image ads · $10/day' },
   { key: 'pr', num: '07', label: 'Press', blurb: 'Proof funnel · image ads · $10/day' },
   { key: 'geo', num: '08', label: 'GEO Desk', blurb: 'Audit funnel · image ads · $10/day' },
@@ -1523,7 +1523,7 @@ export default function AdsPlaybook() {
         </>)}
 
         {tab === 'sk' && (<>
-        {/* ============ Campaign five: The Sidekick Forge ============ */}
+        {/* ============ Campaign five: The Voice Agent Forge ============ */}
         <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
           <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
           <div className="relative">
@@ -1532,20 +1532,20 @@ export default function AdsPlaybook() {
               &ldquo;The Graduate&rdquo; <span className="italic text-[#F5B700]">The demo IS the product.</span>
             </h2>
             <p className="text-white/75 mt-3 max-w-3xl font-sans">
-              The forge funnel. Mr. Mustard trains a Sidekick in the spot; the viewer forges their own
+              The forge funnel. Mr. Mustard trains a Voice Agent in the spot; the viewer forges their own
               for free and HEARS it answer as their business. Every demo is a transcript-attached lead
               at roughly 45 cents of voice cost, and Keep Him subscriptions convert at the moment of
               peak delight. One traffic cell at $15/day, judged on cost per forged demo.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
-              <a href="/sidekick" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The forge (landing)</a>
+              <a href="/voice-agents/forge" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The forge (landing)</a>
               <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads (forged demos)</a>
             </div>
           </div>
         </section>
 
-        {/* Sidekick cuts */}
+        {/* Voice Agent cuts */}
         <section>
           <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The creative, one cut per placement</h3>
           <p className="text-sm text-[#161616]/65 mb-5 font-sans">Same drill: upload one ad, customize per placement. Right-click any video to save it.</p>
@@ -1565,7 +1565,7 @@ export default function AdsPlaybook() {
           </div>
         </section>
 
-        {/* Sidekick copy */}
+        {/* Voice Agent copy */}
         <section>
           <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
           <div className="grid md:grid-cols-2 gap-5">
@@ -1577,7 +1577,7 @@ export default function AdsPlaybook() {
           </div>
         </section>
 
-        {/* Sidekick launch checklist */}
+        {/* Voice Agent launch checklist */}
         <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
           <div className="flex items-center justify-between gap-3 mb-5">
             <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
@@ -2502,7 +2502,7 @@ export default function AdsPlaybook() {
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">How to read results</span>
           <div className="grid md:grid-cols-3 gap-6 mt-4 text-sm font-sans">
             <p><b className="text-[#F5B700]">Calls:</b> every ad-driven call hits the Mustard line and lands in <a href="/admin/callers" className="underline decoration-[#F5B700]">Callers</a> with a transcript. Bookings email you automatically.</p>
-            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, fablemind, sidekick, and goodnews. MUSTARD MODE free-plays, Fable Mind playbook emails, and forged Sidekick demos land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
+            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, fablemind, sidekick, and goodnews. MUSTARD MODE free-plays, Fable Mind playbook emails, and forged Voice Agent demos land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
             <p><b className="text-[#F5B700]">Weekly:</b> ask Claude to read Callers against spend and report the true cost per booked discovery call.</p>
           </div>
         </section>

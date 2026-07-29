@@ -5,7 +5,7 @@
  * spend stays in THEIR ad account on THEIR card, never marked up.
  *
  * Amounts live here in cents and flow into checkout as inline price_data
- * (same shape as Sidekick), so the page and the charge cannot diverge.
+ * (same shape as Voice Agent), so the page and the charge cannot diverge.
  * No trials, month to month, hard caps on managed spend. Fail closed.
  */
 

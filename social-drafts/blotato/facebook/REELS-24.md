@@ -120,7 +120,7 @@
 
 **CAPTION:** No editing, no script, just a real call to a real voice agent. Whatever you think about AI, this is what your after-hours customer is comparing you to now. Curious what you make of it. 👇
 
-**ASK REEL (1 of 3 this month):** pinned comment gets the /sidekick link, phrased as "you can call one yourself here."
+**ASK REEL (1 of 3 this month):** pinned comment gets the /voice-agents/forge link, phrased as "you can call one yourself here."
 
 ---
 
@@ -525,7 +525,7 @@
 
 **CAPTION:** Save this one. Four weeks, zero dollars, four afternoons, and it's more than most businesses do in a year. I do this every week for free in the group, link in the comments. Start with week one and tell me your missed-call number, I promise it's worse than you think.
 
-**ASK REEL (2 of 3 this month):** pinned comment carries the group link plus "if you want to hear what an AI answering your phone sounds like, you can call one at modernmustardseed.com/sidekick."
+**ASK REEL (2 of 3 this month):** pinned comment carries the group link plus "if you want to hear what an AI answering your phone sounds like, you can call one at modernmustardseed.com/voice-agents/forge."
 
 ---
 
@@ -538,7 +538,7 @@
 - Change shirts between batches so two weeks of posts do not look like one afternoon.
 
 **Editing (5 minutes per Reel, in the Facebook app):**
-- Auto-captions on, then fix the words it got wrong. It will get "Sidekick" and business names wrong.
+- Auto-captions on, then fix the words it got wrong. It will get "Voice Agent" and business names wrong.
 - Add the on-screen text beats at the moments listed. Big, high contrast, upper third or center. Never at the very bottom, the UI covers it.
 - Trim dead air at the front. The hook should be the first frame with sound.
 - Add a quiet trending audio underneath at low volume if one fits. Do not let it fight your voice.

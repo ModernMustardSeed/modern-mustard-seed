@@ -1,6 +1,6 @@
 /**
  * Stripe Checkout for MUSTARD BROADCAST (/ads). Amounts come from data/ads.ts
- * in cents as inline price_data (Sidekick shape), so the page and the charge
+ * in cents as inline price_data (Voice Agent shape), so the page and the charge
  * cannot diverge and no env price IDs are needed.
  *   ON AIR      $497 setup + $297/mo  (Meta, manages up to $3,000/mo spend)
  *   PRIME TIME  $997 setup + $597/mo  (Meta + Google, up to $10,000/mo spend)
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   const tier = getBroadcastTier((body.tier || '').trim());
   if (!tier) return NextResponse.json({ error: 'unknown_item' }, { status: 404 });
 
-  // Affiliate attribution: same first-party cookie as Sidekick so a referred
+  // Affiliate attribution: same first-party cookie as Voice Agent so a referred
   // Broadcast subscription pays the partner on every invoice.
   const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
   const ref = (cookieRef ? decodeURIComponent(cookieRef[1]) : '').trim().slice(0, 64) || undefined;

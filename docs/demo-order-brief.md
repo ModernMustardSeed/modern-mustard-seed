@@ -1,7 +1,7 @@
 # Demo "Order It Now" Build Brief (locked 2026-07-11)
 
 Sarah's call: prospects on the forged-demo surfaces buy on the spot instead of
-being sent to /sidekick or /book. We customize after purchase and release
+being sent to /voice-agents/forge or /book. We customize after purchase and release
 within a week.
 
 ## Pricing (LOCKED by Sarah)

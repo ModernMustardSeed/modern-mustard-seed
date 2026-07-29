@@ -1,12 +1,12 @@
 /**
- * THE SIDEKICK FORGE. The mascot-first flagship demo-to-subscription machine.
+ * THE VOICE AGENT FORGE. The mascot-first flagship demo-to-subscription machine.
  *
  * A visitor tells Mr. Mustard about their business, watches him train a
  * personalized AI front desk in about sixty seconds, then talks to it live
  * (in the browser, or it calls their cell). The demo gives them all the room
  * they want to riff (30 min), and the assistant's 60s silence timeout closes
  * an abandoned line; the conversion is "Keep Him": a productized, hard-capped
- * monthly Sidekick.
+ * monthly Voice Agent.
  *
  * Price lives in `sidekickTiers` below, in cents, and nowhere else. Checkout
  * builds inline Stripe price_data from it, so the env price ids this file used
@@ -14,12 +14,12 @@
  */
 
 export const SIDEKICK = {
-  name: 'The Sidekick Forge',
-  wordmark: '[ SIDEKICK: FORGED ]',
+  name: 'The Voice Agent Forge',
+  wordmark: '[ VOICE AGENT: FORGED ]',
   tagline: 'Your front desk, forged in 60 seconds.',
   promise:
     'Tell Mr. Mustard about your business. He trains a personalized voice agent on the spot, and then you talk to it. Live. If you love it, it answers your real phone 24/7 starting this week.',
-  // Intent-first title (2026-07-25). "The Sidekick Forge" has no search demand;
+  // Intent-first title (2026-07-25). "The Voice Agent Forge" has no search demand;
   // "voice agent for small business" does. The brand name still owns the H1.
   metaTitle: 'Voice Agent for Small Business. Hear Yours in 60 Seconds',
   metaDescription:
@@ -135,14 +135,14 @@ export function sidekickUsd(cents: number): number {
 export const sidekickTiers: SidekickTier[] = [
   {
     slug: 'sidekick',
-    name: 'SIDEKICK',
+    name: 'VOICE AGENT',
     chip: '[ ON THE PHONES ]',
     // Matches DEMO_PRODUCTS.voice in lib/demo-order.ts. It is the SAME product,
     // so it must not be cheaper here than in the demo funnel (Sarah, 2026-07-12).
     setupCents: 39700,
     monthlyCents: 29700,
     minutesCap: 250,
-    pitch: 'The Sidekick you just met, answering your real phone around the clock.',
+    pitch: 'The Voice Agent you just met, answering your real phone around the clock.',
     includes: [
       'Your own local number, or we forward your existing line',
       'Trained on your business by Mr. Mustard, tuned by Sarah',
@@ -156,9 +156,9 @@ export const sidekickTiers: SidekickTier[] = [
   },
   {
     slug: 'sidekick-pro',
-    name: 'SIDEKICK PRO',
+    name: 'VOICE AGENT PRO',
     chip: '[ RUNS THE DESK ]',
-    // Must stay strictly above SIDEKICK, and by enough that the upgrade reads as a
+    // Must stay strictly above VOICE AGENT, and by enough that the upgrade reads as a
     // different tier rather than a rounding error. Base moved to $397/$297, which
     // squeezed the premium to +$100/+$100, so Pro moves with it and restores the
     // original +$200/+$200 gap (Sarah, 2026-07-13).
@@ -167,7 +167,7 @@ export const sidekickTiers: SidekickTier[] = [
     minutesCap: 600,
     pitch: 'For phones that actually ring. More minutes, a memory, and a monthly tune-up.',
     includes: [
-      'Everything in SIDEKICK',
+      'Everything in VOICE AGENT',
       '600 answered minutes a month (roughly 250 calls)',
       'Caller memory: regulars get recognized between calls',
       'Booking wired into your real calendar',
@@ -220,7 +220,7 @@ export const sidekickFaq = [
   },
   {
     q: 'Can I change what he says?',
-    a: 'Yes. Email an edit and it ships same day on Pro, within two business days on SIDEKICK. Pro also gets a monthly retrain call with Sarah.',
+    a: 'Yes. Email an edit and it ships same day on Pro, within two business days on VOICE AGENT. Pro also gets a monthly retrain call with Sarah.',
   },
   {
     q: 'Is there a contract?',
@@ -228,7 +228,7 @@ export const sidekickFaq = [
   },
   {
     q: 'Who is Mr. Mustard?',
-    a: 'The AI who answers Modern Mustard Seed’s own phones at (406) 312-1223 and just trained your Sidekick. Call him yourself, he loves visitors.',
+    a: 'The AI who answers Modern Mustard Seed’s own phones at (406) 312-1223 and just trained your Voice Agent. Call him yourself, he loves visitors.',
   },
 ] as const;
 

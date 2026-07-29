@@ -46,7 +46,7 @@ export async function POST() {
     greetName: user.name,
     email: user.email,
     systemPrompt: prompt,
-    keyterms: ['Sidekick', 'Outbound'],
+    keyterms: ['Voice Agent', 'Outbound'],
   });
   if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: 503 });
   return NextResponse.json({ call: forged.call });

@@ -1,15 +1,15 @@
 /**
- * THE SIDEKICK DRIP: follow-up for people who forged a Sidekick at /sidekick
+ * THE SIDEKICK DRIP: follow-up for people who forged a Voice Agent at /voice-agents/forge
  * and did not buy.
  *
- * WHY THIS EXISTS (2026-07-20): /sidekick forgers received NOTHING. The forge
+ * WHY THIS EXISTS (2026-07-20): /voice-agents/forge forgers received NOTHING. The forge
  * wrote a row to `leads` with source 'sidekick-forge' and emailed Sarah, and
  * that was the end of it. The demo-station drip only covers `outbound_leads`
  * where source = 'demo-station', and the mustard-sequence cron only covers
  * sources 'mustard-seed-chat' and 'tracker'. A stranger could hear their own
  * phone answered by an AI trained on their business, the single best moment in
  * the product, and never hear from us again. The 28 trade pages and four of the
- * /for/* pillar pages now point at /sidekick, so this was the leak that mattered.
+ * /for/* pillar pages now point at /voice-agents/forge, so this was the leak that mattered.
  *
  * Design notes:
  *  - Rides the outbound-cadence cron. Vercel Hobby cron slots are 12/12 FULL,
@@ -37,7 +37,7 @@ const WINDOW_DAYS = 45;
 
 /**
  * A sequence may only START for a genuinely fresh forge. Without this, the
- * first run of this module would have opened touch 1 ("your Sidekick is still
+ * first run of this module would have opened touch 1 ("your Voice Agent is still
  * standing by") on leads 11 and 13 days old, which reads as a robot that lost
  * track of time. Stale forgers are a human's job, not a drip's: they surface in
  * staleUnstarted() instead. Once a sequence is underway the cadence gaps in
@@ -65,7 +65,7 @@ const TERMINAL = new Set(['replied', 'booked', 'won', 'lost', 'archived']);
  * Pull the run id the forge wrote as `run=<uuid>`. Strict UUID shape, so a
  * malformed or missing token simply yields no deep link rather than a broken
  * URL. Leads forged before 2026-07-20 have no token; they still get the drip,
- * just pointed at /sidekick instead of their specific run.
+ * just pointed at /voice-agents/forge instead of their specific run.
  */
 export function runIdFromNotes(notes: string | null): string | null {
   const m = /run=([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i.exec(notes ?? '');
@@ -100,11 +100,11 @@ export function sidekickDripEmail(
   const hi = first ? `Hi ${first},` : 'Hi there,';
   const biz = escape(bizOf(lead));
   const runId = runIdFromNotes(lead.notes);
-  const demoUrl = runId ? `${SITE.url}/sidekick/demo/${runId}` : `${SITE.url}/sidekick`;
+  const demoUrl = runId ? `${SITE.url}/voice-agents/forge/demo/${runId}` : `${SITE.url}/voice-agents/forge`;
   const monthly = sidekickUsd(sidekickTiers[0].monthlyCents);
   const setup = sidekickUsd(sidekickTiers[0].setupCents);
 
-  const cta = { label: 'Hear your Sidekick again', url: demoUrl };
+  const cta = { label: 'Hear your Voice Agent again', url: demoUrl };
   const secondary = { label: 'Book 10 minutes with Sarah', url: `${SITE.url}/book` };
 
   if (step === 0) {
@@ -113,8 +113,8 @@ export function sidekickDripEmail(
     const ageHrs = (Date.now() - new Date(lead.created_at).getTime()) / 3600000;
     const when = ageHrs < 40 ? 'Yesterday you' : 'A few days ago you';
     return {
-      subject: `${bizOf(lead)}, your Sidekick is still standing by`,
-      snippet: 'Sidekick drip 1 of 3: come back and hear it again.',
+      subject: `${bizOf(lead)}, your Voice Agent is still standing by`,
+      snippet: 'Voice Agent drip 1 of 3: come back and hear it again.',
       html: clientEmail({
         preheader: 'The voice agent you trained is still live, answering to your name.',
         greeting: hi,
@@ -132,13 +132,13 @@ export function sidekickDripEmail(
   if (step === 1) {
     return {
       subject: 'The call you did not answer this week',
-      snippet: 'Sidekick drip 2 of 3: the cost of the missed call.',
+      snippet: 'Voice Agent drip 2 of 3: the cost of the missed call.',
       html: clientEmail({
-        preheader: 'What a missed call actually costs, and what the Sidekick costs.',
+        preheader: 'What a missed call actually costs, and what the Voice Agent costs.',
         greeting: hi,
         body:
           `<p>The caller who gets voicemail usually does not leave one. They dial the next name on the list, and you never find out that the phone rang at all. That is the part that stings: the loss is invisible.</p>` +
-          `<p>The Sidekick you trained for ${biz} answers every one of those, day or night, books the work, and texts you the details. Keeping it is $${setup} to set up plus $${monthly} a month, with a hard minute cap so there is never a surprise bill. Month to month, live within about a week, cancel anytime.</p>` +
+          `<p>The Voice Agent you trained for ${biz} answers every one of those, day or night, books the work, and texts you the details. Keeping it is $${setup} to set up plus $${monthly} a month, with a hard minute cap so there is never a surprise bill. Month to month, live within about a week, cancel anytime.</p>` +
           `<p>No trial, because the demo already was the trial.</p>`,
         cta,
         secondary,
@@ -150,12 +150,12 @@ export function sidekickDripEmail(
 
   return {
     subject: first ? `Last note from me, ${first}` : 'Last note from me',
-    snippet: 'Sidekick drip 3 of 3: the honest close.',
+    snippet: 'Voice Agent drip 3 of 3: the honest close.',
     html: clientEmail({
       preheader: 'Your demo stays live either way. I will stop writing about it.',
       greeting: hi,
       body:
-        `<p>This is my last email about it, promise. Your Sidekick stays live either way, so nothing expires and nobody is going to call you five times.</p>` +
+        `<p>This is my last email about it, promise. Your Voice Agent stays live either way, so nothing expires and nobody is going to call you five times.</p>` +
         `<p>If the timing is wrong, ignore me with a clear conscience. If the missed calls still bother you, putting it on ${biz}'s real line takes about a week, or grab ten minutes with me and I will answer whatever is in the way.</p>`,
       cta,
       secondary,

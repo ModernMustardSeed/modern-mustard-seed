@@ -17,7 +17,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const base = (process.argv[2] || 'https://modernmustardseed.com').replace(/\/$/, '');
-const PAGES = ['/', '/sidekick', '/demos', '/voice-agents/hvac', '/for/service-businesses'];
+const PAGES = ['/', '/voice-agents/forge', '/demos', '/voice-agents/hvac', '/for/service-businesses'];
 const CHROME =
   process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 

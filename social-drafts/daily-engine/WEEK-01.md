@@ -70,7 +70,7 @@ Free. No account. No card. No sales call.
 I built it because "voice agent" means nothing until you hear one say your
 company's name back to you.
 
-modernmustardseed.com/sidekick
+modernmustardseed.com/voice-agents/forge
 
 ---
 

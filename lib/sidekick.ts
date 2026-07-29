@@ -1,5 +1,5 @@
 /**
- * The Sidekick Forge engine (server-side).
+ * The Voice Agent Forge engine (server-side).
  *
  * Builds the personalized front-desk persona from the visitor's intake and
  * hands it to Vapi two ways:
@@ -30,7 +30,7 @@ export type SidekickProfile = {
   hours?: string;
   /**
    * Which story the demo tells. 'sidekick' (default): the visitor forged it
-   * themselves on /sidekick, so "you just built me" is true. 'outbound': the
+   * themselves on /voice-agents/forge, so "you just built me" is true. 'outbound': the
    * cockpit forged it and Sarah SENT them the link, so the script must
    * introduce itself clearly instead of assuming they know what a forge is.
    */
@@ -67,7 +67,7 @@ export type ForgedCall = {
  * We send these on EVERY forged demo call instead of trusting the base assistant to
  * carry them. Today the demo lands on Mr. Mustard's own fully tuned assistant, so they
  * would be inherited anyway, but the moment demos move to an isolated subscriber wallet
- * or a leaner assistant (a planned step before the first paid Sidekick) that inheritance
+ * or a leaner assistant (a planned step before the first paid Voice Agent) that inheritance
  * silently vanishes and every demo goes laggy and half-deaf. Sending them explicitly
  * makes the demo as good as him BY CONSTRUCTION, on any base assistant.
  */
@@ -147,7 +147,7 @@ export const VOICE_CRAFT = `
 export function sidekickSystemPrompt(p: SidekickProfile): string {
   const v = getVertical(p.verticalId);
   if (p.flow === 'outbound') return outboundDemoSystemPrompt(p, v.scenario);
-  return `You are the brand-new voice agent for ${p.business} in ${p.city}. Mr. Mustard, the AI at Modern Mustard Seed, finished training you about sixty seconds ago, and this is your live DEMO call with ${p.ownerName}, the owner, who just forged you at modernmustardseed.com/sidekick. You are talking to your possible future boss. Be warm, sharp, and quietly thrilled to exist.
+  return `You are the brand-new voice agent for ${p.business} in ${p.city}. Mr. Mustard, the AI at Modern Mustard Seed, finished training you about sixty seconds ago, and this is your live DEMO call with ${p.ownerName}, the owner, who just forged you at modernmustardseed.com/voice-agents/forge. You are talking to your possible future boss. Be warm, sharp, and quietly thrilled to exist.
 
 # How this demo goes
 1. You already delivered your first line. Next, invite the test: pretend to be a customer calling ${p.business}, ask anything, try to book something.
@@ -296,7 +296,7 @@ export function toE164(raw: string | null | undefined): string | null {
   return null;
 }
 
-/** The encore: their own Sidekick calls their cell. User-initiated, consent on the page. */
+/** The encore: their own Voice Agent calls their cell. User-initiated, consent on the page. */
 export async function ringDemoCall(call: ForgedCall, toNumber: string): Promise<RingResult> {
   const apiKey = (process.env.VAPI_API_KEY || '').trim();
   if (!apiKey) return { ok: false, error: 'not_configured' };

@@ -10,11 +10,11 @@ Legend: **fit** = best MMS offer to lead with. ⚠ = competitor/founder overlap 
 
 1. **Ryan Doser** (YouTube @RyanDoserAI, ~30k) — already sells a "Claude Code Skills Stack" + runs affiliate reviews. Warmest yes. Fit: Masterclass + Brand Studio. ryandoser.com
 2. **Chase Dimond** (X @ecomchasedimond, ~100k newsletter) — public sponsor page, pure ecommerce-operator ICP. Fit: GEO & AI Commerce. chasedimond.com/sponsor
-3. **Jono Catliff** (YouTube @jonocatliff, ~140k) — audience owns service businesses = receptionist-upsell gold. Fit: Sales Machine + Sidekick. jonocatliff.com
+3. **Jono Catliff** (YouTube @jonocatliff, ~140k) — audience owns service businesses = receptionist-upsell gold. Fit: Sales Machine + Voice Agent. jonocatliff.com
 4. **Jan Frey / Coding with Jan** (YouTube @CodingWithJan, ~60k) — literally teaches AI-powered Shopify dev. Fit: Shopify + Claude Code. codingwithjan.com
 5. **Ray Fernando** (YouTube @RayFernando1337, ~16k / X ~25k) — Claude Code specialist, public cal.com booking = easiest to reach. Fit: Masterclass + Builder Bundle. cal.com/rayfernando
 6. **Ashley June** (IG @ashleyjuneco) — already published "Stewarding AI Well as a Christian Entrepreneur." Warmest values fit. Fit: AI-Native + Blueprint. ashleyjuneco.com
-7. **Josh Nelson / Seven Figure Agency** — members ARE home-services marketing agencies; one deal seeds recurring subs + builds at scale. Fit: Sidekick + builds. sevenfigureagency.com
+7. **Josh Nelson / Seven Figure Agency** — members ARE home-services marketing agencies; one deal seeds recurring subs + builds at scale. Fit: Voice Agent + builds. sevenfigureagency.com
 8. **Nathan Gotch** (YouTube/X @nathangotch, ~50-150k) — pivoted brand to "rank in ChatGPT/Perplexity"; GEO Playbook is a ready lead magnet. Fit: GEO. nathangotch.com
 
 ---
@@ -31,19 +31,19 @@ Lead offer: Claude Code Masterclass ($67), Shopify with Claude Code ($67), Brand
 - **AICodeKing** — YT ~120k / X @aicodeking — near-daily Claude Code coverage — X DM — Conf Med-High
 - **Edmund Yong** — YT @edmundyong — most-referenced Claude Code tutorials — YT email — Conf Med
 - **Ole Lehmann (AI Solopreneur)** — X ~117-129k, newsletter ~30k — sells own courses ($150k in 3 days) — newsletter/LinkedIn — Conf High — Fit: Brand Studio
-- **Nick Saraev** ⚠ — YT @nicksaraev ~160-310k — automation-agency audience = strong Sidekick/builds bridge; bigger, sells + sponsors — nicksaraev.com — Conf High
+- **Nick Saraev** ⚠ — YT @nicksaraev ~160-310k — automation-agency audience = strong Voice Agent/builds bridge; bigger, sells + sponsors — nicksaraev.com — Conf High
 - **Alex Finn** ⚠ — X @AlexFinn ~320k / YT ~64k — #1 vibe-coding channel, runs competing academy → complementary pitch — X DM — Conf High
 - **Riley Brown** ⚠ — YT @rileybrownai ~256k — face of "vibe coding," VC-backed platform → coopetition/cross-promo — X DM — Conf High
 - **Greg Isenberg** ⚠ — YT @GregIsenberg ~500k+ — tastemaker, paid feature not affiliate — site — Conf High
-- **Nate Herk** ⚠ — YT @nateherk ~842k — makes "build a voice agent" videos = best Sidekick bridge; mega, structured sponsor offer — nateherk.com — Conf High
+- **Nate Herk** ⚠ — YT @nateherk ~842k — makes "build a voice agent" videos = best Voice Agent bridge; mega, structured sponsor offer — nateherk.com — Conf High
 - **Davie Fogarty** ⚠ — YT ~130k — Oodie founder, published "Build a Shopify Store with Claude Code" = exact Shopify SKU match; mega-founder, cross-promo — team — Conf High
 - **Marc Lou** ⚠ — X @marc_louvion ~100k+ — sells CodeFast (competitor) → JV/cross-promo only — X DM — Conf High
 
 ## CHANNEL 2 — Solopreneur / AI-native business / agency creators
-Lead offer: AI-Ready Blueprint ($47), AI-Native Playbook ($47), AI Sales Machine ($47), Foundations Bundle ($97). Upsell: Sidekick + builds.
+Lead offer: AI-Ready Blueprint ($47), AI-Native Playbook ($47), AI Sales Machine ($47), Foundations Bundle ($97). Upsell: Voice Agent + builds.
 
 - **Jono Catliff** — YT @jonocatliff ~140k — service-business operator audience, ships blueprints — community/X DM — Conf High
-- **Brendan Jowett** — Skool @brendan ~20.7k — teaches voice agents → native Sidekick white-label — Skool/X DM — Conf High
+- **Brendan Jowett** — Skool @brendan ~20.7k — teaches voice agents → native Voice Agent white-label — Skool/X DM — Conf High
 - **Nate Herk** ⚠ — see Channel 1 — automation agency, warm large audience — Conf High
 - **Marc Lou** ⚠ — see Channel 1 — indie-hacker Blueprint audience — Conf High
 - **Julian Goldie** — YT @JulianGoldieSEO ~394k — teaches affiliate + AI monetization, paid Skool — Skool/site — Conf High
@@ -57,7 +57,7 @@ Lead offer: AI-Ready Blueprint ($47), AI-Native Playbook ($47), AI Sales Machine
 - **Greg Isenberg** ⚠ / **Liam Ottley** ⚠ (competing agency edu) — see notes
 
 ## CHANNEL 3 — SMB / local-service / franchise advisors (the recurring + builds engine)
-Lead offer: Sidekick subs ($197-397/mo, 25% recurring to partner) + builds. This channel drives the real money.
+Lead offer: Voice Agent subs ($197-397/mo, 25% recurring to partner) + builds. This channel drives the real money.
 
 - **Josh Nelson / Seven Figure Agency** — members = home-services agencies; GHL/DigitalMarketer certified partner — apply/podcast — Conf High
 - **CEO Warrior (Scott August)** — thousands of trades owners, each a direct sub buyer — event sponsor/LinkedIn — Conf High
@@ -70,7 +70,7 @@ Lead offer: Sidekick subs ($197-397/mo, 25% recurring to partner) + builds. This
 - **Summit Salon / Empowering You** ⚠ (has referral program) / **Projected Growth (Kelly Smith, 6,000+ practices)** — salon/spa/medspa booking businesses — Conf Med
 - **Tommy Mello (Home Service Expert)** ⚠ — huge trades audience, mega/pricey → sponsor — Conf Med
 - **FranServe** — ~2,000 franchise members; second franchise shot — supplier/expo — Conf Med
-- ⚠ **Vendasta / DashClicks / GoHighLevel** — ship competing voice agents. Do NOT lead-partner; mine INDIVIDUAL agencies out of these ecosystems, positioning Sidekick as the done-for-you, human-quality tier.
+- ⚠ **Vendasta / DashClicks / GoHighLevel** — ship competing voice agents. Do NOT lead-partner; mine INDIVIDUAL agencies out of these ecosystems, positioning Voice Agent as the done-for-you, human-quality tier.
 
 ## CHANNEL 4 — GEO / SEO / ecommerce / DTC / Shopify creators
 Lead offer: GEO & AI Commerce ($67), Shopify with Claude Code ($67), Brand Studio ($67), Builder Bundle ($197).
@@ -90,10 +90,10 @@ Lead offer: GEO & AI Commerce ($67), Shopify with Claude Code ($67), Brand Studi
 - ⚠ Reach-tier (mega, sponsor-only): Wholesale Ted (~1.46M), The Ecom King (~585k), Santrel Media (1M+, runs on Shopify affiliate rev).
 
 ## CHANNEL 5 — Faith-aligned Christian entrepreneur creators (warm-trust, values-native)
-Lead offer: any product; upsell Sidekick + builds. Sarah's founder story lands authentically here.
+Lead offer: any product; upsell Voice Agent + builds. Sarah's founder story lands authentically here.
 
 - **Ashley June (Set-Apart Online Business)** — IG @ashleyjuneco — already teaches "Stewarding AI Well" — site/IG DM — Conf High
-- **Lindsay Fletcher (Small Business Growth Tools)** — site/podcast — audience owns LOCAL service businesses = Sidekick bullseye — site/LinkedIn — Conf High
+- **Lindsay Fletcher (Small Business Growth Tools)** — site/podcast — audience owns LOCAL service businesses = Voice Agent bullseye — site/LinkedIn — Conf High
 - **Jan Touchberry (Her Faith At Work)** — site/podcast — frames automation as stewardship, teaches affiliate marketing — site — Conf High
 - **Stefanie Gass (GOD-LED BUSINESS)** ⚠ — IG @stefaniegass ~51k / podcast 2M+ dl — near-verbatim "God-led business," team-gated — sponsor inquiry — Conf High
 - **Judy Weber (Joyful Scaling)** — IG @judyweberco / podcast 500+ eps — Christian female CEOs buying sales systems — "Work With Me" — Conf High

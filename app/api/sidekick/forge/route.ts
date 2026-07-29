@@ -1,9 +1,9 @@
 /**
- * The Sidekick Forge API.
+ * The Voice Agent Forge API.
  *
  * mode "web"  : forge the persona, record the run, return assistantOverrides
  *               for the in-browser call (the guaranteed primary beat).
- * mode "phone": the encore. Rings the visitor's cell with THEIR Sidekick,
+ * mode "phone": the encore. Rings the visitor's cell with THEIR Voice Agent,
  *               once per run and once per phone number, user-initiated.
  *
  * Every gate fails CLOSED. Voice minutes cost real money:
@@ -141,7 +141,7 @@ async function handleForge(
   if (emailClaim === 'error') return NextResponse.json({ error: 'forge_offline' }, { status: 503 });
   if (emailClaim === 'taken') {
     return NextResponse.json(
-      { error: 'already_forged', message: 'You already forged your Sidekick. Ready to put him on your real phones? That is the button below.' },
+      { error: 'already_forged', message: 'You already forged your Voice Agent. Ready to put him on your real phones? That is the button below.' },
       { status: 402 }
     );
   }
@@ -155,7 +155,7 @@ async function handleForge(
   }
   if (todayCount > GLOBAL_DAILY_CAP) {
     await releaseKey(supabase, 'email', email);
-    await notifySarah('SIDEKICK FORGE: daily cap reached', [
+    await notifySarah('VOICE AGENT FORGE: daily cap reached', [
       `The forge hit its ${GLOBAL_DAILY_CAP}-demo daily cap. Latest attempt: ${business} (${email}).`,
       'Raise GLOBAL_DAILY_CAP in app/api/sidekick/forge/route.ts if this is good traffic.',
     ]);
@@ -195,7 +195,7 @@ async function handleForge(
       // `run=<uuid>` is a MACHINE-READ TOKEN, not prose: lib/sidekick-drip.ts
       // extracts it to link the follow-up emails back to this exact demo.
       // Keep it first and keep the shape. (The leads table has no demo_url
-      // column and the Sidekick forge is a no-DDL surface, so the token is
+      // column and the Voice Agent forge is a no-DDL surface, so the token is
       // how the run travels with the lead.)
       notes: `run=${runId} [sidekick] ${business} · ${getVertical(verticalId).label} · ${city} · taught him: ${services.slice(0, 160)}`,
     });
@@ -203,8 +203,8 @@ async function handleForge(
     /* non-fatal */
   }
 
-  await notifySarah(`SIDEKICK FORGED: ${business} (${city})`, [
-    `<strong>${esc(ownerName)}</strong> just forged a Sidekick for <strong>${esc(business)}</strong> (${getVertical(verticalId).label}, ${esc(city)}).`,
+  await notifySarah(`VOICE AGENT FORGED: ${business} (${city})`, [
+    `<strong>${esc(ownerName)}</strong> just forged a Voice Agent for <strong>${esc(business)}</strong> (${getVertical(verticalId).label}, ${esc(city)}).`,
     `Email: ${esc(email)}`,
     `Taught him: ${esc(services.slice(0, 300))}`,
     `Run ${runId}. Transcript lands in the Vapi dashboard under metadata kind=sidekick-demo.`,
@@ -244,7 +244,7 @@ async function handleRing(
   }
   if (phoneClaim === 'taken') {
     await releaseRing(supabase, runId);
-    return NextResponse.json({ error: 'already_rang', message: 'This number already met its Sidekick. Ready for the real thing?' }, { status: 402 });
+    return NextResponse.json({ error: 'already_rang', message: 'This number already met its Voice Agent. Ready for the real thing?' }, { status: 402 });
   }
 
   const profile: SidekickProfile = {
@@ -272,7 +272,7 @@ async function handleRing(
       // Kill switch: the wallet is empty. Sarah hears about it immediately.
       // Awaited on purpose: Vercel may freeze the function after the response,
       // and this is the alert that also means inbound Mr. Mustard is down.
-      await notifySarah('SIDEKICK KILL SWITCH: Vapi wallet problem', [
+      await notifySarah('VOICE AGENT KILL SWITCH: Vapi wallet problem', [
         `A demo ring to ${to} for ${esc(run.business)} failed with a billing error: ${esc(rang.error)}`,
         'Top up at dashboard.vapi.ai. Inbound Mr. Mustard is likely down too.',
       ]);

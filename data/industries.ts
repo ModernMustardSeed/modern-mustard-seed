@@ -39,17 +39,17 @@ export type Industry = {
    * booking link and the strongest free asset never got shown.
    *
    * Route by what the industry actually loses. Missed-call businesses go to
-   * /sidekick (it rings their real phone in about 60 seconds). Build-shaped
+   * /voice-agents/forge (it rings their real phone in about 60 seconds). Build-shaped
    * businesses go to /demos (voice agent + command center + a custom site).
    * Never send a DTC brand to a voice agent pitch.
    */
-  forge: { href: '/sidekick' | '/demos'; label: string; blurb: string };
+  forge: { href: '/voice-agents/forge' | '/demos'; label: string; blurb: string };
 };
 
 /** Copy for the two forge destinations, so no page invents its own promise. */
 export const FORGE_CTA = {
   sidekick: {
-    href: '/sidekick' as const,
+    href: '/voice-agents/forge' as const,
     label: 'Ring My Own Phone',
     blurb:
       'Free, no account, no card. Enter your business and in about sixty seconds your phone rings with a voice agent answering as your company.',

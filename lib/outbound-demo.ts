@@ -16,15 +16,15 @@ export function leadTrade(lead: OutboundLead): OsTradeKey {
 
 /**
  * Shared forge logic for outbound leads. Two demos exist per lead:
- *   - the VOICE demo (instant): a Sidekick run forged serverless, shareable at
- *     /sidekick/demo/<runId>
+ *   - the VOICE demo (instant): a Voice Agent run forged serverless, shareable at
+ *     /voice-agents/forge/demo/<runId>
  *   - the WEBSITE demo (queued): a row in outbound_demo_sites that the local
  *     demo-site worker builds with headless Claude Code on the Max plan (flat
  *     subscription, never metered API), shareable at /demo/site/<id> with the
  *     voice demo overlaid as a live call widget.
  */
 
-/** Cockpit niches to Sidekick verticals. */
+/** Cockpit niches to Voice Agent verticals. */
 export const SIDEKICK_VERTICAL: Record<Niche, string> = {
   home_service: 'home-services',
   restaurant: 'restaurant',
@@ -39,7 +39,7 @@ export type VoiceForgeResult =
 
 /**
  * Forge the lead's voice agent demo (Cahill's close, automated). Reuses
- * the Sidekick forge directly, skipping the public page's per-email and daily
+ * the Voice Agent forge directly, skipping the public page's per-email and daily
  * caps because this is an internal, admin-triggered run; the platform-side
  * 4-minute call cap still applies. Idempotent: an existing demo is returned
  * as-is.
@@ -89,7 +89,7 @@ export async function forgeLeadVoiceDemo(
   });
   if (!saved) return { ok: false, status: 500, error: 'Could not store the demo run.' };
 
-  const demoUrl = `${SITE.url}/sidekick/demo/${runId}`;
+  const demoUrl = `${SITE.url}/voice-agents/forge/demo/${runId}`;
   const { data: updated, error: updErr } = await supabase
     .from('outbound_leads')
     .update({ demo_url: demoUrl, demo_run_id: runId })

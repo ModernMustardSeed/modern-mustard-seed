@@ -57,7 +57,7 @@ export async function POST() {
       payableUsd: payable / 100,
       paidUsd: paid / 100,
     }),
-    keyterms: [code, 'Sidekick'],
+    keyterms: [code, 'Voice Agent'],
   });
   if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: 503 });
   return NextResponse.json({ call: forged.call });

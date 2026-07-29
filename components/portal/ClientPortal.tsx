@@ -209,7 +209,7 @@ export default function ClientPortal() {
             </div>
 
             {/* What you own — the unified ownership rail. Every paid offer lands
-                here as a first-class card, so a Chief, Sidekick, commercial, or
+                here as a first-class card, so a Chief, Voice Agent, commercial, or
                 press buyer with no build project still sees the thing they bought,
                 its status, and a door into it. */}
             {(data.products?.length ?? 0) > 0 && (

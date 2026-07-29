@@ -182,7 +182,7 @@ export const localBusinessJsonLd = {
     '@type': 'OfferCatalog',
     name: 'Modern Mustard Seed services',
     itemListElement: [
-      ['voice agent and voice agents', 'A 24/7 voice agent that answers every call as your business, books jobs, and texts back missed callers.', '/sidekick'],
+      ['voice agent and voice agents', 'A 24/7 voice agent that answers every call as your business, books jobs, and texts back missed callers.', '/voice-agents/forge'],
       ['Small business websites', 'Custom websites built from scratch with lead capture, SEO, and a voice agent answering on the page.', '/websites'],
       ['Business Command Center', 'One dashboard for calls, leads, customers, reviews, traffic, and money, with an AI that reads it back to you.', '/command-center'],
       ['Free AI demos', 'Three working demos built for your business at no cost: voice agent, website, and command center.', '/demos'],

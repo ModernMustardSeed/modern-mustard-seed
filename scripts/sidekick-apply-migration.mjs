@@ -1,5 +1,5 @@
 /**
- * Sidekick Forge activation:
+ * Voice Agent Forge activation:
  *   1. Applies supabase/migrations/036_sidekick.sql to the MMS CRM project
  *      via the Supabase Management API (same pattern as mustard/gleaner).
  *   2. Verifies sidekick_runs responds through PostgREST.

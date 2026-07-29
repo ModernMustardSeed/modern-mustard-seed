@@ -3,7 +3,7 @@
 **Owner:** Sarah / Modern Mustard Seed
 **Audience:** US small business owners, national. Service businesses first (home services, salons, restaurants, med spas, auto, dental, cleaning, landscaping).
 **Goal:** grow a following fast, become the person SMB owners go to for AI help, build a real community.
-**Conversion goal:** free forged demo at `/sidekick`. Never a price, never a hard pitch.
+**Conversion goal:** free forged demo at `/voice-agents/forge`. Never a price, never a hard pitch.
 **Started:** 2026-07-23. Launch date: Monday 2026-07-27.
 
 ---
@@ -43,10 +43,10 @@ They are two different tools with two different jobs, and this is the thing almo
 The Main Street AI engine already runs on LinkedIn (22982) and X (@modmustardseed, 22771), scheduled through 9/20. Do not copy that lane onto Facebook. Three reasons:
 
 1. **Page organic reach is 1-2%.** Posting text to a Page with no followers reaches nobody. On Facebook, the growth surface is **Reels**, which get pushed to people who do not follow you. Everything else is retention, not acquisition.
-2. **Facebook punishes outbound links in the post body.** The LI/X posts end with `modernmustardseed.com/sidekick` inline. On Facebook that suppresses distribution. Links go in the **first comment** or on the Page CTA button. This is the single biggest mechanical difference.
+2. **Facebook punishes outbound links in the post body.** The LI/X posts end with `modernmustardseed.com/voice-agents/forge` inline. On Facebook that suppresses distribution. Links go in the **first comment** or on the Page CTA button. This is the single biggest mechanical difference.
 3. **Community on Facebook means a Group, not a Page.** A Page follower is an impression. A Group member is a relationship, shows up in their feed as a group they chose, and can be messaged, polled, and served. The Group is the asset.
 
-**The give:ask ratio is different too.** LI/X runs 4-of-5 posts with a CTA because it is demand-gen. Facebook runs roughly **9 give : 1 ask** because it is a community play. Across the whole first cycle (30 text posts + 24 Reels) exactly **three** pieces carry a `/sidekick` ask: text post `fb-20`, Reel `R5`, and Reel `R24`. Everything else ends in a question, a free tactic, or nothing at all. Break this ratio and the group dies.
+**The give:ask ratio is different too.** LI/X runs 4-of-5 posts with a CTA because it is demand-gen. Facebook runs roughly **9 give : 1 ask** because it is a community play. Across the whole first cycle (30 text posts + 24 Reels) exactly **three** pieces carry a `/voice-agents/forge` ask: text post `fb-20`, Reel `R5`, and Reel `R24`. Everything else ends in a question, a free tactic, or nothing at all. Break this ratio and the group dies.
 
 ---
 
@@ -159,7 +159,7 @@ This is the engine. Everything else is support.
 **Why this compounds harder than anything else you could do:**
 - **Infinite supply.** Every small business has leaks. You will never run out.
 - **The featured owner shares it.** They post it to their own page and their network. That is free distribution from someone with local trust you could never buy.
-- **The comments are qualified leads.** "Do mine next" is a person raising their hand, publicly, saying they know they have a problem. Every one of those is a `/sidekick` demo waiting to happen, and you never had to pitch.
+- **The comments are qualified leads.** "Do mine next" is a person raising their hand, publicly, saying they know they have a problem. Every one of those is a `/voice-agents/forge` demo waiting to happen, and you never had to pitch.
 - **It proves expertise instead of claiming it.** Nobody believes "I'm an AI expert." Everybody believes a 60-second video where you call a stranger's business and their phone rings out at 4:45pm.
 - **It is the ad that doesn't look like an ad.** The fix you name is, most of the time, exactly what MMS sells. You just gave it away for free and they know it.
 
@@ -222,9 +222,9 @@ Real weekly cost after batching: **about 2 hours 45 minutes.** That is the hones
 | Group members | 100 | 400 | 1,000 |
 | Emails captured (join question 3) | 60 | 250 | 650 |
 | Reels with 10k+ views | 1 | 4 | 10 |
-| `/sidekick` demos from FB | 10 | 40 | 100 |
+| `/voice-agents/forge` demos from FB | 10 | 40 | 100 |
 
-**The only two numbers that matter:** emails captured (the asset you own) and `/sidekick` demos (the revenue). Follower count is a vanity proxy for those two. If followers climb and demos do not, the content is entertaining and not useful, and you fix it by getting more specific about money.
+**The only two numbers that matter:** emails captured (the asset you own) and `/voice-agents/forge` demos (the revenue). Follower count is a vanity proxy for those two. If followers climb and demos do not, the content is entertaining and not useful, and you fix it by getting more specific about money.
 
 **Kill criteria:** if by day 60 the group is under 150 members and Reels are not clearing 2,000 views, the format is wrong, not the effort. Switch the flagship from Teardown to a weekly Live AMA and re-measure at day 90.
 

@@ -18,7 +18,7 @@ export function HowItWorks() {
     {
       n: '02',
       title: 'Watch the forge run',
-      body: 'Greeting drills, booking reps, one furious caller for composure. Your Sidekick graduates trained on YOUR business, not a script.',
+      body: 'Greeting drills, booking reps, one furious caller for composure. Your Voice Agent graduates trained on YOUR business, not a script.',
     },
     {
       n: '03',
@@ -57,7 +57,7 @@ export function FreeCommandCenter() {
           The calls he catches, on one board. Free.
         </h2>
         <p className="font-body text-[#161616]/70 text-center max-w-2xl mx-auto mt-4 leading-relaxed">
-          Every call your Sidekick answers lands transcribed on your Business Command Center, with the caller already
+          Every call your Voice Agent answers lands transcribed on your Business Command Center, with the caller already
           filed as a lead. That back office is {formatUsd(os.monthlyCents)}/mo on its own, and free with your
           voice agent. Add a website and the whole system runs on one login.
         </p>
@@ -67,7 +67,7 @@ export function FreeCommandCenter() {
           <div className="inline-flex flex-wrap items-center justify-center gap-3 rounded-2xl border-2 border-[#161616] bg-[#161616] px-6 py-4 shadow-[6px_6px_0_0_#F5B700]">
             <span className="font-display italic font-black text-lg text-[#FBF6EA]">Business Command Center</span>
             <span className="font-mono font-bold text-[15px] text-[#FBF6EA]/45 line-through">{formatUsd(os.monthlyCents)}/mo</span>
-            <span className="font-mono font-bold text-[12px] uppercase tracking-[0.12em] text-[#161616] bg-[#F5B700] rounded-full px-3 py-1">Free with your Sidekick</span>
+            <span className="font-mono font-bold text-[12px] uppercase tracking-[0.12em] text-[#161616] bg-[#F5B700] rounded-full px-3 py-1">Free with your Voice Agent</span>
           </div>
         </div>
 
@@ -80,7 +80,7 @@ export function FreeCommandCenter() {
             <span className="text-2xl leading-none" aria-hidden="true">⚙</span>
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">Your free back office</span>
             <h3 className="font-display italic font-black text-xl text-[#161616] mt-1">The Command Center</h3>
-            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Every call transcribed, your customers, reviews, and money, on one board wired to your Sidekick.</p>
+            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Every call transcribed, your customers, reviews, and money, on one board wired to your Voice Agent.</p>
             <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span></span>
           </Link>
           <Link
@@ -90,7 +90,7 @@ export function FreeCommandCenter() {
             <span className="text-2xl leading-none" aria-hidden="true">🌐</span>
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">Give him a home</span>
             <h3 className="font-display italic font-black text-xl text-[#161616] mt-1">A Website That Works</h3>
-            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Your Sidekick answers right on a site built to capture the lead. Website plus voice agent plus the free command center is the whole system.</p>
+            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Your Voice Agent answers right on a site built to capture the lead. Website plus voice agent plus the free command center is the whole system.</p>
             <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span></span>
           </Link>
         </div>
@@ -171,7 +171,7 @@ export function MeetTheTrainer() {
           <div className="absolute inset-0 translate-x-2 translate-y-2 rounded-2xl bg-[#F5B700] border-2 border-[#161616]" aria-hidden="true" />
           <Image
             src="/brand/mascot.png"
-            alt="Mr. Mustard, the AI who trains every Sidekick"
+            alt="Mr. Mustard, the AI who trains every Voice Agent"
             width={220}
             height={220}
             className="relative rounded-2xl border-2 border-[#161616] bg-[#FBF6EA]"
@@ -180,7 +180,7 @@ export function MeetTheTrainer() {
         <div className="text-center md:text-left">
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3">[ The trainer ]</p>
           <h2 id="trainer-heading" className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight leading-[1.05]">
-            Every Sidekick trains under Mr. Mustard.
+            Every Voice Agent trains under Mr. Mustard.
           </h2>
           <p className="font-body text-[#161616]/70 leading-relaxed mt-4">
             He answers Modern Mustard Seed&apos;s own phones, books Sarah&apos;s calendar, and has taken more curveballs than any receptionist in Montana.
@@ -199,13 +199,13 @@ export function MeetTheTrainer() {
 export function CrossSell() {
   return (
     <section className="py-16 md:py-20">
-      {/* The Chief: the natural graduation from an inbound Sidekick to a personal chief of staff. */}
+      {/* The Chief: the natural graduation from an inbound Voice Agent to a personal chief of staff. */}
       <div className="max-w-5xl mx-auto px-5 mb-6">
         <div className="rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-7 md:p-9 shadow-[8px_8px_0_0_#161616] flex flex-col md:flex-row md:items-center gap-6">
           <div className="flex-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#161616] font-bold">The other half of Mr. Mustard</p>
             <h3 className="font-display italic text-2xl md:text-3xl font-black text-[#161616] mt-1.5 leading-[1.05]">
-              Your Sidekick answers your customers. The Chief works for you.
+              Your Voice Agent answers your customers. The Chief works for you.
             </h3>
             <p className="font-body text-sm text-[#161616]/80 mt-2.5 leading-relaxed max-w-2xl">
               Meet his big brother: a personal AI chief of staff who runs your calendar, drafts your email, makes your
@@ -236,7 +236,7 @@ export function CrossSell() {
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Rather build?</p>
           <h3 className="font-display text-xl font-black text-[#161616] mt-1.5">Learn the method in MUSTARD MODE</h3>
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
-            Mr. Mustard also coaches humans. Learn Claude and ship your own tools with the same trainer who forged your Sidekick.
+            Mr. Mustard also coaches humans. Learn Claude and ship your own tools with the same trainer who forged your Voice Agent.
           </p>
           <Link href="/mustard-mode" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
             [ MUSTARD MODE: ON ] →

@@ -20,8 +20,8 @@ export const dynamic = 'force-dynamic';
  * have not bought get a three-touch sequence that stops the moment they buy,
  * reply, or a rep moves the lead.
  *
- * ALSO runs the SIDEKICK DRIP (lib/sidekick-drip.ts): the same idea for
- * /sidekick forgers, who until 2026-07-20 received no follow-up at all. Both
+ * ALSO runs the VOICE AGENT DRIP (lib/sidekick-drip.ts): the same idea for
+ * /voice-agents/forge forgers, who until 2026-07-20 received no follow-up at all. Both
  * ride this cron because Vercel Hobby cron slots are 12/12 full.
  */
 

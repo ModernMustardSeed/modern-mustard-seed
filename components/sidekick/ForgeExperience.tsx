@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * THE SIDEKICK FORGE. The signature moment of /sidekick.
+ * THE VOICE AGENT FORGE. The signature moment of /voice-agents/forge.
  *
  * intake  -> a terminal card where you tell Mr. Mustard about your business
  * forging -> the training montage: personalized log lines type out while the
@@ -354,7 +354,7 @@ export default function ForgeExperience() {
             disabled={submitting || !forgeEnabled}
             className="mt-6 w-full rounded-full bg-[#F5B700] border-2 border-[#161616] px-8 py-4 font-sans font-extrabold text-[#161616] text-sm uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#161616] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {forgeEnabled ? 'Forge my Sidekick (free, 60 seconds)' : 'The forge is warming up. Check back shortly.'}
+            {forgeEnabled ? 'Forge my Voice Agent (free, 60 seconds)' : 'The forge is warming up. Check back shortly.'}
           </button>
           <p className="mt-3 text-center text-[11px] font-mono text-[#161616]/70">
             One free forge per business. No card. He talks to you live when he graduates.
@@ -366,7 +366,7 @@ export default function ForgeExperience() {
       {stage === 'forging' && (
         <div className="rounded-2xl border-2 border-[#161616] bg-[#161616] p-6 md:p-8 shadow-[6px_6px_0_0_#F5B700] min-h-[380px]">
           <div className="flex items-center gap-3 mb-5">
-            <Image src="/brand/mascot.png" alt="Mr. Mustard training your Sidekick" width={46} height={46} className="rounded-full border-2 border-[#F5B700] bg-[#F5B700] animate-pulse" />
+            <Image src="/brand/mascot.png" alt="Mr. Mustard training your Voice Agent" width={46} height={46} className="rounded-full border-2 border-[#F5B700] bg-[#F5B700] animate-pulse" />
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">Training in progress</p>
               <p className="font-display text-lg font-black text-[#FBF6EA] leading-tight">Mr. Mustard is forging {form.business.trim()}&apos;s front desk.</p>
@@ -432,7 +432,7 @@ export default function ForgeExperience() {
               </div>
               <div className="flex-1 text-center sm:text-left">
                 <span className="text-[10px] uppercase tracking-[0.35em] text-[#F5B700] font-mono font-bold block mb-1.5">
-                  {isLive ? (speaking ? 'Your Sidekick is talking' : 'Listening to you') : isConnecting ? 'Connecting…' : callState === 'ended' ? 'Call ended' : 'He graduated. Say hello.'}
+                  {isLive ? (speaking ? 'Your Voice Agent is talking' : 'Listening to you') : isConnecting ? 'Connecting…' : callState === 'ended' ? 'Call ended' : 'He graduated. Say hello.'}
                 </span>
                 <p className="font-display text-xl md:text-2xl font-black tracking-tight leading-snug mb-1.5">
                   {isLive
@@ -516,7 +516,7 @@ export default function ForgeExperience() {
             He already knows your business.<br className="hidden md:block" /> Put him on the phones.
           </h2>
           <p className="font-body text-[#161616]/65 max-w-xl mx-auto mt-4">
-            Sarah hand-installs your Sidekick on a real line within 7 days. Hard-capped minutes, month to month, {SIDEKICK.creditNote.charAt(0).toLowerCase() + SIDEKICK.creditNote.slice(1)}
+            Sarah hand-installs your Voice Agent on a real line within 7 days. Hard-capped minutes, month to month, {SIDEKICK.creditNote.charAt(0).toLowerCase() + SIDEKICK.creditNote.slice(1)}
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">

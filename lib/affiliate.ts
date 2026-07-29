@@ -19,7 +19,7 @@ export const COMMISSION_BUILD_RATE = 0.1;
 /** Producer tier: partners who actually close builds are bumped here (set per
  *  entry in admin via the build-commission rate override). */
 export const COMMISSION_BUILD_PRODUCER_RATE = 0.2;
-/** Recurring share of every referred subscription invoice (Sidekick and any
+/** Recurring share of every referred subscription invoice (Voice Agent and any
  *  other ref-tagged subscription), paid for up to COMMISSION_SUBSCRIPTION_MONTHS
  *  paid invoices per referred account. This is the influencer magnet: a partner
  *  keeps earning every month the business they referred stays subscribed. */
@@ -198,7 +198,7 @@ export async function recordSubscriptionCommission(args: {
       .select('id')
       .single();
     if (!error && data) {
-      const label = args.kind === 'sidekick' ? 'a Sidekick subscription' : 'a recurring subscription';
+      const label = args.kind === 'sidekick' ? 'a Voice Agent subscription' : 'a recurring subscription';
       await notifyEarnings({ affiliate, amountCents: amount, productSlug: subTag, label });
     }
   } catch {

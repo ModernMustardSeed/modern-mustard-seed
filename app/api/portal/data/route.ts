@@ -175,7 +175,7 @@ export async function GET() {
     /* saved_audits not migrated */
   }
 
-  // Relationship offers (Chief, Sidekick, engagements) write a `clients` row, so
+  // Relationship offers (Chief, Voice Agent, engagements) write a `clients` row, so
   // they are recognized as clients here and see the full workspace. Store/playbook
   // buyers stay `buyer` (correct welcome copy, no agency onboarding); their purchase
   // still surfaces through the products rail, which is not audience-gated.

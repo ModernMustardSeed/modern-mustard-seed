@@ -4,9 +4,9 @@ import { buildMetadata } from '@/lib/seo';
 import { SIDEKICK } from '@/data/sidekick';
 
 export const metadata = buildMetadata({
-  title: 'Your Sidekick got the job',
+  title: 'Your Voice Agent got the job',
   description: 'Order confirmed. Here is exactly what happens before he goes live on your phones.',
-  path: '/sidekick/welcome',
+  path: '/voice-agents/forge/welcome',
   noindex: true,
 });
 
@@ -15,7 +15,7 @@ export default function SidekickWelcomePage() {
     {
       n: '1',
       title: 'Sarah emails you within one business day',
-      body: 'She confirms everything your Sidekick learned in the forge and how you want the line handled: a new local number to publish, or quiet forwarding from your existing one.',
+      body: 'She confirms everything your Voice Agent learned in the forge and how you want the line handled: a new local number to publish, or quiet forwarding from your existing one.',
     },
     {
       n: '2',
@@ -40,7 +40,7 @@ export default function SidekickWelcomePage() {
             height={84}
             className="mx-auto rounded-full border-2 border-[#161616] bg-[#F5B700] shadow-[4px_4px_0_0_#161616]"
           />
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mt-6 mb-3">[ SIDEKICK: HIRED ]</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mt-6 mb-3">[ VOICE AGENT: HIRED ]</p>
           <h1 className="font-display text-4xl md:text-5xl font-black tracking-tight leading-[1.02]">
             He got the job.
           </h1>

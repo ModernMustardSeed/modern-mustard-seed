@@ -69,7 +69,7 @@ const DEPARTMENTS = [
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
   { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },
-  { name: 'Sidekick Forge', tag: 'FREE VOICE AGENT DEMO', href: '/sidekick' },
+  { name: 'Voice Agent Forge', tag: 'FREE VOICE AGENT DEMO', href: '/voice-agents/forge' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
   { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },
@@ -128,7 +128,7 @@ export default function Navbar() {
   // App shells (admin, client portal, program HQs) have their own headers, and
   // forged demos are single-offer sales pages. Hide the marketing nav on both
   // so it never overlaps them or sells a competing offer. The voice demo still
-  // lives at the legacy /sidekick/demo/ path.
+  // lives at the legacy /voice-agents/forge/demo/ path.
   const isAppShell =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/portal') ||
@@ -136,7 +136,7 @@ export default function Navbar() {
     pathname === '/partners/playbook' ||
     pathname.startsWith('/demo/') ||
     pathname.startsWith('/hatchery/') ||
-    pathname.startsWith('/sidekick/demo/');
+    pathname.startsWith('/voice-agents/forge/demo/');
   if (isAppShell) return null;
 
   return (

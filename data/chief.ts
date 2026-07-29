@@ -1,7 +1,7 @@
 /**
  * THE CHIEF. Mr. Mustard as your personal chief of staff.
  *
- * The Sidekick answers your customers. THE CHIEF works for YOU. A proactive,
+ * The Voice Agent answers your customers. THE CHIEF works for YOU. A proactive,
  * agentic assistant you call, text, or type to any hour, trained on your
  * business and your life. He runs your calendar, drafts and sends your email,
  * makes calls and books things for you, researches anything, runs sales
@@ -254,8 +254,8 @@ export const chiefBoundaries = {
 
 export const chiefFaq = [
   {
-    q: 'How is this different from the voice agent (Sidekick)?',
-    a: 'Opposite direction. The Sidekick answers your customers, an inbound front desk for your business. The Chief works for you. He is your outbound, proactive right hand: your calendar, your email, your calls, your research, your prep, your morning briefing. One picks up the phone when the world calls in. The other runs your week.',
+    q: 'How is this different from the voice agent (Voice Agent)?',
+    a: 'Opposite direction. The Voice Agent answers your customers, an inbound front desk for your business. The Chief works for you. He is your outbound, proactive right hand: your calendar, your email, your calls, your research, your prep, your morning briefing. One picks up the phone when the world calls in. The other runs your week.',
   },
   {
     q: 'How does he learn my business and my life?',

@@ -63,7 +63,7 @@ export function productSpecFor(kind: string, session: Stripe.Checkout.Session): 
       return {
         kind,
         label: 'Your Voice Agent',
-        tier: tier ?? 'Sidekick',
+        tier: tier ?? 'Voice Agent',
         status: 'provisioning',
         homeUrl: '/portal',
         detail: 'Live within 7 days, installed by hand. I email you within one business day.',

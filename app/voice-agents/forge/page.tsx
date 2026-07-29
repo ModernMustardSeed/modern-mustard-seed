@@ -6,7 +6,7 @@ import { HowItWorks, Boundaries, Faq, MeetTheTrainer, CrossSell, FreeCommandCent
 export const metadata = buildMetadata({
   title: SIDEKICK.metaTitle,
   description: SIDEKICK.metaDescription,
-  path: '/sidekick',
+  path: '/voice-agents/forge',
 });
 
 export default function SidekickPage() {
@@ -15,7 +15,7 @@ export default function SidekickPage() {
     '@graph': [
       {
         '@type': 'Service',
-        name: 'SIDEKICK by Modern Mustard Seed',
+        name: 'Voice Agent by Modern Mustard Seed',
         serviceType: 'voice agent for small businesses',
         description: SIDEKICK.metaDescription,
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
@@ -32,7 +32,7 @@ export default function SidekickPage() {
             billingIncrement: 1,
             unitText: 'MONTH',
           },
-          url: `${SITE.url}/sidekick#keep`,
+          url: `${SITE.url}/voice-agents/forge#keep`,
           availability: 'https://schema.org/InStock',
         })),
       },
@@ -41,7 +41,7 @@ export default function SidekickPage() {
         name: 'Hear your own voice agent in 60 seconds',
         step: [
           { '@type': 'HowToStep', name: 'Tell Mr. Mustard about your business', text: 'Business name, what you do, what customers ask. Sixty seconds of intake.' },
-          { '@type': 'HowToStep', name: 'Watch the forge train your Sidekick', text: 'Greeting drills, booking reps, composure tests, personalized to your business.' },
+          { '@type': 'HowToStep', name: 'Watch the forge train your Voice Agent', text: 'Greeting drills, booking reps, composure tests, personalized to your business.' },
           { '@type': 'HowToStep', name: 'Talk to him live', text: 'He answers in your browser as your front desk, or calls your cell. Keep him and he answers your real phone 24/7 within a week.' },
         ],
       },
@@ -64,7 +64,7 @@ export default function SidekickPage() {
       <section className="halftone-bg border-b-2 border-[#161616]">
         <div className="max-w-5xl mx-auto px-5 pt-16 md:pt-24 pb-16 md:pb-24">
           <div className="text-center mb-10 md:mb-14">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-4">[ The Sidekick Forge ]</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-4">[ The Voice Agent Forge ]</p>
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[0.98]">
               Your missed calls just met<br className="hidden md:block" /> their worst enemy.
             </h1>
@@ -95,7 +95,7 @@ export default function SidekickPage() {
             Every call he answers is money<br className="hidden md:block" /> you stopped losing.
           </h2>
           <p className="font-body text-[#161616]/75 mt-4 max-w-xl mx-auto">
-            The average missed call is a customer who dialed the next name on the list. Forge your Sidekick, hear him take one, and do the math yourself.
+            The average missed call is a customer who dialed the next name on the list. Forge your Voice Agent, hear him take one, and do the math yourself.
           </p>
           <a
             href="#top"
