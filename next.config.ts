@@ -29,6 +29,13 @@ const config: NextConfig = {
       // /book automatically, where BookCall prefills it. /api/build-queue is
       // a distinct path and is not affected by this redirect.
       { source: '/build-queue', destination: '/book', permanent: true },
+      // The Sidekick Forge became the Voice Agent Forge (2026-07-28) and moved
+      // under the /voice-agents hub, alongside /whitepaper and the trade fleet.
+      // /sidekick is in live ads, sent emails, YouTube descriptions, and every
+      // partner referral link, so these are permanent and the query string
+      // (notably ?ref=CODE, which pays the partner) passes through untouched.
+      { source: '/sidekick', destination: '/voice-agents/forge', permanent: true },
+      { source: '/sidekick/:path*', destination: '/voice-agents/forge/:path*', permanent: true },
     ];
   },
 };
