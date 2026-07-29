@@ -48,16 +48,25 @@ const PERMISSION = process.env.DEMO_SITE_PERMISSION || 'bypassPermissions';
 // reachable on a working machine. A guard that never lets anything through is not a
 // safety feature, it is an outage.
 const MIN_FREE_MEM_MB = Number(process.env.DEMO_SITE_MIN_FREE_MB || 1200);
-// 45, not 35. Under LAW v4 (THE HOUSE: front door + 3 rooms) the builds got
-// bigger, and on 2026-07-23 six of the last eight finished at EXACTLY 35m, which
-// means the cap was ending them rather than the model being done. Two of those
-// landed at 117KB and 135KB with zero photographs: a house cut off mid-furnish and
-// stored anyway, because index.html happened to exist when the axe fell.
-const MAX_RUNTIME_MS = Number(process.env.DEMO_SITE_MAX_MS || 45 * 60 * 1000);
+// WALL CLOCK IS THE WRONG AXE, and raising it was never the fix. 35 minutes cut
+// builds off mid-furnish (2026-07-23: six of the last eight finished at EXACTLY
+// 35m, two of them 117KB and 135KB with zero photographs). Raising it to 45 just
+// moved the same cliff, and made every genuinely DEAD build hold a serial worker
+// hostage for three quarters of an hour.
+//
+// So the axe is now STALL, not elapsed. The CLI streams tool calls and text the
+// whole way through a healthy build, so silence is the real signal: a run that has
+// said nothing for STALL_MS is hung and dies immediately, while a run still
+// talking at minute 60 is working and is left alone. This cuts the worst case on a
+// hung build from 45 minutes to 10, and stops killing slow-but-alive builds at all.
+// MAX_RUNTIME_MS survives only as a backstop against a process that chatters
+// forever without converging.
+const STALL_MS = Number(process.env.DEMO_SITE_STALL_MS || 10 * 60 * 1000);
+const MAX_RUNTIME_MS = Number(process.env.DEMO_SITE_MAX_MS || 90 * 60 * 1000);
 // Must stay LONGER than MAX_RUNTIME_MS. A stale window shorter than the build
 // timeout means a job that is still legitimately building gets reclaimed and
 // handed to a second worker, and two workers race to write the same row.
-const STALE_MS = Number(process.env.DEMO_SITE_STALE_MS || 60 * 60 * 1000);
+const STALE_MS = Number(process.env.DEMO_SITE_STALE_MS || 100 * 60 * 1000);
 const WORKER = os.hostname();
 const SITE_URL = 'https://modernmustardseed.com';
 
@@ -142,6 +151,13 @@ const isProjectEdit = (job) => isEdit(job) && Boolean(job.project_id);
  * cockpit can say WHY the queue is not moving instead of showing silence.
  * Best effort by design: a health write must never break or slow a build.
  */
+// What is on the bench right now, so the health row can say "building Tiger
+// Concrete, 12m in" instead of going quiet for the length of a build.
+let current = null;
+export function setCurrent(job) {
+  current = job ? { id: job.id, name: job.business_name || null, since: new Date().toISOString() } : null;
+}
+
 let lastHealthAt = 0;
 async function reportHealth({ state, reason, freeMb }) {
   const now = Date.now();
@@ -167,6 +183,8 @@ async function reportHealth({ state, reason, freeMb }) {
           minFreeMb: MIN_FREE_MEM_MB,
           queued,
           worker: WORKER,
+          current,
+          stallMs: STALL_MS,
           at: new Date().toISOString(),
         },
         updated_at: new Date().toISOString(),
@@ -263,8 +281,25 @@ function runClaude(dir, directive) {
     child.stdin.write(prompt);
     child.stdin.end();
     let out = '';
-    const keep = (s) => { out = (out + s).slice(-200000); };
-    const timer = setTimeout(() => { killTree(child); resolve({ code: 124, out: out + '\n[timeout]' }); }, MAX_RUNTIME_MS);
+    const started = Date.now();
+    let lastByte = Date.now();
+    let done = false;
+    // One exit path for every outcome, so the signal handlers and the stall watch
+    // are always torn down exactly once no matter which one fires first.
+    const finish = (r) => { if (done) return; done = true; clearInterval(watch); cleanup(); resolve(r); };
+    const keep = (s) => { out = (out + s).slice(-200000); lastByte = Date.now(); };
+    // Watch for SILENCE, and separately for a run that never converges.
+    const watch = setInterval(() => {
+      const quietMs = Date.now() - lastByte;
+      const runMs = Date.now() - started;
+      if (quietMs >= STALL_MS) {
+        killTree(child);
+        finish({ code: 124, out: `${out}\n[stalled: silent for ${Math.round(quietMs / 60000)}m after ${Math.round(runMs / 60000)}m]` });
+      } else if (runMs >= MAX_RUNTIME_MS) {
+        killTree(child);
+        finish({ code: 124, out: `${out}\n[ceiling: still talking at ${Math.round(runMs / 60000)}m]` });
+      }
+    }, 30 * 1000);
     // A worker shutdown must not orphan the build either: same escape hatch, same
     // fix. Without this, every Ctrl-C on a busy floor leaks a live claude.exe.
     const onExit = () => { killTree(child); };
@@ -273,8 +308,8 @@ function runClaude(dir, directive) {
     const cleanup = () => { process.off('SIGINT', onExit); process.off('SIGTERM', onExit); };
     child.stdout.on('data', (d) => { keep(d.toString()); process.stdout.write(d); });
     child.stderr.on('data', (d) => { keep(d.toString()); process.stderr.write(d); });
-    child.on('close', (code) => { clearTimeout(timer); cleanup(); resolve({ code, out }); });
-    child.on('error', (e) => { clearTimeout(timer); cleanup(); resolve({ code: 1, out: out + '\n' + e.message }); });
+    child.on('close', (code) => finish({ code, out }));
+    child.on('error', (e) => finish({ code: 1, out: out + '\n' + e.message }));
   });
 }
 
@@ -385,12 +420,36 @@ async function process_(job) {
     const directive = edit ? law.EDIT_DIRECTIVE : rebuild ? law.REAL_DIRECTIVE : law.DIRECTIVE;
     const { code, out } = await runClaude(dir, directive);
 
-    if (!existsSync(htmlPath)) {
+    const stalled = code === 124 && /\[stalled:/.test(out);
+    const nothing = !existsSync(htmlPath);
+    const html = nothing ? '' : readFileSync(htmlPath, 'utf8');
+    const unusable = nothing || html.length < 1500 || !/<\/html>/i.test(html);
+
+    // A stall that wrote NOTHING is a hung CLI far more often than a bad job, and
+    // burning the lead for it costs Sarah a demo she asked for. Give it exactly one
+    // more turn. The attempt is recorded in `error` rather than a new column, which
+    // keeps this durable across worker restarts without a migration, and the marker
+    // is what stops it looping: a second stall falls through to a real failure.
+    if (unusable && stalled && !/\[requeued after stall\]/.test(job.error || '')) {
+      log('stalled with nothing usable, requeueing once:', job.id);
+      await supabase
+        .from('outbound_demo_sites')
+        .update({
+          status: 'queued',
+          worker: null,
+          claimed_at: null,
+          error: `[requeued after stall] ${out.slice(-400)}`,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', job.id);
+      return;
+    }
+
+    if (nothing) {
       await fail(job, `no index.html produced (claude exited ${code}): ${out.slice(-500)}`);
       return;
     }
-    const html = readFileSync(htmlPath, 'utf8');
-    if (html.length < 1500 || !/<\/html>/i.test(html)) {
+    if (unusable) {
       await fail(job, `index.html looks incomplete (${html.length} bytes, claude exited ${code})`);
       return;
     }
@@ -557,6 +616,12 @@ async function beat() {
       value: { at: new Date().toISOString(), host: WORKER },
     });
   } catch { /* a missed beat just makes the failsafe more eager, never less safe */ }
+  // Refresh the health row mid-build too. Without this it freezes at the moment
+  // the build started, and a 40-minute-old timestamp reads as a dead worker.
+  if (current) {
+    lastHealthAt = 0;
+    await reportHealth({ state: 'building', reason: current.name, freeMb: Math.round(os.freemem() / (1024 * 1024)) });
+  }
 }
 
 // Track so we log the pressure once, not on every 15s poll.
@@ -587,7 +652,15 @@ async function tick() {
 
   const job = await claimNext();
   if (!job) return false;
-  await process_(job);
+  setCurrent(job);
+  await reportHealth({ state: 'building', reason: job.business_name || job.id, freeMb });
+  try {
+    await process_(job);
+  } finally {
+    // Always clear, or a crashed build leaves the cockpit claiming work is in
+    // flight forever, which is the exact blindness this row exists to remove.
+    setCurrent(null);
+  }
   return true;
 }
 

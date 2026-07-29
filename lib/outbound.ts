@@ -248,6 +248,38 @@ export type ForgeRow = {
 
 export type ForgeCounts = Record<ForgeStage, number> & { all: number };
 
+/**
+ * The forge worker's own vital signs.
+ *
+ * The forge is a LOCAL poller, so the database cannot tell "holding off, this
+ * machine is busy" apart from "dead" on its own. On 2026-07-26 the worker
+ * declined every claim for days because free memory sat under its floor, and the
+ * only trace was one line in a console nobody had open: the cockpit just showed
+ * a queue that never moved. The worker now writes this to app_state every poll
+ * and mid-build, and the board renders it.
+ */
+export type ForgeWorkerHealth = {
+  state: 'polling' | 'building' | 'blocked';
+  reason: string | null;
+  freeMb: number | null;
+  minFreeMb: number | null;
+  queued: number | null;
+  worker: string | null;
+  stallMs?: number | null;
+  current?: { id: string; name: string | null; since: string } | null;
+  at: string;
+};
+
+/**
+ * Health is only meaningful with its age attached. A row saying "polling" from
+ * forty minutes ago means the worker is DOWN, and rendering it without the age
+ * would be worse than showing nothing.
+ */
+export type ForgeWorkerVitals = ForgeWorkerHealth & { ageSeconds: number; alive: boolean };
+
+/** Two poll cycles plus slack. Past this, the worker is not running. */
+export const FORGE_WORKER_DEAD_AFTER_S = 180;
+
 /** What the provider says happened to a sent email. 'sent' only means Resend accepted it. */
 export type MessageDelivery = {
   status: string | null;

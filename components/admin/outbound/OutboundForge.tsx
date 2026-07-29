@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { formatPhone } from '@/lib/outbound';
 import { FORGE_STAGE_LABELS } from '@/lib/outbound';
-import type { ForgeCounts, ForgeRow, ForgeStage, Rep } from '@/lib/outbound';
+import type { ForgeCounts, ForgeRow, ForgeStage, ForgeWorkerVitals, Rep } from '@/lib/outbound';
 import {
   OutboundNav,
   BackButton,
@@ -33,7 +33,7 @@ import {
  * built, and never contacted.
  */
 
-type Payload = { rows: ForgeRow[]; counts: ForgeCounts; reps: Rep[] };
+type Payload = { rows: ForgeRow[]; counts: ForgeCounts; reps: Rep[]; worker: ForgeWorkerVitals | null };
 
 const STAGE_ORDER: ForgeStage[] = ['forging', 'failed', 'uncontacted', 'waiting', 'landed', 'closed'];
 
@@ -63,6 +63,71 @@ function ago(iso: string | null): string {
 }
 
 /** Minutes a build has been sitting, for the anvil clock. */
+/**
+ * THE WORKER VITALS STRIP.
+ *
+ * The forge is a poller on Sarah's own machine, so the cockpit used to INFER its
+ * state from the queue: two or more builds sitting unclaimed meant "probably not
+ * running". That inference is silent in the two cases that actually cost a day.
+ * With an empty queue a dead worker looks identical to an idle one, and on
+ * 2026-07-26 the worker was alive and deliberately declining every claim because
+ * free memory sat under its floor, which no amount of queue-watching can express.
+ * The worker now writes its own state, and this reads it.
+ */
+function WorkerVitals({ vitals }: { vitals: ForgeWorkerVitals | null }) {
+  const down = !vitals || !vitals.alive;
+  const blocked = !down && vitals!.state === 'blocked';
+  const tone = down || blocked
+    ? { border: 'border-[#a03123]/60', bg: 'bg-[#a03123]/15', dot: 'bg-[#e8a598]' }
+    : { border: 'border-[#f7f3e9]/15', bg: 'bg-[#f7f3e9]/[0.04]', dot: 'bg-[#3f5d34]' };
+
+  const age = (s: number) => (s < 90 ? `${s}s` : `${Math.round(s / 60)}m`);
+  const gb = (mb: number | null) => (mb == null ? null : mb >= 1024 ? `${(mb / 1024).toFixed(1)}GB` : `${mb}MB`);
+
+  let headline: string;
+  let detail: React.ReactNode = null;
+  if (!vitals) {
+    headline = 'Forge worker has never reported in';
+    detail = <>It writes its health every poll, so no row at all means it has not run since this was deployed.</>;
+  } else if (!vitals.alive) {
+    headline = `Forge worker is DOWN (last seen ${age(vitals.ageSeconds)} ago)`;
+  } else if (vitals.state === 'blocked') {
+    headline = 'Forge worker is UP but refusing to claim';
+    detail = <>{vitals.reason}. It resumes on its own the moment the machine frees up, so close something heavy rather than restarting it.</>;
+  } else if (vitals.state === 'building' && vitals.current) {
+    headline = `Building ${vitals.current.name || vitals.current.id}`;
+    detail = (
+      <>
+        {minsSince(vitals.current.since)}m in on {vitals.worker}. Free memory {gb(vitals.freeMb)}.
+        {vitals.stallMs ? ` Dies automatically after ${Math.round(vitals.stallMs / 60000)}m of silence.` : ''}
+      </>
+    );
+  } else {
+    headline = 'Forge worker is up and polling';
+    detail = (
+      <>
+        {vitals.queued ?? 0} queued. Free memory {gb(vitals.freeMb)} against a {gb(vitals.minFreeMb)} floor. Heard from {age(vitals.ageSeconds)} ago.
+      </>
+    );
+  }
+
+  return (
+    <div className={`mt-4 flex items-start gap-2.5 rounded-xl border-2 ${tone.border} ${tone.bg} px-4 py-3 font-sans text-[13px] leading-relaxed text-[#f7f3e9]`}>
+      <span className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${tone.dot} ${down || blocked ? '' : 'animate-pulse'}`} aria-hidden />
+      <span className="min-w-0">
+        <strong className="font-oswald uppercase tracking-[0.06em]">{headline}</strong>
+        {detail ? <> {detail}</> : null}
+        {down && (
+          <>
+            {' '}The forge runs on your machine. Start it with{' '}
+            <code className="font-mono text-[12px] text-[#b58a2a]">node scripts/demo-site-worker.mjs</code> and the queue moves on its own.
+          </>
+        )}
+      </span>
+    </div>
+  );
+}
+
 function minsSince(iso: string): number {
   return Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 60000));
 }
@@ -248,13 +313,17 @@ export default function OutboundForge() {
           {/* One honest line beats eleven identical spinners: if nothing has
               claimed the queue, the local worker is not running, and no amount
               of waiting on this page will change that. */}
-          {stalled.length >= 2 && (
-            <p className="mt-4 flex items-start gap-2.5 rounded-xl border-2 border-[#a03123]/60 bg-[#a03123]/15 px-4 py-3 font-sans text-[13px] leading-relaxed text-[#f7f3e9]">
+          <WorkerVitals vitals={data?.worker ?? null} />
+
+          {/* The queue's own complaint, kept only where it says something the
+              worker's heartbeat does not: the worker is alive and claiming, yet
+              rows are still piling up behind it. */}
+          {stalled.length >= 2 && data?.worker?.alive && data.worker.state !== 'blocked' && (
+            <p className="mt-3 flex items-start gap-2.5 rounded-xl border-2 border-[#b58a2a]/50 bg-[#b58a2a]/10 px-4 py-3 font-sans text-[13px] leading-relaxed text-[#f7f3e9]">
               <span aria-hidden>⚠</span>
               <span>
-                <strong className="font-oswald uppercase tracking-[0.06em]">{stalled.length} builds are queued and nothing has claimed them</strong>{' '}
-                (oldest {Math.max(...stalled.map((r) => minsSince(r.site!.created_at)))}m). The forge worker runs on your machine. Start it with{' '}
-                <code className="font-mono text-[12px] text-[#b58a2a]">node scripts/demo-site-worker.mjs</code> and these move on their own.
+                <strong className="font-oswald uppercase tracking-[0.06em]">{stalled.length} builds are still waiting behind it</strong>{' '}
+                (oldest {Math.max(...stalled.map((r) => minsSince(r.site!.created_at)))}m). The forge builds one at a time, so a deep queue is slow, not broken.
               </span>
             </p>
           )}
