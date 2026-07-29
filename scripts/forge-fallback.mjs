@@ -127,6 +127,26 @@ async function main() {
   const cutoff = new Date(now - graceMs).toISOString();
   log(`workstation ${workerAlive ? 'ALIVE' : 'not beating'} | rescuing jobs queued before ${cutoff}`);
 
+  // RECLAIM ABANDONED BUILDS BEFORE LOOKING FOR QUEUED ONES.
+  //
+  // A row stuck in `building` was invisible here, because this only ever selected
+  // `queued`. The reclaim that would free it lives inside the workstation worker,
+  // so when that process dies mid-build the job is stranded forever and BOTH paths
+  // ignore it. On 2026-07-29 Tiger Concrete sat in `building` for 134 minutes that
+  // way while Sarah watched an empty cockpit. Nothing can be allowed to depend on
+  // the dead process to declare itself dead.
+  const STRANDED_MS = Number(process.env.FORGE_STRANDED_MS || 70 * 60 * 1000);
+  const strandedBefore = new Date(now - STRANDED_MS).toISOString();
+  const { data: reclaimed } = await sb
+    .from('outbound_demo_sites')
+    .update({ status: 'queued', worker: null, claimed_at: null, updated_at: new Date().toISOString() })
+    .eq('status', 'building')
+    .lt('claimed_at', strandedBefore)
+    .select('id,business_name');
+  if (reclaimed?.length) {
+    log(`reclaimed ${reclaimed.length} abandoned build(s): ${reclaimed.map((r) => r.business_name).join(', ')}`);
+  }
+
   // Oldest first: whoever has been staring at the countdown longest goes first.
   //
   // worker_only rows are skipped on purpose. Those are housekeeping rebuilds of sites

@@ -23,7 +23,11 @@ export type ForgeResult =
   | { ok: true; html: string; direction: string; hero: 'painted' | 'skipped'; bytes: number }
   | { ok: false; error: string };
 
-const MODEL = process.env.FORGE_FALLBACK_MODEL || 'claude-opus-4-8';
+// claude-opus-4-8 is a previous generation. On 2026-07-29 the failsafe claimed
+// B. Davis Remodeling, ran for 11 minutes and returned a 530-byte document, which
+// is a preamble rather than a site. Opus 5 is the current flagship and the one the
+// workstation path already builds with.
+const MODEL = process.env.FORGE_FALLBACK_MODEL || 'claude-opus-5';
 
 /** Seedream v4, synchronous endpoint. Confirmed working in the media pipeline. */
 const FAL_MODEL = 'fal-ai/bytedance/seedream/v4/text-to-image';
