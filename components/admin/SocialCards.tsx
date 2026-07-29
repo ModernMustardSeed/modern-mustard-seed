@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { SOCIAL_SETS, postToText, type SocialSet, type SocialPost, type SocialCard } from '@/data/social-cards';
 
@@ -13,6 +13,10 @@ import { SOCIAL_SETS, postToText, type SocialSet, type SocialPost, type SocialCa
  * sets first shipped as a Claude artifact, where a sandboxed iframe silently
  * blocks every file write and the buttons looked dead. On a normal page they
  * just work, including "save all six".
+ *
+ * Browsing: the Overview tab shows every card in every set at a glance; each
+ * set tab shows the full kit (cards, rules, posts, replies) with jump chips.
+ * The active tab is mirrored into the URL hash so a set can be linked directly.
  */
 
 type Fmt = 'feed' | 'square';
@@ -74,7 +78,7 @@ function CardTile({ set, card, fmt }: { set: SocialSet; card: SocialCard; fmt: F
   );
 }
 
-function PostBlock({ post, set }: { post: SocialPost; set: SocialSet }) {
+function PostBlock({ post }: { post: SocialPost }) {
   let n = 0;
   return (
     <article className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616]">
@@ -127,6 +131,17 @@ function PostBlock({ post, set }: { post: SocialPost; set: SocialSet }) {
   );
 }
 
+const JUMPS: Array<[string, string]> = [
+  ['cards', 'Cards'],
+  ['rules', 'Before You Post'],
+  ['posts', 'Posts'],
+  ['replies', 'Replies'],
+];
+
+function jumpTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function SetPanel({ set, fmt }: { set: SocialSet; fmt: Fmt }) {
   const [busy, setBusy] = useState(false);
 
@@ -149,7 +164,7 @@ function SetPanel({ set, fmt }: { set: SocialSet; fmt: Fmt }) {
 
   return (
     <section className="flex flex-col gap-6">
-      <div className="border-t-4 border-[#161616] pt-6 flex flex-col gap-3">
+      <div className="flex flex-col gap-3">
         <p className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-[#8f6600]">{set.eyebrow}</p>
         <div className="flex items-end justify-between gap-4 flex-wrap">
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold leading-none tracking-tight">{set.name}</h2>
@@ -158,21 +173,35 @@ function SetPanel({ set, fmt }: { set: SocialSet; fmt: Fmt }) {
           </button>
         </div>
         <p className="text-[15px] leading-relaxed text-[#161616]/75 max-w-[64ch]">{set.blurb}</p>
-        <p
-          className="text-[12px] font-mono font-bold uppercase tracking-[0.12em] px-3 py-1.5 border-2 border-[#161616] self-start"
-          style={{ background: set.accent, color: '#FBF6EA' }}
-        >
-          {set.cta}
-        </p>
+        <div className="flex items-center gap-3 flex-wrap">
+          <p
+            className="text-[12px] font-mono font-bold uppercase tracking-[0.12em] px-3 py-1.5 border-2 border-[#161616]"
+            style={{ background: set.accent, color: '#FBF6EA' }}
+          >
+            {set.cta}
+          </p>
+          <nav className="flex items-center gap-1.5 flex-wrap" aria-label="Jump to section">
+            {JUMPS.map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                className="text-[10px] uppercase tracking-[0.14em] font-sans font-bold px-2.5 py-1.5 border-2 border-[#161616]/30 text-[#161616]/70 hover:border-[#161616] hover:text-[#161616] transition-colors"
+                onClick={() => jumpTo(`${set.id}-${key}`)}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+        </div>
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div id={`${set.id}-cards`} className="scroll-mt-28 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {set.cards.map((c) => (
           <CardTile key={c.file} set={set} card={c} fmt={fmt} />
         ))}
       </div>
 
-      <div className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-5">
+      <div id={`${set.id}-rules`} className="scroll-mt-28 bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-5">
         <h3 className="font-display text-xl font-extrabold mb-3">Before you post</h3>
         <ul className="flex flex-col gap-2.5">
           {set.rules.map((r) => (
@@ -184,13 +213,13 @@ function SetPanel({ set, fmt }: { set: SocialSet; fmt: Fmt }) {
         </ul>
       </div>
 
-      <div className="flex flex-col gap-5">
+      <div id={`${set.id}-posts`} className="scroll-mt-28 flex flex-col gap-5">
         {set.posts.map((p) => (
-          <PostBlock key={p.n} post={p} set={set} />
+          <PostBlock key={p.n} post={p} />
         ))}
       </div>
 
-      <div className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616]">
+      <div id={`${set.id}-replies`} className="scroll-mt-28 bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616]">
         <h3 className="font-display text-xl font-extrabold px-5 py-3.5 border-b-2 border-[#161616] bg-[#FBF6EA]">
           Comment replies
         </h3>
@@ -213,16 +242,70 @@ function SetPanel({ set, fmt }: { set: SocialSet; fmt: Fmt }) {
   );
 }
 
+function OverviewPanel({ fmt, onOpen }: { fmt: Fmt; onOpen: (id: string) => void }) {
+  return (
+    <div className="flex flex-col gap-10">
+      {SOCIAL_SETS.map((s) => (
+        <section key={s.id} className="flex flex-col gap-4">
+          <div className="flex items-end justify-between gap-4 flex-wrap border-t-4 border-[#161616] pt-4">
+            <div className="flex flex-col gap-1">
+              <p className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-[#8f6600]">{s.eyebrow}</p>
+              <div className="flex items-center gap-2.5">
+                <span
+                  className="w-3 h-3 border-2 border-[#161616] shrink-0"
+                  style={{ background: s.accent }}
+                  aria-hidden
+                />
+                <h2 className="font-display text-2xl font-extrabold leading-tight">{s.name}</h2>
+              </div>
+            </div>
+            <button type="button" className={btn} onClick={() => onOpen(s.id)}>
+              Open Set
+            </button>
+          </div>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+            {s.cards.map((c) => (
+              <button
+                key={c.file}
+                type="button"
+                onClick={() => onOpen(s.id)}
+                title={c.headline}
+                className="block border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#F5B700] hover:-translate-y-0.5 hover:shadow-[1px_1px_0_0_#F5B700] transition-all"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={assetPath(s.id, c.file, fmt)} alt={c.alt} className="block w-full h-auto" loading="lazy" />
+              </button>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
 export default function SocialCardsLibrary() {
   const [fmt, setFmt] = useState<Fmt>('feed');
+  const [activeId, setActiveId] = useState<string>('all');
   const totalCards = SOCIAL_SETS.reduce((n, s) => n + s.cards.length, 0);
   const totalPosts = SOCIAL_SETS.reduce((n, s) => n + s.posts.length, 0);
+  const active = SOCIAL_SETS.find((s) => s.id === activeId);
+
+  useEffect(() => {
+    const fromHash = window.location.hash.replace('#', '');
+    if (fromHash === 'all' || SOCIAL_SETS.some((s) => s.id === fromHash)) setActiveId(fromHash);
+  }, []);
+
+  function pick(id: string) {
+    setActiveId(id);
+    window.history.replaceState(null, '', `#${id}`);
+    window.scrollTo({ top: 0 });
+  }
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="social" title="Social Cards" />
-      <main className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col gap-12">
-        <header className="flex flex-col gap-4">
+      <main className="max-w-6xl mx-auto px-5 sm:px-8 pb-10 flex flex-col">
+        <header className="flex flex-col gap-4 py-10">
           <h1 className="font-display text-4xl sm:text-5xl font-extrabold leading-none tracking-tight">
             Social Cards
           </h1>
@@ -230,7 +313,40 @@ export default function SocialCardsLibrary() {
             {totalCards} finished graphics and {totalPosts} group posts across {SOCIAL_SETS.length} sets, ready to
             download and paste. Every statistic on every card has a named publisher and a date printed on the art.
           </p>
-          <div className="flex items-center gap-2.5 flex-wrap">
+          <p className="text-[13.5px] leading-relaxed text-[#161616]/65 max-w-[62ch]">
+            Overview shows every card at a glance. Open a set for its posting rules, group posts, and comment
+            replies. Feed (1080 × 1350) is native for Facebook, groups, Instagram, and LinkedIn. The square
+            (1080 × 1080) is a re-typeset card for X, not a crop. The size switch changes every preview and
+            download.
+          </p>
+        </header>
+
+        <nav
+          className="sticky top-0 z-30 -mx-5 sm:-mx-8 px-5 sm:px-8 py-3 bg-[#FBF6EA]/95 backdrop-blur border-y-2 border-[#161616] flex items-center gap-2 flex-wrap"
+          aria-label="Card sets"
+        >
+          <button
+            type="button"
+            aria-pressed={activeId === 'all'}
+            className={activeId === 'all' ? btnSolid : btn}
+            onClick={() => pick('all')}
+          >
+            Overview
+          </button>
+          {SOCIAL_SETS.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              aria-pressed={activeId === s.id}
+              className={`${activeId === s.id ? btnSolid : btn} inline-flex items-center gap-2`}
+              onClick={() => pick(s.id)}
+            >
+              <span className="w-2.5 h-2.5 border border-[#161616] shrink-0" style={{ background: s.accent }} aria-hidden />
+              {s.name}
+            </button>
+          ))}
+          <span className="flex-1" aria-hidden />
+          <div className="flex items-center gap-2">
             <span className="text-[11px] font-mono font-bold uppercase tracking-[0.18em] text-[#161616]/55">Size</span>
             <button
               type="button"
@@ -238,7 +354,7 @@ export default function SocialCardsLibrary() {
               className={fmt === 'feed' ? btnSolid : btn}
               onClick={() => setFmt('feed')}
             >
-              1080 × 1350 · Feed
+              Feed
             </button>
             <button
               type="button"
@@ -246,20 +362,16 @@ export default function SocialCardsLibrary() {
               className={fmt === 'square' ? btnSolid : btn}
               onClick={() => setFmt('square')}
             >
-              1080 × 1080 · X
+              X
             </button>
           </div>
-          <p className="text-[13.5px] leading-relaxed text-[#161616]/65 max-w-[62ch]">
-            Feed is native for Facebook, groups, Instagram, and LinkedIn. The square is a re-typeset card for X, not
-            a crop, so nothing important gets clipped. The switch changes every preview and download below.
-          </p>
-        </header>
+        </nav>
 
-        {SOCIAL_SETS.map((s) => (
-          <SetPanel key={s.id} set={s} fmt={fmt} />
-        ))}
+        <div className="pt-8">
+          {active ? <SetPanel set={active} fmt={fmt} /> : <OverviewPanel fmt={fmt} onOpen={pick} />}
+        </div>
 
-        <footer className="border-t-2 border-[#161616]/20 pt-5 text-[12px] font-mono uppercase tracking-[0.14em] text-[#161616]/55">
+        <footer className="border-t-2 border-[#161616]/20 pt-5 mt-12 text-[12px] font-mono uppercase tracking-[0.14em] text-[#161616]/55">
           Source files in social-drafts/&lt;set&gt;/ · re-render with node render.mjs, add --square for the X cut
         </footer>
       </main>
