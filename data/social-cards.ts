@@ -159,7 +159,7 @@ export const SOCIAL_SETS: SocialSet[] = [
     replies: [
       {
         q: 'How much?',
-        a: 'The call is free, always. If you want one of your own it is $397 to build and $297 a month, and I scope it on a 15 minute call. Not trying to sell you in the comments though, go break the demo first.',
+        a: 'The call is free, always. If you want one of your own it is $397 to build and $397 a month, and I scope it on a 15 minute call. Not trying to sell you in the comments though, go break the demo first.',
         warn: 'Price check before you post. That came from data/sidekick.ts on 2026-07-28. Never type a price from memory, re-read the file if the tiers have moved.',
       },
       {
@@ -563,8 +563,146 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
       {
         q: 'How much?',
-        a: 'The call is free and always will be. If you want one of your own it is $397 to build and $297 a month, scoped on a 15 minute call. Go time your own phone first though, you might just need the text-back switched on.',
+        a: 'The call is free and always will be. If you want one of your own it is $397 to build and $397 a month, scoped on a 15 minute call. Go time your own phone first though, you might just need the text-back switched on.',
         warn: 'Price from data/sidekick.ts on 2026-07-28. Re-read the file if the tiers have moved. Never type a price from memory.',
+      },
+    ],
+  },
+  {
+    id: 'race-day',
+    name: 'Race Day',
+    eyebrow: 'Set five · Mr. Mustard',
+    blurb:
+      'The odd one out on purpose: no statistics, no sources, no offer. Mr. Mustard, comic sunbursts, Ben-Day dots and hand-drawn racing props. Sets one to four exist to be argued with. This one exists to be liked and shared, so the stat posts land on a warm audience instead of a cold one.',
+    cta: 'Weekly rhythm · Monday, midweek, Friday',
+    accent: '#1E50C8',
+    rules: [
+      'Nothing in this set sells anything. If one of these posts ends in a pitch it stops doing its job. The job is reach and warmth.',
+      'It is a rhythm, not a campaign. 01 Monday, 03 midweek, 04 Friday, on repeat. Nobody minds a recurring bit, that is what makes it a bit.',
+      'Post from the Page, not into other people’s groups. Groups want value or a dare. Personality belongs on your own turf.',
+      'If the tag post gets traction, reply to every single comment. A tag post with an absent author is worse than no tag post.',
+      'Run one a week alongside the data sets, not instead of them.',
+    ],
+    cards: [
+      {
+        file: '01-green-flag',
+        headline: 'Green flag. New week, fresh tank.',
+        use: 'Monday. The recurring week-opener.',
+        alt: 'Mr. Mustard waving on a mustard sunburst with a start-light gantry and speed lines. Headline: Green flag.',
+      },
+      {
+        file: '02-pit-crew',
+        headline: 'You drive. We wrench.',
+        use: 'What MMS actually does, explained without the word AI.',
+        alt: 'Mr. Mustard on a blue sunburst with a racing tyre and a spanner. Headline: You drive. We wrench.',
+      },
+      {
+        file: '03-send-it',
+        headline: 'Send it.',
+        use: 'Midweek push. The shortest and loudest card in the set.',
+        alt: 'Mr. Mustard leaning into speed lines on a red sunburst. Headline: Send it.',
+      },
+      {
+        file: '04-chequered',
+        headline: 'You finished the week.',
+        use: 'Friday. The warmest one, and the most reshared.',
+        alt: 'Mr. Mustard holding a chequered flag on a cream and mustard sunburst. Headline: You finished the week.',
+      },
+      {
+        file: '05-tag-your-crew',
+        headline: 'Tag your pit crew.',
+        use: 'The engagement card. Easy, kind question, so it actually gets answers.',
+        alt: 'Mr. Mustard with a speech bubble reading Who is yours, on a blue sunburst. Headline: Tag your pit crew.',
+      },
+      {
+        file: '06-fuel',
+        headline: 'Runs on coffee and stubbornness.',
+        use: 'The relatable one. Good any day it is quiet.',
+        alt: 'Mr. Mustard beside a red fuel can on a mustard sunburst. Headline: Runs on coffee and stubbornness.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'Monday',
+        graphic: '01-green-flag',
+        body: [
+          'Lights out.',
+          'Whatever last week did to you, it does not get a vote today. Fresh tank, clean screen, nobody has missed a call yet.',
+          'Go get it.',
+        ],
+      },
+      {
+        n: 2,
+        title: 'What we actually do',
+        graphic: '02-pit-crew',
+        body: [
+          'Somebody asked me this week to explain what we do without using the word AI, so here it is.',
+          'You are the driver. You know the roads, you know the customers, you have been doing this since before anybody had an app for it. That part is not our business and never will be.',
+          'We are the crew in the pit lane. We handle the tyres, the fuel, the boring telemetry nobody wants to look at, and the phone that rings while you are up a ladder.',
+          'You drive. We wrench.',
+        ],
+      },
+      {
+        n: 3,
+        title: 'Midweek',
+        graphic: '03-send-it',
+        body: [
+          'Reminder for the Wednesday of it all:',
+          'The website was never going to feel finished. The post was never going to feel clever enough. The price was never going to feel comfortable to say out loud.',
+          'Send it anyway. You can fix it in the pits.',
+        ],
+      },
+      {
+        n: 4,
+        title: 'Friday',
+        graphic: '04-chequered',
+        body: [
+          'You finished the week.',
+          'Not perfectly. Probably not in the order you planned. Somebody moved a job, somebody did not pay yet, and something broke on Thursday that was not supposed to be your problem.',
+          'Doesn’t matter. Chequered flag is a chequered flag.',
+          'Go and have your Friday.',
+        ],
+      },
+      {
+        n: 5,
+        title: 'The roll call',
+        graphic: '05-tag-your-crew',
+        body: [
+          'Tag your pit crew.',
+          'The person who answers the phone when you cannot. The one who does the invoices you keep avoiding. The spouse who has heard about the same job three nights running and still asks how it went.',
+          'Nobody finishes a season alone. Name yours, I will go and follow them.',
+        ],
+        followUp: {
+          label: 'Working the comments',
+          lines: [
+            'Reply to every single comment on this one. A tag post with an absent author is worse than no tag post.',
+          ],
+        },
+      },
+      {
+        n: 6,
+        title: 'The fuel one',
+        graphic: '06-fuel',
+        body: [
+          'Every small business in this town runs on the same two things and neither of them is a marketing strategy.',
+          'Coffee and pure stubbornness.',
+          'Premium unleaded is for people with a marketing department. The rest of us are out here running on a flat white and the refusal to quit.',
+        ],
+      },
+    ],
+    replies: [
+      {
+        q: 'Somebody asks what you actually sell on one of these.',
+        a: 'Answer it plainly in one line and leave it there. "We build websites and phone systems for small businesses, but this post is not that, this post is just Friday." Then move on. Turning a warmth post into a pitch is how a Page trains people to scroll past it.',
+      },
+      {
+        q: 'The tag post takes off and there are fifty comments.',
+        a: 'Reply to all of them, even if it is three words. Then go follow the people who got tagged. That is the entire return on this set, and it does not happen unless you show up in the comments the same day.',
+      },
+      {
+        q: 'Can I reuse these week after week?',
+        a: 'Yes, and you should. Monday green flag and Friday chequered flag work better as a recurring bit than as a one-off. People start expecting them, which is the point.',
       },
     ],
   },

@@ -65,7 +65,7 @@ function milestonesFor(keys: string[]): Array<{ title: string; detail: string; d
 
 function projectNameFor(business: string | null, keys: string[]): string {
   const who = (business || 'New client').trim();
-  if (keys.includes('bundle')) return `${who}: the whole system`;
+  if (keys.includes('bundle')) return `${who}: ${DEMO_BUNDLE.name}`;
   const names = keys.map((k) => DEMO_PRODUCTS[k as DemoProductKey]?.name).filter(Boolean);
   return names.length ? `${who}: ${names.join(' + ')}` : `${who} build`;
 }

@@ -167,7 +167,7 @@ export function cityFaqs(city: MontanaCity): { q: string; a: string }[] {
     },
     {
       q: `How much does a website cost in ${city.name}?`,
-      a: `The productized website is $497 to set up and $97 a month, which covers the domain, hosting, care, and the business command center. That is the same price whether you are in ${city.name} or anywhere else: we do not price by zip code. Larger custom builds (booking systems, an embedded CRM, a store) are scoped and quoted after a free call. Month to month, cancel anytime, and no trials.`,
+      a: `The productized website is $497 to set up and $147 a month, which covers the domain, hosting, care, and the business command center. That is the same price whether you are in ${city.name} or anywhere else: we do not price by zip code. Larger custom builds (booking systems, an embedded CRM, a store) are scoped and quoted after a free call. Month to month, cancel anytime, and no trials.`,
     },
     {
       q: `Will a voice agent sound right for a ${city.name} business?`,

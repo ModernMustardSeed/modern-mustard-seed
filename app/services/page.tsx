@@ -41,7 +41,7 @@ const FAQ = [
   },
   {
     q: 'What does it cost?',
-    a: 'The productized doors show their price on each page (for example, a website is $497 setup plus $97 a month, and the command center is free with either). Bespoke apps, tools, stores, and agentic systems are quoted per project after a free discovery call. Pricing is fixed before work starts, with no hourly billing.',
+    a: 'The productized doors show their price on each page (for example, a website is $497 setup plus $147 a month, and the command center is free with either). Bespoke apps, tools, stores, and agentic systems are quoted per project after a free discovery call. Pricing is fixed before work starts, with no hourly billing.',
   },
 ];
 

@@ -116,6 +116,40 @@
     background-image: radial-gradient(rgba(245, 183, 0, 0.3) 1.5px, transparent 1.6px);
     background-size: 18px 18px;
   }
+  /* Big ink halftone for dark bands (the /voice-agents call band). */
+  .halftone-ink {
+    background-image: radial-gradient(rgba(245, 183, 0, 0.16) 2px, transparent 2.2px);
+    background-size: 26px 26px;
+  }
+  /* Diagonal screenprint rule, ink on gold. */
+  .stripe-ink {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      #161616 0 6px,
+      transparent 6px 16px
+    );
+  }
+
+  /* ── Ring waves: concentric pulses radiating off the phone number ── */
+  .ring-wave {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: 9999px;
+    border: 2px solid rgba(245, 183, 0, 0.75);
+    animation: ringWave 4.2s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+    will-change: transform, opacity;
+  }
+
+  /* ── Ticker marquee (the sample-night call log) ── */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 42s linear infinite;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
 
   /* Horizontal card scroller (engagements on /work-with-us). Pop-art
      scrollbar: ink track line, mustard thumb with ink border. */
@@ -341,8 +375,33 @@
   .animate-ken-burns,
   .animate-shimmer,
   .animate-pulse-slow,
-  .animate-pulse-glow {
+  .animate-pulse-glow,
+  .ring-wave,
+  .marquee-track {
     animation: none !important;
+  }
+}
+
+@keyframes ringWave {
+  0% {
+    transform: translate(-50%, -50%) scale(0.32);
+    opacity: 0.6;
+  }
+  70% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 

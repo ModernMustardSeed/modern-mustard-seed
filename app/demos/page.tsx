@@ -16,14 +16,14 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 export const metadata = buildMetadata({
   title: 'Free Voice Agent and Website Demo for Your Business',
   description:
-    'Get three working AI demos free, no card and no sales call: a voice agent that answers as your business, a custom website built from scratch, and a business command center free with either. Live in about 20 seconds. Keep what you love from $97/mo.',
+    'Get three working AI demos free, no card and no sales call: a voice agent that answers as your business, a custom website built from scratch, and a business command center free with either. Live in about 20 seconds. Keep what you love from $147/mo.',
   path: '/demos',
 });
 
 const FAQ = [
   {
     q: 'Is it really free?',
-    a: 'Yes. The three demos cost you nothing and there is no card and no meeting. We build them because the demos sell themselves; keep what you love from $97 a month, or walk away.',
+    a: 'Yes. The three demos cost you nothing and there is no card and no meeting. We build them because the demos sell themselves; keep what you love from $147 a month, or walk away.',
   },
   {
     q: 'What exactly do I get?',
@@ -345,7 +345,7 @@ export default function DemosPage() {
             ))}
           </div>
           <p className="font-body text-[14px] text-[#161616]/60 mt-5">
-            Your command center is free with either piece. Want the voice agent and website together? The whole system
+            Your command center is free with either piece. Want the voice agent and website together? That is The Talking Website, and it
             is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
           </p>
         </section>
@@ -360,7 +360,7 @@ export default function DemosPage() {
               {
                 n: '3',
                 t: 'Keep what you love',
-                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for the whole system, command center free with either. Live within 7 days.`,
+                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for The Talking Website (both, command center free). Live within 7 days.`,
               },
             ].map((s) => (
               <div key={s.n} className="flex gap-4 sm:block">

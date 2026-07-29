@@ -13,6 +13,8 @@
  *
  * Pricing locked by Sarah 2026-07-11; command center made free-with-either
  * 2026-07-22, kept individually purchasable (price waived when paired).
+ * REPRICED by Sarah 2026-07-29: voice $397/$397, website $497/$147, command
+ * center unchanged, and the pair became THE TALKING WEBSITE at $497/$497.
  * All amounts in cents.
  */
 
@@ -34,7 +36,7 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
     key: 'voice',
     name: 'Voice Agent',
     setupCents: 39700,
-    monthlyCents: 29700,
+    monthlyCents: 39700,
     blurb: 'The voice that answered your demo, on your real number, 24/7.',
     finePrint: '250 answered minutes a month, then message-taking mode. Your command center is included free.',
   },
@@ -42,7 +44,7 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
     key: 'site',
     name: 'Your New Website',
     setupCents: 49700,
-    monthlyCents: 9700,
+    monthlyCents: 14700,
     blurb: 'The site you just toured, customized to your business and put live on your domain.',
     // The two free edits are now a real, counted thing (claim_revision, migration 049),
     // so the offer may finally say so out loud. Domain, hosting, care, and the command
@@ -61,21 +63,26 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
 };
 
 /**
- * The whole-system bundle: BOTH paid pieces, and the command center rides free
- * inside it. The bundle must stay ABOVE the priciest single AND below the
+ * THE TALKING WEBSITE: BOTH paid pieces, and the command center rides free
+ * inside it. A website that answers its own phone, in the same voice, off the
+ * same brain. This is the flagship offer and the whole cross-sell.
+ *
+ * The bundle must stay AT OR ABOVE the priciest single AND below the
  * two-paid-piece sum, or a la carte becomes irrational and every bundle leaks.
- * Set 2026-07-22: $797 + $349/mo, a real discount on the pair ($97 off the $894
- * a la carte setup, $45/mo off the $394/mo total). Ladder check: setup $797 >
- * $497 (site) and < $894 (pair); monthly $349 > $297 (voice) and < $394 (pair).
- * Re-run this check every time a single price moves. All surfaces derive from
- * DEMO_PRODUCTS / DEMO_BUNDLE.
+ * Repriced 2026-07-29 (Sarah): $497 + $497/mo. Ladder check: setup $497 = $497
+ * (site, the priciest single) and < $894 (pair), so the bundle absorbs the
+ * voice build for free but is never cheaper than a piece of it; monthly $497 >
+ * $397 (voice, the priciest single) and < $544 (pair). No path buys more for
+ * less. Re-run this check every time a single price moves. All surfaces derive
+ * from DEMO_PRODUCTS / DEMO_BUNDLE.
  */
 export const DEMO_BUNDLE = {
   key: 'bundle' as const,
-  name: 'The Whole System',
-  setupCents: 79700,
-  monthlyCents: 34900,
-  blurb: 'Voice Agent + website, and the command center that ties them together, free. One system, one login.',
+  name: 'The Talking Website',
+  setupCents: 49700,
+  monthlyCents: 49700,
+  blurb:
+    'A website that answers its own phone. Your site and your voice agent built as one thing, off one brain, with the command center that runs both, free.',
 };
 
 /** Every orderable piece, in display order. Each can be bought on its own. */
@@ -107,7 +114,7 @@ export function quoteDemoOrder(selection: string[]): DemoOrderQuote | null {
   if (picked.length === 0) return null;
   const hasVoice = picked.includes('voice');
   const hasSite = picked.includes('site');
-  // The whole system: both paid pieces, command center free inside it.
+  // The Talking Website: both paid pieces, command center free inside it.
   if (hasVoice && hasSite) {
     return {
       products: ['bundle'],

@@ -1,7 +1,7 @@
 /**
  * Stripe Checkout for keeping your Voice Agent. Amounts come from data/sidekick.ts
  * (cents), never from env price IDs, so the page and the charge cannot diverge.
- *   VOICE AGENT      $397 setup + $297/mo   (250 min hard cap)
+ *   VOICE AGENT      $397 setup + $397/mo   (250 min hard cap)
  *   VOICE AGENT PRO  $597 setup + $497/mo   (600 min hard cap)
  *
  * Subscription mode with the one-time setup fee on the first invoice. No

@@ -118,14 +118,25 @@ export default function FlagshipOffer() {
         <div className="mt-8 border-2 border-[#161616] bg-white shadow-[6px_6px_0_0_#161616] p-7 md:p-8 md:flex md:items-center md:justify-between gap-8">
           <div className="md:flex-1">
             <span className="font-mono font-bold text-[10px] uppercase tracking-[0.3em] text-[#C4160B] block">
-              The whole system, one login
+              The first of its kind
             </span>
             <h3 className="font-display italic font-extrabold text-2xl md:text-3xl text-[#161616] mt-2">
-              Voice Agent + website + free command center
+              {DEMO_BUNDLE.name}: a website that answers its own phone
             </h3>
             <p className="font-body text-[14px] text-[#161616]/75 mt-2 leading-relaxed max-w-xl">
-              Take both paid pieces for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup,
-              command center on the house. Month to month, cancel anytime, no trials. The demo was the trial.
+              Your site and your voice agent built as one thing, off one brain, so the answer a
+              visitor reads is the answer a caller hears. {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
+              {formatUsd(DEMO_BUNDLE.setupCents)} setup, command center on the house. That is{' '}
+              {formatUsd(
+                DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents - DEMO_BUNDLE.setupCents
+              )}{' '}
+              off the setup and{' '}
+              {formatUsd(
+                DEMO_PRODUCTS.voice.monthlyCents +
+                  DEMO_PRODUCTS.site.monthlyCents -
+                  DEMO_BUNDLE.monthlyCents
+              )}
+              /mo off buying the pieces apart. Month to month, no trials. The demo was the trial.
             </p>
           </div>
           <div className="mt-6 md:mt-0 flex flex-col gap-3 shrink-0">

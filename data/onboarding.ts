@@ -146,7 +146,7 @@ export const OFFER_LADDER: LadderRung[] = [
     price: '$197 to $997',
     title: 'Productized offers',
     detail: 'A finished, impressive thing at a set price. This is where the monthly plans start too, which is how the business earns while it sleeps.',
-    examples: ['Pictures commercial ($197 / $497)', 'Voice Agent ($397 setup + $297/mo)', 'GEO Fix Pack ($297)'],
+    examples: ['Pictures commercial ($197 / $497)', 'Voice Agent ($397 setup + $397/mo)', 'GEO Fix Pack ($297)'],
   },
   {
     rung: 4,
@@ -337,7 +337,7 @@ export const PHASES: Phase[] = [
             heading: 'The Voice Agent, a 24/7 voice agent  ·  /voice-agents/forge',
             bullets: [
               'The free wow: it forges a personalized voice agent for their business in about 60 seconds, and they talk to it live.',
-              'To keep him: $397 to set up plus $297 a month (250 answered minutes). The Pro is $597 plus $497 a month (600 minutes, caller memory, booking, a monthly tune-up with Sarah).',
+              'To keep him: $397 to set up plus $397 a month (250 answered minutes). The Pro is $597 plus $497 a month (600 minutes, caller memory, booking, a monthly tune-up with Sarah).',
               'Say it like this: "An AI that answers your phone 24/7 in a natural voice and books appointments, even when you are closed or slammed."',
             ],
           },

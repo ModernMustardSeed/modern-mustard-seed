@@ -15,7 +15,7 @@ const STORE = workByKey['cross-covenant'];
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
   description:
-    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, and the command center free. Live in about a week from $97/mo. Add the voice agent whenever you want it to answer the phone too. See yours built free.',
+    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, and the command center free. Live in about a week from $147/mo. Add the voice agent whenever you want it to answer the phone too. See yours built free.',
   path: '/websites',
 });
 
@@ -35,7 +35,7 @@ const FAQ = [
   },
   {
     q: 'Is the voice agent included with the website?',
-    a: `No, and we will not pretend otherwise. The Voice Agent is its own product at ${formatUsd(voice.setupCents)} to set up plus ${formatUsd(voice.monthlyCents)} a month, and it can be added to any website: the one we build you, or the one you already have. It answers your real number 24/7, qualifies the caller, books the job, and texts you the details. Take it with a new website and the pair is ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, a real discount on buying them separately.`,
+    a: `No, and we will not pretend otherwise. The Voice Agent is its own product at ${formatUsd(voice.setupCents)} to set up plus ${formatUsd(voice.monthlyCents)} a month, and it can be added to any website: the one we build you, or the one you already have. It answers your real number 24/7, qualifies the caller, books the job, and texts you the details. Take it with a new website and the pair becomes THE TALKING WEBSITE, the first of its kind: one brain answering the page and the phone, ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, a real discount on buying them separately.`,
   },
   {
     q: 'How much does a website cost?',
@@ -270,7 +270,7 @@ export default function WebsitesPage() {
                     Take both and save
                   </p>
                   <p className="font-body text-[13px] text-[#161616]/80 mt-1.5 leading-relaxed">
-                    Website + voice agent together is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
+                    The Talking Website (site + voice agent, one brain) is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
                     {formatUsd(DEMO_BUNDLE.setupCents)} setup, and the command center still rides free.
                   </p>
                 </div>

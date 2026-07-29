@@ -149,7 +149,7 @@ export default function MakeItRealCTA({
 
         {quote?.isBundle ? (
           <p className="mt-4 rounded-xl border-2 border-[#F5B700] bg-[#F5B700] px-4 py-2.5 font-sans text-[13px] font-bold text-[#161616]">
-            Whole system unlocked: voice agent + website for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
+            The Talking Website unlocked: your site answers its own phone, for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
             (you save {formatUsd(savings.monthly)}/mo and {formatUsd(savings.setup)} on setup), command center free.
           </p>
         ) : osFree ? (

@@ -261,7 +261,7 @@ export default function CommandCenterPage() {
             {/* Whole system */}
             <div className="flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#161616] p-7">
               <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">Everything</span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">The Whole System</h3>
+              <h3 className="font-display italic font-extrabold text-2xl mt-2">The Talking Website</h3>
               <p className="font-mono font-bold text-[15px] mt-3">
                 {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo <span className="text-[#161616]/70">+ {formatUsd(DEMO_BUNDLE.setupCents)} setup</span>
               </p>

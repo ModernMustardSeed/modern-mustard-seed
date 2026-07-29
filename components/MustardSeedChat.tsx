@@ -339,7 +339,7 @@ export default function MustardSeedChat() {
         type="button"
         onClick={toggleOpen}
         aria-expanded={open}
-        aria-label={open ? 'Close Mr. Mustard' : 'Talk to Mr. Mustard'}
+        aria-label={open ? 'Close Mr. Mustard' : 'Talk to Mr. Mustard now'}
         className="fixed bottom-6 right-6 z-[80] group"
       >
         {/* Compact mascot-only bubble below sm: the full label used to span 62%

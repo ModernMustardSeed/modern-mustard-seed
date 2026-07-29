@@ -211,7 +211,7 @@ export default function MissedCallCalculator() {
               </button>
             </div>
             {error && <p className="text-[#E0301E] text-xs font-mono">{error}</p>}
-            <p className="text-[#161616]/45 text-[11px] font-body">
+            <p className="text-[#161616]/70 text-[11px] font-body">
               No spam. One reply from a real person. Unsubscribe anytime.
             </p>
           </form>

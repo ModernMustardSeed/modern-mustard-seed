@@ -139,8 +139,9 @@ export const sidekickTiers: SidekickTier[] = [
     chip: '[ ON THE PHONES ]',
     // Matches DEMO_PRODUCTS.voice in lib/demo-order.ts. It is the SAME product,
     // so it must not be cheaper here than in the demo funnel (Sarah, 2026-07-12).
+    // Repriced with the funnel 2026-07-29: $397 setup + $397/mo.
     setupCents: 39700,
-    monthlyCents: 29700,
+    monthlyCents: 39700,
     minutesCap: 250,
     pitch: 'The Voice Agent you just met, answering your real phone around the clock.',
     includes: [
@@ -162,6 +163,11 @@ export const sidekickTiers: SidekickTier[] = [
     // different tier rather than a rounding error. Base moved to $397/$297, which
     // squeezed the premium to +$100/+$100, so Pro moves with it and restores the
     // original +$200/+$200 gap (Sarah, 2026-07-13).
+    // ⚠️ 2026-07-29: base monthly rose to $397, so the gap is back down to
+    // +$200 setup / +$100 monthly, and Pro monthly now TIES The Talking Website
+    // ($497/mo for voice alone vs voice + site + command center). Left as-is
+    // because Sarah did not reprice Pro. Raising Pro to $597/mo restores both
+    // the +$200/+$200 gap and the separation from the bundle.
     setupCents: 59700,
     monthlyCents: 49700,
     minutesCap: 600,

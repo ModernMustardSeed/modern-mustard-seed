@@ -38,7 +38,7 @@ export default function RestaurantVoiceSection() {
   return (
     <div className="mb-24">
       <div className="text-center mb-12">
-        <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-5 block">
+        <span className="text-[10px] uppercase tracking-[0.5em] text-[#C4160B] font-mono font-bold mb-5 block">
           For restaurants
         </span>
         <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.1]">
@@ -68,7 +68,7 @@ export default function RestaurantVoiceSection() {
 
       {/* Rush-hour missed-call math, restaurant-framed */}
       <div className="pop-card-yellow p-8 md:p-10 mt-8">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-5 text-center">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#161616] font-mono font-bold block mb-5 text-center">
           Do the rush-hour math
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-7">
