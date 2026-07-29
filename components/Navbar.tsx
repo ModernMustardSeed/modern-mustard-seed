@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
 import { navLinks, socials, facebookUrl } from '@/data/socials';
+import { DEMO_LINE } from '@/data/trade-pages';
 
 function FacebookMark() {
   return (
@@ -70,6 +71,7 @@ const DEPARTMENTS = [
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
   { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },
+  { name: 'Voice Agents', tag: `CALL HIM: ${DEMO_LINE.display}`, href: '/voice-agents' },
   { name: 'Voice Agent Forge', tag: 'FREE VOICE AGENT DEMO', href: '/voice-agents/forge' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
