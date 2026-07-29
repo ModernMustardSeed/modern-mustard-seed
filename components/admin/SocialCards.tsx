@@ -215,6 +215,8 @@ function SetPanel({ set, fmt }: { set: SocialSet; fmt: Fmt }) {
 
 export default function SocialCardsLibrary() {
   const [fmt, setFmt] = useState<Fmt>('feed');
+  const totalCards = SOCIAL_SETS.reduce((n, s) => n + s.cards.length, 0);
+  const totalPosts = SOCIAL_SETS.reduce((n, s) => n + s.posts.length, 0);
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -225,8 +227,8 @@ export default function SocialCardsLibrary() {
             Social Cards
           </h1>
           <p className="text-[17px] leading-relaxed text-[#161616]/75 max-w-[62ch]">
-            Twelve finished graphics and eight group posts, ready to download and paste. Every statistic on every
-            card has a named publisher and a date printed on the art.
+            {totalCards} finished graphics and {totalPosts} group posts across {SOCIAL_SETS.length} sets, ready to
+            download and paste. Every statistic on every card has a named publisher and a date printed on the art.
           </p>
           <div className="flex items-center gap-2.5 flex-wrap">
             <span className="text-[11px] font-mono font-bold uppercase tracking-[0.18em] text-[#161616]/55">Size</span>
@@ -258,7 +260,7 @@ export default function SocialCardsLibrary() {
         ))}
 
         <footer className="border-t-2 border-[#161616]/20 pt-5 text-[12px] font-mono uppercase tracking-[0.14em] text-[#161616]/55">
-          Source files in social-drafts/&#123;missed-calls,websites&#125;/ · re-render with node render.mjs, add --square for the X cut
+          Source files in social-drafts/&lt;set&gt;/ · re-render with node render.mjs, add --square for the X cut
         </footer>
       </main>
     </div>
