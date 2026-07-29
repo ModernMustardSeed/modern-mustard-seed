@@ -2,25 +2,26 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
-import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 import { workByKey } from '@/data/website-work';
 import EngineToggle from '@/components/websites/EngineToggle';
 import WorkShowcase from '@/components/websites/WorkShowcase';
 
 const site = DEMO_PRODUCTS.site;
+const voice = DEMO_PRODUCTS.voice;
 const HERO = workByKey['linen-fresh'];
 const STORE = workByKey['cross-covenant'];
 
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
   description:
-    'A website that answers the phone, captures every lead, and runs itself. Elite custom design, a voice agent on it, funnels and SEO baked in, and the command center free. Live in about a week from $97/mo. See yours built free.',
+    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, and the command center free. Live in about a week from $97/mo. Add the voice agent whenever you want it to answer the phone too. See yours built free.',
   path: '/websites',
 });
 
 const INCLUDED = [
   { icon: '🎨', name: 'Elite custom design', desc: 'Designed from scratch for your trade and your town. Not a template anyone else can buy.' },
-  { icon: '🎙', name: 'A voice agent on it', desc: 'The site answers the phone 24/7, books the job, and texts you the details. Never a missed call.' },
+  { icon: '🌐', name: 'Domain, hosting, and care', desc: 'Your domain, the hosting, and ongoing care all handled. Two free edits before it goes live, and we keep it running after.' },
   { icon: '⚙', name: 'The command center, free', desc: 'A back office wired to your calls, traffic, customers, and reviews. On the house with your site.' },
   { icon: '🧲', name: 'Funnels + a lead magnet', desc: 'A real capture flow and a reason to opt in, live and converting on day one, not someday.' },
   { icon: '🔎', name: 'SEO + GEO baked in', desc: 'Built to be found on Google and cited by AI search. Metadata, structured data, the works.' },
@@ -30,7 +31,11 @@ const INCLUDED = [
 const FAQ = [
   {
     q: 'What kind of website do you build?',
-    a: 'Not a brochure that sits there, a working engine. Elite custom design, a voice agent that answers the phone right on the site, funnels and a lead magnet live on day one, the command center wired behind it free, and SEO plus GEO built in so you get found. It looks like the brand you are trying to be, and it actually runs your business.',
+    a: 'Not a brochure that sits there, a working engine. Elite custom design, funnels and a lead magnet live on day one, the command center wired behind it free, SEO plus GEO built in so you get found, and your domain, hosting, and care handled. It looks like the brand you are trying to be, and it actually runs your business.',
+  },
+  {
+    q: 'Is the voice agent included with the website?',
+    a: `No, and we will not pretend otherwise. The Voice Agent is its own product at ${formatUsd(voice.setupCents)} to set up plus ${formatUsd(voice.monthlyCents)} a month, and it can be added to any website: the one we build you, or the one you already have. It answers your real number 24/7, qualifies the caller, books the job, and texts you the details. Take it with a new website and the pair is ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, a real discount on buying them separately.`,
   },
   {
     q: 'How much does a website cost?',
@@ -42,7 +47,7 @@ const FAQ = [
   },
   {
     q: 'How is this different from Wix, Squarespace, or an agency?',
-    a: 'Wix and Squarespace are templates you rent and maintain yourself. An agency hands you a pretty brochure and a bill. We build a working engine you own outright: it answers the phone, captures the lead, and follows up on its own, and you get the repo, the domain, and every account on launch day. You are not renting it and you are not stuck with us.',
+    a: 'Wix and Squarespace are templates you rent and maintain yourself. An agency hands you a pretty brochure and a bill. We build a working engine you own outright: it captures the lead and follows up on its own, it can answer the phone too once you add the voice agent, and you get the repo, the domain, and every account on launch day. You are not renting it and you are not stuck with us.',
   },
   {
     q: 'Do I really own it?',
@@ -50,7 +55,7 @@ const FAQ = [
   },
   {
     q: 'Can I see it before I pay?',
-    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in about twenty seconds, plus a voice agent and a command center. No card and no meeting. Keep what you love, or walk away.',
+    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in about twenty seconds, plus a voice agent and a command center so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
   },
   {
     q: 'What if I already have a website?',
@@ -65,16 +70,16 @@ function websitesJsonLd() {
       {
         '@type': 'Service',
         name: 'Small Business Website Builds by Modern Mustard Seed',
-        serviceType: 'Custom small-business website design and development (with voice agent, funnels, SEO/GEO)',
+        serviceType: 'Custom small-business website design and development (funnels, SEO/GEO, optional voice agent add-on)',
         description:
-          'Custom websites that work: elite design, a voice agent on the site, funnels and a lead magnet day one, the command center wired behind it free, and SEO plus GEO built in. Live in about a week. You own the code, domain, and accounts.',
+          'Custom websites that work: elite design, funnels and a lead magnet day one, the command center wired behind it free, SEO plus GEO built in, and your domain, hosting, and care handled. Live in about a week. You own the code, domain, and accounts. The voice agent is a separate product that can be added to this site or to a site you already have.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/websites`,
         offers: {
           '@type': 'Offer',
           name: 'Website',
-          description: 'Custom website with a voice agent, funnels, SEO/GEO, and the command center free. Domain, hosting, and care included.',
+          description: 'Custom website with funnels, SEO/GEO, and the command center free. Domain, hosting, and care included. Voice agent sold separately.',
           price: Math.round(site.monthlyCents / 100),
           priceCurrency: 'USD',
           priceSpecification: [
@@ -123,9 +128,9 @@ export default function WebsitesPage() {
                 Not a brochure. A website that <em className="italic text-[#C4160B]">works.</em>
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
-                Elite custom design, a voice agent answering right on the page, funnels and SEO baked in, and the
-                command center wired behind it free. It answers the phone, captures the lead, and follows up while you
-                sleep. From {formatUsd(site.monthlyCents)}/mo, and you own every line.
+                Elite custom design, funnels and SEO baked in, and the command center wired behind it free. It captures
+                the lead and follows up while you sleep, and it can answer the phone too the day you add the voice
+                agent. From {formatUsd(site.monthlyCents)}/mo, and you own every line.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -162,7 +167,7 @@ export default function WebsitesPage() {
                 <div className="relative">
                   <Image
                     src={HERO.img}
-                    alt={`${HERO.name}, a real ${HERO.trade.toLowerCase()} website designed and built by Modern Mustard Seed, with the voice agent answering right on the page`}
+                    alt={`${HERO.name}, a ${HERO.trade.toLowerCase()} website designed and built from scratch by Modern Mustard Seed, capturing a new lead into the command center`}
                     width={1600}
                     height={1000}
                     priority
@@ -176,7 +181,7 @@ export default function WebsitesPage() {
                 </div>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-3">
-                A real site we built for {HERO.name}, {HERO.place}. It answers the phone, too.
+                Built for {HERO.name}, {HERO.place}. Designed from scratch, wired to capture every lead.
               </p>
             </div>
           </div>
@@ -217,6 +222,66 @@ export default function WebsitesPage() {
                 <p className="font-body text-[13px] text-[#161616]/70 mt-1.5 leading-relaxed">{m.desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* ── The voice agent is its own product, not part of the site ── */}
+        <section>
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center border-2 border-[#161616] bg-[#161616] rounded-2xl shadow-[8px_8px_0_0_#F5B700] p-7 sm:p-10">
+            <div className="lg:col-span-7">
+              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#F5B700] uppercase">
+                Add-on // Sold separately
+              </p>
+              <h2 className="font-display italic font-extrabold text-3xl md:text-[2.75rem] mt-3 leading-[1.04] text-[#FBF6EA]">
+                Want it to answer the phone? Add the voice agent.
+              </h2>
+              <p className="font-body text-[15px] text-[#FBF6EA]/75 mt-4 leading-relaxed">
+                Straight answer: the voice agent is not part of the website. It is its own product, and it bolts onto
+                any site. It answers your real number 24/7, qualifies the caller, books the job, and texts you the
+                details before you have put your phone down.
+              </p>
+              <ul className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-3">
+                {[
+                  'Add it to the site we build you',
+                  'Or to the site you already have',
+                  'Rides on your existing number',
+                  'Command center stays free either way',
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#FBF6EA]/85">
+                    <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#F5B700] shrink-0" aria-hidden />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="lg:col-span-5">
+              <div className="border-2 border-[#161616] bg-[#FBF6EA] rounded-2xl shadow-[5px_5px_0_0_#C4160B] p-6">
+                <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">
+                  The Voice Agent
+                </span>
+                <p className="font-mono font-bold text-[17px] mt-2.5 text-[#161616]">
+                  {formatUsd(voice.monthlyCents)}/mo{' '}
+                  <span className="text-[#161616]/70">+ {formatUsd(voice.setupCents)} setup</span>
+                </p>
+                <p className="font-body text-[12.5px] text-[#161616]/70 mt-2 leading-relaxed">{voice.finePrint}</p>
+                <div className="mt-4 pt-4 border-t-2 border-dashed border-[#161616]/25">
+                  <p className="font-mono font-bold text-[10px] uppercase tracking-[0.16em] text-[#8f6600]">
+                    Take both and save
+                  </p>
+                  <p className="font-body text-[13px] text-[#161616]/80 mt-1.5 leading-relaxed">
+                    Website + voice agent together is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
+                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, and the command center still rides free.
+                  </p>
+                </div>
+                <Link
+                  href="/voice-agents"
+                  className="mt-5 block text-center border-2 border-[#161616] bg-[#F5B700] text-[#161616] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                >
+                  Hear it answer
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -327,8 +392,8 @@ export default function WebsitesPage() {
                 {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(site.setupCents)} setup</span>
               </p>
               <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
-                A custom site designed from scratch, a voice agent on it, funnels and SEO baked in. Your domain,
-                hosting, care, and the command center all included. Month to month, cancel anytime.
+                A custom site designed from scratch, funnels and SEO baked in. Your domain, hosting, care, and the
+                command center all included. Month to month, cancel anytime. Add the voice agent any time you want.
               </p>
               <Link
                 href="/demos"
@@ -369,8 +434,8 @@ export default function WebsitesPage() {
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               ['1', 'Forge it free', 'Tell us your business and we design a real working demo site for you in about twenty seconds. Tour it, poke around, no card.'],
-              ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the voice agent and funnels, and put it on your domain by hand.'],
-              ['3', 'Own it, and grow', 'Live in about a week. You get the repo, the domain, and every account. The site answers, captures, and follows up on its own.'],
+              ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the funnels and the command center, and put it on your domain by hand.'],
+              ['3', 'Own it, and grow', 'Live in about a week. You get the repo, the domain, and every account. Add the voice agent whenever you want it answering the phone.'],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">
                 <span className="font-display text-5xl font-bold text-[#F5B700] leading-none shrink-0">{n}</span>

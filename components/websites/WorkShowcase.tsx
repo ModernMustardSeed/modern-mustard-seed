@@ -2,9 +2,13 @@ import Image from 'next/image';
 import { WORK_SITES } from '@/data/website-work';
 
 /**
- * The bottom scroll: real sites the studio shipped, gliding past in a marquee
- * that pauses on hover and stands still under reduced-motion. Each card links to
- * the live site. Pop-art cabin framing, full-bleed so it feels like a reel.
+ * The bottom scroll: builds from the studio gliding past in a marquee that pauses
+ * on hover and stands still under reduced-motion. Pop-art cabin framing, full-bleed
+ * so it feels like a reel.
+ *
+ * Copy discipline (2026-07-28): the reel mixes shipped client sites with forged
+ * builds, so the headline claims what is true of ALL of them (designed from scratch,
+ * no templates). Do NOT reintroduce "every one is a real business live on the web."
  */
 
 export default function WorkShowcase() {
@@ -16,14 +20,14 @@ export default function WorkShowcase() {
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6">
         <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
-          Real work // Real businesses
+          The work // No two alike
         </p>
         <h2 id="work-showcase" className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
-          Sites we have actually shipped.
+          {WORK_SITES.length} builds. Zero templates.
         </h2>
         <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
-          Every one of these is a real business, live on the web, designed and built by the studio. Hover to slow the
-          reel down.
+          Laundromats, landscapers, a lakeside retreat, a seafood wholesaler, a full apparel store. Every one designed
+          from scratch by the studio for that business and nobody else. Hover to slow the reel down.
         </p>
       </div>
 

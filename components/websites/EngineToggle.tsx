@@ -17,11 +17,11 @@ const DOMAIN = 'fiatluxdesign.co';
 const BROCHURE_NOTES = [
   'Looks nice. Does nothing.',
   'A visitor leaves and you never know they came.',
-  'The phone rings after hours. Nobody answers.',
+  'After hours it just sits there. The lead moves on.',
 ];
 const ENGINE_NOTES = [
-  'A voice agent answers every call, 24/7.',
-  'Every visitor is captured and followed up in seconds.',
+  'Every visitor is captured, not just counted.',
+  'Follow-up fires in seconds, day or night.',
   'Leads land in your command center while you sleep.',
 ];
 
@@ -122,7 +122,7 @@ export default function EngineToggle() {
           </ul>
           <p className={`mt-5 font-body text-[12.5px] leading-relaxed ${engine ? 'text-[#FBF6EA]/70' : 'text-[#161616]/70'}`}>
             {engine
-              ? 'This is what we build. The same beautiful site, wired to answer, capture, and follow up on its own.'
+              ? 'This is what we build. The same beautiful site, wired to capture, follow up, and file every lead on its own.'
               : 'Most small-business sites stop here. Pretty, and completely asleep.'}
           </p>
         </div>
