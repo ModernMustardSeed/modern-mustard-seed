@@ -39,6 +39,56 @@ const sb = createClient(
   { auth: { persistSession: false } },
 );
 
+/**
+ * Find the selectors that actually declare an outlined word, whatever they are
+ * called. Guessing [class*="hollow"] missed Super Roofers entirely, whose outline
+ * class has a different name, so the word stayed unreadable after a fleet run that
+ * reported success. Read their CSS instead of assuming our own vocabulary.
+ */
+function hollowSelectors(html) {
+  const out = new Map();
+  const re = /-webkit-text-stroke(?:-width)?\s*:\s*[\d.]+px/g;
+  let m;
+  while ((m = re.exec(html))) {
+    const open = html.lastIndexOf('{', m.index);
+    const close = html.indexOf('}', m.index);
+    if (open === -1 || close === -1) continue;
+    const body = html.slice(open, close);
+    if (!/color\s*:\s*transparent/.test(body)) continue;
+
+    // Take the colour from THIS build's own stroke. Falling back to a hardcoded
+    // hex put a teal fill on Super Roofers' orange palette, because that site
+    // never defines --accent. The word became legible and wrong, which is not a fix.
+    const strokeColor =
+      body.match(/-webkit-text-stroke\s*:\s*[\d.]+px\s+([^;}]+)/)?.[1]?.trim() ||
+      body.match(/-webkit-text-stroke-color\s*:\s*([^;}]+)/)?.[1]?.trim() ||
+      null;
+
+    const from = Math.max(0, open - 400);
+    const chunk = html.slice(from, open);
+    const cut = Math.max(chunk.lastIndexOf('}'), chunk.lastIndexOf(';'), chunk.lastIndexOf('>'));
+    const sel = chunk.slice(cut + 1).trim().replace(/\s+/g, ' ');
+    if (!sel || sel.length > 200 || sel.startsWith('@')) continue;
+    if (!/[a-zA-Z.#[]/.test(sel[0])) continue;
+    if (!out.has(sel) || (strokeColor && !out.get(sel))) out.set(sel, strokeColor);
+  }
+  return [...out.entries()];
+}
+
+/** A rule built from the colour this build already chose for its own outline. */
+function hollowRule(strokeColor) {
+  // No declared stroke colour means we must not invent one; leave the fill alone
+  // and win legibility with the halo only.
+  if (!strokeColor) {
+    return '{-webkit-text-stroke-width:3px!important;text-shadow:0 0 2px rgba(0,0,0,.75),0 3px 22px rgba(0,0,0,.75)!important}';
+  }
+  return (
+    `{color:color-mix(in srgb,${strokeColor} 55%,transparent)!important;` +
+    '-webkit-text-stroke-width:3px!important;' +
+    'text-shadow:0 0 2px rgba(0,0,0,.7),0 3px 22px rgba(0,0,0,.7)!important}'
+  );
+}
+
 /** The patch, appended so it wins on cascade order without rewriting their CSS. */
 const PATCH = `
 /* --- forge fix 2026-07-29: hollow hero words must survive the photograph --- */
@@ -118,7 +168,13 @@ for (const r of affected) {
 
   // Append inside </head> if there is one, else before </body>. Appending means it
   // wins the cascade without touching a single line the build wrote.
-  const style = `<style>${PATCH}</style>`;
+  const derived = hollowSelectors(base);
+  const extra = derived.length
+    ? '\n/* selectors and colours read from THIS build: outline classes are not always\n' +
+      '   called "hollow", and the fill must be the palette this site actually chose */\n' +
+      derived.map(([sel, color]) => sel + hollowRule(color)).join('\n')
+    : '';
+  const style = `<style>${PATCH}${extra}</style>`;
   const html = base.includes('</head>')
     ? base.replace('</head>', `${style}</head>`)
     : base.replace('</body>', `${style}</body>`);
