@@ -46,13 +46,21 @@ const FRANCHISE = ['midas','jiffy lube','servpro','roto-rooter','aamco','meineke
 const EMAIL_BLOCK = /\.(png|jpe?g|gif|svg|webp|ico|css|js)$|sentry|wixpress|\.wix\.com|example\.|yourdomain|domain\.com|email\.com|googleapis|cloudflare|schema\.org|w3\.org|godaddy|squarespace|\.wixsite/i;
 const ROLE = /^(info|contact|hello|office|sales|admin|support|frontdesk|reception|booking|hi|service|scheduling|estimates|estimating|dispatch)@/i;
 function bestEmail(list, host) { const clean = [...new Set(list.map((e) => e.toLowerCase().trim()))].filter((e) => !EMAIL_BLOCK.test(e) && e.length <= 100 && /@[a-z0-9.-]+\.[a-z]{2,}$/.test(e)); if (!clean.length) return null; clean.sort((a, b) => { const da = hostOf(a.split('@')[1]) === host ? 1 : 0, db = hostOf(b.split('@')[1]) === host ? 1 : 0; if (da !== db) return db - da; return (ROLE.test(b) ? 1 : 0) - (ROLE.test(a) ? 1 : 0); }); return clean[0]; }
+// fetch with a manually-cleared timeout. AbortSignal.timeout() leaks a libuv
+// timer that crashes Node on Windows (async.c assertion) mid-run.
+async function fetchTimeout(url, opts = {}, ms = 9000) {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), ms);
+  try { return await fetch(url, { ...opts, signal: ac.signal }); }
+  finally { clearTimeout(t); }
+}
 async function scrapeSite(website) {
   const base = website.startsWith('http') ? website : `https://${website}`;
   let origin = ''; try { origin = new URL(base).origin; } catch { return { email: null, weak: [] }; }
   const host = hostOf(base); const collected = []; const weak = []; let home = false;
   for (const page of [base, `${origin}/contact`, `${origin}/contact-us`, `${origin}/about`]) {
     try {
-      const res = await fetch(page, { headers: { 'User-Agent': UA, Accept: 'text/html' }, redirect: 'follow', signal: AbortSignal.timeout(9000) });
+      const res = await fetchTimeout(page, { headers: { 'User-Agent': UA, Accept: 'text/html' }, redirect: 'follow' }, 9000);
       if (!res.ok) continue;
       let html = (await res.text()).slice(0, 400000);
       if (!home && page === base) { home = true; if (!/<meta[^>]+name=["']viewport["']/i.test(html)) weak.push('not mobile-friendly'); if (res.url && res.url.startsWith('http://')) weak.push('no HTTPS'); const yrs = [...html.matchAll(/(?:©|&copy;|copyright)\s*\D{0,6}(20\d\d)/gi)].map((m) => +m[1]); const my = yrs.length ? Math.max(...yrs) : null; if (my && my <= YEAR - 2) weak.push(`stale (©${my})`); }
@@ -76,7 +84,7 @@ async function searchFsq(query, center) {
 async function overpass(bbox) {
   const q = `[out:json][timeout:120];(nwr["website"]["craft"](${bbox});nwr["website"]["office"~"^(construction_company|architect|surveyor|engineer)$"](${bbox});nwr["website"]["shop"~"^(doityourself|hardware|trade|electrical|paint|flooring|garden_centre|kitchen|tiles|glaziery|locksmith|window_construction|gutter|fencing)$"](${bbox});nwr["website"]["amenity"="car_repair"](${bbox}););out tags 800;`;
   for (const url of ['https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass-api.de/api/interpreter']) {
-    try { const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': UA }, body: `data=${encodeURIComponent(q)}`, signal: AbortSignal.timeout(120000) }); if (!res.ok) continue; const j = await res.json(); if (j.elements?.length) return j.elements; } catch {}
+    try { const res = await fetchTimeout(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': UA }, body: `data=${encodeURIComponent(q)}` }, 120000); if (!res.ok) continue; const j = await res.json(); if (j.elements?.length) return j.elements; } catch {}
   }
   return [];
 }
