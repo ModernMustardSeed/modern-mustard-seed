@@ -438,6 +438,136 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
     ],
   },
+  {
+    id: 'speed-to-lead',
+    name: 'Speed to Lead',
+    eyebrow: 'Set four · The Grid',
+    blurb:
+      'Speed to lead staged as a motorsport race: chequered flag, generated speed streaks, and a timing tower that classifies the reader against the field. Not the missed-call set. That one is about never answering, this one is about answering too late, which is harder to hear because the owner thinks they did respond.',
+    cta: 'Race it · (406) 312-1223',
+    accent: '#E10600',
+    rules: [
+      'Always print the year on the Harvard numbers. The audit is real and rigorous (2,241 US companies, real enquiries, timed replies) but it is from 2011.',
+      '⚠️ The Optifai 2026 study (47 hour average) is B2B SaaS, NOT home services. Fine as corroboration in a comment that nothing has moved in 15 years. Never put it on a card aimed at trades.',
+      'Jobber 2026 is the audience-appropriate one, actual home service customers, so lead with it when the room is sceptical of old data.',
+      'Do not run this in the same group in the same week as the Missed Call Files. They are close cousins and it reads as one pitch.',
+      'Never type a price from memory. Sidekick tiers come from data/sidekick.ts.',
+    ],
+    cards: [
+      {
+        file: '01-seven-times',
+        headline: '7× more likely to win the job if you answer inside the hour.',
+        use: 'The opener. Post 2, or run 01 + 02 as a carousel.',
+        alt: 'Racing card, chequered flag strips and red livery stripe. Giant italic 7 times. Headline: more likely to win the job if you answer inside the hour.',
+      },
+      {
+        file: '02-forty-two-hours',
+        headline: '42 hours is how long the average reply actually takes.',
+        use: 'The gap card. Pairs with 01.',
+        alt: 'Racing card with a timing tower comparing what the customer expects against what the field delivers. Headline: 42 hours is how long the average reply actually takes.',
+      },
+      {
+        file: '03-dnf',
+        headline: '23% never reply at all.',
+        use: 'The one that gets shared. DNF is a concept people repeat.',
+        alt: 'Racing card with a timing tower showing a DNF row in red. Headline: 23 percent never reply at all. A quarter of the grid never leaves the line.',
+      },
+      {
+        file: '04-the-flag',
+        headline: '56% expect to hear back within the hour.',
+        use: 'The fresh, audience-appropriate number. Lead with this when the room doubts old data.',
+        alt: 'Racing card, timing tower showing on the lead lap against lapped. Headline: 56 percent expect to hear back within the hour.',
+      },
+      {
+        file: '05-race-it',
+        headline: 'Race it. It answers on ring one.',
+        use: 'The dare. Opener for other people’s groups.',
+        alt: 'Racing card with a skewed black number plate showing the phone number. Headline: Race it.',
+      },
+      {
+        file: '06-pit-stop',
+        headline: 'You do not need to be fast all day. You need to be fast first.',
+        use: 'The fix, in three steps, two of them free.',
+        alt: 'Racing card with a numbered three step list. Headline: You do not need to be fast all day. You need to be fast first.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'The dare',
+        graphic: '05-race-it',
+        body: [
+          'Quick race, and you will lose to a robot. Sorry in advance.',
+          '(406) 312-1223',
+          'Call it and count the rings. It picks up before the first one finishes, tells you straight away that it is an AI, and will happily book a job if you push it that far.',
+          'Then here is the actual exercise. Ring your own business number from a phone nobody recognises. Count those rings. Then send yourself a message through your own website contact form and see how long the reply takes.',
+          'Most owners have genuinely never done that. The results are usually a bit uncomfortable and always useful. Tell me what you found, I will tell you whether it is normal.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'To be fair to everyone: mine is an AI with nothing else to do. You are on a roof. The point is not that you should be faster than a machine, it is knowing what your customer is currently experiencing.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'The stat teardown',
+        graphic: '01-seven-times',
+        body: [
+          'Harvard sent fake enquiries to 2,241 real companies and timed how long each one took to reply. Not a survey. An actual stopwatch on actual businesses.',
+          'Firms that answered inside the hour were about 7 times more likely to qualify the lead. Against the ones who waited a day, 60 times.',
+          'The average reply time among everyone who did answer? 42 hours.',
+          'That study is from 2011, so before anybody says it is out of date: a 2026 study of B2B companies clocked the average at 47 hours. Fifteen years, and the number went the wrong way.',
+          'None of this is about working harder. The winner was not the best tradesperson in the sample. It was whoever picked up first.',
+        ],
+      },
+      {
+        n: 3,
+        title: 'The DNF',
+        graphic: '03-dnf',
+        body: [
+          'In that same Harvard audit, 23% of companies never replied at all.',
+          'Not slow. Never. Nearly one business in four received a real enquiry from a real person and it simply died somewhere between the form and the phone.',
+          'I have started calling this a DNF, because it is the same thing as a car that never leaves the grid. All the cost of showing up, none of the result. You paid for the van, the insurance, the sign, maybe the ads. And then the job walked in the door and stood there until it left.',
+          'If you want to know whether this is you, do not guess. Send yourself an enquiry through your own website today and see what happens. Genuinely, today.',
+        ],
+      },
+      {
+        n: 4,
+        title: 'The pit stop',
+        graphic: '06-pit-stop',
+        body: [
+          'You do not need to be fast all day. You need to be fast first. Three things, and two of them are free.',
+          [
+            'Auto text-back on every missed call, inside sixty seconds. Even a plain "sorry we missed you, what do you need?" recovers more than you would think. Most phone systems and CRMs already do this and it is switched off.',
+            'Name who owns the phone between eight and six. An actual person, on a rota. "Whoever gets to it" is how enquiries die.',
+            'Give after-hours somewhere to land that answers instead of beeping.',
+          ],
+          'That is it. No new marketing, no bigger ad budget, no rebrand. Just closing the gap between someone deciding to call you and someone hearing back.',
+        ],
+      },
+    ],
+    replies: [
+      {
+        q: 'We are a small team, we cannot answer instantly.',
+        a: 'Nobody can, and I would not trust anyone who says they do. The bar is not instant, it is inside the hour, and the study says most of your competition is nowhere near it. You do not have to be fast. You have to be first.',
+      },
+      {
+        q: 'I am on a roof, I cannot take calls.',
+        a: 'Exactly right, and that is the whole point of the text-back. You are not answering the call, you are stopping the person from dialling the next name while they wait. Sixty seconds of automation buys you three hours of grace.',
+      },
+      {
+        q: 'Does an AI answering annoy customers?',
+        a: 'Some people hate it, and I will not pretend otherwise. What the data says is that people prefer it to a voicemail beep at nine at night. Mine announces it is an AI in the first sentence, because anything else is a trick.',
+      },
+      {
+        q: 'How much?',
+        a: 'The call is free and always will be. If you want one of your own it is $397 to build and $297 a month, scoped on a 15 minute call. Go time your own phone first though, you might just need the text-back switched on.',
+        warn: 'Price from data/sidekick.ts on 2026-07-28. Re-read the file if the tiers have moved. Never type a price from memory.',
+      },
+    ],
+  },
 ];
 
 /** Flatten a post body into the plain text that goes in the composer. */
