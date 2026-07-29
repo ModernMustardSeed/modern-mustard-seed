@@ -1,0 +1,67 @@
+# Nightly website backfill for the outbound dial floor.
+#
+# Unlike the other scheduled workflows here, this does NOT ping a Vercel route.
+# It cannot: the lookup drives a real Chromium against Google Maps, and there is
+# no browser in a serverless function. So the work runs inside the Action, which
+# is also why this is the right home for it rather than Sarah's laptop.
+#
+# Why Maps and not a search API: DuckDuckGo, Bing and Google all answer an
+# automated request with a CAPTCHA, and a paid search key was declined. The Maps
+# place panel is reachable and carries the website AND the phone together, so
+# identity is settled by two numbers agreeing rather than by a name resembling a
+# name. scripts/enrich-maps.mjs holds the full reasoning.
+#
+# The script is resumable and writes each result as it finds it, so a cancelled
+# run loses nothing and the next run skips whatever is already settled. That
+# matters here: GitHub caps a job at 6 hours and the first full pass took two.
+
+name: enrich-maps
+
+on:
+  schedule:
+    - cron: "0 9 * * *" # 09:00 UTC = 02:00 MT, off-peak for Maps
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Only process this many leads (blank = all outstanding)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Look up but write nothing"
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: enrich-maps
+  cancel-in-progress: false # never interrupt a run mid-write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330 # under GitHub's 360 ceiling, so the job ends cleanly
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Only Chromium. The full browser set is a slow download we never use.
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Backfill websites from Google Maps
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" != "true" ]; then ARGS="$ARGS --apply"; fi
+          if [ -n "${{ inputs.limit }}" ]; then ARGS="$ARGS --limit ${{ inputs.limit }}"; fi
+          echo "Running: node scripts/enrich-maps.mjs $ARGS"
+          node scripts/enrich-maps.mjs $ARGS

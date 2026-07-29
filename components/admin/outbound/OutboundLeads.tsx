@@ -33,20 +33,33 @@ const rankOf = (s: string) => STATUS_RANK[s] ?? 1;
 /** Saved views: one-click segments for the highest-intent lead types. "No
  *  website" and "Outdated site" are the leads that most need us and close
  *  fastest; the sourcer flags them (website blank, or a "needs us:" note). */
-type ViewKey = 'all' | 'no_site' | 'outdated' | 'needs';
+type ViewKey = 'all' | 'confirmed_no_site' | 'no_site' | 'outdated' | 'needs';
 const VIEWS: { key: ViewKey; label: string; desc: string }[] = [
   { key: 'all', label: 'All leads', desc: 'Everything on the floor.' },
-  { key: 'no_site', label: 'No website', desc: 'Has a phone but no website at all. Pitch: build them one from scratch.' },
+  { key: 'confirmed_no_site', label: 'No website ✓', desc: 'CHECKED on Google Maps and they genuinely have no website. Not "we never looked" — verified. The strongest build pitch on the floor.' },
+  { key: 'no_site', label: 'No website', desc: 'The website field is blank. Includes leads nobody has checked yet, so it is wider and softer than the verified segment.' },
   { key: 'outdated', label: 'Outdated site', desc: 'Has a website, but it is stale, not mobile-friendly, or has no HTTPS. Pitch: redesign.' },
   { key: 'needs', label: 'Needs us', desc: 'No site or a weak site. The whole "needs help" segment in one view.' },
 ];
 const hasSite = (l: OutboundLead) => !!(l.website && l.website.trim());
 const isWeak = (l: OutboundLead) => /needs us/i.test(l.notes ?? '');
+/**
+ * The backfill writes this marker only after Google Maps showed the place and
+ * showed no website on it, so it means "checked and they have none" rather than
+ * "we never looked". That difference is the whole pitch: you can open the call
+ * knowing they have nothing, instead of asking.
+ */
+const confirmedNoSite = (l: OutboundLead) => !hasSite(l) && /NO WEBSITE:/i.test(l.notes ?? '');
 const matchesView = (l: OutboundLead, v: ViewKey) =>
-  v === 'all' ? true : v === 'no_site' ? !hasSite(l) : v === 'outdated' ? hasSite(l) && isWeak(l) : !hasSite(l) || isWeak(l);
+  v === 'all' ? true
+    : v === 'confirmed_no_site' ? confirmedNoSite(l)
+      : v === 'no_site' ? !hasSite(l)
+        : v === 'outdated' ? hasSite(l) && isWeak(l)
+          : !hasSite(l) || isWeak(l);
 
 /** Small per-row cue so a caller knows which pitch a lead is: build vs redesign. */
 function siteFlag(l: OutboundLead): { label: string; tone: 'red' | 'amber' } | null {
+  if (confirmedNoSite(l)) return { label: 'No site ✓', tone: 'red' };
   if (!hasSite(l)) return { label: 'No site', tone: 'red' };
   if (isWeak(l)) return { label: 'Stale site', tone: 'amber' };
   return null;
@@ -262,10 +275,12 @@ export default function OutboundLeads() {
   }, [leads, status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, deferredQ]);
 
   const viewCounts = useMemo(() => {
-    const counts = { all: base.length, no_site: 0, outdated: 0, needs: 0 } as Record<ViewKey, number>;
+    const counts = { all: base.length, confirmed_no_site: 0, no_site: 0, outdated: 0, needs: 0 } as Record<ViewKey, number>;
     for (const l of base) {
-      if (!hasSite(l)) { counts.no_site++; counts.needs++; }
-      else if (isWeak(l)) { counts.outdated++; counts.needs++; }
+      if (!hasSite(l)) {
+        counts.no_site++; counts.needs++;
+        if (confirmedNoSite(l)) counts.confirmed_no_site++;
+      } else if (isWeak(l)) { counts.outdated++; counts.needs++; }
     }
     return counts;
   }, [base]);
