@@ -203,7 +203,14 @@ export type AuditSignalsSummary = {
 };
 
 export type AuditResult =
-  | { ok: true; url: string; report: WebsiteAuditReport; signals_summary: AuditSignalsSummary }
+  | {
+      ok: true;
+      url: string;
+      report: WebsiteAuditReport;
+      signals_summary: AuditSignalsSummary;
+      /** What the call actually cost. Batch runs price themselves off this rather than a guess. */
+      usage?: { model: string; input: number; cache_read: number; output: number };
+    }
   | { ok: false; status: number; error: string };
 
 /**
@@ -330,6 +337,67 @@ function extractSignals(url: URL, html: string, status: number): Signals {
  * Run a full audit on one URL. Never throws: failures come back as
  * `{ ok: false, status, error }` so the caller can map them to HTTP codes.
  */
+/**
+ * THE MODEL LADDER.
+ *
+ * The audit was pinned to a literal 'claude-opus-4-8' and simply stopped working:
+ * on 2026-07-29 that model returned 529 Overloaded while opus-5 and sonnet-5 both
+ * answered 200 on the same key. With no retry anywhere, a single 529 fell through
+ * to "Audit hit a snag", so the button looked broken to Sarah and to every rep.
+ * Same root cause as the forge shipping 530-byte documents off a stale model id.
+ *
+ * Two defences, because the failure has two shapes. Transient overload gets
+ * exponential backoff on the SAME model. Sustained overload walks DOWN the ladder
+ * to a model that is answering, because a slightly cheaper audit that exists beats
+ * a perfect one that 529s. Both are needed for batch work, where a run of
+ * thousands will meet capacity limits it would never meet one lead at a time.
+ */
+const AUDIT_MODELS = (process.env.AUDIT_MODELS || 'claude-opus-5,claude-sonnet-5')
+  .split(',')
+  .map((m) => m.trim())
+  .filter(Boolean);
+
+/** Overload and rate limits are worth waiting on. A 400 or a 401 never is. */
+function isTransient(err: unknown): boolean {
+  if (err instanceof MalformedReport) return true;
+  if (err instanceof Anthropic.RateLimitError) return true;
+  if (err instanceof Anthropic.APIError) {
+    if (err.status === 401 || err.status === 400 || err.status === 403) return false;
+    if (/credit balance|billing|purchase credits/i.test(err.message)) return false;
+    return err.status === 429 || err.status === 529 || (err.status ?? 0) >= 500;
+  }
+  return false;
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * A model that returns unparseable JSON has failed exactly as completely as one
+ * that returns 529, so it is retried the same way. This is not hypothetical:
+ * measured 2026-07-29, sonnet-5 broke the report schema on 2 of 6 real sites
+ * while opus-5 broke none, and because the JSON.parse used to sit OUTSIDE the
+ * retry those two were written off as dead leads.
+ */
+class MalformedReport extends Error {}
+
+async function withModelFallback<T>(run: (model: string) => Promise<T>): Promise<{ value: T; model: string }> {
+  let last: unknown;
+  for (const model of AUDIT_MODELS) {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        return { value: await run(model), model };
+      } catch (err) {
+        last = err;
+        if (!isTransient(err)) throw err;
+        // 1s, 4s, then give up on this model and try the next rung.
+        if (attempt < 2) await sleep(1000 * 4 ** attempt);
+      }
+    }
+    console.warn(`website-audit: ${model} is not answering, dropping to the next model`);
+  }
+  throw last;
+}
+
 export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
   // Trim defensively: a stray newline or literal "\n" pasted into the env var
   // produces an "invalid x-api-key" 401, which is easy to miss.
@@ -400,8 +468,9 @@ export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
     // request risks an HTTP-level timeout with nothing to show for it. Streaming
     // keeps the connection alive and `finalMessage()` still hands back the whole
     // message, so the rest of this function is unchanged.
-    const stream = anthropic.messages.stream({
-      model: 'claude-opus-4-8',
+    const attempt = async (model: string) => {
+      const response = await anthropic.messages.stream({
+      model,
       max_tokens: 8000,
       output_config: {
         effort: 'high',
@@ -427,20 +496,23 @@ ${JSON.stringify(signals, null, 2)}
 Return the JSON report.`,
         },
       ],
-    });
-    const response = await stream.finalMessage();
+    }).finalMessage();
 
-    const textBlock = response.content.find((b) => b.type === 'text');
-    if (!textBlock || textBlock.type !== 'text') {
-      return { ok: false, status: 500, error: 'Audit failed to generate a report.' };
-    }
+      const textBlock = response.content.find((b) => b.type === 'text');
+      if (!textBlock || textBlock.type !== 'text') throw new MalformedReport('no text block in response');
+      let parsed: WebsiteAuditReport & { top_three_fixes?: unknown[]; full_todo?: unknown[] };
+      try {
+        parsed = JSON.parse(textBlock.text);
+      } catch {
+        throw new MalformedReport('report was not valid JSON');
+      }
+      return { report: parsed, response };
+    };
 
-    let report: WebsiteAuditReport & { top_three_fixes?: unknown[]; full_todo?: unknown[] };
-    try {
-      report = JSON.parse(textBlock.text);
-    } catch {
-      return { ok: false, status: 500, error: 'Audit returned malformed JSON.' };
-    }
+    const {
+      value: { report, response },
+      model: usedModel,
+    } = await withModelFallback(attempt);
 
     // The schema can no longer enforce item counts (structured outputs rejects
     // minItems/maxItems), so trim to the promised shape here.
@@ -451,6 +523,12 @@ Return the JSON report.`,
       ok: true,
       url: target.toString(),
       report,
+      usage: {
+        model: usedModel,
+        input: response.usage?.input_tokens ?? 0,
+        cache_read: response.usage?.cache_read_input_tokens ?? 0,
+        output: response.usage?.output_tokens ?? 0,
+      },
       signals_summary: {
         title: signals.title,
         h1: signals.h1_texts[0] ?? null,
