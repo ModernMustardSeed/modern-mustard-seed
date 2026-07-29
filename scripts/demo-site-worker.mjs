@@ -8,7 +8,7 @@
  * the CLI can only ever use the logged-in subscription, never metered credits.
  *
  * The finished HTML is stored back on the row and served by the site at
- * /demo/site/<id>, where the lead's forged voice agent (Sidekick voice
+ * /demo/site/<id>, where the lead's forged voice agent (Voice Agent voice
  * demo) is overlaid as a live call widget. One link, both demos.
  *
  * Prereqs on the machine that runs this:
@@ -125,6 +125,52 @@ const isRebuild = (job) => job.kind === 'rebuild';
 const isEdit = (job) => job.kind === 'edit';
 /** A client's edit belongs to a paid project and lands in a draft for approval. */
 const isProjectEdit = (job) => isEdit(job) && Boolean(job.project_id);
+
+/**
+ * Worker health, written where the cockpit can see it.
+ *
+ * The forge is a LOCAL poller, so when it declines to claim there is nothing in
+ * the database to distinguish "holding off, machine is busy" from "dead". This
+ * writes a heartbeat plus the reason into app_state (no migration needed) so the
+ * cockpit can say WHY the queue is not moving instead of showing silence.
+ * Best effort by design: a health write must never break or slow a build.
+ */
+let lastHealthAt = 0;
+async function reportHealth({ state, reason, freeMb }) {
+  const now = Date.now();
+  // Throttle: the loop polls every 15s and this is only ever advisory.
+  if (state === 'polling' && now - lastHealthAt < 60000) return;
+  lastHealthAt = now;
+  try {
+    let queued = null;
+    try {
+      const { count } = await supabase
+        .from('outbound_demo_sites')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'queued');
+      queued = count ?? null;
+    } catch {}
+    await supabase.from('app_state').upsert(
+      {
+        key: 'forge_worker_health',
+        value: {
+          state,
+          reason,
+          freeMb,
+          minFreeMb: MIN_FREE_MEM_MB,
+          queued,
+          worker: WORKER,
+          at: new Date().toISOString(),
+        },
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'key' },
+    );
+  } catch (e) {
+    // Never let telemetry take the floor down.
+    log('health write failed (ignored):', e?.message || e);
+  }
+}
 
 async function reclaimStranded() {
   const cutoff = new Date(Date.now() - STALE_MS).toISOString();
@@ -521,9 +567,16 @@ async function tick() {
       log(`low memory (${freeMb}MB free, need ${MIN_FREE_MEM_MB}MB) - holding off claiming a build until it recovers`);
       warnedLowMem = true;
     }
+    // 2026-07-28: this guard once held the whole floor for six hours with twelve
+    // leads queued, and the only trace was one line on a console nobody was
+    // watching. From the cockpit it looked like the forge had simply stopped.
+    // A stall that nobody can see is indistinguishable from a broken product, so
+    // the reason now goes where Sarah actually looks.
+    await reportHealth({ state: 'blocked', reason: `low memory: ${freeMb}MB free, needs ${MIN_FREE_MEM_MB}MB`, freeMb });
     return false;
   }
   if (warnedLowMem) { log(`memory recovered (${freeMb}MB free) - resuming`); warnedLowMem = false; }
+  await reportHealth({ state: 'polling', reason: null, freeMb });
 
   const job = await claimNext();
   if (!job) return false;
