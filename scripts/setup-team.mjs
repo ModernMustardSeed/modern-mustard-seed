@@ -58,8 +58,9 @@ const people = [
   { email: 'bizyai2023@gmail.com', name: 'Anthony Scarano', role: 'owner', title: 'Partner', affiliate_code: 'ANTH6YSR', rep_name: 'Anthony', notify_email: null },
 ];
 
-// No passwords: sign-in is passwordless (magic link). These rows are pure
-// identity + role + the code/rep they link to.
+// Identity + role + the code/rep they link to. password_hash is deliberately
+// NOT in this payload: the upsert merges duplicates, so including it would wipe
+// a live password on every re-run. Passwords are set from /admin/team.
 const rows = people.map((p) => ({
   email: p.email,
   name: p.name,
@@ -69,7 +70,6 @@ const rows = people.map((p) => ({
   rep_name: p.rep_name,
   notify_email: p.notify_email,
   active: true,
-  password_hash: null,
 }));
 
 const sres = await fetch(`${url}/rest/v1/team_members?on_conflict=email`, {
@@ -86,10 +86,10 @@ if (!sres.ok) { console.error('Seed FAILED:', sres.status, (await sres.text()).s
 const seeded = await sres.json();
 console.log(`Seeded ${seeded.length} team members.`);
 
-// 3) done. Sign-in is passwordless: each person requests a one-tap link at
-//    /admin/login (the welcome email links them straight there).
-console.log('\n=== TEAM (passwordless magic-link sign-in) ===');
+// 3) done. Sign-in is email + password. A new row has no password until an
+//    owner sets one in /admin/team (the Team tab flags anyone who cannot sign in).
+console.log('\n=== TEAM (email + password sign-in) ===');
 for (const p of people) {
   console.log(`  ${p.name.padEnd(16)} ${p.email.padEnd(38)} ${p.role}  code:${p.affiliate_code}`);
 }
-console.log('\nEach signs in at https://modernmustardseed.com/admin/login (email a link, no password).');
+console.log('\nEach signs in at https://modernmustardseed.com/admin/login. Set passwords in /admin/team.');

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAdminUser } from '@/lib/admin-auth';
+import { getAdminUser, listAdminUsers } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { listTeamMembers } from '@/lib/team-members';
 import { hashPassword } from '@/lib/team-password';
@@ -26,12 +26,21 @@ export async function GET() {
   const today = denverToday();
   const weekStart = denverWeekStart();
 
-  const [members, repsRes, statsRes, commsRes, clicksRes] = await Promise.all([
+  const [members, repsRes, statsRes, commsRes, clicksRes, pwRes] = await Promise.all([
     listTeamMembers(),
     sb.from('outbound_reps').select('id,name,role,daily_dial_goal,daily_demo_goal,active'),
     sb.from('outbound_daily_rep_stats').select('rep_id,day,dials,conversations,demos_booked'),
     sb.from('commissions').select('affiliate_code,amount_cents,status,kind'),
     sb.from('affiliate_clicks').select('code'),
+    sb.from('team_members').select('email,password_hash'),
+  ]);
+
+  // Who can actually get in. Sign-in is password only (2026-07-30), so a row
+  // with no hash and no env credential is a teammate locked out until an owner
+  // sets them a password. The hash itself never leaves this function.
+  const canSignIn = new Set<string>([
+    ...(pwRes.data ?? []).filter((r) => r.password_hash).map((r) => String(r.email).toLowerCase()),
+    ...listAdminUsers().map((u) => u.email),
   ]);
 
   const reps = repsRes.data ?? [];
@@ -85,7 +94,7 @@ export async function GET() {
       active: mem.active,
       affiliate_code: mem.affiliate_code,
       rep_name: mem.rep_name,
-      canLogin: false, // set below without leaking the hash
+      canLogin: canSignIn.has(mem.email.toLowerCase()),
       partner: {
         code: mem.affiliate_code,
         clicks: mem.affiliate_code ? clickCount[mem.affiliate_code] ?? 0 : 0,

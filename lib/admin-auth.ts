@@ -69,6 +69,23 @@ function timingSafeEqualStr(a: string, b: string): boolean {
 export type AdminRole = 'owner' | 'staff';
 export type AdminUser = { email: string; name: string; role: AdminRole };
 
+/**
+ * Second sign-in addresses that belong to an existing teammate. A teammate is
+ * ONE identity with ONE password; this only lets an old address they still type
+ * out of habit reach it. The session is always minted for the canonical email,
+ * so roles, stats, and the roster stay single-rowed.
+ */
+const EMAIL_ALIASES: Record<string, string> = {
+  // Polly's original gmail login, kept alive after the move to her domain email.
+  'thompsonpolly71@gmail.com': 'polly.thompson@modernmustardseed.com',
+};
+
+/** The real account behind a sign-in address. Returns the input if not an alias. */
+export function canonicalAdminEmail(email: string): string {
+  const e = (email || '').toLowerCase().trim();
+  return EMAIL_ALIASES[e] ?? e;
+}
+
 function ownerUser(): AdminUser | null {
   const email = process.env.ADMIN_EMAIL;
   if (!email) return null;
@@ -152,7 +169,9 @@ export async function verifyToken(token: string): Promise<Session | null> {
     const [payloadB64, sig] = token.split('.');
     if (!payloadB64 || !sig) return null;
     const payload = base64UrlToString(payloadB64);
-    // A magic sign-in token must never be accepted as a session cookie.
+    // Sign-in is password only (2026-07-30). The old passwordless `magic:`
+    // tokens were signed with this same secret, so keep rejecting that prefix:
+    // any link still sitting in an inbox can never be replayed as a session.
     if (payload.startsWith('magic:')) return null;
     const expected = await hmacSign(payload);
     if (!timingSafeEqualStr(sig, expected)) return null;
@@ -196,57 +215,6 @@ export function checkCredentials(email: string, password: string): AdminUser | n
     }
   }
   return null;
-}
-
-// ── Passwordless magic sign-in ─────────────
-//
-// The simple, no-password way in: a teammate asks for a link, we email a short
-// lived signed token, clicking it mints a normal session. The token is a
-// distinct `magic:` payload so it can never be replayed as a session cookie
-// (verifyToken rejects the magic prefix), and it is verified against the known
-// team at click time so a removed teammate's link stops working.
-
-const MAGIC_MINUTES = 20;
-
-export async function createMagicToken(email: string): Promise<string> {
-  const e = email.toLowerCase().trim();
-  const expires = Date.now() + MAGIC_MINUTES * 60 * 1000;
-  const payload = `magic:${e}:${expires}`;
-  const sig = await hmacSign(payload);
-  return `${stringToBase64Url(payload)}.${sig}`;
-}
-
-/** Returns the email if the magic token is valid and unexpired, else null. */
-export async function verifyMagicToken(token: string): Promise<string | null> {
-  try {
-    const [payloadB64, sig] = token.split('.');
-    if (!payloadB64 || !sig) return null;
-    const payload = base64UrlToString(payloadB64);
-    if (!payload.startsWith('magic:')) return null;
-    const expected = await hmacSign(payload);
-    if (!timingSafeEqualStr(sig, expected)) return null;
-    const rest = payload.slice('magic:'.length);
-    const idx = rest.lastIndexOf(':');
-    if (idx < 0) return null;
-    const email = rest.slice(0, idx);
-    const expires = Number(rest.slice(idx + 1));
-    if (!email || !expires || Date.now() > expires) return null;
-    return email;
-  } catch {
-    return null;
-  }
-}
-
-/** Is this email allowed to sign in (env owner, legacy ADMIN_TEAM, or DB team)? */
-export async function isKnownAdmin(email: string): Promise<boolean> {
-  const e = email.toLowerCase().trim();
-  if (listAdminUsers().some((u) => u.email === e)) return true;
-  try {
-    const { getTeamMemberByEmail } = await import('@/lib/team-members');
-    return !!(await getTeamMemberByEmail(e));
-  } catch {
-    return false;
-  }
 }
 
 export async function setSessionCookie(email: string): Promise<void> {

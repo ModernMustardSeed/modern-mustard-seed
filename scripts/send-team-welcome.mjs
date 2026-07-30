@@ -123,7 +123,7 @@ function buildHtml(r) {
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${ink};border:2px solid ${ink};border-radius:12px;">
         <tr><td style="padding:18px 22px;">
           <div style="font-family:${mono};font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${gold};font-weight:bold;">Your one login</div>
-          <div style="font-family:${sans};font-size:14px;color:${cream};margin-top:7px;">No password to remember. Tap the button, we email you a one-tap link, and you are in. That is it.</div>
+          <div style="font-family:${sans};font-size:14px;color:${cream};margin-top:7px;">Your email and the password Sarah gave you. Tap the button, sign in, and you are in. That is it.</div>
           <a href="${SITE}/admin/login?email=${encodeURIComponent(r.login)}" style="display:inline-block;margin-top:13px;font-family:${sans};font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:${ink};background:${gold};border:2px solid ${cream};border-radius:999px;padding:11px 22px;text-decoration:none;">Sign in to your command center &rarr;</a>
           <div style="font-family:${sans};font-size:11px;color:rgba(251,246,234,0.65);margin-top:10px;">This one login runs everything: your dial floor, your partner earnings, and the ads.</div>
         </td></tr>
@@ -186,7 +186,7 @@ YOUR PARTNER CODE: ${r.code}
 Your tracked link (share it anywhere): ${refLink}
 ${r.login ? `
 YOUR ONE LOGIN (runs everything: dial floor, earnings, ads)
-  No password. Sign in and we email you a one-tap link:
+  Your email and the password Sarah gave you:
   ${SITE}/admin/login?email=${encodeURIComponent(r.login)}
 ` : ''}
 WHAT YOU EARN

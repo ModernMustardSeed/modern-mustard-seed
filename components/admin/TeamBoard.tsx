@@ -19,6 +19,7 @@ type Member = {
   active: boolean;
   affiliate_code: string | null;
   rep_name: string | null;
+  canLogin: boolean;
   partner: { code: string | null; clicks: number; sales: number; pendingCents: number; payableCents: number; paidCents: number };
   outbound: null | { repRole: string; dialGoal: number; demoGoal: number; today: Dial; week: Dial; allTime: Dial };
 };
@@ -139,6 +140,9 @@ function TeammateCard({ m }: { m: Member }) {
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: m.active ? '#10b981' : '#9ca3af' }} title={m.active ? 'Active' : 'Inactive'} />
           </div>
           <p className="text-[12px] text-[#3A3733] font-body truncate">{m.title || (m.role === 'owner' ? 'Owner' : 'Team')} · {m.email}</p>
+          {!m.canLogin && (
+            <p className="text-[11px] font-mono text-[#E0301E] mt-1">No password set. They cannot sign in yet.</p>
+          )}
         </div>
         <span className={`shrink-0 text-[9px] uppercase tracking-[0.2em] font-mono font-bold px-2.5 py-1 rounded-full border-2 border-[#161616] ${m.role === 'owner' ? 'bg-[#F5B700] text-[#161616]' : 'bg-[#1E50C8] text-[#FBF6EA]'}`}>
           {m.role}
@@ -236,8 +240,8 @@ function AddTeammate({ onDone }: { onDone: () => void }) {
   const input = 'w-full bg-white border-2 border-[#161616] rounded-lg px-3 py-2 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700]';
   return (
     <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#161616] p-5 mb-5">
-      <h3 className="font-display text-lg font-bold mb-1">Add a teammate</h3>
-      <p className="text-[12px] text-[#3A3733] font-body mb-4">One identity: their login, partner code, and dial-floor rep, wired in one go. No env edits.</p>
+      <h3 className="font-display text-lg font-bold mb-1">Add a teammate, or reset a password</h3>
+      <p className="text-[12px] text-[#3A3733] font-body mb-4">One identity: their login, partner code, and dial-floor rep, wired in one go. No env edits. Enter an existing teammate&rsquo;s email with a new password to reset it.</p>
       <div className="grid sm:grid-cols-2 gap-3">
         <input className={input} placeholder="Full name" value={f.name} onChange={set('name')} />
         <input className={input} placeholder="Login email" value={f.email} onChange={set('email')} />
@@ -246,7 +250,7 @@ function AddTeammate({ onDone }: { onDone: () => void }) {
           <option value="staff">Staff (scoped)</option>
           <option value="owner">Owner (full access)</option>
         </select>
-        <input className={input} placeholder="Temp password (min 6)" value={f.password} onChange={set('password')} />
+        <input className={input} placeholder="Password (min 6)" value={f.password} onChange={set('password')} />
         <input className={input} placeholder="Partner code (e.g. JORDAN)" value={f.affiliateCode} onChange={set('affiliateCode')} />
         <input className={input} placeholder="Dial-floor rep name (e.g. Jordan)" value={f.repName} onChange={set('repName')} />
       </div>
