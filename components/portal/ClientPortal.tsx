@@ -52,6 +52,8 @@ type PortalData = {
     fixes: Array<{ title: string; how: string }>;
   } | null;
   googleReviewUrl: string | null;
+  /** From-the-studio updates posted by Sarah's Seedside team, approval-gated. */
+  updates?: Array<{ id: string; projectId: string; authorAgent: string; authorName: string; body: string; createdAt: string }>;
 };
 
 const money = (n: number) => `$${n.toLocaleString('en-US')}`;
@@ -519,6 +521,30 @@ export default function ClientPortal() {
                           <span className="text-[#161616]/80 font-body text-sm group-hover:text-[#161616]">{f.label}</span>
                           <span className="text-[9px] uppercase tracking-[0.2em] text-[#1E50C8] font-mono">{f.kind} ↗</span>
                         </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* From the studio: Sarah's team posts approved progress notes */}
+                {(data.updates?.length ?? 0) > 0 && (
+                  <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-1">From the studio</span>
+                    <p className="text-[#161616]/50 font-body text-xs mb-4">Notes from Sarah's team as they work on your project. Every note is reviewed by Sarah before it reaches you.</p>
+                    <div className="space-y-4">
+                      {data.updates!.map((u) => (
+                        <div key={u.id} className="flex items-start gap-3">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={`/agents/${u.authorAgent}.jpg`} alt={u.authorName} width={40} height={40} className="rounded-full border-2 border-[#161616]/15 object-cover shrink-0" style={{ width: 40, height: 40 }} />
+                          <div className="min-w-0">
+                            <p className="text-[#161616] font-sans font-semibold text-sm leading-tight">
+                              {u.authorName}
+                              <span className="ml-2 text-[9px] uppercase tracking-[0.2em] text-[#161616]/40 font-mono">Sarah's studio team</span>
+                            </p>
+                            <p className="text-[#161616]/75 font-body text-sm whitespace-pre-wrap mt-0.5">{u.body}</p>
+                            <p className="text-[10px] text-[#161616]/40 font-mono mt-1">{new Date(u.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>

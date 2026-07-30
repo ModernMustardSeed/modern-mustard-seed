@@ -56,6 +56,31 @@ export async function GET() {
     /* projects table not migrated */
   }
 
+  // From-the-studio updates posted by Sarah's Seedside team (approval-gated).
+  let updates: Array<{ id: string; projectId: string; authorAgent: string; authorName: string; body: string; createdAt: string }> = [];
+  try {
+    if (projects.length > 0) {
+      const { data } = await supabase
+        .from('client_updates')
+        .select('id, project_id, author_agent, author_name, body, created_at')
+        .in('project_id', projects.map((p) => p.id))
+        .order('created_at', { ascending: false })
+        .limit(12);
+      if (data) {
+        updates = data.map((u) => ({
+          id: u.id as string,
+          projectId: u.project_id as string,
+          authorAgent: u.author_agent as string,
+          authorName: u.author_name as string,
+          body: u.body as string,
+          createdAt: u.created_at as string,
+        }));
+      }
+    }
+  } catch {
+    /* client_updates table not migrated */
+  }
+
   // Billing: the client's accepted proposal (deposit/balance state).
   let billing: {
     oneTime: number;
@@ -185,5 +210,5 @@ export async function GET() {
 
   const googleReviewUrl = process.env.GOOGLE_REVIEW_URL || GOOGLE_REVIEW_FALLBACK;
 
-  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl });
+  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl, updates });
 }
