@@ -1420,6 +1420,153 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
     ],
   },
+
+  {
+    id: 'make-it-shine',
+    name: 'The Marquee',
+    eyebrow: 'Set ten · See Yours',
+    blurb:
+      'The mirror set, built for other people’s groups: a small-town marquee with a blank YOUR NAME HERE where their business goes. It sells nothing in the post. The link in the first comment forges a free talking-website demo of their actual business at /demos.',
+    cta: 'Free demo · modernmustardseed.com/demos',
+    accent: '#D64533',
+    rules: [
+      'The demo link goes in the FIRST COMMENT, never the post body. The URL on the card art keeps lifted screenshots working.',
+      'Say "the demo is free." Never say "free trial." The demo is the free thing; going live is paid from day one.',
+      'No prices on cards, in posts, or in comments. The money question gets the canned reply, not a number.',
+      'The forge has a daily cap. If a thread runs hot, the canned line is "tomorrow morning works too, it will still be free."',
+      'Do not run this in the same group in the same week as the Say Hello set. Same product, and back to back it reads as a campaign.',
+      'Serve in a group before you post. An invitation lands better from a neighbor than a vendor.',
+    ],
+    cards: [
+      {
+        file: '01-your-name',
+        headline: 'Ever seen your business with its name in lights?',
+        use: 'The hook, and the lead image for the main group post.',
+        alt: 'A warm bulb-ringed marquee sign reading YOUR NAME HERE on a dark ground. Headline: Ever seen your business with its name in lights?',
+      },
+      {
+        file: '02-it-talks',
+        headline: 'A designer website that answers out loud.',
+        use: 'The one-line explainer. Own page, or a comment reply image.',
+        alt: 'Marquee sign reading IT TALKS. Headline: A designer website that answers out loud. First of its kind.',
+      },
+      {
+        file: '03-free-to-see',
+        headline: 'We build a real demo for YOUR business. Free.',
+        use: 'The fact card. Kills the what-is-the-catch objection early.',
+        alt: 'Marquee sign reading FREE TO SEE with the red bar ADMISSION FREE, NO CARD. Headline: We build a real demo for your business, free.',
+      },
+      {
+        file: '04-one-of-one',
+        headline: 'Built from your actual business. Not a template.',
+        use: 'The craft card. Post 3, for the template-skeptics.',
+        alt: 'Marquee sign reading ONE OF ONE. Headline: Built from your actual business, not a template.',
+      },
+      {
+        file: '05-go-see-yours',
+        headline: 'Go look at yours.',
+        use: 'The invite. Runs with the link sitting in the first comment.',
+        alt: 'Marquee sign reading GO SEE YOURS with a red arrow pointing down. Red bar: link in the comments. Headline: Go look at yours.',
+      },
+      {
+        file: '06-make-it-shine',
+        headline: 'Best way to make your business thrive? Make it shine.',
+        use: 'The anthem. Warmest card in the set, good any evening.',
+        alt: 'Marquee sign reading MAKE IT SHINE with sparkles. Headline: Best way to make your business thrive? Make it shine.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'The invitation',
+        graphic: '01-your-name',
+        body: [
+          'Odd little offer for the business owners in here, and it costs nothing.',
+          'My studio builds talking websites: designer sites that answer questions out loud, the way a good front-desk person would. To show what they look like, we build free demos. You type in your business, and the forge builds a real working demo of YOUR business. Your services, your town, your voice.',
+          'No card, no sales call, nobody phones you. Most owners just stare at it for a while, and honestly, that is the fun part.',
+          'The link is in the first comment. If you run it, come back and tell me your favorite detail. And if you are feeling brave, post your demo link below so the rest of us can admire it.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'modernmustardseed.com/demos',
+            'Sixty seconds of questions, then it builds. Free, no card. If the day’s forge queue happens to be full, tomorrow morning works too, it will still be free.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'Go see yours',
+        graphic: '05-go-see-yours',
+        body: [
+          'Best way to make your business thrive? Make it shine.',
+          'We build free demos of designer talking websites, built from your actual business. Tell it what you do and where, hand it your current website if you have one, and it dresses your business the way it deserves. Then it answers questions about you, out loud.',
+          'Two minutes, no card, and worst case you spend those two minutes admiring what could be.',
+          'Link in the first comment. Post what yours looks like, I read every one.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'modernmustardseed.com/demos',
+            'No card, no call. The demo stays yours to look at either way.',
+          ],
+        },
+      },
+      {
+        n: 3,
+        title: 'One of one',
+        graphic: '04-one-of-one',
+        body: [
+          'The thing nobody believes until they see it: these demos are not templates.',
+          'The forge reads what you give it. Your trade, your services, your hours, your town, even your current website if you point it there. Then it builds a one-of-one, and no two ever come out alike, because no two businesses are alike.',
+          'A landscaper and a med spa do not get the same site with the colors swapped. They get different rooms, different words, different answers on the phone.',
+          'If you want to see what a one-of-one of YOUR business looks like, the link is in the first comment. Free, and it stays free.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: ['modernmustardseed.com/demos'],
+        },
+      },
+      {
+        n: 4,
+        title: 'The anthem',
+        graphic: '06-make-it-shine',
+        body: [
+          'People pick the business that looks alive. The lights are how they know.',
+          'That is the whole theory of everything we build. Not tricks, not rankings, not hacks. A business that looks awake, answers when spoken to, and wears its own name like it is proud of it.',
+          'If you have been running on a tired website, or none, and you want to see your name lit up for two free minutes, the link is in the first comment.',
+          'Make it shine. Tonight and every night.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: ['modernmustardseed.com/demos'],
+        },
+      },
+    ],
+    replies: [
+      {
+        q: 'How much does it cost?',
+        a: 'The demo is free, no card, and it stays yours to look at either way. If you love it and want it live, the real numbers are on our site and we walk through everything on a short call. I do not quote in comment threads, it never comes out fair to anybody.',
+        warn: 'NEVER type a price here. Demo-order pricing derives from lib/demo-order.ts and lives on the site. A number in a comment thread goes stale and gets screenshotted.',
+      },
+      {
+        q: 'What is the catch?',
+        a: 'The demo is the marketing. Some owners buy it, most just look, and both are fine with me. It costs us a little compute to show off. That is the whole catch.',
+      },
+      {
+        q: 'Is this just AI-generated junk?',
+        a: 'Fair worry, the internet is full of it. This is a designed system fed with your real business details, and the demo you get is the actual product, not a mockup. So judge the thing itself instead of my word for it.',
+      },
+      {
+        q: 'I already have a website.',
+        a: 'Even better. Give the forge your current site when it asks, then put the two side by side. If yours wins, tell me so, I will take the note on the chin.',
+      },
+      {
+        q: 'I tried the link and it did not build.',
+        a: 'The forge builds a limited number each day so every demo gets full attention. Come back tomorrow morning, it will still be free. If it still misbehaves, message me and I will run yours personally.',
+      },
+    ],
+  },
 ];
 
 /** Flatten a post body into the plain text that goes in the composer. */
