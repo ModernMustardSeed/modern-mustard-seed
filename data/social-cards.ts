@@ -1097,6 +1097,171 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
     ],
   },
+  {
+    id: 'talking-website',
+    name: 'The Talking Website',
+    eyebrow: 'Set nine · Flagship',
+    blurb:
+      'Six cards introducing a thing most people have never heard of: a website that speaks, answers the phone, and runs the back office behind it. Mr. Mustard carries every card, the white speech bubble is the signature, and the live number sits on the bottom bar of all six so a screenshot of any single card is still a working ad.',
+    cta: 'Call it: (406) 312-1223',
+    accent: '#F5B700',
+    rules: [
+      'No statistics anywhere in this set. It explains a new thing and hands over a number. Nothing here needs defending.',
+      'Never type a price in a post or a comment. Prices live in one place in the code and they move. Say "it depends what it has to do" and take it to a call.',
+      'The call to action is the number, not a link. On the Page, put the link in the first comment. In other people’s groups, use the number only.',
+      'Dial (406) 312-1223 yourself the morning of any campaign. This whole set is a promise that a stranger can talk to it right now.',
+      'Order matters: 01 explains it, 02 to 05 make it real, 06 is the dare. Run 06 last or it lands as an ad before anyone knows what they are calling.',
+    ],
+    cards: [
+      {
+        file: '01-talks-back',
+        headline: 'Your website talks back now.',
+        use: 'The explainer. Post 1, and the head of any carousel.',
+        alt: 'Mr. Mustard holding a telephone handset under a giant speech bubble reading: your website talks back now.',
+      },
+      {
+        file: '02-after-hours',
+        headline: 'It was awake. You were asleep.',
+        use: 'The after hours beat. Post 2, the one people tag their spouse in.',
+        alt: 'Mr. Mustard lit up inside a dark window at night. Speech bubble reads: it was awake, you were asleep.',
+      },
+      {
+        file: '03-back-office',
+        headline: 'It runs the back office too.',
+        use: 'The second half of the promise. Post 3, best on the Page rather than in groups.',
+        alt: 'Six lit office windows labelled bookings, orders, follow ups, invoices, reviews and the inbox, with Mr. Mustard standing in front.',
+      },
+      {
+        file: '04-all-at-once',
+        headline: 'You take one call at a time. It does not.',
+        use: 'The scaling card. Post 4, the strongest argument in the set.',
+        alt: 'Five speech bubbles asking are you open, how much, Tuesday work, do you deliver, where are you, with Mr. Mustard answering all of them.',
+      },
+      {
+        file: '05-while-you-worked',
+        headline: 'Booked it. Invoiced it. Wrote it down.',
+        use: 'The proof card. Post 5, pairs with a real story from your week.',
+        alt: 'A day sheet headed while you worked, three jobs ticked off with times, beside Mr. Mustard.',
+      },
+      {
+        file: '06-call-it',
+        headline: 'Call it and see.',
+        use: 'The dare, and the closer. Post 6. Run it last.',
+        alt: 'Mr. Mustard on a handset beside a mustard plate reading talk to it now, (406) 312-1223.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'Have you heard about these yet',
+        graphic: '01-talks-back',
+        body: [
+          'Have you heard about the talking websites yet? Because they are here and most people have no idea.',
+          'Not a chat bubble in the corner. An actual voice. Somebody lands on your site at nine at night, asks their question out loud, and gets a real answer. Then it books them in while they are still standing there.',
+          'The same brain answers your phone. So the answer a visitor reads on the page is the exact answer a caller hears at midnight, because it is one system instead of two things that disagree with each other.',
+          'We built ours first so you can hear it before you decide anything about your own. Call (406) 312-1223 and ask it whatever you want. It is not a recording, it books real appointments, and it does not mind being tested.',
+          'Tell me what you would ask it. I will go see how it did.',
+        ],
+        followUp: {
+          label: 'Posting it',
+          lines: [
+            'Put the link in the FIRST COMMENT, never the post body. Facebook throttles reach on posts that leave the app.',
+            'Reply to every comment inside the hour. This post lives or dies on people actually dialling the number, and a reply is what nudges them.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'The 11:42 call',
+        graphic: '02-after-hours',
+        body: [
+          'Here is the part that got me about building this thing.',
+          'A call came in at 11:42 at night. Nobody was awake. It did not go to voicemail, it got answered, the question got a real answer, and the appointment was sitting on the calendar by morning like somebody had worked a night shift.',
+          'Think about what that hour actually is. It is somebody lying in bed deciding tomorrow is the day they finally deal with the leak, or the roof, or the thing they have been putting off since March. They pick whoever picks up. If nobody does, they pick the next name.',
+          'You cannot answer at 11:42. You should not have to. Something else can, in your voice, with your prices and your calendar, and hand you the morning already sorted.',
+          'Try it on ours: (406) 312-1223. Call it late if you want. That is rather the point.',
+        ],
+      },
+      {
+        n: 3,
+        title: 'The part nobody talks about',
+        graphic: '03-back-office',
+        body: [
+          'Everybody asks about the talking part. The part that actually gives you your week back is behind it.',
+          'While it is answering, it is also writing everything down. Bookings on the calendar. Orders taken. Follow ups sent to the people who went quiet. Invoices out. Review requests to the customers who were happy. The inbox handled.',
+          'That is the whole back office, and for most small businesses that back office is one exhausted person doing it at the kitchen table after supper. Usually you.',
+          'A website that talks is a neat trick. A website that talks and then does the paperwork is a different business entirely.',
+          'What is the one job you keep pushing to Sunday night? Say it below. I will tell you honestly whether this handles it or not.',
+        ],
+      },
+      {
+        n: 4,
+        title: 'One at a time',
+        graphic: '04-all-at-once',
+        body: [
+          'You can take one call at a time. That is not a flaw, it is arithmetic. You have one mouth and two hands and both of them are usually holding something.',
+          'Five people can ask this thing five different questions in the same second and all five get a real answer. Nobody waits on hold. Nobody gets the voicemail beep. Nobody goes to the next name on the list.',
+          'That is what growing normally costs you: another person, another wage, another set of Mondays spent training somebody who might leave in June. This is the first version of growing I have seen that does not come with that bill attached.',
+          'You still do the work. It just stops the work from getting away from you before you can get to it.',
+          'Curious what it sounds like when you push it? (406) 312-1223. Try to trip it up, honestly.',
+        ],
+      },
+      {
+        n: 5,
+        title: 'What it did today',
+        graphic: '05-while-you-worked',
+        body: [
+          'This was a real day. Not a demo.',
+          'Booked a Tuesday install at 7:12 in the morning while the crew was still loading the van. Took a reorder and sent the invoice at 11:48. Answered a call at 9:03 at night that would otherwise have been a voicemail somebody listened to two days later.',
+          'Nobody touched a phone for any of it. The day showed up already sorted.',
+          'That is the thing I could not explain properly until I had lived with it for a month. It is not that it does the work faster than you. It is that the work stops piling up in the first place, so you are not opening the laptop at ten at night to catch up on being reachable.',
+          'What would your day look like if the phone stopped being your problem?',
+        ],
+      },
+      {
+        n: 6,
+        title: 'The dare',
+        graphic: '06-call-it',
+        body: [
+          'I am not going to keep describing it. Just call it.',
+          '(406) 312-1223.',
+          'Ask it anything you would ask a receptionist. Ask what we do. Ask if we are open. Ask it something rude. Ask it to book you in and watch it actually do it.',
+          'It is the same thing we build for other businesses, just wearing our name instead of theirs. Yours would know your prices, your calendar, your service area, and the six questions your customers ask over and over.',
+          'Then come back and tell me what it got right and what it fumbled. I mean that. Both answers are useful to me.',
+        ],
+        followUp: {
+          label: 'Run it last',
+          lines: [
+            'This is the closer. It only works on people who already saw 01 to 05 and know what they are dialling.',
+            'Watch the comments for the person who says "it worked" and reply to them first. Their comment is worth more than the post.',
+          ],
+        },
+      },
+    ],
+    replies: [
+      {
+        q: 'Is it a robot? I hate those phone trees.',
+        a: 'So do I, and it is not one. There is no press one for sales. You talk normally and it talks back normally, and if it cannot help it hands you to a human instead of looping you. Fastest way to settle it is to call it: (406) 312-1223.',
+      },
+      {
+        q: 'My customers would hate talking to AI.',
+        a: 'Some will, and it tells them straight away what it is so nobody feels tricked. The comparison that matters is not AI versus you, it is AI versus the voicemail they get at 8pm right now. Most people would rather get an answer.',
+      },
+      {
+        q: 'What does it cost?',
+        a: 'Depends what it has to do, and I would rather not guess at you in a comment thread. Message me or call the number and we can work out in ten minutes whether it is even worth it for your setup.',
+        warn: 'Never type a price here. Prices live in one place in the code and they move.',
+      },
+      {
+        q: 'Can it actually book appointments or does it just take a message?',
+        a: 'It books. It reads the real calendar, offers real openings, and puts the appointment in with a confirmation to both of you. Message taking is the fallback, not the feature.',
+      },
+      {
+        q: 'Does this replace my website?',
+        a: 'It is your website, plus a voice, plus the paperwork underneath it. If you already have a site you like we can wire the voice onto it. If your site is eight years old, that is a different and longer conversation.',
+      },
+    ],
+  },
 ];
 
 /** Flatten a post body into the plain text that goes in the composer. */
