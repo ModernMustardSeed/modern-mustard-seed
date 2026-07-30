@@ -21,10 +21,18 @@ type Params = Promise<{ id: string }>;
  * click always yields the pair. Idempotent: queued/building/ready runs are
  * returned as-is; a failed run re-queues fresh.
  */
-export async function POST(_req: Request, { params }: { params: Params }) {
+export async function POST(req: Request, { params }: { params: Params }) {
   const guard = await requireOutboundAdmin();
   if ('error' in guard) return guard.error;
   const { id } = await params;
+
+  // Sarah's tier picker on the Forge board. 1 = the codex/award style, 2 = the
+  // Wildmere AWARD SITE style. Absent means the worker rolls roulette per build.
+  // The tier rides as the first line of the brief (the worker parses it), so no
+  // schema change is required for it to work; migration 073 adds a real column
+  // for whenever migrations next run.
+  const body = (await req.json().catch(() => ({}))) as { designTier?: unknown };
+  const designTier = body.designTier === 1 || body.designTier === 2 ? body.designTier : null;
 
   const { data: lead, error } = await guard.supabase.from('outbound_leads').select('*').eq('id', id).single();
   if (error || !lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
@@ -55,7 +63,7 @@ export async function POST(_req: Request, { params }: { params: Params }) {
     .insert({
       lead_id: current.id,
       business_name: current.business_name,
-      brief: buildSiteBrief(current, voiceDemoUrl),
+      brief: (designTier ? `DESIGN TIER: ${designTier}\n\n` : '') + buildSiteBrief(current, voiceDemoUrl),
       status: 'queued',
     })
     .select('id')

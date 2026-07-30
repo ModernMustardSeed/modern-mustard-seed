@@ -28,19 +28,22 @@ import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective } from '../lib/site-directive.mjs';
+import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective } from '../lib/site-directive.mjs';
 
 const ONCE = process.argv.includes('--once');
 const POLL_MS = Number(process.env.DEMO_SITE_POLL_MS || 15000);
 const SITES_DIR = process.env.DEMO_SITES_DIR || path.join(os.homedir(), 'mms-demo-sites');
 const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 const CODEX_BIN = process.env.CODEX_BIN || 'codex';
-// Which engine builds a lead DEMO. Sarah's order 2026-07-30 ("it needs to be done
-// the way i gave you through codex"): demo builds run headless Codex carrying the
-// award-site design system from ~/modern-mustard-forge. Client EDITS and paid
-// REBUILDS stay on the claude engine until codex has proven itself on those paths;
-// set DEMO_SITE_ENGINE=claude to fall the demos back too.
-const ENGINE = (process.env.DEMO_SITE_ENGINE || 'codex').toLowerCase();
+// DESIGN TIERS (Sarah 2026-07-30: "give me a button to pick tier 1 design or tier 2
+// design... and play roulette a bit"). Tier 1 = the codex/award engine. Tier 2 = the
+// Wildmere AWARD SITE law (~/wildmere/TEMPLATE.md) on the claude engine. Priority:
+// DEMO_SITE_TIER env (emergency force, 1 or 2) > the row's chosen tier (design_tier
+// column once migration 073 is applied, else the "DESIGN TIER: n" line the cockpit
+// writes at the top of the brief) > roulette, rolled fresh per build so unattended
+// demos come out varied. Client EDITS and paid REBUILDS stay on the claude engine
+// with their own laws regardless of tier.
+const FORCED_TIER = ['1', '2'].includes(process.env.DEMO_SITE_TIER || '') ? Number(process.env.DEMO_SITE_TIER) : null;
 const PERMISSION = process.env.DEMO_SITE_PERMISSION || 'bypassPermissions';
 // Do not CLAIM a new build when the machine is already low on memory. A headless
 // claude child needs a few hundred MB; starting one under pressure is how the
@@ -134,7 +137,34 @@ const MEDIA_NOTES = path.join(os.homedir(), '.claude', 'projects', 'C--Users-mod
  * that. Both laws ride along here for the same reason.
  */
 const LAW_URL = new URL('../lib/site-directive.mjs', import.meta.url).href;
-const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective };
+const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective };
+
+/**
+ * VARIANT ROTATION MEMORY. Tier 2's selection doctrine forbids repeating the
+ * previous build's variant in a run. The builder records its variant in
+ * RESULT.json; we stash it beside the build dirs and feed it to the next
+ * directive. Best effort everywhere: losing this file costs variety, never a build.
+ */
+function lastVariant() {
+  try { return readFileSync(path.join(SITES_DIR, '.last-variant'), 'utf8').trim() || null; } catch { return null; }
+}
+function rememberVariant(dir) {
+  try {
+    const r = JSON.parse(readFileSync(path.join(dir, 'RESULT.json'), 'utf8'));
+    if (r && typeof r.variant === 'string' && r.variant.trim()) {
+      writeFileSync(path.join(SITES_DIR, '.last-variant'), r.variant.trim());
+    }
+  } catch { /* self-report missing or unparseable; variety degrades, nothing breaks */ }
+}
+
+/** Which design tier builds this demo row, and why. */
+function tierOf(job) {
+  if (FORCED_TIER) return { tier: FORCED_TIER, how: 'env override' };
+  if (job.design_tier === 1 || job.design_tier === 2) return { tier: job.design_tier, how: 'chosen' };
+  const m = /^DESIGN TIER:\s*([12])\b/m.exec(job.brief || '');
+  if (m) return { tier: Number(m[1]), how: 'chosen' };
+  return { tier: Math.random() < 0.5 ? 1 : 2, how: 'roulette' };
+}
 
 async function currentLaw() {
   let m = STARTUP_LAW;
@@ -147,6 +177,7 @@ async function currentLaw() {
   return {
     DIRECTIVE: m.cliDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     CODEX_DIRECTIVE: (m.codexDemoDirective || STARTUP_LAW.codexDemoDirective)({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
+    TIER2_DIRECTIVE: (m.tier2DemoDirective || STARTUP_LAW.tier2DemoDirective)({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES, previousVariant: lastVariant() }),
     REAL_DIRECTIVE: m.cliRealDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     EDIT_DIRECTIVE: m.cliEditDirective(),
   };
@@ -490,10 +521,17 @@ async function process_(job) {
     }
 
     const law = await currentLaw();
-    const useCodex = ENGINE === 'codex' && !edit && !rebuild;
-    const directive = edit ? law.EDIT_DIRECTIVE : rebuild ? law.REAL_DIRECTIVE : useCodex ? law.CODEX_DIRECTIVE : law.DIRECTIVE;
-    const engineName = useCodex ? 'codex' : 'claude';
-    const { code, out } = useCodex ? await runCodex(dir, directive) : await runClaude(dir, directive);
+    let directive;
+    let engineName = 'claude';
+    if (edit) directive = law.EDIT_DIRECTIVE;
+    else if (rebuild) directive = law.REAL_DIRECTIVE;
+    else {
+      const { tier, how } = tierOf(job);
+      log(`design tier ${tier} (${how}) for`, job.business_name);
+      if (tier === 1) { directive = law.CODEX_DIRECTIVE; engineName = 'codex'; }
+      else directive = law.TIER2_DIRECTIVE;
+    }
+    const { code, out } = engineName === 'codex' ? await runCodex(dir, directive) : await runClaude(dir, directive);
 
     const stalled = code === 124 && /\[stalled:/.test(out);
     const nothing = !existsSync(htmlPath);
@@ -529,6 +567,7 @@ async function process_(job) {
       return;
     }
 
+    rememberVariant(dir);
     await storeFinished(job, html);
   } catch (e) {
     await fail(job, e?.message || e);
@@ -780,7 +819,7 @@ async function tick() {
   return true;
 }
 
-log('demo-site worker up. sites dir:', SITES_DIR, '| demo engine:', ENGINE, '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
+log('demo-site worker up. sites dir:', SITES_DIR, '| design tiers:', FORCED_TIER ? `forced ${FORCED_TIER}` : 'row choice, else roulette', '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
 
 // Beat on a timer, not inside the work loop: a 30-minute build must not look
 // like a dead machine. unref() so --once can still exit.
