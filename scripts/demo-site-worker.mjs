@@ -28,12 +28,19 @@ import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { cliDirective, cliRealDirective, cliEditDirective } from '../lib/site-directive.mjs';
+import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective } from '../lib/site-directive.mjs';
 
 const ONCE = process.argv.includes('--once');
 const POLL_MS = Number(process.env.DEMO_SITE_POLL_MS || 15000);
 const SITES_DIR = process.env.DEMO_SITES_DIR || path.join(os.homedir(), 'mms-demo-sites');
 const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
+const CODEX_BIN = process.env.CODEX_BIN || 'codex';
+// Which engine builds a lead DEMO. Sarah's order 2026-07-30 ("it needs to be done
+// the way i gave you through codex"): demo builds run headless Codex carrying the
+// award-site design system from ~/modern-mustard-forge. Client EDITS and paid
+// REBUILDS stay on the claude engine until codex has proven itself on those paths;
+// set DEMO_SITE_ENGINE=claude to fall the demos back too.
+const ENGINE = (process.env.DEMO_SITE_ENGINE || 'codex').toLowerCase();
 const PERMISSION = process.env.DEMO_SITE_PERMISSION || 'bypassPermissions';
 // Do not CLAIM a new build when the machine is already low on memory. A headless
 // claude child needs a few hundred MB; starting one under pressure is how the
@@ -127,7 +134,7 @@ const MEDIA_NOTES = path.join(os.homedir(), '.claude', 'projects', 'C--Users-mod
  * that. Both laws ride along here for the same reason.
  */
 const LAW_URL = new URL('../lib/site-directive.mjs', import.meta.url).href;
-const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective };
+const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective };
 
 async function currentLaw() {
   let m = STARTUP_LAW;
@@ -139,6 +146,7 @@ async function currentLaw() {
   }
   return {
     DIRECTIVE: m.cliDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
+    CODEX_DIRECTIVE: (m.codexDemoDirective || STARTUP_LAW.codexDemoDirective)({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     REAL_DIRECTIVE: m.cliRealDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     EDIT_DIRECTIVE: m.cliEditDirective(),
   };
@@ -324,6 +332,60 @@ function runClaude(dir, directive) {
   });
 }
 
+/**
+ * The Codex engine. Same contract as runClaude: DIRECTIVE.md on disk, a short
+ * prompt over stdin (immune to Windows argv quoting), stream-JSON events kept
+ * flowing so the stall watch has a pulse, index.html on disk as the only proof.
+ * Uses the locally signed-in codex CLI (no API key). The sandbox is
+ * workspace-write scoped to the build dir, with network on so the build can
+ * fetch the lead's real site and call fal for the hero.
+ */
+function runCodex(dir, directive) {
+  return new Promise((resolve) => {
+    writeFileSync(path.join(dir, 'DIRECTIVE.md'), directive);
+    const prompt = 'Read DIRECTIVE.md in this directory and follow it exactly. It tells you to read BRIEF.md and build index.html here.';
+    const args = [
+      '--search',
+      '-a', 'never',
+      '-c', 'sandbox_workspace_write.network_access=true',
+      'exec',
+      '-C', dir,
+      '--sandbox', 'workspace-write',
+      '--skip-git-repo-check',
+      '--json',
+    ];
+    log('running:', CODEX_BIN, 'exec <directive> in', dir);
+    const child = spawn(CODEX_BIN, args, { cwd: dir, env, shell: process.platform === 'win32' });
+    child.stdin.write(prompt);
+    child.stdin.end();
+    let out = '';
+    const started = Date.now();
+    let lastByte = Date.now();
+    let done = false;
+    const finish = (r) => { if (done) return; done = true; clearInterval(watch); cleanup(); resolve(r); };
+    const keep = (s) => { out = (out + s).slice(-200000); lastByte = Date.now(); };
+    const watch = setInterval(() => {
+      const quietMs = Date.now() - lastByte;
+      const runMs = Date.now() - started;
+      if (quietMs >= STALL_MS) {
+        killTree(child);
+        finish({ code: 124, out: `${out}\n[stalled: silent for ${Math.round(quietMs / 60000)}m after ${Math.round(runMs / 60000)}m]` });
+      } else if (runMs >= MAX_RUNTIME_MS) {
+        killTree(child);
+        finish({ code: 124, out: `${out}\n[ceiling: still talking at ${Math.round(runMs / 60000)}m]` });
+      }
+    }, 30 * 1000);
+    const onExit = () => { killTree(child); };
+    process.once('SIGINT', onExit);
+    process.once('SIGTERM', onExit);
+    const cleanup = () => { process.off('SIGINT', onExit); process.off('SIGTERM', onExit); };
+    child.stdout.on('data', (d) => { keep(d.toString()); process.stdout.write(d); });
+    child.stderr.on('data', (d) => { keep(d.toString()); process.stderr.write(d); });
+    child.on('close', (code) => finish({ code, out }));
+    child.on('error', (e) => finish({ code: 1, out: out + '\n' + e.message }));
+  });
+}
+
 async function fail(job, message) {
   const error = String(message).slice(0, 2000);
   await supabase
@@ -428,8 +490,10 @@ async function process_(job) {
     }
 
     const law = await currentLaw();
-    const directive = edit ? law.EDIT_DIRECTIVE : rebuild ? law.REAL_DIRECTIVE : law.DIRECTIVE;
-    const { code, out } = await runClaude(dir, directive);
+    const useCodex = ENGINE === 'codex' && !edit && !rebuild;
+    const directive = edit ? law.EDIT_DIRECTIVE : rebuild ? law.REAL_DIRECTIVE : useCodex ? law.CODEX_DIRECTIVE : law.DIRECTIVE;
+    const engineName = useCodex ? 'codex' : 'claude';
+    const { code, out } = useCodex ? await runCodex(dir, directive) : await runClaude(dir, directive);
 
     const stalled = code === 124 && /\[stalled:/.test(out);
     const nothing = !existsSync(htmlPath);
@@ -457,11 +521,11 @@ async function process_(job) {
     }
 
     if (nothing) {
-      await fail(job, `no index.html produced (claude exited ${code}): ${out.slice(-500)}`);
+      await fail(job, `no index.html produced (${engineName} exited ${code}): ${out.slice(-500)}`);
       return;
     }
     if (unusable) {
-      await fail(job, `index.html looks incomplete (${html.length} bytes, claude exited ${code})`);
+      await fail(job, `index.html looks incomplete (${html.length} bytes, ${engineName} exited ${code})`);
       return;
     }
 
@@ -716,7 +780,7 @@ async function tick() {
   return true;
 }
 
-log('demo-site worker up. sites dir:', SITES_DIR, '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
+log('demo-site worker up. sites dir:', SITES_DIR, '| demo engine:', ENGINE, '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
 
 // Beat on a timer, not inside the work loop: a 30-minute build must not look
 // like a dead machine. unref() so --once can still exit.
