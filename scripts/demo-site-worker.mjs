@@ -47,7 +47,13 @@ const PERMISSION = process.env.DEMO_SITE_PERMISSION || 'bypassPermissions';
 // fine. 1200 keeps ~300MB of headroom over the known-bad point while actually being
 // reachable on a working machine. A guard that never lets anything through is not a
 // safety feature, it is an outage.
-const MIN_FREE_MEM_MB = Number(process.env.DEMO_SITE_MIN_FREE_MB || 1200);
+// 1000, not 1200. Measured 2026-07-30 while Sarah had four leads queued and the
+// worker running: this machine hovers at 1180-1260MB free, so a 1200 floor sits
+// exactly ON the operating point and flaps, refusing most polls. That is the
+// second outage this guard has caused. 1000 keeps real headroom over the 0.9GB
+// point where the OOM actually happened, clears the machine's normal state, and
+// the starvation override below means even this floor can never wedge the queue.
+const MIN_FREE_MEM_MB = Number(process.env.DEMO_SITE_MIN_FREE_MB || 1000);
 // WALL CLOCK IS THE WRONG AXE, and raising it was never the fix. 35 minutes cut
 // builds off mid-furnish (2026-07-23: six of the last eight finished at EXACTLY
 // 35m, two of them 117KB and 135KB with zero photographs). Raising it to 45 just
@@ -203,7 +209,12 @@ async function reclaimStranded() {
     .from('outbound_demo_sites')
     .update({ status: 'queued', worker: null, claimed_at: null, updated_at: new Date().toISOString() })
     .eq('status', 'building')
-    .lt('claimed_at', cutoff)
+    // NULL is not less-than anything in SQL, so `.lt('claimed_at', cutoff)` alone
+    // could never see a row that reached 'building' without a claim stamp. One did:
+    // Bigfoot Flooring sat 'building' for TWELVE DAYS, invisible to this reclaim
+    // and to the failsafe (which only selects 'queued'), holding a lead hostage
+    // with nothing anywhere reporting it.
+    .or(`claimed_at.is.null,claimed_at.lt.${cutoff}`)
     .select('id');
   if (data?.length) log('reclaimed stranded builds:', data.map((d) => d.id).join(', '));
 }
@@ -626,6 +637,27 @@ async function beat() {
 
 // Track so we log the pressure once, not on every 15s poll.
 let warnedLowMem = false;
+/** When the memory guard first started refusing. Null whenever it is not refusing. */
+let blockedSince = null;
+
+/**
+ * THE STARVATION OVERRIDE.
+ *
+ * On 2026-07-30 Sarah forged four sites, ran the worker herself, and nothing
+ * moved: 16GB of RAM with ~600MB actually available, so the guard refused every
+ * claim forever. The comment above MIN_FREE_MEM_MB already says it. "A guard that
+ * never lets anything through is not a safety feature, it is an outage." That was
+ * written and then not enforced, because the guard had no way to ever give up.
+ *
+ * So it now gives up. After STARVE_MS of continuous refusal with work waiting, it
+ * takes ONE build anyway, provided there is at least a hard floor of memory to
+ * work in. Waiting for a quiet machine is the preference, not the rule: a build
+ * that runs slowly beats a queue that never moves, and the serial worker means
+ * this can only ever admit one at a time.
+ */
+const STARVE_MS = Number(process.env.DEMO_SITE_STARVE_MS || 15 * 60 * 1000);
+/** Below this a build cannot realistically run, so the override does not apply. */
+const HARD_FLOOR_MB = Number(process.env.DEMO_SITE_HARD_FLOOR_MB || 500);
 
 async function tick() {
   // Bank finished work and free stranded rows first; both are cheap and neither
@@ -634,7 +666,17 @@ async function tick() {
   await reclaimStranded();
 
   const freeMb = Math.round(os.freemem() / (1024 * 1024));
-  if (freeMb < MIN_FREE_MEM_MB) {
+  const short = freeMb < MIN_FREE_MEM_MB;
+  if (short && blockedSince === null) blockedSince = Date.now();
+  if (!short) blockedSince = null;
+
+  // Starved for long enough, with work waiting and enough room to actually build?
+  // Take one. Loudly, so the cockpit and the log both say this was a deliberate
+  // override rather than the guard silently drifting.
+  const starvedMs = blockedSince ? Date.now() - blockedSince : 0;
+  const override = short && starvedMs >= STARVE_MS && freeMb >= HARD_FLOOR_MB;
+
+  if (short && !override) {
     if (!warnedLowMem) {
       log(`low memory (${freeMb}MB free, need ${MIN_FREE_MEM_MB}MB) - holding off claiming a build until it recovers`);
       warnedLowMem = true;
@@ -644,8 +686,18 @@ async function tick() {
     // watching. From the cockpit it looked like the forge had simply stopped.
     // A stall that nobody can see is indistinguishable from a broken product, so
     // the reason now goes where Sarah actually looks.
-    await reportHealth({ state: 'blocked', reason: `low memory: ${freeMb}MB free, needs ${MIN_FREE_MEM_MB}MB`, freeMb });
+    const waited = Math.round(starvedMs / 60000);
+    await reportHealth({
+      state: 'blocked',
+      reason:
+        `low memory: ${freeMb}MB free, needs ${MIN_FREE_MEM_MB}MB` +
+        (waited >= 1 ? `. Waiting ${waited}m; it takes a build anyway at ${Math.round(STARVE_MS / 60000)}m if ${HARD_FLOOR_MB}MB is free.` : ''),
+      freeMb,
+    });
     return false;
+  }
+  if (override) {
+    log(`STARVED ${Math.round(starvedMs / 60000)}m at ${freeMb}MB free - taking a build anyway rather than holding the queue`);
   }
   if (warnedLowMem) { log(`memory recovered (${freeMb}MB free) - resuming`); warnedLowMem = false; }
   await reportHealth({ state: 'polling', reason: null, freeMb });
