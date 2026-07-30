@@ -1262,6 +1262,164 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
     ],
   },
+  {
+    id: 'talking-website-plumbers',
+    name: 'The Talking Website · Plumbers',
+    eyebrow: 'Set ten · Vertical cut',
+    blurb:
+      'The flagship rewritten so every line names a plumber’s actual day: hands under a sink, a ceiling dripping at eleven at night, four calls on the first hard freeze, the paperwork pile at nine PM. Same Say Hello world with water blue as the accent. Postable in groups AND attachable by a rep to an outbound email, one card at a time.',
+    cta: 'Call it: (406) 312-1223',
+    accent: '#1E50C8',
+    rules: [
+      'No statistics, and never a price. Same as the flagship set.',
+      'Reps attach these to EMAIL or show them on a live call. NEVER a cold text. The A2P registration is opt-in conversational and a cold SMS violates it even once approved.',
+      'Never assert anything about their business you have not checked. The copy is about the trade in general, never "your site is broken." A rep line that guesses wrong kills the call in one sentence.',
+      'One card per email, never a wall of six.',
+      'Run 06 last, and dial (406) 312-1223 yourself before any campaign or send.',
+    ],
+    cards: [
+      {
+        file: '01-hands-full',
+        headline: 'It answers while your hands are full.',
+        use: 'The opener, and the single best card to attach to a first outbound email.',
+        alt: 'Mr. Mustard holding a telephone handset under a speech bubble reading: it answers while your hands are full.',
+      },
+      {
+        file: '02-water-does-not-wait',
+        headline: 'Water does not wait for office hours.',
+        use: 'The after hours beat, and the most plumber-specific card in the set. Best second touch.',
+        alt: 'Mr. Mustard lit inside a dark window at night with blue water drips falling into a puddle. Bubble reads: water does not wait for office hours.',
+      },
+      {
+        file: '03-nine-pm-paperwork',
+        headline: 'It does the office work too.',
+        use: 'The answer to "I already have an answering service."',
+        alt: 'Six boards labelled dispatch, estimates, invoices, parts, reviews and follow ups, each with a blue water drop, Mr. Mustard standing in front.',
+      },
+      {
+        file: '04-first-freeze',
+        headline: 'Four calls at once. One of you.',
+        use: 'The seasonal card. Run it the week of the first hard freeze, and use it on anyone who says they are too busy.',
+        alt: 'Five speech bubbles asking water heater is gone, how soon, do you do drains, is there a night fee, do you take cards, with Mr. Mustard answering all of them.',
+      },
+      {
+        file: '05-already-dispatched',
+        headline: 'Booked it. Quoted it. Wrote it down.',
+        use: 'The proof card. Pair it with a real day from a real customer.',
+        alt: 'A day sheet headed while you worked showing a water heater swap booked, a repipe quoted and a burst pipe call taken, beside Mr. Mustard on a handset.',
+      },
+      {
+        file: '06-call-it',
+        headline: 'Call it and see.',
+        use: 'The dare, and the closer. Run last, and only on people who already know what they are dialling.',
+        alt: 'Mr. Mustard on a handset beside a mustard plate reading talk to it now, (406) 312-1223.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'Hands full',
+        graphic: '01-hands-full',
+        body: [
+          'Plumbers, this one is for you.',
+          'You are on your back under a sink with a wrench in one hand and a torch in the other, and the phone starts going in your pocket. You cannot answer. Nobody could.',
+          'So here is what is new. Your website can answer it for you now. Out loud, in your company name, with your rates and your service area and your actual calendar. It picks up, works out what they need, and books them in while you finish the job you are already being paid for.',
+          'Not voicemail. Not a form somebody fills in and you see Thursday. A voice that handles it.',
+          'Ours is on the end of (406) 312-1223 if you want to hear one. Ask it whatever a customer would ask you. It does not mind being tested.',
+        ],
+        followUp: {
+          label: 'Using it in outbound',
+          lines: [
+            'This is the card to attach to a first email. Line that works: "You cannot answer the phone with both hands under a sink. This is the thing we build so you do not have to. There is a live one on (406) 312-1223 if you want to hear it before we talk."',
+            'Email or a live call only. Never a cold text.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'Water does not wait',
+        graphic: '02-water-does-not-wait',
+        body: [
+          'Nothing in plumbing happens at a convenient hour.',
+          'Somebody’s ceiling starts dripping at eleven at night. They are standing in the hallway with a bucket, phone in hand, working down the search results. They are not leaving a voicemail. They are calling until somebody picks up.',
+          'Whether that somebody was you comes down to one thing, and it is not how good you are at the job.',
+          'The thing we build answers at 11:42 the same way it answers at 10 in the morning. Gets the address, works out whether it is an emergency or a Tuesday, quotes the after hours rate if you charge one, and puts it on your calendar. You find out about it over coffee.',
+          'You should not have to be awake to be reachable. (406) 312-1223 if you want to hear it work.',
+        ],
+      },
+      {
+        n: 3,
+        title: 'The nine PM pile',
+        graphic: '03-nine-pm-paperwork',
+        body: [
+          'Everybody asks about the talking part. The part that gives you your evening back is behind it.',
+          'While it is answering, it is also doing the office work. Dispatch. Estimates out. Invoices sent. Parts noted. Review requests to the customers who were happy. Follow ups to the ones who went quiet after a quote.',
+          'That is the stack most plumbers work through at nine at night at the kitchen table, after a ten hour day, badly, because by then nobody is sharp.',
+          'Handled by the time you park the van.',
+          'What is the one job you keep pushing to Sunday? Say it below and I will tell you straight whether this handles it or not.',
+        ],
+      },
+      {
+        n: 4,
+        title: 'First hard freeze',
+        graphic: '04-first-freeze',
+        body: [
+          'You already know the week I mean. First real freeze, and the phone does not stop.',
+          'Four people call inside the same ten minutes. Water heater gone. Pipe split in a crawlspace. Somebody asking if you do drains. Somebody asking if there is a night fee. You are one person with one phone, already elbow deep in the first one.',
+          'Three of those four go to whoever answers next. Not because you are worse. Because you were busy.',
+          'This thing takes all four at the same second. Real answers, real time slots, no hold music. You get a dispatched list instead of a voicemail box and a bad feeling.',
+          'That week is coming. It comes every year.',
+        ],
+      },
+      {
+        n: 5,
+        title: 'Already dispatched',
+        graphic: '05-already-dispatched',
+        body: [
+          'A real day, not a demo.',
+          '6:58 in the morning, booked a water heater swap while the van was still being loaded. 12:20, quoted a repipe and sent it before the customer had finished lunch. 10:41 at night, took a burst pipe call that would otherwise have been a voicemail somebody heard on Monday.',
+          'Nobody touched a phone for any of it.',
+          'That is the part I could not explain properly until I lived with it. It is not that it works faster than you. It is that the work stops piling up, so you are not doing admin at ten at night to catch up on being reachable.',
+          'What would your week look like if the phone stopped being your problem?',
+        ],
+      },
+      {
+        n: 6,
+        title: 'The dare',
+        graphic: '06-call-it',
+        body: [
+          'Enough describing it. Call it.',
+          '(406) 312-1223.',
+          'Ask it what your customers ask you. Ask if it does drains. Ask what it charges after hours. Ask it to book you in and watch it actually do it.',
+          'Yours would answer in your company name, with your rates, your service area, and your calendar. This one just wears ours.',
+          'Then tell me what it got right and what it fumbled. Both are useful to me.',
+        ],
+      },
+    ],
+    replies: [
+      {
+        q: 'I already have an answering service.',
+        a: 'Fair, and a good one is worth having. The question is what happens after they take the message. Does yours quote, invoice, and chase the review? That is the half that usually lands back on you at nine at night.',
+      },
+      {
+        q: 'My customers are older, they will hate it.',
+        a: 'Some will, and it says what it is up front so nobody feels tricked. The comparison that matters is not this versus you, it is this versus the voicemail they get at 8pm right now. Most people would rather get an answer than a beep.',
+      },
+      {
+        q: 'Can it tell an emergency from a normal job?',
+        a: 'That is most of the setup work. You tell it what counts as an emergency for you, what you charge after hours, and how far you will drive. It sorts on your rules, not on its own opinion.',
+      },
+      {
+        q: 'What does it cost?',
+        a: 'Depends what it has to do, and I would rather not guess at you in a comment. Call the number or message me and we can work out in ten minutes whether it is even worth it for your setup.',
+        warn: 'Never type a price here. Prices live in one place in the code and they move.',
+      },
+      {
+        q: 'What happens if it gets something wrong?',
+        a: 'You get the transcript of every call, so you can see exactly what it said and correct it. It is closer to training a new dispatcher than buying a machine, except it only needs telling once.',
+      },
+    ],
+  },
 ];
 
 /** Flatten a post body into the plain text that goes in the composer. */
