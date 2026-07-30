@@ -90,27 +90,29 @@ Paste as-is:
 
 ## 3. Services (free keyword surface, most profiles leave it empty)
 
-Each service takes a name and a 300 character description. Google matches query
-text against these. Add every one of them.
+Each service takes a name and a description. **The description field is 120
+characters, not 300** (measured in the live UI 2026-07-30; docs and third-party
+guides still say 300, they are wrong). Every line below is verified at or under
+120. Google matches query text against these. Add every one of them.
 
-| Service name | Description |
+| Service name | Description (chars) |
 |---|---|
-| Website Design | Custom small business websites built to convert, with lead capture, fast mobile load times, and local SEO baked in. Shipped in weeks, not months. Kalispell and the whole Flathead Valley. |
-| Website Redesign | A rebuild for a site that looks dated or does not bring in calls. Same domain, new build, measurable lead capture. |
-| Small Business Website | Everything a local service business needs on one site: services, proof, reviews, booking, and a phone number that gets used. |
-| Landing Page Design | A single high-converting page for one offer, one campaign, or one ad set. |
-| AI Voice Agent Setup | A 24/7 AI phone agent trained on your hours, prices, services, and policies. Answers every call, books, and takes messages in your voice. |
-| AI Receptionist | An AI receptionist that picks up on the first ring, day or night, and never puts a caller on hold. |
-| 24/7 Answering Service | Round-the-clock call answering for service businesses. No voicemail, no missed jobs, no per-hour staffing cost. |
-| Missed Call Text Back | Every missed call gets an instant text so the lead does not dial your competitor next. |
-| AI Chatbot Setup | A site chat agent trained on your real business data that answers questions and captures leads while you work. |
-| E-Commerce Store Setup | Online stores with product pages, checkout, and inventory that a non-technical owner can actually run. |
-| Custom Web Application | Purpose-built internal tools, dashboards, portals, and workflow software for how your business actually operates. |
-| Business Automation | Connect the tools you already pay for so leads, jobs, invoices, and follow-ups stop falling through the cracks. |
-| Local SEO | Get found for what you do, not just for your name. Schema, local pages, Google Business Profile, and content that answers real searches. |
-| Website Maintenance | Ongoing hosting, updates, edits, monitoring, and fixes so the site never goes stale or dark. |
-| Video Production | AI-assisted commercials, product videos, and social cuts produced without a film crew. |
-| Ad Campaign Management | Paid campaigns run in your own ad accounts, so you keep the data and the assets. |
+| Website Design | Custom small business sites built to convert, with lead capture and local SEO. Shipped in weeks, not months. (108) |
+| Website Redesign | A rebuild for a site that looks dated or does not bring in calls. Same domain, new build, real lead capture. (108) |
+| Small Business Website | Services, proof, reviews, booking, and a phone number that gets used. Everything a local business needs. (104) |
+| Landing Page Design | One high-converting page for one offer, one campaign, or one ad set. (68) |
+| AI Voice Agent Setup | A 24/7 AI phone agent trained on your hours, prices, and services. Answers every call in your voice. (100) |
+| AI Receptionist | An AI receptionist that picks up on the first ring, day or night, and never puts a caller on hold. (98) |
+| 24/7 Answering Service | Round-the-clock call answering. No voicemail, no missed jobs, no per-hour staffing cost. (88) |
+| Missed Call Text Back | Every missed call gets an instant text, so the lead does not dial your competitor next. (87) |
+| AI Chatbot Setup | A site chat agent trained on your business that answers questions and captures leads while you work. (100) |
+| E-Commerce Store Setup | Online stores with product pages, checkout, and inventory a non-technical owner can actually run. (97) |
+| Custom Web Application | Internal tools, dashboards, portals, and workflow software built for how your business runs. (92) |
+| Business Automation | Connect the tools you already pay for so leads, jobs, and follow-ups stop falling through the cracks. (101) |
+| Local SEO | Get found for what you do, not just for your name. Schema, local pages, and content that answers searches. (106) |
+| Website Maintenance | Hosting, updates, edits, monitoring, and fixes so the site never goes stale or dark. (84) |
+| Video Production | AI-assisted commercials, product videos, and social cuts produced without a film crew. (86) |
+| Ad Campaign Management | Paid campaigns run in your own ad accounts, so you keep the data and the assets. (80) |
 
 ---
 
