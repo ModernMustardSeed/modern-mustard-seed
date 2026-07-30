@@ -120,8 +120,11 @@ Set it up as a **service-area business**, not a storefront. There is no walk-in
 office and we deliberately publish no street address. Bing Places supports
 service-area businesses.
 
-- **Category (primary):** Software Company. Secondary: Marketing Agency,
-  Website Designer.
+- **Category (primary):** Website Designer. Secondary: Internet Marketing
+  Service, Marketing Agency, Software Company, Telephone Answering Service.
+  (Corrected 2026-07-30: this used to say Software Company primary. "Software
+  company" carries almost no local query intent. Categories must match the
+  Google Business Profile exactly, see `google-business-profile-kit.md`.)
 - **Service area:** Kalispell, Whitefish, Columbia Falls, Bigfork, Polson,
   Flathead County, Montana.
 - **Phone / site / hours:** (406) 312-1223, https://modernmustardseed.com,
