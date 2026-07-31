@@ -618,6 +618,33 @@ async function storeFinished(job, html) {
     occurred_at: new Date().toISOString(),
   });
   log(isEdit(job) ? 'EDITED' : 'READY', job.id, siteUrl, `(${Math.round(html.length / 1024)}KB)`);
+
+  // Fresh demo banked = the whole suite exists. Tell the site so it can email
+  // the lead the package (route holds every guard + Sarah's kill switch).
+  if (!isEdit(job)) await notifySuiteReady(job);
+}
+
+/**
+ * Sarah 2026-07-30: "as soon as the website is also done... it emails them with
+ * the total package and the video about their stuff." The send itself lives in
+ * app/api/hooks/suite-ready (prod Resend + suppression guards + dedupe + the
+ * app_state kill switch); this just knocks. Fire-and-forget by design: an email
+ * hiccup must never mark a finished build failed.
+ */
+async function notifySuiteReady(job) {
+  const secret = env.FORGE_NOTIFY_SECRET;
+  if (!secret || !job.lead_id) return;
+  try {
+    const res = await fetch(`${SITE_URL}/api/hooks/suite-ready`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${secret}` },
+      body: JSON.stringify({ siteId: job.id }),
+    });
+    const j = await res.json().catch(() => ({}));
+    log('suite-ready email:', res.status, JSON.stringify(j).slice(0, 160));
+  } catch (e) {
+    log('suite-ready email failed (ignored):', e?.message || e);
+  }
 }
 
 /**
