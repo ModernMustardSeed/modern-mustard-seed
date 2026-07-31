@@ -35,15 +35,6 @@ const POLL_MS = Number(process.env.DEMO_SITE_POLL_MS || 15000);
 const SITES_DIR = process.env.DEMO_SITES_DIR || path.join(os.homedir(), 'mms-demo-sites');
 const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 const CODEX_BIN = process.env.CODEX_BIN || 'codex';
-// DESIGN TIERS (Sarah 2026-07-30: "give me a button to pick tier 1 design or tier 2
-// design... and play roulette a bit"). Tier 1 = the codex/award engine. Tier 2 = the
-// Wildmere AWARD SITE law (~/wildmere/TEMPLATE.md) on the claude engine. Priority:
-// DEMO_SITE_TIER env (emergency force, 1 or 2) > the row's chosen tier (design_tier
-// column once migration 073 is applied, else the "DESIGN TIER: n" line the cockpit
-// writes at the top of the brief) > roulette, rolled fresh per build so unattended
-// demos come out varied. Client EDITS and paid REBUILDS stay on the claude engine
-// with their own laws regardless of tier.
-const FORCED_TIER = ['1', '2'].includes(process.env.DEMO_SITE_TIER || '') ? Number(process.env.DEMO_SITE_TIER) : null;
 const PERMISSION = process.env.DEMO_SITE_PERMISSION || 'bypassPermissions';
 // Do not CLAIM a new build when the machine is already low on memory. A headless
 // claude child needs a few hundred MB; starting one under pressure is how the
@@ -95,6 +86,18 @@ try {
     if (m && !env[m[1]]) env[m[1]] = m[2].trim().replace(/^["']|["']$/g, '');
   }
 } catch { /* no .env.local */ }
+
+// DESIGN TIERS (Sarah 2026-07-30: "give me a button to pick tier 1 design or tier 2
+// design... and play roulette a bit"). Tier 1 = the codex/award engine. Tier 2 = the
+// Wildmere AWARD SITE law (~/wildmere/TEMPLATE.md) on the claude engine. Priority:
+// DEMO_SITE_TIER force (process env OR .env.local, so it survives supervisor
+// relaunches) > the row's chosen tier (design_tier column once migration 073 is
+// applied, else the "DESIGN TIER: n" line the cockpit writes at the top of the
+// brief) > roulette, rolled fresh per build so unattended demos come out varied.
+// Client EDITS and paid REBUILDS stay on the claude engine regardless of tier.
+// ⚡ 2026-07-30 late: Sarah ordered TIER 2 ONLY ("i dont like the tier 1 right now")
+// via DEMO_SITE_TIER=2 in .env.local. Remove that line + restart to restore roulette.
+const FORCED_TIER = ['1', '2'].includes(env.DEMO_SITE_TIER || '') ? Number(env.DEMO_SITE_TIER) : null;
 
 const SUPABASE_URL = env.SUPABASE_URL || env.supabase_url || env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_KEY = env.SUPABASE_SERVICE_ROLE_KEY || env.supabase_service_role_key;
