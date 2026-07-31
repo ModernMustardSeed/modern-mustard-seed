@@ -6,11 +6,22 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 import { workByKey } from '@/data/website-work';
 import EngineToggle from '@/components/websites/EngineToggle';
 import WorkShowcase from '@/components/websites/WorkShowcase';
+import HeroFilm from '@/components/websites/HeroFilm';
 
 const site = DEMO_PRODUCTS.site;
 const voice = DEMO_PRODUCTS.voice;
-const HERO = workByKey['linen-fresh'];
 const STORE = workByKey['cross-covenant'];
+
+// The hero film: a real scroll through a real build, recorded off the live
+// site by scripts/record-wildmere-scroll.mjs. Wildmere is a from-scratch
+// studio build, not a client engagement, so the copy here boasts about the
+// craft and never implies a customer. See mms-work-reel-copy-honesty.
+const HERO_FILM = {
+  brand: 'Wildmere Honey Co.',
+  host: 'wildmere.vercel.app',
+  src: '/video/wildmere-scroll.mp4',
+  poster: '/video/wildmere-scroll-poster.jpg',
+};
 
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
@@ -161,27 +172,27 @@ export default function WebsitesPage() {
                     ))}
                   </span>
                   <span className="ml-2 flex-1 truncate rounded-full border border-[#161616]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#161616]/65">
-                    linenfreshlv.com
+                    {HERO_FILM.host}
                   </span>
                 </div>
                 <div className="relative">
-                  <Image
-                    src={HERO.img}
-                    alt={`${HERO.name}, a ${HERO.trade.toLowerCase()} website designed and built from scratch by Modern Mustard Seed, capturing a new lead into the command center`}
-                    width={1600}
-                    height={1000}
-                    priority
-                    sizes="(min-width: 1024px) 58vw, 100vw"
-                    className="block w-full h-auto"
+                  {/* Poster is the film's own first frame, so the still and the
+                      first frame of playback are the same image and nothing
+                      jumps when it starts. */}
+                  <HeroFilm
+                    src={HERO_FILM.src}
+                    poster={HERO_FILM.poster}
+                    alt={`The homepage of ${HERO_FILM.brand}, a honey company website designed and built from scratch by Modern Mustard Seed, scrolling from the hero through the shelf to the booking form`}
                   />
-                  <div className="absolute top-3 right-3 max-w-[60%] rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-3.5 py-2 shadow-[3px_3px_0_0_#F5B700]">
-                    <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#C4160B] font-bold">New lead captured</p>
-                    <p className="font-sans text-[11.5px] font-bold text-[#161616] mt-0.5 leading-snug">Filed to your command center</p>
+                  <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-3.5 py-2 shadow-[3px_3px_0_0_#F5B700]">
+                    <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#C4160B] font-bold">What it does</p>
+                    <p className="font-sans text-[11.5px] font-bold text-[#161616] mt-0.5 leading-snug">Ends on a booking form, not a phone number</p>
                   </div>
                 </div>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-3">
-                Built for {HERO.name}, {HERO.place}. Designed from scratch, wired to capture every lead.
+                {HERO_FILM.brand}, designed and built from scratch. Every scroll, every reveal, and the
+                booking form at the end.
               </p>
             </div>
           </div>
