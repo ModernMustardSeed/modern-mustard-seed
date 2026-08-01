@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { track } from '@vercel/analytics';
 import { routeBuild, ideaPhrase } from '@/data/front-desk';
+import ScriptureSlab from '@/components/home/ScriptureSlab';
 
 type Phase = 'attract' | 'terminal';
 type PlayState = 'idle' | 'typing' | 'scoped' | 'routed' | 'sending' | 'sent';
@@ -264,7 +265,7 @@ export default function FrontDeskHero() {
 
       {/* The Forge Wire strip above carries the navbar clearance, so the
           hero's own top padding is rhythm, not offset. */}
-      <div className="relative max-w-6xl mx-auto px-6 pt-12 pb-16 md:pt-16 md:pb-24 min-h-[86vh] flex flex-col justify-center lg:grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_430px] lg:items-center lg:gap-12">
+      <div className="relative max-w-6xl mx-auto px-6 pt-12 pb-10 md:pt-16 md:pb-14 min-h-[86vh] flex flex-col justify-center lg:grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_430px] lg:items-center lg:gap-12">
         <div>
         {/* Logo lockup with mascot: mobile, centered above the headline */}
         <div className="lg:hidden relative w-[170px] sm:w-[240px] mx-auto mb-7">
@@ -531,6 +532,11 @@ export default function FrontDeskHero() {
           />
         </div>
       </div>
+
+      {/* The parable the studio is named for, extruded in 3D. It lives inside
+          the hero section on purpose: the halftone field runs behind it and
+          the hero's ink border closes underneath it. */}
+      <ScriptureSlab />
     </section>
   );
 }
