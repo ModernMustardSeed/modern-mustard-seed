@@ -182,7 +182,7 @@ async function main() {
       siteUrl: lead.site_demo_url,
       osUrl: lead.os_demo_url,
       cards: {
-        open: openCard({ business: biz, city: config.city || lead.city || '' }),
+        open: openCard({ business: biz }),
         close: closeCard({ business: biz, hubUrl: lead.hub_demo_url || `${SITE_URL}/demo/hub/${lead.hub_demo_id}` }),
       },
       beats,

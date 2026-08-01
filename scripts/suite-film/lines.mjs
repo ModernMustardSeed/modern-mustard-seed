@@ -173,7 +173,10 @@ export function filmScript({ lead, config, have }) {
     id: 'close',
     kind: 'card',
     card: 'close',
-    vo: 'It is all live right now, waiting at your link. Nothing to sign, nothing to cancel, nothing owed. If you want it, just reply and tell us.',
+    // Ends on an invitation, not an accounting. Sarah killed the old
+    // "nothing to sign, nothing to cancel, nothing owed" close: three nothings
+    // finish the film on what is absent instead of handing them something to do.
+    vo: 'It is all live right now, waiting at your link. No card, no meeting, no catch. Take your time with it, and when you are ready, just reply and tell us what you would change.',
   });
 
   return { biz, first, beats };

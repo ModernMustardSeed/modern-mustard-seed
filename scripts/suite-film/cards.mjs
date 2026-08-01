@@ -42,8 +42,15 @@ const SHELL = (body, extraCss = '') => `<!doctype html>
   @media (prefers-reduced-motion:reduce){.fade{transition:none;opacity:1;transform:none}}
 </style></head><body>${body}<style>${extraCss}</style></body></html>`;
 
-/** Beat one: whose film this is. */
-export function openCard({ business, city }) {
+/**
+ * Beat one: whose film this is.
+ *
+ * The credit line names the BUSINESS, never their town. Sarah, 2026-08-01:
+ * "instead of made for Lebanon or whatever city they are in, just say made
+ * whatever the company name is instead." A city reads like a mail-merge field;
+ * their own name reads like it was made for them, which it was.
+ */
+export function openCard({ business }) {
   return SHELL(`
   <div style="max-width:1180px;padding:0 64px">
     <p class="eyebrow fade d1">Built by Modern Mustard Seed</p>
@@ -53,7 +60,7 @@ export function openCard({ business, city }) {
       ${esc(business)}
     </h1>
     <p class="fade d4" style="font-size:26px;line-height:1.5;margin-top:26px;color:${INK}B3">
-      A website, a voice agent, and a command center.${city ? ` Made for ${esc(city)}.` : ''}<br>
+      A website, a voice agent, and a command center, made for ${esc(business)}.<br>
       <span style="background:${GOLD};border:2.5px solid ${INK};border-radius:99px;padding:5px 20px;
             display:inline-block;margin-top:20px;font-weight:700;color:${INK};font-size:21px;
             box-shadow:5px 5px 0 0 ${INK}">Everything you are about to see is live</span>
@@ -61,7 +68,16 @@ export function openCard({ business, city }) {
   </div>`);
 }
 
-/** The last beat: where it lives and what it costs (nothing). */
+/**
+ * The last beat: where it lives, and an invitation rather than an accounting.
+ *
+ * It used to close on "Nothing to sign. Nothing to cancel. Nothing owed."
+ * Sarah, 2026-08-01: "the end says something about nothing owed. that's stupid
+ * and we could say something better." She is right, and the reason is that
+ * three nothings end the film on what is absent. The last thing a prospect
+ * hears should hand them something to do, so it now clears the objection in one
+ * breath and then asks them to react.
+ */
 export function closeCard({ business, hubUrl }) {
   const shown = String(hubUrl || '').replace(/^https?:\/\//, '');
   return SHELL(`
@@ -71,8 +87,8 @@ export function closeCard({ business, hubUrl }) {
         font-size:clamp(42px,6.2vw,96px);line-height:1.05;letter-spacing:-.02em;margin-top:22px">
       It is all yours.
     </h1>
-    <p class="fade d3" style="font-size:25px;line-height:1.55;margin-top:24px;color:${INK}B3;max-width:820px;margin-inline:auto">
-      Nothing to sign. Nothing to cancel. Nothing owed.<br>Look around as long as you like.
+    <p class="fade d3" style="font-size:25px;line-height:1.55;margin-top:24px;color:${INK}B3;max-width:860px;margin-inline:auto">
+      No card, no meeting, no catch.<br>Take your time with it, then tell us what you would change.
     </p>
     <div class="fade d4" style="margin-top:34px;display:inline-block;background:${INK};
          border:3px solid ${INK};border-radius:20px;padding:20px 34px;box-shadow:8px 8px 0 0 ${GOLD}">

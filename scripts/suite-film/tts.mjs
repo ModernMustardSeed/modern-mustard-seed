@@ -39,8 +39,14 @@ export const NARRATOR = {
   fal: { voice_id: 'Wise_Woman', speed: 0.94, vol: 1, pitch: 0 },
 };
 
+/**
+ * The staged caller is the OTHER female voice, per Sarah 2026-08-01 ("use the
+ * other girl voice too"). Emma against Ava keeps the two halves of the call
+ * clearly separate while both stay in a natural customer register; Aria is the
+ * spare if they ever read too close (SUITE_FILM_CALLER_VOICE=en-US-AriaNeural).
+ */
 export const CALLER = {
-  edge: process.env.SUITE_FILM_CALLER_VOICE || 'en-US-AndrewMultilingualNeural',
+  edge: process.env.SUITE_FILM_CALLER_VOICE || 'en-US-EmmaMultilingualNeural',
   rate: '+0%',
   fal: { voice_id: 'Friendly_Person', speed: 1.0, vol: 1, pitch: 0 },
 };
