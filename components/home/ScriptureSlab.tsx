@@ -18,6 +18,17 @@
 
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
+import { PARABLE_REFERENCE, PARABLE_SEGMENTS } from '@/data/parable';
+
+/** The verse, with an alternating tilt resolved onto each stamped word. */
+const VERSE = PARABLE_SEGMENTS.map((seg, i) => ({
+  ...seg,
+  tilt: seg.stamp
+    ? PARABLE_SEGMENTS.slice(0, i).filter((s) => s.stamp).length % 2 === 0
+      ? '-rotate-[1.2deg]'
+      : 'rotate-[1.2deg]'
+    : '',
+}));
 
 /** Resting pose, so the slab reads as a solid even with no cursor on it. */
 const REST_X = 4;
@@ -198,16 +209,20 @@ export default function ScriptureSlab() {
 
             <blockquote className="relative">
               <p className="text-center font-display text-[22px] italic leading-[1.62] text-[#161616] sm:text-[26px] md:text-[32px] md:leading-[1.55]">
-                &ldquo;The kingdom of heaven is like a{' '}
-                <span className="inline-block whitespace-nowrap rounded-[5px] bg-[#161616] px-2 py-[3px] font-mono text-[0.82em] not-italic leading-none text-[#F5B700] shadow-[2px_2px_0_0_rgba(245,183,0,0.65)] -rotate-[1.2deg] align-[0.02em]">
-                  mustard seed
-                </span>
-                , which a man took and planted in his field. Though it is the smallest of all seeds, yet
-                when it grows, it is the largest of garden plants and becomes a{' '}
-                <span className="inline-block rounded-[5px] bg-[#161616] px-2 py-[3px] font-mono text-[0.82em] not-italic leading-none text-[#F5B700] shadow-[2px_2px_0_0_rgba(245,183,0,0.65)] rotate-[1.2deg] align-[0.02em]">
-                  tree
-                </span>
-                , so that the birds come and perch in its branches.&rdquo;
+                &ldquo;
+                {VERSE.map((seg, i) =>
+                  seg.stamp ? (
+                    <span
+                      key={i}
+                      className={`inline-block whitespace-nowrap rounded-[5px] bg-[#161616] px-2 py-[3px] align-[0.02em] font-mono text-[0.82em] not-italic leading-none text-[#F5B700] shadow-[2px_2px_0_0_rgba(245,183,0,0.65)] ${seg.tilt}`}
+                    >
+                      {seg.t}
+                    </span>
+                  ) : (
+                    <span key={i}>{seg.t}</span>
+                  )
+                )}
+                &rdquo;
               </p>
             </blockquote>
 
@@ -229,7 +244,7 @@ export default function ScriptureSlab() {
             style={{ transform: 'translateZ(52px) rotate(-2.5deg)' }}
           >
             <span className="inline-block rounded-full border-2 border-[#161616] bg-[#F5B700] px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#161616] shadow-[3px_3px_0_0_#161616]">
-              Matthew 13:31-32
+              {PARABLE_REFERENCE}
             </span>
           </cite>
 

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { socials } from '@/data/socials';
+import { PARABLE_REFERENCE, PARABLE_SEGMENTS } from '@/data/parable';
 import CookiePreferencesLink from '@/components/CookiePreferencesLink';
 
 /**
@@ -126,14 +127,22 @@ export default function Footer() {
               <Image src="/brand/mascot.png" alt="" fill sizes="28px" className="object-contain" />
             </span>
           </div>
+          {/* Same verse as the hero slab, same source (data/parable.ts). */}
           <p className="font-display italic text-lg md:text-xl leading-relaxed text-[#161616] text-center">
-            &ldquo;The kingdom of heaven is like a{' '}
-            <span className="not-italic font-bold text-[#8f6600]">mustard seed</span>, which a man took and
-            planted in his field. Though it is the smallest of all seeds, yet when it grows, it is the
-            largest of garden plants and becomes a tree, so that the birds come and perch in its branches.&rdquo;
+            &ldquo;
+            {PARABLE_SEGMENTS.map((seg, i) =>
+              seg.stamp ? (
+                <span key={i} className="not-italic font-bold text-[#8f6600]">
+                  {seg.t}
+                </span>
+              ) : (
+                <span key={i}>{seg.t}</span>
+              )
+            )}
+            &rdquo;
           </p>
           <p className="mt-3 text-center font-mono text-[9px] uppercase tracking-[0.4em] font-bold text-[#8f6600]">
-            Matthew 13:31-32
+            {PARABLE_REFERENCE}
           </p>
           <p className="mt-3 text-center font-body text-[13px] text-[#5c554a]">
             Every build here starts seed-sized. That is the plan.

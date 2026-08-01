@@ -10,7 +10,7 @@ import FlagshipOffer from '@/components/home/FlagshipOffer';
 import ThreeDoors from '@/components/home/ThreeDoors';
 import ComicRack from '@/components/home/ComicRack';
 import TheClose from '@/components/home/TheClose';
-import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
+import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
@@ -29,6 +29,8 @@ const homeJsonLd = {
     'Do you want your business to thrive? Custom websites, voice agents, and AI command centers, live in about a week. Custom apps and stores too.',
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },
+  // The parable slab under the hero and the footer card are the same verse.
+  hasPart: { '@id': 'https://modernmustardseed.com/#parable' },
   primaryImageOfPage: {
     '@type': 'ImageObject',
     url: 'https://modernmustardseed.com/opengraph-image',
@@ -109,7 +111,15 @@ const homeFaq = faqJsonLd(HOME_FAQ);
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={[homeJsonLd, offerJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} />
+      <JsonLd
+        data={[
+          homeJsonLd,
+          offerJsonLd,
+          parableJsonLd,
+          homeFaq,
+          breadcrumbJsonLd([{ name: 'Home', url: '/' }]),
+        ]}
+      />
       <DemoForgeStrip />
       <FrontDeskHero />
 

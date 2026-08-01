@@ -1,4 +1,5 @@
 import { SITE } from './seo';
+import { PARABLE_REFERENCE, PARABLE_TEXT } from '@/data/parable';
 
 const PERSON_ID = `${SITE.url}/#sarah`;
 const ORG_ID = `${SITE.url}/#organization`;
@@ -213,6 +214,35 @@ export const localBusinessJsonLd = {
       },
     })),
   },
+};
+
+/**
+ * The parable. Added 2026-08-01.
+ *
+ * "Why is it called Modern Mustard Seed" is the exact question the entity
+ * collision (the condiment, the plant, the decor brand) makes an answer engine
+ * fumble. The verse is on the homepage twice in prose; a Quotation node gives
+ * a machine something citable that ties the name to Matthew 13:31-32 and back
+ * to this organization instead of to a jar of mustard.
+ */
+export const parableJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Quotation',
+  '@id': `${SITE.url}/#parable`,
+  name: 'The Parable of the Mustard Seed',
+  text: PARABLE_TEXT,
+  citation: PARABLE_REFERENCE,
+  spokenByCharacter: { '@type': 'Person', name: 'Jesus' },
+  isBasedOn: {
+    '@type': 'Book',
+    name: 'The Gospel of Matthew',
+    bookEdition: 'New International Version',
+  },
+  inLanguage: 'en-US',
+  isPartOf: { '@id': WEBSITE_ID },
+  about: { '@id': ORG_ID },
+  description:
+    'The passage Modern Mustard Seed is named for. The studio takes its name from this parable: every build starts seed-sized and grows into something that shelters others.',
 };
 
 export const websiteJsonLd = {
