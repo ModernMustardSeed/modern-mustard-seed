@@ -67,7 +67,9 @@ export function FreeCommandCenter() {
         <div className="mt-8 flex justify-center">
           <div className="inline-flex flex-wrap items-center justify-center gap-3 rounded-2xl border-2 border-[#161616] bg-[#161616] px-6 py-4 shadow-[6px_6px_0_0_#F5B700]">
             <span className="font-display italic font-black text-lg text-[#FBF6EA]">Business Command Center</span>
-            <span className="font-mono font-bold text-[15px] text-[#FBF6EA]/45 line-through">{formatUsd(os.monthlyCents)}/mo</span>
+            {/* /45 cream on ink measures ~4.35:1 at 15px bold, just under AA.
+                /60 stays visually secondary and clears the bar. */}
+            <span className="font-mono font-bold text-[15px] text-[#FBF6EA]/60 line-through">{formatUsd(os.monthlyCents)}/mo</span>
             <span className="font-mono font-bold text-[12px] uppercase tracking-[0.12em] text-[#161616] bg-[#F5B700] rounded-full px-3 py-1">Free with your Voice Agent</span>
           </div>
         </div>
