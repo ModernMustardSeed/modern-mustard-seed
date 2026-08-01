@@ -52,7 +52,9 @@ export default function OfferGrid() {
           </h2>
         </Reveal>
 
-        <div className="grid md:grid-cols-3 gap-6 md:gap-5 mt-12 items-stretch">
+        {/* Two paid levels since the Cabinet was retired, so the pair centers
+            instead of leaving a hole in a three-up grid. */}
+        <div className="grid md:grid-cols-2 gap-6 md:gap-5 mt-12 items-stretch max-w-3xl mx-auto">
           {paid.map((l, li) => {
             const hot = l.featured;
             return (

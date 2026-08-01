@@ -56,7 +56,6 @@ const MENU_GROUPS = [
       { label: 'Blog', href: '/blog' },
       { label: 'Store', href: '/store' },
       { label: 'Contact', href: '/contact' },
-      { label: 'The Text Line', href: '/sms' },
       { label: 'Client Portal', href: '/portal' },
     ],
   },

@@ -30,7 +30,7 @@ export default function PrivacyPage() {
             </p>
             <h2>Text messaging (SMS) and your mobile information</h2>
             <p>
-              If you give us your mobile number, on our website, on a form, in person, or in the course of working together, you are agreeing to let us text you at that number about the service you asked about. Consent to receive texts is never a condition of any purchase. We never buy, rent, or sell phone numbers.
+              If you give us your mobile number directly, in a call, in person, or in the course of working together, you are agreeing to let us text you at that number about the service you asked about. We do not collect mobile numbers for texting through this website. Consent to receive texts is never a condition of any purchase. We never buy, rent, or sell phone numbers.
             </p>
             <p>
               <strong>No mobile information will be shared with third parties or affiliates for marketing or promotional purposes.</strong> Sharing with subcontractors who provide support services, such as our messaging provider Twilio, is permitted solely so the message can be delivered. All other categories exclude text messaging originator opt-in data and consent, and this information will not be shared with any third parties.

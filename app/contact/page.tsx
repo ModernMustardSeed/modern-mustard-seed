@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ContactForm from '@/components/ContactForm';
-import TextBackGate from '@/components/TextBackGate';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 
@@ -95,7 +94,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
       </section>
 
       {/* ───────────────  THE REPLY CARD (signature)  ─────────────── */}
-      <section className="relative pt-14 md:pt-20">
+      <section className="relative pt-14 md:pt-20 pb-16 md:pb-24">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 halftone-bg opacity-40" />
         <div className="relative">
           <Suspense fallback={null}>
@@ -104,12 +103,6 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
         </div>
       </section>
 
-      {/* ───────────────  TEXT-BACK (renders only when Twilio is armed)  ─────────────── */}
-      <section className="relative pb-16 md:pb-24">
-        <div className="max-w-2xl mx-auto px-6 -rotate-[0.6deg]">
-          <TextBackGate />
-        </div>
-      </section>
     </div>
   );
 }

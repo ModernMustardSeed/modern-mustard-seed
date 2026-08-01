@@ -1,11 +1,11 @@
 {
   "name": "Modern Mustard Seed",
   "short_name": "MMS",
-  "description": "AI-powered products, voice agents, and business automation. Built with faith, precision, and full-stack execution.",
+  "description": "Custom websites, voice agents, and AI command centers for founders, operators, and small business owners. Live in about a week.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0804",
-  "theme_color": "#C8A415",
+  "background_color": "#FBF6EA",
+  "theme_color": "#F5B700",
   "icons": [
     {
       "src": "/favicon.svg",

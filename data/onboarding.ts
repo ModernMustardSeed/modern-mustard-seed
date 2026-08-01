@@ -367,7 +367,7 @@ export const PHASES: Phase[] = [
           },
           {
             heading: 'And one more: Mustard Mode  ·  /mustard-mode',
-            body: 'Our coaching arcade. Mr. Mustard is a personal AI coach who teaches anyone to build with Claude, in levels, with missions and XP (a lot like this program). Free first session, then Player at $197, Builder at $397, or the Founders Cabinet at $97 a month. This is the "learn to build it yourself" door, and it is also how YOU will start becoming a builder later in this program.',
+            body: 'Our coaching arcade. Mr. Mustard is a personal AI coach who teaches anyone to build with Claude, in levels, with missions and XP (a lot like this program). Free first session, then Player at $197 or Builder at $397. This is the "learn to build it yourself" door, and it is also how YOU will start becoming a builder later in this program.',
           },
         ],
         mission: { do: 'Visit all four free demos (/voice-agents/forge, /pictures, /press, /website-audit) and run one of each on a real local business you can think of.', why: 'You will sell these every day. You should be able to run each one in your sleep before you show a stranger.' },

@@ -42,7 +42,7 @@ const SECTIONS = [
 type SectionKey = (typeof SECTIONS)[number]['key'];
 
 const PROGRAMS: { name: string; blurb: string; href: string; hq: string; tag: string }[] = [
-  { name: 'Mustard Mode', blurb: 'The flagship coaching program. Player, Builder, and the Cabinet.', href: '/mustard-mode', hq: '/mustard-mode/hq', tag: '$197 to $397' },
+  { name: 'Mustard Mode', blurb: 'The flagship coaching program. Free first session, then Player or Builder.', href: '/mustard-mode', hq: '/mustard-mode/hq', tag: '$197 to $397' },
   { name: 'Mustard Launch', blurb: 'The AI launch coach. Blueprint, Kit, and the Launch Room.', href: '/mustard-launch', hq: '/mustard-launch/hq', tag: '$197' },
   { name: 'Idea to Spec', blurb: 'Turn any idea into a spec a builder can ship, with the Spec Studio.', href: '/idea-to-spec', hq: '/idea-to-spec/hq', tag: '$497' },
   { name: 'The Terminal', blurb: 'The fullstack build program, with the Ops Center.', href: '/the-terminal', hq: '/the-terminal/hq', tag: '$497' },

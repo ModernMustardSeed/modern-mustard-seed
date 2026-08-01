@@ -29,10 +29,10 @@ export default function TermsPage() {
             </p>
             <h2>Text messaging (SMS) terms</h2>
             <p>
-              <strong>Program description.</strong> Modern Mustard Seed sends text messages to people who give us their mobile number and ask to hear from us, for example by entering it in the &ldquo;Text me back&rdquo; form on this site. Messages are one to one conversations about the voice agent, website, automation, and related services you asked about, and may include a link to the demo, audit, or proposal you requested.
+              <strong>Program description.</strong> Modern Mustard Seed sends text messages only to people who give us their mobile number directly and ask to hear from us. Messages are one to one conversations about the voice agent, website, automation, and related services you asked about, and may include a link to the demo, audit, or proposal you requested. We do not run a text marketing program and we do not collect mobile numbers for texting through this website.
             </p>
             <p>
-              <strong>How you opt in.</strong> You opt in by submitting your own mobile number through a form on modernmustardseed.com, or by giving it to us directly and asking us to text you. Consent to receive text messages is not a condition of any purchase. We do not buy, rent, or sell phone numbers, and we do not text numbers that did not ask to hear from us.
+              <strong>How you opt in.</strong> You opt in by giving us your mobile number directly, in a call, an email, or in writing, and asking us to text you. Consent to receive text messages is not a condition of any purchase. We do not buy, rent, or sell phone numbers, and we do not text numbers that did not ask to hear from us.
             </p>
             <p>
               <strong>Message frequency.</strong> Message frequency varies and depends on the conversation you are having with us. In most cases this is a handful of messages, not a recurring blast.

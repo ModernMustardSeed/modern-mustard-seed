@@ -62,7 +62,6 @@ const P = {
   spotlight: hatcheryTiers.find((t) => t.name === 'Spotlight')!,
   player: mustardLevels.find((l) => l.name === 'Player')!,
   builder: mustardLevels.find((l) => l.name === 'Builder')!,
-  cabinet: mustardLevels.find((l) => l.name === "Founders' Cabinet")!,
   storeFrom: Math.min(...products.filter((p) => !p.comingSoon).map((p) => p.priceUsd)),
   switchTop: PRICE_TIERS[0],
   switchBest: PRICE_TIERS[PRICE_TIERS.length - 1],
@@ -688,10 +687,9 @@ export default function MustardLifeComic() {
                 The first session is free. The Store carries the studio&rsquo;s production-tested playbooks and
                 courses, from {`$${P.storeFrom}`}.
               </p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <PriceTag name={P.player.name} price={`$${P.player.priceUsd}`} />
                 <PriceTag name={P.builder.name} price={`$${P.builder.priceUsd}`} delay={80} />
-                <PriceTag name={P.cabinet.name} price={`$${P.cabinet.priceUsd}/mo`} delay={160} />
               </div>
               <div className="mlc-pop flex flex-wrap gap-3" style={{ transitionDelay: '260ms' }}>
                 <Cta href="/mustard-mode">Free First Session</Cta>

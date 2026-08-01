@@ -83,7 +83,6 @@ export default function Footer() {
         { label: 'Blog', href: '/blog' },
         { label: 'About', href: '/about' },
         { label: 'Contact', href: '/contact' },
-        { label: 'The Text Line', href: '/sms' },
         { label: 'Privacy', href: '/privacy' },
         { label: 'Terms', href: '/terms' },
       ],

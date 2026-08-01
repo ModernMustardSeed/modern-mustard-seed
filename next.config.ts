@@ -36,6 +36,10 @@ const config: NextConfig = {
       // (notably ?ref=CODE, which pays the partner) passes through untouched.
       { source: '/sidekick', destination: '/voice-agents/forge', permanent: true },
       { source: '/sidekick/:path*', destination: '/voice-agents/forge/:path*', permanent: true },
+      // The Text Line (/sms) was retired 2026-08-01 (Sarah: we do not offer
+      // texting anywhere). The URL is indexed and was filed with carriers, so
+      // it redirects to the contact page instead of 404ing.
+      { source: '/sms', destination: '/contact', permanent: true },
     ];
   },
 };

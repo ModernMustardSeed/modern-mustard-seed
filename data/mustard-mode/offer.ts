@@ -93,24 +93,10 @@ export const mustardLevels: MustardLevel[] = [
     cta: 'Start as Builder',
     featured: true,
   },
-  {
-    level: 3,
-    slug: 'mustard-mode-cabinet',
-    name: "Founders' Cabinet",
-    chip: '[ LEVEL 03 ]',
-    priceUsd: 97,
-    cadence: 'monthly',
-    stripePriceEnv: 'STRIPE_PRICE_MUSTARD_CABINET',
-    mode: 'subscription',
-    pitch: 'The inner circle. Build alongside Sarah, monthly, with everything included.',
-    includes: [
-      'Everything in Player and Builder, included while active',
-      'Monthly live build-along with Sarah',
-      'Every future drop and track, day one',
-      'Priority coach lane',
-    ],
-    cta: 'Join the Cabinet',
-  },
+  // The Founders' Cabinet ($97/mo subscription, level 3) was retired 2026-08-01
+  // (Sarah: no founders pricing talk). The backend still honors the
+  // `mustard-mode-cabinet` entitlement slug so anyone who already subscribed
+  // keeps access and can still cancel, but it is no longer sold anywhere.
 ];
 
 export const mustardFaq: { q: string; a: string }[] = [
