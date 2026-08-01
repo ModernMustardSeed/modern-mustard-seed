@@ -166,7 +166,10 @@ export async function buildCallerWav({ turnFiles, leadSilenceMs = 30_000, gapMs 
  * that half the conversation was missing.
  */
 export async function audibleFraction(file) {
-  const total = await probeDurationSec(file);
+  // ONE decode pass gives both numbers, and it has to be a decode: MediaRecorder
+  // writes webm as a live stream with no duration in the header, so ffprobe
+  // reports N/A and probeDurationSec throws on exactly the file this guard
+  // exists to check. ffmpeg's progress line is the honest length.
   const log = await new Promise((resolve, reject) => {
     const p = spawn('ffmpeg', ['-i', file, '-af', 'silencedetect=n=-45dB:d=1', '-f', 'null', '-'], { windowsHide: true });
     let s = '';
@@ -174,6 +177,9 @@ export async function audibleFraction(file) {
     p.on('error', reject);
     p.on('close', () => resolve(s));
   });
+  const stamps = [...log.matchAll(/time=(\d+):(\d+):([\d.]+)/g)];
+  const last = stamps.at(-1);
+  const total = last ? Number(last[1]) * 3600 + Number(last[2]) * 60 + Number(last[3]) : 0;
   const silent = [...log.matchAll(/silence_duration:\s*([\d.]+)/g)].reduce((n, m) => n + Number(m[1]), 0);
   return total > 0 ? Math.max(0, Math.min(1, (total - silent) / total)) : 0;
 }
