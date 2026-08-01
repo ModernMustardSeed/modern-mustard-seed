@@ -134,9 +134,11 @@ function talkingWebsiteJsonLd() {
         },
       },
       faqJsonLd(FAQ),
+      // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS. Passing
+      // a full URL here doubles the origin in the emitted JSON-LD.
       breadcrumbJsonLd([
-        { name: 'Modern Mustard Seed', url: SITE.url },
-        { name: 'The Talking Website', url: `${SITE.url}/talking-website` },
+        { name: 'Modern Mustard Seed', url: '' },
+        { name: 'The Talking Website', url: '/talking-website' },
       ]),
     ],
   };
