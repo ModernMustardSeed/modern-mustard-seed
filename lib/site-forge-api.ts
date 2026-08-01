@@ -5,7 +5,7 @@
  * (scripts/demo-site-worker.mjs): flat subscription, filesystem, Playwright.
  * That worker only runs when her workstation is on. With ads pointed at /demos,
  * a lead who signs up at 2am would otherwise sit in `queued` forever while their
- * page promises them a site in twenty minutes.
+ * page promises them a finished suite within the hour.
  *
  * This module is the fallback: the same design law (lib/site-directive.mjs),
  * executed against the metered API, from a serverless cron. It costs real money

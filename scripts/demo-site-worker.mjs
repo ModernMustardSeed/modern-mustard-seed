@@ -74,6 +74,11 @@ const MAX_RUNTIME_MS = Number(process.env.DEMO_SITE_MAX_MS || 90 * 60 * 1000);
 // timeout means a job that is still legitimately building gets reclaimed and
 // handed to a second worker, and two workers race to write the same row.
 const STALE_MS = Number(process.env.DEMO_SITE_STALE_MS || 100 * 60 * 1000);
+// The walkthrough film runs inline after a fresh build (see cutSuiteFilm). It
+// is normally 3-6 minutes: narration, a real ~30s call, then the encode. The
+// ceiling exists so a wedged browser or a locked fal wallet cannot hold the
+// whole forge queue hostage; blowing it fails the film, never the build.
+const SUITE_FILM_MAX_MS = Number(process.env.SUITE_FILM_MAX_MS || 14 * 60 * 1000);
 const WORKER = os.hostname();
 const SITE_URL = 'https://modernmustardseed.com';
 
@@ -622,9 +627,56 @@ async function storeFinished(job, html) {
   });
   log(isEdit(job) ? 'EDITED' : 'READY', job.id, siteUrl, `(${Math.round(html.length / 1024)}KB)`);
 
-  // Fresh demo banked = the whole suite exists. Tell the site so it can email
-  // the lead the package (route holds every guard + Sarah's kill switch).
-  if (!isEdit(job)) await notifySuiteReady(job);
+  // Fresh demo banked = the whole suite exists. Cut their walkthrough film
+  // FIRST (it is the last thing made and the first thing they watch), then
+  // tell the site it may announce the package.
+  if (!isEdit(job)) {
+    await cutSuiteFilm(job);
+    await notifySuiteReady(job);
+  }
+}
+
+/**
+ * THE WALKTHROUGH FILM, the final step of the forge.
+ *
+ * Sarah 2026-08-01: the video at the top of a suite has to be a fresh
+ * recording of THAT lead's site, agent and command center. It had been serving
+ * one house film (shot on the Wills Electric build) to everybody.
+ *
+ * Serial on purpose. The film is minutes against a build that is tens of
+ * minutes, and running it inline keeps ONE definition of "this suite is
+ * finished" instead of a second queue to keep alive at 2am. A failure here is
+ * loud on the row (suite_film_status='failed') and simply holds the
+ * announcement: suite-ready refuses to send without a ready film, so the worst
+ * case is a suite that waits for a human, never one that goes out half-made.
+ */
+async function cutSuiteFilm(job) {
+  if (!job.lead_id) return;
+  const script = path.join(process.cwd(), 'scripts', 'suite-film', 'build.mjs');
+  if (!existsSync(script)) return log('suite film: script missing, skipped');
+
+  await supabase.from('outbound_leads').update({ suite_film_status: 'queued' }).eq('id', job.lead_id);
+  log('suite film: rolling for', job.business_name);
+
+  const ok = await new Promise((resolve) => {
+    const child = spawn(process.execPath, [script, '--lead', job.lead_id], {
+      cwd: process.cwd(),
+      env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    const timer = setTimeout(() => {
+      log('suite film: over time, killing');
+      try { killTree(child); } catch { /* already gone */ }
+      resolve(false);
+    }, SUITE_FILM_MAX_MS);
+    const relay = (buf) => String(buf).split(/\r?\n/).filter(Boolean).forEach((l) => log('  film|', l.slice(0, 200)));
+    child.stdout.on('data', relay);
+    child.stderr.on('data', relay);
+    child.on('error', (e) => { clearTimeout(timer); log('suite film: could not start:', e?.message); resolve(false); });
+    child.on('close', (code) => { clearTimeout(timer); resolve(code === 0); });
+  });
+
+  log(ok ? 'suite film: cut' : 'suite film: FAILED (the suite will wait for a human, not go out without it)');
 }
 
 /**

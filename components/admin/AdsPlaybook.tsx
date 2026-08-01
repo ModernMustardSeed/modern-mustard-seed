@@ -160,17 +160,17 @@ const SK_LANDING = 'https://modernmustardseed.com/voice-agents/forge?utm_source=
 
 const SK_COPY_A = `Right now, someone is calling your business. Nobody's answering.
 
-So we built the Voice Agent Forge. Tell Mr. Mustard about your business (what you do, what you charge, what customers ask) and sixty seconds later your own voice agent graduates and talks to you. Live. In your browser. He can even call your cell.
+So we built the Voice Agent Forge. Tell Mr. Mustard about your business (what you do, what you charge, what customers ask) and your own voice agent graduates and talks to you. Live. In your browser. He can even call your cell.
 
 The demo is free, no card. If you love him, he's answering your real phone 24/7 this week: hard-capped minutes, month to month, never a surprise bill.`;
 
 const SK_COPY_B = `The average small business misses 4 in 10 calls. Every missed call dials your competitor next.
 
-Your Voice Agent answers every one: books appointments, takes clean messages, flags emergencies to your cell, and sends you a summary of every call. Trained on YOUR business in sixty seconds, live on your real line within a week.
+Your Voice Agent answers every one: books appointments, takes clean messages, flags emergencies to your cell, and sends you a summary of every call. Trained on YOUR business, live on your real line within a week.
 
 Hear yours before you pay a cent. The forge is free and it is honestly just fun.`;
 
-const SK_HEADLINE = 'Hear YOUR voice agent in 60 seconds.';
+const SK_HEADLINE = 'Hear YOUR voice agent answer live.';
 const SK_DESCRIPTION = 'Free demo. He talks. You decide. From Modern Mustard Seed.';
 
 const SK_CUTS = [
@@ -194,9 +194,9 @@ const SK_CHECKLIST = [
 // ============ Campaigns six-eight: Pictures, Press, GEO (image creative) ============
 
 const PX_LANDING = 'https://modernmustardseed.com/pictures?utm_source=meta&utm_medium=paid&utm_campaign=pictures';
-const PX_COPY_A = `Most small businesses have never seen their story through a director's eyes.\n\nTake the free Screen Test: tell Mr. Mustard what you do and what you are proud of, and sixty seconds later you have a director's treatment for YOUR commercial: the logline, six shots, three taglines. Keep it either way.\n\nLove it? The finished cinematic spot is $197 and lands in about two days.`;
+const PX_COPY_A = `Most small businesses have never seen their story through a director's eyes.\n\nTake the free Screen Test: tell Mr. Mustard what you do and what you are proud of, and you get back a director's treatment for YOUR commercial: the logline, six shots, three taglines. Keep it either way.\n\nLove it? The finished cinematic spot is $197 and lands in about two days.`;
 const PX_COPY_B = `A commercial used to cost $5,000 and a film crew.\n\nOurs start with a free Screen Test (your storyboard, directed on the spot) and finish at $197: three cuts, captions, score, full rights, delivered in about two business days. The same pipeline that makes our own spots.`;
-const PX_HEADLINE = 'Your commercial, storyboarded free in 60 seconds.';
+const PX_HEADLINE = 'Your commercial, storyboarded free.';
 const PX_DESCRIPTION = 'The free Screen Test at MUSTARD PICTURES.';
 const PX_IMAGES = [
   { file: '/ads/pictures-45.png', label: '4:5 — Feed', note: 'The workhorse feed placement.' },
@@ -348,7 +348,7 @@ Modern Mustard Seed builds voice agents for restaurants that answer every call, 
 
 You run the kitchen. It runs the phone. Buonissimo.
 
-Hear a live demo in 60 seconds.`;
+Hear a live demo now.`;
 
 const RS_HEADLINE = 'You cook. He books. In any language.';
 const RS_DESCRIPTION = 'voice agents for restaurants. Answer every call, book every table.';
@@ -1901,7 +1901,7 @@ export default function AdsPlaybook() {
               The front door of the demo machine. Mr. and Mrs. Mustard, in black tie, unveil three exhibits in an
               exquisite private gallery: your website, your voice agent, and your command center. The pitch is
               the funnel&rsquo;s actual promise, we build all three for you first, real and working and free, and you
-              only pay to make them real. Sixty seconds on /demos forges the whole suite. One traffic cell at
+              only pay to make them real. One short form on /demos forges the whole suite. One traffic cell at
               $15/day, judged on cost per forged demo. Runs on Meta and, via the 16:9 cut, on Google / YouTube.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">

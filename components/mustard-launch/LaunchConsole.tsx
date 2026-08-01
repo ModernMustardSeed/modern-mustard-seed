@@ -139,7 +139,7 @@ export default function LaunchConsole() {
           <div className="grid lg:grid-cols-[1.5fr_1fr] gap-6 pt-6">
             {/* left: headline + form */}
             <div>
-              <p className="font-mono text-[11px] tracking-[0.16em] text-[#F5B700] uppercase">Free · no card · 60 seconds</p>
+              <p className="font-mono text-[11px] tracking-[0.16em] text-[#F5B700] uppercase">Free · no card · no meeting</p>
               <h2 className="font-display font-extrabold leading-[0.9] text-4xl sm:text-5xl lg:text-6xl mt-2">
                 Your launch,
                 <br />

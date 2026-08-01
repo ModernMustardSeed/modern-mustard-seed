@@ -54,7 +54,7 @@ const FAQ = [
   },
   {
     q: 'How fast does it go live?',
-    a: 'About a week from kickoff for the productized site. You can tour a free demo version built for your business in about twenty seconds before you decide anything. Bigger custom builds take two to four weeks depending on scope, and you see the exact timeline in your quote before any work begins.',
+    a: 'About a week from kickoff for the productized site. You can tour a free demo version built for your business, in your hands within the hour, before you decide anything. Bigger custom builds take two to four weeks depending on scope, and you see the exact timeline in your quote before any work begins.',
   },
   {
     q: 'How is this different from Wix, Squarespace, or an agency?',
@@ -66,7 +66,7 @@ const FAQ = [
   },
   {
     q: 'Can I see it before I pay?',
-    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in about twenty seconds, plus a voice agent and a command center so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
+    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in your hands within the hour, plus a voice agent and a command center so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
   },
   {
     q: 'What if I already have a website?',
@@ -158,7 +158,7 @@ export default function WebsitesPage() {
                 </Link>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-4">
-                A real working demo, designed for your business, in about twenty seconds. No card.
+                A real working demo, designed for your business, in your hands within the hour. No card.
               </p>
             </div>
 
@@ -444,7 +444,7 @@ export default function WebsitesPage() {
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
-              ['1', 'Forge it free', 'Tell us your business and we design a real working demo site for you in about twenty seconds. Tour it, poke around, no card.'],
+              ['1', 'Forge it free', 'Tell us your business and we design a real working demo site for you, in your hands within the hour. Tour it, poke around, no card.'],
               ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the funnels and the command center, and put it on your domain by hand.'],
               ['3', 'Own it, and grow', 'Live in about a week. You get the repo, the domain, and every account. Add the voice agent whenever you want it answering the phone.'],
             ].map(([n, t, d]) => (

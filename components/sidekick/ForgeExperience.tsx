@@ -354,7 +354,7 @@ export default function ForgeExperience() {
             disabled={submitting || !forgeEnabled}
             className="mt-6 w-full rounded-full bg-[#F5B700] border-2 border-[#161616] px-8 py-4 font-sans font-extrabold text-[#161616] text-sm uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#161616] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {forgeEnabled ? 'Forge my Voice Agent (free, 60 seconds)' : 'The forge is warming up. Check back shortly.'}
+            {forgeEnabled ? 'Forge my Voice Agent (free)' : 'The forge is warming up. Check back shortly.'}
           </button>
           <p className="mt-3 text-center text-[11px] font-mono text-[#161616]/70">
             One free forge per business. No card. He talks to you live when he graduates.
@@ -445,7 +445,7 @@ export default function ForgeExperience() {
                   {isLive
                     ? 'Pretend you are a customer. Ask about prices, book something, throw him a curveball. He can also book 15 minutes with Sarah without hanging up.'
                     : callState === 'ended'
-                      ? 'That was a demo trained in sixty seconds. Imagine him after Sarah hand-tunes him on your real call flows.'
+                      ? 'That was a demo trained off one short form. Imagine him after Sarah hand-tunes him on your real call flows.'
                       : 'Tap the mic. He answers as YOUR business, knows what you taught him, and takes the rest like a pro.'}
                 </p>
                 {callError && <p className="text-[#FF8550] text-xs font-mono mt-2">{callError}</p>}

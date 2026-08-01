@@ -5,7 +5,7 @@ import { join } from 'node:path';
 // The Voice Agent Forge share card: the nameplate badge with the trainer.
 export const runtime = 'nodejs';
 
-export const alt = 'The Voice Agent Forge. Hear your own voice agent in 60 seconds. Free, from Modern Mustard Seed.';
+export const alt = 'The Voice Agent Forge. Hear your own voice agent answer live. Free, from Modern Mustard Seed.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -66,10 +66,10 @@ export default async function OpengraphImage() {
               Hear YOUR AI
             </span>
             <span style={{ fontSize: 76, fontWeight: 800, fontStyle: 'italic', color: INK, lineHeight: 1.12 }}>
-              voice agent in
+              voice agent
             </span>
             <span style={{ display: 'flex', alignItems: 'baseline', fontSize: 76, fontWeight: 800, lineHeight: 1.15 }}>
-              <span style={{ color: INK, background: MUSTARD, padding: '0 16px', border: `4px solid ${INK}` }}>60 seconds.</span>
+              <span style={{ color: INK, background: MUSTARD, padding: '0 16px', border: `4px solid ${INK}` }}>answer live.</span>
             </span>
           </div>
           <span style={{ fontSize: 27, color: '#4a4a4a', marginTop: 30, lineHeight: 1.4 }}>

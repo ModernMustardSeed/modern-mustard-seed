@@ -69,6 +69,9 @@ export default function DemoHub({
   trade,
   film = 'demo-welcome',
   personalVideoUrl,
+  suiteFilmUrl,
+  suiteFilmPoster,
+  suiteFilmPending,
   voiceUrl,
   siteUrl,
   sitePending,
@@ -87,6 +90,14 @@ export default function DemoHub({
   /** A face-to-camera video Sarah recorded for THIS lead. When present it
    *  replaces the generic welcome film (signed booth URL, .webm). */
   personalVideoUrl?: string | null;
+  /** THEIR film: a fresh recording of this lead's own website, a live call with
+   *  their own voice agent, and their own command center. Outranks every other
+   *  video here, because a tour of somebody else's business is what it replaced. */
+  suiteFilmUrl?: string | null;
+  suiteFilmPoster?: string | null;
+  /** The cut is still being made. We say so plainly instead of filling the slot
+   *  with a house film about a different company. */
+  suiteFilmPending?: boolean;
   voiceUrl: string | null;
   siteUrl: string | null;
   sitePending: string | null;
@@ -214,21 +225,52 @@ export default function DemoHub({
       </header>
 
       <main className="max-w-3xl mx-auto px-6 py-10 space-y-10">
-        {/* Welcome video: Sarah's personal one for this lead if she recorded it,
-            otherwise the matched Mr. Mustard film. */}
+        {/* The video, in order of who it is actually about: THEIR suite film
+            first, then Sarah's personal hello if she recorded one, then the
+            house film. The suite film is a real recording of this business's
+            own site, agent and command center, so nothing generic should ever
+            outrank it. While it is still being cut we say so, rather than
+            playing a tour of a different company (the bug this replaced). */}
         <section className="animate-[hubIn_.5s_ease-out_both]">
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] overflow-hidden">
-            <video
-              controls
-              preload="metadata"
-              poster={personalVideoUrl ? undefined : `/video/${film}-poster.jpg`}
-              className="w-full aspect-video bg-[#161616]"
-              src={personalVideoUrl ?? `/video/${film}.mp4`}
-            />
+            {suiteFilmUrl ? (
+              <video
+                controls
+                preload="metadata"
+                poster={suiteFilmPoster ?? undefined}
+                className="w-full aspect-video bg-[#161616]"
+                src={suiteFilmUrl}
+              />
+            ) : suiteFilmPending ? (
+              <div className="w-full aspect-video bg-[#161616] flex items-center justify-center px-6 text-center">
+                <div>
+                  <div className="w-12 h-12 mx-auto rounded-full border-4 border-[#F5B700] border-t-transparent animate-spin" />
+                  <p className="font-display text-2xl font-bold text-[#FBF6EA] mt-5">
+                    We are recording your walkthrough
+                  </p>
+                  <p className="font-body text-[14px] text-[#FBF6EA]/65 mt-2 max-w-sm mx-auto">
+                    A short film of your own site, a real call with your own agent, and your command center.
+                    We are working on it and will have it to you within the hour. Everything below is open now.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <video
+                controls
+                preload="metadata"
+                poster={personalVideoUrl ? undefined : `/video/${film}-poster.jpg`}
+                className="w-full aspect-video bg-[#161616]"
+                src={personalVideoUrl ?? `/video/${film}.mp4`}
+              />
+            )}
             <p className="font-body text-[13px] text-[#161616]/60 px-4 py-3">
-              {personalVideoUrl
-                ? `A personal hello from Sarah, recorded just for ${business}.`
-                : 'Thirty seconds from Mr. Mustard on what is in the box.'}
+              {suiteFilmUrl
+                ? `A walkthrough of what we built for ${business}, including a real call with your own agent.`
+                : suiteFilmPending
+                  ? `Being cut for ${business} right now.`
+                  : personalVideoUrl
+                    ? `A personal hello from Sarah, recorded just for ${business}.`
+                    : 'Thirty seconds from Mr. Mustard on what is in the box.'}
             </p>
           </div>
         </section>

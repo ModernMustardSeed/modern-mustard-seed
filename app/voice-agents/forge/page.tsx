@@ -38,9 +38,9 @@ export default function SidekickPage() {
       },
       {
         '@type': 'HowTo',
-        name: 'Hear your own voice agent in 60 seconds',
+        name: 'Hear your own voice agent, free',
         step: [
-          { '@type': 'HowToStep', name: 'Tell Mr. Mustard about your business', text: 'Business name, what you do, what customers ask. Sixty seconds of intake.' },
+          { '@type': 'HowToStep', name: 'Tell Mr. Mustard about your business', text: 'Business name, what you do, what customers ask. One short form.' },
           { '@type': 'HowToStep', name: 'Watch the forge train your Voice Agent', text: 'Greeting drills, booking reps, composure tests, personalized to your business.' },
           { '@type': 'HowToStep', name: 'Talk to him live', text: 'He answers in your browser as your front desk, or calls your cell. Keep him and he answers your real phone 24/7 within a week.' },
         ],
@@ -72,7 +72,7 @@ export default function SidekickPage() {
               {SIDEKICK.promise}
             </p>
             <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#161616]/70 mt-5">
-              Free · No card · He talks to you live in about 60 seconds
+              Free · No card · He talks to you live
             </p>
           </div>
           <div className="max-w-2xl mx-auto">

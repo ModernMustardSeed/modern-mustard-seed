@@ -1,23 +1,35 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sendViaResend } from '@/lib/send-email';
+import { sendSms, smsSendable, normalizePhone, isOptedOut, withinQuietHours } from '@/lib/sms';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
 
 /**
- * THE SUITE-READY EMAIL (Sarah, 2026-07-30: "as soon as the website is also
- * done... it emails them with the total package and the video about their
- * stuff"). The local forge worker calls this the moment a fresh lead demo
- * website banks; if the lead has an email, they get ONE note presenting the
- * whole suite (the hub link, with the Mr. Mustard tour film at its top).
+ * THE SUITE-READY ANNOUNCEMENT (Sarah, 2026-07-30: "as soon as the website is
+ * also done... it emails them with the total package and the video about their
+ * stuff", refined 2026-08-01: the video must be a real recording of THEIR site
+ * and agent and command center, and cutting it is the FINAL STEP before the
+ * suite is published and shown to the client).
+ *
+ * So this fires last, not first. The forge worker knocks after the film has
+ * been cut and uploaded; if the film is not ready the announcement is held,
+ * and the worker knocks again on the next attempt. Nobody is ever pointed at a
+ * suite whose walkthrough is still being made.
  *
  * Guards, in order:
  *  - Bearer FORGE_NOTIFY_SECRET (its own secret; not CRON_SECRET, not a session).
  *  - Runtime kill switch in app_state ('suite_ready_emails' {enabled:true}) so
- *    Sarah can arm or stop sends WITHOUT a deploy. Ships DISABLED.
+ *    Sarah can arm or stop sends WITHOUT a deploy.
  *  - Fresh demo builds only (no edits, no rebuilds, no paid projects).
- *  - One email per lead ever: the messages note is the dedupe record.
+ *  - THE FILM MUST EXIST. This is the publish gate.
+ *  - One announcement per lead ever: the messages note is the dedupe record.
+ *
+ * The text message is deliberately narrower than the email: it only goes to
+ * SELF-SERVE leads, who typed their own number into the demo station asking us
+ * to build this. Texting an outbound-sourced lead would be cold SMS, which our
+ * A2P registration does not cover (memory: mms-a2p-blocks-cold-texting).
  */
 export async function POST(req: Request) {
   const secret = process.env.FORGE_NOTIFY_SECRET;
@@ -50,12 +62,18 @@ export async function POST(req: Request) {
 
   const { data: lead } = await supabase
     .from('outbound_leads')
-    .select('id,business_name,contact_name,email,hub_demo_url,site_demo_url')
+    .select('id,business_name,contact_name,email,phone,source,hub_demo_url,site_demo_url,suite_film_status')
     .eq('id', site.lead_id)
     .maybeSingle();
   if (!lead?.email) return NextResponse.json({ ok: false, skipped: 'lead has no email' });
   const hubUrl = lead.hub_demo_url || lead.site_demo_url;
   if (!hubUrl) return NextResponse.json({ ok: false, skipped: 'no hub url' });
+
+  // THE PUBLISH GATE. The walkthrough is the last thing made and the first
+  // thing they will watch, so the suite is not announced without it.
+  if (lead.suite_film_status !== 'ready') {
+    return NextResponse.json({ ok: false, skipped: 'suite film not cut yet', filmStatus: lead.suite_film_status ?? null });
+  }
 
   const { data: prior } = await supabase
     .from('messages')
@@ -73,7 +91,7 @@ export async function POST(req: Request) {
     '',
     `We went ahead and built ${biz} a working demo: a brand-new website that answers its own phone, plus a command center that shows every call and booking in one place.`,
     '',
-    `It is all here, with a short video at the top: ${hubUrl}`,
+    `It is all here, and the short video at the top is a walkthrough of your own: your site, a real call with your own agent, and your command center: ${hubUrl}`,
     '',
     `Nothing to set up and nothing owed. Look around, tap the gold button, and talk to the website. If you want it live, or want anything changed, just reply. And if this is not for you, reply "no thanks" and that is the end of it.`,
     '',
@@ -103,5 +121,31 @@ export async function POST(req: Request) {
     occurred_at: new Date().toISOString(),
   });
 
-  return NextResponse.json({ ok: true, id: sent.id });
+  // The text, for people who asked us for this themselves. Everything about it
+  // fails quiet: a suppressed number, a quiet hour, or an unarmed A2P campaign
+  // must never turn a delivered suite into a 500.
+  let texted: string | null = null;
+  const phone = normalizePhone(lead.phone);
+  if (phone && lead.source === 'demo-station' && smsSendable() && !withinQuietHours(phone) && !(await isOptedOut(phone))) {
+    const smsBody =
+      `Hi ${first}, Sarah at Modern Mustard Seed. ${biz}'s demo suite is finished, ` +
+      `including a short walkthrough of your own site and a real call with your agent: ${hubUrl} ` +
+      `Nothing owed. Reply STOP to opt out.`;
+    const res = await sendSms(phone, smsBody).catch(() => ({ ok: false }) as { ok: boolean });
+    if (res.ok) {
+      texted = phone;
+      await supabase.from('messages').insert({
+        outbound_lead_id: lead.id,
+        direction: 'outbound',
+        channel: 'sms',
+        to_addr: phone,
+        subject: 'Demo suite texted',
+        snippet: `Suite-ready text sent with ${hubUrl}`,
+        read: true,
+        occurred_at: new Date().toISOString(),
+      });
+    }
+  }
+
+  return NextResponse.json({ ok: true, id: sent.id, texted });
 }

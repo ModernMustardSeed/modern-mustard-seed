@@ -720,6 +720,10 @@ export default function OsDemoApp({
                 return (
                   <button
                     key={t.id}
+                    // The suite-film recorder drives this tour by tab id
+                    // (scripts/suite-film/record.mjs). Label text is copy and
+                    // moves; this hook must not.
+                    data-os-tab={t.id}
                     onClick={() => setTab(t.id)}
                     className="relative w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] font-semibold transition-colors"
                     style={on ? { background: PANEL_SOFT, color: TEXT } : { color: DIM }}

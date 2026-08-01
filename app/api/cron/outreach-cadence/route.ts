@@ -26,7 +26,7 @@ export const maxDuration = 60;
  *     entry 4 moved Player/Builder OFF the promoted ladder and entry 5 killed the
  *     playbook SKU. Turning this on would cold-email strangers about products the
  *     business has deliberately stopped selling. Rewrite the touches forge-forward
- *     (lead with "hear your own phone answered in 60 seconds") BEFORE enabling.
+ *     (lead with "hear your own phone answered, free") BEFORE enabling.
  *  2. DELIVERABILITY. This is cold mail to people with no prior relationship. The
  *     separate-domain design above is correct and must be honored; sending it from
  *     modernmustardseed.com would put buyer, client, and invoice mail behind the

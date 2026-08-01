@@ -69,8 +69,9 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
             {site.business_name}&apos;s new website is on the drafting table
           </h1>
           <p className="font-body text-[#FBF6EA]/60 mt-3">
-            A designer is building a real, working draft from scratch, custom to the business. It usually takes about
-            twenty minutes. This page refreshes itself, so keep it open, or close it and come back to this same link.
+            A designer is building a real, working draft from scratch, custom to the business, and then we record a
+            walkthrough of the finished suite. We are working on it and will have it to you within the hour. This page
+            refreshes itself, so keep it open, or close it and come back to this same link.
           </p>
           {waitingLead?.demo_url && (
             <a
@@ -90,7 +91,7 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
   // No html at all (first build failed): the snag card. If an OLD site exists,
   // serve it no matter what state a newer build is in.
   if (!site.html) {
-    return <Card title="This demo needs a re-forge" body="The build hit a snag. Ask us to forge it again and it will be here in about twenty minutes." cta />;
+    return <Card title="This demo needs a re-forge" body="The build hit a snag. Ask us to forge it again and we will have it back to you within the hour." cta />;
   }
 
   // Resurrect the lead's voice demo for the overlay widget.

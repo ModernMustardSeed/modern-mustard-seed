@@ -41,7 +41,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
 
   const { data: lead } = await sb
     .from('outbound_leads')
-    .select('id, business_name, contact_name, niche, notes, website, city, state, demo_url, site_demo_url, site_demo_status, os_demo_url, os_demo_status, affiliate_id, origin, last_seen_at')
+    .select('id, business_name, contact_name, niche, notes, website, city, state, demo_url, site_demo_url, site_demo_status, os_demo_url, os_demo_status, suite_film_status, suite_film_path, affiliate_id, origin, last_seen_at')
     .eq('hub_demo_id', hubId)
     .maybeSingle();
   if (!lead) return fallback;
@@ -86,6 +86,22 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
     personalVideoUrl = pv?.signedUrl ?? null;
   }
 
+  // THEIR OWN suite film: a fresh recording of this lead's website, a live call
+  // with this lead's voice agent, and this lead's command center, cut by
+  // scripts/suite-film/build.mjs as the last step of the forge. It outranks
+  // everything else, because a house film about somebody else's business is
+  // exactly what this replaced (Sarah, 2026-08-01).
+  let suiteFilmUrl: string | null = null;
+  let suiteFilmPoster: string | null = null;
+  if (lead.suite_film_status === 'ready' && lead.suite_film_path) {
+    const [film, poster] = await Promise.all([
+      sb.storage.from('booth').createSignedUrl(lead.suite_film_path, 60 * 60 * 3),
+      sb.storage.from('booth').createSignedUrl(lead.suite_film_path.replace(/\.mp4$/, '.jpg'), 60 * 60 * 3),
+    ]);
+    suiteFilmUrl = film.data?.signedUrl ?? null;
+    suiteFilmPoster = poster.data?.signedUrl ?? null;
+  }
+
   const niche = (lead.niche ?? 'other') as Niche;
   const trade = detectTrade([lead.business_name, lead.notes ?? '', lead.website ?? ''].join(' '), niche);
 
@@ -113,6 +129,9 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       trade={trade}
       film={film}
       personalVideoUrl={personalVideoUrl}
+      suiteFilmUrl={suiteFilmUrl}
+      suiteFilmPoster={suiteFilmPoster}
+      suiteFilmPending={suiteFilmUrl ? false : lead.suite_film_status !== 'ready'}
       voiceUrl={lead.demo_url}
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}

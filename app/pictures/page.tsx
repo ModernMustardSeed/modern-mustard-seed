@@ -86,7 +86,7 @@ export default function PicturesPage() {
             The big brands have commercials.<br className="hidden md:block" /> Now so do you.
           </h2>
           <p className="font-body text-[#161616]/75 mt-4 max-w-xl mx-auto">
-            Sixty seconds of your time gets you a director&apos;s treatment worth keeping. Filming it costs less than one slow Friday.
+            One short form gets you a director&apos;s treatment worth keeping. Filming it costs less than one slow Friday.
           </p>
           <a
             href="#top"

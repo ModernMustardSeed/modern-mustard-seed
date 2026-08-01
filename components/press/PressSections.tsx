@@ -120,7 +120,7 @@ export function PressCrossSell() {
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">And the phones?</p>
           <h3 className="font-display text-xl font-black text-[#161616] mt-1.5">The prices are handled. The calls can be too.</h3>
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
-            The Voice Agent Forge trains a voice agent on your business in 60 seconds, free, then answers your real line 24/7.
+            The Voice Agent Forge trains a voice agent on your business, free, then answers your real line 24/7.
           </p>
           <Link href="/voice-agents/forge" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
             Forge yours, free →

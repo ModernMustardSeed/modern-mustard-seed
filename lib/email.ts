@@ -788,6 +788,32 @@ export function personalVideoCard({ href, business }: { href: string; business: 
   </td></tr></table>`;
 }
 
+/**
+ * THEIR OWN walkthrough film, as an email-safe card.
+ *
+ * The suite film is a real recording of this lead's site, a live call with
+ * their own voice agent, and their own command center (scripts/suite-film).
+ * It lives in a private bucket behind a short-lived signed URL, so the email
+ * cannot embed its poster the way the house film card does: a signed image URL
+ * would 404 in the inbox a few hours later, which looks worse than no image.
+ * So this card says exactly what is waiting and sends them to the hub, where
+ * the film is signed fresh on every render.
+ */
+export function suiteFilmCard({ href, business }: { href: string; business: string }): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0"><tr><td align="center">
+    <a href="${escape(href)}" style="text-decoration:none;color:${C.ink}">
+      <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border:2px solid ${C.ink};border-radius:14px;overflow:hidden;background:${C.ink}">
+        <tr><td align="center" style="padding:26px 20px">
+          <div style="font-family:${SANS};font-size:12px;font-weight:bold;letter-spacing:.14em;text-transform:uppercase;color:${C.goldBrand}">We recorded this for you</div>
+          <div style="font-family:${SERIF};font-size:23px;font-style:italic;color:${C.page};margin-top:10px;line-height:1.35">&#9654;&nbsp; A walkthrough of ${escape(business)}&rsquo;s new website, agent and command center</div>
+          <div style="font-family:${SANS};font-size:13px;color:${C.page};opacity:.72;margin-top:10px">Including a real call where the website answers its own phone.</div>
+          <div style="font-family:${SANS};font-size:13px;font-weight:bold;color:${C.goldBrand};margin-top:14px">Watch it on your suite &rarr;</div>
+        </td></tr>
+      </table>
+    </a>
+  </td></tr></table>`;
+}
+
 /* ────────────────────────── CLIENT EMAIL (general) ────────────────────────── */
 
 type ClientEmailArgs = {

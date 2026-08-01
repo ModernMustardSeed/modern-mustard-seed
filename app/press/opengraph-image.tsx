@@ -5,7 +5,7 @@ import { join } from 'node:path';
 // The MUSTARD PRESS share card: the pressman's counter.
 export const runtime = 'nodejs';
 
-export const alt = 'MUSTARD PRESS. Your menu or price list, beautifully typeset in 60 seconds. Free proof.';
+export const alt = 'MUSTARD PRESS. Your menu or price list, beautifully typeset. Free proof.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -71,7 +71,7 @@ export default async function OpengraphImage() {
             </div>
           </div>
           <span style={{ fontSize: 26, color: '#4a4a4a', marginTop: 28 }}>
-            Paste your list. Free typeset proof in 60 seconds. Print-ready file, $97.
+            Paste your list. Free typeset proof. Print-ready file, $97.
           </span>
           <span style={{ fontSize: 22, color: INK, fontWeight: 700, marginTop: 18, letterSpacing: 1 }}>
             modernmustardseed.com/press

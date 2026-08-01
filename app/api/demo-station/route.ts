@@ -260,15 +260,15 @@ export async function POST(req: Request) {
         replyTo: 'sarah@modernmustardseed.com',
         subject: `${first}, ${business}'s demos are being forged right now`,
         html: clientEmail({
-          preheader: 'Your voice agent and command center are ready now; your website lands in about twenty minutes.',
+          preheader: 'Your voice agent and command center are ready now; the rest is with you within the hour.',
           eyebrow: 'YOUR DEMO SUITE',
           greeting: `${first}, it is happening.`,
           body:
-            `<p>Your voice agent and your command center are <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template: it usually lands about twenty minutes after you signed up, and it shows up at the same hub on its own.</p>` +
+            `<p>Your voice agent and your command center are <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template, and then we record you a short walkthrough of the finished suite. We are working on it and will have it to you <strong>within the hour</strong>, at the same hub, on its own.</p>` +
             demoFilmCard({
               film: 'demo-welcome',
               href: lead.hub_demo_url,
-              caption: `Thirty seconds from Mr. Mustard on what we built ${business}.`,
+              caption: `A first look while we finish ${business}'s own walkthrough film.`,
             }) +
             `<p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>`,
           cta: { label: 'Open your Demo Suite', url: lead.hub_demo_url },

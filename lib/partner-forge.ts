@@ -424,7 +424,7 @@ export async function sendForgeHandoffEmail(
       eyebrow: 'YOUR FORGE, THEIR FLAG',
       greeting: `${first}, it is ready.`,
       body:
-        `<p>The demo suite you minted for <strong>${args.business}</strong> is live at their private hub. The voice agent and the command center are ready right now; the custom website is designed from scratch and lands at the same link about twenty minutes in.</p>` +
+        `<p>The demo suite you minted for <strong>${args.business}</strong> is live at their private hub. The voice agent and the command center are ready right now; the custom website is designed from scratch, and it plus their walkthrough film land at the same link within the hour.</p>` +
         `<p>Hand it off in your own words, or use these three lines:</p>` +
         `<p style="padding:12px 16px;border-left:4px solid #F5B700;background:#FBF6EA;">` +
         `"${ownerFirst}, I had something built for ${args.business}. A team I trust makes voice agents and websites, and I asked them to make yours first so you could see it real, not as a pitch. It is at this link, with your name on it, and it took me two minutes: have a look before you talk to anyone."` +

@@ -49,7 +49,7 @@ const FAQ = [
   },
   {
     q: 'How fast can I have it?',
-    a: 'Your command center is forged free in about twenty seconds so you can tour it before you decide. Once you order, we customize it to your business by hand and release the real thing within seven days.',
+    a: 'Your command center is forged free and opens right away, so you can tour it before you decide. Once you order, we customize it to your business by hand and release the real thing within seven days.',
   },
   {
     q: 'Do I own it, and can I cancel?',
@@ -141,7 +141,7 @@ export default function CommandCenterPage() {
                 </Link>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-4">
-                Forged free in about twenty seconds. No card, no meeting.
+                Forged free and open right away. No card, no meeting.
               </p>
             </div>
 
@@ -286,7 +286,7 @@ export default function CommandCenterPage() {
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
-              ['1', 'Forge it free', 'Tell us your business and your command center is built in about twenty seconds. Tour it, try the assistant, poke around. No card.'],
+              ['1', 'Forge it free', 'Tell us your business and your command center opens right away. Tour it, try the assistant, poke around. No card.'],
               ['2', 'We wire it up', 'Order it and we connect your real calls, your website traffic, your customers, and your reviews, customized to your business by hand.'],
               ['3', 'Run the whole thing', 'Live within a week. Every call, lead, review, and dollar on one board, with the AI following up while you work.'],
             ].map(([n, t, d]) => (
@@ -329,7 +329,7 @@ export default function CommandCenterPage() {
               See your command center, built free.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
-              Enter your business once and tour a working command center in about twenty seconds. Keep it for
+              Enter your business once and tour a working command center, open right away. Keep it for
               {' '}{formatUsd(os.monthlyCents)}/mo, or get it free with a website or voice agent.
             </p>
             <Link

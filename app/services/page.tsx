@@ -21,7 +21,7 @@ const FAQ = [
   },
   {
     q: 'How fast can you ship?',
-    a: 'Websites, voice agents, and command centers go live in about a week from kickoff, and you can tour a free demo of each in about twenty seconds first. Custom apps, software, and online stores usually take two to four weeks. Every engagement is fixed scope with a fixed timeline you see before work begins.',
+    a: 'Websites, voice agents, and command centers go live in about a week from kickoff, and you can tour a free demo of each first, in your hands within the hour. Custom apps, software, and online stores usually take two to four weeks. Every engagement is fixed scope with a fixed timeline you see before work begins.',
   },
   {
     q: 'What is a specialty AI tool?',
@@ -255,8 +255,8 @@ export default function ServicesPage() {
               Pick a door. It opens free.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
-              Enter your business once and tour a working website, a voice agent, and a command center in about
-              twenty seconds. No card, no meeting.
+              Enter your business once and tour a working website, a voice agent, and a command center, all with you
+              within the hour. No card, no meeting.
             </p>
             <Link
               href="/demos"

@@ -7,7 +7,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'AI for Restaurants and Franchises. Phone Ordering and Missed-Call Revenue.',
   description:
-    'A 24/7 voice agent for restaurants and multi-unit franchise operators that takes phone orders, books tables, captures catering, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, and rolls out per location across your whole footprint. Hear one trained on your restaurant free in about 60 seconds.',
+    'A 24/7 voice agent for restaurants and multi-unit franchise operators that takes phone orders, books tables, captures catering, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, and rolls out per location across your whole footprint. Hear one trained on your restaurant, free.',
   path: '/for/restaurants',
 });
 
@@ -156,7 +156,7 @@ export default function RestaurantsPage() {
               </a>
             </div>
             <p className="mt-4 text-[13px] font-body text-[#161616]/55 max-w-md mx-auto">
-              Free, no card. Mr. Mustard forges a host trained on your restaurant in about 60 seconds,
+              Free, no card. Mr. Mustard forges a host trained on your restaurant,
               then it answers a live call.{' '}
               <Link
                 href="/book"
@@ -178,7 +178,7 @@ export default function RestaurantsPage() {
                   Hear one trained on your restaurant.
                 </h2>
                 <p className="text-[#161616]/75 text-base font-body leading-7 max-w-xl">
-                  Tell Mr. Mustard your restaurant name and menu. In about sixty seconds he forges a
+                  Tell Mr. Mustard your restaurant name and menu. He forges a
                   host that answers in your voice, then it talks to you live or calls your cell. Free,
                   no card. It is the fastest way to hear exactly what your callers would.
                 </p>

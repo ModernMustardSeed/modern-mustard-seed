@@ -265,7 +265,7 @@ export default function PressRunExperience() {
             disabled={submitting}
             className="mt-6 w-full rounded-full bg-[#F5B700] border-2 border-[#161616] px-8 py-4 font-sans font-extrabold text-[#161616] text-sm uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#161616] disabled:opacity-50"
           >
-            Run my proof (free, 60 seconds)
+            Run my proof (free)
           </button>
           <p className="mt-3 text-center text-[11px] font-mono text-[#161616]/50">
             One free proof per business. No card. Every price set exactly as you wrote it.

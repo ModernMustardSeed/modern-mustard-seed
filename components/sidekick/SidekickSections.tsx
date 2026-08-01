@@ -14,7 +14,7 @@ export function HowItWorks() {
     {
       n: '01',
       title: 'Tell him about your business',
-      body: 'Sixty seconds of intake: what you do, what you charge, what customers ask. That is all Mr. Mustard needs to start the drills.',
+      body: 'One short form: what you do, what you charge, what customers ask. That is all Mr. Mustard needs to start the drills.',
     },
     {
       n: '02',

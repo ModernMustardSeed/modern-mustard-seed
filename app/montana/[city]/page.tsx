@@ -279,7 +279,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             See it built for your {city.name} business, free.
           </h2>
           <p className="mt-4 font-body text-lg text-[#3d382e]">
-            Three working demos, about twenty seconds for the first two. No card and no meeting.
+            Three working demos, the first two open right away and the whole suite within the hour. No card and no meeting.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link

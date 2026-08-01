@@ -16,7 +16,7 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 export const metadata = buildMetadata({
   title: 'Free Voice Agent and Website Demo for Your Business',
   description:
-    'Get three working AI demos free, no card and no sales call: a voice agent that answers as your business, a custom website built from scratch, and a business command center free with either. Live in about 20 seconds. Keep what you love from $147/mo.',
+    'Get three working AI demos free, no card and no sales call: a voice agent that answers as your business, a custom website built from scratch, and a business command center free with either. The whole suite is with you within the hour. Keep what you love from $147/mo.',
   path: '/demos',
 });
 
@@ -31,7 +31,7 @@ const FAQ = [
   },
   {
     q: 'How fast?',
-    a: 'Two of the three are ready in about twenty seconds: your voice agent and your command center. The website is different, because it is designed from scratch rather than filled into a template, and that usually takes about twenty minutes. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
+    a: 'Your voice agent and your command center open right away. The website is different, because it is designed from scratch rather than filled into a template, and then we record you a walkthrough of the finished suite. We have the whole thing to you within the hour. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
   },
   {
     q: 'What happens if I want to keep something?',
@@ -142,7 +142,7 @@ function demosJsonLd() {
       {
         '@type': 'HowTo',
         name: 'Get three free AI demos built for your business',
-        totalTime: 'PT20M',
+        totalTime: 'PT1H',
         step: [
           {
             '@type': 'HowToStep',
@@ -152,12 +152,12 @@ function demosJsonLd() {
           {
             '@type': 'HowToStep',
             name: 'Meet your voice agent and command center',
-            text: 'Both are live in about twenty seconds at your private hub. Talk to the voice agent in your browser and try to stump it.',
+            text: 'Both open right away at your private hub. Talk to the voice agent in your browser and try to stump it.',
           },
           {
             '@type': 'HowToStep',
             name: 'Your website lands',
-            text: 'Designed from scratch rather than filled into a template, so it takes about twenty minutes. It appears at the same hub and we email you when it is ready.',
+            text: 'Designed from scratch rather than filled into a template, then we record you a walkthrough of the finished suite. We have it to you within the hour, at the same hub, and we email you when it is ready.',
           },
         ],
       },
@@ -213,7 +213,7 @@ export default function DemosPage() {
               <ul className="mt-6 space-y-2.5">
                 {[
                   'No card. No meeting. No sales call to sit through.',
-                  'Two are ready in twenty seconds. Your website takes about twenty minutes.',
+                  'Two open right away. The whole suite is with you within the hour.',
                   `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, command center free with either. Or keep nothing.`,
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#161616]/80">
@@ -270,7 +270,7 @@ export default function DemosPage() {
           <div className="lg:col-span-5">
             <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Start the forge</span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 leading-[1.08]">
-              Sixty seconds of you. Then the forge does the rest.
+              One short form from you. Then the forge does the rest.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/70 mt-4 leading-relaxed">
               Your voice agent demo answers as your business, and you talk to it right in your browser. The phone
@@ -285,8 +285,8 @@ export default function DemosPage() {
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">What lands, and when</p>
               <ul className="mt-3 space-y-2">
                 {[
-                  ['Right away', 'Your voice agent and your command center, live in about twenty seconds.'],
-                  ['About twenty minutes', 'Your website, designed from scratch (not a template), landing at the same hub.'],
+                  ['Right away', 'Your voice agent and your command center, live at your private hub.'],
+                  ['Within the hour', 'Your website, designed from scratch (not a template), plus a recorded walkthrough of the finished suite, landing at the same hub.'],
                 ].map(([when, what]) => (
                   <li key={when} className="font-body text-[14px] text-[#FBF6EA]/80 leading-relaxed">
                     <span className="font-sans font-bold uppercase tracking-[0.08em] text-[11px] text-[#F5B700] block">{when}</span>
@@ -355,8 +355,8 @@ export default function DemosPage() {
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
-              { n: '1', t: 'You tell us who you are', d: 'Sixty seconds, the form above. No card, no meeting.' },
-              { n: '2', t: 'The forge builds', d: 'Voice Agent and command center in about twenty seconds. Your website is designed from scratch, so it takes about twenty minutes, and it lands at the same hub on its own.' },
+              { n: '1', t: 'You tell us who you are', d: 'One short form, the one above. No card, no meeting.' },
+              { n: '2', t: 'The forge builds', d: 'Voice Agent and command center open right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within the hour, at the same hub, on its own.' },
               {
                 n: '3',
                 t: 'Keep what you love',

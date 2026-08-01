@@ -129,6 +129,9 @@ export type OutboundLead = {
   os_demo_status: 'ready' | null;
   hub_demo_id: string | null;
   hub_demo_url: string | null;
+  /** Their own walkthrough film, cut as the last step of the forge
+   *  (scripts/suite-film). The suite is not announced until this is 'ready'. */
+  suite_film_status: 'queued' | 'filming' | 'ready' | 'failed' | null;
   affiliate_id: string | null;
   origin: ForgeOrigin | null;
   forge_qa: ForgeQaStatus | null;

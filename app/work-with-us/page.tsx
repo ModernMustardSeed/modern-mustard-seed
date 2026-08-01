@@ -120,7 +120,7 @@ export default function WorkWithUsPage() {
                   Productized doors, tried free before you pay.
                 </h2>
                 <p className="text-[#3a3733] text-sm font-body leading-6 mt-3">
-                  Each one opens with a real working demo, built for your business in about twenty seconds. Keep what
+                  Each one opens with a real working demo, built for your business and in your hands within the hour. Keep what
                   you love, month to month, cancel anytime, no trials. Live within a week.
                 </p>
                 <ul className="mt-5 space-y-2.5">

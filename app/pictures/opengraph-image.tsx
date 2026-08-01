@@ -70,7 +70,7 @@ export default async function OpengraphImage() {
             </span>
           </div>
           <span style={{ fontSize: 28, color: `${CREAM}CC`, marginTop: 30, lineHeight: 1.4 }}>
-            Free screen test: storyboard, taglines, and your hero frame in 60 seconds.
+            Free screen test: storyboard, taglines, and your hero frame.
           </span>
           <span style={{ fontSize: 22, color: MUSTARD, fontWeight: 700, marginTop: 22, letterSpacing: 1 }}>
             modernmustardseed.com/pictures

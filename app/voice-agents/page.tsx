@@ -369,7 +369,7 @@ export default function VoiceAgentsPage() {
                 </h2>
                 <p className="mt-5 max-w-xl font-body text-base md:text-lg leading-relaxed text-[#161616]/80">
                   Tell Mr. Mustard about your business. He trains a personalized front desk on the
-                  spot, in about sixty seconds, then it talks to you live or calls your cell and
+                  spot, then it talks to you live or calls your cell and
                   answers as <em>your</em> company. Free, no card.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
@@ -391,7 +391,7 @@ export default function VoiceAgentsPage() {
               <div className="lg:col-span-5">
                 <div className="rotate-[1.5deg] rounded-2xl border-[3px] border-[#161616] bg-[#161616] p-7 md:p-8 shadow-[9px_9px_0_0_#FBF6EA]">
                   <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">
-                    Sixty Seconds, Start To Finish
+                    One Form, Start To Finish
                   </span>
                   <ol className="mt-5 space-y-4">
                     {[

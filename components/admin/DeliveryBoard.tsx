@@ -617,7 +617,7 @@ function DeliveryRow({
             )}
             {p?.buildStatus === 'building' && (
               <p className="font-body text-[13px] text-[#1E50C8] mb-2">
-                Building their real site from their intake right now. Usually four to twenty minutes.
+                Building their real site from their intake right now. Usually well inside the hour we promise them.
               </p>
             )}
             {p?.buildStatus === 'failed' && (

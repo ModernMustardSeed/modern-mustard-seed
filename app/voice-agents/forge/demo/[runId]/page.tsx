@@ -24,7 +24,7 @@ export default async function SidekickDemoPage({ params }: { params: Promise<{ r
         <div className="max-w-md text-center bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8">
           <h1 className="font-display text-3xl font-bold text-[#161616]">This demo has moved on</h1>
           <p className="font-body text-[#161616]/70 mt-3">
-            We could not find that voice agent demo. Want one built for your business in about 60 seconds?
+            We could not find that voice agent demo. Want one built for your business?
           </p>
           <a
             href="/voice-agents/forge"
