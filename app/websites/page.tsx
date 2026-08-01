@@ -498,8 +498,8 @@ export default function WebsitesPage() {
               See your website, built free.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
-              Enter your business once and tour a real working site, designed from scratch for you, in about twenty
-              seconds. Keep it for {formatUsd(site.monthlyCents)}/mo, command center free.
+              Enter your business once and tour a real working site, designed from scratch for you, in your hands
+              within the hour. Keep it for {formatUsd(site.monthlyCents)}/mo, command center free.
             </p>
             <Link
               href="/demos"

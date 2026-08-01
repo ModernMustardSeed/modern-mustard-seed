@@ -2,7 +2,7 @@
  * THE VOICE AGENT FORGE. The mascot-first flagship demo-to-subscription machine.
  *
  * A visitor tells Mr. Mustard about their business, watches him train a
- * personalized AI front desk in about sixty seconds, then talks to it live
+ * personalized AI front desk while they watch, then talks to it live
  * (in the browser, or it calls their cell). The demo gives them all the room
  * they want to riff (30 min), and the assistant's 60s silence timeout closes
  * an abandoned line; the conversion is "Keep Him": a productized, hard-capped
@@ -16,12 +16,12 @@
 export const SIDEKICK = {
   name: 'The Voice Agent Forge',
   wordmark: '[ VOICE AGENT: FORGED ]',
-  tagline: 'Your front desk, forged in 60 seconds.',
+  tagline: 'Your front desk, forged while you watch.',
   promise:
     'Tell Mr. Mustard about your business. He trains a personalized voice agent on the spot, and then you talk to it. Live. If you love it, it answers your real phone 24/7 starting this week.',
   // Intent-first title (2026-07-25). "The Voice Agent Forge" has no search demand;
   // "voice agent for small business" does. The brand name still owns the H1.
-  metaTitle: 'Voice Agent for Small Business. Hear Yours in 60 Seconds',
+  metaTitle: 'Voice Agent for Small Business. Hear Yours Answer Live',
   metaDescription:
     'Mr. Mustard trains an AI front desk for YOUR business while you watch, then it talks to you live and can even call your cell. Free demo, no card. Keep him and he answers your real phone 24/7. From Modern Mustard Seed.',
   phoneLine: '(406) 312-1223',
