@@ -270,7 +270,9 @@ export default function DemoHub({
                   ? `Being cut for ${business} right now.`
                   : personalVideoUrl
                     ? `A personal hello from Sarah, recorded just for ${business}.`
-                    : 'Thirty seconds from Mr. Mustard on what is in the box.'}
+                    : // Not their film and it does not pretend to be. This plays
+                      // only when no walkthrough has been cut for this suite.
+                      'A short look at what a Modern Mustard Seed suite includes.'}
             </p>
           </div>
         </section>

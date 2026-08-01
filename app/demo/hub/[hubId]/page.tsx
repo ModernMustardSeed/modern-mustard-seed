@@ -131,7 +131,12 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       personalVideoUrl={personalVideoUrl}
       suiteFilmUrl={suiteFilmUrl}
       suiteFilmPoster={suiteFilmPoster}
-      suiteFilmPending={suiteFilmUrl ? false : lead.suite_film_status !== 'ready'}
+      // "We will have it to you within the hour" is only true while a cut is
+      // actually in flight. A hub with no film queued (every suite forged before
+      // 2026-08-01, or one whose cut failed) must not make that promise on a
+      // loop forever, so it falls back to the house film under a caption that
+      // says plainly what it is instead of implying it is theirs.
+      suiteFilmPending={lead.suite_film_status === 'queued' || lead.suite_film_status === 'filming'}
       voiceUrl={lead.demo_url}
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}
