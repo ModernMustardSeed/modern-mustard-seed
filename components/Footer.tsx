@@ -16,6 +16,7 @@ export default function Footer() {
     {
       title: 'The Departments',
       links: [
+        { label: 'The Talking Website', href: '/talking-website' },
         { label: 'The Mustard Tree', href: '/mustard-tree' },
         { label: 'Celebrate', href: '/celebrate' },
         { label: 'The Chief', href: '/chief' },
