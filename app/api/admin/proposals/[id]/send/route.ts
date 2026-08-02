@@ -4,6 +4,7 @@ import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
 import { proposalSendEmail } from '@/lib/email';
+import { renderProposalPdf } from '@/lib/proposal-pdf';
 
 export const runtime = 'nodejs';
 
@@ -50,6 +51,31 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 
   const to = body.test ? SARAH : (p.client_email as string);
+  const hasDemos = Array.isArray(p.demo_links) && (p.demo_links as unknown[]).length > 0;
+
+  // The branded PDF rides along on every send, so the client holds a copy that
+  // looks exactly like the studio. Best-effort: a render hiccup never blocks
+  // the send itself.
+  let attachments: Array<{ filename: string; content: Buffer }> | undefined;
+  try {
+    const bytes = await renderProposalPdf({
+      client_name: p.client_name,
+      client_company: p.client_company,
+      client_email: p.client_email,
+      site_url: p.site_url,
+      demo_links: p.demo_links,
+      situation: p.situation,
+      prose: p.prose,
+      lines: p.lines,
+      one_time_total: p.one_time_total,
+      monthly_total: p.monthly_total,
+      deposit_amount: p.deposit_amount,
+    });
+    attachments = [{ filename: 'Modern-Mustard-Seed-Proposal.pdf', content: Buffer.from(bytes) }];
+  } catch (err) {
+    console.error('proposal send: pdf render failed, sending without attachment', err);
+  }
+
   try {
     const resend = resendClient();
     const { error } = await resend.emails.send({
@@ -59,7 +85,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       subject: body.test
         ? '[Test] Your proposal from Modern Mustard Seed'
         : 'Your proposal from Modern Mustard Seed',
-      html: proposalSendEmail({ toName: (p.client_name as string) || undefined, url, note: body.note }),
+      html: proposalSendEmail({ toName: (p.client_name as string) || undefined, url, note: body.note, hasDemos }),
+      attachments,
     });
     if (error) {
       console.error('proposal send email failed', error);

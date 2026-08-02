@@ -33,7 +33,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from('proposals')
     .select(
-      'id, client_name, client_company, client_email, site_url, status, one_time_total, monthly_total, updated_at, signed_at, sent_at, deposit_status, share_token'
+      'id, client_name, client_company, client_email, site_url, status, one_time_total, monthly_total, updated_at, signed_at, sent_at, deposit_status, share_token, view_count, last_viewed_at'
     )
     .order('updated_at', { ascending: false })
     .limit(100);

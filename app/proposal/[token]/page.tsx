@@ -18,6 +18,15 @@ export default async function PublicProposalPage({ params }: { params: Promise<{
   const { data: p } = await supabase!.from('proposals').select('*').eq('share_token', token).maybeSingle();
   if (!p) notFound();
 
+  // Open receipt: the moment a prospect reads this, Sarah knows (viewed_at,
+  // view_count on the proposal, surfaced in the builder and the Client Book).
+  // Best-effort; a failed bump never blocks the document.
+  try {
+    await supabase!.rpc('bump_proposal_view', { p_token: token });
+  } catch {
+    /* receipt only */
+  }
+
   const lines: Line[] = Array.isArray(p.lines) ? p.lines : [];
   const prose = (p.prose || {}) as { intro?: string; situation?: string; recommendation?: string; close?: string };
   const oneTime = Number(p.one_time_total) || 0;

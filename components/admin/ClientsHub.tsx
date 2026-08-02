@@ -24,6 +24,7 @@ type ProposalLite = {
   oneTime: number;
   monthly: number;
 };
+type NextAction = { label: string; tone: 'red' | 'gold' | 'blue' | 'green'; rank: number };
 type ClientRow = {
   email: string;
   name: string | null;
@@ -31,6 +32,7 @@ type ClientRow = {
   tier: string | null;
   status: string | null;
   createdAt: string;
+  nextAction: NextAction;
   spine: { in: boolean; committed: boolean; building: boolean; live: boolean };
   projects: ProjectLite[];
   products: { kind: string; label: string; status: string }[];
@@ -51,6 +53,8 @@ type Prospect = {
   oneTime: number;
   monthly: number;
   demoLinks: { label: string; url: string }[];
+  viewCount: number;
+  lastViewedAt: string | null;
 };
 type Stats = { total: number; live: number; building: number; awaiting: number; openRequests: number };
 
@@ -60,6 +64,22 @@ const BTN_QUIET =
   'px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] font-sans font-extrabold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform no-underline inline-block';
 
 type Filter = 'all' | 'live' | 'building' | 'waiting' | 'attention';
+
+/** The one line that says what this client needs from Sarah today. */
+function NextActionStrip({ a }: { a: NextAction }) {
+  const cls = {
+    red: 'bg-[#E0301E]/10 border-[#E0301E]/40 text-[#C4160B]',
+    gold: 'bg-[#F5B700]/15 border-[#8f6600]/35 text-[#8f6600]',
+    blue: 'bg-blue-50 border-[#1E50C8]/30 text-[#1E50C8]',
+    green: 'bg-emerald-50 border-emerald-700/25 text-emerald-800',
+  }[a.tone];
+  return (
+    <p className={`mt-3 rounded-lg border px-2.5 py-1.5 font-mono text-[10.5px] font-bold tracking-[0.02em] ${cls}`}>
+      {a.rank === 0 ? '⚡ ' : ''}
+      {a.label}
+    </p>
+  );
+}
 
 /** The pipeline spine: the four beats every client walks, lit as far as they are. */
 function Spine({ spine }: { spine: ClientRow['spine'] }) {
@@ -298,6 +318,7 @@ export default function ClientsHub() {
                       </div>
                     </div>
 
+                    <NextActionStrip a={c.nextAction} />
                     <Spine spine={c.spine} />
                     <MadeChips made={c.made} />
 
@@ -357,16 +378,30 @@ export default function ClientsHub() {
                               .join(' · ')}
                           </p>
                         </div>
-                        <span
-                          className={`shrink-0 text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded border ${
-                            p.status === 'sent'
-                              ? 'text-[#1E50C8] border-[#1E50C8]/30 bg-blue-100'
-                              : p.status === 'declined'
-                                ? 'text-[#161616]/45 border-[#161616]/15 bg-[#161616]/[0.04]'
-                                : 'text-[#161616]/70 border-[#161616]/20 bg-[#FBF6EA]'
-                          }`}
-                        >
-                          {p.status === 'sent' && p.sentAt ? `Sent ${new Date(p.sentAt).toLocaleDateString()}` : p.status}
+                        <span className="flex flex-col items-end gap-1 shrink-0">
+                          <span
+                            className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded border ${
+                              p.status === 'sent'
+                                ? 'text-[#1E50C8] border-[#1E50C8]/30 bg-blue-100'
+                                : p.status === 'declined'
+                                  ? 'text-[#161616]/45 border-[#161616]/15 bg-[#161616]/[0.04]'
+                                  : 'text-[#161616]/70 border-[#161616]/20 bg-[#FBF6EA]'
+                            }`}
+                          >
+                            {p.status === 'sent' && p.sentAt ? `Sent ${new Date(p.sentAt).toLocaleDateString()}` : p.status}
+                          </span>
+                          {/* The open receipt: read vs sent-into-the-void. */}
+                          {p.status === 'sent' && (
+                            <span
+                              className={`text-[9px] uppercase tracking-[0.12em] font-mono font-bold px-2 py-0.5 rounded border ${
+                                p.viewCount > 0
+                                  ? 'text-emerald-800 border-emerald-800/25 bg-emerald-100'
+                                  : 'text-[#C4160B] border-[#E0301E]/35 bg-[#E0301E]/10'
+                              }`}
+                            >
+                              {p.viewCount > 0 ? `Opened ${p.viewCount}×` : 'Never opened'}
+                            </span>
+                          )}
                         </span>
                       </div>
                       {p.demoLinks.length > 0 && (

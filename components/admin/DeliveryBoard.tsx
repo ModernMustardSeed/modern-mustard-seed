@@ -14,10 +14,12 @@ import type { Moodboard as MoodboardPayload } from '@/lib/moodboard-shared';
  */
 
 type Quote = { domain: string; available: boolean; priceUsd: number | null; renewalUsd: number | null; years: number; buyable: boolean; reason?: string };
+type Milestone = { title: string; detail?: string; done: boolean };
 type Project = {
   name: string;
   status: string;
   progress: number;
+  milestones: Milestone[];
   revisionsIncluded: number;
   revisionsUsed: number;
   hasSite: boolean;
@@ -54,6 +56,8 @@ type ProposalInfo = {
   shareToken: string | null;
   oneTime: number;
   monthly: number;
+  viewCount: number;
+  lastViewedAt: string | null;
 };
 type Row = {
   id: string;
@@ -365,6 +369,29 @@ function DeliveryRow({
     if (j?.ok) { setMsg('Edit discarded. Their free edit was refunded.'); onChanged(); }
   };
 
+  // Tick a milestone right here; the client's portal progress updates with it.
+  const doMilestone = async (idx: number) => {
+    if (!row.projectId || !p) return;
+    const ms = p.milestones.map((m, i) => (i === idx ? { ...m, done: !m.done } : m));
+    const done = ms.filter((m) => m.done).length;
+    const progress = ms.length ? Math.round((done / ms.length) * 100) : p.progress;
+    setBusy(`milestone-${idx}`);
+    setErr(null);
+    try {
+      const res = await fetch(`/api/admin/projects/${row.projectId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ milestones: ms, progress }),
+      });
+      if (!res.ok) setErr('Could not save the milestone.');
+      else onChanged();
+    } catch {
+      setErr('Network error.');
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const intake = row.intake ?? {};
   const answers = Object.entries(intake).filter(([k, v]) => k !== 'assets' && typeof v === 'string' && v);
   const assets = Array.isArray((intake as Record<string, unknown>).assets)
@@ -472,6 +499,56 @@ function DeliveryRow({
                     : 'Not sent yet'}
                 {' · '}deposit {row.proposal.depositStatus}
                 {row.proposal.balanceStatus === 'paid' ? ' · balance paid' : ''}
+                {row.proposal.sentAt && !row.proposal.signedAt && (
+                  <span className={row.proposal.viewCount > 0 ? 'text-emerald-700' : 'text-[#C4160B]'}>
+                    {' · '}
+                    {row.proposal.viewCount > 0
+                      ? `opened ${row.proposal.viewCount}×${row.proposal.lastViewedAt ? `, last ${new Date(row.proposal.lastViewedAt).toLocaleDateString()}` : ''}`
+                      : 'never opened'}
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
+
+          {/* The promise, ticked off. What we owe them, from their own portal
+              milestones; one click here moves their progress bar over there. */}
+          {p && p.milestones.length > 0 && (
+            <div>
+              <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">
+                The promise ({p.milestones.filter((m) => m.done).length}/{p.milestones.length})
+              </h4>
+              <div className="space-y-1.5">
+                {p.milestones.map((m, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => doMilestone(i)}
+                    disabled={!!busy}
+                    className={`w-full text-left flex items-start gap-2.5 rounded-lg border-2 px-3 py-2 transition-colors disabled:opacity-60 ${
+                      m.done ? 'border-[#161616]/10 bg-emerald-50/70' : 'border-[#161616]/15 bg-[#FBF6EA] hover:border-[#161616]'
+                    }`}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded border-2 border-[#161616] text-[10px] font-black shrink-0 ${
+                        m.done ? 'bg-[#F5B700]' : 'bg-white'
+                      }`}
+                    >
+                      {m.done ? '✓' : ''}
+                    </span>
+                    <span
+                      className={`font-body text-[13px] leading-snug ${
+                        m.done ? 'text-[#161616]/50 line-through decoration-[#161616]/30' : 'text-[#161616]'
+                      }`}
+                    >
+                      {m.title}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className="font-mono text-[10px] text-[#161616]/45 mt-1.5">
+                Ticking one updates their portal progress instantly.
               </p>
             </div>
           )}

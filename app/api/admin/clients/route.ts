@@ -30,7 +30,7 @@ export async function GET() {
     sb
       .from('projects')
       .select(
-        'id, client_email, name, status, progress, site_live_url, site_domain, site_published_at, revisions_included, revisions_used, care_plan, demo_order_id, created_at'
+        'id, client_email, name, status, progress, site_live_url, site_domain, site_published_at, revisions_included, revisions_used, care_plan, demo_order_id, edit_status, site_build_status, created_at'
       )
       .order('created_at', { ascending: false })
       .limit(500),
@@ -38,7 +38,7 @@ export async function GET() {
     sb
       .from('proposals')
       .select(
-        'id, client_email, client_name, client_company, status, one_time_total, monthly_total, deposit_status, balance_status, signed_at, sent_at, share_token, updated_at, demo_links'
+        'id, client_email, client_name, client_company, status, one_time_total, monthly_total, deposit_status, balance_status, signed_at, sent_at, share_token, updated_at, demo_links, view_count, last_viewed_at'
       )
       .order('updated_at', { ascending: false })
       .limit(300),
@@ -116,6 +116,31 @@ export async function GET() {
       { used: 0, included: 0 }
     );
 
+    // The one line that tells Sarah what this client needs from her TODAY.
+    // Rank drives the book's default sort: needs-you first, waiting-on-them
+    // second, quiet last.
+    const openReqs = openByEmail.get(email) ?? 0;
+    const editReady = projs.some((p) => p.edit_status === 'ready');
+    const buildFailed = projs.some((p) => p.site_build_status === 'failed');
+    const days = (iso: unknown) => Math.max(0, Math.floor((Date.now() - new Date(String(iso)).getTime()) / 86_400_000));
+    let nextAction: { label: string; tone: 'red' | 'gold' | 'blue' | 'green'; rank: number };
+    if (editReady) nextAction = { label: 'Client edit waiting on your approval', tone: 'red', rank: 0 };
+    else if (openReqs > 0) nextAction = { label: `${openReqs} message${openReqs === 1 ? '' : 's'} waiting on you`, tone: 'red', rank: 0 };
+    else if (buildFailed) nextAction = { label: 'A build failed. Rebuild it.', tone: 'red', rank: 0 };
+    else if (prop && !prop.signed_at && prop.status === 'sent' && prop.sent_at) {
+      const d = days(prop.sent_at);
+      const opened = Number(prop.view_count) > 0;
+      nextAction = {
+        label: `Proposal out ${d}d · ${opened ? `opened ${prop.view_count}×` : 'never opened'}${d >= 4 ? '. Nudge them.' : ''}`,
+        tone: 'gold',
+        rank: 1,
+      };
+    } else if (prop?.signed_at && prop.deposit_status !== 'paid')
+      nextAction = { label: 'Signed, deposit unpaid. Send the link.', tone: 'gold', rank: 1 };
+    else if (live) nextAction = { label: 'Live. All quiet.', tone: 'green', rank: 3 };
+    else if (building) nextAction = { label: 'In build. Keep it moving.', tone: 'blue', rank: 2 };
+    else nextAction = { label: 'On file. Nothing owed.', tone: 'green', rank: 3 };
+
     return {
       email,
       name: c.name ?? null,
@@ -123,6 +148,7 @@ export async function GET() {
       tier: c.tier ?? null,
       status: c.status ?? null,
       createdAt: c.created_at,
+      nextAction,
       spine: { in: true, committed, building, live },
       projects: projs.map((p) => ({
         id: p.id,
@@ -152,6 +178,13 @@ export async function GET() {
     };
   });
 
+  // Needs-you first, waiting-on-them second, quiet last; newest inside a tier.
+  rows.sort(
+    (a, b) =>
+      a.nextAction.rank - b.nextAction.rank ||
+      String(b.createdAt ?? '').localeCompare(String(a.createdAt ?? ''))
+  );
+
   // Prospects: proposals for people who are not clients yet. The front of the
   // pipeline, visible in the same book instead of buried in the builder.
   const seen = new Set<string>();
@@ -176,6 +209,8 @@ export async function GET() {
       oneTime: Number(p.one_time_total) || 0,
       monthly: Number(p.monthly_total) || 0,
       demoLinks: cleanDemoLinks(p.demo_links),
+      viewCount: Number(p.view_count) || 0,
+      lastViewedAt: p.last_viewed_at ?? null,
     }));
 
   const stats = {

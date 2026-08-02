@@ -461,27 +461,36 @@ export function proposalSendEmail({
   toName,
   url,
   note,
+  hasDemos,
 }: {
   toName?: string;
   url: string;
   note?: string;
+  /** When the proposal carries live forged demos, the email says so: the
+   * strongest reason to open it is that their new site is already inside. */
+  hasDemos?: boolean;
 }): string {
   const first = toName?.trim()?.split(/\s+/)[0];
   const inner =
     headline(first ? `${first}, here is your proposal` : 'Your proposal is ready') +
-    lede('Review it, sign it, and we begin.') +
+    lede(hasDemos ? 'Your build is already started. See it live inside.' : 'Review it, sign it, and we begin.') +
     (note && note.trim()
       ? paragraph(escape(note.trim()).replace(/\n/g, '<br>'))
       : paragraph(
           'Everything we discussed is laid out at the link below: the scope, the deliverables, the timeline, and the price. When it looks right, sign it in one tap and pay the 50 percent deposit to put your build on the calendar.'
         )) +
-    ctaBlock({ label: 'Review and sign', url }) +
+    (hasDemos
+      ? paragraph(
+          '<strong>One more thing:</strong> we did not wait to start. The proposal has live, working previews of what we already built for you. Click through them; they are real.'
+        )
+      : '') +
+    ctaBlock({ label: hasDemos ? 'See it live and sign' : 'Review and sign', url }) +
     paragraph(
       `<span style="font-size:13px;color:${C.muted}">If the button does not work, paste this into your browser:<br><a href="${url}" style="color:${C.gold};word-break:break-all">${url}</a></span>`
     ) +
-    paragraph('The moment you sign and the deposit clears, I get to work and your project space goes live. Questions before you do? Just reply to this email.') +
+    paragraph('A PDF copy is attached for your records. The moment you sign and the deposit clears, I get to work and your project space goes live. Questions before you do? Just reply to this email.') +
     signature('Sarah');
-  return shell({ preheader: 'Your proposal: review, sign, and begin', subtitle: 'Your proposal', inner });
+  return shell({ preheader: hasDemos ? 'Your proposal, with your build already live inside' : 'Your proposal: review, sign, and begin', subtitle: 'Your proposal', inner });
 }
 
 /** Sent to the client right after they sign, with the signed PDF attached. */

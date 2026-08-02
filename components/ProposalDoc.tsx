@@ -56,6 +56,48 @@ function bareUrl(url: string): string {
   return url.replace(/^https?:\/\//i, '').replace(/\/$/, '');
 }
 
+/** Only our own demo pages get embedded live (anything else may send
+ * X-Frame-Options and render a blank hole in the middle of a sales doc). */
+function canEmbed(url: string): boolean {
+  return /modernmustardseed\.com\/demo\//i.test(url) || /localhost:\d+\/demo\//i.test(url);
+}
+
+/** A live, scrolling preview of the forged site inside a drawn browser frame.
+ * The iframe renders at 2x container size scaled to 0.5, so the demo lays out
+ * like a desktop page at any doc width, phones included. Click-through overlay
+ * carries the whole frame to the real thing. */
+function LiveFrame({ label, url }: { label: string; url: string }) {
+  const href = withProtocol(url);
+  return (
+    <div className="rounded-xl border-2 border-[#161616] overflow-hidden shadow-[4px_4px_0_0_#161616] bg-white">
+      <div className="flex items-center gap-1.5 bg-[#161616] px-3 py-2">
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#E0301E]" />
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#F5B700]" />
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#1E50C8]" />
+        <span className="ml-2 flex-1 truncate rounded bg-white/10 px-2 py-0.5 font-mono text-[9.5px] text-white/70">
+          {bareUrl(url)}
+        </span>
+      </div>
+      <div className="relative w-full overflow-hidden" style={{ aspectRatio: '16 / 10' }}>
+        <iframe
+          src={href}
+          title={label}
+          loading="lazy"
+          tabIndex={-1}
+          aria-hidden="true"
+          className="absolute left-0 top-0 border-0 pointer-events-none"
+          style={{ width: '200%', height: '200%', transform: 'scale(0.5)', transformOrigin: 'top left' }}
+        />
+        <a href={href} target="_blank" rel="noopener noreferrer" className="group absolute inset-0" aria-label={`${label}, open it live`}>
+          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-lg border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 font-sans text-[11px] font-extrabold text-[#161616] shadow-[2px_2px_0_0_#161616] group-hover:-translate-y-0.5 transition-transform">
+            {label} <span aria-hidden="true">↗</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <span className="block text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold">
@@ -168,16 +210,31 @@ export default function ProposalDoc({
         )}
 
         {/* The showcase: work that already exists, live, clickable. This sells
-            harder than any paragraph, so it sits above the situation. */}
-        {showcase.length > 0 && (
+            harder than any paragraph, so it sits above the situation. Our own
+            forged demos render as LIVE embedded previews (the prospect sees
+            their new site breathing inside the proposal); everything else gets
+            a gold card. */}
+        {showcase.length > 0 && (() => {
+          const embeds = showcase.filter((d) => canEmbed(d.url)).slice(0, 2);
+          const embedded = new Set(embeds.map((d) => d.url));
+          const cards = showcase.filter((d) => !embedded.has(d.url));
+          return (
           <div className="mb-8">
             <Eyebrow>Already built for you</Eyebrow>
             <p className="mt-2 text-[14px] text-[#3a3733] font-body leading-relaxed">
-              We do not pitch with promises. Before this proposal was written, we built. Every link below
-              is live right now. Click through.
+              We do not pitch with promises. Before this proposal was written, we built. Everything below
+              is live right now.
             </p>
+            {embeds.length > 0 && (
+              <div className="space-y-4 mt-4">
+                {embeds.map((d, i) => (
+                  <LiveFrame key={`${d.url}-${i}`} label={d.label || 'See it live'} url={d.url} />
+                ))}
+              </div>
+            )}
+            {cards.length > 0 && (
             <div className="grid sm:grid-cols-2 gap-3 mt-4">
-              {showcase.map((d, i) => (
+              {cards.map((d, i) => (
                 <a
                   key={`${d.url}-${i}`}
                   href={withProtocol(d.url)}
@@ -202,8 +259,10 @@ export default function ProposalDoc({
                 </a>
               ))}
             </div>
+            )}
           </div>
-        )}
+          );
+        })()}
 
         {situation && <Section title="Where you are">{situation}</Section>}
         {prose.recommendation && <Section title="What we recommend">{prose.recommendation}</Section>}

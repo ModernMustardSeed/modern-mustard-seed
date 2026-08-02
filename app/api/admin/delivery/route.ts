@@ -32,7 +32,7 @@ export async function GET() {
     sb
       .from('projects')
       .select(
-        'id, client_email, name, status, progress, created_at, revisions_included, revisions_used, demo_site_id, demo_order_id, site_domain, site_live_url, site_published_at, site_domain_source, site_build_status, site_build_error, approved_at, approved_by, reveal_at, edit_status, edit_instruction, edit_requested_by, edit_requested_at, edit_error, moodboard, moodboard_status, moodboard_note, moodboard_sent_at, moodboard_approved_at, care_plan'
+        'id, client_email, name, status, progress, created_at, milestones, revisions_included, revisions_used, demo_site_id, demo_order_id, site_domain, site_live_url, site_published_at, site_domain_source, site_build_status, site_build_error, approved_at, approved_by, reveal_at, edit_status, edit_instruction, edit_requested_by, edit_requested_at, edit_error, moodboard, moodboard_status, moodboard_note, moodboard_sent_at, moodboard_approved_at, care_plan'
       )
       .order('created_at', { ascending: false })
       .limit(200),
@@ -47,7 +47,7 @@ export async function GET() {
     sb
       .from('proposals')
       .select(
-        'id, client_email, client_name, client_company, status, one_time_total, monthly_total, deposit_status, balance_status, signed_at, sent_at, share_token, project_id, lines, updated_at'
+        'id, client_email, client_name, client_company, status, one_time_total, monthly_total, deposit_status, balance_status, signed_at, sent_at, share_token, project_id, lines, updated_at, view_count, last_viewed_at'
       )
       .order('updated_at', { ascending: false })
       .limit(300),
@@ -112,6 +112,7 @@ export async function GET() {
     name: p.name,
     status: p.status,
     progress: p.progress,
+    milestones: Array.isArray(p.milestones) ? p.milestones : [],
     revisionsIncluded: p.revisions_included,
     revisionsUsed: p.revisions_used,
     hasSite: flags.get(p.id as string)?.has_site ?? false,
@@ -151,6 +152,8 @@ export async function GET() {
           shareToken: pr.share_token ?? null,
           oneTime: Number(pr.one_time_total) || 0,
           monthly: Number(pr.monthly_total) || 0,
+          viewCount: Number(pr.view_count) || 0,
+          lastViewedAt: pr.last_viewed_at ?? null,
         }
       : null;
 

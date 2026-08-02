@@ -35,6 +35,8 @@ type Summary = {
   sent_at: string | null;
   deposit_status: string | null;
   share_token: string | null;
+  view_count: number | null;
+  last_viewed_at: string | null;
 };
 
 const STATUS_BADGE: Record<string, string> = {
@@ -735,6 +737,14 @@ export default function ProposalBuilder() {
                             {p.monthly_total ? ` · ${money(p.monthly_total)}/mo` : ''}
                             {p.sent_at ? ` · sent ${new Date(p.sent_at).toLocaleDateString()}` : ''}
                           </span>
+                          {/* The open receipt: the difference between "sent" and "read". */}
+                          {p.sent_at && !p.signed_at && (
+                            <span className={`block text-[10px] font-mono mt-0.5 ${Number(p.view_count) > 0 ? 'text-emerald-700' : 'text-[#C4160B]'}`}>
+                              {Number(p.view_count) > 0
+                                ? `opened ${p.view_count}× · last ${p.last_viewed_at ? new Date(p.last_viewed_at).toLocaleDateString() : ''}`
+                                : 'never opened'}
+                            </span>
+                          )}
                         </button>
                         <span
                           className={`flex-shrink-0 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] font-mono font-bold border rounded ${
