@@ -244,7 +244,7 @@ export const PHONE_SCRIPT = {
     { q: '"I\'m too busy right now."', a: 'Totally get it, that\'s usually the whole reason this helps. The call is quick and on your schedule. Even a slot next week keeps it moving without taking your time now.' },
   ],
   voicemail:
-    'Hi [name], it\'s [your name] with Modern Mustard Seed. You\'d mentioned [their problem], and that\'s right in what we do. I\'d love to grab you a quick 15-minute call with our founder, no charge and no pressure. I\'ll text you a link to pick a time, or call me back at [your number]. Talk soon.',
+    'Hi [name], it\'s [your name] with Modern Mustard Seed. You\'d mentioned [their problem], and that\'s right in what we do. I\'d love to grab you a quick 15-minute call with our founder, no charge and no pressure. I\'ll email you a link to pick a time, or call me back at [your number]. Talk soon.',
 };
 
 /**

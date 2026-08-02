@@ -75,7 +75,6 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'artifacts', label: 'Artifacts', href: '/admin/artifacts' },
       { key: 'youtube', label: 'Publish to YouTube', href: '/admin/youtube' },
       { key: 'campaigns', label: 'Campaigns', href: '/admin/campaigns' },
-      { key: 'texting', label: 'Texting', href: '/admin/texting' },
       { key: 'gleaner', label: 'Gleaner', href: '/admin/gleaner' },
       { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
       { key: 'audit', label: 'Audit Desk', href: '/admin/audit' },
