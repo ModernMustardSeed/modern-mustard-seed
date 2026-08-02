@@ -187,6 +187,18 @@ export async function inlineSiteAssets(html, dir, opts = {}) {
   const rasters = jobs.filter((j) => j.raster);
   if (!rasters.length) return { html: working, inlined, missing, skipped, bytes: Buffer.byteLength(working) };
 
+  // Read each source's real dimensions once, so the encode cap can follow the file
+  // instead of a guess (see the cap comment in the ladder below).
+  if (sharp) {
+    for (const j of rasters) {
+      try {
+        j.intrinsic = (await sharp(readFileSync(j.file)).metadata()).width || null;
+      } catch {
+        j.intrinsic = null;
+      }
+    }
+  }
+
   // Shrink the whole set together until it fits.
   //
   // ORDER MATTERS: give up pixels before giving up quality. These photographs are
@@ -197,7 +209,7 @@ export async function inlineSiteAssets(html, dir, opts = {}) {
   const FLOOR = 62;
   const LADDER = [];
   for (const scale of [1, 0.88, 0.78, 0.68, 0.58, 0.5]) {
-    for (const quality of [82, 76, 70, FLOOR]) LADDER.push({ scale, quality });
+    for (const quality of [82, 76, 70, 66, FLOOR]) LADDER.push({ scale, quality });
   }
   for (const quality of [56, 50, 44, 38]) LADDER.push({ scale: 0.5, quality });
 
@@ -208,12 +220,16 @@ export async function inlineSiteAssets(html, dir, opts = {}) {
     const encoded = [];
     let total = 0;
     for (const j of rasters) {
-      // An undeclared width is almost never a hero. Heroes get width="1600" because
-      // the author was thinking about the slot; the images that arrive undeclared are
-      // gallery tiles and cards, and Miller's masonry column renders them about 380px
-      // wide. Defaulting those to 1400 spent most of the page's byte budget on pixels
-      // no one ever sees, and dragged the hero down with them. Assume a card.
-      const cap = j.width || 900;
+      // WHEN NO WIDTH IS DECLARED, TRUST THE FILE, NOT A GUESS.
+      //
+      // A fixed default is wrong in both directions. Guess high (1400) and Miller's
+      // harvested gallery, whose files are only 540-720px to begin with, eats the
+      // budget for pixels that do not exist. Guess low (900) and Glacier's 2000px
+      // hero gets crushed to 900 and renders soft across a 1453px slot. The source's
+      // own dimensions already encode the intent: a build that generated 2000px meant
+      // that image to be big, and one that harvested a 540px thumb did not. Cap at
+      // the intrinsic width, bounded, and never upscale.
+      const cap = j.width || Math.min(j.intrinsic || 900, 1600);
       // The hero carries the first impression, so it keeps more of its pixels than
       // the cards do as the whole set comes down.
       const eased = cap >= 1400 ? scale + (1 - scale) * 0.5 : scale;
