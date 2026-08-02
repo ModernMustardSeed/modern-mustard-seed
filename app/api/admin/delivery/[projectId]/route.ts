@@ -8,6 +8,7 @@ import { generateMoodboard, type MoodboardBrief } from '@/lib/moodboard';
 import { resendClient } from '@/lib/send-email';
 import { clientEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
+import { selfContainedError } from '@/lib/site-asset-refs.mjs';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -163,6 +164,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
         .eq('id', project.demo_site_id)
         .maybeSingle();
       if (!demo?.html) return NextResponse.json({ error: 'That demo has no HTML yet.' }, { status: 400 });
+      // Every upstream path guarantees a self-contained demo now, but this one copies
+      // html onto a paying client's live site, so it verifies rather than assumes.
+      const demoBroken = selfContainedError(demo.html);
+      if (demoBroken) return NextResponse.json({ error: `That demo cannot be published: ${demoBroken}` }, { status: 400 });
       await sb.from('projects').update({ site_html: demo.html }).eq('id', projectId);
       return NextResponse.json({ ok: true, seeded: true, bytes: demo.html.length });
     }
@@ -172,6 +177,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
       const html = String(body.html ?? '');
       if (html.length < 500) return NextResponse.json({ error: 'That is not a page.' }, { status: 400 });
       if (html.length > 4_000_000) return NextResponse.json({ error: 'That page is too big.' }, { status: 413 });
+      // A hand edit or a paste can reintroduce exactly what broke Miller and Glacier:
+      // an <img src="hero.jpg"> pointing at a file that lives nowhere we publish. This
+      // writes a paying client's LIVE site, so refuse it with a message that says why.
+      const broken = selfContainedError(html);
+      if (broken) return NextResponse.json({ error: broken }, { status: 400 });
       await sb.from('projects').update({ site_html: html }).eq('id', projectId);
       return NextResponse.json({ ok: true, bytes: html.length });
     }

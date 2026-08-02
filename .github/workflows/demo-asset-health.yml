@@ -1,0 +1,53 @@
+# Broken-image watchdog for every site we put in front of someone.
+#
+# On 2026-08-02 two live demos (Miller Construction, Glacier Roofing) sat in front
+# of real prospects as pages of alt text: the builds referenced their photographs
+# as sibling files, but only the html is ever stored and served, so every image
+# 404'd and the browser painted the alt strings through the hero copy. Nobody knew
+# until Sarah opened one.
+#
+# Every write path is gated now (the worker re-inlines from disk, the serverless
+# forge refuses what it cannot repair, the delivery editor rejects a bad paste).
+# This is the backstop for whatever those gates miss. Gates prevent; this detects.
+#
+# All the logic is server-side in app/api/cron/demo-asset-health/route.ts. This job
+# only pings it. A red run means a real site is serving broken images right now, and
+# the route has already emailed Sarah. Silent and green otherwise.
+#
+# Hourly, not every 15 minutes: a demo does not spontaneously break, it breaks when
+# something writes it, and an hour is well inside the window before a prospect is
+# likely to open a fresh one. Here rather than a Vercel cron because the MMS project
+# is on Hobby, where crons are daily-only (same reason as checkout-health).
+
+name: demo-asset-health
+
+on:
+  schedule:
+    - cron: "17 * * * *" # hourly, off the top of the hour to dodge the rush
+  workflow_dispatch: # manual run button
+
+concurrency:
+  group: demo-asset-health
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping broken-image watchdog
+        run: |
+          echo "Checking every demo and client site for unpublished asset references..."
+          BODY=$(curl -sS -m 90 -w $'\n%{http_code}' \
+            ${CRON_SECRET:+-H "Authorization: Bearer $CRON_SECRET"} \
+            "https://modernmustardseed.com/api/cron/demo-asset-health")
+          CODE=$(printf '%s' "$BODY" | tail -n1)
+          JSON=$(printf '%s' "$BODY" | sed '$d')
+          echo "HTTP $CODE"
+          echo "Response: $JSON"
+          if [ "$CODE" -lt 200 ] || [ "$CODE" -ge 300 ]; then
+            echo "::error::a live site is serving broken images (see the response above; Sarah has been emailed)"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}

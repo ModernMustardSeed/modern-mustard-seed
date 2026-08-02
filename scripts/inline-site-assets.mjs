@@ -21,6 +21,7 @@
  */
 import path from 'node:path';
 import { existsSync, readFileSync, statSync } from 'node:fs';
+import { localAssetRefs } from '../lib/site-asset-refs.mjs';
 
 const RASTER = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif']);
 const TEXTUAL = new Map([
@@ -34,49 +35,6 @@ const PASSTHROUGH = new Map([
   ['.woff', 'font/woff'],
   ['.ico', 'image/x-icon'],
 ]);
-
-/** Every place a build can point at a sibling file. */
-const REF_PATTERNS = [
-  /(<img\b[^>]*?\bsrc\s*=\s*)(["'])([^"']+)\2/gi,
-  /(<source\b[^>]*?\bsrcset\s*=\s*)(["'])([^"',]+)\2/gi,
-  /(<video\b[^>]*?\bposter\s*=\s*)(["'])([^"']+)\2/gi,
-  /(<source\b[^>]*?\bsrc\s*=\s*)(["'])([^"']+)\2/gi,
-  /(<link\b[^>]*?\brel\s*=\s*["'](?:stylesheet|icon|apple-touch-icon)["'][^>]*?\bhref\s*=\s*)(["'])([^"']+)\2/gi,
-  /(<script\b[^>]*?\bsrc\s*=\s*)(["'])([^"']+)\2/gi,
-  /(\burl\()\s*(["']?)([^"')]+)\2\s*(?=\))/gi,
-];
-
-/**
- * References we must never touch.
- *
- * The `%23` cases are the trap. An inline SVG embedded as a data URI carries its own
- * `url(#n)` filter references, and inside that URI the `#` is percent-encoded, so a
- * naive scan reads `url(%23n)` as a file named "%23n" and condemns a perfectly good
- * page. A first pass of this scanner flagged 58 healthy demo sites that way. A local
- * asset also always looks like a file: it has an extension. Anything without one is
- * a fragment, an anchor, or a CSS keyword, never something to inline.
- */
-function isExternal(ref) {
-  if (!ref || ref.trim() === '') return true;
-  if (/^(data:|https?:|blob:|about:|#|mailto:|tel:|\/\/)/i.test(ref)) return true;
-  if (/^%23|^%2523/i.test(ref)) return true; // encoded fragment: url(#n) inside a data URI
-  if (/^(none|inherit|initial|unset|currentcolor|transparent)$/i.test(ref.trim())) return true;
-  return !/\.[a-z0-9]{2,5}(?:[?#].*)?$/i.test(ref.split('#')[0]); // no file extension, not a file
-}
-
-function collectRefs(html) {
-  const refs = new Map(); // raw ref -> count
-  for (const re of REF_PATTERNS) {
-    re.lastIndex = 0;
-    let m;
-    while ((m = re.exec(html))) {
-      const ref = m[3].trim();
-      if (isExternal(ref)) continue;
-      refs.set(ref, (refs.get(ref) || 0) + 1);
-    }
-  }
-  return [...refs.keys()];
-}
 
 /** Strip any ?query#hash and decode, so "ch1.jpg?v=2" still finds ch1.jpg. */
 function refToFile(dir, ref) {
@@ -149,7 +107,7 @@ function replaceRef(html, ref, replacement) {
  */
 export async function inlineSiteAssets(html, dir, opts = {}) {
   const maxBytes = opts.maxBytes || 900 * 1024;
-  const refs = collectRefs(html);
+  const refs = localAssetRefs(html);
   if (!refs.length) return { html, inlined: [], missing: [], skipped: [], bytes: Buffer.byteLength(html) };
 
   const sharp = await loadSharp();
@@ -267,7 +225,7 @@ export async function inlineSiteAssets(html, dir, opts = {}) {
  * the offending references so the failure message can name them.
  */
 export function remainingLocalRefs(html) {
-  return collectRefs(html);
+  return localAssetRefs(html);
 }
 
 // CLI: node scripts/inline-site-assets.mjs <dir> [outFile]

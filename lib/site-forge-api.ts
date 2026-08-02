@@ -18,6 +18,7 @@
  */
 import Anthropic from '@anthropic-ai/sdk';
 import { apiDirective, apiRealDirective, apiEditDirective, HERO_PLACEHOLDER } from './site-directive.mjs';
+import { selfContainedError } from './site-asset-refs.mjs';
 
 export type ForgeResult =
   | { ok: true; html: string; direction: string; hero: 'painted' | 'skipped'; bytes: number }
@@ -191,6 +192,17 @@ export async function forgeSiteWithApi(
   const { dataUri, painted } = await paintHero(heroPrompt);
   html = html.split(HERO_PLACEHOLDER).join(dataUri);
 
+  // THIS ENGINE HAS NO DISK, SO IT CANNOT BE REPAIRED. IT CAN ONLY BE REFUSED.
+  //
+  // The worker path re-inlines a loose reference from the files sitting beside the
+  // build (scripts/inline-site-assets.mjs). Serverless has no build directory and
+  // never did, so a model that emitted <img src="hero.jpg"> here has produced a page
+  // whose every photograph is a 404 with alt text showing, and no later step can
+  // recover it. Fail the build and let the caller retry or leave the row queued for
+  // the worker; a failed row is recoverable, a dead demo in front of a 2am lead is not.
+  const unshippable = selfContainedError(html);
+  if (unshippable) return { ok: false, error: unshippable };
+
   return {
     ok: true,
     html,
@@ -254,6 +266,11 @@ export async function editSiteWithApi(
   if (!/<!DOCTYPE html/i.test(html) || !/<\/html>/i.test(html) || html.length < 1000) {
     return { ok: false, error: `model did not return a complete document (${html.length} bytes)` };
   }
+
+  // An edit is just as capable of breaking the page as a build: a model asked to
+  // "swap the hero photo" can answer with a filename. Same refusal, same reason.
+  const unshippable = selfContainedError(html);
+  if (unshippable) return { ok: false, error: unshippable };
 
   return {
     ok: true,
