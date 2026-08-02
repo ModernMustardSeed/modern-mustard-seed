@@ -325,7 +325,7 @@ export default function BuildLogConsole({ data }: { data: BuildLogData }) {
                   <span className="font-mono text-[12px] text-[#161616]/55 tabular-nums">{n}</span>
                 </div>
                 <div className="h-2 bg-[#FBF6EA] border border-[#161616]/10 rounded-full overflow-hidden">
-                  <span className="block h-full rounded-full" style={{ width: `${Math.round((n / projMax) * 100)}%`, background: 'linear-gradient(90deg,#F5B700,#FFD23F)' }} />
+                  <span className="block h-full rounded-full" style={{ width: `${Math.max(4, Math.round(Math.sqrt(n / projMax) * 100))}%`, background: 'linear-gradient(90deg,#F5B700,#FFD23F)' }} />
                 </div>
               </div>
             ))}

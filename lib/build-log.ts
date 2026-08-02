@@ -2,21 +2,41 @@
 // Live commit history across every Modern Mustard Seed venture, for the /admin/build-log page.
 // Fetches from the GitHub API server-side, so the page is always current with no manual publish.
 //
-// Auth: the public repo (modern-mustard-seed) needs no token. The private repos
-// (cross-covenant, wild-hope-hq, penco-command, forge) light up only when a
-// GITHUB_TOKEN (or GH_TOKEN) with org read access is set in the environment.
-// Without a token the page still renders the public MMS history (the bulk of the work).
+// Auth: the public repos (modern-mustard-seed, claude-code-power-pack) need no
+// token. Every private repo lights up only when a GITHUB_TOKEN (or GH_TOKEN)
+// with org read access is set in the environment. Without a token the page
+// still renders the public MMS history (the bulk of the work).
+//
+// `branch` pins a repo whose live work is not on the default branch.
+// `publicLabel` is what the login-free /build-log snapshot shows instead of the
+// real name, so client engagements stay unnamed in public.
 
 import { getSupabase } from "@/lib/supabase";
 
 const OWNER = "ModernMustardSeed";
 
-export const BUILD_LOG_REPOS: { name: string; repo: string }[] = [
+export const BUILD_LOG_REPOS: {
+  name: string;
+  repo: string;
+  branch?: string;
+  publicLabel?: string;
+}[] = [
   { name: "MMS", repo: "modern-mustard-seed" },
   { name: "CXC", repo: "cross-covenant" },
+  { name: "CXC Studio", repo: "cross-covenant-studio" },
+  { name: "The Cove", repo: "the-cove" },
+  { name: "Wildmere", repo: "wildmere" },
+  { name: "Westridge", repo: "westridge" },
   { name: "Wild Hope", repo: "wild-hope-hq" },
-  { name: "Penco", repo: "penco-command" },
+  { name: "Wild Daisy", repo: "wild-daisy-command-center" },
   { name: "FORGE", repo: "forge" },
+  { name: "Site Forge", repo: "modern-mustard-forge" },
+  { name: "Forge Site", repo: "forge-site" },
+  { name: "Power Pack", repo: "claude-code-power-pack" },
+  { name: "Build Log", repo: "worklog" },
+  { name: "Penco", repo: "penco-command", publicLabel: "Client Builds" },
+  { name: "Bare Earth", repo: "bare-earth", publicLabel: "Client Builds" },
+  { name: "D&D Landscaping", repo: "dd-landscaping", branch: "fresh-cut", publicLabel: "Client Builds" },
 ];
 
 // The record begins here (converted to Pacific below).
@@ -86,13 +106,14 @@ function parseSubject(subject: string): { cat: Category; label: string; scope: s
 
 type GhCommit = { commit?: { author?: { date?: string }; message?: string } };
 
-async function fetchRepo(repo: string, headers: Record<string, string>): Promise<GhCommit[]> {
+async function fetchRepo(repo: string, headers: Record<string, string>, branch?: string): Promise<GhCommit[]> {
   const out: GhCommit[] = [];
+  const sha = branch ? `&sha=${encodeURIComponent(branch)}` : "";
   // Cap at 5 pages (500 commits) per repo per period — plenty for this record.
   for (let page = 1; page <= 5; page++) {
     const url =
       `https://api.github.com/repos/${OWNER}/${repo}/commits` +
-      `?since=${SINCE_ISO}&per_page=100&page=${page}`;
+      `?since=${SINCE_ISO}&per_page=100&page=${page}${sha}`;
     const res = await fetch(url, { headers, next: { revalidate: 3600 } });
     if (!res.ok) {
       // 404/401 on a private repo without a valid token → treat as "no data".
@@ -121,8 +142,8 @@ export async function getBuildLogData(): Promise<BuildLogData> {
   const reposFailed: string[] = [];
 
   const results = await Promise.allSettled(
-    BUILD_LOG_REPOS.map(async ({ name, repo }) => {
-      const commits = await fetchRepo(repo, headers);
+    BUILD_LOG_REPOS.map(async ({ name, repo, branch }) => {
+      const commits = await fetchRepo(repo, headers, branch);
       return { name, commits };
     })
   );
@@ -196,13 +217,31 @@ export interface BuildLogSnapshot {
 }
 export interface StoredSnapshot { published: boolean; snapshot: BuildLogSnapshot | null; }
 
+// Client engagements are folded into one unnamed bucket before anything leaves
+// the login wall, so the public page never says who we build for.
+const PUBLIC_LABEL = new Map(
+  BUILD_LOG_REPOS.filter((r) => r.publicLabel).map((r) => [r.name, r.publicLabel as string])
+);
+const publicName = (project: string) => PUBLIC_LABEL.get(project) || project;
+
 export function buildSnapshot(data: BuildLogData): BuildLogSnapshot {
   const dayCounts: Record<string, SnapshotDay> = {};
   for (const [date, list] of Object.entries(data.byDate)) {
     const m = new Map<string, number>();
-    for (const e of list) m.set(e.project, (m.get(e.project) || 0) + 1);
+    for (const e of list) {
+      const p = publicName(e.project);
+      m.set(p, (m.get(p) || 0) + 1);
+    }
     dayCounts[date] = { total: list.length, byProject: [...m.entries()].sort((a, b) => b[1] - a[1]) };
   }
+
+  const projMap = new Map<string, number>();
+  for (const [project, n] of data.projectTotals) {
+    const p = publicName(project);
+    projMap.set(p, (projMap.get(p) || 0) + n);
+  }
+  const projectTotals = [...projMap.entries()].sort((a, b) => b[1] - a[1]);
+
   return {
     publishedAt: new Date().toISOString(),
     minDate: data.minDate,
@@ -210,10 +249,10 @@ export function buildSnapshot(data: BuildLogData): BuildLogSnapshot {
     totals: {
       commits: data.entries.length,
       features: data.featureCount,
-      ventures: data.projectTotals.length,
+      ventures: projectTotals.length,
       activeDays: data.activeDays,
     },
-    projectTotals: data.projectTotals,
+    projectTotals,
     catTotals: data.catTotals,
     dayCounts,
   };
