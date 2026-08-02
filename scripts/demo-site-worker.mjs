@@ -29,6 +29,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node
 import os from 'node:os';
 import path from 'node:path';
 import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective } from '../lib/site-directive.mjs';
+import { inlineSiteAssets, remainingLocalRefs } from './inline-site-assets.mjs';
 
 const ONCE = process.argv.includes('--once');
 const POLL_MS = Number(process.env.DEMO_SITE_POLL_MS || 15000);
@@ -583,11 +584,66 @@ async function process_(job) {
 }
 
 /**
+ * Repair a build that pointed at sibling files instead of inlining them, and refuse
+ * to bank one that cannot be repaired.
+ *
+ * Returns the sealed html, or null when the job has already been failed. A missing
+ * file is a REAL failure: the build died before generating its imagery (Miller's
+ * four offer-card renders never ran), and shipping the page anyway is how a lead
+ * gets a demo full of alt text. Better a retry than a burned prospect.
+ */
+async function sealAssets(job, html) {
+  const dir = path.join(SITES_DIR, job.id);
+  let result;
+  try {
+    result = await inlineSiteAssets(html, dir);
+  } catch (e) {
+    await fail(job, `could not inline the site assets: ${e?.message || e}`);
+    return null;
+  }
+
+  if (result.missing.length) {
+    await fail(job, `build references ${result.missing.length} asset(s) that do not exist on disk: ${result.missing.slice(0, 8).join(', ')}`);
+    return null;
+  }
+
+  if (result.inlined.length) {
+    log(
+      'sealed',
+      result.inlined.length,
+      'loose asset(s) into data URIs for',
+      job.id,
+      `(${Math.round(result.bytes / 1024)}KB, q${result.quality ?? '-'} x${result.scale ?? 1})`
+    );
+  }
+
+  const left = remainingLocalRefs(result.html);
+  if (left.length) {
+    await fail(job, `site still points at local files after inlining: ${left.slice(0, 8).join(', ')}`);
+    return null;
+  }
+  return result.html;
+}
+
+/**
  * Everything that happens once a build has produced valid HTML. Split out of
  * process_ so a build that finished on disk can still be banked after the worker
  * that started it is gone (see rescueFinished).
  */
 async function storeFinished(job, html) {
+  // NOTHING BUT THE HTML LEAVES THIS MACHINE.
+  //
+  // The row IS the deliverable; the build directory is not published anywhere. A
+  // build that wrote `<img src="hero.jpg">` beside its index.html therefore reaches
+  // the prospect as a wall of 404s with the browser painting the long descriptive
+  // alt text where the photographs should be (Miller Construction, 0cda2857,
+  // 2026-08-02: fifteen broken images, alt strings colliding with the hero copy).
+  // The design law forbids this, but law is not enforcement. Seal it here, on the
+  // one path every build and rescue funnels through.
+  const sealed = await sealAssets(job, html);
+  if (!sealed) return; // failed and recorded
+  html = sealed;
+
   // A client's edit lands in a draft for approval; it must NOT be written onto the
   // job's html and served, and it must NOT touch the live site. Route it first.
   if (isProjectEdit(job)) {
