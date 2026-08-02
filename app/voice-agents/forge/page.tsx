@@ -7,6 +7,9 @@ export const metadata = buildMetadata({
   title: SIDEKICK.metaTitle,
   description: SIDEKICK.metaDescription,
   path: '/voice-agents/forge',
+  // Route-level card. buildMetadata sets openGraph.images, which overrides
+  // the file-based opengraph-image convention, so it must be named here.
+  image: '/voice-agents/forge/opengraph-image',
 });
 
 export default function SidekickPage() {

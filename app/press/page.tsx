@@ -7,6 +7,9 @@ export const metadata = buildMetadata({
   title: PRESS.metaTitle,
   description: PRESS.metaDescription,
   path: '/press',
+  // Route-level card. buildMetadata sets openGraph.images, which overrides
+  // the file-based opengraph-image convention, so it must be named here.
+  image: '/press/opengraph-image',
 });
 
 export default function PressPage() {

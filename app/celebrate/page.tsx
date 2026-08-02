@@ -17,6 +17,9 @@ export const metadata = buildMetadata({
   title: CELEBRATE.metaTitle,
   description: CELEBRATE.metaDescription,
   path: '/celebrate',
+  // Route-level card. buildMetadata sets openGraph.images, which overrides
+  // the file-based opengraph-image convention, so it must be named here.
+  image: '/celebrate/opengraph-image',
 });
 
 export default function CelebratePage() {

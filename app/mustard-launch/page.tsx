@@ -8,6 +8,9 @@ export const metadata = buildMetadata({
   title: LAUNCH.metaTitle,
   description: LAUNCH.metaDescription,
   path: '/mustard-launch',
+  // Route-level card. buildMetadata sets openGraph.images, which overrides
+  // the file-based opengraph-image convention, so it must be named here.
+  image: '/mustard-launch/opengraph-image',
 });
 
 const jsonLd = {

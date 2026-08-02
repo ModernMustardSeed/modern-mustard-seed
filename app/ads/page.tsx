@@ -10,6 +10,9 @@ export const metadata = buildMetadata({
   title: BROADCAST.metaTitle,
   description: BROADCAST.metaDescription,
   path: '/ads',
+  // Route-level card. buildMetadata sets openGraph.images, which overrides
+  // the file-based opengraph-image convention, so it must be named here.
+  image: '/ads/opengraph-image',
 });
 
 export default function AdsPage() {

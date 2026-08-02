@@ -9,6 +9,9 @@ export const metadata = buildMetadata({
   title: MUSTARD.metaTitle,
   description: MUSTARD.metaDescription,
   path: '/mustard-mode',
+  // Route-level card. buildMetadata sets openGraph.images, which overrides
+  // the file-based opengraph-image convention, so it must be named here.
+  image: '/mustard-mode/opengraph-image',
 });
 
 export default function MustardModePage() {

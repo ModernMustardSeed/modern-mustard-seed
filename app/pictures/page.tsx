@@ -7,6 +7,9 @@ export const metadata = buildMetadata({
   title: PICTURES.metaTitle,
   description: PICTURES.metaDescription,
   path: '/pictures',
+  // Route-level card. buildMetadata sets openGraph.images, which overrides
+  // the file-based opengraph-image convention, so it must be named here.
+  image: '/pictures/opengraph-image',
 });
 
 export default function PicturesPage() {

@@ -23,6 +23,9 @@ export const metadata = buildMetadata({
   title: 'The Talking Website: a website that answers its own phone',
   description: `Your website and your voice agent built as one thing, off one brain, so the answer a visitor reads is the exact answer a caller hears at midnight. Command center free. ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month. See yours built free.`,
   path: '/talking-website',
+  // Route-level card. buildMetadata sets openGraph.images, which overrides
+  // the file-based opengraph-image convention, so it must be named here.
+  image: '/talking-website/opengraph-image',
 });
 
 // Verified figures only. The "85% of callers never call back" and "$126K a year"
