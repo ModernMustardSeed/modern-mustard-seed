@@ -67,9 +67,12 @@ function siteFlag(l: OutboundLead): { label: string; tone: 'red' | 'amber' } | n
 
 /** The table renders heavy rows (two populated <select>s each). On a floor of
  *  thousands, rendering the whole filtered set stalls the main thread on every
- *  keystroke. Cap the DOM to a scannable window; the count and the view chips
- *  still reflect the full set, and searching narrows below the cap immediately. */
-const RENDER_CAP = 200;
+ *  keystroke, so we page it instead of dumping it. The count and the view chips
+ *  still reflect the FULL filtered set; only the DOM window moves. 200 is the
+ *  ceiling on purpose: past that the per-keystroke re-render gets sluggish. */
+const PAGE_SIZES = [25, 50, 100, 200];
+const DEFAULT_PAGE_SIZE = 50;
+const PAGE_SIZE_KEY = 'mms_outbound_page_size';
 
 const EMPTY_FORM = {
   business_name: '',
@@ -143,6 +146,12 @@ export default function OutboundLeads() {
   const [view, setView] = useState<ViewKey>('all');
   const [sort, setSort] = useState<SortKey>('created_at');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
+  // Paging. Page is zero-indexed and lives only in state: a rep works a floor in
+  // one sitting, and putting it in the URL would make every Next click a history
+  // entry to back out of.
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const tableTop = useRef<HTMLDivElement>(null);
   // Armed after the first render so the URL-sync effect never clobbers the
   // params the mount reader just loaded (both run in the same initial commit).
   const urlWriteArmed = useRef(false);
@@ -300,9 +309,57 @@ export default function OutboundLeads() {
     });
   }, [base, view, workedFirst, sort, dir, repName]);
 
-  // Only the first RENDER_CAP rows hit the DOM. `visible` stays the full set for
+  // Only the current page hits the DOM. `visible` stays the full filtered set for
   // the count, the view chips, and the bulk-scrub target.
-  const shown = useMemo(() => (visible.length > RENDER_CAP ? visible.slice(0, RENDER_CAP) : visible), [visible]);
+  const pageCount = Math.max(1, Math.ceil(visible.length / pageSize));
+  // Derived, not stored: deleting the last lead on the last page (or any shrink
+  // of the filtered set) would otherwise strand the rep on an empty page.
+  const safePage = Math.min(page, pageCount - 1);
+  const from = visible.length === 0 ? 0 : safePage * pageSize + 1;
+  const to = Math.min(visible.length, (safePage + 1) * pageSize);
+  const shown = useMemo(
+    () => visible.slice(safePage * pageSize, safePage * pageSize + pageSize),
+    [visible, safePage, pageSize],
+  );
+
+  /** Page moves land the rep on row one, not at the bottom of the page they just left. */
+  const goToPage = useCallback((p: number) => {
+    setPage(p);
+    tableTop.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
+  // Any change to what's being filtered or sorted starts the stack over at page
+  // one. Landing on "page 14 of 3" after a search would read as an empty floor.
+  useEffect(() => {
+    setPage(0);
+  }, [status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, deferredQ, view, sort, dir, workedFirst]);
+
+  // Remembered per browser: a rep who works 100 at a time shouldn't reset to 50
+  // every morning.
+  useEffect(() => {
+    const saved = Number(window.localStorage.getItem(PAGE_SIZE_KEY));
+    if (PAGE_SIZES.includes(saved)) setPageSize(saved);
+  }, []);
+
+  const pickPageSize = (n: number) => {
+    setPageSize(n);
+    setPage(0);
+    window.localStorage.setItem(PAGE_SIZE_KEY, String(n));
+  };
+
+  // [ and ] page the floor without reaching for the mouse. Ignored while typing
+  // in a field so the search box and the notes textarea keep their brackets.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+      if (e.key === ']' && safePage < pageCount - 1) goToPage(safePage + 1);
+      else if (e.key === '[' && safePage > 0) goToPage(safePage - 1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [safePage, pageCount, goToPage]);
 
   const clickSort = (key: SortKey) => {
     if (sort === key) setDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -515,12 +572,14 @@ export default function OutboundLeads() {
               🔒 Scrub visible ({visibleUnscrubbed.length})
             </button>
           )}
-          <span className="ml-auto font-oswald text-sm text-[#1a1815]/50 uppercase tracking-[0.1em]">{visible.length} leads</span>
+          <span className="ml-auto font-oswald text-sm text-[#1a1815]/50 uppercase tracking-[0.1em] tabular-nums">
+            {visible.length > pageSize ? `${from}–${to} of ${visible.length.toLocaleString()} leads` : `${visible.length} leads`}
+          </span>
           </div>
         </div>
 
         {/* Table */}
-        <div className={`${card} overflow-hidden`}>
+        <div ref={tableTop} className={`${card} overflow-hidden scroll-mt-24`}>
           <div className="overflow-x-auto">
             <table className="w-full text-sm font-sans min-w-[1060px]">
               <thead className="border-b-2 border-[#1a1815]/10 bg-[#f7f3e9]/60">
@@ -642,18 +701,69 @@ export default function OutboundLeads() {
                     </td>
                   </tr>
                 ))}
-                {!loading && visible.length > RENDER_CAP && (
-                  <tr>
-                    <td colSpan={11} className="px-4 py-4 text-center bg-[#f7f3e9]/60 border-t-2 border-[#1a1815]/10">
-                      <p className="font-oswald uppercase tracking-[0.12em] text-xs text-[#1a1815]/55">
-                        Showing the first {RENDER_CAP} of {visible.length}. Search or filter to narrow the list.
-                      </p>
-                    </td>
-                  </tr>
-                )}
               </tbody>
             </table>
           </div>
+
+          {/* Pager. The whole point of the floor is working THROUGH it, so the
+              next batch is one button at the bottom of the rows you just worked. */}
+          {!loading && visible.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5 bg-[#f7f3e9]/70 border-t-2 border-[#1a1815]/10">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => goToPage(0)}
+                  disabled={safePage === 0}
+                  className={`${btnGhost} !px-3 !py-2 !text-xs`}
+                  title="First page"
+                  aria-label="First page"
+                >
+                  «
+                </button>
+                <button
+                  onClick={() => goToPage(safePage - 1)}
+                  disabled={safePage === 0}
+                  className={`${btnGhost} !px-3.5 !py-2 !text-xs`}
+                  title="Previous page ( [ )"
+                >
+                  ← Prev
+                </button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="font-oswald uppercase tracking-[0.1em] text-xs text-[#1a1815]/60 tabular-nums">
+                  {from.toLocaleString()}–{to.toLocaleString()} of {visible.length.toLocaleString()}
+                  <span className="text-[#1a1815]/35"> · page {safePage + 1} of {pageCount}</span>
+                </span>
+                <label className="flex items-center gap-1.5 font-sans text-xs text-[#1a1815]/55">
+                  Per page
+                  <select value={pageSize} onChange={(e) => pickPageSize(Number(e.target.value))} className={selectCls} aria-label="Leads per page">
+                    {PAGE_SIZES.map((n) => <option key={n} value={n}>{n}</option>)}
+                  </select>
+                </label>
+                <span className="hidden md:inline font-sans text-[11px] text-[#1a1815]/30" title="Keyboard shortcut">[ and ] page the list</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => goToPage(safePage + 1)}
+                  disabled={safePage >= pageCount - 1}
+                  className={`${btnPrimary} !px-4 !py-2 !text-xs`}
+                  title="Next page ( ] )"
+                >
+                  {visible.length - to > 0 ? `Next ${Math.min(pageSize, visible.length - to)} →` : 'End of list'}
+                </button>
+                <button
+                  onClick={() => goToPage(pageCount - 1)}
+                  disabled={safePage >= pageCount - 1}
+                  className={`${btnGhost} !px-3 !py-2 !text-xs`}
+                  title="Last page"
+                  aria-label="Last page"
+                >
+                  »
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
