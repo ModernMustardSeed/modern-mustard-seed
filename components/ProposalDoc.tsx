@@ -94,8 +94,28 @@ export default function ProposalDoc({
 
   return (
     <div className="bg-white border-2 border-[#161616] rounded-2xl overflow-hidden shadow-[6px_6px_0_0_#161616]">
+      {/* One orchestrated entrance, then stillness: a document you sign should
+          settle, not perform. CSS-only so every render path (token page, sample,
+          builder preview) gets it for free; reduced-motion and print opt out. */}
+      <style>{`
+        @keyframes pdRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        .pd-head { animation: pdRise 0.55s ease both; }
+        .pd-body > * { animation: pdRise 0.55s ease both; }
+        .pd-body > *:nth-child(1) { animation-delay: 0.08s; }
+        .pd-body > *:nth-child(2) { animation-delay: 0.14s; }
+        .pd-body > *:nth-child(3) { animation-delay: 0.2s; }
+        .pd-body > *:nth-child(4) { animation-delay: 0.26s; }
+        .pd-body > *:nth-child(5) { animation-delay: 0.32s; }
+        .pd-body > *:nth-child(6) { animation-delay: 0.38s; }
+        .pd-body > *:nth-child(7) { animation-delay: 0.44s; }
+        .pd-body > *:nth-child(8) { animation-delay: 0.5s; }
+        .pd-body > *:nth-child(n+9) { animation-delay: 0.56s; }
+        @media (prefers-reduced-motion: reduce), print {
+          .pd-head, .pd-body > * { animation: none; }
+        }
+      `}</style>
       {/* Midnight header band. Dark is reserved for exactly this, by brand law. */}
-      <div className="relative bg-[#080C16] px-8 pt-10 pb-12 text-center overflow-hidden">
+      <div className="pd-head relative bg-[#080C16] px-8 pt-10 pb-12 text-center overflow-hidden">
         <div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none"
@@ -126,7 +146,7 @@ export default function ProposalDoc({
         </div>
       </div>
 
-      <div className="px-7 md:px-9 py-8">
+      <div className="pd-body px-7 md:px-9 py-8">
         {siteUrl && (
           <p className="mb-5">
             <span className="block text-[9px] uppercase tracking-[0.25em] text-[#161616]/40 font-mono font-bold mb-1">
