@@ -52,7 +52,18 @@ const EYEBROW = 'text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono
 
 export default function BuildLogConsole({ data }: { data: BuildLogData }) {
   const router = useRouter();
-  const { byDate, entries, projectTotals, catTotals, minDate, maxDate, activeDays, featureCount, tokenPresent, reposFailed } = data;
+  const { byDate, entries, projectTotals, catTotals, minDate, maxDate, activeDays, featureCount, generatedAt, reposFailed } = data;
+
+  // Rendered client-side so the server does not bake a stale relative time into the HTML.
+  const [generatedLabel, setGeneratedLabel] = useState('');
+  useEffect(() => {
+    const d = new Date(generatedAt);
+    setGeneratedLabel(
+      Number.isNaN(d.getTime())
+        ? ''
+        : d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+    );
+  }, [generatedAt]);
 
   // Public snapshot control (aggregate-only public page at /build-log)
   const [snap, setSnap] = useState<{ published: boolean; publishedAt: string | null } | null>(null);
@@ -208,12 +219,11 @@ export default function BuildLogConsole({ data }: { data: BuildLogData }) {
           </div>
         </div>
 
-        {/* token hint */}
-        {!tokenPresent && reposFailed.length > 0 && (
-          <div className="mb-5 text-[12px] font-mono text-[#161616]/60 bg-[#FFF8E6] border-2 border-[#161616]/15 rounded-xl px-4 py-2.5">
-            Showing {projectTotals.map((p) => p[0]).join(', ') || 'no repos'}. Add a read-only <b className="text-[#161616]">GITHUB_TOKEN</b> in Vercel to include {reposFailed.join(', ')}.
-          </div>
-        )}
+        {/* freshness: the record is read from git by the CLI, not fetched here */}
+        <div className="mb-5 text-[12px] font-mono text-[#161616]/60 bg-[#FFF8E6] border-2 border-[#161616]/15 rounded-xl px-4 py-2.5">
+          Record read from git {generatedLabel}. Refresh with <b className="text-[#161616]">cd ~/worklog &amp;&amp; node gen-build-log.mjs</b>, then commit and push.
+          {reposFailed.length > 0 && <> Not readable this run: {reposFailed.join(', ')}.</>}
+        </div>
 
         {/* calendar + detail */}
         <div className="grid lg:grid-cols-[340px_1fr] gap-4 items-start">

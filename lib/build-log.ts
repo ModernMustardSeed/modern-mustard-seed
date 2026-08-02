@@ -1,47 +1,42 @@
 // lib/build-log.ts
-// Live commit history across every Modern Mustard Seed venture, for the /admin/build-log page.
-// Fetches from the GitHub API server-side, so the page is always current with no manual publish.
+// Commit history across every Modern Mustard Seed venture, for the /admin/build-log page.
 //
-// Auth: the public repos (modern-mustard-seed, claude-code-power-pack) need no
-// token. Every private repo lights up only when a GITHUB_TOKEN (or GH_TOKEN)
-// with org read access is set in the environment. Without a token the page
-// still renders the public MMS history (the bulk of the work).
+// The record is read from git with the git CLI (~/worklog/gen-build-log.mjs) and
+// pushed into app_state, the same k/v table the public snapshot uses. That is
+// the whole reason this page needs no GitHub token: private repos are read
+// locally where Sarah is already authenticated, not fetched from the API here.
 //
-// `branch` pins a repo whose live work is not on the default branch.
+// It lives in Supabase and NOT in this repo on purpose. modern-mustard-seed is
+// public, so a committed dataset would publish every commit subject from 15
+// private repos, client work included.
+//
+// Refresh:  cd ~/worklog && node gen-build-log.mjs   (no redeploy needed)
+//
 // `publicLabel` is what the login-free /build-log snapshot shows instead of the
 // real name, so client engagements stay unnamed in public.
 
 import { getSupabase } from "@/lib/supabase";
 
-const OWNER = "ModernMustardSeed";
+const RECORD_KEY = "build_log:record";
 
-export const BUILD_LOG_REPOS: {
-  name: string;
-  repo: string;
-  branch?: string;
-  publicLabel?: string;
-}[] = [
-  { name: "MMS", repo: "modern-mustard-seed" },
-  { name: "CXC", repo: "cross-covenant" },
-  { name: "CXC Studio", repo: "cross-covenant-studio" },
-  { name: "The Cove", repo: "the-cove" },
-  { name: "Wildmere", repo: "wildmere" },
-  { name: "Westridge", repo: "westridge" },
-  { name: "Wild Hope", repo: "wild-hope-hq" },
-  { name: "Wild Daisy", repo: "wild-daisy-command-center" },
-  { name: "FORGE", repo: "forge" },
-  { name: "Site Forge", repo: "modern-mustard-forge" },
-  { name: "Forge Site", repo: "forge-site" },
-  { name: "Power Pack", repo: "claude-code-power-pack" },
-  { name: "Build Log", repo: "worklog" },
-  { name: "Penco", repo: "penco-command", publicLabel: "Client Builds" },
-  { name: "Bare Earth", repo: "bare-earth", publicLabel: "Client Builds" },
-  { name: "D&D Landscaping", repo: "dd-landscaping", branch: "fresh-cut", publicLabel: "Client Builds" },
+export const BUILD_LOG_REPOS: { name: string; publicLabel?: string }[] = [
+  { name: "MMS" },
+  { name: "CXC" },
+  { name: "CXC Studio" },
+  { name: "The Cove" },
+  { name: "Wildmere" },
+  { name: "Westridge" },
+  { name: "Wild Hope" },
+  { name: "Wild Daisy" },
+  { name: "FORGE" },
+  { name: "Site Forge" },
+  { name: "Forge Site" },
+  { name: "Power Pack" },
+  { name: "Build Log" },
+  { name: "Penco", publicLabel: "Client Builds" },
+  { name: "Bare Earth", publicLabel: "Client Builds" },
+  { name: "D&D Landscaping", publicLabel: "Client Builds" },
 ];
-
-// The record begins here (converted to Pacific below).
-const SINCE_ISO = "2026-07-15T00:00:00Z";
-const SINCE_DAY = "2026-07-15";
 
 export type Category =
   | "new" | "fix" | "perf" | "polish" | "docs" | "access" | "revert" | "note";
@@ -66,10 +61,9 @@ export interface BuildLogData {
   maxDate: string | null;
   activeDays: number;
   featureCount: number;
-  tokenPresent: boolean;
-  reposLoaded: string[];                // display names that returned data
-  reposFailed: string[];                // display names that errored (e.g. private, no token)
-  generatedAt: string;                  // ISO
+  reposLoaded: string[];                // display names present in the record
+  reposFailed: string[];                // roster names the generator could not read
+  generatedAt: string;                  // ISO, when the CLI last read git
 }
 
 const CAT_MAP: Record<string, { key: Category; label: string }> = {
@@ -86,17 +80,6 @@ const CAT_MAP: Record<string, { key: Category; label: string }> = {
 };
 const NOTE = { key: "note" as Category, label: "Note" };
 
-function laDateTime(isoUtc: string): { date: string; time: string } {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Los_Angeles",
-    year: "numeric", month: "2-digit", day: "2-digit",
-    hour: "2-digit", minute: "2-digit", hour12: false,
-  }).formatToParts(new Date(isoUtc));
-  const p = Object.fromEntries(parts.map((x) => [x.type, x.value])) as Record<string, string>;
-  const hour = p.hour === "24" ? "00" : p.hour;
-  return { date: `${p.year}-${p.month}-${p.day}`, time: `${hour}:${p.minute}` };
-}
-
 function parseSubject(subject: string): { cat: Category; label: string; scope: string; title: string } {
   const m = subject.match(/^([a-z0-9]+)(?:\(([^)]*)\))?!?:\s*(.*)$/i);
   if (!m) return { cat: NOTE.key, label: NOTE.label, scope: "", title: subject };
@@ -104,68 +87,40 @@ function parseSubject(subject: string): { cat: Category; label: string; scope: s
   return { cat: mapped.key, label: mapped.label, scope: m[2] || "", title: m[3] || subject };
 }
 
-type GhCommit = { commit?: { author?: { date?: string }; message?: string } };
+interface RecordFile {
+  generatedAt: string;
+  since: string;
+  sources: Record<string, string>;   // display name -> "git" | "gh" | "none"
+  entries: { project: string; datetime: string; subject: string }[];
+}
 
-async function fetchRepo(repo: string, headers: Record<string, string>, branch?: string): Promise<GhCommit[]> {
-  const out: GhCommit[] = [];
-  const sha = branch ? `&sha=${encodeURIComponent(branch)}` : "";
-  // Cap at 5 pages (500 commits) per repo per period — plenty for this record.
-  for (let page = 1; page <= 5; page++) {
-    const url =
-      `https://api.github.com/repos/${OWNER}/${repo}/commits` +
-      `?since=${SINCE_ISO}&per_page=100&page=${page}${sha}`;
-    const res = await fetch(url, { headers, next: { revalidate: 3600 } });
-    if (!res.ok) {
-      // 404/401 on a private repo without a valid token → treat as "no data".
-      if (page === 1) throw new Error(`${repo}: HTTP ${res.status}`);
-      break;
-    }
-    const batch = (await res.json()) as GhCommit[];
-    if (!Array.isArray(batch) || batch.length === 0) break;
-    out.push(...batch);
-    if (batch.length < 100) break;
-  }
-  return out;
+const EMPTY_RECORD: RecordFile = { generatedAt: "", since: "", sources: {}, entries: [] };
+
+async function readRecord(): Promise<RecordFile> {
+  const sb = getSupabase();
+  if (!sb) return EMPTY_RECORD;
+  const { data } = await sb.from("app_state").select("value").eq("key", RECORD_KEY).maybeSingle();
+  const v = data?.value as RecordFile | undefined;
+  return v && Array.isArray(v.entries) ? { ...EMPTY_RECORD, ...v } : EMPTY_RECORD;
 }
 
 export async function getBuildLogData(): Promise<BuildLogData> {
-  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
-  const headers: Record<string, string> = {
-    Accept: "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
-    "User-Agent": "mms-build-log",
-  };
-  if (token) headers.Authorization = `Bearer ${token}`;
+  const record = await readRecord();
 
-  const entries: LogEntry[] = [];
-  const reposLoaded: string[] = [];
-  const reposFailed: string[] = [];
-
-  const results = await Promise.allSettled(
-    BUILD_LOG_REPOS.map(async ({ name, repo, branch }) => {
-      const commits = await fetchRepo(repo, headers, branch);
-      return { name, commits };
-    })
-  );
-
-  results.forEach((r, i) => {
-    const name = BUILD_LOG_REPOS[i].name;
-    if (r.status !== "fulfilled") { reposFailed.push(name); return; }
-    reposLoaded.push(name);
-    for (const c of r.value.commits) {
-      const iso = c.commit?.author?.date;
-      const subject = (c.commit?.message || "").split("\n")[0].trim();
-      if (!iso || !subject) continue;
-      if (/^Merge (branch|pull request|remote)/i.test(subject)) continue;
-      const { date, time } = laDateTime(iso);
-      if (date < SINCE_DAY) continue;
-      const parsed = parseSubject(subject);
-      entries.push({
-        project: name, date, time, datetime: `${date} ${time}`,
-        cat: parsed.cat, catLabel: parsed.label, scope: parsed.scope, title: parsed.title,
-      });
-    }
+  const entries: LogEntry[] = record.entries.map(({ project, datetime, subject }) => {
+    const [date, time] = datetime.split(" ");
+    const parsed = parseSubject(subject);
+    return {
+      project, date, time, datetime,
+      cat: parsed.cat, catLabel: parsed.label, scope: parsed.scope, title: parsed.title,
+    };
   });
+
+  const seen = new Set(entries.map((e) => e.project));
+  const reposLoaded = BUILD_LOG_REPOS.filter((r) => seen.has(r.name)).map((r) => r.name);
+  const reposFailed = BUILD_LOG_REPOS
+    .filter((r) => !seen.has(r.name) && record.sources[r.name] !== "git" && record.sources[r.name] !== "gh")
+    .map((r) => r.name);
 
   entries.sort((a, b) => (a.datetime < b.datetime ? 1 : a.datetime > b.datetime ? -1 : 0));
 
@@ -190,10 +145,9 @@ export async function getBuildLogData(): Promise<BuildLogData> {
     maxDate: dates[dates.length - 1] || null,
     activeDays: dates.length,
     featureCount: entries.filter((e) => e.cat === "new").length,
-    tokenPresent: Boolean(token),
     reposLoaded,
     reposFailed,
-    generatedAt: new Date().toISOString(),
+    generatedAt: record.generatedAt,
   };
 }
 
