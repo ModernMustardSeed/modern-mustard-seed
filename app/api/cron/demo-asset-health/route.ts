@@ -18,6 +18,16 @@
  * too (.github/workflows/demo-asset-health.yml). Same shape as checkout-health and
  * voice-health, and here for the same reason: the MMS Vercel project is on Hobby,
  * where crons are daily-only.
+ *
+ * ── WHY IT PAGES, AND WHY IT LOOKS AT A WINDOW ──
+ * These rows carry entire websites with their photographs inlined as data URIs, so
+ * the fleet is ~60MB of text. The first version selected all of it in one query and
+ * Postgres killed it ("canceling statement due to statement timeout"), which is a
+ * watchdog that reports a false emergency every hour. So it reads in small pages,
+ * and by default only looks at rows touched in the last week. A site cannot break on
+ * its own; it breaks when something writes it, and a write moves updated_at. Pass
+ * ?full=1 for a complete sweep, or run `npm run audit:demo-assets` locally where
+ * nothing is racing a serverless timeout.
  */
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
@@ -32,6 +42,10 @@ export const dynamic = 'force-dynamic';
 
 type Broken = { kind: string; id: string; name: string; refs: string[]; url: string };
 
+const PAGE = 5; // ~4MB and ~2.3s per page; bigger pages risk the statement timeout
+const WINDOW_DAYS = 7;
+const DEADLINE_MS = 45_000; // leave headroom inside maxDuration for the alert email
+
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
   if (secret) {
@@ -44,55 +58,74 @@ export async function GET(req: Request) {
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ ok: true, note: 'supabase not configured; watchdog idle' });
 
+  const full = new URL(req.url).searchParams.get('full') === '1';
+  const since = new Date(Date.now() - WINDOW_DAYS * 86_400_000).toISOString();
+  const startedAt = Date.now();
   const broken: Broken[] = [];
   let checked = 0;
+  let truncated = false;
 
-  // The demo fleet: what prospects open from an email or an ad.
-  const { data: demos, error: demoErr } = await sb
-    .from('outbound_demo_sites')
-    .select('id,business_name,html')
-    .not('html', 'is', null);
-  if (demoErr) {
-    return NextResponse.json({ error: `could not read the demo fleet: ${demoErr.message}` }, { status: 500 });
-  }
-  for (const row of demos ?? []) {
-    checked++;
-    const refs = localAssetRefs(row.html as string);
-    if (refs.length) {
-      broken.push({
-        kind: 'demo',
-        id: row.id as string,
-        name: (row.business_name as string) || 'unnamed',
-        refs,
-        url: `${SITE.url}/demo/site/${row.id}`,
-      });
+  /** Read one table in pages, stopping politely if we run out of time. */
+  async function sweep(
+    table: string,
+    htmlCol: string,
+    nameCol: string,
+    kind: string,
+    urlFor: (id: string) => string,
+    windowed: boolean
+  ): Promise<string | null> {
+    for (let from = 0; ; from += PAGE) {
+      if (Date.now() - startedAt > DEADLINE_MS) {
+        truncated = true;
+        return null;
+      }
+      // The column names are parameters, so PostgREST's compile-time select parser
+      // cannot type this. The shape is checked at the point of use instead.
+      let q = sb!
+        .from(table)
+        .select(`id,${nameCol},${htmlCol}` as '*')
+        .not(htmlCol, 'is', null)
+        .order('updated_at', { ascending: false })
+        .range(from, from + PAGE - 1);
+      if (windowed && !full) q = q.gte('updated_at', since);
+
+      const { data, error } = await q;
+      if (error) return `could not read ${table}: ${error.message}`;
+      if (!data?.length) return null;
+
+      for (const row of data as unknown as Record<string, unknown>[]) {
+        checked++;
+        const refs = localAssetRefs(row[htmlCol] as string);
+        if (refs.length) {
+          broken.push({
+            kind,
+            id: row.id as string,
+            name: (row[nameCol] as string) || 'unnamed',
+            refs,
+            url: urlFor(row.id as string),
+          });
+        }
+      }
+      if (data.length < PAGE) return null;
     }
   }
 
-  // Client sites, which matter more: these are live pages somebody paid for.
-  const { data: projects, error: projErr } = await sb
-    .from('projects')
-    .select('id,name,site_html')
-    .not('site_html', 'is', null);
-  if (projErr) {
-    return NextResponse.json({ error: `could not read client sites: ${projErr.message}` }, { status: 500 });
-  }
-  for (const row of projects ?? []) {
-    checked++;
-    const refs = localAssetRefs(row.site_html as string);
-    if (refs.length) {
-      broken.push({
-        kind: 'client site',
-        id: row.id as string,
-        name: (row.name as string) || 'unnamed',
-        refs,
-        url: `${SITE.url}/admin/delivery`,
-      });
-    }
-  }
+  // Client sites first: fewest rows, and they are live pages somebody paid for.
+  const projErr = await sweep('projects', 'site_html', 'name', 'client site', () => `${SITE.url}/admin/delivery`, false);
+  if (projErr) return NextResponse.json({ error: projErr }, { status: 500 });
+
+  const demoErr = await sweep(
+    'outbound_demo_sites',
+    'html',
+    'business_name',
+    'demo',
+    (id) => `${SITE.url}/demo/site/${id}`,
+    true
+  );
+  if (demoErr) return NextResponse.json({ error: demoErr }, { status: 500 });
 
   if (!broken.length) {
-    return NextResponse.json({ ok: true, checked, broken: 0 });
+    return NextResponse.json({ ok: true, checked, broken: 0, window: full ? 'all' : `${WINDOW_DAYS}d`, truncated });
   }
 
   const fields = broken.slice(0, 12).map((b) => ({
@@ -115,8 +148,8 @@ export async function GET(req: Request) {
             `${broken.length} site(s) are serving broken images right now. Each one renders its alt ` +
             `text where a photograph should be, in front of whoever opens it.`,
           suggestedAction:
-            'Run node scripts/audit-demo-assets.mjs. It says which rows can be repaired in place ' +
-            'and which have lost their assets and need forging again.',
+            'Run npm run audit:demo-assets. It says which rows can be repaired in place and which ' +
+            'have lost their assets and need forging again.',
         }),
       });
     } catch (err) {
@@ -125,5 +158,8 @@ export async function GET(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: false, checked, broken: broken.length, sites: broken }, { status: 500 });
+  return NextResponse.json(
+    { ok: false, checked, broken: broken.length, window: full ? 'all' : `${WINDOW_DAYS}d`, truncated, sites: broken },
+    { status: 500 }
+  );
 }

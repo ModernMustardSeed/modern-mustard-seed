@@ -35,15 +35,29 @@ const supabase = createClient(
 
 const SITES_DIR = process.env.DEMO_SITES_DIR || path.join(os.homedir(), 'mms-demo-sites');
 
-const { data, error } = await supabase
-  .from('outbound_demo_sites')
-  .select('id,business_name,status,built_at,html')
-  .not('html', 'is', null);
-
-if (error) {
-  console.error('query failed:', error.message);
-  process.exit(2);
+// These rows carry whole websites with their photographs inlined, so the fleet is
+// ~60MB of text. Selecting it in one query trips the Postgres statement timeout
+// (it did, on the first version of the watchdog). Read it in small pages.
+const PAGE = 5;
+const data = [];
+for (let from = 0; ; from += PAGE) {
+  const { data: page, error } = await supabase
+    .from('outbound_demo_sites')
+    .select('id,business_name,status,built_at,html')
+    .not('html', 'is', null)
+    .order('built_at', { ascending: false })
+    .range(from, from + PAGE - 1);
+  if (error) {
+    console.error('query failed:', error.message);
+    process.exit(2);
+  }
+  if (!page?.length) break;
+  data.push(...page);
+  // Progress only when someone is watching; piped or in CI it would be line noise.
+  if (process.stderr.isTTY) process.stderr.write(`\rreading... ${data.length}`);
+  if (page.length < PAGE) break;
 }
+if (process.stderr.isTTY) process.stderr.write(`\r${' '.repeat(24)}\r`);
 
 const broken = [];
 for (const row of data) {
