@@ -40,6 +40,15 @@ const config: NextConfig = {
       // texting anywhere). The URL is indexed and was filed with carriers, so
       // it redirects to the contact page instead of 404ing.
       { source: '/sms', destination: '/contact', permanent: true },
+      // The AI receptionist pricing post was pulled 2026-08-01 (Sarah: we do
+      // not talk about pricing in the blog). It was indexed and cited in
+      // llms.txt, so it lands on the sibling comparison guide, which covers
+      // the same buying question without quoting our prices.
+      {
+        source: '/blog/how-much-does-an-ai-receptionist-cost',
+        destination: '/blog/ai-receptionist-vs-answering-service',
+        permanent: true,
+      },
     ];
   },
 };
