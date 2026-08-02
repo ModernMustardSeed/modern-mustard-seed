@@ -1854,6 +1854,305 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
     ],
   },
+  {
+    id: 'mustard-seed-twenty',
+    name: 'The Mustard Seed Twenty',
+    eyebrow: 'Set thirteen · The Kingdom Trades',
+    blurb:
+      'The faith sister set to The Main Street Twenty, and the reason the company has its name. Twenty WPA style posters of the trades the Kingdom was told through: the sower, the shepherd, the baker with her leaven, Lydia the dyer, the watchman of Psalm 130. Each card carries an honor line in our own words plus the scripture reference it comes from, and No. 20 is the mustard seed itself (Matthew 13:31). Same giveaway engine, plus a church escalator: a pastor who comments gets the whole set for the fellowship hall, free.',
+    cta: 'Free poster · comment and it is yours',
+    accent: '#3B6B8A',
+    rules: [
+      'This set wears the faith openly and the company name is the punchline: No. 20 is Matthew 13:31. Post it where faith content is welcome (church groups, faith and business groups, community groups that allow it). NEVER into a secular trade group; that is what set twelve is for.',
+      'No stats and no pitch. The honor line plus the scripture reference is the whole message.',
+      'The honor lines are OUR words, never quotations. The reference points to the passage the picture comes from. Asked for the verse, quote the passage accurately or link it. Never pass our line off as scripture.',
+      'Same giveaway engine as set twelve: whoever runs the trade or the ministry comments and gets the full resolution file free. Poster FIRST, then one soft line. Never open with a link.',
+      'The church escalator: a pastor or ministry leader who comments gets the WHOLE set free for the fellowship hall, church name set into the posters, also free. Deliver all twenty, not just the one.',
+      'Outbound: never attach a faith poster to cold outreach. Only when their faith is public (their site or page says it) or they brought it up first. Email or live call only, never a cold text.',
+      'No depiction of Jesus in any plate, ever. If a regeneration draws one, regenerate again rather than ship it.',
+      'Never argue doctrine in a thread. The poster is a gift, not a debate. Disagreement gets grace and no further replies.',
+      'Asked if it is AI art, the answer is yes, art directed here at the studio. This audience deserves the straightest answer of all.',
+      'The money question gets the canned reply, never a number. Poster talk stays free talk.',
+    ],
+    cards: [
+      {
+        file: '01-sower',
+        headline: 'The Sower. Scatters like the seed will never run out.',
+        use: 'Series opener on our own Page, carries the name story. Matthew 13:3.',
+        alt: 'A WPA style screenprint poster of a farmer broadcasting seed across a plowed hillside at sunrise. Headline: The Sower. Scatters like the seed will never run out. Reference Matthew 13:3.',
+      },
+      {
+        file: '02-shepherd',
+        headline: 'The Shepherd. Counts to ninety-nine and heads back out.',
+        use: 'The church hall post, and pastor appreciation month in October. Luke 15:4.',
+        alt: 'A WPA style poster of a shepherd with a lantern climbing a snowy hillside at night toward one lost sheep. Headline: The Shepherd. Counts to ninety-nine and heads back out. Reference Luke 15:4.',
+      },
+      {
+        file: '03-fisherman',
+        headline: 'The Fisherman. The first ones called were mid-shift at this job.',
+        use: 'Faith and business groups, men’s ministry threads. Matthew 4:19.',
+        alt: 'A WPA style poster of a fisherman casting a circular net from a wooden boat against a giant rising sun. Headline: The Fisherman. The first ones called were mid-shift at this job. Reference Matthew 4:19.',
+      },
+      {
+        file: '04-vinedresser',
+        headline: 'The Vinedresser. Prunes what he loves so it bears more.',
+        use: 'The card for a hard season. Small groups and discipleship threads. John 15:2.',
+        alt: 'A WPA style poster of a vinedresser pruning a heavy grapevine row on terraced hills. Headline: The Vinedresser. Prunes what he loves so it bears more. Reference John 15:2.',
+      },
+      {
+        file: '05-builder',
+        headline: 'The Builder. Digs past the sand until the footing is rock.',
+        use: 'The single trade drop for builder and contractor believers. Luke 6:48.',
+        alt: 'A WPA style poster of a builder laying a cornerstone onto bedrock in a deep foundation trench. Headline: The Builder. Digs past the sand until the footing is rock. Reference Luke 6:48.',
+      },
+      {
+        file: '06-baker',
+        headline: 'The Baker. Works the leaven through all three measures.',
+        use: 'The giveaway post graphic. Her story in the text, Matthew 13:33.',
+        alt: 'A WPA style poster of a woman baker kneading dough before dawn with three flour sacks beside her. Headline: The Baker. Works the leaven through all three measures. Reference Matthew 13:33.',
+      },
+      {
+        file: '07-carpenter',
+        headline: 'The Carpenter. The trade heaven chose for thirty quiet years.',
+        use: 'The strongest single line in the set. Own Page, and woodworker believers. Mark 6:3.',
+        alt: 'A WPA style poster of a carpenter planing a beam in a workshop with a dove on the windowsill. Headline: The Carpenter. The trade heaven chose for thirty quiet years. Reference Mark 6:3.',
+      },
+      {
+        file: '08-potter',
+        headline: 'The Potter. Makes it again instead of throwing it away.',
+        use: 'Recovery ministries and fresh start threads. Jeremiah 18:4.',
+        alt: 'A WPA style poster of a potter re-centering a slumped vessel at a kick wheel. Headline: The Potter. Makes it again instead of throwing it away. Reference Jeremiah 18:4.',
+      },
+      {
+        file: '09-gardener',
+        headline: 'The Gardener. On the third morning, the Lord was taken for one.',
+        use: 'THE Easter card. Hold for Holy Week when the calendar is close. John 20:15.',
+        alt: 'A WPA style poster of a woman gardener kneeling in dew-heavy rows as sunrise breaks over a stone wall. Headline: The Gardener. On the third morning, the Lord was taken for one. Reference John 20:15.',
+      },
+      {
+        file: '10-harvester',
+        headline: 'The Harvester. Says the harvest is plenty. Prays for hands.',
+        use: 'Harvest season and missions emphasis weeks. Matthew 9:37.',
+        alt: 'A WPA style poster of a woman harvester binding wheat sheaves in a vast golden field. Headline: The Harvester. Says the harvest is plenty. Prays for hands. Reference Matthew 9:37.',
+      },
+      {
+        file: '11-lamplighter',
+        headline: 'The Lamplighter. Sets the lamp on the stand, never under it.',
+        use: 'Encouragement threads, graduation season. Matthew 5:15.',
+        alt: 'A WPA style poster of a lamplighter on a ladder lighting a street lamp at dusk on a small town street. Headline: The Lamplighter. Sets the lamp on the stand, never under it. Reference Matthew 5:15.',
+      },
+      {
+        file: '12-pearl-merchant',
+        headline: 'The Pearl Merchant. Sold the whole inventory for the one.',
+        use: 'Faith and business groups. The all-in card. Matthew 13:46.',
+        alt: 'A WPA style poster of a merchant holding one enormous pearl up to the lamplight over emptied cases. Headline: The Pearl Merchant. Sold the whole inventory for the one. Reference Matthew 13:46.',
+      },
+      {
+        file: '13-treasure-finder',
+        headline: 'The Treasure Finder. Sells everything for one field and calls it joy.',
+        use: 'The joy card. Own Page weekends. Matthew 13:44.',
+        alt: 'A WPA style poster of a joyful man opening a buried strongbox glowing with golden light in a plowed field. Headline: The Treasure Finder. Sells everything for one field and calls it joy. Reference Matthew 13:44.',
+      },
+      {
+        file: '14-net-mender',
+        headline: 'The Net Mender. Was mending nets when the call came.',
+        use: 'The ordinary faithfulness card. Fishermen and quiet servers. Mark 1:19.',
+        alt: 'A WPA style poster of two fishermen mending an enormous draped net on a dock at morning. Headline: The Net Mender. Was mending nets when the call came. Reference Mark 1:19.',
+      },
+      {
+        file: '15-tentmaker',
+        headline: 'The Tentmaker. Paid for the letters with needle and canvas.',
+        use: 'Bi-vocational pastors and side business believers. They will feel seen. Acts 18:3.',
+        alt: 'A WPA style poster of a tentmaker stitching heavy canvas by lamplight with bolts of cloth stacked around. Headline: The Tentmaker. Paid for the letters with needle and canvas. Reference Acts 18:3.',
+      },
+      {
+        file: '16-dyer',
+        headline: 'The Dyer. Sold purple. Then hosted the first church in Europe.',
+        use: 'The women of the trades post. Lydia, Acts 16:14. The one card allowed to break the palette with purple.',
+        alt: 'A WPA style poster of a woman dyer lifting deep purple cloth from a stone vat with purple lengths drying overhead. Headline: The Dyer. Sold purple. Then hosted the first church in Europe. Reference Acts 16:14.',
+      },
+      {
+        file: '17-seamstress',
+        headline: 'The Seamstress. Every widow in town kept what she made them.',
+        use: 'Dorcas, Acts 9:39. Quilting circles, sewing ministries, craft groups.',
+        alt: 'A WPA style poster of a woman seamstress at a treadle machine surrounded by finished coats on hooks. Headline: The Seamstress. Every widow in town kept what she made them. Reference Acts 9:39.',
+      },
+      {
+        file: '18-watchman',
+        headline: 'The Watchman. The Psalms measure waiting by this shift.',
+        use: 'The night shift post, and the Advent card. Psalm 130:6.',
+        alt: 'A WPA style poster of a watchman with a lantern on a city wall as the first band of dawn breaks the horizon. Headline: The Watchman. The Psalms measure waiting by this shift. Reference Psalm 130:6.',
+      },
+      {
+        file: '19-physician',
+        headline: 'The Physician. Comes when called. The letters say beloved.',
+        use: 'Nurses week, healthcare believers. Colossians 4:14.',
+        alt: 'A WPA style poster of a woman physician with a leather satchel climbing farmhouse porch steps in night rain toward a lit doorway. Headline: The Physician. Comes when called. The letters say beloved. Reference Colossians 4:14.',
+      },
+      {
+        file: '20-mustard-seed',
+        headline: 'The Mustard Seed. Smallest seed in the drawer. Ask the birds.',
+        use: 'The series closer and the company name card. The why post. Matthew 13:32.',
+        alt: 'A WPA style poster of an enormous mustard tree filled with nesting birds, a tiny sower at its roots, a giant sun behind the crown. Headline: The Mustard Seed. Smallest seed in the drawer. Ask the birds. Reference Matthew 13:32.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'The name post',
+        graphic: '01-sower',
+        body: [
+          'Our studio is named after the smallest seed in the market. Matthew 13:31, look it up, it is a great story to be named after.',
+          'So this month we drew the twenty trades the Kingdom was told through. The sower, the shepherd, the baker with her leaven, the potter, the watchman on the wall. Jesus explained the biggest thing there is using the jobs people were already doing, and we think that says something beautiful about work.',
+          'One goes up every weekday for the next month. If one of these trades is yours, comment and the full resolution file is free. Print it, frame it, hang it in the shop, the office, the fellowship hall.',
+          'No. 01 is the sower. Scatters like the seed will never run out.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'Nothing for sale in this thread. The honor lines are our own words, the reference on each poster points to the passage the picture comes from. And if you want your name or your church set into one, say so. Free.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'The giveaway',
+        graphic: '06-baker',
+        body: [
+          'Comment your trade or your ministry and the poster is yours. Full resolution, free, print it as big as you like.',
+          'Twenty posters for the trades the Kingdom was told through. And a detail we love: scripture put women in these trades from the start. The baker working leaven through three measures is her story, so are the dyer, the seamstress, and more. Six of the twenty are women because the text got there first.',
+          'Your trade not in the twenty? Tell me what you do and we will draw yours. That is a promise, not a maybe.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'Free means free. No list to join, nothing to buy. We are named after Matthew 13:31 and this series is us saying the name out loud.',
+          ],
+        },
+      },
+      {
+        n: 3,
+        title: 'The church hall',
+        graphic: '02-shepherd',
+        body: [
+          'Pastors, this one is for your hallway.',
+          'No. 02 of the Mustard Seed Twenty is the shepherd. Counts to ninety-nine and heads back out. If any wall in your building deserves that reminder, comment and the ENTIRE set of twenty is yours, free, full resolution, your church name set into the posters if you want it.',
+          'Fellowship halls, kids wings, church offices, coffee stations. They were drawn to be printed and hung.',
+        ],
+        followUp: {
+          label: 'Reply rule',
+          lines: [
+            'Every pastor or ministry leader who comments gets the whole set delivered, not just the one. That delivery message may carry exactly one line about what we do, after the files, never before.',
+          ],
+        },
+      },
+      {
+        n: 4,
+        title: 'The women of the trades',
+        graphic: '16-dyer',
+        body: [
+          'Lydia sold purple cloth. Then the first church in Europe met in her house.',
+          'No. 16 of the Mustard Seed Twenty is the dyer, and she is one of six women in the series because scripture put women in business long before anyone made a poster about it. The seamstress whose widows kept every coat. The baker with her three measures of flour.',
+          'Tag a woman who runs her trade in faith, or comment yours. The full resolution file is free, and we will set her name into it if she wants.',
+        ],
+        followUp: {
+          label: 'Reply rule',
+          lines: [
+            'Reply to every tag with the poster offer, and deliver with her name set in when she says yes. The thread of women naming women is the whole post.',
+          ],
+        },
+      },
+      {
+        n: 5,
+        title: 'The single trade drop',
+        graphic: '05-builder',
+        body: [
+          'This one is for the builders.',
+          'No. 05 of the Mustard Seed Twenty. The honor line reads: digs past the sand until the footing is rock. Luke 6:48 is the reference, and if you have ever poured a footing you already know the sermon.',
+          'If building is your trade, comment and the full resolution file is yours, free. It prints clean at frame size.',
+        ],
+        followUp: {
+          label: 'Swap the trade to match the group',
+          lines: [
+            'The fisherman for coastal and lake town groups, the potter for makers, the physician for healthcare believers. One trade per group, always theirs, and only in groups where faith content is welcome.',
+          ],
+        },
+      },
+      {
+        n: 6,
+        title: 'The night shift',
+        graphic: '18-watchman',
+        body: [
+          'For everyone awake at four in the morning so the rest of us are not.',
+          'No. 18 of the Mustard Seed Twenty is the watchman. The Psalms measure waiting by this shift (Psalm 130:6, look at it). Nurses, dispatchers, plow drivers, dairy farmers, security, new parents, this card is yours too.',
+          'Comment and the file is free, full resolution.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'If you know someone on nights this week, tag them. The 4am crowd sees these posts at 4am, and that is exactly who it is for.',
+          ],
+        },
+      },
+      {
+        n: 7,
+        title: 'The why',
+        graphic: '20-mustard-seed',
+        body: [
+          'No. 20 closes the series, and it is the reason the company has its name.',
+          'The mustard seed. Smallest seed in the drawer, and the Kingdom gets compared to it anyway: plant it and it outgrows the whole garden, until the birds nest in its branches. We started this studio small on purpose and named it after the promise that small, planted faithfully, does not stay small.',
+          'Every poster in the series is still free, forever. Comment or message with your trade, your church, your ministry, and we will send yours.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'Thank you for the best month of conversations this page has ever had. All twenty stay free. Matthew 13:31 and 32 if you want the story we are named after.',
+          ],
+        },
+      },
+    ],
+    replies: [
+      {
+        q: 'Can I really have this free?',
+        a: 'Yes, truly free. Full resolution, no list to join, nothing to buy. Tell me your trade or your ministry and where to send it, or I will DM it right here.',
+      },
+      {
+        q: 'Can our church print these?',
+        a: 'Yes, all twenty if you like, and we will set your church name into them, also free. Fellowship halls are exactly what they were drawn for. Tell me the name as you want it to read.',
+        warn: 'Deliver the whole set to churches, not just one card. The church hallway is twenty impressions a Sunday for years.',
+      },
+      {
+        q: 'Is that a real verse?',
+        a: 'The reference is real and worth reading in full. The line on the poster is our own wording, not a quotation, so the poster never puts words in scripture’s mouth.',
+        warn: 'If they want the text, quote the passage accurately or link it. Never pass our line off as scripture.',
+      },
+      {
+        q: 'My trade is not one of the twenty.',
+        a: 'Then we owe you a poster. Tell me what you do and we will draw yours and send it over, free.',
+        warn: 'Make the poster, same day when possible. Custom requests are the warmest leads this set produces.',
+      },
+      {
+        q: 'Is this AI art?',
+        a: 'It is, art directed line by line here at the studio: the style, the palette, the scenes, the words. We use the same care on this we use on everything we build, and happy to talk about the process any time.',
+        warn: 'This audience deserves the straightest answer of all. Never claim hand painted, never dodge.',
+      },
+      {
+        q: 'What does your company actually do?',
+        a: 'We build websites that answer the phone, even at midnight. The posters are us saying our name out loud. If you are curious what one looks like for a business or a church like yours, ask and I will send a link to a free demo.',
+        warn: 'Only send the /demos link when they ask what we do. Never post it into a poster thread unprompted.',
+      },
+      {
+        q: 'Do you build church websites?',
+        a: 'We do, churches and ministries included, and we would love to hear what yours needs. Message me and we will talk it through.',
+        warn: 'No prices in the thread, ever. The church conversation happens off-thread by DM or email.',
+      },
+      {
+        q: 'How much is a website?',
+        a: 'Depends what it has to do, honestly, and I do not quote in comment threads because it never comes out fair to anybody. The demo is free and shows you exactly what yours would be. The poster stays free either way.',
+        warn: 'NEVER type a price. Pricing derives from lib/demo-order.ts and lives on the site.',
+      },
+    ],
+  },
 ];
 
 /** Flatten a post body into the plain text that goes in the composer. */
