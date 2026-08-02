@@ -524,7 +524,10 @@ export default function OutboundLeads() {
   return (
     <div className="min-h-screen bg-[#f7f3e9]">
       <AdminHeader active="outbound" title="Outbound · Leads" onRefresh={() => void load()} />
-      <main className="max-w-7xl mx-auto px-5 md:px-6 py-8">
+      {/* pb-40: the pager's Next button lives at the bottom-right, exactly where the
+          two floating Mr. Mustard widgets are pinned. Without room to scroll past
+          the card, they sit on top of it. */}
+      <main className="max-w-7xl mx-auto px-5 md:px-6 pt-8 pb-40">
         <OutboundNav
           active="leads"
           back={<BackButton label="Back" fallback="/admin/outbound" />}
@@ -692,14 +695,23 @@ export default function OutboundLeads() {
                     </td>
                     <td className="px-3 py-2.5 text-[#1a1815]/70">
                       {l.contact_name ?? ''}
-                      {/* The address the Email button would actually use. */}
+                      {/* The address the Email button would actually use. Truncated,
+                          not wrapped: break-all split long addresses every few
+                          characters and blew single rows up to five lines. Full
+                          address on hover, and on the lead's own page. */}
                       {l.email ? (
-                        <span className="block text-[11px] text-[#1a1815]/45 break-all" title={`Emails go to ${l.email}`}>✉ {l.email}</span>
+                        <span className="block max-w-[150px] text-[11px] text-[#1a1815]/45 truncate" title={`Emails go to ${l.email}`}>✉ {l.email}</span>
                       ) : (
                         <span className="block text-[11px] text-[#1a1815]/30" title="No email on file. Open the lead and run Find site & email.">No email</span>
                       )}
                     </td>
-                    <td className="px-3 py-2.5 whitespace-nowrap text-[#1a1815]/70">{formatPhone(l.phone)}</td>
+                    {/* Capped: a handful of imported leads carry two numbers in one
+                        field ("+1-480-...;+1-888-..."), and nowrap let one of those
+                        stretch the column to 262px on every page it landed on,
+                        pushing the Call button past the container's max-w-7xl. */}
+                    <td className="px-3 py-2.5 text-[#1a1815]/70">
+                      <span className="block max-w-[130px] truncate" title={l.phone}>{formatPhone(l.phone)}</span>
+                    </td>
                     <td className="px-3 py-2.5"><NicheChip niche={l.niche} /></td>
                     <td className="px-3 py-2.5 text-[#1a1815]/70">{l.city ?? ''}</td>
                     <td className="px-3 py-2.5">
