@@ -24,6 +24,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   if (!p) return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
 
   const already = !!p.signed_at;
+  const oneTimeTotal = Number(p.one_time_total) || 0;
+  const signDeposit = Math.round(Number(p.deposit_amount) || Math.round(oneTimeTotal * 0.5));
+  const fullPayment = oneTimeTotal > 0 && signDeposit >= oneTimeTotal;
   if (!already) {
     const ip =
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -78,6 +81,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
             html: proposalSignedEmail({
               toName: name,
               payUrl: p.deposit_status === 'paid' ? undefined : payUrl,
+              fullPayment,
             }),
             attachments: pdfAttachment,
           });
@@ -119,7 +123,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
               { label: 'Company', value: (p.client_company as string) || '—' },
               { label: 'Signed', value: name },
             ],
-            message: 'Proposal accepted. Client + project provisioned. Awaiting the 50% deposit.',
+            message: fullPayment
+              ? 'Proposal accepted. Client + project provisioned. Awaiting the single payment in full.'
+              : 'Proposal accepted. Client + project provisioned. Awaiting the 50% deposit.',
             suggestedAction: 'Kick off discovery.',
           }),
           attachments: pdfAttachment,

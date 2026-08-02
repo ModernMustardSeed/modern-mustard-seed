@@ -494,15 +494,28 @@ export function proposalSendEmail({
 }
 
 /** Sent to the client right after they sign, with the signed PDF attached. */
-export function proposalSignedEmail({ toName, payUrl }: { toName?: string; payUrl?: string }): string {
+export function proposalSignedEmail({
+  toName,
+  payUrl,
+  fullPayment,
+}: {
+  toName?: string;
+  payUrl?: string;
+  /** The one payment covers the whole project: no deposit split, no balance later. */
+  fullPayment?: boolean;
+}): string {
   const first = toName?.trim()?.split(/\s+/)[0];
   const inner =
     headline(first ? `${first}, you signed. Here is your copy` : 'You signed. Here is your copy') +
     lede('Your signed proposal is attached.') +
     paragraph('Thank you. The signed proposal is attached as a PDF for your records. Your project space is live and you will get a separate email with your portal link.') +
     (payUrl
-      ? ctaBlock({ label: 'Pay the deposit to begin', url: payUrl }) +
-        paragraph('The moment the 50 percent deposit clears, your build is on the calendar and I get to work.')
+      ? ctaBlock({ label: fullPayment ? 'Pay and make it official' : 'Pay the deposit to begin', url: payUrl }) +
+        paragraph(
+          fullPayment
+            ? 'One payment and it is done. Nothing due later.'
+            : 'The moment the 50 percent deposit clears, your build is on the calendar and I get to work.'
+        )
       : paragraph('I am on it. Watch your inbox for next steps.')) +
     signature('Sarah');
   return shell({ preheader: 'Your signed proposal (PDF attached)', subtitle: 'Signed and accepted', inner });
@@ -520,33 +533,50 @@ export function depositInvoiceEmail({
   amountUsd,
   payUrl,
   note,
+  fullPayment,
 }: {
   toName?: string;
   label: string;
   amountUsd: number;
   payUrl: string;
   note?: string;
+  /** The one payment covers the whole project: no deposit split, no balance later. */
+  fullPayment?: boolean;
 }): string {
   const first = toName?.trim()?.split(/\s+/)[0];
   const inner =
-    headline(first ? `${first}, here is your deposit to begin` : 'Your deposit to begin') +
-    lede('One payment and we start. This holds your timeline.') +
+    headline(
+      fullPayment
+        ? first
+          ? `${first}, here is your payment link`
+          : 'Your payment link'
+        : first
+          ? `${first}, here is your deposit to begin`
+          : 'Your deposit to begin'
+    ) +
+    lede(fullPayment ? 'One payment, and it is done. Nothing due later.' : 'One payment and we start. This holds your timeline.') +
     (note && note.trim()
       ? paragraph(escape(note.trim()).replace(/\n/g, '<br>'))
       : paragraph(
-          `This is the 50 percent deposit to begin ${escape(label)}. The balance is due on delivery. The deposit holds your spot and your timeline, and it is the only thing standing between here and the work starting.`
+          fullPayment
+            ? `This is the single payment for ${escape(label)}, the whole project in one. No deposit split, no balance on delivery, nothing due later.`
+            : `This is the 50 percent deposit to begin ${escape(label)}. The balance is due on delivery. The deposit holds your spot and your timeline, and it is the only thing standing between here and the work starting.`
         )) +
     valueCallout(
-      'Deposit due',
-      `<span style="font-family:${SERIF};font-size:30px;color:${C.ink};font-weight:600">$${amountUsd.toLocaleString('en-US')}</span> <span style="font-size:14px;color:${C.muted}">to start</span>`
+      fullPayment ? 'Total due, one payment' : 'Deposit due',
+      `<span style="font-family:${SERIF};font-size:30px;color:${C.ink};font-weight:600">$${amountUsd.toLocaleString('en-US')}</span> <span style="font-size:14px;color:${C.muted}">${fullPayment ? 'in full' : 'to start'}</span>`
     ) +
-    ctaBlock({ label: 'Pay the deposit', url: payUrl }) +
+    ctaBlock({ label: fullPayment ? 'Pay and make it official' : 'Pay the deposit', url: payUrl }) +
     paragraph(
       `<span style="font-size:13px;color:${C.muted}">Secure checkout by Stripe. If the button does not work, paste this into your browser:<br><a href="${payUrl}" style="color:${C.gold};word-break:break-all">${payUrl}</a></span>`
     ) +
     paragraph('The moment this clears, your build is on the calendar and I get to work. Questions before you pay? Just reply to this email.') +
     signature('Sarah');
-  return shell({ preheader: `Your deposit to begin ${label}`, subtitle: 'Deposit to begin', inner });
+  return shell({
+    preheader: fullPayment ? `Your payment link for ${label}` : `Your deposit to begin ${label}`,
+    subtitle: fullPayment ? 'Payment in full' : 'Deposit to begin',
+    inner,
+  });
 }
 
 /** The final balance invoice, sent when the build is delivered. */

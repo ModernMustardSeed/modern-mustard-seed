@@ -72,6 +72,7 @@ export default async function PublicProposalPage({ params }: { params: Promise<{
           signedName={(p.signed_name as string) || null}
           depositStatus={(p.deposit_status as string) || 'unpaid'}
           depositDue={depositDue}
+          fullPayment={oneTime > 0 && balanceDue <= 0}
         />
 
         <p className="text-center text-[#161616]/40 text-xs font-body mt-8">

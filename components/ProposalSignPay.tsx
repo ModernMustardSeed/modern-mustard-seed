@@ -7,11 +7,14 @@ export default function ProposalSignPay({
   signedName,
   depositStatus,
   depositDue,
+  fullPayment = false,
 }: {
   token: string;
   signedName: string | null;
   depositStatus: string;
   depositDue: number;
+  /** The one payment covers the whole project: no deposit split, no balance later. */
+  fullPayment?: boolean;
 }) {
   const [signed, setSigned] = useState<string | null>(signedName);
   const [name, setName] = useState('');
@@ -69,8 +72,8 @@ export default function ProposalSignPay({
         <div className="text-4xl mb-3">🌱</div>
         <h2 className="font-display text-2xl font-black text-[#161616] mb-2">It is official</h2>
         <p className="text-[#161616]/75 font-body font-medium max-w-md mx-auto">
-          Signed and deposit received. Your project space is live and Sarah is on it. Check your email for
-          your portal link.
+          {fullPayment ? 'Signed and paid in full.' : 'Signed and deposit received.'} Your project space is
+          live and Sarah is on it. Check your email for your portal link.
         </p>
       </div>
     );
@@ -117,7 +120,9 @@ export default function ProposalSignPay({
             <h2 className="font-display text-xl font-black text-[#161616]">Signed by {signed}</h2>
           </div>
           <p className="text-[#3a3733] text-sm font-body mb-5">
-            One step left. Pay the 50% deposit to put your build on the calendar. Secure checkout by Stripe.
+            {fullPayment
+              ? 'One step left. One payment, and it is done. Nothing due later. Secure checkout by Stripe.'
+              : 'One step left. Pay the 50% deposit to put your build on the calendar. Secure checkout by Stripe.'}
           </p>
           {error && <p className="text-[#E0301E] text-sm font-body font-bold mb-3">{error}</p>}
           <button
@@ -125,7 +130,11 @@ export default function ProposalSignPay({
             disabled={busy}
             className="w-full py-4 text-[12px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-lg border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all disabled:opacity-40"
           >
-            {busy ? 'Opening checkout…' : `Pay ${money(depositDue)} deposit to begin`}
+            {busy
+              ? 'Opening checkout…'
+              : fullPayment
+                ? `Pay ${money(depositDue)}, one payment`
+                : `Pay ${money(depositDue)} deposit to begin`}
           </button>
         </>
       )}

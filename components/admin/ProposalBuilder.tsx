@@ -215,7 +215,12 @@ export default function ProposalBuilder() {
   }, [lines]);
 
   const hasVariable = useMemo(() => lines.some((l) => byId(l.id)?.variable), [lines]);
-  const depositDue = Math.round(oneTime * 0.5);
+  // The preview mirrors the live doc: a set deposit amount (e.g. one payment in
+  // full) wins over the default 50% split.
+  const depositDue =
+    depositAmount !== '' && Number(depositAmount) > 0
+      ? Math.min(Math.round(Number(depositAmount)), oneTime)
+      : Math.round(oneTime * 0.5);
   const balanceDue = oneTime - depositDue;
 
   const draft = async () => {
@@ -637,8 +642,12 @@ export default function ProposalBuilder() {
     L.push(`\n## Totals`);
     if (oneTime) {
       L.push(`Project total: ${money(oneTime)}`);
-      L.push(`- To start, 50% deposit: ${money(depositDue)}`);
-      L.push(`- Balance on delivery: ${money(balanceDue)}`);
+      if (balanceDue <= 0) {
+        L.push(`- One payment, nothing due later: ${money(depositDue)}`);
+      } else {
+        L.push(`- To start, 50% deposit: ${money(depositDue)}`);
+        L.push(`- Balance on delivery: ${money(balanceDue)}`);
+      }
     }
     if (monthly) L.push(`Monthly${hasVariable ? ', estimated' : ''}: ${money(monthly)}/mo`);
     if (hasVariable)

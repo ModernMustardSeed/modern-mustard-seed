@@ -25,6 +25,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ token:
   if (!stripe) return NextResponse.json({ error: 'Payments not configured.' }, { status: 503 });
 
   const label = (p.client_company as string) || (p.client_name as string) || 'your engagement';
+  const fullPayment = amount >= (Number(p.one_time_total) || 0);
   try {
     const checkout = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -33,7 +34,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ token:
         {
           price_data: {
             currency: 'usd',
-            product_data: { name: `Deposit to begin — ${label}` },
+            product_data: { name: fullPayment ? `Payment in full — ${label}` : `Deposit to begin — ${label}` },
             unit_amount: amount * 100,
           },
           quantity: 1,
@@ -42,7 +43,11 @@ export async function POST(_req: Request, { params }: { params: Promise<{ token:
       success_url: `${SITE.url}/proposal/${token}?paid=1`,
       cancel_url: `${SITE.url}/proposal/${token}`,
       ...(p.client_email ? { customer_email: p.client_email as string } : {}),
-      metadata: { kind: 'deposit', proposal_id: p.id as string, item_name: `Deposit — ${label}` },
+      metadata: {
+        kind: 'deposit',
+        proposal_id: p.id as string,
+        item_name: fullPayment ? `Payment in full — ${label}` : `Deposit — ${label}`,
+      },
       payment_intent_data: { metadata: { kind: 'deposit', proposal_id: p.id as string } },
     });
     if (!checkout.url) return NextResponse.json({ error: 'Stripe returned no URL.' }, { status: 502 });

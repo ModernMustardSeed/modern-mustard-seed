@@ -439,9 +439,16 @@ async function handleDepositPaid(session: Stripe.Checkout.Session, email: string
     console.error('deposit order insert failed (may be duplicate)', err);
   }
 
+  // A payment that covers the whole one-time total IS the balance too: mark the
+  // proposal paid in full so no surface waits on a balance that does not exist.
+  const paidInFull = (session.amount_total ?? 0) >= Math.round((Number(p?.one_time_total) || 0) * 100) && Number(p?.one_time_total) > 0;
   await supabase
     .from('proposals')
-    .update({ deposit_status: 'paid', deposit_paid_at: new Date().toISOString() })
+    .update({
+      deposit_status: 'paid',
+      deposit_paid_at: new Date().toISOString(),
+      ...(paidInFull ? { balance_status: 'paid', balance_paid_at: new Date().toISOString() } : {}),
+    })
     .eq('id', proposalId);
 
   // Make sure the client + project exist even if they paid without signing.

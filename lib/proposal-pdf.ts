@@ -246,8 +246,12 @@ export async function renderProposalPdf(p: ProposalRecord): Promise<Uint8Array> 
   };
   if (oneTime > 0) {
     row('Project total', money(oneTime), true);
-    row('To start, 50% deposit', money(depositDue));
-    row('Balance on delivery', money(balanceDue));
+    if (balanceDue <= 0) {
+      row('One payment. Nothing due later.', money(depositDue));
+    } else {
+      row('To start, 50% deposit', money(depositDue));
+      row('Balance on delivery', money(balanceDue));
+    }
   }
   if (monthly > 0) row(`Monthly${hasVariable ? ', estimated' : ''}`, `${money(monthly)}/mo`);
   if (hasVariable) {

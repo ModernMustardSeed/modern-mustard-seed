@@ -338,14 +338,23 @@ export default function ProposalDoc({
                 </span>
               </div>
               <div className="rounded-xl bg-[#FFF3CC] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] p-4 space-y-2.5">
-                <div className="flex items-baseline justify-between">
-                  <span className="text-[13px] text-[#3a3733] font-body">To start, 50% deposit</span>
-                  <span className="font-display text-[17px] font-black text-[#161616]">{money(depositDue)}</span>
-                </div>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-[13px] text-[#3a3733] font-body">Balance on delivery</span>
-                  <span className="font-display text-[17px] font-black text-[#161616]">{money(balanceDue)}</span>
-                </div>
+                {balanceDue <= 0 ? (
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-[13px] text-[#3a3733] font-body">One payment. Nothing due later.</span>
+                    <span className="font-display text-[17px] font-black text-[#161616]">{money(depositDue)}</span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-[13px] text-[#3a3733] font-body">To start, 50% deposit</span>
+                      <span className="font-display text-[17px] font-black text-[#161616]">{money(depositDue)}</span>
+                    </div>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-[13px] text-[#3a3733] font-body">Balance on delivery</span>
+                      <span className="font-display text-[17px] font-black text-[#161616]">{money(balanceDue)}</span>
+                    </div>
+                  </>
+                )}
               </div>
             </>
           )}

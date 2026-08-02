@@ -30,6 +30,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!amount || amount < 1) {
     return NextResponse.json({ error: 'Set a deposit amount first.' }, { status: 400 });
   }
+  const fullPayment = (Number(p.one_time_total) || 0) > 0 && amount >= (Number(p.one_time_total) || 0);
 
   const stripe = getStripe();
   if (!stripe) return NextResponse.json({ error: 'Stripe is not configured.' }, { status: 503 });
@@ -43,7 +44,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         {
           price_data: {
             currency: 'usd',
-            product_data: { name: `Deposit to begin — ${label}` },
+            product_data: { name: fullPayment ? `Payment in full — ${label}` : `Deposit to begin — ${label}` },
             unit_amount: amount * 100,
           },
           quantity: 1,
@@ -52,7 +53,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       success_url: `${SITE.url}/?deposit=paid`,
       cancel_url: `${SITE.url}/?deposit=cancelled`,
       ...(p.client_email ? { customer_email: p.client_email as string } : {}),
-      metadata: { kind: 'deposit', proposal_id: id, item_name: `Deposit — ${label}` },
+      metadata: {
+        kind: 'deposit',
+        proposal_id: id,
+        item_name: fullPayment ? `Payment in full — ${label}` : `Deposit — ${label}`,
+      },
       payment_intent_data: { metadata: { kind: 'deposit', proposal_id: id } },
     });
 
@@ -77,12 +82,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
           from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: p.client_email as string,
           replyTo: 'sarah@modernmustardseed.com',
-          subject: `Your deposit to begin, ${label}`,
+          subject: fullPayment ? `Your payment link, ${label}` : `Your deposit to begin, ${label}`,
           html: depositInvoiceEmail({
             toName: (p.client_name as string) || undefined,
             label,
             amountUsd: amount,
             payUrl: checkout.url,
+            fullPayment,
           }),
         });
         if (error) throw error;
@@ -137,9 +143,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     console.error('deposit manual order insert failed (may be duplicate)', err);
   }
 
+  const coversTotal = (Number(p.one_time_total) || 0) > 0 && amount >= (Number(p.one_time_total) || 0);
   await supabase
     .from('proposals')
-    .update({ deposit_status: 'paid', deposit_paid_at: new Date().toISOString(), deposit_amount: amount })
+    .update({
+      deposit_status: 'paid',
+      deposit_paid_at: new Date().toISOString(),
+      deposit_amount: amount,
+      ...(coversTotal ? { balance_status: 'paid', balance_paid_at: new Date().toISOString() } : {}),
+    })
     .eq('id', id);
 
   // A paid deposit is a won deal. Flip the linked lead.
