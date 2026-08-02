@@ -58,12 +58,27 @@ export async function GET(req: Request) {
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ ok: true, note: 'supabase not configured; watchdog idle' });
 
-  const full = new URL(req.url).searchParams.get('full') === '1';
+  const params = new URL(req.url).searchParams;
+  const full = params.get('full') === '1';
+  // An alert nobody has ever seen fire is not an alert. ?selftest=1 pushes a synthetic
+  // finding through the real email and the real 500 without touching a single row, so
+  // the path that matters can be proven on demand. Same idea as checkout-health.
+  const selftest = params.get('selftest') === '1';
   const since = new Date(Date.now() - WINDOW_DAYS * 86_400_000).toISOString();
   const startedAt = Date.now();
   const broken: Broken[] = [];
   let checked = 0;
   let truncated = false;
+
+  if (selftest) {
+    broken.push({
+      kind: 'SELFTEST (not a real site)',
+      id: 'selftest',
+      name: 'Synthetic finding, nothing is actually broken',
+      refs: ['hero.jpg', 'ch1.jpg'],
+      url: `${SITE.url}/admin`,
+    });
+  }
 
   /** Read one table in pages, stopping politely if we run out of time. */
   async function sweep(

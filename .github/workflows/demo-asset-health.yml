@@ -25,6 +25,11 @@ on:
   schedule:
     - cron: "17 * * * *" # hourly, off the top of the hour to dodge the rush
   workflow_dispatch: # manual run button
+    inputs:
+      selftest:
+        description: "Fire a synthetic finding to prove the alert email still works (touches no data)"
+        type: boolean
+        default: false
 
 concurrency:
   group: demo-asset-health
@@ -37,10 +42,15 @@ jobs:
     steps:
       - name: Ping broken-image watchdog
         run: |
-          echo "Checking every demo and client site for unpublished asset references..."
+          URL="https://modernmustardseed.com/api/cron/demo-asset-health"
+          if [ "$SELFTEST" = "true" ]; then
+            URL="$URL?selftest=1"
+            echo "SELFTEST run: firing a synthetic finding to verify the alert email."
+          fi
+          echo "Checking demos and client sites for unpublished asset references..."
           BODY=$(curl -sS -m 90 -w $'\n%{http_code}' \
             ${CRON_SECRET:+-H "Authorization: Bearer $CRON_SECRET"} \
-            "https://modernmustardseed.com/api/cron/demo-asset-health")
+            "$URL")
           CODE=$(printf '%s' "$BODY" | tail -n1)
           JSON=$(printf '%s' "$BODY" | sed '$d')
           echo "HTTP $CODE"
@@ -51,3 +61,4 @@ jobs:
           fi
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SELFTEST: ${{ inputs.selftest }}
