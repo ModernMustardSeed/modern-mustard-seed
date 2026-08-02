@@ -1,0 +1,99 @@
+---
+title: "Inside the AI Office: What Seventeen Agents Taught Us About Real Agentic Systems"
+description: "We built Seedside, a persistent AI office that runs our ventures on a schedule it sets itself. Here is the architecture that made it work: the approval spine, origin-aware permissions, the trust ladder, and the unglamorous plumbing nobody puts in a demo."
+date: "2026-08-01"
+dateModified: "2026-08-01"
+tag: "Agentic Systems"
+author: "Sarah Scarano"
+faq:
+  - q: "What is an agentic system?"
+    a: "An agentic system is software where AI models do multi-step work on their own initiative rather than answering one question at a time. The distinguishing features are persistence (it keeps running when nobody is watching), tools (it can actually read a database, probe a URL, or send an email instead of just describing one), memory across sessions, and a permission model that decides which actions it may take without a human. A chatbot answers. An agentic system acts."
+  - q: "How is a multi-agent system different from just using ChatGPT or Claude?"
+    a: "A chat window is a conversation you drive. A multi-agent system is a standing operation that drives itself: named agents with distinct roles and tools, a scheduler that wakes them on a rhythm, a shared law they all read, an approval queue for anything that touches the outside world, and a record of what each one did. The model is the same underneath. Everything that makes it useful in a business is the system built around it."
+  - q: "How do you stop AI agents from doing something you did not authorize?"
+    a: "Three layers, all of which fail closed. Every outward action (a post, an email to anyone but you, a client message, spend, a destructive operation) requires an explicit approval before the tool will execute. The approved payload must match what actually ships, character for character, or the tool refuses. And every rate limit denies by default when it cannot verify it is under the cap, so a broken counter stops the office instead of opening it."
+  - q: "Can AI agents earn more autonomy over time?"
+    a: "Yes, and that is better than configuring it up front. In our office an agent earns standing permission for one narrow category of work after a streak of approvals with zero holds in that category. The chief of staff agent finds the streak, proposes the grant, and the human keys it once. From then on that agent ships that one kind of work directly. It is scoped, logged, and revocable in a sentence."
+  - q: "What breaks first when you run AI agents continuously?"
+    a: "Not the intelligence. The plumbing. Our first real outage was a restart that left tasks marked running forever, which clogged every work lane with ghosts. The fixes that mattered were a janitor that requeues stranded work, a supervisor that restarts the daemon, retries that convert failures into review notes, and a replay log of every step an agent took. Continuous operation is an infrastructure problem wearing an AI costume."
+  - q: "Do you need a frontier model for every agent task?"
+    a: "No, and paying for one is waste. Routine work with a tight instruction and a clear output (health checks, inbox triage, sweeps) runs fine on a small fast model. Strategy, writing, and judgment keep the larger one. We route by task type and fall back to the bigger model on a retry, which means the cheap path handles the ordinary day and the expensive path only shows up when something actually went wrong."
+---
+
+For the last few weeks I have been building something I did not expect to work as well as it does. It is called Seedside, and it is an office. Not a chatbot, not a workflow, not a folder of prompts. An office, with seventeen named coworkers who have roles, tools, memory, a shared rulebook, and a working day that starts without me.
+
+This post is the architecture, including the parts that broke. If you are trying to build an agentic system that survives contact with a real business, the interesting lessons are not about prompting. They are about governance and plumbing.
+
+## The difference that changes everything: it starts its own day
+
+Most AI tooling is reactive. You open it, you ask, it answers, it forgets you existed.
+
+The office is not reactive. It has rhythms, which are standing pieces of work that fire on a clock in Mountain Time. The chief of staff runs a standup every morning: she reads the scoreboard, reads the calendar, reviews what happened yesterday, decides the three to five most lever-moving things for the day, and assigns each one to whoever owns it. The finance agent opens the books an hour before that. The watchdog probes the money surfaces morning and evening and reports what drifted. Sunday evening there is a retro. The first of the month, one agent writes a board narrative from live numbers and the system renders the deck that night.
+
+Nobody starts any of that. I wake up to a running office.
+
+The engineering here is boring on purpose. A loop ticks every eight seconds, checks the local hour against a list of rhythms, and inserts a task if that rhythm has not fired today. Each one is idempotent per day, so a restart at 7:04am does not run the standup twice. That single property, fires once per day even across crashes, is worth more than any prompt engineering in the system.
+
+## The approval spine, and why exact-match is the whole ballgame
+
+Every agent can draft. Almost none of them can send.
+
+Anything that leaves the building (a social post, an email to anyone but me, a client portal reply, spend, a pricing change, anything destructive) goes through one path: the agent files a request with a full payload, stops, and waits. I get it in a queue with a key next to it. If I turn the key, the office hands the agent an execution task containing the exact payload I approved and tells it to do that and nothing more.
+
+The detail that makes this real rather than theater is the exact-match gate. When the social agent finally calls the publish tool, the tool independently verifies that an approval exists, that it belongs to that agent, that it is still fresh, and that the text being published matches the approved text character for character. If a single word drifted between the approval and the send, the tool refuses.
+
+That is the difference between "the AI asked permission" and "the AI cannot act without permission." The first is a habit the model can forget. The second is a wall.
+
+Same discipline on the rate limits. Every cap in the system fails closed: sessions per day, messages between any two agents, client emails, generated images, and a hard limit of two shoulder taps to my phone per day so the office cannot become another notification firehose. When a counter cannot be verified, the action is denied. A broken guard stops the office instead of opening it.
+
+## Permission should depend on who asked, not just what the action is
+
+This was the correction that made the office actually useful, and I got it wrong at first.
+
+Version one was strict: every deploy needed my approval. Which sounds responsible, until you watch it in practice. I would tell an agent directly, in chat, "fix the copy on that page and ship it," and it would do the work, then file a request asking permission to do the thing I had just told it to do. I was approving my own instructions back to myself. The safety theater was costing me more attention than the risk it prevented.
+
+So permissions became origin-aware. If a task came from me, and shipping is the thing I asked for, the agent ships and logs what went live. If the agent decided on its own initiative (a rhythm fired it, a teammate delegated it, it had an idea), anything outward still needs the key. And one category is gated no matter who asked: messages to other humans, spend, pricing, and destructive operations. Those need my key every single time, including when I am the one who ordered it.
+
+The principle generalizes past this project. The question is not "is this action dangerous." It is "did a human already decide this, or is the agent deciding for them." Those deserve different gates, and collapsing them into one setting is why most agent permission systems are simultaneously too annoying and not safe enough.
+
+## Autonomy should be earned, not configured
+
+The newest piece is the one I like most. It is a trust ladder.
+
+When an agent files a request it can tag it with a scope, which is just a stable category name like the kind of work it is. The chief of staff, during the Sunday retro, looks for any agent and scope pairing with a long streak of approvals and zero holds. If she finds one, she proposes a standing grant: this agent now ships this one narrow kind of work directly. I key that proposal once. From then on, requests in that scope pre-approve themselves, still logged, still flowing through the same execution path, still revocable by telling her to drop it.
+
+So autonomy is not a checkbox I set on day one when I know the least. It accrues to specific agents for specific work, based on a record of me actually agreeing with them. The permissions are a consequence of the relationship rather than a guess about it.
+
+## The unglamorous parts that made it survive
+
+Nobody demos this half. It is the half that determines whether the thing is alive next week.
+
+**A janitor for the system's own crashes.** My first real outage had nothing to do with AI. I restarted the engine mid-session and the tasks stayed marked as running forever, which permanently occupied the concurrency lanes with ghosts. The whole office silently stopped picking up work. The fix is fifteen lines: anything still running well past the session timeout with no live process behind it gets requeued once, failed after that, and its agent gets reset to resting.
+
+**Failures that become feedback.** A failed task retries once, then goes into a feedback table. On Sunday the chief of staff reads that table for patterns and proposes one line of role tuning per teammate ("this agent got two posts held for tone, add a receipts-first rule"). She is explicitly forbidden from editing anyone's role file herself. She writes the proposal, I approve the wording. The system improves its own instructions with a human in the loop for the actual edit.
+
+**A replay log.** Every step of every session is recorded and viewable per task. When an agent reports something surprising, I do not have to trust the summary. I can read what it actually did.
+
+**Cost routing.** Routine sweeps with tight instructions run on a small fast model. Strategy and writing keep the big one. Retries fall back up. The ordinary day is cheap and the expensive model shows up mostly when something already went wrong.
+
+**One shared law.** Every agent, every session, reads the same charter before its own role file: never fabricate, read before you claim, verify before you report, stay in your lane, when in doubt it needs approval. Seventeen role files times one rulebook beats seventeen copies of the rules, because when the law changes I change it once.
+
+## The moment that told me where the boundary was
+
+One evening the finance agent hit a bug. An environment parser was choking on quoted values, which meant he could not read the numbers he needed. He diagnosed it, found the function, and fixed it. Correctly. The office got better while I was doing something else.
+
+It was a genuinely good patch, and it is now against the rules. The engine that runs the agents is off limits to the agents. If one of them finds a bug in it, the job is to report the diagnosis to the builder agent or to me, with the exact fix proposed, and stop.
+
+Not because the change was wrong. Because a system that can edit the constraints it runs under does not have constraints, it has suggestions. The line is not about capability. It is about which layer is allowed to change which layer, and that is an ordinary engineering decision that people get strange about the moment the word "AI" is involved.
+
+## What this actually means if you run a business
+
+Strip the office metaphor away and what is left is a fairly conventional distributed system: a scheduler, a work queue, workers with scoped credentials, an approval gate on side effects, rate limits that fail closed, a supervisor, an audit log, and a weekly review that tunes the workers. The models are the workers. Every other piece is the same thing you would build to run any process you cannot personally watch.
+
+That is the actual lesson from seven weeks of this. The hard part of agentic systems is not making AI smart enough. It is deciding what it may do unsupervised, proving it cannot exceed that, and being able to see afterward exactly what it did. Get those three right and you can point capable models at real work. Get them wrong and the intelligence just helps you make mistakes faster.
+
+I wrote up the full architecture, including the parts I would build differently, in a whitepaper. [Read the Seedside whitepaper](https://the-cove-indol.vercel.app/Seedside-Whitepaper.pdf), no signup.
+
+And the discipline underneath all of this (how to make a model argue before it decides and verify before it claims) is a free playbook: [the Fable Mind Playbook](/playbooks/fable-mind). Copy-paste, no dependencies.
+
+If you want an operation like this pointed at your business, [book a call](/book). That is the work we do.
