@@ -2153,6 +2153,235 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
     ],
   },
+  {
+    id: 'twelve-windows',
+    name: 'The Twelve Windows',
+    eyebrow: 'Set fourteen · Scripture in Glass',
+    blurb:
+      'Actual scripture this time: twelve verses people live by, quoted exactly from the King James Version, set in type over luminous stained glass window plates on nave dark. Sarah picked Cathedral Glass off a three-direction study (over The Broadside and Gold Illumination). The engine is the custom window: comment the verse you live by and it gets set in glass free, and a pastor who comments gets all twelve for the building. No. 12 sets Matthew 13:31-32 in a rose window, the passage the company is named for.',
+    cta: 'Free window · comment your verse',
+    accent: '#C9A227',
+    rules: [
+      'The verse text is QUOTED EXACTLY, King James Version, marked KJV on every card. Never alter a word beyond conventional partial quotation (04 and 11 quote the spoken clause). If someone wants the fuller passage, point them to it warmly.',
+      'KJV because it is public domain: the giveaway stays truly unencumbered at any print size. A CUSTOM window may carry the requester’s preferred translation wording with its attribution, since that copy is personal.',
+      'The custom window is the engine. Comment a verse, get it set in glass, free, same day when possible. That comment is the warmest lead this set produces and the promise gets kept.',
+      'The church escalator: a pastor or ministry leader who comments gets all twelve for the building, church name set in gold under the reference, free. Deliver the full set, never a sampler.',
+      'Cadence is the church rhythm: one window every Sunday and Wednesday for six weeks on our own Page. Groups only where faith content is welcome; never into secular trade groups.',
+      'Symbolic glass only: no depiction of Jesus in any window, ever. Regenerate rather than ship one.',
+      'Never argue doctrine or translation preference in a thread. The window is a gift, not a debate.',
+      'Asked if it is AI art: yes, art directed at the studio, and the verse text is scripture quoted exactly and checked, which is not generated. The straightest answer, always.',
+      'Outbound: same rule as set thirteen. Never attach scripture to cold outreach; only when their faith is public or they raised it first, email or live call only, never a cold text.',
+      'The money question gets the canned reply, never a number.',
+    ],
+    cards: [
+      {
+        file: '01-lamp',
+        headline: 'Psalm 119:105. Thy word is a lamp unto my feet, and a light unto my path.',
+        use: 'The series opener, and the plate that won the direction study.',
+        alt: 'A stained glass window of a golden lamp above a winding glass path through cobalt night hills. The full verse Psalm 119:105 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '02-shepherd',
+        headline: 'Psalm 23:1. The LORD is my shepherd; I shall not want.',
+        use: 'The most beloved verse in the set. Grief threads get this one gently, never with a pitch.',
+        alt: 'A stained glass window of a shepherd’s crook and a white lamb resting in an emerald glass meadow. Psalm 23:1 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '03-eagle',
+        headline: 'Isaiah 40:31. They shall mount up with wings as eagles.',
+        use: 'Graduation season, new ventures, anyone starting over.',
+        alt: 'A stained glass window of a great eagle rising into an amber glass sun. The full verse Isaiah 40:31 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '04-be-still',
+        headline: 'Psalm 46:10. Be still, and know that I am God',
+        use: 'The quiet card. Anxious weeks, Sunday evenings.',
+        alt: 'A stained glass window of a perfectly still mountain lake under a single bright star in cobalt night glass. Psalm 46:10 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '05-rest',
+        headline: 'Matthew 11:28. Come unto me, and I will give you rest.',
+        use: 'The comfort drop, midweek. Tag someone carrying too much.',
+        alt: 'A stained glass window of a wooden yoke laid down beneath an olive tree as a dove descends in amber light. The full verse Matthew 11:28 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '06-paths',
+        headline: 'Proverbs 3:5-6. Trust in the LORD with all thine heart.',
+        use: 'Decision seasons: careers, moves, engagements.',
+        alt: 'A stained glass window of a golden path forking through emerald hills under a guiding star. Proverbs 3:5-6 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '07-strength',
+        headline: 'Philippians 4:13. I can do all things through Christ which strengtheneth me.',
+        use: 'The giveaway post graphic. The most claimed verse in America.',
+        alt: 'A stained glass window of an oak bending in a storm with glowing amber roots gripping the rock. Philippians 4:13 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '08-shine',
+        headline: 'Matthew 5:16. Let your light so shine before men.',
+        use: 'The church post graphic, and every believer who runs a business.',
+        alt: 'A stained glass window of a blazing lantern on a stand above a small city on a hill at dusk. The full verse Matthew 5:16 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '09-hills',
+        headline: 'Psalm 121:1-2. I will lift up mine eyes unto the hills.',
+        use: 'The Montana card. Local groups, mountain town believers.',
+        alt: 'A stained glass window of violet glass mountains with golden light breaking over the highest peak. Psalm 121:1-2 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '10-courage',
+        headline: 'Joshua 1:9. Be strong and of a good courage.',
+        use: 'Deployments, diagnoses, first days. The courage card.',
+        alt: 'A stained glass window of a torch held high before a wide river crossing with the far bank glowing. The full verse Joshua 1:9 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '11-light',
+        headline: 'John 8:12. I am the light of the world.',
+        use: 'Advent and Christmas Eve. The year-end card.',
+        alt: 'A stained glass window of an enormous amber sun rising over a dark sleeping world, rays driving back violet night glass. John 8:12 is set beneath in italic serif with a gold KJV reference.',
+      },
+      {
+        file: '12-mustard-tree',
+        headline: 'Matthew 13:31-32. The kingdom of heaven is like to a grain of mustard seed.',
+        use: 'The series closer and the company name passage, set in a rose window.',
+        alt: 'A stained glass rose window of an immense mustard tree filled with nesting birds, a tiny seed glowing at its roots. The full passage Matthew 13:31-32 is set beneath in italic serif with a gold KJV reference.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'The launch',
+        graphic: '01-lamp',
+        body: [
+          'The last two series carried our words. This one carries the Word.',
+          'The Twelve Windows: twelve verses people actually live by, set in glass, the full text exactly as written, King James Version, reference on every window. One goes up every Sunday and Wednesday for the next six weeks.',
+          'Every window is free, full resolution, print it as big as a window. Comment or message and it is yours.',
+          'No. 01 is Psalm 119:105. Thy word is a lamp unto my feet.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'Nothing for sale in this thread, same as always. And if the verse you live by is not one of the twelve, tell me what it is. Keep reading this series and you will see why that matters.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'The verse you live by',
+        graphic: '07-strength',
+        body: [
+          'Everybody has one verse that has carried them through something.',
+          'Comment yours and we will set it in glass. Free, full resolution, exact text, your translation if you have a strong feeling about that. This is not a drawing or a maybe, every verse commented gets its window.',
+          'No. 07 is for everyone whose verse is Philippians 4:13.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'Why free? Our studio is named after Matthew 13:31 and this series is the name doing what it says. Small things, planted, grow.',
+          ],
+        },
+      },
+      {
+        n: 3,
+        title: 'The church post',
+        graphic: '08-shine',
+        body: [
+          'Pastors: all twelve, for the building, free.',
+          'The Twelve Windows are stained glass studies of the verses your people already carry: Psalm 23, Isaiah 40:31, Matthew 11:28, Joshua 1:9. Comment and the full set is yours in full resolution, with your church name set in gold under the reference if you want it.',
+          'Hallways, kids wings, the coffee wall, the counseling room. They were made to be printed large and lit warm.',
+        ],
+        followUp: {
+          label: 'Reply rule',
+          lines: [
+            'Every pastor gets the full set delivered, not a sampler. One line about what we do is allowed after delivery, never before.',
+          ],
+        },
+      },
+      {
+        n: 4,
+        title: 'The comfort drop',
+        graphic: '05-rest',
+        body: [
+          'No. 05 is for whoever is carrying too much this week.',
+          'Come unto me, all ye that labour and are heavy laden, and I will give you rest. Matthew 11:28, the whole verse, nothing added, because nothing needs adding.',
+          'If someone comes to mind while you read that, tag them or send them this. The full resolution file is free, like all twelve.',
+        ],
+        followUp: {
+          label: 'Posting note',
+          lines: [
+            'This one never carries a pitch, a link, or a follow up. It is the Race Day rule: this post exists to be a gift, and that is what makes the rest of the series welcome.',
+          ],
+        },
+      },
+      {
+        n: 5,
+        title: 'The Montana card',
+        graphic: '09-hills',
+        body: [
+          'I will lift up mine eyes unto the hills, from whence cometh my help.',
+          'If you live in the Flathead you did not need the reference, you have prayed this one at a windshield. No. 09 of the Twelve Windows is Psalm 121, in glass, and it is free in full resolution for anyone who wants it on a wall.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'Full set is twelve windows, all free. Comment a verse you love and we will set that one in glass too.',
+          ],
+        },
+      },
+      {
+        n: 6,
+        title: 'The closer',
+        graphic: '12-mustard-tree',
+        body: [
+          'No. 12 closes the series where our name began.',
+          'The kingdom of heaven is like to a grain of mustard seed. The least of all seeds, and the birds of the air come and lodge in the branches thereof. We set the whole passage in a rose window because that promise is the reason this studio exists.',
+          'All twelve windows stay free, forever. Comment your verse, your church, or just where to send them.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'Thank you. Between the trade posters and these windows, this has been the best season this page has ever had. The Word is a lamp. Go build something with it.',
+          ],
+        },
+      },
+    ],
+    replies: [
+      {
+        q: 'Can I really have this free?',
+        a: 'Yes, truly free. Full resolution, no list, nothing to buy. Tell me which window and where to send it.',
+      },
+      {
+        q: 'Why King James?',
+        a: 'Because it is public domain, which means we can give these away printed as large as you like with no strings, and because four hundred years have not improved on how it sounds read aloud. For your custom window we can set your preferred translation’s wording with its attribution, since that copy is yours.',
+        warn: 'Never argue translations in a thread. Offer the custom window in their translation and move on.',
+      },
+      {
+        q: 'Can you do MY verse?',
+        a: 'Yes, that is the whole point. Give me the verse and we will set it in glass and send it over, free.',
+        warn: 'Same day when possible. The custom window request is the warmest lead this set produces, keep the promise.',
+      },
+      {
+        q: 'Can our church use these?',
+        a: 'All twelve, printed as big as you like, your church name set in gold under the reference if you want it. Fellowship halls and kids wings are exactly what they are for. Tell me the name as you want it to read.',
+        warn: 'Deliver the full set to churches, never a sampler.',
+      },
+      {
+        q: 'Is this AI art?',
+        a: 'The glass is, art directed line by line at the studio: the glass language, the palette, the scenes. The verse text is scripture quoted exactly and checked, and that part is not generated. Happy to talk about the process any time.',
+        warn: 'This audience deserves the straightest answer of all. Never claim hand made glass, never dodge.',
+      },
+      {
+        q: 'What does your company actually do?',
+        a: 'We build websites that answer the phone, even at midnight. The windows are our name telling its own story. If you are curious what one looks like for a business or a church like yours, ask and I will send a link to a free demo.',
+        warn: 'Only send the /demos link when they ask what we do. Never post it into a window thread unprompted.',
+      },
+      {
+        q: 'How much is a website?',
+        a: 'Depends what it has to do, honestly, and I do not quote in comment threads because it never comes out fair to anybody. The demo is free and shows you exactly what yours would be. The window stays free either way.',
+        warn: 'NEVER type a price. Pricing derives from lib/demo-order.ts and lives on the site.',
+      },
+    ],
+  },
 ];
 
 /** Flatten a post body into the plain text that goes in the composer. */
