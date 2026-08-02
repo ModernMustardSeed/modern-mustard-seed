@@ -1424,7 +1424,7 @@ export const SOCIAL_SETS: SocialSet[] = [
   {
     id: 'make-it-shine',
     name: 'The Lit Window',
-    eyebrow: 'Set ten · Our Sites, Lit',
+    eyebrow: 'Set eleven · Our Sites, Lit',
     blurb:
       'The showcase set for other people’s groups: cinematic dusk paintings, each carrying a REAL site we built glowing in an ivory frame. The post sells nothing and shows everything; the link in the first comment forges a free talking-website demo of their business at /demos.',
     cta: 'Free demo · modernmustardseed.com/demos',
@@ -1564,6 +1564,293 @@ export const SOCIAL_SETS: SocialSet[] = [
       {
         q: 'I tried the link and it did not build.',
         a: 'The forge builds a limited number each day so every demo gets full attention. Come back tomorrow morning, it will still be free. If it still misbehaves, message me and I will run yours personally.',
+      },
+    ],
+  },
+  {
+    id: 'main-street-twenty',
+    name: 'The Main Street Twenty',
+    eyebrow: 'Set twelve · The Trade Posters',
+    blurb:
+      'Twenty trade posters in the old WPA national park register, one for every trade that keeps Main Street running. No stats, no pitch: the poster is the whole post, and the giveaway is the funnel. Whoever runs the trade comments, gets the full resolution file free, and the delivery message opens a one to one conversation with exactly the people we build for.',
+    cta: 'Free poster · comment your trade',
+    accent: '#9C4A2B',
+    rules: [
+      'No stats and no pitch in the post body, ever. The honor line is the whole message; the giveaway does the selling.',
+      'The giveaway is the engine. Anyone who runs the trade comments and gets the full resolution file free, by DM or email. Deliver the poster FIRST, then one soft line. Never open with a link.',
+      'In other people’s groups, post only that group’s trade: the plumber poster in the plumber group, the rancher in the ag group. The full series runs on our own Page, one per weekday.',
+      'Outbound reps may attach a lead’s own trade poster to a first touch EMAIL or offer it on a live call. Never a cold text, and never assert anything about their business we have not checked.',
+      'Asked if it is AI art, the answer is yes, art directed here at the studio. Never claim hand painted, never dodge.',
+      'A trade that is not in the twenty is a custom poster made on request, same day. That comment is the warmest lead in the thread.',
+      'A shop name set into the poster is a five minute re-render and free. Offer it when someone loves theirs.',
+      'The money question gets the canned reply, never a number. Poster talk stays free talk.',
+    ],
+    cards: [
+      {
+        file: '01-plumber',
+        headline: 'The Plumber. Shows up when the ceiling is already raining.',
+        use: 'Series opener on our own Page, and the drop for plumbing groups.',
+        alt: 'A WPA style screenprint poster of a plumber working under a farmhouse sink. Headline: The Plumber. Shows up when the ceiling is already raining.',
+      },
+      {
+        file: '02-electrician',
+        headline: 'The Electrician. Keeps the lights on for everyone else’s big night.',
+        use: 'Electrician and contractor groups.',
+        alt: 'A WPA style poster of a line electrician on a utility pole at sunrise. Headline: The Electrician. Keeps the lights on for everyone else’s big night.',
+      },
+      {
+        file: '03-roofer',
+        headline: 'The Roofer. Stands between your family and the sky.',
+        use: 'Roofing and storm season threads. Strong after weather events, never during one.',
+        alt: 'A WPA style poster of a roofer astride a ridge line under a giant sun. Headline: The Roofer. Stands between your family and the sky.',
+      },
+      {
+        file: '04-hvac',
+        headline: 'The HVAC Tech. First call on the coldest morning of the year.',
+        use: 'HVAC groups. Best in the first cold snap week.',
+        alt: 'A WPA style poster of an HVAC technician carrying a condenser unit up stairs in the snow. Headline: The HVAC Tech. First call on the coldest morning of the year.',
+      },
+      {
+        file: '05-landscaper',
+        headline: 'The Landscaper. Plants things strangers slow down to look at.',
+        use: 'Landscaping and lawn care groups. Spring gold.',
+        alt: 'A WPA style poster of a landscaper planting a young tree on a terraced lawn. Headline: The Landscaper. Plants things strangers slow down to look at.',
+      },
+      {
+        file: '06-painter',
+        headline: 'The Painter. Cuts a line straight enough to trust by eye.',
+        use: 'Painting contractor groups.',
+        alt: 'A WPA style poster of a house painter on a ladder cutting a crisp band of color on a Victorian house. Headline: The Painter. Cuts a line straight enough to trust by eye.',
+      },
+      {
+        file: '07-carpenter',
+        headline: 'The Carpenter. Measures twice so it stands for fifty years.',
+        use: 'Woodworking and builder groups.',
+        alt: 'A WPA style poster of a carpenter planing a beam before a rising timber frame. Headline: The Carpenter. Measures twice so it stands for fifty years.',
+      },
+      {
+        file: '08-mechanic',
+        headline: 'The Mechanic. Hears what your car has been trying to say.',
+        use: 'Auto shop groups, and the waiting room wall angle.',
+        alt: 'A WPA style poster of a mechanic under a pickup raised on a lift in lamplight. Headline: The Mechanic. Hears what your car has been trying to say.',
+      },
+      {
+        file: '09-barber',
+        headline: 'The Barber. Sends everyone out taller than they came in.',
+        use: 'The tag post. Barbers get tagged by their whole chair list.',
+        alt: 'A WPA style poster of a barber mid snip behind a classic chair. Headline: The Barber. Sends everyone out taller than they came in.',
+      },
+      {
+        file: '10-baker',
+        headline: 'The Baker. Up at four so the town smells like morning.',
+        use: 'The warmest card in the set. Community groups love this one.',
+        alt: 'A WPA style poster of a baker pulling loaves from a glowing brick oven before dawn. Headline: The Baker. Up at four so the town smells like morning.',
+      },
+      {
+        file: '11-florist',
+        headline: 'The Florist. On call for the best day and the worst day.',
+        use: 'Community groups. Strongest single honor line in the series.',
+        alt: 'A WPA style poster of a florist gathering an armful of blooms at a workbench. Headline: The Florist. On call for the best day and the worst day.',
+      },
+      {
+        file: '12-cafe',
+        headline: 'The Coffee House. Knows the order before the door swings shut.',
+        use: 'Local community groups, morning posting slot.',
+        alt: 'A WPA style poster of a barista at a lever espresso machine in morning light. Headline: The Coffee House. Knows the order before the door swings shut.',
+      },
+      {
+        file: '13-welder',
+        headline: 'The Welder. Joins what the world calls broken for good.',
+        use: 'Fabrication and farm groups. The most striking plate in the set.',
+        alt: 'A WPA style poster of a welder kneeling in a fan of golden sparks. Headline: The Welder. Joins what the world calls broken for good.',
+      },
+      {
+        file: '14-cleaner',
+        headline: 'The Cleaner. The reason walking in feels like a deep breath.',
+        use: 'Cleaning business groups. A trade that almost never gets honored, so this one lands hard.',
+        alt: 'A WPA style poster of a house cleaner opening tall curtains onto a shaft of sunlight. Headline: The Cleaner. The reason walking in feels like a deep breath.',
+      },
+      {
+        file: '15-mover',
+        headline: 'The Mover. Carries a whole life like it belongs to them.',
+        use: 'Moving company groups, and new to town threads.',
+        alt: 'A WPA style poster of two movers carrying a sofa up a brownstone stoop. Headline: The Mover. Carries a whole life like it belongs to them.',
+      },
+      {
+        file: '16-excavator',
+        headline: 'The Excavator. Reads the ground before anything can rise.',
+        use: 'Excavation and construction groups. Strong in Montana.',
+        alt: 'A WPA style poster of an excavator carving a bench of earth below mountains. Headline: The Excavator. Reads the ground before anything can rise.',
+      },
+      {
+        file: '17-plow',
+        headline: 'The Plow Driver. Out at three so the town opens at eight.',
+        use: 'The Montana card. Local groups in the first big snow week.',
+        alt: 'A WPA style poster of a snow plow throwing a wave of snow down a main street before dawn. Headline: The Plow Driver. Out at three so the town opens at eight.',
+      },
+      {
+        file: '18-rancher',
+        headline: 'The Rancher. Feeds first and eats last, every morning.',
+        use: 'Ag and ranch groups. The other Montana card.',
+        alt: 'A WPA style poster of a rancher on horseback pushing cattle through a frosted meadow at first light. Headline: The Rancher. Feeds first and eats last, every morning.',
+      },
+      {
+        file: '19-cook',
+        headline: 'The Line Cook. Feeds the rush without leaving the fire.',
+        use: 'Restaurant and service industry groups, posted after the lunch rush.',
+        alt: 'A WPA style poster of a short order cook at a glowing flat top seen through a diner pass window. Headline: The Line Cook. Feeds the rush without leaving the fire.',
+      },
+      {
+        file: '20-handyman',
+        headline: 'The Handyman. The number half the town keeps on the fridge.',
+        use: 'The series closer on our own Page.',
+        alt: 'A WPA style poster of a handyman on a step ladder fixing a porch light at dusk. Headline: The Handyman. The number half the town keeps on the fridge.',
+      },
+    ],
+    posts: [
+      {
+        n: 1,
+        title: 'The series launch',
+        graphic: '01-plumber',
+        body: [
+          'We spend our days building for the people who keep this town running. This month we are saying thank you the loudest way we know how.',
+          'The Main Street Twenty: twenty posters, one for every trade we could fit, drawn in the register of the old national park posters, because that is the register these jobs deserve.',
+          'One goes up every weekday for the next month. If you run the trade on the day’s poster, comment below and the full resolution file is yours, free. Print it, frame it, hang it where the customers wait.',
+          'No. 01 is the plumber. Shows up when the ceiling is already raining.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'Nothing for sale in this thread. And if you want your shop’s name set into your poster, say so. Also free.',
+          ],
+        },
+      },
+      {
+        n: 2,
+        title: 'The giveaway',
+        graphic: '10-baker',
+        body: [
+          'Comment the trade you run and your poster is yours. Full resolution, free, print it as big as you like.',
+          'We made twenty of these for the people who keep Main Street running. Plumbers, bakers, barbers, ranchers, plow drivers, the whole crew that has the town’s number on the fridge.',
+          'Your trade not in the twenty? Tell me what you do and we will draw yours. That is a promise, not a maybe.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'To be clear: free means free. No list to join, nothing to buy. We build things for small businesses all day and this month we felt like giving something back.',
+          ],
+        },
+      },
+      {
+        n: 3,
+        title: 'The single trade drop',
+        graphic: '03-roofer',
+        body: [
+          'This one is for the roofers.',
+          'No. 03 in a series of twenty we are making for the trades. The honor line reads: stands between your family and the sky. Because that is the actual job description, even if the invoice says shingles.',
+          'If you roof for a living, comment and the full resolution file is yours, free. It prints clean at poster size.',
+        ],
+        followUp: {
+          label: 'Swap the trade to match the group',
+          lines: [
+            'Post the plumber card in plumbing groups, the welder in fab groups, and so on. One trade per group, always their own.',
+          ],
+        },
+      },
+      {
+        n: 4,
+        title: 'The tag post',
+        graphic: '09-barber',
+        body: [
+          'Tag a barber who deserves a spot on the wall.',
+          'No. 09 of the Main Street Twenty: sends everyone out taller than they came in. Every town has one chair that is really a counseling office with clippers, and that person deserves a poster.',
+          'Tag them or drop the shop name below and we will send the full resolution file over, free.',
+        ],
+        followUp: {
+          label: 'Reply rule',
+          lines: [
+            'Reply to every single tag with the poster offer. The tagged barber reading a thread full of their own customers is the whole play.',
+          ],
+        },
+      },
+      {
+        n: 5,
+        title: 'The Montana card',
+        graphic: '17-plow',
+        body: [
+          'Out at three so the town opens at eight.',
+          'No. 17 of the Main Street Twenty is for the plow drivers, and if you have lived one Flathead winter you know why they got their own poster.',
+          'If you or your crew run a plow, comment below. The full resolution file is free and it prints big enough for the shop door.',
+        ],
+        followUp: {
+          label: 'Seasonal note',
+          lines: [
+            'Hold this one for the first real snow week, then post it in the local groups while everyone is grateful. Pair with 18-rancher for ag groups any time of year.',
+          ],
+        },
+      },
+      {
+        n: 6,
+        title: 'The shop wall',
+        graphic: '08-mechanic',
+        body: [
+          'Waiting rooms deserve better walls.',
+          'No. 08 of the Main Street Twenty, for the mechanics: hears what your car has been trying to say. It was drawn to be printed, framed, and hung right where your customers sit.',
+          'Run a shop? Comment and the file is yours, free, full resolution. Send a photo of it on the wall and we will feature your shop when we wrap the series.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'The wall photo invite is real. Collect every one that comes back, they become the series wrap post and each shop gets named in it.',
+          ],
+        },
+      },
+      {
+        n: 7,
+        title: 'The why',
+        graphic: '20-handyman',
+        body: [
+          'A few people asked why a website studio spent a month drawing trade posters and giving them away.',
+          'Because this is who we build for. The plumber with the flooded ceiling schedule, the baker who was up at four, the handyman whose number is on half the fridges in town. We think their work is beautiful, and we wanted it on record.',
+          'No. 20 closes the series. If you missed your trade, every poster is still free, comment or message and we will send yours.',
+        ],
+        followUp: {
+          label: 'First comment, post it yourself right away',
+          lines: [
+            'All twenty, still free, still full resolution. And thank you. This series brought more good conversations than anything we have ever posted.',
+          ],
+        },
+      },
+    ],
+    replies: [
+      {
+        q: 'Can I really have the file for free?',
+        a: 'Yes, truly free. Full resolution, no list to join, nothing to buy. Tell me your trade and where to send it, or I will DM it right here. Print it as big as you like.',
+      },
+      {
+        q: 'Can you put my business name on it?',
+        a: 'Yes, and it looks great. Give me the exact name as you want it to read and I will set it into the poster and send the file back, free. Allow a day.',
+        warn: 'This is a five minute re-render, deliver same day when possible. The personalized poster is the single warmest touch in the campaign.',
+      },
+      {
+        q: 'My trade is not one of the twenty.',
+        a: 'Then we owe you a poster. Tell me what you do and how you would describe the job to a kid, and we will draw yours and send it over, free.',
+        warn: 'Make the poster. Custom requests are the warmest leads this set produces, and a kept promise here is worth ten posts.',
+      },
+      {
+        q: 'Is this AI art?',
+        a: 'It is, art directed line by line here at the studio: the style, the palette, the scenes, the words. We use the same care on this we use on everything we build. Happy to talk shop about the process any time.',
+        warn: 'Never claim hand painted, never dodge the question. Honesty is the brand.',
+      },
+      {
+        q: 'What does your company actually do?',
+        a: 'We build websites that answer the phone. A site that talks, takes the call, and books the job, even at midnight. The posters are just our thank you to the people we build for. If you are curious what one looks like for a business like yours, ask and I will send a link to a free demo.',
+        warn: 'Only send the /demos link when they ask what we do. Never post it into a poster thread unprompted.',
+      },
+      {
+        q: 'How much is a website?',
+        a: 'Depends what it has to do, honestly, and I do not quote in comment threads because it never comes out fair to anybody. The demo is free and shows you exactly what yours would be. The poster stays free either way.',
+        warn: 'NEVER type a price. Pricing derives from lib/demo-order.ts and lives on the site.',
       },
     ],
   },
