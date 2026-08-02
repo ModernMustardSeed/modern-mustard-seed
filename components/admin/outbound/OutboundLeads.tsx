@@ -57,6 +57,27 @@ const matchesView = (l: OutboundLead, v: ViewKey) =>
         : v === 'outdated' ? hasSite(l) && isWeak(l)
           : !hasSite(l) || isWeak(l);
 
+/**
+ * Never worked: nobody has spent a minute on this lead yet.
+ *
+ * Status alone carries most of it. Logging ANY call outcome moves a lead off
+ * "new" (api/admin/outbound/calls advances demo_booked, callback, lost, and
+ * falls through to "contacted" for everything else), so status === 'new' means
+ * no dial was ever logged. The rest of the test catches the quieter touches a
+ * status never records: an audit email sent, a follow-up scheduled, a note Sarah
+ * typed, a suite already forged. `notes` is deliberately NOT a touch, since the
+ * sourcer writes mining ammo into it on every mined lead.
+ */
+const neverWorked = (l: OutboundLead) =>
+  l.status === 'new' &&
+  !l.last_email_at &&
+  !l.next_action_at &&
+  !l.rep_notes?.trim() &&
+  !l.demo_url &&
+  !l.site_demo_id &&
+  !l.os_demo_id &&
+  !l.hub_demo_id;
+
 /** Small per-row cue so a caller knows which pitch a lead is: build vs redesign. */
 function siteFlag(l: OutboundLead): { label: string; tone: 'red' | 'amber' } | null {
   if (confirmedNoSite(l)) return { label: 'No site ✓', tone: 'red' };
@@ -143,6 +164,10 @@ export default function OutboundLeads() {
   const [sourceF, setSourceF] = useState('');
   const [unscrubbedOnly, setUnscrubbedOnly] = useState(false);
   const [workedFirst, setWorkedFirst] = useState(true);
+  // Stacks ON TOP of the saved view rather than replacing it: "No website ✓" plus
+  // "Never worked" is the best list on the floor, and a sixth mutually exclusive
+  // chip would have made that combination unreachable.
+  const [untouchedOnly, setUntouchedOnly] = useState(false);
   const [view, setView] = useState<ViewKey>('all');
   const [sort, setSort] = useState<SortKey>('created_at');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
@@ -211,6 +236,7 @@ export default function OutboundLeads() {
       if (sc) setStatus(sc);
       const vw = params.get('view');
       if (vw && VIEWS.some((v) => v.key === vw)) setView(vw as ViewKey);
+      if (params.get('untouched') === '1') setUntouchedOnly(true);
     }
   }, [load]);
 
@@ -227,9 +253,10 @@ export default function OutboundLeads() {
     set('state', stateF);
     set('city', cityF);
     set('source', sourceF);
+    set('untouched', untouchedOnly ? '1' : '');
     const qs = p.toString();
     window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
-  }, [view, owner, status, stateF, cityF, sourceF]);
+  }, [view, owner, status, stateF, cityF, sourceF, untouchedOnly]);
 
   const repName = useCallback((id: string | null) => reps.find((r) => r.id === id)?.name ?? '', [reps]);
 
@@ -283,19 +310,27 @@ export default function OutboundLeads() {
     return rows;
   }, [leads, status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, deferredQ]);
 
+  // The untouched filter stacks between the two: site-chip counts reflect it when
+  // it is on, and its own count reflects the site chip you already picked.
+  const scoped = useMemo(() => (untouchedOnly ? base.filter(neverWorked) : base), [base, untouchedOnly]);
+  const untouchedCount = useMemo(
+    () => base.reduce((n, l) => (matchesView(l, view) && neverWorked(l) ? n + 1 : n), 0),
+    [base, view],
+  );
+
   const viewCounts = useMemo(() => {
-    const counts = { all: base.length, confirmed_no_site: 0, no_site: 0, outdated: 0, needs: 0 } as Record<ViewKey, number>;
-    for (const l of base) {
+    const counts = { all: scoped.length, confirmed_no_site: 0, no_site: 0, outdated: 0, needs: 0 } as Record<ViewKey, number>;
+    for (const l of scoped) {
       if (!hasSite(l)) {
         counts.no_site++; counts.needs++;
         if (confirmedNoSite(l)) counts.confirmed_no_site++;
       } else if (isWeak(l)) { counts.outdated++; counts.needs++; }
     }
     return counts;
-  }, [base]);
+  }, [scoped]);
 
   const visible = useMemo(() => {
-    const rows = base.filter((l) => matchesView(l, view));
+    const rows = scoped.filter((l) => matchesView(l, view));
     const mul = dir === 'asc' ? 1 : -1;
     return [...rows].sort((a, b) => {
       if (workedFirst) {
@@ -307,7 +342,7 @@ export default function OutboundLeads() {
       if (typeof va === 'number' || typeof vb === 'number') return (Number(va) - Number(vb)) * mul;
       return String(va).localeCompare(String(vb)) * mul;
     });
-  }, [base, view, workedFirst, sort, dir, repName]);
+  }, [scoped, view, workedFirst, sort, dir, repName]);
 
   // Only the current page hits the DOM. `visible` stays the full filtered set for
   // the count, the view chips, and the bulk-scrub target.
@@ -332,7 +367,7 @@ export default function OutboundLeads() {
   // one. Landing on "page 14 of 3" after a search would read as an empty floor.
   useEffect(() => {
     setPage(0);
-  }, [status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, deferredQ, view, sort, dir, workedFirst]);
+  }, [status, niche, owner, stateF, cityF, sourceF, unscrubbedOnly, untouchedOnly, deferredQ, view, sort, dir, workedFirst]);
 
   // Remembered per browser: a rep who works 100 at a time shouldn't reset to 50
   // every morning.
@@ -530,6 +565,24 @@ export default function OutboundLeads() {
                 </button>
               );
             })}
+
+            {/* Untouched. A filter, not a view: it narrows whichever site segment
+                is selected, so "No website ✓ + Never worked" is one click away.
+                Seed green instead of ink so the different behavior reads. */}
+            <span className="w-px self-stretch bg-[#1a1815]/15 mx-1" aria-hidden />
+            <button
+              onClick={() => setUntouchedOnly((v) => !v)}
+              aria-pressed={untouchedOnly}
+              title="Nobody has worked this lead: no call logged, no email sent, no follow-up scheduled, no note, no demo forged. Stacks on top of the view you picked."
+              className={`px-3 py-1.5 rounded-lg border-2 font-oswald uppercase tracking-[0.08em] text-[11px] transition-colors ${
+                untouchedOnly
+                  ? 'bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815] shadow-[2px_2px_0_0_#1a1815]'
+                  : 'bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#3f5d34] hover:text-[#1a1815]'
+              }`}
+            >
+              ◦ Never worked
+              <span className={`ml-1.5 tabular-nums ${untouchedOnly ? 'text-[#b58a2a]' : 'text-[#1a1815]/40'}`}>{untouchedCount}</span>
+            </button>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search business, contact, phone, city" className={`${inputCls} !w-64 !py-2`} />
@@ -604,8 +657,14 @@ export default function OutboundLeads() {
                 {!loading && visible.length === 0 && (
                   <tr>
                     <td colSpan={11} className="px-4 py-12 text-center">
-                      <p className="font-oswald uppercase text-lg text-[#1a1815]/50">No leads match</p>
-                      <p className="text-xs text-[#1a1815]/50 mt-1">Import a CSV or add your first lead to start dialing.</p>
+                      <p className="font-oswald uppercase text-lg text-[#1a1815]/50">
+                        {untouchedOnly ? 'Every lead here has been worked' : 'No leads match'}
+                      </p>
+                      <p className="text-xs text-[#1a1815]/50 mt-1">
+                        {untouchedOnly
+                          ? 'Nothing untouched left in this segment. Turn off "Never worked" to see the rest, or import more.'
+                          : 'Import a CSV or add your first lead to start dialing.'}
+                      </p>
                     </td>
                   </tr>
                 )}
