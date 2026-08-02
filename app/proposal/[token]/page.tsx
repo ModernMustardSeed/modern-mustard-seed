@@ -26,6 +26,16 @@ export default async function PublicProposalPage({ params }: { params: Promise<{
   const balanceDue = oneTime - depositDue;
   const hasVariable = lines.some((l) => byId(l.id)?.variable);
   const preparedFor = [p.client_name, p.client_company].filter(Boolean).join(', ');
+  const demoLinks = Array.isArray(p.demo_links)
+    ? (p.demo_links as Array<{ label?: string; url?: string }>)
+        .filter((d) => d && typeof d.url === 'string' && d.url)
+        .map((d) => ({ label: String(d.label || 'See it live'), url: String(d.url) }))
+    : [];
+  const dateStr = new Date(p.sent_at || p.updated_at || Date.now()).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
     <main className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-10 pb-24 px-5">
@@ -33,6 +43,9 @@ export default async function PublicProposalPage({ params }: { params: Promise<{
       <div className="relative max-w-3xl mx-auto">
         <ProposalDoc
           preparedFor={preparedFor || undefined}
+          headlineFor={(p.client_company as string) || (p.client_name as string) || null}
+          dateStr={dateStr}
+          demoLinks={demoLinks}
           siteUrl={p.site_url as string | null}
           prose={prose}
           situationFallback={(p.situation as string) || null}

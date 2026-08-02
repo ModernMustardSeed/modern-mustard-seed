@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
+import { cleanDemoLinks } from '@/lib/proposal-links';
 
 export const runtime = 'nodejs';
 
@@ -15,6 +16,7 @@ type ProposalBody = {
   status?: string;
   lines?: unknown[];
   prose?: Record<string, unknown>;
+  demo_links?: unknown[];
   one_time_total?: number;
   monthly_total?: number;
 };
@@ -31,7 +33,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from('proposals')
     .select(
-      'id, client_name, client_company, client_email, site_url, status, one_time_total, monthly_total, updated_at, signed_at, deposit_status, share_token'
+      'id, client_name, client_company, client_email, site_url, status, one_time_total, monthly_total, updated_at, signed_at, sent_at, deposit_status, share_token'
     )
     .order('updated_at', { ascending: false })
     .limit(100);
@@ -82,6 +84,7 @@ export async function POST(req: Request) {
       status,
       lines: body.lines ?? [],
       prose: body.prose ?? {},
+      demo_links: cleanDemoLinks(body.demo_links),
       one_time_total: Math.round(body.one_time_total ?? 0),
       monthly_total: Math.round(body.monthly_total ?? 0),
     })

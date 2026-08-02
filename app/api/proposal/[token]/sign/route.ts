@@ -50,6 +50,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
           client_company: p.client_company,
           client_email: p.client_email,
           site_url: p.site_url,
+          demo_links: p.demo_links,
           situation: p.situation,
           prose: p.prose,
           lines: p.lines,

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
+import { cleanDemoLinks } from '@/lib/proposal-links';
 
 export const runtime = 'nodejs';
 
@@ -53,6 +54,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     'monthly_total',
   ];
   for (const k of passthrough) if (k in body) update[k] = body[k];
+  if ('demo_links' in body) update.demo_links = cleanDemoLinks(body.demo_links);
   if (typeof update.one_time_total === 'number') update.one_time_total = Math.round(update.one_time_total);
   if (typeof update.monthly_total === 'number') update.monthly_total = Math.round(update.monthly_total);
   if (typeof body.status === 'string' && STATUSES.includes(body.status)) update.status = body.status;

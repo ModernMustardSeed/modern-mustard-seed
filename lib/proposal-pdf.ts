@@ -1,4 +1,4 @@
-import { PDFDocument, rgb, type PDFPage, type PDFFont } from 'pdf-lib';
+import { PDFDocument, PDFArray, PDFName, PDFString, rgb, type PDFPage, type PDFFont } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import { PLAYFAIR_700_B64, DMSANS_400_B64, DMSANS_700_B64 } from './proposal-fonts';
 import { byId, isRecurring, isHourly, formatMoney as money, TERMS, type Service } from '@/data/proposal-menu';
@@ -9,6 +9,7 @@ export type ProposalRecord = {
   client_company?: string | null;
   client_email?: string | null;
   site_url?: string | null;
+  demo_links?: Array<{ label?: string | null; url?: string | null }> | null;
   situation?: string | null;
   prose?: { intro?: string; situation?: string; recommendation?: string; close?: string } | null;
   lines?: Line[] | null;
@@ -26,6 +27,9 @@ const BODY = rgb(0.227, 0.216, 0.2);
 const MUTED = rgb(0.54, 0.515, 0.47);
 const YELLOW = rgb(0.96, 0.717, 0);
 const CREAM = rgb(1, 0.953, 0.8);
+const BLUE = rgb(0.118, 0.314, 0.784);
+
+const withProtocol = (url: string): string => (/^https?:\/\//i.test(url) ? url : `https://${url}`);
 
 function linePriceLabel(s: Service, l: Line): string {
   if (s.unit === 'free') return 'Included';
@@ -116,6 +120,23 @@ export async function renderProposalPdf(p: ProposalRecord): Promise<Uint8Array> 
     y -= 9 + 9;
   };
 
+  // A real, clickable link annotation over already-drawn text. Without this the
+  // PDF showed URLs as dead ink, the exact bug the web doc had too.
+  const linkAnnot = (pg: PDFPage, x: number, yBottom: number, w: number, h: number, url: string) => {
+    const ann = doc.context.obj({
+      Type: 'Annot',
+      Subtype: 'Link',
+      Rect: [x, yBottom, x + w, yBottom + h],
+      Border: [0, 0, 0],
+      A: { Type: 'Action', S: 'URI', URI: PDFString.of(withProtocol(url)) },
+    });
+    const ref = doc.context.register(ann);
+    const key = PDFName.of('Annots');
+    const existing = pg.node.lookupMaybe(key, PDFArray);
+    if (existing) existing.push(ref);
+    else pg.node.set(key, doc.context.obj([ref]));
+  };
+
   const bullet = (text: string) => {
     const size = 10;
     const lines = wrap(text, reg, size, contentW - 16);
@@ -137,7 +158,9 @@ export async function renderProposalPdf(p: ProposalRecord): Promise<Uint8Array> 
     y -= 18;
   }
   if (p.site_url) {
-    page.drawText(String(p.site_url), { x: M, y: y - 9, size: 10, font: reg, color: MUTED });
+    const urlText = String(p.site_url);
+    page.drawText(urlText, { x: M, y: y - 9, size: 10, font: reg, color: BLUE });
+    linkAnnot(page, M, y - 12, reg.widthOfTextAtSize(urlText, 10), 12, urlText);
     y -= 20;
   }
 
@@ -154,6 +177,26 @@ export async function renderProposalPdf(p: ProposalRecord): Promise<Uint8Array> 
 
   const prose = p.prose || {};
   if (prose.intro) para(prose.intro, { size: 11 });
+
+  // The showcase: the forged demos, live and clickable, above the fold of the
+  // document because the demo is the pitch.
+  const demoLinks = (Array.isArray(p.demo_links) ? p.demo_links : []).filter((d) => d && d.url);
+  if (demoLinks.length) {
+    heading('Already built for you');
+    para('Every link below is live right now. Click through.', { size: 10, gap: 6 });
+    for (const d of demoLinks) {
+      ensure(32);
+      page.drawText('•', { x: M, y: y - 10, size: 10, font: bold, color: YELLOW });
+      page.drawText(String(d.label || 'See it live'), { x: M + 14, y: y - 10, size: 11, font: bold, color: INK });
+      y -= 15;
+      const urlText = String(d.url).replace(/^https?:\/\//i, '');
+      page.drawText(urlText, { x: M + 14, y: y - 9, size: 9.5, font: reg, color: BLUE });
+      linkAnnot(page, M + 14, y - 12, reg.widthOfTextAtSize(urlText, 9.5), 12, String(d.url));
+      y -= 18;
+    }
+    y -= 4;
+  }
+
   if (prose.situation || p.situation) {
     heading('Where you are');
     para(prose.situation || (p.situation as string));

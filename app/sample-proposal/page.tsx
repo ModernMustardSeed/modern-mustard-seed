@@ -60,6 +60,7 @@ export default function SampleProposalPage() {
         {/* Doc */}
         <ProposalDoc
           preparedFor={`${SAMPLE.client_name}, ${SAMPLE.client_company}`}
+          headlineFor={SAMPLE.client_company}
           siteUrl={SAMPLE.site_url}
           prose={SAMPLE.prose}
           lines={lines}

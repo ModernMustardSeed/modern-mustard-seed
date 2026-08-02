@@ -79,5 +79,29 @@ export async function GET(_req: Request, { params }: { params: Promise<{ email: 
     messages = data ?? [];
   } catch { /* client_requests not migrated */ }
 
-  return NextResponse.json({ email, client, products, projects, orders, billing, messages });
+  // Everything we ever made or filed for them: demos, live links, docs.
+  let files: unknown[] = [];
+  try {
+    const { data } = await sb
+      .from('client_files')
+      .select('id, label, url, kind, created_at')
+      .eq('client_email', email)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    files = data ?? [];
+  } catch { /* client_files not migrated */ }
+
+  // Every proposal, with its share token so the doc is one click away.
+  let proposals: unknown[] = [];
+  try {
+    const { data } = await sb
+      .from('proposals')
+      .select('id, status, one_time_total, monthly_total, deposit_status, balance_status, signed_at, sent_at, share_token, updated_at')
+      .eq('client_email', email)
+      .order('updated_at', { ascending: false })
+      .limit(10);
+    proposals = data ?? [];
+  } catch { /* proposals not migrated */ }
+
+  return NextResponse.json({ email, client, products, projects, orders, billing, messages, files, proposals });
 }

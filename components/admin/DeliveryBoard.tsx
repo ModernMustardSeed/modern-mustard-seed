@@ -5,12 +5,12 @@ import MoodboardCanvas from '@/components/moodboard/MoodboardCanvas';
 import type { Moodboard as MoodboardPayload } from '@/lib/moodboard-shared';
 
 /**
- * THE DELIVERY BOARD. Everyone who has paid, and what they are waiting on.
- *
- * Nothing in the admin read demo_orders. Not one screen. A buyer paid, an email
- * landed in Sarah's inbox, and from that moment the only record of what they were
- * owed was that email. This is where a paid order becomes a live website: their
- * intake and files, a domain, and the button that puts it on the internet.
+ * THE DELIVERY BOARD, universal edition. Every client build, whatever door they
+ * came through: a forge demo order, a signed proposal, or a project opened by
+ * hand. One pipeline for all of them: intake and files, the direction board, a
+ * domain, and the button that puts them on the internet. Paid demo orders that
+ * never got a portal still surface, because that is the failure this board
+ * exists to catch.
  */
 
 type Quote = { domain: string; available: boolean; priceUsd: number | null; renewalUsd: number | null; years: number; buyable: boolean; reason?: string };
@@ -42,9 +42,22 @@ type Project = {
   moodboardNote: string | null;
   moodboardSentAt: string | null;
   moodboardApprovedAt: string | null;
+  carePlan?: boolean;
+};
+type ProposalInfo = {
+  id: string;
+  status: string;
+  depositStatus: string;
+  balanceStatus: string | null;
+  signedAt: string | null;
+  sentAt: string | null;
+  shareToken: string | null;
+  oneTime: number;
+  monthly: number;
 };
 type Row = {
   id: string;
+  source: 'demo' | 'proposal' | 'direct';
   business: string | null;
   name: string | null;
   email: string | null;
@@ -52,7 +65,7 @@ type Row = {
   products: string[];
   setupCents: number;
   monthlyCents: number;
-  status: string;
+  status: string | null;
   createdAt: string;
   intake: Record<string, unknown> | null;
   intakeAt: string | null;
@@ -60,6 +73,7 @@ type Row = {
   hasPortal: boolean;
   projectId: string | null;
   project: Project | null;
+  proposal: ProposalInfo | null;
   openRequests: number;
 };
 
@@ -149,10 +163,11 @@ export default function DeliveryBoard() {
   return (
     <div className="min-h-screen bg-[#FBF6EA] px-6 py-10">
       <div className="max-w-5xl mx-auto">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-1">Delivery</span>
-        <h1 className="font-display text-4xl font-bold text-[#161616] mb-1">Everyone who paid</h1>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold block mb-1">Delivery</span>
+        <h1 className="font-display text-4xl font-bold text-[#161616] mb-1">Everyone we owe a build</h1>
         <p className="font-body text-[#161616]/60 mb-6">
-          What they bought, what they sent us, and the button that puts them on the internet.
+          Forge orders, signed proposals, and hand-opened projects, all on one pipeline: what they bought,
+          what they sent us, and the button that puts them on the internet.
         </p>
 
         {!platformReady && (
@@ -363,14 +378,35 @@ function DeliveryRow({
           <div className="min-w-0">
             <h3 className="font-display text-xl font-semibold text-[#161616]">{row.business || row.name || row.email}</h3>
             <p className="font-mono text-[11px] text-[#161616]/50 mt-0.5">
-              {row.products.join(' + ')} · {usd(row.setupCents)} setup + {usd(row.monthlyCents)}/mo · {row.email}
+              {[
+                row.products.length ? row.products.join(' + ') : null,
+                row.setupCents || row.monthlyCents
+                  ? [
+                      row.setupCents ? `${usd(row.setupCents)} ${row.source === 'demo' ? 'setup' : 'project'}` : null,
+                      row.monthlyCents ? `${usd(row.monthlyCents)}/mo` : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' + ')
+                  : null,
+                row.email,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
             </p>
           </div>
           <div className="flex flex-wrap gap-1.5 items-center">
+            {row.source === 'demo' && <Chip tone="gold">Forge order</Chip>}
+            {row.source === 'proposal' && <Chip tone="blue">Proposal</Chip>}
+            {row.source === 'direct' && <Chip tone="plain">Direct</Chip>}
             {!row.hasPortal && <Chip tone="red">No portal opened</Chip>}
-            {row.status === 'paid' && <Chip tone="gold">Waiting on their intake</Chip>}
-            {row.status === 'intake_done' && <Chip tone="blue">Intake in, build it</Chip>}
-            {row.status === 'delivered' && <Chip tone="green">Delivered</Chip>}
+            {row.source === 'demo' && row.status === 'paid' && <Chip tone="gold">Waiting on their intake</Chip>}
+            {row.source === 'demo' && row.status === 'intake_done' && <Chip tone="blue">Intake in, build it</Chip>}
+            {row.source === 'demo' && row.status === 'delivered' && <Chip tone="green">Delivered</Chip>}
+            {row.proposal && !row.proposal.signedAt && row.proposal.status === 'sent' && <Chip tone="gold">Awaiting signature</Chip>}
+            {row.proposal?.signedAt && <Chip tone="green">Signed</Chip>}
+            {row.proposal?.depositStatus === 'paid' && <Chip tone="green">Deposit in</Chip>}
+            {row.proposal?.balanceStatus === 'paid' && <Chip tone="green">Paid in full</Chip>}
+            {p?.carePlan && <Chip tone="green">Care Plan</Chip>}
             {(p?.buildStatus === 'queued' || p?.buildStatus === 'building') && <Chip tone="blue">Rebuilding</Chip>}
             {p?.buildStatus === 'failed' && <Chip tone="red">Rebuild failed</Chip>}
             {(p?.editStatus === 'queued' || p?.editStatus === 'building') && <Chip tone="blue">Client edit building</Chip>}
@@ -398,7 +434,50 @@ function DeliveryRow({
             </p>
           )}
 
-          {/* What they told us */}
+          {/* One click to everything else this client is. */}
+          {row.email && (
+            <div className="flex flex-wrap gap-2">
+              <a href={`/admin/clients/${encodeURIComponent(row.email)}`} className={`${BTN_QUIET} inline-block no-underline`}>
+                Open client file →
+              </a>
+            </div>
+          )}
+
+          {/* The proposal behind this build: the document, its money, its state. */}
+          {row.proposal && (
+            <div>
+              <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">The proposal</h4>
+              <div className="flex flex-wrap items-center gap-2">
+                {row.proposal.shareToken && (
+                  <a
+                    href={`/proposal/${row.proposal.shareToken}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${BTN_QUIET} inline-block no-underline`}
+                  >
+                    Open the proposal ↗
+                  </a>
+                )}
+                {row.email && (
+                  <a href={`/admin/proposals?email=${encodeURIComponent(row.email)}`} className={`${BTN_QUIET} inline-block no-underline`}>
+                    Open in builder
+                  </a>
+                )}
+              </div>
+              <p className="font-body text-[13px] text-[#161616]/70 mt-2">
+                {row.proposal.signedAt
+                  ? `Signed ${new Date(row.proposal.signedAt).toLocaleDateString()}`
+                  : row.proposal.sentAt
+                    ? `Sent ${new Date(row.proposal.sentAt).toLocaleDateString()}, not signed yet`
+                    : 'Not sent yet'}
+                {' · '}deposit {row.proposal.depositStatus}
+                {row.proposal.balanceStatus === 'paid' ? ' · balance paid' : ''}
+              </p>
+            </div>
+          )}
+
+          {/* What they told us (the demo funnel's intake) */}
+          {row.source === 'demo' && (
           <div>
             <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">What they told us</h4>
             {row.intakeAt ? (
@@ -414,6 +493,7 @@ function DeliveryRow({
               <p className="font-body text-[13px] text-[#161616]/55">Nothing yet. They have not filled in the intake.</p>
             )}
           </div>
+          )}
 
           {/* What they sent */}
           {assets.length > 0 && (
@@ -438,8 +518,9 @@ function DeliveryRow({
           )}
 
           {/* The direction board: forge it from their intake, preview it, send it
-              for the client's signature. The reveal waits on that signature. */}
-          {row.hasPortal && (
+              for the client's signature. The reveal waits on that signature. It
+              forges from the demo intake, so it only renders for forge orders. */}
+          {row.hasPortal && row.source === 'demo' && (
             <div>
               <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">The Direction</h4>
               {p?.moodboardStatus === 'changes' && p.moodboardNote && (

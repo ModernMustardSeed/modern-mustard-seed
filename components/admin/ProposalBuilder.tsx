@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from './AdminHeader';
+import ProposalDoc from '@/components/ProposalDoc';
 import {
   SERVICES,
   PATHS,
@@ -19,6 +20,7 @@ import {
 
 type Line = { id: string; price: number; qty: number; scope: string[]; framing: string };
 type Prose = { intro: string; situation: string; recommendation: string; close: string };
+type DemoLink = { label: string; url: string };
 type Summary = {
   id: string;
   client_name: string | null;
@@ -30,6 +32,7 @@ type Summary = {
   monthly_total: number;
   updated_at: string;
   signed_at: string | null;
+  sent_at: string | null;
   deposit_status: string | null;
   share_token: string | null;
 };
@@ -92,6 +95,13 @@ export default function ProposalBuilder() {
   const [list, setList] = useState<Summary[]>([]);
   const [sendingProposal, setSendingProposal] = useState(false);
   const [proposalSent, setProposalSent] = useState(false);
+  const [sendError, setSendError] = useState('');
+  const [sentUrl, setSentUrl] = useState<string | null>(null);
+  const [testMsg, setTestMsg] = useState('');
+
+  // The showcase: demos already forged for this lead, carried on the document.
+  const [demoLinks, setDemoLinks] = useState<DemoLink[]>([]);
+  const [suggested, setSuggested] = useState<DemoLink[]>([]);
 
   // Deep-link focus: /admin/proposals?email=... auto-opens that client's proposal.
   const [focusEmail, setFocusEmail] = useState<string | null>(null);
@@ -164,6 +174,31 @@ export default function ProposalBuilder() {
       /* nothing to seed */
     }
   }, []);
+
+  // Ask the outbound floor what was already forged for this lead (by email,
+  // then by business name) so Sarah can attach it in one click instead of
+  // hunting through the cockpit. Debounced; purely a suggestion.
+  useEffect(() => {
+    const em = email.trim().toLowerCase();
+    const co = company.trim();
+    if (!em && !co) {
+      setSuggested([]);
+      return;
+    }
+    const t = setTimeout(async () => {
+      try {
+        const qs = new URLSearchParams();
+        if (em) qs.set('email', em);
+        if (co) qs.set('company', co);
+        const r = await fetch(`/api/admin/proposals/lead-demos?${qs.toString()}`);
+        const j = await r.json().catch(() => null);
+        setSuggested(r.ok && Array.isArray(j?.links) ? (j.links as DemoLink[]) : []);
+      } catch {
+        setSuggested([]);
+      }
+    }, 600);
+    return () => clearTimeout(t);
+  }, [email, company]);
 
   const { oneTime, monthly } = useMemo(() => {
     let o = 0;
@@ -247,6 +282,7 @@ export default function ProposalBuilder() {
     status,
     lines,
     prose,
+    demo_links: demoLinks.filter((d) => d.url.trim()),
     one_time_total: oneTime,
     monthly_total: monthly,
   });
@@ -284,36 +320,64 @@ export default function ProposalBuilder() {
     }
   };
 
-  const sendProposal = async () => {
-    if (!currentId || !email.trim() || sendingProposal) return;
+  const sendProposal = async (test = false) => {
+    if (!currentId || sendingProposal) return;
+    if (!test && !email.trim()) return;
     setSendingProposal(true);
+    setSendError('');
+    setTestMsg('');
     try {
+      // The client sees what is SAVED, so save first. An unsaved tweak silently
+      // missing from the document they sign is how the wrong scope gets sold.
+      if (lines.length) {
+        await fetch(`/api/admin/proposals/${currentId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(buildPayload()),
+        });
+      }
       const res = await fetch(`/api/admin/proposals/${currentId}/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify(test ? { test: true } : {}),
       });
-      if (res.ok) {
-        setProposalSent(true);
-        setStatus('sent');
-        setTimeout(() => setProposalSent(false), 3000);
-        loadList();
+      const j = await res.json().catch(() => null);
+      if (!res.ok) {
+        setSendError((j && j.error) || 'Could not send. Try again.');
+        return;
       }
+      if (test) {
+        setTestMsg(`Test sent to ${j?.to || 'your inbox'}. That is exactly what the client gets.`);
+        return;
+      }
+      setProposalSent(true);
+      setStatus('sent');
+      setSentUrl((j?.url as string) ?? null);
+      setTimeout(() => setProposalSent(false), 3000);
+      loadList();
+    } catch {
+      setSendError('Network error. Try again.');
     } finally {
       setSendingProposal(false);
     }
   };
 
   const [resendId, setResendId] = useState<string | null>(null);
+  const [rowErr, setRowErr] = useState<{ id: string; msg: string } | null>(null);
   const resendProposal = async (id: string) => {
     setResendId(id);
+    setRowErr(null);
     try {
-      await fetch(`/api/admin/proposals/${id}/send`, {
+      const res = await fetch(`/api/admin/proposals/${id}/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: '{}',
       });
+      const j = await res.json().catch(() => null);
+      if (!res.ok) setRowErr({ id, msg: (j && j.error) || 'Could not send.' });
       loadList();
+    } catch {
+      setRowErr({ id, msg: 'Network error.' });
     } finally {
       setResendId(null);
     }
@@ -368,6 +432,16 @@ export default function ProposalBuilder() {
         recommendation: p.prose?.recommendation || '',
         close: p.prose?.close || '',
       });
+      setDemoLinks(
+        Array.isArray(p.demo_links)
+          ? (p.demo_links as Array<{ label?: string; url?: string }>)
+              .map((d) => ({ label: String(d?.label ?? ''), url: String(d?.url ?? '') }))
+              .filter((d) => d.url)
+          : []
+      );
+      setSendError('');
+      setSentUrl(null);
+      setTestMsg('');
       setCurrentId(p.id);
       setDepositAmount(p.deposit_amount || '');
       setDepositStatus(p.deposit_status || 'unpaid');
@@ -402,6 +476,10 @@ export default function ProposalBuilder() {
     setPathId(null);
     setLines([]);
     setProse({ intro: '', situation: '', recommendation: '', close: '' });
+    setDemoLinks([]);
+    setSendError('');
+    setSentUrl(null);
+    setTestMsg('');
     setSaveError('');
     setDepositAmount('');
     setDepositStatus('unpaid');
@@ -602,6 +680,9 @@ export default function ProposalBuilder() {
             box-shadow: none !important;
             border-radius: 0 !important;
           }
+          .proposal-doc * {
+            box-shadow: none !important;
+          }
           @page {
             margin: 18mm;
           }
@@ -612,9 +693,9 @@ export default function ProposalBuilder() {
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         <p className="text-[#161616]/60 text-sm font-body mb-6 max-w-2xl print:hidden">
-          Build a proposal from your notes or an audit. Pick a path or add services, edit scope and
-          price, draft the words with AI, then copy it or print to PDF. Nothing here is emailed or
-          stored. It is your workspace for writing the proposal.
+          Build it, attach the demos you already forged, and preview exactly what the client sees at
+          their link (the preview IS their document, one component, zero drift). Send for signature
+          emails them the link, stamps the ledger, and tells you honestly if it did not go out.
         </p>
 
         <div className="grid lg:grid-cols-2 gap-6">
@@ -652,6 +733,7 @@ export default function ProposalBuilder() {
                           <span className="block text-[11px] text-[#161616]/50 font-mono">
                             {p.one_time_total ? money(p.one_time_total) : '—'}
                             {p.monthly_total ? ` · ${money(p.monthly_total)}/mo` : ''}
+                            {p.sent_at ? ` · sent ${new Date(p.sent_at).toLocaleDateString()}` : ''}
                           </span>
                         </button>
                         <span
@@ -689,6 +771,9 @@ export default function ProposalBuilder() {
                           Delete
                         </button>
                       </div>
+                      {rowErr?.id === p.id && (
+                        <p className="text-[#C4160B] text-[11px] font-body mt-1.5">{rowErr.msg}</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -713,6 +798,72 @@ export default function ProposalBuilder() {
                 placeholder="Their situation in a line or two (what they have now, what they need)"
                 className={`${inp} resize-y`}
               />
+            </div>
+
+            {/* The showcase: demos already forged for this lead, on the document */}
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold block mb-1">
+                Already built for them
+              </span>
+              <p className="text-[#161616]/45 text-xs font-body mb-3">
+                Live demo links render as clickable gold cards in the document. The demo is the pitch;
+                never send a proposal without the thing you already made them.
+              </p>
+              {suggested.filter((s) => !demoLinks.some((d) => d.url === s.url)).length > 0 && (
+                <div className="mb-3 rounded-lg border-2 border-[#F5B700] bg-[#FFF8E6] p-3">
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-[#8f6600] font-mono font-bold block mb-2">
+                    Found on the outbound floor for this lead
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {suggested
+                      .filter((s) => !demoLinks.some((d) => d.url === s.url))
+                      .map((s) => (
+                        <button
+                          key={s.url}
+                          type="button"
+                          onClick={() => setDemoLinks((prev) => [...prev, s])}
+                          className="inline-flex items-center gap-1 rounded-lg border-2 border-[#161616] bg-white px-2.5 py-1 font-sans text-[11px] font-bold text-[#161616] hover:bg-[#F5B700] transition-colors"
+                        >
+                          + {s.label}
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              )}
+              {demoLinks.length > 0 && (
+                <div className="space-y-2 mb-2">
+                  {demoLinks.map((d, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <input
+                        value={d.label}
+                        onChange={(e) => setDemoLinks((prev) => prev.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))}
+                        placeholder="Label (Your new website, live now)"
+                        className={`${inp} flex-1`}
+                      />
+                      <input
+                        value={d.url}
+                        onChange={(e) => setDemoLinks((prev) => prev.map((x, j) => (j === i ? { ...x, url: e.target.value } : x)))}
+                        placeholder="https://…"
+                        className={`${inp} flex-[1.2]`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setDemoLinks((prev) => prev.filter((_, j) => j !== i))}
+                        className="text-[10px] uppercase tracking-[0.15em] font-mono text-[#161616]/45 hover:text-[#E0301E] shrink-0"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => setDemoLinks((prev) => [...prev, { label: '', url: '' }])}
+                className="text-[10px] uppercase tracking-[0.15em] font-mono text-[#1E50C8] hover:text-[#161616]"
+              >
+                + Add a link
+              </button>
             </div>
 
             {/* Notes / audit */}
@@ -1028,12 +1179,20 @@ export default function ProposalBuilder() {
                   New
                 </button>
                 <button
-                  onClick={sendProposal}
+                  onClick={() => sendProposal()}
                   disabled={!currentId || !email.trim() || sendingProposal}
                   title={!email.trim() ? 'Add a client email first' : !currentId ? 'Save first' : ''}
                   className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-white bg-emerald-600 hover:bg-emerald-500 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] disabled:opacity-40 transition-all"
                 >
                   {sendingProposal ? 'Sending…' : proposalSent ? 'Sent ✓' : 'Send for signature'}
+                </button>
+                <button
+                  onClick={() => sendProposal(true)}
+                  disabled={!currentId || sendingProposal}
+                  title={!currentId ? 'Save first' : 'Emails the exact client email to your own inbox'}
+                  className="px-4 py-2 rounded-lg text-[10px] uppercase tracking-[0.18em] font-sans font-bold bg-white text-[#161616] border-2 border-[#161616] hover:bg-[#FFF8E6] disabled:opacity-40 transition-colors"
+                >
+                  Send me a test
                 </button>
                 <span className="w-px h-5 bg-[#161616]/15 mx-1" aria-hidden />
                 <button
@@ -1052,152 +1211,63 @@ export default function ProposalBuilder() {
                 </button>
               </div>
               {saveError && <p className="text-[#E0301E] text-xs font-body">{saveError}</p>}
+              {sendError && <p className="text-[#C4160B] text-xs font-body">{sendError}</p>}
+              {testMsg && <p className="text-emerald-700 text-xs font-body">{testMsg}</p>}
+              {sentUrl && (
+                <div className="flex flex-wrap items-center gap-2 rounded-lg border-2 border-emerald-600/40 bg-emerald-50 px-3 py-2">
+                  <span className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-emerald-700">Sent</span>
+                  <a
+                    href={sentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[11px] text-[#1E50C8] hover:text-[#161616] break-all"
+                  >
+                    {sentUrl}
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => navigator.clipboard?.writeText(sentUrl)}
+                    className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-emerald-700 hover:text-emerald-900"
+                  >
+                    Copy
+                  </button>
+                </div>
+              )}
             </div>
 
-            <div className="proposal-doc bg-[#FBF8F2] text-[#1B2436] rounded-xl overflow-hidden">
-              {/* Doc header */}
-              <div className="bg-[#1F4280] px-8 py-7 text-center">
-                <div className="text-[10px] tracking-[0.4em] uppercase text-white font-semibold">Modern Mustard Seed</div>
-                <div className="text-white/80 text-sm italic mt-2" style={{ fontFamily: 'Georgia, serif' }}>
-                  Proposal · {dateStr}
+            {/* The preview IS the client's document: the same shared component the
+                token page renders, so what Sarah approves here is byte-for-byte
+                what the client opens. The old preview had its own navy design and
+                drifted completely off brand. Never again. */}
+            <div className="proposal-doc">
+              {lines.length === 0 ? (
+                <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8">
+                  <p className="text-[#161616]/50 text-sm font-body">
+                    Add a path or services to build the proposal. This preview is exactly what the client
+                    sees at their link.
+                  </p>
                 </div>
-              </div>
-
-              <div className="px-8 py-8">
-                {lines.length === 0 ? (
-                  <p className="text-[#8A8170] text-sm">Add a path or services to build the proposal.</p>
-                ) : (
-                  <>
-                    {preparedFor && (
-                      <p className="text-[11px] uppercase tracking-[0.25em] text-[#A8741A] font-bold mb-1">
-                        Prepared for {preparedFor}
-                      </p>
-                    )}
-                    {url && <p className="text-[13px] text-[#8A8170] mb-4">{url}</p>}
-
-                    {prose.intro && <p className="text-[15px] leading-relaxed mb-5">{prose.intro}</p>}
-
-                    {(prose.situation || situation) && (
-                      <Section title="Where you are">{prose.situation || situation}</Section>
-                    )}
-                    {prose.recommendation && <Section title="What we recommend">{prose.recommendation}</Section>}
-
-                    {/* Line items */}
-                    <h3 className="text-[11px] uppercase tracking-[0.25em] text-[#A8741A] font-bold mt-7 mb-3">
-                      Scope and pricing
-                    </h3>
-                    <div className="space-y-4">
-                      {lines.map((l) => {
-                        const s = lineToService(l);
-                        if (!s) return null;
-                        return (
-                          <div key={l.id} className="border border-[#E7DECC] rounded-lg p-4">
-                            <div className="flex items-baseline justify-between gap-3 mb-1">
-                              <span className="font-semibold text-[16px]" style={{ fontFamily: 'Georgia, serif' }}>
-                                {s.name}
-                              </span>
-                              <span className="text-right whitespace-nowrap">
-                                <span className="text-[14px] font-semibold text-[#1B2436]">{linePriceLabel(s, l)}</span>
-                                {s.variable && (
-                                  <span className="block text-[10px] text-[#8A8170] font-normal">at cost, varies with usage</span>
-                                )}
-                              </span>
-                            </div>
-                            {l.framing && <p className="text-[13.5px] text-[#474F60] leading-relaxed mb-2">{l.framing}</p>}
-                            <ul className="space-y-1">
-                              {l.scope.map((b, i) => (
-                                <li key={i} className="text-[13px] text-[#474F60] leading-relaxed pl-4 relative">
-                                  <span className="absolute left-0 text-[#C8964E]">•</span>
-                                  {b}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Totals: three buckets */}
-                    <div className="mt-6 border-t border-[#E7DECC] pt-4 space-y-3">
-                      {oneTime > 0 && (
-                        <>
-                          <div className="flex items-baseline justify-between">
-                            <span className="text-[14px] text-[#474F60]">Project total</span>
-                            <span className="text-[20px] font-semibold" style={{ fontFamily: 'Georgia, serif' }}>
-                              {money(oneTime)}
-                            </span>
-                          </div>
-                          <div className="rounded-lg bg-[#F5EEE0] border border-[#E7DECC] p-3.5 space-y-2">
-                            <div className="flex items-baseline justify-between">
-                              <span className="text-[13px] text-[#474F60]">To start, 50% deposit</span>
-                              <span className="text-[15px] font-semibold text-[#1B2436]">{money(depositDue)}</span>
-                            </div>
-                            <div className="flex items-baseline justify-between">
-                              <span className="text-[13px] text-[#474F60]">Balance on delivery</span>
-                              <span className="text-[15px] font-semibold text-[#1B2436]">{money(balanceDue)}</span>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {monthly > 0 && (
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-[14px] text-[#474F60]">Monthly{hasVariable ? ', estimated' : ''}</span>
-                          <span className="text-[16px] font-semibold text-[#1B2436]">{money(monthly)}/mo</span>
-                        </div>
-                      )}
-                      {hasVariable && (
-                        <p className="text-[12px] text-[#8A8170] leading-relaxed">
-                          Software and compute is billed at cost and moves with the compute used each
-                          month. The monthly figure is an estimate, not a fixed charge.
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Terms */}
-                    <h3 className="text-[11px] uppercase tracking-[0.25em] text-[#A8741A] font-bold mt-7 mb-2">Terms</h3>
-                    <ul className="space-y-1">
-                      {TERMS.map((t, i) => (
-                        <li key={i} className="text-[12.5px] text-[#474F60] leading-relaxed pl-4 relative">
-                          <span className="absolute left-0 text-[#C8964E]">•</span>
-                          {t}
-                        </li>
-                      ))}
-                    </ul>
-
-                    {prose.close && <p className="text-[15px] leading-relaxed mt-6">{prose.close}</p>}
-
-                    <p className="text-[13px] text-[#474F60] mt-5">
-                      Book a call:{' '}
-                      <a href="https://modernmustardseed.com/book" className="text-[#A8741A] font-semibold">
-                        modernmustardseed.com/book
-                      </a>
-                    </p>
-
-                    <div className="mt-7 pt-5 border-t border-[#E7DECC]">
-                      <p className="text-[11px] uppercase tracking-[0.2em] text-[#8A8170] font-bold">With faith,</p>
-                      <p className="text-[22px] font-semibold mt-1" style={{ fontFamily: 'Georgia, serif' }}>
-                        Sarah
-                      </p>
-                      <p className="text-[11px] uppercase tracking-[0.15em] text-[#A8741A] font-bold mt-0.5">
-                        Founder, Modern Mustard Seed
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
+              ) : (
+                <ProposalDoc
+                  preparedFor={preparedFor || undefined}
+                  headlineFor={company.trim() || name.trim() || null}
+                  dateStr={dateStr}
+                  siteUrl={url.trim() || null}
+                  demoLinks={demoLinks.filter((d) => d.url.trim())}
+                  prose={prose}
+                  situationFallback={situation || null}
+                  lines={lines}
+                  oneTime={oneTime}
+                  monthly={monthly}
+                  depositDue={depositDue}
+                  balanceDue={balanceDue}
+                  hasVariable={hasVariable}
+                />
+              )}
             </div>
           </div>
         </div>
       </main>
-    </div>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="mb-4">
-      <h3 className="text-[11px] uppercase tracking-[0.25em] text-[#A8741A] font-bold mb-1.5">{title}</h3>
-      <p className="text-[14.5px] text-[#474F60] leading-relaxed whitespace-pre-line">{children}</p>
     </div>
   );
 }

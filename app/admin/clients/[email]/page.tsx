@@ -17,7 +17,9 @@ type Order = { stripe_session_id: string; product_name: string; item_type: strin
 type Billing = { one_time_total: number | null; monthly_total: number | null; deposit_status: string | null; balance_status: string | null; signed_at: string | null; subscription_status: string | null } | null;
 type Message = { id: string; body: string; source: string; status: string; reply_body: string | null; replied_at: string | null; proposed_date: string | null; created_at: string };
 type Client = { email: string; name: string | null; company: string | null; tier: string | null; status: string | null; welcome_note: string | null; created_at: string } | null;
-type Payload = { email: string; client: Client; products: Product[]; projects: Project[]; orders: Order[]; billing: Billing; messages: Message[] };
+type ClientFile = { id: string; label: string; url: string; kind: string; created_at: string };
+type ProposalRow = { id: string; status: string; one_time_total: number | null; monthly_total: number | null; deposit_status: string | null; balance_status: string | null; signed_at: string | null; sent_at: string | null; share_token: string | null; updated_at: string };
+type Payload = { email: string; client: Client; products: Product[]; projects: Project[]; orders: Order[]; billing: Billing; messages: Message[]; files?: ClientFile[]; proposals?: ProposalRow[] };
 
 const dollars = (cents: number | null | undefined) => (cents == null ? null : `$${Math.round(cents / 100).toLocaleString('en-US')}`);
 const fmtDate = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
@@ -83,9 +85,9 @@ export default function ClientCommandView() {
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
-      <AdminHeader active="projects" title={displayName} onRefresh={load} />
+      <AdminHeader active="clients" title={displayName} onRefresh={load} />
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <Link href="/admin" className="text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]">← Command Center</Link>
+        <Link href="/admin/clients" className="text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]">← Client Book</Link>
 
         {loading ? (
           <p className="text-center text-[#161616]/50 py-20 font-body italic">Opening the file...</p>
@@ -149,6 +151,68 @@ export default function ClientCommandView() {
                         {p.moodboard_status && <span>Moodboard: {p.moodboard_status}</span>}
                         {p.site_live_url && <a href={p.site_live_url} target="_blank" rel="noopener noreferrer" className="text-[#1E50C8] font-semibold hover:text-[#161616]">Live site ↗</a>}
                       </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Everything we made them: live sites, demos, files. Always clickable. */}
+            {((data.files?.length ?? 0) > 0 || data.projects.some((p) => p.site_live_url)) && (
+              <Card>
+                <Eyebrow>Everything we made</Eyebrow>
+                <div className="flex flex-wrap gap-2">
+                  {data.projects.filter((p) => p.site_live_url).map((p) => (
+                    <a
+                      key={p.id}
+                      href={p.site_live_url as string}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 font-sans text-[12px] font-bold text-[#161616] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform no-underline"
+                    >
+                      {p.name}: live site <span aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                  {(data.files ?? []).map((f) => (
+                    <a
+                      key={f.id}
+                      href={f.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-3 py-1.5 font-sans text-[12px] font-bold text-[#161616] hover:-translate-y-0.5 transition-transform no-underline"
+                    >
+                      {f.label} <span aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Proposals: the documents themselves, one click away. */}
+            {(data.proposals?.length ?? 0) > 0 && (
+              <Card>
+                <Eyebrow>Proposals</Eyebrow>
+                <div className="space-y-2.5">
+                  {(data.proposals ?? []).map((p) => (
+                    <div key={p.id} className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm font-body border-b border-[#161616]/10 last:border-0 pb-2.5 last:pb-0">
+                      <span className="font-mono text-[12px] text-[#161616]/70">
+                        {p.one_time_total ? `$${Number(p.one_time_total).toLocaleString('en-US')}` : ''}
+                        {p.monthly_total ? ` + $${Number(p.monthly_total).toLocaleString('en-US')}/mo` : ''}
+                      </span>
+                      <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded border text-[#161616]/70 border-[#161616]/20 bg-[#FBF6EA]">
+                        {p.signed_at ? 'signed' : p.status}
+                      </span>
+                      {p.sent_at && <span className="text-[#161616]/50 font-mono text-[11px]">sent {fmtDate(p.sent_at)}</span>}
+                      <span className="ml-auto flex items-center gap-3">
+                        {p.share_token && (
+                          <a href={`/proposal/${p.share_token}`} target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]">
+                            Open ↗
+                          </a>
+                        )}
+                        <Link href={`/admin/proposals?email=${encodeURIComponent(data.email)}`} className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]">
+                          Builder →
+                        </Link>
+                      </span>
                     </div>
                   ))}
                 </div>
