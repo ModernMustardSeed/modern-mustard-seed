@@ -39,7 +39,6 @@ import { getSupabase } from '@/lib/supabase';
 import { resendClient } from '@/lib/send-email';
 import { leadNotification } from '@/lib/email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
-import { sendSms } from '@/lib/sms';
 import { sidekickTiers } from '@/data/sidekick';
 import { broadcastTiers } from '@/data/ads';
 import { BUILD_FEE_USD, PRICE_TIERS } from '@/data/switchboard';
@@ -77,7 +76,6 @@ const MAX_DETAIL_ITEMS = 4;
 /** app_state row holding outage + streak memory between runs. */
 const STATE_KEY = 'checkout_health';
 
-const OWNER_ALERT_PHONE = process.env.OWNER_ALERT_PHONE || '+14062506076';
 
 // ----------------------------------------------------------------- types ----
 
@@ -354,15 +352,6 @@ async function emailOwner(subject: string, message: string, action: string, fiel
   }
 }
 
-async function textOwner(body: string): Promise<void> {
-  try {
-    const r = await sendSms(OWNER_ALERT_PHONE, body, { statusCallback: false });
-    if (!r.ok) console.error('checkout-health alert SMS failed', r.error);
-  } catch (err) {
-    console.error('checkout-health alert SMS threw', err);
-  }
-}
-
 /**
  * Decide what this run means, page if it warrants paging, and remember it.
  * Paging rules, in order:
@@ -393,7 +382,6 @@ async function resolveAndAlert(sb: SupabaseClient | null, failures: Check[], inc
         'Check status.stripe.com and the Vercel logs for /api/cron/checkout-health. If Stripe is healthy, the probe is being rate limited and READ_CONCURRENCY in lib/checkout-health.ts needs to come down.',
         fields,
       );
-      await textOwner(`MMS: Stripe has been unreachable or throttled for ${transientStreak} watchdog runs (${names}). Checkout is UNVERIFIED, not confirmed down. Check email.`);
     } else {
       await emailOwner(
         `URGENT: an MMS money path is DOWN (${effective.length})`,
@@ -401,14 +389,12 @@ async function resolveAndAlert(sb: SupabaseClient | null, failures: Check[], inc
         'Fix the failing check below. Run the probe on demand: GET /api/cron/checkout-health with the CRON_SECRET bearer.',
         fields,
       );
-      await textOwner(`MMS ALERT: a money path failed the health check (${effective.length}): ${names}. Check email for details. Buyers may be unable to pay.`);
     }
     alertedAt = new Date().toISOString();
   } else if (!down && prev.down) {
     await emailOwner('Recovered: MMS money paths are working again', 'All paid funnels passed the health probe again. Buyers can check out and pay. Nothing to do.', 'All clear.', [
       { label: 'Status', value: 'All checks passing' },
     ]);
-    await textOwner('MMS: recovered. All checkout and pay links are working again.');
   }
 
   // Always persisted, clean runs included: the streak is what makes a sustained

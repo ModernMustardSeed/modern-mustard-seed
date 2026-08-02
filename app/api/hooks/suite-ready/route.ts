@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sendViaResend } from '@/lib/send-email';
-import { sendSms, smsSendable, normalizePhone, isOptedOut, withinQuietHours } from '@/lib/sms';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -121,31 +120,6 @@ export async function POST(req: Request) {
     occurred_at: new Date().toISOString(),
   });
 
-  // The text, for people who asked us for this themselves. Everything about it
-  // fails quiet: a suppressed number, a quiet hour, or an unarmed A2P campaign
-  // must never turn a delivered suite into a 500.
-  let texted: string | null = null;
-  const phone = normalizePhone(lead.phone);
-  if (phone && lead.source === 'demo-station' && smsSendable() && !withinQuietHours(phone) && !(await isOptedOut(phone))) {
-    const smsBody =
-      `Hi ${first}, Sarah at Modern Mustard Seed. ${biz}'s demo suite is finished, ` +
-      `including a short walkthrough of your own site and a real call with your agent: ${hubUrl} ` +
-      `Nothing owed. Reply STOP to opt out.`;
-    const res = await sendSms(phone, smsBody).catch(() => ({ ok: false }) as { ok: boolean });
-    if (res.ok) {
-      texted = phone;
-      await supabase.from('messages').insert({
-        outbound_lead_id: lead.id,
-        direction: 'outbound',
-        channel: 'sms',
-        to_addr: phone,
-        subject: 'Demo suite texted',
-        snippet: `Suite-ready text sent with ${hubUrl}`,
-        read: true,
-        occurred_at: new Date().toISOString(),
-      });
-    }
-  }
-
-  return NextResponse.json({ ok: true, id: sent.id, texted });
+  // Texting was retired 2026-08-01, so email is the whole delivery here.
+  return NextResponse.json({ ok: true, id: sent.id });
 }

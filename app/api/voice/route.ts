@@ -10,7 +10,6 @@ import {
   p,
 } from '@/lib/email';
 import { getAffiliateByEmail } from '@/lib/affiliate';
-import { sendSms } from '@/lib/sms';
 import { insertLead, getSupabase } from '@/lib/supabase';
 import { recallCaller, rememberFromTool, rememberSummary } from '@/lib/voice-memory';
 import { getNextAvailableSlots, isSlotAvailable, displayForIso, bookingWindow } from '@/lib/booking';
@@ -561,19 +560,14 @@ async function sendResourceEmail(
 
 /* ───────── reach_sarah: a caller asked for Sarah; notify her now ───────── */
 
-/** Sarah's real cell, (406) 250-6076. The live transfer rings it; reach_sarah
- *  also texts it best-effort as a backup heads-up. */
-const SARAH_CELL = '+14062506076';
-
 /**
  * reach_sarah: the caller wants Sarah personally and either the live transfer
  * did not connect, the caller preferred a callback, or this is a web/desk call
  * with no phone leg to bridge. Ping Sarah immediately so she can call back.
  *
- * Email is the guaranteed channel (Resend/Zoho to OWNER_NOTIFY_TO). SMS to her
- * own cell is attempted best-effort: it starts landing the moment the Twilio
- * A2P registration clears (today it may be carrier-filtered), so the email is
- * what actually reaches her.
+ * Email (Resend/Zoho to OWNER_NOTIFY_TO) is the only channel since texting was
+ * retired 2026-08-01. It was already the guaranteed one; the text was
+ * best-effort and carrier-filtered while A2P sat unapproved.
  */
 async function reachSarah(
   input: { name?: string; phone?: string; reason?: string },
@@ -610,15 +604,6 @@ async function reachSarah(
     } catch (err) {
       console.error('reach_sarah email failed', err);
     }
-  }
-
-  // Best-effort text to Sarah's cell. Never blocks or fails the tool.
-  try {
-    const body = `Mr. Mustard: ${name}${phone ? ` (${phone})` : ''} asked for you on a call.${reason ? ` Re: ${reason}.` : ''} Call them back when you can.`;
-    const sms = await sendSms(SARAH_CELL, body, { statusCallback: false });
-    console.log(`reach_sarah sms ${sms.ok ? 'queued ' + sms.sid : 'skipped: ' + sms.error}`);
-  } catch (err) {
-    console.error('reach_sarah sms threw', err);
   }
 
   if (!emailed) {

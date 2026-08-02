@@ -2,17 +2,24 @@
  * THE CHIEF: proactive morning briefing.
  *
  * Once a day, every active Chief client gets their wake-up: a verse, a word of
- * encouragement, and a nudge toward the day. v1 delivers by SMS (the call
- * channel rides the same roster once the per-client Vapi line is provisioned).
- * Fails closed: no CRON_SECRET, no send; SMS not sendable (A2P not approved), no
- * send; already briefed today, skip. Never double-texts, never leaks.
+ * encouragement, and a nudge toward the day.
+ *
+ * Delivered by EMAIL since 2026-08-01. v1 texted it, but texting was retired
+ * across the studio and the A2P campaign never cleared, so the SMS path had in
+ * practice never delivered a single briefing. Email actually arrives, and the
+ * call channel still rides this same roster once the per-client Vapi line is
+ * provisioned.
+ *
+ * Fails closed: no CRON_SECRET, no send; no Resend key, no send; already
+ * briefed today, skip. Never double-sends.
  *
  * Cadence: daily. Vercel cron fires it ~7am Mountain (13:00 UTC).
  */
 
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { sendSms, smsSendable, isOptedOut } from '@/lib/sms';
+import { sendViaResend } from '@/lib/send-email';
+import { clientEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -46,7 +53,6 @@ function verseForToday(): string {
 type ChiefClientRow = {
   email: string;
   first_name: string | null;
-  phone: string | null;
   briefing_channel: string;
 };
 
@@ -60,18 +66,19 @@ export async function GET(req: Request) {
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ ok: false, reason: 'no_db' });
 
-  // Fail closed: if we cannot text (A2P not approved), do not pretend we briefed.
-  if (!smsSendable()) {
-    return NextResponse.json({ ok: true, sent: 0, skipped: 0, reason: 'sms_not_sendable' });
+  // Fail closed: if we cannot send, do not pretend we briefed.
+  if (!process.env.RESEND_API_KEY) {
+    return NextResponse.json({ ok: true, sent: 0, skipped: 0, reason: 'email_not_sendable' });
   }
 
   const today = new Date().toISOString().slice(0, 10);
 
+  // No channel filter: the old roster split on briefing_channel = 'sms', and
+  // those clients now get the same briefing by email instead of nothing.
   const { data, error } = await supabase
     .from('chief_clients')
-    .select('email, first_name, phone, briefing_channel')
+    .select('email, first_name, briefing_channel')
     .eq('active', true)
-    .eq('briefing_channel', 'sms')
     .or(`last_briefed_on.is.null,last_briefed_on.lt.${today}`)
     .limit(500);
 
@@ -86,22 +93,34 @@ export async function GET(req: Request) {
   let skipped = 0;
 
   for (const c of rows) {
-    if (!c.phone) {
+    if (!c.email) {
       skipped++;
       continue;
     }
-    // Honor STOP: never text someone who opted out, even a paying client.
-    if (await isOptedOut(c.phone)) {
-      skipped++;
-      continue;
-    }
-    const name = c.first_name ? `${c.first_name}, ` : '';
-    const body = `Good morning ${name}your Chief here.\n\n${verse}\n\nHere for whatever the day needs. Call or text me anytime.`;
+    const name = c.first_name?.trim();
+    const html = clientEmail({
+      preheader: 'Your morning briefing from the Chief.',
+      eyebrow: 'The Chief',
+      greeting: name ? `Good morning, ${name}` : 'Good morning',
+      body:
+        `<p style="margin:0 0 18px">Your Chief here.</p>` +
+        `<p style="margin:0 0 18px;font-style:italic">${verse}</p>` +
+        `<p style="margin:0">Here for whatever the day needs. Call me anytime.</p>`,
+    });
+
     try {
-      const res = await sendSms(c.phone, body);
+      const res = await sendViaResend({
+        to: [c.email],
+        subject: 'Your morning briefing',
+        html,
+        from: 'The Chief <sarah@modernmustardseed.com>',
+      });
       if (res.ok) {
         sent++;
-        await supabase.from('chief_clients').update({ last_briefed_on: today, updated_at: new Date().toISOString() }).eq('email', c.email);
+        await supabase
+          .from('chief_clients')
+          .update({ last_briefed_on: today, updated_at: new Date().toISOString() })
+          .eq('email', c.email);
       } else {
         skipped++;
       }
