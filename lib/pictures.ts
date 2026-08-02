@@ -4,14 +4,18 @@
  * writeStoryboard: Claude drafts the director's treatment in Mr. Mustard's
  * voice (logline, six shots, three taglines). This is the guaranteed beat.
  *
- * paintHeroFrame: one nano-banana frame of the director on THEIR business's
- * set (same character transform the shipped commercials use). Generation can
- * be down (empty fal wallet, model hiccup): callers must treat a null frame
- * as "the darkroom is backed up", never a failure of the screen test.
+ * heroFramePath: the director on a set matching their vertical. Pre-rendered on
+ * the Codex subscription and committed, so it is free and instant (2026-08-01).
+ *
+ * paintHeroFrame: the live fal fallback, kept only for a vertical with no
+ * rendered frame yet. Generation can be down (empty wallet, model hiccup):
+ * callers must treat a null frame as "the darkroom is backed up", never a
+ * failure of the screen test.
  */
 
 import Anthropic from '@anthropic-ai/sdk';
 import { getPicturesVertical } from '@/data/pictures';
+import { RENDERED_FRAMES } from '@/data/pictures-frames';
 import type { PicturesProfile } from '@/lib/pictures-store';
 
 const CHARACTER =
@@ -67,14 +71,39 @@ export async function writeStoryboard(p: PicturesProfile): Promise<string | null
 }
 
 /**
- * Paint the hero frame. Returns the image URL or null (darkroom backed up).
- * Costs ~$0.04 per frame; the route's caps bound the spend.
+ * The URL of the pre-rendered hero frame for a vertical, or null if that one
+ * has not been rendered yet.
+ *
+ * The frame's art direction depends ONLY on the vertical, never on the
+ * individual business, so there are exactly eight possible frames in the whole
+ * product. That makes live generation the wrong shape for it: pre-rendered
+ * frames are free, instant, and cannot be taken down by an empty wallet in the
+ * middle of someone's screen test. Render them with
+ * `node scripts/gen-pictures-frames.mjs` (Codex, free).
+ *
+ * ABSOLUTE on purpose: this URL is emailed to the prospect as the treatment's
+ * hero image, and a relative path renders as a broken image in every mail
+ * client. Prod is the right origin even from a preview deploy, because the
+ * frames are committed and prod therefore always has them.
  */
+export function heroFramePath(verticalId: string): string | null {
+  const id = getPicturesVertical(verticalId).id;
+  if (!RENDERED_FRAMES.includes(id)) return null;
+  const origin = (process.env.NEXT_PUBLIC_SITE_URL || 'https://modernmustardseed.com').replace(/\/+$/, '');
+  return `${origin}/pictures/frames/${id}.jpg`;
+}
+
+export function heroFramePrompt(verticalId: string): string {
+  const v = getPicturesVertical(verticalId);
+  return `Transform this flat 2D cartoon mascot into ${CHARACTER}. Cinematic film still, behind the scenes at a film shoot: the tiny seed character stands on a director's chair wearing a tiny black beret, holding a small megaphone, directing a commercial film set styled as ${v.set}, warm movie lights and a cinema camera silhouette in the frame, golden cinematic glow, shallow depth of field, photorealistic environment with the stylized 3D character, joyful and grand, 16:9 widescreen. Absolutely no text, no letters, no words anywhere in the image.`;
+}
+
+export const HERO_FRAME_MASCOT_URL = MASCOT_URL;
+
 export async function paintHeroFrame(p: PicturesProfile): Promise<string | null> {
   const falKey = (process.env.FAL_KEY || '').trim();
   if (!falKey) return null;
-  const v = getPicturesVertical(p.verticalId);
-  const prompt = `Transform this flat 2D cartoon mascot into ${CHARACTER}. Cinematic film still, behind the scenes at a film shoot: the tiny seed character stands on a director's chair wearing a tiny black beret, holding a small megaphone, directing a commercial film set styled as ${v.set}, warm movie lights and a cinema camera silhouette in the frame, golden cinematic glow, shallow depth of field, photorealistic environment with the stylized 3D character, joyful and grand, 16:9 widescreen. Absolutely no text, no letters, no words anywhere in the image.`;
+  const prompt = heroFramePrompt(p.verticalId);
   try {
     const res = await fetch('https://fal.run/fal-ai/nano-banana/edit', {
       method: 'POST',

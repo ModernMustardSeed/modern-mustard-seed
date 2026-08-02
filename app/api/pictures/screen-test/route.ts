@@ -13,7 +13,7 @@ import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { resendClient } from '@/lib/send-email';
 import { getSupabase, insertLead } from '@/lib/supabase';
-import { writeStoryboard, paintHeroFrame } from '@/lib/pictures';
+import { writeStoryboard, paintHeroFrame, heroFramePath } from '@/lib/pictures';
 import {
   claimScreenTest,
   releaseScreenTest,
@@ -134,8 +134,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'studio_dark' }, { status: 503 });
   }
 
-  // The hero frame may be in the darkroom (fal down or wallet dry). Graceful.
-  const frameUrl = await paintHeroFrame(profile);
+  // The frame is art-directed off the VERTICAL alone, so the eight possible
+  // frames are pre-rendered on the Codex subscription and served instantly.
+  // Live generation is only the fallback for a vertical not yet rendered, and
+  // it can still be in the darkroom (fal down or wallet dry). Graceful either way.
+  const frameUrl = heroFramePath(verticalId) ?? (await paintHeroFrame(profile));
   if (frameUrl) await updatePicturesRun(supabase, runId, { ...run, frameUrl });
 
   try {
