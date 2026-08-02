@@ -27,6 +27,7 @@ export const BUILD_LOG_REPOS: { name: string; publicLabel?: string }[] = [
   { name: "Wildmere" },
   { name: "Westridge" },
   { name: "Wild Hope" },
+  { name: "Prayerhouse" },
   { name: "Wild Daisy" },
   { name: "FORGE" },
   { name: "Site Forge" },
