@@ -89,9 +89,10 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         data={[
           localForCity,
           faqJsonLd(faqs),
+          // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS.
           breadcrumbJsonLd([
-            { name: 'Montana', url: `${SITE.url}/montana` },
-            { name: city.name, url: `${SITE.url}/montana/${city.slug}` },
+            { name: 'Montana', url: '/montana' },
+            { name: city.name, url: `/montana/${city.slug}` },
           ]),
         ]}
       />

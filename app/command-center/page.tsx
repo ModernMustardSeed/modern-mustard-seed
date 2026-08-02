@@ -97,9 +97,10 @@ function commandCenterJsonLd() {
         },
       },
       faqJsonLd(FAQ),
+      // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS.
       breadcrumbJsonLd([
-        { name: 'Modern Mustard Seed', url: SITE.url },
-        { name: 'Business Command Center', url: `${SITE.url}/command-center` },
+        { name: 'Modern Mustard Seed', url: '' },
+        { name: 'Business Command Center', url: '/command-center' },
       ]),
     ],
   };

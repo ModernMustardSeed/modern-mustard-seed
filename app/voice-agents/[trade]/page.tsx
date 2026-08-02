@@ -48,9 +48,10 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
             description: `voice agent for ${forWord.toLowerCase()}: ${services.toLowerCase()}. Answers every call, books the work, texts a summary.`,
           }),
           faqJsonLd(faqs),
+          // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS.
           breadcrumbJsonLd([
-            { name: 'Voice Agents', url: `${SITE.url}/voice-agents` },
-            { name: forWord, url: `${SITE.url}/voice-agents/${page.slug}` },
+            { name: 'Voice Agents', url: '/voice-agents' },
+            { name: forWord, url: `/voice-agents/${page.slug}` },
           ]),
         ]}
       />

@@ -114,9 +114,10 @@ function websitesJsonLd() {
         },
       },
       faqJsonLd(FAQ),
+      // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS.
       breadcrumbJsonLd([
-        { name: 'Modern Mustard Seed', url: SITE.url },
-        { name: 'Websites', url: `${SITE.url}/websites` },
+        { name: 'Modern Mustard Seed', url: '' },
+        { name: 'Websites', url: '/websites' },
       ]),
     ],
   };

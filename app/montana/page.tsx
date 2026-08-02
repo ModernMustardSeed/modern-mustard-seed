@@ -40,7 +40,8 @@ export default function MontanaPage() {
       <JsonLd
         data={[
           faqJsonLd(FAQ),
-          breadcrumbJsonLd([{ name: 'Montana', url: `${SITE.url}/montana` }]),
+          // breadcrumbJsonLd prepends SITE.url itself, so this is a PATH.
+          breadcrumbJsonLd([{ name: 'Montana', url: '/montana' }]),
           {
             '@context': 'https://schema.org',
             '@type': 'ItemList',

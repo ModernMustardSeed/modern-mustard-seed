@@ -50,9 +50,10 @@ function chiefJsonLd() {
         },
       },
       faqJsonLd(chiefFaq as unknown as { q: string; a: string }[]),
+      // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS.
       breadcrumbJsonLd([
-        { name: 'Modern Mustard Seed', url: SITE.url },
-        { name: 'The Chief', url: `${SITE.url}/chief` },
+        { name: 'Modern Mustard Seed', url: '' },
+        { name: 'The Chief', url: '/chief' },
       ]),
     ],
   };

@@ -389,6 +389,11 @@ export function serviceJsonLd(svc: { name: string; description: string }) {
   };
 }
 
+/**
+ * ⚠️ `url` must be a PATH, not a full URL. This prepends SITE.url itself, so
+ * passing `${SITE.url}/thing` emits "https://site.comhttps://site.com/thing"
+ * and search engines cannot parse the trail. Use '' for home, '/thing' below.
+ */
 export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
   return {
     '@context': 'https://schema.org',
