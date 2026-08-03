@@ -15,7 +15,31 @@ import { parse } from 'node-html-parser';
 // Relative, not the '@/' alias: this module is also imported directly by the
 // tsx batch scripts (scripts/preaudit-leads.mts), which do not load tsconfig
 // path aliases.
-import { claudeCodeAvailable, runClaudeCodeJson } from './claude-code-json';
+/**
+ * NOT a static import, deliberately, and this is load-bearing.
+ *
+ * claude-code-json spawns a local CLI, and a spawn with a resolved binary path
+ * is the shape that makes Next's file tracer give up on static analysis and
+ * conservatively sweep the ENTIRE project root into the serverless bundle. On
+ * 2026-08-03 that took production down for four consecutive deploys: 'The Vercel
+ * Function "api/admin/outbound/leads/[id]/audit" is 1.63gb uncompressed which
+ * exceeds the maximum uncompressed size limit of 250mb'. It had packed
+ * social-drafts/, scripts/launch-video/ and twenty marketing videos into a
+ * lambda whose job is to read a website and return JSON. `next build` passes
+ * locally, because the BUILD is fine; the DEPLOY is what refuses, so the only
+ * symptom is a red deployment and a site frozen on yesterday's code.
+ *
+ * Importing it lazily, inside the branch that can only ever run on a laptop,
+ * means the serverless bundle never contains it and the tracer never has a
+ * reason to guess. AUDIT_ENGINE=claude-code is local-only by design (see
+ * auditEngine below), so this costs the cloud path nothing.
+ */
+type ClaudeCodeJson = typeof import('./claude-code-json');
+let claudeCodeJson: ClaudeCodeJson | null = null;
+async function loadClaudeCodeJson(): Promise<ClaudeCodeJson> {
+  if (!claudeCodeJson) claudeCodeJson = await import('./claude-code-json');
+  return claudeCodeJson;
+}
 
 const SYSTEM_PROMPT = `You are the senior website auditor for Modern Mustard Seed, a one-person product studio in Kalispell, Montana. You judge websites the way Sarah Scarano would: honest, direct, no hedging, no buzzword soup, no em dashes, plain words.
 
@@ -419,11 +443,13 @@ async function withModelFallback<T>(run: (model: string) => Promise<T>): Promise
  * the local paths removes almost all of the spend without putting a
  * customer-facing tool behind a laptop that might be asleep.
  */
-function auditEngine(): 'api' | 'claude-code' {
+async function auditEngine(): Promise<'api' | 'claude-code'> {
   const want = process.env.AUDIT_ENGINE?.trim().toLowerCase();
   if (want === 'claude-code' || want === 'claude') {
-    // Asking for it on Vercel is a misconfiguration, not a preference. Fall
-    // back rather than fail a real visitor's audit.
+    // Nothing on Vercel ever sets this, and asking for it there is a
+    // misconfiguration rather than a preference, so the probe stays behind the
+    // env check and the module stays out of the cloud bundle entirely.
+    const { claudeCodeAvailable } = await loadClaudeCodeJson();
     if (!claudeCodeAvailable()) {
       console.warn('website-audit: AUDIT_ENGINE=claude-code requested but no local CLI, using the API');
       return 'api';
@@ -434,7 +460,7 @@ function auditEngine(): 'api' | 'claude-code' {
 }
 
 export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
-  const engine = auditEngine();
+  const engine = await auditEngine();
 
   // Trim defensively: a stray newline or literal "\n" pasted into the env var
   // produces an "invalid x-api-key" 401, which is easy to miss.
@@ -534,6 +560,7 @@ Return the JSON report.`;
   // Anthropic.APIError handling below applies to a spawned CLI.
   if (engine === 'claude-code') {
     try {
+      const { runClaudeCodeJson } = await loadClaudeCodeJson();
       const report = (await runClaudeCodeJson({
         system: SYSTEM_PROMPT,
         user: userMessage,

@@ -10,6 +10,55 @@ const config: NextConfig = {
   // node-ical (and its rrule/moment-timezone deps) must run from node_modules
   // untouched. Bundling it breaks at runtime ("BigInt is not a function").
   serverExternalPackages: ['node-ical'],
+  /**
+   * NEVER TRACE public/ INTO A SERVERLESS FUNCTION.
+   *
+   * On 2026-08-03 production stopped deploying entirely, four builds in a row,
+   * with: 'The Vercel Function "api/admin/outbound/leads/[id]/audit" is 1.63gb
+   * uncompressed which exceeds the maximum uncompressed size limit of 250mb'.
+   * `next build` passes locally, because the build is fine; it is the DEPLOY
+   * that refuses, so the first sign of it is a red deployment and a site frozen
+   * on yesterday's code.
+   *
+   * The cause was the file tracer following the audit engine's dynamic file
+   * handling and giving up, at which point it conservatively swept in the whole
+   * project root. `public/` is 2.4GB of marketing videos (twenty 16x9 ad cuts at
+   * 20-40MB each), and every one of them was being packed into a lambda whose
+   * job is to read a website and return JSON.
+   *
+   * Files in public/ are served by the CDN as static assets and are never read
+   * from disk by a function, so excluding them is correct on its own merits and
+   * not just a size workaround. Fonts and templates that ARE read at runtime
+   * live under app/ and lib/, which stay traced.
+   */
+  outputFileTracingExcludes: {
+    '**': [
+      // Working directories. Art, video cuts, drafts and backups that exist for
+      // humans and never for a running function.
+      'social-drafts/**',
+      'product-drafts/**',
+      'store-assets/**',
+      'marketing/**',
+      'youtube/**',
+      'backups/**',
+      'docs/**',
+      'supabase/**',
+      'scripts/launch-video/**',
+      // Everything in public/ is served by the CDN, so a function never reads it
+      // from disk. The ONE exception is public/brand, which the eight
+      // opengraph-image routes readFileSync at render time, so it is not listed.
+      'public/social/**',
+      'public/ads/**',
+      'public/video/**',
+      'public/demos/**',
+      'public/agents/**',
+      'public/**/*.mp4',
+      'public/**/*.mov',
+      'public/**/*.webm',
+      // content/ is NOT excluded: lib/content.ts reads the blog, work and
+      // playbook MDX from disk on every render.
+    ],
+  },
   turbopack: {
     root: __dirname,
   },
