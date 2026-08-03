@@ -70,16 +70,16 @@ const WORK: Work[] = [
     shot: '/home/work/dnd-landscaping.jpg',
     tilt: '-rotate-[0.8deg]',
   },
-  {
-    name: 'Bare Earth',
-    domain: 'bare-earth.vercel.app',
-    url: 'https://bare-earth.vercel.app',
-    tag: 'Estate landscaping + AI office',
-    desc: 'An estate groundskeeper brand with instant quoting, an AI concierge that books walkthroughs, and a command center behind it.',
-    shot: '/home/work/bare-earth.jpg',
-    tilt: 'rotate-[0.8deg]',
-  },
+  // Bare Earth pulled 2026-08-03 (Sarah): prospect build, not work we claim.
+  // Shot stays at /home/work/bare-earth.jpg if it ever earns the card back.
 ];
+
+// The grid is two columns, so an odd number of half-width cards strands the last
+// one in the left column with a hole beside it. Center that card instead. A
+// `wide` card fills its own row, so it never counts toward the pairing.
+const HALF_WIDTH_COUNT = WORK.filter((w) => !w.wide).length;
+const isLonelyLast = (i: number) =>
+  i === WORK.length - 1 && !WORK[i].wide && HALF_WIDTH_COUNT % 2 === 1;
 
 export default function RecentWork() {
   return (
@@ -98,13 +98,13 @@ export default function RecentWork() {
         </div>
 
         <div className="grid sm:grid-cols-2 gap-7 md:gap-9">
-          {WORK.map((w) => (
+          {WORK.map((w, i) => (
             <Link
               key={w.domain}
               href={w.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`group block rounded-2xl border-2 border-[#161616] bg-white shadow-[7px_7px_0_0_#161616] overflow-hidden transition-all duration-200 hover:-translate-y-1.5 hover:shadow-[10px_10px_0_0_#161616] ${w.tilt} hover:rotate-0 ${w.wide ? 'sm:col-span-2' : ''}`}
+              className={`group block rounded-2xl border-2 border-[#161616] bg-white shadow-[7px_7px_0_0_#161616] overflow-hidden transition-all duration-200 hover:-translate-y-1.5 hover:shadow-[10px_10px_0_0_#161616] ${w.tilt} hover:rotate-0 ${w.wide ? 'sm:col-span-2' : ''} ${isLonelyLast(i) ? 'sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.875rem)] md:w-[calc(50%-1.125rem)]' : ''}`}
             >
               {/* Faux browser chrome */}
               <div className="flex items-center gap-3 px-4 py-2.5 border-b-2 border-[#161616] bg-[#FBF6EA]">

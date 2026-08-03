@@ -26,7 +26,8 @@ export const WORK_SITES: WorkSite[] = [
   { key: 'cross-covenant', name: 'Cross + Covenant', trade: 'Faith apparel store', place: 'Cart to checkout', img: '/work-shots/cross-covenant.jpg', url: 'https://crossandcovenant.co/shop' },
   { key: 'lago-society', name: 'Lago Society', trade: 'Fashion boutique', place: 'On the lake', img: '/work-shots/lago-society.jpg', url: 'https://lagosociety.com' },
   { key: 'parker-tidewater', name: 'Parker Tidewater', trade: 'Seafood wholesale', place: 'Gulf to Kansas City', img: '/work-shots/parker-tidewater.jpg', url: 'https://parker-tidewater.vercel.app' },
-  { key: 'bare-earth', name: 'Bare Earth', trade: 'Landscaping', place: 'Flathead Valley, MT', img: '/work-shots/bare-earth.jpg', url: 'https://bare-earth.vercel.app' },
+  // Bare Earth pulled 2026-08-03 (Sarah): it is a prospect build, not work we
+  // show as ours. Shot stays at /work-shots/bare-earth.jpg if it ever returns.
 ];
 
 export const workByKey = Object.fromEntries(WORK_SITES.map((s) => [s.key, s]));
