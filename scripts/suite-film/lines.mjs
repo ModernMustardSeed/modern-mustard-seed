@@ -101,9 +101,11 @@ export function filmScript({ lead, config, have }) {
     id: 'open',
     kind: 'card',
     card: 'open',
-    vo: first
-      ? `Hi ${first}. This is what we built for ${biz}. All of it is real, all of it is working, and all of it was made in the last hour.`
-      : `This is what we built for ${biz}. All of it is real, all of it is working, and all of it was made in the last hour.`,
+    // No spoken greeting: TTS mushes "Hi <name>" into one garbled word (the
+    // Kylers cut opened on what Sarah heard as "aquila", 2026-08-03). The film
+    // opens on a word no voice can trip over; their name is on the card and the
+    // agent says the business name in the call, so nothing personal is lost.
+    vo: `This is what we built for ${biz}. All of it is real, all of it is working, and all of it was made in the last hour.`,
   });
 
   if (have.site) {
@@ -174,9 +176,11 @@ export function filmScript({ lead, config, have }) {
     kind: 'card',
     card: 'close',
     // Ends on an invitation, not an accounting. Sarah killed the old
-    // "nothing to sign, nothing to cancel, nothing owed" close: three nothings
-    // finish the film on what is absent instead of handing them something to do.
-    vo: 'It is all live right now, waiting at your link. No card, no meeting, no catch. Take your time with it, and when you are ready, just reply and tell us what you would change.',
+    // "nothing to sign, nothing to cancel, nothing owed" close, then the
+    // "no card, no meeting, no catch" one too (2026-08-03): negation lists end
+    // the film on what is absent. One positive reassurance, then a concrete
+    // ask with a promise attached.
+    vo: 'It is all live right now, waiting at your link, and the link is yours to keep whatever you decide. Click around, show it off, sleep on it. Then reply and tell us the one thing you would change, and we will make it.',
   });
 
   return { biz, first, beats };

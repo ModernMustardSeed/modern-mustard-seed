@@ -73,10 +73,11 @@ export function openCard({ business }) {
  *
  * It used to close on "Nothing to sign. Nothing to cancel. Nothing owed."
  * Sarah, 2026-08-01: "the end says something about nothing owed. that's stupid
- * and we could say something better." She is right, and the reason is that
- * three nothings end the film on what is absent. The last thing a prospect
- * hears should hand them something to do, so it now clears the objection in one
- * breath and then asks them to react.
+ * and we could say something better." Its replacement, "No card, no meeting,
+ * no catch", died the same way (Sarah 2026-08-03): a negation list still ends
+ * the film on what is absent. The close now keeps ONE positive reassurance
+ * (the link is theirs to keep) and hands them a concrete ask with a promise
+ * attached. Mirror any wording change in the close beat of lines.mjs.
  */
 export function closeCard({ business, hubUrl }) {
   const shown = String(hubUrl || '').replace(/^https?:\/\//, '');
@@ -88,7 +89,7 @@ export function closeCard({ business, hubUrl }) {
       It is all yours.
     </h1>
     <p class="fade d3" style="font-size:25px;line-height:1.55;margin-top:24px;color:${INK}B3;max-width:860px;margin-inline:auto">
-      No card, no meeting, no catch.<br>Take your time with it, then tell us what you would change.
+      Yours to keep, whatever you decide.<br>Tell us the one thing you would change, and we will make it.
     </p>
     <div class="fade d4" style="margin-top:34px;display:inline-block;background:${INK};
          border:3px solid ${INK};border-radius:20px;padding:20px 34px;box-shadow:8px 8px 0 0 ${GOLD}">
