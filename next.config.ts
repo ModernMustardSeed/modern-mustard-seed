@@ -33,16 +33,18 @@ const config: NextConfig = {
    */
   outputFileTracingExcludes: {
     '**': [
-      // Working directories. Art, video cuts, drafts and backups that exist for
-      // humans and never for a running function.
+      // ONLY the heavy asset directories, named explicitly.
+      //
+      // A first attempt also excluded supabase/, docs/, youtube/, marketing/,
+      // store-assets/, product-drafts/ and backups/. That took production's API
+      // routes down with 'require() of ES Module route.js from
+      // ___next_launcher.cjs not supported': this package is "type": "module",
+      // so the Vercel Node launcher depends on files the broad list was
+      // stripping to work out that the emitted route is CommonJS. Pages kept
+      // rendering, which made it look like a partial outage rather than a
+      // config mistake. Excluding an entire top-level directory is not worth the
+      // blast radius when four asset folders are the actual weight.
       'social-drafts/**',
-      'product-drafts/**',
-      'store-assets/**',
-      'marketing/**',
-      'youtube/**',
-      'backups/**',
-      'docs/**',
-      'supabase/**',
       'scripts/launch-video/**',
       // Everything in public/ is served by the CDN, so a function never reads it
       // from disk. The ONE exception is public/brand, which the eight
