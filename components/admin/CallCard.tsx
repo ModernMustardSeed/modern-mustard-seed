@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import type { Prospect, ProspectStatus } from '@/lib/prospects';
 import { buildLeadScript, type LeadScript } from '@/lib/lead-script';
 import AuditReport, { siteHref } from './AuditReport';
+import TapText from './TapText';
 
 /**
  * The closed-loop call card: everything a rep needs on one prospect, in one
@@ -63,7 +64,7 @@ export default function CallCard({
   const [emailWithCall, setEmailWithCall] = useState(false);
   const [textOpen, setTextOpen] = useState(false);
   const [textBody, setTextBody] = useState('');
-  const [textBusy, setTextBusy] = useState(false);
+  const [textLoading, setTextLoading] = useState(false);
   const [draftBusy, setDraftBusy] = useState(false);
   const [showFullAudit, setShowFullAudit] = useState(false);
 
@@ -308,39 +309,43 @@ export default function CallCard({
     } finally { setAiCalling(false); }
   };
 
+  // Tap-to-text: the server writes the message, your own phone sends it. No
+  // Twilio and no A2P registration involved (see lib/tap-text.ts).
   const openText = async () => {
     if (textOpen) { setTextOpen(false); return; }
     setTextOpen(true);
     setMsg(null);
     if (!textBody) {
+      setTextLoading(true);
       try {
         const r = await fetch(`/api/admin/prospects/${id}/text`);
         const j = await r.json().catch(() => ({}));
         if (j.body) setTextBody(j.body);
-        if (j.configured === false) setMsg({ kind: 'err', text: 'Texting is not wired yet (add the Twilio credentials).' });
-      } catch { /* leave blank */ }
+      } catch { /* leave blank, she can write it herself */ }
+      finally { setTextLoading(false); }
     }
   };
-  const sendText = async (ignoreQuietHours = false) => {
+
+  /** Record on the lead's thread that the text actually went out. */
+  const logText = async () => {
     if (!textBody.trim()) return;
-    setTextBusy(true);
-    setMsg(null);
     try {
       const r = await fetch(`/api/admin/prospects/${id}/text`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: textBody, ignoreQuietHours }),
+        body: JSON.stringify({ body: textBody }),
       });
       const j = await r.json().catch(() => ({}));
       if (r.ok) {
-        onPatch(id, { status: 'contacted', last_sms_at: new Date().toISOString() } as Partial<typeof prospect>);
-        setMsg({ kind: 'ok', text: `Text sent to ${prospect.phone}. Their reply lands in the Conversation thread.` });
-        setTextOpen(false);
-      } else if (r.status === 409 && j.error === 'quiet-hours') {
-        if (confirm(`${j.message}\n\nSend it now anyway?`)) { setTextBusy(false); return sendText(true); }
-      } else setMsg({ kind: 'err', text: j.error ?? 'Could not send the text.' });
+        onPatch(id, { status: j.status ?? prospect.status, last_sms_at: j.last_sms_at });
+        setMsgs((m) => (m === null ? m : [...m, {
+          id: `tmp-${Date.now()}`, direction: 'outbound', channel: 'sms',
+          subject: null, snippet: textBody.slice(0, 500), body: textBody,
+          occurred_at: new Date().toISOString(),
+        }]));
+      } else setMsg({ kind: 'err', text: j.error ?? 'Could not log the text.' });
     } catch {
-      setMsg({ kind: 'err', text: 'Network error.' });
-    } finally { setTextBusy(false); }
+      setMsg({ kind: 'err', text: 'Network error logging the text.' });
+    }
   };
 
   const draftReply = async () => {
@@ -421,16 +426,13 @@ export default function CallCard({
           </label>
         </div>
         {textOpen && (
-          <div className="mt-3 rounded-xl border-2 border-[#161616] bg-[#FFFDF6] p-3">
-            <span className="text-[10px] uppercase tracking-[0.18em] text-[#2D6A4F] font-mono font-bold block mb-1.5">Personalized text (Cahill)</span>
-            <textarea value={textBody} onChange={(e) => setTextBody(e.target.value)} rows={4}
-              placeholder={prospect.phone ? 'Loading a personalized draft...' : 'No phone on file.'}
-              className="w-full rounded-lg border-2 border-[#161616] px-3 py-2 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#F5B700]" />
-            <div className="flex items-center justify-between gap-2 mt-2">
-              <span className="text-[11px] font-mono text-[#161616]/45">{textBody.length} chars. STOP replies are auto-honored.</span>
-              <button onClick={() => sendText(false)} disabled={textBusy || !textBody.trim()} className={`${pill} bg-[#161616] text-[#FBF6EA] border-[#161616] hover:opacity-90`}>{textBusy ? 'Sending...' : 'Send text'}</button>
-            </div>
-          </div>
+          <TapText
+            phone={prospect.phone}
+            body={textBody}
+            onBodyChange={setTextBody}
+            onLogged={logText}
+            loading={textLoading}
+          />
         )}
         <p className="text-[#161616]/45 font-body text-[11px] mt-2">Mr. Mustard opens by saying he is an AI, pitches the fit, and books a call. The full transcript lands in the Conversation thread when the call ends.</p>
       </div>

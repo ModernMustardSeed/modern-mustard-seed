@@ -44,6 +44,8 @@ export type Prospect = {
   last_email_at: string | null;
   email_opened_at: string | null;
   email_open_count: number | null;
+  /** When a text was last sent to them (from Sarah's own phone, see lib/tap-text). */
+  last_sms_at?: string | null;
   created_at: string;
   updated_at: string;
 };

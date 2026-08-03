@@ -5,6 +5,7 @@ import Modal from '@/components/ui/Modal';
 import { formatPhone } from '@/lib/outbound';
 import type { EmailPreview, LeadContact, MessageDelivery, OutboundAudit, OutboundLead, ThreadMessage } from '@/lib/outbound';
 import { api, btnGhost, btnPrimary, btnSeed, card, eyebrow, inputCls, labelCls } from '@/components/admin/outbound/ui';
+import TapText from '@/components/admin/TapText';
 
 /**
  * Every way to reach a lead, in one strip: Mr. Mustard AI calls, the audit
@@ -72,6 +73,10 @@ export function ReachOutDeck({
   const [rebuilding, setRebuilding] = useState(false);
   const [forgingOs, setForgingOs] = useState(false);
   const [reforgeOpen, setReforgeOpen] = useState(false);
+  // Tap-to-text: we write it, her own phone sends it. No Twilio, no A2P.
+  const [textOpen, setTextOpen] = useState(false);
+  const [textBody, setTextBody] = useState('');
+  const [textLoading, setTextLoading] = useState(false);
 
   const siteForging = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
@@ -229,6 +234,35 @@ export function ReachOutDeck({
     }
   };
 
+  /** Open the composer, fetching a draft that leads with their forged demo link. */
+  const openText = async () => {
+    if (textOpen) { setTextOpen(false); return; }
+    setTextOpen(true);
+    if (textBody) return;
+    setTextLoading(true);
+    try {
+      const res = await api<{ body?: string }>(`/api/admin/outbound/leads/${lead.id}/text`);
+      if (res.body) setTextBody(res.body);
+    } catch {
+      /* she can write it herself; an empty box is not worth an error toast */
+    } finally {
+      setTextLoading(false);
+    }
+  };
+
+  /** Record on the thread that the text actually went out. */
+  const logText = async () => {
+    try {
+      await api(`/api/admin/outbound/leads/${lead.id}/text`, {
+        method: 'POST',
+        body: JSON.stringify({ body: textBody }),
+      });
+      push('Logged on their thread.');
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Could not log the text.', 'error');
+    }
+  };
+
   const opened = lead.email_open_count > 0;
 
   return (
@@ -252,6 +286,15 @@ export function ReachOutDeck({
           title={lead.email ? `Read it before it goes, then send to ${lead.email}` : 'No email on file yet'}
         >
           ✉ {lead.audit_json ? 'Email the audit' : 'Email intro'}
+        </button>
+
+        <button
+          onClick={() => void openText()}
+          disabled={!lead.phone}
+          className={`${chip} bg-[#3f5d34]/12 text-[#3f5d34] border-[#3f5d34]/50 hover:border-[#3f5d34] hover:-translate-y-0.5`}
+          title={lead.phone ? 'Write the text here, send it from your own phone' : 'No phone on file'}
+        >
+          💬 {textOpen ? 'Hide text' : 'Text them'}
         </button>
 
         <button onClick={onOpenThread} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815] hover:-translate-y-0.5`}>
@@ -381,6 +424,22 @@ export function ReachOutDeck({
           </button>
         )}
       </div>
+
+      {textOpen && (
+        <TapText
+          variant="cockpit"
+          phone={lead.phone}
+          body={textBody}
+          onBodyChange={setTextBody}
+          onLogged={logText}
+          loading={textLoading}
+          note={
+            lead.hub_demo_url || lead.site_demo_url || lead.os_demo_url || lead.demo_url
+              ? undefined
+              : 'Nothing is forged for them yet. Build a demo first and this draft will lead with the link.'
+          }
+        />
+      )}
 
       {/* Mr. Mustard confirm */}
       <Modal open={aiOpen} onClose={() => setAiOpen(false)} eyebrow="AI wingman" title="Mr. Mustard makes the call" subtitle={`${lead.business_name} · ${formatPhone(lead.phone)}`} size="sm" headerTone="dark">
