@@ -12,6 +12,8 @@
     "indexnow:all": "node scripts/indexnow.mjs --from-sitemap",
     "demo-site-worker": "node scripts/demo-site-worker.mjs",
     "lighthouse": "node scripts/lighthouse-money-pages.mjs",
+    "zoho:health": "node scripts/zoho-health.mjs",
+    "audit-worker": "tsx scripts/audit-worker.mts",
     "audit:demo-assets": "node scripts/audit-demo-assets.mjs",
     "audit:demo-copy": "node scripts/audit-demo-copy.mjs",
     "test:copy-lint": "node scripts/test-copy-lint.mjs",
