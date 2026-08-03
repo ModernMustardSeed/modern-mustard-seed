@@ -2,7 +2,6 @@
   "name": "modern-mustard-seed",
   "private": true,
   "version": "2.0.0",
-  "type": "module",
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
