@@ -93,13 +93,35 @@ export async function provisionDemoOrder(sb: SupabaseClient, order: DemoOrderRow
     return { ok: true, clientEmail: email, projectId: order.project_id, created: false };
   }
 
+  // THE NAME THEY GAVE US BEATS THE NAME ON THE CARD.
+  //
+  // order.name comes from Stripe's billing details, which is whoever the card
+  // belongs to and however they typed it. A buyer on 2026-08-03 became "peter
+  // scarano" in the portal because that is what the card said, while the person
+  // who actually signed up had typed their own name at the Demo Station two
+  // screens earlier. Prefer the lead's contact name; fall back to the card.
+  let buyerName = order.name || null;
+  if (order.outbound_lead_id) {
+    try {
+      const { data: lead } = await sb
+        .from('outbound_leads')
+        .select('contact_name')
+        .eq('id', order.outbound_lead_id)
+        .maybeSingle();
+      const typed = (lead?.contact_name ?? '').trim();
+      if (typed) buyerName = typed;
+    } catch {
+      /* the card's name is a fine fallback; never block provisioning on this */
+    }
+  }
+
   // 1. The client. Tenancy in this app is by email (see 003_client_portal.sql), so
   //    this row is what makes the portal recognize them at all.
   try {
     await sb.from('clients').upsert(
       {
         email,
-        name: order.name || null,
+        name: buyerName,
         company: order.business_name || null,
         status: 'active',
         welcome_note: `Welcome aboard. Everything for ${order.business_name || 'your build'} lives here: your progress, your edits, and a direct line to me. No email tag.`,

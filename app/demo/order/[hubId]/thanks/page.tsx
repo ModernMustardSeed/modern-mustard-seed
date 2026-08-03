@@ -46,6 +46,32 @@ export default async function DemoOrderThanksPage({
 
   const products = Array.isArray(order.products) ? (order.products as string[]) : [];
   const business = order.business_name || 'your business';
+
+  // WHAT THEY ALREADY TOLD US, HANDED BACK.
+  //
+  // The buyer typed their name, phone, email, website and a description of the
+  // business at the Demo Station, then paid, and the intake asked for all of it
+  // again two screens later. Retyping your own phone number is the cheapest way
+  // for a studio to feel like a form. Every value stays editable and the field
+  // says where it came from.
+  const prefill: Record<string, string> = {};
+  const { data: lead } = await sb
+    .from('outbound_leads')
+    .select('contact_name, phone, email, website, notes')
+    .eq('hub_demo_id', hubId)
+    .maybeSingle();
+  if (lead) {
+    const contact = [lead.contact_name, lead.phone, lead.email].filter(Boolean).join(', ');
+    if (contact) prefill.contact = contact;
+    if (lead.website) {
+      const bare = String(lead.website).replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+      if (bare) prefill.domain = bare;
+    }
+    // Their own words about the business are the best answer to "what do you
+    // sell", and they already wrote them once.
+    const owner = String(lead.notes ?? '').match(/^OWNER NOTES:\s*([\s\S]+)$/m);
+    if (owner?.[1]) prefill.services = owner[1].trim().slice(0, 1200);
+  }
   const already = order.status === 'intake_done' || order.status === 'delivered';
 
   return (
@@ -80,7 +106,7 @@ export default async function DemoOrderThanksPage({
             </p>
           </div>
         ) : (
-          <DemoOrderIntake hubId={hubId} sessionId={sessionId} products={products} business={business} />
+          <DemoOrderIntake hubId={hubId} sessionId={sessionId} products={products} business={business} prefill={prefill} />
         )}
         <p className="font-mono text-[11px] text-[#161616]/40 text-center pb-6">
           Modern Mustard Seed · Kalispell, MT · (406) 312-1223 · sarah@modernmustardseed.com

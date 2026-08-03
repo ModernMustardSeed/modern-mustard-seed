@@ -129,13 +129,24 @@ export default function DemoOrderIntake({
   sessionId,
   products,
   business,
+  prefill,
 }: {
   hubId: string;
   sessionId: string;
   products: string[];
   business: string;
+  /**
+   * What they already told us at the Demo Station. Asking a customer to retype
+   * their own phone number two screens after they typed it is the cheapest way
+   * to feel like a form instead of a studio.
+   */
+  prefill?: Record<string, string>;
 }) {
-  const [values, setValues] = useState<Record<string, string>>({});
+  const [values, setValues] = useState<Record<string, string>>(prefill ?? {});
+  // Which fields arrived pre-filled, so the UI can say so instead of pretending
+  // the buyer typed them. A silently pre-filled field reads as a bug.
+  const [prefilled] = useState<Set<string>>(new Set(Object.keys(prefill ?? {})));
+  const [domainState, setDomainState] = useState<{ state: string; message: string } | null>(null);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -143,6 +154,30 @@ export default function DemoOrderIntake({
 
   const visible = FIELDS.filter((f) => !f.products || f.products.some((p) => products.includes(p)));
   const wantsSite = products.includes('site') || products.includes('bundle');
+
+  /**
+   * Check the domain the moment they look away from the field, not on their
+   * launch day. Fires on blur rather than per keystroke: this reaches a
+   * registrar API, and half-typed domains are not questions worth asking.
+   */
+  async function checkDomain(raw: string) {
+    const value = (raw || '').trim();
+    if (!value) { setDomainState(null); return; }
+    setDomainState({ state: 'checking', message: '' });
+    try {
+      const res = await fetch('/api/demo-order/domain', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hubId, sessionId, domain: value }),
+      });
+      const j = await res.json().catch(() => null);
+      if (j?.message) setDomainState({ state: j.state, message: j.message });
+      else setDomainState(null);
+    } catch {
+      // Never let a helper break the form they are filling in.
+      setDomainState(null);
+    }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -258,10 +293,34 @@ export default function DemoOrderIntake({
               <input
                 type="text"
                 value={values[f.key] || ''}
-                onChange={(e) => setValues((v) => ({ ...v, [f.key]: e.target.value }))}
+                onChange={(e) => {
+                  setValues((v) => ({ ...v, [f.key]: e.target.value }));
+                  if (f.key === 'domain') setDomainState(null);
+                }}
+                onBlur={f.key === 'domain' ? (e) => checkDomain(e.target.value) : undefined}
                 placeholder={f.placeholder}
                 className={inputCls}
               />
+            )}
+            {/* Say when we filled it in. A field that is silently pre-populated
+                reads as a bug; one that explains itself reads as attentive. */}
+            {prefilled.has(f.key) && (
+              <span className="font-body text-[11.5px] text-[#161616]/45 mt-1 block">
+                From what you told us. Change anything that is not right.
+              </span>
+            )}
+            {f.key === 'domain' && domainState && (
+              <span
+                className={`font-body text-[12.5px] mt-1 block ${
+                  domainState.state === 'available'
+                    ? 'text-[#3f5d34]'
+                    : domainState.state === 'taken'
+                      ? 'text-[#161616]/70'
+                      : 'text-[#161616]/45'
+                }`}
+              >
+                {domainState.state === 'checking' ? 'Checking…' : domainState.message}
+              </span>
             )}
           </label>
         ))}
