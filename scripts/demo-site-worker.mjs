@@ -563,19 +563,45 @@ async function process_(job) {
     // burning the lead for it costs Sarah a demo she asked for. Give it exactly one
     // more turn. The attempt is recorded in `error` rather than a new column, which
     // keeps this durable across worker restarts without a migration, and the marker
-    // is what stops it looping: a second stall falls through to a real failure.
-    if (unusable && stalled && !/\[requeued after stall\]/.test(job.error || '')) {
-      log('stalled with nothing usable, requeueing once:', job.id);
+    // is what stops it looping: a second attempt falls through to a real failure.
+    //
+    // A TRANSIENT UPSTREAM ERROR EARNS THE SAME TURN. On 2026-08-03 a paying
+    // client's first edit died on "API Error: Server error mid-response" after 55
+    // seconds. Nothing was wrong with the job; the other end hiccuped. It was
+    // marked failed, which is TERMINAL (the GitHub failsafe only rescues queued
+    // rows), so a single upstream blip became a dead edit in a customer's portal.
+    // One retry makes that class of failure invisible, which is what it should be.
+    const transient =
+      /API Error|Server error|overloaded|rate.?limit|ECONNRESET|ETIMEDOUT|socket hang up|fetch failed|Internal server error|\b(?:500|502|503|504|529)\b/i.test(out);
+    // A SHUT USAGE WINDOW IS NOT TRANSIENT. Retrying immediately just burns another
+    // run against a door that is still locked; that one needs resetsAt and the
+    // parked-worker playbook, not a retry.
+    const windowShut = /usage limit|resetsAt|limit reached.*reset/i.test(out);
+    const retryable = stalled || (transient && !windowShut);
+
+    if (unusable && retryable && !/\[requeued after/.test(job.error || '')) {
+      const why = stalled ? 'stall' : 'a transient upstream error';
+      log(`${stalled ? 'stalled' : 'hit an upstream error'} with nothing usable, requeueing once:`, job.id);
       await supabase
         .from('outbound_demo_sites')
         .update({
           status: 'queued',
           worker: null,
           claimed_at: null,
-          error: `[requeued after stall] ${out.slice(-400)}`,
+          error: `[requeued after ${stalled ? 'stall' : 'upstream error'}] ${out.slice(-400)}`,
           updated_at: new Date().toISOString(),
         })
         .eq('id', job.id);
+      // A client watching their portal should see "still working", never a failure
+      // that is about to un-fail itself. The row is queued again, so the existing
+      // queued/building UI is already correct; just make sure nothing left a
+      // failed state behind from a previous pass.
+      if (isProjectEdit(job)) {
+        await supabase.from('projects').update({ edit_status: 'building', edit_error: null }).eq('id', job.project_id);
+      } else if (isRebuild(job)) {
+        await supabase.from('projects').update({ site_build_status: 'building', site_build_error: null }).eq('id', job.project_id);
+      }
+      log(`requeued for ${why}`);
       return;
     }
 
