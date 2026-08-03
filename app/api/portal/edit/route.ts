@@ -117,8 +117,13 @@ export async function POST(req: Request) {
   /* ── DISCARD: drop the draft. Refund what it cost: a Care edit, a free edit, or
         nothing for a bought one. ── */
   if (action === 'discard') {
-    const isCare = Boolean(proj.edit_care);
-    const wasFree = !proj.edit_paid && !isCare; // a plain two-free-edits revision
+    // A FAILED edit already gave the budget back the moment it failed (the worker
+    // does it, so a client who closes the tab is still made whole). Refunding
+    // again here because they also pressed "Start over" would hand out a second
+    // free edit for one request.
+    const alreadyRefunded = proj.edit_status === 'failed';
+    const isCare = Boolean(proj.edit_care) && !alreadyRefunded;
+    const wasFree = !proj.edit_paid && !Boolean(proj.edit_care) && !alreadyRefunded; // a plain two-free-edits revision
     await sb
       .from('projects')
       .update({
@@ -131,7 +136,9 @@ export async function POST(req: Request) {
         ...(wasFree ? { revisions_used: Math.max(0, Number(proj.revisions_used ?? 0) - 1) } : {}),
       })
       .eq('id', proj.id);
-    return NextResponse.json({ ok: true, refunded: wasFree || isCare });
+    // alreadyRefunded still reports true: the client did get their edit back,
+    // just at the moment it failed rather than at the moment they clicked.
+    return NextResponse.json({ ok: true, refunded: wasFree || isCare || alreadyRefunded });
   }
 
   return NextResponse.json({ error: 'Unknown action.' }, { status: 400 });
