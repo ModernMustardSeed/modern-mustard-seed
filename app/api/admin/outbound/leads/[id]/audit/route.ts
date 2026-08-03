@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { runWebsiteAudit } from '@/lib/website-audit';
+import { auditPreferringWorker } from '@/lib/audit-queue';
 
 export const runtime = 'nodejs';
 // The model call alone measures 36-43s on real prospect sites, so 60 left no
@@ -32,22 +32,35 @@ export async function POST(req: Request, { params }: { params: Params }) {
   const targetUrl = bodyUrl || lead.website;
   if (!targetUrl) return NextResponse.json({ error: 'No website on file. Run "Find site & email" first or add one.' }, { status: 400 });
 
-  const result = await runWebsiteAudit(targetUrl);
-  if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
+  // Free local worker first, metered API whenever it is not answering. The rep
+  // sees the same thing either way. See lib/audit-queue.ts.
+  const outcome = await auditPreferringWorker(guard.supabase, {
+    url: targetUrl,
+    sourceTable: 'outbound_leads',
+    sourceId: id,
+  });
+
+  if (outcome.kind === 'error') return NextResponse.json({ error: outcome.error }, { status: outcome.status });
+  if (outcome.kind === 'queued') {
+    return NextResponse.json(
+      { ok: true, queued: true, jobId: outcome.jobId, error: 'Audit is still running. It will appear on this lead in a minute.' },
+      { status: 202 },
+    );
+  }
 
   const { data: updated, error: updErr } = await guard.supabase
     .from('outbound_leads')
     .update({
       website: targetUrl,
-      audit_url: result.url,
-      audit_score: Math.round(result.report.overall_score),
-      audit_json: result.report,
+      audit_url: outcome.url,
+      audit_score: Math.round(outcome.report.overall_score),
+      audit_json: outcome.report,
       audit_at: new Date().toISOString(),
     })
     .eq('id', id)
     .select()
     .single();
-  if (updErr) return NextResponse.json({ ok: true, url: result.url, report: result.report, warning: updErr.message });
+  if (updErr) return NextResponse.json({ ok: true, url: outcome.url, report: outcome.report, warning: updErr.message });
 
-  return NextResponse.json({ ok: true, url: result.url, report: result.report, lead: updated });
+  return NextResponse.json({ ok: true, url: outcome.url, report: outcome.report, lead: updated, via: outcome.via });
 }
