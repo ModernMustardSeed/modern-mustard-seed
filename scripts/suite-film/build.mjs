@@ -27,6 +27,7 @@ import { speak, NARRATOR, CALLER } from './tts.mjs';
 import { openCard, closeCard } from './cards.mjs';
 import { record } from './record.mjs';
 import { compose, buildCallerWav, audibleFraction } from './compose.mjs';
+import { publishBlockerError } from '../../lib/site-asset-refs.mjs';
 
 const SITE_URL = process.env.SUITE_FILM_SITE_URL || 'https://modernmustardseed.com';
 const BUCKET = 'booth';
@@ -102,7 +103,7 @@ async function main() {
 
   const q = supabase
     .from('outbound_leads')
-    .select('id, business_name, contact_name, city, state, niche, demo_url, demo_run_id, site_demo_url, site_demo_status, os_demo_url, os_demo_status, hub_demo_id, hub_demo_url');
+    .select('id, business_name, contact_name, city, state, niche, demo_url, demo_run_id, site_demo_id, site_demo_url, site_demo_status, os_demo_url, os_demo_status, hub_demo_id, hub_demo_url');
   const { data: lead } = await (leadId ? q.eq('id', leadId) : q.eq('hub_demo_id', hubId)).maybeSingle();
   if (!lead) {
     console.error('No such lead.');
@@ -121,6 +122,34 @@ async function main() {
   // The call rides on the website shell, so with no site there is nothing to
   // click the pill on.
   if (!have.site) have.call = false;
+
+  // A CAMERA HAS NO TASTE. IT WILL FILM AN EMPTY PAGE AND REPORT READY.
+  //
+  // status='ready' says a build finished, not that it is worth showing. On
+  // 2026-08-03 Polly Thompson's site banked with five of its nine photographs
+  // replaced by blank swatches, and this script filmed them, marked the film
+  // ready, and the suite-ready email went out ninety seconds later with that
+  // walkthrough at the top of it. The film is the LAST step of the forge and
+  // the announcement is gated on it, so refusing here is the cheapest place in
+  // the whole pipeline to stop a hollow suite: no film means no email, which is
+  // exactly the behaviour the worker already documents.
+  if (have.site && lead.site_demo_id) {
+    const { data: siteRow } = await supabase
+      .from('outbound_demo_sites')
+      .select('html')
+      .eq('id', lead.site_demo_id)
+      .maybeSingle();
+    const unshowable = siteRow?.html ? publishBlockerError(siteRow.html) : 'the demo row has no html to film';
+    if (unshowable) {
+      const reason = `refusing to film: ${unshowable}`;
+      log(reason);
+      await supabase
+        .from('outbound_leads')
+        .update({ suite_film_status: 'failed', suite_film_error: reason })
+        .eq('id', lead.id);
+      process.exit(1);
+    }
+  }
 
   const workDir = path.join(os.homedir(), 'mms-suite-films', lead.id);
   rmSync(workDir, { recursive: true, force: true });
