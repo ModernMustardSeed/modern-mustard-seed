@@ -5,6 +5,7 @@ import { buildMetadata } from '@/lib/seo';
 import type { ForgedCall } from '@/lib/sidekick';
 import SiteDemoShell from '@/components/demo/SiteDemoShell';
 import { possessive } from '@/lib/business-name';
+import SiteBuildProgress from '@/components/demo/SiteBuildProgress';
 
 export const metadata = buildMetadata({ title: 'Your New Website Demo', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -59,7 +60,7 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
   if ((site.status === 'queued' || site.status === 'building') && !site.html) {
     const { data: waitingLead } = await sb
       .from('outbound_leads')
-      .select('demo_url')
+      .select('demo_url, os_demo_url, os_demo_status')
       .eq('id', site.lead_id)
       .maybeSingle();
     return (
@@ -71,20 +72,45 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
           </h1>
           <p className="font-body text-[#FBF6EA]/60 mt-3">
             A designer is building a real, working draft from scratch, custom to the business, and then we record a
-            walkthrough of the finished suite. We are working on it and will have it to you within the hour. This page
-            refreshes itself, so keep it open, or close it and come back to this same link.
+            walkthrough of the finished suite. Keep this tab open and it will appear here on its own, or close it and
+            come back to this same link.
           </p>
-          {waitingLead?.demo_url && (
-            <a
-              href={waitingLead.demo_url}
-              className="inline-block mt-6 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
-            >
-              Meanwhile, meet your voice agent
-            </a>
+
+          {/* Real state, polled. No invented stages: a fabricated progress story
+              is worse than a spinner, because the customer can catch it. */}
+          <SiteBuildProgress siteId={site.id} />
+
+          {/* THE BEST USE OF THE WAIT IS THE PRODUCT. Two of their three demos are
+              finished and working RIGHT NOW, and this screen used to mention one of
+              them and bury the other entirely. */}
+          {(waitingLead?.demo_url || waitingLead?.os_demo_url) && (
+            <div className="mt-8 pt-6 border-t border-[#FBF6EA]/12">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#FBF6EA]/40">
+                Ready for you right now
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center mt-3">
+                {waitingLead?.demo_url && (
+                  <a
+                    href={waitingLead.demo_url}
+                    className="bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-5 py-3 font-sans font-bold uppercase tracking-[0.1em] text-[12px] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
+                  >
+                    ☎ Call your voice agent
+                  </a>
+                )}
+                {waitingLead?.os_demo_status === 'ready' && waitingLead?.os_demo_url && (
+                  <a
+                    href={waitingLead.os_demo_url}
+                    className="bg-transparent text-[#FBF6EA] border-2 border-[#FBF6EA]/40 rounded-xl px-5 py-3 font-sans font-bold uppercase tracking-[0.1em] text-[12px] hover:border-[#FBF6EA] transition-colors"
+                  >
+                    ⚙ Open your command center
+                  </a>
+                )}
+              </div>
+            </div>
           )}
-          <p className="font-mono text-[11px] text-[#FBF6EA]/35 mt-6">Modern Mustard Seed · Kalispell MT</p>
+
+          <p className="font-mono text-[11px] text-[#FBF6EA]/35 mt-8">Modern Mustard Seed · Kalispell MT</p>
         </div>
-        <script dangerouslySetInnerHTML={{ __html: 'setTimeout(function(){location.reload()},20000);' }} />
       </div>
     );
   }
