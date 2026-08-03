@@ -44,8 +44,34 @@ const LIMIT = ALL ? Number.MAX_SAFE_INTEGER : Number(flag('limit') || 25);
  * belongs there rather than in an arbitrarily small pool. Drop this if the
  * account starts returning sustained 429s.
  */
-const CONCURRENCY = Number(flag('concurrency') || 8);
-if (flag('model')) process.env.AUDIT_MODELS = flag('model')!;
+/**
+ * WHICH ENGINE PAYS FOR THIS RUN.
+ *
+ * `--engine claude-code` grades every lead through the local Claude Code CLI on
+ * the Max subscription instead of the metered API, which takes a floor-sized
+ * sweep from several hundred dollars to zero. It is slower and it needs this
+ * machine awake, so it belongs on batch work like this one and never on a
+ * customer-facing request.
+ *
+ * Concurrency drops with it, and not by preference. Eight simultaneous API
+ * calls are nothing; eight headless Claude processes are a few GB of RAM and
+ * the reason the forge OOM-killed a build at 0.9GB free. `lib/claude-code-json`
+ * enforces its own ceiling regardless, this just keeps the log honest.
+ */
+// Defaults to the free engine, and deliberately NOT via .env.local: `vercel env
+// pull` rewrites that file wholesale and would silently drop the setting,
+// putting the floor back on the meter without anyone noticing. `--engine api`
+// is the opt-out.
+const ENGINE = (flag('engine') || process.env.AUDIT_ENGINE || 'claude-code').toLowerCase();
+const FREE_ENGINE = ENGINE === 'claude-code' || ENGINE === 'claude';
+process.env.AUDIT_ENGINE = ENGINE;
+
+const CONCURRENCY = Number(flag('concurrency') || (FREE_ENGINE ? 2 : 8));
+if (flag('model')) {
+  // The CLI takes an alias ('opus'), the API takes a full id ('claude-opus-5').
+  if (FREE_ENGINE) process.env.AUDIT_CLI_MODEL = flag('model')!;
+  else process.env.AUDIT_MODELS = flag('model')!;
+}
 
 // Priced per million tokens. Only used to report what a run cost, never to gate
 // anything, so a stale number here is a reporting bug and not a spend bug.
@@ -95,7 +121,10 @@ if (!leads.length) {
 }
 
 console.log(
-  `pre-auditing ${leads.length} lead(s) | concurrency ${CONCURRENCY} | models ${process.env.AUDIT_MODELS || 'claude-opus-5,claude-sonnet-5'}`,
+  `pre-auditing ${leads.length} lead(s) | concurrency ${CONCURRENCY} | engine ${ENGINE}` +
+    (FREE_ENGINE
+      ? ` (local subscription, $0)`
+      : ` | models ${process.env.AUDIT_MODELS || 'claude-opus-5,claude-sonnet-5'}`),
 );
 if (!ALL && leads.length >= LIMIT) console.log(`(this is a capped run. --all does the whole floor.)`);
 
@@ -103,6 +132,7 @@ const started = Date.now();
 let done = 0;
 let ok = 0;
 let failed = 0;
+let skipped = 0;
 let spend = 0;
 const byModel = new Map<string, number>();
 
@@ -129,8 +159,20 @@ async function auditOne(lead: Lead) {
         .eq('id', lead.id);
       if (upErr) throw new Error(`db: ${upErr.message}`);
       ok += 1;
+    } else if (r.status === 503) {
+      /**
+       * 503 means OUR side broke, not theirs: a dry API wallet, or the local
+       * engine holding off because the machine ran out of memory. Stamping that
+       * onto the lead would mark a perfectly good prospect as permanently
+       * unauditable because a laptop was busy for ninety seconds, and since a
+       * stamped lead is skipped by every future run, nothing would ever
+       * reconsider it. Leave the row untouched so the next run picks it up.
+       */
+      skipped += 1;
+      if (skipped <= 3) console.log(`  ~ ${lead.business_name}: engine unavailable, leaving for the next run (${r.error})`);
     } else {
-      // Stamp the failure so the next run does not pay for it again.
+      // A real verdict on a real site (dead domain, 404, unreachable). Stamp it
+      // so the next run does not pay for it again.
       await sb
         .from('outbound_leads')
         .update({ audit_json: { [FAILED_MARK]: true, status: r.status, error: r.error, at: new Date().toISOString() } })
@@ -147,7 +189,7 @@ async function auditOne(lead: Lead) {
     const rate = done / elapsed;
     const left = Math.round((leads.length - done) / rate / 60);
     console.log(
-      `  ${done}/${leads.length} | ok ${ok} | failed ${failed} | $${spend.toFixed(2)} | ~${left}m left`,
+      `  ${done}/${leads.length} | ok ${ok} | failed ${failed}${skipped ? ` | skipped ${skipped}` : ''} | $${spend.toFixed(2)} | ~${left}m left`,
     );
   }
 }
@@ -161,5 +203,7 @@ await Promise.all(
 
 const mins = Math.round((Date.now() - started) / 60000);
 console.log(`\nDONE. audited ${ok} | failed ${failed} | ${mins}m | $${spend.toFixed(2)}`);
+// Called out separately because it is the one number that means "run me again".
+if (skipped) console.log(`  ${skipped} left unstamped (engine unavailable). Re-run to pick them up.`);
 for (const [m, n] of byModel) console.log(`  ${m}: ${n}`);
 if (ok) console.log(`  per lead: $${(spend / ok).toFixed(3)}`);

@@ -12,6 +12,10 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import { parse } from 'node-html-parser';
+// Relative, not the '@/' alias: this module is also imported directly by the
+// tsx batch scripts (scripts/preaudit-leads.mts), which do not load tsconfig
+// path aliases.
+import { claudeCodeAvailable, runClaudeCodeJson } from './claude-code-json';
 
 const SYSTEM_PROMPT = `You are the senior website auditor for Modern Mustard Seed, a one-person product studio in Kalispell, Montana. You judge websites the way Sarah Scarano would: honest, direct, no hedging, no buzzword soup, no em dashes, plain words.
 
@@ -398,11 +402,44 @@ async function withModelFallback<T>(run: (model: string) => Promise<T>): Promise
   throw last;
 }
 
+/**
+ * WHICH ENGINE GRADES THE SITE.
+ *
+ * 'api'         metered Anthropic API. The only thing that works on Vercel.
+ * 'claude-code' the local Claude Code CLI on the Max subscription. Costs $0.
+ *
+ * Defaults to 'api' so production is unchanged by this file existing. Set
+ * AUDIT_ENGINE=claude-code in `.env.local` (NEVER in Vercel, there is no
+ * `claude` binary there) and every local batch run goes free: preaudit-leads,
+ * backfill-audits, audit-all, geo-fix-pack, and `next dev`.
+ *
+ * The batch scripts are where the money actually goes. A 3,600-lead sweep at
+ * opus-5 with 8k output tokens is a several-hundred-dollar run; the handful of
+ * public visitors who audit their own site each day are pennies. Flipping only
+ * the local paths removes almost all of the spend without putting a
+ * customer-facing tool behind a laptop that might be asleep.
+ */
+function auditEngine(): 'api' | 'claude-code' {
+  const want = process.env.AUDIT_ENGINE?.trim().toLowerCase();
+  if (want === 'claude-code' || want === 'claude') {
+    // Asking for it on Vercel is a misconfiguration, not a preference. Fall
+    // back rather than fail a real visitor's audit.
+    if (!claudeCodeAvailable()) {
+      console.warn('website-audit: AUDIT_ENGINE=claude-code requested but no local CLI, using the API');
+      return 'api';
+    }
+    return 'claude-code';
+  }
+  return 'api';
+}
+
 export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
+  const engine = auditEngine();
+
   // Trim defensively: a stray newline or literal "\n" pasted into the env var
   // produces an "invalid x-api-key" 401, which is easy to miss.
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
-  if (!apiKey) {
+  if (!apiKey && engine === 'api') {
     return { ok: false, status: 500, error: 'Audit is not configured. Email sarah@modernmustardseed.com.' };
   }
 
@@ -461,6 +498,66 @@ export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
   const signals = extractSignals(target, html, pageResp.status);
   signals.aux = { llms_txt: llmsTxt, ai_txt: aiTxt, robots_txt: robotsTxt, sitemap_xml: sitemapXml };
 
+  // Built once and handed to whichever engine grades this run, so the two paths
+  // can never drift into scoring the same site off different prompts.
+  const userMessage = `Audit this website. Use the extracted signals to inform every category score. Be specific. Reference what you actually see.
+
+URL: ${target.toString()}
+
+Extracted signals (truncated):
+${JSON.stringify(signals, null, 2)}
+
+Return the JSON report.`;
+
+  const signalsSummary: AuditSignalsSummary = {
+    title: signals.title,
+    h1: signals.h1_texts[0] ?? null,
+    json_ld_count: signals.json_ld_count,
+    llms_txt: signals.aux.llms_txt,
+    ai_txt: signals.aux.ai_txt,
+    has_chat_widget: signals.has_chat_widget_hint,
+    img_missing_alt: signals.img_missing_alt,
+  };
+
+  /**
+   * The schema can no longer enforce item counts (structured outputs rejects
+   * minItems/maxItems), so trim to the promised shape here. Shared, because the
+   * CLI engine has no schema enforcement at all and needs it more.
+   */
+  const trimToShape = (report: WebsiteAuditReport & { top_three_fixes?: unknown[]; full_todo?: unknown[] }) => {
+    if (Array.isArray(report.top_three_fixes)) report.top_three_fixes = report.top_three_fixes.slice(0, 3);
+    if (Array.isArray(report.full_todo)) report.full_todo = report.full_todo.slice(0, 15);
+    return report;
+  };
+
+  // THE FREE PATH. Local only, and it owns its failures completely: none of the
+  // Anthropic.APIError handling below applies to a spawned CLI.
+  if (engine === 'claude-code') {
+    try {
+      const report = (await runClaudeCodeJson({
+        system: SYSTEM_PROMPT,
+        user: userMessage,
+        schema: REPORT_SCHEMA,
+        model: process.env.AUDIT_CLI_MODEL,
+        label: `audit ${target.hostname}`,
+      })) as WebsiteAuditReport & { top_three_fixes?: unknown[]; full_todo?: unknown[] };
+
+      return {
+        ok: true,
+        url: target.toString(),
+        report: trimToShape(report),
+        // Zero, and truthfully zero: this ran on the subscription. The batch
+        // scripts multiply these numbers by a price table to report run cost,
+        // so a free run must report as free rather than as unknown.
+        usage: { model: 'claude-code (subscription)', input: 0, cache_read: 0, output: 0 },
+        signals_summary: signalsSummary,
+      };
+    } catch (err) {
+      console.error('website-audit: claude-code engine failed:', err instanceof Error ? err.message : err);
+      return { ok: false, status: 503, error: 'Audit hit a snag. Try again or email sarah@modernmustardseed.com.' };
+    }
+  }
+
   try {
     const anthropic = new Anthropic({ apiKey });
     // Streamed on purpose. At max_tokens 8000 this call measures 36-43s against
@@ -483,19 +580,7 @@ export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
           cache_control: { type: 'ephemeral' },
         },
       ],
-      messages: [
-        {
-          role: 'user',
-          content: `Audit this website. Use the extracted signals to inform every category score. Be specific. Reference what you actually see.
-
-URL: ${target.toString()}
-
-Extracted signals (truncated):
-${JSON.stringify(signals, null, 2)}
-
-Return the JSON report.`,
-        },
-      ],
+      messages: [{ role: 'user', content: userMessage }],
     }).finalMessage();
 
       const textBlock = response.content.find((b) => b.type === 'text');
@@ -514,30 +599,17 @@ Return the JSON report.`,
       model: usedModel,
     } = await withModelFallback(attempt);
 
-    // The schema can no longer enforce item counts (structured outputs rejects
-    // minItems/maxItems), so trim to the promised shape here.
-    if (Array.isArray(report.top_three_fixes)) report.top_three_fixes = report.top_three_fixes.slice(0, 3);
-    if (Array.isArray(report.full_todo)) report.full_todo = report.full_todo.slice(0, 15);
-
     return {
       ok: true,
       url: target.toString(),
-      report,
+      report: trimToShape(report),
       usage: {
         model: usedModel,
         input: response.usage?.input_tokens ?? 0,
         cache_read: response.usage?.cache_read_input_tokens ?? 0,
         output: response.usage?.output_tokens ?? 0,
       },
-      signals_summary: {
-        title: signals.title,
-        h1: signals.h1_texts[0] ?? null,
-        json_ld_count: signals.json_ld_count,
-        llms_txt: signals.aux.llms_txt,
-        ai_txt: signals.aux.ai_txt,
-        has_chat_widget: signals.has_chat_widget_hint,
-        img_missing_alt: signals.img_missing_alt,
-      },
+      signals_summary: signalsSummary,
     };
   } catch (err) {
     if (err instanceof Anthropic.RateLimitError) {
