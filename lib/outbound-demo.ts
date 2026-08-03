@@ -63,7 +63,10 @@ export async function forgeLeadVoiceDemo(
   // The owner's OWN words about their business, when we have them. (This used to
   // take notes.split('\n')[0], which after the Demo Station shipped was just our
   // internal "SELF-SERVE:" marker line, so the voice agent learned nothing.)
-  const owner = ownerNotes(lead, 400);
+  // Take the WHOLE note (the Demo Station caps the box at 600 anyway). At 400
+  // this cut Olivia's Chocolates off mid-sentence and threw away the entire
+  // wholesale half of the business, so the agent never knew it existed.
+  const owner = ownerNotes(lead);
   const trade = leadTrade(lead);
   const tradeLabel = TRADE_PRESETS[trade].label;
   // An admin reforge instruction, when present, steers the voice agent directly.
@@ -73,7 +76,18 @@ export async function forgeLeadVoiceDemo(
     verticalId: SIDEKICK_VERTICAL[niche] ?? 'professional',
     city: lead.city || 'your area',
     ownerName: lead.contact_name || 'the owner',
-    services: `${tradeLabel} work, typically: ${VOICE_SERVICES[trade]}. Answer every call, speak the trade's language, capture the job details, and book the appointment. Never quote exact prices; offer to have the owner confirm pricing.${owner ? ` What the owner says about the business, in their own words (use it, it is why the caller chose them): ${owner}` : ''}${instruction ? ` Additional instructions for how you should handle calls: ${instruction}` : ''}`,
+    // THE OWNER'S OWN WORDS OUTRANK THE TRADE PRESET. The trade list is a
+    // guess made from a keyword; their description is the business. When the
+    // list led, a chocolatier's agent offered wedding cake tastings it does not
+    // sell, and before the detector was fixed it offered emergency tarping.
+    // Never let the template contradict the person who typed the truth.
+    services: `${
+      owner
+        ? `THE BUSINESS, IN THE OWNER'S OWN WORDS. This is the truth about them and it outranks everything below; never offer a service it does not support, and use their own nouns for what they sell: "${owner}" `
+        : ''
+    }Typical ${tradeLabel.toLowerCase()} work, as BACKGROUND only${
+      owner ? ' (offer an item from this list only if it fits what the owner described above)' : ''
+    }: ${VOICE_SERVICES[trade]}. Answer every call, speak the way this business speaks, capture the job details, and book the appointment. Never quote exact prices; offer to have the owner confirm pricing.${instruction ? ` Additional instructions for how you should handle calls: ${instruction}` : ''}`,
     // Cockpit-forged demos get the clear outbound script: Sarah sent them the
     // link, they did not forge anything, so no "you just built me" framing.
     flow: 'outbound' as const,
@@ -318,14 +332,22 @@ export function buildOsConfig(lead: OutboundLead): OsDemoConfig {
  * one short inert phrase on one line.
  */
 function briefField(raw: string | null | undefined, max = 120): string {
-  return (raw ?? '')
+  const clean = (raw ?? '')
     .replace(/[\r\n\t]+/g, ' ')
     .replace(/[`#*_<>{}[\]|]/g, '')
     .replace(/\b(ignore|disregard|forget)\b[^.]{0,40}\b(previous|prior|above|instruction|prompt|rule)\w*/gi, '')
     .replace(/\b(system|assistant|user)\s*:/gi, '')
     .replace(/\s{2,}/g, ' ')
-    .trim()
-    .slice(0, max);
+    .trim();
+  if (clean.length <= max) return clean;
+  // Cut on a word boundary, and prefer the last full sentence. A hard slice
+  // ended one owner's description at "Olivia started in her home " and handed
+  // that fragment to the voice agent as the whole truth about the business.
+  const cut = clean.slice(0, max);
+  const lastStop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('; '));
+  if (lastStop > max * 0.6) return cut.slice(0, lastStop + 1).trim();
+  const lastSpace = cut.lastIndexOf(' ');
+  return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trim();
 }
 
 /**
@@ -362,7 +384,12 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null):
     '',
     `- Business name: ${business}`,
     `- Trade / niche: ${NICHE_LABELS[niche]}`,
-    `- Specific trade detected: ${TRADE_PRESETS[leadTrade(lead)].label}. Build the site for THIS trade's customers and jobs, not the generic category.`,
+    // A GUESS, and labelled as one. This line used to read as an order ("build
+    // the site for THIS trade"), which is dangerous because the trade is
+    // detected from keywords: one idiom in the owner's notes once filed a
+    // chocolatier as a roofing company and this line told the builder to sell
+    // tear-offs. What the owner wrote about themselves always wins.
+    `- Specific trade guessed from their words: ${TRADE_PRESETS[leadTrade(lead)].label}. Use it only as a starting point, and ONLY where it agrees with what the owner says below. If it contradicts them, the guess is wrong: discard it and build the business they actually described.`,
     lead.contact_name ? `- Owner / contact: ${briefField(lead.contact_name, 80)}` : null,
     `- Phone (real, use it for every call CTA): ${briefField(lead.phone, 30)}`,
     lead.city || lead.state ? `- Location: ${briefField([lead.city, lead.state].filter(Boolean).join(', '), 70)}` : null,

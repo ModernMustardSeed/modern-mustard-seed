@@ -22,6 +22,7 @@ import { trackEvent } from '@/lib/analytics';
 import { SIDEKICK, sidekickVerticals, sidekickTiers, getVertical, forgeScript, sidekickUsd } from '@/data/sidekick';
 import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
 import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
+import { possessive } from '@/lib/business-name';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -411,7 +412,7 @@ export default function ForgeExperience() {
                   type="button"
                   onClick={isLive ? stopCall : startCall}
                   disabled={isConnecting}
-                  aria-label={isLive ? 'End the call' : `Talk to ${form.business}'s new front desk`}
+                  aria-label={isLive ? 'End the call' : `Talk to ${possessive(form.business)} new front desk`}
                   className={`relative w-24 h-24 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 ${
                     isLive
                       ? 'bg-[#E0301E] border-white shadow-[0_0_40px_rgba(224,48,30,0.45)]'
@@ -436,10 +437,10 @@ export default function ForgeExperience() {
                 </span>
                 <p className="font-display text-xl md:text-2xl font-black tracking-tight leading-snug mb-1.5">
                   {isLive
-                    ? `You are live with ${form.business.trim()}'s front desk.`
+                    ? `You are live with ${possessive(form.business.trim())} front desk.`
                     : callState === 'ended'
                       ? 'So. Want to keep him?'
-                      : `${form.business.trim()}'s new front desk is on the line.`}
+                      : `${possessive(form.business.trim())} new front desk is on the line.`}
                 </p>
                 <p className="text-[#FBF6EA]/65 text-sm font-body leading-relaxed max-w-md">
                   {isLive

@@ -6,6 +6,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import { formatPhone } from '@/lib/outbound';
 import { FORGE_STAGE_LABELS } from '@/lib/outbound';
 import type { ForgeCounts, ForgeRow, ForgeStage, ForgeWorkerVitals, Rep } from '@/lib/outbound';
+import { possessive } from '@/lib/business-name';
 import {
   OutboundNav,
   BackButton,
@@ -178,7 +179,7 @@ export default function OutboundForge() {
           setBurst((b) => b + 1);
           push(
             landed.length === 1
-              ? `${landed[0].business_name}'s website just landed. Send it. 🌱`
+              ? `${possessive(landed[0].business_name)} website just landed. Send it. 🌱`
               : `${landed.length} demo websites just landed. Send them. 🌱`,
           );
         }

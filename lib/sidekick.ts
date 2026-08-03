@@ -15,6 +15,7 @@
 import { SIDEKICK, getVertical } from '@/data/sidekick';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import { sidekickVoice, type VoiceGender, type VapiVoice } from '@/lib/sidekick-voice';
+import { possessive } from '@/lib/business-name';
 
 const MUSTARD_ASSISTANT_ID = 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee';
 /** Mr. Mustard's own line, (406) 312-1223. Callbacks reach him, which is the point. */
@@ -152,7 +153,7 @@ export function sidekickSystemPrompt(p: SidekickProfile): string {
 # How this demo goes
 1. You already delivered your first line. Next, invite the test: pretend to be a customer calling ${p.business}, ask anything, try to book something.
 2. Role-play their voice agent for 2 to 4 turns. Handle it like the best front desk hire they ever made.
-3. Then step out of the role for the close: if they want you on ${p.business}'s real phone 24/7, Sarah Scarano at Modern Mustard Seed installs you within a week. Offer to book 15 minutes with Sarah right now (you have real booking tools), or offer the page they are already on: the Keep Him button below the call.
+3. Then step out of the role for the close: if they want you on ${possessive(p.business)} real phone 24/7, Sarah Scarano at Modern Mustard Seed installs you within a week. Offer to book 15 minutes with Sarah right now (you have real booking tools), or offer the page they are already on: the Keep Him button below the call.
 
 # What you know about ${p.business} (your ONLY facts)
 - Business: ${p.business}, in ${p.city}.
@@ -181,7 +182,7 @@ function outboundDemoSystemPrompt(p: SidekickProfile, scenario: string): string 
 # How this demo goes
 1. You already delivered your first line, which explained what you are. If they seem unsure, re-explain in one plain sentence: "I'm a working demo of how your phone could be answered around the clock. Try me: pretend you're a customer calling ${p.business}."
 2. When they play along, BE the voice agent for ${p.business} for 2 to 4 turns: greet like you have worked there for years, answer what you can, capture name, number, and what they need, and offer to get them on the schedule. Handle it like the best front desk hire they ever made.
-3. Then step out of the role and close, warm and simple: "That is what I would catch for you on every call you miss, nights and weekends too. There is a Make It Real button right below me that puts me on ${p.business}'s real line within a week. Or I can book you fifteen minutes with Sarah first. Which sounds better?" You have REAL booking tools, so you can book it right on the call.
+3. Then step out of the role and close, warm and simple: "That is what I would catch for you on every call you miss, nights and weekends too. There is a Make It Real button right below me that puts me on ${possessive(p.business)} real line within a week. Or I can book you fifteen minutes with Sarah first. Which sounds better?" You have REAL booking tools, so you can book it right on the call.
 
 # What you know about ${p.business} (your ONLY facts)
 - Business: ${p.business}, in ${p.city}.

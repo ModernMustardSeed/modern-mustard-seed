@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { trackEvent } from '@/lib/analytics';
 import { PICTURES, picturesVerticals, picturesTiers, screenTestScript } from '@/data/pictures';
+import { possessive } from '@/lib/business-name';
 
 type Stage = 'intake' | 'rolling' | 'reveal';
 
@@ -254,7 +255,7 @@ export default function ScreenTestExperience() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={result.frameUrl}
-                alt={`The hero frame of ${form.business.trim()}'s commercial`}
+                alt={`The hero frame of ${possessive(form.business.trim())} commercial`}
                 className="w-full block"
                 onLoad={() => setFrameLoaded(true)}
               />

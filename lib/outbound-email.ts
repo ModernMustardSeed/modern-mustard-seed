@@ -3,6 +3,7 @@ import { auditReportEmail, clientEmail, demoFilmCard, personalVideoCard, suiteFi
 import { sendViaResend } from '@/lib/send-email';
 import { ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
+import { possessive } from '@/lib/business-name';
 
 export const OUTBOUND_FROM = 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>';
 export const OUTBOUND_REPLY_TO = 'sarah@modernmustardseed.com';
@@ -163,7 +164,7 @@ export async function buildOutboundEmail(
                 href: hub,
                 caption: SARAH_WELCOME_READY
                   ? `A quick hello from Sarah on what we built ${lead.business_name}.`
-                  : `A first look while we finish ${lead.business_name}'s own walkthrough film.`,
+                  : `A first look while we finish ${possessive(lead.business_name)} own walkthrough film.`,
               })
         : '') +
       rows +

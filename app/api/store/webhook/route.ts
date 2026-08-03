@@ -48,6 +48,7 @@ import { provisionFromProposal } from '@/lib/proposal-provision';
 import { provisionPurchase } from '@/lib/provision';
 import { sendReviewNudge } from '@/lib/review-nudge';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { possessive } from '@/lib/business-name';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -665,7 +666,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
             preheader: 'Your card needs a quick update so he stays on the phones.',
             eyebrow: 'VOICE AGENT',
             greeting: 'A quick card hiccup.',
-            body: `<p>The monthly payment for ${business}'s Voice Agent did not go through. It happens (expired card, bank hiccup, gremlin).</p><p>Stripe will retry automatically, or just reply to this email and I will send a fresh payment link. He stays on the phones in the meantime.</p>`,
+            body: `<p>The monthly payment for ${possessive(business)} Voice Agent did not go through. It happens (expired card, bank hiccup, gremlin).</p><p>Stripe will retry automatically, or just reply to this email and I will send a fresh payment link. He stays on the phones in the meantime.</p>`,
             signature: 'Sarah',
           }),
         });
@@ -705,7 +706,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
             preheader: 'A quick card update keeps your Chief on duty.',
             eyebrow: 'THE CHIEF',
             greeting: 'A quick card hiccup.',
-            body: `<p>The monthly payment for ${business}'s Chief did not go through. It happens (expired card, bank hiccup, gremlin).</p><p>Stripe will retry automatically, or just reply to this email and I will send a fresh payment link. He stays on duty in the meantime.</p>`,
+            body: `<p>The monthly payment for ${possessive(business)} Chief did not go through. It happens (expired card, bank hiccup, gremlin).</p><p>Stripe will retry automatically, or just reply to this email and I will send a fresh payment link. He stays on duty in the meantime.</p>`,
             signature: 'Sarah',
           }),
         });
@@ -822,7 +823,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
             preheader: 'A quick card update keeps the monthly spots coming.',
             eyebrow: 'MUSTARD PICTURES',
             greeting: 'A quick card hiccup.',
-            body: `<p>The monthly payment for ${business}'s Season Pass did not go through (expired card, bank hiccup, gremlin).</p><p>Stripe retries automatically, or reply to this email and I will send a fresh payment link so this month's spot ships on time.</p>`,
+            body: `<p>The monthly payment for ${possessive(business)} Season Pass did not go through (expired card, bank hiccup, gremlin).</p><p>Stripe retries automatically, or reply to this email and I will send a fresh payment link so this month's spot ships on time.</p>`,
             signature: 'Sarah',
           }),
         });
@@ -861,7 +862,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
             preheader: 'A quick card update keeps your ads running.',
             eyebrow: 'MUSTARD BROADCAST',
             greeting: 'A quick card hiccup.',
-            body: `<p>The monthly payment for ${business}'s ad management did not go through (expired card, bank hiccup, gremlin).</p><p>Stripe retries automatically, or reply to this email and I will send a fresh payment link. Your campaigns stay live in the meantime, and your ad spend with Meta and Google is unaffected because it is on your own card.</p>`,
+            body: `<p>The monthly payment for ${possessive(business)} ad management did not go through (expired card, bank hiccup, gremlin).</p><p>Stripe retries automatically, or reply to this email and I will send a fresh payment link. Your campaigns stay live in the meantime, and your ad spend with Meta and Google is unaffected because it is on your own card.</p>`,
             signature: 'Sarah',
           }),
         });

@@ -31,6 +31,7 @@ import { resendClient } from '@/lib/send-email';
 import { clientEmail, demoFilmCard } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { possessive } from '@/lib/business-name';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -258,7 +259,7 @@ export async function POST(req: Request) {
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
-        subject: `${first}, ${business}'s demos are being forged right now`,
+        subject: `${first}, ${possessive(business)} demos are being forged right now`,
         html: clientEmail({
           preheader: 'Your voice agent and command center are ready now; the rest is with you within the hour.',
           eyebrow: 'YOUR DEMO SUITE',
@@ -268,7 +269,7 @@ export async function POST(req: Request) {
             demoFilmCard({
               film: 'demo-welcome',
               href: lead.hub_demo_url,
-              caption: `A first look while we finish ${business}'s own walkthrough film.`,
+              caption: `A first look while we finish ${possessive(business)} own walkthrough film.`,
             }) +
             `<p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>`,
           cta: { label: 'Open your Demo Suite', url: lead.hub_demo_url },

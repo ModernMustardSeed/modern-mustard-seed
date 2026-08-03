@@ -30,6 +30,7 @@ import { sendViaResend } from '@/lib/send-email';
 import { clientEmail, escape } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
+import { possessive } from '@/lib/business-name';
 
 const CAP_PER_RUN = 12;
 const KEY = (id: string) => `skdrip:${id}`;
@@ -156,7 +157,7 @@ export function sidekickDripEmail(
       greeting: hi,
       body:
         `<p>This is my last email about it, promise. Your Voice Agent stays live either way, so nothing expires and nobody is going to call you five times.</p>` +
-        `<p>If the timing is wrong, ignore me with a clear conscience. If the missed calls still bother you, putting it on ${biz}'s real line takes about a week, or grab ten minutes with me and I will answer whatever is in the way.</p>`,
+        `<p>If the timing is wrong, ignore me with a clear conscience. If the missed calls still bother you, putting it on ${possessive(biz)} real line takes about a week, or grab ten minutes with me and I will answer whatever is in the way.</p>`,
       cta,
       secondary,
       trackId: lead.id,

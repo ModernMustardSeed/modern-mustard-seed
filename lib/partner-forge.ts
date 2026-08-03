@@ -32,6 +32,7 @@ import { resendClient } from '@/lib/send-email';
 import { clientEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { possessive } from '@/lib/business-name';
 
 export const PARTNER_FORGE_GLOBAL_DAILY_CAP = 20;
 export const PARTNER_FORGE_QA_LIFT = 3;
@@ -430,7 +431,7 @@ export async function sendForgeHandoffEmail(
         `"${ownerFirst}, I had something built for ${args.business}. A team I trust makes voice agents and websites, and I asked them to make yours first so you could see it real, not as a pitch. It is at this link, with your name on it, and it took me two minutes: have a look before you talk to anyone."` +
         `</p>` +
         `<p>Send them the hub link below. If they buy, the commission lands on your partner ledger automatically.</p>`,
-      cta: { label: `Open ${args.business}'s Demo Suite`, url: args.hubUrl },
+      cta: { label: `Open ${possessive(args.business)} Demo Suite`, url: args.hubUrl },
       signature: 'Sarah',
     }),
   });
