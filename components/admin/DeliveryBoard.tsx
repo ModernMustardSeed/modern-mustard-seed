@@ -126,6 +126,63 @@ const LABELS: Record<string, string> = {
   facebook: 'Facebook', instagram: 'Instagram', audience: 'Their customer', competitors: 'Competitors',
 };
 
+/**
+ * "Can we put a client live right now?" answered on demand.
+ *
+ * The banner above only knows whether the env vars EXIST. A token that was valid
+ * in July and rotated in August looks identical from there, and the first person
+ * to find out would be a client on their launch day. This asks Vercel directly.
+ *
+ * Deliberately a button rather than an automatic call: it hits a third-party API,
+ * and the board loads on every visit.
+ */
+function LaunchPreflight() {
+  type Check = { id: string; ok: boolean; label: string; detail: string; blocks: string };
+  const [result, setResult] = useState<{ ok: boolean; summary: string; checks: Check[] } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function run() {
+    setBusy(true);
+    try {
+      const res = await fetch('/api/admin/delivery/preflight');
+      const j = await res.json().catch(() => null);
+      if (j?.checks) setResult(j);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mb-6">
+      <button
+        type="button"
+        onClick={run}
+        disabled={busy}
+        className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform disabled:opacity-50"
+      >
+        {busy ? 'Checking…' : 'Can we launch a client right now?'}
+      </button>
+
+      {result && (
+        <div className={`mt-3 rounded-xl border-2 p-4 ${result.ok ? 'border-[#3f5d34] bg-[#3f5d34]/8' : 'border-[#E0301E] bg-[#E0301E]/8'}`}>
+          <p className={`font-sans text-[12px] uppercase tracking-[0.14em] font-bold mb-2 ${result.ok ? 'text-[#3f5d34]' : 'text-[#E0301E]'}`}>
+            {result.summary}
+          </p>
+          <ul className="space-y-1.5">
+            {result.checks.map((c) => (
+              <li key={c.id} className="font-body text-[13px] text-[#161616]/80">
+                <span className="mr-1.5">{c.ok ? '✓' : '✗'}</span>
+                <span className="font-semibold">{c.label}.</span> {c.detail}
+                {!c.ok && <span className="text-[#161616]/55"> Blocks {c.blocks}.</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function DeliveryBoard() {
   const [rows, setRows] = useState<Row[]>([]);
   const [platformReady, setPlatformReady] = useState(true);
@@ -186,6 +243,8 @@ export default function DeliveryBoard() {
             </p>
           </div>
         )}
+
+        <LaunchPreflight />
 
         {loading ? (
           <p className="font-body text-[#161616]/50">Loading…</p>
