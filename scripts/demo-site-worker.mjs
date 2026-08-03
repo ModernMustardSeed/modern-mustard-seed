@@ -30,6 +30,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective } from '../lib/site-directive.mjs';
 import { inlineSiteAssets, remainingLocalRefs } from './inline-site-assets.mjs';
+import { blankImageError } from '../lib/site-asset-refs.mjs';
 
 const ONCE = process.argv.includes('--once');
 const POLL_MS = Number(process.env.DEMO_SITE_POLL_MS || 15000);
@@ -658,6 +659,20 @@ async function sealAssets(job, html) {
   const left = remainingLocalRefs(result.html);
   if (left.length) {
     await fail(job, `site still points at local files after inlining: ${left.slice(0, 8).join(', ')}`);
+    return null;
+  }
+
+  // AND THE IMAGES MUST ACTUALLY BE IMAGES.
+  //
+  // Inlining proves nothing points at a file we will not send. It cannot tell a
+  // photograph from a solid rectangle, and Polly Thompson Pest Elimination
+  // (f9b0be79, 2026-08-03) banked with five blank swatches because the build
+  // inlined a draft while its last five renders were still running, then never ran
+  // the final pass. The renders were sitting on disk, finished and perfect. A
+  // failed row is recoverable; a lead opening a page of empty blocks is not.
+  const blank = blankImageError(result.html);
+  if (blank) {
+    await fail(job, blank);
     return null;
   }
   return result.html;

@@ -33,7 +33,7 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { resendClient } from '@/lib/send-email';
 import { leadNotification } from '@/lib/email';
-import { localAssetRefs } from '@/lib/site-asset-refs.mjs';
+import { blankImages, localAssetRefs } from '@/lib/site-asset-refs.mjs';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -110,7 +110,15 @@ export async function GET(req: Request) {
 
       for (const row of data as unknown as Record<string, unknown>[]) {
         checked++;
-        const refs = localAssetRefs(row[htmlCol] as string);
+        const html = row[htmlCol] as string;
+        // Two ways a page reaches a customer with no imagery: it points at files we
+        // never publish (Miller, Glacier), or it inlined blank placeholder fills
+        // instead of the finished renders (Polly Thompson, 2026-08-03). The second
+        // passes every structural check, so it needs its own eyes.
+        const refs = [
+          ...localAssetRefs(html),
+          ...blankImages(html).map((b) => `blank ${b.width}x${b.height} fill (${Math.round(b.bytes / 1024)}KB)`),
+        ];
         if (refs.length) {
           broken.push({
             kind,

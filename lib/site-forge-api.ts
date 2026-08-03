@@ -18,7 +18,7 @@
  */
 import Anthropic from '@anthropic-ai/sdk';
 import { apiDirective, apiRealDirective, apiEditDirective, HERO_PLACEHOLDER } from './site-directive.mjs';
-import { selfContainedError } from './site-asset-refs.mjs';
+import { publishBlockerError } from './site-asset-refs.mjs';
 
 export type ForgeResult =
   | { ok: true; html: string; direction: string; hero: 'painted' | 'skipped'; bytes: number }
@@ -200,7 +200,10 @@ export async function forgeSiteWithApi(
   // whose every photograph is a 404 with alt text showing, and no later step can
   // recover it. Fail the build and let the caller retry or leave the row queued for
   // the worker; a failed row is recoverable, a dead demo in front of a 2am lead is not.
-  const unshippable = selfContainedError(html);
+  //
+  // The same refusal covers a page whose images are inline but blank: a hero that
+  // came back as a flat fill is the metered path's version of the same defect.
+  const unshippable = publishBlockerError(html);
   if (unshippable) return { ok: false, error: unshippable };
 
   return {
@@ -269,7 +272,7 @@ export async function editSiteWithApi(
 
   // An edit is just as capable of breaking the page as a build: a model asked to
   // "swap the hero photo" can answer with a filename. Same refusal, same reason.
-  const unshippable = selfContainedError(html);
+  const unshippable = publishBlockerError(html);
   if (unshippable) return { ok: false, error: unshippable };
 
   return {

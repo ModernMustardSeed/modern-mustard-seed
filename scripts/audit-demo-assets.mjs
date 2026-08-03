@@ -16,6 +16,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { createClient } from '@supabase/supabase-js';
 import { remainingLocalRefs } from './inline-site-assets.mjs';
+import { blankImages } from '../lib/site-asset-refs.mjs';
 
 const env = Object.fromEntries(
   fs
@@ -60,14 +61,23 @@ for (let from = 0; ; from += PAGE) {
 if (process.stderr.isTTY) process.stderr.write(`\r${' '.repeat(24)}\r`);
 
 const broken = [];
+const blank = [];
 for (const row of data) {
   const refs = remainingLocalRefs(row.html);
-  if (!refs.length) continue;
-  // Say whether it is repairable in place, since that decides the fix: a build dir
-  // that still holds the files just needs re-inlining, a missing one needs a rebuild.
-  const dir = path.join(SITES_DIR, row.id);
-  const onDisk = refs.filter((r) => fs.existsSync(path.join(dir, r.split('#')[0].split('?')[0])));
-  broken.push({ ...row, refs, repairable: onDisk.length === refs.length, onDisk: onDisk.length });
+  if (refs.length) {
+    // Say whether it is repairable in place, since that decides the fix: a build dir
+    // that still holds the files just needs re-inlining, a missing one needs a rebuild.
+    const dir = path.join(SITES_DIR, row.id);
+    const onDisk = refs.filter((r) => fs.existsSync(path.join(dir, r.split('#')[0].split('?')[0])));
+    broken.push({ ...row, refs, repairable: onDisk.length === refs.length, onDisk: onDisk.length });
+  }
+  // A page can be perfectly self-contained and still have nothing to look at: a draft
+  // inlined before its renders finished ships solid fills that pass every other check.
+  const fills = blankImages(row.html);
+  if (fills.length) {
+    const dir = path.join(SITES_DIR, row.id);
+    blank.push({ ...row, fills, hasDir: fs.existsSync(dir) });
+  }
 }
 
 for (const b of broken) {
@@ -79,9 +89,24 @@ for (const b of broken) {
   console.log(`         ${b.refs.slice(0, 6).join(', ')}${b.refs.length > 6 ? ', ...' : ''}`);
 }
 
+for (const b of blank) {
+  console.log(
+    `BLANK  ${b.id}  ${(b.business_name || '').slice(0, 30).padEnd(30)} ${b.status.padEnd(8)} ` +
+      `${String(b.built_at).slice(0, 10)}  ${b.fills.length} placeholder fill(s) ` +
+      `${b.hasDir ? '[build dir present: re-inline the real renders]' : '[needs rebuild: build dir gone]'}`
+  );
+  console.log(
+    `         ${b.fills
+      .slice(0, 6)
+      .map((f) => `#${f.index} ${f.width}x${f.height} ${Math.round(f.bytes / 1024)}KB`)
+      .join(', ')}${b.fills.length > 6 ? ', ...' : ''}`
+  );
+}
+
+const bad = broken.length + blank.length;
 console.log(
-  broken.length
-    ? `\n${broken.length} of ${data.length} demo rows ship broken images.`
-    : `\nAll ${data.length} demo rows are self-contained.`
+  bad
+    ? `\n${broken.length} of ${data.length} demo rows ship broken images; ${blank.length} ship blank placeholder fills.`
+    : `\nAll ${data.length} demo rows are self-contained and carry real imagery.`
 );
-process.exit(broken.length ? 1 : 0);
+process.exit(bad ? 1 : 0);
