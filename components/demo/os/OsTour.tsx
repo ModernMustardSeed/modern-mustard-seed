@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useOs } from './os-kit';
-import { possessive } from '@/lib/business-name';
+import { possessive, withArticle } from '@/lib/business-name';
 
 /**
  * ONBOARDING TOUR: a guided first-run walkthrough of the OS demo, so a prospect
@@ -24,7 +24,7 @@ export default function OsTour({ onGoTo, onClose }: { onGoTo: (tab: string) => v
     { tab: 'today', eyebrow: '1 · Today', title: 'Your day, already sorted', body: `While you slept, your voice agent answered the calls and filed them. This is what is waiting, in order.` },
     { tab: 'calls', eyebrow: '2 · Calls', title: 'Every call, written down', body: `Your voice agent types up every call, after hours included. Open any one for the full transcript, and the lead is already filed.` },
     { tab: 'calendar', eyebrow: '3 · Calendar', title: 'One calendar, filled for you', body: `Your voice agent, your website, and you all book into the same place. No double-bookings, and you barely touch it.` },
-    { tab: 'quotes', eyebrow: '4 · Quotes', title: 'Send a quote, get it signed', body: `Build a ${preset.jobWord} quote from your price book and send it in your brand. They sign it on their phone and it books itself.` },
+    { tab: 'quotes', eyebrow: '4 · Quotes', title: 'Send a quote, get it signed', body: `Build ${withArticle(preset.jobWord)} quote from your price book and send it in your brand. They sign it on their phone and it books itself.` },
     { tab: 'traffic', eyebrow: '5 · Website', title: 'Your site, working for you', body: `See who is visiting your new website, where they came from, and how many became leads on this same board.` },
     { tab: 'leadgen', eyebrow: '6 · Growth', title: 'We keep you busy', body: `Lead gen captures everyone who raises a hand and answers in seconds; Campaigns and Reviews bring more back, on autopilot.` },
     { tab: 'assistant', eyebrow: '7 · Your assistant', title: 'Ask it anything', body: `It can see the whole board. Ask about your day, draft a text, or tell it what you need. That is the tour, have a look around.` },

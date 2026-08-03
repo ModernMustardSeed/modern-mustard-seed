@@ -370,7 +370,7 @@ export default function ForgeExperience() {
             <Image src="/brand/mascot.png" alt="Mr. Mustard training your Voice Agent" width={46} height={46} className="rounded-full border-2 border-[#F5B700] bg-[#F5B700] animate-pulse" />
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">Training in progress</p>
-              <p className="font-display text-lg font-black text-[#FBF6EA] leading-tight">Mr. Mustard is forging {form.business.trim()}&apos;s front desk.</p>
+              <p className="font-display text-lg font-black text-[#FBF6EA] leading-tight">Mr. Mustard is forging {possessive(form.business.trim())} front desk.</p>
             </div>
           </div>
           <div className="font-mono text-[13px] md:text-sm leading-7 text-[#FBF6EA]/90">

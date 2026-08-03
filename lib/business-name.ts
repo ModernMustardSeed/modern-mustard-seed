@@ -40,3 +40,51 @@ export function forBusiness(name: string | null | undefined): string {
   const n = (name ?? '').trim();
   return n ? `for ${n}` : '';
 }
+
+/**
+ * "a" or "an" for a word we do not know until render time.
+ *
+ * Same family of bug as the possessive: our copy hard-codes the article and the
+ * trade fills the noun. Four of the trade presets have a jobWord starting with a
+ * vowel (order, and appointment three times over), so the command center demo
+ * shipped "wants a quote on a order", "Pricing on a order" and "Emergency a
+ * appointment" to every bakery, dental, medspa and salon lead we forged.
+ *
+ * Heuristic, deliberately: English articles follow SOUND, not spelling, and no
+ * trade noun we ship needs more than this. The exceptions below are the ones
+ * that actually bite ("a one-off", "an hour", "a used unit").
+ */
+const SOUNDS_CONSONANT = /^(one|once|uni|use|user|usual|utili|euro|ewe)/i;
+const SOUNDS_VOWEL = /^(hour|honest|honor|heir)/i;
+
+export function article(word: string | null | undefined): string {
+  const w = (word ?? '').trim();
+  if (!w) return 'a';
+  if (SOUNDS_VOWEL.test(w)) return 'an';
+  if (SOUNDS_CONSONANT.test(w)) return 'a';
+  return /^[aeiou]/i.test(w) ? 'an' : 'a';
+}
+
+/** "an order", "a job". Capitalized input keeps its capital: "An order". */
+export function withArticle(word: string | null | undefined): string {
+  const w = (word ?? '').trim();
+  if (!w) return '';
+  const art = article(w);
+  return `${/^[A-Z]/.test(w) ? art[0].toUpperCase() + art.slice(1) : art} ${w}`;
+}
+
+/**
+ * Fill a `{job}`-style token AND repair the article our template hard-coded in
+ * front of it. Do this rather than fixing the twenty template strings by hand:
+ * the strings are the copy, and copy gets rewritten by whoever is closest to it.
+ * The grammar should not be their problem.
+ */
+export function fillNoun(text: string, token: string, word: string): string {
+  const tok = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text
+    .replace(new RegExp(`\\b([Aa])n?\\s+${tok}`, 'g'), (_m, a: string) => {
+      const art = article(word);
+      return `${a === 'A' ? art[0].toUpperCase() + art.slice(1) : art} ${word}`;
+    })
+    .replace(new RegExp(tok, 'g'), word);
+}

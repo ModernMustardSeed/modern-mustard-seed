@@ -235,7 +235,7 @@ export default function ScreenTestExperience() {
             <Image src="/brand/mascot.png" alt="Mr. Mustard directing" width={46} height={46} className="rounded-full border-2 border-[#F5B700] bg-[#F5B700] animate-pulse" />
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">Now shooting</p>
-              <p className="font-display text-lg font-black text-[#FBF6EA] leading-tight">Mr. Mustard is directing {form.business.trim()}&apos;s screen test.</p>
+              <p className="font-display text-lg font-black text-[#FBF6EA] leading-tight">Mr. Mustard is directing {possessive(form.business.trim())} screen test.</p>
             </div>
           </div>
           <div className="font-mono text-[13px] md:text-sm leading-7 text-[#FBF6EA]/90">

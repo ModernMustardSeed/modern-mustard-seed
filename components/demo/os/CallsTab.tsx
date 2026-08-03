@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { SectionTitle, StatCard, hash, useOs } from './os-kit';
+import { withArticle } from '@/lib/business-name';
 
 /**
  * CALLS: the voice agent's back office. Every call your AI answered, written
@@ -74,7 +75,7 @@ export default function CallsTab() {
 
   const seedRows = useMemo<CallRow[]>(() => {
     const daytime = [
-      { caller: 'Marcus D.', need: `Quote on a ${jobWord}, comparing two shops`, outcome: 'Quoted a range, booked a visit' },
+      { caller: 'Marcus D.', need: `Quote on ${withArticle(jobWord)}, comparing two shops`, outcome: 'Quoted a range, booked a visit' },
       { caller: 'Priya S.', need: 'Question about your hours and area', outcome: 'Answered, added to the schedule' },
       { caller: 'The Alvarez Family', need: `Repeat customer, needs another ${jobWord}`, outcome: 'Booked, priority slot held' },
     ];
@@ -127,7 +128,7 @@ export default function CallsTab() {
     const pool = [
       { caller: 'Tyler B.', need: `After-hours ${jobWord}, wants a quote`, outcome: 'Details captured, callback set for the morning' },
       { caller: 'Dev Patel', need: `Emergency ${jobWord}, asked how soon you can come`, outcome: 'Priority slot held, you were texted' },
-      { caller: 'Karen L.', need: `Pricing on a ${jobWord}`, outcome: 'Quoted a range, booked a visit' },
+      { caller: 'Karen L.', need: `Pricing on ${withArticle(jobWord)}`, outcome: 'Quoted a range, booked a visit' },
     ];
     const pick = pool[(h + rows.length) % pool.length];
     const id = `live-${rows.length}`;

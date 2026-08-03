@@ -5,6 +5,7 @@ import type { ForgedCall } from '@/lib/sidekick';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
 import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
+import { possessive } from '@/lib/business-name';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -117,7 +118,7 @@ export default function DemoCallExperience({
         <div className="max-w-2xl mx-auto px-6 py-10 text-center">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#C4160B] font-mono font-bold">Modern Mustard Seed presents</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-[#161616] mt-2 leading-tight">
-            Meet {business}&apos;s voice agent
+            Meet {possessive(business)} voice agent
           </h1>
           <p className="font-body text-[#161616]/70 mt-3 max-w-lg mx-auto">
             We built it to answer as {business}{city ? ` in ${city}` : ''}: every call picked up in two rings, day or night, jobs booked while you work. Talk to it right now.
@@ -184,7 +185,7 @@ export default function DemoCallExperience({
           <div className="mt-8 bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-7 text-center">
             <p className="font-sans font-bold uppercase tracking-[0.1em] text-[11px] text-[#F5B700]">Make it real</p>
             <p className="font-display text-2xl md:text-3xl font-bold text-[#FBF6EA] mt-2 leading-tight">
-              Put it on {business}&apos;s real number
+              Put it on {possessive(business)} real number
             </p>
             <p className="font-body text-[#FBF6EA]/70 mt-3 max-w-md mx-auto">
               {formatUsd(VOICE.setupCents)} to set it up, then {formatUsd(VOICE.monthlyCents)} a month. Month to

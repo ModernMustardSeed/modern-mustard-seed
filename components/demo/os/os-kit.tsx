@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
 import type { OsTradePreset } from '@/data/demo-os-trades';
 import type { OsTheme } from '@/lib/site-palette';
+import { fillNoun } from '@/lib/business-name';
 
 /**
  * Shared kit for the BUSINESS OS demo modules. The app is one template
@@ -151,12 +152,18 @@ export function StatCard({
   );
 }
 
-/** Fill {biz} / {city} / {job} style tokens the presets use. */
+/**
+ * Fill {biz} / {city} / {job} style tokens the presets use.
+ *
+ * {job} goes through fillNoun so the article in front of it is repaired at the
+ * same time. The presets hard-code "a {job}" and four trades fill it with a
+ * vowel (order, appointment), which shipped "a quote on a order" to every
+ * bakery, dental, medspa and salon demo.
+ */
 export function interpolate(s: string, config: OsDemoConfig, jobWord: string): string {
-  return s
+  return fillNoun(s, '\\{job\\}', jobWord)
     .replace(/\{biz\}/g, config.business)
     .replace(/\{city\}/g, config.city || 'your town')
-    .replace(/\{job\}/g, jobWord)
     .replace(/\{firstName\}/g, 'Dana')
     .replace(/\{street\}/g, 'Maple St');
 }

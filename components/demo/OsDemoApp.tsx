@@ -21,6 +21,7 @@ import LeadGenTab from '@/components/demo/os/LeadGenTab';
 import CallsTab from '@/components/demo/os/CallsTab';
 import TrafficTab from '@/components/demo/os/TrafficTab';
 import OsTour from '@/components/demo/os/OsTour';
+import { fillNoun } from '@/lib/business-name';
 
 /**
  * The forged BUSINESS OS demo: one template command center that renders as
@@ -416,7 +417,7 @@ export default function OsDemoApp({
     const inbound = inboundOf(theater.n);
     return [
       `AI · Good evening, ${config.business}. How can I help?`,
-      `${inbound.name.split(' ')[0]} · ${inbound.need.replace(/\{job\}/g, preset.jobWord)}.`,
+      `${inbound.name.split(' ')[0]} · ${fillNoun(inbound.need, '\\{job\\}', preset.jobWord)}.`,
     ].join('\n');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theater?.n, config.business, preset.jobWord]);
@@ -458,7 +459,7 @@ export default function OsDemoApp({
     const t = window.setTimeout(() => {
       const inbound = inboundOf(theater.n);
       const fresh = enrich(
-        { name: inbound.name, need: inbound.need.replace(/\{job\}/g, preset.jobWord), value: preset.avgTicket, stage: 0 },
+        { name: inbound.name, need: fillNoun(inbound.need, '\\{job\\}', preset.jobWord), value: preset.avgTicket, stage: 0 },
         leads.length + 97,
       );
       fresh.source = 'Voice Agent';
@@ -580,7 +581,7 @@ export default function OsDemoApp({
     () =>
       [...preset.extraAutomations, ...OS_AUTOMATIONS].map((a) => ({
         ...a,
-        desc: a.desc.replace(/\{job\}/g, preset.jobWord),
+        desc: fillNoun(a.desc, '\\{job\\}', preset.jobWord),
       })),
     [preset.extraAutomations, preset.jobWord],
   );
@@ -1249,7 +1250,7 @@ export default function OsDemoApp({
               <div className="space-y-2.5">
                 {REVIEW_POOL.map((r, i) => {
                   const replied = repliedReviews.includes(i);
-                  const text = r.text.replace(/\{biz\}/g, config.business).replace(/\{job\}/g, preset.jobWord);
+                  const text = fillNoun(r.text, '\\{job\\}', preset.jobWord).replace(/\{biz\}/g, config.business);
                   return (
                     <div key={r.name} className="rounded-2xl border p-4 animate-[osIn_.4s_ease-out_both]" style={{ background: PANEL, borderColor: LINE, animationDelay: `${i * 60}ms` }}>
                       <div className="flex items-start gap-3">

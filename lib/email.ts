@@ -1,3 +1,4 @@
+import { possessive } from '@/lib/business-name';
 /**
  * Modern Mustard Seed email system.
  *
@@ -844,7 +845,7 @@ export function suiteFilmCard({ href, business }: { href: string; business: stri
       <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border:2px solid ${C.ink};border-radius:14px;overflow:hidden;background:${C.ink}">
         <tr><td align="center" style="padding:26px 20px">
           <div style="font-family:${SANS};font-size:12px;font-weight:bold;letter-spacing:.14em;text-transform:uppercase;color:${C.goldBrand}">We recorded this for you</div>
-          <div style="font-family:${SERIF};font-size:23px;font-style:italic;color:${C.page};margin-top:10px;line-height:1.35">&#9654;&nbsp; A walkthrough of ${escape(business)}&rsquo;s new website, agent and command center</div>
+          <div style="font-family:${SERIF};font-size:23px;font-style:italic;color:${C.page};margin-top:10px;line-height:1.35">&#9654;&nbsp; A walkthrough of ${escape(possessive(business))} new website, agent and command center</div>
           <div style="font-family:${SANS};font-size:13px;color:${C.page};opacity:.72;margin-top:10px">Including a real call where the website answers its own phone.</div>
           <div style="font-family:${SANS};font-size:13px;font-weight:bold;color:${C.goldBrand};margin-top:14px">Watch it on your suite &rarr;</div>
         </td></tr>

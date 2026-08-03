@@ -4,6 +4,7 @@ import { forgeCall } from '@/lib/sidekick';
 import { buildMetadata } from '@/lib/seo';
 import type { ForgedCall } from '@/lib/sidekick';
 import SiteDemoShell from '@/components/demo/SiteDemoShell';
+import { possessive } from '@/lib/business-name';
 
 export const metadata = buildMetadata({ title: 'Your New Website Demo', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -66,7 +67,7 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
         <div className="max-w-md text-center">
           <div className="w-20 h-20 mx-auto rounded-full border-4 border-[#F5B700] border-t-transparent animate-spin" />
           <h1 className="font-display text-3xl md:text-4xl font-bold text-[#FBF6EA] mt-8 leading-tight">
-            {site.business_name}&apos;s new website is on the drafting table
+            {possessive(site.business_name)} new website is on the drafting table
           </h1>
           <p className="font-body text-[#FBF6EA]/60 mt-3">
             A designer is building a real, working draft from scratch, custom to the business, and then we record a

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ForgedCall } from '@/lib/sidekick';
 import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
 import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
+import { possessive } from '@/lib/business-name';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -123,7 +124,7 @@ export default function DemoVoiceWidget({
           <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700] animate-pulse" />
           <div className="text-left">
             <p className="font-sans font-bold uppercase tracking-[0.1em] text-[11px] text-[#FBF6EA]">Live · {mmss}</p>
-            <p className="font-body text-[11px] text-[#FBF6EA]/60">{business}&apos;s voice agent</p>
+            <p className="font-body text-[11px] text-[#FBF6EA]/60">{possessive(business)} voice agent</p>
           </div>
           <button
             onClick={stop}
