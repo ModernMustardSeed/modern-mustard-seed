@@ -36,7 +36,10 @@ export const outreachSequences: OutreachSequence[] = [
       {
         day: 2,
         channel: 'Email',
-        subject: "{{restaurant}}'s phone during the dinner rush",
+        // Phrased to avoid a possessive on purpose. A rep pastes a real business
+        // name into this token, and half of them end in s ("Olivia's Chocolates"),
+        // which would make the subject line stutter in the prospect's inbox.
+        subject: 'The phone at {{restaurant}} during the dinner rush',
         body:
           'Hi {{firstName}},\n\n' +
           'Quick math most {{city}} restaurants never run: 15 missed calls a week at a $32 average ticket is about $1,900 a month walking out the door. During the rush, those are takeout orders and tables going to the place that picked up.\n\n' +

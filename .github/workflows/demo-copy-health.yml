@@ -1,0 +1,77 @@
+# Bad-copy watchdog for every site we put in front of someone.
+#
+# The twin of demo-asset-health. That one asks whether the pictures load. This one
+# reads the words.
+#
+# On 2026-08-03 a full funnel test found that EVERY bakery, dental, medspa and salon
+# demo we had ever forged said "wants a quote on a order", and that twenty-five
+# surfaces said "Olivia's Chocolates's", including the live call pill that rides on
+# every demo site and therefore the walkthrough film we send buyers. Both had been
+# shipping for weeks.
+#
+# That is the argument for this job. A broken image 404s and looks broken. Broken
+# language renders perfectly, scores well on every metric we collect, and quietly
+# tells the prospect a machine wrote their page. We demonstrably do not catch it, so
+# a machine has to.
+#
+# All the logic is server-side in app/api/cron/demo-copy-health/route.ts. This job
+# only pings it. A red run means a live page is serving copy we would not say out
+# loud, and the route has already emailed Sarah. Low-severity polish (an em dash, a
+# doubled word) never turns the run red: a watchdog that pages over taste gets muted,
+# and a muted watchdog is not a watchdog.
+#
+# Hourly and off the top of the hour, same as its twin. Here rather than a Vercel
+# cron because the MMS project is on Hobby, where crons are daily-only.
+
+name: demo-copy-health
+
+on:
+  schedule:
+    - cron: "43 * * * *" # hourly, offset from demo-asset-health so they never collide
+  workflow_dispatch:
+    inputs:
+      selftest:
+        description: "Fire a synthetic finding to prove the alert email still works (touches no data)"
+        type: boolean
+        default: false
+      full:
+        description: "Sweep every site ever forged, not just the last 7 days"
+        type: boolean
+        default: false
+
+concurrency:
+  group: demo-copy-health
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping bad-copy watchdog
+        run: |
+          URL="https://modernmustardseed.com/api/cron/demo-copy-health"
+          QS=""
+          if [ "$SELFTEST" = "true" ]; then
+            QS="?selftest=1"
+            echo "SELFTEST run: firing a synthetic finding to verify the alert email."
+          elif [ "$FULL" = "true" ]; then
+            QS="?full=1"
+            echo "FULL sweep: reading every site ever forged."
+          fi
+          echo "Reading demos and client sites for copy a customer would notice..."
+          BODY=$(curl -sS -m 90 -w $'\n%{http_code}' \
+            ${CRON_SECRET:+-H "Authorization: Bearer $CRON_SECRET"} \
+            "$URL$QS")
+          CODE=$(printf '%s' "$BODY" | tail -n1)
+          JSON=$(printf '%s' "$BODY" | sed '$d')
+          echo "HTTP $CODE"
+          echo "Response: $JSON"
+          if [ "$CODE" -lt 200 ] || [ "$CODE" -ge 300 ]; then
+            echo "::error::a live page is serving copy we would not say out loud (see the response above; Sarah has been emailed)"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SELFTEST: ${{ inputs.selftest }}
+          FULL: ${{ inputs.full }}
