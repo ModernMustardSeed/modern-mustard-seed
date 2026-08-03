@@ -242,6 +242,13 @@ export type ForgeRow = {
   forged_at: string | null;
   /** How many demos are live for this lead (voice agent, website, command center). */
   asset_count: number;
+  /**
+   * The trade the suite was actually BUILT on, off the frozen command-center
+   * config. Null when nothing is forged yet. Shown on the board because this one
+   * keyword drives the voice agent's services, the whole command-center dataset,
+   * and the hub calculator, and it used to be invisible and uncorrectable.
+   */
+  trade: string | null;
   calls: number;
   last_call_at: string | null;
   last_outcome: CallOutcome | null;

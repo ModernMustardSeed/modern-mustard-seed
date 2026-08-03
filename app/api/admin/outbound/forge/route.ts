@@ -55,7 +55,12 @@ const LEAD_COLS =
 /** Anything forged for the lead: voice agent, website, command center, or the suite hub. */
 const FORGED_FILTER = 'demo_run_id.not.is.null,site_demo_id.not.is.null,os_demo_id.not.is.null,hub_demo_id.not.is.null';
 
-type LeadRow = Omit<ForgeRow, 'forged_at' | 'asset_count' | 'calls' | 'last_call_at' | 'last_outcome' | 'stage' | 'site'> & {
+// `trade` is omitted too: it does not live on outbound_leads at all. It is read
+// off the frozen command-center config below and joined on at the end.
+type LeadRow = Omit<
+  ForgeRow,
+  'forged_at' | 'asset_count' | 'calls' | 'last_call_at' | 'last_outcome' | 'stage' | 'site' | 'trade'
+> & {
   demo_run_id: string | null;
   site_demo_id: string | null;
   os_demo_id: string | null;
@@ -65,7 +70,7 @@ type LeadRow = Omit<ForgeRow, 'forged_at' | 'asset_count' | 'calls' | 'last_call
 
 type SiteRow = ForgeSiteRun & { lead_id: string; business_name: string };
 type CallRow = { lead_id: string; called_at: string; outcome: CallOutcome };
-type OsRow = { lead_id: string; created_at: string };
+type OsRow = { lead_id: string; created_at: string; config: unknown };
 
 /**
  * PostgREST `.in()` goes in the URL, so a thousand ids would blow the request
@@ -130,7 +135,7 @@ export async function GET(req: Request) {
     ),
     Promise.all(
       chunk(ids).map((c) =>
-        guard.supabase.from('outbound_demo_os').select('lead_id, created_at').in('lead_id', c),
+        guard.supabase.from('outbound_demo_os').select('lead_id, created_at, config').in('lead_id', c),
       ),
     ),
   ]);
@@ -161,10 +166,22 @@ export async function GET(req: Request) {
   }
 
   const osByLead = new Map<string, string>();
+  // The trade the suite was actually BUILT on, read straight off the frozen
+  // config. It rides along on a query we were already making, so surfacing the
+  // guess costs nothing. One keyword decides the voice agent's service menu, the
+  // command center's entire dataset and the hub calculator, and until now nobody
+  // could see which one it picked: "two businesses under one roof" filed a
+  // chocolatier as a roofer, and a sweep found four more live suites on the wrong
+  // trade, including a restaurant filed as a wedding venue.
+  const tradeByLead = new Map<string, string>();
   for (const res of osChunks) {
     for (const row of (res.data ?? []) as OsRow[]) {
       const seen = osByLead.get(row.lead_id);
-      if (!seen || row.created_at > seen) osByLead.set(row.lead_id, row.created_at);
+      if (!seen || row.created_at > seen) {
+        osByLead.set(row.lead_id, row.created_at);
+        const t = (row.config as { trade?: string } | null)?.trade;
+        if (t) tradeByLead.set(row.lead_id, t);
+      }
     }
   }
 
@@ -234,6 +251,7 @@ export async function GET(req: Request) {
       last_outcome: calls?.last.outcome ?? null,
       stage,
       site,
+      trade: tradeByLead.get(l.id) ?? null,
     };
   });
 

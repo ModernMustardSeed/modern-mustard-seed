@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { forgeCall } from '@/lib/sidekick';
-import { saveRun } from '@/lib/sidekick-store';
+import { saveRun, updateRunBrief } from '@/lib/sidekick-store';
 import { NICHE_LABELS } from '@/lib/outbound';
 import type { Niche, OutboundLead } from '@/lib/outbound';
 import { detectTrade, TRADE_PRESETS, VOICE_SERVICES } from '@/data/demo-os-trades';
@@ -42,6 +42,39 @@ export type VoiceForgeResult =
   | { ok: false; status: number; error: string };
 
 /**
+ * What the voice agent is told this business does.
+ *
+ * ONE definition, because this string is the whole personality of the agent and
+ * it is now written from two places: the forge (at signup) and the re-derive
+ * (when a trade is corrected afterwards). Two copies of a prompt drift, and a
+ * drifted prompt is invisible until a customer hears it say the wrong thing.
+ *
+ * THE OWNER'S OWN WORDS OUTRANK THE TRADE PRESET. The trade is a guess made from
+ * a keyword; their description is the business. When the preset led, a
+ * chocolatier's agent offered wedding cake tastings it does not sell, and before
+ * the detector was fixed it offered emergency tarping. The template must never
+ * contradict the person who typed the truth.
+ */
+export function buildVoiceServices(
+  lead: Pick<OutboundLead, 'notes'>,
+  trade: OsTradeKey,
+  instruction = '',
+): string {
+  // The WHOLE note (the Demo Station caps its box at 600 anyway). At 400 this cut
+  // Olivia's Chocolates off mid-sentence and threw away the entire wholesale half
+  // of the business, so the agent never knew it existed.
+  const owner = ownerNotes(lead as OutboundLead);
+  const tradeLabel = TRADE_PRESETS[trade].label;
+  return `${
+    owner
+      ? `THE BUSINESS, IN THE OWNER'S OWN WORDS. This is the truth about them and it outranks everything below; never offer a service it does not support, and use their own nouns for what they sell: "${owner}" `
+      : ''
+  }Typical ${tradeLabel.toLowerCase()} work, as BACKGROUND only${
+    owner ? ' (offer an item from this list only if it fits what the owner described above)' : ''
+  }: ${VOICE_SERVICES[trade]}. Answer every call, speak the way this business speaks, capture the job details, and book the appointment. Never quote exact prices; offer to have the owner confirm pricing.${instruction ? ` Additional instructions for how you should handle calls: ${instruction}` : ''}`;
+}
+
+/**
  * Forge the lead's voice agent demo (Cahill's close, automated). Reuses
  * the Voice Agent forge directly, skipping the public page's per-email and daily
  * caps because this is an internal, admin-triggered run; the platform-side
@@ -66,9 +99,6 @@ export async function forgeLeadVoiceDemo(
   // Take the WHOLE note (the Demo Station caps the box at 600 anyway). At 400
   // this cut Olivia's Chocolates off mid-sentence and threw away the entire
   // wholesale half of the business, so the agent never knew it existed.
-  const owner = ownerNotes(lead);
-  const trade = leadTrade(lead);
-  const tradeLabel = TRADE_PRESETS[trade].label;
   // An admin reforge instruction, when present, steers the voice agent directly.
   const instruction = (opts?.instruction ?? '').trim().slice(0, 600);
   const profile = {
@@ -76,18 +106,7 @@ export async function forgeLeadVoiceDemo(
     verticalId: SIDEKICK_VERTICAL[niche] ?? 'professional',
     city: lead.city || 'your area',
     ownerName: lead.contact_name || 'the owner',
-    // THE OWNER'S OWN WORDS OUTRANK THE TRADE PRESET. The trade list is a
-    // guess made from a keyword; their description is the business. When the
-    // list led, a chocolatier's agent offered wedding cake tastings it does not
-    // sell, and before the detector was fixed it offered emergency tarping.
-    // Never let the template contradict the person who typed the truth.
-    services: `${
-      owner
-        ? `THE BUSINESS, IN THE OWNER'S OWN WORDS. This is the truth about them and it outranks everything below; never offer a service it does not support, and use their own nouns for what they sell: "${owner}" `
-        : ''
-    }Typical ${tradeLabel.toLowerCase()} work, as BACKGROUND only${
-      owner ? ' (offer an item from this list only if it fits what the owner described above)' : ''
-    }: ${VOICE_SERVICES[trade]}. Answer every call, speak the way this business speaks, capture the job details, and book the appointment. Never quote exact prices; offer to have the owner confirm pricing.${instruction ? ` Additional instructions for how you should handle calls: ${instruction}` : ''}`,
+    services: buildVoiceServices(lead, leadTrade(lead), instruction),
     // Cockpit-forged demos get the clear outbound script: Sarah sent them the
     // link, they did not forge anything, so no "you just built me" framing.
     flow: 'outbound' as const,
@@ -289,6 +308,93 @@ export async function captureLeadBrand(website: string | null | undefined): Prom
   } catch {
     return none;
   }
+}
+
+export type RedriveResult = {
+  ok: boolean;
+  trade: OsTradeKey;
+  was: OsTradeKey | null;
+  changed: string[];
+  error?: string;
+};
+
+/**
+ * REBUILD A FORGED SUITE'S CONFIG FROM TODAY'S CODE. Zero tokens, no rebuild.
+ *
+ * The voice agent's brief and the command center's config are FROZEN at forge
+ * time. That is the right design (a demo must not change under a prospect who is
+ * looking at it), but it has a cost nobody had a lever for: when the law
+ * improves, or the trade detector is fixed, or an owner's description is
+ * corrected, every already-forged suite keeps the old answer forever.
+ *
+ * On 2026-08-03 a chocolatier was filed as a roofing company and the fix had to
+ * be applied by hand-patching two database rows. A sweep then found four more
+ * live suites on the wrong trade, including a restaurant filed as a wedding
+ * venue. This is the lever those need.
+ *
+ * What it deliberately does NOT touch:
+ *   - the run id, so every link already sent keeps working
+ *   - the built website, which is a real artifact and costs 30 minutes
+ *   - the brand palette captured from their real site
+ */
+export async function redriveLeadDemos(
+  supabase: SupabaseClient,
+  lead: OutboundLead,
+  opts?: { trade?: OsTradeKey },
+): Promise<RedriveResult> {
+  const trade = opts?.trade ?? leadTrade(lead);
+  const changed: string[] = [];
+  let was: OsTradeKey | null = null;
+
+  // 1. The command center. Rebuild the config from scratch so EVERY field picks
+  //    up today's code, then force the trade and restore the brand keys that
+  //    captureLeadBrand merged in, which are not derivable from the lead.
+  if (lead.os_demo_id) {
+    const { data: row } = await supabase
+      .from('outbound_demo_os')
+      .select('config')
+      .eq('id', lead.os_demo_id)
+      .maybeSingle();
+    const existing = (row?.config ?? {}) as Record<string, unknown>;
+    was = (existing.trade as OsTradeKey) ?? null;
+    const brand: Record<string, unknown> = {};
+    for (const k of ['bg', 'accent', 'palette', 'logo', 'brandFrom']) {
+      if (existing[k] !== undefined) brand[k] = existing[k];
+    }
+    const next = { ...buildOsConfig(lead), trade, tradeLabel: TRADE_PRESETS[trade].label, ...brand };
+    const { error } = await supabase.from('outbound_demo_os').update({ config: next }).eq('id', lead.os_demo_id);
+    if (error) return { ok: false, trade, was, changed, error: error.message };
+    changed.push('command center');
+  }
+
+  // 2. The voice agent, edited in place so its shareable link survives.
+  if (lead.demo_run_id) {
+    const services = buildVoiceServices(lead, trade);
+    const ok = await updateRunBrief(supabase, lead.demo_run_id, {
+      services,
+      business: lead.business_name,
+      city: lead.city || 'your area',
+      ownerName: lead.contact_name || 'the owner',
+    } as Record<string, unknown>);
+    if (ok) changed.push('voice agent');
+  }
+
+  if (changed.length) {
+    await supabase.from('messages').insert({
+      outbound_lead_id: lead.id,
+      direction: 'outbound',
+      channel: 'note',
+      subject: 'Suite re-derived',
+      body:
+        `Rebuilt ${changed.join(' + ')} from current code. Trade ${was ?? 'unknown'} -> ${trade}. ` +
+        `Links unchanged; the website was not rebuilt.`,
+      snippet: `Re-derived: ${was ?? '?'} -> ${trade}`,
+      read: true,
+      occurred_at: new Date().toISOString(),
+    });
+  }
+
+  return { ok: true, trade, was, changed };
 }
 
 export function buildOsConfig(lead: OutboundLead): OsDemoConfig {

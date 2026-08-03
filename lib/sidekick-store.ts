@@ -108,6 +108,29 @@ export async function getRun(db: KV, runId: string): Promise<SidekickRun | null>
   return (data?.value as SidekickRun | null) ?? null;
 }
 
+/**
+ * Rewrite a stored run's brief IN PLACE, keeping its id.
+ *
+ * The forged demo lives at /voice-agents/forge/demo/<runId>, and that link has
+ * already been emailed, texted, put on a hub and embedded in a walkthrough film.
+ * Re-forging mints a NEW id and silently orphans every one of those. So when a
+ * correction is needed (a trade fixed after the fact, a law improved), the run is
+ * edited where it stands and the link keeps working.
+ */
+export async function updateRunBrief(db: KV, runId: string, patch: Partial<SidekickRun>): Promise<boolean> {
+  const run = await getRun(db, runId);
+  if (!run) return false;
+  const { error } = await db
+    .from('app_state')
+    .update({ value: { ...run, ...patch }, updated_at: new Date().toISOString() })
+    .eq('key', runKey(runId));
+  if (error) {
+    console.error('sidekick run brief update failed', error.message);
+    return false;
+  }
+  return true;
+}
+
 export async function markRunRang(db: KV, runId: string, run: SidekickRun, e164: string, callId: string): Promise<void> {
   const { error } = await db
     .from('app_state')

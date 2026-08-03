@@ -7,6 +7,7 @@ import { formatPhone } from '@/lib/outbound';
 import { FORGE_STAGE_LABELS } from '@/lib/outbound';
 import type { ForgeCounts, ForgeRow, ForgeStage, ForgeWorkerVitals, Rep } from '@/lib/outbound';
 import { possessive } from '@/lib/business-name';
+import TradeChip from '@/components/admin/outbound/TradeChip';
 import {
   OutboundNav,
   BackButton,
@@ -500,6 +501,15 @@ export default function OutboundForge() {
                         <span>{formatPhone(r.phone)}</span>
                         {r.city && <span>· {r.city}{r.state ? `, ${r.state}` : ''}</span>}
                         <NicheChip niche={r.niche} />
+                        <TradeChip
+                          leadId={r.id}
+                          trade={r.trade}
+                          onChanged={(t) =>
+                            setData((prev) =>
+                              prev ? { ...prev, rows: prev.rows.map((x) => (x.id === r.id ? { ...x, trade: t } : x)) } : prev,
+                            )
+                          }
+                        />
                         {r.audit_score != null && <span className="font-oswald">audit {r.audit_score}</span>}
                         {r.forged_at && <span title={dayLabel(r.forged_at)}>· forged {ago(r.forged_at)}</span>}
                       </div>
