@@ -52,13 +52,21 @@ one for you. The AI qualifies and books. Want to see the setup?"
 
 ## [BC01] Baby Clothes (Polly Thompson)
 
-*(Script pending from Marlow)*
+"Hey, this is Sarah from Modern Mustard Seed. We connected about the AI receptionist for your
+baby clothes business. [PAUSE] (If remember) Perfect. The demo answers product questions,
+sizing, shipping - frees you up from the phone. Can I show you how it works? 2 minutes. [CLOSE]
+$497 setup, $497/mo. (If don't remember) I build websites that pick up the phone. Made one for
+you. It handles customer questions while you sew. Want to hear it?"
 
 ---
 
-## [M83] Lead
+## [M83] Florist (Voila Flower)
 
-*(Script pending from Marlow)*
+"Hey, this is Sarah from Modern Mustard Seed. We talked about the AI receptionist for your
+flower shop. [PAUSE] (If remember) Great. The demo answers calls about arrangements, delivery
+times, pricing - catches orders while you're designing. Can I walk you through it? 2 minutes.
+[CLOSE] $497 setup, $497/mo. (If don't remember) I build websites that pick up the phone. Built
+one for Voila Flower. It handles orders and questions. Want to see it in action?"
 
 ---
 
