@@ -1,0 +1,59 @@
+# Rehearse the /demos funnel every night, so a customer never finds the break first.
+#
+# On 2026-08-03 the funnel was driven end to end for the first time since it
+# shipped. It needed a human at the keyboard, because Stripe Checkout in
+# subscription mode ALWAYS collects a card even at $0 after a 100% coupon, which
+# means the money path could never regression-test itself. That single manual pass
+# found five real defects, two of which had been shipping to every bakery, dental,
+# medspa and salon demo for weeks.
+#
+# This is the standing version of that pass. It runs in SMOKE mode: every guard is
+# exercised over real HTTP, the happy path is driven through the database so that
+# NOTHING IS EMAILED and no daily forge slot is burned, and every row it creates is
+# deleted in a finally. It also checks the things that go quiet rather than loud:
+# a dead worker heartbeat, a job queued for over an hour, a build that failed in
+# the night, and copy on the newest demos that reads like a machine wrote it.
+#
+# To upgrade it to FULL (the real hosted checkout with card 4242) you need a
+# preview deployment running Stripe TEST keys. See docs/funnel-rehearsal.md.
+#
+# 6am Mountain, so a failure is sitting in the run list before the first dial of
+# the day rather than after it.
+
+name: funnel-rehearsal
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # 12:00 UTC = 6am MDT
+  workflow_dispatch:
+    inputs:
+      keep:
+        description: "Leave the rehearsal rows in place for inspection instead of deleting them"
+        type: boolean
+        default: false
+
+concurrency:
+  group: funnel-rehearsal
+  cancel-in-progress: false
+
+jobs:
+  rehearse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Only what the script imports: the supabase client. A full install would
+      # take minutes and pull the whole Next.js toolchain for nothing.
+      - name: Install the one dependency the script needs
+        run: npm install --no-save @supabase/supabase-js@2
+
+      - name: Rehearse the funnel
+        run: node scripts/funnel-rehearsal.mjs ${{ inputs.keep && '--keep' || '' }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          REHEARSAL_BASE_URL: https://modernmustardseed.com
