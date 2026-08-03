@@ -42,6 +42,26 @@ export function forBusiness(name: string | null | undefined): string {
 }
 
 /**
+ * A person's name, cased the way a person writes it.
+ *
+ * We greet clients with whatever string the payment processor or a form gave
+ * us, and people type their own name in lowercase constantly. A buyer paid on
+ * 2026-08-03 and their portal opened with "Welcome back, peter." three times
+ * over, which reads like a database talking, not a studio.
+ *
+ * Only ALL-lowercase words are touched. A name the owner deliberately cased
+ * (McDonald, DeAngelo, van Ruysdael, JJ) is left exactly as written, because
+ * naive title case mangles far more real names than it fixes.
+ */
+export function properName(name: string | null | undefined): string {
+  return (name ?? '')
+    .trim()
+    .split(/(\s+|-)/)
+    .map((part) => (/^[a-z][a-z'’]*$/.test(part) ? part[0].toUpperCase() + part.slice(1) : part))
+    .join('');
+}
+
+/**
  * "a" or "an" for a word we do not know until render time.
  *
  * Same family of bug as the possessive: our copy hard-codes the article and the

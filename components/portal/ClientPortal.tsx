@@ -11,6 +11,7 @@ import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
 import MoodboardCard from '@/components/portal/MoodboardCard';
+import { properName } from '@/lib/business-name';
 
 /**
  * The client workspace. One screen scoped to the signed-in client: their
@@ -161,7 +162,9 @@ export default function ClientPortal() {
     window.location.href = '/portal/login';
   };
 
-  const firstName = data?.client?.name?.split(' ')[0] || data?.email?.split('@')[0] || 'there';
+  // properName: the name comes from Stripe billing or a form, and people type
+  // their own name in lowercase. 'Welcome back, peter.' reads like a database.
+  const firstName = properName(data?.client?.name?.split(' ')[0] || data?.email?.split('@')[0] || 'there');
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">

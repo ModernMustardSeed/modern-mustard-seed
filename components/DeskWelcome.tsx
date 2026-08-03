@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { properName } from '@/lib/business-name';
 
 /**
  * Brief first-visit welcome for the client portal and the partner dashboard.
@@ -67,7 +68,7 @@ export default function DeskWelcome({
 }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
-  const first = (name || email.split('@')[0] || 'there').trim().split(/\s+/)[0];
+  const first = properName((name || email.split('@')[0] || 'there').trim().split(/\s+/)[0]);
   const key = `mms_desk_welcome_${surface}_${(email || '').toLowerCase()}`;
 
   useEffect(() => {
