@@ -436,33 +436,21 @@ async function fail(job, message) {
     // A paying client asked for this edit. Surface it on the delivery board, and do
     // NOT touch their live site or their draft.
     //
-    // REFUND THE BUDGET HERE, not when they click. The portal already tells them
-    // "this one is on us", but that refund only ever ran inside the discard
-    // action, so a client who read the message and simply retyped their request
-    // paid twice for one change, and a client who closed the tab never got it
-    // back at all. Verified live 2026-08-03: an edit died on an upstream API
-    // error and the revision stayed spent. A failure is ours, so the give-back
-    // cannot depend on the customer doing anything.
-    const { data: proj } = await supabase
-      .from('projects')
-      .select('edit_paid, edit_care, care_edits_used, revisions_used')
-      .eq('id', job.project_id)
-      .maybeSingle();
-    const isCare = Boolean(proj?.edit_care);
-    const wasFree = !!proj && !proj.edit_paid && !isCare;
+    // HAND THE EDIT BACK HERE, not when they click. Edits are unlimited, but the
+    // fair-use window behind them is real, and this run never produced anything.
+    // The refund used to live only inside the discard action, so a client who read
+    // the failure message and simply retyped their request spent the window twice
+    // for one change, and a client who closed the tab never got it back at all.
+    // Verified live 2026-08-03: an edit died on an upstream API error and the
+    // count stayed spent. A failure is ours, so the give-back cannot depend on the
+    // customer doing anything.
     await supabase
       .from('projects')
-      .update({
-        edit_status: 'failed',
-        edit_error: error,
-        // Give back exactly the budget it drew from, never the wrong one. A
-        // BOUGHT edit is deliberately not refunded here: that is a Stripe charge,
-        // so it needs a real refund decision, not a counter nudge.
-        ...(isCare ? { care_edits_used: Math.max(0, Number(proj.care_edits_used ?? 0) - 1) } : {}),
-        ...(wasFree ? { revisions_used: Math.max(0, Number(proj.revisions_used ?? 0) - 1) } : {}),
-      })
+      .update({ edit_status: 'failed', edit_error: error })
       .eq('id', job.project_id);
-    if (isCare || wasFree) log('refunded the edit budget for', job.project_id, '(build failed)');
+    const { error: refundErr } = await supabase.rpc('refund_revision', { p_project_id: job.project_id });
+    if (refundErr) log('refund_revision failed for', job.project_id, refundErr.message);
+    else log('handed the edit back for', job.project_id, '(build failed)');
   } else if (isRebuild(job)) {
     // A paying client is on the other end of this one, so the failure has to be
     // visible on the delivery board rather than only in a worker log.

@@ -707,7 +707,7 @@ export function clientMessageEmail({
       : source === 'launch_date'
         ? 'a launch date request'
         : source === 'revision'
-          ? 'ONE OF THEIR TWO FREE EDITS'
+          ? 'AN EDIT TO THEIR SITE'
           : 'from their portal';
   const safe = body.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const inner =

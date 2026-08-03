@@ -1,18 +1,16 @@
 import { getSupabase } from '@/lib/supabase';
 import { byId } from '@/data/proposal-menu';
 import { cleanDemoLinks } from '@/lib/proposal-links';
+import { EDITS_ENABLED } from '@/lib/site-edit';
 
 type Line = { id: string; scope?: string[] };
-
-/** The same promise a demo buyer gets: two free edits before it goes live. */
-const PROPOSAL_REVISIONS_INCLUDED = 2;
 
 /**
  * Turn an accepted proposal into live records on both sides, with FULL parity
  * with the demo funnel's delivery spine:
  *  - upsert a client (keyed by email) so the client portal recognizes them
  *  - create a project seeded from the proposal (deliverables become milestones)
- *    with the same two-free-edits budget a demo buyer gets
+ *    with the same unlimited portal editing a demo buyer gets
  *  - seed the demos we forged for them as client_files, so their portal opens
  *    on the thing that sold them, not an empty shell
  *  - mint a client_products ownership card so they appear in the unified layer
@@ -69,7 +67,7 @@ export async function provisionFromProposal(proposalId: string): Promise<void> {
           summary: (p.situation as string) || null,
           progress: 0,
           milestones,
-          revisions_included: PROPOSAL_REVISIONS_INCLUDED,
+          revisions_included: EDITS_ENABLED,
           revisions_used: 0,
         })
         .select('id')

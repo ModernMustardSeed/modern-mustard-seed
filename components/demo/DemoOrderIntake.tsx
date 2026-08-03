@@ -172,7 +172,8 @@ export default function DemoOrderIntake({
         <h2 className="font-display text-2xl font-bold mt-4">Got it. We are on it.</h2>
         <p className="font-body text-[#161616]/70 mt-2 max-w-md mx-auto">
           Everything lands with Sarah right now, and it is all waiting in your portal too. You get{' '}
-          <strong>two free edits</strong> before {business} goes live, and you request them right in the portal.
+          <strong>unlimited edits</strong> on {business}, before it goes live and after, and you request them
+          right in the portal.
         </p>
         <a
           href="/portal"

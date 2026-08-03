@@ -90,7 +90,7 @@ export async function queueLeadSiteEdit(
  */
 export async function queueProjectEdit(
   sb: SupabaseClient,
-  input: { projectId: string; leadId: string | null; business: string; currentHtml: string; instruction: string; requestedBy: string; paid?: boolean; care?: boolean },
+  input: { projectId: string; leadId: string | null; business: string; currentHtml: string; instruction: string; requestedBy: string },
 ): Promise<EditQueueResult> {
   const { data: existing } = await sb
     .from('outbound_demo_sites')
@@ -125,23 +125,30 @@ export async function queueProjectEdit(
       edit_requested_by: input.requestedBy,
       edit_requested_at: new Date().toISOString(),
       edit_error: null,
-      edit_paid: input.paid === true,
-      edit_care: input.care === true,
     })
     .eq('id', input.projectId);
 
   return { ok: true, jobId: job.id as string };
 }
 
-/** One self-serve edit, bought once the two free ones are used. Small and profitable. */
-export const PAID_EDIT_PRICE_CENTS = 2900;
+/**
+ * EDITS ARE UNLIMITED AND FREE (decided 2026-08-03).
+ *
+ * No budget, no counter shown to the client, nothing to buy. The $29 one-off edit
+ * and the $97/mo Care Plan are both retired: charging for a change to a site we
+ * already host is nickel-and-diming, and the forge makes an edit cheap.
+ *
+ * Unlimited to the client, hard-capped behind the glass. Every edit is real forge
+ * spend, so the never-leak-revenue rule still applies: a generous rolling fair-use
+ * ceiling that FAILS CLOSED. Past it the edit becomes a note to Sarah rather than
+ * another forge run. A client editing their website like a normal human never sees it.
+ */
+export const EDIT_FAIR_USE_CAP = 30;
+export const EDIT_FAIR_USE_DAYS = 30;
 
 /**
- * THE CARE PLAN. $97/mo makes every edit included and none of them counted. To
- * honor the never-leak-revenue rule (hard-cap EVERY plan, fail closed), "unlimited"
- * is a generous fair-use HARD CAP per rolling period; at the cap an edit becomes a
- * note to Sarah, never a silent overage of forge spend.
+ * projects.revisions_included is no longer a budget. It survives as the nonzero FLAG
+ * that means "this project has portal editing turned on", which every portal query
+ * filters on with .gt('revisions_included', 0). Provisioners set this, never a count.
  */
-export const CARE_PLAN_PRICE_CENTS = 9700;
-export const CARE_EDITS_CAP = 20;
-export const CARE_PERIOD_DAYS = 30;
+export const EDITS_ENABLED = 1;

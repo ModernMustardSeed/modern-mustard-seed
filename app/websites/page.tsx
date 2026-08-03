@@ -32,7 +32,7 @@ export const metadata = buildMetadata({
 
 const INCLUDED = [
   { icon: '🎨', name: 'Elite custom design', desc: 'Designed from scratch for your trade and your town. Not a template anyone else can buy.' },
-  { icon: '🌐', name: 'Domain, hosting, and care', desc: 'Your domain, the hosting, and ongoing care all handled. Two free edits before it goes live, and we keep it running after.' },
+  { icon: '🌐', name: 'Domain, hosting, and care', desc: 'Your domain, the hosting, and ongoing care all handled. Unlimited edits, before launch and forever after, and we keep it running.' },
   { icon: '⚙', name: 'The command center, free', desc: 'A back office wired to your calls, traffic, customers, and reviews. On the house with your site.' },
   { icon: '🧲', name: 'Funnels + a lead magnet', desc: 'A real capture flow and a reason to opt in, live and converting on day one, not someday.' },
   { icon: '🔎', name: 'SEO + GEO baked in', desc: 'Built to be found on Google and cited by AI search. Metadata, structured data, the works.' },

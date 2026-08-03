@@ -44,7 +44,6 @@ import { broadcastTiers } from '@/data/ads';
 import { BUILD_FEE_USD, PRICE_TIERS } from '@/data/switchboard';
 import { HATCH } from '@/data/hatchery';
 import { products, bundles } from '@/data/products';
-import { PAID_EDIT_PRICE_CENTS, CARE_PLAN_PRICE_CENTS } from '@/lib/site-edit';
 import { DEMO_PRODUCTS, DEMO_BUNDLE } from '@/lib/demo-order';
 import {
   createTransientCircuit,
@@ -122,8 +121,8 @@ function inlinePriceChecks(): Check[] {
     // in the constants). All are validated.
     ...Object.entries(DEMO_PRODUCTS).map(([k, p]) => ({ funnel: `demo-${k}`, amounts: [p.monthlyCents, p.setupCents] })),
     { funnel: 'demo-bundle', amounts: [DEMO_BUNDLE.monthlyCents, DEMO_BUNDLE.setupCents] },
-    { funnel: 'care-plan', amounts: [CARE_PLAN_PRICE_CENTS] },
-    { funnel: 'portal-paid-edit', amounts: [PAID_EDIT_PRICE_CENTS] },
+    // The Care Plan ($97/mo) and the $29 portal edit were retired 2026-08-03 when
+    // edits went unlimited. Nothing left to price-check: there is no checkout.
     { funnel: 'hatchery', amounts: [HATCH.priceUsd] },
   ];
   return groups.map(({ funnel, amounts }) => {

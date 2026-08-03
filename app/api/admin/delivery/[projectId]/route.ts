@@ -253,18 +253,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
     /**
      * ── Throw the edit away. ──
      *
-     * The AI edit was wrong or unwanted. Drop the draft, and give the free edit back:
-     * a client should not lose one of their two edits to a draft nobody kept.
+     * The AI edit was wrong or unwanted. Drop the draft and hand the edit back: it
+     * should not spend a client's fair-use window on a draft nobody kept.
      */
     case 'edit-discard': {
+      await sb.rpc('refund_revision', { p_project_id: projectId });
       await sb
         .from('projects')
-        .update({
-          site_html_draft: null,
-          edit_status: null,
-          edit_error: null,
-          revisions_used: Math.max(0, Number(project.revisions_used ?? 0) - 1),
-        })
+        .update({ site_html_draft: null, edit_status: null, edit_error: null })
         .eq('id', projectId);
       return NextResponse.json({ ok: true, refunded: true });
     }

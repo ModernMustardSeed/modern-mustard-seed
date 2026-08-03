@@ -17,9 +17,8 @@ export const maxDuration = 60;
  * They already saw the draft (the delight moment). Now they act on it, without
  * waiting on Sarah:
  *   - ship: it becomes their site. If the site is already live, it publishes now.
- *   - adjust: refine the SAME draft with another sentence (no new charge, no new
- *     free edit spent) until it is right.
- *   - discard: throw it away. A free edit is refunded; a bought one is not.
+ *   - adjust: refine the SAME draft with another sentence until it is right.
+ *   - discard: throw it away, and the edit goes back on the shelf.
  *
  * Sarah keeps full oversight on /admin/delivery either way (she can rebuild,
  * re-edit, or roll back), but the happy path never blocks on her.
@@ -40,7 +39,7 @@ export async function POST(req: Request) {
 
   const { data: proj } = await sb
     .from('projects')
-    .select('id, name, client_email, site_html, site_html_draft, site_published_at, edit_status, edit_paid, edit_care, care_edits_used, revisions_used, revisions_included')
+    .select('id, name, client_email, site_html, site_html_draft, site_published_at, edit_status')
     .ilike('client_email', session.email)
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
@@ -57,7 +56,7 @@ export async function POST(req: Request) {
     }
     await sb
       .from('projects')
-      .update({ site_html: proj.site_html_draft, site_html_draft: null, edit_status: null, edit_error: null, edit_paid: false, edit_care: false })
+      .update({ site_html: proj.site_html_draft, site_html_draft: null, edit_status: null, edit_error: null })
       .eq('id', proj.id);
 
     let published = false;
@@ -107,38 +106,26 @@ export async function POST(req: Request) {
       currentHtml: proj.site_html_draft as string, // refine the DRAFT, not the live site
       instruction,
       requestedBy: session.email,
-      paid: Boolean(proj.edit_paid), // an adjust keeps the edit's paid/free nature; it never re-charges
-      care: Boolean(proj.edit_care), // and keeps its Care nature, so a later discard refunds correctly
     });
     if (!queued.ok) return NextResponse.json({ error: queued.error }, { status: 400 });
     return NextResponse.json({ ok: true, adjusting: true });
   }
 
-  /* ── DISCARD: drop the draft. Refund what it cost: a Care edit, a free edit, or
-        nothing for a bought one. ── */
+  /* ── DISCARD: drop the draft and put the edit back on the shelf. ── */
   if (action === 'discard') {
-    // A FAILED edit already gave the budget back the moment it failed (the worker
-    // does it, so a client who closes the tab is still made whole). Refunding
-    // again here because they also pressed "Start over" would hand out a second
-    // free edit for one request.
-    const alreadyRefunded = proj.edit_status === 'failed';
-    const isCare = Boolean(proj.edit_care) && !alreadyRefunded;
-    const wasFree = !proj.edit_paid && !Boolean(proj.edit_care) && !alreadyRefunded; // a plain two-free-edits revision
+    // Nothing here costs money, but the fair-use window is still real, and an edit
+    // nobody kept should not spend from it. A FAILED edit was already handed back
+    // the moment it failed (the worker does it, so a client who closes the tab is
+    // still made whole); refunding again because they also pressed "Start over"
+    // would give the window back twice for one request.
+    if (proj.edit_status !== 'failed') {
+      await sb.rpc('refund_revision', { p_project_id: proj.id });
+    }
     await sb
       .from('projects')
-      .update({
-        site_html_draft: null,
-        edit_status: null,
-        edit_error: null,
-        edit_care: false,
-        // Give back exactly the budget it drew from, never the wrong one.
-        ...(isCare ? { care_edits_used: Math.max(0, Number(proj.care_edits_used ?? 0) - 1) } : {}),
-        ...(wasFree ? { revisions_used: Math.max(0, Number(proj.revisions_used ?? 0) - 1) } : {}),
-      })
+      .update({ site_html_draft: null, edit_status: null, edit_error: null })
       .eq('id', proj.id);
-    // alreadyRefunded still reports true: the client did get their edit back,
-    // just at the moment it failed rather than at the moment they clicked.
-    return NextResponse.json({ ok: true, refunded: wasFree || isCare || alreadyRefunded });
+    return NextResponse.json({ ok: true });
   }
 
   return NextResponse.json({ error: 'Unknown action.' }, { status: 400 });

@@ -442,7 +442,7 @@ export default function ClientPortal() {
                     Self-hiding until Sarah sends one. */}
                 <MoodboardCard />
 
-                {/* The two free edits. Sits right under the project because it is
+                {/* Unlimited edits. Sits right under the project because it is
                     the thing they act on while the build is in front of them. */}
                 <RevisionsCard refreshKey={requestRefresh} onSubmitted={() => setRequestRefresh((n) => n + 1)} />
 
@@ -900,34 +900,31 @@ const REQ_STATUS: Record<string, { label: string; cls: string }> = {
 };
 
 /**
- * YOUR TWO FREE EDITS.
+ * YOUR EDITS. ALL OF THEM. FOREVER.
  *
- * The offer promises two free edits before the site goes live, and until now that
- * promise lived only in the sales copy: no counter, no ledger, no way for either
- * side to know whether this was the first edit or the fifth. The count is spent
- * server-side by claim_revision() (one atomic statement, fails closed), so this
- * card only ever reports what is true.
+ * There used to be two free ones, a counter, a $29 third edit, and a $97/mo plan to
+ * escape the counter. All of it is gone (2026-08-03). Changing a website we host and
+ * built is not a thing to meter, so this card never shows a budget, never shows a
+ * price, and never asks for a card. Type the change, watch it get made, ship it.
  *
- * Running out is not a wall. The words still reach Sarah, as a change request she
- * prices. Swallowing what a paying customer typed would be the worst outcome here.
+ * A fair-use ceiling still lives server-side, because every edit is real forge spend
+ * and no plan here is uncapped. It is invisible on purpose: past it the change simply
+ * routes to Sarah as a note she handles by hand, which is a better answer anyway.
  */
-type RevisionState = { id: string; name: string; included: number; used: number; remaining: number; closed: boolean; hasSite: boolean; published: boolean; carePlan: boolean; careUsed: number; careCap: number; paidCount: number };
-type EditState = { status: 'queued' | 'building' | 'ready' | 'failed'; instruction: string | null; paid: boolean };
-const money2 = (cents: number) => `$${Math.round(cents / 100)}`;
+type RevisionState = { id: string; name: string; used: number; hasSite: boolean; published: boolean };
+type EditState = { status: 'queued' | 'building' | 'ready' | 'failed'; instruction: string | null };
 
 /**
  * SELF-SERVE EDITS. You talk, your site changes, you watch it happen.
  *
  * Submit an edit and the forge applies it to a copy within minutes. You PREVIEW
- * the change here, then ship it yourself, adjust it again free, or throw it away.
- * The first two are free. After that, buy one at a time. Sarah keeps oversight on
- * her side, but you never wait on her for the happy path.
+ * the change here, then ship it yourself, adjust it again, or throw it away. As
+ * many times as you want. Sarah keeps oversight on her side, but you never wait on
+ * her for the happy path.
  */
 function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubmitted: () => void }) {
   const [state, setState] = useState<RevisionState | null>(null);
   const [edit, setEdit] = useState<EditState | null>(null);
-  const [priceCents, setPriceCents] = useState(2900);
-  const [carePriceCents, setCarePriceCents] = useState(9700);
   const [text, setText] = useState('');
   const [adjustText, setAdjustText] = useState('');
   const [adjustOpen, setAdjustOpen] = useState(false);
@@ -935,7 +932,6 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState('');
   const [note, setNote] = useState('');
-  const [justPurchased, setJustPurchased] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -944,9 +940,6 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
       if (res.ok) {
         if (j?.project) setState(j.project as RevisionState);
         setEdit((j?.edit as EditState | null) ?? null);
-        if (j?.edit) setJustPurchased(false); // the paid edit landed
-        if (typeof j?.editPriceCents === 'number') setPriceCents(j.editPriceCents);
-        if (typeof j?.carePlanPriceCents === 'number') setCarePriceCents(j.carePlanPriceCents);
       }
     } catch {
       /* leave state as-is */
@@ -954,28 +947,6 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
   }, []);
 
   useEffect(() => { load(); }, [load, refreshKey]);
-
-  // Just back from paying for an edit: the webhook queues it a beat later, so poll
-  // until it shows up instead of flashing the buy form at someone who just paid.
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (new URLSearchParams(window.location.search).get('edit') !== 'purchased') return;
-    setJustPurchased(true);
-    let n = 0;
-    const t = setInterval(() => { n += 1; load(); if (n >= 12) { clearInterval(t); setJustPurchased(false); } }, 4000);
-    return () => clearInterval(t);
-  }, [load]);
-
-  // Just back from starting the Care Plan: poll a few times so the card flips to the
-  // active state as soon as the subscription webhook lands.
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (new URLSearchParams(window.location.search).get('care') !== 'active') return;
-    setNote('Your Care Plan is on. Every edit is included now.');
-    let n = 0;
-    const t = setInterval(() => { n += 1; load(); if (n >= 10) clearInterval(t); }, 3000);
-    return () => clearInterval(t);
-  }, [load]);
 
   // While the forge is building the change, poll so it flips to the preview on its own.
   useEffect(() => {
@@ -1003,10 +974,9 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
   if (!state) return null;
 
   const inFlight = Boolean(edit);
-  const spent = state.remaining === 0;
 
-  // Submit a FREE edit (auto-applies to a draft when a site exists).
-  const submitFree = async (e: FormEvent) => {
+  // Submit an edit (auto-applies to a draft when a site exists).
+  const submitEdit = async (e: FormEvent) => {
     e.preventDefault();
     const body = text.trim();
     if (!body || busy) return;
@@ -1022,40 +992,10 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
       else {
         setText('');
         if (j.applying) { await load(); }
-        else setNote(j.exhausted ? ((j.message as string) || 'Sent to Sarah as a change request.') : 'Sent to Sarah.');
+        else setNote(j.sentAsNote ? ((j.message as string) || 'Sent straight to Sarah.') : 'Sent to Sarah.');
         onSubmitted();
       }
     } catch { setErr('Network error.'); } finally { setBusy(null); }
-  };
-
-  // Buy ONE edit once the free ones are gone.
-  const buyEdit = async (e: FormEvent) => {
-    e.preventDefault();
-    const instruction = text.trim();
-    if (!instruction || busy) return;
-    setBusy('buy');
-    setErr('');
-    try {
-      const res = await fetch('/api/portal/edit/checkout', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ instruction }),
-      });
-      const j = await res.json().catch(() => null);
-      if (res.ok && j?.url) { window.location.href = j.url as string; }
-      else { setErr((j && j.error) || 'Could not start checkout.'); setBusy(null); }
-    } catch { setErr('Network error.'); setBusy(null); }
-  };
-
-  // Turn on the Care Plan: unlimited edits, one monthly price.
-  const startCarePlan = async () => {
-    if (busy) return;
-    setBusy('care');
-    setErr('');
-    try {
-      const res = await fetch('/api/portal/care-plan/checkout', { method: 'POST' });
-      const j = await res.json().catch(() => null);
-      if (res.ok && j?.url) { window.location.href = j.url as string; }
-      else { setErr((j && j.error) || 'Could not start the Care Plan.'); setBusy(null); }
-    } catch { setErr('Network error.'); setBusy(null); }
   };
 
   const act = async (action: 'ship' | 'adjust' | 'discard', instruction?: string) => {
@@ -1115,7 +1055,7 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
             <h3 className="font-display text-xl font-semibold text-[#161616]">Here is your change</h3>
             {edit.instruction && <p className="text-[#161616]/70 font-body text-sm mt-1 italic">&ldquo;{edit.instruction}&rdquo;</p>}
             <p className="text-[#161616]/60 font-body text-sm mt-1 mb-3">
-              Take a look. Ship it and it goes {state.published ? 'live' : 'into your site for launch'}, keep adjusting it free until it is right, or throw it away.
+              Take a look. Ship it and it goes {state.published ? 'live' : 'into your site for launch'}, keep adjusting it until it is right, or throw it away.
             </p>
             <div className="rounded-xl border-2 border-[#161616] overflow-hidden bg-white mb-4">
               {preview ? (
@@ -1161,125 +1101,42 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
     );
   }
 
-  // Just paid, webhook still catching up: reassure rather than reshow the buy form.
-  if (justPurchased && !edit) {
-    return (
-      <div className="border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 bg-[#F5B700]/12">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Your edit</span>
-        <div className="flex items-center gap-3 mt-2">
-          <span className="relative flex h-3 w-3">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F5B700] opacity-70" />
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-[#F5B700]" />
-          </span>
-          <h3 className="font-display text-xl font-semibold text-[#161616]">Payment received. Starting your edit…</h3>
-        </div>
-        <p className="text-[#161616]/60 font-body text-sm mt-2">This takes a few seconds to kick off, then a few minutes to build. This card updates itself.</p>
-      </div>
-    );
-  }
-
-  // ── No edit in flight: care plan, free edit, buy one, or send a note. ──
-  const canBuy = spent && state.hasSite && !state.closed;
-  const editTextarea = (
-    <textarea
-      value={text}
-      onChange={(e) => setText(e.target.value)}
-      rows={3}
-      placeholder="e.g. Swap the hero photo for our storefront, use our green, and make the phone number bigger at the top."
-      className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] resize-y mb-3"
-    />
-  );
-
-  // CARE PLAN ACTIVE: every edit included. No pips, no price, no buy button.
-  if (state.carePlan) {
-    return (
-      <div className="border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 bg-[#F5B700]/12">
-        <div className="flex items-center justify-between gap-3 mb-1">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Care Plan · active</span>
-          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-mono font-bold text-emerald-700">
-            <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" /><span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" /></span>
-            Unlimited
-          </span>
-        </div>
-        <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">Every edit is included.</h3>
-        <p className="text-[#161616]/65 font-body text-sm mb-4">
-          Change your site as often as you like. We make it within minutes, you preview it right here, then you ship it yourself.{state.careUsed > 0 ? ` ${state.careUsed} edit${state.careUsed === 1 ? '' : 's'} this month.` : ''}
-        </p>
-        <form onSubmit={submitFree}>
-          {editTextarea}
-          {err && <p className="text-[#E0301E] text-xs font-body mb-3">{err}</p>}
-          {note && <p className="text-emerald-700 text-xs font-body mb-3">{note}</p>}
-          <button
-            type="submit"
-            disabled={!!busy || !text.trim()}
-            className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-          >
-            {busy === 'submit' ? 'Sending…' : 'Make this edit'}
-          </button>
-        </form>
-      </div>
-    );
-  }
-
-  // Show the Care Plan upsell the moment editing starts to cost: free edits spent,
-  // the site is live, or they have already bought at least one edit.
-  const showUpsell = canBuy || state.closed || state.paidCount > 0;
-
+  // ── No edit in flight: one card, one box, no counter, no price. ──
   return (
-    <div className="space-y-4">
-      <div className={`border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 ${spent ? 'bg-white' : 'bg-[#F5B700]/12'}`}>
-        <div className="flex items-start justify-between gap-4 mb-1">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">{canBuy ? 'Edit your site' : 'Your free edits'}</span>
-          <div className="flex gap-1.5 flex-shrink-0" aria-label={`${state.used} of ${state.included} edits used`}>
-            {Array.from({ length: state.included }).map((_, i) => (
-              <span key={i} className={`w-7 h-2.5 rounded-full border-2 border-[#161616] ${i < state.used ? 'bg-[#161616]' : 'bg-white'}`} />
-            ))}
-          </div>
-        </div>
-
-        <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">
-          {state.closed ? 'Your site is live' : canBuy ? 'Want another change?' : spent ? 'Both free edits are used' : `${state.remaining} free edit${state.remaining === 1 ? '' : 's'} left`}
-        </h3>
-        <p className="text-[#161616]/65 font-body text-sm mb-4">
-          {state.closed
-            ? 'Type any change below. It comes back to you as a preview before anything goes live.'
-            : canBuy
-              ? `Your two free edits are used. Buy one more for ${money2(priceCents)} and it works the same way: we make it, you preview it, you ship it.`
-              : spent
-                ? 'Send the change anyway. Sarah will come back with a price before anyone touches anything.'
-                : 'Tell us what to change. We make it within minutes, you preview it right here, then you ship it yourself.'}
-        </p>
-
-        <form onSubmit={canBuy || state.closed ? buyEdit : submitFree}>
-          {editTextarea}
-          {err && <p className="text-[#E0301E] text-xs font-body mb-3">{err}</p>}
-          {note && <p className="text-emerald-700 text-xs font-body mb-3">{note}</p>}
-          <button
-            type="submit"
-            disabled={!!busy || !text.trim()}
-            className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-          >
-            {busy === 'buy' ? 'Opening checkout…' : busy === 'submit' ? 'Sending…' : canBuy || state.closed ? `Buy this edit · ${money2(priceCents)}` : 'Make this edit'}
-          </button>
-        </form>
+    <div className="border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6 bg-[#F5B700]/12">
+      <div className="flex items-center justify-between gap-3 mb-1">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Edit your site</span>
+        <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-mono font-bold text-emerald-700">
+          <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" /><span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" /></span>
+          Unlimited
+        </span>
       </div>
 
-      {showUpsell && (
-        <div className="border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#1E50C8] p-5 bg-[#161616] text-[#FBF6EA]">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">Editing a lot?</span>
-          <h4 className="font-display text-lg font-semibold mt-1 mb-1">Go unlimited with the Care Plan.</h4>
-          <p className="text-[#FBF6EA]/70 font-body text-sm mb-3">
-            {money2(carePriceCents)}/mo, every edit included, none of them counted.{state.paidCount > 0 ? ` You have spent ${money2(state.paidCount * priceCents)} on edits so far.` : ''} Cancel anytime.
-          </p>
-          <button
-            onClick={startCarePlan}
-            disabled={busy === 'care'}
-            className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#FBF6EA] rounded-lg shadow-[3px_3px_0_0_#FBF6EA] disabled:opacity-50 hover:-translate-y-0.5 transition-all"
-          >
-            {busy === 'care' ? 'Opening checkout…' : `Get the Care Plan · ${money2(carePriceCents)}/mo`}
-          </button>
-        </div>
-      )}
+      <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">Change anything, as often as you like.</h3>
+      <p className="text-[#161616]/65 font-body text-sm mb-4">
+        Every edit is included, before launch and after. Tell us what to change, we make it within minutes, you
+        preview it right here, then you ship it yourself.
+        {state.used > 0 ? ` ${state.used} edit${state.used === 1 ? '' : 's'} so far.` : ''}
+      </p>
+
+      <form onSubmit={submitEdit}>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={3}
+          placeholder="e.g. Swap the hero photo for our storefront, use our green, and make the phone number bigger at the top."
+          className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] placeholder-[#161616]/30 focus:outline-none focus:ring-2 focus:ring-[#F5B700] resize-y mb-3"
+        />
+        {err && <p className="text-[#E0301E] text-xs font-body mb-3">{err}</p>}
+        {note && <p className="text-emerald-700 text-xs font-body mb-3">{note}</p>}
+        <button
+          type="submit"
+          disabled={!!busy || !text.trim()}
+          className="px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+        >
+          {busy === 'submit' ? 'Sending…' : 'Make this edit'}
+        </button>
+      </form>
     </div>
   );
 }
@@ -1532,7 +1389,7 @@ function RequestsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubmi
                     <span className="text-[9px] uppercase tracking-[0.15em] text-[#161616]/45 font-mono mt-1.5 inline-block">via Mr. Mustard Seed</span>
                   )}
                   {r.source === 'revision' && r.revision_number != null && (
-                    <span className="text-[9px] uppercase tracking-[0.15em] text-[#161616]/45 font-mono mt-1.5 inline-block">Free edit {r.revision_number}</span>
+                    <span className="text-[9px] uppercase tracking-[0.15em] text-[#161616]/45 font-mono mt-1.5 inline-block">Edit {r.revision_number}</span>
                   )}
                   {/* Sarah's answer, in the portal. Before this her replies went out
                       as plain email and were invisible here, so the thread the client

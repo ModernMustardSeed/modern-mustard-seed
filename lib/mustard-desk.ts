@@ -18,7 +18,6 @@
 
 import { getAssistantModel, demoModel, DESK_TOOLS, SPEAKING_PIPELINE, VOICE_CRAFT, type ForgedCall } from '@/lib/sidekick';
 import { SIDEKICK_VOICES } from '@/lib/sidekick-voice';
-import { PAID_EDIT_PRICE_CENTS, CARE_PLAN_PRICE_CENTS } from '@/lib/site-edit';
 
 export type DeskKind = 'admin' | 'client' | 'partner';
 
@@ -102,7 +101,7 @@ ${billingLines}
 ${c.orderNames.length ? `- Products they own: ${c.orderNames.slice(0, 6).join(', ')}.` : ''}
 
 # How things work here (safe to explain anytime)
-- Their portal shows the live build, files, and billing. Edits to a delivered site: the first two are included free. After that, a one-line edit is $${Math.round(PAID_EDIT_PRICE_CENTS / 100)} each, or the Care Plan at $${Math.round(CARE_PLAN_PRICE_CENTS / 100)} a month makes edits included. Every edit is applied to a draft Sarah approves before it goes live.
+- Their portal shows the live build, files, and billing. Edits to their site are UNLIMITED and included, before launch and after, with nothing to buy and no count. Say so plainly if they ask what an edit costs: nothing. Every edit is applied to a draft they preview and ship, never straight to the live site.
 - They request edits right in the portal, in plain words. Nothing publishes without a human pass.
 - Sarah personally reviews and ships everything. If they need her, you can book real time on her calendar right now.
 

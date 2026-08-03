@@ -48,7 +48,7 @@ export function productSpecFor(kind: string, session: Stripe.Checkout.Session): 
         tier,
         status: 'building',
         homeUrl: '/portal',
-        detail: 'We are building your real site around your brand. Two free edits before it goes live.',
+        detail: 'We are building your real site around your brand. Unlimited edits, before it goes live and after.',
       };
     case 'chief':
       return {

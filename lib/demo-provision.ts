@@ -20,10 +20,9 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, type DemoProductKey } from './demo-order';
+import { EDITS_ENABLED } from './site-edit';
 import { SITE } from './seo';
 
-/** The offer's promise: two free edits before it goes live. */
-export const DEMO_REVISIONS_INCLUDED = 2;
 
 export type DemoOrderRow = {
   id: string;
@@ -51,7 +50,7 @@ function milestonesFor(keys: string[]): Array<{ title: string; detail: string; d
 
   if (has('site')) {
     ms.push({ title: 'Your website, built for real', detail: 'We take the demo you toured and rebuild it around your real brand, photos, and offers.', done: false });
-    ms.push({ title: 'Your two free edits', detail: 'You review it and tell us what to change. Twice, before it goes live, included.', done: false });
+    ms.push({ title: 'Your edits, unlimited', detail: 'You review it and tell us what to change, as many times as you want. Every edit is included, before launch and after.', done: false });
     ms.push({ title: 'Live on your domain', detail: 'We put it on your own web address and keep it running.', done: false });
   }
   if (has('voice')) {
@@ -136,7 +135,8 @@ export async function provisionDemoOrder(sb: SupabaseClient, order: DemoOrderRow
     demoSiteId = (lead?.site_demo_id as string | null) ?? null;
   }
 
-  // 4. The project. revisions_included is set HERE and only here.
+  // 4. The project. revisions_included is the "portal editing is on" FLAG, not a
+  //    budget: edits are unlimited. It is set HERE and only here.
   const { data: proj, error: projErr } = await sb
     .from('projects')
     .insert({
@@ -146,7 +146,7 @@ export async function provisionDemoOrder(sb: SupabaseClient, order: DemoOrderRow
       summary: summaryFor(keys),
       progress: 5,
       milestones: milestonesFor(keys),
-      revisions_included: DEMO_REVISIONS_INCLUDED,
+      revisions_included: EDITS_ENABLED,
       revisions_used: 0,
       demo_site_id: demoSiteId,
       demo_order_id: order.id,
@@ -202,7 +202,7 @@ export function portalWelcomeBody(args: { firstName?: string; business?: string 
     body: `
       <p>Your client portal is open. It is the only place you and I need to talk from here: your build progress, your edits, your files, and a direct line to me all live in one spot.</p>
       <p><strong>One thing to do first:</strong> tell us about ${args.business || 'your business'}. Your logo, your photos, your hours, the details only you know. That form is the first thing waiting for you, and nothing gets built until it is in.</p>
-      <p>Then you get <strong>two free edits</strong>. You look at what we built, tell us what to change, twice, before it ever goes live. Both are requested right in the portal and I see them the moment you send them.</p>
+      <p>Then you get <strong>unlimited edits</strong>. You look at what we built, tell us what to change, and we change it. As many times as you want, before it goes live and long after. Every edit is requested right in the portal and I see them the moment you send them.</p>
       <p>No password to remember. Enter your email at the portal door and it sends you a link.</p>
     `,
     cta: { label: 'Open my portal', url: args.intakeUrl },

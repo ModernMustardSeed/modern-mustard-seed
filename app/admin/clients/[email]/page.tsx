@@ -146,7 +146,7 @@ export default function ClientCommandView() {
                       <div className="flex flex-wrap gap-x-5 gap-y-1 mt-2 text-[13px] font-body text-[#161616]/75">
                         <span>Progress {Number(p.progress) || 0}%</span>
                         {p.launch_target && <span>Launch {fmtDate(p.launch_target)}</span>}
-                        {p.revisions_included != null && <span>Edits {Number(p.revisions_used) || 0}/{p.revisions_included}</span>}
+                        {Number(p.revisions_used) > 0 && <span>{Number(p.revisions_used)} edit{Number(p.revisions_used) === 1 ? '' : 's'}</span>}
                         {p.care_plan && <span className="text-emerald-700 font-semibold">Care Plan ✓</span>}
                         {p.moodboard_status && <span>Moodboard: {p.moodboard_status}</span>}
                         {p.site_live_url && <a href={p.site_live_url} target="_blank" rel="noopener noreferrer" className="text-[#1E50C8] font-semibold hover:text-[#161616]">Live site ↗</a>}

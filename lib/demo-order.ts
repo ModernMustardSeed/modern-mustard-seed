@@ -48,10 +48,9 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
     setupCents: 49700,
     monthlyCents: 14700,
     blurb: 'The site you just toured, customized to your business and put live on your domain.',
-    // The two free edits are now a real, counted thing (claim_revision, migration 049),
-    // so the offer may finally say so out loud. Domain, hosting, care, and the command
-    // center all ride along.
-    finePrint: 'Two free edits before it goes live. Your domain, hosting, care, and command center all included.',
+    // Edits are unlimited and never metered (migration 078). Domain, hosting, care,
+    // and the command center all ride along.
+    finePrint: 'Unlimited edits, before it goes live and forever after. Your domain, hosting, care, and command center all included.',
   },
   os: {
     key: 'os',

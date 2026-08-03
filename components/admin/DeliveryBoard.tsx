@@ -364,9 +364,9 @@ function DeliveryRow({
   };
 
   const doEditDiscard = async () => {
-    if (!confirm('Throw this edit away? The client gets their free edit back.')) return;
+    if (!confirm('Throw this edit away? The client can make another one right away.')) return;
     const j = await act('edit-discard');
-    if (j?.ok) { setMsg('Edit discarded. Their free edit was refunded.'); onChanged(); }
+    if (j?.ok) { setMsg('Edit discarded. They can send another whenever they like.'); onChanged(); }
   };
 
   // Tick a milestone right here; the client's portal progress updates with it.
@@ -447,7 +447,7 @@ function DeliveryRow({
             {p?.approvedAt && !p.publishedAt && <Chip tone="green">Approved{p.revealAt ? ` for ${new Date(p.revealAt).toLocaleDateString()}` : ''}</Chip>}
             {row.assetCount > 0 && <Chip tone="plain">{row.assetCount} files</Chip>}
             {row.openRequests > 0 && <Chip tone="red">{row.openRequests} open</Chip>}
-            {p && <Chip tone="plain">{p.revisionsUsed}/{p.revisionsIncluded} edits</Chip>}
+            {p && p.revisionsUsed > 0 && <Chip tone="plain">{p.revisionsUsed} edit{p.revisionsUsed === 1 ? '' : 's'}</Chip>}
           </div>
         </div>
       </button>

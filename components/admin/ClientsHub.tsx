@@ -322,11 +322,11 @@ export default function ClientsHub() {
                     <Spine spine={c.spine} />
                     <MadeChips made={c.made} />
 
-                    {(c.products.length > 0 || c.revisions.included > 0 || c.projects.some((p) => p.carePlan)) && (
+                    {(c.products.length > 0 || c.revisions.used > 0 || c.projects.some((p) => p.carePlan)) && (
                       <p className="font-mono text-[10.5px] text-[#161616]/55 mt-3">
                         {[
                           c.products.length ? c.products.map((p) => p.label).slice(0, 3).join(' · ') : null,
-                          c.revisions.included ? `${c.revisions.used}/${c.revisions.included} edits` : null,
+                          c.revisions.used ? `${c.revisions.used} edit${c.revisions.used === 1 ? '' : 's'}` : null,
                           c.projects.some((p) => p.carePlan) ? 'Care Plan ✓' : null,
                         ]
                           .filter(Boolean)

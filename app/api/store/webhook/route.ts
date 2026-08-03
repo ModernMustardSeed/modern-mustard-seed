@@ -1222,10 +1222,13 @@ async function handleSwitchboardPurchase(
 }
 
 /**
- * A client bought ONE self-serve website edit ($29), after their two free ones.
- * Payment has cleared, so queue the edit now: it builds into a draft, and the
- * client previews and ships it themselves from their portal. paid:true so a
- * discard never refunds a free revision they did not spend.
+ * RETIRED 2026-08-03: nobody can buy an edit anymore. Edits are unlimited and free,
+ * and /api/portal/edit/checkout is deleted, so no new session can carry this kind.
+ *
+ * The handler stays for exactly one reason: a checkout page opened minutes before
+ * the deploy can still complete afterward, and that person paid us. It queues the
+ * edit they bought so their money buys the thing. Delete it once no live sessions
+ * predate the switch (any time after 24 hours).
  */
 async function handlePaidEditPurchase(session: Stripe.Checkout.Session) {
   const projectId = session.metadata?.project_id;
@@ -1264,32 +1267,25 @@ async function handlePaidEditPurchase(session: Stripe.Checkout.Session) {
     currentHtml: project.site_html as string,
     instruction,
     requestedBy: clientEmailAddr ?? 'client',
-    paid: true,
   });
   if (!queued.ok) {
     console.error('paid-edit queue failed', queued.error);
     return;
   }
 
-  // Count it, so the portal can say "you have spent $X on edits" and offer the Care
-  // Plan. A read-then-write is fine here: paid edits arrive one cleared payment at a
-  // time, never concurrently for the same project.
-  const { data: cur } = await sb.from('projects').select('paid_edits_count').eq('id', projectId).maybeSingle();
-  await sb.from('projects').update({ paid_edits_count: Number(cur?.paid_edits_count ?? 0) + 1 }).eq('id', projectId);
-
   if (process.env.RESEND_API_KEY) {
     try {
       await resendClient().emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: OWNER_NOTIFY_TO,
-        subject: `Paid edit ($29): ${business}`,
+        subject: `REFUND THIS: a paid edit landed after edits went free — ${business}`,
         html: leadNotification({
           type: 'Contact',
           name: business,
           email: clientEmailAddr ?? 'a client',
           fields: [{ label: 'Edit', value: instruction.slice(0, 300) }],
-          message: 'A client bought a self-serve edit. The forge is building it into a draft for them to preview and ship.',
-          suggestedAction: 'It publishes when they ship it. Oversee on /admin/delivery.',
+          message: 'A checkout opened before edits went unlimited just cleared. Their edit is building, but they should not have been charged.',
+          suggestedAction: 'Refund the $29 in Stripe, then tell them edits are free from now on.',
         }),
       });
     } catch { /* never block the queue on email */ }
@@ -1620,7 +1616,7 @@ async function handleDemoOrderPaid(
           preheader: 'We customize everything and release it within 7 days.',
           eyebrow: 'ORDER CONFIRMED',
           greeting: firstName ? `${firstName}, welcome aboard.` : 'Welcome aboard.',
-          body: `<p>Your <strong>${escapeHtmlSafe(label)}</strong> is officially in production. What you saw in the demo becomes the real thing, customized to ${business || 'your business'}.</p><p><strong>1.</strong> Tell us about your business with the form below: your logo, your photos, your hours, the details only you know.</p><p><strong>2.</strong> We build it for real, then you get <strong>two free edits</strong>. You look at it, tell us what to change, twice, before it ever goes live.</p><p><strong>3.</strong> Within 7 days it is live. Month to month, cancel anytime, never a surprise bill.</p>${provisioned ? `<p>Everything from here happens in <strong>your portal</strong>: your progress, your edits, your files, and a direct line to me. No password to remember, just enter this email address at the door.</p>` : ''}`,
+          body: `<p>Your <strong>${escapeHtmlSafe(label)}</strong> is officially in production. What you saw in the demo becomes the real thing, customized to ${business || 'your business'}.</p><p><strong>1.</strong> Tell us about your business with the form below: your logo, your photos, your hours, the details only you know.</p><p><strong>2.</strong> We build it for real, then you get <strong>unlimited edits</strong>. You look at it, tell us what to change, and we change it. As many times as you want, before it goes live and long after.</p><p><strong>3.</strong> Within 7 days it is live. Month to month, cancel anytime, never a surprise bill.</p>${provisioned ? `<p>Everything from here happens in <strong>your portal</strong>: your progress, your edits, your files, and a direct line to me. No password to remember, just enter this email address at the door.</p>` : ''}`,
           cta: { label: 'Start with your details', url: intakeUrl },
           ...(provisioned ? { secondary: { label: 'Open my portal', url: `${SITE.url}/portal/login` } } : {}),
           signature: 'Sarah',
