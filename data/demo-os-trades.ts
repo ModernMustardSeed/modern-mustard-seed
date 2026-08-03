@@ -102,7 +102,10 @@ const TRADE_PATTERNS: [OsTradeKey, RegExp][] = [
   ['attorney', /attorney|law firm|\blaw\b|lawyer|legal|injury/],
   ['wedding', /wedding|bridal|photograph|event venue|\bvenue\b/],
   ['salon', /salon|barber|hair studio|\bnails?\b|lash|beauty/],
-  ['cafe_bakery', /bakery|bakehouse|caf[eé]|coffee|donut|doughnut|pastry|espresso/],
+  [
+    'cafe_bakery',
+    /bakery|bakehouse|caf[eé]|coffee|donut|doughnut|pastry|espresso|chocolat|\bcocoa\b|confection|creamery|\bcandy\b|candies|\bfudge\b|truffle|ice cream|sweet shop|patisserie/,
+  ],
   [
     'restaurant',
     /restaurant|grill|kitchen|bbq|barbecue|pizz|taco|burger|sushi|diner|bistro|eatery|steak|seafood|fish house|cantina|\bpho\b|thai|deli|catering|\bpub\b|tavern|smokehouse/,
@@ -118,9 +121,38 @@ const NICHE_FALLBACK: Record<Niche, OsTradeKey> = {
   other: 'professional',
 };
 
-/** Detect the specific trade from the lead's own words. Pure, zero tokens. */
-export function detectTrade(corpus: string, niche: Niche): OsTradeKey {
-  const hay = corpus.toLowerCase();
+/**
+ * Phrases where a trade word is a figure of speech, not a trade. Scrubbed
+ * before matching, or the idiom wins the whole classification.
+ *
+ * 2026-08-03: a chocolatier wrote "two businesses under one roof" in their own
+ * notes and the roofing pattern (second in the list, so it beats almost
+ * everything) filed them as a ROOFING company. That one word then briefed the
+ * voice agent on hail damage and insurance claims, filled their command center
+ * with tear-off jobs, priced the hub calculator at a $12,400 average job for a
+ * shop that sells $30 gift boxes, and told the site builder in as many words to
+ * "build the site for THIS trade's customers." Nothing downstream re-checks the
+ * guess, so one idiom silently poisons all three demos. Grow this list whenever
+ * a real lead teaches us a new one.
+ */
+const TRADE_IDIOMS =
+  /\bunder (?:one|the same|a single|our|their|its) roof\b|\ba? ?roof over (?:your|their|our|his|her|my) head\b|\b(?:raise|hit|went through) the roof\b|\bpaint (?:a picture|the town)\b|\bground[- ]?floor opportunit/g;
+
+/**
+ * Detect the specific trade from the lead's own words. Pure, zero tokens.
+ *
+ * `primary` (the business name) is checked FIRST and on its own. The sign on
+ * the building is a far cleaner signal than a paragraph of prose, and prose is
+ * where the false positives live. When the name says nothing, the wider corpus
+ * decides exactly as it always did.
+ */
+export function detectTrade(corpus: string, niche: Niche, primary?: string): OsTradeKey {
+  const scrub = (s: string) => s.toLowerCase().replace(TRADE_IDIOMS, ' ');
+  const name = scrub(primary ?? '').trim();
+  if (name) {
+    for (const [key, re] of TRADE_PATTERNS) if (re.test(name)) return key;
+  }
+  const hay = scrub(corpus);
   for (const [key, re] of TRADE_PATTERNS) if (re.test(hay)) return key;
   return NICHE_FALLBACK[niche] ?? 'professional';
 }

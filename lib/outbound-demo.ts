@@ -8,10 +8,14 @@ import { detectTrade, TRADE_PRESETS, VOICE_SERVICES } from '@/data/demo-os-trade
 import type { OsTradeKey } from '@/data/demo-os-trades';
 import { SITE } from '@/lib/seo';
 
-/** The specific trade, detected from the lead's own words (name, notes, site). */
-export function leadTrade(lead: OutboundLead): OsTradeKey {
+/**
+ * The specific trade, detected from the lead's own words (name, notes, site).
+ * The business name is passed separately so it OUTRANKS the prose: our notes
+ * field is free text and a stray idiom in it used to decide the whole suite.
+ */
+export function leadTrade(lead: Pick<OutboundLead, 'business_name' | 'notes' | 'website' | 'niche'>): OsTradeKey {
   const corpus = [lead.business_name, lead.notes ?? '', lead.website ?? ''].join(' ');
-  return detectTrade(corpus, (lead.niche ?? 'other') as Niche);
+  return detectTrade(corpus, (lead.niche ?? 'other') as Niche, lead.business_name ?? '');
 }
 
 /**

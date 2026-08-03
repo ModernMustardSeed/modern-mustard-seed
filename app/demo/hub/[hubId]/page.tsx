@@ -1,7 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import DemoHub from '@/components/demo/DemoHub';
-import { detectTrade } from '@/data/demo-os-trades';
+import { leadTrade } from '@/lib/outbound-demo';
 import { recordDemoEvent } from '@/lib/demo-events';
 import type { Niche } from '@/lib/outbound';
 import { SARAH_WELCOME_READY } from '@/lib/email';
@@ -103,7 +103,11 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
   }
 
   const niche = (lead.niche ?? 'other') as Niche;
-  const trade = detectTrade([lead.business_name, lead.notes ?? '', lead.website ?? ''].join(' '), niche);
+  // Through leadTrade, never a hand-rolled detectTrade call: this page hand-built
+  // the same corpus join and so quietly skipped the business-name precedence the
+  // forge uses, which is how the hub calculator can price a different trade than
+  // the voice agent and command center were forged for.
+  const trade = leadTrade(lead);
 
   // Pick the welcome film that matches what is forged: the trifecta when the
   // suite is (mostly) complete, otherwise the single-demo cut. The website
