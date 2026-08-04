@@ -182,8 +182,10 @@ async function main() {
         const { durationMs } = await speak(beat.vo, NARRATOR, out);
         beat.voFile = out;
         // A held beat with zero air reads as a jump cut, so every line gets a
-        // short breath after it.
-        beat.voMs = durationMs + 700;
+        // short breath after it. 700ms was eight seconds of the film spent on
+        // pauses and it dragged (Sarah, 2026-08-04: "it all feels too slow and
+        // too much waiting"). 450 still separates the lines.
+        beat.voMs = durationMs + 450;
       }),
     );
 

@@ -116,25 +116,30 @@ export async function compose({ workDir, raw, scoreMs, tracks, bed, outMp4, outP
  * Concatenate the staged caller's lines into the single 16 kHz mono WAV
  * Chromium plays back as a microphone, with silence in the gaps.
  *
- * THE LEAD SILENCE IS LOAD-BEARING AND IT IS LONG ON PURPOSE. Chromium starts
- * playing this file the moment the page opens the microphone, which Vapi does
- * at the START of its connect sequence, not when the agent begins speaking.
- * Measured on the first real run: ~9s of connect, then a ~20s demo greeting
- * ("I'm not a person, I'm a voice agent, a free demo Sarah built for you..."),
- * so a 5s lead meant both caller turns were spent before the agent could hear
- * anything and the call transcribed zero User turns. That reads identically to
- * Krisp deafness and sent a real bug hunt down the wrong hole.
+ * THE LEAD SILENCE IS LOAD-BEARING AND IT IS TIED TO THE GREETING'S LENGTH.
+ * Chromium starts playing this file the moment the page opens the microphone,
+ * which Vapi does at the START of its connect sequence, not when the agent
+ * begins speaking. Measured on the first real run: ~9s of connect, then the
+ * greeting, so a 5s lead meant both caller turns were spent before the agent
+ * could hear anything and the call transcribed zero User turns. That reads
+ * identically to Krisp deafness and sent a real bug hunt down the wrong hole.
  *
- * 30s of lead clears connect plus the whole greeting with a second to spare.
- * Silence is free; a caller talking over the greeting is not.
+ * The lead was 30s while the greeting ran ~20 seconds ("I'm not a person, I'm
+ * a voice agent, a free demo Sarah built for you..."). That greeting was cut to
+ * about nine seconds on 2026-08-04 (lib/sidekick.ts, sidekickFirstMessage:
+ * Sarah wanted the waiting gone and the word "free" out of the film), so the
+ * lead came down with it: ~9s connect + ~9s greeting + margin. IF THE GREETING
+ * IS EVER LENGTHENED AGAIN, LENGTHEN THIS TO MATCH or the caller talks over it
+ * and the film fails the transcript check for no obvious reason.
  *
  * THE GAP BETWEEN TURNS IS THE SAME PROBLEM ONE LAYER DOWN. At 12s the caller's
  * second line landed while the agent was still diagnosing the first ("A
  * breaker" cuts off mid-sentence in the transcript), so the film's best moment
- * sounded like two people talking over each other. 20s lets the agent finish an
- * answer and ask its own question before the caller commits to a time.
+ * sounded like two people talking over each other. The agent's turns are capped
+ * at 1 to 2 sentences by its prompt, so 18s still clears an answer plus its own
+ * follow-up question. Do not go below that on the word of one lucky take.
  */
-export async function buildCallerWav({ turnFiles, leadSilenceMs = 30_000, gapMs = 20_000, out }) {
+export async function buildCallerWav({ turnFiles, leadSilenceMs = 20_000, gapMs = 18_000, out }) {
   const inputs = [];
   const filters = [];
   const labels = [];

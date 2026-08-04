@@ -204,8 +204,24 @@ export function sidekickFirstMessage(p: SidekickProfile): string {
   if (p.flow === 'outbound') {
     // Wording matters here: the old line "I'm the voice agent Sarah at
     // Modern Mustard Seed built..." was spoken as if the voice agent were
-    // NAMED Sarah (heard on the 2026-07-21 Chipman demo call).
-    return `Hi! Quick heads up, I'm not a person. I'm a voice agent, a free demo that Sarah at Modern Mustard Seed built for ${p.business}. If your phone rang after hours, I'm how it could get answered. Want to test me? Pretend you're a customer calling ${p.business} and ask me anything.`;
+    // NAMED Sarah (heard on the 2026-07-21 Chipman demo call). Naming nobody
+    // keeps that from ever coming back.
+    //
+    // ⏱ AND IT IS SHORT ON PURPOSE. This greeting runs before the caller can
+    // say a word, and it is the first thing heard in the suite film. At ~20
+    // seconds ("Quick heads up, I'm not a person. I'm a voice agent, a free
+    // demo that Sarah at Modern Mustard Seed built for X. If your phone rang
+    // after hours, I'm how it could get answered...") it apologized for itself
+    // for a third of a minute before doing anything impressive, and it put the
+    // word "free" in the prospect's ear at the exact moment we want them
+    // valuing the thing (Sarah, 2026-08-04). Nine seconds, discloses what it
+    // is, then hands the call straight to them.
+    //
+    // ⚠️ LENGTHENING THIS BREAKS THE FILM. The staged caller's lead silence in
+    // scripts/suite-film/compose.mjs is sized to connect + this greeting; a
+    // longer greeting means the caller talks over it, the transcript shows no
+    // User turns, and the film fails looking exactly like Krisp deafness.
+    return `Thanks for calling ${p.business}. I'm not a person, I'm the voice agent that answers this line. Ask me anything a customer would.`;
   }
   return `Hi ${p.ownerName}! Thank you for calling ${p.business}... okay, I can't keep a straight face. It's me, your brand new front desk. Mr. Mustard just finished training me on everything you told him, and you are officially my first call. Want to test me? Pretend you're a customer.`;
 }

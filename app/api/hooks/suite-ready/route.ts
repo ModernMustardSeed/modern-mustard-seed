@@ -132,7 +132,11 @@ export async function POST(req: Request) {
     '',
     `It is all here, and the short video at the top is a walkthrough of your own: your site, a real call with your own agent, and your command center: ${hubUrl}`,
     '',
-    `Nothing to set up and nothing owed. Look around, tap the gold button, and talk to the website. If you want it live, or want anything changed, just reply. And if this is not for you, reply "no thanks" and that is the end of it.`,
+    // No "nothing to set up and nothing owed" here any more. Sarah, 2026-08-04:
+    // the email that carries the film should not talk about cost or effort at
+    // the moment we want them valuing what they are looking at. It is the same
+    // rule the film narration now runs on (scripts/suite-film/lines.mjs).
+    `It is yours to poke at for as long as you like. Tap the gold button and talk to the website. If you want it live, or want anything changed, just reply. And if this is not for you, reply "no thanks" and that is the end of it.`,
     '',
     '❤️, Sarah',
     'Modern Mustard Seed · modernmustardseed.com',

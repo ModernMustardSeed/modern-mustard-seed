@@ -122,7 +122,10 @@ export async function buildOutboundEmail(
     withSite &&
       demoRow('🌐', 'Your new website', `A real working draft designed for your business${withDemo ? '. The gold button in the corner is your voice agent riding along so you can hear it on the page, it is its own add-on' : ''}.`, lead.site_demo_url!),
     withOs &&
-      demoRow('⚙️', 'Your command center', 'Every call transcribed, your website traffic, customers, reviews, and money on one board, with an AI that knows it all. Included free with your site or voice agent.', lead.os_demo_url!),
+      // "Included free with your site or voice agent" came off 2026-08-04: the
+      // suite email should sell what the board does, not price-anchor it at
+      // zero. Same rule as the film narration (scripts/suite-film/lines.mjs).
+      demoRow('⚙️', 'Your command center', 'Every call transcribed, your website traffic, customers, reviews, and money on one board, with an AI that knows it all.', lead.os_demo_url!),
   ]
     .filter(Boolean)
     .join('');

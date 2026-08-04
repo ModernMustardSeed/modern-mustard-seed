@@ -237,6 +237,8 @@ export async function record({ workDir, siteUrl, osUrl, cards, beats, callerWav,
 
   let callAudioB64 = null;
   let callAudioOffsetMs = null;
+  /** Set by the beat that dials (armCall); consumed by the call beat. */
+  let call = null;
   let posterAtMs = 0;
   let t0 = 0;
   const at = () => Date.now() - t0;
@@ -287,16 +289,35 @@ export async function record({ workDir, siteUrl, osUrl, cards, beats, callerWav,
         }
 
         if (beat.kind === 'call') {
-          const r = await stageTheCall({ page, glide, callerMs, at, log });
+          // Normally already dialing under the previous line (armCall). The
+          // fallback keeps this beat working on its own if that beat is ever
+          // dropped from the script.
+          if (!call) call = await beginCall({ page, glide, at, log });
+          callAudioOffsetMs = call.offsetMs;
+          const r = await finishCall({ page, glide, startedAt: call.startedAt, callerMs, at });
           callAudioB64 = r.audioB64;
-          callAudioOffsetMs = r.offsetMs;
-          beat.voMs = r.durationMs; // the call IS the audio for this beat
-        } else if (beat.scroll) {
-          const frame = page.frames().find((f) => /\/demo\/site\/.+\/raw/.test(f.url())) || page.mainFrame();
-          const dur = Math.max(1400, (beat.voMs || 3000) - 900);
-          await frame.evaluate(smoothScroll, [beat.scroll, dur]).catch(() => {});
-          await holdBeat(beat, startedAt);
+          // The call IS the audio for this beat. Measured from the beat, not
+          // from the click: the click happened a line earlier, so r.durationMs
+          // covers ground the timeline already attributes to the setup beat.
+          beat.voMs = Date.now() - startedAt;
         } else {
+          if (beat.scroll) {
+            const frame = page.frames().find((f) => /\/demo\/site\/.+\/raw/.test(f.url())) || page.mainFrame();
+            // A beat that also places the call gets a short, fixed glide: the
+            // usual voice-length scroll would hold the click back for the whole
+            // line and put the dead air right back where it was.
+            const dur = beat.scrollMs || Math.max(1400, (beat.voMs || 3000) - 900);
+            await frame.evaluate(smoothScroll, [beat.scroll, dur]).catch(() => {});
+          }
+          // ⚡ DIAL NOW, TALK OVER THE CONNECT. Vapi spends ~9s connecting, and
+          // clicking after the narration spent all of it as silence on a still
+          // page (Sarah, 2026-08-04: "the agent doesnt talk soon enough"). The
+          // rest of this line plays while it rings, so the greeting lands about
+          // when the narrator stops.
+          if (beat.armCall) {
+            call = await beginCall({ page, glide, at, log });
+            callAudioOffsetMs = call.offsetMs;
+          }
           await holdBeat(beat, startedAt);
         }
       } else if (beat.kind === 'os') {
@@ -352,19 +373,26 @@ export async function record({ workDir, siteUrl, osUrl, cards, beats, callerWav,
 }
 
 /**
- * Make the call, on camera.
+ * Place the call, on camera, and start recording it.
+ *
+ * ⚡ THIS RUNS UNDER THE NARRATION THAT INTRODUCES IT, NOT AFTER IT. Vapi's
+ * connect sequence takes about nine seconds, and the first version of this film
+ * clicked the pill only once the setup line had finished, so those nine seconds
+ * played as silence over a page that was not moving. Sarah, 2026-08-04: "the
+ * agent doesnt talk soon enough, it all feels too slow and too much waiting."
+ * Dialing at the top of the setup beat spends the connect on words instead, and
+ * the viewer watches the pill light up while the narrator explains it.
  *
  * The pill is clicked like a person would click it, the caller's questions
- * arrive from the fake microphone, and the agent's answers are captured off
- * the WebRTC track. Held for as long as the caller file runs plus a tail, so
- * the agent gets to finish its last sentence before the hang-up.
+ * arrive from the fake microphone, and the agent's answers are captured off the
+ * WebRTC track.
  */
-async function stageTheCall({ page, glide, callerMs, at, log }) {
+async function beginCall({ page, glide, at, log }) {
   const pill = page.getByRole('button', { name: /talk to this website|call again/i }).first();
   await pill.waitFor({ state: 'visible', timeout: 20_000 });
   const box = await pill.boundingBox();
   if (box) await glide(box.x + box.width / 2, box.y + box.height / 2, 700);
-  const started = Date.now();
+  const startedAt = Date.now();
   await pill.click();
 
   // "Live" appears on call-start. If it never does, the film has nothing to
@@ -388,16 +416,26 @@ async function stageTheCall({ page, glide, callerMs, at, log }) {
     }
   })();
 
-  // Run the call for the whole caller file plus a tail long enough for the
-  // agent to finish its last answer and take the booking.
-  //
-  // Anchored to the CLICK, not to the connect, because Chromium starts playing
-  // the fake microphone file when the page opens the mic, which happens at the
-  // top of Vapi's connect sequence. The file's own clock and this window are
-  // therefore the same clock; anchoring to "live" instead would cut the tail
-  // by however long the connect took.
+  return { startedAt, offsetMs };
+}
+
+/**
+ * Hold the call until the conversation is done, then hang up.
+ *
+ * Runs for the whole caller file plus a tail long enough for the agent to
+ * finish its last answer and take the booking.
+ *
+ * Anchored to the CLICK, not to the connect, because Chromium starts playing
+ * the fake microphone file when the page opens the mic, which happens at the
+ * top of Vapi's connect sequence. The file's own clock and this window are
+ * therefore the same clock; anchoring to "live" instead would cut the tail by
+ * however long the connect took. Because the click now happens a line early,
+ * part of this window is already spent by the time this is called, which is the
+ * whole point: it comes off the front of the wait, not off the conversation.
+ */
+async function finishCall({ page, glide, startedAt, callerMs, at }) {
   const runMs = (callerMs || 45_000) + 12_000;
-  await page.waitForTimeout(Math.max(0, runMs - (Date.now() - started)));
+  await page.waitForTimeout(Math.max(0, runMs - (Date.now() - startedAt)));
 
   const audioB64 = await page.evaluate(() => window.__mmsCallRecStop?.());
 
@@ -409,5 +447,5 @@ async function stageTheCall({ page, glide, callerMs, at, log }) {
   }
   await page.waitForTimeout(900);
 
-  return { audioB64, offsetMs, durationMs: Date.now() - started };
+  return { audioB64, durationMs: Date.now() - startedAt, at: at() };
 }

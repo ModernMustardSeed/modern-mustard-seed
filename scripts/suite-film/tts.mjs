@@ -33,10 +33,19 @@ const PYTHON = process.env.SUITE_FILM_PYTHON || 'python';
  * speaking mid-film. Override the narrator with SUITE_FILM_NARRATOR_VOICE
  * (any `edge-tts --list-voices` name).
  */
+/**
+ * ⚡ THE NARRATOR IS SELLING, NOT READING. Sarah, 2026-08-04: "the voice doing
+ * that demo video needs to sell it better and do a 10x job." She was hearing
+ * -4%, which is a bedtime-story pace: it made confident lines sound tentative
+ * and stretched a two-minute film into something that felt like four. Ava at
+ * +7% lands where a good salesperson actually talks, and the writing in
+ * lines.mjs was cut to short declaratives to match. Any further push starts to
+ * clip her consonants, so this is the ceiling, not a dial to keep turning.
+ */
 export const NARRATOR = {
   edge: process.env.SUITE_FILM_NARRATOR_VOICE || 'en-US-AvaMultilingualNeural',
-  rate: '-4%',
-  fal: { voice_id: 'Wise_Woman', speed: 0.94, vol: 1, pitch: 0 },
+  rate: '+7%',
+  fal: { voice_id: 'Wise_Woman', speed: 1.06, vol: 1, pitch: 0 },
 };
 
 /**
