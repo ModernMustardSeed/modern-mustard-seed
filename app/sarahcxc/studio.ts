@@ -26,11 +26,13 @@ export const CXC_STUDIO: StudioConfig = {
   tabs: [
     ['reel', 'Reels'],
     ['anchor', 'Anchor Films'],
+    ['devotional', 'Daily Bread'],
   ],
   pillarStyles: {
     SCRIPTURE: 'bg-[#FFC431] text-[#0D172A]',
     WITNESS: 'bg-[#21C7D6] text-[#0D172A]',
     COMFORT: 'bg-[#7A4A7F] text-[#FCF0DA]',
+    MERCY: 'bg-[#FF5C7A] text-[#0D172A]',
   },
   scripts: CXC_SCRIPTS,
   theme: {
