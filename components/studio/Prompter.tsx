@@ -95,6 +95,11 @@ function CrossMark({ progress, theme }: { progress: number; theme: StudioTheme }
   const glow = Math.min(1, Math.max(0, (progress - 0.75) / 0.25));
   return (
     <svg width="34" height="44" viewBox="0 0 34 44" aria-hidden="true" className="shrink-0">
+      {/* Faint full cross so the reading line always has a visible anchor, the
+          way the MMS seed is visible from the very first frame. The bright
+          strokes below draw over it as the read progresses. */}
+      <path d="M17 40 L17 5" stroke={theme.accent} strokeWidth="2.6" strokeLinecap="round" fill="none" opacity={0.22} />
+      <path d="M6 16 L28 16" stroke={theme.accent} strokeWidth="2.6" strokeLinecap="round" fill="none" opacity={0.22} />
       <path
         d="M17 40 L17 5"
         stroke={theme.accent}
@@ -791,7 +796,9 @@ export default function Prompter({ studio }: { studio: StudioConfig }) {
             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#C4160B]">
               Director&rsquo;s Note
             </p>
-            <p className="mt-1.5 text-sm leading-relaxed ">{active.directorNote}</p>
+            <p className="mt-1.5 text-sm leading-relaxed" style={{ color: `${INK}d9` }}>
+              {active.directorNote}
+            </p>
           </div>
         </div>
       )}
