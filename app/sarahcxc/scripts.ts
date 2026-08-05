@@ -1,5 +1,6 @@
 import type { PrompterScript as BaseScript } from '@/components/studio/types';
 import { DAILY_BREAD } from './devotionals';
+import { ETERNAL_OPTIMIST } from './eternal-optimist';
 
 /**
  * CROSS + COVENANT scripts. This file is the whole content side of the CXC
@@ -13,8 +14,17 @@ import { DAILY_BREAD } from './devotionals';
  * could hang in any Christian store, it does not belong here.
  */
 export type CxcScript = BaseScript & {
-  kind: 'reel' | 'anchor' | 'devotional';
-  pillar: 'SCRIPTURE' | 'WITNESS' | 'COMFORT' | 'MERCY';
+  kind: 'reel' | 'anchor' | 'devotional' | 'book';
+  pillar:
+    | 'SCRIPTURE'
+    | 'WITNESS'
+    | 'COMFORT'
+    | 'MERCY'
+    // Eternal Optimist uses the book's four parts as its pillars.
+    | 'LENS'
+    | 'ETERNAL'
+    | 'PRACTICE'
+    | 'BEAUTIFUL';
 };
 
 /**
@@ -618,4 +628,9 @@ const MERCY_AND_NEED: CxcScript[] = [
 ];
 
 /** Every Cross + Covenant script, in booth order. */
-export const CXC_SCRIPTS: CxcScript[] = [...ETERNAL_CREATURES, ...MERCY_AND_NEED, ...DAILY_BREAD];
+export const CXC_SCRIPTS: CxcScript[] = [
+  ...ETERNAL_CREATURES,
+  ...MERCY_AND_NEED,
+  ...DAILY_BREAD,
+  ...ETERNAL_OPTIMIST,
+];

@@ -27,12 +27,19 @@ export const CXC_STUDIO: StudioConfig = {
     ['reel', 'Reels'],
     ['anchor', 'Anchor Films'],
     ['devotional', 'Daily Bread'],
+    ['book', 'Eternal Optimist'],
   ],
   pillarStyles: {
     SCRIPTURE: 'bg-[#FFC431] text-[#0D172A]',
     WITNESS: 'bg-[#21C7D6] text-[#0D172A]',
     COMFORT: 'bg-[#7A4A7F] text-[#FCF0DA]',
     MERCY: 'bg-[#FF5C7A] text-[#0D172A]',
+    // The book series uses its four parts as pillars, so the card shows at a
+    // glance which movement of the argument an episode belongs to.
+    LENS: 'bg-[#21C7D6] text-[#0D172A]',
+    ETERNAL: 'bg-[#7A4A7F] text-[#FCF0DA]',
+    PRACTICE: 'bg-[#FFC431] text-[#0D172A]',
+    BEAUTIFUL: 'bg-[#FF5C7A] text-[#0D172A]',
   },
   scripts: CXC_SCRIPTS,
   theme: {
