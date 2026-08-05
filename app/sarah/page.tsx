@@ -1,5 +1,5 @@
 import { buildMetadata } from '@/lib/seo';
-import Teleprompter from './Teleprompter';
+import PrompterMount from './PrompterMount';
 
 export const metadata = buildMetadata({
   title: 'The Prompter',
@@ -9,5 +9,5 @@ export const metadata = buildMetadata({
 });
 
 export default function SarahPrompterPage() {
-  return <Teleprompter />;
+  return <PrompterMount />;
 }

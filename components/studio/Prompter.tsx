@@ -2,42 +2,36 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
-  PROMPTER_SCRIPTS,
   type PrompterScript,
+  type StudioConfig,
+  type StudioTheme,
   scriptWordCount,
   scriptEstSeconds,
   isDirectionLine,
   fmtTime,
-} from './scripts';
-import { useBoothCamera, SelfView, TakesDrawer } from './booth';
+} from './types';
+import { useBoothCamera, SelfView, TakesDrawer } from './useBoothRecorder';
 
-const NIGHT = '#080C16';
-const CREAM = '#FBF6EA';
-const GOLD = '#F5B700';
-const INK = '#161616';
+/**
+ * The shared prompter engine. It carries NO brand of its own: every color,
+ * label, tab, script and API route arrives in the `studio` config, so
+ * /sarah (Modern Mustard Seed) and /sarahcxc (Cross + Covenant) can look and
+ * behave like two different houses while the scroll calibration, the recording
+ * handshake and the keyboard map stay one implementation worth trusting.
+ */
 
 const READ_LINE_FRACTION = 0.3;
-const LS_KEY = 'mms-prompter-settings';
 
-const PILLAR_STYLES: Record<PrompterScript['pillar'], string> = {
-  BUILD: 'bg-[#F5B700] text-[#161616]',
-  SYSTEMS: 'bg-[#cfe0ff] text-[#161616]',
-  STEWARD: 'bg-[#f6d9d5] text-[#161616]',
-  STORY: 'bg-[#e4ddcf] text-[#161616]',
-  SALES: 'bg-[#E0301E] text-[#FBF6EA]',
-  ADS: 'bg-[#FF6B35] text-[#161616]',
-  // CXC plum, the brand's "depth / reverence" token. Not an MMS color on purpose:
-  // this tab is Cross + Covenant content and should read as a different house.
-  COVENANT: 'bg-[#7A4A7F] text-[#FBF6EA]',
-};
+/** Fallback chip for a pillar a studio forgot to style. Never crashes a card. */
+const PILLAR_FALLBACK = 'bg-[#e4ddcf] text-[#161616]';
 
 type Settings = { speed: number; fontSize: number; mirror: boolean };
 const DEFAULTS: Settings = { speed: 1, fontSize: 44, mirror: false };
 
-function loadSettings(): Settings {
+function loadSettings(lsKey: string): Settings {
   if (typeof window === 'undefined') return DEFAULTS;
   try {
-    const raw = window.localStorage.getItem(LS_KEY);
+    const raw = window.localStorage.getItem(lsKey);
     if (!raw) return DEFAULTS;
     const parsed = JSON.parse(raw) as Partial<Settings>;
     return {
@@ -51,28 +45,28 @@ function loadSettings(): Settings {
 }
 
 /** Direction cue: unmistakably not a spoken line. */
-function DirectionCue({ text, fontSize }: { text: string; fontSize: number }) {
+function DirectionCue({ text, fontSize, theme }: { text: string; fontSize: number; theme: StudioTheme }) {
   const size = Math.max(15, Math.round(fontSize * 0.46));
   return (
     <div
       className="mb-7 border-2 border-dashed px-4 py-3"
-      style={{ borderColor: 'rgba(245,183,0,0.7)', background: 'rgba(245,183,0,0.09)' }}
+      style={{ borderColor: `${theme.accent}b3`, background: `${theme.accent}17` }}
     >
       <span
         className="mb-1.5 flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em]"
-        style={{ color: GOLD }}
+        style={{ color: theme.accent }}
       >
         <span aria-hidden="true">▸</span> Direction · don&rsquo;t read aloud
       </span>
-      <p className="font-serif italic" style={{ color: 'rgba(251,246,234,0.75)', fontSize: size, lineHeight: 1.4 }}>
+      <p className="font-serif italic" style={{ color: `rgba(${theme.creamRgb},0.75)`, fontSize: size, lineHeight: 1.4 }}>
         {text}
       </p>
     </div>
   );
 }
 
-/** The seed that grows a sprout as the read progresses. */
-function SeedSprout({ progress }: { progress: number }) {
+/** MMS: the seed that grows a sprout as the read progresses. */
+function SeedSprout({ progress, theme }: { progress: number; theme: StudioTheme }) {
   const stem = Math.min(1, Math.max(0, (progress - 0.02) / 0.6));
   const leaves = Math.min(1, Math.max(0, (progress - 0.45) / 0.35));
   return (
@@ -84,12 +78,79 @@ function SeedSprout({ progress }: { progress: number }) {
         <path d="M17 18 C 10 16, 7 10, 8 6 C 13 7, 16 11, 17 16 Z" fill="#8FA98F" />
         <path d="M17 18 C 24 16, 27 10, 26 6 C 21 7, 18 11, 17 16 Z" fill="#7FA98F" />
       </g>
-      <ellipse cx="17" cy="39" rx="5.5" ry="4.5" fill={GOLD} stroke={INK} strokeWidth="1.6" />
+      <ellipse cx="17" cy="39" rx="5.5" ry="4.5" fill={theme.accent} stroke={theme.ink} strokeWidth="1.6" />
     </svg>
   );
 }
 
-export default function Teleprompter() {
+/**
+ * CXC: a cross that draws itself in light as the read progresses. Same job as
+ * the MMS seed (it marks the reading line and shows how far in you are), but
+ * it belongs to the other house. The upright draws first, the crossbar follows,
+ * and the whole mark warms once the read is nearly home.
+ */
+function CrossMark({ progress, theme }: { progress: number; theme: StudioTheme }) {
+  const upright = Math.min(1, Math.max(0, progress / 0.55));
+  const bar = Math.min(1, Math.max(0, (progress - 0.4) / 0.45));
+  const glow = Math.min(1, Math.max(0, (progress - 0.75) / 0.25));
+  return (
+    <svg width="34" height="44" viewBox="0 0 34 44" aria-hidden="true" className="shrink-0">
+      <path
+        d="M17 40 L17 5"
+        stroke={theme.accent}
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        fill="none"
+        pathLength={1}
+        strokeDasharray={1}
+        strokeDashoffset={1 - upright}
+        style={{ transition: 'stroke-dashoffset 400ms ease' }}
+      />
+      <path
+        d="M6 16 L28 16"
+        stroke={theme.accentAlt}
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        fill="none"
+        pathLength={1}
+        strokeDasharray={1}
+        strokeDashoffset={1 - bar}
+        style={{ transition: 'stroke-dashoffset 400ms ease' }}
+      />
+      <circle
+        cx="17"
+        cy="16"
+        r="6.5"
+        fill={theme.accent}
+        style={{ opacity: glow * 0.28, transition: 'opacity 500ms ease' }}
+      />
+    </svg>
+  );
+}
+
+function ReadingMark({ progress, studio }: { progress: number; studio: StudioConfig }) {
+  return studio.mark === 'cross' ? (
+    <CrossMark progress={progress} theme={studio.theme} />
+  ) : (
+    <SeedSprout progress={progress} theme={studio.theme} />
+  );
+}
+
+export default function Prompter({ studio }: { studio: StudioConfig }) {
+  const { theme } = studio;
+  const NIGHT = theme.night;
+  const CREAM = theme.cream;
+  const GOLD = theme.accent;
+  const INK = theme.ink;
+  /** Translucent helpers so every surface tints with the studio, not with MMS. */
+  const dim = useCallback((a: number) => `rgba(${theme.creamRgb},${a})`, [theme.creamRgb]);
+  const night = useCallback((a: number) => `rgba(${theme.nightRgb},${a})`, [theme.nightRgb]);
+  const acc = useCallback(
+    (a: number) => `${theme.accent}${Math.round(a * 255).toString(16).padStart(2, '0')}`,
+    [theme.accent],
+  );
+  const PROMPTER_SCRIPTS = studio.scripts;
+
   const [active, setActive] = useState<PrompterScript | null>(null);
   const [playing, setPlaying] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -98,17 +159,17 @@ export default function Teleprompter() {
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [progress, setProgress] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const booth = useBoothCamera();
+  const booth = useBoothCamera(studio.apiBase);
   const [showTakes, setShowTakes] = useState(false);
   const [selfViewOn, setSelfViewOn] = useState(true);
-  const [tab, setTab] = useState<'episode' | 'short' | 'sales' | 'ad' | 'cxc'>('episode');
+  const [tab, setTab] = useState<string>(studio.tabs[0][0]);
   const [finals, setFinals] = useState<{ name: string; path: string; signedUrl: string | null }[]>([]);
   useEffect(() => {
-    fetch('/api/booth/finals', { method: 'POST' })
+    fetch(`${studio.apiBase}/finals`, { method: 'POST' })
       .then((r) => r.json())
       .then((j) => setFinals(Array.isArray(j.finals) ? j.finals : []))
       .catch(() => {});
-  }, []);
+  }, [studio.apiBase]);
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const columnRef = useRef<HTMLDivElement>(null);
@@ -126,15 +187,17 @@ export default function Teleprompter() {
     activeRef.current = active;
   }, [active]);
 
+  // Namespaced per studio so MMS speed/size/mirror never overwrite CXC's.
+  const lsKey = `${studio.id}-prompter-settings`;
   useEffect(() => {
-    setSettings(loadSettings());
-  }, []);
+    setSettings(loadSettings(lsKey));
+  }, [lsKey]);
   useEffect(() => {
     speedRef.current = settings.speed;
     try {
-      window.localStorage.setItem(LS_KEY, JSON.stringify(settings));
+      window.localStorage.setItem(lsKey, JSON.stringify(settings));
     } catch {}
-  }, [settings]);
+  }, [settings, lsKey]);
   useEffect(() => {
     playingRef.current = playing;
   }, [playing]);
@@ -385,29 +448,20 @@ export default function Teleprompter() {
       <main className="min-h-screen" style={{ background: NIGHT }}>
         <div
           className="mx-auto max-w-3xl px-5 pb-24 pt-16 sm:pt-24"
-          style={{ backgroundImage: `radial-gradient(60rem 30rem at 50% -10%, rgba(245,183,0,0.09), transparent)` }}
+          style={{ backgroundImage: `radial-gradient(60rem 30rem at 50% -10%, ${GOLD}17, transparent)` }}
         >
           <p className="font-mono text-[11px] uppercase tracking-[0.22em]" style={{ color: GOLD }}>
-            MMS Studio · Recording Booth
+            {studio.kicker}
           </p>
           <h1 className="font-display mt-3 text-5xl font-bold sm:text-7xl" style={{ color: CREAM }}>
-            The Prompter
+            {studio.title}
           </h1>
-          <p className="mt-4 max-w-xl text-base sm:text-lg" style={{ color: 'rgba(251,246,234,0.72)' }}>
-            The whole studio in one room. Pick a script, arm the camera, hit play. Every take records itself and
-            sends itself to Claude for the edit. The seed on the reading line grows as you go.
+          <p className="mt-4 max-w-xl text-base sm:text-lg" style={{ color: dim(0.72) }}>
+            {studio.blurb}
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            {(
-              [
-                ['episode', 'Episodes'],
-                ['short', 'Shorts Bank'],
-                ['sales', 'Sales Desk'],
-                ['ad', 'Meta Ads'],
-                ['cxc', 'Cross + Covenant'],
-              ] as const
-            ).map(([k, label]) => {
+            {studio.tabs.map(([k, label]) => {
               const count = PROMPTER_SCRIPTS.filter((s) => s.kind === k).length;
               const on = tab === k;
               return (
@@ -417,8 +471,8 @@ export default function Teleprompter() {
                   className="border-2 px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] transition-transform hover:-translate-y-0.5"
                   style={{
                     background: on ? GOLD : 'transparent',
-                    borderColor: on ? INK : 'rgba(251,246,234,0.3)',
-                    color: on ? INK : 'rgba(251,246,234,0.75)',
+                    borderColor: on ? INK : dim(0.3),
+                    color: on ? INK : dim(0.75),
                     boxShadow: on ? `3px 3px 0 0 ${CREAM}33` : 'none',
                   }}
                 >
@@ -435,32 +489,32 @@ export default function Teleprompter() {
                 <button
                   key={s.id}
                   onClick={() => openScript(s)}
-                  className="group block w-full border-2 text-left transition-transform duration-150 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#F5B700]/60"
-                  style={{ background: CREAM, borderColor: INK, boxShadow: `6px 6px 0 0 ${GOLD}` }}
+                  className="group block w-full border-2 text-left transition-transform duration-150 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4"
+                  style={{ background: CREAM, borderColor: INK, boxShadow: `6px 6px 0 0 ${theme.accentAlt}` }}
                 >
                   <div className="p-5 sm:p-6">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#C4160B]">
+                      <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: theme.accentAlt }}>
                         {s.episode}
                       </span>
                       <span
-                        className={`border font-mono text-[10px] font-bold uppercase tracking-[0.1em] ${PILLAR_STYLES[s.pillar]}`}
+                        className={`border font-mono text-[10px] font-bold uppercase tracking-[0.1em] ${studio.pillarStyles[s.pillar] ?? PILLAR_FALLBACK}`}
                         style={{ borderColor: INK, padding: '1px 7px' }}
                       >
                         {s.pillar}
                       </span>
-                      <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.12em] text-[#161616]/60">
+                      <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.12em]" style={{ color: `${INK}99` }}>
                         {s.session}
                       </span>
                     </div>
                     <h2 className="font-display mt-3 text-2xl font-bold sm:text-3xl" style={{ color: INK }}>
                       {s.title}
                     </h2>
-                    <p className="font-serif mt-2 text-lg italic leading-snug text-[#161616]/75">
+                    <p className="font-serif mt-2 text-lg italic leading-snug" style={{ color: `${INK}bf` }}>
                       &ldquo;{s.hook}&rdquo;
                     </p>
                     <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-                      <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-[#161616]/60">
+                      <span className="font-mono text-[11px] uppercase tracking-[0.12em]" style={{ color: `${INK}99` }}>
                         ~{fmtTime(scriptEstSeconds(s))} read · {words} words · {s.publish}
                       </span>
                       <span
@@ -476,45 +530,48 @@ export default function Teleprompter() {
             })}
           </div>
 
-          <div className="mt-12 border-t pt-6" style={{ borderColor: 'rgba(251,246,234,0.15)' }}>
+          <div className="mt-12 border-t pt-6" style={{ borderColor: dim(0.15) }}>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: GOLD }}>
                 Finished cuts{finals.length > 0 ? ` (${finals.length})` : ''}
               </p>
-              <a href="/admin/youtube" className="font-mono text-[11px] uppercase underline" style={{ color: 'rgba(251,246,234,0.82)' }}>
-                Open the publisher →
-              </a>
+              {studio.publisher && (
+                <a href={studio.publisher.href} className="font-mono text-[11px] uppercase underline" style={{ color: dim(0.82) }}>
+                  {studio.publisher.label} →
+                </a>
+              )}
             </div>
             {finals.length === 0 ? (
-              <p className="mt-2 font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.5)' }}>
-                Record a take above, then Claude edits it (Mr. Mustard, the New Day ident, graphics, and the mild
-                polish) and the finished cut lands right here, ready to post to YouTube in one button.
+              <p className="mt-2 font-mono text-[11px] leading-relaxed" style={{ color: dim(0.5) }}>
+                {studio.finalsEmpty}
               </p>
             ) : (
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 {finals.map((f) => (
-                  <div key={f.path} className="border p-3" style={{ borderColor: 'rgba(251,246,234,0.18)', background: 'rgba(251,246,234,0.04)' }}>
+                  <div key={f.path} className="border p-3" style={{ borderColor: dim(0.18), background: dim(0.04) }}>
                     {f.signedUrl && (
                       // eslint-disable-next-line jsx-a11y/media-has-caption
                       <video src={f.signedUrl} controls preload="metadata" className="w-full aspect-video" style={{ background: '#000' }} />
                     )}
                     <p className="mt-2 truncate font-mono text-[11px]" style={{ color: CREAM }}>{f.name}</p>
-                    <a href="/admin/youtube" className="font-mono text-[10px] uppercase underline" style={{ color: GOLD }}>
-                      Post it to YouTube →
-                    </a>
+                    {studio.publisher && (
+                      <a href={studio.publisher.href} className="font-mono text-[10px] uppercase underline" style={{ color: GOLD }}>
+                        {studio.publisher.label} →
+                      </a>
+                    )}
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="mt-8 border-t pt-6" style={{ borderColor: 'rgba(251,246,234,0.15)' }}>
-            <p className="font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.45)' }}>
-              PRIVATE BOOTH · not linked, not indexed. Arm the camera and every play/pause cycle records a take,
-              sends it to Claude for the edit, and keeps it to rewatch. Amber &ldquo;Direction&rdquo; blocks are
-              notes from Claude, never read them aloud. SPACE play/pause (and record) · ↑↓ speed · ←→ sections ·
-              +/− text size · M mirror (beam-splitter rig) · C self-view · T takes + replay · F fullscreen ·
-              R restart · ESC pause/exit.
+          <div className="mt-8 border-t pt-6" style={{ borderColor: dim(0.15) }}>
+            <p className="font-mono text-[11px] leading-relaxed" style={{ color: dim(0.45) }}>
+              PRIVATE BOOTH · not linked, not indexed. Takes from this room go to {studio.bucketLabel} and nowhere
+              else. Arm the camera and every play/pause cycle records a take, sends it to Claude for the edit, and
+              keeps it to rewatch. Dashed &ldquo;Direction&rdquo; blocks are notes from Claude, never read them
+              aloud. SPACE play/pause (and record) · ↑↓ speed · ←→ sections · +/− text size · M mirror
+              (beam-splitter rig) · C self-view · T takes + replay · F fullscreen · R restart · ESC pause/exit.
             </p>
           </div>
         </div>
@@ -531,7 +588,7 @@ export default function Teleprompter() {
     // z-[130] keeps the booth above the site cookie banner (z-[120]); consent stays reachable on the library view
     <main ref={shellRef} className="fixed inset-0 z-[130] overflow-hidden" style={{ background: NIGHT }}>
       {/* progress bar */}
-      <div className="absolute left-0 top-0 z-40 h-[3px] w-full" style={{ background: 'rgba(251,246,234,0.12)' }}>
+      <div className="absolute left-0 top-0 z-40 h-[3px] w-full" style={{ background: dim(0.12) }}>
         <div className="h-full transition-[width] duration-200" style={{ width: `${progress * 100}%`, background: GOLD }} />
       </div>
 
@@ -541,7 +598,7 @@ export default function Teleprompter() {
           className="mx-auto h-2.5 w-2.5 rounded-full border"
           style={{ borderColor: GOLD, boxShadow: `0 0 8px ${GOLD}66` }}
         />
-        <div className="mt-1 font-mono text-[8px] uppercase tracking-[0.3em]" style={{ color: 'rgba(245,183,0,0.6)' }}>
+        <div className="mt-1 font-mono text-[8px] uppercase tracking-[0.3em]" style={{ color: acc(0.6) }}>
           Lens
         </div>
       </div>
@@ -552,12 +609,12 @@ export default function Teleprompter() {
           <button
             onClick={backToLibrary}
             className="shrink-0 border px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors hover:bg-[#FBF6EA]/10"
-            style={{ borderColor: 'rgba(251,246,234,0.3)', color: 'rgba(251,246,234,0.8)' }}
+            style={{ borderColor: dim(0.3), color: dim(0.8) }}
             aria-label="Back to scripts"
           >
             ← Scripts
           </button>
-          <div className="hidden max-w-[34vw] truncate font-mono text-[11px] uppercase tracking-[0.14em] lg:block" style={{ color: 'rgba(251,246,234,0.55)' }}>
+          <div className="hidden max-w-[34vw] truncate font-mono text-[11px] uppercase tracking-[0.14em] lg:block" style={{ color: dim(0.55) }}>
             {active.episode} · {active.title}
           </div>
         </div>
@@ -581,7 +638,7 @@ export default function Teleprompter() {
             <button
               onClick={() => !booth.recording && booth.disable()}
               className="border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em]"
-              style={{ borderColor: 'rgba(251,246,234,0.3)', color: 'rgba(251,246,234,0.6)' }}
+              style={{ borderColor: dim(0.3), color: dim(0.6) }}
               aria-label="Turn the camera off"
               title={booth.recording ? 'Recording; pause first' : 'Turn the camera off'}
             >
@@ -611,13 +668,13 @@ export default function Teleprompter() {
           <button
             onClick={() => setShowTakes((v) => !v)}
             className="border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
-            style={{ borderColor: 'rgba(251,246,234,0.3)', color: 'rgba(251,246,234,0.8)' }}
+            style={{ borderColor: dim(0.3), color: dim(0.8) }}
             aria-label="Open the takes drawer (T)"
           >
             Takes{booth.takes.length > 0 ? ` (${booth.takes.length})` : ''}
           </button>
-          <div className="font-mono text-[12px] tabular-nums" style={{ color: 'rgba(251,246,234,0.8)' }}>
-            {fmtTime(elapsed)} <span style={{ color: 'rgba(251,246,234,0.4)' }}>/ ~{fmtTime(est)}</span>
+          <div className="font-mono text-[12px] tabular-nums" style={{ color: dim(0.8) }}>
+            {fmtTime(elapsed)} <span style={{ color: dim(0.4) }}>/ ~{fmtTime(est)}</span>
           </div>
         </div>
       </div>
@@ -635,19 +692,19 @@ export default function Teleprompter() {
                 {i > 0 && (
                   <div className="my-8 flex justify-center gap-3" aria-hidden="true">
                     {[0, 1, 2].map((d) => (
-                      <span key={d} className="h-1.5 w-1.5 rounded-full" style={{ background: 'rgba(245,183,0,0.5)' }} />
+                      <span key={d} className="h-1.5 w-1.5 rounded-full" style={{ background: acc(0.5) }} />
                     ))}
                   </div>
                 )}
                 <h3
                   className="mb-5 font-mono text-[12px] font-bold uppercase tracking-[0.28em]"
-                  style={{ color: 'rgba(245,183,0,0.75)' }}
+                  style={{ color: acc(0.75) }}
                 >
                   {sec.heading}
                 </h3>
                 {sec.paragraphs.map((p, j) =>
                   isDirectionLine(p) ? (
-                    <DirectionCue key={j} text={p} fontSize={settings.fontSize} />
+                    <DirectionCue key={j} text={p} fontSize={settings.fontSize} theme={theme} />
                   ) : (
                     <p
                       key={j}
@@ -670,14 +727,14 @@ export default function Teleprompter() {
         className="pointer-events-none absolute left-0 right-0 top-0 z-10"
         style={{
           height: `calc(${readLinePct}% - 70px)`,
-          background: `linear-gradient(to bottom, ${NIGHT} 22%, rgba(8,12,22,0.55) 75%, transparent)`,
+          background: `linear-gradient(to bottom, ${NIGHT} 22%, ${night(0.55)} 75%, transparent)`,
         }}
       />
       <div
         className="pointer-events-none absolute bottom-0 left-0 right-0 z-10"
         style={{
           top: `calc(${readLinePct}% + 150px)`,
-          background: `linear-gradient(to top, ${NIGHT} 6%, rgba(8,12,22,0.5) 60%, transparent)`,
+          background: `linear-gradient(to top, ${NIGHT} 6%, ${night(0.5)} 60%, transparent)`,
         }}
       />
 
@@ -686,8 +743,8 @@ export default function Teleprompter() {
         className="pointer-events-none absolute left-0 right-0 z-20 flex items-center gap-2 px-2 sm:px-4"
         style={{ top: `${readLinePct}%` }}
       >
-        <SeedSprout progress={progress} />
-        <div className="h-[2px] flex-1" style={{ background: `linear-gradient(to right, ${GOLD}, rgba(245,183,0,0.15))` }} />
+        <ReadingMark progress={progress} studio={studio} />
+        <div className="h-[2px] flex-1" style={{ background: `linear-gradient(to right, ${GOLD}, ${acc(0.15)})` }} />
       </div>
 
       {/* director's note + camera arm (pre-roll) */}
@@ -695,7 +752,7 @@ export default function Teleprompter() {
         <div className="absolute bottom-24 left-1/2 z-30 w-[min(92vw,640px)] -translate-x-1/2 sm:bottom-28">
           {!booth.canRecord && (
             <div className="mb-2 flex flex-wrap items-center justify-between gap-3 border-2 px-4 py-2.5" style={{ background: '#0B1019', borderColor: GOLD }}>
-              <p className="font-mono text-[10px] uppercase tracking-[0.12em]" style={{ color: 'rgba(251,246,234,0.8)' }}>
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em]" style={{ color: dim(0.8) }}>
                 Arm the camera (face takes) or the screen (demo walkthroughs), or both for a face bubble.
               </p>
               <span className="flex shrink-0 gap-2">
@@ -734,18 +791,18 @@ export default function Teleprompter() {
             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#C4160B]">
               Director&rsquo;s Note
             </p>
-            <p className="mt-1.5 text-sm leading-relaxed text-[#161616]/85">{active.directorNote}</p>
+            <p className="mt-1.5 text-sm leading-relaxed ">{active.directorNote}</p>
           </div>
         </div>
       )}
 
       {/* booth camera self-view + takes */}
-      <SelfView booth={booth} visible={selfViewOn && !done} />
-      <TakesDrawer booth={booth} open={showTakes} onClose={() => setShowTakes(false)} />
+      <SelfView booth={booth} visible={selfViewOn && !done} theme={theme} />
+      <TakesDrawer booth={booth} open={showTakes} onClose={() => setShowTakes(false)} theme={theme} bucketLabel={studio.bucketLabel} />
 
       {/* countdown */}
       {countdown !== null && countdown > 0 && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(8,12,22,0.82)' }}>
+        <div className="absolute inset-0 z-50 flex items-center justify-center" style={{ background: night(0.82) }}>
           <div className="text-center">
             <div
               key={countdown}
@@ -754,7 +811,7 @@ export default function Teleprompter() {
             >
               {countdown}
             </div>
-            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.3em]" style={{ color: 'rgba(251,246,234,0.6)' }}>
+            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.3em]" style={{ color: dim(0.6) }}>
               Eyes to the lens
             </p>
           </div>
@@ -763,19 +820,19 @@ export default function Teleprompter() {
 
       {/* end card */}
       {done && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center px-6" style={{ background: 'rgba(8,12,22,0.94)' }}>
+        <div className="absolute inset-0 z-50 flex items-center justify-center px-6" style={{ background: night(0.94) }}>
           <div className="max-w-xl text-center">
             <div className="mx-auto mb-6 w-fit scale-[1.8]">
-              <SeedSprout progress={1} />
+              <ReadingMark progress={1} studio={studio} />
             </div>
             <h2 className="font-display text-5xl font-bold sm:text-6xl" style={{ color: CREAM }}>
-              That&rsquo;s the take.
+              {studio.endCard.title}
             </h2>
-            <p className="mt-4 font-mono text-[12px] uppercase tracking-[0.18em]" style={{ color: 'rgba(245,183,0,0.85)' }}>
+            <p className="mt-4 font-mono text-[12px] uppercase tracking-[0.18em]" style={{ color: acc(0.85) }}>
               {active.episode} · {fmtTime(elapsed)} on the clock · {scriptWordCount(active)} words
             </p>
-            <p className="font-serif mt-4 text-xl italic" style={{ color: 'rgba(251,246,234,0.75)' }}>
-              Small faith. Real leverage. Work that shelters.
+            <p className="font-serif mt-4 text-xl italic" style={{ color: dim(0.75) }}>
+              {studio.endCard.creed}
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <button
@@ -788,7 +845,7 @@ export default function Teleprompter() {
               <button
                 onClick={backToLibrary}
                 className="border-2 px-5 py-2.5 font-mono text-[12px] font-bold uppercase tracking-[0.14em]"
-                style={{ borderColor: 'rgba(251,246,234,0.4)', color: CREAM }}
+                style={{ borderColor: dim(0.4), color: CREAM }}
               >
                 Back to Scripts
               </button>
@@ -801,39 +858,39 @@ export default function Teleprompter() {
       <div className="absolute bottom-0 left-0 right-0 z-30 flex items-center justify-center gap-2 px-3 pb-4 pt-2 sm:gap-3">
         <div
           className="flex items-center gap-1.5 border-2 px-2.5 py-2 sm:gap-2 sm:px-3"
-          style={{ background: 'rgba(8,12,22,0.85)', borderColor: 'rgba(251,246,234,0.2)', backdropFilter: 'blur(6px)' }}
+          style={{ background: night(0.85), borderColor: dim(0.2), backdropFilter: 'blur(6px)' }}
         >
-          <ControlBtn label="Restart (R)" onClick={restart}>
+          <ControlBtn theme={theme} label="Restart (R)" onClick={restart}>
             ↺
           </ControlBtn>
-          <ControlBtn label="Slower (↓)" onClick={() => setSettings((s) => ({ ...s, speed: Math.max(0.4, Math.round((s.speed - 0.1) * 10) / 10) }))}>
+          <ControlBtn theme={theme} label="Slower (↓)" onClick={() => setSettings((s) => ({ ...s, speed: Math.max(0.4, Math.round((s.speed - 0.1) * 10) / 10) }))}>
             −
           </ControlBtn>
           <button
             onClick={togglePlay}
             aria-label={playing ? 'Pause (Space)' : 'Play (Space)'}
             className="mx-1 flex h-12 w-12 items-center justify-center border-2 text-xl font-bold transition-transform hover:scale-105 sm:h-14 sm:w-14"
-            style={{ background: GOLD, borderColor: INK, color: INK, boxShadow: `3px 3px 0 0 rgba(251,246,234,0.25)` }}
+            style={{ background: GOLD, borderColor: INK, color: INK, boxShadow: `3px 3px 0 0 ${dim(0.25)}` }}
           >
             {playing ? '❚❚' : '▶'}
           </button>
-          <ControlBtn label="Faster (↑)" onClick={() => setSettings((s) => ({ ...s, speed: Math.min(3, Math.round((s.speed + 0.1) * 10) / 10) }))}>
+          <ControlBtn theme={theme} label="Faster (↑)" onClick={() => setSettings((s) => ({ ...s, speed: Math.min(3, Math.round((s.speed + 0.1) * 10) / 10) }))}>
             +
           </ControlBtn>
-          <span className="w-12 text-center font-mono text-[11px] tabular-nums" style={{ color: 'rgba(251,246,234,0.75)' }}>
+          <span className="w-12 text-center font-mono text-[11px] tabular-nums" style={{ color: dim(0.75) }}>
             {settings.speed.toFixed(1)}x
           </span>
-          <span className="mx-1 h-6 w-px" style={{ background: 'rgba(251,246,234,0.15)' }} />
-          <ControlBtn label="Smaller text (−)" onClick={() => setSettings((s) => ({ ...s, fontSize: Math.max(26, s.fontSize - 2) }))}>
+          <span className="mx-1 h-6 w-px" style={{ background: dim(0.15) }} />
+          <ControlBtn theme={theme} label="Smaller text (−)" onClick={() => setSettings((s) => ({ ...s, fontSize: Math.max(26, s.fontSize - 2) }))}>
             A−
           </ControlBtn>
-          <ControlBtn label="Bigger text (+)" onClick={() => setSettings((s) => ({ ...s, fontSize: Math.min(76, s.fontSize + 2) }))}>
+          <ControlBtn theme={theme} label="Bigger text (+)" onClick={() => setSettings((s) => ({ ...s, fontSize: Math.min(76, s.fontSize + 2) }))}>
             A+
           </ControlBtn>
-          <ControlBtn label="Mirror for beam-splitter rig (M)" active={settings.mirror} onClick={() => setSettings((s) => ({ ...s, mirror: !s.mirror }))}>
+          <ControlBtn theme={theme} label="Mirror for beam-splitter rig (M)" active={settings.mirror} onClick={() => setSettings((s) => ({ ...s, mirror: !s.mirror }))}>
             ⇋
           </ControlBtn>
-          <ControlBtn label="Fullscreen (F)" onClick={toggleFullscreen} className="hidden sm:flex">
+          <ControlBtn theme={theme} label="Fullscreen (F)" onClick={toggleFullscreen} className="hidden sm:flex">
             ⛶
           </ControlBtn>
         </div>
@@ -867,12 +924,14 @@ function ControlBtn({
   onClick,
   active,
   className = '',
+  theme,
 }: {
   children: React.ReactNode;
   label: string;
   onClick: () => void;
   active?: boolean;
   className?: string;
+  theme: StudioTheme;
 }) {
   return (
     <button
@@ -881,9 +940,9 @@ function ControlBtn({
       title={label}
       className={`flex h-9 w-9 items-center justify-center border font-mono text-[13px] transition-colors ${className}`}
       style={{
-        borderColor: active ? '#F5B700' : 'rgba(251,246,234,0.25)',
-        color: active ? '#F5B700' : 'rgba(251,246,234,0.8)',
-        background: active ? 'rgba(245,183,0,0.12)' : 'transparent',
+        borderColor: active ? theme.accent : `rgba(${theme.creamRgb},0.25)`,
+        color: active ? theme.accent : `rgba(${theme.creamRgb},0.8)`,
+        background: active ? `${theme.accent}1f` : 'transparent',
       }}
     >
       {children}

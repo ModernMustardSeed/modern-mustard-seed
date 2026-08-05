@@ -1,22 +1,29 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { StudioTheme } from './types';
 
 /**
- * The booth: records Sarah (camera), her screen (demo walkthroughs), or both
- * at once while the prompter rolls, and sends every take straight to the
- * private Supabase `booth` bucket for editing.
+ * The booth recorder: records Sarah (camera), her screen (demo walkthroughs),
+ * or both at once while the prompter rolls, and sends every take straight to
+ * that studio's own private Supabase bucket for editing.
+ *
+ * This hook is the one piece both studios share, because it is pure plumbing
+ * with no brand in it. It is bound to a studio by `apiBase`, and THAT is what
+ * keeps the two pipelines apart: /api/booth writes MMS takes to `booth`,
+ * /api/booth-cxc writes Cross + Covenant takes to `booth-cxc`. A take can
+ * never land in the wrong house because the hook never sees a bucket name,
+ * only the route it was handed.
  *
  * Screen mode captures the picked tab/window/screen plus a MIXED audio track
  * (her mic + the tab's own audio), so a live call with a voice agent records
  * both sides cleanly. Arm Camera at the same time and a second synced take
  * (-cam) records her face for a picture-in-picture bubble in the edit.
  *
- * No booth code: /sarah is private (noindex, unlinked, single user). Every take
- * uploads on its own, is kept in the browser for instant replay this session,
- * and can be rewatched later from the "Saved in the booth" library, which lists
- * everything in the bucket. Uploads/deletes are guarded server-side by a
- * same-origin check.
+ * No booth code: both studios are private (noindex, unlinked, single user).
+ * Every take uploads on its own, is kept in the browser for instant replay this
+ * session, and can be rewatched later from the "Saved in the booth" library.
+ * Uploads/deletes are guarded server-side by a same-origin check.
  */
 
 export type TakeStatus = 'local' | 'uploading' | 'sent' | 'failed';
@@ -55,7 +62,7 @@ function pickMime(): string {
   return 'video/webm';
 }
 
-export function useBoothCamera() {
+export function useBoothCamera(apiBase: string) {
   const [enabled, setEnabled] = useState(false);
   const [ready, setReady] = useState(false);
   const [camError, setCamError] = useState<string | null>(null);
@@ -188,7 +195,7 @@ export function useBoothCamera() {
     setLibLoading(true);
     setLibError(null);
     try {
-      const res = await fetch('/api/booth/list', { method: 'POST' });
+      const res = await fetch(`${apiBase}/list`, { method: 'POST' });
       const json = (await res.json()) as { takes?: SavedTake[]; error?: string };
       if (!res.ok) throw new Error(json.error || 'list failed');
       setLibrary(json.takes ?? []);
@@ -197,7 +204,7 @@ export function useBoothCamera() {
     } finally {
       setLibLoading(false);
     }
-  }, []);
+  }, [apiBase]);
 
   const upload = useCallback(
     async (takeId: string) => {
@@ -207,7 +214,7 @@ export function useBoothCamera() {
 
       patch({ status: 'uploading', progress: 0 });
       try {
-        const res = await fetch('/api/booth/sign', {
+        const res = await fetch(`${apiBase}/sign`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ scriptId: take.scriptId, fileName: take.fileName }),
@@ -233,7 +240,7 @@ export function useBoothCamera() {
         patch({ status: 'failed' });
       }
     },
-    [loadLibrary],
+    [loadLibrary, apiBase],
   );
 
   const recordStream = useCallback(
@@ -322,7 +329,7 @@ export function useBoothCamera() {
     if (!take) return true;
     if (take.status === 'sent') {
       try {
-        const res = await fetch('/api/booth/delete', {
+        const res = await fetch(`${apiBase}/delete`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ scriptId: take.scriptId, fileName: take.fileName }),
@@ -336,12 +343,12 @@ export function useBoothCamera() {
     setTakes((ts) => ts.filter((t) => t.id !== takeId));
     setLibrary((lib) => lib.filter((s) => s.path !== `${take.scriptId}/${take.fileName}`));
     return true;
-  }, []);
+  }, [apiBase]);
 
   /** Deletes a stored take that is only in the library (no local copy). */
   const deleteSaved = useCallback(async (scriptId: string, fileName: string): Promise<boolean> => {
     try {
-      const res = await fetch('/api/booth/delete', {
+      const res = await fetch(`${apiBase}/delete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scriptId, fileName }),
@@ -352,7 +359,7 @@ export function useBoothCamera() {
     }
     setLibrary((lib) => lib.filter((s) => s.path !== `${scriptId}/${fileName}`));
     return true;
-  }, []);
+  }, [apiBase]);
 
   const download = useCallback((takeId: string) => {
     const take = takesRef.current.find((t) => t.id === takeId);
@@ -421,18 +428,18 @@ export function useBoothCamera() {
 
 export type BoothCamera = ReturnType<typeof useBoothCamera>;
 
-const GOLD = '#F5B700';
-const CREAM = '#FBF6EA';
-const INK = '#161616';
+/** Signal colors, not brand colors: these mean the same thing in every studio. */
+const DANGER = '#E0301E';
+const SENT = '#2c7a4b';
 
-export function SelfView({ booth, visible }: { booth: BoothCamera; visible: boolean }) {
+export function SelfView({ booth, visible, theme }: { booth: BoothCamera; visible: boolean; theme: StudioTheme }) {
   if (!booth.enabled) return null;
   return (
     <div
       className="absolute left-1/2 top-9 z-30 -translate-x-1/2 transition-opacity duration-300"
       style={{ opacity: visible ? (booth.recording ? 0.55 : 1) : 0, pointerEvents: 'none' }}
     >
-      <div className="border-2" style={{ borderColor: booth.recording ? '#E0301E' : 'rgba(251,246,234,0.3)' }}>
+      <div className="border-2" style={{ borderColor: booth.recording ? DANGER : `rgba(${theme.creamRgb},0.3)` }}>
         <video
           ref={booth.attachVideo}
           muted
@@ -441,10 +448,10 @@ export function SelfView({ booth, visible }: { booth: BoothCamera; visible: bool
           style={{ transform: 'scaleX(-1)', background: '#000' }}
         />
       </div>
-      <div className="mt-1 h-1 w-full" style={{ background: 'rgba(251,246,234,0.15)' }}>
+      <div className="mt-1 h-1 w-full" style={{ background: `rgba(${theme.creamRgb},0.15)` }}>
         <div
           className="h-full transition-[width] duration-100"
-          style={{ width: `${Math.round(booth.level * 100)}%`, background: booth.level > 0.85 ? '#E0301E' : GOLD }}
+          style={{ width: `${Math.round(booth.level * 100)}%`, background: booth.level > 0.85 ? DANGER : theme.accent }}
         />
       </div>
     </div>
@@ -464,15 +471,17 @@ function fmtWhen(iso: string | null): string {
     d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 }
 
-const STATUS_CHIP: Record<TakeStatus, { text: string; bg: string; fg: string }> = {
-  local: { text: 'Saved here', bg: 'rgba(251,246,234,0.15)', fg: CREAM },
-  uploading: { text: 'Sending…', bg: GOLD, fg: INK },
-  sent: { text: 'Sent to Claude ✓', bg: '#2c7a4b', fg: CREAM },
-  failed: { text: 'Failed', bg: '#E0301E', fg: CREAM },
-};
+function statusChips(theme: StudioTheme): Record<TakeStatus, { text: string; bg: string; fg: string }> {
+  return {
+    local: { text: 'Saved here', bg: `rgba(${theme.creamRgb},0.15)`, fg: theme.cream },
+    uploading: { text: 'Sending…', bg: theme.accent, fg: theme.ink },
+    sent: { text: 'Sent to Claude ✓', bg: SENT, fg: theme.cream },
+    failed: { text: 'Failed', bg: DANGER, fg: theme.cream },
+  };
+}
 
 /** Fullscreen playback overlay for rewatching a take. */
-function TakePlayer({ url, name, onClose }: { url: string; name: string; onClose: () => void }) {
+function TakePlayer({ url, name, onClose, theme }: { url: string; name: string; onClose: () => void; theme: StudioTheme }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -486,19 +495,19 @@ function TakePlayer({ url, name, onClose }: { url: string; name: string; onClose
   return (
     <div
       className="fixed inset-0 z-[150] flex items-center justify-center p-4"
-      style={{ background: 'rgba(4,7,12,0.92)' }}
+      style={{ background: `rgba(${theme.nightRgb},0.92)` }}
       onClick={onClose}
     >
       <div
         className="flex max-h-[90vh] w-[min(96vw,960px)] flex-col border-2"
-        style={{ borderColor: INK, background: '#05070C', boxShadow: `7px 7px 0 0 ${GOLD}` }}
+        style={{ borderColor: theme.ink, background: theme.panel, boxShadow: `7px 7px 0 0 ${theme.accent}` }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-2.5" style={{ borderBottom: '1px solid rgba(251,246,234,0.15)' }}>
-          <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em]" style={{ color: GOLD }}>
+        <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-2.5" style={{ borderBottom: `1px solid rgba(${theme.creamRgb},0.15)` }}>
+          <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em]" style={{ color: theme.accent }}>
             Replay · {name}
           </span>
-          <button onClick={onClose} aria-label="Close player" className="shrink-0 font-mono text-[15px]" style={{ color: CREAM }}>
+          <button onClick={onClose} aria-label="Close player" className="shrink-0 font-mono text-[15px]" style={{ color: theme.cream }}>
             ✕
           </button>
         </div>
@@ -515,11 +524,20 @@ export function TakesDrawer({
   booth,
   open,
   onClose,
+  theme,
+  bucketLabel,
 }: {
   booth: BoothCamera;
   open: boolean;
   onClose: () => void;
+  theme: StudioTheme;
+  /** Named out loud so it is never a mystery which house a take landed in. */
+  bucketLabel: string;
 }) {
+  const STATUS_CHIP = statusChips(theme);
+  const CREAM = theme.cream;
+  const GOLD = theme.accent;
+  const dim = (a: number) => `rgba(${theme.creamRgb},${a})`;
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [deleteFailed, setDeleteFailed] = useState<string | null>(null);
   const [player, setPlayer] = useState<{ url: string; name: string } | null>(null);
@@ -537,23 +555,23 @@ export function TakesDrawer({
   const savedOnly = booth.library.filter((s) => !localPaths.has(s.path));
 
   return (
-    <div className="absolute inset-y-0 right-0 z-40 flex w-[min(94vw,380px)] flex-col border-l-2" style={{ background: '#0B1019', borderColor: 'rgba(251,246,234,0.2)' }}>
-      <div className="flex shrink-0 items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid rgba(251,246,234,0.15)' }}>
+    <div className="absolute inset-y-0 right-0 z-40 flex w-[min(94vw,380px)] flex-col border-l-2" style={{ background: theme.panel, borderColor: dim(0.2) }}>
+      <div className="flex shrink-0 items-center justify-between px-4 py-3" style={{ borderBottom: `1px solid ${dim(0.15)}` }}>
         <span className="font-mono text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: GOLD }}>
           Takes
         </span>
-        <button onClick={onClose} aria-label="Close takes" className="font-mono text-[13px]" style={{ color: 'rgba(251,246,234,0.7)' }}>
+        <button onClick={onClose} aria-label="Close takes" className="font-mono text-[13px]" style={{ color: dim(0.7) }}>
           ✕
         </button>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         {/* This session */}
-        <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(251,246,234,0.5)' }}>
+        <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: dim(0.5) }}>
           This session
         </p>
         {booth.takes.length === 0 && (
-          <p className="mb-4 font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.5)' }}>
+          <p className="mb-4 font-mono text-[11px] leading-relaxed" style={{ color: dim(0.5) }}>
             No takes yet. Arm the camera (or the screen for a demo walkthrough), hit play, and every take lands
             here, uploads on its own, and can be replayed right away. Record section by section; short takes
             upload fast and edit clean.
@@ -562,11 +580,11 @@ export function TakesDrawer({
         {booth.takes.map((t) => {
           const chip = STATUS_CHIP[t.status];
           return (
-            <div key={t.id} className="mb-3 border p-3" style={{ borderColor: 'rgba(251,246,234,0.18)', background: 'rgba(251,246,234,0.04)' }}>
+            <div key={t.id} className="mb-3 border p-3" style={{ borderColor: dim(0.18), background: dim(0.04) }}>
               <p className="truncate font-mono text-[11px]" style={{ color: CREAM }}>
                 {t.fileName}
               </p>
-              <p className="mt-1 font-mono text-[10px]" style={{ color: 'rgba(251,246,234,0.55)' }}>
+              <p className="mt-1 font-mono text-[10px]" style={{ color: dim(0.55) }}>
                 {Math.floor(t.seconds / 60)}:{String(t.seconds % 60).padStart(2, '0')} · {fmtBytes(t.bytes)}
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -588,7 +606,7 @@ export function TakesDrawer({
                   </button>
                 )}
                 {t.url && (
-                  <button onClick={() => booth.download(t.id)} className="font-mono text-[10px] uppercase underline" style={{ color: 'rgba(251,246,234,0.7)' }}>
+                  <button onClick={() => booth.download(t.id)} className="font-mono text-[10px] uppercase underline" style={{ color: dim(0.7) }}>
                     Download
                   </button>
                 )}
@@ -607,7 +625,7 @@ export function TakesDrawer({
                   <button
                     onClick={() => setConfirmDelete(t.id)}
                     className="ml-auto font-mono text-[10px] uppercase underline"
-                    style={{ color: 'rgba(251,246,234,0.45)' }}
+                    style={{ color: dim(0.45) }}
                     aria-label={`Delete take ${t.fileName}`}
                   >
                     Delete
@@ -625,13 +643,14 @@ export function TakesDrawer({
 
         {/* Saved in the booth (the whole bucket) */}
         <div className="mb-2 mt-5 flex items-center justify-between">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(251,246,234,0.5)' }}>
-            Saved in the booth{savedOnly.length > 0 ? ` (${savedOnly.length})` : ''}
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: dim(0.5) }}>
+            {bucketLabel}
+            {savedOnly.length > 0 ? ` (${savedOnly.length})` : ''}
           </p>
           <button
             onClick={() => void booth.loadLibrary()}
             className="font-mono text-[10px] uppercase underline"
-            style={{ color: 'rgba(251,246,234,0.6)' }}
+            style={{ color: dim(0.6) }}
           >
             {booth.libLoading ? 'Loading…' : 'Refresh'}
           </button>
@@ -642,16 +661,16 @@ export function TakesDrawer({
           </p>
         )}
         {!booth.libLoading && !booth.libError && savedOnly.length === 0 && (
-          <p className="font-mono text-[11px] leading-relaxed" style={{ color: 'rgba(251,246,234,0.45)' }}>
+          <p className="font-mono text-[11px] leading-relaxed" style={{ color: dim(0.45) }}>
             Every take you record is stored here and can be rewatched anytime, even from another day or machine.
           </p>
         )}
         {savedOnly.map((s) => (
-          <div key={s.path} className="mb-3 border p-3" style={{ borderColor: 'rgba(251,246,234,0.14)', background: 'rgba(251,246,234,0.03)' }}>
+          <div key={s.path} className="mb-3 border p-3" style={{ borderColor: dim(0.14), background: dim(0.03) }}>
             <p className="truncate font-mono text-[11px]" style={{ color: CREAM }}>
               {s.fileName}
             </p>
-            <p className="mt-1 truncate font-mono text-[10px]" style={{ color: 'rgba(251,246,234,0.5)' }}>
+            <p className="mt-1 truncate font-mono text-[10px]" style={{ color: dim(0.5) }}>
               {s.scriptId} · {fmtBytes(s.bytes)}{s.updatedAt ? ` · ${fmtWhen(s.updatedAt)}` : ''}
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -664,7 +683,7 @@ export function TakesDrawer({
                   ▶ Watch
                 </button>
               ) : (
-                <span className="font-mono text-[10px] uppercase" style={{ color: 'rgba(251,246,234,0.4)' }}>
+                <span className="font-mono text-[10px] uppercase" style={{ color: dim(0.4) }}>
                   Link expired · refresh
                 </span>
               )}
@@ -674,7 +693,7 @@ export function TakesDrawer({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-mono text-[10px] uppercase underline"
-                  style={{ color: 'rgba(251,246,234,0.7)' }}
+                  style={{ color: dim(0.7) }}
                 >
                   Download
                 </a>
@@ -694,7 +713,7 @@ export function TakesDrawer({
                 <button
                   onClick={() => setConfirmDelete(s.path)}
                   className="ml-auto font-mono text-[10px] uppercase underline"
-                  style={{ color: 'rgba(251,246,234,0.45)' }}
+                  style={{ color: dim(0.45) }}
                   aria-label={`Delete saved take ${s.fileName}`}
                 >
                   Delete
@@ -710,7 +729,7 @@ export function TakesDrawer({
         ))}
       </div>
 
-      {player && <TakePlayer url={player.url} name={player.name} onClose={() => setPlayer(null)} />}
+      {player && <TakePlayer url={player.url} name={player.name} onClose={() => setPlayer(null)} theme={theme} />}
     </div>
   );
 }
