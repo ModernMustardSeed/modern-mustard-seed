@@ -26,6 +26,9 @@ const PILLAR_STYLES: Record<PrompterScript['pillar'], string> = {
   STORY: 'bg-[#e4ddcf] text-[#161616]',
   SALES: 'bg-[#E0301E] text-[#FBF6EA]',
   ADS: 'bg-[#FF6B35] text-[#161616]',
+  // CXC plum, the brand's "depth / reverence" token. Not an MMS color on purpose:
+  // this tab is Cross + Covenant content and should read as a different house.
+  COVENANT: 'bg-[#7A4A7F] text-[#FBF6EA]',
 };
 
 type Settings = { speed: number; fontSize: number; mirror: boolean };
@@ -98,7 +101,7 @@ export default function Teleprompter() {
   const booth = useBoothCamera();
   const [showTakes, setShowTakes] = useState(false);
   const [selfViewOn, setSelfViewOn] = useState(true);
-  const [tab, setTab] = useState<'episode' | 'short' | 'sales' | 'ad'>('episode');
+  const [tab, setTab] = useState<'episode' | 'short' | 'sales' | 'ad' | 'cxc'>('episode');
   const [finals, setFinals] = useState<{ name: string; path: string; signedUrl: string | null }[]>([]);
   useEffect(() => {
     fetch('/api/booth/finals', { method: 'POST' })
@@ -395,13 +398,14 @@ export default function Teleprompter() {
             sends itself to Claude for the edit. The seed on the reading line grows as you go.
           </p>
 
-          <div className="mt-8 flex gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
             {(
               [
                 ['episode', 'Episodes'],
                 ['short', 'Shorts Bank'],
                 ['sales', 'Sales Desk'],
                 ['ad', 'Meta Ads'],
+                ['cxc', 'Cross + Covenant'],
               ] as const
             ).map(([k, label]) => {
               const count = PROMPTER_SCRIPTS.filter((s) => s.kind === k).length;
