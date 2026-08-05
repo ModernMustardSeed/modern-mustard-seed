@@ -139,6 +139,10 @@ export default function Navbar() {
     pathname === '/partners/playbook' ||
     pathname.startsWith('/demo/') ||
     pathname.startsWith('/hatchery/') ||
+    // The Cross + Covenant booth is a different brand's room. MMS marketing nav
+    // across the top of it is exactly the blur that studio exists to prevent.
+    // (/sarah keeps the nav: MMS chrome on an MMS booth is not a brand collision.)
+    pathname.startsWith('/sarahcxc') ||
     pathname.startsWith('/voice-agents/forge/demo/');
   if (isAppShell) return null;
 
