@@ -360,6 +360,51 @@ export function caseStudyJsonLd(args: {
   };
 }
 
+/**
+ * Article schema for a hand-built page that lives at an arbitrary PATH.
+ *
+ * The three /guides pages have called this since 2026-08-03 and it was never
+ * written, so the production build has been failing on a missing export.
+ * `blogPostingJsonLd` and `caseStudyJsonLd` could not stand in: both take a
+ * slug and hardcode their own section (/blog/, /work/), and a guide indexed
+ * under the wrong URL is worse than no schema at all.
+ *
+ * ⚠️ `path` is a PATH, leading slash and all, exactly like `breadcrumbJsonLd`.
+ */
+export function articleJsonLd(args: {
+  title: string;
+  description: string;
+  /** Site-root-relative, e.g. '/guides/local-seo-checklist'. */
+  path: string;
+  datePublished: string;
+  dateModified?: string;
+  wordCount?: number;
+  keywords?: string[];
+}) {
+  const url = `${SITE.url}${args.path}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: args.title,
+    description: args.description,
+    datePublished: args.datePublished,
+    dateModified: args.dateModified ?? args.datePublished,
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': ORG_ID },
+    mainEntityOfPage: url,
+    image: OG_IMAGE,
+    inLanguage: 'en-US',
+    isPartOf: { '@id': WEBSITE_ID },
+    ...(args.wordCount ? { wordCount: args.wordCount } : {}),
+    ...(args.keywords?.length ? { keywords: args.keywords.join(', ') } : {}),
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.mdx-prose h2', '.mdx-prose p:first-of-type'],
+    },
+  };
+}
+
 export function faqJsonLd(items: { q: string; a: string }[]) {
   return {
     '@context': 'https://schema.org',

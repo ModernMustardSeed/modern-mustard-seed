@@ -27,6 +27,7 @@ export type OsTradeKey =
   | 'garage_door'
   | 'tree_service'
   | 'landscaping'
+  | 'landscape_lighting'
   | 'pool_spa'
   | 'pest_control'
   | 'painting'
@@ -139,6 +140,30 @@ const TRADE_IDIOMS =
   /\bunder (?:one|the same|a single|our|their|its) roof\b|\ba? ?roof over (?:your|their|our|his|her|my) head\b|\b(?:raise|hit|went through) the roof\b|\bpaint (?:a picture|the town)\b|\bground[- ]?floor opportunit/g;
 
 /**
+ * SPECIALTIES the broad patterns above would swallow, matched on the business
+ * NAME ONLY.
+ *
+ * Glimmer Landscape Lighting was filed under `landscaping` because the general
+ * pattern sees "landscap" and stops. Their command center then showed weekly
+ * mowing routes, mulch and sod, and their forged agent's only facts said it
+ * mowed lawns. An owner watching their own agent book a job they do not do
+ * stops believing the rest of the demo, so this is a correctness bug, not
+ * polish (memory: feedback_name_the_business_exactly, "trade presets are a
+ * guess; the owner's words are the truth").
+ *
+ * NAME ONLY is the whole safety story. A full-service landscaper's website
+ * legitimately sells landscape lighting as one line of many, so running these
+ * against the wider corpus would misfile real landscapers. Putting the
+ * specialty on the sign is what makes it the business rather than a service.
+ */
+const NAME_SPECIALTIES: [OsTradeKey, RegExp][] = [
+  [
+    'landscape_lighting',
+    /landscape light|outdoor light|architectural light|low.?voltage light|permanent (?:trim|light)|holiday light|christmas light|lightscap/,
+  ],
+];
+
+/**
  * Detect the specific trade from the lead's own words. Pure, zero tokens.
  *
  * `primary` (the business name) is checked FIRST and on its own. The sign on
@@ -150,6 +175,7 @@ export function detectTrade(corpus: string, niche: Niche, primary?: string): OsT
   const scrub = (s: string) => s.toLowerCase().replace(TRADE_IDIOMS, ' ');
   const name = scrub(primary ?? '').trim();
   if (name) {
+    for (const [key, re] of NAME_SPECIALTIES) if (re.test(name)) return key;
     for (const [key, re] of TRADE_PATTERNS) if (re.test(name)) return key;
   }
   const hay = scrub(corpus);
@@ -195,6 +221,8 @@ export const VOICE_SERVICES: Record<OsTradeKey, string> = {
   garage_door: 'Broken spring rescues, opener repairs and installs, off-track doors, and full door replacements',
   tree_service: 'Tree removals, trimming, stump grinding, storm damage response, and hazard assessments',
   landscaping: 'Weekly mowing routes, seasonal cleanups, mulch, irrigation, sod, and patio and hardscape builds',
+  landscape_lighting:
+    'Low voltage LED lighting design for the house and the grounds, full installation, permanent architectural trim lighting, plus service, repairs and seasonal adjustments on systems we did not install. Designs are drawn on the property after dark, so the first step is booking an evening walkthrough',
   pool_spa: 'Weekly pool service routes, green pool rescues, heater and pump repairs, and openings and closings',
   pest_control: 'Ants, wasps, spiders, mice, and termites, with one-time treatments and quarterly protection plans',
   painting: 'Interior and exterior repaints, cabinet refinishing, deck staining, and free color consults with every estimate',
@@ -798,6 +826,66 @@ export const TRADE_PRESETS: Record<OsTradeKey, OsTradePreset> = {
     extraAutomations: [
       { icon: 'bell', title: 'Rain-day rescheduler', desc: 'Weather pushes the route, every affected customer gets the new day by text, nobody calls asking where you are.', on: true },
       { icon: 'chart', title: 'Seasonal presale ladder', desc: 'Cleanups, mulch, aeration, and lighting get offered to route customers in season, automatically.', on: true },
+    ],
+  },
+
+  /* --------------------------- LANDSCAPE LIGHTING ----------------------- */
+  /**
+   * A lighting company is NOT a landscaper with a different logo, which is the
+   * whole reason this preset exists. The money is a small number of large
+   * design-and-install jobs rather than a mowing route, the pipeline is gated
+   * on one thing a landscaper never has to schedule (a walkthrough that can
+   * only happen after dark), and the recurring revenue is service plans on
+   * systems already in the ground, including systems somebody else installed.
+   */
+  landscape_lighting: {
+    label: 'Landscape Lighting',
+    jobWord: 'design',
+    stages: ['New lead', 'Night walk set', 'Design approved', 'Installed'],
+    accent: '#e3b872',
+    accentSoft: 'rgba(227,184,114,0.14)',
+    weekRevenue: 18400,
+    avgTicket: 4200,
+    customers: [
+      { name: 'The Ellisons', need: 'Front elevation uplighting, brick and gables', value: 5800, stage: 1 },
+      { name: 'R. Okafor', need: 'Path lighting, drive to front door', value: 3100, stage: 2 },
+      { name: 'Haverhill Ridge HOA', need: 'Entry monument + monument landscaping', value: 9400, stage: 0 },
+      { name: 'The Brannans', need: 'Permanent architectural trim, whole front', value: 11200, stage: 1 },
+      { name: 'D. Vasquez', need: 'Existing system, four fixtures dark', value: 385, stage: 3 },
+      { name: 'The Pruitts', need: 'Pool and pergola lighting, phase two', value: 4600, stage: 2 },
+    ],
+    overnightCalls: [
+      { caller: 'The Brannans', time: '8:50 PM', need: 'Saw a neighbor’s trim lighting, wants a price', outcome: 'Night walk booked, Thursday after sunset' },
+      { caller: 'D. Vasquez', time: '9:35 PM', need: 'Half the yard went dark tonight', outcome: 'Service visit set, transformer check first' },
+      { caller: 'Unknown', time: '10:10 PM', need: 'Do you light trees this tall?', outcome: 'Address taken, evening walkthrough offered' },
+    ],
+    todayJobs: [
+      { time: '9:00', title: 'Install day one: Okafor path run', who: 'Crew 1' },
+      { time: '2:00', title: 'Service call, transformer + four fixtures', who: 'D. Vasquez' },
+      { time: '8:30', title: 'Night walk, front elevation design', who: 'The Brannans' },
+    ],
+    ads: [
+      { headline: 'Your house disappears at sunset.', body: '{biz} designs the light that keeps it there. Uplights on the architecture, a lit path to the door, and one evening walkthrough to see it before you buy it.' },
+      { headline: 'The design happens after dark.', body: 'Because that is the only time you can see what you are paying for. {biz} walks your {city} property at night and shows you the plan on the house itself.' },
+    ],
+    reviewAsk: 'Hope the house is looking sharp after dark! If the crew earned it, a quick Google review helps your neighbors find us: ',
+    signature: {
+      tabLabel: 'Night walks',
+      title: 'Night walk & install board',
+      sub: 'Every job starts with one evening walkthrough, and every walkthrough that does not get booked is the job going to whoever answered.',
+      metricLabel: 'Design value in the pipeline',
+      metricValue: '$34,100',
+      rows: [
+        { title: 'Brannan permanent trim', sub: 'Night walk Thursday, full front elevation, Everlights', amount: 11200, tag: 'Walk set', tone: 'hot' },
+        { title: 'Haverhill Ridge HOA', sub: 'Entry monument bid, board votes at the end of the month', amount: 9400, tag: 'Bid out', tone: 'wait' },
+        { title: 'Ellison front elevation', sub: 'Design drawn on site, deposit invoice sent Tuesday', amount: 5800, tag: 'Deposit out', tone: 'wait' },
+        { title: '41 systems on service plans', sub: 'Spring aim, lamp swaps, and timer resets, renewed annually', amount: 7700, tag: 'Recurring', tone: 'won' },
+      ],
+      footer: 'In the real build the walkthrough books itself into the after-sunset window, deposits invoice on design approval, and every installed system rolls onto a service plan.',
+    },
+    extraAutomations: [
+      { icon: 'bell', title: 'After-sunset booking window', desc: 'Designs can only be walked in the dark, so the agent offers evening slots that move with sunset through the season instead of a fixed 5pm.', on: true },
+      { icon: 'chart', title: 'Service plan renewals', desc: 'Every installed system comes back around for its seasonal aim and lamp check, offered automatically before the season starts.', on: true },
     ],
   },
 

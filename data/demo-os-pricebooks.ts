@@ -238,6 +238,26 @@ export const PRICE_BOOKS: Record<OsTradeKey, OsPriceBook> = {
       ...STANDARD_TERMS,
     ],
   },
+  landscape_lighting: {
+    docWord: 'Design proposal',
+    intro: 'Prepared by {biz} after walking the property at night. Every fixture on this list has a place on the plan and a reason for being there.',
+    depositPct: 40,
+    items: [
+      { name: 'Evening design walkthrough', unit: 'flat', price: 0, popular: true },
+      { name: 'Brass uplight, installed', unit: 'per fixture', price: 285, popular: true },
+      { name: 'Brass path light, installed', unit: 'per fixture', price: 245, popular: true },
+      { name: 'Moonlight, mounted in tree', unit: 'per fixture', price: 395 },
+      { name: 'Transformer, 300W with photocell + timer', unit: 'each', price: 720 },
+      { name: 'Permanent architectural trim lighting', unit: 'per linear ft', price: 32 },
+      { name: 'Service call on an existing system', unit: 'flat', price: 185 },
+      { name: 'Annual service plan, aim + lamp check', unit: 'per year', price: 240 },
+    ],
+    terms: [
+      'The design walkthrough happens after sunset, because that is when the plan can actually be seen.',
+      'Fixtures carry the manufacturer warranty; our workmanship is guaranteed for three years.',
+      ...STANDARD_TERMS,
+    ],
+  },
   pool_spa: {
     docWord: 'Estimate',
     intro: 'From {biz}. Chemistry logged every visit, photos texted before we latch the gate.',

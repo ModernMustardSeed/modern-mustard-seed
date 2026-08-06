@@ -38,6 +38,10 @@ const CALLER_TURNS = {
   garage_door: ['Hi, my garage door is stuck about halfway open and it will not go up or down. Can somebody come look at it?', 'Thursday morning works. My name is Dana Whitfield.'],
   tree_service: ['Hi, I have got a big limb hanging over my roof after the wind last night and it does not look safe. Can you take a look?', 'Thursday morning is good. My name is Dana Whitfield.'],
   landscaping: ['Hi, I am looking to get my yard cleaned up and back on a regular mow. Can somebody come give me a price?', 'Thursday morning works. My name is Dana Whitfield.'],
+  // A lighting company is booked at night, not Thursday morning, and the ask is
+  // for a design rather than a price. Asking one about a mow is how a film
+  // teaches the owner that we did not look at their business.
+  landscape_lighting: ['Hi, my house just goes black the second the sun goes down and I would love to get the front of it lit up. Can somebody come look at it?', 'An evening works better for me. My name is Dana Whitfield.'],
   pool_spa: ['Hi, my pool has gone completely green and I cannot get it back. Can somebody come out and look at it?', 'Thursday morning works. My name is Dana Whitfield.'],
   pest_control: ['Hi, I am seeing mice in my kitchen and I would like to get somebody out to deal with it.', 'Thursday morning is good. My name is Dana Whitfield.'],
   painting: ['Hi, I want to get the outside of my house painted this summer. Can somebody come out and give me a quote?', 'Thursday morning works. My name is Dana Whitfield.'],
