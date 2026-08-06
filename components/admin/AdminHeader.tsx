@@ -61,6 +61,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'call', label: 'Intake Call', href: '/admin/intake-call' },
       { key: 'builds', label: 'Builds', href: '/admin/builds' },
       { key: 'build-log', label: 'Build Log', href: '/admin/build-log' },
+      { key: 'golive', label: 'Go-Live', href: '/admin/golive' },
       { key: 'intakes', label: 'Intakes', href: '/admin/intakes' },
       { key: 'reviews', label: 'Reviews', href: '/admin/testimonials' },
       { key: 'portfolio', label: 'My Projects', href: '/admin/portfolio' },

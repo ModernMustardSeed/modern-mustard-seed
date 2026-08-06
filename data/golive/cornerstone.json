@@ -1,0 +1,62 @@
+{
+  "slug": "cornerstone",
+  "title": "Cornerstone",
+  "subtitle": "Agentic construction management. Client sprint live: intake sent, engine week in flight.",
+  "repo_path": "~/cornerstone",
+  "prod_url": "https://cornerstone-sarah-7990s-projects.vercel.app",
+  "groups": [
+    {
+      "name": "1 · Accounts & Money (≈45 Min Total)",
+      "items": [
+        { "id": "wallet", "who": "You", "what": "Fund the Anthropic API wallet (~$200 to start)",
+          "how": "Customer workloads run on metered API, never on a subscription. This powers certificate reading and reply handling.",
+          "href": "https://console.anthropic.com/settings/billing", "label": "console.anthropic.com → Billing" },
+        { "id": "supabase", "who": "You", "what": "Create a dedicated Supabase project on Pro ($25/mo), name it cornerstone-prod",
+          "how": "Customer data never shares a database with anything else. Pick us-east-1. Then send me the project URL + service-role key (Settings → API).",
+          "href": "https://supabase.com/dashboard/new", "label": "supabase.com → New project" },
+        { "id": "vps", "who": "You", "what": "Netcup VPS 1000 G12, Manassas USA, HOURLY billing (€0.017/hr, no commitment)",
+          "how": "4 vCPU / 8GB / 256GB. Ubuntu 24.04. Send me the IP + root password and I do everything else.",
+          "href": "https://www.netcup.com/en/server/vps", "label": "netcup.com → VPS 1000 G12" },
+        { "id": "resend", "who": "Done", "what": "Email sending (Resend): wired",
+          "how": "Intake notifications land at makeourcitypretty@gmail.com (sarah@ is a suppressed recipient in Resend; it sends FROM sarah@ fine)." }
+      ]
+    },
+    {
+      "name": "2 · The Phone (SMS Can Lag Launch, Email Goes First)",
+      "items": [
+        { "id": "ein", "who": "You", "what": "Find or get the EIN (free, ~10 min)",
+          "how": "Check email for the IRS CP-575 PDF or your business bank docs. Nothing? Apply online, issued instantly. Or call the IRS business line 800-829-4933 for a 147-C letter.",
+          "href": "https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number", "label": "irs.gov → Get an EIN" },
+        { "id": "twilio", "who": "You", "what": "Twilio: read the Trust Hub rejection reason, then resubmit the brand with the EXACT IRS legal name",
+          "how": "Use case wording matters: transactional notifications to known business contacts under existing contracts, with opt-out. Not marketing.",
+          "href": "https://console.twilio.com/us1/account/trust-hub", "label": "console.twilio.com → Trust Hub" },
+        { "id": "sms", "who": "Claude", "what": "Flip the SMS adapter on the day A2P clears", "how": "Already stubbed in the engine. Zero code waiting on it at launch." }
+      ]
+    },
+    {
+      "name": "3 · The Client",
+      "items": [
+        { "id": "intake", "who": "You", "what": "Send them the intake link",
+          "how": "One link, ~20 minutes for them. It tells them exactly what to email afterward (COIs, W-9s, requirements, drawings).",
+          "href": "https://cornerstone-sarah-7990s-projects.vercel.app/start", "label": "cornerstone …/start" },
+        { "id": "docs", "who": "Client", "what": "They email their documents to sarah@modernmustardseed.com", "how": "Whatever they have, any shape." },
+        { "id": "price", "who": "You", "what": "Quote them the real price. No pilot, no trial",
+          "how": "Setup ($1,500 res / $5,000 comm) + first month at the tier ($449+ res / $1,200+ comm). Cancel monthly. Week one is supervised, which IS the safety story, not a discount excuse." }
+      ]
+    },
+    {
+      "name": "4 · Launch Week (Claude Builds, You Approve)",
+      "note": "Each step fires the moment its inputs above exist.",
+      "items": [
+        { "id": "b1", "who": "Claude", "what": "Apply the schema, load their job, ingest roster + COI PDFs, run adequacy checks", "how": "Needs: wallet + Supabase + their docs." },
+        { "id": "b2", "who": "Claude", "what": "Reply ingest live (their subs' emails + attached certs file themselves)" },
+        { "id": "b3", "who": "Claude", "what": "Engine on the VPS: nightly sweep 23:40, report 04:45, guards armed, DRY_RUN off / shadow ON", "how": "Needs: VPS IP." },
+        { "id": "b4", "who": "Claude", "what": "Their console view live (their job, their subs, their chases, their report)" },
+        { "id": "shadow", "who": "You", "what": "Shadow week: approve each drafted chase in one tap; call the client before the first live send",
+          "how": "Your client-facing-send law, applied to their subs. Autonomy dials up per chase type as it proves out." },
+        { "id": "live", "who": "You", "what": "Say GO. The Marshal runs the ladder unsupervised, escalations still come to a human",
+          "how": "The launch crew at go-live: Foreman (report) + Marshal (documents) + Scheduler (weather watch) + Logger (drop inbox)." }
+      ]
+    }
+  ]
+}
