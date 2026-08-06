@@ -37,15 +37,21 @@ bucket at `suite/<leadId>.mp4` and `suite/<leadId>.jpg`, signed fresh on every
 hub render (same pattern as Sarah's founder videos).
 
 Needs, on the machine that runs it: Playwright chromium, `ffmpeg` + `ffprobe` on
-PATH, `~/.claude/fal.env` with a funded wallet, and `.env.local` with the Supabase
-service role key. `VAPI_API_KEY` is optional but strongly wanted (see below).
+PATH, `edge-tts` (`python -m pip install edge-tts`), and `.env.local` with the
+Supabase service role key. `VAPI_API_KEY` is optional but strongly wanted (see below).
+
+**A funded fal wallet is NOT required.** `tts.mjs` runs the free Edge neural voices by
+default and only falls back to fal's minimax when edge-tts is missing or the network
+refuses it. Verified 2026-08-06: a full Kylers cut completed with the fal wallet locked
+(`403 User is locked. Reason: Exhausted balance`). Do not let a dry fal wallet stop you
+from cutting a film.
 
 ## The five files
 
 | file | what it owns |
 |---|---|
 | `lines.mjs` | the script: narration per beat, and what the staged caller says per trade |
-| `tts.mjs` | the two voices, via fal `minimax/speech-02-hd`. Returns `duration_ms` |
+| `tts.mjs` | the two voices, free Edge neural voices first, fal `minimax/speech-02-hd` as fallback. Returns `duration_ms` either way |
 | `cards.mjs` | the pop-art open and close cards |
 | `record.mjs` | the camera: drives the real surfaces, makes the call, captures both sides of it |
 | `compose.mjs` | the cut: ffmpeg, plus the caller's fake-microphone WAV |
