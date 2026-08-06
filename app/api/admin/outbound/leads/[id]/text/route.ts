@@ -45,6 +45,31 @@ function bestLink(lead: OutboundLead): { url: string; noun: string } | null {
 function draftFor(lead: OutboundLead): string {
   const hi = greeting(lead);
   const link = bestLink(lead);
+
+  // A lead still on status 'new' has never been worked (every logged call
+  // outcome moves it off 'new'), so this text is their first contact ever.
+  // The follow-up drafts below both presume a phone call that never happened;
+  // a cold text has to say who Sarah is, why she's texting, and offer an easy
+  // out. Full name and the studio, because an unknown number gets one glance.
+  const cold = lead.status === 'new';
+
+  if (cold) {
+    if (link) {
+      return toAscii(
+        `${hi} this is Sarah Scarano with Modern Mustard Seed, a web studio in Montana. ` +
+        `We build talking websites, sites that greet your customers and answer them out loud. ` +
+        `I put one together so you could see and hear it for yourself: ${link.url} ` +
+        `Ninety seconds, no strings. If it's not for you, no worries at all.`
+      );
+    }
+    return toAscii(
+      `${hi} this is Sarah Scarano with Modern Mustard Seed, a web studio in Montana. ` +
+      `We build talking websites, sites that greet your customers and answer them out loud. ` +
+      `I'd love to show you what ${lead.business_name} would look and sound like with one. ` +
+      `Want me to put that together for you? If not, no worries at all.`
+    );
+  }
+
   if (link) {
     return toAscii(
       `${hi} it's Sarah with Modern Mustard Seed. ` +
