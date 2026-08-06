@@ -133,12 +133,53 @@ function CrossMark({ progress, theme }: { progress: number; theme: StudioTheme }
   );
 }
 
-function ReadingMark({ progress, studio }: { progress: number; studio: StudioConfig }) {
-  return studio.mark === 'cross' ? (
-    <CrossMark progress={progress} theme={studio.theme} />
-  ) : (
-    <SeedSprout progress={progress} theme={studio.theme} />
+/**
+ * Eternal Optimist: a sun that rises as the read progresses. The book's own
+ * image, and its closing line. The disc climbs from below the horizon, the rays
+ * come out one by one as it clears, and the horizon stays lit the whole way so
+ * the mark is never invisible at zero.
+ */
+function SunMark({ progress, theme }: { progress: number; theme: StudioTheme }) {
+  const rise = Math.min(1, Math.max(0, progress));
+  const cy = 34 - rise * 17; // below the line, then well above it
+  const rays = Math.min(1, Math.max(0, (progress - 0.25) / 0.5));
+  return (
+    <svg width="34" height="44" viewBox="0 0 34 44" aria-hidden="true" className="shrink-0">
+      <defs>
+        <clipPath id="above-horizon">
+          <rect x="0" y="0" width="34" height="34" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#above-horizon)">
+        <g style={{ transition: 'transform 400ms ease' }} transform={`translate(0 ${cy - 17})`}>
+          <circle cx="17" cy="17" r="6.5" fill={theme.accent} />
+          <g style={{ opacity: rays, transition: 'opacity 500ms ease' }}>
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+              <line
+                key={deg}
+                x1="17"
+                y1="7.5"
+                x2="17"
+                y2="3.5"
+                stroke={theme.accent}
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                transform={`rotate(${deg} 17 17)`}
+              />
+            ))}
+          </g>
+        </g>
+      </g>
+      {/* The horizon: always lit, so there is a mark from the very first frame. */}
+      <line x1="3" y1="34" x2="31" y2="34" stroke={theme.accentAlt} strokeWidth="2" strokeLinecap="round" />
+    </svg>
   );
+}
+
+function ReadingMark({ progress, studio }: { progress: number; studio: StudioConfig }) {
+  if (studio.mark === 'cross') return <CrossMark progress={progress} theme={studio.theme} />;
+  if (studio.mark === 'sun') return <SunMark progress={progress} theme={studio.theme} />;
+  return <SeedSprout progress={progress} theme={studio.theme} />;
 }
 
 export default function Prompter({ studio }: { studio: StudioConfig }) {

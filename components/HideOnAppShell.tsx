@@ -15,8 +15,9 @@ export default function HideOnAppShell({ children }: { children: React.ReactNode
     p.endsWith('/hq') ||
     p.startsWith('/demo/') ||
     p.startsWith('/hatchery/') ||
-    // Cross + Covenant's booth: no MMS footer under another brand's room.
+    // The CXC and Eternal Optimist booths: no MMS footer under another house.
     p.startsWith('/sarahcxc') ||
+    p.startsWith('/sarahbook') ||
     p.startsWith('/voice-agents/forge/demo/')
   )
     return null;

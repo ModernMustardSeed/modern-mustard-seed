@@ -101,7 +101,7 @@ export type StudioConfig = {
   scripts: PrompterScript[];
   theme: StudioTheme;
   /** Which reading-line mark to draw. */
-  mark: 'seed' | 'cross';
+  mark: 'seed' | 'cross' | 'sun';
   endCard: { title: string; creed: string };
   /** The finished-cuts destination. Null when the studio has no publisher yet. */
   publisher: { href: string; label: string } | null;

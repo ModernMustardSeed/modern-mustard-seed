@@ -1,4 +1,18 @@
-import type { CxcScript } from './scripts';
+import type { PrompterScript as BaseScript } from '@/components/studio/types';
+
+/**
+ * The book studio speaks in the book's own structure: `kind` is the PART (which
+ * drives the four tabs) and `pillar` is the one word that chapter is actually
+ * about, so a card tells you its subject at a glance.
+ */
+export type BookScript = BaseScript & {
+  kind: 'lens' | 'eternal' | 'practice' | 'beautiful';
+  pillar:
+    | 'PERSPECTIVE' | 'ATTENTION' | 'CLARITY' | 'PRESENCE'
+    | 'FORMATION' | 'SCALE' | 'IDENTITY' | 'HOPE'
+    | 'RHYTHM' | 'GRATITUDE' | 'REFRAME' | 'INPUT' | 'JOY'
+    | 'BEAUTY' | 'FIRE' | 'LIGHT';
+};
 
 /**
  * ETERNAL OPTIMIST: sixteen episodes, one per chapter, pulled from Sarah's book
@@ -24,15 +38,15 @@ import type { CxcScript } from './scripts';
  * Grouped by the book's four parts, which the pillar chip shows on every card:
  *   LENS · ETERNAL · PRACTICE · BEAUTIFUL
  */
-export const ETERNAL_OPTIMIST: CxcScript[] = [
+export const ETERNAL_OPTIMIST: BookScript[] = [
   /* ─────────────────────────── PART ONE: THE LENS ─────────────────────────── */
   {
     id: 'eo-ch01-ten-ninety',
-    kind: 'book',
+    kind: 'lens',
     episode: 'Chapter One',
-    session: 'Eternal Optimist · Part One: The Lens',
+    session: 'Part One: The Lens',
     publish: 'Book series',
-    pillar: 'LENS',
+    pillar: 'PERSPECTIVE',
     title: 'The 10/90 Principle',
     hook: 'My mother handed me a piece of paper when I was nine years old, and it set the direction of my whole life.',
     directorNote:
@@ -86,11 +100,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch02-find-what-you-look-for',
-    kind: 'book',
+    kind: 'lens',
     episode: 'Chapter Two',
-    session: 'Eternal Optimist · Part One: The Lens',
+    session: 'Part One: The Lens',
     publish: 'Book series',
-    pillar: 'LENS',
+    pillar: 'ATTENTION',
     title: 'You Find What You Look For',
     hook: 'The coin did not move. What changed was the light in the room and the attention of the woman holding the broom.',
     directorNote:
@@ -138,11 +152,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch03-dirty-window',
-    kind: 'book',
+    kind: 'lens',
     episode: 'Chapter Three',
-    session: 'Eternal Optimist · Part One: The Lens',
+    session: 'Part One: The Lens',
     publish: 'Book series',
-    pillar: 'LENS',
+    pillar: 'CLARITY',
     title: 'The Dirty Window',
     hook: 'She had been squinting at a garden she could barely see, and somewhere along the way she just accepted that this was what the garden looked like now.',
     directorNote:
@@ -192,11 +206,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch04-borrowed-grief',
-    kind: 'book',
+    kind: 'lens',
     episode: 'Chapter Four',
-    session: 'Eternal Optimist · Part One: The Lens',
+    session: 'Part One: The Lens',
     publish: 'Book series',
-    pillar: 'LENS',
+    pillar: 'PRESENCE',
     title: 'Borrowed Grief and Present Grace',
     hook: 'There is a kind of suffering that is entirely self-manufactured, and I have spent large portions of my life doing exactly this.',
     directorNote:
@@ -245,11 +259,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   /* ──────────────────── PART TWO: THE ETERNAL FRAME ──────────────────── */
   {
     id: 'eo-ch05-boot-camp',
-    kind: 'book',
+    kind: 'eternal',
     episode: 'Chapter Five',
-    session: 'Eternal Optimist · Part Two: The Eternal Frame',
+    session: 'Part Two: The Eternal Frame',
     publish: 'Book series',
-    pillar: 'ETERNAL',
+    pillar: 'FORMATION',
     title: 'Boot Camp',
     hook: 'The suffering is the curriculum.',
     directorNote:
@@ -293,11 +307,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch06-eternity-is-long',
-    kind: 'book',
+    kind: 'eternal',
     episode: 'Chapter Six',
-    session: 'Eternal Optimist · Part Two: The Eternal Frame',
+    session: 'Part Two: The Eternal Frame',
     publish: 'Book series',
-    pillar: 'ETERNAL',
+    pillar: 'SCALE',
     title: 'Eternity Is Long',
     hook: 'We have made eternity very small.',
     directorNote:
@@ -341,11 +355,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch07-daughters-vantage-point',
-    kind: 'book',
+    kind: 'eternal',
     episode: 'Chapter Seven',
-    session: 'Eternal Optimist · Part Two: The Eternal Frame',
+    session: 'Part Two: The Eternal Frame',
     publish: 'Book series',
-    pillar: 'ETERNAL',
+    pillar: 'IDENTITY',
     title: "The Daughter's Vantage Point",
     hook: 'I know whose I am. Four words that contain an entire architecture of identity and freedom.',
     directorNote:
@@ -384,11 +398,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch08-temporal-evil',
-    kind: 'book',
+    kind: 'eternal',
     episode: 'Chapter Eight',
-    session: 'Eternal Optimist · Part Two: The Eternal Frame',
+    session: 'Part Two: The Eternal Frame',
     publish: 'Book series',
-    pillar: 'ETERNAL',
+    pillar: 'HOPE',
     title: 'Evil Has an Expiration Date',
     hook: 'I want to begin with something I will not walk back. Evil is real.',
     directorNote:
@@ -435,11 +449,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   /* ────────────────────── PART THREE: THE PRACTICE ────────────────────── */
   {
     id: 'eo-ch09-morning-architecture',
-    kind: 'book',
+    kind: 'practice',
     episode: 'Chapter Nine',
-    session: 'Eternal Optimist · Part Three: The Practice',
+    session: 'Part Three: The Practice',
     publish: 'Book series',
-    pillar: 'PRACTICE',
+    pillar: 'RHYTHM',
     title: 'Morning Architecture',
     hook: 'Before the world gets to you, you get to choose.',
     directorNote:
@@ -485,11 +499,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch10-gratitude-weapon',
-    kind: 'book',
+    kind: 'practice',
     episode: 'Chapter Ten',
-    session: 'Eternal Optimist · Part Three: The Practice',
+    session: 'Part Three: The Practice',
     publish: 'Book series',
-    pillar: 'PRACTICE',
+    pillar: 'GRATITUDE',
     title: 'The Gratitude Weapon',
     hook: 'Paul wrote rejoice always from inside actual chains.',
     directorNote:
@@ -534,11 +548,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch11-reframing',
-    kind: 'book',
+    kind: 'practice',
     episode: 'Chapter Eleven',
-    session: 'Eternal Optimist · Part Three: The Practice',
+    session: 'Part Three: The Practice',
     publish: 'Book series',
-    pillar: 'PRACTICE',
+    pillar: 'REFRAME',
     title: 'What Would I See If God Wastes Nothing',
     hook: 'It is made of broken things, and people have been crossing oceans to stand in front of it for nine hundred years.',
     directorNote:
@@ -586,11 +600,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch12-who-you-let-speak',
-    kind: 'book',
+    kind: 'practice',
     episode: 'Chapter Twelve',
-    session: 'Eternal Optimist · Part Three: The Practice',
+    session: 'Part Three: The Practice',
     publish: 'Book series',
-    pillar: 'PRACTICE',
+    pillar: 'INPUT',
     title: 'Who You Let Speak',
     hook: 'You are being formed right now. Not in the dramatic moments. Right now.',
     directorNote:
@@ -634,11 +648,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch13-celebration-as-theology',
-    kind: 'book',
+    kind: 'practice',
     episode: 'Chapter Thirteen',
-    session: 'Eternal Optimist · Part Three: The Practice',
+    session: 'Part Three: The Practice',
     publish: 'Book series',
-    pillar: 'PRACTICE',
+    pillar: 'JOY',
     title: 'Celebration as Theology',
     hook: 'We had to celebrate. Had to. Not chose to.',
     directorNote:
@@ -685,11 +699,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   /* ────────────────── PART FOUR: THE BEAUTIFUL LIFE ────────────────── */
   {
     id: 'eo-ch14-beautiful-life',
-    kind: 'book',
+    kind: 'beautiful',
     episode: 'Chapter Fourteen',
-    session: 'Eternal Optimist · Part Four: The Beautiful Life',
+    session: 'Part Four: The Beautiful Life',
     publish: 'Book series',
-    pillar: 'BEAUTIFUL',
+    pillar: 'BEAUTY',
     title: 'Seen, Not Perfect',
     hook: 'The life in the photographs does not exist. It has never existed.',
     directorNote:
@@ -728,11 +742,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch15-suffering-well',
-    kind: 'book',
+    kind: 'beautiful',
     episode: 'Chapter Fifteen',
-    session: 'Eternal Optimist · Part Four: The Beautiful Life',
+    session: 'Part Four: The Beautiful Life',
     publish: 'Book series',
-    pillar: 'BEAUTIFUL',
+    pillar: 'FIRE',
     title: 'Suffering Well',
     hook: 'They have been through something. And they are not bitter. That is the thing that undoes you.',
     directorNote:
@@ -777,11 +791,11 @@ export const ETERNAL_OPTIMIST: CxcScript[] = [
   },
   {
     id: 'eo-ch16-contagious',
-    kind: 'book',
+    kind: 'beautiful',
     episode: 'Chapter Sixteen',
-    session: 'Eternal Optimist · Part Four: The Beautiful Life',
+    session: 'Part Four: The Beautiful Life',
     publish: 'Book series',
-    pillar: 'BEAUTIFUL',
+    pillar: 'LIGHT',
     title: 'Contagious',
     hook: 'You have not been doing this work only for yourself.',
     directorNote:
