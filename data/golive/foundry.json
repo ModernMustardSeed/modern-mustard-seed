@@ -10,7 +10,7 @@
       "note": "Nothing downstream moves until these calls.",
       "items": [
         { "id": "name", "who": "You", "what": "Bless or replace the working brand name for the launch vertical",
-          "how": "Recommendation: Journeyman first (only vertical with an unambiguously buyable domain today, and the MMS outbound lists already point at trades). Clear second as the PTG design-partner pilot, sold in a room rather than on a page." },
+          "how": "Recommendation: Journeyman first (only vertical with an unambiguously buyable domain today, and the MMS outbound lists already point at trades)." },
         { "id": "domain", "who": "You", "what": "Buy the launch domain (journeyman.trade recommended)",
           "how": "Heads up: .cpa is a RESTRICTED TLD (verified accountancy credentials), so confirm plumb.cpa is even purchasable before committing to that name. .studio, .management and .trade are open.",
           "href": "https://porkbun.com/checkout/search?q=journeyman.trade", "label": "porkbun.com → journeyman.trade" },
@@ -38,7 +38,8 @@
         { "id": "checkout", "who": "Claude", "what": "Wire the pilot payment path (Stripe checkout or invoice) once the number is set" },
         { "id": "caps", "who": "Claude", "what": "Make the caps-fail-closed law real in code before anyone is billed",
           "how": "It is marketing copy today, not enforcement. Never-leak-revenue law: guards ship before money moves, or the claim gets softened." },
-        { "id": "ptg", "who": "You", "what": "Confirm the PTG design-partner path for Clear (the title vertical)" }
+        { "id": "clear-channel", "who": "You", "what": "Decide Clear's distribution channel (the title vertical)",
+          "how": "The old plan leaned on title-industry warm intros that no longer exist. Clear needs a new door or it waits behind Journeyman." }
       ]
     }
   ]
