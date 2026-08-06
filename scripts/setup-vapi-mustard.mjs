@@ -152,6 +152,7 @@ Never invent a discount, a promotion, or a price that is not written above.
 - Use short, declarative sentences. They carry better on a phone line than long winding ones, and they keep you sounding sharp.
 - Warm but measured and grounded. Quietly confident, not bouncy or hyped up. Skip slang and filler interjections. A simple "got it" or "that makes sense" is plenty. Never say things like "oof" or "love that".
 - Never use em dashes, in speech or in any text. Use periods, commas, or parentheses instead. Short, clean sentences read better aloud and keep your cadence punchy.
+- NEVER stall out loud. Do not say "hold on a sec", "just a moment", "let me check", "one second", or any variation while you are looking something up at the START of a call. You are checking a record that returns instantly, so stalling invents dead air that makes you sound slow, and slow is the one thing you cannot be. Look it up and keep talking as if you already knew. The ONLY place a short "one sec" is acceptable is a live calendar lookup or an actual booking, where a real beat of quiet is natural.
 - Use their name once you have it, naturally, not in every sentence.
 - Never read lists out loud. Weave options into speech: "I could do Tuesday at nine, or Thursday at one thirty."
 - Numbers, emails, and times are spoken naturally: "nine a m Mountain" not "9:00 AM MT".
@@ -257,10 +258,19 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
+    // SILENCE THE FILLER. Verified 2026-08-06: with no `messages` array, Vapi
+    // auto-generates a spoken stall before the tool runs, and it was saying
+    // "Hold on a sec" / "This'll just take a sec" / "Give me a moment" at the
+    // START of every single call. Prompt rules could not stop it, because it is
+    // Vapi generating the line, not the model. An explicit request-start message
+    // OVERRIDES that auto-filler, and empty content means nothing is spoken.
+    // recall_caller returns instantly, so this is pure dead air removed from the
+    // first seconds of every call, which is exactly where "he's slow" is felt.
+    messages: [{ type: 'request-start', content: '' }],
     function: {
       name: 'recall_caller',
       description:
-        "Check whether you have spoken with this caller before. Call this ONCE at the very start of the call, right after your opening line, before anything else. For phone callers it recognizes them automatically by their number (no arguments needed). If you later get an email and suspect they have spoken with us, call it again with that email. If it returns a known caller, greet them by name and pick up where you left off; if not, just continue normally.",
+        "Check whether you have spoken with this caller before. Call this ONCE at the very start of the call, right after your opening line, before anything else. CALL IT SILENTLY: it returns instantly, so you must NOT say 'hold on', 'one sec', 'let me check', or any other stalling phrase before or during it. Emit the tool call with NO spoken text alongside it, then answer as though you already knew. For phone callers it recognizes them automatically by their number (no arguments needed). If you later get an email and suspect they have spoken with us, call it again with that email. If it returns a known caller, greet them by name and pick up where you left off; if not, just continue normally and never mention that you checked.",
       parameters: {
         type: 'object',
         properties: {
@@ -277,6 +287,10 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
+    // A calendar lookup is genuinely slow enough that silence would feel like a
+    // dropped call, so this one keeps a spoken beat. It is stated explicitly so
+    // it is OUR line in his voice, not Vapi's randomly generated filler.
+    messages: [{ type: 'request-start', content: "Let me pull up Sarah's calendar." }],
     function: {
       name: 'get_available_slots',
       description:
@@ -297,6 +311,7 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
+    messages: [{ type: 'request-start', content: 'Getting that on her calendar now.' }],
     function: {
       name: 'book_discovery_call',
       description:
@@ -323,6 +338,9 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
+    // Silent: fires mid-conversation and returns fast. Announcing it would both
+    // stall and tell the caller they are being filed, which is not the moment.
+    messages: [{ type: 'request-start', content: '' }],
     function: {
       name: 'capture_lead',
       description:
@@ -345,6 +363,9 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
+    // Silent: the persona already confirms the send in his own words afterwards
+    // ("that's on its way to your inbox"), so a stall here just doubles it up.
+    messages: [{ type: 'request-start', content: '' }],
     function: {
       name: 'send_email',
       description:
@@ -376,6 +397,7 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
+    messages: [{ type: 'request-start', content: 'Let me get word to Sarah right now.' }],
     function: {
       name: 'reach_sarah',
       description:
