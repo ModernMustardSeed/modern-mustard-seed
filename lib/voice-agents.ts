@@ -58,8 +58,16 @@ export const VOICE_AGENTS: VoiceAgent[] = [
     // Fallback moved haiku-4-5 -> sonnet-4-6: haiku is faster but in the 8/06
     // benchmark it broke persona (narrated its own tool call out loud), which is
     // not acceptable on the flagship sales line even during a brief failover.
-    primary: process.env.VOICE_PRIMARY_MODEL || 'claude-sonnet-5',
-    fallback: process.env.VOICE_FALLBACK_MODEL || 'claude-sonnet-4-6',
+    // ⚠️ 2026-08-06 (same day): REVERTED sonnet-5 -> sonnet-4-6 after a real call
+    // showed sonnet-5 sitting silent ~29s between a tool result and speaking
+    // (adaptive thinking emits no audio). This MUST match
+    // scripts/setup-vapi-mustard.mjs. It is not cosmetic: with primary left at
+    // sonnet-5, the live model (sonnet-4-6) would have equalled the FALLBACK, and
+    // the "both probes pass + agent on fallback -> restore primary" rule would
+    // have shoved him back onto sonnet-5 within ~10 minutes and re-broken the
+    // line. Fallback goes back to haiku so primary and fallback stay distinct.
+    primary: process.env.VOICE_PRIMARY_MODEL || 'claude-sonnet-4-6',
+    fallback: process.env.VOICE_FALLBACK_MODEL || 'claude-haiku-4-5-20251001',
   },
   {
     id: 'f87500be-5992-4ffa-ad38-8fd18c078b01',

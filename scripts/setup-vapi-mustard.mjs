@@ -258,15 +258,17 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
-    // SILENCE THE FILLER. Verified 2026-08-06: with no `messages` array, Vapi
-    // auto-generates a spoken stall before the tool runs, and it was saying
-    // "Hold on a sec" / "This'll just take a sec" / "Give me a moment" at the
-    // START of every single call. Prompt rules could not stop it, because it is
-    // Vapi generating the line, not the model. An explicit request-start message
-    // OVERRIDES that auto-filler, and empty content means nothing is spoken.
-    // recall_caller returns instantly, so this is pure dead air removed from the
-    // first seconds of every call, which is exactly where "he's slow" is felt.
-    messages: [{ type: 'request-start', content: '' }],
+    // ⚠️ DO NOT SILENCE THIS AGAIN. It was set to '' on 2026-08-06 to kill Vapi's
+    // auto-filler, and that was a REGRESSION: a real call went bare-silent and
+    // the caller said "Hello? Hello?" then hung up.
+    // Why: the tool itself is fast (webhook round trip measured 1.2s), but the
+    // MODEL takes ~10s to decide to call it after the caller stops talking
+    // (10.3s on opus-4-6, 10.7s on sonnet-5, so it is not model-specific). That
+    // 10 seconds is unavoidable dead air on the FIRST turn of every call, and
+    // Vapi's auto-filler had been covering it all along.
+    // So the fix is not silence, it is OUR line instead of Vapi's random one.
+    // Keep it SHORT and natural so it reads as a beat, not a stall.
+    messages: [{ type: 'request-start', content: 'Sure thing.' }],
     function: {
       name: 'recall_caller',
       description:
@@ -570,7 +572,20 @@ const assistant = {
     // ⚠️ The voice-health watchdog can silently demote this. Its env overrides
     // VOICE_PRIMARY_MODEL / VOICE_FALLBACK_MODEL must be updated to match, or a
     // failover will quietly put him back on an older brain.
-    model: env('VAPI_MODEL') || 'claude-sonnet-5',
+    // ⚠️⚠️ REVERTED OFF claude-sonnet-5 2026-08-06 AFTER A REAL CALL. Do not put
+    // it back without new evidence. POST /chat benchmarks made sonnet-5 look 3.4x
+    // faster than opus, but /chat CANNOT SEE what breaks a voice call. Measured
+    // from live call timelines (secondsFromStart), time from tool result to the
+    // bot actually speaking:
+    //   opus-4-6   30.9s result -> 32.4s speech =  1.5s
+    //   sonnet-5   21.0s result -> 50.1s speech = 29.1s   <- caller said "Hello?
+    //                                                         Hello?" and hung up
+    // That ~29s of dead air is adaptive thinking: reasoning tokens produce NO
+    // audio, so the line just sounds dead. [[decision-ledger]] already warned
+    // "adaptive thinking = silent pauses" and it was right.
+    // LESSON: a voice model must be judged on LIVE CALL TIMELINES, never on
+    // /chat latency. /chat measures total completion; a caller hears the silence.
+    model: env('VAPI_MODEL') || 'claude-sonnet-4-6',
     // 0.7 gives him warmth and natural variety for ideation without rambling;
     // the prompt keeps turns tight. Drop toward 0.6 if he ever gets loose.
     temperature: 0.7,
