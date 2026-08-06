@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAdminUser } from '@/lib/admin-auth';
 import { listRunbooks, progressOf } from '@/lib/golive';
+import GoliveAddProject from '@/components/admin/GoliveAddProject';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Go-Live' };
@@ -30,16 +31,20 @@ export default async function GolivePage() {
           </Link>
         </div>
 
+        <div className="mt-6">
+          <GoliveAddProject />
+        </div>
+
         {runbooks.length === 0 ? (
-          <div className="mt-10 border-2 border-[#161616] bg-white p-8 shadow-[4px_4px_0_0_#161616]">
+          <div className="mt-8 border-2 border-[#161616] bg-white p-8 shadow-[4px_4px_0_0_#161616]">
             <p className="font-semibold">No runbooks yet.</p>
             <p className="mt-2 text-sm text-[#161616]/70">
-              In Claude Code, run the <span className="font-mono">golive</span> skill on any
-              project. It scans the repo and files the runbook here.
+              Add a project above, or run the <span className="font-mono">golive</span> skill
+              on any repo in Claude Code and the scanned runbook lands here.
             </p>
           </div>
         ) : (
-          <div className="mt-10 grid gap-5">
+          <div className="mt-8 grid gap-5">
             {runbooks.map((rb) => {
               const p = progressOf(rb);
               const pct = p.total ? Math.round((p.done / p.total) * 100) : 0;

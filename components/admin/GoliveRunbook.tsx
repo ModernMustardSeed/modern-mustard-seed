@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { GoliveRunbook, GoliveDoneMark, GoliveItem } from '@/lib/golive';
+import type { GoliveRunbook, GoliveDoneMark, GoliveGroup, GoliveItem, GoliveWho } from '@/lib/golive';
 
 const WHO_STYLE: Record<string, { bg: string; fg: string }> = {
   You: { bg: '#F5B700', fg: '#161616' },
@@ -11,8 +11,27 @@ const WHO_STYLE: Record<string, { bg: string; fg: string }> = {
 };
 
 export default function GoliveRunbookView({ runbook }: { runbook: GoliveRunbook }) {
+  const [groups, setGroups] = useState<GoliveGroup[]>(runbook.data);
   const [done, setDone] = useState<Record<string, GoliveDoneMark>>(runbook.done);
   const [err, setErr] = useState<string | null>(null);
+
+  async function addStep(group: string, who: GoliveWho, what: string): Promise<boolean> {
+    setErr(null);
+    try {
+      const r = await fetch('/api/admin/golive', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: runbook.slug, group, who, what }),
+      });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || 'add failed');
+      setGroups((gs) => gs.map((g) => (g.name === group ? { ...g, items: [...g.items, j.item] } : g)));
+      return true;
+    } catch {
+      setErr('That step did not save. Try again.');
+      return false;
+    }
+  }
 
   const isDone = (it: GoliveItem) => it.who === 'Done' || Boolean(done[it.id]);
 
@@ -40,7 +59,7 @@ export default function GoliveRunbookView({ runbook }: { runbook: GoliveRunbook 
     }
   }
 
-  const items = runbook.data.flatMap((g) => g.items);
+  const items = groups.flatMap((g) => g.items);
   const total = items.length;
   const doneCount = items.filter(isDone).length;
   const ready = total > 0 && doneCount === total;
@@ -60,7 +79,7 @@ export default function GoliveRunbookView({ runbook }: { runbook: GoliveRunbook 
       </div>
       {err && <p className="font-mono text-xs text-[#C4160B]">{err}</p>}
 
-      {runbook.data.map((g) => (
+      {groups.map((g) => (
         <div key={g.name} className="border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616]">
           <div className="border-b-2 border-[#161616] bg-[#161616] px-5 py-3">
             <span className="font-display text-lg font-bold text-[#FBF6EA]">{g.name}</span>
@@ -122,8 +141,53 @@ export default function GoliveRunbookView({ runbook }: { runbook: GoliveRunbook 
               );
             })}
           </ul>
+          <AddStepRow group={g.name} onAdd={addStep} />
         </div>
       ))}
     </div>
+  );
+}
+
+function AddStepRow({ group, onAdd }: { group: string; onAdd: (group: string, who: GoliveWho, what: string) => Promise<boolean> }) {
+  const [what, setWhat] = useState('');
+  const [who, setWho] = useState<GoliveWho>('You');
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!what.trim() || busy) return;
+    setBusy(true);
+    const saved = await onAdd(group, who, what);
+    if (saved) setWhat('');
+    setBusy(false);
+  }
+
+  return (
+    <form onSubmit={submit} className="flex gap-2 border-t border-[#161616]/15 bg-[#FBF6EA] px-5 py-3">
+      <input
+        value={what}
+        onChange={(e) => setWhat(e.target.value)}
+        aria-label={`Add a step to ${group}`}
+        placeholder="Add a step…"
+        className="min-w-0 flex-1 border-2 border-[#161616] bg-white px-3 py-1.5 text-[13px] text-[#161616] outline-none placeholder:text-[#161616]/40"
+      />
+      <select
+        value={who}
+        onChange={(e) => setWho(e.target.value as GoliveWho)}
+        aria-label="Who owns this step"
+        className="border-2 border-[#161616] bg-white px-2 py-1.5 font-mono text-[11px] uppercase text-[#161616]"
+      >
+        <option value="You">You</option>
+        <option value="Claude">Claude</option>
+        <option value="Client">Client</option>
+      </select>
+      <button
+        type="submit"
+        disabled={busy || !what.trim()}
+        className="border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 font-mono text-[12px] font-bold text-[#161616] disabled:opacity-40"
+      >
+        {busy ? '…' : '+'}
+      </button>
+    </form>
   );
 }

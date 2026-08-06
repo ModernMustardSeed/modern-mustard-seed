@@ -15,6 +15,9 @@ export type GoliveGroup = { name: string; note?: string; items: GoliveItem[] };
 
 export type GoliveDoneMark = { at: string; by: string };
 
+/** A hand-added step. Lives in its own column so rescans never wipe it. */
+export type GoliveExtra = { id: string; group: string; who: GoliveWho; what: string };
+
 export type GoliveRunbook = {
   slug: string;
   title: string;
@@ -27,6 +30,31 @@ export type GoliveRunbook = {
   created_at: string;
   updated_at: string;
 };
+
+type Row = GoliveRunbook & { extras: GoliveExtra[] };
+
+const EXTRA_GROUP = 'Added By Hand';
+
+/** Fold hand-added steps into their groups so everything downstream sees one plan. */
+function mergeExtras(row: Row): GoliveRunbook {
+  const { extras, ...rb } = row;
+  if (!extras?.length) return rb;
+  const groups = rb.data.map((g) => ({ ...g, items: [...g.items] }));
+  for (const ex of extras) {
+    const item: GoliveItem = { id: ex.id, who: ex.who, what: ex.what };
+    const g = groups.find((x) => x.name === ex.group);
+    if (g) g.items.push(item);
+    else {
+      let hand = groups.find((x) => x.name === EXTRA_GROUP);
+      if (!hand) {
+        hand = { name: EXTRA_GROUP, items: [] };
+        groups.push(hand);
+      }
+      hand.items.push(item);
+    }
+  }
+  return { ...rb, data: groups };
+}
 
 export function itemDone(rb: Pick<GoliveRunbook, 'done'>, item: GoliveItem): boolean {
   return item.who === 'Done' || Boolean(rb.done[item.id]);
@@ -52,7 +80,7 @@ export async function listRunbooks(): Promise<GoliveRunbook[]> {
     console.error('golive list error:', error);
     return [];
   }
-  return (data ?? []) as GoliveRunbook[];
+  return ((data ?? []) as Row[]).map(mergeExtras);
 }
 
 export async function getRunbook(slug: string): Promise<GoliveRunbook | null> {
@@ -63,10 +91,10 @@ export async function getRunbook(slug: string): Promise<GoliveRunbook | null> {
     console.error('golive get error:', error);
     return null;
   }
-  return (data as GoliveRunbook) ?? null;
+  return data ? mergeExtras(data as Row) : null;
 }
 
-/** Flip one item. Returns the fresh done map, or null on failure. */
+/** Flip one item (scanned or hand-added). Returns the fresh done map, or null. */
 export async function setItemDone(
   slug: string,
   itemId: string,
@@ -91,4 +119,128 @@ export async function setItemDone(
     return null;
   }
   return next;
+}
+
+/** Append a hand-added step to a group. Returns the stored extra, or null. */
+export async function addExtraItem(
+  slug: string,
+  group: string,
+  who: GoliveWho,
+  what: string
+): Promise<GoliveExtra | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  const { data, error } = await sb.from('golive_runbooks').select('data, extras').eq('slug', slug).maybeSingle();
+  if (error || !data) return null;
+  const row = data as Pick<Row, 'data' | 'extras'>;
+  const taken = new Set([
+    ...row.data.flatMap((g) => g.items.map((i) => i.id)),
+    ...(row.extras ?? []).map((e) => e.id),
+  ]);
+  let id = 'hand-' + slugify(what).slice(0, 24);
+  for (let n = 2; taken.has(id); n++) id = 'hand-' + slugify(what).slice(0, 24) + '-' + n;
+  const extra: GoliveExtra = { id, group, who, what: what.trim() };
+  const { error: upErr } = await sb
+    .from('golive_runbooks')
+    .update({ extras: [...(row.extras ?? []), extra], updated_at: new Date().toISOString() })
+    .eq('slug', slug);
+  if (upErr) {
+    console.error('golive extra error:', upErr);
+    return null;
+  }
+  return extra;
+}
+
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * The starter checklist a hub-created project begins with. Stable st- ids; the
+ * golive skill's deep scan REPLACES these with verified facts (checks on st-
+ * ids drop then, by design: scanned items are different claims).
+ */
+function starterGroups(kind: 'ours' | 'client'): GoliveGroup[] {
+  const groups: GoliveGroup[] = [
+    {
+      name: '1 · Accounts & Keys',
+      note: 'Starter list. A deep scan replaces it with verified facts.',
+      items: [
+        { id: 'st-domain', who: 'You', what: 'Buy or point the domain', how: 'DNS at the registrar, bound to the host. Dead until this exists.' },
+        { id: 'st-keys', who: 'You', what: 'Every env key the code needs, set in production', how: 'The repo’s env example file is the list. Missing keys fail silently more often than loudly.' },
+        { id: 'st-analytics', who: 'You', what: 'Pick analytics', how: 'Vercel Analytics is the one-line default. Shipping with zero measurement is the common miss.' },
+      ],
+    },
+    {
+      name: '2 · Build & Deploy',
+      items: [
+        { id: 'st-build', who: 'Claude', what: 'Clean production build, zero type errors' },
+        { id: 'st-deploy', who: 'Claude', what: 'Deploy, bind the domain, verify it serves anonymously', how: 'Deployment protection off for anything a client will open.' },
+        { id: 'st-assets', who: 'Claude', what: 'Favicon, OG share image, sitemap, robots, per-page metadata', how: 'Blank shares and default icons read as unfinished.' },
+      ],
+    },
+    {
+      name: '3 · Content & Design',
+      items: [
+        { id: 'st-copy', who: 'Claude', what: 'Real copy end to end: zero placeholders, zero lorem, no dead links' },
+        { id: 'st-visual', who: 'You', what: 'Visual sign-off on the direction', how: 'The moodboard-before-build law, applied.' },
+        { id: 'st-imagery', who: kind === 'client' ? 'Client' : 'You', what: 'Real imagery in place of anything generated or temporary' },
+      ],
+    },
+    {
+      name: '4 · Revenue & Launch',
+      items: [
+        { id: 'st-convert', who: 'Claude', what: 'A working conversion path (form, booking, or checkout), walked end to end', how: 'Submit it for real. A page that cannot take a lead is a poster.' },
+        { id: 'st-pricing', who: 'You', what: 'Prices approved before they face the public' },
+        ...(kind === 'client'
+          ? [
+              { id: 'st-client-assets', who: 'Client' as GoliveWho, what: 'Client assets in hand: photos, logins, domain access' },
+              { id: 'st-client-approve', who: 'Client' as GoliveWho, what: 'Client approves copy, pricing, and the launch date' },
+            ]
+          : []),
+        { id: 'st-scan', who: 'Claude', what: 'Deep scan: run the golive skill on the repo so this starter list becomes verified facts' },
+      ],
+    },
+  ];
+  return groups;
+}
+
+/** Create a runbook from the hub. Returns the slug, or null. */
+export async function createRunbook(args: {
+  title: string;
+  repo_path?: string | null;
+  prod_url?: string | null;
+  kind?: 'ours' | 'client';
+}): Promise<string | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  const title = args.title.trim();
+  if (!title) return null;
+  const base = slugify(title) || 'project';
+  const { data: rows } = await sb.from('golive_runbooks').select('slug');
+  const taken = new Set((rows ?? []).map((r: { slug: string }) => r.slug));
+  let slug = base;
+  for (let n = 2; taken.has(slug); n++) slug = `${base}-${n}`;
+  const kind = args.kind === 'client' ? 'client' : 'ours';
+  const { error } = await sb.from('golive_runbooks').insert({
+    slug,
+    title,
+    subtitle:
+      kind === 'client'
+        ? 'Client build. Starter checklist until the deep scan runs.'
+        : 'Starter checklist until the deep scan runs.',
+    repo_path: args.repo_path?.trim() || null,
+    prod_url: args.prod_url?.trim() || null,
+    data: starterGroups(kind),
+    done: {},
+    extras: [],
+  });
+  if (error) {
+    console.error('golive create error:', error);
+    return null;
+  }
+  return slug;
 }

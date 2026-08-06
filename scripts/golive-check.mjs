@@ -34,12 +34,15 @@ const sb = createClient(
   { auth: { persistSession: false } }
 );
 
-const { data: rb, error: readErr } = await sb.from('golive_runbooks').select('data, done').eq('slug', slug).maybeSingle();
+const { data: rb, error: readErr } = await sb.from('golive_runbooks').select('data, extras, done').eq('slug', slug).maybeSingle();
 if (readErr || !rb) {
   console.error('Runbook not found:', slug, readErr?.message ?? '');
   process.exit(1);
 }
-const ids = new Set(rb.data.flatMap((g) => g.items.map((i) => i.id)));
+const ids = new Set([
+  ...rb.data.flatMap((g) => g.items.map((i) => i.id)),
+  ...(rb.extras ?? []).map((e) => e.id),
+]);
 if (!ids.has(itemId)) {
   console.error(`Item "${itemId}" not in runbook "${slug}". Items: ${[...ids].join(', ')}`);
   process.exit(1);
