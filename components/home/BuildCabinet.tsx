@@ -9,6 +9,10 @@ import { getContent } from '@/lib/content';
  * full apps, online stores) live in the strip under the grid. Each cabinet
  * carries the pitch, the capability chips, and a real receipt pulled from the
  * shipped case studies.
+ *
+ * Sarah, 2026-08-06: "Start this build" no longer jumps straight into the
+ * build-queue form. Each cabinet now hands the visitor to its own product
+ * page (/websites, /voice-agents, /command-center), and they book from there.
  */
 
 const CABINETS = [
@@ -20,7 +24,7 @@ const CABINETS = [
       'Not a brochure, a working engine. Elite design, funnels and a lead magnet live on day one, an AI concierge trained on your business, SEO and GEO baked in.',
     chips: ['Funnels day one', 'AI concierge', 'SEO + GEO'],
     receiptSlug: 'cross-and-covenant',
-    intent: 'website',
+    href: '/websites',
   },
   {
     key: 'voice',
@@ -30,7 +34,7 @@ const CABINETS = [
       'A 24/7 voice agent that answers every call in a natural human voice, books appointments, and routes the urgent ones to you. Speaks 100+ languages.',
     chips: ['24/7 answering', '100+ languages', 'Books appointments'],
     receiptSlug: 'voicestaff',
-    intent: 'phone-agent',
+    href: '/voice-agents',
   },
   {
     key: 'command',
@@ -40,7 +44,7 @@ const CABINETS = [
       'Your whole operation on one screen: leads, jobs, follow-ups, and the AI agents that work them while you sleep. Built around how you actually run the day.',
     chips: ['Ops on one screen', 'AI agents built in', 'Replaces the spreadsheet'],
     receiptSlug: 'wild-daisy-command-center',
-    intent: 'dashboard',
+    href: '/command-center',
   },
 ];
 
@@ -124,7 +128,7 @@ export default function BuildCabinet() {
                 </Link>
               )}
               <Link
-                href={`/build-queue?intent=${c.intent}`}
+                href={c.href}
                 className="mt-5 text-center font-sans font-bold text-sm bg-[#F5B700] text-[#161616] border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] px-5 py-3 hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#161616] transition-all"
               >
                 Start this build
