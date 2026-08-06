@@ -1,0 +1,55 @@
+{
+  "slug": "voicestaff",
+  "title": "VoiceStaff",
+  "subtitle": "Marketing site live and healthy (19 pages, clean build). Everything behind a form or button is dead. Shortest path to sellable: DNS + auth + two keys, lean on /demo and the phone line.",
+  "repo_path": "~/voicestaff",
+  "prod_url": "https://voicestaff.vercel.app",
+  "groups": [
+    {
+      "name": "1 · Accounts & Keys",
+      "items": [
+        { "id": "dns", "who": "You", "what": "Point voicestaff.pro at Vercel: add A record @ → 76.76.21.21 at Name.com",
+          "how": "The domain is bound to the project but does not resolve (TLS fail). DO NOT touch MX records: Google Workspace runs sarah@voicestaff.pro, which is also the Supabase Pro org login.",
+          "href": "https://www.name.com/account/domain/details/voicestaff.pro#dns", "label": "name.com → voicestaff.pro DNS" },
+        { "id": "vapi-wallet", "who": "You", "what": "Top up the Vapi wallet, or the demo number and web widget stay dead",
+          "href": "https://dashboard.vapi.ai", "label": "dashboard.vapi.ai → Billing" },
+        { "id": "vapi-own", "who": "You", "what": "Decide: give VoiceStaff its own Vapi assistant, or keep borrowing Mr. Mustard",
+          "how": "The widget currently targets the MMS assistant. Fine for demos, awkward the day a VoiceStaff customer hears the MMS pitch." },
+        { "id": "keys", "who": "You", "what": "Supply the money keys: Stripe live secret + publishable + webhook secret, Resend API key, production database URL",
+          "how": "HubSpot, Slack, Google and OpenAI keys are optional (only power the booking orchestrator). Zero env vars exist on Vercel today." },
+        { "id": "env-push", "who": "Claude", "what": "Push all env vars to Vercel the moment they exist", "how": "vercel env add --value, per the CLI law." }
+      ]
+    },
+    {
+      "name": "2 · Security Before The Database (Highest Priority)",
+      "note": "The moment DATABASE_URL lands, today's code makes every lead row public.",
+      "items": [
+        { "id": "auth-leads", "who": "Claude", "what": "Gate GET /api/leads and /api/admin/stats behind auth BEFORE connecting the database",
+          "how": "Both are unauthenticated today and would return the full lead list. They 500 only because no DB is attached yet. robots.txt is not access control." },
+        { "id": "auth-admin", "who": "Claude", "what": "Replace the dead Replit OIDC login with password-only admin auth (the MMS pattern)",
+          "how": "This un-bricks /crm and /funnel, which currently hardcode logged-out and bounce to a 404." },
+        { "id": "vapi-hmac", "who": "Claude", "what": "Add HMAC signature verification to /api/webhooks/vapi", "how": "It accepts any unsigned POST today." }
+      ]
+    },
+    {
+      "name": "3 · Content Fixes",
+      "items": [
+        { "id": "seo", "who": "Done", "what": "SEO stack is genuinely solved: server-rendered metadata, OG image, 7 JSON-LD schemas, GA4 + Pixel, favicon, robots, ai.txt. All 19 pages return 200" },
+        { "id": "email-fix", "who": "Claude", "what": "Fix hello@voicestaff.ai on /contact to sarah@voicestaff.pro", "how": "Wrong TLD, a domain we do not own." },
+        { "id": "phone-fix", "who": "Claude", "what": "Fix or remove 448-200-8433 on /sarah", "how": "Not a valid US number, appears nowhere else." },
+        { "id": "sitemap", "who": "Claude", "what": "Move the stale hand-written sitemap to a Next sitemap.ts with all 17 public pages", "how": "Current one has 12 URLs, lastmod 2024, and absolute URLs pointing at the dead host." }
+      ]
+    },
+    {
+      "name": "4 · Revenue Path",
+      "items": [
+        { "id": "stripe", "who": "Claude", "what": "Build real Stripe checkout: create-intent route, repoint the checkout form, implement the webhook",
+          "how": "Checkout has NEVER worked, including on Replit (the client always called a route that did not exist, and the payment route returns a mock). Product is $1,500 setup + $399/mo, so it needs a PaymentIntent plus a subscription, not a one-time charge." },
+        { "id": "contact-intake", "who": "Claude", "what": "Wire /contact to a real endpoint and build /api/intake, or take /intake off the site", "how": "Both forms are dead today. /demo is the only working form." },
+        { "id": "funnel-fate", "who": "You", "what": "Decide the fate of /funnel and /portal: build their backends or unlink them",
+          "how": "Fully built UIs calling 8+ endpoints that never existed anywhere. They look shippable and do nothing." },
+        { "id": "pricing", "who": "You", "what": "Confirm the $1,500 setup + $399/mo pricing before checkout goes live" }
+      ]
+    }
+  ]
+}

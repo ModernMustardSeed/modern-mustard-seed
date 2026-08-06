@@ -1,0 +1,62 @@
+{
+  "slug": "dd-landscaping",
+  "title": "D&D Landscaping",
+  "subtitle": "Fresh Cut builds clean and is fully pushed, but ddlandscaping.pro is LIVE today serving Dalten's legacy site. Go-live is a cutover, and the ballpark pricing quoting real customers needs his sign-off first.",
+  "repo_path": "~/dd-landscaping (branch fresh-cut)",
+  "prod_url": "https://ddlandscaping.pro",
+  "groups": [
+    {
+      "name": "1 · Keys & Accounts",
+      "items": [
+        { "id": "upstash", "who": "You", "what": "Create an Upstash Redis and set KV_REST_API_URL + KV_REST_API_TOKEN",
+          "how": "Without it, booking leads live in lambda memory and die on redeploy, and the visualizer queue and its daily cap cannot function.",
+          "href": "https://console.upstash.com", "label": "console.upstash.com → Create Redis" },
+        { "id": "resend", "who": "You", "what": "Resend key + LEAD_NOTIFY_FROM on a verified sender",
+          "how": "Today a booking request would email NOBODY, silently. The code logs and swallows it by design." },
+        { "id": "strip-keys", "who": "Claude", "what": "Strip FAL_KEY and ANTHROPIC_API_KEY from Production env",
+          "how": "FAL_KEY is actively harmful: the visualizer picks fal (exhausted wallet) over the free path. ANTHROPIC_API_KEY is a stale canopy leftover." },
+        { "id": "site-url", "who": "Claude", "what": "Verify NEXT_PUBLIC_SITE_URL in Production equals https://ddlandscaping.pro",
+          "how": "Set 55 days ago in the canopy era. A wrong value poisons every canonical, sitemap URL and JSON-LD id." },
+        { "id": "vapi", "who": "You", "what": "Vapi wallet top-up + set the public key in Production, or Augustine ships as the browser-voice tour",
+          "how": "Degrades gracefully without it. Not a launch blocker." },
+        { "id": "search", "who": "You", "what": "Google Search Console + Bing verification, and claim the Google Business Profile", "how": "Nothing is wired. GBP is the highest-leverage local move." },
+        { "id": "analytics", "who": "You", "what": "Pick analytics (Vercel Analytics is the one-line default)", "how": "The site currently ships with zero measurement." }
+      ]
+    },
+    {
+      "name": "2 · The Cutover (Destructive, Gated On Dalten)",
+      "note": "Flipping the domain takes his current live site down.",
+      "items": [
+        { "id": "preview", "who": "Claude", "what": "Make a shareable preview so Dalten can review Fresh Cut", "how": "Previews are behind Vercel SSO today (302 for him)." },
+        { "id": "promote", "who": "Claude", "what": "Deploy fresh-cut to Production on the canopy project once env is set", "how": "Build is clean, tree is pushed, nothing is blocking but the keys." },
+        { "id": "domain-flip", "who": "You", "what": "Approve the domain flip, then Claude detaches ddlandscaping.pro + www from the legacy project and attaches them to Fresh Cut",
+          "how": "THE destructive step. Timed with Dalten's consent, ideally same-hour as his go-ahead." },
+        { "id": "www-dns", "who": "Claude", "what": "Create the missing www DNS record at Name.com and redirect to apex", "how": "www.ddlandscaping.pro is NXDOMAIN today." },
+        { "id": "legacy", "who": "You", "what": "Decide the legacy project's fate after cutover (redirect or delete)" }
+      ]
+    },
+    {
+      "name": "3 · Content & Handoff",
+      "items": [
+        { "id": "clean", "who": "Done", "what": "No placeholder copy, no dead links, favicon/OG/robots/sitemap/llms.txt present, real phone + email consistent everywhere" },
+        { "id": "jsonld-img", "who": "Claude", "what": "Fix the JSON-LD image array in app/layout.tsx: it points at /images-fal/* which does not exist (two 404s)", "how": "The optimizer wrote /images/*.webp instead." },
+        { "id": "readme", "who": "Claude", "what": "Rewrite the stale README (it still describes the canopy build)" },
+        { "id": "welcome", "who": "Claude", "what": "Port /welcome + the owner's manual from canopy-standard", "how": "The client-handoff standard requires it; it was never brought over to fresh-cut." }
+      ]
+    },
+    {
+      "name": "4 · Dalten's Column (Only The Client Can)",
+      "items": [
+        { "id": "pricing", "who": "Client", "what": "APPROVE THE BALLPARK PRICING. Highest-risk item on this list",
+          "how": "The site quotes real numbers to real customers: lawn $45 + $60/acre, cleanup $280 + $120/acre, mulch $210 + $95/acre, and the FAQ says \"$50 to $75 a visit\" out loud. These are our assumptions until he blesses them." },
+        { "id": "slas", "who": "Client", "what": "Confirm the SPEC tier SLAs are promises he will honor", "how": "48hr / 24hr / same-day storm response, monthly photo walk reports. These read as contractual." },
+        { "id": "photos", "who": "Client", "what": "Real job photos (every image today is AI-generated, labeled representative)" },
+        { "id": "reviews", "who": "Client", "what": "Real reviews for the proof section (it holds the slot honestly for now)" },
+        { "id": "gbp-social", "who": "Client", "what": "Google Business Profile access + any social links" },
+        { "id": "address", "who": "Client", "what": "Street address + zip, so the map data stops being a downtown approximation" },
+        { "id": "copy-ok", "who": "Client", "what": "Founder letter in his own voice + overall copy approval" },
+        { "id": "consent", "who": "Client", "what": "Consent to the cutover date (his current site goes dark at that moment)" }
+      ]
+    }
+  ]
+}

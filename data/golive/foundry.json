@@ -1,0 +1,45 @@
+{
+  "slug": "foundry",
+  "title": "Foundry",
+  "subtitle": "Five verticals on one chassis, all build clean, zero env needed. The blockers are business calls: a blessed name, a domain, and a conversion path.",
+  "repo_path": "~/foundry",
+  "prod_url": null,
+  "groups": [
+    {
+      "name": "1 · The Name & The Domain (Critical Path)",
+      "note": "Nothing downstream moves until these calls.",
+      "items": [
+        { "id": "name", "who": "You", "what": "Bless or replace the working brand name for the launch vertical",
+          "how": "Recommendation: Journeyman first (only vertical with an unambiguously buyable domain today, and the MMS outbound lists already point at trades). Clear second as the PTG design-partner pilot, sold in a room rather than on a page." },
+        { "id": "domain", "who": "You", "what": "Buy the launch domain (journeyman.trade recommended)",
+          "how": "Heads up: .cpa is a RESTRICTED TLD (verified accountancy credentials), so confirm plumb.cpa is even purchasable before committing to that name. .studio, .management and .trade are open.",
+          "href": "https://porkbun.com/checkout/search?q=journeyman.trade", "label": "porkbun.com → journeyman.trade" },
+        { "id": "offer", "who": "You", "what": "Decide vertical one's offer: the pilot price and what it includes, and approve the coded pricing tiers before /pricing goes public",
+          "how": "The engine behind the demo is 0% built and the footer says so honestly. Price the pilot as a design-partner engagement, not a finished SaaS." }
+      ]
+    },
+    {
+      "name": "2 · Ship It (Fires The Moment Group 1 Exists)",
+      "items": [
+        { "id": "builds", "who": "Done", "what": "All five verticals build clean: 8 static routes each, zero env vars, favicons, per-vertical metadata, honest seeded-demo disclosure in every footer" },
+        { "id": "repo", "who": "Claude", "what": "Create the GitHub repo under ModernMustardSeed and push master", "how": "No remote exists today; one clean commit on master." },
+        { "id": "deploy", "who": "Claude", "what": "Vercel project for the launch vertical (root apps/<vertical>) and bind the domain",
+          "how": "Watch the known gotcha: vercel domains add binds to the CWD's project." },
+        { "id": "og", "who": "Claude", "what": "Add opengraph-image.tsx and metadataBase per vertical", "how": "Today every share renders blank." },
+        { "id": "seo", "who": "Claude", "what": "Add sitemap.ts and robots.ts per vertical" }
+      ]
+    },
+    {
+      "name": "3 · Revenue Path (THE Launch Blocker)",
+      "items": [
+        { "id": "convert-pick", "who": "You", "what": "Pick the conversion mechanism: form to Resend, calendar link, or a phone number",
+          "how": "Right now a buyer literally cannot reach you from any of the five sites. Every CTA is internal navigation." },
+        { "id": "convert-build", "who": "Claude", "what": "Build the chosen conversion path into the chassis so all five verticals get it at once" },
+        { "id": "checkout", "who": "Claude", "what": "Wire the pilot payment path (Stripe checkout or invoice) once the number is set" },
+        { "id": "caps", "who": "Claude", "what": "Make the caps-fail-closed law real in code before anyone is billed",
+          "how": "It is marketing copy today, not enforcement. Never-leak-revenue law: guards ship before money moves, or the claim gets softened." },
+        { "id": "ptg", "who": "You", "what": "Confirm the PTG design-partner path for Clear (the title vertical)" }
+      ]
+    }
+  ]
+}
