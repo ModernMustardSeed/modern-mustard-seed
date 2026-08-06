@@ -453,13 +453,17 @@ const TOOLS = [
  * and stability/style shape projection. Every field below is schema-validated
  * against Vapi (2026-08-06), so the switch cannot fail at config time.
  *
- * VOICE PICK: Roger (CwhRBWXzGAHq8TQ4Fs17), listed by ElevenLabs as "Laid-Back,
- * Casual, Resonant". Sarah asked for a guy who is still laid back like Sid but
- * way better, and Roger is the one that keeps Sid's ease while adding the
- * resonance and presence Sid lacks. Runners-up if he does not land on a real
- * call: Brian nPczCjzI2devNBz1zQrb (deep, resonant, comforting, closest to Sid's
- * depth), Chris iP95p4xoKVk53GoZ742B (charming, down to earth), Eric
- * cjVigY5qzO86Huf0OWal (smooth, trustworthy).
+ * VOICE PICK: Will (bIHbv24MWmeRgasZH58o), "Relaxed Optimist". Sarah chose it by
+ * EAR on 2026-08-06 from rendered samples, after rejecting Vapi-native Sid (too
+ * soft) and then ElevenLabs Roger (too stuffy). Do not swap this on a hunch: she
+ * has now rejected two voices by listening, so render samples and let her pick
+ * rather than guessing a fourth time. Samples live in
+ * C:\\Users\\moder\\mustard-voice-samples (regenerate via the ElevenLabs
+ * /v1/text-to-speech endpoint with his real opening line as the script).
+ * Runners-up she heard and passed on: Chris iP95p4xoKVk53GoZ742B (charming, down
+ * to earth), Eric cjVigY5qzO86Huf0OWal (smooth, trustworthy), Brian
+ * nPczCjzI2devNBz1zQrb (deep, resonant, closest to Sid's depth), Roger
+ * CwhRBWXzGAHq8TQ4Fs17 (laid-back on paper, stuffy at style 0.35).
  *
  * LIVE as of 2026-08-06. Sarah's new ElevenLabs account is on the PAID `starter`
  * tier (verified active via /v1/user/subscription), so the old
@@ -504,14 +508,20 @@ const voice =
   VOICE_PROVIDER === '11labs'
     ? {
         provider: '11labs',
-        voiceId: env('VAPI_VOICE_ID') || 'CwhRBWXzGAHq8TQ4Fs17', // Roger: laid-back, casual, resonant
+        voiceId: env('VAPI_VOICE_ID') || 'bIHbv24MWmeRgasZH58o', // Will, "Relaxed Optimist" (Sarah picked by ear 8/06)
         // turbo_v2_5 balances quality and latency. eleven_flash_v2_5 is the
         // lower-latency lever if he still feels slow on a real call.
         model: env('VAPI_11LABS_MODEL') || 'eleven_turbo_v2_5',
         useSpeakerBoost: true, // the actual loudness control, the whole reason to come here
-        stability: 0.45, // lower = more dynamic range and projection
+        // ⚠️ style MUST STAY 0. Roger shipped at style 0.35 and Sarah's verdict
+        // was "too stuffy". `style` is EXAGGERATION: it makes ElevenLabs PERFORM
+        // the line rather than just say it, which reads announcer-y on a phone
+        // call. 0 is natural speech. That setting, not the voice, is what made a
+        // voice literally labeled "laid-back" come out formal. It costs latency
+        // too. Raise it only if Sarah asks for more theatrical delivery.
+        stability: 0.35, // lower = looser and more human; higher drifts monotone
         similarityBoost: 0.75,
-        style: 0.35,
+        style: 0.0,
         speed: VOICE_SPEED,
       }
     : {
