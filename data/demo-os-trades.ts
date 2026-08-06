@@ -103,13 +103,17 @@ const TRADE_PATTERNS: [OsTradeKey, RegExp][] = [
   ['attorney', /attorney|law firm|\blaw\b|lawyer|legal|injury/],
   ['wedding', /wedding|bridal|photograph|event venue|\bvenue\b/],
   ['salon', /salon|barber|hair studio|\bnails?\b|lash|beauty/],
+  // Remodelers, ahead of the food patterns and behind every specific trade, so
+  // "Roofing & Remodeling" stays a roofer while "Apex Remodeling" stops being a
+  // restaurant. Without this, `kitchen` claims every kitchen-and-bath remodeler.
+  ['home_services', /remodel|renovation/],
   [
     'cafe_bakery',
     /bakery|bakehouse|caf[eé]|coffee|donut|doughnut|pastry|espresso|chocolat|\bcocoa\b|confection|creamery|\bcandy\b|candies|\bfudge\b|truffle|ice cream|sweet shop|patisserie/,
   ],
   [
     'restaurant',
-    /restaurant|grill|kitchen|bbq|barbecue|pizz|taco|burger|sushi|diner|bistro|eatery|steak|seafood|fish house|cantina|\bpho\b|thai|deli|catering|\bpub\b|tavern|smokehouse/,
+    /restaurant|grill|kitchen|bbq|barbecue|pizz|taco|burger|sushi|diner|bistro|eatery|steak|seafood|fish house|cantina|\bpho\b|thai|\bdelis?\b|delicatessen|catering|\bpub\b|tavern|smokehouse/,
   ],
   ['real_estate', /realty|real estate|realtor|properties/],
 ];
