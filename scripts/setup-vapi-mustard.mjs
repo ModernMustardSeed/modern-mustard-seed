@@ -461,26 +461,41 @@ const TOOLS = [
  * depth), Chris iP95p4xoKVk53GoZ742B (charming, down to earth), Eric
  * cjVigY5qzO86Huf0OWal (smooth, trustworthy).
  *
- * ⚠️ STILL GATED ON A CREDENTIAL. Sarah moved to a NEW ElevenLabs account on
- * 2026-08-06, and its key is NOT yet on the Vapi org. The credential sitting
- * there (568ed8fa, created 2025-11-17) belongs to the OLD account and its voice
- * list reads EMPTY, so it must be replaced, not relied on. Until the new key is
- * added, flipping the provider would drop EVERY call with
- * pipeline-error-eleven-labs-blocked-free-plan. This is the flagship line, so it
- * does not get flipped on a guess. It also cannot be rehearsed on a throwaway:
- * POST /call/web rejects the private key, and the public key is scoped to Mr.
- * Mustard's assistant id alone.
+ * LIVE as of 2026-08-06. Sarah's new ElevenLabs account is on the PAID `starter`
+ * tier (verified active via /v1/user/subscription), so the old
+ * pipeline-error-eleven-labs-blocked-free-plan risk does not apply.
  *
- * TO SWITCH, once the new key is on the org (Vapi dashboard > Providers >
- * ElevenLabs, or POST /credential {provider:'11labs', apiKey}), one command:
- *   VAPI_VOICE_PROVIDER=11labs node scripts/setup-vapi-mustard.mjs \
- *     --update faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee
- * Then place ONE real call to (406) 312-1223. If it drops instantly, the key is
- * missing or the plan is free.
- * Revert with: VAPI_VOICE_PROVIDER=vapi VAPI_VOICE_ID=Sid (same command).
+ * ⚠️ TWO GOTCHAS THAT COST AN HOUR, DO NOT REDISCOVER THEM:
+ * 1. VAPI REJECTS RESTRICTED ELEVENLABS KEYS. Her first key did TTS perfectly
+ *    (GET /v1/voices 200, /text-to-speech 200, /stream 200 WITH speaker boost)
+ *    and Vapi STILL refused it: "Couldn't Validate 11labs Credential". Vapi
+ *    validates by calling the ElevenLabs USER endpoint, and the key lacked
+ *    `user_read`. So working TTS is NOT sufficient. Diagnose in one shot by
+ *    curling /v1/user with the key: a "missing the permission user_read" 401
+ *    means Vapi will reject it no matter how well TTS works.
+ * 2. Vapi allows only ONE ElevenLabs credential per org (POST 400s with "a
+ *    ElevenLabs credential already exists"), so PATCH the existing id
+ *    568ed8fa-b98c-47b6-9349-65c66cdb1c18. Its `name` is capped at 40 chars.
+ * Also note GET /provider/11labs/voices returns 0 for this org, which is NOT a
+ * fault: it lists CLONED voices and she has none. Roger is a premade voice and
+ * is reachable by id regardless.
+ *
+ * ⚠️ QUOTA IS THE REAL CONSTRAINT NOW. Starter is 40,000 characters/month, and
+ * roughly 1,000 characters is about a minute of speech, so this is only ~40-60
+ * minutes of TOTAL agent speech a month across the phone line AND every web
+ * demo that forges from this assistant. That is far below the 500-minute plans
+ * MMS sells. Watch it, and upgrade the ElevenLabs plan before pointing paying
+ * customers' agents at this credential.
+ *
+ * REVERT (instant, if he sounds wrong or the quota runs out):
+ *   VAPI_VOICE_PROVIDER=vapi VAPI_VOICE_ID=Sid \
+ *     node scripts/setup-vapi-mustard.mjs --update faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee
  * ------------------------------------------------------------------ */
 
-const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || 'vapi';
+// DEFAULT = 11labs as of 2026-08-06. It must be the DEFAULT, not an env-only
+// flip, or the next `--update` run without the env var silently reverts him to
+// Sid and quietly undoes the loudness fix.
+const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || '11labs';
 // 1.08 reads noticeably more awake and forward without chipmunking him.
 // Probed: 1.25 / 1.5 / 2.0 are all accepted, so there is headroom if she wants more.
 const VOICE_SPEED = Number(env('VAPI_VOICE_SPEED') || 1.08);
