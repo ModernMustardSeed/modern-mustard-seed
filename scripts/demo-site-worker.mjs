@@ -81,6 +81,9 @@ const STALE_MS = Number(process.env.DEMO_SITE_STALE_MS || 100 * 60 * 1000);
 // ceiling exists so a wedged browser or a locked fal wallet cannot hold the
 // whole forge queue hostage; blowing it fails the film, never the build.
 const SUITE_FILM_MAX_MS = Number(process.env.SUITE_FILM_MAX_MS || 14 * 60 * 1000);
+// The tour is a handful of short TTS clips and an upload, no browser and no
+// call, so it lives in a different order of magnitude from the film.
+const SITE_TOUR_MAX_MS = Number(process.env.SITE_TOUR_MAX_MS || 4 * 60 * 1000);
 const WORKER = os.hostname();
 const SITE_URL = 'https://modernmustardseed.com';
 
@@ -740,9 +743,53 @@ async function storeFinished(job, html) {
   // FIRST (it is the last thing made and the first thing they watch), then
   // tell the site it may announce the package.
   if (!isEdit(job)) {
+    await buildSiteTour(job);
     await cutSuiteFilm(job);
     await notifySuiteReady(job);
   }
+}
+
+/**
+ * THE HOSTESS, now a standard part of every site we build.
+ *
+ * Sarah 2026-08-07, after hearing it on Glimmer: *"use that voice for all the
+ * sites we do this with... and make that part of how we do websites for
+ * future."* So the tour is no longer a thing done by hand per site; a finished
+ * build gets one the way it gets a film.
+ *
+ * ⚠️ NON-FATAL, unlike the film. The film IS the publish gate, so its failure
+ * correctly holds the whole announcement. A missing tour costs the visitor a
+ * welcome and nothing else, and `SiteTour` already renders nothing when there
+ * is no manifest. Holding a finished suite hostage over a nice-to-have would
+ * be the wrong trade. Runs BEFORE the film so the recorder never catches a
+ * half-written manifest.
+ */
+async function buildSiteTour(job) {
+  const script = path.join(process.cwd(), 'scripts', 'site-tour', 'build.mjs');
+  if (!existsSync(script)) return log('site tour: script missing, skipped');
+  log('site tour: writing the welcome for', job.business_name);
+
+  const ok = await new Promise((resolve) => {
+    const child = spawn(process.execPath, [script, '--site', job.id], {
+      cwd: process.cwd(),
+      env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    const timer = setTimeout(() => {
+      log('site tour: over time, killing');
+      try { killTree(child); } catch { /* already gone */ }
+      resolve(false);
+    }, SITE_TOUR_MAX_MS);
+    const relay = (buf) => String(buf).split(/\r?\n/).filter(Boolean).forEach((l) => log('  tour|', l.slice(0, 200)));
+    child.stdout.on('data', relay);
+    child.stderr.on('data', relay);
+    child.on('error', (e) => { clearTimeout(timer); log('site tour: could not start:', e?.message); resolve(false); });
+    child.on('close', (code) => { clearTimeout(timer); resolve(code === 0); });
+  });
+
+  // Exit 2 is the builder refusing to ship a stub tour, which is a correct
+  // outcome on a thin page, not a breakage.
+  log(ok ? 'site tour: ready' : 'site tour: not built (the suite ships without a guide)');
 }
 
 /**

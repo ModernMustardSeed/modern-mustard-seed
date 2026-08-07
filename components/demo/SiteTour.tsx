@@ -76,13 +76,40 @@ export default function SiteTour({
     return () => window.clearTimeout(t);
   }, [tour, siteId, done]);
 
+  /**
+   * Frame the section's CONTENT, not its padding box.
+   *
+   * Sarah, 2026-08-07: *"there is too much padding at top and it cuts bottom of
+   * section off."* `scrollIntoView({block:'start'})` aligns the section's top
+   * EDGE to the viewport top, and a well-designed section opens with a lot of
+   * vertical padding. So the visitor got a screen of empty space while the
+   * words the hostess was reading sat below the fold. Scroll to the section's
+   * first heading instead, and pay back whatever a fixed header is covering.
+   */
   const scrollTo = useCallback((anchor: string) => {
     const doc = frame.current?.contentDocument;
-    if (!doc) return;
-    const el = anchor === 'top' ? doc.body : doc.getElementById(anchor);
-    if (!el) return;
-    if (anchor === 'top') doc.defaultView?.scrollTo({ top: 0, behavior: 'smooth' });
-    else el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const win = doc?.defaultView;
+    if (!doc || !win) return;
+    if (anchor === 'top') { win.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+
+    const section = doc.getElementById(anchor);
+    if (!section) return;
+    const target = section.querySelector('h1, h2, h3') || section;
+
+    // A pinned header sits over whatever we scroll to, so measure the real one
+    // rather than guessing a constant that is wrong on every other site. Only
+    // count bars parked at the top and shorter than a third of the screen: a
+    // full-height fixed overlay is not a header.
+    let headerH = 0;
+    for (const el of Array.from(doc.querySelectorAll('header, nav, [class*="fixed"], [class*="sticky"]'))) {
+      const cs = win.getComputedStyle(el);
+      if (cs.position !== 'fixed' && cs.position !== 'sticky') continue;
+      const r = el.getBoundingClientRect();
+      if (r.top <= 4 && r.height > 0 && r.height < win.innerHeight * 0.33) headerH = Math.max(headerH, r.height);
+    }
+
+    const top = win.scrollY + target.getBoundingClientRect().top - headerH - Math.round(win.innerHeight * 0.06);
+    win.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
   }, [frame]);
 
   const stop = useCallback((markSeen: boolean) => {
