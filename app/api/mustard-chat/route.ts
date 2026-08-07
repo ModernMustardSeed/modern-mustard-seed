@@ -118,6 +118,51 @@ If the visitor declines to share an email, do not capture. Point them at the fre
 - If asked about your tech, you are powered by Anthropic Claude.
 - When recommending a page, name it specifically and only use real routes: /demos, /websites, /voice-agents, /command-center, /services, /store, /audit, /website-audit, /work, /work-with-us, /for/[industry], plus any department href listed above.`;
 
+/**
+ * A live "what day is it" block, sent as its own system message.
+ *
+ * Without this the model has no idea what today is, so it cannot tell that a
+ * visitor asking for "tomorrow" is asking for a Saturday. On 2026-08-07 the
+ * voice agent hit exactly that: asked for tomorrow (a Saturday), it answered
+ * "perfect" and then offered Tuesday the 11th, which is the correct SLOT but
+ * reads as agreement to the wrong DAY. The slot engine was right the whole
+ * time; the prompt just had no calendar to check the request against.
+ *
+ * Working days are derived from `availability` rather than restated, so
+ * changing workingWeekdays there updates what the agent says here.
+ *
+ * This is deliberately a SEPARATE system block, appended after the cached
+ * SYSTEM_PROMPT. The prompt cache breakpoint sits at the end of that first
+ * block, so a value that changes daily cannot invalidate the cached prefix.
+ */
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+function todayBlock(now: Date = new Date()): string {
+  // `as const` on availability narrows this to (2|3|4|5)[], which then rejects a
+  // plain number in .includes(). Widen once, here, the same way lib/booking.ts does.
+  const working: number[] = [...(availability.workingWeekdays as readonly number[])].sort((a, b) => a - b);
+  const workingNames = working.map((d) => DAY_NAMES[d]);
+  const offNames = DAY_NAMES.filter((_, i) => !working.includes(i));
+  const list = (xs: string[]) =>
+    xs.length <= 1 ? (xs[0] ?? '') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`;
+
+  const today = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Denver',
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(now);
+
+  return `# Today, and the only days Sarah takes calls
+Today is ${today}, Mountain Time. Trust this over any assumption about the current date.
+- Sarah takes discovery calls on ${list(workingNames)} only, between ${availability.startHour}:00 and ${availability.endHour}:00 Mountain. She does NOT take calls on ${list(offNames)}.
+- She needs about ${availability.minLeadHours} hours of notice, so today and most of tomorrow morning are normally unavailable.
+- When a visitor names a day in relative terms ("tomorrow", "Monday", "this weekend"), work out the real date from today's date above and check it against those working days BEFORE you respond agreeably.
+- Never agree to a day and then offer a different one. If the day they asked for does not work, say so plainly first, then offer the soonest real option: "Tomorrow is a Saturday, and Sarah keeps consults to Tuesday through Friday. The soonest is Tuesday the 11th."
+- Always name the weekday and the date together when offering or confirming a time.`;
+}
+
 const CAPTURE_LEAD_TOOL = {
   name: 'capture_lead',
   description:
@@ -497,6 +542,7 @@ export async function POST(req: Request) {
         output_config: { effort: 'low' },
         system: [
           { type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
+          { type: 'text', text: todayBlock() },
         ],
         tools: [CAPTURE_LEAD_TOOL, PROPOSE_SLOTS_TOOL, BOOK_SLOT_TOOL],
         messages,
