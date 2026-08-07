@@ -18,6 +18,7 @@ import { buildIcsInvite } from '@/lib/ics';
 import { sendMetaEvent } from '@/lib/meta-capi';
 import { randomUUID } from 'node:crypto';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { forgeSuiteFromCall } from '@/lib/voice-forge-suite';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -772,6 +773,8 @@ export async function POST(req: Request) {
           result = await sendResourceEmail(args as Parameters<typeof sendResourceEmail>[0], { deskKind, authedEmail });
         } else if (fnName === 'reach_sarah') {
           result = await reachSarah(args as Parameters<typeof reachSarah>[0], callerNumber);
+        } else if (fnName === 'forge_demo_suite') {
+          result = await forgeSuiteFromCall(args as Parameters<typeof forgeSuiteFromCall>[0], callerNumber);
         } else {
           result = JSON.stringify({ ok: false, error: `Unknown tool: ${fnName}` });
         }
