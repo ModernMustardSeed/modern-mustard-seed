@@ -28,7 +28,7 @@ import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective } from '../lib/site-directive.mjs';
+import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective } from '../lib/site-directive.mjs';
 import { inlineSiteAssets, remainingLocalRefs } from './inline-site-assets.mjs';
 import { blankImageError } from '../lib/site-asset-refs.mjs';
 
@@ -105,9 +105,13 @@ try {
 // applied, else the "DESIGN TIER: n" line the cockpit writes at the top of the
 // brief) > roulette, rolled fresh per build so unattended demos come out varied.
 // Client EDITS and paid REBUILDS stay on the claude engine regardless of tier.
-// ⚡ 2026-07-30 late: Sarah ordered TIER 2 ONLY ("i dont like the tier 1 right now")
-// via DEMO_SITE_TIER=2 in .env.local. Remove that line + restart to restore roulette.
-const FORCED_TIER = ['1', '2'].includes(env.DEMO_SITE_TIER || '') ? Number(env.DEMO_SITE_TIER) : null;
+// ⚡ 2026-08-07: TIER 3 (the JOURNEY site, born from the Flathead homepage) joins the
+// roster and Sarah's picker offers 2 or 3. Tier 1 stays UNWIRED until she reworks it
+// ("eventually 1 when i wire it again"): it is not in the roulette, and a stale
+// tier-1 choice builds tier 2 instead. The 7/30 DEMO_SITE_TIER=2 force is retired
+// from .env.local so the picker can actually produce a 3; the env stays honored as
+// an emergency lever.
+const FORCED_TIER = ['1', '2', '3'].includes(env.DEMO_SITE_TIER || '') ? Number(env.DEMO_SITE_TIER) : null;
 
 const SUPABASE_URL = env.SUPABASE_URL || env.supabase_url || env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_KEY = env.SUPABASE_SERVICE_ROLE_KEY || env.supabase_service_role_key;
@@ -150,7 +154,7 @@ const MEDIA_NOTES = path.join(os.homedir(), '.claude', 'projects', 'C--Users-mod
  * that. Both laws ride along here for the same reason.
  */
 const LAW_URL = new URL('../lib/site-directive.mjs', import.meta.url).href;
-const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective };
+const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective };
 
 /**
  * VARIANT ROTATION MEMORY. Tier 2's selection doctrine forbids repeating the
@@ -170,13 +174,15 @@ function rememberVariant(dir) {
   } catch { /* self-report missing or unparseable; variety degrades, nothing breaks */ }
 }
 
-/** Which design tier builds this demo row, and why. */
+/** Which design tier builds this demo row, and why. Tier 1 is unwired for now:
+ * a chosen 1 (stale brief, old row) builds tier 2 rather than the retired path. */
 function tierOf(job) {
-  if (FORCED_TIER) return { tier: FORCED_TIER, how: 'env override' };
-  if (job.design_tier === 1 || job.design_tier === 2) return { tier: job.design_tier, how: 'chosen' };
-  const m = /^DESIGN TIER:\s*([12])\b/m.exec(job.brief || '');
-  if (m) return { tier: Number(m[1]), how: 'chosen' };
-  return { tier: Math.random() < 0.5 ? 1 : 2, how: 'roulette' };
+  const sane = (t) => (t === 3 ? 3 : 2);
+  if (FORCED_TIER) return { tier: sane(FORCED_TIER), how: 'env override' };
+  if ([1, 2, 3].includes(job.design_tier)) return { tier: sane(job.design_tier), how: 'chosen' };
+  const m = /^DESIGN TIER:\s*([123])\b/m.exec(job.brief || '');
+  if (m) return { tier: sane(Number(m[1])), how: 'chosen' };
+  return { tier: Math.random() < 0.5 ? 2 : 3, how: 'roulette' };
 }
 
 async function currentLaw() {
@@ -191,6 +197,7 @@ async function currentLaw() {
     DIRECTIVE: m.cliDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     CODEX_DIRECTIVE: (m.codexDemoDirective || STARTUP_LAW.codexDemoDirective)({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     TIER2_DIRECTIVE: (m.tier2DemoDirective || STARTUP_LAW.tier2DemoDirective)({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES, previousVariant: lastVariant() }),
+    TIER3_DIRECTIVE: (m.tier3DemoDirective || STARTUP_LAW.tier3DemoDirective)({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     REAL_DIRECTIVE: m.cliRealDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     EDIT_DIRECTIVE: m.cliEditDirective(),
   };
@@ -554,6 +561,7 @@ async function process_(job) {
       const { tier, how } = tierOf(job);
       log(`design tier ${tier} (${how}) for`, job.business_name);
       if (tier === 1) { directive = law.CODEX_DIRECTIVE; engineName = 'codex'; }
+      else if (tier === 3) directive = law.TIER3_DIRECTIVE;
       else directive = law.TIER2_DIRECTIVE;
     }
     const { code, out } = engineName === 'codex' ? await runCodex(dir, directive) : await runClaude(dir, directive);

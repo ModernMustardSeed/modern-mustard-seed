@@ -26,13 +26,16 @@ export async function POST(req: Request, { params }: { params: Params }) {
   if ('error' in guard) return guard.error;
   const { id } = await params;
 
-  // Sarah's tier picker on the Forge board. 1 = the codex/award style, 2 = the
-  // Wildmere AWARD SITE style. Absent means the worker rolls roulette per build.
-  // The tier rides as the first line of the brief (the worker parses it), so no
-  // schema change is required for it to work; migration 073 adds a real column
-  // for whenever migrations next run.
-  const body = (await req.json().catch(() => ({}))) as { designTier?: unknown };
-  const designTier = body.designTier === 1 || body.designTier === 2 ? body.designTier : null;
+  // Sarah's tier picker on the Forge board. 2 = the Wildmere AWARD SITE world,
+  // 3 = the JOURNEY site (the Flathead homepage template, 2026-08-07). Tier 1
+  // is unwired until Sarah reworks it. Absent means the worker rolls roulette
+  // (2 or 3) per build. talkingWebsite makes the talking layer the star of the
+  // demo (the tier directives read the flag out of the brief). Both ride as
+  // leading lines of the brief (the worker parses them), so no schema change
+  // is required; migration 073 adds a real column for whenever migrations run.
+  const body = (await req.json().catch(() => ({}))) as { designTier?: unknown; talkingWebsite?: unknown };
+  const designTier = body.designTier === 2 || body.designTier === 3 ? body.designTier : null;
+  const talkingWebsite = body.talkingWebsite === true;
 
   const { data: lead, error } = await guard.supabase.from('outbound_leads').select('*').eq('id', id).single();
   if (error || !lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
@@ -63,7 +66,11 @@ export async function POST(req: Request, { params }: { params: Params }) {
     .insert({
       lead_id: current.id,
       business_name: current.business_name,
-      brief: (designTier ? `DESIGN TIER: ${designTier}\n\n` : '') + buildSiteBrief(current, voiceDemoUrl),
+      brief:
+        (designTier ? `DESIGN TIER: ${designTier}\n` : '') +
+        (talkingWebsite ? 'TALKING WEBSITE: yes\n' : '') +
+        (designTier || talkingWebsite ? '\n' : '') +
+        buildSiteBrief(current, voiceDemoUrl),
       status: 'queued',
     })
     .select('id')

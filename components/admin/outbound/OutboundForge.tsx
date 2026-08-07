@@ -155,10 +155,13 @@ export default function OutboundForge() {
   const [q, setQ] = useState('');
   const [owner, setOwner] = useState('');
   const [retrying, setRetrying] = useState<string | null>(null);
-  // Sarah's design-tier picker (2026-07-30). 1 = the codex/award style, 2 = the
-  // Wildmere AWARD SITE style, 0 = roulette (the worker rolls per build so
-  // unattended demos come out varied).
-  const [designTier, setDesignTier] = useState<0 | 1 | 2>(0);
+  // Sarah's design-tier picker (2026-07-30, reworked 2026-08-07). 2 = the
+  // Wildmere AWARD SITE world, 3 = the JOURNEY site (the Flathead homepage
+  // template), 0 = roulette (the worker rolls 2 or 3 per build so unattended
+  // demos come out varied). Tier 1 returns when Sarah rewires it.
+  const [designTier, setDesignTier] = useState<0 | 2 | 3>(0);
+  // Make the talking layer the star of the demo (rides the brief as a flag).
+  const [talkingWebsite, setTalkingWebsite] = useState(false);
   const [anvilAll, setAnvilAll] = useState(false);
   const [burst, setBurst] = useState(0);
   const { toasts, push } = useToasts();
@@ -254,9 +257,9 @@ export default function OutboundForge() {
     try {
       await api(`/api/admin/outbound/leads/${row.id}/forge-site`, {
         method: 'POST',
-        body: JSON.stringify(designTier ? { designTier } : {}),
+        body: JSON.stringify({ ...(designTier ? { designTier } : {}), ...(talkingWebsite ? { talkingWebsite } : {}) }),
       });
-      push(`${row.business_name} is back on the anvil${designTier ? ` (Tier ${designTier} design)` : ' (design roulette)'}.`);
+      push(`${row.business_name} is back on the anvil${designTier ? ` (Tier ${designTier} design)` : ' (design roulette)'}${talkingWebsite ? ', Talking Website front and center' : ''}.`);
       await load(true);
     } catch (e) {
       push(e instanceof Error ? e.message : 'Could not re-queue that build.', 'error');
@@ -428,23 +431,35 @@ export default function OutboundForge() {
             </select>
             <span className="flex items-center gap-1.5" role="group" aria-label="Design tier for forge builds">
               <span className={`${eyebrow} mr-0.5`}>Design</span>
-              {([1, 2, 0] as const).map((t) => {
+              {([2, 3, 0] as const).map((t) => {
                 const active = designTier === t;
                 return (
                   <button
                     key={t}
                     onClick={() => setDesignTier(t)}
-                    title={t === 0 ? 'The forge picks a tier per build, so the demos vary' : t === 1 ? 'The codex award style' : 'The Wildmere award-site style'}
+                    title={t === 0 ? 'The forge picks a tier per build, so the demos vary' : t === 2 ? 'The Wildmere award-site world' : 'The Journey site (the Flathead homepage template)'}
                     className={`px-3 py-1.5 rounded-lg border-2 font-oswald uppercase tracking-[0.08em] text-[11px] transition-colors ${
                       active
                         ? 'bg-[#1a1815] text-[#f7f3e9] border-[#1a1815] shadow-[2px_2px_0_0_#b58a2a]'
                         : 'bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#b58a2a] hover:text-[#1a1815]'
                     }`}
                   >
-                    {t === 0 ? 'Roulette' : `Tier ${t}`}
+                    {t === 0 ? 'Roulette' : t === 3 ? 'Tier 3 · Journey' : 'Tier 2 · World'}
                   </button>
                 );
               })}
+              <button
+                onClick={() => setTalkingWebsite((v) => !v)}
+                title="Make the talking layer the star: the hero names it and a sign pitches The Talking Website by name"
+                aria-pressed={talkingWebsite}
+                className={`px-3 py-1.5 rounded-lg border-2 font-oswald uppercase tracking-[0.08em] text-[11px] transition-colors ${
+                  talkingWebsite
+                    ? 'bg-[#b58a2a] text-[#1a1815] border-[#1a1815] shadow-[2px_2px_0_0_#1a1815]'
+                    : 'bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#b58a2a] hover:text-[#1a1815]'
+                }`}
+              >
+                🗣 Talking Website
+              </button>
             </span>
             <span className="ml-auto font-oswald text-sm text-[#1a1815]/50 uppercase tracking-[0.1em]">
               {visible.length} {visible.length === 1 ? 'lead' : 'leads'}
