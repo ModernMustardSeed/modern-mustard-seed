@@ -94,7 +94,13 @@ export default function SiteTour({
 
     const section = doc.getElementById(anchor);
     if (!section) return;
-    const target = section.querySelector('h1, h2, h3') || section;
+    let target: Element = section.querySelector('h1, h2, h3') || section;
+    // Take the eyebrow with the heading. Sections label themselves with a short
+    // line above the h2 ("WHAT WE LIGHT"), and anchoring on the heading alone
+    // slides that label up under the fixed header, where it reads as clipped.
+    const eyebrow = target.previousElementSibling;
+    const eyebrowText = eyebrow?.textContent?.trim() ?? '';
+    if (eyebrow && eyebrowText.length > 0 && eyebrowText.length < 40) target = eyebrow;
 
     // A pinned header sits over whatever we scroll to, so measure the real one
     // rather than guessing a constant that is wrong on every other site. Only
