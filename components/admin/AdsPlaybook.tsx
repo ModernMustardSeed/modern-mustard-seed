@@ -1397,8 +1397,9 @@ export default function AdsPlaybook() {
             <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold px-2 py-1 bg-[#F5B700] border-2 border-[#161616] text-[#161616]">New · Aug 7</span>
           </div>
           <p className="text-sm text-[#161616]/65 mb-5 font-sans">
-            The NEW creative: 31 seconds of the real landing page doing its thing (type an ambition, the coach answers) with
-            a voiceover and burned-in captions. Filenames contain <span className="font-mono">demo</span>. The 16:9 is the
+            The NEW creative: 32 seconds inside the real product. Type an ambition on the landing, then the HQ itself:
+            player HUD with XP and rank, the four tracks, Mr. Mustard coaching live in the terminal, and the prompt library.
+            Voiceover plus burned-in captions. Filenames contain <span className="font-mono">demo</span>. The 16:9 is the
             Google Ads cut. Same link, same funnel, judged on the same metric.
           </p>
           <div className="grid md:grid-cols-3 gap-5">
