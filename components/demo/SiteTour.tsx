@@ -176,12 +176,32 @@ export default function SiteTour({
     return { bg, accent, ...inkFor(bg) };
   }, [tour]);
 
-  if (!tour || done) return null;
+  if (!tour) return null;
 
   const beat = tour.beats[index];
 
   return (
     <div className="fixed bottom-4 left-4 z-50 max-w-[min(380px,calc(100vw-2rem))] print:hidden">
+      {/* THE HOSTESS IS NEVER GONE. Declining, finishing, or a same-tab
+          revisit used to unmount her entirely, and Sarah read that as broken
+          ("tour in bottom left is gone", 2026-08-07). Whenever neither the
+          invite nor the player is up, a small speaker chip keeps her one tap
+          away. It still yields to Mr. Mustard while he has the floor. */}
+      {!invited && !playing && !voiceBusy && (
+        <button
+          onClick={start}
+          aria-label="Play the spoken tour"
+          title="Play the spoken tour"
+          className="flex h-11 w-11 items-center justify-center rounded-full border shadow-xl backdrop-blur-sm transition-transform hover:-translate-y-0.5"
+          style={{ background: `${theme.bg}f2`, borderColor: `${theme.accent}80` }}
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <path d="M11 5 6 9H3v6h3l5 4V5z" fill={theme.accent} stroke="none" />
+            <path d="M16 9a4 4 0 0 1 0 6" />
+            <path d="M19 6a8 8 0 0 1 0 12" />
+          </svg>
+        </button>
+      )}
       {invited && !playing && (
         <div
           className="rounded-2xl border p-4 shadow-2xl backdrop-blur-sm animate-[tourIn_.5s_cubic-bezier(.2,.7,.2,1)]"

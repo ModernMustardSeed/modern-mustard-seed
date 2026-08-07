@@ -29,7 +29,9 @@ export default function JourneyRig() {
   const railRef = useRef<HTMLDivElement>(null);
   const carRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
-  const topBar = useRef<HTMLDivElement>(null);
+  // Bottom bar only. The top cinema bar slid OVER the fixed navbar and brand
+  // (Sarah 2026-08-07: "take the top one out that overlaps regular one"), so
+  // the letterbox breathes from the bottom edge alone.
   const botBar = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [stops, setStops] = useState<Stop[]>([]);
@@ -73,7 +75,6 @@ export default function JourneyRig() {
         if (r.top < mid && r.bottom > mid) { cinema = true; break; }
       }
       const barH = cinema ? Math.round(window.innerHeight * 0.055) : 0;
-      if (topBar.current) topBar.current.style.height = `${barH}px`;
       if (botBar.current) botBar.current.style.height = `${barH}px`;
 
       // Active stop for the rail dots.
@@ -193,8 +194,7 @@ export default function JourneyRig() {
 
   return (
     <>
-      {/* Cinema bars */}
-      <div ref={topBar} aria-hidden className="fixed top-0 left-0 right-0 z-[60] bg-[#0B0B0B] transition-[height] duration-700 ease-[cubic-bezier(.22,1,.36,1)] pointer-events-none motion-reduce:hidden" style={{ height: 0 }} />
+      {/* Cinema bar, bottom only (the top one covered the navbar) */}
       <div ref={botBar} aria-hidden className="fixed bottom-0 left-0 right-0 z-[60] bg-[#0B0B0B] transition-[height] duration-700 ease-[cubic-bezier(.22,1,.36,1)] pointer-events-none motion-reduce:hidden" style={{ height: 0 }} />
 
       {/* The flock */}
