@@ -1,0 +1,59 @@
+{
+  "business": "Modern Mustard Seed",
+  "palette": {
+    "bg": "#161616",
+    "accent": "#F5B700"
+  },
+  "beats": [
+    {
+      "id": "welcome",
+      "anchor": "top",
+      "text": "Welcome to Modern Mustard Seed. Hop in, the top is down. We are taking the scenic route, and by the end of this drive you will know exactly what we can grow for you. Scroll when you are ready.",
+      "ms": 11280,
+      "src": "/tour/journey/00-welcome.mp3"
+    },
+    {
+      "id": "orchard",
+      "anchor": "tour-orchard",
+      "text": "First, the orchards. Everything we build starts the same three ways: a website that talks, a voice agent that answers, and the command center that runs them both. Planted once, tended every day, and live in about a week.",
+      "ms": 12816,
+      "src": "/tour/journey/01-orchard.mp3"
+    },
+    {
+      "id": "signs",
+      "anchor": "tour-signs",
+      "text": "Now watch the roadside. Every sign out here is something real that you can walk into today. The Talking Website, voice sidekicks, commercials, and free tools you can try before you spend a single dollar.",
+      "ms": 11424,
+      "src": "/tour/journey/02-signs.mp3"
+    },
+    {
+      "id": "gate",
+      "anchor": "tour-gate",
+      "text": "There it is. The gate at Mustard Seed Ranch. Everything this studio does comes from one verse about one seed, and this is the ground where we plant it.",
+      "ms": 8904,
+      "src": "/tour/journey/03-gate.mp3"
+    },
+    {
+      "id": "planting",
+      "anchor": "tour-planting",
+      "text": "The smallest seed in the field. That is how every great business starts. Including yours.",
+      "ms": 5808,
+      "src": "/tour/journey/04-planting.mp3"
+    },
+    {
+      "id": "tree",
+      "anchor": "tour-tree",
+      "text": "And this is how it grows. A tree the birds come home to. Your customers, your calls, your bookings, all finding their way back to you, day and night.",
+      "ms": 9624,
+      "src": "/tour/journey/05-tree.mp3"
+    },
+    {
+      "id": "doors",
+      "anchor": "tour-doors",
+      "text": "Four doors, and every one of them is open. Press the gold button in the corner and talk to Mr. Mustard right now. He can answer anything about how this works, show you a live demo, forge a custom demo for your business while you watch, or book you straight onto Sarah’s calendar. The drive is over. The growing starts now.",
+      "ms": 17976,
+      "src": "/tour/journey/06-doors.mp3"
+    }
+  ],
+  "totalMs": 77832
+}
