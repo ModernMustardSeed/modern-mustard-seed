@@ -19,7 +19,7 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
     anchor: 'top',
     text:
       'Welcome to Modern Mustard Seed. Hop in, the top is down. ' +
-      'We are taking the long way around the lake, and by the end of this drive you will know exactly what we can grow for you. ' +
+      'We are taking the scenic route, and by the end of this drive you will know exactly what we can grow for you. ' +
       'Scroll when you are ready.',
   },
   {

@@ -127,7 +127,7 @@ export function JourneyHero() {
           </h1>
           <p className={`mt-6 max-w-2xl text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
             Websites that talk, voice agents that answer, and the command centers that run them.
-            Live in about a week. This is Modern Mustard Seed, and this is the long way around the lake.
+            Live in about a week. This is Modern Mustard Seed, and this is the scenic route.
           </p>
           <div className={`mt-9 flex flex-wrap items-center justify-center gap-4 ${revealBase}`} style={{ transitionDelay: '360ms' }}>
             <a
