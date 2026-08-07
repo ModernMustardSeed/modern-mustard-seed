@@ -117,7 +117,7 @@ const MM_DEMO_CUTS = [
 
 const MM_CHECKLIST = [
   { id: 'cell', label: 'One cell to start: Campaign objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the MUSTARD MODE UTM link above. Paste Copy Variant 1.' },
-  { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
+  { id: 'placements', label: 'Upload the DEMO 4:5 cut (filename contains demo), then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
   { id: 'audience', label: 'Audience: Advantage+, but consumer-tilted vs the service campaigns. Suggestions: Entrepreneurship, Side project, Web development, ChatGPT/AI tools, Online courses. Age 22-55, United States.' },
   { id: 'captions', label: 'Decline Meta auto-captions (styled captions are burned in).' },
   { id: 'organic', label: 'Post the 9:16 cut as an organic Reel + the 4:5 to FB the same day (the launch post drafts are already written, ask Claude).' },
@@ -1390,14 +1390,21 @@ export default function AdsPlaybook() {
           </div>
         </section>
 
-        {/* MUSTARD MODE cuts */}
+        {/* MUSTARD MODE demo spot cuts (the NEW creative, Aug 2026) */}
         <section>
-          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The creative, one cut per placement</h3>
-          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Same drill: upload one ad, customize per placement. Right-click any video to save it.</p>
+          <div className="flex items-center gap-3 mb-1">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">The demo spot, one cut per placement</h3>
+            <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold px-2 py-1 bg-[#F5B700] border-2 border-[#161616] text-[#161616]">New · Aug 7</span>
+          </div>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">
+            The NEW creative: 31 seconds of the real landing page doing its thing (type an ambition, the coach answers) with
+            a voiceover and burned-in captions. Filenames contain <span className="font-mono">demo</span>. The 16:9 is the
+            Google Ads cut. Same link, same funnel, judged on the same metric.
+          </p>
           <div className="grid md:grid-cols-3 gap-5">
-            {MM_CUTS.map((c) => (
+            {MM_DEMO_CUTS.map((c) => (
               <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
-                <video controls preload="metadata" poster="/ads/mustard-mode-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <video controls preload="metadata" poster="/ads/mustard-mode-demo-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
                 <div className="mt-3 flex items-center justify-between gap-2">
                   <div>
                     <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
@@ -1410,17 +1417,17 @@ export default function AdsPlaybook() {
           </div>
         </section>
 
-        {/* MUSTARD MODE demo spot cuts */}
+        {/* MUSTARD MODE story spot cuts (the original July commercial) */}
         <section>
-          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The demo spot, one cut per placement</h3>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The story spot (the original July commercial)</h3>
           <p className="text-sm text-[#161616]/65 mb-5 font-sans">
-            The second creative: 31 seconds of the real landing page doing its thing (type an ambition, the coach answers) with
-            a voiceover and burned-in captions. The 16:9 is the Google Ads cut. Same link, same funnel, judged on the same metric.
+            The arcade story commercial from July, kept for the creative A/B test. No voiceover, captions carry the lines.
+            Filenames do NOT contain <span className="font-mono">demo</span>.
           </p>
           <div className="grid md:grid-cols-3 gap-5">
-            {MM_DEMO_CUTS.map((c) => (
+            {MM_CUTS.map((c) => (
               <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
-                <video controls preload="metadata" poster="/ads/mustard-mode-demo-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <video controls preload="metadata" poster="/ads/mustard-mode-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
                 <div className="mt-3 flex items-center justify-between gap-2">
                   <div>
                     <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
