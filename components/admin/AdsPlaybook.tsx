@@ -163,6 +163,54 @@ const FM_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per playbook email (the "Email this to me" captures land in Leads). The truth metric: booked calls and audit requests from playbook readers.' },
 ];
 
+/* ============ Campaign twenty: Cross + Covenant ============
+ *
+ * The online-store campaign, and the only one whose footage is a REAL brand.
+ * Every other spot on the shelf is a company we invented to show the treatment;
+ * this one is Sarah's own storefront, live, taking orders. That is the whole
+ * argument, so the copy never buries it.
+ *
+ * Ava narrates over the actual site (no mockups, no stock), which is why the
+ * creative doubles as the proof. Cuts are in ~/mms-cxc-ad, and the rig there
+ * will film any live site the same way.
+ */
+
+const CX_LANDING = 'https://modernmustardseed.com/websites?utm_source=meta&utm_medium=paid&utm_campaign=cxc';
+
+const CX_COPY_A = `This is Cross and Covenant. It welcomes you before it sells you anything.
+
+Scripture that changes every day, so people come back on their own. A wall the community writes on. Art that moves. Then the whole collection, two taps from the bag.
+
+We built all of it. An online store people remember is an online store people buy from. Let's build yours.`;
+
+const CX_COPY_B = `Most online stores open with a discount popup and a photo of a product, then wonder why nobody stays.
+
+Here is the alternative, and it is live right now. A storefront that gives people a reason to come back before it ever asks for the sale, and a checkout two taps away when they are ready.
+
+Watch thirty seconds of one we built, then tell us about yours.`;
+
+const CX_HEADLINE = 'Online stores people come back to.';
+const CX_DESCRIPTION = 'Built end to end by Modern Mustard Seed.';
+
+const CX_CUTS = [
+  { file: '/ads/cxc-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/cxc-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical placements.' },
+  { file: '/ads/cxc-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube, Demand Gen, and the site.' },
+];
+
+const CX_CHECKLIST = [
+  { id: 'cell', label: 'One cell to start: objective Traffic (switch to Conversions once the pixel has volume). Budget $15/day. Learn More button → the UTM link above. Paste Copy Variant 1.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
+  { id: 'audience', label: 'Audience: Advantage+, seller-tilted. Suggestions: Shopify, Ecommerce, Etsy sellers, Small business owners, Entrepreneurship, Print on demand. Age 25-60, United States.' },
+  { id: 'captions', label: 'Decline Meta auto-captions. The caption plates are burned in and styled.' },
+  { id: 'google', label: 'Google: the 16:9 cut runs as Demand Gen and YouTube in-feed against the same landing page. Reuse the headline and description verbatim so the two platforms report against one message.' },
+  { id: 'proof', label: 'Answer every comment asking whether the store is real with the link. It is, and that is the campaign.' },
+  { id: 'organic', label: 'Post the 9:16 cut as an organic Reel and the 4:5 to FB the same day. The CXC accounts do NOT repost this one: it sells MMS, not the apparel.' },
+  { id: 'abtest', label: 'Day 3: duplicate with Copy Variant 2 (the discount-popup angle) and let them fight. Kill the loser at day 6.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at /websites. Anyone who watched a storefront tour for thirty seconds is shopping for one.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per build-queue enquiry, not clicks. The truth metric is booked calls that mention the store.' },
+];
+
 // ============ Campaign five: The Voice Agent Forge ============
 
 const SK_LANDING = 'https://modernmustardseed.com/voice-agents/forge?utm_source=meta&utm_medium=paid&utm_campaign=sidekick';
@@ -865,7 +913,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -887,6 +935,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'chief', num: '17', label: 'The Chief', blurb: 'Product · AI chief of staff · /chief · $15/day' },
   { key: 'ans', num: '18', label: 'The Answer Machine', blurb: 'Demo funnel · worries in, answers out · $15/day' },
   { key: 'scenic', num: '19', label: 'The Scenic Route', blurb: 'Brand film · the homepage journey · $10/day' },
+  { key: 'cxc', num: '20', label: 'Cross + Covenant', blurb: 'Online stores · a real live storefront · $15/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -902,7 +951,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo'] },
-  { name: 'Brand + Verticals', keys: ['callme', 'tw', 'gn', 'rest', 'scenic'] },
+  { name: 'Brand + Verticals', keys: ['callme', 'tw', 'gn', 'rest', 'scenic', 'cxc'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
 ];
 
@@ -1013,6 +1062,7 @@ export default function AdsPlaybook() {
   const [checkedChief, setCheckedChief] = useState<Record<string, boolean>>({});
   const [checkedAns, setCheckedAns] = useState<Record<string, boolean>>({});
   const [checkedScenic, setCheckedScenic] = useState<Record<string, boolean>>({});
+  const [checkedCxc, setCheckedCxc] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -1095,6 +1145,8 @@ export default function AdsPlaybook() {
       if (rawAns) setCheckedAns(JSON.parse(rawAns));
       const rawScenic = localStorage.getItem('mms-ads-checklist-scenic');
       if (rawScenic) setCheckedScenic(JSON.parse(rawScenic));
+      const rawCxc = localStorage.getItem('mms-ads-checklist-cxc');
+      if (rawCxc) setCheckedCxc(JSON.parse(rawCxc));
     } catch { /* first visit */ }
   }, []);
 
@@ -1119,6 +1171,7 @@ export default function AdsPlaybook() {
   const toggleChief = mkToggle('mms-ads-checklist-chief', setCheckedChief);
   const toggleAns = mkToggle('mms-ads-checklist-ans', setCheckedAns);
   const toggleScenic = mkToggle('mms-ads-checklist-scenic', setCheckedScenic);
+  const toggleCxc = mkToggle('mms-ads-checklist-cxc', setCheckedCxc);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -1179,6 +1232,7 @@ export default function AdsPlaybook() {
   const doneCountChief = CH_CHECKLIST.filter((c) => checkedChief[c.id]).length;
   const doneCountAns = AM_CHECKLIST.filter((c) => checkedAns[c.id]).length;
   const doneCountScenic = SR_CHECKLIST.filter((c) => checkedScenic[c.id]).length;
+  const doneCountCxc = CX_CHECKLIST.filter((c) => checkedCxc[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -2685,6 +2739,87 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedScenic[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'cxc' && (<>
+        {/* ============ Campaign twenty: Cross + Covenant (the store is real) ============ */}
+        <section className="bg-[#0D172A] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign twenty &middot; online stores, a real live storefront</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;Cross + Covenant&rdquo; <span className="italic text-[#F5B700]">the store you can actually open</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              Every other spot we run is a company we invented to show the treatment. This one is not. Ava
+              narrates over the live crossandcovenant.co: the painting assembling on the hero, the daily
+              scripture, the prayer wall, the collection, and two taps into a real bag with a real subtotal.
+              Nothing is a mockup and nothing is stock, which means the proof and the creative are the same
+              thirty-seven seconds. One cell at $15/day into /websites.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/websites" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Websites (landing)</a>
+              <a href="https://crossandcovenant.co" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The store itself</a>
+              <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Ava over a Lyria score, styled captions burned in for muted feeds. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {CX_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/cxc-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text &mdash; Variant 1 (the walkthrough)" text={CX_COPY_A} />
+            <CopyBlock title="Primary text &mdash; Variant 2 (the discount popup)" text={CX_COPY_B} />
+            <CopyBlock title="Headline" text={CX_HEADLINE} />
+            <CopyBlock title="Description" text={CX_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM" text={CX_LANDING} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountCxc}/{CX_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {CX_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedCxc[item.id]}
+                    onChange={() => toggleCxc(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedCxc[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>

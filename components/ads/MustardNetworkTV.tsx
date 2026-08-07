@@ -62,6 +62,13 @@ const CHANNELS: Channel[] = [
     src: '/ads/good-news-16x9.mp4',
     poster: '/ads/good-news-poster.png',
   },
+  {
+    n: '07',
+    title: 'Cross + Covenant',
+    note: 'The only channel you can shop. A real storefront, live right now, and every frame is the actual site.',
+    src: '/ads/cxc-16x9.mp4',
+    poster: '/ads/cxc-poster.jpg',
+  },
 ];
 
 export default function MustardNetworkTV() {

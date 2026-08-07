@@ -41,6 +41,14 @@ export function TimberlineConfession() {
                 <p className="font-sans font-extrabold text-[#161616] text-lg">
                   If we do this for companies that do not exist, imagine what we do with your real one.
                 </p>
+                {/* The one real brand on the set. Added when the Cross + Covenant
+                    spot went up on channel 07: leaving it unmentioned under a
+                    headline that says none of these companies exist would read
+                    as a lie by omission, and saying it out loud is stronger
+                    than the confession was on its own. */}
+                <p>
+                  One channel is different. <strong className="font-sans font-bold text-[#161616]">Cross&nbsp;+&nbsp;Covenant is real</strong>, it is live, and you can buy from it tonight. Every frame of that film is the actual store, and we built the store too.
+                </p>
               </div>
             </Reveal>
             <Reveal variant="drop" delay={200}>
