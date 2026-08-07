@@ -64,10 +64,14 @@ const MENU_GROUPS = [
 // The Studio Departments: every door opens free. Rendered as the signature
 // ink panel near the bottom of the drawer (names in Title Case, descriptors
 // in tracked mono caps; never a lowercase opener).
+//
+// PARKED 2026-08-07 (Sarah): The Mustard Tree, Celebrate, Mustard Press, and
+// Mustard Hatchery are pulled from every nav, index, sitemap, and llms.txt
+// entry. The pages still build and answer at their URLs, they are just not
+// discoverable. Restore these four rows (plus the Footer, sitemap, services-hub,
+// llms.txt, front-desk, quotable, and comic entries) to bring them back.
 const DEPARTMENTS = [
   { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
-  { name: 'The Mustard Tree', tag: 'ONE SEED IN, A WHOLE BUSINESS OUT', href: '/mustard-tree' },
-  { name: 'Celebrate', tag: 'GIFTING ON AUTOPILOT', href: '/celebrate' },
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
   { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },
@@ -76,9 +80,7 @@ const DEPARTMENTS = [
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
   { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },
-  { name: 'Mustard Press', tag: 'FREE TYPESET PROOF', href: '/press' },
   { name: 'GEO Desk', tag: 'FREE AI-FINDABILITY GRADE', href: '/website-audit' },
-  { name: 'Mustard Hatchery', tag: 'FREE FIRST GLIMPSE', href: '/hatchery' },
   { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
   { name: 'Mustard Launch', tag: 'YOUR AI LAUNCH COACH', href: '/mustard-launch' },
 ];

@@ -335,9 +335,9 @@ export default function MustardLifeComic() {
                     { p: '04', label: 'The Voice Agent Forge', note: `voice agent, from ${usd(P.sidekick.setupCents)} + ${usd(P.sidekick.monthlyCents)}/mo`, href: '#sidekick' },
                     { p: '06', label: 'Websites and Command Centers', note: `from ${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`, href: '#websites' },
                     { p: '10', label: 'Pictures and Broadcast', note: `commercials from $${P.justCommercial.priceUsd}, managed ads from ${usd(P.onAir.setupCents)}`, href: '#pictures' },
-                    { p: '12', label: 'Press, Launch, and the GEO Desk', note: `from $${P.piece.priceUsd}`, href: '#press' },
+                    { p: '12', label: 'Launch and the GEO Desk', note: `from $${P.launchKit.priceUsd}`, href: '#launch' },
                     { p: '14', label: 'The Switchboard', note: `franchises, from $${P.switchBest.perLocationUsd}/location`, href: '#switchboard' },
-                    { p: '16', label: 'The Hatchery and Night School', note: `mascots $${P.hatch.priceUsd}, courses from $${P.storeFrom}`, href: '#hatchery' },
+                    { p: '16', label: 'Night School and the Store', note: `courses from $${P.storeFrom}`, href: '#night-school' },
                     { p: '18', label: 'The Custom Shop', note: 'sites, stores, apps, whole systems', href: '#builds' },
                     { p: '20', label: 'The Free Classifieds', note: 'everything on this page costs nothing', href: '#classifieds' },
                     { p: '22', label: 'Find Your Horizon', note: 'the partner program', href: '#partners' },
@@ -546,24 +546,17 @@ export default function MustardLifeComic() {
         </div>
       </section>
 
-      {/* ════════════════ p.12 TRIPTYCH: PRESS / LAUNCH / GEO ════════════════ */}
-      <section id="press" className="relative border-b-2 border-[#161616]">
+      {/* ════════════════ p.12 DOUBLE FEATURE: LAUNCH / GEO ════════════════
+          The Mustard Press panel was parked here 2026-08-07 (Sarah). Restore
+          the press entry (art /comic/press.webp, P.piece + P.handPress tags,
+          CTA /press), set the grid back to md:grid-cols-3, and rename the
+          section id back to "press" to bring the feature back. */}
+      <section id="launch" className="relative border-b-2 border-[#161616]">
         <div aria-hidden className="absolute inset-0 halftone-bg opacity-30 pointer-events-none" />
         <div className="relative mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
-          <PageRule page="p. 12" title="Three Short Features" />
-          <div className="grid gap-8 md:grid-cols-3">
+          <PageRule page="p. 12" title="Two Short Features" />
+          <div className="grid gap-8 md:grid-cols-2">
             {[
-              {
-                art: '/comic/press.webp',
-                alt: 'The seedling kids covered in golden ink proudly holding freshly printed sheets by an antique letterpress.',
-                head: 'The kids found the letterpress.',
-                sub: 'The letterpress will recover. Mustard Press typesets print that actually wins customers, and the first proof is free.',
-                tags: [
-                  { name: P.piece.name, price: `$${P.piece.priceUsd}` },
-                  { name: P.handPress.name, price: `$${P.handPress.priceUsd}` },
-                ],
-                cta: { label: 'Free Typeset Proof', href: '/press' },
-              },
               {
                 art: '/comic/launch.webp',
                 alt: 'The Mustard family on a picnic blanket watching a small golden rocket lift off into a twilight sky.',
@@ -588,7 +581,7 @@ export default function MustardLifeComic() {
               },
             ].map((f, i) => (
               <article key={f.head} className="flex flex-col gap-4">
-                <Art src={f.art} alt={f.alt} aspect="1/1" tilt={i === 1 ? 0 : i === 0 ? -0.6 : 0.6} sizes="(min-width: 768px) 33vw, 100vw" />
+                <Art src={f.art} alt={f.alt} aspect="1/1" tilt={i === 0 ? -0.6 : 0.6} sizes="(min-width: 768px) 50vw, 100vw" />
                 <h3 className="mlc-pop font-display text-2xl font-black italic leading-tight" style={{ transitionDelay: '80ms' }}>{f.head}</h3>
                 <p className="mlc-pop font-body text-[14px] leading-relaxed text-[#3a3733]" style={{ transitionDelay: '140ms' }}>{f.sub}</p>
                 <div className="grid grid-cols-2 gap-3">
@@ -644,42 +637,24 @@ export default function MustardLifeComic() {
         </div>
       </section>
 
-      {/* ════════════════ p.16 HATCHERY + NIGHT SCHOOL ════════════════ */}
-      <section id="hatchery" className="relative border-b-2 border-[#161616]">
+      {/* ════════════════ p.16 NIGHT SCHOOL ════════════════
+          The Mustard Hatchery announcement was parked here 2026-08-07 (Sarah).
+          Restore the article (art /comic/hatchery.webp, P.hatch + P.heartbeat +
+          P.spotlight tags, CTA /hatchery), put the wrapper back to
+          "grid gap-10 lg:grid-cols-2", and rename the section id back to
+          "hatchery" to bring the announcement back. */}
+      <section id="night-school" className="relative border-b-2 border-[#161616]">
         <div aria-hidden className="absolute inset-0 halftone-bg opacity-30 pointer-events-none" />
         <div className="relative mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 16" title="Family Announcements" />
-          <div className="grid gap-10 lg:grid-cols-2">
-            <article className="space-y-4">
-              <Art
-                src="/comic/hatchery.webp"
-                alt="The whole Mustard family gathered around a glowing golden egg cracking open in a nest of straw."
-                aspect="1/1"
-                tilt={-0.5}
-                sizes="(min-width: 1024px) 50vw, 100vw"
-              />
-              <h3 className="mlc-pop font-display text-3xl font-black italic">Something is hatching.</h3>
-              <p className="mlc-pop font-body text-[14px] leading-relaxed text-[#3a3733]" style={{ transitionDelay: '100ms' }}>
-                The Mustard Hatchery births a mascot for your business: a face, a voice, a story your customers
-                remember. Meet the first glimpse free, then hatch the whole character.
-              </p>
-              <div className="grid grid-cols-3 gap-3">
-                <PriceTag name={P.hatch.name} price={`$${P.hatch.priceUsd}`} />
-                <PriceTag name={P.heartbeat.name} price={`$${P.heartbeat.priceUsd}/mo`} delay={80} />
-                <PriceTag name={P.spotlight.name} price={`$${P.spotlight.priceUsd}/mo`} delay={160} />
-              </div>
-              <div className="mlc-pop" style={{ transitionDelay: '260ms' }}>
-                <Cta href="/hatchery">Peek in the Nest</Cta>
-              </div>
-            </article>
-
+          <div className="grid gap-10 max-w-3xl">
             <article className="space-y-4">
               <Art
                 src="/comic/study.webp"
                 alt="Mr. Mustard as an enthusiastic professor at a chalkboard of doodles while the seedling kids study and the puppies wear graduation caps."
                 aspect="16/9"
                 tilt={0.5}
-                sizes="(min-width: 1024px) 50vw, 100vw"
+                sizes="(min-width: 1024px) 768px, 100vw"
               />
               <h3 className="mlc-pop font-display text-3xl font-black italic">Night school, Mustard style.</h3>
               <p className="mlc-pop font-body text-[14px] leading-relaxed text-[#3a3733]" style={{ transitionDelay: '100ms' }}>

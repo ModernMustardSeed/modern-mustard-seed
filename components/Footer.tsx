@@ -14,12 +14,13 @@ import CookiePreferencesLink from '@/components/CookiePreferencesLink';
  */
 export default function Footer() {
   const linkSections = [
+    // PARKED 2026-08-07 (Sarah): The Mustard Tree, Celebrate, Mustard Press, and
+    // Mustard Hatchery are pulled from every nav and index. The pages still
+    // answer at their URLs; they are only unlisted. See the note in Navbar.tsx.
     {
       title: 'The Departments',
       links: [
         { label: 'The Talking Website', href: '/talking-website' },
-        { label: 'The Mustard Tree', href: '/mustard-tree' },
-        { label: 'Celebrate', href: '/celebrate' },
         { label: 'The Chief', href: '/chief' },
         { label: 'Command Center', href: '/command-center' },
         { label: 'Websites', href: '/websites' },
@@ -27,9 +28,7 @@ export default function Footer() {
         { label: 'The Switchboard', href: '/switchboard' },
         { label: 'Mustard Broadcast', href: '/ads' },
         { label: 'Mustard Pictures', href: '/pictures' },
-        { label: 'Mustard Press', href: '/press' },
         { label: 'GEO Desk', href: '/website-audit' },
-        { label: 'Mustard Hatchery', href: '/hatchery' },
         { label: 'Mustard Launch', href: '/mustard-launch' },
         { label: 'Mustard Mode', href: '/mustard-mode' },
       ],

@@ -27,14 +27,9 @@ export const frontDeskIntents: FrontDeskIntent[] = [
     headline: 'Your {thing}, answering within the week.',
     cta: { label: 'Forge a free voice demo in 60 seconds', href: '/voice-agents/forge' },
   },
-  {
-    key: 'press',
-    match: ['menu', 'price list', 'price sheet', 'rate sheet', 'flyer', 'business card', 'yard sign'],
-    reply:
-      "Seed received, and there's a shortcut: MUSTARD PRESS typesets your actual price list into a print-ready page while you watch, free, every price exactly as you wrote it. Run it at modernmustardseed.com/press. The clean file is $97, instant. Bigger brand system? That's THE KIT, or we design the whole presence.",
-    headline: 'Your {thing}, print-ready today.',
-    cta: { label: 'Typeset your proof free', href: '/press' },
-  },
+  // The 'press' intent (menus, price lists, flyers) is parked with Mustard
+  // Press as of 2026-08-07. Those words now fall through to the general
+  // scoping reply. See the note in Navbar.tsx to bring the department back.
   {
     key: 'pictures',
     match: ['commercial', 'video ad', 'promo video', 'tv ad', 'advertisement', 'video for my'],

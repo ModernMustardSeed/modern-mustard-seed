@@ -3,6 +3,11 @@
  * door that opens with a free demo or tool) plus the goal router that sends a
  * visitor to the right one. Kept in one place so the grid and the PathFinder
  * never drift. Only LIVE, deployed department pages belong here.
+ *
+ * PARKED 2026-08-07 (Sarah): Mustard Press, Mustard Hatchery, Celebrate, and
+ * The Mustard Tree are pulled from this map, so they leave the /services grid,
+ * the PathFinder, and the studio lines the site chat quotes from. The pages
+ * still answer at their URLs. Re-add the rows to bring the doors back.
  */
 
 export type Dept = {
@@ -23,13 +28,10 @@ export const DEPARTMENTS: Dept[] = [
   { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
   { key: 'ads', name: 'Mustard Broadcast', tag: 'We run your ads', blurb: 'We make the cinematic commercial and run the Meta and Google ads in your own account.', href: '/ads', icon: '📺' },
   { key: 'pictures', name: 'Mustard Pictures', tag: 'Free screen test', blurb: 'Your business as a real cinematic commercial, directed by our AI. Preview yours free.', href: '/pictures', icon: '🎬' },
-  { key: 'press', name: 'Mustard Press', tag: 'Free typeset proof', blurb: 'Your menu, price list, or rate sheet typeset print-ready while you watch. Cards and flyers too.', href: '/press', icon: '🖨' },
   { key: 'geo', name: 'GEO Desk', tag: 'Free findability grade', blurb: 'Get found and cited by ChatGPT, Perplexity, and Google AI. Graded, then fixed.', href: '/website-audit', icon: '🔎' },
   { key: 'launch', name: 'Mustard Launch', tag: 'Your AI launch coach', blurb: 'A free personalized launch plan for any new business, then a coach that ships it with you.', href: '/mustard-launch', icon: '🚀' },
   { key: 'switchboard', name: 'The Switchboard', tag: 'Franchise demo line', blurb: 'A 24/7 AI concierge line for multi-location and franchise operators. Call the live demo.', href: '/switchboard', icon: '☎️' },
-  { key: 'hatchery', name: 'Mustard Hatchery', tag: 'Free first glimpse', blurb: 'Your own branded AI mascot, born and given a voice. Meet the first glimpse free.', href: '/hatchery', icon: '🥚' },
   { key: 'mode', name: 'Mustard Mode', tag: 'Learn with a coach', blurb: 'Learn to run Claude like the studio does. A live AI coach, four tracks, first session free.', href: '/mustard-mode', icon: '🎓' },
-  { key: 'celebrate', name: 'Celebrate', tag: 'Gifting on autopilot', blurb: 'Client and team gifting that runs itself, so the right people feel remembered on time.', href: '/celebrate', icon: '🎉' },
 ];
 
 export const deptByKey = Object.fromEntries(DEPARTMENTS.map((d) => [d.key, d]));
@@ -42,7 +44,7 @@ export const GOALS: Goal[] = [
   { label: 'Stop missing calls', emoji: '📞', deptKeys: ['sidekick', 'switchboard'], note: 'A voice agent on your real number, day or night. Multi-location? The Switchboard.' },
   { label: 'Run the whole business', emoji: '🧭', deptKeys: ['command-center', 'sidekick', 'websites'], note: 'One command center wired to your calls, your site, and your customers.' },
   { label: 'Get my hours back', emoji: '⏳', deptKeys: ['chief', 'command-center'], note: 'An AI chief of staff who runs your calendar, email, and follow-up, with the back office behind it.' },
-  { label: 'Look professional online', emoji: '✨', deptKeys: ['websites', 'pictures', 'press'], note: 'A real website, a cinematic commercial, and print-ready collateral that match.' },
+  { label: 'Look professional online', emoji: '✨', deptKeys: ['websites', 'pictures'], note: 'A real website and a cinematic commercial that match.' },
   { label: 'Get found by AI & Google', emoji: '🔎', deptKeys: ['geo', 'websites'], note: 'Grade your findability free, then install the signals that get you cited.' },
   { label: 'Launch something new', emoji: '🚀', deptKeys: ['launch', 'websites', 'sidekick'], note: 'A free launch plan, then the site and the phone line to open the doors.' },
   { label: 'Sell products online', emoji: '🛍', deptKeys: ['websites'], note: 'A custom storefront on the Full-Service Business Build. Start with a free demo.' },

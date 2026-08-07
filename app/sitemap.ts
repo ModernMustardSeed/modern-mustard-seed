@@ -6,20 +6,19 @@ import { products, bundles } from '@/data/products';
 import { liveTradePages } from '@/data/trade-pages';
 import { MONTANA_CITIES } from '@/data/montana-cities';
 
+// PARKED 2026-08-07 (Sarah): /mustard-tree, /celebrate, /press, and /hatchery
+// are out of the sitemap and noindexed. The routes still answer directly; they
+// are simply not advertised to crawlers or AI answer engines. See Navbar.tsx.
 const STATIC_PATHS = [
   '',
   '/talking-website',
   '/ads',
-  '/mustard-tree',
-  '/celebrate',
   '/chief',
   '/command-center',
   '/websites',
   '/comic',
   '/voice-agents/forge',
   '/pictures',
-  '/press',
-  '/hatchery',
   '/switchboard',
   '/world',
   '/mustard-launch',
@@ -66,7 +65,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/book'
         ? 1.0
-        : path === '/talking-website' || path === '/ads' || path === '/mustard-tree' || path === '/celebrate' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/voice-agents/forge' || path === '/pictures' || path === '/press' || path === '/hatchery' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/one-person-business' || path === '/the-terminal' || path === '/idea-to-spec'
+        : path === '/talking-website' || path === '/ads' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/voice-agents/forge' || path === '/pictures' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/one-person-business' || path === '/the-terminal' || path === '/idea-to-spec'
           ? 0.95
           : path === '/work' || path === '/audit' || path === '/comic' || path === '/launch-checklist' || path === '/prompt-playbook'
             ? 0.9

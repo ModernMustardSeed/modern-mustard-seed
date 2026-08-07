@@ -10,6 +10,10 @@ export const metadata = buildMetadata({
   title: MUSTARD_TREE.metaTitle,
   description: MUSTARD_TREE.metaDescription,
   path: '/mustard-tree',
+  // PARKED 2026-08-07 (Sarah). Unlisted from every nav, the sitemap, and
+  // llms.txt; noindexed so it only opens for someone typing the URL. Drop this
+  // flag to bring the department back. See the note in Navbar.tsx.
+  noindex: true,
 });
 
 function GoldSeal({ className = '' }: { className?: string }) {

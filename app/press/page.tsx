@@ -10,6 +10,10 @@ export const metadata = buildMetadata({
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
   image: '/press/opengraph-image',
+  // PARKED 2026-08-07 (Sarah). Unlisted from every nav, the sitemap, and
+  // llms.txt; noindexed so it only opens for someone typing the URL. Drop this
+  // flag to bring the department back. See the note in Navbar.tsx.
+  noindex: true,
 });
 
 export default function PressPage() {
