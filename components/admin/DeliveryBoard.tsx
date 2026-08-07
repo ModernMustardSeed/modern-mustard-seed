@@ -286,6 +286,8 @@ function DeliveryRow({
   const [addr, setAddr] = useState({ address1: '', city: '', state: '', zip: '', phone: '' });
   const [showBoard, setShowBoard] = useState(false);
   const [steer, setSteer] = useState('');
+  // Paid builds only: spend fal on generated hero/signature video beats.
+  const [videoBeats, setVideoBeats] = useState(false);
 
   const p = row.project;
 
@@ -360,8 +362,8 @@ function DeliveryRow({
 
   const doRebuild = async () => {
     if (p?.hasSite && !confirm('Rebuild their site from their intake? This replaces the current draft, including any edits you made here.')) return;
-    const j = await act('rebuild');
-    if (j?.ok) { setMsg('Queued. The forge is rebuilding their real site from what they sent us. It takes a few minutes.'); onChanged(); }
+    const j = await act('rebuild', videoBeats ? { videoBeats: true } : {});
+    if (j?.ok) { setMsg(`Queued. The forge is rebuilding their real site from what they sent us${videoBeats ? ', with generated video beats (spends fal)' : ''}. It takes a few minutes.`); onChanged(); }
   };
 
   const doApprove = async () => {
@@ -850,15 +852,21 @@ function DeliveryRow({
                 </button>
               )}
               {row.intakeAt && (
-                <button
-                  type="button"
-                  onClick={doRebuild}
-                  disabled={!!busy || p?.buildStatus === 'queued' || p?.buildStatus === 'building' || Boolean(p?.publishedAt)}
-                  className={p?.hasSite ? BTN_QUIET : BTN}
-                  title={p?.publishedAt ? 'It is already live. Edit it instead.' : 'Forge their real site from their intake'}
-                >
-                  {busy === 'rebuild' ? 'Queueing…' : 'Rebuild from their intake'}
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={doRebuild}
+                    disabled={!!busy || p?.buildStatus === 'queued' || p?.buildStatus === 'building' || Boolean(p?.publishedAt)}
+                    className={p?.hasSite ? BTN_QUIET : BTN}
+                    title={p?.publishedAt ? 'It is already live. Edit it instead.' : 'Forge their real site from their intake'}
+                  >
+                    {busy === 'rebuild' ? 'Queueing…' : 'Rebuild from their intake'}
+                  </button>
+                  <label className="flex items-center gap-1.5 text-xs text-[#161616]/70 cursor-pointer select-none" title="Generate a few short hero and signature video clips for their site (Kling via fal, a few dollars). Paid builds only; demos never generate video.">
+                    <input type="checkbox" checked={videoBeats} onChange={(e) => setVideoBeats(e.target.checked)} className="h-3.5 w-3.5 accent-[#F5B700]" />
+                    Add video beats (spends fal)
+                  </label>
+                </>
               )}
               {p?.hasSite && (
                 <>

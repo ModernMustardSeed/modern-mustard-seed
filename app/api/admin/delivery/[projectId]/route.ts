@@ -66,7 +66,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
   if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   const { projectId } = await params;
-  let body: { action?: string; domain?: string; html?: string; external?: boolean; revealAt?: string; address1?: string; city?: string; state?: string; zip?: string; phone?: string; steer?: string; moodboardOverride?: boolean };
+  let body: { action?: string; domain?: string; html?: string; external?: boolean; revealAt?: string; address1?: string; city?: string; state?: string; zip?: string; phone?: string; steer?: string; moodboardOverride?: boolean; videoBeats?: boolean };
   try {
     body = await req.json();
   } catch {
@@ -190,6 +190,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
     case 'rebuild': {
       const input = await rebuildInputFor(sb, projectId);
       if ('error' in input) return NextResponse.json({ error: input.error }, { status: 400 });
+      // Paid builds may spend on generated video, but only when Sarah ticks it.
+      if (body.videoBeats === true) input.videoBeats = true;
       const queued = await queueRebuild(sb, input);
       if (!queued.ok) return NextResponse.json({ error: queued.error }, { status: 500 });
       return NextResponse.json({ ok: true, jobId: queued.jobId });

@@ -25,6 +25,14 @@ export type RebuildInput = {
   products: string[];
   intake: Record<string, unknown>;
   lead: { city?: string | null; state?: string | null; phone?: string | null; niche?: string | null; website?: string | null } | null;
+  /**
+   * Sarah's per-build call to spend on generated video for the hero and
+   * signature beats (Kling via fal, a few dollars per build). PAID builds
+   * only, and only when she ticks it: free demos never generate video
+   * (2026-08-07, never-leak-revenue), so this defaults off everywhere and the
+   * customer-triggered intake path never sets it.
+   */
+  videoBeats?: boolean;
 };
 
 type Asset = { url: string; name: string; kind: string };
@@ -64,6 +72,7 @@ export function buildRebuildBrief(input: RebuildInput): string {
     '',
     'THIS IS THE PAID, REAL WEBSITE. It goes live on their own domain. Follow the real-site rules:',
     'no demo pitch, no voice agent sales section, no sample captions, no invented facts.',
+    input.videoBeats ? 'VIDEO BEATS: yes' : null,
     '',
     '## The business',
     `- Name: ${input.business}`,
