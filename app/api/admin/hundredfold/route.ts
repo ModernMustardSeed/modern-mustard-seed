@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/lib/admin-auth';
 import { activeMemberCount, listMembers } from '@/lib/hundredfold-store';
-import { HUNDREDFOLD, seatsLeft } from '@/lib/hundredfold';
+
 
 export const runtime = 'nodejs';
 
@@ -12,13 +12,5 @@ export async function GET() {
   const members = await listMembers();
   const active = await activeMemberCount();
 
-  return NextResponse.json({
-    ok: true,
-    members,
-    seats: {
-      total: HUNDREDFOLD.foundingSeats,
-      taken: active ?? 0,
-      left: active === null ? null : seatsLeft(active),
-    },
-  });
+  return NextResponse.json({ ok: true, members, active: active ?? 0 });
 }

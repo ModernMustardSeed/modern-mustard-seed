@@ -43,7 +43,7 @@ const HEAT = ['interviewed', 'offered', 'interviewing', 'active', 'applicant', '
 
 export default function HundredfoldDesk() {
   const [members, setMembers] = useState<Member[]>([]);
-  const [seats, setSeats] = useState<{ total: number; taken: number; left: number | null } | null>(null);
+  const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
@@ -53,7 +53,7 @@ export default function HundredfoldDesk() {
       const data = await res.json();
       if (data.ok) {
         setMembers(data.members as Member[]);
-        setSeats(data.seats);
+        setActive(Number(data.active) || 0);
       }
     } finally {
       setLoading(false);
@@ -91,13 +91,10 @@ export default function HundredfoldDesk() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
           {[
-            { label: 'Seats left', value: seats?.left ?? '–' },
-            { label: 'Active members', value: seats?.taken ?? 0 },
+            { label: 'Paying members', value: active },
             { label: 'Waiting on a plan', value: members.filter((m) => m.status === 'interviewed').length },
-            {
-              label: 'Recurring at full',
-              value: money(HUNDREDFOLD.monthlyCents * HUNDREDFOLD.foundingSeats),
-            },
+            { label: 'Interviews taken', value: members.filter((m) => m.status !== 'applicant').length },
+            { label: 'Monthly recurring', value: money(HUNDREDFOLD.monthlyCents * active) },
           ].map((s) => (
             <div key={s.label} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
               <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#161616]/55 mb-2">

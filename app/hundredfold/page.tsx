@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import TheInterview from '@/components/hundredfold/TheInterview';
 import HundredfoldFilm from '@/components/hundredfold/HundredfoldFilm';
-import { activeMemberCount } from '@/lib/hundredfold-store';
+import JoinHundredfold from '@/components/hundredfold/JoinHundredfold';
 import {
   FIT,
   GUARANTEE,
@@ -11,7 +11,6 @@ import {
   STACK,
   money,
   priceSentence,
-  seatsLeft,
   stackTotalCents,
 } from '@/lib/hundredfold';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
@@ -20,7 +19,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'HUNDREDFOLD. The Scaling Program That Builds The Machine With You.',
   description:
-    'Mr. Mustard interviews you, we forge your offer, we build the agents that run your plan, and we coach you through four gates for twelve months. $5,000 to start, then $2,500 a month. Ten founding seats.',
+    'Mr. Mustard interviews you, we forge your offer, we build the AI agents that run your plan, and we coach you every week against four gates. $5,000 to start, then $2,500 a month, month to month.',
   path: '/hundredfold',
 });
 
@@ -35,7 +34,7 @@ const FAQS = [
   },
   {
     q: 'What does it cost?',
-    a: 'Five thousand dollars to start, then two thousand five hundred a month. The start covers your interview, your roadmap, your offer, and the first system we build. The monthly covers weekly coaching, the ongoing build queue, and running the agents. Founding members hold that price for twelve months. There is no free trial and no discount, because a program that hand-holds this closely cannot be run at volume.',
+    a: 'Five thousand dollars to start, then two thousand five hundred a month, month to month. The start covers your interview, your roadmap, your forged offer, and the first system we build and put live. The monthly covers weekly coaching, the ongoing build queue, and running your agents. There is no free trial, because the interview and the roadmap are free and they are worth more than a fortnight of access. Cancel with thirty days notice any month and everything we built stays in your accounts.',
   },
   {
     q: 'How is this different from a coaching program or a mastermind?',
@@ -58,20 +57,16 @@ const FAQS = [
     a: 'The First Window Guarantee. Your first thirty days produce your offer, your roadmap, and your first built system, live and working. If all three are not in your hands by day thirty, you do not pay the second month and you keep everything we made. After that it is thirty days notice, any month, no exit fee. Everything built stays in your accounts either way.',
   },
   {
-    q: 'Why only ten seats?',
-    a: 'Because Sarah runs every interview and every build herself. The seat count is simply the number of businesses she can serve without the quality dropping. When they are full, the next opening is the next one someone finishes. That is not a marketing tactic, it is arithmetic.',
+    q: 'Is there a waitlist or a cohort I have to wait for?',
+    a: 'No. There is no cohort, no seat count, no doors closing on Friday. You start when you start, and your first window begins the day your interview is done. The reason to start now is arithmetic rather than pressure: window one takes thirty days whether you begin it this month or next, and the people who told you maybe later this quarter are getting colder every week nobody calls them.',
   },
   {
     q: 'How do I start?',
-    a: 'Run the free Hundredfold Roadmap on your website first, which costs nothing and takes ninety seconds. If what it says lands, do the interview. After the interview Sarah reviews everything herself and brings you your plan along with what it would take to run it together. Nobody is charged anything before that conversation.',
+    a: 'Run the free Hundredfold Roadmap on your website first, which costs nothing and takes ninety seconds. If what it says lands, do the interview, which is also free. From there you can join right on the page and your Command Center opens immediately, or wait and talk to Sarah first. Nothing is charged until you choose to join.',
   },
 ];
 
-export default async function HundredfoldPage() {
-  const active = await activeMemberCount();
-  // Fails toward FULL: if we cannot read the count we do not advertise seats we
-  // might not have.
-  const left = active === null ? null : seatsLeft(active);
+export default function HundredfoldPage() {
   const stackTotal = stackTotalCents();
 
   return (
@@ -92,7 +87,7 @@ export default async function HundredfoldPage() {
               '@type': 'Offer',
               price: (HUNDREDFOLD.setupCents / 100).toFixed(0),
               priceCurrency: 'USD',
-              description: `${priceSentence()}. ${HUNDREDFOLD.foundingSeats} founding seats.`,
+              description: `${priceSentence()}, month to month.`,
             },
           },
           serviceJsonLd({
@@ -153,13 +148,9 @@ export default async function HundredfoldPage() {
               </Link>
             </div>
 
-            {left !== null && (
-              <p className="mt-6 text-center text-[10px] uppercase tracking-[0.3em] font-mono font-bold" style={{ color: RED }}>
-                {left > 0
-                  ? `${left} of ${HUNDREDFOLD.foundingSeats} founding seats open`
-                  : 'All founding seats are taken. The waitlist is open.'}
-              </p>
-            )}
+            <p className="mt-6 text-center text-[10px] uppercase tracking-[0.3em] font-mono font-bold" style={{ color: RED }}>
+              {priceSentence()} · Month to month
+            </p>
           </div>
         </header>
 
@@ -321,10 +312,13 @@ export default async function HundredfoldPage() {
                 </div>
               </div>
               <p className="mt-5 text-[#161616]/70 font-body text-sm leading-relaxed">
-                Price held for {HUNDREDFOLD.priceLockMonths} months for founding members. Month to month
-                after the first window, thirty days notice, no exit fee. Everything we build stays in your
-                accounts whatever happens.
+                Month to month, thirty days notice, no exit fee, no contract to escape. Everything we build
+                stays in your accounts whatever happens.
               </p>
+
+              <div id="join" className="mt-8 pt-7 border-t-2 border-[#161616]/12 scroll-mt-24">
+                <JoinHundredfold />
+              </div>
             </div>
 
             {/* Guarantee + scarcity */}
@@ -338,7 +332,7 @@ export default async function HundredfoldPage() {
               </div>
               <div className="pop-card p-7">
                 <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold mb-3" style={{ color: RED }}>
-                  Why the seats are capped
+                  On starting now
                 </span>
                 <h3 className="font-display text-2xl font-black tracking-tight mb-3">{SCARCITY.headline}</h3>
                 <p className="text-[#3a3733] font-body text-sm leading-relaxed">{SCARCITY.body}</p>

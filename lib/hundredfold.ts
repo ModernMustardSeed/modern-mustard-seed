@@ -25,18 +25,22 @@ export const HUNDREDFOLD = {
   /** $2,500 a month. Coaching, the build queue, and the agents running. */
   monthlyCents: 250_000,
 
-  /** Months the joining price is held, said plainly on the page. */
-  priceLockMonths: 12,
-
-  /**
-   * The hard cap. Sarah delivers this personally, so the number of seats is the
-   * number she can actually serve, and the page never sells past it.
-   * Revenue rule: hard-cap every plan, no trials, spend guards fail closed.
-   */
-  foundingSeats: 10,
-
   /** The program runs on gates, not on the calendar. Twelve months of windows. */
   termMonths: 12,
+
+  /**
+   * ⚠️ THE SPEND CAP, and it is the only cap left.
+   *
+   * Sarah removed the founding-seat limit on 2026-08-07: this is a straight
+   * offer meant to reach thousands, not a cohort. That decision moves the risk
+   * from "can Sarah serve them" to "does a member cost more in model calls than
+   * they pay", which is the failure this number exists to prevent.
+   *
+   * A member's included AI work per month: interviews, re-synthesis, agent runs.
+   * Past it, the work queues to the next cycle rather than billing them a
+   * surprise or quietly eating the margin. Guards fail CLOSED.
+   */
+  monthlyAiCreditCents: 40_000,
 } as const;
 
 export const money = (cents: number): string =>
@@ -117,11 +121,11 @@ export const PILLARS: Pillar[] = [
     n: '05',
     name: 'The Coaching',
     line: 'Every week. Step by step, and the reason behind the step.',
-    body: 'Two things at once, because owners need both. The step-by-step: exactly what to do this week, in what order, with the script. And the altitude: why this works, so you can make the call yourself next quarter without asking anyone. You leave knowing how to run the machine, not just owning one.',
+    body: 'Two things at once, because owners need both. The step-by-step: exactly what to do this week, in what order, with the script. And the altitude: why this works, so you can make the call yourself next quarter without asking anyone. Live working sessions every week, plus Mr. Mustard on your own gates any hour you want him, which is the part that means you are never stuck at nine at night waiting on a reply. You leave knowing how to run the machine, not just owning one.',
     gets: [
-      'Weekly working sessions against your current gate',
-      'The step-by-step for this week, written down',
-      'A direct line between sessions, answered by a person',
+      'Live working sessions every week, run against whatever gate you are on',
+      'Mr. Mustard on call for your own plan, day or night, as often as you like',
+      'The step-by-step for this week, written down where you can find it',
     ],
   },
   {
@@ -198,15 +202,21 @@ export const stackTotalCents = (): number => STACK.reduce((s, i) => s + i.valueC
 export const GUARANTEE = {
   name: 'The First Window Guarantee',
   body: `Your first thirty days produce your offer, your roadmap, and your first built system, live and working. If all three are not in your hands by day thirty, you do not pay the second month and you keep everything we made. After that, thirty days notice, any month, no exit fee and no argument. Everything we build stays in your accounts either way.`,
+  /** Said under the button, where the hesitation actually happens. */
+  short: 'Offer, roadmap, and your first working system inside thirty days, or month two is free and you keep it all.',
 };
 
 /**
- * Scarcity that is true and checkable, never a countdown timer. Sarah builds
- * every one of these personally, so the seat count IS the delivery capacity.
+ * No countdown timer, no fake seat count, no "doors close Friday".
+ *
+ * The honest reason to start now is arithmetic: the program is built around
+ * four windows, and the first one is thirty days. A month spent deciding is a
+ * window you do not get back, and every warm lead already in their phone is
+ * cooling while they think about it.
  */
 export const SCARCITY = {
-  headline: `${HUNDREDFOLD.foundingSeats} founding seats`,
-  body: `Sarah runs every interview and every build herself, so the number of seats is simply the number she can serve well. Founding members hold their joining price for ${HUNDREDFOLD.priceLockMonths} months. When the seats are full the next opening is the next one someone finishes.`,
+  headline: 'The only clock that matters is yours',
+  body: `There is no countdown on this page and no seat count, because neither would be true. What is true is that window one takes thirty days and it is the same thirty days whether you start it this month or next, and that the people who said "maybe later" to you this quarter are getting colder every week nobody calls them. Start when you are ready to actually run it.`,
 };
 
 /** Who this is and is not for. Saying the "not" out loud is what makes the "is" land. */
@@ -244,6 +254,9 @@ export type MemberStatus = (typeof MEMBER_STATUSES)[number];
 export const SYSTEM_STATUSES = ['proposed', 'queued', 'building', 'live', 'retired'] as const;
 export type SystemStatus = (typeof SYSTEM_STATUSES)[number];
 
-/** Seats left, floored at zero so the page can never advertise a negative. */
-export const seatsLeft = (activeCount: number): number =>
-  Math.max(0, HUNDREDFOLD.foundingSeats - activeCount);
+/**
+ * Stack value is quoted per YEAR against a price that is setup plus twelve
+ * months, so the two numbers on the page compare like for like.
+ */
+export const firstYearPriceSentence = (): string =>
+  `${money(HUNDREDFOLD.setupCents)} to start, then ${money(HUNDREDFOLD.monthlyCents)} a month, month to month`;

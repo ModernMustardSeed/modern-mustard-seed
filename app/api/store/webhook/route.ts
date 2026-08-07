@@ -31,11 +31,14 @@ import { getPicturesTier, PICTURES } from '@/data/pictures';
 import { getBroadcastTier } from '@/data/ads';
 import { getPicturesRun } from '@/lib/pictures-store';
 import { getPressTier, PRESS } from '@/data/press';
+import { getSeoTier } from '@/data/seo-packages';
 import { getPressRun, consumeHandPressSlot } from '@/lib/press-store';
 import { getHatcheryTier, HATCH, HUCK } from '@/data/hatchery';
 import { nextHatchNumber } from '@/lib/hatchery-store';
 import { renderPressPdf } from '@/lib/press-pdf';
 import { getGeoTier } from '@/data/geo';
+import { HUNDREDFOLD, money as hundredfoldMoney } from '@/lib/hundredfold';
+import { getMemberByEmail, updateMember, upsertMember } from '@/lib/hundredfold-store';
 import { saveGeoWatch, deleteGeoWatch, claimGeoWebhook } from '@/lib/geo-store';
 import { SITE } from '@/lib/seo';
 import { grantEntitlement, revokeEntitlement, PROGRAM_ASSETS, isProgramSlug, isMustardSlug, isLaunchSlug, type ProgramSlug } from '@/lib/entitlements';
@@ -1067,6 +1070,90 @@ async function handleSidekickPurchase(
  * buyer, tells Sarah to TRAIN the Chief within 7 days, and magic-links the buyer
  * straight into /chief/hq.
  */
+/**
+ * A HUNDREDFOLD membership just started.
+ *
+ * Flip the member to active (creating the row if they came straight from an ad
+ * without an interview), grant the portal entitlement so their Command Center
+ * opens, and tell them the one thing they need to do next, which is the
+ * interview. Everything downstream of this program is built from that
+ * transcript, so the welcome email has exactly one ask in it.
+ */
+async function handleHundredfoldPurchase(
+  session: Stripe.Checkout.Session,
+  email: string,
+  name: string | null
+) {
+  const businessRaw = (session.metadata?.business || '').trim();
+  const business = escapeHtmlSafe(businessRaw);
+  const firstName = name?.split(' ')[0];
+  const subId = typeof session.subscription === 'string' ? session.subscription : null;
+  const customerId = typeof session.customer === 'string' ? session.customer : null;
+
+  const member =
+    (await getMemberByEmail(email)) ??
+    (await upsertMember({ email, name, business_name: businessRaw || null, status: 'active' }));
+
+  if (member) {
+    await updateMember(member.id, {
+      status: 'active',
+      started_at: new Date().toISOString(),
+      stripe_customer_id: customerId,
+      stripe_subscription_id: subId,
+      setup_cents: HUNDREDFOLD.setupCents,
+      monthly_cents: HUNDREDFOLD.monthlyCents,
+    } as never);
+  }
+
+  // The portal is where their whole program lives, so the entitlement has to
+  // exist before the welcome email points them at it.
+  await grantEntitlement(email, 'hundredfold', 'purchase');
+
+  const alreadyInterviewed = Boolean(member?.deep_roadmap);
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const resend = resendClient();
+      await resend.emails.send({
+        from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+        to: email,
+        replyTo: 'sarah@modernmustardseed.com',
+        subject: alreadyInterviewed ? 'You are in Hundredfold' : 'You are in. One thing to do first.',
+        html: clientEmail({
+          preheader: alreadyInterviewed
+            ? 'Your Command Center is open. Window one starts now.'
+            : 'Twenty minutes with Mr. Mustard and your plan gets built.',
+          eyebrow: 'HUNDREDFOLD',
+          greeting: firstName ? `${firstName}, you are in.` : 'You are in.',
+          body: alreadyInterviewed
+            ? `<p>Your Command Center is open at <a href="${SITE.url}/portal/hundredfold">${SITE.url}/portal/hundredfold</a>. Your roadmap, your offer, your gates, and the build queue are all in there.</p><p>Window one is thirty days and it starts now. Open it, read the gate at the bottom of window one, and start with the first move. I will be in touch this week.</p>`
+            : `<p>One thing before anything else: <a href="${SITE.url}/hundredfold#interview">the interview</a>. About twenty minutes with Mr. Mustard, and everything after it gets built from your answers, so it is genuinely the highest-leverage twenty minutes of the whole program.</p><p>Once it is done your roadmap, your offer, and your build plan land in your Command Center at <a href="${SITE.url}/portal/hundredfold">${SITE.url}/portal/hundredfold</a>, and I read every word of the transcript myself.</p>`,
+          signature: 'Sarah',
+        }),
+      });
+
+      await resend.emails.send({
+        from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+        to: OWNER_NOTIFY_TO,
+        subject: `HUNDREDFOLD joined: ${businessRaw || email}`,
+        html: clientEmail({
+          preheader: 'A new Hundredfold member.',
+          eyebrow: 'HUNDREDFOLD',
+          greeting: 'Somebody joined.',
+          body: `<p><strong>${safeOrEmail(name, email)}</strong>${businessRaw ? ` (${business})` : ''} just started HUNDREDFOLD at ${hundredfoldMoney(HUNDREDFOLD.setupCents)} + ${hundredfoldMoney(HUNDREDFOLD.monthlyCents)}/mo.</p><p>${alreadyInterviewed ? 'They have already been interviewed and their plan is built. Read it before you call them.' : 'They have NOT been interviewed yet. The welcome email points them at it.'}</p><p>Desk: <a href="${SITE.url}/admin/hundredfold${member ? `/${member.id}` : ''}">open them</a>. Stripe session ${session.id}.</p>`,
+          signature: 'The Hundredfold Desk',
+        }),
+      });
+    } catch (err) {
+      console.error('hundredfold welcome email failed', err);
+    }
+  }
+}
+
+function safeOrEmail(name: string | null, email: string): string {
+  return name ? escapeHtmlSafe(name) : escapeHtmlSafe(email);
+}
+
 async function handleChiefPurchase(
   req: Request,
   session: Stripe.Checkout.Session,
@@ -2369,6 +2456,12 @@ export async function POST(req: Request) {
   }
 
   // ── THE CHIEF subscription started (setup fee rides the first invoice) ──
+  // ── HUNDREDFOLD membership started ($5,000 + $2,500/mo, no cap) ──
+  if (session.metadata?.kind === 'hundredfold') {
+    await handleHundredfoldPurchase(session, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'hundredfold' });
+  }
+
   if (session.metadata?.kind === 'chief') {
     await handleChiefPurchase(req, session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'chief' });
