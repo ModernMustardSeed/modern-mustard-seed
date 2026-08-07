@@ -107,6 +107,14 @@ const MM_CUTS = [
   { file: '/ads/mustard-mode-16x9.mp4', label: '16:9 — In-stream + site', note: 'Video feeds, search, and the landing hero.' },
 ];
 
+// The demo spot: 31s of real screen footage of the live landing page with an
+// AI voiceover (Ava). Same funnel, same UTM link. Runs against the story spot.
+const MM_DEMO_CUTS = [
+  { file: '/ads/mustard-mode-demo-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. Lead with this on Meta.' },
+  { file: '/ads/mustard-mode-demo-9x16.mp4', label: '9:16 — Reels + Stories + Shorts', note: 'Vertical placements, Meta and YouTube Shorts.' },
+  { file: '/ads/mustard-mode-demo-16x9.mp4', label: '16:9 — Google + in-stream', note: 'The Google Ads cut: YouTube in-stream and in-feed. Also Meta video feeds.' },
+];
+
 const MM_CHECKLIST = [
   { id: 'cell', label: 'One cell to start: Campaign objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the MUSTARD MODE UTM link above. Paste Copy Variant 1.' },
   { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
@@ -114,6 +122,7 @@ const MM_CHECKLIST = [
   { id: 'captions', label: 'Decline Meta auto-captions (styled captions are burned in).' },
   { id: 'organic', label: 'Post the 9:16 cut as an organic Reel + the 4:5 to FB the same day (the launch post drafts are already written, ask Claude).' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 and let them fight. Kill the loser at day 6.' },
+  { id: 'demovstory', label: 'Creative test: run the demo spot (screen footage + voiceover) against the story spot in the same ad set, one at a time or as separate ads. The demo rehearses the exact first action on the landing page; judge both on cost per free-play email.' },
   { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers across ALL THREE commercials pointed at the MUSTARD MODE link. Builders who watched the service ads are this product’s warmest audience.' },
   { id: 'review', label: 'Day 5-7: judge on cost per free-play email (leads tagged source mustard-mode-free-play in the admin). The true metric: Stripe checkouts on Player/Builder, which land in Orders and email you on every sale.' },
 ];
@@ -1389,6 +1398,29 @@ export default function AdsPlaybook() {
             {MM_CUTS.map((c) => (
               <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
                 <video controls preload="metadata" poster="/ads/mustard-mode-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* MUSTARD MODE demo spot cuts */}
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The demo spot, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">
+            The second creative: 31 seconds of the real landing page doing its thing (type an ambition, the coach answers) with
+            a voiceover and burned-in captions. The 16:9 is the Google Ads cut. Same link, same funnel, judged on the same metric.
+          </p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {MM_DEMO_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/mustard-mode-demo-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
                 <div className="mt-3 flex items-center justify-between gap-2">
                   <div>
                     <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
