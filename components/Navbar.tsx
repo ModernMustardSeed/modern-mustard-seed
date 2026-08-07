@@ -34,6 +34,7 @@ const MENU_GROUPS = [
     heading: 'Programs',
     links: [
       { label: 'Hundredfold', href: '/hundredfold' },
+      { label: 'Watch: How It Works', href: '/hundredfold/webinar' },
       { label: 'Seed to System', href: '/seed-to-system' },
       { label: 'One-Person Business Class', href: '/one-person-business' },
       { label: 'Idea to Spec', href: '/idea-to-spec' },

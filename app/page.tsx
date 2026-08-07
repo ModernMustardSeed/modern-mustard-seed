@@ -2,6 +2,7 @@ import DemoForgeStrip from '@/components/home/DemoForgeStrip';
 import ProofBand from '@/components/home/ProofBand';
 import JourneyRig from '@/components/journey/JourneyRig';
 import JourneyTour from '@/components/journey/JourneyTour';
+import HundredfoldBand from '@/components/home/HundredfoldBand';
 import {
   JourneyHero,
   JourneyOrchard,
@@ -130,6 +131,7 @@ export default function HomePage() {
         <JourneyOrchard />
         <JourneySigns />
         <JourneyGate />
+        <HundredfoldBand />
         <div className="border-b-2 border-[#161616]">
           <ProofBand />
         </div>
