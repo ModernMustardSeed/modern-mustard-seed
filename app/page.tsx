@@ -1,15 +1,16 @@
-import FrontDeskHero from '@/components/home/FrontDeskHero';
 import DemoForgeStrip from '@/components/home/DemoForgeStrip';
-import HomeTicker from '@/components/home/HomeTicker';
-import HomeVine from '@/components/home/HomeVine';
-import HomeFilmStage from '@/components/home/HomeFilmStage';
 import ProofBand from '@/components/home/ProofBand';
-import BuildCabinet from '@/components/home/BuildCabinet';
-import FlagshipOffer from '@/components/home/FlagshipOffer';
-import ThreeDoors from '@/components/home/ThreeDoors';
-import ComicRack from '@/components/home/ComicRack';
-import TheClose from '@/components/home/TheClose';
-import HomeTour from '@/components/home/HomeTour';
+import JourneyRig from '@/components/journey/JourneyRig';
+import JourneyTour from '@/components/journey/JourneyTour';
+import {
+  JourneyHero,
+  JourneyOrchard,
+  JourneySigns,
+  JourneyGate,
+  JourneyPlanting,
+  JourneyTree,
+  JourneyDoors,
+} from '@/components/journey/chapters';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -29,7 +30,7 @@ const homeJsonLd = {
     'Do you want your business to thrive? Custom websites, voice agents, and AI command centers, live in about a week. Custom apps and stores too.',
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },
-  // The parable slab under the hero and the footer card are the same verse.
+  // The planting chapter and the footer card are the same verse.
   hasPart: { '@id': 'https://modernmustardseed.com/#parable' },
   primaryImageOfPage: {
     '@type': 'ImageObject',
@@ -97,16 +98,18 @@ const HOME_FAQ = [
   },
   {
     q: 'Why is it called Modern Mustard Seed?',
-    a: 'The name comes from the mustard seed parable in Matthew 13: the smallest seed in the field grows into a tree the birds perch in. Every build here starts seed-sized, and that is the plan.',
+    a: 'The name comes from the mustard seed parable in Matthew 13: the smallest seed in the field grows into a tree the birds perch in. Every build here starts seed-sized, and that is the plan. The homepage is a drive around Flathead Lake that ends at that exact tree.',
   },
 ];
 
 const homeFaq = faqJsonLd(HOME_FAQ);
 
 /**
- * Homepage: six beats, Studio Arcade direction (approved 2026-07-02).
- * 01 Front Desk hero · 02 ticker · 03 proof band · 04 Build Cabinet ·
- * 05 Three Doors + free audit · 06 the close.
+ * Homepage: THE FLATHEAD JOURNEY (branch build, approved direction B world +
+ * A chrome, 2026-08-07). One scrolling drive around the lake: pickup,
+ * orchards, roadside signs, the gate, proof, the planting, the tree, four
+ * doors. Ava narrates opt-in; Mr. Mustard takes the close. Every funnel from
+ * the previous homepage is reachable from the roadside signs and the doors.
  */
 export default function HomePage() {
   return (
@@ -121,51 +124,41 @@ export default function HomePage() {
         ]}
       />
       <DemoForgeStrip />
-      <FrontDeskHero />
-
-      {/* The Growing Vine draws down this whole container as you scroll:
-          seed under the hero, a leaf pair at each data-vine-stop boundary,
-          two perched birds at the close (Matthew 13:32). */}
-      <main id="mm-vine-host" className="relative bg-[#FBF6EA] text-[#161616]">
-        <HomeVine />
-        <HomeTicker />
-        <div data-vine-stop><HomeFilmStage /></div>
-        <div data-vine-stop id="tour-proof"><ProofBand /></div>
-        <div data-vine-stop id="tour-flagship"><FlagshipOffer /></div>
-        <div data-vine-stop id="tour-build"><BuildCabinet /></div>
-        <HomeTicker reverse />
-        <div data-vine-stop id="tour-doors"><ThreeDoors /></div>
-        {/* RecentWork (the shipped-sites grid) came off the homepage
-            2026-08-06 at Sarah's request. The work still lives at /work, and
-            the component stays in components/home/RecentWork.tsx if it earns
-            the slot back. */}
-        <div data-vine-stop><ComicRack /></div>
-        <div data-vine-stop>
-          <section className="relative bg-[#F5F0E8] border-t-2 border-[#161616] py-20 md:py-28">
-            <div className="relative max-w-3xl mx-auto px-6">
-              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase text-center">
-                Straight answers // No sales call required
-              </p>
-              <h2 className="font-display italic font-extrabold text-4xl md:text-5xl text-[#161616] mt-3 leading-[1.02] text-center">
-                Questions, answered plainly.
-              </h2>
-              <div className="mt-10 space-y-4">
-                {HOME_FAQ.map((f) => (
-                  <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white p-5 open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
-                    <summary className="font-display text-lg font-bold text-[#161616] cursor-pointer list-none flex items-center justify-between gap-4">
-                      {f.q}
-                      <span className="flex-shrink-0 text-[#C4160B] transition-transform group-open:rotate-45" aria-hidden="true">+</span>
-                    </summary>
-                    <p className="mt-3 text-[#5c554a] leading-relaxed font-body">{f.a}</p>
-                  </details>
-                ))}
-              </div>
-            </div>
-          </section>
+      <main className="relative bg-[#FBF6EA] text-[#161616]">
+        <JourneyRig />
+        <JourneyHero />
+        <JourneyOrchard />
+        <JourneySigns />
+        <JourneyGate />
+        <div className="border-b-2 border-[#161616]">
+          <ProofBand />
         </div>
-        <div data-vine-stop id="tour-close"><TheClose /></div>
-        {/* The hostess. Bottom left, opposite Mr. Mustard, and she yields to him. */}
-        <HomeTour />
+        <JourneyPlanting />
+        <JourneyTree />
+        <JourneyDoors />
+        <section className="relative bg-[#F5F0E8] border-t-2 border-[#161616] py-20 md:py-28">
+          <div className="relative max-w-3xl mx-auto px-6">
+            <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase text-center">
+              Straight answers // No sales call required
+            </p>
+            <h2 className="font-display italic font-extrabold text-4xl md:text-5xl text-[#161616] mt-3 leading-[1.02] text-center">
+              Questions, answered plainly.
+            </h2>
+            <div className="mt-10 space-y-4">
+              {HOME_FAQ.map((f) => (
+                <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white p-5 open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
+                  <summary className="font-display text-lg font-bold text-[#161616] cursor-pointer list-none flex items-center justify-between gap-4">
+                    {f.q}
+                    <span className="flex-shrink-0 text-[#C4160B] transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                  </summary>
+                  <p className="mt-3 text-[#5c554a] leading-relaxed font-body">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+        {/* Ava, bottom left, opposite Mr. Mustard. She yields to him. */}
+        <JourneyTour />
       </main>
     </>
   );

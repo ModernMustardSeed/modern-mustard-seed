@@ -22,8 +22,8 @@ type TourManifest = {
   totalMs: number;
 };
 
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export async function GET(_req: Request, { params }: { params: Promise<{ siteId: string }> }) {
+  const { siteId: id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) return NextResponse.json({ tour: null }, { status: 400 });
 
   const client = getSupabase();

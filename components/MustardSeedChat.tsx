@@ -77,6 +77,23 @@ export default function MustardSeedChat() {
   useEffect(() => {
     window.dispatchEvent(new CustomEvent('mms:voice', { detail: { busy: callState !== 'idle' && callState !== 'error' } }));
   }, [callState]);
+
+  /**
+   * Let the page open him. The journey homepage's hero and four-door close
+   * dispatch `mms:launcher:open` (detail.mode 'voice' | 'chat') instead of
+   * linking away: the whole point of the close is that he picks up right here.
+   */
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const want = (e as CustomEvent).detail?.mode;
+      setOpen(true);
+      // Voice honors the same env guard as the choose screen: without keys the
+      // visitor lands on choose, whose voice door links out gracefully.
+      if (want === 'chat' || (want === 'voice' && canCall)) setMode(want);
+    };
+    window.addEventListener('mms:launcher:open', onOpen);
+    return () => window.removeEventListener('mms:launcher:open', onOpen);
+  }, [canCall]);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
