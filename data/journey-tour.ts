@@ -26,8 +26,8 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
     id: 'orchard',
     anchor: 'tour-orchard',
     text:
-      'First, the orchards. Everything we build starts the same three ways: a website that talks, a voice agent that answers, and the command center that runs them both. ' +
-      'Planted once, tended every day, and live in about a week.',
+      'First, the orchards. We grow four things: a website that talks, a voice agent that answers, the command center that runs them both, and custom software when your idea needs its own row. ' +
+      'Full apps, stores, agentic systems. Planted once, tended every day, and the first three go live in about a week.',
   },
   {
     id: 'signs',

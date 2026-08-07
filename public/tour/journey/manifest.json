@@ -15,8 +15,8 @@
     {
       "id": "orchard",
       "anchor": "tour-orchard",
-      "text": "First, the orchards. Everything we build starts the same three ways: a website that talks, a voice agent that answers, and the command center that runs them both. Planted once, tended every day, and live in about a week.",
-      "ms": 12864,
+      "text": "First, the orchards. We grow four things: a website that talks, a voice agent that answers, the command center that runs them both, and custom software when your idea needs its own row. Full apps, stores, agentic systems. Planted once, tended every day, and the first three go live in about a week.",
+      "ms": 17976,
       "src": "/tour/journey/01-orchard.mp3"
     },
     {
@@ -55,5 +55,5 @@
       "src": "/tour/journey/06-doors.mp3"
     }
   ],
-  "totalMs": 78000
+  "totalMs": 83112
 }

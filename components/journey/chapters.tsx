@@ -173,6 +173,11 @@ const CROPS = [
     label: 'The Command Center',
     line: 'Every lead, booking, and conversation on one screen. The brain both of the others report to.',
   },
+  {
+    href: '/book',
+    label: 'The Custom Build',
+    line: 'Full apps, stores, and agentic software grown from scratch for your operation. Bring the idea, book a call, and we scope it together.',
+  },
 ];
 
 export function JourneyOrchard() {
@@ -190,11 +195,12 @@ export function JourneyOrchard() {
           <h2 className={`${anton.className} mt-5 uppercase text-[#161616] leading-[0.95] ${revealBase}`} style={{ fontSize: 'clamp(40px,5vw,72px)' }}>
             We Grow
             <br />
-            Three Things
+            Four Things
           </h2>
           <p className={`mt-5 max-w-xl text-lg text-[#161616]/80 ${revealBase}`} style={{ transitionDelay: '120ms' }}>
             The orchards up here hang heavy every summer because somebody planted rows on purpose.
-            Same idea down at the studio. Three crops, planted together, tending each other.
+            Same idea down at the studio. Three crops planted together, and a fourth row for
+            whatever your business needs built custom.
           </p>
           <div className="mt-8 space-y-4">
             {CROPS.map((c, i) => (

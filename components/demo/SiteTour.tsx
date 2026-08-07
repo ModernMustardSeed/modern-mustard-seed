@@ -181,7 +181,9 @@ export default function SiteTour({
   const beat = tour.beats[index];
 
   return (
-    <div className="fixed bottom-4 left-4 z-50 max-w-[min(380px,calc(100vw-2rem))] print:hidden">
+    // z-[80]: above the journey's letterbox (60), flock (55), and rail (70).
+    // Nothing is allowed to sit on top of the hostess (Sarah: "i dont see the tour").
+    <div className="fixed bottom-4 left-4 z-[80] max-w-[min(380px,calc(100vw-2rem))] print:hidden">
       {/* THE HOSTESS IS NEVER GONE. Declining, finishing, or a same-tab
           revisit used to unmount her entirely, and Sarah read that as broken
           ("tour in bottom left is gone", 2026-08-07). Whenever neither the
