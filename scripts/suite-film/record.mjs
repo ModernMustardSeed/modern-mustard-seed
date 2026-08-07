@@ -240,6 +240,14 @@ export async function record({ workDir, siteUrl, osUrl, cards, beats, callerWav,
   /** Set by the beat that dials (armCall); consumed by the call beat. */
   let call = null;
   let posterAtMs = 0;
+  /**
+   * Silence held on the open card before the first word, and counted into the
+   * score so the tail-anchored trim keeps it. Sized to the card's own entrance
+   * (5 x 150ms stagger + 700ms fade = 1.45s in cards.mjs); shorter and the
+   * narrator starts over a card that is still moving. Raising the stagger there
+   * means raising this too.
+   */
+  const OPEN_LEAD_MS = 1500;
   let t0 = 0;
   const at = () => Date.now() - t0;
   const timeline = [];
@@ -263,6 +271,16 @@ export async function record({ workDir, siteUrl, osUrl, cards, beats, callerWav,
 
     t0 = Date.now();
     await page.evaluate(() => document.body.classList.add('go'));
+    // ⏸ THE OPENING BEAT OF SILENCE. Sarah, 2026-08-06, on the Glimmer cut:
+    // "the very beginning of the video is wrong, it cuts off and no proper
+    // hello." Nothing was actually clipped (the narration line was whole, and
+    // measured intact from frame 0). The problem was that the narrator started
+    // ON frame 0: the card's staggered entrance runs 750ms of delay plus a
+    // 700ms fade, so she was talking over the card still assembling itself,
+    // and a film whose first syllable lands on its first frame reads as a
+    // recording that was joined late. Let the card land, and hold one still
+    // moment, before anybody says anything.
+    await hold(OPEN_LEAD_MS);
 
     let where = 'card';
     for (const beat of beats) {
