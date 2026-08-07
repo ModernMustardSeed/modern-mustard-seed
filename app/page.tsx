@@ -9,6 +9,7 @@ import FlagshipOffer from '@/components/home/FlagshipOffer';
 import ThreeDoors from '@/components/home/ThreeDoors';
 import ComicRack from '@/components/home/ComicRack';
 import TheClose from '@/components/home/TheClose';
+import HomeTour from '@/components/home/HomeTour';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -129,11 +130,11 @@ export default function HomePage() {
         <HomeVine />
         <HomeTicker />
         <div data-vine-stop><HomeFilmStage /></div>
-        <div data-vine-stop><ProofBand /></div>
-        <div data-vine-stop><FlagshipOffer /></div>
-        <div data-vine-stop><BuildCabinet /></div>
+        <div data-vine-stop id="tour-proof"><ProofBand /></div>
+        <div data-vine-stop id="tour-flagship"><FlagshipOffer /></div>
+        <div data-vine-stop id="tour-build"><BuildCabinet /></div>
         <HomeTicker reverse />
-        <div data-vine-stop><ThreeDoors /></div>
+        <div data-vine-stop id="tour-doors"><ThreeDoors /></div>
         {/* RecentWork (the shipped-sites grid) came off the homepage
             2026-08-06 at Sarah's request. The work still lives at /work, and
             the component stays in components/home/RecentWork.tsx if it earns
@@ -162,7 +163,9 @@ export default function HomePage() {
             </div>
           </section>
         </div>
-        <div data-vine-stop><TheClose /></div>
+        <div data-vine-stop id="tour-close"><TheClose /></div>
+        {/* The hostess. Bottom left, opposite Mr. Mustard, and she yields to him. */}
+        <HomeTour />
       </main>
     </>
   );

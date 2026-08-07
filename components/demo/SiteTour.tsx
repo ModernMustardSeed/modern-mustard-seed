@@ -34,17 +34,29 @@ function inkFor(hex: string): { ink: string; dim: string } {
 
 export default function SiteTour({
   siteId,
+  manifestUrl,
   frame,
   voiceBusy,
   onActiveChange,
+  invite,
 }: {
-  siteId: string;
-  /** The iframe the site lives in. Same-origin, so we can drive its scroll. */
-  frame: React.RefObject<HTMLIFrameElement | null>;
-  /** True whenever the Vapi agent is connecting or on a call. */
+  /** A forged demo site. Its manifest is served signed, per site. */
+  siteId?: string;
+  /** A page that owns its own static manifest (our marketing site). */
+  manifestUrl?: string;
+  /**
+   * The iframe the site lives in, same-origin so we can drive its scroll.
+   * OMIT on a page that IS the site: the tour then scrolls the real window.
+   */
+  frame?: React.RefObject<HTMLIFrameElement | null>;
+  /** True whenever a live voice agent is connecting or on a call. */
   voiceBusy: boolean;
   onActiveChange?: (active: boolean) => void;
+  /** Override the invitation copy. Defaults to the client-site wording. */
+  invite?: { eyebrow?: string; line?: string };
 }) {
+  const url = manifestUrl ?? (siteId ? `/demo/site/${siteId}/tour` : null);
+  const key = manifestUrl ?? siteId ?? 'tour';
   const [tour, setTour] = useState<Tour | null>(null);
   const [invited, setInvited] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -54,13 +66,15 @@ export default function SiteTour({
   const indexRef = useRef(0);
 
   useEffect(() => {
+    if (!url) return;
     let alive = true;
-    fetch(`/demo/site/${siteId}/tour`)
+    fetch(url)
       .then((r) => r.json())
-      .then((d) => { if (alive && d?.tour?.beats?.length) setTour(d.tour); })
+      // The demo route wraps its payload; a static manifest is the payload.
+      .then((d) => { const t = d?.tour ?? d; if (alive && t?.beats?.length) setTour(t); })
       .catch(() => { /* no guide is a fine outcome */ });
     return () => { alive = false; };
-  }, [siteId]);
+  }, [url]);
 
   // The invitation, not the tour, is what "comes on when someone lands".
   //
@@ -71,10 +85,10 @@ export default function SiteTour({
   // unlocks audio for the rest of the visit.
   useEffect(() => {
     if (!tour || done) return;
-    try { if (sessionStorage.getItem(`mms_tour_${siteId}`) === 'seen') return; } catch { /* fine */ }
+    try { if (sessionStorage.getItem(`mms_tour_${key}`) === 'seen') return; } catch { /* fine */ }
     const t = window.setTimeout(() => setInvited(true), 1400);
     return () => window.clearTimeout(t);
-  }, [tour, siteId, done]);
+  }, [tour, key, done]);
 
   /**
    * Frame the section's CONTENT, not its padding box.
@@ -87,8 +101,10 @@ export default function SiteTour({
    * first heading instead, and pay back whatever a fixed header is covering.
    */
   const scrollTo = useCallback((anchor: string) => {
-    const doc = frame.current?.contentDocument;
-    const win = doc?.defaultView;
+    // With a frame we drive the embedded site; without one this page IS the
+    // site, so the tour scrolls the real window.
+    const doc = frame ? frame.current?.contentDocument : document;
+    const win = frame ? doc?.defaultView : window;
     if (!doc || !win) return;
     if (anchor === 'top') { win.scrollTo({ top: 0, behavior: 'smooth' }); return; }
 
@@ -126,9 +142,9 @@ export default function SiteTour({
     setInvited(false);
     if (markSeen) {
       setDone(true);
-      try { sessionStorage.setItem(`mms_tour_${siteId}`, 'seen'); } catch { /* fine */ }
+      try { sessionStorage.setItem(`mms_tour_${key}`, 'seen'); } catch { /* fine */ }
     }
-  }, [siteId]);
+  }, [key]);
 
   // The agent always wins. Stop mid-word, and do not come back.
   useEffect(() => { if (voiceBusy && playing) stop(true); }, [voiceBusy, playing, stop]);
@@ -171,31 +187,46 @@ export default function SiteTour({
           className="rounded-2xl border p-4 shadow-2xl backdrop-blur-sm animate-[tourIn_.5s_cubic-bezier(.2,.7,.2,1)]"
           style={{ background: `${theme.bg}f2`, borderColor: `${theme.accent}59`, color: theme.ink }}
         >
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: theme.accent }}>
-            {tour.business}
-          </p>
-          <p className="mt-2 text-[15px] leading-snug" style={{ color: theme.ink }}>
-            Welcome. Would you like me to show you around?
+          {/* Sarah 2026-08-07: "lets make the opt in button more obvious." The
+              first version was a quiet text button that read as a cookie
+              banner. This one announces itself: a speaking-mark that pulses to
+              say the page has a voice, then a full-width button in the site's
+              own accent with a ring drawing the eye to it. The decline stays
+              deliberately quiet, because it is not the action we want. */}
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-6 w-6 shrink-0 items-center justify-center" aria-hidden="true">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-40" style={{ background: theme.accent }} />
+              <svg viewBox="0 0 24 24" className="relative h-5 w-5" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round">
+                <path d="M11 5 6 9H3v6h3l5 4V5z" fill={theme.accent} stroke="none" />
+                <path d="M16 9a4 4 0 0 1 0 6" />
+                <path d="M19 6a8 8 0 0 1 0 12" />
+              </svg>
+            </span>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: theme.accent }}>
+              {invite?.eyebrow ?? tour.business}
+            </p>
+          </div>
+          <p className="mt-2.5 text-[17px] font-semibold leading-snug" style={{ color: theme.ink }}>
+            {invite?.line ?? 'Welcome. Would you like me to show you around?'}
           </p>
           <p className="mt-1 text-[12px]" style={{ color: theme.dim }}>
-            About {Math.round(tour.totalMs / 1000)} seconds, with sound.
+            A {Math.round(tour.totalMs / 1000)} second tour, out loud. Turn your sound on.
           </p>
-          <div className="mt-3 flex items-center gap-2">
-            <button
-              onClick={start}
-              className="rounded-full px-4 py-2 text-[12px] font-bold uppercase tracking-[0.1em] transition-transform hover:-translate-y-0.5"
-              style={{ background: theme.accent, color: inkFor(theme.accent).ink }}
-            >
-              Show me around
-            </button>
-            <button
-              onClick={() => stop(true)}
-              className="rounded-full px-3 py-2 text-[12px] font-medium"
-              style={{ color: theme.dim }}
-            >
-              No thanks
-            </button>
-          </div>
+          <button
+            onClick={start}
+            className="mt-3.5 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-[13px] font-extrabold uppercase tracking-[0.1em] shadow-lg transition-transform hover:-translate-y-0.5"
+            style={{ background: theme.accent, color: inkFor(theme.accent).ink, boxShadow: `0 0 0 3px ${theme.accent}33` }}
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+            Show me around
+          </button>
+          <button
+            onClick={() => stop(true)}
+            className="mt-1.5 w-full rounded-lg py-1.5 text-[12px] font-medium"
+            style={{ color: theme.dim }}
+          >
+            No thanks
+          </button>
         </div>
       )}
 

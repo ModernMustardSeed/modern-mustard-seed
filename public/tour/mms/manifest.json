@@ -1,0 +1,45 @@
+{
+  "business": "Modern Mustard Seed",
+  "palette": {
+    "bg": "#161616",
+    "accent": "#F5B700"
+  },
+  "beats": [
+    {
+      "id": "welcome",
+      "anchor": "top",
+      "text": "Welcome to Modern Mustard Seed. We build websites, voice agents, and the command centers that run them, and they go live in about a week. Let me show you around. This takes about a minute.",
+      "ms": 10872,
+      "src": "/tour/mms/00-welcome.mp3"
+    },
+    {
+      "id": "flagship",
+      "anchor": "tour-flagship",
+      "text": "Start with the flagship. A voice agent, a website, and the brain that runs them. Tell us about your business and we forge all three before you pay anything, in about a minute. Keep whatever you love.",
+      "ms": 12024,
+      "src": "/tour/mms/01-flagship.mp3"
+    },
+    {
+      "id": "build",
+      "anchor": "tour-build",
+      "text": "Everything here is fixed scope and fixed quote, agreed before the work starts. No hourly billing, and no surprise at the end.",
+      "ms": 7536,
+      "src": "/tour/mms/02-build.mp3"
+    },
+    {
+      "id": "doors",
+      "anchor": "tour-doors",
+      "text": "There are three ways in, depending on how much you want to hand over. Sarah answers you personally, and fast. And Mr. Mustard, the studio AI, is on call around the clock in between.",
+      "ms": 10800,
+      "src": "/tour/mms/03-doors.mp3"
+    },
+    {
+      "id": "close",
+      "anchor": "tour-close",
+      "text": "Your idea deserves to ship. One person with the right tools can now build what used to take a team of fifty, so bring the seed you have. And you do not have to wait for me. Press the button in the corner and talk to Mr. Mustard right now. He can answer anything about how this works, scope your idea on the spot, and book you straight onto Sarah’s calendar.",
+      "ms": 18504,
+      "src": "/tour/mms/04-close.mp3"
+    }
+  ],
+  "totalMs": 59736
+}

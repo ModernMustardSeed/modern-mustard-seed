@@ -63,6 +63,20 @@ export default function MustardSeedChat() {
   const [callError, setCallError] = useState<string | null>(null);
   const vapiRef = useRef<Vapi | null>(null);
   const canCall = Boolean(VAPI_PUBLIC_KEY && VAPI_ASSISTANT_ID);
+
+  /**
+   * Tell the rest of the page when Mr. Mustard has the floor.
+   *
+   * The homepage hostess (`SiteTour`) is pre-recorded and one-way; he is live
+   * and can actually take someone's name. Two voices at once reads as broken,
+   * so she has to yield the instant he connects. A window event rather than
+   * lifted state on purpose: this launcher is mounted globally in the layout
+   * and the tour is mounted on one page, so threading a prop between them would
+   * mean putting call state in the root layout for one consumer.
+   */
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('mms:voice', { detail: { busy: callState !== 'idle' && callState !== 'error' } }));
+  }, [callState]);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
