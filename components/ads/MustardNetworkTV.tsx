@@ -69,6 +69,13 @@ const CHANNELS: Channel[] = [
     src: '/ads/cxc-16x9.mp4',
     poster: '/ads/cxc-poster.jpg',
   },
+  {
+    n: '08',
+    title: '9:47 PM',
+    note: 'Nothing the voice says here was written. We called our own AI after hours, recorded what it said back, and cut the ad from that.',
+    src: '/ads/after-hours-16x9.mp4',
+    poster: '/ads/after-hours-poster.jpg',
+  },
 ];
 
 export default function MustardNetworkTV() {

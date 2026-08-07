@@ -80,7 +80,7 @@ const CURSOR_AND_TAPS = `
  * is what gets recorded. The muted <audio> element is belt and braces: it keeps
  * the track from being treated as unconsumed.
  */
-const CALL_AUDIO_TAP = `
+export const CALL_AUDIO_TAP = `
 (() => {
   if (window.top !== window) return;
   const AC = window.AudioContext || window.webkitAudioContext;

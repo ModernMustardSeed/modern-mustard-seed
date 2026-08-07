@@ -815,6 +815,81 @@ Turn your sound on and take the scenic route. Link in bio.
 
 const SR_POST_STORY = 'Our website takes you for a drive around Flathead Lake, out loud. Take the scenic route → modernmustardseed.com';
 
+/* ============ Campaign twenty-one: 9:47 PM (the recorded call) ============ */
+
+/**
+ * The one campaign where the creative is evidence rather than a performance.
+ * Every word Mr. Mustard speaks in these cuts is a fragment of a real call
+ * placed to the live line on 2026-08-07, so the end card can dare the viewer
+ * to dial the same number instead of asking them to click. That also makes the
+ * ad its own funnel: a call arrives already talking to the agent that books
+ * discovery calls.
+ */
+
+const AH_LANDING = 'https://modernmustardseed.com/voice-agents?utm_source=meta&utm_medium=paid&utm_campaign=afterhours';
+
+const AH_COPY_A = `It was 9:47 at night. The shop was closed, the owner was home, and the phone was ringing.
+
+Our AI voice agent picked up, answered the question, and put the job on the calendar before anyone unlocked the door in the morning.
+
+You do not have to believe any of that. The number below reaches the same agent you just watched. Call it and ask it whatever you want.
+
+(406) 312-1223`;
+
+const AH_COPY_B = `82% of people who cannot reach you call a competitor instead. That is CallRail's 2025 number, and most of those calls land while you are under a sink, on a roof, or asleep.
+
+An AI voice agent answers every one of them in your business name, handles the question, and books the job on your calendar. It runs $397 to build and $397 a month, which covers about 200 calls.
+
+Hear it work before you decide. Call (406) 312-1223.`;
+
+const AH_COPY_C = `Your phone rang at 9:47 PM. Nobody was there to answer it.
+
+Something can be. Call (406) 312-1223 and hear exactly what your customers would hear.`;
+
+const AH_HEADLINE = 'Your phone, answered at 9:47 PM';
+const AH_DESCRIPTION = 'It answers every call, day or night, and books the job.';
+
+const AH_CUTS = [
+  { file: '/ads/after-hours-4x5.mp4', label: '4:5 — Feed (:30)', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/after-hours-9x16.mp4', label: '9:16 — Reels + Stories (:30)', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/after-hours-16x9.mp4', label: '16:9 — In-stream + Google (:30)', note: 'Video feeds, YouTube, Demand Gen, and the site.' },
+  { file: '/ads/after-hours-60s-16x9.mp4', label: '16:9 — The full argument (:60)', note: 'In-feed and Demand Gen only. The strongest cut in the set, see the note below.' },
+  { file: '/ads/after-hours-short-9x16.mp4', label: '9:16 — Short cut (:15)', note: 'Reels / Stories / Shorts A-B test and the natural second creative at refresh.' },
+];
+
+const AH_CHECKLIST = [
+  { id: 'quota', label: 'STOP. Upgrade ElevenLabs before a dollar of spend. Measured 8/07: organic traffic alone runs 37,267 characters a month against a 40,000 cap, 93% of the quota with zero ads, leaving room for about four extra calls. When it runs out the line does not slow down, it breaks, and it takes every web demo on the site with it because they all forge off the same assistant. Size the plan on 665 characters per call.' },
+  { id: 'booking', label: 'Clear the test booking recording the ad created: Tuesday August 11, 9:30 AM MT, "Ava Bennett". It sits one slot after a real one. /admin/calendar.' },
+  { id: 'dial', label: 'Dial (406) 312-1223 yourself once, the day you launch. The entire ad is a dare to call it, so a broken line is worse here than in any other campaign.' },
+  { id: 'cellA', label: 'Cell A (main): objective Leads with the Calls performance goal. Budget $15/day. Upload the 4:5, customize placements (9:16 for Reels/Stories). Call Now button dialing (406) 312-1223. Paste Copy Variant 1.' },
+  { id: 'cellB', label: 'Cell B: objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button to the UTM link above. Paste Copy Variant 2. Mostly builds the retargeting pool.' },
+  { id: 'sixty', label: 'Give the :60 its OWN ad set rather than putting it in with the others. Advantage+ will favour the shorter cuts on cost per call and starve it, but the :60 is the cut that converts a skeptic: it has him asking a diagnostic question, quoting the real price, and admitting the 8 AM slot did not exist.' },
+  { id: 'captions', label: 'Decline Meta auto-captions. Every spoken line is already burned in, and the caption text was checked against a transcript of the finished file, so platform captions would double up and disagree.' },
+  { id: 'claims', label: 'COPY LAW: 82% / CallRail 2025 is the only statistic and it is printed on the frame. Never reach for "85% never call back" or "$126K a year", both are folklore and get called out in SMB groups.' },
+  { id: 'burn', label: 'Watch the ElevenLabs character burn DAILY for the first week. That, not the budget, is the ceiling on how hard this campaign can be pushed.' },
+  { id: 'review', label: 'Judge Cell A on calls of 60 seconds or more, never impressions or clicks. Under 30 seconds is usually a misdial. Scale at under $40 per qualified call for three days, raise 20% every second day. Kill a cell at $120 with zero qualified calls.' },
+];
+
+const AH_POST_FB = `We called our own AI at 9:47 at night and recorded what it said back.
+
+It answered on the second ring. It asked what our setup looked like before it pitched anything. It quoted a real price without being asked twice. And when the caller wanted eight in the morning, it said Sarah does not have an 8 AM slot, her discovery calls run 9 to 3.
+
+Then it booked her anyway and sent the invite.
+
+Nothing in that ad was scripted. The number in it rings the same agent, right now, and you are welcome to call it and try to trip it up.
+
+(406) 312-1223`;
+
+const AH_POST_IG = `9:47 PM. The shop is closed. The phone is ringing.
+
+We called our own AI that night and used whatever it said back. No script. It even told the caller the time she wanted was not available, then booked her anyway.
+
+Call it yourself and see. (406) 312-1223
+
+#smallbusiness #aiforbusiness #missedcalls #montana #modernmustardseed`;
+
+const AH_POST_STORY = 'We recorded our AI answering a call at 9:47 PM and made it the ad. Call it yourself: (406) 312-1223';
+
 const BR_CHECKLIST = [
   { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the captain\'s log).' },
   { id: 'challenger', label: 'This is a CHALLENGER to Campaign 12 (same broad audience, same /demos landing, different creative). Do not run both cold cells at once: A/B them for a week and keep the cheaper cost per forged demo.' },
@@ -913,7 +988,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -936,6 +1011,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'ans', num: '18', label: 'The Answer Machine', blurb: 'Demo funnel · worries in, answers out · $15/day' },
   { key: 'scenic', num: '19', label: 'The Scenic Route', blurb: 'Brand film · the homepage journey · $10/day' },
   { key: 'cxc', num: '20', label: 'Cross + Covenant', blurb: 'Online stores · a real live storefront · $15/day' },
+  { key: 'ah', num: '21', label: '9:47 PM', blurb: 'Voice agents · a REAL recorded call · $25/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -951,7 +1027,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo'] },
-  { name: 'Brand + Verticals', keys: ['callme', 'tw', 'gn', 'rest', 'scenic', 'cxc'] },
+  { name: 'Brand + Verticals', keys: ['callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'cxc'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
 ];
 
@@ -1063,6 +1139,7 @@ export default function AdsPlaybook() {
   const [checkedAns, setCheckedAns] = useState<Record<string, boolean>>({});
   const [checkedScenic, setCheckedScenic] = useState<Record<string, boolean>>({});
   const [checkedCxc, setCheckedCxc] = useState<Record<string, boolean>>({});
+  const [checkedAh, setCheckedAh] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -1171,6 +1248,7 @@ export default function AdsPlaybook() {
   const toggleChief = mkToggle('mms-ads-checklist-chief', setCheckedChief);
   const toggleAns = mkToggle('mms-ads-checklist-ans', setCheckedAns);
   const toggleScenic = mkToggle('mms-ads-checklist-scenic', setCheckedScenic);
+  const toggleAh = mkToggle('mms-ads-checklist-afterhours', setCheckedAh);
   const toggleCxc = mkToggle('mms-ads-checklist-cxc', setCheckedCxc);
 
   const toggle = (id: string) => {
@@ -1233,6 +1311,7 @@ export default function AdsPlaybook() {
   const doneCountAns = AM_CHECKLIST.filter((c) => checkedAns[c.id]).length;
   const doneCountScenic = SR_CHECKLIST.filter((c) => checkedScenic[c.id]).length;
   const doneCountCxc = CX_CHECKLIST.filter((c) => checkedCxc[c.id]).length;
+  const doneCountAh = AH_CHECKLIST.filter((c) => checkedAh[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -2820,6 +2899,126 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedCxc[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'ah' && (<>
+        {/* ============ Campaign twenty-one: 9:47 PM (the recorded call) ============ */}
+        <section className="bg-[#0B0E16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign twenty-one &middot; voice agents, a real recorded call</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;9:47 PM&rdquo; <span className="italic text-[#F5B700]">call him yourself</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              A closed shop, one phone ringing on the counter, and Mr. Mustard picking up. Every word he
+              speaks in these cuts is a fragment of a real call placed to the live line, so the end card can
+              dare the viewer to dial the same number instead of asking them to click. That also makes this
+              cell its own funnel: a call arrives already talking to the agent that books discovery calls.
+              Two cells at $25/day.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/voice-agents" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Voice Agents (landing)</a>
+              <a href="/admin/calendar" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Calendar (booked calls)</a>
+            </div>
+          </div>
+        </section>
+
+        {/* The quota is the only thing that can turn this campaign into money
+            spent on a dead phone, so it sits above the creative rather than
+            ninth on a checklist somebody scrolls past. */}
+        <section className="bg-[#E0301E] border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-7 text-white">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-white/85">Before any spend</span>
+          <h3 className="font-display text-2xl font-extrabold mt-1.5">Upgrade ElevenLabs first. This one is not optional.</h3>
+          <p className="mt-3 font-sans text-white/95 max-w-3xl leading-relaxed">
+            Measured 2026-08-07 off the last hundred calls: organic traffic alone runs <b>37,267 characters
+            a month against a 40,000 cap</b>, 93% of the quota with zero advertising. That leaves room for
+            about four extra calls. When it runs out the line does not slow down, it breaks, and it takes
+            every web demo on the site with it because they all forge off the same assistant. You would be
+            paying for impressions that reach a dead phone, and you cannot catch it by watching, because by
+            then the ad has already sent people to silence. Size the plan on <b>665 characters per call</b>.
+          </p>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Every spoken line is burned in, so these read with the sound off. Decline platform captions. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {AH_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="none" poster="/ads/after-hours-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">Why the :60 is the strongest cut, and not just a longer :30</h3>
+          <p className="text-sm text-[#161616]/75 mt-3 font-sans max-w-3xl leading-relaxed">
+            The :60 carries three things he did unprompted that no copywriter would have dared. He asks a
+            diagnostic question before pitching anything. He answers the money question with the real
+            published price instead of dodging it. And when the caller asks for eight in the morning, he
+            says <i>&ldquo;Sarah doesn&rsquo;t have an 8 AM slot available. Her discovery calls run 9 to
+            3.&rdquo;</i> He could have invented a slot to keep the booking moving and he did not. That
+            refusal is the most persuasive four seconds in the campaign, and it only exists because the call
+            was real. Give it its own ad set, or Advantage+ will starve it in favour of the shorter cuts.
+          </p>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text &mdash; Variant 1 (the dare, lead with this)" text={AH_COPY_A} />
+            <CopyBlock title="Primary text &mdash; Variant 2 (the cost, with real pricing)" text={AH_COPY_B} />
+            <CopyBlock title="Primary text &mdash; Variant 3 (short, for Reels)" text={AH_COPY_C} />
+            <CopyBlock title="Headline" text={AH_HEADLINE} />
+            <CopyBlock title="Description" text={AH_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (Cell B only)" text={AH_LANDING} />
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">Organic launch posts</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">The recording is the story, so this one is worth posting before it is boosted. A phone number is not a link, so it keeps full Facebook reach. Sarah approves every post before it goes out.</p>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Facebook post (4:5 or 16:9 cut)" text={AH_POST_FB} />
+            <CopyBlock title="Instagram Reel caption (9:16 cut)" text={AH_POST_IG} />
+            <CopyBlock title="Instagram Story line (+ link sticker)" text={AH_POST_STORY} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountAh}/{AH_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {AH_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedAh[item.id]}
+                    onChange={() => toggleAh(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedAh[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>

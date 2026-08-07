@@ -49,6 +49,15 @@ export function TimberlineConfession() {
                 <p>
                   One channel is different. <strong className="font-sans font-bold text-[#161616]">Cross&nbsp;+&nbsp;Covenant is real</strong>, it is live, and you can buy from it tonight. Every frame of that film is the actual store, and we built the store too.
                 </p>
+                {/* Channel 08 is a third category and the headline above would
+                    be a half-truth without it: the plumbing company is invented
+                    like the rest, but the voice is a recording, not a
+                    performance. That distinction is the entire argument of the
+                    spot, so it gets said here rather than left for someone to
+                    discover. */}
+                <p>
+                  So is the voice on channel 08. The plumbing company in it was invented like the rest, but <strong className="font-sans font-bold text-[#161616]">the agent was not acting</strong>. We called our own line at night, recorded whatever it said back, and cut the ad from that. It answered, it quoted a real price, it admitted the time she asked for was not available, and it booked her anyway. The number on the end card rings the same one.
+                </p>
               </div>
             </Reveal>
             <Reveal variant="drop" delay={200}>
