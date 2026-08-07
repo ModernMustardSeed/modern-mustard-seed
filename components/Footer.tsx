@@ -68,6 +68,7 @@ export default function Footer() {
     {
       title: 'Free Tools',
       links: [
+        { label: 'The Hundredfold Roadmap', href: '/scaling-roadmap' },
         { label: 'New Business Checklist', href: '/launch-checklist' },
         { label: 'Bottleneck Breaker', href: '/audit' },
         { label: 'Website Audit', href: '/website-audit' },

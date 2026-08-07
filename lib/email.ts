@@ -1387,3 +1387,87 @@ export function callout(args: {
     </td></tr>
   </table>`;
 }
+
+/* ────────────────────────── THE HUNDREDFOLD ROADMAP ────────────────────────── */
+
+/**
+ * The emailed copy of a scaling roadmap. Sent when a visitor asks for it from
+ * /scaling-roadmap. Deliberately NOT the whole document: the email carries the
+ * verdict, the constraint, and this week's three moves, then sends them back to
+ * their own permalink for the rest. A 14-section report does not survive Gmail's
+ * clipping, and the click-through is the signal we actually want.
+ */
+export function roadmapEmail({
+  toName,
+  host,
+  stage,
+  score,
+  headline: line,
+  constraintTitle,
+  firstMove,
+  nextThree,
+  reportUrl,
+  trackId,
+}: {
+  toName?: string;
+  host: string;
+  stage: string;
+  score: number;
+  headline: string;
+  constraintTitle: string;
+  firstMove: string;
+  nextThree: string[];
+  reportUrl: string;
+  trackId?: string;
+}): string {
+  const first = toName?.trim()?.split(/\s+/)[0];
+  const moves = nextThree.slice(0, 3);
+
+  const movesBlock = moves.length
+    ? `<tr><td style="padding:30px 44px 0">
+        <div style="margin-bottom:14px">${overline('Your next three moves')}</div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.line};border-radius:10px">
+          ${moves
+            .map(
+              (m, i) => `<tr><td style="padding:14px 18px;${i === 0 ? '' : `border-top:1px solid ${C.line}`}">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td valign="top" style="padding-right:14px"><span style="display:inline-block;background:${C.goldBrand};color:${C.ink};width:22px;height:22px;line-height:22px;text-align:center;border-radius:11px;font-family:${SANS};font-size:12px;font-weight:700">${i + 1}</span></td>
+              <td valign="top"><span class="mms-body" style="font-family:${SANS};font-size:14px;color:${C.body};line-height:1.6">${escape(m)}</span></td>
+            </tr></table>
+          </td></tr>`
+            )
+            .join('')}
+        </table>
+      </td></tr>`
+    : '';
+
+  const inner =
+    headline(first ? `${first}, here is your roadmap` : `Your scaling roadmap, ${escape(host)}`) +
+    lede(line || `The path from where ${host} is now to what it could be.`) +
+    paragraph(
+      `I read your site and built you a plan. It names the one thing capping your growth right now, rebuilds your offer so it is worth more than the price, and sequences the next year into four windows with a number on each gate. It is yours, no strings.`
+    ) +
+    valueCallout(
+      'Where you are',
+      `<span style="font-family:${SERIF};font-size:30px;color:${C.ink};font-weight:600">${escape(String(score))}</span><span style="font-size:15px;color:${C.muted}"> / 100 scale score</span> &nbsp;&nbsp; <span style="font-size:13px;color:${C.gold};font-weight:700;letter-spacing:1px">STAGE: ${escape(stage.toUpperCase())}</span>`
+    ) +
+    valueCallout('Your one constraint', 
+      `<span style="font-family:${SERIF};font-size:19px;color:${C.ink};font-weight:600">${escape(constraintTitle)}</span><br><span class="mms-body" style="font-family:${SANS};font-size:14px;color:${C.body};line-height:1.6">${escape(firstMove)}</span>`
+    ) +
+    movesBlock +
+    ctaBlock(
+      { label: 'Open your full roadmap', url: reportUrl },
+      { label: 'Book a 30 min call', url: BOOKING_URL }
+    ) +
+    paragraph(
+      `<span style="font-size:14px">If you want help actually running this, that is the whole job here. Reply to this email and tell me which phase you are starting with, and I will tell you the fastest version of it. No pressure either way, and either way I am cheering you on.</span>`
+    ) +
+    signature('Sarah') +
+    trackPixel(trackId);
+
+  return shell({
+    preheader: `Your scaling roadmap for ${host}: stage ${stage}, score ${score}/100, and the one thing to fix first.`,
+    subtitle: `Roadmap · ${host}`,
+    inner,
+  });
+}

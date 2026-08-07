@@ -328,7 +328,13 @@ function repairStructure(text: string, schema: unknown, label: string): unknown 
   return obj;
 }
 
-function extractJson(text: string, schema: unknown, label: string): unknown {
+/**
+ * Exported because the API path needs it too. Any schema big enough to make the
+ * Anthropic structured-output grammar refuse to compile ("the compiled grammar
+ * is too large") has to fall back to prompted JSON, and prompted JSON from the
+ * API breaks in exactly the ways this parser already repairs.
+ */
+export function extractJson(text: string, schema: unknown, label: string): unknown {
   const trimmed = text.trim();
 
   const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/);

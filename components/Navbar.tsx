@@ -42,6 +42,7 @@ const MENU_GROUPS = [
   {
     heading: 'Free Tools',
     links: [
+      { label: 'Scaling Roadmap', href: '/scaling-roadmap' },
       { label: 'Bottleneck Breaker', href: '/audit' },
       { label: 'Launch Checklist', href: '/launch-checklist' },
       { label: 'Prompt Playbook', href: '/prompt-playbook' },
@@ -81,6 +82,7 @@ const DEPARTMENTS = [
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
   { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },
   { name: 'GEO Desk', tag: 'FREE AI-FINDABILITY GRADE', href: '/website-audit' },
+  { name: 'The Hundredfold Roadmap', tag: 'FREE SCALING PLAN FOR YOUR BUSINESS', href: '/scaling-roadmap' },
   { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
   { name: 'Mustard Launch', tag: 'YOUR AI LAUNCH COACH', href: '/mustard-launch' },
 ];

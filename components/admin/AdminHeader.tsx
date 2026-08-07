@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -44,6 +44,7 @@ const PROGRAMS: Item[] = [
   { key: 'p-pictures', label: 'Mustard Pictures', href: '/pictures', external: true },
   { key: 'p-press', label: 'Mustard Press', href: '/press', external: true },
   { key: 'p-audit', label: 'Website Audit', href: '/website-audit', external: true },
+  { key: 'p-roadmap', label: 'Scaling Roadmap', href: '/scaling-roadmap', external: true },
   { key: 'p-spec', label: 'Idea to Spec', href: '/idea-to-spec', external: true },
   { key: 'p-terminal', label: 'The Terminal', href: '/the-terminal', external: true },
   { key: 'p-store', label: 'Store', href: '/store', external: true },
@@ -79,6 +80,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'gleaner', label: 'Gleaner', href: '/admin/gleaner' },
       { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
       { key: 'audit', label: 'Audit Desk', href: '/admin/audit' },
+      { key: 'roadmaps', label: 'Roadmap Desk', href: '/admin/roadmaps' },
     ],
   },
   {
