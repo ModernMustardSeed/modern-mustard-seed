@@ -24,6 +24,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     message:
       defaultMessage ??
       (defaultPackage ? `I'm interested in the ${defaultPackage} package.` : ''),
@@ -56,6 +57,22 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
 
       if (res.ok) {
         setSubmitted(true);
+        // ⚡ SPEED TO LEAD. Fired AFTER the lead is safely saved and never
+        // awaited: the call is the delight, the saved lead is the job. If
+        // telephony is down they still got a form submit and an email.
+        if (formData.phone.trim()) {
+          void fetch('/api/instant-callback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: formData.name,
+              phone: formData.phone,
+              email: formData.email,
+              need: formData.message,
+              source: source ? `contact-${source}` : 'contact form',
+            }),
+          }).catch(() => {});
+        }
         trackLead({
           source: source ? `contact-${source}` : 'contact-form',
           eventId: dedup.metaEventId,
@@ -176,6 +193,30 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                       />
                     </label>
                   </div>
+                  <label className="block">
+                    <span className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#5c554a]">
+                      Phone <span className="normal-case tracking-normal text-[10px] font-body font-normal">(optional, but this is the fun part)</span>
+                    </span>
+                    <input
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className={inputCls}
+                      placeholder="(406) 555-0134"
+                    />
+                    {/* ⚠️ THIS SENTENCE IS THE FEATURE, NOT THE PAPERWORK. The
+                        callback only feels like magic because we said it would
+                        happen before it did. It is also what makes the call a
+                        requested callback instead of a cold call, so no form
+                        may post to /api/instant-callback without it. */}
+                    <span className="mt-2 block font-body text-[12px] leading-relaxed text-[#5c554a]">
+                      Leave a number and our AI, Mr. Mustard, calls you back in about ten seconds. He can answer
+                      questions and book you straight onto Sarah&apos;s calendar. Leave it blank and we will just email.
+                    </span>
+                  </label>
+
                   <label className="block">
                     <span className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#5c554a]">Your note</span>
                     <textarea
