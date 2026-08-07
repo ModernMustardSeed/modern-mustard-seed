@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ForgedCall } from '@/lib/sidekick';
 import DemoVoiceWidget, { type VoiceState } from '@/components/demo/DemoVoiceWidget';
+import SiteTour from '@/components/demo/SiteTour';
 
 /**
  * Serves a forged demo website full-screen with the lead's voice agent
@@ -26,6 +27,8 @@ export default function SiteDemoShell({
 }) {
   const [showIntro, setShowIntro] = useState(false);
   const [voiceState, setVoiceState] = useState<VoiceState>('idle');
+  const frameRef = useRef<HTMLIFrameElement | null>(null);
+  const [touring, setTouring] = useState(false);
 
   // The orientation card: appears once per browser after a beat, leaves on
   // its own, never comes back after they dismiss it or start a call.
@@ -60,14 +63,32 @@ export default function SiteDemoShell({
       {/* A real src (not srcdoc) so the site's own #anchor nav links are
           same-document jumps; under srcdoc they resolved against the parent
           URL and reloaded the wrapper instead of scrolling. */}
-      <iframe title={`${business} demo website`} src={`/demo/site/${siteId}/raw`} className="w-full h-full border-0 bg-white" />
+      <iframe
+        ref={frameRef}
+        title={`${business} demo website`}
+        src={`/demo/site/${siteId}/raw`}
+        className="w-full h-full border-0 bg-white"
+      />
+
+      {/* The hostess, bottom-LEFT, opposite the agent. She welcomes the visitor
+          and walks them through the page; the agent answers them. Two mouths,
+          two corners, and she yields the moment a call starts. */}
+      <SiteTour
+        siteId={siteId}
+        frame={frameRef}
+        voiceBusy={voiceState !== 'idle'}
+        onActiveChange={setTouring}
+      />
 
       {/* The voice agent, living on the site it answers for. One column,
           bottom-right: orientation card, then the call pill, then the credit
           chip. A single flex stack so nothing can ever overlap, at any
           viewport. */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2 max-w-[min(320px,calc(100vw-2rem))]">
-        {showIntro && voiceState === 'idle' && (
+        {/* One thing at a time. While the hostess is offering or talking, this
+            card would be a second voice in print, telling them to press a
+            different button than the one she is about to mention. */}
+        {showIntro && voiceState === 'idle' && !touring && (
           <div className="bg-[#161616] border-2 border-[#F5B700] rounded-2xl shadow-[5px_5px_0_0_rgba(0,0,0,0.5)] p-4 animate-[demoIntro_.45s_ease-out]">
             <p className="font-sans font-bold uppercase tracking-[0.14em] text-[10px] text-[#F5B700]">Your demo, {business}</p>
             <p className="font-body text-[13px] leading-relaxed text-[#FBF6EA]/90 mt-1.5">
