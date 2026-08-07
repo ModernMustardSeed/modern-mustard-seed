@@ -704,6 +704,69 @@ Link in bio.
 
 const AM_POST_STORY = 'Worries in. Answers out. See all three of your demos free → modernmustardseed.com/demos';
 
+/* ============ Campaign nineteen: The Scenic Route (the homepage is the ad) ============ */
+
+const SR_LANDING = 'https://modernmustardseed.com/?utm_source=meta&utm_medium=paid&utm_campaign=scenicroute';
+
+const SR_COPY_A = `Most business websites read like a brochure.
+
+Ours takes you for a drive.
+
+Mr. and Mrs. Mustard ride the lake road past the cherry orchards, plant one seed at the ranch, and a tree grows tall enough for every bird to come home. That is the whole business plan, on one page, out loud (the site literally narrates itself).
+
+The same crew that built that page builds websites that talk, voice agents that answer every call, and command centers that run the whole business.
+
+Take the scenic route. It ends at your front door.`;
+
+const SR_COPY_B = `We rebuilt our own homepage as a drive around Flathead Lake, with a narrator, a red convertible, and a tree full of birds.
+
+Why show you that? Because it is the exact same build we do for businesses like yours: a website that talks, a voice agent that answers, and a command center that runs it all.
+
+If a page can drive you around a lake, it can certainly answer your customers at midnight.
+
+Come for a drive. Stay for the demo, built free before you pay anything.`;
+
+const SR_HEADLINE = 'This is the scenic route. It ends at your front door.';
+const SR_DESCRIPTION = 'A website that talks, a voice agent that answers, and a command center. See the drive.';
+
+const SR_CUTS = [
+  { file: '/ads/scenic-route-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/scenic-route-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/scenic-route-16x9.mp4', label: '16:9 — In-stream + Google', note: 'Video feeds, YouTube / Google video, and anywhere the film plays on-site.' },
+];
+
+const SR_CHECKLIST = [
+  { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the homepage UTM link above. Paste Copy Variant 1 (the brochure vs the drive).' },
+  { id: 'brand', label: 'This is a BRAND film, not a demo-funnel cell: it lands on the homepage journey, and the journey itself sells (Ava narrates, Mr. Mustard closes). Judge it on quality of traffic, not just cost per click.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot has Ava\'s voiceover; no burned captions, so ACCEPT platform captions on this one.' },
+  { id: 'ear', label: 'EAR CHECK before spend: Sarah listens to the mix once (six VO lines over the acoustic bed; music should sit far under Ava).' },
+  { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" in any edit.' },
+  { id: 'audience', label: 'Audience: Advantage+, broad small-business. The film self-selects owners who feel the missed-calls line at the tree beat.' },
+  { id: 'organic', label: 'Organic first: this film is made to be shared. Post the 9:16 as a Reel + YouTube Short and the 4:5 to FB before spending a dollar. Drafts below (Sarah approves every post).' },
+  { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (why we rebuilt our own homepage) and let them fight. Kill the loser at day 6.' },
+  { id: 'review', label: 'Day 5-7: read GA4 + the beacon under utm_campaign=scenicroute; the truth metric is journey-door clicks (journey_door events) and booked calls that mention the drive.' },
+];
+
+const SR_POST_FB = `We rebuilt our homepage as a drive around Flathead Lake.
+
+A red convertible. The cherry orchards. One seed planted at the ranch, and a tree the birds come home to.
+
+It narrates itself out loud as you scroll (really, turn your sound on), and at the end, our AI answers any question you have, live.
+
+That is what we do for a living: websites that talk, voice agents that answer every call, and command centers that run the whole business.
+
+Take the scenic route → modernmustardseed.com`;
+
+const SR_POST_IG = `Our homepage is now a drive around Flathead Lake, and it talks.
+
+The seed gets planted at mile 89. The birds come home at mile 92.
+
+Turn your sound on and take the scenic route. Link in bio.
+
+#smallbusiness #websitedesign #aiforbusiness #montana #modernmustardseed`;
+
+const SR_POST_STORY = 'Our website takes you for a drive around Flathead Lake, out loud. Take the scenic route → modernmustardseed.com';
+
 const BR_CHECKLIST = [
   { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the captain\'s log).' },
   { id: 'challenger', label: 'This is a CHALLENGER to Campaign 12 (same broad audience, same /demos landing, different creative). Do not run both cold cells at once: A/B them for a week and keep the cheaper cost per forged demo.' },
@@ -802,7 +865,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -823,6 +886,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'stone', num: '16', label: 'The Stone Age Is Over', blurb: 'Demo funnel · the transformation · $15/day' },
   { key: 'chief', num: '17', label: 'The Chief', blurb: 'Product · AI chief of staff · /chief · $15/day' },
   { key: 'ans', num: '18', label: 'The Answer Machine', blurb: 'Demo funnel · worries in, answers out · $15/day' },
+  { key: 'scenic', num: '19', label: 'The Scenic Route', blurb: 'Brand film · the homepage journey · $10/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -838,7 +902,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo'] },
-  { name: 'Brand + Verticals', keys: ['callme', 'tw', 'gn', 'rest'] },
+  { name: 'Brand + Verticals', keys: ['callme', 'tw', 'gn', 'rest', 'scenic'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
 ];
 
@@ -948,6 +1012,7 @@ export default function AdsPlaybook() {
   const [checkedStone, setCheckedStone] = useState<Record<string, boolean>>({});
   const [checkedChief, setCheckedChief] = useState<Record<string, boolean>>({});
   const [checkedAns, setCheckedAns] = useState<Record<string, boolean>>({});
+  const [checkedScenic, setCheckedScenic] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -1028,6 +1093,8 @@ export default function AdsPlaybook() {
       if (rawChief) setCheckedChief(JSON.parse(rawChief));
       const rawAns = localStorage.getItem('mms-ads-checklist-ans');
       if (rawAns) setCheckedAns(JSON.parse(rawAns));
+      const rawScenic = localStorage.getItem('mms-ads-checklist-scenic');
+      if (rawScenic) setCheckedScenic(JSON.parse(rawScenic));
     } catch { /* first visit */ }
   }, []);
 
@@ -1051,6 +1118,7 @@ export default function AdsPlaybook() {
   const toggleStone = mkToggle('mms-ads-checklist-stone', setCheckedStone);
   const toggleChief = mkToggle('mms-ads-checklist-chief', setCheckedChief);
   const toggleAns = mkToggle('mms-ads-checklist-ans', setCheckedAns);
+  const toggleScenic = mkToggle('mms-ads-checklist-scenic', setCheckedScenic);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -1110,6 +1178,7 @@ export default function AdsPlaybook() {
   const doneCountStone = ST_CHECKLIST.filter((c) => checkedStone[c.id]).length;
   const doneCountChief = CH_CHECKLIST.filter((c) => checkedChief[c.id]).length;
   const doneCountAns = AM_CHECKLIST.filter((c) => checkedAns[c.id]).length;
+  const doneCountScenic = SR_CHECKLIST.filter((c) => checkedScenic[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -2526,6 +2595,96 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedAns[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'scenic' && (<>
+        {/* ============ Campaign nineteen: The Scenic Route (the homepage is the ad) ============ */}
+        <section className="bg-[#0E3A4A] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign nineteen &middot; brand film, the homepage journey</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;The Scenic Route&rdquo; <span className="italic text-[#F5B700]">it ends at your front door</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              Thirty seconds cut from the real homepage footage: Mr. and Mrs. Mustard drive the lake road,
+              pick cherries in the orchard, roll under the ranch gate, plant one glowing seed, and the tree
+              fills with birds while Ava narrates. The landing page IS the product demo (the site narrates
+              itself and Mr. Mustard answers live), so this cell buys people a seat in the car. One cell at
+              $10/day into the homepage.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Journey (landing)</a>
+              <a href="/admin/analytics" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Traffic (results)</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Ava&rsquo;s voiceover over an acoustic bed, no burned captions (accept platform captions). Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {SR_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/scenic-route-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text &mdash; Variant 1 (brochure vs the drive)" text={SR_COPY_A} />
+            <CopyBlock title="Primary text &mdash; Variant 2 (why we rebuilt our own homepage)" text={SR_COPY_B} />
+            <CopyBlock title="Headline" text={SR_HEADLINE} />
+            <CopyBlock title="Description" text={SR_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (the homepage journey)" text={SR_LANDING} />
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">Organic launch posts</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">This film is built to be shared before it is bought. Post the 9:16 as a Reel and the 4:5 to Facebook the same day. Sarah approves every post before it goes out.</p>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Facebook post (4:5 or 16:9 cut)" text={SR_POST_FB} />
+            <CopyBlock title="Instagram Reel caption (9:16 cut)" text={SR_POST_IG} />
+            <CopyBlock title="Instagram Story line (+ link sticker)" text={SR_POST_STORY} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountScenic}/{SR_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {SR_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedScenic[item.id]}
+                    onChange={() => toggleScenic(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedScenic[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>
