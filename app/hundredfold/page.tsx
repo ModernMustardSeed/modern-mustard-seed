@@ -19,7 +19,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'HUNDREDFOLD. The Scaling Program That Builds The Machine With You.',
   description:
-    'Mr. Mustard interviews you, we forge your offer, we build the AI agents that run your plan, and we coach you every week against four gates. $5,000 to start, then $2,500 a month, month to month.',
+    'Mr. Mustard interviews you, we forge your offer, we build the AI agents that run your plan, and a coach that knows your plan answers you at any hour. $5,000 to start, then $2,500 a month, month to month.',
   path: '/hundredfold',
 });
 
@@ -30,15 +30,15 @@ const RED = '#C4160B';
 const FAQS = [
   {
     q: 'What is HUNDREDFOLD?',
-    a: 'A twelve month scaling program for a business that already works and is capped. It has four parts that most programs only have one of. Mr. Mustard interviews you with about thirty questions and builds your roadmap from your answers. We forge the offer you should actually be selling, priced and guaranteed and written. We build the AI agents and automations that execute the plan inside your business, in your accounts. And we coach you every week against four gates, so you learn to run the machine instead of just owning one.',
+    a: 'A twelve month scaling program for a business that already works and is capped. It has four parts that most programs only have one of. Mr. Mustard interviews you with about thirty questions and builds your roadmap from your answers. We forge the offer you should actually be selling, priced and guaranteed and written. We build the AI agents and automations that execute the plan inside your business, in your accounts. And your own coach lives in your portal, having read your whole plan, so you get the answer the moment you need it instead of saving questions for a call. You learn to run the machine instead of just owning one.',
   },
   {
     q: 'What does it cost?',
-    a: 'Five thousand dollars to start, then two thousand five hundred a month, month to month. The start covers your interview, your roadmap, your forged offer, and the first system we build and put live. The monthly covers weekly coaching, the ongoing build queue, and running your agents. There is no free trial, because the interview and the roadmap are free and they are worth more than a fortnight of access. Cancel with thirty days notice any month and everything we built stays in your accounts.',
+    a: 'Five thousand dollars to start, then two thousand five hundred a month, month to month. The start covers your interview, your roadmap, your forged offer, and the first system we build and put live. The monthly covers your coach, the ongoing build queue, the arsenal you build from, and running your agents. There is no free trial, because the interview and the roadmap are free and they are worth more than a fortnight of access. Cancel with thirty days notice any month and everything we built stays in your accounts.',
   },
   {
     q: 'How is this different from a coaching program or a mastermind?',
-    a: 'A coaching program tells you what to do and leaves you to do it. An agency does it for you and teaches you nothing. HUNDREDFOLD does both on purpose: we build the actual systems, wired into your actual business, and we walk you through the reasoning every week so you can make the next call yourself. You end the year with a machine you own and the understanding to change it.',
+    a: 'A coaching program tells you what to do and leaves you to do it. An agency does it for you and teaches you nothing. HUNDREDFOLD does both on purpose: we build the actual systems, wired into your actual business, and your coach walks you through the reasoning whenever you ask, so you can make the next call yourself. You end the year with a machine you own and the understanding to change it.',
   },
   {
     q: 'What is the interview really like?',
@@ -50,7 +50,15 @@ const FAQS = [
   },
   {
     q: 'Do I have to do the work?',
-    a: 'Yes, the parts only you can do. We build the machines and we tell you exactly what to do each week, but nobody can make your calls, set your prices, or decide what your business becomes. If you want to hand it all off and stay out of the room, this is the wrong program and we will say so before you pay.',
+    a: 'Yes, the parts only you can do. We build the machines and your coach tells you exactly what to do next, but nobody can make your calls, set your prices, or decide what your business becomes. If you want to hand it all off and stay out of the room, this is the wrong program and we will say so before you pay.',
+  },
+  {
+    q: 'Is there a weekly call with Sarah?',
+    a: 'No, and that is deliberate. A weekly call means saving your questions for Tuesday, and the question you have at nine on a Sunday night is the one that actually stops you. Instead your own coach lives in your Command Center, has read your interview, your roadmap, your offer, and every gate, and answers in your context any hour of any day, as often as you want. When the answer is that something needs building, he does not hand you homework, he files the build with us and it shows up in your arsenal.',
+  },
+  {
+    q: 'What can I build myself?',
+    a: 'Most of it, unlimited, right in your Command Center. Pages, images, scripts, campaigns, offers, emails, social. You build it and you put it live yourself. The only things that wait for a yes from you are the ones that spend real money to run: video generation and paid ad spend. Those show you the cost before anything happens and never spend a cent without you approving it.',
   },
   {
     q: 'What is the guarantee?',
@@ -62,7 +70,7 @@ const FAQS = [
   },
   {
     q: 'How do I start?',
-    a: 'Run the free Hundredfold Roadmap on your website first, which costs nothing and takes ninety seconds. If what it says lands, do the interview, which is also free. From there you can join right on the page and your Command Center opens immediately, or wait and talk to Sarah first. Nothing is charged until you choose to join.',
+    a: 'Run the free Hundredfold Roadmap on your website first, which costs nothing and takes ninety seconds. If what it says lands, do the interview, which is also free. From there you join right on the page and your Command Center opens immediately, with your coach already in it and already read up on you. Nothing is charged until you choose to join.',
   },
 ];
 
@@ -79,7 +87,7 @@ export default function HundredfoldPage() {
             '@id': `${SITE.url}/hundredfold#service`,
             name: 'HUNDREDFOLD',
             description:
-              'A twelve month scaling program: a thirty question coaching interview, a forged offer, custom AI agents and automations built into the business, and weekly coaching against four numeric gates.',
+              'A twelve month scaling program: a thirty question coaching interview, a forged offer, custom AI agents and automations built into the business, a 24/7 coach that knows the plan, and four numeric gates.',
             provider: { '@id': `${SITE.url}/#organization` },
             serviceType: 'Business scaling program',
             areaServed: 'United States',
@@ -93,7 +101,7 @@ export default function HundredfoldPage() {
           serviceJsonLd({
             name: 'HUNDREDFOLD scaling program',
             description:
-              'Coaching plus custom AI systems: interview, offer forge, build, and weekly coaching against four gates over twelve months.',
+              'Coaching plus custom AI systems: interview, offer forge, agent builds, a 24/7 coach in your own portal, and four gates over twelve months.',
           }),
           faqJsonLd(FAQS),
           breadcrumbJsonLd([
@@ -124,7 +132,7 @@ export default function HundredfoldPage() {
               <p className="mt-5 text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
                 Mr. Mustard interviews you like a coach who will not take a vague answer. We forge the offer
                 you should actually be selling. We wire the AI agents that execute your roadmap inside your
-                business. Then we coach you every week for a year, against four gates with a number on each.
+                business. Then your own coach answers you at any hour, against four gates with a number on each.
               </p>
             </div>
 
@@ -431,10 +439,10 @@ export default function HundredfoldPage() {
                   Start the interview
                 </a>
                 <Link
-                  href="/book"
+                  href="/scaling-roadmap"
                   className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#FBF6EA] rounded-xl border-2 border-[#FBF6EA]/40 hover:border-[#FBF6EA] transition-all"
                 >
-                  Talk to Sarah first
+                  Read the free roadmap first
                 </Link>
               </div>
               <p className="mt-6 text-[#FBF6EA]/45 text-[10px] uppercase tracking-[0.3em] font-mono">

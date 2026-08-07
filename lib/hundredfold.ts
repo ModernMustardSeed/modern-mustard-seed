@@ -119,25 +119,25 @@ export const PILLARS: Pillar[] = [
   {
     key: 'coaching',
     n: '05',
-    name: 'The Coaching',
-    line: 'Every week. Step by step, and the reason behind the step.',
-    body: 'Two things at once, because owners need both. The step-by-step: exactly what to do this week, in what order, with the script. And the altitude: why this works, so you can make the call yourself next quarter without asking anyone. Live working sessions every week, plus Mr. Mustard on your own gates any hour you want him, which is the part that means you are never stuck at nine at night waiting on a reply. You leave knowing how to run the machine, not just owning one.',
+    name: 'Your Coach',
+    line: 'Mr. Mustard, on your business, at three in the morning if that is when you think.',
+    body: 'Not a weekly call you have to save your questions for. Your own coach lives in your Command Center and has read everything: your interview, your roadmap, your offer, every gate, every number you have logged. Ask him what to do next, why a gate is not moving, how to handle the objection you got today, what to say on the phone tomorrow. He answers in your context, not in general. And when the answer is "that needs building", he does not hand you homework. He asks us to build it.',
     gets: [
-      'Live working sessions every week, run against whatever gate you are on',
-      'Mr. Mustard on call for your own plan, day or night, as often as you like',
-      'The step-by-step for this week, written down where you can find it',
+      'A coach who knows your plan, available every hour of every day',
+      'Answers in your context: your numbers, your gate, your offer, your words',
+      'No calls to schedule, no waiting until Tuesday, no saving up questions',
     ],
   },
   {
     key: 'command',
     n: '06',
-    name: 'The Command Center',
-    line: 'Your whole program on one screen.',
-    body: 'Your roadmap lives here, not in a PDF that goes stale. Gates check off as you clear them. Your scoreboard updates. You can see every agent we have built, what is in the build queue, every session, every asset, and the message thread with us. Open it Monday morning and you know exactly what this week is.',
+    name: 'The Arsenal',
+    line: 'Everything the plan needs, built and ready, in one place.',
+    body: 'Your roadmap lives here instead of going stale in a PDF, and so does everything it takes to run it. Gates check off as you clear them. Your agents, your campaigns, your images, your pages, your scripts. Most of it you can build and put live yourself, right there, as many times as you want. The pieces that cost real money to run stay behind a yes from you, so nothing ever spends without you saying so.',
     gets: [
-      'Your live roadmap with checkable gates',
-      'Your scoreboard, your agents, and your build queue',
-      'Every asset, session, and recording in one place',
+      'Your live roadmap, gates, scoreboard, and build queue on one screen',
+      'Build and deploy your own pages, images, campaigns, and scripts, unlimited',
+      'Anything that spends real money waits for your approval first',
     ],
   },
 ];
@@ -168,9 +168,9 @@ export const STACK: { item: string; valueCents: number; why: string }[] = [
     why: 'Bespoke build work at this studio runs $2,500 to $45,000 per system.',
   },
   {
-    item: 'Weekly coaching sessions with Sarah, all year',
+    item: 'Your own coach, in your context, every hour of every day',
     valueCents: 1_800_000,
-    why: 'Studio time is $225 an hour. This is a standing hour every week, plus prep.',
+    why: 'Studio time is $225 an hour. This is the answer at 11pm on a Sunday, as often as you need it.',
   },
   {
     item: 'A voice agent on your real number and a site that answers for you',
@@ -229,6 +229,7 @@ export const FIT = {
   ],
   no: [
     'You have no offer and no customers yet. Start with the free roadmap.',
+    'You want a standing phone call on the calendar. We do not run those, on purpose.',
     'You want someone to do all of it while you stay out of the room.',
     'You are looking for a course to watch.',
     'You need this to pay for itself in thirty days. Give it a full window.',

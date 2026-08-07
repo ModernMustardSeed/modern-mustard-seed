@@ -60,6 +60,11 @@ type GenerateResponse = {
 
 export default function ScalingRoadmapEngine() {
   const [url, setUrl] = useState('');
+  // ⚠️ Collected BEFORE anything is generated (Sarah, 2026-08-07). The roadmap
+  // costs real tokens and is the top of the funnel; it is not handed to
+  // anonymous traffic. The full report still renders the moment it is ready.
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [context, setContext] = useState<RoadmapContext>({});
   const [showContext, setShowContext] = useState(false);
 
@@ -69,11 +74,6 @@ export default function ScalingRoadmapEngine() {
   const [meta, setMeta] = useState<{ url: string; host: string; slug: string | null } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [saveEmail, setSaveEmail] = useState('');
-  const [saveName, setSaveName] = useState('');
-  const [savePhone, setSavePhone] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -102,13 +102,12 @@ export default function ScalingRoadmapEngine() {
     setLoading(true);
     setError(null);
     setReport(null);
-    setSaved(false);
 
     try {
       const res = await fetch('/api/scaling-roadmap', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url.trim(), context }),
+        body: JSON.stringify({ url: url.trim(), name: name.trim(), email: email.trim(), context }),
       });
       const data = (await res.json()) as GenerateResponse | { error: string };
       if (!res.ok || 'error' in data) {
@@ -120,32 +119,6 @@ export default function ScalingRoadmapEngine() {
       setError(err instanceof Error ? err.message : 'The roadmap failed to build.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const emailMe = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!saveEmail.trim() || !meta?.slug) return;
-    setSaving(true);
-    setSaveError(null);
-    try {
-      const res = await fetch('/api/scaling-roadmap/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          slug: meta.slug,
-          email: saveEmail.trim(),
-          name: saveName.trim(),
-          phone: savePhone.trim(),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || 'Could not send it.');
-      setSaved(true);
-    } catch (err) {
-      setSaveError(err instanceof Error ? err.message : 'Could not send it.');
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -169,6 +142,36 @@ export default function ScalingRoadmapEngine() {
     return (
       <div className="max-w-3xl mx-auto">
         <form onSubmit={generate}>
+          <div className="pop-card p-5 md:p-6 mb-3 grid sm:grid-cols-2 gap-3">
+            <label>
+              <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#161616]/60 mb-1.5">
+                Your name
+              </span>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Dana Whitaker"
+                disabled={loading}
+                aria-label="Your name"
+                className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/35 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow disabled:opacity-50"
+              />
+            </label>
+            <label>
+              <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#161616]/60 mb-1.5">
+                Where we send it
+              </span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@yourbusiness.com"
+                disabled={loading}
+                required
+                aria-label="Your email"
+                className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/35 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow disabled:opacity-50"
+              />
+            </label>
+          </div>
           <div className="pop-card p-2 md:p-3 flex flex-col md:flex-row gap-2 md:gap-3">
             <input
               type="text"
@@ -184,7 +187,7 @@ export default function ScalingRoadmapEngine() {
             />
             <button
               type="submit"
-              disabled={loading || !url.trim()}
+              disabled={loading || !url.trim() || !email.includes('@') || name.trim().length < 2}
               className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-xl border-2 border-[#161616] hover:-translate-y-0.5 disabled:opacity-50 transition-all whitespace-nowrap"
             >
               {loading ? 'Building…' : 'Build my roadmap →'}
@@ -227,7 +230,8 @@ export default function ScalingRoadmapEngine() {
 
           {!loading && (
             <p className="text-center text-[#161616]/55 text-xs font-body mt-5">
-              Free. No card, no signup. It takes about ninety seconds because it is actually reading your site.
+              Free, no card. It takes about ninety seconds because it is actually reading your site, and the
+              whole thing appears right here the moment it is done. We email you a copy too.
             </p>
           )}
         </form>
@@ -280,70 +284,39 @@ export default function ScalingRoadmapEngine() {
     <div ref={resultRef} className="max-w-5xl mx-auto scroll-mt-24">
       <RoadmapDocument report={report} host={meta?.host ?? ''} url={meta?.url} />
 
-      {/* Keep it */}
-      <div className="mt-16 pop-card-yellow p-8 md:p-12">
-        {!saved ? (
-          <>
-            <span className="block text-[9px] uppercase tracking-[0.4em] text-[#161616] font-mono font-bold mb-3">
-              Keep it
-            </span>
-            <h3 className="font-display text-3xl md:text-4xl text-[#161616] font-black tracking-tight mb-3 leading-tight">
-              Want this in your inbox?
-            </h3>
-            <p className="text-[#161616]/80 text-base font-body font-medium leading-relaxed mb-7 max-w-2xl">
-              We will send you the verdict, your constraint, and this week&rsquo;s three moves, with a
-              permanent link to the full roadmap. Reply to it and you are talking to Sarah, not a bot.
-            </p>
-            <form onSubmit={emailMe} className="grid sm:grid-cols-3 gap-3">
-              <input
-                type="text"
-                value={saveName}
-                onChange={(e) => setSaveName(e.target.value)}
-                placeholder="Your name"
-                disabled={saving}
-                aria-label="Your name"
-                className="bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/40 font-body text-sm focus:outline-none disabled:opacity-50"
-              />
-              <input
-                type="email"
-                value={saveEmail}
-                onChange={(e) => setSaveEmail(e.target.value)}
-                placeholder="you@yourbusiness.com"
-                disabled={saving}
-                required
-                aria-label="Your email"
-                className="bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/40 font-body text-sm focus:outline-none disabled:opacity-50"
-              />
-              <input
-                type="tel"
-                value={savePhone}
-                onChange={(e) => setSavePhone(e.target.value)}
-                placeholder="Phone (optional)"
-                disabled={saving}
-                aria-label="Your phone number, optional"
-                className="bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/40 font-body text-sm focus:outline-none disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                disabled={saving || !saveEmail.trim() || !meta?.slug}
-                className="sm:col-span-3 px-6 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-lg border-2 border-[#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-all"
-              >
-                {saving ? 'Sending…' : 'Email me the roadmap'}
-              </button>
-            </form>
-            {saveError && <p className="text-[#161616] font-bold text-xs font-mono mt-3">{saveError}</p>}
-          </>
-        ) : (
-          <div className="py-4">
-            <p className="font-display italic text-2xl md:text-3xl text-[#161616] font-black mb-3">
-              Sent. Check your inbox.
-            </p>
-            <p className="text-[#161616]/80 text-base font-body font-medium leading-relaxed max-w-2xl">
-              Sarah saw it too. If you want the fastest version of phase one, reply to that email and
-              say which part you are starting with.
-            </p>
-          </div>
-        )}
+      {/* Now go do it. The address is already ours, so this space sells the
+          implementation instead of asking for an email a second time. */}
+      <div className="mt-16 border-2 border-[#161616] rounded-2xl bg-[#161616] shadow-[8px_8px_0_0_#F5B700] p-8 md:p-12">
+        <span className="block text-[9px] uppercase tracking-[0.4em] text-[#F5B700] font-mono font-bold mb-4">
+          A copy is in your inbox
+        </span>
+        <h3 className="font-display text-3xl md:text-5xl text-[#FBF6EA] font-black tracking-tight leading-[1.0]">
+          Reading it is the easy part
+        </h3>
+        <p className="mt-5 text-[#FBF6EA]/80 text-base md:text-lg font-body leading-relaxed max-w-2xl">
+          You now know your constraint and what clears the first gate. The reason plans like this sit in a
+          folder is never that the plan was wrong. It is that nobody built the machines, and nobody was
+          checking on Thursday.
+        </p>
+        <p className="mt-4 text-[#FBF6EA]/80 text-base md:text-lg font-body leading-relaxed max-w-2xl">
+          HUNDREDFOLD is the version where it actually happens. Mr. Mustard interviews you properly, we
+          forge the offer, we wire the agents that run this plan inside your business, and a coach who has
+          read every word of it answers you at any hour.
+        </p>
+        <div className="mt-9 flex flex-col sm:flex-row gap-3">
+          <a
+            href="/hundredfold#interview"
+            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-xl border-2 border-[#F5B700] hover:-translate-y-0.5 transition-all text-center"
+          >
+            Get interviewed, free
+          </a>
+          <a
+            href="/hundredfold"
+            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#FBF6EA] rounded-xl border-2 border-[#FBF6EA]/40 hover:border-[#FBF6EA] transition-all text-center"
+          >
+            See what HUNDREDFOLD is
+          </a>
+        </div>
       </div>
 
       {/* Share, print, run another */}
@@ -371,10 +344,6 @@ export default function ScalingRoadmapEngine() {
             setMeta(null);
             setUrl('');
             setContext({});
-            setSaved(false);
-            setSaveEmail('');
-            setSaveName('');
-            setSavePhone('');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           className="px-5 py-3 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616]/60 hover:text-[#C4160B] transition-colors"

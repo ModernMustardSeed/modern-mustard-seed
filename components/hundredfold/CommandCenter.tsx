@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import RoadmapDocument from '@/components/RoadmapDocument';
+import CoachPanel from '@/components/hundredfold/CoachPanel';
 import type { RoadmapReport } from '@/lib/roadmap-shape';
 
 /**
@@ -53,7 +54,7 @@ type SystemRow = {
   url: string | null;
 };
 
-type Tab = 'week' | 'plan' | 'offer' | 'build';
+type Tab = 'coach' | 'week' | 'plan' | 'offer' | 'build';
 
 const SYSTEM_STYLE: Record<string, string> = {
   proposed: 'bg-white text-[#161616]/60 border-[#161616]/30',
@@ -68,7 +69,7 @@ export default function HundredfoldCommandCenter() {
   const [gates, setGates] = useState<Gate[]>([]);
   const [systems, setSystems] = useState<SystemRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<Tab>('week');
+  const [tab, setTab] = useState<Tab>('coach');
 
   const load = async () => {
     try {
@@ -188,10 +189,11 @@ export default function HundredfoldCommandCenter() {
       <div className="flex flex-wrap gap-2">
         {(
           [
+            ['coach', 'Your coach'],
             ['week', 'This week'],
             ['plan', 'The roadmap'],
             ['offer', 'Your offer'],
-            ['build', 'What we are building'],
+            ['build', 'Your arsenal'],
           ] as [Tab, string][]
         ).map(([k, label]) => (
           <button
@@ -206,6 +208,15 @@ export default function HundredfoldCommandCenter() {
           </button>
         ))}
       </div>
+
+      {tab === 'coach' && (
+        <CoachPanel
+          firstName={member.name?.split(/\s+/)[0] ?? null}
+          windowTitle={phase?.title ?? null}
+          gateLabel={gate?.label ?? null}
+          onFiled={load}
+        />
+      )}
 
       {tab === 'week' && (
         <div className="space-y-4">
@@ -314,9 +325,13 @@ export default function HundredfoldCommandCenter() {
 
       {tab === 'build' && (
         <div className="pop-card p-6 md:p-8">
-          <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#C4160B] mb-5">
-            The machines
+          <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#C4160B] mb-2">
+            Your arsenal
           </span>
+          <p className="font-body text-sm text-[#161616]/65 mb-5 max-w-2xl leading-relaxed">
+            Everything built for this plan. Most of it is yours to put live whenever you want. Anything that
+            spends real money to run waits here for your yes, and nothing is charged before you give it.
+          </p>
           {systems.length === 0 && (
             <p className="font-body text-[#161616]/55">Your build plan lands here after your roadmap is written.</p>
           )}
