@@ -9,7 +9,7 @@
       "id": "welcome",
       "anchor": "top",
       "text": "Welcome to Modern Mustard Seed. We build websites, voice agents, and the command centers that run them, and they go live in about a week. Let me show you around. This takes about a minute.",
-      "ms": 10872,
+      "ms": 11016,
       "src": "/tour/mms/00-welcome.mp3"
     },
     {
@@ -41,5 +41,5 @@
       "src": "/tour/mms/04-close.mp3"
     }
   ],
-  "totalMs": 59736
+  "totalMs": 59880
 }

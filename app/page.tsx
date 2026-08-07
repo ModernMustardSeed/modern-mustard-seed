@@ -1,4 +1,3 @@
-import DemoForgeStrip from '@/components/home/DemoForgeStrip';
 import ProofBand from '@/components/home/ProofBand';
 import JourneyRig from '@/components/journey/JourneyRig';
 import JourneyTour from '@/components/journey/JourneyTour';
@@ -123,7 +122,9 @@ export default function HomePage() {
           breadcrumbJsonLd([{ name: 'Home', url: '/' }]),
         ]}
       />
-      <DemoForgeStrip />
+      {/* The forge ticker strip came off the homepage 2026-08-07 (Sarah: it
+          overshadowed the nav and brand). The component stays for other uses;
+          the journey's roadside signs carry the /demos funnel now. */}
       <main className="relative bg-[#FBF6EA] text-[#161616]">
         <JourneyRig />
         <JourneyHero />

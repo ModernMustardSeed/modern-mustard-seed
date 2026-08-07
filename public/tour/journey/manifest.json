@@ -16,7 +16,7 @@
       "id": "orchard",
       "anchor": "tour-orchard",
       "text": "First, the orchards. Everything we build starts the same three ways: a website that talks, a voice agent that answers, and the command center that runs them both. Planted once, tended every day, and live in about a week.",
-      "ms": 12816,
+      "ms": 12864,
       "src": "/tour/journey/01-orchard.mp3"
     },
     {
@@ -51,9 +51,9 @@
       "id": "doors",
       "anchor": "tour-doors",
       "text": "Four doors, and every one of them is open. Press the gold button in the corner and talk to Mr. Mustard right now. He can answer anything about how this works, show you a live demo, forge a custom demo for your business while you watch, or book you straight onto Sarah’s calendar. The drive is over. The growing starts now.",
-      "ms": 17976,
+      "ms": 18096,
       "src": "/tour/journey/06-doors.mp3"
     }
   ],
-  "totalMs": 77832
+  "totalMs": 78000
 }

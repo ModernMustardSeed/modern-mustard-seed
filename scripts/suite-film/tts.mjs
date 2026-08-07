@@ -174,8 +174,24 @@ async function falSpeak(text, voice, outFile, timeoutMs) {
  * opposite, because a hero can fall back to another photograph. A narrator
  * cannot fall back to silence.)
  */
+/**
+ * PRONUNCIATION FIXES, applied to the SPOKEN text only (captions and manifests
+ * keep the real spelling because callers store their own copy of `text`).
+ *
+ * Sarah 2026-08-07: "it says word LIVE wrong - it needs to be a hard i because
+ * its LIVE (L-EYE-VE)". In our copy "live" is virtually always /laɪv/ (goes
+ * live, live demo, live in about a week), and the TTS reads the verb form
+ * /lɪv/ whenever the grammar allows it. "lyve" forces the long i on every
+ * engine. Applies pipeline-wide: every film, tour, and hostess speaks through
+ * this function.
+ */
+function spokenText(text) {
+  return String(text).replace(/\blive\b/gi, 'lyve');
+}
+
 export async function speak(text, voice, outFile, { timeoutMs = 120_000, allowPaid = true } = {}) {
   mkdirSync(path.dirname(outFile), { recursive: true });
+  text = spokenText(text);
 
   let freeErr = null;
   try {
