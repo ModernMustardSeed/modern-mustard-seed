@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -28,6 +28,7 @@ type Item = { key: Tab | string; label: string; href: string; external?: boolean
 
 const PINNED: Item[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
+  { key: 'hundredfold', label: 'Hundredfold', href: '/admin/hundredfold' },
   { key: 'outbound', label: 'Outbound', href: '/admin/outbound' },
   { key: 'pipeline', label: 'Pipeline', href: '/admin/leads' },
   { key: 'hq', label: 'Partner Hub', href: '/admin/hq' },
@@ -45,6 +46,7 @@ const PROGRAMS: Item[] = [
   { key: 'p-press', label: 'Mustard Press', href: '/press', external: true },
   { key: 'p-audit', label: 'Website Audit', href: '/website-audit', external: true },
   { key: 'p-roadmap', label: 'Scaling Roadmap', href: '/scaling-roadmap', external: true },
+  { key: 'p-hundredfold', label: 'HUNDREDFOLD', href: '/hundredfold', external: true },
   { key: 'p-spec', label: 'Idea to Spec', href: '/idea-to-spec', external: true },
   { key: 'p-terminal', label: 'The Terminal', href: '/the-terminal', external: true },
   { key: 'p-store', label: 'Store', href: '/store', external: true },

@@ -20,6 +20,7 @@ export default function Footer() {
     {
       title: 'The Departments',
       links: [
+        { label: 'HUNDREDFOLD', href: '/hundredfold' },
         { label: 'The Talking Website', href: '/talking-website' },
         { label: 'The Chief', href: '/chief' },
         { label: 'Command Center', href: '/command-center' },

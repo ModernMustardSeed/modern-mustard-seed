@@ -780,3 +780,68 @@ Return the JSON roadmap.`;
     return { ok: false, status: 500, error: 'The roadmap engine hit a snag. Try again, or email sarah@modernmustardseed.com.' };
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Shared plumbing, for engines that are not "read a website"                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Generate a roadmap from a brief instead of a site scrape.
+ *
+ * HUNDREDFOLD's deep roadmap is built from a thirty-question voice interview,
+ * which is far better input than a homepage. It must still be the SAME
+ * document: same sections, same gates, same renderer, so a member can lay the
+ * free roadmap and the deep one side by side and see what the interview bought
+ * them. That only stays true if both go through this one prompt.
+ *
+ * `extra` appends rules for the caller's situation without forking the prompt.
+ */
+export async function runRoadmapFromBrief(
+  brief: string,
+  opts: { effort?: RoadmapEffort; deadlineMs?: number; label?: string; extra?: string } = {}
+): Promise<{ ok: true; report: RoadmapReport; model: string } | { ok: false; status: number; error: string }> {
+  const apiKey = process.env.ANTHROPIC_API_KEY?.trim().replace(/\n$/, '');
+  if (!apiKey) return { ok: false, status: 500, error: 'The roadmap engine is not configured.' };
+
+  const deadline = Date.now() + (opts.deadlineMs ?? 30 * 60_000);
+  const label = opts.label ?? 'roadmap-from-brief';
+  const userMessage = `${brief}\n\n${opts.extra ?? ''}\n\nReturn the JSON roadmap.`;
+
+  try {
+    const anthropic = new Anthropic({ apiKey });
+    const attempt = async (model: string) => {
+      const response = await anthropic.messages
+        .stream({
+          model,
+          max_tokens: 24000,
+          output_config: { effort: opts.effort ?? 'high' },
+          system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
+          messages: [{ role: 'user', content: `${userMessage}\n\n---\n\n${SCHEMA_INSTRUCTIONS}` }],
+        })
+        .finalMessage();
+
+      if (response.stop_reason === 'max_tokens') {
+        throw new MalformedReport('roadmap hit the max_tokens ceiling and was cut off');
+      }
+      const textBlock = response.content.find((b) => b.type === 'text');
+      if (!textBlock || textBlock.type !== 'text') throw new MalformedReport('no text block in response');
+      let parsed: RoadmapReport;
+      try {
+        parsed = extractJson(textBlock.text, REPORT_SCHEMA, label) as RoadmapReport;
+      } catch (err) {
+        throw new MalformedReport(err instanceof Error ? err.message : 'roadmap was not valid JSON');
+      }
+      return finalize(parsed);
+    };
+
+    const { value, model } = await withModelFallback(attempt, deadline);
+    return { ok: true, report: value, model };
+  } catch (err) {
+    if (err instanceof Anthropic.APIError && (/credit balance|billing/i.test(err.message) || err.status === 401)) {
+      console.error(`${label}: ANTHROPIC ACCOUNT PROBLEM:`, err.message);
+      return { ok: false, status: 503, error: 'The roadmap engine is down for maintenance.' };
+    }
+    console.error(`${label}: failed`, err instanceof Error ? err.message : err);
+    return { ok: false, status: 500, error: 'The roadmap engine hit a snag.' };
+  }
+}

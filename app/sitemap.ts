@@ -42,6 +42,7 @@ const STATIC_PATHS = [
   '/demos',
   '/website-audit',
   '/scaling-roadmap',
+  '/hundredfold',
   '/launch-checklist',
   '/prompt-playbook',
   '/ai-proof',
@@ -66,7 +67,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/book'
         ? 1.0
-        : path === '/talking-website' || path === '/ads' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/voice-agents/forge' || path === '/pictures' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/one-person-business' || path === '/the-terminal' || path === '/idea-to-spec' || path === '/scaling-roadmap'
+        : path === '/talking-website' || path === '/ads' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/voice-agents/forge' || path === '/pictures' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/one-person-business' || path === '/the-terminal' || path === '/idea-to-spec' || path === '/scaling-roadmap' || path === '/hundredfold'
           ? 0.95
           : path === '/work' || path === '/audit' || path === '/comic' || path === '/launch-checklist' || path === '/prompt-playbook'
             ? 0.9

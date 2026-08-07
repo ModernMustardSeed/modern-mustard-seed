@@ -33,6 +33,7 @@ const MENU_GROUPS = [
   {
     heading: 'Programs',
     links: [
+      { label: 'Hundredfold', href: '/hundredfold' },
       { label: 'Seed to System', href: '/seed-to-system' },
       { label: 'One-Person Business Class', href: '/one-person-business' },
       { label: 'Idea to Spec', href: '/idea-to-spec' },
@@ -72,6 +73,7 @@ const MENU_GROUPS = [
 // discoverable. Restore these four rows (plus the Footer, sitemap, services-hub,
 // llms.txt, front-desk, quotable, and comic entries) to bring them back.
 const DEPARTMENTS = [
+  { name: 'HUNDREDFOLD', tag: 'THE FLAGSHIP SCALING PROGRAM', href: '/hundredfold' },
   { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
