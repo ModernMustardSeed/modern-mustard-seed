@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { getSupabase } from '@/lib/supabase';
 import { sendViaResend } from '@/lib/send-email';
 import { clientEmail, escape } from '@/lib/email';
+import { mailable } from '@/lib/hundredfold-drip';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -151,7 +152,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
     .eq('id', system.member_id)
     .maybeSingle();
 
-  if (member?.email) {
+  // ⚠️ Skip the notify for an address we should never mail. The Whitaker demo
+  // runs on a .demo address, and Resend accepts an undeliverable address and
+  // then bounces it, which spends real sender reputation on a fictional med
+  // spa. Deliverability here is already carried on one domain shared with
+  // receipts and client delivery, so it is not a reputation to donate.
+  if (member?.email && mailable(member.email)) {
     const rows = Object.entries(payload)
       .map(
         ([k, v]) =>
