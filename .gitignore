@@ -64,3 +64,7 @@ backups/
 # Local team login credentials written by scripts/setup-team.mjs (never commit)
 .team-credentials.json
 scripts/.cache/
+
+# Working files for the Mr. Mustard call ad (takes, renders, screen captures).
+# The rig lives in scripts/mustard-ad; only the finished cut is committed.
+.mustard-ad/
