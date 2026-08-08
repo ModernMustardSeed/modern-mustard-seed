@@ -27,33 +27,47 @@
       "src": "/tour/journey/02-signs.mp3"
     },
     {
+      "id": "square",
+      "anchor": "tour-square",
+      "text": "Pull over a second, because this is the part nobody tells you. The town square moved onto the internet, and being found in it is its own trade. We wire up your Google Business Profile, we collect and answer your reviews for you, and we put the same true facts about you everywhere people look now, right down to the AI they ask instead of searching. Then the quieter half: one obvious next move on every page, and a follow up that runs without you. All of it inside a Talking Website, and none of it a line item.",
+      "ms": 28320,
+      "src": "/tour/journey/03-square.mp3"
+    },
+    {
       "id": "gate",
       "anchor": "tour-gate",
       "text": "There it is. The gate at Mustard Seed Ranch. Everything this studio does comes from one verse about one seed, and this is the ground where we plant it.",
       "ms": 8904,
-      "src": "/tour/journey/03-gate.mp3"
+      "src": "/tour/journey/04-gate.mp3"
     },
     {
       "id": "planting",
       "anchor": "tour-planting",
       "text": "The smallest seed in the field. That is how every great business starts. Including yours.",
       "ms": 5808,
-      "src": "/tour/journey/04-planting.mp3"
+      "src": "/tour/journey/05-planting.mp3"
     },
     {
       "id": "tree",
       "anchor": "tour-tree",
       "text": "And this is how it grows. A tree the birds come home to. Your customers, your calls, your bookings, all finding their way back to you, day and night.",
       "ms": 9624,
-      "src": "/tour/journey/05-tree.mp3"
+      "src": "/tour/journey/06-tree.mp3"
+    },
+    {
+      "id": "reviews",
+      "anchor": "tour-reviews",
+      "text": "Before you go, the word around town. This is real, and it lives on Google, where we cannot edit a word of it. And the review system running underneath it is the same one we install for you.",
+      "ms": 11304,
+      "src": "/tour/journey/07-reviews.mp3"
     },
     {
       "id": "doors",
       "anchor": "tour-doors",
       "text": "Four doors, and every one of them is open. Press the gold button in the corner and talk to Mr. Mustard right now. He can answer anything about how this works, show you a live demo, forge a custom demo for your business while you watch, or book you straight onto Sarah’s calendar. The drive is over. The growing starts now.",
       "ms": 18096,
-      "src": "/tour/journey/06-doors.mp3"
+      "src": "/tour/journey/08-doors.mp3"
     }
   ],
-  "totalMs": 83112
+  "totalMs": 122736
 }

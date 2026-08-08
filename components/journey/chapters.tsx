@@ -324,6 +324,129 @@ export function JourneySigns() {
 }
 
 /* ------------------------------------------------------------------ */
+/* MI 47 · The Town Square                                             */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Sarah 2026-08-08: *"add into the audio tour and the page how we connect it to
+ * your google business profile and optimize and get you seen in the social
+ * square called the internet... but go into cro and funnels and things as well
+ * that are all baked into the talking sites."*
+ *
+ * The honest framing matters here. GBP discovery is category-gated and Kalispell
+ * is 26K people ([[mms-seo-indexing]]), so nothing on this page promises a rank
+ * or a position. It promises the work: the profile wired correctly, the reviews
+ * asked for and answered, the same facts published everywhere the square looks,
+ * and the conversion path measured. All of it inside the build, not billed after.
+ */
+const SQUARE = [
+  {
+    tag: 'Google',
+    label: 'Your Google Profile, Wired In',
+    line:
+      'We claim it or clean it up, then set the categories that actually decide which searches you are eligible for. Services written, photos loaded, hours and phone and address matching the site exactly, because matching is the part Google checks.',
+  },
+  {
+    tag: 'Reviews',
+    label: 'Your Reviews, Handled For You',
+    line:
+      'We ask while the work is still warm, with a link that opens the review box in one tap instead of four. Then we answer every review that lands, the glowing ones and the hard ones. Nothing scripted, nothing paid for, nothing fake.',
+  },
+  {
+    tag: 'The Square',
+    label: 'Seen All Over The Square',
+    line:
+      'One set of true facts about your business, published everywhere people look now: Google, Bing, Apple Maps, and the AI assistants they ask instead of searching. When every source agrees, you are easier to find and far easier to believe.',
+  },
+  {
+    tag: 'CRO',
+    label: 'The Path To The Button',
+    line:
+      'Every page gets exactly one obvious next move, and everything between a visitor and that move gets taken out of the way. We watch what people actually click, then keep moving things until more of them press it.',
+  },
+  {
+    tag: 'Funnels',
+    label: 'The Follow Up Runs Itself',
+    line:
+      'Most people are not ready on the first visit. So there is something free worth having, an email that shows up on its own, a missed call that texts back in seconds, and a booking link that never sleeps.',
+  },
+  {
+    tag: 'Proof',
+    label: 'The Numbers, In Plain English',
+    line:
+      'Your command center shows calls answered, forms filled, reviews collected, and where every one of them came from. Written in sentences, not charts you have to decode.',
+  },
+];
+
+export function JourneySquare() {
+  const ref = useReveal<HTMLDivElement>();
+  return (
+    <section
+      id="tour-square"
+      data-journey-chapter="The Town Square"
+      data-mile="MI 47"
+      className="relative bg-[#FBF6EA] border-y-2 border-[#161616] py-24 md:py-32 overflow-hidden"
+    >
+      {/* Faint street grid, the square underfoot. */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.055]"
+        aria-hidden
+        style={{
+          backgroundImage:
+            'linear-gradient(#161616 1px, transparent 1px), linear-gradient(90deg, #161616 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
+        }}
+      />
+      <div ref={ref} className="group relative mx-auto max-w-7xl px-6">
+        <div className="text-center">
+          <Mile label="MI 47 · The Town Square" />
+          <h2
+            className={`${anton.className} mt-5 uppercase text-[#161616] leading-[0.95] ${revealBase}`}
+            style={{ fontSize: 'clamp(38px,5.6vw,84px)' }}
+          >
+            Every Town Square
+            <br />
+            Moved Online
+          </h2>
+          <p className={`mx-auto mt-5 max-w-2xl text-lg text-[#161616]/80 ${revealBase}`} style={{ transitionDelay: '110ms' }}>
+            There used to be one square where the whole town could see you. Now the square is the
+            internet, everybody is standing in it holding a phone, and being findable there is its
+            own trade. We do that trade. It comes inside the build.
+          </p>
+        </div>
+        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {SQUARE.map((s, i) => (
+            <div
+              key={s.label}
+              className={`relative flex flex-col border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#F5B700] ${revealBase}`}
+              style={{ transitionDelay: `${150 + i * 80}ms` }}
+            >
+              <span className="absolute -top-3 left-5 border-2 border-[#161616] bg-[#F5B700] px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#161616] shadow-[2px_2px_0_0_#161616]">
+                {s.tag}
+              </span>
+              <span className="mt-2 font-display text-xl font-extrabold leading-tight text-[#161616]">{s.label}</span>
+              <p className="mt-2.5 flex-1 text-[15px] leading-relaxed text-[#161616]/75">{s.line}</p>
+            </div>
+          ))}
+        </div>
+        <div className={`mt-12 text-center ${revealBase}`} style={{ transitionDelay: '640ms' }}>
+          <p className={`${caveat.className} text-2xl text-[#161616]/80`}>
+            all of it standard on a Talking Website, none of it a line item
+          </p>
+          <Link
+            href="/talking-website"
+            onClick={() => track('journey_square', { to: 'talking-website' })}
+            className="mt-5 inline-block border-2 border-[#161616] bg-[#F5B700] px-6 py-3 font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#161616]"
+          >
+            See What Is Baked In
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* MI 68 · The Gate                                                    */
 /* ------------------------------------------------------------------ */
 

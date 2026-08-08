@@ -2,11 +2,12 @@ import DemoForgeStrip from '@/components/home/DemoForgeStrip';
 import ProofBand from '@/components/home/ProofBand';
 import JourneyRig from '@/components/journey/JourneyRig';
 import JourneyTour from '@/components/journey/JourneyTour';
-import HundredfoldBand from '@/components/home/HundredfoldBand';
+import GoogleReviews from '@/components/home/GoogleReviews';
 import {
   JourneyHero,
   JourneyOrchard,
   JourneySigns,
+  JourneySquare,
   JourneyGate,
   JourneyPlanting,
   JourneyTree,
@@ -130,13 +131,17 @@ export default function HomePage() {
         <JourneyHero />
         <JourneyOrchard />
         <JourneySigns />
+        {/* MI 47. How a business gets found and gets chosen: the Google profile,
+            the reviews, the AI answers, the conversion path, the follow up. */}
+        <JourneySquare />
         <JourneyGate />
-        <HundredfoldBand />
         <div className="border-b-2 border-[#161616]">
           <ProofBand />
         </div>
         <JourneyPlanting />
         <JourneyTree />
+        {/* Real Google reviews sit directly in front of the ask. */}
+        <GoogleReviews />
         <JourneyDoors />
         <section className="relative bg-[#F5F0E8] border-t-2 border-[#161616] py-20 md:py-28">
           <div className="relative max-w-3xl mx-auto px-6">

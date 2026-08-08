@@ -37,6 +37,14 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
       'The Talking Website, voice sidekicks, commercials, and free tools you can try before you spend a single dollar.',
   },
   {
+    id: 'square',
+    anchor: 'tour-square',
+    text:
+      'Pull over a second, because this is the part nobody tells you. The town square moved onto the internet, and being found in it is its own trade. ' +
+      'We wire up your Google Business Profile, we collect and answer your reviews for you, and we put the same true facts about you everywhere people look now, right down to the AI they ask instead of searching. ' +
+      'Then the quieter half: one obvious next move on every page, and a follow up that runs without you. All of it inside a Talking Website, and none of it a line item.',
+  },
+  {
     id: 'gate',
     anchor: 'tour-gate',
     text:
@@ -55,6 +63,17 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
     text:
       'And this is how it grows. A tree the birds come home to. ' +
       'Your customers, your calls, your bookings, all finding their way back to you, day and night.',
+  },
+  // ⚠️ NO COMMENTS INSIDE A BEAT OBJECT. build-journey.mjs matches
+  // `id` then `anchor` then `text` with \s* between them, so a comment line in
+  // the middle drops the whole beat from the render with no error at all.
+  // Caught 2026-08-08 when this stop rendered as eight beats instead of nine.
+  {
+    id: 'reviews',
+    anchor: 'tour-reviews',
+    text:
+      'Before you go, the word around town. This is real, and it lives on Google, where we cannot edit a word of it. ' +
+      'And the review system running underneath it is the same one we install for you.',
   },
   {
     id: 'doors',

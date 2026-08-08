@@ -64,6 +64,11 @@ export default function SiteTour({
   const [index, setIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const indexRef = useRef(0);
+  /** Cancels whatever glide is in flight. Only one camera move at a time. */
+  const glideRef = useRef<(() => void) | null>(null);
+  /** Bumps whenever the tour stops or restarts, so a settled glide from the
+   *  previous run cannot wake up and start talking over the new one. */
+  const runRef = useRef(0);
 
   useEffect(() => {
     if (!url) return;
@@ -100,16 +105,19 @@ export default function SiteTour({
    * words the hostess was reading sat below the fold. Scroll to the section's
    * first heading instead, and pay back whatever a fixed header is covering.
    */
-  const scrollTo = useCallback((anchor: string) => {
+  const glideTo = useCallback((anchor: string): Promise<void> => {
     // With a frame we drive the embedded site; without one this page IS the
     // site, so the tour scrolls the real window.
     const doc = frame ? frame.current?.contentDocument : document;
     const win = frame ? doc?.defaultView : window;
-    if (!doc || !win) return;
-    if (anchor === 'top') { win.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if (!doc || !win) return Promise.resolve();
+
+    const settle = (top: number) => glide(win, top);
+
+    if (anchor === 'top') return settle(0);
 
     const section = doc.getElementById(anchor);
-    if (!section) return;
+    if (!section) return Promise.resolve();
     let target: Element = section.querySelector('h1, h2, h3') || section;
     // Take the eyebrow with the heading. Sections label themselves with a short
     // line above the h2 ("WHAT WE LIGHT"), and anchoring on the heading alone
@@ -131,13 +139,91 @@ export default function SiteTour({
     }
 
     const top = win.scrollY + target.getBoundingClientRect().top - headerH - Math.round(win.innerHeight * 0.06);
-    win.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    return settle(Math.max(0, top));
+
+    /**
+     * THE CAMERA MOVE. Sarah, 2026-08-08: *"make the audio tour a little more
+     * fluid on mms site, it bounces around a bit and i dont love that."*
+     *
+     * Three things were causing the bounce, and this replaces all of them:
+     *
+     * 1. `behavior:'smooth'` runs at roughly ONE duration no matter the
+     *    distance, so a hop between neighbours crawled and a flight across
+     *    three full-screen chapters whipped. Here the duration scales with the
+     *    distance and then caps, so every move reads like the same camera.
+     * 2. It fired and the clip started talking in the same tick, so the visitor
+     *    heard the sentence about a section while still flying past two others.
+     *    This resolves near the end of the move, and `playFrom` waits on it.
+     * 3. Landing a few pixels off a section you are already looking at reads as
+     *    a twitch, not a move. Under an eighth of a screen, do not move at all.
+     *
+     * A human touching the wheel wins instantly: we cancel and let them drive.
+     * Fighting a visitor for the scrollbar is the worst bounce of them all.
+     */
+    function glide(w: Window, to: number): Promise<void> {
+      glideRef.current?.();
+      const from = w.scrollY;
+      const dist = to - from;
+      if (Math.abs(dist) < w.innerHeight * 0.12) return Promise.resolve();
+      if (w.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        w.scrollTo({ top: to, behavior: 'instant' });
+        return Promise.resolve();
+      }
+
+      // Long enough to read as a drive, short enough that she is not waiting.
+      const ms = Math.min(1500, Math.max(620, Math.abs(dist) * 0.72));
+      // She may start speaking just before the wheels stop. Arriving in silence
+      // feels like a stall; arriving as she starts feels like one gesture.
+      const speakAt = ms * 0.74;
+
+      return new Promise<void>((resolve) => {
+        const t0 = performance.now();
+        let raf = 0;
+        let spoken = false;
+        const done = () => {
+          w.cancelAnimationFrame(raf);
+          w.removeEventListener('wheel', abort);
+          w.removeEventListener('touchstart', abort);
+          w.removeEventListener('keydown', abort);
+          glideRef.current = null;
+          if (!spoken) { spoken = true; resolve(); }
+        };
+        function abort() { done(); }
+        const step = (now: number) => {
+          const p = Math.min(1, (now - t0) / ms);
+          // easeInOutCubic: pulls away and settles, no hard stop at either end.
+          const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+          // ⚠️ 'instant', NEVER 'auto'. Per CSSOM-View, behavior:'auto' means
+          // "defer to the element's CSS scroll-behavior", and globals.css sets
+          // that to smooth. So an 'auto' scrollTo per frame kicks off a fresh
+          // browser easing sixty times a second, each one chasing the last:
+          // the scroll lags, overshoots, and reverses. Measured in a harness
+          // 2026-08-08: 'auto' gave 10 direction reversals and landed 5,600px
+          // short of the target; 'instant' gives 0 reversals and lands exactly.
+          // That mismatch IS the bounce Sarah saw.
+          w.scrollTo({ top: Math.round(from + dist * e), behavior: 'instant' });
+          if (!spoken && now - t0 >= speakAt) { spoken = true; resolve(); }
+          if (p < 1) raf = w.requestAnimationFrame(step);
+          else done();
+        };
+        glideRef.current = done;
+        // Passive listeners: we are only watching for the human, never blocking.
+        w.addEventListener('wheel', abort, { passive: true, once: true });
+        w.addEventListener('touchstart', abort, { passive: true, once: true });
+        w.addEventListener('keydown', abort, { once: true });
+        raf = w.requestAnimationFrame(step);
+      });
+    }
   }, [frame]);
 
   const stop = useCallback((markSeen: boolean) => {
     const a = audioRef.current;
     if (a) { a.pause(); a.src = ''; }
     audioRef.current = null;
+    // Kill the camera too. Stopping the voice while the page kept flying was
+    // its own kind of broken.
+    glideRef.current?.();
+    runRef.current += 1;
     setPlaying(false);
     setInvited(false);
     if (markSeen) {
@@ -149,26 +235,33 @@ export default function SiteTour({
   // The agent always wins. Stop mid-word, and do not come back.
   useEffect(() => { if (voiceBusy && playing) stop(true); }, [voiceBusy, playing, stop]);
   useEffect(() => { onActiveChange?.(playing || invited); }, [playing, invited, onActiveChange]);
-  useEffect(() => () => { audioRef.current?.pause(); }, []);
+  useEffect(() => () => { audioRef.current?.pause(); glideRef.current?.(); }, []);
 
   const playFrom = useCallback((i: number) => {
     if (!tour || i >= tour.beats.length) { stop(true); return; }
     indexRef.current = i;
     setIndex(i);
-    scrollTo(tour.beats[i].anchor);
-    const a = audioRef.current ?? new Audio();
-    audioRef.current = a;
-    a.src = tour.beats[i].src;
-    a.onended = () => {
-      // A short breath between stops, so the scroll lands before she speaks.
-      window.setTimeout(() => playFrom(indexRef.current + 1), 550);
-    };
-    // If the clip will not load, keep the tour moving rather than hanging.
-    a.onerror = () => window.setTimeout(() => playFrom(indexRef.current + 1), 200);
-    a.play().then(() => setPlaying(true)).catch(() => stop(false));
-  }, [tour, scrollTo, stop]);
+    // Drive first, THEN talk. The glide resolves as the page settles, so the
+    // sentence about a section arrives while that section is on screen instead
+    // of somewhere over the two chapters we flew past to get here.
+    const run = runRef.current;
+    glideTo(tour.beats[i].anchor).then(() => {
+      if (run !== runRef.current) return; // stopped, or restarted, mid-glide
+      const a = audioRef.current ?? new Audio();
+      audioRef.current = a;
+      a.src = tour.beats[i].src;
+      a.onended = () => {
+        // A breath between stops. Shorter than it was, because the glide now
+        // carries its own pause instead of racing the voice.
+        window.setTimeout(() => { if (run === runRef.current) playFrom(indexRef.current + 1); }, 320);
+      };
+      // If the clip will not load, keep the tour moving rather than hanging.
+      a.onerror = () => window.setTimeout(() => { if (run === runRef.current) playFrom(indexRef.current + 1); }, 200);
+      a.play().then(() => setPlaying(true)).catch(() => stop(false));
+    });
+  }, [tour, glideTo, stop]);
 
-  const start = () => { setInvited(false); playFrom(0); };
+  const start = () => { setInvited(false); runRef.current += 1; playFrom(0); };
 
   const theme = useMemo(() => {
     const bg = tour?.palette?.bg || '#0b0f14';
@@ -179,6 +272,8 @@ export default function SiteTour({
   if (!tour) return null;
 
   const beat = tour.beats[index];
+  const secs = Math.round(tour.totalMs / 1000);
+  const runtime = secs < 95 ? `${secs} second` : `${Math.round(secs / 30) / 2} minute`;
 
   return (
     // z-[80]: above the journey's letterbox (60), flock (55), and rail (70).
@@ -232,7 +327,10 @@ export default function SiteTour({
             {invite?.line ?? 'Welcome. Would you like me to show you around?'}
           </p>
           <p className="mt-1 text-[12px]" style={{ color: theme.dim }}>
-            A {Math.round(tour.totalMs / 1000)} second tour, out loud. Turn your sound on.
+            {/* Past a minute and a half, seconds stop reading as a length and
+                start reading as a number. "A 123 second tour" is a commitment
+                the visitor has to do arithmetic on. */}
+            A {runtime} tour, out loud. Turn your sound on.
           </p>
           <button
             onClick={start}
