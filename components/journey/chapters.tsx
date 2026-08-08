@@ -113,23 +113,27 @@ export function JourneyHero() {
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <Footage src="/journey/drive.mp4" poster="/journey/poster-drive.jpg" dim={0.3} />
-        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
+        {/* Sarah 2026-08-07: the headline was sitting on Mr. and Mrs. Mustard's
+            faces (they ride center-left of the footage). Desktop: the copy
+            moves to the open water on the RIGHT, vertically centered. Mobile:
+            it anchors to the bottom, under their faces. They stay the stars. */}
+        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-end px-6 pb-28 text-center lg:items-end lg:justify-center lg:pb-0 lg:pr-[6vw] lg:text-right">
           <span className={`${caveat.className} text-2xl md:text-3xl text-[#FFDD55] rotate-[-2deg] ${revealBase}`} data-in-stagger>
             Flathead Lake, Montana
           </span>
           <h1
             className={`${anton.className} mt-4 uppercase leading-[0.92] text-transparent ${revealBase}`}
-            style={{ WebkitTextStroke: '2.5px #FBF6EA', fontSize: 'clamp(64px, 11vw, 176px)', transitionDelay: '120ms' }}
+            style={{ WebkitTextStroke: '2.5px #FBF6EA', fontSize: 'clamp(52px, 8.5vw, 136px)', transitionDelay: '120ms' }}
           >
             Come For
             <br />
             A Drive
           </h1>
-          <p className={`mt-6 max-w-2xl text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
+          <p className={`mt-6 max-w-2xl lg:max-w-xl text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
             Websites that talk, voice agents that answer, and the command centers that run them.
             Live in about a week. This is Modern Mustard Seed, and this is the scenic route.
           </p>
-          <div className={`mt-9 flex flex-wrap items-center justify-center gap-4 ${revealBase}`} style={{ transitionDelay: '360ms' }}>
+          <div className={`mt-9 flex flex-wrap items-center justify-center gap-4 lg:justify-end ${revealBase}`} style={{ transitionDelay: '360ms' }}>
             <a
               href="#tour-orchard"
               className="bg-[#F5B700] text-[#161616] font-bold border-2 border-[#161616] px-7 py-3.5 shadow-[4px_4px_0_0_#161616] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#161616] transition-all"
