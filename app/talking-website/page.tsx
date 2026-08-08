@@ -41,7 +41,7 @@ const PIECES = [
     icon: '🌐',
     name: 'The website',
     price: `${formatUsd(site.setupCents)} + ${formatUsd(site.monthlyCents)}/mo on its own`,
-    desc: 'Custom design for your trade and your town, funnels and a lead magnet live on day one, SEO and GEO baked in. Your domain, hosting, and care handled.',
+    desc: 'Custom design for your trade and your town, funnels and a lead magnet live on day one, SEO and GEO baked in. We wire up your Google Business Profile and handle your reviews. Your domain, hosting, and care handled.',
   },
   {
     icon: '☎️',
@@ -359,6 +359,11 @@ export default function TalkingWebsitePage() {
                   'Voice agent on your real number, 24/7',
                   'Command center free inside it',
                   'Funnels, lead magnet, SEO and GEO',
+                  // The homepage Town Square (MI 47) promises both of these by
+                  // name. The flagship page has to say so too, or the CTA that
+                  // sends people here to "see what is baked in" is a dead end.
+                  'Google Business Profile set up and tuned',
+                  'Your reviews collected and answered',
                   'Domain, hosting, and care handled',
                   'You own the code and every account',
                 ].map((f) => (
