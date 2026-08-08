@@ -41,10 +41,20 @@ const STATUS_STYLE: Record<string, string> = {
 /** Interviewed first. That row is a person waiting for a plan. */
 const HEAT = ['interviewed', 'offered', 'interviewing', 'active', 'applicant', 'paused', 'alumni', 'declined'];
 
+type DripPass = { sent: number; due: number; skipped: number; unwritable: number };
+type DripReport = {
+  roadmap: DripPass;
+  interview: DripPass;
+  needsAHuman: { kind: string; label: string; email: string; why: string; ageDays: number }[];
+  touches: { roadmap: number; interview: number };
+  previewMember: string;
+};
+
 export default function HundredfoldDesk() {
   const [members, setMembers] = useState<Member[]>([]);
   const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [drip, setDrip] = useState<DripReport | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -62,6 +72,17 @@ export default function HundredfoldDesk() {
 
   useEffect(() => {
     void load();
+    // The drip is the one send path nobody reads over the shoulder of, so its
+    // state is on the desk rather than buried in a cron log.
+    void (async () => {
+      try {
+        const res = await fetch('/api/admin/hundredfold/drip');
+        const data = await res.json();
+        if (data.ok) setDrip(data as DripReport);
+      } catch {
+        /* the desk still works without it */
+      }
+    })();
   }, []);
 
   const sorted = [...members].sort((a, b) => {
@@ -118,6 +139,91 @@ export default function HundredfoldDesk() {
               </span>
             ))}
           </div>
+        )}
+
+        {drip && (
+          <section className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 md:p-6 mb-6">
+            <div className="flex flex-wrap items-baseline justify-between gap-3 mb-3">
+              <div>
+                <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#C4160B] mb-1.5">
+                  The Drip
+                </span>
+                <h2 className="font-display text-xl font-black tracking-tight">Follow-up, written from their own roadmap</h2>
+              </div>
+              <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#161616]/50">
+                Weekdays 9:30am MT
+              </span>
+            </div>
+            <p className="text-sm font-body text-[#161616]/70 leading-relaxed mb-4 max-w-3xl">
+              Two sequences. Roadmap takers who did not come back get {drip.touches.roadmap} letters, people who finished
+              the interview and did not join get {drip.touches.interview}. Every letter quotes their constraint, their
+              gate, and their first move. A row with nothing personal to say is never mailed, it lands in the list below.
+            </p>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              {[
+                { label: 'Roadmap, due now', value: drip.roadmap.due },
+                { label: 'Interview, due now', value: drip.interview.due },
+                { label: 'Held back, not writable', value: drip.roadmap.unwritable + drip.interview.unwritable },
+                { label: 'Need a person', value: drip.needsAHuman.length },
+              ].map((s) => (
+                <div key={s.label} className="bg-[#FFFDF6] border border-[#161616]/15 rounded-xl px-4 py-3">
+                  <span className="block text-[9px] uppercase tracking-[0.24em] font-mono font-bold text-[#161616]/50 mb-1">
+                    {s.label}
+                  </span>
+                  <span className="font-display text-2xl font-black">{s.value}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-1">
+              <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#161616]/50 self-center mr-1">
+                Read the letters
+              </span>
+              {Array.from({ length: drip.touches.roadmap }, (_, i) => (
+                <a
+                  key={`r${i}`}
+                  href={`/api/admin/hundredfold/drip?preview=roadmap:${i}&member=${drip.previewMember}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded border-2 border-[#161616] bg-white text-[10px] uppercase tracking-[0.18em] font-mono font-bold hover:bg-[#F5B700]"
+                >
+                  Roadmap {i + 1}
+                </a>
+              ))}
+              {Array.from({ length: drip.touches.interview }, (_, i) => (
+                <a
+                  key={`i${i}`}
+                  href={`/api/admin/hundredfold/drip?preview=interview:${i}&member=${drip.previewMember}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded border-2 border-[#161616] bg-[#F5B700]/25 text-[10px] uppercase tracking-[0.18em] font-mono font-bold hover:bg-[#F5B700]"
+                >
+                  Interview {i + 1}
+                </a>
+              ))}
+            </div>
+            <p className="text-[11px] font-body text-[#161616]/45 mt-2">Preview only. Opening one sends nothing.</p>
+
+            {drip.needsAHuman.length > 0 && (
+              <div className="mt-5 border-t border-[#161616]/10 pt-4">
+                <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#C4160B] mb-2">
+                  The robot will not write these. You should.
+                </span>
+                <ul className="space-y-1.5">
+                  {drip.needsAHuman.slice(0, 12).map((n) => (
+                    <li key={`${n.kind}-${n.email}`} className="text-[13px] font-body text-[#161616]/75">
+                      <strong className="font-sans font-extrabold">{n.label}</strong>{' '}
+                      <span className="font-mono text-[11px] text-[#161616]/50">{n.email}</span>{' '}
+                      <span className="text-[#161616]/55">
+                        · {n.why} ({n.ageDays}d)
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
         )}
 
         <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] overflow-hidden">

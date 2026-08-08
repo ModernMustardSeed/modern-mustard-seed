@@ -56,6 +56,10 @@
     {
       "path": "/api/cron/deliver",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/hundredfold-drip",
+      "schedule": "30 15 * * 1-5"
     }
   ]
 }
