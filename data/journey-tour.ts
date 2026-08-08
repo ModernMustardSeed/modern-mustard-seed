@@ -68,13 +68,18 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
   // `id` then `anchor` then `text` with \s* between them, so a comment line in
   // the middle drops the whole beat from the render with no error at all.
   // Caught 2026-08-08 when this stop rendered as eight beats instead of nine.
-  {
-    id: 'reviews',
-    anchor: 'tour-reviews',
-    text:
-      'Before you go, the word around town. This is real, and it lives on Google, where we cannot edit a word of it. ' +
-      'And the review system running underneath it is the same one we install for you.',
-  },
+  // Parked 2026-08-08 with the review band itself. Ava cannot narrate "the word
+  // around town" over a section that is not on the page, so this beat comes out
+  // and goes back in together with <GoogleReviews /> in app/page.tsx. Both the
+  // matcher above and its declared-id count skip `//` lines, so this stays
+  // invisible to build-journey.mjs until the slashes come off.
+  // {
+  //   id: 'reviews',
+  //   anchor: 'tour-reviews',
+  //   text:
+  //     'Before you go, the word around town. This is real, and it lives on Google, where we cannot edit a word of it. ' +
+  //     'And the review system running underneath it is the same one we install for you.',
+  // },
   {
     id: 'doors',
     anchor: 'tour-doors',

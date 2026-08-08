@@ -55,13 +55,6 @@
       "src": "/tour/journey/06-tree.mp3"
     },
     {
-      "id": "reviews",
-      "anchor": "tour-reviews",
-      "text": "Before you go, the word around town. This is real, and it lives on Google, where we cannot edit a word of it. And the review system running underneath it is the same one we install for you.",
-      "ms": 11304,
-      "src": "/tour/journey/07-reviews.mp3"
-    },
-    {
       "id": "doors",
       "anchor": "tour-doors",
       "text": "Four doors, and every one of them is open. Press the gold button in the corner and talk to Mr. Mustard right now. He can answer anything about how this works, show you a live demo, forge a custom demo for your business while you watch, or book you straight onto Sarah’s calendar. The drive is over. The growing starts now.",
@@ -69,5 +62,5 @@
       "src": "/tour/journey/08-doors.mp3"
     }
   ],
-  "totalMs": 122736
+  "totalMs": 111432
 }

@@ -2,7 +2,10 @@ import DemoForgeStrip from '@/components/home/DemoForgeStrip';
 import ProofBand from '@/components/home/ProofBand';
 import JourneyRig from '@/components/journey/JourneyRig';
 import JourneyTour from '@/components/journey/JourneyTour';
-import GoogleReviews from '@/components/home/GoogleReviews';
+// Parked 2026-08-08 at Sarah's request: hide the review band until there is
+// more than one review to show. Uncomment this and the <GoogleReviews /> tag
+// below, plus the 'reviews' beat in data/journey-tour.ts, to bring it back.
+// import GoogleReviews from '@/components/home/GoogleReviews';
 import {
   JourneyHero,
   JourneyOrchard,
@@ -140,8 +143,9 @@ export default function HomePage() {
         </div>
         <JourneyPlanting />
         <JourneyTree />
-        {/* Real Google reviews sit directly in front of the ask. */}
-        <GoogleReviews />
+        {/* Real Google reviews sit directly in front of the ask. Parked until
+            there is more than one; see the note on the import above. */}
+        {/* <GoogleReviews /> */}
         <JourneyDoors />
         <section className="relative bg-[#F5F0E8] border-t-2 border-[#161616] py-20 md:py-28">
           <div className="relative max-w-3xl mx-auto px-6">
