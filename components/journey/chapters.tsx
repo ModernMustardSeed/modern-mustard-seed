@@ -47,8 +47,12 @@ function useReveal<T extends HTMLElement>() {
   return ref;
 }
 
-/** Full-bleed footage that only plays on screen and never plays under reduced motion. */
-function Footage({ src, poster, className = '', dim = 0.25 }: { src: string; poster: string; className?: string; dim?: number }) {
+/**
+ * Full-bleed footage that only plays on screen and never plays under reduced motion.
+ * `mediaClass` rides the video/img itself, which is how a chapter moves the crop's
+ * focal point (a portrait phone window is a narrow slice of a 16:9 frame).
+ */
+function Footage({ src, poster, className = '', dim = 0.25, mediaClass = '' }: { src: string; poster: string; className?: string; dim?: number; mediaClass?: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [still, setStill] = useState(false);
   useEffect(() => {
@@ -66,9 +70,9 @@ function Footage({ src, poster, className = '', dim = 0.25 }: { src: string; pos
     <div className={`absolute inset-0 overflow-hidden ${className}`} aria-hidden>
       {still ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={poster} alt="" className="h-full w-full object-cover" />
+        <img src={poster} alt="" className={`h-full w-full object-cover ${mediaClass}`} />
       ) : (
-        <video ref={ref} muted loop playsInline preload="metadata" poster={poster} className="h-full w-full object-cover">
+        <video ref={ref} muted loop playsInline preload="metadata" poster={poster} className={`h-full w-full object-cover ${mediaClass}`}>
           <source src={src} type="video/mp4" />
         </video>
       )}
@@ -112,28 +116,39 @@ export function JourneyHero() {
       className="relative h-[132vh] bg-[#0B0B0B]"
     >
       <div className="sticky top-0 h-screen overflow-hidden">
-        <Footage src="/journey/drive.mp4" poster="/journey/poster-drive.jpg" dim={0.3} />
+        <Footage
+          src="/journey/drive.mp4"
+          poster="/journey/poster-drive.jpg"
+          dim={0.3}
+          // Phones see a narrow slice of the 16:9 frame. Centered, that slice cuts
+          // Mr. Mustard in half; 38% puts the two of them mid-window for the whole pan.
+          mediaClass="object-[38%_50%] sm:object-center"
+        />
         {/* Sarah 2026-08-07: the headline was sitting on Mr. and Mrs. Mustard's
             faces (they ride center-left of the footage). Desktop: the copy
-            moves to the open water on the RIGHT, vertically centered. Mobile:
-            it anchors to the bottom, under their faces. They stay the stars. */}
-        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-end px-6 pb-28 text-center lg:items-end lg:justify-center lg:pb-0 lg:pr-[6vw] lg:text-right">
+            moves to the open water on the RIGHT, vertically centered. Phones:
+            the whole invitation drops BELOW their faces, which means smaller
+            type, a shorter line, and one CTA (the launcher pill already offers
+            Mr. Mustard down there). The sticky box hangs ~119px past the fold
+            at rest, so the bottom pad is measured in vh to clear it. */}
+        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-end px-6 pb-[18vh] text-center sm:pb-28 lg:items-end lg:justify-center lg:pb-0 lg:pr-[6vw] lg:text-right">
           <span className={`${caveat.className} text-2xl md:text-3xl text-[#FFDD55] rotate-[-2deg] ${revealBase}`} data-in-stagger>
             Flathead Lake, Montana
           </span>
           <h1
             className={`${anton.className} mt-4 uppercase leading-[0.92] text-transparent ${revealBase}`}
-            style={{ WebkitTextStroke: '2.5px #FBF6EA', fontSize: 'clamp(52px, 8.5vw, 136px)', transitionDelay: '120ms' }}
+            style={{ WebkitTextStroke: '2.5px #FBF6EA', fontSize: 'clamp(44px, 8.5vw, 136px)', transitionDelay: '120ms' }}
           >
             Come For
             <br />
             A Drive
           </h1>
-          <p className={`mt-6 max-w-2xl lg:max-w-xl text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
+          <p className={`mt-4 sm:mt-6 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
             Websites that talk, voice agents that answer, and the command centers that run them.
-            Live in about a week. This is Modern Mustard Seed, and this is the scenic route.
+            Live in about a week.
+            <span className="hidden sm:inline"> This is Modern Mustard Seed, and this is the scenic route.</span>
           </p>
-          <div className={`mt-9 flex flex-wrap items-center justify-center gap-4 lg:justify-end ${revealBase}`} style={{ transitionDelay: '360ms' }}>
+          <div className={`mt-6 sm:mt-9 flex flex-wrap items-center justify-center gap-4 lg:justify-end ${revealBase}`} style={{ transitionDelay: '360ms' }}>
             <a
               href="#tour-orchard"
               className="bg-[#F5B700] text-[#161616] font-bold border-2 border-[#161616] px-7 py-3.5 shadow-[4px_4px_0_0_#161616] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#161616] transition-all"
@@ -143,7 +158,7 @@ export function JourneyHero() {
             </a>
             <button
               onClick={() => openMustard('hero')}
-              className="bg-white/10 backdrop-blur text-[#FBF6EA] font-bold border-2 border-[#FBF6EA] px-7 py-3.5 hover:bg-white/20 transition-colors"
+              className="hidden sm:inline-block bg-white/10 backdrop-blur text-[#FBF6EA] font-bold border-2 border-[#FBF6EA] px-7 py-3.5 hover:bg-white/20 transition-colors"
             >
               Skip Ahead, Talk To Mr. Mustard
             </button>
