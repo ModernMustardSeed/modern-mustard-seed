@@ -850,10 +850,10 @@ const AH_HEADLINE = 'Your phone, answered at 9:47 PM';
 const AH_DESCRIPTION = 'It answers every call, day or night, and books the job.';
 
 const AH_CUTS = [
-  { file: '/ads/after-hours-4x5.mp4', label: '4:5 — Feed (:30)', note: 'Facebook + Instagram feed. The workhorse placement.' },
-  { file: '/ads/after-hours-9x16.mp4', label: '9:16 — Reels + Stories (:30)', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
-  { file: '/ads/after-hours-16x9.mp4', label: '16:9 — In-stream + Google (:30)', note: 'Video feeds, YouTube, Demand Gen, and the site.' },
-  { file: '/ads/after-hours-60s-16x9.mp4', label: '16:9 — The full argument (:60)', note: 'In-feed and Demand Gen only. The strongest cut in the set, see the note below.' },
+  { file: '/ads/after-hours-4x5.mp4', label: '4:5 — Feed (:33)', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/after-hours-9x16.mp4', label: '9:16 — Reels + Stories (:33)', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/after-hours-16x9.mp4', label: '16:9 — In-stream + Google (:33)', note: 'Video feeds, YouTube, Demand Gen, and the site.' },
+  { file: '/ads/after-hours-60s-16x9.mp4', label: '16:9 — The full argument (:63)', note: 'In-feed and Demand Gen only. The strongest cut in the set, see the note below.' },
   { file: '/ads/after-hours-short-9x16.mp4', label: '9:16 — Short cut (:15)', note: 'Reels / Stories / Shorts A-B test and the natural second creative at refresh.' },
 ];
 
