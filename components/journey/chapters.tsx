@@ -131,7 +131,7 @@ export function JourneyHero() {
             type, a shorter line, and one CTA (the launcher pill already offers
             Mr. Mustard down there). The sticky box hangs ~119px past the fold
             at rest, so the bottom pad is measured in vh to clear it. */}
-        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-end px-6 pb-[18vh] text-center sm:pb-28 lg:items-end lg:justify-center lg:pb-0 lg:pr-[6vw] lg:text-right">
+        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-end px-6 pb-[18vh] text-center lg:items-end lg:justify-center lg:pb-0 lg:pr-[6vw] lg:text-right">
           <span className={`${caveat.className} text-2xl md:text-3xl text-[#FFDD55] rotate-[-2deg] ${revealBase}`} data-in-stagger>
             Flathead Lake, Montana
           </span>
