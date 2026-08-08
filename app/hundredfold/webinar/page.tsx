@@ -1,7 +1,6 @@
 import Link from 'next/link';
-import { existsSync } from 'node:fs';
-import path from 'node:path';
 import type { Metadata } from 'next';
+import { FILMS } from '@/lib/films';
 import { buildMetadata } from '@/lib/seo';
 import { HUNDREDFOLD, money } from '@/lib/hundredfold';
 
@@ -37,7 +36,10 @@ const CHAPTERS = [
 ];
 
 export default function HundredfoldWebinarPage() {
-  const hasFilm = existsSync(path.join(process.cwd(), 'public', 'video', 'hundredfold-webinar.mp4'));
+  // ⚠️ A declaration, not a filesystem probe. See lib/films.ts: `existsSync`
+  // on public/ returns false on any render that happens at request time, which
+  // is what silently blanked the hero film on /hundredfold.
+  const { mp4, poster, shipped: hasFilm } = FILMS.webinar;
 
   return (
     <main className="relative min-h-screen bg-[#161616] text-[#FBF6EA] pt-32 md:pt-40 pb-24">
@@ -60,8 +62,8 @@ export default function HundredfoldWebinarPage() {
 
         <div className="mt-12 border-2 border-[#FBF6EA] rounded-2xl overflow-hidden shadow-[8px_8px_0_0_#F5B700] bg-black">
           {hasFilm ? (
-            <video controls playsInline preload="metadata" poster="/video/hundredfold-webinar.jpg" className="w-full h-auto block">
-              <source src="/video/hundredfold-webinar.mp4" type="video/mp4" />
+            <video controls playsInline preload="metadata" poster={poster} className="w-full h-auto block">
+              <source src={mp4} type="video/mp4" />
             </video>
           ) : (
             <div className="p-10 md:p-16 text-center bg-[#FBF6EA]/[0.04]">

@@ -1,24 +1,21 @@
-import { existsSync } from 'node:fs';
-import path from 'node:path';
+import { FILMS } from '@/lib/films';
 
 /**
  * The HUNDREDFOLD film: a real walkthrough of the system running a business,
- * with the owner and Mr. Mustard talking over it.
+ * narrated by Mr. Mustard.
  *
- * Checked on disk rather than hard-coded, so the hero degrades to a real
- * invitation instead of a broken player on any deploy where the cut has not
- * landed yet. A dead play button on the flagship page is worse than no player.
+ * ⚠️ Reads a DECLARATION, never the filesystem. This component used to call
+ * `existsSync` on `public/video/...`, which silently returns false on every
+ * render that happens on the lambda: this page carries `revalidate = 300`, so
+ * five minutes after deploy it regenerated server-side, found no `public/`
+ * directory in the traced bundle, and fell back to the no-film card while the
+ * file was serving fine from the CDN. See lib/films.ts.
  */
 
-const FILM = '/video/hundredfold-film.mp4';
-const POSTER = '/video/hundredfold-film.jpg';
+const { mp4: FILM, poster: POSTER, shipped, runtime } = FILMS.hero;
 
 export default function HundredfoldFilm() {
-  const root = path.join(process.cwd(), 'public');
-  const hasFilm = existsSync(path.join(root, 'video', 'hundredfold-film.mp4'));
-  const hasPoster = existsSync(path.join(root, 'video', 'hundredfold-film.jpg'));
-
-  if (!hasFilm) {
+  if (!shipped) {
     return (
       <div className="border-2 border-[#161616] rounded-2xl bg-[#161616] shadow-[7px_7px_0_0_#F5B700] p-9 md:p-12 text-center">
         <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#F5B700] mb-4">
@@ -36,17 +33,16 @@ export default function HundredfoldFilm() {
   }
 
   return (
-    <div className="border-2 border-[#161616] rounded-2xl overflow-hidden shadow-[7px_7px_0_0_#F5B700] bg-[#161616]">
-      <video
-        controls
-        playsInline
-        preload="metadata"
-        poster={hasPoster ? POSTER : undefined}
-        className="w-full h-auto block"
-      >
-        <source src={FILM} type="video/mp4" />
-        Your browser cannot play this video.
-      </video>
+    <div>
+      <div className="border-2 border-[#161616] rounded-2xl overflow-hidden shadow-[7px_7px_0_0_#F5B700] bg-[#161616]">
+        <video controls playsInline preload="metadata" poster={POSTER} className="w-full h-auto block">
+          <source src={FILM} type="video/mp4" />
+          Your browser cannot play this video.
+        </video>
+      </div>
+      <p className="mt-3 text-center text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#161616]/45">
+        The walkthrough · {runtime}
+      </p>
     </div>
   );
 }
