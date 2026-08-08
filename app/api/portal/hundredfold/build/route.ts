@@ -3,7 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getMemberByEmail } from '@/lib/hundredfold-store';
 import type { SystemRow } from '@/lib/hundredfold-store';
-import { runBuild, estimateCents } from '@/lib/hundredfold-factory';
+import { runBuild, runRevision, rollback, estimateCents, RESTYLE_INSTRUCTION } from '@/lib/hundredfold-factory';
 import { readMeter } from '@/lib/hundredfold-credit';
 import { needsApproval } from '@/lib/hundredfold-coach';
 
@@ -18,7 +18,7 @@ export const maxDuration = 300;
  * member_id, so nobody can build (or approve, or publish) on somebody else's
  * arsenal by guessing an id. Same posture as the gate PATCH next door.
  *
- * POST { systemId, action?: 'build' | 'approve' | 'unpublish' }
+ * POST { systemId, action?: 'build' | 'revise' | 'restyle' | 'rollback' | 'approve' | 'unpublish', instruction?, versionId? }
  *
  * `approve` exists because approval is the OWNER'S, and only the owner's. The
  * coach cannot grant it, the desk cannot grant it, and the factory refuses to
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   const member = await getMemberByEmail(session.email);
   if (!member) return NextResponse.json({ error: 'Not a member' }, { status: 403 });
 
-  let body: { systemId?: string; action?: string };
+  let body: { systemId?: string; action?: string; instruction?: string; versionId?: string };
   try {
     body = await req.json();
   } catch {
@@ -65,6 +65,24 @@ export async function POST(req: Request) {
       })
       .eq('id', row.id);
     return NextResponse.json({ ok: true, approved: true });
+  }
+
+  if (action === 'revise' || action === 'restyle') {
+    // "Match my brand" is a revision with a standing instruction, so it gets
+    // the same snapshot, the same meter, and the same undo as any other edit.
+    const ask = action === 'restyle' ? RESTYLE_INSTRUCTION : String(body.instruction ?? '');
+    // The half Sarah asked for on 8/08: change what exists instead of
+    // re-rolling it. runRevision snapshots the live version first, so this is
+    // always undoable, and it never changes the published slug.
+    const outcome = await runRevision(sb, member, row, ask, session.email);
+    if (!outcome.ok) return NextResponse.json({ ok: false, reason: outcome.reason, meter: outcome.meter });
+    return NextResponse.json({ ok: true, assets: outcome.assets, url: outcome.url, spentCents: outcome.spentCents, meter: outcome.meter });
+  }
+
+  if (action === 'rollback') {
+    if (!body.versionId) return NextResponse.json({ error: 'versionId required' }, { status: 400 });
+    const done = await rollback(sb, row, String(body.versionId), session.email);
+    return NextResponse.json({ ok: done, reason: done ? undefined : 'That version is no longer available.' });
   }
 
   if (action === 'unpublish') {
@@ -105,7 +123,7 @@ export async function GET() {
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ error: 'unavailable' }, { status: 500 });
 
-  const [meter, { data: subs }] = await Promise.all([
+  const [meter, { data: subs }, { data: versions }] = await Promise.all([
     readMeter(sb, member),
     sb
       .from('hundredfold_tool_submissions')
@@ -113,12 +131,19 @@ export async function GET() {
       .eq('member_id', member.id)
       .order('created_at', { ascending: false })
       .limit(50),
+    sb
+      .from('hundredfold_versions')
+      .select('id, system_id, n, note, created_by, created_at')
+      .eq('member_id', member.id)
+      .order('created_at', { ascending: false })
+      .limit(60),
   ]);
 
   return NextResponse.json({
     ok: true,
     meter,
     submissions: subs ?? [],
+    versions: versions ?? [],
     estimates: {
       images: estimateCents('images'),
       page: estimateCents('page'),

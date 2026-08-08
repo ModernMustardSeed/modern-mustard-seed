@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import RoadmapDocument from '@/components/RoadmapDocument';
 import CoachPanel from '@/components/hundredfold/CoachPanel';
+import BrandPanel from '@/components/hundredfold/BrandPanel';
 import type { RoadmapReport } from '@/lib/roadmap-shape';
 
 /**
@@ -76,6 +77,14 @@ type Meter = {
   unreadable: boolean;
 };
 
+type Version = {
+  id: string;
+  system_id: string;
+  n: number;
+  note: string | null;
+  created_at: string;
+};
+
 type Submission = {
   id: string;
   system_id: string;
@@ -89,6 +98,8 @@ type Submission = {
 /** Kinds the factory makes on demand. Everything else is the studio's to build. */
 const SELF_SERVE = new Set(['page', 'tool', 'pdf', 'copy', 'script', 'email-sequence', 'social-campaign', 'images']);
 const SPENDS = new Set(['video', 'ad-campaign']);
+/** Kinds that can be EDITED in place rather than rebuilt. Mirrors the factory. */
+const REVISABLE = new Set(['page', 'tool', 'pdf', 'copy', 'script', 'email-sequence', 'social-campaign']);
 
 const usd = (cents: number) => `$${(cents / 100).toFixed(0)}`;
 
@@ -110,6 +121,10 @@ export default function HundredfoldCommandCenter() {
   const [tab, setTab] = useState<Tab>('coach');
   const [meter, setMeter] = useState<Meter | null>(null);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [versions, setVersions] = useState<Version[]>([]);
+  /** systemId -> the change the member is typing. */
+  const [asks, setAsks] = useState<Record<string, string>>({});
+  const [editing, setEditing] = useState<string | null>(null);
   /** systemId -> what the factory is doing, or what it said when it refused. */
   const [busy, setBusy] = useState<string | null>(null);
   const [says, setSays] = useState<Record<string, string>>({});
@@ -122,6 +137,7 @@ export default function HundredfoldCommandCenter() {
       if (data.ok) {
         setMeter(data.meter ?? null);
         setSubmissions(data.submissions ?? []);
+        setVersions(data.versions ?? []);
       }
     } catch {
       /* the arsenal still renders without the meter */
@@ -133,14 +149,28 @@ export default function HundredfoldCommandCenter() {
    * page or a tool takes a minute or two and the member is watching, so the
    * honest UI is a button that stays busy until there is something to show.
    */
-  const act = async (systemId: string, action: 'build' | 'approve' | 'unpublish') => {
+  const act = async (
+    systemId: string,
+    action: 'build' | 'approve' | 'unpublish' | 'revise' | 'restyle' | 'rollback',
+    extra: { instruction?: string; versionId?: string } = {},
+  ) => {
     setBusy(systemId);
-    setSays((s) => ({ ...s, [systemId]: action === 'build' ? 'Building it now. This takes a minute or two.' : '' }));
+    setSays((s) => ({
+      ...s,
+      [systemId]:
+        action === 'build'
+          ? 'Building it now. This takes a minute or two.'
+          : action === 'revise'
+            ? 'Changing just that. Everything else stays as it is.'
+            : action === 'restyle'
+              ? 'Repainting it in your brand. Not a word changes.'
+              : '',
+    }));
     try {
       const res = await fetch('/api/portal/hundredfold/build', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ systemId, action }),
+        body: JSON.stringify({ systemId, action, ...extra }),
       });
       const data = await res.json();
       setSays((s) => ({
@@ -150,9 +180,16 @@ export default function HundredfoldCommandCenter() {
             ? 'Approved. It is queued and you can build it now.'
             : action === 'unpublish'
               ? 'Taken down. The address stops serving straight away.'
-              : 'Done. It is below.'
+              : action === 'restyle'
+                ? 'Repainted in your brand. Same words, same address.'
+                : action === 'revise'
+                  ? 'Changed. The address stayed the same, so anywhere you already pasted it is still right.'
+                : action === 'rollback'
+                  ? 'Put back. The version you replaced is still in the history.'
+                  : 'Done. It is below.'
           : (data.reason ?? 'That did not go through. Try it again.'),
       }));
+      if (action === 'revise') setAsks((a) => ({ ...a, [systemId]: '' }));
       await Promise.all([load(), loadMeter()]);
     } catch {
       setSays((s) => ({ ...s, [systemId]: 'That did not go through. Try it again.' }));
@@ -435,6 +472,9 @@ export default function HundredfoldCommandCenter() {
             give it.
           </p>
 
+          {/* What everything gets painted with, before the things it paints. */}
+          <BrandPanel onChanged={() => void loadMeter()} />
+
           {meter && (
             <div className="mb-6 border-2 border-[#161616] rounded-xl bg-[#FFFDF6] p-4 md:p-5">
               <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
@@ -478,6 +518,7 @@ export default function HundredfoldCommandCenter() {
               const spends = SPENDS.has(kind);
               const assets = s.assets ?? [];
               const subs = submissions.filter((x) => x.system_id === s.id);
+              const history = versions.filter((v) => v.system_id === s.id);
               const working = busy === s.id;
 
               return (
@@ -545,6 +586,90 @@ export default function HundredfoldCommandCenter() {
 
                   {(says[s.id] || s.error) && (
                     <p className="font-body text-[13px] text-[#161616]/70 mt-2">{says[s.id] || s.error}</p>
+                  )}
+
+                  {/*
+                    CHANGE SOMETHING. The difference between a slot machine and a
+                    studio: "Build another" re-rolls and throws away the good
+                    parts, this edits what exists and keeps the rest. The
+                    published address never changes, so anywhere the member has
+                    already pasted it stays correct.
+                  */}
+                  {assets.length > 0 && REVISABLE.has(kind) && (
+                    <div className="mt-3 border-t border-[#161616]/10 pt-3">
+                      {editing === s.id ? (
+                        <div>
+                          <label
+                            className="block text-[9px] uppercase tracking-[0.24em] font-mono font-bold text-[#161616]/55 mb-1.5"
+                            htmlFor={`ask-${s.id}`}
+                          >
+                            What should be different?
+                          </label>
+                          <textarea
+                            id={`ask-${s.id}`}
+                            value={asks[s.id] ?? ''}
+                            onChange={(e) => setAsks((a) => ({ ...a, [s.id]: e.target.value }))}
+                            rows={2}
+                            placeholder="Make the headline about the guarantee, and drop the second section."
+                            className="w-full px-3 py-2 rounded-lg border-2 border-[#161616]/15 bg-white font-body text-sm focus:border-[#161616] focus:outline-none"
+                          />
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            <button
+                              type="button"
+                              onClick={() => void act(s.id, 'revise', { instruction: asks[s.id] ?? '' })}
+                              disabled={working || !(asks[s.id] ?? '').trim()}
+                              className="px-3 py-1.5 rounded border-2 border-[#161616] bg-[#F5B700] text-[10px] uppercase tracking-[0.18em] font-mono font-bold disabled:opacity-50"
+                            >
+                              {working ? 'Changing…' : 'Change it'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditing(null)}
+                              className="px-3 py-1.5 rounded border-2 border-[#161616]/25 bg-white text-[10px] uppercase tracking-[0.18em] font-mono font-bold text-[#161616]/60"
+                            >
+                              Never mind
+                            </button>
+                          </div>
+                          <p className="text-[11px] font-body text-[#161616]/45 mt-2">
+                            Only what you ask for changes. Everything else stays exactly as it is, and the previous
+                            version is kept so you can put it back.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setEditing(s.id)}
+                            className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]"
+                          >
+                            Change something →
+                          </button>
+                          {(kind === 'page' || kind === 'tool') && (
+                            <button
+                              type="button"
+                              onClick={() => void act(s.id, 'restyle')}
+                              disabled={working}
+                              className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616] disabled:opacity-50"
+                            >
+                              Match my brand →
+                            </button>
+                          )}
+                          {history.length > 0 && (
+                            <span className="text-[11px] font-body text-[#161616]/50">
+                              {history.length} earlier version{history.length === 1 ? '' : 's'}:{' '}
+                              <button
+                                type="button"
+                                onClick={() => void act(s.id, 'rollback', { versionId: history[0].id })}
+                                disabled={working}
+                                className="underline hover:text-[#C4160B] disabled:opacity-50"
+                              >
+                                put the last one back
+                              </button>
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   )}
 
                   {/* What actually got made. */}

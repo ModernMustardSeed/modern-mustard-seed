@@ -72,6 +72,10 @@ export type SystemRow = {
   approved_by: string | null;
   spend_cents: number | null;
   error: string | null;
+  /** The authored structure behind a PDF, so a revision edits it rather than rewriting it. */
+  doc: unknown | null;
+  /** Bumped on every build and every revision; `hundredfold_versions` holds the history. */
+  version: number | null;
   /** A deployable page or tool: one self-contained document, served at public_slug. */
   artifact_html: string | null;
   public_slug: string | null;
