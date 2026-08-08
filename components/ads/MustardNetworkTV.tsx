@@ -76,6 +76,13 @@ const CHANNELS: Channel[] = [
     src: '/ads/after-hours-16x9.mp4',
     poster: '/ads/after-hours-poster.jpg',
   },
+  {
+    n: '09',
+    title: 'Say Whaaa',
+    note: 'The only channel where the product builds something while you watch. Every frame is our own live site, scrolled in real time, and Mr. Mustard makes the offer out loud.',
+    src: '/ads/say-whaa-16x9.mp4',
+    poster: '/ads/say-whaa-poster.jpg',
+  },
 ];
 
 export default function MustardNetworkTV() {
