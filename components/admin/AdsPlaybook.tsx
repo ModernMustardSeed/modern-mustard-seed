@@ -815,6 +815,60 @@ Turn your sound on and take the scenic route. Link in bio.
 
 const SR_POST_STORY = 'Our website takes you for a drive around Flathead Lake, out loud. Take the scenic route → modernmustardseed.com';
 
+/* ============ Campaign twenty: Say Whaaa (the agent that builds) ============ */
+
+const SW_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medium=paid&utm_campaign=saywhaa';
+
+const SW_COPY_A = `Our website narrates itself out loud. That is the least interesting thing about it.
+
+Because at the end of the drive you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the forge while you are still talking: your own voice agent, your own website, your own command center.
+
+Free demos, in your inbox within the hour. Love them? Order right from the page.
+
+The site talks. The agent builds. Say whaaa.`;
+
+const SW_COPY_B = `Most AI assistants answer questions.
+
+Ours takes your details on the phone and BUILDS: a voice agent that answers as your business, a website designed from scratch, and a command center with your name on the door. Free, in your inbox within the hour, yours to keep or toss.
+
+Watch the film, then go say hi. He picks up every time.`;
+
+const SW_HEADLINE = 'The site talks. The agent builds.';
+const SW_DESCRIPTION = 'Tell our AI your trade. Your voice agent, website, and command center land in your inbox within the hour. Free.';
+
+const SW_CUTS = [
+  { file: '/ads/say-whaa-16x9.mp4', label: '16:9 — In-stream + site', note: 'The full film: Ava drives, Mr. Mustard forges. Two voices, real product.' },
+  { file: '/ads/say-whaa-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+];
+
+const SW_CHECKLIST = [
+  { id: 'ear', label: 'EAR CHECK before anything: two voices in one film (Ava + the staged Mr. Mustard). Confirm the handoff at ~21s reads clearly as two speakers, and "within the hour" is clean.' },
+  { id: 'cell', label: 'Cell A (Meta): objective Traffic. Budget $10/day. Learn More button → the /demos UTM link above. Paste Copy Variant 1 (say whaaa).' },
+  { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" in any edit. The film voice for Mr. Mustard is a staged studio read; the live line runs his real voice.' },
+  { id: 'placements', label: 'No burned captions on this one, so ACCEPT platform captions for sound-off viewers.' },
+  { id: 'organic', label: 'Organic first: 9:16 as a Reel + YouTube Short, 16:9 to FB and the site. Drafts below (Sarah approves every post).' },
+  { id: 'stack', label: 'This is the PRODUCT spot; The Scenic Route (19) is the brand film. Run them as a story: organic Scenic Route first, then this one two days later.' },
+  { id: 'review', label: 'Day 5-7: judge on forged demos under utm_campaign=saywhaa (source=demo-station in the cockpit) plus calls answered on the Mustard line.' },
+];
+
+const SW_POST_FB = `Our website reads itself to you out loud while you scroll. And that is the least interesting thing about it.
+
+Because at the end of the drive, you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the forge while you are still on the line: your own voice agent, your own website, your own command center. Free, in your inbox within the hour.
+
+The site talks. The agent builds. Say whaaa.
+
+Take the drive → modernmustardseed.com`;
+
+const SW_POST_IG = `The site talks. The agent builds.
+
+Tell our AI your trade. Your own voice agent, website, and command center land in your inbox within the hour. Free.
+
+Turn your sound on for this one. Link in bio.
+
+#aiforbusiness #smallbusiness #voiceai #websitedesign #modernmustardseed`;
+
+const SW_POST_STORY = 'Our AI just built a whole business suite on a phone call. Say whaaa → modernmustardseed.com/demos';
+
 /* ============ Campaign twenty-one: 9:47 PM (the recorded call) ============ */
 
 /**
@@ -988,7 +1042,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1012,6 +1066,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'scenic', num: '19', label: 'The Scenic Route', blurb: 'Brand film · the homepage journey · $10/day' },
   { key: 'cxc', num: '20', label: 'Cross + Covenant', blurb: 'Online stores · a real live storefront · $15/day' },
   { key: 'ah', num: '21', label: '9:47 PM', blurb: 'Voice agents · a REAL recorded call · $25/day' },
+  { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The forge · the agent that builds · $10/day' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -1027,7 +1082,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo'] },
-  { name: 'Brand + Verticals', keys: ['callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'cxc'] },
+  { name: 'Brand + Verticals', keys: ['callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
 ];
 
@@ -1138,6 +1193,7 @@ export default function AdsPlaybook() {
   const [checkedChief, setCheckedChief] = useState<Record<string, boolean>>({});
   const [checkedAns, setCheckedAns] = useState<Record<string, boolean>>({});
   const [checkedScenic, setCheckedScenic] = useState<Record<string, boolean>>({});
+  const [checkedWhaa, setCheckedWhaa] = useState<Record<string, boolean>>({});
   const [checkedCxc, setCheckedCxc] = useState<Record<string, boolean>>({});
   const [checkedAh, setCheckedAh] = useState<Record<string, boolean>>({});
 
@@ -1222,6 +1278,8 @@ export default function AdsPlaybook() {
       if (rawAns) setCheckedAns(JSON.parse(rawAns));
       const rawScenic = localStorage.getItem('mms-ads-checklist-scenic');
       if (rawScenic) setCheckedScenic(JSON.parse(rawScenic));
+      const rawWhaa = localStorage.getItem('mms-ads-checklist-whaa');
+      if (rawWhaa) setCheckedWhaa(JSON.parse(rawWhaa));
       const rawCxc = localStorage.getItem('mms-ads-checklist-cxc');
       if (rawCxc) setCheckedCxc(JSON.parse(rawCxc));
     } catch { /* first visit */ }
@@ -1248,6 +1306,7 @@ export default function AdsPlaybook() {
   const toggleChief = mkToggle('mms-ads-checklist-chief', setCheckedChief);
   const toggleAns = mkToggle('mms-ads-checklist-ans', setCheckedAns);
   const toggleScenic = mkToggle('mms-ads-checklist-scenic', setCheckedScenic);
+  const toggleWhaa = mkToggle('mms-ads-checklist-whaa', setCheckedWhaa);
   const toggleAh = mkToggle('mms-ads-checklist-afterhours', setCheckedAh);
   const toggleCxc = mkToggle('mms-ads-checklist-cxc', setCheckedCxc);
 
@@ -1310,6 +1369,7 @@ export default function AdsPlaybook() {
   const doneCountChief = CH_CHECKLIST.filter((c) => checkedChief[c.id]).length;
   const doneCountAns = AM_CHECKLIST.filter((c) => checkedAns[c.id]).length;
   const doneCountScenic = SR_CHECKLIST.filter((c) => checkedScenic[c.id]).length;
+  const doneCountWhaa = SW_CHECKLIST.filter((c) => checkedWhaa[c.id]).length;
   const doneCountCxc = CX_CHECKLIST.filter((c) => checkedCxc[c.id]).length;
   const doneCountAh = AH_CHECKLIST.filter((c) => checkedAh[c.id]).length;
 
@@ -3019,6 +3079,95 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedAh[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'whaa' && (<>
+        {/* ============ Campaign twenty-two: Say Whaaa (the agent that builds) ============ */}
+        <section className="bg-[#161616] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign twenty-two &middot; the product spot, both voices</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;Say Whaaa&rdquo; <span className="italic text-[#F5B700]">the site talks, the agent builds</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              A screen film of the real thing: Ava drives the journey out loud, hands the visitor to Mr.
+              Mustard at the four doors, and he makes the offer that ends the ad market: tell me your trade
+              and your email, and I fire the forge while we talk. Voice agent, website, command center, in
+              your inbox within the hour, order right from the page. One cell at $10/day into /demos.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Two voices: Ava as herself, and a staged studio read for Mr. Mustard (the live line runs his real voice). No burned captions; accept platform captions. Right-click to save.</p>
+          <div className="grid md:grid-cols-2 gap-5">
+            {SW_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/say-whaa-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text &mdash; Variant 1 (say whaaa)" text={SW_COPY_A} />
+            <CopyBlock title="Primary text &mdash; Variant 2 (assistants answer, ours builds)" text={SW_COPY_B} />
+            <CopyBlock title="Headline" text={SW_HEADLINE} />
+            <CopyBlock title="Description" text={SW_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM (the Demo Station)" text={SW_LANDING} />
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">Organic launch posts</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Post the 9:16 as a Reel and the 16:9 to Facebook. Sarah approves every post before it goes out.</p>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Facebook post (16:9 cut)" text={SW_POST_FB} />
+            <CopyBlock title="Instagram Reel caption (9:16 cut)" text={SW_POST_IG} />
+            <CopyBlock title="Instagram Story line (+ link sticker)" text={SW_POST_STORY} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountWhaa}/{SW_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {SW_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedWhaa[item.id]}
+                    onChange={() => toggleWhaa(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedWhaa[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>
