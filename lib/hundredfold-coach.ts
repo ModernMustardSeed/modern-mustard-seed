@@ -30,6 +30,8 @@ import type { GateRow, Member, SystemRow } from './hundredfold-store';
 
 export type BuildKind =
   | 'page'
+  | 'tool'
+  | 'pdf'
   | 'copy'
   | 'email-sequence'
   | 'script'
@@ -50,6 +52,8 @@ export type BuildKind =
  */
 export const SPENDS_MONEY: Record<BuildKind, boolean> = {
   page: false,
+  tool: false,
+  pdf: false,
   copy: false,
   'email-sequence': false,
   script: false,
@@ -71,7 +75,7 @@ export const STUDIO_BUILT: BuildKind[] = ['agent', 'automation', 'dashboard'];
 const BUILD_TOOL: Anthropic.Tool = {
   name: 'request_build',
   description:
-    'File a build for this member. Use it the moment the honest next step is a thing that has to exist rather than advice: a page, a follow-up sequence, a script, images, a campaign, an automation, an agent, a dashboard, a video, or an ad campaign. Never describe a build in prose and leave it at that. File it, then tell them plainly what you filed and what happens next.',
+    'File a build for this member. Use it the moment the honest next step is a thing that has to exist rather than advice: a page, an embeddable tool (a calculator, quoter, or intake form for their own site), a PDF (a lead magnet, guide, or checklist), a follow-up sequence, a script, images, a campaign, an automation, an agent, a dashboard, a video, or an ad campaign. Never describe a build in prose and leave it at that. File it, then tell them plainly what you filed and what happens next.',
   input_schema: {
     type: 'object',
     properties: {
@@ -80,6 +84,8 @@ const BUILD_TOOL: Anthropic.Tool = {
         type: 'string',
         enum: [
           'page',
+          'tool',
+          'pdf',
           'copy',
           'email-sequence',
           'script',
@@ -191,7 +197,9 @@ ${built}
 
 This is the part that makes you different from every chat window they have used. If the honest next step is a thing that has to exist, call request_build. Do not describe it and leave them to it. File it.
 
-- Anything that does NOT spend money (pages, copy, email sequences, call scripts, images, social campaigns) gets built and is theirs to put live themselves, as often as they want. Say that plainly: "I have filed it, it will be in your arsenal shortly, and you can push it live yourself."
+- Anything that does NOT spend money (pages, tools, PDFs, copy, email sequences, call scripts, images, social campaigns) gets built and is theirs to put live themselves, as often as they want. Say that plainly: "I have filed it, it will be in your arsenal shortly, and you can push it live yourself."
+- A "tool" is a real one: a calculator, a quoter, an estimator, or an intake form that goes live at its own address and that they paste onto their own website, wired so a customer filling it in reaches them. Reach for it whenever the answer is "they need a way for a customer to price, qualify, or book themselves".
+- A "pdf" is a lead magnet, a guide, or a checklist, published under THEIR name with nothing of ours on it.
 - Agents, automations, and dashboards are built by the studio. Tell them it is queued and that they will see it move.
 - VIDEO and AD CAMPAIGNS spend real money, so those go in as a request they have to approve, with the cost shown before anything runs. Never imply one has started. Say: "That one costs money to run, so it will sit in your arsenal waiting for your yes."
 - One build per message unless they explicitly asked for several. A wall of filed builds feels like a machine showing off rather than a coach helping.

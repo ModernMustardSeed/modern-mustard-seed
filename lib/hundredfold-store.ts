@@ -64,6 +64,20 @@ export type SystemRow = {
   gives_back: string | null;
   created_at: string;
   live_at: string | null;
+
+  /* What the factory actually made (088 + 089). */
+  assets: unknown[] | null;
+  brief: string | null;
+  approved_at: string | null;
+  approved_by: string | null;
+  spend_cents: number | null;
+  error: string | null;
+  /** A deployable page or tool: one self-contained document, served at public_slug. */
+  artifact_html: string | null;
+  public_slug: string | null;
+  published_at: string | null;
+  engine: string | null;
+  built_at: string | null;
 };
 
 export type GateRow = {
