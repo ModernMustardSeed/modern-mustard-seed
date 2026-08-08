@@ -838,13 +838,14 @@ const SW_DESCRIPTION = 'Tell our AI your trade. Your voice agent, website, and c
 
 const SW_CUTS = [
   { file: '/ads/say-whaa-16x9.mp4', label: '16:9 — In-stream + site', note: 'The full film: Ava drives, Mr. Mustard forges. Two voices, real product.' },
-  { file: '/ads/say-whaa-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical. Doubles as an IG Reel + YouTube Short.' },
+  { file: '/ads/say-whaa-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Filmed on the REAL mobile site, not a cropped wide cut. IG Reel + YouTube Short.' },
 ];
 
 const SW_CHECKLIST = [
   { id: 'ear', label: 'EAR CHECK before anything: two voices in one film (Ava + the staged Mr. Mustard). Confirm the handoff at ~21s reads clearly as two speakers, and "within the hour" is clean.' },
+  { id: 'eye', label: 'EYE CHECK: this is the RECUT (2026-08-07). Take 1 whip-panned a whole chapter in 2.6s and made Sarah motion-sick. The recut is eight held shots that creep 21-50px/s, cut on the beat, 25fps to match the capture. Watch for any move that still feels like it is chasing you.' },
   { id: 'cell', label: 'Cell A (Meta): objective Traffic. Budget $10/day. Learn More button → the /demos UTM link above. Paste Copy Variant 1 (say whaaa).' },
-  { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" in any edit. The film voice for Mr. Mustard is a staged studio read; the live line runs his real voice.' },
+  { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" in any edit. The film voice for Mr. Mustard is STILL a staged studio read: the rig is wired for his real ElevenLabs voice (Will) and swaps automatically once a real sk_ key exists. The file in OneDrive is the key ID, not the key.' },
   { id: 'placements', label: 'No burned captions on this one, so ACCEPT platform captions for sound-off viewers.' },
   { id: 'organic', label: 'Organic first: 9:16 as a Reel + YouTube Short, 16:9 to FB and the site. Drafts below (Sarah approves every post).' },
   { id: 'stack', label: 'This is the PRODUCT spot; The Scenic Route (19) is the brand film. Run them as a story: organic Scenic Route first, then this one two days later.' },
