@@ -105,3 +105,59 @@ What the first application fixed, across all seven:
 | `stopSpeakingPlan` | absent | 2 words | A stray TV word could cut the agent off mid-sentence |
 | `backgroundSpeechDenoisingPlan` | absent | Krisp + Fourier | Room noise reached the transcriber and came back garbled |
 | `analysisPlan` | absent | summary | Owners got no record of what their phone did overnight |
+
+## The fleet registry and linter
+
+`vapi/fleet.json` declares what each agent **is**: the client, the vertical it
+serves, and the structural family it belongs to. Nothing in a Vapi config says
+"this is a med spa", so nothing could detect an agent cloned from the wrong
+vertical. This file says it and `scripts/vapi-lint.mjs` enforces it.
+
+```bash
+node scripts/vapi-lint.mjs            # exit 1 on any error
+node scripts/vapi-lint.mjs --strict   # warnings fail too
+```
+
+Needs no credentials, so it runs first in CI and fails fast.
+
+It checks four things:
+
+1. **Vertical matches family.** A med spa running the painting family is the
+   root cause of every vocabulary problem downstream, because once the family is
+   declared, its paint vocabulary reads as native.
+2. **Tool set matches family.** A drifted tool set means an unrecorded
+   capability, or a clone from a family the agent does not claim.
+3. **No foreign vocabulary.** Each family owns its parameter names. A parameter
+   from another family is the signature of an unfinished clone: descriptions get
+   rewritten for the new client, field names do not.
+4. **Baseline compliance**, and any concierge missing from the registry.
+
+Issues already written up in `_knownIssues` report as known rather than failing,
+so an accepted problem with a documented fix does not hold CI red forever. A
+**new** mismatch is a hard error.
+
+### Adding a concierge
+
+1. Add it to `assistants` in `fleet.json` with its client, vertical and family.
+2. Add its slug to `appliesTo` in `baseline.json`.
+3. `vapi-sync.mjs --pull`, then `vapi-lint.mjs`.
+
+Skip step 1 and the linter warns that an undeclared concierge exists. Declare
+the wrong family and it errors.
+
+### Known issue: two med spas speaking paint
+
+Just Botox and Serabella were cloned from CertaPro, a painting contractor. The
+descriptions were rewritten for aesthetics; the parameter names were not. Both
+booking tools still take `colors` and `project_type`, so a botox consult sends
+the client's backend a field called `colors` containing "masseter, jawline".
+
+Calls work today and the descriptions carry the right meaning, so this is
+moderate, not urgent. It is not fixed here because renaming a parameter changes
+the webhook payload contract, and those handlers live in separate deployments
+this repo does not contain. Renaming without shipping those first would break
+live booking for two paying clients.
+
+The fix, in order: update both webhook handlers to accept `treatment_type` and
+drop `colors`, move both to the `medspa-consult` family, then `--push`. The
+linter goes green on its own.

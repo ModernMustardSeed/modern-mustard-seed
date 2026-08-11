@@ -22,6 +22,12 @@ jobs:
         with:
           node-version: '20'
 
+      # Needs no credentials, so it runs first and fails fast. Catches an agent
+      # cloned from the wrong vertical (the failure that shipped a med spa whose
+      # booking tool asks for paint colors) before any network call happens.
+      - name: Lint the fleet against vapi/fleet.json
+        run: node scripts/vapi-lint.mjs
+
       # Exits 1 when repo and Vapi disagree, which fails the job. On a pull
       # request that is the point: a config change must be pushed to Vapi, or
       # the PR is describing a state that does not exist.
