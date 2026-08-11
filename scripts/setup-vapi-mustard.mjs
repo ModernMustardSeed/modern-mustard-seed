@@ -38,19 +38,78 @@ const fileEnv = {
   ...loadEnvFile(resolve(__dirname, '../../modern-mustard-seed-voice-agent/.env')),
   ...loadEnvFile(resolve(__dirname, '../.env.local')),
 };
-const env = (k) => process.env[k] ?? fileEnv[k];
+
+/* ⚠️ PLACEHOLDER GUARD (added 2026-08-11 after a near miss, do not remove).
+ * `vercel env pull` writes the LITERAL string "[SENSITIVE]" for every variable
+ * marked Sensitive in Vercel, because sensitive values are write-only and can
+ * never be read back (not by the CLI, not by the dashboard, not by anyone).
+ * 51 of the 83 vars in this repo's .env.local are exactly that placeholder.
+ *
+ * The danger is that "[SENSITIVE]" is TRUTHY, so it sails straight through
+ * `|| ''` and `WEBHOOK_SECRET ? ... : ...` checks. Left unguarded, a routine
+ * `--update` run would PATCH the live assistant with server.secret =
+ * "[SENSITIVE]", which breaks webhook signature verification and therefore
+ * silently kills EVERY tool Mr. Mustard has: booking, send_email, forge,
+ * recall_caller. He would still answer the phone and sound perfect while being
+ * unable to actually do anything, which is the worst possible failure mode.
+ *
+ * So the placeholder is caught at the single point every value flows through,
+ * and it is a hard stop rather than a warning. Real values must come from the
+ * Vapi dashboard into .env.local by hand; re-running `vercel env pull` will
+ * clobber them back to placeholders. */
+const PLACEHOLDER = '[SENSITIVE]';
+
+// --dry-run never contacts Vapi, so it must stay runnable with NO credentials at
+// all: reviewing the persona, the derived prices and the tool list is the main
+// way to check this agent, and needing a secret to read your own config would
+// make the safe path the inconvenient one. Placeholders only have to be fatal on
+// a run that actually writes to a live assistant.
+const DRY_RUN = process.argv.includes('--dry-run');
+const placeholdersSeen = [];
+
+const env = (k) => {
+  const v = process.env[k] ?? fileEnv[k];
+  if (v === PLACEHOLDER) {
+    if (DRY_RUN) {
+      if (!placeholdersSeen.includes(k)) placeholdersSeen.push(k);
+      return undefined; // fall through to the script's own defaults
+    }
+    console.error(
+      `\n${k} is the literal placeholder "${PLACEHOLDER}", not a real value.\n\n` +
+        `That comes from \`vercel env pull\`: variables marked Sensitive in Vercel are\n` +
+        `write-only and cannot be read back. Pushing this to the live assistant would\n` +
+        `break Mr. Mustard's webhook auth and disable every one of his tools.\n\n` +
+        `Fix: copy the real value out of the Vapi dashboard into .env.local by hand.\n` +
+        `Refusing to touch a live agent with a placeholder.\n`
+    );
+    process.exit(1);
+  }
+  return v;
+};
 
 const VAPI_API_KEY = env('VAPI_API_KEY');
 const WEBHOOK_SECRET = env('VAPI_WEBHOOK_SECRET') || '';
 const SITE_URL = env('SITE_URL') || 'https://modernmustardseed.com';
 
-if (!VAPI_API_KEY) {
+if (!VAPI_API_KEY && !DRY_RUN) {
   console.error('Missing VAPI_API_KEY (env, .env.local, or the voice-agent project .env).');
   process.exit(1);
 }
 
 const updateIdx = process.argv.indexOf('--update');
 const UPDATE_ID = updateIdx > -1 ? process.argv[updateIdx + 1] : null;
+
+// Same trap by another road: `--update $env:VAPI_MUSTARD_ASSISTANT_ID` expands
+// to the placeholder when that var came from `vercel env pull`. Caught here so
+// it fails with the real reason instead of a bare 404 from Vapi.
+if (UPDATE_ID === PLACEHOLDER) {
+  console.error(
+    `\nThe --update assistant id is the literal placeholder "${PLACEHOLDER}".\n` +
+      `That variable came from \`vercel env pull\` and has no readable value.\n` +
+      `Pass the real assistant id from the Vapi dashboard instead.\n`
+  );
+  process.exit(1);
+}
 
 /* ─────────────────── Prices (DERIVED, never typed) ───────────────────
  * mms-price-single-source is law: never hand-type a price. Mr. Mustard now
@@ -746,7 +805,7 @@ const assistant = {
 
 // --dry-run renders everything (including the DERIVED prices) and prints it
 // without touching Vapi. Always dry-run before pointing an edit at the live line.
-if (process.argv.includes('--dry-run')) {
+if (DRY_RUN) {
   console.log('\n── DERIVED PRICES (from lib/demo-order.ts + data/sidekick.ts) ──');
   console.log(PRICE);
   console.log('\n── VOICE ──');
@@ -761,6 +820,22 @@ if (process.argv.includes('--dry-run')) {
   console.log('em dashes present:', emDash ? 'YES (FIX THIS)' : 'no');
   console.log('unresolved template holes:', /\$\{/.test(SYSTEM_PROMPT) ? 'YES (FIX THIS)' : 'no');
   console.log('tools:', TOOLS.map((t) => t.function?.name || t.type).join(', '));
+
+  // Prove the warm handoff is actually wired, in the one report anyone reads
+  // before pushing. A transfer that silently lost its destination would look
+  // exactly like a working config everywhere else in this output.
+  const transfer = TOOLS.find((t) => t.type === 'transferCall');
+  const dest = transfer?.destinations?.[0];
+  console.log('warm transfer ->', dest?.number || 'MISSING (FIX THIS)', dest?.transferPlan?.mode ? `(${dest.transferPlan.mode})` : '');
+
+  if (placeholdersSeen.length) {
+    console.log(
+      `\n⚠ ${placeholdersSeen.length} var(s) are the "${PLACEHOLDER}" placeholder from \`vercel env pull\`,\n` +
+        `  so script defaults were used above: ${placeholdersSeen.join(', ')}.\n` +
+        `  Harmless for --dry-run. A live --update will hard-stop until the real\n` +
+        `  values are copied from the Vapi dashboard into .env.local by hand.`
+    );
+  }
   process.exit(0);
 }
 
