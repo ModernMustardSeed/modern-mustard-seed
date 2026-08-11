@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
+import { likeLiteral } from '@/lib/sql-like';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -20,7 +21,7 @@ export async function GET() {
   const { data: proj } = await sb
     .from('projects')
     .select('id, site_html_draft, edit_status')
-    .ilike('client_email', session.email)
+    .ilike('client_email', likeLiteral(session.email))
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
     .limit(1)

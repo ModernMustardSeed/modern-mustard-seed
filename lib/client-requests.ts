@@ -3,6 +3,7 @@ import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
 import { clientMessageEmail } from '@/lib/email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { likeLiteral } from './sql-like';
 
 /**
  * Record a change request / note from a client and notify Sarah. Used by both
@@ -42,7 +43,7 @@ export async function createClientRequest(args: {
       const { data: proj } = await supabase
         .from('projects')
         .select('id, name')
-        .ilike('client_email', email)
+        .ilike('client_email', likeLiteral(email))
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();

@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import { byId } from '@/data/proposal-menu';
 import { selectSections } from '@/lib/intake';
+import { likeLiteral } from './sql-like';
 
 /**
  * Assemble a complete build brief for a client from everything on file: their
@@ -52,7 +53,7 @@ export async function assembleBuildSpec(args: {
     const { data: proj } = await supabase
       .from('projects')
       .select('id, name, summary, milestones')
-      .ilike('client_email', email)
+      .ilike('client_email', likeLiteral(email))
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -71,7 +72,7 @@ export async function assembleBuildSpec(args: {
     const { data: p } = await supabase
       .from('proposals')
       .select('lines, situation, prose')
-      .ilike('client_email', email)
+      .ilike('client_email', likeLiteral(email))
       .order('updated_at', { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -93,7 +94,7 @@ export async function assembleBuildSpec(args: {
 
   // Intake answers (brand, domain, content, etc.)
   try {
-    const { data: intake } = await supabase.from('client_intake').select('answers').ilike('client_email', email).maybeSingle();
+    const { data: intake } = await supabase.from('client_intake').select('answers').ilike('client_email', likeLiteral(email)).maybeSingle();
     const answers = (intake?.answers as Record<string, string>) ?? {};
     if (Object.keys(answers).length) {
       const sections = selectSections(serviceIds);
@@ -109,7 +110,7 @@ export async function assembleBuildSpec(args: {
 
   // Files / assets
   try {
-    const { data: files } = await supabase.from('client_files').select('label, url, kind').ilike('client_email', email);
+    const { data: files } = await supabase.from('client_files').select('label, url, kind').ilike('client_email', likeLiteral(email));
     if (files?.length) {
       L.push(`\n## Assets and links on file`);
       for (const f of files) L.push(`- [${f.kind}] ${f.label}: ${f.url}`);
