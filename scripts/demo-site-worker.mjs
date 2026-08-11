@@ -103,14 +103,15 @@ try {
 // DEMO_SITE_TIER force (process env OR .env.local, so it survives supervisor
 // relaunches) > the row's chosen tier (design_tier column once migration 073 is
 // applied, else the "DESIGN TIER: n" line the cockpit writes at the top of the
-// brief) > roulette, rolled fresh per build so unattended demos come out varied.
+// brief) > tier 2, the house style, for anything that did not choose.
 // Client EDITS and paid REBUILDS stay on the claude engine regardless of tier.
 // ⚡ 2026-08-07: TIER 3 (the JOURNEY site, born from the Flathead homepage) joins the
 // roster and Sarah's picker offers 2 or 3. Tier 1 stays UNWIRED until she reworks it
-// ("eventually 1 when i wire it again"): it is not in the roulette, and a stale
-// tier-1 choice builds tier 2 instead. The 7/30 DEMO_SITE_TIER=2 force is retired
-// from .env.local so the picker can actually produce a 3; the env stays honored as
-// an emergency lever.
+// ("eventually 1 when i wire it again"): a stale tier-1 choice builds tier 2
+// instead. The 7/30 DEMO_SITE_TIER=2 force is retired from .env.local so the
+// picker can actually produce a 3; the env stays honored as an emergency lever.
+// ⚡ 2026-08-11: tier 2 becomes the house style and the default for anything that
+// did not explicitly choose (see tierOf).
 const FORCED_TIER = ['1', '2', '3'].includes(env.DEMO_SITE_TIER || '') ? Number(env.DEMO_SITE_TIER) : null;
 
 const SUPABASE_URL = env.SUPABASE_URL || env.supabase_url || env.NEXT_PUBLIC_SUPABASE_URL;
@@ -133,7 +134,12 @@ const log = (...a) => console.log(new Date().toISOString(), ...a);
  * at 2am while this machine is asleep gets the same caliber of site.
  */
 const FAL_ENV = path.join(os.homedir(), '.claude', 'fal.env').replace(/\\/g, '/');
-const MEDIA_NOTES = path.join(os.homedir(), '.claude', 'projects', 'C--Users-moder', 'memory', 'media-generation-pipeline.md').replace(/\\/g, '/');
+// Derived from the running user's home rather than one machine's name, so the
+// same worker finds its own notes wherever the forge happens to be running.
+const MEDIA_NOTES = (
+  env.MMS_MEDIA_NOTES ||
+  path.join(os.homedir(), '.claude', 'projects', `C--Users-${path.basename(os.homedir())}`, 'memory', 'image-generation-setup.md')
+).replace(/\\/g, '/');
 
 /**
  * THE LAW IS RE-READ FOR EVERY BUILD, not once at startup.
@@ -175,14 +181,20 @@ function rememberVariant(dir) {
 }
 
 /** Which design tier builds this demo row, and why. Tier 1 is unwired for now:
- * a chosen 1 (stale brief, old row) builds tier 2 rather than the retired path. */
+ * a chosen 1 (stale brief, old row) builds tier 2 rather than the retired path.
+ *
+ * ⚡ TIER 2 IS THE HOUSE STYLE (Sarah, 2026-08-11: "we will harden the tools to
+ * do this tier 2 with narration as the go to for the sites"). The roulette that
+ * used to decide unattended builds is retired: it made every demo a coin flip
+ * between two different products, and the one she picked is tier 2. Tier 3 is
+ * still built on request, it is just no longer something a build wanders into. */
 function tierOf(job) {
   const sane = (t) => (t === 3 ? 3 : 2);
   if (FORCED_TIER) return { tier: sane(FORCED_TIER), how: 'env override' };
   if ([1, 2, 3].includes(job.design_tier)) return { tier: sane(job.design_tier), how: 'chosen' };
   const m = /^DESIGN TIER:\s*([123])\b/m.exec(job.brief || '');
   if (m) return { tier: sane(Number(m[1])), how: 'chosen' };
-  return { tier: Math.random() < 0.5 ? 2 : 3, how: 'roulette' };
+  return { tier: 2, how: 'house style' };
 }
 
 async function currentLaw() {
@@ -772,7 +784,24 @@ async function storeFinished(job, html) {
  * be the wrong trade. Runs BEFORE the film so the recorder never catches a
  * half-written manifest.
  */
+/**
+ * ⏸️ PAUSED, 2026-08-11. Sarah: *"the narration is not quite right. take it off
+ * for now until we perfect her cadence."* The script the tour builds from is
+ * correct now (it reads the page's own chapters), and the voice renders free on
+ * the Node Edge path, so what is left is a TASTE problem: how she paces a
+ * sentence, where she breathes, how long a beat runs. A hostess with the wrong
+ * cadence on a prospect's demo is worse than no hostess, so the pipeline stops
+ * making them until the read is right.
+ *
+ * Turning it back on is one flag and no code change: SITE_TOUR=on (in the
+ * environment or .env.local). Nothing else about the tour was removed, and
+ * `node scripts/site-tour/build.mjs --site <id>` still builds one by hand,
+ * which is exactly how the cadence gets tuned.
+ */
+const SITE_TOUR_ON = /^(1|on|true|yes)$/i.test(env.SITE_TOUR || '');
+
 async function buildSiteTour(job) {
+  if (!SITE_TOUR_ON) return log('site tour: PAUSED (cadence rework). Set SITE_TOUR=on to resume.');
   const script = path.join(process.cwd(), 'scripts', 'site-tour', 'build.mjs');
   if (!existsSync(script)) return log('site tour: script missing, skipped');
   log('site tour: writing the welcome for', job.business_name);
@@ -1065,7 +1094,7 @@ async function tick() {
   return true;
 }
 
-log('demo-site worker up. sites dir:', SITES_DIR, '| design tiers:', FORCED_TIER ? `forced ${FORCED_TIER}` : 'row choice, else roulette', '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
+log('demo-site worker up. sites dir:', SITES_DIR, '| design tiers:', FORCED_TIER ? `forced ${FORCED_TIER}` : 'row choice, else tier 2', '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
 
 // Beat on a timer, not inside the work loop: a 30-minute build must not look
 // like a dead machine. unref() so --once can still exit.

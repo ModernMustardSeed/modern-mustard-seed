@@ -71,6 +71,10 @@ export function ReachOutDeck({
   const [forging, setForging] = useState(false);
   const [forgingSite, setForgingSite] = useState(false);
   const [rebuilding, setRebuilding] = useState(false);
+  // Sarah's design-tier picker, same convention as the Forge board. Tier 2 (the
+  // Wildmere award-site world) is the house style and the default; tier 3 is the
+  // Journey site, built on request. Governs the first forge and any rebuild.
+  const [designTier, setDesignTier] = useState<2 | 3>(2);
   const [forgingOs, setForgingOs] = useState(false);
   const [reforgeOpen, setReforgeOpen] = useState(false);
   // Tap-to-text: we write it, her own phone sends it. No Twilio, no A2P.
@@ -112,9 +116,12 @@ export function ReachOutDeck({
 
   const forgeSite = async () => {
     setForgingSite(true);
-    push('Queuing their demo website at the forge...');
+    push(`Queuing their demo website at the forge${designTier ? ` (Tier ${designTier} design)` : ''}...`);
     try {
-      const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-site`, { method: 'POST' });
+      const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-site`, {
+        method: 'POST',
+        body: JSON.stringify(designTier ? { designTier } : {}),
+      });
       if (res.lead) onLead(res.lead);
       push('Website queued. The forge builds it in the background; the chip flips to live when it is done.');
     } catch (e) {
@@ -130,9 +137,12 @@ export function ReachOutDeck({
   // whole time, so this is safe to press on a demo a prospect is already holding.
   const rebuildSite = async () => {
     setRebuilding(true);
-    push('Queuing a rebuild on the current design law...');
+    push(`Queuing a rebuild on the current design law${designTier ? ` (Tier ${designTier} design)` : ''}...`);
     try {
-      const res = await api<{ already?: boolean }>(`/api/admin/outbound/leads/${lead.id}/refresh-site`, { method: 'POST' });
+      const res = await api<{ already?: boolean }>(`/api/admin/outbound/leads/${lead.id}/refresh-site`, {
+        method: 'POST',
+        body: JSON.stringify(designTier ? { designTier } : {}),
+      });
       onLead({ ...lead, site_demo_status: 'queued' });
       push(
         res.already
@@ -339,6 +349,19 @@ export function ReachOutDeck({
           <button onClick={() => void forgeDemo()} disabled={forging} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title="Build their branded voice agent demo in seconds">
             {forging ? 'Forging…' : '⚒ Forge demo'}
           </button>
+        )}
+
+        {!siteForging && (
+          <select
+            value={designTier}
+            onChange={(e) => setDesignTier(Number(e.target.value) as 2 | 3)}
+            className="bg-white border-2 border-[#1a1815]/20 rounded-lg px-2 py-1.5 font-oswald uppercase tracking-[0.06em] text-[11px] text-[#1a1815]/75 outline-none focus:border-[#b58a2a] hover:border-[#1a1815]"
+            title="Which design tier the next website forge or rebuild uses. Tier 2 is the house style. Applies to the button below, not to a site already built."
+            aria-label="Design tier for the website forge"
+          >
+            <option value={2}>Design: Tier 2 · World</option>
+            <option value={3}>Design: Tier 3 · Journey</option>
+          </select>
         )}
 
         {siteReady ? (
