@@ -73,3 +73,35 @@ dashboard. Only assistant configuration is versioned here.
 `.github/workflows/vapi-drift.yml` runs `--diff` daily at 08:00 Mountain and on
 any PR touching `vapi/assistants/**` or the sync tool. It also fails when any
 webhook has no secret set.
+
+## The shared call-quality baseline
+
+Prompts and tools are bespoke per client: a roofer books jobs, a med spa books
+consults, a restaurant takes orders. That variation is the product. The
+call-handling plumbing underneath should not vary, and all seven concierges
+shipped without any of it.
+
+`vapi/baseline.json` holds those shared settings with the reasoning stored
+beside each value, in `_`-prefixed keys, so the reason travels with the number.
+
+```bash
+node scripts/vapi-baseline.mjs            # report what would change
+node scripts/vapi-baseline.mjs --apply    # write it into the configs
+node scripts/vapi-sync.mjs --diff         # review
+node scripts/vapi-sync.mjs --push --all   # ship
+```
+
+It edits only the baseline keys and never touches a prompt or a tool, so a
+client's tuned agent is not at risk. Adding a new concierge means adding its
+slug to `appliesTo`.
+
+What the first application fixed, across all seven:
+
+| Setting | Was | Now | Why it mattered |
+|---|---|---|---|
+| `maxDurationSeconds` | 900 | 3600 | Callers were hung up on mid-sentence at fifteen minutes |
+| `silenceTimeoutSeconds` | 20 | 60 | Twenty seconds of quiet ended calls while people looked things up |
+| `startSpeakingPlan` | absent | livekit, 0.2s | Fixed silence timers instead of true end-of-turn detection |
+| `stopSpeakingPlan` | absent | 2 words | A stray TV word could cut the agent off mid-sentence |
+| `backgroundSpeechDenoisingPlan` | absent | Krisp + Fourier | Room noise reached the transcriber and came back garbled |
+| `analysisPlan` | absent | summary | Owners got no record of what their phone did overnight |

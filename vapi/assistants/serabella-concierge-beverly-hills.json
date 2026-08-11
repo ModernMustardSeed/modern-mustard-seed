@@ -1,6 +1,21 @@
 {
   "id": "83e69245-8905-4b63-a39e-df081f852a70",
+  "analysisPlan": {
+    "summaryPrompt": "Summarize this call for the business owner: who called, what they wanted, what was booked, quoted or captured, and the single best next action. If the caller needs a human, say so first and say why. Be specific and brief."
+  },
   "backgroundDenoisingEnabled": true,
+  "backgroundSpeechDenoisingPlan": {
+    "smartDenoisingPlan": {
+      "enabled": true
+    },
+    "fourierDenoisingPlan": {
+      "enabled": true,
+      "mediaDetectionEnabled": true,
+      "baselineOffsetDb": -15,
+      "windowSizeMs": 3000,
+      "baselinePercentile": 85
+    }
+  },
   "endCallPhrases": [
     "goodbye",
     "have a good one",
@@ -8,7 +23,7 @@
     "bye now"
   ],
   "firstMessage": "Thank you for calling Serabella MedSpa, Beverly Hills. I can book your complimentary consultation or answer any questions. How can I help you glow today?",
-  "maxDurationSeconds": 900,
+  "maxDurationSeconds": 3600,
   "metadata": {
     "branchId": "br_bh",
     "team": "+13105550002"
@@ -264,7 +279,18 @@
   "server": {
     "url": "https://serabella-medspa-concierge.vercel.app/api/vapi/webhook"
   },
-  "silenceTimeoutSeconds": 20,
+  "silenceTimeoutSeconds": 60,
+  "startSpeakingPlan": {
+    "waitSeconds": 0.2,
+    "smartEndpointingPlan": {
+      "provider": "livekit"
+    }
+  },
+  "stopSpeakingPlan": {
+    "numWords": 2,
+    "voiceSeconds": 0.3,
+    "backoffSeconds": 1
+  },
   "transcriber": {
     "language": "multi",
     "model": "nova-3",
