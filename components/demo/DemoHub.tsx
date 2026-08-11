@@ -77,6 +77,7 @@ export default function DemoHub({
   sitePending,
   osUrl,
   presenter,
+  theme,
 }: {
   hubId: string;
   business: string;
@@ -104,6 +105,8 @@ export default function DemoHub({
   osUrl: string | null;
   /** Partner who minted this suite ("Presented by X with Modern Mustard Seed"). */
   presenter?: string | null;
+  /** Derived from THIS lead's own forged website; falls back to house mustard. */
+  theme?: { accent: string; accentInk: string };
 }) {
   const { shown: bubble, typing } = useTyped(`Hi${ownerFirst ? ` ${ownerFirst}` : ''}! We made ${business} some presents. Open them!`);
 
@@ -355,6 +358,7 @@ export default function DemoHub({
         <MakeItRealCTA
           hubId={hubId}
           business={business}
+          theme={theme}
           forged={[
             voiceUrl ? ('voice' as DemoProductKey) : null,
             siteUrl || sitePending ? ('site' as DemoProductKey) : null,

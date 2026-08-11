@@ -2,35 +2,42 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { ForgedCall } from '@/lib/sidekick';
-import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
-import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
+import { sidekickVoice } from '@/lib/sidekick-voice';
 import { possessive } from '@/lib/business-name';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+
+/** The house mustard, used until a lead's own brand color has been forged. */
+const MMS_THEME = { accent: '#F5B700', accentInk: '#161616' };
 
 export type VoiceState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 
 /**
  * The one voice call button shared by every forged-demo surface (the demo
  * website overlay and the business OS demo): starts a live web call with the
- * lead's own voice agent. Same Vapi web pattern as DemoCallExperience.
+ * lead's own voice agent. Same Vapi web pattern as DemoCallExperience. Every
+ * forged agent answers in the same female voice (Sarah, 2026-08-11); the
+ * button wears the lead's own brand color when one has been forged, falling
+ * back to house mustard.
  */
 export default function DemoVoiceWidget({
   business,
   call,
   label = 'Talk to this website',
   onStateChange,
+  theme = MMS_THEME,
 }: {
   business: string;
   call: ForgedCall | null;
   label?: string;
   onStateChange?: (s: VoiceState) => void;
+  /** Derived from the lead's own forged website; falls back to house mustard. */
+  theme?: { accent: string; accentInk: string };
 }) {
   const [state, setStateRaw] = useState<VoiceState>('idle');
   const [error, setError] = useState('');
   const [seconds, setSeconds] = useState(0);
-  const [gender, setGender] = useState<VoiceGender>(() => genderFromVoiceId(call?.voice?.voiceId));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const vapiRef = useRef<any>(null);
 
@@ -87,7 +94,7 @@ export default function DemoVoiceWidget({
         silenceTimeoutSeconds: call.silenceTimeoutSeconds,
         maxDurationSeconds: call.maxDurationSeconds,
         metadata: call.metadata,
-        voice: sidekickVoice(gender),
+        voice: sidekickVoice('female'),
       } as never);
     } catch (err) {
       setState('error');
@@ -114,14 +121,12 @@ export default function DemoVoiceWidget({
 
   return (
     <div className="flex flex-col items-end gap-2">
-      {state !== 'live' && state !== 'connecting' && (
-        <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_rgba(0,0,0,0.45)] px-3 pt-2 pb-2.5">
-          <VoiceGenderToggle value={gender} onChange={setGender} tone="light" />
-        </div>
-      )}
       {state === 'live' ? (
-        <div className="bg-[#161616] border-2 border-[#F5B700] rounded-2xl shadow-[4px_4px_0_0_rgba(0,0,0,0.45)] px-4 py-3 flex items-center gap-3">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700] animate-pulse" />
+        <div
+          className="bg-[#161616] border-2 rounded-2xl shadow-[4px_4px_0_0_rgba(0,0,0,0.45)] px-4 py-3 flex items-center gap-3"
+          style={{ borderColor: theme.accent }}
+        >
+          <span className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ background: theme.accent }} />
           <div className="text-left">
             <p className="font-sans font-bold uppercase tracking-[0.1em] text-[11px] text-[#FBF6EA]">Live · {mmss}</p>
             <p className="font-body text-[11px] text-[#FBF6EA]/60">{possessive(business)} voice agent</p>
@@ -137,11 +142,12 @@ export default function DemoVoiceWidget({
         <button
           onClick={() => void start()}
           disabled={state === 'connecting'}
-          className="group bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-full shadow-[4px_4px_0_0_#161616] pl-4 pr-5 py-3 font-sans font-bold uppercase tracking-[0.08em] text-sm hover:-translate-y-0.5 transition-transform disabled:opacity-70 flex items-center gap-2.5"
+          className="group border-2 border-[#161616] rounded-full shadow-[4px_4px_0_0_#161616] pl-4 pr-5 py-3 font-sans font-bold uppercase tracking-[0.08em] text-sm hover:-translate-y-0.5 transition-transform disabled:opacity-70 flex items-center gap-2.5"
+          style={{ background: theme.accent, color: theme.accentInk }}
         >
           <span className="relative flex w-2.5 h-2.5">
-            <span className="absolute inline-flex w-full h-full rounded-full bg-[#161616]/40 animate-ping group-hover:animate-none" />
-            <span className="relative inline-flex w-2.5 h-2.5 rounded-full bg-[#161616]" />
+            <span className="absolute inline-flex w-full h-full rounded-full animate-ping group-hover:animate-none" style={{ background: theme.accentInk, opacity: 0.4 }} />
+            <span className="relative inline-flex w-2.5 h-2.5 rounded-full" style={{ background: theme.accentInk }} />
           </span>
           {state === 'connecting' ? 'Ringing…' : state === 'ended' ? 'Call again' : label}
         </button>

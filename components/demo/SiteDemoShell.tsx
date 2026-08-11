@@ -18,12 +18,15 @@ export default function SiteDemoShell({
   business,
   call,
   orderUrl,
+  theme,
 }: {
   siteId: string;
   business: string;
   call: ForgedCall | null;
   /** the hub's order section; buying happens there, one tap away */
   orderUrl?: string | null;
+  /** Derived from THIS lead's own forged website; falls back to house mustard. */
+  theme?: { accent: string; accentInk: string };
 }) {
   const [showIntro, setShowIntro] = useState(false);
   const [voiceState, setVoiceState] = useState<VoiceState>('idle');
@@ -93,7 +96,7 @@ export default function SiteDemoShell({
             <p className="font-sans font-bold uppercase tracking-[0.14em] text-[10px] text-[#F5B700]">Your demo, {business}</p>
             <p className="font-body text-[13px] leading-relaxed text-[#FBF6EA]/90 mt-1.5">
               This whole website is a working draft we built for you. One more thing: it answers its own phone.
-              Tap the gold button and pretend you are a customer calling in.
+              Tap the call button and pretend you are a customer calling in.
             </p>
             <button
               onClick={dismissIntro}
@@ -107,6 +110,7 @@ export default function SiteDemoShell({
         <DemoVoiceWidget
           business={business}
           call={call}
+          theme={theme}
           onStateChange={(s) => {
             setVoiceState(s);
             if (s === 'connecting') dismissIntro();

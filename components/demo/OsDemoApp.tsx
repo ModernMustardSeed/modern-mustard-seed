@@ -1606,7 +1606,7 @@ export default function OsDemoApp({
 
       {/* The voice agent, one floor down from the corner tabs on mobile. */}
       <div className="fixed bottom-16 md:bottom-4 right-4 z-40">
-        <DemoVoiceWidget business={config.business} call={call} label="Your voice agent. Try it" />
+        <DemoVoiceWidget business={config.business} call={call} label="Your voice agent. Try it" theme={{ accent, accentInk }} />
       </div>
 
       {/* First-run onboarding tour (drives the tabs as it explains them). */}

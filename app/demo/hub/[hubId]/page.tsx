@@ -2,9 +2,11 @@ import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import DemoHub from '@/components/demo/DemoHub';
 import { leadTrade } from '@/lib/outbound-demo';
+import type { OsDemoConfig } from '@/lib/outbound-demo';
 import { recordDemoEvent } from '@/lib/demo-events';
 import type { Niche } from '@/lib/outbound';
 import { SARAH_WELCOME_READY } from '@/lib/email';
+import { extractPalette, themeFromPalette } from '@/lib/site-palette';
 
 export const metadata = buildMetadata({ title: 'Your Demo Suite', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -124,8 +126,31 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
           ? 'demo-welcome-os'
           : 'demo-welcome-voice';
 
+  // Wear the same clothes as THEIR forged website, so the button and the
+  // order card match the demos they open from here instead of standing out
+  // as an MMS-branded add-on. Same order of trust as the OS demo: the
+  // forged site's own declared palette, then the brand color captured from
+  // their real site at forge time, then the house mustard deck.
+  const { data: site } = await sb
+    .from('outbound_demo_sites')
+    .select('html')
+    .eq('lead_id', lead.id)
+    .eq('status', 'ready')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const sitePalette = extractPalette(site?.html);
+  let brandColor: string | null = null;
+  if (!sitePalette) {
+    const { data: osDemo } = await sb.from('outbound_demo_os').select('config').eq('lead_id', lead.id).maybeSingle();
+    brandColor = (osDemo?.config as OsDemoConfig | undefined)?.brandColor ?? null;
+  }
+  const palette = sitePalette ?? (brandColor ? { bg: '#0e1220', accent: brandColor } : null);
+  const theme = themeFromPalette(palette);
+
   return (
     <DemoHub
+      theme={{ accent: theme.accent, accentInk: theme.accentInk }}
       hubId={hubId}
       business={lead.business_name}
       ownerFirst={lead.contact_name?.trim().split(/\s+/)[0] ?? null}
