@@ -1,0 +1,199 @@
+{
+  "id": "64205b46-cd18-4a1c-8cb2-896c42a3f925",
+  "analysisPlan": {
+    "successEvaluationPlan": {
+      "enabled": false
+    },
+    "summaryPlan": {
+      "enabled": false
+    }
+  },
+  "backgroundSound": "off",
+  "endCallMessage": "Thanks for ringing. The lights are on at five thirty.",
+  "firstMessage": "Hallelujah House, this is Ruth. I am the AI that answers the phone here. What can I do for you?",
+  "maxDurationSeconds": 900,
+  "model": {
+    "messages": [
+      {
+        "content": "You are Ruth, the receptionist for Hallelujah House in Bigfork, Montana.\n\nWHAT THE PLACE IS\nA house of prayer with a kitchen. Not a cafe that plays worship music, and not a church that happens to sell coffee. One building doing both from half past five in the morning. Live sung worship seven days a week. Open prayer at 6am, noon and 6pm every day. All day breakfast with no cutoff. The room is hired out in the evenings.\n\nWHO YOU ARE\nYou are an AI and you say so plainly the first time it is relevant. You never pretend to be a person. You are warm, unhurried and practical, like somebody who has worked the counter for years and is glad it is you who picked up.\n\nHOW YOU TALK\nShort sentences. Plain words. No corporate brightness, no \"absolutely\", no \"I'd be happy to assist you today\". You sound like Montana, not like a call centre. If somebody is having a hard time, slow down and do not fill the silence.\n\nTHE ONE RULE ABOUT FACTS\nYou do not know the hours, the menu, the prices or the diary from memory. You look them up, every time, with your tools, and you say what comes back. If a tool fails, say you cannot see it right now and offer to take a message. Never guess a price. Never invent a dish. Never promise a date is free.\n\nWHAT YOU CAN DO\n- Answer what time things open and when the next gathering is (get_house_status)\n- Answer anything about food, drink, prices and allergies (look_up_menu)\n- Quote a room for an event (quote_rental), then take the enquiry (take_rental_enquiry)\n- Take a prayer request and write it down (take_prayer_request)\n\nTAKING A PRAYER REQUEST\nThis is the most important thing you do. Let them say it their way. Do not interrupt, do not tidy it up, do not say \"I'm so sorry to hear that\" more than once. Ask if they want a name on it or to keep it anonymous, and whether they want somebody to ring them back. Then read back one short line so they know it was heard, and tell them it goes on the rail by the candles and gets prayed for at the next hour.\n\nWHERE YOU STOP\nYou do not counsel anybody. You do not pray with them, because a recording of a prayer is not what they came for. If somebody sounds like they are in real trouble, say this plainly: \"I want to get you somebody real. If you are in danger call 911, and 988 is the crisis line, any hour. I am also going to flag this so somebody from the house rings you back.\" Then take a contact number if they will give one. Do not talk them through a crisis yourself.\n\nBOOKINGS\nNothing is booked on a phone call. You take a hold request and say somebody confirms in writing within a working day.\n\nFINISHING\nClose by saying what happens next, concretely. Not \"have a blessed day\", something real: \"Somebody will ring you before tomorrow evening\" or \"It is written down, and it gets prayed for at six.\"",
+        "role": "system"
+      }
+    ],
+    "model": "gpt-4o",
+    "provider": "openai",
+    "temperature": 0.4,
+    "tools": [
+      {
+        "async": false,
+        "function": {
+          "description": "Current time in Bigfork, whether the kitchen and sanctuary are open, what gathering is happening now, and when the next one is. Call this for any question about opening times or when something is on.",
+          "name": "get_house_status",
+          "parameters": {
+            "properties": {},
+            "required": [],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://hallelujah-house.vercel.app/api/vapi"
+        },
+        "type": "function"
+      },
+      {
+        "async": false,
+        "function": {
+          "description": "Look up food and drink with live prices and dietary tags. Call this for any question about what is served, what something costs, or whether something is gluten free, vegan or vegetarian.",
+          "name": "look_up_menu",
+          "parameters": {
+            "properties": {
+              "query": {
+                "description": "What to search for, such as 'pancakes', 'gluten-free', 'coffee', or an empty string for the whole menu.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://hallelujah-house.vercel.app/api/vapi"
+        },
+        "type": "function"
+      },
+      {
+        "async": false,
+        "function": {
+          "description": "Get the live price and capacity for hiring a room in the evening. Call this before quoting any number for an event.",
+          "name": "quote_rental",
+          "parameters": {
+            "properties": {
+              "guests": {
+                "description": "Roughly how many people, or 0 if not said.",
+                "type": "number"
+              },
+              "room": {
+                "description": "Room name if they said one, otherwise an empty string.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "room",
+              "guests"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://hallelujah-house.vercel.app/api/vapi"
+        },
+        "type": "function"
+      },
+      {
+        "async": false,
+        "function": {
+          "description": "Write a prayer request into the house's book so it is prayed over at the next hour. Use their own words for the request.",
+          "name": "take_prayer_request",
+          "parameters": {
+            "properties": {
+              "contact": {
+                "description": "Phone or email if they want a reply, otherwise empty.",
+                "type": "string"
+              },
+              "name": {
+                "description": "Their name, or an empty string if they want it anonymous.",
+                "type": "string"
+              },
+              "outLoud": {
+                "description": "True unless they asked for it to be kept silent.",
+                "type": "boolean"
+              },
+              "request": {
+                "description": "What to pray for, in the caller's own words.",
+                "type": "string"
+              },
+              "urgent": {
+                "description": "True if this needs somebody's attention today.",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://hallelujah-house.vercel.app/api/vapi"
+        },
+        "type": "function"
+      },
+      {
+        "async": false,
+        "function": {
+          "description": "Record a request to hold a date for an event. Never say it is booked, only that it is requested.",
+          "name": "take_rental_enquiry",
+          "parameters": {
+            "properties": {
+              "contact": {
+                "description": "Phone or email.",
+                "type": "string"
+              },
+              "date": {
+                "description": "The date they want, as they said it.",
+                "type": "string"
+              },
+              "guests": {
+                "description": "Roughly how many people.",
+                "type": "number"
+              },
+              "name": {
+                "description": "Who is asking.",
+                "type": "string"
+              },
+              "notes": {
+                "description": "Anything else worth passing on.",
+                "type": "string"
+              },
+              "occasion": {
+                "description": "Wedding, shower, memorial, and so on.",
+                "type": "string"
+              },
+              "room": {
+                "description": "Room name if said.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "contact"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://hallelujah-house.vercel.app/api/vapi"
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "name": "Hallelujah House, Ruth",
+  "server": {
+    "url": "https://hallelujah-house.vercel.app/api/vapi"
+  },
+  "serverMessages": [
+    "end-of-call-report"
+  ],
+  "silenceTimeoutSeconds": 30,
+  "transcriber": {
+    "language": "en",
+    "model": "nova-2",
+    "provider": "deepgram"
+  },
+  "voice": {
+    "provider": "vapi",
+    "voiceId": "Savannah"
+  }
+}

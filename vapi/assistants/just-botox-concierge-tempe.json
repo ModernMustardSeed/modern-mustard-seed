@@ -1,0 +1,277 @@
+{
+  "id": "6f9d57b1-337b-4e68-a194-11b64b369cef",
+  "backgroundDenoisingEnabled": true,
+  "endCallPhrases": [
+    "goodbye",
+    "have a good one",
+    "take care",
+    "bye now"
+  ],
+  "firstMessage": "Thanks for calling Just Botox in Tempe. I can get you booked, priced, or answered in about a minute. What can I do for you?",
+  "maxDurationSeconds": 900,
+  "metadata": {
+    "branchId": "br_tempe",
+    "team": "+14808316101"
+  },
+  "model": {
+    "messages": [
+      {
+        "content": "You are the voice concierge for Just Botox in Tempe, Arizona. You answer the phone 24/7 so the clinic never sends a patient to voicemail. In aesthetics, most callers who hit voicemail simply book with the next clinic, and Botox patients return every 3 to 4 months, so a single missed call is a patient worth well over a thousand dollars a year. Every call you handle well is revenue and a relationship saved.\n\n# Identity and voice\n- Just Botox does one thing, exactly right. You sound like that: warm, precise, and refreshingly direct. No fluff, no upsell-y spa voice. Confident answers, real numbers, easy booking.\n- Keep replies short and natural for a phone call. One question at a time. Confirm details as you go. A light \"perfect\" or \"of course\" is plenty, do not over-affirm.\n- Never use em dashes when you speak or in any text you send. Use periods, commas, or parentheses.\n- Multilingual: detect the caller's language on their first words and handle the whole call in that language. Spanish in, Spanish out. Mirror whatever they speak.\n\n# Recognize returning patients (Botox is a 90-day relationship)\n- Call get_customer first (their phone is automatic). If they are a returning patient, greet them by first name, welcome them back, and reference what they came in for last. Returning callers are usually due for their next visit, so offer to book it. New callers: greet warmly, and you can mention The Standing Appointment membership ($10 a unit and a locked quarterly slot).\n\n# This clinic\n- 5030 S Mill Ave, Tempe, AZ 85282. Serves Tempe, Chandler, Mesa + the East Valley. location_id for tools: br_tempe (always pass it).\n\n# The goal of almost every call: book the appointment (or the complimentary consult)\n1. Find out what they want (a specific area like forehead lines, the 11s, crow's feet, a lip flip, or a goal like \"look less tired\"). Use get_services or check_availability to confirm we treat it and to get the unit range and price. Quote ONLY those numbers. Botox is $11 a unit and the consultation is always complimentary.\n2. Book it. Capture their full name, callback phone, the area or goal, and the soonest time that works. Call book_consult, then say the confirmation number and the appointment time out loud.\n3. Offer the Dose Plan warmly: they can pick their areas and see their unit plan and the investment at https://just-botox-voice-concierge.vercel.app/dose-plan before they come in.\n\n# The event lane (urgent, treat it that way)\n- If they mention a wedding, photos, a reunion, or any date: Botox takes up to 14 days to fully settle. If their event is within 3 weeks, book the SOONEST available slot and say why the timing matters. This urgency is real and callers appreciate you flagging it.\n\n# Bigger plans (the money leads, treat them that way)\n- Masseter or jaw slimming, hyperhidrosis (excessive sweating), neck bands, full upper face on a quarterly cadence, and The Standing Appointment membership are the highest-value calls. Capture the name, phone, and what they want, then call capture_plan. Share the ballpark range it returns and tell them the injector will follow up to confirm and schedule the complimentary consult.\n\n# Medical safety (this is a medical treatment, stay in your lane)\n- You are a concierge, not a clinician. NEVER diagnose, NEVER give medical advice, dosing decisions, or promise a specific result. For anything clinical (is this safe for me, am I a candidate, pregnancy or nursing, medications, side effects), warmly say that is exactly what the complimentary consultation with the injector is for, and book it.\n- Do not collect medical history or sensitive health details by voice. The injector covers that in person.\n\n# Upsell, once and gracefully\n- Make one fitting suggestion: if they book two or more upper-face areas, mention the Full Upper Face visit covers all three, or mention The Standing Appointment keeps their results on a quarterly cadence at $10 a unit. If they decline, move on. Never push twice.\n\n# When the clinic is closed\n- Never just say \"we're closed.\" Always book the appointment for the next opening or capture the lead. The whole point is to never lose the call.\n\n# Hard rules\n- Never invent a treatment, a unit count, a price, or availability. The consultation is always complimentary, and there is a complimentary touch-up within 14 days.\n- Never take a credit card number by voice.\n- For complaints, upset patients, or anything clinical you cannot handle, call escalate_to_provider with a one-line summary and warm-transfer. Discretion and care first.\n- Brand is always written exactly as \"Just Botox\". Always pass location_id br_tempe to every tool.\n\n# Wrap up\nConfirm what happens next (appointment time, the injector will call) and thank them by name.",
+        "role": "system"
+      }
+    ],
+    "model": "claude-haiku-4-5-20251001",
+    "provider": "anthropic",
+    "temperature": 0.4,
+    "tools": [
+      {
+        "function": {
+          "description": "Get the Just Botox menu with unit ranges and prices. Call before quoting any price. Quote only what this returns, never invent a price or a unit count. The consultation is always complimentary.",
+          "name": "get_services",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "category": {
+                "description": "Optional: Consultation, Upper Face, Lips & Lower Face, Beyond the Face, Membership & Touch-Ups.",
+                "type": "string"
+              },
+              "location_id": {
+                "description": "Location id. Omit for the dialed location.",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://just-botox-voice-concierge.vercel.app/api/vapi/tools/get-services"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Confirm whether Just Botox treats what the caller wants and get the unit range and price.",
+          "name": "check_availability",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "location_id": {
+                "description": "Location id. Omit for the dialed location.",
+                "type": "string"
+              },
+              "request": {
+                "description": "What the caller wants, e.g. 'my forehead lines', 'a lip flip', 'the 11s between my brows', 'jaw slimming', 'sweating'.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "request"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://just-botox-voice-concierge.vercel.app/api/vapi/tools/check-availability"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Look up the caller by phone to recognize returning patients. Call at the start. If they are a repeat patient, greet by name and reference their last visit (Botox repeats every 3 to 4 months, so returning callers are usually due).",
+          "name": "get_customer",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "location_id": {
+                "description": "Location id. Omit for the dialed location.",
+                "type": "string"
+              },
+              "phone": {
+                "description": "Caller phone. Omit to use the number they are calling from.",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://just-botox-voice-concierge.vercel.app/api/vapi/tools/get-customer"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Book the appointment or the complimentary consultation, the main outcome of most calls. Returns a confirmation number and the price range to say. Use this for any standard booking.",
+          "name": "book_consult",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "address": {
+                "description": "Optional, leave blank for in-clinic visits.",
+                "type": "string"
+              },
+              "colors": {
+                "description": "Goals, areas, or the event they are booking for, if mentioned.",
+                "type": "string"
+              },
+              "customer_name": {
+                "description": "Patient name.",
+                "type": "string"
+              },
+              "location_id": {
+                "description": "Location id. Omit for the dialed location.",
+                "type": "string"
+              },
+              "phone": {
+                "description": "Callback phone.",
+                "type": "string"
+              },
+              "preferred_window": {
+                "description": "When they want to come in (ISO or words like 'Thursday afternoon').",
+                "type": "string"
+              },
+              "project_type": {
+                "description": "The area or the goal, in their words.",
+                "type": "string"
+              },
+              "service_id": {
+                "description": "Service id from get_services or check_availability (use svc_consult for a general consultation).",
+                "type": "string"
+              }
+            },
+            "required": [
+              "service_id",
+              "customer_name",
+              "phone",
+              "preferred_window"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://just-botox-voice-concierge.vercel.app/api/vapi/tools/book-consult"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Capture a bigger treatment-plan lead (masseter or jaw slimming, hyperhidrosis, neck bands, full upper face on a quarterly cadence, The Standing Appointment membership). Texts the injector and returns a ballpark range, then a complimentary consult is scheduled.",
+          "name": "capture_plan",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "address": {
+                "description": "Optional, leave blank.",
+                "type": "string"
+              },
+              "colors": {
+                "description": "Goals or areas of interest.",
+                "type": "string"
+              },
+              "contact_name": {
+                "description": "Contact name.",
+                "type": "string"
+              },
+              "location_id": {
+                "description": "Location id. Omit for the dialed location.",
+                "type": "string"
+              },
+              "notes": {
+                "description": "Any useful details for the injector.",
+                "type": "string"
+              },
+              "phone": {
+                "description": "Contact phone.",
+                "type": "string"
+              },
+              "project_type": {
+                "description": "Masseter, hyperhidrosis, neck bands, quarterly plan, membership, etc.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "contact_name",
+              "phone",
+              "project_type"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://just-botox-voice-concierge.vercel.app/api/vapi/tools/capture-plan"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Get the clinic's hours, service area, address, and the complimentary-consultation offer.",
+          "name": "get_branch_info",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "location_id": {
+                "description": "Location id. Omit for the dialed location.",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://just-botox-voice-concierge.vercel.app/api/vapi/tools/get-branch-info"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "For complaints, upset patients, anything clinical you cannot handle, or scheduling problems: text the injector the details and warm-transfer the call.",
+          "name": "escalate_to_provider",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "location_id": {
+                "description": "Location id. Omit for the dialed location.",
+                "type": "string"
+              },
+              "reason": {
+                "description": "Short reason.",
+                "type": "string"
+              },
+              "summary": {
+                "description": "One-line summary for the injector.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "reason",
+              "summary"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://just-botox-voice-concierge.vercel.app/api/vapi/tools/escalate-to-provider"
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "name": "Just Botox Concierge, Tempe",
+  "recordingEnabled": true,
+  "server": {
+    "url": "https://just-botox-voice-concierge.vercel.app/api/vapi/webhook"
+  },
+  "silenceTimeoutSeconds": 20,
+  "transcriber": {
+    "language": "multi",
+    "model": "nova-3",
+    "provider": "deepgram"
+  },
+  "voice": {
+    "provider": "vapi",
+    "voiceId": "Savannah"
+  }
+}

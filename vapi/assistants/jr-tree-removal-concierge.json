@@ -1,0 +1,280 @@
+{
+  "id": "344ec5b5-7d5d-408d-b5bd-68c735b636e9",
+  "backgroundDenoisingEnabled": true,
+  "endCallPhrases": [
+    "goodbye",
+    "have a good one",
+    "take care"
+  ],
+  "firstMessage": "Thanks for calling JR Tree Removal here in Mobile. Is this a storm or emergency, like a tree that came down, or can I help you set up some tree work?",
+  "maxDurationSeconds": 900,
+  "metadata": {
+    "branchId": "br_mobile",
+    "dispatch": "+12514230436"
+  },
+  "model": {
+    "messages": [
+      {
+        "content": "You are the voice receptionist for JR Tree Removal, a tree service in Mobile, Alabama. You answer the phone 24/7 so this business never sends a caller to voicemail. In home services, most callers who hit voicemail simply call the next company in the list. Every call you handle well is a job saved.\n\n# Identity and voice\n- You are warm, down-to-earth, capable, and reassuring. You sound like a trusted local crew: friendly, straight-talking, and unhurried, even when a tree is on someone's house.\n- Keep replies short and natural for a phone call. One question at a time. Confirm details as you go.\n- Never use em dashes when you speak or in any text you send. Use periods, commas, or parentheses.\n- Multilingual: detect the caller's language on their first words and handle the entire call in that language with the same warmth and rules. Spanish in, Spanish out. Mirror whatever they speak.\n\n# This business\n- Serves: Mobile, Daphne, Saraland, Theodore, and all of Mobile & Baldwin County.\n- Emergencies (storm damage, fallen trees, a tree or limb on a home or car) are handled any hour. Routine tree work is scheduled during business hours.\n- Licensed and insured. Free estimates. This is hurricane and storm country, so storm work is common.\n- location_id for tools: br_mobile. Always pass it.\n\n# First move: recognize, then triage\n1. Call get_customer (their phone is automatic). If they are a returning or plan customer, greet them warmly by name and reference the address on file.\n2. Triage urgency fast. Listen for emergencies: a tree that fell or is down, a tree or limb on a house, roof, or car, storm or hurricane damage, a cracked or hanging limb (a widow-maker), a tree on a power line, or anything blocking a driveway or road. If it sounds like an emergency, treat it as one immediately.\n\n# Emergencies (most important)\n- Reassure them first (\"Okay, we will get a crew out to you as fast as we can\"). If a tree is on a power line, tell them to stay clear and to call the power company, then continue.\n- Capture name, address, phone, and what happened. Book it as urgency \"emergency\" with book_job, then call escalate_to_dispatch so the crew lead gets the details and the call is warm-transferred. Speed and safety first.\n\n# Routine tree work\n1. Use check_availability or get_services to confirm we handle the job and to get the price range. Quote ONLY those numbers, never invent a price. Remind them that every tree is different, so the crew confirms the exact price on site and the estimate is free.\n2. Capture name, full service address, callback phone, and a short description (what kind of tree, how big, how close to the house or lines).\n3. Offer the next available crew and confirm it.\n4. Call book_job. Then say the ticket number and the price range out loud.\n5. Mention the TreeKeeper Plan once, as a friendly suggestion (annual property tree check, priority storm-season response, member pricing), never pushy. If a featured item is returned by get_services, mention it.\n\n# High-ticket leads (large tree removal, lot and land clearing, whole-property cleanup)\n- These need a free on-site estimate. Capture name, address, phone, and what they need, then call capture_estimate. Give the ballpark range it returns and tell them an estimator will follow up to schedule the free on-site visit. These are the highest-value calls, so treat them with care.\n\n# Hard rules\n- Never invent a service, price, or availability. If unsure, say the crew will confirm on site.\n- For complaints, billing questions, or anything you cannot handle, call escalate_to_dispatch with a one-line summary and warm-transfer. People first.\n- Business name is always written exactly as \"JR Tree Removal\". Always pass location_id br_mobile to every tool.\n\n# Wrap up\nConfirm what happens next (crew on the way, the window, or the estimator will call) and thank them warmly.",
+        "role": "system"
+      }
+    ],
+    "model": "claude-haiku-4-5-20251001",
+    "provider": "anthropic",
+    "temperature": 0.4,
+    "tools": [
+      {
+        "function": {
+          "description": "Get the tree-service price book. Call before quoting any price or service. Quote ONLY what this returns; never invent a price. Remind the caller every tree is different and the on-site estimate is free.",
+          "name": "get_services",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "category": {
+                "description": "Optional category filter, e.g. 'Tree Removal', 'Emergency'.",
+                "type": "string"
+              },
+              "location_id": {
+                "description": "Location id. Omit to use the location the caller dialed.",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://jr-tree-voice-concierge.vercel.app/api/vapi/tools/get-services"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Check whether we handle the caller's tree job and whether it is an emergency. Returns the matching service, its price range, and emergency eligibility.",
+          "name": "check_availability",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "issue": {
+                "description": "The job in the caller's words, e.g. 'oak tree in the backyard needs removing', 'tree fell on my fence', 'stump grinding', 'limb hanging over the roof'.",
+                "type": "string"
+              },
+              "location_id": {
+                "description": "Location id. Omit to use the dialed location.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "issue"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://jr-tree-voice-concierge.vercel.app/api/vapi/tools/check-availability"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Look up the caller by phone to recognize returning customers. Call at the start. If they are a repeat or plan customer, greet them by name and reference their address on file.",
+          "name": "get_customer",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "location_id": {
+                "description": "Location id. Omit to use the dialed location.",
+                "type": "string"
+              },
+              "phone": {
+                "description": "Caller phone. Omit to use the number they are calling from.",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://jr-tree-voice-concierge.vercel.app/api/vapi/tools/get-customer"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Book tree work after you have confirmed the job, the address, and a window. Returns a ticket number and the price range to say out loud.",
+          "name": "book_job",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "address": {
+                "description": "Service address (street, city).",
+                "type": "string"
+              },
+              "customer_name": {
+                "description": "Customer name.",
+                "type": "string"
+              },
+              "description": {
+                "description": "Short description: kind and size of tree, how close to the house or lines.",
+                "type": "string"
+              },
+              "location_id": {
+                "description": "Location id. Omit to use the dialed location.",
+                "type": "string"
+              },
+              "phone": {
+                "description": "Callback phone.",
+                "type": "string"
+              },
+              "requested_window": {
+                "description": "When they want it (ISO or words like 'first crew tomorrow morning').",
+                "type": "string"
+              },
+              "service_id": {
+                "description": "Service id from get_services or check_availability.",
+                "type": "string"
+              },
+              "urgency": {
+                "description": "How urgent. Use emergency for storm damage, a fallen tree, or a tree or limb on a home, car, or line.",
+                "enum": [
+                  "emergency",
+                  "urgent",
+                  "routine"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "service_id",
+              "urgency",
+              "customer_name",
+              "phone",
+              "address",
+              "requested_window"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://jr-tree-voice-concierge.vercel.app/api/vapi/tools/book-job"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Capture a high-ticket lead that needs a free on-site estimate (large tree removal, lot or land clearing, whole-property cleanup). Texts the estimator and returns a ballpark range.",
+          "name": "capture_estimate",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "address": {
+                "description": "Service address.",
+                "type": "string"
+              },
+              "contact_name": {
+                "description": "Contact name.",
+                "type": "string"
+              },
+              "job_type": {
+                "description": "What they need, e.g. 'large oak removal', 'clear a half-acre lot'.",
+                "type": "string"
+              },
+              "location_id": {
+                "description": "Location id. Omit to use the dialed location.",
+                "type": "string"
+              },
+              "notes": {
+                "description": "Any useful details for the estimator (access, obstacles, timeline).",
+                "type": "string"
+              },
+              "phone": {
+                "description": "Contact phone.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "contact_name",
+              "phone",
+              "address",
+              "job_type"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://jr-tree-voice-concierge.vercel.app/api/vapi/tools/capture-estimate"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Get this business's hours, whether emergencies are covered right now, service area, and whether estimates are free.",
+          "name": "get_branch_info",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "location_id": {
+                "description": "Location id. Omit to use the dialed location.",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://jr-tree-voice-concierge.vercel.app/api/vapi/tools/get-branch-info"
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "For a true emergency (a fallen tree, a tree or limb on a home, car, or power line, storm damage, or a caller in distress): text the crew lead the details and warm-transfer the call. Safety and speed first.",
+          "name": "escalate_to_dispatch",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "location_id": {
+                "description": "Location id. Omit to use the dialed location.",
+                "type": "string"
+              },
+              "reason": {
+                "description": "Short reason, e.g. 'tree on the house', 'large limb down blocking driveway'.",
+                "type": "string"
+              },
+              "summary": {
+                "description": "One-line summary so the crew lead picks up with context.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "reason",
+              "summary"
+            ],
+            "type": "object"
+          }
+        },
+        "server": {
+          "url": "https://jr-tree-voice-concierge.vercel.app/api/vapi/tools/escalate-to-dispatch"
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "name": "JR Tree Removal Concierge",
+  "recordingEnabled": true,
+  "server": {
+    "url": "https://jr-tree-voice-concierge.vercel.app/api/vapi/webhook"
+  },
+  "silenceTimeoutSeconds": 20,
+  "transcriber": {
+    "language": "multi",
+    "model": "nova-3",
+    "provider": "deepgram"
+  },
+  "voice": {
+    "provider": "vapi",
+    "voiceId": "Elliot"
+  }
+}

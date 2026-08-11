@@ -141,14 +141,18 @@ for (const a of assistants) {
   console.log(`  prompt        ${sysPrompt.length} chars`);
   console.log(`  tools (${fnNames.length})    ${fnNames.join(', ') || 'none'}`);
   console.log(`  phone         ${numbers.join(', ') || 'not attached to a number'}`);
-  // ⚠️ Vapi NEVER returns server.secret on a GET (verified 2026-08-11: the server
-  // object comes back as {url, timeoutSeconds} only). So webhook secret state is
-  // simply NOT KNOWABLE from this API. An earlier version of this line printed
-  // "NO SECRET" here, which was a false alarm on all 22 assistants at once. Do
-  // not reintroduce it: a monitor that cries wolf every run teaches you to ignore
-  // it, which is worse than not checking. Verify a secret by watching whether the
-  // webhook actually authenticates a real call, not by reading it back.
-  console.log(`  webhook       ${a.server?.url ?? 'none'}`);
+  // Webhook auth state IS knowable, just not where you would first look. Vapi
+  // never returns server.secret itself (the server object is {url,
+  // timeoutSeconds}), but it exposes the BOOLEAN `isServerUrlSecretSet` at the
+  // top level. Read that, never server.secret, or you will conclude every
+  // assistant is unprotected and start ignoring a real alarm.
+  // An unprotected webhook means anyone who learns the URL can POST forged tool
+  // calls to it: book jobs, capture leads, hit customer lookups.
+  if (a.server?.url) {
+    console.log(`  webhook       ${a.server.url}${a.isServerUrlSecretSet ? ' (secret set)' : '  ⚠ UNPROTECTED, no secret'}`);
+  } else {
+    console.log(`  webhook       none`);
+  }
 
   if (dest) {
     const match = expectedTransfer ? (dest.number === expectedTransfer ? 'matches repo' : `DRIFT, repo says ${expectedTransfer}`) : 'repo anchor not found';
@@ -157,10 +161,9 @@ for (const a of assistants) {
     console.log(`  warm transfer MISSING. Repo defines ${expectedTransfer}, live agent has no transferCall.`);
   }
 
-  // A placeholder webhook secret cannot be detected here (see the note above:
-  // the field is never returned), so the guard against pushing one lives in
-  // setup-vapi-mustard.mjs, where it is caught BEFORE the write instead of
-  // hunted for afterwards. Prevention is the only workable side of this one.
+  // A placeholder secret still cannot be distinguished from a real one here,
+  // since only the boolean is exposed. That guard lives in setup-vapi-mustard.mjs
+  // where a bad value is caught BEFORE the write rather than hunted afterwards.
 
   if (FULL) {
     console.log(`  first msg     ${JSON.stringify(a.firstMessage ?? '')}`);
@@ -172,6 +175,27 @@ const orphanNumbers = phoneNumbers.filter((n) => !n.assistantId);
 if (orphanNumbers.length) {
   console.log(`\n${'='.repeat(60)}\n${orphanNumbers.length} phone number(s) with no assistant attached:`);
   for (const n of orphanNumbers) console.log(`  ${n.number || n.id}`);
+}
+
+/* ── Summary of things that need a human ──────────────────────────────
+ * Per-assistant lines scroll away in a 22 item list, so anything actionable is
+ * repeated at the bottom where it lands last and gets read. */
+const unprotected = assistants.filter((a) => a.server?.url && !a.isServerUrlSecretSet);
+if (unprotected.length) {
+  console.log(`\n${'='.repeat(60)}`);
+  console.log(`⚠ ${unprotected.length} UNPROTECTED WEBHOOK(S). No secret set, so anyone who`);
+  console.log(`  learns the URL can POST forged tool calls to it:`);
+  for (const a of unprotected) console.log(`    ${a.name || a.id}`);
+}
+
+// Zero-prompt, zero-tool, no-number assistants are leftover probes from voice
+// sampling. Harmless, but they bury the real agents in every listing.
+const junk = assistants.filter(
+  (a) => !(a.model?.messages ?? []).some((m) => m.content) && !(a.model?.tools ?? []).length && !numbersByAssistant.has(a.id)
+);
+if (junk.length) {
+  console.log(`\n${junk.length} empty assistant(s) with no prompt, tools, or number (cleanup candidates):`);
+  console.log(`    ${junk.map((a) => a.name || a.id).join(', ')}`);
 }
 
 console.log('');

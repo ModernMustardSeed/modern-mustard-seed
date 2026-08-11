@@ -1,0 +1,45 @@
+name: Vapi drift check
+
+# Catches the failure this whole system exists to prevent: someone edits an
+# assistant in the Vapi dashboard, the repo silently stops matching production,
+# and nobody finds out until a client's agent behaves in a way no commit
+# explains. Runs daily and on any change to the configs or the sync tooling.
+on:
+  schedule:
+    - cron: '0 15 * * *' # 08:00 Mountain, daily
+  pull_request:
+    paths:
+      - 'vapi/assistants/**'
+      - 'scripts/vapi-sync.mjs'
+  workflow_dispatch:
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Exits 1 when repo and Vapi disagree, which fails the job. On a pull
+      # request that is the point: a config change must be pushed to Vapi, or
+      # the PR is describing a state that does not exist.
+      - name: Compare repo configs against live Vapi
+        env:
+          VAPI_API_KEY: ${{ secrets.VAPI_API_KEY }}
+        run: node scripts/vapi-sync.mjs --diff
+
+      # Separate step so an unprotected webhook is its own red X in the run log
+      # rather than a line buried in the inventory output.
+      - name: Fail if any webhook is unprotected
+        if: always()
+        env:
+          VAPI_API_KEY: ${{ secrets.VAPI_API_KEY }}
+        run: |
+          node scripts/vapi-assistants.mjs > inventory.txt
+          cat inventory.txt
+          if grep -q 'UNPROTECTED WEBHOOK' inventory.txt; then
+            echo "::error::One or more Vapi webhooks have no secret set. Anyone who learns the URL can POST forged tool calls."
+            exit 1
+          fi
