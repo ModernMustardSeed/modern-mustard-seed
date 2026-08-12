@@ -1111,6 +1111,7 @@ export const SOCIAL_SETS: SocialSet[] = [
       'The call to action is the number, not a link. On the Page, put the link in the first comment. In other people’s groups, use the number only.',
       'Dial (406) 312-1223 yourself the morning of any campaign. This whole set is a promise that a stranger can talk to it right now.',
       'Order matters: 01 explains it, 02 to 05 make it real, 06 is the dare. Run 06 last or it lands as an ad before anyone knows what they are calling.',
+      'Card 07 is a separate door, not part of the 01-06 order. It needs the Blotato comment-to-DM automation turned on before it posts, or the comment sits there with nothing behind it.',
     ],
     cards: [
       {
@@ -1148,6 +1149,12 @@ export const SOCIAL_SETS: SocialSet[] = [
         headline: 'Call it and see.',
         use: 'The dare, and the closer. Post 6. Run it last.',
         alt: 'Mr. Mustard on a handset beside a mustard plate reading talk to it now, (406) 312-1223.',
+      },
+      {
+        file: '07-comment-talk',
+        headline: "Comment TALK. I'll send you the number.",
+        use: 'The DM-automation opener, built on the Blotato comment-to-DM feature. Run it as its own post, not part of the 01-06 carousel.',
+        alt: 'Mr. Mustard waving beside a speech bubble reading comment TALK, I will send you the number.',
       },
     ],
     posts: [
@@ -1237,8 +1244,31 @@ export const SOCIAL_SETS: SocialSet[] = [
           ],
         },
       },
+      {
+        n: 7,
+        title: 'The one that does not make you dial',
+        graphic: '07-comment-talk',
+        body: [
+          'Not everyone wants to call a number a stranger posted online. Fair. So here is the easier way in.',
+          'Comment TALK below and it lands straight in your DMs, the same number, in about ten seconds. No form, no landing page, no email.',
+          'Once you have it, do whatever you want. Call it, ignore it, forward it to the person you know who is somehow worse at answering their phone than you are.',
+          'Comment TALK. I will see you in your DMs.',
+        ],
+        followUp: {
+          label: 'Before you post this',
+          lines: [
+            'Set up the Blotato DM automation on this post first: trigger word TALK, on Instagram and Facebook, reply "(406) 312-1223, the same one from the post. Call it whenever you are ready."',
+            'Turn on the Comments and Messaging inbox in Blotato so replies land in one place instead of scattered notifications.',
+            'This post can run any time, independent of 01 to 06. It is a second door into the same number, not part of that carousel order.',
+          ],
+        },
+      },
     ],
     replies: [
+      {
+        q: 'Why not just put the number in the post like the other cards?',
+        a: 'It is, on every other card in this set. This one is for people who would rather not call a stranger’s number cold. Commenting gets it to them privately, same number, no pressure to dial on the spot.',
+      },
       {
         q: 'Is it a robot? I hate those phone trees.',
         a: 'So do I, and it is not one. There is no press one for sales. You talk normally and it talks back normally, and if it cannot help it hands you to a human instead of looping you. Fastest way to settle it is to call it: (406) 312-1223.',
