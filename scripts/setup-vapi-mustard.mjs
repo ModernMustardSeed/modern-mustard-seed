@@ -650,15 +650,29 @@ const VOICE_SPEED = Number(env('VAPI_VOICE_SPEED') || 1.0);
 
 /* The delivery direction. This is prose the TTS model actually follows, so write
  * it like direction to a voice actor, not like config. Keep it about HOW he
- * sounds; what he says is the system prompt's job. */
+ * sounds; WHAT he says is the system prompt's job, and mixing the two makes both
+ * worse.
+ *
+ * Written for a PHONE specifically. Phone audio is band-limited: it throws away
+ * the highs and lows that carry warmth, so a read that sounds fine in headphones
+ * arrives thin and mechanical through a handset. The direction has to overshoot
+ * warmth and variation to survive the trip.
+ *
+ * If Sarah says robotic again, THIS is the thing to rewrite, not the voiceId.
+ * Prosody is where robotic lives. Be concrete: name the behavior you want
+ * ("start a touch higher and settle") rather than an adjective ("be natural").
+ * Adjectives average out to the default read, which is the flat one. */
 const VOICE_INSTRUCTIONS =
   env('VAPI_VOICE_INSTRUCTIONS') ||
   [
-    'Speak like a real person on a real phone call, never like a recording or an announcer.',
-    'Warm, awake, and genuinely glad this person called. There is a smile behind the voice.',
-    'Conversational pace: unhurried, but never slow or sleepy. Let sentences breathe.',
-    'Vary your pitch and rhythm the way people actually do. Flat, even delivery is the one thing to avoid.',
-    'Friendly and grounded, like someone who runs a good shop and knows their trade. Never salesy, never hyped.',
+    'You are a real person on a real phone call, mid-conversation. Never a recording, never an announcer, never a narrator reading a script.',
+    'Warm and genuinely glad this person called. Keep a faint smile in the voice the whole way through.',
+    'Vary constantly. Change pitch, speed and volume from sentence to sentence, and even inside a sentence. Even, metronomic delivery is the single thing that makes a voice sound like a machine, so avoid it above everything else.',
+    'Start each answer a touch higher and brighter, then settle as you go, the way people do when they are actually pleased to help.',
+    'Use natural contractions. Let small pauses fall where a thinking person would pause, especially before a number or a name.',
+    'Land the last word of a sentence warmly instead of trailing off flat. Lift gently at the end of a question so it sounds asked, not recited.',
+    'Unhurried but awake. Never rushed, never sleepy, never breathy.',
+    'Grounded and friendly, like someone who runs a good shop and knows their trade. Never salesy, never hyped, never chipper.',
   ].join(' ');
 
 const voice = {
