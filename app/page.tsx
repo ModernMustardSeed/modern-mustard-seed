@@ -1,5 +1,6 @@
 import DemoForgeStrip from '@/components/home/DemoForgeStrip';
 import ProofBand from '@/components/home/ProofBand';
+import JourneyCalculator from '@/components/journey/JourneyCalculator';
 import JourneyRig from '@/components/journey/JourneyRig';
 import JourneyTour from '@/components/journey/JourneyTour';
 // Parked 2026-08-08 at Sarah's request: hide the review band until there is
@@ -133,6 +134,10 @@ export default function HomePage() {
         <JourneyRig />
         <JourneyHero />
         <JourneyOrchard />
+        {/* MI 19. The leak, priced. Conversion proof for the talking website and
+            the voice agent, then a working pop-art calculator that totals what
+            the silence costs, and the Forge as the next move. */}
+        <JourneyCalculator />
         <JourneySigns />
         {/* MI 47. How a business gets found and gets chosen: the Google profile,
             the reviews, the AI answers, the conversion path, the follow up. */}
