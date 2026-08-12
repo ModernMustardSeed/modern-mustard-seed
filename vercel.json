@@ -60,6 +60,10 @@
     {
       "path": "/api/cron/hundredfold-drip",
       "schedule": "30 15 * * 1-5"
+    },
+    {
+      "path": "/api/cron/celebrate-drip",
+      "schedule": "0 16 * * *"
     }
   ]
 }

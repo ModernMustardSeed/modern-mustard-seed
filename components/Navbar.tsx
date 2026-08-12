@@ -68,11 +68,17 @@ const MENU_GROUPS = [
 // ink panel near the bottom of the drawer (names in Title Case, descriptors
 // in tracked mono caps; never a lowercase opener).
 //
-// PARKED 2026-08-07 (Sarah): The Mustard Tree, Celebrate, Mustard Press, and
-// Mustard Hatchery are pulled from every nav, index, sitemap, and llms.txt
-// entry. The pages still build and answer at their URLs, they are just not
-// discoverable. Restore these four rows (plus the Footer, sitemap, services-hub,
-// llms.txt, front-desk, quotable, and comic entries) to bring them back.
+// PARKED 2026-08-07 (Sarah): The Mustard Tree, Mustard Press, and Mustard
+// Hatchery are pulled from every nav, index, sitemap, and llms.txt entry. The
+// pages still build and answer at their URLs, they are just not discoverable.
+// Restore these three rows (plus the Footer, sitemap, services-hub, llms.txt,
+// front-desk, quotable, and comic entries) to bring them back.
+//
+// UNPARKED 2026-08-11 (Sarah): Celebrate came back on its own when the launch
+// countdown shipped. It opens 19 October 2026 and runs a waitlist until then,
+// so it is listed everywhere the other departments are, with one exception:
+// lib/quotable.ts, because the site agent must not quote a price for something
+// that is not selling yet.
 const DEPARTMENTS = [
   { name: 'HUNDREDFOLD', tag: 'THE FLAGSHIP SCALING PROGRAM', href: '/hundredfold' },
   { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
@@ -88,6 +94,7 @@ const DEPARTMENTS = [
   { name: 'The Hundredfold Roadmap', tag: 'FREE SCALING PLAN FOR YOUR BUSINESS', href: '/scaling-roadmap' },
   { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
   { name: 'Mustard Launch', tag: 'YOUR AI LAUNCH COACH', href: '/mustard-launch' },
+  { name: 'Celebrate', tag: 'GIFTING ON AUTOPILOT, OPENS OCT 19', href: '/celebrate' },
 ];
 
 export default function Navbar() {

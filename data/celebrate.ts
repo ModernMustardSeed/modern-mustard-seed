@@ -24,6 +24,70 @@ export const CELEBRATE = {
   foundingRoute: 'Founding route now boarding: the Flathead Valley, Montana. Every other city rides the waitlist.',
 } as const;
 
+/* -------------------------------------------------------------------------- */
+/* THE CLOCK                                                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Opening day. Sarah set the clock on 2026-08-11 at "68 days out", which lands
+ * on Monday 19 October 2026. The instant is 9:00 AM Mountain (MDT, UTC-6 on
+ * that date), so the doors open at the start of a business day rather than at
+ * a midnight nobody is awake for.
+ *
+ * ⚠️ THIS DATE IS LOAD-BEARING IN THREE PLACES: the on-page counter, every
+ * letter in the pre-launch drip (lib/celebrate-drip.ts schedules against days
+ * to launch, not days since signup), and the waitlist confirmation email.
+ * Move it here and all three move together. Do not hardcode it anywhere else.
+ */
+export const CELEBRATE_LAUNCH = {
+  /** The moment the doors open, as a real instant. */
+  at: '2026-10-19T15:00:00.000Z',
+  /** How the date is written in prose. Never abbreviate it in a headline. */
+  label: 'Monday, October 19, 2026',
+  short: 'Oct 19',
+  /** Local phrasing for the founding route, which is where the clock applies. */
+  timeLabel: '9:00 AM Mountain',
+  city: 'the Flathead Valley',
+} as const;
+
+export type LaunchClock = {
+  /** Milliseconds left. Zero once the doors are open. */
+  ms: number;
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  /** True the instant the countdown reaches opening day. */
+  open: boolean;
+};
+
+/**
+ * The countdown, computed from one instant so the page, the emails, and the
+ * cron all agree. `now` is always passed in: a server component that called
+ * Date.now() itself would bake the answer into the static build, and a client
+ * component that called it during the first render would disagree with the
+ * server HTML and blow up hydration.
+ */
+export function launchClock(now: number): LaunchClock {
+  const ms = Math.max(0, new Date(CELEBRATE_LAUNCH.at).getTime() - now);
+  return {
+    ms,
+    days: Math.floor(ms / 86400000),
+    hours: Math.floor(ms / 3600000) % 24,
+    minutes: Math.floor(ms / 60000) % 60,
+    seconds: Math.floor(ms / 1000) % 60,
+    open: ms === 0,
+  };
+}
+
+/** Whole days to opening, the number the drip schedules against. Negative after launch. */
+export function daysToLaunch(now: number): number {
+  return Math.floor((new Date(CELEBRATE_LAUNCH.at).getTime() - now) / 86400000);
+}
+
+/** Who a waitlist signup is celebrating. Drives which drip lane they ride. */
+export type CelebrateAudience = 'team' | 'family';
+
 export type CelebrateTier = {
   slug: string;
   name: string;

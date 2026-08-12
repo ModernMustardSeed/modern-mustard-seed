@@ -14,9 +14,10 @@ import CookiePreferencesLink from '@/components/CookiePreferencesLink';
  */
 export default function Footer() {
   const linkSections = [
-    // PARKED 2026-08-07 (Sarah): The Mustard Tree, Celebrate, Mustard Press, and
-    // Mustard Hatchery are pulled from every nav and index. The pages still
-    // answer at their URLs; they are only unlisted. See the note in Navbar.tsx.
+    // PARKED 2026-08-07 (Sarah): The Mustard Tree, Mustard Press, and Mustard
+    // Hatchery are pulled from every nav and index. The pages still answer at
+    // their URLs; they are only unlisted. Celebrate was unparked 2026-08-11 when
+    // the launch countdown shipped. See the note in Navbar.tsx.
     {
       title: 'The Departments',
       links: [
@@ -32,6 +33,7 @@ export default function Footer() {
         { label: 'GEO Desk', href: '/website-audit' },
         { label: 'Mustard Launch', href: '/mustard-launch' },
         { label: 'Mustard Mode', href: '/mustard-mode' },
+        { label: 'Celebrate', href: '/celebrate' },
       ],
     },
     {
