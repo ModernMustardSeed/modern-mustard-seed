@@ -30,6 +30,15 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
       'Full apps, stores, agentic systems. Planted once, tended every day, and the first three go live in about a week.',
   },
   {
+    id: 'calculator',
+    anchor: 'tour-calculator',
+    text:
+      'Pull over here for a second, because this is the part with a number on it. ' +
+      'Sixty two percent of calls to a small business go unanswered, and eighty five percent of those people never try you again. ' +
+      'Meanwhile the average website converts at two and a third percent, which means it watches almost everybody leave. ' +
+      'The machine on your screen adds both of those up in your business. Punch in your own numbers and watch it total.',
+  },
+  {
     id: 'signs',
     anchor: 'tour-signs',
     text:
