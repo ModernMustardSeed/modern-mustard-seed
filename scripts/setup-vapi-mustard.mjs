@@ -65,7 +65,26 @@ const PLACEHOLDER = '[SENSITIVE]';
 // make the safe path the inconvenient one. Placeholders only have to be fatal on
 // a run that actually writes to a live assistant.
 const DRY_RUN = process.argv.includes('--dry-run');
+const IS_UPDATE = process.argv.includes('--update');
 const placeholdersSeen = [];
+
+/* The webhook secret is the ONE placeholder that must not block a live update.
+ * It is write-only in Vercel and Vapi never returns it on a GET, so there is no
+ * way to recover it, and hard-stopping on it meant a one-line voice change was
+ * gated behind a credential the change does not use. Blocking a routine push
+ * for a value nobody can read is how a stale config stays live.
+ *
+ * Instead, on --update, an unreadable secret is treated as unknown: the whole
+ * `server` block is dropped from the PATCH once the live agent is confirmed to
+ * already have a secret set (isServerUrlSecretSet), so his existing webhook auth
+ * is left exactly as it was. Same technique vapi-sync.mjs uses on every push.
+ * Omitting the block preserves the secret; sending the block without one CLEARS
+ * it, which is the failure this whole guard exists to prevent.
+ *
+ * On a CREATE (POST) it stays fatal. A brand new assistant with no secret is an
+ * unauthenticated webhook, and there is nothing already live to preserve. */
+const SECRET_UNREADABLE = new Set(['VAPI_WEBHOOK_SECRET']);
+let webhookSecretUnknown = false;
 
 const env = (k) => {
   const v = process.env[k] ?? fileEnv[k];
@@ -73,6 +92,10 @@ const env = (k) => {
     if (DRY_RUN) {
       if (!placeholdersSeen.includes(k)) placeholdersSeen.push(k);
       return undefined; // fall through to the script's own defaults
+    }
+    if (IS_UPDATE && SECRET_UNREADABLE.has(k)) {
+      webhookSecretUnknown = true;
+      return undefined;
     }
     console.error(
       `\n${k} is the literal placeholder "${PLACEHOLDER}", not a real value.\n\n` +
@@ -802,6 +825,29 @@ if (DRY_RUN) {
 const url = UPDATE_ID ? `https://api.vapi.ai/assistant/${UPDATE_ID}` : 'https://api.vapi.ai/assistant';
 const method = UPDATE_ID ? 'PATCH' : 'POST';
 
+/* Unreadable secret: confirm the live agent actually has one, then leave its
+ * whole `server` block alone. If it has NO secret, sending the block is safe
+ * (there is nothing to clear) and it keeps the webhook url correct. */
+if (UPDATE_ID && webhookSecretUnknown) {
+  const cur = await fetch(`https://api.vapi.ai/assistant/${UPDATE_ID}`, {
+    headers: { Authorization: `Bearer ${VAPI_API_KEY}` },
+  });
+  if (!cur.ok) {
+    console.error(`\nCould not read the live assistant to check its webhook secret (${cur.status}).`);
+    console.error(`Refusing to PATCH blind, because a server block without a secret would clear it.\n`);
+    process.exit(1);
+  }
+  const live = await cur.json();
+  if (live.isServerUrlSecretSet) {
+    delete assistant.server;
+    console.log('\nVAPI_WEBHOOK_SECRET is unreadable ([SENSITIVE] in Vercel, never returned by Vapi).');
+    console.log('Live agent already has a secret set, so `server` is left untouched by this patch.');
+  } else {
+    console.log('\nVAPI_WEBHOOK_SECRET is unreadable, and the live agent has no secret set either.');
+    console.log('Sending `server` anyway: there is nothing to clear. Set a secret in the Vapi dashboard.');
+  }
+}
+
 const res = await fetch(url, {
   method,
   headers: {
@@ -821,7 +867,14 @@ if (!res.ok) {
 
 console.log(`\n✔ Mr. Mustard ${UPDATE_ID ? 'updated' : 'created'} on Vapi`);
 console.log(`  Assistant ID: ${data.id}`);
-console.log(`  Server URL:   ${SITE_URL}/api/voice ${WEBHOOK_SECRET ? '(secret set)' : '(NO secret — set VAPI_WEBHOOK_SECRET)'}`);
+console.log(
+  `  Server URL:   ${SITE_URL}/api/voice ` +
+    (WEBHOOK_SECRET
+      ? '(secret set)'
+      : webhookSecretUnknown
+        ? '(secret left as-is, unreadable from here)'
+        : '(NO secret, set VAPI_WEBHOOK_SECRET)')
+);
 console.log(`\nNext steps:`);
 console.log(`  1. Vercel env (production): NEXT_PUBLIC_VAPI_ASSISTANT_ID=${data.id}`);
 console.log(`  2. Vercel env (production): NEXT_PUBLIC_VAPI_PUBLIC_KEY=<your Vapi PUBLIC key>`);
