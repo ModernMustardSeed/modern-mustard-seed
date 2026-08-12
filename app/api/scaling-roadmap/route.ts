@@ -3,6 +3,8 @@ import { createHash } from 'crypto';
 import { runScalingRoadmap, type RoadmapContext } from '@/lib/scaling-roadmap';
 import { saveRoadmap } from '@/lib/roadmap-store';
 import { deliverRoadmap } from '@/lib/roadmap-delivery';
+import { getSupabase } from '@/lib/supabase';
+import { enqueueRoadmap, roadmapWorkerAlive, waitForRoadmapJob } from '@/lib/roadmap-queue';
 
 export const runtime = 'nodejs';
 // The read is capped at 22s and the model call measures 60 to 120s at 12k output
@@ -102,11 +104,100 @@ export async function POST(req: Request) {
     goal: clean(raw.goal, 400),
   };
 
+  const phone = (body.phone ?? '').trim();
+  const sb = getSupabase();
+
+  /**
+   * THE FREE ENGINE FIRST, THE METER SECOND, AND NEVER AN APOLOGY.
+   *
+   * This route used to call the Anthropic API inline and nothing else. When the
+   * metered wallet ran dry it returned "the roadmap engine is down for
+   * maintenance" and threw the request away: no row, no lead, no retry, no way
+   * for Sarah to even see who had asked.
+   *
+   * Now the local worker gets first refusal. It writes the roadmap on the Max
+   * subscription at HIGH effort (better than the medium this route can afford),
+   * saves it, and emails it. If it finishes inside the wait the visitor reads it
+   * on the page exactly as before. If it does not, they get an honest "it is
+   * building, it is coming to your inbox", which is true, because the worker
+   * owns delivery and the address was collected before a token was spent.
+   *
+   * The metered API stays as the fallback for when the workstation is asleep,
+   * and if THAT is out of credit the job is still queued rather than lost.
+   *
+   * Related: lib/roadmap-queue.ts, scripts/roadmap-worker.mts.
+   */
+  const enqueueOrder = async () =>
+    sb
+      ? enqueueRoadmap(sb, {
+          url: (body.url ?? '').trim(),
+          context,
+          email,
+          name,
+          phone,
+          source: 'public',
+          ipHash,
+        })
+      : null;
+
+  /** What the page shows while the worker finishes without us. */
+  const buildingResponse = (jobId: string) =>
+    NextResponse.json(
+      {
+        ok: true,
+        queued: true,
+        jobId,
+        message: `Your roadmap is being written now. It takes a few minutes at full depth, and the finished document lands in ${email} the moment it is done. Leave this page open and it will appear here too.`,
+      },
+      { status: 202 },
+    );
+
+  if (sb && (await roadmapWorkerAlive(sb))) {
+    const jobId = await enqueueOrder();
+    if (jobId) {
+      // 250s, not 280. The wait has to end far enough under maxDuration that
+      // the response itself still gets out; a request the platform kills at the
+      // ceiling returns nothing at all, which is the failure this replaces.
+      const job = await waitForRoadmapJob(sb, jobId, 250_000);
+
+      if (job?.status === 'done' && job.report) {
+        // The worker already saved it and already emailed it. Doing either
+        // again here would mean a duplicate row and a duplicate inbox copy.
+        return NextResponse.json({
+          ok: true,
+          url: job.target_url,
+          host: (() => {
+            try { return new URL(job.target_url).hostname.replace(/^www\./, ''); } catch { return job.target_url; }
+          })(),
+          slug: job.slug,
+          report: job.report,
+          emailed: Boolean(job.slug),
+          via: 'worker',
+        });
+      }
+      if (job?.status === 'failed') {
+        return NextResponse.json({ error: job.error ?? 'The roadmap failed to build.' }, { status: 400 });
+      }
+      // Still running. It is not lost, it is just slower than one HTTP request.
+      return buildingResponse(jobId);
+    }
+  }
+
   // Medium effort by default (high measured 320s for the model call alone, which
   // does not fit here), and a deadline 20s under the ceiling so the engine
   // declines a retry it cannot finish instead of handing the visitor a 504.
   const result = await runScalingRoadmap(body.url ?? '', context, { deadlineMs: 280_000 });
   if (!result.ok) {
+    /**
+     * 503 means the engine itself is unavailable (dry wallet, dead key), not
+     * that their website is unreadable. Defer the work instead of discarding
+     * it: the worker will pick this up the next time Sarah's machine is on and
+     * the visitor will get their roadmap by email hours later rather than never.
+     */
+    if (result.status === 503) {
+      const jobId = await enqueueOrder();
+      if (jobId) return buildingResponse(jobId);
+    }
     return NextResponse.json({ error: result.error }, { status: result.status });
   }
 
@@ -129,7 +220,7 @@ export async function POST(req: Request) {
         slug: saved.slug,
         email,
         name,
-        phone: (body.phone ?? '').trim(),
+        phone,
       });
     } catch (err) {
       console.error('scaling-roadmap: delivery failed', err);
