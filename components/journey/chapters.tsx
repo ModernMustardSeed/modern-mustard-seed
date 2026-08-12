@@ -270,7 +270,18 @@ const SIGNS = [
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, directed by the studio AI.', cta: 'Visit The Studio' },
   { href: '/store', label: 'The Playbook Store', line: 'The exact playbooks the studio runs on, written down and ready to use.', cta: 'Browse The Store' },
   { href: '/mustard-mode', label: 'Mustard Mode', line: 'Coach-led training that makes you dangerous with Claude. First session free.', cta: 'Take The Ramp' },
+  { href: '/comic', label: 'Mustard Life', line: 'The whole catalog told as a glossy magazine comic. Every product, every price, printed in ink. Free.', cta: 'Read The Issue' },
+  { href: '/hundredfold', label: 'HUNDREDFOLD', line: 'The scaling program for the operator who already has something working. We interview you, forge the offer, and build the agents that run the plan.', cta: 'See The Program' },
 ];
+
+/**
+ * The flagship sign spans two columns at md and lg, so the grid only lands even
+ * when the remaining cells fill the row. At lg (3 up) that is automatic with the
+ * current count; at md (2 up) an odd cell total leaves one card orphaned, so the
+ * final sign stretches the row instead of sitting half-width next to nothing.
+ */
+const SIGN_CELLS = 2 + (SIGNS.length - 1);
+const MD_ORPHAN = SIGN_CELLS % 2 === 1;
 
 export function JourneySigns() {
   const ref = useReveal<HTMLDivElement>();
@@ -302,7 +313,7 @@ export function JourneySigns() {
               key={s.href}
               href={s.href}
               onClick={() => track('journey_sign', { sign: s.href })}
-              className={`group relative flex flex-col border-2 border-[#161616] bg-[#FBF6EA] p-6 shadow-[6px_6px_0_0_#161616] hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#F5B700] transition-all ${s.big ? 'md:col-span-2 lg:col-span-2 bg-[#F5B700]' : ''} ${revealBase} ${i % 2 ? 'rotate-[0.6deg]' : 'rotate-[-0.6deg]'}`}
+              className={`group relative flex flex-col border-2 border-[#161616] bg-[#FBF6EA] p-6 shadow-[6px_6px_0_0_#161616] hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#F5B700] transition-all ${s.big ? 'md:col-span-2 lg:col-span-2 bg-[#F5B700]' : ''} ${!s.big && MD_ORPHAN && i === SIGNS.length - 1 ? 'md:col-span-2 lg:col-span-1' : ''} ${revealBase} ${i % 2 ? 'rotate-[0.6deg]' : 'rotate-[-0.6deg]'}`}
               style={{ transitionDelay: `${150 + i * 70}ms` }}
             >
               {s.big && (
