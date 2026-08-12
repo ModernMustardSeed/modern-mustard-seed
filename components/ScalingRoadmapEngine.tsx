@@ -58,6 +58,36 @@ type GenerateResponse = {
   report: RoadmapReport;
 };
 
+/**
+ * The 202 the route returns when the local worker took the job but did not
+ * finish inside the request. Not an error state: the roadmap is being written
+ * right now and is emailed on completion whether or not this tab stays open.
+ */
+type QueuedResponse = {
+  ok: true;
+  queued: true;
+  jobId: string;
+  message: string;
+};
+
+/** What the poll endpoint answers while the worker is still writing. */
+type JobResponse =
+  | ({ ok: true; status: 'done' } & GenerateResponse)
+  | { ok: true; status: 'queued' | 'running' }
+  | { ok: false; status: 'failed'; error: string };
+
+/**
+ * How long the page keeps watching a queued job.
+ *
+ * A roadmap at high effort measures two to five minutes, and the worker retries
+ * once, so fifteen minutes covers a bad run with room to spare. Past that the
+ * panel stops polling and stands on the email, which is the durable delivery
+ * either way. Polling forever would leave an abandoned tab hitting the route
+ * until the laptop closes.
+ */
+const POLL_EVERY_MS = 5000;
+const POLL_FOR_MS = 15 * 60 * 1000;
+
 export default function ScalingRoadmapEngine() {
   const [url, setUrl] = useState('');
   // ⚠️ Collected BEFORE anything is generated (Sarah, 2026-08-07). The roadmap
@@ -75,6 +105,10 @@ export default function ScalingRoadmapEngine() {
   const [error, setError] = useState<string | null>(null);
 
   const [saveError, setSaveError] = useState<string | null>(null);
+  /** Set when the worker took the job but the request could not wait for it. */
+  const [building, setBuilding] = useState<{ jobId: string; message: string } | null>(null);
+  /** Bumped on every submit so an older poll loop cannot land on a newer run. */
+  const watchToken = useRef(0);
   const [copied, setCopied] = useState(false);
 
   const resultRef = useRef<HTMLDivElement>(null);
@@ -96,12 +130,59 @@ export default function ScalingRoadmapEngine() {
     }
   }, [report]);
 
+  const land = (data: GenerateResponse) => {
+    setReport(data.report);
+    setMeta({ url: data.url, host: data.host, slug: data.slug });
+  };
+
+  /**
+   * Watch a job the worker is still writing.
+   *
+   * Deliberately fire-and-forget rather than a useEffect keyed on jobId: this
+   * has one owner (the submit that created the job), it must survive the
+   * `loading` flag flipping off, and it must not restart on every render. The
+   * cancelled ref is what stops it if the visitor starts a second roadmap.
+   */
+  const watchJob = async (jobId: string) => {
+    const until = Date.now() + POLL_FOR_MS;
+    const mine = ++watchToken.current;
+
+    while (Date.now() < until) {
+      await new Promise((r) => setTimeout(r, POLL_EVERY_MS));
+      if (watchToken.current !== mine) return; // a newer run took over
+
+      try {
+        const res = await fetch(`/api/scaling-roadmap/job/${jobId}`);
+        if (!res.ok) continue; // a 404 here is a blip, not a verdict
+        const data = (await res.json()) as JobResponse;
+
+        if (data.ok && data.status === 'done') {
+          if (watchToken.current !== mine) return;
+          setBuilding(null);
+          land(data);
+          return;
+        }
+        if (!data.ok && data.status === 'failed') {
+          if (watchToken.current !== mine) return;
+          setBuilding(null);
+          setError(data.error);
+          return;
+        }
+      } catch {
+        // Offline, asleep, a dropped request. Keep watching; the email lands
+        // regardless and a transient network error is not worth surfacing.
+      }
+    }
+  };
+
   const generate = async (e: FormEvent) => {
     e.preventDefault();
     if (!url.trim() || loading) return;
     setLoading(true);
     setError(null);
     setReport(null);
+    setBuilding(null);
+    watchToken.current += 1; // abandon any job the previous submit was watching
 
     try {
       const res = await fetch('/api/scaling-roadmap', {
@@ -109,12 +190,21 @@ export default function ScalingRoadmapEngine() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: url.trim(), name: name.trim(), email: email.trim(), context }),
       });
-      const data = (await res.json()) as GenerateResponse | { error: string };
+      const data = (await res.json()) as GenerateResponse | QueuedResponse | { error: string };
+      // 202 counts as ok, which is the point: "still building" is a success.
       if (!res.ok || 'error' in data) {
         throw new Error('error' in data ? data.error : 'The roadmap failed to build.');
       }
-      setReport(data.report);
-      setMeta({ url: data.url, host: data.host, slug: data.slug });
+
+      // 202: the worker has it and is still writing. Not a failure, and not a
+      // dead end either, because the finished document is emailed on its own.
+      if ('queued' in data) {
+        setBuilding({ jobId: data.jobId, message: data.message });
+        void watchJob(data.jobId);
+        return;
+      }
+
+      land(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'The roadmap failed to build.');
     } finally {
@@ -263,7 +353,25 @@ export default function ScalingRoadmapEngine() {
           </div>
         )}
 
-        {error && !loading && (
+        {/* Still writing. This is a promise being kept, not a failure, so it
+            reads like the receipt it is rather than like a warning. */}
+        {building && !loading && (
+          <div className="mt-8 border-2 border-[#161616] rounded-2xl bg-[#161616] shadow-[8px_8px_0_0_#F5B700] p-6 md:p-8">
+            <span className="flex items-center gap-3 text-[9px] uppercase tracking-[0.4em] text-[#F5B700] font-mono font-bold">
+              <span className="inline-block h-2 w-2 rounded-full bg-[#F5B700] animate-pulse" />
+              Writing your roadmap
+            </span>
+            <p className="mt-4 text-[#FBF6EA]/90 text-base font-body leading-relaxed max-w-2xl">
+              {building.message}
+            </p>
+            <p className="mt-4 text-[#FBF6EA]/55 text-[13px] font-body leading-relaxed max-w-2xl">
+              This one is written at full depth rather than the fast setting, which is why it takes minutes
+              instead of seconds. You do not need to keep this tab open.
+            </p>
+          </div>
+        )}
+
+        {error && !loading && !building && (
           <div className="mt-8 pop-card p-6 border-[#E0301E]">
             <p className="text-[#C4160B] text-sm font-body font-bold leading-relaxed">{error}</p>
             <button
