@@ -46,11 +46,26 @@ export async function deliverRoadmap(input: {
     notes: `Stage: ${report.stage}. Constraint: ${report.constraint?.type}. Roadmap: ${reportUrl}`,
   });
 
+  /**
+   * No key configured is a deliberate no-send, not a failure: the roadmap is
+   * saved and readable at its permalink, and the lead is already filed.
+   */
   if (!process.env.RESEND_API_KEY) return { ok: true, url: reportUrl };
 
   const resend = resendClient();
 
-  await resend.emails.send({
+  /**
+   * THE RESEND SDK DOES NOT THROW. IT RETURNS `{ data, error }`.
+   *
+   * This function used to `await` both sends and then return `{ ok: true }`
+   * unconditionally, so a rejected send was invisible to every caller. Caught
+   * 2026-08-12 on the first real run through the roadmap worker: the local
+   * RESEND_API_KEY was invalid, the SDK printed a 400 to the console, and the
+   * worker logged "emailed sarah@modernmustardseed.com" anyway. A delivery
+   * system that reports success on failure is worse than one that has no
+   * reporting at all, because it stops anyone from looking.
+   */
+  const ownerSend = await resend.emails.send({
     from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
     to: OWNER_NOTIFY_TO,
     replyTo: input.email,
@@ -80,7 +95,13 @@ export async function deliverRoadmap(input: {
     }),
   });
 
-  await resend.emails.send({
+  // Sarah's own copy failing is a notification problem, not the visitor's
+  // problem, so it is logged loudly and does not decide the return value.
+  if (ownerSend.error) {
+    console.error('roadmap-delivery: owner notification failed:', ownerSend.error.message);
+  }
+
+  const ownerCopy = await resend.emails.send({
     from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
     to: input.email,
     replyTo: 'sarah@modernmustardseed.com',
@@ -97,6 +118,15 @@ export async function deliverRoadmap(input: {
       reportUrl,
     }),
   });
+
+  // THIS one decides the answer. It is the roadmap reaching the person who
+  // asked for it, which is the whole promise the form makes before it spends a
+  // token. The permalink still comes back either way, because the document
+  // exists and is readable whether or not the mail got out.
+  if (ownerCopy.error) {
+    console.error('roadmap-delivery: could not email the roadmap to', input.email, ':', ownerCopy.error.message);
+    return { ok: false, url: reportUrl, error: ownerCopy.error.message };
+  }
 
   return { ok: true, url: reportUrl };
 }

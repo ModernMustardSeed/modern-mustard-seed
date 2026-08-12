@@ -150,10 +150,15 @@ async function runOne(job: Record<string, unknown>) {
     // a roadmap that is already saved and already readable at its permalink.
     if (saved?.slug && email) {
       try {
-        await deliverRoadmap({ slug: saved.slug, email, name, phone });
-        log(`  emailed ${email}`);
+        // Check the RETURN, not just the absence of a throw. The Resend SDK
+        // hands back { data, error } rather than rejecting, so an await alone
+        // reports success on a dead API key. That is exactly what this worker
+        // did on its first real run.
+        const sent = await deliverRoadmap({ slug: saved.slug, email, name, phone });
+        if (sent.ok) log(`  emailed ${email}`);
+        else log(`  NOT EMAILED (${sent.error ?? 'unknown'}). Roadmap is saved at /scaling-roadmap/r/${saved.slug}`);
       } catch (e) {
-        log(`  delivery failed (roadmap is saved at /scaling-roadmap/r/${saved.slug}):`, (e as Error).message);
+        log(`  delivery threw (roadmap is saved at /scaling-roadmap/r/${saved.slug}):`, (e as Error).message);
       }
     }
 
