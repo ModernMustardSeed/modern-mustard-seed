@@ -14,7 +14,15 @@ REM
 REM Install: put a shortcut to this file in
 REM   %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup
 REM (Task Scheduler is denied on this machine, no admin rights.)
-cd /d C:\Users\moder\modern-mustard-seed
+REM The repo path, and it has been wrong since this file was written: it pointed
+REM at C:\Users\moder\modern-mustard-seed, which does not exist on this machine.
+REM `cd /d` to a missing directory fails, the shell carries on anyway, and npx
+REM then runs from wherever the shortcut happened to start. So the supervisor
+REM never audited anything, there is no audit-worker.log to show for it, and
+REM every audit quietly went to the metered API instead of the subscription.
+REM Corrected 2026-08-11. Same lesson as the roadmap queue in migration 091: a
+REM free engine nobody can reach is not a free engine.
+cd /d C:\Users\SMSca\dev\mms\products\modern-mustard-seed
 :loop
 echo [%DATE% %TIME%] starting audit worker >> "%LOCALAPPDATA%\Temp\audit-worker.log"
 npx tsx scripts\audit-worker.mts >> "%LOCALAPPDATA%\Temp\audit-worker.log" 2>&1
