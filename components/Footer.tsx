@@ -26,7 +26,10 @@ export default function Footer() {
         { label: 'The Chief', href: '/chief' },
         { label: 'Command Center', href: '/command-center' },
         { label: 'Websites', href: '/websites' },
-        { label: 'Voice Agent Forge', href: '/voice-agents/forge' },
+        // The Voice Agent Forge was parked 2026-08-12 (Sarah) and held this
+        // slot alone, so /voice-agents takes it rather than leaving the footer
+        // with no voice agent department. See the note in Navbar.tsx.
+        { label: 'Voice Agents', href: '/voice-agents' },
         { label: 'The Switchboard', href: '/switchboard' },
         { label: 'Mustard Broadcast', href: '/ads' },
         { label: 'Mustard Pictures', href: '/pictures' },

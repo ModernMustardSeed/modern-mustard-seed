@@ -114,7 +114,7 @@ export default function GeoDesk() {
 
         <p className="text-center mt-8 font-body text-sm text-[#161616]/60 max-w-xl mx-auto">
           The honest fine print: nobody can promise what ChatGPT will recommend, and we never will. We install the signals it reads and prove they exist with re-grades. While you are fixing the website, the phones deserve the same:{' '}
-          <Link href="/voice-agents/forge" className="text-[#1E50C8] font-semibold underline underline-offset-2">forge your free voice agent demo</Link>.
+          <Link href="/demos" className="text-[#1E50C8] font-semibold underline underline-offset-2">forge your free voice agent demo</Link>.
         </p>
       </div>
     </section>

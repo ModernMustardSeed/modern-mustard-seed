@@ -9,7 +9,9 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
 // PARKED 2026-08-07 (Sarah): /mustard-tree, /press, and /hatchery are out of
 // the sitemap and noindexed. The routes still answer directly; they are simply
 // not advertised to crawlers or AI answer engines. /celebrate was unparked
-// 2026-08-11 with the launch countdown. See Navbar.tsx.
+// 2026-08-11 with the launch countdown. /voice-agents/forge was parked
+// 2026-08-12 the same way: out of the sitemap and noindexed, still answering for
+// the Meta campaign, Stripe returns, and the drip. See Navbar.tsx.
 const STATIC_PATHS = [
   '',
   '/talking-website',
@@ -18,7 +20,6 @@ const STATIC_PATHS = [
   '/command-center',
   '/websites',
   '/comic',
-  '/voice-agents/forge',
   '/pictures',
   '/switchboard',
   '/world',
@@ -70,7 +71,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/book'
         ? 1.0
-        : path === '/talking-website' || path === '/ads' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/voice-agents/forge' || path === '/pictures' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/one-person-business' || path === '/the-terminal' || path === '/idea-to-spec' || path === '/scaling-roadmap' || path === '/hundredfold' || path === '/hundredfold/webinar'
+        : path === '/talking-website' || path === '/ads' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/pictures' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/one-person-business' || path === '/the-terminal' || path === '/idea-to-spec' || path === '/scaling-roadmap' || path === '/hundredfold' || path === '/hundredfold/webinar'
           ? 0.95
           : path === '/work' || path === '/audit' || path === '/comic' || path === '/launch-checklist' || path === '/prompt-playbook'
             ? 0.9

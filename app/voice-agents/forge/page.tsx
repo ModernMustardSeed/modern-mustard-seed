@@ -10,6 +10,13 @@ export const metadata = buildMetadata({
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
   image: '/voice-agents/forge/opengraph-image',
+  // PARKED 2026-08-12 (Sarah). The site already has /voice-agents and /demos, so
+  // the forge landing is unlisted from every nav, the sitemap, and llms.txt, and
+  // noindexed. It still answers at its URL on purpose: the Meta campaign lands
+  // here with UTMs, Stripe checkout returns here, and the Sidekick drip links
+  // here. The /forge/demo/<runId> and /forge/welcome subroutes are unaffected.
+  // Drop this flag and restore the nav rows to bring the department back.
+  noindex: true,
 });
 
 export default function SidekickPage() {

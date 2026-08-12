@@ -63,7 +63,7 @@ export default async function PartnerHQ() {
 
   const links = [
     { label: 'The Playbook Store (50% on every sale)', url: `${SITE.url}/store?ref=${code}` },
-    { label: 'Hire a voice agent (recurring)', url: `${SITE.url}/voice-agents/forge?ref=${code}` },
+    { label: 'Hire a voice agent (recurring)', url: `${SITE.url}/voice-agents?ref=${code}` },
     { label: 'Book a build with Sarah', url: `${SITE.url}/book?ref=${code}` },
     { label: 'Done-for-you builds', url: `${SITE.url}/build-queue?ref=${code}` },
   ];

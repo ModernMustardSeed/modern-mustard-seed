@@ -67,7 +67,9 @@ export const SWIPE_OFFERS: SwipeOffer[] = [
     key: 'ai-receptionist',
     name: 'The Voice Agent (recurring)',
     earn: 'You earn 25% of their bill, every month, for a year',
-    linkPath: '/voice-agents/forge',
+    // Forge parked 2026-08-12 (Sarah). The swipe copy promises a personalized
+    // demo, which /demos delivers. See Navbar.tsx.
+    linkPath: '/demos',
     bestFor: 'Anyone with local or service-business owners in their audience.',
     swipes: {
       x: `Know a business that misses calls? Modern Mustard Seed builds a 24/7 voice agent that answers, books, and takes messages on their own number. You can hear a demo of your own in 60 seconds. (I earn a referral cut if you sign up.) {{LINK}}`,

@@ -361,7 +361,7 @@ export default function VoiceAgentsPage() {
             <div className="grid lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-7">
                 <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#C4160B] shadow-[3px_3px_0_0_#161616]">
-                  New · The Voice Agent Forge
+                  New · The Free Demo
                 </span>
                 <h2 className="mt-6 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.03] text-[#161616]">
                   That was ours. Now hear one trained on{' '}
@@ -369,12 +369,11 @@ export default function VoiceAgentsPage() {
                 </h2>
                 <p className="mt-5 max-w-xl font-body text-base md:text-lg leading-relaxed text-[#161616]/80">
                   Tell Mr. Mustard about your business. He trains a personalized front desk on the
-                  spot, then it talks to you live or calls your cell and
-                  answers as <em>your</em> company. Free, no card.
+                  spot, then you call it and hear it answer as <em>your</em> company. Free, no card.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <Link
-                    href="/voice-agents/forge"
+                    href="/demos"
                     className="rounded-full border-2 border-[#161616] bg-[#161616] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#FBF6EA]"
                   >
                     Forge Mine, Free →
