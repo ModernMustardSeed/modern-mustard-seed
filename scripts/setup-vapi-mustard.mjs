@@ -599,32 +599,75 @@ const TOOLS = [
  * exaggeration; Roger at 0.35 read announcer-y and Sarah's word was "stuffy").
  * ------------------------------------------------------------------ */
 
-// DEFAULT = Vapi-native as of 2026-08-12, no second vendor metering his minutes.
-// It must stay the DEFAULT, not an env-only flip, or the next `--update` run
-// without the env var silently puts him back on a billed ElevenLabs credential.
-const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || 'vapi';
-// 1.08 reads noticeably more awake and forward without chipmunking him.
-// Probed: 1.25 / 1.5 / 2.0 are all accepted, so there is headroom if she wants more.
-const VOICE_SPEED = Number(env('VAPI_VOICE_SPEED') || 1.08);
-// Rohan: 20s, bright and energetic. Picked to answer the ONE complaint that sent
-// him to ElevenLabs in the first place. Native has no amplitude control at all
-// (`volume` and `gain` both 400 with "should not exist", probed 2026-08-06), so
-// presence has to come from a voice that is bright by spec, plus speed. Sid is
-// spec'd "smooth, deep, LAID-BACK" and that laid-back is exactly the softness
-// Sarah rejected on 2026-08-06, so DO NOT quietly fall back to Sid. Elliot lost
-// a real-call A/B to Sid on 2026-06-23, so it is not the answer either.
-// Untried male natives, all confirmed settable, in the order worth A/B'ing:
-//   Neil (clear/professional) · Kai (30s, friendly/approachable) ·
-//   Godfrey (energetic) · Sagar (steady/professional) · Nico (casual)
-// Flip in one command, no code edit:
-//   $env:VAPI_VOICE_ID="Neil"; node scripts/setup-vapi-mustard.mjs --update <id>
-// Retired voices (Cole/Spencer/Harry/Paige/Hana/Lily/Kylie/Neha) still appear in
-// Vapi's enum and 400 on update. Prove any new pick with a transient
-// POST /assistant carrying the voiceId (201 = usable) before shipping it here.
+/* DEFAULT = OpenAI gpt-4o-mini-tts, "echo", as of 2026-08-12.
+ *
+ * Vapi-native lasted one afternoon. Sarah's verdict on native Rohan: "so
+ * robotic." That is not a bad pick inside the native set, it is the native set:
+ * those voices are Vapi's cheapest bundled tier and they read synthetic on a
+ * phone line no matter which name you choose. Cycling Neil/Kai/Godfrey would
+ * have burned her afternoon for the same result.
+ *
+ * The lever that actually exists here is `instructions`, and ONLY OpenAI has it
+ * (probed 2026-08-12: Vapi stores it verbatim on the voice object). Every other
+ * provider lets you pick a timbre; this one lets you DIRECT the read. Robotic is
+ * usually flat prosody rather than a bad voice, and prosody is exactly what this
+ * field controls. That is why this is the answer and another voice name is not.
+ *
+ * Cost: it bills to the OpenAI credential ALREADY on the org, usage-based, with
+ * no monthly character cliff to fall off mid-call. gpt-4o-mini-tts audio runs
+ * about $0.015/minute, so 500 minutes is roughly $7.50. ElevenLabs Starter was
+ * $5 for 60-80 minutes and then hard-stopped the phone line.
+ *
+ * ⚠️ ONLY FOUR OPENAI VOICES WORK HERE, and the failure is confusing enough to
+ * cost you twenty minutes. Probed against the LIVE assistant 2026-08-12:
+ *   usable:  echo (default, conversational male) · onyx (deeper, more
+ *            authority, but watch for announcer-y, which is the exact note
+ *            Sarah gave ElevenLabs Roger) · fable (British male) · alloy (neutral)
+ *   REJECTED: ash, sage, ballad, verse -> "Voice X may only be used with realtime
+ *            models". He runs claude-sonnet-4-6, not a realtime model, so those
+ *            four are permanently unavailable to him.
+ * The trap: POSTing a NEW bare assistant with `ash` returns 201, because a
+ * assistant with no model block is not yet realtime-incompatible. Config-time
+ * acceptance on a throwaway does NOT prove it works on him. PATCH the real
+ * assistant, or a throwaway carrying his model, when probing voices.
+ *
+ * A/B alternates beyond OpenAI, all probed 201 on this org:
+ *   rime-ai `marsh` on mistv2, built for phone calls, or cartesia `sonic-2`,
+ *   lowest latency of the three. Deepgram Aura works too (bare names:
+ *   orion / arcas / zeus, with model 'aura-2') but it is flatter than
+ *   OpenAI-with-instructions and takes no delivery direction at all.
+ * Flip the voice with no code edit:
+ *   $env:VAPI_VOICE_ID="onyx"; node scripts/setup-vapi-mustard.mjs --update <id>
+ *
+ * And note that 201 proves the config is valid, NOT that the call connects: an
+ * 11labs voice also configures fine and then drops the call if the credential's
+ * plan is exhausted. Always place a real call after changing the voice. */
+const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || 'openai';
+// 1.0, deliberately. The old 1.08 was bought on ElevenLabs to make a soft voice
+// read awake, and speeding up a TTS engine is itself one of the things that
+// makes it sound synthetic. Pace now comes from the instructions below instead.
+const VOICE_SPEED = Number(env('VAPI_VOICE_SPEED') || 1.0);
+
+/* The delivery direction. This is prose the TTS model actually follows, so write
+ * it like direction to a voice actor, not like config. Keep it about HOW he
+ * sounds; what he says is the system prompt's job. */
+const VOICE_INSTRUCTIONS =
+  env('VAPI_VOICE_INSTRUCTIONS') ||
+  [
+    'Speak like a real person on a real phone call, never like a recording or an announcer.',
+    'Warm, awake, and genuinely glad this person called. There is a smile behind the voice.',
+    'Conversational pace: unhurried, but never slow or sleepy. Let sentences breathe.',
+    'Vary your pitch and rhythm the way people actually do. Flat, even delivery is the one thing to avoid.',
+    'Friendly and grounded, like someone who runs a good shop and knows their trade. Never salesy, never hyped.',
+  ].join(' ');
+
 const voice = {
   provider: VOICE_PROVIDER,
-  voiceId: env('VAPI_VOICE_ID') || 'Rohan',
+  voiceId: env('VAPI_VOICE_ID') || 'echo',
   speed: VOICE_SPEED,
+  ...(VOICE_PROVIDER === 'openai'
+    ? { model: env('VAPI_OPENAI_TTS_MODEL') || 'gpt-4o-mini-tts', instructions: VOICE_INSTRUCTIONS }
+    : {}),
 };
 
 /* ───────────────────────── Assistant body ───────────────────────── */
