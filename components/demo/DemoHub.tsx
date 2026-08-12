@@ -67,17 +67,15 @@ export default function DemoHub({
   ownerFirst,
   niche,
   trade,
-  film = 'demo-welcome',
   personalVideoUrl,
   suiteFilmUrl,
   suiteFilmPoster,
-  suiteFilmPending,
+  suiteFilmStatus,
   voiceUrl,
   siteUrl,
   sitePending,
   osUrl,
   presenter,
-  theme,
 }: {
   hubId: string;
   business: string;
@@ -85,29 +83,29 @@ export default function DemoHub({
   niche: Niche;
   /** Specific detected trade; when present the calculator speaks it. */
   trade?: OsTradeKey;
-  /** Which welcome film matches the forged set (trifecta or a single cut), or
-   *  Sarah's personal hello once that film is live. */
-  film?: 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os' | 'demo-welcome-sarah';
   /** A face-to-camera video Sarah recorded for THIS lead. When present it
-   *  replaces the generic welcome film (signed booth URL, .webm). */
+   *  stands in for the suite film (signed booth URL, .webm). It is a real,
+   *  personal video about this business, never a stock/house reel. */
   personalVideoUrl?: string | null;
   /** THEIR film: a fresh recording of this lead's own website, a live call with
    *  their own voice agent, and their own command center. Outranks every other
    *  video here, because a tour of somebody else's business is what it replaced. */
   suiteFilmUrl?: string | null;
   suiteFilmPoster?: string | null;
-  /** The cut is still being made. We say so plainly instead of filling the slot
-   *  with a house film about a different company. */
-  suiteFilmPending?: boolean;
+  /** queued | filming | ready | failed | null. Never used to pick a stand-in
+   *  video: no status maps to playing a house film. Only queued/filming earns
+   *  the "within the hour" promise; failed/null get the same honest waiting
+   *  card with no ETA (Sarah, 2026-08-11: a captioned wrong-business video is
+   *  still a wrong-business video). */
+  suiteFilmStatus?: 'queued' | 'filming' | 'ready' | 'failed' | null;
   voiceUrl: string | null;
   siteUrl: string | null;
   sitePending: string | null;
   osUrl: string | null;
   /** Partner who minted this suite ("Presented by X with Modern Mustard Seed"). */
   presenter?: string | null;
-  /** Derived from THIS lead's own forged website; falls back to house mustard. */
-  theme?: { accent: string; accentInk: string };
 }) {
+  const suiteFilmPending = suiteFilmStatus === 'queued' || suiteFilmStatus === 'filming';
   const { shown: bubble, typing } = useTyped(`Hi${ownerFirst ? ` ${ownerFirst}` : ''}! We made ${business} some presents. Open them!`);
 
   // Presence beat: while the hub is open the dial floor sees "watching right
@@ -228,12 +226,12 @@ export default function DemoHub({
       </header>
 
       <main className="max-w-3xl mx-auto px-6 py-10 space-y-10">
-        {/* The video, in order of who it is actually about: THEIR suite film
-            first, then Sarah's personal hello if she recorded one, then the
-            house film. The suite film is a real recording of this business's
-            own site, agent and command center, so nothing generic should ever
-            outrank it. While it is still being cut we say so, rather than
-            playing a tour of a different company (the bug this replaced). */}
+        {/* The video, in order of who it is actually about: THEIR suite film,
+            then Sarah's personal hello if she recorded one for THIS lead.
+            Nothing else ever plays here. No stock reel, no other client's
+            footage, captioned or not (Sarah, 2026-08-01 and 2026-08-11: a
+            captioned wrong-business video is still a wrong-business video).
+            When neither exists yet, we say so honestly instead. */}
         <section className="animate-[hubIn_.5s_ease-out_both]">
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] overflow-hidden">
             {suiteFilmUrl ? (
@@ -244,7 +242,14 @@ export default function DemoHub({
                 className="w-full aspect-video bg-[#161616]"
                 src={suiteFilmUrl}
               />
-            ) : suiteFilmPending ? (
+            ) : personalVideoUrl ? (
+              <video
+                controls
+                preload="metadata"
+                className="w-full aspect-video bg-[#161616]"
+                src={personalVideoUrl}
+              />
+            ) : (
               <div className="w-full aspect-video bg-[#161616] flex items-center justify-center px-6 text-center">
                 <div>
                   <div className="w-12 h-12 mx-auto rounded-full border-4 border-[#F5B700] border-t-transparent animate-spin" />
@@ -252,30 +257,21 @@ export default function DemoHub({
                     We are recording your walkthrough
                   </p>
                   <p className="font-body text-[14px] text-[#FBF6EA]/65 mt-2 max-w-sm mx-auto">
-                    A short film of your own site, a real call with your own agent, and your command center.
-                    We are working on it and will have it to you within the hour. Everything below is open now.
+                    {suiteFilmPending
+                      ? 'A short film of your own site, a real call with your own agent, and your command center. We are working on it and will have it to you within the hour. Everything below is open now.'
+                      : 'A short film of your own site, a real call with your own agent, and your command center. It is not cut yet, so nothing plays here until it is. Everything below is open now, and reaching out gets it made today.'}
                   </p>
                 </div>
               </div>
-            ) : (
-              <video
-                controls
-                preload="metadata"
-                poster={personalVideoUrl ? undefined : `/video/${film}-poster.jpg`}
-                className="w-full aspect-video bg-[#161616]"
-                src={personalVideoUrl ?? `/video/${film}.mp4`}
-              />
             )}
             <p className="font-body text-[13px] text-[#161616]/60 px-4 py-3">
               {suiteFilmUrl
                 ? `A walkthrough of what we built for ${business}, including a real call with your own agent.`
-                : suiteFilmPending
-                  ? `Being cut for ${business} right now.`
-                  : personalVideoUrl
-                    ? `A personal hello from Sarah, recorded just for ${business}.`
-                    : // Not their film and it does not pretend to be. This plays
-                      // only when no walkthrough has been cut for this suite.
-                      'A short look at what a Modern Mustard Seed suite includes.'}
+                : personalVideoUrl
+                  ? `A personal hello from Sarah, recorded just for ${business}.`
+                  : suiteFilmPending
+                    ? `Being cut for ${business} right now.`
+                    : `Your own walkthrough is not cut yet.`}
             </p>
           </div>
         </section>
@@ -358,7 +354,6 @@ export default function DemoHub({
         <MakeItRealCTA
           hubId={hubId}
           business={business}
-          theme={theme}
           forged={[
             voiceUrl ? ('voice' as DemoProductKey) : null,
             siteUrl || sitePending ? ('site' as DemoProductKey) : null,
