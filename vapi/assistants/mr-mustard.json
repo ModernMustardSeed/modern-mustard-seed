@@ -367,14 +367,9 @@
     "provider": "deepgram"
   },
   "voice": {
-    "model": "eleven_turbo_v2_5",
-    "provider": "11labs",
-    "similarityBoost": 0.75,
+    "provider": "vapi",
     "speed": 1.08,
-    "stability": 0.35,
-    "style": 0,
-    "useSpeakerBoost": true,
-    "voiceId": "bIHbv24MWmeRgasZH58o"
+    "voiceId": "Rohan"
   },
   "voicemailMessage": "Please call back when you're available.",
   "_generatedBy": "setup-vapi-mustard.mjs"

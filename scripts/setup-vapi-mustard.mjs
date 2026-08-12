@@ -554,86 +554,55 @@ const TOOLS = [
  * deep, LAID-BACK", and that laid-back is exactly the softness Sarah hears. So
  * on native, presence is bought with pace and persona, never amplitude.
  *
- * TRUE loudness lives on ElevenLabs: `useSpeakerBoost` raises presence directly,
- * and stability/style shape projection. Every field below is schema-validated
- * against Vapi (2026-08-06), so the switch cannot fail at config time.
+ * ELEVENLABS IS RETIRED AS OF 2026-08-12. Sarah's call: too expensive for what
+ * it bought. He ran on 11labs Will (bIHbv24MWmeRgasZH58o, "Relaxed Optimist")
+ * from 2026-08-06 for six days, purely to get `useSpeakerBoost`, which is the
+ * only true loudness control in either provider. The economics killed it:
+ * Starter is 30-40k credits/month and turbo_v2_5 bills 0.5 credits/character, so
+ * roughly 1,000 characters a minute put his hard ceiling at 60-80 minutes of
+ * speech a MONTH. That covered the phone line, the homepage hero button, the
+ * chat widget and the English path of VoiceTalkButton, all uncapped and all open
+ * to anonymous visitors. MMS sells 500-minute plans. When the credits ran out
+ * ElevenLabs would 401 and Vapi would kill the call with
+ * pipeline-error-eleven-labs-blocked, mid-sentence, with no degraded mode.
  *
- * VOICE PICK: Will (bIHbv24MWmeRgasZH58o), "Relaxed Optimist". Sarah chose it by
- * EAR on 2026-08-06 from rendered samples, after rejecting Vapi-native Sid (too
- * soft) and then ElevenLabs Roger (too stuffy). Do not swap this on a hunch: she
- * has now rejected two voices by listening, so render samples and let her pick
- * rather than guessing a fourth time. Samples live in
- * C:\\Users\\moder\\mustard-voice-samples (regenerate via the ElevenLabs
- * /v1/text-to-speech endpoint with his real opening line as the script).
- * Runners-up she heard and passed on: Chris iP95p4xoKVk53GoZ742B (charming, down
- * to earth), Eric cjVigY5qzO86Huf0OWal (smooth, trustworthy), Brian
- * nPczCjzI2devNBz1zQrb (deep, resonant, closest to Sid's depth), Roger
- * CwhRBWXzGAHq8TQ4Fs17 (laid-back on paper, stuffy at style 0.35).
- *
- * LIVE as of 2026-08-06. Sarah's new ElevenLabs account is on the PAID `starter`
- * tier (verified active via /v1/user/subscription), so the old
- * pipeline-error-eleven-labs-blocked-free-plan risk does not apply.
- *
- * ⚠️ TWO GOTCHAS THAT COST AN HOUR, DO NOT REDISCOVER THEM:
- * 1. VAPI REJECTS RESTRICTED ELEVENLABS KEYS. Her first key did TTS perfectly
- *    (GET /v1/voices 200, /text-to-speech 200, /stream 200 WITH speaker boost)
- *    and Vapi STILL refused it: "Couldn't Validate 11labs Credential". Vapi
- *    validates by calling the ElevenLabs USER endpoint, and the key lacked
- *    `user_read`. So working TTS is NOT sufficient. Diagnose in one shot by
- *    curling /v1/user with the key: a "missing the permission user_read" 401
- *    means Vapi will reject it no matter how well TTS works.
- * 2. Vapi allows only ONE ElevenLabs credential per org (POST 400s with "a
- *    ElevenLabs credential already exists"), so PATCH the existing id
- *    568ed8fa-b98c-47b6-9349-65c66cdb1c18. Its `name` is capped at 40 chars.
- * Also note GET /provider/11labs/voices returns 0 for this org, which is NOT a
- * fault: it lists CLONED voices and she has none. Roger is a premade voice and
- * is reachable by id regardless.
- *
- * ⚠️ QUOTA IS THE REAL CONSTRAINT NOW. Starter is 40,000 characters/month, and
- * roughly 1,000 characters is about a minute of speech, so this is only ~40-60
- * minutes of TOTAL agent speech a month across the phone line AND every web
- * demo that forges from this assistant. That is far below the 500-minute plans
- * MMS sells. Watch it, and upgrade the ElevenLabs plan before pointing paying
- * customers' agents at this credential.
- *
- * REVERT (instant, if he sounds wrong or the quota runs out):
- *   VAPI_VOICE_PROVIDER=vapi VAPI_VOICE_ID=Sid \
- *     node scripts/setup-vapi-mustard.mjs --update faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee
+ * DO NOT REINTRODUCE IT without Sarah saying so. If she ever does, the two facts
+ * that cost an hour last time: (1) Vapi validates an ElevenLabs key by calling
+ * /v1/user, so a restricted key that does perfect TTS is still rejected unless it
+ * carries `user_read`; (2) Vapi allows exactly one ElevenLabs credential per org,
+ * so PATCH the existing id 568ed8fa-b98c-47b6-9349-65c66cdb1c18 rather than
+ * POSTing a second. Settings that worked: turbo_v2_5, useSpeakerBoost true,
+ * stability 0.35, similarityBoost 0.75, and style MUST be 0 (style is
+ * exaggeration; Roger at 0.35 read announcer-y and Sarah's word was "stuffy").
  * ------------------------------------------------------------------ */
 
-// DEFAULT = 11labs as of 2026-08-06. It must be the DEFAULT, not an env-only
-// flip, or the next `--update` run without the env var silently reverts him to
-// Sid and quietly undoes the loudness fix.
-const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || '11labs';
+// DEFAULT = Vapi-native as of 2026-08-12, no second vendor metering his minutes.
+// It must stay the DEFAULT, not an env-only flip, or the next `--update` run
+// without the env var silently puts him back on a billed ElevenLabs credential.
+const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || 'vapi';
 // 1.08 reads noticeably more awake and forward without chipmunking him.
 // Probed: 1.25 / 1.5 / 2.0 are all accepted, so there is headroom if she wants more.
 const VOICE_SPEED = Number(env('VAPI_VOICE_SPEED') || 1.08);
-
-const voice =
-  VOICE_PROVIDER === '11labs'
-    ? {
-        provider: '11labs',
-        voiceId: env('VAPI_VOICE_ID') || 'bIHbv24MWmeRgasZH58o', // Will, "Relaxed Optimist" (Sarah picked by ear 8/06)
-        // turbo_v2_5 balances quality and latency. eleven_flash_v2_5 is the
-        // lower-latency lever if he still feels slow on a real call.
-        model: env('VAPI_11LABS_MODEL') || 'eleven_turbo_v2_5',
-        useSpeakerBoost: true, // the actual loudness control, the whole reason to come here
-        // ⚠️ style MUST STAY 0. Roger shipped at style 0.35 and Sarah's verdict
-        // was "too stuffy". `style` is EXAGGERATION: it makes ElevenLabs PERFORM
-        // the line rather than just say it, which reads announcer-y on a phone
-        // call. 0 is natural speech. That setting, not the voice, is what made a
-        // voice literally labeled "laid-back" come out formal. It costs latency
-        // too. Raise it only if Sarah asks for more theatrical delivery.
-        stability: 0.35, // lower = looser and more human; higher drifts monotone
-        similarityBoost: 0.75,
-        style: 0.0,
-        speed: VOICE_SPEED,
-      }
-    : {
-        provider: VOICE_PROVIDER,
-        voiceId: env('VAPI_VOICE_ID') || 'Sid',
-        speed: VOICE_SPEED,
-      };
+// Rohan: 20s, bright and energetic. Picked to answer the ONE complaint that sent
+// him to ElevenLabs in the first place. Native has no amplitude control at all
+// (`volume` and `gain` both 400 with "should not exist", probed 2026-08-06), so
+// presence has to come from a voice that is bright by spec, plus speed. Sid is
+// spec'd "smooth, deep, LAID-BACK" and that laid-back is exactly the softness
+// Sarah rejected on 2026-08-06, so DO NOT quietly fall back to Sid. Elliot lost
+// a real-call A/B to Sid on 2026-06-23, so it is not the answer either.
+// Untried male natives, all confirmed settable, in the order worth A/B'ing:
+//   Neil (clear/professional) · Kai (30s, friendly/approachable) ·
+//   Godfrey (energetic) · Sagar (steady/professional) · Nico (casual)
+// Flip in one command, no code edit:
+//   $env:VAPI_VOICE_ID="Neil"; node scripts/setup-vapi-mustard.mjs --update <id>
+// Retired voices (Cole/Spencer/Harry/Paige/Hana/Lily/Kylie/Neha) still appear in
+// Vapi's enum and 400 on update. Prove any new pick with a transient
+// POST /assistant carrying the voiceId (201 = usable) before shipping it here.
+const voice = {
+  provider: VOICE_PROVIDER,
+  voiceId: env('VAPI_VOICE_ID') || 'Rohan',
+  speed: VOICE_SPEED,
+};
 
 /* ───────────────────────── Assistant body ───────────────────────── */
 
@@ -696,24 +665,15 @@ const assistant = {
     tools: TOOLS,
   },
   voice: {
-    // Vapi-native voice: bundled, no external 11labs plan required.
-    // (11labs voices need a paid ElevenLabs account connected to the Vapi org,
-    // otherwise calls drop with pipeline-error-eleven-labs-blocked-free-plan.)
-    // CURRENT (non-legacy) Vapi-native male voices only — the enum also lists
-    // retired ones (Cole/Spencer/Harry/etc.) that 400 on update. Settable male
-    // voices: Elliot (20s, friendly/soothing), Rohan (20s, bright/energetic),
-    // Nico (20s, casual), Kai (30s, friendly/relaxed/approachable),
-    // Sagar (20s, steady/professional), Godfrey (20s, energetic),
-    // Neil (20s, clear/professional), Sid (30s, smooth/deep/laid-back).
-    // DEFAULT = Sid (30s, smooth/deep/laid-back). Sarah A/B'd Sid against Elliot on
-    // a real call 2026-06-23 and strongly preferred it ("worked amazingly"), so Sid
-    // is now the keeper. Elliot (the most natural neutral-accent option) is the
-    // fallback if Sid ever reads off: VAPI_VOICE_ID=Elliot node ... --update <id>.
-    // 2026-06-27: tried Azure multilingual (en-US-AndrewMultilingualNeural) so he
-    // could sound native in any language; Sarah found it worse AND slower (Azure
-    // TTS adds latency on top of the model). Reverted to native Sid. Multilingual
-    // now lives ONLY in the web demo (VoiceTalkButton per-call overrides), not on
-    // the live line. Sarah A/B'd Sid vs Elliot 2026-06-23 and loves Sid.
+    // Vapi-native: bundled with Vapi, no second vendor, no character quota, no
+    // way for a busy month on the homepage button to silence the phone line.
+    // The pick, the rejected voices and the A/B alternates are documented at the
+    // VOICE block above. Voice history worth keeping: 2026-06-23 Sarah A/B'd Sid
+    // against Elliot on a real call and preferred Sid; 2026-06-27 Azure
+    // multilingual (en-US-AndrewMultilingualNeural) was tried so he could sound
+    // native in any language and she found it worse AND slower, since Azure TTS
+    // adds latency on top of the model. Multilingual now lives ONLY in the web
+    // demo (VoiceTalkButton per-call overrides), never on the live line.
     ...voice,
   },
   transcriber: {

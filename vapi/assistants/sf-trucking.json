@@ -27,11 +27,8 @@
     "provider": "deepgram"
   },
   "voice": {
-    "model": "eleven_turbo_v2_5",
-    "provider": "11labs",
-    "similarityBoost": 0.75,
-    "stability": 0.5,
-    "voiceId": "cjVigY5qzO86Huf0OWal"
+    "provider": "vapi",
+    "voiceId": "Neil"
   },
   "voicemailMessage": "Please call back when you're available."
 }
