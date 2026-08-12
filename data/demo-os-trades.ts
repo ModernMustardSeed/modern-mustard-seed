@@ -17,6 +17,7 @@ import type { OsPreset } from '@/data/demo-os';
 
 export type OsTradeKey =
   | 'roofing'
+  | 'construction'
   | 'hvac'
   | 'plumbing'
   | 'electrical'
@@ -103,6 +104,12 @@ const TRADE_PATTERNS: [OsTradeKey, RegExp][] = [
   ['attorney', /attorney|law firm|\blaw\b|lawyer|legal|injury/],
   ['wedding', /wedding|bridal|photograph|event venue|\bvenue\b/],
   ['salon', /salon|barber|hair studio|\bnails?\b|lash|beauty/],
+  // Builders and general contractors, deliberately BEHIND every specific trade:
+  // "Smith Plumbing & Contracting" is a plumber, and "Vance Roofing and
+  // Construction" is a roofer. This catches the generalist whose own name says
+  // construction, which used to fall through to a handyman price book or, worse,
+  // to whatever trade an idiom in their notes happened to name.
+  ['construction', /construction|general contract|\bcontracting\b|\bbuilders?\b|\bcarpentry\b|\bframing\b|home addition|deck build|\bdecks?\b/],
   // Remodelers, ahead of the food patterns and behind every specific trade, so
   // "Roofing & Remodeling" stays a roofer while "Apex Remodeling" stops being a
   // restaurant. Without this, `kitchen` claims every kitchen-and-bath remodeler.
@@ -144,6 +151,23 @@ const TRADE_IDIOMS =
   /\bunder (?:one|the same|a single|our|their|its) roof\b|\ba? ?roof over (?:your|their|our|his|her|my) head\b|\b(?:raise|hit|went through) the roof\b|\bpaint (?:a picture|the town)\b|\bground[- ]?floor opportunit/g;
 
 /**
+ * A trade an owner has RULED OUT is the strongest possible signal that it is not
+ * their trade, and the detector used to read it as the opposite.
+ *
+ * 2026-08-11: Black Knight Construction's owner told us, in his own words, "No
+ * more roofs or sidewalks everything besides that." The roofing pattern sits
+ * second in the list, matched the word "roofs", and filed a general contractor
+ * as a ROOFING company: roofing price book, tear-off jobs in his command center,
+ * a voice agent briefed on hail damage. He had said the one thing that should
+ * have made roofing impossible.
+ *
+ * So negated trade words are scrubbed BEFORE matching, exactly like idioms. This
+ * runs first because "no more roofs" must not survive as "roofs".
+ */
+const TRADE_NEGATIONS =
+  /\b(?:no|not|never|dont|don't|doesnt|doesn't|stopped|quit|gave up|retired from|no more|nothing but no)\s+(?:doing\s+|does\s+|do\s+|any\s+|more\s+)*[a-z]*\s*\b(roof\w*|shingl\w*|gutter\w*|sidewalk\w*|concrete|paint\w*|plumb\w*|electric\w*|hvac|landscap\w*|tree\w*|pool\w*|pest\w*|clean\w*|tow\w*)\b/g;
+
+/**
  * SPECIALTIES the broad patterns above would swallow, matched on the business
  * NAME ONLY.
  *
@@ -176,7 +200,7 @@ const NAME_SPECIALTIES: [OsTradeKey, RegExp][] = [
  * decides exactly as it always did.
  */
 export function detectTrade(corpus: string, niche: Niche, primary?: string): OsTradeKey {
-  const scrub = (s: string) => s.toLowerCase().replace(TRADE_IDIOMS, ' ');
+  const scrub = (s: string) => s.toLowerCase().replace(TRADE_NEGATIONS, ' ').replace(TRADE_IDIOMS, ' ');
   const name = scrub(primary ?? '').trim();
   if (name) {
     for (const [key, re] of NAME_SPECIALTIES) if (re.test(name)) return key;
@@ -215,6 +239,9 @@ export function resolveTrade(config: { trade?: string | null; business: string; 
 
 export const VOICE_SERVICES: Record<OsTradeKey, string> = {
   roofing: 'Roof repairs, full replacements, storm and hail damage inspections, insurance claim help, and emergency tarping',
+  // No roofing in this menu on purpose: the agent must never offer a general
+  // contractor's callers the one job he told us he does not take.
+  construction: 'Decks and porches, room and garage additions, carpentry and framing, fences and gates, trim and siding repair, and interior and exterior repairs',
   hvac: 'AC and furnace repair, full system replacements, mini-splits, and seasonal tune-ups on a maintenance plan',
   plumbing: 'Emergency leaks and bursts, water heaters, drain clearing, remodel plumbing, and fixture repairs',
   electrical: 'Panel upgrades, EV chargers, troubleshooting and safety checks, lighting, and permitted wiring work',
@@ -1046,6 +1073,65 @@ export const TRADE_PRESETS: Record<OsTradeKey, OsTradePreset> = {
     extraAutomations: [
       { icon: 'chart', title: 'Same-day estimate rule', desc: 'Every walk becomes a written estimate before dinner, with a color mockup attached. Speed wins bids.', on: true },
       { icon: 'star', title: 'Season repaint radar', desc: 'Exteriors painted 6+ years ago get a friendly check-in each spring, photos of their own house included.', on: false },
+    ],
+  },
+
+  /* ------------------------------ CONSTRUCTION --------------------------- */
+  /**
+   * The generalist builder: decks, additions, carpentry, fences, interior and
+   * exterior repairs. DELIBERATELY NO ROOFING ANYWHERE in this preset, because
+   * the leads who land here are usually the ones who told us they do not do it
+   * (Sarah, 2026-08-11, on Black Knight Construction). Roofers have their own
+   * preset and their own price book.
+   */
+  construction: {
+    label: 'General construction',
+    jobWord: 'job',
+    stages: ['New lead', 'Estimated', 'Scheduled', 'Done'],
+    accent: '#c98a3c',
+    accentSoft: 'rgba(201,138,60,0.14)',
+    weekRevenue: 18400,
+    avgTicket: 6200,
+    customers: [
+      { name: 'The Hollands', need: 'Rear deck rebuild, 16x20 with rails', value: 11400, stage: 1 },
+      { name: 'M. Ruiz', need: 'Garage conversion to home office', value: 14800, stage: 1 },
+      { name: 'Cedar Lane HOA', need: 'Fence line repair, 340 feet', value: 6200, stage: 2 },
+      { name: 'B. Whitfield', need: 'Rotted trim and siding replacement', value: 3900, stage: 0 },
+      { name: 'The Osbornes', need: 'Screened porch addition', value: 21500, stage: 2 },
+      { name: 'D. Pham', need: 'Punch list before listing the house', value: 2400, stage: 3 },
+    ],
+    overnightCalls: [
+      { caller: 'M. Ruiz', time: '8:22 PM', need: 'Garage conversion, is it permitted work?', outcome: 'Answered, walkthrough booked Thursday' },
+      { caller: 'The Hollands', time: '9:51 PM', need: 'Deck estimate still good?', outcome: 'Confirmed, material options texted' },
+      { caller: 'Unknown', time: '6:14 AM', need: 'Do you build screened porches?', outcome: 'Answered, photos requested by text' },
+    ],
+    todayJobs: [
+      { time: '7:30', title: 'Deck framing, day 2', who: 'The Hollands' },
+      { time: '11:00', title: 'Walkthrough: garage conversion', who: 'M. Ruiz' },
+      { time: '2:00', title: 'Fence line repair', who: 'Cedar Lane HOA' },
+    ],
+    ads: [
+      { headline: 'The punch list nobody else will finish.', body: '{biz} takes the whole list: decks, trim, fences, doors, and the odd jobs that have been waiting a year in {city}.' },
+      { headline: 'One crew, start to finish.', body: 'No subs you have never met. {biz} shows up when they say, builds it square, and cleans up before the truck leaves.' },
+    ],
+    reviewAsk: 'The build is done and the site is clean! If the work earned it, a quick Google review helps your neighbors in {city} find us: ',
+    signature: {
+      tabLabel: 'Bids',
+      title: 'Bid & build board',
+      sub: 'Construction is a bid game: what is out, what is decided, and what is on the calendar.',
+      metricLabel: 'Bids waiting on a yes',
+      metricValue: '$32,700',
+      rows: [
+        { title: 'Osborne screened porch', sub: 'Bid delivered, permit questions answered, deciding this week', amount: 21500, tag: 'Bid out', tone: 'hot' },
+        { title: 'Ruiz garage conversion', sub: 'Walkthrough Thursday, drawings ready to price', amount: 14800, tag: 'Walk Thu', tone: 'wait' },
+        { title: 'Holland deck rebuild', sub: 'Signed, materials ordered, framing started', amount: 11400, tag: 'Building', tone: 'won' },
+        { title: 'Win rate this quarter', sub: '9 of 16 bids closed. The ones followed up close twice as often', amount: '56%', tag: 'Win rate', tone: 'won' },
+      ],
+      footer: 'In the real build every bid follows up on itself, change orders get signed before the work happens, and the schedule updates the customer without a phone call.',
+    },
+    extraAutomations: [
+      { icon: 'chart', title: 'Bid follow-up ladder', desc: 'Every bid gets a day-3 text and a day-7 call reminder. Big jobs die from silence, not from price.', on: true },
+      { icon: 'star', title: 'Change order guardrail', desc: 'Scope changes get written, priced, and signed before the crew touches them. No arguments at the final invoice.', on: true },
     ],
   },
 

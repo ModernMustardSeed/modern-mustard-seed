@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { createClientRequest } from '@/lib/client-requests';
 import { queueProjectEdit, EDIT_FAIR_USE_CAP, EDIT_FAIR_USE_DAYS } from '@/lib/site-edit';
+import { likeLiteral } from '@/lib/sql-like';
 
 export const runtime = 'nodejs';
 
@@ -34,7 +35,7 @@ export async function GET() {
   const { data: proj } = await sb
     .from('projects')
     .select('id, name, revisions_used, status, site_published_at, edit_status, edit_instruction')
-    .ilike('client_email', session.email)
+    .ilike('client_email', likeLiteral(session.email))
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -90,7 +91,7 @@ export async function POST(req: Request) {
   const { data: proj } = await sb
     .from('projects')
     .select('id, name, revisions_used, status, site_html, site_published_at, edit_status')
-    .ilike('client_email', session.email)
+    .ilike('client_email', likeLiteral(session.email))
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
     .limit(1)

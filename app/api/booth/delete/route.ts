@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { sameOriginOnly } from '../guard';
+import { requireBoothAccess } from '../guard';
 
 /** Deletes a booth take from the private `booth` bucket. Same-origin guard only. */
 
@@ -8,8 +8,8 @@ const BUCKET = 'booth';
 const SAFE_SEGMENT = /^[a-z0-9][a-z0-9._-]{0,120}$/i;
 
 export async function POST(req: NextRequest) {
-  if (!sameOriginOnly(req)) {
-    return NextResponse.json({ error: 'Cross-origin requests are not allowed.' }, { status: 403 });
+  if (!(await requireBoothAccess(req))) {
+    return NextResponse.json({ error: 'Sign in to the admin to use the booth.' }, { status: 401 });
   }
   const client = getSupabase();
   if (!client) {

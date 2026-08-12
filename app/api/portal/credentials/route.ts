@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
+import { likeLiteral } from '@/lib/sql-like';
 
 export const runtime = 'nodejs';
 
@@ -15,7 +16,7 @@ export async function GET() {
     const { data } = await supabase
       .from('client_credentials')
       .select('id, label, username, url, created_at')
-      .ilike('client_email', session.email)
+      .ilike('client_email', likeLiteral(session.email))
       .order('created_at', { ascending: false });
     return NextResponse.json({ credentials: data ?? [] });
   } catch {

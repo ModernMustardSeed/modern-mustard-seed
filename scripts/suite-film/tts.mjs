@@ -60,7 +60,7 @@ export const CALLER = {
   fal: { voice_id: 'Friendly_Person', speed: 1.0, vol: 1, pitch: 0 },
 };
 
-function durationMs(file) {
+function ffprobeMs(file) {
   return new Promise((resolve, reject) => {
     const p = spawn('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file], { windowsHide: true });
     let s = '';
@@ -72,6 +72,86 @@ function durationMs(file) {
       else resolve(Math.round(n * 1000));
     });
   });
+}
+
+/**
+ * Measure an MP3 by walking its own frame headers, with no external binary.
+ *
+ * ffprobe is not on every machine that runs the forge (it is missing on Sarah's,
+ * which is how a finished suite ended up with no narration at all on
+ * 2026-08-11), and duration is the one number the whole cut is timed off. Each
+ * MPEG audio frame declares its bitrate and sample rate, so the file can time
+ * itself: sum every frame's duration. Handles the VBR that Edge's encoder emits,
+ * which a bytes-over-bitrate estimate gets wrong.
+ */
+const MPEG_BITRATES_V1L3 = [0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 0];
+const MPEG_BITRATES_V2L3 = [0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0];
+const MPEG_RATES = { 3: [44100, 48000, 32000], 2: [22050, 24000, 16000], 0: [11025, 12000, 8000] };
+
+function mp3DurationMs(file) {
+  const buf = readFileSync(file);
+  let i = 0;
+  // Skip an ID3v2 tag if one is present; its header carries a syncsafe length.
+  if (buf.length > 10 && buf.toString('latin1', 0, 3) === 'ID3') {
+    i = 10 + ((buf[6] & 0x7f) << 21 | (buf[7] & 0x7f) << 14 | (buf[8] & 0x7f) << 7 | (buf[9] & 0x7f));
+  }
+  let seconds = 0;
+  let frames = 0;
+  while (i + 4 <= buf.length) {
+    if (buf[i] !== 0xff || (buf[i + 1] & 0xe0) !== 0xe0) { i += 1; continue; }
+    const versionBits = (buf[i + 1] >> 3) & 0x03;
+    const layerBits = (buf[i + 1] >> 1) & 0x03;
+    if (versionBits === 1 || layerBits !== 1) { i += 1; continue; } // reserved version, or not Layer III
+    const rates = MPEG_RATES[versionBits];
+    const sampleRate = rates && rates[(buf[i + 2] >> 2) & 0x03];
+    const table = versionBits === 3 ? MPEG_BITRATES_V1L3 : MPEG_BITRATES_V2L3;
+    const bitrate = table[(buf[i + 2] >> 4) & 0x0f] * 1000;
+    if (!sampleRate || !bitrate) { i += 1; continue; }
+    const samples = versionBits === 3 ? 1152 : 576;
+    const padding = (buf[i + 2] >> 1) & 0x01;
+    const frameLen = Math.floor((samples / 8) * bitrate / sampleRate) + padding;
+    if (frameLen < 4) { i += 1; continue; }
+    seconds += samples / sampleRate;
+    frames += 1;
+    i += frameLen;
+  }
+  if (!frames) throw new Error(`no MPEG frames in ${path.basename(file)}`);
+  return Math.round(seconds * 1000);
+}
+
+/** ffprobe when it exists, the file's own frame headers when it does not. */
+async function durationMs(file) {
+  try {
+    return await ffprobeMs(file);
+  } catch {
+    return mp3DurationMs(file);
+  }
+}
+
+/**
+ * THE FREE PATH, WITHOUT PYTHON. Same Microsoft neural voices, reached over the
+ * same public endpoint, from Node instead of a python module.
+ *
+ * The python path below assumes `python -m edge_tts` works. On Windows, `python`
+ * is very often the Microsoft Store STUB, which exits 9009 without ever running
+ * anything, and installing the real interpreter plus a pip package is a system
+ * change nobody asked for. That stub is exactly what silently cost Black Knight
+ * its narration on 2026-08-11 ("no voice available... Python was not found"),
+ * and with no fal key on the machine there was no second engine to catch it.
+ * This path needs neither, so a plain `npm install` is the whole prereq.
+ */
+async function nodeEdgeSpeak(text, voice, outFile) {
+  const { MsEdgeTTS, OUTPUT_FORMAT } = await import('msedge-tts');
+  const tts = new MsEdgeTTS();
+  await tts.setMetadata(voice.edge, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+  // The library takes rate as SSML prosody ("+7%"), same string the CLI uses.
+  const { audioStream } = await tts.toStream(text, { rate: voice.rate });
+  const chunks = [];
+  for await (const chunk of audioStream) chunks.push(chunk);
+  const buf = Buffer.concat(chunks);
+  // Same guard as the CLI path: a stream can close clean and still be silent.
+  if (buf.length < 1200) throw new Error('edge (node) wrote no audio');
+  writeFileSync(outFile, buf);
 }
 
 /** The free path: Microsoft's neural voices, no key, no account, no meter. */
@@ -193,19 +273,23 @@ export async function speak(text, voice, outFile, { timeoutMs = 120_000, allowPa
   mkdirSync(path.dirname(outFile), { recursive: true });
   text = spokenText(text);
 
-  let freeErr = null;
-  try {
-    await edgeSpeak(text, voice, outFile);
-    return { file: outFile, durationMs: await durationMs(outFile), engine: 'edge' };
-  } catch (e) {
-    freeErr = e;
+  // Node first (no interpreter to find), then the python CLI, then the meter.
+  const freeErrs = [];
+  for (const [name, run] of [['edge-node', nodeEdgeSpeak], ['edge-cli', edgeSpeak]]) {
+    try {
+      await run(text, voice, outFile);
+      return { file: outFile, durationMs: await durationMs(outFile), engine: name };
+    } catch (e) {
+      freeErrs.push(`${name}: ${e.message}`);
+    }
   }
+  const freeSummary = freeErrs.join(' | ');
 
-  if (!allowPaid) throw new Error(`edge-tts failed and the paid path is off: ${freeErr.message}`);
+  if (!allowPaid) throw new Error(`the free voices failed and the paid path is off: ${freeSummary}`);
   try {
     await falSpeak(text, voice, outFile, timeoutMs);
     return { file: outFile, durationMs: await durationMs(outFile), engine: 'fal' };
   } catch (paidErr) {
-    throw new Error(`no voice available. edge-tts: ${freeErr.message} | fal: ${paidErr.message}`);
+    throw new Error(`no voice available. ${freeSummary} | fal: ${paidErr.message}`);
   }
 }
