@@ -2,11 +2,8 @@ import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import DemoHub from '@/components/demo/DemoHub';
 import { leadTrade } from '@/lib/outbound-demo';
-import type { OsDemoConfig } from '@/lib/outbound-demo';
 import { recordDemoEvent } from '@/lib/demo-events';
 import type { Niche } from '@/lib/outbound';
-import { SARAH_WELCOME_READY } from '@/lib/email';
-import { extractPalette, themeFromPalette } from '@/lib/site-palette';
 
 export const metadata = buildMetadata({ title: 'Your Demo Suite', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -81,7 +78,8 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
 
   // Sarah's personal video for THIS lead, if she attached one from the cockpit
   // (stored at founder/<leadId>.webm in the private booth bucket). Signed fresh
-  // each render; when absent, the hub falls back to the generic welcome film.
+  // each render; when absent, DemoHub falls through to the suite-film waiting
+  // card rather than any stand-in video.
   let personalVideoUrl: string | null = null;
   {
     const { data: pv } = await sb.storage.from('booth').createSignedUrl(`founder/${lead.id}.webm`, 60 * 60 * 3);
@@ -111,61 +109,24 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
   // the voice agent and command center were forged for.
   const trade = leadTrade(lead);
 
-  // Pick the welcome film that matches what is forged: the trifecta when the
-  // suite is (mostly) complete, otherwise the single-demo cut. The website
-  // film mentions the phone-answering, so it also covers voice+site pairs.
-  const hasSite = lead.site_demo_status === 'ready' || lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
-  const hasOs = lead.os_demo_status === 'ready';
-  const film = SARAH_WELCOME_READY
-    ? 'demo-welcome-sarah'
-    : hasSite && hasOs
-      ? 'demo-welcome'
-      : hasSite
-        ? 'demo-welcome-site'
-        : hasOs
-          ? 'demo-welcome-os'
-          : 'demo-welcome-voice';
-
-  // Wear the same clothes as THEIR forged website, so the button and the
-  // order card match the demos they open from here instead of standing out
-  // as an MMS-branded add-on. Same order of trust as the OS demo: the
-  // forged site's own declared palette, then the brand color captured from
-  // their real site at forge time, then the house mustard deck.
-  const { data: site } = await sb
-    .from('outbound_demo_sites')
-    .select('html')
-    .eq('lead_id', lead.id)
-    .eq('status', 'ready')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  const sitePalette = extractPalette(site?.html);
-  let brandColor: string | null = null;
-  if (!sitePalette) {
-    const { data: osDemo } = await sb.from('outbound_demo_os').select('config').eq('lead_id', lead.id).maybeSingle();
-    brandColor = (osDemo?.config as OsDemoConfig | undefined)?.brandColor ?? null;
-  }
-  const palette = sitePalette ?? (brandColor ? { bg: '#0e1220', accent: brandColor } : null);
-  const theme = themeFromPalette(palette);
-
   return (
     <DemoHub
-      theme={{ accent: theme.accent, accentInk: theme.accentInk }}
       hubId={hubId}
       business={lead.business_name}
       ownerFirst={lead.contact_name?.trim().split(/\s+/)[0] ?? null}
       niche={niche}
       trade={trade}
-      film={film}
       personalVideoUrl={personalVideoUrl}
       suiteFilmUrl={suiteFilmUrl}
       suiteFilmPoster={suiteFilmPoster}
-      // "We will have it to you within the hour" is only true while a cut is
-      // actually in flight. A hub with no film queued (every suite forged before
-      // 2026-08-01, or one whose cut failed) must not make that promise on a
-      // loop forever, so it falls back to the house film under a caption that
-      // says plainly what it is instead of implying it is theirs.
-      suiteFilmPending={lead.suite_film_status === 'queued' || lead.suite_film_status === 'filming'}
+      // Sarah, 2026-08-01 and again 2026-08-11 (on the Black Knight cut still
+      // showing the Wills Electric reel): the hub must NEVER play stock/house
+      // footage in this slot, full stop, not even under an honest caption. So
+      // this is the raw status, not a collapsed boolean: DemoHub shows THEIR
+      // film when it exists, otherwise an honest waiting state, and only
+      // promises an ETA while a cut is actually in flight (queued/filming).
+      // failed/null gets the same waiting card with no ETA, never the reel.
+      suiteFilmStatus={lead.suite_film_status ?? null}
       voiceUrl={lead.demo_url}
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}

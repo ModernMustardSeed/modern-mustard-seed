@@ -181,6 +181,10 @@ async function main() {
         const out = path.join(workDir, `vo-${String(i).padStart(2, '0')}-${beat.id}.mp3`);
         const { durationMs } = await speak(beat.vo, NARRATOR, out);
         beat.voFile = out;
+        // The clip's real spoken length, before the breathing room below is
+        // added. compose.mjs needs this one, not voMs, to know whether the
+        // line is still talking when the next thing starts.
+        beat.voDurationMs = durationMs;
         // A held beat with zero air reads as a jump cut, so every line gets a
         // short breath after it. 700ms was eight seconds of the film spent on
         // pauses and it dragged (Sarah, 2026-08-04: "it all feels too slow and
@@ -227,10 +231,28 @@ async function main() {
     /* -------------------------------- the cut ------------------------------ */
     log('cutting...');
     const tracks = [];
-    for (const [i, beat] of beats.entries()) {
+    for (const beat of beats) {
       if (!beat.voFile) continue;
       const t = take.beats.find((b) => b.id === beat.id);
-      if (t) tracks.push({ file: beat.voFile, atMs: t.atMs, gain: 1 });
+      if (!t) continue;
+      const track = { file: beat.voFile, atMs: t.atMs, gain: 1 };
+      // The call-setup line is deliberately timed to talk OVER Vapi's ~9s
+      // connect (record.mjs, "DIAL NOW, TALK OVER THE CONNECT"), so it and the
+      // agent's own greeting are racing by design. When the connect finishes
+      // early, or the line just runs long, the greeting starts while she is
+      // still mid-sentence and it plays as two people talking at once (Sarah,
+      // 2026-08-11, on the Black Knight cut). Duck the line out instead of
+      // hoping the race lands clean: silent by the moment the call track
+      // begins, never touching the video's own timing.
+      if (beat.armCall && take.callAudioOffsetMs != null) {
+        const localOverlapMs = take.callAudioOffsetMs - t.atMs;
+        const fadeMs = 450;
+        if (localOverlapMs < (beat.voDurationMs ?? beat.voMs)) {
+          track.fadeOutAtMs = Math.max(0, localOverlapMs - fadeMs);
+          track.fadeOutMs = fadeMs;
+        }
+      }
+      tracks.push(track);
     }
     if (take.callAudioB64 && take.callAudioOffsetMs != null) {
       const callFile = path.join(workDir, 'call.webm');
