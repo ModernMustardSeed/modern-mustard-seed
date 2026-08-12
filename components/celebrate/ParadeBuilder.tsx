@@ -7,6 +7,7 @@ import {
   celebrateSamplePeople,
   type CelebrateOccasionId,
 } from '@/data/celebrate';
+import { useWaitlist } from '@/components/celebrate/useWaitlist';
 
 type Person = { name: string; month: number; day: number; occasion: CelebrateOccasionId };
 
@@ -147,10 +148,9 @@ export default function ParadeBuilder() {
   const [day, setDay] = useState(1);
   const [occasion, setOccasion] = useState<CelebrateOccasionId>('birthday');
   const [rolled, setRolled] = useState(false);
-  const [email, setEmail] = useState('');
-  const [business, setBusiness] = useState('');
-  const [honeypot, setHoneypot] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  // Shared with the countdown band's capture so both surfaces post the same
+  // payload to the same endpoint. See components/celebrate/useWaitlist.ts.
+  const w = useWaitlist('parade');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const paradeRef = useRef<HTMLDivElement>(null);
 
@@ -175,21 +175,9 @@ export default function ParadeBuilder() {
       }`
   );
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (status === 'sending') return;
-    setStatus('sending');
-    try {
-      const res = await fetch('/api/celebrate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, business, people: paradeStrings, company: honeypot }),
-      });
-      if (!res.ok) throw new Error('bad status');
-      setStatus('done');
-    } catch {
-      setStatus('error');
-    }
+    void w.submit(paradeStrings);
   };
 
   return (
@@ -340,16 +328,17 @@ export default function ParadeBuilder() {
 
             {/* ── Step 3: save it ── */}
             <div className="mt-6 bg-[#FBF6EA] border-2 border-[#161616] rounded-xl p-4 md:p-5">
-              {status === 'done' ? (
+              {w.status === 'done' ? (
                 <div className="relative">
                   <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Dispatch Slip</p>
                   <p className="font-display font-black text-2xl mt-1">You are on the parade route.</p>
                   <p className="font-body text-sm text-[#161616]/70 mt-1 max-w-md">
-                    Your parade is saved. We open routes city by city, and pilots in the Flathead Valley start now.{' '}
+                    Your parade is saved and your dates are loaded for opening day. We open routes city by city, and
+                    pilots in the Flathead Valley start now.{' '}
                     <Link href="/book" className="font-bold text-[#1E50C8] underline underline-offset-4">
                       Book a corporate pilot
                     </Link>{' '}
-                    and your next 60 days of celebrations are handled.
+                    and your next 60 days of celebrations are handled before the public doors open.
                   </p>
                   <span
                     aria-hidden
@@ -359,44 +348,81 @@ export default function ParadeBuilder() {
                   </span>
                 </div>
               ) : (
-                <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-3 items-center">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@company.com"
-                    aria-label="Email"
-                    className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
-                  />
-                  <input
-                    value={business}
-                    onChange={(e) => setBusiness(e.target.value)}
-                    placeholder="Business or family name (optional)"
-                    aria-label="Business or family name"
-                    className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
-                  />
-                  <input
-                    tabIndex={-1}
-                    autoComplete="off"
-                    value={honeypot}
-                    onChange={(e) => setHoneypot(e.target.value)}
-                    name="company"
-                    aria-hidden
-                    className="hidden"
-                  />
-                  <button
-                    type="submit"
-                    disabled={status === 'sending'}
-                    className="bg-[#E0301E] text-white font-bold rounded-full px-7 py-3 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] disabled:opacity-60 hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#161616] transition"
-                  >
-                    {status === 'sending' ? 'Saving…' : 'Save your parade'}
-                  </button>
-                  {status === 'error' && (
-                    <p className="md:col-span-3 font-body text-sm text-[#C4160B]">
-                      That did not go through. Give it one more try, or email sarah@modernmustardseed.com and we will add you by hand.
-                    </p>
-                  )}
+                <form onSubmit={submit}>
+                  <fieldset>
+                    <legend className="font-body text-sm text-[#161616]/70 mb-2">
+                      Saving puts you on the waitlist with these dates already loaded. Who is this parade for?
+                    </legend>
+                    <div className="flex gap-2.5">
+                      {(
+                        [
+                          { id: 'team', label: 'My team and clients' },
+                          { id: 'family', label: 'My family' },
+                        ] as const
+                      ).map((o) => (
+                        <button
+                          key={o.id}
+                          type="button"
+                          aria-pressed={w.audience === o.id}
+                          onClick={() => w.setAudience(o.id)}
+                          className={`font-bold text-sm rounded-full px-5 py-2.5 border-2 border-[#161616] transition ${
+                            w.audience === o.id
+                              ? 'bg-[#1E50C8] text-white shadow-[3px_3px_0_0_#161616]'
+                              : 'bg-white text-[#161616] shadow-[2px_2px_0_0_#161616] hover:translate-y-[1px]'
+                          }`}
+                        >
+                          {o.label}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-3 items-center mt-4">
+                    <input
+                      type="email"
+                      required
+                      value={w.email}
+                      onChange={(e) => w.setEmail(e.target.value)}
+                      placeholder={w.audience === 'family' ? 'you@email.com' : 'you@company.com'}
+                      aria-label="Email"
+                      className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+                    />
+                    <input
+                      value={w.city}
+                      onChange={(e) => w.setCity(e.target.value)}
+                      placeholder="Your city"
+                      aria-label="Your city"
+                      className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+                    />
+                    <input
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={w.honeypot}
+                      onChange={(e) => w.setHoneypot(e.target.value)}
+                      name="company"
+                      aria-hidden
+                      className="hidden"
+                    />
+                    <button
+                      type="submit"
+                      disabled={w.status === 'sending'}
+                      className="bg-[#E0301E] text-white font-bold rounded-full px-7 py-3 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] disabled:opacity-60 hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#161616] transition"
+                    >
+                      {w.status === 'sending' ? 'Saving…' : 'Save your parade'}
+                    </button>
+                    <input
+                      value={w.business}
+                      onChange={(e) => w.setBusiness(e.target.value)}
+                      placeholder={w.audience === 'family' ? 'Family name (optional)' : 'Business name (optional)'}
+                      aria-label={w.audience === 'family' ? 'Family name' : 'Business name'}
+                      className="md:col-span-3 border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+                    />
+                    {w.status === 'error' && (
+                      <p className="md:col-span-3 font-body text-sm text-[#C4160B]">
+                        That did not go through. Give it one more try, or email sarah@modernmustardseed.com and we will add you by hand.
+                      </p>
+                    )}
+                  </div>
                 </form>
               )}
             </div>

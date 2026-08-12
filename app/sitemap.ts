@@ -6,9 +6,10 @@ import { products, bundles } from '@/data/products';
 import { liveTradePages } from '@/data/trade-pages';
 import { MONTANA_CITIES } from '@/data/montana-cities';
 
-// PARKED 2026-08-07 (Sarah): /mustard-tree, /celebrate, /press, and /hatchery
-// are out of the sitemap and noindexed. The routes still answer directly; they
-// are simply not advertised to crawlers or AI answer engines. See Navbar.tsx.
+// PARKED 2026-08-07 (Sarah): /mustard-tree, /press, and /hatchery are out of
+// the sitemap and noindexed. The routes still answer directly; they are simply
+// not advertised to crawlers or AI answer engines. /celebrate was unparked
+// 2026-08-11 with the launch countdown. See Navbar.tsx.
 const STATIC_PATHS = [
   '',
   '/talking-website',
@@ -23,6 +24,7 @@ const STATIC_PATHS = [
   '/world',
   '/mustard-launch',
   '/mustard-mode',
+  '/celebrate',
   '/mustard-mode/start-here',
   '/seed-to-system',
   '/one-person-business',

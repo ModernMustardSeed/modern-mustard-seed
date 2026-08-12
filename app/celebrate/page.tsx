@@ -1,8 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { CELEBRATE, celebrateFaq, celebrateTiers, celebrateUsd } from '@/data/celebrate';
+import {
+  CELEBRATE,
+  CELEBRATE_LAUNCH,
+  celebrateFaq,
+  celebrateTiers,
+  celebrateUsd,
+  daysToLaunch,
+} from '@/data/celebrate';
 import ParadeBuilder from '@/components/celebrate/ParadeBuilder';
+import LaunchCountdown from '@/components/celebrate/LaunchCountdown';
 import {
   CelebrateFaqSection,
   ConfettiField,
@@ -20,13 +28,23 @@ export const metadata = buildMetadata({
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
   image: '/celebrate/opengraph-image',
-  // PARKED 2026-08-07 (Sarah). Unlisted from every nav, the sitemap, and
-  // llms.txt; noindexed so it only opens for someone typing the URL. Drop this
-  // flag to bring the department back. See the note in Navbar.tsx.
-  noindex: true,
+  // UNPARKED 2026-08-11 (Sarah). Parked on 2026-08-07 alongside The Mustard
+  // Tree, Mustard Press, and Mustard Hatchery, and brought back on its own when
+  // the launch countdown shipped: a clock nobody can find collects no waitlist.
+  // The other three stay parked. See the note in Navbar.tsx.
 });
 
+/**
+ * Regenerated hourly so the countdown's server-rendered first paint is never
+ * more than an hour stale. LaunchCountdown takes that instant as a prop and
+ * swaps to the live clock on mount, which is what keeps hydration clean.
+ */
+export const revalidate = 3600;
+
 export default function CelebratePage() {
+  const now = Date.now();
+  const days = daysToLaunch(now);
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -51,6 +69,9 @@ export default function CelebratePage() {
           },
           url: `${SITE.url}/celebrate#pricing`,
           availability: 'https://schema.org/PreOrder',
+          // Answer engines quote opening day off this, so it tracks the one
+          // constant in data/celebrate.ts rather than a second hardcoded date.
+          availabilityStarts: CELEBRATE_LAUNCH.at,
         })),
       },
       {
@@ -96,7 +117,7 @@ export default function CelebratePage() {
           <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-10 items-center">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-4">
-                [ Celebrate &middot; A Modern Mustard Seed Service ]
+                [ Celebrate &middot; {days > 0 ? `Opens ${CELEBRATE_LAUNCH.short}` : 'Now Open'} ]
               </p>
               <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.98]">
                 Turn your calendar into a parade.
@@ -106,16 +127,17 @@ export default function CelebratePage() {
               </p>
               <div className="flex flex-wrap items-center gap-4 mt-8">
                 <a
-                  href="#parade"
+                  href="#countdown"
                   className="bg-[#F5B700] text-[#161616] font-bold text-base rounded-full px-8 py-4 border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:translate-y-[1px] hover:shadow-[3px_3px_0_0_#161616] transition"
                 >
-                  Roll your year&apos;s parade
+                  {days > 0 ? `Hold your spot (${days} days)` : 'Open your account'}
                 </a>
                 <Link href="/book" className="font-bold text-[#1E50C8] underline underline-offset-4">
                   or book a corporate pilot
                 </Link>
               </div>
               <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#161616]/70 mt-6">
+                {days > 0 ? `Doors open ${CELEBRATE_LAUNCH.label}. ` : ''}
                 {CELEBRATE.foundingRoute}
               </p>
             </div>
@@ -137,6 +159,9 @@ export default function CelebratePage() {
           </div>
         </div>
       </section>
+
+      {/* ─── THE CLOCK ON THE DOOR (+ one-field capture) ─── */}
+      <LaunchCountdown serverNow={now} />
 
       {/* ─── THE PARADE BUILDER (signature + waitlist) ─── */}
       <section id="parade" className="max-w-4xl mx-auto px-5 py-14 md:py-20 scroll-mt-24">

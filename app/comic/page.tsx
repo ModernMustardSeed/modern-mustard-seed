@@ -39,6 +39,7 @@ const offerIndexJsonLd = {
     { name: 'GEO Desk (AI findability)', url: `${SITE.url}/website-audit` },
     { name: 'The Switchboard (franchise concierge)', url: `${SITE.url}/switchboard` },
     { name: 'Mustard Mode (Claude coaching)', url: `${SITE.url}/mustard-mode` },
+    { name: 'Celebrate (gifting on autopilot, opens October 19)', url: `${SITE.url}/celebrate` },
     { name: 'The Store (playbooks and courses)', url: `${SITE.url}/store` },
     { name: 'Custom builds', url: `${SITE.url}/services` },
     { name: 'Partner Program', url: `${SITE.url}/partners` },

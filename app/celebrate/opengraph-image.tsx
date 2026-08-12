@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { CELEBRATE_LAUNCH, daysToLaunch } from '@/data/celebrate';
 
 // The Celebrate share card: confetti pop-art with the mascot leading the parade.
 export const runtime = 'nodejs';
@@ -85,15 +86,21 @@ export default async function OpengraphImage() {
               display: 'flex',
               background: RED,
               color: CREAM,
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: 700,
               padding: '10px 18px',
               border: `3px solid ${INK}`,
               alignSelf: 'flex-start',
-              letterSpacing: 3,
+              letterSpacing: 2,
+              whiteSpace: 'nowrap',
             }}
           >
-            A MODERN MUSTARD SEED SERVICE
+            {/* One text node, not an expression plus a literal. Satori trims the
+                leading space off a text node that follows an expression, which
+                rendered as "OCT 19· MODERN" on the first pass. */}
+            {`${
+              daysToLaunch(Date.now()) > 0 ? `OPENS ${CELEBRATE_LAUNCH.short.toUpperCase()}` : 'NOW OPEN'
+            } · MODERN MUSTARD SEED`}
           </div>
           <div style={{ display: 'flex', color: INK, fontSize: 108, fontWeight: 800, letterSpacing: -2, marginTop: 28 }}>
             CELEBRATE
