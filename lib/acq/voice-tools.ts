@@ -421,6 +421,14 @@ export async function handleAcqEndOfCall(
 
   const campaign = await getCampaign();
 
+  // Sarah gets told about a high scorer who just finished a real conversation,
+  // and about nothing else here. The needs-human flag and the booking and the
+  // payment already have their own notifications; adding "a call happened" for
+  // every call is how a useful alert becomes noise she filters.
+  if (completed && (lead.lead_score ?? 0) >= 70 && (report.durationSeconds ?? 0) >= 120) {
+    after(() => notifyHighValueCall(lead, report));
+  }
+
   if (completed && !lead.demo_status && !lead.unsubscribed_at) {
     // They talked but never asked for theirs. One nudge, not a campaign.
     await enqueue(db, {
@@ -443,6 +451,34 @@ export async function handleAcqEndOfCall(
       runAfter: new Date(Date.now() + 4 * 60 * 60 * 1000),
       payload: { phone: lead.phone },
     });
+  }
+}
+
+async function notifyHighValueCall(
+  lead: AcqProspect,
+  report: { summary: string; durationSeconds?: number },
+): Promise<void> {
+  if (!process.env.RESEND_API_KEY) return;
+  const business = shortBusiness(lead.business_name);
+  const mins = Math.floor((report.durationSeconds ?? 0) / 60);
+  try {
+    const resend = resendClient();
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `Mr. Mustard just talked to ${business} for ${mins} minutes`,
+      html: clientEmail({
+        preheader: `Score ${lead.lead_score}. ${[lead.city, lead.state].filter(Boolean).join(', ')}.`,
+        eyebrow: 'A GOOD ONE JUST HUNG UP',
+        greeting: `${business} scored ${lead.lead_score} and stayed on for ${mins} minutes.`,
+        body:
+          p(escape(report.summary.slice(0, 1200))) +
+          p(`<a href="${SITE.url}/admin/acquisition/prospects/${lead.id}">Open the prospect and read the transcript</a>`),
+        signature: 'The Acquisition Engine',
+      }),
+    });
+  } catch (err) {
+    console.error('acq high-value call notify failed', err);
   }
 }
 

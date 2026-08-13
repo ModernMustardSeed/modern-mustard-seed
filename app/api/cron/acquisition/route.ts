@@ -66,7 +66,40 @@ export async function GET(req: Request) {
     if (res.ok && res.created) swept++;
   }
 
-  /* ── 2. drain ── */
+  /* ── 2. daily sourcing, if Sarah turned it on ── */
+
+  let sourcingRun: string | null = null;
+  if (settings.daily_sourcing_enabled && settings.sourcing_enabled) {
+    const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Denver' }).format(new Date());
+    const { data: already } = await db
+      .from('acq_sourcing_runs')
+      .select('id')
+      .gte('created_at', `${today}T00:00:00Z`)
+      .in('status', ['queued', 'running', 'done'])
+      .limit(1);
+
+    // One run a day, and only under the total campaign ceiling. Uncontrolled
+    // sourcing is how a prospect list becomes a liability.
+    const { count: total } = await db.from('outbound_leads').select('id', { count: 'exact', head: true }).not('acq_campaign_id', 'is', null);
+    if (!(already ?? []).length && (total ?? 0) < settings.total_campaign_max) {
+      const split = settings.daily_sourcing_split ?? { hvac: 40, plumbing: 30, roofing: 30 };
+      const scale = settings.daily_sourcing_target / Math.max(1, Object.values(split).reduce((s, n) => s + Number(n), 0));
+      const targets = Object.fromEntries(Object.entries(split).map(([k, v]) => [k, Math.round(Number(v) * scale)]));
+      const { data: run } = await db
+        .from('acq_sourcing_runs')
+        .insert({
+          label: `Daily sourcing: ${settings.daily_sourcing_target} prospects`,
+          params: { targets, tier: 3, requireEmail: true, minScore: settings.min_lead_score, daily: true },
+          target: settings.daily_sourcing_target,
+          status: 'queued',
+        })
+        .select('id')
+        .single();
+      sourcingRun = (run?.id as string) ?? null;
+    }
+  }
+
+  /* ── 3. drain ── */
 
   const drained = await drainQueue({ limit: 40, worker: 'cron' });
 
@@ -79,5 +112,5 @@ export async function GET(req: Request) {
     });
   }
 
-  return NextResponse.json({ ok: true, swept, drained });
+  return NextResponse.json({ ok: true, swept, sourcingRun, drained });
 }
