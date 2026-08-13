@@ -23,6 +23,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // ── Client portal ──
+  // Also guarded by prefix, for the same reason as the admin block below.
   if (path.startsWith('/portal')) {
     if (path === '/portal/login') return NextResponse.next();
     const token = req.cookies.get(CLIENT_COOKIE_NAME)?.value;
@@ -36,13 +37,24 @@ export async function middleware(req: NextRequest) {
 
   // ── Admin ──
   // Only the login page is public. Sign-in is password only.
-  if (path === '/admin/login') return NextResponse.next();
-  const token = req.cookies.get(COOKIE_NAME)?.value;
-  const session = token ? await verifyToken(token) : null;
-  if (!session) {
-    const url = new URL('/admin/login', req.url);
-    url.searchParams.set('next', path);
-    return NextResponse.redirect(url);
+  //
+  // ⚠️ THE `startsWith` GUARD IS LOAD-BEARING. This block used to assume that
+  // anything reaching it was an /admin path, which was true while the matcher
+  // held only /admin and /portal. The moment /Mustard was added to the matcher,
+  // Vercel matched it case-INSENSITIVELY, `/mustard` fell through both blocks
+  // above, hit this one, found no admin cookie, and bounced every visitor to
+  // the public doorway into the admin login. Live, on the page we were about to
+  // promote. Any future matcher entry must be gated the same way.
+  if (path.startsWith('/admin')) {
+    if (path === '/admin/login') return NextResponse.next();
+    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const session = token ? await verifyToken(token) : null;
+    if (!session) {
+      const url = new URL('/admin/login', req.url);
+      url.searchParams.set('next', path);
+      return NextResponse.redirect(url);
+    }
   }
+
   return NextResponse.next();
 }
