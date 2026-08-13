@@ -7,6 +7,7 @@ import { saveBlueprint } from './blueprint';
 import { INTERNAL_TENANT_SLUG } from './tenant';
 import type { FactoryRow, FactoryTenant } from './types';
 import { audit } from './audit-log';
+import { autoConnectPlatform } from './connectors';
 
 /**
  * BOOTSTRAP. Push the code-defined registries into the database and make sure
@@ -97,6 +98,33 @@ export async function bootstrapFactoryPlatform(
     factoryId = result.factoryId;
     created = result.created;
     if (result.note) notes.push(result.note);
+
+    // Connect everything Modern Mustard Seed already runs, on EVERY bootstrap
+    // rather than only on the first one. We own the Resend account, the Vapi
+    // org and the Stripe account, so no person should be clicking Connect on
+    // our own infrastructure, and a checklist that stays red because nobody
+    // pressed a button is a checklist that teaches people to ignore it.
+    // Re-running is also the repair path: a credential that rotated shows up
+    // here as a failure with the provider's own words rather than silence.
+    if (factoryId) {
+      const { deployedBlueprint, currentBlueprint, validateBlueprint } = await import('./blueprint');
+      const row = (await deployedBlueprint(supabase, factoryId)) ?? (await currentBlueprint(supabase, factoryId));
+      const parsed = row ? validateBlueprint(row.doc) : null;
+      if (parsed?.ok) {
+        const wired = await autoConnectPlatform({
+          supabase,
+          tenantId: tenant.id,
+          blueprint: parsed.doc,
+          actor,
+          // The internal tenant collects through the platform Stripe account. A
+          // customer's Factory never does: a prospect buying from them pays them.
+          claimEither: true,
+        });
+        if (wired.connected.length) notes.push(`Connected ${wired.connected.map((c) => c.provider).join(', ')}.`);
+        for (const failure of wired.failed) notes.push(`${failure.provider}: ${failure.detail}`);
+        if (wired.needsCustomer.length) notes.push(`Needs the customer: ${wired.needsCustomer.join(', ')}.`);
+      }
+    }
   }
 
   return { modules: moduleRows.length, valueActions: actionRows.length, templates, tenant: tenant.id, factory: factoryId, created, notes };

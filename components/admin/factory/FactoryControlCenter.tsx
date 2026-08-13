@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { Badge, Bar, Button, Card, Empty, Stat, ago, money, pct } from './ui';
+import FactoryIntegrations from './FactoryIntegrations';
 
 /**
  * THE FACTORY CONTROL CENTRE.
@@ -306,6 +307,9 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
             </div>
           )}
         </Card>
+
+        {/* ── integrations ── */}
+        <FactoryIntegrations factoryId={factoryId} onChange={() => void load()} />
 
         {/* ── results ── */}
         {data.summary && (

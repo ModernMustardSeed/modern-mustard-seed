@@ -70,6 +70,7 @@ const { funnel, factorySummary } = await import('@/lib/factory/analytics');
 const { enqueue, claim, complete, queueDepth } = await import('@/lib/factory/queue');
 const { bootstrapFactoryPlatform } = await import('@/lib/factory/bootstrap');
 const { audit, recentAudit } = await import('@/lib/factory/audit-log');
+const { integrationStatus, connectIntegration, disconnectIntegration, autoConnectPlatform, credentialStorageReady } = await import('@/lib/factory/connectors');
 const { slugify } = await import('@/lib/factory/types');
 import type { Blueprint, FactoryRow } from '@/lib/factory/types';
 
@@ -549,6 +550,108 @@ try {
     assert(snapshot.length === a.blueprint.crm.pipeline.length, 'every stage appears, even the empty ones');
     const otherTenant = await pipelineSnapshot(sb, b.tenantId, b.factoryId, b.blueprint.crm.pipeline);
     eq(otherTenant.reduce((s, x) => s + x.count, 0), 0, 'tenant B sees none of tenant A pipeline');
+  });
+
+  /* ── integrations ── */
+
+  await check('the platform connects what it owns and leaves the rest to the customer', async () => {
+    const outcome = await autoConnectPlatform({ supabase: sb, tenantId: a.tenantId, blueprint: a.blueprint, actor: 'smoke' });
+    const connected = outcome.connected.map((c) => c.provider);
+    const failed = outcome.failed.map((c) => c.provider);
+    assert(connected.includes('telephony'), `telephony is ours to connect, got connected=${connected} failed=${failed}`);
+    assert(outcome.needsCustomer.includes('payments'), 'payments is the customer account, so it must be left to them');
+  });
+
+  await check('the email check is real, not a checkbox', async () => {
+    // The fixture sends from example.invalid, which is genuinely not verified on
+    // the sending account. A connector that reported "connected" here would be
+    // one that never asked the provider anything.
+    const { views } = await integrationStatus({ supabase: sb, tenantId: a.tenantId, blueprint: a.blueprint });
+    const email = views.find((v) => v.provider === 'email_sender');
+    assert(email, 'email_sender must appear');
+    assert(email.status !== 'connected', 'an unverified sending domain must not report as connected');
+    assert(email.detail?.includes('example.invalid'), `the failure must name the domain, got: ${email.detail}`);
+  });
+
+  await check('integration status reports required and missing', async () => {
+    const status = await integrationStatus({ supabase: sb, tenantId: a.tenantId, blueprint: a.blueprint });
+    assert(status.required.includes('telephony'), 'the blueprint requires telephony');
+    assert(status.missing.includes('email_sender'), 'email_sender is required and not connected, so it is missing');
+    assert(!status.missing.includes('telephony'), 'telephony connected, so it is not missing');
+  });
+
+  const cryptoReady = credentialStorageReady();
+  if (!cryptoReady) {
+    console.log('  note  CREDENTIALS_SECRET is too short on this machine, so the encrypted-storage path is checked by its refusal instead.');
+  }
+
+  await check('a tenant credential is stored encrypted and never handed back', async () => {
+    const result = await connectIntegration({
+      supabase: sb, tenantId: a.tenantId, provider: 'payments', blueprint: a.blueprint,
+      ownership: 'tenant', secret: 'sk_test_smoke_not_a_real_key', actor: 'smoke',
+    });
+    assert(!result.ok, 'a made-up key must not connect');
+    assert(!JSON.stringify(result).includes('sk_test_smoke'), 'the credential must never appear in a response');
+
+    if (!cryptoReady) {
+      // A short signing key is a misconfigured environment, and the honest
+      // behaviour is a clear refusal rather than a 500 from inside encryption.
+      assert(result.detail.includes('Credential storage is not configured'), `expected a clear refusal, got: ${result.detail}`);
+      const { data } = await sb.from('factory_integrations').select('secret_ciphertext').eq('tenant_id', a.tenantId).eq('provider', 'payments').maybeSingle();
+      assert(!(data as { secret_ciphertext: string | null } | null)?.secret_ciphertext, 'nothing may be stored when storage is unavailable');
+      return;
+    }
+
+    const { data } = await sb.from('factory_integrations').select('secret_ciphertext, config').eq('tenant_id', a.tenantId).eq('provider', 'payments').single();
+    const row = data as { secret_ciphertext: string | null; config: Record<string, unknown> };
+    assert(row.secret_ciphertext, 'the credential must be stored');
+    assert(!row.secret_ciphertext.includes('sk_test_smoke'), 'it must be stored encrypted, not in the clear');
+    assert(!JSON.stringify(row.config).includes('sk_test_smoke'), 'it must never land in config');
+  });
+
+  await check('a credential never reaches the audit log', async () => {
+    const rows = await recentAudit(sb, { tenantId: a.tenantId, limit: 60 });
+    assert(!JSON.stringify(rows).includes('sk_test_smoke'), 'no audit row may carry a credential');
+    assert(rows.some((r) => r.action === 'integration.connected' || r.action === 'integration.failed'), 'the attempt must be recorded');
+  });
+
+  await check('a platform-owned connector refuses a customer key', async () => {
+    const result = await connectIntegration({
+      supabase: sb, tenantId: a.tenantId, provider: 'telephony', blueprint: a.blueprint,
+      ownership: 'tenant', secret: 'whatever-key-value', actor: 'smoke',
+    });
+    assert(!result.ok, 'telephony is ours, so a tenant key must be refused');
+    assert(result.detail.includes('Modern Mustard Seed'), 'the refusal must say who provides it');
+  });
+
+  await check('disconnecting clears the stored credential', async () => {
+    // Connect platform-side first so there is definitely a row to disconnect,
+    // whatever happened on the tenant-credential path above.
+    await connectIntegration({ supabase: sb, tenantId: a.tenantId, provider: 'payments', blueprint: a.blueprint, ownership: 'platform', actor: 'smoke' });
+    await disconnectIntegration({ supabase: sb, tenantId: a.tenantId, provider: 'payments', actor: 'smoke' });
+    const { data } = await sb.from('factory_integrations').select('status, secret_ciphertext').eq('tenant_id', a.tenantId).eq('provider', 'payments').single();
+    const row = data as { status: string; secret_ciphertext: string | null };
+    eq(row.status, 'disconnected', 'the row records the disconnect');
+    eq(row.secret_ciphertext, null, 'the credential is gone');
+  });
+
+  await check('preflight names each integration instead of listing keys', async () => {
+    const { data: factory } = await sb.from('factories').select('*').eq('id', a.factoryId).single();
+    const plan = await getPlan(sb, 'pro');
+    const report = await preflight({ supabase: sb, tenantId: a.tenantId, factory: factory as FactoryRow, blueprint: a.blueprint, plan });
+    const rows = report.checks.filter((c) => c.key.startsWith('integrations.'));
+    assert(rows.length >= 2, 'each required integration gets its own check');
+    const telephonyCheck = rows.find((c) => c.key === 'integrations.telephony');
+    eq(telephonyCheck?.status, 'pass', 'a connected integration passes');
+    const emailCheck = rows.find((c) => c.key === 'integrations.email_sender');
+    eq(emailCheck?.status, 'fail', 'an unverified sender fails');
+    assert(emailCheck?.label === 'Email Sending', 'the check is named for a person, not keyed for a machine');
+  });
+
+  await check('integrations are tenant scoped, and one tenant connecting does not connect another', async () => {
+    const other = await integrationStatus({ supabase: sb, tenantId: b.tenantId, blueprint: b.blueprint });
+    eq(other.views.filter((v) => v.status === 'connected').length, 0, 'tenant B has connected nothing');
+    assert(other.missing.length > 0, 'and its required integrations are still missing');
   });
 
   /* ── limits, health, analytics ── */

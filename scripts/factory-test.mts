@@ -52,6 +52,7 @@ const { findBottleneck, findMoreLikeWinners, MIN_SAMPLE } = await import('@/lib/
 const { backoffMs, LANE_PRIORITY } = await import('@/lib/factory/queue');
 const { redact } = await import('@/lib/factory/audit-log');
 const { SCENARIOS } = await import('@/lib/factory/simulate');
+const { CONNECTORS, getConnector, senderDomainOf, listConnectors } = await import('@/lib/factory/connectors');
 
 /* ─────────────────────────── the blueprint ──────────────────────────── */
 
@@ -617,6 +618,67 @@ await check('the same request from different wording collapses to one key', () =
   const a = normalizeRequest('Can we route Spanish calls to Maria?');
   const b = normalizeRequest('Route the Spanish calls to Maria please');
   eq(a, b, 'the same ask phrased differently must group');
+});
+
+/* ───────────────────────────── connectors ───────────────────────────── */
+
+await check('every integration a module requires has a connector', () => {
+  const known = new Set(CONNECTORS.map((c) => c.key));
+  for (const m of MODULES) {
+    for (const need of m.requires) {
+      if (!need.includes('.')) assert(known.has(need), `${m.key} requires "${need}" and no connector defines it`);
+    }
+  }
+});
+
+await check('every seeded template only requires connectors that exist', () => {
+  const known = new Set(CONNECTORS.map((c) => c.key));
+  for (const t of offerableTemplates(true)) {
+    const built = blueprintFromTemplate(t.key, {}, 'Test Co');
+    assert(built.ok, `${t.key} did not build`);
+    for (const need of requiredIntegrations(built.doc.modules)) {
+      assert(known.has(need), `${t.key} needs a connector "${need}" that does not exist`);
+    }
+  }
+});
+
+await check('the sender domain is read from the blueprint, declared first', () => {
+  const bp = goodBlueprint();
+  bp.compliance.sender_domain = 'declared.com';
+  bp.compliance.sender_from = 'Dana <dana@parsed.com>';
+  eq(senderDomainOf(bp), 'declared.com', 'a declared domain wins');
+});
+
+await check('the sender domain falls back to parsing the from address', () => {
+  const bp = goodBlueprint();
+  bp.compliance.sender_domain = null;
+  bp.compliance.sender_from = 'Dana at Acme <dana@acme.com>';
+  eq(senderDomainOf(bp), 'acme.com', 'the address is parsed when no domain is declared');
+  bp.compliance.sender_from = null;
+  eq(senderDomainOf(bp), null, 'with neither there is no domain to check');
+});
+
+await check('a connector that stores nothing declares no secret', () => {
+  for (const c of CONNECTORS) {
+    if (c.ownership === 'platform') eq(c.secretLabel, null, `${c.key} is platform-owned so it must not ask for a credential`);
+    if (c.ownership === 'tenant') assert(c.secretLabel, `${c.key} is tenant-owned so it must say what credential it needs`);
+    assert(c.howToConnect.length > 20, `${c.key} must say what connecting involves`);
+  }
+});
+
+await check('a connector that is not built says so instead of failing quietly', async () => {
+  const crm = getConnector('crm');
+  assert(crm, 'the crm connector must be declared');
+  eq(crm.status, 'proposed', 'it is not built yet');
+  assert(crm.buildSpec, 'a proposed connector must carry a build spec');
+  const result = await crm.check({ supabase: null as never, tenantId: 't', blueprint: null, ownership: 'tenant', secret: 'x', config: {} });
+  assert(!result.ok, 'an unbuilt connector must never report ok');
+});
+
+await check('the connector catalog never leaks a check implementation', () => {
+  for (const c of listConnectors()) {
+    assert(!('check' in c), `${c.key} must not expose its check function to the client`);
+  }
 });
 
 /* ────────────────────────── infrastructure ──────────────────────────── */

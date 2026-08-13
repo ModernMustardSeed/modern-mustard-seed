@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Blueprint, FactoryRow, PreflightCheck, PreflightReport } from './types';
 import { resolveModules, requiredIntegrations } from './modules';
+import { integrationStatus } from './connectors';
 import { checkModules, checkValueAction, type PlanRow } from './plans';
 import { getValueAction } from './value-actions';
 import { TOOLS } from './tools';
@@ -109,21 +110,38 @@ export async function preflight(ctx: PreflightContext): Promise<PreflightReport>
   );
 
   /* ── integrations ── */
+  //
+  // One check per connector rather than one line listing three keys. "Not
+  // connected: email_sender, telephony, payments" is true and useless: it does
+  // not say what the thing is, who owns the account, or whether MMS can simply
+  // provide it. Each of these now names the connector, says who connects it,
+  // and carries the last real error the provider gave us.
   const needed = requiredIntegrations(bp.modules);
   if (needed.length) {
-    const { data } = await ctx.supabase
-      .from('factory_integrations')
-      .select('provider, status')
-      .eq('tenant_id', ctx.tenantId);
-    const connected = new Set(
-      ((data as { provider: string; status: string }[]) ?? []).filter((r) => r.status === 'connected').map((r) => r.provider),
-    );
-    const missing = needed.filter((n) => !connected.has(n));
-    checks.push(
-      missing.length
-        ? fail('integrations', 'Integrations', `Not connected: ${missing.join(', ')}.`)
-        : pass('integrations', 'Integrations', `${needed.join(', ')} connected.`),
-    );
+    const { views } = await integrationStatus({ supabase: ctx.supabase, tenantId: ctx.tenantId, blueprint: bp });
+    for (const view of views.filter((v) => v.required)) {
+      if (view.status === 'connected') {
+        checks.push(pass(`integrations.${view.provider}`, view.name, view.detail ?? 'Connected.'));
+        continue;
+      }
+      if (!view.buildable) {
+        checks.push(fail(`integrations.${view.provider}`, view.name, `${view.howToConnect} ${view.buildSpec ?? ''}`.trim()));
+        continue;
+      }
+      const who =
+        view.ownership === 'platform'
+          ? 'Modern Mustard Seed provides this, so it connects with one click.'
+          : 'This one is the customer\'s own account.';
+      checks.push(
+        fail(
+          `integrations.${view.provider}`,
+          view.name,
+          view.needsReconnect
+            ? `Was working and stopped. ${view.detail ?? ''} Reconnect it.`.trim()
+            : `${view.detail ?? 'Not connected.'} ${who}`,
+        ),
+      );
+    }
   }
 
   /* ── the agent ── */
