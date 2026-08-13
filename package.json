@@ -13,12 +13,16 @@
     "lighthouse": "node scripts/lighthouse-money-pages.mjs",
     "zoho:health": "node scripts/zoho-health.mjs",
     "audit-worker": "tsx scripts/audit-worker.mts",
+    "factory-worker": "tsx scripts/factory-worker.mts",
     "roadmap-worker": "tsx scripts/roadmap-worker.mts",
     "audit:demo-assets": "node scripts/audit-demo-assets.mjs",
     "audit:demo-copy": "node scripts/audit-demo-copy.mjs",
     "test:copy-lint": "node scripts/test-copy-lint.mjs",
     "rehearse": "node scripts/funnel-rehearsal.mjs",
-    "audit:trades": "node scripts/audit-lead-trades.mjs"
+    "audit:trades": "node scripts/audit-lead-trades.mjs",
+    "factory:test": "tsx scripts/factory-test.mts",
+    "factory:smoke": "tsx scripts/factory-smoke.mts",
+    "factory:bootstrap": "tsx scripts/factory-bootstrap.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",

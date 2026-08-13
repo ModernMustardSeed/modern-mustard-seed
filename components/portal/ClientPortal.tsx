@@ -11,6 +11,7 @@ import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
 import MoodboardCard from '@/components/portal/MoodboardCard';
+import FactoryPortalLink from '@/components/portal/FactoryPortalLink';
 import { properName } from '@/lib/business-name';
 
 /**
@@ -198,6 +199,8 @@ export default function ClientPortal() {
           <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6"><p className="text-[#E0301E] text-sm font-body">{error}</p></div>
         ) : data ? (
           <>
+            <FactoryPortalLink />
+
             {/* Welcome */}
             <div className="mb-8">
               <h2 className="font-display text-3xl md:text-4xl font-semibold text-[#161616] tracking-tight">
