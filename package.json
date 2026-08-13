@@ -24,7 +24,9 @@
     "acq:source": "tsx scripts/acq-source.mts",
     "acq:import": "tsx scripts/acq-import-existing.mts",
     "acq:smoke": "tsx scripts/acq-smoke.mts",
-    "acq:health": "tsx scripts/acq-health.mts"
+    "acq:health": "tsx scripts/acq-health.mts",
+    "acq:preview": "tsx scripts/acq-preview-email.mts",
+    "acq:login": "tsx scripts/acq-login-check.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",
@@ -81,3 +83,4 @@
     "typescript": "~5.8.2"
   }
 }
+

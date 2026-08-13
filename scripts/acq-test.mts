@@ -25,6 +25,7 @@ import { cloudflareEmails, extractPhone, extractHours, extractServiceArea, parse
 import { tradeOf, buildBriefing, firstMessage, acquisitionTools } from '../lib/acq/call';
 import { authorize, nextRampStep, backOffStep, tierFor } from '../lib/acq/governor';
 import { goalLadder, forecast, monthsBetween, type FunnelRate } from '../lib/acq/factory';
+import { estimateFor, calculatorBlock, personalOpener } from '../lib/acq/personalize';
 import { readAttribution, labelSource } from '../lib/mustard/surface';
 import { hashToken } from '../lib/mustard/links';
 import { OFFER, isMailableEmailStatus } from '../lib/acq/types';
@@ -755,6 +756,94 @@ test('factory: whole months are floored, not rounded up', () => {
   assert.equal(monthsBetween(new Date('2026-01-15T00:00:00Z'), new Date('2026-02-14T00:00:00Z')), 0);
   assert.equal(monthsBetween(new Date('2026-01-15T00:00:00Z'), new Date('2026-02-15T00:00:00Z')), 1);
   assert.equal(monthsBetween(new Date('2026-01-15T00:00:00Z'), new Date('2027-01-15T00:00:00Z')), 12);
+});
+
+/* ------------------------------ personalization --------------------------- */
+
+test('personalization: refuses to personalize when we do not actually know them', () => {
+  const blind = estimateFor(lead({ review_count: null, rating: null, city: null, state: null, hours: null, open_24_7: false, emergency_service: false }));
+  assert.equal(blind.personalizable, false, 'nothing true to say means no personalized email');
+  assert.equal(blind.hook, null);
+});
+
+test('personalization: opens with something true, and the arithmetic follows from it', () => {
+  const e = estimateFor(lead({ review_count: 312, rating: 4.8, city: 'Phoenix', state: 'AZ' }));
+  assert.equal(e.personalizable, true);
+  assert.match(e.hook ?? '', /312 reviews/);
+  assert.match(e.hook ?? '', /Phoenix, AZ/);
+  assert.match(personalOpener(lead({ review_count: 312, rating: 4.8, city: 'Phoenix', state: 'AZ' }), e), /312 reviews/);
+  assert.ok(e.monthlyLeakCents > 0);
+});
+
+test('personalization: every input is labelled fact or assumption, and the guesses are named', () => {
+  const e = estimateFor(lead({ review_count: 312, city: 'Phoenix', state: 'AZ' }));
+  for (const i of e.inputs) {
+    assert.ok(['fact', 'assumption'].includes(i.provenance), `${i.key} must declare its provenance`);
+    assert.ok(i.because.length > 10, `${i.key} must say why we believe it`);
+  }
+  // The two the reader would know better than we do are always stated.
+  assert.ok(e.inputs.some((i) => i.key === 'value' && i.provenance === 'assumption'));
+  assert.ok(e.inputs.some((i) => i.key === 'close' && i.provenance === 'assumption'));
+});
+
+test('personalization: the coverage gap it names matches what we observed', () => {
+  const closesEarly = estimateFor(lead({
+    review_count: 200,
+    hours: { monday: '8:00 am - 5:00 pm', tuesday: '8:00 am - 5:00 pm', wednesday: '8:00 am - 5:00 pm', thursday: '8:00 am - 5:00 pm', friday: '8:00 am - 5:00 pm' },
+  }));
+  assert.match(closesEarly.inputs.find((i) => i.key === 'missed')!.because, /posted hours end at 5pm/);
+
+  const always = estimateFor(lead({ review_count: 200, open_24_7: true }));
+  assert.match(always.inputs.find((i) => i.key === 'missed')!.because, /around the clock/);
+});
+
+test('personalization: roofing carries a bigger ticket than plumbing, and it says so', () => {
+  const roof = estimateFor(lead({ trade: 'roofing', review_count: 200 }));
+  const plumb = estimateFor(lead({ trade: 'plumbing', review_count: 200 }));
+  assert.ok(roof.avgJobValue > plumb.avgJobValue);
+  assert.match(roof.inputs.find((i) => i.key === 'value')!.because, /roofing/);
+});
+
+test('personalization: the calculator block is email safe and shows its working', () => {
+  const l = lead({ review_count: 312, rating: 4.8, city: 'Phoenix', state: 'AZ' });
+  const html = calculatorBlock(l, estimateFor(l), (s) => s);
+  assert.match(html, /<table/, 'tables, because half of these open in Outlook');
+  assert.ok(!/<script|onclick=|position:\s*fixed|background-image/i.test(html), 'no script, no handlers, no background images');
+  assert.match(html, /Every month/);
+  assert.match(html, /worked back from your 312 public reviews/);
+  assert.match(html, /Two of those are guesses/, 'the guesses must be admitted in the body');
+});
+
+test('personalization: the personalized email still carries the opt-out and the tracked CTA', () => {
+  const l = lead({ review_count: 312, rating: 4.8, city: 'Phoenix', state: 'AZ' });
+  const built = buildCampaignEmail({
+    lead: l,
+    variant: { id: 'v', campaign_id: 'c', key: 'P', step: 1, subject: 'x', cta_label: 'YES', body_key: 'personalized', weight: 1, active: true },
+    step: 1,
+    fromName: 'Sarah',
+    fromEmail: 's@x.com',
+    replyTo: 's@x.com',
+  });
+  assert.ok(built);
+  assert.match(built!.html, /unsubscribe here/i);
+  assert.match(built!.html, /\/api\/acq\/click\?/);
+  assert.match(built!.subject, /what happens to the calls you miss/i);
+  assert.ok(!built!.html.includes('—'), 'no em dashes');
+});
+
+test('personalization: a thin prospect on the personalized variant gets the plain email', () => {
+  const thin = lead({ review_count: null, city: null, state: null, hours: null, emergency_service: false, open_24_7: false });
+  const built = buildCampaignEmail({
+    lead: thin,
+    variant: { id: 'v', campaign_id: 'c', key: 'P', step: 1, subject: 'Want my AI receptionist to call you?', cta_label: 'YES', body_key: 'personalized', weight: 1, active: true },
+    step: 1,
+    fromName: 'Sarah',
+    fromEmail: 's@x.com',
+    replyTo: 's@x.com',
+  });
+  assert.ok(built);
+  assert.match(built!.html, /Slightly unusual question/, 'falls back to the plain email');
+  assert.ok(!built!.html.includes('What the misses are worth'), 'no invented calculator');
 });
 
 /* ----------------------------- the /mustard door -------------------------- */

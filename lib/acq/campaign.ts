@@ -19,6 +19,7 @@ import { complianceFooter, unsubscribeUrlFor } from '@/lib/outbound-email';
 import { SITE } from '@/lib/seo';
 import type { AcqProspect, AcqVariant } from '@/lib/acq/types';
 import { possessive } from '@/lib/business-name';
+import { estimateFor, calculatorBlock, personalOpener, type Estimate } from '@/lib/acq/personalize';
 
 /** Tracked CTA. Every click is a measured "permission requested". */
 export function permissionUrl(lead: Pick<AcqProspect, 'id'>, step: number, variantKey: string): string {
@@ -123,7 +124,19 @@ export function buildCampaignEmail(args: {
   const greeting = greetingFor(lead);
   const cta = { label: variant.cta_label, url: permissionUrl(lead, step, variant.key) };
 
-  const body = step === 1 ? email1(business) : step === 2 ? email2(business) : email3(business);
+  // The personalized variant only fires when we genuinely hold two independent
+  // true things about this business. Otherwise it degrades to the plain email
+  // rather than dressing a template up as research.
+  const estimate = variant.body_key === 'personalized' && step === 1 ? estimateFor(lead) : null;
+  const personalized = estimate?.personalizable ? estimate : null;
+
+  const body = personalized
+    ? emailPersonalized(lead, personalized, business)
+    : step === 1
+      ? email1(business)
+      : step === 2
+        ? email2(business)
+        : email3(business);
 
   const html =
     clientEmail({
@@ -139,13 +152,52 @@ export function buildCampaignEmail(args: {
     to: lead.email,
     from: `${args.fromName} <${args.fromEmail}>`,
     replyTo: args.replyTo,
-    subject: renderSubject(variant, lead),
+    subject: personalized ? personalizedSubject(lead, personalized) : renderSubject(variant, lead),
     html,
     unsubscribeUrl: unsubscribeUrlFor(lead.email),
-    summary: `MEET MR. MUSTARD email ${step} (variant ${variant.key}).`,
+    summary: `MEET MR. MUSTARD email ${step} (variant ${variant.key}${personalized ? ', personalized' : ''}).`,
     step,
     variantKey: variant.key,
   };
+}
+
+/**
+ * EMAIL 1, PERSONALIZED.
+ *
+ * Same single ask as the plain one. The difference is that it opens with
+ * something true about their business and then shows the arithmetic behind why
+ * a missed call matters, with the two guessed inputs printed in the open.
+ *
+ * It still does not sell a voice agent. It still asks one question.
+ */
+function emailPersonalized(lead: AcqProspect, est: Estimate, business: string): string {
+  return (
+    p(escape(personalOpener(lead, est))) +
+    p(
+      `I built an AI receptionist named <strong>Mr. Mustard</strong> that answers, qualifies and books customers for service businesses. Before I pitch you anything, here is the only reason it would matter to you.`,
+    ) +
+    calculatorBlock(lead, est, escape) +
+    p(
+      `Rather than argue about the number, I would rather let him call you and show you what he does with those calls. He can even pretend he is the receptionist for <strong>${escape(business)}</strong> so you can test him yourself.`,
+    ) +
+    p('<strong>Want Mr. Mustard to call you for a three minute demo?</strong>')
+  );
+}
+
+function personalizedSubject(lead: AcqProspect, est: Estimate): string {
+  const business = shortBusiness(lead.business_name);
+  switch (est.hookKind) {
+    case 'reviews':
+      return `${business}, what happens to the calls you miss?`;
+    case 'always-open':
+      return `Who answers ${possessive(business)} phone at 2am?`;
+    case 'hours':
+      return `${business}, who picks up after you close?`;
+    case 'emergency':
+      return `${business}, the 11pm emergency call`;
+    default:
+      return `Want my AI receptionist to call you?`;
+  }
 }
 
 const PREHEADERS: Record<number, string> = {
