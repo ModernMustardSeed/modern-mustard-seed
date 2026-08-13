@@ -1,9 +1,20 @@
 /**
- * THE DEMO-STATION DRIP: self-serve forgers who have not bought yet get a
- * three-touch email sequence (about day 1, 3, and 7 after signup) that stops
- * the moment they buy, reply, or a rep moves the lead. Invoked by the
- * outbound-cadence cron (it rides that cron instead of registering a new one;
- * Hobby cron limits have killed deploys before).
+ * THE DEMO DRIP: forgers who have not bought yet get a three-touch email
+ * sequence (about day 1, 3, and 7 after signup) that stops the moment they buy,
+ * reply, or a rep moves the lead. Invoked by the outbound-cadence cron (it rides
+ * that cron instead of registering a new one; Hobby cron limits have killed
+ * deploys before).
+ *
+ * ⚠️ 2026-08-13: this used to filter `source = 'demo-station'` ONLY, which
+ * meant every lead Mr. Mustard forged on a live phone call (source
+ * `mr-mustard`) fell out of the funnel the moment the call ended. The warmest
+ * leads in the building, the ones who talked to a human-sounding agent and said
+ * yes out loud, got a single welcome email and then silence. They are in now.
+ *
+ * The copy is generated from what was ACTUALLY forged, because he no longer
+ * builds all three every time (see lib/voice-forge-suite.ts). Naming a website
+ * to someone who only ever asked for a voice agent reads like a mail merge that
+ * does not know them, which is exactly the opposite of the pitch.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { sendViaResend } from '@/lib/send-email';
@@ -29,6 +40,21 @@ function dripDue(step: number, ageHrs: number, sinceLastHrs: number): boolean {
   return false;
 }
 
+/** What this lead actually has, read off the row rather than assumed. */
+function forgedPieces(lead: OutboundLead): string[] {
+  return [
+    lead.demo_url ? 'voice agent' : null,
+    lead.site_demo_id ? 'website' : null,
+    lead.os_demo_id ? 'command center' : null,
+  ].filter(Boolean) as string[];
+}
+
+function andList(items: string[]): string {
+  if (items.length <= 1) return items[0] ?? 'demo';
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+}
+
 function dripEmail(lead: OutboundLead, step: number): { subject: string; html: string; snippet: string } {
   const first = lead.contact_name?.trim().split(/\s+/)[0];
   const hi = first ? `Hi ${first},` : 'Hi there,';
@@ -36,19 +62,33 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
   const hub = lead.hub_demo_url ?? 'https://modernmustardseed.com/demos';
   const trade = TRADE_PRESETS[leadTrade(lead)];
   const tradeWord = trade.label.toLowerCase();
-  const cta = { label: 'Open your Demo Suite', url: hub };
-  const secondary = { label: 'Book 10 minutes with Sarah', url: 'https://modernmustardseed.com/book' };
+  const pieces = forgedPieces(lead);
+  const built = andList(pieces);
+  const one = pieces.length === 1;
+  const hasVoice = pieces.includes('voice agent');
+  // On the phone he already told them the calendar is not the next step, so the
+  // drip does not contradict him. The order card on the hub is the close, and
+  // the secondary is a reply to a human, not a booking link.
+  const cta = { label: one ? `Open your ${pieces[0]}` : 'Open your Demo Suite', url: hub };
+  const secondary = { label: 'Reply with a question', url: 'mailto:sarah@modernmustardseed.com' };
+  // Phone leads talked to Mr. Mustard; self-serve leads clicked a button. Same
+  // sequence, but pretending not to know which one is how warm mail goes cold.
+  const fromCall = lead.source === 'mr-mustard';
 
   if (step === 0) {
     return {
-      subject: `${lead.business_name}, your demos are sitting there warm`,
+      subject: one
+        ? `${lead.business_name}, your ${pieces[0]} is sitting there warm`
+        : `${lead.business_name}, your demos are sitting there warm`,
       snippet: 'Demo drip 1 of 3: come back to the suite.',
       html: clientEmail({
-        preheader: 'The voice agent and command center you forged are still live at your hub.',
+        preheader: `The ${built} you forged ${one ? 'is' : 'are'} still live at your hub.`,
         greeting: hi,
         body:
-          `<p>Yesterday you forged ${biz} a working voice agent and a command center${lead.site_demo_status === 'ready' ? ', and the website you queued is finished too' : ''}. They are still live at your private hub, answering to your name.</p>` +
-          `<p>Two minutes there is worth more than anything I could write here: call the voice agent and try to stump it, then slide the calculator to see what your missed calls have been costing. Most ${tradeWord} owners are surprised by that number.</p>`,
+          (fromCall
+            ? `<p>Yesterday you and Mr. Mustard built ${biz} a working ${built}, live on the phone${lead.site_demo_status === 'ready' ? ', and the website he queued is finished now too' : ''}. ${one ? 'It is' : 'They are'} still live at your private hub, answering to your name.</p>`
+            : `<p>Yesterday you forged ${biz} a working ${built}${lead.site_demo_status === 'ready' ? ', and the website you queued is finished too' : ''}. ${one ? 'It is' : 'They are'} still live at your private hub, answering to your name.</p>`) +
+          `<p>Two minutes there is worth more than anything I could write here: ${hasVoice ? 'call the voice agent and try to stump it, then slide' : 'slide'} the calculator to see what your missed calls have been costing. Most ${tradeWord} owners are surprised by that number.</p>`,
         cta,
         secondary,
         trackId: lead.id,
@@ -57,15 +97,24 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
     };
   }
   if (step === 1) {
+    // The money angle has to match the piece they took. Missed calls are the
+    // right wound for a voice agent and the wrong one for a website-only lead,
+    // who is losing the person that looked them up and found nothing.
     return {
-      subject: `What one missed call costs a ${tradeWord} business`,
+      subject: hasVoice
+        ? `What one missed call costs a ${tradeWord} business`
+        : `What a stale website costs a ${tradeWord} business`,
       snippet: 'Demo drip 2 of 3: the money angle.',
       html: clientEmail({
-        preheader: 'The math is on your hub, with your demos still live around it.',
+        preheader: `The math is on your hub, with your ${built} still live around it.`,
         greeting: hi,
         body:
-          `<p>In ${tradeWord}, the caller who gets voicemail does not leave a message. They dial the next name, and that ${escape(trade.jobWord)} is gone before you even knew it rang.</p>` +
-          `<p>The suite you forged for ${biz} exists to end exactly that: the voice agent answers every call in two rings, books the work, and texts you the details, and the command center shows you every one it caught. It is all still live on your hub, next to the calculator and the order card. If you want it on your real line, it is about a week from yes to live.</p>`,
+          (hasVoice
+            ? `<p>In ${tradeWord}, the caller who gets voicemail does not leave a message. They dial the next name, and that ${escape(trade.jobWord)} is gone before you even knew it rang.</p>` +
+              `<p>The ${built} you forged for ${biz} exists to end exactly that: it answers every call in two rings, books the work, and texts you the details.</p>`
+            : `<p>In ${tradeWord}, most people decide about you before they ever speak to you. They look you up, they read for about eight seconds, and if nothing there tells them you are the right call, that ${escape(trade.jobWord)} quietly goes to whoever looked more ready.</p>` +
+              `<p>The ${built} you forged for ${biz} exists to end exactly that.</p>`) +
+          `<p>It is still live on your hub, next to the calculator and the order card. If you want it real, it is about a week from yes to live.</p>`,
         cta,
         secondary,
         trackId: lead.id,
@@ -77,11 +126,11 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
     subject: first ? `Last nudge from me, ${first}` : 'Last nudge from me',
     snippet: 'Demo drip 3 of 3: the honest close.',
     html: clientEmail({
-      preheader: 'Your demos stay live; I will just stop writing about them.',
+      preheader: `Your ${built} stays live; I will just stop writing about ${one ? 'it' : 'them'}.`,
       greeting: hi,
       body:
-        `<p>This is my last email about the demos, promise. They stay live at your hub either way, so nothing expires and nobody calls you five times.</p>` +
-        `<p>If the timing is wrong, ignore me with a clear conscience. If the missed calls still sting, the order card on your hub makes ${biz} real in about a week, or grab ten minutes with me and I will answer whatever is in the way.</p>`,
+        `<p>This is my last email about ${one ? `the ${pieces[0]}` : 'the demos'}, promise. ${one ? 'It stays' : 'They stay'} live at your hub either way, so nothing expires and nobody calls you five times.</p>` +
+        `<p>If the timing is wrong, ignore me with a clear conscience. If it still stings, the order card on your hub makes ${biz} real in about a week, and you can just hit reply if something is in the way. A real person reads it.</p>`,
       cta,
       secondary,
       trackId: lead.id,
@@ -102,7 +151,7 @@ export async function demoStationDrip(
   const { data: leads } = await sb
     .from('outbound_leads')
     .select('*')
-    .eq('source', 'demo-station')
+    .in('source', ['demo-station', 'mr-mustard'])
     .in('status', ['new', 'contacted'])
     .not('email', 'is', null)
     .gte('created_at', new Date(now - 45 * 86400000).toISOString())
