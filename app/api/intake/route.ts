@@ -3,6 +3,7 @@ import { resendClient } from '@/lib/send-email';
 import { clientEmail, leadNotification, p, callout } from '@/lib/email';
 import { getSupabase } from '@/lib/supabase';
 import { logClientMessage } from '@/lib/client-mail';
+import { getClientSession } from '@/lib/client-auth';
 
 export const runtime = 'nodejs';
 
@@ -77,9 +78,29 @@ export async function POST(req: Request) {
     const assets: Assets = data.assets ?? {};
     const photoUrls = Array.isArray(assets.photoUrls) ? assets.photoUrls.filter(Boolean) : [];
 
-    // ── 1. Persist (best-effort). Merge under `brand_intake` so we never clobber
-    //       a portal/proposal intake stored in the same row. ──
+    /*
+     * WHO THIS EMAIL BELONGS TO DECIDES WHETHER WE MAY WRITE OVER THEIR ROWS.
+     *
+     * This form is deliberately public: a client who just signed fills it in
+     * without logging in first. But the email came out of the REQUEST BODY, and
+     * both writes below were blind upserts keyed on it. Anyone could POST this
+     * endpoint with a real client's address and overwrite that client's `clients`
+     * row (name, company, and tier forced to 'engagement') and graft an
+     * attacker-authored blob into their `client_intake.answers`, which then
+     * renders in the victim's portal, in the admin intake board, and in the build
+     * spec. Found in the 2026-08-11 tenant audit.
+     *
+     * So the public form may only CLAIM AN UNCLAIMED EMAIL. If the address is
+     * already a known client (or already has an intake on file), the submission
+     * is accepted and mailed to Sarah, but it does not touch the stored rows
+     * unless the caller proves they are that person with a portal session.
+     */
+    const session = await getClientSession();
+    const authed = (session?.email ?? '').toLowerCase() === email;
+
     const supabase = getSupabase();
+    let persisted = false;
+    let refusedOverwrite = false;
     if (supabase) {
       try {
         const brandIntake = { ...data, email, submittedAt: new Date().toISOString() };
@@ -88,26 +109,39 @@ export async function POST(req: Request) {
           .select('answers')
           .eq('client_email', email)
           .maybeSingle();
-        const mergedAnswers = { ...(existing?.answers ?? {}), brand_intake: brandIntake };
-        await supabase.from('client_intake').upsert(
-          {
-            client_email: email,
-            answers: mergedAnswers,
-            status: 'submitted',
-            submitted_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: 'client_email' }
-        );
-        // Make sure they exist as a client so they show up in the admin board.
-        await supabase.from('clients').upsert(
-          { email, name: ownerName, company: businessName, tier: 'engagement' },
-          { onConflict: 'email' }
-        );
+        const { data: existingClient } = await supabase
+          .from('clients')
+          .select('email')
+          .eq('email', email)
+          .maybeSingle();
+
+        if (!authed && (existing || existingClient)) {
+          // Someone else's address, or their own without a session. Never write.
+          refusedOverwrite = true;
+        } else {
+          const mergedAnswers = { ...(existing?.answers ?? {}), brand_intake: brandIntake };
+          await supabase.from('client_intake').upsert(
+            {
+              client_email: email,
+              answers: mergedAnswers,
+              status: 'submitted',
+              submitted_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: 'client_email' }
+          );
+          // Make sure they exist as a client so they show up in the admin board.
+          await supabase.from('clients').upsert(
+            { email, name: ownerName, company: businessName, tier: 'engagement' },
+            { onConflict: 'email' }
+          );
+          persisted = true;
+        }
       } catch (dbErr) {
         console.error('Intake persist error (continuing to email):', dbErr);
       }
     }
+    void persisted;
 
     // ── 2. Email the team (primary, guaranteed delivery of every answer) ──
     const apiKey = process.env.RESEND_API_KEY;
@@ -167,14 +201,22 @@ export async function POST(req: Request) {
           from: 'Brand Intake <sarah@modernmustardseed.com>',
           to: ['sarah@modernmustardseed.com', 'thompsonpolly71@gmail.com'],
           replyTo: email,
-          subject: `Intake submitted: ${ownerName} (${businessName})`,
+          subject: refusedOverwrite
+            ? `Intake submitted (NOT SAVED, needs a look): ${ownerName} (${businessName})`
+            : `Intake submitted: ${ownerName} (${businessName})`,
           html: leadNotification({
             type: 'Contact',
             name: ownerName,
             email,
             fields,
             message: longAnswers || 'No long-form answers provided.',
-            suggestedAction: 'Review the full intake at modernmustardseed.com/admin/intakes',
+            // A submission for an address that already belongs to someone is not
+            // stored, so the answers in this email are the only copy. That is the
+            // normal shape of a client re-submitting without signing in, and it is
+            // also what an attempt to overwrite another client's record looks like.
+            suggestedAction: refusedOverwrite
+              ? `This address already belongs to a client and the sender was not signed in, so NOTHING was written to their record. The answers above are the only copy. If this is really ${email}, ask them to sign in at modernmustardseed.com/portal and resubmit, or paste it in by hand at /admin/intakes.`
+              : 'Review the full intake at modernmustardseed.com/admin/intakes',
           }),
         });
       } catch (mailErr) {

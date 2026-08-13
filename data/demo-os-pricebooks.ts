@@ -534,6 +534,31 @@ export const PRICE_BOOKS: Record<OsTradeKey, OsPriceBook> = {
       'Weekly showing + feedback report every Monday morning.',
     ],
   },
+  // General construction. NO ROOFING LINE ITEMS, on purpose: this book exists
+  // for the builder who does everything but the roof, and gutter cleaning is the
+  // handyman book's job, not this one.
+  construction: {
+    docWord: 'Estimate',
+    intro: 'From {biz}. Scope, materials, and price agreed in writing before the first cut.',
+    depositPct: 30,
+    items: [
+      { name: 'Deck build', unit: 'per sq ft', price: 42, popular: true },
+      { name: 'Deck repair & board replacement', unit: 'per board', price: 38 },
+      { name: 'Screened porch addition', unit: 'flat', price: 18500, popular: true },
+      { name: 'Garage or basement conversion', unit: 'flat', price: 14200 },
+      { name: 'Fence build', unit: 'per linear ft', price: 34, popular: true },
+      { name: 'Trim & siding replacement', unit: 'per sq ft', price: 12 },
+      { name: 'Interior carpentry & repairs', unit: 'per hour', price: 95 },
+      { name: 'Pressure washing', unit: 'flat', price: 285 },
+      { name: 'Interior painting', unit: 'per room', price: 480 },
+    ],
+    terms: [
+      'A written change order is signed before any added scope is built.',
+      'Materials billed at cost with receipts attached, no markup games.',
+      '1-year warranty on all workmanship.',
+      ...STANDARD_TERMS,
+    ],
+  },
   home_services: {
     docWord: 'Estimate',
     intro: 'From {biz}. One crew, one call, the whole list handled.',

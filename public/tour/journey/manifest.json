@@ -9,58 +9,65 @@
       "id": "welcome",
       "anchor": "top",
       "text": "Welcome to Modern Mustard Seed. Hop in, the top is down. We are taking the scenic route, and by the end of this drive you will know exactly what we can grow for you. Scroll when you are ready.",
-      "ms": 11280,
+      "ms": 11184,
       "src": "/tour/journey/00-welcome.mp3"
     },
     {
       "id": "orchard",
       "anchor": "tour-orchard",
       "text": "First, the orchards. We grow four things: a website that talks, a voice agent that answers, the command center that runs them both, and custom software when your idea needs its own row. Full apps, stores, agentic systems. Planted once, tended every day, and the first three go live in about a week.",
-      "ms": 17976,
+      "ms": 18120,
       "src": "/tour/journey/01-orchard.mp3"
+    },
+    {
+      "id": "calculator",
+      "anchor": "tour-calculator",
+      "text": "Pull over here for a second, because this is the part with a number on it. Sixty two percent of calls to a small business go unanswered, and eighty five percent of those people never try you again. Meanwhile the average website converts at two and a third percent, which means it watches almost everybody leave. The machine on your screen adds both of those up in your business. Punch in your own numbers and watch it total.",
+      "ms": 22464,
+      "src": "/tour/journey/02-calculator.mp3"
     },
     {
       "id": "signs",
       "anchor": "tour-signs",
       "text": "Now watch the roadside. Every sign out here is something real that you can walk into today. The Talking Website, voice sidekicks, commercials, and free tools you can try before you spend a single dollar.",
-      "ms": 11424,
-      "src": "/tour/journey/02-signs.mp3"
+      "ms": 11496,
+      "src": "/tour/journey/03-signs.mp3"
     },
     {
       "id": "square",
       "anchor": "tour-square",
       "text": "Pull over a second, because this is the part nobody tells you. The town square moved onto the internet, and being found in it is its own trade. We wire up your Google Business Profile, we collect and answer your reviews for you, and we put the same true facts about you everywhere people look now, right down to the AI they ask instead of searching. Then the quieter half: one obvious next move on every page, and a follow up that runs without you. All of it inside a Talking Website, and none of it a line item.",
-      "ms": 28320,
-      "src": "/tour/journey/03-square.mp3"
+      "ms": 28416,
+      "src": "/tour/journey/04-square.mp3"
     },
     {
       "id": "gate",
       "anchor": "tour-gate",
       "text": "There it is. The gate at Mustard Seed Ranch. Everything this studio does comes from one verse about one seed, and this is the ground where we plant it.",
-      "ms": 8904,
-      "src": "/tour/journey/04-gate.mp3"
+      "ms": 8928,
+      "src": "/tour/journey/05-gate.mp3"
     },
     {
       "id": "planting",
       "anchor": "tour-planting",
       "text": "The smallest seed in the field. That is how every great business starts. Including yours.",
-      "ms": 5808,
-      "src": "/tour/journey/05-planting.mp3"
+      "ms": 5832,
+      "src": "/tour/journey/06-planting.mp3"
     },
     {
       "id": "tree",
       "anchor": "tour-tree",
       "text": "And this is how it grows. A tree the birds come home to. Your customers, your calls, your bookings, all finding their way back to you, day and night.",
-      "ms": 9624,
-      "src": "/tour/journey/06-tree.mp3"
+      "ms": 9336,
+      "src": "/tour/journey/07-tree.mp3"
     },
     {
       "id": "doors",
       "anchor": "tour-doors",
       "text": "Four doors, and every one of them is open. Press the gold button in the corner and talk to Mr. Mustard right now. He can answer anything about how this works, show you a live demo, forge a custom demo for your business while you watch, or book you straight onto Sarah’s calendar. The drive is over. The growing starts now.",
-      "ms": 18096,
+      "ms": 17952,
       "src": "/tour/journey/08-doors.mp3"
     }
   ],
-  "totalMs": 111432
+  "totalMs": 133728
 }

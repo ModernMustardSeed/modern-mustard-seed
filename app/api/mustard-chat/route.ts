@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmJson, llmText, renderTranscript, residentWorkerAlive, LlmUnavailable } from '@/lib/llm';
 import { resendClient } from '@/lib/send-email';
 import {
   playbookEmail,
@@ -12,6 +12,7 @@ import { getNextAvailableSlots, isSlotAvailable, displayForIso, bookingWindow } 
 import { availability } from '@/data/availability';
 import { buildIcsInvite } from '@/lib/ics';
 import { sendMetaEvent } from '@/lib/meta-capi';
+import { claimDailySpend, clientIp, ipAllowed } from '@/lib/spend-guard';
 import { randomUUID } from 'node:crypto';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { DEPARTMENTS, BESPOKE } from '@/data/services-hub';
@@ -66,12 +67,12 @@ const SYSTEM_PROMPT = `You are Mr. Mustard, the AI assistant for Modern Mustard 
 At modernmustardseed.com/demos the visitor enters their business once and we forge three real working demos for them in about twenty seconds: a voice agent that answers as their business, a website designed from scratch, and a command center with their name on it. No card, no meeting, nothing to install. This is the single best thing you can offer almost any visitor, because they get to judge the real product before spending a dollar. Send people here early and often.
 
 # The three core products (published prices, you may quote these)
-- **Your New Website** (${formatUsd(SITE.setupCents)} setup + ${formatUsd(SITE.monthlyCents)}/mo, live in about a week) at /websites: elite custom design built from scratch, funnels and a lead magnet live day one, SEO and GEO baked in, the command center free behind it, and their domain, hosting, and ongoing care handled. They own the code, the domain, and every account on launch day.
+- **Your New Website** (${formatUsd(SITE.setupCents)} setup + ${formatUsd(SITE.monthlyCents)}/mo, live in about a week) at /websites: elite custom design built from scratch, funnels and a lead magnet live day one, SEO and GEO baked in, and their domain, hosting, and ongoing care handled. They own the code, the domain, and every account on launch day.
 - **The Voice Agent** (${formatUsd(VOICE.setupCents)} setup + ${formatUsd(VOICE.monthlyCents)}/mo) at /voice-agents: answers their real number 24/7 in a natural voice, qualifies the caller, books the job, and texts them the details. ${VOICE.finePrint}
-- **The Business Command Center** (${formatUsd(OS.setupCents)} setup + ${formatUsd(OS.monthlyCents)}/mo on its own, but FREE with the website or the voice agent) at /command-center: calls transcribed, website traffic, customers, reviews, and money on one board.
-- **The Talking Website** (${formatUsd(DEMO_BUNDLE.setupCents)} setup + ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo): the website and the voice agent built as one thing, off one brain, so the site literally answers its own phone. The first offer of its kind. Command center included.
+- **The Business Command Center** (${formatUsd(OS.setupCents)} setup + ${formatUsd(OS.monthlyCents)}/mo on its own, and FREE only when they take the website AND the voice agent together) at /command-center: calls transcribed, website traffic, customers, reviews, and money on one board.
+- **The Talking Website** (${formatUsd(DEMO_BUNDLE.setupCents)} setup + ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo): the website and the voice agent built as one thing, off one brain, so the site literally answers its own phone. The first offer of its kind, and the ONLY place the command center is free. Steer here whenever someone wants the command center.
 
-IMPORTANT: the voice agent is NOT included with the website. They are separate products with separate prices. The voice agent can be added to any website, the one we build or one they already have. Never say a website "comes with" or "includes" a voice agent. The command center is the only piece that rides free with a paid piece.
+IMPORTANT: the voice agent is NOT included with the website. They are separate products with separate prices. The voice agent can be added to any website, the one we build or one they already have. Never say a website "comes with" or "includes" a voice agent. The command center is free in exactly one place, The Talking Website, where they take both paid pieces. One piece on its own does not earn it: quote the command center at its own price alongside a single piece, and tell them what taking both would cost instead.
 
 Everything above is month to month, cancel anytime. There is no free trial and no free month on a real line. The DEMO is the free part.
 
@@ -163,87 +164,113 @@ Today is ${today}, Mountain Time. Trust this over any assumption about the curre
 - Always name the weekday and the date together when offering or confirming a time.`;
 }
 
-const CAPTURE_LEAD_TOOL = {
-  name: 'capture_lead',
-  description:
-    "Send the visitor a personalized 5-step playbook email and notify Sarah. Use after the visitor has shared a real pain point and provided their email. Do not call this if the visitor is booking a call instead. The recommendedSteps array MUST contain exactly 5 ordered, specific, actionable steps you wrote for this visitor's exact pain point.",
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      name: { type: 'string', description: 'Visitor\'s name if they shared it. Use "Site visitor" if not provided.' },
-      email: { type: 'string', description: 'Visitor\'s email address. Required.' },
-      painSummary: {
-        type: 'string',
-        description:
-          'One-paragraph summary of the visitor\'s pain point and what they are looking for, in your own words. This will be quoted back to them.',
-      },
-      business: { type: 'string', description: 'Business name, vertical, or short description if shared.' },
-      recommendedSteps: {
-        type: 'array',
-        minItems: 5,
-        maxItems: 5,
-        description: '5 ordered, specific, actionable steps you would take for this visitor, starting tomorrow morning.',
-        items: {
-          type: 'object',
-          properties: {
-            title: { type: 'string', description: '3 to 7 word imperative step title' },
-            detail: { type: 'string', description: 'One-sentence specific detail of what to do' },
+/**
+ * What Mr. Mustard is shown instead of a chat when the workstation is down.
+ *
+ * Deliberately not an error. The visitor did nothing wrong and the studio is
+ * not broken; the live half of it is asleep. Every path out of this message
+ * still reaches Sarah, which is the only thing the widget was ever really for.
+ */
+const MUSTARD_OFFLINE_MESSAGE =
+  'Mr. Mustard is off the desk right now. Email sarah@modernmustardseed.com, or book a call at modernmustardseed.com/book, and Sarah will pick it up herself.';
+
+/**
+ * The rules that used to live in three tool descriptions.
+ *
+ * Same content, moved from the wire protocol into the prompt, because the CLI
+ * has no tool protocol to carry them. Kept verbatim where the wording was doing
+ * real work (the "exactly 5 steps", the "never promise a time you did not
+ * fetch") since those were each written to stop a specific bad behaviour.
+ */
+const DECISION_RULES = `# How to answer
+
+Reply with a single JSON object and nothing else. It has a "reply" (what you say to the visitor next), an "action", and the arguments for that action.
+
+Actions:
+
+- "none": you are just talking. Most turns are this.
+
+- "capture_lead": send the visitor their personalized 5-step playbook email and notify Sarah. Use this once the visitor has shared a real pain point AND given you their email AND has not asked to book a call. Fill "capture_lead". recommendedSteps MUST be exactly 5 ordered, specific, actionable steps written for this visitor's exact pain point, each with a 3 to 7 word imperative title and a one-sentence detail. If they declined to give an email, do not use this action: point them at /demos or the free Website Audit instead.
+
+- "propose_call_slots": fetch Sarah's real open 30-minute slots. Use it the moment the visitor wants to book, schedule, or talk. NEVER promise or invent a specific time without this. Bookings run about four months out, so if they ask about a later week or month, set "fromDate" to a YYYY-MM-DD in that period rather than telling them it is too far ahead.
+
+- "book_call_slot": reserve a slot the visitor picked. "startIso" must be one of the exact ISO values you offered them earlier in this conversation. Requires their name, email, and a one-paragraph pain summary.
+
+When you take an action other than "none", keep "reply" short: you will get to speak again once the action has run, with its result in front of you.`;
+
+const DECISION_SCHEMA = {
+  type: 'object' as const,
+  properties: {
+    reply: { type: 'string' },
+    action: { type: 'string', enum: ['none', 'capture_lead', 'propose_call_slots', 'book_call_slot'] },
+    capture_lead: {
+      type: 'object' as const,
+      properties: {
+        name: { type: 'string' },
+        email: { type: 'string' },
+        painSummary: { type: 'string' },
+        business: { type: 'string' },
+        recommendedSteps: {
+          type: 'array' as const,
+          items: {
+            type: 'object' as const,
+            properties: { title: { type: 'string' }, detail: { type: 'string' } },
+            required: ['title', 'detail'],
           },
-          required: ['title', 'detail'],
+        },
+        recommendedOffer: {
+          type: 'string',
+          enum: ['seed-site', 'full-service', 'idea-to-product', 'ai-proof', 'fractional', 'audit'],
         },
       },
-      recommendedOffer: {
-        type: 'string',
-        enum: ['seed-site', 'full-service', 'idea-to-product', 'ai-proof', 'fractional', 'audit'],
-        description: 'Which Modern Mustard Seed offering best matches this visitor.',
-      },
+      required: ['email', 'painSummary', 'recommendedSteps'],
     },
-    required: ['email', 'painSummary', 'recommendedSteps'],
-  },
-};
-
-const PROPOSE_SLOTS_TOOL = {
-  name: 'propose_call_slots',
-  description:
-    'Fetch available 30-minute discovery call slots with Sarah. Call this when the visitor wants to book, schedule, or talk on a call. Returns slots you can present in chat. Do NOT promise specific times without calling this tool first. Bookings are open up to about four months out: when the visitor asks about a later day, week, or month ("mid August", "sometime in September"), pass fromDate instead of saying it is too far ahead.',
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      fromDate: {
-        type: 'string',
-        description: 'Optional start date, YYYY-MM-DD. Set it when the visitor wants times from a specific later day, week, or month ("sometime in September" means the first of September). Omit for the soonest open times.',
-      },
+    propose_call_slots: {
+      type: 'object' as const,
+      properties: { fromDate: { type: 'string' } },
     },
-    required: [],
-  },
-};
-
-const BOOK_SLOT_TOOL = {
-  name: 'book_call_slot',
-  description:
-    "Reserve a specific slot the visitor chose. Send calendar invites to Sarah and the visitor. The slot's startIso must be one of the ISO values you received from propose_call_slots in this conversation. Requires the visitor's name, email, and pain summary.",
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      startIso: { type: 'string', description: 'The exact startIso the visitor picked from the proposed slots.' },
-      name: { type: 'string', description: 'Visitor\'s full name.' },
-      email: { type: 'string', description: 'Visitor\'s email. Required for the calendar invite.' },
-      business: { type: 'string', description: 'Business name or vertical, if shared.' },
-      painSummary: { type: 'string', description: 'One-paragraph summary of why they want to talk.' },
-      recommendedSteps: {
-        type: 'array',
-        minItems: 3,
-        maxItems: 5,
-        items: {
-          type: 'object',
-          properties: { title: { type: 'string' }, detail: { type: 'string' } },
-          required: ['title', 'detail'],
+    book_call_slot: {
+      type: 'object' as const,
+      properties: {
+        startIso: { type: 'string' },
+        name: { type: 'string' },
+        email: { type: 'string' },
+        business: { type: 'string' },
+        painSummary: { type: 'string' },
+        recommendedSteps: {
+          type: 'array' as const,
+          items: {
+            type: 'object' as const,
+            properties: { title: { type: 'string' }, detail: { type: 'string' } },
+            required: ['title', 'detail'],
+          },
         },
       },
+      required: ['startIso', 'name', 'email', 'painSummary'],
     },
-    required: ['startIso', 'name', 'email', 'painSummary'],
   },
+  required: ['reply', 'action'],
 };
+
+type ChatDecision = {
+  reply: string;
+  action: 'none' | 'capture_lead' | 'propose_call_slots' | 'book_call_slot';
+  capture_lead?: Parameters<typeof executeCaptureLead>[0];
+  propose_call_slots?: { fromDate?: string };
+  book_call_slot?: Parameters<typeof executeBookSlot>[0];
+};
+
+/**
+ * The three Anthropic tool definitions that used to live here are gone.
+ *
+ * Their schemas became DECISION_SCHEMA and their descriptions became
+ * DECISION_RULES above, because the CLI has no tool-use protocol to carry
+ * either. The wording in those descriptions was kept rather than rewritten:
+ * each line of it ("exactly 5 steps", "never promise a time you did not
+ * fetch", "startIso must be one you already offered") was written to stop a
+ * specific thing Mr. Mustard did wrong once, and losing them in a refactor
+ * would have quietly reintroduced all three.
+ */
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
@@ -510,12 +537,22 @@ async function executeBookSlot(input: {
 
 export async function POST(req: Request) {
   try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: 'Chat is not configured. Email sarah@modernmustardseed.com.' },
-        { status: 500 }
-      );
+    /**
+     * MR. MUSTARD IS LIVE ONLY WHEN THE WORKSTATION IS.
+     *
+     * Sarah's call, 2026-08-12, and the right one. Every other prompt in this
+     * app can be queued and finished minutes later by the Actions drainer,
+     * because a draft or an audit does not care when it lands. A chat does.
+     * Routing a visitor's message to a five-minute cron would leave them
+     * watching a spinner, which is a worse experience than being told plainly
+     * that the person they want is not at the desk.
+     *
+     * So this checks for a LIVE resident worker and offers the reliable path
+     * when there is not one. Fails closed by construction: `residentWorkerAlive`
+     * returns false on any error.
+     */
+    if (!(await residentWorkerAlive())) {
+      return NextResponse.json({ error: MUSTARD_OFFLINE_MESSAGE, offline: true }, { status: 503 });
     }
 
     const body = (await req.json()) as { messages?: ChatMessage[] };
@@ -524,9 +561,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Tell me a little about your pain point first.' }, { status: 400 });
     }
 
-    const anthropic = new Anthropic({ apiKey });
+    // SPEND GUARDS. Mr. Mustard rides on every page, runs on opus, and each
+    // POST can cost up to five model calls through the tool loop below. Until
+    // 2026-08-12 nothing rate limited him at all, so a single open tab in a
+    // retry loop could hold the wallet open indefinitely.
+    //
+    // 40 turns per IP per hour is a very long genuine conversation and a very
+    // short scripted one. The daily cap bounds the whole world.
+    if (!ipAllowed('mustard-chat', clientIp(req), Number(process.env.CHAT_IP_HOURLY || 40))) {
+      return NextResponse.json(
+        { error: 'We have talked a lot this hour. Email sarah@modernmustardseed.com and she will pick it up from here.' },
+        { status: 429 },
+      );
+    }
 
-    const messages: Anthropic.MessageParam[] = incoming.map((m) => ({
+    if (!(await claimDailySpend('mustardchat', Number(process.env.CHAT_DAILY_CAP || 600)))) {
+      return NextResponse.json(
+        { error: 'Mr. Mustard is resting. Email sarah@modernmustardseed.com and she will answer personally.' },
+        { status: 429 },
+      );
+    }
+
+    const messages = incoming.map((m) => ({
       role: m.role,
       content: m.content.slice(0, 4000),
     }));
@@ -534,80 +590,85 @@ export async function POST(req: Request) {
     let leadCaptured = false;
     let booked = false;
 
-    // Loop. Capped at 5 to allow multi-tool sequences (propose then book).
-    for (let i = 0; i < 5; i++) {
-      const response: Anthropic.Message = await anthropic.messages.create({
-        model: 'claude-opus-4-7',
-        max_tokens: 2048,
-        output_config: { effort: 'low' },
-        system: [
-          { type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
-          { type: 'text', text: todayBlock() },
-        ],
-        tools: [CAPTURE_LEAD_TOOL, PROPOSE_SLOTS_TOOL, BOOK_SLOT_TOOL],
-        messages,
-      });
+    /**
+     * ONE DECISION, THEN AT MOST ONE COMPOSE.
+     *
+     * The Anthropic tool-use protocol is gone with the API, so the loop that
+     * used to run up to five round trips is now a document: Mr. Mustard says
+     * what he wants to do and what he wants to say, this route does the doing,
+     * and if the doing produced something he needs to talk about (open slots, a
+     * confirmed booking) he gets one more turn to say it properly.
+     *
+     * Behaviour is unchanged where it counts: the playbook email still sends,
+     * slots still come from real availability rather than the model's
+     * imagination, and a booking is still a real calendar invite. What changed
+     * is that the route decides WHEN a tool runs instead of the wire protocol,
+     * which is a better place for that decision to live anyway.
+     */
+    const decision = await llmJson<ChatDecision>({
+      label: 'mustard-chat',
+      model: 'sonnet',
+      system: `${SYSTEM_PROMPT}\n\n${todayBlock()}\n\n${DECISION_RULES}`,
+      user: renderTranscript(messages, { assistantLabel: 'Mr. Mustard', userLabel: 'Visitor' }),
+      schema: DECISION_SCHEMA,
+      // The widget is a chat box. Past about twenty seconds a visitor has
+      // decided the thing is broken, and a late answer is worth less than an
+      // honest one, so this deliberately gives up early rather than holding the
+      // request open for the full route budget.
+      timeoutMs: 22_000,
+    });
 
-      if (response.stop_reason === 'tool_use') {
-        messages.push({ role: 'assistant', content: response.content });
-        const toolResults: Anthropic.ToolResultBlockParam[] = [];
+    let toolResult: string | null = null;
 
-        for (const block of response.content) {
-          if (block.type !== 'tool_use') continue;
-          let resultText: string;
-          if (block.name === 'capture_lead') {
-            resultText = await executeCaptureLead(block.input as Parameters<typeof executeCaptureLead>[0]);
-            leadCaptured = true;
-          } else if (block.name === 'propose_call_slots') {
-            resultText = await executeProposeSlots((block.input as { fromDate?: string }).fromDate);
-          } else if (block.name === 'book_call_slot') {
-            const r = await executeBookSlot(block.input as Parameters<typeof executeBookSlot>[0]);
-            try {
-              if ((JSON.parse(r) as { ok?: boolean }).ok) booked = true;
-            } catch {
-              // ignore parse fail
-            }
-            resultText = r;
-          } else {
-            resultText = JSON.stringify({ error: 'Unknown tool.' });
-          }
-          toolResults.push({ type: 'tool_result', tool_use_id: block.id, content: resultText });
-        }
-
-        messages.push({ role: 'user', content: toolResults });
-        continue;
+    if (decision.action === 'capture_lead' && decision.capture_lead) {
+      toolResult = await executeCaptureLead(decision.capture_lead);
+      leadCaptured = true;
+    } else if (decision.action === 'propose_call_slots') {
+      toolResult = await executeProposeSlots(decision.propose_call_slots?.fromDate);
+    } else if (decision.action === 'book_call_slot' && decision.book_call_slot) {
+      toolResult = await executeBookSlot(decision.book_call_slot);
+      try {
+        if ((JSON.parse(toolResult) as { ok?: boolean }).ok) booked = true;
+      } catch {
+        // ignore parse fail
       }
+    }
 
-      const text = response.content
-        .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-        .map((b) => b.text)
-        .join('')
-        .trim();
+    let reply = (decision.reply ?? '').trim();
 
-      return NextResponse.json({
-        reply: text || 'Tell me a little more about what is going on.',
-        leadCaptured: leadCaptured || booked,
-        booked,
-      });
+    if (toolResult) {
+      // The executors return an `instruction` telling him how to phrase the
+      // outcome. That is the whole reason for a second turn: the slots and the
+      // booking result are facts he did not have when he wrote the first reply,
+      // and letting him restate them beats stapling raw JSON to the response.
+      try {
+        reply = await llmText({
+          label: 'mustard-chat-compose',
+          model: 'sonnet',
+          system: `${SYSTEM_PROMPT}\n\n${todayBlock()}`,
+          user:
+            `${renderTranscript(messages, { assistantLabel: 'Mr. Mustard', userLabel: 'Visitor' })}` +
+            ` (you just ran ${decision.action} and it returned: ${toolResult})\n\n` +
+            'Write only your next message to the visitor, following any instruction in that result. No preamble, no JSON.',
+          timeoutMs: 20_000,
+        });
+      } catch {
+        // The action already happened, so a failure to narrate it must not read
+        // as a failure to do it. Fall back to what he planned to say.
+        reply = reply || 'Done. Check your inbox in the next minute or two.';
+      }
     }
 
     return NextResponse.json({
-      reply: 'I need to slow down. Try rephrasing your last note?',
+      reply: reply || 'Tell me a little more about what is going on.',
       leadCaptured: leadCaptured || booked,
       booked,
     });
   } catch (err) {
-    if (err instanceof Anthropic.RateLimitError) {
+    if (err instanceof LlmUnavailable) {
       return NextResponse.json(
-        { error: 'Chat is busy. Try again in a moment.' },
-        { status: 429 }
-      );
-    }
-    if (err instanceof Anthropic.APIError) {
-      console.error('mustard-chat anthropic error', err.status, err.message);
-      return NextResponse.json(
-        { error: 'Chat hit a snag. Email sarah@modernmustardseed.com if it persists.' },
-        { status: 502 }
+        { error: MUSTARD_OFFLINE_MESSAGE, offline: true },
+        { status: 503 }
       );
     }
     console.error('mustard-chat error', err);

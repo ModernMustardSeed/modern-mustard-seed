@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmJson, renderTranscript } from '@/lib/llm';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { displayForIso } from '@/lib/booking';
@@ -30,33 +30,39 @@ Voice:
 - You only know THIS client's account. If they ask about something you cannot see, say so plainly and suggest they email sarah@modernmustardseed.com.
 - Never invent project details, dates, prices, or files that are not in the context. If it is not in the context, say you are not sure and Sarah can confirm.`;
 
-const TOOLS: Anthropic.Tool[] = [
-  {
-    name: 'send_note_to_sarah',
-    description:
-      "Send the client's change request, edit, fix, feedback, or note to Sarah Scarano. Use this whenever the client wants something changed about their project or wants to tell Sarah something directly.",
-    input_schema: {
-      type: 'object',
-      properties: {
-        message: {
-          type: 'string',
-          description:
-            "A clear, complete restatement of what the client wants Sarah to know or do, written in the client's voice. Include every specific they gave (pages, copy, colors, dates, etc.).",
-        },
-      },
-      required: ['message'],
-    },
+/**
+ * The `send_note_to_sarah` tool, restated as a decision document.
+ *
+ * The CLI has no tool-use protocol, so the one tool this assistant ever had
+ * becomes a field on the answer and the route does the sending. The trigger
+ * wording is the tool description verbatim, because it is what decides whether
+ * a client's "can you make the header blue" reaches Sarah or evaporates into a
+ * friendly reply.
+ */
+const DECISION_RULES = `# How to answer
+
+Reply with a single JSON object and nothing else:
+{"reply": "<what you say to the client>", "sendNote": <true|false>, "note": "<the message for Sarah, or empty>"}
+
+Set sendNote to true whenever the client wants something changed about their project, or wants to tell Sarah something directly: a change request, an edit, a fix, feedback, or a note. When you do, "note" is a clear, complete restatement of what they want Sarah to know or do, written in the client's voice, including every specific they gave (pages, copy, colors, dates). Otherwise sendNote is false and "note" is an empty string.
+
+Keep "reply" in your normal voice either way. Do not tell the client you are sending a note unless sendNote is true.`;
+
+const DECISION_SCHEMA = {
+  type: 'object' as const,
+  properties: {
+    reply: { type: 'string' },
+    sendNote: { type: 'boolean' },
+    note: { type: 'string' },
   },
-];
+  required: ['reply', 'sendNote'],
+};
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
 export async function POST(req: Request) {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return NextResponse.json({ reply: 'The assistant is not configured yet. Email sarah@modernmustardseed.com and she will help directly.' });
 
   let body: { messages?: ChatMessage[] };
   try {
@@ -99,62 +105,37 @@ export async function POST(req: Request) {
   }
   const contextBlock = ctx.join('\n');
 
-  const anthropic = new Anthropic({ apiKey });
-  const system: Anthropic.TextBlockParam[] = [
-    { type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
-    { type: 'text', text: `Here is everything you know about this client (and nothing about anyone else):\n\n${contextBlock}` },
-  ];
-  const convo: Anthropic.MessageParam[] = incoming.map((m) => ({ role: m.role, content: m.content.slice(0, 2000) }));
-
-  const textOf = (blocks: Anthropic.ContentBlock[]) =>
-    blocks.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('').trim();
+  const system = `${SYSTEM_PROMPT}\n\nHere is everything you know about this client (and nothing about anyone else):\n\n${contextBlock}`;
+  const convo = incoming.map((m) => ({ role: m.role, content: m.content.slice(0, 2000) }));
 
   try {
-    let response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 700,
-      system,
-      tools: TOOLS,
-      messages: convo,
+    const decision = await llmJson<{ reply: string; sendNote: boolean; note?: string }>({
+      label: 'portal-assistant',
+      model: 'sonnet',
+      system: `${system}\n\n${DECISION_RULES}`,
+      user: renderTranscript(convo, { assistantLabel: 'Assistant', userLabel: 'Client' }),
+      schema: DECISION_SCHEMA,
+      timeoutMs: 45_000,
     });
 
     let noteSent = false;
-
-    // Resolve up to two rounds of tool calls (a client rarely sends more).
-    for (let round = 0; round < 2 && response.stop_reason === 'tool_use'; round++) {
-      const toolUses = response.content.filter((b): b is Anthropic.ToolUseBlock => b.type === 'tool_use');
-      const results: Anthropic.ToolResultBlockParam[] = [];
-      for (const tu of toolUses) {
-        if (tu.name === 'send_note_to_sarah') {
-          const message = (tu.input as { message?: string })?.message?.trim() || '';
-          const r = message ? await createClientRequest({ email, body: message, source: 'chatbot' }) : { ok: false };
-          if (r.ok) noteSent = true;
-          results.push({
-            type: 'tool_result',
-            tool_use_id: tu.id,
-            content: r.ok
-              ? 'Sent to Sarah. She has it and will follow up.'
-              : 'Could not send right now. Ask the client to try again or email sarah@modernmustardseed.com.',
-            is_error: !r.ok,
-          });
-        } else {
-          results.push({ type: 'tool_result', tool_use_id: tu.id, content: 'Unknown tool.', is_error: true });
-        }
+    if (decision.sendNote) {
+      const message = (decision.note ?? '').trim();
+      if (message) {
+        const r = await createClientRequest({ email, body: message, source: 'chatbot' });
+        noteSent = r.ok;
       }
-      convo.push({ role: 'assistant', content: response.content });
-      convo.push({ role: 'user', content: results });
-      response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 700,
-        system,
-        tools: TOOLS,
-        messages: convo,
-      });
     }
 
-    const reply = textOf(response.content);
+    const reply = (decision.reply ?? '').trim();
     return NextResponse.json({
-      reply: reply || (noteSent ? 'Done. I passed that along to Sarah and she will follow up.' : 'Tell me a little more and I will help.'),
+      reply:
+        reply ||
+        (noteSent ? 'Done. I passed that along to Sarah and she will follow up.' : 'Tell me a little more and I will help.'),
+      // Only true when the note actually landed. The old loop told the model
+      // whether the send succeeded and let it phrase the outcome; there is no
+      // second turn here, so the flag is the honest signal and the client is
+      // never told something reached Sarah when it did not.
       noteSent,
     });
   } catch (err) {

@@ -18,12 +18,12 @@
  * engine lives here and the routes stay thin.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { llmJson, LlmUnavailable } from './llm';
 import { parse } from 'node-html-parser';
 // Static import, deliberately. See the long note in lib/website-audit.ts: a
 // dynamic import of this module landed in a shared ESM chunk and took every API
 // route down. Bundle size is handled in next.config.ts, not here.
-import { claudeCodeAvailable, extractJson, runClaudeCodeJson } from './claude-code-json';
+import { extractJson } from './claude-code-json';
 
 /* -------------------------------------------------------------------------- */
 /* The report                                                                  */
@@ -405,69 +405,12 @@ async function readBusiness(target: URL, until: number): Promise<BusinessRead | 
 /* Model plumbing (mirrors website-audit: backoff, then walk down the ladder)   */
 /* -------------------------------------------------------------------------- */
 
-const ROADMAP_MODELS = (process.env.ROADMAP_MODELS || process.env.AUDIT_MODELS || 'claude-opus-5,claude-sonnet-5')
-  .split(',')
-  .map((m) => m.trim())
-  .filter(Boolean);
+// The model ladder, the transience test and the backoff loop lived here to
+// survive the metered API returning 429/529. There is no API left to return
+// them; retries against a spawned CLI live in lib/claude-code-json.ts.
 
+/** Thrown by `finalize` when the document came back missing required sections. */
 class MalformedReport extends Error {}
-
-function isTransient(err: unknown): boolean {
-  if (err instanceof MalformedReport) return true;
-  if (err instanceof Anthropic.RateLimitError) return true;
-  if (err instanceof Anthropic.APIError) {
-    if (err.status === 401 || err.status === 400 || err.status === 403) return false;
-    if (/credit balance|billing|purchase credits/i.test(err.message)) return false;
-    return err.status === 429 || err.status === 529 || (err.status ?? 0) >= 500;
-  }
-  return false;
-}
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-/**
- * One roadmap call measures 150 to 320 seconds, so a blind retry is not free:
- * on the public route it is the difference between a slow answer and a 504 with
- * nothing to show. Retries only start when there is plausibly time to finish
- * one, and the caller sets the wall.
- */
-const ONE_RUN_MS = 170_000;
-
-async function withModelFallback<T>(
-  run: (model: string) => Promise<T>,
-  deadline: number
-): Promise<{ value: T; model: string }> {
-  let last: unknown;
-  for (const model of ROADMAP_MODELS) {
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      try {
-        return { value: await run(model), model };
-      } catch (err) {
-        last = err;
-        if (!isTransient(err)) throw err;
-        if (Date.now() + ONE_RUN_MS > deadline) {
-          console.warn('scaling-roadmap: out of time to retry, giving up on this run');
-          throw last;
-        }
-        if (attempt < 1) await sleep(1500);
-      }
-    }
-    console.warn(`scaling-roadmap: ${model} is not answering, dropping to the next model`);
-  }
-  throw last;
-}
-
-function roadmapEngine(): 'api' | 'claude-code' {
-  const want = (process.env.ROADMAP_ENGINE || process.env.AUDIT_ENGINE)?.trim().toLowerCase();
-  if (want === 'claude-code' || want === 'claude') {
-    if (!claudeCodeAvailable()) {
-      console.warn('scaling-roadmap: claude-code requested but no local CLI, using the API');
-      return 'api';
-    }
-    return 'claude-code';
-  }
-  return 'api';
-}
 
 /**
  * The model is told the counts; the schema cannot enforce them (structured
@@ -631,13 +574,6 @@ export async function runScalingRoadmap(
   // passes its own function ceiling minus a margin; scripts pass nothing and
   // are allowed to take as long as the model takes.
   const deadline = Date.now() + (opts.deadlineMs ?? 30 * 60_000);
-  const engine = roadmapEngine();
-
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
-  if (!apiKey && engine === 'api') {
-    return { ok: false, status: 500, error: 'The roadmap engine is not configured. Email sarah@modernmustardseed.com.' };
-  }
-
   let raw = (rawUrl ?? '').trim();
   if (!raw) return { ok: false, status: 400, error: 'Drop your website URL.' };
   if (!/^https?:\/\//i.test(raw)) raw = `https://${raw}`;
@@ -684,99 +620,40 @@ Rules for this run:
 
 Return the JSON roadmap.`;
 
-  if (engine === 'claude-code') {
-    try {
-      const report = (await runClaudeCodeJson({
-        system: SYSTEM_PROMPT,
-        user: userMessage,
-        schema: REPORT_SCHEMA,
-        model: process.env.ROADMAP_CLI_MODEL,
-        label: `roadmap ${read.host}`,
-      })) as RoadmapReport;
-      return {
-        ok: true,
-        url: read.url,
-        host: read.host,
-        report: finalize(report),
-        // Truthfully zero: this ran on the subscription.
-        usage: { model: 'claude-code (subscription)', input: 0, cache_read: 0, output: 0 },
-      };
-    } catch (err) {
-      console.error('scaling-roadmap: claude-code engine failed:', err instanceof Error ? err.message : err);
-      return { ok: false, status: 503, error: 'The roadmap engine hit a snag. Try again, or email sarah@modernmustardseed.com.' };
-    }
-  }
-
+  // ONE ENGINE. The `roadmapEngine()` switch, the model ladder and the
+  // account-state error handling were all API scaffolding; `lib/llm.ts` runs
+  // the CLI here or hands the job to a drainer, and neither end can be taken
+  // down by a balance.
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const attempt = async (model: string) => {
-      // Streamed for the same reason the audit is: this is a 60 to 120 second
-      // call and a non-streaming request in that range risks an HTTP timeout
-      // with nothing to show for it.
-      const response = await anthropic.messages
-        .stream({
-          model,
-          // Room for the document (roughly 9k tokens) AND the thinking that
-          // effort 'high' spends, which is billed against the same ceiling. At
-          // 12000 a high-effort run truncated mid-document.
-          max_tokens: 24000,
-          output_config: { effort: opts.effort ?? 'medium' },
-          system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
-          messages: [{ role: 'user', content: `${userMessage}\n\n---\n\n${SCHEMA_INSTRUCTIONS}` }],
-        })
-        .finalMessage();
-
-      // Say WHY it is broken before the parser guesses. A run that hit the
-      // ceiling is a budget problem, not a JSON problem, and the log should
-      // read that way when the next person raises max_tokens.
-      if (response.stop_reason === 'max_tokens') {
-        throw new MalformedReport('roadmap hit the max_tokens ceiling and was cut off');
-      }
-      const textBlock = response.content.find((b) => b.type === 'text');
-      if (!textBlock || textBlock.type !== 'text') throw new MalformedReport('no text block in response');
-      let parsed: RoadmapReport;
-      try {
-        parsed = extractJson(textBlock.text, REPORT_SCHEMA, `roadmap ${read.host}`) as RoadmapReport;
-      } catch (err) {
-        throw new MalformedReport(err instanceof Error ? err.message : 'roadmap was not valid JSON');
-      }
-      return { report: finalize(parsed), response };
-    };
-
-    const {
-      value: { report, response },
-      model: usedModel,
-    } = await withModelFallback(attempt, deadline);
+    const report = (await llmJson({
+      label: `roadmap ${read.host}`,
+      model: process.env.ROADMAP_CLI_MODEL || 'opus',
+      system: SYSTEM_PROMPT,
+      user: userMessage,
+      schema: REPORT_SCHEMA,
+      // The public route already runs its own queue (migration 091) and is
+      // built to hand back a "still building" page, so this deliberately does
+      // not sit on the request for its whole 300s budget.
+      timeoutMs: Math.max(30_000, deadline - Date.now() - 10_000),
+    })) as RoadmapReport;
 
     return {
       ok: true,
       url: read.url,
       host: read.host,
-      report,
-      usage: {
-        model: usedModel,
-        input: response.usage?.input_tokens ?? 0,
-        cache_read: response.usage?.cache_read_input_tokens ?? 0,
-        output: response.usage?.output_tokens ?? 0,
-      },
+      report: finalize(report),
+      // Truthfully zero: this ran on the subscription.
+      usage: { model: 'claude-code (subscription)', input: 0, cache_read: 0, output: 0 },
     };
   } catch (err) {
-    if (err instanceof Anthropic.RateLimitError) {
-      return { ok: false, status: 429, error: 'The roadmap engine is busy. Try again in a moment.' };
+    if (err instanceof LlmUnavailable) {
+      return {
+        ok: false,
+        status: 503,
+        error: 'The roadmap is queued and finishing now. It will be emailed to you shortly.',
+      };
     }
-    if (err instanceof Anthropic.APIError) {
-      if (/credit balance|billing|purchase credits/i.test(err.message) || err.status === 401) {
-        console.error('scaling-roadmap: ANTHROPIC ACCOUNT PROBLEM (top up credits or fix the key):', err.message);
-        return {
-          ok: false,
-          status: 503,
-          error: 'The roadmap engine is down for maintenance. Check back shortly, or email sarah@modernmustardseed.com.',
-        };
-      }
-      console.error(`scaling-roadmap: anthropic status ${err.status}:`, err.message);
-    } else {
-      console.error('scaling-roadmap: unexpected error', err);
-    }
+    console.error('scaling-roadmap: engine failed:', err instanceof Error ? err.message : err);
     return { ok: false, status: 500, error: 'The roadmap engine hit a snag. Try again, or email sarah@modernmustardseed.com.' };
   }
 }
@@ -800,46 +677,26 @@ export async function runRoadmapFromBrief(
   brief: string,
   opts: { effort?: RoadmapEffort; deadlineMs?: number; label?: string; extra?: string } = {}
 ): Promise<{ ok: true; report: RoadmapReport; model: string } | { ok: false; status: number; error: string }> {
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim().replace(/\n$/, '');
-  if (!apiKey) return { ok: false, status: 500, error: 'The roadmap engine is not configured.' };
-
-  const deadline = Date.now() + (opts.deadlineMs ?? 30 * 60_000);
   const label = opts.label ?? 'roadmap-from-brief';
   const userMessage = `${brief}\n\n${opts.extra ?? ''}\n\nReturn the JSON roadmap.`;
 
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const attempt = async (model: string) => {
-      const response = await anthropic.messages
-        .stream({
-          model,
-          max_tokens: 24000,
-          output_config: { effort: opts.effort ?? 'high' },
-          system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
-          messages: [{ role: 'user', content: `${userMessage}\n\n---\n\n${SCHEMA_INSTRUCTIONS}` }],
-        })
-        .finalMessage();
+    const report = (await llmJson({
+      label,
+      model: process.env.ROADMAP_CLI_MODEL || 'opus',
+      system: SYSTEM_PROMPT,
+      user: userMessage,
+      schema: REPORT_SCHEMA,
+      // Every caller of this is a background job (HUNDREDFOLD synthesis after
+      // an interview ends), so the default half-hour deadline is real and worth
+      // honouring rather than trimming to a request budget nobody is waiting on.
+      timeoutMs: opts.deadlineMs ?? 30 * 60_000,
+    })) as RoadmapReport;
 
-      if (response.stop_reason === 'max_tokens') {
-        throw new MalformedReport('roadmap hit the max_tokens ceiling and was cut off');
-      }
-      const textBlock = response.content.find((b) => b.type === 'text');
-      if (!textBlock || textBlock.type !== 'text') throw new MalformedReport('no text block in response');
-      let parsed: RoadmapReport;
-      try {
-        parsed = extractJson(textBlock.text, REPORT_SCHEMA, label) as RoadmapReport;
-      } catch (err) {
-        throw new MalformedReport(err instanceof Error ? err.message : 'roadmap was not valid JSON');
-      }
-      return finalize(parsed);
-    };
-
-    const { value, model } = await withModelFallback(attempt, deadline);
-    return { ok: true, report: value, model };
+    return { ok: true, report: finalize(report), model: 'claude-code (subscription)' };
   } catch (err) {
-    if (err instanceof Anthropic.APIError && (/credit balance|billing/i.test(err.message) || err.status === 401)) {
-      console.error(`${label}: ANTHROPIC ACCOUNT PROBLEM:`, err.message);
-      return { ok: false, status: 503, error: 'The roadmap engine is down for maintenance.' };
+    if (err instanceof LlmUnavailable) {
+      return { ok: false, status: 503, error: 'The roadmap is queued and will finish shortly.' };
     }
     console.error(`${label}: failed`, err instanceof Error ? err.message : err);
     return { ok: false, status: 500, error: 'The roadmap engine hit a snag.' };

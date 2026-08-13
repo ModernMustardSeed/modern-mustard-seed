@@ -147,8 +147,8 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               <p className="mt-2 font-display text-xl font-extrabold">{preset.signature.title}</p>
               <p className="mt-1 font-body text-sm text-[#5c554a]">{preset.signature.sub}</p>
               <p className="mt-3 font-body text-sm text-[#3d382e]">
-                Every forged demo ships with a full business command center for your trade, and it stays free with your
-                voice agent. This board is its centerpiece. See it live inside your demo.
+                Every forged demo ships with a full business command center for your trade, free to tour, and free
+                to keep when you take the voice agent and the website together. This board is its centerpiece.
               </p>
             </div>
           </div>
@@ -289,7 +289,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
             </h2>
             <p className="mt-4 font-body text-[16px] text-[#3d382e] leading-relaxed max-w-2xl">
               The voice agent is the front door. Behind it, the command center runs the follow-through that this
-              trade lives on, and it comes free with your voice agent.
+              trade lives on, and it comes free when you take the voice agent and the website together.
             </p>
             <div className="mt-8 grid md:grid-cols-3 gap-6">
               {preset.extraAutomations.map((a) => (

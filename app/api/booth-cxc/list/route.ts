@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { sameOriginOnly } from '../guard';
+import { requireBoothAccess } from '../guard';
 
 /**
  * Lists every take stored in the private `booth-cxc` bucket and hands back a signed
@@ -23,8 +23,8 @@ type SavedTake = {
 };
 
 export async function POST(req: NextRequest) {
-  if (!sameOriginOnly(req)) {
-    return NextResponse.json({ error: 'Cross-origin requests are not allowed.' }, { status: 403 });
+  if (!(await requireBoothAccess(req))) {
+    return NextResponse.json({ error: 'Sign in to the admin to use the booth.' }, { status: 401 });
   }
   const client = getSupabase();
   if (!client) {

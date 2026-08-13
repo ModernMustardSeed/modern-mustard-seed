@@ -45,11 +45,21 @@ jobs:
 
       - run: npm ci
 
+      - name: Install Claude Code
+        run: npm i -g @anthropic-ai/claude-code
+
       - name: Forge any stranded demo site
         run: node scripts/forge-fallback.mjs
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Subscription, not the wallet. lib/site-forge-api now spawns the
+          # Claude Code CLI, which reads this token. Do NOT add
+          # ANTHROPIC_API_KEY back: the CLI prefers it and would silently put
+          # every rescued build back on metered billing.
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           FAL_KEY: ${{ secrets.FAL_KEY }}
-          FORGE_FALLBACK_DAILY_CAP: "6"
+          # The cap was a SPEND cap and the spend is gone. It stays as a sanity
+          # bound on how many rescues one day can trigger, raised because six was
+          # sized against a dollar figure that no longer exists.
+          FORGE_FALLBACK_DAILY_CAP: "40"

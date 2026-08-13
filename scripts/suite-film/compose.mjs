@@ -43,7 +43,10 @@ async function probeDurationSec(file) {
 /**
  * Turn the raw take plus the audio pieces into the finished film.
  *
- * @param tracks each { file, atMs, gain } laid at its own offset
+ * @param tracks each { file, atMs, gain, fadeOutAtMs?, fadeOutMs? } laid at its
+ *   own offset. fadeOutAtMs/fadeOutMs duck the clip to silence starting that
+ *   far into ITS OWN runtime (not the master timeline), for a track that would
+ *   otherwise still be talking when the next one starts.
  */
 export async function compose({ workDir, raw, scoreMs, tracks, bed, outMp4, outPoster, posterAtMs, log = () => {} }) {
   const rawSec = await probeDurationSec(raw);
@@ -73,9 +76,18 @@ export async function compose({ workDir, raw, scoreMs, tracks, bed, outMp4, outP
     inputs.push('-i', t.file);
     const ms = Math.max(0, Math.round(t.atMs));
     const gain = t.gain ?? 1;
+    // Duck this clip to silence before it ends, so a narration line that runs
+    // long never fights the audio laid down right after it (the call-setup
+    // line vs. the agent's own greeting: both are "on time" by the beat's
+    // visual pacing, but pacing has no opinion about two voices at once).
+    // afade runs on the clip's OWN clock, so it goes before adelay shifts
+    // that clock onto the master timeline.
+    const fade = t.fadeOutAtMs != null
+      ? `,afade=t=out:st=${(t.fadeOutAtMs / 1000).toFixed(3)}:d=${((t.fadeOutMs ?? 450) / 1000).toFixed(3)}`
+      : '';
     // adelay wants one value per channel; the pair covers mono and stereo, and
     // aresample keeps everything on one clock before the mix.
-    filters.push(`[${i}:a]aresample=48000,adelay=${ms}|${ms},volume=${gain}[a${i}]`);
+    filters.push(`[${i}:a]aresample=48000${fade},adelay=${ms}|${ms},volume=${gain}[a${i}]`);
     labels.push(`[a${i}]`);
   });
 

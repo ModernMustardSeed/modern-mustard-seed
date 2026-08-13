@@ -14,9 +14,8 @@
  * exists to fix.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText } from '@/lib/llm';
 import { extractJson } from './claude-code-json';
-import { claudeCostCents } from './hundredfold-credit';
 import {
   fetchSiteSource,
   paletteCandidates,
@@ -37,9 +36,6 @@ export async function readBrandFromSite(input: {
   business: string;
   url: string;
 }): Promise<BrandRead> {
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return { ok: false, reason: 'The brand reader is offline.', cents: 0 };
-
   const src = await fetchSiteSource(input.url);
   if (!src) {
     return {
@@ -70,11 +66,10 @@ export async function readBrandFromSite(input: {
     .replace(/\s+/g, ' ')
     .slice(0, 6000);
 
-  const anthropic = new Anthropic({ apiKey });
-  const res = await anthropic.messages.create({
+  const text = await llmText({
+    label: 'hundredfold-brand-read',
     model: MODEL,
-    max_tokens: 2000,
-    output_config: { effort: 'low' },
+    timeoutMs: 120_000,
     system: `You read a small business's existing brand off their own website so that everything we build for them afterwards matches it.
 
 Return ONLY a JSON object:
@@ -93,10 +88,7 @@ Rules:
 - contact: copy ONLY what is literally on the page. An empty string is correct and expected. Never guess a phone number or an address.
 - legal: only a licence number, certification, or disclaimer that actually appears.
 - No em dashes anywhere.`,
-    messages: [
-      {
-        role: 'user',
-        content: `BUSINESS: ${input.business}
+    user: `BUSINESS: ${input.business}
 SITE: ${src.finalUrl}
 
 COLOUR CANDIDATES (hex, then how many times it appears):
@@ -107,15 +99,12 @@ ${fonts.length ? fonts.join('\n') : '(none found)'}
 
 VISIBLE PAGE TEXT:
 ${visible}`,
-      },
-    ],
   });
 
-  const cents = claudeCostCents(MODEL, res.usage);
-  const text = res.content
-    .filter((b) => b.type === 'text')
-    .map((b) => (b.type === 'text' ? b.text : ''))
-    .join('\n');
+  // Zero, and truthfully zero. The HUNDREDFOLD credit ledger sums these to show
+  // an owner what their build cost, so a run on the subscription has to report
+  // as free rather than as an estimate nobody paid.
+  const cents = 0;
 
   const parsed = extractJson(text, {}, 'hundredfold-brand-read') as Partial<Brand>;
   if (!parsed?.accent) return { ok: false, reason: 'The reader could not settle on a palette.', cents };

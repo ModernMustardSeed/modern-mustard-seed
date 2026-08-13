@@ -11,16 +11,13 @@
  * after the call ends and lands in the member's Command Center.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { llmJson } from '@/lib/llm';
 import { extractJson } from './claude-code-json';
 import { runRoadmapFromBrief } from './scaling-roadmap';
 import type { RoadmapReport } from './roadmap-shape';
 import { QUESTIONS, transcriptText, type Turn } from './hundredfold-interview';
 
-const MODELS = (process.env.ROADMAP_MODELS || 'claude-opus-5,claude-sonnet-5')
-  .split(',')
-  .map((m) => m.trim())
-  .filter(Boolean);
+// Model choice now lives in the llmJson call below; the ladder is gone with the API.
 
 async function ask(
   system: string,
@@ -29,47 +26,31 @@ async function ask(
   label: string,
   maxTokens = 16000
 ): Promise<unknown> {
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY missing');
-  const anthropic = new Anthropic({ apiKey });
-
-  const keys = Object.keys((schema as { properties?: object }).properties ?? {});
-  const instructions = [
-    'Return ONLY a single JSON object matching this JSON Schema. No preamble, no commentary, no markdown fence. The first character of your reply must be {.',
-    '',
-    JSON.stringify(schema),
-    '',
-    keys.length > 1
-      ? `The root object has exactly these ${keys.length} keys and every one is a DIRECT CHILD of the root: ${keys.join(', ')}. They are siblings. Close each nested object before starting the next root key.`
-      : '',
-  ]
-    .filter(Boolean)
-    .join('\n');
-
-  let last: unknown;
-  for (const model of MODELS) {
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      try {
-        const response = await anthropic.messages
-          .stream({
-            model,
-            max_tokens: maxTokens,
-            output_config: { effort: 'high' },
-            system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
-            messages: [{ role: 'user', content: `${user}\n\n---\n\n${instructions}` }],
-          })
-          .finalMessage();
-        if (response.stop_reason === 'max_tokens') throw new Error(`${label}: hit the max_tokens ceiling`);
-        const block = response.content.find((b) => b.type === 'text');
-        if (!block || block.type !== 'text') throw new Error(`${label}: no text block`);
-        return extractJson(block.text, schema, label);
-      } catch (err) {
-        last = err;
-        console.warn(`${label}: attempt failed on ${model}:`, err instanceof Error ? err.message : err);
-      }
-    }
-  }
-  throw last instanceof Error ? last : new Error(String(last));
+  /**
+   * The hand-rolled schema instructions, the model ladder, the retry loop and
+   * the JSON extraction all lived here because the API had no better answer.
+   * `llmJson` already does every one of them: it builds the same root-key
+   * reminder from the schema, retries a malformed document twice, and runs the
+   * control-character and structural repairs that `extractJson` was doing by
+   * hand at the end of this function. Duplicating that here would mean two
+   * parsers to keep in step, and the one in `lib/claude-code-json.ts` is the
+   * one with thousands of real audits behind it.
+   *
+   * `maxTokens` is gone rather than translated. It existed to bound spend and
+   * to catch truncation, and on the subscription the first is moot while the
+   * second is handled by the repair pass.
+   */
+  return llmJson({
+    label,
+    model: 'opus',
+    system,
+    user,
+    schema,
+    // Synthesis is the long pole in the HUNDREDFOLD build: these are big
+    // documents at high effort, and the caller is a background job rather than
+    // a visitor, so it can afford to wait for a drainer.
+    timeoutMs: 240_000,
+  });
 }
 
 const str = { type: 'string' as const };

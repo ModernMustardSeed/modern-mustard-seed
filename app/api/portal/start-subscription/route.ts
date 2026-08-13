@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getStripe } from '@/lib/stripe';
 import { SITE } from '@/lib/seo';
+import { likeLiteral } from '@/lib/sql-like';
 
 export const runtime = 'nodejs';
 
@@ -16,7 +17,7 @@ export async function POST() {
   const { data: p } = await supabase
     .from('proposals')
     .select('id, client_name, client_company, site_url, monthly_total, subscription_status')
-    .ilike('client_email', session.email)
+    .ilike('client_email', likeLiteral(session.email))
     .in('status', ['accepted', 'sent'])
     .order('updated_at', { ascending: false })
     .limit(1)

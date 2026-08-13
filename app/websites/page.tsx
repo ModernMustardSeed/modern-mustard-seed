@@ -26,14 +26,14 @@ const HERO_FILM = {
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
   description:
-    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, and the command center free. Live in about a week from $147/mo. Add the voice agent whenever you want it to answer the phone too. See yours built free.',
+    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, your domain, hosting, and care handled. Live in about a week from $147/mo. Add the voice agent and the command center comes free with the pair. See yours built free.',
   path: '/websites',
 });
 
 const INCLUDED = [
   { icon: '🎨', name: 'Elite custom design', desc: 'Designed from scratch for your trade and your town. Not a template anyone else can buy.' },
   { icon: '🌐', name: 'Domain, hosting, and care', desc: 'Your domain, the hosting, and ongoing care all handled. Unlimited edits, before launch and forever after, and we keep it running.' },
-  { icon: '⚙', name: 'The command center, free', desc: 'A back office wired to your calls, traffic, customers, and reviews. On the house with your site.' },
+  { icon: '⚙', name: 'The command center', desc: 'A back office wired to your calls, traffic, customers, and reviews. Free when you take the voice agent with your site.' },
   { icon: '🧲', name: 'Funnels + a lead magnet', desc: 'A real capture flow and a reason to opt in, live and converting on day one, not someday.' },
   { icon: '🔎', name: 'SEO + GEO baked in', desc: 'Built to be found on Google and cited by AI search. Metadata, structured data, the works.' },
   { icon: '🔑', name: 'You own every line', desc: 'The repo, the domain, the accounts, all yours on launch day. No rental, no lock-in.' },
@@ -42,7 +42,7 @@ const INCLUDED = [
 const FAQ = [
   {
     q: 'What kind of website do you build?',
-    a: 'Not a brochure that sits there, a working engine. Elite custom design, funnels and a lead magnet live on day one, the command center wired behind it free, SEO plus GEO built in so you get found, and your domain, hosting, and care handled. It looks like the brand you are trying to be, and it actually runs your business.',
+    a: 'Not a brochure that sits there, a working engine. Elite custom design, funnels and a lead magnet live on day one, SEO plus GEO built in so you get found, and your domain, hosting, and care handled. It looks like the brand you are trying to be, and it actually runs your business.',
   },
   {
     q: 'Is the voice agent included with the website?',
@@ -50,7 +50,7 @@ const FAQ = [
   },
   {
     q: 'How much does a website cost?',
-    a: `The productized website is ${formatUsd(site.setupCents)} to set up plus ${formatUsd(site.monthlyCents)} a month, and that includes your domain, hosting, ongoing care, and the command center free. It goes live in about a week. For a bigger, fully bespoke build (custom booking, an embedded CRM, a vertical app, an AI sales rep), we scope a Full-Service Business Build and quote it after a free call. Month to month, cancel anytime, no trials.`,
+    a: `The productized website is ${formatUsd(site.setupCents)} to set up plus ${formatUsd(site.monthlyCents)} a month, and that includes your domain, hosting, and ongoing care. Add the voice agent and the command center rides along free with the pair. It goes live in about a week. For a bigger, fully bespoke build (custom booking, an embedded CRM, a vertical app, an AI sales rep), we scope a Full-Service Business Build and quote it after a free call. Month to month, cancel anytime, no trials.`,
   },
   {
     q: 'How fast does it go live?',
@@ -83,14 +83,14 @@ function websitesJsonLd() {
         name: 'Small Business Website Builds by Modern Mustard Seed',
         serviceType: 'Custom small-business website design and development (funnels, SEO/GEO, optional voice agent add-on)',
         description:
-          'Custom websites that work: elite design, funnels and a lead magnet day one, the command center wired behind it free, SEO plus GEO built in, and your domain, hosting, and care handled. Live in about a week. You own the code, domain, and accounts. The voice agent is a separate product that can be added to this site or to a site you already have.',
+          'Custom websites that work: elite design, funnels and a lead magnet day one, SEO plus GEO built in, and your domain, hosting, and care handled. Live in about a week. You own the code, domain, and accounts. The voice agent is a separate product that can be added to this site or to a site you already have.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/websites`,
         offers: {
           '@type': 'Offer',
           name: 'Website',
-          description: 'Custom website with funnels, SEO/GEO, and the command center free. Domain, hosting, and care included. Voice agent sold separately.',
+          description: 'Custom website with funnels and SEO/GEO. Domain, hosting, and care included. Voice agent sold separately, and taking both makes the command center free.',
           price: Math.round(site.monthlyCents / 100),
           priceCurrency: 'USD',
           priceSpecification: [
@@ -140,9 +140,9 @@ export default function WebsitesPage() {
                 Not a brochure. A website that <em className="italic text-[#C4160B]">works.</em>
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
-                Elite custom design, funnels and SEO baked in, and the command center wired behind it free. It captures
-                the lead and follows up while you sleep, and it can answer the phone too the day you add the voice
-                agent. From {formatUsd(site.monthlyCents)}/mo, and you own every line.
+                Elite custom design, funnels and SEO baked in, your domain and hosting handled. It captures the lead
+                and follows up while you sleep, and it answers the phone too the day you add the voice agent, which is
+                also the day your command center goes free. From {formatUsd(site.monthlyCents)}/mo, and you own every line.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -257,7 +257,7 @@ export default function WebsitesPage() {
                   'Add it to the site we build you',
                   'Or to the site you already have',
                   'Rides on your existing number',
-                  'Command center stays free either way',
+                  'Take both and the command center is free',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#FBF6EA]/85">
                     <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#F5B700] shrink-0" aria-hidden />
@@ -283,7 +283,7 @@ export default function WebsitesPage() {
                   </p>
                   <p className="font-body text-[13px] text-[#161616]/80 mt-1.5 leading-relaxed">
                     The Talking Website (site + voice agent, one brain) is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
-                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, and the command center still rides free.
+                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, and the command center rides free inside it.
                   </p>
                 </div>
                 <Link
@@ -404,8 +404,8 @@ export default function WebsitesPage() {
                 {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(site.setupCents)} setup</span>
               </p>
               <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
-                A custom site designed from scratch, funnels and SEO baked in. Your domain, hosting, care, and the
-                command center all included. Month to month, cancel anytime. Add the voice agent any time you want.
+                A custom site designed from scratch, funnels and SEO baked in. Your domain, hosting, and care all
+                included. Month to month, cancel anytime. Add the voice agent any time and the command center is free.
               </p>
               <Link
                 href="/demos"
@@ -500,7 +500,8 @@ export default function WebsitesPage() {
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Enter your business once and tour a real working site, designed from scratch for you, in your hands
-              within the hour. Keep it for {formatUsd(site.monthlyCents)}/mo, command center free.
+              within the hour. Keep it for {formatUsd(site.monthlyCents)}/mo, or take the voice agent with it and the
+              command center is free.
             </p>
             <Link
               href="/demos"

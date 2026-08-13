@@ -112,12 +112,23 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
     .digest('hex')
     .slice(0, 32);
   const since = new Date(Date.now() - 3600_000).toISOString();
+  /*
+   * THE VISITOR'S EMAIL IS UNTRUSTED INPUT AND `.or()` TAKES A FILTER GRAMMAR,
+   * NOT A VALUE. Interpolating it raw let a submitter send an address like
+   * `x,ip_hash.not.is.null`, rewriting the ceiling's own filter so the count
+   * never reached the limit. That turns a member's published tool into a
+   * mail-bomb aimed at that member's inbox, since every submission emails them.
+   * Commas, dots and parentheses are all syntax here, so anything that is not a
+   * plainly well-formed address is dropped back to the IP-only ceiling.
+   */
+  const SAFE_EMAIL = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  const rateEmail = email && SAFE_EMAIL.test(email) ? email : '';
   const { count } = await sb
     .from('hundredfold_tool_submissions')
     .select('id', { count: 'exact', head: true })
     .eq('system_id', system.id)
     .gte('created_at', since)
-    .or(email ? `email.eq.${email},ip_hash.eq.${ipHash}` : `ip_hash.eq.${ipHash}`);
+    .or(rateEmail ? `email.eq.${rateEmail},ip_hash.eq.${ipHash}` : `ip_hash.eq.${ipHash}`);
   if ((count ?? 0) >= RATE_PER_HOUR) {
     // Deliberately a soft answer: the visitor is usually a real customer who
     // double-clicked, and telling them they are rate limited helps nobody.

@@ -16,7 +16,7 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 export const metadata = buildMetadata({
   title: 'Free Voice Agent and Website Demo for Your Business',
   description:
-    'Get three working AI demos free, no card and no sales call: a voice agent that answers as your business, a custom website built from scratch, and a business command center free with either. The whole suite is with you within the hour. Keep what you love from $147/mo.',
+    'Get three working AI demos free, no card and no sales call: a voice agent that answers as your business, a custom website built from scratch, and a business command center that is free when you take both. The whole suite is with you within the hour. Keep what you love from $147/mo.',
   path: '/demos',
 });
 
@@ -27,7 +27,7 @@ const FAQ = [
   },
   {
     q: 'What exactly do I get?',
-    a: 'Three working demos personalized to your business: a voice agent you can call and try to stump, a complete demo website designed from scratch, and a business command center with your name on the door, wired to your calls and your website traffic. The command center comes free with the website or the voice agent, no build cost and no monthly. All three live at your private hub link.',
+    a: 'Three working demos personalized to your business: a voice agent you can call and try to stump, a complete demo website designed from scratch, and a business command center with your name on the door, wired to your calls and your website traffic. Take the website and the voice agent together and the command center comes free, no build cost and no monthly. All three live at your private hub link.',
   },
   {
     q: 'How fast?',
@@ -119,7 +119,7 @@ function demosJsonLd() {
         name: 'The Demo Station by Modern Mustard Seed',
         serviceType: 'Free AI business demos: voice agent, website, and command center',
         description:
-          'A free self-serve forge. Enter your business once and receive three working demos: a voice agent trained on your company, a custom website designed from scratch, and a business command center that comes free with either. No account and no credit card.',
+          'A free self-serve forge. Enter your business once and receive three working demos: a voice agent trained on your company, a custom website designed from scratch, and a business command center that is free when you take the website and the voice agent together. No account and no credit card.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         offers: [
@@ -128,7 +128,7 @@ function demosJsonLd() {
               p.name,
               p.monthlyCents,
               p.setupCents,
-              p.freeWithPaid ? `${p.blurb} Sold on its own, or free with the website or voice agent.` : p.blurb,
+              p.freeInBundle ? `${p.blurb} Sold on its own, or free when you take the website and the voice agent together.` : p.blurb,
             ),
           ),
           offer(
@@ -214,7 +214,7 @@ export default function DemosPage() {
                 {[
                   'No card. No meeting. No sales call to sit through.',
                   'Two open right away. The whole suite is with you within the hour.',
-                  `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, command center free with either. Or keep nothing.`,
+                  `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, command center free when you take both. Or keep nothing.`,
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#161616]/80">
                     <span
@@ -339,14 +339,14 @@ export default function DemosPage() {
                 >
                   Free demo
                   <span className={c.tone === 'ink' ? 'text-[#FBF6EA]/40' : 'text-[#161616]/70'}> · </span>
-                  {c.price.freeWithPaid ? <>{formatUsd(c.price.monthlyCents)}/mo, free with either</> : <>keep for {formatUsd(c.price.monthlyCents)}/mo</>}
+                  {c.price.freeInBundle ? <>{formatUsd(c.price.monthlyCents)}/mo, free when you take both</> : <>keep for {formatUsd(c.price.monthlyCents)}/mo</>}
                 </p>
               </div>
             ))}
           </div>
           <p className="font-body text-[14px] text-[#161616]/60 mt-5">
-            Your command center is free with either piece. Want the voice agent and website together? That is The Talking Website, and it
-            is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
+            Take the voice agent and the website together and your command center is free. That pair is The Talking
+            Website, {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
           </p>
         </section>
 
@@ -360,7 +360,7 @@ export default function DemosPage() {
               {
                 n: '3',
                 t: 'Keep what you love',
-                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for The Talking Website (both, command center free). Live within 7 days.`,
+                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for The Talking Website (both pieces, command center free). Live within 7 days.`,
               },
             ].map((s) => (
               <div key={s.n} className="flex gap-4 sm:block">

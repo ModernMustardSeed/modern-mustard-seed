@@ -207,8 +207,8 @@ export default function DemoStation() {
       <p className="font-body text-[12px] text-[#161616]/70 text-center mt-3.5 leading-relaxed">
         No card, no meeting, no strings. If you love them:{' '}
         the website or voice agent from {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, the command center from{' '}
-        {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo (free with either), or The Talking Website for{' '}
-        {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo. Month to month.
+        {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo, or all three as The Talking Website for{' '}
+        {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo with the command center free. Month to month.
       </p>
     </form>
   );

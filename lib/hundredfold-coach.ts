@@ -19,7 +19,6 @@
  * an unrecognised build kind is treated as spending.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
 import type { RoadmapReport } from './roadmap-shape';
 import type { ForgedOffer } from './hundredfold-synthesis';
 import type { GateRow, Member, SystemRow } from './hundredfold-store';
@@ -72,45 +71,68 @@ export const needsApproval = (kind: string): boolean => SPENDS_MONEY[kind as Bui
 /** Which builds we make by hand versus the ones the member can fire themselves. */
 export const STUDIO_BUILT: BuildKind[] = ['agent', 'automation', 'dashboard'];
 
-const BUILD_TOOL: Anthropic.Tool = {
-  name: 'request_build',
-  description:
-    'File a build for this member. Use it the moment the honest next step is a thing that has to exist rather than advice: a page, an embeddable tool (a calculator, quoter, or intake form for their own site), a PDF (a lead magnet, guide, or checklist), a follow-up sequence, a script, images, a campaign, an automation, an agent, a dashboard, a video, or an ad campaign. Never describe a build in prose and leave it at that. File it, then tell them plainly what you filed and what happens next.',
-  input_schema: {
-    type: 'object',
-    properties: {
-      name: { type: 'string', description: 'Short name the member will recognise in their arsenal.' },
-      kind: {
-        type: 'string',
-        enum: [
-          'page',
-          'tool',
-          'pdf',
-          'copy',
-          'email-sequence',
-          'script',
-          'images',
-          'social-campaign',
-          'automation',
-          'agent',
-          'dashboard',
-          'video',
-          'ad-campaign',
-        ],
-      },
-      window_no: { type: 'number', description: 'Which roadmap window (1-4) this belongs to.' },
-      summary: { type: 'string', description: 'What it is and what it does, in the member’s own terms.' },
-      gives_back: {
-        type: 'string',
-        description: 'The hours or the money this hands back to the owner. Concrete, in their terms.',
-      },
-      why_now: { type: 'string', description: 'Which gate or move this unblocks.' },
-    },
-    required: ['name', 'kind', 'window_no', 'summary', 'gives_back', 'why_now'],
-  },
-};
+/**
+ * The `request_build` tool, restated as a decision document.
+ *
+ * The trigger sentence is the tool description verbatim, including the line
+ * about never describing a build in prose and leaving it at that. That rule is
+ * the difference between a coach who files work and a coach who gives advice,
+ * which is the entire product, so it survives the move to the letter.
+ */
+export const COACH_DECISION_RULES = `# How to answer
 
-export const COACH_TOOLS: Anthropic.Tool[] = [BUILD_TOOL];
+Reply with a single JSON object and nothing else:
+{"reply": "<what you say to the member>", "fileBuild": <true|false>, "build": { ... } or null}
+
+Set fileBuild to true the moment the honest next step is a thing that has to exist rather than advice: a page, an embeddable tool (a calculator, quoter, or intake form for their own site), a PDF (a lead magnet, guide, or checklist), a follow-up sequence, a script, images, a campaign, an automation, an agent, a dashboard, a video, or an ad campaign. Never describe a build in prose and leave it at that. File it.
+
+File at most ONE build per message. When you file, "build" carries:
+- name: short name the member will recognise in their arsenal
+- kind: one of page, tool, pdf, copy, email-sequence, script, images, social-campaign, automation, agent, dashboard, video, ad-campaign
+- window_no: which roadmap window (1-4) this belongs to
+- summary: what it is and what it does, in the member's own terms
+- gives_back: the hours or the money this hands back to the owner, concrete, in their terms
+- why_now: which gate or move this unblocks
+
+Keep "reply" short when you are filing something. You will get to speak again once it is filed, and you will be told exactly what to say about it.`;
+
+export const COACH_DECISION_SCHEMA = {
+  type: 'object' as const,
+  properties: {
+    reply: { type: 'string' },
+    fileBuild: { type: 'boolean' },
+    build: {
+      type: 'object' as const,
+      properties: {
+        name: { type: 'string' },
+        kind: {
+          type: 'string',
+          enum: [
+            'page',
+            'tool',
+            'pdf',
+            'copy',
+            'email-sequence',
+            'script',
+            'images',
+            'social-campaign',
+            'automation',
+            'agent',
+            'dashboard',
+            'video',
+            'ad-campaign',
+          ],
+        },
+        window_no: { type: 'number' },
+        summary: { type: 'string' },
+        gives_back: { type: 'string' },
+        why_now: { type: 'string' },
+      },
+      required: ['name', 'kind', 'window_no', 'summary', 'gives_back', 'why_now'],
+    },
+  },
+  required: ['reply', 'fileBuild'],
+};
 
 /* -------------------------------------------------------------------------- */
 /* His brief                                                                   */

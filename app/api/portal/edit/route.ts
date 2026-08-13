@@ -7,6 +7,7 @@ import { resendClient } from '@/lib/send-email';
 import { clientMessageEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { likeLiteral } from '@/lib/sql-like';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
   const { data: proj } = await sb
     .from('projects')
     .select('id, name, client_email, site_html, site_html_draft, site_published_at, edit_status')
-    .ilike('client_email', session.email)
+    .ilike('client_email', likeLiteral(session.email))
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
     .limit(1)

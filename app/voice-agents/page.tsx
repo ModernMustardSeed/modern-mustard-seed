@@ -5,6 +5,7 @@ import MissedCallCalculator from '@/components/MissedCallCalculator';
 import RestaurantVoiceSection from '@/components/RestaurantVoiceSection';
 import VoiceTalkButton from '@/components/VoiceTalkButton';
 import MrMustardHeroCTA from '@/components/MrMustardHeroCTA';
+import RingMeNow from '@/components/RingMeNow';
 import CallTheNumber from '@/components/voice-agents/CallTheNumber';
 import CallTicker from '@/components/voice-agents/CallTicker';
 import NightShiftFilm from '@/components/voice-agents/NightShiftFilm';
@@ -252,6 +253,13 @@ export default function VoiceAgentsPage() {
                       </span>
                     )
                   )}
+                </div>
+
+                {/* The other direction. The signature moment below asks them to
+                    dial; this asks for nothing but the number and dials them.
+                    Whichever one they are willing to do, they hear the product. */}
+                <div className="mt-8">
+                  <RingMeNow source="voice-agents-hero" />
                 </div>
               </div>
 

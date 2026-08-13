@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { Anton, Caveat } from 'next/font/google';
 import { track } from '@vercel/analytics';
+import RingMeNow from '@/components/RingMeNow';
 
 const anton = Anton({ weight: '400', subsets: ['latin'], display: 'swap' });
 const caveat = Caveat({ weight: '600', subsets: ['latin'], display: 'swap' });
@@ -131,24 +132,29 @@ export function JourneyHero() {
             type, a shorter line, and one CTA (the launcher pill already offers
             Mr. Mustard down there). The sticky box hangs ~119px past the fold
             at rest, so the bottom pad is measured in vh to clear it. */}
-        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-end px-6 pb-[18vh] text-center lg:items-end lg:justify-center lg:pb-0 lg:pr-[6vw] lg:text-right">
+        {/* The bottom pad is not decoration on either breakpoint. At rest the
+            sticky box hangs ~130px past the fold, so a centered column ends up
+            centered on a point below the screen. Padding lifts the stack back
+            into view. It was 0 on desktop until the ring box was added
+            2026-08-13; 12vh is what puts the card above the fold on a laptop. */}
+        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-end px-6 pb-[11vh] text-center lg:items-end lg:justify-center lg:pb-[12vh] lg:pr-[6vw] lg:text-right">
           <span className={`${caveat.className} text-2xl md:text-3xl text-[#FFDD55] rotate-[-2deg] ${revealBase}`} data-in-stagger>
             Flathead Lake, Montana
           </span>
           <h1
-            className={`${anton.className} mt-4 uppercase leading-[0.92] text-transparent ${revealBase}`}
+            className={`${anton.className} mt-3 sm:mt-4 uppercase leading-[0.92] text-transparent ${revealBase}`}
             style={{ WebkitTextStroke: '2.5px #FBF6EA', fontSize: 'clamp(44px, 8.5vw, 136px)', transitionDelay: '120ms' }}
           >
             Come For
             <br />
             A Drive
           </h1>
-          <p className={`mt-4 sm:mt-6 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
+          <p className={`mt-3 sm:mt-5 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
             Websites that talk, voice agents that answer, and the command centers that run them.
             Live in about a week.
             <span className="hidden sm:inline"> This is Modern Mustard Seed, and this is the scenic route.</span>
           </p>
-          <div className={`mt-6 sm:mt-9 flex flex-wrap items-center justify-center gap-4 lg:justify-end ${revealBase}`} style={{ transitionDelay: '360ms' }}>
+          <div className={`mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end ${revealBase}`} style={{ transitionDelay: '360ms' }}>
             <a
               href="#tour-orchard"
               className="bg-[#F5B700] text-[#161616] font-bold border-2 border-[#161616] px-7 py-3.5 shadow-[4px_4px_0_0_#161616] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#161616] transition-all"
@@ -158,10 +164,17 @@ export function JourneyHero() {
             </a>
             <button
               onClick={() => openMustard('hero')}
-              className="hidden sm:inline-block bg-white/10 backdrop-blur text-[#FBF6EA] font-bold border-2 border-[#FBF6EA] px-7 py-3.5 hover:bg-white/20 transition-colors"
+              className="hidden lg:inline-block bg-white/10 backdrop-blur text-[#FBF6EA] font-bold border-2 border-[#FBF6EA] px-7 py-3.5 hover:bg-white/20 transition-colors"
             >
               Skip Ahead, Talk To Mr. Mustard
             </button>
+          </div>
+          {/* The lead capture, sitting in the hero on purpose (Sarah 2026-08-13).
+              The drive is the story; this is the door you can walk through in
+              one gesture, before any of it. Dense on phones so it never pushes
+              the headline off the sticky frame. */}
+          <div className={`mt-4 sm:mt-5 flex w-full justify-center lg:justify-end ${revealBase}`} style={{ transitionDelay: '480ms' }}>
+            <RingMeNow source="home-hero" dense />
           </div>
         </div>
         <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 text-[#FBF6EA]/80 font-mono text-[11px] tracking-[0.3em] uppercase motion-reduce:hidden">

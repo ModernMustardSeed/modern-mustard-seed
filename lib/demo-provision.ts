@@ -56,9 +56,16 @@ function milestonesFor(keys: string[]): Array<{ title: string; detail: string; d
   if (has('voice')) {
     ms.push({ title: 'Your voice agent goes live', detail: 'The voice from your demo, answering your real number around the clock.', done: false });
   }
-  // The command center rides free with every order (a website and a voice agent
-  // both need a back office), so it is always part of the build, never gated.
-  ms.push({ title: 'Your command center, included free', detail: 'Wired to your real calls and transcripts, your website traffic, customers, and reviews.', done: false });
+  // The command center is built when they bought it, and free inside the bundle
+  // where both paid pieces ride (Sarah 2026-08-13: free with both, not either).
+  // has() already returns true for every key when the order is the bundle.
+  if (has('os')) {
+    ms.push({
+      title: keys.includes('bundle') ? 'Your command center, included free' : 'Your command center, wired up',
+      detail: 'Wired to your real calls and transcripts, your website traffic, customers, and reviews.',
+      done: false,
+    });
+  }
   return ms;
 }
 

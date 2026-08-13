@@ -200,7 +200,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             {[
               {
                 t: 'The Website',
-                b: 'Designed from scratch for your business, not filled into a template. Lead capture, funnels, SEO, and the command center free. You own the code, the domain, and every account.',
+                b: 'Designed from scratch for your business, not filled into a template. Lead capture, funnels, and SEO built in. You own the code, the domain, and every account.',
                 p: `${formatUsd(DEMO_PRODUCTS.site.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`,
                 href: '/websites',
               },
@@ -212,8 +212,8 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               },
               {
                 t: 'The Command Center',
-                b: 'Calls, leads, customers, reviews, traffic, and money on one board, with an AI that reads it back to you. Free with the website or the voice agent.',
-                p: 'Free with either',
+                b: 'Calls, leads, customers, reviews, traffic, and money on one board, with an AI that reads it back to you. Free when you take the website and the voice agent together.',
+                p: 'Free with both',
                 href: '/command-center',
               },
             ].map((c) => (

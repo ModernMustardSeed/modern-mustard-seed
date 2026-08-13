@@ -60,9 +60,12 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
   console.error('Missing supabase url or service role key.');
   process.exit(1);
 }
-// site-forge-api reads these off process.env, so make sure the .env.local path
-// populates them too.
-process.env.ANTHROPIC_API_KEY = env.ANTHROPIC_API_KEY || '';
+// site-forge-api runs the Claude Code CLI now, not the API, so there is no key
+// to forward and forwarding one would be actively harmful: a present
+// ANTHROPIC_API_KEY silently flips the CLI back to metered billing. Only FAL
+// (the hero image) still takes a key here.
+delete process.env.ANTHROPIC_API_KEY;
+delete process.env.ANTHROPIC_AUTH_TOKEN;
 process.env.FAL_KEY = env.FAL_KEY || '';
 
 const sb = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } });

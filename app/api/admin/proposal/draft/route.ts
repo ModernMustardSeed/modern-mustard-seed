@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/admin-auth';
+import { llmJson } from '@/lib/llm';
 import { byId, listPrice } from '@/data/proposal-menu';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
-
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
 
 const SYSTEM = `You write proposals for Modern Mustard Seed, Sarah Scarano's one-person AI product studio in Kalispell, Montana. You write the way she does: direct, warm, concrete, stewardship not extraction.
 
@@ -44,11 +43,6 @@ const SCHEMA = {
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  if (!ANTHROPIC_API_KEY) {
-    console.error('proposal/draft: ANTHROPIC_API_KEY is not set');
-    return NextResponse.json({ error: 'Drafting is not configured.' }, { status: 500 });
-  }
 
   const { client, notes, serviceIds } = (await req.json()) as {
     client?: { name?: string; company?: string; url?: string; situation?: string };
@@ -89,39 +83,14 @@ ${serviceContext}
 Return the JSON proposal narrative. Remember: no dollar amounts anywhere in the prose.`;
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 2000,
-        output_config: { format: { type: 'json_schema', schema: SCHEMA } },
-        system: SYSTEM,
-        messages: [{ role: 'user', content: userMsg }],
-      }),
+    const draft = await llmJson<{ item_framing?: { id: string; line: string }[]; [k: string]: unknown }>({
+      label: 'proposal-draft',
+      model: 'sonnet',
+      system: SYSTEM,
+      user: userMsg,
+      schema: SCHEMA,
+      timeoutMs: 90_000,
     });
-
-    if (!response.ok) {
-      const detail = await response.text().catch(() => '');
-      const kind =
-        response.status === 401 ? 'auth' : response.status === 429 ? 'rate limit' : `status ${response.status}`;
-      console.error(`proposal/draft: anthropic ${kind} ${detail.slice(0, 300)}`);
-      return NextResponse.json({ error: 'Could not draft right now. Try again.' }, { status: 502 });
-    }
-
-    const data = await response.json();
-    const text = (data.content || []).map((c: { text?: string }) => c.text || '').join('');
-    let draft: { item_framing?: { id: string; line: string }[]; [k: string]: unknown };
-    try {
-      draft = JSON.parse(text);
-    } catch {
-      console.error('proposal/draft: unparseable JSON', text.slice(0, 300));
-      return NextResponse.json({ error: 'The draft came back unreadable. Try again.' }, { status: 502 });
-    }
 
     // Reshape item_framing into a simple map for the UI.
     const framing: Record<string, string> = {};

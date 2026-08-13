@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText, LlmUnavailable } from '@/lib/llm';
 import { getAdminUser } from '@/lib/admin-auth';
 import { PROMPTER_SCRIPTS, isDirectionLine } from '@/app/sarah/scripts';
 import { SITE } from '@/lib/seo';
@@ -15,9 +15,6 @@ export const maxDuration = 60;
 export async function POST(req: Request) {
   const user = await getAdminUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return NextResponse.json({ error: 'AI is not configured (ANTHROPIC_API_KEY).' }, { status: 503 });
 
   const body = (await req.json().catch(() => null)) as { scriptId?: string; text?: string } | null;
   const script = body?.scriptId ? PROMPTER_SCRIPTS.find((s) => s.id === body.scriptId) : undefined;
@@ -40,14 +37,7 @@ export async function POST(req: Request) {
   const prompt = `This is a ${kind} titled "${sourceTitle || 'untitled'}". Here is the spoken script:\n\n${transcript.slice(0, 6000)}\n\nWrite metadata as JSON with exactly these keys:\n- "title": a compelling YouTube title, at most 90 characters, that promises the real value and sounds like Sarah, not a marketer.\n- "description": 130 to 240 words. Open with a strong first sentence (it shows in search). Say what the viewer will learn or feel. Then a short call to action to see what the studio builds at ${SITE.url}. End with the line "Small faith. Real leverage. Work that shelters." No hashtags in the body.\n- "tags": an array of 12 to 18 lowercase search tags relevant to the topic (mix of broad and specific), no hashes.\nReturn only the JSON object.`;
 
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const resp = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
-      max_tokens: 1500,
-      system: sys,
-      messages: [{ role: 'user', content: prompt }],
-    });
-    const raw = resp.content.map((c) => (c.type === 'text' ? c.text : '')).join('').trim();
+    const raw = await llmText({ label: 'youtube-metadata', model: 'sonnet', system: sys, user: prompt });
     const jsonText = raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1);
     const parsed = JSON.parse(jsonText) as { title?: string; description?: string; tags?: string[] };
     if (!parsed.title || !parsed.description) throw new Error('missing fields');

@@ -29,10 +29,15 @@ type Params = Promise<{ id: string }>;
  * a site that is already live, so it waits for the Max-plan worker however long that
  * takes and costs nothing.
  */
-export async function POST(_req: Request, { params }: { params: Params }) {
+export async function POST(req: Request, { params }: { params: Params }) {
   const guard = await requireOutboundAdmin();
   if ('error' in guard) return guard.error;
   const { id } = await params;
+
+  // Same tier picker the initial forge takes (2 = Wildmere award-site world, 3 =
+  // the Journey site). Absent means the worker rolls roulette, same as forge-site.
+  const body = (await req.json().catch(() => ({}))) as { designTier?: unknown };
+  const designTier = body.designTier === 2 || body.designTier === 3 ? body.designTier : null;
 
   const { data: lead, error } = await guard.supabase.from('outbound_leads').select('*').eq('id', id).single();
   if (error || !lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
@@ -73,8 +78,10 @@ export async function POST(_req: Request, { params }: { params: Params }) {
       status: 'queued',
       kind,
       // Facts move. Rebuild the brief from what we know about them right now rather
-      // than replaying whatever the row was first queued with.
-      brief: buildSiteBrief(l, l.demo_url ?? null),
+      // than replaying whatever the row was first queued with. A chosen tier rides
+      // as the brief's first line, same convention forge-site uses (see tierOf in
+      // scripts/demo-site-worker.mjs).
+      brief: (designTier ? `DESIGN TIER: ${designTier}\n\n` : '') + buildSiteBrief(l, l.demo_url ?? null),
       reuse_photos: true,
       worker_only: true,
       worker: null,

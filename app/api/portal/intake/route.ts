@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { selectSections } from '@/lib/intake';
 import { createClientRequest } from '@/lib/client-requests';
+import { likeLiteral } from '@/lib/sql-like';
 
 export const runtime = 'nodejs';
 
@@ -12,7 +13,7 @@ async function serviceIdsFor(supabase: ReturnType<typeof getSupabase>, email: st
     const { data } = await supabase
       .from('proposals')
       .select('lines, updated_at')
-      .ilike('client_email', email)
+      .ilike('client_email', likeLiteral(email))
       .order('updated_at', { ascending: false })
       .limit(1)
       .maybeSingle();
