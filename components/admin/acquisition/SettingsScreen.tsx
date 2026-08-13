@@ -201,6 +201,28 @@ export default function SettingsScreen() {
               </Section>
             </div>
 
+            {/*
+              A standing decision, written where it cannot be missed. Two
+              systems can technically mail this prospect list, and two systems
+              mailing one list is the single worst outcome available: duplicate
+              cold email from the same domain to the same contractor.
+            */}
+            <Section title="Who owns MMS outbound" note="A standing decision, not a setting. Changing it is a deliberate act.">
+              <p className="text-[14px] leading-relaxed text-[#161616]/80">
+                <strong>This engine owns Modern Mustard Seed&apos;s own outbound.</strong> It holds the prospects, the
+                consent ledger, the governor and the send history, and every send it makes is counted against one rolling
+                ceiling.
+              </p>
+              <p className="mt-2 text-[14px] leading-relaxed text-[#161616]/80">
+                Client Factory sells the machine to other businesses. Its MMS tenant stays in test mode with outreach
+                paused, which is how it was built. If that ever changes, turn this engine off first, in this order, or
+                the same contractor gets the same cold email twice from the same domain.
+              </p>
+              <p className="mt-2 text-[12px] font-mono text-[#161616]/50">
+                acq_* tables and the outbound governor · factory_* tables and the blueprint compiler
+              </p>
+            </Section>
+
             <Section title="Production readiness" note="Checked live. A blocker means the campaign refuses to start.">
               <ul className="space-y-2">
                 {data.preflight.checks.map((c) => (
