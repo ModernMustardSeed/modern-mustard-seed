@@ -4,7 +4,8 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 /**
  * FLAGSHIP OFFER. Homepage beat: the studio's headline product, forged free and
  * kept for a monthly. Three pieces, and the command center's price is STRUCK
- * THROUGH under a "free with either" stamp (the signature moment, the hook).
+ * THROUGH under a "free with both" stamp (the signature moment, the hook).
+ * Narrowed 2026-08-13: the waiver needs BOTH paid pieces, which is the bundle.
  * Pop-art cabin system: cream canvas, ink pop-cards, gold, halftone. Every
  * price DERIVES from DEMO_PRODUCTS / DEMO_BUNDLE (never typed).
  */
@@ -53,8 +54,8 @@ export default function FlagshipOffer() {
           A voice agent, a website,<br />and the brain that runs them.
         </h2>
         <p className="font-body text-[15px] md:text-[17px] text-[#161616]/75 mt-5 max-w-2xl leading-relaxed">
-          Tell us your business and we forge all three, free, in about a minute. Keep what you love. Add the website or
-          the voice agent and your command center comes free, so the back office is on the house.
+          Tell us your business and we forge all three, free, in about a minute. Keep what you love. Take the website
+          and the voice agent together and your command center comes free, so the back office is on the house.
         </p>
 
         <div className="grid md:grid-cols-3 gap-6 mt-12 items-stretch">
@@ -79,7 +80,7 @@ export default function FlagshipOffer() {
                     aria-hidden
                     className="absolute -top-4 -right-3 rotate-[8deg] select-none bg-[#C4160B] text-[#FBF6EA] font-mono font-extrabold text-[11px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616]"
                   >
-                    Free with either
+                    Free with both
                   </span>
                 ) : null}
 
@@ -97,7 +98,7 @@ export default function FlagshipOffer() {
                         {priceLine(c.key)}
                       </span>
                       <span className="block mt-1 text-[#C4160B] font-extrabold text-[15px] not-italic">
-                        Free with your site or voice agent
+                        Free with your site and voice agent
                       </span>
                     </p>
                   ) : (

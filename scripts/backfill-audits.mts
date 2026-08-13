@@ -30,20 +30,13 @@ if (!url || !key) {
   console.error('Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.');
   process.exit(1);
 }
-// Free by default, like scripts/preaudit-leads.mts: this always runs locally, so
-// there is no reason for it to bill the API. `AUDIT_ENGINE=api` opts back out.
-if (!process.env.AUDIT_ENGINE) process.env.AUDIT_ENGINE = 'claude-code';
-const ON_API = process.env.AUDIT_ENGINE === 'api';
-
-if (ON_API && !process.env.ANTHROPIC_API_KEY) {
-  console.error('ANTHROPIC_API_KEY missing (env or .env.local).');
-  process.exit(1);
-}
+// AUDIT_ENGINE is gone: there is one engine now and it is the subscription.
+// Anything still setting it in a shell profile is harmless and ignored.
 
 const supabase = createClient(url, key, { auth: { persistSession: false } });
-// Headless Claude wants a few hundred MB per process, so the free engine runs
-// leaner than the API path did. lib/claude-code-json enforces its own cap too.
-const CONCURRENCY = ON_API ? 3 : 2;
+// Headless Claude wants a few hundred MB per process, so this runs leaner than
+// the old API path did. lib/claude-code-json enforces its own cap too.
+const CONCURRENCY = 2;
 
 const { data: rows, error } = await supabase
   .from('rep_prospects')

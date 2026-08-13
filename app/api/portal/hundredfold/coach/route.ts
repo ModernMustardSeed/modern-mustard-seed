@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmJson, llmText, renderTranscript } from '@/lib/llm';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getMemberByEmail, listGates, listSystems } from '@/lib/hundredfold-store';
 import {
   COACH_MODEL,
-  COACH_TOOLS,
+  COACH_DECISION_RULES,
+  COACH_DECISION_SCHEMA,
   STUDIO_BUILT,
   coachSystemPrompt,
   needsApproval,
@@ -47,8 +48,6 @@ export async function POST(req: Request) {
   const message = (body.message ?? '').trim().slice(0, 4000);
   if (!message) return NextResponse.json({ error: 'Say something first.' }, { status: 400 });
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return NextResponse.json({ error: 'The coach is offline. Email sarah@modernmustardseed.com.' }, { status: 503 });
 
   const [gates, systems] = await Promise.all([listGates(member.id), listSystems(member.id)]);
 
@@ -79,83 +78,85 @@ export async function POST(req: Request) {
     content: String(t.text ?? '').slice(0, 4000),
   }));
 
-  const anthropic = new Anthropic({ apiKey });
   const filed: { name: string; kind: string; approval: boolean; studio: boolean }[] = [];
 
   try {
-    const messages: Anthropic.MessageParam[] = [...history, { role: 'user', content: message }];
+    const convo = [...history, { role: 'user' as const, content: message }];
+    const transcript = renderTranscript(convo, { assistantLabel: 'Coach', userLabel: 'Member' });
 
-    let response = await anthropic.messages.create({
+    const decision = await llmJson<{
+      reply: string;
+      fileBuild: boolean;
+      build?: {
+        name?: string;
+        kind?: string;
+        window_no?: number;
+        summary?: string;
+        gives_back?: string;
+        why_now?: string;
+      };
+    }>({
+      label: 'hundredfold-coach',
       model: COACH_MODEL,
-      max_tokens: 1600,
-      system,
-      tools: COACH_TOOLS,
-      messages,
+      system: `${system}\n\n${COACH_DECISION_RULES}`,
+      user: transcript,
+      schema: COACH_DECISION_SCHEMA,
+      timeoutMs: 45_000,
     });
 
-    // One tool round trip. He is told to file at most one build per message, so
-    // a single pass is enough, and capping it keeps a chat turn from becoming a
-    // runaway agent loop inside a customer-facing request.
-    const toolUses = response.content.filter((b) => b.type === 'tool_use');
-    if (toolUses.length) {
-      const results: Anthropic.ToolResultBlockParam[] = [];
-      for (const use of toolUses) {
-        if (use.type !== 'tool_use') continue;
-        const input = use.input as {
-          name?: string;
-          kind?: string;
-          window_no?: number;
-          summary?: string;
-          gives_back?: string;
-          why_now?: string;
-        };
-        const kind = (input.kind ?? '') as BuildKind;
-        const approval = needsApproval(kind);
-        const studio = STUDIO_BUILT.includes(kind);
-        const name = (input.name ?? 'Untitled build').slice(0, 120);
+    // At most one build per message, same cap the tool loop had, and for the
+    // same reason: a chat turn must not become a runaway agent loop inside a
+    // customer-facing request.
+    let toolResult: string | null = null;
+    if (decision.fileBuild && decision.build) {
+      const input = decision.build;
+      const kind = (input.kind ?? '') as BuildKind;
+      const approval = needsApproval(kind);
+      const studio = STUDIO_BUILT.includes(kind);
+      const name = (input.name ?? 'Untitled build').slice(0, 120);
 
-        const client = getSupabase();
-        if (client) {
-          await client.from('hundredfold_systems').insert({
-            member_id: member.id,
-            name,
-            window_no: Math.max(1, Math.min(4, Math.round(Number(input.window_no) || currentWindow))),
-            kind,
-            summary: [input.summary, input.why_now].filter(Boolean).join(' '),
-            gives_back: input.gives_back ?? null,
-            // Spend waits for a yes; everything else goes straight into the queue.
-            status: approval ? 'proposed' : 'queued',
-          });
-        }
-        filed.push({ name, kind, approval, studio });
-
-        results.push({
-          type: 'tool_result',
-          tool_use_id: use.id,
-          content: approval
-            ? `Filed "${name}" and put it in their arsenal AWAITING THEIR APPROVAL, because it spends real money. Tell them it is waiting on their yes and that nothing has run or been charged.`
-            : studio
-              ? `Filed "${name}" and queued it with the studio. Tell them it is queued and they will watch it move in their arsenal.`
-              : `Filed "${name}" and queued it. Tell them it will be in their arsenal shortly and that they can push it live themselves whenever they want.`,
+      const client = getSupabase();
+      if (client) {
+        await client.from('hundredfold_systems').insert({
+          member_id: member.id,
+          name,
+          window_no: Math.max(1, Math.min(4, Math.round(Number(input.window_no) || currentWindow))),
+          kind,
+          summary: [input.summary, input.why_now].filter(Boolean).join(' '),
+          gives_back: input.gives_back ?? null,
+          // Spend waits for a yes; everything else goes straight into the queue.
+          status: approval ? 'proposed' : 'queued',
         });
       }
+      filed.push({ name, kind, approval, studio });
 
-      messages.push({ role: 'assistant', content: response.content });
-      messages.push({ role: 'user', content: results });
-      response = await anthropic.messages.create({
-        model: COACH_MODEL,
-        max_tokens: 1600,
-        system,
-        tools: COACH_TOOLS,
-        messages,
-      });
+      toolResult = approval
+        ? `Filed "${name}" and put it in their arsenal AWAITING THEIR APPROVAL, because it spends real money. Tell them it is waiting on their yes and that nothing has run or been charged.`
+        : studio
+          ? `Filed "${name}" and queued it with the studio. Tell them it is queued and they will watch it move in their arsenal.`
+          : `Filed "${name}" and queued it. Tell them it will be in their arsenal shortly and that they can push it live themselves whenever they want.`;
     }
 
-    const text = response.content
-      .filter((b) => b.type === 'text')
-      .map((b) => (b.type === 'text' ? b.text : ''))
-      .join('\n')
-      .trim();
+    let text = (decision.reply ?? '').trim();
+
+    if (toolResult) {
+      // The approval wording is not cosmetic: a member told "queued" about
+      // something that actually costs money and is waiting on their yes has
+      // been misinformed about their own bill. So the filing outcome gets its
+      // own turn rather than trusting the first reply to have guessed right.
+      try {
+        text = await llmText({
+          label: 'hundredfold-coach-compose',
+          model: COACH_MODEL,
+          system,
+          user: `${transcript} (you just filed a build and the arsenal returned: ${toolResult})\n\nWrite only your next message to the member, following that instruction. No preamble, no JSON.`,
+          timeoutMs: 30_000,
+        });
+      } catch {
+        // It is filed either way. Say the true thing rather than nothing.
+        text = text || toolResult;
+      }
+    }
 
     // A filed build is news on our side too. Sarah sees it without anybody
     // having to remember to tell her.

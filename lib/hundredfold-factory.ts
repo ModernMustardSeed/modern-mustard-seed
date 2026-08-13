@@ -35,7 +35,7 @@
  *      next cycle rather than running.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { runClaudeCodeText } from './claude-code-json';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { extractJson } from './claude-code-json';
 import { needsApproval, STUDIO_BUILT, type BuildKind } from './hundredfold-coach';
@@ -150,36 +150,28 @@ async function callClaude(
   user: string,
   opts: { maxTokens?: number; effort?: 'low' | 'medium' | 'high' } = {}
 ): Promise<{ text: string; cents: number }> {
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) throw new Error('The build engine is offline.');
-  const anthropic = new Anthropic({ apiKey });
-
   /**
-   * ⚠️ ALWAYS STREAMED, never `.create()`.
+   * The streaming note that used to live here is obsolete rather than moved.
+   * It existed because the SDK refuses a non-streaming request above a size
+   * ceiling ("Streaming is required for operations that may take longer than 10
+   * minutes"), which a 24k-token page build tripped on its first live run.
+   * There is no HTTP request here any more, so there is no ceiling to trip and
+   * `opts.maxTokens` has nothing left to configure.
    *
-   * A whole self-contained page or tool needs a 24k output ceiling, and the SDK
-   * refuses a non-streaming request that large ("Streaming is required for
-   * operations that may take longer than 10 minutes"). Found the honest way:
-   * the first live `tool` build failed instantly on it. Streaming everything
-   * keeps one code path rather than a size-dependent branch that would break
-   * again the next time a prompt grew.
+   * These are builds, not chat: a page or an embeddable tool takes minutes, and
+   * the caller is a background job, so the timeout is generous on purpose.
    */
-  const stream = anthropic.messages.stream({
+  const text = await runClaudeCodeText({
+    label: 'hundredfold-factory',
     model: FACTORY_MODEL,
-    max_tokens: opts.maxTokens ?? 12000,
-    output_config: { effort: opts.effort ?? 'medium' },
     system,
-    messages: [{ role: 'user', content: user }],
+    user,
+    timeoutMs: 20 * 60 * 1000,
   });
-  const res = await stream.finalMessage();
 
-  const text = res.content
-    .filter((b) => b.type === 'text')
-    .map((b) => (b.type === 'text' ? b.text : ''))
-    .join('\n')
-    .trim();
-
-  return { text, cents: claudeCostCents(FACTORY_MODEL, res.usage) };
+  // Truthfully zero: this ran on the subscription. The member's credit ledger
+  // sums these, so a free build has to report as free.
+  return { text, cents: 0 };
 }
 
 /* -------------------------------------------------------------------------- */

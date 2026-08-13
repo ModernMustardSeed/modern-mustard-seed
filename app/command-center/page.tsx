@@ -7,11 +7,19 @@ import StackCalculator from '@/components/command-center/StackCalculator';
 
 const os = DEMO_PRODUCTS.os;
 const site = DEMO_PRODUCTS.site;
+const voice = DEMO_PRODUCTS.voice;
+
+/** The a la carte middle rung: a website with the back office behind it, both at
+ *  their own price. Derived, never typed, so a reprice moves this page with it. */
+const SITE_PLUS_OS = {
+  setupCents: site.setupCents + os.setupCents,
+  monthlyCents: site.monthlyCents + os.monthlyCents,
+};
 
 export const metadata = buildMetadata({
   title: 'Business Command Center: the AI back office for your whole business',
   description:
-    'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. $197/mo on its own, free with a website or voice agent. See yours built free.',
+    'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. $197/mo on its own, and free when you take the website and the voice agent together. See yours built free.',
   path: '/command-center',
 });
 
@@ -33,7 +41,7 @@ const FAQ = [
   },
   {
     q: 'How much does it cost?',
-    a: `The command center is ${formatUsd(os.setupCents)} to set up plus ${formatUsd(os.monthlyCents)} a month on its own. It is FREE with either a new website or a voice agent, because a website needs a back office and so does a phone line, so its price is waived the moment you add either. Month to month, cancel anytime, no trials.`,
+    a: `The command center is ${formatUsd(os.setupCents)} to set up plus ${formatUsd(os.monthlyCents)} a month on its own. It is FREE inside The Talking Website, which is a new website and a voice agent taken together for ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month. That is the whole system on one brain, the back office included, for less than buying the three pieces separately. One piece on its own does not waive it. Month to month, cancel anytime, no trials.`,
   },
   {
     q: 'What does it replace?',
@@ -45,7 +53,7 @@ const FAQ = [
   },
   {
     q: 'Can I buy just the command center?',
-    a: `Yes. You can order the command center on its own for ${formatUsd(os.setupCents)} setup plus ${formatUsd(os.monthlyCents)} a month. If you add a website (${formatUsd(site.monthlyCents)}/mo) or a voice agent, the command center comes free, so most owners take a paid piece and get the back office at no extra cost.`,
+    a: `Yes. You can order the command center on its own for ${formatUsd(os.setupCents)} setup plus ${formatUsd(os.monthlyCents)} a month, and you can pair it with just a website (${formatUsd(site.monthlyCents)}/mo) or just a voice agent (${formatUsd(voice.monthlyCents)}/mo) at both of their own prices. It only becomes free when you take the website and the voice agent together, because that is when it stops being a dashboard and starts being the brain both of them report to.`,
   },
   {
     q: 'How fast can I have it?',
@@ -66,14 +74,14 @@ function commandCenterJsonLd() {
         name: 'Business Command Center by Modern Mustard Seed',
         serviceType: 'AI business operations dashboard (CRM, call transcripts, website analytics, reviews, invoicing)',
         description:
-          'One AI back-office board that runs the whole business: every call transcribed, website traffic and leads, customers, reviews, invoices, and reports, wired together. Sold standalone or free with a website or voice agent.',
+          'One AI back-office board that runs the whole business: every call transcribed, website traffic and leads, customers, reviews, invoices, and reports, wired together. Sold standalone, and free inside The Talking Website, where the website and the voice agent are taken together.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/command-center`,
         offers: {
           '@type': 'Offer',
           name: 'Business Command Center',
-          description: 'Standalone, or free with a website or voice agent.',
+          description: 'Standalone, or free when the website and the voice agent are taken together.',
           price: Math.round(os.monthlyCents / 100),
           priceCurrency: 'USD',
           priceSpecification: [
@@ -117,15 +125,15 @@ export default function CommandCenterPage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-6 xl:col-span-5">
               <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                The AI back office // Free with either
+                The AI back office // Free with the whole system
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 The command center that <em className="italic text-[#C4160B]">runs the whole business.</em>
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired
-                together on one board with an AI that sees all of it. {formatUsd(os.monthlyCents)}/mo on its own.
-                Free with a website or a voice agent.
+                together on one board with an AI that sees all of it. {formatUsd(os.monthlyCents)}/mo on its own,
+                and free when you take the website and the voice agent together.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -209,10 +217,10 @@ export default function CommandCenterPage() {
         {/* ── Pricing ── */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
-            Pricing // Free with either paid piece
+            Pricing // Free inside the whole system
           </p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
-            Buy it on its own, or get it on the house.
+            Buy it on its own, or take the whole system and it is on the house.
           </h2>
 
           <div className="grid md:grid-cols-3 gap-6 mt-10 items-stretch">
@@ -234,7 +242,7 @@ export default function CommandCenterPage() {
               </Link>
             </div>
 
-            {/* Free with website — featured */}
+            {/* The whole system — featured, and the only place the price is waived */}
             <div className="relative flex flex-col border-2 border-[#161616] bg-[#F5B700] rounded-2xl shadow-[8px_8px_0_0_#161616] p-7">
               <span
                 aria-hidden
@@ -242,38 +250,40 @@ export default function CommandCenterPage() {
               >
                 Smartest move
               </span>
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">Add a website</span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">Website + free command center</h3>
+              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">Everything, back office free</span>
+              <h3 className="font-display italic font-extrabold text-2xl mt-2">{DEMO_BUNDLE.name}</h3>
               <p className="font-mono font-bold text-[15px] mt-3 text-[#161616]">
-                {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(site.setupCents)} setup</span>
+                {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(DEMO_BUNDLE.setupCents)} setup</span>
               </p>
               <p className="font-body text-[13px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
-                A new site on your own domain, and the command center rides free. It costs less per month than the
-                command center alone, and you get both.
+                Your website and your voice agent off one brain, and the command center that ties them together,
+                free. Bought as three separate pieces that is{' '}
+                {formatUsd(site.monthlyCents + voice.monthlyCents + os.monthlyCents)}/mo. One system, one login.
               </p>
               <Link
                 href="/demos"
                 className="mt-6 text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
               >
-                Build both free
+                Build all three free
               </Link>
             </div>
 
-            {/* Whole system */}
+            {/* One piece at a time. Honest middle rung: nothing is waived here. */}
             <div className="flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#161616] p-7">
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">Everything</span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">The Talking Website</h3>
+              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">One piece at a time</span>
+              <h3 className="font-display italic font-extrabold text-2xl mt-2">Website + Command Center</h3>
               <p className="font-mono font-bold text-[15px] mt-3">
-                {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo <span className="text-[#161616]/70">+ {formatUsd(DEMO_BUNDLE.setupCents)} setup</span>
+                {formatUsd(SITE_PLUS_OS.monthlyCents)}/mo <span className="text-[#161616]/70">+ {formatUsd(SITE_PLUS_OS.setupCents)} setup</span>
               </p>
               <p className="font-body text-[13px] text-[#161616]/70 mt-3 leading-relaxed flex-1">
-                Voice Agent + website + the command center that ties them together, free. One system, one login.
+                A new site on your own domain with the back office behind it, each at its own price. Add the voice
+                agent later and the command center goes free.
               </p>
               <Link
                 href="/demos"
                 className="mt-6 text-center border-2 border-[#161616] bg-[#F5B700] text-[#161616] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Build all three free
+                Build both free
               </Link>
             </div>
           </div>
@@ -331,7 +341,7 @@ export default function CommandCenterPage() {
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Enter your business once and tour a working command center, open right away. Keep it for
-              {' '}{formatUsd(os.monthlyCents)}/mo, or get it free with a website or voice agent.
+              {' '}{formatUsd(os.monthlyCents)}/mo, or take the website and the voice agent together and it is free.
             </p>
             <Link
               href="/demos"

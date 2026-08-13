@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   ArrowRight,
   Check,
@@ -67,13 +66,13 @@ export default function SeedToSystemPage() {
               {SEED_TO_SYSTEM.promise}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/one-person-business#register"
+              <a
+                href="#enroll"
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#161616] bg-[#F5B700] px-7 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#161616] shadow-[5px_5px_0_0_#FFFFFF] transition-transform hover:-translate-y-0.5"
               >
-                Join the founding list
+                Take a founding seat
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
+              </a>
               <a
                 href="#curriculum"
                 className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-white bg-[#161616]/65 px-7 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#161616]"
@@ -239,7 +238,7 @@ export default function SeedToSystemPage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#161616] bg-[#FBF6EA] py-16 md:py-24">
+      <section id="enroll" className="scroll-mt-24 border-b-2 border-[#161616] bg-[#FBF6EA] py-16 md:py-24">
         <div className="mx-auto max-w-5xl px-6 md:px-10">
           <div className="grid gap-10 lg:grid-cols-[1fr_400px] lg:items-start">
             <div>
@@ -277,19 +276,8 @@ export default function SeedToSystemPage() {
               >
                 Need the 3-pay plan? Ask Sarah.
               </a>
-              <div className="my-6 border-t border-[#161616]/20" />
-              <p className="font-body text-sm leading-relaxed text-[#5C554A]">
-                Want to see the five-job engine first?
-              </p>
-              <Link
-                href="/one-person-business#register"
-                className="mt-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border-2 border-[#161616] bg-white px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#161616] transition-colors hover:bg-[#FBF6EA]"
-              >
-                Save my free seat
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <p className="mt-3 text-center font-body text-[11px] text-[#5C554A]">
-                No card. No countdown. Bring the idea.
+              <p className="mt-4 text-center font-body text-[11px] text-[#5C554A]">
+                Six live weeks. {SEED_TO_SYSTEM.seats} seats. Bring the idea.
               </p>
             </div>
           </div>

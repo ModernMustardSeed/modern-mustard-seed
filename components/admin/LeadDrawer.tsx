@@ -144,12 +144,20 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
                 {new Date(lead.created_at).toLocaleString()}
               </span>
             </div>
+            {/* A ring lead has a phone and nothing else until Mr. Mustard
+                captures the rest on the call, so the number is the identity. */}
             <h2 className="font-sans text-2xl font-semibold text-[#161616] tracking-tight">
-              {lead.name ?? lead.email}
+              {lead.name ?? lead.email ?? lead.phone ?? 'Unknown lead'}
             </h2>
-            <a href={`mailto:${lead.email}`} className="text-[#1E50C8] text-sm font-body hover:text-[#161616]">
-              {lead.email}
-            </a>
+            {lead.email ? (
+              <a href={`mailto:${lead.email}`} className="text-[#1E50C8] text-sm font-body hover:text-[#161616]">
+                {lead.email}
+              </a>
+            ) : lead.phone ? (
+              <a href={`tel:${lead.phone}`} className="text-[#1E50C8] text-sm font-body hover:text-[#161616]">
+                {lead.phone}
+              </a>
+            ) : null}
           </div>
           <button
             onClick={onClose}
@@ -317,21 +325,34 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
             </button>
           </div>
 
-          {/* Quick actions */}
+          {/* Quick actions. Email actions only exist once there is an email:
+              a ring lead starts as a bare phone number, so it gets a dial link. */}
           <div className="flex flex-wrap gap-3 pt-4 border-t border-[#161616]/10">
-            <button
-              onClick={sendIntro}
-              disabled={intro === 'sending' || intro === 'sent'}
-              className="text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg px-5 py-2.5 shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:hover:translate-y-0 disabled:shadow-[3px_3px_0_0_#161616]"
-            >
-              {intro === 'sending' ? 'Sending...' : intro === 'sent' ? 'Intro sent ✓' : 'Send intro email'}
-            </button>
-            <a
-              href={`mailto:${lead.email}`}
-              className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-white border-2 border-[#161616] rounded-lg px-5 py-2.5 hover:bg-[#FFF8E6] transition-all"
-            >
-              Reply manually
-            </a>
+            {lead.email && (
+              <>
+                <button
+                  onClick={sendIntro}
+                  disabled={intro === 'sending' || intro === 'sent'}
+                  className="text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg px-5 py-2.5 shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:hover:translate-y-0 disabled:shadow-[3px_3px_0_0_#161616]"
+                >
+                  {intro === 'sending' ? 'Sending...' : intro === 'sent' ? 'Intro sent ✓' : 'Send intro email'}
+                </button>
+                <a
+                  href={`mailto:${lead.email}`}
+                  className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-white border-2 border-[#161616] rounded-lg px-5 py-2.5 hover:bg-[#FFF8E6] transition-all"
+                >
+                  Reply manually
+                </a>
+              </>
+            )}
+            {lead.phone && (
+              <a
+                href={`tel:${lead.phone}`}
+                className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-white border-2 border-[#161616] rounded-lg px-5 py-2.5 hover:bg-[#FFF8E6] transition-all"
+              >
+                Call them
+              </a>
+            )}
             <button
               onClick={remove}
               className="text-[11px] uppercase tracking-[0.2em] font-sans font-medium text-[#E0301E] bg-white border-2 border-[#E0301E] rounded-lg px-5 py-2.5 hover:bg-red-50 transition-all"

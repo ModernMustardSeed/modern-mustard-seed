@@ -24,7 +24,8 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   const forged = await forgeLeadVoiceDemo(guard.supabase, lead);
   if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: forged.status });
 
-  // The command center comes free with the voice agent, so include it (instant, token-free).
+  // Every forged suite shows the command center too, whatever they end up buying:
+  // it is instant and token-free to build, and seeing it is what sells the pair.
   const withOs = await ensureOsDemo(guard.supabase, forged.lead);
   const withHub = await ensureDemoHub(guard.supabase, withOs);
   return NextResponse.json({ ok: true, demo_url: forged.demoUrl, lead: withHub, existing: forged.existing });

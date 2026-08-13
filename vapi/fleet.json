@@ -1,0 +1,162 @@
+{
+  "_why": "Declares what each agent IS, so tooling can catch an agent that was cloned from the wrong vertical and never fully rewritten. Six of the seven concierges are structural twins, and two of them are painting-contractor clones wearing med spa descriptions. Nothing in a config file says 'this is a med spa', so nothing could detect that. This file says it, and scripts/vapi-lint.mjs enforces it.",
+  "families": {
+    "trades-dispatch": {
+      "_for": "Trades that dispatch a crew to an address: tree work, roofing, plumbing, HVAC, electrical. The caller has a problem at a location and wants someone to come fix it.",
+      "tools": [
+        "get_services",
+        "check_availability",
+        "get_customer",
+        "book_job",
+        "capture_estimate",
+        "get_branch_info",
+        "escalate_to_dispatch"
+      ],
+      "vocabulary": {
+        "availability_arg": "issue",
+        "booking_window": "requested_window",
+        "work_descriptor": "job_type"
+      },
+      "verticals": [
+        "tree-service",
+        "roofing",
+        "plumbing",
+        "hvac",
+        "electrical",
+        "landscaping"
+      ]
+    },
+    "painting-project": {
+      "_for": "Project contractors quoting scoped work with material choices: painting, refinishing, remodels. The caller is planning a project and colors are a real part of the conversation.",
+      "tools": [
+        "get_services",
+        "check_availability",
+        "get_customer",
+        "book_estimate",
+        "capture_project",
+        "get_branch_info",
+        "escalate_to_team"
+      ],
+      "vocabulary": {
+        "availability_arg": "request",
+        "booking_window": "preferred_window",
+        "work_descriptor": "project_type",
+        "material_choice": "colors"
+      },
+      "verticals": [
+        "painting",
+        "refinishing",
+        "remodeling",
+        "flooring"
+      ]
+    },
+    "medspa-consult": {
+      "_for": "Aesthetic and wellness clinics booking consults for treatments. There is no address to dispatch to and no material to choose, so neither `colors` nor an address belongs in a booking.",
+      "_status": "DECLARED BUT NOT YET IMPLEMENTED. just-botox and serabella currently run painting-project and should move here once their webhook handlers accept the renamed fields. See _knownIssues.",
+      "tools": [
+        "get_services",
+        "check_availability",
+        "get_customer",
+        "book_consult",
+        "capture_plan",
+        "get_branch_info",
+        "escalate_to_provider"
+      ],
+      "vocabulary": {
+        "availability_arg": "request",
+        "booking_window": "preferred_window",
+        "work_descriptor": "treatment_type"
+      },
+      "verticals": [
+        "medspa",
+        "aesthetics",
+        "wellness",
+        "dental"
+      ]
+    },
+    "restaurant-order": {
+      "_for": "Full service restaurant: orders, catering leads, reservations and payment links.",
+      "tools": [
+        "get_menu",
+        "check_availability",
+        "get_customer",
+        "create_order",
+        "create_catering_lead",
+        "book_appointment",
+        "get_location_info",
+        "send_payment_link",
+        "escalate_to_human"
+      ],
+      "vocabulary": {},
+      "verticals": [
+        "restaurant"
+      ]
+    },
+    "restaurant-basic": {
+      "_for": "Small restaurant taking orders and answering questions. No catering, reservations or payments.",
+      "tools": [
+        "get_menu",
+        "create_order",
+        "get_restaurant_info"
+      ],
+      "vocabulary": {},
+      "verticals": [
+        "restaurant"
+      ]
+    }
+  },
+  "assistants": {
+    "jr-tree-removal-concierge": {
+      "client": "JR Tree Removal",
+      "vertical": "tree-service",
+      "family": "trades-dispatch"
+    },
+    "hall-roofing-concierge-bonifay": {
+      "client": "Hall Roofing",
+      "vertical": "roofing",
+      "family": "trades-dispatch"
+    },
+    "franklin-plumbing-concierge-tampa": {
+      "client": "Franklin Plumbing",
+      "vertical": "plumbing",
+      "family": "trades-dispatch"
+    },
+    "certapro-concierge-tampa": {
+      "client": "CertaPro",
+      "vertical": "painting",
+      "family": "painting-project"
+    },
+    "serabella-concierge-beverly-hills": {
+      "client": "Serabella",
+      "vertical": "medspa",
+      "family": "painting-project"
+    },
+    "just-botox-concierge-tempe": {
+      "client": "Just Botox",
+      "vertical": "medspa",
+      "family": "medspa-consult"
+    },
+    "newk-s-voice-concierge-tallahassee": {
+      "client": "Newk's",
+      "vertical": "restaurant",
+      "family": "restaurant-order"
+    },
+    "chinatown-kalispell-host": {
+      "client": "Chinatown Kalispell",
+      "vertical": "restaurant",
+      "family": "restaurant-basic"
+    }
+  },
+  "_knownIssues": [
+    {
+      "assistants": [
+        "just-botox-concierge-tempe",
+        "serabella-concierge-beverly-hills"
+      ],
+      "issue": "Both are med spas cloned from CertaPro, a painting contractor. The parameter DESCRIPTIONS were rewritten for aesthetics while the parameter NAMES were left alone, so their booking tools still take `colors` and `project_type`: a botox consult sends the client's backend a field called `colors` containing 'masseter, jawline'. The clone was finished to different depths. just-botox got the medspa tool NAMES (book_consult, capture_plan, escalate_to_provider) and kept painting parameters. serabella kept painting names AND painting parameters throughout.",
+      "severity": "Moderate, not urgent. The descriptions carry the right meaning, so the model collects and passes correct content, and calls work today. The cost is a wrong data model on the client's side, a model nudged toward painting vocabulary by a parameter literally named colors, and an agent that reads as cloned rather than built if the client ever looks.",
+      "whyNotFixedHere": "Renaming a parameter changes the webhook payload contract. The handlers live in just-botox-voice-concierge and serabella-medspa-concierge, separate deployments this repo does not contain. Renaming here without shipping those first would break live booking for two paying clients.",
+      "fix": "Update both webhook handlers to accept treatment_type (and drop colors), then move both to the medspa-consult family, then vapi-sync --push. Lint will go green on its own."
+    }
+  ]
+}

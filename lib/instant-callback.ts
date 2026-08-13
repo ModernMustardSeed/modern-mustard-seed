@@ -32,6 +32,18 @@ const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID || process.env.VA
  */
 const DEDUPE_MINUTES = 30;
 
+/**
+ * Which door they came through, which decides what Mr. Mustard opens with and
+ * what he is trying to accomplish on the call.
+ *
+ * `general`  the contact form: they wrote a note, he answers it and books Sarah.
+ * `voice-agent`  the hero ring box: all we have is a phone number, and the whole
+ *   point of the call is that they are HEARING the thing we sell. He finds out
+ *   what their business is, offers to build them their own, and gets the name
+ *   and email we did not ask for on the page.
+ */
+export type CallbackIntent = 'general' | 'voice-agent';
+
 export type CallbackRequest = {
   name?: string | null;
   phone: string;
@@ -39,6 +51,7 @@ export type CallbackRequest = {
   /** What they typed. The agent opens with it, which is what makes it land. */
   need?: string | null;
   source?: string | null;
+  intent?: CallbackIntent;
 };
 
 export type CallbackResult =
@@ -71,23 +84,117 @@ function firstName(name?: string | null): string {
  */
 function greeting(req: CallbackRequest): string {
   const who = firstName(req.name);
+  if (req.intent === 'voice-agent') {
+    // The hero box asks for a phone number and nothing else, so he cannot open
+    // on what they wrote. He opens on the only fact he has: they wanted to hear
+    // this, about ten seconds ago, and they are hearing it.
+    return (
+      `Hi${who ? ` ${who}` : ''}, this is Mr. Mustard, the A I voice agent over at Modern Mustard Seed. ` +
+      'You dropped your number on our site about ten seconds ago, so here I am. ' +
+      'What kind of business do you run?'
+    );
+  }
   return (
     `Hi${who ? ` ${who}` : ''}, this is Mr. Mustard from Modern Mustard Seed. ` +
     'You just asked us to call, so here I am. What are you trying to build?'
   );
 }
 
-/** Everything the agent should already know, so they never repeat themselves. */
-function context(req: CallbackRequest): string {
-  const lines = [
-    `They just submitted the form on modernmustardseed.com${req.source ? ` (${req.source})` : ''} and asked for a call back right away.`,
-    req.name ? `Their name: ${req.name}.` : null,
-    req.email ? `Their email: ${req.email}.` : null,
+/**
+ * The per-call briefing, appended to Mr. Mustard's own system prompt at dial
+ * time. This is the part that makes the call land, and it has to be an APPEND:
+ * his persona, his prices, his booking calendar and his seven tools all live in
+ * that prompt, and replacing it (the outbound-cold-call pattern in
+ * lib/outbound-call.ts) would throw all of it away for a warm inbound lead.
+ *
+ * ⚠️ `assistantOverrides.variableValues` does NOT do this job. Vapi only
+ * substitutes a variable where the prompt already says {{name}}, and his prompt
+ * never has. Anything passed that way is silently dropped, which is why the
+ * context below is injected as prompt text instead.
+ */
+function briefing(req: CallbackRequest): string {
+  const known = [
+    req.name ? `Name: ${req.name}.` : null,
+    req.email ? `Email: ${req.email}.` : null,
     req.need ? `What they typed, word for word: "${req.need}"` : null,
-    'Open by acknowledging what they wrote. Never make them repeat it.',
-    'You may book them onto Sarah\'s calendar on this call. That is the goal.',
   ].filter(Boolean);
-  return lines.join(' ');
+
+  if (req.intent === 'voice-agent') {
+    return `# THIS CALL: someone just asked to hear you, from the website hero
+They typed their phone number into the "have Mr. Mustard call me" box on modernmustardseed.com${req.source ? ` (${req.source})` : ''} seconds ago. The page promised the phone would ring in about ten seconds, and it did. They are almost certainly still looking at that page.
+${known.length ? known.join(' ') : 'All you have is the number you just dialed. They gave nothing else, because the box only asked for a number.'}
+
+This is not a support call and it is not a cold call. It is a demo they requested, and you are the demo.
+
+Your mission, in this order:
+1. Find out what they do and how calls reach their business today. One question at a time, then be quiet and listen. Who answers when they are on a job or with a customer? What happens after hours?
+2. Tell them what their own agent would handle, in their words, using what they just told you. Be specific to their trade, never generic.
+3. Name what is happening, once, warmly: what they are hearing right now is what would answer their phone, in their business's name, at two in the morning.
+4. Get their first name and their email and call capture_lead, so the lead survives even if the call drops. Spell the email back before you save it.
+5. Close on ONE of these, whichever fits: offer to build their whole demo suite live on this call with forge_demo_suite (their own voice agent, website, and command center, free, in their inbox within the hour), or book Sarah with get_available_slots then book_discovery_call.
+
+Keep it tight, four minutes or so unless they are enjoying themselves. They gave you a phone number, not an appointment. If it is a bad time, offer to call back or text the link and let them go warmly.`;
+  }
+
+  return `# THIS CALL: they just submitted the form and asked to be called back
+They submitted the form on modernmustardseed.com${req.source ? ` (${req.source})` : ''} and asked for a call right away, so they are still at their desk with the tab open.
+${known.join(' ')}
+Open by acknowledging what they wrote. Never make them repeat it. Booking them onto Sarah's calendar on this call is the goal.`;
+}
+
+type VapiModel = Record<string, unknown> & { messages?: { role: string; content?: string }[] };
+
+/**
+ * His prompt is 22k characters and changes when Sarah runs the setup script,
+ * which is not often. Fetching it on every ring adds a round trip to the one
+ * moment on the site where seconds are the product, so hold it briefly.
+ */
+const MODEL_TTL_MS = 5 * 60 * 1000;
+let modelCache: { at: number; id: string; model: VapiModel } | null = null;
+
+/**
+ * Fetch the live assistant and return its model object with the briefing
+ * appended to the system message.
+ *
+ * Vapi rejects a partial model override ("model.provider must be one of..."),
+ * so the whole object has to travel, which is also what keeps his tools,
+ * provider, and temperature intact. Returns null on any problem: the call still
+ * goes out, just without the briefing, and a call with a good opening line beats
+ * no call at all.
+ */
+async function modelWithBriefing(
+  apiKey: string,
+  assistantId: string,
+  text: string
+): Promise<Record<string, unknown> | null> {
+  try {
+    let model =
+      modelCache && modelCache.id === assistantId && Date.now() - modelCache.at < MODEL_TTL_MS
+        ? modelCache.model
+        : null;
+    if (!model) {
+      const res = await fetch(`${VAPI_BASE}/assistant/${assistantId}`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      if (!res.ok) return null;
+      const assistant = (await res.json()) as { model?: VapiModel };
+      model = assistant?.model ?? null;
+      if (model) modelCache = { at: Date.now(), id: assistantId, model };
+    }
+    if (!model) return null;
+    const messages = Array.isArray(model.messages) ? model.messages : [];
+    const system = messages.find((m) => m.role === 'system' && typeof m.content === 'string');
+    if (!system?.content) return null;
+    return {
+      ...model,
+      messages: [
+        { role: 'system', content: `${system.content}\n\n${text}` },
+        ...messages.filter((m) => m !== system),
+      ],
+    };
+  } catch {
+    return null;
+  }
 }
 
 async function recentlyCalled(phone: string): Promise<boolean> {
@@ -125,6 +232,10 @@ export async function placeInstantCallback(req: CallbackRequest): Promise<Callba
   if (await recentlyCalled(to)) return { ok: false, reason: 'duplicate' };
 
   try {
+    // Best effort: his own prompt plus this call's briefing. Null means the
+    // fetch failed, and the call goes out on the opening line alone.
+    const model = await modelWithBriefing(apiKey, ASSISTANT_ID, briefing(req));
+
     const res = await fetch(`${VAPI_BASE}/call`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
@@ -138,11 +249,16 @@ export async function placeInstantCallback(req: CallbackRequest): Promise<Callba
         // mms-voice-agent-mr-mustard); overrides at call time are the safe path.
         assistantOverrides: {
           firstMessage: greeting(req),
+          ...(model ? { model } : {}),
+          metadata: {
+            mode: 'instant-callback',
+            intent: req.intent || 'general',
+            source: req.source || '',
+          },
           variableValues: {
             callerName: req.name || '',
             callerEmail: req.email || '',
             callerNeed: req.need || '',
-            callbackContext: context(req),
           },
         },
       }),

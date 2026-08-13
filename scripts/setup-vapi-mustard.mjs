@@ -38,19 +38,101 @@ const fileEnv = {
   ...loadEnvFile(resolve(__dirname, '../../modern-mustard-seed-voice-agent/.env')),
   ...loadEnvFile(resolve(__dirname, '../.env.local')),
 };
-const env = (k) => process.env[k] ?? fileEnv[k];
+
+/* ⚠️ PLACEHOLDER GUARD (added 2026-08-11 after a near miss, do not remove).
+ * `vercel env pull` writes the LITERAL string "[SENSITIVE]" for every variable
+ * marked Sensitive in Vercel, because sensitive values are write-only and can
+ * never be read back (not by the CLI, not by the dashboard, not by anyone).
+ * 51 of the 83 vars in this repo's .env.local are exactly that placeholder.
+ *
+ * The danger is that "[SENSITIVE]" is TRUTHY, so it sails straight through
+ * `|| ''` and `WEBHOOK_SECRET ? ... : ...` checks. Left unguarded, a routine
+ * `--update` run would PATCH the live assistant with server.secret =
+ * "[SENSITIVE]", which breaks webhook signature verification and therefore
+ * silently kills EVERY tool Mr. Mustard has: booking, send_email, forge,
+ * recall_caller. He would still answer the phone and sound perfect while being
+ * unable to actually do anything, which is the worst possible failure mode.
+ *
+ * So the placeholder is caught at the single point every value flows through,
+ * and it is a hard stop rather than a warning. Real values must come from the
+ * Vapi dashboard into .env.local by hand; re-running `vercel env pull` will
+ * clobber them back to placeholders. */
+const PLACEHOLDER = '[SENSITIVE]';
+
+// --dry-run never contacts Vapi, so it must stay runnable with NO credentials at
+// all: reviewing the persona, the derived prices and the tool list is the main
+// way to check this agent, and needing a secret to read your own config would
+// make the safe path the inconvenient one. Placeholders only have to be fatal on
+// a run that actually writes to a live assistant.
+const DRY_RUN = process.argv.includes('--dry-run');
+const IS_UPDATE = process.argv.includes('--update');
+const placeholdersSeen = [];
+
+/* The webhook secret is the ONE placeholder that must not block a live update.
+ * It is write-only in Vercel and Vapi never returns it on a GET, so there is no
+ * way to recover it, and hard-stopping on it meant a one-line voice change was
+ * gated behind a credential the change does not use. Blocking a routine push
+ * for a value nobody can read is how a stale config stays live.
+ *
+ * Instead, on --update, an unreadable secret is treated as unknown: the whole
+ * `server` block is dropped from the PATCH once the live agent is confirmed to
+ * already have a secret set (isServerUrlSecretSet), so his existing webhook auth
+ * is left exactly as it was. Same technique vapi-sync.mjs uses on every push.
+ * Omitting the block preserves the secret; sending the block without one CLEARS
+ * it, which is the failure this whole guard exists to prevent.
+ *
+ * On a CREATE (POST) it stays fatal. A brand new assistant with no secret is an
+ * unauthenticated webhook, and there is nothing already live to preserve. */
+const SECRET_UNREADABLE = new Set(['VAPI_WEBHOOK_SECRET']);
+let webhookSecretUnknown = false;
+
+const env = (k) => {
+  const v = process.env[k] ?? fileEnv[k];
+  if (v === PLACEHOLDER) {
+    if (DRY_RUN) {
+      if (!placeholdersSeen.includes(k)) placeholdersSeen.push(k);
+      return undefined; // fall through to the script's own defaults
+    }
+    if (IS_UPDATE && SECRET_UNREADABLE.has(k)) {
+      webhookSecretUnknown = true;
+      return undefined;
+    }
+    console.error(
+      `\n${k} is the literal placeholder "${PLACEHOLDER}", not a real value.\n\n` +
+        `That comes from \`vercel env pull\`: variables marked Sensitive in Vercel are\n` +
+        `write-only and cannot be read back. Pushing this to the live assistant would\n` +
+        `break Mr. Mustard's webhook auth and disable every one of his tools.\n\n` +
+        `Fix: copy the real value out of the Vapi dashboard into .env.local by hand.\n` +
+        `Refusing to touch a live agent with a placeholder.\n`
+    );
+    process.exit(1);
+  }
+  return v;
+};
 
 const VAPI_API_KEY = env('VAPI_API_KEY');
 const WEBHOOK_SECRET = env('VAPI_WEBHOOK_SECRET') || '';
 const SITE_URL = env('SITE_URL') || 'https://modernmustardseed.com';
 
-if (!VAPI_API_KEY) {
+if (!VAPI_API_KEY && !DRY_RUN) {
   console.error('Missing VAPI_API_KEY (env, .env.local, or the voice-agent project .env).');
   process.exit(1);
 }
 
 const updateIdx = process.argv.indexOf('--update');
 const UPDATE_ID = updateIdx > -1 ? process.argv[updateIdx + 1] : null;
+
+// Same trap by another road: `--update $env:VAPI_MUSTARD_ASSISTANT_ID` expands
+// to the placeholder when that var came from `vercel env pull`. Caught here so
+// it fails with the real reason instead of a bare 404 from Vapi.
+if (UPDATE_ID === PLACEHOLDER) {
+  console.error(
+    `\nThe --update assistant id is the literal placeholder "${PLACEHOLDER}".\n` +
+      `That variable came from \`vercel env pull\` and has no readable value.\n` +
+      `Pass the real assistant id from the Vapi dashboard instead.\n`
+  );
+  process.exit(1);
+}
 
 /* ─────────────────── Prices (DERIVED, never typed) ───────────────────
  * mms-price-single-source is law: never hand-type a price. Mr. Mustard now
@@ -125,7 +207,7 @@ Every piece also stands on its own:
 - Voice Agent: ${PRICE.voiceSetup} to build, ${PRICE.voiceMonthly} a month. Me, on their real number, around the clock. ${PRICE.voiceMinutes} answered minutes a month, roughly two hundred calls.
 - Voice Agent Pro: ${PRICE.proSetup} and ${PRICE.proMonthly} a month. ${PRICE.proMinutes} minutes, roughly five hundred calls, caller memory so regulars get recognized between calls, booking wired into their real calendar, and a monthly retrain call with Sarah.
 - A new website: ${PRICE.siteSetup} to build, ${PRICE.siteMonthly} a month. Unlimited edits, forever, before and after launch. Domain, hosting, and care included.
-- Business Command Center: ${PRICE.osSetup} and ${PRICE.osMonthly} a month, and FREE with either paid piece. Every call transcribed, plus traffic, leads, customers, reviews, and money on one board.
+- Business Command Center: ${PRICE.osSetup} and ${PRICE.osMonthly} a month, and FREE only inside The Talking Website, where they take the site and the voice agent together. One piece on its own does not earn it, so quote the command center at its own price next to a single piece and tell them what taking both would cost instead. Every call transcribed, plus traffic, leads, customers, reviews, and money on one board.
 - Custom work (apps, dashboards, internal tools, specialty AI, MVPs for founders) runs about twenty five hundred to forty five thousand dollars, scoped and quoted on a call. Any setup fee they already paid is credited in full toward a build over twenty five hundred.
 
 Terms that close people, so say them: month to month, cancel anytime, no free trials, live within about seven days, installed by hand. The minute caps are HARD, so at the ceiling I just take messages instead. There is never a surprise bill.
@@ -495,56 +577,61 @@ const TOOLS = [
  * deep, LAID-BACK", and that laid-back is exactly the softness Sarah hears. So
  * on native, presence is bought with pace and persona, never amplitude.
  *
- * TRUE loudness lives on ElevenLabs: `useSpeakerBoost` raises presence directly,
- * and stability/style shape projection. Every field below is schema-validated
- * against Vapi (2026-08-06), so the switch cannot fail at config time.
+ * ══ VOICE HISTORY, 2026-08-12, ONE DAY, THREE PROVIDERS. READ BEFORE CHANGING. ══
  *
- * VOICE PICK: Will (bIHbv24MWmeRgasZH58o), "Relaxed Optimist". Sarah chose it by
- * EAR on 2026-08-06 from rendered samples, after rejecting Vapi-native Sid (too
- * soft) and then ElevenLabs Roger (too stuffy). Do not swap this on a hunch: she
- * has now rejected two voices by listening, so render samples and let her pick
- * rather than guessing a fourth time. Samples live in
- * C:\\Users\\moder\\mustard-voice-samples (regenerate via the ElevenLabs
- * /v1/text-to-speech endpoint with his real opening line as the script).
- * Runners-up she heard and passed on: Chris iP95p4xoKVk53GoZ742B (charming, down
- * to earth), Eric cjVigY5qzO86Huf0OWal (smooth, trustworthy), Brian
- * nPczCjzI2devNBz1zQrb (deep, resonant, closest to Sid's depth), Roger
- * CwhRBWXzGAHq8TQ4Fs17 (laid-back on paper, stuffy at style 0.35).
+ * He ran on 11labs Will from 2026-08-06 and sounded right. Sarah moved off it on
+ * cost, and the two replacements both failed, in two DIFFERENT ways, both of
+ * which looked fine at config time:
  *
- * LIVE as of 2026-08-06. Sarah's new ElevenLabs account is on the PAID `starter`
- * tier (verified active via /v1/user/subscription), so the old
- * pipeline-error-eleven-labs-blocked-free-plan risk does not apply.
+ * 1. Vapi-native Rohan. Configured perfectly, connected perfectly, and Sarah's
+ *    verdict was "so robotic." Native is Vapi's cheapest bundled tier and it
+ *    reads synthetic on a phone line whichever name you pick. Not a bad choice
+ *    inside the set; the set is the problem.
+ * 2. OpenAI gpt-4o-mini-tts / echo. Every PATCH returned 200. The voice object
+ *    stored cleanly, `instructions` and all. Then THREE REAL INBOUND CALLS DIED
+ *    with `pipeline-error-openai-voice-failed` (01:20:27, 01:20:39, 01:20:55Z).
+ *    The org has two OpenAI credentials attached and neither actually works for
+ *    TTS. Vapi does not check that until it asks for audio, mid-call.
  *
- * ⚠️ TWO GOTCHAS THAT COST AN HOUR, DO NOT REDISCOVER THEM:
- * 1. VAPI REJECTS RESTRICTED ELEVENLABS KEYS. Her first key did TTS perfectly
- *    (GET /v1/voices 200, /text-to-speech 200, /stream 200 WITH speaker boost)
- *    and Vapi STILL refused it: "Couldn't Validate 11labs Credential". Vapi
- *    validates by calling the ElevenLabs USER endpoint, and the key lacked
- *    `user_read`. So working TTS is NOT sufficient. Diagnose in one shot by
- *    curling /v1/user with the key: a "missing the permission user_read" 401
- *    means Vapi will reject it no matter how well TTS works.
- * 2. Vapi allows only ONE ElevenLabs credential per org (POST 400s with "a
- *    ElevenLabs credential already exists"), so PATCH the existing id
- *    568ed8fa-b98c-47b6-9349-65c66cdb1c18. Its `name` is capped at 40 chars.
- * Also note GET /provider/11labs/voices returns 0 for this org, which is NOT a
- * fault: it lists CLONED voices and she has none. Roger is a premade voice and
- * is reachable by id regardless.
+ * ⚠️ THE LESSON, AND IT COST HER A DEAD PHONE LINE: A 200 FROM VAPI PROVES THE
+ * CONFIG IS VALID AND NOTHING ELSE. It does not prove the provider credential
+ * works, is funded, or has quota left. The ONLY proof is a real call. After ANY
+ * voice change, place one, then read the result back:
+ *   GET /call?assistantId=faf7f2c4-...&limit=3  ->  check `endedReason`
+ * A healthy call ends `customer-ended-call`. Anything matching
+ * `pipeline-error-*-voice-*` means the voice is broken and the line is down.
  *
- * ⚠️ QUOTA IS THE REAL CONSTRAINT NOW. Starter is 40,000 characters/month, and
- * roughly 1,000 characters is about a minute of speech, so this is only ~40-60
- * minutes of TOTAL agent speech a month across the phone line AND every web
- * demo that forges from this assistant. That is far below the 500-minute plans
- * MMS sells. Watch it, and upgrade the ElevenLabs plan before pointing paying
- * customers' agents at this credential.
+ * BACK ON ELEVENLABS AS OF 2026-08-12, Sarah's call after seeing both failures:
+ * "lets just add elevenlabs back but for mr mustard only. it shouldnt break."
+ * This is the ONE configuration with six days of real call history behind it, on
+ * a credential that has already proven it works end to end. Him only: SF Trucking
+ * stays on a bundled native voice, so the quota is not split two ways.
  *
- * REVERT (instant, if he sounds wrong or the quota runs out):
- *   VAPI_VOICE_PROVIDER=vapi VAPI_VOICE_ID=Sid \
- *     node scripts/setup-vapi-mustard.mjs --update faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee
+ * ⚠️ THE REMAINING RISK IS QUOTA, AND IT IS REAL. Starter is 30-40k credits and
+ * turbo_v2_5 bills 0.5 credits/character, so roughly 1,000 characters a minute
+ * caps him near 60-80 minutes of speech a MONTH, shared with the homepage hero
+ * button, the chat widget and VoiceTalkButton in English (all three call
+ * `vapi.start(id)` with NO voice override, so they use this voice and this
+ * quota; forged demos do not, `sidekickVoice()` overrides them to native). When
+ * it runs out, ElevenLabs 401s and the call dies mid-sentence with
+ * `pipeline-error-eleven-labs-blocked`. Upgrading the ElevenLabs plan is the fix,
+ * not a different voice.
+ *
+ * Two facts that cost an hour on 2026-08-06, do not rediscover them:
+ *   1. Vapi validates an ElevenLabs key by calling /v1/user, so a restricted key
+ *      that does perfect TTS is still rejected without `user_read`.
+ *   2. Vapi allows exactly ONE ElevenLabs credential per org, so PATCH the
+ *      existing id 568ed8fa-b98c-47b6-9349-65c66cdb1c18, never POST a second.
+ *
+ * Instant revert to a voice that cannot fail on a credential (robotic, but it
+ * answers), if the quota runs out at 2am:
+ *   $env:VAPI_VOICE_PROVIDER="vapi"; $env:VAPI_VOICE_ID="Rohan"
+ *   node scripts/setup-vapi-mustard.mjs --update faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee
  * ------------------------------------------------------------------ */
 
-// DEFAULT = 11labs as of 2026-08-06. It must be the DEFAULT, not an env-only
-// flip, or the next `--update` run without the env var silently reverts him to
-// Sid and quietly undoes the loudness fix.
+// DEFAULT = 11labs. It must be the DEFAULT and not an env-only flip, or the next
+// `--update` run without the env var silently drops him to a voice Sarah has
+// already rejected out loud.
 const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || '11labs';
 // 1.08 reads noticeably more awake and forward without chipmunking him.
 // Probed: 1.25 / 1.5 / 2.0 are all accepted, so there is headroom if she wants more.
@@ -554,25 +641,48 @@ const voice =
   VOICE_PROVIDER === '11labs'
     ? {
         provider: '11labs',
-        voiceId: env('VAPI_VOICE_ID') || 'bIHbv24MWmeRgasZH58o', // Will, "Relaxed Optimist" (Sarah picked by ear 8/06)
+        /* Chris (iP95p4xoKVk53GoZ742B), "charming, down to earth". Sarah's
+         * verdict on a real call, 2026-08-12: "hes perfect". That is the first
+         * unqualified yes any voice has gotten, across six months and nine
+         * candidates, so treat it as settled and do not swap it on a hunch.
+         *
+         * How he was found, because the method is the reusable part: he was a
+         * RUNNER-UP she had already heard and passed on back on 2026-08-06.
+         * When the replacements failed, the answer was not a new search, it was
+         * the shortlist she had already judged by ear. Every other voice was
+         * A/B'd against him with EVERY other setting held identical, so the only
+         * variable was timbre. That is why this landed in three tries.
+         *
+         * Heard and rejected, do not re-propose without a reason:
+         *   Sid (native)    "worked amazingly" 6/23, then too soft 8/06
+         *   Elliot (native) lost the 6/23 A/B to Sid
+         *   Rohan (native)  "so robotic" 8/12
+         *   Azure Andrew    worse and slower, reverted 6/27
+         *   Roger  CwhRBWXzGAHq8TQ4Fs17  "too stuffy" (that was style 0.35)
+         *   Will   bIHbv24MWmeRgasZH58o  ran 8/06-8/12, fine, not it
+         *   Brian  nPczCjzI2devNBz1zQrb  "closest to Sid's depth", passed 8/12
+         *   Eric   cjVigY5qzO86Huf0OWal  "smooth, trustworthy", never tried */
+        voiceId: env('VAPI_VOICE_ID') || 'iP95p4xoKVk53GoZ742B',
         // turbo_v2_5 balances quality and latency. eleven_flash_v2_5 is the
-        // lower-latency lever if he still feels slow on a real call.
+        // lower-latency lever if he ever feels slow on a real call.
         model: env('VAPI_11LABS_MODEL') || 'eleven_turbo_v2_5',
-        useSpeakerBoost: true, // the actual loudness control, the whole reason to come here
-        // ⚠️ style MUST STAY 0. Roger shipped at style 0.35 and Sarah's verdict
-        // was "too stuffy". `style` is EXAGGERATION: it makes ElevenLabs PERFORM
-        // the line rather than just say it, which reads announcer-y on a phone
-        // call. 0 is natural speech. That setting, not the voice, is what made a
-        // voice literally labeled "laid-back" come out formal. It costs latency
-        // too. Raise it only if Sarah asks for more theatrical delivery.
+        useSpeakerBoost: true, // the actual loudness control, the whole reason to be here
+        // ⚠️ style MUST STAY 0. `style` is EXAGGERATION: it makes ElevenLabs
+        // PERFORM the line rather than say it, which reads announcer-y on a
+        // phone call. Roger shipped at 0.35 and Sarah's verdict was "too
+        // stuffy" — that setting, not the voice, is what made a voice literally
+        // labeled "laid-back" come out formal. It costs latency too.
+        style: 0.0,
         stability: 0.35, // lower = looser and more human; higher drifts monotone
         similarityBoost: 0.75,
-        style: 0.0,
         speed: VOICE_SPEED,
       }
     : {
+        // Any non-11labs provider: bundled Vapi natives are the safe fallback,
+        // because they need no credential and therefore cannot fail the way
+        // OpenAI did. Rohan over Sid, which Sarah called too soft on 08-06.
         provider: VOICE_PROVIDER,
-        voiceId: env('VAPI_VOICE_ID') || 'Sid',
+        voiceId: env('VAPI_VOICE_ID') || 'Rohan',
         speed: VOICE_SPEED,
       };
 
@@ -637,24 +747,15 @@ const assistant = {
     tools: TOOLS,
   },
   voice: {
-    // Vapi-native voice: bundled, no external 11labs plan required.
-    // (11labs voices need a paid ElevenLabs account connected to the Vapi org,
-    // otherwise calls drop with pipeline-error-eleven-labs-blocked-free-plan.)
-    // CURRENT (non-legacy) Vapi-native male voices only — the enum also lists
-    // retired ones (Cole/Spencer/Harry/etc.) that 400 on update. Settable male
-    // voices: Elliot (20s, friendly/soothing), Rohan (20s, bright/energetic),
-    // Nico (20s, casual), Kai (30s, friendly/relaxed/approachable),
-    // Sagar (20s, steady/professional), Godfrey (20s, energetic),
-    // Neil (20s, clear/professional), Sid (30s, smooth/deep/laid-back).
-    // DEFAULT = Sid (30s, smooth/deep/laid-back). Sarah A/B'd Sid against Elliot on
-    // a real call 2026-06-23 and strongly preferred it ("worked amazingly"), so Sid
-    // is now the keeper. Elliot (the most natural neutral-accent option) is the
-    // fallback if Sid ever reads off: VAPI_VOICE_ID=Elliot node ... --update <id>.
-    // 2026-06-27: tried Azure multilingual (en-US-AndrewMultilingualNeural) so he
-    // could sound native in any language; Sarah found it worse AND slower (Azure
-    // TTS adds latency on top of the model). Reverted to native Sid. Multilingual
-    // now lives ONLY in the web demo (VoiceTalkButton per-call overrides), not on
-    // the live line. Sarah A/B'd Sid vs Elliot 2026-06-23 and loves Sid.
+    // Vapi-native: bundled with Vapi, no second vendor, no character quota, no
+    // way for a busy month on the homepage button to silence the phone line.
+    // The pick, the rejected voices and the A/B alternates are documented at the
+    // VOICE block above. Voice history worth keeping: 2026-06-23 Sarah A/B'd Sid
+    // against Elliot on a real call and preferred Sid; 2026-06-27 Azure
+    // multilingual (en-US-AndrewMultilingualNeural) was tried so he could sound
+    // native in any language and she found it worse AND slower, since Azure TTS
+    // adds latency on top of the model. Multilingual now lives ONLY in the web
+    // demo (VoiceTalkButton per-call overrides), never on the live line.
     ...voice,
   },
   transcriber: {
@@ -746,7 +847,7 @@ const assistant = {
 
 // --dry-run renders everything (including the DERIVED prices) and prints it
 // without touching Vapi. Always dry-run before pointing an edit at the live line.
-if (process.argv.includes('--dry-run')) {
+if (DRY_RUN) {
   console.log('\n── DERIVED PRICES (from lib/demo-order.ts + data/sidekick.ts) ──');
   console.log(PRICE);
   console.log('\n── VOICE ──');
@@ -761,11 +862,50 @@ if (process.argv.includes('--dry-run')) {
   console.log('em dashes present:', emDash ? 'YES (FIX THIS)' : 'no');
   console.log('unresolved template holes:', /\$\{/.test(SYSTEM_PROMPT) ? 'YES (FIX THIS)' : 'no');
   console.log('tools:', TOOLS.map((t) => t.function?.name || t.type).join(', '));
+
+  // Prove the warm handoff is actually wired, in the one report anyone reads
+  // before pushing. A transfer that silently lost its destination would look
+  // exactly like a working config everywhere else in this output.
+  const transfer = TOOLS.find((t) => t.type === 'transferCall');
+  const dest = transfer?.destinations?.[0];
+  console.log('warm transfer ->', dest?.number || 'MISSING (FIX THIS)', dest?.transferPlan?.mode ? `(${dest.transferPlan.mode})` : '');
+
+  if (placeholdersSeen.length) {
+    console.log(
+      `\n⚠ ${placeholdersSeen.length} var(s) are the "${PLACEHOLDER}" placeholder from \`vercel env pull\`,\n` +
+        `  so script defaults were used above: ${placeholdersSeen.join(', ')}.\n` +
+        `  Harmless for --dry-run. A live --update will hard-stop until the real\n` +
+        `  values are copied from the Vapi dashboard into .env.local by hand.`
+    );
+  }
   process.exit(0);
 }
 
 const url = UPDATE_ID ? `https://api.vapi.ai/assistant/${UPDATE_ID}` : 'https://api.vapi.ai/assistant';
 const method = UPDATE_ID ? 'PATCH' : 'POST';
+
+/* Unreadable secret: confirm the live agent actually has one, then leave its
+ * whole `server` block alone. If it has NO secret, sending the block is safe
+ * (there is nothing to clear) and it keeps the webhook url correct. */
+if (UPDATE_ID && webhookSecretUnknown) {
+  const cur = await fetch(`https://api.vapi.ai/assistant/${UPDATE_ID}`, {
+    headers: { Authorization: `Bearer ${VAPI_API_KEY}` },
+  });
+  if (!cur.ok) {
+    console.error(`\nCould not read the live assistant to check its webhook secret (${cur.status}).`);
+    console.error(`Refusing to PATCH blind, because a server block without a secret would clear it.\n`);
+    process.exit(1);
+  }
+  const live = await cur.json();
+  if (live.isServerUrlSecretSet) {
+    delete assistant.server;
+    console.log('\nVAPI_WEBHOOK_SECRET is unreadable ([SENSITIVE] in Vercel, never returned by Vapi).');
+    console.log('Live agent already has a secret set, so `server` is left untouched by this patch.');
+  } else {
+    console.log('\nVAPI_WEBHOOK_SECRET is unreadable, and the live agent has no secret set either.');
+    console.log('Sending `server` anyway: there is nothing to clear. Set a secret in the Vapi dashboard.');
+  }
+}
 
 const res = await fetch(url, {
   method,
@@ -786,7 +926,14 @@ if (!res.ok) {
 
 console.log(`\n✔ Mr. Mustard ${UPDATE_ID ? 'updated' : 'created'} on Vapi`);
 console.log(`  Assistant ID: ${data.id}`);
-console.log(`  Server URL:   ${SITE_URL}/api/voice ${WEBHOOK_SECRET ? '(secret set)' : '(NO secret — set VAPI_WEBHOOK_SECRET)'}`);
+console.log(
+  `  Server URL:   ${SITE_URL}/api/voice ` +
+    (WEBHOOK_SECRET
+      ? '(secret set)'
+      : webhookSecretUnknown
+        ? '(secret left as-is, unreadable from here)'
+        : '(NO secret, set VAPI_WEBHOOK_SECRET)')
+);
 console.log(`\nNext steps:`);
 console.log(`  1. Vercel env (production): NEXT_PUBLIC_VAPI_ASSISTANT_ID=${data.id}`);
 console.log(`  2. Vercel env (production): NEXT_PUBLIC_VAPI_PUBLIC_KEY=<your Vapi PUBLIC key>`);

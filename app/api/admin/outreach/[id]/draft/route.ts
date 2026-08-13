@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText, LlmUnavailable } from '@/lib/llm';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { templateFor, RUBRIC, type ChannelType } from '@/lib/outreach';
@@ -30,10 +30,7 @@ Output ONLY valid JSON, no prose, in this exact shape:
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return NextResponse.json({ error: 'AI not configured (set ANTHROPIC_API_KEY).' }, { status: 503 });
-  const supabase = getSupabase();
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });  const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   const { id } = await params;
@@ -55,19 +52,20 @@ Template to personalize${tpl.subject ? ` (subject: "${tpl.subject}")` : ''}:
 ${tpl.body}
 """`;
 
-  const anthropic = new Anthropic({ apiKey });
   let parsed: { fit?: Record<string, number>; rationale?: string; subject?: string; body?: string };
   try {
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1200,
-      system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: userMsg }],
+    const text = await llmText({
+      label: 'outreach-draft',
+      model: 'sonnet',
+      system: SYSTEM_PROMPT,
+      user: userMsg,
     });
-    const text = response.content.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('').trim();
     const jsonStr = text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1);
     parsed = JSON.parse(jsonStr);
   } catch (err) {
+    if (err instanceof LlmUnavailable) {
+      return NextResponse.json({ error: 'The writer is busy. Try again in a minute.' }, { status: 503 });
+    }
     console.error('outreach draft failed', err);
     return NextResponse.json({ error: 'Could not draft. Try again.' }, { status: 502 });
   }

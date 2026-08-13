@@ -6,7 +6,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText, renderTranscript } from '@/lib/llm';
 import { getClientSession } from '@/lib/client-auth';
 import { getLaunchTier, buildLaunchSystemPrompt } from '@/lib/mustard-launch';
 import { getSupabase } from '@/lib/supabase';
@@ -55,22 +55,13 @@ export async function POST(req: Request) {
     oneLiner = latest?.blueprint?.oneLiner;
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
-
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
-      max_tokens: 700,
+    const reply = await llmText({
+      label: 'mustard-launch-coach',
+      model: 'sonnet',
       system: buildLaunchSystemPrompt({ tier, idea, oneLiner, currentPhase: body.currentPhase?.slice(0, 60) }),
-      messages: incoming,
+      user: renderTranscript(incoming, { assistantLabel: 'Coach', userLabel: 'Founder' }),
     });
-    const reply = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('\n')
-      .trim();
     return NextResponse.json({ reply });
   } catch (err) {
     console.error('launch coach claude error', err instanceof Error ? err.message : err);

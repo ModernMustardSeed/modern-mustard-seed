@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server';
 import { parse } from 'node-html-parser';
 import { captureHarvestInbound } from '@/lib/harvest-capture';
+import { claimDailySpend, clientIp, ipAllowed } from '@/lib/spend-guard';
+import { llmText, LlmUnavailable } from '@/lib/llm';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
-// Trim defensively: a stray newline or literal "\n" pasted into the env var
-// produces a silent 401, which is easy to miss.
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
+/**
+ * Spend guards for the Bottleneck Breaker. Cheaper per call than the full
+ * website audit (sonnet-4-6, 1500 output tokens) but just as open: this route
+ * is linked from the homepage and took a raw URL with no email and no throttle.
+ */
+const DAILY_CAP = Number(process.env.AUDIT_DAILY_CAP || 120);
+const PER_IP_HOURLY = Number(process.env.AUDIT_IP_HOURLY || 5);
 
 // Fetch the real page and pull the signals that matter for an AI-readiness read.
 // Best-effort: returns null if the page cannot be loaded, so the audit still
@@ -77,11 +83,19 @@ export async function POST(req: Request) {
     // Best-effort, never blocks or breaks the audit response.
     await captureHarvestInbound({ url });
 
-    if (!ANTHROPIC_API_KEY) {
-      console.error('audit: ANTHROPIC_API_KEY is not set');
+    // The lead is captured either way, so a throttled visitor still reaches
+    // Sarah. What they do not get is another metered model call.
+    if (!ipAllowed('audit', clientIp(req), PER_IP_HOURLY)) {
       return NextResponse.json(
-        { error: true, message: 'The audit is not configured yet. Sarah has been notified.' },
-        { status: 500 }
+        { error: true, message: 'You have run several audits already. Try again in an hour. Your details are saved and Sarah will follow up.' },
+        { status: 429 },
+      );
+    }
+
+    if (!(await claimDailySpend('audit', DAILY_CAP))) {
+      return NextResponse.json(
+        { error: true, message: 'The audit is at capacity for today. Your details are saved and Sarah will follow up.' },
+        { status: 429 },
       );
     }
 
@@ -94,20 +108,12 @@ Fetched page signals:
 ${pageContext}`
       : `The live page could not be fetched, so infer cautiously from the URL alone and keep the score conservative.`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1500,
-        messages: [
-          {
-            role: 'user',
-            content: `You are the Bottleneck Breaker, an expert operator who finds the single biggest bottleneck quietly costing a business the most, then the highest-leverage fixes (software and AI). Analyze this business: ${url}
+    const text = await llmText({
+      label: 'bottleneck-audit',
+      model: 'sonnet',
+      system: 'You are the Bottleneck Breaker. Return only the JSON object you are asked for, with no preamble and no markdown fence.',
+      timeoutMs: 45_000,
+      user: `You are the Bottleneck Breaker, an expert operator who finds the single biggest bottleneck quietly costing a business the most, then the highest-leverage fixes (software and AI). Analyze this business: ${url}
 
 ${groundingBlock}
 
@@ -134,32 +140,8 @@ Respond ONLY with a valid JSON object (no markdown, no backticks, no preamble) w
   "competitiveEdge": "One sentence about how AI gives them an edge over competitors",
   "riskOfInaction": "One sentence about what happens if they don't adopt AI"
 }`,
-          },
-        ],
-      }),
     });
 
-    if (!response.ok) {
-      const detail = await response.text().catch(() => '');
-      // Distinguish the failure mode so the next issue surfaces fast in logs.
-      const kind =
-        response.status === 401
-          ? 'auth (invalid x-api-key)'
-          : response.status === 429
-            ? 'rate limit'
-            : response.status >= 500
-              ? 'anthropic server error'
-              : 'bad request';
-      console.error(`audit: anthropic ${response.status} (${kind}) ${detail.slice(0, 300)}`);
-      const message =
-        response.status === 429
-          ? 'The audit is busy right now. Try again in a moment.'
-          : 'The audit could not be generated right now. Your details are saved and Sarah will follow up.';
-      return NextResponse.json({ error: true, message }, { status: 502 });
-    }
-
-    const data = await response.json();
-    const text = (data.content || []).map((c: { text?: string }) => c.text || '').join('');
     const clean = text.replace(/```json|```/g, '').trim();
 
     let result: unknown;
@@ -175,6 +157,14 @@ Respond ONLY with a valid JSON object (no markdown, no backticks, no preamble) w
 
     return NextResponse.json(result);
   } catch (err) {
+    // The lead was captured before a token was spent, so a queued audit still
+    // reaches Sarah even though the visitor's page could not wait for it.
+    if (err instanceof LlmUnavailable) {
+      return NextResponse.json(
+        { error: true, message: 'The audit is queued and finishing now. Your details are saved and Sarah will follow up.' },
+        { status: 503 }
+      );
+    }
     console.error('audit: unexpected error', err);
     return NextResponse.json(
       { error: true, message: 'The audit hit a snag. Please try again or book a call.' },

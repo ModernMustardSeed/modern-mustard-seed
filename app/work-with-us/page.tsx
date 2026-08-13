@@ -127,7 +127,7 @@ export default function WorkWithUsPage() {
                   {[
                     ['🌐', 'Website', `${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo + ${formatUsd(DEMO_PRODUCTS.site.setupCents)} setup`],
                     ['🎙', 'voice agent', `${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo + ${formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup`],
-                    ['⚙', 'Command center', 'Free with either'],
+                    ['⚙', 'Command center', 'Free with both'],
                     ['✦', 'The Talking Website', `${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + ${formatUsd(DEMO_BUNDLE.setupCents)} setup`],
                   ].map(([icon, name, price]) => (
                     <li key={name} className="flex items-center justify-between gap-3 border-b border-dashed border-[#161616]/15 pb-2.5 last:border-0">

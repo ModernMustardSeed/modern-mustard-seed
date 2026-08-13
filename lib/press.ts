@@ -11,7 +11,7 @@
  * same layout the PDF sets.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText } from '@/lib/llm';
 import type { PressCatalog, PressProfile, PressItem } from '@/lib/press-store';
 
 const PARSE_SYSTEM = `You parse a small business's pasted price list into clean JSON for typesetting. Output ONLY valid JSON, no prose, no markdown fences, matching:
@@ -19,26 +19,16 @@ const PARSE_SYSTEM = `You parse a small business's pasted price list into clean 
 Rules: preserve EVERY price exactly as written (normalize format to $X or $X.XX but never change the number; ranges and "from $X" stay as written; "call for rates" and "free quote" are valid prices). Multi-price items (short/full, cup/bowl) become one item whose price field shows the variants like "$5 cup / $8 bowl". Upsells ("add bacon 2") become that item's note. Policy lines (discounts, cancellation, no substitutions) become footnotes, cleaned up but faithful. Title-case section names; if the list has no sections, create ONE sensible section named after the trade. Cap at 48 items: if there are more, keep the first 48 and add a footnote "Full list continues; ask at the counter." Never invent items, prices, or sections. Item names in title case, details lowercase.`;
 
 export async function parseCatalog(raw: string): Promise<PressCatalog | null> {
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return null;
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
-      max_tokens: 4000,
-      system: PARSE_SYSTEM,
-      messages: [{ role: 'user', content: raw }],
-    });
-    if (response.stop_reason === 'max_tokens') {
-      console.error('press parse truncated at max_tokens');
-      return null;
-    }
-    const text = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('')
-      .trim()
-      .replace(/^```(?:json)?\s*|\s*```$/g, '');
+    const text = (
+      await llmText({
+        label: 'press-catalog',
+        model: 'sonnet',
+        system: PARSE_SYSTEM,
+        user: raw,
+        timeoutMs: 90_000,
+      })
+    ).replace(/^```(?:json)?\s*|\s*```$/g, '');
     const parsed = JSON.parse(text) as PressCatalog;
     return sanitizeCatalog(parsed);
   } catch (err) {

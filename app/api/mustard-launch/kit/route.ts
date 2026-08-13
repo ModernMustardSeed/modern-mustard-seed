@@ -54,8 +54,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'no_idea', message: 'Tell Mr. Mustard what you are launching first.' }, { status: 400 });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
 
   const kit = await generateLaunchKit(idea, latest?.blueprint ?? null);
   if (!kit) return NextResponse.json({ error: 'coach_unavailable' }, { status: 502 });
