@@ -9,7 +9,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText } from '@/lib/llm';
 import { getSupabase, insertLead } from '@/lib/supabase';
 import { FREE_PLAY_SYSTEM } from '@/lib/mustard-mode';
 
@@ -88,23 +88,14 @@ export async function POST(req: Request) {
     /* non-fatal */
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
-
   let reply = '';
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
-      max_tokens: 400,
+    reply = await llmText({
+      label: 'mustard-mode-free-play',
+      model: 'sonnet',
       system: FREE_PLAY_SYSTEM,
-      messages: [{ role: 'user', content: `My ambition: ${ambition}` }],
+      user: `My ambition: ${ambition}`,
     });
-    reply = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('\n')
-      .trim();
   } catch (err) {
     console.error('free-play claude error', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'coach_unavailable' }, { status: 502 });

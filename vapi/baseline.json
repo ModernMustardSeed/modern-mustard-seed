@@ -1,0 +1,51 @@
+{
+  "_why": "Call-handling settings shared by every client concierge. Prompts and tools stay bespoke per client; this is the plumbing that decides whether a real caller gets clipped, cut off, or drowned out by their own television. All seven concierges shipped without it, so they behave measurably worse on a live line than Mr. Mustard does. Applied with `node scripts/vapi-baseline.mjs --apply`, reviewed with `vapi-sync.mjs --diff`, shipped with `--push`.",
+
+  "appliesTo": [
+    "jr-tree-removal-concierge",
+    "hall-roofing-concierge-bonifay",
+    "just-botox-concierge-tempe",
+    "serabella-concierge-beverly-hills",
+    "certapro-concierge-tampa",
+    "franklin-plumbing-concierge-tampa",
+    "newk-s-voice-concierge-tallahassee"
+  ],
+
+  "settings": {
+    "_maxDurationSeconds": "Was 900. Fifteen minutes is inside the range a real roofing estimate or catering order actually takes, so a paying client's caller was getting hung up on mid-sentence with no warning. Mr. Mustard uses Vapi's 12h maximum on the reasoning that silence, not a stopwatch, is the real guard against runaway cost. That reasoning holds here, but a client is paying for these minutes, so this caps the blast radius of a wedged call at one hour. No legitimate concierge call runs an hour; plenty run past fifteen minutes.",
+    "maxDurationSeconds": 3600,
+
+    "_silenceTimeoutSeconds": "Was 20. Twenty seconds of quiet ends the call while the caller is still finding their address or reading a card number off a desk. 60 matches Mr. Mustard and is forgiving enough that a genuine pause mid-conversation does not read as an abandoned line.",
+    "silenceTimeoutSeconds": 60,
+
+    "_startSpeakingPlan": "Absent entirely, so these agents sat on Vapi's fixed silence timers. LiveKit smart endpointing detects the true end of a turn instead, and waitSeconds 0.2 is pure padding removed from the front of every single reply. Proven on Mr. Mustard's live line. Raise waitSeconds toward 0.4 if an agent starts clipping people who pause mid-sentence.",
+    "startSpeakingPlan": {
+      "waitSeconds": 0.2,
+      "smartEndpointingPlan": { "provider": "livekit" }
+    },
+
+    "_stopSpeakingPlan": "Absent, so a single stray word from a television or a baby's cry could cut the agent off mid-sentence. Requiring two real words keeps genuine interruptions instant while ignoring room noise.",
+    "stopSpeakingPlan": {
+      "numWords": 2,
+      "voiceSeconds": 0.3,
+      "backoffSeconds": 1
+    },
+
+    "_backgroundSpeechDenoisingPlan": "Absent, so a caller's TV, shop radio or road noise went straight to the transcriber and came back as garbled input the model then had to guess at. Krisp handles smart denoising, Fourier cleans persistent media noise. Same settings as the live MMS line.",
+    "backgroundSpeechDenoisingPlan": {
+      "smartDenoisingPlan": { "enabled": true },
+      "fourierDenoisingPlan": {
+        "enabled": true,
+        "mediaDetectionEnabled": true,
+        "baselineOffsetDb": -15,
+        "windowSizeMs": 3000,
+        "baselinePercentile": 85
+      }
+    },
+
+    "_analysisPlan": "Absent, so nobody got a summary of what happened on any call. The client owns these agents and should be able to read what their phone did overnight without listening to recordings.",
+    "analysisPlan": {
+      "summaryPrompt": "Summarize this call for the business owner: who called, what they wanted, what was booked, quoted or captured, and the single best next action. If the caller needs a human, say so first and say why. Be specific and brief."
+    }
+  }
+}

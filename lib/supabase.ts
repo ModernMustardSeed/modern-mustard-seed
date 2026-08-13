@@ -14,7 +14,8 @@ export function getSupabase(): SupabaseClient | null {
   return cached;
 }
 
-export type LeadType = 'build-queue' | 'audit' | 'contact' | 'newsletter';
+/** 'callback' is a hero ring request: a phone number and nothing else (migration 093). */
+export type LeadType = 'build-queue' | 'audit' | 'contact' | 'newsletter' | 'callback';
 export type LeadStatus = 'new' | 'replied' | 'booked' | 'won' | 'lost' | 'archived';
 
 export type LeadRow = {
@@ -22,7 +23,8 @@ export type LeadRow = {
   type: LeadType;
   status: LeadStatus;
   name: string | null;
-  email: string;
+  /** Null on a 'callback' lead: they gave a number, and the email arrives on the call. */
+  email: string | null;
   phone: string | null;
   company: string | null;
   business_name: string | null;
@@ -46,7 +48,8 @@ export type LeadRow = {
 
 export type LeadInsert = Omit<Partial<LeadRow>, 'id' | 'created_at' | 'updated_at'> & {
   type: LeadType;
-  email: string;
+  /** Explicit, never omitted: a lead with no email must say so out loud. */
+  email: string | null;
 };
 
 /** Best-effort insert. Logs and swallows errors so missing Supabase config never breaks the public site. */

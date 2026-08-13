@@ -11,6 +11,7 @@ const TYPE_LABEL: Record<LeadType, string> = {
   audit: 'AI Audit',
   contact: 'Contact',
   newsletter: 'Newsletter',
+  callback: 'Ring',
 };
 
 const TYPE_COLOR: Record<LeadType, string> = {
@@ -18,6 +19,8 @@ const TYPE_COLOR: Record<LeadType, string> = {
   audit: 'border-amber-800/25 text-amber-800 bg-amber-100',
   contact: 'border-emerald-800/25 text-emerald-800 bg-emerald-100',
   newsletter: 'border-[#161616]/20 text-[#161616]/65 bg-[#161616]/[0.06]',
+  // Loudest chip on the board: this one was on the phone with Mr. Mustard.
+  callback: 'border-[#C2261A]/30 text-[#C2261A] bg-[#C2261A]/[0.08]',
 };
 
 const STATUS_OPTIONS: LeadStatus[] = ['new', 'replied', 'booked', 'won', 'lost', 'archived'];
@@ -212,7 +215,10 @@ export default function AdminDashboard() {
                       </span>
                     </td>
                     <td className="px-4 py-3.5 text-[#161616] font-body">{l.name ?? <span className="text-[#161616]/45">—</span>}</td>
-                    <td className="px-4 py-3.5 text-[#161616]/60 font-body text-xs">{l.email}</td>
+                    {/* A ring lead has no email yet, so it identifies by number. */}
+                    <td className="px-4 py-3.5 text-[#161616]/60 font-body text-xs">
+                      {l.email || l.phone || <span className="text-[#161616]/45">—</span>}
+                    </td>
                     <td className="px-4 py-3.5 text-[#161616]/60 font-body text-xs max-w-xs truncate">
                       {l.business_name || l.company || l.message?.slice(0, 80) || l.idea_description?.slice(0, 80) || <span className="text-[#161616]/45">—</span>}
                     </td>

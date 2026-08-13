@@ -45,3 +45,13 @@ master
 - MDX content lives in `content/{blog,work,playbooks}`. Frontmatter is parsed by `lib/content.ts`.
 - **Nav completeness: a new public route ships with its links in the same commit.** Every new customer-facing page must be added to (1) the footer columns in `components/Footer.tsx`, (2) the navbar in `components/Navbar.tsx` (the `DEPARTMENTS` panel if it is a product or department, otherwise the fitting menu group), and (3) the static path list in `app/sitemap.ts` if it is not content-driven. Nav labels are Title Case, never lowercase. (Rule added 2026-07-19 after an audit found 11 live product pages, Switchboard and Demos included, with zero footer links.)
 - **Modals/popups must never clip their top on short screens.** A centered overlay whose child can be taller than the viewport will push its top off-screen with no way to scroll up. Always build modal cards as a height-capped flex column: overlay `fixed inset-0 flex items-center justify-center p-4`, card `max-h-[90vh] flex flex-col`, header `shrink-0` (pinned), body `overflow-y-auto`. (Side drawers: full-height `overflow-y-auto` + sticky header. Bottom-anchored panels: `max-h-[..vh]` + internal scroll.) Verify every new modal at a short viewport (e.g. 1100x620).
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

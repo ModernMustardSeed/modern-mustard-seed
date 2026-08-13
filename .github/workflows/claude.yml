@@ -65,7 +65,14 @@ jobs:
 
       - uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # SUBSCRIPTION, NOT THE METERED API. An @claude mention starts a
+          # 30-minute agentic run with Write and Edit on the strong default
+          # model, which is the single most expensive thing this repo can do on
+          # purpose. On the API key that was billed against the credit wallet;
+          # on an OAuth token from `claude setup-token` it rides the Max plan
+          # and costs nothing, which is the same plan the local agents already
+          # use for the same work.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # Collapse the running commentary into one comment instead of a dozen.
           use_sticky_comment: true

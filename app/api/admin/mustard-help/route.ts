@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText, renderTranscript } from '@/lib/llm';
 import { getSession } from '@/lib/admin-auth';
 import { buildHelpKnowledge, MUSTARD_HELP_SYSTEM } from '@/lib/mustard-help-knowledge';
 
@@ -17,11 +17,6 @@ type Msg = { role: 'user' | 'assistant'; content: string };
 export async function POST(req: Request) {
   if (!(await getSession())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const apiKey = (process.env.ANTHROPIC_API_KEY || '').replace(/\\r|\\n/g, '').replace(/[\r\n]/g, '').trim();
-  if (!apiKey) {
-    return NextResponse.json({ error: 'Mr. Mustard is not configured yet (no API key).' }, { status: 500 });
   }
 
   let body: { messages?: Msg[] };
@@ -43,21 +38,15 @@ export async function POST(req: Request) {
   const system = MUSTARD_HELP_SYSTEM.replace('${KNOWLEDGE}', buildHelpKnowledge());
 
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const res = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 900,
+    const reply = await llmText({
+      label: 'mustard-help',
+      model: 'sonnet',
       system,
-      messages,
+      user: renderTranscript(messages, { assistantLabel: 'Mr. Mustard', userLabel: 'Teammate' }),
     });
-    const reply = res.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('')
-      .trim();
     return NextResponse.json({ reply: reply || 'Sorry, I lost my train of thought. Ask me again?' });
   } catch (err) {
     console.error('mustard-help error', err);
-    return NextResponse.json({ error: 'Mr. Mustard had a hiccup. Try again in a moment.' }, { status: 500 });
+    return NextResponse.json({ error: 'Mr. Mustard is thinking about something else. Try again in a moment.' }, { status: 503 });
   }
 }

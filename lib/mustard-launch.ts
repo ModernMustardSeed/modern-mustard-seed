@@ -5,7 +5,7 @@
  * defensively and bounded before it ever reaches the client.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText } from '@/lib/llm';
 import { hasEntitlement } from './entitlements';
 import { LAUNCH_PHASES } from '@/data/mustard-launch';
 
@@ -72,22 +72,14 @@ function extractJson(raw: string): unknown {
 
 /** Generate the free personalized Blueprint. Returns null on any failure. */
 export async function generateBlueprint(idea: string): Promise<Blueprint | null> {
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return null;
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const res = await anthropic.messages.create({
+    const text = await llmText({
+      label: 'launch-blueprint',
       model: MODEL,
-      max_tokens: 3200,
       system: BLUEPRINT_SYSTEM,
-      messages: [{ role: 'user', content: `What I am launching: ${idea}` }],
+      user: `What I am launching: ${idea}`,
+      timeoutMs: 50_000,
     });
-    if (res.stop_reason === 'max_tokens') return null; // truncated JSON, do not ship
-    const text = res.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('')
-      .trim();
     const parsed = extractJson(text) as Blueprint;
     return sanitizeBlueprint(parsed);
   } catch (err) {
@@ -178,25 +170,17 @@ Rules:
 
 /** Generate the paid Launch Kit. Returns null on any failure. */
 export async function generateLaunchKit(idea: string, blueprint?: Blueprint | null): Promise<LaunchKit | null> {
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return null;
   const context = blueprint
     ? `\n\nTheir free Blueprint (build on it, do not contradict it):\nName: ${blueprint.businessName}\nCategory: ${blueprint.category}\nOne-liner: ${blueprint.oneLiner}\nSignature move: ${blueprint.signatureMove}`
     : '';
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const res = await anthropic.messages.create({
+    const text = await llmText({
+      label: 'launch-kit',
       model: MODEL,
-      max_tokens: 3800,
       system: KIT_SYSTEM,
-      messages: [{ role: 'user', content: `What I am launching: ${idea}${context}` }],
+      user: `What I am launching: ${idea}${context}`,
+      timeoutMs: 50_000,
     });
-    if (res.stop_reason === 'max_tokens') return null;
-    const text = res.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('')
-      .trim();
     return sanitizeKit(extractJson(text));
   } catch (err) {
     console.error('generateLaunchKit failed', err instanceof Error ? err.message : err);

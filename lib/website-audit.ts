@@ -10,7 +10,6 @@
  * and persists the report onto the prospect).
  */
 
-import Anthropic from '@anthropic-ai/sdk';
 import { parse } from 'node-html-parser';
 // Relative, not the '@/' alias: this module is also imported directly by the
 // tsx batch scripts (scripts/preaudit-leads.mts), which do not load tsconfig
@@ -30,7 +29,7 @@ import { parse } from 'node-html-parser';
  * The bundle size problem it was trying to solve is handled where it belongs, in
  * next.config.ts, by not tracing the art directories into a lambda.
  */
-import { claudeCodeAvailable, runClaudeCodeJson } from './claude-code-json';
+import { llmJson, LlmUnavailable } from './llm';
 
 const SYSTEM_PROMPT = `You are the senior website auditor for Modern Mustard Seed, a one-person product studio in Kalispell, Montana. You judge websites the way Sarah Scarano would: honest, direct, no hedging, no buzzword soup, no em dashes, plain words.
 
@@ -357,108 +356,18 @@ function extractSignals(url: URL, html: string, status: number): Signals {
  * `{ ok: false, status, error }` so the caller can map them to HTTP codes.
  */
 /**
- * THE MODEL LADDER.
+ * THE MODEL LADDER IS GONE, AND SO IS THE ENGINE SWITCH.
  *
- * The audit was pinned to a literal 'claude-opus-4-8' and simply stopped working:
- * on 2026-07-29 that model returned 529 Overloaded while opus-5 and sonnet-5 both
- * answered 200 on the same key. With no retry anywhere, a single 529 fell through
- * to "Audit hit a snag", so the button looked broken to Sarah and to every rep.
- * Same root cause as the forge shipping 530-byte documents off a stale model id.
- *
- * Two defences, because the failure has two shapes. Transient overload gets
- * exponential backoff on the SAME model. Sustained overload walks DOWN the ladder
- * to a model that is answering, because a slightly cheaper audit that exists beats
- * a perfect one that 529s. Both are needed for batch work, where a run of
- * thousands will meet capacity limits it would never meet one lead at a time.
+ * Both existed to survive the metered API: a ladder that walked opus-5 down to
+ * sonnet-5 when Anthropic returned 529, and an AUDIT_ENGINE flag that could
+ * point a local run at the free CLI. Neither has anything to do to now. There
+ * is one engine, it is the subscription, and `lib/llm.ts` decides whether this
+ * process runs it directly or hands it to a drainer. Retries, malformed-JSON
+ * repair and backoff all live in `lib/claude-code-json.ts`, which is where the
+ * spawned CLI's failures actually happen.
  */
-const AUDIT_MODELS = (process.env.AUDIT_MODELS || 'claude-opus-5,claude-sonnet-5')
-  .split(',')
-  .map((m) => m.trim())
-  .filter(Boolean);
-
-/** Overload and rate limits are worth waiting on. A 400 or a 401 never is. */
-function isTransient(err: unknown): boolean {
-  if (err instanceof MalformedReport) return true;
-  if (err instanceof Anthropic.RateLimitError) return true;
-  if (err instanceof Anthropic.APIError) {
-    if (err.status === 401 || err.status === 400 || err.status === 403) return false;
-    if (/credit balance|billing|purchase credits/i.test(err.message)) return false;
-    return err.status === 429 || err.status === 529 || (err.status ?? 0) >= 500;
-  }
-  return false;
-}
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-/**
- * A model that returns unparseable JSON has failed exactly as completely as one
- * that returns 529, so it is retried the same way. This is not hypothetical:
- * measured 2026-07-29, sonnet-5 broke the report schema on 2 of 6 real sites
- * while opus-5 broke none, and because the JSON.parse used to sit OUTSIDE the
- * retry those two were written off as dead leads.
- */
-class MalformedReport extends Error {}
-
-async function withModelFallback<T>(run: (model: string) => Promise<T>): Promise<{ value: T; model: string }> {
-  let last: unknown;
-  for (const model of AUDIT_MODELS) {
-    for (let attempt = 0; attempt < 3; attempt += 1) {
-      try {
-        return { value: await run(model), model };
-      } catch (err) {
-        last = err;
-        if (!isTransient(err)) throw err;
-        // 1s, 4s, then give up on this model and try the next rung.
-        if (attempt < 2) await sleep(1000 * 4 ** attempt);
-      }
-    }
-    console.warn(`website-audit: ${model} is not answering, dropping to the next model`);
-  }
-  throw last;
-}
-
-/**
- * WHICH ENGINE GRADES THE SITE.
- *
- * 'api'         metered Anthropic API. The only thing that works on Vercel.
- * 'claude-code' the local Claude Code CLI on the Max subscription. Costs $0.
- *
- * Defaults to 'api' so production is unchanged by this file existing. Set
- * AUDIT_ENGINE=claude-code in `.env.local` (NEVER in Vercel, there is no
- * `claude` binary there) and every local batch run goes free: preaudit-leads,
- * backfill-audits, audit-all, geo-fix-pack, and `next dev`.
- *
- * The batch scripts are where the money actually goes. A 3,600-lead sweep at
- * opus-5 with 8k output tokens is a several-hundred-dollar run; the handful of
- * public visitors who audit their own site each day are pennies. Flipping only
- * the local paths removes almost all of the spend without putting a
- * customer-facing tool behind a laptop that might be asleep.
- */
-function auditEngine(): 'api' | 'claude-code' {
-  const want = process.env.AUDIT_ENGINE?.trim().toLowerCase();
-  if (want === 'claude-code' || want === 'claude') {
-    // Nothing on Vercel ever sets this, and asking for it there is a
-    // misconfiguration rather than a preference, so the probe stays behind the
-    // env check and the module stays out of the cloud bundle entirely.
-    if (!claudeCodeAvailable()) {
-      console.warn('website-audit: AUDIT_ENGINE=claude-code requested but no local CLI, using the API');
-      return 'api';
-    }
-    return 'claude-code';
-  }
-  return 'api';
-}
 
 export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
-  const engine = auditEngine();
-
-  // Trim defensively: a stray newline or literal "\n" pasted into the env var
-  // produces an "invalid x-api-key" 401, which is easy to miss.
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
-  if (!apiKey && engine === 'api') {
-    return { ok: false, status: 500, error: 'Audit is not configured. Email sarah@modernmustardseed.com.' };
-  }
-
   let raw = (rawUrl ?? '').trim();
   if (!raw) return { ok: false, status: 400, error: 'Drop your website URL.' };
   if (!/^https?:\/\//i.test(raw)) raw = `https://${raw}`;
@@ -546,104 +455,46 @@ Return the JSON report.`;
     return report;
   };
 
-  // THE FREE PATH. Local only, and it owns its failures completely: none of the
-  // Anthropic.APIError handling below applies to a spawned CLI.
-  if (engine === 'claude-code') {
-    try {
-      const report = (await runClaudeCodeJson({
-        system: SYSTEM_PROMPT,
-        user: userMessage,
-        schema: REPORT_SCHEMA,
-        model: process.env.AUDIT_CLI_MODEL,
-        label: `audit ${target.hostname}`,
-      })) as WebsiteAuditReport & { top_three_fixes?: unknown[]; full_todo?: unknown[] };
-
-      return {
-        ok: true,
-        url: target.toString(),
-        report: trimToShape(report),
-        // Zero, and truthfully zero: this ran on the subscription. The batch
-        // scripts multiply these numbers by a price table to report run cost,
-        // so a free run must report as free rather than as unknown.
-        usage: { model: 'claude-code (subscription)', input: 0, cache_read: 0, output: 0 },
-        signals_summary: signalsSummary,
-      };
-    } catch (err) {
-      console.error('website-audit: claude-code engine failed:', err instanceof Error ? err.message : err);
-      return { ok: false, status: 503, error: 'Audit hit a snag. Try again or email sarah@modernmustardseed.com.' };
-    }
-  }
-
+  // ONE PATH NOW. There used to be two: a free local CLI branch and a metered
+  // API branch, chosen by an env var that production never set, so every real
+  // audit ran on the wallet. `lib/llm.ts` makes the choice a deployment detail
+  // instead of a policy decision: run it here if a CLI exists, hand it to a
+  // drainer if not. Both ends are the subscription, so there is no branch left
+  // that can cost money and no account state that can take the tool down.
   try {
-    const anthropic = new Anthropic({ apiKey });
-    // Streamed on purpose. At max_tokens 8000 this call measures 36-43s against
-    // real prospect sites, which is exactly the range where a non-streaming
-    // request risks an HTTP-level timeout with nothing to show for it. Streaming
-    // keeps the connection alive and `finalMessage()` still hands back the whole
-    // message, so the rest of this function is unchanged.
-    const attempt = async (model: string) => {
-      const response = await anthropic.messages.stream({
-      model,
-      max_tokens: 8000,
-      output_config: {
-        effort: 'high',
-        format: { type: 'json_schema' as const, schema: REPORT_SCHEMA },
-      },
-      system: [
-        {
-          type: 'text',
-          text: SYSTEM_PROMPT,
-          cache_control: { type: 'ephemeral' },
-        },
-      ],
-      messages: [{ role: 'user', content: userMessage }],
-    }).finalMessage();
-
-      const textBlock = response.content.find((b) => b.type === 'text');
-      if (!textBlock || textBlock.type !== 'text') throw new MalformedReport('no text block in response');
-      let parsed: WebsiteAuditReport & { top_three_fixes?: unknown[]; full_todo?: unknown[] };
-      try {
-        parsed = JSON.parse(textBlock.text);
-      } catch {
-        throw new MalformedReport('report was not valid JSON');
-      }
-      return { report: parsed, response };
-    };
-
-    const {
-      value: { report, response },
-      model: usedModel,
-    } = await withModelFallback(attempt);
+    const report = await llmJson<WebsiteAuditReport & { top_three_fixes?: unknown[]; full_todo?: unknown[] }>({
+      label: `audit ${target.hostname}`,
+      model: process.env.AUDIT_CLI_MODEL || 'opus',
+      system: SYSTEM_PROMPT,
+      user: userMessage,
+      schema: REPORT_SCHEMA,
+      // The public route allows 120s. Leave a clear margin so a slow audit
+      // returns "still working" rather than being killed with nothing to show.
+      timeoutMs: 95_000,
+    });
 
     return {
       ok: true,
       url: target.toString(),
       report: trimToShape(report),
-      usage: {
-        model: usedModel,
-        input: response.usage?.input_tokens ?? 0,
-        cache_read: response.usage?.cache_read_input_tokens ?? 0,
-        output: response.usage?.output_tokens ?? 0,
-      },
+      // Zero, and truthfully zero: this ran on the subscription. The batch
+      // scripts multiply these numbers by a price table to report run cost, so
+      // a free run must report as free rather than as unknown.
+      usage: { model: 'claude-code (subscription)', input: 0, cache_read: 0, output: 0 },
       signals_summary: signalsSummary,
     };
   } catch (err) {
-    if (err instanceof Anthropic.RateLimitError) {
-      return { ok: false, status: 429, error: 'Audit is busy. Try again in a moment.' };
+    // A queued job is not a failure and must not read like one. The work is
+    // still in front of a drainer and will still be written; this request just
+    // ended first, which on a busy queue is a normal Tuesday.
+    if (err instanceof LlmUnavailable) {
+      return {
+        ok: false,
+        status: 503,
+        error: 'The audit is queued and will finish shortly. Try again in a minute.',
+      };
     }
-    if (err instanceof Anthropic.APIError) {
-      // A dry wallet or dead key is an ops problem, not a transient snag. Say so
-      // loudly in the logs and give the visitor a message that invites a retry
-      // later instead of "try again" (which will fail identically).
-      if (/credit balance|billing|purchase credits/i.test(err.message) || err.status === 401) {
-        console.error('website-audit: ANTHROPIC ACCOUNT PROBLEM (top up credits or fix the key):', err.message);
-        return { ok: false, status: 503, error: 'The audit engine is down for maintenance. Check back in a bit, or email sarah@modernmustardseed.com.' };
-      }
-      const kind = err.status === 400 ? 'bad request (likely schema)' : `status ${err.status}`;
-      console.error(`website-audit: anthropic ${kind}:`, err.message);
-    } else {
-      console.error('website-audit: unexpected error', err);
-    }
-    return { ok: false, status: 500, error: 'Audit hit a snag. Try again or email sarah@modernmustardseed.com.' };
+    console.error('website-audit: engine failed:', err instanceof Error ? err.message : err);
+    return { ok: false, status: 503, error: 'Audit hit a snag. Try again or email sarah@modernmustardseed.com.' };
   }
 }

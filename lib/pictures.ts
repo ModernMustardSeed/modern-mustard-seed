@@ -13,7 +13,7 @@
  * failure of the screen test.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText } from '@/lib/llm';
 import { getPicturesVertical } from '@/data/pictures';
 import { RENDERED_FRAMES } from '@/data/pictures-frames';
 import type { PicturesProfile } from '@/lib/pictures-store';
@@ -48,21 +48,13 @@ export function storyboardUserPrompt(p: PicturesProfile): string {
 }
 
 export async function writeStoryboard(p: PicturesProfile): Promise<string | null> {
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return null;
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
-      max_tokens: 600,
+    const text = await llmText({
+      label: 'pictures-storyboard',
+      model: 'sonnet',
       system: storyboardSystemPrompt(),
-      messages: [{ role: 'user', content: storyboardUserPrompt(p) }],
+      user: storyboardUserPrompt(p),
     });
-    const text = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('\n')
-      .trim();
     return text || null;
   } catch (err) {
     console.error('pictures storyboard error', err instanceof Error ? err.message : err);

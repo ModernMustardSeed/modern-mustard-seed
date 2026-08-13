@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText, LlmUnavailable } from '@/lib/llm';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
 
 export const runtime = 'nodejs';
@@ -17,8 +17,6 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   if ('error' in guard) return guard.error;
   const { id } = await params;
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return NextResponse.json({ error: 'AI drafting is not configured (ANTHROPIC_API_KEY missing).' }, { status: 500 });
 
   const { data: lead, error } = await guard.supabase.from('outbound_leads').select('*').eq('id', id).single();
   if (error || !lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
@@ -39,24 +37,13 @@ export async function POST(_req: Request, { params }: { params: Params }) {
     : 'No website audit on file.';
 
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const msg = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 600,
+    const draft = await llmText({
+      label: 'outbound-draft-reply',
+      model: 'sonnet',
       system:
-        'You are Sarah Scarano of Modern Mustard Seed, a Montana AI studio. You sell a voice agent that catches missed calls and books jobs, plus a website and a business command center. These are three SEPARATE products with separate prices: the voice agent is never included with a website, it is an add-on that goes on any site, theirs or ours, so never say a website comes with one. The command center is the only piece that rides free with a paid piece. The free part is the DEMO: we build them a real working one to try, at no cost and with no card. There is NO free trial and NO free month on their real line, so never promise one. Going live is a one-time setup fee plus a flat monthly, month to month, cancel anytime, and you may not invent or quote dollar figures. Voice: warm, direct, founder to founder, short paragraphs, no fluff, no em dashes. Draft ONLY the reply email body (no subject line, no signature block beyond "Sarah"). Push gently toward booking a 10-minute demo.',
-      messages: [
-        {
-          role: 'user',
-          content: `Lead: ${lead.business_name}${lead.city ? ` in ${lead.city}` : ''}. ${auditLine}\n\nTheir last message (subject: ${last.subject ?? 'none'}):\n${(last.body || last.snippet || '').slice(0, 3000)}\n\nDraft my reply.`,
-        },
-      ],
+        'You are Sarah Scarano of Modern Mustard Seed, a Montana AI studio. You sell a voice agent that catches missed calls and books jobs, plus a website and a business command center. These are three SEPARATE products with separate prices: the voice agent is never included with a website, it is an add-on that goes on any site, theirs or ours, so never say a website comes with one. The command center is free only when they take the website and the voice agent together; with just one piece it is its own price. The free part is the DEMO: we build them a real working one to try, at no cost and with no card. There is NO free trial and NO free month on their real line, so never promise one. Going live is a one-time setup fee plus a flat monthly, month to month, cancel anytime, and you may not invent or quote dollar figures. Voice: warm, direct, founder to founder, short paragraphs, no fluff, no em dashes. Draft ONLY the reply email body (no subject line, no signature block beyond "Sarah"). Push gently toward booking a 10-minute demo.',
+      user: `Lead: ${lead.business_name}${lead.city ? ` in ${lead.city}` : ''}. ${auditLine}\n\nTheir last message (subject: ${last.subject ?? 'none'}):\n${(last.body || last.snippet || '').slice(0, 3000)}\n\nDraft my reply.`,
     });
-    const draft = msg.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('\n')
-      .trim();
     if (!draft) return NextResponse.json({ error: 'The draft came back empty. Try again.' }, { status: 500 });
     return NextResponse.json({ ok: true, draft });
   } catch (e) {

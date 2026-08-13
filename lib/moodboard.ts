@@ -4,7 +4,7 @@
  * lib/moodboard-shared.ts).
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText } from '@/lib/llm';
 import { FONT_PAIRINGS, sanitizeMoodboard, type Moodboard } from './moodboard-shared';
 
 export * from './moodboard-shared';
@@ -59,8 +59,6 @@ function extractJson(raw: string): unknown {
 
 /** Forge a moodboard from the intake brief. Returns null on any failure. */
 export async function generateMoodboard(brief: MoodboardBrief): Promise<Moodboard | null> {
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return null;
   const lines = [
     `Business: ${brief.businessName}`,
     brief.trade ? `Trade: ${brief.trade}` : '',
@@ -71,21 +69,13 @@ export async function generateMoodboard(brief: MoodboardBrief): Promise<Moodboar
     brief.sarahNote ? `Steer from Sarah (follow it): ${brief.sarahNote}` : '',
   ].filter(Boolean);
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const res = await anthropic.messages.create({
+    const text = await llmText({
+      label: 'moodboard',
       model: MODEL,
-      // The model thinks before it answers; a tight cap here trips the
-      // truncation guard on thinking alone (found live, 2026-07-21).
-      max_tokens: 4000,
       system: SYSTEM,
-      messages: [{ role: 'user', content: lines.join('\n') }],
+      user: lines.join('\n'),
+      timeoutMs: 90_000,
     });
-    if (res.stop_reason === 'max_tokens') return null; // truncated JSON, do not ship
-    const text = res.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('')
-      .trim();
     return sanitizeMoodboard(extractJson(text));
   } catch (err) {
     console.error('generateMoodboard failed', err instanceof Error ? err.message : err);

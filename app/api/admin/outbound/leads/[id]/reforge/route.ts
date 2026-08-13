@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText } from '@/lib/llm';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
 import { forgeLeadVoiceDemo, buildOsConfig } from '@/lib/outbound-demo';
 import { queueLeadSiteEdit } from '@/lib/site-edit';
@@ -114,8 +114,6 @@ type OsRemap = { config: ReturnType<typeof buildOsConfig>; ok: true } | { ok: fa
 
 async function remapOsConfig(lead: OutboundLead, instruction: string): Promise<OsRemap> {
   const base = buildOsConfig(lead);
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return { ok: false, error: 'The OS reforge needs ANTHROPIC_API_KEY set on the server.' };
 
   const tradeKeys = Object.keys(TRADE_PRESETS) as OsTradeKey[];
   const system = `You edit a small JSON config for a business "command center" demo. You are given the current config and a change request. Reply with ONLY a JSON object containing the fields to CHANGE, nothing else, no prose, no code fence.
@@ -124,28 +122,21 @@ Only include a field if the change request clearly asks to change it. If nothing
 
   let text = '';
   try {
-    const client = new Anthropic({ apiKey });
-    const msg = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 400,
+    text = await llmText({
+      label: 'os-reforge',
+      model: 'haiku',
       system,
-      messages: [
-        {
-          role: 'user',
-          content: `Current config:\n${JSON.stringify({
-            business: base.business,
-            ownerFirst: base.ownerFirst,
-            city: base.city,
-            state: base.state,
-            phone: base.phone,
-            evidenceQuote: base.evidenceQuote,
-            auditScore: base.auditScore,
-            trade: base.trade,
-          })}\n\nChange request:\n${instruction}`,
-        },
-      ],
+      user: `Current config:\n${JSON.stringify({
+        business: base.business,
+        ownerFirst: base.ownerFirst,
+        city: base.city,
+        state: base.state,
+        phone: base.phone,
+        evidenceQuote: base.evidenceQuote,
+        auditScore: base.auditScore,
+        trade: base.trade,
+      })}\n\nChange request:\n${instruction}`,
     });
-    text = msg.content.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('').trim();
   } catch (e) {
     return { ok: false, error: `The OS reforge model call failed: ${(e as Error)?.message ?? e}` };
   }

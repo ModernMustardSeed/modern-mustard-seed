@@ -206,7 +206,7 @@ export async function buildOutboundEmail(
             opts.note
               ? escape(opts.note)
               : includeAny
-                ? `Why build it for free? Because showing beats telling. I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss, and the demos make the case better than I can. And the command center that ties it all together, your calls, customers, and follow-ups on one board, now comes free with any website or voice agent, no extra charge. If you want it on your real line, the button inside sets it up in a week. No trial to sign up for, no card to test it: you already have the real thing in front of you.`
+                ? `Why build it for free? Because showing beats telling. I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss, and the demos make the case better than I can. And the command center that ties it all together, your calls, customers, and follow-ups on one board, comes free when you take the website and the voice agent together. If you want it on your real line, the button inside sets it up in a week. No trial to sign up for, no card to test it: you already have the real thing in front of you.`
                 : `I help local businesses like ${escape(lead.business_name)} stop losing the calls they miss. I build a voice agent that answers every call in two rings, books the job, and texts you the details. I would rather show you than pitch you, so tell me the word and I will build you a working one to try.`
           }</p>` +
           (hasAudit && lead.audit_score != null && !includeAny

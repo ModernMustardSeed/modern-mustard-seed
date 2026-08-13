@@ -58,20 +58,11 @@ const LIMIT = ALL ? Number.MAX_SAFE_INTEGER : Number(flag('limit') || 25);
  * the reason the forge OOM-killed a build at 0.9GB free. `lib/claude-code-json`
  * enforces its own ceiling regardless, this just keeps the log honest.
  */
-// Defaults to the free engine, and deliberately NOT via .env.local: `vercel env
-// pull` rewrites that file wholesale and would silently drop the setting,
-// putting the floor back on the meter without anyone noticing. `--engine api`
-// is the opt-out.
-const ENGINE = (flag('engine') || process.env.AUDIT_ENGINE || 'claude-code').toLowerCase();
-const FREE_ENGINE = ENGINE === 'claude-code' || ENGINE === 'claude';
-process.env.AUDIT_ENGINE = ENGINE;
-
-const CONCURRENCY = Number(flag('concurrency') || (FREE_ENGINE ? 2 : 8));
-if (flag('model')) {
-  // The CLI takes an alias ('opus'), the API takes a full id ('claude-opus-5').
-  if (FREE_ENGINE) process.env.AUDIT_CLI_MODEL = flag('model')!;
-  else process.env.AUDIT_MODELS = flag('model')!;
-}
+// There is one engine now and it is the subscription, so `--engine` and the
+// AUDIT_ENGINE variable are gone. `--model` still works and takes a CLI alias
+// ('opus', 'sonnet') rather than a full model id.
+const CONCURRENCY = Number(flag('concurrency') || 2);
+if (flag('model')) process.env.AUDIT_CLI_MODEL = flag('model')!;
 
 // Priced per million tokens. Only used to report what a run cost, never to gate
 // anything, so a stale number here is a reporting bug and not a spend bug.

@@ -1234,9 +1234,10 @@ export function auditFollowupEmail({ firstName, url, score, grade, headline: lin
 export type LeadField = { label: string; value: string; isLink?: boolean };
 
 type LeadNotificationArgs = {
-  type: 'Build Queue' | 'AI Audit' | 'Contact' | 'Newsletter';
+  type: 'Build Queue' | 'AI Audit' | 'Contact' | 'Newsletter' | 'Callback';
   name: string;
-  email: string;
+  /** Optional: a hero ring request arrives with a phone number and nothing else. */
+  email?: string;
   fields: LeadField[];
   message?: string;
   suggestedAction?: string;
@@ -1256,6 +1257,7 @@ export function leadNotification({
     'AI Audit': C.goldBrand,
     Contact: C.goldDeep,
     Newsletter: C.muted,
+    Callback: C.gold,
   }[type];
   const pillFg = type === 'AI Audit' || type === 'Build Queue' ? C.ink : '#FFFFFF';
 
@@ -1271,9 +1273,9 @@ export function leadNotification({
   const inner = `
     ${statusPill(type, pillBg, pillFg)}
     ${headline(name)}
-    <tr><td style="padding:8px 44px 0">
+    ${email ? `<tr><td style="padding:8px 44px 0">
       <a href="mailto:${escape(email)}" style="color:${C.gold};text-decoration:none;font-family:${SANS};font-size:13px;letter-spacing:0.3px">${escape(email)}</a>
-    </td></tr>
+    </td></tr>` : ''}
     <tr><td style="padding:24px 44px 0">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
         ${fieldsHtml}

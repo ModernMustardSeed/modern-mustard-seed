@@ -132,7 +132,7 @@ function killTree(child: ReturnType<typeof spawn>) {
 
 type RunResult = { code: number | null; stdout: string; stderr: string };
 
-function spawnClaude(prompt: string, model?: string): Promise<RunResult> {
+function spawnClaude(prompt: string, model?: string, allowWeb = false, timeoutMs = TIMEOUT_MS): Promise<RunResult> {
   return new Promise((resolve) => {
     // Subscription only, by construction. A present key silently switches the
     // CLI to metered API billing, which is the one outcome this module exists
@@ -163,11 +163,28 @@ function spawnClaude(prompt: string, model?: string): Promise<RunResult> {
      * headings and meta scraped from whatever site is being graded), so a shell
      * or a file writer is exactly what it must not have.
      */
+    /**
+     * `allowWeb` exists for exactly one caller: the site forge, which used the
+     * API's server-side web_search and web_fetch to read a prospect's real
+     * website before designing theirs. That research is most of what made the
+     * fallback forge's output usable, so dropping it to move onto the
+     * subscription would have been a quiet downgrade dressed as a migration.
+     *
+     * What stays blocked in BOTH modes is everything that writes: Bash, Write,
+     * Edit, NotebookEdit, Task. The brief embeds attacker-controlled text (a
+     * scraped homepage), so reading the web on its say-so is a risk the API
+     * path already took, while giving it a shell is one nobody has taken and
+     * nobody should.
+     */
+    const blocked = allowWeb
+      ? ['Bash', 'Write', 'Edit', 'NotebookEdit', 'Task']
+      : ['Bash', 'Write', 'Edit', 'NotebookEdit', 'WebFetch', 'WebSearch', 'Task'];
+
     const args = [
       '-p',
       '--output-format', 'json',
       '--strict-mcp-config',
-      '--disallowed-tools', 'Bash', 'Write', 'Edit', 'NotebookEdit', 'WebFetch', 'WebSearch', 'Task',
+      '--disallowed-tools', ...blocked,
     ];
     if (model) args.push('--model', model);
 
@@ -197,8 +214,8 @@ function spawnClaude(prompt: string, model?: string): Promise<RunResult> {
 
     const timer = setTimeout(() => {
       killTree(child);
-      finish({ code: 124, stdout, stderr: `${stderr}\n[timeout after ${Math.round(TIMEOUT_MS / 1000)}s]` });
-    }, TIMEOUT_MS);
+      finish({ code: 124, stdout, stderr: `${stderr}\n[timeout after ${Math.round(timeoutMs / 1000)}s]` });
+    }, timeoutMs);
 
     child.stdout?.on('data', (d) => { stdout += d.toString(); });
     child.stderr?.on('data', (d) => { stderr += d.toString(); });
@@ -329,6 +346,72 @@ function repairStructure(text: string, schema: unknown, label: string): unknown 
 }
 
 /**
+ * WHEN THE MODEL ANSWERS TWICE, TAKE THE BETTER ANSWER.
+ *
+ * Observed on a real roadmap run (2026-08-12, three attempts in a row): the
+ * model wrote a complete JSON object, then wrote
+ *
+ *   "Wait. I need to return the complete JSON object with all 19 keys. Let me
+ *    give you the full document."
+ *
+ * and wrote a SECOND, fuller object. The payload is therefore object, prose,
+ * object. Every candidate above fails on it: the whole text has trailing
+ * content after the first value, and first-brace-to-last-brace spans both
+ * objects AND the prose between them, so it is not valid JSON either. Three
+ * attempts, ten minutes of subscription time, and a "hit a snag" for the
+ * visitor, over a response that contained a perfectly good document.
+ *
+ * A self-correction is not noise, it is the model telling us which answer it
+ * stands behind. So walk the text for every top-level balanced object, parse
+ * each one, and keep the one that satisfies the most of the schema's root keys.
+ * Ties go to the LAST one, because that is the correction rather than the
+ * draft.
+ *
+ * String-aware on purpose: a brace inside a quoted value is not structure, and
+ * roadmap prose is full of them.
+ */
+function balancedObjects(text: string): string[] {
+  const spans: string[] = [];
+  let depth = 0;
+  let start = -1;
+  let inString = false;
+  let escaped = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+    if (escaped) { escaped = false; continue; }
+    if (inString) {
+      if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') { inString = true; continue; }
+    if (ch === '{') {
+      if (depth === 0) start = i;
+      depth += 1;
+    } else if (ch === '}') {
+      depth -= 1;
+      if (depth === 0 && start !== -1) {
+        spans.push(text.slice(start, i + 1));
+        start = -1;
+      } else if (depth < 0) {
+        depth = 0; // a stray closer; resynchronise rather than give up
+        start = -1;
+      }
+    }
+  }
+  return spans;
+}
+
+/** How much of the caller's schema this object actually delivers. */
+function rootKeyScore(value: unknown, schema: unknown): number {
+  const keys = Object.keys((schema as { properties?: Record<string, unknown> })?.properties ?? {});
+  if (!keys.length || !value || typeof value !== 'object' || Array.isArray(value)) return 0;
+  const obj = value as Record<string, unknown>;
+  return keys.filter((k) => k in obj).length;
+}
+
+/**
  * Exported because the API path needs it too. Any schema big enough to make the
  * Anthropic structured-output grammar refuse to compile ("the compiled grammar
  * is too large") has to fall back to prompted JSON, and prompted JSON from the
@@ -344,7 +427,55 @@ export function extractJson(text: string, schema: unknown, label: string): unkno
   const last = trimmed.lastIndexOf('}');
   const braced = first !== -1 && last > first ? trimmed.slice(first, last + 1) : null;
 
-  const candidates = [fenced?.[1], trimmed, braced].filter(Boolean) as string[];
+  /**
+   * Sits between the exact-parse candidates and the structural repair. A clean
+   * parse of a real object always beats reconstructing one, and reconstructing
+   * from a span that contains two objects produces confident nonsense.
+   */
+  const multi = (() => {
+    const spans = balancedObjects(trimmed);
+    if (spans.length < 2) return null; // one object is already the normal path
+    let best: { text: string; score: number } | null = null;
+    for (const span of spans) {
+      let parsed: unknown;
+      try { parsed = JSON.parse(span); } catch {
+        try { parsed = JSON.parse(escapeRawControls(span)); } catch { continue; }
+      }
+      const score = rootKeyScore(parsed, schema);
+      // >= so that a later, equally complete object wins: that is the redo.
+      if (!best || score >= best.score) best = { text: span, score };
+    }
+    if (!best) return null;
+
+    /**
+     * A PARTIAL DOCUMENT IS WORSE THAN A RETRY, SO REFUSE TO RETURN ONE.
+     *
+     * Measured on the three payloads that motivated this scanner: the best
+     * balanced span carried 9 of the roadmap's 19 root keys. Handing that back
+     * would have turned a retry (which costs minutes and usually succeeds) into
+     * a published roadmap missing its offer stack, money model, phases and
+     * scoreboard, rendered as a broken page nobody would call a bug on the
+     * model. Throwing keeps the existing retry behaviour, which is correct.
+     *
+     * The threshold is deliberately high. This path exists for a model that
+     * answered twice and stands behind the second answer, not for salvaging
+     * wreckage.
+     */
+    const keyCount = Object.keys((schema as { properties?: Record<string, unknown> })?.properties ?? {}).length;
+    if (keyCount && best.score < Math.ceil(keyCount * 0.8)) {
+      console.warn(
+        `${label}: ${spans.length} JSON objects in the response, best covers only ${best.score}/${keyCount} root keys, retrying instead of publishing a partial`,
+      );
+      return null;
+    }
+
+    console.warn(
+      `${label}: response contained ${spans.length} JSON objects, took the one matching ${best.score} root keys`,
+    );
+    return best.text;
+  })();
+
+  const candidates = [fenced?.[1], trimmed, multi, braced].filter(Boolean) as string[];
 
   let why = '';
   for (const c of candidates) {
@@ -417,6 +548,86 @@ function rootKeyReminder(schema: unknown): string {
     `They are siblings of each other. None of them is nested inside another. ` +
     `Close each nested object before you start the next root key, and check your closing braces before you answer.`
   );
+}
+
+/**
+ * The same engine, for prompts whose answer is prose rather than a document.
+ *
+ * Most of the app's call sites are this shape: draft a reply, write a script,
+ * answer a visitor. They were on the metered API only because nothing here
+ * offered a text mode, so this exists to remove that excuse. It shares the
+ * semaphore, the memory guard, the credential stripping and the process-tree
+ * kill with the JSON path, because every one of those was learned the hard way
+ * and none of them are about JSON.
+ */
+export async function runClaudeCodeText({
+  system,
+  user,
+  model,
+  retries = 2,
+  label = 'claude-code-text',
+  allowWeb = false,
+  timeoutMs,
+}: {
+  system: string;
+  user: string;
+  model?: string;
+  retries?: number;
+  label?: string;
+  /** Let this prompt read the live web. See the note in `spawnClaude`. */
+  allowWeb?: boolean;
+  /**
+   * Per-call kill time. The module default of five minutes is right for a
+   * one-turn reasoning call and badly wrong for the site forge, which measures
+   * four minutes on a good run and has taken eleven. Left at the default, a
+   * forge would be killed mid-document and reported as a failure every time the
+   * build was merely slow.
+   */
+  timeoutMs?: number;
+}): Promise<string> {
+  if (!claudeCodeAvailable()) {
+    throw new ClaudeCodeError('Claude Code engine is not available in this runtime (no local CLI).');
+  }
+
+  const prompt = [system, '', '---', '', user].filter(Boolean).join('\n');
+
+  const release = await acquire();
+  try {
+    let last: unknown;
+
+    for (let attempt = 0; attempt <= retries; attempt += 1) {
+      await waitForMemory(label);
+      const { code, stdout, stderr } = await spawnClaude(prompt, model, allowWeb, timeoutMs);
+
+      if (code !== 0) {
+        last = new ClaudeCodeError(`: claude exited ${code}: ${stderr.slice(-500) || '(no stderr)'}`);
+      } else {
+        // `--output-format json` wraps the answer in an envelope. Older/other
+        // shapes fall back to treating stdout as the payload itself.
+        let payload = stdout;
+        try {
+          const envelope = JSON.parse(stdout) as { result?: string; is_error?: boolean; subtype?: string };
+          if (envelope.is_error) throw new ClaudeCodeError(`${label}: claude reported ${envelope.subtype ?? 'an error'}`);
+          if (typeof envelope.result === 'string') payload = envelope.result;
+        } catch (err) {
+          if (err instanceof ClaudeCodeError) { last = err; payload = ''; }
+        }
+
+        const text = payload.trim();
+        if (text) return text;
+        last = last ?? new ClaudeCodeError(`${label}: claude returned an empty answer`);
+      }
+
+      if (attempt < retries) {
+        console.warn(`${label}: attempt ${attempt + 1} failed (${(last as Error)?.message ?? last}), retrying`);
+        await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+      }
+    }
+
+    throw last instanceof Error ? last : new ClaudeCodeError(String(last));
+  } finally {
+    release();
+  }
 }
 
 export type ClaudeCodeJsonOptions = {

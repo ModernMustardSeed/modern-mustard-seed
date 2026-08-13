@@ -5,7 +5,7 @@
  * GEO.freeRerunsPerPack re-scans per purchase.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText } from '@/lib/llm';
 import { runWebsiteAudit } from '@/lib/website-audit';
 import type { GeoArtifacts } from '@/lib/geo-store';
 
@@ -47,31 +47,16 @@ export async function generateArtifacts(url: string): Promise<{ artifacts: GeoAr
   }
   const platform = await detectPlatform(audit.url);
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return null;
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
-      max_tokens: 8000,
-      system: GEN_SYSTEM,
-      messages: [
-        {
-          role: 'user',
-          content: `Site: ${audit.url}\nPlatform: ${platform}\nAudit headline: ${audit.report.headline}\nAnalysis: ${audit.report.overall_analysis}\nSignals: ${JSON.stringify(audit.signals_summary)}\nTop fixes from the audit: ${JSON.stringify(audit.report.top_three_fixes ?? [])}\nCategories: ${JSON.stringify(audit.report.categories ?? {})}`,
-        },
-      ],
-    });
-    if (response.stop_reason === 'max_tokens') {
-      console.error('geo pack generation truncated');
-      return null;
-    }
-    const text = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('')
-      .trim()
-      .replace(/^```(?:json)?\s*|\s*```$/g, '');
+    const text = (
+      await llmText({
+        label: 'geo-fix-pack',
+        model: 'sonnet',
+        system: GEN_SYSTEM,
+        user: `Site: ${audit.url}\nPlatform: ${platform}\nAudit headline: ${audit.report.headline}\nAnalysis: ${audit.report.overall_analysis}\nSignals: ${JSON.stringify(audit.signals_summary)}\nTop fixes from the audit: ${JSON.stringify(audit.report.top_three_fixes ?? [])}\nCategories: ${JSON.stringify(audit.report.categories ?? {})}`,
+        timeoutMs: 90_000,
+      })
+    ).replace(/^```(?:json)?\s*|\s*```$/g, '');
     const gen = JSON.parse(text) as Omit<GeoArtifacts, 'platform' | 'installSteps'>;
     if (!gen.llmsTxt || !gen.aiTxt || !Array.isArray(gen.jsonLd)) return null;
 

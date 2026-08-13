@@ -100,7 +100,8 @@ export async function POST(req: Request, { params }: { params: Params }) {
     occurred_at: new Date().toISOString(),
   });
 
-  // The command center comes free with the website, so include it (instant, token-free).
+  // Every forged suite shows the command center too, whatever they end up buying:
+  // it is instant and token-free to build, and seeing it is what sells the pair.
   const withOs = await ensureOsDemo(guard.supabase, updated as OutboundLead);
   const withHub = await ensureDemoHub(guard.supabase, withOs);
   return NextResponse.json({ ok: true, lead: withHub });

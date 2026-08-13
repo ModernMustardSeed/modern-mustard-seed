@@ -72,7 +72,7 @@ const FAQ = [
   },
   {
     q: 'Can I buy just the website or just the voice agent?',
-    a: `Yes. Every piece is sold on its own. The website is ${formatUsd(site.setupCents)} plus ${formatUsd(site.monthlyCents)} a month, the voice agent is ${formatUsd(voice.setupCents)} plus ${formatUsd(voice.monthlyCents)} a month, and the command center is free with either one. The Talking Website is simply what happens when you take both, and it is cheaper than buying them separately.`,
+    a: `Yes. Every piece is sold on its own. The website is ${formatUsd(site.setupCents)} plus ${formatUsd(site.monthlyCents)} a month, the voice agent is ${formatUsd(voice.setupCents)} plus ${formatUsd(voice.monthlyCents)} a month, and the command center is ${formatUsd(os.setupCents)} plus ${formatUsd(os.monthlyCents)} a month. The Talking Website is what happens when you take the website and the voice agent together, and it is cheaper than buying them separately, with the command center free inside it.`,
   },
   {
     q: 'Can I put the voice agent on the website I already have?',

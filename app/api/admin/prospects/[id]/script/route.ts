@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmJson } from '@/lib/llm';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { buildLeadScript, categoryLabel } from '@/lib/lead-script';
@@ -85,12 +85,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (error || !data) return NextResponse.json({ error: 'Prospect not found' }, { status: 404 });
   const prospect = data as Prospect;
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim().replace(/\\n$/, '');
-  // No key, no problem: hand back the deterministic script.
-  if (!apiKey) {
-    return NextResponse.json({ ok: true, fallback: true, script: buildLeadScript(prospect, repName, bookDisplay) });
-  }
-
   const category = categoryLabel(prospect.notes);
   const audit = prospect.audit_json;
   const auditBlock = audit
@@ -115,25 +109,18 @@ ${auditBlock}
 Return the JSON script.`;
 
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-opus-4-8',
-      max_tokens: 2500,
-      output_config: {
-        effort: 'medium',
-        format: { type: 'json_schema' as const, schema: SCRIPT_SCHEMA },
-      },
-      system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: userContent }],
-    });
-
-    const textBlock = response.content.find((b) => b.type === 'text');
-    if (!textBlock || textBlock.type !== 'text') throw new Error('no text block');
-    const parsed = JSON.parse(textBlock.text) as {
+    const parsed = await llmJson<{
       steps: { label: string; line: string }[];
       voicemail: string;
       objections: { q: string; a: string }[];
-    };
+    }>({
+      label: 'prospect-call-script',
+      model: 'opus',
+      system: SYSTEM_PROMPT,
+      user: userContent,
+      schema: SCRIPT_SCHEMA,
+      timeoutMs: 90_000,
+    });
 
     const script = {
       category,

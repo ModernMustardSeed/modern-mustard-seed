@@ -81,8 +81,6 @@ export async function POST(req: Request) {
     /* non-fatal */
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
 
   const blueprint = await generateBlueprint(idea);
   if (!blueprint) return NextResponse.json({ error: 'coach_unavailable' }, { status: 502 });

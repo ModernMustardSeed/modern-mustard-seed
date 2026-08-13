@@ -1,22 +1,19 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText, LlmUnavailable } from '@/lib/llm';
 import { getSession } from '@/lib/admin-auth';
 
 export const runtime = 'nodejs';
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 /**
  * Rewrite a campaign outreach email as a fresh, different draft. Interactive and
- * low-volume, so it uses the metered Anthropic API directly (same pattern as the
- * Tracker/Outbound draft-reply). Returns a new subject + body only; the rep
- * reviews, edits, and sends. Admin-gated (campaigns are visible to all roles).
+ * low-volume, and it runs on the subscription like everything else. Returns a
+ * new subject + body only; the rep reviews, edits, and sends. Admin-gated
+ * (campaigns are visible to all roles).
  */
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return NextResponse.json({ error: 'AI drafting is not configured (ANTHROPIC_API_KEY missing).' }, { status: 500 });
 
   let payload: {
     subject?: string;
@@ -50,18 +47,7 @@ Current body:
 ${body}`;
 
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const msg = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 900,
-      system,
-      messages: [{ role: 'user', content: user }],
-    });
-    const text = msg.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('\n')
-      .trim();
+    const text = await llmText({ label: 'campaign-rewrite', model: 'sonnet', system, user });
     if (!text) return NextResponse.json({ error: 'The rewrite came back empty. Try again.' }, { status: 500 });
 
     // Parse "Subject: <...>" then a blank line then the body. Fall back gracefully.
@@ -80,6 +66,16 @@ ${body}`;
     }
     return NextResponse.json({ ok: true, subject: newSubject, body: newBody });
   } catch (e) {
+    // A rewrite has nowhere to land except this response, so a queued job is
+    // genuinely no use to the rep sitting in front of the editor. Say so, and
+    // say it is a wait rather than a failure, because the draft on screen is
+    // untouched and trying again in a minute usually works.
+    if (e instanceof LlmUnavailable) {
+      return NextResponse.json(
+        { error: 'The writer is busy. Your draft is untouched. Try the rewrite again in a minute.' },
+        { status: 503 },
+      );
+    }
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Rewrite failed' }, { status: 500 });
   }
 }

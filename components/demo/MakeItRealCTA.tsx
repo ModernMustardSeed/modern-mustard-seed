@@ -1,15 +1,19 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, DEMO_ORDER_KEYS, quoteDemoOrder, isCommandCenterFree, formatUsd, type DemoProductKey } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, DEMO_ORDER_KEYS, quoteDemoOrder, isCommandCenterFree, commandCenterUpsell, formatUsd, type DemoProductKey } from '@/lib/demo-order';
 
 /**
  * "Make it real" — order straight from the demo. Toggle any pieces, watch the
  * monthly total roll like the Recovery Calculator. Each is individually
  * purchasable; the Business Command Center shows its own price, STRUCK THROUGH
- * with "Free" the moment the website or voice agent is added (it rides free
- * with either). Both paid pieces unlock the whole-system bundle. Checkout
- * happens right here (Stripe); booking stays as a quiet second path.
+ * with "Free" the moment BOTH the website and the voice agent are in the cart,
+ * which is the bundle (Sarah 2026-08-13: free with both, not with either).
+ *
+ * When they are one piece away from that, the strip under the list says so and
+ * names the number, because "add the website and the whole system costs less
+ * than what you have selected" is a true sentence they deserve to read before
+ * they pay. Checkout happens right here (Stripe); booking is the quiet second path.
  */
 
 function useCountUp(target: number, ms = 700): number {
@@ -58,8 +62,9 @@ export default function MakeItRealCTA({
   const quote = useMemo(() => quoteDemoOrder(picked), [picked]);
   const monthlyShown = useCountUp(quote ? quote.monthlyCents / 100 : 0);
   const osFree = isCommandCenterFree(picked);
-  // Savings the bundle gives over the two PAID pieces a la carte (command center
-  // is free either way, so it never figures into the bundle discount).
+  const missing = commandCenterUpsell(picked);
+  // Savings the bundle gives over the two PAID pieces a la carte. The command
+  // center is free on top of that, and is quoted separately in the copy.
   const savings = {
     setup: DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents - DEMO_BUNDLE.setupCents,
     monthly: DEMO_PRODUCTS.voice.monthlyCents + DEMO_PRODUCTS.site.monthlyCents - DEMO_BUNDLE.monthlyCents,
@@ -95,8 +100,8 @@ export default function MakeItRealCTA({
           Keep it. Order right here, live within a week.
         </h2>
         <p className="font-body text-[14px] text-[#FBF6EA]/60 mt-2">
-          Pick any piece, or all of it. Add the website or voice agent and your command center is free. We customize
-          everything to {business} by hand and release it within 7 days.
+          Pick any piece, or all of it. Take the website and the voice agent together and your command center is
+          free. We customize everything to {business} by hand and release it within 7 days.
         </p>
 
         <div className="mt-6 space-y-3">
@@ -159,9 +164,15 @@ export default function MakeItRealCTA({
             The Talking Website unlocked: your site answers its own phone, for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
             (you save {formatUsd(savings.monthly)}/mo and {formatUsd(savings.setup)} on setup), command center free.
           </p>
-        ) : osFree ? (
+        ) : missing && quote ? (
           <p className="mt-4 rounded-xl border-2 bg-[#1F1F1F] px-4 py-2.5 font-sans text-[13px] font-bold" style={{ borderColor: accent, color: accent }}>
-            Command center free with your {picked.includes('site') ? 'website' : 'voice agent'}. That is {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo + {formatUsd(DEMO_PRODUCTS.os.setupCents)} setup, on the house.
+            Add {missing.key === 'site' ? 'the website' : 'the voice agent'} and the command center stops costing you{' '}
+            {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo. All three become {DEMO_BUNDLE.name} at{' '}
+            {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
+            {/* Truth check, not a slogan: only claim "cheaper" where it is. */}
+            {DEMO_BUNDLE.monthlyCents <= quote.monthlyCents
+              ? ', less every month than what you have selected right now.'
+              : `, and the setup drops from ${formatUsd(quote.setupCents)} to ${formatUsd(DEMO_BUNDLE.setupCents)}.`}
           </p>
         ) : null}
 
@@ -193,7 +204,7 @@ export default function MakeItRealCTA({
             </>
           ) : (
             <p className="font-body text-[14px] text-[#FBF6EA]/70">
-              Pick a piece above. Add the website or voice agent and your command center is free.
+              Pick a piece above. Take the website and the voice agent together and your command center is free.
             </p>
           )}
         </div>

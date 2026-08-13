@@ -5,7 +5,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { llmText, renderTranscript } from '@/lib/llm';
 import { getClientSession } from '@/lib/client-auth';
 import { getMustardTier, buildCoachSystemPrompt } from '@/lib/mustard-mode';
 import { getSupabase } from '@/lib/supabase';
@@ -55,27 +55,18 @@ export async function POST(req: Request) {
     }
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
-
   try {
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
-      max_tokens: 700,
+    const reply = await llmText({
+      label: 'mustard-mode-coach',
+      model: 'sonnet',
       system: buildCoachSystemPrompt({
         tier,
         trackName: body.trackName?.slice(0, 60),
         missionTitle: body.missionTitle?.slice(0, 100),
         savedRun,
       }),
-      messages: incoming,
+      user: renderTranscript(incoming, { assistantLabel: 'Coach', userLabel: 'Player' }),
     });
-    const reply = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('\n')
-      .trim();
     return NextResponse.json({ reply });
   } catch (err) {
     console.error('coach claude error', err instanceof Error ? err.message : err);
