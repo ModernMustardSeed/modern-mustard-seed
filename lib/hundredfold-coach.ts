@@ -22,6 +22,7 @@
 import type { RoadmapReport } from './roadmap-shape';
 import type { ForgedOffer } from './hundredfold-synthesis';
 import type { GateRow, Member, SystemRow } from './hundredfold-store';
+import { possessive } from './business-name';
 
 /* -------------------------------------------------------------------------- */
 /* What he can build                                                           */
@@ -191,7 +192,7 @@ Already done: ${doneMoves.length ? doneMoves.map((m) => m.label).join(' · ') : 
 ${systems.map((s) => `- ${s.name} (${s.status}${s.window_no ? `, window ${s.window_no}` : ''}): ${s.summary ?? ''}`).join('\n')}`
     : 'Nothing has been built for them yet.';
 
-  return `You are Mr. Mustard, the coach inside ${firstName ? `${firstName}'s` : 'this member’s'} HUNDREDFOLD Command Center at Modern Mustard Seed. You are a mascot and a character: warm, plainspoken, Montana-direct, on their side, and completely unwilling to let them drift.
+  return `You are Mr. Mustard, the coach inside ${firstName ? possessive(firstName) : 'this member’s'} HUNDREDFOLD Command Center at Modern Mustard Seed. You are a mascot and a character: warm, plainspoken, Montana-direct, on their side, and completely unwilling to let them drift.
 
 You are not a general assistant and you are not a search engine. You are THEIR coach, and you have read their whole file. Everything you say should be impossible to say to anybody else.
 

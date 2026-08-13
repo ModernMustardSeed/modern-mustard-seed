@@ -39,20 +39,23 @@ export type Industry = {
    * booking link and the strongest free asset never got shown.
    *
    * Route by what the industry actually loses. Missed-call businesses go to
-   * /voice-agents/forge (it rings their real phone in about 60 seconds). Build-shaped
-   * businesses go to /demos (voice agent + command center + a custom site).
-   * Never send a DTC brand to a voice agent pitch.
+   * /voice-agents (the live demo line and their trade's missed-call math).
+   * Build-shaped businesses go to /demos (voice agent + command center + a
+   * custom site). Never send a DTC brand to a voice agent pitch.
+   *
+   * The Voice Agent Forge was parked 2026-08-12 (Sarah); the missed-call route
+   * pointed there and now points at /voice-agents. See Navbar.tsx.
    */
-  forge: { href: '/voice-agents/forge' | '/demos'; label: string; blurb: string };
+  forge: { href: '/voice-agents' | '/demos'; label: string; blurb: string };
 };
 
 /** Copy for the two forge destinations, so no page invents its own promise. */
 export const FORGE_CTA = {
   sidekick: {
-    href: '/voice-agents/forge' as const,
-    label: 'Ring My Own Phone',
+    href: '/voice-agents' as const,
+    label: 'Hear One Answer Now',
     blurb:
-      'Free, no account, no card. Enter your business and in about sixty seconds your phone rings with a voice agent answering as your company.',
+      'Free, no account, no card. Call the live line and hear a voice agent answer the way yours would, then see the missed-call math for your trade.',
   },
   demos: {
     href: '/demos' as const,

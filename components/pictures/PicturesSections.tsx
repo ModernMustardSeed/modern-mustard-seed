@@ -113,8 +113,8 @@ export function StudioCrossSell() {
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
             Mr. Mustard also trains voice agents. Forge one for your business free, hear it answer as YOUR front desk, and never miss the customers your new commercial sends.
           </p>
-          <Link href="/voice-agents/forge" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
-            The Voice Agent Forge →
+          <Link href="/demos" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+            Forge A Voice Agent →
           </Link>
         </div>
         <div className="rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">

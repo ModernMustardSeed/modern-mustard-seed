@@ -37,16 +37,23 @@ function useCountUp(target: number, ms = 700): number {
 
 const PRODUCT_ICONS: Record<DemoProductKey, string> = { voice: '🎙', site: '🌐', os: '⚙' };
 
+/** The house mustard, used until a lead's own brand color has been forged. */
+const MMS_THEME = { accent: '#F5B700', accentInk: '#161616' };
+
 export default function MakeItRealCTA({
   hubId,
   business,
   forged,
+  theme = MMS_THEME,
 }: {
   hubId: string;
   business: string;
   /** which demos were actually forged; these start selected */
   forged: DemoProductKey[];
+  /** Derived from THIS lead's own forged website; falls back to house mustard. */
+  theme?: { accent: string; accentInk: string };
 }) {
+  const { accent, accentInk } = theme;
   const seed = DEMO_ORDER_KEYS.filter((k) => forged.includes(k));
   const [picked, setPicked] = useState<DemoProductKey[]>(seed.length ? seed : ['voice']);
   const [busy, setBusy] = useState(false);
@@ -87,8 +94,8 @@ export default function MakeItRealCTA({
 
   return (
     <section id="order" className="animate-[hubIn_.5s_ease-out_both]">
-      <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-6 sm:p-8">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">Make it real</span>
+      <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl p-6 sm:p-8" style={{ boxShadow: `6px 6px 0 0 ${accent}` }}>
+        <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold" style={{ color: accent }}>Make it real</span>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#FBF6EA] mt-2">
           Keep it. Order right here, live within a week.
         </h2>
@@ -109,16 +116,16 @@ export default function MakeItRealCTA({
                 onClick={() => toggle(k)}
                 aria-pressed={on}
                 className={`w-full text-left rounded-2xl border-2 p-4 flex items-start gap-4 transition-all ${
-                  on
-                    ? 'border-[#F5B700] bg-[#242424]'
-                    : 'border-[#FBF6EA]/20 bg-white/5 opacity-75 hover:opacity-100'
+                  on ? 'bg-[#242424]' : 'border-[#FBF6EA]/20 bg-white/5 opacity-75 hover:opacity-100'
                 }`}
+                style={on ? { borderColor: accent } : undefined}
               >
                 <span
                   aria-hidden
                   className={`mt-0.5 h-6 w-6 shrink-0 rounded-md border-2 flex items-center justify-center font-bold text-[14px] ${
-                    on ? 'bg-[#F5B700] border-[#F5B700] text-[#161616]' : 'border-[#FBF6EA]/40 text-transparent'
+                    on ? '' : 'border-[#FBF6EA]/40 text-transparent'
                   }`}
+                  style={on ? { background: accent, borderColor: accent, color: accentInk } : undefined}
                 >
                   ✓
                 </span>
@@ -132,12 +139,12 @@ export default function MakeItRealCTA({
                         <span className="line-through text-[#FBF6EA]/40">
                           {formatUsd(p.monthlyCents)}/mo + {formatUsd(p.setupCents)} setup
                         </span>
-                        <span className="text-[#161616] bg-[#F5B700] rounded-full px-2 py-0.5 text-[11px] uppercase tracking-[0.1em]">
+                        <span className="rounded-full px-2 py-0.5 text-[11px] uppercase tracking-[0.1em]" style={{ background: accent, color: accentInk }}>
                           Free
                         </span>
                       </span>
                     ) : (
-                      <span className="font-mono text-[13px] font-bold text-[#F5B700] whitespace-nowrap">
+                      <span className="font-mono text-[13px] font-bold whitespace-nowrap" style={{ color: accent }}>
                         {formatUsd(p.monthlyCents)}/mo + {formatUsd(p.setupCents)} setup
                       </span>
                     )}
@@ -153,12 +160,12 @@ export default function MakeItRealCTA({
         </div>
 
         {quote?.isBundle ? (
-          <p className="mt-4 rounded-xl border-2 border-[#F5B700] bg-[#F5B700] px-4 py-2.5 font-sans text-[13px] font-bold text-[#161616]">
+          <p className="mt-4 rounded-xl border-2 px-4 py-2.5 font-sans text-[13px] font-bold" style={{ borderColor: accent, background: accent, color: accentInk }}>
             The Talking Website unlocked: your site answers its own phone, for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
             (you save {formatUsd(savings.monthly)}/mo and {formatUsd(savings.setup)} on setup), command center free.
           </p>
         ) : missing && quote ? (
-          <p className="mt-4 rounded-xl border-2 border-[#F5B700] bg-[#1F1F1F] px-4 py-2.5 font-sans text-[13px] font-bold text-[#F5B700]">
+          <p className="mt-4 rounded-xl border-2 bg-[#1F1F1F] px-4 py-2.5 font-sans text-[13px] font-bold" style={{ borderColor: accent, color: accent }}>
             Add {missing.key === 'site' ? 'the website' : 'the voice agent'} and the command center stops costing you{' '}
             {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo. All three become {DEMO_BUNDLE.name} at{' '}
             {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + {formatUsd(DEMO_BUNDLE.setupCents)} setup
@@ -169,11 +176,12 @@ export default function MakeItRealCTA({
           </p>
         ) : null}
 
-        {/* Neutral lifted ink. A translucent mustard fill over ink reads brown. */}
-        <div className="mt-6 rounded-2xl border-2 border-[#F5B700] bg-[#1F1F1F] p-5 text-center">
+        {/* Neutral lifted ink. A translucent accent fill over ink can mix to mud
+            on some brand colors, so the border carries the accent, not the fill. */}
+        <div className="mt-6 rounded-2xl border-2 bg-[#1F1F1F] p-5 text-center" style={{ borderColor: accent }}>
           {quote ? (
             <>
-              <p className="font-sans text-[11px] uppercase tracking-[0.2em] font-bold text-[#F5B700]">{quote.label}</p>
+              <p className="font-sans text-[11px] uppercase tracking-[0.2em] font-bold" style={{ color: accent }}>{quote.label}</p>
               <p className="font-display text-5xl font-bold text-[#FBF6EA] mt-1 tabular-nums">
                 ${monthlyShown.toLocaleString()}<span className="text-xl">/mo</span>
               </p>
@@ -184,7 +192,8 @@ export default function MakeItRealCTA({
                 type="button"
                 onClick={checkout}
                 disabled={busy}
-                className="mt-4 inline-block bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-8 py-4 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[4px_4px_0_0_#000000] hover:-translate-y-0.5 transition-transform disabled:opacity-60 disabled:hover:translate-y-0"
+                className="mt-4 inline-block border-2 border-[#161616] rounded-xl px-8 py-4 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[4px_4px_0_0_#000000] hover:-translate-y-0.5 transition-transform disabled:opacity-60 disabled:hover:translate-y-0"
+                style={{ background: accent, color: accentInk }}
               >
                 {busy ? 'Opening secure checkout…' : `Make it real →`}
               </button>
@@ -202,11 +211,11 @@ export default function MakeItRealCTA({
 
         <p className="font-body text-[13px] text-[#FBF6EA]/50 mt-5 text-center">
           Prefer to talk it through first?{' '}
-          <a href="https://modernmustardseed.com/book" className="underline text-[#FBF6EA]/80 hover:text-[#F5B700]">
+          <a href="https://modernmustardseed.com/book" className="underline text-[#FBF6EA]/80 hover:text-[#FBF6EA]">
             Book 10 minutes with Sarah
           </a>{' '}
           or call{' '}
-          <a href="tel:+14063121223" className="underline text-[#FBF6EA]/80 hover:text-[#F5B700]">
+          <a href="tel:+14063121223" className="underline text-[#FBF6EA]/80 hover:text-[#FBF6EA]">
             (406) 312-1223
           </a>
           .

@@ -213,7 +213,7 @@ export default function DemoCallExperience({
               <a href="/book" className="bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
                 Book the 10-minute setup call
               </a>
-              <a href="/voice-agents/forge" className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
+              <a href="/voice-agents" className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
                 See pricing
               </a>
             </div>

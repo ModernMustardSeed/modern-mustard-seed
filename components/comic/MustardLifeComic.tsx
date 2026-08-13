@@ -409,7 +409,7 @@ export default function MustardLifeComic() {
                 delay={120}
               />
               <div className="mlc-pop flex flex-col gap-3 pt-2" style={{ transitionDelay: '220ms' }}>
-                <Cta href="/voice-agents/forge" solid>Forge Yours Free</Cta>
+                <Cta href="/demos" solid>Forge Yours Free</Cta>
                 <p className="font-mono text-[11px] text-[#5c554a] leading-relaxed">
                   Or call Mr. Mustard himself: <a className="font-bold text-[#1E50C8]" href="tel:+14063121223">{SIDEKICK.phoneLine}</a>. He loves visitors.
                 </p>

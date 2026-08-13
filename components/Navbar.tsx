@@ -78,6 +78,16 @@ const MENU_GROUPS = [
 // so it is listed everywhere the other departments are, with one exception:
 // lib/quotable.ts, because the site agent must not quote a price for something
 // that is not selling yet.
+//
+// PARKED 2026-08-12 (Sarah): The Voice Agent Forge is pulled from every nav,
+// index, cross-sell CTA, sitemap, and llms.txt entry, and noindexed. Three voice
+// agent pages competed with each other; /voice-agents and /demos are the two
+// that stay. The route still answers so the Meta campaign, Stripe checkout
+// returns, and the Sidekick drip keep working, and the forged demos at
+// /voice-agents/forge/demo/<runId> are untouched. To bring it back: restore this
+// row plus the Footer, sitemap, services-hub, llms.txt, front-desk, portfolio,
+// industries, partner-swipe, jsonld, and comic entries, drop the noindex flag on
+// app/voice-agents/forge/page.tsx, and repoint the cross-sell CTAs.
 const DEPARTMENTS = [
   { name: 'HUNDREDFOLD', tag: 'THE FLAGSHIP SCALING PROGRAM', href: '/hundredfold' },
   { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
@@ -85,7 +95,6 @@ const DEPARTMENTS = [
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
   { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },
   { name: 'Voice Agents', tag: `CALL HIM: ${DEMO_LINE.display}`, href: '/voice-agents' },
-  { name: 'Voice Agent Forge', tag: 'FREE VOICE AGENT DEMO', href: '/voice-agents/forge' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
   { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },

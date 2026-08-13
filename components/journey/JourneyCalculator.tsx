@@ -362,7 +362,10 @@ export default function JourneyCalculator() {
         </div>
 
         {/* ── The machine ── */}
-        <div className="mt-16 flex flex-col items-center gap-10 xl:flex-row xl:items-start xl:gap-12">
+        {/* Sarah 2026-08-12: the machine read as cute but oversized. The rig is
+            capped well inside the 7xl page gutter and every internal scale came
+            down a notch, so it stays a desk calculator instead of a billboard. */}
+        <div className="mx-auto mt-16 flex max-w-5xl flex-col items-center gap-10 xl:flex-row xl:items-start xl:gap-10">
           <div className="w-full min-w-0 xl:flex-1">
             <p
               className={`${caveat.className} mb-3 ml-2 rotate-[-2deg] text-2xl text-[#161616]/70 md:text-3xl`}
@@ -371,11 +374,11 @@ export default function JourneyCalculator() {
             </p>
 
             <div
-              className="rounded-[28px] border-[3px] border-[#161616] bg-[#F5B700] p-4 shadow-[14px_14px_0_0_#161616] sm:p-6 md:p-8"
+              className="rounded-[22px] border-[3px] border-[#161616] bg-[#F5B700] p-3.5 shadow-[10px_10px_0_0_#161616] sm:p-5 md:p-6"
               style={{ transform: 'rotate(-0.6deg)' }}
             >
               {/* Brand plate */}
-              <div className="mb-4 flex items-center justify-between gap-4">
+              <div className="mb-3 flex items-center justify-between gap-4">
                 <div>
                   <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#161616]">
                     Modern Mustard Seed
@@ -398,7 +401,7 @@ export default function JourneyCalculator() {
               {/* Background rides inline, not on a class: two arbitrary bg-[] classes
                   would race in the stylesheet and the flash would land at random. */}
               <div
-                className="relative overflow-hidden rounded-2xl border-2 border-[#161616] p-5 transition-[background-color,filter] duration-150 motion-reduce:transition-none sm:p-7"
+                className="relative overflow-hidden rounded-xl border-2 border-[#161616] p-4 transition-[background-color,filter] duration-150 motion-reduce:transition-none sm:p-5"
                 style={{
                   backgroundColor: flash ? '#17301F' : '#080C16',
                   filter: flash ? 'brightness(1.25)' : 'none',
@@ -427,14 +430,14 @@ export default function JourneyCalculator() {
                   <span
                     aria-hidden
                     className="pointer-events-none absolute inset-0 select-none font-mono font-bold tabular-nums text-[#F5B700] opacity-[0.045]"
-                    style={{ fontSize: 'clamp(34px,7vw,76px)', lineHeight: 1 }}
+                    style={{ fontSize: 'clamp(30px,4.6vw,54px)', lineHeight: 1 }}
                   >
                     $888,888
                   </span>
                   <span
                     className="relative block font-mono font-bold tabular-nums text-[#FFDD55]"
                     style={{
-                      fontSize: 'clamp(34px,7vw,76px)',
+                      fontSize: 'clamp(30px,4.6vw,54px)',
                       lineHeight: 1,
                       textShadow: '0 0 22px rgba(245,183,0,0.45)',
                     }}
@@ -446,7 +449,7 @@ export default function JourneyCalculator() {
                   </span>
                 </div>
 
-                <div className="relative mt-5 grid grid-cols-3 gap-2 border-t border-[#F5B700]/20 pt-4 text-center">
+                <div className="relative mt-4 grid grid-cols-3 gap-2 border-t border-[#F5B700]/20 pt-3 text-center">
                   {[
                     { k: 'From The Site', v: usd(math.siteMonthly) },
                     { k: 'From The Phone', v: usd(math.phoneMonthly) },
@@ -456,7 +459,7 @@ export default function JourneyCalculator() {
                       <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[#F5B700]/60">
                         {r.k}
                       </span>
-                      <span className="mt-1 block font-mono text-sm font-bold tabular-nums text-[#FBF6EA] sm:text-lg">
+                      <span className="mt-1 block font-mono text-xs font-bold tabular-nums text-[#FBF6EA] sm:text-base">
                         {r.v}
                       </span>
                     </div>
@@ -465,20 +468,20 @@ export default function JourneyCalculator() {
               </div>
 
               {/* Slots and keypad */}
-              <div className="mt-6 grid gap-5 lg:grid-cols-[1.05fr_1fr] lg:gap-6">
+              <div className="mt-4 grid gap-4 lg:grid-cols-[1.05fr_1fr] lg:gap-5">
                 {/* Input slots */}
-                <div className="rounded-2xl border-2 border-[#161616] bg-[#FFFDF6] p-4 sm:p-5">
+                <div className="rounded-xl border-2 border-[#161616] bg-[#FFFDF6] p-3.5 sm:p-4">
                   <span className="mb-3 block font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#161616]/60">
                     Your Numbers
                   </span>
-                  <div className="flex flex-col gap-2.5">
+                  <div className="flex flex-col gap-2">
                     {FIELDS.map((f) => {
                       const on = active === f.key;
                       return (
                         <label
                           key={f.key}
                           htmlFor={`rr-${f.key}`}
-                          className={`block cursor-text rounded-xl border-2 px-3.5 py-2.5 transition-colors ${
+                          className={`block cursor-text rounded-lg border-2 px-3 py-2 transition-colors ${
                             on
                               ? 'border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#161616]'
                               : 'border-[#161616]/25 bg-white hover:border-[#161616]/60'
@@ -491,7 +494,7 @@ export default function JourneyCalculator() {
                               </span>
                               <span className="block truncate text-[11px] text-[#161616]/55">{f.hint}</span>
                             </span>
-                            <span className="flex shrink-0 items-baseline font-mono text-lg font-bold tabular-nums text-[#161616] sm:text-xl">
+                            <span className="flex shrink-0 items-baseline font-mono text-base font-bold tabular-nums text-[#161616] sm:text-lg">
                               {f.prefix}
                               <input
                                 id={`rr-${f.key}`}
@@ -521,41 +524,41 @@ export default function JourneyCalculator() {
                 </div>
 
                 {/* Keypad */}
-                <div className="grid grid-cols-4 gap-2 sm:gap-2.5">
+                <div className="grid grid-cols-4 gap-2">
                   {['7', '8', '9'].map((d) => (
-                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-4 text-xl text-[#161616] sm:py-5 sm:text-2xl">
+                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-3 text-lg text-[#161616] sm:py-3.5 sm:text-xl">
                       {d}
                     </PopKey>
                   ))}
-                  <PopKey label="Clear this field" onClick={clearKey} className="bg-[#E0301E] py-4 text-sm text-[#FBF6EA] sm:py-5 sm:text-base">
+                  <PopKey label="Clear this field" onClick={clearKey} className="bg-[#E0301E] py-3 text-sm text-[#FBF6EA] sm:py-3.5">
                     C
                   </PopKey>
 
                   {['4', '5', '6'].map((d) => (
-                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-4 text-xl text-[#161616] sm:py-5 sm:text-2xl">
+                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-3 text-lg text-[#161616] sm:py-3.5 sm:text-xl">
                       {d}
                     </PopKey>
                   ))}
-                  <PopKey label="Delete last digit" onClick={backspace} className="bg-[#1E50C8] py-4 text-base text-[#FBF6EA] sm:py-5">
+                  <PopKey label="Delete last digit" onClick={backspace} className="bg-[#1E50C8] py-3 text-base text-[#FBF6EA] sm:py-3.5">
                     <span aria-hidden>⌫</span>
                   </PopKey>
 
                   {['1', '2', '3'].map((d) => (
-                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-4 text-xl text-[#161616] sm:py-5 sm:text-2xl">
+                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-3 text-lg text-[#161616] sm:py-3.5 sm:text-xl">
                       {d}
                     </PopKey>
                   ))}
-                  <PopKey label="Next field" onClick={nextField} className="bg-[#1E50C8] py-4 text-[10px] uppercase tracking-[0.1em] text-[#FBF6EA] sm:py-5">
+                  <PopKey label="Next field" onClick={nextField} className="bg-[#1E50C8] py-3 text-[10px] uppercase tracking-[0.1em] text-[#FBF6EA] sm:py-3.5">
                     Next
                   </PopKey>
 
-                  <PopKey label="Digit 0" onClick={() => digit('0')} className="col-span-2 bg-white py-4 text-xl text-[#161616] sm:py-5 sm:text-2xl">
+                  <PopKey label="Digit 0" onClick={() => digit('0')} className="col-span-2 bg-white py-3 text-lg text-[#161616] sm:py-3.5 sm:text-xl">
                     0
                   </PopKey>
-                  <PopKey label="Double zero" onClick={() => digit('00')} className="bg-white py-4 text-xl text-[#161616] sm:py-5 sm:text-2xl">
+                  <PopKey label="Double zero" onClick={() => digit('00')} className="bg-white py-3 text-lg text-[#161616] sm:py-3.5 sm:text-xl">
                     00
                   </PopKey>
-                  <PopKey label="Total it up" onClick={equals} className="bg-[#161616] py-4 text-2xl text-[#F5B700] sm:py-5">
+                  <PopKey label="Total it up" onClick={equals} className="bg-[#161616] py-3 text-xl text-[#F5B700] sm:py-3.5">
                     =
                   </PopKey>
 
@@ -573,7 +576,7 @@ export default function JourneyCalculator() {
           </div>
 
           {/* ── The tape ── */}
-          <div className="w-full max-w-[340px] shrink-0 xl:mt-16 xl:w-[320px]">
+          <div className="w-full max-w-[300px] shrink-0 xl:mt-14 xl:w-[272px]">
             {/* The offset shadow rides a drop-shadow filter, not a box-shadow, so it
                 follows the torn teeth. White paper on cream has almost no edge
                 contrast otherwise and the tear reads as a straight cut. */}

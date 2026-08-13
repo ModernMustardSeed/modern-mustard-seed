@@ -6,6 +6,7 @@ import type { ForgedCall } from '@/lib/sidekick';
 import SiteDemoShell from '@/components/demo/SiteDemoShell';
 import { possessive } from '@/lib/business-name';
 import SiteBuildProgress from '@/components/demo/SiteBuildProgress';
+import { themeFromSiteHtml } from '@/lib/site-palette';
 
 export const metadata = buildMetadata({ title: 'Your New Website Demo', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -137,5 +138,16 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
   }
 
   const orderUrl = lead?.hub_demo_url ? `${lead.hub_demo_url}#order` : null;
-  return <SiteDemoShell siteId={site.id} business={site.business_name} call={call} orderUrl={orderUrl} />;
+  // Wears the site's own declared palette, so the call button matches the
+  // page it floats over instead of standing out as an MMS-branded add-on.
+  const theme = themeFromSiteHtml(site.html);
+  return (
+    <SiteDemoShell
+      siteId={site.id}
+      business={site.business_name}
+      call={call}
+      orderUrl={orderUrl}
+      theme={{ accent: theme.accent, accentInk: theme.accentInk }}
+    />
+  );
 }
