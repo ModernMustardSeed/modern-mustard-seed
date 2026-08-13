@@ -25,6 +25,8 @@ import { cloudflareEmails, extractPhone, extractHours, extractServiceArea, parse
 import { tradeOf, buildBriefing, firstMessage, acquisitionTools } from '../lib/acq/call';
 import { authorize, nextRampStep, backOffStep, tierFor } from '../lib/acq/governor';
 import { goalLadder, forecast, monthsBetween, type FunnelRate } from '../lib/acq/factory';
+import { readAttribution, labelSource } from '../lib/mustard/surface';
+import { hashToken } from '../lib/mustard/links';
 import { OFFER, isMailableEmailStatus } from '../lib/acq/types';
 import type { AcqProspect, AcqVariant, AcqSettings, AcqCampaign } from '../lib/acq/types';
 
@@ -753,6 +755,47 @@ test('factory: whole months are floored, not rounded up', () => {
   assert.equal(monthsBetween(new Date('2026-01-15T00:00:00Z'), new Date('2026-02-14T00:00:00Z')), 0);
   assert.equal(monthsBetween(new Date('2026-01-15T00:00:00Z'), new Date('2026-02-15T00:00:00Z')), 1);
   assert.equal(monthsBetween(new Date('2026-01-15T00:00:00Z'), new Date('2027-01-15T00:00:00Z')), 12);
+});
+
+/* ----------------------------- the /mustard door -------------------------- */
+
+test('mustard: attribution is read off the URL and never invented', () => {
+  const a = readAttribution(
+    new URL('https://modernmustardseed.com/mustard?source=Facebook-Group&utm_source=fb&utm_campaign=trades&utm_content=A'),
+    new Headers({ referer: 'https://facebook.com/groups/hvac' }),
+  );
+  assert.equal(a.source, 'facebook-group', 'sources are normalized, not trusted verbatim');
+  assert.equal(a.utm_campaign, 'trades');
+  assert.equal(a.utm_content, 'A');
+  assert.equal(a.referrer, 'https://facebook.com/groups/hvac');
+
+  const bare = readAttribution(new URL('https://modernmustardseed.com/mustard'), new Headers());
+  assert.equal(bare.source, 'direct', 'an unknown arrival is direct, not a guess');
+  assert.equal(bare.utm_source, null);
+});
+
+test('mustard: a hostile source string cannot escape into the record', () => {
+  const a = readAttribution(new URL('https://x.com/mustard?source=' + encodeURIComponent('../../evil<script>')), new Headers());
+  assert.match(a.source, /^[a-z0-9._-]+$/);
+  assert.ok(!a.source.includes('<'));
+});
+
+test('mustard: an unknown source is kept rather than dropped', () => {
+  // A new channel is meant to work by inventing a URL, with no deploy.
+  const a = readAttribution(new URL('https://x.com/mustard?source=trade-show-booth'), new Headers());
+  assert.equal(a.source, 'trade-show-booth');
+  assert.equal(labelSource('trade-show-booth'), 'trade show booth');
+  assert.equal(labelSource('facebook-group'), 'Facebook group');
+  assert.equal(labelSource(null), 'Direct');
+});
+
+test('mustard: only the token hash is ever stored', () => {
+  const token = 'a-secret-token-value';
+  const h = hashToken(token);
+  assert.equal(h.length, 64, 'sha-256 hex');
+  assert.notEqual(h, token);
+  assert.equal(hashToken(token), h, 'stable');
+  assert.notEqual(hashToken(`${token}x`), h);
 });
 
 /* ---------------------------------- price --------------------------------- */

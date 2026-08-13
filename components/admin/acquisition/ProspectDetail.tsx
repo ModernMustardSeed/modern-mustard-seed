@@ -75,6 +75,8 @@ export default function ProspectDetail({ id }: { id: string }) {
   const [note, setNote] = useState('');
   const [showEmail, setShowEmail] = useState(false);
   const [openTranscript, setOpenTranscript] = useState<number | null>(null);
+  const [mustardLink, setMustardLink] = useState<{ url: string; expiresAt: string; message: string } | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -101,6 +103,39 @@ export default function ProspectDetail({ id }: { id: string }) {
       setError(e instanceof Error ? e.message : 'That did not work.');
     } finally {
       setBusy('');
+    }
+  };
+
+  /**
+   * Mint the prefilled link. The token comes back exactly once, in this
+   * response, because only its hash is stored. Copy it now or mint another.
+   */
+  const mintLink = async (source: string) => {
+    setBusy(`link:${source}`);
+    setError('');
+    try {
+      const res = await api<{ url: string; expiresAt: string; message: string }>('/api/admin/acquisition/mustard', {
+        method: 'POST',
+        body: JSON.stringify({ action: 'mint', leadId: id, source }),
+      });
+      setMustardLink(res);
+      setLinkCopied(false);
+      await copyLink(res.url);
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not mint the link.');
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const copyLink = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setLinkCopied(true);
+      window.setTimeout(() => setLinkCopied(false), 2500);
+    } catch {
+      /* the URL is on screen either way */
     }
   };
 
@@ -300,6 +335,42 @@ export default function ProspectDetail({ id }: { id: string }) {
 
           {/* ── the side rail: act on it ── */}
           <div className="space-y-6">
+            <Section
+              title="Send Mustard link"
+              note="The human cold-call move. Get them to yes on the phone, send this, and they press one button."
+            >
+              {mustardLink ? (
+                <>
+                  <button
+                    className={`${btnGhost} w-full justify-start font-mono text-[11px] normal-case tracking-normal truncate`}
+                    onClick={() => void copyLink(mustardLink.url)}
+                    title={mustardLink.url}
+                  >
+                    {linkCopied ? 'Copied to your clipboard' : mustardLink.url.replace(/^https:\/\//, '')}
+                  </button>
+                  <p className="mt-2 text-[12px] text-[#161616]/60">{mustardLink.message}</p>
+                  <p className="mt-1 text-[11px] font-mono text-[#161616]/45">
+                    Expires {new Date(mustardLink.expiresAt).toLocaleString()}
+                  </p>
+                  <button className={`${btnGhost} mt-2`} onClick={() => setMustardLink(null)}>
+                    Make another
+                  </button>
+                </>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {(['human-call', 'facebook-dm', 'linkedin-dm', 'cold-email'] as const).map((src) => (
+                    <button key={src} className={btnGhost} disabled={busy !== ''} onClick={() => void mintLink(src)}>
+                      {busy === `link:${src}` ? 'Minting...' : `Link for ${src.replace(/-/g, ' ')}`}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="mt-3 text-[11px] leading-snug text-[#161616]/50">
+                It fills their number in. It does not consent for them and it never dials on its own. They still tick
+                the box and press the button.
+              </p>
+            </Section>
+
             <Section title="Do something">
               <div className="flex flex-col gap-2">
                 <button className={btnPrimary} disabled={busy !== '' || !l.acq_eligible} onClick={() => void act('queue-email')}>

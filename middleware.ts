@@ -3,11 +3,24 @@ import { verifyToken, COOKIE_NAME } from '@/lib/admin-auth';
 import { verifyClientToken, CLIENT_COOKIE_NAME } from '@/lib/client-auth';
 
 export const config = {
-  matcher: ['/admin/:path*', '/portal/:path*'],
+  matcher: ['/admin/:path*', '/portal/:path*', '/Mustard', '/MUSTARD'],
 };
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
+
+  // ── /Mustard, as Sarah says it out loud ──
+  // This lives here rather than in next.config because config redirects match
+  // case-INSENSITIVELY: a `/Mustard -> /mustard` rule also matches `/mustard`
+  // and redirects the canonical page to itself forever. An exact string
+  // comparison is the only way to catch the capital and leave the real page
+  // alone. The query string carries through, so ?source= and a magic-link
+  // token survive.
+  if (path !== '/mustard' && path.toLowerCase() === '/mustard') {
+    const url = req.nextUrl.clone();
+    url.pathname = '/mustard';
+    return NextResponse.redirect(url);
+  }
 
   // ── Client portal ──
   if (path.startsWith('/portal')) {

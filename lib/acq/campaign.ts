@@ -26,13 +26,16 @@ export function permissionUrl(lead: Pick<AcqProspect, 'id'>, step: number, varia
   return `${SITE.url}/api/acq/click?${q.toString()}`;
 }
 
-/** Where the click lands, and where a prospect can arrive cold. */
+/**
+ * The doorway. ONE page for every channel: cold email, Facebook, LinkedIn, a QR
+ * code, Sarah reading it down the phone. The `source` is the whole tracking
+ * system, so a new channel needs a new URL rather than a new page.
+ */
 export function permissionPageUrl(leadId?: string, variantKey?: string): string {
-  const q = new URLSearchParams();
+  const q = new URLSearchParams({ source: 'cold-email' });
   if (leadId) q.set('p', leadId);
-  if (variantKey) q.set('v', variantKey);
-  const s = q.toString();
-  return `${SITE.url}/meet-mr-mustard${s ? `?${s}` : ''}`;
+  if (variantKey) q.set('utm_content', variantKey);
+  return `${SITE.url}/mustard?${q.toString()}`;
 }
 
 /**

@@ -82,7 +82,7 @@ export function useCountUp(target: number, ms = 700): number {
 
 /* ----------------------------------- nav ---------------------------------- */
 
-export type AcqTab = 'factory' | 'command' | 'prospects' | 'finder' | 'campaign' | 'calls' | 'sender' | 'intelligence' | 'settings';
+export type AcqTab = 'factory' | 'command' | 'prospects' | 'finder' | 'campaign' | 'mustard' | 'calls' | 'sender' | 'intelligence' | 'settings';
 
 const TABS: { key: AcqTab; href: string; label: string }[] = [
   { key: 'factory', href: '/admin/acquisition', label: 'Client Factory' },
@@ -90,7 +90,8 @@ const TABS: { key: AcqTab; href: string; label: string }[] = [
   { key: 'prospects', href: '/admin/acquisition/prospects', label: 'Prospects' },
   { key: 'finder', href: '/admin/acquisition/lead-finder', label: 'Lead Finder' },
   { key: 'campaign', href: '/admin/acquisition/campaign', label: 'Campaign' },
-  { key: 'calls', href: '/admin/acquisition/calls', label: 'Mr. Mustard' },
+  { key: 'mustard', href: '/admin/acquisition/mustard', label: '/mustard' },
+  { key: 'calls', href: '/admin/acquisition/calls', label: 'Calls' },
   { key: 'sender', href: '/admin/acquisition/sender-health', label: 'Sender Health' },
   { key: 'intelligence', href: '/admin/acquisition/intelligence', label: 'Intelligence' },
   { key: 'settings', href: '/admin/acquisition/settings', label: 'Settings' },
