@@ -298,6 +298,7 @@ export type AcqProspect = {
   notes: string | null;
   rep_notes: string | null;
   demo_url: string | null;
+  hub_demo_id: string | null;
   hub_demo_url: string | null;
   site_demo_url: string | null;
   site_demo_status: string | null;

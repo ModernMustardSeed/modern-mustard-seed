@@ -52,6 +52,8 @@ import { provisionPurchase } from '@/lib/provision';
 import { sendReviewNudge } from '@/lib/review-nudge';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { possessive } from '@/lib/business-name';
+import { cancelPendingFor } from '@/lib/acq/queue';
+import { recordEvent } from '@/lib/acq/events';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -1624,10 +1626,37 @@ async function handleDemoOrderPaid(
     try {
       const { data: wonLead } = await supabase
         .from('outbound_leads')
-        .update({ status: 'won', next_action: 'Deliver demo order within 7 days' })
+        .update({
+          status: 'won',
+          next_action: 'Deliver demo order within 7 days',
+          // The acquisition engine counts clients off these fields. Setting them
+          // here is what closes its funnel: the prospect who was emailed, called
+          // by Mr. Mustard and forged now shows up as a client on the 50 client
+          // dial rather than sitting forever at "checkout sent".
+          client_status: 'client',
+          payment_status: 'paid',
+          acq_stage: 'client',
+          won_at: new Date().toISOString(),
+          setup_cents: order.setup_cents ?? null,
+          mrr_cents: order.monthly_cents ?? null,
+          acq_eligible: false,
+          acq_ineligible_reason: 'They bought. Prospecting stops.',
+        })
         .eq('id', order.outbound_lead_id)
         .select('*')
         .maybeSingle();
+
+      // Stop every queued email, follow-up and call for this prospect. Nothing
+      // reads worse than a "should I leave you alone?" landing on a customer.
+      // Both writes are safe on a replay: the pending -> paid lock above means
+      // this block only runs once per order.
+      await cancelPendingFor(supabase, order.outbound_lead_id, undefined, 'They bought. Prospecting stops.');
+      await recordEvent(supabase, {
+        leadId: order.outbound_lead_id,
+        type: 'purchased',
+        label: `Purchased: ${label} (${money})`,
+        detail: { stripeSession: session.id, products, setupCents: order.setup_cents, monthlyCents: order.monthly_cents },
+      });
       await supabase.from('messages').insert({
         outbound_lead_id: order.outbound_lead_id,
         direction: 'inbound',

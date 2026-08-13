@@ -222,9 +222,20 @@ export async function sendCampaignEmail(
   return { ok: true, messageId: sent.id, subject: built.subject };
 }
 
+/**
+ * Where they buy.
+ *
+ * The real order page is the forged hub's own order screen, because that is
+ * where the Stripe session is minted with the demo order attached, and it is
+ * what carries the purchase back onto this lead through the store webhook. A
+ * prospect with nothing forged yet has no hub, so they get the public offer page
+ * instead of a link that would 404 in front of a buyer.
+ */
 export function checkoutUrlFor(lead: AcqProspect): string {
-  const q = new URLSearchParams({ products: 'voice', lead: lead.id, ref: 'mr-mustard' });
-  return `${SITE.url}/demo/order?${q.toString()}`;
+  const hubId = lead.hub_demo_id;
+  if (hubId) return `${SITE.url}/demo/order/${hubId}?products=voice`;
+  if (lead.hub_demo_url) return `${lead.hub_demo_url}?order=voice`;
+  return `${SITE.url}/voice-agents`;
 }
 
 export const CALENDAR_URL = `${SITE.url}/book`;

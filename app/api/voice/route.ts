@@ -28,6 +28,8 @@ import {
   handleStopContacting,
   handleAcqEndOfCall,
 } from '@/lib/acq/voice-tools';
+import { cancelPendingFor } from '@/lib/acq/queue';
+import { recordEvent } from '@/lib/acq/events';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -747,6 +749,43 @@ const ACQ_TOOLS = new Set([
   'stop_contacting',
 ]);
 
+/**
+ * Carry a booking made on an acquisition call onto the prospect: stage, meeting
+ * time, and a stop on every queued sales chase. Best effort by design, because a
+ * failure here must never turn a successful booking into a tool error the caller
+ * hears about.
+ */
+async function noteAcqBooking(
+  acq: NonNullable<ReturnType<typeof acqContext>>,
+  args: { startIso?: string },
+  toolResult: string,
+): Promise<void> {
+  try {
+    if (!/"ok"\s*:\s*true/.test(toolResult)) return;
+    const sb = getSupabase();
+    if (!sb) return;
+    await sb
+      .from('outbound_leads')
+      .update({
+        meeting_status: 'booked',
+        meeting_at: args.startIso ?? null,
+        acq_stage: 'meeting',
+        needs_human: null,
+      })
+      .eq('id', acq.leadId);
+    await cancelPendingFor(sb, acq.leadId, ['email', 'followup'], 'They booked Sarah. Sales chasing stops.');
+    await recordEvent(sb, {
+      leadId: acq.leadId,
+      campaignId: acq.campaignId,
+      type: 'meeting_booked',
+      label: `Booked Sarah${args.startIso ? ` for ${args.startIso}` : ''}`,
+      detail: { startIso: args.startIso ?? null },
+    });
+  } catch (err) {
+    console.error('acq booking note failed', err);
+  }
+}
+
 async function runAcqTool(
   name: string,
   ctx: NonNullable<ReturnType<typeof acqContext>>,
@@ -835,6 +874,11 @@ export async function POST(req: Request) {
           result = await getSlots((args as { fromDate?: string }).fromDate);
         } else if (fnName === 'book_discovery_call') {
           result = await bookSlot(args as Parameters<typeof bookSlot>[0], callerNumber);
+          // A booking made on an acquisition call is a funnel stage, so it is
+          // carried onto the prospect. Without this the Command Center would
+          // show a lead stuck at "Mr. Mustard called" who is already on Sarah's
+          // calendar, and the chase emails would keep going out.
+          if (acq) await noteAcqBooking(acq, args as { startIso?: string }, result);
         } else if (fnName === 'capture_lead') {
           result = await captureLead(args as Parameters<typeof captureLead>[0], callerNumber);
         } else if (fnName === 'send_email') {
