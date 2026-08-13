@@ -577,112 +577,114 @@ const TOOLS = [
  * deep, LAID-BACK", and that laid-back is exactly the softness Sarah hears. So
  * on native, presence is bought with pace and persona, never amplitude.
  *
- * ELEVENLABS IS RETIRED AS OF 2026-08-12. Sarah's call: too expensive for what
- * it bought. He ran on 11labs Will (bIHbv24MWmeRgasZH58o, "Relaxed Optimist")
- * from 2026-08-06 for six days, purely to get `useSpeakerBoost`, which is the
- * only true loudness control in either provider. The economics killed it:
- * Starter is 30-40k credits/month and turbo_v2_5 bills 0.5 credits/character, so
- * roughly 1,000 characters a minute put his hard ceiling at 60-80 minutes of
- * speech a MONTH. That covered the phone line, the homepage hero button, the
- * chat widget and the English path of VoiceTalkButton, all uncapped and all open
- * to anonymous visitors. MMS sells 500-minute plans. When the credits ran out
- * ElevenLabs would 401 and Vapi would kill the call with
- * pipeline-error-eleven-labs-blocked, mid-sentence, with no degraded mode.
+ * ══ VOICE HISTORY, 2026-08-12, ONE DAY, THREE PROVIDERS. READ BEFORE CHANGING. ══
  *
- * DO NOT REINTRODUCE IT without Sarah saying so. If she ever does, the two facts
- * that cost an hour last time: (1) Vapi validates an ElevenLabs key by calling
- * /v1/user, so a restricted key that does perfect TTS is still rejected unless it
- * carries `user_read`; (2) Vapi allows exactly one ElevenLabs credential per org,
- * so PATCH the existing id 568ed8fa-b98c-47b6-9349-65c66cdb1c18 rather than
- * POSTing a second. Settings that worked: turbo_v2_5, useSpeakerBoost true,
- * stability 0.35, similarityBoost 0.75, and style MUST be 0 (style is
- * exaggeration; Roger at 0.35 read announcer-y and Sarah's word was "stuffy").
+ * He ran on 11labs Will from 2026-08-06 and sounded right. Sarah moved off it on
+ * cost, and the two replacements both failed, in two DIFFERENT ways, both of
+ * which looked fine at config time:
+ *
+ * 1. Vapi-native Rohan. Configured perfectly, connected perfectly, and Sarah's
+ *    verdict was "so robotic." Native is Vapi's cheapest bundled tier and it
+ *    reads synthetic on a phone line whichever name you pick. Not a bad choice
+ *    inside the set; the set is the problem.
+ * 2. OpenAI gpt-4o-mini-tts / echo. Every PATCH returned 200. The voice object
+ *    stored cleanly, `instructions` and all. Then THREE REAL INBOUND CALLS DIED
+ *    with `pipeline-error-openai-voice-failed` (01:20:27, 01:20:39, 01:20:55Z).
+ *    The org has two OpenAI credentials attached and neither actually works for
+ *    TTS. Vapi does not check that until it asks for audio, mid-call.
+ *
+ * ⚠️ THE LESSON, AND IT COST HER A DEAD PHONE LINE: A 200 FROM VAPI PROVES THE
+ * CONFIG IS VALID AND NOTHING ELSE. It does not prove the provider credential
+ * works, is funded, or has quota left. The ONLY proof is a real call. After ANY
+ * voice change, place one, then read the result back:
+ *   GET /call?assistantId=faf7f2c4-...&limit=3  ->  check `endedReason`
+ * A healthy call ends `customer-ended-call`. Anything matching
+ * `pipeline-error-*-voice-*` means the voice is broken and the line is down.
+ *
+ * BACK ON ELEVENLABS AS OF 2026-08-12, Sarah's call after seeing both failures:
+ * "lets just add elevenlabs back but for mr mustard only. it shouldnt break."
+ * This is the ONE configuration with six days of real call history behind it, on
+ * a credential that has already proven it works end to end. Him only: SF Trucking
+ * stays on a bundled native voice, so the quota is not split two ways.
+ *
+ * ⚠️ THE REMAINING RISK IS QUOTA, AND IT IS REAL. Starter is 30-40k credits and
+ * turbo_v2_5 bills 0.5 credits/character, so roughly 1,000 characters a minute
+ * caps him near 60-80 minutes of speech a MONTH, shared with the homepage hero
+ * button, the chat widget and VoiceTalkButton in English (all three call
+ * `vapi.start(id)` with NO voice override, so they use this voice and this
+ * quota; forged demos do not, `sidekickVoice()` overrides them to native). When
+ * it runs out, ElevenLabs 401s and the call dies mid-sentence with
+ * `pipeline-error-eleven-labs-blocked`. Upgrading the ElevenLabs plan is the fix,
+ * not a different voice.
+ *
+ * Two facts that cost an hour on 2026-08-06, do not rediscover them:
+ *   1. Vapi validates an ElevenLabs key by calling /v1/user, so a restricted key
+ *      that does perfect TTS is still rejected without `user_read`.
+ *   2. Vapi allows exactly ONE ElevenLabs credential per org, so PATCH the
+ *      existing id 568ed8fa-b98c-47b6-9349-65c66cdb1c18, never POST a second.
+ *
+ * Instant revert to a voice that cannot fail on a credential (robotic, but it
+ * answers), if the quota runs out at 2am:
+ *   $env:VAPI_VOICE_PROVIDER="vapi"; $env:VAPI_VOICE_ID="Rohan"
+ *   node scripts/setup-vapi-mustard.mjs --update faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee
  * ------------------------------------------------------------------ */
 
-/* DEFAULT = OpenAI gpt-4o-mini-tts, "echo", as of 2026-08-12.
- *
- * Vapi-native lasted one afternoon. Sarah's verdict on native Rohan: "so
- * robotic." That is not a bad pick inside the native set, it is the native set:
- * those voices are Vapi's cheapest bundled tier and they read synthetic on a
- * phone line no matter which name you choose. Cycling Neil/Kai/Godfrey would
- * have burned her afternoon for the same result.
- *
- * The lever that actually exists here is `instructions`, and ONLY OpenAI has it
- * (probed 2026-08-12: Vapi stores it verbatim on the voice object). Every other
- * provider lets you pick a timbre; this one lets you DIRECT the read. Robotic is
- * usually flat prosody rather than a bad voice, and prosody is exactly what this
- * field controls. That is why this is the answer and another voice name is not.
- *
- * Cost: it bills to the OpenAI credential ALREADY on the org, usage-based, with
- * no monthly character cliff to fall off mid-call. gpt-4o-mini-tts audio runs
- * about $0.015/minute, so 500 minutes is roughly $7.50. ElevenLabs Starter was
- * $5 for 60-80 minutes and then hard-stopped the phone line.
- *
- * ⚠️ ONLY FOUR OPENAI VOICES WORK HERE, and the failure is confusing enough to
- * cost you twenty minutes. Probed against the LIVE assistant 2026-08-12:
- *   usable:  echo (default, conversational male) · onyx (deeper, more
- *            authority, but watch for announcer-y, which is the exact note
- *            Sarah gave ElevenLabs Roger) · fable (British male) · alloy (neutral)
- *   REJECTED: ash, sage, ballad, verse -> "Voice X may only be used with realtime
- *            models". He runs claude-sonnet-4-6, not a realtime model, so those
- *            four are permanently unavailable to him.
- * The trap: POSTing a NEW bare assistant with `ash` returns 201, because a
- * assistant with no model block is not yet realtime-incompatible. Config-time
- * acceptance on a throwaway does NOT prove it works on him. PATCH the real
- * assistant, or a throwaway carrying his model, when probing voices.
- *
- * A/B alternates beyond OpenAI, all probed 201 on this org:
- *   rime-ai `marsh` on mistv2, built for phone calls, or cartesia `sonic-2`,
- *   lowest latency of the three. Deepgram Aura works too (bare names:
- *   orion / arcas / zeus, with model 'aura-2') but it is flatter than
- *   OpenAI-with-instructions and takes no delivery direction at all.
- * Flip the voice with no code edit:
- *   $env:VAPI_VOICE_ID="onyx"; node scripts/setup-vapi-mustard.mjs --update <id>
- *
- * And note that 201 proves the config is valid, NOT that the call connects: an
- * 11labs voice also configures fine and then drops the call if the credential's
- * plan is exhausted. Always place a real call after changing the voice. */
-const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || 'openai';
-// 1.0, deliberately. The old 1.08 was bought on ElevenLabs to make a soft voice
-// read awake, and speeding up a TTS engine is itself one of the things that
-// makes it sound synthetic. Pace now comes from the instructions below instead.
-const VOICE_SPEED = Number(env('VAPI_VOICE_SPEED') || 1.0);
+// DEFAULT = 11labs. It must be the DEFAULT and not an env-only flip, or the next
+// `--update` run without the env var silently drops him to a voice Sarah has
+// already rejected out loud.
+const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || '11labs';
+// 1.08 reads noticeably more awake and forward without chipmunking him.
+// Probed: 1.25 / 1.5 / 2.0 are all accepted, so there is headroom if she wants more.
+const VOICE_SPEED = Number(env('VAPI_VOICE_SPEED') || 1.08);
 
-/* The delivery direction. This is prose the TTS model actually follows, so write
- * it like direction to a voice actor, not like config. Keep it about HOW he
- * sounds; WHAT he says is the system prompt's job, and mixing the two makes both
- * worse.
- *
- * Written for a PHONE specifically. Phone audio is band-limited: it throws away
- * the highs and lows that carry warmth, so a read that sounds fine in headphones
- * arrives thin and mechanical through a handset. The direction has to overshoot
- * warmth and variation to survive the trip.
- *
- * If Sarah says robotic again, THIS is the thing to rewrite, not the voiceId.
- * Prosody is where robotic lives. Be concrete: name the behavior you want
- * ("start a touch higher and settle") rather than an adjective ("be natural").
- * Adjectives average out to the default read, which is the flat one. */
-const VOICE_INSTRUCTIONS =
-  env('VAPI_VOICE_INSTRUCTIONS') ||
-  [
-    'You are a real person on a real phone call, mid-conversation. Never a recording, never an announcer, never a narrator reading a script.',
-    'Warm and genuinely glad this person called. Keep a faint smile in the voice the whole way through.',
-    'Vary constantly. Change pitch, speed and volume from sentence to sentence, and even inside a sentence. Even, metronomic delivery is the single thing that makes a voice sound like a machine, so avoid it above everything else.',
-    'Start each answer a touch higher and brighter, then settle as you go, the way people do when they are actually pleased to help.',
-    'Use natural contractions. Let small pauses fall where a thinking person would pause, especially before a number or a name.',
-    'Land the last word of a sentence warmly instead of trailing off flat. Lift gently at the end of a question so it sounds asked, not recited.',
-    'Unhurried but awake. Never rushed, never sleepy, never breathy.',
-    'Grounded and friendly, like someone who runs a good shop and knows their trade. Never salesy, never hyped, never chipper.',
-  ].join(' ');
-
-const voice = {
-  provider: VOICE_PROVIDER,
-  voiceId: env('VAPI_VOICE_ID') || 'echo',
-  speed: VOICE_SPEED,
-  ...(VOICE_PROVIDER === 'openai'
-    ? { model: env('VAPI_OPENAI_TTS_MODEL') || 'gpt-4o-mini-tts', instructions: VOICE_INSTRUCTIONS }
-    : {}),
-};
+const voice =
+  VOICE_PROVIDER === '11labs'
+    ? {
+        provider: '11labs',
+        /* Chris (iP95p4xoKVk53GoZ742B), "charming, down to earth". Sarah's
+         * verdict on a real call, 2026-08-12: "hes perfect". That is the first
+         * unqualified yes any voice has gotten, across six months and nine
+         * candidates, so treat it as settled and do not swap it on a hunch.
+         *
+         * How he was found, because the method is the reusable part: he was a
+         * RUNNER-UP she had already heard and passed on back on 2026-08-06.
+         * When the replacements failed, the answer was not a new search, it was
+         * the shortlist she had already judged by ear. Every other voice was
+         * A/B'd against him with EVERY other setting held identical, so the only
+         * variable was timbre. That is why this landed in three tries.
+         *
+         * Heard and rejected, do not re-propose without a reason:
+         *   Sid (native)    "worked amazingly" 6/23, then too soft 8/06
+         *   Elliot (native) lost the 6/23 A/B to Sid
+         *   Rohan (native)  "so robotic" 8/12
+         *   Azure Andrew    worse and slower, reverted 6/27
+         *   Roger  CwhRBWXzGAHq8TQ4Fs17  "too stuffy" (that was style 0.35)
+         *   Will   bIHbv24MWmeRgasZH58o  ran 8/06-8/12, fine, not it
+         *   Brian  nPczCjzI2devNBz1zQrb  "closest to Sid's depth", passed 8/12
+         *   Eric   cjVigY5qzO86Huf0OWal  "smooth, trustworthy", never tried */
+        voiceId: env('VAPI_VOICE_ID') || 'iP95p4xoKVk53GoZ742B',
+        // turbo_v2_5 balances quality and latency. eleven_flash_v2_5 is the
+        // lower-latency lever if he ever feels slow on a real call.
+        model: env('VAPI_11LABS_MODEL') || 'eleven_turbo_v2_5',
+        useSpeakerBoost: true, // the actual loudness control, the whole reason to be here
+        // ⚠️ style MUST STAY 0. `style` is EXAGGERATION: it makes ElevenLabs
+        // PERFORM the line rather than say it, which reads announcer-y on a
+        // phone call. Roger shipped at 0.35 and Sarah's verdict was "too
+        // stuffy" — that setting, not the voice, is what made a voice literally
+        // labeled "laid-back" come out formal. It costs latency too.
+        style: 0.0,
+        stability: 0.35, // lower = looser and more human; higher drifts monotone
+        similarityBoost: 0.75,
+        speed: VOICE_SPEED,
+      }
+    : {
+        // Any non-11labs provider: bundled Vapi natives are the safe fallback,
+        // because they need no credential and therefore cannot fail the way
+        // OpenAI did. Rohan over Sid, which Sarah called too soft on 08-06.
+        provider: VOICE_PROVIDER,
+        voiceId: env('VAPI_VOICE_ID') || 'Rohan',
+        speed: VOICE_SPEED,
+      };
 
 /* ───────────────────────── Assistant body ───────────────────────── */
 

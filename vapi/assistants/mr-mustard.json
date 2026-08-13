@@ -367,11 +367,14 @@
     "provider": "deepgram"
   },
   "voice": {
-    "instructions": "You are a real person on a real phone call, mid-conversation. Never a recording, never an announcer, never a narrator reading a script. Warm and genuinely glad this person called. Keep a faint smile in the voice the whole way through. Vary constantly. Change pitch, speed and volume from sentence to sentence, and even inside a sentence. Even, metronomic delivery is the single thing that makes a voice sound like a machine, so avoid it above everything else. Start each answer a touch higher and brighter, then settle as you go, the way people do when they are actually pleased to help. Use natural contractions. Let small pauses fall where a thinking person would pause, especially before a number or a name. Land the last word of a sentence warmly instead of trailing off flat. Lift gently at the end of a question so it sounds asked, not recited. Unhurried but awake. Never rushed, never sleepy, never breathy. Grounded and friendly, like someone who runs a good shop and knows their trade. Never salesy, never hyped, never chipper.",
-    "model": "gpt-4o-mini-tts",
-    "provider": "openai",
-    "speed": 1,
-    "voiceId": "echo"
+    "model": "eleven_turbo_v2_5",
+    "provider": "11labs",
+    "similarityBoost": 0.75,
+    "speed": 1.08,
+    "stability": 0.35,
+    "style": 0,
+    "useSpeakerBoost": true,
+    "voiceId": "iP95p4xoKVk53GoZ742B"
   },
   "voicemailMessage": "Please call back when you're available.",
   "_generatedBy": "setup-vapi-mustard.mjs"
