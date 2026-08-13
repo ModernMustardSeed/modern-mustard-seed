@@ -73,41 +73,76 @@ async function txt(name: string): Promise<string[]> {
   }
 }
 
+/**
+ * SPF, checked where it is ACTUALLY evaluated.
+ *
+ * ⚠️ The root domain's SPF record is the wrong place to look, and looking there
+ * alone produced a false alarm on 2026-08-13 that nearly had Sarah editing a
+ * working record. SPF is checked against the ENVELOPE sender (the Return-Path),
+ * not the From header. Resend provisions a `send.<domain>` subdomain for that
+ * envelope and puts the SES include on it. The root SPF record belongs to
+ * whoever handles normal business mail, which here is Zoho, and it is
+ * completely irrelevant to what Resend sends.
+ *
+ * Under DMARC relaxed alignment (`aspf=r`, which is the default and what this
+ * domain publishes) an envelope of send.example.com aligns with a From of
+ * example.com, because the organizational domain matches. So a correctly
+ * provisioned Return-Path subdomain means SPF both PASSES and ALIGNS.
+ */
 async function checkSpf(domain: string): Promise<HealthCheck> {
-  const records = (await txt(domain)).filter((r) => /^v=spf1/i.test(r));
-  if (!records.length) {
+  const root = (await txt(domain)).filter((r) => /^v=spf1/i.test(r));
+  const envelopeHost = `send.${domain}`;
+  const envelope = (await txt(envelopeHost)).filter((r) => /^v=spf1/i.test(r));
+  const sesInclude = (r: string) => /include:.*(amazonses|resend)/i.test(r);
+
+  if (root.length > 1) {
     return {
       id: 'spf',
       label: 'SPF',
       level: 'error',
-      detail: `No SPF record on ${domain}.`,
-      fix: 'Add the SPF record Resend gives you in its Domains screen.',
-    };
-  }
-  const record = records[0];
-  const includesResend = /include:.*resend/i.test(record) || /include:.*amazonses/i.test(record);
-  if (records.length > 1) {
-    return {
-      id: 'spf',
-      label: 'SPF',
-      level: 'error',
-      detail: `${records.length} SPF records on ${domain}. More than one is an automatic fail at the receiver.`,
+      detail: `${root.length} SPF records on ${domain}. More than one is an automatic fail at every receiver.`,
       fix: 'Merge them into a single v=spf1 record.',
     };
   }
-  if (includesResend) return { id: 'spf', label: 'SPF', level: 'pass', detail: record };
 
-  // Not automatically a failure, and worth saying why rather than raising an
-  // alarm. Resend signs with DKIM on our own domain and uses its own envelope
-  // sender, so DMARC can pass on DKIM alignment alone. It becomes a real problem
-  // the moment a custom return-path is configured, and it is worth fixing anyway
-  // because some receivers weight both.
+  // The path that actually matters for this sender.
+  if (envelope.length === 1 && sesInclude(envelope[0])) {
+    return {
+      id: 'spf',
+      label: 'SPF',
+      level: 'pass',
+      detail:
+        `${envelopeHost} publishes "${envelope[0]}". That subdomain is the Return-Path Resend sends from, so SPF is ` +
+        `evaluated there and passes, and it aligns with ${domain} under relaxed DMARC alignment. ` +
+        (root.length ? `The root record ("${root[0]}") belongs to normal business mail and is not used by this path.` : ''),
+    };
+  }
+
+  if (!root.length && !envelope.length) {
+    return {
+      id: 'spf',
+      label: 'SPF',
+      level: 'error',
+      detail: `No SPF record on ${domain} or ${envelopeHost}.`,
+      fix: 'Add the SPF record Resend shows in its Domains screen.',
+    };
+  }
+
+  if (root.length === 1 && sesInclude(root[0])) {
+    return { id: 'spf', label: 'SPF', level: 'pass', detail: `${domain} publishes "${root[0]}".` };
+  }
+
+  // No Return-Path subdomain and no SES include on the root. DKIM still carries
+  // DMARC on its own, so this is a warning rather than a stop.
   return {
     id: 'spf',
     label: 'SPF',
     level: 'warning',
-    detail: `${record}. No Resend or SES include, so SPF will not align on cold sends. DKIM is signing on this domain and DMARC can pass on DKIM alignment alone, which is why this is a warning and not a stop.`,
-    fix: 'Add Resend to the SPF record alongside Zoho, or leave it and rely on DKIM. Do not configure a custom return-path at Resend until SPF includes it.',
+    detail:
+      `${root[0] ?? '(no root SPF)'}. There is no Return-Path subdomain at ${envelopeHost} and no SES include on the ` +
+      `root, so SPF will not align on these sends. DKIM signs on this domain and DMARC can pass on DKIM alignment ` +
+      `alone, which is why this is a warning and not a stop.`,
+    fix: `Verify the domain in Resend so it provisions ${envelopeHost}. Do not edit the root SPF record, which belongs to normal business mail.`,
   };
 }
 
