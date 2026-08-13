@@ -96,6 +96,7 @@ const DEPARTMENTS = [
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
   { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },
   { name: 'Voice Agents', tag: `CALL HIM: ${DEMO_LINE.display}`, href: '/voice-agents' },
+  { name: 'Meet Mr. Mustard', tag: 'HE CALLS YOU IN TEN SECONDS', href: '/meet-mr-mustard' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
   { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },

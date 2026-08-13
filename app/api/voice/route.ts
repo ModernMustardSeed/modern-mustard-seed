@@ -19,6 +19,15 @@ import { sendMetaEvent } from '@/lib/meta-capi';
 import { randomUUID } from 'node:crypto';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { forgeSuiteFromCall } from '@/lib/voice-forge-suite';
+import {
+  acqContext,
+  handleForgeProspectAgent,
+  handleEmailProspectDemo,
+  handleSendCheckoutLink,
+  handleLogCallOutcome,
+  handleStopContacting,
+  handleAcqEndOfCall,
+} from '@/lib/acq/voice-tools';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -443,6 +452,7 @@ const RESOURCE_CATALOG: Record<string, CatalogEntry> = {
   // into admin, so they are dropped on non-admin calls). Paths mirror the admin
   // nav in components/admin/AdminHeader.tsx.
   'admin-outbound': { label: 'The dial floor (Outbound)', url: `${SITE_ROOT}/admin/outbound`, admin: true },
+  'admin-acquisition': { label: 'The Acquisition Command Center', url: `${SITE_ROOT}/admin/acquisition`, admin: true },
   'admin-pipeline': { label: 'The pipeline (every lead)', url: `${SITE_ROOT}/admin/leads`, admin: true },
   'admin-partner-hub': { label: 'Partner Hub', url: `${SITE_ROOT}/admin/hq`, admin: true },
   'admin-delivery': { label: 'The delivery board', url: `${SITE_ROOT}/admin/delivery`, admin: true },
@@ -640,6 +650,25 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
     ((call.assistantOverrides as Record<string, unknown>)?.metadata as Record<string, unknown>) || {}) as Record<string, unknown>;
   const prospectId = typeof meta.prospectId === 'string' ? meta.prospectId : null;
   const outboundLeadId = typeof meta.outboundLeadId === 'string' ? meta.outboundLeadId : null;
+
+  // An acquisition demo call banks its own record: the call row, the funnel
+  // stage, and whichever follow-up the outcome earns. Idempotent, because Vapi
+  // retries this webhook and a retry must not add a second conversation to the
+  // funnel or fire the follow-ups twice.
+  const acq = acqContext(meta);
+  if (acq) {
+    try {
+      await handleAcqEndOfCall(acq, {
+        summary,
+        transcript,
+        durationSeconds,
+        endedReason,
+        vapiCallId: typeof call.id === 'string' ? call.id : undefined,
+      });
+    } catch (err) {
+      console.error('acq end-of-call failed', err);
+    }
+  }
   if (prospectId || outboundLeadId) {
     try {
       const sb = getSupabase();
@@ -705,6 +734,40 @@ type VapiToolCall = {
   function?: { name: string; arguments: unknown };
 };
 
+/**
+ * The acquisition toolbelt (lib/acq/voice-tools.ts). Listed here rather than
+ * chained onto the if/else above so the studio line's own seven tools stay
+ * visibly untouched: this whole branch is unreachable without acq metadata.
+ */
+const ACQ_TOOLS = new Set([
+  'forge_prospect_agent',
+  'email_prospect_demo',
+  'send_checkout_link',
+  'log_call_outcome',
+  'stop_contacting',
+]);
+
+async function runAcqTool(
+  name: string,
+  ctx: NonNullable<ReturnType<typeof acqContext>>,
+  args: Record<string, unknown>,
+): Promise<string> {
+  switch (name) {
+    case 'forge_prospect_agent':
+      return handleForgeProspectAgent(ctx, args);
+    case 'email_prospect_demo':
+      return handleEmailProspectDemo(ctx, args);
+    case 'send_checkout_link':
+      return handleSendCheckoutLink(ctx, args);
+    case 'log_call_outcome':
+      return handleLogCallOutcome(ctx, args);
+    case 'stop_contacting':
+      return handleStopContacting(ctx, args);
+    default:
+      return JSON.stringify({ ok: false, error: `Unknown tool: ${name}` });
+  }
+}
+
 function parseArgs(raw: unknown): Record<string, unknown> {
   if (!raw) return {};
   if (typeof raw === 'string') {
@@ -752,6 +815,11 @@ export async function POST(req: Request) {
     const deskKind = typeof meta.desk === 'string' ? meta.desk : null;
     const authedEmail = typeof meta.email === 'string' ? meta.email : null;
 
+    // An acquisition call carries acq:true plus the prospect it belongs to. His
+    // five extra tools only resolve on those calls; on the studio line and every
+    // forged web demo this is null and nothing below changes.
+    const acq = acqContext(meta);
+
     // Vapi sends toolCallList (new) or toolCalls (older payloads). Handle both.
     const rawCalls = (message.toolCallList ?? message.toolCalls ?? []) as VapiToolCall[];
     const results: { toolCallId: string; result: string }[] = [];
@@ -775,6 +843,13 @@ export async function POST(req: Request) {
           result = await reachSarah(args as Parameters<typeof reachSarah>[0], callerNumber);
         } else if (fnName === 'forge_demo_suite') {
           result = await forgeSuiteFromCall(args as Parameters<typeof forgeSuiteFromCall>[0], callerNumber);
+        } else if (ACQ_TOOLS.has(fnName)) {
+          result = acq
+            ? await runAcqTool(fnName, acq, args)
+            : JSON.stringify({
+                ok: false,
+                error: 'That tool only exists on an acquisition call. Continue without it.',
+              });
         } else {
           result = JSON.stringify({ ok: false, error: `Unknown tool: ${fnName}` });
         }

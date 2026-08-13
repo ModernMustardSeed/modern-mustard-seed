@@ -1,0 +1,359 @@
+/**
+ * THE MR. MUSTARD ACQUISITION ENGINE — shared vocabulary.
+ *
+ * One journey, five words: Prospect → Permission → Mr. Mustard → Forge → Sale.
+ * Every stage name, score band and status string in the engine comes from here,
+ * so the admin, the queue, the emails and the voice tools can never disagree
+ * about what a lead's state actually is.
+ */
+
+import { DEMO_PRODUCTS } from '@/lib/demo-order';
+
+/* ─────────────────────────────── the trades ─────────────────────────────── */
+
+export const TRADES = ['hvac', 'plumbing', 'roofing', 'other'] as const;
+export type Trade = (typeof TRADES)[number];
+
+export const TRADE_LABELS: Record<Trade, string> = {
+  hvac: 'HVAC',
+  plumbing: 'Plumbing',
+  roofing: 'Roofing',
+  other: 'Other trade',
+};
+
+/** What a customer of this trade calls about when it is urgent and expensive. */
+export const TRADE_SCENARIOS: Record<Trade, string[]> = {
+  hvac: [
+    'the AC stopped cooling and the house is 88 degrees',
+    'no heat overnight with a baby in the house',
+    'a furnace making a noise it has never made before',
+    'a quote on replacing a twenty year old system',
+    'a maintenance tune-up before summer',
+  ],
+  plumbing: [
+    'a burst pipe running water under the kitchen',
+    'a water heater leaking across the garage floor',
+    'a main line backing up into the shower',
+    'a clogged drain that will not clear',
+    'a running toilet and a dripping faucet on the same visit',
+  ],
+  roofing: [
+    'an active leak in the ceiling during a storm',
+    'hail damage the insurance adjuster wants documented',
+    'a missing section of shingles after wind',
+    'an inspection before closing on a house',
+    'a full replacement quote on a twenty five year old roof',
+  ],
+  other: ['an urgent service call after hours', 'a quote on a job worth real money'],
+};
+
+/** The greeting a receptionist for this trade actually opens with at 11pm. */
+export const TRADE_ROLEPLAY_NOTE: Record<Trade, string> = {
+  hvac:
+    'HVAC MODE. You know no-cool, no-heat, emergency HVAC, repair vs replacement, maintenance plans, thermostats, AC tune-ups and scheduling. Ask about the system age and whether anyone in the house is medically vulnerable to the temperature. Never diagnose the equipment.',
+  plumbing:
+    'PLUMBING MODE. You know burst pipes, active leaks, clogged drains, sewer and main line backups, water heaters, toilets, faucets, emergency plumbing and scheduling. On an active leak, the first thing out of your mouth is where the shutoff valve is. Never diagnose the plumbing.',
+  roofing:
+    'ROOFING MODE. You know active roof leaks, storm and hail damage, inspections, repair vs replacement, insurance claim questions, and commercial versus residential. On an active leak you take the address and get somebody out; you never quote a price sight unseen. Never speculate about what insurance will cover.',
+  other:
+    'Handle it like an excellent front desk: who is calling, what they need, how urgent, and how to reach them.',
+};
+
+/* ─────────────────────────── the journey stages ─────────────────────────── */
+
+export const ACQ_STAGES = [
+  'prospect',
+  'emailed',
+  'consented',
+  'called',
+  'demoed',
+  'forged',
+  'demo_sent',
+  'meeting',
+  'client',
+  'lost',
+] as const;
+export type AcqStage = (typeof ACQ_STAGES)[number];
+
+export const STAGE_LABELS: Record<AcqStage, string> = {
+  prospect: 'Prospect',
+  emailed: 'Email sent',
+  consented: 'Consented',
+  called: 'Mr. Mustard called',
+  demoed: 'Demo completed',
+  forged: 'Agent forged',
+  demo_sent: 'Demo sent',
+  meeting: 'Meeting / checkout',
+  client: 'Client',
+  lost: 'Lost',
+};
+
+/** The funnel, in order, as the Command Center draws it. */
+export const FUNNEL_STAGES: AcqStage[] = [
+  'prospect',
+  'emailed',
+  'consented',
+  'called',
+  'demoed',
+  'forged',
+  'demo_sent',
+  'meeting',
+  'client',
+];
+
+/* ───────────────────────────── email quality ────────────────────────────── */
+
+export const EMAIL_STATUSES = ['verified', 'likely', 'public', 'risky', 'invalid', 'unknown'] as const;
+export type EmailStatus = (typeof EMAIL_STATUSES)[number];
+
+export const EMAIL_STATUS_LABELS: Record<EmailStatus, string> = {
+  verified: 'Verified',
+  likely: 'Likely valid',
+  public: 'Publicly listed',
+  risky: 'Risky',
+  invalid: 'Invalid',
+  unknown: 'Unknown',
+};
+
+/**
+ * THE SEND GATE. Nothing outside this set is ever mailed by the campaign, and
+ * the check lives in one place so no future surface can quietly widen it.
+ * `risky` and `invalid` are excluded on purpose: a bounce costs the sending
+ * domain far more than a lead is worth, and this rides sarah@modernmustardseed.com.
+ */
+export const MAILABLE_EMAIL_STATUSES: EmailStatus[] = ['verified', 'likely', 'public'];
+
+export function isMailableEmailStatus(s: string | null | undefined): boolean {
+  return MAILABLE_EMAIL_STATUSES.includes(s as EmailStatus);
+}
+
+/* ──────────────────────────── the call record ───────────────────────────── */
+
+export type CallStage = 'none' | 'requested' | 'queued' | 'ringing' | 'attempted' | 'completed' | 'failed';
+export type DemoStatus = 'none' | 'requested' | 'forging' | 'ready' | 'failed';
+export type ConsentStatus = 'none' | 'granted' | 'revoked';
+
+/* ─────────────────────────── the queue job kinds ────────────────────────── */
+
+export const QUEUE_KINDS = ['email', 'call', 'forge', 'demo_email', 'checkout', 'research', 'followup'] as const;
+export type QueueKind = (typeof QUEUE_KINDS)[number];
+
+/* ───────────────────────────── canonical price ──────────────────────────── */
+
+/**
+ * The offer this campaign sells, read from the ONE place price lives
+ * (data/sidekick.ts → lib/demo-order.ts). Never retype the number: if Sarah
+ * reprices the Voice Agent, the emails, the goal math and Mr. Mustard's script
+ * all move with it on the next request.
+ */
+export const OFFER = {
+  get name() {
+    return DEMO_PRODUCTS.voice.name;
+  },
+  get setupCents() {
+    return DEMO_PRODUCTS.voice.setupCents;
+  },
+  get monthlyCents() {
+    return DEMO_PRODUCTS.voice.monthlyCents;
+  },
+  get setupUsd() {
+    return Math.round(DEMO_PRODUCTS.voice.setupCents / 100);
+  },
+  get monthlyUsd() {
+    return Math.round(DEMO_PRODUCTS.voice.monthlyCents / 100);
+  },
+  /** "$397 setup + $397/month" — the exact phrase every surface uses. */
+  get line() {
+    return `$${Math.round(DEMO_PRODUCTS.voice.setupCents / 100)} setup + $${Math.round(
+      DEMO_PRODUCTS.voice.monthlyCents / 100,
+    )}/month`;
+  },
+} as const;
+
+/* ────────────────────────────── the campaign ────────────────────────────── */
+
+export const CAMPAIGN_SLUG = 'meet-mr-mustard';
+
+export type AcqCampaign = {
+  id: string;
+  slug: string;
+  name: string;
+  status: 'draft' | 'live' | 'paused' | 'stopped';
+  goal_clients: number;
+  daily_send_cap: number;
+  hourly_send_cap: number;
+  send_start_hour: number;
+  send_end_hour: number;
+  send_weekdays_only: boolean;
+  from_name: string;
+  from_email: string;
+  reply_to: string;
+  step2_after_days: number;
+  step3_after_days: number;
+  max_call_attempts: number;
+  settings: Record<string, unknown>;
+  started_at: string | null;
+  paused_at: string | null;
+};
+
+export type AcqVariant = {
+  id: string;
+  campaign_id: string;
+  key: string;
+  step: number;
+  subject: string;
+  cta_label: string;
+  body_key: string;
+  weight: number;
+  active: boolean;
+};
+
+export type AcqSettings = {
+  master_paused: boolean;
+  sourcing_enabled: boolean;
+  enrichment_enabled: boolean;
+  email_enabled: boolean;
+  calls_enabled: boolean;
+  followups_enabled: boolean;
+  daily_sourcing_enabled: boolean;
+  daily_sourcing_target: number;
+  daily_sourcing_split: Record<string, number>;
+  total_campaign_max: number;
+  min_lead_score: number;
+  paused_reason: string | null;
+  updated_at: string;
+};
+
+/**
+ * The acquisition view of a lead. A superset of OutboundLead's acquisition
+ * columns; queries select what they need, so this is intentionally partial-safe.
+ */
+export type AcqProspect = {
+  id: string;
+  business_name: string;
+  contact_name: string | null;
+  contact_title: string | null;
+  phone: string;
+  email: string | null;
+  website: string | null;
+  niche: string;
+  trade: Trade | null;
+  city: string | null;
+  state: string | null;
+  address: string | null;
+  postal_code: string | null;
+  service_area: string | null;
+  email_status: EmailStatus | null;
+  email_confidence: number | null;
+  email_source: string | null;
+  email_source_url: string | null;
+  contact_source_url: string | null;
+  phone_type: string | null;
+  rating: number | null;
+  review_count: number | null;
+  hours: Record<string, string> | null;
+  open_24_7: boolean;
+  emergency_service: boolean;
+  call_volume_score: number | null;
+  missed_call_score: number | null;
+  lead_score: number | null;
+  score_reasons: ScoreReason[] | null;
+  priority: number | null;
+  source: string | null;
+  source_urls: string[] | null;
+  acq_campaign_id: string | null;
+  acq_stage: AcqStage;
+  acq_variant: string | null;
+  acq_eligible: boolean;
+  acq_ineligible_reason: string | null;
+  email_stage: number;
+  last_campaign_email_at: string | null;
+  reply_at: string | null;
+  call_stage: CallStage | null;
+  call_attempts: number;
+  last_call_at: string | null;
+  consent_status: ConsentStatus | null;
+  consent_at: string | null;
+  consent_id: string | null;
+  demo_status: DemoStatus | null;
+  demo_emailed_at: string | null;
+  checkout_sent_at: string | null;
+  checkout_url: string | null;
+  meeting_status: string | null;
+  meeting_at: string | null;
+  payment_status: string | null;
+  client_status: string | null;
+  won_at: string | null;
+  setup_cents: number | null;
+  mrr_cents: number | null;
+  unsubscribed_at: string | null;
+  suppression_reason: string | null;
+  bounced: boolean;
+  duplicate_of: string | null;
+  is_test: boolean;
+  assigned_to: string | null;
+  last_researched_at: string | null;
+  imported_at: string | null;
+  needs_human: string | null;
+  notes: string | null;
+  rep_notes: string | null;
+  demo_url: string | null;
+  hub_demo_url: string | null;
+  site_demo_url: string | null;
+  site_demo_status: string | null;
+  os_demo_url: string | null;
+  dnc_checked: boolean;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+/** One line of "why this lead scored what it scored", shown in the CRM. */
+export type ScoreReason = { label: string; points: number };
+
+export type AcqEvent = {
+  id: string;
+  lead_id: string | null;
+  campaign_id: string | null;
+  type: string;
+  label: string;
+  detail: Record<string, unknown>;
+  occurred_at: string;
+};
+
+export type AcqCall = {
+  id: string;
+  lead_id: string | null;
+  vapi_call_id: string | null;
+  status: 'queued' | 'ringing' | 'in_progress' | 'completed' | 'failed' | 'no_answer';
+  attempt: number;
+  to_phone: string;
+  requested_at: string;
+  started_at: string | null;
+  ended_at: string | null;
+  duration_sec: number | null;
+  ended_reason: string | null;
+  roleplay_scenario: string | null;
+  summary: string | null;
+  transcript: string | null;
+  intel: CallIntel | null;
+  outcome: string | null;
+};
+
+/** What we pull out of a Mr. Mustard conversation and act on. */
+export type CallIntel = {
+  pain_point: string | null;
+  company_size: string | null;
+  current_phone_workflow: string | null;
+  missed_call_problem: string | null;
+  after_hours_need: string | null;
+  objection: string | null;
+  requested_features: string[];
+  buying_intent: 'high' | 'medium' | 'low' | 'none' | null;
+  price_reaction: string | null;
+  next_step: string | null;
+  competitor: string | null;
+  close_probability: number | null;
+  roleplay_scenario: string | null;
+  needs_human: string | null;
+};

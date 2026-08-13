@@ -64,6 +64,10 @@
     {
       "path": "/api/cron/celebrate-drip",
       "schedule": "0 16 * * *"
+    },
+    {
+      "path": "/api/cron/acquisition",
+      "schedule": "0,20,40 14-23 * * 1-5"
     }
   ]
 }
