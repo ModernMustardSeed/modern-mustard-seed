@@ -40,7 +40,6 @@ export default function Footer() {
       title: 'Programs',
       links: [
         { label: 'Seed to System', href: '/seed-to-system' },
-        { label: 'One-Person Business Class', href: '/one-person-business' },
         { label: 'Idea to Spec', href: '/idea-to-spec' },
         { label: 'The Terminal', href: '/the-terminal' },
         { label: 'The Store', href: '/store' },
