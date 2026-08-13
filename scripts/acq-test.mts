@@ -23,8 +23,10 @@ import { normalizeObjection } from '../lib/acq/stats';
 import { addBusinessDays, shouldStopFollowup } from '../lib/acq/runner';
 import { cloudflareEmails, extractPhone, extractHours, extractServiceArea, parseOsmHours, matchesTrade, normalizePhone, decodeObfuscated, hostOf } from '../lib/acq/source';
 import { tradeOf, buildBriefing, firstMessage, acquisitionTools } from '../lib/acq/call';
+import { authorize, nextRampStep, backOffStep, tierFor } from '../lib/acq/governor';
+import { goalLadder, forecast, monthsBetween, type FunnelRate } from '../lib/acq/factory';
 import { OFFER, isMailableEmailStatus } from '../lib/acq/types';
-import type { AcqProspect, AcqVariant } from '../lib/acq/types';
+import type { AcqProspect, AcqVariant, AcqSettings, AcqCampaign } from '../lib/acq/types';
 
 /* --------------------------------- helpers -------------------------------- */
 
@@ -107,6 +109,14 @@ const lead = (over: Partial<AcqProspect> = {}): AcqProspect =>
     status: 'new',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
+    hub_demo_id: null,
+    acq_cohort_id: null,
+    reservoir_state: 'ready',
+    email_tier: null,
+    metro: null,
+    last_enriched_at: null,
+    enrichment_provider: null,
+    enrichment_cost_cents: null,
     ...over,
   }) as AcqProspect;
 
@@ -534,6 +544,215 @@ test('intelligence: objections collapse into the families that matter', () => {
   assert.equal(normalizeObjection('my customers will know it is a robot'), 'Customers will know it is AI');
   assert.equal(normalizeObjection('needs to talk to his partner'), 'Timing, needs to think');
   assert.equal(normalizeObjection('does it work with ServiceTitan'), 'Integration with their software');
+});
+
+/* -------------------------------- governor -------------------------------- */
+
+const settingsFor = (over: Partial<AcqSettings> = {}): AcqSettings =>
+  ({
+    master_paused: false, sourcing_enabled: true, enrichment_enabled: true, email_enabled: true,
+    calls_enabled: true, followups_enabled: true, daily_sourcing_enabled: false, daily_sourcing_target: 100,
+    daily_sourcing_split: {}, total_campaign_max: 25000, min_lead_score: 40, paused_reason: null,
+    updated_at: new Date().toISOString(),
+    global_rolling_24h_ceiling: 4500, sender_state: 'healthy', sender_state_reason: null,
+    sender_state_at: new Date().toISOString(), adaptive_daily_allowance: 500, last_ramp_at: null,
+    max_bounce_rate_pct: 4, max_complaint_rate_pct: 0.1, min_days_between_emails: 2,
+    allowed_email_tiers: ['A', 'B', 'C'], target_ready_inventory: 25000,
+    hunter_min_lead_score: 70, hunter_daily_credit_cap: 0,
+    ...over,
+  }) as AcqSettings;
+
+const campaignFor = (over: Partial<AcqCampaign> = {}): AcqCampaign =>
+  ({
+    id: 'c0000000-0000-4000-8000-000000000000', slug: 'meet-mr-mustard', name: 'MEET MR. MUSTARD',
+    status: 'live', goal_clients: 50, daily_send_cap: 150, hourly_send_cap: 25,
+    // A window wide enough that the test never depends on the wall clock.
+    send_start_hour: 0, send_end_hour: 24, send_weekdays_only: false,
+    from_name: 'Sarah', from_email: 's@x.com', reply_to: 's@x.com',
+    step2_after_days: 2, step3_after_days: 4, max_call_attempts: 2, settings: {},
+    started_at: null, paused_at: null, goal_mrr_cents: 0, goal_revenue_cents: 100000000,
+    goal_horizon_months: 12, goal_started_on: null, monthly_client_target_min: 30,
+    monthly_client_target_stretch: 40,
+    ...over,
+  }) as AcqCampaign;
+
+const clean = { sent24h: 0, sent1h: 0, bounced24h: 0, complained24h: 0, unsub24h: 0 };
+const fakeDb = {} as never;
+
+async function decide(over: { lead?: Partial<AcqProspect>; settings?: Partial<AcqSettings>; campaign?: Partial<AcqCampaign>; rolling?: typeof clean } = {}) {
+  return authorize({
+    db: fakeDb,
+    lead: lead(over.lead ?? {}),
+    settings: settingsFor(over.settings),
+    campaign: campaignFor(over.campaign),
+    rolling: over.rolling ?? clean,
+  });
+}
+
+test('governor: a clean prospect in a healthy state is allowed', async () => {
+  const d = await decide();
+  assert.equal(d.allowed, true, d.reason ?? '');
+  assert.ok(d.remainingToday > 0);
+});
+
+test('governor: every global stop refuses, and says which one', async () => {
+  const cases: [Parameters<typeof decide>[0], RegExp][] = [
+    [{ settings: { master_paused: true, paused_reason: 'held' } }, /master switch/i],
+    [{ settings: { email_enabled: false } }, /outbound email/i],
+    [{ campaign: { status: 'paused' } }, /campaign status/i],
+    [{ settings: { sender_state: 'restricted', sender_state_reason: 'complaints' } }, /sender state/i],
+    [{ settings: { sender_state: 'paused' } }, /sender state/i],
+  ];
+  for (const [over, expected] of cases) {
+    const d = await decide(over);
+    assert.equal(d.allowed, false, JSON.stringify(over));
+    assert.match(d.reason ?? '', expected);
+  }
+});
+
+test('governor: the rolling ceiling and the allowance are separate walls', async () => {
+  // Under the ceiling but at the allowance: still refused. The allowance is the
+  // wall that actually binds day to day.
+  const atAllowance = await decide({ rolling: { ...clean, sent24h: 500 } });
+  assert.equal(atAllowance.allowed, false);
+  assert.match(atAllowance.reason ?? '', /adaptive allowance/i);
+
+  // At the hard ceiling with an allowance raised above it: still refused, and
+  // the ceiling is what names it.
+  const atCeiling = await decide({
+    settings: { adaptive_daily_allowance: 99999 },
+    rolling: { ...clean, sent24h: 4500 },
+  });
+  assert.equal(atCeiling.allowed, false);
+  assert.match(atCeiling.reason ?? '', /ceiling/i);
+});
+
+test('governor: the ceiling is clamped below five thousand by the allowance min', async () => {
+  const d = await decide({ settings: { adaptive_daily_allowance: 999999, global_rolling_24h_ceiling: 4500 } });
+  assert.equal(d.allowance, 4500, 'the allowance can never exceed the ceiling');
+  assert.equal(d.ceiling, 4500);
+});
+
+test('governor: the hourly cap refuses and says when to come back', async () => {
+  const d = await decide({ rolling: { ...clean, sent24h: 100, sent1h: 25 } });
+  assert.equal(d.allowed, false);
+  assert.match(d.reason ?? '', /hourly rate/i);
+  assert.ok(d.retryAfter instanceof Date);
+});
+
+test('governor: bad rates stop the engine, and a thin sample does not', async () => {
+  const bad = await decide({ rolling: { ...clean, sent24h: 200, bounced24h: 20 } });
+  assert.equal(bad.allowed, false);
+  assert.match(bad.reason ?? '', /bounce rate/i);
+
+  const complained = await decide({ rolling: { ...clean, sent24h: 200, complained24h: 3 } });
+  assert.equal(complained.allowed, false);
+  assert.match(complained.reason ?? '', /complaint rate/i);
+
+  // The same ratio under the measurement floor must NOT stop anything: two
+  // bounces out of ten is noise, not a signal.
+  const thin = await decide({ rolling: { ...clean, sent24h: 10, bounced24h: 2 } });
+  assert.equal(thin.allowed, true, thin.reason ?? '');
+});
+
+test('governor: every recipient-level stop refuses', async () => {
+  const cases: [Partial<AcqProspect>, RegExp][] = [
+    [{ email: null }, /recipient address/i],
+    [{ is_test: true }, /real prospect/i],
+    [{ unsubscribed_at: new Date().toISOString() }, /opt-out/i],
+    [{ bounced: true }, /previous bounce/i],
+    [{ dnc_checked: true }, /do not contact/i],
+    [{ email_status: 'risky' }, /email confidence/i],
+    [{ last_campaign_email_at: new Date().toISOString() }, /contact frequency/i],
+  ];
+  for (const [over, expected] of cases) {
+    const d = await decide({ lead: over });
+    assert.equal(d.allowed, false, JSON.stringify(over));
+    assert.match(d.reason ?? '', expected);
+  }
+});
+
+test('governor: an email tier outside the allowed set is refused', async () => {
+  const d = await decide({ lead: { email_status: 'public' }, settings: { allowed_email_tiers: ['A'] } });
+  assert.equal(d.allowed, false);
+  assert.match(d.reason ?? '', /email confidence/i);
+});
+
+test('governor: the send window refuses outside hours and says when it opens', async () => {
+  const d = await decide({ campaign: { send_start_hour: 9, send_end_hour: 10, send_weekdays_only: false } });
+  // Either it is genuinely inside 09:00-10:00 Mountain right now, or it refuses
+  // with a retry time. Both are correct; a silent pass is not.
+  if (!d.allowed) {
+    assert.match(d.reason ?? '', /send window/i);
+    assert.ok(d.retryAfter instanceof Date);
+  }
+});
+
+test('governor: the ramp goes up one step and comes down a whole one', () => {
+  assert.equal(nextRampStep(100, 4500), 250);
+  assert.equal(nextRampStep(1000, 4500), 1500);
+  assert.equal(nextRampStep(4500, 4500), 4500, 'never past the ceiling');
+  assert.equal(nextRampStep(250, 500), 500, 'the ceiling clamps the step');
+  assert.equal(backOffStep(1000), 750);
+  assert.equal(backOffStep(100), 100, 'never below the first step');
+});
+
+test('governor: email tiers follow provenance, not optimism', () => {
+  assert.equal(tierFor({ email_status: 'verified', email_source: 'website', email_confidence: 90 }), 'A');
+  assert.equal(tierFor({ email_status: 'verified', email_source: 'hunter', email_confidence: 90 }), 'B');
+  assert.equal(tierFor({ email_status: 'likely', email_source: 'website', email_confidence: 78 }), 'A');
+  assert.equal(tierFor({ email_status: 'likely', email_source: 'website', email_confidence: 40 }), 'C');
+  assert.equal(tierFor({ email_status: 'public', email_source: 'osm', email_confidence: 48 }), 'C');
+  assert.equal(tierFor({ email_status: 'risky', email_source: null, email_confidence: 30 }), 'HOLD');
+  assert.equal(tierFor({ email_status: 'unknown', email_source: null, email_confidence: 0 }), 'HOLD');
+});
+
+/* ------------------------------ client factory ---------------------------- */
+
+test('factory: the ladder marks the rung we are on and never treats it as a ceiling', () => {
+  const l = goalLadder(12, 500_000, 50);
+  const current = l.clients.find((c) => c.current);
+  assert.equal(current?.value, 50);
+  assert.equal(l.clients.some((c) => c.value === 5000), true, 'the ladder runs past the goal');
+  assert.equal(l.clients.filter((c) => c.reached).length, 0);
+
+  const past = goalLadder(260, 12_000_000, 50);
+  assert.equal(past.clients.find((c) => c.current)?.value, 500);
+  assert.ok(past.clients.filter((c) => c.reached).length >= 3);
+});
+
+test('factory: a forecast off a thin sample returns nothing rather than a fiction', () => {
+  const thin: FunnelRate[] = [
+    { key: 'email-permission', label: '', numerator: 1, denominator: 3, ratePct: 33, thin: true },
+    { key: 'permission-call', label: '', numerator: 1, denominator: 1, ratePct: 100, thin: true },
+    { key: 'call-forge', label: '', numerator: 0, denominator: 1, ratePct: 0, thin: true },
+    { key: 'forge-paid', label: '', numerator: 0, denominator: 0, ratePct: null, thin: true },
+  ];
+  const f = forecast(thin, 50);
+  assert.equal(f.prospectsNeeded, null);
+  assert.equal(f.confident, false);
+  assert.match(f.basedOn, /not enough/i);
+});
+
+test('factory: a real sample forecasts, labels itself a projection, and widens when thin', () => {
+  const rates: FunnelRate[] = [
+    { key: 'email-permission', label: '', numerator: 40, denominator: 10000, ratePct: 0.4, thin: false },
+    { key: 'permission-call', label: '', numerator: 33, denominator: 40, ratePct: 82, thin: false },
+    { key: 'call-forge', label: '', numerator: 22, denominator: 33, ratePct: 67, thin: false },
+    { key: 'forge-paid', label: '', numerator: 7, denominator: 22, ratePct: 31, thin: false },
+  ];
+  const f = forecast(rates, 30);
+  assert.ok(f.forgesNeeded! >= 96 && f.forgesNeeded! <= 98, `forges ${f.forgesNeeded}`);
+  assert.ok(f.emailsNeeded! > 40000, `emails ${f.emailsNeeded}`);
+  assert.match(f.basedOn, /PROJECTION, NOT GUARANTEE/);
+  assert.equal(f.confident, false, 'the smallest denominator here is 22, which is not a confident sample');
+  assert.ok(f.high! > f.low!);
+});
+
+test('factory: whole months are floored, not rounded up', () => {
+  assert.equal(monthsBetween(new Date('2026-01-15T00:00:00Z'), new Date('2026-02-14T00:00:00Z')), 0);
+  assert.equal(monthsBetween(new Date('2026-01-15T00:00:00Z'), new Date('2026-02-15T00:00:00Z')), 1);
+  assert.equal(monthsBetween(new Date('2026-01-15T00:00:00Z'), new Date('2027-01-15T00:00:00Z')), 12);
 });
 
 /* ---------------------------------- price --------------------------------- */

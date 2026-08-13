@@ -28,6 +28,22 @@ const FALLBACK: AcqSettings = {
   min_lead_score: 40,
   paused_reason: 'Acquisition settings are unreadable, so everything is held.',
   updated_at: new Date(0).toISOString(),
+  // The governor's fallback is the most restrictive posture there is: paused,
+  // restricted, and an allowance of zero. An unreadable settings row must never
+  // read as permission.
+  global_rolling_24h_ceiling: 4500,
+  sender_state: 'restricted',
+  sender_state_reason: 'Settings unreadable.',
+  sender_state_at: new Date(0).toISOString(),
+  adaptive_daily_allowance: 0,
+  last_ramp_at: null,
+  max_bounce_rate_pct: 4,
+  max_complaint_rate_pct: 0.1,
+  min_days_between_emails: 2,
+  allowed_email_tiers: [],
+  target_ready_inventory: 25000,
+  hunter_min_lead_score: 70,
+  hunter_daily_credit_cap: 0,
 };
 
 /** Fails CLOSED. An unreadable settings row must never read as "everything on". */

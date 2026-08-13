@@ -5,6 +5,7 @@ import { getAcqSettings, getCampaign } from '@/lib/acq/settings';
 import { enqueue } from '@/lib/acq/queue';
 import { dueForStep } from '@/lib/acq/eligibility';
 import { recordEvent } from '@/lib/acq/events';
+import { rampSender } from '@/lib/acq/governor';
 import type { AcqProspect } from '@/lib/acq/types';
 
 export const runtime = 'nodejs';
@@ -99,7 +100,22 @@ export async function GET(req: Request) {
     }
   }
 
-  /* ── 3. drain ── */
+  /* ── 3. the ramp ── */
+
+  // Evaluated every tick and acted on rarely: up needs a full clean day at the
+  // current allowance, down needs only one bad signal. The asymmetry is the
+  // whole design.
+  const ramp = await rampSender(db);
+  if (ramp.changed) {
+    await recordEvent(db, {
+      campaignId: campaign.id,
+      type: 'note',
+      label: `Sender allowance ${ramp.to > ramp.from ? 'raised' : 'lowered'} from ${ramp.from} to ${ramp.to} (${ramp.state})`,
+      detail: { reason: ramp.reason },
+    });
+  }
+
+  /* ── 4. drain ── */
 
   const drained = await drainQueue({ limit: 40, worker: 'cron' });
 
@@ -112,5 +128,5 @@ export async function GET(req: Request) {
     });
   }
 
-  return NextResponse.json({ ok: true, swept, sourcingRun, drained });
+  return NextResponse.json({ ok: true, swept, sourcingRun, ramp, drained });
 }

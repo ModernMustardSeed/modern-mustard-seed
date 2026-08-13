@@ -24,6 +24,7 @@ import { recordEvent } from '@/lib/acq/events';
 import { OFFER } from '@/lib/acq/types';
 import type { AcqCampaign, AcqProspect } from '@/lib/acq/types';
 import { SITE } from '@/lib/seo';
+import { authorize, recordSend, recordRefusal } from '@/lib/acq/governor';
 
 /** Above this share of the day's sends bouncing, stop and shout. */
 export const BOUNCE_ALARM_PCT = 4;
@@ -150,12 +151,35 @@ function permanent(error: string): SendResult {
   return { ok: false, error, permanent: true };
 }
 
+/**
+ * THE ONE GATE. Every marketing send in this file asks first, and a refusal is
+ * recorded rather than swallowed so "why did nothing go out" always has an
+ * answer. Transactional mail does not come through here.
+ */
+async function gateOrRefuse(
+  db: SupabaseClient,
+  campaign: AcqCampaign,
+  lead: AcqProspect,
+  kind: 'campaign' | 'followup' | 'demo' | 'checkout',
+): Promise<{ ok: true } | { ok: false; result: SendResult }> {
+  const decision = await authorize({ db, lead, kind, campaign });
+  if (decision.allowed) return { ok: true };
+  await recordRefusal(db, lead, campaign.id, decision.reason ?? 'refused');
+  // A refusal about THIS person is permanent for this job; a refusal about
+  // volume or the window is not, and the queue should come back later.
+  const aboutTheRecipient = /opt-out|suppress|bounce|do not contact|confidence|test prospect|no email/i.test(decision.reason ?? '');
+  return { ok: false, result: { ok: false, error: decision.reason ?? 'Refused by the outbound governor.', permanent: aboutTheRecipient } };
+}
+
 export async function sendCampaignEmail(
   db: SupabaseClient,
   campaign: AcqCampaign,
   lead: AcqProspect,
   step: 1 | 2 | 3,
 ): Promise<SendResult> {
+  const gate = await gateOrRefuse(db, campaign, lead, 'campaign');
+  if (!gate.ok) return gate.result;
+
   const variants = await getVariants(campaign.id);
   const variant = pickVariant(variants, step, lead.id);
   if (!variant) return permanent(`No active variant for step ${step}.`);
@@ -218,6 +242,20 @@ export async function sendCampaignEmail(
     label: `Campaign email ${step} sent (variant ${variant.key}): ${built.subject}`,
     detail: { step, variant: variant.key, subject: built.subject, messageId: sent.id, to: built.to },
   });
+  // The governor counts its rolling window off acq_sends, so a send that is not
+  // recorded is a send the ceiling does not know about.
+  await recordSend(db, {
+    leadId: lead.id,
+    campaignId: campaign.id,
+    cohortId: lead.acq_cohort_id,
+    kind: 'campaign',
+    step,
+    variant: variant.key,
+    to: built.to,
+    from: built.from,
+    subject: built.subject,
+    providerMessageId: sent.id,
+  });
 
   return { ok: true, messageId: sent.id, subject: built.subject };
 }
@@ -248,6 +286,9 @@ export async function sendDemoEmail(
   const demoUrl = lead.hub_demo_url || lead.demo_url;
   if (!demoUrl) return { ok: false, error: 'Nothing forged yet.', permanent: false };
 
+  const gate = await gateOrRefuse(db, campaign, lead, 'demo');
+  if (!gate.ok) return gate.result;
+
   const built = buildDemoEmail({
     lead,
     demoUrl,
@@ -272,9 +313,19 @@ export async function sendDemoEmail(
   });
   if (!sent.ok) return { ok: false, error: sent.error, permanent: Boolean(sent.suppressed?.length) };
 
+  await recordSend(db, {
+    leadId: lead.id,
+    campaignId: campaign.id,
+    cohortId: lead.acq_cohort_id,
+    kind: 'demo',
+    to: built.to,
+    from: built.from,
+    subject: built.subject,
+    providerMessageId: sent.id,
+  });
   await db
     .from('outbound_leads')
-    .update({ demo_emailed_at: new Date().toISOString(), acq_stage: 'demo_sent' })
+    .update({ demo_emailed_at: new Date().toISOString(), acq_stage: 'demo_sent', reservoir_state: 'hot' })
     .eq('id', lead.id);
   await recordEvent(db, {
     leadId: lead.id,
@@ -293,6 +344,9 @@ export async function sendFollowup(
   lead: AcqProspect,
   kind: FollowupKind,
 ): Promise<SendResult> {
+  const gate = await gateOrRefuse(db, campaign, lead, 'followup');
+  if (!gate.ok) return gate.result;
+
   const built = buildFollowupEmail({
     kind,
     lead,
@@ -319,6 +373,17 @@ export async function sendFollowup(
   if (!sent.ok) return { ok: false, error: sent.error, permanent: Boolean(sent.suppressed?.length) };
 
   await db.from('outbound_leads').update({ last_campaign_email_at: new Date().toISOString() }).eq('id', lead.id);
+  await recordSend(db, {
+    leadId: lead.id,
+    campaignId: campaign.id,
+    cohortId: lead.acq_cohort_id,
+    kind: 'followup',
+    variant: kind,
+    to: built.to,
+    from: built.from,
+    subject: built.subject,
+    providerMessageId: sent.id,
+  });
   await recordEvent(db, {
     leadId: lead.id,
     campaignId: campaign.id,
@@ -339,6 +404,14 @@ export async function sendCheckoutLink(
   note?: string,
 ): Promise<SendResult> {
   if (!lead.email) return permanent('No email address on the prospect.');
+
+  // The activation link is asked for out loud on a call, so it is the one place
+  // where the send window and the pacing caps would be actively unhelpful. It
+  // still goes through the governor: opt-out, suppression, bounce, do-not-contact
+  // and the hard ceiling all still apply.
+  const gate = await gateOrRefuse(db, campaign, lead, 'checkout');
+  if (!gate.ok && gate.result.ok === false && gate.result.permanent) return gate.result;
+
   const { clientEmail, p, escape } = await import('@/lib/email');
   const { complianceFooter, unsubscribeUrlFor } = await import('@/lib/outbound-email');
   const { shortBusiness, greetingFor } = await import('@/lib/acq/campaign');
@@ -373,9 +446,19 @@ export async function sendCheckoutLink(
   });
   if (!sent.ok) return { ok: false, error: sent.error, permanent: Boolean(sent.suppressed?.length) };
 
+  await recordSend(db, {
+    leadId: lead.id,
+    campaignId: campaign.id,
+    cohortId: lead.acq_cohort_id,
+    kind: 'checkout',
+    to: lead.email,
+    from: campaign.from_email,
+    subject: `Your Voice Agent activation link, ${business}`,
+    providerMessageId: sent.id,
+  });
   await db
     .from('outbound_leads')
-    .update({ checkout_sent_at: new Date().toISOString(), checkout_url: url, acq_stage: 'meeting' })
+    .update({ checkout_sent_at: new Date().toISOString(), checkout_url: url, acq_stage: 'meeting', reservoir_state: 'checkout' })
     .eq('id', lead.id);
   await recordEvent(db, {
     leadId: lead.id,

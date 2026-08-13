@@ -194,6 +194,13 @@ export type AcqCampaign = {
   settings: Record<string, unknown>;
   started_at: string | null;
   paused_at: string | null;
+  /* goals, which are milestones and never ceilings (migration 095) */
+  goal_mrr_cents: number;
+  goal_revenue_cents: number;
+  goal_horizon_months: number;
+  goal_started_on: string | null;
+  monthly_client_target_min: number;
+  monthly_client_target_stretch: number;
 };
 
 export type AcqVariant = {
@@ -222,6 +229,20 @@ export type AcqSettings = {
   min_lead_score: number;
   paused_reason: string | null;
   updated_at: string;
+  /* the governor (migration 095) */
+  global_rolling_24h_ceiling: number;
+  sender_state: string;
+  sender_state_reason: string | null;
+  sender_state_at: string;
+  adaptive_daily_allowance: number;
+  last_ramp_at: string | null;
+  max_bounce_rate_pct: number;
+  max_complaint_rate_pct: number;
+  min_days_between_emails: number;
+  allowed_email_tiers: string[];
+  target_ready_inventory: number;
+  hunter_min_lead_score: number;
+  hunter_daily_credit_cap: number;
 };
 
 /**
@@ -307,7 +328,42 @@ export type AcqProspect = {
   status: string;
   created_at: string;
   updated_at: string;
+  /* the reservoir (migration 095) */
+  acq_cohort_id: string | null;
+  reservoir_state: ReservoirState;
+  email_tier: 'A' | 'B' | 'C' | 'HOLD' | null;
+  metro: string | null;
+  last_enriched_at: string | null;
+  enrichment_provider: string | null;
+  enrichment_cost_cents: number | null;
 };
+
+/**
+ * Where a business sits in the reservoir, which is wider than the campaign
+ * journey: a prospect can be RESEARCHING for days before it is ever eligible to
+ * be emailed, and NURTURE is a real destination rather than a failure.
+ */
+export const RESERVOIR_STATES = [
+  'discovered', 'researching', 'qualified', 'email_found', 'verified', 'ready', 'hold',
+  'queued', 'contacted', 'engaged', 'consented', 'called', 'forged', 'hot', 'meeting',
+  'checkout', 'won', 'nurture', 'lost', 'suppressed', 'disqualified',
+] as const;
+export type ReservoirState = (typeof RESERVOIR_STATES)[number];
+
+export const RESERVOIR_LABELS: Record<ReservoirState, string> = {
+  discovered: 'Discovered', researching: 'Researching', qualified: 'Qualified',
+  email_found: 'Email found', verified: 'Verified', ready: 'Ready', hold: 'Hold',
+  queued: 'Queued', contacted: 'Contacted', engaged: 'Engaged', consented: 'Consented',
+  called: 'Mr. Mustard called', forged: 'Forged', hot: 'Hot', meeting: 'Meeting',
+  checkout: 'Checkout', won: 'Won', nurture: 'Nurture', lost: 'Lost',
+  suppressed: 'Suppressed', disqualified: 'Disqualified',
+};
+
+/** The client milestones. A milestone is never a ceiling. */
+export const CLIENT_MILESTONES = [50, 100, 210, 500, 1000, 2500, 5000] as const;
+
+/** The MRR milestones, in cents. */
+export const MRR_MILESTONES_CENTS = [2_500_000, 5_000_000, 10_000_000, 25_000_000, 50_000_000, 100_000_000] as const;
 
 /** One line of "why this lead scored what it scored", shown in the CRM. */
 export type ScoreReason = { label: string; points: number };

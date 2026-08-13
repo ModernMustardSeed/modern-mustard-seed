@@ -1574,6 +1574,68 @@ async function handleHatcheryPurchase(
  * thread, and fire the provision + welcome emails. Revenue itself is
  * recorded per paid invoice by handleInvoicePaid (subscription rule).
  */
+/**
+ * Write a churn row when a subscription ends.
+ *
+ * Idempotent: the ledger is keyed by subscription, and a replayed
+ * `customer.subscription.deleted` finds the existing churn row and stops. The
+ * delta is negative, which is what makes Net New MRR an honest number rather
+ * than a running total of good news.
+ */
+async function recordAcqChurn(sub: Stripe.Subscription): Promise<void> {
+  try {
+    const db = getSupabase();
+    if (!db) return;
+
+    const { data: existing } = await db
+      .from('acq_mrr_events')
+      .select('id')
+      .eq('stripe_subscription_id', sub.id)
+      .eq('type', 'churn')
+      .limit(1);
+    if ((existing ?? []).length) return;
+
+    const { data: opened } = await db
+      .from('acq_mrr_events')
+      .select('lead_id,mrr_delta_cents')
+      .eq('stripe_subscription_id', sub.id)
+      .eq('type', 'new')
+      .maybeSingle();
+    // Only an acquisition-sourced subscription belongs in this ledger. Every
+    // other MMS product has its own bookkeeping and would double count here.
+    if (!opened) return;
+
+    const mrr = Number(opened.mrr_delta_cents ?? 0);
+    await db.from('acq_mrr_events').insert({
+      lead_id: opened.lead_id,
+      type: 'churn',
+      mrr_delta_cents: -Math.abs(mrr),
+      reason: sub.cancellation_details?.reason ?? sub.cancellation_details?.comment ?? 'subscription ended',
+      stripe_subscription_id: sub.id,
+      occurred_at: new Date().toISOString(),
+    });
+
+    if (opened.lead_id) {
+      await db
+        .from('outbound_leads')
+        .update({ client_status: 'churned', payment_status: 'cancelled', reservoir_state: 'nurture' })
+        .eq('id', opened.lead_id);
+      await recordEvent(db, {
+        leadId: opened.lead_id,
+        type: 'note',
+        label: `Subscription cancelled (${formatCents(mrr)}/mo off the book)`,
+        detail: { subscription: sub.id, reason: sub.cancellation_details?.reason ?? null },
+      });
+    }
+  } catch (err) {
+    console.error('acq churn bookkeeping failed', err);
+  }
+}
+
+function formatCents(cents: number): string {
+  return `$${Math.round(Math.abs(cents) / 100).toLocaleString('en-US')}`;
+}
+
 async function handleDemoOrderPaid(
   session: Stripe.Checkout.Session,
   email: string | null,
@@ -1656,6 +1718,18 @@ async function handleDemoOrderPaid(
         type: 'purchased',
         label: `Purchased: ${label} (${money})`,
         detail: { stripeSession: session.id, products, setupCents: order.setup_cents, monthlyCents: order.monthly_cents },
+      });
+      // The MRR ledger. Net New MRR is the Client Factory north star and it is
+      // decomposed from these rows, so a win that is not written here is a win
+      // the company cannot see itself earn. Append only, inside the pending ->
+      // paid lock, so a replayed Stripe event cannot count the same MRR twice.
+      await supabase.from('acq_mrr_events').insert({
+        lead_id: order.outbound_lead_id,
+        type: 'new',
+        mrr_delta_cents: order.monthly_cents ?? 0,
+        setup_cents: order.setup_cents ?? 0,
+        product: products || label,
+        stripe_subscription_id: subId,
       });
       await supabase.from('messages').insert({
         outbound_lead_id: order.outbound_lead_id,
@@ -2360,6 +2434,10 @@ export async function POST(req: Request) {
   }
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as Stripe.Subscription;
+    // Churn is written FIRST, before any per-product handler returns early.
+    // Net New MRR is meaningless if the only movement the ledger ever sees is
+    // the good kind, and every one of the branches below returns.
+    await recordAcqChurn(sub);
     if (sub.metadata?.kind === 'mustard-mode') {
       await handleMustardSubscriptionDeleted(stripe, sub);
       return NextResponse.json({ received: true, kind: 'mustard_subscription_canceled' });

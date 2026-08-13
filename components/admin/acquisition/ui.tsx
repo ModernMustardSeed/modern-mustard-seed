@@ -82,14 +82,16 @@ export function useCountUp(target: number, ms = 700): number {
 
 /* ----------------------------------- nav ---------------------------------- */
 
-export type AcqTab = 'command' | 'prospects' | 'finder' | 'campaign' | 'calls' | 'intelligence' | 'settings';
+export type AcqTab = 'factory' | 'command' | 'prospects' | 'finder' | 'campaign' | 'calls' | 'sender' | 'intelligence' | 'settings';
 
 const TABS: { key: AcqTab; href: string; label: string }[] = [
-  { key: 'command', href: '/admin/acquisition', label: 'Command Center' },
+  { key: 'factory', href: '/admin/acquisition', label: 'Client Factory' },
+  { key: 'command', href: '/admin/acquisition/command', label: 'Command Center' },
   { key: 'prospects', href: '/admin/acquisition/prospects', label: 'Prospects' },
   { key: 'finder', href: '/admin/acquisition/lead-finder', label: 'Lead Finder' },
   { key: 'campaign', href: '/admin/acquisition/campaign', label: 'Campaign' },
   { key: 'calls', href: '/admin/acquisition/calls', label: 'Mr. Mustard' },
+  { key: 'sender', href: '/admin/acquisition/sender-health', label: 'Sender Health' },
   { key: 'intelligence', href: '/admin/acquisition/intelligence', label: 'Intelligence' },
   { key: 'settings', href: '/admin/acquisition/settings', label: 'Settings' },
 ];
