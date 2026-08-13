@@ -49,6 +49,7 @@ import { insertLead } from '@/lib/supabase';
 import { recordProductCommission, recordSubscriptionCommission } from '@/lib/affiliate';
 import { provisionFromProposal } from '@/lib/proposal-provision';
 import { provisionPurchase } from '@/lib/provision';
+import { provisionClientFactory, suspendClientFactory } from '@/lib/factory/billing';
 import { sendReviewNudge } from '@/lib/review-nudge';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { possessive } from '@/lib/business-name';
@@ -2331,6 +2332,17 @@ export async function POST(req: Request) {
   }
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as Stripe.Subscription;
+
+    // A cancelled Client Factory is SUSPENDED, not deleted. Their prospects,
+    // conversations, CRM and attribution are their business records. The
+    // machine stops; the data stays and is there if they come back.
+    if (sub.metadata?.kind === 'client-factory') {
+      const { suspended } = await suspendClientFactory(
+        { subscriptionId: sub.id, customerId: typeof sub.customer === 'string' ? sub.customer : null },
+        'The Client Factory subscription was cancelled.',
+      );
+      return NextResponse.json({ received: true, kind: 'client_factory_canceled', suspended });
+    }
     if (sub.metadata?.kind === 'mustard-mode') {
       await handleMustardSubscriptionDeleted(stripe, sub);
       return NextResponse.json({ received: true, kind: 'mustard_subscription_canceled' });
@@ -2453,6 +2465,15 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'sidekick') {
     await handleSidekickPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'sidekick' });
+  }
+
+  // ── CLIENT FACTORY purchased. Provision the tenant, seat the buyer, apply the
+  //    plan limits, and stop there: the Factory itself is forged and reviewed,
+  //    never conjured by a card clearing. `plan` metadata picks the tier.
+  if (session.metadata?.kind === 'client-factory') {
+    const result = email ? await provisionClientFactory(session, email, name ?? null) : { ok: false as const, reason: 'No buyer email.' };
+    if (!result.ok) console.error('client-factory provisioning failed', result.reason);
+    return NextResponse.json({ received: true, kind: 'client-factory', provisioned: result.ok });
   }
 
   // ── THE CHIEF subscription started (setup fee rides the first invoice) ──

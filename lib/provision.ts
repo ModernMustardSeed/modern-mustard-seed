@@ -68,6 +68,15 @@ export function productSpecFor(kind: string, session: Stripe.Checkout.Session): 
         homeUrl: '/portal',
         detail: 'Live within 7 days, installed by hand. I email you within one business day.',
       };
+    case 'client-factory':
+      return {
+        kind,
+        label: 'Your Client Factory',
+        tier: tier ?? 'Client Factory',
+        status: 'provisioning',
+        homeUrl: '/portal/factory',
+        detail: 'We are forging your acquisition system now. You confirm the facts only you know, then we test it before it contacts anybody.',
+      };
     case 'switchboard':
       return {
         kind,
