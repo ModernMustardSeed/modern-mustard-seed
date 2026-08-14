@@ -17,11 +17,20 @@ type Campaign = {
   from_name: string;
   from_email: string;
   reply_to: string;
-  step2_after_days: number;
-  step3_after_days: number;
+  step_after_days: number[];
   max_call_attempts: number;
 };
 type Variant = { id: string; key: string; step: number; subject: string; cta_label: string; weight: number; active: boolean };
+
+/** What each email in the sequence is FOR, so the A/B panel reads as a story
+ *  rather than five numbered boxes. Cosmetic only; an unnamed step is fine. */
+const STEP_NAMES: Record<number, string> = {
+  1: 'the ask',
+  2: 'the proof',
+  3: 'the challenge',
+  4: 'keep her',
+  5: 'the breakup',
+};
 type Counts = { pending: number; claimed: number; done: number; failed: number; skipped: number; cancelled: number };
 
 export default function CampaignScreen() {
@@ -66,6 +75,12 @@ export default function CampaignScreen() {
   };
 
   const val = <K extends keyof Campaign>(k: K): Campaign[K] | undefined => (draft[k] as Campaign[K]) ?? campaign?.[k];
+
+  /** The gaps being edited. Falls back to the house spacing on an old row. */
+  const gaps: number[] = val('step_after_days') ?? [2, 3, 3, 4];
+
+  /** Emails in the sequence: one more than the number of gaps between them. */
+  const stepCount = gaps.length + 1;
 
   if (!campaign) {
     return (
@@ -122,10 +137,35 @@ export default function CampaignScreen() {
               <Num label="Hourly send cap" k="hourly_send_cap" val={val} setDraft={setDraft} />
               <Num label="Window opens (Mountain)" k="send_start_hour" val={val} setDraft={setDraft} min={0} max={23} />
               <Num label="Window closes (Mountain)" k="send_end_hour" val={val} setDraft={setDraft} min={1} max={24} />
-              <Num label="Days before email 2" k="step2_after_days" val={val} setDraft={setDraft} min={0} max={30} />
-              <Num label="Days before email 3" k="step3_after_days" val={val} setDraft={setDraft} min={0} max={30} />
               <Num label="Max call attempts" k="max_call_attempts" val={val} setDraft={setDraft} min={1} max={5} />
               <Num label="Client goal" k="goal_clients" val={val} setDraft={setDraft} min={1} max={5000} />
+            </div>
+
+            {/* One box per gap, generated from the array, so a sixth email in
+                the sequence shows up here on its own without a UI change. */}
+            <p className="mt-5 text-[10px] uppercase tracking-[0.22em] font-oswald font-semibold text-[#161616]/50">
+              Business days between emails
+            </p>
+            <div className="mt-2 flex flex-wrap gap-3">
+              {gaps.map((d, i) => (
+                <label key={i} className="block">
+                  <span className="block text-[11px] text-[#161616]/60">
+                    {i + 1} &rarr; {i + 2}
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={30}
+                    value={d}
+                    className="mt-1 w-20 rounded-lg border-2 border-[#161616] bg-white px-2 py-1.5 text-sm font-semibold"
+                    onChange={(e) => {
+                      const next = [...gaps];
+                      next[i] = Math.max(1, Math.min(30, Number(e.target.value) || 1));
+                      setDraft((s) => ({ ...s, step_after_days: next }));
+                    }}
+                  />
+                </label>
+              ))}
             </div>
             <label className="mt-3 flex items-center gap-2 text-[13px]">
               <input
@@ -153,9 +193,12 @@ export default function CampaignScreen() {
             title="A/B tests"
             note="Optimized for purchases, not opens. A prospect is assigned deterministically, so the same person always lands in the same arm."
           >
-            {[1, 2, 3].map((step) => (
+            {Array.from({ length: stepCount }, (_, i) => i + 1).map((step) => (
               <div key={step} className="mb-5">
-                <p className="text-[10px] uppercase tracking-[0.22em] font-oswald font-semibold text-[#161616]/50 mb-2">Email {step}</p>
+                <p className="text-[10px] uppercase tracking-[0.22em] font-oswald font-semibold text-[#161616]/50 mb-2">
+                  Email {step}
+                  {STEP_NAMES[step] ? <span className="ml-2 normal-case tracking-normal text-[#161616]/40">{STEP_NAMES[step]}</span> : null}
+                </p>
                 <div className="space-y-2">
                   {variants.filter((v) => v.step === step).map((v) => (
                     <div key={v.id} className="rounded-xl border-2 border-[#161616]/15 p-3">

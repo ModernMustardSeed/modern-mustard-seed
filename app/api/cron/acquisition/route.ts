@@ -3,7 +3,7 @@ import { getSupabase } from '@/lib/supabase';
 import { drainQueue } from '@/lib/acq/runner';
 import { getAcqSettings, getCampaign } from '@/lib/acq/settings';
 import { enqueue } from '@/lib/acq/queue';
-import { dueForStep } from '@/lib/acq/eligibility';
+import { dueForStep, sequenceLength } from '@/lib/acq/eligibility';
 import { recordEvent } from '@/lib/acq/events';
 import { rampSender } from '@/lib/acq/governor';
 import type { AcqProspect } from '@/lib/acq/types';
@@ -54,14 +54,17 @@ export async function GET(req: Request) {
     .select('id,acq_stage,email_stage,last_campaign_email_at,consent_status,reply_at,acq_eligible,unsubscribed_at,client_status')
     .eq('acq_campaign_id', campaign.id)
     .eq('acq_eligible', true)
-    .lt('email_stage', 3)
+    // The sequence length is configured, not fixed at three. Reading it from
+    // the campaign means adding a sixth email does not silently leave every
+    // prospect stranded after the fifth because this filter never heard of it.
+    .lt('email_stage', sequenceLength(campaign.step_after_days))
     .is('unsubscribed_at', null)
     .order('last_campaign_email_at', { ascending: true, nullsFirst: true })
     .limit(500);
 
   for (const row of ((candidates ?? []) as unknown as AcqProspect[])) {
     if (row.client_status === 'client') continue;
-    const step = dueForStep(row, now, campaign.step2_after_days, campaign.step3_after_days);
+    const step = dueForStep(row, now, campaign.step_after_days);
     if (!step) continue;
     const res = await enqueue(db, { kind: 'email', leadId: row.id, campaignId: campaign.id, step });
     if (res.ok && res.created) swept++;

@@ -69,26 +69,43 @@ export function isRoleInbox(email: string | null | undefined): boolean {
  * Separate from eligibility on purpose: a lead can be perfectly eligible and
  * still not be due.
  */
-export function dueForStep(
-  lead: AcqProspect,
-  now: Date,
-  step2AfterDays: number,
-  step3AfterDays: number,
-): 1 | 2 | 3 | null {
+export function dueForStep(lead: AcqProspect, now: Date, stepAfterDays: number[]): number | null {
   // Anything that converted stops the sequence dead.
   if (lead.consent_status === 'granted') return null;
   if (lead.reply_at) return null;
   if (['consented', 'called', 'demoed', 'forged', 'demo_sent', 'meeting', 'client'].includes(lead.acq_stage)) return null;
 
+  const gaps = sequenceGaps(stepAfterDays);
   const stage = lead.email_stage ?? 0;
-  if (stage >= 3) return null;
+  // N gaps means N+1 emails. Past the last one, the sequence is over.
+  if (stage >= gaps.length + 1) return null;
   if (stage === 0) return 1;
 
   const last = lead.last_campaign_email_at ? new Date(lead.last_campaign_email_at) : null;
-  if (!last) return (stage + 1) as 2 | 3;
-  const waited = businessDaysBetween(last, now);
-  if (stage === 1) return waited >= step2AfterDays ? 2 : null;
-  return waited >= step3AfterDays ? 3 : null;
+  if (!last) return stage + 1;
+  // gaps[0] is the wait between emails 1 and 2, so the gap after email `stage`
+  // is gaps[stage - 1].
+  return businessDaysBetween(last, now) >= gaps[stage - 1] ? stage + 1 : null;
+}
+
+/**
+ * The configured gaps, defended against a bad campaign row.
+ *
+ * A null, empty or all-zero array would otherwise mean "every remaining email
+ * is due right now" and fire the whole sequence into one inbox in one pass, so
+ * a missing value falls back to the default spacing and every entry is floored
+ * at one business day. Nothing here can produce a same-day second email.
+ */
+export function sequenceGaps(stepAfterDays: number[] | null | undefined): number[] {
+  const raw = Array.isArray(stepAfterDays) && stepAfterDays.length ? stepAfterDays : DEFAULT_STEP_GAPS;
+  return raw.slice(0, 10).map((d) => Math.max(1, Math.min(60, Math.round(Number(d) || 0) || 1)));
+}
+
+export const DEFAULT_STEP_GAPS = [2, 3, 3, 4];
+
+/** How many emails the sequence holds. One more than the number of gaps. */
+export function sequenceLength(stepAfterDays: number[] | null | undefined): number {
+  return sequenceGaps(stepAfterDays).length + 1;
 }
 
 /** Whole business days between two instants (Sat/Sun do not count). */

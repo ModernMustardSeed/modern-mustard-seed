@@ -56,7 +56,7 @@ const toRender: V[] = [
 ];
 
 for (const variant of toRender) {
-  const step = variant.step as 1 | 2 | 3;
+  const step = variant.step;
   const built = buildCampaignEmail({
     lead,
     variant: variant as never,

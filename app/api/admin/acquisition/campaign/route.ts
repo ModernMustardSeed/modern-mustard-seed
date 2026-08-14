@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAcqAdmin, enrollEligible } from '@/lib/acq/server';
 import { getCampaign, getAcqSettings, updateAcqSettings, getVariants } from '@/lib/acq/settings';
 import { runPreflight } from '@/lib/acq/preflight';
+import { sequenceGaps } from '@/lib/acq/eligibility';
 import { drainQueue } from '@/lib/acq/runner';
 import { recordEvent } from '@/lib/acq/events';
 import { queueCounts } from '@/lib/acq/queue';
@@ -86,12 +87,16 @@ export async function POST(req: Request) {
         'hourly_send_cap',
         'send_start_hour',
         'send_end_hour',
-        'step2_after_days',
-        'step3_after_days',
         'max_call_attempts',
         'goal_clients',
       ]) {
         if (body[k] !== undefined) patch[k] = Number(body[k]);
+      }
+      // The gaps between emails, one entry per gap. Run through sequenceGaps so
+      // a hand-edited payload cannot set a zero-day gap and fire the remaining
+      // sequence into one inbox in a single pass.
+      if (Array.isArray(body.step_after_days)) {
+        patch.step_after_days = sequenceGaps(body.step_after_days as number[]);
       }
       if (body.send_weekdays_only !== undefined) patch.send_weekdays_only = Boolean(body.send_weekdays_only);
       if (body.from_name) patch.from_name = String(body.from_name).slice(0, 120);

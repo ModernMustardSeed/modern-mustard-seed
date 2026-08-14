@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { CALL_STATS } from '@/data/proof-stats';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import MissedCallCalculator from '@/components/MissedCallCalculator';
 import RestaurantVoiceSection from '@/components/RestaurantVoiceSection';
@@ -39,32 +40,11 @@ export const metadata = buildMetadata({
 // Verified figures only. Every one is published, dated, and cited on the card.
 // See the missed-call-stats research: the "85% never call back" and
 // "$126K a year" numbers everybody repeats have no primary source.
-const stats = [
-  {
-    figure: '82%',
-    label: 'Call the next guy',
-    body: 'After one unanswered call, most people do not try again. They call a competitor.',
-    source: 'CallRail, 2025',
-  },
-  {
-    figure: '78%',
-    label: 'Already walked',
-    body: 'Have abandoned a business over a call nobody picked up. Not a bad review. Just gone.',
-    source: 'CallRail, 2025',
-  },
-  {
-    figure: '52%',
-    label: 'Prefer the AI',
-    body: 'Say an AI answering after hours signals better service, not worse. The robot objection is dead.',
-    source: 'CallRail, 2025',
-  },
-  {
-    figure: '7x',
-    label: 'Within the hour',
-    body: 'Higher odds of qualifying a lead when you respond inside an hour. Your agent responds in one ring.',
-    source: 'Harvard Business Review, 2011',
-  },
-];
+//
+// These now live in data/proof-stats.ts, because the cold email sequence quotes
+// the same numbers and two hand-maintained copies of a statistic will disagree
+// eventually. The bar for adding one is written at the top of that file.
+const stats = CALL_STATS;
 
 const handles = [
   {

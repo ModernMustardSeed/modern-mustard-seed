@@ -24,15 +24,20 @@
 import { chromium, type Browser, type Page } from 'playwright';
 import type { Market } from '../lib/acq/markets';
 import type { Candidate } from '../lib/acq/source';
+import { TRADE_DEFS } from '../lib/acq/trades';
 
-type Trade = 'hvac' | 'plumbing' | 'roofing';
+type Trade = Exclude<import('../lib/acq/types').Trade, 'other'>;
 
-/** Search phrases per trade, ordered so the first one is the highest yield. */
-const QUERIES: Record<Trade, string[]> = {
-  hvac: ['hvac contractors', 'air conditioning repair', 'heating and cooling companies'],
-  plumbing: ['plumbers', 'plumbing contractors', 'drain cleaning service'],
-  roofing: ['roofing contractors', 'roof repair companies', 'roofing companies'],
-};
+/**
+ * Search phrases per trade, ordered so the first one is the highest yield.
+ * Read from the registry, so an industry added in lib/acq/trades.ts is
+ * searchable on Maps without touching this file. The old hard-coded copy of
+ * these three lists is exactly the kind of second source of truth that goes
+ * stale the first time somebody edits one and not the other.
+ */
+const QUERIES: Record<Trade, string[]> = Object.fromEntries(
+  Object.entries(TRADE_DEFS).map(([k, d]) => [k, d.maps]),
+) as Record<Trade, string[]>;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
