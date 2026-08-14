@@ -150,11 +150,24 @@ export default async function MustardPage({
               </p>
             </div>
 
+            {/*
+              STEP THREE USED TO SAY "Free, and yours to keep poking at."
+
+              Three problems with it. It said free twice on a page that has
+              already said no card. It made the thing we sell sound like a
+              giveaway, which is what people who want a free toy respond to
+              rather than people who want a receptionist. And it ended the
+              sequence on a shrug: poke at it, and then what?
+
+              "Buy it only if you love it" is the stronger offer and the more
+              confident one. It says we are not worried about you saying no,
+              which is only sayable by somebody who has heard their own demo.
+            */}
             <ol className="mt-6 grid gap-3 sm:grid-cols-3">
               {[
                 ['He calls you', 'Ten seconds from now, from a real number.'],
-                ['You test him', 'The call your team gets on a bad night.'],
-                ['He builds yours', 'Free, and yours to keep poking at.'],
+                ['You try to break him', 'The call your team gets on a bad night.'],
+                ['Then you decide', 'Hear him answering as your business. Buy it only if you love it.'],
               ].map(([title, body], i) => (
                 <li key={title} className="rounded-xl border-2 border-[#161616] bg-[#FBF6EA]/80 p-3.5">
                   <p className="font-mono text-[10px] font-bold text-[#C4160B]">0{i + 1}</p>
@@ -190,6 +203,29 @@ export default async function MustardPage({
               (406) 312-1223
             </a>
             , and he answers it himself, day or night.
+          </p>
+
+          {/*
+            THE ONE WAY OFF THIS PAGE THAT IS NOT A DEAD END.
+
+            The nav and footer are hidden here on purpose: this screen has a
+            single objective and fifteen departments in a menu are fifteen ways
+            to leave. But a reader who wants to know what the thing costs and
+            what it does before handing over their number is not a distraction,
+            they are a buyer doing their homework, and sending them away
+            empty-handed loses them entirely. So exactly two links, at the
+            bottom, after the ask rather than above it.
+          */}
+          <p className="mt-4 text-sm text-[#FBF6EA]/60">
+            Want to read about it first?{' '}
+            <a className="font-bold text-[#F5B700] underline underline-offset-4" href="/voice-agents">
+              How the voice agent works
+            </a>{' '}
+            and{' '}
+            <a className="font-bold text-[#F5B700] underline underline-offset-4" href="/demos">
+              what it costs
+            </a>
+            .
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-[#FBF6EA]/15 pt-5 text-[11px] text-[#FBF6EA]/45">

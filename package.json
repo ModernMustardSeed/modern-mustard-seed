@@ -35,7 +35,8 @@
     "acq:reservoir": "tsx scripts/acq-reservoir.mts",
     "acq:queue": "tsx scripts/acq-queue-run.mts",
     "acq:enroll": "tsx scripts/acq-enroll.mts",
-    "acq:dress": "tsx scripts/acq-dress-rehearsal.mts"
+    "acq:dress": "tsx scripts/acq-dress-rehearsal.mts",
+    "acq:journey": "tsx scripts/acq-send-journey.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",

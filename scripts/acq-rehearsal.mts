@@ -461,6 +461,27 @@ async function run() {
       }
     }
 
+    /* ── EVERY LINK WE PUT IN FRONT OF A BUYER RESOLVES ──
+       checkoutUrlFor pointed at /demo/order/{hubId} for months. That page has
+       never existed, so the button in the email Mr. Mustard fires the moment
+       somebody says "I want it" returned a 404. Nothing tested it, because
+       every test asserted the STRING was built, not that the page was there.
+       This fetches them. */
+    const { checkoutUrlFor } = await import('../lib/acq/send');
+    const hubId = crypto.randomUUID();
+    await db.from('outbound_leads').update({ hub_demo_id: hubId }).eq('id', lead.id);
+    const { data: withHub } = await db.from('outbound_leads').select('*').eq('id', lead.id).single();
+
+    const buyUrl = checkoutUrlFor(withHub);
+    const buyPath = buyUrl.replace(BASE, '');
+    const buyRes = await http(buyPath);
+    check('the checkout link in the email resolves', buyRes.status === 200, `HTTP ${buyRes.status}  ${buyPath}`);
+
+    // And the fallbacks, for a prospect with no forged hub at all.
+    const noHub = checkoutUrlFor({ ...withHub, hub_demo_id: null, hub_demo_url: null });
+    const fallbackRes = await http(noHub.replace(BASE, ''));
+    check('the checkout fallback resolves too', fallbackRes.status === 200, `HTTP ${fallbackRes.status}  ${noHub.replace(BASE, '')}`);
+
     const cronGuard = await http('/api/cron/front-office');
     check('the front office cron refuses an unauthenticated call', cronGuard.status === 401, `HTTP ${cronGuard.status}`);
 

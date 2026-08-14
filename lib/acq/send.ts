@@ -269,11 +269,27 @@ export async function sendCampaignEmail(
  * prospect with nothing forged yet has no hub, so they get the public offer page
  * instead of a link that would 404 in front of a buyer.
  */
+/**
+ * WHERE "I WANT IT" ACTUALLY GOES.
+ *
+ * This pointed at /demo/order/{hubId}, which has never existed as a page. Only
+ * /demo/order/{hubId}/thanks does, and that is the POST-payment intake. So the
+ * button in the checkout email Mr. Mustard fires the moment somebody says yes
+ * returned a 404, which is the single most expensive failure this system is
+ * capable of: it loses the one prospect who already decided to buy.
+ *
+ * The buy panel (components/demo/MakeItRealCTA) is rendered by the demo suite
+ * hub, so that is the page. Nothing rendered the order path; it was simply a
+ * URL somebody assembled that read plausibly.
+ *
+ * A rehearsal check now fetches this URL for a real lead and asserts a 200, so
+ * a link we put in front of a buyer can never silently stop resolving again.
+ */
 export function checkoutUrlFor(lead: AcqProspect): string {
   const hubId = lead.hub_demo_id;
-  if (hubId) return `${SITE.url}/demo/order/${hubId}?products=voice`;
-  if (lead.hub_demo_url) return `${lead.hub_demo_url}?order=voice`;
-  return `${SITE.url}/voice-agents`;
+  if (hubId) return `${SITE.url}/demo/hub/${hubId}`;
+  if (lead.hub_demo_url) return lead.hub_demo_url;
+  return `${SITE.url}/demos`;
 }
 
 export const CALENDAR_URL = `${SITE.url}/book`;
