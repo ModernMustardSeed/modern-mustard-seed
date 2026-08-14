@@ -2,17 +2,22 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
-import { Badge, Bar, Button, Card, Empty, Stat, ago, money, pct } from './ui';
 import FactoryIntegrations from './FactoryIntegrations';
+import {
+  Badge, Button, Card, Dial, Empty, Eyebrow, Meter, Notice, Page, PageTitle, Shell, Skeleton, Stat,
+  ago, figure, money, num, pct, sentenceCase, toneForScore,
+} from './ui';
 
 /**
  * THE FACTORY CONTROL CENTRE.
  *
- * One screen for one Factory: is it healthy, what is it allowed to do, what has
- * it produced, where is it failing, what does it cost, and the switches to stop
- * it. The activation checklist sits above the results on purpose. A Factory
- * that has not passed it has no results worth reading, and burying the reason
- * it cannot go live under a funnel chart is how a launch stalls for a week.
+ * One screen for one Factory: is it healthy, what is it allowed to do, what
+ * has it produced, where is it failing, what does it cost, and the switches to
+ * stop it.
+ *
+ * The activation checklist sits above the results on purpose. A Factory that
+ * has not passed it has no results worth reading, and burying the reason it
+ * cannot go live under a funnel chart is how a launch stalls for a week.
  */
 
 type Check = { key: string; label: string; status: 'pass' | 'warn' | 'fail'; detail: string; blocker: boolean };
@@ -89,13 +94,9 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
         const json = await res.json();
         if (action === 'test_run') setTestSteps(json.steps ?? []);
         if (action === 'simulate' && res.ok) setSim(json);
-        if (!res.ok) {
-          setError([json.error, ...(json.blockers ?? [])].filter(Boolean).join(' '));
-        } else if (action === 'deploy') {
-          setNotice(`Deployed. ${(json.changes ?? []).join(' ')}`);
-        } else if (action === 'activate') {
-          setNotice('Activated. This Factory is live and can contact real prospects.');
-        }
+        if (!res.ok) setError([json.error, ...(json.blockers ?? [])].filter(Boolean).join(' '));
+        else if (action === 'deploy') setNotice(`Deployed. ${(json.changes ?? []).join(' ')}`.trim());
+        else if (action === 'activate') setNotice('Activated. This Factory is live and can contact real prospects.');
         await load();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'That did not work.');
@@ -122,129 +123,187 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
 
   if (error && !data) {
     return (
-      <div className="min-h-screen bg-[#FBF6EA]">
+      <Shell>
         <AdminHeader active="factories" title="Client Factory" />
-        <main className="max-w-7xl mx-auto px-5 py-10"><Empty>{error}</Empty></main>
-      </div>
+        <Page><Card><Empty title="This Factory did not open">{error}</Empty></Card></Page>
+      </Shell>
     );
   }
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#FBF6EA]">
+      <Shell>
         <AdminHeader active="factories" title="Client Factory" />
-        <main className="max-w-7xl mx-auto px-5 py-10"><Empty>Loading.</Empty></main>
-      </div>
+        <Page><Card eyebrow="Working" title="Opening the Factory"><Skeleton rows={5} /></Card></Page>
+      </Shell>
     );
   }
 
   const f = data.factory;
-  const blockers = (data.preflight?.checks ?? []).filter((c) => c.status === 'fail' && c.blocker);
-  const warnings = (data.preflight?.checks ?? []).filter((c) => c.status === 'warn' || (c.status === 'fail' && !c.blocker));
-  const passes = (data.preflight?.checks ?? []).filter((c) => c.status === 'pass');
-  const switches: [string, boolean][] = [
-    ['sourcing', f.sourcing_paused],
-    ['outreach', f.outreach_paused],
-    ['ai', f.ai_paused],
-    ['followup', f.followup_paused],
+  const checks = data.preflight?.checks ?? [];
+  const blockers = checks.filter((c) => c.status === 'fail' && c.blocker);
+  const warnings = checks.filter((c) => c.status === 'warn' || (c.status === 'fail' && !c.blocker));
+  const passes = checks.filter((c) => c.status === 'pass');
+  const switches: { key: string; label: string; paused: boolean }[] = [
+    { key: 'sourcing', label: 'Sourcing', paused: f.sourcing_paused },
+    { key: 'outreach', label: 'Outreach', paused: f.outreach_paused },
+    { key: 'ai', label: 'The AI', paused: f.ai_paused },
+    { key: 'followup', label: 'Follow-up', paused: f.followup_paused },
   ];
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <Shell>
       <AdminHeader active="factories" title={f.name} onRefresh={() => void load()} />
-
-      <main className="max-w-7xl mx-auto px-5 md:px-6 py-6 space-y-5">
-        {error && <div className="border-2 border-[#E0301E] bg-[#E0301E]/[0.06] rounded-xl px-4 py-3 text-sm text-[#E0301E]">{error}</div>}
-        {notice && <div className="border-2 border-emerald-800 bg-emerald-50 rounded-xl px-4 py-3 text-sm text-emerald-900">{notice}</div>}
-
-        {/* ── status and controls ── */}
-        <Card
-          title="Status"
-          right={
-            <div className="flex items-center gap-1.5">
+      <Page>
+        <PageTitle
+          eyebrow={data.tenant?.name ?? 'Client Factory'}
+          title={f.name}
+          sub={
+            f.status === 'live'
+              ? 'Live. It is contacting real prospects right now.'
+              : f.mode === 'test'
+                ? 'In test mode. It can only ever touch a test record.'
+                : `In ${f.status}.`
+          }
+          actions={
+            <>
               <Badge tone={f.status}>{f.status}</Badge>
               <Badge tone={f.mode === 'test' ? 'test' : 'live'}>{f.mode} mode</Badge>
-              <Badge>{f.autonomy}</Badge>
-            </div>
+              <Badge tone="draft">{f.autonomy}</Badge>
+            </>
           }
-        >
-          <div className="grid md:grid-cols-4 gap-4 mb-4">
-            <Stat label="Health" value={data.health.overall} tone={data.health.overall < 45 ? 'bad' : data.health.overall < 70 ? 'warn' : 'good'} sub={data.health.band} />
-            <Stat label="Setup score" value={data.preflight ? `${data.preflight.overall}%` : 'no blueprint'} tone={data.preflight?.ok ? 'good' : 'warn'} />
-            <Stat label="Customer" value={data.tenant?.name ?? 'unknown'} sub={data.plan?.name ?? 'no plan'} />
-            <Stat label="Activated" value={f.activated_at ? ago(f.activated_at) : 'not yet'} />
-          </div>
+        />
 
-          {data.health.reasons.length > 0 && (
-            <ul className="mb-4 space-y-1">
-              {data.health.reasons.map((r) => (
-                <li key={r} className="text-sm text-[#161616]/75 flex gap-2"><span className="text-[#E0301E]">•</span>{r}</li>
+        {error && <Notice kind="bad">{error}</Notice>}
+        {notice && <Notice kind="good">{notice}</Notice>}
+        {f.pause_reason && <Notice kind="warn">{f.pause_reason}</Notice>}
+
+        {/* ── health and controls ── */}
+        <div className="grid gap-5 lg:grid-cols-3">
+          <Card eyebrow="Health" title="How it is doing">
+            <div className="flex flex-wrap items-center gap-5">
+              <Dial score={data.health.overall} label={data.health.band} />
+              <div className="min-w-0 space-y-2.5">
+                {Object.entries(data.health.dimensions).map(([key, dim]) => (
+                  <div key={key}>
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[#5C5850]">{key}</span>
+                      <span className="font-mono text-[11px] font-bold tabular-nums text-[#161616]">{dim.score}</span>
+                    </div>
+                    <Meter pct={dim.score} tone={toneForScore(dim.score)} height="sm" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            {data.health.reasons.length > 0 && (
+              <ul className="mt-4 pt-4 border-t-2 border-[#161616]/12 space-y-1.5">
+                {data.health.reasons.map((r) => (
+                  <li key={r} className="flex gap-2 font-body text-[14px] text-[#3A362D] leading-snug">
+                    <span className="text-[#C4160B] font-bold shrink-0" aria-hidden>&rsaquo;</span>{r}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+
+          <Card eyebrow="Controls" title="Stop any part of it" className="lg:col-span-2">
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="sm:col-span-2">
+                <Button
+                  tone={f.status === 'paused' ? 'primary' : 'danger'}
+                  onClick={() => void control('factory', f.status !== 'paused')}
+                  disabled={busy !== null}
+                  className="w-full"
+                >
+                  {f.status === 'paused' ? 'Resume the whole Factory' : 'Pause the whole Factory'}
+                </Button>
+              </div>
+              {switches.map((s) => (
+                <button
+                  key={s.key}
+                  type="button"
+                  onClick={() => void control(s.key, !s.paused)}
+                  disabled={busy !== null}
+                  className={`flex items-center justify-between gap-3 rounded-lg border-2 border-[#161616] px-3.5 py-3 text-left transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#1E50C8]/40 disabled:cursor-not-allowed ${
+                    s.paused ? 'bg-[#FBE3E1]' : 'bg-white hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#161616]'
+                  }`}
+                >
+                  <span>
+                    <span className="block font-sans text-[13px] font-bold text-[#161616]">{s.label}</span>
+                    <span className={`block font-mono text-[10px] uppercase tracking-[0.14em] ${s.paused ? 'text-[#8E1007]' : 'text-[#5C5850]'}`}>
+                      {s.paused ? 'paused' : 'running'}
+                    </span>
+                  </span>
+                  <span className={`font-mono text-[10px] font-bold uppercase tracking-[0.14em] ${s.paused ? 'text-[#8E1007]' : 'text-[#3A362D]'}`}>
+                    {s.paused ? 'Resume' : 'Pause'}
+                  </span>
+                </button>
               ))}
-            </ul>
-          )}
+            </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              tone={f.status === 'paused' ? 'primary' : 'danger'}
-              onClick={() => void control('factory', f.status !== 'paused')}
-              disabled={busy !== null}
-            >
-              {f.status === 'paused' ? 'Resume Factory' : 'Pause Factory'}
-            </Button>
-            {switches.map(([name, paused]) => (
-              <Button key={name} onClick={() => void control(name, !paused)} disabled={busy !== null}>
-                {paused ? `Resume ${name}` : `Pause ${name}`}
-              </Button>
-            ))}
-          </div>
-          {f.pause_reason && <p className="text-xs text-[#E0301E] mt-2">{f.pause_reason}</p>}
-        </Card>
+            <div className="mt-4 pt-4 border-t-2 border-[#161616]/12 grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <Stat label="Setup score" value={data.preflight ? `${data.preflight.overall}%` : 'n/a'} size="sm" tone={data.preflight?.ok ? 'good' : 'warn'} />
+              <Stat label="Plan" value={data.plan?.name ?? 'None'} size="sm" />
+              <Stat label="Blueprint" value={data.blueprintMeta ? `v${data.blueprintMeta.version}` : 'none'} size="sm" sub={data.blueprintMeta?.status} />
+              <Stat label="Activated" value={f.activated_at ? ago(f.activated_at) : 'Not yet'} size="sm" />
+            </div>
+          </Card>
+        </div>
 
-        {/* ── the activation checklist ── */}
+        {/* ── activation checklist ── */}
         <Card
+          eyebrow="Before it can go live"
           title="Activation checklist"
           right={
-            <div className="flex items-center gap-2">
-              <Button onClick={() => void act('deploy')} disabled={busy !== null || !data.blueprintValid}>
-                {busy === 'deploy' ? 'Deploying…' : 'Deploy blueprint'}
+            <>
+              <Button size="sm" onClick={() => void act('deploy')} disabled={busy !== null || !data.blueprintValid} title={!data.blueprintValid ? 'Needs a valid blueprint first' : undefined}>
+                {busy === 'deploy' ? 'Deploying' : 'Deploy blueprint'}
               </Button>
-              <Button onClick={() => void act('test_run')} disabled={busy !== null || f.mode !== 'test'}>
-                {busy === 'test_run' ? 'Running…' : 'Test run'}
+              <Button size="sm" onClick={() => void act('test_run')} disabled={busy !== null || f.mode !== 'test'} title={f.mode !== 'test' ? 'Switch to test mode to run a test' : undefined}>
+                {busy === 'test_run' ? 'Running' : 'Test run'}
               </Button>
-              <Button onClick={() => void act('simulate')} disabled={busy !== null}>
-                {busy === 'simulate' ? 'Simulating…' : 'Simulate agent'}
+              <Button size="sm" onClick={() => void act('simulate')} disabled={busy !== null}>
+                {busy === 'simulate' ? 'Simulating' : 'Simulate agent'}
               </Button>
-              <Button tone="primary" onClick={() => void act('activate')} disabled={busy !== null || !data.preflight?.ok}>
-                {busy === 'activate' ? 'Activating…' : 'Activate'}
+              <Button
+                size="sm"
+                tone="primary"
+                onClick={() => void act('activate')}
+                disabled={busy !== null || !data.preflight?.ok}
+                title={data.preflight?.ok ? undefined : `${blockers.length} blocker${blockers.length === 1 ? '' : 's'} still open`}
+              >
+                {busy === 'activate' ? 'Activating' : 'Activate'}
               </Button>
-            </div>
+            </>
           }
         >
           {!data.blueprintValid && (
-            <p className="text-sm text-[#E0301E] mb-3">This Factory has no valid blueprint. Forge one or fix the configuration before anything else.</p>
+            <div className="mb-4"><Notice kind="bad">This Factory has no valid blueprint. Forge one or fix the configuration before anything else.</Notice></div>
           )}
 
           {data.preflight && (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-5">
                 {Object.entries(data.preflight.scores).map(([area, score]) => (
                   <div key={area}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#161616]/50">{area}</span>
-                      <span className="font-mono text-[10px] font-bold tabular-nums">{score}%</span>
+                    <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                      <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[#5C5850] truncate">{area}</span>
+                      <span className="font-mono text-[11px] font-bold tabular-nums text-[#161616]">{score}%</span>
                     </div>
-                    <Bar pct={score} tone={score === 100 ? 'good' : score >= 60 ? 'warn' : 'bad'} />
+                    <Meter pct={score} tone={score === 100 ? 'good' : score >= 60 ? 'warn' : 'bad'} height="sm" />
                   </div>
                 ))}
               </div>
 
               {blockers.length > 0 && (
-                <div className="mb-3">
-                  <h3 className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#E0301E] mb-1.5">Blocking activation</h3>
-                  <ul className="space-y-1.5">
+                <div className="rounded-xl border-2 border-[#8E1007] bg-[#FBE3E1] p-4 mb-4">
+                  <Eyebrow>Blocking activation</Eyebrow>
+                  <ul className="mt-2 space-y-2.5">
                     {blockers.map((c) => (
-                      <li key={c.key} className="text-sm text-[#161616]/85 flex gap-2">
-                        <Badge tone="fail">fail</Badge>
-                        <span><strong>{c.label}.</strong> {c.detail}</span>
+                      <li key={c.key} className="flex flex-wrap items-start gap-2">
+                        <Badge tone="fail">fix</Badge>
+                        <span className="font-body text-[14px] text-[#161616] leading-snug flex-1 min-w-[14rem]">
+                          <strong className="font-bold">{c.label}.</strong> {c.detail}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -252,24 +311,29 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
               )}
 
               {warnings.length > 0 && (
-                <details className="mb-3">
-                  <summary className="cursor-pointer font-mono text-[9px] uppercase tracking-[0.2em] text-amber-700">{warnings.length} warnings</summary>
-                  <ul className="space-y-1.5 mt-2">
+                <details className="mb-3 rounded-xl border-2 border-[#6B4400] bg-[#FFE9B8] px-4 py-3">
+                  <summary className="cursor-pointer font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#6B4400]">
+                    {warnings.length} warning{warnings.length === 1 ? '' : 's'}, not blocking
+                  </summary>
+                  <ul className="mt-3 space-y-2">
                     {warnings.map((c) => (
-                      <li key={c.key} className="text-sm text-[#161616]/70 flex gap-2">
-                        <Badge tone="warn">warn</Badge>
-                        <span><strong>{c.label}.</strong> {c.detail}</span>
+                      <li key={c.key} className="font-body text-[14px] text-[#161616] leading-snug">
+                        <strong className="font-bold">{c.label}.</strong> {c.detail}
                       </li>
                     ))}
                   </ul>
                 </details>
               )}
 
-              <details>
-                <summary className="cursor-pointer font-mono text-[9px] uppercase tracking-[0.2em] text-emerald-700">{passes.length} passing</summary>
-                <ul className="space-y-1 mt-2">
+              <details className="rounded-xl border-2 border-[#12502B] bg-[#DFF0E4] px-4 py-3">
+                <summary className="cursor-pointer font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#12502B]">
+                  {passes.length} passing
+                </summary>
+                <ul className="mt-3 space-y-1.5">
                   {passes.map((c) => (
-                    <li key={c.key} className="text-xs text-[#161616]/55">{c.label}: {c.detail}</li>
+                    <li key={c.key} className="font-body text-[13px] text-[#161616] leading-snug">
+                      <strong className="font-bold">{c.label}.</strong> {c.detail}
+                    </li>
                   ))}
                 </ul>
               </details>
@@ -277,13 +341,15 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
           )}
 
           {testSteps && (
-            <div className="mt-4 border-t-2 border-[#161616]/10 pt-3">
-              <h3 className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#161616]/50 mb-1.5">Test run</h3>
-              <ul className="space-y-1">
+            <div className="mt-5 pt-5 border-t-2 border-[#161616]/12">
+              <Eyebrow>Test run</Eyebrow>
+              <ul className="mt-2.5 space-y-2">
                 {testSteps.map((s) => (
-                  <li key={s.step} className="text-sm flex gap-2">
+                  <li key={s.step} className="flex flex-wrap items-start gap-2">
                     <Badge tone={s.ok ? 'pass' : 'fail'}>{s.ok ? 'ok' : 'fail'}</Badge>
-                    <span className="text-[#161616]/80"><strong>{s.step}.</strong> {s.detail}</span>
+                    <span className="font-body text-[14px] text-[#3A362D] leading-snug flex-1 min-w-[14rem]">
+                      <strong className="font-bold text-[#161616]">{s.step}.</strong> {s.detail}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -291,16 +357,18 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
           )}
 
           {sim && (
-            <div className="mt-4 border-t-2 border-[#161616]/10 pt-3">
-              <div className="flex items-center gap-3 mb-2">
-                <Stat label="AI sales readiness" value={`${sim.score}/100`} tone={sim.score < 70 ? 'bad' : sim.score < 85 ? 'warn' : 'good'} />
-                <p className="text-xs text-[#161616]/50 flex-1">{sim.disclaimer}</p>
+            <div className="mt-5 pt-5 border-t-2 border-[#161616]/12">
+              <div className="flex flex-wrap items-center gap-5 mb-3">
+                <Stat label="AI sales readiness" value={`${sim.score}`} sub="out of 100" tone={sim.score < 70 ? 'bad' : sim.score < 85 ? 'warn' : 'good'} />
+                <p className="font-body text-[13px] text-[#3A362D] flex-1 min-w-[16rem] leading-snug">{sim.disclaimer}</p>
               </div>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {sim.results.map((r) => (
-                  <li key={r.key} className="text-sm flex gap-2">
+                  <li key={r.key} className="flex flex-wrap items-start gap-2">
                     <Badge tone={r.passed ? 'pass' : r.critical ? 'fail' : 'warn'}>{r.passed ? 'pass' : r.critical ? 'critical' : 'fail'}</Badge>
-                    <span className="text-[#161616]/80"><strong>{r.name}.</strong> {r.reason}</span>
+                    <span className="font-body text-[14px] text-[#3A362D] leading-snug flex-1 min-w-[14rem]">
+                      <strong className="font-bold text-[#161616]">{r.name}.</strong> {r.reason}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -313,109 +381,99 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
 
         {/* ── results ── */}
         {data.summary && (
-          <div className="grid lg:grid-cols-3 gap-4">
-            <Card title="Funnel" className="lg:col-span-2">
-              <div className="space-y-2">
-                {data.summary.funnel.stages.map((s) => (
-                  <div key={s.key} className="flex items-center gap-3">
-                    <span className="w-32 shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-[#161616]/55">{s.label}</span>
-                    <span className="w-14 shrink-0 font-sans font-bold tabular-nums text-[#161616]">{s.count}</span>
-                    <div className="flex-1"><Bar pct={data.summary!.funnel.stages[0].count ? (s.count / data.summary!.funnel.stages[0].count) * 100 : 0} /></div>
-                    <span className="w-20 shrink-0 text-right font-mono text-[10px] tabular-nums text-[#161616]/50">
-                      {s.rateFromPrevious === null ? '' : `${s.rateFromPrevious.toFixed(1)}%`}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              {data.summary.bottleneck && (
-                <div className="mt-4 border-2 border-[#161616] bg-[#F5B700]/25 rounded-lg p-3">
-                  <h3 className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#161616]/70">Primary bottleneck</h3>
-                  <p className="font-sans font-bold text-[#161616] mt-0.5">{data.summary.bottleneck.label}</p>
-                  <p className="text-sm text-[#161616]/75">{data.summary.bottleneck.verdict}</p>
-                  <p className="text-sm text-[#161616]/85 mt-1">{data.summary.bottleneck.recommendation}</p>
-                </div>
-              )}
+          <div className="grid gap-5 lg:grid-cols-3">
+            <Card eyebrow="This month" title="The funnel" className="lg:col-span-2">
+              <Funnel stages={data.summary.funnel.stages} />
             </Card>
 
-            <div className="space-y-4">
-              <Card title="Money">
-                <div className="grid grid-cols-2 gap-4">
-                  <Stat label="Pipeline" value={money(data.summary.pipelineCents)} />
-                  <Stat label="Closed" value={money(data.summary.closedCents)} />
-                  <Stat label="Factory cost" value={money(data.summary.costCents, 2)} />
-                  <Stat label="ROI" value={pct(data.summary.roi)} tone={data.summary.roi === null ? 'muted' : data.summary.roi > 0 ? 'good' : 'bad'} />
+            <div className="space-y-5">
+              <Card tone="ink" eyebrow="Money" title="What it produced">
+                <div className="grid grid-cols-2 gap-5">
+                  <DarkStat label="Pipeline" value={money(data.summary.pipelineCents)} />
+                  <DarkStat label="Closed" value={money(data.summary.closedCents)} />
+                  <DarkStat label="Factory cost" value={money(data.summary.costCents, 2)} />
+                  <DarkStat label="ROI" value={pct(data.summary.roi)} sub={data.summary.roi === null ? 'connect revenue' : undefined} />
                 </div>
                 {data.tenant?.kind !== 'internal' && (
-                  <div className="mt-3 pt-3 border-t border-[#161616]/10 grid grid-cols-2 gap-4">
-                    <Stat label="They pay" value={money(data.usage.margin.revenueCents)} sub="per month" />
-                    <Stat
-                      label="Our margin"
-                      value={pct(data.usage.margin.grossPct)}
-                      tone={data.usage.margin.grossPct === null ? 'muted' : data.usage.margin.grossPct < 40 ? 'bad' : 'good'}
-                    />
+                  <div className="mt-4 pt-4 border-t-2 border-white/20 grid grid-cols-2 gap-5">
+                    <DarkStat label="They pay" value={money(data.usage.margin.revenueCents)} sub="per month" />
+                    <DarkStat label="Our margin" value={pct(data.usage.margin.grossPct)} sub={(data.usage.margin.grossPct ?? 100) < 40 ? 'below the floor' : undefined} />
                   </div>
                 )}
               </Card>
 
-              <Card title="Time to value">
-                <div className="space-y-1">
+              <Card eyebrow="Speed" title="Time to value">
+                <dl className="space-y-2">
                   {Object.entries(data.summary.timeToValue).map(([label, days]) => (
-                    <div key={label} className="flex justify-between text-sm">
-                      <span className="text-[#161616]/60">{label}</span>
-                      <span className="font-mono tabular-nums text-[#161616]">{days === null ? 'not yet' : `${days}d`}</span>
+                    <div key={label} className="flex items-baseline justify-between gap-3 border-b-2 border-[#161616]/10 pb-2 last:border-0 last:pb-0">
+                      <dt className="font-body text-[14px] text-[#3A362D]">{label}</dt>
+                      <dd className="font-mono text-[13px] font-bold tabular-nums text-[#161616]">{days === null ? 'not yet' : `${days} days`}</dd>
                     </div>
                   ))}
-                </div>
+                </dl>
               </Card>
             </div>
           </div>
         )}
 
-        {/* ── reservoir, hot, limits ── */}
-        <div className="grid lg:grid-cols-3 gap-4">
-          <Card title="Prospect reservoir">
-            <Stat label="Total" value={data.reservoir.total} />
-            <div className="mt-3 space-y-1">
+        {data.summary?.bottleneck && (
+          <Card tone="yellow" eyebrow="Primary bottleneck" title={data.summary.bottleneck.label}>
+            <p className="font-display text-xl font-semibold text-[#161616] leading-snug">{data.summary.bottleneck.verdict}</p>
+            <p className="font-body text-[15px] text-[#161616] mt-2 leading-relaxed">{data.summary.bottleneck.recommendation}</p>
+          </Card>
+        )}
+
+        {/* ── reservoir and hot ── */}
+        <div className="grid gap-5 lg:grid-cols-3">
+          <Card eyebrow="Inventory" title="Prospect reservoir">
+            <Stat label="Held" value={num(data.reservoir.total)} size="lg" sub="contactable and not contactable, this Factory only" />
+            <dl className="mt-4 space-y-1.5">
               {Object.entries(data.reservoir)
                 .filter(([k, v]) => k !== 'total' && v > 0)
+                .sort((a, b) => b[1] - a[1])
                 .map(([state, count]) => (
-                  <div key={state} className="flex justify-between text-sm">
-                    <span className="text-[#161616]/60">{state}</span>
-                    <span className="font-mono tabular-nums">{count}</span>
+                  <div key={state} className="flex items-baseline justify-between gap-3">
+                    <dt className="font-body text-[14px] text-[#3A362D]">{sentenceCase(state)}</dt>
+                    <dd className="font-mono text-[13px] font-bold tabular-nums text-[#161616]">{num(count)}</dd>
                   </div>
                 ))}
-            </div>
+            </dl>
           </Card>
 
-          <Card title="Hot right now" className="lg:col-span-2">
+          <Card eyebrow="Buying intent" title="Hot right now" className="lg:col-span-2">
             {data.hot.length ? (
-              <ul className="space-y-2">
+              <ul className="divide-y-2 divide-[#161616]/10">
                 {data.hot.map((h) => (
-                  <li key={h.id} className="flex items-start justify-between gap-3 border-b border-[#161616]/8 pb-2 last:border-0">
+                  <li key={h.id} className="flex items-start justify-between gap-4 py-2.5 first:pt-0 last:pb-0">
                     <div className="min-w-0">
-                      <p className="font-sans font-semibold text-sm text-[#161616] truncate">{h.company}</p>
-                      <p className="text-xs text-[#161616]/55">{h.reasons.join(' · ')}</p>
+                      <p className="font-sans text-[15px] font-bold text-[#161616] truncate">{h.company}</p>
+                      <p className="font-body text-[13px] text-[#3A362D] leading-snug">{h.reasons.join(' · ')}</p>
                     </div>
-                    <span className="font-sans font-bold tabular-nums text-[#161616] shrink-0">{h.heat}</span>
+                    <span className={`${figure} text-2xl text-[#161616] shrink-0`}>{h.heat}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <Empty>Nothing showing buying intent yet.</Empty>
+              <Empty title="Nobody is showing intent yet">
+                This fills with prospects who replied, opened what the Factory made for them, or asked about pricing. Only tracked behaviour, never inferred.
+              </Empty>
             )}
           </Card>
         </div>
 
-        {/* ── usage against plan ── */}
-        <Card title="Usage against plan">
-          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {/* ── usage ── */}
+        <Card eyebrow="Against the plan" title="Usage this month">
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-5">
             {data.limits.map((l) => (
               <div key={l.metric}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-[#161616]/50">{l.limitKey ?? l.metric}</span>
-                  <span className="font-mono text-[10px] tabular-nums">{l.used}{l.limit === null ? '' : ` / ${l.limit}`}</span>
+                <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                  <span className="font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[#5C5850] truncate">{(l.limitKey ?? l.metric).replace(/_/g, ' ')}</span>
+                  <span className="font-mono text-[11px] font-bold tabular-nums text-[#161616]">
+                    {num(l.used)}{l.limit === null ? '' : ` / ${num(l.limit)}`}
+                  </span>
                 </div>
-                <Bar pct={l.pct ?? 0} tone={l.exceeded ? 'bad' : (l.pct ?? 0) > 80 ? 'warn' : 'good'} />
+                <Meter pct={l.pct ?? 0} tone={l.exceeded ? 'bad' : (l.pct ?? 0) > 80 ? 'warn' : 'good'} height="sm" />
+                {l.limit === null && <p className="font-body text-[12px] text-[#5C5850] mt-1">No cap on this plan</p>}
               </div>
             ))}
           </div>
@@ -423,95 +481,162 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
 
         {/* ── learning ── */}
         {data.segments && data.segments.length > 0 && (
-          <Card title="Winning segments" right={<span className="font-mono text-[9px] text-[#161616]/40">30 prospect minimum for a rate</span>}>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+          <Card eyebrow="What is working" title="Winning segments" right={<span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#5C5850]">30 prospect minimum for a rate</span>}>
+            <div className="overflow-x-auto -mx-4 sm:-mx-5 px-4 sm:px-5">
+              <table className="w-full min-w-[34rem] border-collapse">
                 <thead>
-                  <tr className="text-left font-mono text-[9px] uppercase tracking-[0.16em] text-[#161616]/45">
-                    <th className="pb-2">Segment</th><th className="pb-2">Sample</th><th className="pb-2">Engaged</th><th className="pb-2">Won</th><th className="pb-2">Win rate</th>
+                  <tr className="text-left">
+                    {['Segment', 'Sample', 'Engaged', 'Won', 'Win rate'].map((h) => (
+                      <th key={h} className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#C4160B] pb-2.5 pr-4">{h}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
                   {data.segments.slice(0, 10).map((s) => (
-                    <tr key={s.key} className="border-t border-[#161616]/8">
-                      <td className="py-1.5 text-[#161616]">{s.label}</td>
-                      <td className="py-1.5 font-mono tabular-nums text-[#161616]/70">{s.sample}</td>
-                      <td className="py-1.5 font-mono tabular-nums text-[#161616]/70">{s.engaged}</td>
-                      <td className="py-1.5 font-mono tabular-nums text-[#161616]/70">{s.won}</td>
-                      <td className="py-1.5 font-mono tabular-nums text-[#161616]/70">{s.winRate === null ? 'sample too small' : `${s.winRate.toFixed(1)}%`}</td>
+                    <tr key={s.key} className="border-t-2 border-[#161616]/10">
+                      <td className="py-2.5 pr-4 font-sans text-[14px] font-semibold text-[#161616]">{s.label}</td>
+                      <td className="py-2.5 pr-4 font-mono text-[13px] tabular-nums text-[#3A362D]">{num(s.sample)}</td>
+                      <td className="py-2.5 pr-4 font-mono text-[13px] tabular-nums text-[#3A362D]">{num(s.engaged)}</td>
+                      <td className="py-2.5 pr-4 font-mono text-[13px] tabular-nums text-[#3A362D]">{num(s.won)}</td>
+                      <td className="py-2.5 pr-4 font-mono text-[13px] tabular-nums text-[#3A362D]">
+                        {s.winRate === null ? <span className="text-[#5C5850]">sample too small</span> : `${s.winRate.toFixed(1)}%`}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
             {data.findMoreLike && (
-              <div className="mt-3 border-2 border-[#161616] bg-[#F5B700]/25 rounded-lg p-3">
-                <h3 className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#161616]/70">Find more like these</h3>
-                <p className="text-sm text-[#161616]/85 mt-0.5">{data.findMoreLike.criteria.join(' · ')}</p>
-                <p className="text-xs text-[#161616]/55 mt-1">{data.findMoreLike.evidence}</p>
+              <div className="mt-4 rounded-xl border-2 border-[#161616] bg-[#F5B700] p-4 shadow-[3px_3px_0_0_#161616]">
+                <Eyebrow tone="ink">Find more like these</Eyebrow>
+                <p className="font-display text-lg font-semibold text-[#161616] mt-1">{data.findMoreLike.criteria.join(' · ')}</p>
+                <p className="font-body text-[13px] text-[#161616] mt-1.5">{data.findMoreLike.evidence}</p>
               </div>
             )}
           </Card>
         )}
 
         {/* ── configuration ── */}
-        <div className="grid lg:grid-cols-2 gap-4">
-          <Card title="Blueprint versions" right={data.blueprintMeta ? <Badge tone={data.blueprintMeta.status}>v{data.blueprintMeta.version} {data.blueprintMeta.status}</Badge> : null}>
+        <div className="grid gap-5 lg:grid-cols-2">
+          <Card eyebrow="History" title="Blueprint versions" right={data.blueprintMeta ? <Badge tone={data.blueprintMeta.status}>v{data.blueprintMeta.version}</Badge> : null}>
             {data.history.length ? (
-              <ul className="space-y-2">
+              <ul className="divide-y-2 divide-[#161616]/10">
                 {data.history.slice(0, 10).map((v) => (
-                  <li key={v.id} className="flex items-start justify-between gap-3 text-sm border-b border-[#161616]/8 pb-2 last:border-0">
+                  <li key={v.id} className="flex items-start justify-between gap-4 py-2.5 first:pt-0 last:pb-0">
                     <div className="min-w-0">
-                      <p className="text-[#161616]"><strong>v{v.version}</strong> {v.summary ?? 'No summary.'}</p>
-                      <p className="text-xs text-[#161616]/45">{v.by ?? 'system'} · {ago(v.at)}</p>
+                      <p className="font-body text-[14px] text-[#161616] leading-snug">
+                        <strong className="font-bold">v{v.version}</strong> {v.summary ?? 'No summary.'}
+                      </p>
+                      <p className="font-mono text-[11px] text-[#5C5850] mt-0.5">{v.by ?? 'system'} · {ago(v.at)}</p>
                     </div>
                     <Badge tone={v.status}>{v.status}</Badge>
                   </li>
                 ))}
               </ul>
             ) : (
-              <Empty>No blueprint versions yet.</Empty>
+              <Empty title="No versions yet">A blueprint appears here the moment the Forge writes one.</Empty>
             )}
           </Card>
 
-          <Card title="Productization">
+          <Card eyebrow="Leverage" title="Productization">
             {data.productization ? (
               <>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <Stat label="Reusable" value={`${data.productization.reusablePct}%`} tone={data.productization.reusablePct >= 90 ? 'good' : 'warn'} />
-                  <Stat label="Custom pieces" value={data.productization.custom} tone={data.productization.custom ? 'warn' : 'good'} />
+                <div className="flex flex-wrap items-center gap-5">
+                  <Dial score={data.productization.reusablePct} label="reusable" size={110} />
+                  <div className="min-w-0 space-y-3">
+                    <Stat label="Custom pieces" value={num(data.productization.custom)} size="sm" tone={data.productization.custom ? 'warn' : 'good'} />
+                    <Stat label="Modules" value={num(data.productization.fromModules)} size="sm" />
+                    <Stat label="Configured areas" value={num(data.productization.fromConfiguration)} size="sm" />
+                  </div>
                 </div>
-                <p className="text-sm text-[#161616]/70">{data.productization.note}</p>
+                <p className="font-body text-[14px] text-[#3A362D] mt-4 leading-relaxed">{data.productization.note}</p>
                 {data.complexity && (
-                  <p className="text-xs text-[#161616]/50 mt-2">
-                    {data.complexity.level} deployment, about {data.complexity.estimatedMinutes} human minutes estimated. {data.complexity.drivers.join(' ')}
+                  <p className="font-body text-[13px] text-[#5C5850] mt-2 leading-relaxed">
+                    {sentenceCase(data.complexity.level)} deployment, about {data.complexity.estimatedMinutes} human minutes estimated. {data.complexity.drivers.join(' ')}
                   </p>
                 )}
               </>
             ) : (
-              <Empty>Needs a valid blueprint.</Empty>
+              <Empty title="Needs a valid blueprint">The reuse ratio is computed from what the blueprint actually composes.</Empty>
             )}
           </Card>
         </div>
 
         {/* ── audit ── */}
-        <Card title="Audit log">
+        <Card eyebrow="Everything that happened" title="Audit log">
           {data.events.length ? (
-            <ul className="space-y-1">
+            <ul className="divide-y-2 divide-[#161616]/10">
               {data.events.map((e) => (
-                <li key={e.id} className="flex items-center gap-2 text-xs border-b border-[#161616]/6 pb-1 last:border-0">
+                <li key={e.id} className="flex flex-wrap items-center gap-2 py-2 first:pt-0 last:pb-0">
                   {e.severity !== 'info' && <Badge tone={e.severity === 'critical' ? 'fail' : 'warn'}>{e.severity}</Badge>}
-                  <span className="font-mono text-[#161616]/70">{e.action}</span>
-                  <span className="text-[#161616]/45">{e.actor ?? 'system'}</span>
-                  <span className="ml-auto text-[#161616]/35">{ago(e.occurred_at)}</span>
+                  <span className="font-mono text-[12px] font-bold text-[#161616]">{e.action}</span>
+                  <span className="font-body text-[13px] text-[#3A362D]">{e.actor ?? 'system'}</span>
+                  <span className="ml-auto font-mono text-[11px] text-[#5C5850]">{ago(e.occurred_at)}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <Empty>Nothing recorded yet.</Empty>
+            <Empty title="Nothing recorded yet">Every activation, pause, deploy, send and escalation lands here.</Empty>
           )}
         </Card>
-      </main>
+      </Page>
+    </Shell>
+  );
+}
+
+function DarkStat({ label, value, sub }: { label: string; value: string; sub?: string }) {
+  return (
+    <div className="min-w-0">
+      <div className="font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">{label}</div>
+      <div className={`${figure} text-[26px] mt-1.5 text-white`}>{value}</div>
+      {sub && <div className="font-body text-[12px] text-[#CFC9BA] mt-1.5 leading-snug">{sub}</div>}
     </div>
+  );
+}
+
+/**
+ * The funnel, drawn as a funnel.
+ *
+ * Bars are proportional to the widest stage and the conversion rate sits
+ * BETWEEN the rows it describes, because a rate printed beside a count reads
+ * as a property of that count rather than of the step into it. Rates below
+ * their stage's benchmark are marked, so the eye lands on the leak.
+ */
+function Funnel({ stages }: { stages: Stage[] }) {
+  const top = stages[0]?.count ?? 0;
+  if (!top) {
+    return <Empty title="No prospects yet this month">The funnel fills from the top the moment sourcing or an import puts prospects in the reservoir.</Empty>;
+  }
+
+  return (
+    <ol className="space-y-1">
+      {stages.map((s, i) => {
+        const width = Math.max(2, (s.count / top) * 100);
+        const weak = s.rateFromPrevious !== null && s.rateFromPrevious < 20 && i > 0;
+        return (
+          <li key={s.key}>
+            {i > 0 && (
+              <div className="flex items-center gap-2 py-1 pl-1">
+                <span aria-hidden className="font-mono text-[10px] text-[#5C5850]">&darr;</span>
+                <span className={`font-mono text-[10px] font-bold uppercase tracking-[0.14em] ${weak ? 'text-[#C4160B]' : 'text-[#5C5850]'}`}>
+                  {s.rateFromPrevious === null ? 'no data' : `${s.rateFromPrevious.toFixed(1)}% through`}
+                </span>
+              </div>
+            )}
+            <div className="flex items-center gap-3">
+              <span className="w-28 sm:w-32 shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#3A362D]">{s.label}</span>
+              <div className="flex-1 min-w-0">
+                <div
+                  className="h-8 rounded-md border-2 border-[#161616] bg-[#F5B700] flex items-center justify-end px-2 transition-[width] duration-500"
+                  style={{ width: `${width}%` }}
+                >
+                  <span className={`${figure} text-[15px] text-[#161616]`}>{num(s.count)}</span>
+                </div>
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
   );
 }

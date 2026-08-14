@@ -2,20 +2,23 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
-import { Badge, Bar, Button, Card, Empty, Field, Stat, inputCls, money, pct } from './ui';
+import {
+  Badge, Button, Card, Dial, Empty, Eyebrow, Meter, Notice, Page, PageTitle, Shell, Skeleton, Stat, Tabs,
+  figure, inputCls, money, num, pct, sentenceCase,
+} from './ui';
 
 /**
  * THE MMS LIBRARY. What the platform can do, what it is made of, and how much
  * of the work is being repeated.
  *
- * Four things live here because they are the same subject: the reusable parts
- * (modules, value actions, tools, templates), the plans that gate them, the
- * delivery metrics that say whether reuse is winning, and the queue of
- * customer requests that decides what gets built next.
+ * Six views of one subject: the reusable parts (templates, modules, value
+ * actions, tools), the plans that gate them, and the delivery metrics that say
+ * whether reuse is winning. Delivery opens first because it is the only tab
+ * that can tell you the company is in trouble.
  *
  * MISSING CAPABILITY IS SHOWN, NOT HIDDEN. A module marked NEEDS DEVELOPMENT
- * appears in the list with its build spec. The Forge will refuse to deploy a
- * blueprint that depends on one, which is the whole point of naming them.
+ * appears with its build spec. The Forge refuses to deploy a blueprint that
+ * depends on one, which is the whole point of naming them.
  */
 
 type Module = { key: string; name: string; category: string; blurb: string; risk: string; status: string; cost: { unit: string; cents: number } | null; requires: string[]; buildSpec?: string };
@@ -49,11 +52,14 @@ type Payload = {
 const TABS = ['Delivery', 'Templates', 'Modules', 'Value actions', 'Tools', 'Plans'] as const;
 type Tab = (typeof TABS)[number];
 
+const CATEGORIES = ['data', 'outbound', 'ai', 'value', 'conversion', 'ops'] as const;
+
 export default function FactoryLibrary() {
   const [data, setData] = useState<Payload | null>(null);
   const [tab, setTab] = useState<Tab>('Delivery');
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [problem, setProblem] = useState<string | null>(null);
   const [requestTitle, setRequestTitle] = useState('');
 
   const load = useCallback(async () => {
@@ -67,13 +73,15 @@ export default function FactoryLibrary() {
     async (body: Record<string, unknown>, label: string) => {
       setBusy(label);
       setNotice(null);
+      setProblem(null);
       const res = await fetch('/api/admin/factories/platform', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
       const json = await res.json();
-      setNotice(res.ok ? summarize(body.action as string, json) : json.error ?? 'That did not work.');
+      if (res.ok) setNotice(summarize(body.action as string, json));
+      else setProblem(json.error ?? 'That did not work.');
       await load();
       setBusy(null);
     },
@@ -82,166 +90,204 @@ export default function FactoryLibrary() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#FBF6EA]">
+      <Shell>
         <AdminHeader active="factories" title="Factory Library" />
-        <main className="max-w-7xl mx-auto px-5 py-10"><Empty>Loading.</Empty></main>
-      </div>
+        <Page><Card eyebrow="Working" title="Opening the library"><Skeleton rows={5} /></Card></Page>
+      </Shell>
     );
   }
 
   const { registry, delivery, economics } = data;
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <Shell>
       <AdminHeader active="factories" title="Factory Library" onRefresh={() => void load()} />
+      <Page>
+        <PageTitle
+          eyebrow="Modern Mustard Seed IP"
+          title={<>The parts every Factory is <em className="font-display italic">built from</em></>}
+          sub="Templates, modules, value actions and tools. Everything here is written once and deployed many times, and the delivery numbers say whether that is actually happening."
+          actions={
+            <Button tone="primary" onClick={() => void post({ action: 'bootstrap' }, 'bootstrap')} disabled={busy !== null}>
+              {busy === 'bootstrap' ? 'Syncing' : 'Sync registries'}
+            </Button>
+          }
+        />
 
-      <main className="max-w-7xl mx-auto px-5 md:px-6 py-6 space-y-5">
-        {notice && <div className="border-2 border-[#161616] bg-white rounded-xl px-4 py-3 text-sm text-[#161616]">{notice}</div>}
+        {notice && <Notice kind="good">{notice}</Notice>}
+        {problem && <Notice kind="bad">{problem}</Notice>}
 
-        <Card title="Platform" right={<Button onClick={() => void post({ action: 'bootstrap' }, 'bootstrap')} disabled={busy !== null}>{busy === 'bootstrap' ? 'Syncing…' : 'Sync registries'}</Button>}>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-            <Stat label="Modules" value={registry.summary.modules} sub={`${registry.summary.stableModules} stable`} />
-            <Stat label="Needs building" value={registry.summary.proposedModules} tone={registry.summary.proposedModules ? 'warn' : 'good'} />
-            <Stat label="Templates" value={registry.summary.templates} sub={`${registry.summary.stableTemplates} stable`} />
-            <Stat label="Customers" value={economics.customerTenants} />
-            <Stat label="ARPA" value={money(economics.arpaCents)} />
-            <Stat label="Gross margin" value={pct(economics.grossMarginPct)} tone={economics.grossMarginPct === null ? 'muted' : economics.grossMarginPct < 40 ? 'bad' : 'good'} />
+        <Card tone="ink" eyebrow="The platform" title="What exists right now">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-5">
+            <DarkStat label="Modules" value={num(registry.summary.modules)} sub={`${registry.summary.stableModules} stable`} />
+            <DarkStat label="Needs building" value={num(registry.summary.proposedModules)} sub={registry.summary.proposedModules ? 'named, with a spec' : 'no gaps'} />
+            <DarkStat label="Templates" value={num(registry.summary.templates)} sub={`${registry.summary.stableTemplates} stable`} />
+            <DarkStat label="Customers" value={num(economics.customerTenants)} sub="paying tenants" />
+            <DarkStat label="ARPA" value={money(economics.arpaCents)} sub="per customer" />
+            <DarkStat label="Gross margin" value={pct(economics.grossMarginPct)} sub={economics.grossMarginPct === null ? 'no revenue yet' : undefined} />
           </div>
         </Card>
 
-        <nav className="flex flex-wrap gap-1.5">
-          {TABS.map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`font-mono text-[10px] uppercase tracking-[0.14em] font-bold px-3 py-2 rounded-lg border-2 transition-colors ${
-                tab === t ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[2px_2px_0_0_#161616]' : 'border-transparent text-[#161616]/55 hover:text-[#161616] hover:bg-[#161616]/[0.05]'
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-        </nav>
+        <Tabs tabs={TABS} active={tab} onChange={setTab} />
 
         {tab === 'Delivery' && (
-          <div className="space-y-4">
-            {delivery.bottleneck && (
-              <Card title="Current MMS scale bottleneck">
-                <p className="font-sans font-bold text-[#161616]">{delivery.bottleneck.area}</p>
-                <p className="text-sm text-[#161616]/75">{delivery.bottleneck.verdict}</p>
-                <p className="text-sm text-[#161616]/85 mt-1">{delivery.bottleneck.recommendation}</p>
+          <div className="space-y-5">
+            {delivery.bottleneck ? (
+              <Card tone="yellow" eyebrow="Current MMS scale bottleneck" title={delivery.bottleneck.area}>
+                <p className="font-display text-xl font-semibold text-[#161616] leading-snug">{delivery.bottleneck.verdict}</p>
+                <p className="font-body text-[15px] text-[#161616] mt-2 leading-relaxed">{delivery.bottleneck.recommendation}</p>
+              </Card>
+            ) : (
+              <Card eyebrow="Current MMS scale bottleneck" title="Nothing is limiting growth right now">
+                <p className="font-body text-[15px] text-[#3A362D] leading-relaxed">
+                  Deployment effort is not rising, no customer is below the margin floor, and no request has been asked for enough times to be a module. This changes the moment one of them does.
+                </p>
               </Card>
             )}
 
-            <Card title="Deployment effort">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
-                <Stat label="Deployments" value={delivery.effort.count} />
-                <Stat label="Median human minutes" value={delivery.effort.medianMinutes ?? 'not recorded'} tone={(delivery.effort.medianMinutes ?? 0) > 60 ? 'warn' : 'good'} />
-                <Stat label="Automated" value={delivery.effort.meanAutomationPct === null ? 'unknown' : `${delivery.effort.meanAutomationPct}%`} />
+            <Card eyebrow="The metric that matters" title="Deployment effort">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
+                <div className="flex justify-center sm:justify-start">
+                  <Dial score={delivery.effort.meanAutomationPct ?? 0} label="automated" />
+                </div>
+                <Stat label="Deployments" value={num(delivery.effort.count)} sub="recorded launches" />
+                <Stat
+                  label="Median human minutes"
+                  value={delivery.effort.medianMinutes === null ? 'Not recorded' : num(delivery.effort.medianMinutes)}
+                  tone={(delivery.effort.medianMinutes ?? 0) > 60 ? 'warn' : 'good'}
+                  sub="target is under 60 for a standard template"
+                />
                 <Stat
                   label="Trend"
-                  value={delivery.effort.trend}
+                  value={sentenceCase(delivery.effort.trend)}
                   tone={delivery.effort.trend === 'falling' ? 'good' : delivery.effort.trend === 'rising' ? 'bad' : 'muted'}
+                  sub="it should fall as templates improve"
                 />
               </div>
-              <p className="text-xs text-[#161616]/50">
-                The target for a standard template deployment is under sixty human minutes. It should fall as templates improve, not hold flat.
-              </p>
               {delivery.effort.byTemplate.length > 0 && (
-                <div className="mt-3 space-y-1">
+                <dl className="mt-5 pt-5 border-t-2 border-[#161616]/12 space-y-2">
                   {delivery.effort.byTemplate.map((t) => (
-                    <div key={t.template} className="flex justify-between text-sm">
-                      <span className="text-[#161616]/60">{t.template}</span>
-                      <span className="font-mono tabular-nums text-[#161616]">{t.medianMinutes ?? 'not recorded'} min · {t.count} launches</span>
+                    <div key={t.template} className="flex items-baseline justify-between gap-3">
+                      <dt className="font-body text-[14px] text-[#3A362D]">{t.template}</dt>
+                      <dd className="font-mono text-[13px] font-bold tabular-nums text-[#161616]">
+                        {t.medianMinutes === null ? 'not recorded' : `${t.medianMinutes} min`} · {t.count} launch{t.count === 1 ? '' : 'es'}
+                      </dd>
                     </div>
                   ))}
-                </div>
+                </dl>
               )}
             </Card>
 
-            <Card title="Repeated requests" right={<span className="font-mono text-[9px] text-[#161616]/40">Once is custom. Three times is a module.</span>}>
-              <div className="flex gap-2 mb-3">
-                <input className={inputCls} value={requestTitle} onChange={(e) => setRequestTitle(e.target.value)} placeholder="A customer asked for…" />
+            <Card
+              eyebrow="Product opportunities"
+              title="Repeated requests"
+              right={<span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#5C5850]">Once is custom. Three times is a module.</span>}
+            >
+              <div className="flex flex-wrap gap-2 mb-4">
+                <input
+                  className={`${inputCls} flex-1 min-w-[16rem]`}
+                  value={requestTitle}
+                  onChange={(e) => setRequestTitle(e.target.value)}
+                  placeholder="A customer asked for bilingual call routing"
+                  aria-label="Log a customer request"
+                />
                 <Button
+                  tone="primary"
                   onClick={() => { void post({ action: 'log_request', title: requestTitle }, 'request'); setRequestTitle(''); }}
                   disabled={busy !== null || requestTitle.trim().length < 3}
+                  title={requestTitle.trim().length < 3 ? 'Write the request first' : undefined}
                 >
                   Log it
                 </Button>
               </div>
               {delivery.opportunities.length ? (
-                <ul className="space-y-2">
+                <ul className="divide-y-2 divide-[#161616]/10">
                   {delivery.opportunities.map((o) => (
-                    <li key={o.requestKey} className="flex items-start justify-between gap-3 border-b border-[#161616]/8 pb-2 last:border-0">
+                    <li key={o.requestKey} className="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0">
                       <div className="min-w-0">
-                        <p className="text-sm text-[#161616]"><strong>{o.title}</strong></p>
-                        <p className="text-xs text-[#161616]/55">{o.recommendation}</p>
+                        <p className="font-sans text-[15px] font-bold text-[#161616] leading-snug">{o.title}</p>
+                        <p className="font-body text-[13px] text-[#3A362D] mt-0.5 leading-snug">{o.recommendation}</p>
                       </div>
                       <div className="shrink-0 text-right">
-                        <span className="font-sans font-bold tabular-nums text-[#161616]">{o.tenants}</span>
-                        <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[#161616]/40">customers</p>
+                        <span className={`${figure} text-2xl ${o.tenants >= 3 ? 'text-[#C4160B]' : 'text-[#161616]'}`}>{o.tenants}</span>
+                        <p className="font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[#5C5850]">customers</p>
                       </div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <Empty>No requests logged yet.</Empty>
+                <Empty title="No requests logged yet">
+                  Every time a customer asks for something the platform does not do, log it here. The third customer asking turns it into a module.
+                </Empty>
               )}
             </Card>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              <Card title="Custom code registry">
+            <div className="grid gap-5 lg:grid-cols-2">
+              <Card eyebrow="Liability" title="Custom code registry">
                 {delivery.customCode.length ? (
-                  <ul className="space-y-1.5">
+                  <ul className="divide-y-2 divide-[#161616]/10">
                     {delivery.customCode.map((c) => (
-                      <li key={c.id} className="text-sm flex gap-2">
+                      <li key={c.id} className="flex items-start gap-2 py-2.5 first:pt-0 last:pb-0">
                         <Badge tone={c.maintenance_risk === 'high' ? 'fail' : c.maintenance_risk === 'medium' ? 'warn' : 'pass'}>{c.maintenance_risk}</Badge>
-                        <span className="text-[#161616]/80"><strong>{c.title}.</strong> {c.purpose ?? ''}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <Empty>No tenant-specific code. Everything shipped is reusable.</Empty>
-                )}
-              </Card>
-
-              <Card title="Queues">
-                {data.queues.length ? (
-                  <ul className="space-y-1">
-                    {data.queues.map((q) => (
-                      <li key={q.lane} className="flex justify-between text-sm">
-                        <span className="text-[#161616]/60">{q.lane}</span>
-                        <span className="font-mono tabular-nums text-[#161616]">
-                          {q.queued} queued · {q.running} running{q.failed ? ` · ${q.failed} failed` : ''}
-                          {q.oldestSeconds !== null && q.oldestSeconds > 300 ? ` · ${Math.round(q.oldestSeconds / 60)}m lag` : ''}
+                        <span className="font-body text-[14px] text-[#3A362D] leading-snug">
+                          <strong className="font-bold text-[#161616]">{c.title}.</strong> {c.purpose ?? ''}
                         </span>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <Empty>Every queue is empty.</Empty>
+                  <Empty title="No tenant-specific code">Everything shipped so far is reusable. That is the number to protect.</Empty>
                 )}
-                <Button className="mt-3" onClick={() => void post({ action: 'requeue_stale' }, 'requeue')} disabled={busy !== null}>Requeue stale jobs</Button>
+              </Card>
+
+              <Card
+                eyebrow="Infrastructure"
+                title="Queues"
+                right={<Button size="sm" onClick={() => void post({ action: 'requeue_stale' }, 'requeue')} disabled={busy !== null}>Requeue stale</Button>}
+              >
+                {data.queues.length ? (
+                  <dl className="divide-y-2 divide-[#161616]/10">
+                    {data.queues.map((q) => (
+                      <div key={q.lane} className="flex items-baseline justify-between gap-3 py-2.5 first:pt-0 last:pb-0">
+                        <dt className="font-sans text-[14px] font-bold text-[#161616]">{sentenceCase(q.lane)}</dt>
+                        <dd className="font-mono text-[13px] tabular-nums text-[#3A362D]">
+                          {q.queued} queued · {q.running} running
+                          {q.failed ? <span className="text-[#C4160B] font-bold"> · {q.failed} failed</span> : null}
+                          {q.oldestSeconds !== null && q.oldestSeconds > 300 ? <span className="text-[#C4160B] font-bold"> · {Math.round(q.oldestSeconds / 60)}m lag</span> : null}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                ) : (
+                  <Empty title="Every queue is empty">Nothing is waiting and nothing is stuck.</Empty>
+                )}
               </Card>
             </div>
           </div>
         )}
 
         {tab === 'Templates' && (
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
             {registry.templates.map((t) => (
-              <Card key={`${t.key ?? t.name}-${t.version ?? 1}`} title={t.name} right={<Badge tone={t.channel}>{t.channel}</Badge>}>
-                <p className="text-sm text-[#161616]/70">{t.blurb}</p>
-                <p className="text-xs text-[#161616]/45 mt-2">
-                  {t.vertical ?? 'General'}{t.parent_key || t.parent ? ` · inherits ${t.parent_key ?? t.parent}` : ''}{t.version ? ` · v${t.version}` : ''}
+              <Card
+                key={`${t.key ?? t.name}-${t.version ?? 1}`}
+                eyebrow={t.vertical ?? 'General'}
+                title={t.name}
+                right={<Badge tone={t.channel}>{t.channel}</Badge>}
+              >
+                <p className="font-body text-[14px] text-[#3A362D] leading-relaxed">{t.blurb}</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#5C5850] mt-3">
+                  {t.parent_key || t.parent ? `inherits ${t.parent_key ?? t.parent}` : 'root template'}{t.version ? ` · v${t.version}` : ''}
                 </p>
                 {t.key && t.version && (
-                  <div className="flex gap-1.5 mt-3">
+                  <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t-2 border-[#161616]/12">
                     {(['beta', 'stable', 'deprecated'] as const).map((channel) => (
                       <Button
                         key={channel}
-                        onClick={() => void post({ action: 'publish_template', key: t.key, version: t.version, channel }, `publish-${t.key}`)}
+                        size="sm"
+                        onClick={() => void post({ action: 'publish_template', key: t.key, version: t.version, channel }, `publish-${t.key}-${channel}`)}
                         disabled={busy !== null || t.channel === channel}
+                        title={t.channel === channel ? `Already ${channel}` : `Move to ${channel}`}
                       >
                         {channel}
                       </Button>
@@ -254,38 +300,46 @@ export default function FactoryLibrary() {
         )}
 
         {tab === 'Modules' && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {registry.capabilities.gaps.length > 0 && (
-              <Card title="Missing capability">
-                <ul className="space-y-2">
+              <Card eyebrow="Not built yet" title="Missing capability">
+                <ul className="space-y-3">
                   {registry.capabilities.gaps.map((g) => (
-                    <li key={g.key} className="text-sm">
-                      <p className="text-[#161616]"><strong>{g.name}</strong> <Badge tone="proposed">needs development</Badge></p>
-                      <p className="text-xs text-[#161616]/55">{g.buildSpec}</p>
+                    <li key={g.key} className="rounded-xl border-2 border-[#432076] bg-[#E7DEF7] p-3.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="font-display text-lg font-semibold text-[#161616]">{g.name}</h3>
+                        <Badge tone="proposed">needs development</Badge>
+                      </div>
+                      <p className="font-body text-[14px] text-[#432076] mt-1 leading-snug">{g.buildSpec}</p>
                     </li>
                   ))}
                 </ul>
-                <p className="text-xs text-[#161616]/45 mt-3">
+                <p className="font-body text-[13px] text-[#3A362D] mt-4 leading-relaxed">
                   A blueprint that depends on one of these will not deploy. Build the module, remove the feature, or make it a manual step.
                 </p>
               </Card>
             )}
-            {['data', 'outbound', 'ai', 'value', 'conversion', 'ops'].map((category) => {
+            {CATEGORIES.map((category) => {
               const mine = registry.modules.filter((m) => m.category === category);
               if (!mine.length) return null;
               return (
-                <Card key={category} title={category}>
-                  <ul className="space-y-2">
+                <Card key={category} eyebrow={`${mine.length} module${mine.length === 1 ? '' : 's'}`} title={sentenceCase(category)}>
+                  <ul className="divide-y-2 divide-[#161616]/10">
                     {mine.map((m) => (
-                      <li key={m.key} className="flex items-start justify-between gap-3 border-b border-[#161616]/8 pb-2 last:border-0">
-                        <div className="min-w-0">
-                          <p className="text-sm text-[#161616]"><strong>{m.name}</strong> <span className="font-mono text-[10px] text-[#161616]/40">{m.key}</span></p>
-                          <p className="text-xs text-[#161616]/60">{m.blurb}</p>
-                          {m.requires.length > 0 && <p className="text-[11px] text-[#161616]/40 mt-0.5">Needs: {m.requires.join(', ')}</p>}
+                      <li key={m.key} className="flex flex-wrap items-start justify-between gap-4 py-3 first:pt-0 last:pb-0">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-baseline gap-2">
+                            <h3 className="font-sans text-[15px] font-bold text-[#161616]">{m.name}</h3>
+                            <code className="font-mono text-[11px] text-[#5C5850]">{m.key}</code>
+                          </div>
+                          <p className="font-body text-[14px] text-[#3A362D] mt-0.5 leading-snug">{m.blurb}</p>
+                          {m.requires.length > 0 && (
+                            <p className="font-mono text-[11px] text-[#5C5850] mt-1">needs: {m.requires.join(', ')}</p>
+                          )}
                         </div>
-                        <div className="shrink-0 text-right space-y-1">
+                        <div className="shrink-0 text-right space-y-1.5">
                           <Badge tone={m.status}>{m.status}</Badge>
-                          {m.cost && <p className="font-mono text-[10px] text-[#161616]/45">{m.cost.cents}c / {m.cost.unit}</p>}
+                          {m.cost && <p className="font-mono text-[11px] text-[#3A362D]">{m.cost.cents}c per {m.cost.unit.replace(/_/g, ' ')}</p>}
                         </div>
                       </li>
                     ))}
@@ -297,35 +351,50 @@ export default function FactoryLibrary() {
         )}
 
         {tab === 'Value actions' && (
-          <div className="grid gap-3 md:grid-cols-2">
-            {registry.valueActions.map((a) => (
-              <Card key={a.key} title={a.name} right={<Badge tone={a.status}>{a.status}</Badge>}>
-                <p className="text-sm text-[#161616]/75">{a.blurb}</p>
-                <dl className="mt-3 space-y-1 text-xs">
-                  <div className="flex gap-2"><dt className="text-[#161616]/40 w-20 shrink-0">Cost</dt><dd className="text-[#161616]/70">{a.costCents ? `${a.costCents}c per run` : 'free'}</dd></div>
-                  <div className="flex gap-2"><dt className="text-[#161616]/40 w-20 shrink-0">Safety</dt><dd className="text-[#161616]/70">{a.safety}</dd></div>
-                  <div className="flex gap-2"><dt className="text-[#161616]/40 w-20 shrink-0">Measured by</dt><dd className="text-[#161616]/70">{a.successMetric}</dd></div>
-                </dl>
-              </Card>
-            ))}
-          </div>
+          <>
+            <Card tone="yellow" eyebrow="The differentiator" title="Something useful, before anybody is asked to buy">
+              <p className="font-body text-[15px] text-[#161616] leading-relaxed max-w-3xl">
+                Any tool can send a sequence. A Value Action is the part a prospect actually keeps: an audit of their own site, the arithmetic on what a problem costs them, a receptionist that answers as their business. It is why the second sentence gets read.
+              </p>
+            </Card>
+            <div className="grid gap-5 md:grid-cols-2">
+              {registry.valueActions.map((a) => (
+                <Card key={a.key} eyebrow={a.costCents ? `${a.costCents}c per run` : 'free to run'} title={a.name} right={<Badge tone={a.status}>{a.status}</Badge>}>
+                  <p className="font-body text-[15px] text-[#3A362D] leading-relaxed">{a.blurb}</p>
+                  <dl className="mt-4 space-y-2.5 pt-4 border-t-2 border-[#161616]/12">
+                    <div>
+                      <dt className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#C4160B]">Safety</dt>
+                      <dd className="font-body text-[13px] text-[#3A362D] mt-0.5 leading-snug">{a.safety}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#C4160B]">Measured by</dt>
+                      <dd className="font-body text-[13px] text-[#3A362D] mt-0.5 leading-snug">{a.successMetric}</dd>
+                    </div>
+                  </dl>
+                </Card>
+              ))}
+            </div>
+          </>
         )}
 
         {tab === 'Tools' && (
-          <Card title="Tool registry">
-            <p className="text-xs text-[#161616]/50 mb-3">
-              Authorized per Factory, checked server-side where the tool runs. High-risk tools stay off unless the blueprint explicitly enables them.
+          <Card eyebrow="What an AI salesperson may hold" title="Tool registry">
+            <p className="font-body text-[14px] text-[#3A362D] mb-4 leading-relaxed max-w-3xl">
+              Authorized per Factory and checked server-side where the tool runs, not where the prompt is written. High-risk tools stay off unless the blueprint explicitly enables them.
             </p>
-            <ul className="space-y-2">
+            <ul className="divide-y-2 divide-[#161616]/10">
               {registry.tools.map((t) => (
-                <li key={t.key} className="flex items-start justify-between gap-3 border-b border-[#161616]/8 pb-2 last:border-0">
-                  <div className="min-w-0">
-                    <p className="text-sm text-[#161616]"><strong>{t.name}</strong> <span className="font-mono text-[10px] text-[#161616]/40">{t.key}</span></p>
-                    <p className="text-xs text-[#161616]/60">{t.purpose}</p>
+                <li key={t.key} className="flex flex-wrap items-start justify-between gap-4 py-3 first:pt-0 last:pb-0">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-baseline gap-2">
+                      <h3 className="font-sans text-[15px] font-bold text-[#161616]">{t.name}</h3>
+                      <code className="font-mono text-[11px] text-[#5C5850]">{t.key}</code>
+                    </div>
+                    <p className="font-body text-[14px] text-[#3A362D] mt-0.5 leading-snug">{t.purpose}</p>
                   </div>
-                  <div className="shrink-0 text-right">
+                  <div className="shrink-0 text-right space-y-1.5">
                     <Badge tone={t.risk === 'high' ? 'fail' : t.risk === 'medium' ? 'warn' : 'pass'}>{t.risk} risk</Badge>
-                    {t.moduleKey && <p className="font-mono text-[9px] text-[#161616]/35 mt-1">{t.moduleKey}</p>}
+                    {t.moduleKey && <p className="font-mono text-[11px] text-[#5C5850]">{t.moduleKey}</p>}
                   </div>
                 </li>
               ))}
@@ -334,32 +403,45 @@ export default function FactoryLibrary() {
         )}
 
         {tab === 'Plans' && (
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {data.plans.map((p) => (
-              <Card key={p.code} title={p.name} right={<Badge tone={p.status === 'public' ? 'stable' : p.status}>{p.status}</Badge>}>
-                <p className="text-sm text-[#161616]/70">{p.blurb}</p>
-                <div className="mt-3 grid grid-cols-2 gap-3">
-                  <Stat label="Setup" value={money(p.setup_price_cents)} />
-                  <Stat label="Monthly" value={money(p.monthly_price_cents)} />
+              <Card key={p.code} eyebrow={p.managed ? 'Managed' : 'Self-serve'} title={p.name} right={<Badge tone={p.status === 'public' ? 'stable' : p.status}>{p.status}</Badge>}>
+                <p className="font-body text-[14px] text-[#3A362D] leading-relaxed">{p.blurb}</p>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <Stat label="Setup" value={money(p.setup_price_cents)} size="sm" tone={p.setup_price_cents === null ? 'muted' : 'ink'} />
+                  <Stat label="Monthly" value={money(p.monthly_price_cents)} size="sm" tone={p.monthly_price_cents === null ? 'muted' : 'ink'} />
                 </div>
-                <p className="text-[11px] text-[#161616]/40 mt-1">
-                  {p.setup_price_cents === null || p.monthly_price_cents === null
-                    ? 'Not priced yet. Nothing publishes a number MMS has not set.'
-                    : p.managed ? 'Managed engagement.' : 'Self-serve.'}
-                </p>
-                <ul className="mt-3 space-y-0.5">
+                {(p.setup_price_cents === null || p.monthly_price_cents === null) && (
+                  <p className="font-body text-[12px] text-[#5C5850] mt-2 leading-snug">
+                    Not priced yet. Nothing publishes a number that has not been set.
+                  </p>
+                )}
+                <dl className="mt-4 pt-4 border-t-2 border-[#161616]/12 space-y-1.5">
                   {Object.entries(p.limits).slice(0, 8).map(([k, v]) => (
-                    <li key={k} className="flex justify-between text-xs">
-                      <span className="text-[#161616]/50">{k}</span>
-                      <span className="font-mono tabular-nums text-[#161616]/75">{v.toLocaleString()}</span>
-                    </li>
+                    <div key={k} className="flex items-baseline justify-between gap-3">
+                      <dt className="font-body text-[13px] text-[#3A362D]">{sentenceCase(k)}</dt>
+                      <dd className="font-mono text-[12px] font-bold tabular-nums text-[#161616]">{num(v)}</dd>
+                    </div>
                   ))}
-                </ul>
+                  {Object.keys(p.limits).length === 0 && (
+                    <p className="font-body text-[13px] text-[#5C5850]">No caps on this plan.</p>
+                  )}
+                </dl>
               </Card>
             ))}
           </div>
         )}
-      </main>
+      </Page>
+    </Shell>
+  );
+}
+
+function DarkStat({ label, value, sub }: { label: string; value: string; sub?: string }) {
+  return (
+    <div className="min-w-0">
+      <div className="font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">{label}</div>
+      <div className={`${figure} text-[26px] mt-1.5 text-white`}>{value}</div>
+      {sub && <div className="font-body text-[12px] text-[#CFC9BA] mt-1.5 leading-snug truncate">{sub}</div>}
     </div>
   );
 }
@@ -369,10 +451,10 @@ function summarize(action: string, json: Record<string, unknown>): string {
     const notes = (json.notes as string[]) ?? [];
     return `Synced ${json.modules} modules, ${json.valueActions} value actions and ${json.templates} templates. ${notes.join(' ')}`.trim();
   }
-  if (action === 'requeue_stale') return `Requeued ${json.requeued} stale job(s).`;
+  if (action === 'requeue_stale') return `Requeued ${json.requeued} stale job${json.requeued === 1 ? '' : 's'}.`;
   if (action === 'log_request') {
     const o = json.opportunity as Opportunity | null;
-    return o ? `Logged. ${o.tenants} customer(s) have asked for this. ${o.recommendation}` : 'Logged.';
+    return o ? `Logged. ${o.tenants} customer${o.tenants === 1 ? ' has' : 's have'} asked for this. ${o.recommendation}` : 'Logged.';
   }
   if (action === 'publish_template') {
     const t = json.template as { key: string; version: number; channel: string };
