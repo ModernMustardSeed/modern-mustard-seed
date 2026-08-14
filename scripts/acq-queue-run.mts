@@ -33,6 +33,31 @@ for (const l of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
 const argv = process.argv.slice(2);
 const arg = (k: string, d = '') => (argv.find((a) => a.startsWith(`--${k}=`)) ?? `--${k}=${d}`).split('=').slice(1).join('=');
 
+/*
+ * --help must not queue anything.
+ *
+ * It did. `npm run acq:queue -- --help` fell straight through to the insert
+ * and booked a 3,000 lead run, because every unrecognised flag was simply
+ * ignored. A script whose only side effect is creating work has to treat an
+ * unknown intent as a question, not as consent.
+ */
+if (argv.includes('--help') || argv.includes('-h')) {
+  console.log(`
+  npm run acq:queue -- --count=3000 --industry=new
+  npm run acq:queue -- --count=500  --industry=electrical
+  npm run acq:queue -- --count=1000 --industry=all --tier=2
+
+  --industry   new (default) | all | proven | one trade key
+  --count      10 to 20000, default 3000
+  --tier       1 priority metros, 2 plus secondary, 3 everything (default)
+  --minScore   lead score floor, default 35
+  --minReviews minimum public reviews, default 0
+
+  Queues a run. The worker (npm run acq:worker) does the sourcing.
+`);
+  process.exit(0);
+}
+
 const COUNT = Math.max(10, Math.min(20000, Number(arg('count', '3000'))));
 const INDUSTRY = arg('industry', 'new');
 const TIER = Math.min(3, Math.max(1, Number(arg('tier', '3'))));

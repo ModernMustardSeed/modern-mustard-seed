@@ -33,7 +33,9 @@
     "factory:bootstrap": "tsx scripts/factory-bootstrap.mts",
     "acq:rehearse": "tsx scripts/acq-rehearsal.mts",
     "acq:reservoir": "tsx scripts/acq-reservoir.mts",
-    "acq:queue": "tsx scripts/acq-queue-run.mts"
+    "acq:queue": "tsx scripts/acq-queue-run.mts",
+    "acq:enroll": "tsx scripts/acq-enroll.mts",
+    "acq:dress": "tsx scripts/acq-dress-rehearsal.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",
@@ -87,6 +89,7 @@
     "playwright": "^1.60.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.12",
     "typescript": "~5.8.2"
   }
 }

@@ -1808,14 +1808,18 @@ async function handleDemoOrderPaid(
   // no lead row still gets an office, just without the trade seeding.
   let wonLeadVoice: string | null = null;
   let wonLeadTrade: Trade | null = null;
+  // Everything else we know about them, carried into their Front Office so the
+  // agent and the portal are not blank on day one.
+  let wonLeadProfile: Record<string, unknown> | null = null;
   if (order?.outbound_lead_id) {
     const { data: l } = await supabase
       .from('outbound_leads')
-      .select('voice_gender, trade')
+      .select('voice_gender, trade, website, address, city, state, rating, review_count, emergency_service, contact_name, contact_title, hours, service_area')
       .eq('id', order.outbound_lead_id)
       .maybeSingle();
     wonLeadVoice = (l?.voice_gender as string | null) ?? null;
     wonLeadTrade = (l?.trade as Trade | null) ?? null;
+    wonLeadProfile = l ?? null;
   }
 
   let provisioned = false;
@@ -1853,6 +1857,17 @@ async function handleDemoOrderPaid(
           voiceGender: (order as { voice_gender?: string | null }).voice_gender ?? wonLeadVoice,
           trade: wonLeadTrade,
           phone: order.phone ?? null,
+          website: (wonLeadProfile?.website as string) ?? null,
+          address: (wonLeadProfile?.address as string) ?? null,
+          city: (wonLeadProfile?.city as string) ?? null,
+          state: (wonLeadProfile?.state as string) ?? null,
+          rating: (wonLeadProfile?.rating as number) ?? null,
+          reviewCount: (wonLeadProfile?.review_count as number) ?? null,
+          emergencyService: (wonLeadProfile?.emergency_service as boolean) ?? null,
+          contactName: (wonLeadProfile?.contact_name as string) ?? null,
+          contactTitle: (wonLeadProfile?.contact_title as string) ?? null,
+          hours: (wonLeadProfile?.hours as Record<string, unknown>) ?? null,
+          serviceArea: (wonLeadProfile?.service_area as string) ?? null,
         });
         if (office.ok) {
           // The gate in lib/front-office/readiness.ts will not let us spend

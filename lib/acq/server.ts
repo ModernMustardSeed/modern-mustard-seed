@@ -180,6 +180,25 @@ export type EnrollReport = {
  * explain a skip, and the queue's idempotency key means a second pass cannot
  * schedule a second first email.
  */
+/**
+ * Exactly the columns `evaluate()` reads, plus the ones enrolment writes off.
+ *
+ * This was `select('*')` across every row in outbound_leads, which on 7,400
+ * prospects with a hundred and fifty columns each is megabytes of payload
+ * fetched to answer questions about fourteen fields. Combined with one UPDATE
+ * per row it put the enrol endpoint over the sixty second serverless ceiling
+ * and returned a 504 to somebody trying to start their campaign.
+ */
+const ENROLL_COLUMNS =
+  'id,is_test,duplicate_of,unsubscribed_at,bounced,client_status,acq_stage,status,dnc_checked,email,email_status,phone,lead_score,acq_eligible,acq_ineligible_reason,acq_campaign_id,imported_at,email_stage,trade';
+
+/** Ids per write. Small enough that the URL PostgREST builds stays sane. */
+const ENROLL_CHUNK = 200;
+
+async function inChunks<T>(items: T[], size: number, run: (chunk: T[]) => PromiseLike<unknown>): Promise<void> {
+  for (let i = 0; i < items.length; i += size) await run(items.slice(i, i + size));
+}
+
 export async function enrollEligible(
   db: SupabaseClient,
   campaignId: string,
@@ -188,8 +207,19 @@ export async function enrollEligible(
   const report: EnrollReport = { considered: 0, enrolled: 0, alreadyIn: 0, rejected: {}, queued: 0 };
   const suppressed = await suppressedAddresses(db);
 
-  const rows = await fetchAll<AcqProspect>(db, 'outbound_leads', '*');
+  const rows = await fetchAll<AcqProspect>(db, 'outbound_leads', ENROLL_COLUMNS);
   const wanted = opts.trades?.length ? new Set(opts.trades) : null;
+
+  /*
+   * DECIDE FIRST, WRITE ONCE.
+   *
+   * The previous version issued an UPDATE and an event INSERT per row as it
+   * walked, which is up to fifteen thousand sequential round trips for a full
+   * pass. Judging is local and free; the writes are what cost, so every
+   * decision is collected here and flushed in batches below.
+   */
+  const toEnroll: AcqProspect[] = [];
+  const rejectBy = new Map<string, string[]>();
 
   for (const lead of rows) {
     if (wanted && !wanted.has(lead.trade ?? 'other')) continue;
@@ -198,47 +228,74 @@ export async function enrollEligible(
     const verdict = evaluate(lead, { suppressed, minLeadScore: opts.minScore });
     if (!verdict.eligible) {
       report.rejected[verdict.reason] = (report.rejected[verdict.reason] ?? 0) + 1;
-      if (!opts.dryRun && (lead.acq_eligible || lead.acq_ineligible_reason !== verdict.reason)) {
-        await db
-          .from('outbound_leads')
-          .update({ acq_eligible: false, acq_ineligible_reason: verdict.reason })
-          .eq('id', lead.id);
+      // Only write when the stored answer is actually wrong. Re-stamping a row
+      // that already says the same thing is the commonest wasted write here.
+      if (lead.acq_eligible || lead.acq_ineligible_reason !== verdict.reason) {
+        rejectBy.set(verdict.reason, [...(rejectBy.get(verdict.reason) ?? []), lead.id]);
       }
       continue;
     }
 
     if (lead.acq_eligible && lead.acq_campaign_id === campaignId) {
       report.alreadyIn++;
-    } else {
-      report.enrolled++;
-      if (!opts.dryRun) {
-        await db
-          .from('outbound_leads')
-          .update({
-            acq_eligible: true,
-            acq_ineligible_reason: null,
-            acq_campaign_id: campaignId,
-            acq_stage: lead.acq_stage === 'lost' ? 'prospect' : lead.acq_stage ?? 'prospect',
-            imported_at: lead.imported_at ?? new Date().toISOString(),
-          })
-          .eq('id', lead.id);
-        await recordEvent(db, {
-          leadId: lead.id,
-          campaignId,
-          type: 'eligible',
-          label: 'Enrolled in MEET MR. MUSTARD',
-          detail: { score: lead.lead_score },
-        });
-      }
+      continue;
     }
 
-    if (opts.queueFirstEmail && !opts.dryRun && (lead.email_stage ?? 0) === 0) {
+    report.enrolled++;
+    toEnroll.push(lead);
+    if (opts.limit && report.enrolled >= opts.limit) break;
+  }
+
+  if (opts.dryRun) return report;
+
+  const stamp = new Date().toISOString();
+
+  for (const [reason, ids] of rejectBy) {
+    await inChunks(ids, ENROLL_CHUNK, (chunk) =>
+      db.from('outbound_leads').update({ acq_eligible: false, acq_ineligible_reason: reason }).in('id', chunk),
+    );
+  }
+
+  // A lost prospect coming back becomes a prospect again; everyone else keeps
+  // the stage they had. Grouped so the whole set is two writes, not N.
+  const revive = toEnroll.filter((l) => l.acq_stage === 'lost' || !l.acq_stage).map((l) => l.id);
+  const keep = toEnroll.filter((l) => !(l.acq_stage === 'lost' || !l.acq_stage)).map((l) => l.id);
+
+  await inChunks(revive, ENROLL_CHUNK, (chunk) =>
+    db
+      .from('outbound_leads')
+      .update({ acq_eligible: true, acq_ineligible_reason: null, acq_campaign_id: campaignId, acq_stage: 'prospect' })
+      .in('id', chunk),
+  );
+  await inChunks(keep, ENROLL_CHUNK, (chunk) =>
+    db.from('outbound_leads').update({ acq_eligible: true, acq_ineligible_reason: null, acq_campaign_id: campaignId }).in('id', chunk),
+  );
+
+  // imported_at records when a prospect FIRST entered the campaign, so it is
+  // only ever set on rows that do not have one.
+  const firstTime = toEnroll.filter((l) => !l.imported_at).map((l) => l.id);
+  await inChunks(firstTime, ENROLL_CHUNK, (chunk) => db.from('outbound_leads').update({ imported_at: stamp }).in('id', chunk));
+
+  await inChunks(toEnroll, ENROLL_CHUNK, (chunk) =>
+    db.from('acq_events').insert(
+      chunk.map((l) => ({
+        lead_id: l.id,
+        campaign_id: campaignId,
+        type: 'eligible',
+        label: 'Enrolled in MEET MR. MUSTARD',
+        detail: { score: l.lead_score },
+      })),
+    ),
+  );
+
+  if (opts.queueFirstEmail) {
+    for (const lead of toEnroll) {
+      if ((lead.email_stage ?? 0) !== 0) continue;
       const res = await enqueue(db, { kind: 'email', leadId: lead.id, campaignId, step: 1 });
       if (res.ok && res.created) report.queued++;
     }
-
-    if (opts.limit && report.enrolled >= opts.limit) break;
   }
 
   return report;
 }
+

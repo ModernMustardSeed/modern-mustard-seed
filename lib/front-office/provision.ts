@@ -45,6 +45,22 @@ export type ProvisionInput = {
   timezone?: string | null;
   hours?: Record<string, unknown> | null;
   serviceArea?: string | null;
+  /**
+   * What we already know about them.
+   *
+   * All of this sits on the lead at the moment of sale and was previously
+   * thrown away, which meant an agent that could not answer "where are you
+   * based" about the business it works for.
+   */
+  website?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  rating?: number | null;
+  reviewCount?: number | null;
+  emergencyService?: boolean | null;
+  contactName?: string | null;
+  contactTitle?: string | null;
 };
 
 export type ProvisionResult =
@@ -113,6 +129,23 @@ export async function provisionFrontOffice(sb: SupabaseClient, input: ProvisionI
     if (input.outboundLeadId) patch.outbound_lead_id = input.outboundLeadId;
     if (input.demoOrderId) patch.demo_order_id = input.demoOrderId;
     if (input.projectId) patch.project_id = input.projectId;
+    // Fill gaps only. An owner who has fixed their address in the portal must
+    // not have it overwritten by whatever we scraped months earlier.
+    const { data: cur } = await sb
+      .from('fo_offices')
+      .select('website,address,city,state,rating,review_count,contact_name,trade')
+      .eq('id', existing.id)
+      .maybeSingle();
+    if (cur) {
+      if (!cur.website && input.website) patch.website = input.website;
+      if (!cur.address && input.address) patch.address = input.address;
+      if (!cur.city && input.city) patch.city = input.city;
+      if (!cur.state && input.state) patch.state = input.state;
+      if (cur.rating == null && input.rating != null) patch.rating = input.rating;
+      if (cur.review_count == null && input.reviewCount != null) patch.review_count = input.reviewCount;
+      if (!cur.contact_name && input.contactName) patch.contact_name = input.contactName;
+      if (!cur.trade && trade) patch.trade = trade;
+    }
     await sb.from('fo_offices').update(patch).eq('id', existing.id);
     return { ok: true, officeId: existing.id, created: false };
   }
@@ -140,6 +173,21 @@ export async function provisionFrontOffice(sb: SupabaseClient, input: ProvisionI
       // Where alerts go until they say otherwise. An office with no
       // notification address catches an emergency and tells nobody.
       notify_email: clientEmail,
+      /* ── WHAT WE ALREADY KNOW ABOUT THEM ──
+         All of this is on the lead at the moment of sale and used to be thrown
+         away, which left an agent that could not answer "where are you based"
+         about the business it works for, and a portal profile that knew
+         nothing about them on the day they paid. */
+      website: input.website ?? null,
+      address: input.address ?? null,
+      city: input.city ?? null,
+      state: input.state ?? null,
+      rating: input.rating ?? null,
+      review_count: input.reviewCount ?? null,
+      emergency_service: input.emergencyService ?? null,
+      contact_name: input.contactName ?? null,
+      contact_title: input.contactTitle ?? null,
+      trade: trade ?? null,
       never_do: neverDoFor(trade),
       escalate_on: escalateOnFor(trade),
       settings: { trade: trade ?? null, seeded_from: input.outboundLeadId ? 'acquisition' : 'demo-order' },

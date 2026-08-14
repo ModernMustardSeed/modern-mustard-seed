@@ -41,6 +41,10 @@ export type OfficeRow = {
   hours: Record<string, unknown>;
   services: string[];
   service_area: string | null;
+  website: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
   booking_enabled: boolean;
   transfers_enabled: boolean;
   never_do: string[];
@@ -100,7 +104,23 @@ export function buildInstructions(office: OfficeRow, transfers: TransferRow[]): 
   if (office.services.length) {
     bits.push('WHAT THIS BUSINESS DOES:', ...office.services.map((s) => `  - ${s}`), '');
   }
-  if (office.service_area) bits.push(`WHERE THEY WORK: ${office.service_area}`, '');
+
+  /*
+   * THE FACTS A CALLER ACTUALLY ASKS FOR.
+   *
+   * "Where are you based", "what's your website", "do you come out to my
+   * area". An agent that cannot answer those about the business it claims to
+   * work for is the moment a good call becomes an obvious robot. Only what we
+   * genuinely hold is listed, so it never invents an address.
+   */
+  const facts: string[] = [];
+  if (office.address) facts.push(`  Address: ${office.address}`);
+  else if (office.city && office.state) facts.push(`  Based in: ${office.city}, ${office.state}`);
+  if (office.website) facts.push(`  Website: ${office.website}`);
+  if (office.service_area) facts.push(`  Service area: ${office.service_area}`);
+  if (facts.length) {
+    bits.push('ABOUT THE BUSINESS, if a caller asks:', ...facts, '  If they ask something not listed here, say you will have somebody confirm rather than guessing.', '');
+  }
 
   const hours = formatHours(office.hours);
   if (hours) bits.push('THEIR HOURS:', `  ${hours}`, `  Times you say out loud are ${office.timezone}.`, '');
