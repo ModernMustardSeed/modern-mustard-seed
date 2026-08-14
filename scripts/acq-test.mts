@@ -20,6 +20,9 @@ import { workerStatus } from '../app/api/admin/acquisition/lead-finder/route';
 import { TRADE_DEFS, SOURCEABLE_TRADES, PROVEN_TRADES } from '../lib/acq/trades';
 import { neverDoFor, escalateOnFor, defaultGreeting, callerKey } from '../lib/front-office/provision';
 import { runwayDays } from '../lib/acq/reservoir';
+import { buildInstructions, assistantConfig } from '../lib/front-office/agent';
+import { frontOfficeTools } from '../lib/front-office/tools';
+import { parseDayHours, sayable } from '../lib/front-office/calendar';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 
 /** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
@@ -389,6 +392,95 @@ test('emails: every campaign email carries the opt-out and the tracked CTA', () 
     assert.match(built!.html, /\/api\/acq\/click\?/, 'the CTA must be the tracked link');
     assert.equal(built!.to, 'office@abcheating.com');
   }
+});
+
+const office = (over: Record<string, unknown> = {}) => ({
+  id: 'o1',
+  business_name: 'Flathead Comfort Heating & Air',
+  agent_name: 'the front desk',
+  greeting: 'Thanks for calling Flathead Comfort. How can I help?',
+  tone: 'warm',
+  voice_gender: 'female',
+  languages: ['en'],
+  timezone: 'America/Denver',
+  hours: { monday: '8:00 am - 5:00 pm', saturday: 'closed' },
+  services: ['AC repair'],
+  service_area: 'Flathead Valley',
+  booking_enabled: true,
+  transfers_enabled: true,
+  never_do: ['Never diagnose the equipment.', 'Never claim to be a human. If asked, say plainly that you are an AI assistant.'],
+  escalate_on: ['The caller asks for a human.'],
+  after_hours_message: null,
+  forward_mode: 'after_hours',
+  vapi_assistant_id: null,
+  settings: {},
+  ...over,
+});
+
+test('agent: the instructions always disclose what it is, and never bend the hard rules', () => {
+  const i = buildInstructions(office(), []);
+  assert.match(i, /You are an AI assistant\. Say so plainly/);
+  assert.match(i, /Never diagnose the equipment/);
+  // The identity and the hard rules must come BEFORE the softer context. A
+  // model that runs short on attention drops the middle of a prompt, and the
+  // middle is not where "never claim to be human" belongs.
+  assert.ok(i.indexOf('DO NOT BEND') < i.indexOf('HOW YOU SOUND'), 'rules must precede tone');
+  assert.ok(i.indexOf('AI assistant') < i.length / 2, 'the disclosure belongs in the first half');
+});
+
+test('agent: a tool the office switched off is absent, not merely discouraged', () => {
+  const withBooking = frontOfficeTools({ booking_enabled: true, transfers_enabled: true }).map((t) => t.function.name);
+  assert.ok(withBooking.includes('book_appointment') && withBooking.includes('transfer_call'));
+
+  // A model cannot misuse a tool it does not have. "Please do not use this"
+  // is an instruction, not a control.
+  const without = frontOfficeTools({ booking_enabled: false, transfers_enabled: false }).map((t) => t.function.name);
+  assert.ok(!without.includes('book_appointment'), 'booking off means the tool is gone');
+  assert.ok(!without.includes('transfer_call'), 'transfers off means the tool is gone');
+  // log_call and take_message are never optional: an office that records
+  // nothing is an answering machine with extra steps.
+  assert.ok(without.includes('log_call') && without.includes('take_message'));
+});
+
+test('agent: nothing uploaded to Vapi carries a secret or an office id as authority', () => {
+  const OFFICE_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+  const cfg = assistantConfig(office({ id: OFFICE_ID }), []);
+  const json = JSON.stringify(cfg);
+  assert.ok(!/api[_-]?key|bearer |service_role|password/i.test(json), 'no credential may travel with an assistant');
+  // The server URL must NOT carry the office id: the webhook resolves the
+  // office from the assistant id instead, so a guessed URL writes nothing.
+  const serverUrl = String((cfg.server as { url: string }).url);
+  assert.ok(!serverUrl.includes(OFFICE_ID), 'the office id must never be in the callback URL');
+  assert.match(serverUrl, /\/api\/front-office\/vapi$/);
+});
+
+test('agent: Spanish is only promised when the owner turned it on', () => {
+  assert.ok(!/Spanish/i.test(buildInstructions(office(), [])));
+  assert.match(buildInstructions(office({ languages: ['en', 'es'] }), []), /switch to Spanish/i);
+});
+
+test('calendar: hours that cannot be read are treated as CLOSED, never as open', () => {
+  assert.deepEqual(parseDayHours('8:00 am - 5:00 pm'), { open: 480, close: 1020 });
+  assert.deepEqual(parseDayHours('9am-6pm'), { open: 540, close: 1080 });
+  assert.deepEqual(parseDayHours('24/7'), { open: 0, close: 1440 });
+  assert.equal(parseDayHours('closed'), null);
+  assert.equal(parseDayHours(''), null);
+  assert.equal(parseDayHours(undefined), null);
+  // The failure that offers a caller a 3am Sunday appointment is worse than
+  // the one that offers nothing at all.
+  assert.equal(parseDayHours('by appointment'), null);
+  assert.equal(parseDayHours('sunrise to sunset'), null);
+  // A close that is not after the open is nonsense, not a 23-hour day.
+  assert.equal(parseDayHours('5pm - 8am'), null);
+});
+
+test('calendar: a spoken time is readable, not a timestamp', () => {
+  const said = sayable(new Date('2026-08-20T15:00:00Z'), 'America/Denver');
+  assert.match(said, /Thursday/);
+  assert.match(said, /9:00\s?AM/i, 'converted into the office timezone, not left in UTC');
+  // "never read an ISO string to a caller". Checking for a bare 'T' would
+  // fail on the word Thursday, so this looks for the actual shape.
+  assert.ok(!/\d{4}-\d{2}-\d{2}T/.test(said), 'never read an ISO timestamp to a caller');
 });
 
 test('front office: the rules seeded for a trade carry its own hard rule and the disclosure', () => {

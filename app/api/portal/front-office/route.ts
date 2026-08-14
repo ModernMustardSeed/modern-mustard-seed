@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { recordOfficeEvent } from '@/lib/front-office/provision';
 import { sidekickVoice } from '@/lib/sidekick-voice';
+import { syncAssistant } from '@/lib/front-office/agent';
 
 export const runtime = 'nodejs';
 
@@ -133,5 +134,25 @@ export async function POST(req: Request) {
     actor: session.email,
   });
 
-  return NextResponse.json({ ok: true });
+  // PUSH IT TO THE LIVE AGENT.
+  //
+  // Without this the portal is a settings screen that changes nothing until
+  // somebody in admin remembers to press sync, which means an owner switching
+  // to the female voice on Friday still hears the male one on Monday and
+  // reasonably concludes the product is broken.
+  //
+  // Failure is reported honestly rather than swallowed: the setting IS saved,
+  // and saying so while admitting the agent has not picked it up yet is the
+  // difference between a delay and a lie.
+  const synced = await syncAssistant(db, office.id);
+  if (!synced.ok) {
+    console.error('front office portal sync failed', synced.error);
+    return NextResponse.json({
+      ok: true,
+      synced: false,
+      message: 'Saved. Your receptionist picks this up shortly; we are on it if it takes more than a few minutes.',
+    });
+  }
+
+  return NextResponse.json({ ok: true, synced: true });
 }

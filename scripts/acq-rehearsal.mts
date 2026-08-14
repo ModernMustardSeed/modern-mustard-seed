@@ -353,6 +353,45 @@ async function run() {
     check('the rules include the disclosure rule', (row?.never_do ?? []).some((r: string) => /you are an AI/i.test(r)), 'AI disclosure');
     check('an emergency trade escalates on injury and fire', (row?.escalate_on ?? []).some((r: string) => /injury|fire|flooding/i.test(r)), `${(row?.escalate_on ?? []).length} triggers`);
     check('a trade with no registry entry still gets the base rules', neverDoFor(null).length >= 3, `${neverDoFor(null).length} rules`);
+
+    /* ── the receptionist itself ── */
+    const { buildInstructions, assistantConfig } = await import('../lib/front-office/agent');
+    const { availableSlots, bookSlot } = await import('../lib/front-office/calendar');
+    const { blockersFor } = await import('../app/api/admin/front-office/route');
+
+    const { data: full } = await db.from('fo_offices').select('*').eq('id', office.officeId).maybeSingle();
+    const instructions = buildInstructions(full, []);
+    check('the agent discloses that it is an AI', /You are an AI assistant/.test(instructions), 'disclosure present');
+    check('the agent carries the trade rule into its instructions', /never diagnose/i.test(instructions), 'rule present');
+
+    const cfg = assistantConfig(full, []);
+    const cfgJson = JSON.stringify(cfg);
+    check('no credential is uploaded with the assistant', !/api[_-]?key|service_role|password/i.test(cfgJson), 'clean');
+    check('the office id is not in the webhook URL', !cfgJson.includes(`/api/front-office/vapi?`), 'resolved from assistant id instead');
+
+    // An office with no hours must offer NOTHING rather than inventing a slot.
+    const noHours = await availableSlots(db, { id: office.officeId, hours: {}, timezone: 'America/Denver' });
+    check('an office with no hours offers no times', noHours.length === 0, `${noHours.length} offered`);
+
+    const withHours = { id: office.officeId, hours: { monday: '8:00 am - 5:00 pm', tuesday: '8:00 am - 5:00 pm', wednesday: '8:00 am - 5:00 pm', thursday: '8:00 am - 5:00 pm', friday: '8:00 am - 5:00 pm' }, timezone: 'America/Denver' };
+    const slots = await availableSlots(db, withHours, { limit: 3 });
+    check('real openings are offered inside posted hours', slots.length > 0, `${slots.length} slots, first ${slots[0]?.label ?? 'none'}`);
+
+    if (slots.length) {
+      const first = await bookSlot(db, withHours, { startsAt: slots[0].startsAt, title: 'Rehearsal booking' });
+      check('a slot can be booked', first.ok, first.ok ? first.label : first.message);
+      // THE RACE. Two callers, one slot. The database must award it once.
+      const second = await bookSlot(db, withHours, { startsAt: slots[0].startsAt, title: 'Rehearsal double-book' });
+      check('the same slot cannot be booked twice', !second.ok && second.reason === 'taken', second.ok ? 'DOUBLE BOOKED' : second.reason);
+      const past = await bookSlot(db, withHours, { startsAt: new Date(Date.now() - 3600_000).toISOString(), title: 'Rehearsal past' });
+      check('a time in the past is refused', !past.ok && past.reason === 'past', past.ok ? 'accepted a past time' : past.reason);
+    }
+
+    // The go-live gate. An office missing anything must NOT be able to tell a
+    // customer their phone is answered.
+    const blocking = blockersFor(full);
+    check('a half-built office reports what is blocking it', blocking.length > 0, blocking.join('; ') || 'nothing blocking');
+    check('a half-built office has no phone number assigned', !full.agent_phone, String(full.agent_phone ?? 'none'));
   }
 }
 
@@ -364,6 +403,11 @@ async function cleanup() {
   try {
     const rehearsalClient = `${MARKER}@modernmustardseed.com`;
     // Order matters: the office cascades its own children, then the client.
+    const { data: doomed } = await db.from('fo_offices').select('id').eq('client_email', rehearsalClient);
+    for (const o of doomed ?? []) {
+      await db.from('fo_appointments').delete().eq('office_id', o.id);
+      await db.from('fo_calls').delete().eq('office_id', o.id);
+    }
     await db.from('fo_offices').delete().eq('client_email', rehearsalClient);
     if (leadId) {
       await db.from('acq_events').delete().eq('lead_id', leadId);

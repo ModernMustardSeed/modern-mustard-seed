@@ -12,6 +12,7 @@ import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboa
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
 import MoodboardCard from '@/components/portal/MoodboardCard';
 import FactoryPortalLink from '@/components/portal/FactoryPortalLink';
+import FrontOfficePortalLink from '@/components/portal/FrontOfficePortalLink';
 import { properName } from '@/lib/business-name';
 
 /**
@@ -199,6 +200,7 @@ export default function ClientPortal() {
           <div className="bg-white border-2 border-[#E0301E] rounded-2xl shadow-[4px_4px_0_0_#161616] p-6"><p className="text-[#E0301E] text-sm font-body">{error}</p></div>
         ) : data ? (
           <>
+            <FrontOfficePortalLink />
             <FactoryPortalLink />
 
             {/* Welcome */}
