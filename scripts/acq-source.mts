@@ -41,8 +41,9 @@ const {
 const { marketsByTier, findMarket } = await import('../lib/acq/markets');
 const { buildDedupeIndex, checkDuplicate, claim, keysFor } = await import('../lib/acq/dedupe');
 const { CAMPAIGN_SLUG } = await import('../lib/acq/types');
+const { SOURCEABLE_TRADES, PROVEN_TRADES } = await import('../lib/acq/trades');
 
-type Trade = 'hvac' | 'plumbing' | 'roofing';
+type Trade = Exclude<import('../lib/acq/types').Trade, 'other'>;
 
 const argv = process.argv.slice(2);
 const flag = (n: string): string | null => {
@@ -203,6 +204,14 @@ async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>
 
 async function execute(run: Run): Promise<void> {
   const targets: Targets = run.params?.targets ?? { hvac: 200, plumbing: 150, roofing: 150 };
+
+  /* ── WHICH TRADES THIS RUN IS ACTUALLY FOR ──
+     This used to be a hardcoded ['hvac','plumbing','roofing'], written when
+     those were the only three that existed. A run queued for thirteen new
+     trades therefore sourced the three old ones instead, logged
+     "totals hvac 0/undefined" because it was reading a target key that was not
+     in the params, and banked nothing at all. The trades come from the run. */
+  const requested = (Object.keys(targets) as Trade[]).filter((t) => Number(targets[t]) > 0 && SOURCEABLE_TRADES.includes(t));
   const requireEmail = run.params?.requireEmail !== false;
   const minScore = Number(run.params?.minScore ?? 0);
   const tier = (run.params?.tier ?? TIER) as 1 | 2 | 3;
@@ -218,8 +227,8 @@ async function execute(run: Run): Promise<void> {
     ? (run.params.markets.map((k) => findMarket(k)).filter(Boolean) as ReturnType<typeof marketsByTier>)
     : marketsByTier(tier);
 
-  const banked: Record<Trade, number> = { hvac: 0, plumbing: 0, roofing: 0 };
-  const trades: Trade[] = ['hvac', 'plumbing', 'roofing'];
+  const trades: Trade[] = requested.length ? requested : [...PROVEN_TRADES];
+  const banked = Object.fromEntries(trades.map((t) => [t, 0])) as Record<Trade, number>;
 
   // One browser for the whole run, opened lazily so an OSM-only run never pays
   // for Chromium. Closed in the finally below whatever happens.
@@ -241,7 +250,7 @@ async function execute(run: Run): Promise<void> {
 
   try {
   outer: for (const market of markets) {
-    if (trades.every((t) => banked[t] >= targets[t])) break outer;
+    if (trades.every((t) => banked[t] >= (targets[t] ?? 0))) break outer;
 
     // ONE Overpass call per market for all three trades. Ninety metro boxes at
     // roughly a minute each is an afternoon; two hundred and seventy is not.
@@ -250,7 +259,7 @@ async function execute(run: Run): Promise<void> {
     const discovered = await discoverOsmAllTrades(market);
 
     for (const trade of trades) {
-      if (banked[trade] >= targets[trade]) continue;
+      if (banked[trade] >= (targets[trade] ?? 0)) continue;
 
       const fromMaps = maps && discoverMaps ? await discoverMaps(maps.page, market, trade) : [];
       const fsq = await discoverFoursquare(market, trade);
@@ -283,7 +292,7 @@ async function execute(run: Run): Promise<void> {
       const rows: Record<string, unknown>[] = [];
 
       await pool(fresh, CONCURRENCY, async (candidate) => {
-        if (banked[trade] >= targets[trade]) return;
+        if (banked[trade] >= (targets[trade] ?? 0)) return;
         const scrape = candidate.website ? await scrapeBusiness(candidate.website) : null;
         const siteHost = candidate.website ? hostOf(candidate.website) : null;
         // An address the directory itself publishes counts as publicly listed,
@@ -358,7 +367,9 @@ async function execute(run: Run): Promise<void> {
         counters.inserted += rows.length;
       }
 
-      log(`   ${trade}: banked ${rows.length} · totals hvac ${banked.hvac}/${targets.hvac}, plumbing ${banked.plumbing}/${targets.plumbing}, roofing ${banked.roofing}/${targets.roofing}`);
+      log(
+        `   ${trade}: banked ${rows.length} · ${trades.map((t) => `${t} ${banked[t]}/${targets[t] ?? 0}`).join(', ')}`,
+      );
       await pushProgress(run.id, `${market.city}, ${market.state} · ${trade}`);
     }
     await sleep(800);
@@ -367,11 +378,11 @@ async function execute(run: Run): Promise<void> {
     if (maps) await maps.browser.close().catch(() => {});
   }
 
-  const done = trades.every((t) => banked[t] >= targets[t]);
+  const done = trades.every((t) => banked[t] >= (targets[t] ?? 0));
   log(
     done
       ? `Targets met. ${counters.inserted} prospects inserted.`
-      : `Markets exhausted at tier ${tier}. ${counters.inserted} inserted (hvac ${banked.hvac}, plumbing ${banked.plumbing}, roofing ${banked.roofing}).`,
+      : `Markets exhausted at tier ${tier}. ${counters.inserted} inserted (${trades.map((t) => `${t} ${banked[t]}`).join(', ')}).`,
   );
 
   await db
