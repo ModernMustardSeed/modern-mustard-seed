@@ -227,17 +227,40 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
   </td></tr>`;
 }
 
-// Sarah's signature: a hand-drawn heart with ", Sarah" set beside it, aligned
-// toward the bottom of the heart. Signs every email. The name arg is kept for
-// call-site compatibility; the sign-off is always the heart + Sarah.
+// Sarah's signature. A pop-art bubble portrait, her name set in script, the
+// role in plain type beneath it, and Mr. Mustard answering the ranch line so
+// every email ends with a way to reach a person. Signs every email. The name
+// arg is kept for call-site compatibility; the sign-off is always Sarah.
+//
+// The three assets are 2x PNGs in public/brand, sized down in the markup so
+// they stay sharp on retina. The script name carries alt="Sarah Scarano", so a
+// client with images off still shows the name and not a gap.
 function signature(_name?: string): string {
-  return `<tr><td style="padding:34px 44px 42px">
+  return `<tr><td style="padding:36px 44px 0">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-      <td style="vertical-align:bottom"><img src="https://modernmustardseed.com/brand/sap-heart.png" width="62" height="57" alt="With love" style="display:block;border:0" /></td>
-      <td style="vertical-align:bottom;padding:0 0 9px 3px"><span class="mms-ink" style="font-family:${SERIF};font-style:italic;font-size:30px;color:${C.ink};font-weight:700;letter-spacing:0.3px">, Sarah</span></td>
+      <td width="114" style="width:114px;vertical-align:middle">
+        <img src="${SITE}/brand/sig-sarah.png" width="114" height="114" alt="" style="display:block;border:0;outline:none;text-decoration:none" />
+      </td>
+      <td style="vertical-align:middle;padding-left:20px">
+        <img src="${SITE}/brand/sig-name.png" width="339" height="46" alt="Sarah Scarano" style="display:block;border:0;outline:none;text-decoration:none;max-width:339px" />
+        <p class="mms-body" style="margin:9px 0 0;font-family:${SANS};font-size:14px;color:${C.body};font-weight:600">(Founder &amp; Agentic Engineer)</p>
+        <p style="margin:9px 0 0;font-family:${SANS};font-size:11px;color:${C.gold};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
+      </td>
     </tr></table>
-    <p style="margin:14px 0 0;font-family:${SANS};font-size:11px;color:${C.gold};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
-    <p class="mms-ink" style="margin:7px 0 0;font-family:${SERIF};font-style:italic;font-size:14px;color:${C.ink};font-weight:600">Do you want your business to thrive?</p>
+  </td></tr>
+  <tr><td style="padding:26px 44px 42px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panelWarm}" style="background:${C.panelWarm};border:2px solid ${C.ink};border-radius:14px">
+      <tr>
+        <td width="112" style="width:112px;vertical-align:bottom;padding:10px 0 0 12px">
+          <img src="${SITE}/brand/sig-mustard-phone.png" width="100" height="127" alt="Mr. Mustard answering the ranch line" style="display:block;border:0;outline:none;text-decoration:none" />
+        </td>
+        <td style="vertical-align:middle;padding:18px 22px 18px 8px">
+          <div style="font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${C.gold}">The ranch line</div>
+          <a href="tel:+14063121223" class="mms-ink" style="display:inline-block;margin:8px 0 0;font-family:${SERIF};font-size:25px;font-weight:700;color:${C.ink};text-decoration:none;letter-spacing:0.2px">(406) 312-1223</a>
+          <p class="mms-body" style="margin:8px 0 0;font-family:${SANS};font-size:13px;color:${C.body};line-height:1.6">Mr. Mustard picks up day or night. Ask him anything, and he will get you to me.</p>
+        </td>
+      </tr>
+    </table>
   </td></tr>`;
 }
 
