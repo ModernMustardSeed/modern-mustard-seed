@@ -51,7 +51,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <MagneticCursor />
         <AppNavDock />
-        <DeferredChat />
+        {/*
+          The chat launcher is marketing chrome like the footer, and on a
+          single-objective page it competes with the objective. On /mustard it is
+          literally a second Mr. Mustard button offering a different conversation
+          that skips the consent flow. Same guard, same reasons.
+        */}
+        <HideOnAppShell>
+          <DeferredChat />
+        </HideOnAppShell>
         <RefCapture />
         <AnalyticsScripts />
         <CookieConsent />

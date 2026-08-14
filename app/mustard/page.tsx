@@ -1,10 +1,10 @@
+import Image from 'next/image';
 import MustardDemo from '@/components/mustard/MustardDemo';
 import { getSupabase } from '@/lib/supabase';
 import { getSurface, readAttribution, labelSource } from '@/lib/mustard/surface';
 import { resolveLink } from '@/lib/mustard/links';
 import { consentVersion, CURRENT_CONSENT } from '@/lib/acq/consent';
-import { buildMetadata } from '@/lib/seo';
-import { SITE } from '@/lib/seo';
+import { buildMetadata, SITE } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,9 +23,15 @@ export const metadata = buildMetadata({
  * here with a `?source=` on the end, and the funnel splits itself by channel
  * without a single new page ever being built.
  *
- * Deliberately not a landing page. No navbar, no footer columns, no product
- * tour, no second CTA. Everything on this screen exists to get one person to
- * hear Mr. Mustard.
+ * Deliberately not a landing page. The navbar hides itself here (isAppShell in
+ * Navbar.tsx) and the footer is suppressed below, because this screen has one
+ * job and a nav offering fifteen other departments is fifteen ways to leave
+ * before the phone rings.
+ *
+ * House grammar throughout: cream canvas, ink outlines, mustard fills, red mono
+ * eyebrow, hard sticker shadows, halftone. Playfair for the display line with a
+ * single italic word, DM Sans for body, JetBrains Mono for labels. Oswald is the
+ * outbound cockpit's sub-brand and stays out of public pages.
  */
 export default async function MustardPage({
   searchParams,
@@ -38,7 +44,6 @@ export default async function MustardPage({
     return (Array.isArray(v) ? v[0] : v) ?? '';
   };
 
-  // Rebuild the landing URL so attribution reads exactly as it arrived.
   const url = new URL(`${SITE.url}/mustard`);
   for (const [k, v] of Object.entries(params)) {
     const val = Array.isArray(v) ? v[0] : v;
@@ -77,46 +82,46 @@ export default async function MustardPage({
   }
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]" data-mustard-door>
-      {/*
-        The site chrome is hidden HERE rather than by restructuring the root
-        layout, because the root layout wraps every route in the app and moving
-        it into route groups to bare one page is a large change to somebody
-        else's application for a small gain. This page has one objective and a
-        navbar offering eleven other products actively works against it.
-      */}
-      <style>{`
-        body:has([data-mustard-door]) > nav,
-        body:has([data-mustard-door]) footer { display: none; }
-      `}</style>
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.07]" aria-hidden="true" style={halftone} />
-        <div className="relative mx-auto max-w-2xl px-5 py-10 sm:py-16">
-          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.35em] text-[#E0301E]">
-            {surface.seller_name}
-          </p>
-          <h1 className="mt-3 font-oswald text-[2.5rem] leading-[0.95] sm:text-6xl font-bold uppercase tracking-tight">
-            Meet
-            <br />
-            Mr. Mustard
-          </h1>
-          <p className="mt-5 font-oswald text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#161616]/85">
-            {surface.headline}
-          </p>
+    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616]">
+      {/* ── the poster: words and the ask, together, above the fold ── */}
+      <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#F5B700]">
+        <div className="absolute inset-0 halftone-ink" aria-hidden="true" />
 
-          <div className="mt-5 space-y-3 text-[17px] leading-relaxed text-[#161616]/75">
-            <p>Do not take our word for it.</p>
-            <p>
-              Give him the number you want him to call. He will ring you and show you what an AI receptionist could
-              sound like working for your business.
-            </p>
-            <p>
-              You can even pretend you are one of your own customers and{' '}
-              <strong className="text-[#161616]">try to stump him</strong>.
+        {/*
+          Reading order differs by device on purpose.
+
+          PHONE: hook, then the ask, then the reassurance. Most people arrive
+          here from the Facebook or LinkedIn app on a handset, and three
+          paragraphs between the headline and the phone field is three
+          paragraphs of scroll before anyone can act.
+
+          DESKTOP: the poster. Words on the left, the ask on the right, both on
+          one screen. Explicit grid placement rather than source order, so the
+          markup can stay in the order a screen reader should hear it.
+        */}
+        <div className="relative mx-auto grid max-w-6xl items-start gap-x-14 gap-y-8 px-5 pt-8 pb-12 sm:px-8 sm:pt-12 sm:pb-16 lg:grid-cols-[1.05fr_minmax(0,26rem)]">
+          {/* the hook */}
+          <div className="order-1 max-w-xl lg:col-start-1 lg:row-start-1">
+            <div className="flex items-center gap-3">
+              <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-[#161616] bg-[#FBF6EA]">
+                <Image src="/brand/mascot.png" alt="" fill sizes="48px" className="object-contain p-0.5" priority />
+              </span>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.32em] text-[#C4160B]">
+                {surface.seller_name}
+              </p>
+            </div>
+
+            <h1 className="mt-5 font-display text-[2.9rem] leading-[0.92] sm:text-[4.5rem] font-extrabold tracking-tight text-[#161616]">
+              Meet <span className="italic">Mr. Mustard</span>.
+            </h1>
+
+            <p className="mt-3 font-display text-[1.5rem] sm:text-[2.1rem] leading-[1.1] font-bold text-[#161616]">
+              Want my AI receptionist to call <span className="italic">you</span>?
             </p>
           </div>
 
-          <div className="mt-7">
+          {/* the ask */}
+          <div className="order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-8">
             <MustardDemo
               surface={surface.slug}
               headline={surface.headline}
@@ -132,40 +137,77 @@ export default async function MustardPage({
             />
           </div>
 
-          <ol className="mt-9 grid gap-3 sm:grid-cols-3">
-            {[
-              ['He calls you', 'In about ten seconds, from a real number.'],
-              ['You test him', 'Give him the call your team actually gets.'],
-              ['He builds yours', 'Free, if you want to keep poking at it later.'],
-            ].map(([title, body], i) => (
-              <li key={title} className="rounded-xl border-2 border-[#161616] bg-white/70 p-4 shadow-[3px_3px_0_0_#161616]">
-                <p className="font-mono text-[11px] font-bold text-[#E0301E]">0{i + 1}</p>
-                <p className="mt-1 font-oswald text-sm font-bold uppercase tracking-wide">{title}</p>
-                <p className="mt-1 text-[13px] leading-snug text-[#161616]/70">{body}</p>
-              </li>
-            ))}
-          </ol>
+          {/* the reassurance */}
+          <div className="order-3 max-w-xl lg:col-start-1 lg:row-start-2 lg:-mt-2">
+            <div className="space-y-3 text-[16.5px] leading-relaxed text-[#161616]/80">
+              <p>Do not take our word for it.</p>
+              <p>
+                Give him the number you want him to call. He rings you and shows you what an AI receptionist sounds like
+                working for your business.
+              </p>
+              <p className="font-semibold text-[#161616]">
+                You can pretend to be your own customer and try to stump him.
+              </p>
+            </div>
 
-          <p className="mt-8 text-sm text-[#161616]/55">
-            He is an AI and he says so in his first breath. Prefer to skip the form? His line is{' '}
-            <a className="font-semibold underline" href="tel:+14063121223">
+            <ol className="mt-6 grid gap-3 sm:grid-cols-3">
+              {[
+                ['He calls you', 'Ten seconds from now, from a real number.'],
+                ['You test him', 'The call your team gets on a bad night.'],
+                ['He builds yours', 'Free, and yours to keep poking at.'],
+              ].map(([title, body], i) => (
+                <li key={title} className="rounded-xl border-2 border-[#161616] bg-[#FBF6EA]/80 p-3.5">
+                  <p className="font-mono text-[10px] font-bold text-[#C4160B]">0{i + 1}</p>
+                  <p className="mt-1 font-display text-[15px] font-bold leading-tight">{title}</p>
+                  <p className="mt-1 text-[12.5px] leading-snug text-[#161616]/70">{body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        {/* screenprint rule between the plates */}
+        <div className="stripe-ink h-3 w-full opacity-90" aria-hidden="true" />
+      </section>
+
+      {/* ── the ink close ── */}
+      <section className="relative overflow-hidden bg-[#080C16] text-[#FBF6EA]">
+        <div className="absolute inset-0 halftone-ink" aria-hidden="true" />
+        <div className="relative mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-16">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.32em] text-[#F5B700]">
+            Do not let him present
+          </p>
+          <p className="mt-4 font-display text-2xl sm:text-3xl leading-tight font-bold">
+            The demo everybody remembers is the one where they tried to <span className="italic">break him</span>.
+          </p>
+          <p className="mt-4 text-[16px] leading-relaxed text-[#FBF6EA]/75">
+            Give him the eleven o&apos;clock emergency. The caller who will not say what is wrong. The one who wants a
+            price over the phone. That is the real test, and it is the same test a front desk fails on a busy Tuesday.
+          </p>
+          <p className="mt-6 text-sm text-[#FBF6EA]/60">
+            He is an AI and he says so in his first breath. Prefer to skip the form? His own line is{' '}
+            <a className="font-bold text-[#F5B700] underline underline-offset-4" href="tel:+14063121223">
               (406) 312-1223
             </a>
             , and he answers it himself, day or night.
           </p>
 
-          {source !== 'direct' && (
-            <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/25">
-              {labelSource(source)}
-            </p>
-          )}
+          <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-[#FBF6EA]/15 pt-5 text-[11px] text-[#FBF6EA]/45">
+            <a href="/privacy" className="underline underline-offset-4 hover:text-[#FBF6EA]/80">
+              Privacy
+            </a>
+            <a href="/terms" className="underline underline-offset-4 hover:text-[#FBF6EA]/80">
+              Terms
+            </a>
+            <a href={SITE.url} className="underline underline-offset-4 hover:text-[#FBF6EA]/80">
+              Modern Mustard Seed
+            </a>
+            {source !== 'direct' && (
+              <span className="ml-auto font-mono uppercase tracking-[0.2em]">{labelSource(source)}</span>
+            )}
+          </div>
         </div>
       </section>
     </div>
   );
 }
-
-const halftone: React.CSSProperties = {
-  backgroundImage: 'radial-gradient(#161616 1.4px, transparent 1.4px)',
-  backgroundSize: '11px 11px',
-};

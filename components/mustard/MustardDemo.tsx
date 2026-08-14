@@ -3,16 +3,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
- * /mustard, the doorway.
+ * The doorway's one interaction.
  *
- * One objective and exactly one: get this person to experience Mr. Mustard. No
- * navigation, no second CTA, no product tour. A phone number, a checkbox, a
- * button, and then his voice.
+ * A phone number, a checkbox, a button, and then his voice. No navigation, no
+ * second CTA, no product tour.
  *
- * Built phone-first because most people arrive from a Facebook or LinkedIn app
+ * Built phone-first, because most people arrive from a Facebook or LinkedIn app
  * on a handset: `inputMode="tel"` for the right keyboard, tap targets over
- * 48px, no layout shift between the three states, and the whole thing fits
- * above the fold on a small screen.
+ * 56px, and the three states are the same card so nothing reflows underneath a
+ * thumb mid-tap.
+ *
+ * House grammar: pop-card, ink borders, hard sticker shadows, Playfair for the
+ * display lines, JetBrains Mono for labels, ring waves on the calling state
+ * (the same `.ring-wave` the /voice-agents number uses).
  */
 
 type Props = {
@@ -26,7 +29,7 @@ type Props = {
   token: string | null;
   landingUrl: string;
   prefill: { phone: string; businessName: string; contactName: string };
-  /** Only shown when a magic link told us who this is. */
+  /** Only set when a magic link told us who this is. */
   knownAs: string | null;
 };
 
@@ -105,8 +108,6 @@ export default function MustardDemo(props: Props) {
     }
   };
 
-  /* ── while he is on the line ── */
-
   const poll = useCallback(async () => {
     if (!requestId) return;
     try {
@@ -137,39 +138,65 @@ export default function MustardDemo(props: Props) {
 
   if (phase === 'calling' || phase === 'queued' || phase === 'connected') {
     return (
-      <Panel>
-        <Ringer />
-        <h2 className="mt-6 font-oswald text-3xl sm:text-4xl font-bold uppercase tracking-tight text-[#161616]">
-          {phase === 'queued' ? 'You are next in line' : phase === 'connected' ? 'You are talking to him now' : 'Mr. Mustard is calling you'}
+      <div className="pop-card-yellow relative overflow-hidden p-7 sm:p-9 text-center" role="status" aria-live="polite">
+        <div className="relative mx-auto mb-7 h-28 w-28" aria-hidden="true">
+          <span className="ring-wave h-24 w-24 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(22,22,22,.55)' }} />
+          <span className="ring-wave h-24 w-24 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(22,22,22,.4)', animationDelay: '1.4s' }} />
+          <span className="ring-wave h-24 w-24 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(22,22,22,.28)', animationDelay: '2.8s' }} />
+          <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#161616] bg-[#FBF6EA] text-3xl">
+            📞
+          </span>
+        </div>
+
+        <h2 className="font-display text-[2rem] sm:text-4xl font-extrabold leading-tight tracking-tight text-[#161616]">
+          {phase === 'queued' ? (
+            <>
+              You are <span className="italic">next</span> in line
+            </>
+          ) : phase === 'connected' ? (
+            <>
+              You are talking to him <span className="italic">now</span>
+            </>
+          ) : (
+            <>
+              Mr. Mustard is <span className="italic">calling you</span>
+            </>
+          )}
         </h2>
-        <p className="mt-3 text-lg leading-relaxed text-[#161616]/75">
+
+        <p className="mt-3 text-lg leading-relaxed text-[#161616]/80">
           {phase === 'queued' ? message || 'He will ring you shortly.' : 'He is grabbing his headset. Keep your phone nearby.'}
         </p>
-        <p className="mt-5 font-mono text-xl font-bold text-[#161616]">{phone}</p>
-        <p className="mt-6 text-sm text-[#161616]/60">
+
+        <p className="mt-5 inline-block rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-4 py-2 font-mono text-xl font-bold tracking-wide">
+          {phone}
+        </p>
+
+        <p className="mt-7 text-sm leading-relaxed text-[#161616]/70">
           Do not let him present. Give him the call your team actually gets, and try to break him.
         </p>
-        <p className="mt-4 text-sm text-[#161616]/55">
-          Nothing rang? His own line is{' '}
-          <a className="font-semibold underline" href="tel:+14063121223">
+        <p className="mt-3 text-sm text-[#161616]/60">
+          Nothing rang? His line is{' '}
+          <a className="font-bold underline underline-offset-4" href="tel:+14063121223">
             (406) 312-1223
-          </a>{' '}
-          and he answers it himself.
+          </a>
+          .
         </p>
-      </Panel>
+      </div>
     );
   }
 
   if (phase === 'done') {
     return (
-      <Panel>
-        <h2 className="font-oswald text-3xl sm:text-4xl font-bold uppercase tracking-tight text-[#161616]">
-          That was him.
+      <div className="pop-card p-7 sm:p-9 text-center">
+        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#C4160B]">That was him</p>
+        <h2 className="mt-3 font-display text-[2rem] sm:text-4xl font-extrabold leading-tight tracking-tight">
+          Want one that answers for <span className="italic">{business || 'your business'}</span>?
         </h2>
-        <p className="mt-3 text-lg leading-relaxed text-[#161616]/75">
-          Want one that answers for {business || 'your business'}, on your real number, around the clock?
+        <p className="mt-3 text-[17px] leading-relaxed text-[#161616]/75">
+          On your real number, around the clock, in your words.
         </p>
-        <div className="mt-6 flex flex-col gap-3">
+        <div className="mt-7 flex flex-col gap-3">
           {demoUrl && (
             <a href={demoUrl} className={bigButton}>
               Open the one he built you
@@ -178,42 +205,45 @@ export default function MustardDemo(props: Props) {
           <a href="/voice-agents" className={bigButtonQuiet}>
             Build my receptionist
           </a>
-          <a href="/book" className="text-center text-sm font-semibold underline text-[#161616]/70">
+          <a href="/book" className="text-center text-sm font-semibold underline underline-offset-4 text-[#161616]/70">
             Or talk it through with Sarah
           </a>
         </div>
-      </Panel>
+      </div>
     );
   }
 
   if (phase === 'error') {
     return (
-      <Panel>
-        <h2 className="font-oswald text-3xl font-bold uppercase tracking-tight text-[#E0301E]">Mr. Mustard hit a snag</h2>
-        <p className="mt-3 text-lg leading-relaxed text-[#161616]/75">{error}</p>
-        <button onClick={retry} className={`${bigButton} mt-6`}>
+      <div className="pop-card p-7 sm:p-9 text-center" style={{ borderColor: '#E0301E', boxShadow: '5px 5px 0 0 #E0301E' }}>
+        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#E0301E]">Snag</p>
+        <h2 className="mt-3 font-display text-3xl font-extrabold leading-tight tracking-tight">
+          Mr. Mustard hit a <span className="italic">snag</span>.
+        </h2>
+        <p className="mt-3 text-[17px] leading-relaxed text-[#161616]/75">{error}</p>
+        <button onClick={retry} className={`${bigButton} mt-6 w-full`}>
           Try again
         </button>
-        <p className="mt-4 text-sm text-[#161616]/55">
-          Or just call him yourself at{' '}
-          <a className="font-semibold underline" href="tel:+14063121223">
+        <p className="mt-4 text-sm text-[#161616]/60">
+          Or call him yourself at{' '}
+          <a className="font-bold underline underline-offset-4" href="tel:+14063121223">
             (406) 312-1223
           </a>
           .
         </p>
-      </Panel>
+      </div>
     );
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border-[3px] border-[#161616] bg-white shadow-[8px_8px_0_0_#161616] p-6 sm:p-8">
+    <form onSubmit={submit} className="pop-card p-6 sm:p-8">
       {props.knownAs && (
-        <p className="mb-4 text-sm font-semibold text-[#161616]/70">
-          Welcome back{props.knownAs ? `, ${props.knownAs}` : ''}. Just confirm the number.
+        <p className="mb-5 rounded-lg border-2 border-[#161616] bg-[#F5B700] px-3 py-2 text-sm font-semibold">
+          Welcome back, {props.knownAs}. Just confirm the number.
         </p>
       )}
 
-      <label htmlFor="mustard-phone" className="block font-oswald text-sm font-bold uppercase tracking-[0.16em] text-[#161616]/65">
+      <label htmlFor="mustard-phone" className="block font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-[#C4160B]">
         The number he should ring
       </label>
       <input
@@ -225,39 +255,51 @@ export default function MustardDemo(props: Props) {
         placeholder="(602) 555-0134"
         value={phone}
         onChange={(e) => setPhone(formatUsPhone(e.target.value))}
-        className="mt-2 w-full rounded-xl border-[3px] border-[#161616] bg-[#FBF6EA] px-4 py-4 text-2xl font-bold tracking-wide text-[#161616] outline-none transition-shadow focus:shadow-[0_0_0_4px_#F5B700]"
+        className="mt-2 w-full rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-4 py-4 font-mono text-2xl font-bold tracking-wide text-[#161616] outline-none transition-shadow placeholder:text-[#161616]/25 focus:shadow-[0_0_0_4px_#F5B700]"
         aria-describedby="mustard-consent"
       />
 
       {showBusiness ? (
         <div className="mt-4">
-          <label htmlFor="mustard-business" className="block font-oswald text-xs font-bold uppercase tracking-[0.16em] text-[#161616]/55">
-            Business name (optional, it makes him better)
+          <label htmlFor="mustard-business" className="block font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-[#161616]/45">
+            Business name, so he can answer as you
           </label>
           <input
             id="mustard-business"
             value={business}
             onChange={(e) => setBusiness(e.target.value)}
-            placeholder="ABC Heating & Air"
+            placeholder="ABC Heating &amp; Air"
             autoComplete="organization"
-            className="mt-1.5 w-full rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-3.5 py-3 text-base text-[#161616] outline-none focus:shadow-[0_0_0_3px_#F5B700]"
+            className="mt-2 w-full rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-4 py-3.5 text-base text-[#161616] outline-none placeholder:text-[#161616]/25 focus:shadow-[0_0_0_4px_#F5B700]"
           />
         </div>
       ) : (
-        <button type="button" onClick={() => setShowBusiness(true)} className="mt-3 text-sm font-semibold underline text-[#161616]/55">
-          Tell him your business name, and he can answer as you
+        <button
+          type="button"
+          onClick={() => setShowBusiness(true)}
+          className="mt-3 block text-left text-[13.5px] font-semibold underline underline-offset-4 text-[#161616]/55 hover:text-[#161616]"
+        >
+          Add your business name, and he answers as you
         </button>
       )}
 
-      <label className="mt-5 flex gap-3 items-start cursor-pointer">
+      {/*
+        The consent block is legally load-bearing, so it is never collapsed
+        behind a "details" toggle and never pre-checked. It is set slightly
+        quieter than the field above it so the phone number still reads as the
+        one thing being asked for, which is a typographic decision and not a
+        legibility one: it stays at 12.5px on a 1.65 leading, well above the
+        point where anybody would call it buried.
+      */}
+      <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border-2 border-[#161616]/12 bg-[#FBF6EA]/70 p-3.5 transition-colors hover:border-[#161616]/35">
         <input
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 h-6 w-6 shrink-0 accent-[#F5B700] rounded border-2 border-[#161616]"
+          className="mt-0.5 h-6 w-6 shrink-0 rounded border-2 border-[#161616] accent-[#F5B700]"
           aria-describedby="mustard-consent"
         />
-        <span id="mustard-consent" className="text-[13px] leading-relaxed text-[#161616]/75">
+        <span id="mustard-consent" className="text-[12.5px] leading-[1.65] text-[#161616]/70">
           {props.consentText}
         </span>
       </label>
@@ -272,46 +314,14 @@ export default function MustardDemo(props: Props) {
         {phase === 'sending' ? 'Getting him on the line...' : props.ctaLabel}
       </button>
 
-      <p className="mt-3 text-center text-xs text-[#161616]/55">
+      <p className="mt-3.5 text-center text-[13px] text-[#161616]/55">
         He rings in about ten seconds. Three minutes, no card, no obligation.
-      </p>
-      <p className="mt-2 text-center text-[11px] text-[#161616]/40">
-        <a href="/privacy" className="underline">
-          Privacy
-        </a>
-        {' · '}
-        <a href="/terms" className="underline">
-          Terms
-        </a>
       </p>
     </form>
   );
 }
 
 const bigButton =
-  'inline-flex items-center justify-center rounded-xl border-[3px] border-[#161616] bg-[#F5B700] px-6 py-4 min-h-[56px] font-oswald text-xl font-bold uppercase tracking-wide text-[#161616] shadow-[5px_5px_0_0_#161616] transition-transform hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#161616] disabled:opacity-60 disabled:translate-x-0';
+  'inline-flex min-h-[60px] items-center justify-center rounded-xl border-2 border-[#161616] bg-[#F5B700] px-6 py-4 font-display text-xl font-extrabold tracking-tight text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616] active:translate-y-0 active:shadow-[3px_3px_0_0_#161616] disabled:opacity-60 disabled:translate-y-0';
 const bigButtonQuiet =
-  'inline-flex items-center justify-center rounded-xl border-[3px] border-[#161616] bg-white px-6 py-4 min-h-[56px] font-oswald text-lg font-bold uppercase tracking-wide text-[#161616] shadow-[5px_5px_0_0_#161616] transition-transform hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#161616]';
-
-function Panel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="rounded-2xl border-[3px] border-[#161616] bg-[#F5B700] shadow-[8px_8px_0_0_#161616] p-7 sm:p-9 text-center"
-      role="status"
-      aria-live="polite"
-    >
-      {children}
-    </div>
-  );
-}
-
-/** Five bars that behave like a ringing line. Purely decorative. */
-function Ringer() {
-  return (
-    <div className="flex items-end justify-center gap-1.5 h-10" aria-hidden="true">
-      {[0, 1, 2, 3, 4].map((i) => (
-        <span key={i} className="w-2.5 rounded-full bg-[#161616] animate-eq" style={{ height: 38, animationDelay: `${i * 0.12}s` }} />
-      ))}
-    </div>
-  );
-}
+  'inline-flex min-h-[60px] items-center justify-center rounded-xl border-2 border-[#161616] bg-white px-6 py-4 font-display text-lg font-extrabold tracking-tight text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616] active:translate-y-0';

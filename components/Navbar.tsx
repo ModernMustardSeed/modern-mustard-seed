@@ -168,6 +168,9 @@ export default function Navbar() {
     // booth is not a brand collision.)
     pathname.startsWith('/sarahcxc') ||
     pathname.startsWith('/sarahbook') ||
+    // /mustard is the doorway. It has one job, and a nav offering fifteen other
+    // departments is fifteen ways to leave before the phone rings.
+    pathname === '/mustard' ||
     pathname.startsWith('/voice-agents/forge/demo/');
   if (isAppShell) return null;
 
