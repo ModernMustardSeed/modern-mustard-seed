@@ -13,6 +13,7 @@
     "lighthouse": "node scripts/lighthouse-money-pages.mjs",
     "zoho:health": "node scripts/zoho-health.mjs",
     "audit-worker": "tsx scripts/audit-worker.mts",
+    "factory-worker": "tsx scripts/factory-worker.mts",
     "roadmap-worker": "tsx scripts/roadmap-worker.mts",
     "audit:demo-assets": "node scripts/audit-demo-assets.mjs",
     "audit:demo-copy": "node scripts/audit-demo-copy.mjs",
@@ -22,11 +23,14 @@
     "acq:test": "tsx --test scripts/acq-test.mts",
     "acq:worker": "tsx scripts/acq-source.mts --watch",
     "acq:source": "tsx scripts/acq-source.mts",
-    "acq:import": "tsx scripts/acq-import-existing.mts",
     "acq:smoke": "tsx scripts/acq-smoke.mts",
     "acq:health": "tsx scripts/acq-health.mts",
+    "acq:import": "tsx scripts/acq-import-existing.mts",
     "acq:preview": "tsx scripts/acq-preview-email.mts",
-    "acq:login": "tsx scripts/acq-login-check.mts"
+    "acq:login": "tsx scripts/acq-login-check.mts",
+    "factory:test": "tsx scripts/factory-test.mts",
+    "factory:smoke": "tsx scripts/factory-smoke.mts",
+    "factory:bootstrap": "tsx scripts/factory-bootstrap.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",
