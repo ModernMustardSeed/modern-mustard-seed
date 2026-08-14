@@ -3,6 +3,8 @@ import { requireAcqAdmin } from '@/lib/acq/server';
 import { syncAssistant, assistantConfig, buildInstructions, type OfficeRow, type TransferRow } from '@/lib/front-office/agent';
 import { recordOfficeEvent } from '@/lib/front-office/provision';
 import { availableSlots } from '@/lib/front-office/calendar';
+import { readiness, type OfficeReadiness } from '@/lib/front-office/readiness';
+import { buyNumberFor, releaseNumberFor, placeTestCall, normalizeAreaCode } from '@/lib/front-office/phone';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -46,22 +48,12 @@ export async function GET() {
       ...o,
       week: callsBy.get(o.id) ?? { total: 0, booked: 0, needsHuman: 0 },
       teamSize: teamBy.get(o.id) ?? 0,
-      // What is still missing before this can answer a real phone. This list is
-      // the actual work queue, so it is computed rather than tracked by hand.
-      blocking: blockersFor(o as OfficeRow),
+      // The board renders from the SAME gate the routes enforce, so the screen
+      // can never offer a button the API would refuse.
+      readiness: readiness(o as OfficeReadiness),
+      suggestedAreaCode: normalizeAreaCode(o.forward_from),
     })),
   });
-}
-
-/** Everything standing between this office and a ringing phone, in order. */
-export function blockersFor(o: OfficeRow & { agent_phone?: string | null; forward_from?: string | null; status?: string }): string[] {
-  const out: string[] = [];
-  if (!o.greeting?.trim()) out.push('No greeting');
-  if (!Object.keys(o.hours ?? {}).length) out.push('No hours, so it cannot book anything');
-  if (!o.vapi_assistant_id) out.push('Agent not built yet');
-  if (!o.agent_phone) out.push('No phone number assigned');
-  if (!o.forward_from) out.push('Their number is not forwarding to us');
-  return out;
 }
 
 export async function POST(req: Request) {
@@ -82,7 +74,11 @@ export async function POST(req: Request) {
     case 'sync': {
       const res = await syncAssistant(db, officeId);
       if (!res.ok) return NextResponse.json({ error: res.error }, { status: 502 });
-      await db.from('fo_offices').update({ status: office.status === 'provisioning' ? 'configuring' : office.status }).eq('id', officeId);
+      // Stamped so readiness() can tell "tested" from "tested, then changed".
+      await db
+        .from('fo_offices')
+        .update({ status: office.status === 'provisioning' ? 'configuring' : office.status, agent_synced_at: new Date().toISOString() })
+        .eq('id', officeId);
       await recordOfficeEvent(db, officeId, { type: 'sync', label: res.created ? 'Agent built' : 'Agent updated', actor: 'admin' });
       return NextResponse.json({ ok: true, assistantId: res.assistantId, created: res.created });
     }
@@ -101,24 +97,87 @@ export async function POST(req: Request) {
       });
     }
 
-    /** Attach the number we bought. Typed by a human who can see the account. */
-    case 'assign-phone': {
-      const phone = String(body.phone ?? '').trim();
-      const vapiPhoneId = body.vapiPhoneNumberId ? String(body.vapiPhoneNumberId).trim() : null;
-      if (phone.replace(/\D/g, '').length < 10) return NextResponse.json({ error: 'That is not a phone number.' }, { status: 400 });
-      await db.from('fo_offices').update({ agent_phone: phone, vapi_phone_number_id: vapiPhoneId }).eq('id', officeId);
-      await recordOfficeEvent(db, officeId, { type: 'phone', label: `Number assigned: ${phone}`, actor: 'admin' });
+    /**
+     * RING IT, so a person hears the agent before a customer does.
+     * Placed to whoever is testing, never to the customer's own line, and it
+     * happens BEFORE we have bought anything.
+     */
+    case 'test-call': {
+      const to = String(body.to ?? '').trim();
+      if (!to) return NextResponse.json({ error: 'Which number should it call?' }, { status: 400 });
+      const res = await placeTestCall(db, officeId, to, 'admin');
+      return res.ok ? NextResponse.json({ ok: true, callId: res.callId }) : NextResponse.json({ error: res.error }, { status: 409 });
+    }
+
+    /**
+     * The judgement. A human says whether it was good enough for a real
+     * customer, and that verdict is what unlocks spending money.
+     */
+    case 'judge-test': {
+      const passed = body.passed === true;
+      await db
+        .from('fo_offices')
+        .update({
+          test_call_passed: passed,
+          test_call_notes: body.notes ? String(body.notes).slice(0, 2000) : null,
+          test_call_at: office.test_call_at ?? new Date().toISOString(),
+          test_call_by: 'admin',
+        })
+        .eq('id', officeId);
+      await recordOfficeEvent(db, officeId, {
+        type: 'test_judged',
+        label: passed ? 'Test call passed' : 'Test call failed',
+        detail: { notes: body.notes ?? null },
+        actor: 'admin',
+      });
       return NextResponse.json({ ok: true });
     }
 
     /**
-     * Put it live. Refuses while anything is still missing rather than
-     * flipping a status that would tell the customer their phone is answered
+     * SPEND MONEY. Refused unless they are a live paying customer AND the
+     * agent has passed a test that is still current. The gate is re-evaluated
+     * inside buyNumberFor as well: a hidden button is not a control.
+     */
+    case 'buy-number': {
+      const res = await buyNumberFor(db, officeId, { areaCode: body.areaCode ? String(body.areaCode) : null, actor: 'admin' });
+      if (!res.ok) return NextResponse.json({ error: res.error, blockers: res.blockers ?? [] }, { status: 409 });
+      return NextResponse.json({ ok: true, phone: res.phone });
+    }
+
+    case 'release-number': {
+      await releaseNumberFor(db, officeId, String(body.reason ?? 'released by admin'), 'admin');
+      return NextResponse.json({ ok: true });
+    }
+
+    /** A number bought elsewhere, typed in by a human who can see the account. */
+    case 'assign-phone': {
+      const phone = String(body.phone ?? '').trim();
+      if (phone.replace(/\D/g, '').length < 10) return NextResponse.json({ error: 'That is not a phone number.' }, { status: 400 });
+      await db
+        .from('fo_offices')
+        .update({ agent_phone: phone, vapi_phone_number_id: body.vapiPhoneNumberId ? String(body.vapiPhoneNumberId).trim() : null, agent_phone_provider: 'manual' })
+        .eq('id', officeId);
+      await recordOfficeEvent(db, officeId, { type: 'phone', label: `Number assigned by hand: ${phone}`, actor: 'admin' });
+      return NextResponse.json({ ok: true });
+    }
+
+    /** Record which of THEIR numbers forwards to us. */
+    case 'set-forwarding': {
+      const from = String(body.forwardFrom ?? '').trim();
+      if (from.replace(/\D/g, '').length < 10) return NextResponse.json({ error: 'That is not a phone number.' }, { status: 400 });
+      await db.from('fo_offices').update({ forward_from: from }).eq('id', officeId);
+      await recordOfficeEvent(db, officeId, { type: 'forwarding', label: `Forwarding confirmed from ${from}`, actor: 'admin' });
+      return NextResponse.json({ ok: true });
+    }
+
+    /**
+     * Point real customers at it. Refuses while anything is missing rather
+     * than flipping a status that tells a customer their phone is covered
      * when it is not.
      */
     case 'go-live': {
-      const blocking = blockersFor(office as OfficeRow);
-      if (blocking.length) return NextResponse.json({ error: `Not ready: ${blocking.join('; ')}.` }, { status: 409 });
+      const gate = readiness(office as OfficeReadiness);
+      if (!gate.canGoLive.ok) return NextResponse.json({ error: `Not ready: ${gate.canGoLive.blockers.join('; ')}.`, blockers: gate.canGoLive.blockers }, { status: 409 });
       await db.from('fo_offices').update({ status: 'live', live_at: new Date().toISOString() }).eq('id', officeId);
       await recordOfficeEvent(db, officeId, { type: 'live', label: 'Went live', actor: 'admin' });
       return NextResponse.json({ ok: true });

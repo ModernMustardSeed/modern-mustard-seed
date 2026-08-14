@@ -12,6 +12,9 @@ import AdminHeader from '@/components/admin/AdminHeader';
  * started, so those sort to the top and say exactly what they are waiting on.
  */
 
+type Gate = { ok: boolean; blockers: string[] };
+type Readiness = { canSync: Gate; canTest: Gate; canBuyNumber: Gate; canGoLive: Gate; summary: string };
+
 type Office = {
   id: string;
   business_name: string;
@@ -26,7 +29,12 @@ type Office = {
   created_at: string;
   week: { total: number; booked: number; needsHuman: number };
   teamSize: number;
-  blocking: string[];
+  billing_status: string;
+  test_call_at: string | null;
+  test_call_passed: boolean | null;
+  phone_purchased_at: string | null;
+  readiness: Readiness;
+  suggestedAreaCode: string | null;
 };
 
 export default function FrontOfficeBoard() {
@@ -75,14 +83,17 @@ export default function FrontOfficeBoard() {
     }
   };
 
-  // Blocked first, then live, then everything else. The work queue, in order.
+  // Closest to going live first. An office one step away is where the next
+  // hour is best spent; one waiting on the customer's card is not.
   const sorted = [...offices].sort((a, b) => {
-    if (a.blocking.length !== b.blocking.length) return b.blocking.length - a.blocking.length;
+    const d = a.readiness.canGoLive.blockers.length - b.readiness.canGoLive.blockers.length;
+    if (d !== 0) return d;
     return Date.parse(b.created_at) - Date.parse(a.created_at);
   });
 
   const live = offices.filter((o) => o.status === 'live').length;
-  const waiting = offices.filter((o) => o.blocking.length > 0).length;
+  const waiting = offices.filter((o) => !o.readiness.canGoLive.ok && o.status !== 'live').length;
+  const readyNow = offices.filter((o) => o.readiness.canGoLive.ok && o.status !== 'live').length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -91,10 +102,11 @@ export default function FrontOfficeBoard() {
         {error && <p className="mb-3 text-sm font-semibold text-[#E0301E]">{error}</p>}
         {notice && <p className="mb-3 text-sm font-semibold text-[#3f5d34]">{notice}</p>}
 
-        <div className="mb-6 grid gap-3 sm:grid-cols-4">
+        <div className="mb-6 grid gap-3 sm:grid-cols-5">
           <Tile label="Offices" value={offices.length} />
           <Tile label="Answering" value={live} tone="seed" />
-          <Tile label="Waiting on us" value={waiting} tone={waiting > 0 ? 'red' : 'ink'} />
+          <Tile label="Ready to go live" value={readyNow} tone={readyNow > 0 ? 'seed' : 'ink'} />
+          <Tile label="Not ready" value={waiting} tone={waiting > 0 ? 'red' : 'ink'} />
           <Tile label="Calls this week" value={offices.reduce((s, o) => s + o.week.total, 0)} />
         </div>
 
@@ -112,30 +124,39 @@ export default function FrontOfficeBoard() {
                   <h2 className="font-display text-[20px] font-bold leading-tight">{o.business_name}</h2>
                   <p className="font-mono text-[11px] text-[#161616]/55">{o.client_email}</p>
                 </div>
-                <span
-                  className={`rounded-lg border-2 border-[#161616] px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] ${
-                    o.status === 'live' ? 'bg-[#F5B700]' : o.blocking.length ? 'bg-[#E0301E]/10' : 'bg-white'
-                  }`}
-                >
-                  {o.status}
-                </span>
+                <div className="text-right">
+                  <span
+                    className={`inline-block rounded-lg border-2 border-[#161616] px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] ${
+                      o.status === 'live' ? 'bg-[#F5B700]' : o.readiness.canGoLive.ok ? 'bg-white' : 'bg-[#E0301E]/10'
+                    }`}
+                  >
+                    {o.status}
+                  </span>
+                  <p className="mt-1.5 max-w-[16rem] text-[12px] text-[#161616]/60">{o.readiness.summary}</p>
+                </div>
               </div>
 
               <div className="mt-3 grid gap-x-6 gap-y-1 text-[13px] sm:grid-cols-2 lg:grid-cols-4">
-                <Fact label="Number" value={o.agent_phone ?? 'not assigned'} />
+                <Fact label="Number" value={o.agent_phone ?? 'not bought yet'} />
                 <Fact label="Forwards from" value={o.forward_from ?? 'not set'} />
                 <Fact label="Answers" value={o.forward_mode.replace(/_/g, ' ')} />
                 <Fact label="Voice" value={`${o.voice_gender}, ${o.languages.join('/')}`} />
                 <Fact label="Team" value={`${o.teamSize} to transfer to`} />
+                <Fact label="Billing" value={o.billing_status} tone={o.billing_status === 'active' ? undefined : 'red'} />
+                <Fact
+                  label="Tested"
+                  value={o.test_call_passed === true ? 'passed' : o.test_call_passed === false ? 'FAILED' : o.test_call_at ? 'not judged yet' : 'never'}
+                  tone={o.test_call_passed === true ? undefined : 'red'}
+                />
                 <Fact label="This week" value={`${o.week.total} calls, ${o.week.booked} booked`} />
                 {o.week.needsHuman > 0 && <Fact label="Needs a human" value={String(o.week.needsHuman)} tone="red" />}
               </div>
 
-              {o.blocking.length > 0 && (
+              {!o.readiness.canGoLive.ok && o.status !== 'live' && (
                 <div className="mt-3 rounded-lg border-2 border-[#E0301E] bg-[#E0301E]/[0.06] p-3">
-                  <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#E0301E]">Waiting on us</p>
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#E0301E]">Before this can answer their calls</p>
                   <ul className="mt-1 space-y-0.5">
-                    {o.blocking.map((b) => (
+                    {o.readiness.canGoLive.blockers.map((b) => (
                       <li key={b} className="text-[13px] text-[#161616]/80">
                         {b}
                       </li>
@@ -144,21 +165,50 @@ export default function FrontOfficeBoard() {
                 </div>
               )}
 
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Btn onClick={() => void act(o.id, 'sync')} busy={busy === `${o.id}:sync`}>
+              {/* The order is the real sequence: build it, hear it, judge it,
+                  and only then spend money and point real customers at it.
+                  Every button is disabled by the SAME gate the server enforces,
+                  so the screen can never offer what the API would refuse. */}
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <Btn onClick={() => void act(o.id, 'sync')} busy={busy === `${o.id}:sync`} gate={o.readiness.canSync}>
                   {o.vapi_assistant_id ? 'Update agent' : 'Build agent'}
                 </Btn>
                 <Btn onClick={() => void act(o.id, 'preview')} busy={busy === `${o.id}:preview`} ghost>
                   Read what it will say
                 </Btn>
-                <PhoneBtn onAssign={(phone, vapiPhoneNumberId) => void act(o.id, 'assign-phone', { phone, vapiPhoneNumberId })} />
+                <TestBtn gate={o.readiness.canTest} onCall={(to) => void act(o.id, 'test-call', { to })} />
+                {o.test_call_at && o.test_call_passed === null && (
+                  <>
+                    <Btn onClick={() => void act(o.id, 'judge-test', { passed: true })} busy={busy === `${o.id}:judge-test`}>
+                      It sounded good
+                    </Btn>
+                    <Btn onClick={() => void act(o.id, 'judge-test', { passed: false })} busy={busy === `${o.id}:judge-test`} ghost>
+                      Not good enough
+                    </Btn>
+                  </>
+                )}
+                {!o.agent_phone && (
+                  <Btn
+                    onClick={() => void act(o.id, 'buy-number', { areaCode: o.suggestedAreaCode })}
+                    busy={busy === `${o.id}:buy-number`}
+                    gate={o.readiness.canBuyNumber}
+                  >
+                    Buy the line{o.suggestedAreaCode ? ` (${o.suggestedAreaCode})` : ''}
+                  </Btn>
+                )}
+                <ForwardBtn onSet={(forwardFrom) => void act(o.id, 'set-forwarding', { forwardFrom })} />
                 {o.status === 'live' ? (
                   <Btn onClick={() => void act(o.id, 'pause')} busy={busy === `${o.id}:pause`} ghost>
                     Pause
                   </Btn>
                 ) : (
-                  <Btn onClick={() => void act(o.id, 'go-live')} busy={busy === `${o.id}:go-live`}>
+                  <Btn onClick={() => void act(o.id, 'go-live')} busy={busy === `${o.id}:go-live`} gate={o.readiness.canGoLive}>
                     Go live
+                  </Btn>
+                )}
+                {o.agent_phone && o.phone_purchased_at && (
+                  <Btn onClick={() => void act(o.id, 'release-number', { reason: 'released from the board' })} busy={busy === `${o.id}:release-number`} ghost>
+                    Release the line
                   </Btn>
                 )}
               </div>
@@ -176,24 +226,80 @@ export default function FrontOfficeBoard() {
   );
 }
 
-function PhoneBtn({ onAssign }: { onAssign: (phone: string, vapiId: string) => void }) {
+function Btn({
+  children,
+  onClick,
+  busy,
+  ghost,
+  gate,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  busy?: boolean;
+  ghost?: boolean;
+  gate?: Gate;
+}) {
+  const blocked = gate ? !gate.ok : false;
+  return (
+    <button
+      onClick={onClick}
+      disabled={busy || blocked}
+      // A disabled button with no explanation reads as a bug. The tooltip
+      // carries the exact reason the server would have given.
+      title={blocked ? gate!.blockers.join('; ') : undefined}
+      className={`rounded-lg border-2 border-[#161616] px-3 py-1.5 text-[13px] font-bold disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none ${
+        ghost ? 'bg-white hover:bg-[#FBF6EA]' : 'bg-[#F5B700] shadow-[3px_3px_0_0_#161616]'
+      }`}
+    >
+      {busy ? '...' : children}
+    </button>
+  );
+}
+
+/** Ring the agent, at a number typed by whoever is about to listen to it. */
+function TestBtn({ gate, onCall }: { gate: Gate; onCall: (to: string) => void }) {
   const [open, setOpen] = useState(false);
-  const [phone, setPhone] = useState('');
-  const [vapiId, setVapiId] = useState('');
+  const [to, setTo] = useState('');
+  if (!open) {
+    return (
+      <Btn onClick={() => setOpen(true)} gate={gate} ghost>
+        Test call
+      </Btn>
+    );
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <input value={to} onChange={(e) => setTo(e.target.value)} placeholder="Call me at..." className="rounded-lg border-2 border-[#161616] px-2 py-1.5 text-[13px]" />
+      <button
+        onClick={() => {
+          onCall(to);
+          setOpen(false);
+        }}
+        className="rounded-lg border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 text-[13px] font-bold shadow-[3px_3px_0_0_#161616]"
+      >
+        Ring it
+      </button>
+    </div>
+  );
+}
+
+/** Which of THEIR numbers forwards to us. The last step before go-live. */
+function ForwardBtn({ onSet }: { onSet: (from: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [from, setFrom] = useState('');
   if (!open) {
     return (
       <button onClick={() => setOpen(true)} className="rounded-lg border-2 border-[#161616] bg-white px-3 py-1.5 text-[13px] font-bold hover:bg-[#FBF6EA]">
-        Assign number
+        Forwarding
       </button>
     );
   }
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(406) 555-0100" className="rounded-lg border-2 border-[#161616] px-2 py-1.5 text-[13px]" />
-      <input value={vapiId} onChange={(e) => setVapiId(e.target.value)} placeholder="Vapi phone number id" className="rounded-lg border-2 border-[#161616] px-2 py-1.5 text-[13px]" />
+    <div className="flex items-center gap-2">
+      <input value={from} onChange={(e) => setFrom(e.target.value)} placeholder="Their number" className="rounded-lg border-2 border-[#161616] px-2 py-1.5 text-[13px]" />
       <button
         onClick={() => {
-          onAssign(phone, vapiId);
+          onSet(from);
           setOpen(false);
         }}
         className="rounded-lg border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 text-[13px] font-bold shadow-[3px_3px_0_0_#161616]"
@@ -201,20 +307,6 @@ function PhoneBtn({ onAssign }: { onAssign: (phone: string, vapiId: string) => v
         Save
       </button>
     </div>
-  );
-}
-
-function Btn({ children, onClick, busy, ghost }: { children: React.ReactNode; onClick: () => void; busy?: boolean; ghost?: boolean }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={busy}
-      className={`rounded-lg border-2 border-[#161616] px-3 py-1.5 text-[13px] font-bold disabled:opacity-50 ${
-        ghost ? 'bg-white hover:bg-[#FBF6EA]' : 'bg-[#F5B700] shadow-[3px_3px_0_0_#161616]'
-      }`}
-    >
-      {busy ? '...' : children}
-    </button>
   );
 }
 

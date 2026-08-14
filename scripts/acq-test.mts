@@ -23,6 +23,8 @@ import { runwayDays } from '../lib/acq/reservoir';
 import { buildInstructions, assistantConfig } from '../lib/front-office/agent';
 import { frontOfficeTools } from '../lib/front-office/tools';
 import { parseDayHours, sayable } from '../lib/front-office/calendar';
+import { readiness, isPaying, isTested } from '../lib/front-office/readiness';
+import { normalizeAreaCode } from '../lib/front-office/phone';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 
 /** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
@@ -415,6 +417,109 @@ const office = (over: Record<string, unknown> = {}) => ({
   vapi_assistant_id: null,
   settings: {},
   ...over,
+});
+
+const ready = (over: Record<string, unknown> = {}) => ({
+  id: 'o1',
+  status: 'configuring',
+  greeting: 'Thanks for calling.',
+  hours: { monday: '8:00 am - 5:00 pm' },
+  vapi_assistant_id: 'asst_1',
+  agent_phone: null,
+  forward_from: '(406) 555-0143',
+  billing_status: 'active',
+  test_call_at: '2026-08-14T10:00:00Z',
+  test_call_passed: true,
+  agent_synced_at: '2026-08-14T09:00:00Z',
+  ...over,
+});
+
+test('readiness: money is never spent on somebody who is not paying', () => {
+  assert.ok(readiness(ready()).canBuyNumber.ok, 'a paid, tested office may buy a line');
+
+  // A number bills every month it exists. Buying one for a prospect, a
+  // past-due card, or a cancelled customer is a cost that outlives the reason
+  // for it, so each is refused by name rather than by a generic "not ready".
+  for (const [billing, needle] of [
+    ['unknown', /paying customer/i],
+    ['past_due', /past due/i],
+    ['cancelled', /cancelled/i],
+  ] as const) {
+    const g = readiness(ready({ billing_status: billing }));
+    assert.equal(g.canBuyNumber.ok, false, `${billing} must not be able to buy a line`);
+    assert.equal(g.canGoLive.ok, false, `${billing} must not be able to go live`);
+    assert.ok(g.canBuyNumber.blockers.some((b) => needle.test(b)), `${billing} must say why`);
+  }
+});
+
+test('readiness: an untested agent never reaches a real customer', () => {
+  // Never tested.
+  const never = readiness(ready({ test_call_at: null, test_call_passed: null }));
+  assert.equal(never.canBuyNumber.ok, false);
+  assert.match(never.canGoLive.blockers.join(' '), /No test call/i);
+
+  // Tested and judged bad.
+  const failed = readiness(ready({ test_call_passed: false }));
+  assert.equal(failed.canGoLive.ok, false);
+  assert.match(failed.canGoLive.blockers.join(' '), /marked as failed/i);
+
+  // THE DANGEROUS ONE. Called, but nobody has said whether it was any good.
+  // A two-state boolean would read this as false-y and could just as easily
+  // have defaulted the other way, which is why the column is three-state.
+  const unjudged = readiness(ready({ test_call_passed: null }));
+  assert.equal(unjudged.canGoLive.ok, false, 'an unjudged test is not a pass');
+  assert.match(unjudged.canGoLive.blockers.join(' '), /not been judged/i);
+});
+
+test('readiness: a pass expires the moment the agent changes underneath it', () => {
+  // Synced AFTER the test. The thing that was judged no longer exists.
+  const stale = readiness(ready({ test_call_at: '2026-08-14T10:00:00Z', agent_synced_at: '2026-08-14T11:00:00Z' }));
+  assert.equal(stale.canGoLive.ok, false, 'a test that predates the current agent is not evidence');
+  assert.match(stale.canGoLive.blockers.join(' '), /changed since it was tested/i);
+
+  // Synced before the test is fine: the test judged what exists now. (The
+  // phone is supplied here because canGoLive also needs a line to ring; this
+  // assertion is about staleness, not about the rest of the gate.)
+  assert.ok(isTested(ready({ agent_synced_at: '2026-08-14T09:59:00Z' })).ok);
+  assert.ok(readiness(ready({ agent_synced_at: '2026-08-14T09:59:00Z', agent_phone: '(406) 555-0100' })).canGoLive.ok);
+  assert.ok(isPaying(ready()), 'active billing is the only state that counts as paying');
+});
+
+test('readiness: going live needs the pieces that make a phone actually ring', () => {
+  assert.ok(readiness(ready({ agent_phone: '(406) 555-0100' })).canGoLive.ok);
+
+  const noPhone = readiness(ready({ agent_phone: null }));
+  assert.equal(noPhone.canGoLive.ok, false);
+  assert.match(noPhone.canGoLive.blockers.join(' '), /No phone number/i);
+
+  const noForward = readiness(ready({ agent_phone: '(406) 555-0100', forward_from: null }));
+  assert.equal(noForward.canGoLive.ok, false, 'a number nobody forwards to never rings');
+
+  const noHours = readiness(ready({ agent_phone: '(406) 555-0100', hours: {} }));
+  assert.equal(noHours.canGoLive.ok, false, 'no hours means it cannot book anything');
+
+  // Buying twice is a second monthly bill nobody notices for a year.
+  assert.equal(readiness(ready({ agent_phone: '(406) 555-0100' })).canBuyNumber.ok, false, 'never buy a second line');
+});
+
+test('readiness: building and previewing stay cheap and available', () => {
+  // Sync is reversible and costs nothing, so a non-paying office can still be
+  // built and read. Locking that would mean nobody could prepare an account.
+  const prospect = readiness(ready({ billing_status: 'unknown', test_call_at: null, test_call_passed: null, vapi_assistant_id: null }));
+  assert.ok(prospect.canSync.ok, 'an unpaid office can still have its agent built');
+  assert.equal(prospect.canTest.ok, false, 'but there is nothing to test until it is built');
+  assert.match(prospect.canTest.blockers.join(' '), /not been built/i);
+});
+
+test('phone: the area code is theirs, or we do not guess', () => {
+  assert.equal(normalizeAreaCode('(406) 555-0143'), '406');
+  assert.equal(normalizeAreaCode('4065550143'), '406');
+  assert.equal(normalizeAreaCode('+1 406 555 0143'), '406');
+  // Buying a Denver number for a Montana contractor because we misread a
+  // country code is worse than letting the provider choose.
+  assert.equal(normalizeAreaCode('+44 20 7946 0000'), null);
+  assert.equal(normalizeAreaCode('555-0143'), null);
+  assert.equal(normalizeAreaCode(null), null);
 });
 
 test('agent: the instructions always disclose what it is, and never bend the hard rules', () => {

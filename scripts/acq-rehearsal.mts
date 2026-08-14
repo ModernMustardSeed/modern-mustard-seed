@@ -357,7 +357,6 @@ async function run() {
     /* ── the receptionist itself ── */
     const { buildInstructions, assistantConfig } = await import('../lib/front-office/agent');
     const { availableSlots, bookSlot } = await import('../lib/front-office/calendar');
-    const { blockersFor } = await import('../app/api/admin/front-office/route');
 
     const { data: full } = await db.from('fo_offices').select('*').eq('id', office.officeId).maybeSingle();
     const instructions = buildInstructions(full, []);
@@ -389,9 +388,35 @@ async function run() {
 
     // The go-live gate. An office missing anything must NOT be able to tell a
     // customer their phone is answered.
-    const blocking = blockersFor(full);
-    check('a half-built office reports what is blocking it', blocking.length > 0, blocking.join('; ') || 'nothing blocking');
-    check('a half-built office has no phone number assigned', !full.agent_phone, String(full.agent_phone ?? 'none'));
+    /* ── THE MONEY AND SAFETY GATE ──
+       Two irreversible things sit behind this: buying a number starts a bill
+       that runs every month until somebody releases it, and going live points
+       a real contractor's customers at an AI. Neither may happen until they
+       are a live paying customer AND a person has heard the agent. */
+    const { readiness } = await import('../lib/front-office/readiness');
+
+    const fresh = readiness(full);
+    check('a brand new office cannot buy a phone line', !fresh.canBuyNumber.ok, fresh.canBuyNumber.blockers.join('; '));
+    check('a brand new office cannot go live', !fresh.canGoLive.ok, fresh.canGoLive.blockers.join('; '));
+    check('it says WHY it cannot, in words', fresh.canGoLive.blockers.length > 0 && fresh.canGoLive.blockers.every((b) => b.length > 8), `${fresh.canGoLive.blockers.length} reasons`);
+
+    // Paying but never tested. This is the one that would otherwise slip
+    // through: the money is real, so it FEELS ready.
+    const paidUntested = readiness({ ...full, billing_status: 'active', vapi_assistant_id: 'asst_rehearsal', greeting: 'hello', hours: { monday: '8:00 am - 5:00 pm' }, agent_phone: null, test_call_at: null, test_call_passed: null });
+    check('a paying customer with an untested agent still cannot buy a line', !paidUntested.canBuyNumber.ok, paidUntested.canBuyNumber.blockers.join('; '));
+
+    // Tested but not paying. The mirror case.
+    const testedUnpaid = readiness({ ...full, billing_status: 'unknown', vapi_assistant_id: 'asst_rehearsal', greeting: 'hello', hours: { monday: '8:00 am - 5:00 pm' }, agent_phone: null, test_call_at: new Date().toISOString(), test_call_passed: true, agent_synced_at: null });
+    check('a tested agent for a non-paying account cannot buy a line', !testedUnpaid.canBuyNumber.ok, testedUnpaid.canBuyNumber.blockers.join('; '));
+
+    // Both satisfied. The gate must actually open, or it is not a gate, it is a wall.
+    const bothOk = readiness({ ...full, billing_status: 'active', vapi_assistant_id: 'asst_rehearsal', greeting: 'hello', hours: { monday: '8:00 am - 5:00 pm' }, agent_phone: null, test_call_at: new Date().toISOString(), test_call_passed: true, agent_synced_at: null });
+    check('paid AND tested opens the gate', bothOk.canBuyNumber.ok, bothOk.canBuyNumber.blockers.join('; ') || 'allowed');
+
+    // And the server refuses even if somebody POSTs past the disabled button.
+    const { buyNumberFor } = await import('../lib/front-office/phone');
+    const refused = await buyNumberFor(db, office.officeId, { actor: 'rehearsal' });
+    check('the API refuses a purchase the button would have blocked', !refused.ok, refused.ok ? 'BOUGHT A NUMBER' : refused.error);
   }
 }
 

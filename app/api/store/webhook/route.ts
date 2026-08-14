@@ -21,6 +21,7 @@ import { getSupabase } from '@/lib/supabase';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import { provisionDemoOrder } from '@/lib/demo-provision';
 import { provisionFrontOffice } from '@/lib/front-office/provision';
+import { releaseNumberFor } from '@/lib/front-office/phone';
 import type { Trade } from '@/lib/acq/types';
 import { queueProjectEdit } from '@/lib/site-edit';
 import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/data/products';
@@ -599,6 +600,19 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
     ? ((invoice as { subscription?: string }).subscription as string)
     : null;
   if (!subId) return;
+
+  // A cleared invoice puts a past-due office back to active, which is what
+  // re-opens the readiness gate. Without this a customer who fixed their card
+  // stays locked out of anything new until somebody edits a row by hand.
+  try {
+    await supabase
+      .from('fo_offices')
+      .update({ billing_status: 'active', billing_checked_at: new Date().toISOString() })
+      .eq('stripe_subscription_id', subId);
+  } catch (err) {
+    console.error('front office: could not clear past due', err);
+  }
+
   const amount = invoice.amount_paid ?? 0;
   if (amount < 1) return;
   const email = invoice.customer_email || 'client@unknown';
@@ -655,6 +669,21 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
     ? ((invoice as { subscription?: string }).subscription as string)
     : null;
   if (!subId) return;
+
+  // PAST DUE STOPS US SPENDING MORE ON THEM.
+  //
+  // Not a shutdown: a failed card is usually an expired card, and switching a
+  // contractor's phone off over a billing hiccup is how a recoverable problem
+  // becomes a cancellation. The office keeps answering; what stops is buying
+  // them anything new, which the readiness gate enforces off this column.
+  try {
+    await supabase
+      .from('fo_offices')
+      .update({ billing_status: 'past_due', billing_checked_at: new Date().toISOString() })
+      .eq('stripe_subscription_id', subId);
+  } catch (err) {
+    console.error('front office: could not flag past due', err);
+  }
 
   // Voice Agent renewals get their own recovery note (the /portal link below is
   // for proposal clients and means nothing to a Voice Agent buyer).
@@ -1618,6 +1647,22 @@ async function recordAcqChurn(sub: Stripe.Subscription): Promise<void> {
       occurred_at: new Date().toISOString(),
     });
 
+    // THE LINE MUST NOT OUTLIVE THE SUBSCRIPTION.
+    //
+    // A released customer whose number keeps billing is a cost that survives
+    // the relationship, and an office left `live` after cancellation is an AI
+    // still answering a business that stopped paying for it. Both are closed
+    // here, from the money path, rather than waiting for somebody to notice.
+    try {
+      const { data: offices } = await db.from('fo_offices').select('id').eq('stripe_subscription_id', sub.id);
+      for (const o of offices ?? []) {
+        await db.from('fo_offices').update({ billing_status: 'cancelled', billing_checked_at: new Date().toISOString() }).eq('id', o.id);
+        await releaseNumberFor(db, o.id, `Subscription ${sub.id} cancelled`, 'stripe');
+      }
+    } catch (err) {
+      console.error('front office: could not stand down after cancellation', err);
+    }
+
     if (opened.lead_id) {
       await db
         .from('outbound_leads')
@@ -1810,6 +1855,14 @@ async function handleDemoOrderPaid(
           phone: order.phone ?? null,
         });
         if (office.ok) {
+          // The gate in lib/front-office/readiness.ts will not let us spend
+          // money on a line until this says `active`. It is set from the money
+          // path rather than inferred later, because "are they actually paying"
+          // is a question only this handler can answer truthfully.
+          await supabase
+            .from('fo_offices')
+            .update({ billing_status: 'active', stripe_subscription_id: subId, billing_checked_at: new Date().toISOString() })
+            .eq('id', office.officeId);
           await supabase.from('demo_orders').update({ front_office_id: office.officeId }).eq('id', order.id);
           if (order.outbound_lead_id) {
             await supabase.from('outbound_leads').update({ front_office_id: office.officeId }).eq('id', order.outbound_lead_id);
