@@ -10,6 +10,8 @@ import { resendClient } from '@/lib/send-email';
 import { clientEmail } from '@/lib/email';
 import { queueRebuild, rebuildInputFor } from '@/lib/site-rebuild';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { sidekickVoice } from '@/lib/sidekick-voice';
+import { recordOfficeEvent } from '@/lib/front-office/provision';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -40,7 +42,30 @@ const FIELD_LABELS: Record<string, string> = {
   instagram: 'Instagram',
   competitors: 'Who they compete with',
   audience: 'Who their customer is',
+  // The Front Office answers. These are not notes for a human to read later:
+  // they are applied to the live receptionist the moment intake is filed.
+  agent_name: 'What to call the receptionist',
+  never_do: 'What it must never do',
+  transfer_to: 'Who to transfer calls to',
 };
+
+/**
+ * THE FRONT OFFICE ANSWERS.
+ *
+ * Everything here changes how their receptionist behaves, so each one is
+ * validated to a known value rather than trusted. A free-text `tone` reaching
+ * the agent prompt is an instruction-injection hole in a field we hand to a
+ * stranger on the internet.
+ */
+const VOICE_GENDERS = ['male', 'female'] as const;
+const FORWARD_MODES = ['all_calls', 'after_hours', 'overflow', 'voicemail_only'] as const;
+const TONES = ['warm', 'professional', 'brisk', 'folksy'] as const;
+const LANGUAGES = ['en', 'es'] as const;
+
+function oneOf<T extends readonly string[]>(allowed: T, v: unknown, fallback: T[number]): T[number] {
+  const s = typeof v === 'string' ? v.trim().toLowerCase() : '';
+  return (allowed as readonly string[]).includes(s) ? (s as T[number]) : fallback;
+}
 
 /** Uploaded files (logo, photos, product or menu lists) that came with the intake. */
 type Asset = { url: string; name: string; kind: 'logo' | 'photo' | 'product' | 'file' };
@@ -66,7 +91,14 @@ function isOurUpload(url: string): boolean {
 }
 
 export async function POST(req: Request) {
-  let body: { hubId?: string; sessionId?: string; answers?: Record<string, string>; assets?: Asset[] };
+  let body: {
+    hubId?: string;
+    sessionId?: string;
+    answers?: Record<string, string>;
+    assets?: Asset[];
+    /** How their receptionist should behave. Applied to fo_offices, not filed as a note for somebody to re-type. */
+    frontOffice?: Record<string, unknown>;
+  };
   try {
     body = await req.json();
   } catch {
@@ -133,6 +165,92 @@ export async function POST(req: Request) {
   if (upErr) {
     console.error('demo-order intake save failed:', upErr.message);
     return NextResponse.json({ error: 'save_failed' }, { status: 500 });
+  }
+
+  /* ── CONFIGURE THEIR RECEPTIONIST ──────────────────────────────────────────
+     Intake is the moment the customer tells us how their front desk should
+     sound, and until now those answers went into an email for a human to
+     re-type. They are applied to the live office here instead.
+
+     A resubmit re-applies, on purpose: an owner correcting "actually, use the
+     female voice" expects that to take effect, not to be filed as a note. */
+  const fo = (body.frontOffice ?? {}) as Record<string, unknown>;
+  if (order.client_email && Object.keys(fo).length) {
+    try {
+      const { data: office } = await supabase
+        .from('fo_offices')
+        .select('id')
+        .eq('client_email', order.client_email)
+        .maybeSingle();
+
+      if (office?.id) {
+        const voiceGender = oneOf(VOICE_GENDERS, fo.voiceGender, 'female');
+        const langs = Array.isArray(fo.languages)
+          ? [...new Set(fo.languages.map((l) => oneOf(LANGUAGES, l, 'en')))]
+          : ['en'];
+        // English is not optional. A caller who reaches a Spanish-only agent
+        // when the owner speaks English is a support call, not a feature.
+        if (!langs.includes('en')) langs.unshift('en');
+
+        const patch: Record<string, unknown> = {
+          voice_gender: voiceGender,
+          voice_id: sidekickVoice(voiceGender).voiceId,
+          forward_mode: oneOf(FORWARD_MODES, fo.forwardMode, 'after_hours'),
+          tone: oneOf(TONES, fo.tone, 'warm'),
+          languages: langs,
+          booking_enabled: fo.bookingEnabled !== false,
+          transfers_enabled: fo.transfersEnabled !== false,
+          status: 'configuring',
+          updated_at: new Date().toISOString(),
+        };
+        if (typeof fo.agentName === 'string' && fo.agentName.trim()) patch.agent_name = fo.agentName.trim().slice(0, 60);
+        if (typeof fo.greeting === 'string' && fo.greeting.trim()) patch.greeting = fo.greeting.trim().slice(0, 600);
+        if (typeof fo.forwardFrom === 'string' && fo.forwardFrom.trim()) patch.forward_from = fo.forwardFrom.trim().slice(0, 40);
+        if (typeof fo.timezone === 'string' && fo.timezone.trim()) patch.timezone = fo.timezone.trim().slice(0, 60);
+        if (Array.isArray(fo.services)) patch.services = fo.services.filter((x): x is string => typeof x === 'string').map((x) => x.slice(0, 80)).slice(0, 30);
+        // Appended, never replaced: the trade's own hard rules were seeded at
+        // provisioning and an owner adding one must not delete "never diagnose
+        // the equipment" by not mentioning it.
+        if (typeof fo.neverDo === 'string' && fo.neverDo.trim()) {
+          const { data: cur } = await supabase.from('fo_offices').select('never_do').eq('id', office.id).maybeSingle();
+          const seeded = (cur?.never_do as string[] | null) ?? [];
+          patch.never_do = [...new Set([...seeded, fo.neverDo.trim().slice(0, 300)])];
+        }
+
+        await supabase.from('fo_offices').update(patch).eq('id', office.id);
+        await recordOfficeEvent(supabase, office.id, {
+          type: 'configured',
+          label: 'Configured at intake by the owner',
+          detail: { voiceGender, forwardMode: patch.forward_mode, languages: langs },
+          actor: order.client_email,
+        });
+
+        // Who a call gets handed to. Replaced wholesale, because a team list is
+        // the one thing an owner edits by removing somebody.
+        const team = Array.isArray(fo.transfers) ? fo.transfers : [];
+        if (team.length) {
+          await supabase.from('fo_transfers').delete().eq('office_id', office.id);
+          await supabase.from('fo_transfers').insert(
+            team
+              .filter((t): t is Record<string, unknown> => Boolean(t) && typeof t === 'object')
+              .slice(0, 12)
+              .map((t, i) => ({
+                office_id: office.id,
+                name: String(t.name ?? '').slice(0, 80) || 'Team member',
+                role: t.role ? String(t.role).slice(0, 80) : null,
+                phone: String(t.phone ?? '').slice(0, 40),
+                when_to_transfer: t.when ? String(t.when).slice(0, 300) : null,
+                priority: i + 1,
+              }))
+              .filter((t) => t.phone.replace(/\D/g, '').length >= 10),
+          );
+        }
+      }
+    } catch (err) {
+      // Never fail intake over configuration. The answers are saved on the
+      // order either way and the admin board shows offices still unconfigured.
+      console.error('front office configuration from intake failed', err);
+    }
   }
 
   // Their logo and photos belong in the portal, not only in an inbox. This is the

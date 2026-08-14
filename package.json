@@ -30,7 +30,9 @@
     "acq:login": "tsx scripts/acq-login-check.mts",
     "factory:test": "tsx scripts/factory-test.mts",
     "factory:smoke": "tsx scripts/factory-smoke.mts",
-    "factory:bootstrap": "tsx scripts/factory-bootstrap.mts"
+    "factory:bootstrap": "tsx scripts/factory-bootstrap.mts",
+    "acq:rehearse": "tsx scripts/acq-rehearsal.mts",
+    "acq:reservoir": "tsx scripts/acq-reservoir.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",
@@ -87,4 +89,3 @@
     "typescript": "~5.8.2"
   }
 }
-

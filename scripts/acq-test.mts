@@ -18,6 +18,8 @@ import { evaluate, dueForStep, businessDaysBetween, sequenceGaps, sequenceLength
 
 import { workerStatus } from '../app/api/admin/acquisition/lead-finder/route';
 import { TRADE_DEFS, SOURCEABLE_TRADES, PROVEN_TRADES } from '../lib/acq/trades';
+import { neverDoFor, escalateOnFor, defaultGreeting, callerKey } from '../lib/front-office/provision';
+import { runwayDays } from '../lib/acq/reservoir';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 
 /** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
@@ -387,6 +389,57 @@ test('emails: every campaign email carries the opt-out and the tracked CTA', () 
     assert.match(built!.html, /\/api\/acq\/click\?/, 'the CTA must be the tracked link');
     assert.equal(built!.to, 'office@abcheating.com');
   }
+});
+
+test('front office: the rules seeded for a trade carry its own hard rule and the disclosure', () => {
+  const hvac = neverDoFor('hvac');
+  assert.ok(hvac.some((r) => /never diagnose the equipment/i.test(r)), 'the trade rule must be lifted out of the roleplay note');
+  assert.ok(hvac.some((r) => /you are an AI/i.test(r)), 'an agent must always be able to say what it is');
+  assert.ok(hvac.some((r) => /never quote a firm price/i.test(r)));
+
+  // A business we banked without pinning the trade still gets the base rules
+  // rather than an empty list, which would be an agent with no limits at all.
+  assert.ok(neverDoFor(null).length >= 3);
+  assert.ok(neverDoFor('other').length >= 3);
+
+  // Emergency trades escalate on the things that hurt people; a flooring
+  // company does not need a fire clause and should not get one.
+  assert.ok(escalateOnFor('restoration').some((r) => /flooding|fire|injury/i.test(r)));
+  assert.ok(!escalateOnFor('flooring').some((r) => /flooding|fire/i.test(r)));
+  // Every trade escalates when a human is asked for. That one is universal.
+  for (const t of SOURCEABLE_TRADES) {
+    assert.ok(escalateOnFor(t).some((r) => /asks for a human/i.test(r)), `${t} must escalate on request`);
+  }
+});
+
+test('front office: a greeting always names the business and never ships empty', () => {
+  const g = defaultGreeting('Flathead Comfort Heating & Air');
+  assert.match(g, /Flathead Comfort Heating & Air/);
+  assert.ok(g.length > 40);
+  // The fallback for a missing name must still be a sentence, not "Thanks for
+  // calling ." which is what an empty string would produce.
+  assert.ok(!defaultGreeting('').includes('calling .'));
+});
+
+test('front office: one caller is one contact however the number was written', () => {
+  const forms = ['(406) 555-0143', '406-555-0143', '4065550143', '+1 406 555 0143', '1-406-555-0143'];
+  const keys = new Set(forms.map((f) => callerKey(f)));
+  assert.equal(keys.size, 1, 'every format of the same number must collapse to one key');
+  assert.equal([...keys][0], '4065550143');
+  // Too short to be a phone number is null, not a truncated key that would
+  // merge two unrelated callers.
+  assert.equal(callerKey('12345'), null);
+  assert.equal(callerKey(''), null);
+  assert.equal(callerKey(null), null);
+});
+
+test('reservoir: runway is measured in days, and refuses to divide by nothing', () => {
+  assert.equal(runwayDays(4500, 4500), 1);
+  assert.equal(runwayDays(1000, 4500), 0, 'a thousand prospects is not one day at the ceiling');
+  assert.equal(runwayDays(25000, 100), 250);
+  // No send rate means no answer, not Infinity dressed up as good news.
+  assert.equal(runwayDays(1000, 0), null);
+  assert.equal(runwayDays(1000, Number.NaN), null);
 });
 
 test('trades: every industry in the registry is complete and internally consistent', () => {

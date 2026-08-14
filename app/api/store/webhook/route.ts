@@ -20,6 +20,8 @@ import { getStripe, STRIPE_WEBHOOK_SECRET } from '@/lib/stripe';
 import { getSupabase } from '@/lib/supabase';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import { provisionDemoOrder } from '@/lib/demo-provision';
+import { provisionFrontOffice } from '@/lib/front-office/provision';
+import type { Trade } from '@/lib/acq/types';
 import { queueProjectEdit } from '@/lib/site-edit';
 import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/data/products';
 import { programBundle } from '@/data/programs';
@@ -1756,6 +1758,21 @@ async function handleDemoOrderPaid(
   // them the guest empty state. Best-effort on purpose. If it throws, the money is
   // already banked and a Stripe retry would re-run the whole handler, so we log and
   // let the admin screen surface any order that never got a project.
+  // Two facts about the lead the Front Office needs, read before the block that
+  // owns `wonLead` goes out of scope. Both are optional: a self-serve buyer with
+  // no lead row still gets an office, just without the trade seeding.
+  let wonLeadVoice: string | null = null;
+  let wonLeadTrade: Trade | null = null;
+  if (order?.outbound_lead_id) {
+    const { data: l } = await supabase
+      .from('outbound_leads')
+      .select('voice_gender, trade')
+      .eq('id', order.outbound_lead_id)
+      .maybeSingle();
+    wonLeadVoice = (l?.voice_gender as string | null) ?? null;
+    wonLeadTrade = (l?.trade as Trade | null) ?? null;
+  }
+
   let provisioned = false;
   try {
     const result = await provisionDemoOrder(supabase, {
@@ -1766,6 +1783,42 @@ async function handleDemoOrderPaid(
     if (result.ok) {
       provisioned = true;
       console.log('demo-order provisioned:', result.projectId, result.created ? '(new)' : '(existing)');
+
+      // BUILD THE THING THEY BOUGHT.
+      //
+      // The portal, the project and the milestones all existed; the receptionist
+      // itself did not. A voice customer's Front Office was a line on a to-do
+      // list, so the product they paid for on Friday depended on somebody
+      // remembering it on Monday. It now exists before the receipt lands.
+      //
+      // Deliberately NOT for a website-only order: an office with no agent is a
+      // confusing empty screen in their portal.
+      const boughtVoice = Array.isArray(order.products)
+        ? (order.products as string[]).some((p) => p === 'voice' || p === 'bundle')
+        : false;
+      if (boughtVoice) {
+        const office = await provisionFrontOffice(supabase, {
+          clientEmail: result.clientEmail,
+          businessName: order.business_name ?? 'your business',
+          outboundLeadId: order.outbound_lead_id ?? null,
+          demoOrderId: order.id,
+          projectId: result.projectId,
+          // Their choice from the demo call, when they made one. Intake can
+          // still change it, and so can the portal, forever.
+          voiceGender: (order as { voice_gender?: string | null }).voice_gender ?? wonLeadVoice,
+          trade: wonLeadTrade,
+          phone: order.phone ?? null,
+        });
+        if (office.ok) {
+          await supabase.from('demo_orders').update({ front_office_id: office.officeId }).eq('id', order.id);
+          if (order.outbound_lead_id) {
+            await supabase.from('outbound_leads').update({ front_office_id: office.officeId }).eq('id', order.outbound_lead_id);
+          }
+          console.log('front office provisioned:', office.officeId, office.created ? '(new)' : '(existing)');
+        } else {
+          console.error('front office provisioning failed:', office.error);
+        }
+      }
     } else {
       console.error('demo-order provisioning failed:', result.error);
     }

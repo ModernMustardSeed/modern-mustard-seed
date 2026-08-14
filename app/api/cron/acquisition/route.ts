@@ -4,6 +4,7 @@ import { drainQueue } from '@/lib/acq/runner';
 import { getAcqSettings, getCampaign } from '@/lib/acq/settings';
 import { enqueue } from '@/lib/acq/queue';
 import { dueForStep, sequenceLength } from '@/lib/acq/eligibility';
+import { replenishReservoir } from '@/lib/acq/reservoir';
 import { recordEvent } from '@/lib/acq/events';
 import { rampSender } from '@/lib/acq/governor';
 import type { AcqProspect } from '@/lib/acq/types';
@@ -70,6 +71,20 @@ export async function GET(req: Request) {
     if (res.ok && res.created) swept++;
   }
 
+  /* ── 1b. keep the reservoir graded ──
+     Promotion is what turns discovered prospects into mailable inventory, and
+     nothing did it: 781 graded prospects sat at `discovered` while the
+     bottleneck engine reported inventory as the constraint. Runs every pass,
+     before sourcing, because promoting what we already have is free and
+     sourcing more is not. */
+  let reservoir: { promoted: number; demoted: number; ready: number; shortfall: number } | null = null;
+  try {
+    const r = await replenishReservoir(db);
+    reservoir = { promoted: r.promoted, demoted: r.demoted, ready: r.readyAfter, shortfall: r.shortfall };
+  } catch (err) {
+    console.error('cron/acquisition: reservoir replenish failed', err);
+  }
+
   /* ── 2. daily sourcing, if Sarah turned it on ── */
 
   let sourcingRun: string | null = null;
@@ -131,5 +146,5 @@ export async function GET(req: Request) {
     });
   }
 
-  return NextResponse.json({ ok: true, swept, sourcingRun, ramp, drained });
+  return NextResponse.json({ ok: true, swept, reservoir, sourcingRun, ramp, drained });
 }
