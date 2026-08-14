@@ -49,9 +49,19 @@ const campaign = await getCampaign();
 if (!campaign) throw new Error('No campaign row.');
 const before = await getAcqSettings();
 
-const business = `Flathead Comfort Heating & Air`;
+/*
+ * THE NAME IS JUST THE NAME.
+ *
+ * This appended a build stamp so repeated runs would not collide on the dedupe
+ * index, and the stamp then showed up in the email subject, on the buy page and
+ * in the portal: "Flathead Comfort Heating & Air mst68son". Nobody reviewing
+ * their own customer journey should have to mentally delete a build id from
+ * every screen. Uniqueness belongs in the email alias and the hub id, both of
+ * which are invisible, not in the one string a human reads everywhere.
+ */
+const business = 'Flathead Comfort Heating & Air';
 const hubId = crypto.randomUUID();
-const keys = keysFor({ business_name: `${business} ${STAMP}`, city: 'Kalispell', state: 'MT', phone: '(406) 555-0143', email: to });
+const keys = keysFor({ business_name: business, city: 'Kalispell', state: 'MT', phone: '(406) 555-0143', email: to });
 
 console.log(`\nTHE BUYER'S JOURNEY  ->  ${to}\n`);
 
@@ -66,7 +76,7 @@ try {
   const { data: lead, error } = await db
     .from('outbound_leads')
     .insert({
-      business_name: `${business} ${STAMP}`,
+      business_name: business,
       contact_name: 'Sarah Scarano',
       contact_title: 'Owner',
       phone: '(406) 555-0143',
@@ -92,9 +102,7 @@ try {
       acq_eligible: true,
       consent_status: 'granted',
       hub_demo_id: hubId,
-      hub_demo_url: `${SITE.url}/demo/order/${hubId}`,
-      demo_url: `${SITE.url}/demos`,
-      demo_status: 'ready',
+      hub_demo_url: `${SITE.url}/demo/hub/${hubId}`,
       notes: `${MARKER}: shows Sarah the post-sale journey. Deleted unless --keep.`,
       ...keys,
     })
@@ -103,6 +111,19 @@ try {
   if (error || !lead) throw new Error(`Could not create the prospect: ${error?.message}`);
   leadId = lead.id;
 
+  /* ── FORGE A REAL AGENT ──
+     The first version wrote demo_url = /demos and called it forged. Every link
+     then resolved to the marketing page, so "try your receptionist" played
+     nothing, which is the one thing this walkthrough exists to demonstrate.
+     This runs the actual forge, so the demo in the email is a real agent that
+     really answers. It is slower and it spends real quota; that is the cost of
+     a walkthrough that is not a mock-up. */
+  const { forgeProspectAgent } = await import('../lib/acq/forge');
+  const forged = await forgeProspectAgent(db, lead, {}, { deferHeavy: false });
+  console.log(`  0. forging a real voice agent      ${forged.ok ? `FORGED  ${forged.demoUrl}` : `FAILED: ${forged.error}`}`);
+  const { data: readyLead } = await db.from('outbound_leads').select('*').eq('id', leadId).single();
+  const workingLead = readyLead ?? lead;
+
   // The window and frequency rules are relaxed IN MEMORY only. Sarah asks for
   // these at nine at night and the same address receives three in a row on
   // purpose; the real campaign row is never touched.
@@ -110,13 +131,13 @@ try {
   await updateAcqSettings({ master_paused: false, email_enabled: true, paused_reason: null, min_days_between_emails: 0 });
 
   /* ── 1. YOUR DEMO IS READY ── */
-  const demo = await sendDemoEmail(db, live, { ...lead, demo_emailed_at: null });
+  const demo = await sendDemoEmail(db, live, { ...workingLead, demo_emailed_at: null });
   console.log(`  1. "your receptionist is built"   ${demo.ok ? `SENT  ${demo.subject}` : `NOT SENT: ${demo.error}`}`);
   if (demo.ok) sent.push(`Demo ready: ${demo.subject}`);
 
   /* ── 2. HERE IS WHERE YOU BUY IT ── */
-  const buyUrl = checkoutUrlFor(lead);
-  const checkout = await sendCheckoutLink(db, live, { ...lead, checkout_sent_at: null }, 'Here is the link we talked about on the call.');
+  const buyUrl = checkoutUrlFor(workingLead);
+  const checkout = await sendCheckoutLink(db, live, { ...workingLead, checkout_sent_at: null }, 'Here is the link we talked about on the call.');
   console.log(`  2. "your activation link"         ${checkout.ok ? 'SENT' : `NOT SENT: ${checkout.error}`}`);
   if (checkout.ok) sent.push('Checkout link: your Voice Agent activation link');
 
@@ -197,11 +218,41 @@ try {
     if (!werr) sent.push('Welcome aboard, with the intake link');
   }
 
-  console.log(`\n  THE PAGES, open these in a browser:`);
-  console.log(`    buy page      ${buyUrl}`);
-  console.log(`    intake        ${intakeUrl}`);
-  console.log(`    their portal  ${PORTAL_URL}   (sign in as ${to})`);
-  console.log(`    front office  ${SITE.url}/portal/front-office`);
+  /* ── FETCH EVERY LINK BEFORE CLAIMING IT WORKS ──
+     The previous run printed a buy-page URL that returned 404 and reported the
+     whole journey as a success, because it checked that a string had been
+     built rather than that a page was there. Nothing is claimed below that has
+     not been fetched. */
+  const demoUrl = workingLead.hub_demo_url || workingLead.demo_url || '';
+  const links: [string, string][] = [
+    ['buy page', buyUrl],
+    ['their demo', demoUrl],
+    ['intake', intakeUrl],
+    ['portal', PORTAL_URL],
+    ['front office', `${SITE.url}/portal/front-office`],
+  ];
+
+  console.log(`\n  THE PAGES, each one actually fetched:`);
+  let broken = 0;
+  for (const [label, url] of links) {
+    if (!url) {
+      console.log(`    ${label.padEnd(13)} NOT BUILT`);
+      broken++;
+      continue;
+    }
+    let code = 0;
+    try {
+      code = (await fetch(url, { redirect: 'manual' })).status;
+    } catch {
+      code = 0;
+    }
+    // The portal and front office 200 for signed-out visitors (they render a
+    // sign-in prompt), so anything under 400 is a page that exists.
+    const ok = code > 0 && code < 400;
+    if (!ok) broken++;
+    console.log(`    ${label.padEnd(13)} ${String(code).padEnd(4)} ${ok ? '' : 'BROKEN  '}${url}`);
+  }
+  if (broken) console.log(`\n  ⚠ ${broken} link${broken === 1 ? '' : 's'} above ${broken === 1 ? 'does' : 'do'} not resolve. Do not trust this run.`);
 } finally {
   await updateAcqSettings({
     master_paused: before.master_paused,
