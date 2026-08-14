@@ -1,7 +1,16 @@
 /**
  * THE "MEET MR. MUSTARD" EMAILS.
  *
- * These three emails have exactly one job, and it is not to explain AI, sell a
+ * The sequence, in order:
+ *
+ *   1  THE ASK        one question, no argument. Three subject lines plus the
+ *                     personalized arm carrying their own missed-call maths.
+ *   2  THE PROOF      why silence costs money, in numbers that cite themselves.
+ *   3  THE CHALLENGE  do not let him present, try to break him.
+ *   4  KEEP HER       nights and overflow only. Nobody loses a job over this.
+ *   5  THE BREAKUP    permission to close the door.
+ *
+ * These emails have exactly one job, and it is not to explain AI, sell a
  * website, or book a discovery call. It is to make a contractor curious enough
  * to say "yes, let him call me."
  *
@@ -20,6 +29,7 @@ import { SITE } from '@/lib/seo';
 import type { AcqProspect, AcqVariant } from '@/lib/acq/types';
 import { possessive } from '@/lib/business-name';
 import { estimateFor, calculatorBlock, personalOpener, type Estimate } from '@/lib/acq/personalize';
+import { proofStat, type ProofStat } from '@/data/proof-stats';
 
 /** Tracked CTA. Every click is a measured "permission requested". */
 export function permissionUrl(lead: Pick<AcqProspect, 'id'>, step: number, variantKey: string): string {
@@ -112,7 +122,9 @@ const CTA_STYLE_NOTE = 'The button IS the conversion. There is exactly one per e
 export function buildCampaignEmail(args: {
   lead: AcqProspect;
   variant: AcqVariant;
-  step: 1 | 2 | 3;
+  /** 1-based position in the sequence. The BODY comes from `variant.body_key`,
+   *  not from this number, so reordering the drip never rewrites an email. */
+  step: number;
   fromName: string;
   fromEmail: string;
   replyTo: string;
@@ -130,17 +142,11 @@ export function buildCampaignEmail(args: {
   const estimate = variant.body_key === 'personalized' && step === 1 ? estimateFor(lead) : null;
   const personalized = estimate?.personalizable ? estimate : null;
 
-  const body = personalized
-    ? emailPersonalized(lead, personalized, business)
-    : step === 1
-      ? email1(business)
-      : step === 2
-        ? email2(business)
-        : email3(business);
+  const body = personalized ? emailPersonalized(lead, personalized, business) : BODIES[variant.body_key]?.(business) ?? email1(business);
 
   const html =
     clientEmail({
-      preheader: PREHEADERS[step],
+      preheader: PREHEADERS[variant.body_key] ?? PREHEADERS.default,
       greeting,
       body,
       cta,
@@ -200,13 +206,35 @@ function personalizedSubject(lead: AcqProspect, est: Estimate): string {
   }
 }
 
-const PREHEADERS: Record<number, string> = {
-  1: 'Three minutes on the phone with an AI receptionist, no pitch.',
-  2: 'Do not let him present. Try to break him.',
-  3: 'Last note from me on this.',
+/**
+ * Body registry. The variant row names its body; the step number does not pick
+ * it. That separation is the point: the sequence can be reordered from the
+ * Command Center, or a sixth email inserted in the middle, and every existing
+ * email still renders the words it was written to render.
+ *
+ * An unknown body_key falls back to the plain ask rather than sending a blank
+ * email, and `acq:test` asserts every body_key in the database has an entry.
+ */
+const BODIES: Record<string, (business: string) => string> = {
+  default: email1,
+  proof: emailProof,
+  challenge: email2,
+  keep_her: emailKeepHer,
+  breakup: email3,
 };
 
-/* ────────────────────────────── the three emails ─────────────────────────── */
+const PREHEADERS: Record<string, string> = {
+  default: 'Three minutes on the phone with an AI receptionist, no pitch.',
+  proof: 'The customers who hang up never tell you they called.',
+  challenge: 'Do not let him present. Try to break him.',
+  keep_her: 'Nights, weekends and overflow. Your front desk keeps her job.',
+  breakup: 'Last note from me on this.',
+};
+
+/** Every body key the renderer knows. Used by the tests and the admin preview. */
+export const BODY_KEYS = Object.keys(BODIES).concat('personalized');
+
+/* ────────────────────────────── the five emails ──────────────────────────── */
 
 /** EMAIL 1. The whole ask is "can he call you". Nothing else is sold. */
 function email1(business: string): string {
@@ -237,7 +265,124 @@ function email2(business: string): string {
   );
 }
 
-/** EMAIL 3. The permission-to-close. Says the quiet part and means it. */
+/**
+ * EMAIL 2. THE PROOF.
+ *
+ * The only email in the sequence that argues. It exists because email 1 asks a
+ * stranger for three minutes without ever saying why an unanswered phone is
+ * expensive, and some people need the why before the what.
+ *
+ * Every figure comes from data/proof-stats.ts and prints its own citation on
+ * the same line. The voicemail number shows its spread rather than pretending
+ * a contested statistic is settled. Nothing here is rounded up for effect,
+ * because the next email asks them to trust an estimate about their own
+ * business and this is where that credit is earned or lost.
+ */
+function emailProof(business: string): string {
+  const speed = proofStat('first-minute');
+  const silence = proofStat('voicemail-silence');
+  const nextGuy = proofStat('call-the-next-guy');
+
+  return (
+    p('Following up with the part I left out.') +
+    p(
+      `Everybody knows a missed call is bad. What surprised me is how fast it is over, and how little of it you ever find out about.`,
+    ) +
+    statBlock([speed, silence, nextGuy]) +
+    p(
+      `That middle one is the one I would think hardest about. A missed call at least leaves a number in your log. The ones who hang up on the beep leave nothing, so the loss never shows up anywhere you would look for it.`,
+    ) +
+    p(
+      `Mr. Mustard answers in two rings, at any hour, and every caller ends up as a name, a number and what they wanted, in writing.`,
+    ) +
+    p(`<strong>Want him to call you and show you what that sounds like?</strong>`)
+  );
+}
+
+/**
+ * The proof table. Figure, claim, citation, in one stacked row each.
+ *
+ * The citation is not a footnote and not a tooltip. It sits directly under the
+ * claim in the same block, at the same weight as the assumptions under the
+ * calculator, for the same reason: a number a contractor cannot check is a
+ * number a contractor discounts.
+ */
+function statBlock(stats: ProofStat[]): string {
+  const row = (s: ProofStat, last: boolean) => `
+    <tr>
+      <td style="padding:${last ? '12px 0 0' : '12px 0'};border-bottom:${last ? 'none' : '1px solid #eee7d8'}">
+        <p style="margin:0;font-size:24px;font-weight:bold;color:#161616;line-height:1.1">${escape(s.figure)}</p>
+        <p style="margin:4px 0 0;font-size:14px;line-height:1.55;color:#5a564f">${escape(s.body)}</p>
+        <p style="margin:5px 0 0;font-size:11px;line-height:1.5;color:#8a8375">${escape(
+          s.spread ? `${s.source}. ${capitalize(s.spread)}, so treat it as "most", not as exactly ${s.figure.replace(/^~/, '')}.` : s.source,
+        )}</p>
+      </td>
+    </tr>`;
+
+  return `
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0">
+    <tr>
+      <td style="border:2px solid #161616;border-radius:14px;padding:18px 20px;background:#ffffff">
+        <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#E0301E;font-weight:bold">
+          Silence costs more than a bad call
+        </p>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${stats.map((s, i) => row(s, i === stats.length - 1)).join('')}
+        </table>
+      </td>
+    </tr>
+  </table>`;
+}
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/**
+ * EMAIL 4. KEEP HER.
+ *
+ * The objection nobody replies to say out loud. An owner reads "AI
+ * receptionist", pictures replacing the person who has answered their phone
+ * for nine years, decides they are not that kind of owner, and stops opening
+ * our emails. They never argue with us; they just go quiet.
+ *
+ * So this one argues against the sale as most people imagine it. The offer is
+ * genuinely additive: nights, weekends, and the calls that were already going
+ * to voicemail. Nothing in here is softened for effect. If somebody DOES want
+ * to cut a salary, they can, and we do not need to say so to sell this.
+ */
+function emailKeepHer(business: string): string {
+  const line = (title: string, body: string) => `
+    <tr>
+      <td style="padding:9px 0;border-bottom:1px solid #eee7d8">
+        <p style="margin:0;font-size:14px;font-weight:bold;color:#161616">${escape(title)}</p>
+        <p style="margin:3px 0 0;font-size:13.5px;line-height:1.55;color:#5a564f">${escape(body)}</p>
+      </td>
+    </tr>`;
+
+  return (
+    p('Something I should have said three emails ago.') +
+    p(
+      `This is not a replacement for whoever answers your phone. If you have somebody good on the front desk, she is a reason customers stay with ${escape(business)}, and no software is going to do what she does.`,
+    ) +
+    p('Almost nobody puts Mr. Mustard on every call. They give him one narrow job:') +
+    `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0">
+      <tr><td style="border:2px solid #161616;border-radius:14px;padding:16px 20px;background:#ffffff">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${line('After hours and weekends', 'She goes home at five. He picks up the six-thirty emergency instead of the machine.')}
+          ${line('Overflow only', 'He answers the second and third callers while she is on the first, so nobody waits.')}
+          ${line('Just the voicemail calls', 'He takes only what was already going to the beep. Every call she reaches, she keeps.')}
+        </table>
+      </td></tr>
+    </table>` +
+    p(
+      `You pick which. It is one sentence to set up and it changes nothing about your number, your phones, or who answers them during the day.`,
+    ) +
+    p('<strong>Easiest way to judge it is to let him call you. Three minutes.</strong>')
+  );
+}
+
+/** EMAIL 5. The permission-to-close. Says the quiet part and means it. */
 function email3(business: string): string {
   return (
     p('Last note from me.') +

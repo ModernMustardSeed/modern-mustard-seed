@@ -18,7 +18,7 @@ import type { QueueJob } from '@/lib/acq/queue';
 import { getAcqSettings, gate, getCampaign } from '@/lib/acq/settings';
 import { checkPace, sendCampaignEmail, sendDemoEmail, sendFollowup, sendCheckoutLink } from '@/lib/acq/send';
 import type { FollowupKind } from '@/lib/acq/campaign';
-import { evaluate, dueForStep } from '@/lib/acq/eligibility';
+import { evaluate, dueForStep, sequenceGaps } from '@/lib/acq/eligibility';
 import { activeSuppressions } from '@/lib/email-log';
 import { forgeProspectAgent } from '@/lib/acq/forge';
 import { placeDemoCall } from '@/lib/acq/call';
@@ -198,12 +198,13 @@ async function runEmailJob(
     return { kind: 'skip', note: blocked };
   }
 
-  const step = (job.step || 1) as 1 | 2 | 3;
+  const gaps = sequenceGaps(campaign.step_after_days);
+  const step = Math.max(1, job.step || 1);
   if ((lead.email_stage ?? 0) >= step) {
     return { kind: 'skip', note: `Email ${step} already went out (stage ${lead.email_stage}).` };
   }
   // The sequence stops the moment they convert, even if this was scheduled first.
-  const due = dueForStep(lead, new Date(), campaign.step2_after_days, campaign.step3_after_days);
+  const due = dueForStep(lead, new Date(), campaign.step_after_days);
   if (due === null) return { kind: 'skip', note: 'The prospect moved past the email sequence.' };
   if (due !== step) return { kind: 'defer', note: `Step ${step} is not due yet (next is ${due}).` };
 
@@ -211,15 +212,15 @@ async function runEmailJob(
   if (!sent.ok) return sent.permanent ? { kind: 'skip', note: sent.error } : { kind: 'fail', note: sent.error };
 
   // Schedule the next one immediately so the sequence is durable rather than
-  // dependent on a nightly sweep finding it again.
-  if (step < 3) {
-    const days = step === 1 ? campaign.step2_after_days : campaign.step3_after_days;
+  // dependent on a nightly sweep finding it again. gaps[step - 1] is the wait
+  // that follows THIS email; running off the end means this was the last one.
+  if (step <= gaps.length) {
     await enqueue(db, {
       kind: 'email',
       leadId: lead.id,
       campaignId: campaign.id,
       step: step + 1,
-      runAfter: addBusinessDays(new Date(), days),
+      runAfter: addBusinessDays(new Date(), gaps[step - 1]),
     });
   }
 

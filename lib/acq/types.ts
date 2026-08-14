@@ -188,8 +188,12 @@ export type AcqCampaign = {
   from_name: string;
   from_email: string;
   reply_to: string;
-  step2_after_days: number;
-  step3_after_days: number;
+  /**
+   * Business days to wait AFTER email n before email n+1, so entry [0] is the
+   * gap between emails 1 and 2. A five email sequence has four entries; the
+   * sequence length is read from this array, never hard-coded.
+   */
+  step_after_days: number[];
   max_call_attempts: number;
   settings: Record<string, unknown>;
   started_at: string | null;

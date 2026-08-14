@@ -25,7 +25,23 @@ type Run = {
   params: Record<string, unknown>;
 };
 
-type Payload = { runs: Run[]; sourcedTotal: number; markets: { key: string; label: string; tier: number }[]; workerCommand: string };
+type WorkerStatus = { state: 'working' | 'waiting' | 'stalled' | 'absent'; headline: string; detail: string; command: string | null };
+type Payload = {
+  runs: Run[];
+  sourcedTotal: number;
+  markets: { key: string; label: string; tier: number }[];
+  workerCommand: string;
+  worker: WorkerStatus;
+};
+
+/** What the Status tile says. "IDLE" is deliberately absent: it was the word
+ *  that hid an unattended queue for thirty eight minutes. */
+const WORKER_LABEL: Record<WorkerStatus['state'], string> = {
+  working: 'RUNNING',
+  waiting: 'READY',
+  stalled: 'STALLED',
+  absent: 'NO WORKER',
+};
 
 export default function LeadFinder() {
   const [data, setData] = useState<Payload | null>(null);
@@ -75,6 +91,7 @@ export default function LeadFinder() {
   };
 
   const running = data?.runs.find((r) => r.status === 'running');
+  const worker: WorkerStatus = data?.worker ?? { state: 'waiting', headline: '', detail: '', command: null };
 
   return (
     <div className="min-h-screen bg-[#FBF6EA]">
@@ -143,10 +160,32 @@ export default function LeadFinder() {
           </Section>
 
           <div className="space-y-6">
+            {/* The loudest thing on the screen when nothing is listening. It
+                names the problem and carries the exact command that fixes it. */}
+            {(worker.state === 'absent' || worker.state === 'stalled') && (
+              <div className="rounded-xl border-2 border-[#E0301E] bg-[#E0301E]/[0.06] p-4">
+                <p className="font-display text-[17px] font-bold text-[#E0301E]">{worker.headline}</p>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-[#161616]/75">{worker.detail}</p>
+                {worker.command && (
+                  <code className="mt-3 block rounded-lg border-2 border-[#161616] bg-white px-3 py-2 font-mono text-[12px] font-semibold">
+                    {worker.command}
+                  </code>
+                )}
+              </div>
+            )}
+
             <div className="grid sm:grid-cols-3 gap-3">
               <Stat label="Sourced by the finder" value={(data?.sourcedTotal ?? 0).toLocaleString()} tone="seed" big />
               <Stat label="Runs" value={data?.runs.length ?? 0} />
-              <Stat label="Status" value={running ? 'RUNNING' : 'IDLE'} tone={running ? 'seed' : 'ink'} sub={running?.current_market ?? undefined} />
+              {/* Never claim IDLE when work is queued. Idle means nothing is
+                  waiting; a queued run with no worker is abandoned, and the
+                  two used to render identically. */}
+              <Stat
+                label="Status"
+                value={WORKER_LABEL[worker.state]}
+                tone={worker.state === 'working' ? 'seed' : worker.state === 'waiting' ? 'ink' : 'red'}
+                sub={running?.current_market ?? undefined}
+              />
             </div>
 
             {running && (

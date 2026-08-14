@@ -14,7 +14,12 @@ import assert from 'node:assert/strict';
 
 import { nameKey, domainKey, phoneDigits, emailKey, keysFor, checkDuplicate, claim, type DedupeIndex } from '../lib/acq/dedupe';
 import { scoreLead, lastCloseHour } from '../lib/acq/score';
-import { evaluate, dueForStep, businessDaysBetween } from '../lib/acq/eligibility';
+import { evaluate, dueForStep, businessDaysBetween, sequenceGaps, sequenceLength } from '../lib/acq/eligibility';
+
+import { workerStatus } from '../app/api/admin/acquisition/lead-finder/route';
+
+/** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
+const GAPS = [2, 4, 3, 4];
 import { idempotencyKey } from '../lib/acq/queue';
 import { CONSENT_VERSIONS, CURRENT_CONSENT, toE164, consentVersion } from '../lib/acq/consent';
 import { greetingFor, firstNameOr, renderSubject, shortBusiness, buildCampaignEmail, permissionUrl } from '../lib/acq/campaign';
@@ -269,19 +274,21 @@ test('eligibility: only verified, likely and publicly listed addresses are maila
 
 test('sequencing: the sequence stops dead the moment they convert', () => {
   const now = new Date('2026-08-20T16:00:00Z');
-  assert.equal(dueForStep(lead({ email_stage: 0 }), now, 2, 4), 1);
-  assert.equal(dueForStep(lead({ consent_status: 'granted' }), now, 2, 4), null);
-  assert.equal(dueForStep(lead({ reply_at: now.toISOString() }), now, 2, 4), null);
-  assert.equal(dueForStep(lead({ acq_stage: 'called' }), now, 2, 4), null);
-  assert.equal(dueForStep(lead({ email_stage: 3 }), now, 2, 4), null);
+  assert.equal(dueForStep(lead({ email_stage: 0 }), now, GAPS), 1);
+  assert.equal(dueForStep(lead({ consent_status: 'granted' }), now, GAPS), null);
+  assert.equal(dueForStep(lead({ reply_at: now.toISOString() }), now, GAPS), null);
+  assert.equal(dueForStep(lead({ acq_stage: 'called' }), now, GAPS), null);
+  // Past the last email in the sequence. GAPS has four gaps, so five emails.
+  assert.equal(dueForStep(lead({ email_stage: 5 }), now, GAPS), null);
+  assert.equal(dueForStep(lead({ email_stage: 3 }), now, GAPS), 4);
 });
 
 test('sequencing: step two waits its business days', () => {
   const sent = new Date('2026-08-17T16:00:00Z'); // a Monday
   const oneDay = new Date('2026-08-18T16:00:00Z');
   const twoDays = new Date('2026-08-19T16:00:00Z');
-  assert.equal(dueForStep(lead({ email_stage: 1, last_campaign_email_at: sent.toISOString() }), oneDay, 2, 4), null);
-  assert.equal(dueForStep(lead({ email_stage: 1, last_campaign_email_at: sent.toISOString() }), twoDays, 2, 4), 2);
+  assert.equal(dueForStep(lead({ email_stage: 1, last_campaign_email_at: sent.toISOString() }), oneDay, GAPS), null);
+  assert.equal(dueForStep(lead({ email_stage: 1, last_campaign_email_at: sent.toISOString() }), twoDays, GAPS), 2);
 });
 
 test('sequencing: weekends do not count as business days', () => {
@@ -363,7 +370,7 @@ test('emails: a merge field always resolves to something honest', () => {
 });
 
 test('emails: every campaign email carries the opt-out and the tracked CTA', () => {
-  for (const step of [1, 2, 3] as const) {
+  for (const step of [1, 2, 3, 4, 5] as const) {
     const built = buildCampaignEmail({
       lead: lead(),
       variant: { id: 'v', campaign_id: 'c', key: 'A', step, subject: 'S', cta_label: 'YES', body_key: 'default', weight: 1, active: true },
@@ -378,6 +385,98 @@ test('emails: every campaign email carries the opt-out and the tracked CTA', () 
     assert.match(built!.html, /\/api\/acq\/click\?/, 'the CTA must be the tracked link');
     assert.equal(built!.to, 'office@abcheating.com');
   }
+});
+
+test('lead finder: a queued run with no worker reports ABSENT, never idle', () => {
+  const now = Date.parse('2026-08-14T02:20:00Z');
+  const queued = { status: 'queued', heartbeat_at: null, created_at: '2026-08-14T01:42:00Z' };
+
+  // The exact bug. Thirty eight minutes queued, nothing listening, and the
+  // screen used to say IDLE because no run had status 'running'.
+  const abandoned = workerStatus([queued], now);
+  assert.equal(abandoned.state, 'absent');
+  assert.match(abandoned.detail, /38 minutes/);
+  assert.ok(abandoned.command, 'must hand back the command that fixes it');
+
+  // Claimed and beating.
+  assert.equal(workerStatus([{ status: 'running', heartbeat_at: '2026-08-14T02:19:30Z', created_at: '2026-08-14T01:42:00Z' }], now).state, 'working');
+
+  // Claimed, then the terminal was closed.
+  assert.equal(workerStatus([{ status: 'running', heartbeat_at: '2026-08-14T02:05:00Z', created_at: '2026-08-14T01:42:00Z' }], now).state, 'stalled');
+
+  // Genuinely nothing to do. This is the only case that is not a problem.
+  assert.equal(workerStatus([{ status: 'done', heartbeat_at: '2026-08-13T19:05:00Z', created_at: '2026-08-13T18:58:00Z' }], now).state, 'waiting');
+  assert.equal(workerStatus([], now).state, 'waiting');
+});
+
+test('sequence: gaps are sanitized so a bad row cannot fire the whole drip at once', () => {
+  // The dangerous case. A zero gap means "due immediately", and five emails
+  // arriving in one pass is a spam complaint rather than a sequence.
+  assert.deepEqual(sequenceGaps([0, 0, 0, 0]), [1, 1, 1, 1]);
+  assert.deepEqual(sequenceGaps([]), [2, 3, 3, 4], 'empty falls back to the house spacing');
+  assert.deepEqual(sequenceGaps(null), [2, 3, 3, 4]);
+  assert.deepEqual(sequenceGaps([2.6, -5, 999]), [3, 1, 60], 'rounded, floored at 1, capped at 60');
+  assert.equal(sequenceLength([2, 3, 3, 4]), 5, 'four gaps means five emails');
+  assert.equal(sequenceLength(null), 5);
+});
+
+test('sequence: every body_key in the sequence renders its own distinct email', () => {
+  const seen = new Map<string, string>();
+  for (const body_key of ['default', 'proof', 'challenge', 'keep_her', 'breakup']) {
+    const built = buildCampaignEmail({
+      lead: lead(),
+      variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'S', cta_label: 'YES', body_key, weight: 1, active: true },
+      step: 1,
+      fromName: 'Sarah',
+      fromEmail: 'sarah@modernmustardseed.com',
+      replyTo: 'sarah@modernmustardseed.com',
+    });
+    assert.ok(built, `${body_key} should build`);
+    for (const [other, html] of seen) {
+      assert.notEqual(built!.html, html, `${body_key} renders the same email as ${other}`);
+    }
+    seen.set(body_key, built!.html);
+  }
+});
+
+test('emails: the proof email quotes only cited figures, and shows the contested one as a range', () => {
+  const built = buildCampaignEmail({
+    lead: lead(),
+    variant: { id: 'v', campaign_id: 'c', key: 'A', step: 2, subject: 'The call you never hear about', cta_label: 'YES', body_key: 'proof', weight: 1, active: true },
+    step: 2,
+    fromName: 'Sarah',
+    fromEmail: 'sarah@modernmustardseed.com',
+    replyTo: 'sarah@modernmustardseed.com',
+  });
+  const html = built!.html;
+  assert.match(html, /391%/);
+  assert.match(html, /Harvard Business Review, 2011/);
+  assert.match(html, /82%/);
+  assert.match(html, /CallRail, 2025/);
+  // The voicemail figure is contested, so it must never appear as a bare
+  // round number pretending to be settled.
+  assert.match(html, /67% to 86%/, 'the voicemail spread must be shown');
+  // The numbers with no primary source stay out, forever.
+  for (const junk of ['85%', '126,000', '$126K', '62% of business calls']) {
+    assert.ok(!html.includes(junk), `unsourced figure "${junk}" must never ship`);
+  }
+});
+
+test('emails: the keep-her email promises nobody loses a job', () => {
+  const built = buildCampaignEmail({
+    lead: lead(),
+    variant: { id: 'v', campaign_id: 'c', key: 'A', step: 4, subject: 'You do not have to replace anybody', cta_label: 'YES', body_key: 'keep_her', weight: 1, active: true },
+    step: 4,
+    fromName: 'Sarah',
+    fromEmail: 'sarah@modernmustardseed.com',
+    replyTo: 'sarah@modernmustardseed.com',
+  });
+  const html = built!.html;
+  assert.match(html, /not a replacement/i);
+  assert.match(html, /After hours and weekends/);
+  assert.match(html, /Overflow only/);
+  assert.match(html, /ABC Heating &amp; Air/, 'their name, escaped, not a raw ampersand');
+  assert.ok(!/fire|replace (her|your staff)|cut (a )?salary/i.test(html), 'never sells this as cutting staff');
 });
 
 test('emails: prose carries no em dashes, per the house rule', () => {
@@ -572,7 +671,7 @@ const campaignFor = (over: Partial<AcqCampaign> = {}): AcqCampaign =>
     // A window wide enough that the test never depends on the wall clock.
     send_start_hour: 0, send_end_hour: 24, send_weekdays_only: false,
     from_name: 'Sarah', from_email: 's@x.com', reply_to: 's@x.com',
-    step2_after_days: 2, step3_after_days: 4, max_call_attempts: 2, settings: {},
+    step_after_days: [2, 4, 3, 4], max_call_attempts: 2, settings: {},
     started_at: null, paused_at: null, goal_mrr_cents: 0, goal_revenue_cents: 100000000,
     goal_horizon_months: 12, goal_started_on: null, monthly_client_target_min: 30,
     monthly_client_target_stretch: 40,

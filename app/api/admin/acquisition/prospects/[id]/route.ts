@@ -4,7 +4,7 @@ import { timelineFor, recordEvent } from '@/lib/acq/events';
 import { getCampaign, getAcqSettings, getVariants, pickVariant } from '@/lib/acq/settings';
 import { buildCampaignEmail } from '@/lib/acq/campaign';
 import { enqueue, cancelPendingFor } from '@/lib/acq/queue';
-import { evaluate } from '@/lib/acq/eligibility';
+import { evaluate, sequenceLength } from '@/lib/acq/eligibility';
 import { forgeProspectAgent } from '@/lib/acq/forge';
 import { sendDemoEmail, sendCheckoutLink, checkoutUrlFor } from '@/lib/acq/send';
 import { buildPrepBrief } from '@/lib/acq/brief';
@@ -44,7 +44,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   // The next email, rendered exactly as it would ship, so nothing is a surprise.
   let nextEmail: { subject: string; html: string; step: number; variant: string } | null = null;
   if (campaign && lead.email) {
-    const step = Math.min(3, (lead.email_stage ?? 0) + 1) as 1 | 2 | 3;
+    const step = (lead.email_stage ?? 0) + 1;
     const variant = pickVariant(variants, step, lead.id);
     if (variant) {
       const built = buildCampaignEmail({
@@ -115,7 +115,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }
     case 'queue-email': {
       if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
-      const step = Math.min(3, Number(body.step ?? (lead.email_stage ?? 0) + 1));
+      const step = Math.max(
+        1,
+        Math.min(sequenceLength(campaign.step_after_days), Number(body.step ?? (lead.email_stage ?? 0) + 1)),
+      );
       const res = await enqueue(db, { kind: 'email', leadId: id, campaignId: campaign.id, step, runAfter: new Date() });
       return NextResponse.json({ ok: true, created: res.ok && res.created });
     }

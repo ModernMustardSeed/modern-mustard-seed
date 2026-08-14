@@ -175,7 +175,7 @@ export async function sendCampaignEmail(
   db: SupabaseClient,
   campaign: AcqCampaign,
   lead: AcqProspect,
-  step: 1 | 2 | 3,
+  step: number,
 ): Promise<SendResult> {
   const gate = await gateOrRefuse(db, campaign, lead, 'campaign');
   if (!gate.ok) return gate.result;
