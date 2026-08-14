@@ -18,6 +18,7 @@
 
 import { getAssistantModel, demoModel, DESK_TOOLS, SPEAKING_PIPELINE, VOICE_CRAFT, type ForgedCall } from '@/lib/sidekick';
 import { SIDEKICK_VOICES } from '@/lib/sidekick-voice';
+import { env } from '@/lib/env';
 
 export type DeskKind = 'admin' | 'client' | 'partner';
 
@@ -169,7 +170,7 @@ export async function forgeDeskCall(
   desk: DeskKind,
   opts: { greetName: string; email: string; systemPrompt: string; keyterms?: string[] },
 ): Promise<{ ok: true; call: ForgedCall } | { ok: false; error: string }> {
-  const apiKey = (process.env.VAPI_API_KEY || '').trim();
+  const apiKey = env('VAPI_API_KEY') ?? '';
   if (!apiKey) return { ok: false, error: 'not_configured' };
   const model = await getAssistantModel(apiKey);
   if (!model) return { ok: false, error: 'assistant_unavailable' };

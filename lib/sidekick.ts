@@ -16,6 +16,7 @@ import { SIDEKICK, getVertical } from '@/data/sidekick';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import { sidekickVoice, type VoiceGender, type VapiVoice } from '@/lib/sidekick-voice';
 import { possessive } from '@/lib/business-name';
+import { env, envAny } from '@/lib/env';
 
 const MUSTARD_ASSISTANT_ID = 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee';
 /** Mr. Mustard's own line, (406) 312-1223. Callbacks reach him, which is the point. */
@@ -263,16 +264,23 @@ export async function getAssistantModel(apiKey: string): Promise<Record<string, 
   }
 }
 
+/*
+ * These two already had hardcoded fallbacks and still failed, because a
+ * `vercel env pull` had written the literal string "[SENSITIVE]" over the
+ * variable. "[SENSITIVE]" is not empty, so `(x || '').trim() || FALLBACK`
+ * happily returned it, and Vapi was asked for an assistant with that id. The
+ * 404 came back as `assistant_unavailable`, which reads exactly like somebody
+ * having deleted the assistant.
+ *
+ * env() treats a placeholder as absent, so the fallback beneath it does the job
+ * it was written to do. See lib/env.ts.
+ */
 export function assistantId(): string {
-  return (process.env.VAPI_MUSTARD_ASSISTANT_ID || '').trim() || MUSTARD_ASSISTANT_ID;
+  return env('VAPI_MUSTARD_ASSISTANT_ID') ?? MUSTARD_ASSISTANT_ID;
 }
 
 function phoneNumberId(): string {
-  return (
-    (process.env.SIDEKICK_PHONE_NUMBER_ID || '').trim() ||
-    (process.env.VAPI_PHONE_NUMBER_ID || '').trim() ||
-    MUSTARD_PHONE_NUMBER_ID
-  );
+  return envAny('SIDEKICK_PHONE_NUMBER_ID', 'VAPI_PHONE_NUMBER_ID') ?? MUSTARD_PHONE_NUMBER_ID;
 }
 
 export type ForgeResult =
@@ -281,7 +289,7 @@ export type ForgeResult =
 
 /** Forge the call payload (shared by web and phone paths). */
 export async function forgeCall(p: SidekickProfile, runId: string, mode: 'web' | 'phone'): Promise<ForgeResult> {
-  const apiKey = (process.env.VAPI_API_KEY || '').trim();
+  const apiKey = env('VAPI_API_KEY') ?? '';
   if (!apiKey) return { ok: false, error: 'not_configured' };
 
   const model = await getAssistantModel(apiKey);
@@ -315,7 +323,7 @@ export function toE164(raw: string | null | undefined): string | null {
 
 /** The encore: their own Voice Agent calls their cell. User-initiated, consent on the page. */
 export async function ringDemoCall(call: ForgedCall, toNumber: string): Promise<RingResult> {
-  const apiKey = (process.env.VAPI_API_KEY || '').trim();
+  const apiKey = env('VAPI_API_KEY') ?? '';
   if (!apiKey) return { ok: false, error: 'not_configured' };
   try {
     const res = await fetch('https://api.vapi.ai/call', {

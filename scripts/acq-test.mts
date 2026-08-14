@@ -27,6 +27,7 @@ import { readiness, isPaying, isTested } from '../lib/front-office/readiness';
 import { normalizeAreaCode } from '../lib/front-office/phone';
 import { shouldNotify, subjectFor, smsBodyFor } from '../lib/front-office/notify';
 import { trimForSms } from '../lib/sms';
+import { env, envAny, isPlaceholder, placeholderVars } from '../lib/env';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 
 /** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
@@ -434,6 +435,42 @@ const ready = (over: Record<string, unknown> = {}) => ({
   test_call_passed: true,
   agent_synced_at: '2026-08-14T09:00:00Z',
   ...over,
+});
+
+test('env: a clobbered variable behaves like a missing one, not a real value', () => {
+  const KEY = 'ACQ_TEST_ENV_PROBE';
+
+  // THE BUG. `vercel env pull` writes the literal "[SENSITIVE]" over anything
+  // marked sensitive. It is not empty, so `(x || '').trim() || FALLBACK`
+  // returns it, and the caller sends the string "[SENSITIVE]" to an API as an
+  // id. Vapi answered 404 and the error surfaced as assistant_unavailable,
+  // which reads exactly like somebody having deleted the assistant.
+  process.env[KEY] = '[SENSITIVE]';
+  assert.equal(env(KEY), null, 'a placeholder must read as absent');
+  assert.ok(isPlaceholder(process.env[KEY]));
+  assert.equal(env(KEY) ?? 'the-fallback', 'the-fallback', 'so the fallback beneath it actually runs');
+
+  // The other stand-ins that mean "nobody filled this in".
+  for (const junk of ['changeme', 'YOUR_API_KEY_HERE', 'xxxx', 'TODO', '<your-token>', '  ']) {
+    process.env[KEY] = junk;
+    assert.equal(env(KEY), null, `"${junk}" must read as absent`);
+  }
+
+  // And a real value is still a real value, including one that merely looks odd.
+  for (const good of ['faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee', 'sk_live_abc123', 'x']) {
+    process.env[KEY] = good;
+    assert.equal(env(KEY), good);
+    assert.equal(isPlaceholder(good), false);
+  }
+
+  process.env[KEY] = '[SENSITIVE]';
+  process.env[`${KEY}_2`] = 'real-value';
+  assert.equal(envAny(KEY, `${KEY}_2`), 'real-value', 'aliases skip the clobbered one');
+  assert.deepEqual(placeholderVars([KEY, `${KEY}_2`]), [KEY], 'and a clobbered environment can name itself');
+
+  delete process.env[KEY];
+  delete process.env[`${KEY}_2`];
+  assert.equal(env(KEY), null);
 });
 
 test('sms: a number we cannot be sure of is never texted', () => {

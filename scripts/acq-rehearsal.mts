@@ -225,6 +225,35 @@ async function run() {
     .lt('claimed_at', ninetyMinutesAgo);
   check('no queue job has been claimed and abandoned', (stuck ?? 0) === 0, `${stuck ?? 0} stale`);
 
+  /* ── IS THIS ENVIRONMENT ACTUALLY CONFIGURED? ──
+     A `vercel env pull` once wrote "[SENSITIVE]" over 63 variables here. The
+     values did not go missing so much as go missing while staying truthy, so
+     every fallback beneath them was skipped and the failures surfaced as
+     unrelated 404s. This names them instead of leaving them to be found one
+     confusing error at a time. */
+  const { placeholderVars } = await import('../lib/env');
+  const clobbered = placeholderVars([
+    'VAPI_API_KEY',
+    'VAPI_MUSTARD_ASSISTANT_ID',
+    'VAPI_PHONE_NUMBER_ID',
+    'VAPI_WEBHOOK_SECRET',
+    'STRIPE_SECRET_KEY',
+    'STRIPE_WEBHOOK_SECRET',
+    'RESEND_API_KEY',
+    'TWILIO_ACCOUNT_SID',
+    'TWILIO_AUTH_TOKEN',
+    'TWILIO_MESSAGING_SERVICE_SID',
+    'SUPABASE_SERVICE_ROLE_KEY',
+  ]);
+  // Not a hard failure: this runs against a developer machine as often as a
+  // real one, and a clobbered local file does not mean production is broken.
+  // It is reported loudly so nobody spends an afternoon on the wrong cause.
+  check(
+    'no credential is sitting on a placeholder',
+    clobbered.length === 0,
+    clobbered.length ? `CLOBBERED: ${clobbered.join(', ')}` : 'all real',
+  );
+
   /* ─────────────────────────── 4. DELIVERABILITY ──────────────────────────── */
   section = 'deliverability';
 
