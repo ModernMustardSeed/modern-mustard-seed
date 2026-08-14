@@ -164,60 +164,86 @@ export async function discoverOsm(market: Market, trade: Exclude<Trade, 'other'>
  */
 export async function discoverOsmAllTrades(market: Market): Promise<Record<Exclude<Trade, 'other'>, Candidate[]>> {
   const out = Object.fromEntries(SOURCEABLE_TRADES.map((t) => [t, [] as Candidate[]])) as Record<Exclude<Trade, 'other'>, Candidate[]>;
-  const els = await overpass(combinedQuery(market.bbox));
   const seen = new Set<string>();
-  for (const el of els) {
-    const tags = el.tags ?? {};
-    const name = (tags.name || tags.operator || '').trim();
-    if (!name) continue;
-    for (const trade of SOURCEABLE_TRADES) {
-      if (!matchesTrade(name, trade)) continue;
-      const candidate = fromOsm(tags, market, trade);
-      if (!candidate) break;
-      // A "Smith Plumbing & Heating" is one business, not two leads. First
-      // matching trade wins, so it lands in exactly one bucket.
-      const key = `${name.toLowerCase()}|${candidate.website ?? candidate.phone ?? ''}`;
-      if (seen.has(key)) break;
-      seen.add(key);
-      out[trade].push(candidate);
-      break;
+
+  /*
+   * CHUNKED, BECAUSE ONE QUERY FOR SIXTEEN TRADES IS A QUERY NOBODY ANSWERS.
+   *
+   * This was a single combined call, which was right when there were three
+   * trades and became wrong the moment there were sixteen: the name alternation
+   * grew past what Overpass will evaluate over a metro bbox, every mirror timed
+   * out, and each market spent minutes returning nothing. Four at a time keeps
+   * each query in the range Overpass actually serves, and a chunk that fails
+   * costs its own trades rather than the whole market.
+   */
+  for (let i = 0; i < SOURCEABLE_TRADES.length; i += OSM_CHUNK) {
+    const chunk = SOURCEABLE_TRADES.slice(i, i + OSM_CHUNK);
+    let els: OsmElement[] = [];
+    try {
+      els = await overpass(combinedQuery(market.bbox, chunk));
+    } catch {
+      continue;
+    }
+
+    for (const el of els) {
+      const tags = el.tags ?? {};
+      const name = (tags.name || tags.operator || '').trim();
+      if (!name) continue;
+      for (const trade of chunk) {
+        if (!matchesTrade(name, trade)) continue;
+        const candidate = fromOsm(tags, market, trade);
+        if (!candidate) break;
+        // A "Smith Plumbing & Heating" is one business, not two leads. First
+        // matching trade wins, so it lands in exactly one bucket.
+        const key = `${name.toLowerCase()}|${candidate.website ?? candidate.phone ?? ''}`;
+        if (seen.has(key)) break;
+        seen.add(key);
+        out[trade].push(candidate);
+        break;
+      }
     }
   }
+
   return out;
 }
 
-function combinedQuery(bbox: string): string {
-  const names = Object.values(TRADE_QUERY).map((q) => q.name).join('|');
-  // Every craft value any trade in the registry claims, unwrapped from the
-  // per-trade ^(...)$ anchors and rejoined into one alternation. Built rather
-  // than typed so a new trade's craft tags are queried the day it is added.
+
+/** How many trades share one Overpass query. Small enough to be answerable. */
+const OSM_CHUNK = 4;
+
+function combinedQuery(bbox: string, trades: readonly Exclude<Trade, 'other'>[]): string {
+  const defs = trades.map((t) => TRADE_QUERY[t]).filter(Boolean);
+  const names = defs.map((q) => q.name).join('|');
+  // Every craft value these trades claim, unwrapped from the per-trade ^(...)$
+  // anchors and rejoined. Built rather than typed so a new trade's craft tags
+  // are queried the day it is added.
   const crafts = [
-    ...new Set(
-      Object.values(TRADE_QUERY)
-        .flatMap((q) => q.craft.replace(/^\^\(|\)\$$/g, '').split('|'))
-        .filter(Boolean),
-    ),
+    ...new Set(defs.flatMap((q) => q.craft.replace(/^\^\(|\)\$$/g, '').split('|')).filter(Boolean)),
   ].join('|');
-  return `[out:json][timeout:240];(
+  return `[out:json][timeout:55];(
 nwr["craft"~"^(${crafts})$"](${bbox});
-nwr["shop"~"^(hvac|plumber|roofer|trade|garage_door|appliance|car_repair|pool_supply|paint|flooring|carpet|doityourself)$"](${bbox});
-nwr["amenity"~"^(veterinary)$"](${bbox});
-nwr["office"~"^(company|contractor)$"]["name"~"${names}",i](${bbox});
 nwr["name"~"${names}",i]["website"](${bbox});
 nwr["name"~"${names}",i]["contact:website"](${bbox});
 nwr["name"~"${names}",i]["email"](${bbox});
 nwr["name"~"${names}",i]["contact:email"](${bbox});
-);out tags 6000;`;
+);out tags 3000;`;
 }
+
 
 async function overpass(query: string): Promise<OsmElement[]> {
   const body = `data=${encodeURIComponent(query)}`;
   for (const url of OVERPASS_ENDPOINTS) {
     try {
+      // 60s, not 250s. Overpass answers a metro-sized query in well under a
+      // minute when it can answer it at all; past that it is queued behind
+      // somebody else's continental extract and waiting costs more than the
+      // results are worth. Three mirrors at 250s meant a single unanswerable
+      // query burned 12.5 minutes per market, and at 90 markets that is a run
+      // that looks alive for eighteen hours and banks nothing.
       const res = await fetchTimeout(
         url,
         { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': UA }, body },
-        250_000,
+        60_000,
       );
       if (!res.ok) continue;
       const json = (await res.json()) as { elements?: OsmElement[] };
