@@ -244,7 +244,7 @@ function signature(_name?: string): string {
       <td style="vertical-align:middle;padding-left:20px">
         <img src="${SITE}/brand/sig-name.png" width="339" height="46" alt="Sarah Scarano" style="display:block;border:0;outline:none;text-decoration:none;max-width:339px" />
         <p class="mms-body" style="margin:9px 0 0;font-family:${SANS};font-size:14px;color:${C.body};font-weight:600">(Founder &amp; Agentic Engineer)</p>
-        <p style="margin:9px 0 0;font-family:${SANS};font-size:11px;color:${C.gold};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
+        <p class="mms-ink" style="margin:9px 0 0;font-family:${SANS};font-size:11px;color:${C.ink};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
       </td>
     </tr></table>
   </td></tr>
