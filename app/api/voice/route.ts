@@ -30,6 +30,7 @@ import {
 } from '@/lib/acq/voice-tools';
 import { cancelPendingFor } from '@/lib/acq/queue';
 import { recordEvent } from '@/lib/acq/events';
+import { env } from '@/lib/env';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -820,8 +821,21 @@ function parseArgs(raw: unknown): Record<string, unknown> {
 }
 
 export async function POST(req: Request) {
-  // Shared-secret check (set VAPI_WEBHOOK_SECRET in Vercel and on the assistant).
-  const secret = process.env.VAPI_WEBHOOK_SECRET;
+  /*
+   * Shared-secret check. Vapi sends it as x-vapi-secret, configured either on
+   * the assistant or org-wide in the dashboard.
+   *
+   * env() rather than process.env, because a `vercel env pull` writes the
+   * literal string "[SENSITIVE]" over sensitive values and that is TRUTHY. A
+   * deploy that picked one up would compare every incoming header against
+   * "[SENSITIVE]", 401 every request, and Mr. Mustard would keep answering the
+   * phone while silently losing the ability to book, forge, transfer or log
+   * anything. The call would sound fine and do nothing, which is the worst
+   * possible failure mode for a receptionist.
+   *
+   * A placeholder therefore means "no secret configured", exactly like absent.
+   */
+  const secret = env('VAPI_WEBHOOK_SECRET');
   if (secret) {
     const got = req.headers.get('x-vapi-secret');
     if (got !== secret) {

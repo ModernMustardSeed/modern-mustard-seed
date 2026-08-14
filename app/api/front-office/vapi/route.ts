@@ -3,6 +3,7 @@ import { getSupabase } from '@/lib/supabase';
 import { runFrontOfficeTool, type ToolContext } from '@/lib/front-office/tools';
 import { upsertContact, recordOfficeEvent, callerKey } from '@/lib/front-office/provision';
 import { notifyOwner } from '@/lib/front-office/notify';
+import { env } from '@/lib/env';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -43,8 +44,10 @@ function parseArgs(raw: unknown): Record<string, unknown> {
 }
 
 export async function POST(req: Request) {
-  const secret = process.env.VAPI_WEBHOOK_SECRET;
-  if (secret && !/^\[SENSITIVE\]$/i.test(secret)) {
+  // Placeholder-safe: see lib/env.ts. A clobbered value must read as "not
+  // configured", never as a secret nobody can match.
+  const secret = env('VAPI_WEBHOOK_SECRET');
+  if (secret) {
     const given = req.headers.get('x-vapi-secret') ?? req.headers.get('x-vapi-signature') ?? '';
     if (given !== secret) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
