@@ -413,6 +413,57 @@ async function run() {
     const bothOk = readiness({ ...full, billing_status: 'active', vapi_assistant_id: 'asst_rehearsal', greeting: 'hello', hours: { monday: '8:00 am - 5:00 pm' }, agent_phone: null, test_call_at: new Date().toISOString(), test_call_passed: true, agent_synced_at: null });
     check('paid AND tested opens the gate', bothOk.canBuyNumber.ok, bothOk.canBuyNumber.blockers.join('; ') || 'allowed');
 
+    /* ── THE OWNER ACTUALLY GETS TOLD ──
+       The gap that would have hurt most: an emergency at 2am, handled
+       perfectly, written to a dashboard nobody is looking at. A caught call
+       nobody is told about is not a caught call. */
+    const { data: freshOffice } = await db.from('fo_offices').select('notify_email, notify_on').eq('id', office.officeId).maybeSingle();
+    check('a new office has somewhere to send alerts', Boolean(freshOffice?.notify_email), freshOffice?.notify_email ?? 'NOWHERE');
+    check(
+      'emergencies and callbacks are on by default',
+      (freshOffice?.notify_on ?? []).includes('emergency') && (freshOffice?.notify_on ?? []).includes('needs_human'),
+      (freshOffice?.notify_on ?? []).join(', '),
+    );
+
+    // The claim is the lock. Two handlers racing on one emergency must send
+    // one email, not two, because a duplicated alert trains an owner to
+    // ignore the channel before the call that matters arrives.
+    const { data: fakeCall } = await db
+      .from('fo_calls')
+      .insert({
+        office_id: office.officeId,
+        vapi_call_id: `${MARKER}-${Date.now().toString(36)}`,
+        direction: 'inbound',
+        from_number: '(406) 555-0177',
+        urgency: 'emergency',
+        needs_human: true,
+        summary: 'Rehearsal emergency. Not a real caller.',
+        started_at: new Date().toISOString(),
+      })
+      .select('id')
+      .single();
+
+    if (fakeCall) {
+      const first = await db.from('fo_calls').update({ notified_at: new Date().toISOString() }).eq('id', fakeCall.id).is('notified_at', null).select('id').maybeSingle();
+      const second = await db.from('fo_calls').update({ notified_at: new Date().toISOString() }).eq('id', fakeCall.id).is('notified_at', null).select('id').maybeSingle();
+      check('one emergency notifies exactly once', Boolean(first.data) && !second.data, `first=${Boolean(first.data)}, second=${Boolean(second.data)}`);
+      await db.from('fo_calls').delete().eq('id', fakeCall.id);
+    }
+
+    // The reminder claim is the same shape, for the same reason: an hourly
+    // cron that overlaps itself must not send four reminders about one job.
+    if (slots.length > 1) {
+      const appt = await bookSlot(db, withHours, { startsAt: slots[1].startsAt, title: 'Rehearsal reminder claim' });
+      if (appt.ok) {
+        const r1 = await db.from('fo_appointments').update({ reminder_sent_at: new Date().toISOString() }).eq('id', appt.appointmentId).is('reminder_sent_at', null).select('id').maybeSingle();
+        const r2 = await db.from('fo_appointments').update({ reminder_sent_at: new Date().toISOString() }).eq('id', appt.appointmentId).is('reminder_sent_at', null).select('id').maybeSingle();
+        check('one appointment reminds exactly once', Boolean(r1.data) && !r2.data, `first=${Boolean(r1.data)}, second=${Boolean(r2.data)}`);
+      }
+    }
+
+    const cronGuard = await http('/api/cron/front-office');
+    check('the front office cron refuses an unauthenticated call', cronGuard.status === 401, `HTTP ${cronGuard.status}`);
+
     // And the server refuses even if somebody POSTs past the disabled button.
     const { buyNumberFor } = await import('../lib/front-office/phone');
     const refused = await buyNumberFor(db, office.officeId, { actor: 'rehearsal' });

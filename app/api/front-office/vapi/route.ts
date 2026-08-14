@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { runFrontOfficeTool, type ToolContext } from '@/lib/front-office/tools';
 import { upsertContact, recordOfficeEvent, callerKey } from '@/lib/front-office/provision';
+import { notifyOwner } from '@/lib/front-office/notify';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -69,6 +70,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ results: [] });
   }
 
+  /* ── IS THIS A REHEARSAL? ──
+     placeTestCall tags its calls with metadata.testCall. Without this check a
+     test rings up in the customer's own dashboard as a real customer call,
+     inflating the "calls answered" number we invoice against and confusing the
+     one screen they trust. The metadata is ours, set server-side when we place
+     the call, so it is not something a caller can fake. */
+  const meta = (call.metadata ?? (message.metadata as Record<string, unknown>) ?? {}) as Record<string, unknown>;
+  const isTestCall = meta.testCall === true;
+
   const customer = (call.customer ?? {}) as Record<string, unknown>;
   const fromNumber = (customer.number as string | undefined) ?? (message.phoneNumber as string | undefined) ?? null;
 
@@ -88,7 +98,7 @@ export async function POST(req: Request) {
   /* ── the call row exists before any tool writes to it ──
      Tools update fo_calls by vapi_call_id, so the row has to be there first or
      a booking made in the first ten seconds updates nothing at all. */
-  if (callId) {
+  if (callId && !isTestCall) {
     const { data: existing } = await db.from('fo_calls').select('id').eq('vapi_call_id', callId).maybeSingle();
     if (!existing) {
       const contactId = await upsertContact(db, office.id, { phone: fromNumber });
@@ -121,6 +131,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ results });
   }
 
+  if (type === 'end-of-call-report' && isTestCall) {
+    // A rehearsal is recorded on the OFFICE, where the person who ordered it
+    // is looking, and nowhere near the customer's call history.
+    await recordOfficeEvent(db, office.id, {
+      type: 'test_call_ended',
+      label: `Test call finished (${message.endedReason ?? 'ended'})`,
+      detail: { callId, durationSeconds: message.durationSeconds ?? null },
+      actor: 'admin',
+    });
+    return NextResponse.json({ ok: true });
+  }
+
   if (type === 'end-of-call-report') {
     const artifact = (message.artifact ?? {}) as Record<string, unknown>;
     const analysis = (message.analysis ?? {}) as Record<string, unknown>;
@@ -151,6 +173,15 @@ export async function POST(req: Request) {
       detail: { callId, from: fromNumber, endedReason: message.endedReason ?? null },
       actor: 'agent',
     });
+
+    // TELL THE OWNER. This is the difference between catching a call and
+    // catching a call that matters. Best-effort and idempotent inside
+    // notifyOwner; a failure here must never 500 back at Vapi.
+    if (callId) {
+      const { data: row } = await db.from('fo_calls').select('id').eq('vapi_call_id', callId).maybeSingle();
+      if (row?.id) await notifyOwner(db, office.id, row.id).catch((e) => console.error('front office notify threw', e));
+    }
+
     return NextResponse.json({ ok: true });
   }
 

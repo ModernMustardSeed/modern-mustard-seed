@@ -124,6 +124,43 @@ function UploadBox({
   );
 }
 
+
+/** A row of chunky sticker buttons. One choice, always one selected. */
+function Choice({
+  label,
+  hint,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  hint?: string;
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div>
+      <p className="font-body text-[15px] font-bold text-[#161616]">{label}</p>
+      {hint ? <p className="font-body text-[13px] text-[#161616]/60 mt-0.5">{hint}</p> : null}
+      <div className="mt-2 flex flex-wrap gap-2">
+        {options.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => onChange(o.value)}
+            className={`rounded-lg border-2 border-[#161616] px-3.5 py-2 font-body text-[13.5px] font-bold transition ${
+              value === o.value ? 'bg-[#F5B700] shadow-[3px_3px_0_0_#161616]' : 'bg-white hover:bg-[#FBF6EA]'
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function DemoOrderIntake({
   hubId,
   sessionId,
@@ -143,6 +180,19 @@ export default function DemoOrderIntake({
   prefill?: Record<string, string>;
 }) {
   const [values, setValues] = useState<Record<string, string>>(prefill ?? {});
+
+  /**
+   * THE RECEPTIONIST ANSWERS.
+   *
+   * These are not notes for somebody to read later: they are applied to the
+   * live agent the moment this form is filed. Defaults match what provisioning
+   * already chose, so a customer who skips this section still gets a working
+   * front desk rather than an empty one.
+   */
+  const [voiceGender, setVoiceGender] = useState<'female' | 'male'>('female');
+  const [forwardMode, setForwardMode] = useState('after_hours');
+  const [tone, setTone] = useState('warm');
+  const [spanish, setSpanish] = useState(false);
   // Which fields arrived pre-filled, so the UI can say so instead of pretending
   // the buyer typed them. A silently pre-filled field reads as a bug.
   const [prefilled] = useState<Set<string>>(new Set(Object.keys(prefill ?? {})));
@@ -154,6 +204,7 @@ export default function DemoOrderIntake({
 
   const visible = FIELDS.filter((f) => !f.products || f.products.some((p) => products.includes(p)));
   const wantsSite = products.includes('site') || products.includes('bundle');
+  const wantsVoice = products.includes('voice') || products.includes('bundle');
 
   /**
    * Check the domain the moment they look away from the field, not on their
@@ -188,7 +239,25 @@ export default function DemoOrderIntake({
       const res = await fetch('/api/demo-order/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hubId, sessionId, answers: values, assets }),
+        body: JSON.stringify({
+          hubId,
+          sessionId,
+          answers: values,
+          assets,
+          // Applied to their live receptionist, not filed as a note.
+          ...(wantsVoice
+            ? {
+                frontOffice: {
+                  voiceGender,
+                  forwardMode,
+                  tone,
+                  languages: spanish ? ['en', 'es'] : ['en'],
+                  greeting: values.greeting || undefined,
+                  forwardFrom: values.contact || undefined,
+                },
+              }
+            : {}),
+        }),
       });
       if (!res.ok) throw new Error('Save hiccuped. Try once more?');
       setDone(true);
@@ -225,6 +294,68 @@ export default function DemoOrderIntake({
 
   return (
     <form onSubmit={submit} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 sm:p-8 space-y-5">
+      {wantsVoice ? (
+        <div className="rounded-xl border-2 border-[#161616] bg-[#FBF6EA] p-5 space-y-5">
+          <div>
+            <p className="font-display text-[19px] font-bold text-[#161616]">Your receptionist</p>
+            <p className="font-body text-[13.5px] text-[#161616]/70 mt-1">
+              Four questions. You can change any of them yourself later, as often as you like, and it takes effect on the
+              next call.
+            </p>
+          </div>
+
+          <Choice
+            label="Voice"
+            options={[
+              { value: 'female', label: 'Female' },
+              { value: 'male', label: 'Male' },
+            ]}
+            value={voiceGender}
+            onChange={(v) => setVoiceGender(v as 'female' | 'male')}
+          />
+
+          <Choice
+            label="Which calls should it take?"
+            hint="Most owners start with nights and weekends. Nobody on your front desk loses a call they were there for."
+            options={[
+              { value: 'after_hours', label: 'Nights and weekends' },
+              { value: 'overflow', label: 'Only when lines are busy' },
+              { value: 'voicemail_only', label: 'Only what would go to voicemail' },
+              { value: 'all_calls', label: 'Every call' },
+            ]}
+            value={forwardMode}
+            onChange={setForwardMode}
+          />
+
+          <Choice
+            label="How should it come across?"
+            options={[
+              { value: 'warm', label: 'Warm' },
+              { value: 'professional', label: 'Professional' },
+              { value: 'brisk', label: 'Brisk' },
+              { value: 'folksy', label: 'Plain-spoken' },
+            ]}
+            value={tone}
+            onChange={setTone}
+          />
+
+          <label className="flex items-start gap-2.5 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={spanish}
+              onChange={(e) => setSpanish(e.target.checked)}
+              className="mt-1 w-4 h-4 accent-[#F5B700]"
+            />
+            <span className="font-body text-[14px] text-[#161616]">
+              <strong>Answer in Spanish too.</strong>
+              <span className="block text-[13px] text-[#161616]/65">
+                If a caller speaks Spanish it switches and handles the whole call in Spanish.
+              </span>
+            </span>
+          </label>
+        </div>
+      ) : null}
+
       {/* The files come FIRST. They are the thing that turns a template into their
           brand, and burying them under seven text boxes is how they get skipped. */}
       <div className="space-y-3">

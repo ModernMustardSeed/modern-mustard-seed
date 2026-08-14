@@ -137,6 +137,9 @@ export async function provisionFrontOffice(sb: SupabaseClient, input: ProvisionI
       timezone: input.timezone || 'America/Denver',
       hours: input.hours ?? {},
       service_area: input.serviceArea ?? null,
+      // Where alerts go until they say otherwise. An office with no
+      // notification address catches an emergency and tells nobody.
+      notify_email: clientEmail,
       never_do: neverDoFor(trade),
       escalate_on: escalateOnFor(trade),
       settings: { trade: trade ?? null, seeded_from: input.outboundLeadId ? 'acquisition' : 'demo-order' },

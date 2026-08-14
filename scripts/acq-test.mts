@@ -25,6 +25,7 @@ import { frontOfficeTools } from '../lib/front-office/tools';
 import { parseDayHours, sayable } from '../lib/front-office/calendar';
 import { readiness, isPaying, isTested } from '../lib/front-office/readiness';
 import { normalizeAreaCode } from '../lib/front-office/phone';
+import { shouldNotify, subjectFor } from '../lib/front-office/notify';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 
 /** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
@@ -432,6 +433,47 @@ const ready = (over: Record<string, unknown> = {}) => ({
   test_call_passed: true,
   agent_synced_at: '2026-08-14T09:00:00Z',
   ...over,
+});
+
+test('notify: only the calls worth interrupting somebody for', () => {
+  const on = { notify_on: ['emergency', 'needs_human', 'booked'] };
+
+  assert.ok(shouldNotify(on, { urgency: 'emergency', needs_human: false, booked: false }));
+  assert.ok(shouldNotify(on, { urgency: 'routine', needs_human: true, booked: false }));
+  assert.ok(shouldNotify(on, { urgency: 'routine', needs_human: false, booked: true }));
+
+  // A routine, handled, unbooked call is the agent doing its job. An alert for
+  // one of those gets the channel muted inside a week, and a muted channel is
+  // the same as no channel when the 2am emergency finally arrives.
+  assert.equal(shouldNotify(on, { urgency: 'routine', needs_human: false, booked: false }), false);
+  assert.equal(shouldNotify(on, { urgency: 'info', needs_human: false, booked: false }), false);
+
+  // An owner who genuinely wants everything can have it.
+  assert.ok(shouldNotify({ notify_on: ['every_call'] }, { urgency: 'info', needs_human: false, booked: false }));
+
+  // And an owner who has turned everything off gets nothing, including
+  // emergencies. That is their call to make, not ours to override.
+  assert.equal(shouldNotify({ notify_on: [] }, { urgency: 'emergency', needs_human: true, booked: true }), false);
+});
+
+test('notify: an emergency reads as an emergency in the subject line', () => {
+  const o = { id: 'o', business_name: 'Rico Roofing', client_email: 'a@b.com', notify_email: null, notify_on: [], timezone: 'America/Denver' };
+  const base = { id: 'c', office_id: 'o', vapi_call_id: null, from_number: '(406) 555-0143', started_at: '2026-08-14T09:00:00Z', intent: null, summary: null, transferred: false, notified_at: null };
+
+  const emergency = subjectFor(o, { ...base, urgency: 'emergency', needs_human: true, booked: false });
+  assert.match(emergency, /EMERGENCY/);
+  assert.match(emergency, /Rico Roofing/);
+  assert.match(emergency, /555-0143/, 'the number they need to ring back belongs in the subject');
+
+  // A booking is good news and must not shout like a burst pipe.
+  const booked = subjectFor(o, { ...base, urgency: 'routine', needs_human: false, booked: true });
+  assert.ok(!/EMERGENCY/.test(booked));
+  assert.match(booked, /booked/i);
+
+  // needs_human without an emergency still asks for a callback, plainly.
+  const callback = subjectFor(o, { ...base, urgency: 'routine', needs_human: true, booked: false });
+  assert.ok(!/EMERGENCY/.test(callback));
+  assert.match(callback, /ring back/i);
 });
 
 test('readiness: money is never spent on somebody who is not paying', () => {

@@ -182,8 +182,9 @@ export async function placeTestCall(db: SupabaseClient, officeId: string, toNumb
         phoneNumberId: fromId,
         assistantId: office.vapi_assistant_id,
         customer: { number: e164 },
-        // Tagged so the Front Office webhook can tell a rehearsal apart from a
-        // real customer and keep it out of the customer's own call history.
+        // Read by the webhook, which files a tagged call as an office event
+        // instead of a customer call. Without that a test shows up in their
+        // dashboard as real traffic and inflates the number we invoice on.
         metadata: { officeId, testCall: true },
       }),
     });

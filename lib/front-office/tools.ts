@@ -220,6 +220,20 @@ async function doMessage(ctx: ToolContext, args: Record<string, unknown>): Promi
     actor: 'agent',
   });
 
+  // AN EMERGENCY DOES NOT WAIT FOR THE CALL TO END.
+  //
+  // The end-of-call report is the normal notification trigger, and it arrives
+  // after the caller hangs up, which on a long call is minutes later. For a
+  // flooded basement those minutes are the product. notifyOwner is idempotent,
+  // so the end-of-call pass will not send a second one.
+  if (urgency === 'emergency' && ctx.callId) {
+    const { data: row } = await ctx.db.from('fo_calls').select('id').eq('vapi_call_id', ctx.callId).maybeSingle();
+    if (row?.id) {
+      const { notifyOwner } = await import('@/lib/front-office/notify');
+      await notifyOwner(ctx.db, ctx.office.id, row.id).catch(() => {});
+    }
+  }
+
   return urgency === 'emergency'
     ? 'Message taken and flagged as an emergency. Tell them somebody is being alerted right now.'
     : 'Message taken. Tell them somebody will call them back.';

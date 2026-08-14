@@ -68,6 +68,10 @@
     {
       "path": "/api/cron/acquisition",
       "schedule": "0,20,40 14-23 * * 1-5"
+    },
+    {
+      "path": "/api/cron/front-office",
+      "schedule": "15 * * * *"
     }
   ]
 }
