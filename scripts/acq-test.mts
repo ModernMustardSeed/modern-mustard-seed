@@ -25,7 +25,8 @@ import { frontOfficeTools } from '../lib/front-office/tools';
 import { parseDayHours, sayable } from '../lib/front-office/calendar';
 import { readiness, isPaying, isTested } from '../lib/front-office/readiness';
 import { normalizeAreaCode } from '../lib/front-office/phone';
-import { shouldNotify, subjectFor } from '../lib/front-office/notify';
+import { shouldNotify, subjectFor, smsBodyFor } from '../lib/front-office/notify';
+import { trimForSms } from '../lib/sms';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 
 /** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
@@ -433,6 +434,55 @@ const ready = (over: Record<string, unknown> = {}) => ({
   test_call_passed: true,
   agent_synced_at: '2026-08-14T09:00:00Z',
   ...over,
+});
+
+test('sms: a number we cannot be sure of is never texted', () => {
+  assert.equal(toE164('(406) 555-0143'), '+14065550143');
+  assert.equal(toE164('406-555-0143'), '+14065550143');
+  assert.equal(toE164('14065550143'), '+14065550143');
+  assert.equal(toE164('+1 406 555 0143'), '+14065550143');
+
+  // Texting the wrong person because we prepended +1 to an international
+  // number is worse than not texting at all.
+  assert.equal(toE164('555-0143'), null);
+  assert.equal(toE164('12345'), null);
+  assert.equal(toE164(''), null);
+  assert.equal(toE164(null), null);
+
+  // International is REFUSED, not guessed at. There is exactly one of these
+  // functions in the codebase (lib/acq/consent) and it is deliberately strict:
+  // a number we cannot be sure of belongs to a stranger, and texting a
+  // stranger is worse than not texting our customer.
+  assert.equal(toE164('+442079460000'), null);
+});
+
+test('sms: a text is trimmed on a word boundary, never mid-word', () => {
+  const long = 'Emergency for Rico Roofing. The caller says water is coming through the ceiling in two bedrooms and they have shut the water off at the main already. Call back: (406) 555-0143';
+  const out = trimForSms(long, 80);
+  assert.ok(out.length <= 80, `got ${out.length}`);
+  assert.ok(out.endsWith('…'));
+  // The character before the ellipsis must not be a partial word.
+  assert.ok(!/\w…$/.test(out) || out.slice(0, -1).split(' ').pop()!.length > 1);
+
+  // Short messages are left exactly alone.
+  assert.equal(trimForSms('Job booked.'), 'Job booked.');
+  // Newlines collapse: a lock screen shows one line anyway.
+  assert.equal(trimForSms('a\n\nb'), 'a b');
+});
+
+test('sms: the text says who, what, and the number to ring, in that order', () => {
+  const o = { id: 'o', business_name: 'Rico Roofing', client_email: 'a@b.com', notify_email: null, notify_sms: '+14065550100', notify_on: [], timezone: 'America/Denver' };
+  const base = { id: 'c', office_id: 'o', vapi_call_id: null, from_number: '(406) 555-0143', started_at: '2026-08-14T09:00:00Z', intent: 'roof leak', transferred: false, notified_at: null };
+
+  const emergency = smsBodyFor(o, { ...base, urgency: 'emergency', needs_human: true, booked: false, summary: 'Water through the ceiling.' });
+  assert.match(emergency, /^EMERGENCY for Rico Roofing\./);
+  assert.match(emergency, /Water through the ceiling/);
+  assert.match(emergency, /Call back: \(406\) 555-0143$/, 'the callback number is the last thing on the screen');
+
+  // A booking must not read like a burst pipe on a lock screen.
+  const booked = smsBodyFor(o, { ...base, urgency: 'routine', needs_human: false, booked: true, summary: null });
+  assert.ok(!/EMERGENCY/.test(booked));
+  assert.match(booked, /job booked/i);
 });
 
 test('notify: only the calls worth interrupting somebody for', () => {

@@ -32,7 +32,8 @@
     "factory:smoke": "tsx scripts/factory-smoke.mts",
     "factory:bootstrap": "tsx scripts/factory-bootstrap.mts",
     "acq:rehearse": "tsx scripts/acq-rehearsal.mts",
-    "acq:reservoir": "tsx scripts/acq-reservoir.mts"
+    "acq:reservoir": "tsx scripts/acq-reservoir.mts",
+    "acq:queue": "tsx scripts/acq-queue-run.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",

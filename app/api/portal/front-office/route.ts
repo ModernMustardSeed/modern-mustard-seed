@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { recordOfficeEvent } from '@/lib/front-office/provision';
 import { sidekickVoice } from '@/lib/sidekick-voice';
+import { toE164 } from '@/lib/sms';
 import { syncAssistant } from '@/lib/front-office/agent';
 
 export const runtime = 'nodejs';
@@ -22,6 +23,7 @@ const VOICE_GENDERS = ['male', 'female'];
 const FORWARD_MODES = ['all_calls', 'after_hours', 'overflow', 'voicemail_only'];
 const TONES = ['warm', 'professional', 'brisk', 'folksy'];
 const LANGUAGES = ['en', 'es'];
+const NOTIFY_EVENTS = ['emergency', 'needs_human', 'booked', 'every_call'];
 
 export async function GET() {
   const session = await getClientSession();
@@ -108,6 +110,21 @@ export async function POST(req: Request) {
   if (typeof body.greeting === 'string') patch.greeting = body.greeting.trim().slice(0, 600);
   if (typeof body.agentName === 'string' && body.agentName.trim()) patch.agent_name = body.agentName.trim().slice(0, 60);
   if (typeof body.afterHoursMessage === 'string') patch.after_hours_message = body.afterHoursMessage.trim().slice(0, 600);
+  // Where alerts go. Normalised on the way in, so a number that cannot be
+  // texted is rejected here rather than failing silently at 2am.
+  if (typeof body.notifyEmail === 'string') patch.notify_email = body.notifyEmail.trim().slice(0, 200) || null;
+  if (typeof body.notifySms === 'string') {
+    const n = body.notifySms.trim();
+    if (!n) patch.notify_sms = null;
+    else {
+      const e164 = toE164(n);
+      if (!e164) return NextResponse.json({ error: 'That does not look like a US mobile number.' }, { status: 400 });
+      patch.notify_sms = e164;
+    }
+  }
+  if (Array.isArray(body.notifyOn)) {
+    patch.notify_on = body.notifyOn.filter((x): x is string => typeof x === 'string' && NOTIFY_EVENTS.includes(x));
+  }
   if (typeof body.bookingEnabled === 'boolean') patch.booking_enabled = body.bookingEnabled;
   if (typeof body.transfersEnabled === 'boolean') patch.transfers_enabled = body.transfersEnabled;
   if (body.hours && typeof body.hours === 'object') patch.hours = body.hours;

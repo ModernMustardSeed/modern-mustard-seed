@@ -18,18 +18,23 @@
  * who gets a notification for a wrong number mutes the channel inside a week,
  * and a muted channel is the same as no channel at all.
  *
- * ── EMAIL TODAY, SMS SHAPED IN ───────────────────────────────────────────────
- * There is no SMS sender in this codebase yet, and inventing one here would be
- * a second half-built thing. `notify_sms` is captured and the dispatch is
- * written to fan out, so adding a sender is one function, not a refactor. For
- * a 2am emergency, email is genuinely weaker than a text, and that is stated
- * rather than papered over.
+ * ── BOTH CHANNELS, AND EITHER IS ENOUGH ──────────────────────────────────────
+ * Email and SMS go out together, because a 2am emergency needs the thing that
+ * buzzes on a nightstand and a text is a bad place to read a call summary. The
+ * notification counts as delivered if EITHER lands: retrying because one
+ * channel failed would re-send the one that worked, and a duplicate alert is
+ * how an owner learns to ignore the channel.
+ *
+ * SMS goes through the Twilio Messaging Service, which carries the registered
+ * A2P campaign and the carrier opt-out list, so a customer replying STOP is
+ * honoured at the carrier rather than by us remembering to check.
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { resendClient } from '@/lib/send-email';
 import { clientEmail, escape, p } from '@/lib/email';
 import { SITE } from '@/lib/seo';
+import { sendSms } from '@/lib/sms';
 
 export type CallForNotice = {
   id: string;
@@ -51,6 +56,7 @@ export type OfficeForNotice = {
   business_name: string;
   client_email: string;
   notify_email: string | null;
+  notify_sms: string | null;
   notify_on: string[];
   timezone: string;
 };
@@ -74,11 +80,28 @@ export function subjectFor(office: OfficeForNotice, call: CallForNotice): string
   return `${office.business_name}: a call was answered`;
 }
 
-export type NotifyResult = { ok: boolean; sent: boolean; reason?: string };
+export type NotifyResult = { ok: boolean; sent: boolean; reason?: string; channels?: { email: boolean; sms: boolean } };
+
+/**
+ * The text. Different from the email on purpose: a lock screen gets who, what,
+ * and the number to ring, and nothing else. The detail is in the email that
+ * arrived at the same moment.
+ */
+export function smsBodyFor(office: OfficeForNotice, call: CallForNotice): string {
+  const who = call.from_number ?? 'Unknown number';
+  const lead =
+    call.urgency === 'emergency'
+      ? `EMERGENCY for ${office.business_name}.`
+      : call.needs_human
+        ? `${office.business_name}: caller needs a callback.`
+        : `${office.business_name}: job booked.`;
+  const what = call.summary ? ` ${call.summary}` : call.intent ? ` About: ${call.intent}.` : '';
+  return `${lead}${what} Call back: ${who}`;
+}
 
 export async function notifyOwner(db: SupabaseClient, officeId: string, callId: string): Promise<NotifyResult> {
   const [{ data: office }, { data: call }] = await Promise.all([
-    db.from('fo_offices').select('id, business_name, client_email, notify_email, notify_on, timezone').eq('id', officeId).maybeSingle(),
+    db.from('fo_offices').select('id, business_name, client_email, notify_email, notify_sms, notify_on, timezone').eq('id', officeId).maybeSingle(),
     db.from('fo_calls').select('*').eq('id', callId).maybeSingle(),
   ]);
   if (!office || !call) return { ok: false, sent: false, reason: 'office or call missing' };
@@ -89,7 +112,8 @@ export async function notifyOwner(db: SupabaseClient, officeId: string, callId: 
   if (!shouldNotify(o, c)) return { ok: true, sent: false, reason: 'below the notification bar' };
 
   const to = (o.notify_email || o.client_email || '').trim();
-  if (!to) return { ok: false, sent: false, reason: 'no address to notify' };
+  const sms = (o.notify_sms || '').trim();
+  if (!to && !sms) return { ok: false, sent: false, reason: 'no address or number to notify' };
 
   // CLAIM IT FIRST. The conditional update is the lock: whichever handler
   // flips notified_at from null wins, and the loser sends nothing. Sending
@@ -104,11 +128,6 @@ export async function notifyOwner(db: SupabaseClient, officeId: string, callId: 
     .maybeSingle();
   if (!claimed) return { ok: true, sent: false, reason: 'already notified' };
 
-  const resend = resendClient();
-  if (!resend) {
-    await db.from('fo_calls').update({ notified_at: null, notify_error: 'no mail transport configured' }).eq('id', callId);
-    return { ok: false, sent: false, reason: 'no mail transport' };
-  }
 
   const when = new Intl.DateTimeFormat('en-US', {
     weekday: 'short',
@@ -138,6 +157,30 @@ export async function notifyOwner(db: SupabaseClient, officeId: string, callId: 
     </tr></table>` +
     (c.from_number ? p(`<a href="tel:${escape(c.from_number.replace(/[^\d+]/g, ''))}" style="font-size:15px;font-weight:bold;color:#C2261A;text-decoration:none">Call them back &rarr;</a>`) : '');
 
+  /* ── SMS FIRST ──
+     It is the channel that actually wakes somebody, and it is two lines, so
+     it goes out before the email is composed rather than after. */
+  let smsOk = false;
+  let smsErr: string | null = null;
+  if (sms) {
+    const res = await sendSms(sms, smsBodyFor(o, c));
+    smsOk = res.ok;
+    if (!res.ok) smsErr = res.configured ? res.error : 'SMS not configured';
+  }
+
+  const resend = to ? resendClient() : null;
+  if (!resend) {
+    // No mail transport, or no address. If the text got through, the owner has
+    // been told and this is a success with one channel down.
+    const err = [smsErr, to ? 'no mail transport configured' : 'no email address'].filter(Boolean).join('; ');
+    if (!smsOk) {
+      await db.from('fo_calls').update({ notified_at: null, notify_error: err.slice(0, 500) }).eq('id', callId);
+      return { ok: false, sent: false, reason: err, channels: { email: false, sms: false } };
+    }
+    await db.from('fo_calls').update({ notify_error: err.slice(0, 500) }).eq('id', callId);
+    return { ok: true, sent: true, channels: { email: false, sms: true } };
+  }
+
   try {
     const { error } = await resend.emails.send({
       from: `${o.business_name} front desk <notifications@modernmustardseed.com>`,
@@ -155,14 +198,22 @@ export async function notifyOwner(db: SupabaseClient, officeId: string, callId: 
       }),
     });
     if (error) throw new Error(JSON.stringify(error));
-    return { ok: true, sent: true };
+    if (smsErr) await db.from('fo_calls').update({ notify_error: smsErr.slice(0, 500) }).eq('id', callId);
+    return { ok: true, sent: true, channels: { email: true, sms: smsOk } };
   } catch (err) {
-    // Release the claim so the next pass can retry. A notification that failed
-    // and marked itself sent is the worst of both worlds.
     const msg = err instanceof Error ? err.message : String(err);
-    await db.from('fo_calls').update({ notified_at: null, notify_error: msg.slice(0, 500) }).eq('id', callId);
-    console.error('front office notify failed', msg);
-    return { ok: false, sent: false, reason: msg };
+    // The text landed, so the owner HAS been told. Keep the claim: releasing it
+    // would re-send the SMS on the next sweep, and a duplicated emergency alert
+    // is how somebody learns to ignore the channel that matters.
+    if (smsOk) {
+      await db.from('fo_calls').update({ notify_error: `email failed: ${msg}`.slice(0, 500) }).eq('id', callId);
+      return { ok: true, sent: true, reason: msg, channels: { email: false, sms: true } };
+    }
+    // Both channels down. Release the claim so the sweep retries; a
+    // notification that failed and marked itself sent is the worst outcome.
+    await db.from('fo_calls').update({ notified_at: null, notify_error: [msg, smsErr].filter(Boolean).join('; ').slice(0, 500) }).eq('id', callId);
+    console.error('front office notify failed', msg, smsErr ?? '');
+    return { ok: false, sent: false, reason: msg, channels: { email: false, sms: false } };
   }
 }
 

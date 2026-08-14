@@ -31,6 +31,9 @@ type Office = {
   transfers_enabled: boolean;
   never_do: string[];
   escalate_on: string[];
+  notify_email: string | null;
+  notify_sms: string | null;
+  notify_on: string[];
 };
 type Call = {
   id: string;
@@ -311,6 +314,10 @@ export default function FrontOfficeScreen() {
             </ul>
           </Card>
 
+          <Card title="Where we reach you" note="A text is what actually wakes somebody at 2am. The email has the detail.">
+            <Alerts office={o} busy={busy} onSave={(patch) => void save(patch)} />
+          </Card>
+
           <Card title="What it will never do">
             <ul className="space-y-1.5">
               {o.never_do.map((r) => (
@@ -326,6 +333,94 @@ export default function FrontOfficeScreen() {
         </div>
       </div>
     </Shell>
+  );
+}
+
+/**
+ * Where alerts go, and for what.
+ *
+ * The text number is the important field on this card, so it is first. An
+ * owner who fills in nothing here still gets email at their account address,
+ * because an office that can reach nobody is the failure this whole screen
+ * exists to prevent.
+ */
+function Alerts({ office, busy, onSave }: { office: Office; busy: boolean; onSave: (patch: Record<string, unknown>) => void }) {
+  const [sms, setSms] = useState(office.notify_sms ?? '');
+  const [email, setEmail] = useState(office.notify_email ?? '');
+  useEffect(() => {
+    setSms(office.notify_sms ?? '');
+    setEmail(office.notify_email ?? '');
+  }, [office.notify_sms, office.notify_email]);
+
+  const events: [string, string][] = [
+    ['emergency', 'Emergencies'],
+    ['needs_human', 'Somebody needs a callback'],
+    ['booked', 'A job gets booked'],
+    ['every_call', 'Every single call'],
+  ];
+
+  return (
+    <div>
+      <Field label="Text me at">
+        <div className="flex flex-wrap gap-2">
+          <input
+            value={sms}
+            onChange={(e) => setSms(e.target.value)}
+            placeholder="(406) 555-0143"
+            className="min-w-0 flex-1 rounded-lg border-2 border-[#161616] bg-white px-2.5 py-1.5 text-[14px]"
+          />
+          <button
+            disabled={busy || sms.trim() === (office.notify_sms ?? '')}
+            onClick={() => onSave({ notifySms: sms })}
+            className="rounded-lg border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 text-[13px] font-bold shadow-[3px_3px_0_0_#161616] disabled:opacity-40 disabled:shadow-none"
+          >
+            Save
+          </button>
+        </div>
+        <p className="mt-1 text-[12px] text-[#161616]/55">Leave it blank for email only. Reply STOP to any text and they stop.</p>
+      </Field>
+
+      <Field label="Email me at">
+        <div className="flex flex-wrap gap-2">
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@yourbusiness.com"
+            className="min-w-0 flex-1 rounded-lg border-2 border-[#161616] bg-white px-2.5 py-1.5 text-[14px]"
+          />
+          <button
+            disabled={busy || email.trim() === (office.notify_email ?? '')}
+            onClick={() => onSave({ notifyEmail: email })}
+            className="rounded-lg border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 text-[13px] font-bold shadow-[3px_3px_0_0_#161616] disabled:opacity-40 disabled:shadow-none"
+          >
+            Save
+          </button>
+        </div>
+      </Field>
+
+      <Field label="Tell me about">
+        <div className="grid gap-2">
+          {events.map(([key, label]) => {
+            const on = office.notify_on.includes(key);
+            return (
+              <button
+                key={key}
+                disabled={busy}
+                onClick={() => onSave({ notifyOn: on ? office.notify_on.filter((x) => x !== key) : [...office.notify_on, key] })}
+                className={`rounded-lg border-2 border-[#161616] px-3 py-2 text-left text-[13px] font-semibold transition ${
+                  on ? 'bg-[#F5B700] shadow-[3px_3px_0_0_#161616]' : 'bg-white hover:bg-[#FBF6EA]'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-1.5 text-[12px] text-[#161616]/55">
+          Turning on every call is the fastest way to start ignoring these. Most owners leave it on the first three.
+        </p>
+      </Field>
+    </div>
   );
 }
 
