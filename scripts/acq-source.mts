@@ -136,25 +136,80 @@ async function loadOrCreateRun(): Promise<Run> {
   return data as Run;
 }
 
-/** Next queued run, for --watch mode (the admin Find More Prospects button). */
+/**
+ * How long a claimed run may go silent before another worker may take it.
+ *
+ * The worker beats once per market, and a slow market with Maps up runs a few
+ * minutes. Ten is comfortably past the slowest honest market and well short of
+ * leaving a run stranded for a working day.
+ */
+const STALE_CLAIM_MINUTES = 10;
+
+/**
+ * The next run to work on: queued first, then anything abandoned.
+ *
+ * ── WHY ABANDONED RUNS ARE RECLAIMED ─────────────────────────────────────────
+ * A worker that dies mid-run leaves the row reading `running` with a heartbeat
+ * that stops. Nothing then picks it up, because the claim only ever looked for
+ * `queued`, so a killed terminal or a crashed Chromium stranded the run until
+ * somebody noticed and reset it by hand. That happened three times in one day:
+ * once for 38 minutes, once for nine hours.
+ *
+ * The claim is still a conditional update, so two workers racing for the same
+ * abandoned run cannot both win: the heartbeat each one tested against is part
+ * of the WHERE clause, and the loser gets nothing back and moves on.
+ *
+ * Already-banked prospects are safe on a reclaim. Dedupe runs against every
+ * table before anything is inserted, so a resumed run re-walks its markets and
+ * skips what it already found rather than duplicating it.
+ */
 async function nextQueuedRun(): Promise<Run | null> {
-  const { data } = await db
+  const { data: queued } = await db
     .from('acq_sourcing_runs')
     .select('*')
     .eq('status', 'queued')
     .order('created_at')
     .limit(1);
-  const run = (data ?? [])[0] as Run | undefined;
-  if (!run) return null;
-  const { data: claimed } = await db
+
+  const fresh = (queued ?? [])[0] as Run | undefined;
+  if (fresh) {
+    const { data: claimed } = await db
+      .from('acq_sourcing_runs')
+      .update({ status: 'running', heartbeat_at: new Date().toISOString() })
+      .eq('id', fresh.id)
+      .eq('status', 'queued')
+      .select('*')
+      .single();
+    if (claimed) return claimed as Run;
+  }
+
+  const cutoff = new Date(Date.now() - STALE_CLAIM_MINUTES * 60_000).toISOString();
+  const { data: abandoned } = await db
     .from('acq_sourcing_runs')
-    .update({ status: 'running', heartbeat_at: new Date().toISOString() })
-    .eq('id', run.id)
-    .eq('status', 'queued')
     .select('*')
-    .single();
-  return (claimed as Run) ?? null;
+    .eq('status', 'running')
+    .lt('heartbeat_at', cutoff)
+    .order('created_at')
+    .limit(1);
+
+  const stale = (abandoned ?? [])[0] as Run | undefined;
+  if (!stale) return null;
+
+  // The heartbeat we read is part of the condition, so whichever worker gets
+  // there first wins and the others match nothing.
+  const { data: retaken } = await db
+    .from('acq_sourcing_runs')
+    .update({ heartbeat_at: new Date().toISOString() })
+    .eq('id', stale.id)
+    .eq('status', 'running')
+    .eq('heartbeat_at', stale.heartbeat_at)
+    .select('*')
+    .maybeSingle();
+
+  if (retaken) log(`Resuming abandoned run ${stale.id} (silent since ${stale.heartbeat_at}).`);
+  return (retaken as Run) ?? null;
 }
+
 
 const counters = { searched: 0, found: 0, withEmail: 0, verified: 0, duplicates: 0, invalid: 0, inserted: 0 };
 const logLines: { at: string; line: string }[] = [];
