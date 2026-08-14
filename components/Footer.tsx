@@ -30,6 +30,7 @@ export default function Footer() {
         // slot alone, so /voice-agents takes it rather than leaving the footer
         // with no voice agent department. See the note in Navbar.tsx.
         { label: 'Voice Agents', href: '/voice-agents' },
+        { label: 'Meet Mr. Mustard', href: '/mustard' },
         { label: 'The Switchboard', href: '/switchboard' },
         { label: 'Mustard Broadcast', href: '/ads' },
         { label: 'Mustard Pictures', href: '/pictures' },

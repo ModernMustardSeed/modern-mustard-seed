@@ -53,6 +53,8 @@ import { provisionClientFactory, suspendClientFactory } from '@/lib/factory/bill
 import { sendReviewNudge } from '@/lib/review-nudge';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { possessive } from '@/lib/business-name';
+import { cancelPendingFor } from '@/lib/acq/queue';
+import { recordEvent } from '@/lib/acq/events';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -1573,6 +1575,68 @@ async function handleHatcheryPurchase(
  * thread, and fire the provision + welcome emails. Revenue itself is
  * recorded per paid invoice by handleInvoicePaid (subscription rule).
  */
+/**
+ * Write a churn row when a subscription ends.
+ *
+ * Idempotent: the ledger is keyed by subscription, and a replayed
+ * `customer.subscription.deleted` finds the existing churn row and stops. The
+ * delta is negative, which is what makes Net New MRR an honest number rather
+ * than a running total of good news.
+ */
+async function recordAcqChurn(sub: Stripe.Subscription): Promise<void> {
+  try {
+    const db = getSupabase();
+    if (!db) return;
+
+    const { data: existing } = await db
+      .from('acq_mrr_events')
+      .select('id')
+      .eq('stripe_subscription_id', sub.id)
+      .eq('type', 'churn')
+      .limit(1);
+    if ((existing ?? []).length) return;
+
+    const { data: opened } = await db
+      .from('acq_mrr_events')
+      .select('lead_id,mrr_delta_cents')
+      .eq('stripe_subscription_id', sub.id)
+      .eq('type', 'new')
+      .maybeSingle();
+    // Only an acquisition-sourced subscription belongs in this ledger. Every
+    // other MMS product has its own bookkeeping and would double count here.
+    if (!opened) return;
+
+    const mrr = Number(opened.mrr_delta_cents ?? 0);
+    await db.from('acq_mrr_events').insert({
+      lead_id: opened.lead_id,
+      type: 'churn',
+      mrr_delta_cents: -Math.abs(mrr),
+      reason: sub.cancellation_details?.reason ?? sub.cancellation_details?.comment ?? 'subscription ended',
+      stripe_subscription_id: sub.id,
+      occurred_at: new Date().toISOString(),
+    });
+
+    if (opened.lead_id) {
+      await db
+        .from('outbound_leads')
+        .update({ client_status: 'churned', payment_status: 'cancelled', reservoir_state: 'nurture' })
+        .eq('id', opened.lead_id);
+      await recordEvent(db, {
+        leadId: opened.lead_id,
+        type: 'note',
+        label: `Subscription cancelled (${formatCents(mrr)}/mo off the book)`,
+        detail: { subscription: sub.id, reason: sub.cancellation_details?.reason ?? null },
+      });
+    }
+  } catch (err) {
+    console.error('acq churn bookkeeping failed', err);
+  }
+}
+
+function formatCents(cents: number): string {
+  return `$${Math.round(Math.abs(cents) / 100).toLocaleString('en-US')}`;
+}
+
 async function handleDemoOrderPaid(
   session: Stripe.Checkout.Session,
   email: string | null,
@@ -1625,10 +1689,49 @@ async function handleDemoOrderPaid(
     try {
       const { data: wonLead } = await supabase
         .from('outbound_leads')
-        .update({ status: 'won', next_action: 'Deliver demo order within 7 days' })
+        .update({
+          status: 'won',
+          next_action: 'Deliver demo order within 7 days',
+          // The acquisition engine counts clients off these fields. Setting them
+          // here is what closes its funnel: the prospect who was emailed, called
+          // by Mr. Mustard and forged now shows up as a client on the 50 client
+          // dial rather than sitting forever at "checkout sent".
+          client_status: 'client',
+          payment_status: 'paid',
+          acq_stage: 'client',
+          won_at: new Date().toISOString(),
+          setup_cents: order.setup_cents ?? null,
+          mrr_cents: order.monthly_cents ?? null,
+          acq_eligible: false,
+          acq_ineligible_reason: 'They bought. Prospecting stops.',
+        })
         .eq('id', order.outbound_lead_id)
         .select('*')
         .maybeSingle();
+
+      // Stop every queued email, follow-up and call for this prospect. Nothing
+      // reads worse than a "should I leave you alone?" landing on a customer.
+      // Both writes are safe on a replay: the pending -> paid lock above means
+      // this block only runs once per order.
+      await cancelPendingFor(supabase, order.outbound_lead_id, undefined, 'They bought. Prospecting stops.');
+      await recordEvent(supabase, {
+        leadId: order.outbound_lead_id,
+        type: 'purchased',
+        label: `Purchased: ${label} (${money})`,
+        detail: { stripeSession: session.id, products, setupCents: order.setup_cents, monthlyCents: order.monthly_cents },
+      });
+      // The MRR ledger. Net New MRR is the Client Factory north star and it is
+      // decomposed from these rows, so a win that is not written here is a win
+      // the company cannot see itself earn. Append only, inside the pending ->
+      // paid lock, so a replayed Stripe event cannot count the same MRR twice.
+      await supabase.from('acq_mrr_events').insert({
+        lead_id: order.outbound_lead_id,
+        type: 'new',
+        mrr_delta_cents: order.monthly_cents ?? 0,
+        setup_cents: order.setup_cents ?? 0,
+        product: products || label,
+        stripe_subscription_id: subId,
+      });
       await supabase.from('messages').insert({
         outbound_lead_id: order.outbound_lead_id,
         direction: 'inbound',
@@ -2332,10 +2435,15 @@ export async function POST(req: Request) {
   }
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as Stripe.Subscription;
+    // Churn is written FIRST, before any per-product handler returns early.
+    // Net New MRR is meaningless if the only movement the ledger ever sees is
+    // the good kind, and every one of the branches below returns.
+    await recordAcqChurn(sub);
 
     // A cancelled Client Factory is SUSPENDED, not deleted. Their prospects,
     // conversations, CRM and attribution are their business records. The
-    // machine stops; the data stays and is there if they come back.
+    // machine stops; the data stays and is there if they come back. This sits
+    // after the churn write for exactly the reason stated above: it returns.
     if (sub.metadata?.kind === 'client-factory') {
       const { suspended } = await suspendClientFactory(
         { subscriptionId: sub.id, customerId: typeof sub.customer === 'string' ? sub.customer : null },

@@ -18,6 +18,11 @@ export default function HideOnAppShell({ children }: { children: React.ReactNode
     // The CXC and Eternal Optimist booths: no MMS footer under another house.
     p.startsWith('/sarahcxc') ||
     p.startsWith('/sarahbook') ||
+    // /mustard is the doorway. One objective, one CTA. The footer sells fifteen
+    // other departments directly under the ask, and the floating chat launcher
+    // is a SECOND Mr. Mustard offering a different conversation that skips the
+    // consent flow entirely and spends ElevenLabs quota doing it.
+    p === '/mustard' ||
     p.startsWith('/voice-agents/forge/demo/')
   )
     return null;

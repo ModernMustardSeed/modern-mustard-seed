@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'factories' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -28,6 +28,9 @@ type Item = { key: Tab | string; label: string; href: string; external?: boolean
 
 const PINNED: Item[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
+  // Pinned rather than tucked in a dropdown: the 50 client sprint is the number
+  // the studio is currently steering by, so it gets a chip.
+  { key: 'acquisition', label: 'Acquisition', href: '/admin/acquisition' },
   { key: 'hundredfold', label: 'Hundredfold', href: '/admin/hundredfold' },
   { key: 'outbound', label: 'Outbound', href: '/admin/outbound' },
   { key: 'factories', label: 'Factories', href: '/admin/factories' },

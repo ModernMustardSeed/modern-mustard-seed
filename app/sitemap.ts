@@ -37,6 +37,7 @@ const STATIC_PATHS = [
   '/services',
   '/voice-agents',
   '/voice-agents/whitepaper',
+  '/mustard',
   '/work-with-us',
   '/blog',
   '/playbooks',

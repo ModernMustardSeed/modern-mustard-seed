@@ -72,6 +72,9 @@ const config: NextConfig = {
   },
   async redirects() {
     return [
+      // /Mustard is handled in middleware.ts, NOT here. Config redirects match
+      // case-insensitively, so a `/Mustard -> /mustard` rule here also matches
+      // `/mustard` and redirects the real page to itself in an infinite loop.
       { source: '/dashboard', destination: '/', permanent: false },
       { source: '/case-studies', destination: '/work', permanent: true },
       { source: '/case-studies/:slug', destination: '/work/:slug', permanent: true },
