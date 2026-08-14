@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
   const { data: proj } = await sb
     .from('projects')
-    .select('id, name, client_email, site_html, site_html_draft, site_published_at, edit_status')
+    .select('id, name, client_email, site_html, site_html_draft, site_pages_draft, site_published_at, edit_status')
     .ilike('client_email', likeLiteral(session.email))
     .gt('revisions_included', 0)
     .order('created_at', { ascending: false })
@@ -55,9 +55,18 @@ export async function POST(req: Request) {
     if (proj.edit_status !== 'ready' || !proj.site_html_draft) {
       return NextResponse.json({ error: 'There is no ready change to ship.' }, { status: 400 });
     }
+    // Promote the WHOLE draft. On a multi-page site, shipping only site_html would
+    // put the edited home page live beside four pages the edit had already replaced.
     await sb
       .from('projects')
-      .update({ site_html: proj.site_html_draft, site_html_draft: null, edit_status: null, edit_error: null })
+      .update({
+        site_html: proj.site_html_draft,
+        site_pages: proj.site_pages_draft ?? null,
+        site_html_draft: null,
+        site_pages_draft: null,
+        edit_status: null,
+        edit_error: null,
+      })
       .eq('id', proj.id);
 
     let published = false;
@@ -124,7 +133,7 @@ export async function POST(req: Request) {
     }
     await sb
       .from('projects')
-      .update({ site_html_draft: null, edit_status: null, edit_error: null })
+      .update({ site_html_draft: null, site_pages_draft: null, edit_status: null, edit_error: null })
       .eq('id', proj.id);
     return NextResponse.json({ ok: true });
   }
