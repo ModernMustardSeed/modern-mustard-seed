@@ -28,6 +28,7 @@ import { normalizeAreaCode } from '../lib/front-office/phone';
 import { shouldNotify, subjectFor, smsBodyFor } from '../lib/front-office/notify';
 import { trimForSms } from '../lib/sms';
 import { env, envAny, isPlaceholder, placeholderVars } from '../lib/env';
+import { parseTeam } from '../app/api/demo-order/intake/route';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 
 /** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
@@ -435,6 +436,34 @@ const ready = (over: Record<string, unknown> = {}) => ({
   test_call_passed: true,
   agent_synced_at: '2026-08-14T09:00:00Z',
   ...over,
+});
+
+test('intake: a team list typed by a human parses into real transfer rows', () => {
+  // What a contractor actually types, not what a form spec wishes they typed.
+  const rows = parseTeam(
+    [
+      'Danny, (406) 555-0161, anything about thermostats',
+      'On-call 406-555-0162 emergencies after 6pm',
+      '  Rita , 4065550163 , commercial roofs  ',
+    ].join('\n'),
+  );
+
+  assert.equal(rows.length, 3);
+  assert.equal(rows[0].name, 'Danny');
+  assert.equal(rows[0].phone.replace(/\D/g, ''), '4065550161');
+  assert.match(rows[0].when ?? '', /thermostats/);
+  // No commas at all still yields a usable row: the number is found anywhere.
+  assert.equal(rows[1].phone.replace(/\D/g, ''), '4065550162');
+  assert.equal(rows[2].name, 'Rita', 'stray whitespace is trimmed');
+
+  // A line with no usable number is DROPPED, never saved as a transfer that
+  // would fail silently on a live call.
+  assert.deepEqual(parseTeam('Danny, ask him about thermostats'), []);
+  assert.deepEqual(parseTeam('Danny, 555-0161'), [], 'seven digits is not a number we can dial');
+
+  assert.deepEqual(parseTeam(''), []);
+  assert.deepEqual(parseTeam(undefined), []);
+  assert.deepEqual(parseTeam(['already', 'structured']), [], 'an array is handled by the caller, not here');
 });
 
 test('env: a clobbered variable behaves like a missing one, not a real value', () => {
