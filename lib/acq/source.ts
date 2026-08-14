@@ -24,6 +24,7 @@
 import { resolveMx } from 'node:dns/promises';
 import { scoreLead } from '@/lib/acq/score';
 import type { Trade } from '@/lib/acq/types';
+import { TRADE_DEFS, SOURCEABLE_TRADES } from '@/lib/acq/trades';
 import type { Market } from '@/lib/acq/markets';
 
 const UA = 'ModernMustardSeed-LeadFinder/1.0 (+https://modernmustardseed.com; sarah@modernmustardseed.com)';
@@ -69,20 +70,9 @@ const OVERPASS_ENDPOINTS = [
   'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
 ];
 
-const TRADE_QUERY: Record<Exclude<Trade, 'other'>, { craft: string; name: string }> = {
-  hvac: {
-    craft: '^(hvac|heating_engineer|air_conditioning|ventilation)$',
-    name: 'hvac|heating|air condition|airconditioning|a/?c |furnace|climate|comfort|cooling|refrigerat|mechanical',
-  },
-  plumbing: {
-    craft: '^(plumber)$',
-    name: 'plumb|drain|rooter|sewer|water heater|septic|leak|pipe|hydro ?jet|backflow',
-  },
-  roofing: {
-    craft: '^(roofer)$',
-    name: 'roof|shingle|gutter|exteriors?|siding|storm restoration|metal roof',
-  },
-};
+const TRADE_QUERY: Record<Exclude<Trade, 'other'>, { craft: string; name: string }> = Object.fromEntries(
+  Object.entries(TRADE_DEFS).map(([k, d]) => [k, d.osm]),
+) as Record<Exclude<Trade, 'other'>, { craft: string; name: string }>;
 
 /**
  * Overpass is queried three ways because US business tagging in OSM is
@@ -115,11 +105,9 @@ nwr["name"~"${q.name}",i]["contact:email"](${bbox});
  * and "Sazerac PHX Cocktails" arrived as HVAC companies (both contain "ac ").
  * This is the gate that keeps a bar out of the plumbing campaign.
  */
-const STRICT_TRADE: Record<Exclude<Trade, 'other'>, RegExp> = {
-  hvac: /\b(hvac|heating|air[\s-]?conditioning|a\/c|furnace|heat pump|cooling|refrigeration|climate control|comfort (systems?|air|solutions|specialists?)|mechanical (services?|contractors?|systems?)|air conditioner)\b/i,
-  plumbing: /\b(plumber|plumbers|plumbing|drain(s|age)?|rooter|sewer|water heaters?|septic|leak detection|re-?pipe|backflow|hydro[\s-]?jet|pipefitt)\b/i,
-  roofing: /\b(roof|roofs|roofer|roofers|roofing|shingles?|gutters?|siding|metal roof|storm restoration|exteriors?)\b/i,
-};
+const STRICT_TRADE: Record<Exclude<Trade, 'other'>, RegExp> = Object.fromEntries(
+  Object.entries(TRADE_DEFS).map(([k, d]) => [k, d.match]),
+) as Record<Exclude<Trade, 'other'>, RegExp>;
 
 /**
  * Businesses that carry a trade word without being a company that answers
@@ -132,8 +120,24 @@ const NOT_A_CONTRACTOR =
 /** Keep only what actually reads like a contractor in this trade. */
 export function matchesTrade(name: string, trade: Exclude<Trade, 'other'>): boolean {
   const n = String(name || '');
-  if (!STRICT_TRADE[trade].test(n)) return false;
-  if (NOT_A_CONTRACTOR.test(n)) return false;
+  const def = TRADE_DEFS[trade];
+  if (!def) return false;
+  if (!def.match.test(n)) return false;
+  // The neighbouring trade that shares vocabulary: furniture restoration,
+  // a car dealership's service department, a paint-and-sip studio.
+  if (def.notThis?.test(n)) return false;
+  // The global list is tuned for contractors, so it throws out "clinic",
+  // "hospital", "auto" and "spa". Those words are the industry itself for a
+  // vet, an auto shop or a pool company, and without this exemption adding
+  // one of those trades silently sources nothing at all.
+  if (NOT_A_CONTRACTOR.test(n)) {
+    if (!def.allowGlobal) return false;
+    // Only forgive the term the trade actually claims. Anything else on the
+    // global list still disqualifies: an "auto parts wholesale supply" is not
+    // an auto repair shop just because auto repair is allowed to say "auto".
+    const stillBad = n.replace(def.allowGlobal, ' ');
+    if (NOT_A_CONTRACTOR.test(stillBad)) return false;
+  }
   return true;
 }
 
@@ -159,14 +163,14 @@ export async function discoverOsm(market: Market, trade: Exclude<Trade, 'other'>
  * per-trade path uses.
  */
 export async function discoverOsmAllTrades(market: Market): Promise<Record<Exclude<Trade, 'other'>, Candidate[]>> {
-  const out: Record<Exclude<Trade, 'other'>, Candidate[]> = { hvac: [], plumbing: [], roofing: [] };
+  const out = Object.fromEntries(SOURCEABLE_TRADES.map((t) => [t, [] as Candidate[]])) as Record<Exclude<Trade, 'other'>, Candidate[]>;
   const els = await overpass(combinedQuery(market.bbox));
   const seen = new Set<string>();
   for (const el of els) {
     const tags = el.tags ?? {};
     const name = (tags.name || tags.operator || '').trim();
     if (!name) continue;
-    for (const trade of ['hvac', 'plumbing', 'roofing'] as const) {
+    for (const trade of SOURCEABLE_TRADES) {
       if (!matchesTrade(name, trade)) continue;
       const candidate = fromOsm(tags, market, trade);
       if (!candidate) break;
@@ -184,9 +188,20 @@ export async function discoverOsmAllTrades(market: Market): Promise<Record<Exclu
 
 function combinedQuery(bbox: string): string {
   const names = Object.values(TRADE_QUERY).map((q) => q.name).join('|');
+  // Every craft value any trade in the registry claims, unwrapped from the
+  // per-trade ^(...)$ anchors and rejoined into one alternation. Built rather
+  // than typed so a new trade's craft tags are queried the day it is added.
+  const crafts = [
+    ...new Set(
+      Object.values(TRADE_QUERY)
+        .flatMap((q) => q.craft.replace(/^\^\(|\)\$$/g, '').split('|'))
+        .filter(Boolean),
+    ),
+  ].join('|');
   return `[out:json][timeout:240];(
-nwr["craft"~"^(hvac|heating_engineer|air_conditioning|ventilation|plumber|roofer)$"](${bbox});
-nwr["shop"~"^(hvac|plumber|roofer|trade)$"](${bbox});
+nwr["craft"~"^(${crafts})$"](${bbox});
+nwr["shop"~"^(hvac|plumber|roofer|trade|garage_door|appliance|car_repair|pool_supply|paint|flooring|carpet|doityourself)$"](${bbox});
+nwr["amenity"~"^(veterinary)$"](${bbox});
 nwr["office"~"^(company|contractor)$"]["name"~"${names}",i](${bbox});
 nwr["name"~"${names}",i]["website"](${bbox});
 nwr["name"~"${names}",i]["contact:website"](${bbox});
@@ -267,15 +282,11 @@ export function parseOsmHours(raw: string): Record<string, string> | null {
 export async function discoverFoursquare(market: Market, trade: Exclude<Trade, 'other'>): Promise<Candidate[]> {
   const key = process.env.FOURSQUARE_API_KEY;
   if (!key || /^\[SENSITIVE\]$/i.test(key)) return [];
-  const queries: Record<Exclude<Trade, 'other'>, string[]> = {
-    hvac: ['hvac contractor', 'air conditioning repair', 'heating contractor'],
-    plumbing: ['plumber', 'plumbing contractor', 'drain cleaning'],
-    roofing: ['roofing contractor', 'roof repair'],
-  };
+  const queries = TRADE_DEFS[trade].maps;
   const [s, w, n, e] = market.bbox.split(',').map(Number);
   const ll = `${(s + n) / 2},${(w + e) / 2}`;
   const out: Candidate[] = [];
-  for (const q of queries[trade]) {
+  for (const q of queries) {
     try {
       const params = new URLSearchParams({ query: q, ll, radius: '35000', limit: '50', fields: 'name,location,tel,website,hours,rating,stats' });
       const res = await fetchTimeout(`https://places-api.foursquare.com/places/search?${params}`, {

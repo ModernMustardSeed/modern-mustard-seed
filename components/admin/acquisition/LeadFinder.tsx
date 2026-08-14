@@ -30,6 +30,7 @@ type Payload = {
   runs: Run[];
   sourcedTotal: number;
   markets: { key: string; label: string; tier: number }[];
+  industries: { key: string; label: string; proven: boolean; emergency: boolean; avgJob: number }[];
   workerCommand: string;
   worker: WorkerStatus;
 };
@@ -50,7 +51,7 @@ export default function LeadFinder() {
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
 
-  const [industry, setIndustry] = useState('all');
+  const [industry, setIndustry] = useState('proven');
   const [count, setCount] = useState(500);
   const [tier, setTier] = useState(3);
   const [requireEmail, setRequireEmail] = useState(true);
@@ -111,16 +112,28 @@ export default function LeadFinder() {
               <div>
                 <label className={labelCls}>Industry</label>
                 <select className={inputCls} value={industry} onChange={(e) => setIndustry(e.target.value)}>
-                  <option value="all">All three</option>
-                  <option value="hvac">HVAC</option>
-                  <option value="plumbing">Plumbing</option>
-                  <option value="roofing">Roofing</option>
+                  <option value="proven">The proven three</option>
+                  <option value="all">Every industry ({data?.industries.length ?? 0})</option>
+                  <optgroup label="Proven">
+                    {(data?.industries ?? []).filter((i) => i.proven).map((i) => (
+                      <option key={i.key} value={i.key}>
+                        {i.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Not yet measured">
+                    {(data?.industries ?? []).filter((i) => !i.proven).map((i) => (
+                      <option key={i.key} value={i.key}>
+                        {i.label} · ${i.avgJob.toLocaleString()} job{i.emergency ? ' · emergency' : ''}
+                      </option>
+                    ))}
+                  </optgroup>
                 </select>
               </div>
               <div>
                 <label className={labelCls}>How many</label>
                 <select className={inputCls} value={count} onChange={(e) => setCount(Number(e.target.value))}>
-                  {[50, 100, 250, 500, 1000].map((c) => (
+                  {[50, 100, 250, 500, 1000, 2500].map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>
@@ -148,6 +161,11 @@ export default function LeadFinder() {
               <Toggle label="Require a public email" checked={requireEmail} onChange={setRequireEmail} hint="Off means banking businesses we cannot email yet." />
               <Toggle label="Exclude national chains" checked={excludeChains} onChange={setExcludeChains} hint="A corporate call centre already answers the phone." />
               <p className="text-xs text-[#161616]/55">Existing prospects are always excluded. Dedupe runs against every table we have ever touched.</p>
+              <p className="text-xs text-[#161616]/55">
+                Proven means HVAC, plumbing and roofing, the three we have measured real yield on. The rest qualify on
+                the same test (the phone is the front door, a job is worth real money, the owner answers, and after
+                hours is real) but their yield per market is still a guess. Source one on its own first.
+              </p>
             </div>
             <button className={`${btnPrimary} mt-4 w-full`} disabled={busy} onClick={() => void start()}>
               {busy ? 'Queueing...' : 'Start sourcing'}

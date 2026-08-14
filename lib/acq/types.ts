@@ -8,56 +8,60 @@
  */
 
 import { DEMO_PRODUCTS } from '@/lib/demo-order';
+import { TRADE_DEFS } from '@/lib/acq/trades';
 
 /* ─────────────────────────────── the trades ─────────────────────────────── */
 
-export const TRADES = ['hvac', 'plumbing', 'roofing', 'other'] as const;
+/**
+ * Every industry the engine can source, sell to and answer the phone for.
+ *
+ * The definitions (how to find them, what a job is worth, how Mr. Mustard
+ * behaves as their receptionist) live in lib/acq/trades.ts, one block each.
+ * Only the key list lives here, because this file is imported by the database
+ * types and must not pull in the sourcing regexes.
+ */
+export const TRADES = [
+  'hvac',
+  'plumbing',
+  'roofing',
+  'electrical',
+  'garage_door',
+  'appliance_repair',
+  'restoration',
+  'pest_control',
+  'landscaping',
+  'tree_service',
+  'pool_service',
+  'chimney',
+  'painting',
+  'flooring',
+  'auto_repair',
+  'veterinary',
+  'other',
+] as const;
 export type Trade = (typeof TRADES)[number];
 
-export const TRADE_LABELS: Record<Trade, string> = {
-  hvac: 'HVAC',
-  plumbing: 'Plumbing',
-  roofing: 'Roofing',
-  other: 'Other trade',
-};
+/**
+ * Display names and the two things the voice agent needs, derived from the
+ * registry so an industry is added in exactly one place. `other` is the honest
+ * fallback for a business we banked without pinning the trade.
+ */
+export const TRADE_LABELS: Record<Trade, string> = Object.fromEntries([
+  ...Object.entries(TRADE_DEFS).map(([k, d]) => [k, d.label]),
+  ['other', 'Other trade'],
+]) as Record<Trade, string>;
 
 /** What a customer of this trade calls about when it is urgent and expensive. */
-export const TRADE_SCENARIOS: Record<Trade, string[]> = {
-  hvac: [
-    'the AC stopped cooling and the house is 88 degrees',
-    'no heat overnight with a baby in the house',
-    'a furnace making a noise it has never made before',
-    'a quote on replacing a twenty year old system',
-    'a maintenance tune-up before summer',
-  ],
-  plumbing: [
-    'a burst pipe running water under the kitchen',
-    'a water heater leaking across the garage floor',
-    'a main line backing up into the shower',
-    'a clogged drain that will not clear',
-    'a running toilet and a dripping faucet on the same visit',
-  ],
-  roofing: [
-    'an active leak in the ceiling during a storm',
-    'hail damage the insurance adjuster wants documented',
-    'a missing section of shingles after wind',
-    'an inspection before closing on a house',
-    'a full replacement quote on a twenty five year old roof',
-  ],
-  other: ['an urgent service call after hours', 'a quote on a job worth real money'],
-};
+export const TRADE_SCENARIOS: Record<Trade, string[]> = Object.fromEntries([
+  ...Object.entries(TRADE_DEFS).map(([k, d]) => [k, d.scenarios]),
+  ['other', ['an urgent service call after hours', 'a quote on a job worth real money']],
+]) as Record<Trade, string[]>;
 
 /** The greeting a receptionist for this trade actually opens with at 11pm. */
-export const TRADE_ROLEPLAY_NOTE: Record<Trade, string> = {
-  hvac:
-    'HVAC MODE. You know no-cool, no-heat, emergency HVAC, repair vs replacement, maintenance plans, thermostats, AC tune-ups and scheduling. Ask about the system age and whether anyone in the house is medically vulnerable to the temperature. Never diagnose the equipment.',
-  plumbing:
-    'PLUMBING MODE. You know burst pipes, active leaks, clogged drains, sewer and main line backups, water heaters, toilets, faucets, emergency plumbing and scheduling. On an active leak, the first thing out of your mouth is where the shutoff valve is. Never diagnose the plumbing.',
-  roofing:
-    'ROOFING MODE. You know active roof leaks, storm and hail damage, inspections, repair vs replacement, insurance claim questions, and commercial versus residential. On an active leak you take the address and get somebody out; you never quote a price sight unseen. Never speculate about what insurance will cover.',
-  other:
-    'Handle it like an excellent front desk: who is calling, what they need, how urgent, and how to reach them.',
-};
+export const TRADE_ROLEPLAY_NOTE: Record<Trade, string> = Object.fromEntries([
+  ...Object.entries(TRADE_DEFS).map(([k, d]) => [k, d.roleplay]),
+  ['other', 'Handle it like an excellent front desk: who is calling, what they need, how urgent, and how to reach them.'],
+]) as Record<Trade, string>;
 
 /* ─────────────────────────── the journey stages ─────────────────────────── */
 

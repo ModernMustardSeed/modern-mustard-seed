@@ -21,6 +21,7 @@
  */
 
 import type { AcqProspect, Trade } from '@/lib/acq/types';
+import { TRADE_DEFS, type TradeEconomics } from '@/lib/acq/trades';
 import { shortBusiness } from '@/lib/acq/campaign';
 import { lastCloseHour } from '@/lib/acq/score';
 
@@ -61,13 +62,12 @@ export type Estimate = {
  * an estimate that undershoots and gets corrected upward by the reader is
  * persuasive, and one that overshoots reads as a scam.
  */
-const TRADE_DEFAULTS: Record<Trade, { avgJobValue: number; closeRatePct: number; callsPerReview: number }> = {
-  //                         ticket   close   calls per lifetime review
-  hvac: { avgJobValue: 450, closeRatePct: 35, callsPerReview: 9 },
-  plumbing: { avgJobValue: 400, closeRatePct: 35, callsPerReview: 9 },
-  roofing: { avgJobValue: 1200, closeRatePct: 25, callsPerReview: 7 },
-  other: { avgJobValue: 400, closeRatePct: 30, callsPerReview: 8 },
-};
+const TRADE_DEFAULTS: Record<Trade, TradeEconomics> = Object.fromEntries([
+  ...Object.entries(TRADE_DEFS).map(([k, d]) => [k, d.economics]),
+  // The floor for a business we banked without pinning the industry. Low on
+  // every axis, so an unknown trade under-promises rather than over-promises.
+  ['other', { avgJobValue: 400, closeRatePct: 30, callsPerReview: 8 }],
+]) as Record<Trade, TradeEconomics>;
 
 /**
  * The share of inbound calls a business with staffed daytime hours misses.

@@ -17,6 +17,8 @@ import { scoreLead, lastCloseHour } from '../lib/acq/score';
 import { evaluate, dueForStep, businessDaysBetween, sequenceGaps, sequenceLength } from '../lib/acq/eligibility';
 
 import { workerStatus } from '../app/api/admin/acquisition/lead-finder/route';
+import { TRADE_DEFS, SOURCEABLE_TRADES, PROVEN_TRADES } from '../lib/acq/trades';
+import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 
 /** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
 const GAPS = [2, 4, 3, 4];
@@ -384,6 +386,76 @@ test('emails: every campaign email carries the opt-out and the tracked CTA', () 
     assert.match(built!.unsubscribeUrl, /\/api\/outreach\/unsubscribe\?c=/);
     assert.match(built!.html, /\/api\/acq\/click\?/, 'the CTA must be the tracked link');
     assert.equal(built!.to, 'office@abcheating.com');
+  }
+});
+
+test('trades: every industry in the registry is complete and internally consistent', () => {
+  for (const key of SOURCEABLE_TRADES) {
+    const d = TRADE_DEFS[key];
+    assert.equal(d.key, key, `${key}: the key inside the block must match the key it is filed under`);
+    assert.ok(d.label && d.maps.length && d.scenarios.length >= 3, `${key}: missing label, maps queries or scenarios`);
+    assert.ok(d.economics.avgJobValue > 0 && d.economics.closeRatePct > 0 && d.economics.callsPerReview > 0, `${key}: economics must be real numbers`);
+    assert.ok(d.roleplay.length > 80, `${key}: the roleplay note is what Mr. Mustard actually becomes, it cannot be a stub`);
+    // Every trade must match its own name, or sourcing it finds nothing.
+    assert.ok(d.match.test(d.label) || d.maps.some((q) => d.match.test(q)), `${key}: the strict filter does not match its own search terms`);
+    assert.ok(TRADE_LABELS[key] && TRADE_SCENARIOS[key]?.length && TRADE_ROLEPLAY_NOTE[key], `${key}: missing from the derived tables`);
+  }
+  assert.ok(SOURCEABLE_TRADES.length >= 16, 'the registry should carry every industry we can sell to');
+  for (const t of PROVEN_TRADES) assert.ok(SOURCEABLE_TRADES.includes(t), `${t} is marked proven but is not in the registry`);
+});
+
+test('trades: the keyword collisions that would poison a campaign are all rejected', () => {
+  // Each of these reads exactly like the trade and is not the trade. Sending
+  // a missed-call pitch to a power co-op or a paint-and-sip bar is the kind of
+  // mistake that gets a sending domain reported.
+  const traps: [string, Parameters<typeof matchesTrade>[1]][] = [
+    ['Flathead Electric Cooperative', 'electrical'],
+    ['Electric Avenue Bikes', 'electrical'],
+    ['Bozeman Furniture Restoration', 'restoration'],
+    ['Classic Auto Restoration', 'restoration'],
+    ['Pinot and Paint Studio', 'painting'],
+    ['Maaco Collision Repair and Auto Painting', 'painting'],
+    ['Corner Pocket Billiards and Pool Hall', 'pool_service'],
+    ['Missoula Family Tree Genealogy', 'tree_service'],
+    ['Larry H Miller Toyota', 'auto_repair'],
+    ['AutoZone Auto Parts', 'auto_repair'],
+    ['Veterans Affairs Clinic', 'veterinary'],
+    ['Second Floor Dance Studio', 'flooring'],
+    ['Scratch and Dent Appliance Store', 'appliance_repair'],
+    ['Glacier Garden Center and Nursery', 'landscaping'],
+  ];
+  for (const [name, trade] of traps) {
+    assert.equal(matchesTrade(name, trade), false, `"${name}" must never be sourced as ${trade}`);
+  }
+
+  // And the real ones still get through, including the three whose industry
+  // vocabulary collides head-on with the global contractor exclusions.
+  const real: [string, Parameters<typeof matchesTrade>[1]][] = [
+    ['Bigfork Electric LLC', 'electrical'],
+    ['Overhead Door Company of Kalispell', 'garage_door'],
+    ['SERVPRO of Flathead County Water Damage Restoration', 'restoration'],
+    ['Glacier Pest Control', 'pest_control'],
+    ['Whitefish Tree Service', 'tree_service'],
+    ['Flathead Valley Animal Hospital', 'veterinary'],
+    ['Kalispell Auto Repair', 'auto_repair'],
+    ['Big Sky Pool Service and Spa', 'pool_service'],
+    ['Montana Appliance Repair', 'appliance_repair'],
+    ['Summit Chimney Sweep', 'chimney'],
+    ['Larson Painting Company', 'painting'],
+    ['Glacier Flooring Gallery', 'flooring'],
+    ['Evergreen Lawn Care', 'landscaping'],
+  ];
+  for (const [name, trade] of real) {
+    assert.equal(matchesTrade(name, trade), true, `"${name}" should source as ${trade}`);
+  }
+});
+
+test('trades: an estimate is built for every industry, never just the original three', () => {
+  for (const trade of SOURCEABLE_TRADES) {
+    const est = estimateFor(lead({ trade, review_count: 180, rating: 4.8 }));
+    assert.ok(est.personalizable, `${trade}: a well-reviewed business must be personalizable`);
+    assert.ok(est.monthlyLeakCents > 0, `${trade}: the estimate must be a real number`);
+    assert.ok(est.inputs.every((i) => i.because), `${trade}: every input must say where it came from`);
   }
 });
 
