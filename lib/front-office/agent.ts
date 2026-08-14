@@ -24,10 +24,10 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { sidekickVoice } from '@/lib/sidekick-voice';
 import { SITE } from '@/lib/seo';
 import { frontOfficeTools } from '@/lib/front-office/tools';
+import { env, envAny } from '@/lib/env';
 
 const VAPI_BASE = 'https://api.vapi.ai';
-const real = (v?: string | null) => (v && !/^\[SENSITIVE\]$/i.test(v) ? v : null);
-const apiKey = () => real(process.env.VAPI_API_KEY) || real(process.env.VAPI_PRIVATE_KEY);
+const apiKey = () => envAny('VAPI_API_KEY', 'VAPI_PRIVATE_KEY');
 
 export type OfficeRow = {
   id: string;
@@ -182,9 +182,25 @@ export function assistantConfig(office: OfficeRow, transfers: TransferRow[]): Re
       messages: [{ role: 'system', content: buildInstructions(office, transfers) }],
       tools: frontOfficeTools(office),
     },
-    // Every event lands on one endpoint that resolves the office from the
-    // assistant id in the payload. No office id in the URL, ever.
-    server: { url: `${SITE.url}/api/front-office/vapi` },
+    /*
+     * Every event lands on one endpoint that resolves the office from the
+     * assistant id in the payload. No office id in the URL, ever.
+     *
+     * THE SECRET IS ATTACHED HERE, PER ASSISTANT, FROM ONE ENVIRONMENT
+     * VARIABLE. Vapi sends it back as the x-vapi-secret header and the webhook
+     * checks it. Doing it this way means Sarah sets VAPI_WEBHOOK_SECRET once,
+     * ever, and every receptionist we forge from then on carries it without
+     * anybody touching a dashboard per customer. A per-assistant server block
+     * would otherwise override any org-level setting, which is exactly the
+     * sort of thing that is discovered six clients later.
+     *
+     * Omitted entirely when unset, rather than sent blank: an empty secret
+     * that looks configured is worse than an absent one that says so.
+     */
+    server: {
+      url: `${SITE.url}/api/front-office/vapi`,
+      ...(env('VAPI_WEBHOOK_SECRET') ? { secret: env('VAPI_WEBHOOK_SECRET') } : {}),
+    },
     serverMessages: ['tool-calls', 'end-of-call-report', 'status-update'],
     // A receptionist that will not stop talking is worse than voicemail.
     silenceTimeoutSeconds: 30,
