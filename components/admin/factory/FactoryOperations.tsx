@@ -3,16 +3,20 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
-import { Badge, Bar, Button, Card, Empty, Stat, ago, money, pct } from './ui';
+import {
+  Badge, Button, Card, Dial, Empty, Eyebrow, LinkButton, Notice, Page, PageTitle, Shell, Skeleton,
+  ago, figure, money, num, pct, toneForScore,
+} from './ui';
 
 /**
  * FACTORY OPERATIONS. Every Client Factory MMS runs, ranked by what needs a
  * person.
  *
  * Deliberately not an alphabetical list. At a thousand tenants nobody scrolls,
- * so the board opens on CRITICAL and NEEDS ATTENTION, healthy Factories collapse
- * into a count, and the platform economics sit at the top where an operator can
- * see whether the business is scaling or just getting busier.
+ * so the board opens on CRITICAL and NEEDS ATTENTION, healthy Factories
+ * collapse into a single line you can expand, and the platform economics sit
+ * on the ink band at the top where an operator sees whether the business is
+ * scaling or just getting busier.
  */
 
 type Health = {
@@ -58,7 +62,17 @@ const BAND_LABEL: Record<Health['band'], string> = {
   growth: 'High growth',
 };
 
+const BAND_NOTE: Record<Health['band'], string> = {
+  critical: 'Something is broken. These come first.',
+  attention: 'Running, but a number is heading the wrong way.',
+  new: 'Inside the first two weeks. Too early to judge.',
+  paused: 'Stopped on purpose, by us or by the customer.',
+  healthy: 'Nothing needs a person today.',
+  growth: 'Healthy and pulling ahead.',
+};
+
 const ORDER: Health['band'][] = ['critical', 'attention', 'new', 'paused', 'healthy', 'growth'];
+const QUIET = new Set<Health['band']>(['healthy', 'growth']);
 
 export default function FactoryOperations() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -86,149 +100,179 @@ export default function FactoryOperations() {
   useEffect(() => { void load(); }, [load]);
 
   const grouped = ORDER.map((band) => ({ band, items: rows.filter((r) => r.health.band === band) })).filter((g) => g.items.length);
-  const quiet = new Set<Health['band']>(['healthy', 'growth']);
-  const visible = showAll ? grouped : grouped.filter((g) => !quiet.has(g.band));
-  const quietCount = grouped.filter((g) => quiet.has(g.band)).reduce((s, g) => s + g.items.length, 0);
+  const visible = showAll ? grouped : grouped.filter((g) => !QUIET.has(g.band));
+  const quietCount = grouped.filter((g) => QUIET.has(g.band)).reduce((s, g) => s + g.items.length, 0);
+  const attention = rows.filter((r) => r.health.band === 'critical' || r.health.band === 'attention').length;
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <Shell>
       <AdminHeader active="factories" title="Factory Operations" onRefresh={() => void load(true)} />
+      <Page>
+        <PageTitle
+          eyebrow="Client Factory"
+          title={<>Every machine, ranked by <em className="font-display italic">what needs you</em></>}
+          sub="Healthy Factories are meant to be invisible. What is left on this screen is the work."
+          actions={
+            <>
+              <LinkButton href="/admin/factories/library">Library</LinkButton>
+              <LinkButton href="/admin/factories/new" tone="primary">+ New Client Factory</LinkButton>
+            </>
+          }
+        />
 
-      <main className="max-w-7xl mx-auto px-5 md:px-6 py-6 space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-[#161616]/60 max-w-2xl">
-            Every Client Factory, ranked by what needs a person today. Healthy ones are meant to be invisible.
-          </p>
-          <div className="flex gap-2">
-            <Link href="/admin/factories/library" className="font-mono text-[10px] uppercase tracking-[0.16em] font-bold px-3 py-2 rounded-lg border-2 border-[#161616] bg-white shadow-[2px_2px_0_0_#161616]">
-              Library
-            </Link>
-            <Link href="/admin/factories/new" className="font-mono text-[10px] uppercase tracking-[0.16em] font-bold px-3 py-2 rounded-lg border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616]">
-              + New Client Factory
-            </Link>
-          </div>
-        </div>
-
-        {error && (
-          <div className="border-2 border-[#E0301E] bg-[#E0301E]/[0.06] rounded-xl px-4 py-3 text-sm text-[#E0301E]">{error}</div>
-        )}
+        {error && <Notice kind="bad">{error}</Notice>}
 
         {platform && (
-          <Card title="Platform">
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-              <Stat label="Factories" value={platform.factories} sub={`${platform.live} live`} />
-              <Stat label="Customers" value={platform.customerTenants} sub={`${platform.tenants} tenants`} />
-              <Stat label="Factory MRR" value={money(platform.mrrCents)} />
-              <Stat label="Variable cost" value={money(platform.variableCostCents, 2)} sub="this month" />
-              <Stat
+          <Card tone="ink" eyebrow="The platform" title="What the whole thing is doing" right={<Badge tone={attention ? 'attention' : 'healthy'}>{attention ? `${attention} need attention` : 'all clear'}</Badge>}>
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-5">
+              <DarkStat label="Factories" value={num(platform.factories)} sub={`${platform.live} live`} />
+              <DarkStat label="Customers" value={num(platform.customerTenants)} sub={`${platform.tenants} tenants total`} />
+              <DarkStat label="Factory MRR" value={money(platform.mrrCents)} sub="recurring" />
+              <DarkStat label="Variable cost" value={money(platform.variableCostCents, 2)} sub="this month" />
+              <DarkStat
                 label="Gross margin"
                 value={pct(platform.grossMarginPct)}
-                tone={platform.grossMarginPct === null ? 'muted' : platform.grossMarginPct < 40 ? 'bad' : platform.grossMarginPct < 65 ? 'warn' : 'good'}
+                sub={platform.grossMarginPct === null ? 'no revenue connected' : platform.grossMarginPct < 40 ? 'below the 40% floor' : 'healthy'}
+                tone={platform.grossMarginPct === null ? 'muted' : platform.grossMarginPct < 40 ? 'bad' : 'good'}
               />
-              <Stat
+              <DarkStat
                 label="Below 40%"
-                value={platform.unprofitable.length}
+                value={num(platform.unprofitable.length)}
+                sub={platform.unprofitable.map((u) => u.name).join(', ') || 'nobody'}
                 tone={platform.unprofitable.length ? 'bad' : 'good'}
-                sub={platform.unprofitable.map((u) => u.name).join(', ') || 'none'}
               />
             </div>
           </Card>
         )}
 
-        {loading && !rows.length && <Empty>Scoring every Factory.</Empty>}
+        {loading && !rows.length && (
+          <Card eyebrow="Working" title="Scoring every Factory"><Skeleton rows={4} /></Card>
+        )}
 
         {!loading && !rows.length && !error && (
           <Card>
-            <div className="py-8 text-center space-y-3">
-              <p className="text-sm text-[#161616]/60">No Client Factories yet.</p>
-              <p className="text-xs text-[#161616]/45 max-w-md mx-auto">
-                Run the bootstrap from the Library to seed the module, value action and template registries, then forge the first one.
-              </p>
-            </div>
+            <Empty
+              title="No Client Factories yet"
+              action={<LinkButton href="/admin/factories/new" tone="primary">Forge the first one</LinkButton>}
+            >
+              A Factory starts from a customer&apos;s website. The Forge reads it, picks a template, and writes the blueprint you review.
+            </Empty>
           </Card>
         )}
 
         {visible.map((group) => (
-          <div key={group.band} className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Badge tone={group.band}>{BAND_LABEL[group.band]}</Badge>
-              <span className="font-mono text-[10px] text-[#161616]/45">{group.items.length}</span>
+          <section key={group.band} className="space-y-3">
+            <div className="border-b-2 border-[#161616]/15 pb-2">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <h2 className="font-display text-2xl font-semibold tracking-tight text-[#161616]">
+                  {BAND_LABEL[group.band]}
+                </h2>
+                <span className={`${figure} text-lg text-[#5C5850]`}>{group.items.length}</span>
+                <p className="font-body text-[13px] text-[#3A362D]">{BAND_NOTE[group.band]}</p>
+              </div>
             </div>
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
               {group.items.map((row) => <FactoryCard key={row.id} row={row} />)}
             </div>
-          </div>
+          </section>
         ))}
 
         {quietCount > 0 && !showAll && (
           <Card>
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm text-[#161616]/60">
-                {quietCount} Factor{quietCount === 1 ? 'y is' : 'ies are'} healthy and need nothing.
-              </p>
-              <Button onClick={() => setShowAll(true)}>Show them</Button>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <Eyebrow>Quiet</Eyebrow>
+                <p className="font-display text-lg font-semibold text-[#161616] mt-1">
+                  {quietCount} Factor{quietCount === 1 ? 'y is' : 'ies are'} healthy and need nothing
+                </p>
+                <p className="font-body text-[14px] text-[#3A362D] mt-1">That is the whole point. Open them only if you want to.</p>
+              </div>
+              <Button onClick={() => setShowAll(true)}>Show them anyway</Button>
             </div>
           </Card>
         )}
-      </main>
+      </Page>
+    </Shell>
+  );
+}
+
+function DarkStat({ label, value, sub, tone = 'ink' }: { label: string; value: string; sub?: string; tone?: 'ink' | 'good' | 'bad' | 'muted' }) {
+  const color = tone === 'good' ? 'text-[#7FD79B]' : tone === 'bad' ? 'text-[#FF9A8F]' : tone === 'muted' ? 'text-[#B8B2A4]' : 'text-white';
+  // A long value ("Not measurable") steps down rather than dominating a row of
+  // short counts, which is what it did on the first pass.
+  const scale = value.length > 9 ? 'text-lg' : 'text-[26px]';
+  return (
+    <div className="min-w-0">
+      <div className="font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">{label}</div>
+      <div className={`${figure} ${scale} mt-1.5 ${color}`}>{value}</div>
+      {sub && <div className="font-body text-[12px] text-[#CFC9BA] mt-1.5 leading-snug truncate">{sub}</div>}
     </div>
   );
 }
 
 function FactoryCard({ row }: { row: Row }) {
   const paused = Object.entries(row.paused).filter(([, v]) => v).map(([k]) => k);
-  const tone = row.health.overall < 45 ? 'bad' : row.health.overall < 70 ? 'warn' : 'good';
 
   return (
     <Link
       href={`/admin/factories/${row.id}`}
-      className="block border-2 border-[#161616] bg-white rounded-xl shadow-[3px_3px_0_0_#161616] hover:shadow-[5px_5px_0_0_#161616] transition-shadow p-4 space-y-3"
+      className="group block rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#161616] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#1E50C8]/40"
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <h3 className="font-sans font-bold text-[#161616] tracking-tight truncate">{row.name}</h3>
-          <p className="text-xs text-[#161616]/50 truncate">{row.tenantName}</p>
+      <div className="flex items-start gap-4 p-4 sm:p-5">
+        <div className="min-w-0 flex-1">
+          <Eyebrow>{row.tenantName}</Eyebrow>
+          <h3 className="font-display text-xl font-semibold tracking-tight text-[#161616] mt-1 leading-tight break-words">{row.name}</h3>
+          <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
+            <Badge tone={row.status}>{row.status}</Badge>
+            {row.mode === 'test' && <Badge tone="test">test mode</Badge>}
+            <Badge tone="draft">{row.autonomy}</Badge>
+          </div>
         </div>
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <Badge tone={row.status}>{row.status}</Badge>
-          {row.mode === 'test' && <Badge tone="test">test mode</Badge>}
-        </div>
+        <Dial score={row.health.overall} size={96} />
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="flex-1"><Bar pct={row.health.overall} tone={tone} /></div>
-        <span className="font-sans text-lg font-bold tabular-nums text-[#161616]">{row.health.overall}</span>
-      </div>
-
-      {row.health.reasons.length > 0 ? (
-        <ul className="space-y-1">
-          {row.health.reasons.slice(0, 3).map((reason) => (
-            <li key={reason} className="text-xs text-[#161616]/70 flex gap-1.5">
-              <span className="text-[#E0301E] shrink-0">•</span>
-              <span>{reason}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-xs text-[#161616]/45">Nothing needs attention.</p>
-      )}
-
-      <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-[#161616]/10">
-        <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#161616]/40">{row.planCode ?? 'no plan'}</span>
-        <span className="text-[#161616]/20">/</span>
-        <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#161616]/40">{row.autonomy}</span>
-        {row.templateKey && (
-          <>
-            <span className="text-[#161616]/20">/</span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#161616]/40">{row.templateKey}</span>
-          </>
+      <div className="px-4 sm:px-5 pb-4 sm:pb-5 space-y-3">
+        {row.health.reasons.length > 0 ? (
+          <ul className="space-y-1.5">
+            {row.health.reasons.slice(0, 3).map((reason) => (
+              <li key={reason} className="flex gap-2 font-body text-[13px] text-[#3A362D] leading-snug">
+                <span className="text-[#C4160B] font-bold shrink-0" aria-hidden>&rsaquo;</span>
+                <span>{reason}</span>
+              </li>
+            ))}
+            {row.health.reasons.length > 3 && (
+              <li className="font-body text-[13px] text-[#5C5850]">and {row.health.reasons.length - 3} more</li>
+            )}
+          </ul>
+        ) : (
+          <p className="font-body text-[13px] text-[#3A362D]">Nothing needs attention on this one.</p>
         )}
-        <span className="ml-auto font-mono text-[9px] text-[#161616]/35">{ago(row.health.at)}</span>
-      </div>
 
-      {paused.length > 0 && (
-        <p className="text-[11px] text-[#E0301E] font-mono uppercase tracking-[0.14em]">Paused: {paused.join(', ')}</p>
-      )}
+        <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+          {Object.entries(row.health.dimensions)
+            .sort((a, b) => a[1].score - b[1].score)
+            .slice(0, 2)
+            .map(([key, dim]) => (
+              <div key={key} className="flex items-baseline justify-between gap-2">
+                <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#5C5850] truncate">{key}</dt>
+                <dd className={`${figure} text-[13px] ${dim.score < 45 ? 'text-[#C4160B]' : dim.score < 70 ? 'text-[#8A5A00]' : 'text-[#1B6B3A]'}`}>{dim.score}</dd>
+              </div>
+            ))}
+        </dl>
+
+        {paused.length > 0 && (
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#8E1007]">
+            Paused: {paused.join(', ')}
+          </p>
+        )}
+
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-3 border-t-2 border-[#161616]/12 font-mono text-[10px] uppercase tracking-[0.14em] text-[#5C5850]">
+          <span>{row.planCode ?? 'no plan'}</span>
+          <span aria-hidden className="text-[#161616]/25">/</span>
+          <span>{row.templateKey ?? 'no template'}</span>
+          <span className="ml-auto normal-case tracking-normal">scored {ago(row.health.at)}</span>
+        </div>
+      </div>
     </Link>
   );
 }
