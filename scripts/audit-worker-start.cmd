@@ -22,7 +22,9 @@ REM never audited anything, there is no audit-worker.log to show for it, and
 REM every audit quietly went to the metered API instead of the subscription.
 REM Corrected 2026-08-11. Same lesson as the roadmap queue in migration 091: a
 REM free engine nobody can reach is not a free engine.
-cd /d C:\Users\SMSca\dev\mms\products\modern-mustard-seed
+REM Repo root from this file's own location, never a hardcoded machine path.
+REM See the note in forge-worker-watchdog.cmd for what the hardcoded one cost.
+cd /d "%~dp0.."
 :loop
 echo [%DATE% %TIME%] starting audit worker >> "%LOCALAPPDATA%\Temp\audit-worker.log"
 npx tsx scripts\audit-worker.mts >> "%LOCALAPPDATA%\Temp\audit-worker.log" 2>&1

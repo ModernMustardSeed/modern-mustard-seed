@@ -75,7 +75,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
 
   const { data: project } = await sb
     .from('projects')
-    .select('id, name, client_email, demo_site_id, site_html, site_domain, site_vercel_project_id, site_live_url, site_published_at, site_build_status, approved_at, reveal_at, site_html_draft, edit_status, revisions_used, moodboard, moodboard_status, moodboard_note')
+    .select('id, name, client_email, demo_site_id, site_html, site_domain, site_vercel_project_id, site_live_url, site_published_at, site_build_status, approved_at, reveal_at, site_html_draft, site_pages_draft, edit_status, revisions_used, moodboard, moodboard_status, moodboard_note')
     .eq('id', projectId)
     .maybeSingle();
   if (!project) return NextResponse.json({ error: 'No such project' }, { status: 404 });
@@ -237,9 +237,18 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
      */
     case 'edit-approve': {
       if (!project.site_html_draft) return NextResponse.json({ error: 'There is no edited draft to approve.' }, { status: 400 });
+      // The draft is the WHOLE site, not just its home page. Promoting site_html
+      // without site_pages would publish an edited front page beside four stale ones.
       await sb
         .from('projects')
-        .update({ site_html: project.site_html_draft, site_html_draft: null, edit_status: null, edit_error: null })
+        .update({
+          site_html: project.site_html_draft,
+          site_pages: project.site_pages_draft ?? null,
+          site_html_draft: null,
+          site_pages_draft: null,
+          edit_status: null,
+          edit_error: null,
+        })
         .eq('id', projectId);
 
       // If they were already live, push the change out now. If not, it just becomes the
@@ -262,7 +271,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
       await sb.rpc('refund_revision', { p_project_id: projectId });
       await sb
         .from('projects')
-        .update({ site_html_draft: null, edit_status: null, edit_error: null })
+        .update({ site_html_draft: null, site_pages_draft: null, edit_status: null, edit_error: null })
         .eq('id', projectId);
       return NextResponse.json({ ok: true, refunded: true });
     }

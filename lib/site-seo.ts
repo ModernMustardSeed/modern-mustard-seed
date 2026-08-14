@@ -204,16 +204,20 @@ export function robotsTxt(f: SiteFacts): string {
   ].join('\n');
 }
 
-export function sitemapXml(f: SiteFacts): string {
+export function sitemapXml(f: SiteFacts, paths: string[] = ['/']): string {
   const url = siteUrl(f.domain);
+  const seen = new Set<string>();
+  const list = ['/', ...paths].filter((p) => (seen.has(p) ? false : (seen.add(p), true)));
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9">'.replace('www.sitemap.org', 'www.sitemaps.org'),
-    '  <url>',
-    `    <loc>${url}/</loc>`,
-    '    <changefreq>weekly</changefreq>',
-    '    <priority>1.0</priority>',
-    '  </url>',
+    ...list.flatMap((p) => [
+      '  <url>',
+      `    <loc>${url}${p}</loc>`,
+      '    <changefreq>weekly</changefreq>',
+      `    <priority>${p === '/' ? '1.0' : '0.8'}</priority>`,
+      '  </url>',
+    ]),
     '</urlset>',
     '',
   ].join('\n');
@@ -237,10 +241,15 @@ export function aiTxt(f: SiteFacts): string {
  * structured record), and we replace the title/description only when the page's own is
  * missing or is obviously the forge's placeholder.
  */
-export function injectSeo(html: string, f: SiteFacts): string {
+export function injectSeo(html: string, f: SiteFacts, pathname = '/'): string {
   const url = siteUrl(f.domain);
   const desc = metaDescription(f);
   const title = `${f.business}${clean(f.city) ? ` · ${clean(f.city)}` : ''}`;
+  // A five page site is only worth building if each page is its OWN page to a
+  // crawler, so the canonical and og:url follow the file rather than all pointing
+  // home. Every page canonicalising to "/" is the same bug as hash routes wearing a
+  // different hat: five documents, one indexable URL.
+  const here = `${url}${pathname}`;
 
   const existingTitle = /<title>([^<]*)<\/title>/i.exec(html)?.[1]?.trim();
   const hasTitle = Boolean(existingTitle && existingTitle.length > 3);
@@ -251,16 +260,19 @@ export function injectSeo(html: string, f: SiteFacts): string {
   if (!hasDesc) head.push(`<meta name="description" content="${escapeHtml(desc)}">`);
 
   head.push(
-    `<link rel="canonical" href="${url}/">`,
+    `<link rel="canonical" href="${here}">`,
     `<meta name="robots" content="index, follow, max-image-preview:large">`,
     `<meta property="og:type" content="website">`,
     `<meta property="og:site_name" content="${escapeHtml(f.business)}">`,
     `<meta property="og:title" content="${escapeHtml(existingTitle || title)}">`,
     `<meta property="og:description" content="${escapeHtml(desc)}">`,
-    `<meta property="og:url" content="${url}/">`,
+    `<meta property="og:url" content="${here}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
     clean(f.logoUrl) ? `<meta property="og:image" content="${escapeHtml(clean(f.logoUrl)!)}">` : '',
-    `<script type="application/ld+json">\n${localBusinessJsonLd(f)}\n</script>`,
+    // The business record belongs to the business, so it ships once, on the home
+    // page. Repeating a LocalBusiness node on all five pages tells a crawler there
+    // are five businesses at one address.
+    pathname === '/' ? `<script type="application/ld+json">\n${localBusinessJsonLd(f)}\n</script>` : '',
   );
 
   const block = `\n${head.filter(Boolean).join('\n')}\n`;
@@ -282,12 +294,33 @@ export function injectSeo(html: string, f: SiteFacts): string {
   return out;
 }
 
-/** Everything that ships beside index.html. */
-export function seoFiles(f: SiteFacts, indexHtml: string): SiteFile[] {
+/**
+ * The URL a page file is served at. Vercel serves `services.html` at BOTH
+ * `/services.html` and the clean `/services`, and the clean one is what belongs in
+ * a canonical tag and a sitemap.
+ */
+export function pathForPage(file: string): string {
+  const name = file.replace(/^\/+/, '').replace(/\.html$/i, '');
+  return name === 'index' ? '/' : `/${name}`;
+}
+
+/**
+ * Everything that ships beside index.html.
+ *
+ * `pages` carries the ADDITIONAL pages of a multi-page paid site, keyed by filename
+ * ({ 'services.html': '<!doctype html>...' }). Omit it and the output is exactly what
+ * it always was for a single-page site, which is what every demo still is.
+ */
+export function seoFiles(f: SiteFacts, indexHtml: string, pages?: Record<string, string> | null): SiteFile[] {
+  const extra = Object.entries(pages ?? {}).filter(
+    ([file, html]) => /\.html$/i.test(file) && file !== 'index.html' && typeof html === 'string' && html.trim().length > 0,
+  );
+  const paths = extra.map(([file]) => pathForPage(file));
   return [
-    { file: 'index.html', data: injectSeo(indexHtml, f) },
+    { file: 'index.html', data: injectSeo(indexHtml, f, '/') },
+    ...extra.map(([file, html]) => ({ file, data: injectSeo(html, f, pathForPage(file)) })),
     { file: 'robots.txt', data: robotsTxt(f) },
-    { file: 'sitemap.xml', data: sitemapXml(f) },
+    { file: 'sitemap.xml', data: sitemapXml(f, paths) },
     { file: 'llms.txt', data: llmsTxt(f) },
     { file: '.well-known/ai.txt', data: aiTxt(f) },
   ];
