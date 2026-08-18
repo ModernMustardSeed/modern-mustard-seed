@@ -384,29 +384,59 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
   if (!placed.ok) {
     // The consent stands and the person is waiting, so this becomes queued work
     // rather than a dead end. Never silently fail on somebody who just asked.
+    //
+    // ⚠️ A DAILY CAP IS NOT A HICCUP. A phone number bought inside Vapi stops
+    // placing outbound calls after its daily allowance and does not recover
+    // until the UTC day rolls over. Retrying in sixty seconds burns the queue
+    // against a wall, and telling the visitor "a minute" is simply false. So
+    // that case waits for the actual reset and says so out loud. Found
+    // 2026-08-18 on a real visitor, on the eleventh outbound call of the day.
+    const dailyLimit = placed.reason === 'daily-limit';
+    const resetsAt = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() + 1, 0, 5));
     await enqueue(db, {
       kind: 'call',
       leadId: lead.id,
       campaignId: campaign?.id ?? null,
       step: 1,
-      runAfter: new Date(Date.now() + 60_000),
+      runAfter: dailyLimit ? resetsAt : new Date(Date.now() + 60_000),
       payload: { phone: phoneE164, consentId: consent.id, mustardRequestId: requestId },
+    });
+
+    // Sarah hears about it the moment it happens. A visitor who asked to be
+    // called and was not called is the most expensive failure this page has,
+    // and it is invisible unless somebody is told.
+    await alertOwner({
+      subject: dailyLimit
+        ? `Mr. Mustard could NOT call ${phoneE164}: the line hit its daily cap`
+        : `Mr. Mustard could not call ${phoneE164}`,
+      phone: phoneE164,
+      business: lead.business_name,
+      source,
+      detail: placed.detail ?? placed.reason,
+      dailyLimit,
+      resetsAt,
     });
     await db
       .from('mustard_requests')
       .update({ status: placed.reason === 'duplicate' ? 'calling' : 'failed', error: `${placed.reason}: ${placed.detail ?? ''}`.slice(0, 300), called_at: now })
       .eq('id', requestId);
 
-    return placed.reason === 'duplicate'
-      ? { ok: true, requestId, leadId: lead.id, status: 'calling', phone: phoneE164, message: 'He is already calling that number. Check your phone.' }
-      : {
-          ok: true,
-          requestId,
-          leadId: lead.id,
-          status: 'queued',
-          phone: phoneE164,
-          message: 'He hit a snag getting on the line. It is queued and he will ring you in a minute.',
-        };
+    if (placed.reason === 'duplicate') {
+      return { ok: true, requestId, leadId: lead.id, status: 'calling', phone: phoneE164, message: 'He is already calling that number. Check your phone.' };
+    }
+    return {
+      ok: true,
+      requestId,
+      leadId: lead.id,
+      status: 'queued',
+      phone: phoneE164,
+      // Say the true thing. A person who was promised a call in a minute and
+      // got one tomorrow trusts nothing else on this page, and the studio's own
+      // number is right there, so give it to them instead of an apology.
+      message: dailyLimit
+        ? 'His line has taken all the calls it can place today. You are saved and first in line when it clears tonight, and Sarah has already been told. If you would rather not wait, call him yourself at (406) 312-1223 and he picks up right now.'
+        : 'He could not get on the line just now. You are saved and queued, Sarah has been told, and you can reach him directly at (406) 312-1223 in the meantime.',
+    };
   }
 
   await db
@@ -415,6 +445,58 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
     .eq('id', requestId);
 
   return { ok: true, requestId, leadId: lead.id, status: 'calling', phone: phoneE164, message: 'Mr. Mustard is calling you.' };
+}
+
+/* ─────────────────────────── telling Sarah ──────────────────────────────── */
+
+/**
+ * A visitor who asked to be called and was not called is the most expensive
+ * thing that can go wrong on this page, and without this it is completely
+ * silent: the row says `failed`, nobody reads rows, and the person waits.
+ *
+ * Best effort by design. This runs after consent is already recorded and the
+ * retry is already queued, so a mail failure must not change what the visitor
+ * is told or lose the work that is already safely on disk.
+ */
+async function alertOwner(a: {
+  subject: string;
+  phone: string;
+  business: string | null;
+  source: string;
+  detail: string;
+  dailyLimit: boolean;
+  resetsAt: Date;
+}): Promise<void> {
+  if (!process.env.RESEND_API_KEY) return;
+  try {
+    const { resendClient } = await import('@/lib/send-email');
+    const { leadNotification } = await import('@/lib/email');
+    const { OWNER_NOTIFY_TO } = await import('@/lib/owner');
+    await resendClient().emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: a.subject,
+      html: leadNotification({
+        type: 'Callback',
+        name: a.business || 'Someone on /mustard',
+        email: '',
+        fields: [
+          { label: 'Their number', value: a.phone },
+          { label: 'Came from', value: a.source },
+          { label: 'Why it failed', value: a.detail.slice(0, 300) },
+          ...(a.dailyLimit ? [{ label: 'Clears at', value: `${a.resetsAt.toISOString()} (UTC midnight)` }] : []),
+        ],
+        message: a.dailyLimit
+          ? 'A number bought inside Vapi stops placing outbound calls after its daily allowance. The studio line is capped for the rest of the UTC day, so every callback from /mustard fails until it rolls over. Importing a Twilio number removes the cap entirely.'
+          : 'The dial failed and the callback is queued for a retry. The lead and their consent are saved either way.',
+        suggestedAction: a.dailyLimit
+          ? `Call them yourself at ${a.phone} now, and import a Twilio number so this cannot happen again`
+          : `Call them yourself at ${a.phone} if the retry does not land`,
+      }),
+    });
+  } catch (err) {
+    console.error('mustard failure alert did not send:', err instanceof Error ? err.message : err);
+  }
 }
 
 /* ──────────────────────── resolve or create the prospect ────────────────── */

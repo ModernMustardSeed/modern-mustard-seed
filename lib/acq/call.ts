@@ -300,7 +300,19 @@ export function firstMessage(lead: AcqProspect): string {
 
 export type PlaceCallResult =
   | { ok: true; vapiCallId: string; acqCallId: string }
-  | { ok: false; reason: 'not-configured' | 'no-consent' | 'duplicate' | 'vapi-error' | 'bad-phone' | 'db'; detail?: string };
+  | {
+      ok: false;
+      /**
+       * `daily-limit` is separated from the general `vapi-error` on purpose. A
+       * number bought inside Vapi caps outbound calls per UTC day, and when it
+       * trips, the caller-facing copy and the retry schedule both have to
+       * change: nothing will succeed again until the day rolls over, so
+       * promising a call "in a minute" is a lie and retrying in a minute is
+       * pointless load. Found 2026-08-18 when a real visitor hit it.
+       */
+      reason: 'not-configured' | 'no-consent' | 'duplicate' | 'vapi-error' | 'bad-phone' | 'db' | 'daily-limit';
+      detail?: string;
+    };
 
 type VapiModel = { messages?: { role: string; content: string }[]; tools?: unknown[] } & Record<string, unknown>;
 
@@ -408,15 +420,25 @@ export async function placeDemoCall(args: {
     });
     if (!res.ok) {
       const detail = (await res.text()).slice(0, 400);
-      await db.from('acq_calls').update({ status: 'failed', ended_reason: `vapi-${res.status}` }).eq('id', callRow.id);
+      // Vapi answers this one with a 400 and a sentence, not a code, so the
+      // sentence is what we match. Both spellings seen in the wild: the human
+      // message on the POST, and `vapi-number-outbound-daily-limit` on the call
+      // record afterwards.
+      const dailyLimit = /daily outbound call limit|outbound-daily-limit/i.test(detail);
+      await db
+        .from('acq_calls')
+        .update({ status: 'failed', ended_reason: dailyLimit ? 'vapi-number-outbound-daily-limit' : `vapi-${res.status}` })
+        .eq('id', callRow.id);
       await recordEvent(db, {
         leadId: args.lead.id,
         campaignId: args.campaignId,
         type: 'call_failed',
-        label: 'Mr. Mustard could not place the call',
+        label: dailyLimit
+          ? 'The studio line hit its daily outbound cap, so this callback could not be placed'
+          : 'Mr. Mustard could not place the call',
         detail: { status: res.status, detail },
       });
-      return { ok: false, reason: 'vapi-error', detail };
+      return { ok: false, reason: dailyLimit ? 'daily-limit' : 'vapi-error', detail };
     }
     const call = (await res.json()) as { id?: string };
     const vapiCallId = call?.id || '';
