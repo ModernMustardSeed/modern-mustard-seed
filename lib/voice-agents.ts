@@ -75,8 +75,12 @@ export const VOICE_AGENTS: VoiceAgent[] = [
     // Fallback moves haiku-4-5 -> sonnet-4-6: primary and fallback still differ
     // (which is what stops the restore rule from flapping), and sonnet-4-6 holds
     // persona under failover where haiku narrated its own tool calls out loud.
-    primary: process.env.VOICE_PRIMARY_MODEL || 'claude-opus-4-6',
-    fallback: process.env.VOICE_FALLBACK_MODEL || 'claude-sonnet-4-6',
+    // 2026-08-18: back to sonnet-4-6, tracking setup-vapi-mustard.mjs, after a
+    // measured call showed 3 to 7 second gaps before opus started speaking.
+    // Fallback returns to haiku so primary and fallback stay distinct, which is
+    // what stops the restore rule from flapping.
+    primary: process.env.VOICE_PRIMARY_MODEL || 'claude-sonnet-4-6',
+    fallback: process.env.VOICE_FALLBACK_MODEL || 'claude-haiku-4-5-20251001',
   },
   {
     id: 'f87500be-5992-4ffa-ad38-8fd18c078b01',

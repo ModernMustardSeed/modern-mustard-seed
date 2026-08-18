@@ -862,7 +862,25 @@ const assistant = {
     // higher per minute and that is the trade she asked for.
     // Levers: VAPI_MODEL=claude-sonnet-4-6 (previous) or
     // claude-haiku-4-5-20251001 (snappiest, breaks persona under load).
-    model: env('VAPI_MODEL') || 'claude-opus-4-6',
+    // ⚠️ 2026-08-18, BACK TO SONNET 4.6 ON MEASURED EVIDENCE, one day after
+    // moving to opus. Sarah on a real call: "he was very slow to answer... hes
+    // kinda wierd". The transcript timeline says she was right and it was not
+    // close. Time from her finishing to him starting to speak, straight off
+    // secondsFromStart on call 01a01627: 7.3s, 3.4s, 5.3s, 4.6s, 6.1s, 5.3s,
+    // and a 6.5s gap after she gave up and said "Hello?".
+    //
+    // Two things compounded. Opus is the slower brain, and the system prompt
+    // nearly DOUBLED the same day, 22,736 -> 42,143 characters, every one of
+    // which is re-read on every single turn. The smartest model in the world
+    // reads as broken when a caller has to say "hello?" to find out it is still
+    // there, and nobody ever bought anything from a line that does that.
+    //
+    // Sonnet 4.6 ran this line for six days with no complaint about pace. It is
+    // the pick until the prompt is cut back hard, and then opus is worth
+    // re-testing WITH the timeline measured rather than assumed.
+    // Lever: VAPI_MODEL=claude-opus-4-6 puts the bigger brain back in one env
+    // var, no deploy.
+    model: env('VAPI_MODEL') || 'claude-sonnet-4-6',
     // 0.7 gave him warmth and natural variety for ideation without rambling.
     // 2026-08-17: 0.7 -> 0.6, on evidence from a live call. Reading an email
     // back, he did not just mis-hear characters, he INVENTED them: the line
