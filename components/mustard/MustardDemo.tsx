@@ -317,6 +317,41 @@ export default function MustardDemo(props: Props) {
       <p className="mt-3.5 text-center text-[13px] text-[#161616]/55">
         He rings in about ten seconds. Three minutes, no card, no obligation.
       </p>
+
+      {/*
+        THE OTHER DOOR, and on a phone it is the better one.
+
+        Outbound is the metered direction: the studio's number can only PLACE a
+        limited number of calls a day, and an email blast that lands hundreds of
+        people on this page at once will exhaust that long before it exhausts
+        the interest. Inbound has no such limit and never has. So the page
+        offers both, and the person on a handset, which is most of them, gets a
+        one-tap path that cannot be rationed and does not make them wait.
+
+        It sits UNDER the form on purpose. Giving us the number is still the
+        thing we want, because it captures a lead even when the call does not
+        connect. This is the escape hatch, not the headline.
+      */}
+      <div className="mt-6 flex items-center gap-3" aria-hidden="true">
+        <span className="h-px flex-1 bg-[#161616]/15" />
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#161616]/40">or</span>
+        <span className="h-px flex-1 bg-[#161616]/15" />
+      </div>
+
+      <a
+        href="tel:+14063121223"
+        className="mt-4 flex min-h-[60px] w-full items-center justify-center gap-3 rounded-xl border-2 border-[#161616] bg-white px-5 py-4 font-display text-lg font-extrabold tracking-tight text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616] active:translate-y-0 active:shadow-[3px_3px_0_0_#161616]"
+      >
+        <span aria-hidden="true" className="text-xl">
+          📞
+        </span>
+        Call him yourself, right now
+      </a>
+
+      <p className="mt-2.5 text-center font-mono text-[13px] font-bold tracking-wide text-[#161616]/70">
+        (406) 312-1223
+      </p>
+      <p className="mt-1 text-center text-[12.5px] text-[#161616]/55">He picks up on the first ring, any hour.</p>
     </form>
   );
 }
