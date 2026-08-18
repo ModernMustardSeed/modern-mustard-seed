@@ -95,7 +95,7 @@ export default function LeadFinder() {
   const worker: WorkerStatus = data?.worker ?? { state: 'waiting', headline: '', detail: '', command: null };
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[86rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav active="finder" />
@@ -160,8 +160,8 @@ export default function LeadFinder() {
             <div className="mt-3 space-y-2">
               <Toggle label="Require a public email" checked={requireEmail} onChange={setRequireEmail} hint="Off means banking businesses we cannot email yet." />
               <Toggle label="Exclude national chains" checked={excludeChains} onChange={setExcludeChains} hint="A corporate call centre already answers the phone." />
-              <p className="text-xs text-[#161616]/55">Existing prospects are always excluded. Dedupe runs against every table we have ever touched.</p>
-              <p className="text-xs text-[#161616]/55">
+              <p className="text-xs text-[#161616]/65">Existing prospects are always excluded. Dedupe runs against every table we have ever touched.</p>
+              <p className="text-xs text-[#161616]/65">
                 Proven means HVAC, plumbing and roofing, the three we have measured real yield on. The rest qualify on
                 the same test (the phone is the front door, a job is worth real money, the owner answers, and after
                 hours is real) but their yield per market is still a guess. Source one on its own first.
@@ -170,7 +170,7 @@ export default function LeadFinder() {
             <button className={`${btnPrimary} mt-4 w-full`} disabled={busy} onClick={() => void start()}>
               {busy ? 'Queueing...' : 'Start sourcing'}
             </button>
-            <p className="mt-3 text-[12px] text-[#161616]/55 leading-relaxed">
+            <p className="mt-3 text-[12px] text-[#161616]/65 leading-relaxed">
               Runs are served by the local worker, the same way the demo-site forge is: a run reads hundreds of company
               websites and drives a real browser, which no serverless function can do. Start it once and leave it up:
               <code className="ml-1 px-1.5 py-0.5 rounded bg-[#161616]/[0.07] font-mono text-[11px]">{data?.workerCommand}</code>
@@ -217,7 +217,7 @@ export default function LeadFinder() {
 
             <Section title="Runs" note="Every sourcing job, and exactly what it rejected.">
               {!data?.runs.length ? (
-                <p className="text-sm text-[#161616]/45">No runs yet.</p>
+                <p className="text-sm text-[#161616]/60">No runs yet.</p>
               ) : (
                 <ul className="space-y-2">
                   {data.runs.map((r) => (
@@ -228,7 +228,7 @@ export default function LeadFinder() {
                           tone={r.status === 'done' ? 'good' : r.status === 'failed' ? 'bad' : r.status === 'running' ? 'warn' : 'neutral'}
                         />
                         <span className="font-semibold text-sm">{r.label ?? 'Sourcing run'}</span>
-                        <span className="ml-auto text-[11px] font-mono text-[#161616]/45">{timeAgo(r.created_at)}</span>
+                        <span className="ml-auto text-[11px] font-mono text-[#161616]/60">{timeAgo(r.created_at)}</span>
                       </div>
                       <Progress run={r} />
                       {r.error && <p className="mt-2 text-[12px] text-[#E0301E]">{r.error}</p>}
@@ -274,7 +274,7 @@ function Toggle({ label, checked, onChange, hint }: { label: string; checked: bo
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="mt-0.5 accent-[#F5B700] w-4 h-4" />
       <span>
         <span className="text-[13px] font-semibold">{label}</span>
-        {hint && <span className="block text-[11px] text-[#161616]/50">{hint}</span>}
+        {hint && <span className="block text-[11px] text-[#161616]/65">{hint}</span>}
       </span>
     </label>
   );

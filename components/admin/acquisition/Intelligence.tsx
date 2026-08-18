@@ -54,14 +54,14 @@ export default function Intelligence() {
     data?.variants.find((v) => v.key === key && v.step === step)?.subject ?? key;
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[86rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav active="intelligence" />
         {error && <p className="mb-3 text-sm font-semibold text-[#E0301E]">{error}</p>}
 
         {!data ? (
-          <p className="text-sm text-[#161616]/50">Loading...</p>
+          <p className="text-sm text-[#161616]/65">Loading...</p>
         ) : (
           <div className="space-y-6">
             <div className="grid sm:grid-cols-4 gap-3">
@@ -95,7 +95,7 @@ export default function Intelligence() {
             <div className="grid lg:grid-cols-2 gap-6">
               <Section title="What they object to" note="Pulled from what Mr. Mustard logged at the end of each call.">
                 {data.intel.objections.length === 0 ? (
-                  <p className="text-sm text-[#161616]/45">No objections recorded yet.</p>
+                  <p className="text-sm text-[#161616]/60">No objections recorded yet.</p>
                 ) : (
                   <ul className="space-y-1.5">
                     {data.intel.objections.map((o) => (
@@ -116,13 +116,13 @@ export default function Intelligence() {
 
               <Section title="Which roleplay converts" note="The scenario he acted out, and how many of those became clients.">
                 {data.intel.scenarios.length === 0 ? (
-                  <p className="text-sm text-[#161616]/45">No roleplays recorded yet.</p>
+                  <p className="text-sm text-[#161616]/60">No roleplays recorded yet.</p>
                 ) : (
                   <ul className="space-y-1.5">
                     {data.intel.scenarios.map((s) => (
                       <li key={s.label} className="flex items-center gap-3 text-[13px]">
                         <span className="flex-1 truncate">{s.label}</span>
-                        <span className="font-mono text-[12px] tabular-nums text-[#161616]/55">{s.count} run</span>
+                        <span className="font-mono text-[12px] tabular-nums text-[#161616]/65">{s.count} run</span>
                         <span className="font-mono text-[12px] tabular-nums text-[#3f5d34] w-16 text-right">{s.clients} won</span>
                       </li>
                     ))}
@@ -141,14 +141,14 @@ function SegmentTable({ title, note, rows }: { title: string; note: string; rows
   return (
     <Section title={title} note={note}>
       {rows.length === 0 ? (
-        <p className="text-sm text-[#161616]/45">Nothing to compare yet.</p>
+        <p className="text-sm text-[#161616]/60">Nothing to compare yet.</p>
       ) : (
         <div className={`${card} overflow-x-auto`}>
           <table className="w-full text-[13px]">
             <thead>
               <tr className="border-b-2 border-[#161616] text-left">
                 {['', 'Prospects', 'Emailed', 'Consented', 'Talked', 'Demos', 'Clients', 'Permission', 'Close'].map((h) => (
-                  <th key={h} className="px-3 py-2 text-[10px] uppercase tracking-[0.14em] font-oswald font-semibold text-[#161616]/55 whitespace-nowrap">
+                  <th key={h} className="px-3 py-2 text-[10px] uppercase tracking-[0.14em] font-oswald font-semibold text-[#161616]/65 whitespace-nowrap">
                     {h}
                   </th>
                 ))}

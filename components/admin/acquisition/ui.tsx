@@ -26,7 +26,7 @@ export const btnGhost =
 export const btnDanger =
   'inline-flex items-center justify-center gap-2 bg-[#FFFDF8] text-[#E0301E] border-2 border-[#E0301E] rounded-xl px-4 py-2.5 font-oswald font-semibold uppercase tracking-[0.08em] text-sm shadow-[3px_3px_0_0_#E0301E] hover:-translate-y-0.5 transition-all disabled:opacity-40 disabled:pointer-events-none';
 export const inputCls =
-  'w-full bg-white border-2 border-[#161616]/25 focus:border-[#F5B700] rounded-xl px-3.5 py-2.5 font-sans text-sm text-[#161616] outline-none transition-colors placeholder:text-[#161616]/35';
+  'w-full bg-white border-2 border-[#161616]/25 focus:border-[#F5B700] rounded-xl px-3.5 py-2.5 font-sans text-sm text-[#161616] outline-none transition-colors placeholder:text-[#161616]/65';
 export const labelCls = 'block text-[10px] uppercase tracking-[0.22em] font-oswald font-medium text-[#161616]/60 mb-1.5';
 export const eyebrow = 'text-[10px] uppercase tracking-[0.3em] font-oswald font-semibold text-[#E0301E]';
 
@@ -149,9 +149,9 @@ export function Stat({
           : 'text-[#161616]';
   return (
     <div className={`${cardFlat} p-4`}>
-      <p className="text-[9px] uppercase tracking-[0.2em] font-oswald font-semibold text-[#161616]/45">{label}</p>
+      <p className="text-[9px] uppercase tracking-[0.2em] font-oswald font-semibold text-[#161616]/60">{label}</p>
       <p className={`mt-1 font-oswald font-bold tabular-nums leading-none ${big ? 'text-4xl' : 'text-2xl'} ${color}`}>{value}</p>
-      {sub && <p className="mt-1 text-[11px] text-[#161616]/50 leading-snug">{sub}</p>}
+      {sub && <p className="mt-1 text-[11px] text-[#161616]/65 leading-snug">{sub}</p>}
     </div>
   );
 }
@@ -162,7 +162,7 @@ export function Section({ title, note, right, children }: { title: string; note?
       <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
         <div>
           <h2 className="font-oswald text-lg font-bold uppercase tracking-[0.06em] text-[#161616]">{title}</h2>
-          {note && <p className="mt-0.5 text-xs text-[#161616]/55 max-w-2xl leading-snug">{note}</p>}
+          {note && <p className="mt-0.5 text-xs text-[#161616]/65 max-w-2xl leading-snug">{note}</p>}
         </div>
         {right}
       </div>
@@ -223,7 +223,7 @@ export function GoalDial({ clients, goal, mrrCents, setupCents, goalMrrCents, go
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="font-oswald text-4xl font-bold tabular-nums leading-none text-[#161616]">{shown}</span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/45">of {goal}</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/60">of {goal}</span>
         </div>
       </div>
       <div className="min-w-0 text-center sm:text-left">
@@ -233,12 +233,12 @@ export function GoalDial({ clients, goal, mrrCents, setupCents, goalMrrCents, go
         </h2>
         <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
           <div>
-            <dt className="text-[10px] uppercase tracking-[0.18em] font-oswald text-[#161616]/45">New MRR</dt>
-            <dd className="font-oswald text-lg font-bold tabular-nums">{usd(mrrCents)} <span className="text-[#161616]/40 text-sm font-medium">/ {usd(goalMrrCents)}</span></dd>
+            <dt className="text-[10px] uppercase tracking-[0.18em] font-oswald text-[#161616]/60">New MRR</dt>
+            <dd className="font-oswald text-lg font-bold tabular-nums">{usd(mrrCents)} <span className="text-[#161616]/60 text-sm font-medium">/ {usd(goalMrrCents)}</span></dd>
           </div>
           <div>
-            <dt className="text-[10px] uppercase tracking-[0.18em] font-oswald text-[#161616]/45">Setup revenue</dt>
-            <dd className="font-oswald text-lg font-bold tabular-nums">{usd(setupCents)} <span className="text-[#161616]/40 text-sm font-medium">/ {usd(goalSetupCents)}</span></dd>
+            <dt className="text-[10px] uppercase tracking-[0.18em] font-oswald text-[#161616]/60">Setup revenue</dt>
+            <dd className="font-oswald text-lg font-bold tabular-nums">{usd(setupCents)} <span className="text-[#161616]/60 text-sm font-medium">/ {usd(goalSetupCents)}</span></dd>
           </div>
         </dl>
       </div>
@@ -270,7 +270,7 @@ export function Funnel({ steps }: { steps: { stage: string; label: string; count
                   </span>
                 </div>
               </div>
-              <div className="w-24 shrink-0 text-[11px] font-mono tabular-nums text-[#161616]/55">
+              <div className="w-24 shrink-0 text-[11px] font-mono tabular-nums text-[#161616]/65">
                 {i === 0 ? '—' : (
                   <span className={dropping ? 'text-[#E0301E] font-bold' : ''}>{pct(s.fromPrevious)}</span>
                 )}

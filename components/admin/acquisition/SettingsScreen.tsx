@@ -67,7 +67,7 @@ export default function SettingsScreen() {
   const status = s?.master_paused ? 'PAUSED' : (data?.preflight.blockers.length ?? 0) > 0 ? 'ERROR' : 'LIVE';
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[74rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav active="settings" />
@@ -75,7 +75,7 @@ export default function SettingsScreen() {
         {notice && <p className="mb-3 text-sm font-semibold text-[#3f5d34]">{notice}</p>}
 
         {!s ? (
-          <p className="text-sm text-[#161616]/50">Loading...</p>
+          <p className="text-sm text-[#161616]/65">Loading...</p>
         ) : (
           <div className="space-y-6">
             {/* ── the master switch ── */}
@@ -124,7 +124,7 @@ export default function SettingsScreen() {
                       />
                       <span>
                         <span className="text-[14px] font-semibold">{t.label}</span>
-                        <span className="block text-[12px] text-[#161616]/55">{t.hint}</span>
+                        <span className="block text-[12px] text-[#161616]/65">{t.hint}</span>
                       </span>
                     </label>
                   ))}
@@ -171,7 +171,7 @@ export default function SettingsScreen() {
                     />
                     <span>
                       <span className="text-[14px] font-semibold">Automatic daily sourcing</span>
-                      <span className="block text-[12px] text-[#161616]/55">
+                      <span className="block text-[12px] text-[#161616]/65">
                         Off by default on purpose. Uncontrolled sourcing is how a prospect list becomes a liability.
                       </span>
                     </span>
@@ -218,7 +218,7 @@ export default function SettingsScreen() {
                 paused, which is how it was built. If that ever changes, turn this engine off first, in this order, or
                 the same contractor gets the same cold email twice from the same domain.
               </p>
-              <p className="mt-2 text-[12px] font-mono text-[#161616]/50">
+              <p className="mt-2 text-[12px] font-mono text-[#161616]/65">
                 acq_* tables and the outbound governor · factory_* tables and the blueprint compiler
               </p>
             </Section>

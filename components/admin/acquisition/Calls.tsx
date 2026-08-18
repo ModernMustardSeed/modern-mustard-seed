@@ -45,7 +45,7 @@ export default function Calls() {
   }, [load]);
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[86rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav
@@ -80,7 +80,7 @@ export default function Calls() {
 
         <Section title="Mr. Mustard on the phones" note="Every acquisition call, newest first. Open one to read the transcript.">
           {calls.length === 0 ? (
-            <p className="text-sm text-[#161616]/45">
+            <p className="text-sm text-[#161616]/60">
               No calls yet. They start when a prospect clicks the button in the email and gives consent.
             </p>
           ) : (
@@ -97,11 +97,11 @@ export default function Calls() {
                         {c.lead.business_name}
                       </Link>
                     ) : (
-                      <span className="font-semibold text-[#161616]/50">Unknown prospect</span>
+                      <span className="font-semibold text-[#161616]/65">Unknown prospect</span>
                     )}
                     {c.lead?.trade && <Chip label={c.lead.trade} />}
                     {c.lead?.city && (
-                      <span className="text-[12px] text-[#161616]/55">
+                      <span className="text-[12px] text-[#161616]/65">
                         {c.lead.city}
                         {c.lead.state ? `, ${c.lead.state}` : ''}
                       </span>
@@ -111,7 +111,7 @@ export default function Calls() {
                     {c.lead?.needs_human && <Chip label="NEEDS YOU" tone="hot" />}
                     {c.lead?.demo_status === 'ready' && <Chip label="forged" tone="good" />}
                     {c.lead?.client_status === 'client' && <Chip label="CLIENT" tone="good" />}
-                    <span className="ml-auto text-[11px] font-mono text-[#161616]/45">{timeAgo(c.requested_at)}</span>
+                    <span className="ml-auto text-[11px] font-mono text-[#161616]/60">{timeAgo(c.requested_at)}</span>
                   </div>
 
                   {c.roleplay_scenario && (
@@ -121,7 +121,7 @@ export default function Calls() {
                   )}
                   {c.summary && <p className="mt-2 text-[13px] leading-relaxed text-[#161616]/80">{c.summary}</p>}
                   {c.ended_reason && !c.summary && (
-                    <p className="mt-2 text-[12px] font-mono text-[#161616]/45">Ended: {c.ended_reason}</p>
+                    <p className="mt-2 text-[12px] font-mono text-[#161616]/60">Ended: {c.ended_reason}</p>
                   )}
 
                   {c.transcript && (

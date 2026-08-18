@@ -52,11 +52,11 @@ export default function ClientFactory() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#FBF6EA]">
+      <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
         <AdminHeader active="acquisition" title="Acquisition" />
         <main className="max-w-6xl mx-auto px-5 py-6">
           <AcqNav active="factory" />
-          <p className="text-sm text-[#161616]/50">{error || 'Counting...'}</p>
+          <p className="text-sm text-[#161616]/65">{error || 'Counting...'}</p>
         </main>
       </div>
     );
@@ -67,7 +67,7 @@ export default function ClientFactory() {
   const compounding = m.netNewCents > 0;
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[92rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav active="factory" />
@@ -84,7 +84,7 @@ export default function ClientFactory() {
                 {m.netNewCents >= 0 ? '+' : ''}
                 {usd(m.netNewCents)}
               </h1>
-              <p className="mt-1 font-oswald text-sm uppercase tracking-[0.18em] text-[#161616]/55">Net new MRR</p>
+              <p className="mt-1 font-oswald text-sm uppercase tracking-[0.18em] text-[#161616]/65">Net new MRR</p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 min-w-0">
               <Stat label="Active MRR" value={usd(m.activeMrrCents)} tone="seed" big />
@@ -105,7 +105,7 @@ export default function ClientFactory() {
           <div className="mt-4 flex flex-wrap gap-4 text-[13px] text-[#161616]/65">
             <span>Net revenue retention: <strong>{m.nrrPct != null ? `${m.nrrPct}%` : 'no base yet'}</strong></span>
             <span>Logo churn: <strong>{m.logoChurnPct != null ? `${m.logoChurnPct}%` : 'no base yet'}</strong></span>
-            <span className="text-[#161616]/45">
+            <span className="text-[#161616]/60">
               {compounding ? 'The company is compounding this month.' : m.netNewCents === 0 ? 'Nothing has moved this month yet.' : 'More left than arrived this month.'}
             </span>
           </div>
@@ -126,7 +126,7 @@ export default function ClientFactory() {
                     : ''
               }`}
             >
-              <p className="text-[10px] uppercase tracking-[0.22em] font-oswald font-semibold text-[#161616]/50">Current constraint</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] font-oswald font-semibold text-[#161616]/65">Current constraint</p>
               <p className="mt-1 font-oswald text-xl font-bold uppercase tracking-tight">{data.bottleneck.constraint.label}</p>
               <p className="mt-1 text-[13px] text-[#161616]/70">{data.bottleneck.constraint.detail}</p>
             </div>
@@ -146,7 +146,7 @@ export default function ClientFactory() {
                     <span className={`w-16 text-right font-mono text-[12px] tabular-nums ${worst ? 'text-[#E0301E] font-bold' : 'text-[#161616]/65'}`}>
                       {pct(r.ratePct)}
                     </span>
-                    <span className="w-24 text-right font-mono text-[11px] text-[#161616]/40">
+                    <span className="w-24 text-right font-mono text-[11px] text-[#161616]/60">
                       {r.numerator}/{r.denominator}
                       {r.thin ? ' thin' : ''}
                     </span>
@@ -245,7 +245,7 @@ export default function ClientFactory() {
                     ? 'bg-[#3f5d34] text-white border-[#161616]'
                     : c.current
                       ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[3px_3px_0_0_#161616]'
-                      : 'border-[#161616]/20 text-[#161616]/40'
+                      : 'border-[#161616]/20 text-[#161616]/60'
                 }`}
               >
                 {c.value.toLocaleString()} clients
@@ -261,7 +261,7 @@ export default function ClientFactory() {
                     ? 'bg-[#3f5d34] text-white border-[#161616]'
                     : c.current
                       ? 'bg-[#F5B700] text-[#161616] border-[#161616] shadow-[3px_3px_0_0_#161616]'
-                      : 'border-[#161616]/20 text-[#161616]/40'
+                      : 'border-[#161616]/20 text-[#161616]/60'
                 }`}
               >
                 {usd(c.cents)} MRR
@@ -304,7 +304,7 @@ export default function ClientFactory() {
           {/* ── the forecast ── */}
           <Section title="What it would take" note="Computed from this campaign's own observed rates. Projection, not guarantee.">
             {data.forecasts.every((f) => f.prospectsNeeded === null) ? (
-              <p className="text-sm text-[#161616]/55">{data.forecasts[0]?.basedOn ?? 'Not enough of the funnel has run yet.'}</p>
+              <p className="text-sm text-[#161616]/65">{data.forecasts[0]?.basedOn ?? 'Not enough of the funnel has run yet.'}</p>
             ) : (
               <div className="space-y-3">
                 {data.forecasts
@@ -321,7 +321,7 @@ export default function ClientFactory() {
                         <Pair label="Calls" v={f.callsNeeded} />
                         <Pair label="Forges" v={f.forgesNeeded} />
                       </dl>
-                      <p className="mt-2 text-[11px] font-mono text-[#161616]/50">
+                      <p className="mt-2 text-[11px] font-mono text-[#161616]/65">
                         Range {f.low?.toLocaleString()} to {f.high?.toLocaleString()} emails. {f.basedOn}
                       </p>
                     </div>
@@ -347,7 +347,7 @@ export default function ClientFactory() {
 function Pair({ label, v }: { label: string; v: number | null }) {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-[0.18em] font-oswald text-[#161616]/45">{label}</dt>
+      <dt className="text-[10px] uppercase tracking-[0.18em] font-oswald text-[#161616]/60">{label}</dt>
       <dd className="font-mono tabular-nums">{v?.toLocaleString() ?? '—'}</dd>
     </div>
   );

@@ -120,7 +120,7 @@ export default function Prospects() {
   const pages = Math.max(1, Math.ceil(total / size));
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[110rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav active="prospects" />
@@ -157,7 +157,7 @@ export default function Prospects() {
             </label>
             <span className="w-px h-4 bg-[#161616]/15" />
             <Select label="" inline value={sort} options={['lead_score', 'created_at', 'updated_at', 'business_name', 'review_count', 'email_confidence']} onChange={setSort} />
-            <span className="ml-auto text-xs font-mono text-[#161616]/55 tabular-nums">{total.toLocaleString()} prospects</span>
+            <span className="ml-auto text-xs font-mono text-[#161616]/65 tabular-nums">{total.toLocaleString()} prospects</span>
             <a className={btnGhost} href={`/api/admin/acquisition/prospects?${query().toString()}&format=csv`}>
               Export CSV
             </a>
@@ -212,12 +212,12 @@ export default function Prospects() {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={10} className="px-4 py-8 text-center text-[#161616]/45">Loading...</td>
+                  <td colSpan={10} className="px-4 py-8 text-center text-[#161616]/60">Loading...</td>
                 </tr>
               )}
               {!loading && rows.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="px-4 py-8 text-center text-[#161616]/45">
+                  <td colSpan={10} className="px-4 py-8 text-center text-[#161616]/60">
                     Nothing matches. Try clearing the filters, or run the Lead Finder.
                   </td>
                 </tr>
@@ -231,12 +231,12 @@ export default function Prospects() {
                     <Link href={`/admin/acquisition/prospects/${r.id}`} className="font-semibold hover:underline">
                       {r.business_name}
                     </Link>
-                    <div className="text-[11px] text-[#161616]/50 truncate max-w-[22rem]">
+                    <div className="text-[11px] text-[#161616]/65 truncate max-w-[22rem]">
                       {r.contact_name ? `${r.contact_name} · ` : ''}
                       {r.email ?? 'no email'}
                     </div>
                   </Td>
-                  <Td>{r.trade ? <Chip label={r.trade} /> : <span className="text-[#161616]/30">—</span>}</Td>
+                  <Td>{r.trade ? <Chip label={r.trade} /> : <span className="text-[#161616]/65">—</span>}</Td>
                   <Td className="whitespace-nowrap text-[13px] text-[#161616]/70">
                     {r.city ?? '—'}
                     {r.state ? `, ${r.state}` : ''}
@@ -246,10 +246,10 @@ export default function Prospects() {
                   </Td>
                   <Td className="text-right font-mono text-[12px] tabular-nums text-[#161616]/70">
                     {r.review_count?.toLocaleString() ?? '—'}
-                    {r.rating ? <span className="text-[#161616]/40"> · {r.rating}</span> : null}
+                    {r.rating ? <span className="text-[#161616]/60"> · {r.rating}</span> : null}
                   </Td>
                   <Td className="text-right">
-                    <span className={`font-oswald font-bold tabular-nums ${(r.lead_score ?? 0) >= 70 ? 'text-[#3f5d34]' : (r.lead_score ?? 0) >= 50 ? 'text-[#161616]' : 'text-[#161616]/40'}`}>
+                    <span className={`font-oswald font-bold tabular-nums ${(r.lead_score ?? 0) >= 70 ? 'text-[#3f5d34]' : (r.lead_score ?? 0) >= 50 ? 'text-[#161616]' : 'text-[#161616]/60'}`}>
                       {r.lead_score ?? '—'}
                     </span>
                   </Td>
@@ -273,7 +273,7 @@ export default function Prospects() {
                       )}
                     </div>
                   </Td>
-                  <Td className="whitespace-nowrap text-[11px] font-mono text-[#161616]/45">{timeAgo(r.updated_at)}</Td>
+                  <Td className="whitespace-nowrap text-[11px] font-mono text-[#161616]/60">{timeAgo(r.updated_at)}</Td>
                 </tr>
               ))}
             </tbody>
@@ -284,7 +284,7 @@ export default function Prospects() {
           <button className={btnGhost} disabled={page === 0} onClick={() => setPage((p) => Math.max(0, p - 1))}>
             Previous
           </button>
-          <span className="text-xs font-mono text-[#161616]/55">
+          <span className="text-xs font-mono text-[#161616]/65">
             Page {page + 1} of {pages}
           </span>
           <button className={btnPrimary} disabled={page + 1 >= pages} onClick={() => setPage((p) => p + 1)}>
@@ -297,13 +297,13 @@ export default function Prospects() {
 }
 
 function EmailChip({ status, confidence }: { status: string | null; confidence: number | null }) {
-  if (!status) return <span className="text-[#161616]/30">—</span>;
+  if (!status) return <span className="text-[#161616]/65">—</span>;
   const tone = status === 'verified' ? 'good' : status === 'likely' || status === 'public' ? 'warn' : status === 'unknown' ? 'neutral' : 'bad';
   return <Chip label={`${status}${confidence ? ` ${confidence}` : ''}`} tone={tone as 'good' | 'warn' | 'bad' | 'neutral'} />;
 }
 
 function Th({ children, className = '' }: { children?: React.ReactNode; className?: string }) {
-  return <th className={`px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] font-oswald font-semibold text-[#161616]/55 ${className}`}>{children}</th>;
+  return <th className={`px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] font-oswald font-semibold text-[#161616]/65 ${className}`}>{children}</th>;
 }
 function Td({ children, className = '' }: { children?: React.ReactNode; className?: string }) {
   return <td className={`px-3 py-2.5 align-top ${className}`}>{children}</td>;
