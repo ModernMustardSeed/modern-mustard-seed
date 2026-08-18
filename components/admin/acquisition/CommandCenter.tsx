@@ -24,7 +24,7 @@ type Overview = {
   preflight: Preflight;
   queues: { hot: QueueRow[]; needsHuman: QueueRow[]; followupToday: QueueRow[] };
   emailQueue: { pending: number; failed: number; estimate: string; pace: { sending: boolean; reason?: string; remainingToday?: number; remainingThisHour?: number } };
-  events: { id: string; type: string; label: string; occurred_at: string; lead_id: string | null }[];
+  events: { id: string; type: string; label: string; occurred_at: string; lead_id: string | null; business_name: string | null; city: string | null; state: string | null }[];
 };
 
 export default function CommandCenter() {
@@ -260,19 +260,31 @@ export default function CommandCenter() {
                 </p>
               </Section>
 
-              <Section title="Live activity" note="The last forty things that happened.">
+              <Section
+                title="Live activity"
+                note="The last forty things that happened, and who did them."
+                right={
+                  <Link href="/admin/acquisition/engagement" className={`${btnGhost} !py-1.5 !px-3 !text-[11px]`}>
+                    Who is moving
+                  </Link>
+                }
+              >
                 <ol className="space-y-1.5 max-h-[22rem] overflow-y-auto pr-1">
                   {data.events.length === 0 && <li className="text-sm text-[#161616]/60">Nothing yet.</li>}
                   {data.events.map((e) => (
                     <li key={e.id} className="flex items-start gap-2 text-[13px] leading-snug">
                       <span className="font-mono text-[10px] text-[#161616]/60 tabular-nums shrink-0 pt-0.5">{timeAgo(e.occurred_at)}</span>
-                      {e.lead_id ? (
-                        <Link href={`/admin/acquisition/prospects/${e.lead_id}`} className="text-[#161616]/80 hover:text-[#161616] hover:underline">
-                          {e.label}
-                        </Link>
-                      ) : (
-                        <span className="text-[#161616]/80">{e.label}</span>
-                      )}
+                      <span className="min-w-0">
+                        {e.lead_id ? (
+                          <Link href={`/admin/acquisition/prospects/${e.lead_id}`} className="font-semibold text-[#161616] hover:underline">
+                            {e.business_name ?? 'Unknown business'}
+                          </Link>
+                        ) : (
+                          <span className="font-semibold text-[#161616]">Campaign</span>
+                        )}
+                        <span className="text-[#161616]/80"> · {e.label}</span>
+                        {e.city && <span className="text-[#161616]/60 text-[11px]"> · {e.city}{e.state ? `, ${e.state}` : ''}</span>}
+                      </span>
                     </li>
                   ))}
                 </ol>

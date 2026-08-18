@@ -700,6 +700,16 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
       console.error('acq end-of-call failed', err);
     }
   }
+  // A prospect who dials Mr. Mustard's line themselves is the warmest signal
+  // the campaign has, and until now it left no mark on their record. Match the
+  // caller id against the acquisition prospects and put it on their timeline.
+  if (!acq && phoneNumber && (call.type === 'inboundPhoneCall' || !call.type)) {
+    try {
+      await noteInboundFromProspect(phoneNumber, { summary, durationSeconds, endedReason });
+    } catch (err) {
+      console.error('acq inbound match failed', err);
+    }
+  }
   if (prospectId || outboundLeadId) {
     try {
       const sb = getSupabase();
@@ -754,6 +764,46 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
   } catch (err) {
     console.error('voice end-of-call report email failed', err);
   }
+}
+
+/**
+ * Find the acquisition prospect behind an inbound caller id and record the
+ * call on their timeline. Phones in outbound_leads arrive in every format a
+ * scraper can produce, so match on the last ten digits in code after a cheap
+ * suffix filter in the database.
+ */
+async function noteInboundFromProspect(
+  callerNumber: string,
+  info: { summary: string; durationSeconds?: number; endedReason: string },
+): Promise<void> {
+  const sb = getSupabase();
+  if (!sb) return;
+  const digits = callerNumber.replace(/\D/g, '');
+  if (digits.length < 10) return;
+  const last10 = digits.slice(-10);
+  const { data } = await sb
+    .from('outbound_leads')
+    .select('id,phone,acq_campaign_id,business_name')
+    .not('acq_campaign_id', 'is', null)
+    .like('phone', `%${last10.slice(-4)}`)
+    .limit(50);
+  const lead = ((data ?? []) as { id: string; phone: string | null; acq_campaign_id: string | null }[]).find(
+    (l) => (l.phone ?? '').replace(/\D/g, '').slice(-10) === last10,
+  );
+  if (!lead) return;
+  const stamp = new Date().toISOString();
+  await recordEvent(sb, {
+    leadId: lead.id,
+    campaignId: lead.acq_campaign_id,
+    type: 'call_inbound',
+    label: `Called Mr. Mustard's line themselves${info.durationSeconds ? ` (${info.durationSeconds}s)` : ''}`,
+    detail: { from: callerNumber, endedReason: info.endedReason, summary: info.summary.slice(0, 600) },
+  });
+  await sb
+    .from('outbound_leads')
+    .update({ last_seen_at: stamp, reservoir_state: 'engaged', needs_human: `Called Mr. Mustard's line ${stamp.slice(0, 10)}. Call them back.` })
+    .eq('id', lead.id)
+    .in('reservoir_state', ['queued', 'contacted', 'engaged', 'ready', 'verified', 'email_found', 'qualified']);
 }
 
 /* ───────── Webhook entry ───────── */
