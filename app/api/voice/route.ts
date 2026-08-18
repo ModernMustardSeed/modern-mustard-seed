@@ -451,6 +451,17 @@ const RESOURCE_CATALOG: Record<string, CatalogEntry> = {
   'partner-hub': { label: 'Your partner dashboard', url: `${SITE_ROOT}/partners/hq` },
   partners: { label: 'The partner program', url: `${SITE_ROOT}/partners` },
   home: { label: 'Modern Mustard Seed', url: SITE_ROOT },
+  // ── PAY LINKS ──────────────────────────────────────────────────────────────
+  // A caller who says "just send me the bill" gets a real one. Each opens a live
+  // Stripe Checkout for that exact product, priced from lib/demo-order.ts by
+  // app/pay/[slug]/route.ts, so what he says out loud and what they are charged
+  // can never disagree. Added 2026-08-17 (Sarah): "he needs to be able to email
+  // payment links and the actual product so they can just pay for it if they
+  // want to." `ref: true` so a partner still earns on a link they caused.
+  'pay-talking-website': { label: 'Start The Talking Website (secure checkout)', url: `${SITE_ROOT}/pay/talking-website`, ref: true },
+  'pay-voice-agent': { label: 'Start your Voice Agent (secure checkout)', url: `${SITE_ROOT}/pay/voice-agent`, ref: true },
+  'pay-website': { label: 'Start your website (secure checkout)', url: `${SITE_ROOT}/pay/website`, ref: true },
+  'pay-command-center': { label: 'Start your Business Command Center (secure checkout)', url: `${SITE_ROOT}/pay/command-center`, ref: true },
   // Admin-desk-only deep links (auth-gated routes; useless to anyone not signed
   // into admin, so they are dropped on non-admin calls). Paths mirror the admin
   // nav in components/admin/AdminHeader.tsx.

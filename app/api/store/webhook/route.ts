@@ -1684,6 +1684,64 @@ function formatCents(cents: number): string {
   return `$${Math.round(Math.abs(cents) / 100).toLocaleString('en-US')}`;
 }
 
+/**
+ * Somebody paid off a /pay/<slug> link, with no forged demo behind them. The
+ * money is already collected and the client record already written by
+ * provisionPurchase, so this owes Sarah two things: the email that tells her a
+ * sale landed, and a lead row so the buyer shows up in the pipeline instead of
+ * only in Stripe. Best effort throughout: a notification failure must never
+ * fail a webhook Stripe will otherwise retry against a paid session.
+ */
+async function handleDirectPayPaid(
+  session: Stripe.Checkout.Session,
+  email: string | null,
+  name: string | null,
+): Promise<void> {
+  const itemName = session.metadata?.item_name || 'Modern Mustard Seed';
+  const products = session.metadata?.products || '';
+  const phone = session.customer_details?.phone || '';
+  const amount = formatCents(session.amount_total ?? 0);
+
+  try {
+    await insertLead({
+      type: 'contact',
+      name: name || null,
+      email: email || null,
+      phone: phone || null,
+      source: 'pay-link',
+      message: `PAID on a direct pay link: ${itemName} (${products}). First invoice ${amount}. No forged demo behind this one, so the build starts from scratch.`,
+    });
+  } catch (err) {
+    console.error('direct-pay lead insert failed:', err instanceof Error ? err.message : err);
+  }
+
+  if (!process.env.RESEND_API_KEY) return;
+  try {
+    const resend = resendClient();
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `PAID: ${itemName}. ${amount} today.`,
+      html: leadNotification({
+        type: 'Contact',
+        name: name || 'A new client',
+        email: email || '',
+        fields: [
+          { label: 'Bought', value: itemName },
+          { label: 'Pieces', value: products || 'unknown' },
+          { label: 'First invoice', value: amount },
+          { label: 'Email', value: email || 'not given' },
+          { label: 'Phone', value: phone || 'not given' },
+        ],
+        message: 'They paid off a direct link, so there is no forged demo to release. This build starts from scratch.',
+        suggestedAction: 'Send the kickoff questionnaire and get the build on the delivery board',
+      }),
+    });
+  } catch (err) {
+    console.error('direct-pay owner notify failed:', err instanceof Error ? err.message : err);
+  }
+}
+
 async function handleDemoOrderPaid(
   session: Stripe.Checkout.Session,
   email: string | null,
@@ -2659,6 +2717,18 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'demo-order') {
     await handleDemoOrderPaid(session, email ?? null, name ?? null);
     return NextResponse.json({ received: true, kind: 'demo-order' });
+  }
+
+  // ── DIRECT PAY: bought straight off a /pay/<slug> link, no demo hub ──
+  // Mr. Mustard emails these on a call to somebody who has decided. The unified
+  // pipeline above already made them a client and wrote their ownership card,
+  // so all this owes is telling Sarah a sale landed and who to build for. It is
+  // deliberately thin: no provisioning branches, because a direct buyer has no
+  // forged demo to release, and Sarah starts their build by hand from this
+  // email the same way she starts a proposal sale.
+  if (session.metadata?.kind === 'direct-pay') {
+    await handleDirectPayPaid(session, email ?? null, name ?? null);
+    return NextResponse.json({ received: true, kind: 'direct-pay' });
   }
 
   // ── SWITCHBOARD franchise deal (subscription, per-location, no slug) ──
