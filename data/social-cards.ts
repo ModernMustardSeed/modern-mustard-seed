@@ -73,9 +73,9 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
       {
         file: '03-after-hours',
-        headline: '52% say an AI after hours is better service.',
-        use: 'The objection killer. Post 3, the strongest stat in the set.',
-        alt: 'A lit shop counter at night. Headline: 52 percent say an AI answering after hours is better service.',
+        headline: 'People do not hate robots. People hate beeps.',
+        use: 'The objection killer. Post 3.',
+        alt: 'A lit shop counter at night. Headline: people do not hate robots, people hate beeps.',
       },
       {
         file: '04-call-it',
@@ -137,8 +137,8 @@ export const SOCIAL_SETS: SocialSet[] = [
         graphic: '03-after-hours',
         body: [
           'Every time I bring up AI answering the phone, somebody says "people hate talking to robots."',
-          'I get it. I hated the idea too. But 52% of consumers now say a business having AI answer after hours is a sign of BETTER service, not worse (CallRail, 2025).',
-          'Here is why I think that flipped. The alternative was never a human. At 9pm on a Saturday the alternative was a beep. People do not hate robots. People hate beeps.',
+          'I get it. I hated the idea too.',
+          'Then I noticed what the alternative actually was. At 9pm on a Saturday nobody was choosing between a robot and a person. They were choosing between a robot and a beep. People do not hate robots. People hate beeps.',
           'Mine is at (406) 312-1223 if you want to judge for yourself. It says it is an AI in the first sentence. That part is non-negotiable for me.',
         ],
       },

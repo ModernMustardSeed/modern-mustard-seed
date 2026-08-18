@@ -33,7 +33,6 @@ export const metadata = buildMetadata({
 const STATS = [
   { figure: '82%', label: 'Call the next guy', source: 'CallRail, 2025' },
   { figure: '78%', label: 'Already walked over one missed call', source: 'CallRail, 2025' },
-  { figure: '52%', label: 'Say AI answering after hours signals better service', source: 'CallRail, 2025' },
 ];
 
 const PIECES = [
@@ -80,7 +79,7 @@ const FAQ = [
   },
   {
     q: 'Will my customers know it is AI?',
-    a: 'It introduces itself honestly and it never pretends to be a person. That turns out to be fine: 52% of consumers now say a business having AI answer after hours is a sign of better service, not worse (CallRail, 2025). What loses you the job is the call nobody picks up.',
+    a: 'It introduces itself honestly and it never pretends to be a person. That turns out to be fine, because at nine on a Saturday night the alternative was never a human, it was a beep. What loses you the job is the call nobody picks up.',
   },
   {
     q: 'How fast does it go live?',

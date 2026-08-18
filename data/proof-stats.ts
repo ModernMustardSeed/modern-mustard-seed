@@ -41,8 +41,15 @@ export type ProofStat = {
 };
 
 /**
- * The four on the /voice-agents wall. These were verified when that page was
- * built and are the canonical set for public marketing.
+ * The public wall, on /voice-agents and /mustard. Verified when those pages
+ * were built and the canonical set for public marketing.
+ *
+ * ⚠️ PULLED 2026-08-18, on Sarah's instruction: "take the 52% stat off
+ * everywhere". That was `prefer-the-ai`, CallRail 2025, "52% say an AI
+ * answering after hours signals better service". It met the sourcing bar above,
+ * so this is a judgement call about what we want to argue, not a correction.
+ * Do not put it back without asking her. Its hand-written copies on
+ * /talking-website and in data/social-cards.ts came out in the same commit.
  */
 export const CALL_STATS: ProofStat[] = [
   {
@@ -57,13 +64,6 @@ export const CALL_STATS: ProofStat[] = [
     figure: '78%',
     label: 'Already walked',
     body: 'Have abandoned a business over a call nobody picked up. Not a bad review. Just gone.',
-    source: 'CallRail, 2025',
-  },
-  {
-    id: 'prefer-the-ai',
-    figure: '52%',
-    label: 'Prefer the AI',
-    body: 'Say an AI answering after hours signals better service, not worse. The robot objection is dead.',
     source: 'CallRail, 2025',
   },
   {

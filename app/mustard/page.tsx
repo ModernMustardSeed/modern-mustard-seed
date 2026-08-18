@@ -473,12 +473,20 @@ export default async function MustardPage({
                 Why the phone is the leak
               </p>
               <div className="mt-5 grid grid-cols-2 gap-4">
+                {/*
+                  An odd count would leave the last bubble orphaned beside a
+                  hole, so it spans the row instead and reads as deliberate.
+                  This matters because the list is DATA: pulling the 52% figure
+                  on 2026-08-18 took the set from four to three, and the next
+                  edit to the proof bank should not be able to break the layout
+                  either.
+                */}
                 {CALL_STATS.map((s, i) => (
                   <div
                     key={s.id}
                     className={`rounded-2xl border-2 border-[#161616] p-4 shadow-[4px_4px_0_0_#161616] ${
                       i % 3 === 0 ? 'bg-[#F5B700]' : i % 3 === 1 ? 'bg-white' : 'bg-[#080C16] text-[#FBF6EA]'
-                    }`}
+                    } ${CALL_STATS.length % 2 === 1 && i === CALL_STATS.length - 1 ? 'col-span-2' : ''}`}
                     style={{ transform: `rotate(${i % 2 === 0 ? '-0.8' : '0.8'}deg)` }}
                   >
                     <p className="font-display text-[2rem] font-extrabold leading-none tracking-tight tabular-nums">
