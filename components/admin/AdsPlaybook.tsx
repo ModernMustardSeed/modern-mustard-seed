@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
+import SocialPosts from '@/components/admin/SocialPosts';
 
 /**
  * Meta Ads launch playbook for the Mr. Mustard commercials.
@@ -1043,7 +1044,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'social' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1068,6 +1069,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'cxc', num: '20', label: 'Cross + Covenant', blurb: 'Online stores · a real live storefront · $15/day' },
   { key: 'ah', num: '21', label: '9:47 PM', blurb: 'Voice agents · a REAL recorded call · $25/day' },
   { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The forge · the agent that builds · $10/day' },
+  { key: 'social', num: '💬', label: 'Organic Social', blurb: 'FB + IG + X posts · free · same day as the paid cut' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
 
@@ -1085,6 +1087,7 @@ const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo'] },
   { name: 'Brand + Verticals', keys: ['callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
+  { name: 'Organic', keys: ['social'] },
 ];
 
 /** Image-creative campaign tab (Pictures / Press / GEO share this shape). */
@@ -3178,6 +3181,8 @@ export default function AdsPlaybook() {
           </ol>
         </section>
         </>)}
+
+        {tab === 'social' && <SocialPosts />}
 
         {tab === 'results' && (<>
         {/* Measurement */}
