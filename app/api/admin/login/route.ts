@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { canonicalAdminEmail, checkCredentials, setSessionCookie } from '@/lib/admin-auth';
+import { signInCandidates, checkCredentials, setSessionCookie } from '@/lib/admin-auth';
 import { checkTeamCredentials } from '@/lib/team-password';
 
 export const runtime = 'nodejs';
@@ -35,13 +35,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Email and password required' }, { status: 400 });
   }
 
-  // An old address a teammate still types resolves to their real account first,
-  // so they have one password no matter which one they enter.
-  const loginEmail = canonicalAdminEmail(email);
-
   // Env credentials first (owner + legacy ADMIN_TEAM), then the DB team_members
   // (unified identity). The DB check is node-only and kept out of admin-auth.
-  const user = checkCredentials(loginEmail, password) ?? (await checkTeamCredentials(loginEmail, password));
+  //
+  // A teammate with a second address gets every one of them tried, the typed
+  // one first, so an old address they still reach for opens the same account
+  // and moving their roster row between addresses never locks them out. The
+  // session is minted for the address the account is actually filed under, so
+  // roles, stats, and the roster stay single-rowed.
+  let user: Awaited<ReturnType<typeof checkTeamCredentials>> = null;
+  for (const candidate of signInCandidates(email)) {
+    user = checkCredentials(candidate, password) ?? (await checkTeamCredentials(candidate, password));
+    if (user) break;
+  }
   if (!user) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   }
