@@ -72,12 +72,19 @@ type LimitVerdict = { ok: true } | { ok: false; code: 'cooldown' | 'rate-limited
  * Adaptive rather than always burdensome. A first-time visitor sees nothing. A
  * number that was just called waits out a cooldown. An address firing numbers
  * at us is stopped at the hour and again at the day.
+ *
+ * The request row is written BEFORE these checks run, so every query here
+ * excludes it by id. Without that exclusion the row this attempt just inserted
+ * matched its own cooldown window, and /mustard refused every caller it ever
+ * saw with "he called that number a moment ago".
  */
 async function checkLimits(
   db: SupabaseClient,
   surface: MustardSurface,
   phoneE164: string,
   ip: string | null,
+  /** The row this attempt just wrote. It must never be counted against itself. */
+  requestId: string,
 ): Promise<LimitVerdict> {
   const now = Date.now();
   const dayAgo = new Date(now - 86400_000).toISOString();
@@ -88,6 +95,7 @@ async function checkLimits(
     .from('mustard_requests')
     .select('id,created_at,status')
     .eq('phone_e164', phoneE164)
+    .neq('id', requestId)
     .in('status', ['calling', 'connected'])
     .gte('created_at', new Date(now - 30 * 60_000).toISOString())
     .limit(1);
@@ -99,6 +107,7 @@ async function checkLimits(
     .from('mustard_requests')
     .select('created_at')
     .eq('phone_e164', phoneE164)
+    .neq('id', requestId)
     .neq('status', 'refused')
     .gte('created_at', new Date(now - surface.cooldown_minutes * 60_000).toISOString())
     .order('created_at', { ascending: false })
@@ -118,6 +127,7 @@ async function checkLimits(
     .from('mustard_requests')
     .select('id', { count: 'exact', head: true })
     .eq('phone_e164', phoneE164)
+    .neq('id', requestId)
     .neq('status', 'refused')
     .gte('created_at', dayAgo);
   if ((perPhoneDay ?? 0) >= surface.max_per_phone_per_day) {
@@ -129,6 +139,7 @@ async function checkLimits(
       .from('mustard_requests')
       .select('id', { count: 'exact', head: true })
       .eq('ip', ip)
+      .neq('id', requestId)
       .neq('status', 'refused')
       .gte('created_at', hourAgo);
     if ((perIpHour ?? 0) >= surface.max_per_ip_per_hour) {
@@ -138,6 +149,7 @@ async function checkLimits(
       .from('mustard_requests')
       .select('id', { count: 'exact', head: true })
       .eq('ip', ip)
+      .neq('id', requestId)
       .neq('status', 'refused')
       .gte('created_at', dayAgo);
     if ((perIpDay ?? 0) >= surface.max_per_ip_per_day) {
@@ -252,7 +264,7 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
 
   /* ── the abuse limits ── */
 
-  const limits = await checkLimits(db, surface, phoneE164, input.ip);
+  const limits = await checkLimits(db, surface, phoneE164, input.ip, requestId);
   if (!limits.ok) return refuse(limits.code, limits.error, limits.retryAfterSeconds);
 
   /* ── resolve or create the prospect ── */
