@@ -6,6 +6,7 @@ import { resolveLink } from '@/lib/mustard/links';
 import { consentVersion, CURRENT_CONSENT } from '@/lib/acq/consent';
 import { recordEventOnce } from '@/lib/acq/events';
 import { buildMetadata, SITE } from '@/lib/seo';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
 export const dynamic = 'force-dynamic';
 
@@ -204,6 +205,120 @@ export default async function MustardPage({
 
         {/* screenprint rule between the plates */}
         <div className="stripe-ink h-3 w-full opacity-90" aria-hidden="true" />
+      </section>
+
+      {/*
+        ── what he is, and what the thing costs ──────────────────────────────
+
+        Added 2026-08-18 (Sarah): "make /mustard a bit more welcoming and
+        helpful, intro them to our voice agents and what they do and also
+        talking websites, so it completes the knowledge gap in the campaign."
+
+        THE KNOWLEDGE GAP IS REAL AND IT IS SPECIFIC. Somebody arriving from a
+        cold email has been told a robot will call them and nothing else. They
+        do not know what it does when it answers, they do not know a website is
+        part of it, and they do not know what any of it costs. Every one of
+        those is a reason to close the tab instead of typing a number.
+
+        IT SITS BELOW THE ASK, NOT ABOVE IT. The form stays the first thing on
+        the screen, because the demo IS the pitch and reading about a voice
+        agent is a poor substitute for hearing one. This is for the person who
+        scrolled instead of typing, which is the person we were losing.
+
+        PRICES ARE DERIVED, NEVER TYPED. Everything below reads from
+        lib/demo-order.ts, the same source the checkout and Mr. Mustard's own
+        script use, so the page cannot drift from what he says on the phone or
+        what Stripe charges.
+      */}
+      <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#FBF6EA]">
+        <div className="relative mx-auto max-w-5xl px-5 py-14 sm:px-8 sm:py-20">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.32em] text-[#C4160B]">
+            While you wait for the phone to ring
+          </p>
+          <h2 className="mt-4 max-w-2xl font-display text-[2.1rem] sm:text-[3rem] font-extrabold leading-[0.95] tracking-tight">
+            So what <span className="italic">is</span> he?
+          </h2>
+          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-[#161616]/80">
+            He is a voice agent. He answers your phone in your business name, at two in the afternoon and at two in the
+            morning, and he never once puts somebody on hold to go find you.
+          </p>
+
+          <ul className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ['Answers on the first ring', 'Every call, all night, no voicemail. The nine p m caller who would have rung the next name on the list gets a person instead.'],
+              ['Books the job', 'Straight into your real calendar, with the address and the problem written down the way you would have written it.'],
+              ['Knows your business', 'Your services, your hours, your prices, your service area. He answers the question instead of taking a message about it.'],
+              ['Hands you the ones that matter', 'A big job or an angry customer gets warmed up and transferred to your cell, with a summary before you say hello.'],
+              ['Writes everything down', 'Name, number, what they wanted, what you promised. In your inbox before the call ends.'],
+              ['Remembers repeat callers', 'Somebody who called last month gets greeted like it. That alone sounds more human than most front desks.'],
+            ].map(([title, body]) => (
+              <li key={title} className="rounded-xl border-2 border-[#161616] bg-white p-5 shadow-[4px_4px_0_0_#161616]">
+                <p className="font-display text-[17px] font-bold leading-tight">{title}</p>
+                <p className="mt-2 text-[14px] leading-relaxed text-[#161616]/70">{body}</p>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-8 max-w-2xl text-[15px] leading-relaxed text-[#161616]/70">
+            The one on the phone with you is the same product, running Sarah&apos;s business instead of yours. Nothing on
+            this page is a mockup.
+          </p>
+
+          {/*
+            THE BUNDLE, WHICH IS THE ACTUAL OFFER.
+
+            A voice agent alone is the thing they clicked for. The Talking
+            Website is the thing most of them need, and it is genuinely cheaper
+            than the two pieces bought separately, so saying it plainly here is
+            service rather than upsell. The command center riding free inside it
+            is the whole reason the bundle is not a discount trick.
+          */}
+          <div className="mt-14 grid gap-5 lg:grid-cols-[1.15fr_1fr]">
+            <div className="relative overflow-hidden rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-7 shadow-[6px_6px_0_0_#161616] sm:p-9">
+              <div className="absolute inset-0 halftone-ink opacity-60" aria-hidden="true" />
+              <div className="relative">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.32em] text-[#C4160B]">
+                  The one most people take
+                </p>
+                <h3 className="mt-3 font-display text-[2rem] sm:text-[2.6rem] font-extrabold leading-[0.95] tracking-tight">
+                  {DEMO_BUNDLE.name}
+                </h3>
+                <p className="mt-3 text-[16.5px] leading-relaxed text-[#161616]/85">
+                  A website that answers its own phone. The site and the voice agent built as one thing, off one brain,
+                  so the answer somebody reads at noon is the answer they hear at midnight.
+                </p>
+                <p className="mt-5 inline-block rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-4 py-2 font-mono text-[15px] font-bold tracking-wide">
+                  {formatUsd(DEMO_BUNDLE.setupCents)} to build, then {formatUsd(DEMO_BUNDLE.monthlyCents)} a month
+                </p>
+                <p className="mt-4 text-[14px] leading-relaxed text-[#161616]/75">
+                  The {DEMO_PRODUCTS.os.name} rides along free inside it: every call transcribed, plus your traffic,
+                  leads, customers, reviews and money on one board. On its own it is{' '}
+                  {formatUsd(DEMO_PRODUCTS.os.setupCents)} and {formatUsd(DEMO_PRODUCTS.os.monthlyCents)} a month.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-5">
+              {[DEMO_PRODUCTS.voice, DEMO_PRODUCTS.site].map((p) => (
+                <div key={p.key} className="flex-1 rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616]">
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#161616]/45">
+                    On its own
+                  </p>
+                  <h3 className="mt-2 font-display text-[1.5rem] font-extrabold leading-tight tracking-tight">{p.name}</h3>
+                  <p className="mt-2 text-[14.5px] leading-relaxed text-[#161616]/70">{p.blurb}</p>
+                  <p className="mt-3 font-mono text-[13.5px] font-bold">
+                    {formatUsd(p.setupCents)} to build, {formatUsd(p.monthlyCents)} a month
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p className="mt-7 text-[14px] leading-relaxed text-[#161616]/60">
+            Month to month. Cancel any time. Your phone number does not change, it forwards. Nothing is due today and
+            the call above costs you nothing either way.
+          </p>
+        </div>
       </section>
 
       {/* ── the ink close ── */}
