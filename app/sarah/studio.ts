@@ -29,6 +29,7 @@ export const MMS_STUDIO: StudioConfig = {
     BUILD: 'bg-[#F5B700] text-[#161616]',
     SYSTEMS: 'bg-[#cfe0ff] text-[#161616]',
     STEWARD: 'bg-[#f6d9d5] text-[#161616]',
+    KINGDOM: 'bg-[#2F6F4E] text-[#FBF6EA]',
     STORY: 'bg-[#e4ddcf] text-[#161616]',
     SALES: 'bg-[#E0301E] text-[#FBF6EA]',
     ADS: 'bg-[#FF6B35] text-[#161616]',

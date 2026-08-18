@@ -12,12 +12,13 @@ import type { PrompterScript as BaseScript } from '@/components/studio/types';
  */
 export type PrompterScript = BaseScript & {
   kind: 'episode' | 'short' | 'sales' | 'ad';
-  pillar: 'BUILD' | 'SYSTEMS' | 'STEWARD' | 'STORY' | 'SALES' | 'ADS';
+  pillar: 'BUILD' | 'SYSTEMS' | 'STEWARD' | 'STORY' | 'SALES' | 'ADS' | 'KINGDOM';
 };
 
 export { isDirectionLine, scriptWordCount, scriptEstSeconds, fmtTime } from '@/components/studio/types';
 
 import { GENERATED } from './scripts-data';
+import { KINGDOM_LEVERAGE } from './scripts-kingdom';
 
 /** The ratified 3-minute originals live on as tight cuts in the Shorts bank. */
 const TIGHT_CUTS: PrompterScript[] = [
@@ -2248,5 +2249,5 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
   },
 ];
 
-/** Episodes, how-we-build batches, Sales Desk, Meta Ads, Shorts bank, Origin batch, By Request. */
-export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...BEHIND_THE_BUILD, ...MORE_SAUCE, ...SALES_DESK, ...META_ADS, ...TIGHT_CUTS, ...ORIGIN, ...AUDIENCE_REQUESTS];
+/** Episodes, Kingdom Leverage season two, how-we-build batches, Sales Desk, Meta Ads, Shorts bank, Origin batch, By Request. */
+export const PROMPTER_SCRIPTS: PrompterScript[] = [...GENERATED, ...KINGDOM_LEVERAGE, ...BEHIND_THE_BUILD, ...MORE_SAUCE, ...SALES_DESK, ...META_ADS, ...TIGHT_CUTS, ...ORIGIN, ...AUDIENCE_REQUESTS];
