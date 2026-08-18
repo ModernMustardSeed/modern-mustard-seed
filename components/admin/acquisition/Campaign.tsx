@@ -84,18 +84,18 @@ export default function CampaignScreen() {
 
   if (!campaign) {
     return (
-      <div className="min-h-screen bg-[#FBF6EA]">
+      <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
         <AdminHeader active="acquisition" title="Acquisition" />
         <main className="max-w-6xl mx-auto px-5 py-6">
           <AcqNav active="campaign" />
-          <p className="text-sm text-[#161616]/50">{error || 'Loading...'}</p>
+          <p className="text-sm text-[#161616]/65">{error || 'Loading...'}</p>
         </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[86rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav
@@ -143,7 +143,7 @@ export default function CampaignScreen() {
 
             {/* One box per gap, generated from the array, so a sixth email in
                 the sequence shows up here on its own without a UI change. */}
-            <p className="mt-5 text-[10px] uppercase tracking-[0.22em] font-oswald font-semibold text-[#161616]/50">
+            <p className="mt-5 text-[10px] uppercase tracking-[0.22em] font-oswald font-semibold text-[#161616]/65">
               Business days between emails
             </p>
             <div className="mt-2 flex flex-wrap gap-3">
@@ -183,7 +183,7 @@ export default function CampaignScreen() {
             >
               Save pacing
             </button>
-            <p className="mt-3 text-xs text-[#161616]/55">
+            <p className="mt-3 text-xs text-[#161616]/65">
               Pacing protects the sending domain, which every client invoice and booking confirmation also rides on. The
               sender stops itself if the day&apos;s bounce rate crosses four percent.
             </p>
@@ -195,9 +195,9 @@ export default function CampaignScreen() {
           >
             {Array.from({ length: stepCount }, (_, i) => i + 1).map((step) => (
               <div key={step} className="mb-5">
-                <p className="text-[10px] uppercase tracking-[0.22em] font-oswald font-semibold text-[#161616]/50 mb-2">
+                <p className="text-[10px] uppercase tracking-[0.22em] font-oswald font-semibold text-[#161616]/65 mb-2">
                   Email {step}
-                  {STEP_NAMES[step] ? <span className="ml-2 normal-case tracking-normal text-[#161616]/40">{STEP_NAMES[step]}</span> : null}
+                  {STEP_NAMES[step] ? <span className="ml-2 normal-case tracking-normal text-[#161616]/60">{STEP_NAMES[step]}</span> : null}
                 </p>
                 <div className="space-y-2">
                   {variants.filter((v) => v.step === step).map((v) => (
@@ -231,12 +231,12 @@ export default function CampaignScreen() {
                     </div>
                   ))}
                   {variants.filter((v) => v.step === step).length === 0 && (
-                    <p className="text-sm text-[#161616]/45">No variants for this step.</p>
+                    <p className="text-sm text-[#161616]/60">No variants for this step.</p>
                   )}
                 </div>
               </div>
             ))}
-            <p className="text-xs text-[#161616]/55">
+            <p className="text-xs text-[#161616]/65">
               <code className="font-mono">{'{{first_name}}'}</code> falls back to the business name when we do not know a
               real first name. Nothing ever addresses a company as a person.
             </p>
