@@ -35,31 +35,32 @@ export const STUDIO_NUMBER = '(406) 312-1223';
 export const STUDIO_NUMBER_E164 = '+14063121223';
 
 /**
- * The outbound line IS the studio line, and that is the finished answer after
- * trying both alternatives on 2026-08-18.
+ * THE OUTBOUND LINE, AND WHY IT IS NOT THE STUDIO LINE.
  *
- * ⚠️ THE DAILY OUTBOUND CAP IS PER ACCOUNT, NOT PER NUMBER. This is the fact
- * everything else follows from, and it was measured, not assumed: a second Vapi
- * number that had placed ZERO calls that day was refused with the identical
- * error the moment the account's ten were gone. So splitting callbacks onto
- * their own number buys exactly nothing, and buying more numbers buys nothing
- * either. Vapi will not sell more free ones anyway ("You have reached the
- * maximum number of free phone numbers").
+ * Sarah's own Twilio number, imported into Vapi on 2026-08-18 and attached to
+ * Mr. Mustard, so a person who calls back the number that rang them reaches him.
+ * Every outbound call he places goes out on it.
  *
- * Since a second number adds no capacity, it only costs identity, so calls go
- * out on the number that is printed on the website. Somebody who gets rung sees
- * the same number they would have dialled, and calling it back reaches him.
+ * ⚠️ THE VAPI DAILY OUTBOUND CAP IS PER ACCOUNT, NOT PER NUMBER, and that fact
+ * is why this exists. Measured, not assumed: a second VAPI number that had
+ * placed ZERO calls that day was refused with the identical
+ * "Numbers Bought On Vapi Have A Daily Outbound Call Limit" error the moment the
+ * account's ten were gone. So no arrangement of Vapi numbers raises the ceiling,
+ * and Vapi will not sell more free ones anyway. An IMPORTED carrier number is
+ * outside that accounting entirely, which was proved by placing a call through
+ * this line on a day when the Vapi numbers were still refusing everything.
  *
- * Twilio was tried first and reverted the same hour. Sarah's account is on a
- * TRIAL, so an inbound call opened with Twilio's own recorded notice and a
- * "press any key" before the agent ever spoke, and she does not want a third
- * vendor billing per call. An upgraded Twilio account removes both the notice
- * and the cap, and that is the ONLY way past ten a day short of a Vapi plan
- * change. Inbound has never been capped on any of this.
+ * The earlier attempt with Huck's Twilio number failed for a reason that had
+ * nothing to do with any of this: that account was on a TRIAL, so inbound calls
+ * opened with Twilio's own recorded notice and a "press any key" before the
+ * agent spoke. This account is type Full and active, so no notice.
+ *
+ * Inbound has never been capped on any line. The studio number keeps answering
+ * as it always has, and it stays the number printed on the website.
  */
-export const CALLBACK_NUMBER = STUDIO_NUMBER;
-export const CALLBACK_NUMBER_E164 = STUDIO_NUMBER_E164;
+export const CALLBACK_NUMBER = '(406) 709-6593';
+export const CALLBACK_NUMBER_E164 = '+14067096593';
 
 /** Env wins, so a line can be swapped in an emergency without a deploy. */
 export const CALLBACK_NUMBER_ID =
-  real(process.env.VAPI_CALLBACK_NUMBER_ID) || '462f988d-ce3a-4961-b652-dfc1fb1ac5d0';
+  real(process.env.VAPI_CALLBACK_NUMBER_ID) || '93647a40-4eff-4ac7-9ada-a57f7a9f1f5b';
