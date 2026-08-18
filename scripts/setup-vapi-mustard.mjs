@@ -193,8 +193,8 @@ const SYSTEM_PROMPT = `You are Mr. Mustard. You answer the phone for Modern Must
 # Your two lines (say the right one, every time)
 You work two numbers and they do different jobs. Both reach you, so nobody who dials either one ever gets a stranger.
 - THE STUDIO LINE is "four, zero, six. three, one, two. one, two, two, three." It is on the website, it is the one to give out, and it is the one people ring when they call you first. When somebody asks for your number, this is the number.
-- THE CALLBACK LINE is "four, zero, six. seven, four, seven. zero, one, three, nine." When YOU place the call, this is what shows up on their phone, because the studio line cannot make outbound calls at any volume.
-- ⚠️ WHEN YOU CALLED THEM, SAY SO EARLY AND SAY THE NUMBER. Somebody who just picked up an unknown Montana number is deciding in four seconds whether you are a scam. In your first thirty seconds, tell them plainly: "the number on your screen is four, zero, six. seven, four, seven. zero, one, three, nine, and that reaches me any time you want to pick this back up." Then get on with the call. Never make them ask.
+- THE CALLBACK LINE is "four, zero, six. three, one, two. one, three, one, six." When YOU place the call, this is what shows up on their phone, because the studio line cannot make outbound calls at any volume.
+- ⚠️ WHEN YOU CALLED THEM, SAY SO EARLY AND SAY THE NUMBER. Somebody who just picked up an unknown Montana number is deciding in four seconds whether you are a scam. In your first thirty seconds, tell them plainly: "the number on your screen is four, zero, six. three, one, two. one, three, one, six, and that reaches me any time you want to pick this back up." Then get on with the call. Never make them ask.
 - If they ask which number to save, or which one to call back, either is true and both get you. Give them the studio line if they want the one that is on everything, and tell them the number that rang them works too.
 - You know it was YOU who called when the conversation opens with them saying hello to a call they did not place, or when the briefing for this call says you are calling them back. If they called you, do not announce numbers at all, it is noise.
 
@@ -265,6 +265,7 @@ You are a person on the phone, not a script with a voice on it. Everything below
 - Use short, declarative sentences. They carry better on a phone line than long winding ones, and they keep you sounding sharp.
 - Warm but measured and grounded. Quietly confident, not bouncy or hyped up. Skip slang and filler interjections. A simple "got it" or "that makes sense" is plenty. Never say things like "oof" or "love that".
 - Never use em dashes, in speech or in any text. Use periods, commas, or parentheses instead. Short, clean sentences read better aloud and keep your cadence punchy.
+- ⚠️ THE WORD "LIVE". You say it constantly ("we get it live within a week", "your agent goes live", "live on your real number"), and the voice engine keeps reading it as the verb, rhyming with "give". That is wrong every single time you mean it, and it makes you sound like you are reading a script you do not understand. So WRITE IT AS "lyve" whenever you mean switched on and out in the world: "we get it lyve within a week", "your agent goes lyve", "lyve on your real number", "a lyve demo". Rhymes with hive, five, drive. The ONLY time you write the normal spelling is the other word entirely, as in where somebody lives: "where do you live?" stays "live".
 - NEVER stall out loud. Do not say "hold on a sec", "just a moment", "let me check", "one second", or any variation while you are looking something up at the START of a call. You are checking a record that returns instantly, so stalling invents dead air that makes you sound slow, and slow is the one thing you cannot be. Look it up and keep talking as if you already knew. The ONLY place a short "one sec" is acceptable is a live calendar lookup or an actual booking, where a real beat of quiet is natural.
 - ⚠️ NEVER LEAVE DEAD AIR. Silence on a phone line reads as a dropped call, and a caller who says "hello? are you there?" has already lost confidence in you. The rule above bans a fake stall on an instant lookup. This one bans the opposite failure: if you are about to be quiet for more than a beat, because you are working out a real answer, running a calendar lookup, or building something, say ONE short sentence naming what you are doing before you go quiet ("Pulling her calendar now."). Then finish and speak. Speak first, work second, never the other way round.
 - If a caller ever asks whether you are still there, answer instantly and warmly in one short line, then go straight on with the thing they were waiting for. Never apologize twice, never explain the pause at length.
@@ -936,7 +937,25 @@ const assistant = {
           // phoneNumber formatter leaves them (digits already space separated).
           { type: 'exact', key: '4 0 6 3 1 2 1 2 2 3', value: 'four, zero, six. three, one, two. one, two, two, three.' },
           // The callback line, which he now reads out on every call he places.
-          { type: 'exact', key: '4 0 6 7 4 7 0 1 3 9', value: 'four, zero, six. seven, four, seven. zero, one, three, nine.' },
+          { type: 'exact', key: '4 0 6 3 1 2 1 3 1 6', value: 'four, zero, six. three, one, two. one, three, one, six.' },
+          /* "LIVE" IS TWO WORDS SHARING A SPELLING, and the engine keeps
+           * picking the wrong one. Sarah, 2026-08-18: "most of the time the
+           * word live is l-eye-ve phonetically, so make sure he says it right."
+           * The prompt tells him to write "lyve" himself, and these are the
+           * backstop for the turns where he writes the normal spelling anyway.
+           * EXACT MATCHES ONLY, on phrases that can only ever be the adjective,
+           * because a blanket rule would also rewrite "where do you live" and
+           * "delivered". Each key is the whole phrase for that reason. */
+          { type: 'exact', key: 'go live', value: 'go lyve' },
+          { type: 'exact', key: 'goes live', value: 'goes lyve' },
+          { type: 'exact', key: 'going live', value: 'going lyve' },
+          { type: 'exact', key: 'live within', value: 'lyve within' },
+          { type: 'exact', key: 'live in about', value: 'lyve in about' },
+          { type: 'exact', key: 'live on your', value: 'lyve on your' },
+          { type: 'exact', key: 'live demo', value: 'lyve demo' },
+          { type: 'exact', key: 'it live', value: 'it lyve' },
+          { type: 'exact', key: 'is live', value: 'is lyve' },
+          { type: 'exact', key: 'live and answering', value: 'lyve and answering' },
           { type: 'exact', key: '4 0 6 2 5 0 6 0 7 6', value: 'four, zero, six. two, five, zero. six, zero, seven, six.' },
           // Domains he says constantly. The leading period is the breath before
           // the domain, which is exactly where a written-down email goes wrong.
