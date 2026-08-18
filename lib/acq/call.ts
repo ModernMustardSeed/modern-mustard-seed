@@ -45,27 +45,14 @@ const real = (...values: (string | undefined)[]): string => {
 };
 
 /**
- * THE CALLBACK LINE, AND WHY IT IS NOT THE STUDIO LINE.
+ * The outbound line, defined once in lib/vapi-lines.ts along with the reason it
+ * is the studio number and not a second one. Short version: the ten-a-day
+ * outbound cap on Vapi numbers is per ACCOUNT, so a separate callback number
+ * adds no capacity and only costs identity.
  *
- * +1 406 747 0139, a TWILIO number imported into Vapi. Every outbound call he
- * places goes out on it: /mustard callbacks, hero ring-me, cold calls.
- *
- * ⚠️ It had to stop being the studio line. A number PROVISIONED INSIDE VAPI
- * caps outbound at ten calls per UTC day, and on 2026-08-18 a real visitor
- * filling in /mustard was the eleventh, so her callback simply never happened
- * ("Numbers Bought On Vapi Have A Daily Outbound Call Limit. Import Your Own
- * Twilio Numbers To Scale Without Limits."). Inbound was never affected. An
- * imported Twilio number has no such cap, which was proved by placing a call
- * through this exact line on the same day the studio line was refusing.
- *
- * This number was Huck's, the parked Hatchery mascot. It is now attached to Mr.
- * Mustard in Vapi, so somebody who calls back the number that rang them gets
- * him, every time, instead of a mascot for a product that is not selling.
- *
- * ⚠️ HE TELLS THEM THIS NUMBER OUT LOUD. The prompt in
- * scripts/setup-vapi-mustard.mjs names both lines and instructs him to say
- * which one is on their screen. If this id ever changes, that prompt changes
- * with it, or he will read a number that does not reach him.
+ * ⚠️ He reads this number out loud on every call he places, from the prompt in
+ * scripts/setup-vapi-mustard.mjs. Change the line, change that prompt in the
+ * same commit, or he tells people a number that does not reach him.
  */
 const FROM_NUMBER_ID = CALLBACK_NUMBER_ID;
 
@@ -95,11 +82,11 @@ export function acquisitionTools() {
       function: {
         name: 'forge_prospect_agent',
         description:
-          "Build THIS prospect's own personalized voice agent demo, for the business already on the call. Use it when the owner says yes to 'want me to build the {business} version so you can test it whenever you want'. Free, no card. Confirm their email by spelling it back BEFORE calling this. Call it once per call.",
+          "Build THIS prospect's own personalized voice agent demo, for the business already on the call. Use it when the owner says yes to 'want me to build the {business} version so you can test it whenever you want'. Free, no card. Use the email already in your briefing if there is one, confirmed by saying it back as words, and only take a fresh one (anchored, 'b as in boy') if they say it is wrong. Call it once per call.",
         parameters: {
           type: 'object',
           properties: {
-            email: { type: 'string', description: 'Their email, confirmed by spelling it back character by character.' },
+            email: { type: 'string', description: 'Their email. Use the one from your briefing when there is one; only spell out a new one if they corrected you.' },
             contact_name: { type: 'string', description: 'The owner or manager name, if they gave it.' },
             trade: { type: 'string', description: 'Their trade in their own words (heating and air, plumbing, roofing).' },
             services: { type: 'string', description: 'The services they named on the call, comma separated.' },
@@ -239,6 +226,26 @@ export function buildBriefing(lead: AcqProspect, consentAt: string | null): stri
    * a fresh address if they say this one is wrong, which is rare and is exactly
    * when the spelling rules in his prompt should kick in.
    */
+  /**
+   * THE NUMBER HE IS DIALLING. He is on it, so asking for it is absurd, and
+   * asking a business owner to recite their own number back is worse than
+   * absurd on a three minute call. What he actually needs to know is whether
+   * this is the line the agent should ANSWER, which is a different question and
+   * a genuinely useful one: plenty of owners give a cell for the callback and
+   * want the shop line covered.
+   */
+  const dialing = String(lead.phone || '').trim();
+  const phoneBlock = dialing
+    ? `
+
+THE NUMBER YOU ARE CALLING: ${dialing}
+You are on it right now, so never ask them for a phone number and never ask them
+to read it back. The only phone question worth asking is which line the agent
+should ANSWER for them: "is this the number you'd want me answering, or is the
+business on a different line?" Ask it once, late, when the conversation is
+already about building them one.`
+    : '';
+
   const knownEmail = String(lead.email || '').trim();
   const emailBlock = knownEmail
     ? `
@@ -271,7 +278,7 @@ WHY THE PHONE IS RINGING: this person got an email from Sarah asking whether the
 wanted Mr. Mustard to call them, and they clicked yes and gave their number${
     consentAt ? ` at ${consentAt}` : ''
   }. They ASKED for this call, seconds ago. It is not a cold call. Say so early
-and plainly, because it is the thing that makes it land.${emailBlock}
+and plainly, because it is the thing that makes it land.${phoneBlock}${emailBlock}
 
 WHO THEY ARE:
 - Business: ${lead.business_name}${business !== lead.business_name ? ` (say it as "${business}")` : ''}

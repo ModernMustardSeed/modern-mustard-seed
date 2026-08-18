@@ -69,6 +69,21 @@ export type DemoCallError =
 type LimitVerdict = { ok: true } | { ok: false; code: 'cooldown' | 'rate-limited'; error: string; retryAfterSeconds: number };
 
 /**
+ * ⚠️ ONLY A CALL THAT ACTUALLY HAPPENED COUNTS AGAINST ANYBODY.
+ *
+ * Found 2026-08-18, on Sarah's own number. She was told "that number has had
+ * its demos for today" after receiving ONE call, because two earlier attempts
+ * had died on Vapi's daily outbound cap and were still counted against her
+ * three. So the failure mode was: the system cannot call you, and then it locks
+ * you out for twenty-four hours for the calls it failed to make.
+ *
+ * `refused` was already excluded. `failed` and `started` were not, and they are
+ * exactly the rows where the person got nothing. A limit exists to stop someone
+ * being called too much, so it may only ever count calls that were placed.
+ */
+const PLACED = ['calling', 'connected', 'completed'];
+
+/**
  * Adaptive rather than always burdensome. A first-time visitor sees nothing. A
  * number that was just called waits out a cooldown. An address firing numbers
  * at us is stopped at the hour and again at the day.
@@ -108,7 +123,7 @@ async function checkLimits(
     .select('created_at')
     .eq('phone_e164', phoneE164)
     .neq('id', requestId)
-    .neq('status', 'refused')
+    .in('status', PLACED)
     .gte('created_at', new Date(now - surface.cooldown_minutes * 60_000).toISOString())
     .order('created_at', { ascending: false })
     .limit(1);
@@ -128,7 +143,7 @@ async function checkLimits(
     .select('id', { count: 'exact', head: true })
     .eq('phone_e164', phoneE164)
     .neq('id', requestId)
-    .neq('status', 'refused')
+    .in('status', PLACED)
     .gte('created_at', dayAgo);
   if ((perPhoneDay ?? 0) >= surface.max_per_phone_per_day) {
     return { ok: false, code: 'rate-limited', error: 'That number has had its demos for today. Email sarah@modernmustardseed.com and she will sort it out.', retryAfterSeconds: 3600 };
@@ -140,7 +155,7 @@ async function checkLimits(
       .select('id', { count: 'exact', head: true })
       .eq('ip', ip)
       .neq('id', requestId)
-      .neq('status', 'refused')
+      .in('status', PLACED)
       .gte('created_at', hourAgo);
     if ((perIpHour ?? 0) >= surface.max_per_ip_per_hour) {
       return { ok: false, code: 'rate-limited', error: 'Too many requests from this connection in the last hour.', retryAfterSeconds: 900 };
@@ -150,7 +165,7 @@ async function checkLimits(
       .select('id', { count: 'exact', head: true })
       .eq('ip', ip)
       .neq('id', requestId)
-      .neq('status', 'refused')
+      .in('status', PLACED)
       .gte('created_at', dayAgo);
     if ((perIpDay ?? 0) >= surface.max_per_ip_per_day) {
       return { ok: false, code: 'rate-limited', error: 'Too many requests from this connection today.', retryAfterSeconds: 3600 };
