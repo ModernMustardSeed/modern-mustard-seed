@@ -680,23 +680,31 @@ const voice =
   VOICE_PROVIDER === '11labs'
     ? {
         provider: '11labs',
-        /* Nate (Ifu36BnEjjIY932etsqk), "natural, warm, podcast voice", a
-         * PROFESSIONAL voice from the ElevenLabs library rather than a premade
-         * one. Sarah picked him 2026-08-17, the same day she moved the org onto
-         * a new ElevenLabs account (Creator, 131k credits, replacing the Starter
-         * that was capping him near 60-80 minutes of speech a month).
+        /* Adam Spencer (xKhbyU7E3bC6T89Kn26c), "intelligent and kind", a late
+         * thirties American male from the ElevenLabs library, half casual and
+         * half professional. Sarah picked him 2026-08-17 off an eleven voice
+         * audition, on the new Creator account.
          *
-         * ⚠️ A library voice only renders for an account that has ADDED it. He
-         * is in hers (GET /v1/voices/Ifu36BnEjjIY932etsqk returns 200 on her
-         * key, and a real turbo_v2_5 synthesis came back with audio). If the
-         * ElevenLabs credential is ever pointed at a different account, check
-         * that before assuming Vapi or the voice id is wrong.
+         * What she was solving for, in her words: Nate was "too nasaly", but
+         * she liked "how loud and fast and smart he was". Loud is
+         * useSpeakerBoost, fast is speed 1.08, smart is the prompt, so none of
+         * those had to move. Only timbre did. Nate was also the only YOUNG male
+         * voice ever run here, and that thin upper-mid is what read as nasal,
+         * so every candidate on the audition was middle_aged with the
+         * resonance lower in the chest.
          *
-         * The method that keeps landing this fast, and the reusable part: A/B
-         * against the shortlist she has already judged by ear, with every other
-         * setting held identical so timbre is the only variable.
+         * ⚠️ Library voices DO NOT need to be added to the account. Tested
+         * 2026-08-17: TTS by voice id alone returns audio on her key, and the
+         * 30 voice slots stay free. That means the shortlist is the whole
+         * library, not the 28 voices sitting in her VoiceLab, which is what
+         * limited every earlier round.
+         *
+         * The method, and the reusable part: render ONE identical script
+         * through every candidate at identical settings, so timbre is the only
+         * variable, and let her judge by ear. Eleven at once beat three.
          *
          * Heard and replaced or rejected, do not re-propose without a reason:
+         *   Nate   Ifu36BnEjjIY932etsqk  "too nasaly", ran 8/17 for one hour
          *   Chris  iP95p4xoKVk53GoZ742B  "hes perfect" 8/12, ran 8/12 to 8/17
          *   Sid (native)    "worked amazingly" 6/23, then too soft 8/06
          *   Elliot (native) lost the 6/23 A/B to Sid
@@ -705,8 +713,10 @@ const voice =
          *   Roger  CwhRBWXzGAHq8TQ4Fs17  "too stuffy" (that was style 0.35)
          *   Will   bIHbv24MWmeRgasZH58o  ran 8/06-8/12, fine, not it
          *   Brian  nPczCjzI2devNBz1zQrb  "closest to Sid's depth", passed 8/12
-         *   Eric   cjVigY5qzO86Huf0OWal  "smooth, trustworthy", never tried */
-        voiceId: env('VAPI_VOICE_ID') || 'Ifu36BnEjjIY932etsqk',
+         *   Eric   cjVigY5qzO86Huf0OWal  "smooth, trustworthy", never tried
+         *   Also auditioned 8/17 and not picked: Donovan, Brian Everyman,
+         *   Marcus, Victor Voss, Jack John, Mark */
+        voiceId: env('VAPI_VOICE_ID') || 'xKhbyU7E3bC6T89Kn26c',
         // turbo_v2_5 balances quality and latency. eleven_flash_v2_5 is the
         // lower-latency lever if he ever feels slow on a real call.
         model: env('VAPI_11LABS_MODEL') || 'eleven_turbo_v2_5',
