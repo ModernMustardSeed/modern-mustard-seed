@@ -225,6 +225,36 @@ export function buildBriefing(lead: AcqProspect, consentAt: string | null): stri
     known.push(`Posted hours: ${Object.entries(lead.hours).map(([d, h]) => `${d} ${h}`).join('; ')}.`);
   }
 
+  /**
+   * ⚠️ THE ADDRESS WE ALREADY HAVE.
+   *
+   * Almost everyone on this call arrived by clicking a button in an email
+   * Sarah sent them, which means their address is already on the lead row and
+   * has already proved it can receive mail. Asking that person to spell it out
+   * loud is the single worst thing he can do: spelled letters are the one thing
+   * a phone line reliably destroys, it burns a minute of a three minute call,
+   * and it can only make a known-good address worse.
+   *
+   * So when we have it, he confirms it as WORDS and never spells. He only takes
+   * a fresh address if they say this one is wrong, which is rare and is exactly
+   * when the spelling rules in his prompt should kick in.
+   */
+  const knownEmail = String(lead.email || '').trim();
+  const emailBlock = knownEmail
+    ? `
+
+YOU ALREADY HAVE THEIR EMAIL: ${knownEmail}
+It came from the campaign they replied to, so it is known good. DO NOT ask them
+to spell it and DO NOT ask for it again. If you need to confirm it, say it back
+ONCE as ordinary words, not letters ("I have you at ${knownEmail}, still the
+best one?"), and move on. Only take a new address if they tell you this one is
+wrong, and only then do you spell anything.`
+    : `
+
+YOU DO NOT HAVE THEIR EMAIL. If you need one, follow the email rules in your
+instructions exactly: hear it as words first, spell only when words will not do,
+and spell anchored ("b as in boy").`;
+
   const scenarios = TRADE_SCENARIOS[trade].slice(0, 3).map((s) => `"${s}"`).join(', ');
   const first = String(lead.contact_name || '').trim().split(/\s+/)[0] || '';
 
@@ -241,7 +271,7 @@ WHY THE PHONE IS RINGING: this person got an email from Sarah asking whether the
 wanted Mr. Mustard to call them, and they clicked yes and gave their number${
     consentAt ? ` at ${consentAt}` : ''
   }. They ASKED for this call, seconds ago. It is not a cold call. Say so early
-and plainly, because it is the thing that makes it land.
+and plainly, because it is the thing that makes it land.${emailBlock}
 
 WHO THEY ARE:
 - Business: ${lead.business_name}${business !== lead.business_name ? ` (say it as "${business}")` : ''}
@@ -286,7 +316,8 @@ they want to keep going.
 
 5. OFFER TO BUILD THEIRS. "Want me to actually build the ${business} version so
    you can test it whenever you want?" It is FREE, no card, no commitment. If yes:
-   confirm their email by spelling it back, then call forge_prospect_agent once,
+   confirm the email you already have by saying it back as words (or take one
+   properly if you have none), then call forge_prospect_agent once,
    then email_prospect_demo.
 
 PRICE, only if they ask, and answer plainly without overselling:
