@@ -4,6 +4,7 @@ import { getSupabase } from '@/lib/supabase';
 import { getSurface, readAttribution, labelSource } from '@/lib/mustard/surface';
 import { resolveLink } from '@/lib/mustard/links';
 import { consentVersion, CURRENT_CONSENT } from '@/lib/acq/consent';
+import { recordEventOnce } from '@/lib/acq/events';
 import { buildMetadata, SITE } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
@@ -59,6 +60,11 @@ export default async function MustardPage({
   let prefill = { phone: '', businessName: '', contactName: '' };
   let knownAs: string | null = null;
   let source = attribution.source;
+  // Who arrived. A resolved token or a bare prospect id names the visitor, and
+  // landing on this page is a step in its own right: it is the moment between
+  // "clicked" and "gave permission" where most people fall out, and the
+  // engagement board needs to show exactly who got this far.
+  let visitorLeadId: string | null = null;
   if (token) {
     const link = await resolveLink(getSupabase(), token);
     if (link.ok) {
@@ -69,6 +75,7 @@ export default async function MustardPage({
       };
       knownAs = link.prefill.contactName?.split(/\s+/)[0] ?? link.prefill.businessName ?? null;
       source = link.prefill.source || source;
+      visitorLeadId = link.prefill.leadId;
     }
     // An expired or unknown token is not an error. They still get their call,
     // they just type their own number. Nothing is said about it.
@@ -77,8 +84,24 @@ export default async function MustardPage({
     // when that mint failed, and it only ever prefills the business name: a bare
     // id in a URL should not hand out somebody's phone number.
     const db = getSupabase();
-    const { data } = db ? await db.from('outbound_leads').select('business_name').eq('id', one('p')).maybeSingle() : { data: null };
-    if (data?.business_name) prefill = { ...prefill, businessName: data.business_name as string };
+    const { data } = db ? await db.from('outbound_leads').select('id,business_name').eq('id', one('p')).maybeSingle() : { data: null };
+    if (data?.business_name) {
+      prefill = { ...prefill, businessName: data.business_name as string };
+      visitorLeadId = data.id as string;
+    }
+  }
+  if (visitorLeadId) {
+    // One line per prospect per fifteen minutes: a refresh is not a second visit.
+    await recordEventOnce(
+      getSupabase(),
+      {
+        leadId: visitorLeadId,
+        type: 'permission_visited',
+        label: `Landed on the permission page${source ? ` (${labelSource(source)})` : ''}`,
+        detail: { source, campaign: one('utm_campaign') || null, variant: one('utm_content') || null },
+      },
+      15,
+    );
   }
 
   return (

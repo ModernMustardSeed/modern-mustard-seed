@@ -30,6 +30,17 @@ export async function GET() {
 
   const pace = campaign ? await checkPace(db, campaign) : null;
 
+  // A feed line without a name is a fact about nobody. Attach who did it.
+  const eventLeadIds = [...new Set(events.map((e) => e.lead_id).filter(Boolean))] as string[];
+  const { data: eventLeads } = eventLeadIds.length
+    ? await db.from('outbound_leads').select('id,business_name,city,state').in('id', eventLeadIds)
+    : { data: [] };
+  const nameById = new Map(((eventLeads ?? []) as { id: string; business_name: string; city: string | null; state: string | null }[]).map((l) => [l.id, l]));
+  const namedEvents = events.map((e) => {
+    const l = e.lead_id ? nameById.get(e.lead_id) : null;
+    return { ...e, business_name: l?.business_name ?? null, city: l?.city ?? null, state: l?.state ?? null };
+  });
+
   return NextResponse.json({
     campaign,
     settings,
@@ -43,6 +54,6 @@ export async function GET() {
         ? { sending: true, remainingToday: pace.remainingToday, remainingThisHour: pace.remainingThisHour }
         : { sending: false, reason: pace?.reason ?? 'No campaign.', retryAfter: pace && !pace.ok ? pace.retryAfter : null },
     },
-    events,
+    events: namedEvents,
   });
 }
