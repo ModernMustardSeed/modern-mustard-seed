@@ -26,6 +26,7 @@ import { recordEvent } from '@/lib/acq/events';
 import { OFFER, TRADE_ROLEPLAY_NOTE, TRADE_SCENARIOS } from '@/lib/acq/types';
 import type { AcqProspect, Trade } from '@/lib/acq/types';
 import { shortBusiness } from '@/lib/acq/campaign';
+import { CALLBACK_NUMBER_ID } from '@/lib/vapi-lines';
 
 const VAPI_BASE = 'https://api.vapi.ai';
 
@@ -43,9 +44,30 @@ const real = (...values: (string | undefined)[]): string => {
   return '';
 };
 
-/** Mr. Mustard's own line, so the number they see matches the one on the site. */
-const FROM_NUMBER_ID =
-  real(process.env.VAPI_CALLBACK_NUMBER_ID, process.env.VAPI_PHONE_NUMBER_ID) || '462f988d-ce3a-4961-b652-dfc1fb1ac5d0';
+/**
+ * THE CALLBACK LINE, AND WHY IT IS NOT THE STUDIO LINE.
+ *
+ * +1 406 747 0139, a TWILIO number imported into Vapi. Every outbound call he
+ * places goes out on it: /mustard callbacks, hero ring-me, cold calls.
+ *
+ * ⚠️ It had to stop being the studio line. A number PROVISIONED INSIDE VAPI
+ * caps outbound at ten calls per UTC day, and on 2026-08-18 a real visitor
+ * filling in /mustard was the eleventh, so her callback simply never happened
+ * ("Numbers Bought On Vapi Have A Daily Outbound Call Limit. Import Your Own
+ * Twilio Numbers To Scale Without Limits."). Inbound was never affected. An
+ * imported Twilio number has no such cap, which was proved by placing a call
+ * through this exact line on the same day the studio line was refusing.
+ *
+ * This number was Huck's, the parked Hatchery mascot. It is now attached to Mr.
+ * Mustard in Vapi, so somebody who calls back the number that rang them gets
+ * him, every time, instead of a mascot for a product that is not selling.
+ *
+ * ⚠️ HE TELLS THEM THIS NUMBER OUT LOUD. The prompt in
+ * scripts/setup-vapi-mustard.mjs names both lines and instructs him to say
+ * which one is on their screen. If this id ever changes, that prompt changes
+ * with it, or he will read a number that does not reach him.
+ */
+const FROM_NUMBER_ID = CALLBACK_NUMBER_ID;
 
 const ASSISTANT_ID = real(
   process.env.VAPI_MUSTARD_ASSISTANT_ID,

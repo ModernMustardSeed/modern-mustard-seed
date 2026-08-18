@@ -18,6 +18,8 @@
  * so the UI can show a setup nudge instead of erroring.
  */
 
+import { CALLBACK_NUMBER_ID } from '@/lib/vapi-lines';
+
 const VAPI_CALL_URL = 'https://api.vapi.ai/call';
 
 export type OutboundProspect = {
@@ -140,7 +142,10 @@ export const OUTBOUND_CTA = {
 /** Place the outbound call. Guardrails first, then Vapi. */
 export async function placeOutboundCall(p: OutboundProspect): Promise<OutboundResult> {
   const apiKey = (process.env.VAPI_API_KEY || '').trim();
-  const phoneNumberId = (process.env.VAPI_PHONE_NUMBER_ID || '').trim();
+  // The shared outbound line. Was VAPI_PHONE_NUMBER_ID, which is the STUDIO
+  // number, and a number bought inside Vapi stops dialing after ten calls a day.
+  // A cold-call run of any size would have died on its eleventh dial.
+  const phoneNumberId = CALLBACK_NUMBER_ID;
   const assistantId = (process.env.VAPI_MUSTARD_ASSISTANT_ID || '').trim();
   if (!apiKey || !phoneNumberId || !assistantId) {
     return { ok: false, needsSetup: true, error: 'Outbound calling is not configured yet (needs VAPI_API_KEY, VAPI_PHONE_NUMBER_ID, and VAPI_MUSTARD_ASSISTANT_ID).' };

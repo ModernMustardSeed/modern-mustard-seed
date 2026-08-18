@@ -1,5 +1,6 @@
 import { buildMetadata } from '@/lib/seo';
 import HuckVoiceWidget from '@/components/hatchery/HuckVoiceWidget';
+import { HUCK } from '@/data/hatchery';
 
 export const metadata = buildMetadata({
   title: 'Meet Huck — Born at the Mustard Hatchery',
@@ -72,11 +73,11 @@ export default function HuckRevealPage() {
           <div className="inline-block bg-[#FBF6EA] text-[#161616] rounded-2xl border-2 border-[#161616] px-8 py-7 shadow-[6px_6px_0_0_#B54423]" style={{ transform: 'rotate(-1.2deg)' }}>
             <p className="text-[10px] uppercase tracking-[0.35em] text-[#B54423] font-mono font-bold">He answers his own phone</p>
             <a
-              href="tel:+14067470139"
+              href={HUCK.phoneHref}
               className="block mt-2 text-4xl md:text-5xl font-bold tracking-tight hover:opacity-80 transition-opacity"
               style={{ fontFamily: 'var(--font-display, Playfair Display, serif)' }}
             >
-              (406) 747-0139
+              {HUCK.phone}
             </a>
             <p className="mt-2 text-sm text-[#161616]/70" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontStyle: 'italic' }}>
               Ask him how he got his name. Tell him yours.

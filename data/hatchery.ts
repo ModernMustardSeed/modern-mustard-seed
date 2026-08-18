@@ -26,14 +26,26 @@ export const HATCHERY = {
     'A storybook heirloom hatchery: the official mascot of your business, born by candlelight, with a phone number the whole town can call.',
 } as const;
 
-/** Huck, the pilot birth. His live line + in-browser voice both point here. */
+/**
+ * Huck, the pilot birth. His in-browser voice still points at his assistant.
+ *
+ * ⚠️ HIS PHONE LINE IS GONE, on purpose. The Hatchery has been parked since
+ * 2026-08-07, and on 2026-08-18 his Twilio number (406) 747-0139 was
+ * repurposed as Mr. Mustard's outbound callback line, because a number bought
+ * inside Vapi stops placing calls after ten a day and that cap was dropping
+ * real callbacks on /mustard. Dialling that number now reaches Mr. Mustard.
+ *
+ * So the page shows the studio line instead. A parked page that publishes a
+ * number answering as somebody else is worse than a parked page with no number.
+ * If the Hatchery ever comes back, Huck needs his own line again first.
+ */
 export const HUCK = {
   name: 'Huck',
   business: 'The Huckleberry Scoop',
   city: 'Kalispell, Montana',
   assistantId: 'aad65761-8a06-4288-a5bd-d055360ea8f4',
-  phone: '(406) 747-0139',
-  phoneHref: 'tel:+14067470139',
+  phone: '(406) 312-1223',
+  phoneHref: 'tel:+14063121223',
   revealPath: '/hatchery/huck',
 } as const;
 
