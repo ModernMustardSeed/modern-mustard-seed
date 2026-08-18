@@ -644,15 +644,17 @@ const TOOLS = [
  * a credential that has already proven it works end to end. Him only: SF Trucking
  * stays on a bundled native voice, so the quota is not split two ways.
  *
- * ⚠️ THE REMAINING RISK IS QUOTA, AND IT IS REAL. Starter is 30-40k credits and
- * turbo_v2_5 bills 0.5 credits/character, so roughly 1,000 characters a minute
- * caps him near 60-80 minutes of speech a MONTH, shared with the homepage hero
- * button, the chat widget and VoiceTalkButton in English (all three call
- * `vapi.start(id)` with NO voice override, so they use this voice and this
- * quota; forged demos do not, `sidekickVoice()` overrides them to native). When
- * it runs out, ElevenLabs 401s and the call dies mid-sentence with
- * `pipeline-error-eleven-labs-blocked`. Upgrading the ElevenLabs plan is the fix,
- * not a different voice.
+ * QUOTA, WHICH USED TO BE THE STANDING RISK AND IS NOW MOSTLY HEADROOM. The org
+ * moved to a NEW ElevenLabs account on 2026-08-17: Creator, 131,000 credits a
+ * month, 0 used, resetting the 18th. turbo_v2_5 bills 0.5 credits/character at
+ * roughly 1,000 characters a minute, so that is about four hours of speech a
+ * month instead of the 60-80 minutes Starter allowed. It is still SHARED with
+ * the homepage hero button, the chat widget and VoiceTalkButton in English (all
+ * three call `vapi.start(id)` with NO voice override, so they use this voice and
+ * this quota; forged demos do not, `sidekickVoice()` overrides them to native).
+ * When it does run out, ElevenLabs 401s and the call dies mid-sentence with
+ * `pipeline-error-eleven-labs-blocked`. Upgrading the plan is the fix, not a
+ * different voice.
  *
  * Two facts that cost an hour on 2026-08-06, do not rediscover them:
  *   1. Vapi validates an ElevenLabs key by calling /v1/user, so a restricted key
@@ -678,19 +680,24 @@ const voice =
   VOICE_PROVIDER === '11labs'
     ? {
         provider: '11labs',
-        /* Chris (iP95p4xoKVk53GoZ742B), "charming, down to earth". Sarah's
-         * verdict on a real call, 2026-08-12: "hes perfect". That is the first
-         * unqualified yes any voice has gotten, across six months and nine
-         * candidates, so treat it as settled and do not swap it on a hunch.
+        /* Nate (Ifu36BnEjjIY932etsqk), "natural, warm, podcast voice", a
+         * PROFESSIONAL voice from the ElevenLabs library rather than a premade
+         * one. Sarah picked him 2026-08-17, the same day she moved the org onto
+         * a new ElevenLabs account (Creator, 131k credits, replacing the Starter
+         * that was capping him near 60-80 minutes of speech a month).
          *
-         * How he was found, because the method is the reusable part: he was a
-         * RUNNER-UP she had already heard and passed on back on 2026-08-06.
-         * When the replacements failed, the answer was not a new search, it was
-         * the shortlist she had already judged by ear. Every other voice was
-         * A/B'd against him with EVERY other setting held identical, so the only
-         * variable was timbre. That is why this landed in three tries.
+         * ⚠️ A library voice only renders for an account that has ADDED it. He
+         * is in hers (GET /v1/voices/Ifu36BnEjjIY932etsqk returns 200 on her
+         * key, and a real turbo_v2_5 synthesis came back with audio). If the
+         * ElevenLabs credential is ever pointed at a different account, check
+         * that before assuming Vapi or the voice id is wrong.
          *
-         * Heard and rejected, do not re-propose without a reason:
+         * The method that keeps landing this fast, and the reusable part: A/B
+         * against the shortlist she has already judged by ear, with every other
+         * setting held identical so timbre is the only variable.
+         *
+         * Heard and replaced or rejected, do not re-propose without a reason:
+         *   Chris  iP95p4xoKVk53GoZ742B  "hes perfect" 8/12, ran 8/12 to 8/17
          *   Sid (native)    "worked amazingly" 6/23, then too soft 8/06
          *   Elliot (native) lost the 6/23 A/B to Sid
          *   Rohan (native)  "so robotic" 8/12
@@ -699,7 +706,7 @@ const voice =
          *   Will   bIHbv24MWmeRgasZH58o  ran 8/06-8/12, fine, not it
          *   Brian  nPczCjzI2devNBz1zQrb  "closest to Sid's depth", passed 8/12
          *   Eric   cjVigY5qzO86Huf0OWal  "smooth, trustworthy", never tried */
-        voiceId: env('VAPI_VOICE_ID') || 'iP95p4xoKVk53GoZ742B',
+        voiceId: env('VAPI_VOICE_ID') || 'Ifu36BnEjjIY932etsqk',
         // turbo_v2_5 balances quality and latency. eleven_flash_v2_5 is the
         // lower-latency lever if he ever feels slow on a real call.
         model: env('VAPI_11LABS_MODEL') || 'eleven_turbo_v2_5',
