@@ -185,6 +185,56 @@ export default function DemoHub({
     [voiceUrl, siteUrl, sitePending, osUrl, business],
   );
 
+  /**
+   * ⚠️ ONE PIECE IS NOT A SUITE, AND CALLING IT ONE IS A BROKEN PROMISE.
+   *
+   * Sarah, 2026-08-18: "only give the demo for whatever they asked for... use
+   * the normal demo suite for talking websites or both, but not for just one
+   * thing forged."
+   *
+   * The forge stopped building unasked-for pieces on 2026-08-13, and the cards
+   * and the order card below have been piece-aware ever since. This page never
+   * caught up: it still greeted a caller who asked for one voice agent with
+   * "The Acme Demo Suite" and "everything below", which reads as either a
+   * mistake or a bait, and neither is what we sold on the phone.
+   *
+   * So the page names what was actually built. What they did NOT take moves to
+   * one quiet line at the bottom, after the order card, where it is an offer
+   * rather than clutter over the thing they asked for.
+   */
+  const forged = [
+    voiceUrl ? 'voice' : null,
+    siteUrl || sitePending ? 'site' : null,
+    osUrl ? 'os' : null,
+  ].filter(Boolean) as ('voice' | 'site' | 'os')[];
+  const PIECE_NAME: Record<'voice' | 'site' | 'os', string> = {
+    voice: 'Voice Agent',
+    site: 'Website',
+    os: 'Command Center',
+  };
+  const onlyOne = forged.length === 1;
+  const missing = (['voice', 'site', 'os'] as const).filter((p) => !forged.includes(p));
+
+  /**
+   * The line about what they did not take. It carries the command-center rule
+   * when it applies, because a buyer holding one paid piece who adds the other
+   * gets the back office free, and every surface that can put somebody in the
+   * dominated cart owes them that fact in the moment.
+   */
+  const restLine = (() => {
+    if (!missing.length) return null;
+    if (forged.includes('voice') && forged.includes('site')) {
+      return 'You have both paid pieces here, so the command center that files every call and every lead is already free with them. Say the word and it goes on this page.';
+    }
+    if (forged.includes('voice')) {
+      return 'Want the website to match, built the same way, off the same brain? Taking the two together makes the command center free.';
+    }
+    if (forged.includes('site')) {
+      return 'Want it to answer its own phone too? Taking the two together makes the command center free.';
+    }
+    return 'Want the voice agent that feeds this, or the website to match? We can forge either one.';
+  })();
+
   const toneCls: Record<'dark' | 'gold' | 'ink', string> = {
     dark: 'bg-[#161616] text-[#FBF6EA]',
     gold: 'bg-[#F5B700] text-[#161616]',
@@ -215,12 +265,15 @@ export default function DemoHub({
             </div>
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-bold mt-4 leading-tight">
-            The {business} Demo Suite
+            {onlyOne ? `The ${business} ${PIECE_NAME[forged[0]]}` : `The ${business} Demo Suite`}
           </h1>
           <p className="font-body text-[#161616]/70 mt-3 max-w-xl mx-auto">
             {presenter
-              ? `${presenter} asked us to build this for you. Free, nothing to sign, nothing to cancel. Everything below is live and working, not a mockup. Go play.`
-              : `Built from scratch around your business. Free, nothing to sign, nothing to cancel. Everything below is live and working, not a mockup. Go play.`}
+              ? `${presenter} asked us to build this for you. `
+              : 'Built from scratch around your business. '}
+            {onlyOne
+              ? 'You asked for one thing, so this is that one thing. Free, nothing to sign, nothing to cancel, and it is live and working rather than a mockup. Go play.'
+              : 'Free, nothing to sign, nothing to cancel. Everything below is live and working, not a mockup. Go play.'}
           </p>
         </div>
       </header>
@@ -360,6 +413,39 @@ export default function DemoHub({
             osUrl ? ('os' as DemoProductKey) : null,
           ].filter(Boolean) as DemoProductKey[]}
         />
+
+        {/*
+          THE REST, AFTER THE ORDER CARD AND NOWHERE ELSE.
+
+          One quiet offer for the pieces they did not ask for, placed below the
+          thing they did ask for and below the button that takes the money.
+          Above it, it would be clutter on top of the demo they came to see.
+          Here it reads as "there is more if you want it", which is the truth.
+
+          The ask is a phone call on purpose. Inbound is uncapped, he answers it
+          himself, and a caller who says "build me the website too" gets it
+          forged on that call. A form would be slower and worse.
+        */}
+        {restLine && (
+          <section className="animate-[hubIn_.5s_ease-out_both]">
+            <div className="rounded-2xl border-2 border-dashed border-[#161616]/30 bg-white/60 p-6 text-center">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#C4160B]">
+                {onlyOne ? 'Want more than the one thing?' : 'One piece still missing'}
+              </p>
+              <p className="font-body mt-3 text-[15.5px] leading-relaxed text-[#161616]/80 max-w-xl mx-auto">{restLine}</p>
+              <a
+                href="tel:+14063121223"
+                className="mt-5 inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#F5B700] px-5 py-3 font-display text-[17px] font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616]"
+              >
+                <span aria-hidden="true">📞</span>
+                Call Mr. Mustard and say which one
+              </a>
+              <p className="font-body mt-2 text-[13px] text-[#161616]/55">
+                (406) 312-1223. He forges it while you are still on the phone.
+              </p>
+            </div>
+          </section>
+        )}
 
         <section className="text-center pb-6">
           <p className="font-mono text-[11px] text-[#161616]/40">

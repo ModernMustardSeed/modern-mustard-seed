@@ -5,7 +5,9 @@ import { leadTrade } from '@/lib/outbound-demo';
 import { recordDemoEvent } from '@/lib/demo-events';
 import type { Niche } from '@/lib/outbound';
 
-export const metadata = buildMetadata({ title: 'Your Demo Suite', noindex: true });
+// Titled for the one-piece case as well as the suite: a caller who asked for a
+// voice agent should not find a browser tab calling it a suite.
+export const metadata = buildMetadata({ title: 'Your demo from Modern Mustard Seed', noindex: true });
 export const dynamic = 'force-dynamic';
 
 /**

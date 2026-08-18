@@ -893,6 +893,27 @@ const assistant = {
      * Docs: https://docs.vapi.ai/assistants/voice-formatting-plan */
     chunkPlan: {
       enabled: true,
+      /**
+       * ⚠️ TIME TO FIRST WORD. Unset, Vapi buffers 30 characters of his reply
+       * before it sends anything to ElevenLabs, and that wait is paid on every
+       * single turn. Measured on real calls 2026-08-18, the gap from a caller
+       * finishing to him starting to speak was a 3.9s median even after moving
+       * off opus and cutting 6k characters of prompt. Callers say "hello?" at
+       * four seconds. 10 lets a short reply ("Got it.") start speaking almost
+       * immediately.
+       *
+       * THE TRADE, and it is why this number is 10 and not 1: the replacements
+       * below are EXACT matches on whole strings like `4 0 6 3 1 2 1 2 2 3`, so
+       * a chunk boundary landing mid-number stops the pacing rule from firing
+       * and the number goes back to sounding like one blur. 10 is small enough
+       * to kill the front-of-turn wait and large enough that ordinary prose
+       * still chunks on punctuation rather than mid-token.
+       *
+       * If number readbacks ever start blurring again, this is the first thing
+       * to put back to 30, and the prompt rules still say the digits as words
+       * on their own.
+       */
+      minCharacters: 10,
       formatPlan: {
         enabled: true,
         // formattersEnabled is deliberately OMITTED. Every formatter is on by
