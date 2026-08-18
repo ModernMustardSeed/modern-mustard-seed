@@ -35,32 +35,31 @@ export const STUDIO_NUMBER = '(406) 312-1223';
 export const STUDIO_NUMBER_E164 = '+14063121223';
 
 /**
- * The outbound line. Same 406 exchange as the studio number, one digit group
- * apart, and attached to Mr. Mustard in Vapi so a person who calls back the
- * number that rang them reaches him rather than a dead end.
+ * The outbound line IS the studio line, and that is the finished answer after
+ * trying both alternatives on 2026-08-18.
  *
- * ⚠️ IT IS A VAPI NUMBER, NOT TWILIO, AND THAT IS DELIBERATE. The Twilio route
- * was tried first and reverted within the hour on 2026-08-18. Two reasons, both
- * Sarah's: her Twilio account is still a TRIAL, so every inbound call opened
- * with Twilio's own recorded notice and a "press any key" before Mr. Mustard
- * ever spoke, which is a terrible first impression on a sales line; and she does
- * not want a third vendor billing per call when Vapi already provides numbers.
+ * ⚠️ THE DAILY OUTBOUND CAP IS PER ACCOUNT, NOT PER NUMBER. This is the fact
+ * everything else follows from, and it was measured, not assumed: a second Vapi
+ * number that had placed ZERO calls that day was refused with the identical
+ * error the moment the account's ten were gone. So splitting callbacks onto
+ * their own number buys exactly nothing, and buying more numbers buys nothing
+ * either. Vapi will not sell more free ones anyway ("You have reached the
+ * maximum number of free phone numbers").
  *
- * The cost of staying inside Vapi is the ten-outbound-calls-per-day cap that
- * every Vapi-provisioned number carries. That is why this is a SEPARATE number
- * from the studio line: the two caps do not share, so callbacks can burn their
- * ten without touching the line people actually dial, and inbound is never
- * capped on either.
+ * Since a second number adds no capacity, it only costs identity, so calls go
+ * out on the number that is printed on the website. Somebody who gets rung sees
+ * the same number they would have dialled, and calling it back reaches him.
  *
- * This number was idle. It was pointing at assistant ebf00e6e, which returns a
- * 404, so it had been answering for a deleted agent. Vapi refuses to hand out
- * more free numbers on this plan ("You have reached the maximum number of free
- * phone numbers"), so when ten callbacks a day is no longer enough the choices
- * are: take Twilio off trial and import a number, or move up a Vapi plan.
+ * Twilio was tried first and reverted the same hour. Sarah's account is on a
+ * TRIAL, so an inbound call opened with Twilio's own recorded notice and a
+ * "press any key" before the agent ever spoke, and she does not want a third
+ * vendor billing per call. An upgraded Twilio account removes both the notice
+ * and the cap, and that is the ONLY way past ten a day short of a Vapi plan
+ * change. Inbound has never been capped on any of this.
  */
-export const CALLBACK_NUMBER = '(406) 312-1316';
-export const CALLBACK_NUMBER_E164 = '+14063121316';
+export const CALLBACK_NUMBER = STUDIO_NUMBER;
+export const CALLBACK_NUMBER_E164 = STUDIO_NUMBER_E164;
 
 /** Env wins, so a line can be swapped in an emergency without a deploy. */
 export const CALLBACK_NUMBER_ID =
-  real(process.env.VAPI_CALLBACK_NUMBER_ID) || 'a87446b2-8308-48ce-b384-a75038138982';
+  real(process.env.VAPI_CALLBACK_NUMBER_ID) || '462f988d-ce3a-4961-b652-dfc1fb1ac5d0';
