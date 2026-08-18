@@ -208,6 +208,45 @@ export default async function MustardPage({
       </section>
 
       {/*
+        THE NIGHT SHIFT TICKER.
+
+        House device, already used for the sample-night call log elsewhere, and
+        it earns its place here rather than decorating: every line is a call
+        that arrives when nobody is at the desk, with the hour attached. That is
+        the entire argument for a voice agent, made in the two seconds somebody
+        spends scrolling past it, and it is the only thing on this page that
+        moves.
+
+        `.marquee-track` carries its own prefers-reduced-motion stop in
+        globals.css, and the strip is aria-hidden because a screen reader
+        reading a looping list of fake timestamps is noise, not information.
+        The same argument is made in words in the section below it.
+      */}
+      <div className="overflow-hidden border-b-2 border-[#161616] bg-[#080C16] py-3" aria-hidden="true">
+        <div className="marquee-track gap-8">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex shrink-0 items-center gap-8 pr-8">
+              {[
+                ['9:14 pm', 'burst pipe in Bigfork', 'booked for 7am'],
+                ['11:48 pm', 'quote on a metal roof', 'name and number taken'],
+                ['2:03 am', 'no heat, two kids at home', 'transferred to the on-call'],
+                ['5:31 am', 'is this the place that does gutters', 'answered, then booked'],
+                ['12:09 pm', 'caller who would not say what was wrong', 'got it out of them'],
+                ['7:52 pm', 'price shopper from three towns over', 'quoted and calendared'],
+              ].map(([time, what, outcome]) => (
+                <span key={`${copy}-${time}`} className="flex shrink-0 items-center gap-2.5 font-mono text-[12px] tracking-wide">
+                  <span className="font-bold text-[#F5B700]">{time}</span>
+                  <span className="text-[#FBF6EA]/75">{what}</span>
+                  <span className="text-[#FBF6EA]/30">&rarr;</span>
+                  <span className="font-bold text-[#FBF6EA]">{outcome}</span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/*
         ── what he is, and what the thing costs ──────────────────────────────
 
         Added 2026-08-18 (Sarah): "make /mustard a bit more welcoming and
@@ -232,16 +271,53 @@ export default async function MustardPage({
       */}
       <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#FBF6EA]">
         <div className="relative mx-auto max-w-5xl px-5 py-14 sm:px-8 sm:py-20">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.32em] text-[#C4160B]">
-            While you wait for the phone to ring
-          </p>
-          <h2 className="mt-4 max-w-2xl font-display text-[2.1rem] sm:text-[3rem] font-extrabold leading-[0.95] tracking-tight">
+          <div className="flex items-center gap-3">
+            <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border-2 border-[#161616] bg-[#F5B700]">
+              <Image src="/brand/mascot.png" alt="" fill sizes="44px" className="object-contain p-0.5" />
+            </span>
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.32em] text-[#C4160B]">
+              While you wait for the phone to ring
+            </p>
+          </div>
+          <h2 className="mt-5 max-w-2xl font-display text-[2.1rem] sm:text-[3rem] font-extrabold leading-[0.95] tracking-tight">
             So what <span className="italic">is</span> he?
           </h2>
           <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-[#161616]/80">
             He is a voice agent. He answers your phone in your business name, at two in the afternoon and at two in the
             morning, and he never once puts somebody on hold to go find you.
           </p>
+
+          {/*
+            THE COMMERCIAL, WHICH ARGUES BETTER THAN THE PARAGRAPH ABOVE IT.
+
+            This is the 16:9 cut of the "Your 24/7 voice agent, hear it live"
+            spot, the one the ads playbook already marks for site use. Showing
+            it here closes the same gap the cards below close, faster, for the
+            people who would rather watch than read.
+
+            `preload="none"` with a poster is deliberate: the file is 18MB and
+            most of this traffic is a phone on cell data opening an email. The
+            poster is 260KB and paints instantly, and nothing downloads until
+            somebody actually presses play. A hero that costs 18MB to scroll
+            past would cost more calls than the film wins.
+          */}
+          <figure className="mt-8 max-w-3xl">
+            <div className="overflow-hidden rounded-2xl border-2 border-[#161616] bg-black shadow-[6px_6px_0_0_#161616]">
+              <video
+                controls
+                preload="none"
+                playsInline
+                poster="/ads/call-me-poster.png"
+                src="/ads/call-me-16x9.mp4"
+                className="block w-full"
+              />
+            </div>
+            <figcaption className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#161616]/50">
+              <span className="text-[#C4160B]">Press play</span>
+              <span aria-hidden="true">&middot;</span>
+              <span>That is him, working</span>
+            </figcaption>
+          </figure>
 
           <ul className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
