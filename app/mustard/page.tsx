@@ -7,6 +7,8 @@ import { consentVersion, CURRENT_CONSENT } from '@/lib/acq/consent';
 import { recordEventOnce } from '@/lib/acq/events';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { CALL_STATS } from '@/data/proof-stats';
+import MissedMoney from '@/components/mustard/MissedMoney';
 
 export const dynamic = 'force-dynamic';
 
@@ -442,6 +444,62 @@ export default async function MustardPage({
             Month to month. Cancel any time. Your phone number does not change, it forwards. Nothing is due today and
             the call above costs you nothing either way.
           </p>
+
+          {/*
+            ── THE MATH, AND THE FOUR NUMBERS BEHIND IT ────────────────────────
+
+            Sarah, 2026-08-18: "maybe add small calculator on page too so they
+            can see the math, and add a few of the stats we have, but in small
+            popart bubbles around the page. keep it simple and clear, put those
+            towards the bottom."
+
+            Both sit at the very bottom on purpose. Somebody who came to hear
+            him does not need convincing with arithmetic first, and a page that
+            argues before it demonstrates is a worse page. This is for the
+            reader who got all the way down here and is doing sums in their
+            head anyway, so we may as well do them accurately and in public.
+
+            ⚠️ THE STATS ARE THE PROOF BANK, NOT WRITING. data/proof-stats.ts
+            only admits a figure with a named, dated, published source, and it
+            keeps a list of the widely circulated industry numbers it REFUSES
+            because nobody can trace them. Quote from there or do not quote.
+            Every bubble carries its source under the figure for that reason.
+          */}
+          <div className="mt-14 grid gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start">
+            <MissedMoney monthlyPrice={formatUsd(DEMO_BUNDLE.monthlyCents)} />
+
+            <div>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#C4160B]">
+                Why the phone is the leak
+              </p>
+              <div className="mt-5 grid grid-cols-2 gap-4">
+                {CALL_STATS.map((s, i) => (
+                  <div
+                    key={s.id}
+                    className={`rounded-2xl border-2 border-[#161616] p-4 shadow-[4px_4px_0_0_#161616] ${
+                      i % 3 === 0 ? 'bg-[#F5B700]' : i % 3 === 1 ? 'bg-white' : 'bg-[#080C16] text-[#FBF6EA]'
+                    }`}
+                    style={{ transform: `rotate(${i % 2 === 0 ? '-0.8' : '0.8'}deg)` }}
+                  >
+                    <p className="font-display text-[2rem] font-extrabold leading-none tracking-tight tabular-nums">
+                      {s.figure}
+                    </p>
+                    <p className="mt-1.5 font-display text-[14px] font-bold leading-tight">{s.label}</p>
+                    <p className={`mt-1.5 text-[12.5px] leading-snug ${i % 3 === 2 ? 'text-[#FBF6EA]/70' : 'text-[#161616]/65'}`}>
+                      {s.body}
+                    </p>
+                    <p
+                      className={`mt-2 font-mono text-[9.5px] uppercase tracking-[0.16em] ${
+                        i % 3 === 2 ? 'text-[#FBF6EA]/40' : 'text-[#161616]/40'
+                      }`}
+                    >
+                      {s.source}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
