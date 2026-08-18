@@ -578,8 +578,16 @@ async function sendResourceEmail(
   }
   return JSON.stringify({
     ok: true,
-    instruction:
-      'Sent. Tell them warmly it is on its way to their inbox now (from sarah@modernmustardseed.com), and to peek in spam if it is not there in a minute. Then ask if there is anything else.',
+    sentTo: to,
+    // ⚠️ The address is echoed back so he SAYS it, anchored, one more time.
+    // 2026-08-17: on a live call he read "a as in apple, i as in igloo" back
+    // correctly and then wrote `bizyal2023` into this tool, turning an i into an
+    // l after the caller had already confirmed it. Nothing on the call could
+    // catch that, because the only place the wrong address existed was inside a
+    // tool argument nobody spoke out loud. Now he speaks it, and the person who
+    // owns the inbox gets one chance to say "that's wrong" while he can still
+    // resend.
+    instruction: `Sent to ${to}. Say that address back to them ANCHORED, one time, exactly as it went out ("that went to b as in boy, i as in igloo..."), and ask if that is right. If they say it is wrong, take the correction and call send_email again with the fixed address. If it is right, tell them to peek in spam if it is not there in a minute, then ask if there is anything else.`,
   });
 }
 
