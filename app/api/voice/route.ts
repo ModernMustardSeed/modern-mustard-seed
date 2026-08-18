@@ -31,6 +31,7 @@ import {
 import { cancelPendingFor } from '@/lib/acq/queue';
 import { recordEvent } from '@/lib/acq/events';
 import { env } from '@/lib/env';
+import { checkSpokenEmail, spokenEmailInstruction } from '@/lib/spoken-email';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -505,6 +506,14 @@ async function sendResourceEmail(
       error:
         'No good email to send to yet. Ask for the best address, confirm it by spelling it back, then call send_email again.',
     });
+  }
+
+  // A shape check passes every plausible mishearing, and a link sent to
+  // gmial.com is worse than no link: the caller hangs up believing it arrived.
+  // This costs a few milliseconds and fails open on a DNS hiccup.
+  const verdict = await checkSpokenEmail(to);
+  if (!verdict.ok) {
+    return JSON.stringify({ ok: false, error: spokenEmailInstruction(verdict) });
   }
 
   // Partner desk: stamp their referral code onto any ref-eligible link so a
