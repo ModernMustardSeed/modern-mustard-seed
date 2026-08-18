@@ -142,6 +142,54 @@ export default async function MustardPage({
             <p className="mt-3 font-display text-[1.5rem] sm:text-[2.1rem] leading-[1.1] font-bold text-[#161616]">
               Want my AI receptionist to call <span className="italic">you</span>?
             </p>
+
+            {/*
+              ── THE FIRST LINE, SITTING IN THE HOLE THE GRID LEAVES ──────────
+
+              On desktop the form is taller than the hook, so the left column
+              ended and left roughly 170px of empty mustard between the subhead
+              and the reassurance. Sarah asked for something pretty in it.
+
+              What went in is the sentence they will actually hear, roughly ten
+              seconds after they press the button, in a speech bubble with the
+              ring waves already going. It is decoration that does the work of a
+              screenshot: it answers "what happens when I do this" before the
+              question is asked, in his voice rather than ours.
+
+              ⚠️ DESKTOP ONLY, and that is not laziness. On a phone the reading
+              order is hook, form, reassurance, with no gap to fill, so this
+              block would insert itself between the headline and the phone field
+              and push the one thing that matters below the fold. There is no
+              hole on mobile, so there is nothing here.
+
+              The waves reuse .ring-wave from the calling state, which already
+              carries its own prefers-reduced-motion stop in globals.css.
+            */}
+            <div className="mt-9 hidden lg:block" aria-hidden="true">
+              <div className="flex items-start gap-4">
+                <div className="relative mt-1 h-14 w-14 shrink-0">
+                  <span className="ring-wave h-12 w-12 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(22,22,22,.5)' }} />
+                  <span className="ring-wave h-12 w-12 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(22,22,22,.3)', animationDelay: '1.4s' }} />
+                  <span className="absolute left-1/2 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#161616] bg-[#FBF6EA] text-lg">
+                    📞
+                  </span>
+                </div>
+
+                <div
+                  className="relative max-w-md rounded-2xl rounded-bl-none border-2 border-[#161616] bg-[#FBF6EA] px-5 py-4 shadow-[5px_5px_0_0_#161616]"
+                  style={{ transform: 'rotate(-0.6deg)' }}
+                >
+                  <p className="font-display text-[19px] leading-snug font-bold text-[#161616]">
+                    &ldquo;Thanks for calling Modern Mustard Seed. This is{' '}
+                    <span className="italic">Mr. Mustard</span>, Sarah&apos;s AI assistant. What can I help you with
+                    today?&rdquo;
+                  </p>
+                  <p className="mt-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#C4160B]">
+                    What you hear in about ten seconds
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* the ask */}
