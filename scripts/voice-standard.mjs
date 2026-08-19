@@ -163,6 +163,8 @@ if (diffFor) {
 console.log(`THE VOICE STANDARD v${VOICE_STANDARD_VERSION}${apply ? '  (applying)' : '  (audit only, pass --apply to write)'}\n`);
 
 let clean = 0;
+let written = 0;
+const failed = [];
 const unmapped = [];
 for (const a of targets) {
   const { missing, total, booking } = score(a);
@@ -180,9 +182,19 @@ for (const a of targets) {
 
   if (!apply) continue;
   const { next } = restandardise(a);
+  // Only the messages array changes. Spreading the model keeps each agent's
+  // own provider, temperature and tools exactly as they were.
   const model = { ...a.model, messages: [{ role: 'system', content: next }] };
-  await api(`/assistant/${a.id}`, { method: 'PATCH', body: JSON.stringify({ model }) });
-  console.log(`       written, prompt now ${next.length} chars`);
+  try {
+    await api(`/assistant/${a.id}`, { method: 'PATCH', body: JSON.stringify({ model }) });
+    console.log(`       written, prompt now ${next.length} chars`);
+    written += 1;
+  } catch (err) {
+    // One agent Vapi will not take must not stop the other seventeen. The run
+    // reports it at the end instead of dying halfway through the org.
+    failed.push([a.name, err instanceof Error ? err.message : String(err)]);
+    console.log(`       FAILED, left as it was`);
+  }
 }
 
 console.log(`\n${clean}/${targets.length} already at the standard.`);
