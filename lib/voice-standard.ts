@@ -20,7 +20,7 @@
  * in the prompt.
  */
 
-export const VOICE_STANDARD_VERSION = 1;
+export const VOICE_STANDARD_VERSION = 2;
 
 /* ────────────────────────────────────────────────────────────────────────────
    1. THE CLOCK
@@ -68,23 +68,32 @@ export const SPEECH_RULES = [
 /* ────────────────────────────────────────────────────────────────────────────
    3. ANYTHING THE CALLER HAS TO WRITE DOWN
 
-   Measured against real speech recognition on real phone lines. Letter sounds
-   come back wrong, "ay" is heard as I, and a bare run of digits gets slurred:
-   a caller asked an agent to repeat his phone number slower and got back nine
-   digits instead of ten. Only this phrasing survives the line intact.
+   These are the studio spelling standard, lifted verbatim rather than
+   rewritten. They were measured against real speech recognition and learned on
+   live calls, and three of them exist because of a specific failure that a
+   plainer version of the rule did not prevent: an identifier written as a
+   numeral comes back as a year or a hundred, a price spelled digit by digit
+   sounds like a serial number, and an agent that reads anchors back perfectly
+   and then adds the joined-up version hands the caller the broken half.
+
+   They lived as their own section pasted into each prompt. Now they live here,
+   and the apply script strips the pasted copy, because two copies of a rule is
+   how one of them goes stale.
    ──────────────────────────────────────────────────────────────────────────── */
 
 export const SPELLING_RULES = [
-  'SPELL ANCHORED, ALWAYS. Every letter gets an anchor word and a period after it: "b as in boy. i as in igloo. z as in zebra." Never say a letter on its own and never say it as a sound, because letter sounds come back wrong and corrupt what gets written down without anyone noticing.',
-  "Use ordinary anchors a person would use: apple, boy, cat, dog, easy, frank, george, henry, igloo, john, king, larry, mary, nancy, ocean, peter, queen, robert, sam, tom, uniform, victor, william, x-ray, yellow, zebra. Never improvise a strange one.",
-  'ASK for spellings the same way you give them: "spell it with words for me, like b as in boy." That is what makes their letters arrive intact on your end, and it is the most useful sentence you own on a bad line.',
-  'NUMBERS ARE WORDS, comma separated, with a period between groups: "eight, five, zero. three, five, four. three, six, zero, one." Never a bare run of digits. Same for a house number, a confirmation code, or a date.',
-  "WORDS FIRST for email. Most addresses are ordinary words run together, so say them as words with a period between each one, and only spell when the words will not do or when they tell you that you got it wrong. Common domains are spoken as ordinary words, never spelled: gmail dot com, yahoo dot com, outlook dot com, icloud dot com.",
-  'Name every symbol plainly: "underscore", "dot", "dash", "plus", "the number sign". Say the word "dash", never a hyphen, because a hyphen is read out loud as "minus".',
-  "Say a readback ONCE, land on the period, then stop and let them answer. Never repeat it twice in one breath and never speed up to sound efficient. This is the one place on a call where slow is correct.",
-  "NEVER guess a character you did not clearly hear. If you lost it, say so plainly in one line and take it again anchored.",
-  "TWO STRIKES AND YOU STOP SPELLING. If a readback is wrong twice, change the road: take their phone number instead, because ten digits transcribe reliably where an address does not, and tell them somebody will follow up.",
-  'WHAT YOU TYPE MUST MATCH WHAT YOU SAID. When you write an address, an email or a number into a tool, build it from the anchors you just confirmed. "i as in igloo" is the letter i, never l.',
+  "⚠️ AN IDENTIFIER IS NEVER A NUMERAL. In a phone number, an email address, a code, a house number or an order number, every digit is the WORD, comma separated, with a PERIOD between groups: \"four, zero, six. three, one, two. one, two, two, three.\" A numeral is not safe there. Written as digits, 2023 gets read back as a year, 200 becomes \"two hundred\", and a lone 0 can come out as a noise that is not a word at all. The word \"zero\" cannot be re-read as anything else, which is the entire point.",
+  "MONEY IS THE EXCEPTION, and it is the only one. Write a price as an ordinary figure, \"$497 to build and $497 a month\", because that is read out correctly as money and spelling it digit by digit would make a price sound like a serial number. Quantities and dates behave like money, not like identifiers: \"thirty calls a week\", \"next Tuesday\".",
+  "SPELL ANCHORED, ALWAYS. Every letter gets an anchor word and a period after it: \"b as in boy. i as in igloo. z as in zebra.\" Never say a letter on its own, and never say it as a sound (\"bee\", \"ay\"). Letter sounds come back wrong, \"ay\" is heard as I, and that corrupts what gets written down without anyone noticing.",
+  "Use ordinary anchors a person on a job site would use: apple, boy, cat, dog, easy, frank, george, henry, igloo, john, king, larry, mary, nancy, ocean, peter, queen, robert, sam, tom, uniform, victor, william, x-ray, yellow, zebra. Never improvise a strange one.",
+  "ASK for spellings the same way you give them: \"spell it with words for me, like b as in boy.\" That is what makes THEIR letters arrive intact on your end, and it is the most useful sentence you own on a bad line.",
+  "WORDS FIRST for email. Most addresses are ordinary words run together, so say them as words with a period between each one (\"make. our. city. pretty. at gmail dot com\") and only spell when the words will not do, when they ask you to, or when they tell you that you got it wrong.",
+  "⚠️ SAY IT ONCE, THEN STOP. Land on the period, ask if you got it right, and go quiet. NEVER add the joined-up version afterwards (\"so that's makeourcitypretty\"), never spell it a second way, never summarise it. On a real call an agent read the anchors back perfectly and then tacked on a collapsed version with letters dropped and doubled, and the caller heard only the broken half. Anchors, period, question, silence.",
+  "Name every symbol plainly: \"underscore\", \"dot\", \"dash\", \"plus\", \"the number sign\". Say the word \"dash\", never a hyphen, because a hyphen is read out loud as \"minus\".",
+  "Common domains are spoken as ordinary words, never spelled: gmail dot com, yahoo dot com, outlook dot com, hotmail dot com, icloud dot com. Spell a company domain only when you have not heard it before.",
+  "NEVER guess a character you did not clearly hear, and never invent one to fill a gap. If you lost it, say so plainly in one line and take that part again, only that part, anchored.",
+  "TWO STRIKES AND YOU STOP SPELLING. If a readback is wrong twice, do not try a third time. Change the road: take their phone number instead, because ten digits transcribe reliably where an address does not, and get that number to a human who can follow up in writing.",
+  "WHAT YOU TYPE MUST MATCH WHAT YOU SAID. When you write an address or a number into a tool, build it from the anchors you just confirmed. \"i as in igloo\" is the letter i, never l. After it goes out, say it back one more time so they can catch it while a resend is still free.",
 ];
 
 /* ────────────────────────────────────────────────────────────────────────────

@@ -38,7 +38,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
  * module this script scores against. There is no second copy to fall out of
  * date, which was the entire point of putting the standard in one file.
  */
-const { voiceStandard, VOICE_STANDARD_VERSION } = await import(
+const { voiceStandard, VOICE_STANDARD_VERSION, SPELLING_RULES } = await import(
   pathToFileURL(join(ROOT, 'lib', 'voice-standard.ts')).href
 );
 
@@ -110,10 +110,15 @@ const skip = (name) => name.startsWith('__') || name.startsWith('RETIRED');
 /* ── the checks ───────────────────────────────────────────────────────────── */
 
 const CHECKS = [
+  // A version bump has to reach every agent, or the module moves on alone and
+  // the org quietly runs last month's rules.
+  ['VERSION', 'carries the current version of the standard', (p) => p.includes(`THE STANDARD (v${VOICE_STANDARD_VERSION}).`)],
   ['CLOCK', 'knows what day it is', (p) => /\{\{\s*["']?now["']?\s*[|}]/.test(p)],
   ['SPEECH', 'no filler, no stalling, no naming the system', (p) => /NO FILLER/.test(p) && /NEVER NARRATE YOUR OWN MACHINERY/.test(p)],
   ['HONEST', 'cannot invent a price, a review or a capability', (p) => /Never invent a price/.test(p)],
-  ['SPELL', 'anchored letters and grouped digits', (p) => /SPELL ANCHORED/.test(p)],
+  // Counting, not matching. The failure this catches is two copies, not none:
+  // the rules were pasted into prompts by hand before the module existed.
+  ['SPELL', 'exactly one copy of the spelling standard', (p) => (p.match(/SPELL ANCHORED, ALWAYS/g) ?? []).length === 1],
   ['CAL', 'never constructs a date, offers only what is open', (p) => /NEVER WORK OUT A DATE YOURSELF/.test(p) && /OFFER ONLY WHAT CAME BACK/.test(p)],
 ];
 
@@ -125,11 +130,57 @@ function score(assistant) {
   return { prompt, booking, missing, total: applicable.length };
 }
 
+/*
+ * The spelling standard used to be a section pasted into each prompt by hand.
+ * The module carries it now, lifted verbatim, so the pasted copy has to come
+ * out or every agent holds the same twelve rules twice and the two copies drift
+ * apart. Stripping here is what makes the apply idempotent: run it after
+ * somebody pastes the old section back in and the duplicate disappears again.
+ *
+ * ── WHY LINE BY LINE AND NOT THE WHOLE SECTION ───────────────────────────────
+ * Cutting the section wholesale would have deleted four rules that are Mr.
+ * Mustard's alone: the escape hatch that reads {{customer.number}} back when a
+ * spelling has failed twice, and two about not calling a tool before an address
+ * is confirmed. They live inside the same section, under a line saying the
+ * studio standard above is the law and these are his on top of it. A shared
+ * rule and an agent's own rule sitting in one block is exactly the case a blunt
+ * strip gets wrong, and it would have been silent.
+ *
+ * So: drop only the lines the module itself now carries, keep everything else,
+ * and drop the heading only if nothing of the agent's own was left under it.
+ */
+function stripPastedSpelling(prompt) {
+  const start = prompt.search(/^#+ Letters, numbers and addresses[^\n]*$/m);
+  if (start < 0) return prompt;
+  const after = prompt.slice(start + 1);
+  const rel = after.search(/^(#+ |[A-Z][A-Z0-9 ,'()]{6,}:?$)/m);
+  const end = rel < 0 ? prompt.length : start + 1 + rel;
+
+  const canon = new Set(SPELLING_RULES.map((r) => r.trim()));
+  const lines = prompt.slice(start, end).split('\n');
+  const heading = lines[0];
+  const kept = lines.slice(1).filter((l) => {
+    const t = l.replace(/^\s*-\s*/, '').trim();
+    if (!t) return false;
+    if (canon.has(t)) return false;
+    // The section's own preamble says these rules were measured on real calls.
+    // The module says it better, in the comment above SPELLING_RULES.
+    if (/^Anything a caller has to write down/.test(t)) return false;
+    if (/^THE STUDIO STANDARD ABOVE IS THE LAW/.test(t)) return false;
+    return true;
+  });
+
+  const replacement = kept.length
+    ? `${heading.replace(/\s*\(studio standard v\d+\)/, ' (yours, on top of the studio standard)')}\n${kept.join('\n')}\n`
+    : '';
+  return (prompt.slice(0, start) + replacement + prompt.slice(end)).replace(/\n{3,}/g, '\n\n');
+}
+
 /** The prompt with the standard block replaced (or appended if it had none). */
 function restandardise(assistant) {
   const { prompt, booking } = score(assistant);
   const timezone = ZONES[assistant.name];
-  const body = prompt.replace(MARKER, '').trimEnd();
+  const body = stripPastedSpelling(prompt.replace(MARKER, '')).trimEnd();
   const block = voiceStandard({ timezone: timezone ?? 'America/New_York', booking });
   return { next: `${body}\n\n${block}\n`, timezone };
 }
