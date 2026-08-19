@@ -51,8 +51,9 @@ if (!KEY) {
    * the drift this audit is here to catch.
    */
   const CHECKS = [
-    ['v2 heading', /studio standard v2/],
-    ['no numerals', /NEVER WRITE A NUMERAL/],
+    ['v3 heading', /studio standard v3/],
+    ['identifiers not numerals', /AN IDENTIFIER IS NEVER A NUMERAL/],
+    ['money exempted', /MONEY IS THE EXCEPTION/],
     ['anchored spelling', /SPELL ANCHORED, ALWAYS/],
     ['say it once', /SAY IT ONCE, THEN STOP/],
   ];
@@ -83,7 +84,7 @@ if (!KEY) {
       }
     }
 
-    console.log(`\n${ok} agent(s) carry the full v2 standard, ${bad} do not, ${skipped} skipped.`);
+    console.log(`\n${ok} agent(s) carry the full v3 standard, ${bad} do not, ${skipped} skipped.`);
     if (bad) {
       console.log('\nFix with: node scripts/vapi-spelling.mjs --apply');
       console.log('Mr. Mustard is fixed with: node scripts/setup-vapi-mustard.mjs --update <id>\n');
