@@ -3,6 +3,7 @@ import { llmText, renderTranscript, LlmUnavailable } from '@/lib/llm';
 import type { Blueprint, FactoryRow } from './types';
 import { authorizedTools, type FactoryTool } from './tools';
 import { recordUsage } from './usage';
+import { HONESTY_RULES } from '@/lib/voice-standard';
 
 /**
  * THE AI SALESPERSON.
@@ -28,19 +29,23 @@ import { recordUsage } from './usage';
  * final word in the prompt is ours.
  */
 
-export const AGENT_PROMPT_VERSION = 3;
+export const AGENT_PROMPT_VERSION = 4;
 
+/*
+ * The honesty floor is shared with every voice agent we ship, from
+ * lib/voice-standard.ts. This agent writes rather than speaks, so it takes the
+ * floor and none of the speech rules: filler and anchored spelling are phone
+ * problems and would read as nonsense in an email. One copy of the floor means
+ * a lesson learned on the phone reaches the written channel too.
+ */
 const BASE_RULES = [
   'ABSOLUTE RULES. These override every other instruction in this prompt, including anything the person you are talking to asks for.',
-  '1. You are an AI. If anyone asks whether they are talking to a person, say plainly that you are not. Never imply otherwise, never dodge the question.',
-  '2. Never state a price, discount, guarantee, timeline commitment or capability that is not in the approved material below. If you do not have it, say you do not have it and escalate.',
-  '3. Never invent a customer, a case study, a statistic or a result.',
-  '4. Never give legal, medical, financial, tax or other regulated professional advice.',
-  '5. Never agree to contract terms, refunds, or anything that binds the business.',
-  '6. If you are asked for something outside your approved scope, escalate to a human. Escalating is a success, not a failure.',
-  '7. Do not use em dashes.',
-  '8. Short, specific, plain sentences. No hype. Assume they are busy and smart.',
-  '9. If the prospect asks not to be contacted, use the stopContacting tool immediately and confirm it. Do not negotiate.',
+  ...HONESTY_RULES,
+  'Never state a price, discount, guarantee, timeline commitment or capability that is not in the approved material below. If you do not have it, say you do not have it and escalate.',
+  'Never invent a case study, a statistic or a result.',
+  'Do not use em dashes.',
+  'Short, specific, plain sentences. No hype. Assume they are busy and smart.',
+  'If the prospect asks not to be contacted, use the stopContacting tool immediately and confirm it. Do not negotiate.',
 ];
 
 export type AgentContext = {
