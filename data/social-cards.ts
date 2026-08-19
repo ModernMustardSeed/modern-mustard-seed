@@ -78,19 +78,15 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
       {
         file: '02-unanswered',
-        headline: '62% of calls to small businesses go unanswered.',
+        headline: 'You cannot be in two places. The phone does not know that.',
         use: 'The empathy beat. Middle of the Post 2 carousel.',
-        alt: 'A tradesperson working under a kitchen sink. Headline: 62 percent of calls to small businesses go unanswered.',
-        retired:
-          'The 62% figure is on the REFUSED list in data/proof-stats.ts: it circulates widely and has no traceable primary source. Our whole pitch is "here is the arithmetic with the assumptions showing", and one invented number discredits the sourced ones beside it. Re-render from social-drafts/missed-calls with a figure from the proof bank.',
+        alt: 'A tradesperson working under a kitchen sink. Headline: you cannot be in two places, the phone does not know that.',
       },
       {
         file: '03-after-hours',
         headline: 'People do not hate robots. People hate beeps.',
         use: 'The objection killer. Post 3.',
         alt: 'A lit shop counter at night. Headline: people do not hate robots, people hate beeps.',
-        retired:
-          'The ARTWORK still reads "52% say an AI after hours is better service", which Sarah pulled everywhere on 2026-08-18. The written copy above was rewritten to the beeps line, so the caption and the image now disagree, which is worse than either. Re-render from social-drafts/missed-calls with the beeps headline and clear this field.',
       },
       {
         file: '04-call-it',
@@ -109,6 +105,12 @@ export const SOCIAL_SETS: SocialSet[] = [
         headline: 'It answers. It thinks. It books.',
         use: 'The explainer. Post 4, for people already asking what it does.',
         alt: 'Hands patching a cable into a vintage switchboard. Headline: It answers. It thinks. It books.',
+      },
+      {
+        file: '07-you-own-it',
+        headline: 'You own it. Domain, accounts, numbers, all of it.',
+        use: 'The stewardship card. Post it to the audience that has been burned by an agency, and any time somebody asks what happens if they leave.',
+        alt: 'One hand passing a ring of keys to another across a shop counter. Headline: you own it, domain, accounts, numbers, all of it.',
       },
     ],
     posts: [

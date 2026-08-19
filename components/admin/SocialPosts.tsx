@@ -35,7 +35,10 @@ type Post = {
   angle: string;
   /** What this post is for, in one line, so a tired Sarah picks the right one. */
   use: string;
-  creative: string;
+  /** The card to post with it: <set>/<file>, resolved to a real PNG below. */
+  card: string;
+  /** The moving cut, when there is one worth using instead. */
+  video: string;
   fb: string;
   ig: string;
   x: string;
@@ -46,7 +49,8 @@ const POSTS: Post[] = [
     id: 'dare',
     angle: 'The dare',
     use: 'The default post. Works cold, works warm, works on every network, and the demo does the selling.',
-    creative: 'GRAPHIC: /social/missed-calls/05-break-it.png (feed) and 05-break-it-square.png (X). VIDEO if you would rather: call-me-4x5.mp4 on FB and IG, call-me-9x16.mp4 for Reels and Stories, call-me-16x9.mp4 on X.',
+    card: 'missed-calls/05-break-it',
+    video: 'call-me-4x5.mp4 on FB and IG, call-me-9x16.mp4 for Reels and Stories, call-me-16x9.mp4 on X.',
     fb: `I built an AI receptionist and I am not going to describe him to you.
 
 His number is ${PHONE}. Call it right now. He picks up on the first ring, he says he is an AI in his first sentence, and then he answers whatever you throw at him.
@@ -75,7 +79,8 @@ Try to break him. That is the demo.`,
     id: 'beep',
     angle: 'The beep',
     use: 'The objection killer. Use it the moment somebody says people hate talking to robots.',
-    creative: 'NO GRAPHIC YET. 03-after-hours.png is retired: its artwork still reads the 52% figure that was pulled. Post this one text-only, or re-render that card with the beeps headline from social-drafts/missed-calls.',
+    card: 'missed-calls/03-after-hours',
+    video: 'after-hours-4x5.mp4, if you would rather move.',
     fb: `Every time I bring up AI answering the phone, somebody tells me people hate talking to robots.
 
 I get it. I hated the idea too.
@@ -106,7 +111,8 @@ People do not hate robots. People hate beeps.`,
     id: 'ninepm',
     angle: 'The nine at night caller',
     use: 'The arithmetic post. Best for trades and anyone who works a route or a job site.',
-    creative: 'GRAPHIC: /social/missed-calls/01-competitor.png (feed) and -square (X). VIDEO: after-hours-4x5.mp4. Avoid 02-unanswered, it is retired for carrying an unsourced 62% figure.',
+    card: 'missed-calls/01-competitor',
+    video: 'after-hours-4x5.mp4. 02-unanswered also fits this angle.',
     fb: `The call you lost last night did not go to voicemail and stay there.
 
 It rang four times, hit your recording, and that person hung up and called the next name on the list. They did not leave a message. They are not going to call back in the morning. You will never know it happened.
@@ -137,7 +143,8 @@ That is what makes it expensive. It is invisible.`,
     id: 'talking-website',
     angle: 'A website that answers its own phone',
     use: 'The flagship offer. Use when the audience is further along than "what is a voice agent".',
-    creative: 'GRAPHIC: /social/talking-website/01-talks-back.png (feed) and -square (X). VIDEO: the Talking Website cut, or a screen recording of the site with the gold call button.',
+    card: 'talking-website/01-talks-back',
+    video: 'The Talking Website cut, or a screen recording of the site with the gold call button.',
     fb: `Your website and your phone do not know each other.
 
 The site says you are open until six. The voicemail says something you recorded in 2019. A customer reads one, hears the other, and decides you are disorganised before anybody has spoken to them.
@@ -166,7 +173,8 @@ Build them as one thing.`,
     id: 'roof',
     angle: 'While you are on a roof',
     use: 'Trades specific. Roofing, HVAC, plumbing, landscaping. The one that gets shared in contractor groups.',
-    creative: 'GRAPHIC: /social/talking-website-plumbers/ for the trade cut, or /social/missed-calls/06-what-it-does.png. VIDEO: call-me-9x16.mp4 as a Reel.',
+    card: 'missed-calls/06-what-it-does',
+    video: 'call-me-9x16.mp4 as a Reel. The talking-website-plumbers set is the trade specific cut.',
     fb: `You cannot answer the phone from up a ladder. That is not a discipline problem, it is physics.
 
 So the phone rings while your hands are full, and by the time you are back in the truck the person who called has already booked somebody else.
@@ -191,7 +199,8 @@ Mine answers it, books the job, writes down the address, and texts me the ones t
     id: 'own-it',
     angle: 'You own it',
     use: 'The stewardship post. Slower, warmer, for the audience that has been burned by an agency.',
-    creative: 'GRAPHIC: /social/missed-calls/04-call-it.png (feed) and -square (X), or a photo of the Flathead. Download any of these from /admin/social-cards.',
+    card: 'missed-calls/07-you-own-it',
+    video: 'None. This one is better as a still.',
     fb: `Most people who build you something want you to need them forever.
 
 That is the business model. You do not get the logins, you do not get the code, and every small change costs you a phone call and two weeks of waiting.
@@ -304,9 +313,44 @@ export default function SocialPosts() {
 
       {POSTS.filter((p) => p.id === open).map((p) => (
         <section key={p.id} className="space-y-5">
+          {/*
+            SHOW THE GRAPHIC, DO NOT DESCRIBE IT.
+
+            This block used to be a sentence naming a filename, which is how a
+            library of finished artwork ends up looking like a to-do list.
+            Sarah's words on seeing it: "there are no graphics, there is only a
+            prompt." The cards existed the whole time. Now they are on screen,
+            both cuts, with the download that actually saves the file.
+          */}
           <div className="bg-[#FBF6EA] border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-5">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Creative</span>
-            <p className="text-sm text-[#161616]/85 font-sans mt-2">{p.creative}</p>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
+              Post it with this
+            </span>
+            <div className="mt-4 grid gap-4 sm:grid-cols-[1.1fr_1fr]">
+              {(['', '-square'] as const).map((suffix) => (
+                <figure key={suffix} className="flex flex-col gap-2">
+                  <a
+                    href={`/social/${p.card}${suffix}.png`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#F5B700] transition-all hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#F5B700]"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`/social/${p.card}${suffix}.png`} alt="" className="block h-auto w-full" loading="lazy" />
+                  </a>
+                  <a
+                    href={`/social/${p.card}${suffix}.png`}
+                    download
+                    className="text-center text-[11px] uppercase tracking-[0.14em] font-sans font-bold px-3 py-2 border-2 border-[#161616] bg-white shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
+                  >
+                    {suffix ? 'Download square (X)' : 'Download feed (FB + IG)'}
+                  </a>
+                </figure>
+              ))}
+            </div>
+            <p className="text-[13px] text-[#161616]/70 font-sans mt-4 leading-relaxed">
+              <b>Video instead:</b> {p.video}
+            </p>
           </div>
           <Copyable label="Facebook" text={p.fb} />
           <Copyable label="Instagram (no links, phone is the CTA)" text={p.ig} />
