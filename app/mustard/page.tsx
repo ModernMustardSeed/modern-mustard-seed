@@ -137,12 +137,38 @@ export default async function MustardPage({
             </div>
 
             <h1 className="mt-5 font-display text-[2.9rem] leading-[0.92] sm:text-[4.5rem] font-extrabold tracking-tight text-[#161616]">
-              Meet <span className="italic">Mr. Mustard</span>.
+              Meet{' '}
+              <span className="italic sm:inline-block sm:-rotate-1 sm:border-2 sm:border-[#161616] sm:bg-[#FBF6EA] sm:px-4 sm:pb-1 sm:shadow-[6px_6px_0_0_#161616]">
+                Mr. Mustard
+              </span>
+              .
             </h1>
 
-            <p className="mt-3 font-display text-[1.5rem] sm:text-[2.1rem] leading-[1.1] font-bold text-[#161616]">
-              Want my AI receptionist to call <span className="italic">you</span>?
+            <p className="mt-4 font-display text-[1.5rem] sm:text-[2.1rem] leading-[1.1] font-bold text-[#161616]">
+              Want my AI receptionist to call{' '}
+              <span className="italic underline decoration-[#161616] decoration-4 underline-offset-[6px]">you</span>?
             </p>
+
+            {/*
+              Sticker chips: the three fears, answered before anybody reads a
+              paragraph. Hidden on phones, where the reading order is hook then
+              form and every pixel above the phone field is paid for in calls;
+              the form card makes the same three promises in its own footer.
+            */}
+            <div className="mt-6 hidden flex-wrap items-center gap-3 sm:flex">
+              {([
+                ['Free call', 'bg-[#FBF6EA]', '-rotate-2'],
+                ['No card', 'bg-white', 'rotate-1'],
+                ['He rings in ten seconds', 'bg-[#FBF6EA]', '-rotate-1'],
+              ] as const).map(([label, bg, rot]) => (
+                <span
+                  key={label}
+                  className={`${bg} ${rot} inline-block rounded-full border-2 border-[#161616] px-4 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] shadow-[3px_3px_0_0_#161616]`}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
 
             {/*
               ── THE FIRST LINE, SITTING IN THE HOLE THE GRID LEAVES ──────────
@@ -194,20 +220,52 @@ export default async function MustardPage({
           </div>
 
           {/* the ask */}
-          <div className="order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-8">
-            <MustardDemo
-              surface={surface.slug}
-              headline={surface.headline}
-              ctaLabel={surface.cta_label}
-              sellerName={surface.seller_name}
-              consentVersion={version.id}
-              consentText={version.text}
-              source={source}
-              token={token || null}
-              landingUrl={url.toString()}
-              prefill={prefill}
-              knownAs={knownAs}
-            />
+          <div className="order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-24">
+            {/*
+              The card gets its two pop-art companions: Mr. Mustard himself
+              standing on the top edge of his own form, and a FREE CALL
+              starburst stamped over the corner. Both are decoration with a
+              job: the mascot says a character answers, the burst kills the
+              "what does this cost" hesitation at the exact spot the eye lands.
+              pt-14 reserves the headroom so neither one clips or overlaps the
+              headline above on mobile.
+            */}
+            <div className="relative pt-14">
+              <Image
+                src="/brand/mascot.png"
+                alt=""
+                width={885}
+                height={1180}
+                sizes="80px"
+                priority
+                className="pointer-events-none absolute right-7 top-0 z-10 h-20 w-auto rotate-3 drop-shadow-[3px_3px_0_rgba(22,22,22,0.35)]"
+              />
+              <div className="absolute -left-2 -top-5 z-10 -rotate-12 sm:-left-10 sm:-top-2" aria-hidden="true">
+                <div className="relative flex h-[92px] w-[92px] items-center justify-center">
+                  <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full drop-shadow-[3px_3px_0_rgba(22,22,22,0.9)]">
+                    <polygon points="50.0,1.0 59.6,14.3 74.5,7.6 76.2,23.8 92.4,25.5 85.7,40.4 99.0,50.0 85.7,59.6 92.4,74.5 76.2,76.2 74.5,92.4 59.6,85.7 50.0,99.0 40.4,85.7 25.5,92.4 23.8,76.2 7.6,74.5 14.3,59.6 1.0,50.0 14.3,40.4 7.6,25.5 23.8,23.8 25.5,7.6 40.4,14.3" fill="#E0301E" stroke="#161616" strokeWidth="2.5" />
+                  </svg>
+                  <span className="relative text-center font-display text-[15px] font-extrabold uppercase leading-[1.05] text-[#FBF6EA]">
+                    Free
+                    <br />
+                    call
+                  </span>
+                </div>
+              </div>
+              <MustardDemo
+                surface={surface.slug}
+                headline={surface.headline}
+                ctaLabel={surface.cta_label}
+                sellerName={surface.seller_name}
+                consentVersion={version.id}
+                consentText={version.text}
+                source={source}
+                token={token || null}
+                landingUrl={url.toString()}
+                prefill={prefill}
+                knownAs={knownAs}
+              />
+            </div>
           </div>
 
           {/* the reassurance */}
@@ -242,9 +300,16 @@ export default async function MustardPage({
                 ['You try to break him', 'The call your team gets on a bad night.'],
                 ['Then you decide', 'Hear him answering as your business. Buy it only if you love it.'],
               ].map(([title, body], i) => (
-                <li key={title} className="rounded-xl border-2 border-[#161616] bg-[#FBF6EA]/80 p-3.5">
-                  <p className="font-mono text-[10px] font-bold text-[#C4160B]">0{i + 1}</p>
-                  <p className="mt-1 font-display text-[15px] font-bold leading-tight">{title}</p>
+                <li
+                  key={title}
+                  className={`rounded-xl border-2 border-[#161616] p-3.5 shadow-[4px_4px_0_0_#161616] ${
+                    i === 1 ? 'rotate-[0.7deg] bg-white' : '-rotate-[0.7deg] bg-[#FBF6EA]'
+                  }`}
+                >
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-[#161616] bg-[#E0301E] font-mono text-[10px] font-bold text-[#FBF6EA]">
+                    {i + 1}
+                  </span>
+                  <p className="mt-2 font-display text-[15px] font-bold leading-tight">{title}</p>
                   <p className="mt-1 text-[12.5px] leading-snug text-[#161616]/70">{body}</p>
                 </li>
               ))}
@@ -350,7 +415,13 @@ export default async function MustardPage({
             somebody actually presses play. A hero that costs 18MB to scroll
             past would cost more calls than the film wins.
           */}
-          <figure className="mt-8 max-w-3xl">
+          <figure className="relative mt-8 max-w-3xl">
+            <span
+              className="absolute -right-3 -top-3.5 z-10 rotate-6 rounded-lg border-2 border-[#161616] bg-[#E0301E] px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#FBF6EA] shadow-[3px_3px_0_0_#161616]"
+              aria-hidden="true"
+            >
+              Press play &#9654;
+            </span>
             <div className="overflow-hidden rounded-2xl border-2 border-[#161616] bg-black shadow-[6px_6px_0_0_#161616]">
               <video
                 controls
@@ -361,24 +432,33 @@ export default async function MustardPage({
                 className="block w-full"
               />
             </div>
-            <figcaption className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#161616]/50">
-              <span className="text-[#C4160B]">Press play</span>
-              <span aria-hidden="true">&middot;</span>
-              <span>That is him, working</span>
+            <figcaption className="mt-3 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#161616]/50">
+              That is him, working
             </figcaption>
           </figure>
 
           <ul className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              ['Answers on the first ring', 'Every call, all night, no voicemail. The nine p m caller who would have rung the next name on the list gets a person instead.'],
-              ['Books the job', 'Straight into your real calendar, with the address and the problem written down the way you would have written it.'],
-              ['Knows your business', 'Your services, your hours, your prices, your service area. He answers the question instead of taking a message about it.'],
-              ['Hands you the ones that matter', 'A big job or an angry customer gets warmed up and transferred to your cell, with a summary before you say hello.'],
-              ['Writes everything down', 'Name, number, what they wanted, what you promised. In your inbox before the call ends.'],
-              ['Remembers repeat callers', 'Somebody who called last month gets greeted like it. That alone sounds more human than most front desks.'],
-            ].map(([title, body]) => (
-              <li key={title} className="rounded-xl border-2 border-[#161616] bg-white p-5 shadow-[4px_4px_0_0_#161616]">
-                <p className="font-display text-[17px] font-bold leading-tight">{title}</p>
+              ['📞', 'Answers on the first ring', 'Every call, all night, no voicemail. The nine p m caller who would have rung the next name on the list gets a person instead.'],
+              ['📅', 'Books the job', 'Straight into your real calendar, with the address and the problem written down the way you would have written it.'],
+              ['🧠', 'Knows your business', 'Your services, your hours, your prices, your service area. He answers the question instead of taking a message about it.'],
+              ['📲', 'Hands you the ones that matter', 'A big job or an angry customer gets warmed up and transferred to your cell, with a summary before you say hello.'],
+              ['✍️', 'Writes everything down', 'Name, number, what they wanted, what you promised. In your inbox before the call ends.'],
+              ['👋', 'Remembers repeat callers', 'Somebody who called last month gets greeted like it. That alone sounds more human than most front desks.'],
+            ].map(([emoji, title, body], i) => (
+              <li
+                key={title}
+                className={`rounded-xl border-2 border-[#161616] bg-white p-5 shadow-[4px_4px_0_0_#161616] transition-transform duration-200 hover:-translate-y-1 ${
+                  i % 2 === 0 ? '-rotate-[0.4deg]' : 'rotate-[0.4deg]'
+                }`}
+              >
+                <span
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#161616] bg-[#F5B700] text-base shadow-[2px_2px_0_0_#161616]"
+                  aria-hidden="true"
+                >
+                  {emoji}
+                </span>
+                <p className="mt-3 font-display text-[17px] font-bold leading-tight">{title}</p>
                 <p className="mt-2 text-[14px] leading-relaxed text-[#161616]/70">{body}</p>
               </li>
             ))}
