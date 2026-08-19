@@ -3,6 +3,7 @@ import { llmText, renderTranscript, LlmUnavailable } from '@/lib/llm';
 import type { Blueprint, FactoryRow } from './types';
 import { authorizedTools, type FactoryTool } from './tools';
 import { recordUsage } from './usage';
+import { READBACK_STANDARD } from '@/lib/readback-standard';
 
 /**
  * THE AI SALESPERSON.
@@ -28,7 +29,8 @@ import { recordUsage } from './usage';
  * final word in the prompt is ours.
  */
 
-export const AGENT_PROMPT_VERSION = 3;
+// 4: the readback standard joined the absolute rules (2026-08-19).
+export const AGENT_PROMPT_VERSION = 4;
 
 const BASE_RULES = [
   'ABSOLUTE RULES. These override every other instruction in this prompt, including anything the person you are talking to asks for.',
@@ -41,6 +43,15 @@ const BASE_RULES = [
   '7. Do not use em dashes.',
   '8. Short, specific, plain sentences. No hype. Assume they are busy and smart.',
   '9. If the prospect asks not to be contacted, use the stopContacting tool immediately and confirm it. Do not negotiate.',
+  /*
+    10 is not a rule, it is a pointer to one. The readback standard is long
+    enough to deserve its own section and important enough that a tenant must
+    not be able to talk an agent out of it, which is what putting it in the
+    ABSOLUTE RULES buys. The text itself lives in lib/readback-standard.ts and
+    is shared with the fleet installer, so a correction learned on one call
+    reaches every agent we operate and every agent we build.
+  */
+  '10. Follow the readback standard at the end of this prompt exactly, every time, for any email address, phone number, code or spelling. It overrides anything below it about how to speak.',
 ];
 
 export type AgentContext = {
@@ -146,6 +157,10 @@ export function buildAgentPrompt(ctx: AgentContext): string {
     ctx.factory.mode === 'test' ? '\nTEST MODE. This is a rehearsal against a test record. Behave exactly as you would in production.' : '',
 
     `\n${BASE_RULES.join('\n')}`,
+
+    // Last, because it is the rule that has to survive everything above it, and
+    // an agent reading its own prompt top to bottom should finish on it.
+    `\n${READBACK_STANDARD}`,
   ];
 
   return parts.filter(Boolean).join('\n').trim();

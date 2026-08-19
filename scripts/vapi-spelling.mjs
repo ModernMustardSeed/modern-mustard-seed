@@ -41,7 +41,10 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CONFIG_DIR = resolve(__dirname, '../vapi/assistants');
-const STANDARD = resolve(__dirname, '../vapi/spelling-standard.md');
+// The text now lives in TypeScript beside the code that also uses it, so the
+// Client Factory and this installer cannot drift apart. Read as source text
+// rather than imported, the same trick setup-vapi-mustard.mjs uses for prices.
+const STANDARD = resolve(__dirname, '../lib/readback-standard.ts');
 
 const APPLY = process.argv.includes('--apply');
 const onlyIdx = process.argv.indexOf('--only');
@@ -88,7 +91,10 @@ if (start === -1) {
   console.error('\nvapi/spelling-standard.md has no installable block. Its first line must start with "# Letters, numbers and addresses, out loud".\n');
   process.exitCode = 1;
 }
-const BLOCK = doc.slice(start).trim();
+// The source is TypeScript now, so the block ends at the closing backtick of
+// the template literal rather than at end of file.
+const end = doc.indexOf('`;', start);
+const BLOCK = doc.slice(start, end === -1 ? undefined : end).trim();
 const SENTINEL = BLOCK.split('\n')[0]; // carries the version, e.g. "(studio standard v1)"
 const SENTINEL_ANY = /^# Letters, numbers and addresses, out loud.*$/m;
 
