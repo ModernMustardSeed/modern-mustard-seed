@@ -298,7 +298,26 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
   // Somebody who asked to be left alone does not get called because they found
   // a link. This is checked here even though the address may be blank, because
   // a known prospect carries one.
-  if (lead.unsubscribed_at || lead.status === 'dnc' || lead.dnc_checked) {
+  /**
+   * ⚠️ DO NOT CONTACT BELONGS TO THE NUMBER, NOT TO ONE ROW.
+   *
+   * Checking only the resolved lead was a coin flip dressed up as a rule: when
+   * a number sits on several rows and one of them says do-not-call, whether we
+   * dialled came down to which row the resolver happened to return. Somebody
+   * who asked us to stop could be called simply because a newer record existed.
+   *
+   * So every row carrying this number is checked, and any one of them saying
+   * stop is enough. Strictly more conservative than before, and deterministic,
+   * which is the only acceptable pair of properties for this particular check.
+   */
+  const { data: sharing } = await db
+    .from('outbound_leads')
+    .select('id,status,dnc_checked,unsubscribed_at')
+    .eq('phone_digits', phoneDigits(phoneE164));
+  const suppressedRow = (sharing ?? []).find(
+    (r) => r.unsubscribed_at || r.status === 'dnc' || r.dnc_checked,
+  );
+  if (lead.unsubscribed_at || lead.status === 'dnc' || lead.dnc_checked || suppressedRow) {
     return refuse('suppressed', 'That number is on our do-not-contact list, and it stays there. Email sarah@modernmustardseed.com if that is wrong.');
   }
   if (lead.email) {
@@ -539,7 +558,29 @@ async function resolveLead(
   // Otherwise the phone number is the identity. This is what stops /mustard
   // from producing a fresh duplicate every time somebody tries it twice.
   if (digits) {
-    const { data: byKey } = await db.from('outbound_leads').select('*').eq('phone_digits', digits).limit(1);
+    /**
+     * ⚠️ ORDERING IS NOT COSMETIC HERE. This used to be a bare `.limit(1)` with
+     * no ORDER BY, so when a number appeared on more than one row, WHICH row
+     * won was down to whatever Postgres felt like returning that second.
+     *
+     * That is not hypothetical. Sarah's own cell sits on six rows from her demo
+     * testing, and a callback to it greeted her as "Michelle" from a Cross +
+     * Covenant record on one call and as somebody else on the next. For a real
+     * caller with an old record and a new one, it decides whether he greets
+     * them with this year's context or a year-old one, at random.
+     *
+     * Most recently touched wins. That is the row a human would have picked,
+     * and being deterministic matters more than being clever: the same caller
+     * now gets the same identity every time, which is the whole promise of
+     * "he remembers you".
+     */
+    const { data: byKey } = await db
+      .from('outbound_leads')
+      .select('*')
+      .eq('phone_digits', digits)
+      .order('updated_at', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: false })
+      .limit(1);
     if ((byKey ?? []).length) return (byKey as AcqProspect[])[0];
     // Older rows predate phone_digits, so fall back to a suffix match on the
     // raw column rather than creating a duplicate of somebody we already know.
