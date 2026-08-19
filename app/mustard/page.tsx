@@ -27,10 +27,9 @@ export const metadata = buildMetadata({
  * here with a `?source=` on the end, and the funnel splits itself by channel
  * without a single new page ever being built.
  *
- * Deliberately not a landing page. The navbar hides itself here (isAppShell in
- * Navbar.tsx) and the footer is suppressed below, because this screen has one
- * job and a nav offering fifteen other departments is fifteen ways to leave
- * before the phone rings.
+ * The site nav and footer show here so a visitor can poke around the rest of
+ * the company. Only the floating chat launcher stays hidden (HideOnAppShell in
+ * layout.tsx): it is a second Mr. Mustard that skips the consent flow.
  *
  * House grammar throughout: cream canvas, ink outlines, mustard fills, red mono
  * eyebrow, hard sticker shadows, halftone. Playfair for the display line with a
@@ -125,7 +124,7 @@ export default async function MustardPage({
           one screen. Explicit grid placement rather than source order, so the
           markup can stay in the order a screen reader should hear it.
         */}
-        <div className="relative mx-auto grid max-w-6xl items-start gap-x-14 gap-y-8 px-5 pt-8 pb-12 sm:px-8 sm:pt-12 sm:pb-16 lg:grid-cols-[1.05fr_minmax(0,26rem)]">
+        <div className="relative mx-auto grid max-w-6xl items-start gap-x-14 gap-y-8 px-5 pt-24 pb-12 sm:px-8 sm:pt-28 sm:pb-16 lg:grid-cols-[1.05fr_minmax(0,26rem)]">
           {/* the hook */}
           <div className="order-1 max-w-xl lg:col-start-1 lg:row-start-1">
             <div className="flex items-center gap-3">
