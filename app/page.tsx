@@ -1,4 +1,3 @@
-import DemoForgeStrip from '@/components/home/DemoForgeStrip';
 import ProofBand from '@/components/home/ProofBand';
 import JourneyCalculator from '@/components/journey/JourneyCalculator';
 import JourneyRig from '@/components/journey/JourneyRig';
@@ -9,6 +8,7 @@ import JourneyTour from '@/components/journey/JourneyTour';
 // import GoogleReviews from '@/components/home/GoogleReviews';
 import {
   JourneyHero,
+  JourneyRing,
   JourneyOrchard,
   JourneySigns,
   JourneySquare,
@@ -129,10 +129,13 @@ export default function HomePage() {
           breadcrumbJsonLd([{ name: 'Home', url: '/' }]),
         ]}
       />
-      <DemoForgeStrip />
       <main className="relative bg-[#FBF6EA] text-[#161616]">
         <JourneyRig />
         <JourneyHero />
+        {/* MI 4. The turnout: one field, one promise, the phone rings. It used
+            to sit inside the hero (Sarah 2026-08-19: too crowded up there), so
+            it gets its own band the moment the drive starts. */}
+        <JourneyRing />
         <JourneyOrchard />
         {/* MI 19. The leak, priced. Conversion proof for the talking website and
             the voice agent, then a working pop-art calculator that totals what

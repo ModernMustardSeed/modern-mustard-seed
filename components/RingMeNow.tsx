@@ -13,6 +13,10 @@ import { DEMO_LINE } from '@/data/trade-pages';
  * them about their business and if he can make them their very own voice
  * agent. Something simple but loud."*
  *
+ * 2026-08-19: on the homepage it moved out of the hero and into its own band
+ * one screen down (JourneyRing, "The Turnout"). The hero had gotten crowded.
+ * Nothing about the card changed except that it always shows in full now.
+ *
  * Simple is the whole design. It asks for ONE thing, because a phone number is
  * the only thing a stranger hands over in a single gesture, and because the
  * product IS a phone call: the fastest way to sell a voice agent is to be one.
@@ -44,20 +48,9 @@ const REASONS: Record<string, string> = {
 export default function RingMeNow({
   source = 'hero-ring',
   className = '',
-  dense = false,
 }: {
   source?: string;
   className?: string;
-  /**
-   * The hero cut: chip, field, button, one line of consent, and nothing else.
-   *
-   * The homepage hero is a sticky full-screen frame that already holds an
-   * eyebrow, a 200px headline, a paragraph, and a button row. Measured at a
-   * 636px viewport (a 900px laptop window with Chrome's chrome on it), the full
-   * card pushed the top of COME FOR A DRIVE off the screen. So in the hero the
-   * chip carries the offer and the card stays about 170px tall.
-   */
-  dense?: boolean;
 }) {
   const [phone, setPhone] = useState('');
   const [state, setState] = useState<State>('idle');
@@ -110,7 +103,7 @@ export default function RingMeNow({
 
   return (
     <div
-      className={`relative w-full max-w-xl rounded-2xl border-[3px] border-[#161616] bg-[#FBF6EA] text-left shadow-[7px_7px_0_0_#161616] ${dense ? 'p-4 sm:p-[18px]' : 'p-5 sm:p-6'} ${className}`}
+      className={`relative w-full max-w-xl rounded-2xl border-[3px] border-[#161616] bg-[#FBF6EA] p-5 text-left shadow-[7px_7px_0_0_#161616] sm:p-6 ${className}`}
     >
       {state === 'ringing' ? (
         <div aria-live="polite">
@@ -151,22 +144,18 @@ export default function RingMeNow({
       ) : (
         <>
           <span className="inline-block border-2 border-[#161616] bg-[#F5B700] px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#161616] shadow-[3px_3px_0_0_#161616]">
-            {dense ? 'Hear your own voice agent · 10 seconds' : 'Your phone, ten seconds'}
+            Your phone, ten seconds
           </span>
 
-          {!dense && (
-            <>
-              <p className="mt-3.5 font-display text-[26px] font-black leading-[1.05] tracking-tight text-[#161616] sm:text-[32px]">
-                Hear your own voice agent.
-              </p>
-              <p className="mt-2 max-w-md font-body text-sm leading-relaxed text-[#3a3733] sm:text-base">
-                Drop your number and Mr. Mustard calls you right now. He asks what your business is,
-                then tells you exactly what your own agent would answer.
-              </p>
-            </>
-          )}
+          <p className="mt-3.5 font-display text-[26px] font-black leading-[1.05] tracking-tight text-[#161616] sm:text-[32px]">
+            Hear your own voice agent.
+          </p>
+          <p className="mt-2 max-w-md font-body text-sm leading-relaxed text-[#3a3733] sm:text-base">
+            Drop your number and Mr. Mustard calls you right now. He asks what your business is,
+            then tells you exactly what your own agent would answer.
+          </p>
 
-          <form onSubmit={submit} className={`flex flex-col gap-2.5 sm:flex-row ${dense ? 'mt-3' : 'mt-4'}`}>
+          <form onSubmit={submit} className="mt-4 flex flex-col gap-2.5 sm:flex-row">
             <label className="flex-1">
               <span className="sr-only">Your phone number</span>
               <input
@@ -199,12 +188,11 @@ export default function RingMeNow({
             </p>
           )}
 
-          {/* ⚠️ Consent. See the header comment. This sentence is why the call is welcome,
-              so it survives the dense cut. Only its second half gets trimmed. */}
-          <p className={`font-body text-[12px] leading-relaxed text-[#5c554a] ${dense ? 'mt-2.5' : 'mt-3'}`}>
-            One call, placed by our AI to the number you just typed, because you asked for it.
-            {dense ? ' ' : ' No list, no spam, and he will not ring you twice. '}
-            Rather dial him?{' '}
+          {/* ⚠️ Consent. See the header comment. This sentence is why the call is
+              welcome. It does not get trimmed. */}
+          <p className="mt-3 font-body text-[12px] leading-relaxed text-[#5c554a]">
+            One call, placed by our AI to the number you just typed, because you asked for it. No
+            list, no spam, and he will not ring you twice. Rather dial him?{' '}
             <a href={`tel:${DEMO_LINE.tel}`} className="font-bold text-[#C2261A] underline underline-offset-2">
               {DEMO_LINE.display}
             </a>
