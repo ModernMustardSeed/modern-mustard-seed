@@ -15,6 +15,17 @@ export type SocialCard = {
   headline: string;
   use: string;
   alt: string;
+  /**
+   * Set when the PNG must not be posted any more, with the reason. The file
+   * stays in the repo, because deleting it would break the historical record of
+   * what we published, but the admin page stops offering it for download and
+   * says why.
+   *
+   * ⚠️ A retired card is a card whose ARTWORK is wrong, not one that is merely
+   * old. Both current cases carry a statistic burned into the image, which is
+   * the one kind of error that cannot be fixed by editing this file.
+   */
+  retired?: string;
 };
 
 // A paragraph, or an array of strings rendered as a numbered list.
@@ -70,12 +81,16 @@ export const SOCIAL_SETS: SocialSet[] = [
         headline: '62% of calls to small businesses go unanswered.',
         use: 'The empathy beat. Middle of the Post 2 carousel.',
         alt: 'A tradesperson working under a kitchen sink. Headline: 62 percent of calls to small businesses go unanswered.',
+        retired:
+          'The 62% figure is on the REFUSED list in data/proof-stats.ts: it circulates widely and has no traceable primary source. Our whole pitch is "here is the arithmetic with the assumptions showing", and one invented number discredits the sourced ones beside it. Re-render from social-drafts/missed-calls with a figure from the proof bank.',
       },
       {
         file: '03-after-hours',
         headline: 'People do not hate robots. People hate beeps.',
         use: 'The objection killer. Post 3.',
         alt: 'A lit shop counter at night. Headline: people do not hate robots, people hate beeps.',
+        retired:
+          'The ARTWORK still reads "52% say an AI after hours is better service", which Sarah pulled everywhere on 2026-08-18. The written copy above was rewritten to the beeps line, so the caption and the image now disagree, which is worse than either. Re-render from social-drafts/missed-calls with the beeps headline and clear this field.',
       },
       {
         file: '04-call-it',

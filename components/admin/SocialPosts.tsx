@@ -46,7 +46,7 @@ const POSTS: Post[] = [
     id: 'dare',
     angle: 'The dare',
     use: 'The default post. Works cold, works warm, works on every network, and the demo does the selling.',
-    creative: 'call-me-4x5.mp4 on FB and IG, call-me-9x16.mp4 for Reels and Stories, call-me-16x9.mp4 on X.',
+    creative: 'GRAPHIC: /social/missed-calls/05-break-it.png (feed) and 05-break-it-square.png (X). VIDEO if you would rather: call-me-4x5.mp4 on FB and IG, call-me-9x16.mp4 for Reels and Stories, call-me-16x9.mp4 on X.',
     fb: `I built an AI receptionist and I am not going to describe him to you.
 
 His number is ${PHONE}. Call it right now. He picks up on the first ring, he says he is an AI in his first sentence, and then he answers whatever you throw at him.
@@ -75,7 +75,7 @@ Try to break him. That is the demo.`,
     id: 'beep',
     angle: 'The beep',
     use: 'The objection killer. Use it the moment somebody says people hate talking to robots.',
-    creative: 'The after-hours still, or the 4:5 commercial.',
+    creative: 'NO GRAPHIC YET. 03-after-hours.png is retired: its artwork still reads the 52% figure that was pulled. Post this one text-only, or re-render that card with the beeps headline from social-drafts/missed-calls.',
     fb: `Every time I bring up AI answering the phone, somebody tells me people hate talking to robots.
 
 I get it. I hated the idea too.
@@ -106,7 +106,7 @@ People do not hate robots. People hate beeps.`,
     id: 'ninepm',
     angle: 'The nine at night caller',
     use: 'The arithmetic post. Best for trades and anyone who works a route or a job site.',
-    creative: 'after-hours-4x5.mp4, or a still of a lit shop counter at night.',
+    creative: 'GRAPHIC: /social/missed-calls/01-competitor.png (feed) and -square (X). VIDEO: after-hours-4x5.mp4. Avoid 02-unanswered, it is retired for carrying an unsourced 62% figure.',
     fb: `The call you lost last night did not go to voicemail and stay there.
 
 It rang four times, hit your recording, and that person hung up and called the next name on the list. They did not leave a message. They are not going to call back in the morning. You will never know it happened.
@@ -137,7 +137,7 @@ That is what makes it expensive. It is invisible.`,
     id: 'talking-website',
     angle: 'A website that answers its own phone',
     use: 'The flagship offer. Use when the audience is further along than "what is a voice agent".',
-    creative: 'The Talking Website cut, or a screen recording of the site with the gold call button.',
+    creative: 'GRAPHIC: /social/talking-website/01-talks-back.png (feed) and -square (X). VIDEO: the Talking Website cut, or a screen recording of the site with the gold call button.',
     fb: `Your website and your phone do not know each other.
 
 The site says you are open until six. The voicemail says something you recorded in 2019. A customer reads one, hears the other, and decides you are disorganised before anybody has spoken to them.
@@ -166,7 +166,7 @@ Build them as one thing.`,
     id: 'roof',
     angle: 'While you are on a roof',
     use: 'Trades specific. Roofing, HVAC, plumbing, landscaping. The one that gets shared in contractor groups.',
-    creative: 'call-me-9x16.mp4 as a Reel.',
+    creative: 'GRAPHIC: /social/talking-website-plumbers/ for the trade cut, or /social/missed-calls/06-what-it-does.png. VIDEO: call-me-9x16.mp4 as a Reel.',
     fb: `You cannot answer the phone from up a ladder. That is not a discipline problem, it is physics.
 
 So the phone rings while your hands are full, and by the time you are back in the truck the person who called has already booked somebody else.
@@ -191,7 +191,7 @@ Mine answers it, books the job, writes down the address, and texts me the ones t
     id: 'own-it',
     angle: 'You own it',
     use: 'The stewardship post. Slower, warmer, for the audience that has been burned by an agency.',
-    creative: 'A still of the mascot, or a photo of the Flathead.',
+    creative: 'GRAPHIC: /social/missed-calls/04-call-it.png (feed) and -square (X), or a photo of the Flathead. Download any of these from /admin/social-cards.',
     fb: `Most people who build you something want you to need them forever.
 
 That is the business model. You do not get the logins, you do not get the code, and every small change costs you a phone call and two weeks of waiting.
