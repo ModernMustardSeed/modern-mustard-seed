@@ -51,7 +51,7 @@ if (!KEY) {
    * the drift this audit is here to catch.
    */
   const CHECKS = [
-    ['v5 heading', /studio standard v5/],
+    ['v6 heading', /studio standard v6/],
     ['identifiers not numerals', /AN IDENTIFIER IS NEVER A NUMERAL/],
     ['money exempted', /MONEY IS THE EXCEPTION/],
     ['corrections kill', /A CORRECTION KILLS EVERYTHING BEFORE IT/],
@@ -61,6 +61,10 @@ if (!KEY) {
     // written into the tool is a different string entirely (2026-08-20).
     ['anchors beat the heard word', /THE ANCHORS ARE THE SPELLING/],
     ['read back what was typed', /READ BACK FROM WHAT YOU TYPED/],
+    // v6. A caller spelled a surname as bare letters and the booking still got
+    // the misheard version, because v5 only bound on anchored spelling.
+    ['bare letters count as spelling', /THIS COVERS EVERY WAY A HUMAN SPELLS/],
+    ['names and businesses get read back', /A NAME OR A BUSINESS IS AN IDENTIFIER/],
   ];
 
   const res = await fetch('https://api.vapi.ai/assistant?limit=100', { headers: { Authorization: `Bearer ${KEY}` } });
@@ -89,7 +93,7 @@ if (!KEY) {
       }
     }
 
-    console.log(`\n${ok} agent(s) carry the full v5 standard, ${bad} do not, ${skipped} skipped.`);
+    console.log(`\n${ok} agent(s) carry the full v6 standard, ${bad} do not, ${skipped} skipped.`);
     if (bad) {
       console.log('\nFix with: node scripts/vapi-spelling.mjs --apply');
       console.log('Mr. Mustard is fixed with: node scripts/setup-vapi-mustard.mjs --update <id>\n');
