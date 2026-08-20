@@ -5,6 +5,8 @@ import type { Niche } from '@/lib/outbound';
 import { TRADE_PRESETS, TICKET_WORD } from '@/data/demo-os-trades';
 import type { OsTradeKey } from '@/data/demo-os-trades';
 import MakeItRealCTA from '@/components/demo/MakeItRealCTA';
+import RecoveryMachine, { type RecoveryValues } from '@/components/RecoveryMachine';
+import SuiteMoreForm from '@/components/demo/SuiteMoreForm';
 import type { DemoProductKey } from '@/lib/demo-order';
 
 /**
@@ -22,32 +24,6 @@ const AVG_JOB: Record<Niche, { label: string; value: number }> = {
   real_estate: { label: 'average commission', value: 7500 },
   other: { label: 'average sale', value: 250 },
 };
-
-/** Round a slider ceiling to something a human would pick. */
-function niceMax(v: number): number {
-  const raw = v * 2.5;
-  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
-  return Math.ceil(raw / mag) * mag;
-}
-
-function useCountUp(target: number, ms = 900): number {
-  const [v, setV] = useState(target);
-  const prev = useRef(target);
-  useEffect(() => {
-    const from = prev.current;
-    prev.current = target;
-    let raf = 0;
-    const t0 = performance.now();
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - t0) / ms);
-      setV(Math.round(from + (target - from) * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [target, ms]);
-  return v;
-}
 
 /** Types the line out, and reports when it is finished so the caret can leave.
  *  A caret that keeps blinking after the sentence lands reads like a bug. */
@@ -147,6 +123,7 @@ export default function DemoHub({
   demoRunId,
   noticedLine,
   missedPreset,
+  hasEmail,
   presenter,
 }: {
   hubId: string;
@@ -188,6 +165,9 @@ export default function DemoHub({
   noticedLine?: string | null;
   /** Research-informed starting value for the missed-calls slider. */
   missedPreset?: number | null;
+  /** Whether the lead row already carries an email (the ready announcement
+   *  needs one; the request form only asks when we do not have it). */
+  hasEmail?: boolean;
   /** Partner who minted this suite ("Presented by X with Modern Mustard Seed"). */
   presenter?: string | null;
 }) {
@@ -212,17 +192,18 @@ export default function DemoHub({
   }, [hubId]);
 
   /* ------------------------------ calculator ------------------------------ */
+  // The machine itself is the shared pop-art RecoveryMachine; this component
+  // only keeps its outputs to write the trade-specific reaction line.
   const tp = trade ? TRADE_PRESETS[trade] : null;
   const job = tp
     ? { label: `average ${TICKET_WORD[trade!] ?? tp.jobWord}`, value: tp.avgTicket }
     : (AVG_JOB[niche] ?? AVG_JOB.other);
-  const sliderMax = niceMax(job.value);
-  const [missed, setMissed] = useState(missedPreset ?? 7);
-  const [close, setClose] = useState(45);
-  const [avg, setAvg] = useState(job.value);
-  const leak = Math.round(missed * 4.33 * (close / 100) * avg);
+  const [calc, setCalc] = useState<RecoveryValues>(() => {
+    const missed = missedPreset ?? 7;
+    return { missed, close: 45, ticket: job.value, leak: Math.round(missed * 4.33 * 0.45 * job.value) };
+  });
+  const leak = calc.leak;
   const caught = Math.round(leak * 0.75);
-  const shown = useCountUp(leak);
   // The trade line lands hardest: dollars restated as whole jobs lost.
   const lostJobs = tp && tp.avgTicket >= 400 ? Math.round(leak / tp.avgTicket) : 0;
   const jobNoun = tp ? (TICKET_WORD[trade!] ?? tp.jobWord) : '';
@@ -311,6 +292,9 @@ export default function DemoHub({
   };
   const onlyOne = forged.length === 1;
   const missing = (['voice', 'site', 'os'] as const).filter((p) => !forged.includes(p));
+  // What the form can actually queue: the two sellable demos. The command
+  // center is included free at purchase, not forged on request.
+  const forgeMissing = missing.filter((p): p is 'voice' | 'site' => p === 'voice' || p === 'site');
 
   /**
    * The line about what they did not take. It carries the command-center rule
@@ -485,57 +469,32 @@ export default function DemoHub({
         {/* The encore: strongest moment in the suite, one tap after the doors. */}
         {demoRunId && voiceUrl && <EncoreRing runId={demoRunId} business={business} />}
 
-        {/* Recovery Calculator */}
+        {/* Recovery Calculator: the shared pop-art desk machine, hub sized
+            (Sarah, 2026-08-20: same calc as the landing page, a little smaller,
+            "it's so much cuter"). */}
         <section className="animate-[hubIn_.5s_ease-out_both]">
-          <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-6 sm:p-8">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">The Recovery Calculator</span>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#FBF6EA] mt-2">What are missed calls costing {business}?</h2>
-            <p className="font-body text-[14px] text-[#FBF6EA]/60 mt-2">Slide to match your week. Estimates, but honest ones.</p>
-            {noticedLine && (
-              <p className="font-body text-[14px] text-[#FBF6EA]/85 border-l-4 border-[#F5B700] bg-white/5 rounded-r-xl px-4 py-3 mt-4">
-                <span className="font-bold text-[#F5B700] uppercase tracking-[0.08em] text-[11px] font-sans block mb-1">What we noticed before we built this</span>
-                {noticedLine}
-              </p>
-            )}
-
-            <div className="grid sm:grid-cols-3 gap-5 mt-6">
-              {[
-                { label: 'Calls you miss per week', value: missed, set: setMissed, min: 1, max: 40, fmt: (v: number) => String(v) },
-                { label: 'Would have hired you', value: close, set: setClose, min: 10, max: 90, fmt: (v: number) => `${v}%` },
-                { label: `Your ${job.label}`, value: avg, set: setAvg, min: 20, max: tp ? sliderMax : niche === 'real_estate' ? 20000 : 3000, fmt: (v: number) => `$${v.toLocaleString()}` },
-              ].map((s) => (
-                <label key={s.label} className="block">
-                  <span className="font-sans text-[11px] uppercase tracking-[0.14em] font-bold text-[#FBF6EA]/70">{s.label}</span>
-                  <span className="block font-mono text-xl font-bold text-[#F5B700] mt-1">{s.fmt(s.value)}</span>
-                  <input
-                    type="range"
-                    min={s.min}
-                    max={s.max}
-                    value={s.value}
-                    onChange={(e) => s.set(Number(e.target.value))}
-                    className="w-full mt-2 accent-[#F5B700]"
-                  />
-                </label>
-              ))}
-            </div>
-
-            {/* Neutral lifted ink, never a mustard wash: translucent mustard over
-                ink mixes to a muddy brown, which is off-brand. Border carries the gold. */}
-            <div className="mt-6 rounded-2xl border-2 border-[#F5B700] bg-[#1F1F1F] p-5 text-center">
-              <p className="font-sans text-[12px] uppercase tracking-[0.24em] font-bold text-[#F5B700]">Leaking every month</p>
-              <p className="hub-ember font-display text-6xl sm:text-7xl md:text-8xl font-bold text-[#FBF6EA] mt-2 tabular-nums leading-none animate-[hubEmber_2.6s_ease-in-out_infinite]">
-                ${shown.toLocaleString()}
-              </p>
-              <p className="font-body text-[14px] text-[#FBF6EA]/70 mt-2">
-                If this suite caught even three quarters of those calls, that is about{' '}
-                <strong className="text-[#F5B700]">${caught.toLocaleString()} a month</strong> back in the till, roughly{' '}
-                <strong className="text-[#F5B700]">${(caught * 12).toLocaleString()} a year</strong>.
-              </p>
-              <div className="flex items-center justify-center gap-3 mt-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/brand/mascot.png" alt="" width={40} height={40} />
-                <p className="font-body text-[13px] italic text-[#FBF6EA]/80 bg-white/5 border border-[#FBF6EA]/15 rounded-xl px-3 py-2">{reaction}</p>
-              </div>
+          <div className="text-center mb-5">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold">The Recovery Calculator</span>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold mt-2">What are missed calls costing {business}?</h2>
+            <p className="font-body text-[14px] text-[#161616]/60 mt-1">Punch in your week. Estimates, but honest ones.</p>
+          </div>
+          <RecoveryMachine
+            missedPreset={missedPreset}
+            ticketPreset={job.value}
+            ticketLabel={`Your ${job.label}`}
+            noticedLine={noticedLine}
+            onChange={setCalc}
+          />
+          <div className="mx-auto mt-5 max-w-xl rounded-2xl border-2 border-[#161616] bg-[#161616] p-4 text-center">
+            <p className="font-body text-[14px] text-[#FBF6EA]/80">
+              If this suite caught even three quarters of those calls, that is about{' '}
+              <strong className="text-[#F5B700]">${caught.toLocaleString()} a month</strong> back in the till, roughly{' '}
+              <strong className="text-[#F5B700]">${(caught * 12).toLocaleString()} a year</strong>.
+            </p>
+            <div className="flex items-center justify-center gap-3 mt-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/mascot.png" alt="" width={40} height={40} />
+              <p className="font-body text-[13px] italic text-[#FBF6EA]/80 bg-white/5 border border-[#FBF6EA]/15 rounded-xl px-3 py-2">{reaction}</p>
             </div>
           </div>
         </section>
@@ -576,9 +535,11 @@ export default function DemoHub({
           Above it, it would be clutter on top of the demo they came to see.
           Here it reads as "there is more if you want it", which is the truth.
 
-          The ask is a phone call on purpose. Inbound is uncapped, he answers it
-          himself, and a caller who says "build me the website too" gets it
-          forged on that call. A form would be slower and worse.
+          The ask WAS a phone call; Sarah 2026-08-20 flipped it: the missing
+          pieces get forged from this page on the spot (SuiteMoreForm hits
+          /api/demo-hub/<hubId>/request-build), the suite updates itself when
+          the build lands, and the suite-ready announcement emails them. The
+          phone survives as the small human fallback under the button.
         */}
         {restLine && (
           <section className="animate-[hubIn_.5s_ease-out_both]">
@@ -587,16 +548,17 @@ export default function DemoHub({
                 {onlyOne ? 'Want more than the one thing?' : 'One piece still missing'}
               </p>
               <p className="font-body mt-3 text-[15.5px] leading-relaxed text-[#161616]/80 max-w-xl mx-auto">{restLine}</p>
-              <a
-                href="tel:+14063121223"
-                className="mt-5 inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#F5B700] px-5 py-3 font-display text-[17px] font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616]"
-              >
-                <span aria-hidden="true">📞</span>
-                Call Mr. Mustard and say which one
-              </a>
-              <p className="font-body mt-2 text-[13px] text-[#161616]/55">
-                (406) 312-1223. He forges it while you are still on the phone.
-              </p>
+              {forgeMissing.length ? (
+                <SuiteMoreForm hubId={hubId} missing={forgeMissing} hasEmail={hasEmail ?? false} />
+              ) : (
+                <a
+                  href="tel:+14063121223"
+                  className="mt-5 inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#F5B700] px-5 py-3 font-display text-[17px] font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616]"
+                >
+                  <span aria-hidden="true">📞</span>
+                  Call Mr. Mustard and say the word
+                </a>
+              )}
             </div>
           </section>
         )}
