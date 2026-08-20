@@ -24,7 +24,6 @@ const STATIC_PATHS = [
   '/world',
   '/mustard-launch',
   '/mustard-mode',
-  '/celebrate',
   '/mustard-mode/start-here',
   '/seed-to-system',
   '/the-terminal',

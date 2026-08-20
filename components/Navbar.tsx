@@ -74,10 +74,11 @@ const MENU_GROUPS = [
 // front-desk, quotable, and comic entries) to bring them back.
 //
 // UNPARKED 2026-08-11 (Sarah): Celebrate came back on its own when the launch
-// countdown shipped. It opens 19 October 2026 and runs a waitlist until then,
-// so it is listed everywhere the other departments are, with one exception:
-// lib/quotable.ts, because the site agent must not quote a price for something
-// that is not selling yet.
+// countdown shipped, listed everywhere except lib/quotable.ts.
+//
+// RE-PARKED 2026-08-20 (Sarah): Celebrate is off every listing surface again
+// (nav, footer, sitemap, llms.txt, services hub, comic) and noindexed. The
+// route and the waitlist drip keep working; it is only undiscoverable.
 //
 // PARKED 2026-08-12 (Sarah): The Voice Agent Forge is pulled from every nav,
 // index, cross-sell CTA, sitemap, and llms.txt entry, and noindexed. Three voice
@@ -104,7 +105,6 @@ const DEPARTMENTS = [
   { name: 'The Hundredfold Roadmap', tag: 'FREE SCALING PLAN FOR YOUR BUSINESS', href: '/scaling-roadmap' },
   { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
   { name: 'Mustard Launch', tag: 'YOUR AI LAUNCH COACH', href: '/mustard-launch' },
-  { name: 'Celebrate', tag: 'GIFTING ON AUTOPILOT, OPENS OCT 19', href: '/celebrate' },
 ];
 
 export default function Navbar() {
