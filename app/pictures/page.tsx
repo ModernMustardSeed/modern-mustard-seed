@@ -7,6 +7,8 @@ export const metadata = buildMetadata({
   title: PICTURES.metaTitle,
   description: PICTURES.metaDescription,
   path: '/pictures',
+  // Unlisted while the studio uses the page internally (Sarah, 2026-08-20).
+  noindex: true,
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
   image: '/pictures/opengraph-image',
