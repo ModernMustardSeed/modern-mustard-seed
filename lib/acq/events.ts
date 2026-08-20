@@ -118,23 +118,31 @@ export const ENGAGEMENT_TYPES: EventType[] = [
  * refresh and every image prefetch, and a timeline that says "opened, opened,
  * opened, opened" in one minute tells Sarah nothing the first line did not.
  * Returns true when a row was written.
+ *
+ * `dedupeOn.machine` scopes the collapse to hits of the same kind, and it is
+ * not optional cleverness: a mail gateway follows the link seconds after the
+ * send and the recipient reads it an hour later, both inside a six-hour
+ * window. Without the scope the scanner's row lands first and swallows the
+ * human's, and the one signal worth having is the one thrown away.
  */
 export async function recordEventOnce(
   db: SupabaseClient | null,
   args: Parameters<typeof recordEvent>[1] & { leadId: string },
   withinMinutes: number,
+  dedupeOn?: { machine: boolean },
 ): Promise<boolean> {
   const client = db ?? getSupabase();
   if (!client) return false;
   try {
     const since = new Date(Date.now() - withinMinutes * 60_000).toISOString();
-    const { data } = await client
+    let q = client
       .from('acq_events')
       .select('id')
       .eq('lead_id', args.leadId)
       .eq('type', args.type)
-      .gte('occurred_at', since)
-      .limit(1);
+      .gte('occurred_at', since);
+    if (dedupeOn) q = q.eq('detail->>machine', String(dedupeOn.machine));
+    const { data } = await q.limit(1);
     if (data && data.length) return false;
   } catch {
     /* if the check fails, writing the line is the safer mistake */

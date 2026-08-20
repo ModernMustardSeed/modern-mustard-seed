@@ -277,6 +277,11 @@ export async function GET(req: Request) {
   for (let i = events.length - 1; i >= 0; i--) {
     const e = events[i];
     if (!e.lead_id) continue;
+    // A mail security gateway following our link is not a person moving. It
+    // stays on the prospect's timeline, labelled, but it never puts anybody on
+    // this board: a board that lists antivirus as movement is worse than an
+    // empty one, because an empty one is honest.
+    if ((e.detail as Record<string, unknown> | null)?.machine === true) continue;
     const step = stepFor(e.type);
     if (!step) continue;
     const p = ensure(e.lead_id);

@@ -1,10 +1,12 @@
 import Image from 'next/image';
+import { headers } from 'next/headers';
 import MustardDemo from '@/components/mustard/MustardDemo';
 import { getSupabase } from '@/lib/supabase';
 import { getSurface, readAttribution, labelSource } from '@/lib/mustard/surface';
 import { resolveLink } from '@/lib/mustard/links';
 import { consentVersion, CURRENT_CONSENT } from '@/lib/acq/consent';
 import { recordEventOnce } from '@/lib/acq/events';
+import { classifyHit, verdictDetail } from '@/lib/acq/bots';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 import { CALL_STATS } from '@/data/proof-stats';
@@ -52,7 +54,10 @@ export default async function MustardPage({
     const val = Array.isArray(v) ? v[0] : v;
     if (val) url.searchParams.set(k, val);
   }
-  const attribution = readAttribution(url, new Headers());
+  // Real request headers, not an empty bag. The attribution reader wants the
+  // referer, and the machine filter below wants the agent.
+  const requestHeaders = await headers();
+  const attribution = readAttribution(url, requestHeaders as unknown as Headers);
 
   const surface = await getSurface(one('s') || undefined);
   const version = consentVersion(surface.consent_version) ?? CURRENT_CONSENT;
@@ -93,16 +98,34 @@ export default async function MustardPage({
     }
   }
   if (visitorLeadId) {
+    // A security gateway that follows the button lands here too, and renders
+    // the whole page doing it. It gets a row that says so rather than a row
+    // that says a contractor showed up.
+    const hit = await classifyHit(getSupabase(), {
+      leadId: visitorLeadId,
+      type: 'permission_visited',
+      headers: requestHeaders as unknown as Headers,
+    });
     // One line per prospect per fifteen minutes: a refresh is not a second visit.
     await recordEventOnce(
       getSupabase(),
       {
         leadId: visitorLeadId,
         type: 'permission_visited',
-        label: `Landed on the permission page${source ? ` (${labelSource(source)})` : ''}`,
-        detail: { source, campaign: one('utm_campaign') || null, variant: one('utm_content') || null },
+        label: hit.machine
+          ? `Security scanner opened the permission page${source ? ` (${labelSource(source)})` : ''}`
+          : `Landed on the permission page${source ? ` (${labelSource(source)})` : ''}`,
+        detail: {
+          source,
+          campaign: one('utm_campaign') || null,
+          variant: one('utm_content') || null,
+          ...verdictDetail(hit),
+        },
       },
       15,
+      // A scanner arriving first must not eat the visit from the person it
+      // was scanning on behalf of.
+      { machine: hit.machine },
     );
   }
 
