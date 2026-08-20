@@ -129,6 +129,12 @@ export type OutboundLead = {
   os_demo_status: 'ready' | null;
   hub_demo_id: string | null;
   hub_demo_url: string | null;
+  /** The AI Integration Plan (migration 104): the free customized document a
+   *  field partner hands or emails the business. Written by the local
+   *  integration-plan worker, served at /demo/plan/<id>. */
+  integration_plan_id: string | null;
+  integration_plan_url: string | null;
+  integration_plan_status: 'queued' | 'building' | 'ready' | 'failed' | null;
   /** Their own walkthrough film, cut as the last step of the forge
    *  (scripts/suite-film). The suite is not announced until this is 'ready'. */
   suite_film_status: 'queued' | 'filming' | 'ready' | 'failed' | null;
@@ -232,6 +238,8 @@ export type ForgeRow = {
   site_demo_status: SiteDemoStatus | null;
   os_demo_url: string | null;
   hub_demo_url: string | null;
+  integration_plan_url: string | null;
+  integration_plan_status: 'queued' | 'building' | 'ready' | 'failed' | null;
   hub_view_count: number;
   email_open_count: number;
   last_email_at: string | null;

@@ -155,6 +155,7 @@ export default function OutboundForge() {
   const [q, setQ] = useState('');
   const [owner, setOwner] = useState('');
   const [retrying, setRetrying] = useState<string | null>(null);
+  const [planning, setPlanning] = useState<string | null>(null);
   // Sarah's design-tier picker (2026-07-30, reworked 2026-08-07). 2 = the
   // Wildmere AWARD SITE world, 3 = the JOURNEY site (the Flathead homepage
   // template). Tier 2 is the HOUSE STYLE and the default (Sarah, 2026-08-11);
@@ -270,6 +271,22 @@ export default function OutboundForge() {
   };
 
   const repName = (id: string | null) => data?.reps.find((r) => r.id === id)?.name ?? '';
+
+  // The free, customized AI Integration Plan (the Ground Game door-opener).
+  // Queues a row the local integration-plan worker writes with headless Claude
+  // on the Max plan; the finished document serves at /demo/plan/<id>.
+  const makePlan = async (row: ForgeRow) => {
+    setPlanning(row.id);
+    try {
+      const res = await api<{ planUrl?: string; existing?: boolean }>(`/api/admin/outbound/leads/${row.id}/integration-plan`, { method: 'POST' });
+      push(res.existing ? `${row.business_name} already has a plan on the way.` : `Writing the Integration Plan for ${row.business_name}. A few minutes.`);
+      await load(true);
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Could not queue the plan.', 'error');
+    } finally {
+      setPlanning(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f7f3e9]">
@@ -551,6 +568,24 @@ export default function OutboundForge() {
                           <a href={r.hub_demo_url} target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-[0.1em] font-oswald font-semibold px-2 py-1 rounded-md border-2 border-[#1a1815] bg-[#1a1815] text-[#b58a2a] hover:-translate-y-0.5 transition-transform">
                             ▦ Their suite ↗
                           </a>
+                        )}
+                        {r.integration_plan_status === 'ready' && r.integration_plan_url ? (
+                          <a href={r.integration_plan_url} target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-[0.1em] font-oswald font-semibold px-2 py-1 rounded-md border-2 border-[#3f5d34] bg-[#3f5d34] text-[#f7f3e9] hover:-translate-y-0.5 transition-transform" title="The free customized plan. Open it, print it, or send the link.">
+                            📋 Integration Plan ↗
+                          </a>
+                        ) : r.integration_plan_status === 'queued' || r.integration_plan_status === 'building' ? (
+                          <span className="text-[10px] uppercase tracking-[0.1em] font-oswald font-semibold px-2 py-1 rounded-md border-2 border-[#1a1815]/25 text-[#1a1815]/50" title="The local plan worker is writing it.">
+                            📋 Plan writing…
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => void makePlan(r)}
+                            disabled={planning === r.id}
+                            className="text-[10px] uppercase tracking-[0.1em] font-oswald font-semibold px-2 py-1 rounded-md border-2 border-dashed border-[#1a1815]/35 text-[#1a1815]/60 hover:border-[#1a1815] hover:text-[#1a1815] transition-colors"
+                            title="Write their free customized AI Integration Plan (runs on the local worker, Max plan)"
+                          >
+                            {planning === r.id ? 'Queuing…' : r.integration_plan_status === 'failed' ? '📋 Retry plan' : '📋 Make plan'}
+                          </button>
                         )}
                         {r.stage === 'failed' && r.site?.error && (
                           <span className="text-[11px] font-sans text-[#a03123] max-w-[420px] truncate" title={r.site.error}>

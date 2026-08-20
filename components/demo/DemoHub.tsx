@@ -284,7 +284,10 @@ export default function DemoHub({
             Nothing else ever plays here. No stock reel, no other client's
             footage, captioned or not (Sarah, 2026-08-01 and 2026-08-11: a
             captioned wrong-business video is still a wrong-business video).
-            When neither exists yet, we say so honestly instead. */}
+            Sarah, 2026-08-20: and when no film exists or is being cut, the
+            whole card disappears. A suite is not required to have a video, and
+            an empty spinner promising one we never queued reads as a stall. */}
+        {(suiteFilmUrl || personalVideoUrl || suiteFilmPending) && (
         <section className="animate-[hubIn_.5s_ease-out_both]">
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] overflow-hidden">
             {suiteFilmUrl ? (
@@ -328,6 +331,7 @@ export default function DemoHub({
             </p>
           </div>
         </section>
+        )}
 
         {/* The doors */}
         <section>
