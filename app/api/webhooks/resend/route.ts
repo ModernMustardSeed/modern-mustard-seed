@@ -29,6 +29,11 @@ const TYPE_TO_STATUS: Record<string, string> = {
   'email.complained': 'complained',
   'email.failed': 'failed',
   'email.opened': 'opened',
+  // Resend accepted the message and then never sent it, because the address is
+  // on the account suppression list from an earlier bounce or complaint. It is
+  // NOT a delivery, and counting it as one overstates reach while quietly
+  // burning the same dead address every cycle.
+  'email.suppressed': 'suppressed',
 };
 
 function verifySvix(secret: string, id: string, ts: string, body: string, header: string): boolean {
@@ -130,6 +135,7 @@ async function recordAcqDelivery(providerId: string, type: string, detail: strin
     'email.complained': 'complaint',
     'email.delivery_delayed': 'deferred',
     'email.delivered': 'delivered',
+    'email.suppressed': 'suppressed',
   };
   const status = TERMINAL[type];
   if (!status) return;
@@ -142,29 +148,51 @@ async function recordAcqDelivery(providerId: string, type: string, detail: strin
     if (status === 'delivered') patch.delivered_at = stamp;
     if (status === 'bounced') patch.bounced_at = stamp;
     if (status === 'complaint') patch.complained_at = stamp;
+    if (status === 'suppressed') patch.unsubscribed_at = stamp;
 
     let q = db.from('acq_sends').update(patch).eq('provider_message_id', providerId);
     // A drop is authoritative. Anything softer must not overwrite one.
-    if (status === 'delivered' || status === 'deferred') q = q.not('status', 'in', '(bounced,complaint,unsubscribed)');
+    if (status === 'delivered' || status === 'deferred') q = q.not('status', 'in', '(bounced,complaint,unsubscribed,suppressed)');
     const { data } = await q.select('lead_id');
 
     const leadId = ((data ?? [])[0] as { lead_id: string | null } | undefined)?.lead_id;
-    if (leadId && (status === 'bounced' || status === 'complaint')) {
+    const DEAD: Record<string, { reason: string; why: string; event: 'email_bounced' | 'suppressed'; label: string }> = {
+      bounced: {
+        reason: 'Hard bounced.',
+        why: 'Hard bounced.',
+        event: 'email_bounced',
+        label: `Hard bounce: ${detail ?? ''}`.trim(),
+      },
+      complaint: {
+        reason: 'Marked our mail as spam.',
+        why: 'Spam complaint.',
+        event: 'suppressed',
+        label: 'Marked our email as spam',
+      },
+      suppressed: {
+        reason: 'Resend suppressed this address.',
+        why: 'Resend suppressed this address.',
+        event: 'suppressed',
+        label: 'Resend suppressed this address, so the message never went out',
+      },
+    };
+    const dead = DEAD[status];
+    if (leadId && dead) {
       await db
         .from('outbound_leads')
         .update({
           bounced: status === 'bounced',
           acq_eligible: false,
-          acq_ineligible_reason: status === 'bounced' ? 'Hard bounced.' : 'Marked our mail as spam.',
+          acq_ineligible_reason: dead.reason,
           reservoir_state: 'suppressed',
           ...(status === 'complaint' ? { unsubscribed_at: stamp, suppression_reason: 'spam complaint' } : {}),
         })
         .eq('id', leadId);
-      await cancelPendingFor(db, leadId, undefined, status === 'bounced' ? 'Hard bounced.' : 'Spam complaint.');
+      await cancelPendingFor(db, leadId, undefined, dead.why);
       await recordEvent(db, {
         leadId,
-        type: status === 'bounced' ? 'email_bounced' : 'suppressed',
-        label: status === 'bounced' ? `Hard bounce: ${detail ?? ''}`.trim() : 'Marked our email as spam',
+        type: dead.event,
+        label: dead.label,
         detail: { providerId, detail },
       });
     }
