@@ -57,3 +57,14 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           REHEARSAL_BASE_URL: https://modernmustardseed.com
+
+      # The rehearsal exists to prove the funnel works, so a red run has to
+      # page (loop audit 2026-08-20: failures used to reach nobody but the
+      # Actions tab). Pages through the app's own alert transport.
+      - name: Page Sarah on failure
+        if: failure()
+        run: |
+          curl -s -X POST "https://modernmustardseed.com/api/hooks/rehearsal-failed" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"runUrl\":\"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"

@@ -405,21 +405,49 @@ async function resolveAndAlert(sb: SupabaseClient | null, failures: Check[], inc
 // ----------------------------------------------------------- orchestrator ----
 
 /** Run every money-path check, alert if warranted, and report what was found. */
+/**
+ * Resend liveness, with one read-only API call. The mail transport carries
+ * every client email and every alert this watchdog sends, so a revoked key
+ * has to page while paging still works elsewhere (the report also lands in
+ * app_state either way). Auth failures page; network blips are inconclusive.
+ */
+async function resendCheck(): Promise<Check> {
+  const key = (process.env.RESEND_API_KEY || '').trim();
+  if (!key || key === '[SENSITIVE]') {
+    return { name: 'resend_env', ok: false, detail: 'RESEND_API_KEY missing — all outbound email, including these alerts, is silently undeliverable' };
+  }
+  try {
+    const res = await fetch('https://api.resend.com/domains', { headers: { Authorization: `Bearer ${key}` } });
+    if (res.status === 401 || res.status === 403) {
+      return { name: 'resend_api', ok: false, detail: `Resend rejected the API key (${res.status}) — all outbound email is down, including these alerts` };
+    }
+    if (!res.ok) return { name: 'resend_api', ok: false, inconclusive: true, detail: `Resend API returned ${res.status}` };
+    return { name: 'resend_api', ok: true };
+  } catch (err) {
+    return { name: 'resend_api', ok: false, inconclusive: true, detail: `Resend unreachable: ${err instanceof Error ? err.message : 'network error'}` };
+  }
+}
+
 export async function runCheckoutHealth({ selftest = false }: { selftest?: boolean } = {}): Promise<HealthReport> {
   const deadline = startDeadline(PROBE_BUDGET_MS);
   const supabase = getSupabase();
   const stripe = getStripe();
 
   const config: Check[] = [
+    // Every alert this watchdog sends rides Resend, so a dead Resend key used
+    // to mean the alarm system could not report its own transport being down
+    // (loop audit, break under #9). Checked with a read-only API call; a
+    // transient Resend hiccup is inconclusive, not a page.
     { name: 'supabase_env', ok: !!supabase, detail: supabase ? undefined : 'SUPABASE_URL / SERVICE_ROLE_KEY missing in prod' },
     { name: 'stripe_env', ok: !!stripe, detail: stripe ? undefined : 'STRIPE_SECRET_KEY missing in prod' },
     { name: 'webhook_secret', ok: !!STRIPE_WEBHOOK_SECRET(), detail: STRIPE_WEBHOOK_SECRET() ? undefined : 'STRIPE_WEBHOOK_SECRET missing — paid orders would not be recorded/fulfilled' },
   ];
 
   // The Supabase and Stripe halves are independent; run them together.
-  const [supabaseResults, stripeResults] = await Promise.all([
+  const [supabaseResults, stripeResults, resendResult] = await Promise.all([
     supabase ? supabaseChecks(supabase) : Promise.resolve<Check[]>([]),
     stripe ? stripeChecks(stripe, deadline) : Promise.resolve<Check[]>([]),
+    resendCheck(),
   ]);
 
   const checks: Check[] = [
@@ -428,6 +456,7 @@ export async function runCheckoutHealth({ selftest = false }: { selftest?: boole
     ...inlinePriceChecks(),
     ...supabaseResults,
     ...stripeResults,
+    resendResult,
   ];
 
   const failures = checks.filter((c) => !c.ok && !c.inconclusive);

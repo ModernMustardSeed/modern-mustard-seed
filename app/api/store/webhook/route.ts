@@ -15,12 +15,13 @@
 
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
-import { resendClient } from '@/lib/send-email';
+import { resendClient, sendViaResend } from '@/lib/send-email';
 import { getStripe, STRIPE_WEBHOOK_SECRET } from '@/lib/stripe';
 import { getSupabase } from '@/lib/supabase';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import { provisionDemoOrder } from '@/lib/demo-provision';
 import { provisionFrontOffice } from '@/lib/front-office/provision';
+import { syncAssistant } from '@/lib/front-office/agent';
 import { releaseNumberFor } from '@/lib/front-office/phone';
 import type { Trade } from '@/lib/acq/types';
 import { queueProjectEdit } from '@/lib/site-edit';
@@ -647,6 +648,35 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
     });
   } catch (err) {
     console.error('subscription invoice order insert failed (may be duplicate)', err);
+  }
+
+  // Retention becomes visible (loop audit, break under #9): renewals used to
+  // never touch the MRR ledger, so the north star saw signup and churn and no
+  // retained months. A renewal is NOT a delta, so it lands at zero delta (the
+  // active-MRR sum stays truthful) with the paid amount in the reason.
+  // Idempotent by invoice id in the reason; scoped to demo-order subs only.
+  try {
+    const { data: dOrder } = await supabase
+      .from('demo_orders')
+      .select('outbound_lead_id')
+      .eq('stripe_subscription_id', subId)
+      .maybeSingle();
+    if (dOrder && invoice.id) {
+      const reason = `renewal invoice ${invoice.id}: $${(amount / 100).toFixed(2)}`;
+      const { data: dupe } = await supabase.from('acq_mrr_events').select('id').eq('reason', reason).maybeSingle();
+      if (!dupe) {
+        await supabase.from('acq_mrr_events').insert({
+          lead_id: dOrder.outbound_lead_id ?? null,
+          type: 'renewal',
+          mrr_delta_cents: 0,
+          setup_cents: 0,
+          product: 'demo-order',
+          reason,
+        });
+      }
+    }
+  } catch (err) {
+    console.error('renewal ledger insert failed (invoice is banked regardless)', err);
   }
 
   // Ensure the proposal is marked active (covers the first-invoice race).
@@ -1899,9 +1929,14 @@ async function handleDemoOrderPaid(
       // remembering it on Monday. It now exists before the receipt lands.
       //
       // Deliberately NOT for a website-only order: an office with no agent is a
-      // confusing empty screen in their portal.
+      // confusing empty screen in their portal. But an OS purchase IS the
+      // office: before 2026-08-20 a standalone Command Center buyer paid $497
+      // + $197/mo and nothing provisioned anything (loop audit, break #3), so
+      // their portal showed a milestone no code could ever complete. The
+      // office is now created for os too; the web-lead intake route feeds it
+      // even before any agent exists.
       const boughtVoice = Array.isArray(order.products)
-        ? (order.products as string[]).some((p) => p === 'voice' || p === 'bundle')
+        ? (order.products as string[]).some((p) => p === 'voice' || p === 'bundle' || p === 'os')
         : false;
       if (boughtVoice) {
         const office = await provisionFrontOffice(supabase, {
@@ -1941,6 +1976,16 @@ async function handleDemoOrderPaid(
             await supabase.from('outbound_leads').update({ front_office_id: office.officeId }).eq('id', order.outbound_lead_id);
           }
           console.log('front office provisioned:', office.officeId, office.created ? '(new)' : '(existing)');
+          // Build the brain immediately (loop audit, break #7): syncing the
+          // assistant at provisioning costs nothing and means the office is
+          // never a shell waiting for a human to press the first button.
+          // Number purchase and go-live remain behind the human QA gate.
+          try {
+            const synced = await syncAssistant(supabase, office.officeId);
+            if (!synced.ok) console.error('provision auto-sync failed (board sync still works):', synced.error);
+          } catch (err) {
+            console.error('provision auto-sync threw', err);
+          }
         } else {
           console.error('front office provisioning failed:', office.error);
         }
@@ -1986,7 +2031,16 @@ async function handleDemoOrderPaid(
           preheader: 'We customize everything and release it within 7 days.',
           eyebrow: 'ORDER CONFIRMED',
           greeting: firstName ? `${firstName}, welcome aboard.` : 'Welcome aboard.',
-          body: `<p>Your <strong>${escapeHtmlSafe(label)}</strong> is officially in production. What you saw in the demo becomes the real thing, customized to ${business || 'your business'}.</p><p><strong>1.</strong> Tell us about your business with the form below: your logo, your photos, your hours, the details only you know.</p><p><strong>2.</strong> We build it for real, then you get <strong>unlimited edits</strong>. You look at it, tell us what to change, and we change it. As many times as you want, before it goes live and long after.</p><p><strong>3.</strong> Within 7 days it is live. Month to month, cancel anytime, never a surprise bill.</p>${provisioned ? `<p>Everything from here happens in <strong>your portal</strong>: your progress, your edits, your files, and a direct line to me. No password to remember, just enter this email address at the door.</p>` : ''}`,
+          body: `<p>Your <strong>${escapeHtmlSafe(label)}</strong> is officially in production. What you saw in the demo becomes the real thing, customized to ${business || 'your business'}.</p><p><strong>1.</strong> Tell us about your business with the form below: your logo, your photos, your hours, the details only you know.</p><p><strong>2.</strong> We build it for real, then you get <strong>unlimited edits</strong>. You look at it, tell us what to change, and we change it. As many times as you want, before it goes live and long after.</p><p><strong>3.</strong> Within 7 days it is live. Month to month, cancel anytime, never a surprise bill.</p>${provisioned ? `<p>Everything from here happens in <strong>your portal</strong>: your progress, your edits, your files, and a direct line to me. No password to remember, just enter this email address at the door.</p>` : ''}${(() => {
+            // The one quiet post-purchase upsell (loop audit, break #8): a
+            // buyer holding exactly one paid piece is told, once, that the
+            // other one makes the command center free. Never for the bundle.
+            const bought = Array.isArray(order?.products) ? (order!.products as string[]) : [];
+            if (bought.includes('bundle') || (bought.includes('voice') && bought.includes('site'))) return '';
+            if (bought.includes('voice')) return `<p>One thing worth knowing while we build: if you ever add the matching website, the Business Command Center comes <strong>free with the pair</strong>. No pressure and no clock on it; just reply to this email whenever you want it.</p>`;
+            if (bought.includes('site')) return `<p>One thing worth knowing while we build: if you ever add the voice agent that answers your phone, the Business Command Center comes <strong>free with the pair</strong>. No pressure and no clock on it; just reply to this email whenever you want it.</p>`;
+            return '';
+          })()}`,
           cta: { label: 'Start with your details', url: intakeUrl },
           ...(provisioned ? { secondary: { label: 'Open my portal', url: `${SITE.url}/portal/login` } } : {}),
           signature: 'Sarah',
@@ -2662,10 +2716,47 @@ export async function POST(req: Request) {
     if (sub.metadata?.kind === 'demo-order') {
       const db = getSupabase();
       if (db) {
-        await db
+        const { data: gone } = await db
           .from('demo_orders')
           .update({ status: 'canceled', updated_at: new Date().toISOString() })
-          .eq('stripe_subscription_id', sub.id);
+          .eq('stripe_subscription_id', sub.id)
+          .select('email, business_name, products')
+          .maybeSingle();
+        // Offboarding was silence on both sides (loop audit, break under #9):
+        // the phone number releases elsewhere, but the deployed site and any
+        // purchased domain stay live and billing with nobody told. No
+        // auto-teardown here, deliberately: tearing down a live business site
+        // is Sarah's call. Both emails fail-soft; the cancel above stands.
+        try {
+          const bizRaw = gone?.business_name || 'their business';
+          const hadSite = Array.isArray(gone?.products) && (gone!.products as string[]).some((p) => p === 'site' || p === 'bundle');
+          await sendViaResend({
+            from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
+            to: OWNER_NOTIFY_TO,
+            subject: `CANCELED: ${bizRaw} ended their subscription`,
+            text:
+              `${bizRaw} (${gone?.email ?? 'email unknown'}) canceled. Stripe sub ${sub.id}.\n` +
+              (hadSite
+                ? `Their website deployment and any purchased domain are STILL LIVE and still on our bill. Decide: keep as a comeback door, transfer to them, or tear down from the Delivery Board.`
+                : `No website on this order; the number release is handled automatically.`),
+          });
+          if (gone?.email) {
+            await sendViaResend({
+              from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+              to: gone.email,
+              replyTo: 'sarah@modernmustardseed.com',
+              subject: `Sorry to see you go. Here is where everything stands`,
+              text:
+                `Your subscription is canceled and nothing further will be billed.\n\n` +
+                (hadSite
+                  ? `Your website stays up for a short grace period so nothing goes dark on you overnight. If you want the site files, the domain transferred to you, or everything taken down sooner, just reply to this email and I will handle it personally.\n\n`
+                  : ``) +
+                `And if things change, everything we built for ${bizRaw} can be switched back on the same day.\n\nSarah`,
+            });
+          }
+        } catch (err) {
+          console.error('demo-order offboarding emails failed (cancel stands)', err);
+        }
       }
       return NextResponse.json({ received: true, kind: 'demo_order_canceled' });
     }

@@ -5,6 +5,7 @@ import { recordOfficeEvent } from '@/lib/front-office/provision';
 import { availableSlots } from '@/lib/front-office/calendar';
 import { readiness, type OfficeReadiness } from '@/lib/front-office/readiness';
 import { buyNumberFor, releaseNumberFor, placeTestCall, normalizeAreaCode } from '@/lib/front-office/phone';
+import { sendViaResend } from '@/lib/send-email';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -180,6 +181,46 @@ export async function POST(req: Request) {
       if (!gate.canGoLive.ok) return NextResponse.json({ error: `Not ready: ${gate.canGoLive.blockers.join('; ')}.`, blockers: gate.canGoLive.blockers }, { status: 409 });
       await db.from('fo_offices').update({ status: 'live', live_at: new Date().toISOString() }).eq('id', officeId);
       await recordOfficeEvent(db, officeId, { type: 'live', label: 'Went live', actor: 'admin' });
+
+      // The voice "You are live." (loop audit, break #2). Until 2026-08-20 a
+      // website going live emailed the client and a voice agent going live
+      // told nobody, and a voice-only order could never reach 'delivered'
+      // because only site-publish wrote it. Both fail-soft: the flip above is
+      // the product truth and stands even if the mail bounces.
+      try {
+        const { data: full } = await db
+          .from('fo_offices')
+          .select('client_email, business_name, agent_phone, forward_from')
+          .eq('id', officeId)
+          .maybeSingle();
+        if (full?.client_email) {
+          await sendViaResend({
+            from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+            to: full.client_email,
+            replyTo: 'sarah@modernmustardseed.com',
+            subject: `Your voice agent is live. Call it right now`,
+            text:
+              `It is on.\n\n` +
+              `Your AI front desk for ${full.business_name ?? 'your business'} is answering as of this minute` +
+              (full.agent_phone ? ` at ${full.agent_phone}` : '') +
+              `. Call it yourself first: ask it what a customer would ask, try to stump it, hear it book something.\n\n` +
+              `Every call it takes lands in your portal with the full transcript: modernmustardseed.com/portal (just enter this email address at the door).\n\n` +
+              `Sarah`,
+          });
+        }
+        const { data: ord } = await db
+          .from('demo_orders')
+          .select('id, products, status')
+          .eq('front_office_id', officeId)
+          .maybeSingle();
+        const prods = Array.isArray(ord?.products) ? (ord!.products as string[]) : [];
+        const voiceOnly = prods.includes('voice') && !prods.includes('site') && !prods.includes('bundle');
+        if (ord && voiceOnly && ord.status !== 'delivered' && ord.status !== 'canceled') {
+          await db.from('demo_orders').update({ status: 'delivered', delivered_at: new Date().toISOString() }).eq('id', ord.id);
+        }
+      } catch (err) {
+        console.error('go-live client notice failed (office is live regardless)', err);
+      }
       return NextResponse.json({ ok: true });
     }
 
