@@ -572,7 +572,12 @@ const TOOLS = [
         properties: {
           name: { type: 'string', description: "The caller's name." },
           phone: { type: 'string', description: 'The best callback number for the caller, confirmed digit by digit.' },
-          reason: { type: 'string', description: 'One line on why they want Sarah, in your words.' },
+          email: {
+            type: 'string',
+            description:
+              'Their email, if you have confirmed one. It goes HERE, in its own field, never buried inside the reason text. Exactly the letters from your last confirmed readback and nothing else: if they corrected themselves, everything said before the correction is gone.',
+          },
+          reason: { type: 'string', description: 'One line on why they want Sarah, in your words. Do not put the email address in here.' },
         },
         required: [],
       },

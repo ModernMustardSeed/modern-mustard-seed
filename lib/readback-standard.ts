@@ -42,9 +42,9 @@
  * chance to be wrong and none of them ever made it clearer.
  */
 
-export const READBACK_STANDARD_VERSION = 3;
+export const READBACK_STANDARD_VERSION = 4;
 
-export const READBACK_STANDARD = `# Letters, numbers and addresses, out loud (studio standard v3)
+export const READBACK_STANDARD = `# Letters, numbers and addresses, out loud (studio standard v4)
 Anything a caller has to write down, or that you have to get exactly right, follows these rules. They are not style, they were measured against real speech recognition and learned on live calls, and only this phrasing survives a phone line intact.
 - ⚠️ AN IDENTIFIER IS NEVER A NUMERAL. In a phone number, an email address, a code, a house number or an order number, every digit is the WORD, comma separated, with a PERIOD between groups: "four, zero, six. three, one, two. one, two, two, three." A numeral is not safe there. Written as digits, 2023 gets read back as a year, 200 becomes "two hundred", and a lone 0 can come out as a noise that is not a word at all. The word "zero" cannot be re-read as anything else, which is the entire point.
 - MONEY IS THE EXCEPTION, and it is the only one. Write a price as an ordinary figure, "$497 to build and $497 a month", because that is read out correctly as money and spelling it digit by digit would make a price sound like a serial number. Quantities and dates behave like money, not like identifiers: "thirty calls a week", "next Tuesday".
@@ -57,4 +57,5 @@ Anything a caller has to write down, or that you have to get exactly right, foll
 - Common domains are spoken as ordinary words, never spelled: gmail dot com, yahoo dot com, outlook dot com, hotmail dot com, icloud dot com. Spell a company domain only when you have not heard it before.
 - NEVER guess a character you did not clearly hear, and never invent one to fill a gap. If you lost it, say so plainly in one line and take that part again, only that part, anchored.
 - TWO STRIKES AND YOU STOP SPELLING. If a readback is wrong twice, do not try a third time. Change the road: take their phone number instead, because ten digits transcribe reliably where an address does not, and get that number to a human who can follow up in writing.
-- WHAT YOU TYPE MUST MATCH WHAT YOU SAID. When you write an address or a number into a tool, build it from the anchors you just confirmed. "i as in igloo" is the letter i, never l. After it goes out, say it back one more time so they can catch it while a resend is still free.`;
+- WHAT YOU TYPE MUST MATCH WHAT YOU SAID. When you write an address or a number into a tool, build it from the anchors you just confirmed. "i as in igloo" is the letter i, never l. After it goes out, say it back one more time so they can catch it while a resend is still free.
+- ⚠️ A CORRECTION KILLS EVERYTHING BEFORE IT. People start an address, stop, and say it again properly, and the first attempt is then DEAD. Your last confirmed readback is the only version that exists. Never blend the two, never keep a word from the first try because you think you heard it. A caller once said "bella valentina may two" and immediately corrected herself to "b e l l a v a l e n t i n a two two". The readback was right, and then "MAY" was typed into the tool from the abandoned first attempt, so the lead reached the studio with an address that had never existed. If they correct any part of it, throw the whole earlier version away and type only what you just read back and they just agreed to.`;

@@ -612,12 +612,37 @@ async function sendResourceEmail(
  * best-effort and carrier-filtered while A2P sat unapproved.
  */
 async function reachSarah(
-  input: { name?: string; phone?: string; reason?: string },
+  input: { name?: string; phone?: string; reason?: string; email?: string },
   callerNumber: string | null,
 ): Promise<string> {
   const name = (input.name || '').trim() || 'A caller';
-  const phone = (input.phone || '').trim() || callerNumber || '';
+  /**
+   * A Vapi variable is substituted in the SYSTEM PROMPT before the model sees
+   * it, so on a real call he reads a real number. In any context where that
+   * substitution has not happened, he copies the placeholder through verbatim,
+   * and Sarah gets a lead telling her to ring "{{customer.number}}". Seen in a
+   * harness on 2026-08-20. Two characters of defence, and the caller ID is
+   * better information than a template string in every case where they differ.
+   */
+  const phoneRaw = (input.phone || '').trim();
+  const phone = (/\{\{|\}\}/.test(phoneRaw) ? '' : phoneRaw) || callerNumber || '';
   const reason = (input.reason || '').trim();
+  /**
+   * ⚠️ THE ADDRESS GETS ITS OWN FIELD AND ITS OWN CHECK.
+   *
+   * It used to arrive buried in `reason` as free prose, which meant nothing
+   * could validate it and nothing could read it back. On 2026-08-20 Lucy began
+   * an address, corrected herself mid-sentence, and the lead reached Sarah as
+   * `bellavalentinaMAY22@gmail.com`: a blend of the abandoned first attempt and
+   * the corrected one. He had read the correct version back out loud twice.
+   *
+   * A blend like that is a VALID address at a real domain, so no format check
+   * can catch it. What catches it is making him say the stored value back, so
+   * the one person who knows it is wrong hears it while the call is still live.
+   */
+  const emailRaw = (input.email || '').trim();
+  const emailVerdict = emailRaw ? await checkSpokenEmail(emailRaw) : null;
+  const email = emailVerdict?.ok ? emailVerdict.address : '';
 
   let emailed = false;
   const apiKey = process.env.RESEND_API_KEY;
@@ -636,6 +661,7 @@ async function reachSarah(
           fields: [
             { label: 'Who', value: name },
             ...(phone ? [{ label: 'Call them back at', value: phone }] : []),
+            ...(email ? [{ label: 'Email (he read this back on the call)', value: email }] : []),
             { label: 'Source', value: 'Mr. Mustard voice call (they asked for you by name)' },
           ],
           message: reason || 'A caller asked to speak with you directly.',
@@ -657,8 +683,10 @@ async function reachSarah(
   }
   return JSON.stringify({
     ok: true,
-    instruction:
-      'Sarah has just been notified (email now, and a text as backup). Tell them warmly she will get right back to them, confirm the best number to reach them, and offer to book a specific time with her too.',
+    ...(email ? { sentWithEmail: email } : {}),
+    instruction: email
+      ? `Sarah has been notified, and the address on the record is ${email}. Say that address back to them ONCE, anchored, and ask if it is right. This is the last moment anybody can catch it, because after this call it is just a line in her inbox. If it is wrong, take the correction and call reach_sarah again with the fixed address. Then tell them warmly she will get right back to them.`
+      : 'Sarah has just been notified (email now, and a text as backup). Tell them warmly she will get right back to them, confirm the best number to reach them, and offer to book a specific time with her too.',
   });
 }
 
