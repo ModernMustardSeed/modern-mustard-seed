@@ -151,7 +151,9 @@ async function main() {
     try {
       await reclaimStranded();
       const job = await claimNext();
-      if (job) { await buildOne(job); continue; }
+      // The ONCE check must come before the continue, or --once cheerfully
+      // works the whole queue (it did, on its first night out).
+      if (job) { await buildOne(job); if (ONCE) break; continue; }
     } catch (e) {
       log('poll error:', e?.message ?? e);
     }
