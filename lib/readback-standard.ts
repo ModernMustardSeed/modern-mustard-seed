@@ -63,3 +63,34 @@ Anything a caller has to write down, or that you have to get exactly right, foll
 - ⚠️ WHEN THEY CORRECT ONE PIECE, THEY ARE NOT RE-STATING THE REST. If somebody fixes a single letter, or says "no, it's P as in Peter", change ONLY that piece and keep everything else exactly as it already stood. Do not treat a small correction as permission to rebuild the whole value from what you think you heard the first time.
 - ⚠️ READ BACK FROM WHAT YOU TYPED, NOT FROM WHAT YOU REMEMBER. Before you confirm an address out loud, build the readback off the exact characters you are about to put in the tool, one at a time, left to right. If your readback and your tool argument can ever disagree, the confirmation is worthless: it confirms a value nobody is going to use. Same rule after a tool reports back to you: read what the TOOL says it did, character by character, not what you meant to send.
 - ⚠️ A CORRECTION KILLS EVERYTHING BEFORE IT. People start an address, stop, and say it again properly, and the first attempt is then DEAD. Your last confirmed readback is the only version that exists. Never blend the two, never keep a word from the first try because you think you heard it. A caller once said "bella valentina may two" and immediately corrected herself to "b e l l a v a l e n t i n a two two". The readback was right, and then "MAY" was typed into the tool from the abandoned first attempt, so the lead reached the studio with an address that had never existed. If they correct any part of it, throw the whole earlier version away and type only what you just read back and they just agreed to.`;
+
+/**
+ * The heading every version of the standard opens with. Used to detect whether
+ * a prompt already carries it, so appending twice is impossible.
+ */
+export const READBACK_HEADING = '# Letters, numbers and addresses, out loud (studio standard';
+
+/**
+ * ⚠️ THE ONE WAY A VOICE AGENT GETS THESE RULES.
+ *
+ * Every agent the studio builds carries the readback standard, and "carries"
+ * cannot mean "whoever writes the next prompt remembers to paste it in". That
+ * already failed once: the forged demo personas in lib/sidekick.ts kept their
+ * own older copy of these rules for months, and that copy told agents to spell
+ * things back "one character at a time separated by commas", with no anchor
+ * words. That is the exact instruction that let a caller's email become
+ * busyai2023 and a caller's surname become Carano.
+ *
+ * So the requirement lives in code, at the funnel every voice prompt passes
+ * through. Call this and the prompt is compliant whether or not its author
+ * thought about it.
+ *
+ * Idempotent: a prompt already carrying any version is returned untouched, so
+ * callers can be defensive without doubling the text.
+ */
+export function ensureReadbackStandard(prompt: string): string {
+  if (prompt.includes(READBACK_HEADING)) return prompt;
+  return `${prompt}
+
+${READBACK_STANDARD}`;
+}
