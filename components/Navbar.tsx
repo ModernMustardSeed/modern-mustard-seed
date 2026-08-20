@@ -98,7 +98,8 @@ const DEPARTMENTS = [
   { name: 'Meet Mr. Mustard', tag: 'HE CALLS YOU IN TEN SECONDS', href: '/mustard' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
-  { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },
+  // Mustard Pictures is unlisted while the studio uses it internally
+  // (Sarah, 2026-08-20). The route still works for anyone holding the URL.
   { name: 'GEO Desk', tag: 'FREE AI-FINDABILITY GRADE', href: '/website-audit' },
   { name: 'The Hundredfold Roadmap', tag: 'FREE SCALING PLAN FOR YOUR BUSINESS', href: '/scaling-roadmap' },
   { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
