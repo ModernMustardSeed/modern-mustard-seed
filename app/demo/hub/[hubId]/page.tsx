@@ -42,7 +42,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
 
   const { data: lead } = await sb
     .from('outbound_leads')
-    .select('id, business_name, contact_name, niche, notes, website, city, state, demo_url, site_demo_url, site_demo_status, os_demo_url, os_demo_status, suite_film_status, suite_film_path, affiliate_id, origin, last_seen_at')
+    .select('id, business_name, contact_name, niche, notes, website, city, state, demo_url, site_demo_url, site_demo_status, os_demo_url, os_demo_status, integration_plan_url, integration_plan_status, suite_film_status, suite_film_path, affiliate_id, origin, last_seen_at')
     .eq('hub_demo_id', hubId)
     .maybeSingle();
   if (!lead) return fallback;
@@ -133,6 +133,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}
       osUrl={lead.os_demo_status === 'ready' ? lead.os_demo_url : null}
+      integrationPlanUrl={lead.integration_plan_status === 'ready' ? lead.integration_plan_url : null}
       presenter={presenter}
     />
   );
