@@ -61,6 +61,73 @@ function useTyped(text: string, speed = 28): { shown: string; typing: boolean } 
   return { shown: text.slice(0, n), typing: n < text.length };
 }
 
+/**
+ * The encore: their own agent calls THEM. Rides the existing public
+ * /api/sidekick/forge phone path, which enforces one ring per run, one ring
+ * per number, and the Vapi billing kill switch. User-initiated, consent on
+ * the page, US numbers only.
+ */
+function EncoreRing({ runId, business }: { runId: string; business: string }) {
+  const [phone, setPhone] = useState('');
+  const [state, setState] = useState<'idle' | 'calling' | 'done' | 'error'>('idle');
+  const [msg, setMsg] = useState('');
+  const ring = async () => {
+    if (state === 'calling' || state === 'done') return;
+    setState('calling');
+    try {
+      const res = await fetch('/api/sidekick/forge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'phone', runId, phone }),
+      });
+      const j = (await res.json().catch(() => ({}))) as { from?: string; message?: string };
+      if (res.ok) {
+        setState('done');
+        setMsg(`Ringing you right now${j.from ? ` from ${j.from}` : ''}. Answer it and say hello.`);
+      } else {
+        setState('error');
+        setMsg(j.message || 'The call could not go out just now. The browser demo above still works.');
+      }
+    } catch {
+      setState('error');
+      setMsg('The call could not go out just now. The browser demo above still works.');
+    }
+  };
+  return (
+    <section className="animate-[hubIn_.5s_ease-out_both]">
+      <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 sm:p-8 text-center">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">The encore</span>
+        <h2 className="font-display text-2xl sm:text-3xl font-bold mt-2">Have it call you. Right now.</h2>
+        <p className="font-body text-[14px] text-[#161616]/65 mt-2 max-w-md mx-auto">
+          Type your cell and the {business} front desk calls YOU. One demo call, US numbers, and it only dials because you asked it to.
+        </p>
+        {state === 'done' || state === 'error' ? (
+          <p className={`font-body text-[15px] font-semibold mt-5 ${state === 'done' ? 'text-[#3f5d34]' : 'text-[#a03123]'}`}>{msg}</p>
+        ) : (
+          <div className="flex flex-col sm:flex-row items-stretch justify-center gap-3 mt-5 max-w-md mx-auto">
+            <input
+              type="tel"
+              inputMode="tel"
+              placeholder="(406) 555-0123"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="flex-1 font-body text-[16px] px-4 py-3 rounded-xl border-2 border-[#161616] bg-[#FBF6EA] focus:outline-none focus:ring-2 focus:ring-[#F5B700] tabular-nums"
+              aria-label="Your phone number"
+            />
+            <button
+              onClick={() => void ring()}
+              disabled={state === 'calling' || phone.replace(/\D/g, '').length < 10}
+              className="font-sans font-bold uppercase tracking-[0.1em] text-[13px] rounded-xl border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-6 py-3 shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-transform disabled:opacity-50 disabled:hover:translate-y-0"
+            >
+              {state === 'calling' ? 'Dialing…' : '☎ Call me'}
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function DemoHub({
   hubId,
   business,
@@ -76,6 +143,10 @@ export default function DemoHub({
   sitePending,
   osUrl,
   integrationPlanUrl,
+  planQuote,
+  demoRunId,
+  noticedLine,
+  missedPreset,
   presenter,
 }: {
   hubId: string;
@@ -106,6 +177,17 @@ export default function DemoHub({
   /** Their finished AI Integration Plan (/demo/plan/<id>), when written. It
    *  joins the suite as a door: free value that fills a voice-only page. */
   integrationPlanUrl?: string | null;
+  /** One sharp, factual sentence lifted from that plan, quoted on its door. */
+  planQuote?: string | null;
+  /** The lead's forged voice run. Powers the encore: their agent calls THEM,
+   *  through the existing /api/sidekick/forge phone path with all its caps. */
+  demoRunId?: string | null;
+  /** A factual line from the walk-in research ("closed both weekend days..."),
+   *  already sanitized server-side. Shown above the calculator so the numbers
+   *  start as theirs. */
+  noticedLine?: string | null;
+  /** Research-informed starting value for the missed-calls slider. */
+  missedPreset?: number | null;
   /** Partner who minted this suite ("Presented by X with Modern Mustard Seed"). */
   presenter?: string | null;
 }) {
@@ -135,7 +217,7 @@ export default function DemoHub({
     ? { label: `average ${TICKET_WORD[trade!] ?? tp.jobWord}`, value: tp.avgTicket }
     : (AVG_JOB[niche] ?? AVG_JOB.other);
   const sliderMax = niceMax(job.value);
-  const [missed, setMissed] = useState(7);
+  const [missed, setMissed] = useState(missedPreset ?? 7);
   const [close, setClose] = useState(45);
   const [avg, setAvg] = useState(job.value);
   const leak = Math.round(missed * 4.33 * (close / 100) * avg);
@@ -189,13 +271,15 @@ export default function DemoHub({
           href: integrationPlanUrl,
           icon: '📋',
           title: 'Your AI Integration Plan',
-          desc: `The step-by-step plan we wrote for ${business}: where the calls are leaking, what to do about it, and the order to do it in. Yours to keep, free either way.`,
+          desc: planQuote
+            ? `From your plan: "${planQuote}" The rest is a step-by-step path, yours to keep, free either way.`
+            : `The step-by-step plan we wrote for ${business}: where the calls are leaking, what to do about it, and the order to do it in. Yours to keep, free either way.`,
           tone: 'ink' as const,
           cta: 'Read it',
           badge: 'Free',
         },
       ].filter(Boolean) as { href: string; icon: string; title: string; desc: string; tone: 'dark' | 'gold' | 'ink'; cta: string; badge?: string }[],
-    [voiceUrl, siteUrl, sitePending, osUrl, integrationPlanUrl, business],
+    [voiceUrl, siteUrl, sitePending, osUrl, integrationPlanUrl, planQuote, business],
   );
 
   /**
@@ -398,12 +482,21 @@ export default function DemoHub({
         </section>
         )}
 
+        {/* The encore: strongest moment in the suite, one tap after the doors. */}
+        {demoRunId && voiceUrl && <EncoreRing runId={demoRunId} business={business} />}
+
         {/* Recovery Calculator */}
         <section className="animate-[hubIn_.5s_ease-out_both]">
           <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-6 sm:p-8">
             <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">The Recovery Calculator</span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#FBF6EA] mt-2">What are missed calls costing {business}?</h2>
             <p className="font-body text-[14px] text-[#FBF6EA]/60 mt-2">Slide to match your week. Estimates, but honest ones.</p>
+            {noticedLine && (
+              <p className="font-body text-[14px] text-[#FBF6EA]/85 border-l-4 border-[#F5B700] bg-white/5 rounded-r-xl px-4 py-3 mt-4">
+                <span className="font-bold text-[#F5B700] uppercase tracking-[0.08em] text-[11px] font-sans block mb-1">What we noticed before we built this</span>
+                {noticedLine}
+              </p>
+            )}
 
             <div className="grid sm:grid-cols-3 gap-5 mt-6">
               {[
@@ -444,6 +537,23 @@ export default function DemoHub({
                 <p className="font-body text-[13px] italic text-[#FBF6EA]/80 bg-white/5 border border-[#FBF6EA]/15 rounded-xl px-3 py-2">{reaction}</p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* What saying yes actually looks like: three beats, zero ambiguity. */}
+        <section className="animate-[hubIn_.5s_ease-out_both]">
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { n: 'Today', t: 'You say yes', d: 'One click below. No contract to print, nothing to install, nothing to learn.' },
+              { n: 'Tomorrow', t: 'It answers your phone', d: 'Your agent goes live on your line and starts catching the calls you miss.' },
+              { n: 'Friday', t: 'You read the receipts', d: 'Every call transcribed, every booking listed. You see exactly what it caught.' },
+            ].map((s, i) => (
+              <div key={s.n} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 animate-[hubIn_.5s_ease-out_both]" style={{ animationDelay: `${i * 110}ms` }}>
+                <span className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#E0301E]">{s.n}</span>
+                <h3 className="font-display text-lg font-bold mt-1 leading-tight">{s.t}</h3>
+                <p className="font-body text-[13px] text-[#161616]/65 mt-1.5 leading-relaxed">{s.d}</p>
+              </div>
+            ))}
           </div>
         </section>
 
