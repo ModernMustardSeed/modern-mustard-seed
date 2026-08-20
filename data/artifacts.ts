@@ -22,6 +22,36 @@ export type ArtifactEntry = {
 
 export const ARTIFACTS: ArtifactEntry[] = [
   {
+    id: 'accd37ba-4b0c-48bf-9d29-9908b548fdf1',
+    title: 'The Ground Game',
+    url: 'https://claude.ai/code/artifact/accd37ba-4b0c-48bf-9d29-9908b548fdf1',
+    updated: '2026-08-20',
+    venture: 'MMS',
+    kind: 'Playbook',
+    description: 'The field partner program: door scripts, the comp plan on the live commission engine, the hiring kit and job ad, the city shortlist, and the operating machinery.',
+    pinned: true,
+  },
+  {
+    id: '2681b68a-b437-416a-aecf-33b16c92bcdf',
+    title: 'Ground Game Week Two',
+    url: 'https://claude.ai/code/artifact/2681b68a-b437-416a-aecf-33b16c92bcdf',
+    updated: '2026-08-20',
+    venture: 'MMS',
+    kind: 'Plan',
+    description: 'Sixty-three verified walk-in targets across five run days with live demo links: Tallahassee, Columbia Falls, Kalispell round two, the west shore, and Bigfork round two.',
+    pinned: true,
+  },
+  {
+    id: '98fdaa45-00f5-4b25-a6bc-db5b3c668394',
+    title: 'Flathead Demo Day',
+    url: 'https://claude.ai/code/artifact/98fdaa45-00f5-4b25-a6bc-db5b3c668394',
+    updated: '2026-08-20',
+    venture: 'MMS',
+    kind: 'Plan',
+    description: 'The week-one walk-in hit list: 37 verified stops across Kalispell, Bigfork, and Whitefish with owners, hours traps, forged demo links, and the bench.',
+    pinned: true,
+  },
+  {
     id: '8d0cc42b-5586-4c2f-8f32-2025b8fcd55e',
     title: 'The Build Log',
     url: 'https://claude.ai/code/artifact/8d0cc42b-5586-4c2f-8f32-2025b8fcd55e',
