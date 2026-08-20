@@ -27,6 +27,7 @@ import { OFFER, TRADE_ROLEPLAY_NOTE, TRADE_SCENARIOS } from '@/lib/acq/types';
 import type { AcqProspect, Trade } from '@/lib/acq/types';
 import { shortBusiness } from '@/lib/acq/campaign';
 import { CALLBACK_NUMBER_ID } from '@/lib/vapi-lines';
+import { phoneOverrides, pickLanguage } from '@/lib/call-language';
 
 const VAPI_BASE = 'https://api.vapi.ai';
 
@@ -426,6 +427,8 @@ export async function placeDemoCall(args: {
   consentAt: string | null;
   campaignId: string | null;
   attempt?: number;
+  /** Browser Accept-Language of whoever asked for the call. English changes nothing. */
+  acceptLanguage?: string | null;
 }): Promise<PlaceCallResult> {
   const db = getSupabase();
   if (!db) return { ok: false, reason: 'db' };
@@ -466,6 +469,12 @@ export async function placeDemoCall(args: {
         assistantOverrides: {
           firstMessage: firstMessage(args.lead),
           model,
+          // Undefined for English, so the tuned English stack is untouched. For
+          // anyone else this swaps the ear and the opener, never his voice.
+          ...(phoneOverrides(
+            pickLanguage(args.acceptLanguage),
+            args.lead.contact_name || args.lead.business_name
+          ) ?? {}),
           metadata: {
             acq: true,
             leadId: args.lead.id,

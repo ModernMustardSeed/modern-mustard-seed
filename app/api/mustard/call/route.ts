@@ -45,6 +45,7 @@ export async function POST(req: Request) {
     attribution: readAttribution(landing, req.headers),
     ip: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null,
     userAgent: req.headers.get('user-agent'),
+    acceptLanguage: req.headers.get('accept-language'),
     sessionId: str('sessionId', 80) || null,
     idempotencyKey: str('idempotencyKey', 120) || null,
   });

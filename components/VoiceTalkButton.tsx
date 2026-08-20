@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type Vapi from '@vapi-ai/web';
 import { trackEvent } from '@/lib/analytics';
+import { CALL_LANGUAGES, webOverrides, type CallLanguage } from '@/lib/call-language';
 
 /**
  * Live in-browser voice call with Mr. Mustard via Vapi.
@@ -18,31 +19,12 @@ type CallState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
 
-type Lang = { code: string; label: string; flag: string; voice?: string; dg?: string; first?: string };
-
-// Multilingual lives HERE, in the demo only (the live phone agent is English +
-// Sid). English uses Mr. Mustard's native voice + base prompt. Other languages
-// override the voice (Azure, native-sounding) + transcriber + opener, so the
-// demo speaks that language; Claude then mirrors the caller's language for the
-// rest of the call (a foreign opener + foreign transcription keep it there).
-const LANGS: Lang[] = [
-  { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'es', label: 'Español', flag: '🇲🇽', voice: 'es-US-AlonsoNeural', dg: 'es', first: '¡Hola! Soy Mr. Mustard, de Modern Mustard Seed. Pregúnteme lo que quiera, o reserve una llamada con Sarah. ¿En qué le puedo ayudar hoy?' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷', voice: 'fr-FR-HenriNeural', dg: 'fr', first: "Bonjour, je suis Mr. Mustard, de Modern Mustard Seed. Posez-moi vos questions ou réservez un appel avec Sarah. Comment puis-je vous aider?" },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪', voice: 'de-DE-ConradNeural', dg: 'de', first: 'Hallo, ich bin Mr. Mustard von Modern Mustard Seed. Fragen Sie mich alles oder buchen Sie einen Termin mit Sarah. Wie kann ich helfen?' },
-  { code: 'pt', label: 'Português', flag: '🇧🇷', voice: 'pt-BR-AntonioNeural', dg: 'pt', first: 'Olá, eu sou o Mr. Mustard, da Modern Mustard Seed. Pergunte o que quiser ou agende uma conversa com a Sarah. Como posso ajudar?' },
-  { code: 'zh', label: '中文', flag: '🇨🇳', voice: 'zh-CN-YunxiNeural', dg: 'zh', first: '您好，我是 Modern Mustard Seed 的 Mr. Mustard。您可以问我任何问题，或预约与 Sarah 的通话。我能帮您做什么？' },
-  { code: 'ru', label: 'Русский', flag: '🇷🇺', voice: 'ru-RU-DmitryNeural', dg: 'ru', first: 'Здравствуйте! Я Mr. Mustard из Modern Mustard Seed. Спросите меня о чём угодно или запишитесь на звонок с Сарой. Чем могу помочь?' },
-];
-
-function overridesFor(l: Lang): Record<string, unknown> | undefined {
-  if (!l.voice) return undefined;
-  return {
-    firstMessage: l.first,
-    voice: { provider: 'azure', voiceId: l.voice },
-    transcriber: { provider: 'deepgram', model: 'nova-2', language: l.dg },
-  };
-}
+// The language table used to live here. It now lives in lib/call-language.ts,
+// because the phone needs the same table and a table that exists twice drifts.
+// Behaviour here is unchanged: same codes, same Azure voices, same openers.
+type Lang = CallLanguage;
+const LANGS = CALL_LANGUAGES;
+const overridesFor = webOverrides;
 
 export default function VoiceTalkButton() {
   const [state, setState] = useState<CallState>('idle');

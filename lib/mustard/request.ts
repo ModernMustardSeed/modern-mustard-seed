@@ -48,6 +48,8 @@ export type DemoCallInput = {
   sessionId?: string | null;
   /** Sent by the browser so a double-click cannot become two calls. */
   idempotencyKey?: string | null;
+  /** Raw Accept-Language header. Decides which language he opens the call in. */
+  acceptLanguage?: string | null;
 };
 
 export type DemoCallResult =
@@ -413,6 +415,7 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
     consentAt: now,
     campaignId: campaign?.id ?? null,
     attempt: (lead.call_attempts ?? 0) + 1,
+    acceptLanguage: input.acceptLanguage ?? null,
   });
 
   if (!placed.ok) {
