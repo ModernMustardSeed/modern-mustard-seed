@@ -101,7 +101,11 @@ export default async function MustardPage({
     // A security gateway that follows the button lands here too, and renders
     // the whole page doing it. It gets a row that says so rather than a row
     // that says a contractor showed up.
-    const hit = await classifyHit(getSupabase(), visitorLeadId, requestHeaders as unknown as Headers);
+    const hit = await classifyHit(getSupabase(), {
+      leadId: visitorLeadId,
+      type: 'permission_visited',
+      headers: requestHeaders as unknown as Headers,
+    });
     // One line per prospect per fifteen minutes: a refresh is not a second visit.
     await recordEventOnce(
       getSupabase(),
@@ -119,6 +123,9 @@ export default async function MustardPage({
         },
       },
       15,
+      // A scanner arriving first must not eat the visit from the person it
+      // was scanning on behalf of.
+      { machine: hit.machine },
     );
   }
 
