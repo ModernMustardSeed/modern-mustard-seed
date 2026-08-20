@@ -38,7 +38,10 @@ export type Totals = {
   bounced: number;
   unsubscribed: number;
   replies: number;
+  /** Clicks from a person. Scanner traffic is excluded; see lib/acq/bots.ts. */
   permissionClicks: number;
+  /** Clicks from mail security gateways and other automation. Not interest. */
+  machineClicks: number;
   callsRequested: number;
   callsAttempted: number;
   conversationsCompleted: number;
@@ -139,6 +142,7 @@ export async function computeStats(campaignId: string | null, goalClients = 50):
   let emailsSentTotal = 0;
   let emailsSentToday = 0;
   let permissionClicks = 0;
+  let machineClicks = 0;
   let conversationsCompleted = 0;
   let callsAttempted = 0;
 
@@ -152,15 +156,17 @@ export async function computeStats(campaignId: string | null, goalClients = 50):
 
     const { data: sentEvents } = await db
       .from('acq_events')
-      .select('type,occurred_at')
+      .select('type,occurred_at,detail')
       .in('type', ['email_sent', 'link_clicked', 'permission_visited'])
       .limit(100000);
-    for (const e of (sentEvents ?? []) as { type: string; occurred_at: string }[]) {
+    for (const e of (sentEvents ?? []) as { type: string; occurred_at: string; detail: Record<string, unknown> | null }[]) {
       if (e.type === 'email_sent') {
         emailsSentTotal++;
         if (isToday(e.occurred_at)) emailsSentToday++;
       } else if (e.type === 'link_clicked') {
-        permissionClicks++;
+        // Scanner traffic is counted separately or the click rate is fiction.
+        if (e.detail?.machine === true) machineClicks++;
+        else permissionClicks++;
       }
     }
 
@@ -184,6 +190,7 @@ export async function computeStats(campaignId: string | null, goalClients = 50):
     unsubscribed: rows.filter((r) => r.unsubscribed_at).length,
     replies: rows.filter((r) => r.reply_at).length,
     permissionClicks,
+    machineClicks,
     callsRequested: rows.filter((r) => r.consent_status === 'granted').length,
     callsAttempted,
     conversationsCompleted,
