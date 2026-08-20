@@ -89,11 +89,15 @@ function runClaude(dir, directive) {
     child.stdout.on('data', (d) => { out += d; });
     child.stderr.on('data', (d) => { out += d; });
     const timer = setTimeout(() => { killTree(child); }, BUILD_TIMEOUT_MS);
-    child.on('close', (code) => { clearTimeout(timer); resolve({ code, out: out.slice(-2000) }); });
+    // Full output comes back so the stdout-salvage path can recover a whole
+    // document; error messages slice their own tail.
+    child.on('close', (code) => { clearTimeout(timer); resolve({ code, out }); });
   });
 }
 
-const DIRECTIVE = `Read BRIEF.md in this directory: it describes one real local business and the live demos already built for them. Write their customized AI INTEGRATION PLAN as a single self-contained file named plan.html in this directory.
+const DIRECTIVE = `YOUR ONLY DELIVERABLE IS A FILE. Using your file tools, CREATE a file named plan.html in the current directory. Do not answer in chat, do not describe what you would write, do not print the document to stdout: a run that ends without plan.html on disk is a failed run, whatever else you said.
+
+Read BRIEF.md in this directory: it describes one real local business and the live demos already built for them. Write their customized AI INTEGRATION PLAN as a single self-contained file named plan.html in this directory.
 
 WHAT THE DOCUMENT IS: a free, genuinely useful, step-by-step plan the business owner keeps, teaching them exactly how AI gets integrated into THEIR operation. It must be specific to their trade, their gaps, and the research in the brief, never generic. Write it so a determined owner could follow it alone. The document sells by being good, not by pitching: each phase ends with ONE quiet italic line noting Modern Mustard Seed can switch that phase on for them, and nothing more.
 
@@ -125,8 +129,17 @@ async function buildOne(job) {
     writeFileSync(path.join(dir, 'BRIEF.md'), job.brief, 'utf8');
     const { code, out } = await runClaude(dir, DIRECTIVE);
     const planPath = path.join(dir, 'plan.html');
-    if (!existsSync(planPath)) throw new Error(`no plan.html produced (claude exited ${code}): ${out.slice(-300)}`);
-    const html = readFileSync(planPath, 'utf8');
+    let html;
+    if (existsSync(planPath)) {
+      html = readFileSync(planPath, 'utf8');
+    } else {
+      // Salvage: headless claude sometimes answers in chat instead of writing
+      // the file (three did on night one). If a complete document made it to
+      // stdout anyway, keep it rather than burning the run.
+      const m = /<!doctype html[\s\S]*<\/html>/i.exec(out);
+      if (m) { html = m[0]; log('salvaged plan from stdout for', job.business_name); }
+      else throw new Error(`no plan.html produced (claude exited ${code}): ${out.slice(-300)}`);
+    }
     if (html.length < 4000 || !/<\/html>/i.test(html)) throw new Error(`plan.html incomplete (${html.length} bytes)`);
     await rest('PATCH', `integration_plans?id=eq.${job.id}`, {
       status: 'ready', html, error: null, built_at: new Date().toISOString(), updated_at: new Date().toISOString(),

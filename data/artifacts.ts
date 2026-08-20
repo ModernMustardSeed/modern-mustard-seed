@@ -22,6 +22,16 @@ export type ArtifactEntry = {
 
 export const ARTIFACTS: ArtifactEntry[] = [
   {
+    id: '2b6286cf-e034-4121-a8cb-315d6cf6c7aa',
+    title: 'The Thousand-Client Map',
+    url: 'https://claude.ai/code/artifact/2b6286cf-e034-4121-a8cb-315d6cf6c7aa',
+    updated: '2026-08-20',
+    venture: 'MMS',
+    kind: 'Briefing',
+    description: 'The whole operation in ten minutes, written for family: the machine, the money math, the path to thousands of clients, and three days in the life.',
+    pinned: true,
+  },
+  {
     id: 'accd37ba-4b0c-48bf-9d29-9908b548fdf1',
     title: 'The Ground Game',
     url: 'https://claude.ai/code/artifact/accd37ba-4b0c-48bf-9d29-9908b548fdf1',
