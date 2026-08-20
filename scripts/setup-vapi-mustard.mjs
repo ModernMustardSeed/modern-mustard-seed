@@ -1155,13 +1155,29 @@ const assistant = {
   },
   // NEVER drop a live call. Sarah's rule (2026-07-22): a call ends when everyone
   // says goodbye and Mr. Mustard hangs up, or when the line goes truly silent,
-  // and NEVER because a timer ran out mid-conversation. So the duration ceiling is
-  // Vapi's maximum (43200s = 12h; the API rejects anything higher). No human
-  // conversation ever reaches it, so an actively-talking caller who wants to keep
-  // riffing never gets cut off. This override rides along on every surface that
-  // forges from this assistant (the desk lines and the demos inherit it unless
-  // they set their own).
-  maxDurationSeconds: 43200,
+  // and NEVER because a timer ran out mid-conversation. That intent is kept
+  // here in full, but the ceiling is no longer Vapi's 12 hour maximum.
+  //
+  // ⚠️ THE SILENCE TIMEOUT DOES NOT COVER THE EXPENSIVE CASE. The argument for
+  // 43200s was that an abandoned line dies after 60s of quiet, so the stopwatch
+  // never matters. That holds for a SILENT stuck call. It does not hold for one
+  // producing continuous audio, which is exactly what hold music, a long
+  // voicemail greeting, an IVR loop or a radio in a truck sounds like to the
+  // silence detector. On an outbound dialer working through hundreds of
+  // contractors, that is not a freak event, it is Tuesday. At the measured
+  // $0.099/min a single call stuck that way bills $71.28 before it stops.
+  //
+  // 1800s is not a guess. Across 88 completed calls the longest ever recorded
+  // is 690s, so 30 minutes is 2.6x the all-time record: it truncates ZERO real
+  // calls, present or historical, and a caller who wants to keep riffing still
+  // never gets cut off. What it does is cap the tail at $2.97 instead of
+  // $71.28, a 24x reduction in the worst case for no behavioural cost. The rest
+  // of the fleet sits at 900s; he gets double because he holds the longest
+  // conversations in the business.
+  //
+  // This override rides along on every surface that forges from this assistant
+  // (the desk lines and the demos inherit it unless they set their own).
+  maxDurationSeconds: Number(env('VAPI_MAX_CALL_SECONDS') || 1800),
   // The real guard against runaway cost is silence, not a stopwatch: an abandoned
   // line (nobody speaking) ends after 60s of quiet, while someone actively talking
   // is never silent that long. 60 (up from Vapi's 30s default) is forgiving enough
