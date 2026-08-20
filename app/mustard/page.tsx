@@ -220,7 +220,7 @@ export default async function MustardPage({
           </div>
 
           {/* the ask */}
-          <div className="order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-24">
+          <div id="ask" className="order-2 scroll-mt-24 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-24">
             {/*
               The card gets its two pop-art companions: Mr. Mustard himself
               standing on the top edge of his own form, and a FREE CALL
@@ -586,6 +586,157 @@ export default async function MustardPage({
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/*
+        ── THE SKILL SHEET ─────────────────────────────────────────────────
+
+        Sarah, 2026-08-20: "tell what the agent can do for service
+        businesses, and that we can make it multilingual, and other
+        features... closer to bottom of page maybe but not all the way at
+        bottom."
+
+        So it sits between the math and the ink close: the reader who got
+        this far has heard the pitch and done the sums, and this is the
+        concrete inventory that converts "impressive demo" into "it could
+        run MY desk." The six cards up top are outcomes; these are the
+        skills themselves, named the way an owner would name them.
+
+        Two showpieces get real artifacts instead of adjectives: the
+        mid-call text card shows the actual SMS bubble, and the language
+        card opens in Spanish. The ninth card is dashed on purpose: it is
+        the blank line on the sheet, because every agent is custom-built.
+
+        HONESTY LINE: nothing on this sheet is aspirational. Booking,
+        orders, mid-call SMS links, price answers, warm transfer, playbook
+        rules, and language switching all ship today; "more on request" is
+        the only promise, and it is one Sarah keeps by building it.
+      */}
+      <section className="relative overflow-hidden border-b-2 border-t-2 border-[#161616] bg-[#F5B700]">
+        <div className="absolute inset-0 halftone-ink" aria-hidden="true" />
+        <div className="relative mx-auto max-w-5xl px-5 py-14 sm:px-8 sm:py-20">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.32em] text-[#C4160B]">The skill sheet</p>
+          <h2 className="mt-4 max-w-2xl font-display text-[2.1rem] sm:text-[3rem] font-extrabold leading-[0.95] tracking-tight">
+            Answering is the <span className="italic">easy</span> part.
+          </h2>
+          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-[#161616]/80">
+            Here is the rest of the job, done the way a service business needs it done.
+          </p>
+
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {/* the everyday skills */}
+            {[
+              ['📅', 'Books the appointment', 'Finds an open slot, books it, reschedules it, cancels it. Your real calendar, not a copy of it.'],
+              ['🧾', 'Takes the order', 'Name, number, the order read back right, and a pickup time that is actually open.'],
+              ['💬', 'Answers the everyday twenty', 'Hours, prices, service area, do you do this. Answered on the spot instead of taken as a message.'],
+            ].map(([emoji, title, body], i) => (
+              <li
+                key={title}
+                className={`rounded-xl border-2 border-[#161616] bg-white p-5 shadow-[4px_4px_0_0_#161616] ${
+                  i % 2 === 0 ? '-rotate-[0.5deg]' : 'rotate-[0.5deg]'
+                }`}
+              >
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#161616] bg-[#F5B700] text-base shadow-[2px_2px_0_0_#161616]" aria-hidden="true">
+                  {emoji}
+                </span>
+                <p className="mt-3 font-display text-[17px] font-bold leading-tight">{title}</p>
+                <p className="mt-2 text-[14px] leading-relaxed text-[#161616]/70">{body}</p>
+              </li>
+            ))}
+
+            {/* showpiece: the mid-call text, shown as the text itself */}
+            <li className="rounded-xl border-2 border-[#161616] bg-[#FBF6EA] p-5 shadow-[4px_4px_0_0_#161616] rotate-[0.5deg] sm:col-span-2 lg:col-span-1">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#161616] bg-[#F5B700] text-base shadow-[2px_2px_0_0_#161616]" aria-hidden="true">
+                {'🔗'}
+              </span>
+              <p className="mt-3 font-display text-[17px] font-bold leading-tight">Texts links mid-call</p>
+              <p className="mt-2 text-[14px] leading-relaxed text-[#161616]/70">
+                Booking page, menu, estimate form, directions. The caller asks and their phone buzzes before the call ends.
+              </p>
+              <div className="mt-3 max-w-[240px] rounded-2xl rounded-bl-none border-2 border-[#161616] bg-white px-3.5 py-2.5 shadow-[3px_3px_0_0_#161616]" aria-hidden="true">
+                <p className="font-mono text-[12px] leading-snug text-[#161616]">Here is that booking link: your-shop.com/book</p>
+              </div>
+            </li>
+
+            {/* showpiece: the language switch, opening in Spanish */}
+            <li className="relative overflow-hidden rounded-xl border-2 border-[#161616] bg-[#080C16] p-5 text-[#FBF6EA] shadow-[4px_4px_0_0_#161616] -rotate-[0.5deg] sm:col-span-2">
+              <div className="absolute inset-0 halftone-ink opacity-40" aria-hidden="true" />
+              <div className="relative">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#FBF6EA] bg-[#F5B700] text-base shadow-[2px_2px_0_0_#FBF6EA]" aria-hidden="true">
+                  {'🌍'}
+                </span>
+                <p className="mt-3 font-display text-[1.5rem] sm:text-[1.8rem] font-extrabold italic leading-tight">
+                  &iquest;C&oacute;mo puedo ayudarle?
+                </p>
+                <p className="mt-1.5 font-display text-[17px] font-bold leading-tight">Speaks the caller&apos;s language</p>
+                <p className="mt-2 max-w-md text-[14px] leading-relaxed text-[#FBF6EA]/70">
+                  He switches when the caller does, mid-sentence if he has to. Spanish out of the box, more on request, same manners in every one.
+                </p>
+                <p className="mt-4 font-display text-[15px] italic text-[#FBF6EA]/40">
+                  Bonjour. Hallo. Ciao. Tudo bem.
+                </p>
+              </div>
+            </li>
+
+            {[
+              ['🚫', 'Hangs up on robocalls', 'Spam and robodialers get two polite seconds. Customers get all night.'],
+              ['💵', 'Quotes your prices', 'Your price list, said out loud. Never invented, never rounded up.'],
+              ['📖', 'Runs your playbook', 'Who gets transferred, what gets booked, what waits for morning. Your rules, kept at two in the morning.'],
+            ].map(([emoji, title, body], i) => (
+              <li
+                key={title}
+                className={`rounded-xl border-2 border-[#161616] bg-white p-5 shadow-[4px_4px_0_0_#161616] ${
+                  i % 2 === 0 ? 'rotate-[0.5deg]' : '-rotate-[0.5deg]'
+                }`}
+              >
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#161616] bg-[#F5B700] text-base shadow-[2px_2px_0_0_#161616]" aria-hidden="true">
+                  {emoji}
+                </span>
+                <p className="mt-3 font-display text-[17px] font-bold leading-tight">{title}</p>
+                <p className="mt-2 text-[14px] leading-relaxed text-[#161616]/70">{body}</p>
+              </li>
+            ))}
+
+            {/* the blank line on the sheet, wide like one */}
+            <li className="flex flex-col gap-3 rounded-xl border-2 border-dashed border-[#161616] bg-[#F5B700] p-5 sm:col-span-2 sm:flex-row sm:items-center sm:gap-4 lg:col-span-3">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#161616] bg-[#FBF6EA] text-base shadow-[2px_2px_0_0_#161616]" aria-hidden="true">
+                {'🧰'}
+              </span>
+              <div>
+                <p className="font-display text-[17px] font-bold leading-tight">The one your desk does</p>
+                <p className="mt-1 text-[14px] leading-relaxed text-[#161616]/75">
+                  Every agent is custom-built. If your front desk does it, he learns it. Bring the weird ones.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+          {/* who this sheet was written for */}
+          <div className="mt-9 flex flex-wrap items-center gap-x-2.5 gap-y-2">
+            <span className="mr-1 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#161616]/55">
+              On the phones for
+            </span>
+            {['HVAC', 'Plumbing', 'Roofing', 'Landscaping', 'Salons', 'Dental', 'Med spas', 'Restaurants', 'Auto repair', 'Cleaning crews'].map((trade) => (
+              <span key={trade} className="rounded-full border-2 border-[#161616] bg-[#FBF6EA] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em]">
+                {trade}
+              </span>
+            ))}
+          </div>
+
+          {/* the sheet ends where the proof starts */}
+          <div className="mt-10">
+            <a
+              href="#ask"
+              className="inline-flex min-h-[56px] items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-6 py-3.5 font-display text-lg font-extrabold tracking-tight text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616] active:translate-y-0 active:shadow-[3px_3px_0_0_#161616]"
+            >
+              Have him prove it {'↑'}
+            </a>
+            <p className="mt-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#161616]/55">
+              Every skill on this sheet, live on the call he makes you
+            </p>
           </div>
         </div>
       </section>
