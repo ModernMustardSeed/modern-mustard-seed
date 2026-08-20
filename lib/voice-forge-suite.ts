@@ -156,6 +156,15 @@ export type ForgeSuiteInput = {
   build?: string[];
 };
 
+/**
+ * How many times this caller has fired the forge with an empty build, in this
+ * process. Deliberately in memory rather than the database: it only has to
+ * survive the length of one phone call, and a serverless instance handles a
+ * whole call. Entries clear themselves after fifteen minutes so a caller who
+ * rings back tomorrow starts clean.
+ */
+const EMPTY_FORGE_CALLS = new Map<string, number>();
+
 export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: string | null): Promise<string> {
   const business = clean(input.business, 90);
   const name = clean(input.contact_name, 80);
@@ -170,10 +179,45 @@ export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: s
 
   const wanted = piecesFrom(input.build);
   if (!wanted.length) {
+    /**
+     * ⚠️ THE SECOND BOUNCE IS A DIFFERENT PROBLEM FROM THE FIRST.
+     *
+     * On a real inbound call 2026-08-20 the agent called this tool FIVE times
+     * with an empty body. Each bounce returned this same polite instruction, he
+     * ignored it, and the caller heard the tool's waiting message five times
+     * over before he gave up and apologised for a technical snag. Nothing was
+     * built and she had already told him exactly what she wanted.
+     *
+     * The prompt now forbids repeat calls, but a prompt is a hope and this is a
+     * guarantee. The server counts empty calls per phone line and escalates its
+     * own wording: the first bounce coaches, the second orders him to stop
+     * calling the tool and talk, and by the third it takes the decision away
+     * and sends him to a human. An instruction the model has already ignored
+     * twice will not work the third time by being repeated more politely.
+     */
+    const key = callerNumber || 'unknown';
+    const seen = (EMPTY_FORGE_CALLS.get(key) ?? 0) + 1;
+    EMPTY_FORGE_CALLS.set(key, seen);
+    setTimeout(() => EMPTY_FORGE_CALLS.delete(key), 15 * 60_000).unref?.();
+
+    if (seen >= 3) {
+      return JSON.stringify({
+        ok: false,
+        instruction:
+          'STOP. You have now called this tool three times with nothing filled in. Do not call it again on this call, whatever happens. Say to them, out loud and in your own words, that you are going to have Sarah build it by hand today rather than keep them waiting, then call reach_sarah with their name, number, business and exactly what they asked for. That is the close now.',
+      });
+    }
+    if (seen === 2) {
+      return JSON.stringify({
+        ok: false,
+        instruction:
+          'DO NOT CALL THIS TOOL AGAIN UNTIL THEY HAVE ANSWERED YOU OUT LOUD. You just called it twice with an empty build. Stop calling and start talking: ask them plainly, in one short question, whether they want the voice agent that answers their phone, a website, or the back office board. Wait for the answer. Then call this once with that answer in `build`, along with the business name, their name, their email and their phone.',
+      });
+    }
     return JSON.stringify({
       ok: false,
       instruction:
-        'You have not established WHAT to build yet, and the forge will not guess. Ask them plainly which piece they actually need: the voice agent that answers their phone, a website, or the command center that runs the back office. Their answer goes in `build`. It is fine to build more than one when they genuinely want more than one, but never build a piece they did not ask for.',
+        'You have not established WHAT to build yet, and the forge will not guess. If they have ALREADY told you (somebody who said "a voice agent and a website" has told you ["voice_agent","website"]), put that in `build` and call this once more with the rest of the fields filled. Only if they genuinely have not said, ask them plainly which piece they need: the voice agent that answers their phone, a website, or the command center that runs the back office. Never build a piece they did not ask for.',
     });
   }
 
