@@ -37,7 +37,7 @@ export const DEPARTMENTS: Dept[] = [
   { key: 'launch', name: 'Mustard Launch', tag: 'Your AI launch coach', blurb: 'A free personalized launch plan for any new business, then a coach that ships it with you.', href: '/mustard-launch', icon: '🚀' },
   { key: 'switchboard', name: 'The Switchboard', tag: 'Franchise demo line', blurb: 'A 24/7 AI concierge line for multi-location and franchise operators. Call the live demo.', href: '/switchboard', icon: '☎️' },
   { key: 'mode', name: 'Mustard Mode', tag: 'Learn with a coach', blurb: 'Learn to run Claude like the studio does. A live AI coach, four tracks, first session free.', href: '/mustard-mode', icon: '🎓' },
-  { key: 'celebrate', name: 'Celebrate', tag: 'Opens October 19', blurb: 'Every birthday and work anniversary handled: real cakes, flowers, and handwritten cards from local shops, on autopilot. Join the waitlist.', href: '/celebrate', icon: '🎂' },
+  // Celebrate re-parked 2026-08-20 (Sarah): see the note in Navbar.tsx.
 ];
 
 export const deptByKey = Object.fromEntries(DEPARTMENTS.map((d) => [d.key, d]));
@@ -55,7 +55,9 @@ export const GOALS: Goal[] = [
   { label: 'Launch something new', emoji: '🚀', deptKeys: ['launch', 'websites', 'sidekick'], note: 'A free launch plan, then the site and the phone line to open the doors.' },
   { label: 'Sell products online', emoji: '🛍', deptKeys: ['websites'], note: 'A custom storefront on the Full-Service Business Build. Start with a free demo.' },
   { label: 'Learn to build it myself', emoji: '🎓', deptKeys: ['mode', 'launch'], note: 'A coach that teaches you to run Claude and build the thing yourself.' },
-  { label: 'Keep my people happy', emoji: '🎂', deptKeys: ['celebrate', 'chief'], note: 'Every birthday, work anniversary, and client milestone handled by local shops, on autopilot. Opens October 19.' },
+  // 'Keep my people happy' goal re-parked with Celebrate 2026-08-20 (Sarah):
+  // the row existed to sell Celebrate, and pointing it at The Chief alone
+  // would put a gifting pitch on a chief-of-staff door.
 ];
 
 /** Bespoke work beyond the productized doors. Routes to a discovery call. */

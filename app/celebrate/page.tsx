@@ -25,6 +25,8 @@ export const metadata = buildMetadata({
   title: CELEBRATE.metaTitle,
   description: CELEBRATE.metaDescription,
   path: '/celebrate',
+  // RE-PARKED 2026-08-20 (Sarah): unlisted and noindexed, route still answers.
+  noindex: true,
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
   image: '/celebrate/opengraph-image',

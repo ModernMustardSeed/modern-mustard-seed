@@ -36,7 +36,6 @@ export default function Footer() {
         { label: 'GEO Desk', href: '/website-audit' },
         { label: 'Mustard Launch', href: '/mustard-launch' },
         { label: 'Mustard Mode', href: '/mustard-mode' },
-        { label: 'Celebrate', href: '/celebrate' },
       ],
     },
     {
