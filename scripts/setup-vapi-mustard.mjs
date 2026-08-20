@@ -1062,12 +1062,25 @@ const assistant = {
           // Domains he says constantly. The leading period is the breath before
           // the domain, which is exactly where a written-down email goes wrong.
           // The MMS one also fixes the run-together pronunciation.
-          { type: 'exact', key: ' at modernmustardseed dot com', value: '. at modern mustard seed dot com.' },
-          { type: 'exact', key: ' at gmail dot com', value: '. at gmail dot com.' },
-          { type: 'exact', key: ' at yahoo dot com', value: '. at yahoo dot com.' },
-          { type: 'exact', key: ' at outlook dot com', value: '. at outlook dot com.' },
-          { type: 'exact', key: ' at hotmail dot com', value: '. at hotmail dot com.' },
-          { type: 'exact', key: ' at icloud dot com', value: '. at icloud dot com.' },
+          /* ⚠️ COMMAS HERE, NEVER PERIODS. These exist to put a beat before the
+           * domain so an address does not run together. A comma does that just
+           * as well as a period and cannot be mistaken for part of an address.
+           *
+           * On 2026-08-20 he read an email back as "i as in igloo. DOT 2. 0 2 3
+           * at gmail dot com", inventing a spoken "dot" the caller had to
+           * correct. ElevenLabs was cleared: synthesizing the period version
+           * directly produced no spurious "dot" in 12 takes. Vapi runs its own
+           * formatters over this text with every formatter on by default, and
+           * one of them expands "." into "dot" for addresses, which is the only
+           * remaining thing standing between our text and his voice. A period
+           * sitting hard against digits right before "at gmail" is exactly what
+           * that formatter is looking for. The comma removes the bait. */
+          { type: 'exact', key: ' at modernmustardseed dot com', value: ', at modern mustard seed dot com,' },
+          { type: 'exact', key: ' at gmail dot com', value: ', at gmail dot com,' },
+          { type: 'exact', key: ' at yahoo dot com', value: ', at yahoo dot com,' },
+          { type: 'exact', key: ' at outlook dot com', value: ', at outlook dot com,' },
+          { type: 'exact', key: ' at hotmail dot com', value: ', at hotmail dot com,' },
+          { type: 'exact', key: ' at icloud dot com', value: ', at icloud dot com,' },
         ],
       },
     },
