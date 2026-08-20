@@ -132,7 +132,11 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       const text = (plan.html as string)
         .replace(/<style[\s\S]*?<\/style>/gi, ' ')
         .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+        // Headings carry no periods, so closing a block ends the sentence too;
+        // without this the quote glues a heading onto the next line.
+        .replace(/<\/(p|h[1-6]|li|div|section|td|th)>/gi, '. ')
         .replace(/<[^>]+>/g, ' ')
+        .replace(/\.\s*\./g, '.')
         .replace(/&[a-z#0-9]+;/gi, ' ')
         .replace(/\s+/g, ' ');
       const sentence = text
