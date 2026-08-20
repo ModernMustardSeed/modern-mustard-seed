@@ -42,7 +42,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
 
   const { data: lead } = await sb
     .from('outbound_leads')
-    .select('id, business_name, contact_name, niche, notes, website, city, state, demo_url, site_demo_url, site_demo_status, os_demo_url, os_demo_status, integration_plan_url, integration_plan_status, suite_film_status, suite_film_path, affiliate_id, origin, last_seen_at')
+    .select('id, business_name, contact_name, niche, notes, website, city, state, demo_url, demo_run_id, site_demo_url, site_demo_status, os_demo_url, os_demo_status, integration_plan_id, integration_plan_url, integration_plan_status, suite_film_status, suite_film_path, affiliate_id, origin, last_seen_at')
     .eq('hub_demo_id', hubId)
     .maybeSingle();
   if (!lead) return fallback;
@@ -104,6 +104,44 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
     suiteFilmPoster = poster.data?.signedUrl ?? null;
   }
 
+  // What the research noticed about THIS business, surfaced on the calculator
+  // so the numbers start as theirs, not a stranger's. The GAP line in lead
+  // notes is walk-in research: keep only the factual sentences (anything that
+  // reads like our sales plan stays internal), and only when enough survives
+  // to stand alone.
+  const gapRaw = /^GAP:\s*(.+)$/m.exec((lead.notes as string) ?? '')?.[1] ?? null;
+  const noticedLine = (() => {
+    if (!gapRaw) return null;
+    const kept = gapRaw
+      .split(/(?<=[.;])\s+/)
+      .filter((s) => !/voice|agent|pitch|demo|sale|textbook|lead with|walk-in|forge/i.test(s))
+      .join(' ')
+      .trim()
+      .replace(/[;,]$/, '');
+    return kept.length >= 30 ? kept : null;
+  })();
+  // Weekend-dark businesses start the slider closer to their reality.
+  const missedPreset = /closed (both )?weekend|closed sat|closed sun|after-hours|every evening|nights and weekends/i.test((lead.notes as string) ?? '') ? 11 : null;
+
+  // One sharp line from their finished Integration Plan, quoted on its door so
+  // the suite and the plan sell each other. Fail-soft to the generic copy.
+  let planQuote: string | null = null;
+  if (lead.integration_plan_status === 'ready' && lead.integration_plan_id) {
+    const { data: plan } = await sb.from('integration_plans').select('html').eq('id', lead.integration_plan_id).maybeSingle();
+    if (plan?.html) {
+      const text = (plan.html as string)
+        .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&[a-z#0-9]+;/gi, ' ')
+        .replace(/\s+/g, ' ');
+      const sentence = text
+        .split(/(?<=[.!?])\s+/)
+        .find((s) => /\d/.test(s) && /hour|open|closed|week|call|review|answer/i.test(s) && s.length >= 40 && s.length <= 200);
+      if (sentence) planQuote = sentence.trim();
+    }
+  }
+
   const niche = (lead.niche ?? 'other') as Niche;
   // Through leadTrade, never a hand-rolled detectTrade call: this page hand-built
   // the same corpus join and so quietly skipped the business-name precedence the
@@ -134,6 +172,10 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}
       osUrl={lead.os_demo_status === 'ready' ? lead.os_demo_url : null}
       integrationPlanUrl={lead.integration_plan_status === 'ready' ? lead.integration_plan_url : null}
+      planQuote={planQuote}
+      demoRunId={lead.demo_run_id}
+      noticedLine={noticedLine}
+      missedPreset={missedPreset}
       presenter={presenter}
     />
   );
