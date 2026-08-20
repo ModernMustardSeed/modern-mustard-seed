@@ -30,6 +30,7 @@ import { trimForSms } from '../lib/sms';
 import { env, envAny, isPlaceholder, placeholderVars } from '../lib/env';
 import { parseTeam } from '../app/api/demo-order/intake/route';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
+import { classifyAgent, classifyHit, verdictDetail, HUMAN_DELAY_SECONDS, POLL_WINDOW_MINUTES } from '../lib/acq/bots';
 
 /** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
 const GAPS = [2, 4, 3, 4];
@@ -1472,4 +1473,165 @@ test('price: the offer is read from the one place price lives', () => {
   assert.equal(OFFER.setupUsd, 397);
   assert.equal(OFFER.monthlyUsd, 397);
   assert.equal(OFFER.line, '$397 setup + $397/month');
+});
+
+/* ─────────────────────────── the machine filter ──────────────────────────── */
+
+/**
+ * A chainable stand-in for the Supabase client, good enough for classifyHit.
+ * `sends` answers the "when did we last email them" query, `history` answers
+ * the poller-and-proof-of-life query. Everything is resolved from the `type`
+ * filter the caller applied, which is the only thing that distinguishes the
+ * two calls.
+ */
+function fakeEventsDb(rows: { sends: string[]; history: { type: string; occurred_at: string }[] }): any {
+  const build = () => {
+    const state: { eqType?: string; inTypes?: string[] } = {};
+    const chain: any = {
+      select: () => chain,
+      eq: (col: string, val: string) => {
+        if (col === 'type') state.eqType = val;
+        return chain;
+      },
+      in: (_col: string, vals: string[]) => {
+        state.inTypes = vals;
+        return chain;
+      },
+      lte: () => chain,
+      gte: () => chain,
+      order: () => chain,
+      limit: () => {
+        if (state.eqType === 'email_sent') {
+          return Promise.resolve({ data: rows.sends.map((occurred_at) => ({ occurred_at })) });
+        }
+        const allowed = new Set(state.inTypes ?? []);
+        return Promise.resolve({ data: rows.history.filter((r) => allowed.has(r.type)) });
+      },
+    };
+    return chain;
+  };
+  return { from: () => build() };
+}
+
+const BROWSER =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0 Safari/537.36';
+const agoSec = (s: number) => new Date(Date.now() - s * 1000).toISOString();
+const heads = (ua: string | null) => new Headers(ua ? { 'user-agent': ua } : {});
+
+test('bots: an agent that names itself is a machine, whatever else is true', () => {
+  assert.equal(classifyAgent('Mozilla/5.0 (compatible; Barracuda Sentinel)').machine, true);
+  assert.equal(classifyAgent('python-requests/2.31.0').machine, true);
+  assert.equal(classifyAgent('Slackbot-LinkExpanding 1.0').machine, true);
+  assert.equal(classifyAgent(BROWSER).machine, false);
+});
+
+test('bots: a request with no browser agent is a script, not a shy person', () => {
+  assert.equal(classifyAgent(null).machine, true);
+  assert.equal(classifyAgent('').machine, true);
+  assert.equal(classifyAgent('curl/8.4').machine, true);
+});
+
+test('bots: a hit inside the delivery scan window is the gateway, not the prospect', async () => {
+  const db = fakeEventsDb({ sends: [agoSec(45)], history: [] });
+  const v = await classifyHit(db, { leadId: 'lead', type: 'link_clicked', headers: heads(BROWSER) });
+  assert.equal(v.machine, true);
+  assert.match(v.why, /delivery scan window/);
+  assert.equal(v.secondsAfterSend, 45);
+});
+
+test('bots: the window closes at five minutes, where the observed sweep ends', async () => {
+  const inside = await classifyHit(fakeEventsDb({ sends: [agoSec(HUMAN_DELAY_SECONDS - 5)], history: [] }), {
+    leadId: 'lead',
+    type: 'link_clicked',
+    headers: heads(BROWSER),
+  });
+  const outside = await classifyHit(fakeEventsDb({ sends: [agoSec(HUMAN_DELAY_SECONDS + 5)], history: [] }), {
+    leadId: 'lead',
+    type: 'link_clicked',
+    headers: heads(BROWSER),
+  });
+  assert.equal(inside.machine, true);
+  assert.equal(outside.machine, false);
+});
+
+test('bots: a third hit inside the window is a re-validation loop, not a visit', async () => {
+  const history = [
+    { type: 'link_clicked', occurred_at: agoSec(60 * 60) },
+    { type: 'link_clicked', occurred_at: agoSec(30 * 60) },
+  ];
+  const v = await classifyHit(fakeEventsDb({ sends: [agoSec(45 * 60)], history }), {
+    leadId: 'lead',
+    type: 'link_clicked',
+    headers: heads(BROWSER),
+  });
+  assert.equal(v.machine, true);
+  assert.match(v.why, /re-validation loop/);
+});
+
+test('bots: the poller rule never touches a prospect first two hits, so nobody is erased', async () => {
+  const history = [{ type: 'link_clicked', occurred_at: agoSec(30 * 60) }];
+  const v = await classifyHit(fakeEventsDb({ sends: [agoSec(45 * 60)], history }), {
+    leadId: 'lead',
+    type: 'link_clicked',
+    headers: heads(BROWSER),
+  });
+  assert.equal(v.machine, false);
+});
+
+test('bots: hits older than the poll window do not accumulate against a prospect', async () => {
+  const history = [
+    { type: 'link_clicked', occurred_at: agoSec((POLL_WINDOW_MINUTES + 30) * 60) },
+    { type: 'link_clicked', occurred_at: agoSec((POLL_WINDOW_MINUTES + 20) * 60) },
+    { type: 'link_clicked', occurred_at: agoSec((POLL_WINDOW_MINUTES + 10) * 60) },
+  ];
+  const v = await classifyHit(fakeEventsDb({ sends: [agoSec(4 * 60 * 60)], history }), {
+    leadId: 'lead',
+    type: 'link_clicked',
+    headers: heads(BROWSER),
+  });
+  assert.equal(v.machine, false);
+  assert.equal(v.priorHits, 0);
+});
+
+test('bots: proof of life outranks every heuristic below it', async () => {
+  // Same fast click that would otherwise be called a scanner, but this
+  // prospect has already given us their number. They are a person forever.
+  const history = [{ type: 'consent_captured', occurred_at: agoSec(48 * 60 * 60) }];
+  const v = await classifyHit(fakeEventsDb({ sends: [agoSec(10)], history }), {
+    leadId: 'lead',
+    type: 'link_clicked',
+    headers: heads('python-requests/2.31.0'),
+  });
+  assert.equal(v.machine, false);
+  assert.equal(v.knownHuman, true);
+});
+
+test('bots: with no prospect to date the hit against, only the agent is judged', async () => {
+  const human = await classifyHit(null, { leadId: null, type: 'link_clicked', headers: heads(BROWSER) });
+  const bot = await classifyHit(null, { leadId: null, type: 'link_clicked', headers: heads('Mimecast') });
+  assert.equal(human.machine, false);
+  assert.equal(bot.machine, true);
+  assert.equal(human.secondsAfterSend, null);
+});
+
+test('bots: a prospect we have never emailed is not condemned by a missing send', async () => {
+  const v = await classifyHit(fakeEventsDb({ sends: [], history: [] }), {
+    leadId: 'lead',
+    type: 'permission_visited',
+    headers: heads(BROWSER),
+  });
+  assert.equal(v.machine, false);
+  assert.equal(v.secondsAfterSend, null);
+});
+
+test('bots: the verdict blob carries the reason only when there is one', () => {
+  const machine = verdictDetail({
+    machine: true, why: 'Scanner', ua: 'x', secondsAfterSend: 3, priorHits: 0, knownHuman: false,
+  });
+  const human = verdictDetail({
+    machine: false, why: 'Human', ua: BROWSER, secondsAfterSend: 900, priorHits: 1, knownHuman: false,
+  });
+  assert.equal(machine.machine_why, 'Scanner');
+  assert.equal(human.machine_why, null);
+  assert.equal(human.seconds_after_send, 900);
 });
