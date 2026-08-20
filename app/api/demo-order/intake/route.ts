@@ -12,6 +12,7 @@ import { queueRebuild, rebuildInputFor } from '@/lib/site-rebuild';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { sidekickVoice } from '@/lib/sidekick-voice';
 import { recordOfficeEvent } from '@/lib/front-office/provision';
+import { syncAssistant } from '@/lib/front-office/agent';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -278,6 +279,18 @@ export async function POST(req: Request) {
               }))
               .filter((t) => t.phone.replace(/\D/g, '').length >= 10),
           );
+        }
+        // The agent hears the intake immediately (loop audit, break #7). The
+        // owner just chose their voice, greeting and transfer list; leaving
+        // the assistant unsynced meant a live agent kept saying the old
+        // greeting and a new office had no assistant until a human pressed
+        // sync. Number purchase and go-live stay behind the human QA gate;
+        // building the brain costs nothing and buys the test call its time.
+        try {
+          const synced = await syncAssistant(supabase, office.id);
+          if (!synced.ok) console.error('intake auto-sync failed (board sync button still works):', synced.error);
+        } catch (err) {
+          console.error('intake auto-sync threw', err);
         }
       }
     } catch (err) {

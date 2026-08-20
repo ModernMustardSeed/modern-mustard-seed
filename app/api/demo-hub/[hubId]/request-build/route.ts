@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { buildSiteBrief, forgeLeadVoiceDemo } from '@/lib/outbound-demo';
+import { sendViaResend } from '@/lib/send-email';
 import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
 
@@ -72,6 +73,26 @@ export async function POST(req: Request, { params }: { params: Promise<{ hubId: 
       await sb.from('outbound_leads').update({ site_demo_id: row.id, site_demo_url: siteUrl, site_demo_status: 'queued' }).eq('id', l.id);
       queued.push('website');
     }
+  }
+
+  // The client hears back immediately (loop audit, break #10: they used to
+  // tap the button, get JSON, and wait on a film-gated announcement that a
+  // voice-only request would never trigger at all). Fail-soft: the queue work
+  // above already stands.
+  const ackTo = l.email;
+  if (ackTo && queued.length) {
+    const voiceLine = queued.includes('voice agent') && l.demo_url ? `Your voice agent is actually ready RIGHT NOW; it forges in seconds: ${l.demo_url}\n\n` : '';
+    await sendViaResend({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: ackTo,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `On the anvil: your ${queued.join(' and ')}`,
+      text:
+        `Got it. The forge is building your ${queued.join(' and ')} for ${l.business_name} as of this minute.\n\n` +
+        voiceLine +
+        `Your demo suite updates itself the moment each piece is ready:\n${l.hub_demo_url ?? ''}\n\n` +
+        `Nothing to sign, nothing owed. Reply here if you want anything done differently.\n\nSarah`,
+    }).catch(() => {});
   }
 
   // The cockpit inbox hears about it either way: a self-served build request

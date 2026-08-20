@@ -881,7 +881,11 @@ async function cutSuiteFilm(job) {
  */
 async function notifySuiteReady(job) {
   const secret = env.FORGE_NOTIFY_SECRET;
-  if (!secret || !job.lead_id) return;
+  // Loud, not silent: an unset secret used to be an invisible no-op that
+  // stranded every announcement with a clean log (loop audit, break #6). The
+  // daily suite-sweep cron is the second knock either way.
+  if (!secret) return log('suite-ready NOT knocked: FORGE_NOTIFY_SECRET is missing from this env. Announcements cannot send until it is set.');
+  if (!job.lead_id) return;
   try {
     const res = await fetch(`${SITE_URL}/api/hooks/suite-ready`, {
       method: 'POST',
