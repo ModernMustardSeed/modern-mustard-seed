@@ -75,6 +75,7 @@ export default function DemoHub({
   siteUrl,
   sitePending,
   osUrl,
+  integrationPlanUrl,
   presenter,
 }: {
   hubId: string;
@@ -102,6 +103,9 @@ export default function DemoHub({
   siteUrl: string | null;
   sitePending: string | null;
   osUrl: string | null;
+  /** Their finished AI Integration Plan (/demo/plan/<id>), when written. It
+   *  joins the suite as a door: free value that fills a voice-only page. */
+  integrationPlanUrl?: string | null;
   /** Partner who minted this suite ("Presented by X with Modern Mustard Seed"). */
   presenter?: string | null;
 }) {
@@ -181,8 +185,17 @@ export default function DemoHub({
           cta: 'Open it',
           badge: 'Free with both',
         },
+        integrationPlanUrl && {
+          href: integrationPlanUrl,
+          icon: '📋',
+          title: 'Your AI Integration Plan',
+          desc: `The step-by-step plan we wrote for ${business}: where the calls are leaking, what to do about it, and the order to do it in. Yours to keep, free either way.`,
+          tone: 'ink' as const,
+          cta: 'Read it',
+          badge: 'Free',
+        },
       ].filter(Boolean) as { href: string; icon: string; title: string; desc: string; tone: 'dark' | 'gold' | 'ink'; cta: string; badge?: string }[],
-    [voiceUrl, siteUrl, sitePending, osUrl, business],
+    [voiceUrl, siteUrl, sitePending, osUrl, integrationPlanUrl, business],
   );
 
   /**
@@ -246,6 +259,9 @@ export default function DemoHub({
       <style>{`
         @keyframes hubBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
         @keyframes hubIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+        @keyframes hubRing{0%{box-shadow:0 0 0 0 rgba(245,183,0,.55)}70%{box-shadow:0 0 0 26px rgba(245,183,0,0)}100%{box-shadow:0 0 0 0 rgba(245,183,0,0)}}
+        @keyframes hubEmber{0%,100%{text-shadow:0 0 0 rgba(245,183,0,0)}50%{text-shadow:0 0 26px rgba(245,183,0,.4)}}
+        @media (prefers-reduced-motion: reduce){.hub-ring,.hub-ember{animation:none !important}}
       `}</style>
 
       {/* Hero */}
@@ -333,10 +349,31 @@ export default function DemoHub({
         </section>
         )}
 
-        {/* The doors */}
+        {/* The doors. One door is not a grid, it is the whole show: a lonely
+            card in a three-column layout reads as "something is missing" when
+            what it should read is "this is the thing" (Sarah, 2026-08-20). */}
+        {doors.length === 1 ? (
+          <section className="animate-[hubIn_.5s_ease-out_both]">
+            <a
+              href={doors[0].href}
+              className={`${toneCls[doors[0].tone]} block border-2 border-[#161616] rounded-3xl shadow-[8px_8px_0_0_#F5B700] p-8 sm:p-10 text-center transition-transform hover:-translate-y-1.5`}
+            >
+              <span className="hub-ring inline-flex items-center justify-center w-24 h-24 rounded-full bg-[#F5B700] text-5xl border-2 border-[#161616] animate-[hubRing_2.4s_ease-out_infinite]" aria-hidden>
+                {doors[0].icon}
+              </span>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold mt-6 leading-tight">{doors[0].title}</h2>
+              <p className={`font-body text-[16px] leading-relaxed mt-3 max-w-md mx-auto ${doors[0].tone === 'dark' ? 'text-[#FBF6EA]/80' : 'text-[#161616]/70'}`}>
+                {doors[0].desc}
+              </p>
+              <span className="mt-7 inline-flex items-center gap-2 font-sans font-bold uppercase tracking-[0.12em] text-[15px] rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-3.5 shadow-[4px_4px_0_0_#161616]">
+                {doors[0].cta} →
+              </span>
+            </a>
+          </section>
+        ) : (
         <section>
-          <h2 className="font-display text-2xl font-bold mb-4">Your {doors.length === 1 ? 'demo' : `${doors.length} demos`}</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <h2 className="font-display text-2xl font-bold mb-4">Your {doors.length} demos</h2>
+          <div className={`grid sm:grid-cols-2 ${doors.length >= 3 ? 'lg:grid-cols-3' : ''} gap-4`}>
             {doors.map((d, i) => (
               <a
                 key={d.title}
@@ -359,6 +396,7 @@ export default function DemoHub({
             ))}
           </div>
         </section>
+        )}
 
         {/* Recovery Calculator */}
         <section className="animate-[hubIn_.5s_ease-out_both]">
@@ -391,8 +429,10 @@ export default function DemoHub({
             {/* Neutral lifted ink, never a mustard wash: translucent mustard over
                 ink mixes to a muddy brown, which is off-brand. Border carries the gold. */}
             <div className="mt-6 rounded-2xl border-2 border-[#F5B700] bg-[#1F1F1F] p-5 text-center">
-              <p className="font-sans text-[11px] uppercase tracking-[0.2em] font-bold text-[#F5B700]">Leaking every month</p>
-              <p className="font-display text-5xl sm:text-6xl font-bold text-[#FBF6EA] mt-1 tabular-nums">${shown.toLocaleString()}</p>
+              <p className="font-sans text-[12px] uppercase tracking-[0.24em] font-bold text-[#F5B700]">Leaking every month</p>
+              <p className="hub-ember font-display text-6xl sm:text-7xl md:text-8xl font-bold text-[#FBF6EA] mt-2 tabular-nums leading-none animate-[hubEmber_2.6s_ease-in-out_infinite]">
+                ${shown.toLocaleString()}
+              </p>
               <p className="font-body text-[14px] text-[#FBF6EA]/70 mt-2">
                 If this suite caught even three quarters of those calls, that is about{' '}
                 <strong className="text-[#F5B700]">${caught.toLocaleString()} a month</strong> back in the till, roughly{' '}
