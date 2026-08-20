@@ -799,15 +799,37 @@ const voice =
          *   Also auditioned 8/17 and not picked: Donovan, Brian Everyman,
          *   Marcus, Victor Voss, Jack John, Mark */
         voiceId: env('VAPI_VOICE_ID') || 'xKhbyU7E3bC6T89Kn26c',
-        // turbo_v2_5 balances quality and latency. eleven_flash_v2_5 is the
-        // lower-latency lever if he ever feels slow on a real call.
-        model: env('VAPI_11LABS_MODEL') || 'eleven_turbo_v2_5',
+        /* ⚠️ NOT turbo, AND NOT FOR QUALITY REASONS IN THE ABSTRACT. On 2026-08-20
+         * Sarah heard him slur on a live call, and the transcript logged him
+         * saying "what's going on with with your roof today". Measured against
+         * this exact voice: eleven_turbo_v2_5 inserts words into roughly one
+         * take in twelve, and that rate does NOT move with stability, which was
+         * tested at 0.35, 0.60, 0.75, 0.85, 0.90 and 0.95 across 96 samples. It
+         * is the model, not the settings.
+         *
+         * What it inserts is the problem. Turbo produced "two zero two TWO
+         * three" in an email readback and repeated whole phrases. A voice that
+         * randomly duplicates a digit defeats the entire readback standard.
+         *
+         * eleven_multilingual_v2 came back clean on 84 samples. It also happens
+         * to be the right model for the language mirroring he now does. */
+        model: env('VAPI_11LABS_MODEL') || 'eleven_multilingual_v2',
+        /* ⚠️ THIS IS WHAT MAKES THE ABOVE AFFORDABLE. multilingual_v2 is the
+         * slower model: 1161ms to first audio wide open, against turbo's 466ms,
+         * which would be a real pause on every turn. At optimize level 2 it is
+         * 595ms, so the whole upgrade costs about 129ms and nobody hears it.
+         *
+         * Levels are a tradeoff, so they were measured too: level 0 is 0
+         * artifacts in 84 takes but too slow, levels 1 and 2 are 1 in 24 and
+         * both of those were a harmless "um", never a mangled digit. Do not
+         * push past 2 without re-running scripts against real readback lines. */
+        optimizeStreamingLatency: Number(env('VAPI_11LABS_LATENCY') || 2),
         useSpeakerBoost: true, // the actual loudness control, the whole reason to be here
         // ⚠️ style MUST STAY 0. `style` is EXAGGERATION: it makes ElevenLabs
         // PERFORM the line rather than say it, which reads announcer-y on a
         // phone call. Roger shipped at 0.35 and Sarah's verdict was "too
-        // stuffy" — that setting, not the voice, is what made a voice literally
-        // labeled "laid-back" come out formal. It costs latency too.
+        // stuffy", and that setting is what made a voice literally
+        // labeled "laid-back" come out formal, not the voice. It costs latency too.
         style: 0.0,
         stability: 0.35, // lower = looser and more human; higher drifts monotone
         similarityBoost: 0.75,
@@ -1053,7 +1075,7 @@ const assistant = {
   transcriber: {
     // nova-3 is materially better than nova-2 at exactly what Mr. Mustard kept
     // botching: spoken emails, names, and alphanumerics. NOTE: Vapi does NOT
-    // enum-validate Deepgram model strings (unlike Anthropic models) — it passes
+    // enum-validate Deepgram model strings (unlike Anthropic models), so it passes
     // them straight through, so a typo here silently breaks transcription at call
     // time. Revert instantly with VAPI_TRANSCRIBER_MODEL=nova-2 if a test call sounds off.
     provider: 'deepgram',
