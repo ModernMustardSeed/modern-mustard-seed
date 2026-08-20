@@ -224,7 +224,7 @@ The demo is free, no card. If you love him, he's answering your real phone 24/7 
 
 const SK_COPY_B = `The average small business misses 4 in 10 calls. Every missed call dials your competitor next.
 
-Your Voice Agent answers every one: books appointments, takes clean messages, flags emergencies to your cell, and sends you a summary of every call. Trained on YOUR business, live on your real line within a week.
+Your Voice Agent answers every one: books appointments, takes clean messages, flags emergencies to your cell, and sends you a summary of every call. Trained on YOUR business, live within a week, answering the number you already have.
 
 Hear yours before you pay a cent. The forge is free and it is honestly just fun.`;
 

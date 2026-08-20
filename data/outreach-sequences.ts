@@ -43,7 +43,7 @@ export const outreachSequences: OutreachSequence[] = [
         body:
           'Hi {{firstName}},\n\n' +
           'Quick math most {{city}} restaurants never run: 15 missed calls a week at a $32 average ticket is about $1,900 a month walking out the door. During the rush, those are takeout orders and tables going to the place that picked up.\n\n' +
-          'I build voice agents that answer every call in a natural voice, take the full order and fire it to your POS (Toast, Square, Clover), book reservations, and recover the calls you miss. Live in about two weeks, on your own number.\n\n' +
+          'I build voice agents that answer every call in a natural voice, take the full order and fire it to your POS (Toast, Square, Clover), book reservations, and recover the calls you miss. Live in about two weeks, and you keep the number you already have.\n\n' +
           'Here is how it works for restaurants: https://modernmustardseed.com/for/restaurants\n\n' +
           'If it is worth 15 minutes, grab a time here: https://modernmustardseed.com/book\n\n' +
           'Either way, the calculator on that page shows your own number in 30 seconds.\n\n' +

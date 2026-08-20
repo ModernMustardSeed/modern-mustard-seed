@@ -106,7 +106,7 @@ const faq = [
   },
   {
     q: 'How fast can it go live?',
-    a: 'Most voice agents are live on your number in about a week, from first conversation to answering real calls.',
+    a: 'Most voice agents are live in about a week, answering the number you already have, from first conversation to answering real calls.',
   },
   {
     q: 'Does it work with my calendar and CRM?',

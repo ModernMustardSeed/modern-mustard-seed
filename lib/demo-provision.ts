@@ -54,7 +54,7 @@ function milestonesFor(keys: string[]): Array<{ title: string; detail: string; d
     ms.push({ title: 'Live on your domain', detail: 'We put it on your own web address and keep it running.', done: false });
   }
   if (has('voice')) {
-    ms.push({ title: 'Your voice agent goes live', detail: 'The voice from your demo, answering your real number around the clock.', done: false });
+    ms.push({ title: 'Your voice agent goes live', detail: 'The voice from your demo, answering your calls around the clock.', done: false });
   }
   // The command center is built when they bought it, and free inside the bundle
   // where both paid pieces ride (Sarah 2026-08-13: free with both, not either).

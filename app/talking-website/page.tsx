@@ -105,7 +105,7 @@ function talkingWebsiteJsonLd() {
         serviceType:
           'Combined small-business website and AI voice agent built on one shared knowledge base, with a business command center included',
         description:
-          'A website that answers its own phone. The website and the AI voice agent are built as one system off one brain, so the answer a visitor reads on the page is the same answer a caller hears at midnight. Includes custom website design, funnels, SEO and GEO, a 24/7 AI voice agent on your real phone number, and the business command center free.',
+          'A website that answers its own phone. The website and the AI voice agent are built as one system off one brain, so the answer a visitor reads on the page is the same answer a caller hears at midnight. Includes custom website design, funnels, SEO and GEO, a 24/7 AI voice agent answering the number you already have, and the business command center free.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/talking-website`,
@@ -355,7 +355,7 @@ export default function TalkingWebsitePage() {
               <ul className="mt-5 grid sm:grid-cols-2 gap-x-6 gap-y-2.5 flex-1">
                 {[
                   'Custom website, live in about a week',
-                  'Voice agent on your real number, 24/7',
+                  'Voice agent answering your calls, 24/7',
                   'Command center free inside it',
                   'Funnels, lead magnet, SEO and GEO',
                   // The homepage Town Square (MI 47) promises both of these by

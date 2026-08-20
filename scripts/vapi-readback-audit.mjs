@@ -51,12 +51,16 @@ if (!KEY) {
    * the drift this audit is here to catch.
    */
   const CHECKS = [
-    ['v4 heading', /studio standard v4/],
+    ['v5 heading', /studio standard v5/],
     ['identifiers not numerals', /AN IDENTIFIER IS NEVER A NUMERAL/],
     ['money exempted', /MONEY IS THE EXCEPTION/],
     ['corrections kill', /A CORRECTION KILLS EVERYTHING BEFORE IT/],
     ['anchored spelling', /SPELL ANCHORED, ALWAYS/],
     ['say it once', /SAY IT ONCE, THEN STOP/],
+    // v5. Both exist because a spoken readback can be perfect while the value
+    // written into the tool is a different string entirely (2026-08-20).
+    ['anchors beat the heard word', /THE ANCHORS ARE THE SPELLING/],
+    ['read back what was typed', /READ BACK FROM WHAT YOU TYPED/],
   ];
 
   const res = await fetch('https://api.vapi.ai/assistant?limit=100', { headers: { Authorization: `Bearer ${KEY}` } });
@@ -85,7 +89,7 @@ if (!KEY) {
       }
     }
 
-    console.log(`\n${ok} agent(s) carry the full v4 standard, ${bad} do not, ${skipped} skipped.`);
+    console.log(`\n${ok} agent(s) carry the full v5 standard, ${bad} do not, ${skipped} skipped.`);
     if (bad) {
       console.log('\nFix with: node scripts/vapi-spelling.mjs --apply');
       console.log('Mr. Mustard is fixed with: node scripts/setup-vapi-mustard.mjs --update <id>\n');

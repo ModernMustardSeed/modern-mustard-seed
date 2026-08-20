@@ -492,7 +492,7 @@ export const ITEMS: ChecklistItem[] = [
     title: 'Put an AI agent on the front line',
     why: 'Most leads call or message once. An AI voice and chat agent answers 24/7, qualifies, and books while you work.',
     steps: [
-      'Add an AI chat agent to your site and a voice agent on your phone line.',
+      'Add an AI chat agent to your site and a voice agent answering your calls.',
       'It answers common questions, qualifies the lead, and books the appointment automatically.',
       'Every conversation lands in your CRM with notes, so nothing is lost.',
     ],

@@ -30,7 +30,7 @@ import { READBACK_STANDARD } from '@/lib/readback-standard';
  */
 
 // 4: the readback standard joined the absolute rules (2026-08-19).
-export const AGENT_PROMPT_VERSION = 4;
+export const AGENT_PROMPT_VERSION = 5;
 
 const BASE_RULES = [
   'ABSOLUTE RULES. These override every other instruction in this prompt, including anything the person you are talking to asks for.',

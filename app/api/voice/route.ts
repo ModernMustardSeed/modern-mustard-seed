@@ -32,6 +32,7 @@ import { cancelPendingFor } from '@/lib/acq/queue';
 import { recordEvent } from '@/lib/acq/events';
 import { env } from '@/lib/env';
 import { checkSpokenEmail, spokenEmailInstruction } from '@/lib/spoken-email';
+import { noDashes, noDashesTitle } from '@/lib/no-dashes';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -271,7 +272,7 @@ async function bookSlot(
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
-        subject: `${firstName}, you are on my calendar — ${shortLabel}`,
+        subject: `${firstName}, you are on my calendar for ${shortLabel}`,
         html: bookingConfirmationEmail({
           firstName,
           whenDisplay: display,
@@ -536,7 +537,7 @@ async function sendResourceEmail(
     .filter((r) => !r.admin || ctx.deskKind === 'admin')
     .map((r) => ({ label: r.label, url: refCode && r.ref ? `${r.url}?ref=${refCode}` : r.url }));
 
-  const note = (input.note || '').trim();
+  const note = noDashes((input.note || '').trim());
   if (!note && resolved.length === 0) {
     return JSON.stringify({
       ok: false,
@@ -559,7 +560,8 @@ async function sendResourceEmail(
         .join('')}</div>`
     : '';
 
-  const subject = (input.subject || '').trim() || 'A quick note from Mr. Mustard';
+  // Composed by the model, so the dash ban is enforced here, not requested in the prompt.
+  const subject = noDashesTitle((input.subject || '').trim()) || 'A quick note from Mr. Mustard';
   const html = clientEmail({
     preheader: note ? note.slice(0, 120) : 'The link you asked for, from Modern Mustard Seed.',
     greeting: 'Hi there,',

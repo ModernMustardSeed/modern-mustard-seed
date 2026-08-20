@@ -46,7 +46,7 @@ const FAQ = [
   },
   {
     q: 'Is the voice agent included with the website?',
-    a: `No, and we will not pretend otherwise. The Voice Agent is its own product at ${formatUsd(voice.setupCents)} to set up plus ${formatUsd(voice.monthlyCents)} a month, and it can be added to any website: the one we build you, or the one you already have. It answers your real number 24/7, qualifies the caller, books the job, and texts you the details. Take it with a new website and the pair becomes THE TALKING WEBSITE, the first of its kind: one brain answering the page and the phone, ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, a real discount on buying them separately.`,
+    a: `No, and we will not pretend otherwise. The Voice Agent is its own product at ${formatUsd(voice.setupCents)} to set up plus ${formatUsd(voice.monthlyCents)} a month, and it can be added to any website: the one we build you, or the one you already have. It answers your calls 24/7, qualifies the caller, books the job, and texts you the details. Take it with a new website and the pair becomes THE TALKING WEBSITE, the first of its kind: one brain answering the page and the phone, ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, a real discount on buying them separately.`,
   },
   {
     q: 'How much does a website cost?',
@@ -249,14 +249,14 @@ export default function WebsitesPage() {
               </h2>
               <p className="font-body text-[15px] text-[#FBF6EA]/75 mt-4 leading-relaxed">
                 Straight answer: the voice agent is not part of the website. It is its own product, and it bolts onto
-                any site. It answers your real number 24/7, qualifies the caller, books the job, and texts you the
+                any site. It answers your calls 24/7, qualifies the caller, books the job, and texts you the
                 details before you have put your phone down.
               </p>
               <ul className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-3">
                 {[
                   'Add it to the site we build you',
                   'Or to the site you already have',
-                  'Rides on your existing number',
+                  'Keeps the number you already have',
                   'Take both and the command center is free',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#FBF6EA]/85">
