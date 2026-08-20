@@ -1,5 +1,6 @@
 import { getSupabase } from '@/lib/supabase';
 import { CALLBACK_NUMBER_ID } from '@/lib/vapi-lines';
+import { phoneOverrides, pickLanguage } from '@/lib/call-language';
 
 /**
  * INSTANT CALLBACK. The form is submitted, the phone rings in ten seconds.
@@ -58,6 +59,8 @@ export type CallbackRequest = {
   need?: string | null;
   source?: string | null;
   intent?: CallbackIntent;
+  /** Raw Accept-Language header. English changes nothing (lib/call-language.ts). */
+  acceptLanguage?: string | null;
 };
 
 export type CallbackResult =
@@ -256,6 +259,8 @@ export async function placeInstantCallback(req: CallbackRequest): Promise<Callba
         assistantOverrides: {
           firstMessage: greeting(req),
           ...(model ? { model } : {}),
+          // Undefined for English, so the tuned English stack is untouched.
+          ...(phoneOverrides(pickLanguage(req.acceptLanguage), req.name) ?? {}),
           metadata: {
             mode: 'instant-callback',
             intent: req.intent || 'general',
