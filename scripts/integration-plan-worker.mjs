@@ -127,7 +127,13 @@ async function buildOne(job) {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'mms-plan-'));
   try {
     writeFileSync(path.join(dir, 'BRIEF.md'), job.brief, 'utf8');
-    const { code, out } = await runClaude(dir, DIRECTIVE);
+    // The directive goes on DISK and the -p prompt stays one line. spawn with
+    // shell:true on Windows mangles multiline arguments (cmd treats newlines
+    // as command breaks), so a multiline -p reaches claude empty or truncated.
+    // Night one: 77 plans failed in twenty minutes with "I don't see a
+    // request" before this landed. demo-site-worker learned the same lesson.
+    writeFileSync(path.join(dir, 'DIRECTIVE.md'), DIRECTIVE, 'utf8');
+    const { code, out } = await runClaude(dir, 'Read DIRECTIVE.md in this directory and do exactly what it says. Your only deliverable is the file plan.html written in this directory.');
     const planPath = path.join(dir, 'plan.html');
     let html;
     if (existsSync(planPath)) {
