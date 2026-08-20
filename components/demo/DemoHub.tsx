@@ -243,10 +243,15 @@ export default function DemoHub({
           href: osUrl,
           icon: '⚙',
           title: 'Your command center',
-          desc: 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Free when you keep the website and the voice agent together, nothing to install.',
+          // Sarah 2026-08-20: when the agent and the website both live in the
+          // suite, the free command center is the headline, not a footnote.
+          desc:
+            voiceUrl && (siteUrl || sitePending)
+              ? 'Every call transcribed, your customers, reviews, quotes, and money on one board. It costs nothing extra: the website and the voice agent live here together, so this comes with them. Already built, already wearing your brand.'
+              : 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Free when you keep the website and the voice agent together, nothing to install.',
           tone: 'ink' as const,
           cta: 'Open it',
-          badge: 'Free with both',
+          badge: voiceUrl && (siteUrl || sitePending) ? 'FREE with these two' : 'Free with both',
         },
         integrationPlanUrl && {
           href: integrationPlanUrl,
@@ -440,7 +445,14 @@ export default function DemoHub({
           </section>
         ) : (
         <section>
-          <h2 className="font-display text-2xl font-bold mb-4">Your {doors.length} demos</h2>
+          <h2 className="font-display text-2xl font-bold mb-1">Your {doors.length} demos</h2>
+          {osUrl && voiceUrl && (siteUrl || sitePending) && (
+            <p className="font-body text-[14.5px] text-[#161616]/70 mb-4 max-w-xl">
+              Two of these are the products. The third, your command center, is <strong className="text-[#161616]">included free</strong> because
+              the website and the voice agent live together in this suite. You are not being upsold a dashboard; it comes with the pair.
+            </p>
+          )}
+          {!(osUrl && voiceUrl && (siteUrl || sitePending)) && <div className="mb-3" />}
           <div className={`grid sm:grid-cols-2 ${doors.length >= 3 ? 'lg:grid-cols-3' : ''} gap-4`}>
             {doors.map((d, i) => (
               <a
