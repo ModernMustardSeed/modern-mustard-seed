@@ -1,5 +1,5 @@
 /**
- * THE VAULT: one readable master copy of the secrets Vercel will not give back.
+ * THE VAULT: one readable master copy of the secrets Vercel will not hand back.
  *
  *   npm run vault:edit      open it in Notepad, re-encrypt on close
  *   npm run vault:unlock    fan it out into .env.local in every worktree
@@ -8,20 +8,14 @@
  *
  * ── WHY THIS EXISTS ──────────────────────────────────────────────────────────
  *
- * Vercel production is the source of truth for what production runs, and it is
- * a fine one. It is a terrible BACKUP, because a variable marked Sensitive
- * cannot be read back. Ever. By anyone. That is the point of the flag.
+ * Vercel production is the source of truth for what production runs, and a fine
+ * one. It is a terrible BACKUP, because a variable marked Sensitive cannot be
+ * read back. Ever, by anyone. That is the point of the flag.
  *
  * So when a pull wrote `[SENSITIVE]` over this machine's .env.local, twenty
- * values were simply gone from this disk, with production still humming along
- * unaware. There was no second copy anywhere. That is the actual bug, and no
- * amount of care with the pull command fixes it: the missing thing was a
- * readable master.
- *
- * This is that master. It lives OUTSIDE every repository, so no git operation,
- * no environment pull and no worktree checkout can reach it, and it is
- * encrypted at rest so a plaintext file of live credentials is never sitting on
- * a laptop.
+ * values were simply gone from the disk while production hummed along unaware.
+ * There was no second copy anywhere. That is the actual bug, and no amount of
+ * care with the pull command fixes it: what was missing was a readable master.
  *
  * ── WHERE, EXACTLY ───────────────────────────────────────────────────────────
  *
@@ -31,15 +25,31 @@
  * encrypted file, and that file is the thing worth backing up to a password
  * manager or a drive: if it survives, everything else can be rebuilt from it.
  *
- * ── THE ONE RULE ─────────────────────────────────────────────────────────────
+ * ── PASSPHRASES, AND WHY NOT --batch ─────────────────────────────────────────
  *
- * Plaintext exists only while Notepad is open, in a temp file this deletes and
- * overwrites on close. If the process is killed mid-edit, `vault:status` says
- * so and names the stray file. No value is ever printed to a terminal.
+ * gpg's `--batch` means "never prompt for anything", so pairing it with
+ * symmetric encryption asks gpg to encrypt with a passphrase it is forbidden to
+ * obtain. It does not warn. It reports "cancelled by user" and writes no file,
+ * which reads like the user cancelled something rather than like a broken
+ * command. The first version of this had exactly that bug.
+ *
+ * So the passphrase is read here, on the terminal, with the characters hidden,
+ * and handed to gpg on stdin under `--pinentry-mode loopback`. That works with
+ * no TTY-owning pinentry, no GUI dialog and no agent configuration.
+ *
+ * A REAL TERMINAL IS REQUIRED, and that is deliberate. If stdin is not a TTY
+ * there is nobody to type a passphrase, and the honest response is to say so
+ * rather than to hang or to invent one.
+ *
+ * On first creation the passphrase is asked for twice. A typo there does not
+ * produce an error, it produces a vault that will never open again, which is
+ * the same disaster this file exists to prevent.
+ *
+ * No value is ever printed to a terminal.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, statSync } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, renameSync, statSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 
 const VAULT_DIR = join(homedir(), '.mms-vault');
@@ -51,7 +61,7 @@ const cmd = (process.argv[2] ?? 'status').replace(/^-+/, '');
 /**
  * What belongs in here: the values no machine can recover, split by whether a
  * local worker actually reads them. Nine of the twenty run only on Vercel and
- * are never read on a laptop, so putting them in is optional and leaving them
+ * are never read on a laptop, so filling those in is optional and leaving them
  * out breaks nothing locally.
  */
 const NEEDED_LOCALLY: Record<string, string> = {
@@ -90,21 +100,87 @@ function parse(text: string): Map<string, string> {
   return out;
 }
 
-/** Overwrite before unlinking, so the bytes are not left in free space. */
+/** Overwrite before unlinking, so the bytes are not left sitting in free space. */
 function shred(path: string): void {
   try {
     if (!existsSync(path)) return;
-    const size = statSync(path).size;
-    writeFileSync(path, Buffer.alloc(size, 0));
+    writeFileSync(path, Buffer.alloc(statSync(path).size, 0));
     rmSync(path, { force: true });
   } catch {
     try { rmSync(path, { force: true }); } catch { /* nothing more to try */ }
   }
 }
 
-function gpg(args: string[], input?: string): string {
-  const r = spawnSync('gpg', args, { input, encoding: 'utf8', stdio: ['pipe', 'pipe', 'inherit'] });
-  if (r.status !== 0) throw new Error(`gpg exited ${r.status}`);
+/* ── the passphrase ───────────────────────────────────────────────────────── */
+
+/** Read a line from the terminal without echoing it. Requires a real TTY. */
+function askHidden(prompt: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const stdin = process.stdin;
+    if (!stdin.isTTY) {
+      reject(
+        new Error(
+          'This needs a real terminal to type a passphrase into.\n' +
+            'Run it yourself in PowerShell:\n' +
+            '  cd $env:USERPROFILE\\dev\\mms\\worktrees\\acquisition\n' +
+            `  npm run vault:${cmd}`,
+        ),
+      );
+      return;
+    }
+    process.stdout.write(prompt);
+    stdin.setRawMode(true);
+    stdin.resume();
+    stdin.setEncoding('utf8');
+    let buf = '';
+    const onData = (ch: string) => {
+      for (const c of ch) {
+        if (c === '\r' || c === '\n') {
+          stdin.setRawMode(false);
+          stdin.pause();
+          stdin.removeListener('data', onData);
+          process.stdout.write('\n');
+          resolve(buf);
+          return;
+        }
+        if (c === '\u0003') {
+          stdin.setRawMode(false);
+          stdin.pause();
+          process.stdout.write('\n');
+          process.exit(130);
+        }
+        if (c === '\u007f' || c === '\b') {
+          buf = buf.slice(0, -1);
+          continue;
+        }
+        buf += c;
+      }
+    };
+    stdin.on('data', onData);
+  });
+}
+
+async function passphraseFor(creating: boolean): Promise<string> {
+  const first = await askHidden(creating ? 'Choose a passphrase for the vault: ' : 'Vault passphrase: ');
+  if (!first) throw new Error('Empty passphrase. Nothing done.');
+  if (!creating) return first;
+  // A typo here does not error, it produces a vault that never opens again.
+  const again = await askHidden('Type it again: ');
+  if (first !== again) throw new Error('They do not match. Nothing written.');
+  if (first.length < 8) throw new Error('Use at least 8 characters. Nothing written.');
+  return first;
+}
+
+function gpgLoopback(args: string[], passphrase: string): string {
+  const r = spawnSync('gpg', ['--quiet', '--batch', '--yes', '--pinentry-mode', 'loopback', '--passphrase-fd', '0', ...args], {
+    input: passphrase,
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
+  });
+  if (r.status !== 0) {
+    const why = /bad session key|decryption failed/i.test(r.stderr ?? '') ? 'Wrong passphrase.' : (r.stderr ?? '').trim();
+    throw new Error(why || `gpg exited ${r.status}`);
+  }
   return r.stdout;
 }
 
@@ -130,41 +206,65 @@ function template(): string {
   return lines.join('\r\n');
 }
 
-function readVault(): Map<string, string> {
-  if (!existsSync(VAULT)) return new Map();
-  return parse(gpg(['--quiet', '--batch', '--decrypt', VAULT]));
-}
-
 /* ── commands ─────────────────────────────────────────────────────────────── */
 
-function edit(): void {
+async function edit(): Promise<void> {
   mkdirSync(VAULT_DIR, { recursive: true });
   if (existsSync(STAGING)) {
     console.error(`A previous edit left plaintext at:\n  ${STAGING}\nOpen it, finish or discard it, then run vault:edit again.`);
     process.exit(1);
   }
-  const body = existsSync(VAULT) ? gpg(['--quiet', '--batch', '--decrypt', VAULT]) : template();
+  const creating = !existsSync(VAULT);
+  const pass = await passphraseFor(creating);
+
+  const body = creating ? template() : gpgLoopback(['--decrypt', VAULT], pass);
   writeFileSync(STAGING, body, 'utf8');
 
-  console.log('Notepad is open. Fill in what you have, then SAVE and CLOSE it.');
-  console.log('gpg will then ask for a passphrase to encrypt with.\n');
+  console.log('\nNotepad is open. Fill in what you have, then SAVE and CLOSE it.\n');
   spawnSync('notepad.exe', [STAGING], { stdio: 'inherit' });
 
-  const edited = readFileSync(STAGING, 'utf8');
-  const filled = [...parse(edited).entries()].filter(([, v]) => !isBlank(v));
+  const filled = [...parse(readFileSync(STAGING, 'utf8')).entries()].filter(([, v]) => !isBlank(v));
   if (!filled.length) {
     shred(STAGING);
     console.log('Nothing filled in. Vault unchanged.');
     return;
   }
 
-  try {
-    rmSync(VAULT, { force: true });
-    gpg(['--quiet', '--batch', '--yes', '--symmetric', '--cipher-algo', 'AES256', '--output', VAULT, STAGING]);
-  } finally {
-    shred(STAGING);
+  // ENCRYPT TO ONE SIDE, THEN SWAP, and shred only once the new file is real.
+  //
+  // The obvious version of this deletes the old vault, encrypts over the top,
+  // and shreds the plaintext in a `finally`. Every one of those steps is fine
+  // until gpg fails, at which point the old vault is already gone and the
+  // plaintext is being shredded on the way out: both copies destroyed, by the
+  // error handling. That is the exact failure this whole file exists to
+  // prevent, so nothing is thrown away until the replacement is on disk and
+  // has been proved to open.
+  const fresh = `${VAULT}.new`;
+  rmSync(fresh, { force: true });
+  gpgLoopback(['--symmetric', '--cipher-algo', 'AES256', '--output', fresh, STAGING], pass);
+  if (!existsSync(fresh) || statSync(fresh).size === 0) {
+    throw new Error(`gpg wrote nothing. The vault is untouched and your text is still at:\n  ${STAGING}`);
   }
-  console.log(`\nVault holds ${filled.length} values.`);
+
+  // Prove it opens before trusting it. An unopenable vault is indistinguishable
+  // from a good one until the day it is needed, which is the worst possible day
+  // to find out.
+  const check = parse(gpgLoopback(['--decrypt', fresh], pass));
+  if (check.size === 0) {
+    rmSync(fresh, { force: true });
+    throw new Error(`The new vault did not read back. Untouched, and your text is still at:\n  ${STAGING}`);
+  }
+
+  const previous = existsSync(VAULT) ? `${VAULT}.previous` : null;
+  if (previous) {
+    rmSync(previous, { force: true });
+    renameSync(VAULT, previous);
+  }
+  renameSync(fresh, VAULT);
+  shred(STAGING);
+
+  console.log(`Vault holds ${filled.length} values.`);
+  if (previous) console.log(`Previous vault kept at ${previous} until you are happy.`);
   console.log(`  ${VAULT}`);
   console.log('Plaintext shredded. Run `npm run vault:unlock` to push them into every worktree.');
 }
@@ -178,11 +278,19 @@ function worktrees(): string[] {
   }
 }
 
-function unlock(): void {
-  const vault = readVault();
-  const usable = [...vault.entries()].filter(([, v]) => !isBlank(v));
+async function readVault(): Promise<Map<string, string>> {
+  if (!existsSync(VAULT)) return new Map();
+  return parse(gpgLoopback(['--decrypt', VAULT], await passphraseFor(false)));
+}
+
+async function unlock(): Promise<void> {
+  if (!existsSync(VAULT)) {
+    console.log('No vault yet. Run `npm run vault:edit` first.');
+    return;
+  }
+  const usable = [...(await readVault()).entries()].filter(([, v]) => !isBlank(v));
   if (!usable.length) {
-    console.log('Vault is empty. Run `npm run vault:edit` first.');
+    console.log('Vault is empty.');
     return;
   }
 
@@ -220,18 +328,16 @@ function unlock(): void {
   }
 }
 
-function status(): void {
-  if (existsSync(STAGING)) {
-    console.log(`⚠  Plaintext left behind by an interrupted edit:\n   ${STAGING}\n`);
-  }
+async function status(): Promise<void> {
+  if (existsSync(STAGING)) console.log(`⚠  Plaintext left behind by an interrupted edit:\n   ${STAGING}\n`);
   if (!existsSync(VAULT)) {
     console.log('No vault yet. Run `npm run vault:edit` to create one.');
     console.log(`It will live at ${VAULT}`);
+    console.log(`\n${Object.keys(NEEDED_LOCALLY).length} secrets local scripts read, and ${SERVER_ONLY.length} that only production reads.`);
     return;
   }
-  const vault = readVault();
+  const vault = await readVault();
   const has = (k: string) => vault.has(k) && !isBlank(vault.get(k)!);
-
   const localMissing = Object.keys(NEEDED_LOCALLY).filter((k) => !has(k));
   const serverMissing = SERVER_ONLY.filter((k) => !has(k));
 
@@ -250,19 +356,18 @@ function status(): void {
 }
 
 /** Set one value into Vercel production, straight from the vault. */
-function push(name: string): void {
+async function push(name: string): Promise<void> {
   if (!name) {
     console.error('Which one? e.g. npm run vault:push -- CRON_SECRET');
     process.exit(1);
   }
-  const vault = readVault();
-  const value = vault.get(name);
+  const value = (await readVault()).get(name);
   if (!value || isBlank(value)) {
     console.error(`${name} is not in the vault.`);
     process.exit(1);
   }
   // Through the BOM-safe setter: a PowerShell pipe into the Vercel CLI prepends
-  // a byte order mark, and a Sensitive value with a BOM never matches anything.
+  // a byte order mark, and a Sensitive value carrying one never matches anything.
   const r = spawnSync(
     'powershell.exe',
     ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'scripts/vercel-env-set.ps1', '-Name', name, '-Value', value, '-Sensitive'],
@@ -273,9 +378,16 @@ function push(name: string): void {
   console.log('  vercel redeploy <current production url> --target production');
 }
 
-switch (cmd) {
-  case 'edit': edit(); break;
-  case 'unlock': unlock(); break;
-  case 'push': push(process.argv[3] ?? ''); break;
-  default: status();
+async function main() {
+  switch (cmd) {
+    case 'edit': await edit(); break;
+    case 'unlock': await unlock(); break;
+    case 'push': await push(process.argv[3] ?? ''); break;
+    default: await status();
+  }
 }
+
+main().catch((e: Error) => {
+  console.error(`\n${e.message}`);
+  process.exit(1);
+});
