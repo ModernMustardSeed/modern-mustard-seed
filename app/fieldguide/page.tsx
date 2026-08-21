@@ -16,6 +16,7 @@ import {
   SLASH,
   STARTER_STEPS,
   TRIAGE,
+  WHAT_YOU_NEED,
 } from '@/data/fieldguide';
 import {
   CodeBlock,
@@ -171,7 +172,7 @@ export default function FieldGuidePage() {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              {['No coding required', 'Mac, Windows, Linux', '17 prompts you can steal', 'Free, no email needed'].map(
+              {['No coding required', 'Mac, Windows, Linux', '17 prompts you can steal', 'The guide is free'].map(
                 (chip) => (
                   <span
                     key={chip}
@@ -235,6 +236,27 @@ export default function FieldGuidePage() {
                 title="Your first twenty minutes"
                 lede="In order. Do not skip the fourth one, it is the step that makes every step after it work."
               >
+                {/*
+                  The price goes ABOVE the install, not in a footnote. Somebody
+                  who follows six steps and then meets a paywall has had their
+                  evening wasted by us.
+                */}
+                <div className="pop-card p-6 md:p-7 mb-6">
+                  <span className="block text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-4">
+                    First, what you need
+                  </span>
+                  <dl className="grid md:grid-cols-3 gap-5">
+                    {WHAT_YOU_NEED.map((item) => (
+                      <div key={item.label}>
+                        <dt className="font-display text-base font-black text-[#161616] leading-snug mb-1.5">
+                          {item.label}
+                        </dt>
+                        <dd className="text-[#3a3733] text-[13.5px] font-body leading-6">{item.body}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+
                 <div className="grid md:grid-cols-2 gap-5">
                   {STARTER_STEPS.map((s, i) => (
                     <div key={s.n} className={`min-w-0 ${i === 3 ? 'pop-card-yellow p-6' : 'pop-card p-6'}`}>

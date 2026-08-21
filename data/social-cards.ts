@@ -102,7 +102,7 @@ const FIELD_GUIDE_SET: SocialSet = {
     },
     {
       q: 'What does Claude Code cost?',
-      a: 'It runs on a Claude subscription from Anthropic, and the tiers change, so check claude.com rather than taking a number from me. The guide itself costs nothing either way.',
+      a: 'Claude Code needs a paid Claude account, which is the part most write-ups skip. Pro is $20 a month and includes it, Max starts at $100 a month, and you can also pay per use with Console credits instead of subscribing. It is not on the free tier. Tiers change, so check claude.com/pricing. The guide itself costs nothing either way.',
     },
     {
       q: 'I tried something like this and it wrote garbage.',
