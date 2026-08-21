@@ -55,13 +55,21 @@ jobs:
         with:
           fetch-depth: 0 # full history so the agent can diff against master
 
+      # The repo maintains pnpm-lock.yaml, not package-lock.json: every dependency
+      # added since 2026-08-14 landed in the pnpm lock only. CI installs from the
+      # lockfile that is actually kept current, so a new dependency can never
+      # silently take the runners down again.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.21.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
+          cache: pnpm
 
       # Pre-install so the agent spends its turns on the task, not on `npm ci`.
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - uses: anthropics/claude-code-action@v1
         with:
