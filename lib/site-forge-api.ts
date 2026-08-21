@@ -16,7 +16,14 @@
  * written to outbound_demo_sites.html. Nothing downstream can tell which engine
  * produced it, except the `worker` column, which says so honestly.
  */
-import { runClaudeCodeText } from './claude-code-json';
+// The extension is load-bearing. Webpack resolves an extensionless specifier
+// fine, but this file is also imported straight off disk by
+// scripts/forge-fallback.mjs on a runner, where Node 24 strips the types itself
+// and does no extension guessing at all. Without the .ts the failsafe dies on
+// ERR_MODULE_NOT_FOUND after it has already claimed a job, so every run burned
+// one queued demo into `failed`. scripts/llm-worker.mjs already imports this
+// same module with the extension for the same reason.
+import { runClaudeCodeText } from './claude-code-json.ts';
 import { apiDirective, apiRealDirective, apiEditDirective, HERO_PLACEHOLDER } from './site-directive.mjs';
 import { publishBlockerError } from './site-asset-refs.mjs';
 
