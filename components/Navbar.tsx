@@ -47,6 +47,7 @@ const MENU_GROUPS = [
       { label: 'Bottleneck Breaker', href: '/audit' },
       { label: 'Launch Checklist', href: '/launch-checklist' },
       { label: 'Prompt Playbook', href: '/prompt-playbook' },
+      { label: 'Claude Code Field Guide', href: '/fieldguide' },
       { label: 'Free Playbooks', href: '/playbooks' },
     ],
   },

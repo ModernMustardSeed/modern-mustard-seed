@@ -6,6 +6,7 @@
     "dev": "next dev -p 3001",
     "build": "node scripts/voice-standard-check.mjs && next build",
     "start": "next start",
+    "fieldguide:sheet": "tsx scripts/build-fieldguide-onepager.ts",
     "lint": "next lint",
     "indexnow": "node scripts/indexnow.mjs",
     "indexnow:all": "node scripts/indexnow.mjs --from-sitemap",
