@@ -65,6 +65,12 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Every file a build directive tells the forge to go read has to exist.
+      # The default demo tier spent weeks pointing at a design system that was
+      # on a computer Sarah no longer owns, and nothing ever said so.
+      - name: Every path a directive names still resolves
+        run: node scripts/directive-paths-check.mjs
+
       - uses: anthropics/claude-code-action@v1
         with:
           # SUBSCRIPTION, NOT THE METERED API. This fires on `opened` AND on
