@@ -147,6 +147,21 @@ function PostBlock({ post }: { post: SocialPost }) {
           ))}
         </div>
       )}
+
+      {post.variants?.map((v) => (
+        <div key={v.label} className="mx-5 mb-5 p-4 border-2 border-[#161616]/20 bg-white flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-[#C4160B]">
+              {v.label}
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono text-[#161616]/40 tabular-nums">{v.text.length} ch</span>
+              <CopyButton text={v.text} />
+            </div>
+          </div>
+          <p className="text-[14px] leading-relaxed text-[#161616]/80 whitespace-pre-line max-w-[62ch]">{v.text}</p>
+        </div>
+      ))}
     </article>
   );
 }
