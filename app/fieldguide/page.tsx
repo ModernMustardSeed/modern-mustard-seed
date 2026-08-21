@@ -668,6 +668,12 @@ export default function FieldGuidePage() {
                       >
                         See the work
                       </Link>
+                      <Link
+                        href="/mustard-mode"
+                        className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                      >
+                        Learn it with a coach
+                      </Link>
                       <a
                         href="/downloads/modern-mustard-seed-claude-code-field-guide.pdf"
                         className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"

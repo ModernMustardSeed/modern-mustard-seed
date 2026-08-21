@@ -23,8 +23,15 @@ import { join } from 'node:path';
 import { LOOP, PROMPT_GROUPS, RULES, TRIAGE } from '../data/fieldguide';
 
 const SITE = 'https://modernmustardseed.com';
-const GUIDE_URL = `${SITE}/fieldguide`;
-const BOOK_URL = `${SITE}/book`;
+/**
+ * Printed QR codes carry their own attribution so the sheet can be told
+ * apart from the social cut. NOT `?ref=`: that namespace belongs to partner
+ * codes (see RefCapture), and a collision there would pay a commission to a
+ * partner named "sheet".
+ */
+const TAG = 'utm_source=sheet&utm_medium=print';
+const GUIDE_URL = `${SITE}/fieldguide?${TAG}`;
+const BOOK_URL = `${SITE}/book?${TAG}`;
 const PHONE = '(406) 312-1223';
 
 /** US Letter at 96dpi. The whole design is laid out to this box, exactly. */
@@ -66,7 +73,7 @@ const esc = (s: string) =>
 async function qr(url: string) {
   return QRCode.toDataURL(url, {
     margin: 0,
-    width: 320,
+    width: 360,
     errorCorrectionLevel: 'M',
     color: { dark: '#161616ff', light: '#00000000' },
   });
@@ -165,7 +172,7 @@ async function html() {
   .foot p{font-size:8.8px;line-height:1.42;color:rgba(22,22,22,.8);margin-top:5px}
   .foot .url{font-family:"JetBrains Mono",monospace;font-size:9.5px;font-weight:700;margin-top:7px;display:block}
   .qbox{display:flex;gap:11px;align-items:flex-start}
-  .qbox img{width:62px;height:62px;flex:0 0 62px;background:#FFFDF6;border:1.5px solid #161616;border-radius:6px;padding:3px}
+  .qbox img{width:72px;height:72px;flex:0 0 72px;background:#FFFDF6;border:1.5px solid #161616;border-radius:6px;padding:3px}
   .divider{border-left:2px solid rgba(22,22,22,.22);padding-left:22px}
   .credit{margin:0 -38px;background:#161616;color:#FBF6EA;padding:6px 38px;display:flex;justify-content:space-between;align-items:center;
     font-family:"JetBrains Mono",monospace;font-size:7.5px;letter-spacing:.14em;text-transform:uppercase}
