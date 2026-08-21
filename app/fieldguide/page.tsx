@@ -29,7 +29,7 @@ import {
  * /fieldguide - The Claude Code Field Guide.
  *
  * Sarah 2026-08-21: a sheet she can hand any friend, or post, for people who
- * want to build things and have no idea where to start. The printable one-pager
+ * want to build things and have no idea where to start. The printable field card
  * at /downloads/modern-mustard-seed-claude-code-field-guide.pdf is the hook;
  * this page is the thing the hook points at; the ranch line at the bottom is
  * where a reader who would rather have the product than the education lands.
@@ -163,7 +163,7 @@ export default function FieldGuidePage() {
                 href="/downloads/modern-mustard-seed-claude-code-field-guide.pdf"
                 className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
               >
-                Print the one-pager
+                Print the field card
               </a>
             </div>
 
@@ -678,7 +678,7 @@ export default function FieldGuidePage() {
                         href="/downloads/modern-mustard-seed-claude-code-field-guide.pdf"
                         className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                       >
-                        Download the one-pager
+                        Print the field card
                       </a>
                     </div>
                   </div>

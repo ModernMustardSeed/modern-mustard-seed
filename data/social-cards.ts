@@ -37,6 +37,12 @@ export type SocialPost = {
   graphic: string;
   body: PostBlock[];
   followUp?: { label: string; lines: string[] };
+  /**
+   * The same post said for another network, when reflowing the Facebook copy
+   * would be wrong rather than merely lazy: Instagram cannot carry a link, and
+   * X punishes any setup at all. Each one gets its own copy button.
+   */
+  variants?: { label: string; text: string }[];
 };
 
 export type SocialReply = { q: string; a: string; warn?: string };
@@ -54,7 +60,64 @@ export type SocialSet = {
   replies: SocialReply[];
 };
 
+import { FIELD_GUIDE_POSTS, FIELD_GUIDE_RULES } from './fieldguide-social';
+
+/**
+ * Set fifteen is assembled rather than typed out, because the same words also
+ * render in the Ads Playbook's Organic Social tab. One source, two surfaces.
+ */
+const FIELD_GUIDE_SET: SocialSet = {
+  id: 'field-guide',
+  name: 'The Field Guide',
+  eyebrow: 'Set fifteen · Claude Code',
+  blurb:
+    'Six cards for the free Claude Code guide at /fieldguide. This set gives something away instead of selling something, so every caption teaches one complete, true thing on its own. Somebody who never clicks still leaves with a tip that works, which is the only reason a stranger shares a post from a company they have never heard of.',
+  cta: 'modernmustardseed.com/fieldguide',
+  accent: '#F5B700',
+  rules: FIELD_GUIDE_RULES,
+  cards: FIELD_GUIDE_POSTS.map((p) => ({
+    file: p.file,
+    headline: p.headline,
+    use: p.use,
+    alt: p.alt,
+  })),
+  posts: FIELD_GUIDE_POSTS.map((p, i) => ({
+    n: i + 1,
+    title: p.angle,
+    graphic: `${p.file}.png`,
+    body: p.fb.split('\n\n'),
+    variants: [
+      { label: 'Instagram (no links, the typed URL is the CTA)', text: p.ig },
+      { label: 'X (under 280)', text: p.x },
+    ],
+  })),
+  replies: [
+    {
+      q: 'Do I need to know how to code to use this?',
+      a: 'No. You need to know what you want and how to check that you got it. The guide is written for someone who has never opened a terminal, and it starts with the install.',
+    },
+    {
+      q: 'Is it actually free, or is there a catch?',
+      a: 'Actually free. No signup, no email, nothing gated. There is a printable card at the bottom if you want it on paper.',
+    },
+    {
+      q: 'What does Claude Code cost?',
+      a: 'It runs on a Claude subscription from Anthropic, and the tiers change, so check claude.com rather than taking a number from me. The guide itself costs nothing either way.',
+    },
+    {
+      q: 'I tried something like this and it wrote garbage.',
+      a: 'That is usually the loop, not the model. Explore, plan, build, prove, save, in that order. Most bad AI code is an approved bad plan, approved by someone who never read the plan. The loop card is the short version.',
+    },
+    {
+      q: 'Can you just build it for me instead?',
+      a: 'Yes, that is the day job. Call (406) 312-1223 and Mr. Mustard picks up at any hour, or book thirty minutes at modernmustardseed.com/book and bring nothing but the idea.',
+      warn: 'Only say this once the person has actually asked. The set works because it gives something away first.',
+    },
+  ],
+};
+
 export const SOCIAL_SETS: SocialSet[] = [
+  FIELD_GUIDE_SET,
   {
     id: 'missed-calls',
     name: 'The Missed Call Files',
