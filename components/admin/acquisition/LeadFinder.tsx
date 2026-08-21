@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Section, Stat, Chip, api, card, btnPrimary, btnGhost, inputCls, labelCls, timeAgo } from '@/components/admin/acquisition/ui';
+import { usePoll } from '@/lib/use-poll';
 
 type Run = {
   id: string;
@@ -70,9 +71,10 @@ export default function LeadFinder() {
 
   useEffect(() => {
     void load();
-    const t = window.setInterval(() => void load(true), 12000);
-    return () => window.clearInterval(t);
   }, [load]);
+
+  // Live while the panel is on screen, silent while the tab is in the background.
+  usePoll(() => void load(true), 12000);
 
   const start = async () => {
     setBusy(true);

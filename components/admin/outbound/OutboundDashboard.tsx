@@ -7,6 +7,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { formatPhone, fmtMoney } from '@/lib/outbound';
 import type { ForgeCounts, HeatReason, Rep } from '@/lib/outbound';
+import { usePoll } from '@/lib/use-poll';
 import { GoalRing, OutboundNav, StatusChip, NicheChip, HeatChip, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, eyebrow, labelCls, setDialSession } from '@/components/admin/outbound/ui';
 
 type Stat = { dials: number; conversations: number; demos_booked: number };
@@ -95,11 +96,11 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
 
   useEffect(() => {
     void load();
-    // Speed-to-open: refresh every minute so "reading your audit right now"
-    // surfaces while it is still true.
-    const t = window.setInterval(() => void load(true), 60000);
-    return () => window.clearInterval(t);
   }, [load]);
+
+  // Speed-to-open: refresh every minute so "reading your audit right now"
+  // surfaces while it is still true. A backgrounded tab refreshes nothing.
+  usePoll(() => void load(true), 60000);
 
   // ── live floor: presence + resume ──
   // Presence is its own light poll (every 20s) so the online dots and "on: X"
@@ -129,9 +130,11 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
 
   useEffect(() => {
     void loadFloor();
-    const t = window.setInterval(() => void loadFloor(), 20000);
-    return () => window.clearInterval(t);
   }, [loadFloor]);
+
+  // Three calls a tick: presence, batch, forge counts. That trio ran every 20s
+  // in every open tab, seen or not, and it is what burned the egress budget.
+  usePoll(() => void loadFloor(), 20000);
 
   const pickUpWhereLeftOff = useCallback(() => {
     if (!resume) return;

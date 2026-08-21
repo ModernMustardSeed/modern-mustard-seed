@@ -7,6 +7,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { NICHE_LABELS, OUTCOME_LABELS, denverIso, formatPhone, fmtMoney, monthlyLeak } from '@/lib/outbound';
 import type { CallLog, CallOutcome, Niche, OutboundLead, Pilot, Rep, Script } from '@/lib/outbound';
+import { usePoll } from '@/lib/use-poll';
 import { OutboundNav, BackButton, StatusChip, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, inputCls, labelCls, eyebrow, getDialSession, setDialSession, bumpDialSession, batchPosition, SeedBurst } from '@/components/admin/outbound/ui';
 import type { DialSession } from '@/components/admin/outbound/ui';
 import { ReachOutDeck, AuditIntelCard, ReviewAmmoCard, ThreadPanel, LeadFile } from '@/components/admin/outbound/OutboundReachOut';
@@ -162,14 +163,17 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
   // label, the no-double-dial guard, and the server-side batch cursor that makes
   // "pick up where you left off" land exactly here. Fire once immediately so the
   // board updates the instant a caller opens a lead.
+  const beat = useCallback(() => {
+    void api<{ onSameLead?: string[] }>('/api/admin/outbound/presence', { method: 'POST', body: JSON.stringify({ lead_id: leadId }) })
+      .then((r) => setAlsoOnLead(r.onSameLead ?? []))
+      .catch(() => {});
+  }, [leadId]);
+
+  // A rep in a background tab is not on this lead in any sense the floor cares
+  // about, so the heartbeat pauses with the tab and resumes on return.
+  usePoll(beat, 20000, { leading: true });
+
   useEffect(() => {
-    const beat = () => {
-      void api<{ onSameLead?: string[] }>('/api/admin/outbound/presence', { method: 'POST', body: JSON.stringify({ lead_id: leadId }) })
-        .then((r) => setAlsoOnLead(r.onSameLead ?? []))
-        .catch(() => {});
-    };
-    beat();
-    const t = window.setInterval(beat, 20000);
     // On leave, clear my current lead so the board doesn't show me parked on a
     // lead I walked away from (keepalive so it still fires during navigation).
     const clear = () => {
@@ -182,7 +186,6 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     };
     window.addEventListener('pagehide', clear);
     return () => {
-      window.clearInterval(t);
       window.removeEventListener('pagehide', clear);
     };
   }, [leadId]);

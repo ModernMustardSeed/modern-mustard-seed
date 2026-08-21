@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Section, Stat, Chip, GoalDial, Funnel, api, card, btnPrimary, btnGhost, btnDanger, usd, pct, timeAgo } from '@/components/admin/acquisition/ui';
+import { usePoll } from '@/lib/use-poll';
 
 type Preflight = {
   blockers: { id: string; label: string; detail: string; fix: string }[];
@@ -45,9 +46,10 @@ export default function CommandCenter() {
 
   useEffect(() => {
     void load();
-    const t = window.setInterval(() => void load(true), 45000);
-    return () => window.clearInterval(t);
   }, [load]);
+
+  // Live while the panel is on screen, silent while the tab is in the background.
+  usePoll(() => void load(true), 45000);
 
   const act = async (action: string, extra: Record<string, unknown> = {}) => {
     setBusy(action);

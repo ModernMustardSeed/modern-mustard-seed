@@ -7,6 +7,7 @@ import { formatPhone } from '@/lib/outbound';
 import { FORGE_STAGE_LABELS } from '@/lib/outbound';
 import type { ForgeCounts, ForgeRow, ForgeStage, ForgeWorkerVitals, Rep } from '@/lib/outbound';
 import { possessive } from '@/lib/business-name';
+import { usePoll } from '@/lib/use-poll';
 import TradeChip from '@/components/admin/outbound/TradeChip';
 import {
   OutboundNav,
@@ -210,15 +211,17 @@ export default function OutboundForge() {
       const s = new URLSearchParams(window.location.search).get('stage');
       if (s && (s === 'all' || (STAGE_ORDER as string[]).includes(s))) setStage(s as ForgeStage | 'all');
     }
-    // A build finishing is the whole reason to keep this page open, so it
-    // refreshes itself. The anvil clock ticks every 15s in between.
-    const poll = window.setInterval(() => void load(true), 20000);
+    // The anvil clock ticks every 15s; it is local and costs nothing.
     const tick = window.setInterval(() => setTick((t) => t + 1), 15000);
     return () => {
-      window.clearInterval(poll);
       window.clearInterval(tick);
     };
   }, [load]);
+
+  // A build finishing is the whole reason to keep this page open, so it
+  // refreshes itself while Sarah is looking at it, and stops the moment the tab
+  // goes to the background.
+  usePoll(() => void load(true), 20000);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

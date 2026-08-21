@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Section, Stat, Chip, api, card, cardFlat, btnPrimary, btnGhost, inputCls, labelCls, eyebrow, usd, pct } from '@/components/admin/acquisition/ui';
+import { usePoll } from '@/lib/use-poll';
 
 type Rate = { key: string; label: string; numerator: number; denominator: number; ratePct: number | null; thin: boolean };
 type Forecast = { target: number; prospectsNeeded: number | null; emailsNeeded: number | null; permissionsNeeded: number | null; callsNeeded: number | null; forgesNeeded: number | null; low: number | null; high: number | null; basedOn: string; confident: boolean };
@@ -35,9 +36,10 @@ export default function ClientFactory() {
 
   useEffect(() => {
     void load();
-    const t = window.setInterval(() => void load(true), 60000);
-    return () => window.clearInterval(t);
   }, [load]);
+
+  // Live while the panel is on screen, silent while the tab is in the background.
+  usePoll(() => void load(true), 60000);
 
   const saveGoal = async (patch: Record<string, unknown>) => {
     try {
