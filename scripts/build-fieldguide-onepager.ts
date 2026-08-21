@@ -28,7 +28,7 @@
  * rather than silently clipping a punchline.
  */
 
-import { chromium, type Page } from 'playwright';
+import { chromium, type Browser, type Page } from 'playwright';
 import QRCode from 'qrcode';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -164,12 +164,52 @@ const CARD_COMMANDS: [string, string][] = [
 ];
 
 /**
- * The homepage journey art, inlined. The card is rendered with setContent, so
- * a relative src would resolve against about:blank and silently render nothing.
+ * The homepage journey art, inlined. The card is rendered with setContent, so a
+ * relative src would resolve against about:blank and silently render nothing.
  * Same footage the site opens with: the card and the homepage are one world.
  */
 const art = (name: string) =>
   `data:image/jpeg;base64,${readFileSync(join(process.cwd(), 'public', 'journey', `${name}.jpg`)).toString('base64')}`;
+
+/**
+ * ...but inlined at 1600x900, which is roughly eight times the pixels either
+ * placement can show, and it put 300KB into a PDF that gets emailed. So each
+ * still is square-cropped and resampled to twice its printed size before it
+ * goes in. `focus` is the horizontal centre of the crop, matching what
+ * object-position did when the browser was doing the cropping.
+ */
+async function fitted(browser: Browser, name: string, size: number, focus = 0.5) {
+  const page = await browser.newPage();
+  const out = await page.evaluate(
+    async ({ src, size, focus }) => {
+      const img = new Image();
+      img.src = src;
+      await img.decode();
+      const side = Math.min(img.naturalWidth, img.naturalHeight);
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('no 2d context');
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(
+        img,
+        (img.naturalWidth - side) * focus,
+        (img.naturalHeight - side) / 2,
+        side,
+        side,
+        0,
+        0,
+        size,
+        size,
+      );
+      return canvas.toDataURL('image/jpeg', 0.8);
+    },
+    { src: art(name), size, focus },
+  );
+  await page.close();
+  return out;
+}
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -177,7 +217,7 @@ const esc = (s: string) =>
 async function qr(url: string) {
   return QRCode.toDataURL(url, {
     margin: 0,
-    width: 400,
+    width: 320,
     errorCorrectionLevel: 'M',
     color: { dark: '#161616ff', light: '#00000000' },
   });
@@ -205,12 +245,12 @@ const masthead = (side: string, label: string) => `
 /* SIDE A: the start. Air, one hero, one diagram, two doors.          */
 /* ------------------------------------------------------------------ */
 
-function sideA(qrGuide: string, qrBook: string) {
+function sideA(qrGuide: string, qrBook: string, portrait: string) {
   return `
 <section class="sheet a">
   ${masthead('Side A · The Start', `Field Card ${EDITION}`)}
 
-  <img class="portrait" src="${art('poster-drive')}" alt="">
+  <img class="portrait" src="${portrait}" alt="">
 
   <div class="hero">
     <h1><span>Claude Code,</span><span>from <em>zero</em>.</span></h1>
@@ -308,13 +348,13 @@ function sideA(qrGuide: string, qrBook: string) {
 /* SIDE B: the reference. The side that stays on the wall.            */
 /* ------------------------------------------------------------------ */
 
-function sideB() {
+function sideB(chip: string) {
   return `
 <section class="sheet b">
   ${masthead('Side B · The Reference', 'Pin this side out')}
 
   <div class="btitle">
-    <img class="chip" src="${art('poster-tree')}" alt="">
+    <img class="chip" src="${chip}" alt="">
     <h2>The reference</h2>
     <p>Anything in [BRACKETS] is yours to replace. That is the only editing these need.</p>
   </div>
@@ -416,9 +456,8 @@ const CSS = `
 
   /* ---- the journey art ---- */
   .portrait{position:absolute;right:44px;top:104px;width:196px;height:196px;
-    object-fit:cover;object-position:52% 50%;border-radius:50%;
-    border:4px solid #161616;box-shadow:7px 7px 0 0 #F5B700}
-  .chip{width:46px;height:46px;object-fit:cover;border-radius:50%;
+    border-radius:50%;border:4px solid #161616;box-shadow:7px 7px 0 0 #F5B700}
+  .chip{width:46px;height:46px;border-radius:50%;
     border:2.5px solid #161616;box-shadow:3px 3px 0 0 #F5B700;flex:none;align-self:center}
 
   /* ---- side A hero ---- */
@@ -448,7 +487,7 @@ const CSS = `
   .check i{display:block;width:14px;height:14px;border:2px solid #161616;border-radius:3px;
     background:#FFFDF6;margin-top:1px}
   .check span{font-size:9.8px;line-height:1.4;color:#3a3733}
-  .aside{margin-top:9px;font-size:9.2px;line-height:1.45;color:rgba(22,22,22,.55);font-style:italic}
+  .aside{margin-top:9px;font-size:9.2px;line-height:1.45;color:rgba(22,22,22,.5)}
 
   /* ---- the loop ---- */
   .loopwrap{margin-top:26px}
@@ -477,7 +516,7 @@ const CSS = `
     color:rgba(22,22,22,.45);text-decoration:line-through;text-decoration-thickness:1px}
   .say .good{margin-top:8px}
   .say .good i{color:#E0301E}
-  .say .good span{display:block;margin-top:2px;font-size:10.4px;line-height:1.5;color:#161616;font-weight:500}
+  .say .good span{display:block;margin-top:2px;font-size:10.4px;line-height:1.5;color:#161616}
 
   /* ---- the two doors ---- */
   .doors{margin:auto -44px 0;background:#F5B700;border-top:2.5px solid #161616;
@@ -562,10 +601,24 @@ const shell = (body: string) => `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,900;1,900&display=swap">
 <style>${CSS}</style></head><body>${body}</body></html>`;
 
 /* ------------------------------------------------------------------ */
+
+/**
+ * The three faces the card is set in. If a webfont has not arrived by the time
+ * the page is captured, the layout silently falls back to a system font, the
+ * measurements all shift, and nothing else in this script would notice.
+ */
+async function assertFonts(page: Page, where: string) {
+  const missing = await page.evaluate(async () => {
+    await document.fonts.ready;
+    const want = ['700 12px "DM Sans"', '400 12px "JetBrains Mono"', '900 12px "Playfair Display"'];
+    return want.filter((f) => !document.fonts.check(f));
+  });
+  if (missing.length) throw new Error(`field card ${where}: these faces never loaded: ${missing.join(', ')}`);
+}
 
 /** A side that overflows its own sheet is a side with a clipped punchline. */
 async function assertFits(page: Page, name: string) {
@@ -591,20 +644,33 @@ async function main() {
   mkdirSync(OUT_DIR, { recursive: true });
   const [qrGuide, qrBook] = await Promise.all([qr(GUIDE_URL), qr(BOOK_URL)]);
 
-  const A = sideA(qrGuide, qrBook);
-  const B = sideB();
-
   const browser = await chromium.launch();
 
+  // The portrait prints at 196px (2.04in), the chip at 46px. 340 and 92 keep
+  // both above 170dpi on paper, which is plenty for a photo on a handout.
+  const [portrait, chip] = await Promise.all([
+    fitted(browser, 'poster-drive', 340, 0.52),
+    fitted(browser, 'poster-tree', 92),
+  ]);
+
+  // The PDF gets the resampled art, because it has a weight budget. The PNGs
+  // are screenshots with no budget at all, so they get the full-size stills and
+  // stay crisp when somebody drops one into a post.
+  const A = sideA(qrGuide, qrBook, portrait);
+  const B = sideB(chip);
+  const SHOTS = {
+    front: sideA(qrGuide, qrBook, art('poster-drive')),
+    back: sideB(art('poster-tree')),
+  };
+
   // Each side alone, for the fit check and the shareable PNGs.
-  for (const [name, body] of [
-    ['front', A],
-    ['back', B],
-  ] as const) {
+  for (const name of ['front', 'back'] as const) {
+    const body = SHOTS[name];
     const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 2 });
     await page.setContent(shell(body), { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(400);
+    await assertFonts(page, name);
     const used = await assertFits(page, name);
     await page.screenshot({ path: join(OUT_DIR, `${BASENAME}-${name}.png`) });
     console.log(`  ${name.padEnd(5)} ${used}/${H}px`);
@@ -616,6 +682,7 @@ async function main() {
   await pdfPage.setContent(shell(A + B), { waitUntil: 'networkidle' });
   await pdfPage.evaluate(() => document.fonts.ready);
   await pdfPage.waitForTimeout(400);
+  await assertFonts(pdfPage, 'pdf');
   const pdf = await pdfPage.pdf({
     width: `${W}px`,
     height: `${H}px`,
@@ -626,7 +693,13 @@ async function main() {
   writeFileSync(join(OUT_DIR, `${BASENAME}.pdf`), pdf);
 
   await browser.close();
-  console.log('field card built, one sheet, two sides');
+
+  // It gets emailed and it gets printed at libraries. Half a meg is the ceiling.
+  const kb = Math.round(pdf.length / 1024);
+  if (kb > 512) {
+    throw new Error(`field card PDF is ${kb}KB, over the 512KB ceiling. Shrink the art or drop a font weight.`);
+  }
+  console.log(`field card built, one sheet, two sides, ${kb}KB`);
   console.log(`  ${join('public', 'downloads', `${BASENAME}.pdf`)}`);
 }
 
