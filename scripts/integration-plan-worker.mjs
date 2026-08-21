@@ -109,6 +109,7 @@ STRUCTURE (3 to 4 printed letter pages):
    Phase 2 A website that books (only if the brief shows their site is weak or missing, else fold into phase 3 as "tune what you have").
    Phase 3 Reviews and follow-up (automated review requests, missed-call text-back).
    Phase 4 One or two automations specific to their trade (pick the highest-leverage ones for this exact business type).
+   Phase 5 "What most owners have not realized yet": two or three MORE things AI can already do for THIS specific trade beyond the phone and the website (think: photo-to-quote, review replies in their voice, receipts-to-bookkeeping, job postings and applicant screening, one job into a month of social posts, SOPs nobody has time to write; pick what fits THEIR trade, never a generic list). Close the phase with one honest, warm paragraph: they can now bring their own ideas to life, describing software in plain English and watching it get built in days at a fraction of the old cost, and we teach exactly that alongside building for them.
 4. "Start here this week": three bullet next steps, the first being "talk to your own agent" with their demo link, and a closing line: set package pricing, changes included, no hourly billing, you own everything we build.
 
 HARD RULES:
