@@ -47,6 +47,7 @@ const STATIC_PATHS = [
   '/hundredfold/webinar',
   '/launch-checklist',
   '/prompt-playbook',
+  '/fieldguide',
   '/ai-proof',
   '/for',
   '/for/restaurants',

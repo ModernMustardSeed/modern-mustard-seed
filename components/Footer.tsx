@@ -77,6 +77,7 @@ export default function Footer() {
         { label: 'Bottleneck Breaker', href: '/audit' },
         { label: 'Website Audit', href: '/website-audit' },
         { label: 'Prompt Playbook', href: '/prompt-playbook' },
+        { label: 'Claude Code Field Guide', href: '/fieldguide' },
       ],
     },
     {
