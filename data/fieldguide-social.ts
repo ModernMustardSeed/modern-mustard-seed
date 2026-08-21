@@ -56,7 +56,7 @@ export const FIELD_GUIDE_POSTS: FieldGuidePost[] = [
     use: 'The lead post. Widest audience, works cold, and the one most likely to get sent to a friend.',
     file: '01-no-code',
     headline: 'You do not need to know how to code.',
-    alt: 'A terminal window on a cream card. Headline: you do not need to know how to code.',
+    alt: 'Mr. and Mrs. Mustard driving a red convertible along Flathead Lake at sunset. Headline: you do not need to know how to code.',
     fb: `Almost everyone I talk to has something they want built and thinks the wall is code.
 
 It is not, and it stopped being that about a year ago.
@@ -97,7 +97,7 @@ modernmustardseed.com/fieldguide`,
     use: 'The zero-friction post. Kills the "setup is probably complicated" objection in one screenshot.',
     file: '02-four-lines',
     headline: 'Four lines and you are building.',
-    alt: 'A terminal window showing four install commands. Headline: four lines and you are building.',
+    alt: 'The Mustard Seed Ranch gate at sunrise, with the mascot waving beside it. Headline: four lines and you are building.',
     fb: `People assume the setup is the hard part. Here is the entire setup.
 
 npm install -g @anthropic-ai/claude-code
@@ -142,7 +142,7 @@ Full guide, free: modernmustardseed.com/fieldguide`,
     use: 'The one real tip. Best save-and-share rate of the set, because it works the same day someone reads it.',
     file: '03-six-words',
     headline: 'The six most useful words you can type.',
-    alt: 'A terminal window with the line "do not write any code yet" highlighted in mustard.',
+    alt: 'Mr. and Mrs. Mustard planting a glowing seed above the lake. Headline: the six most useful words you can type.',
     fb: `The six most useful words you can type at an AI that writes code:
 
 "do not write any code yet"
@@ -180,7 +180,7 @@ Most bad AI code is an approved bad plan, approved by someone who never read it.
     use: 'The credibility post. Says the quiet part out loud, so it reads as honest rather than as marketing.',
     file: '04-done',
     headline: 'Never accept done as evidence.',
-    alt: 'A terminal window where a confident "Done!" is answered with "run it and show me the real output".',
+    alt: 'Mr. and Mrs. Mustard picking cherries from the convertible in an east shore orchard. Headline: never accept done as evidence.',
     fb: `A rule that has saved us more time than any other, and it cost a real day to learn:
 
 Done is not evidence.
@@ -220,7 +220,7 @@ The fix is one sentence: "run it and show me the real output."`,
     use: 'The method post. Use this one when somebody says they tried an AI coding tool and it made a mess.',
     file: '05-the-loop',
     headline: 'The loop that actually works.',
-    alt: 'A cream card listing five numbered steps: explore, plan, build, prove, save.',
+    alt: 'Flathead Lake from the air with the shore road curving around it. Headline: the loop that actually works.',
     fb: `If you tried an AI coding tool and it made a mess, you were probably missing the loop. Five steps, in this order:
 
 1. Explore. Have it read the relevant code and explain it back to you first.
@@ -262,7 +262,7 @@ Every bad result comes from jumping to 3.`,
     use: 'The direct ask. Post it last, once the teaching posts have warmed the page. Carries both doors.',
     file: '06-free',
     headline: 'We wrote the guide we wish we had.',
-    alt: 'A cream card listing what the free field guide contains.',
+    alt: 'The mustard tree at sunset with the birds coming home. Headline: we wrote the guide we wish we had.',
     fb: `We wrote the guide we wish we had, and it is free.
 
 The Claude Code Field Guide, for anyone who wants to build software and has never written any:

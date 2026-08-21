@@ -30,7 +30,7 @@
 
 import { chromium, type Page } from 'playwright';
 import QRCode from 'qrcode';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { CHARACTERS, LOOP, PROMPT_GROUPS, RULES, TRIAGE } from '../data/fieldguide';
 
@@ -163,6 +163,14 @@ const CARD_COMMANDS: [string, string][] = [
   ['claude update', 'Get the newest version'],
 ];
 
+/**
+ * The homepage journey art, inlined. The card is rendered with setContent, so
+ * a relative src would resolve against about:blank and silently render nothing.
+ * Same footage the site opens with: the card and the homepage are one world.
+ */
+const art = (name: string) =>
+  `data:image/jpeg;base64,${readFileSync(join(process.cwd(), 'public', 'journey', `${name}.jpg`)).toString('base64')}`;
+
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -201,6 +209,8 @@ function sideA(qrGuide: string, qrBook: string) {
   return `
 <section class="sheet a">
   ${masthead('Side A · The Start', `Field Card ${EDITION}`)}
+
+  <img class="portrait" src="${art('poster-drive')}" alt="">
 
   <div class="hero">
     <h1><span>Claude Code,</span><span>from <em>zero</em>.</span></h1>
@@ -304,6 +314,7 @@ function sideB() {
   ${masthead('Side B · The Reference', 'Pin this side out')}
 
   <div class="btitle">
+    <img class="chip" src="${art('poster-tree')}" alt="">
     <h2>The reference</h2>
     <p>Anything in [BRACKETS] is yours to replace. That is the only editing these need.</p>
   </div>
@@ -403,13 +414,20 @@ const CSS = `
   .eyebrow{display:block;font-family:"JetBrains Mono",monospace;font-size:8.5px;font-weight:700;
     letter-spacing:.22em;text-transform:uppercase;color:#E0301E}
 
+  /* ---- the journey art ---- */
+  .portrait{position:absolute;right:44px;top:104px;width:196px;height:196px;
+    object-fit:cover;object-position:52% 50%;border-radius:50%;
+    border:4px solid #161616;box-shadow:7px 7px 0 0 #F5B700}
+  .chip{width:46px;height:46px;object-fit:cover;border-radius:50%;
+    border:2.5px solid #161616;box-shadow:3px 3px 0 0 #F5B700;flex:none;align-self:center}
+
   /* ---- side A hero ---- */
   .hero{padding:26px 0 0}
   h1{display:flex;flex-direction:column;gap:1px}
   h1 span{display:block;font-family:"Playfair Display",Georgia,serif;font-weight:900;
     font-size:57px;line-height:1.03;letter-spacing:-.022em;padding-bottom:2px}
   h1 em{font-style:italic;color:#E0301E}
-  .lede{margin-top:15px;font-size:12px;line-height:1.62;max-width:646px;color:#3a3733}
+  .lede{margin-top:15px;font-size:12px;line-height:1.62;max-width:498px;color:#3a3733}
   .lede b{color:#161616;font-weight:700}
 
   /* ---- side A columns ---- */

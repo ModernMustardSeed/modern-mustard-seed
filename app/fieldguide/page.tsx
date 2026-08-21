@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
@@ -118,6 +119,8 @@ export default function FieldGuidePage() {
         <div className="relative">
           {/* ================= HERO ================= */}
           <header className="max-w-[1180px] mx-auto px-6 md:px-8 mb-16 md:mb-24 xl:pl-[254px]">
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14 lg:items-center">
+          <div className="min-w-0">
             <span className="block text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold mb-7">
               Free guide · Never built anything? Start here
             </span>
@@ -179,6 +182,29 @@ export default function FieldGuidePage() {
                 ),
               )}
             </div>
+          </div>
+
+          {/*
+            The same footage the homepage opens with. A guide that looks like a
+            developer tool is a guide nobody can tell we wrote, and the people
+            this is for recognise the drive before they recognise the logo.
+          */}
+          <div className="hidden lg:block">
+            <div className="relative aspect-square rounded-full overflow-hidden border-[3px] border-[#161616] shadow-[10px_10px_0_0_#F5B700]">
+              <Image
+                src="/journey/poster-drive.jpg"
+                alt="Mr. and Mrs. Mustard driving a red convertible along Flathead Lake at sunset"
+                fill
+                sizes="300px"
+                className="object-cover"
+                priority
+              />
+            </div>
+            <p className="mt-5 text-center text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#161616]/45">
+              Kalispell, Montana
+            </p>
+          </div>
+          </div>
           </header>
 
           {/* ================= BODY ================= */}
@@ -621,9 +647,20 @@ export default function FieldGuidePage() {
               {/* --------------- 15 HELP --------------- */}
               <section id="help" className="scroll-mt-32">
                 <div className="pop-card-yellow p-7 md:p-11">
-                  <span className="block text-[10px] uppercase tracking-[0.35em] text-[#8A1006] font-mono font-bold mb-4">
-                    Stuck, or would rather not
-                  </span>
+                  <div className="flex items-start gap-5 mb-4">
+                    <div className="relative h-16 w-16 shrink-0 rounded-full overflow-hidden border-[3px] border-[#161616] shadow-[4px_4px_0_0_#161616]">
+                      <Image
+                        src="/journey/poster-orchard.jpg"
+                        alt="Mr. and Mrs. Mustard picking cherries on the east shore"
+                        fill
+                        sizes="64px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <span className="block text-[10px] uppercase tracking-[0.35em] text-[#8A1006] font-mono font-bold pt-1">
+                      Stuck, or would rather not
+                    </span>
+                  </div>
                   <h2 className="font-display text-2xl md:text-4xl font-black text-[#161616] tracking-tight leading-[1.15] mb-5">
                     Two ways to get unstuck, and neither one costs you anything to start.
                   </h2>
