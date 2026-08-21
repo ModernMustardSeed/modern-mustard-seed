@@ -27,6 +27,26 @@
  * publish path (fixes the ones people paid for). New builds are born correct via
  * the companion rules in lib/site-directive.mjs, and the shim is idempotent, so
  * carrying both costs nothing.
+ *
+ * THE BARE DOT IS NOW REMOVED, NOT SETTLED (2026-08-21).
+ *
+ * The paragraph above tolerates "on the plainer builds just a dot", because when
+ * this was written a dot was legal. It is not any more. Sarah, on a live demo:
+ * "get rid of the small circle that stays in the same place as you scroll." A
+ * settled dot still parks itself over the hero the instant the pointer moves and
+ * then holds that spot while the page scrolls under it, which is exactly the
+ * complaint. lib/site-directive.mjs banned the glyph the same day, but a law only
+ * governs the NEXT build: it cannot reach the sites already in the table, and it
+ * does not always land on the one-shot API path either (Underscore Art, forged by
+ * the failsafe at 19:32 that evening, came out with a dot two hours after the ban).
+ *
+ * So the removal lives here instead, where every surface already passes through
+ * and no re-forge is needed. Two guards keep it from eating anything real:
+ *   - a page carrying data-mms-tool-cursor is left entirely alone, because it was
+ *     built under the law and its glyph is a drawn tool with traces that belong
+ *   - an element is only ever judged AFTER it has been watched riding the pointer,
+ *     and only removed when it has no path, no image, no mask, and is a small
+ *     round blank blob. Anything that looks like artwork is settled, not deleted.
  */
 
 const MARKER = 'mms-companion-settle';
@@ -34,7 +54,7 @@ const MARKER = 'mms-companion-settle';
 const SCRIPT = `<script data-${MARKER}>
 (function(){
   try{
-    var IDLE=1400, MAX=220, FADE=340;
+    var IDLE=1400, MAX=220, FADE=340, DOT_MAX=64;
     var fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
     var candidates=[], followers=[], rects=new WeakMap();
     var woke=false, timer=0, settled=false;
@@ -47,6 +67,45 @@ const SCRIPT = `<script data-${MARKER}>
       var r=el.getBoundingClientRect();
       if(r.width<3||r.height<3||r.width>MAX||r.height>MAX) return false;
       return true;
+    }
+
+    // Pages built under the tool-cursor law mark their glyph. Those are correct
+    // by construction, so nothing below ever touches them.
+    var LAW_OK = !!document.querySelector('[data-mms-tool-cursor]');
+
+    // A BARE DOT, which is the thing the law bans. Deliberately narrow: it only
+    // says yes when there is no artwork of any kind, because settling a real
+    // tool is harmless and deleting one is not.
+    function isBareDot(el){
+      try{
+        if(el.closest && el.closest('[data-mms-tool-cursor]')) return false;
+        // Any drawn shape means someone tried to render a tool. A circle or an
+        // ellipse is not a tool, so an svg holding only those still counts bare.
+        if(el.querySelector && el.querySelector('path,polygon,polyline,line,text,image,use')) return false;
+        var cs=getComputedStyle(el);
+        if(cs.backgroundImage && cs.backgroundImage!=='none') return false;
+        if(cs.maskImage && cs.maskImage!=='none') return false;
+        var r=el.getBoundingClientRect();
+        var min=Math.min(r.width,r.height);
+        if(min>DOT_MAX) return false;
+        // Round enough to read as a dot: a percentage radius at or past 40, or a
+        // pixel radius that reaches the element's own halfway mark.
+        var br=(cs.borderRadius||'').split(' ')[0].split('/')[0].trim();
+        if(!br) return false;
+        var round=false;
+        if(br.indexOf('%')>0) round=parseFloat(br)>=40;
+        else if(br.indexOf('px')>0) round=parseFloat(br)>=(min/2)-1;
+        return round;
+      }catch(e){ return false; }
+    }
+
+    // Permanent, not a fade. The site's own script may keep writing transforms
+    // to it; on a display:none element that costs nothing and breaks nothing.
+    function kill(el){
+      try{
+        el.setAttribute('data-mms-dot-removed','');
+        el.style.setProperty('display','none','important');
+      }catch(e){}
     }
     function rescan(){
       candidates=[];
@@ -85,7 +144,13 @@ const SCRIPT = `<script data-${MARKER}>
         var el=candidates[i], was=rects.get(el);
         try{
           var r=el.getBoundingClientRect(), now=r.left+','+r.top;
-          if(was!==undefined && was!==now && followers.indexOf(el)<0) followers.push(el);
+          if(was!==undefined && was!==now && followers.indexOf(el)<0){
+            // Proven to ride the pointer. That is the only moment we are sure
+            // enough to delete one, so the bare-dot check happens here and
+            // nowhere else: a fixed decoration that never moved is never judged.
+            if(!LAW_OK && isBareDot(el)) kill(el);
+            else followers.push(el);
+          }
           rects.set(el,now);
         }catch(e){}
       }
