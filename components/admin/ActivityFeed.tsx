@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
+import { usePoll } from '@/lib/use-poll';
 
 /**
  * Live activity on the command center. The same moments that fire an owner email
@@ -67,9 +68,9 @@ export default function ActivityFeed({ showMoney = true }: { showMoney?: boolean
 
   useEffect(() => {
     load();
-    const t = setInterval(load, 45000);
-    return () => clearInterval(t);
   }, [load]);
+
+  usePoll(load, 45000);
 
   return (
     <section className="bg-white border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#161616] overflow-hidden">

@@ -6,6 +6,7 @@ import { formatPhone } from '@/lib/outbound';
 import type { EmailPreview, LeadContact, MessageDelivery, OutboundAudit, OutboundLead, ThreadMessage } from '@/lib/outbound';
 import { api, btnGhost, btnPrimary, btnSeed, card, eyebrow, inputCls, labelCls } from '@/components/admin/outbound/ui';
 import TapText from '@/components/admin/TapText';
+import { usePoll } from '@/lib/use-poll';
 
 /**
  * Every way to reach a lead, in one strip: Mr. Mustard AI calls, the audit
@@ -160,9 +161,8 @@ export function ReachOutDeck({
   // worker machine, minutes not seconds).
   const siteStatusRef = useRef(lead.site_demo_status);
   siteStatusRef.current = lead.site_demo_status;
-  useEffect(() => {
-    if (!siteForging) return;
-    const t = window.setInterval(async () => {
+  usePoll(
+    async () => {
       try {
         const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}`);
         if (res.lead.site_demo_status !== siteStatusRef.current) {
@@ -173,10 +173,10 @@ export function ReachOutDeck({
       } catch {
         /* transient; next tick retries */
       }
-    }, 20000);
-    return () => window.clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lead.id, siteForging]);
+    },
+    20000,
+    { enabled: siteForging },
+  );
 
   const enrich = async () => {
     setEnriching(true);

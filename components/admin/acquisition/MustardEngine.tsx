@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Section, Stat, Chip, api, card, cardFlat, btnGhost, timeAgo, pct } from '@/components/admin/acquisition/ui';
+import { usePoll } from '@/lib/use-poll';
 
 type Funnel = {
   source: string; label: string; requests: number; consented: number; called: number; completed: number;
@@ -44,9 +45,10 @@ export default function MustardEngine() {
 
   useEffect(() => {
     void load();
-    const t = window.setInterval(() => void load(true), 30000);
-    return () => window.clearInterval(t);
   }, [load]);
+
+  // Live while the panel is on screen, silent while the tab is in the background.
+  usePoll(() => void load(true), 30000);
 
   const copy = async (text: string, key: string) => {
     try {

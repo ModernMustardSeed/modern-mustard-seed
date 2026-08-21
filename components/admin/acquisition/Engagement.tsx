@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Section, Chip, api, card, cardFlat, btnGhost, timeAgo } from '@/components/admin/acquisition/ui';
+import { usePoll } from '@/lib/use-poll';
 
 /**
  * WHO IS MOVING.
@@ -141,9 +142,10 @@ export default function Engagement() {
 
   useEffect(() => {
     void load();
-    const t = window.setInterval(() => void load(true), 30000);
-    return () => window.clearInterval(t);
   }, [load]);
+
+  // Live while the panel is on screen, silent while the tab is in the background.
+  usePoll(() => void load(true), 30000);
 
   const rows = useMemo(() => {
     if (!data) return [];

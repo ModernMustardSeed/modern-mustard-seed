@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import MoodboardCanvas from '@/components/moodboard/MoodboardCanvas';
 import type { Moodboard as MoodboardPayload } from '@/lib/moodboard-shared';
+import { usePoll } from '@/lib/use-poll';
 
 /**
  * THE DELIVERY BOARD, universal edition. Every client build, whatever door they
@@ -215,11 +216,7 @@ export default function DeliveryBoard() {
       r.project?.editStatus === 'queued' ||
       r.project?.editStatus === 'building',
   );
-  useEffect(() => {
-    if (!building) return;
-    const t = setInterval(load, 20_000);
-    return () => clearInterval(t);
-  }, [building, load]);
+  usePoll(load, 20_000, { enabled: building });
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] px-6 py-10">
