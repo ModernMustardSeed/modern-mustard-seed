@@ -3,7 +3,6 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import MagneticCursor from '@/components/MagneticCursor';
 import DeferredChat from '@/components/DeferredChat';
 import RefCapture from '@/components/RefCapture';
 import AnalyticsScripts from '@/components/AnalyticsScripts';
@@ -49,7 +48,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </HideOnAppShell>
         </div>
-        <MagneticCursor />
         <AppNavDock />
         {/*
           The chat launcher stays off /mustard even though the nav and footer
