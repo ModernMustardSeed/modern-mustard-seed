@@ -32,7 +32,7 @@ import { chromium, type Browser, type Page } from 'playwright';
 import QRCode from 'qrcode';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { CHARACTERS, LOOP, PROMPT_GROUPS, RULES, TRIAGE } from '../data/fieldguide';
+import { CHARACTERS, COST_LINE, LOOP, PROMPT_GROUPS, RULES, TRIAGE } from '../data/fieldguide';
 
 const SITE = 'https://modernmustardseed.com';
 /**
@@ -267,6 +267,7 @@ function sideA(qrGuide: string, qrBook: string, portrait: string) {
       <div class="term">
         ${SETUP.map((s) => `<div class="row"><code>${esc(s.cmd)}</code><small>${esc(s.note)}</small></div>`).join('')}
       </div>
+      <p class="heads-up"><b>Before you start:</b> ${esc(COST_LINE)}</p>
     </div>
 
     <div>
@@ -274,10 +275,7 @@ function sideA(qrGuide: string, qrBook: string, portrait: string) {
       <ul class="check">
         ${FIRST_TWENTY.map((t) => `<li><i></i><span>${esc(t)}</span></li>`).join('')}
       </ul>
-      <p class="aside">
-        Ask it about your own code, not "hello", so you can judge the answer. It is also the fastest way to
-        learn what your project actually does.
-      </p>
+      <p class="aside">Ask it about your own code, not "hello", so you can judge the answer.</p>
     </div>
   </div>
 
@@ -488,9 +486,12 @@ const CSS = `
     background:#FFFDF6;margin-top:1px}
   .check span{font-size:9.8px;line-height:1.4;color:#3a3733}
   .aside{margin-top:9px;font-size:9.2px;line-height:1.45;color:rgba(22,22,22,.5)}
+  .heads-up{margin-top:10px;padding-left:9px;border-left:3px solid #E0301E;
+    font-size:9.2px;line-height:1.5;color:#3a3733}
+  .heads-up b{color:#161616;font-weight:700}
 
   /* ---- the loop ---- */
-  .loopwrap{margin-top:26px}
+  .loopwrap{margin-top:21px}
   .loopnote{margin-top:6px;font-size:9.6px;line-height:1.45;color:#3a3733}
   .loop{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:14px}
   .rail{position:absolute;left:9%;right:9%;top:15px;height:2.5px;background:#161616}
@@ -506,7 +507,7 @@ const CSS = `
     font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(22,22,22,.45)}
 
   /* ---- say it like this ---- */
-  .saywrap{margin-top:28px}
+  .saywrap{margin-top:23px}
   .says{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:11px}
   .say{border-left:3px solid #F5B700;padding-left:13px}
   .say i{display:block;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:7.8px;

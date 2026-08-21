@@ -18,11 +18,45 @@
 
 export type Step = { n: string; title: string; body: string; code?: string };
 
+/**
+ * WHAT YOU NEED, BEFORE STEP ONE.
+ *
+ * Sarah 2026-08-21: "since you need a claude sub to use claude code, add that
+ * to the actual field guide."
+ *
+ * She is right and the omission was the worst kind: someone follows the install,
+ * types `claude`, and hits a login for a plan they did not know they needed.
+ * A guide for beginners that hides the price is a guide that wastes their
+ * evening.
+ *
+ * Verified 2026-08-21 against claude.com/pricing and the Claude Code quickstart.
+ * Prices move, so the copy names the number AND points at the page, and nothing
+ * here is written as if it were permanent.
+ */
+export const WHAT_YOU_NEED: { label: string; body: string }[] = [
+  {
+    label: 'A computer and a terminal',
+    body: 'Mac, Windows, or Linux. The terminal is already installed on all three. You do not need to know how to use it yet.',
+  },
+  {
+    label: 'A paid Claude account',
+    body: 'This is the part nobody mentions. Claude Code is not on the free tier. A Pro plan is $20 a month, or $17 if you pay for the year, and it includes Claude Code. Max plans start at $100 a month for heavier use. You can also sign in with a Claude Console account and pay per use from pre-paid credits instead of subscribing. Check claude.com/pricing before you buy, because these change.',
+  },
+  {
+    label: 'Twenty minutes',
+    body: 'That is genuinely the whole setup, and most of it is waiting for one download.',
+  },
+];
+
+/** One line, for the places that only have room for one line. */
+export const COST_LINE =
+  'Claude Code needs a paid Claude account. Pro is $20 a month and includes it. The free tier does not.';
+
 export const STARTER_STEPS: Step[] = [
   {
     n: '01',
     title: 'Install it',
-    body: 'You need Node 18 or newer first (nodejs.org, the green button). Then one line in your terminal. Terminal means Terminal on a Mac, PowerShell on Windows.',
+    body: 'One line in your terminal. Terminal means Terminal on a Mac, PowerShell on Windows. This route needs Node 18 or newer first (nodejs.org, the green button), and it is the same command on all three systems. If you would rather not install Node at all, Anthropic also ships a native installer, which is one different command per system: see code.claude.com/docs.',
     code: 'npm install -g @anthropic-ai/claude-code',
   },
   {
@@ -33,8 +67,8 @@ export const STARTER_STEPS: Step[] = [
   },
   {
     n: '03',
-    title: 'Log in',
-    body: 'It opens a browser window the first time. Sign in with your Claude account, come back to the terminal, done. If sign-in ever gets strange, the /login command starts it over.',
+    title: 'Log in with a paid Claude account',
+    body: 'It opens a browser the first time. Sign in, come back to the terminal, done. This is the step that catches people out: Claude Code is not included on the free tier, so you need a Pro, Max, Team or Enterprise plan, or a Claude Console account with pre-paid credits. If sign-in ever gets strange, the /login command starts it over.',
   },
   {
     n: '04',
@@ -446,6 +480,10 @@ export const FAQ: { q: string; a: string }[] = [
   {
     q: 'What is Claude Code?',
     a: 'Claude Code is Anthropic’s AI coding tool that runs in your terminal instead of a browser tab. The difference matters: it can read your actual files, run your actual commands, install things, run tests, and fix what it finds. A chat window can only give you text to copy. Claude Code does the work in the real project.',
+  },
+  {
+    q: 'What does Claude Code cost, and do I need a subscription?',
+    a: 'Yes, you need a paid Claude account. Claude Code is not included on the free tier of claude.ai, which is the thing most guides leave out. A Pro plan is $20 a month, or $17 a month if you pay annually, and it includes Claude Code. Max plans start at $100 a month for people running it hard all day. Team and Enterprise plans include it too. If you would rather not subscribe, you can sign in with a Claude Console account and pay per use from pre-paid credits. Prices and limits change, so check claude.com/pricing before you commit. This guide is free either way.',
   },
   {
     q: 'Do I need to know how to code to use it?',
