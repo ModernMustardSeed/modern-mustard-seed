@@ -43,13 +43,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The repo maintains pnpm-lock.yaml, not package-lock.json: every dependency
+      # added since 2026-08-14 landed in the pnpm lock only. CI installs from the
+      # lockfile that is actually kept current, so a new dependency can never
+      # silently take the runners down again.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.21.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       # Only Chromium. The full browser set is a slow download we never use.
       - name: Install Chromium for Playwright

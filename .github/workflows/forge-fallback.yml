@@ -36,14 +36,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The repo maintains pnpm-lock.yaml, not package-lock.json: every dependency
+      # added since 2026-08-14 landed in the pnpm lock only. CI installs from the
+      # lockfile that is actually kept current, so a new dependency can never
+      # silently take the runners down again.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.21.0
+
       - uses: actions/setup-node@v4
         with:
           # 24 for native TS type-stripping: the script imports lib/site-forge-api.ts
           # directly, so the design law stays in one typechecked place.
           node-version: 24
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - name: Install Claude Code
         run: npm i -g @anthropic-ai/claude-code
