@@ -25,13 +25,11 @@ async function checkImap(host: string, port: number, user: string, pass: string)
   const client = new ImapFlow({ host, port, secure: true, auth: { user, pass }, logger: false });
   try {
     await client.connect();
-    const lock = await client.getMailboxLock('INBOX');
-    const box = client.mailbox && typeof client.mailbox !== 'boolean' ? client.mailbox : null;
-    const total = box?.exists;
-    const unseen = box?.unseen;
-    lock.release();
+    // STATUS rather than opening the mailbox: it answers both counts in one
+    // round trip and needs no lock, so a health check never blocks the sync.
+    const status = await client.status('INBOX', { messages: true, unseen: true });
     await client.logout();
-    return { ok: true, ms: Date.now() - started, total, unseen };
+    return { ok: true, ms: Date.now() - started, total: status.messages, unseen: status.unseen };
   } catch (e) {
     try { await client.logout(); } catch { /* already closed */ }
     const f = describeMailError(e);
