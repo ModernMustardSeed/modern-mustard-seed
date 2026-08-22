@@ -163,7 +163,25 @@ async function main() {
   // applied. A hard failure there would silently stop rescuing real leads, which is the
   // one thing this file exists to prevent. So if the column is not there yet, fall back
   // to the unfiltered query and keep working.
-  const pick = (q) => q.eq('status', 'queued').lt('created_at', cutoff).order('created_at', { ascending: true }).limit(1).maybeSingle();
+  // THIS ENGINE DOES NOT BUILD DEMOS ANY MORE (2026-08-22).
+  //
+  // Sarah, after reviewing the fleet: the sites she named as right (Columbia Falls
+  // Barbershop, Sands Surveying, Hungry Horse Motel) are workstation builds at
+  // 9 images / 2, 3 and 8 distinct and around 650KB. Every site she called slop is
+  // one of ours: 13/1 at 12,535KB, 10/1 at 6,867KB, and one at 1/1 with no webfont
+  // at all. The engine split predicts her verdict perfectly, with no exceptions
+  // either way.
+  //
+  // A demo is the sales artifact, and a one-shot engine that gets a single pass to
+  // research, art-direct, write and hand-build motion reaches for the safest
+  // possible layout every time. Better a lead waits for the workstation than opens
+  // something that loses them.
+  //
+  // REBUILDS AND EDITS STILL COME THROUGH HERE, deliberately: those belong to
+  // clients who have already paid, they are time-critical in a way a demo is not,
+  // and apiRealDirective builds them from the client's OWN uploaded photographs,
+  // so the one-image failure that ruins a demo does not apply.
+  const pick = (q) => q.eq('status', 'queued').neq('kind', 'demo').lt('created_at', cutoff).order('created_at', { ascending: true }).limit(1).maybeSingle();
   const base = () => sb.from('outbound_demo_sites').select('*');
   let { data: job, error } = await pick(base().eq('worker_only', false));
   if (error && /worker_only/.test(error.message || '')) {
