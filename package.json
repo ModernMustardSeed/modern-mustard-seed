@@ -2,6 +2,7 @@
   "name": "modern-mustard-seed",
   "private": true,
   "version": "2.0.0",
+  "packageManager": "pnpm@11.21.0",
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "node scripts/voice-standard-check.mjs && next build",
