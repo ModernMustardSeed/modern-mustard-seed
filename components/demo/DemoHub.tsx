@@ -120,6 +120,9 @@ export default function DemoHub({
   osUrl,
   integrationPlanUrl,
   planQuote,
+  auditUrl,
+  auditScore,
+  auditHeadline,
   demoRunId,
   noticedLine,
   missedPreset,
@@ -156,6 +159,13 @@ export default function DemoHub({
   integrationPlanUrl?: string | null;
   /** One sharp, factual sentence lifted from that plan, quoted on its door. */
   planQuote?: string | null;
+  /** Their Presence Audit (/demo/audit/<id>): website, Google profile and
+   *  reviews, each graded. It is the door that explains WHY the other four
+   *  exist, so it sits first when it is present. */
+  auditUrl?: string | null;
+  auditScore?: number | null;
+  /** The audit's own one-line verdict, quoted on the door. */
+  auditHeadline?: string | null;
   /** The lead's forged voice run. Powers the encore: their agent calls THEM,
    *  through the existing /api/sidekick/forge phone path with all its caps. */
   demoRunId?: string | null;
@@ -221,6 +231,21 @@ export default function DemoHub({
   const doors = useMemo(
     () =>
       [
+        // The audit leads. It is the only door that is about THEM rather than
+        // about us, and a score with their own review count in it is what makes
+        // the other four read as an answer instead of an offer.
+        auditUrl && {
+          href: auditUrl,
+          icon: '📊',
+          title: 'Your presence audit',
+          desc:
+            auditHeadline
+              ? `${auditHeadline} Your website, your Google profile and your reviews, each scored, with every number showing where it came from.`
+              : `Your website, your Google profile and your reviews, each scored out of 100, with every number showing where it came from.`,
+          tone: 'gold' as const,
+          cta: 'See the score',
+          badge: typeof auditScore === 'number' ? `${auditScore}/100` : 'Free',
+        },
         voiceUrl && {
           href: voiceUrl,
           icon: '🎙',
@@ -265,7 +290,7 @@ export default function DemoHub({
           badge: 'Free',
         },
       ].filter(Boolean) as { href: string; icon: string; title: string; desc: string; tone: 'dark' | 'gold' | 'ink'; cta: string; badge?: string }[],
-    [voiceUrl, siteUrl, sitePending, osUrl, integrationPlanUrl, planQuote, business],
+    [voiceUrl, siteUrl, sitePending, osUrl, integrationPlanUrl, planQuote, auditUrl, auditScore, auditHeadline, business],
   );
 
   /**

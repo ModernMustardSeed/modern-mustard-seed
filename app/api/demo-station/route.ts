@@ -22,9 +22,10 @@
  *     (their business, contact, and demos). Never do that.
  */
 
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { forgeLeadVoiceDemo, buildOsConfig, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
+import { ensurePresenceAudit } from '@/lib/presence-audit';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import type { OutboundLead, Niche } from '@/lib/outbound';
 import { resendClient } from '@/lib/send-email';
@@ -237,6 +238,14 @@ export async function POST(req: Request) {
   lead = await ensureDemoHub(supabase, lead);
   if (!lead.hub_demo_url) {
     return NextResponse.json({ error: 'forge_failed' }, { status: 500 });
+  }
+
+  // The fifth door, built AFTER the response. A person is watching a spinner
+  // on the other end of this request and the website grade can take ninety
+  // seconds; the hub renders the audit door on its own as soon as it lands.
+  {
+    const forAudit = lead as unknown as Record<string, unknown>;
+    after(() => ensurePresenceAudit(supabase, forAudit));
   }
 
   // Into the CRM pipeline too, or the command center never sees them: /admin

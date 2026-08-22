@@ -42,7 +42,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
 
   const { data: lead } = await sb
     .from('outbound_leads')
-    .select('id, business_name, contact_name, email, niche, notes, website, city, state, demo_url, demo_run_id, site_demo_url, site_demo_status, os_demo_url, os_demo_status, integration_plan_id, integration_plan_url, integration_plan_status, suite_film_status, suite_film_path, affiliate_id, origin, last_seen_at')
+    .select('id, business_name, contact_name, email, niche, notes, website, city, state, demo_url, demo_run_id, site_demo_url, site_demo_status, os_demo_url, os_demo_status, integration_plan_id, integration_plan_url, integration_plan_status, presence_audit_id, presence_audit_url, presence_audit_score, suite_film_status, suite_film_path, affiliate_id, origin, last_seen_at')
     .eq('hub_demo_id', hubId)
     .maybeSingle();
   if (!lead) return fallback;
@@ -146,6 +146,16 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
     }
   }
 
+  // The audit's own verdict, quoted on its door. Read from the stored report
+  // rather than recomputed, so the door and the page can never disagree about
+  // the same business.
+  let auditHeadline: string | null = null;
+  if (lead.presence_audit_id) {
+    const { data: audit } = await sb.from('presence_audits').select('report').eq('id', lead.presence_audit_id).maybeSingle();
+    const head = (audit?.report as { headline?: string } | null)?.headline;
+    if (typeof head === 'string' && head.trim()) auditHeadline = head.trim();
+  }
+
   const niche = (lead.niche ?? 'other') as Niche;
   // Through leadTrade, never a hand-rolled detectTrade call: this page hand-built
   // the same corpus join and so quietly skipped the business-name precedence the
@@ -177,6 +187,9 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       osUrl={lead.os_demo_status === 'ready' ? lead.os_demo_url : null}
       integrationPlanUrl={lead.integration_plan_status === 'ready' ? lead.integration_plan_url : null}
       planQuote={planQuote}
+      auditUrl={lead.presence_audit_url}
+      auditScore={lead.presence_audit_score}
+      auditHeadline={auditHeadline}
       demoRunId={lead.demo_run_id}
       noticedLine={noticedLine}
       missedPreset={missedPreset}

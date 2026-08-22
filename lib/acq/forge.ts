@@ -22,6 +22,7 @@ import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
 import { recordEvent } from '@/lib/acq/events';
 import { enqueue } from '@/lib/acq/queue';
+import { ensurePresenceAudit } from '@/lib/presence-audit';
 import type { AcqProspect } from '@/lib/acq/types';
 
 /** His own ceiling. A phone line that can spawn builds is a wallet with a
@@ -150,6 +151,14 @@ export async function forgeProspectAgent(
       }
 
       row = await ensureDemoHub(db, row);
+
+      // The audit is the fifth door and the only one that is about THEM. It
+      // runs before the suite email is queued so the mail can carry the score,
+      // and it is fail-soft by construction: a suite with four doors is a good
+      // day, a forge that died grading somebody's website is a lost customer.
+      await ensurePresenceAudit(db, row as unknown as Record<string, unknown>);
+      const { data: withAudit } = await db.from('outbound_leads').select('*').eq('id', row.id).single();
+      if (withAudit) row = withAudit as OutboundLead;
 
       await db
         .from('outbound_leads')

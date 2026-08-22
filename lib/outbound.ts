@@ -135,6 +135,13 @@ export type OutboundLead = {
   integration_plan_id: string | null;
   integration_plan_url: string | null;
   integration_plan_status: 'queued' | 'building' | 'ready' | 'failed' | null;
+  /** Their PRESENCE AUDIT (migration 106): website, Google Business Profile and
+   *  reviews, each scored, served at /demo/audit/<id>. The fifth suite door,
+   *  and the only one that is about them rather than about us. */
+  presence_audit_id: string | null;
+  presence_audit_url: string | null;
+  presence_audit_score: number | null;
+  presence_audit_at: string | null;
   /** Their own walkthrough film, cut as the last step of the forge
    *  (scripts/suite-film). The suite is not announced until this is 'ready'. */
   suite_film_status: 'queued' | 'filming' | 'ready' | 'failed' | null;
@@ -240,6 +247,8 @@ export type ForgeRow = {
   hub_demo_url: string | null;
   integration_plan_url: string | null;
   integration_plan_status: 'queued' | 'building' | 'ready' | 'failed' | null;
+  presence_audit_url: string | null;
+  presence_audit_score: number | null;
   hub_view_count: number;
   email_open_count: number;
   last_email_at: string | null;
