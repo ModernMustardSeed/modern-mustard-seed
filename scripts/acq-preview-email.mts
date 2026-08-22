@@ -49,10 +49,15 @@ console.log(`  estimate: $${Math.round(est.monthlyLeakCents / 100).toLocaleStrin
 
 // Every step-1 arm is rendered so the arms can be compared side by side, then
 // the arm this prospect would actually land in is named at the end.
+//
+// The later steps are read off the campaign rather than listed here, so a
+// seventh email is previewed the day it is added instead of the day somebody
+// remembers to widen this array.
 type V = { key: string; step: number };
+const laterSteps = [...new Set(((variants ?? []) as V[]).map((v) => v.step))].filter((s) => s > 1).sort((a, b) => a - b);
 const toRender: V[] = [
   ...((variants ?? []) as V[]).filter((v) => v.step === 1),
-  ...([2, 3] as const).map((s) => pickVariant(variants ?? [], s, lead.id)).filter(Boolean).map((v) => v as V),
+  ...laterSteps.map((s) => pickVariant(variants ?? [], s, lead.id)).filter(Boolean).map((v) => v as V),
 ];
 
 for (const variant of toRender) {
@@ -68,8 +73,10 @@ for (const variant of toRender) {
   if (!built) continue;
   const file = join(tmpdir(), `mms-email-${step}-${variant.key}.html`);
   writeFileSync(file, built.html);
-  const personalized = built.html.includes('What the misses are worth');
-  console.log(`  EMAIL ${step} (variant ${variant.key})${personalized ? '  ← personalized, with the calculator' : ''}`);
+  const personalized = built.html.includes('shows in public');
+  const machine = built.html.includes('Model RR-1');
+  const tag = personalized ? '  ← personalized, machine on their own numbers' : machine ? '  ← machine on house numbers' : '';
+  console.log(`  EMAIL ${step} (variant ${variant.key})${tag}`);
   console.log(`    subject: ${built.subject}`);
   console.log(`    open:    ${file}\n`);
 }
