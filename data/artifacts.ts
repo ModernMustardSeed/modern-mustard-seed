@@ -22,6 +22,25 @@ export type ArtifactEntry = {
 
 export const ARTIFACTS: ArtifactEntry[] = [
   {
+    id: '7e2d2a8b-89dc-4c90-9879-809e2acbad90',
+    title: 'The Reply Path',
+    url: 'https://claude.ai/code/artifact/7e2d2a8b-89dc-4c90-9879-809e2acbad90',
+    updated: '2026-08-22',
+    venture: 'MMS',
+    kind: 'Playbook',
+    description: 'The runbook for putting a working mailbox behind every business we send mail for: the MMS lane, the Dalten lane, the standard every client after him gets, the autonomy ladder, and the five checks before a business counts as wired.',
+    pinned: true,
+  },
+  {
+    id: '2790d57e-bbd7-49fa-9653-f2932edb01b2',
+    title: 'The Mail Plane',
+    url: 'https://claude.ai/code/artifact/2790d57e-bbd7-49fa-9653-f2932edb01b2',
+    updated: '2026-08-22',
+    venture: 'MMS',
+    kind: 'Briefing',
+    description: 'Why every Command Center we sell can send mail and none can receive it, read live off the Resend account and DNS, and the one relay that fixes it without a client ever holding a provider key.',
+  },
+  {
     id: '2b6286cf-e034-4121-a8cb-315d6cf6c7aa',
     title: 'The Thousand-Client Map',
     url: 'https://claude.ai/code/artifact/2b6286cf-e034-4121-a8cb-315d6cf6c7aa',

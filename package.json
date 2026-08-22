@@ -35,6 +35,7 @@
     "rehearse": "node scripts/funnel-rehearsal.mjs",
     "audit:trades": "node scripts/audit-lead-trades.mjs",
     "acq:test": "tsx --test scripts/acq-test.mts",
+    "mail:test": "tsx --test scripts/mail-routing-test.mts",
     "acq:worker": "tsx scripts/acq-source.mts --watch",
     "acq:source": "tsx scripts/acq-source.mts",
     "acq:smoke": "tsx scripts/acq-smoke.mts",
