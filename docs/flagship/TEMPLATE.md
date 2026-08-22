@@ -60,11 +60,47 @@ Seven copies of one image is not seven images. If you cannot produce a distinct
 frame for a slot, remove the slot. A gallery of one repeated photo reads as
 broken software, and it is the single fastest way to lose the owner.
 
-### 2. The page fits in the cap
-Under 900KB total, inlined. Sappari's flagship build is 830KB with seven
-photographs. That is achievable: encode WebP, size each image to the box it
-actually occupies, and give each one a byte budget before you start. 617KB per
-image is not a decision, it is an omission.
+### 2. The page fits in the cap, and here is the method
+Under 900KB total, inlined. This is now MEASURED and ENFORCED: a build over
+1800KB is requeued once with its own numbers handed back, and failed if it blows
+the ceiling twice. See `lib/site-weight.mjs`.
+
+Saying "make it smaller" has never once worked. The method has:
+
+**Budget every image before you generate it, not after.** Decide the byte
+allowance per slot up front and encode to hit it. What the two reference builds
+actually used:
+
+| slot | width | budget |
+| --- | --- | --- |
+| full-bleed hero | 1600px | 120KB |
+| full-bleed band | 1400px | 90KB |
+| card or tile | 900px | 60KB |
+| portrait tile | 560px | 50KB |
+
+**Encode WebP, and size to the box the image actually occupies.** A 900px card
+does not need a 1536px file. Wild Hope: eight photographs, 600KB raw, 807KB
+inlined. Sappari: seven photographs, 524KB raw, 830KB inlined.
+
+**Define each photograph ONCE.** Any image appearing in more than one place is a
+CSS custom property that both places reference, never a second copy of the
+base64. Wild Hope shows eight photographs in twelve slots from eight encodings;
+inlining per element put it 195KB over the cap on its own.
+
+```css
+:root{ --art-hero:url("data:image/webp;base64,...") }
+.art--hero{ background-image:var(--art-hero) }
+```
+
+Use `role="img"` with a real `aria-label` on a painted plate, so nothing is lost
+against an `<img alt>`.
+
+**Base64 costs 34%.** A 600KB raw budget lands at about 805KB inlined. Work
+backwards from the cap, not forwards from the images.
+
+617KB per image is not a decision, it is an omission. Seven copies of one
+617KB photograph, which is what Sappari's first build shipped, is 4.3MB of a
+5.8MB page and the reason this section exists.
 
 ### 3. Nothing overprints, nothing goes faint
 See `LEGIBILITY_LAW` in `lib/site-directive.mjs`. Text on photography carries a

@@ -29,6 +29,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node
 import os from 'node:os';
 import path from 'node:path';
 import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective } from '../lib/site-directive.mjs';
+import { weighSite, weightLine, weightRefusal } from '../lib/site-weight.mjs';
 import { inlineSiteAssets, remainingLocalRefs } from './inline-site-assets.mjs';
 import { blankImageError } from '../lib/site-asset-refs.mjs';
 
@@ -719,6 +720,35 @@ async function storeFinished(job, html) {
   const sealed = await sealAssets(job, html);
   if (!sealed) return; // failed and recorded
   html = sealed;
+
+  // THE WEIGHT GATE. The law has asked for under 900KB for months and the night of
+  // 2026-08-21 still shipped a 12.5MB demo, because a sentence in a prompt is not
+  // enforcement. Measured here, on the same path sealAssets already guards.
+  //
+  // One requeue, never a silent pass and never a straight failure: the numbers go
+  // back to the builder so the retry knows it inlined the same photo seven times,
+  // rather than being told to "make it smaller" again.
+  const weight = weighSite(html);
+  log('weight:', weightLine(weight));
+  if (weight.overCeiling) {
+    const refusal = weightRefusal(weight);
+    if (!/\[requeued after weight/.test(job.error || '')) {
+      log('OVER THE WEIGHT CEILING, requeueing once:', job.id, refusal);
+      await supabase
+        .from('outbound_demo_sites')
+        .update({
+          status: 'queued',
+          worker: null,
+          claimed_at: null,
+          error: `[requeued after weight] ${refusal}`,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', job.id);
+      return;
+    }
+    await fail(job, `still over the weight ceiling after a retry: ${refusal}`);
+    return;
+  }
 
   // A client's edit lands in a draft for approval; it must NOT be written onto the
   // job's html and served, and it must NOT touch the live site. Route it first.
