@@ -31,6 +31,7 @@
  *   node scripts/funnel-rehearsal.mjs --keep     # leave the artifacts for inspection
  */
 import { createClient } from '@supabase/supabase-js';
+import { judgeDemo } from '../lib/demo-quality.mjs';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { copyFindings, hasHighSeverity } from '../lib/site-copy-lint.mjs';
@@ -220,7 +221,7 @@ async function run() {
   /* ── 5. THE COPY ON WHAT WE ARE SERVING RIGHT NOW ─────────────────── */
   const { data: recent } = await sb
     .from('outbound_demo_sites')
-    .select('id, business_name, html')
+    .select('id, business_name, html, worker')
     .eq('status', 'ready')
     .order('updated_at', { ascending: false })
     .limit(3);
@@ -230,6 +231,20 @@ async function run() {
     if (hasHighSeverity(copyFindings(row.html, row.business_name))) badCopy++;
   }
   check('the newest demos read like a person wrote them', badCopy === 0, `${badCopy} of ${(recent ?? []).length} flagged`);
+
+  // NO SLOP REACHES A PROSPECT (Sarah, 2026-08-22: "MAKE IT A RULE TO NEVER
+  // PRODUCE SLOP EVER AGAIN - EVER"). The worker refuses to bank one, and this is
+  // the fleet-level backstop: a page that got past the gate, or was banked before
+  // the gate existed, shows up here every morning instead of when someone happens
+  // to open it.
+  let slop = 0;
+  const slopNames = [];
+  for (const row of recent ?? []) {
+    if (!row.html) continue;
+    const q = judgeDemo(row.html, row.worker ?? null);
+    if (q.verdict === 'slop') { slop++; slopNames.push(`${row.business_name} (${q.label})`); }
+  }
+  check('no recent demo is slop', slop === 0, slopNames.join('; ') || `0 of ${(recent ?? []).length}`);
 
   /* ── 6. WITH THE CARD, WHEN A TEST ENVIRONMENT EXISTS ─────────────── */
   if (FULL) {

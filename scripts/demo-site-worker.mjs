@@ -30,6 +30,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective } from '../lib/site-directive.mjs';
 import { weighSite, weightLine, weightRefusal } from '../lib/site-weight.mjs';
+import { judgeDemo } from '../lib/demo-quality.mjs';
 import { inlineSiteAssets, remainingLocalRefs } from './inline-site-assets.mjs';
 import { blankImageError } from '../lib/site-asset-refs.mjs';
 
@@ -748,6 +749,46 @@ async function storeFinished(job, html) {
     }
     await fail(job, `still over the weight ceiling after a retry: ${refusal}`);
     return;
+  }
+
+  // THE NO-SLOP GATE (Sarah, 2026-08-22: "MAKE IT A RULE TO NEVER PRODUCE SLOP
+  // EVER AGAIN - EVER").
+  //
+  // It is a gate rather than a sentence on purpose. The law had said "every
+  // visual slot carries photography" for months, and the fleet still filled with
+  // pages that satisfied it by pasting the hero into all nine slots. A rule the
+  // build cannot fail is not a rule.
+  //
+  // judgeDemo is calibrated against Sarah's own verdicts on eight sites she named
+  // either way, and agrees on seven. It refuses only SLOP, never merely weak:
+  // Huck Yeah reads weak and she likes it, so blocking weak would block work she
+  // approved. Slop is the narrow, defensible case: one photograph AND something
+  // else wrong on top of it.
+  if (!isEdit(job) && !isRebuild(job)) {
+    const q = judgeDemo(html, WORKER);
+    log(`quality: ${q.verdict} (${q.label})${q.reasons.length ? ' :: ' + q.reasons.join('; ') : ''}`);
+    if (q.verdict === 'slop') {
+      const why =
+        `this build is slop and will not be sent: ${q.reasons.join('; ')}. ` +
+        `Every visual slot needs its OWN photograph. One image repeated is the single fastest way to lose the owner. ` +
+        `Pick a house style from STYLES.md, give every slot a distinct frame, and put their real rating in the proof section.`;
+      if (!/\[requeued after quality/.test(job.error || '')) {
+        log('SLOP, requeueing once:', job.id, why);
+        await supabase
+          .from('outbound_demo_sites')
+          .update({
+            status: 'queued',
+            worker: null,
+            claimed_at: null,
+            error: `[requeued after quality] ${why}`,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', job.id);
+        return;
+      }
+      await fail(job, `still slop after a retry: ${q.reasons.join('; ')}`);
+      return;
+    }
   }
 
   // A client's edit lands in a draft for approval; it must NOT be written onto the
