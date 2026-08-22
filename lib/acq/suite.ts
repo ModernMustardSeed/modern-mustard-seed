@@ -35,6 +35,7 @@ import {
 import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
 import { recordEvent } from '@/lib/acq/events';
+import { enqueue } from '@/lib/acq/queue';
 import { TRADE_LABELS } from '@/lib/acq/types';
 import type { AcqProspect, CallIntel, Trade } from '@/lib/acq/types';
 import { estimateFor } from '@/lib/acq/personalize';
@@ -79,9 +80,22 @@ export type SuiteState = {
   siteUrl: string | null;
   siteStatus: string | null;
   osUrl: string | null;
+  /**
+   * Whether the PROSPECT can see the command center, which is a different
+   * question from whether one was built.
+   *
+   * The command center is free with the website and the voice agent together
+   * and is not free with either alone, so the demo suite page and the suite
+   * email only show it when both are present (Sarah, 2026-08-22). The forge
+   * mints one alongside every voice agent regardless, because it is instant and
+   * costs nothing and it appears on its own the moment the website lands. This
+   * flag is the difference, and the board draws it so a built-but-hidden
+   * command center never reads as a missing one.
+   */
+  osShown: boolean;
   hubUrl: string | null;
   filmStatus: string | null;
-  /** How many of the four pieces are finished and openable. */
+  /** How many pieces the prospect can actually open. */
   pieces: number;
 };
 
@@ -91,10 +105,13 @@ export function suiteState(lead: AcqSuiteLead): SuiteState {
   const siteReady = lead.site_demo_status === 'ready' && !!lead.site_demo_url;
   const siteBusy = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
   const siteFailed = lead.site_demo_status === 'failed';
+  // A website still on the anvil counts toward the pair: it is part of this
+  // suite and it lands on the page within the hour.
+  const osShown = !!lead.os_demo_url && !!lead.demo_url && (siteReady || siteBusy);
   const pieces =
     (lead.demo_url ? 1 : 0) +
     (siteReady ? 1 : 0) +
-    (lead.os_demo_url ? 1 : 0) +
+    (osShown ? 1 : 0) +
     (lead.suite_film_status === 'ready' ? 1 : 0);
 
   let stage: SuiteStage;
@@ -111,6 +128,7 @@ export function suiteState(lead: AcqSuiteLead): SuiteState {
     siteUrl: siteReady ? lead.site_demo_url : null,
     siteStatus: lead.site_demo_status,
     osUrl: lead.os_demo_url,
+    osShown,
     hubUrl: lead.hub_demo_url,
     filmStatus: lead.suite_film_status ?? null,
     pieces,
@@ -310,31 +328,53 @@ export type SuiteForgeOptions = SiteOptions & {
   /** Who pulled the lever. Used for the timeline line, nothing else. */
   by?: string;
   /**
-   * Count this build against the unattended daily ceiling and refuse past it.
-   * The queue sets it; Sarah pressing the button on the board does not, because
-   * a hand on the lever is the cap.
+   * Count this build against a daily ceiling and refuse past it.
+   *
+   *   'queue' the engine building on its own overnight
+   *   'phone' Mr. Mustard building for whoever is on the line
+   *
+   * Sarah pressing the button on the board sets neither, because a hand on the
+   * lever is the cap.
    */
-  capped?: boolean;
+  capped?: 'queue' | 'phone';
+  /**
+   * Queue the suite email to go out the moment the build lands.
+   *
+   * The phone sets this because Mr. Mustard says the words "it lands at your
+   * email shortly" out loud while they are listening, and a promise made on a
+   * call has to keep itself. The board does not, because Sarah decides when a
+   * demo goes out and to whom.
+   *
+   * Queued rather than sent, on the same idempotency key the email tool uses,
+   * so a caller who also asks him to email it cannot get two.
+   */
+  mailWhenReady?: boolean;
 };
 
 /**
- * How many suites the engine may forge on its own in a day.
+ * How many suites each unattended path may forge in a day.
  *
  * This is not a policy about ambition, it is a spend guard. Every suite mints a
  * Vapi assistant and puts a website on a queue that one machine works through at
  * roughly two an hour, so an unattended job that fans out to five hundred would
  * commit weeks of the forge and a wallet's worth of assistants before anybody
- * saw it. It fails CLOSED: a cap that cannot be read is a cap that is hit.
+ * saw it.
+ *
+ * The phone gets the tighter number, and it always will: the queue is fed from
+ * a board Sarah is looking at, and the phone is a number strangers can dial. A
+ * line that can spawn website builds is a wallet with a public number on it.
+ *
+ * Both fail CLOSED. A cap that cannot be read is a cap that is hit.
  */
-export const UNATTENDED_SUITE_CAP = 40;
+export const SUITE_CAPS: Record<'queue' | 'phone', number> = { queue: 40, phone: 15 };
 
-async function claimUnattendedSlot(db: SupabaseClient): Promise<boolean> {
+async function claimSuiteSlot(db: SupabaseClient, path: 'queue' | 'phone'): Promise<boolean> {
   const { data, error } = await db.rpc('claim_forge_slot', {
-    p_key: `acqsuite:day:${new Date().toISOString().slice(0, 10)}`,
-    p_cap: UNATTENDED_SUITE_CAP,
+    p_key: `acqsuite:${path}:${new Date().toISOString().slice(0, 10)}`,
+    p_cap: SUITE_CAPS[path],
   });
   if (error) {
-    console.error('acq suite cap claim failed:', error.message);
+    console.error(`acq suite cap claim failed (${path}):`, error.message);
     return false;
   }
   return data === true;
@@ -368,11 +408,14 @@ export async function forgeProspectSuite(
     return { ok: false, retryable: false, error: 'They opted out. Nothing gets built for them.' };
   }
 
-  if (opts.capped && !(await claimUnattendedSlot(db))) {
+  if (opts.capped && !(await claimSuiteSlot(db, opts.capped))) {
     return {
       ok: false,
       retryable: true,
-      error: `The engine has forged its ${UNATTENDED_SUITE_CAP} suites for today. It picks this one up tomorrow, or you can build it by hand from the board right now.`,
+      error:
+        opts.capped === 'phone'
+          ? `The forge has built its ${SUITE_CAPS.phone} suites off the phone today. Take their details and tell them it gets built first thing.`
+          : `The engine has forged its ${SUITE_CAPS.queue} suites for today. It picks this one up tomorrow, or you can build it by hand from the board right now.`,
     };
   }
 
@@ -453,6 +496,10 @@ export async function forgeProspectSuite(
       reservoir_state: 'forged',
     })
     .eq('id', prospect.id);
+
+  if (opts.mailWhenReady) {
+    await enqueue(db, { kind: 'demo_email', leadId: prospect.id, campaignId: prospect.acq_campaign_id, step: 0 });
+  }
 
   await recordEvent(db, {
     leadId: prospect.id,

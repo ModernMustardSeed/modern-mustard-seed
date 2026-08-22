@@ -404,7 +404,7 @@ async function runForgeJob(db: SupabaseClient, lead: AcqProspect, job: QueueJob)
     talkingWebsite: job.payload.talkingWebsite === true,
     by: String(job.payload.by ?? 'queue'),
     // Nobody is watching this one, so it counts against the daily ceiling.
-    capped: true,
+    capped: 'queue',
   });
   if (!result.ok) return result.retryable ? { kind: 'fail', note: result.error } : { kind: 'skip', note: result.error };
   return {

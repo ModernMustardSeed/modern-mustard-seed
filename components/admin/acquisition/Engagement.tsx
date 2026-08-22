@@ -5,6 +5,8 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Section, Chip, api, card, cardFlat, btnGhost, timeAgo } from '@/components/admin/acquisition/ui';
 import { usePoll } from '@/lib/use-poll';
+import RowForge from '@/components/admin/acquisition/RowForge';
+import type { RowSuite } from '@/components/admin/acquisition/RowForge';
 
 /**
  * WHO IS MOVING.
@@ -39,6 +41,8 @@ type Person = {
   client_status: string | null;
   checkout_sent_at: string | null;
   demo_status: string | null;
+  demo_emailed_at: string | null;
+  suite: RowSuite | null;
   furthest: Step;
   last_activity: string;
   signals: Record<Step, Signal>;
@@ -255,6 +259,7 @@ export default function Engagement() {
                       <Th>On the page</Th>
                       <Th>Permission</Th>
                       <Th>Call</Th>
+                      <Th>Their suite</Th>
                       <Th className="text-right">Last moved</Th>
                     </tr>
                   </thead>
@@ -291,7 +296,6 @@ export default function Engagement() {
                                     {p.is_test && <Chip label="TEST" tone="warn" />}
                                     {p.client_status === 'client' && <Chip label="CLIENT" tone="good" />}
                                     {p.checkout_sent_at && <Chip label="checkout sent" tone="warn" />}
-                                    {p.demo_status === 'ready' && <Chip label="forged" tone="good" />}
                                     {p.unsubscribed_at && <Chip label="opted out" tone="bad" />}
                                   </div>
                                 </div>
@@ -345,6 +349,16 @@ export default function Engagement() {
                                 <Dash />
                               )}
                             </Td>
+                            <Td>
+                              <RowForge
+                                id={p.id}
+                                business={p.business_name}
+                                email={p.email}
+                                suite={p.suite}
+                                demoEmailedAt={p.demo_emailed_at}
+                                onDone={() => void load()}
+                              />
+                            </Td>
                             <Td className="text-right whitespace-nowrap">
                               <div className="font-mono text-[11px] text-[#161616]/70">{timeAgo(p.last_activity)}</div>
                               <div className="text-[10px] text-[#161616]/60">{when(p.last_activity)}</div>
@@ -352,7 +366,7 @@ export default function Engagement() {
                           </tr>
                           {expanded && (
                             <tr className="border-b border-[#161616]/10 bg-[#FFFDF8]">
-                              <td colSpan={8} className="px-3 py-3">
+                              <td colSpan={9} className="px-3 py-3">
                                 <Detail p={p} />
                               </td>
                             </tr>

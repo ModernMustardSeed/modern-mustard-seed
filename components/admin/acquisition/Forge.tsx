@@ -54,6 +54,8 @@ type Suite = {
   siteUrl: string | null;
   siteStatus: string | null;
   osUrl: string | null;
+  /** Whether the prospect sees it. Free with the pair, hidden without it. */
+  osShown: boolean;
   hubUrl: string | null;
   filmStatus: string | null;
   pieces: number;
@@ -263,11 +265,26 @@ function SuiteChips({ row }: { row: Row }) {
           🌐 Website building{row.siteRun ? ` · ${minsSince(row.siteRun.claimed_at ?? row.siteRun.created_at)}m` : ''}
         </span>
       )}
-      {row.suite.osUrl && (
-        <a href={row.suite.osUrl} target="_blank" rel="noopener noreferrer" className={`${chip} border-[#161616]/30 bg-[#161616]/[0.05] text-[#161616]/75 hover:border-[#161616]`}>
-          ⚙ Command center ↗
-        </a>
-      )}
+      {row.suite.osUrl &&
+        (row.suite.osShown ? (
+          <a href={row.suite.osUrl} target="_blank" rel="noopener noreferrer" className={`${chip} border-[#161616]/30 bg-[#161616]/[0.05] text-[#161616]/75 hover:border-[#161616]`}>
+            ⚙ Command center ↗
+          </a>
+        ) : (
+          // Built, but the prospect does not see it: the command center is free
+          // with the website and the voice agent together and with neither one
+          // alone, so it stays off their page until the pair exists. Forging
+          // the website turns it on by itself, nothing else to do.
+          <a
+            href={row.suite.osUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${chip} border-dashed border-[#161616]/25 bg-transparent text-[#161616]/40 hover:border-[#161616]/60`}
+            title="Built, but hidden from them: the command center is only free with the website and the voice agent together. Forge their website and it appears on their suite by itself."
+          >
+            ⚙ Command center · hidden ↗
+          </a>
+        ))}
       {row.suite.hubUrl && (
         <a href={row.suite.hubUrl} target="_blank" rel="noopener noreferrer" className={`${chip} border-[#161616] bg-[#161616] text-[#F5B700] hover:-translate-y-0.5`}>
           ▦ Their suite ↗

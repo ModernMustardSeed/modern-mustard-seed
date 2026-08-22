@@ -61,6 +61,7 @@ type Suite = {
   siteUrl: string | null;
   siteStatus: string | null;
   osUrl: string | null;
+  osShown: boolean;
   hubUrl: string | null;
   filmStatus: string | null;
   pieces: number;
@@ -651,7 +652,14 @@ function SuitePanel({
               : null,
           'Not queued yet. The forge takes twenty to forty minutes.',
         )}
-        {piece('Command center', s?.osUrl ?? null, null, 'Not forged yet. Instant, and free with either of the others.')}
+        {piece(
+          'Command center',
+          s?.osShown ? s.osUrl : null,
+          s?.osUrl && !s.osShown
+            ? 'Built, but hidden from them until the website exists. It is free with the website and the voice agent together, not with one of them, so their suite page and their email both leave it out. Forging the website turns it on by itself.'
+            : null,
+          'Not forged yet. Instant, and it rides free once the website and the voice agent are both there.',
+        )}
         {piece(
           'Walkthrough film',
           null,

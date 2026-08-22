@@ -725,14 +725,23 @@ export function buildSuiteEmail(args: {
       url: suite.voiceUrl,
     });
   }
-  if (suite.osUrl) {
+  // THE COMMAND CENTER IS FREE WITH BOTH, SO IT IS NAMED ONLY WITH BOTH.
+  // The forge mints one alongside every voice agent because it costs nothing,
+  // but our own pricing does not give it away with a single piece. Listing it
+  // to somebody holding one thing promises a product they have not earned, and
+  // the demo suite page applies the identical rule (components/demo/DemoHub.tsx),
+  // so the email and the page they land on can never disagree.
+  const showOs = Boolean(suite.osUrl) && Boolean(suite.voiceUrl) && Boolean(suite.siteUrl);
+  if (showOs) {
     pieces.push({
       label: 'Your back office',
-      blurb: 'Every call, job and customer in one screen, wearing your colors.',
-      url: suite.osUrl,
+      blurb: 'Every call, job and customer in one screen, wearing your colors. It comes free with the other two.',
+      url: suite.osUrl!,
     });
   }
   if (!pieces.length) return null;
+  const onlyVoice = pieces.length === 1 && Boolean(suite.voiceUrl);
+  const onlySite = pieces.length === 1 && Boolean(suite.siteUrl);
 
   const list = pieces
     .map(
@@ -764,15 +773,27 @@ export function buildSuiteEmail(args: {
 
   const html =
     clientEmail({
-      preheader: `Your website, your receptionist and your back office are live. Nothing to sign up for.`,
+      // The preheader is the first line they read in the inbox list, before the
+      // subject has even earned a click, so it names the same pieces the body
+      // does and nothing more. It promised a back office to everybody until the
+      // command-center checks in scripts/verify-acq-suite.ts caught it.
+      preheader: showOs
+        ? `Your website, your receptionist and your back office are live. Nothing to sign up for.`
+        : pieces.length === 2
+          ? `Your website and your receptionist are live. Nothing to sign up for.`
+          : onlySite
+            ? `Your website is live. Nothing to sign up for.`
+            : `Your receptionist is live. Nothing to sign up for.`,
       eyebrow: 'IT IS BUILT',
       greeting,
       body:
         p(`I built it.`) +
         p(
-          `${escape(business)} now has a website, an AI receptionist answering the phone on it, and the back office that runs behind both. All ${
-            pieces.length === 3 ? 'three' : pieces.length === 2 ? 'two' : 'of it'
-          } are live right now. Nothing to sign up for, no card, no call with me first.`,
+          showOs
+            ? `${escape(business)} now has a website, an AI receptionist answering the phone on it, and the back office that runs behind both. All three are live right now. Nothing to sign up for, no card, no call with me first.`
+            : pieces.length === 2
+              ? `${escape(business)} now has a website and an AI receptionist answering the phone on it. Both are live right now. Nothing to sign up for, no card, no call with me first.`
+              : `It is live right now. Nothing to sign up for, no card, no call with me first.`,
         ) +
         videoLine +
         `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 6px">${list}</table>` +
@@ -798,7 +819,14 @@ export function buildSuiteEmail(args: {
     replyTo: args.replyTo,
     // NOT escaped: a subject line is plain text, so an entity here would ship
     // literally and turn Bob's Heating into Bob&#39;s Heating in the inbox.
-    subject: `I built ${business} a website and a receptionist`,
+    // It also names only what is inside: a subject promising a website to
+    // somebody who is getting a receptionist is the first broken promise they
+    // read, and it is the one they judge everything else by.
+    subject: onlyVoice
+      ? `I built ${business} a receptionist`
+      : onlySite
+        ? `I built ${business} a website`
+        : `I built ${business} a website and a receptionist`,
     html,
     unsubscribeUrl: unsubscribeUrlFor(lead.email),
     summary: `Sent the full forged suite: ${pieces.map((x) => x.label.toLowerCase()).join(', ')}.`,

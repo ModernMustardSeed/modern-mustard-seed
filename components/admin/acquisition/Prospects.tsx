@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Chip, api, card, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, timeAgo } from '@/components/admin/acquisition/ui';
+import RowForge from '@/components/admin/acquisition/RowForge';
+import type { RowSuite } from '@/components/admin/acquisition/RowForge';
 
 type Row = {
   id: string;
@@ -28,6 +30,8 @@ type Row = {
   consent_status: string | null;
   call_stage: string | null;
   demo_status: string | null;
+  demo_emailed_at: string | null;
+  suite: RowSuite | null;
   checkout_sent_at: string | null;
   client_status: string | null;
   unsubscribed_at: string | null;
@@ -206,18 +210,19 @@ export default function Prospects() {
                 <Th className="text-right">Score</Th>
                 <Th>Stage</Th>
                 <Th>Journey</Th>
+                <Th>Their suite</Th>
                 <Th>Updated</Th>
               </tr>
             </thead>
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={10} className="px-4 py-8 text-center text-[#161616]/60">Loading...</td>
+                  <td colSpan={11} className="px-4 py-8 text-center text-[#161616]/60">Loading...</td>
                 </tr>
               )}
               {!loading && rows.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="px-4 py-8 text-center text-[#161616]/60">
+                  <td colSpan={11} className="px-4 py-8 text-center text-[#161616]/60">
                     Nothing matches. Try clearing the filters, or run the Lead Finder.
                   </td>
                 </tr>
@@ -263,7 +268,6 @@ export default function Prospects() {
                       {r.email_stage > 0 && <Chip label={`E${r.email_stage}`} />}
                       {r.consent_status === 'granted' && <Chip label="consent" tone="good" />}
                       {r.call_stage === 'completed' && <Chip label="talked" tone="good" />}
-                      {r.demo_status === 'ready' && <Chip label="forged" tone="good" />}
                       {r.checkout_sent_at && <Chip label="checkout" tone="warn" />}
                       {r.client_status === 'client' && <Chip label="CLIENT" tone="good" />}
                       {r.unsubscribed_at && <Chip label="opted out" tone="bad" />}
@@ -272,6 +276,16 @@ export default function Prospects() {
                         <Chip label="held" tone="warn" title={r.acq_ineligible_reason ?? undefined} />
                       )}
                     </div>
+                  </Td>
+                  <Td>
+                    <RowForge
+                      id={r.id}
+                      business={r.business_name}
+                      email={r.email}
+                      suite={r.suite}
+                      demoEmailedAt={r.demo_emailed_at}
+                      onDone={() => void load()}
+                    />
                   </Td>
                   <Td className="whitespace-nowrap text-[11px] font-mono text-[#161616]/60">{timeAgo(r.updated_at)}</Td>
                 </tr>

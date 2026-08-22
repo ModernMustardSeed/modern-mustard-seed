@@ -261,3 +261,64 @@ if (existing) writeFileSync(path.join(OUT, 'acq-demo-email-existing.html'), exis
 rule('THE EMAIL THAT ALREADY SHIPS (control)');
 console.log('written:', path.join(OUT, 'acq-demo-email-existing.html'));
 console.log('bytes  :', existing?.html.length);
+
+/* ── 8. THE COMMAND CENTER RULE ──────────────────────────────────────────────
+   Free with the website and the voice agent TOGETHER, free with neither alone.
+   So the email names the back office only when both are present, and the demo
+   suite page applies the identical rule. Three shapes, checked. ------------ */
+rule('THE COMMAND CENTER RULE (free with both, hidden with one)');
+
+const shapes = [
+  {
+    name: 'voice agent alone (a command center IS minted, and must stay hidden)',
+    suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: prospect.demo_url, siteUrl: null, osUrl: prospect.os_demo_url, personalVideo: false, film: false },
+    expectOs: false,
+  },
+  {
+    name: 'website alone',
+    suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: null, siteUrl: prospect.site_demo_url, osUrl: prospect.os_demo_url, personalVideo: false, film: false },
+    expectOs: false,
+  },
+  {
+    name: 'the pair',
+    suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: prospect.demo_url, siteUrl: prospect.site_demo_url, osUrl: prospect.os_demo_url, personalVideo: false, film: false },
+    expectOs: true,
+  },
+];
+
+let failures = 0;
+for (const shape of shapes) {
+  const built = buildSuiteEmail({
+    lead: prospect,
+    suite: shape.suite,
+    checkoutUrl: 'https://modernmustardseed.com/demo/order/hub-1',
+    calendarUrl: 'https://modernmustardseed.com/book',
+    offerLine: OFFER.line,
+    fromName: 'Sarah at Modern Mustard Seed',
+    fromEmail: 'sarah@modernmustardseed.com',
+    replyTo: 'sarah@modernmustardseed.com',
+    fromMustard: false,
+  });
+  if (!built) { console.log(` ${shape.name}: REFUSED TO BUILD`); failures++; continue; }
+  const namesOs = /back office/i.test(built.html);
+  const ok = namesOs === shape.expectOs;
+  if (!ok) failures++;
+  console.log(` ${ok ? 'OK  ' : 'FAIL'} ${shape.name}`);
+  console.log(`        subject: ${built.subject}`);
+  console.log(`        names the back office: ${namesOs} (expected ${shape.expectOs})`);
+}
+
+/* And the suite state the board reads must agree with the email. */
+const voiceOnly = suiteState({ ...prospect, site_demo_url: null, site_demo_status: null, suite_film_status: null } as AcqProspect);
+const pair = suiteState(prospect);
+const siteBuilding = suiteState({ ...prospect, site_demo_status: 'building', suite_film_status: null } as AcqProspect);
+console.log('');
+console.log(' suiteState.osShown, voice only          :', voiceOnly.osShown, '(expected false)');
+console.log(' suiteState.osShown, website still building:', siteBuilding.osShown, '(expected true: it lands within the hour)');
+console.log(' suiteState.osShown, the pair             :', pair.osShown, '(expected true)');
+if (voiceOnly.osShown !== false || siteBuilding.osShown !== true || pair.osShown !== true) failures++;
+console.log(' pieces the prospect can open, voice only :', voiceOnly.pieces, '(expected 1: the agent, alone)');
+if (voiceOnly.pieces !== 1) failures++;
+
+console.log(failures === 0 ? 'ALL COMMAND CENTER CHECKS PASS' : `${failures} CHECK(S) FAILED`);
+if (failures) process.exitCode = 1;

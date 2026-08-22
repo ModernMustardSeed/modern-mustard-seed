@@ -4,6 +4,7 @@ import { getCampaign, getAcqSettings } from '@/lib/acq/settings';
 import { enqueue, cancelPendingFor } from '@/lib/acq/queue';
 import { recordEvent } from '@/lib/acq/events';
 import { evaluate } from '@/lib/acq/eligibility';
+import { suiteState } from '@/lib/acq/suite';
 import type { AcqProspect } from '@/lib/acq/types';
 
 export const runtime = 'nodejs';
@@ -15,7 +16,9 @@ const LIST_COLS =
   'acq_stage,acq_eligible,acq_ineligible_reason,email_stage,last_campaign_email_at,consent_status,consent_at,' +
   'call_stage,call_attempts,last_call_at,demo_status,demo_emailed_at,checkout_sent_at,meeting_status,' +
   'payment_status,client_status,unsubscribed_at,bounced,is_test,duplicate_of,needs_human,source,' +
-  'open_24_7,emergency_service,created_at,updated_at,imported_at,last_researched_at,assigned_to,reply_at';
+  'open_24_7,emergency_service,created_at,updated_at,imported_at,last_researched_at,assigned_to,reply_at,' +
+  // What is forged for them, so a row can build and send without opening it.
+  'demo_url,site_demo_url,site_demo_status,os_demo_url,hub_demo_url,suite_film_status';
 
 /** The CRM list: search, filter, sort, page. */
 export async function GET(req: Request) {
@@ -68,7 +71,12 @@ export async function GET(req: Request) {
   const { data, count, error } = await query.range(page * size, page * size + size - 1);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  return NextResponse.json({ rows: data ?? [], total: count ?? 0, page, size });
+  // The suite state is computed HERE, not in the browser: suiteState lives
+  // beside the forge and pulls in node crypto through it, and the free-with-both
+  // command center rule must be decided in exactly one place or two screens will
+  // eventually disagree about what a prospect can see.
+  const rows = ((data ?? []) as unknown as AcqProspect[]).map((r) => ({ ...r, suite: suiteState(r) }));
+  return NextResponse.json({ rows, total: count ?? 0, page, size });
 }
 
 /** Bulk actions. Every one of them is idempotent and every one records why. */
