@@ -144,6 +144,11 @@ screenshot and invisible in a diff.
 - no fabricated signage: never letter their name onto a building or a truck
 - the Modern Mustard Seed credit in the footer, in mustard `#F5B700`
 
+## The styles
+
+Six house styles, each lifted off a build that was approved, live in `STYLES.md`.
+Pick one per client and rotate; never blend two.
+
 ## Reading the references
 
 `REFERENCE-WILD-HOPE.html` is the second reference build, a church concept, and

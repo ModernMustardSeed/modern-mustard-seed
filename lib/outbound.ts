@@ -111,6 +111,9 @@ export type OutboundLead = {
   // billing email, a second decision maker. Each is { label, name, phone, email }.
   extra_contacts: LeadContact[];
   audit_score: number | null;
+  /** Their real Google/Yelp reputation, populated on ~4,400 leads and used in the brief. */
+  rating?: number | null;
+  review_count?: number | null;
   audit_url: string | null;
   audit_json: OutboundAudit | null;
   audit_at: string | null;
@@ -233,6 +236,9 @@ export type ForgeRow = {
   owner_rep_id: string | null;
   dnc_checked: boolean;
   audit_score: number | null;
+  /** Their real Google/Yelp reputation, populated on ~4,400 leads and used in the brief. */
+  rating?: number | null;
+  review_count?: number | null;
   demo_url: string | null;
   site_demo_url: string | null;
   site_demo_status: SiteDemoStatus | null;

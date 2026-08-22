@@ -506,6 +506,21 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null):
           .join('; ')}`
       : null,
     evidence ? `- Why they qualified (mined evidence):\n${evidence.slice(0, 1200)}` : null,
+    // THEIR REAL REPUTATION, WHICH WE ALREADY HOLD AND USED TO THROW AWAY.
+    //
+    // outbound_leads.rating and .review_count are populated on roughly 4,400
+    // leads, and neither ever reached the brief. So a builder forbidden from
+    // inventing reviews had nothing true to put in a proof section, and it went
+    // generic or went missing. Sarah, 2026-08-22: "use their real reviews too,
+    // needs to be as close to what they get as possible."
+    //
+    // Both numbers are real and checkable, and they are the most persuasive thing
+    // on the page. Inventing review TEXT stays banned.
+    lead.rating != null
+      ? `- THEIR REAL REPUTATION (verified, use it prominently, never round it up): ${lead.rating} stars` +
+        (lead.review_count != null ? ` from ${lead.review_count} reviews` : '') +
+        `. This belongs in the proof section as their actual number. Do NOT invent review text to sit beside it: if no quoted review appears in the mined evidence above, show the rating and the count on their own.`
+      : null,
     voiceDemoUrl ? `- Their agent voice demo (already forged, will be overlaid on the hosted page): ${voiceDemoUrl}` : null,
     owner
       ? [
