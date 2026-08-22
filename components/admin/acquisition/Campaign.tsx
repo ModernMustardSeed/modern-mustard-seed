@@ -27,9 +27,10 @@ type Variant = { id: string; key: string; step: number; subject: string; cta_lab
 const STEP_NAMES: Record<number, string> = {
   1: 'the ask',
   2: 'the proof',
-  3: 'the challenge',
-  4: 'keep her',
-  5: 'the breakup',
+  3: 'the whole thing',
+  4: 'the challenge',
+  5: 'keep her',
+  6: 'the breakup',
 };
 type Counts = { pending: number; claimed: number; done: number; failed: number; skipped: number; cancelled: number };
 
