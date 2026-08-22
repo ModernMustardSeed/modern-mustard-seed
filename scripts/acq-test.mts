@@ -37,7 +37,9 @@ import { classifyAgent, classifyHit, verdictDetail, HUMAN_DELAY_SECONDS, POLL_WI
 const GAPS = [2, 4, 3, 4];
 import { idempotencyKey } from '../lib/acq/queue';
 import { CONSENT_VERSIONS, CURRENT_CONSENT, toE164, consentVersion } from '../lib/acq/consent';
-import { greetingFor, firstNameOr, renderSubject, shortBusiness, buildCampaignEmail, permissionUrl } from '../lib/acq/campaign';
+import { greetingFor, firstNameOr, renderSubject, shortBusiness, buildCampaignEmail, buildDemoEmail, permissionUrl } from '../lib/acq/campaign';
+import { DEMO_ORDER_KEYS, DEMO_PRODUCTS, DEMO_BUNDLE, quoteDemoOrder } from '../lib/demo-order';
+import { FORGE_PIECES } from '../lib/voice-forge-suite';
 import { pickVariant } from '../lib/acq/settings';
 import { normalizeObjection } from '../lib/acq/stats';
 import { addBusinessDays, shouldStopFollowup } from '../lib/acq/runner';
@@ -957,7 +959,10 @@ test('emails: the website email sells the suite and its button opens the suite',
   });
   const html = built!.html;
   assert.match(html, /We build the website too/i);
-  assert.match(html, /The command center/);
+  assert.match(html, /The voice agent/);
+  // The command center came off the offer on 2026-08-22. It must not be named
+  // in the drip at all: not as a piece, not as a freebie, not as an aside.
+  assert.ok(!/command center/i.test(html), 'the command center is never suggested alongside anything');
   assert.match(html, /\(406\) 312-1223/, 'the forge close is on the phone, so the number is in the copy');
   // The button must go to the demo suite, and the quieter second link back to
   // the callback page. A button labelled BUILD MY SUITE that opens /mustard is
@@ -1515,6 +1520,74 @@ test('personalization: a thin prospect on the personalized variant gets the plai
   assert.match(built!.html, /these three are ours/, 'the machine admits whose numbers these are');
   assert.ok(!built!.html.includes('shows in public'), 'no invented research');
   assert.ok(!built!.html.includes('worked back from your'), 'no invented citation');
+});
+
+/* --------------------- the command center is off the menu ----------------- */
+
+/**
+ * Sarah pulled the command center out of the suite and the offer on 2026-08-22:
+ * still sold, never bundled, never forged, never suggested. These are the
+ * guards, because that kind of decision is exactly the kind that leaks back in
+ * one helpful-looking cross-sell at a time.
+ */
+test('command center: the suite does not offer it, but a pay link can still price it', () => {
+  assert.ok(!DEMO_ORDER_KEYS.includes('os' as never), 'it is off the demo suite order card');
+  assert.deepEqual(DEMO_ORDER_KEYS, ['voice', 'site']);
+  // Still sold. /pay/command-center has to mint a real Stripe session.
+  const solo = quoteDemoOrder(['os']);
+  assert.ok(solo, 'a standalone command center still quotes');
+  assert.equal(solo!.setupCents, DEMO_PRODUCTS.os.setupCents);
+  assert.equal(solo!.monthlyCents, DEMO_PRODUCTS.os.monthlyCents);
+  assert.equal(solo!.isBundle, false);
+});
+
+test('command center: nothing is waived anywhere any more', () => {
+  const bundle = quoteDemoOrder(['voice', 'site']);
+  assert.ok(bundle!.isBundle, 'the two paid pieces are still the bundle');
+  assert.equal(bundle!.setupCents, DEMO_BUNDLE.setupCents);
+
+  // Ticking all three is no longer a bundle with a freebie: it is the bundle
+  // price plus a command center, billed. The old rule made this cart cheaper
+  // than the sum, which is exactly the waiver that is gone.
+  const all = quoteDemoOrder(['voice', 'site', 'os']);
+  assert.equal(all!.isBundle, false, 'three pieces is not the bundle');
+  assert.equal(
+    all!.monthlyCents,
+    DEMO_PRODUCTS.voice.monthlyCents + DEMO_PRODUCTS.site.monthlyCents + DEMO_PRODUCTS.os.monthlyCents,
+    'every piece bills at its own price',
+  );
+});
+
+test('command center: the bundle still clears the price ladder without it', () => {
+  // The ladder is the whole reason a la carte stays rational. It never counted
+  // the command center, so removing the freebie must not have moved it.
+  const pairSetup = DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents;
+  const pairMonthly = DEMO_PRODUCTS.voice.monthlyCents + DEMO_PRODUCTS.site.monthlyCents;
+  const priciestSetup = Math.max(DEMO_PRODUCTS.voice.setupCents, DEMO_PRODUCTS.site.setupCents);
+  const priciestMonthly = Math.max(DEMO_PRODUCTS.voice.monthlyCents, DEMO_PRODUCTS.site.monthlyCents);
+  assert.ok(DEMO_BUNDLE.setupCents >= priciestSetup && DEMO_BUNDLE.setupCents < pairSetup, 'setup sits inside the ladder');
+  assert.ok(DEMO_BUNDLE.monthlyCents >= priciestMonthly && DEMO_BUNDLE.monthlyCents < pairMonthly, 'monthly sits inside the ladder');
+});
+
+test('command center: Mr. Mustard cannot forge one, and asking for one is not silently dropped into a build', () => {
+  assert.ok(!('command_center' in FORGE_PIECES), 'it is not a forgeable piece');
+  assert.deepEqual(Object.values(FORGE_PIECES).sort(), ['site', 'voice']);
+});
+
+test('command center: no suite email names it', () => {
+  const built = buildDemoEmail({
+    lead: lead(),
+    demoUrl: 'https://modernmustardseed.com/demo/hub/x',
+    checkoutUrl: 'https://modernmustardseed.com/demo/hub/x',
+    calendarUrl: 'https://modernmustardseed.com/book',
+    offerLine: 'From $397 a month',
+    fromName: 'Mr. Mustard',
+    fromEmail: 'm@x.com',
+    replyTo: 'm@x.com',
+  });
+  assert.ok(built);
+  assert.ok(!/command center/i.test(built!.html), 'the demo email never mentions it');
+  assert.match(built!.html, /rather show you than pitch you/i, 'the joke survives');
 });
 
 /* ----------------------------- the presence audit ------------------------- */

@@ -470,9 +470,8 @@ export default function VoiceAgentsPage() {
                   </p>
                   <p className="mt-3 font-body text-[15px] leading-6 text-[#161616]/80 max-w-xl">
                     That is {formatUsd(bundleSavings.setup)} off the build and{' '}
-                    {formatUsd(bundleSavings.monthly)}/mo off buying them apart, and the{' '}
-                    {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo Business Command Center comes free
-                    inside it. Month to month, cancel anytime, no trials.
+                    {formatUsd(bundleSavings.monthly)}/mo off buying them apart. Month to month, cancel
+                    anytime, no trials.
                   </p>
                 </div>
                 <div className="mt-6 md:mt-0 flex flex-col gap-3 shrink-0">

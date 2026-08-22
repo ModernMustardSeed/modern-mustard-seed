@@ -55,7 +55,7 @@ export default function FlagshipOffer() {
         </h2>
         <p className="font-body text-[15px] md:text-[17px] text-[#161616]/75 mt-5 max-w-2xl leading-relaxed">
           Tell us your business and we forge all three, free, in about a minute. Keep what you love. Take the website
-          and the voice agent together and your command center comes free, so the back office is on the house.
+          and the voice agent together and they are built as one thing, for less than the two apart.
         </p>
 
         <div className="grid md:grid-cols-3 gap-6 mt-12 items-stretch">
@@ -145,7 +145,7 @@ export default function FlagshipOffer() {
               href="/demos"
               className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
             >
-              Forge my three demos, free →
+              Forge my demos, free →
             </Link>
             <Link
               href="/book"

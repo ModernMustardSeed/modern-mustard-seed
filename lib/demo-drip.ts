@@ -42,10 +42,12 @@ function dripDue(step: number, ageHrs: number, sinceLastHrs: number): boolean {
 
 /** What this lead actually has, read off the row rather than assumed. */
 function forgedPieces(lead: OutboundLead): string[] {
+  // The command center left the suite on 2026-08-22. A lead forged before that
+  // may still carry one, and its page still resolves, but the drip stops naming
+  // it: it is sold on its own now and never suggested alongside anything.
   return [
     lead.demo_url ? 'voice agent' : null,
     lead.site_demo_id ? 'website' : null,
-    lead.os_demo_id ? 'command center' : null,
   ].filter(Boolean) as string[];
 }
 

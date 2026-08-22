@@ -35,7 +35,7 @@ function chiefJsonLd() {
         name: 'The Chief, a personal AI chief of staff by Modern Mustard Seed',
         serviceType: 'Personal AI assistant and chief of staff (voice, text, and chat; calendar, email, calls, research, sales coaching, lead generation)',
         description:
-          'A proactive AI chief of staff you call, text, or type to any hour. Trained on your business and your life, he runs your calendar, drafts and sends email, makes calls and books things, researches anything, runs sales role-play, builds your lead list, and delivers a morning briefing with scripture. Command center included.',
+          'A proactive AI chief of staff you call, text, or type to any hour. Trained on your business and your life, he runs your calendar, drafts and sends email, makes calls and books things, researches anything, runs sales role-play, builds your lead list, and delivers a morning briefing with scripture.',
         provider: { '@type': 'Organization', name: SITE.name, url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/chief`,
