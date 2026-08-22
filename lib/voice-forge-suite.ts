@@ -28,6 +28,7 @@
 import { after } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { forgeLeadVoiceDemo, buildOsConfig, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
+import { ensurePresenceAudit } from '@/lib/presence-audit';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import type { OutboundLead, Niche } from '@/lib/outbound';
 import { resendClient } from '@/lib/send-email';
@@ -399,6 +400,16 @@ export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: s
       }
 
       lead = await ensureDemoHub(supabase, lead);
+
+      // The fifth door. Grading a website can take a minute and a half, and
+      // this block already runs behind the call rather than during it, so the
+      // caller never waits on it. Fail-soft: no audit is a smaller suite, not
+      // a failed forge.
+      await ensurePresenceAudit(supabase, lead as unknown as Record<string, unknown>);
+      {
+        const { data: withAudit } = await supabase.from('outbound_leads').select('*').eq('id', lead.id).single();
+        if (withAudit) lead = withAudit as OutboundLead;
+      }
 
       try {
         const synced = await syncLeadToPipeline(supabase, lead, { source: 'mr-mustard' });
