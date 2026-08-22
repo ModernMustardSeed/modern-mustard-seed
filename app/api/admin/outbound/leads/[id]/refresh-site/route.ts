@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
 import { buildSiteBrief } from '@/lib/outbound-demo';
+import { judgeDemo } from '@/lib/demo-quality.mjs';
 import type { OutboundLead } from '@/lib/outbound';
 
 export const runtime = 'nodejs';
@@ -52,7 +53,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
 
   const { data: site } = await guard.supabase
     .from('outbound_demo_sites')
-    .select('id, status, html, kind')
+    .select('id, status, html, kind, worker')
     .eq('id', l.site_demo_id)
     .maybeSingle();
 
@@ -71,6 +72,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
   // the row back on the directive it belongs on: a paid client's site stays 'rebuild',
   // everything else is a demo build.
   const kind = site.kind === 'rebuild' ? 'rebuild' : 'demo';
+  const verdict = judgeDemo(site.html ?? '', site.worker ?? null);
 
   const { error: qErr } = await guard.supabase
     .from('outbound_demo_sites')
@@ -82,7 +84,15 @@ export async function POST(req: Request, { params }: { params: Params }) {
       // as the brief's first line, same convention forge-site uses (see tierOf in
       // scripts/demo-site-worker.mjs).
       brief: (designTier ? `DESIGN TIER: ${designTier}\n\n` : '') + buildSiteBrief(l, l.demo_url ?? null),
-      reuse_photos: true,
+      // KEEP THE PHOTOGRAPHS ONLY IF THEY ARE WORTH KEEPING.
+      //
+      // This was unconditionally true, and the worker then harvests the inlined
+      // images out of the OLD page. On a build whose entire defect is one
+      // photograph repeated across every slot, that carried the defect straight
+      // into the rebuild: forty five minutes of workstation time to get the same
+      // site back. Twenty two live demos were in exactly that state on
+      // 2026-08-22. Judge first, and only reuse real photography.
+      reuse_photos: verdict.keepPhotos,
       worker_only: true,
       worker: null,
       claimed_at: null,
@@ -104,11 +114,12 @@ export async function POST(req: Request, { params }: { params: Params }) {
     from_addr: 'cockpit',
     to_addr: l.business_name,
     subject: 'Website rebuild queued',
-    snippet:
-      'Rebuilding their website from scratch on the current design law, keeping the photographs it already has. Same link. Their finished site keeps serving until the new one lands.',
+    snippet: verdict.keepPhotos
+      ? 'Rebuilding their website from scratch on the current design law, keeping the photographs it already has. Same link. Their finished site keeps serving until the new one lands.'
+      : `Rebuilding their website from scratch on the current design law WITH FRESH PHOTOGRAPHY, because the old page had ${verdict.distinct} distinct photograph(s) across ${verdict.images} slots and reusing them would carry the fault into the rebuild. Same link. Their finished site keeps serving until the new one lands.`,
     read: true,
     occurred_at: new Date().toISOString(),
   });
 
-  return NextResponse.json({ ok: true, siteId: site.id });
+  return NextResponse.json({ ok: true, siteId: site.id, keptPhotos: verdict.keepPhotos, verdict: verdict.verdict, distinct: verdict.distinct });
 }
