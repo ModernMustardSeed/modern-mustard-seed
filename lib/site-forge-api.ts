@@ -24,7 +24,7 @@
 // one queued demo into `failed`. scripts/llm-worker.mjs already imports this
 // same module with the extension for the same reason.
 import { runClaudeCodeText } from './claude-code-json.ts';
-import { apiDirective, apiRealDirective, apiEditDirective, HERO_PLACEHOLDER } from './site-directive.mjs';
+import { apiDirective, apiRealDirective, apiEditDirective, HERO_PLACEHOLDER, ART_PLACEHOLDER, MAX_ART_SLOTS } from './site-directive.mjs';
 import { publishBlockerError } from './site-asset-refs.mjs';
 
 export type ForgeResult =
@@ -48,7 +48,7 @@ const FAL_MODEL = 'fal-ai/bytedance/seedream/v4/text-to-image';
  */
 const HERO_MAX_BYTES = 900_000;
 
-function extract(tag: 'DIRECTION' | 'HERO_PROMPT', html: string): string {
+function extract(tag: string, html: string): string {
   const m = html.match(new RegExp(`<!--\\s*${tag}:\\s*([\\s\\S]*?)-->`, 'i'));
   return m ? m[1].trim() : '';
 }
@@ -186,8 +186,45 @@ export async function forgeSiteWithApi(
   const direction = extract('DIRECTION', html) || 'unnamed';
   const heroPrompt = extract('HERO_PROMPT', html);
 
-  const { dataUri, painted } = await paintHero(heroPrompt);
-  html = html.split(HERO_PLACEHOLDER).join(dataUri);
+  // ONE SLOT, ONE PHOTOGRAPH.
+  //
+  // This used to paint a single image and splice it into every placeholder, so a
+  // nine-slot build shipped nine copies of the hero. On 2026-08-22 every one of
+  // the ten heaviest demos in the fleet read "N assets, ONE distinct", 39MB of
+  // 136MB was that duplication, and Sarah's verdict on the result was that they
+  // "have one picture for all the photo spots". Painting per slot is the fix; no
+  // amount of telling the model to vary its imagery could reach it, because the
+  // model never controlled this substitution in the first place.
+  const slots: Array<{ token: string; prompt: string }> = [{ token: HERO_PLACEHOLDER, prompt: heroPrompt }];
+  for (let n = 2; n <= MAX_ART_SLOTS; n++) {
+    const token = ART_PLACEHOLDER(n);
+    if (!html.includes(token)) continue;
+    const prompt = extract(`ART_PROMPT_${n}`, html);
+    // No prompt means the model asked for a slot it never art-directed. Fall back
+    // to the hero prompt rather than leaving a raw token in the page.
+    slots.push({ token, prompt: prompt || heroPrompt });
+  }
+
+  // Bounded concurrency: fal is billed per image and rate-limited, and a runner
+  // that fires seven at once gets throttled into the retry path.
+  const plates: Array<{ token: string; dataUri: string; ok: boolean }> = [];
+  const LANES = 3;
+  for (let i = 0; i < slots.length; i += LANES) {
+    const batch = await Promise.all(
+      slots.slice(i, i + LANES).map(async (s) => {
+        const r = await paintHero(s.prompt);
+        return { token: s.token, dataUri: r.dataUri, ok: r.painted };
+      }),
+    );
+    plates.push(...batch);
+  }
+  for (const p of plates) html = html.split(p.token).join(p.dataUri);
+  const okCount = plates.filter((p) => p.ok).length;
+  console.log(`forge-fallback: painted ${okCount}/${plates.length} distinct image(s) for ${plates.length} slot(s)`);
+  // The hero is slot one, and it is the only one whose absence changes the result
+  // shape: the page is designed to survive a dry wallet behind the hero, and the
+  // other slots simply fall back to a transparent pixel.
+  const painted = plates[0]?.ok ?? false;
 
   // THIS ENGINE HAS NO DISK, SO IT CANNOT BE REPAIRED. IT CAN ONLY BE REFUSED.
   //
