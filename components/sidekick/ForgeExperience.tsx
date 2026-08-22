@@ -23,6 +23,7 @@ import { SIDEKICK, sidekickVerticals, sidekickTiers, getVertical, forgeScript, s
 import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
 import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
 import { possessive } from '@/lib/business-name';
+import Link from 'next/link';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -528,7 +529,7 @@ export default function ForgeExperience() {
         <p className="text-center mt-6 font-body text-sm text-[#161616]/60">
           Phones ring more than {sidekickTiers[sidekickTiers.length - 1].minutesCap.toLocaleString()}{' '}
           minutes a month? You want the full custom concierge.{' '}
-          <a href="/voice-agents" className="text-[#1E50C8] font-semibold underline underline-offset-2">Start here</a> or book Sarah from the demo call.
+          <Link href="/voice-agents" className="text-[#1E50C8] font-semibold underline underline-offset-2">Start here</Link> or book Sarah from the demo call.
         </p>
       </div>
     </div>

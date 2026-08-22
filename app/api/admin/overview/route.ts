@@ -45,7 +45,7 @@ export async function GET() {
   const sixMonthsAgo = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 5, 1));
 
   // ── Orders / revenue ──────────────────────────────────────────────
-  let revenue = { month: 0, allTime: 0, monthCount: 0, allTimeCount: 0 };
+  const revenue = { month: 0, allTime: 0, monthCount: 0, allTimeCount: 0 };
   let recentOrders: Array<{ name: string | null; email: string; product_name: string; price_paid_cents: number; created_at: string }> = [];
   const revenueByMonth = new Map<string, number>();
   try {

@@ -76,7 +76,7 @@ const { TRADE_LABELS } = await import('../lib/acq/types');
 const NEW_TRADES = SOURCEABLE_TRADES.filter((t) => !PROVEN_TRADES.includes(t));
 
 let chosen: string[];
-let weights: Record<string, number> = {};
+const weights: Record<string, number> = {};
 
 if (INDUSTRY === 'new') {
   chosen = [...NEW_TRADES];

@@ -11,6 +11,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 import { CALL_STATS } from '@/data/proof-stats';
 import MissedMoney from '@/components/mustard/MissedMoney';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -799,9 +800,9 @@ export default async function MustardPage({
           */}
           <p className="mt-4 text-sm text-[#FBF6EA]/60">
             Want to read about it first?{' '}
-            <a className="font-bold text-[#F5B700] underline underline-offset-4" href="/voice-agents">
+            <Link className="font-bold text-[#F5B700] underline underline-offset-4" href="/voice-agents">
               How the voice agent works
-            </a>{' '}
+            </Link>{' '}
             and{' '}
             <a className="font-bold text-[#F5B700] underline underline-offset-4" href="/demos">
               what it costs

@@ -28,13 +28,16 @@
 import { readFileSync } from 'node:fs';
 import os from 'node:os';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+// Type-only, so it is erased at compile time and never pulls the module in
+// before the .env.local loop below has populated process.env.
+import type { FactoryJob } from '@/lib/factory/queue';
 
 for (const line of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
   const m = line.match(/^([A-Za-z0-9_]+)=(.*)$/);
   if (m && !process.env[m[1]]) process.env[m[1]] = m[2].trim().replace(/^["']|["']$/g, '');
 }
 
-const { claim, complete, fail, requeueStale, enqueue, type FactoryJob } = await import('@/lib/factory/queue');
+const { claim, complete, fail, requeueStale, enqueue } = await import('@/lib/factory/queue');
 const { runValueAction } = await import('@/lib/factory/value-actions');
 const { sendStep } = await import('@/lib/factory/campaigns');
 const { deployedBlueprint, validateBlueprint } = await import('@/lib/factory/blueprint');

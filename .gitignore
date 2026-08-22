@@ -71,3 +71,9 @@ scripts/.cache/
 
 # Rendered drip letters from scripts/celebrate-letters.mts (proofing only)
 .letters/
+
+# One lockfile. This repo resolves dependencies with pnpm everywhere: CI, Vercel,
+# and local. A stray install by another package manager writes a second lockfile
+# that Vercel would then build from, shipping dependency versions CI never tested.
+package-lock.json
+yarn.lock

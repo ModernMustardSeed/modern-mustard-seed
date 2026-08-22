@@ -50,10 +50,10 @@ jobs:
         with:
           fetch-depth: 0 # need the base branch present to diff against
 
-      # The repo maintains pnpm-lock.yaml, not package-lock.json: every dependency
-      # added since 2026-08-14 landed in the pnpm lock only. CI installs from the
-      # lockfile that is actually kept current, so a new dependency can never
-      # silently take the runners down again.
+      # One lockfile, pnpm, everywhere. CI, Vercel and local all resolve from
+      # pnpm-lock.yaml. package-lock.json used to sit beside it, eight days
+      # stale and missing a declared dependency, and Vercel built from THAT,
+      # so production shipped versions CI had never tested.
       - uses: pnpm/action-setup@v4
         with:
           version: 11.21.0
@@ -64,6 +64,18 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      # A second lockfile is how production and CI drifted apart. Catch it at
+      # the PR, not after a deploy ships untested dependency versions.
+      - name: One lockfile only
+        run: |
+          for stray in package-lock.json yarn.lock; do
+            if [ -f "$stray" ]; then
+              echo "::error::$stray is present. This repo installs with pnpm everywhere; delete it."
+              exit 1
+            fi
+          done
+          echo "pnpm-lock.yaml is the only lockfile."
 
       # Every file a build directive tells the forge to go read has to exist.
       # The default demo tier spent weeks pointing at a design system that was
@@ -101,7 +113,7 @@ jobs:
             STEP 2 — SWEEP
             Spawn one subagent per dimension via the Task tool and run them in parallel:
 
-              build    Actually RUN `npm run build`. Any failure, or any NEW warning attributable to
+              build    Actually RUN `pnpm build`. Any failure, or any NEW warning attributable to
                        changed code, is a finding with the real command output as evidence. Run any
                        tests covering the changed files.
               bugs     Review the DIFF for correctness only: broken logic, null paths, async races,

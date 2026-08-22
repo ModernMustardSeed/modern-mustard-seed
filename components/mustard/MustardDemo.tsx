@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 
 /**
  * The doorway's one interaction.
@@ -202,9 +203,9 @@ export default function MustardDemo(props: Props) {
               Open the one he built you
             </a>
           )}
-          <a href="/voice-agents" className={bigButtonQuiet}>
+          <Link href="/voice-agents" className={bigButtonQuiet}>
             Build my receptionist
-          </a>
+          </Link>
           <a href="/book" className="text-center text-sm font-semibold underline underline-offset-4 text-[#161616]/70">
             Or talk it through with Sarah
           </a>
