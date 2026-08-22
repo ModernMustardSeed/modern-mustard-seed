@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import type { SupabaseClient } from '@supabase/supabase-js';
 import { requireAcqAdmin } from '@/lib/acq/server';
-import { ENGAGEMENT_TYPES } from '@/lib/acq/events';
+import { isMachineHit, readEngagementEvents } from '@/lib/acq/engagement';
 import type { AcqEvent } from '@/lib/acq/types';
 
 export const runtime = 'nodejs';
@@ -110,25 +109,6 @@ async function inChunks<T>(ids: string[], fetch: (chunk: string[]) => Promise<T[
   return out;
 }
 
-async function eventsSince(db: SupabaseClient, since: string | null, cap: number): Promise<AcqEvent[]> {
-  const out: AcqEvent[] = [];
-  for (let from = 0; from < cap; from += 1000) {
-    let q = db
-      .from('acq_events')
-      .select('*')
-      .in('type', ENGAGEMENT_TYPES)
-      .order('occurred_at', { ascending: false })
-      .range(from, from + 999);
-    if (since) q = q.gte('occurred_at', since);
-    const { data, error } = await q;
-    if (error) throw new Error(error.message);
-    const rows = (data ?? []) as AcqEvent[];
-    out.push(...rows);
-    if (rows.length < 1000) break;
-  }
-  return out;
-}
-
 export async function GET(req: Request) {
   const gate = await requireAcqAdmin();
   if ('error' in gate) return gate.error;
@@ -142,7 +122,7 @@ export async function GET(req: Request) {
 
   let events: AcqEvent[];
   try {
-    events = await eventsSince(db, since, 5000);
+    events = await readEngagementEvents(db, since, 5000);
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Could not read the timeline.' }, { status: 500 });
   }
@@ -281,7 +261,7 @@ export async function GET(req: Request) {
     // stays on the prospect's timeline, labelled, but it never puts anybody on
     // this board: a board that lists antivirus as movement is worse than an
     // empty one, because an empty one is honest.
-    if ((e.detail as Record<string, unknown> | null)?.machine === true) continue;
+    if (isMachineHit(e)) continue;
     const step = stepFor(e.type);
     if (!step) continue;
     const p = ensure(e.lead_id);

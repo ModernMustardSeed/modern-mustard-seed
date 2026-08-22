@@ -6,34 +6,9 @@ import type {
   ForgeRow,
   ForgeSiteRun,
   ForgeStage,
-  ForgeWorkerHealth,
-  ForgeWorkerVitals,
   SiteDemoStatus,
 } from '@/lib/outbound';
-import { FORGE_WORKER_DEAD_AFTER_S } from '@/lib/outbound';
-
-/**
- * Read the worker's heartbeat. Best effort in both directions: a missing row and
- * a failed read both mean "no signal", and neither may take the forge board down,
- * because the board is how Sarah works the floor.
- */
-type ForgeSupabase = Awaited<ReturnType<typeof requireOutboundAdmin>> extends infer G
-  ? G extends { supabase: infer S }
-    ? S
-    : never
-  : never;
-
-async function workerVitals(supabase: ForgeSupabase): Promise<ForgeWorkerVitals | null> {
-  try {
-    const { data } = await supabase.from('app_state').select('value').eq('key', 'forge_worker_health').maybeSingle();
-    const v = (data?.value ?? null) as ForgeWorkerHealth | null;
-    if (!v?.at) return null;
-    const ageSeconds = Math.max(0, Math.round((Date.now() - new Date(v.at).getTime()) / 1000));
-    return { ...v, ageSeconds, alive: ageSeconds <= FORGE_WORKER_DEAD_AFTER_S };
-  } catch {
-    return null;
-  }
-}
+import { readForgeWorkerVitals } from '@/lib/forge-worker';
 
 export const runtime = 'nodejs';
 
@@ -268,7 +243,7 @@ export async function GET(req: Request) {
     { forging: 0, failed: 0, uncontacted: 0, waiting: 0, landed: 0, closed: 0, all: 0 },
   );
 
-  if (summaryOnly) return NextResponse.json({ counts, worker: await workerVitals(guard.supabase) });
+  if (summaryOnly) return NextResponse.json({ counts, worker: await readForgeWorkerVitals(guard.supabase) });
 
   // Work order, not chronology: what is building, what broke, what is built and
   // unspent, then the rest. Inside a bucket, the freshest forge leads.
@@ -281,5 +256,5 @@ export async function GET(req: Request) {
     return bt.localeCompare(at);
   });
 
-  return NextResponse.json({ rows, counts, reps, worker: await workerVitals(guard.supabase) });
+  return NextResponse.json({ rows, counts, reps, worker: await readForgeWorkerVitals(guard.supabase) });
 }

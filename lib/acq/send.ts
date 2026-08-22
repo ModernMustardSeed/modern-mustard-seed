@@ -17,7 +17,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
 import { sendViaResend } from '@/lib/send-email';
-import { buildCampaignEmail, buildDemoEmail, buildFollowupEmail } from '@/lib/acq/campaign';
+import { buildCampaignEmail, buildDemoEmail, buildFollowupEmail, buildSuiteEmail } from '@/lib/acq/campaign';
 import type { FollowupKind } from '@/lib/acq/campaign';
 import { getVariants, pickVariant } from '@/lib/acq/settings';
 import { recordEvent } from '@/lib/acq/events';
@@ -373,6 +373,118 @@ export async function sendDemoEmail(
     type: 'demo_emailed',
     label: `Personalized demo emailed to ${built.to}`,
     detail: { demoUrl, messageId: sent.id },
+  });
+
+  return { ok: true, messageId: sent.id, subject: built.subject };
+}
+
+
+/**
+ * SEND THEM THE WHOLE SUITE.
+ *
+ * sendDemoEmail above is Mr. Mustard's, sent to somebody who just spent four
+ * minutes on the phone with him, and it points at one thing: the receptionist
+ * they heard. This one is for everybody else, and it leads with all of it.
+ *
+ * Three refusals happen before a byte moves, and each of them exists because
+ * the alternative is a broken link in front of a stranger:
+ *   1. Nothing forged: there is no suite to send.
+ *   2. A website that is still on the anvil is never named. The email is
+ *      rebuilt around whatever is genuinely finished.
+ *   3. The governor decides, exactly as it does for every other send, so the
+ *      sending domain is protected by one gate and not by four.
+ */
+export async function sendSuiteEmail(
+  db: SupabaseClient,
+  campaign: AcqCampaign,
+  lead: AcqProspect,
+  opts: { resend?: boolean } = {},
+): Promise<SendResult> {
+  const hubUrl = lead.hub_demo_url;
+  const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
+  if (!hubUrl || (!lead.demo_url && !siteReady && !lead.os_demo_url)) {
+    return { ok: false, error: 'Nothing is forged for them yet. Build the suite first.', permanent: false };
+  }
+  if (lead.demo_emailed_at && !opts.resend) {
+    return { ok: false, error: 'Their suite already went out. Use the follow-ups from here.', permanent: true };
+  }
+
+  const gate = await gateOrRefuse(db, campaign, lead, 'demo');
+  if (!gate.ok) return gate.result;
+
+  // Only claim a video that is actually attached. Both lookups fail soft: a
+  // storage hiccup costs the email one sentence, never the send.
+  let personalVideo = false;
+  try {
+    const { data } = await db.storage.from('booth').createSignedUrl(`founder/${lead.id}.webm`, 60);
+    personalVideo = Boolean(data?.signedUrl);
+  } catch {
+    personalVideo = false;
+  }
+  const film = (lead as unknown as { suite_film_status?: string | null }).suite_film_status === 'ready';
+
+  const built = buildSuiteEmail({
+    lead,
+    suite: {
+      hubUrl,
+      voiceUrl: lead.demo_url,
+      siteUrl: siteReady ? lead.site_demo_url : null,
+      osUrl: lead.os_demo_url,
+      personalVideo,
+      film,
+    },
+    checkoutUrl: checkoutUrlFor(lead),
+    calendarUrl: CALENDAR_URL,
+    offerLine: OFFER.line,
+    // He only signs it if he has actually spoken to them. A stranger getting a
+    // warm note from a character they have never met reads as a bot.
+    fromMustard: lead.call_stage === 'completed',
+    fromName: lead.call_stage === 'completed' ? 'Mr. Mustard at Modern Mustard Seed' : campaign.from_name,
+    fromEmail: campaign.from_email,
+    replyTo: campaign.reply_to,
+  });
+  if (!built) return permanent('No email address on the prospect.');
+
+  const sent = await sendViaResend({
+    from: built.from,
+    to: built.to,
+    replyTo: built.replyTo,
+    subject: built.subject,
+    html: built.html,
+    mailbox: campaign.reply_to,
+    unsubscribeUrl: built.unsubscribeUrl,
+    leadId: lead.id,
+  });
+  if (!sent.ok) return { ok: false, error: sent.error, permanent: Boolean(sent.suppressed?.length) };
+
+  await recordSend(db, {
+    leadId: lead.id,
+    campaignId: campaign.id,
+    cohortId: lead.acq_cohort_id,
+    kind: 'demo',
+    to: built.to,
+    from: built.from,
+    subject: built.subject,
+    providerMessageId: sent.id,
+  });
+  await db
+    .from('outbound_leads')
+    .update({ demo_emailed_at: new Date().toISOString(), acq_stage: 'demo_sent', reservoir_state: 'hot' })
+    .eq('id', lead.id);
+  await recordEvent(db, {
+    leadId: lead.id,
+    campaignId: campaign.id,
+    type: 'demo_emailed',
+    label: `Their full suite was emailed to ${built.to}`,
+    detail: {
+      hubUrl,
+      voice: Boolean(lead.demo_url),
+      site: siteReady,
+      os: Boolean(lead.os_demo_url),
+      personalVideo,
+      film,
+      messageId: sent.id,
+    },
   });
 
   return { ok: true, messageId: sent.id, subject: built.subject };
