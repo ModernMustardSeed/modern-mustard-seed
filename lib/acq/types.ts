@@ -37,6 +37,17 @@ export const TRADES = [
   'flooring',
   'auto_repair',
   'veterinary',
+  /* the construction family (2026-08-22) */
+  'general_contractor',
+  'concrete',
+  'masonry',
+  'fencing',
+  'siding_gutters',
+  'windows_doors',
+  'septic',
+  'well_water',
+  'excavation',
+  'paving',
   'other',
 ] as const;
 export type Trade = (typeof TRADES)[number];

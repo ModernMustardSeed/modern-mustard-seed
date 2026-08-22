@@ -5,7 +5,8 @@ import { enqueue, cancelPendingFor } from '@/lib/acq/queue';
 import { recordEvent } from '@/lib/acq/events';
 import { evaluate } from '@/lib/acq/eligibility';
 import { suiteState } from '@/lib/acq/suite';
-import type { AcqProspect } from '@/lib/acq/types';
+import { SOURCEABLE_TRADES } from '@/lib/acq/trades';
+import type { AcqProspect, Trade } from '@/lib/acq/types';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -178,9 +179,13 @@ export async function POST(req: Request) {
       break;
     }
     case 'set-trade': {
+      // Every trade the registry carries, not a hand-typed four. This list was
+      // written when there were three industries and it silently refused the
+      // other twenty-two, so correcting a prospect to electrical or concrete by
+      // hand was impossible from the screen built to do exactly that.
       const trade = String(body.value ?? '');
-      if (!['hvac', 'plumbing', 'roofing', 'other'].includes(trade)) {
-        return NextResponse.json({ error: 'Unknown trade.' }, { status: 400 });
+      if (trade !== 'other' && !SOURCEABLE_TRADES.includes(trade as Exclude<Trade, 'other'>)) {
+        return NextResponse.json({ error: `Unknown trade: ${trade}` }, { status: 400 });
       }
       await db.from('outbound_leads').update({ trade }).in('id', ids);
       affected = ids.length;
