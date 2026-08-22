@@ -253,9 +253,8 @@ export default async function PresenceAuditPage({ params }: { params: Params }) 
             We would rather show you than pitch you.
           </h2>
           <p className="font-body text-[15px] leading-relaxed text-[#FBF6EA]/85 mt-3 max-w-2xl">
-            So we already built it. A website for {business}, a voice agent that answers as you at two in the morning, a
-            command center that puts your calls and your money on one board, and a step-by-step AI plan you keep either
-            way. All free to look at, all yours, no card and no meeting.
+            So we already built it. A website for {business}, a voice agent that answers as you at two in the morning,
+            and a step-by-step AI plan you keep either way. All free to look at, all yours, no card and no meeting.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a

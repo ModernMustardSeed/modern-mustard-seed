@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { forgeLeadVoiceDemo, buildSiteBrief, ensureOsDemo, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
 
@@ -42,12 +42,10 @@ export async function POST(req: Request, { params }: { params: Params }) {
   const l = lead as OutboundLead;
 
   if (l.site_demo_status === 'queued' || l.site_demo_status === 'building') {
-    const withOs = await ensureOsDemo(guard.supabase, l);
-    return NextResponse.json({ ok: true, lead: await ensureDemoHub(guard.supabase, withOs), already: true });
+    return NextResponse.json({ ok: true, lead: await ensureDemoHub(guard.supabase, l), already: true });
   }
   if (l.site_demo_status === 'ready' && l.site_demo_url) {
-    const withOs = await ensureOsDemo(guard.supabase, l);
-    return NextResponse.json({ ok: true, lead: await ensureDemoHub(guard.supabase, withOs), existing: true });
+    return NextResponse.json({ ok: true, lead: await ensureDemoHub(guard.supabase, l), existing: true });
   }
 
   // The pair, without hesitation: make sure the voice demo exists first. A
@@ -100,9 +98,8 @@ export async function POST(req: Request, { params }: { params: Params }) {
     occurred_at: new Date().toISOString(),
   });
 
-  // Every forged suite shows the command center too, whatever they end up buying:
-  // it is instant and token-free to build, and seeing it is what sells the pair.
-  const withOs = await ensureOsDemo(guard.supabase, updated as OutboundLead);
-  const withHub = await ensureDemoHub(guard.supabase, withOs);
+  // No command center rides along any more (Sarah, 2026-08-22). It is sold on
+  // its own and built by hand; the Forge OS button is the only way one appears.
+  const withHub = await ensureDemoHub(guard.supabase, updated as OutboundLead);
   return NextResponse.json({ ok: true, lead: withHub });
 }

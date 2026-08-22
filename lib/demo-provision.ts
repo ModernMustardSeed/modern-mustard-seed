@@ -46,7 +46,11 @@ function milestonesFor(keys: string[]): Array<{ title: string; detail: string; d
   const ms: Array<{ title: string; detail: string; done: boolean }> = [
     { title: 'Tell us about your business', detail: 'Your logo, photos, hours, and the details only you know. This is the one thing we need from you.', done: false },
   ];
-  const has = (k: DemoProductKey) => keys.includes(k) || keys.includes('bundle');
+  // The bundle is the two paid pieces and NOTHING ELSE since 2026-08-22, so it
+  // no longer implies a command center. A buyer who ticked one explicitly still
+  // gets its milestone; a bundle buyer must not, or we promise them a build
+  // they did not pay for and nobody is going to make.
+  const has = (k: DemoProductKey) => keys.includes(k) || (keys.includes('bundle') && k !== 'os');
 
   if (has('site')) {
     ms.push({ title: 'Your website, built for real', detail: 'We take the demo you toured and rebuild it around your real brand, photos, and offers.', done: false });
@@ -56,13 +60,11 @@ function milestonesFor(keys: string[]): Array<{ title: string; detail: string; d
   if (has('voice')) {
     ms.push({ title: 'Your voice agent goes live', detail: 'The voice from your demo, answering your calls around the clock.', done: false });
   }
-  // The command center is built when they bought it, and free inside the bundle
-  // where both paid pieces ride (Sarah 2026-08-13: free with both, not either).
-  // has() already returns true for every key when the order is the bundle.
+  // Only when they actually bought one. It is no longer part of any bundle.
   if (has('os')) {
     ms.push({
-      title: keys.includes('bundle') ? 'Your command center, included free' : 'Your command center, wired up',
-      detail: 'Wired to your real calls and transcripts, your website traffic, customers, and reviews.',
+      title: 'Your command center, wired up',
+      detail: 'Scoped with you, then built by hand around your real calls and transcripts, your website traffic, customers, and reviews.',
       done: false,
     });
   }

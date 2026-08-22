@@ -393,13 +393,12 @@ function emailTalkingWebsite(business: string, _lead: AcqProspect): string {
         </p>
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
           ${piece('The voice agent', 'Answers as your business, day or night, qualifies the caller and books the job.')}
-          ${piece('The website', 'Designed from scratch for your trade and your town, with him answering on it.')}
-          ${piece('The command center', 'Every call written down, your leads, your customers and your money on one board.', true)}
+          ${piece('The website', 'Designed from scratch for your trade and your town, with him answering on it.', true)}
         </table>
       </td></tr>
     </table>` +
     p(
-      'All three are built for your business and cost nothing to look at. No card, no meeting, and it is with you inside the hour.',
+      'Both are built for your business and cost nothing to look at. No card, no meeting, and it is with you inside the hour.',
     ) +
     p(
       `Or skip the form: call Mr. Mustard on <a href="tel:${RANCH_LINE.tel}" style="color:#C2261A;font-weight:700;text-decoration:none;white-space:nowrap">${RANCH_LINE.display}</a> and tell him to build you a website. He does it while you are on the line with him.`,

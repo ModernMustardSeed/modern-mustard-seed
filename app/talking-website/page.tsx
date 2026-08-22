@@ -59,7 +59,7 @@ const PIECES = [
 const FAQ = [
   {
     q: 'What is The Talking Website?',
-    a: `A website that answers its own phone. Instead of buying a site from one vendor and bolting a phone robot on later, your website and your voice agent are built as one thing, off one brain, so the answer a visitor reads on the page is the exact answer a caller hears at midnight. The business command center that runs both rides along free. It is ${formatUsd(DEMO_BUNDLE.setupCents)} to set up plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month.`,
+    a: `A website that answers its own phone. Instead of buying a site from one vendor and bolting a phone robot on later, your website and your voice agent are built as one thing, off one brain, so the answer a visitor reads on the page is the exact answer a caller hears at midnight. It is ${formatUsd(DEMO_BUNDLE.setupCents)} to set up plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month.`,
   },
   {
     q: 'How is this different from adding a chatbot to my site?',
@@ -67,11 +67,11 @@ const FAQ = [
   },
   {
     q: 'How much does it cost?',
-    a: `${formatUsd(DEMO_BUNDLE.setupCents)} to set up plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, month to month, cancel anytime, no trials. Bought separately the two paid pieces are ${formatUsd(PAIR_SETUP)} setup plus ${formatUsd(PAIR_MONTHLY)} a month, so the bundle saves you ${formatUsd(SAVE_SETUP)} up front and ${formatUsd(SAVE_MONTHLY)} every month, and the command center (normally ${formatUsd(os.setupCents)} plus ${formatUsd(os.monthlyCents)}/mo) is free inside it.`,
+    a: `${formatUsd(DEMO_BUNDLE.setupCents)} to set up plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, month to month, cancel anytime, no trials. Bought separately the two paid pieces are ${formatUsd(PAIR_SETUP)} setup plus ${formatUsd(PAIR_MONTHLY)} a month, so the bundle saves you ${formatUsd(SAVE_SETUP)} up front and ${formatUsd(SAVE_MONTHLY)} every month.`,
   },
   {
     q: 'Can I buy just the website or just the voice agent?',
-    a: `Yes. Every piece is sold on its own. The website is ${formatUsd(site.setupCents)} plus ${formatUsd(site.monthlyCents)} a month, the voice agent is ${formatUsd(voice.setupCents)} plus ${formatUsd(voice.monthlyCents)} a month, and the command center is ${formatUsd(os.setupCents)} plus ${formatUsd(os.monthlyCents)} a month. The Talking Website is what happens when you take the website and the voice agent together, and it is cheaper than buying them separately, with the command center free inside it.`,
+    a: `Yes. Every piece is sold on its own. The website is ${formatUsd(site.setupCents)} plus ${formatUsd(site.monthlyCents)} a month and the voice agent is ${formatUsd(voice.setupCents)} plus ${formatUsd(voice.monthlyCents)} a month. The Talking Website is what happens when you take them together, and it is cheaper than buying them separately.`,
   },
   {
     q: 'Can I put the voice agent on the website I already have?',
@@ -91,7 +91,7 @@ const FAQ = [
   },
   {
     q: 'What happens if it cannot answer something?',
-    a: `It takes a proper message and hands off to you, with the transcript and the caller's number already in your command center and a text on your phone. It also has a hard monthly minute cap, so a runaway month is not a runaway bill: ${voice.finePrint}`,
+    a: `It takes a proper message and hands off to you, with the transcript and the caller's number in your inbox and a text on your phone. It also has a hard monthly minute cap, so a runaway month is not a runaway bill: ${voice.finePrint}`,
   },
 ];
 
@@ -103,7 +103,7 @@ function talkingWebsiteJsonLd() {
         '@type': 'Service',
         name: 'The Talking Website by Modern Mustard Seed',
         serviceType:
-          'Combined small-business website and AI voice agent built on one shared knowledge base, with a business command center included',
+          'Combined small-business website and AI voice agent built on one shared knowledge base',
         description:
           'A website that answers its own phone. The website and the AI voice agent are built as one system off one brain, so the answer a visitor reads on the page is the same answer a caller hears at midnight. Includes custom website design, funnels, SEO and GEO, a 24/7 AI voice agent answering the number you already have, and the business command center free.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
@@ -165,7 +165,7 @@ export default function TalkingWebsitePage() {
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Not a site with a chat bubble bolted on. Your website and your voice agent, built as one thing off one
                 brain, so the answer a visitor reads at noon is the exact answer a caller hears at midnight. The
-                command center that runs both is free inside it.
+                two are built as one thing, off one brain.
               </p>
               <p className="font-mono font-bold text-[15px] mt-5">
                 {formatUsd(DEMO_BUNDLE.setupCents)} setup{' '}
@@ -356,7 +356,7 @@ export default function TalkingWebsitePage() {
                 {[
                   'Custom website, live in about a week',
                   'Voice agent answering your calls, 24/7',
-                  'Command center free inside it',
+                  'One brain behind both',
                   'Funnels, lead magnet, SEO and GEO',
                   // The homepage Town Square (MI 47) promises both of these by
                   // name. The flagship page has to say so too, or the CTA that

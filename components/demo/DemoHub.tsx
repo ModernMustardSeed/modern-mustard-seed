@@ -117,7 +117,6 @@ export default function DemoHub({
   voiceUrl,
   siteUrl,
   sitePending,
-  osUrl,
   integrationPlanUrl,
   planQuote,
   auditUrl,
@@ -153,7 +152,6 @@ export default function DemoHub({
   voiceUrl: string | null;
   siteUrl: string | null;
   sitePending: string | null;
-  osUrl: string | null;
   /** Their finished AI Integration Plan (/demo/plan/<id>), when written. It
    *  joins the suite as a door: free value that fills a voice-only page. */
   integrationPlanUrl?: string | null;
@@ -264,20 +262,6 @@ export default function DemoHub({
           tone: 'gold' as const,
           cta: siteUrl ? 'See it live' : 'Watch it forge',
         },
-        osUrl && {
-          href: osUrl,
-          icon: '⚙',
-          title: 'Your command center',
-          // Sarah 2026-08-20: when the agent and the website both live in the
-          // suite, the free command center is the headline, not a footnote.
-          desc:
-            voiceUrl && (siteUrl || sitePending)
-              ? 'Every call transcribed, your customers, reviews, quotes, and money on one board. It costs nothing extra: the website and the voice agent live here together, so this comes with them. Already built, already wearing your brand.'
-              : 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Free when you keep the website and the voice agent together, nothing to install.',
-          tone: 'ink' as const,
-          cta: 'Open it',
-          badge: voiceUrl && (siteUrl || sitePending) ? 'FREE with these two' : 'Free with both',
-        },
         integrationPlanUrl && {
           href: integrationPlanUrl,
           icon: '📋',
@@ -290,7 +274,7 @@ export default function DemoHub({
           badge: 'Free',
         },
       ].filter(Boolean) as { href: string; icon: string; title: string; desc: string; tone: 'dark' | 'gold' | 'ink'; cta: string; badge?: string }[],
-    [voiceUrl, siteUrl, sitePending, osUrl, integrationPlanUrl, planQuote, auditUrl, auditScore, auditHeadline, business],
+    [voiceUrl, siteUrl, sitePending, integrationPlanUrl, planQuote, auditUrl, auditScore, auditHeadline, business],
   );
 
   /**
@@ -310,38 +294,33 @@ export default function DemoHub({
    * one quiet line at the bottom, after the order card, where it is an offer
    * rather than clutter over the thing they asked for.
    */
+  //
+  // THE COMMAND CENTER IS NOT A SUITE PIECE ANY MORE (Sarah, 2026-08-22). It is
+  // still sold and still built by hand, it is simply not forged, not shown here
+  // and not suggested next to anything. A lead forged before that date can
+  // still carry an os_demo_url and its page still resolves, so any link already
+  // emailed keeps working; it just no longer appears as a door.
+  //
   const forged = [
     voiceUrl ? 'voice' : null,
     siteUrl || sitePending ? 'site' : null,
-    osUrl ? 'os' : null,
-  ].filter(Boolean) as ('voice' | 'site' | 'os')[];
-  const PIECE_NAME: Record<'voice' | 'site' | 'os', string> = {
+  ].filter(Boolean) as ('voice' | 'site')[];
+  const PIECE_NAME: Record<'voice' | 'site', string> = {
     voice: 'Voice Agent',
     site: 'Website',
-    os: 'Command Center',
   };
   const onlyOne = forged.length === 1;
-  const missing = (['voice', 'site', 'os'] as const).filter((p) => !forged.includes(p));
-  // What the form can actually queue: the two sellable demos. The command
-  // center is included free at purchase, not forged on request.
-  const forgeMissing = missing.filter((p): p is 'voice' | 'site' => p === 'voice' || p === 'site');
+  const missing = (['voice', 'site'] as const).filter((p) => !forged.includes(p));
+  const forgeMissing = missing;
 
-  /**
-   * The line about what they did not take. It carries the command-center rule
-   * when it applies, because a buyer holding one paid piece who adds the other
-   * gets the back office free, and every surface that can put somebody in the
-   * dominated cart owes them that fact in the moment.
-   */
+  /** The line about the one piece they did not take. */
   const restLine = (() => {
     if (!missing.length) return null;
-    if (forged.includes('voice') && forged.includes('site')) {
-      return 'You have both paid pieces here, so the command center that files every call and every lead is already free with them. Say the word and it goes on this page.';
-    }
     if (forged.includes('voice')) {
-      return 'Want the website to match, built the same way, off the same brain? Taking the two together makes the command center free.';
+      return 'Want the website to match, built the same way, off the same brain? Taken together they become one thing, and it costs less than the two apart.';
     }
     if (forged.includes('site')) {
-      return 'Want it to answer its own phone too? Taking the two together makes the command center free.';
+      return 'Want it to answer its own phone too? Taken together they become one thing, and it costs less than the two apart.';
     }
     return 'Want the voice agent that feeds this, or the website to match? We can forge either one.';
   })();
@@ -471,13 +450,7 @@ export default function DemoHub({
         ) : (
         <section>
           <h2 className="font-display text-2xl font-bold mb-1">Your {doors.length} demos</h2>
-          {osUrl && voiceUrl && (siteUrl || sitePending) && (
-            <p className="font-body text-[14.5px] text-[#161616]/70 mb-4 max-w-xl">
-              Two of these are the products. The third, your command center, is <strong className="text-[#161616]">included free</strong> because
-              the website and the voice agent live together in this suite. You are not being upsold a dashboard; it comes with the pair.
-            </p>
-          )}
-          {!(osUrl && voiceUrl && (siteUrl || sitePending)) && <div className="mb-3" />}
+          <div className="mb-3" />
           <div className={`grid sm:grid-cols-2 ${doors.length >= 3 ? 'lg:grid-cols-3' : ''} gap-4`}>
             {doors.map((d, i) => (
               <a
@@ -560,7 +533,6 @@ export default function DemoHub({
           forged={[
             voiceUrl ? ('voice' as DemoProductKey) : null,
             siteUrl || sitePending ? ('site' as DemoProductKey) : null,
-            osUrl ? ('os' as DemoProductKey) : null,
           ].filter(Boolean) as DemoProductKey[]}
         />
 

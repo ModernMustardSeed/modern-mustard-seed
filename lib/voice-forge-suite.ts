@@ -27,7 +27,7 @@
 
 import { after } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { forgeLeadVoiceDemo, buildOsConfig, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
 import { ensurePresenceAudit } from '@/lib/presence-audit';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import type { OutboundLead, Niche } from '@/lib/outbound';
@@ -79,7 +79,6 @@ function nicheOf(trade: string): Niche {
 export const FORGE_PIECES = {
   voice_agent: 'voice',
   website: 'site',
-  command_center: 'os',
 } as const;
 
 export type ForgePiece = (typeof FORGE_PIECES)[keyof typeof FORGE_PIECES];
@@ -88,12 +87,11 @@ export type ForgePiece = (typeof FORGE_PIECES)[keyof typeof FORGE_PIECES];
 const PIECE_LABEL: Record<ForgePiece, string> = {
   voice: 'voice agent',
   site: 'website',
-  os: 'command center',
 };
 
 /** Instant vs queued. Only the website goes to the worker floor, and only the
  *  website earns the "within the hour" promise or a walkthrough film. */
-const INSTANT: Record<ForgePiece, boolean> = { voice: true, site: false, os: true };
+const INSTANT: Record<ForgePiece, boolean> = { voice: true, site: false };
 
 function piecesFrom(build: unknown): ForgePiece[] {
   const raw = Array.isArray(build) ? build : typeof build === 'string' ? [build] : [];
@@ -105,31 +103,32 @@ function piecesFrom(build: unknown): ForgePiece[] {
     // rather than bouncing a real request back at a live caller.
     else if (/^(voice|agent|phone)/.test(k)) out.add('voice');
     else if (/^(site|web)/.test(k)) out.add('site');
-    else if (/^(os|command|back_?office|dashboard)/.test(k)) out.add('os');
+    // A command center request is DROPPED here on purpose (Sarah, 2026-08-22).
+    // It is no longer a forgeable piece: it is sold on its own and built by
+    // hand. Silently mapping it to a build would ship the one product she
+    // pulled, so the request falls through to `pieces.length === 0`, which
+    // makes him ask what they want instead of guessing.
   }
-  return (['voice', 'site', 'os'] as ForgePiece[]).filter((p) => out.has(p));
+  return (['voice', 'site'] as ForgePiece[]).filter((p) => out.has(p));
 }
 
 /**
  * The one soft line naming what they did NOT take. It runs in the delivery
  * email and nowhere else: on the call he is told to close and stop selling, so
- * the other pieces get named here instead, at the reader's own pace, next to
+ * the other piece gets named here instead, at the reader's own pace, next to
  * the order card that can actually take the money.
  *
- * When the missing piece would complete BOTH paid pieces, it says the command
- * center comes free with them. That is the `commandCenterUpsell` signpost every
- * ordering surface owes a buyer since the 2026-08-13 rule change, not a
- * flourish: voice plus a paid command center costs more for less than the
- * bundle, and nobody should reach that cart uninformed.
+ * It names ONLY the two forgeable pieces. The command center is not mentioned
+ * anywhere in this file any more (Sarah, 2026-08-22): it is sold on its own and
+ * never suggested alongside something else.
  */
 function upsellLine(pieces: ForgePiece[]): string {
   const has = (p: ForgePiece) => pieces.includes(p);
-  if (has('voice') && has('site') && has('os')) return '';
+  if (has('voice') && has('site')) return '';
   const wrap = (s: string) => `<p>${s} Just reply to this email or call us back, and we will forge that one too.</p>`;
-  const bundleNote = 'and taking the two together makes the command center free';
-  if (has('voice') && has('site')) return wrap('You have both paid pieces here, so the command center that files every call and every lead is already free with them: say the word and it goes on your hub.');
-  if (has('voice')) return wrap(`If you ever want the website to match, ${bundleNote}.`);
-  if (has('site')) return wrap(`If you ever want it to answer its own phone too, ${bundleNote}.`);
+  const pair = 'and taken together they are built as one thing, for less than the two apart';
+  if (has('voice')) return wrap(`If you ever want the website to match, ${pair}.`);
+  if (has('site')) return wrap(`If you ever want it to answer its own phone too, ${pair}.`);
   return wrap('If you ever want the voice agent that feeds it, or the website to match, we can build either one.');
 }
 
@@ -269,7 +268,7 @@ export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: s
 
   // Present on the prior lead = already forged, whatever its build status.
   const alreadyHas = (lead: OutboundLead, piece: ForgePiece): boolean =>
-    piece === 'voice' ? !!lead.demo_url : piece === 'site' ? !!lead.site_demo_id : !!lead.os_demo_id;
+    piece === 'voice' ? !!lead.demo_url : !!lead.site_demo_id;
 
   let addTo: OutboundLead | null = null;
   let pieces = wanted;
@@ -360,23 +359,6 @@ export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: s
       if (want('voice')) {
         const voice = await forgeLeadVoiceDemo(supabase, lead);
         if (voice.ok) lead = voice.lead;
-      }
-
-      if (want('os')) {
-        const { data: osRow } = await supabase
-          .from('outbound_demo_os')
-          .insert({ lead_id: lead.id, business_name: lead.business_name, config: buildOsConfig(lead) })
-          .select('id')
-          .single();
-        if (osRow) {
-          const { data: updated } = await supabase
-            .from('outbound_leads')
-            .update({ os_demo_id: osRow.id, os_demo_url: `${SITE.url}/demo/os/${osRow.id}`, os_demo_status: 'ready' })
-            .eq('id', lead.id)
-            .select('*')
-            .single();
-          if (updated) lead = updated as OutboundLead;
-        }
       }
 
       if (want('site')) {

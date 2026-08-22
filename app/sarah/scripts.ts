@@ -782,7 +782,8 @@ const META_ADS: PrompterScript[] = [
     ],
   },
 
-  /* ---- Websites + the Command Center, free with both pieces (2026-08-13) ---- */
+  /* ---- Websites. The command center came off the offer 2026-08-22: it is
+     sold on its own, built by hand, and never pitched alongside anything. ---- */
   {
     id: 'ad-cc-one-screen',
     kind: 'ad',
@@ -811,7 +812,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Offer + CTA',
         paragraphs: [
-          'And here is the part I like. Take the website and the voice agent together and it comes free. Not a monthly add on. Included.',
+          'And here is the part I like. Take the website and the voice agent together and they are built as one thing, off one brain, for less than the two apart.',
           '(Screen record of the command center, real leads pinging in live. Text on screen: FREE WITH YOUR BUILD.)',
           'One screen for your whole front door. Want to see it work? The link is below. I am Sarah, Modern Mustard Seed.',
         ],
@@ -880,7 +881,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Fix + CTA',
         paragraphs: [
-          'So I put all of it on one screen, a command center, and it is free when you take the website and the voice agent together. Leads, calls, messages, bookings, one place, on your phone.',
+          'So I put all of it on one screen. Leads, calls, messages, bookings, one place, on your phone. That one is built by hand and we scope it first, so ask me about it when the front door is handled.',
           'Fewer apps, nothing dropped. Let me show you. The link is below.',
         ],
       },
@@ -914,7 +915,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Offer + CTA',
         paragraphs: [
-          'And it comes free when you take the website and the voice agent together. You just watch the front door fill up.',
+          'You just watch the front door fill up.',
           'Your whole business, on one screen, in your pocket. See it below. I am Sarah, Modern Mustard Seed.',
         ],
       },
@@ -930,7 +931,7 @@ const META_ADS: PrompterScript[] = [
     title: 'A Website That Actually Works',
     hook: 'Your website should be your hardest working employee. Most of them are a business card that forgot to do anything.',
     directorNote:
-      'Confident and a little cheeky on the business-card line. This is the core website pitch, so the value-add close (the free command center) should feel like a bonus you are throwing in, not the headline.',
+      'Confident and a little cheeky on the business-card line. This is the core website pitch, so the close is the pair: a site that answers its own phone, for less than the two apart.',
     sections: [
       {
         heading: 'Hook',
@@ -948,7 +949,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Offer + CTA',
         paragraphs: [
-          'And add the voice agent to it and the command center is free, so every lead the site brings in lands in one place you can watch from your phone.',
+          'And add the voice agent to it and they are built as one thing, so every lead the site brings in gets answered the same way at midnight as at noon.',
           'A website that earns its keep. Want to see yours? The link is below. I am Sarah, from a studio in Montana.',
         ],
       },
@@ -982,7 +983,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Fix + CTA',
         paragraphs: [
-          'I rebuild it into something fast and clean that actually turns visitors into calls, and I wire it into a command center, free once the voice agent is on it too, so you can see every lead it brings in.',
+          'I rebuild it into something fast and clean that actually turns visitors into calls, and I put the voice agent on it so the ones that come in at night get answered too.',
           'Stop leaking customers to a bad website. Let me show you better. The link is below.',
         ],
       },
@@ -1050,7 +1051,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Offer + CTA',
         paragraphs: [
-          'Same quality site, a command center free when you take the voice agent too, and a real human who answers. The plain numbers are always on the page.',
+          'Same quality site, a voice agent that answers it, and a real human who answers you. The plain numbers are always on the page.',
           'Skip the agency, keep the quality. Come see. The link is below.',
         ],
       },
@@ -1419,7 +1420,7 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
         paragraphs: [
           'Then three things get built at once. First, the voice agent. An AI agent gets trained on their services, their hours, and the language of their trade, and it can answer the phone as their business in about a minute. It books the job, it speaks like a person who works there, and it is told to never quote a price it should not.',
           'Second, the website. While I am asleep, an agent reads the brief, researches what a business like theirs actually needs, writes the copy, designs the layout, builds the whole thing, tests it on a phone, finds its own broken pieces, fixes them, and publishes it to a live address. It runs on a flat monthly plan, not a meter, so building a hundred of these costs me the same as building one.',
-          'Third, the command center. A simple dashboard, free when you take the site and the voice agent together, where every call, every lead, and every message lands in one place. A website that just sits there is a brochure. A website wired into a command center is a business.',
+          'Third, once those two are working, the back office. A simple dashboard where every call, every lead, and every message lands in one place. We build those by hand and scope them first, so it is a conversation rather than a checkbox. A website that just sits there is a brochure.',
           '(Split screen: the voice agent answering a live call, the website assembling itself, the dashboard lighting up. Mr. Mustard runs between all three like a stagehand.)',
         ],
       },
@@ -1624,7 +1625,7 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       {
         heading: 'Why Free',
         paragraphs: [
-          'I include it free when you take the website and the voice agent together, and people do not believe me. Here is why I do it. A website that just sits there is a brochure. A website wired into a command center is a business you can actually run. I would rather build you the second kind. Fewer apps, nothing falls through the cracks, and your whole front door fits in your pocket.',
+          'Here is why I care about it. A website that just sits there is a brochure. A website wired into a back office is a business you can actually run. Fewer apps, nothing falls through the cracks, and your whole front door fits in your pocket. I build those one at a time, by hand, around whatever you already use.',
         ],
       },
     ],
