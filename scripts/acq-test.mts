@@ -18,6 +18,7 @@ import { evaluate, dueForStep, businessDaysBetween, sequenceGaps, sequenceLength
 
 import { workerStatus } from '../app/api/admin/acquisition/lead-finder/route';
 import { TRADE_DEFS, SOURCEABLE_TRADES, PROVEN_TRADES } from '../lib/acq/trades';
+import { detectTrade } from '../data/demo-os-trades';
 import { neverDoFor, escalateOnFor, defaultGreeting, callerKey } from '../lib/front-office/provision';
 import { runwayDays } from '../lib/acq/reservoir';
 import { buildInstructions, assistantConfig } from '../lib/front-office/agent';
@@ -815,7 +816,7 @@ test('trades: every industry in the registry is complete and internally consiste
     assert.ok(d.match.test(d.label) || d.maps.some((q) => d.match.test(q)), `${key}: the strict filter does not match its own search terms`);
     assert.ok(TRADE_LABELS[key] && TRADE_SCENARIOS[key]?.length && TRADE_ROLEPLAY_NOTE[key], `${key}: missing from the derived tables`);
   }
-  assert.ok(SOURCEABLE_TRADES.length >= 16, 'the registry should carry every industry we can sell to');
+  assert.ok(SOURCEABLE_TRADES.length >= 26, 'the registry should carry every industry we can sell to');
   for (const t of PROVEN_TRADES) assert.ok(SOURCEABLE_TRADES.includes(t), `${t} is marked proven but is not in the registry`);
 });
 
@@ -838,6 +839,18 @@ test('trades: the keyword collisions that would poison a campaign are all reject
     ['Second Floor Dance Studio', 'flooring'],
     ['Scratch and Dent Appliance Store', 'appliance_repair'],
     ['Glacier Garden Center and Nursery', 'landscaping'],
+    /* the construction family. Every one of these reads exactly like the trade. */
+    ['Free Mason Lodge No 42', 'masonry'],
+    ['Community Foundation of the Flathead', 'concrete'],
+    ['Bozeman Fencing Club', 'fencing'],
+    ['Elite Window Tinting', 'windows_doors'],
+    ['Microsoft Windows Support', 'windows_doors'],
+    ['Gutter Ball Bowling Alley', 'siding_gutters'],
+    ['Rocky Mountain Construction Lending', 'general_contractor'],
+    ['Northern Excavation Archaeology Institute', 'excavation'],
+    ['Permian Basin Oil Well Drilling', 'well_water'],
+    ['Big Sky Wellness Center', 'well_water'],
+    ['Interstate Highway Paving Division', 'paving'],
   ];
   for (const [name, trade] of traps) {
     assert.equal(matchesTrade(name, trade), false, `"${name}" must never be sourced as ${trade}`);
@@ -859,10 +872,65 @@ test('trades: the keyword collisions that would poison a campaign are all reject
     ['Larson Painting Company', 'painting'],
     ['Glacier Flooring Gallery', 'flooring'],
     ['Evergreen Lawn Care', 'landscaping'],
+    /* and the construction family sources for real */
+    ['Flathead Valley Construction LLC', 'general_contractor'],
+    ['Summit Concrete and Flatwork', 'concrete'],
+    ['Glacier Masonry and Stonework', 'masonry'],
+    ['Big Sky Fence Company', 'fencing'],
+    ['Valley Seamless Gutters', 'siding_gutters'],
+    ['Kalispell Window and Door', 'windows_doors'],
+    ['Montana Septic Service', 'septic'],
+    ['Flathead Well Drilling and Pump', 'well_water'],
+    ['Whitefish Excavation and Site Work', 'excavation'],
+    ['Big Sky Asphalt Paving', 'paving'],
+    /* Real signage from a live Google Maps probe of Phoenix that the first cut
+       of these patterns threw away. Each one is a business we would have paid
+       to discover and then silently binned. */
+    ['RCC Block Wall Contractors Phoenix', 'masonry'],
+    ['Arizona Trench Company', 'excavation'],
+    ['Window World of Phoenix', 'windows_doors'],
+    ['American Pump & Well Service & Repair', 'well_water'],
+    ['Domres Grading Inc', 'excavation'],
+    ['Arizona Rain Gutters & Insulation', 'siding_gutters'],
+    ['Aria Builders LLC - General Contractor', 'general_contractor'],
   ];
   for (const [name, trade] of real) {
     assert.equal(matchesTrade(name, trade), true, `"${name}" should source as ${trade}`);
   }
+});
+
+test('trades: a sourced business forges as something better than a handyman', () => {
+  // Sourcing a trade and FORGING for it are two different registries: one finds
+  // the business, the other decides which price book, script and command centre
+  // it gets. Adding an industry to the first and forgetting the second is silent,
+  // because the forge just falls through to the generic preset and a fence
+  // company ends up with a demo about furnaces.
+  const forgesAs: [string, string][] = [
+    ['Summit Concrete and Flatwork', 'construction'],
+    ['Glacier Masonry and Stonework', 'construction'],
+    ['Big Sky Fence Company', 'construction'],
+    ['Valley Siding and Exteriors', 'construction'],
+    ['Kalispell Window and Door', 'construction'],
+    ['Whitefish Excavation and Site Work', 'construction'],
+    ['Big Sky Asphalt Paving', 'construction'],
+    ['Flathead Valley Construction LLC', 'construction'],
+    ['Montana Septic Service', 'septic'],
+    ['Flathead Well Drilling and Pump', 'plumbing'],
+  ];
+  for (const [name, expected] of forgesAs) {
+    assert.equal(detectTrade(name, 'home_service', name), expected, `${name} should forge as ${expected}`);
+  }
+
+  // And the words that carry the family must not drag in the neighbours who
+  // merely share vocabulary. A masonic lodge is not a contractor, and a
+  // wellness studio is not a well driller.
+  assert.notEqual(detectTrade('Free Mason Lodge No 42', 'other', 'Free Mason Lodge No 42'), 'construction');
+  assert.notEqual(detectTrade('Big Sky Wellness Center', 'other', 'Big Sky Wellness Center'), 'plumbing');
+
+  // The specific trades still win over the family. This is the ordering that
+  // keeps "Vance Roofing and Construction" a roofer.
+  assert.equal(detectTrade('Vance Roofing and Construction', 'home_service', 'Vance Roofing and Construction'), 'roofing');
+  assert.equal(detectTrade('Smith Plumbing and Excavation', 'home_service', 'Smith Plumbing and Excavation'), 'plumbing');
 });
 
 test('trades: an estimate is built for every industry, never just the original three', () => {
@@ -1020,7 +1088,7 @@ test('emails: the keep-her email promises nobody loses a job', () => {
   assert.match(html, /After hours and weekends/);
   assert.match(html, /Overflow only/);
   assert.match(html, /ABC Heating &amp; Air/, 'their name, escaped, not a raw ampersand');
-  assert.ok(!/fire|replace (her|your staff)|cut (a )?salary/i.test(html), 'never sells this as cutting staff');
+  assert.ok(!/\bfire\b|replace (her|your staff)|cut (a )?salary/i.test(html), 'never sells this as cutting staff');
 });
 
 test('emails: prose carries no em dashes, per the house rule', () => {

@@ -104,6 +104,21 @@ const TRADE_PATTERNS: [OsTradeKey, RegExp][] = [
   ['attorney', /attorney|law firm|\blaw\b|lawyer|legal|injury/],
   ['wedding', /wedding|bridal|photograph|event venue|\bvenue\b/],
   ['salon', /salon|barber|hair studio|\bnails?\b|lash|beauty/],
+  // THE CONSTRUCTION FAMILY (2026-08-22), sitting just ahead of the generalist
+  // below it and behind every specific trade above. Acquisition can now source
+  // concrete, masonry, fencing, siding, windows, excavation and paving, and
+  // without these lines every one of them forged as a generic handyman: the
+  // detector had no word for them, so a fence company got a price book about
+  // furnaces. They all map onto `construction`, whose own service list already
+  // covers decks, fences, siding and trim, because a separate preset per trade
+  // would be nine near-identical price books to keep in step.
+  ['construction', /\bconcrete\b|\bcement\b|flatwork|\bmasonry\b|\bmasons\b|bricklay|brickwork|stonework|tuckpoint|repoint|\bfenc(e|es|ing)\b|chain link|\bsiding\b|soffit|fascia|excavat|earthwork|\bgrading\b|backhoe|trenching|\bpaving\b|\basphalt\b|sealcoat|seal coat|blacktop|retaining wall/],
+  // Windows and doors, kept out of the line above only because "window" is the
+  // single most collided word in the whole registry and it earns its own entry.
+  ['construction', /replacement windows?|window (and|&) door|entry doors?|patio doors?|egress window|\bglazing\b/],
+  // Wells, pumps and water treatment are plumbing as far as the price book and
+  // the phone script are concerned: same trucks, same urgency, same questions.
+  ['plumbing', /water wells?|wells? drilling|well pumps?|water treatment|water filtration|water softener|pressure tank/],
   // Builders and general contractors, deliberately BEHIND every specific trade:
   // "Smith Plumbing & Contracting" is a plumber, and "Vance Roofing and
   // Construction" is a roofer. This catches the generalist whose own name says
