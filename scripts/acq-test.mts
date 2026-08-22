@@ -1613,8 +1613,18 @@ test('audit: every fact printed carries where it came from', () => {
   assert.ok(labels.includes('Star rating'));
   assert.ok(labels.includes('Review count'));
   for (const row of report.provenance) assert.ok(row.source.length > 0, `${row.label} must cite a source`);
-  // The listing URL we actually hold, not a generic phrase, when we have one.
-  assert.match(report.provenance.find((p) => p.label === 'Star rating')!.source, /google\.com\/maps/);
+  // The listing URL we actually hold rides as a LINK, and the printed source
+  // stays a short phrase: a 200-character Maps URL in the body of the receipts
+  // is what made this section look unfinished.
+  const rating = report.provenance.find((p) => p.label === 'Star rating')!;
+  assert.match(rating.sourceUrl!, /google\.com\/maps/);
+  assert.ok(rating.source.length < 60, 'the printed source is a phrase, not a URL');
+  assert.ok(!/https?:\/\//.test(rating.source), 'no raw URL in the printed source');
+  // Their own listing tracking parameters are noise on their audit.
+  const site = buildPresenceReport(presence({ website: 'https://x.example/?utm_source=GBP&utm_medium=organic' }), null)
+    .provenance.find((p) => p.label === 'Website')!;
+  assert.equal(site.value, 'https://x.example/');
+  assert.match(site.sourceUrl!, /utm_source/, 'the link still goes where we actually looked');
 });
 
 test('audit: letters agree with each other across every pillar', () => {
