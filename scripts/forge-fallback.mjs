@@ -30,6 +30,7 @@
  *      node scripts/forge-fallback.mjs --dry  (report what it WOULD do, spend nothing)
  */
 import { createClient } from '@supabase/supabase-js';
+import { weighSite, weightLine, weightRefusal } from '../lib/site-weight.mjs';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -236,6 +237,32 @@ async function main() {
 
   if (!result.ok) {
     await fail(claimed, result.error);
+    process.exit(1);
+  }
+
+  // THE WEIGHT GATE. Every one of the oversize builds on the night of 2026-08-21
+  // came through this path: 12,535KB, 6,867KB, 6,349KB, 5,695KB, all marked ready
+  // against a 900KB law. The one-shot engine is the one that most needs telling,
+  // because it never sees its own output rendered.
+  const weight = weighSite(result.html);
+  log('weight:', weightLine(weight));
+  if (weight.overCeiling) {
+    const refusal = weightRefusal(weight);
+    if (!/\[requeued after weight/.test(claimed.error || '')) {
+      log('OVER THE WEIGHT CEILING, requeueing once:', refusal);
+      await sb
+        .from('outbound_demo_sites')
+        .update({
+          status: 'queued',
+          worker: null,
+          claimed_at: null,
+          error: `[requeued after weight] ${refusal}`,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', claimed.id);
+      process.exit(0);
+    }
+    await fail(claimed, `still over the weight ceiling after a retry: ${refusal}`);
     process.exit(1);
   }
 

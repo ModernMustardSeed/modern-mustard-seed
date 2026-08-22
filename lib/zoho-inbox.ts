@@ -13,6 +13,7 @@ import { ImapFlow } from 'imapflow';
 import { simpleParser } from 'mailparser';
 import { getSupabase } from '@/lib/supabase';
 import { listMailboxes, type Mailbox } from '@/lib/mailboxes';
+import { describeMailError, mailErrorLine } from '@/lib/mail-errors';
 
 export type SyncResult = {
   ok: boolean;
@@ -22,6 +23,12 @@ export type SyncResult = {
   matched: number;    // emails from a known lead/client
   threaded: number;   // lead `messages` rows written
   error?: string;
+  /** Raw server text behind `error`, when Zoho gave one. */
+  detail?: string;
+  /** What to do about it, in words. */
+  fix?: string;
+  /** True when Zoho rejected the username or app password. */
+  authFailed?: boolean;
 };
 
 function normalizeSubject(s: string): string {
@@ -135,7 +142,9 @@ export async function syncMailbox(box: Mailbox, opts: { sinceDays?: number } = {
     return { ok: true, mailbox: box.address, fetched, inserted, matched, threaded };
   } catch (e) {
     try { await client.logout(); } catch { /* already closed */ }
-    return { ok: false, mailbox: box.address, fetched, inserted, matched, threaded, error: e instanceof Error ? e.message : String(e) };
+    const f = describeMailError(e);
+    console.error(`[zoho-sync] ${box.address}: ${mailErrorLine(e)}`);
+    return { ok: false, mailbox: box.address, fetched, inserted, matched, threaded, error: f.reason, detail: f.detail, fix: f.fix, authFailed: f.auth };
   }
 }
 
@@ -158,5 +167,13 @@ export async function syncZohoInbox(opts: { sinceDays?: number } = {}): Promise<
     (a, r) => ({ fetched: a.fetched + r.fetched, inserted: a.inserted + r.inserted, matched: a.matched + r.matched, threaded: a.threaded + r.threaded }),
     { fetched: 0, inserted: 0, matched: 0, threaded: 0 }
   );
-  return { ok, ...agg, error: ok ? undefined : (mailboxes.find((r) => r.error)?.error || 'No mailboxes configured') };
+  const firstBad = mailboxes.find((r) => !r.ok);
+  return {
+    ok,
+    ...agg,
+    error: ok ? undefined : (firstBad?.error || 'No mailboxes configured'),
+    detail: ok ? undefined : firstBad?.detail,
+    fix: ok ? undefined : firstBad?.fix,
+    authFailed: ok ? undefined : firstBad?.authFailed,
+  };
 }
