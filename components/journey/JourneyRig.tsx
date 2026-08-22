@@ -149,8 +149,8 @@ export default function JourneyRig() {
         b.ph += 0.11 * b.s;
         const wx = Math.sin(b.ph * 0.37 + b.s * 9) * 60;
         const wy = Math.cos(b.ph * 0.29 + b.s * 7) * 34;
-        let dx = ax + wx - b.x;
-        let dy = ay + wy - b.y;
+        const dx = ax + wx - b.x;
+        const dy = ay + wy - b.y;
         b.vx += dx * 0.0016;
         b.vy += dy * 0.0016;
         const mdx = b.x - mouse.x, mdy = b.y - mouse.y;

@@ -23,9 +23,15 @@ Company website for Modern Mustard Seed. Marketing site, blog, case studies, pla
 - FAQ schema on the homepage.
 
 ## Build & Run
+This repo installs with **pnpm** everywhere: local, CI, and Vercel. There is one
+lockfile, `pnpm-lock.yaml`, and `package-lock.json` / `yarn.lock` are gitignored.
+A second lockfile is how production and CI drifted apart once before.
 ```bash
-npm run dev     # Dev server
-npm run build   # Production build
+pnpm install --frozen-lockfile
+pnpm dev              # Dev server
+pnpm build            # Production build
+pnpm lint             # ESLint CLI (Next 16 removed `next lint`)
+pnpm exec tsc --noEmit
 ```
 
 ## Live URL

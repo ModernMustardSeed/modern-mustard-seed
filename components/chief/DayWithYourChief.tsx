@@ -160,6 +160,7 @@ export default function DayWithYourChief() {
         {/* Time-of-day chip, top-left */}
         <div className="absolute left-4 top-4">
           <span className="font-mono font-bold text-[11px] uppercase tracking-[0.2em] text-white/95 bg-[#161616]/45 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/25">
+            {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- a terminal-style // separator, not a comment */}
             {m.time} // {m.tag}
           </span>
         </div>

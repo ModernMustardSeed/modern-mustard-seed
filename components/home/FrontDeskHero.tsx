@@ -344,6 +344,7 @@ export default function FrontDeskHero() {
               <div>
                 <span className="text-[#5C7188]">$ </span>
                 <span className="text-[#FFDD55]">[MODERN MUSTARD SEED]</span>
+                {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- a terminal-style // separator, not a comment */}
                 <span className="text-[#5C7188]"> // the front desk is open</span>
               </div>
               <div className="mt-1 text-[#7aa2ff]">PLANT YOUR IDEA. Mr. Mustard scopes it on the spot.</div>
