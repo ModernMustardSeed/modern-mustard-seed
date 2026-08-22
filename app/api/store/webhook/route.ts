@@ -2034,11 +2034,11 @@ async function handleDemoOrderPaid(
           body: `<p>Your <strong>${escapeHtmlSafe(label)}</strong> is officially in production. What you saw in the demo becomes the real thing, customized to ${business || 'your business'}.</p><p><strong>1.</strong> Tell us about your business with the form below: your logo, your photos, your hours, the details only you know.</p><p><strong>2.</strong> We build it for real, then you get <strong>unlimited edits</strong>. You look at it, tell us what to change, and we change it. As many times as you want, before it goes live and long after.</p><p><strong>3.</strong> Within 7 days it is live. Month to month, cancel anytime, never a surprise bill.</p>${provisioned ? `<p>Everything from here happens in <strong>your portal</strong>: your progress, your edits, your files, and a direct line to me. No password to remember, just enter this email address at the door.</p>` : ''}${(() => {
             // The one quiet post-purchase upsell (loop audit, break #8): a
             // buyer holding exactly one paid piece is told, once, that the
-            // other one makes the command center free. Never for the bundle.
+            // other one builds them as one thing for less. Never for the bundle.
             const bought = Array.isArray(order?.products) ? (order!.products as string[]) : [];
             if (bought.includes('bundle') || (bought.includes('voice') && bought.includes('site'))) return '';
-            if (bought.includes('voice')) return `<p>One thing worth knowing while we build: if you ever add the matching website, the Business Command Center comes <strong>free with the pair</strong>. No pressure and no clock on it; just reply to this email whenever you want it.</p>`;
-            if (bought.includes('site')) return `<p>One thing worth knowing while we build: if you ever add the voice agent that answers your phone, the Business Command Center comes <strong>free with the pair</strong>. No pressure and no clock on it; just reply to this email whenever you want it.</p>`;
+            if (bought.includes('voice')) return `<p>One thing worth knowing while we build: if you ever add the matching website, the two get built as one thing, off one brain, and it costs less than the two apart. No pressure and no clock on it; just reply to this email whenever you want it.</p>`;
+            if (bought.includes('site')) return `<p>One thing worth knowing while we build: if you ever add the voice agent that answers your phone, the two get built as one thing, off one brain, and it costs less than the two apart. No pressure and no clock on it; just reply to this email whenever you want it.</p>`;
             return '';
           })()}`,
           cta: { label: 'Start with your details', url: intakeUrl },

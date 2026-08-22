@@ -39,7 +39,9 @@ import { piecesFrom, listPieces, PIECE_ORDER } from '../lib/forge-pieces';
 const GAPS = [2, 4, 3, 4];
 import { idempotencyKey } from '../lib/acq/queue';
 import { CONSENT_VERSIONS, CURRENT_CONSENT, toE164, consentVersion } from '../lib/acq/consent';
-import { greetingFor, firstNameOr, renderSubject, shortBusiness, buildCampaignEmail, permissionUrl } from '../lib/acq/campaign';
+import { greetingFor, firstNameOr, renderSubject, shortBusiness, buildCampaignEmail, buildDemoEmail, permissionUrl } from '../lib/acq/campaign';
+import { DEMO_ORDER_KEYS, DEMO_PRODUCTS, DEMO_BUNDLE, quoteDemoOrder } from '../lib/demo-order';
+import { FORGE_PIECES } from '../lib/voice-forge-suite';
 import { pickVariant } from '../lib/acq/settings';
 import { normalizeObjection } from '../lib/acq/stats';
 import { addBusinessDays, shouldStopFollowup } from '../lib/acq/runner';
@@ -1026,7 +1028,10 @@ test('emails: the website email sells the suite and its button opens the suite',
   });
   const html = built!.html;
   assert.match(html, /We build the website too/i);
-  assert.match(html, /The command center/);
+  assert.match(html, /The voice agent/);
+  // The command center came off the offer on 2026-08-22. It must not be named
+  // in the drip at all: not as a piece, not as a freebie, not as an aside.
+  assert.ok(!/command center/i.test(html), 'the command center is never suggested alongside anything');
   assert.match(html, /\(406\) 312-1223/, 'the forge close is on the phone, so the number is in the copy');
   // The button must go to the demo suite, and the quieter second link back to
   // the callback page. A button labelled BUILD MY SUITE that opens /mustard is
@@ -1586,6 +1591,74 @@ test('personalization: a thin prospect on the personalized variant gets the plai
   assert.ok(!built!.html.includes('worked back from your'), 'no invented citation');
 });
 
+/* --------------------- the command center is off the menu ----------------- */
+
+/**
+ * Sarah pulled the command center out of the suite and the offer on 2026-08-22:
+ * still sold, never bundled, never forged, never suggested. These are the
+ * guards, because that kind of decision is exactly the kind that leaks back in
+ * one helpful-looking cross-sell at a time.
+ */
+test('command center: the suite does not offer it, but a pay link can still price it', () => {
+  assert.ok(!DEMO_ORDER_KEYS.includes('os' as never), 'it is off the demo suite order card');
+  assert.deepEqual(DEMO_ORDER_KEYS, ['voice', 'site']);
+  // Still sold. /pay/command-center has to mint a real Stripe session.
+  const solo = quoteDemoOrder(['os']);
+  assert.ok(solo, 'a standalone command center still quotes');
+  assert.equal(solo!.setupCents, DEMO_PRODUCTS.os.setupCents);
+  assert.equal(solo!.monthlyCents, DEMO_PRODUCTS.os.monthlyCents);
+  assert.equal(solo!.isBundle, false);
+});
+
+test('command center: nothing is waived anywhere any more', () => {
+  const bundle = quoteDemoOrder(['voice', 'site']);
+  assert.ok(bundle!.isBundle, 'the two paid pieces are still the bundle');
+  assert.equal(bundle!.setupCents, DEMO_BUNDLE.setupCents);
+
+  // Ticking all three is no longer a bundle with a freebie: it is the bundle
+  // price plus a command center, billed. The old rule made this cart cheaper
+  // than the sum, which is exactly the waiver that is gone.
+  const all = quoteDemoOrder(['voice', 'site', 'os']);
+  assert.equal(all!.isBundle, false, 'three pieces is not the bundle');
+  assert.equal(
+    all!.monthlyCents,
+    DEMO_PRODUCTS.voice.monthlyCents + DEMO_PRODUCTS.site.monthlyCents + DEMO_PRODUCTS.os.monthlyCents,
+    'every piece bills at its own price',
+  );
+});
+
+test('command center: the bundle still clears the price ladder without it', () => {
+  // The ladder is the whole reason a la carte stays rational. It never counted
+  // the command center, so removing the freebie must not have moved it.
+  const pairSetup = DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents;
+  const pairMonthly = DEMO_PRODUCTS.voice.monthlyCents + DEMO_PRODUCTS.site.monthlyCents;
+  const priciestSetup = Math.max(DEMO_PRODUCTS.voice.setupCents, DEMO_PRODUCTS.site.setupCents);
+  const priciestMonthly = Math.max(DEMO_PRODUCTS.voice.monthlyCents, DEMO_PRODUCTS.site.monthlyCents);
+  assert.ok(DEMO_BUNDLE.setupCents >= priciestSetup && DEMO_BUNDLE.setupCents < pairSetup, 'setup sits inside the ladder');
+  assert.ok(DEMO_BUNDLE.monthlyCents >= priciestMonthly && DEMO_BUNDLE.monthlyCents < pairMonthly, 'monthly sits inside the ladder');
+});
+
+test('command center: Mr. Mustard cannot forge one, and asking for one is not silently dropped into a build', () => {
+  assert.ok(!('command_center' in FORGE_PIECES), 'it is not a forgeable piece');
+  assert.deepEqual(Object.values(FORGE_PIECES).sort(), ['site', 'voice']);
+});
+
+test('command center: no suite email names it', () => {
+  const built = buildDemoEmail({
+    lead: lead(),
+    demoUrl: 'https://modernmustardseed.com/demo/hub/x',
+    checkoutUrl: 'https://modernmustardseed.com/demo/hub/x',
+    calendarUrl: 'https://modernmustardseed.com/book',
+    offerLine: 'From $397 a month',
+    fromName: 'Mr. Mustard',
+    fromEmail: 'm@x.com',
+    replyTo: 'm@x.com',
+  });
+  assert.ok(built);
+  assert.ok(!/command center/i.test(built!.html), 'the demo email never mentions it');
+  assert.match(built!.html, /rather show you than pitch you/i, 'the joke survives');
+});
+
 /* ----------------------------- the presence audit ------------------------- */
 
 /** A prospect with a full Google listing behind it. */
@@ -1942,21 +2015,34 @@ test('bots: the verdict blob carries the reason only when there is one', () => {
 test('forge build: the exact wire vocabulary, which is the happy path', () => {
   assert.deepEqual(piecesFrom(['voice_agent']), ['voice']);
   assert.deepEqual(piecesFrom(['website']), ['site']);
-  assert.deepEqual(piecesFrom(['command_center']), ['os']);
   assert.deepEqual(piecesFrom(['voice_agent', 'website']), ['voice', 'site']);
 });
 
-test('forge build: "command_center" survives the separator split', () => {
-  // Regression: splitting on a bare "and" instead of \band\b tears
-  // "command_center" into "comm" and "_center" and the most common value in
-  // the whole vocabulary silently stops resolving.
-  assert.deepEqual(piecesFrom(['command_center']), ['os']);
-  assert.deepEqual(piecesFrom('command_center'), ['os']);
-  assert.deepEqual(piecesFrom(['command center']), ['os']);
+test('forge build: the command center is not forgeable, and asking for one builds nothing', () => {
+  // Sarah took it off the suite and out of the offer on 2026-08-22. Dropping
+  // the word is the point: an empty build is the branch that makes him stop and
+  // ask, which beats silently building the product she pulled.
+  assert.deepEqual(piecesFrom(['command_center']), []);
+  assert.deepEqual(piecesFrom('command_center'), []);
+  assert.deepEqual(piecesFrom(['command center']), []);
+  assert.deepEqual(piecesFrom(['back office']), []);
+  assert.deepEqual(piecesFrom(['dashboard']), []);
+  // And it must never sneak in beside a real piece.
+  assert.deepEqual(piecesFrom(['voice_agent', 'command_center']), ['voice']);
+});
+
+test('forge build: the separator split still does not tear a long value in half', () => {
+  // The \band\b word boundaries are still load bearing. This used to be proven
+  // with "command_center" (a bare "and" tore it into "comm" and "_center"), so
+  // it is proven here on a value that is still in the vocabulary rather than
+  // dropped along with the guard.
+  assert.deepEqual(piecesFrom(['brand_new_website']), ['site']);
+  assert.deepEqual(piecesFrom('brand_new_website'), ['site']);
+  assert.deepEqual(piecesFrom(['voice_agent and brand_new_website']), ['voice', 'site']);
 });
 
 test('forge build: the answer is in canonical order however it was said', () => {
-  assert.deepEqual(piecesFrom(['command_center', 'website', 'voice_agent']), PIECE_ORDER);
+  assert.deepEqual(piecesFrom(['website', 'voice_agent']), PIECE_ORDER);
   assert.deepEqual(piecesFrom(['website', 'voice_agent']), ['voice', 'site']);
 });
 
@@ -1964,8 +2050,8 @@ test('forge build: one string instead of an array still gets built', () => {
   assert.deepEqual(piecesFrom('voice_agent'), ['voice']);
   assert.deepEqual(piecesFrom('voice_agent, website'), ['voice', 'site']);
   assert.deepEqual(piecesFrom('voice agent and a website'), ['voice', 'site']);
-  assert.deepEqual(piecesFrom('voice_agent + command_center'), ['voice', 'os']);
-  assert.deepEqual(piecesFrom('website/command_center'), ['site', 'os']);
+  assert.deepEqual(piecesFrom('voice_agent + website'), ['voice', 'site']);
+  assert.deepEqual(piecesFrom('website/voice_agent'), ['voice', 'site']);
 });
 
 test('forge build: the near misses a model actually says', () => {
@@ -1973,12 +2059,10 @@ test('forge build: the near misses a model actually says', () => {
   assert.deepEqual(piecesFrom(['phone agent']), ['voice']);
   assert.deepEqual(piecesFrom(['site']), ['site']);
   assert.deepEqual(piecesFrom(['web site']), ['site']);
-  assert.deepEqual(piecesFrom(['os']), ['os']);
-  assert.deepEqual(piecesFrom(['back office']), ['os']);
-  assert.deepEqual(piecesFrom(['dashboard']), ['os']);
+  assert.deepEqual(piecesFrom(['receptionist']), ['voice']);
 });
 
-test('forge build: "everything" means all three, and it beats the word inside it', () => {
+test('forge build: "everything" means every forgeable piece, and it beats the word inside it', () => {
   assert.deepEqual(piecesFrom(['all']), PIECE_ORDER);
   assert.deepEqual(piecesFrom(['everything']), PIECE_ORDER);
   assert.deepEqual(piecesFrom(['the_whole_suite']), PIECE_ORDER);
@@ -2008,6 +2092,6 @@ test('forge build: no piece is ever duplicated', () => {
 test('forge build: the spoken list matches what was actually forged', () => {
   assert.equal(listPieces(['voice']), 'voice agent');
   assert.equal(listPieces(['voice', 'site']), 'voice agent and website');
-  assert.equal(listPieces(PIECE_ORDER), 'voice agent, website, and command center');
+  assert.equal(listPieces(PIECE_ORDER), 'voice agent and website');
   assert.equal(listPieces([]), 'nothing');
 });

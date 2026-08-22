@@ -2,24 +2,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import StackCalculator from '@/components/command-center/StackCalculator';
 
+// One product, one price. The bundle, the paired middle rung and the voice
+// agent's price all used to be imported here to build a three-column comparison
+// grid whose job was to push the buyer into the bundle where this came free.
+// That rule is gone (Sarah, 2026-08-22) and so is the grid.
 const os = DEMO_PRODUCTS.os;
-const site = DEMO_PRODUCTS.site;
-const voice = DEMO_PRODUCTS.voice;
-
-/** The a la carte middle rung: a website with the back office behind it, both at
- *  their own price. Derived, never typed, so a reprice moves this page with it. */
-const SITE_PLUS_OS = {
-  setupCents: site.setupCents + os.setupCents,
-  monthlyCents: site.monthlyCents + os.monthlyCents,
-};
 
 export const metadata = buildMetadata({
   title: 'Business Command Center: the AI back office for your whole business',
   description:
-    'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. $197/mo on its own, and free when you take the website and the voice agent together. See yours built free.',
+    'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. $197/mo, built by hand and scoped with you first.',
   path: '/command-center',
 });
 
@@ -41,7 +36,7 @@ const FAQ = [
   },
   {
     q: 'How much does it cost?',
-    a: `The command center is ${formatUsd(os.setupCents)} to set up plus ${formatUsd(os.monthlyCents)} a month on its own. It is FREE inside The Talking Website, which is a new website and a voice agent taken together for ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month. That is the whole system on one brain, the back office included, for less than buying the three pieces separately. One piece on its own does not waive it. Month to month, cancel anytime, no trials.`,
+    a: `${formatUsd(os.setupCents)} to set up plus ${formatUsd(os.monthlyCents)} a month, month to month, cancel anytime, no trials. It is sold on its own and it is not bundled with anything: every one is built by hand around the tools you already run, so it is scoped with you before it is built.`,
   },
   {
     q: 'What does it replace?',
@@ -49,15 +44,15 @@ const FAQ = [
   },
   {
     q: 'How does it get my real data?',
-    a: 'When your voice agent goes live, every call flows in with a full transcript and a filed lead. When your website goes live, its traffic and form fills flow in too. Connect your Google for reviews, and your invoicing for the money view. The demo shows sample data; the real build wires your actual calls, site, and customers.',
+    a: 'If you run one of our voice agents, every call flows in with a full transcript and a filed lead. If you run one of our websites, its traffic and form fills flow in too. Connect your Google for reviews, and your invoicing for the money view. It also wires into plenty of software you already have, which is what the scoping conversation is for.',
   },
   {
     q: 'Can I buy just the command center?',
-    a: `Yes. You can order the command center on its own for ${formatUsd(os.setupCents)} setup plus ${formatUsd(os.monthlyCents)} a month, and you can pair it with just a website (${formatUsd(site.monthlyCents)}/mo) or just a voice agent (${formatUsd(voice.monthlyCents)}/mo) at both of their own prices. It only becomes free when you take the website and the voice agent together, because that is when it stops being a dashboard and starts being the brain both of them report to.`,
+    a: `That is the only way it is sold. ${formatUsd(os.setupCents)} setup plus ${formatUsd(os.monthlyCents)} a month, month to month. It is not part of the free demo suite and it is not bundled with anything: every one is built by hand around the software you already run, so it starts with a short conversation rather than a form.`,
   },
   {
     q: 'How fast can I have it?',
-    a: 'Your command center is forged free and opens right away, so you can tour it before you decide. Once you order, we customize it to your business by hand and release the real thing within seven days.',
+    a: 'Faster than most software migrations and slower than our other two doors, because this one is built by hand around the tools you already use. We scope it with you first, then build. If you want to see one working before you decide, ask and we will walk you through a live board.',
   },
   {
     q: 'Do I own it, and can I cancel?',
@@ -74,7 +69,7 @@ function commandCenterJsonLd() {
         name: 'Business Command Center by Modern Mustard Seed',
         serviceType: 'AI business operations dashboard (CRM, call transcripts, website analytics, reviews, invoicing)',
         description:
-          'One AI back-office board that runs the whole business: every call transcribed, website traffic and leads, customers, reviews, invoices, and reports, wired together. Sold standalone, and free inside The Talking Website, where the website and the voice agent are taken together.',
+          'One AI back-office board that runs the whole business: every call transcribed, website traffic and leads, customers, reviews, invoices, and reports, wired together. Sold on its own, built by hand.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/command-center`,
@@ -125,22 +120,22 @@ export default function CommandCenterPage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-6 xl:col-span-5">
               <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                The AI back office // Free with the whole system
+                The AI back office // Sold on its own
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 The command center that <em className="italic text-[#C4160B]">runs the whole business.</em>
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired
-                together on one board with an AI that sees all of it. {formatUsd(os.monthlyCents)}/mo on its own,
-                and free when you take the website and the voice agent together.
+                together on one board with an AI that sees all of it. {formatUsd(os.monthlyCents)}/mo, built by
+                hand around the software you already run.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/demos"
+                  href="/book"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
-                  Build mine free →
+                  Scope mine with Sarah →
                 </Link>
                 <Link
                   href="/book"
@@ -214,81 +209,46 @@ export default function CommandCenterPage() {
           <StackCalculator />
         </section>
 
-        {/* ── Pricing ── */}
+        {/* ── Pricing ──
+            ONE CARD, ON PURPOSE (Sarah, 2026-08-22). This section used to be a
+            three-column grid whose whole job was to push the buyer into the
+            bundle where the command center came free. It is not in the bundle
+            any more and it is not in the demo suite, so a grid that compares it
+            to two things it no longer ships with would be selling a rule that
+            does not exist. It is one product at one price, and the honest thing
+            about it is that it is hand built, which is also why it is not free.
+        */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
-            Pricing // Free inside the whole system
+            Pricing // One product, one price
           </p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
-            Buy it on its own, or take the whole system and it is on the house.
+            Built by hand, around what you already run.
           </h2>
+          <p className="font-body text-[16px] text-[#161616]/75 mt-4 max-w-2xl leading-relaxed">
+            Most businesses that want this already have software doing pieces of it. That is exactly why every one of
+            these is scoped before it is built: the point is one board, not a sixth login. So this is not part of the
+            free demo suite, and it is never bundled with anything else.
+          </p>
 
-          <div className="grid md:grid-cols-3 gap-6 mt-10 items-stretch">
-            {/* Standalone */}
-            <div className="flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#161616] p-7">
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">On its own</span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">Command Center</h3>
-              <p className="font-mono font-bold text-[15px] mt-3">
-                {formatUsd(os.monthlyCents)}/mo <span className="text-[#161616]/70">+ {formatUsd(os.setupCents)} setup</span>
-              </p>
-              <p className="font-body text-[13px] text-[#161616]/70 mt-3 leading-relaxed flex-1">
-                The whole back office, wired to your existing phone, site, and customers. Month to month.
-              </p>
-              <Link
-                href="/demos"
-                className="mt-6 text-center border-2 border-[#161616] bg-[#F5B700] text-[#161616] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-              >
-                Build mine free
-              </Link>
-            </div>
-
-            {/* The whole system — featured, and the only place the price is waived */}
-            <div className="relative flex flex-col border-2 border-[#161616] bg-[#F5B700] rounded-2xl shadow-[8px_8px_0_0_#161616] p-7">
-              <span
-                aria-hidden
-                className="absolute -top-4 -right-3 rotate-[8deg] bg-[#C4160B] text-[#FBF6EA] font-mono font-extrabold text-[10px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616]"
-              >
-                Smartest move
-              </span>
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">Everything, back office free</span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">{DEMO_BUNDLE.name}</h3>
-              <p className="font-mono font-bold text-[15px] mt-3 text-[#161616]">
-                {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(DEMO_BUNDLE.setupCents)} setup</span>
-              </p>
-              <p className="font-body text-[13px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
-                Your website and your voice agent off one brain, and the command center that ties them together,
-                free. Bought as three separate pieces that is{' '}
-                {formatUsd(site.monthlyCents + voice.monthlyCents + os.monthlyCents)}/mo. One system, one login.
-              </p>
-              <Link
-                href="/demos"
-                className="mt-6 text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
-              >
-                Build all three free
-              </Link>
-            </div>
-
-            {/* One piece at a time. Honest middle rung: nothing is waived here. */}
-            <div className="flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#161616] p-7">
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">One piece at a time</span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">Website + Command Center</h3>
-              <p className="font-mono font-bold text-[15px] mt-3">
-                {formatUsd(SITE_PLUS_OS.monthlyCents)}/mo <span className="text-[#161616]/70">+ {formatUsd(SITE_PLUS_OS.setupCents)} setup</span>
-              </p>
-              <p className="font-body text-[13px] text-[#161616]/70 mt-3 leading-relaxed flex-1">
-                A new site on your own domain with the back office behind it, each at its own price. Add the voice
-                agent later and the command center goes free.
-              </p>
-              <Link
-                href="/demos"
-                className="mt-6 text-center border-2 border-[#161616] bg-[#F5B700] text-[#161616] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-              >
-                Build both free
-              </Link>
-            </div>
+          <div className="mt-9 max-w-xl border-2 border-[#161616] bg-[#F5B700] rounded-2xl shadow-[8px_8px_0_0_#161616] p-7 sm:p-9">
+            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">Business Command Center</span>
+            <p className="font-mono font-bold text-[20px] mt-3 text-[#161616]">
+              {formatUsd(os.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(os.setupCents)} setup</span>
+            </p>
+            <p className="font-body text-[14px] text-[#161616]/80 mt-4 leading-relaxed">
+              The whole back office, wired to your phone, your site, and your customers. Month to month, cancel
+              anytime. We scope it with you first so it replaces tools instead of joining them.
+            </p>
+            <Link
+              href="/book"
+              className="mt-7 inline-block text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-7 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
+            >
+              Scope mine with Sarah
+            </Link>
           </div>
-          <p className="font-body text-[13px] text-[#161616]/70 mt-6 text-center">
-            Month to month, cancel anytime, no trials. We customize everything by hand and release it within 7 days.
+          <p className="font-body text-[13px] text-[#161616]/70 mt-6 max-w-xl">
+            Month to month, cancel anytime, no trials.
           </p>
         </section>
 
@@ -297,7 +257,7 @@ export default function CommandCenterPage() {
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
-              ['1', 'Forge it free', 'Tell us your business and your command center opens right away. Tour it, try the assistant, poke around. No card.'],
+              ['1', 'We scope it together', 'A short call about the software you already run, so this replaces tools instead of joining them.'],
               ['2', 'We wire it up', 'Order it and we connect your real calls, your website traffic, your customers, and your reviews, customized to your business by hand.'],
               ['3', 'Run the whole thing', 'Live within a week. Every call, lead, review, and dollar on one board, with the AI following up while you work.'],
             ].map(([n, t, d]) => (
@@ -337,17 +297,17 @@ export default function CommandCenterPage() {
         <section className="relative halftone-bg border-2 border-[#161616] rounded-2xl bg-[#F5B700] p-10 md:p-14 text-center overflow-hidden">
           <div className="relative">
             <h2 className="font-display italic font-extrabold text-3xl md:text-5xl leading-[1.02]">
-              See your command center, built free.
+              Let us scope your command center.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Enter your business once and tour a working command center, open right away. Keep it for
               {' '}{formatUsd(os.monthlyCents)}/mo, or take the website and the voice agent together and it is free.
             </p>
             <Link
-              href="/demos"
+              href="/book"
               className="mt-7 inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
             >
-              Build mine free →
+              Scope mine with Sarah →
             </Link>
           </div>
         </section>

@@ -499,8 +499,8 @@ export default async function MustardPage({
             A voice agent alone is the thing they clicked for. The Talking
             Website is the thing most of them need, and it is genuinely cheaper
             than the two pieces bought separately, so saying it plainly here is
-            service rather than upsell. The command center riding free inside it
-            is the whole reason the bundle is not a discount trick.
+            service rather than upsell: one brain answering on the page and on
+            the phone is a different product, not a discount trick.
           */}
           <div className="mt-14 grid gap-5 lg:grid-cols-[1.15fr_1fr]">
             <div className="relative overflow-hidden rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-7 shadow-[6px_6px_0_0_#161616] sm:p-9">
@@ -520,9 +520,10 @@ export default async function MustardPage({
                   {formatUsd(DEMO_BUNDLE.setupCents)} to build, then {formatUsd(DEMO_BUNDLE.monthlyCents)} a month
                 </p>
                 <p className="mt-4 text-[14px] leading-relaxed text-[#161616]/75">
-                  The {DEMO_PRODUCTS.os.name} rides along free inside it: every call transcribed, plus your traffic,
-                  leads, customers, reviews and money on one board. On its own it is{' '}
-                  {formatUsd(DEMO_PRODUCTS.os.setupCents)} and {formatUsd(DEMO_PRODUCTS.os.monthlyCents)} a month.
+                  Bought apart, the website is {formatUsd(DEMO_PRODUCTS.site.setupCents)} and{' '}
+                  {formatUsd(DEMO_PRODUCTS.site.monthlyCents)} a month and the voice agent is{' '}
+                  {formatUsd(DEMO_PRODUCTS.voice.setupCents)} and {formatUsd(DEMO_PRODUCTS.voice.monthlyCents)} a
+                  month. Together they cost less and behave like one thing.
                 </p>
               </div>
             </div>

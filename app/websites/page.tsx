@@ -26,14 +26,14 @@ const HERO_FILM = {
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
   description:
-    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, your domain, hosting, and care handled. Live in about a week from $147/mo. Add the voice agent and the command center comes free with the pair. See yours built free.',
+    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, your domain, hosting, and care handled. Live in about a week from $147/mo. Add the voice agent and they are built as one thing. See yours built free.',
   path: '/websites',
 });
 
 const INCLUDED = [
   { icon: '🎨', name: 'Elite custom design', desc: 'Designed from scratch for your trade and your town. Not a template anyone else can buy.' },
   { icon: '🌐', name: 'Domain, hosting, and care', desc: 'Your domain, the hosting, and ongoing care all handled. Unlimited edits, before launch and forever after, and we keep it running.' },
-  { icon: '⚙', name: 'The command center', desc: 'A back office wired to your calls, traffic, customers, and reviews. Free when you take the voice agent with your site.' },
+  { icon: '📈', name: 'Funnels and SEO', desc: 'Built in from the first page, not bolted on later. Your site is found, and the people who find it get somewhere to go.' },
   { icon: '🧲', name: 'Funnels + a lead magnet', desc: 'A real capture flow and a reason to opt in, live and converting on day one, not someday.' },
   { icon: '🔎', name: 'SEO + GEO baked in', desc: 'Built to be found on Google and cited by AI search. Metadata, structured data, the works.' },
   { icon: '🔑', name: 'You own every line', desc: 'The repo, the domain, the accounts, all yours on launch day. No rental, no lock-in.' },
@@ -50,7 +50,7 @@ const FAQ = [
   },
   {
     q: 'How much does a website cost?',
-    a: `The productized website is ${formatUsd(site.setupCents)} to set up plus ${formatUsd(site.monthlyCents)} a month, and that includes your domain, hosting, and ongoing care. Add the voice agent and the command center rides along free with the pair. It goes live in about a week. For a bigger, fully bespoke build (custom booking, an embedded CRM, a vertical app, an AI sales rep), we scope a Full-Service Business Build and quote it after a free call. Month to month, cancel anytime, no trials.`,
+    a: `The productized website is ${formatUsd(site.setupCents)} to set up plus ${formatUsd(site.monthlyCents)} a month, and that includes your domain, hosting, and ongoing care. Add the voice agent and the two are built as one thing, for less than they cost apart. It goes live in about a week. For a bigger, fully bespoke build (custom booking, an embedded CRM, a vertical app, an AI sales rep), we scope a Full-Service Business Build and quote it after a free call. Month to month, cancel anytime, no trials.`,
   },
   {
     q: 'How fast does it go live?',
@@ -66,11 +66,11 @@ const FAQ = [
   },
   {
     q: 'Can I see it before I pay?',
-    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in your hands within the hour, plus a voice agent and a command center so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
+    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in your hands within the hour, plus a voice agent so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
   },
   {
     q: 'What if I already have a website?',
-    a: 'We can rebuild it as a working engine, or wire the parts you are missing (the voice agent, the command center, funnels, SEO and GEO) onto what you have. Start with a free demo or a free website audit and we will tell you the highest-leverage move.',
+    a: 'We can rebuild it as a working engine, or wire the parts you are missing (the voice agent, funnels, SEO and GEO) onto what you have. Start with a free demo or a free website audit and we will tell you the highest-leverage move.',
   },
 ];
 
@@ -90,7 +90,7 @@ function websitesJsonLd() {
         offers: {
           '@type': 'Offer',
           name: 'Website',
-          description: 'Custom website with funnels and SEO/GEO. Domain, hosting, and care included. Voice agent sold separately, and taking both makes the command center free.',
+          description: 'Custom website with funnels and SEO/GEO. Domain, hosting, and care included. Voice agent sold separately, and taking both builds them as one thing.',
           price: Math.round(site.monthlyCents / 100),
           priceCurrency: 'USD',
           priceSpecification: [
@@ -283,7 +283,7 @@ export default function WebsitesPage() {
                   </p>
                   <p className="font-body text-[13px] text-[#161616]/80 mt-1.5 leading-relaxed">
                     The Talking Website (site + voice agent, one brain) is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
-                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, and the command center rides free inside it.
+                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, less than the two apart.
                   </p>
                 </div>
                 <Link
