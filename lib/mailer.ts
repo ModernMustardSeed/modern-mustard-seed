@@ -12,8 +12,9 @@ import nodemailer from 'nodemailer';
 import { ImapFlow } from 'imapflow';
 import type { Mailbox } from '@/lib/mailboxes';
 import { getSupabase } from '@/lib/supabase';
+import { describeMailError, mailErrorLine } from '@/lib/mail-errors';
 
-export type SendResult = { ok: boolean; messageId?: string; error?: string };
+export type SendResult = { ok: boolean; messageId?: string; error?: string; detail?: string; fix?: string; authFailed?: boolean };
 
 function normalizeSubject(s: string): string {
   return (s || '').replace(/^\s*(re|fwd?):\s*/i, '').trim().toLowerCase().slice(0, 200);
@@ -70,7 +71,9 @@ export async function sendMailAs(
     });
     messageId = info.messageId;
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+    const f = describeMailError(e);
+    console.error(`[mailer] ${box.address}: ${mailErrorLine(e)}`);
+    return { ok: false, error: f.reason, detail: f.detail, fix: f.fix, authFailed: f.auth };
   }
 
   // Record to the mailbox Sent folder (best-effort DB write).
