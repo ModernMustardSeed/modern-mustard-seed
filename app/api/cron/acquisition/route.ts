@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { drainQueue } from '@/lib/acq/runner';
 import { getAcqSettings, getCampaign } from '@/lib/acq/settings';
-import { enqueue } from '@/lib/acq/queue';
+import { enqueueMany } from '@/lib/acq/queue';
+import type { EnqueueManyArgs } from '@/lib/acq/queue';
 import { dueForStep, sequenceLength } from '@/lib/acq/eligibility';
 import { replenishReservoir } from '@/lib/acq/reservoir';
 import { recordEvent } from '@/lib/acq/events';
@@ -63,13 +64,19 @@ export async function GET(req: Request) {
     .order('last_campaign_email_at', { ascending: true, nullsFirst: true })
     .limit(500);
 
+  // Collect first, write once. Most of this list is already queued from an
+  // earlier pass, and asking Postgres about each one separately is what put the
+  // database on the floor. See enqueueMany.
+  const due: EnqueueManyArgs[] = [];
   for (const row of ((candidates ?? []) as unknown as AcqProspect[])) {
     if (row.client_status === 'client') continue;
     const step = dueForStep(row, now, campaign.step_after_days);
     if (!step) continue;
-    const res = await enqueue(db, { kind: 'email', leadId: row.id, campaignId: campaign.id, step });
-    if (res.ok && res.created) swept++;
+    due.push({ kind: 'email', leadId: row.id, campaignId: campaign.id, step });
   }
+  const sweepResult = await enqueueMany(db, due);
+  if (!sweepResult.ok) console.error('cron/acquisition: sweep enqueue failed', sweepResult.error);
+  swept = sweepResult.created;
 
   /* ── 1b. keep the reservoir graded ──
      Promotion is what turns discovered prospects into mailable inventory, and

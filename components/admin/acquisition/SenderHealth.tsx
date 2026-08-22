@@ -61,11 +61,11 @@ export default function SenderHealth() {
 
   if (!health) {
     return (
-      <div className="min-h-screen bg-[#FBF6EA]">
+      <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
         <AdminHeader active="acquisition" title="Acquisition" />
         <main className="max-w-6xl mx-auto px-5 py-6">
           <AcqNav active="sender" />
-          <p className="text-sm text-[#161616]/50">{error || 'Reading DNS and the provider...'}</p>
+          <p className="text-sm text-[#161616]/65">{error || 'Reading DNS and the provider...'}</p>
         </main>
       </div>
     );
@@ -75,7 +75,7 @@ export default function SenderHealth() {
   const headline = health.worst === 'error' ? 'ERROR' : health.worst === 'warning' ? 'WARNING' : health.worst === 'unknown' ? 'PARTIAL' : 'PASS';
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[86rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav
@@ -116,7 +116,7 @@ export default function SenderHealth() {
           </div>
 
           <div className="mt-5">
-            <div className="flex items-center justify-between text-[11px] font-mono text-[#161616]/55 mb-1.5">
+            <div className="flex items-center justify-between text-[11px] font-mono text-[#161616]/65 mb-1.5">
               <span>{v.sent24h} of {v.allowance} allowed</span>
               <span>ceiling {v.ceiling}</span>
             </div>
@@ -139,14 +139,14 @@ export default function SenderHealth() {
                     ? 'bg-[#F5B700] border-[#161616]'
                     : s < health.ramp.current
                       ? 'bg-[#3f5d34]/15 border-[#3f5d34]/40 text-[#2c4225]'
-                      : 'border-[#161616]/15 text-[#161616]/35'
+                      : 'border-[#161616]/15 text-[#161616]/65'
                 }`}
               >
                 {s.toLocaleString()}
               </span>
             ))}
           </div>
-          <p className="mt-2 text-xs text-[#161616]/55 max-w-3xl">
+          <p className="mt-2 text-xs text-[#161616]/65 max-w-3xl">
             The allowance rises only after a full day spent near the current step with clean rates, and falls a whole step
             the moment bounces or complaints cross their ceiling. Raising it by hand is possible and is almost always the
             wrong move.
@@ -188,7 +188,7 @@ export default function SenderHealth() {
                   <Stat key={k} label={k} value={n.toLocaleString()} tone={k === 'bounced' || k === 'complaint' ? 'red' : k === 'delivered' ? 'seed' : 'ink'} />
                 ))}
               </div>
-              <p className="mt-3 text-xs text-[#161616]/55">
+              <p className="mt-3 text-xs text-[#161616]/65">
                 Accepted is not delivered, and delivered is not read. Inbox against Promotions against Spam is not visible
                 from here, so this engine never claims to know it.
               </p>

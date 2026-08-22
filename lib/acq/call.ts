@@ -26,6 +26,8 @@ import { recordEvent } from '@/lib/acq/events';
 import { OFFER, TRADE_ROLEPLAY_NOTE, TRADE_SCENARIOS } from '@/lib/acq/types';
 import type { AcqProspect, Trade } from '@/lib/acq/types';
 import { shortBusiness } from '@/lib/acq/campaign';
+import { CALLBACK_NUMBER_ID } from '@/lib/vapi-lines';
+import { phoneOverrides, pickLanguage } from '@/lib/call-language';
 
 const VAPI_BASE = 'https://api.vapi.ai';
 
@@ -43,9 +45,17 @@ const real = (...values: (string | undefined)[]): string => {
   return '';
 };
 
-/** Mr. Mustard's own line, so the number they see matches the one on the site. */
-const FROM_NUMBER_ID =
-  real(process.env.VAPI_CALLBACK_NUMBER_ID, process.env.VAPI_PHONE_NUMBER_ID) || '462f988d-ce3a-4961-b652-dfc1fb1ac5d0';
+/**
+ * The outbound line, defined once in lib/vapi-lines.ts along with the reason it
+ * is the studio number and not a second one. Short version: the ten-a-day
+ * outbound cap on Vapi numbers is per ACCOUNT, so a separate callback number
+ * adds no capacity and only costs identity.
+ *
+ * ⚠️ He reads this number out loud on every call he places, from the prompt in
+ * scripts/setup-vapi-mustard.mjs. Change the line, change that prompt in the
+ * same commit, or he tells people a number that does not reach him.
+ */
+const FROM_NUMBER_ID = CALLBACK_NUMBER_ID;
 
 const ASSISTANT_ID = real(
   process.env.VAPI_MUSTARD_ASSISTANT_ID,
@@ -73,11 +83,11 @@ export function acquisitionTools() {
       function: {
         name: 'forge_prospect_agent',
         description:
-          "Build THIS prospect's own personalized voice agent demo, for the business already on the call. Use it when the owner says yes to 'want me to build the {business} version so you can test it whenever you want'. Free, no card. Confirm their email by spelling it back BEFORE calling this. Call it once per call.",
+          "Build THIS prospect's own personalized voice agent demo, for the business already on the call. Use it when the owner says yes to 'want me to build the {business} version so you can test it whenever you want'. Free, no card. Use the email already in your briefing if there is one, confirmed by saying it back as words, and only take a fresh one (anchored, 'b as in boy') if they say it is wrong. Call it once per call.",
         parameters: {
           type: 'object',
           properties: {
-            email: { type: 'string', description: 'Their email, confirmed by spelling it back character by character.' },
+            email: { type: 'string', description: 'Their email. Use the one from your briefing when there is one; only spell out a new one if they corrected you.' },
             contact_name: { type: 'string', description: 'The owner or manager name, if they gave it.' },
             trade: { type: 'string', description: 'Their trade in their own words (heating and air, plumbing, roofing).' },
             services: { type: 'string', description: 'The services they named on the call, comma separated.' },
@@ -203,6 +213,56 @@ export function buildBriefing(lead: AcqProspect, consentAt: string | null): stri
     known.push(`Posted hours: ${Object.entries(lead.hours).map(([d, h]) => `${d} ${h}`).join('; ')}.`);
   }
 
+  /**
+   * ⚠️ THE ADDRESS WE ALREADY HAVE.
+   *
+   * Almost everyone on this call arrived by clicking a button in an email
+   * Sarah sent them, which means their address is already on the lead row and
+   * has already proved it can receive mail. Asking that person to spell it out
+   * loud is the single worst thing he can do: spelled letters are the one thing
+   * a phone line reliably destroys, it burns a minute of a three minute call,
+   * and it can only make a known-good address worse.
+   *
+   * So when we have it, he confirms it as WORDS and never spells. He only takes
+   * a fresh address if they say this one is wrong, which is rare and is exactly
+   * when the spelling rules in his prompt should kick in.
+   */
+  /**
+   * THE NUMBER HE IS DIALLING. He is on it, so asking for it is absurd, and
+   * asking a business owner to recite their own number back is worse than
+   * absurd on a three minute call. What he actually needs to know is whether
+   * this is the line the agent should ANSWER, which is a different question and
+   * a genuinely useful one: plenty of owners give a cell for the callback and
+   * want the shop line covered.
+   */
+  const dialing = String(lead.phone || '').trim();
+  const phoneBlock = dialing
+    ? `
+
+THE NUMBER YOU ARE CALLING: ${dialing}
+You are on it right now, so never ask them for a phone number and never ask them
+to read it back. The only phone question worth asking is which line the agent
+should ANSWER for them: "is this the number you'd want me answering, or is the
+business on a different line?" Ask it once, late, when the conversation is
+already about building them one.`
+    : '';
+
+  const knownEmail = String(lead.email || '').trim();
+  const emailBlock = knownEmail
+    ? `
+
+YOU ALREADY HAVE THEIR EMAIL: ${knownEmail}
+It came from the campaign they replied to, so it is known good. DO NOT ask them
+to spell it and DO NOT ask for it again. If you need to confirm it, say it back
+ONCE as ordinary words, not letters ("I have you at ${knownEmail}, still the
+best one?"), and move on. Only take a new address if they tell you this one is
+wrong, and only then do you spell anything.`
+    : `
+
+YOU DO NOT HAVE THEIR EMAIL. If you need one, follow the email rules in your
+instructions exactly: hear it as words first, spell only when words will not do,
+and spell anchored ("b as in boy").`;
+
   const scenarios = TRADE_SCENARIOS[trade].slice(0, 3).map((s) => `"${s}"`).join(', ');
   const first = String(lead.contact_name || '').trim().split(/\s+/)[0] || '';
 
@@ -219,7 +279,7 @@ WHY THE PHONE IS RINGING: this person got an email from Sarah asking whether the
 wanted Mr. Mustard to call them, and they clicked yes and gave their number${
     consentAt ? ` at ${consentAt}` : ''
   }. They ASKED for this call, seconds ago. It is not a cold call. Say so early
-and plainly, because it is the thing that makes it land.
+and plainly, because it is the thing that makes it land.${phoneBlock}${emailBlock}
 
 WHO THEY ARE:
 - Business: ${lead.business_name}${business !== lead.business_name ? ` (say it as "${business}")` : ''}
@@ -264,7 +324,8 @@ they want to keep going.
 
 5. OFFER TO BUILD THEIRS. "Want me to actually build the ${business} version so
    you can test it whenever you want?" It is FREE, no card, no commitment. If yes:
-   confirm their email by spelling it back, then call forge_prospect_agent once,
+   confirm the email you already have by saying it back as words (or take one
+   properly if you have none), then call forge_prospect_agent once,
    then email_prospect_demo.
 
 PRICE, only if they ask, and answer plainly without overselling:
@@ -300,7 +361,19 @@ export function firstMessage(lead: AcqProspect): string {
 
 export type PlaceCallResult =
   | { ok: true; vapiCallId: string; acqCallId: string }
-  | { ok: false; reason: 'not-configured' | 'no-consent' | 'duplicate' | 'vapi-error' | 'bad-phone' | 'db'; detail?: string };
+  | {
+      ok: false;
+      /**
+       * `daily-limit` is separated from the general `vapi-error` on purpose. A
+       * number bought inside Vapi caps outbound calls per UTC day, and when it
+       * trips, the caller-facing copy and the retry schedule both have to
+       * change: nothing will succeed again until the day rolls over, so
+       * promising a call "in a minute" is a lie and retrying in a minute is
+       * pointless load. Found 2026-08-18 when a real visitor hit it.
+       */
+      reason: 'not-configured' | 'no-consent' | 'duplicate' | 'vapi-error' | 'bad-phone' | 'db' | 'daily-limit';
+      detail?: string;
+    };
 
 type VapiModel = { messages?: { role: string; content: string }[]; tools?: unknown[] } & Record<string, unknown>;
 
@@ -354,6 +427,8 @@ export async function placeDemoCall(args: {
   consentAt: string | null;
   campaignId: string | null;
   attempt?: number;
+  /** Browser Accept-Language of whoever asked for the call. English changes nothing. */
+  acceptLanguage?: string | null;
 }): Promise<PlaceCallResult> {
   const db = getSupabase();
   if (!db) return { ok: false, reason: 'db' };
@@ -394,6 +469,12 @@ export async function placeDemoCall(args: {
         assistantOverrides: {
           firstMessage: firstMessage(args.lead),
           model,
+          // Undefined for English, so the tuned English stack is untouched. For
+          // anyone else this swaps the ear and the opener, never his voice.
+          ...(phoneOverrides(
+            pickLanguage(args.acceptLanguage),
+            args.lead.contact_name || args.lead.business_name
+          ) ?? {}),
           metadata: {
             acq: true,
             leadId: args.lead.id,
@@ -408,15 +489,25 @@ export async function placeDemoCall(args: {
     });
     if (!res.ok) {
       const detail = (await res.text()).slice(0, 400);
-      await db.from('acq_calls').update({ status: 'failed', ended_reason: `vapi-${res.status}` }).eq('id', callRow.id);
+      // Vapi answers this one with a 400 and a sentence, not a code, so the
+      // sentence is what we match. Both spellings seen in the wild: the human
+      // message on the POST, and `vapi-number-outbound-daily-limit` on the call
+      // record afterwards.
+      const dailyLimit = /daily outbound call limit|outbound-daily-limit/i.test(detail);
+      await db
+        .from('acq_calls')
+        .update({ status: 'failed', ended_reason: dailyLimit ? 'vapi-number-outbound-daily-limit' : `vapi-${res.status}` })
+        .eq('id', callRow.id);
       await recordEvent(db, {
         leadId: args.lead.id,
         campaignId: args.campaignId,
         type: 'call_failed',
-        label: 'Mr. Mustard could not place the call',
+        label: dailyLimit
+          ? 'The studio line hit its daily outbound cap, so this callback could not be placed'
+          : 'Mr. Mustard could not place the call',
         detail: { status: res.status, detail },
       });
-      return { ok: false, reason: 'vapi-error', detail };
+      return { ok: false, reason: dailyLimit ? 'daily-limit' : 'vapi-error', detail };
     }
     const call = (await res.json()) as { id?: string };
     const vapiCallId = call?.id || '';

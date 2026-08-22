@@ -61,7 +61,7 @@ const faqs = [
   },
   {
     q: 'How fast can it go live, and what does it cost?',
-    a: 'Most restaurant systems are live on your number in about two weeks. Pricing is simple and per store: $799 a month with a one-time $1,000 activation, or $749 a month per store across a committed fleet of 25 or more with the activation waived. Enterprise rollouts are custom. That includes to-go and catering ordering, the operator dashboard, and up to 1,200 answered calls a month. One recovered catering order a month more than covers a store, and a 30-day pilot proves the number before you commit.',
+    a: 'Most restaurant systems are live in about two weeks, answering the number you already have. Pricing is simple and per store: $799 a month with a one-time $1,000 activation, or $749 a month per store across a committed fleet of 25 or more with the activation waived. Enterprise rollouts are custom. That includes to-go and catering ordering, the operator dashboard, and up to 1,200 answered calls a month. One recovered catering order a month more than covers a store, and a 30-day pilot proves the number before you commit.',
   },
   {
     q: 'Does it actually sound human?',

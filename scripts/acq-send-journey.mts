@@ -63,6 +63,35 @@ const business = 'Flathead Comfort Heating & Air';
 const hubId = crypto.randomUUID();
 const keys = keysFor({ business_name: business, city: 'Kalispell', state: 'MT', phone: '(406) 555-0143', email: to });
 
+/*
+ * CLEAR ANY PREVIOUS WALKTHROUGH FOR THIS ADDRESS FIRST.
+ *
+ * Every --keep run left its lead, order, client, project and office behind, so
+ * four runs meant four of everything and twelve emails in one inbox. That
+ * reads exactly like the engine double-sending when it is only this script
+ * piling up. One walkthrough at a time: the newest run is the one you are
+ * looking at, and the older ones stop cluttering the Client Book.
+ */
+const { data: stale } = await db.from('outbound_leads').select('id').eq('source', MARKER).eq('email', to);
+if ((stale ?? []).length) {
+  const ids = (stale ?? []).map((r) => r.id as string);
+  const { data: offices } = await db.from('fo_offices').select('id').eq('client_email', to);
+  for (const o of offices ?? []) {
+    for (const t of ['fo_appointments', 'fo_calls', 'fo_contacts', 'fo_transfers', 'fo_events']) {
+      await db.from(t).delete().eq('office_id', o.id);
+    }
+  }
+  await db.from('fo_offices').delete().eq('client_email', to);
+  await db.from('projects').delete().eq('client_email', to);
+  await db.from('client_files').delete().eq('client_email', to);
+  await db.from('clients').delete().eq('email', to);
+  await db.from('demo_orders').delete().eq('email', to);
+  for (const t of ['acq_mrr_events', 'acq_events', 'acq_queue', 'acq_sends']) await db.from(t).delete().in('lead_id', ids);
+  await db.from('messages').delete().in('outbound_lead_id', ids);
+  await db.from('outbound_leads').delete().in('id', ids);
+  console.log(`\n  cleared ${ids.length} previous walkthrough${ids.length === 1 ? '' : 's'} for this address.`);
+}
+
 console.log(`\nTHE BUYER'S JOURNEY  ->  ${to}\n`);
 
 let leadId: string | null = null;

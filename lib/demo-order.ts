@@ -40,7 +40,7 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
     name: 'Voice Agent',
     setupCents: 39700,
     monthlyCents: 39700,
-    blurb: 'The voice that answered your demo, on your real number, 24/7.',
+    blurb: 'The voice that answered your demo, answering your calls, 24/7.',
     finePrint: `${sidekickTiers[0].minutesCap.toLocaleString()} answered minutes a month, then message-taking mode. Add the website and the command center comes free with both.`,
   },
   site: {

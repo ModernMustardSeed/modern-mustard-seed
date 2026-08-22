@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Section, Stat, Chip, GoalDial, Funnel, api, card, btnPrimary, btnGhost, btnDanger, usd, pct, timeAgo } from '@/components/admin/acquisition/ui';
+import { usePoll } from '@/lib/use-poll';
 
 type Preflight = {
   blockers: { id: string; label: string; detail: string; fix: string }[];
@@ -24,7 +25,7 @@ type Overview = {
   preflight: Preflight;
   queues: { hot: QueueRow[]; needsHuman: QueueRow[]; followupToday: QueueRow[] };
   emailQueue: { pending: number; failed: number; estimate: string; pace: { sending: boolean; reason?: string; remainingToday?: number; remainingThisHour?: number } };
-  events: { id: string; type: string; label: string; occurred_at: string; lead_id: string | null }[];
+  events: { id: string; type: string; label: string; occurred_at: string; lead_id: string | null; business_name: string | null; city: string | null; state: string | null }[];
 };
 
 export default function CommandCenter() {
@@ -45,9 +46,10 @@ export default function CommandCenter() {
 
   useEffect(() => {
     void load();
-    const t = window.setInterval(() => void load(true), 45000);
-    return () => window.clearInterval(t);
   }, [load]);
+
+  // Live while the panel is on screen, silent while the tab is in the background.
+  usePoll(() => void load(true), 45000);
 
   const act = async (action: string, extra: Record<string, unknown> = {}) => {
     setBusy(action);
@@ -79,7 +81,7 @@ export default function CommandCenter() {
   const status = data?.settings.master_paused ? 'PAUSED' : data?.campaign?.status === 'live' ? 'LIVE' : (data?.campaign?.status ?? '').toUpperCase() || 'DRAFT';
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-7xl mx-auto px-5 md:px-6 py-6">
         <AcqNav
@@ -146,7 +148,7 @@ export default function CommandCenter() {
         )}
 
         {!data ? (
-          <p className="text-sm text-[#161616]/50">Loading the machine...</p>
+          <p className="text-sm text-[#161616]/65">Loading the machine...</p>
         ) : (
           <div className="space-y-6">
             <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-6">
@@ -251,7 +253,7 @@ export default function CommandCenter() {
                     </button>
                   )}
                 </div>
-                <p className="mt-3 text-xs text-[#161616]/55">
+                <p className="mt-3 text-xs text-[#161616]/65">
                   Caps: {data.campaign?.daily_send_cap ?? 0} a day, {data.campaign?.hourly_send_cap ?? 0} an hour, weekdays inside business hours Mountain.{' '}
                   <Link href="/admin/acquisition/settings" className="underline font-semibold">
                     Change them
@@ -260,19 +262,31 @@ export default function CommandCenter() {
                 </p>
               </Section>
 
-              <Section title="Live activity" note="The last forty things that happened.">
+              <Section
+                title="Live activity"
+                note="The last forty things that happened, and who did them."
+                right={
+                  <Link href="/admin/acquisition/engagement" className={`${btnGhost} !py-1.5 !px-3 !text-[11px]`}>
+                    Who is moving
+                  </Link>
+                }
+              >
                 <ol className="space-y-1.5 max-h-[22rem] overflow-y-auto pr-1">
-                  {data.events.length === 0 && <li className="text-sm text-[#161616]/45">Nothing yet.</li>}
+                  {data.events.length === 0 && <li className="text-sm text-[#161616]/60">Nothing yet.</li>}
                   {data.events.map((e) => (
                     <li key={e.id} className="flex items-start gap-2 text-[13px] leading-snug">
-                      <span className="font-mono text-[10px] text-[#161616]/40 tabular-nums shrink-0 pt-0.5">{timeAgo(e.occurred_at)}</span>
-                      {e.lead_id ? (
-                        <Link href={`/admin/acquisition/prospects/${e.lead_id}`} className="text-[#161616]/80 hover:text-[#161616] hover:underline">
-                          {e.label}
-                        </Link>
-                      ) : (
-                        <span className="text-[#161616]/80">{e.label}</span>
-                      )}
+                      <span className="font-mono text-[10px] text-[#161616]/60 tabular-nums shrink-0 pt-0.5">{timeAgo(e.occurred_at)}</span>
+                      <span className="min-w-0">
+                        {e.lead_id ? (
+                          <Link href={`/admin/acquisition/prospects/${e.lead_id}`} className="font-semibold text-[#161616] hover:underline">
+                            {e.business_name ?? 'Unknown business'}
+                          </Link>
+                        ) : (
+                          <span className="font-semibold text-[#161616]">Campaign</span>
+                        )}
+                        <span className="text-[#161616]/80"> · {e.label}</span>
+                        {e.city && <span className="text-[#161616]/60 text-[11px]"> · {e.city}{e.state ? `, ${e.state}` : ''}</span>}
+                      </span>
                     </li>
                   ))}
                 </ol>
@@ -293,7 +307,7 @@ function PriorityList({ title, rows, tone, empty }: { title: string; rows: Queue
         <Chip label={String(rows.length)} tone={tone} />
       </div>
       {rows.length === 0 ? (
-        <p className="text-sm text-[#161616]/45">{empty}</p>
+        <p className="text-sm text-[#161616]/60">{empty}</p>
       ) : (
         <ol className="space-y-2 max-h-[20rem] overflow-y-auto pr-1">
           {rows.map((r) => (
@@ -301,7 +315,7 @@ function PriorityList({ title, rows, tone, empty }: { title: string; rows: Queue
               <Link href={r.href} className="block rounded-lg border-2 border-[#161616]/15 hover:border-[#161616] px-3 py-2 transition-colors">
                 <div className="flex items-baseline justify-between gap-2">
                   <span className="font-semibold text-sm truncate">{r.business_name}</span>
-                  {r.lead_score != null && <span className="font-mono text-[11px] tabular-nums text-[#161616]/50 shrink-0">{r.lead_score}</span>}
+                  {r.lead_score != null && <span className="font-mono text-[11px] tabular-nums text-[#161616]/65 shrink-0">{r.lead_score}</span>}
                 </div>
                 <p className="text-[12px] text-[#161616]/60 truncate">
                   {r.reason}

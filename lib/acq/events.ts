@@ -33,6 +33,7 @@ export type EventType =
   | 'call_started'
   | 'call_completed'
   | 'call_failed'
+  | 'call_inbound'
   | 'roleplay'
   | 'forge_requested'
   | 'forge_started'
@@ -86,6 +87,68 @@ export async function timelineFor(leadId: string, limit = 200): Promise<AcqEvent
     .order('occurred_at', { ascending: true })
     .limit(limit);
   return (data ?? []) as AcqEvent[];
+}
+
+/**
+ * The signals that mean a real person did something on their side. Opening,
+ * clicking, landing on the permission page, giving consent, picking up the
+ * phone. These are what "who is moving" is built from; sends and forges are
+ * things WE did and are not in this list on purpose.
+ */
+export const ENGAGEMENT_TYPES: EventType[] = [
+  'email_opened',
+  'link_clicked',
+  'permission_visited',
+  'consent_captured',
+  'consent_revoked',
+  'call_queued',
+  'call_started',
+  'call_completed',
+  'call_failed',
+  'call_inbound',
+  'reply',
+  'meeting_booked',
+  'purchased',
+  'unsubscribed',
+];
+
+/**
+ * Record an engagement signal unless the same signal for the same prospect was
+ * already written inside `withinMinutes`. Opens and page visits fire on every
+ * refresh and every image prefetch, and a timeline that says "opened, opened,
+ * opened, opened" in one minute tells Sarah nothing the first line did not.
+ * Returns true when a row was written.
+ *
+ * `dedupeOn.machine` scopes the collapse to hits of the same kind, and it is
+ * not optional cleverness: a mail gateway follows the link seconds after the
+ * send and the recipient reads it an hour later, both inside a six-hour
+ * window. Without the scope the scanner's row lands first and swallows the
+ * human's, and the one signal worth having is the one thrown away.
+ */
+export async function recordEventOnce(
+  db: SupabaseClient | null,
+  args: Parameters<typeof recordEvent>[1] & { leadId: string },
+  withinMinutes: number,
+  dedupeOn?: { machine: boolean },
+): Promise<boolean> {
+  const client = db ?? getSupabase();
+  if (!client) return false;
+  try {
+    const since = new Date(Date.now() - withinMinutes * 60_000).toISOString();
+    let q = client
+      .from('acq_events')
+      .select('id')
+      .eq('lead_id', args.leadId)
+      .eq('type', args.type)
+      .gte('occurred_at', since);
+    if (dedupeOn) q = q.eq('detail->>machine', String(dedupeOn.machine));
+    const { data } = await q.limit(1);
+    if (data && data.length) return false;
+  } catch {
+    /* if the check fails, writing the line is the safer mistake */
+  }
+  await recordEvent(client, args);
+  return true;
 }
 
 /** Events across the whole campaign, newest first. Powers the live activity feed. */

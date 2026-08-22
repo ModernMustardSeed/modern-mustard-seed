@@ -132,12 +132,12 @@ export function JourneyHero() {
             type, a shorter line, and one CTA (the launcher pill already offers
             Mr. Mustard down there). The sticky box hangs ~119px past the fold
             at rest, so the bottom pad is measured in vh to clear it. */}
-        {/* The bottom pad is not decoration on either breakpoint. At rest the
-            sticky box hangs ~130px past the fold, so a centered column ends up
-            centered on a point below the screen. Padding lifts the stack back
-            into view. It was 0 on desktop until the ring box was added
-            2026-08-13; 12vh is what puts the card above the fold on a laptop. */}
-        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-end px-6 pb-[11vh] text-center lg:items-end lg:justify-center lg:pb-[12vh] lg:pr-[6vw] lg:text-right">
+        {/* The bottom pad is not decoration on phones. At rest the sticky box
+            hangs ~130px past the fold, so a centered column ends up centered on
+            a point below the screen, and the padding lifts the stack back into
+            view. Desktop is back to 0: the ring box moved out of the hero
+            2026-08-19 and the headline gets the open water to itself again. */}
+        <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-end px-6 pb-[11vh] text-center lg:items-end lg:justify-center lg:pb-0 lg:pr-[6vw] lg:text-right">
           <span className={`${caveat.className} text-2xl md:text-3xl text-[#FFDD55] rotate-[-2deg] ${revealBase}`} data-in-stagger>
             Flathead Lake, Montana
           </span>
@@ -169,16 +169,42 @@ export function JourneyHero() {
               Skip Ahead, Talk To Mr. Mustard
             </button>
           </div>
-          {/* The lead capture, sitting in the hero on purpose (Sarah 2026-08-13).
-              The drive is the story; this is the door you can walk through in
-              one gesture, before any of it. Dense on phones so it never pushes
-              the headline off the sticky frame. */}
-          <div className={`mt-4 sm:mt-5 flex w-full justify-center lg:justify-end ${revealBase}`} style={{ transitionDelay: '480ms' }}>
-            <RingMeNow source="home-hero" dense />
-          </div>
         </div>
         <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 text-[#FBF6EA]/80 font-mono text-[11px] tracking-[0.3em] uppercase motion-reduce:hidden">
           <span className="inline-block animate-bounce">▼ Scroll</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* MI 4 · The Turnout (the ring box)                                   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * THE TURNOUT. The first place to pull over after the drive starts.
+ *
+ * Sarah 2026-08-19: the ring box was riding inside the sticky hero next to the
+ * headline and the button row, and the hero felt packed. It gets its own band
+ * now, one screen down, where it is the only thing on the page. Mustard behind
+ * it so the cream card reads as an object you stop at, not another line of
+ * hero furniture. Full card, not the dense cut, because there is room here for
+ * the offer to say what it is.
+ */
+export function JourneyRing() {
+  const ref = useReveal<HTMLDivElement>();
+  return (
+    <section
+      id="tour-ring"
+      className="relative bg-[#F5B700] border-b-2 border-[#161616] py-14 md:py-20"
+    >
+      <div ref={ref} className="group mx-auto flex max-w-xl flex-col items-center px-6 text-center">
+        <span className={`${caveat.className} text-2xl md:text-3xl text-[#161616] rotate-[-1.5deg] ${revealBase}`}>
+          the fastest way to hear one is to answer one
+        </span>
+        <div className={`mt-5 w-full ${revealBase}`} style={{ transitionDelay: '120ms' }}>
+          <RingMeNow source="home-turnout" />
         </div>
       </div>
     </section>

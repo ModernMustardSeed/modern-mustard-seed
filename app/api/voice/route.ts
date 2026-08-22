@@ -30,6 +30,9 @@ import {
 } from '@/lib/acq/voice-tools';
 import { cancelPendingFor } from '@/lib/acq/queue';
 import { recordEvent } from '@/lib/acq/events';
+import { env } from '@/lib/env';
+import { checkSpokenEmail, spokenEmailInstruction } from '@/lib/spoken-email';
+import { noDashes, noDashesTitle } from '@/lib/no-dashes';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -269,7 +272,7 @@ async function bookSlot(
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
-        subject: `${firstName}, you are on my calendar — ${shortLabel}`,
+        subject: `${firstName}, you are on my calendar for ${shortLabel}`,
         html: bookingConfirmationEmail({
           firstName,
           whenDisplay: display,
@@ -450,6 +453,17 @@ const RESOURCE_CATALOG: Record<string, CatalogEntry> = {
   'partner-hub': { label: 'Your partner dashboard', url: `${SITE_ROOT}/partners/hq` },
   partners: { label: 'The partner program', url: `${SITE_ROOT}/partners` },
   home: { label: 'Modern Mustard Seed', url: SITE_ROOT },
+  // ── PAY LINKS ──────────────────────────────────────────────────────────────
+  // A caller who says "just send me the bill" gets a real one. Each opens a live
+  // Stripe Checkout for that exact product, priced from lib/demo-order.ts by
+  // app/pay/[slug]/route.ts, so what he says out loud and what they are charged
+  // can never disagree. Added 2026-08-17 (Sarah): "he needs to be able to email
+  // payment links and the actual product so they can just pay for it if they
+  // want to." `ref: true` so a partner still earns on a link they caused.
+  'pay-talking-website': { label: 'Start The Talking Website (secure checkout)', url: `${SITE_ROOT}/pay/talking-website`, ref: true },
+  'pay-voice-agent': { label: 'Start your Voice Agent (secure checkout)', url: `${SITE_ROOT}/pay/voice-agent`, ref: true },
+  'pay-website': { label: 'Start your website (secure checkout)', url: `${SITE_ROOT}/pay/website`, ref: true },
+  'pay-command-center': { label: 'Start your Business Command Center (secure checkout)', url: `${SITE_ROOT}/pay/command-center`, ref: true },
   // Admin-desk-only deep links (auth-gated routes; useless to anyone not signed
   // into admin, so they are dropped on non-admin calls). Paths mirror the admin
   // nav in components/admin/AdminHeader.tsx.
@@ -495,6 +509,14 @@ async function sendResourceEmail(
     });
   }
 
+  // A shape check passes every plausible mishearing, and a link sent to
+  // gmial.com is worse than no link: the caller hangs up believing it arrived.
+  // This costs a few milliseconds and fails open on a DNS hiccup.
+  const verdict = await checkSpokenEmail(to);
+  if (!verdict.ok) {
+    return JSON.stringify({ ok: false, error: spokenEmailInstruction(verdict) });
+  }
+
   // Partner desk: stamp their referral code onto any ref-eligible link so a
   // partner who emails themselves the store or booking link earns on it.
   let refCode: string | null = null;
@@ -515,7 +537,7 @@ async function sendResourceEmail(
     .filter((r) => !r.admin || ctx.deskKind === 'admin')
     .map((r) => ({ label: r.label, url: refCode && r.ref ? `${r.url}?ref=${refCode}` : r.url }));
 
-  const note = (input.note || '').trim();
+  const note = noDashes((input.note || '').trim());
   if (!note && resolved.length === 0) {
     return JSON.stringify({
       ok: false,
@@ -538,7 +560,8 @@ async function sendResourceEmail(
         .join('')}</div>`
     : '';
 
-  const subject = (input.subject || '').trim() || 'A quick note from Mr. Mustard';
+  // Composed by the model, so the dash ban is enforced here, not requested in the prompt.
+  const subject = noDashesTitle((input.subject || '').trim()) || 'A quick note from Mr. Mustard';
   const html = clientEmail({
     preheader: note ? note.slice(0, 120) : 'The link you asked for, from Modern Mustard Seed.',
     greeting: 'Hi there,',
@@ -566,8 +589,16 @@ async function sendResourceEmail(
   }
   return JSON.stringify({
     ok: true,
-    instruction:
-      'Sent. Tell them warmly it is on its way to their inbox now (from sarah@modernmustardseed.com), and to peek in spam if it is not there in a minute. Then ask if there is anything else.',
+    sentTo: to,
+    // ⚠️ The address is echoed back so he SAYS it, anchored, one more time.
+    // 2026-08-17: on a live call he read "a as in apple, i as in igloo" back
+    // correctly and then wrote `bizyal2023` into this tool, turning an i into an
+    // l after the caller had already confirmed it. Nothing on the call could
+    // catch that, because the only place the wrong address existed was inside a
+    // tool argument nobody spoke out loud. Now he speaks it, and the person who
+    // owns the inbox gets one chance to say "that's wrong" while he can still
+    // resend.
+    instruction: `Sent to ${to}. Say that address back to them ANCHORED, one time, exactly as it went out ("that went to b as in boy, i as in igloo..."), and ask if that is right. If they say it is wrong, take the correction and call send_email again with the fixed address. If it is right, tell them to peek in spam if it is not there in a minute, then ask if there is anything else.`,
   });
 }
 
@@ -583,12 +614,37 @@ async function sendResourceEmail(
  * best-effort and carrier-filtered while A2P sat unapproved.
  */
 async function reachSarah(
-  input: { name?: string; phone?: string; reason?: string },
+  input: { name?: string; phone?: string; reason?: string; email?: string },
   callerNumber: string | null,
 ): Promise<string> {
   const name = (input.name || '').trim() || 'A caller';
-  const phone = (input.phone || '').trim() || callerNumber || '';
+  /**
+   * A Vapi variable is substituted in the SYSTEM PROMPT before the model sees
+   * it, so on a real call he reads a real number. In any context where that
+   * substitution has not happened, he copies the placeholder through verbatim,
+   * and Sarah gets a lead telling her to ring "{{customer.number}}". Seen in a
+   * harness on 2026-08-20. Two characters of defence, and the caller ID is
+   * better information than a template string in every case where they differ.
+   */
+  const phoneRaw = (input.phone || '').trim();
+  const phone = (/\{\{|\}\}/.test(phoneRaw) ? '' : phoneRaw) || callerNumber || '';
   const reason = (input.reason || '').trim();
+  /**
+   * ⚠️ THE ADDRESS GETS ITS OWN FIELD AND ITS OWN CHECK.
+   *
+   * It used to arrive buried in `reason` as free prose, which meant nothing
+   * could validate it and nothing could read it back. On 2026-08-20 Lucy began
+   * an address, corrected herself mid-sentence, and the lead reached Sarah as
+   * `bellavalentinaMAY22@gmail.com`: a blend of the abandoned first attempt and
+   * the corrected one. He had read the correct version back out loud twice.
+   *
+   * A blend like that is a VALID address at a real domain, so no format check
+   * can catch it. What catches it is making him say the stored value back, so
+   * the one person who knows it is wrong hears it while the call is still live.
+   */
+  const emailRaw = (input.email || '').trim();
+  const emailVerdict = emailRaw ? await checkSpokenEmail(emailRaw) : null;
+  const email = emailVerdict?.ok ? emailVerdict.address : '';
 
   let emailed = false;
   const apiKey = process.env.RESEND_API_KEY;
@@ -607,6 +663,7 @@ async function reachSarah(
           fields: [
             { label: 'Who', value: name },
             ...(phone ? [{ label: 'Call them back at', value: phone }] : []),
+            ...(email ? [{ label: 'Email (he read this back on the call)', value: email }] : []),
             { label: 'Source', value: 'Mr. Mustard voice call (they asked for you by name)' },
           ],
           message: reason || 'A caller asked to speak with you directly.',
@@ -628,8 +685,10 @@ async function reachSarah(
   }
   return JSON.stringify({
     ok: true,
-    instruction:
-      'Sarah has just been notified (email now, and a text as backup). Tell them warmly she will get right back to them, confirm the best number to reach them, and offer to book a specific time with her too.',
+    ...(email ? { sentWithEmail: email } : {}),
+    instruction: email
+      ? `Sarah has been notified, and the address on the record is ${email}. Say that address back to them ONCE, anchored, and ask if it is right. This is the last moment anybody can catch it, because after this call it is just a line in her inbox. If it is wrong, take the correction and call reach_sarah again with the fixed address. Then tell them warmly she will get right back to them.`
+      : 'Sarah has just been notified (email now, and a text as backup). Tell them warmly she will get right back to them, confirm the best number to reach them, and offer to book a specific time with her too.',
   });
 }
 
@@ -669,6 +728,16 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
       });
     } catch (err) {
       console.error('acq end-of-call failed', err);
+    }
+  }
+  // A prospect who dials Mr. Mustard's line themselves is the warmest signal
+  // the campaign has, and until now it left no mark on their record. Match the
+  // caller id against the acquisition prospects and put it on their timeline.
+  if (!acq && phoneNumber && (call.type === 'inboundPhoneCall' || !call.type)) {
+    try {
+      await noteInboundFromProspect(phoneNumber, { summary, durationSeconds, endedReason });
+    } catch (err) {
+      console.error('acq inbound match failed', err);
     }
   }
   if (prospectId || outboundLeadId) {
@@ -725,6 +794,46 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
   } catch (err) {
     console.error('voice end-of-call report email failed', err);
   }
+}
+
+/**
+ * Find the acquisition prospect behind an inbound caller id and record the
+ * call on their timeline. Phones in outbound_leads arrive in every format a
+ * scraper can produce, so match on the last ten digits in code after a cheap
+ * suffix filter in the database.
+ */
+async function noteInboundFromProspect(
+  callerNumber: string,
+  info: { summary: string; durationSeconds?: number; endedReason: string },
+): Promise<void> {
+  const sb = getSupabase();
+  if (!sb) return;
+  const digits = callerNumber.replace(/\D/g, '');
+  if (digits.length < 10) return;
+  const last10 = digits.slice(-10);
+  const { data } = await sb
+    .from('outbound_leads')
+    .select('id,phone,acq_campaign_id,business_name')
+    .not('acq_campaign_id', 'is', null)
+    .like('phone', `%${last10.slice(-4)}`)
+    .limit(50);
+  const lead = ((data ?? []) as { id: string; phone: string | null; acq_campaign_id: string | null }[]).find(
+    (l) => (l.phone ?? '').replace(/\D/g, '').slice(-10) === last10,
+  );
+  if (!lead) return;
+  const stamp = new Date().toISOString();
+  await recordEvent(sb, {
+    leadId: lead.id,
+    campaignId: lead.acq_campaign_id,
+    type: 'call_inbound',
+    label: `Called Mr. Mustard's line themselves${info.durationSeconds ? ` (${info.durationSeconds}s)` : ''}`,
+    detail: { from: callerNumber, endedReason: info.endedReason, summary: info.summary.slice(0, 600) },
+  });
+  await sb
+    .from('outbound_leads')
+    .update({ last_seen_at: stamp, reservoir_state: 'engaged', needs_human: `Called Mr. Mustard's line ${stamp.slice(0, 10)}. Call them back.` })
+    .eq('id', lead.id)
+    .in('reservoir_state', ['queued', 'contacted', 'engaged', 'ready', 'verified', 'email_found', 'qualified']);
 }
 
 /* ───────── Webhook entry ───────── */
@@ -820,8 +929,21 @@ function parseArgs(raw: unknown): Record<string, unknown> {
 }
 
 export async function POST(req: Request) {
-  // Shared-secret check (set VAPI_WEBHOOK_SECRET in Vercel and on the assistant).
-  const secret = process.env.VAPI_WEBHOOK_SECRET;
+  /*
+   * Shared-secret check. Vapi sends it as x-vapi-secret, configured either on
+   * the assistant or org-wide in the dashboard.
+   *
+   * env() rather than process.env, because a `vercel env pull` writes the
+   * literal string "[SENSITIVE]" over sensitive values and that is TRUTHY. A
+   * deploy that picked one up would compare every incoming header against
+   * "[SENSITIVE]", 401 every request, and Mr. Mustard would keep answering the
+   * phone while silently losing the ability to book, forge, transfer or log
+   * anything. The call would sound fine and do nothing, which is the worst
+   * possible failure mode for a receptionist.
+   *
+   * A placeholder therefore means "no secret configured", exactly like absent.
+   */
+  const secret = env('VAPI_WEBHOOK_SECRET');
   if (secret) {
     const got = req.headers.get('x-vapi-secret');
     if (got !== secret) {

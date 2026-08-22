@@ -141,11 +141,11 @@ export default function ProspectDetail({ id }: { id: string }) {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#FBF6EA]">
+      <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
         <AdminHeader active="acquisition" title="Acquisition" />
         <main className="max-w-6xl mx-auto px-5 py-6">
           <AcqNav active="prospects" />
-          <p className="text-sm text-[#161616]/50">{error || 'Loading...'}</p>
+          <p className="text-sm text-[#161616]/65">{error || 'Loading...'}</p>
         </main>
       </div>
     );
@@ -154,7 +154,7 @@ export default function ProspectDetail({ id }: { id: string }) {
   const l = data.lead;
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[86rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav
@@ -219,14 +219,14 @@ export default function ProspectDetail({ id }: { id: string }) {
               </dl>
 
               {l.hours && (
-                <p className="mt-3 text-[12px] text-[#161616]/55">
+                <p className="mt-3 text-[12px] text-[#161616]/65">
                   Posted hours: {Object.entries(l.hours).map(([d, h]) => `${d.slice(0, 3)} ${h}`).join(' · ')}
                 </p>
               )}
 
               {l.score_reasons?.length ? (
                 <details className="mt-4">
-                  <summary className="cursor-pointer text-xs font-oswald uppercase tracking-[0.16em] text-[#161616]/55">Why it scored {l.lead_score}</summary>
+                  <summary className="cursor-pointer text-xs font-oswald uppercase tracking-[0.16em] text-[#161616]/65">Why it scored {l.lead_score}</summary>
                   <ul className="mt-2 grid sm:grid-cols-2 gap-x-6 gap-y-1 text-[13px]">
                     {l.score_reasons.map((r, i) => (
                       <li key={i} className="flex justify-between gap-3">
@@ -242,7 +242,7 @@ export default function ProspectDetail({ id }: { id: string }) {
               ) : null}
 
               {l.source_urls?.length ? (
-                <p className="mt-3 text-[11px] text-[#161616]/45 break-all">
+                <p className="mt-3 text-[11px] text-[#161616]/60 break-all">
                   Sources: {l.source_urls.map((u, i) => (
                     <a key={i} href={u} target="_blank" rel="noopener noreferrer" className="underline mr-2">
                       {u.replace(/^https?:\/\//, '').slice(0, 48)}
@@ -255,14 +255,14 @@ export default function ProspectDetail({ id }: { id: string }) {
             {/* ── the timeline ── */}
             <Section title="Timeline" note="Everything that has happened to this prospect, in order.">
               {data.timeline.length === 0 ? (
-                <p className="text-sm text-[#161616]/45">Nothing yet.</p>
+                <p className="text-sm text-[#161616]/60">Nothing yet.</p>
               ) : (
                 <ol className="relative border-l-2 border-[#161616]/15 ml-2 space-y-3">
                   {data.timeline.map((e) => (
                     <li key={e.id} className="pl-5 relative">
                       <span className={`absolute -left-[7px] top-1.5 w-3 h-3 rounded-full border-2 border-[#161616] ${dotFor(e.type)}`} />
                       <p className="text-[13px] leading-snug">
-                        <span className="font-mono text-[11px] text-[#161616]/45 tabular-nums mr-2">
+                        <span className="font-mono text-[11px] text-[#161616]/60 tabular-nums mr-2">
                           {new Date(e.occurred_at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
                         </span>
                         {e.label}
@@ -276,7 +276,7 @@ export default function ProspectDetail({ id }: { id: string }) {
             {/* ── Mr. Mustard ── */}
             <Section title="Mr. Mustard" note="What he heard, and what he did about it.">
               {data.calls.length === 0 ? (
-                <p className="text-sm text-[#161616]/45">He has not spoken to them yet.</p>
+                <p className="text-sm text-[#161616]/60">He has not spoken to them yet.</p>
               ) : (
                 <div className="space-y-4">
                   {data.calls.map((c, i) => (
@@ -285,8 +285,8 @@ export default function ProspectDetail({ id }: { id: string }) {
                         <Chip label={c.status ?? 'call'} tone={c.status === 'completed' ? 'good' : c.status === 'failed' ? 'bad' : 'neutral'} />
                         {c.duration_sec ? <Chip label={`${Math.floor(c.duration_sec / 60)}m ${c.duration_sec % 60}s`} /> : null}
                         {c.roleplay_scenario && <Chip label={`roleplay: ${c.roleplay_scenario}`} tone="warn" />}
-                        {c.ended_reason && <span className="text-[11px] font-mono text-[#161616]/45">{c.ended_reason}</span>}
-                        <span className="ml-auto text-[11px] font-mono text-[#161616]/45">{timeAgo(c.requested_at)}</span>
+                        {c.ended_reason && <span className="text-[11px] font-mono text-[#161616]/60">{c.ended_reason}</span>}
+                        <span className="ml-auto text-[11px] font-mono text-[#161616]/60">{timeAgo(c.requested_at)}</span>
                       </div>
                       {c.summary && <p className="text-[13px] leading-relaxed text-[#161616]/80">{c.summary}</p>}
                       {c.intel && <IntelGrid intel={c.intel} />}
@@ -311,7 +311,7 @@ export default function ProspectDetail({ id }: { id: string }) {
             {/* ── consent evidence ── */}
             <Section title="Consent record" note="Exactly what they agreed to, when, and from where. Append only.">
               {data.consents.length === 0 ? (
-                <p className="text-sm text-[#161616]/45">No consent on file, so Mr. Mustard will not call.</p>
+                <p className="text-sm text-[#161616]/60">No consent on file, so Mr. Mustard will not call.</p>
               ) : (
                 <div className="space-y-3">
                   {data.consents.map((c) => (
@@ -320,10 +320,10 @@ export default function ProspectDetail({ id }: { id: string }) {
                         <Chip label={c.consent_version} />
                         <Chip label={c.phone_e164} tone="good" />
                         {c.revoked_at && <Chip label="revoked" tone="bad" />}
-                        <span className="ml-auto text-[11px] font-mono text-[#161616]/45">{new Date(c.created_at).toLocaleString()}</span>
+                        <span className="ml-auto text-[11px] font-mono text-[#161616]/60">{new Date(c.created_at).toLocaleString()}</span>
                       </div>
                       <p className="mt-2 text-[12px] leading-relaxed text-[#161616]/70">{c.consent_text}</p>
-                      <p className="mt-2 text-[11px] font-mono text-[#161616]/45">
+                      <p className="mt-2 text-[11px] font-mono text-[#161616]/60">
                         Typed name: {c.typed_name ?? '—'} · IP {c.ip ?? '—'} · {(c.user_agent ?? '').slice(0, 70)}
                       </p>
                     </div>
@@ -349,7 +349,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                     {linkCopied ? 'Copied to your clipboard' : mustardLink.url.replace(/^https:\/\//, '')}
                   </button>
                   <p className="mt-2 text-[12px] text-[#161616]/60">{mustardLink.message}</p>
-                  <p className="mt-1 text-[11px] font-mono text-[#161616]/45">
+                  <p className="mt-1 text-[11px] font-mono text-[#161616]/60">
                     Expires {new Date(mustardLink.expiresAt).toLocaleString()}
                   </p>
                   <button className={`${btnGhost} mt-2`} onClick={() => setMustardLink(null)}>
@@ -365,7 +365,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                   ))}
                 </div>
               )}
-              <p className="mt-3 text-[11px] leading-snug text-[#161616]/50">
+              <p className="mt-3 text-[11px] leading-snug text-[#161616]/65">
                 It fills their number in. It does not consent for them and it never dials on its own. They still tick
                 the box and press the button.
               </p>
@@ -436,11 +436,11 @@ export default function ProspectDetail({ id }: { id: string }) {
 
             <Section title="Prep brief" note="What Sarah should know before she talks to them.">
               <p className="font-oswald text-lg font-bold uppercase tracking-tight">{data.brief.headline}</p>
-              <p className="mt-1 text-xs font-mono text-[#161616]/55">Buying intent: {data.brief.intent}</p>
+              <p className="mt-1 text-xs font-mono text-[#161616]/65">Buying intent: {data.brief.intent}</p>
               <dl className="mt-3 space-y-1 text-[13px]">
                 {data.brief.facts.map((f) => (
                   <div key={f.label} className="flex gap-2">
-                    <dt className="w-32 shrink-0 text-[#161616]/50">{f.label}</dt>
+                    <dt className="w-32 shrink-0 text-[#161616]/65">{f.label}</dt>
                     <dd className="min-w-0 break-words">{f.value}</dd>
                   </div>
                 ))}
@@ -456,7 +456,7 @@ export default function ProspectDetail({ id }: { id: string }) {
 
             <Section title="Queued work">
               {data.queue.length === 0 ? (
-                <p className="text-sm text-[#161616]/45">Nothing scheduled.</p>
+                <p className="text-sm text-[#161616]/60">Nothing scheduled.</p>
               ) : (
                 <ul className="space-y-1.5 text-[13px]">
                   {data.queue.map((j) => (
@@ -466,7 +466,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                         {j.status}
                         {j.step ? ` · step ${j.step}` : ''}
                       </span>
-                      <span className="ml-auto font-mono text-[11px] text-[#161616]/45">{timeAgo(j.run_after)}</span>
+                      <span className="ml-auto font-mono text-[11px] text-[#161616]/60">{timeAgo(j.run_after)}</span>
                     </li>
                   ))}
                 </ul>
@@ -489,7 +489,7 @@ export default function ProspectDetail({ id }: { id: string }) {
               </button>
               {l.notes && (
                 <details className="mt-4">
-                  <summary className="cursor-pointer text-xs font-oswald uppercase tracking-[0.16em] text-[#161616]/55">Sourcing record</summary>
+                  <summary className="cursor-pointer text-xs font-oswald uppercase tracking-[0.16em] text-[#161616]/65">Sourcing record</summary>
                   <pre className="mt-2 whitespace-pre-wrap text-[12px] text-[#161616]/65">{l.notes}</pre>
                 </details>
               )}
@@ -504,12 +504,12 @@ export default function ProspectDetail({ id }: { id: string }) {
 function Fact({ label, value, sub, href, hrefLabel }: { label: string; value: string; sub?: string; href?: string; hrefLabel?: string }) {
   return (
     <div className="flex gap-2">
-      <dt className="w-28 shrink-0 text-[#161616]/45">{label}</dt>
+      <dt className="w-28 shrink-0 text-[#161616]/60">{label}</dt>
       <dd className="min-w-0 break-words">
         {value}
-        {sub && <span className="block text-[11px] text-[#161616]/45">{sub}</span>}
+        {sub && <span className="block text-[11px] text-[#161616]/60">{sub}</span>}
         {href && (
-          <a href={href} target="_blank" rel="noopener noreferrer" className="text-[11px] underline text-[#161616]/50">
+          <a href={href} target="_blank" rel="noopener noreferrer" className="text-[11px] underline text-[#161616]/65">
             {hrefLabel ?? 'open'} ↗
           </a>
         )}
@@ -525,7 +525,7 @@ function IntelGrid({ intel }: { intel: Record<string, unknown> }) {
     <dl className="mt-3 grid sm:grid-cols-2 gap-x-5 gap-y-1 text-[12px]">
       {entries.map(([k, v]) => (
         <div key={k} className="flex gap-2">
-          <dt className="w-32 shrink-0 text-[#161616]/45">{k.replace(/_/g, ' ')}</dt>
+          <dt className="w-32 shrink-0 text-[#161616]/60">{k.replace(/_/g, ' ')}</dt>
           <dd className="min-w-0 break-words text-[#161616]/80">{Array.isArray(v) ? v.join(', ') : String(v)}</dd>
         </div>
       ))}

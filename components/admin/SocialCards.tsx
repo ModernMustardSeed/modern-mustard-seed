@@ -53,13 +53,24 @@ function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) 
 
 function CardTile({ set, card, fmt }: { set: SocialSet; card: SocialCard; fmt: Fmt }) {
   const src = assetPath(set.id, card.file, fmt);
+  /*
+    A retired card keeps its thumbnail, because seeing what went out is how
+    somebody understands why it was pulled, but it loses the download button and
+    the image is dimmed so it cannot be grabbed on autopilot. The reason is
+    printed in full: a warning with no reason gets ignored by the third time.
+  */
+  const dead = Boolean(card.retired);
   return (
     <figure className="flex flex-col gap-3">
       <a
         href={src}
         target="_blank"
         rel="noopener noreferrer"
-        className="block border-2 border-[#161616] shadow-[4px_4px_0_0_#F5B700] hover:shadow-[2px_2px_0_0_#F5B700] hover:-translate-y-0.5 transition-all bg-white"
+        className={`block border-2 border-[#161616] bg-white transition-all ${
+          dead
+            ? 'opacity-40 grayscale shadow-[4px_4px_0_0_#E0301E]'
+            : 'shadow-[4px_4px_0_0_#F5B700] hover:shadow-[2px_2px_0_0_#F5B700] hover:-translate-y-0.5'
+        }`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={card.alt} className="block w-full h-auto" loading="lazy" />
@@ -71,9 +82,18 @@ function CardTile({ set, card, fmt }: { set: SocialSet; card: SocialCard; fmt: F
         <span className="font-sans font-bold text-[15px] leading-snug text-[#161616]">{card.headline}</span>
         <span className="text-[13px] text-[#161616]/70 leading-snug">{card.use}</span>
       </figcaption>
-      <a href={src} download={assetName(card.file, fmt)} className={`${btn} text-center`}>
-        Download PNG
-      </a>
+      {dead ? (
+        <div className="border-2 border-[#E0301E] bg-[#E0301E]/8 p-3">
+          <span className="block text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#E0301E]">
+            Do not post
+          </span>
+          <span className="mt-1.5 block text-[12.5px] leading-snug text-[#161616]/80">{card.retired}</span>
+        </div>
+      ) : (
+        <a href={src} download={assetName(card.file, fmt)} className={`${btn} text-center`}>
+          Download PNG
+        </a>
+      )}
     </figure>
   );
 }
@@ -127,6 +147,21 @@ function PostBlock({ post }: { post: SocialPost }) {
           ))}
         </div>
       )}
+
+      {post.variants?.map((v) => (
+        <div key={v.label} className="mx-5 mb-5 p-4 border-2 border-[#161616]/20 bg-white flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-[#C4160B]">
+              {v.label}
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono text-[#161616]/40 tabular-nums">{v.text.length} ch</span>
+              <CopyButton text={v.text} />
+            </div>
+          </div>
+          <p className="text-[14px] leading-relaxed text-[#161616]/80 whitespace-pre-line max-w-[62ch]">{v.text}</p>
+        </div>
+      ))}
     </article>
   );
 }
@@ -149,7 +184,10 @@ function SetPanel({ set, fmt }: { set: SocialSet; fmt: Fmt }) {
   // whether to allow multiple files, then saves all six.
   function saveAll() {
     setBusy(true);
-    set.cards.forEach((card, i) => {
+    // Retired cards are excluded: "download all" must never hand somebody a
+    // graphic the page just told them not to post.
+    const live = set.cards.filter((c) => !c.retired);
+    live.forEach((card, i) => {
       setTimeout(() => {
         const a = document.createElement('a');
         a.href = assetPath(set.id, card.file, fmt);
@@ -157,7 +195,7 @@ function SetPanel({ set, fmt }: { set: SocialSet; fmt: Fmt }) {
         document.body.appendChild(a);
         a.click();
         a.remove();
-        if (i === set.cards.length - 1) setBusy(false);
+        if (i === live.length - 1) setBusy(false);
       }, i * 350);
     });
   }

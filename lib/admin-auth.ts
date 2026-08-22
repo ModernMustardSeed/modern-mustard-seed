@@ -70,20 +70,27 @@ export type AdminRole = 'owner' | 'staff';
 export type AdminUser = { email: string; name: string; role: AdminRole };
 
 /**
- * Second sign-in addresses that belong to an existing teammate. A teammate is
- * ONE identity with ONE password; this only lets an old address they still type
- * out of habit reach it. The session is always minted for the canonical email,
- * so roles, stats, and the roster stay single-rowed.
+ * Addresses that are the same teammate. A teammate is ONE identity with ONE
+ * password, filed on the roster under exactly one of these; the others are the
+ * addresses they still type out of habit. Grouped rather than pointed at one
+ * canonical address on purpose: moving someone from one login to the other is
+ * then a roster edit with no window where neither address opens the account,
+ * because sign-in tries every address in the group.
  */
-const EMAIL_ALIASES: Record<string, string> = {
-  // Polly's original gmail login, kept alive after the move to her domain email.
-  'thompsonpolly71@gmail.com': 'polly.thompson@modernmustardseed.com',
-};
+const LINKED_LOGINS: string[][] = [
+  // Polly signs in with her own gmail. The studio address she was moved to in
+  // July still reaches her, but she does not need that mailbox to get in.
+  ['thompsonpolly71@gmail.com', 'polly.thompson@modernmustardseed.com'],
+];
 
-/** The real account behind a sign-in address. Returns the input if not an alias. */
-export function canonicalAdminEmail(email: string): string {
+/**
+ * Every address a sign-in attempt could be filed under, the typed one first.
+ * A single-element list for anyone with no second address.
+ */
+export function signInCandidates(email: string): string[] {
   const e = (email || '').toLowerCase().trim();
-  return EMAIL_ALIASES[e] ?? e;
+  const group = LINKED_LOGINS.find((g) => g.includes(e));
+  return group ? [e, ...group.filter((a) => a !== e)] : [e];
 }
 
 function ownerUser(): AdminUser | null {

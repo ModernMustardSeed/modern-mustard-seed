@@ -26,7 +26,15 @@ export const HATCHERY = {
     'A storybook heirloom hatchery: the official mascot of your business, born by candlelight, with a phone number the whole town can call.',
 } as const;
 
-/** Huck, the pilot birth. His live line + in-browser voice both point here. */
+/**
+ * Huck, the pilot birth. His live line and in-browser voice both point here.
+ *
+ * His number was briefly borrowed on 2026-08-18 as Mr. Mustard's callback line
+ * and given straight back the same day: it is a TRIAL Twilio account, so every
+ * inbound call opened with Twilio's own recorded notice before the agent spoke.
+ * The callback line lives on a Vapi number now (see lib/vapi-lines.ts). If the
+ * Hatchery ever unparks, this line answers as Huck exactly as it always did.
+ */
 export const HUCK = {
   name: 'Huck',
   business: 'The Huckleberry Scoop',

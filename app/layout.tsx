@@ -3,7 +3,6 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import MagneticCursor from '@/components/MagneticCursor';
 import DeferredChat from '@/components/DeferredChat';
 import RefCapture from '@/components/RefCapture';
 import AnalyticsScripts from '@/components/AnalyticsScripts';
@@ -49,15 +48,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </HideOnAppShell>
         </div>
-        <MagneticCursor />
         <AppNavDock />
         {/*
-          The chat launcher is marketing chrome like the footer, and on a
-          single-objective page it competes with the objective. On /mustard it is
-          literally a second Mr. Mustard button offering a different conversation
-          that skips the consent flow. Same guard, same reasons.
+          The chat launcher stays off /mustard even though the nav and footer
+          now show there: it is literally a second Mr. Mustard button offering a
+          different conversation that skips the consent flow and spends
+          ElevenLabs quota doing it.
         */}
-        <HideOnAppShell>
+        <HideOnAppShell alsoOn={['/mustard']}>
           <DeferredChat />
         </HideOnAppShell>
         <RefCapture />

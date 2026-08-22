@@ -17,14 +17,36 @@ import { useState } from 'react';
 
 type Asset = { url: string; name: string; kind: 'logo' | 'photo' | 'product' };
 
+/*
+ * ONLY ASK FOR WHAT WE ACTUALLY USE.
+ *
+ * A field with no `products` shows to everybody, and that quietly meant a voice
+ * agent buyer was asked for their brand colours, their logo, photos of their
+ * work and their Instagram. None of it reaches a receptionist. It is the worst
+ * kind of form question: it costs the customer effort, it makes us look like we
+ * were not listening on the call, and the answer goes nowhere.
+ *
+ * Every question below now declares which products it serves. The rule is
+ * simple: if the answer does not change something we build, it is not asked.
+ */
 const FIELDS: { key: string; label: string; hint: string; placeholder: string; area?: boolean; products?: string[] }[] = [
+  // Both. The agent needs the hours to book; the site needs them to be true.
   { key: 'hours', label: 'Your business hours', hint: 'So the voice agent knows when you are open and the site says the truth.', placeholder: 'Mon-Fri 8-5, Sat 9-noon, closed Sunday' },
   { key: 'services', label: 'What you sell or do', hint: 'The 3-6 things customers actually call about.', placeholder: 'Water heater replacement, drain cleaning, emergency calls...' },
-  { key: 'greeting', label: 'How should the phone be answered?', hint: 'The exact first line, in your words.', placeholder: 'Thanks for calling Rico Roofing, this is Rosie, how can I help?', products: ['voice', 'bundle'] },
-  { key: 'domain', label: 'Your website domain', hint: 'The one you own. If you do not have one yet, say so and we will get it for you.', placeholder: 'ricoroofing.com', products: ['site', 'bundle'] },
-  { key: 'brand', label: 'Look and feel', hint: 'Colors, vibe, anything you love or hate.', placeholder: 'Our trucks are navy and orange. Keep it bold, no cursive.' },
-  { key: 'audience', label: 'Who is your customer?', hint: 'Who you want more of, and who you would rather not hear from.', placeholder: 'Homeowners in the valley. Not big commercial jobs.' },
   { key: 'contact', label: 'Best number and email for you', hint: 'Where we send drafts and the go-live word.', placeholder: '(406) 555-0123, rico@gmail.com' },
+
+  // Voice only.
+  { key: 'greeting', label: 'How should the phone be answered?', hint: 'The exact first line, in your words.', placeholder: 'Thanks for calling Rico Roofing, this is Rosie, how can I help?', products: ['voice', 'bundle'] },
+  { key: 'service_area', label: 'Where do you work?', hint: 'So it can tell a caller straight away whether you come out to them.', placeholder: 'Flathead Valley, Whitefish, Columbia Falls. Not over the pass.', products: ['voice', 'bundle'] },
+  { key: 'forward_from', label: 'The number customers already call', hint: 'The line you would forward to us. Nothing changes until you say so.', placeholder: '(406) 555-0123', products: ['voice', 'bundle'] },
+  { key: 'transfer_to', label: 'Who should it put people through to?', hint: 'Name, number, and when. One per line. Leave blank and it takes a message instead.', placeholder: 'Danny, (406) 555-0161, anything about thermostats\nOn-call, (406) 555-0162, emergencies after 6pm', area: true, products: ['voice', 'bundle'] },
+  { key: 'never_do', label: 'Anything it must never do?', hint: 'It already refuses to quote prices sight unseen or diagnose over the phone. Add your own.', placeholder: 'Never promise same-day in winter. Never book Kalispell jobs before 9am.', area: true, products: ['voice', 'bundle'] },
+
+  // Website only.
+  { key: 'domain', label: 'Your website domain', hint: 'The one you own. If you do not have one yet, say so and we will get it for you.', placeholder: 'ricoroofing.com', products: ['site', 'bundle'] },
+  { key: 'brand', label: 'Look and feel', hint: 'Colors, vibe, anything you love or hate.', placeholder: 'Our trucks are navy and orange. Keep it bold, no cursive.', products: ['site', 'bundle'] },
+  { key: 'audience', label: 'Who is your customer?', hint: 'Who you want more of, and who you would rather not hear from.', placeholder: 'Homeowners in the valley. Not big commercial jobs.', products: ['site', 'bundle'] },
+
   { key: 'notes', label: 'Anything else we should know?', hint: 'Optional, but gold when you fill it.', placeholder: 'We are closed the first week of August...', area: true },
 ];
 
@@ -253,7 +275,13 @@ export default function DemoOrderIntake({
                   tone,
                   languages: spanish ? ['en', 'es'] : ['en'],
                   greeting: values.greeting || undefined,
-                  forwardFrom: values.contact || undefined,
+                  // Their existing business line, not the "best number for you"
+                  // field, which is where WE reach them. Forwarding the wrong
+                  // number is how a customer's phone goes quiet.
+                  forwardFrom: values.forward_from || undefined,
+                  serviceArea: values.service_area || undefined,
+                  neverDo: values.never_do || undefined,
+                  transfers: values.transfer_to || undefined,
                 },
               }
             : {}),
@@ -358,6 +386,10 @@ export default function DemoOrderIntake({
 
       {/* The files come FIRST. They are the thing that turns a template into their
           brand, and burying them under seven text boxes is how they get skipped. */}
+      {/* Logos, photos and social links are raw material for a WEBSITE. A voice
+          agent buyer was being asked to dig out their logo for a product that
+          never renders one. */}
+      {wantsSite && (
       <div className="space-y-3">
         <div>
           <h3 className="font-display text-xl font-bold text-[#161616]">Send us your stuff</h3>
@@ -406,6 +438,7 @@ export default function DemoOrderIntake({
           />
         )}
       </div>
+      )}
 
       <div className="pt-2 space-y-5 border-t-2 border-[#161616]/10">
         {visible.map((f) => (
@@ -458,7 +491,9 @@ export default function DemoOrderIntake({
       </div>
 
       {/* Where they already exist online. This is the raw material for getting them
-          found, by Google and by the AI assistants people now ask instead. */}
+          found, by Google and by the AI assistants people now ask instead. Search
+          presence is website work, so a voice-only buyer is not asked. */}
+      {wantsSite && (
       <div className="pt-2 border-t-2 border-[#161616]/10">
         <h3 className="font-display text-xl font-bold text-[#161616]">Where you already are online</h3>
         <p className="font-body text-[13px] text-[#161616]/60 mb-3">
@@ -479,6 +514,7 @@ export default function DemoOrderIntake({
           ))}
         </div>
       </div>
+      )}
 
       <button
         type="submit"

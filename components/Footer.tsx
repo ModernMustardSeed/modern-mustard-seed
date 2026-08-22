@@ -33,11 +33,9 @@ export default function Footer() {
         { label: 'Meet Mr. Mustard', href: '/mustard' },
         { label: 'The Switchboard', href: '/switchboard' },
         { label: 'Mustard Broadcast', href: '/ads' },
-        { label: 'Mustard Pictures', href: '/pictures' },
         { label: 'GEO Desk', href: '/website-audit' },
         { label: 'Mustard Launch', href: '/mustard-launch' },
         { label: 'Mustard Mode', href: '/mustard-mode' },
-        { label: 'Celebrate', href: '/celebrate' },
       ],
     },
     {
@@ -79,6 +77,7 @@ export default function Footer() {
         { label: 'Bottleneck Breaker', href: '/audit' },
         { label: 'Website Audit', href: '/website-audit' },
         { label: 'Prompt Playbook', href: '/prompt-playbook' },
+        { label: 'Claude Code Field Guide', href: '/fieldguide' },
       ],
     },
     {

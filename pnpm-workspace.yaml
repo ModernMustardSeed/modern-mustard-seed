@@ -1,3 +1,11 @@
+# pnpm 11 refuses to finish an install when a dependency wants to run a build
+# script nobody has answered for. It exits 1 even though every package installed
+# fine, and on a runner there is no one to answer `pnpm approve-builds`, so the
+# answer has to live in the repo.
+#
+# pnpm wrote these two names here itself and left the values as a prompt. Both
+# are answered now: esbuild links the platform binary the lockfile already
+# pinned, and msedge-tts is only ever reached by the voice tooling.
 allowBuilds:
-  esbuild: set this to true or false
-  msedge-tts: set this to true or false
+  esbuild: true
+  msedge-tts: true

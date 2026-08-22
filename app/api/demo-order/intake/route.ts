@@ -12,6 +12,7 @@ import { queueRebuild, rebuildInputFor } from '@/lib/site-rebuild';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { sidekickVoice } from '@/lib/sidekick-voice';
 import { recordOfficeEvent } from '@/lib/front-office/provision';
+import { syncAssistant } from '@/lib/front-office/agent';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -61,6 +62,31 @@ const VOICE_GENDERS = ['male', 'female'] as const;
 const FORWARD_MODES = ['all_calls', 'after_hours', 'overflow', 'voicemail_only'] as const;
 const TONES = ['warm', 'professional', 'brisk', 'folksy'] as const;
 const LANGUAGES = ['en', 'es'] as const;
+
+/**
+ * "Danny, (406) 555-0161, anything about thermostats" -> a transfer row.
+ *
+ * One person per line, name first, the phone number found anywhere in the line,
+ * and whatever is left over as the "when". Written to be forgiving, because the
+ * alternative is three form fields per teammate and a field nobody fills in.
+ * A line with no usable number is dropped rather than saved as a transfer that
+ * would silently fail on a live call.
+ */
+export function parseTeam(raw: unknown): Array<{ name: string; phone: string; when?: string }> {
+  if (typeof raw !== 'string' || !raw.trim()) return [];
+  return raw
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .slice(0, 12)
+    .map((line) => {
+      const phoneMatch = line.match(/(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
+      const phone = phoneMatch?.[0]?.trim() ?? '';
+      const rest = line.replace(phone, '').split(',').map((p) => p.trim()).filter(Boolean);
+      return { name: rest[0] ?? 'Team member', phone, when: rest.slice(1).join(', ') || undefined };
+    })
+    .filter((t) => t.phone.replace(/\D/g, '').length >= 10);
+}
 
 function oneOf<T extends readonly string[]>(allowed: T, v: unknown, fallback: T[number]): T[number] {
   const s = typeof v === 'string' ? v.trim().toLowerCase() : '';
@@ -206,6 +232,10 @@ export async function POST(req: Request) {
         if (typeof fo.agentName === 'string' && fo.agentName.trim()) patch.agent_name = fo.agentName.trim().slice(0, 60);
         if (typeof fo.greeting === 'string' && fo.greeting.trim()) patch.greeting = fo.greeting.trim().slice(0, 600);
         if (typeof fo.forwardFrom === 'string' && fo.forwardFrom.trim()) patch.forward_from = fo.forwardFrom.trim().slice(0, 40);
+        // Where they work. The agent uses it to tell a caller straight away
+        // whether somebody comes out to them, which is the second question on
+        // half of these calls.
+        if (typeof fo.serviceArea === 'string' && fo.serviceArea.trim()) patch.service_area = fo.serviceArea.trim().slice(0, 300);
         if (typeof fo.timezone === 'string' && fo.timezone.trim()) patch.timezone = fo.timezone.trim().slice(0, 60);
         if (Array.isArray(fo.services)) patch.services = fo.services.filter((x): x is string => typeof x === 'string').map((x) => x.slice(0, 80)).slice(0, 30);
         // Appended, never replaced: the trade's own hard rules were seeded at
@@ -227,7 +257,12 @@ export async function POST(req: Request) {
 
         // Who a call gets handed to. Replaced wholesale, because a team list is
         // the one thing an owner edits by removing somebody.
-        const team = Array.isArray(fo.transfers) ? fo.transfers : [];
+        //
+        // Accepts either the structured shape (from admin) or the one line per
+        // person a human actually types into a textarea. Asking a contractor to
+        // fill three boxes per teammate is how the field comes back empty and
+        // every call becomes a message instead of a transfer.
+        const team = Array.isArray(fo.transfers) ? fo.transfers : parseTeam(fo.transfers);
         if (team.length) {
           await supabase.from('fo_transfers').delete().eq('office_id', office.id);
           await supabase.from('fo_transfers').insert(
@@ -244,6 +279,18 @@ export async function POST(req: Request) {
               }))
               .filter((t) => t.phone.replace(/\D/g, '').length >= 10),
           );
+        }
+        // The agent hears the intake immediately (loop audit, break #7). The
+        // owner just chose their voice, greeting and transfer list; leaving
+        // the assistant unsynced meant a live agent kept saying the old
+        // greeting and a new office had no assistant until a human pressed
+        // sync. Number purchase and go-live stay behind the human QA gate;
+        // building the brain costs nothing and buys the test call its time.
+        try {
+          const synced = await syncAssistant(supabase, office.id);
+          if (!synced.ok) console.error('intake auto-sync failed (board sync button still works):', synced.error);
+        } catch (err) {
+          console.error('intake auto-sync threw', err);
         }
       }
     } catch (err) {

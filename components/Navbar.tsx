@@ -47,6 +47,7 @@ const MENU_GROUPS = [
       { label: 'Bottleneck Breaker', href: '/audit' },
       { label: 'Launch Checklist', href: '/launch-checklist' },
       { label: 'Prompt Playbook', href: '/prompt-playbook' },
+      { label: 'Claude Code Field Guide', href: '/fieldguide' },
       { label: 'Free Playbooks', href: '/playbooks' },
     ],
   },
@@ -74,10 +75,11 @@ const MENU_GROUPS = [
 // front-desk, quotable, and comic entries) to bring them back.
 //
 // UNPARKED 2026-08-11 (Sarah): Celebrate came back on its own when the launch
-// countdown shipped. It opens 19 October 2026 and runs a waitlist until then,
-// so it is listed everywhere the other departments are, with one exception:
-// lib/quotable.ts, because the site agent must not quote a price for something
-// that is not selling yet.
+// countdown shipped, listed everywhere except lib/quotable.ts.
+//
+// RE-PARKED 2026-08-20 (Sarah): Celebrate is off every listing surface again
+// (nav, footer, sitemap, llms.txt, services hub, comic) and noindexed. The
+// route and the waitlist drip keep working; it is only undiscoverable.
 //
 // PARKED 2026-08-12 (Sarah): The Voice Agent Forge is pulled from every nav,
 // index, cross-sell CTA, sitemap, and llms.txt entry, and noindexed. Three voice
@@ -98,12 +100,12 @@ const DEPARTMENTS = [
   { name: 'Meet Mr. Mustard', tag: 'HE CALLS YOU IN TEN SECONDS', href: '/mustard' },
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
-  { name: 'Mustard Pictures', tag: 'FREE SCREEN TEST', href: '/pictures' },
+  // Mustard Pictures is unlisted while the studio uses it internally
+  // (Sarah, 2026-08-20). The route still works for anyone holding the URL.
   { name: 'GEO Desk', tag: 'FREE AI-FINDABILITY GRADE', href: '/website-audit' },
   { name: 'The Hundredfold Roadmap', tag: 'FREE SCALING PLAN FOR YOUR BUSINESS', href: '/scaling-roadmap' },
   { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
   { name: 'Mustard Launch', tag: 'YOUR AI LAUNCH COACH', href: '/mustard-launch' },
-  { name: 'Celebrate', tag: 'GIFTING ON AUTOPILOT, OPENS OCT 19', href: '/celebrate' },
 ];
 
 export default function Navbar() {
@@ -168,9 +170,6 @@ export default function Navbar() {
     // booth is not a brand collision.)
     pathname.startsWith('/sarahcxc') ||
     pathname.startsWith('/sarahbook') ||
-    // /mustard is the doorway. It has one job, and a nav offering fifteen other
-    // departments is fifteen ways to leave before the phone rings.
-    pathname === '/mustard' ||
     pathname.startsWith('/voice-agents/forge/demo/');
   if (isAppShell) return null;
 

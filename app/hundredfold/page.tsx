@@ -46,7 +46,7 @@ const FAQS = [
   },
   {
     q: 'What kind of systems do you actually build?',
-    a: 'Whatever your roadmap calls for, one window at a time. Commonly: a voice agent that answers your real number day and night and books the job, a follow-up engine that works the warm leads you have already paid for, a site that sells instead of sitting there, a content engine that turns finished work into proof, a dashboard that puts your scoreboard numbers in one place, and quoting or intake tools specific to your trade. Everything lives in your accounts, in your name, and stays yours.',
+    a: 'Whatever your roadmap calls for, one window at a time. Commonly: a voice agent that answers every call day and night and books the job, a follow-up engine that works the warm leads you have already paid for, a site that sells instead of sitting there, a content engine that turns finished work into proof, a dashboard that puts your scoreboard numbers in one place, and quoting or intake tools specific to your trade. Everything lives in your accounts, in your name, and stays yours.',
   },
   {
     q: 'Do I have to do the work?',

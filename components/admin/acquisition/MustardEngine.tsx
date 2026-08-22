@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Section, Stat, Chip, api, card, cardFlat, btnGhost, timeAgo, pct } from '@/components/admin/acquisition/ui';
+import { usePoll } from '@/lib/use-poll';
 
 type Funnel = {
   source: string; label: string; requests: number; consented: number; called: number; completed: number;
@@ -44,9 +45,10 @@ export default function MustardEngine() {
 
   useEffect(() => {
     void load();
-    const t = window.setInterval(() => void load(true), 30000);
-    return () => window.clearInterval(t);
   }, [load]);
+
+  // Live while the panel is on screen, silent while the tab is in the background.
+  usePoll(() => void load(true), 30000);
 
   const copy = async (text: string, key: string) => {
     try {
@@ -60,11 +62,11 @@ export default function MustardEngine() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#FBF6EA]">
+      <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
         <AdminHeader active="acquisition" title="Acquisition" />
         <main className="max-w-6xl mx-auto px-5 py-6">
           <AcqNav active="mustard" />
-          <p className="text-sm text-[#161616]/50">{error || 'Counting...'}</p>
+          <p className="text-sm text-[#161616]/65">{error || 'Counting...'}</p>
         </main>
       </div>
     );
@@ -73,7 +75,7 @@ export default function MustardEngine() {
   const a = data.analytics;
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA]">
+    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <AdminHeader active="acquisition" title="Acquisition" onRefresh={() => void load()} />
       <main className="max-w-[92rem] mx-auto px-5 md:px-6 py-6">
         <AcqNav
@@ -100,7 +102,7 @@ export default function MustardEngine() {
             note="One page, one query parameter, every channel. A new channel is tried by inventing a URL, not by shipping a page."
           >
             {a.bySource.length === 0 ? (
-              <p className="text-sm text-[#161616]/45">
+              <p className="text-sm text-[#161616]/60">
                 Nobody has come through the door yet. Paste one of the links on the right into a Facebook group or a DM.
               </p>
             ) : (
@@ -109,7 +111,7 @@ export default function MustardEngine() {
                   <thead>
                     <tr className="border-b-2 border-[#161616] text-left">
                       {['Source', 'Requests', 'Consented', 'Called', 'Completed', 'Forged', 'Paid', 'Consent', 'Completion', 'Paid rate'].map((h) => (
-                        <th key={h} className="px-3 py-2 text-[10px] uppercase tracking-[0.14em] font-oswald font-semibold text-[#161616]/55 whitespace-nowrap">
+                        <th key={h} className="px-3 py-2 text-[10px] uppercase tracking-[0.14em] font-oswald font-semibold text-[#161616]/65 whitespace-nowrap">
                           {h}
                         </th>
                       ))}
@@ -134,7 +136,7 @@ export default function MustardEngine() {
                 </table>
               </div>
             )}
-            <p className="mt-3 text-xs text-[#161616]/50">
+            <p className="mt-3 text-xs text-[#161616]/65">
               All time: {a.allTime.requests} requests, {a.allTime.calls} calls, {a.allTime.completed} completed,{' '}
               {a.allTime.forged} forged, {a.allTime.paid} paid.
             </p>
@@ -158,7 +160,7 @@ export default function MustardEngine() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-3 text-xs text-[#161616]/55">
+              <p className="mt-3 text-xs text-[#161616]/65">
                 For one specific prospect, open them in Prospects and press <strong>Send Mustard link</strong>. That one
                 prefills their number so they type nothing. It still does not consent for them.
               </p>
@@ -175,7 +177,7 @@ export default function MustardEngine() {
                 Consent copy is versioned in code and stored whole on every record. Have counsel review it before
                 large-scale national use.
               </p>
-              <p className="mt-2 text-xs text-[#161616]/50">
+              <p className="mt-2 text-xs text-[#161616]/65">
                 Magic links: {data.analytics.links.active} active, {data.analytics.links.used} used,{' '}
                 {data.analytics.links.expired} expired.
               </p>
@@ -185,7 +187,7 @@ export default function MustardEngine() {
 
         <Section title="Who just knocked" note="The last forty people through the door.">
           {a.recent.length === 0 ? (
-            <p className="text-sm text-[#161616]/45">Nothing yet.</p>
+            <p className="text-sm text-[#161616]/60">Nothing yet.</p>
           ) : (
             <ul className="space-y-1.5 max-h-[26rem] overflow-y-auto pr-1">
               {a.recent.map((r) => (
@@ -198,9 +200,9 @@ export default function MustardEngine() {
                       {r.business ?? 'Open the prospect'}
                     </Link>
                   ) : (
-                    <span className="text-[13px] text-[#161616]/50">{r.business ?? 'no prospect linked'}</span>
+                    <span className="text-[13px] text-[#161616]/65">{r.business ?? 'no prospect linked'}</span>
                   )}
-                  <span className="ml-auto font-mono text-[11px] text-[#161616]/45">{timeAgo(r.createdAt)}</span>
+                  <span className="ml-auto font-mono text-[11px] text-[#161616]/60">{timeAgo(r.createdAt)}</span>
                 </li>
               ))}
             </ul>

@@ -33,7 +33,6 @@ export const metadata = buildMetadata({
 const STATS = [
   { figure: '82%', label: 'Call the next guy', source: 'CallRail, 2025' },
   { figure: '78%', label: 'Already walked over one missed call', source: 'CallRail, 2025' },
-  { figure: '52%', label: 'Say AI answering after hours signals better service', source: 'CallRail, 2025' },
 ];
 
 const PIECES = [
@@ -80,7 +79,7 @@ const FAQ = [
   },
   {
     q: 'Will my customers know it is AI?',
-    a: 'It introduces itself honestly and it never pretends to be a person. That turns out to be fine: 52% of consumers now say a business having AI answer after hours is a sign of better service, not worse (CallRail, 2025). What loses you the job is the call nobody picks up.',
+    a: 'It introduces itself honestly and it never pretends to be a person. That turns out to be fine, because at nine on a Saturday night the alternative was never a human, it was a beep. What loses you the job is the call nobody picks up.',
   },
   {
     q: 'How fast does it go live?',
@@ -106,7 +105,7 @@ function talkingWebsiteJsonLd() {
         serviceType:
           'Combined small-business website and AI voice agent built on one shared knowledge base, with a business command center included',
         description:
-          'A website that answers its own phone. The website and the AI voice agent are built as one system off one brain, so the answer a visitor reads on the page is the same answer a caller hears at midnight. Includes custom website design, funnels, SEO and GEO, a 24/7 AI voice agent on your real phone number, and the business command center free.',
+          'A website that answers its own phone. The website and the AI voice agent are built as one system off one brain, so the answer a visitor reads on the page is the same answer a caller hears at midnight. Includes custom website design, funnels, SEO and GEO, a 24/7 AI voice agent answering the number you already have, and the business command center free.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/talking-website`,
@@ -356,7 +355,7 @@ export default function TalkingWebsitePage() {
               <ul className="mt-5 grid sm:grid-cols-2 gap-x-6 gap-y-2.5 flex-1">
                 {[
                   'Custom website, live in about a week',
-                  'Voice agent on your real number, 24/7',
+                  'Voice agent answering your calls, 24/7',
                   'Command center free inside it',
                   'Funnels, lead magnet, SEO and GEO',
                   // The homepage Town Square (MI 47) promises both of these by

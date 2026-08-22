@@ -112,7 +112,7 @@ export const PILLARS: Pillar[] = [
     body: 'This is the part nobody else does. Every window of your roadmap has work in it that a machine should be doing, and we build those machines into your business. Your phone answered day and night. Your follow-up that never forgets a warm lead. Your content produced from work you already did. Your numbers on one board. Real systems in your accounts, built for your business, not a template with your logo on it.',
     gets: [
       'Custom agents and automations built for your roadmap, one window at a time',
-      'A voice agent on your real number and a site that answers for you',
+      'A voice agent answering your calls and a site that answers for you',
       'Everything in your accounts, in your name, yours to keep',
     ],
   },
@@ -173,7 +173,7 @@ export const STACK: { item: string; valueCents: number; why: string }[] = [
     why: 'Studio time is $225 an hour. This is the answer at 11pm on a Sunday, as often as you need it.',
   },
   {
-    item: 'A voice agent on your real number and a site that answers for you',
+    item: 'A voice agent answering your calls and a site that answers for you',
     valueCents: 596_400,
     why: 'The Talking Website is $497 to start plus $497 a month on its own.',
   },

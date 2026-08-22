@@ -67,6 +67,33 @@ export default function PlaybooksPage() {
             </span>
           </Link>
 
+          {/* Featured guide: Claude Code for people who have never built anything */}
+          <Link
+            href="/fieldguide"
+            className="group block pop-card p-8 md:p-10 mb-12 hover:-translate-y-1 transition-transform duration-300"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-[8px] uppercase tracking-[0.18em] font-mono font-bold text-white bg-[#161616] rounded-full px-2.5 py-1">
+                Free guide
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-bold">
+                Want to build software yourself?
+              </span>
+            </div>
+            <h2 className="font-display text-2xl md:text-4xl font-black text-[#161616] tracking-tight mb-3 leading-[1.05]">
+              The Claude Code Field Guide
+            </h2>
+            <p className="text-[#161616]/75 text-sm md:text-base font-body leading-7 max-w-2xl">
+              Claude Code builds real software from plain English, and almost nobody is shown how to drive it. This is
+              the install, the loop that works, seventeen prompts you can copy, and the twelve rules we learned the
+              expensive way. Written for someone who has never written a line of code.
+            </p>
+            <span className="inline-flex items-center gap-1.5 mt-5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616]">
+              Read the field guide
+              <span aria-hidden className="transition-transform group-hover:translate-x-1">&rarr;</span>
+            </span>
+          </Link>
+
           {playbooks.length === 0 ? (
             <p className="text-center text-[#161616]/40 font-body italic">
               First playbooks shipping this month. Subscribe to get notified.

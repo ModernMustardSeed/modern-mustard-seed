@@ -38,27 +38,38 @@ const CARDS = [
     focus: '50% 42%',
   },
   {
+    /*
+      Was a 62% stat card. That figure is on the REFUSED list in
+      data/proof-stats.ts: it circulates everywhere and no primary source
+      survives contact. The card makes the same point harder without it, so the
+      number came out rather than the card.
+    */
     id: '02-unanswered',
     art: 'under-sink.png',
-    kind: 'stat',
+    kind: 'call',
     eyebrow: 'The Missed Call Files / 02',
-    stat: '62',
-    unit: '%',
-    head: 'of calls to small businesses go unanswered.',
-    sub: 'Not because owners do not care. Because they are under a sink, up a ladder, or standing in front of a paying customer. You cannot be in two places. The phone does not know that.',
-    src: 'Source: 411 Locals, 85 businesses across 58 industries, 2016',
+    head: 'You cannot be in two places.',
+    kicker: 'The phone does not know that.',
+    sub: 'It is never that the owner does not care. It is that they are under a sink, up a ladder, or standing in front of a paying customer. Something still has to answer while you work.',
+    src: 'Hear what answers: (406) 312-1223',
     focus: '50% 20%',
   },
   {
+    /*
+      Was a 52% stat card. Sarah pulled that figure everywhere on 2026-08-18, so
+      this is now a CALL card carrying the argument instead of the number, which
+      is the stronger half anyway. Same art plate, no new image needed.
+    */
     id: '03-after-hours',
     art: 'night-shop.png',
-    kind: 'stat',
-    eyebrow: 'The Missed Call Files / 03',
-    stat: '52',
-    unit: '%',
-    head: 'say an AI answering after hours is better service.',
-    sub: 'The objection is always "people hate robots." The data says people hate voicemail. A voice that answers at nine at night and actually books the job beats a beep every single time.',
-    src: 'Source: CallRail consumer survey, 2025',
+    kind: 'call',
+    bigNumber: true,
+    eyebrow: 'The objection, answered',
+    head: 'People do not hate robots.',
+    kicker: 'People hate beeps.',
+    sub: 'At nine on a Saturday night nobody is choosing between a robot and a person. They are choosing between a robot and a voicemail beep. One of those two books the job.',
+    src: 'Mine says it is an AI in its first sentence. That part is not negotiable.',
+    sticker: { small: 'Judge it', big: 'Yourself' },
     focus: '50% 50%',
   },
   {
@@ -100,6 +111,30 @@ const CARDS = [
     ],
     src: 'Hear all three in about ninety seconds.',
     focus: '50% 45%',
+  },
+  {
+    /*
+      Added 2026-08-19 for the stewardship post in the Organic Social tab, which
+      was the one angle in that set with no card behind it. New art plate
+      (handover.png) generated with Codex image_gen rather than fal, since the
+      fal runner reads a key path that does not exist on this machine. Same
+      style block as the original six, so it sits in the set rather than beside
+      it.
+    */
+    id: '07-you-own-it',
+    art: 'handover.png',
+    kind: 'call',
+    // Without the number bar this layout leaves a hole where every other card
+    // carries its call to action, and a stewardship card with no way to act on
+    // it is a poster rather than an ad.
+    bigNumber: true,
+    eyebrow: 'The Missed Call Files / 07',
+    head: 'You own it.',
+    kicker: 'Domain, accounts, numbers, all of it.',
+    sub: 'Most people who build you something want you to need them forever. That is the business model. We hand the keys over on day one, in your name. Fire us tomorrow and you keep everything, still working.',
+    src: 'Stewardship over extraction. It is the whole reason this shop exists.',
+    sticker: { small: 'Built to', big: 'Hand over' },
+    focus: '50% 55%',
   },
 ];
 

@@ -6,6 +6,7 @@ import { formatPhone } from '@/lib/outbound';
 import type { EmailPreview, LeadContact, MessageDelivery, OutboundAudit, OutboundLead, ThreadMessage } from '@/lib/outbound';
 import { api, btnGhost, btnPrimary, btnSeed, card, eyebrow, inputCls, labelCls } from '@/components/admin/outbound/ui';
 import TapText from '@/components/admin/TapText';
+import { usePoll } from '@/lib/use-poll';
 
 /**
  * Every way to reach a lead, in one strip: Mr. Mustard AI calls, the audit
@@ -160,9 +161,8 @@ export function ReachOutDeck({
   // worker machine, minutes not seconds).
   const siteStatusRef = useRef(lead.site_demo_status);
   siteStatusRef.current = lead.site_demo_status;
-  useEffect(() => {
-    if (!siteForging) return;
-    const t = window.setInterval(async () => {
+  usePoll(
+    async () => {
       try {
         const res = await api<{ lead: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}`);
         if (res.lead.site_demo_status !== siteStatusRef.current) {
@@ -173,10 +173,10 @@ export function ReachOutDeck({
       } catch {
         /* transient; next tick retries */
       }
-    }, 20000);
-    return () => window.clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lead.id, siteForging]);
+    },
+    20000,
+    { enabled: siteForging },
+  );
 
   const enrich = async () => {
     setEnriching(true);
@@ -510,6 +510,89 @@ export function ReachOutDeck({
  * own notes. Everything saves as you go. The header up top stays a glance; this is
  * where you edit.
  */
+/**
+ * Everything already made for this lead, right in the lead file: the forged
+ * demos, their Integration Plan (with a one-click queue when it is missing),
+ * and the printable Game Plan sheet. This is the walk-in kit; before this
+ * strip existed it lived only on the Forge board and in local PDF folders,
+ * which is why it was invisible while working a lead.
+ */
+function MadeForThem({ lead, onLead, push }: { lead: OutboundLead; onLead: (l: OutboundLead) => void; push: Push }) {
+  const [queueing, setQueueing] = useState(false);
+
+  const makePlan = async () => {
+    setQueueing(true);
+    try {
+      const res = await api<{ ok: boolean; planUrl: string; existing: boolean }>(
+        `/api/admin/outbound/leads/${lead.id}/integration-plan`,
+        { method: 'POST' },
+      );
+      onLead({
+        ...lead,
+        integration_plan_url: res.planUrl ?? lead.integration_plan_url,
+        integration_plan_status: lead.integration_plan_status === 'ready' ? 'ready' : 'queued',
+      });
+      push(res.existing ? 'Their plan already exists.' : 'Their Integration Plan is being written. A few minutes.');
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Could not queue the plan.', 'error');
+    } finally {
+      setQueueing(false);
+    }
+  };
+
+  const chip = 'inline-flex items-center gap-1.5 rounded-lg border-2 border-[#1a1815]/25 px-3 py-1.5 font-oswald font-semibold uppercase tracking-[0.08em] text-xs text-[#1a1815] hover:border-[#1a1815] transition-colors';
+  const dot = (color: string) => <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: color }} />;
+
+  const planStatus = lead.integration_plan_status;
+  const planReady = planStatus === 'ready' && lead.integration_plan_url;
+  const planWriting = planStatus === 'queued' || planStatus === 'building';
+  const siteReady = lead.site_demo_status === 'ready' && lead.site_demo_url;
+  const siteBuilding = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
+
+  return (
+    <div className="mt-5 pt-4 border-t-2 border-[#1a1815]/[0.08]">
+      <div className="flex items-center justify-between gap-2 mb-2.5">
+        <span className="text-[10px] uppercase tracking-[0.2em] font-oswald font-medium text-[#1a1815]/50">Made for them</span>
+        <a
+          href={`/admin/outbound/gameplan/${lead.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#1a1815] bg-[#b58a2a] px-3.5 py-1.5 font-oswald font-semibold uppercase tracking-[0.08em] text-xs text-[#1a1815] shadow-[2px_2px_0_0_#1a1815] hover:translate-y-[1px] hover:shadow-[1px_1px_0_0_#1a1815] transition-all"
+        >
+          🖨 Print the sheet
+        </a>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        {lead.demo_url && (
+          <a href={lead.demo_url} target="_blank" rel="noopener noreferrer" className={chip}>{dot('#3f5d34')} Voice agent ↗</a>
+        )}
+        {siteReady && (
+          <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={chip}>{dot('#3f5d34')} Demo site ↗</a>
+        )}
+        {siteBuilding && <span className={`${chip} !border-dashed opacity-60 cursor-default`}>{dot('#b58a2a')} Site building…</span>}
+        {lead.os_demo_url && (
+          <a href={lead.os_demo_url} target="_blank" rel="noopener noreferrer" className={chip}>{dot('#3f5d34')} Command center ↗</a>
+        )}
+        {lead.hub_demo_url && (
+          <a href={lead.hub_demo_url} target="_blank" rel="noopener noreferrer" className={chip}>{dot('#3f5d34')} Demo hub ↗</a>
+        )}
+        {planReady && (
+          <a href={lead.integration_plan_url!} target="_blank" rel="noopener noreferrer" className={chip}>{dot('#3f5d34')} Integration Plan ↗</a>
+        )}
+        {planWriting && <span className={`${chip} !border-dashed opacity-60 cursor-default`}>{dot('#b58a2a')} Plan writing…</span>}
+        {!planReady && !planWriting && (
+          <button onClick={() => void makePlan()} disabled={queueing} className={`${chip} !border-[#b58a2a] !text-[#7a5c1a] hover:bg-[#b58a2a]/10`}>
+            {queueing ? 'Queueing…' : '+ Make their Integration Plan'}
+          </button>
+        )}
+        {!lead.demo_url && !siteReady && !siteBuilding && !lead.os_demo_url && !lead.hub_demo_url && (
+          <span className="font-sans text-[13px] text-[#1a1815]/45">Nothing forged yet. The sheet still prints with what we know; forge their demos from the deck above.</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function LeadFile({ lead, onLead, push }: { lead: OutboundLead; onLead: (l: OutboundLead) => void; push: Push }) {
   const [name, setName] = useState(lead.contact_name ?? '');
   const [phone, setPhone] = useState(lead.phone ?? '');
@@ -639,6 +722,9 @@ export function LeadFile({ lead, onLead, push }: { lead: OutboundLead; onLead: (
           </div>
         )}
       </div>
+
+      {/* Everything forged for them + the printable sheet. */}
+      <MadeForThem lead={lead} onLead={onLead} push={push} />
 
       {/* Notes. */}
       <LeadNotes lead={lead} onLead={onLead} push={push} />

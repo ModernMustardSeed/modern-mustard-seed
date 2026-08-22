@@ -17,6 +17,7 @@ import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import { sidekickVoice, type VoiceGender, type VapiVoice } from '@/lib/sidekick-voice';
 import { possessive } from '@/lib/business-name';
 import { env, envAny } from '@/lib/env';
+import { ensureReadbackStandard } from '@/lib/readback-standard';
 
 const MUSTARD_ASSISTANT_ID = 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee';
 /** Mr. Mustard's own line, (406) 312-1223. Callbacks reach him, which is the point. */
@@ -127,7 +128,15 @@ export function demoModel(
         return !name || keepTools.has(name);
       })
     : base.tools;
-  return { ...base, messages: [{ role: 'system', content: systemPrompt }], tools };
+  // ⚠️ EVERY forged demo, desk call and interview agent is built here, so this
+  // is where the readback standard is guaranteed rather than requested. A new
+  // persona written a year from now gets it without its author knowing it
+  // exists. Idempotent, so a prompt that already carries it is left alone.
+  return {
+    ...base,
+    messages: [{ role: 'system', content: ensureReadbackStandard(systemPrompt) }],
+    tools,
+  };
 }
 
 /**
@@ -142,8 +151,8 @@ export const VOICE_CRAFT = `
 # Getting details right (hard rules, each has failed on a real call)
 - If you did not catch something, ask again ONCE at most. Still unclear? Take your best good-faith read of it and keep the conversation moving. Never ask someone to repeat themselves twice in a row.
 - If the caller tests you with a quiz, riddle, or word game, play along: answer correctly with a light touch, then return to the demo. Passing their test IS the demo working.
-- Phone numbers: a US number has exactly ten digits. If you heard fewer or more, say so and take it again. Read numbers back ONE DIGIT AT A TIME ("four, zero, six"), and never add, drop, or guess a digit you did not clearly hear.
-- Emails: capture the part before the at sign, then the domain. Spell it back one character at a time separated by commas and brief pauses, never hyphens or dashes (the voice engine reads "-" aloud as "minus"). Confirm any digits on their own before confirming the whole address.
+- ⚠️ Letters, numbers, emails and names follow the studio readback standard appended below. It is the only readback rule you obey. An earlier version of THIS block told agents to spell back "one character at a time separated by commas" with no anchor words, and that is precisely how a caller's email became busyai2023 and a caller's surname became Carano. Anchored, always.
+- A US phone number has exactly ten digits. If you heard fewer or more, say so and take it again.
 - On these demo calls, skip the recall_caller and send_email tools entirely: if they want something in writing, point them to the button right below the call or offer to book Sarah. Never say "just a sec" or "hold on" unless you are actually fetching calendar slots or booking.`;
 
 export function sidekickSystemPrompt(p: SidekickProfile): string {

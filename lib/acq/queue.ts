@@ -111,6 +111,75 @@ export async function enqueue(
   return { ok: false, error: error?.message ?? 'Enqueue failed.' };
 }
 
+export type EnqueueManyArgs = {
+  kind: QueueKind;
+  leadId: string;
+  campaignId?: string | null;
+  step?: number;
+  runAfter?: Date | string;
+  payload?: Record<string, unknown>;
+  maxAttempts?: number;
+  discriminator?: string;
+};
+
+/**
+ * ENQUEUE A WHOLE SWEEP IN ONE BREATH.
+ *
+ * `enqueue` is right for one job and wrong for five hundred. The cron sweep
+ * walks every eligible prospect on every pass, and almost all of them are
+ * already queued, so calling `enqueue` per row meant five hundred sequential
+ * INSERTs that Postgres rejected on the unique index, five hundred logged
+ * unique_violation ERRORs, and five hundred follow-up SELECTs to fetch the row
+ * we already knew existed. On 2026-08-21 that sweep, on a nano instance, was
+ * the last thing production Postgres did before it went down.
+ *
+ * ON CONFLICT DO NOTHING says the same thing in one round trip and Postgres
+ * does not consider it an error. `data` comes back holding only the rows that
+ * were actually inserted, which is exactly the "created" count the caller wants.
+ */
+export async function enqueueMany(
+  db: SupabaseClient | null,
+  jobs: EnqueueManyArgs[],
+  chunkSize = 200,
+): Promise<{ ok: boolean; created: number; skipped: number; error?: string }> {
+  const client = db ?? getSupabase();
+  if (!client) return { ok: false, created: 0, skipped: 0, error: 'Database is not configured.' };
+  if (jobs.length === 0) return { ok: true, created: 0, skipped: 0 };
+
+  // Two callers asking for the same work in one batch is the same request
+  // twice, and the batch has to settle it before Postgres sees it.
+  const byKey = new Map<string, Record<string, unknown>>();
+  for (const job of jobs) {
+    const key = idempotencyKey(job.kind, job.leadId, job.step ?? 0, job.discriminator);
+    if (byKey.has(key)) continue;
+    byKey.set(key, {
+      campaign_id: job.campaignId ?? null,
+      lead_id: job.leadId,
+      kind: job.kind,
+      step: job.step ?? 0,
+      run_after:
+        job.runAfter instanceof Date ? job.runAfter.toISOString() : job.runAfter || new Date().toISOString(),
+      idempotency_key: key,
+      payload: job.payload ?? {},
+      max_attempts: job.maxAttempts ?? 3,
+    });
+  }
+
+  const rows = [...byKey.values()];
+  let created = 0;
+  for (let i = 0; i < rows.length; i += chunkSize) {
+    const chunk = rows.slice(i, i + chunkSize);
+    const { data, error } = await client
+      .from('acq_queue')
+      .upsert(chunk, { onConflict: 'idempotency_key', ignoreDuplicates: true })
+      .select('id');
+    if (error) return { ok: false, created, skipped: rows.length - created, error: error.message };
+    created += (data ?? []).length;
+  }
+
+  return { ok: true, created, skipped: rows.length - created };
+}
+
 /** Atomic claim. Never returns a job another worker is holding. */
 export async function claimJobs(
   db: SupabaseClient | null,

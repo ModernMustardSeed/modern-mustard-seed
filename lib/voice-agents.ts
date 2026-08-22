@@ -66,6 +66,19 @@ export const VOICE_AGENTS: VoiceAgent[] = [
     // the "both probes pass + agent on fallback -> restore primary" rule would
     // have shoved him back onto sonnet-5 within ~10 minutes and re-broken the
     // line. Fallback goes back to haiku so primary and fallback stay distinct.
+    // 2026-08-17: primary -> claude-opus-4-6, tracking the same change in
+    // scripts/setup-vapi-mustard.mjs. Sarah asked for the most intelligent brain
+    // available ("this is the face of my entire company"), and a re-probe of
+    // Vapi's Anthropic enum that night confirmed opus-4-6 is the ceiling:
+    // claude-opus-5, claude-fable-5, claude-opus-4-7 and claude-opus-4-8 are all
+    // rejected with a 400. Sonnet 5 stays banned on the 29.1s dead-air evidence.
+    // Fallback moves haiku-4-5 -> sonnet-4-6: primary and fallback still differ
+    // (which is what stops the restore rule from flapping), and sonnet-4-6 holds
+    // persona under failover where haiku narrated its own tool calls out loud.
+    // 2026-08-18: back to sonnet-4-6, tracking setup-vapi-mustard.mjs, after a
+    // measured call showed 3 to 7 second gaps before opus started speaking.
+    // Fallback returns to haiku so primary and fallback stay distinct, which is
+    // what stops the restore rule from flapping.
     primary: process.env.VOICE_PRIMARY_MODEL || 'claude-sonnet-4-6',
     fallback: process.env.VOICE_FALLBACK_MODEL || 'claude-haiku-4-5-20251001',
   },

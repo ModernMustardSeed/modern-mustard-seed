@@ -26,7 +26,7 @@ So we productized the fix, and we made the demo the product.
 
 Go to the Voice Agent Forge, tell Mr. Mustard (our AI) about your business: what you do, what you charge, what customers ask. Sixty seconds later your own voice agent graduates and talks to you, live, in your browser. Ask it your hardest customer question. Or have it call your cell so you feel exactly what your customers would feel.
 
-If you love him: $297 setup + $197 a month, live on your real line within 7 days, hard-capped minutes so there is never a surprise bill, cancel anytime. The setup fee credits toward any custom build if you outgrow him.
+If you love him: $297 setup + $197 a month, live within 7 days, answering the number you already have, hard-capped minutes so there is never a surprise bill, cancel anytime. The setup fee credits toward any custom build if you outgrow him.
 
 The demo is free and there is no card. It is honestly just fun, even if you never buy.
 

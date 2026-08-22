@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   type PrompterScript,
   type StudioConfig,
@@ -24,6 +24,56 @@ const READ_LINE_FRACTION = 0.3;
 
 /** Fallback chip for a pillar a studio forgot to style. Never crashes a card. */
 const PILLAR_FALLBACK = 'bg-[#e4ddcf] text-[#161616]';
+
+/** Regex-escape so a search for "c++" or "(on screen" cannot throw. */
+function escapeRe(t: string): string {
+  return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Marks the matched terms inside a string without dangerouslySetInnerHTML.
+ * Split on a capturing group returns match parts at every odd index.
+ */
+function Highlight({ text, terms, tint }: { text: string; terms: string[]; tint: string }) {
+  const parts = useMemo(() => {
+    const esc = terms.map(escapeRe).filter(Boolean);
+    if (!esc.length) return [text];
+    return text.split(new RegExp(`(${esc.join('|')})`, 'ig'));
+  }, [text, terms]);
+  if (parts.length === 1) return <>{text}</>;
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <mark key={i} style={{ background: tint, color: 'inherit', padding: '0 2px' }}>
+            {part}
+          </mark>
+        ) : (
+          <span key={i}>{part}</span>
+        ),
+      )}
+    </>
+  );
+}
+
+/**
+ * First spoken line that carries a term, trimmed to a readable window. This is
+ * what makes body search worth having: Sarah remembers a line, not a title.
+ */
+function bodySnippet(s: PrompterScript, terms: string[]): string | null {
+  for (const sec of s.sections) {
+    for (const p of sec.paragraphs) {
+      const low = p.toLowerCase();
+      const hits = terms.map((t) => low.indexOf(t)).filter((i) => i >= 0);
+      if (!hits.length) continue;
+      const at = Math.min(...hits);
+      const start = Math.max(0, at - 60);
+      const end = Math.min(p.length, at + 150);
+      return `${start > 0 ? '…' : ''}${p.slice(start, end).trim()}${end < p.length ? '…' : ''}`;
+    }
+  }
+  return null;
+}
 
 type Settings = { speed: number; fontSize: number; mirror: boolean };
 const DEFAULTS: Settings = { speed: 1, fontSize: 44, mirror: false };
@@ -209,6 +259,78 @@ export default function Prompter({ studio }: { studio: StudioConfig }) {
   const [showTakes, setShowTakes] = useState(false);
   const [selfViewOn, setSelfViewOn] = useState(true);
   const [tab, setTab] = useState<string>(studio.tabs[0][0]);
+  const [query, setQuery] = useState('');
+  /** While searching, results span every tab; scope narrows them back to one kind. */
+  const [scope, setScope] = useState<string | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+
+  /* ---------------------------------- search ---------------------------------- */
+
+  const terms = useMemo(
+    () => query.trim().toLowerCase().split(/\s+/).filter(Boolean),
+    [query],
+  );
+  const searching = terms.length > 0;
+
+  /**
+   * Every script flattened once. `head` is the card face (title, hook, labels),
+   * `body` is every spoken line, so a half-remembered sentence finds its script.
+   */
+  const index = useMemo(
+    () =>
+      PROMPTER_SCRIPTS.map((s) => ({
+        s,
+        title: s.title.toLowerCase(),
+        head: `${s.title} ${s.hook} ${s.episode} ${s.session} ${s.pillar} ${s.publish} ${s.kind}`.toLowerCase(),
+        body: s.sections.map((sec) => `${sec.heading} ${sec.paragraphs.join(' ')}`).join(' ').toLowerCase(),
+      })),
+    [PROMPTER_SCRIPTS],
+  );
+
+  /** All terms must match (AND), title hits rank above card face, face above body. */
+  const results = useMemo(() => {
+    if (!terms.length) return [] as { s: PrompterScript; rank: number }[];
+    const out: { s: PrompterScript; rank: number }[] = [];
+    for (const row of index) {
+      const all = `${row.head} ${row.body}`;
+      if (!terms.every((t) => all.includes(t))) continue;
+      const rank = terms.every((t) => row.title.includes(t))
+        ? 0
+        : terms.every((t) => row.head.includes(t))
+          ? 1
+          : 2;
+      out.push({ s: row.s, rank });
+    }
+    return out.sort((a, b) => a.rank - b.rank);
+  }, [index, terms]);
+
+  const listed: PrompterScript[] = searching
+    ? results.filter((r) => !scope || r.s.kind === scope).map((r) => r.s)
+    : PROMPTER_SCRIPTS.filter((s) => s.kind === tab);
+
+  /** A new query always starts wide; narrowing is a deliberate second click. */
+  useEffect(() => {
+    setScope(null);
+  }, [query]);
+
+  /** Library-only keys. The prompter has its own map and this effect stays out of it. */
+  useEffect(() => {
+    if (active) return;
+    const onKey = (e: KeyboardEvent) => {
+      const el = document.activeElement as HTMLElement | null;
+      const typing = !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA');
+      if (e.key === '/' && !typing) {
+        e.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      } else if (e.key === 'Escape' && typing) {
+        setQuery('');
+        searchRef.current?.blur();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [active]);
   const [finals, setFinals] = useState<{ name: string; path: string; signedUrl: string | null }[]>([]);
   useEffect(() => {
     fetch(`${studio.apiBase}/finals`, { method: 'POST' })
@@ -506,31 +628,111 @@ export default function Prompter({ studio }: { studio: StudioConfig }) {
             {studio.blurb}
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            {studio.tabs.map(([k, label]) => {
-              const count = PROMPTER_SCRIPTS.filter((s) => s.kind === k).length;
-              const on = tab === k;
-              return (
+          <div className="mt-8">
+            <div className="relative">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-mono text-[13px]"
+                style={{ color: dim(0.4) }}
+              >
+                ⌕
+              </span>
+              <input
+                ref={searchRef}
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search titles, hooks, and every spoken line"
+                aria-label="Search scripts"
+                className="w-full border-2 py-3 pl-10 pr-24 font-mono text-[13px] tracking-[0.02em] outline-none placeholder:text-white/35 focus:ring-0"
+                style={{ background: dim(0.05), borderColor: searching ? GOLD : dim(0.28), color: CREAM }}
+              />
+              {searching ? (
                 <button
-                  key={k}
-                  onClick={() => setTab(k)}
+                  onClick={() => {
+                    setQuery('');
+                    searchRef.current?.focus();
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 border px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
+                  style={{ borderColor: dim(0.3), color: dim(0.7) }}
+                >
+                  Clear
+                </button>
+              ) : (
+                <span
+                  aria-hidden="true"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 font-mono text-[10px] uppercase tracking-[0.14em]"
+                  style={{ color: dim(0.35) }}
+                >
+                  Press /
+                </span>
+              )}
+            </div>
+
+            {searching && (
+              <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em]" style={{ color: dim(0.6) }}>
+                {results.length === 0
+                  ? 'No script carries that'
+                  : `${results.length} script${results.length === 1 ? '' : 's'} across every tab`}
+                {' · '}Esc clears
+              </p>
+            )}
+
+            <div className="mt-4 flex flex-wrap gap-3">
+              {searching && (
+                <button
+                  onClick={() => setScope(null)}
                   className="border-2 px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] transition-transform hover:-translate-y-0.5"
                   style={{
-                    background: on ? GOLD : 'transparent',
-                    borderColor: on ? INK : dim(0.3),
-                    color: on ? INK : dim(0.75),
-                    boxShadow: on ? `3px 3px 0 0 ${CREAM}33` : 'none',
+                    background: scope === null ? GOLD : 'transparent',
+                    borderColor: scope === null ? INK : dim(0.3),
+                    color: scope === null ? INK : dim(0.75),
+                    boxShadow: scope === null ? `3px 3px 0 0 ${CREAM}33` : 'none',
                   }}
                 >
-                  {label} ({count})
+                  All matches ({results.length})
                 </button>
-              );
-            })}
+              )}
+              {studio.tabs.map(([k, label]) => {
+                const count = searching
+                  ? results.filter((r) => r.s.kind === k).length
+                  : PROMPTER_SCRIPTS.filter((s) => s.kind === k).length;
+                const on = searching ? scope === k : tab === k;
+                const mute = searching && count === 0;
+                return (
+                  <button
+                    key={k}
+                    onClick={() => (searching ? setScope(scope === k ? null : k) : setTab(k))}
+                    disabled={mute}
+                    className="border-2 px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] transition-transform enabled:hover:-translate-y-0.5"
+                    style={{
+                      background: on ? GOLD : 'transparent',
+                      borderColor: on ? INK : dim(0.3),
+                      color: on ? INK : dim(0.75),
+                      boxShadow: on ? `3px 3px 0 0 ${CREAM}33` : 'none',
+                      opacity: mute ? 0.35 : 1,
+                      cursor: mute ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {label} ({count})
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="mt-8 space-y-6">
-            {PROMPTER_SCRIPTS.filter((s) => s.kind === tab).map((s) => {
+            {searching && listed.length === 0 && (
+              <p className="border-2 border-dashed p-6 font-mono text-[12px] leading-relaxed" style={{ borderColor: dim(0.2), color: dim(0.55) }}>
+                Nothing in the library matches every word of that. Search is an AND, so drop a term and try again.
+                It reads titles, hooks, episode and session labels, pillars, and every spoken line in every script.
+              </p>
+            )}
+            {listed.map((s) => {
               const words = scriptWordCount(s);
+              const kindLabel = studio.tabs.find(([k]) => k === s.kind)?.[1] ?? s.kind;
+              const faceHit = `${s.title} ${s.hook}`.toLowerCase();
+              const snippet = searching && !terms.every((t) => faceHit.includes(t)) ? bodySnippet(s, terms) : null;
               return (
                 <button
                   key={s.id}
@@ -549,16 +751,32 @@ export default function Prompter({ studio }: { studio: StudioConfig }) {
                       >
                         {s.pillar}
                       </span>
+                      {searching && (
+                        <span
+                          className="border font-mono text-[10px] font-bold uppercase tracking-[0.1em]"
+                          style={{ borderColor: INK, background: 'transparent', color: `${INK}cc`, padding: '1px 7px' }}
+                        >
+                          {kindLabel}
+                        </span>
+                      )}
                       <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.12em]" style={{ color: `${INK}99` }}>
                         {s.session}
                       </span>
                     </div>
                     <h2 className="font-display mt-3 text-2xl font-bold sm:text-3xl" style={{ color: INK }}>
-                      {s.title}
+                      <Highlight text={s.title} terms={terms} tint={`${GOLD}66`} />
                     </h2>
                     <p className="font-serif mt-2 text-lg italic leading-snug" style={{ color: `${INK}bf` }}>
-                      &ldquo;{s.hook}&rdquo;
+                      &ldquo;<Highlight text={s.hook} terms={terms} tint={`${GOLD}66`} />&rdquo;
                     </p>
+                    {snippet && (
+                      <p
+                        className="mt-3 border-l-2 pl-3 font-mono text-[12px] leading-relaxed"
+                        style={{ borderColor: theme.accentAlt, color: `${INK}a6` }}
+                      >
+                        <Highlight text={snippet} terms={terms} tint={`${GOLD}66`} />
+                      </p>
+                    )}
                     <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
                       <span className="font-mono text-[11px] uppercase tracking-[0.12em]" style={{ color: `${INK}99` }}>
                         ~{fmtTime(scriptEstSeconds(s))} read · {words} words · {s.publish}
@@ -616,7 +834,7 @@ export default function Prompter({ studio }: { studio: StudioConfig }) {
               PRIVATE BOOTH · not linked, not indexed. Takes from this room go to {studio.bucketLabel} and nowhere
               else. Arm the camera and every play/pause cycle records a take, sends it to Claude for the edit, and
               keeps it to rewatch. Dashed &ldquo;Direction&rdquo; blocks are notes from Claude, never read them
-              aloud. SPACE play/pause (and record) · ↑↓ speed · ←→ sections · +/− text size · M mirror
+              aloud. / or click the search box finds any script by title, hook, label, or a line you half remember. SPACE play/pause (and record) · ↑↓ speed · ←→ sections · +/− text size · M mirror
               (beam-splitter rig) · C self-view · T takes + replay · F fullscreen · R restart · ESC pause/exit.
             </p>
           </div>

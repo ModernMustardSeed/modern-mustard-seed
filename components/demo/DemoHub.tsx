@@ -5,6 +5,8 @@ import type { Niche } from '@/lib/outbound';
 import { TRADE_PRESETS, TICKET_WORD } from '@/data/demo-os-trades';
 import type { OsTradeKey } from '@/data/demo-os-trades';
 import MakeItRealCTA from '@/components/demo/MakeItRealCTA';
+import RecoveryMachine, { type RecoveryValues } from '@/components/RecoveryMachine';
+import SuiteMoreForm from '@/components/demo/SuiteMoreForm';
 import type { DemoProductKey } from '@/lib/demo-order';
 
 /**
@@ -23,32 +25,6 @@ const AVG_JOB: Record<Niche, { label: string; value: number }> = {
   other: { label: 'average sale', value: 250 },
 };
 
-/** Round a slider ceiling to something a human would pick. */
-function niceMax(v: number): number {
-  const raw = v * 2.5;
-  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
-  return Math.ceil(raw / mag) * mag;
-}
-
-function useCountUp(target: number, ms = 900): number {
-  const [v, setV] = useState(target);
-  const prev = useRef(target);
-  useEffect(() => {
-    const from = prev.current;
-    prev.current = target;
-    let raf = 0;
-    const t0 = performance.now();
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - t0) / ms);
-      setV(Math.round(from + (target - from) * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [target, ms]);
-  return v;
-}
-
 /** Types the line out, and reports when it is finished so the caret can leave.
  *  A caret that keeps blinking after the sentence lands reads like a bug. */
 function useTyped(text: string, speed = 28): { shown: string; typing: boolean } {
@@ -59,6 +35,73 @@ function useTyped(text: string, speed = 28): { shown: string; typing: boolean } 
     return () => window.clearInterval(t);
   }, [text, speed]);
   return { shown: text.slice(0, n), typing: n < text.length };
+}
+
+/**
+ * The encore: their own agent calls THEM. Rides the existing public
+ * /api/sidekick/forge phone path, which enforces one ring per run, one ring
+ * per number, and the Vapi billing kill switch. User-initiated, consent on
+ * the page, US numbers only.
+ */
+function EncoreRing({ runId, business }: { runId: string; business: string }) {
+  const [phone, setPhone] = useState('');
+  const [state, setState] = useState<'idle' | 'calling' | 'done' | 'error'>('idle');
+  const [msg, setMsg] = useState('');
+  const ring = async () => {
+    if (state === 'calling' || state === 'done') return;
+    setState('calling');
+    try {
+      const res = await fetch('/api/sidekick/forge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'phone', runId, phone }),
+      });
+      const j = (await res.json().catch(() => ({}))) as { from?: string; message?: string };
+      if (res.ok) {
+        setState('done');
+        setMsg(`Ringing you right now${j.from ? ` from ${j.from}` : ''}. Answer it and say hello.`);
+      } else {
+        setState('error');
+        setMsg(j.message || 'The call could not go out just now. The browser demo above still works.');
+      }
+    } catch {
+      setState('error');
+      setMsg('The call could not go out just now. The browser demo above still works.');
+    }
+  };
+  return (
+    <section className="animate-[hubIn_.5s_ease-out_both]">
+      <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 sm:p-8 text-center">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">The encore</span>
+        <h2 className="font-display text-2xl sm:text-3xl font-bold mt-2">Have it call you. Right now.</h2>
+        <p className="font-body text-[14px] text-[#161616]/65 mt-2 max-w-md mx-auto">
+          Type your cell and the {business} front desk calls YOU. One demo call, US numbers, and it only dials because you asked it to.
+        </p>
+        {state === 'done' || state === 'error' ? (
+          <p className={`font-body text-[15px] font-semibold mt-5 ${state === 'done' ? 'text-[#3f5d34]' : 'text-[#a03123]'}`}>{msg}</p>
+        ) : (
+          <div className="flex flex-col sm:flex-row items-stretch justify-center gap-3 mt-5 max-w-md mx-auto">
+            <input
+              type="tel"
+              inputMode="tel"
+              placeholder="(406) 555-0123"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="flex-1 font-body text-[16px] px-4 py-3 rounded-xl border-2 border-[#161616] bg-[#FBF6EA] focus:outline-none focus:ring-2 focus:ring-[#F5B700] tabular-nums"
+              aria-label="Your phone number"
+            />
+            <button
+              onClick={() => void ring()}
+              disabled={state === 'calling' || phone.replace(/\D/g, '').length < 10}
+              className="font-sans font-bold uppercase tracking-[0.1em] text-[13px] rounded-xl border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-6 py-3 shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-transform disabled:opacity-50 disabled:hover:translate-y-0"
+            >
+              {state === 'calling' ? 'Dialing…' : '☎ Call me'}
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
 }
 
 export default function DemoHub({
@@ -75,6 +118,12 @@ export default function DemoHub({
   siteUrl,
   sitePending,
   osUrl,
+  integrationPlanUrl,
+  planQuote,
+  demoRunId,
+  noticedLine,
+  missedPreset,
+  hasEmail,
   presenter,
 }: {
   hubId: string;
@@ -102,6 +151,23 @@ export default function DemoHub({
   siteUrl: string | null;
   sitePending: string | null;
   osUrl: string | null;
+  /** Their finished AI Integration Plan (/demo/plan/<id>), when written. It
+   *  joins the suite as a door: free value that fills a voice-only page. */
+  integrationPlanUrl?: string | null;
+  /** One sharp, factual sentence lifted from that plan, quoted on its door. */
+  planQuote?: string | null;
+  /** The lead's forged voice run. Powers the encore: their agent calls THEM,
+   *  through the existing /api/sidekick/forge phone path with all its caps. */
+  demoRunId?: string | null;
+  /** A factual line from the walk-in research ("closed both weekend days..."),
+   *  already sanitized server-side. Shown above the calculator so the numbers
+   *  start as theirs. */
+  noticedLine?: string | null;
+  /** Research-informed starting value for the missed-calls slider. */
+  missedPreset?: number | null;
+  /** Whether the lead row already carries an email (the ready announcement
+   *  needs one; the request form only asks when we do not have it). */
+  hasEmail?: boolean;
   /** Partner who minted this suite ("Presented by X with Modern Mustard Seed"). */
   presenter?: string | null;
 }) {
@@ -126,17 +192,18 @@ export default function DemoHub({
   }, [hubId]);
 
   /* ------------------------------ calculator ------------------------------ */
+  // The machine itself is the shared pop-art RecoveryMachine; this component
+  // only keeps its outputs to write the trade-specific reaction line.
   const tp = trade ? TRADE_PRESETS[trade] : null;
   const job = tp
     ? { label: `average ${TICKET_WORD[trade!] ?? tp.jobWord}`, value: tp.avgTicket }
     : (AVG_JOB[niche] ?? AVG_JOB.other);
-  const sliderMax = niceMax(job.value);
-  const [missed, setMissed] = useState(7);
-  const [close, setClose] = useState(45);
-  const [avg, setAvg] = useState(job.value);
-  const leak = Math.round(missed * 4.33 * (close / 100) * avg);
+  const [calc, setCalc] = useState<RecoveryValues>(() => {
+    const missed = missedPreset ?? 7;
+    return { missed, close: 45, ticket: job.value, leak: Math.round(missed * 4.33 * 0.45 * job.value) };
+  });
+  const leak = calc.leak;
   const caught = Math.round(leak * 0.75);
-  const shown = useCountUp(leak);
   // The trade line lands hardest: dollars restated as whole jobs lost.
   const lostJobs = tp && tp.avgTicket >= 400 ? Math.round(leak / tp.avgTicket) : 0;
   const jobNoun = tp ? (TICKET_WORD[trade!] ?? tp.jobWord) : '';
@@ -176,14 +243,83 @@ export default function DemoHub({
           href: osUrl,
           icon: '⚙',
           title: 'Your command center',
-          desc: 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Free when you keep the website and the voice agent together, nothing to install.',
+          // Sarah 2026-08-20: when the agent and the website both live in the
+          // suite, the free command center is the headline, not a footnote.
+          desc:
+            voiceUrl && (siteUrl || sitePending)
+              ? 'Every call transcribed, your customers, reviews, quotes, and money on one board. It costs nothing extra: the website and the voice agent live here together, so this comes with them. Already built, already wearing your brand.'
+              : 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Free when you keep the website and the voice agent together, nothing to install.',
           tone: 'ink' as const,
           cta: 'Open it',
-          badge: 'Free with both',
+          badge: voiceUrl && (siteUrl || sitePending) ? 'FREE with these two' : 'Free with both',
+        },
+        integrationPlanUrl && {
+          href: integrationPlanUrl,
+          icon: '📋',
+          title: 'Your AI Integration Plan',
+          desc: planQuote
+            ? `From your plan: "${planQuote}" The rest is a step-by-step path, yours to keep, free either way.`
+            : `The step-by-step plan we wrote for ${business}: where the calls are leaking, what to do about it, and the order to do it in. Yours to keep, free either way.`,
+          tone: 'ink' as const,
+          cta: 'Read it',
+          badge: 'Free',
         },
       ].filter(Boolean) as { href: string; icon: string; title: string; desc: string; tone: 'dark' | 'gold' | 'ink'; cta: string; badge?: string }[],
-    [voiceUrl, siteUrl, sitePending, osUrl, business],
+    [voiceUrl, siteUrl, sitePending, osUrl, integrationPlanUrl, planQuote, business],
   );
+
+  /**
+   * ⚠️ ONE PIECE IS NOT A SUITE, AND CALLING IT ONE IS A BROKEN PROMISE.
+   *
+   * Sarah, 2026-08-18: "only give the demo for whatever they asked for... use
+   * the normal demo suite for talking websites or both, but not for just one
+   * thing forged."
+   *
+   * The forge stopped building unasked-for pieces on 2026-08-13, and the cards
+   * and the order card below have been piece-aware ever since. This page never
+   * caught up: it still greeted a caller who asked for one voice agent with
+   * "The Acme Demo Suite" and "everything below", which reads as either a
+   * mistake or a bait, and neither is what we sold on the phone.
+   *
+   * So the page names what was actually built. What they did NOT take moves to
+   * one quiet line at the bottom, after the order card, where it is an offer
+   * rather than clutter over the thing they asked for.
+   */
+  const forged = [
+    voiceUrl ? 'voice' : null,
+    siteUrl || sitePending ? 'site' : null,
+    osUrl ? 'os' : null,
+  ].filter(Boolean) as ('voice' | 'site' | 'os')[];
+  const PIECE_NAME: Record<'voice' | 'site' | 'os', string> = {
+    voice: 'Voice Agent',
+    site: 'Website',
+    os: 'Command Center',
+  };
+  const onlyOne = forged.length === 1;
+  const missing = (['voice', 'site', 'os'] as const).filter((p) => !forged.includes(p));
+  // What the form can actually queue: the two sellable demos. The command
+  // center is included free at purchase, not forged on request.
+  const forgeMissing = missing.filter((p): p is 'voice' | 'site' => p === 'voice' || p === 'site');
+
+  /**
+   * The line about what they did not take. It carries the command-center rule
+   * when it applies, because a buyer holding one paid piece who adds the other
+   * gets the back office free, and every surface that can put somebody in the
+   * dominated cart owes them that fact in the moment.
+   */
+  const restLine = (() => {
+    if (!missing.length) return null;
+    if (forged.includes('voice') && forged.includes('site')) {
+      return 'You have both paid pieces here, so the command center that files every call and every lead is already free with them. Say the word and it goes on this page.';
+    }
+    if (forged.includes('voice')) {
+      return 'Want the website to match, built the same way, off the same brain? Taking the two together makes the command center free.';
+    }
+    if (forged.includes('site')) {
+      return 'Want it to answer its own phone too? Taking the two together makes the command center free.';
+    }
+    return 'Want the voice agent that feeds this, or the website to match? We can forge either one.';
+  })();
 
   const toneCls: Record<'dark' | 'gold' | 'ink', string> = {
     dark: 'bg-[#161616] text-[#FBF6EA]',
@@ -196,6 +332,9 @@ export default function DemoHub({
       <style>{`
         @keyframes hubBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
         @keyframes hubIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+        @keyframes hubRing{0%{box-shadow:0 0 0 0 rgba(245,183,0,.55)}70%{box-shadow:0 0 0 26px rgba(245,183,0,0)}100%{box-shadow:0 0 0 0 rgba(245,183,0,0)}}
+        @keyframes hubEmber{0%,100%{text-shadow:0 0 0 rgba(245,183,0,0)}50%{text-shadow:0 0 26px rgba(245,183,0,.4)}}
+        @media (prefers-reduced-motion: reduce){.hub-ring,.hub-ember{animation:none !important}}
       `}</style>
 
       {/* Hero */}
@@ -215,12 +354,15 @@ export default function DemoHub({
             </div>
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-bold mt-4 leading-tight">
-            The {business} Demo Suite
+            {onlyOne ? `The ${business} ${PIECE_NAME[forged[0]]}` : `The ${business} Demo Suite`}
           </h1>
           <p className="font-body text-[#161616]/70 mt-3 max-w-xl mx-auto">
             {presenter
-              ? `${presenter} asked us to build this for you. Free, nothing to sign, nothing to cancel. Everything below is live and working, not a mockup. Go play.`
-              : `Built from scratch around your business. Free, nothing to sign, nothing to cancel. Everything below is live and working, not a mockup. Go play.`}
+              ? `${presenter} asked us to build this for you. `
+              : 'Built from scratch around your business. '}
+            {onlyOne
+              ? 'You asked for one thing, so this is that one thing. Free, nothing to sign, nothing to cancel, and it is live and working rather than a mockup. Go play.'
+              : 'Free, nothing to sign, nothing to cancel. Everything below is live and working, not a mockup. Go play.'}
           </p>
         </div>
       </header>
@@ -231,7 +373,10 @@ export default function DemoHub({
             Nothing else ever plays here. No stock reel, no other client's
             footage, captioned or not (Sarah, 2026-08-01 and 2026-08-11: a
             captioned wrong-business video is still a wrong-business video).
-            When neither exists yet, we say so honestly instead. */}
+            Sarah, 2026-08-20: and when no film exists or is being cut, the
+            whole card disappears. A suite is not required to have a video, and
+            an empty spinner promising one we never queued reads as a stall. */}
+        {(suiteFilmUrl || personalVideoUrl || suiteFilmPending) && (
         <section className="animate-[hubIn_.5s_ease-out_both]">
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] overflow-hidden">
             {suiteFilmUrl ? (
@@ -275,11 +420,40 @@ export default function DemoHub({
             </p>
           </div>
         </section>
+        )}
 
-        {/* The doors */}
+        {/* The doors. One door is not a grid, it is the whole show: a lonely
+            card in a three-column layout reads as "something is missing" when
+            what it should read is "this is the thing" (Sarah, 2026-08-20). */}
+        {doors.length === 1 ? (
+          <section className="animate-[hubIn_.5s_ease-out_both]">
+            <a
+              href={doors[0].href}
+              className={`${toneCls[doors[0].tone]} block border-2 border-[#161616] rounded-3xl shadow-[8px_8px_0_0_#F5B700] p-8 sm:p-10 text-center transition-transform hover:-translate-y-1.5`}
+            >
+              <span className="hub-ring inline-flex items-center justify-center w-24 h-24 rounded-full bg-[#F5B700] text-5xl border-2 border-[#161616] animate-[hubRing_2.4s_ease-out_infinite]" aria-hidden>
+                {doors[0].icon}
+              </span>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold mt-6 leading-tight">{doors[0].title}</h2>
+              <p className={`font-body text-[16px] leading-relaxed mt-3 max-w-md mx-auto ${doors[0].tone === 'dark' ? 'text-[#FBF6EA]/80' : 'text-[#161616]/70'}`}>
+                {doors[0].desc}
+              </p>
+              <span className="mt-7 inline-flex items-center gap-2 font-sans font-bold uppercase tracking-[0.12em] text-[15px] rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-3.5 shadow-[4px_4px_0_0_#161616]">
+                {doors[0].cta} →
+              </span>
+            </a>
+          </section>
+        ) : (
         <section>
-          <h2 className="font-display text-2xl font-bold mb-4">Your {doors.length === 1 ? 'demo' : `${doors.length} demos`}</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <h2 className="font-display text-2xl font-bold mb-1">Your {doors.length} demos</h2>
+          {osUrl && voiceUrl && (siteUrl || sitePending) && (
+            <p className="font-body text-[14.5px] text-[#161616]/70 mb-4 max-w-xl">
+              Two of these are the products. The third, your command center, is <strong className="text-[#161616]">included free</strong> because
+              the website and the voice agent live together in this suite. You are not being upsold a dashboard; it comes with the pair.
+            </p>
+          )}
+          {!(osUrl && voiceUrl && (siteUrl || sitePending)) && <div className="mb-3" />}
+          <div className={`grid sm:grid-cols-2 ${doors.length >= 3 ? 'lg:grid-cols-3' : ''} gap-4`}>
             {doors.map((d, i) => (
               <a
                 key={d.title}
@@ -302,51 +476,55 @@ export default function DemoHub({
             ))}
           </div>
         </section>
+        )}
 
-        {/* Recovery Calculator */}
+        {/* The encore: strongest moment in the suite, one tap after the doors. */}
+        {demoRunId && voiceUrl && <EncoreRing runId={demoRunId} business={business} />}
+
+        {/* Recovery Calculator: the shared pop-art desk machine, hub sized
+            (Sarah, 2026-08-20: same calc as the landing page, a little smaller,
+            "it's so much cuter"). */}
         <section className="animate-[hubIn_.5s_ease-out_both]">
-          <div className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#F5B700] p-6 sm:p-8">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">The Recovery Calculator</span>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#FBF6EA] mt-2">What are missed calls costing {business}?</h2>
-            <p className="font-body text-[14px] text-[#FBF6EA]/60 mt-2">Slide to match your week. Estimates, but honest ones.</p>
-
-            <div className="grid sm:grid-cols-3 gap-5 mt-6">
-              {[
-                { label: 'Calls you miss per week', value: missed, set: setMissed, min: 1, max: 40, fmt: (v: number) => String(v) },
-                { label: 'Would have hired you', value: close, set: setClose, min: 10, max: 90, fmt: (v: number) => `${v}%` },
-                { label: `Your ${job.label}`, value: avg, set: setAvg, min: 20, max: tp ? sliderMax : niche === 'real_estate' ? 20000 : 3000, fmt: (v: number) => `$${v.toLocaleString()}` },
-              ].map((s) => (
-                <label key={s.label} className="block">
-                  <span className="font-sans text-[11px] uppercase tracking-[0.14em] font-bold text-[#FBF6EA]/70">{s.label}</span>
-                  <span className="block font-mono text-xl font-bold text-[#F5B700] mt-1">{s.fmt(s.value)}</span>
-                  <input
-                    type="range"
-                    min={s.min}
-                    max={s.max}
-                    value={s.value}
-                    onChange={(e) => s.set(Number(e.target.value))}
-                    className="w-full mt-2 accent-[#F5B700]"
-                  />
-                </label>
-              ))}
+          <div className="text-center mb-5">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold">The Recovery Calculator</span>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold mt-2">What are missed calls costing {business}?</h2>
+            <p className="font-body text-[14px] text-[#161616]/60 mt-1">Punch in your week. Estimates, but honest ones.</p>
+          </div>
+          <RecoveryMachine
+            missedPreset={missedPreset}
+            ticketPreset={job.value}
+            ticketLabel={`Your ${job.label}`}
+            noticedLine={noticedLine}
+            onChange={setCalc}
+          />
+          <div className="mx-auto mt-5 max-w-xl rounded-2xl border-2 border-[#161616] bg-[#161616] p-4 text-center">
+            <p className="font-body text-[14px] text-[#FBF6EA]/80">
+              If this suite caught even three quarters of those calls, that is about{' '}
+              <strong className="text-[#F5B700]">${caught.toLocaleString()} a month</strong> back in the till, roughly{' '}
+              <strong className="text-[#F5B700]">${(caught * 12).toLocaleString()} a year</strong>.
+            </p>
+            <div className="flex items-center justify-center gap-3 mt-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/mascot.png" alt="" width={40} height={40} />
+              <p className="font-body text-[13px] italic text-[#FBF6EA]/80 bg-white/5 border border-[#FBF6EA]/15 rounded-xl px-3 py-2">{reaction}</p>
             </div>
+          </div>
+        </section>
 
-            {/* Neutral lifted ink, never a mustard wash: translucent mustard over
-                ink mixes to a muddy brown, which is off-brand. Border carries the gold. */}
-            <div className="mt-6 rounded-2xl border-2 border-[#F5B700] bg-[#1F1F1F] p-5 text-center">
-              <p className="font-sans text-[11px] uppercase tracking-[0.2em] font-bold text-[#F5B700]">Leaking every month</p>
-              <p className="font-display text-5xl sm:text-6xl font-bold text-[#FBF6EA] mt-1 tabular-nums">${shown.toLocaleString()}</p>
-              <p className="font-body text-[14px] text-[#FBF6EA]/70 mt-2">
-                If this suite caught even three quarters of those calls, that is about{' '}
-                <strong className="text-[#F5B700]">${caught.toLocaleString()} a month</strong> back in the till, roughly{' '}
-                <strong className="text-[#F5B700]">${(caught * 12).toLocaleString()} a year</strong>.
-              </p>
-              <div className="flex items-center justify-center gap-3 mt-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/brand/mascot.png" alt="" width={40} height={40} />
-                <p className="font-body text-[13px] italic text-[#FBF6EA]/80 bg-white/5 border border-[#FBF6EA]/15 rounded-xl px-3 py-2">{reaction}</p>
+        {/* What saying yes actually looks like: three beats, zero ambiguity. */}
+        <section className="animate-[hubIn_.5s_ease-out_both]">
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { n: 'Today', t: 'You say yes', d: 'One click below. No contract to print, nothing to install, nothing to learn.' },
+              { n: 'Tomorrow', t: 'It answers your phone', d: 'Your agent goes live on your line and starts catching the calls you miss.' },
+              { n: 'Friday', t: 'You read the receipts', d: 'Every call transcribed, every booking listed. You see exactly what it caught.' },
+            ].map((s, i) => (
+              <div key={s.n} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 animate-[hubIn_.5s_ease-out_both]" style={{ animationDelay: `${i * 110}ms` }}>
+                <span className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#E0301E]">{s.n}</span>
+                <h3 className="font-display text-lg font-bold mt-1 leading-tight">{s.t}</h3>
+                <p className="font-body text-[13px] text-[#161616]/65 mt-1.5 leading-relaxed">{s.d}</p>
               </div>
-            </div>
+            ))}
           </div>
         </section>
 
@@ -360,6 +538,42 @@ export default function DemoHub({
             osUrl ? ('os' as DemoProductKey) : null,
           ].filter(Boolean) as DemoProductKey[]}
         />
+
+        {/*
+          THE REST, AFTER THE ORDER CARD AND NOWHERE ELSE.
+
+          One quiet offer for the pieces they did not ask for, placed below the
+          thing they did ask for and below the button that takes the money.
+          Above it, it would be clutter on top of the demo they came to see.
+          Here it reads as "there is more if you want it", which is the truth.
+
+          The ask WAS a phone call; Sarah 2026-08-20 flipped it: the missing
+          pieces get forged from this page on the spot (SuiteMoreForm hits
+          /api/demo-hub/<hubId>/request-build), the suite updates itself when
+          the build lands, and the suite-ready announcement emails them. The
+          phone survives as the small human fallback under the button.
+        */}
+        {restLine && (
+          <section className="animate-[hubIn_.5s_ease-out_both]">
+            <div className="rounded-2xl border-2 border-dashed border-[#161616]/30 bg-white/60 p-6 text-center">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#C4160B]">
+                {onlyOne ? 'Want more than the one thing?' : 'One piece still missing'}
+              </p>
+              <p className="font-body mt-3 text-[15.5px] leading-relaxed text-[#161616]/80 max-w-xl mx-auto">{restLine}</p>
+              {forgeMissing.length ? (
+                <SuiteMoreForm hubId={hubId} missing={forgeMissing} hasEmail={hasEmail ?? false} />
+              ) : (
+                <a
+                  href="tel:+14063121223"
+                  className="mt-5 inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#F5B700] px-5 py-3 font-display text-[17px] font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616]"
+                >
+                  <span aria-hidden="true">📞</span>
+                  Call Mr. Mustard and say the word
+                </a>
+              )}
+            </div>
+          </section>
+        )}
 
         <section className="text-center pb-6">
           <p className="font-mono text-[11px] text-[#161616]/40">

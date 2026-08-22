@@ -48,6 +48,8 @@ export type DemoCallInput = {
   sessionId?: string | null;
   /** Sent by the browser so a double-click cannot become two calls. */
   idempotencyKey?: string | null;
+  /** Raw Accept-Language header. Decides which language he opens the call in. */
+  acceptLanguage?: string | null;
 };
 
 export type DemoCallResult =
@@ -69,15 +71,37 @@ export type DemoCallError =
 type LimitVerdict = { ok: true } | { ok: false; code: 'cooldown' | 'rate-limited'; error: string; retryAfterSeconds: number };
 
 /**
+ * ⚠️ ONLY A CALL THAT ACTUALLY HAPPENED COUNTS AGAINST ANYBODY.
+ *
+ * Found 2026-08-18, on Sarah's own number. She was told "that number has had
+ * its demos for today" after receiving ONE call, because two earlier attempts
+ * had died on Vapi's daily outbound cap and were still counted against her
+ * three. So the failure mode was: the system cannot call you, and then it locks
+ * you out for twenty-four hours for the calls it failed to make.
+ *
+ * `refused` was already excluded. `failed` and `started` were not, and they are
+ * exactly the rows where the person got nothing. A limit exists to stop someone
+ * being called too much, so it may only ever count calls that were placed.
+ */
+const PLACED = ['calling', 'connected', 'completed'];
+
+/**
  * Adaptive rather than always burdensome. A first-time visitor sees nothing. A
  * number that was just called waits out a cooldown. An address firing numbers
  * at us is stopped at the hour and again at the day.
+ *
+ * The request row is written BEFORE these checks run, so every query here
+ * excludes it by id. Without that exclusion the row this attempt just inserted
+ * matched its own cooldown window, and /mustard refused every caller it ever
+ * saw with "he called that number a moment ago".
  */
 async function checkLimits(
   db: SupabaseClient,
   surface: MustardSurface,
   phoneE164: string,
   ip: string | null,
+  /** The row this attempt just wrote. It must never be counted against itself. */
+  requestId: string,
 ): Promise<LimitVerdict> {
   const now = Date.now();
   const dayAgo = new Date(now - 86400_000).toISOString();
@@ -88,6 +112,7 @@ async function checkLimits(
     .from('mustard_requests')
     .select('id,created_at,status')
     .eq('phone_e164', phoneE164)
+    .neq('id', requestId)
     .in('status', ['calling', 'connected'])
     .gte('created_at', new Date(now - 30 * 60_000).toISOString())
     .limit(1);
@@ -99,7 +124,8 @@ async function checkLimits(
     .from('mustard_requests')
     .select('created_at')
     .eq('phone_e164', phoneE164)
-    .neq('status', 'refused')
+    .neq('id', requestId)
+    .in('status', PLACED)
     .gte('created_at', new Date(now - surface.cooldown_minutes * 60_000).toISOString())
     .order('created_at', { ascending: false })
     .limit(1);
@@ -118,7 +144,8 @@ async function checkLimits(
     .from('mustard_requests')
     .select('id', { count: 'exact', head: true })
     .eq('phone_e164', phoneE164)
-    .neq('status', 'refused')
+    .neq('id', requestId)
+    .in('status', PLACED)
     .gte('created_at', dayAgo);
   if ((perPhoneDay ?? 0) >= surface.max_per_phone_per_day) {
     return { ok: false, code: 'rate-limited', error: 'That number has had its demos for today. Email sarah@modernmustardseed.com and she will sort it out.', retryAfterSeconds: 3600 };
@@ -129,7 +156,8 @@ async function checkLimits(
       .from('mustard_requests')
       .select('id', { count: 'exact', head: true })
       .eq('ip', ip)
-      .neq('status', 'refused')
+      .neq('id', requestId)
+      .in('status', PLACED)
       .gte('created_at', hourAgo);
     if ((perIpHour ?? 0) >= surface.max_per_ip_per_hour) {
       return { ok: false, code: 'rate-limited', error: 'Too many requests from this connection in the last hour.', retryAfterSeconds: 900 };
@@ -138,7 +166,8 @@ async function checkLimits(
       .from('mustard_requests')
       .select('id', { count: 'exact', head: true })
       .eq('ip', ip)
-      .neq('status', 'refused')
+      .neq('id', requestId)
+      .in('status', PLACED)
       .gte('created_at', dayAgo);
     if ((perIpDay ?? 0) >= surface.max_per_ip_per_day) {
       return { ok: false, code: 'rate-limited', error: 'Too many requests from this connection today.', retryAfterSeconds: 3600 };
@@ -252,7 +281,7 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
 
   /* ── the abuse limits ── */
 
-  const limits = await checkLimits(db, surface, phoneE164, input.ip);
+  const limits = await checkLimits(db, surface, phoneE164, input.ip, requestId);
   if (!limits.ok) return refuse(limits.code, limits.error, limits.retryAfterSeconds);
 
   /* ── resolve or create the prospect ── */
@@ -271,7 +300,26 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
   // Somebody who asked to be left alone does not get called because they found
   // a link. This is checked here even though the address may be blank, because
   // a known prospect carries one.
-  if (lead.unsubscribed_at || lead.status === 'dnc' || lead.dnc_checked) {
+  /**
+   * ⚠️ DO NOT CONTACT BELONGS TO THE NUMBER, NOT TO ONE ROW.
+   *
+   * Checking only the resolved lead was a coin flip dressed up as a rule: when
+   * a number sits on several rows and one of them says do-not-call, whether we
+   * dialled came down to which row the resolver happened to return. Somebody
+   * who asked us to stop could be called simply because a newer record existed.
+   *
+   * So every row carrying this number is checked, and any one of them saying
+   * stop is enough. Strictly more conservative than before, and deterministic,
+   * which is the only acceptable pair of properties for this particular check.
+   */
+  const { data: sharing } = await db
+    .from('outbound_leads')
+    .select('id,status,dnc_checked,unsubscribed_at')
+    .eq('phone_digits', phoneDigits(phoneE164));
+  const suppressedRow = (sharing ?? []).find(
+    (r) => r.unsubscribed_at || r.status === 'dnc' || r.dnc_checked,
+  );
+  if (lead.unsubscribed_at || lead.status === 'dnc' || lead.dnc_checked || suppressedRow) {
     return refuse('suppressed', 'That number is on our do-not-contact list, and it stays there. Email sarah@modernmustardseed.com if that is wrong.');
   }
   if (lead.email) {
@@ -367,34 +415,65 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
     consentAt: now,
     campaignId: campaign?.id ?? null,
     attempt: (lead.call_attempts ?? 0) + 1,
+    acceptLanguage: input.acceptLanguage ?? null,
   });
 
   if (!placed.ok) {
     // The consent stands and the person is waiting, so this becomes queued work
     // rather than a dead end. Never silently fail on somebody who just asked.
+    //
+    // ⚠️ A DAILY CAP IS NOT A HICCUP. A phone number bought inside Vapi stops
+    // placing outbound calls after its daily allowance and does not recover
+    // until the UTC day rolls over. Retrying in sixty seconds burns the queue
+    // against a wall, and telling the visitor "a minute" is simply false. So
+    // that case waits for the actual reset and says so out loud. Found
+    // 2026-08-18 on a real visitor, on the eleventh outbound call of the day.
+    const dailyLimit = placed.reason === 'daily-limit';
+    const resetsAt = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() + 1, 0, 5));
     await enqueue(db, {
       kind: 'call',
       leadId: lead.id,
       campaignId: campaign?.id ?? null,
       step: 1,
-      runAfter: new Date(Date.now() + 60_000),
+      runAfter: dailyLimit ? resetsAt : new Date(Date.now() + 60_000),
       payload: { phone: phoneE164, consentId: consent.id, mustardRequestId: requestId },
+    });
+
+    // Sarah hears about it the moment it happens. A visitor who asked to be
+    // called and was not called is the most expensive failure this page has,
+    // and it is invisible unless somebody is told.
+    await alertOwner({
+      subject: dailyLimit
+        ? `Mr. Mustard could NOT call ${phoneE164}: the line hit its daily cap`
+        : `Mr. Mustard could not call ${phoneE164}`,
+      phone: phoneE164,
+      business: lead.business_name,
+      source,
+      detail: placed.detail ?? placed.reason,
+      dailyLimit,
+      resetsAt,
     });
     await db
       .from('mustard_requests')
       .update({ status: placed.reason === 'duplicate' ? 'calling' : 'failed', error: `${placed.reason}: ${placed.detail ?? ''}`.slice(0, 300), called_at: now })
       .eq('id', requestId);
 
-    return placed.reason === 'duplicate'
-      ? { ok: true, requestId, leadId: lead.id, status: 'calling', phone: phoneE164, message: 'He is already calling that number. Check your phone.' }
-      : {
-          ok: true,
-          requestId,
-          leadId: lead.id,
-          status: 'queued',
-          phone: phoneE164,
-          message: 'He hit a snag getting on the line. It is queued and he will ring you in a minute.',
-        };
+    if (placed.reason === 'duplicate') {
+      return { ok: true, requestId, leadId: lead.id, status: 'calling', phone: phoneE164, message: 'He is already calling that number. Check your phone.' };
+    }
+    return {
+      ok: true,
+      requestId,
+      leadId: lead.id,
+      status: 'queued',
+      phone: phoneE164,
+      // Say the true thing. A person who was promised a call in a minute and
+      // got one tomorrow trusts nothing else on this page, and the studio's own
+      // number is right there, so give it to them instead of an apology.
+      message: dailyLimit
+        ? 'His line has taken all the calls it can place today. You are saved and first in line when it clears tonight, and Sarah has already been told. If you would rather not wait, call him yourself at (406) 312-1223 and he picks up right now.'
+        : 'He could not get on the line just now. You are saved and queued, Sarah has been told, and you can reach him directly at (406) 312-1223 in the meantime.',
+    };
   }
 
   await db
@@ -403,6 +482,58 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
     .eq('id', requestId);
 
   return { ok: true, requestId, leadId: lead.id, status: 'calling', phone: phoneE164, message: 'Mr. Mustard is calling you.' };
+}
+
+/* ─────────────────────────── telling Sarah ──────────────────────────────── */
+
+/**
+ * A visitor who asked to be called and was not called is the most expensive
+ * thing that can go wrong on this page, and without this it is completely
+ * silent: the row says `failed`, nobody reads rows, and the person waits.
+ *
+ * Best effort by design. This runs after consent is already recorded and the
+ * retry is already queued, so a mail failure must not change what the visitor
+ * is told or lose the work that is already safely on disk.
+ */
+async function alertOwner(a: {
+  subject: string;
+  phone: string;
+  business: string | null;
+  source: string;
+  detail: string;
+  dailyLimit: boolean;
+  resetsAt: Date;
+}): Promise<void> {
+  if (!process.env.RESEND_API_KEY) return;
+  try {
+    const { resendClient } = await import('@/lib/send-email');
+    const { leadNotification } = await import('@/lib/email');
+    const { OWNER_NOTIFY_TO } = await import('@/lib/owner');
+    await resendClient().emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: a.subject,
+      html: leadNotification({
+        type: 'Callback',
+        name: a.business || 'Someone on /mustard',
+        email: '',
+        fields: [
+          { label: 'Their number', value: a.phone },
+          { label: 'Came from', value: a.source },
+          { label: 'Why it failed', value: a.detail.slice(0, 300) },
+          ...(a.dailyLimit ? [{ label: 'Clears at', value: `${a.resetsAt.toISOString()} (UTC midnight)` }] : []),
+        ],
+        message: a.dailyLimit
+          ? 'A number bought inside Vapi stops placing outbound calls after its daily allowance. The studio line is capped for the rest of the UTC day, so every callback from /mustard fails until it rolls over. Importing a Twilio number removes the cap entirely.'
+          : 'The dial failed and the callback is queued for a retry. The lead and their consent are saved either way.',
+        suggestedAction: a.dailyLimit
+          ? `Call them yourself at ${a.phone} now, and import a Twilio number so this cannot happen again`
+          : `Call them yourself at ${a.phone} if the retry does not land`,
+      }),
+    });
+  } catch (err) {
+    console.error('mustard failure alert did not send:', err instanceof Error ? err.message : err);
+  }
 }
 
 /* ──────────────────────── resolve or create the prospect ────────────────── */
@@ -430,7 +561,29 @@ async function resolveLead(
   // Otherwise the phone number is the identity. This is what stops /mustard
   // from producing a fresh duplicate every time somebody tries it twice.
   if (digits) {
-    const { data: byKey } = await db.from('outbound_leads').select('*').eq('phone_digits', digits).limit(1);
+    /**
+     * ⚠️ ORDERING IS NOT COSMETIC HERE. This used to be a bare `.limit(1)` with
+     * no ORDER BY, so when a number appeared on more than one row, WHICH row
+     * won was down to whatever Postgres felt like returning that second.
+     *
+     * That is not hypothetical. Sarah's own cell sits on six rows from her demo
+     * testing, and a callback to it greeted her as "Michelle" from a Cross +
+     * Covenant record on one call and as somebody else on the next. For a real
+     * caller with an old record and a new one, it decides whether he greets
+     * them with this year's context or a year-old one, at random.
+     *
+     * Most recently touched wins. That is the row a human would have picked,
+     * and being deterministic matters more than being clever: the same caller
+     * now gets the same identity every time, which is the whole promise of
+     * "he remembers you".
+     */
+    const { data: byKey } = await db
+      .from('outbound_leads')
+      .select('*')
+      .eq('phone_digits', digits)
+      .order('updated_at', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: false })
+      .limit(1);
     if ((byKey ?? []).length) return (byKey as AcqProspect[])[0];
     // Older rows predate phone_digits, so fall back to a suffix match on the
     // raw column rather than creating a duplicate of somebody we already know.

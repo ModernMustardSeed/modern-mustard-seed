@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { recordEvent } from '@/lib/acq/events';
+import { recordEventOnce } from '@/lib/acq/events';
 import { mintLink } from '@/lib/mustard/links';
+import { classifyHit, verdictDetail } from '@/lib/acq/bots';
 import { getSurface } from '@/lib/mustard/surface';
 import { SITE } from '@/lib/seo';
 
@@ -38,15 +39,33 @@ export async function GET(req: Request) {
     const db = getSupabase();
     if (db) {
       try {
-        await recordEvent(db, {
-          leadId,
-          type: 'link_clicked',
-          label: `Clicked the Mr. Mustard button${step ? ` from email ${step}` : ''}`,
-          detail: { step, variant, referer: req.headers.get('referer') },
-        });
+        // Most of what reaches this route is a mail security gateway following
+        // the link before the recipient has seen the message. It gets its row,
+        // labelled for what it is, and it never moves the lead or the funnel.
+        const hit = await classifyHit(db, { leadId, type: 'link_clicked', headers: req.headers });
+        await recordEventOnce(
+          db,
+          {
+            leadId,
+            type: 'link_clicked',
+            label: hit.machine
+              ? `Security scanner followed the link${step ? ` in email ${step}` : ''}`
+              : `Clicked the Mr. Mustard button${step ? ` from email ${step}` : ''}`,
+            detail: { step, variant, referer: req.headers.get('referer'), ...verdictDetail(hit) },
+          },
+          // Gateways fetch the same URL twice in the same second. A person who
+          // taps the button twice in two minutes tapped it once.
+          2,
+          { machine: hit.machine },
+        );
+        // `engaged` is a claim about a person. Only a person earns it.
         await db
           .from('outbound_leads')
-          .update({ last_seen_at: new Date().toISOString(), reservoir_state: 'engaged' })
+          .update(
+            hit.machine
+              ? { last_scanned_at: new Date().toISOString() }
+              : { last_seen_at: new Date().toISOString(), reservoir_state: 'engaged' },
+          )
           .eq('id', leadId);
 
         const surface = await getSurface();

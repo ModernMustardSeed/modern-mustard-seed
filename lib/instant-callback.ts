@@ -1,4 +1,6 @@
 import { getSupabase } from '@/lib/supabase';
+import { CALLBACK_NUMBER_ID } from '@/lib/vapi-lines';
+import { phoneOverrides, pickLanguage } from '@/lib/call-language';
 
 /**
  * INSTANT CALLBACK. The form is submitted, the phone rings in ten seconds.
@@ -22,8 +24,13 @@ import { getSupabase } from '@/lib/supabase';
  */
 
 const VAPI_BASE = 'https://api.vapi.ai';
-/** Mr. Mustard's own line, so the number they see matches the one on the site. */
-const FROM_NUMBER_ID = process.env.VAPI_CALLBACK_NUMBER_ID || '462f988d-ce3a-4961-b652-dfc1fb1ac5d0';
+/**
+ * The outbound line, shared with every other calling path through
+ * lib/vapi-lines.ts. This file used to carry its own copy of the id, which is
+ * exactly how the hero button would have stayed on the capped Vapi number after
+ * the rest of the system moved off it.
+ */
+const FROM_NUMBER_ID = CALLBACK_NUMBER_ID;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID || process.env.VAPI_ASSISTANT_ID;
 
 /**
@@ -52,6 +59,8 @@ export type CallbackRequest = {
   need?: string | null;
   source?: string | null;
   intent?: CallbackIntent;
+  /** Raw Accept-Language header. English changes nothing (lib/call-language.ts). */
+  acceptLanguage?: string | null;
 };
 
 export type CallbackResult =
@@ -250,6 +259,8 @@ export async function placeInstantCallback(req: CallbackRequest): Promise<Callba
         assistantOverrides: {
           firstMessage: greeting(req),
           ...(model ? { model } : {}),
+          // Undefined for English, so the tuned English stack is untouched.
+          ...(phoneOverrides(pickLanguage(req.acceptLanguage), req.name) ?? {}),
           metadata: {
             mode: 'instant-callback',
             intent: req.intent || 'general',

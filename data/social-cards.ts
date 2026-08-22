@@ -15,6 +15,17 @@ export type SocialCard = {
   headline: string;
   use: string;
   alt: string;
+  /**
+   * Set when the PNG must not be posted any more, with the reason. The file
+   * stays in the repo, because deleting it would break the historical record of
+   * what we published, but the admin page stops offering it for download and
+   * says why.
+   *
+   * ⚠️ A retired card is a card whose ARTWORK is wrong, not one that is merely
+   * old. Both current cases carry a statistic burned into the image, which is
+   * the one kind of error that cannot be fixed by editing this file.
+   */
+  retired?: string;
 };
 
 // A paragraph, or an array of strings rendered as a numbered list.
@@ -26,6 +37,12 @@ export type SocialPost = {
   graphic: string;
   body: PostBlock[];
   followUp?: { label: string; lines: string[] };
+  /**
+   * The same post said for another network, when reflowing the Facebook copy
+   * would be wrong rather than merely lazy: Instagram cannot carry a link, and
+   * X punishes any setup at all. Each one gets its own copy button.
+   */
+  variants?: { label: string; text: string }[];
 };
 
 export type SocialReply = { q: string; a: string; warn?: string };
@@ -43,7 +60,64 @@ export type SocialSet = {
   replies: SocialReply[];
 };
 
+import { FIELD_GUIDE_POSTS, FIELD_GUIDE_RULES } from './fieldguide-social';
+
+/**
+ * Set fifteen is assembled rather than typed out, because the same words also
+ * render in the Ads Playbook's Organic Social tab. One source, two surfaces.
+ */
+const FIELD_GUIDE_SET: SocialSet = {
+  id: 'field-guide',
+  name: 'The Field Guide',
+  eyebrow: 'Set fifteen · Claude Code',
+  blurb:
+    'Six cards for the free Claude Code guide at /fieldguide. This set gives something away instead of selling something, so every caption teaches one complete, true thing on its own. Somebody who never clicks still leaves with a tip that works, which is the only reason a stranger shares a post from a company they have never heard of.',
+  cta: 'modernmustardseed.com/fieldguide',
+  accent: '#F5B700',
+  rules: FIELD_GUIDE_RULES,
+  cards: FIELD_GUIDE_POSTS.map((p) => ({
+    file: p.file,
+    headline: p.headline,
+    use: p.use,
+    alt: p.alt,
+  })),
+  posts: FIELD_GUIDE_POSTS.map((p, i) => ({
+    n: i + 1,
+    title: p.angle,
+    graphic: `${p.file}.png`,
+    body: p.fb.split('\n\n'),
+    variants: [
+      { label: 'Instagram (no links, the typed URL is the CTA)', text: p.ig },
+      { label: 'X (under 280)', text: p.x },
+    ],
+  })),
+  replies: [
+    {
+      q: 'Do I need to know how to code to use this?',
+      a: 'No. You need to know what you want and how to check that you got it. The guide is written for someone who has never opened a terminal, and it starts with the install.',
+    },
+    {
+      q: 'Is it actually free, or is there a catch?',
+      a: 'Actually free. No signup, no email, nothing gated. There is a printable card at the bottom if you want it on paper.',
+    },
+    {
+      q: 'What does Claude Code cost?',
+      a: 'Claude Code needs a paid Claude account, which is the part most write-ups skip. Pro is $20 a month and includes it, Max starts at $100 a month, and you can also pay per use with Console credits instead of subscribing. It is not on the free tier. Tiers change, so check claude.com/pricing. The guide itself costs nothing either way.',
+    },
+    {
+      q: 'I tried something like this and it wrote garbage.',
+      a: 'That is usually the loop, not the model. Explore, plan, build, prove, save, in that order. Most bad AI code is an approved bad plan, approved by someone who never read the plan. The loop card is the short version.',
+    },
+    {
+      q: 'Can you just build it for me instead?',
+      a: 'Yes, that is the day job. Call (406) 312-1223 and Mr. Mustard picks up at any hour, or book thirty minutes at modernmustardseed.com/book and bring nothing but the idea.',
+      warn: 'Only say this once the person has actually asked. The set works because it gives something away first.',
+    },
+  ],
+};
+
 export const SOCIAL_SETS: SocialSet[] = [
+  FIELD_GUIDE_SET,
   {
     id: 'missed-calls',
     name: 'The Missed Call Files',
@@ -67,15 +141,15 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
       {
         file: '02-unanswered',
-        headline: '62% of calls to small businesses go unanswered.',
+        headline: 'You cannot be in two places. The phone does not know that.',
         use: 'The empathy beat. Middle of the Post 2 carousel.',
-        alt: 'A tradesperson working under a kitchen sink. Headline: 62 percent of calls to small businesses go unanswered.',
+        alt: 'A tradesperson working under a kitchen sink. Headline: you cannot be in two places, the phone does not know that.',
       },
       {
         file: '03-after-hours',
-        headline: '52% say an AI after hours is better service.',
-        use: 'The objection killer. Post 3, the strongest stat in the set.',
-        alt: 'A lit shop counter at night. Headline: 52 percent say an AI answering after hours is better service.',
+        headline: 'People do not hate robots. People hate beeps.',
+        use: 'The objection killer. Post 3.',
+        alt: 'A lit shop counter at night. Headline: people do not hate robots, people hate beeps.',
       },
       {
         file: '04-call-it',
@@ -94,6 +168,12 @@ export const SOCIAL_SETS: SocialSet[] = [
         headline: 'It answers. It thinks. It books.',
         use: 'The explainer. Post 4, for people already asking what it does.',
         alt: 'Hands patching a cable into a vintage switchboard. Headline: It answers. It thinks. It books.',
+      },
+      {
+        file: '07-you-own-it',
+        headline: 'You own it. Domain, accounts, numbers, all of it.',
+        use: 'The stewardship card. Post it to the audience that has been burned by an agency, and any time somebody asks what happens if they leave.',
+        alt: 'One hand passing a ring of keys to another across a shop counter. Headline: you own it, domain, accounts, numbers, all of it.',
       },
     ],
     posts: [
@@ -137,8 +217,8 @@ export const SOCIAL_SETS: SocialSet[] = [
         graphic: '03-after-hours',
         body: [
           'Every time I bring up AI answering the phone, somebody says "people hate talking to robots."',
-          'I get it. I hated the idea too. But 52% of consumers now say a business having AI answer after hours is a sign of BETTER service, not worse (CallRail, 2025).',
-          'Here is why I think that flipped. The alternative was never a human. At 9pm on a Saturday the alternative was a beep. People do not hate robots. People hate beeps.',
+          'I get it. I hated the idea too.',
+          'Then I noticed what the alternative actually was. At 9pm on a Saturday nobody was choosing between a robot and a person. They were choosing between a robot and a beep. People do not hate robots. People hate beeps.',
           'Mine is at (406) 312-1223 if you want to judge for yourself. It says it is an AI in the first sentence. That part is non-negotiable for me.',
         ],
       },

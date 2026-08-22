@@ -103,7 +103,7 @@ export default function MustardDemo(props: Props) {
       setMessage(json.message ?? '');
       setPhase(json.status === 'queued' ? 'queued' : 'calling');
     } catch {
-      setError('Something went wrong on our end.');
+      setError('The call did not go out. Try again, or ring him direct at (406) 312-1223.');
       setPhase('error');
     }
   };
@@ -284,25 +284,41 @@ export default function MustardDemo(props: Props) {
       )}
 
       {/*
-        The consent block is legally load-bearing, so it is never collapsed
-        behind a "details" toggle and never pre-checked. It is set slightly
-        quieter than the field above it so the phone number still reads as the
-        one thing being asked for, which is a typographic decision and not a
-        legibility one: it stays at 12.5px on a 1.65 leading, well above the
-        point where anybody would call it buried.
+        THE PERMISSION SLIP.
+
+        The consent sentence is legally load-bearing: TCPA consent for an AI
+        voice placing a marketing call. The words come from lib/acq/consent.ts
+        verbatim, versioned, never pre-checked, refused server-side without the
+        box. None of that changes here and none of it ever should.
+
+        What changed is the packaging. The old block was gray text in a faint
+        gray border, which is the visual grammar of a warning label, and Sarah
+        watched it scare people. So the same sentence now arrives as a
+        permission slip: a friendly headline that says what the box means in
+        nine words, a solid ink border and sticker shadow like every other
+        object on the page, and the legalese underneath at the same 12.5px it
+        always was. Fine print reads as a trap when it is styled like one.
       */}
-      <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border-2 border-[#161616]/12 bg-[#FBF6EA]/70 p-3.5 transition-colors hover:border-[#161616]/35">
-        <input
-          type="checkbox"
-          checked={consent}
-          onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 h-6 w-6 shrink-0 rounded border-2 border-[#161616] accent-[#F5B700]"
-          aria-describedby="mustard-consent"
-        />
-        <span id="mustard-consent" className="text-[12.5px] leading-[1.65] text-[#161616]/70">
-          {props.consentText}
-        </span>
-      </label>
+      <div className="mt-6">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#C4160B]">
+          The permission slip
+        </p>
+        <p className="mt-1.5 text-[14px] font-semibold text-[#161616]">
+          He is polite. He only calls people who invite him.
+        </p>
+        <label className="mt-2.5 flex cursor-pointer items-start gap-3 rounded-xl border-2 border-[#161616] bg-[#FBF6EA] p-3.5 shadow-[3px_3px_0_0_#161616] transition-colors hover:bg-white">
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-0.5 h-6 w-6 shrink-0 rounded border-2 border-[#161616] accent-[#F5B700]"
+            aria-describedby="mustard-consent"
+          />
+          <span id="mustard-consent" className="text-[12.5px] leading-[1.65] text-[#161616]/60">
+            {props.consentText}
+          </span>
+        </label>
+      </div>
 
       {error && (
         <p className="mt-4 text-sm font-bold text-[#E0301E]" role="alert">
@@ -317,6 +333,41 @@ export default function MustardDemo(props: Props) {
       <p className="mt-3.5 text-center text-[13px] text-[#161616]/55">
         He rings in about ten seconds. Three minutes, no card, no obligation.
       </p>
+
+      {/*
+        THE OTHER DOOR, and on a phone it is the better one.
+
+        Outbound is the metered direction: the studio's number can only PLACE a
+        limited number of calls a day, and an email blast that lands hundreds of
+        people on this page at once will exhaust that long before it exhausts
+        the interest. Inbound has no such limit and never has. So the page
+        offers both, and the person on a handset, which is most of them, gets a
+        one-tap path that cannot be rationed and does not make them wait.
+
+        It sits UNDER the form on purpose. Giving us the number is still the
+        thing we want, because it captures a lead even when the call does not
+        connect. This is the escape hatch, not the headline.
+      */}
+      <div className="mt-6 flex items-center gap-3" aria-hidden="true">
+        <span className="h-px flex-1 bg-[#161616]/15" />
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#161616]/40">or</span>
+        <span className="h-px flex-1 bg-[#161616]/15" />
+      </div>
+
+      <a
+        href="tel:+14063121223"
+        className="mt-4 flex min-h-[60px] w-full items-center justify-center gap-3 rounded-xl border-2 border-[#161616] bg-white px-5 py-4 font-display text-lg font-extrabold tracking-tight text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616] active:translate-y-0 active:shadow-[3px_3px_0_0_#161616]"
+      >
+        <span aria-hidden="true" className="text-xl">
+          📞
+        </span>
+        Call him yourself, right now
+      </a>
+
+      <p className="mt-2.5 text-center font-mono text-[13px] font-bold tracking-wide text-[#161616]/70">
+        (406) 312-1223
+      </p>
+      <p className="mt-1 text-center text-[12.5px] text-[#161616]/55">He picks up on the first ring, any hour.</p>
     </form>
   );
 }

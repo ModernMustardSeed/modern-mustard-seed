@@ -106,7 +106,7 @@ const faq = [
   },
   {
     q: 'How fast can it go live?',
-    a: 'Most voice agents are live on your number in about a week, from first conversation to answering real calls.',
+    a: 'Most voice agents are live in about a week, answering the number you already have, from first conversation to answering real calls.',
   },
   {
     q: 'Does it work with my calendar and CRM?',
@@ -320,7 +320,19 @@ export default function VoiceAgentsPage() {
               </p>
             </div>
 
-            <div className="mt-11 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {/*
+              The column count follows the DATA, it is not a fixed four. When
+              the 52% figure was pulled on 2026-08-18 this grid still said
+              lg:grid-cols-4 and left three cards sitting in a four-wide row
+              with a hole on the end, which reads as a missing card rather than
+              a considered set. Tailwind cannot take a runtime class name, so
+              the three real cases are written out and picked.
+            */}
+            <div
+              className={`mt-11 grid grid-cols-1 sm:grid-cols-2 gap-5 ${
+                stats.length % 4 === 0 ? 'lg:grid-cols-4' : stats.length % 3 === 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-2'
+              }`}
+            >
               {stats.map((s) => (
                 <div key={s.label} className="pop-card p-7 flex flex-col">
                   <span

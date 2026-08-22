@@ -28,7 +28,7 @@ export type Dept = {
 export const DEPARTMENTS: Dept[] = [
   { key: 'websites', name: 'Websites', tag: 'Free website demo', blurb: 'A site that captures the lead and follows up on its own. Not a brochure, an engine.', href: '/websites', icon: '🌐', flagship: true },
   // Forge parked 2026-08-12 (Sarah); this row points at /voice-agents now. See Navbar.tsx.
-  { key: 'sidekick', name: 'Voice Agents', tag: 'Free voice agent demo', blurb: 'Answers your real number 24/7 in a natural voice, books the job, texts you the details.', href: '/voice-agents', icon: '🎙', flagship: true },
+  { key: 'sidekick', name: 'Voice Agents', tag: 'Free voice agent demo', blurb: 'Answers your calls 24/7 in a natural voice, books the job, texts you the details.', href: '/voice-agents', icon: '🎙', flagship: true },
   { key: 'command-center', name: 'Command Center', tag: 'The AI back office', blurb: 'One board: calls transcribed, website traffic, customers, reviews, and money, wired together.', href: '/command-center', icon: '⚙', flagship: true },
   { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
   { key: 'ads', name: 'Mustard Broadcast', tag: 'We run your ads', blurb: 'We make the cinematic commercial and run the Meta and Google ads in your own account.', href: '/ads', icon: '📺' },
@@ -37,7 +37,7 @@ export const DEPARTMENTS: Dept[] = [
   { key: 'launch', name: 'Mustard Launch', tag: 'Your AI launch coach', blurb: 'A free personalized launch plan for any new business, then a coach that ships it with you.', href: '/mustard-launch', icon: '🚀' },
   { key: 'switchboard', name: 'The Switchboard', tag: 'Franchise demo line', blurb: 'A 24/7 AI concierge line for multi-location and franchise operators. Call the live demo.', href: '/switchboard', icon: '☎️' },
   { key: 'mode', name: 'Mustard Mode', tag: 'Learn with a coach', blurb: 'Learn to run Claude like the studio does. A live AI coach, four tracks, first session free.', href: '/mustard-mode', icon: '🎓' },
-  { key: 'celebrate', name: 'Celebrate', tag: 'Opens October 19', blurb: 'Every birthday and work anniversary handled: real cakes, flowers, and handwritten cards from local shops, on autopilot. Join the waitlist.', href: '/celebrate', icon: '🎂' },
+  // Celebrate re-parked 2026-08-20 (Sarah): see the note in Navbar.tsx.
 ];
 
 export const deptByKey = Object.fromEntries(DEPARTMENTS.map((d) => [d.key, d]));
@@ -47,7 +47,7 @@ export type Goal = { label: string; emoji: string; deptKeys: string[]; note: str
 /** The goal router. Each goal surfaces the right doors. */
 export const GOALS: Goal[] = [
   { label: 'Get more customers', emoji: '📈', deptKeys: ['ads', 'websites', 'geo'], note: 'A site that converts, ads that run in your account, and findability on Google and AI search.' },
-  { label: 'Stop missing calls', emoji: '📞', deptKeys: ['sidekick', 'switchboard'], note: 'A voice agent on your real number, day or night. Multi-location? The Switchboard.' },
+  { label: 'Stop missing calls', emoji: '📞', deptKeys: ['sidekick', 'switchboard'], note: 'A voice agent answering day or night, on the number you already have. Multi-location? The Switchboard.' },
   { label: 'Run the whole business', emoji: '🧭', deptKeys: ['command-center', 'sidekick', 'websites'], note: 'One command center wired to your calls, your site, and your customers.' },
   { label: 'Get my hours back', emoji: '⏳', deptKeys: ['chief', 'command-center'], note: 'An AI chief of staff who runs your calendar, email, and follow-up, with the back office behind it.' },
   { label: 'Look professional online', emoji: '✨', deptKeys: ['websites', 'pictures'], note: 'A real website and a cinematic commercial that match.' },
@@ -55,7 +55,9 @@ export const GOALS: Goal[] = [
   { label: 'Launch something new', emoji: '🚀', deptKeys: ['launch', 'websites', 'sidekick'], note: 'A free launch plan, then the site and the phone line to open the doors.' },
   { label: 'Sell products online', emoji: '🛍', deptKeys: ['websites'], note: 'A custom storefront on the Full-Service Business Build. Start with a free demo.' },
   { label: 'Learn to build it myself', emoji: '🎓', deptKeys: ['mode', 'launch'], note: 'A coach that teaches you to run Claude and build the thing yourself.' },
-  { label: 'Keep my people happy', emoji: '🎂', deptKeys: ['celebrate', 'chief'], note: 'Every birthday, work anniversary, and client milestone handled by local shops, on autopilot. Opens October 19.' },
+  // 'Keep my people happy' goal re-parked with Celebrate 2026-08-20 (Sarah):
+  // the row existed to sell Celebrate, and pointing it at The Chief alone
+  // would put a gifting pitch on a chief-of-staff door.
 ];
 
 /** Bespoke work beyond the productized doors. Routes to a discovery call. */

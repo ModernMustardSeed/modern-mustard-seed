@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
     phone,
     source,
     intent: 'voice-agent',
+    acceptLanguage: req.headers.get('accept-language'),
   });
 
   await Promise.allSettled([
