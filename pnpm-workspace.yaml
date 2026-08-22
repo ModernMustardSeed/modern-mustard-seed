@@ -9,3 +9,8 @@
 allowBuilds:
   esbuild: true
   msedge-tts: true
+  # Added with eslint: eslint-plugin-import-x's native resolver. Its postinstall
+  # fetches a binding that only speeds module resolution up. ESLint resolves
+  # correctly without it and the full lint passes with the build skipped, so the
+  # answer here is no rather than an unanswered prompt that fails the install.
+  unrs-resolver: false

@@ -552,6 +552,48 @@ function email3(business: string): string {
 /* ─────────────────── the demo email Mr. Mustard sends ────────────────────── */
 
 /**
+ * THE JOKE, AND IT IS LOAD BEARING.
+ *
+ * Sarah, 2026-08-22: "make a cute joke in the demo suite emails that say wed
+ * rather show you than pitch you."
+ *
+ * It is funny because it is the literal operating model. Everybody in this
+ * inbox has been pitched by four agencies this month; nobody has been handed a
+ * working version of their own business. Saying the quiet part is the cheapest
+ * credibility we have, so it sits right where a pitch would normally go.
+ */
+export const SHOW_DONT_PITCH = 'We would rather show you than pitch you, mostly because we are terrible at pitching and pretty good at building.';
+
+/**
+ * The audit, folded into a suite email.
+ *
+ * Prints the score, because a number in an inbox gets opened and an adjective
+ * does not. Renders nothing at all when no audit has been run, rather than
+ * linking to a page that will greet them with a spinner.
+ */
+function auditBlock(args: { auditUrl?: string | null; auditScore?: number | null; auditHeadline?: string | null }): string {
+  if (!args.auditUrl) return '';
+  const SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif";
+  const score = typeof args.auditScore === 'number' ? args.auditScore : null;
+  return `
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0">
+    <tr><td style="border:2px solid #161616;border-radius:14px;padding:16px 20px;background:#FFF3CC">
+      <p style="margin:0;font-family:${SANS};font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#C2261A;font-weight:bold">
+        And we scored you while we were in there
+      </p>
+      <p style="margin:8px 0 0;font-family:${SANS};font-size:15px;line-height:1.6;color:#161616">
+        ${score !== null ? `<strong style="font-size:22px">${score}/100</strong>. ` : ''}${
+          args.auditHeadline ? `${escape(args.auditHeadline)} ` : ''
+        }Your website, your Google Business Profile and your reviews, each graded, with every number showing where it came from.
+      </p>
+      <p style="margin:10px 0 0">
+        <a href="${escape(args.auditUrl)}" style="font-family:${SANS};font-size:14px;font-weight:bold;color:#8a6a1f;text-decoration:none">Read your presence audit &rarr;</a>
+      </p>
+    </td></tr>
+  </table>`;
+}
+
+/**
  * The "I built their receptionist" email. Sent the moment the Forge lands,
  * either by Mr. Mustard on the call or by the queue when the build finishes.
  * The subject runs the business name through possessive() so a company called
@@ -567,6 +609,12 @@ export function buildDemoEmail(args: {
   fromName: string;
   fromEmail: string;
   replyTo: string;
+  /** Their Presence Audit, when one has been run. Website, Google profile and
+   *  reviews, each scored. It is what makes the rest of the suite read as an
+   *  answer to something instead of an offer out of nowhere. */
+  auditUrl?: string | null;
+  auditScore?: number | null;
+  auditHeadline?: string | null;
 }): BuiltCampaignEmail | null {
   const { lead } = args;
   if (!lead.email) return null;
@@ -582,6 +630,7 @@ export function buildDemoEmail(args: {
         p('Mr. Mustard here.') +
         p(`I built the ${escape(business)} version we talked about.`) +
         p('Test it like a customer. Try weird questions. Try an emergency. Try to stump it.') +
+        auditBlock(args) +
         `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0"><tr>
           <td style="border:2px solid #161616;border-radius:14px;padding:16px 18px;background:#ffffff">
             <p style="margin:0;font-size:15px;color:#161616"><strong>If you want it on your real incoming calls</strong></p>
@@ -589,6 +638,7 @@ export function buildDemoEmail(args: {
             <p style="margin:10px 0 0"><a href="${escape(args.checkoutUrl)}" style="font-size:14px;font-weight:bold;color:#8a6a1f;text-decoration:none">Activate ${escape(possessive(business))} voice agent &rarr;</a></p>
           </td>
         </tr></table>` +
+        p(escape(SHOW_DONT_PITCH)) +
         p(
           `Or if you would rather talk it through with a human, <a href="${escape(args.calendarUrl)}" style="color:#C2261A;font-weight:700;text-decoration:none">grab time with Sarah</a>.`,
         ),

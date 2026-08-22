@@ -6,6 +6,7 @@ import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
 import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
 import { possessive } from '@/lib/business-name';
+import Link from 'next/link';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -213,9 +214,9 @@ export default function DemoCallExperience({
               <a href="/book" className="bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
                 Book the 10-minute setup call
               </a>
-              <a href="/voice-agents" className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
+              <Link href="/voice-agents" className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
                 See pricing
-              </a>
+              </Link>
             </div>
           </div>
         )}

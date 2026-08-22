@@ -483,6 +483,7 @@ export default function MultiplierHero() {
               <div>
                 <span className="text-[#5C7188]">$ </span>
                 <span className="text-[#FFDD55]">[MUSTARD MODE: ON]</span>
+                {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- a terminal-style // separator, not a comment */}
                 <span className="text-[#5C7188]"> // 1 free credit</span>
               </div>
               <div className="mt-1 text-[#7aa2ff]">INSERT AMBITION TO PLAY. What do you want to build?</div>

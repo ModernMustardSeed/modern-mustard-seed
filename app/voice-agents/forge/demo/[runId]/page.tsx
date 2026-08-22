@@ -3,6 +3,7 @@ import { getRun } from '@/lib/sidekick-store';
 import { forgeCall } from '@/lib/sidekick';
 import { buildMetadata } from '@/lib/seo';
 import DemoCallExperience from '@/components/sidekick/DemoCallExperience';
+import Link from 'next/link';
 
 export const metadata = buildMetadata({ title: 'Your Voice Agent Demo', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -26,12 +27,12 @@ export default async function SidekickDemoPage({ params }: { params: Promise<{ r
           <p className="font-body text-[#161616]/70 mt-3">
             We could not find that voice agent demo. Want one built for your business?
           </p>
-          <a
+          <Link
             href="/voice-agents/forge"
             className="inline-block mt-5 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616]"
           >
             Forge mine now
-          </a>
+          </Link>
         </div>
       </div>
     );

@@ -49,6 +49,48 @@ function forgedPieces(lead: OutboundLead): string[] {
   ].filter(Boolean) as string[];
 }
 
+/**
+ * The free documents, which are not demos and must not be counted as pieces.
+ *
+ * The suite copy is generated from what was FORGED, and a plan or an audit is
+ * neither built nor bought: they are things we wrote about their business.
+ * Folding them into `forgedPieces` would make a voice-only lead read as if they
+ * took three products, which is the exact mail-merge tell the drip avoids.
+ */
+function extras(lead: OutboundLead): string[] {
+  return [
+    lead.presence_audit_url ? 'presence audit' : null,
+    lead.integration_plan_status === 'ready' && lead.integration_plan_url ? 'AI Integration Plan' : null,
+  ].filter(Boolean) as string[];
+}
+
+/**
+ * THE JOKE, AND IT IS LOAD BEARING (Sarah, 2026-08-22).
+ *
+ * It is funny because it is the literal operating model. Everyone in this inbox
+ * has been pitched by four agencies this month and handed a working version of
+ * their own business by nobody.
+ */
+const SHOW_DONT_PITCH =
+  'We would rather show you than pitch you, mostly because we are terrible at pitching and pretty good at building.';
+
+/**
+ * The audit, in one line with its score.
+ *
+ * A number in an inbox gets clicked and an adjective does not, so the score
+ * leads. Renders nothing when no audit exists rather than linking somebody to a
+ * page that will greet them with a spinner.
+ */
+function auditLine(lead: OutboundLead): string {
+  if (!lead.presence_audit_url) return '';
+  const score = typeof lead.presence_audit_score === 'number' ? lead.presence_audit_score : null;
+  return (
+    `<p>We also scored you while we were in there${score !== null ? `, and you came out at <strong>${score}/100</strong>` : ''}: ` +
+    `<a href="${lead.presence_audit_url}" style="color:#C2261A;font-weight:700;text-decoration:none">your website, your Google profile and your reviews</a>, ` +
+    `each graded, with every number showing where it came from.</p>`
+  );
+}
+
 function andList(items: string[]): string {
   if (items.length <= 1) return items[0] ?? 'demo';
   if (items.length === 2) return `${items[0]} and ${items[1]}`;
@@ -88,7 +130,9 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
           (fromCall
             ? `<p>Yesterday you and Mr. Mustard built ${biz} a working ${built}, live on the phone${lead.site_demo_status === 'ready' ? ', and the website he queued is finished now too' : ''}. ${one ? 'It is' : 'They are'} still live at your private hub, answering to your name.</p>`
             : `<p>Yesterday you forged ${biz} a working ${built}${lead.site_demo_status === 'ready' ? ', and the website you queued is finished too' : ''}. ${one ? 'It is' : 'They are'} still live at your private hub, answering to your name.</p>`) +
-          `<p>Two minutes there is worth more than anything I could write here: ${hasVoice ? 'call the voice agent and try to stump it, then slide' : 'slide'} the calculator to see what your missed calls have been costing. Most ${tradeWord} owners are surprised by that number.</p>`,
+          `<p>Two minutes there is worth more than anything I could write here: ${hasVoice ? 'call the voice agent and try to stump it, then slide' : 'slide'} the calculator to see what your missed calls have been costing. Most ${tradeWord} owners are surprised by that number.</p>` +
+          auditLine(lead) +
+          `<p>${SHOW_DONT_PITCH}</p>`,
         cta,
         secondary,
         trackId: lead.id,
@@ -130,7 +174,10 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
       greeting: hi,
       body:
         `<p>This is my last email about ${one ? `the ${pieces[0]}` : 'the demos'}, promise. ${one ? 'It stays' : 'They stay'} live at your hub either way, so nothing expires and nobody calls you five times.</p>` +
-        `<p>If the timing is wrong, ignore me with a clear conscience. If it still stings, the order card on your hub makes ${biz} real in about a week, and you can just hit reply if something is in the way. A real person reads it.</p>`,
+        `<p>If the timing is wrong, ignore me with a clear conscience. If it still stings, the order card on your hub makes ${biz} real in about a week, and you can just hit reply if something is in the way. A real person reads it.</p>` +
+        (extras(lead).length
+          ? `<p>Either way the ${andList(extras(lead))} we wrote for ${biz} ${extras(lead).length === 1 ? 'is' : 'are'} yours to keep. No strings, no expiry, and you never have to talk to us again to use ${extras(lead).length === 1 ? 'it' : 'them'}.</p>`
+          : ''),
       cta,
       secondary,
       trackId: lead.id,

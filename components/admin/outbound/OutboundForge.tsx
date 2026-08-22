@@ -157,6 +157,7 @@ export default function OutboundForge() {
   const [owner, setOwner] = useState('');
   const [retrying, setRetrying] = useState<string | null>(null);
   const [planning, setPlanning] = useState<string | null>(null);
+  const [auditing, setAuditing] = useState<string | null>(null);
   // Sarah's design-tier picker (2026-07-30, reworked 2026-08-07). 2 = the
   // Wildmere AWARD SITE world, 3 = the JOURNEY site (the Flathead homepage
   // template). Tier 2 is the HOUSE STYLE and the default (Sarah, 2026-08-11);
@@ -288,6 +289,26 @@ export default function OutboundForge() {
       push(e instanceof Error ? e.message : 'Could not queue the plan.', 'error');
     } finally {
       setPlanning(null);
+    }
+  };
+
+  // The PRESENCE AUDIT: website, Google profile and reviews, each scored. Runs
+  // inline (the website pillar waits on the local audit worker, or falls back
+  // to the API when it is asleep), so this button can sit for up to a minute
+  // and a half. Every forge mints one on its own; this is the re-run.
+  const makeAudit = async (row: ForgeRow) => {
+    setAuditing(row.id);
+    try {
+      const res = await api<{ score?: number }>(`/api/admin/outbound/leads/${row.id}/presence-audit`, {
+        method: 'POST',
+        body: JSON.stringify({ force: true }),
+      });
+      push(`${row.business_name} scored ${res.score ?? '?'}/100.`);
+      await load(true);
+    } catch (e) {
+      push(e instanceof Error ? e.message : 'Could not run the audit.', 'error');
+    } finally {
+      setAuditing(null);
     }
   };
 
@@ -590,6 +611,19 @@ export default function OutboundForge() {
                             {planning === r.id ? 'Queuing…' : r.integration_plan_status === 'failed' ? '📋 Retry plan' : '📋 Make plan'}
                           </button>
                         )}
+                        {r.presence_audit_url ? (
+                          <a href={r.presence_audit_url} target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-[0.1em] font-oswald font-semibold px-2 py-1 rounded-md border-2 border-[#b58a2a] bg-[#b58a2a] text-[#1a1815] hover:-translate-y-0.5 transition-transform" title="Website, Google profile and reviews, each scored. Open it or send the link.">
+                            📊 Audit {typeof r.presence_audit_score === 'number' ? `${r.presence_audit_score}/100` : ''} ↗
+                          </a>
+                        ) : null}
+                        <button
+                          onClick={() => void makeAudit(r)}
+                          disabled={auditing === r.id}
+                          className="text-[10px] uppercase tracking-[0.1em] font-oswald font-semibold px-2 py-1 rounded-md border-2 border-dashed border-[#1a1815]/35 text-[#1a1815]/60 hover:border-[#1a1815] hover:text-[#1a1815] transition-colors"
+                          title="Score their website, Google Business Profile and reviews. Takes up to 90 seconds."
+                        >
+                          {auditing === r.id ? 'Scoring…' : r.presence_audit_url ? '📊 Re-score' : '📊 Run audit'}
+                        </button>
                         {r.stage === 'failed' && r.site?.error && (
                           <span className="text-[11px] font-sans text-[#a03123] max-w-[420px] truncate" title={r.site.error}>
                             {r.site.error}

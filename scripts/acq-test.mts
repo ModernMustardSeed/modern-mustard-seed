@@ -47,6 +47,10 @@ import { authorize, nextRampStep, backOffStep, tierFor } from '../lib/acq/govern
 import { goalLadder, forecast, monthsBetween, type FunnelRate } from '../lib/acq/factory';
 import { estimateFor, personalOpener } from '../lib/acq/personalize';
 import { recoveryMachineBlock, machineAssumptions } from '../lib/acq/machine';
+import {
+  scoreReviews, scoreProfile, scoreWebsite, blend, letterFor, buildPresenceReport,
+  inputFromLead, PILLAR_WEIGHTS, type PresenceInput,
+} from '../lib/presence-audit';
 import { readAttribution, labelSource } from '../lib/mustard/surface';
 import { hashToken } from '../lib/mustard/links';
 import { OFFER, isMailableEmailStatus } from '../lib/acq/types';
@@ -1511,6 +1515,134 @@ test('personalization: a thin prospect on the personalized variant gets the plai
   assert.match(built!.html, /these three are ours/, 'the machine admits whose numbers these are');
   assert.ok(!built!.html.includes('shows in public'), 'no invented research');
   assert.ok(!built!.html.includes('worked back from your'), 'no invented citation');
+});
+
+/* ----------------------------- the presence audit ------------------------- */
+
+/** A prospect with a full Google listing behind it. */
+const presence = (over: Partial<PresenceInput> = {}): PresenceInput => ({
+  business_name: 'ABC Heating & Air',
+  website: 'https://abcheating.example',
+  phone: '(406) 555-0143',
+  address: '123 Main St',
+  city: 'Kalispell',
+  state: 'MT',
+  rating: 4.8,
+  review_count: 312,
+  hours: { monday: '8-5', tuesday: '8-5', wednesday: '8-5', thursday: '8-5', friday: '8-5' },
+  open_24_7: false,
+  emergency_service: true,
+  trade: 'hvac',
+  source_urls: ['https://www.google.com/maps/place/abc'],
+  ...over,
+});
+
+test('audit: reviews reward volume more than a perfect rating on nothing', () => {
+  const many = scoreReviews(presence({ review_count: 400, rating: 4.6 }));
+  const perfectFew = scoreReviews(presence({ review_count: 9, rating: 5.0 }));
+  assert.ok(many.score > perfectFew.score, 'four hundred at 4.6 beats nine at 5.0');
+  // The claim has to be checkable: the count itself is printed, not paraphrased.
+  assert.match(many.checks[0].detail, /400 reviews/);
+  assert.match(perfectFew.checks[0].detail, /9 reviews/);
+});
+
+test('audit: no reviews at all is withheld, never scored as a zero', () => {
+  const blind = scoreReviews(presence({ review_count: null, rating: null }));
+  assert.equal(blind.unknown, true, 'we could not see it, so we do not grade it');
+  // And an unknown pillar must not drag the total down, which is the whole
+  // difference between an audit and an insult.
+  const withUnknown = blend([scoreWebsite(presence(), null), blind, scoreProfile(presence())]);
+  const withoutReviews = blend([scoreWebsite(presence(), null), scoreProfile(presence())]);
+  assert.equal(withUnknown, withoutReviews, 'an unseen pillar is dropped, not zeroed');
+});
+
+test('audit: every profile check is worth what it says it is worth', () => {
+  const full = scoreProfile(presence());
+  const total = full.checks.reduce((s, c) => s + c.points, 0);
+  assert.equal(total, 100, 'the checks add up to exactly 100, so the score is checkable');
+  assert.equal(full.score, full.checks.reduce((s, c) => s + c.earned, 0));
+  assert.ok(full.checks.every((c) => c.earned <= c.points), 'no check can earn more than it is worth');
+
+  // A failed check must say what failing it costs, not just that it failed.
+  const noSite = scoreProfile(presence({ website: null }));
+  const failed = noSite.checks.find((c) => /website/i.test(c.label))!;
+  assert.equal(failed.passed, false);
+  assert.equal(failed.earned, 0);
+  assert.ok(failed.detail.length > 40, 'a failed check explains the consequence');
+  assert.ok(noSite.score < full.score);
+});
+
+test('audit: a business with no website gets a hard F and a reason, not a crash', () => {
+  const pillar = scoreWebsite(presence({ website: null }), null);
+  assert.equal(pillar.score, 0);
+  assert.equal(pillar.letter, 'F');
+  assert.equal(pillar.unknown, false, 'no website is a finding, not a blind spot');
+  assert.match(pillar.verdict, /Google owns/);
+});
+
+test('audit: a site we could not load is unknown, not a zero the owner earned', () => {
+  const pillar = scoreWebsite(presence(), null);
+  assert.equal(pillar.unknown, true, 'we could not read it, so it does not count against the total');
+});
+
+test('audit: the weights are the ones printed on the report', () => {
+  const sum = PILLAR_WEIGHTS.website + PILLAR_WEIGHTS.reviews + PILLAR_WEIGHTS.profile;
+  assert.ok(Math.abs(sum - 1) < 1e-9, 'the three weights add to one');
+  const report = buildPresenceReport(presence({ website: null }), null);
+  assert.equal(report.pillars.length, 3);
+  for (const p of report.pillars) assert.equal(p.weight, PILLAR_WEIGHTS[p.key]);
+});
+
+test('audit: great reviews against a missing website names the gap', () => {
+  const report = buildPresenceReport(presence({ website: null }), null);
+  assert.match(report.headline, /nowhere to send it/i);
+  assert.match(report.summary, /ABC Heating & Air/);
+});
+
+test('audit: free profile fixes are ranked above rebuilding the website', () => {
+  const report = buildPresenceReport(presence({ hours: null, address: null }), null);
+  assert.ok(report.top_fixes.length >= 2);
+  // An audit that opens with "rebuild your website" reads as a sales document
+  // no matter how true it is, so the same-day free fixes come first.
+  assert.match(report.top_fixes[0].how, /free|five minutes/i);
+});
+
+test('audit: every fact printed carries where it came from', () => {
+  const report = buildPresenceReport(presence(), null);
+  const labels = report.provenance.map((p) => p.label);
+  assert.ok(labels.includes('Star rating'));
+  assert.ok(labels.includes('Review count'));
+  for (const row of report.provenance) assert.ok(row.source.length > 0, `${row.label} must cite a source`);
+  // The listing URL we actually hold rides as a LINK, and the printed source
+  // stays a short phrase: a 200-character Maps URL in the body of the receipts
+  // is what made this section look unfinished.
+  const rating = report.provenance.find((p) => p.label === 'Star rating')!;
+  assert.match(rating.sourceUrl!, /google\.com\/maps/);
+  assert.ok(rating.source.length < 60, 'the printed source is a phrase, not a URL');
+  assert.ok(!/https?:\/\//.test(rating.source), 'no raw URL in the printed source');
+  // Their own listing tracking parameters are noise on their audit.
+  const site = buildPresenceReport(presence({ website: 'https://x.example/?utm_source=GBP&utm_medium=organic' }), null)
+    .provenance.find((p) => p.label === 'Website')!;
+  assert.equal(site.value, 'https://x.example/');
+  assert.match(site.sourceUrl!, /utm_source/, 'the link still goes where we actually looked');
+});
+
+test('audit: letters agree with each other across every pillar', () => {
+  assert.equal(letterFor(100), 'A+');
+  assert.equal(letterFor(90), 'A-');
+  assert.equal(letterFor(70), 'C-');
+  assert.equal(letterFor(59), 'F');
+  assert.equal(letterFor(0), 'F');
+  const report = buildPresenceReport(presence({ website: null }), null);
+  assert.equal(report.letter_grade, letterFor(report.overall_score));
+  for (const p of report.pillars) if (!p.unknown) assert.equal(p.letter, letterFor(p.score));
+});
+
+test('audit: a lead row reads into the scorer without inventing anything', () => {
+  const input = inputFromLead({ business_name: 'Ross Plumbing', rating: 4.2, review_count: 40 });
+  assert.equal(input.website, null, 'a missing field is null, never a guess');
+  assert.equal(input.rating, 4.2);
+  assert.equal(input.business_name, 'Ross Plumbing');
 });
 
 /* ----------------------------- the /mustard door -------------------------- */

@@ -305,6 +305,27 @@ export async function sendDemoEmail(
   const gate = await gateOrRefuse(db, campaign, lead, 'demo');
   if (!gate.ok) return gate.result;
 
+  // Their Presence Audit rides along when one exists. Read fresh rather than
+  // carried on the prospect type, because the audit is written by a different
+  // path (the cockpit, or the forge) and the lead row in hand can be stale.
+  let auditUrl: string | null = null;
+  let auditScore: number | null = null;
+  let auditHeadline: string | null = null;
+  {
+    const { data: row } = await db
+      .from('outbound_leads')
+      .select('presence_audit_url, presence_audit_score, presence_audit_id')
+      .eq('id', lead.id)
+      .maybeSingle();
+    auditUrl = (row?.presence_audit_url as string | null) ?? null;
+    auditScore = (row?.presence_audit_score as number | null) ?? null;
+    if (row?.presence_audit_id) {
+      const { data: audit } = await db.from('presence_audits').select('report').eq('id', row.presence_audit_id).maybeSingle();
+      const head = (audit?.report as { headline?: string } | null)?.headline;
+      if (typeof head === 'string' && head.trim()) auditHeadline = head.trim();
+    }
+  }
+
   const built = buildDemoEmail({
     lead,
     demoUrl,
@@ -314,6 +335,9 @@ export async function sendDemoEmail(
     fromName: 'Mr. Mustard at Modern Mustard Seed',
     fromEmail: campaign.from_email,
     replyTo: campaign.reply_to,
+    auditUrl,
+    auditScore,
+    auditHeadline,
   });
   if (!built) return permanent('No email address on the prospect.');
 
