@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   if (!city) return buildMetadata({ noindex: true });
   return buildMetadata({
     title: `Web Design and Voice Agents in ${city.nameWithState}`,
-    description: `Custom websites and 24/7 AI phone answering for ${city.name}, Montana businesses, built by a studio in the Flathead Valley. See three working demos free before you pay anything. Call ${SITE.phone}.`,
+    description: `Custom websites and 24/7 AI phone answering for ${city.name}, Montana businesses, built by a studio in the Flathead Valley. See two working demos free before you pay anything. Call ${SITE.phone}.`,
     path: `/montana/${city.slug}`,
   });
 }
@@ -212,8 +212,8 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               },
               {
                 t: 'The Command Center',
-                b: 'Calls, leads, customers, reviews, traffic, and money on one board, with an AI that reads it back to you. Free when you take the website and the voice agent together.',
-                p: 'Free with both',
+                b: 'Calls, leads, customers, reviews, traffic, and money on one board, with an AI that reads it back to you. Built by hand, scoped with you first.',
+                p: `${formatUsd(DEMO_PRODUCTS.os.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo`,
                 href: '/command-center',
               },
             ].map((c) => (
@@ -280,7 +280,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             See it built for your {city.name} business, free.
           </h2>
           <p className="mt-4 font-body text-lg text-[#3d382e]">
-            Three working demos, the first two open right away and the whole suite within the hour. No card and no meeting.
+            Two working demos: your agent opens right away and the website lands within the hour. No card and no meeting.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link

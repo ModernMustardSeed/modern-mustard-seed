@@ -184,7 +184,6 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       voiceUrl={lead.demo_url}
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}
-      osUrl={lead.os_demo_status === 'ready' ? lead.os_demo_url : null}
       integrationPlanUrl={lead.integration_plan_status === 'ready' ? lead.integration_plan_url : null}
       planQuote={planQuote}
       auditUrl={lead.presence_audit_url}

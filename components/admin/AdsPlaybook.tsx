@@ -676,7 +676,7 @@ Sixty seconds to start. Link in bio.
 
 #smallbusiness #aiforbusiness #businessowner #automation #modernmustardseed`;
 
-const ST_POST_STORY = 'The stone age is over. See your three demos free → modernmustardseed.com/demos';
+const ST_POST_STORY = 'The stone age is over. See your demos free → modernmustardseed.com/demos';
 
 /* ===================== Campaign 18: The Answer Machine ===================== */
 

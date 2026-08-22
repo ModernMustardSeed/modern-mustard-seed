@@ -24,7 +24,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { forgeLeadVoiceDemo, buildOsConfig, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import { recordDemoEvent } from '@/lib/demo-events';
 import type { OutboundLead, Niche, ForgeOrigin } from '@/lib/outbound';
@@ -296,25 +296,15 @@ export async function mintForgedSuite(
   }
   let lead = leadRow as OutboundLead;
 
-  // Forge order proven by the Demo Station: voice (the OS references it),
-  // OS (instant), website (queued to the worker), then the hub.
+  // Forge order proven by the Demo Station: voice (instant), website (queued
+  // to the worker), then the hub.
   const voice = await forgeLeadVoiceDemo(supabase, lead);
   if (voice.ok) lead = voice.lead;
 
-  const { data: osRow } = await supabase
-    .from('outbound_demo_os')
-    .insert({ lead_id: lead.id, business_name: lead.business_name, config: buildOsConfig(lead) })
-    .select('id')
-    .single();
-  if (osRow) {
-    const { data: updated } = await supabase
-      .from('outbound_leads')
-      .update({ os_demo_id: osRow.id, os_demo_url: `${SITE.url}/demo/os/${osRow.id}`, os_demo_status: 'ready' })
-      .eq('id', lead.id)
-      .select('*')
-      .single();
-    if (updated) lead = updated as OutboundLead;
-  }
+  // THE COMMAND CENTER IS NOT FORGED ANY MORE (Sarah, 2026-08-22). It is sold
+  // on its own, built by hand, and scoped with the client first. A forge that
+  // quietly produced one was shipping a product that is not finished yet, and
+  // the freebie it used to ride in on is gone from the offer too.
 
   const { data: siteRow } = await supabase
     .from('outbound_demo_sites')
