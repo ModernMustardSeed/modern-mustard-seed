@@ -660,6 +660,181 @@ export function buildDemoEmail(args: {
   };
 }
 
+
+/* ──────────────────────── the SUITE email (all of it) ───────────────────── */
+
+/** What actually got built for them. Only pieces that exist are ever named. */
+export type SuiteLinks = {
+  hubUrl: string;
+  voiceUrl: string | null;
+  siteUrl: string | null;
+  osUrl: string | null;
+  /** True when Sarah recorded a face-to-camera video for this business. */
+  personalVideo: boolean;
+  /** True when the walkthrough film of THEIR suite is cut and ready. */
+  film: boolean;
+};
+
+/**
+ * THE SUITE EMAIL.
+ *
+ * The demo email above says "I built your receptionist" and is Mr. Mustard's,
+ * sent to somebody who just spent four minutes talking to him. This one is for
+ * the far bigger audience that never picked up the phone: they opened the note,
+ * some of them walked all the way to the permission page, and then they closed
+ * the tab. Nothing was owed to them and nothing was ever sent.
+ *
+ * So this email leads with the thing itself. No pitch in the first line, no
+ * "just following up", no asking for a call. Their website exists, their
+ * receptionist answers, their back office is running, and the whole point of
+ * the email is the four links that prove it.
+ *
+ * It only ever names pieces that are actually built. A suite email that
+ * promises a website which is still on the anvil is worse than no email,
+ * because they click it inside the first minute.
+ */
+export function buildSuiteEmail(args: {
+  lead: AcqProspect;
+  suite: SuiteLinks;
+  checkoutUrl: string;
+  calendarUrl: string;
+  offerLine: string;
+  fromName: string;
+  fromEmail: string;
+  replyTo: string;
+  /** Mr. Mustard signs it when he has actually spoken to them. Otherwise Sarah does. */
+  fromMustard: boolean;
+}): BuiltCampaignEmail | null {
+  const { lead, suite } = args;
+  if (!lead.email) return null;
+  const business = shortBusiness(lead.business_name);
+  const greeting = greetingFor(lead);
+
+  const pieces: { label: string; blurb: string; url: string }[] = [];
+  if (suite.siteUrl) {
+    pieces.push({
+      label: 'Your website',
+      blurb: `Built around ${escape(business)}, not a template with your name dropped in. Open it on your phone.`,
+      url: suite.siteUrl,
+    });
+  }
+  if (suite.voiceUrl) {
+    pieces.push({
+      label: 'Your receptionist',
+      blurb: 'Answers as your business, in a real voice, on any call. Try to stump it.',
+      url: suite.voiceUrl,
+    });
+  }
+  // THE COMMAND CENTER IS FREE WITH BOTH, SO IT IS NAMED ONLY WITH BOTH.
+  // The forge mints one alongside every voice agent because it costs nothing,
+  // but our own pricing does not give it away with a single piece. Listing it
+  // to somebody holding one thing promises a product they have not earned, and
+  // the demo suite page applies the identical rule (components/demo/DemoHub.tsx),
+  // so the email and the page they land on can never disagree.
+  const showOs = Boolean(suite.osUrl) && Boolean(suite.voiceUrl) && Boolean(suite.siteUrl);
+  if (showOs) {
+    pieces.push({
+      label: 'Your back office',
+      blurb: 'Every call, job and customer in one screen, wearing your colors. It comes free with the other two.',
+      url: suite.osUrl!,
+    });
+  }
+  if (!pieces.length) return null;
+  const onlyVoice = pieces.length === 1 && Boolean(suite.voiceUrl);
+  const onlySite = pieces.length === 1 && Boolean(suite.siteUrl);
+
+  const list = pieces
+    .map(
+      (piece) => `
+      <tr><td style="padding:0 0 10px">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:2px solid #161616;border-radius:14px;background:#ffffff">
+          <tr><td style="padding:15px 18px">
+            <p style="margin:0 0 3px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#8a6a1f">${escape(piece.label)}</p>
+            <p style="margin:0 0 9px;font-size:14px;color:#5a564f;line-height:1.6">${piece.blurb}</p>
+            <a href="${escape(piece.url)}" style="font-size:14px;font-weight:bold;color:#161616;text-decoration:none">Open it &rarr;</a>
+          </td></tr>
+        </table>
+      </td></tr>`,
+    )
+    .join('');
+
+  // The video line is only ever written when a video genuinely exists. A
+  // promise of a walkthrough that is not there is the one thing that would
+  // make this email worse than silence.
+  const videoLine = suite.personalVideo
+    ? p(
+        `There is a short video of me at the top of that page walking you through what I built and why. Watch that first and the rest will make sense.`,
+      )
+    : suite.film
+      ? p(
+          `There is a two minute walkthrough at the top of that page: your site, a live call to your receptionist, and your back office, recorded off the real thing.`,
+        )
+      : '';
+
+  const html =
+    clientEmail({
+      // The preheader is the first line they read in the inbox list, before the
+      // subject has even earned a click, so it names the same pieces the body
+      // does and nothing more. It promised a back office to everybody until the
+      // command-center checks in scripts/verify-acq-suite.ts caught it.
+      preheader: showOs
+        ? `Your website, your receptionist and your back office are live. Nothing to sign up for.`
+        : pieces.length === 2
+          ? `Your website and your receptionist are live. Nothing to sign up for.`
+          : onlySite
+            ? `Your website is live. Nothing to sign up for.`
+            : `Your receptionist is live. Nothing to sign up for.`,
+      eyebrow: 'IT IS BUILT',
+      greeting,
+      body:
+        p(`I built it.`) +
+        p(
+          showOs
+            ? `${escape(business)} now has a website, an AI receptionist answering the phone on it, and the back office that runs behind both. All three are live right now. Nothing to sign up for, no card, no call with me first.`
+            : pieces.length === 2
+              ? `${escape(business)} now has a website and an AI receptionist answering the phone on it. Both are live right now. Nothing to sign up for, no card, no call with me first.`
+              : `It is live right now. Nothing to sign up for, no card, no call with me first.`,
+        ) +
+        videoLine +
+        `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 6px">${list}</table>` +
+        p(`Break it if you can. That is genuinely the best thing you could do with it today.`) +
+        `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0"><tr>
+          <td style="border:2px solid #161616;border-radius:14px;padding:16px 18px;background:#FBF6EA">
+            <p style="margin:0;font-size:15px;color:#161616"><strong>If you want the receptionist on your real incoming calls</strong></p>
+            <p style="margin:6px 0 0;font-size:14px;color:#5a564f;line-height:1.6">${escape(args.offerLine)}. Month to month, cancel anytime. Your number and your phones stay exactly as they are, and we install it by hand inside a week.</p>
+            <p style="margin:10px 0 0"><a href="${escape(args.checkoutUrl)}" style="font-size:14px;font-weight:bold;color:#8a6a1f;text-decoration:none">Put it on ${escape(possessive(business))} real calls &rarr;</a></p>
+          </td>
+        </tr></table>` +
+        p(
+          `Or if you would rather talk to a person about it, <a href="${escape(args.calendarUrl)}" style="color:#C2261A;font-weight:700;text-decoration:none">grab time with me</a>. If the answer is no, replying with the word no is a complete answer and I will stop.`,
+        ),
+      cta: { label: 'Open everything', url: suite.hubUrl },
+      signature: args.fromMustard ? 'Mr. Mustard' : 'Sarah',
+      trackId: lead.id,
+    }) + complianceFooter(lead.email);
+
+  return {
+    to: lead.email,
+    from: `${args.fromName} <${args.fromEmail}>`,
+    replyTo: args.replyTo,
+    // NOT escaped: a subject line is plain text, so an entity here would ship
+    // literally and turn Bob's Heating into Bob&#39;s Heating in the inbox.
+    // It also names only what is inside: a subject promising a website to
+    // somebody who is getting a receptionist is the first broken promise they
+    // read, and it is the one they judge everything else by.
+    subject: onlyVoice
+      ? `I built ${business} a receptionist`
+      : onlySite
+        ? `I built ${business} a website`
+        : `I built ${business} a website and a receptionist`,
+    html,
+    unsubscribeUrl: unsubscribeUrlFor(lead.email),
+    summary: `Sent the full forged suite: ${pieces.map((x) => x.label.toLowerCase()).join(', ')}.`,
+    step: 0,
+    variantKey: 'suite',
+  };
+}
+
 /* ──────────────── behavior-driven follow-ups after the demo ──────────────── */
 
 export type FollowupKind = 'no_call_after_consent' | 'called_no_forge' | 'demo_no_purchase_1' | 'demo_no_purchase_2' | 'demo_no_purchase_3';

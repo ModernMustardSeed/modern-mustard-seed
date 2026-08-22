@@ -228,6 +228,28 @@ export default function DemoHub({
             ? 'That would cover this whole suite many times over.'
             : 'Even this adds up to real money over a year.';
 
+  /**
+   * THE COMMAND CENTER IS ONLY FREE WITH BOTH, SO IT ONLY APPEARS WITH BOTH.
+   *
+   * Sarah, 2026-08-22: "the agent is supposed to be alone on the demo suite
+   * page, not with command center, unless website is on there too, because
+   * command center is free with both, but not free with one."
+   *
+   * The forge mints an OS demo alongside every voice agent because it is
+   * instant and costs nothing, and this page used to show whatever had been
+   * minted. On a voice-only demo that put a third door in front of somebody who
+   * had not earned it under our own pricing, softened by a caveat nobody reads.
+   * A caveat is not the fix. The door is.
+   *
+   * So the command center appears only when the voice agent AND the website are
+   * both part of this suite. A website still on the anvil counts, because it is
+   * part of the suite and it will be on this page within the hour. When it does
+   * not apply, the pair is offered in one quiet line at the bottom instead, and
+   * that line is where the "free with both" fact belongs: at the moment it
+   * would change what they buy.
+   */
+  const showOs = Boolean(osUrl) && Boolean(voiceUrl) && Boolean(siteUrl || sitePending);
+
   const doors = useMemo(
     () =>
       [
@@ -264,19 +286,19 @@ export default function DemoHub({
           tone: 'gold' as const,
           cta: siteUrl ? 'See it live' : 'Watch it forge',
         },
-        osUrl && {
-          href: osUrl,
+        showOs && {
+          href: osUrl!,
           icon: '⚙',
           title: 'Your command center',
           // Sarah 2026-08-20: when the agent and the website both live in the
-          // suite, the free command center is the headline, not a footnote.
+          // suite, the free command center is the headline, not a footnote. It
+          // is only ever drawn when that is true (see showOs), so there is no
+          // second, apologetic version of this line any more.
           desc:
-            voiceUrl && (siteUrl || sitePending)
-              ? 'Every call transcribed, your customers, reviews, quotes, and money on one board. It costs nothing extra: the website and the voice agent live here together, so this comes with them. Already built, already wearing your brand.'
-              : 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Free when you keep the website and the voice agent together, nothing to install.',
+            'Every call transcribed, your customers, reviews, quotes, and money on one board. It costs nothing extra: the website and the voice agent live here together, so this comes with them. Already built, already wearing your brand.',
           tone: 'ink' as const,
           cta: 'Open it',
-          badge: voiceUrl && (siteUrl || sitePending) ? 'FREE with these two' : 'Free with both',
+          badge: 'FREE with these two',
         },
         integrationPlanUrl && {
           href: integrationPlanUrl,
@@ -290,7 +312,7 @@ export default function DemoHub({
           badge: 'Free',
         },
       ].filter(Boolean) as { href: string; icon: string; title: string; desc: string; tone: 'dark' | 'gold' | 'ink'; cta: string; badge?: string }[],
-    [voiceUrl, siteUrl, sitePending, osUrl, integrationPlanUrl, planQuote, auditUrl, auditScore, auditHeadline, business],
+    [voiceUrl, siteUrl, sitePending, osUrl, showOs, integrationPlanUrl, planQuote, auditUrl, auditScore, auditHeadline, business],
   );
 
   /**
@@ -313,7 +335,9 @@ export default function DemoHub({
   const forged = [
     voiceUrl ? 'voice' : null,
     siteUrl || sitePending ? 'site' : null,
-    osUrl ? 'os' : null,
+    // A minted-but-hidden command center is not part of this suite as far as
+    // the visitor is concerned, and the copy below must agree with the doors.
+    showOs ? 'os' : null,
   ].filter(Boolean) as ('voice' | 'site' | 'os')[];
   const PIECE_NAME: Record<'voice' | 'site' | 'os', string> = {
     voice: 'Voice Agent',
@@ -471,13 +495,13 @@ export default function DemoHub({
         ) : (
         <section>
           <h2 className="font-display text-2xl font-bold mb-1">Your {doors.length} demos</h2>
-          {osUrl && voiceUrl && (siteUrl || sitePending) && (
+          {showOs && (
             <p className="font-body text-[14.5px] text-[#161616]/70 mb-4 max-w-xl">
               Two of these are the products. The third, your command center, is <strong className="text-[#161616]">included free</strong> because
               the website and the voice agent live together in this suite. You are not being upsold a dashboard; it comes with the pair.
             </p>
           )}
-          {!(osUrl && voiceUrl && (siteUrl || sitePending)) && <div className="mb-3" />}
+          {!showOs && <div className="mb-3" />}
           <div className={`grid sm:grid-cols-2 ${doors.length >= 3 ? 'lg:grid-cols-3' : ''} gap-4`}>
             {doors.map((d, i) => (
               <a
@@ -560,7 +584,7 @@ export default function DemoHub({
           forged={[
             voiceUrl ? ('voice' as DemoProductKey) : null,
             siteUrl || sitePending ? ('site' as DemoProductKey) : null,
-            osUrl ? ('os' as DemoProductKey) : null,
+            showOs ? ('os' as DemoProductKey) : null,
           ].filter(Boolean) as DemoProductKey[]}
         />
 

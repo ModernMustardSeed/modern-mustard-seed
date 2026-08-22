@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
-import { AcqNav, Chip, Section, Stat, api, card, cardFlat, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, eyebrow, timeAgo } from '@/components/admin/acquisition/ui';
+import { AcqNav, Chip, Section, Stat, ToastHost, api, card, cardFlat, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, eyebrow, timeAgo, useToasts } from '@/components/admin/acquisition/ui';
+import PersonalVideoCard from '@/components/admin/acquisition/PersonalVideoCard';
 
 type Lead = Record<string, unknown> & {
   id: string;
@@ -54,6 +55,17 @@ type Lead = Record<string, unknown> & {
 type Event = { id: string; type: string; label: string; occurred_at: string; detail: Record<string, unknown> };
 type Call = { id?: string; summary: string | null; transcript: string | null; intel: Record<string, unknown> | null; duration_sec: number | null; roleplay_scenario: string | null; status?: string; requested_at?: string; ended_reason?: string | null };
 type Consent = { id: string; phone_e164: string; consent_version: string; consent_text: string; typed_name: string | null; ip: string | null; user_agent: string | null; created_at: string; revoked_at: string | null };
+type Suite = {
+  stage: string;
+  voiceUrl: string | null;
+  siteUrl: string | null;
+  siteStatus: string | null;
+  osUrl: string | null;
+  osShown: boolean;
+  hubUrl: string | null;
+  filmStatus: string | null;
+  pieces: number;
+};
 type Brief = { headline: string; facts: { label: string; value: string }[]; intent: string; lines: string[]; call: { duration: string | null; scenario: string | null; summary: string | null } | null };
 type Detail = {
   lead: Lead;
@@ -64,6 +76,7 @@ type Detail = {
   messages: { id: string; direction: string; channel: string; subject: string | null; snippet: string | null; occurred_at: string }[];
   nextEmail: { subject: string; html: string; step: number; variant: string } | null;
   checkoutUrl: string;
+  suite: Suite | null;
   brief: Brief;
 };
 
@@ -77,6 +90,9 @@ export default function ProspectDetail({ id }: { id: string }) {
   const [openTranscript, setOpenTranscript] = useState<number | null>(null);
   const [mustardLink, setMustardLink] = useState<{ url: string; expiresAt: string; message: string } | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [designTier, setDesignTier] = useState<2 | 3>(2);
+  const [talkingWebsite, setTalkingWebsite] = useState(false);
+  const { toasts, push } = useToasts();
 
   const load = useCallback(async () => {
     try {
@@ -371,6 +387,19 @@ export default function ProspectDetail({ id }: { id: string }) {
               </p>
             </Section>
 
+            <SuitePanel
+              suite={data.suite}
+              lead={l}
+              busy={busy}
+              designTier={designTier}
+              talkingWebsite={talkingWebsite}
+              onTier={setDesignTier}
+              onTalking={setTalkingWebsite}
+              act={act}
+            />
+
+            <PersonalVideoCard leadId={l.id} business={l.business_name} push={push} />
+
             <Section title="Do something">
               <div className="flex flex-col gap-2">
                 <button className={btnPrimary} disabled={busy !== '' || !l.acq_eligible} onClick={() => void act('queue-email')}>
@@ -379,11 +408,13 @@ export default function ProspectDetail({ id }: { id: string }) {
                 <button className={btnGhost} disabled={busy !== ''} onClick={() => void act('call-now')} title={l.consent_status !== 'granted' ? 'Needs consent first' : undefined}>
                   Have Mr. Mustard call now
                 </button>
-                <button className={btnGhost} disabled={busy !== ''} onClick={() => void act('forge')}>
-                  {busy === 'forge' ? 'Forging...' : 'Forge their agent'}
-                </button>
-                <button className={btnGhost} disabled={busy !== '' || !l.hub_demo_url} onClick={() => void act('send-demo')}>
-                  Email their demo
+                <button
+                  className={btnGhost}
+                  disabled={busy !== ''}
+                  onClick={() => void act('forge')}
+                  title="Voice agent and command center only, no website. The suite card above builds all of it."
+                >
+                  {busy === 'forge' ? 'Forging...' : 'Forge the instant pieces'}
                 </button>
                 <button className={btnGhost} disabled={busy !== ''} onClick={() => void act('send-checkout')}>
                   Send the checkout link
@@ -398,13 +429,6 @@ export default function ProspectDetail({ id }: { id: string }) {
                   Opt them out
                 </button>
               </div>
-              {l.hub_demo_url && (
-                <p className="mt-3 text-[12px]">
-                  <a href={l.hub_demo_url} target="_blank" rel="noopener noreferrer" className="underline font-semibold">
-                    Open their demo suite ↗
-                  </a>
-                </p>
-              )}
               <p className="mt-1 text-[12px]">
                 <a href={data.checkoutUrl} target="_blank" rel="noopener noreferrer" className="underline">
                   Their checkout link ↗
@@ -497,6 +521,7 @@ export default function ProspectDetail({ id }: { id: string }) {
           </div>
         </div>
       </main>
+      <ToastHost toasts={toasts} />
     </div>
   );
 }
@@ -538,4 +563,210 @@ function dotFor(type: string): string {
   if (/fail|bounce|unsub|suppress|needs_human/.test(type)) return 'bg-[#E0301E]';
   if (/call|consent|forge|demo|checkout|meeting/.test(type)) return 'bg-[#F5B700]';
   return 'bg-white';
+}
+
+/**
+ * THEIR SUITE, on one card.
+ *
+ * Four things get built for a business and they land at different speeds, so
+ * this shows the truth about each one rather than a single "forged" badge: the
+ * voice agent and the command center are instant, the website takes the local
+ * forge twenty to forty minutes, and the walkthrough film is cut after it.
+ *
+ * Every piece that is finished is a link you can open right now. Every piece
+ * that is not says exactly what it is waiting on.
+ */
+function SuitePanel({
+  suite,
+  lead,
+  busy,
+  designTier,
+  talkingWebsite,
+  onTier,
+  onTalking,
+  act,
+}: {
+  suite: Suite | null;
+  lead: Lead;
+  busy: string;
+  designTier: 2 | 3;
+  talkingWebsite: boolean;
+  onTier: (t: 2 | 3) => void;
+  onTalking: (v: boolean) => void;
+  act: (action: string, extra?: Record<string, unknown>) => Promise<void>;
+}) {
+  const s = suite;
+  const building = s?.siteStatus === 'queued' || s?.siteStatus === 'building';
+  const failed = s?.siteStatus === 'failed';
+  const nothing = !s || s.pieces === 0;
+
+  const piece = (label: string, url: string | null, pending: string | null, blurb: string) => (
+    <div className={`${cardFlat} flex items-start gap-3 p-3.5`} key={label}>
+      <span
+        className={`mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full ${url ? 'bg-[#3f5d34]' : pending ? 'animate-pulse bg-[#F5B700]' : 'bg-[#161616]/15'}`}
+        aria-hidden
+      />
+      <div className="min-w-0 flex-1">
+        <p className="font-oswald text-[11px] font-semibold uppercase tracking-[0.16em] text-[#161616]/70">{label}</p>
+        {url ? (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-sans text-[13px] font-semibold text-[#161616] underline decoration-[#F5B700] decoration-2 underline-offset-4"
+          >
+            Open it ↗
+          </a>
+        ) : (
+          <p className="font-sans text-[12px] leading-snug text-[#161616]/55">{pending ?? blurb}</p>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <Section
+      title="Their suite"
+      note={
+        nothing
+          ? 'Nothing is built for them yet. One press builds all of it.'
+          : 'Everything forged for this business. The hub is the one link you send.'
+      }
+      right={
+        s?.hubUrl ? (
+          <a href={s.hubUrl} target="_blank" rel="noopener noreferrer" className={`${btnGhost} !py-2 !text-xs`}>
+            ▦ Open their suite ↗
+          </a>
+        ) : undefined
+      }
+    >
+      <div className="grid gap-2 sm:grid-cols-2">
+        {piece('Voice agent', s?.voiceUrl ?? null, null, 'Not forged yet. Instant when you build.')}
+        {piece(
+          'Website',
+          s?.siteUrl ?? null,
+          building
+            ? 'On the anvil. The forge on your machine is building it now.'
+            : failed
+              ? 'The last build failed. Retry puts it back on the anvil.'
+              : null,
+          'Not queued yet. The forge takes twenty to forty minutes.',
+        )}
+        {piece(
+          'Command center',
+          s?.osShown ? s.osUrl : null,
+          s?.osUrl && !s.osShown
+            ? 'Built, but hidden from them until the website exists. It is free with the website and the voice agent together, not with one of them, so their suite page and their email both leave it out. Forging the website turns it on by itself.'
+            : null,
+          'Not forged yet. Instant, and it rides free once the website and the voice agent are both there.',
+        )}
+        {piece(
+          'Walkthrough film',
+          null,
+          s?.filmStatus === 'ready'
+            ? 'Cut from their own site, agent and command center. It plays on their suite page.'
+            : s?.filmStatus === 'queued' || s?.filmStatus === 'filming'
+              ? 'Being cut now, off their own suite.'
+              : null,
+          'Cut automatically once their website lands.',
+        )}
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t-2 border-[#161616]/10 pt-4">
+        <span className={`${eyebrow} mr-1`}>Design</span>
+        {([2, 3] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => onTier(t)}
+            title={t === 2 ? 'The Wildmere award-site world. The house style.' : 'The Journey site (the Flathead homepage template)'}
+            className={`rounded-lg border-2 px-3 py-1.5 font-oswald text-[11px] uppercase tracking-[0.08em] transition-colors ${
+              designTier === t
+                ? 'border-[#161616] bg-[#161616] text-[#FBF6EA] shadow-[2px_2px_0_0_#F5B700]'
+                : 'border-[#161616]/20 bg-white text-[#161616]/70 hover:border-[#F5B700]'
+            }`}
+          >
+            {t === 3 ? 'Tier 3 · Journey' : 'Tier 2 · World'}
+          </button>
+        ))}
+        <button
+          onClick={() => onTalking(!talkingWebsite)}
+          aria-pressed={talkingWebsite}
+          title="Make the talking layer the star of the demo"
+          className={`rounded-lg border-2 px-3 py-1.5 font-oswald text-[11px] uppercase tracking-[0.08em] transition-colors ${
+            talkingWebsite
+              ? 'border-[#161616] bg-[#F5B700] text-[#161616] shadow-[2px_2px_0_0_#161616]'
+              : 'border-[#161616]/20 bg-white text-[#161616]/70 hover:border-[#F5B700]'
+          }`}
+        >
+          🗣 Talking Website
+        </button>
+      </div>
+
+      <div className="mt-3 flex flex-col gap-2">
+        <button
+          className={btnPrimary}
+          disabled={busy !== ''}
+          onClick={() => void act('forge-suite', { site: true, designTier, talkingWebsite })}
+        >
+          {busy === 'forge-suite' ? 'Forging…' : nothing ? '⚒ Forge the whole suite' : '⚒ Forge whatever is missing'}
+        </button>
+
+        {/*
+          THE WEBSITE, ON ITS OWN BUTTON.
+
+          "Forge whatever is missing" is accurate and it is also invisible: when
+          the thing missing is the website, the word website appears nowhere on
+          the control that builds it. This is the button Sarah went looking for
+          and could not find. It says what it does, and it says the other half
+          out loud too, because forging the website is what turns their command
+          center on.
+        */}
+        {!building && !s?.siteUrl && (
+          <button
+            className={btnPrimary}
+            disabled={busy !== ''}
+            onClick={() => void act('forge-suite', { site: true, designTier, talkingWebsite })}
+            title="Queue their demo website at the forge. Twenty to forty minutes on your machine."
+          >
+            {busy === 'forge-suite' ? 'Queuing…' : '🌐 Forge their website'}
+          </button>
+        )}
+        {!building && !s?.siteUrl && s?.osUrl && !s?.osShown && (
+          <p className="-mt-1 text-[11px] leading-snug text-[#161616]/55">
+            Their command center is already built and sitting hidden. The website is the only thing standing between
+            them and seeing it, because it is free with the pair and free with neither one alone.
+          </p>
+        )}
+
+        {(failed || (s?.siteUrl && !building)) && (
+          <button className={btnGhost} disabled={busy !== ''} onClick={() => void act('reforge-site', { designTier, talkingWebsite })}>
+            {busy === 'reforge-site' ? 'Queuing…' : failed ? 'Retry the website build' : 'Build their website again'}
+          </button>
+        )}
+        <button
+          className={btnPrimary}
+          disabled={busy !== '' || !s?.hubUrl || (s?.pieces ?? 0) === 0}
+          title={!s?.hubUrl ? 'There is nothing built to send yet.' : undefined}
+          onClick={() => void act('send-suite', lead.demo_emailed_at ? { resend: true } : {})}
+        >
+          {busy === 'send-suite' ? 'Sending…' : lead.demo_emailed_at ? '✉ Send their suite again' : '✉ Send them their suite'}
+        </button>
+      </div>
+
+      {lead.demo_emailed_at && (
+        <p className="mt-3 font-sans text-[12px] text-[#161616]/55">
+          Their suite went out {timeAgo(lead.demo_emailed_at as string)}. Sending again is deliberate and it is logged.
+        </p>
+      )}
+      {building && (
+        <p className="mt-3 font-sans text-[12px] text-[#161616]/55">
+          The website builds on your machine. If nothing moves, open{' '}
+          <Link href="/admin/acquisition/forge" className="underline decoration-[#F5B700] decoration-2 underline-offset-4">
+            the Forge board
+          </Link>
+          , which says out loud whether the worker is running.
+        </p>
+      )}
+    </Section>
+  );
 }

@@ -437,7 +437,7 @@ export function buildOsConfig(lead: OutboundLead): OsDemoConfig {
  * and prompt-ish framing) and hard-cap the length, so a value can only ever be
  * one short inert phrase on one line.
  */
-function briefField(raw: string | null | undefined, max = 120): string {
+export function briefField(raw: string | null | undefined, max = 120): string {
   const clean = (raw ?? '')
     .replace(/[\r\n\t]+/g, ' ')
     .replace(/[`#*_<>{}[\]|]/g, '')

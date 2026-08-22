@@ -329,9 +329,15 @@ export type AcqProspect = {
   demo_url: string | null;
   hub_demo_id: string | null;
   hub_demo_url: string | null;
+  hub_view_count: number | null;
+  site_demo_id: string | null;
   site_demo_url: string | null;
   site_demo_status: string | null;
+  os_demo_id: string | null;
   os_demo_url: string | null;
+  os_demo_status: string | null;
+  /** The walkthrough film cut off THEIR suite, once the website build lands. */
+  suite_film_status: 'queued' | 'filming' | 'ready' | 'failed' | null;
   dnc_checked: boolean;
   status: string;
   created_at: string;

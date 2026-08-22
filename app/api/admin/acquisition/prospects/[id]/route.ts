@@ -6,7 +6,8 @@ import { buildCampaignEmail } from '@/lib/acq/campaign';
 import { enqueue, cancelPendingFor } from '@/lib/acq/queue';
 import { evaluate, sequenceLength } from '@/lib/acq/eligibility';
 import { forgeProspectAgent } from '@/lib/acq/forge';
-import { sendDemoEmail, sendCheckoutLink, checkoutUrlFor } from '@/lib/acq/send';
+import { forgeProspectSuite, queueProspectSite, suiteState } from '@/lib/acq/suite';
+import { sendDemoEmail, sendSuiteEmail, sendCheckoutLink, checkoutUrlFor } from '@/lib/acq/send';
 import { buildPrepBrief } from '@/lib/acq/brief';
 import type { AcqProspect } from '@/lib/acq/types';
 
@@ -70,6 +71,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     messages: messages ?? [],
     nextEmail,
     checkoutUrl: checkoutUrlFor(lead),
+    suite: suiteState(lead),
     brief: buildPrepBrief(lead, callRows),
   });
 }
@@ -140,16 +142,56 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       });
       return NextResponse.json({ ok: true, created: res.ok && res.created });
     }
+    /* The instant half: voice agent, command center, hub. No website. */
     case 'forge': {
       const result = await forgeProspectAgent(db, lead, {}, { deferHeavy: false });
       return result.ok
         ? NextResponse.json({ ok: true, demoUrl: result.demoUrl, hubUrl: result.hubUrl })
         : NextResponse.json({ error: result.error }, { status: 409 });
     }
+    /* The whole thing: voice agent, command center, website, hub. */
+    case 'forge-suite': {
+      const result = await forgeProspectSuite(db, lead, {
+        site: body.site !== false,
+        designTier: body.designTier === 3 ? 3 : 2,
+        talkingWebsite: body.talkingWebsite === true,
+        forceSite: body.force === true,
+        by: 'prospect',
+      });
+      if (!result.ok) return NextResponse.json({ error: result.error }, { status: 409 });
+      const { data: after } = await db.from('outbound_leads').select('*').eq('id', id).single();
+      return NextResponse.json({
+        ok: true,
+        created: result.created,
+        warnings: result.warnings,
+        hubUrl: result.hubUrl,
+        siteUrl: result.siteUrl,
+        lead: after,
+      });
+    }
+    /* Re-queue the website: the retry for a failure, the rebuild for a stale one. */
+    case 'reforge-site': {
+      const queued = await queueProspectSite(db, lead, {
+        designTier: body.designTier === 3 ? 3 : 2,
+        talkingWebsite: body.talkingWebsite === true,
+        force: true,
+      });
+      if (!queued.ok) return NextResponse.json({ error: queued.error }, { status: 409 });
+      const { data: after } = await db.from('outbound_leads').select('*').eq('id', id).single();
+      return NextResponse.json({ ok: true, note: queued.note, lead: after });
+    }
     case 'send-demo': {
       if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
       const sent = await sendDemoEmail(db, campaign, lead);
       return sent.ok ? NextResponse.json({ ok: true }) : NextResponse.json({ error: sent.error }, { status: 409 });
+    }
+    /* Mail them everything that is finished, with the video leading it. */
+    case 'send-suite': {
+      if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
+      const sent = await sendSuiteEmail(db, campaign, lead, { resend: body.resend === true });
+      return sent.ok
+        ? NextResponse.json({ ok: true, subject: sent.subject })
+        : NextResponse.json({ error: sent.error }, { status: 409 });
     }
     case 'send-checkout': {
       if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
