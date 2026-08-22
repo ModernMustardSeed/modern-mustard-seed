@@ -78,6 +78,7 @@ export function ReachOutDeck({
   const [designTier, setDesignTier] = useState<2 | 3>(2);
   const [forgingOs, setForgingOs] = useState(false);
   const [reforgeOpen, setReforgeOpen] = useState(false);
+
   // Tap-to-text: we write it, her own phone sends it. No Twilio, no A2P.
   const [textOpen, setTextOpen] = useState(false);
   const [textBody, setTextBody] = useState('');
@@ -85,6 +86,25 @@ export function ReachOutDeck({
 
   const siteForging = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
+  // IS THIS ONE WORTH REBUILDING?
+  //
+  // Sarah, on twenty two demos a one-shot engine built overnight: "give me the
+  // option to rebuild in the contact so i can decide if its worth it by looking
+  // at it." The verdict is computable from the html, so it rides next to the
+  // link and she can triage the list without opening any of them.
+  const [demoQ, setDemoQ] = useState<{
+    verdict: 'good' | 'weak' | 'slop'; label: string; reasons: string[]; engine: string | null;
+  } | null>(null);
+  useEffect(() => {
+    if (!siteReady) { setDemoQ(null); return; }
+    let live = true;
+    void api<{ has?: boolean; verdict?: 'good' | 'weak' | 'slop'; label?: string; reasons?: string[]; engine?: string | null }>(
+      `/api/admin/outbound/leads/${lead.id}/demo-quality`,
+    )
+      .then((r) => { if (live && r?.has && r.verdict) setDemoQ({ verdict: r.verdict, label: r.label ?? '', reasons: r.reasons ?? [], engine: r.engine ?? null }); })
+      .catch(() => {});
+    return () => { live = false; };
+  }, [lead.id, siteReady, lead.site_demo_status]);
   const osReady = lead.os_demo_status === 'ready' && Boolean(lead.os_demo_url);
   const demoCount = [Boolean(lead.demo_url), siteReady, osReady].filter(Boolean).length;
 
@@ -369,13 +389,38 @@ export function ReachOutDeck({
             <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged demo website. The voice agent rides along on it for the demo, but it is a separate product. Do not tell them the site includes it.">
               🌐 Website live ↗
             </a>
+            {demoQ && (
+              <span
+                className={`${chip} cursor-default ${
+                  demoQ.verdict === 'good'
+                    ? 'bg-[#e8f3e8] text-[#245c2a] border-[#245c2a]/40'
+                    : demoQ.verdict === 'weak'
+                      ? 'bg-[#fdf3e0] text-[#8a5a12] border-[#8a5a12]/40'
+                      : 'bg-[#fbe6e6] text-[#8f2323] border-[#8f2323]/50'
+                }`}
+                title={
+                  (demoQ.reasons.length ? demoQ.reasons.join('; ') : 'Distinct photography, inside the size cap, real type and a proof section.') +
+                  (demoQ.engine ? ` · built by ${demoQ.engine}` : '')
+                }
+              >
+                {demoQ.verdict === 'good' ? '✓' : demoQ.verdict === 'weak' ? '!' : '✕'} {demoQ.label}
+              </span>
+            )}
             <button
               onClick={() => void rebuildSite()}
               disabled={rebuilding}
-              className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`}
-              title="Build it again from scratch on the current design law. Same link, same photos, no prompt needed. Their finished site keeps serving until the new one lands."
+              className={`${chip} ${
+                demoQ && demoQ.verdict === 'slop'
+                  ? 'bg-[#8f2323] text-white border-[#8f2323] hover:-translate-y-0.5'
+                  : 'bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]'
+              }`}
+              title={
+                demoQ && demoQ.verdict !== 'good'
+                  ? `Build it again from scratch on the current design law, WITH FRESH PHOTOGRAPHY because this one is thin (${demoQ.reasons.join('; ')}). Their finished site keeps serving until the new one lands.`
+                  : 'Build it again from scratch on the current design law. Same link, same photos, no prompt needed. Their finished site keeps serving until the new one lands.'
+              }
             >
-              {rebuilding ? 'Queuing…' : '↻ Rebuild'}
+              {rebuilding ? 'Queuing…' : demoQ && demoQ.verdict === 'slop' ? '↻ Rebuild properly' : '↻ Rebuild'}
             </button>
           </>
         ) : siteForging ? (
