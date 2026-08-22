@@ -284,7 +284,23 @@ export default async function PresenceAuditPage({ params }: { params: Params }) 
                 <div key={p.label} className="flex gap-2 text-[12.5px] font-body text-[#161616]/65">
                   <dt className="font-bold text-[#161616]/80 whitespace-nowrap">{p.label}:</dt>
                   <dd className="min-w-0 break-words">
-                    {p.value} <span className="text-[#161616]/45">({p.source})</span>
+                    {p.value}{' '}
+                    {/* A short label that links, never the raw URL. A Maps place
+                        link is 200 characters of coordinates, and six of them
+                        printed in full turn the most credible part of this page
+                        into the part that looks unfinished. */}
+                    {p.sourceUrl ? (
+                      <a
+                        href={p.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        className="text-[#161616]/45 underline decoration-[#161616]/20 underline-offset-2 hover:text-[#C2261A]"
+                      >
+                        ({p.source})
+                      </a>
+                    ) : (
+                      <span className="text-[#161616]/45">({p.source})</span>
+                    )}
                   </dd>
                 </div>
               ))}

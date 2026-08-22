@@ -80,7 +80,7 @@ export type PresenceAuditReport = {
   /** The seven-category website breakdown, when we have it. */
   website_categories: Record<string, { score: number; letter: string; notes: string }> | null;
   /** Every fact we used, with where it came from. Printed at the foot. */
-  provenance: { label: string; value: string; source: string }[];
+  provenance: { label: string; value: string; source: string; sourceUrl?: string | null }[];
 };
 
 /* ─────────────────────────────── the grades ─────────────────────────────── */
@@ -482,17 +482,35 @@ export function fixesFor(pillars: Pillar[], report: WebsiteAuditReport | null): 
   return out.slice(0, 6);
 }
 
-/** The facts, and where each one came from. Printed at the foot of the report. */
-export function provenanceFor(input: PresenceInput): { label: string; value: string; source: string }[] {
-  const listing = (input.source_urls ?? []).find((u) => /google|maps/i.test(u)) ?? 'your public Google Business Profile';
-  const rows: { label: string; value: string; source: string }[] = [];
-  if (input.rating !== null) rows.push({ label: 'Star rating', value: `${input.rating}`, source: listing });
-  if (input.review_count !== null) rows.push({ label: 'Review count', value: input.review_count.toLocaleString('en-US'), source: listing });
-  if (input.website) rows.push({ label: 'Website', value: input.website, source: 'read live at the time of this audit' });
-  if (input.phone) rows.push({ label: 'Phone', value: input.phone, source: listing });
-  if (input.address) rows.push({ label: 'Address', value: input.address, source: listing });
+/**
+ * The facts, and where each one came from. Printed at the foot of the report.
+ *
+ * The source is a SHORT LABEL plus a link, never the raw URL. A Google Maps
+ * place URL is roughly two hundred characters of base64-looking coordinates,
+ * and six of them printed in full turn the receipts, which are the most
+ * credible thing on the page, into the part that looks unfinished. The link is
+ * still there and still clickable; it just does not shout.
+ */
+export function provenanceFor(input: PresenceInput): { label: string; value: string; source: string; sourceUrl?: string | null }[] {
+  const listingUrl = (input.source_urls ?? []).find((u) => /google|maps/i.test(u)) ?? null;
+  const listing = { source: 'your public Google Business Profile', sourceUrl: listingUrl };
+  const rows: { label: string; value: string; source: string; sourceUrl?: string | null }[] = [];
+  if (input.rating !== null) rows.push({ label: 'Star rating', value: `${input.rating}`, ...listing });
+  if (input.review_count !== null) rows.push({ label: 'Review count', value: input.review_count.toLocaleString('en-US'), ...listing });
+  if (input.website) {
+    rows.push({
+      label: 'Website',
+      // The tracking parameters they put on their own listing link are noise
+      // here, and one of them is usually the most embarrassing fact on the page.
+      value: input.website.replace(/[?&](utm_[^=]+|gclid|fbclid)=[^&]*/gi, '').replace(/\?$/, ''),
+      source: 'read live at the time of this audit',
+      sourceUrl: input.website,
+    });
+  }
+  if (input.phone) rows.push({ label: 'Phone', value: input.phone, ...listing });
+  if (input.address) rows.push({ label: 'Address', value: input.address, ...listing });
   const hoursCount = input.hours ? Object.keys(input.hours).length : 0;
-  if (hoursCount) rows.push({ label: 'Published hours', value: `${hoursCount} days listed`, source: listing });
+  if (hoursCount) rows.push({ label: 'Published hours', value: `${hoursCount} days listed`, ...listing });
   return rows;
 }
 
