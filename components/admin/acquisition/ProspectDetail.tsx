@@ -710,6 +710,34 @@ function SuitePanel({
         >
           {busy === 'forge-suite' ? 'Forging…' : nothing ? '⚒ Forge the whole suite' : '⚒ Forge whatever is missing'}
         </button>
+
+        {/*
+          THE WEBSITE, ON ITS OWN BUTTON.
+
+          "Forge whatever is missing" is accurate and it is also invisible: when
+          the thing missing is the website, the word website appears nowhere on
+          the control that builds it. This is the button Sarah went looking for
+          and could not find. It says what it does, and it says the other half
+          out loud too, because forging the website is what turns their command
+          center on.
+        */}
+        {!building && !s?.siteUrl && (
+          <button
+            className={btnPrimary}
+            disabled={busy !== ''}
+            onClick={() => void act('forge-suite', { site: true, designTier, talkingWebsite })}
+            title="Queue their demo website at the forge. Twenty to forty minutes on your machine."
+          >
+            {busy === 'forge-suite' ? 'Queuing…' : '🌐 Forge their website'}
+          </button>
+        )}
+        {!building && !s?.siteUrl && s?.osUrl && !s?.osShown && (
+          <p className="-mt-1 text-[11px] leading-snug text-[#161616]/55">
+            Their command center is already built and sitting hidden. The website is the only thing standing between
+            them and seeing it, because it is free with the pair and free with neither one alone.
+          </p>
+        )}
+
         {(failed || (s?.siteUrl && !building)) && (
           <button className={btnGhost} disabled={busy !== ''} onClick={() => void act('reforge-site', { designTier, talkingWebsite })}>
             {busy === 'reforge-site' ? 'Queuing…' : failed ? 'Retry the website build' : 'Build their website again'}

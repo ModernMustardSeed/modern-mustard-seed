@@ -786,6 +786,18 @@ export default function AcqForge() {
                           {busy === 'forge' ? 'Forging…' : '⚒ Forge'}
                         </button>
                       )}
+                      {/* Built, but no website: name the website on the button that
+                          builds it. It is also what turns their command center on. */}
+                      {r.suite.pieces > 0 && !r.suite.siteUrl && r.segment !== 'forging' && r.segment !== 'closed' && (
+                        <button
+                          onClick={() => void act('forge', [r.id])}
+                          disabled={busy !== ''}
+                          className={`${btnPrimary} !px-3.5 !py-2 !text-xs`}
+                          title="Queue their demo website. It also turns their free command center on."
+                        >
+                          {busy === 'forge' ? 'Queuing…' : '🌐 Forge website'}
+                        </button>
+                      )}
                       {sendable(r) && (
                         <button onClick={() => void act('send-suite', [r.id])} disabled={busy !== ''} className={`${btnPrimary} !px-3.5 !py-2 !text-xs`}>
                           {busy === 'send-suite' ? 'Sending…' : '✉ Send suite'}
