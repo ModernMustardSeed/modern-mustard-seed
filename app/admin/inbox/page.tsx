@@ -31,6 +31,19 @@ type FullEmail = ListItem & {
   status_detail: string | null;
 };
 type MailboxInfo = { address: string; name: string } | null;
+type SyncTrouble = { error: string; detail?: string; fix?: string } | null;
+type Check = { ok: boolean; reason?: string; detail?: string; code?: string; fix?: string; ms: number; total?: number; unseen?: number };
+type Diagnosis = {
+  ok: boolean;
+  mailbox: { address: string; name: string } | null;
+  reason?: string;
+  fix?: string;
+  credential?: { length: number; looksPlaceholder: boolean; note?: string };
+  hosts?: { imap: string; smtp: string };
+  imap?: Check;
+  smtp?: Check;
+  store?: { lastInboundAt: string | null; storedInbox: number; staleHours: number | null };
+} | null;
 type Compose = { to: string; cc: string; subject: string; text: string; inReplyTo?: string; references?: string };
 
 const CARD = 'rounded-xl border-2 border-[#161616]';
@@ -73,6 +86,9 @@ export default function InboxPage() {
   const [q, setQ] = useState('');
   const [open, setOpen] = useState<FullEmail | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [trouble, setTrouble] = useState<SyncTrouble>(null);
+  const [diagnosing, setDiagnosing] = useState(false);
+  const [diagnosis, setDiagnosis] = useState<Diagnosis>(null);
   const [compose, setCompose] = useState<Compose | null>(null);
   const [sending, setSending] = useState(false);
   const composeRef = useRef<HTMLTextAreaElement>(null);
@@ -101,10 +117,32 @@ export default function InboxPage() {
     setItems((prev) => prev?.map((it) => (it.id === id ? { ...it, is_read: true } : it)) ?? prev);
   };
 
+  // A refresh that fails used to look exactly like a refresh that found nothing.
+  // Keep the reason on screen instead, with the Zoho setting to change.
   const sync = async () => {
     setSyncing(true);
-    try { await fetch('/api/admin/mail/sync', { method: 'POST' }); await load(); }
-    finally { setSyncing(false); }
+    setTrouble(null);
+    try {
+      const r = await fetch('/api/admin/mail/sync', { method: 'POST' });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || j?.ok === false) {
+        setTrouble({ error: j?.error || `Sync failed (HTTP ${r.status})`, detail: j?.detail, fix: j?.fix });
+      }
+      await load();
+    } catch {
+      setTrouble({ error: 'Could not reach the sync endpoint.' });
+    } finally { setSyncing(false); }
+  };
+
+  const diagnose = async () => {
+    setDiagnosing(true);
+    setDiagnosis(null);
+    try {
+      const r = await fetch('/api/admin/mail/diagnose');
+      setDiagnosis(await r.json());
+    } catch {
+      setDiagnosis({ ok: false, mailbox: null, reason: 'Could not reach the diagnose endpoint.' });
+    } finally { setDiagnosing(false); }
   };
 
   const send = async () => {
@@ -168,9 +206,45 @@ export default function InboxPage() {
               ))}
             </div>
             <button onClick={sync} disabled={syncing || !configured} className={BTN}>{syncing ? 'Syncing…' : 'Refresh mail'}</button>
+            <button onClick={diagnose} disabled={diagnosing} className={BTN}>{diagnosing ? 'Checking…' : 'Mail health'}</button>
             <button onClick={() => openCompose({ to: '', cc: '', subject: '', text: '' })} disabled={!configured} className={BTN_GO}>Compose</button>
           </div>
         </div>
+
+        {trouble && (
+          <div className="rounded-xl border-2 border-[#161616] bg-[#FFE4E0] p-4 mb-4 shadow-[4px_4px_0_0_#161616]">
+            <p className="font-sans font-bold text-[#161616] text-sm">Mail did not sync: {trouble.error}</p>
+            {trouble.detail && <p className="font-mono text-[11px] text-[#161616]/70 mt-1 break-all">{trouble.detail}</p>}
+            {trouble.fix && <p className="font-body text-sm text-[#3A3733] mt-2">{trouble.fix}</p>}
+          </div>
+        )}
+
+        {diagnosis && (
+          <div className="rounded-xl border-2 border-[#161616] bg-white p-4 mb-4 shadow-[4px_4px_0_0_#161616]">
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-sans font-bold text-[#161616]">Mail health</h3>
+              <span className={`text-[9px] uppercase tracking-wider rounded-full border-2 border-[#161616] px-2 py-0.5 ${diagnosis.ok ? 'bg-[#1F7A3D] text-white' : 'bg-[#E0301E] text-white'}`}>
+                {diagnosis.ok ? 'Healthy' : 'Broken'}
+              </span>
+              <button onClick={() => setDiagnosis(null)} className="ml-auto text-[11px] font-sans uppercase tracking-wider text-[#161616]/60 hover:text-[#161616]">Close</button>
+            </div>
+            {diagnosis.reason && <p className="font-body text-sm text-[#3A3733] mb-2">{diagnosis.reason}</p>}
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-[13px] font-body text-[#3A3733]">
+              <div><dt className="inline font-bold text-[#161616]">Mailbox: </dt><dd className="inline font-mono">{diagnosis.mailbox?.address ?? 'none mapped'}</dd></div>
+              <div><dt className="inline font-bold text-[#161616]">App password: </dt><dd className="inline">{diagnosis.credential ? `${diagnosis.credential.length} chars` : 'n/a'}</dd></div>
+              <div><dt className="inline font-bold text-[#161616]">Reading (IMAP): </dt><dd className="inline">{diagnosis.imap ? (diagnosis.imap.ok ? `OK, ${diagnosis.imap.total ?? 0} in the inbox, ${diagnosis.imap.unseen ?? 0} unread` : diagnosis.imap.reason) : 'not run'}</dd></div>
+              <div><dt className="inline font-bold text-[#161616]">Sending (SMTP): </dt><dd className="inline">{diagnosis.smtp ? (diagnosis.smtp.ok ? 'OK' : diagnosis.smtp.reason) : 'not run'}</dd></div>
+              <div><dt className="inline font-bold text-[#161616]">Stored here: </dt><dd className="inline">{diagnosis.store?.storedInbox ?? 0} messages</dd></div>
+              <div><dt className="inline font-bold text-[#161616]">Newest: </dt><dd className="inline">{diagnosis.store?.lastInboundAt ? `${new Date(diagnosis.store.lastInboundAt).toLocaleString()} (${diagnosis.store.staleHours}h ago)` : 'none yet'}</dd></div>
+            </dl>
+            {diagnosis.credential?.note && <p className="font-body text-sm text-[#B3261E] mt-2">{diagnosis.credential.note}</p>}
+            {(diagnosis.imap?.fix || diagnosis.smtp?.fix || diagnosis.fix) && (
+              <p className="font-body text-sm text-[#3A3733] mt-3 border-t-2 border-[#161616]/10 pt-2">
+                {diagnosis.imap?.fix || diagnosis.smtp?.fix || diagnosis.fix}
+              </p>
+            )}
+          </div>
+        )}
 
         {configured === false ? (
           <div className={`${CARD} bg-white p-6 shadow-[4px_4px_0_0_#161616] max-w-2xl`}>
