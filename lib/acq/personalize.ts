@@ -91,6 +91,17 @@ function missRate(lead: AcqProspect): { rate: number; because: string } {
   return { rate: 0.2, because: 'a busy trades line typically misses about one call in five' };
 }
 
+/**
+ * The trade as it belongs in a sentence. The registry label, lowercased unless
+ * it is an acronym, so a prospect reads "a conservative HVAC ticket" and never
+ * "a conservative hvac ticket" or "a conservative Plumbing ticket".
+ */
+function tradeWord(trade: Trade): string {
+  const label = TRADE_DEFS[trade as keyof typeof TRADE_DEFS]?.label;
+  if (!label) return 'trades';
+  return label === label.toUpperCase() ? label : label.toLowerCase();
+}
+
 function closesAt(lead: AcqProspect): number | null {
   if (!lead.hours) return null;
   const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
@@ -163,7 +174,10 @@ export function estimateFor(lead: AcqProspect): Estimate {
     value: d.avgJobValue,
     display: `$${d.avgJobValue.toLocaleString()}`,
     provenance: 'assumption',
-    because: `a conservative ${trade === 'other' ? 'trades' : trade} ticket. If yours is higher, the number below is low`,
+    // No "the number below": the machine sits ABOVE this receipt now, and a
+    // line that points the wrong way is the kind of small wrong thing that
+    // makes a stranger stop trusting the rest of the arithmetic.
+    because: `a conservative ${tradeWord(trade)} ticket. If yours is higher, the machine is under-reading you`,
   });
 
   inputs.push({
@@ -220,62 +234,14 @@ export function estimateFor(lead: AcqProspect): Estimate {
   };
 }
 
-/* ────────────────────────── the calculator, in an email ─────────────────── */
-
-const usd = (cents: number): string => `$${Math.round(cents / 100).toLocaleString('en-US')}`;
+/* ────────────────────────── the money, formatted ────────────────────────── */
 
 /**
- * The calculator as an email-safe table.
- *
- * No JavaScript, no web fonts, no background images, table layout throughout,
- * because half of these will open in Outlook and the other half on a phone.
- * The assumptions are printed UNDER the number rather than hidden behind a
- * tooltip, which is the whole reason it is persuasive instead of insulting.
+ * THE CALCULATOR MOVED. It used to be drawn here as a plain grey table. It is
+ * now the pop-art Model RR-1 in lib/acq/machine.ts, the same machine that sits
+ * on the homepage, on /mustard and on every demo hub, so an email and a page
+ * can never disagree about the same three inputs (2026-08-22).
  */
-export function calculatorBlock(lead: AcqProspect, est: Estimate, escape: (s: string) => string): string {
-  const business = shortBusiness(lead.business_name);
-  const row = (i: Input) => `
-    <tr>
-      <td style="padding:7px 0;font-size:14px;color:#5a564f;border-bottom:1px solid #eee7d8">${escape(i.label)}</td>
-      <td style="padding:7px 0;font-size:14px;font-weight:bold;color:#161616;text-align:right;border-bottom:1px solid #eee7d8;white-space:nowrap">${escape(i.display)}</td>
-    </tr>`;
-
-  return `
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0">
-    <tr>
-      <td style="border:2px solid #161616;border-radius:14px;padding:18px 20px;background:#ffffff">
-        <p style="margin:0 0 2px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#E0301E;font-weight:bold">
-          What the misses are worth
-        </p>
-        <p style="margin:0 0 14px;font-size:15px;color:#161616">
-          Rough arithmetic for ${escape(business)}, with the assumptions showing.
-        </p>
-
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-          ${est.inputs.map(row).join('')}
-          <tr>
-            <td style="padding:14px 0 0;font-size:15px;font-weight:bold;color:#161616">Every month</td>
-            <td style="padding:14px 0 0;font-size:26px;font-weight:bold;color:#161616;text-align:right;white-space:nowrap">${usd(est.monthlyLeakCents)}</td>
-          </tr>
-          <tr>
-            <td style="padding:2px 0 0;font-size:13px;color:#8a8375">Every year</td>
-            <td style="padding:2px 0 0;font-size:15px;font-weight:bold;color:#8a8375;text-align:right;white-space:nowrap">${usd(est.annualLeakCents)}</td>
-          </tr>
-        </table>
-
-        <p style="margin:14px 0 0;font-size:12px;line-height:1.6;color:#8a8375">
-          ${est.inputs
-            .map((i) => `<strong style="color:#5a564f">${escape(i.label)}:</strong> ${escape(i.because)}.`)
-            .join('<br>')}
-        </p>
-        <p style="margin:10px 0 0;font-size:12px;line-height:1.6;color:#8a8375">
-          Two of those are guesses, and they are the two you would know better than we do. If your average job is
-          bigger than ${escape(`$${est.avgJobValue.toLocaleString()}`)}, this number is low.
-        </p>
-      </td>
-    </tr>
-  </table>`;
-}
 
 /**
  * The opening line, built from the one true observation.

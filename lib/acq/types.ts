@@ -194,7 +194,7 @@ export type AcqCampaign = {
   reply_to: string;
   /**
    * Business days to wait AFTER email n before email n+1, so entry [0] is the
-   * gap between emails 1 and 2. A five email sequence has four entries; the
+   * gap between emails 1 and 2. A six email sequence has five entries; the
    * sequence length is read from this array, never hard-coded.
    */
   step_after_days: number[];

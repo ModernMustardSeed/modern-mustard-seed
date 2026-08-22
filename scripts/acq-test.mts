@@ -32,7 +32,8 @@ import { parseTeam } from '../app/api/demo-order/intake/route';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 import { classifyAgent, classifyHit, verdictDetail, HUMAN_DELAY_SECONDS, POLL_WINDOW_MINUTES } from '../lib/acq/bots';
 
-/** Four gaps, so a five email sequence. Mirrors the shipped campaign. */
+/** Four gaps, so a five email sequence. A fixture for the date maths only;
+ *  the shipped campaign runs six emails and reads its length off its own row. */
 const GAPS = [2, 4, 3, 4];
 import { idempotencyKey } from '../lib/acq/queue';
 import { CONSENT_VERSIONS, CURRENT_CONSENT, toE164, consentVersion } from '../lib/acq/consent';
@@ -44,7 +45,8 @@ import { cloudflareEmails, extractPhone, extractHours, extractServiceArea, parse
 import { tradeOf, buildBriefing, firstMessage, acquisitionTools } from '../lib/acq/call';
 import { authorize, nextRampStep, backOffStep, tierFor } from '../lib/acq/governor';
 import { goalLadder, forecast, monthsBetween, type FunnelRate } from '../lib/acq/factory';
-import { estimateFor, calculatorBlock, personalOpener } from '../lib/acq/personalize';
+import { estimateFor, personalOpener } from '../lib/acq/personalize';
+import { recoveryMachineBlock, machineAssumptions } from '../lib/acq/machine';
 import { readAttribution, labelSource } from '../lib/mustard/surface';
 import { hashToken } from '../lib/mustard/links';
 import { OFFER, isMailableEmailStatus } from '../lib/acq/types';
@@ -903,7 +905,7 @@ test('sequence: gaps are sanitized so a bad row cannot fire the whole drip at on
 
 test('sequence: every body_key in the sequence renders its own distinct email', () => {
   const seen = new Map<string, string>();
-  for (const body_key of ['default', 'proof', 'challenge', 'keep_her', 'breakup']) {
+  for (const body_key of ['default', 'proof', 'talking_website', 'challenge', 'keep_her', 'breakup']) {
     const built = buildCampaignEmail({
       lead: lead(),
       variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'S', cta_label: 'YES', body_key, weight: 1, active: true },
@@ -918,6 +920,63 @@ test('sequence: every body_key in the sequence renders its own distinct email', 
     }
     seen.set(body_key, built!.html);
   }
+});
+
+test('emails: email one carries the machine, the ranch line and exactly one button', () => {
+  const built = buildCampaignEmail({
+    lead: lead(),
+    variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'S', cta_label: 'YES', body_key: 'default', weight: 1, active: true },
+    step: 1,
+    fromName: 'Sarah',
+    fromEmail: 's@x.com',
+    replyTo: 's@x.com',
+  });
+  const html = built!.html;
+  assert.match(html, /Model RR-1/, 'the pop-art calculator ships in the first email');
+  assert.match(html, /\(406\) 312-1223/, 'his number is printed, not only linked in the signature');
+  assert.match(html, /tel:\+14063121223/, 'and it is dialable from a phone');
+  // Two doors, one button. A second button splits the click and measures
+  // nothing; a phone number does not compete with a CTA. The keypad links to
+  // the live machine on /mustard, so it never lands on the tracked route.
+  const tracked = html.match(/\/api\/acq\/click\?/g) ?? [];
+  assert.equal(tracked.length, 1, 'exactly one tracked button in the email');
+});
+
+test('emails: the website email sells the suite and its button opens the suite', () => {
+  const built = buildCampaignEmail({
+    lead: lead(),
+    variant: { id: 'v', campaign_id: 'c', key: 'A', step: 3, subject: 'He can answer your website too', cta_label: 'BUILD MY DEMO SUITE', body_key: 'talking_website', weight: 1, active: true },
+    step: 3,
+    fromName: 'Sarah',
+    fromEmail: 's@x.com',
+    replyTo: 's@x.com',
+  });
+  const html = built!.html;
+  assert.match(html, /We build the website too/i);
+  assert.match(html, /The command center/);
+  assert.match(html, /\(406\) 312-1223/, 'the forge close is on the phone, so the number is in the copy');
+  // The button must go to the demo suite, and the quieter second link back to
+  // the callback page. A button labelled BUILD MY SUITE that opens /mustard is
+  // a bait and switch.
+  assert.match(html, /\/api\/acq\/click\?[^"]*d=demos/, 'the button carries the demos door');
+  assert.ok(!/free\s+(website|suite)\s+for\s+\$/i.test(html), 'never a price on the free demo');
+  assert.match(html, /Have him call me/, 'the second door is a text link');
+});
+
+test('emails: only the website email changes the door, and the door is a whitelist', () => {
+  for (const body_key of ['default', 'proof', 'challenge', 'keep_her', 'breakup']) {
+    const built = buildCampaignEmail({
+      lead: lead(),
+      variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'S', cta_label: 'YES', body_key, weight: 1, active: true },
+      step: 1,
+      fromName: 'Sarah',
+      fromEmail: 's@x.com',
+      replyTo: 's@x.com',
+    });
+    assert.ok(!built!.html.includes('d=demos'), `${body_key} must keep the callback door`);
+  }
+  assert.match(permissionUrl(lead(), 3, 'A', 'demos'), /d=demos/);
+  assert.ok(!permissionUrl(lead(), 1, 'A').includes('d='), 'the default door adds no parameter');
 });
 
 test('emails: the proof email quotes only cited figures, and shows the contested one as a range', () => {
@@ -946,8 +1005,8 @@ test('emails: the proof email quotes only cited figures, and shows the contested
 test('emails: the keep-her email promises nobody loses a job', () => {
   const built = buildCampaignEmail({
     lead: lead(),
-    variant: { id: 'v', campaign_id: 'c', key: 'A', step: 4, subject: 'You do not have to replace anybody', cta_label: 'YES', body_key: 'keep_her', weight: 1, active: true },
-    step: 4,
+    variant: { id: 'v', campaign_id: 'c', key: 'A', step: 5, subject: 'You do not have to replace anybody', cta_label: 'YES', body_key: 'keep_her', weight: 1, active: true },
+    step: 5,
     fromName: 'Sarah',
     fromEmail: 'sarah@modernmustardseed.com',
     replyTo: 'sarah@modernmustardseed.com',
@@ -1384,14 +1443,38 @@ test('personalization: roofing carries a bigger ticket than plumbing, and it say
   assert.match(roof.inputs.find((i) => i.key === 'value')!.because, /roofing/);
 });
 
-test('personalization: the calculator block is email safe and shows its working', () => {
+test('machine: the pop-art calculator is email safe and shows its working', () => {
   const l = lead({ review_count: 312, rating: 4.8, city: 'Phoenix', state: 'AZ' });
-  const html = calculatorBlock(l, estimateFor(l), (s) => s);
+  const est = estimateFor(l);
+  const html =
+    recoveryMachineBlock({ est, business: 'ABC Heating', personalized: true, liveUrl: 'https://modernmustardseed.com/mustard', escape: (s) => s }) +
+    machineAssumptions(est, (s) => s);
+
   assert.match(html, /<table/, 'tables, because half of these open in Outlook');
-  assert.ok(!/<script|onclick=|position:\s*fixed|background-image/i.test(html), 'no script, no handlers, no background images');
-  assert.match(html, /Every month/);
+  // Everything the React machine does with script, shadow or a gradient has to
+  // be gone, or it renders as a broken box in Outlook and Gmail.
+  // `text-transform` is fine and everywhere, so the transform check is anchored
+  // to a property start rather than matching the substring.
+  assert.ok(!/<script|onclick=|position:\s*fixed|background-image|box-shadow|[;"\s]transform:/i.test(html), 'no script, no handlers, no shadows, no background images');
+  assert.match(html, /Model RR-1/, 'it is the same machine, and it says so');
+  assert.match(html, /Leaking Every Month/);
+  assert.match(html, /Calls You Miss A Week/);
   assert.match(html, /worked back from your 312 public reviews/);
-  assert.match(html, /Two of those are guesses/, 'the guesses must be admitted in the body');
+  assert.match(html, /guesses/, 'the guesses must be admitted under the machine');
+
+  // The display must equal the estimate, or the email and /mustard disagree.
+  const shown = html.match(/font-size:38px;font-weight:bold;color:#FFDD55;line-height:1.15;padding-top:6px">\$([\d,]+)</);
+  assert.ok(shown, 'the LCD renders a dollar figure');
+  assert.equal(Number(shown![1].replace(/,/g, '')), Math.round(est.monthlyLeakCents / 100));
+});
+
+test('machine: house numbers never claim to be their numbers', () => {
+  const est = estimateFor(lead());
+  const theirs = recoveryMachineBlock({ est, business: 'ABC Heating', personalized: true, liveUrl: 'https://x.test', escape: (s) => s });
+  const ours = recoveryMachineBlock({ est, business: 'ABC Heating', personalized: false, liveUrl: 'https://x.test', escape: (s) => s });
+  assert.match(theirs, /shows in public/, 'a researched machine says where the numbers came from');
+  assert.match(ours, /these three are ours/, 'a house machine says the numbers are ours');
+  assert.ok(!/shows in public/.test(ours), 'house defaults must never be presented as research');
 });
 
 test('personalization: the personalized email still carries the opt-out and the tracked CTA', () => {
@@ -1423,7 +1506,11 @@ test('personalization: a thin prospect on the personalized variant gets the plai
   });
   assert.ok(built);
   assert.match(built!.html, /Slightly unusual question/, 'falls back to the plain email');
-  assert.ok(!built!.html.includes('What the misses are worth'), 'no invented calculator');
+  // The machine still ships, because it is the hook. What it must never do is
+  // claim the numbers on it were read off a business we could not see.
+  assert.match(built!.html, /these three are ours/, 'the machine admits whose numbers these are');
+  assert.ok(!built!.html.includes('shows in public'), 'no invented research');
+  assert.ok(!built!.html.includes('worked back from your'), 'no invented citation');
 });
 
 /* ----------------------------- the /mustard door -------------------------- */
