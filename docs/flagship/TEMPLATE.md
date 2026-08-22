@@ -73,6 +73,9 @@ Measured on the reference: worst off-photograph contrast **5.13:1** across 44
 text nodes.
 
 ### 4. One signature moment, drawn from the trade
+The six worked-out forms, and the traps in each, are in `MOTION.md`. Read it and
+pick one rather than inventing a seventh. THE TURN is the flagship form.
+
 Abruzzo got a slider through their handmade pasta. Sappari got a brass handle
 that drags the rail from wool to linen, February to July. It has to be:
 - made from **their** material, real photography, never drawn art
@@ -105,7 +108,14 @@ screenshot and invisible in a diff.
 - no fabricated signage: never letter their name onto a building or a truck
 - the Modern Mustard Seed credit in the footer, in mustard `#F5B700`
 
-## Reading the reference
+## Reading the references
+
+`REFERENCE-WILD-HOPE.html` is the second reference build, a church concept, and
+it is the one to read for MOTION: the scroll-driven night-to-dawn turn, the
+drag-through week, the horizontal rail, and the oversized wordmark clamped on
+both axes.
+
+
 
 `REFERENCE.html` is the Sappari build with `__IMG_*__` tokens where the seven
 photographs go. Read it for the scrim construction, the signature-moment

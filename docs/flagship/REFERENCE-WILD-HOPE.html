@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<!--DIRECTION: wild reverent alive-->
+<!--HERO_PROMPT: A wide Montana mountain valley at first light, ground mist in the valley floor, dark conifer forest climbing both sides, a snow-dusted ridge catching the first warm light while the valley stays in cool blue shadow.-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wild Hope Church · Sunday mornings in the Flathead Valley</title>
+<meta name="description" content="A church in the Flathead Valley for people who are not sure they belong in one. Sundays at 9 and 11. Come as you are, sit at the back, leave when you like.">
+<meta name="theme-color" content="#0B1016">
+<meta name="mms-palette" content='{"bg":"#0B1016","accent":"#E08A3C"}'>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B1016'/%3E%3Cpath d='M32 12 L32 52 M32 24 C24 20 18 24 16 30 C22 32 28 30 32 24 Z M32 24 C40 20 46 24 48 30 C42 32 36 30 32 24 Z' stroke='%23E08A3C' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0B1016; --night-2:#121A23; --slate:#1B242E;
+  --paper:#F6F1E8; --paper-2:#E7DFD2; --muted:#9AA6B2;
+  --ember:#E08A3C; --ember-lift:#F5B36A; --moss:#5C6E5A;
+  --display:'Fraunces',Georgia,'Times New Roman',serif;
+  --body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --edge:clamp(1.25rem,5vw,5.5rem);
+  --maxw:78rem;
+  --hdr:70px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--night);color:var(--paper);font-family:var(--body);
+  font-size:clamp(1rem,.95rem + .22vw,1.09rem);line-height:1.68;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:300;letter-spacing:-.022em;line-height:1.03;margin:0}
+p{margin:0 0 1em}
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--edge)}
+.eyebrow{font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:var(--ember)}
+:focus-visible{outline:2.5px solid var(--ember);outline-offset:3px;border-radius:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- header ---------- */
+.hdr{position:fixed;inset:0 0 auto;z-index:80;height:var(--hdr);display:flex;align-items:center;
+  gap:1.5rem;padding-inline:var(--edge);transition:background .4s,border-color .4s;
+  border-bottom:1px solid transparent}
+.hdr.is-stuck{background:rgba(11,16,22,.92);border-bottom-color:rgba(246,241,232,.12)}
+.hdr__mark{display:flex;align-items:center;gap:.6rem;text-decoration:none;margin-right:auto;white-space:nowrap}
+.hdr__mark svg{width:26px;height:26px;flex:none}
+.hdr__mark b{font-family:var(--display);font-weight:400;font-size:1.36rem;letter-spacing:-.015em}
+.hdr__nav{display:none;gap:1.75rem}
+.hdr__nav a{font-size:.73rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
+  color:rgba(246,241,232,.78);position:relative;padding-block:.35rem}
+.hdr__nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ember);
+  transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.hdr__nav a:hover::after,.hdr__nav a:focus-visible::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:600;font-size:.76rem;letter-spacing:.11em;
+  text-transform:uppercase;text-decoration:none;padding:.78rem 1.3rem;border-radius:2px;
+  border:1px solid transparent;white-space:nowrap;
+  transition:transform .28s cubic-bezier(.16,1,.3,1),background .28s,color .28s,border-color .28s}
+.btn--ember{background:var(--ember);color:#17110A}
+.btn--ember:hover{background:var(--ember-lift);transform:translateY(-2px)}
+.btn--line{border-color:rgba(246,241,232,.5);color:var(--paper)}
+.btn--line:hover{background:var(--paper);color:var(--night);border-color:var(--paper);transform:translateY(-2px)}
+@media (min-width:940px){:root{--hdr:80px}.hdr__nav{display:flex}}
+
+/* ---------- hero: parallax plate ---------- */
+/* Grid, not absolute positioning. The times bar was pinned to the bottom and
+   the buttons sat in normal flow, so on a short viewport they printed straight
+   through each other. A row that the layout reserves cannot be overlapped. */
+/* The hero does NOT clip. Only the parallax plate does, from its own wrapper.
+   With overflow:hidden on the section itself, a big wordmark on a short laptop
+   silently cut the buttons and the service times off the bottom, and there was
+   no scroll that could reach them. */
+.hero{position:relative;min-height:100svh;height:auto;display:grid;
+  grid-template-rows:1fr auto;isolation:isolate}
+.hero__clip{position:absolute;inset:0;z-index:-2;overflow:hidden}
+.hero__plate{position:absolute;inset:-8% 0 -8%;will-change:transform}
+.art--fill{position:absolute;inset:0;width:100%;height:100%}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:
+  linear-gradient(180deg,rgba(11,16,22,.80) 0%,rgba(11,16,22,.34) 30%,rgba(11,16,22,.46) 62%,rgba(11,16,22,.94) 100%)}
+.hero__in{position:relative;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--edge);
+  padding-top:calc(var(--hdr) + 1.5rem);padding-bottom:1.5rem;align-self:center}
+/* Sized by the SHORTER axis as well as the wider one. A width-only clamp put
+   the wordmark at 208px, which fits a tall window and pushes the buttons off
+   a short laptop. min() with vh caps it by whichever axis runs out first. */
+.hero h1{font-size:clamp(3.6rem,min(15.5vw,21vh),13.5rem);font-weight:200;letter-spacing:-.055em;
+  line-height:.86;color:var(--paper);text-shadow:0 2px 46px rgba(0,0,0,.62)}
+.hero h1 span{display:block}
+.hero h1 em{font-style:italic;color:var(--ember-lift)}
+.hero__sub{max-width:34rem;margin-top:1.8rem;font-size:1.14rem;color:rgba(246,241,232,.92);font-size:1.08rem;
+  text-shadow:0 1px 4px rgba(0,0,0,.8),0 1px 20px rgba(0,0,0,.6)}
+.hero__cta{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem}
+.hero__times{position:relative;width:100%;max-width:var(--maxw);margin:0 auto 1.5rem;
+  padding-inline:var(--edge);display:flex;flex-wrap:wrap;
+  gap:.6rem 1.6rem;align-items:baseline;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(246,241,232,.66)}
+.hero__times::before{content:"";position:absolute;left:var(--edge);right:var(--edge);top:-1rem;
+  height:1px;background:rgba(246,241,232,.18)}
+.hero__times b{color:var(--ember);font-weight:600}
+
+/* ---------- generic section ---------- */
+.sect{padding-block:clamp(4.5rem,11vw,9rem);position:relative}
+.sect--paper{background:var(--paper);color:var(--night)}
+.sect--paper .eyebrow{color:#A6551A}
+.lede{font-family:var(--display);font-size:clamp(1.7rem,4vw,3.1rem);font-weight:300;line-height:1.2;
+  letter-spacing:-.022em;max-width:22ch}
+.body-max{max-width:38rem}
+.rule{width:58px;height:2px;background:var(--ember);margin-bottom:1.4rem}
+.two{display:grid;gap:clamp(2.2rem,6vw,5rem);align-items:center}
+@media (min-width:940px){.two{grid-template-columns:1fr 1fr}}
+
+/* ---------- THE DAWN: scroll drives night into morning ---------- */
+.dawn{height:340svh;position:relative}
+.dawn__stick{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;
+  display:grid;place-items:center}
+.dawn__layer{position:absolute;inset:0;z-index:-2}
+
+.dawn__dawn{opacity:var(--k,0)}
+.dawn__wash{position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(11,16,22,.55) 0%,rgba(11,16,22,.14) 42%,rgba(11,16,22,.72) 100%)}
+.dawn__words{position:relative;text-align:center;padding-inline:var(--edge);max-width:56rem}
+.dawn__words p{font-family:var(--display);font-weight:200;font-size:clamp(1.9rem,5.4vw,4.2rem);
+  line-height:1.14;letter-spacing:-.03em;color:var(--paper);margin:0;
+  text-shadow:0 2px 44px rgba(0,0,0,.66)}
+.dawn__words .li{display:block;opacity:.16;transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1);
+  transform:translateY(10px)}
+.dawn__words .li.on{opacity:1;transform:none}
+.dawn__words .li em{font-style:italic;color:var(--ember-lift)}
+/* Scoped, because `.dawn__words p` sets the verse at 4.2rem and outranks a
+   bare class. Unscoped, the citation rendered at display size and printed
+   straight through the second line of the verse. */
+.dawn__words p.dawn__cite{margin-top:2.2rem;font-family:var(--body);font-size:.72rem;
+  font-weight:600;letter-spacing:.22em;text-transform:uppercase;line-height:1.6;
+  color:rgba(246,241,232,.62);text-shadow:0 1px 12px rgba(0,0,0,.8)}
+.dawn__cue{position:absolute;left:50%;translate:-50% 0;bottom:1.6rem;font-size:.66rem;letter-spacing:.24em;
+  text-transform:uppercase;color:rgba(246,241,232,.45)}
+
+/* ---------- THE WEEK: drag through the rhythm ---------- */
+.week{background:var(--night-2)}
+.week__stage{position:relative;margin-top:clamp(2rem,5vw,3.5rem);border-radius:3px;overflow:hidden;
+  aspect-ratio:16/10;cursor:grab;user-select:none;touch-action:pan-y;
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.9)}
+.week__stage:active{cursor:grabbing}
+@media (max-width:700px){.week__stage{aspect-ratio:4/5}}
+.week__pane{position:absolute;inset:0;opacity:0;transition:opacity .7s ease}
+.week__pane.on{opacity:1}
+
+.week__pane::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(11,16,22,.20) 0%,rgba(11,16,22,.10) 40%,rgba(11,16,22,.90) 100%)}
+.week__cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:clamp(1.4rem,4vw,2.6rem)}
+.week__cap h3{font-size:clamp(1.7rem,4vw,2.8rem);color:var(--paper)}
+.week__cap p{color:rgba(246,241,232,.86);max-width:34rem;margin:.6rem 0 0}
+.week__cap b{color:var(--ember);font-weight:600;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  display:block;margin-bottom:.5rem}
+.week__track{position:relative;display:flex;gap:0;margin-top:1.2rem;border-top:1px solid rgba(246,241,232,.16)}
+.week__tab{flex:1;background:none;border:0;padding:1rem .4rem 0;color:rgba(246,241,232,.5);
+  font:inherit;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;
+  text-align:left;position:relative;transition:color .35s}
+.week__tab[aria-selected="true"]{color:var(--paper)}
+.week__tab::before{content:"";position:absolute;top:-1px;left:0;right:0;height:2px;background:var(--ember);
+  transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.week__tab[aria-selected="true"]::before{transform:scaleX(1)}
+.week__hint{margin-top:.9rem;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(246,241,232,.42)}
+
+/* ---------- the rail: horizontal drag gallery ---------- */
+.rail{padding-block:clamp(4rem,10vw,8rem);background:var(--paper);color:var(--night);overflow:hidden}
+.rail .eyebrow{color:#A6551A}
+/* align-items:start, not the flex default of stretch. Stretched, every card
+   grew to the height of the tall one, the 4:3 plates stopped short, and the
+   captions floated on bare card background below their own photograph. */
+.rail__scroller{display:flex;align-items:flex-start;gap:clamp(.9rem,2vw,1.5rem);
+  margin-top:clamp(2rem,5vw,3rem);
+  padding-inline:var(--edge);overflow-x:auto;scroll-snap-type:x mandatory;cursor:grab;
+  scrollbar-width:none;-ms-overflow-style:none}
+.rail__scroller::-webkit-scrollbar{display:none}
+.rail__scroller:active{cursor:grabbing}
+.rail__card{flex:0 0 auto;width:min(78vw,26rem);scroll-snap-align:center;position:relative;
+  border-radius:3px;overflow:hidden;background:var(--paper-2)}
+.rail__card--tall{width:min(58vw,19rem)}
+.art--card{width:100%;aspect-ratio:4/3}
+.art--tall{width:100%;aspect-ratio:2/3}
+.rail__card figcaption{position:absolute;left:0;right:0;bottom:0;padding:1.1rem 1.2rem;color:#fff;
+  background:linear-gradient(180deg,transparent,rgba(11,16,22,.86));font-size:.94rem}
+.rail__card figcaption b{display:block;font-family:var(--display);font-size:1.25rem;font-weight:400;
+  margin-bottom:.15rem}
+.rail__hint{padding-inline:var(--edge);margin-top:1rem;font-size:.68rem;letter-spacing:.18em;
+  text-transform:uppercase;color:#6A6357}
+
+/* ---------- honest section ---------- */
+.honest{background:var(--slate)}
+.honest__grid{display:grid;gap:clamp(1.6rem,4vw,2.5rem);margin-top:clamp(2rem,5vw,3rem)}
+@media (min-width:820px){.honest__grid{grid-template-columns:repeat(3,1fr)}}
+.honest__item{border-top:1px solid rgba(246,241,232,.18);padding-top:1.3rem}
+.honest__item h3{font-size:1.4rem;color:var(--paper);margin-bottom:.5rem}
+.honest__item p{color:rgba(246,241,232,.76);margin:0;font-size:.98rem}
+
+/* ---------- closing band ---------- */
+.close{position:relative;isolation:isolate;overflow:hidden;
+  padding-top:clamp(4.5rem,10vw,8rem);padding-bottom:clamp(3rem,6vw,5rem);background:#070B0F}
+.close::before{content:"";position:absolute;inset:0;z-index:-1;background:
+  radial-gradient(140% 120% at 8% 118%, rgba(224,138,60,.42) 0%, rgba(224,138,60,.09) 36%, transparent 68%),
+  radial-gradient(100% 90% at 96% -12%, rgba(92,110,90,.26) 0%, transparent 62%)}
+.close__edge{position:absolute;top:0;left:0;right:0;height:1px;z-index:2;transform:scaleX(0);
+  transform-origin:left;transition:transform 1.3s cubic-bezier(.16,1,.3,1);background:
+  linear-gradient(90deg,rgba(224,138,60,0),var(--ember) 18%,var(--ember-lift) 46%,rgba(224,138,60,.3) 80%,rgba(224,138,60,0));
+  box-shadow:0 0 22px 1px rgba(224,138,60,.5)}
+.close__edge.on{transform:scaleX(1)}
+.close h2{font-size:clamp(2.6rem,7vw,5.4rem);font-weight:200;letter-spacing:-.04em;margin-top:.7rem}
+.close__grid{display:grid;gap:clamp(2rem,5vw,3.5rem);margin-top:clamp(2.4rem,5vw,3.5rem)}
+@media (min-width:860px){.close__grid{grid-template-columns:1.15fr .85fr;align-items:start}}
+.dl{display:grid;gap:1.5rem;margin:0}
+.dl dt{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ember);margin-bottom:.35rem}
+.dl dd{margin:0;color:rgba(246,241,232,.92)}
+.demo-note{font-size:.82rem;color:rgba(246,241,232,.5);font-style:italic;line-height:1.55;
+  border-left:2px solid rgba(224,138,60,.45);padding-left:.95rem;margin-top:1.8rem}
+.foot{background:#070B0F;padding-bottom:2.4rem}
+.foot__top{border-top:1px solid rgba(246,241,232,.14);padding-top:1.7rem;display:flex;flex-wrap:wrap;
+  gap:1rem 1.75rem;align-items:baseline;justify-content:space-between}
+.foot__mark{font-family:var(--display);font-size:clamp(2.8rem,7.4vw,5.4rem);font-weight:200;
+  letter-spacing:-.045em;line-height:.9;color:var(--paper);margin:0}
+.foot__mark i{color:var(--ember);font-style:normal}
+.foot__nav{display:flex;flex-wrap:wrap;gap:1rem 1.75rem;list-style:none;margin:0;padding:0}
+.foot__nav a{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
+  color:rgba(246,241,232,.66);position:relative}
+.foot__nav a::after{content:"";position:absolute;left:0;right:0;bottom:-.3em;height:1px;background:var(--ember);
+  transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.foot__nav a:hover{color:var(--paper)}
+.foot__nav a:hover::after{transform:scaleX(1)}
+.foot__fine{margin-top:1.5rem;font-size:.76rem;color:rgba(246,241,232,.42);display:flex;flex-wrap:wrap;
+  gap:.5rem 1.5rem;justify-content:space-between}
+.foot__fine a{color:#F5B700;text-decoration:none;font-weight:600}
+.foot__fine a:hover{text-decoration:underline}
+
+/* ---------- reveal ---------- */
+.rise{opacity:0;transform:translateY(26px);
+  transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.rise.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .rise{opacity:1;transform:none;transition:none}
+  .close__edge{transform:scaleX(1);transition:none}
+  .dawn{height:auto}
+  .dawn__stick{position:static;height:auto;min-height:78svh;padding-block:5rem}
+  .dawn__dawn{opacity:1}
+  .dawn__words .li{opacity:1;transform:none;transition:none}
+  .hero__plate{inset:0}
+  .week__pane{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr" id="hdr">
+  <a class="hdr__mark" href="#top">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 12 L32 52 M32 24 C24 20 18 24 16 30 C22 32 28 30 32 24 Z M32 24 C40 20 46 24 48 30 C42 32 36 30 32 24 Z" stroke="#E08A3C" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <b>Wild Hope</b>
+  </a>
+  <nav class="hdr__nav" aria-label="Primary">
+    <a href="#dawn">The Morning</a>
+    <a href="#week">The Week</a>
+    <a href="#life">Life Here</a>
+    <a href="#honest">Before You Come</a>
+  </nav>
+  <a class="btn btn--ember" href="#visit">Plan a Sunday</a>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="hero__clip"><div class="hero__plate" id="heroPlate">__IMG_HERO__</div></div>
+    <div class="hero__in">
+      <p class="eyebrow">Flathead Valley, Montana</p>
+      <h1><span>Wild</span><span><em>Hope</em></span></h1>
+      <p class="hero__sub">A church for people who are not sure they belong in one. Come as you are, sit at the
+        back if you want to, and leave whenever you like.</p>
+      <div class="hero__cta">
+        <a class="btn btn--ember" href="#visit">Plan a Sunday</a>
+        <a class="btn btn--line" href="#honest">Read this first</a>
+      </div>
+    </div>
+    <p class="hero__times"><span><b>Sundays</b> 9:00 and 11:00</span><span><b>Where</b> 412 Ridge Road, Kalispell</span><span><b>Coffee</b> from 8:30, and it is good</span></p>
+  </section>
+
+  <!-- SIGNATURE 1: the scroll turns night into morning -->
+  <section class="dawn" id="dawn" aria-label="Night turning to morning">
+    <div class="dawn__stick">
+      <div class="dawn__layer">__IMG_NIGHT__</div>
+      <div class="dawn__layer dawn__dawn" id="dawnLayer">__IMG_DAWN__</div>
+      <div class="dawn__wash"></div>
+      <div class="dawn__words">
+        <p>
+          <span class="li" data-li="0">Weeping may stay for the night,</span>
+          <span class="li" data-li="1">but <em>joy</em> comes in the morning.</span>
+        </p>
+        <p class="dawn__cite">Psalm 30 · verse 5</p>
+      </div>
+      <p class="dawn__cue">Keep scrolling</p>
+    </div>
+  </section>
+
+  <section class="sect sect--paper">
+    <div class="wrap two">
+      <div class="rise">
+        <div class="rule"></div>
+        <p class="eyebrow">Why we are called that</p>
+        <h2 class="lede">Hope is not a mood. It is the thing that got us out of bed.</h2>
+      </div>
+      <div class="rise body-max">
+        <p style="color:#4A4F56">We started in a living room in 2019 with eleven people and a borrowed coffee urn.
+          Nobody had a plan for a building. What we had was a shared suspicion that God was not finished with any
+          of us, and that a room full of honest people was worth more than a good sound system.</p>
+        <p style="color:#4A4F56">Seven years on we are a few hundred, we own the coffee urn, and the suspicion has
+          not changed. Wild, because hope out here is not tidy. Hope, because it turned out to be true.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNATURE 2: drag through the week -->
+  <section class="week sect" id="week">
+    <div class="wrap">
+      <div class="rise" style="max-width:40rem">
+        <div class="rule"></div>
+        <p class="eyebrow">The rhythm</p>
+        <h2 class="lede" style="margin-top:.6rem">A week here, dragged.</h2>
+      </div>
+
+      <div class="week__stage" id="weekStage" role="group" aria-label="The week, drag or use arrow keys" tabindex="0">
+        <div class="week__pane on" data-pane="0">
+          __IMG_GATHER__
+          <div class="week__cap"><b>Sunday · 9:00 and 11:00</b>
+            <h3>The gathering</h3>
+            <p>Singing, a passage read out loud, a sermon that assumes you have questions. Ninety minutes,
+              and nobody will ask you to stand up and introduce yourself.</p></div>
+        </div>
+        <div class="week__pane" data-pane="1">
+          __IMG_BREAD__
+          <div class="week__cap"><b>First Sunday of the month</b>
+            <h3>The table</h3>
+            <p>Bread torn from one loaf, a cup passed down the row. Open to anyone who wants it, including the
+              people who are still deciding what they believe.</p></div>
+        </div>
+        <div class="week__pane" data-pane="2">
+          __IMG_KIDS__
+          <div class="week__cap"><b>Wednesday · 6:00</b>
+            <h3>Kids and youth</h3>
+            <p>Dinner first, because everyone is hungry at six. Then games outside until the light goes, and
+              twenty minutes of something true.</p></div>
+        </div>
+        <div class="week__pane" data-pane="3">
+          __IMG_SERVE__
+          <div class="week__cap"><b>Second Saturday</b>
+            <h3>Serve day</h3>
+            <p>Firewood, gutters, a ride to Missoula for chemo. We keep a list of who needs what, and we work
+              through it. No sign-up sheet required, just turn up.</p></div>
+        </div>
+      </div>
+
+      <div class="week__track" role="tablist" aria-label="Days of the week">
+        <button class="week__tab" role="tab" aria-selected="true" data-tab="0">Sunday</button>
+        <button class="week__tab" role="tab" aria-selected="false" data-tab="1">The table</button>
+        <button class="week__tab" role="tab" aria-selected="false" data-tab="2">Wednesday</button>
+        <button class="week__tab" role="tab" aria-selected="false" data-tab="3">Saturday</button>
+      </div>
+      <p class="week__hint">Drag the image, or use the arrow keys</p>
+    </div>
+  </section>
+
+  <!-- SIGNATURE 3: the rail -->
+  <section class="rail" id="life">
+    <div class="wrap" style="padding-inline:0">
+      <div class="rise" style="padding-inline:var(--edge);max-width:40rem">
+        <div class="rule"></div>
+        <p class="eyebrow">Life here</p>
+        <h2 class="lede" style="margin-top:.6rem">Most of it happens outside the building.</h2>
+      </div>
+    </div>
+    <div class="rail__scroller" id="rail">
+      <figure class="rail__card">__IMG_GATHER_C__<figcaption><b>The room</b>Ridge Road, most Sundays, twice.</figcaption></figure>
+      <figure class="rail__card rail__card--tall">__IMG_TRAIL__<figcaption><b>Thursday walks</b>Six miles and no agenda.</figcaption></figure>
+      <figure class="rail__card">__IMG_KIDS_C__<figcaption><b>The field out back</b>Where the kids actually are.</figcaption></figure>
+      <figure class="rail__card">__IMG_SERVE_C__<figcaption><b>Serve day</b>Second Saturday, rain or otherwise.</figcaption></figure>
+      <figure class="rail__card">__IMG_BREAD_C__<figcaption><b>The table</b>One loaf, one cup, no membership card.</figcaption></figure>
+    </div>
+    <p class="rail__hint">Drag sideways</p>
+  </section>
+
+  <section class="honest sect" id="honest">
+    <div class="wrap">
+      <div class="rise" style="max-width:44rem">
+        <div class="rule"></div>
+        <p class="eyebrow">Before you come</p>
+        <h2 class="lede" style="margin-top:.6rem">The three things people actually want to know.</h2>
+      </div>
+      <div class="honest__grid">
+        <div class="honest__item rise"><h3>What do I wear?</h3>
+          <p>What you wore yesterday. Half the room is in flannel and boots, and nobody has ever been turned away
+            for it.</p></div>
+        <div class="honest__item rise"><h3>Will I get singled out?</h3>
+          <p>No. We do not make visitors stand, we do not pass a card down the row, and the offering is a box by
+            the door that you can walk straight past.</p></div>
+        <div class="honest__item rise"><h3>What if I do not believe any of it?</h3>
+          <p>Then you are in good company, and you are still welcome. Plenty of people here spent a long year in
+            the back row before anything shifted. There is no clock on it.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="close" id="visit">
+    <span class="close__edge" id="closeEdge" aria-hidden="true"></span>
+    <div class="wrap">
+      <p class="eyebrow">Plan a Sunday</p>
+      <h2>We will save you a seat<br>near the back.</h2>
+      <div class="close__grid">
+        <div>
+          <p style="color:rgba(246,241,232,.84);max-width:34ch;margin-top:1.2rem;font-size:1.06rem">
+            Come at 9 or at 11. Coffee from half past eight. If you want someone to meet you in the car park so
+            you are not walking in alone, say so and we will be there.</p>
+          <div class="hero__cta" style="margin-top:1.6rem">
+            <a class="btn btn--ember" href="tel:+14065550134">Call (406) 555-0134</a>
+            <a class="btn btn--line" href="#top">Back to the top</a>
+          </div>
+          <p class="demo-note">Concept site. The phone number, the address and the story are illustrative, and a
+            real build would carry the church's own details, a live service time that knows Mountain Time, and a
+            form that tells someone you are coming.</p>
+        </div>
+        <dl class="dl">
+          <div><dt>Sundays</dt><dd>9:00 and 11:00<br>Coffee from 8:30</dd></div>
+          <div><dt>Where</dt><dd>412 Ridge Road<br>Kalispell, Montana</dd></div>
+          <div><dt>Wednesdays</dt><dd>Kids and youth, 6:00<br>Dinner included</dd></div>
+          <div><dt>Second Saturday</dt><dd>Serve day, 9:00<br>Meet at the building</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot__top">
+        <p class="foot__mark">Wild Hope<i>.</i></p>
+        <ul class="foot__nav">
+          <li><a href="#dawn">The Morning</a></li>
+          <li><a href="#week">The Week</a></li>
+          <li><a href="#life">Life Here</a></li>
+          <li><a href="#honest">Before You Come</a></li>
+          <li><a href="#visit">Plan a Sunday</a></li>
+        </ul>
+      </div>
+      <div class="foot__fine">
+        <span>Wild Hope Church · 412 Ridge Road, Kalispell, Montana · Gathering since 2019</span>
+        <span>Concept site by <a href="https://modernmustardseed.com" target="_blank" rel="noopener noreferrer">Modern Mustard Seed</a></span>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Church","name":"Wild Hope Church",
+"description":"A church in the Flathead Valley, Montana. Sundays at 9:00 and 11:00.",
+"telephone":"+1-406-555-0134","foundingDate":"2019",
+"address":{"@type":"PostalAddress","streetAddress":"412 Ridge Road","addressLocality":"Kalispell","addressRegion":"MT","addressCountry":"US"}}
+</script>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var raf = window.requestAnimationFrame;
+
+  /* ---- reveal ---- */
+  var rises = document.querySelectorAll('.rise');
+  if (!('IntersectionObserver' in window) || reduce) {
+    rises.forEach(function(e){ e.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.14, rootMargin:'0px 0px -6% 0px'});
+    rises.forEach(function(e){ io.observe(e); });
+  }
+
+  /* ---- header, class toggled only on change ---- */
+  var hdr = document.getElementById('hdr'), stuck = null;
+  function header(){
+    var now = window.scrollY > 40;
+    if (now === stuck) return;
+    stuck = now; hdr.classList.toggle('is-stuck', now);
+  }
+
+  /* ---- the lit edge ---- */
+  var edge = document.getElementById('closeEdge');
+  if (edge) {
+    if (!('IntersectionObserver' in window) || reduce) edge.classList.add('on');
+    else new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting) edge.classList.add('on'); });
+    }, {threshold:.2}).observe(edge.parentElement);
+  }
+
+  /* ---- SIGNATURE 1: scroll drives night into morning ----
+     One rAF-throttled scroll handler owns the hero parallax AND the dawn
+     crossfade. Two separate scroll listeners each writing style is how you get a
+     page that stutters; this reads once per frame and writes once per frame. */
+  var plate = document.getElementById('heroPlate');
+  var dawnSec = document.getElementById('dawn');
+  var dawnLayer = document.getElementById('dawnLayer');
+  var lines = [].slice.call(document.querySelectorAll('.dawn__words .li'));
+  var ticking = false;
+
+  function frame(){
+    ticking = false;
+    header();
+    if (reduce) return;
+
+    if (plate) {
+      var hb = plate.parentElement.getBoundingClientRect();
+      if (hb.bottom > 0 && hb.top < window.innerHeight) {
+        plate.style.transform = 'translate3d(0,' + (-hb.top * 0.18).toFixed(1) + 'px,0)';
+      }
+    }
+
+    if (dawnSec && dawnLayer) {
+      var r = dawnSec.getBoundingClientRect();
+      var span = r.height - window.innerHeight;
+      if (span > 0 && r.top <= 0 && r.bottom >= window.innerHeight) {
+        var k = Math.min(1, Math.max(0, -r.top / span));
+        // ease so the sun comes up rather than fades in linearly
+        var e = k < .5 ? 2*k*k : 1 - Math.pow(-2*k + 2, 2) / 2;
+        dawnLayer.style.setProperty('--k', e.toFixed(3));
+        for (var i = 0; i < lines.length; i++) {
+          lines[i].classList.toggle('on', k > 0.12 + i * 0.26);
+        }
+      } else if (r.top > 0) {
+        dawnLayer.style.setProperty('--k', '0');
+        lines.forEach(function(l){ l.classList.remove('on'); });
+      } else {
+        dawnLayer.style.setProperty('--k', '1');
+        lines.forEach(function(l){ l.classList.add('on'); });
+      }
+    }
+  }
+  function onScroll(){ if (!ticking) { ticking = true; raf(frame); } }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll, {passive:true});
+  frame();
+
+  /* ---- SIGNATURE 2: drag through the week ---- */
+  var stage = document.getElementById('weekStage');
+  if (stage) {
+    var panes = [].slice.call(stage.querySelectorAll('.week__pane'));
+    var tabs = [].slice.call(document.querySelectorAll('.week__tab'));
+    var at = 0, downX = null, moved = false;
+
+    function show(n){
+      at = (n + panes.length) % panes.length;
+      panes.forEach(function(p,i){ p.classList.toggle('on', i === at); });
+      tabs.forEach(function(t,i){ t.setAttribute('aria-selected', i === at ? 'true' : 'false'); });
+    }
+    tabs.forEach(function(t){ t.addEventListener('click', function(){ show(+t.dataset.tab); }); });
+
+    stage.addEventListener('pointerdown', function(e){ downX = e.clientX; moved = false; stage.setPointerCapture(e.pointerId); });
+    stage.addEventListener('pointermove', function(e){
+      if (downX === null) return;
+      var dx = e.clientX - downX;
+      if (Math.abs(dx) > 55 && !moved) { moved = true; show(at + (dx < 0 ? 1 : -1)); }
+    });
+    function release(){ downX = null; }
+    stage.addEventListener('pointerup', release);
+    stage.addEventListener('pointercancel', release);
+    stage.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowRight') { show(at + 1); e.preventDefault(); }
+      if (e.key === 'ArrowLeft')  { show(at - 1); e.preventDefault(); }
+    });
+    show(0);
+  }
+
+  /* ---- SIGNATURE 3: the rail drags with a pointer as well as a wheel ---- */
+  var rail = document.getElementById('rail');
+  if (rail) {
+    var rx = 0, rl = 0, down = false;
+    rail.addEventListener('pointerdown', function(e){
+      down = true; rx = e.clientX; rl = rail.scrollLeft;
+      rail.style.scrollSnapType = 'none';
+      rail.setPointerCapture(e.pointerId);
+    });
+    rail.addEventListener('pointermove', function(e){
+      if (down) rail.scrollLeft = rl - (e.clientX - rx);
+    });
+    function up(){ if (!down) return; down = false; rail.style.scrollSnapType = ''; }
+    rail.addEventListener('pointerup', up);
+    rail.addEventListener('pointercancel', up);
+    rail.addEventListener('dragstart', function(e){ e.preventDefault(); });
+  }
+})();
+</script>
+</body>
+</html>
