@@ -41,7 +41,7 @@ const FAQ = [
   },
   {
     q: 'What does it cost?',
-    a: 'The productized doors show their price on each page (for example, a website is $497 setup plus $147 a month, and the command center is free when you take the website and the voice agent together). Bespoke apps, tools, stores, and agentic systems are quoted per project after a free discovery call. Pricing is fixed before work starts, with no hourly billing.',
+    a: 'The productized doors show their price on each page (for example, a website is $497 setup plus $147 a month, and the voice agent is $397 plus $397 a month). Bespoke apps, tools, stores, and agentic systems are quoted per project after a free discovery call. Pricing is fixed before work starts, with no hourly billing.',
   },
 ];
 
@@ -100,7 +100,7 @@ export default function ServicesPage() {
           </h2>
           <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
             The three that work together. Forge all three free in about a minute, and take the website and the voice
-            agent together to get the command center free.
+            agent together, which costs less than the two apart.
           </p>
           <div className="grid md:grid-cols-3 gap-6 mt-10 items-stretch">
             {flagship.map((d) => (

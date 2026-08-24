@@ -11,7 +11,7 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
 
 export const metadata = buildMetadata({
   title: 'Web Design and Voice Agents in Northwest Montana',
-  description: `A Kalispell studio building custom websites and 24/7 AI phone answering for businesses across the Flathead Valley: ${MONTANA_CITIES.map((c) => c.name).join(', ')}. Three working demos free before you pay. Call ${SITE.phone}.`,
+  description: `A Kalispell studio building custom websites and 24/7 AI phone answering for businesses across the Flathead Valley: ${MONTANA_CITIES.map((c) => c.name).join(', ')}. Two working demos free before you pay. Call ${SITE.phone}.`,
   path: '/montana',
 });
 
@@ -30,7 +30,7 @@ const FAQ = [
   },
   {
     q: 'Can I try it before paying?',
-    a: 'Yes. Enter your business once at the demo station and you get three working demos free: a voice agent you can talk to, a website designed from scratch, and a command center. No card, no meeting.',
+    a: 'Yes. Enter your business once at the demo station and you get two working demos free: a voice agent you can talk to and a website designed from scratch. No card, no meeting.',
   },
 ];
 
