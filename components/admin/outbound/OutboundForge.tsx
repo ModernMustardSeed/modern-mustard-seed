@@ -8,6 +8,8 @@ import { FORGE_STAGE_LABELS } from '@/lib/outbound';
 import type { ForgeCounts, ForgeRow, ForgeStage, ForgeWorkerVitals, Rep } from '@/lib/outbound';
 import { possessive } from '@/lib/business-name';
 import { usePoll } from '@/lib/use-poll';
+import { TemplatePicker } from '@/components/admin/TemplatePicker';
+import { RANDOM_TEMPLATE } from '@/lib/site-templates.mjs';
 import TradeChip from '@/components/admin/outbound/TradeChip';
 import {
   OutboundNav,
@@ -166,6 +168,8 @@ export default function OutboundForge() {
   const [designTier, setDesignTier] = useState<2 | 3>(2);
   // Make the talking layer the star of the demo (rides the brief as a flag).
   const [talkingWebsite, setTalkingWebsite] = useState(false);
+  // The template picker (2026-08-24): Random rotates by trade, a name is worn exactly.
+  const [siteTemplateKey, setSiteTemplateKey] = useState<string>(RANDOM_TEMPLATE);
   const [anvilAll, setAnvilAll] = useState(false);
   const [burst, setBurst] = useState(0);
   const { toasts, push } = useToasts();
@@ -263,7 +267,7 @@ export default function OutboundForge() {
     try {
       await api(`/api/admin/outbound/leads/${row.id}/forge-site`, {
         method: 'POST',
-        body: JSON.stringify({ ...(designTier ? { designTier } : {}), ...(talkingWebsite ? { talkingWebsite } : {}) }),
+        body: JSON.stringify({ ...(designTier ? { designTier } : {}), ...(talkingWebsite ? { talkingWebsite } : {}), siteTemplate: siteTemplateKey }),
       });
       push(`${row.business_name} is back on the anvil (Tier ${designTier} design)${talkingWebsite ? ', Talking Website front and center' : ''}.`);
       await load(true);
@@ -502,6 +506,12 @@ export default function OutboundForge() {
               >
                 🗣 Talking Website
               </button>
+              <TemplatePicker
+                value={siteTemplateKey}
+                onChange={setSiteTemplateKey}
+                compact
+                className="px-3 py-1.5 rounded-lg border-2 bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#b58a2a] font-oswald uppercase tracking-[0.08em] text-[11px] outline-none max-w-[210px]"
+              />
             </span>
             <span className="ml-auto font-oswald text-sm text-[#1a1815]/50 uppercase tracking-[0.1em]">
               {visible.length} {visible.length === 1 ? 'lead' : 'leads'}

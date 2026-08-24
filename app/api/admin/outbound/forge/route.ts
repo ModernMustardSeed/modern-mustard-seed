@@ -25,7 +25,7 @@ export const runtime = 'nodejs';
 // One literal string on purpose: a computed/joined list widens to `string` and
 // supabase-js loses row typing entirely (every row becomes GenericStringError).
 const LEAD_COLS =
-  'id, business_name, contact_name, phone, email, niche, city, state, status, source, origin, owner_rep_id, dnc_checked, audit_score, demo_url, demo_run_id, site_demo_id, site_demo_url, site_demo_status, os_demo_id, os_demo_url, hub_demo_id, hub_demo_url, integration_plan_url, integration_plan_status, presence_audit_url, presence_audit_score, hub_view_count, email_open_count, last_email_at, last_open_at, next_action_at, created_at, updated_at';
+  'id, business_name, contact_name, phone, email, niche, city, state, status, source, origin, owner_rep_id, dnc_checked, audit_score, demo_url, demo_run_id, site_demo_id, site_demo_url, site_demo_status, site_template, os_demo_id, os_demo_url, hub_demo_id, hub_demo_url, integration_plan_url, integration_plan_status, presence_audit_url, presence_audit_score, hub_view_count, email_open_count, last_email_at, last_open_at, next_action_at, created_at, updated_at';
 
 /** Anything forged for the lead: voice agent, website, command center, or the suite hub. */
 const FORGED_FILTER = 'demo_run_id.not.is.null,site_demo_id.not.is.null,os_demo_id.not.is.null,hub_demo_id.not.is.null';

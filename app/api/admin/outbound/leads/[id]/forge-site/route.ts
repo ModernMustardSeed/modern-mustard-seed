@@ -3,6 +3,7 @@ import { requireOutboundAdmin } from '@/lib/outbound-server';
 import { forgeLeadVoiceDemo, buildSiteBrief, ensureOsDemo, ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
+import { resolveSiteTemplate, templateBriefLine, rememberTemplate } from '@/lib/site-template-choice';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -33,7 +34,9 @@ export async function POST(req: Request, { params }: { params: Params }) {
   // demo (the tier directives read the flag out of the brief). Both ride as
   // leading lines of the brief (the worker parses them), so no schema change
   // is required; migration 073 adds a real column for whenever migrations run.
-  const body = (await req.json().catch(() => ({}))) as { designTier?: unknown; talkingWebsite?: unknown };
+  // siteTemplate: a lib/site-templates.mjs key, 'random', or absent (= random).
+  // Resolved before the row is queued so every surface agrees on what it wears.
+  const body = (await req.json().catch(() => ({}))) as { designTier?: unknown; talkingWebsite?: unknown; siteTemplate?: unknown };
   const designTier = body.designTier === 2 || body.designTier === 3 ? body.designTier : null;
   const talkingWebsite = body.talkingWebsite === true;
 
@@ -61,6 +64,8 @@ export async function POST(req: Request, { params }: { params: Params }) {
     voiceDemoUrl = voice.demoUrl;
   }
 
+  const template = await resolveSiteTemplate(guard.supabase, current, body.siteTemplate);
+
   const { data: row, error: insErr } = await guard.supabase
     .from('outbound_demo_sites')
     .insert({
@@ -69,7 +74,8 @@ export async function POST(req: Request, { params }: { params: Params }) {
       brief:
         (designTier ? `DESIGN TIER: ${designTier}\n` : '') +
         (talkingWebsite ? 'TALKING WEBSITE: yes\n' : '') +
-        (designTier || talkingWebsite ? '\n' : '') +
+        templateBriefLine(template.key) +
+        '\n' +
         buildSiteBrief(current, voiceDemoUrl),
       status: 'queued',
     })
@@ -78,6 +84,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
   if (insErr || !row) {
     return NextResponse.json({ error: insErr?.message ?? 'Could not queue the website build.' }, { status: 500 });
   }
+  await rememberTemplate(guard.supabase, row.id, current.id, template.key);
 
   const siteUrl = `${SITE.url}/demo/site/${row.id}`;
   const { data: updated, error: updErr } = await guard.supabase
@@ -95,7 +102,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
     from_addr: 'cockpit',
     to_addr: current.business_name,
     subject: 'Website demo queued',
-    snippet: `The forge is building their demo website. It goes live at ${siteUrl}`,
+    snippet: `The forge is building their demo website in the ${template.key} template (${template.how}). It goes live at ${siteUrl}`,
     read: true,
     occurred_at: new Date().toISOString(),
   });
@@ -104,5 +111,5 @@ export async function POST(req: Request, { params }: { params: Params }) {
   // it is instant and token-free to build, and seeing it is what sells the pair.
   const withOs = await ensureOsDemo(guard.supabase, updated as OutboundLead);
   const withHub = await ensureDemoHub(guard.supabase, withOs);
-  return NextResponse.json({ ok: true, lead: withHub });
+  return NextResponse.json({ ok: true, lead: withHub, template });
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { resolveSiteTemplate, templateBriefLine, rememberTemplate } from '@/lib/site-template-choice';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
 import { buildSiteBrief } from '@/lib/outbound-demo';
 import { judgeDemo } from '@/lib/demo-quality.mjs';
@@ -37,7 +38,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
 
   // Same tier picker the initial forge takes (2 = Wildmere award-site world, 3 =
   // the Journey site). Absent means the worker rolls roulette, same as forge-site.
-  const body = (await req.json().catch(() => ({}))) as { designTier?: unknown };
+  const body = (await req.json().catch(() => ({}))) as { designTier?: unknown; siteTemplate?: unknown };
   const designTier = body.designTier === 2 || body.designTier === 3 ? body.designTier : null;
 
   const { data: lead, error } = await guard.supabase.from('outbound_leads').select('*').eq('id', id).single();
@@ -72,6 +73,9 @@ export async function POST(req: Request, { params }: { params: Params }) {
   // the row back on the directive it belongs on: a paid client's site stays 'rebuild',
   // everything else is a demo build.
   const kind = site.kind === 'rebuild' ? 'rebuild' : 'demo';
+  // Same template picker the first forge takes. Random on a rebuild never repeats
+  // the template the site already wears, which is usually the point of rebuilding.
+  const template = await resolveSiteTemplate(guard.supabase, l, body.siteTemplate);
   const verdict = judgeDemo(site.html ?? '', site.worker ?? null);
 
   const { error: qErr } = await guard.supabase
@@ -83,7 +87,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
       // than replaying whatever the row was first queued with. A chosen tier rides
       // as the brief's first line, same convention forge-site uses (see tierOf in
       // scripts/demo-site-worker.mjs).
-      brief: (designTier ? `DESIGN TIER: ${designTier}\n\n` : '') + buildSiteBrief(l, l.demo_url ?? null),
+      brief: (designTier ? `DESIGN TIER: ${designTier}\n` : '') + templateBriefLine(template.key) + '\n' + buildSiteBrief(l, l.demo_url ?? null),
       // KEEP THE PHOTOGRAPHS ONLY IF THEY ARE WORTH KEEPING.
       //
       // This was unconditionally true, and the worker then harvests the inlined
@@ -106,6 +110,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
     .from('outbound_leads')
     .update({ site_demo_status: 'queued' })
     .eq('id', l.id);
+  await rememberTemplate(guard.supabase, site.id, l.id, template.key);
 
   await guard.supabase.from('messages').insert({
     outbound_lead_id: l.id,
