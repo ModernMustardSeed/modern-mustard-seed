@@ -3,6 +3,7 @@ import { publishSite, attachDomain, projectSlug } from './vercel-platform';
 import { seoFiles, type SiteFacts } from './site-seo';
 import { settleCursorCompanions } from './cursor-companion';
 import { dressClosingBand } from './closing-band';
+import { levelMarquees } from './level-marquee';
 import { resendClient } from './send-email';
 import { clientEmail } from './email';
 import { SITE } from './seo';
@@ -80,7 +81,7 @@ export async function publishProject(sb: SupabaseClient, projectId: string): Pro
   };
 
   const pub = await publishSite({
-    files: seoFiles(facts, dressClosingBand(settleCursorCompanions(project.site_html as string))),
+    files: seoFiles(facts, levelMarquees(dressClosingBand(settleCursorCompanions(project.site_html as string)))),
     business,
     key: projectId,
     projectId: (project.site_vercel_project_id as string | null) ?? null,
