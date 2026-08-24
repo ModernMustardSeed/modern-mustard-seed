@@ -127,6 +127,10 @@ function Specimen({ t }: { t: Template }) {
 function ReferenceFrame({ reference, notes, name }: { reference: Reference | null; notes: string; name: string }) {
   const [width, setWidth] = useState<'desktop' | 'phone'>('desktop');
   const [loaded, setLoaded] = useState(false);
+  // ON DEMAND. Twelve full demo sites (canvas ambience, parallax, 900KB each)
+  // mounting at once froze the tab on the first live load (2026-08-24). A
+  // reference mounts only when Sarah asks for it, one click, and stays mounted.
+  const [armed, setArmed] = useState(false);
   if (!reference) {
     return (
       <div className="rounded-xl border-2 border-dashed border-[#161616]/30 bg-[#FBF6EA] p-5 text-[13px] font-body text-[#161616]/75">
@@ -149,21 +153,31 @@ function ReferenceFrame({ reference, notes, name }: { reference: Reference | nul
           <a href={reference.url} target="_blank" rel="noopener noreferrer" className={`${btn} bg-[#FBF6EA] text-[#161616] border-[#FBF6EA]`}>Open full ↗</a>
         </div>
       </div>
-      <div className="relative bg-[#0f0f0f] flex justify-center" style={{ height: frameHeight }}>
-        {!loaded && (
-          <div className="absolute inset-0 flex items-center justify-center text-[11px] uppercase tracking-[0.2em] font-mono text-[#FBF6EA]/50" aria-live="polite">
-            Loading the site…
+      <div className="relative bg-[#0f0f0f] flex justify-center" style={{ height: armed ? frameHeight : 160 }}>
+        {!armed ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-6">
+            <p className="text-[12px] font-body text-[#FBF6EA]/70 max-w-md">The whole site, live in this frame, every interaction working. Loads when you ask so the gallery stays quick.</p>
+            <button onClick={() => setArmed(true)} className={`${btn} bg-[#F5B700] text-[#161616] border-[#F5B700] hover:-translate-y-0.5`}>
+              Load {reference.label.replace(/\s*\(.*\)$/, '')} here
+            </button>
           </div>
+        ) : (
+          <>
+            {!loaded && (
+              <div className="absolute inset-0 flex items-center justify-center text-[11px] uppercase tracking-[0.2em] font-mono text-[#FBF6EA]/50" aria-live="polite">
+                Loading the site…
+              </div>
+            )}
+            <iframe
+              key={`${reference.url}-${width}`}
+              src={reference.url}
+              title={`${reference.label}, ${width} width`}
+              onLoad={() => setLoaded(true)}
+              className="bg-white border-0 h-full"
+              style={{ width: width === 'phone' ? 390 : '100%' }}
+            />
+          </>
         )}
-        <iframe
-          key={`${reference.url}-${width}`}
-          src={reference.url}
-          title={`${reference.label}, ${width} width`}
-          onLoad={() => setLoaded(true)}
-          loading="lazy"
-          className="bg-white border-0 h-full"
-          style={{ width: width === 'phone' ? 390 : '100%' }}
-        />
       </div>
       {notes && <p className="px-4 py-3 text-[12px] font-body text-[#FBF6EA]/80 bg-[#161616] border-t border-[#FBF6EA]/15">{notes}</p>}
     </div>
