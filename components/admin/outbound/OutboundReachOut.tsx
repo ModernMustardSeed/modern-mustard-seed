@@ -77,7 +77,7 @@ export function ReachOutDeck({
   // Sarah's design-tier picker, same convention as the Forge board. Tier 2 (the
   // Wildmere award-site world) is the house style and the default; tier 3 is the
   // Journey site, built on request. Governs the first forge and any rebuild.
-  const [designTier, setDesignTier] = useState<2 | 3>(2);
+  const [designTier, setDesignTier] = useState<1 | 2 | 3>(2);
   // Sarah's template picker (2026-08-24): Random lets the studio rotate by trade;
   // a named template is worn exactly. Rides the first forge and any rebuild.
   const [siteTemplateKey, setSiteTemplateKey] = useState<string>(RANDOM_TEMPLATE);
@@ -379,11 +379,12 @@ export function ReachOutDeck({
         {!siteForging && (
           <select
             value={designTier}
-            onChange={(e) => setDesignTier(Number(e.target.value) as 2 | 3)}
+            onChange={(e) => setDesignTier(Number(e.target.value) as 1 | 2 | 3)}
             className="bg-white border-2 border-[#1a1815]/20 rounded-lg px-2 py-1.5 font-oswald uppercase tracking-[0.06em] text-[11px] text-[#1a1815]/75 outline-none focus:border-[#b58a2a] hover:border-[#1a1815]"
             title="Which design tier the next website forge or rebuild uses. Tier 2 is the house style. Applies to the button below, not to a site already built."
             aria-label="Design tier for the website forge"
           >
+            <option value={1}>Design: Tier 1 · Award</option>
             <option value={2}>Design: Tier 2 · World</option>
             <option value={3}>Design: Tier 3 · Journey</option>
           </select>

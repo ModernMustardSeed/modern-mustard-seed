@@ -24,9 +24,15 @@ alter table public.projects
 comment on column public.projects.site_template is
   'The template the client''s site wears, carried over from the demo they bought.';
 
-alter table public.outbound_demo_sites drop constraint if exists outbound_demo_sites_design_tier_check;
-alter table public.outbound_demo_sites
-  add constraint outbound_demo_sites_design_tier_check check (design_tier in (1, 2, 3));
+-- design_tier only exists where migration 073 landed (it never did in production,
+-- found 2026-08-24). One failing statement rolls a whole file back, so guard it.
+do $
+begin
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'outbound_demo_sites' and column_name = 'design_tier') then
+    alter table public.outbound_demo_sites drop constraint if exists outbound_demo_sites_design_tier_check;
+    alter table public.outbound_demo_sites add constraint outbound_demo_sites_design_tier_check check (design_tier in (1, 2, 3));
+  end if;
+end $;
 
 create index if not exists outbound_leads_site_template_idx
   on public.outbound_leads (site_template) where site_template is not null;
