@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { forgeLeadVoiceDemo, buildSiteBrief, ensureOsDemo, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, buildSiteBrief, ensureOsDemo, ensureDemoHub, captureLeadBrand } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
 import { resolveSiteTemplate, templateBriefLine, rememberTemplate } from '@/lib/site-template-choice';
@@ -65,6 +65,9 @@ export async function POST(req: Request, { params }: { params: Params }) {
   }
 
   const template = await resolveSiteTemplate(guard.supabase, current, body.siteTemplate);
+  // Their own logo and colour, off their live site, so the build wears THEIR
+  // brand and the template only supplies the roles. Best effort, 4.5s cap.
+  const brand = await captureLeadBrand(current.website).catch(() => null);
 
   const { data: row, error: insErr } = await guard.supabase
     .from('outbound_demo_sites')
@@ -76,7 +79,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
         (talkingWebsite ? 'TALKING WEBSITE: yes\n' : '') +
         templateBriefLine(template.key) +
         '\n' +
-        buildSiteBrief(current, voiceDemoUrl),
+        buildSiteBrief(current, voiceDemoUrl, brand),
       status: 'queued',
     })
     .select('id')
