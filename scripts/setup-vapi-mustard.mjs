@@ -637,11 +637,48 @@ const TOOLS = [
       parameters: {
         type: 'object',
         properties: {
+          /*
+           * ⚠️ NEVER PUT AN `enum` INSIDE `items` HERE. THE VOCABULARY GOES
+           * IN THE DESCRIPTION.
+           *
+           * This parameter shipped 2026-08-13 as
+           * `items: { type: 'string', enum: [...] }` and it silently zeroed the
+           * ENTIRE arguments object on every call. Not the one field: all ten.
+           * Vapi handed the model a tool it could select but could not fill, so
+           * `forge_demo_suite` arrived at the webhook as the literal `{}` on 16
+           * attempts out of 16 across 4 real calls between 2026-08-13 and
+           * 2026-08-24, and NOT ONE demo was ever forged on a phone call in
+           * those eleven days. It cost David Parker's call on 2026-08-24: three
+           * empty fires, then an apology and a handoff to Sarah, with every
+           * field already spoken out loud and sitting in the transcript.
+           *
+           * ⚠️ It is the NESTED enum specifically, not enums in general. A
+           * plain top-level string enum is fine: `book_walkthrough.urgency` is
+           * exactly that and filled 6 times out of 6. The proof, all of it from
+           * the Vapi call history rather than a hunch:
+           *   - Before the nested enum existed, this same tool arrived with 8
+           *     fields filled (2026-08-13, argLen 366 and 344).
+           *   - `send_email.links` is ALSO an array and ALSO gets filled
+           *     correctly (`links: ["pay-voice-agent"]`) on the very same days
+           *     this one arrived empty. It is declared `items: { type:
+           *     'string' }` and carries a 26-key vocabulary in its DESCRIPTION.
+           *   - Array plus enum is the only combination that has ever failed.
+           *
+           * So this mirrors `send_email.links` exactly, which is the only array
+           * shape this assistant has ever filled successfully. Never add the
+           * enum back for type safety: the model never sees a schema violation
+           * on a phone call, it just sends nothing and the caller hears an
+           * apology. `piecesFrom()` in lib/voice-forge-suite.ts is the
+           * enforcement point and it is deliberately permissive.
+           *
+           * scripts/vapi-lint.mjs fails the build if this shape reappears in
+           * any assistant config.
+           */
           build: {
             type: 'array',
-            items: { type: 'string', enum: ['voice_agent', 'website', 'command_center'] },
+            items: { type: 'string' },
             description:
-              "REQUIRED. Only the pieces they said they want, from what you learned asking. 'voice_agent' = the agent that answers their phone. 'website' = a custom site built from scratch. 'command_center' = the back office board (every call transcribed, leads, customers, reviews, money). Pass one when they want one. NEVER add a piece they did not ask for: building a website for someone who only wanted their phone answered wastes the day's build capacity and contradicts the price you quoted.",
+              "REQUIRED. Only the pieces they said they want, from what you learned asking. Valid values ONLY: 'voice_agent' (the agent that answers their phone), 'website' (a custom site built from scratch), 'command_center' (the back office board: every call transcribed, leads, customers, reviews, money). Pass an array of one, two or three of those exact strings, for example [\"voice_agent\"] or [\"voice_agent\", \"website\"]. NEVER add a piece they did not ask for: building a website for someone who only wanted their phone answered wastes the day's build capacity and contradicts the price you quoted.",
           },
           business: { type: 'string', description: 'The business name exactly as it appears on their sign.' },
           contact_name: { type: 'string', description: "The owner's full name." },

@@ -251,13 +251,8 @@
           "parameters": {
             "properties": {
               "build": {
-                "description": "REQUIRED. Only the pieces they said they want, from what you learned asking. 'voice_agent' = the agent that answers their phone. 'website' = a custom site built from scratch. 'command_center' = the back office board (every call transcribed, leads, customers, reviews, money). Pass one when they want one. NEVER add a piece they did not ask for: building a website for someone who only wanted their phone answered wastes the day's build capacity and contradicts the price you quoted.",
+                "description": "REQUIRED. Only the pieces they said they want, from what you learned asking. Valid values ONLY: 'voice_agent' (the agent that answers their phone), 'website' (a custom site built from scratch), 'command_center' (the back office board: every call transcribed, leads, customers, reviews, money). Pass an array of one, two or three of those exact strings, for example [\"voice_agent\"] or [\"voice_agent\", \"website\"]. NEVER add a piece they did not ask for: building a website for someone who only wanted their phone answered wastes the day's build capacity and contradicts the price you quoted.",
                 "items": {
-                  "enum": [
-                    "voice_agent",
-                    "website",
-                    "command_center"
-                  ],
                   "type": "string"
                 },
                 "type": "array"
