@@ -7,7 +7,7 @@
   "crons": [
     {
       "path": "/api/indexnow",
-      "schedule": "0 6 * * 1"
+      "schedule": "5 6 * * 1"
     },
     {
       "path": "/api/cron/intake-nudge",
@@ -19,59 +19,59 @@
     },
     {
       "path": "/api/cron/chief-briefing",
-      "schedule": "0 13 * * *"
+      "schedule": "5 13 * * *"
     },
     {
       "path": "/api/cron/mustard-sequence",
-      "schedule": "0 17 * * *"
+      "schedule": "5 17 * * *"
     },
     {
       "path": "/api/cron/commissions",
-      "schedule": "0 9 * * *"
+      "schedule": "5 9 * * *"
     },
     {
       "path": "/api/cron/outreach-cadence",
-      "schedule": "0 16 * * *"
+      "schedule": "5 16 * * *"
     },
     {
       "path": "/api/cron/booking-reminders",
-      "schedule": "0 14 * * 2-5"
+      "schedule": "5 14 * * 2-5"
     },
     {
       "path": "/api/cron/lead-digest",
-      "schedule": "0 15 * * 1-5"
+      "schedule": "5 15 * * 1-5"
     },
     {
       "path": "/api/cron/operator",
-      "schedule": "0 13 * * 1-5"
+      "schedule": "25 13 * * 1-5"
     },
     {
       "path": "/api/cron/outbound-audits",
-      "schedule": "30 13 * * *"
+      "schedule": "45 13 * * *"
     },
     {
       "path": "/api/cron/outbound-cadence",
-      "schedule": "0 18 * * 1-5"
+      "schedule": "5 18 * * 1-5"
     },
     {
       "path": "/api/cron/pilot-usage",
-      "schedule": "0 12 * * *"
+      "schedule": "5 12 * * *"
     },
     {
       "path": "/api/cron/geo-watch",
-      "schedule": "20 14 * * *"
+      "schedule": "25 14 * * *"
     },
     {
       "path": "/api/cron/deliver",
-      "schedule": "0 * * * *"
+      "schedule": "10 * * * *"
     },
     {
       "path": "/api/cron/hundredfold-drip",
-      "schedule": "30 15 * * 1-5"
+      "schedule": "50 15 * * 1-5"
     },
     {
       "path": "/api/cron/celebrate-drip",
-      "schedule": "0 16 * * *"
+      "schedule": "25 16 * * *"
     },
     {
       "path": "/api/cron/acquisition",

@@ -41,8 +41,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ email: 
   // database missing one of them must still return the projects.
   const projectQuery = (cols: string) => sb.from('projects').select(cols).eq('client_email', email).order('created_at', { ascending: false });
   try {
-    let { data, error } = await projectQuery(`${BASE}, site_template, edit_status, edit_error, edit_instruction, edit_requested_at, site_html, demo_site_id`);
-    if (error) ({ data } = await projectQuery(BASE));
+    const wide = await projectQuery(`${BASE}, site_template, edit_status, edit_error, edit_instruction, edit_requested_at, site_html, demo_site_id`);
+    let data = wide.data;
+    if (wide.error) ({ data } = await projectQuery(BASE));
     // The html itself never leaves the route; the card only needs to know it exists.
     projects = ((data ?? []) as unknown as Record<string, unknown>[]).map((p) => {
       const { site_html, ...rest } = p as { site_html?: string | null } & Record<string, unknown>;
