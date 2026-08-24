@@ -358,7 +358,7 @@ export default function SiteTemplates() {
         <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
           <p className="text-[#161616]/65 text-sm font-body max-w-2xl">
             Every structure and every visual system the Forge can build, each with its real reference site embedded whole. Pick a template on a contact card and the build wears it;
-            leave the picker on Random and the studio rotates by trade. The structure (World or Journey) is the bones, the template is the skin, and the colours are always the
+            leave the picker on Random and the studio rotates by trade. The structure (Award, World or Journey) is the bones, the template is the skin, and the colours are always the
             client&apos;s own.
           </p>
           <div className="text-right shrink-0">
@@ -375,7 +375,7 @@ export default function SiteTemplates() {
             <section className="mb-10">
               <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
                 <h2 className="font-sans font-extrabold text-xl">The structures</h2>
-                <p className="text-[12px] font-body text-[#161616]/60 max-w-xl">The bones every template is built on. The picker offers World and Journey; the Award tier is listed with its status so nothing here pretends.</p>
+                <p className="text-[12px] font-body text-[#161616]/60 max-w-xl">The bones every template is built on. The picker offers all three: Award, World and Journey.</p>
               </div>
               <div className="grid gap-6">
                 {data.structures.map((s) => <StructureCard key={s.key} s={s} />)}
