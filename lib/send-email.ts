@@ -89,6 +89,59 @@ function cleanKey(k?: string): string {
   return (k || '').replace(/[\r\n]/g, '').trim();
 }
 
+/**
+ * REPLY ROUTING. We send as addresses we cannot receive at.
+ *
+ * Confirmed by live probe on 2026-08-22: mail to hello@, notifications@ and
+ * outbound@modernmustardseed.com hard-bounces with
+ * `550 5.1.1 User does not exist`. The Zoho org is Workplace Standard with two
+ * mailboxes, sarah@ and polly.thompson@, and nothing else exists. Meanwhile
+ * roughly forty send sites use "Modern Mustard Seed <hello@…>" as their From:
+ * store receipts, demo orders, intake nudges, press proofs, the hatchery, the
+ * portal coach. Only three of them set a Reply-To.
+ *
+ * So a customer who hit reply on any of those got a bounce, and we never found
+ * out they had answered. This is the same class of failure as the phantom
+ * success this file was written to kill: the send looked fine and the outcome
+ * was invisible.
+ *
+ * The gate: any From on our own domain that is not a real mailbox gets a
+ * Reply-To that is. Set REPLY_TO_FALLBACK to change where those land, and add
+ * to RECEIVING_MAILBOXES the moment a new mailbox or alias actually exists.
+ * Addresses on any other domain (a client's, a Factory tenant's) are left
+ * exactly as the caller wrote them.
+ */
+const RECEIVING_MAILBOXES = new Set(
+  (process.env.RECEIVING_MAILBOXES || 'sarah@modernmustardseed.com,polly.thompson@modernmustardseed.com')
+    .split(',')
+    .map((s) => normEmail(s))
+    .filter(Boolean),
+);
+
+const OUR_DOMAIN = '@modernmustardseed.com';
+
+function replyFallback(): string {
+  return normEmail(process.env.REPLY_TO_FALLBACK || 'sarah@modernmustardseed.com');
+}
+
+/** True for an address on our domain that no mailbox or alias answers. */
+function unroutable(addr: string): boolean {
+  const a = normEmail(addr);
+  // A plus-tag still lands in the base mailbox, so sarah+forge@ is routable.
+  const base = a.replace(/\+[^@]*@/, '@');
+  return a.endsWith(OUR_DOMAIN) && !RECEIVING_MAILBOXES.has(base);
+}
+
+/**
+ * The Reply-To this message should actually carry. Keeps whatever the caller
+ * set unless that address is itself a dead one on our domain.
+ */
+export function routableReplyTo(from: string, replyTo?: string): string | undefined {
+  if (replyTo && !unroutable(replyTo)) return replyTo;
+  if (replyTo && unroutable(replyTo)) return replyFallback();
+  return unroutable(bareAddr(from)) ? replyFallback() : replyTo;
+}
+
 export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
   const apiKey = cleanKey(process.env.RESEND_API_KEY);
   if (!apiKey) return { ok: false, error: 'Email is not configured (RESEND_API_KEY missing).' };
@@ -160,7 +213,7 @@ export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
     to,
     cc: cc.length ? cc : undefined,
     bcc: keptBcc.length ? keptBcc : undefined,
-    replyTo: msg.replyTo,
+    replyTo: routableReplyTo(msg.from, msg.replyTo),
     subject: msg.subject,
     headers: unsubHeaders(msg.unsubscribeUrl),
   };
@@ -281,7 +334,7 @@ export function resendClient(): Resend {
         html: p.html,
         text: p.text,
         fromName: fromName || undefined,
-        replyTo: p.replyTo,
+        replyTo: routableReplyTo(from, p.replyTo),
       });
       await recordSentEmail({
         mailbox: z.from || mailbox,
@@ -345,7 +398,13 @@ export function resendClient(): Resend {
     // Strip a suppressed bcc so it can't drop the whole message. cc/bcc are
     // set explicitly so the mute-filtered lists win over the originals in p.
     const keptBcc = bcc.filter((a) => !supp.has(normEmail(a)));
-    const outPayload = { ...p, to: resendTo, cc: cc.length ? cc : undefined, bcc: keptBcc.length ? keptBcc : undefined };
+    const outPayload = {
+      ...p,
+      to: resendTo,
+      cc: cc.length ? cc : undefined,
+      bcc: keptBcc.length ? keptBcc : undefined,
+      replyTo: routableReplyTo(from, p.replyTo),
+    };
 
     const res = await real.emails.send(
       outPayload as Parameters<typeof real.emails.send>[0],
