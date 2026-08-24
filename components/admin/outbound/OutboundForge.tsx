@@ -165,7 +165,7 @@ export default function OutboundForge() {
   // template). Tier 2 is the HOUSE STYLE and the default (Sarah, 2026-08-11);
   // the old roulette is retired because it made every unattended demo a coin
   // flip between two different products. Tier 1 returns when Sarah rewires it.
-  const [designTier, setDesignTier] = useState<2 | 3>(2);
+  const [designTier, setDesignTier] = useState<1 | 2 | 3>(2);
   // Make the talking layer the star of the demo (rides the brief as a flag).
   const [talkingWebsite, setTalkingWebsite] = useState(false);
   // The template picker (2026-08-24): Random rotates by trade, a name is worn exactly.
@@ -477,20 +477,20 @@ export default function OutboundForge() {
             </select>
             <span className="flex items-center gap-1.5" role="group" aria-label="Design tier for forge builds">
               <span className={`${eyebrow} mr-0.5`}>Design</span>
-              {([2, 3] as const).map((t) => {
+              {([1, 2, 3] as const).map((t) => {
                 const active = designTier === t;
                 return (
                   <button
                     key={t}
                     onClick={() => setDesignTier(t)}
-                    title={t === 2 ? 'The Wildmere award-site world. The house style.' : 'The Journey site (the Flathead homepage template)'}
+                    title={t === 1 ? 'The Award site: the Stack hero, the outline moment, the seal, the spine' : t === 2 ? 'The Wildmere award-site world. The house style.' : 'The Journey site (the Flathead homepage template)'}
                     className={`px-3 py-1.5 rounded-lg border-2 font-oswald uppercase tracking-[0.08em] text-[11px] transition-colors ${
                       active
                         ? 'bg-[#1a1815] text-[#f7f3e9] border-[#1a1815] shadow-[2px_2px_0_0_#b58a2a]'
                         : 'bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#b58a2a] hover:text-[#1a1815]'
                     }`}
                   >
-                    {t === 3 ? 'Tier 3 · Journey' : 'Tier 2 · World'}
+                    {t === 1 ? 'Tier 1 · Award' : t === 3 ? 'Tier 3 · Journey' : 'Tier 2 · World'}
                   </button>
                 );
               })}

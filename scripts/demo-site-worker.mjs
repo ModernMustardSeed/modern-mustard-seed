@@ -192,7 +192,9 @@ function rememberVariant(dir) {
  * between two different products, and the one she picked is tier 2. Tier 3 is
  * still built on request, it is just no longer something a build wanders into. */
 function tierOf(job) {
-  const sane = (t) => (t === 3 ? 3 : 2);
+  // ⚡ 2026-08-24: TIER 1 IS WIRED AGAIN (Sarah: "wire tier 1 too"), on the claude
+  // engine rather than codex, so the Award structure is a live pick.
+  const sane = (t) => (t === 1 ? 1 : t === 3 ? 3 : 2);
   if (FORCED_TIER) return { tier: sane(FORCED_TIER), how: 'env override' };
   if ([1, 2, 3].includes(job.design_tier)) return { tier: sane(job.design_tier), how: 'chosen' };
   const m = /^DESIGN TIER:\s*([123])\b/m.exec(job.brief || '');
@@ -607,7 +609,7 @@ async function process_(job) {
     else {
       const { tier, how } = tierOf(job);
       log(`design tier ${tier} (${how}) for`, job.business_name);
-      if (tier === 1) { directive = law.CODEX_DIRECTIVE; engineName = 'codex'; }
+      if (tier === 1) { directive = law.CODEX_DIRECTIVE; engineName = env.DEMO_SITE_TIER1_ENGINE === 'codex' ? 'codex' : 'claude'; }
       else if (tier === 3) directive = law.TIER3_DIRECTIVE;
       else directive = law.TIER2_DIRECTIVE;
       const tpl = templateOf(job);

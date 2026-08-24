@@ -60,14 +60,14 @@ const REFERENCES: Record<string, { fixed?: Reference; business?: string; demoId?
 
 /**
  * THE STRUCTURES: the bones a template is built on. The picker on every forge
- * offers World and Journey; the Award tier is the codex engine and is unwired
- * until Sarah rewires it, which the gallery says plainly rather than hiding it.
+ * offers all three since 2026-08-24, when the Award tier was rewired onto the
+ * claude engine.
  */
 const STRUCTURES = [
   {
     key: 'tier-1',
     name: 'Tier 1 · The Award Site',
-    status: 'Unwired. A chosen tier 1 builds tier 2 until the codex engine is rewired.',
+    status: 'Live on every picker since 2026-08-24, built on the claude engine.',
     feel: 'The flagship standard: a giant wordmark, the outline moment, a living centrepiece, the spinning seal, story chapters on a scroll-scrubbed spine.',
     carries: [
       'THE OUTLINE MOMENT: the hero headline mixes solid and hollow words, the hollow word a 55% tinted fill with a stroke so it survives a dark plate (born on the Porsha Lee custom-paint hero)',

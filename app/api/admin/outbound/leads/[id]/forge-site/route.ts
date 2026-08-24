@@ -27,17 +27,17 @@ export async function POST(req: Request, { params }: { params: Params }) {
   if ('error' in guard) return guard.error;
   const { id } = await params;
 
-  // Sarah's tier picker on the Forge board. 2 = the Wildmere AWARD SITE world,
-  // 3 = the JOURNEY site (the Flathead homepage template, 2026-08-07). Tier 1
-  // is unwired until Sarah reworks it. Absent means the worker rolls roulette
-  // (2 or 3) per build. talkingWebsite makes the talking layer the star of the
+  // Sarah's tier picker. 1 = the AWARD site (the Stack hero and the outline
+  // moment, rewired onto the claude engine 2026-08-24), 2 = the Wildmere WORLD,
+  // 3 = the JOURNEY site (the Flathead homepage template, 2026-08-07). Absent
+  // means tier 2, the house structure. talkingWebsite makes the talking layer the star of the
   // demo (the tier directives read the flag out of the brief). Both ride as
   // leading lines of the brief (the worker parses them), so no schema change
   // is required; migration 073 adds a real column for whenever migrations run.
   // siteTemplate: a lib/site-templates.mjs key, 'random', or absent (= random).
   // Resolved before the row is queued so every surface agrees on what it wears.
   const body = (await req.json().catch(() => ({}))) as { designTier?: unknown; talkingWebsite?: unknown; siteTemplate?: unknown };
-  const designTier = body.designTier === 2 || body.designTier === 3 ? body.designTier : null;
+  const designTier = body.designTier === 1 || body.designTier === 2 || body.designTier === 3 ? body.designTier : null;
   const talkingWebsite = body.talkingWebsite === true;
 
   const { data: lead, error } = await guard.supabase.from('outbound_leads').select('*').eq('id', id).single();

@@ -39,7 +39,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
   // Same tier picker the initial forge takes (2 = Wildmere award-site world, 3 =
   // the Journey site). Absent means the worker rolls roulette, same as forge-site.
   const body = (await req.json().catch(() => ({}))) as { designTier?: unknown; siteTemplate?: unknown };
-  const designTier = body.designTier === 2 || body.designTier === 3 ? body.designTier : null;
+  const designTier = body.designTier === 1 || body.designTier === 2 || body.designTier === 3 ? body.designTier : null;
 
   const { data: lead, error } = await guard.supabase.from('outbound_leads').select('*').eq('id', id).single();
   if (error || !lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
