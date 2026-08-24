@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { resolveSiteTemplate, templateBriefLine, rememberTemplate } from '@/lib/site-template-choice';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { buildSiteBrief } from '@/lib/outbound-demo';
+import { buildSiteBrief, captureLeadBrand } from '@/lib/outbound-demo';
 import { judgeDemo } from '@/lib/demo-quality.mjs';
 import type { OutboundLead } from '@/lib/outbound';
 
@@ -76,6 +76,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
   // Same template picker the first forge takes. Random on a rebuild never repeats
   // the template the site already wears, which is usually the point of rebuilding.
   const template = await resolveSiteTemplate(guard.supabase, l, body.siteTemplate);
+  const brand = await captureLeadBrand(l.website).catch(() => null);
   const verdict = judgeDemo(site.html ?? '', site.worker ?? null);
 
   const { error: qErr } = await guard.supabase
@@ -87,7 +88,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
       // than replaying whatever the row was first queued with. A chosen tier rides
       // as the brief's first line, same convention forge-site uses (see tierOf in
       // scripts/demo-site-worker.mjs).
-      brief: (designTier ? `DESIGN TIER: ${designTier}\n` : '') + templateBriefLine(template.key) + '\n' + buildSiteBrief(l, l.demo_url ?? null),
+      brief: (designTier ? `DESIGN TIER: ${designTier}\n` : '') + templateBriefLine(template.key) + '\n' + buildSiteBrief(l, l.demo_url ?? null, brand),
       // KEEP THE PHOTOGRAPHS ONLY IF THEY ARE WORTH KEEPING.
       //
       // This was unconditionally true, and the worker then harvests the inlined

@@ -468,8 +468,31 @@ export function ownerNotes(lead: OutboundLead, max = 600): string {
   return m ? briefField(m[1], max) : '';
 }
 
-export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null): string {
+/**
+ * THEIR BRAND, CAPTURED OFF THEIR OWN SITE (2026-08-24, Sarah: "we need to brand
+ * websites to their colors, not our own random ones"). captureLeadBrand pulls
+ * the logo and the declared theme colour off the lead's live website; this is
+ * the block that hands them to the builder, with the law that a template's
+ * palette is a set of ROLES the business's own colours fill.
+ */
+export type SiteBrandHint = { logoUrl: string | null; brandColor: string | null };
+
+export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null, brand?: SiteBrandHint | null): string {
   const niche = (lead.niche ?? 'other') as Niche;
+  const brandLines =
+    brand && (brand.logoUrl || brand.brandColor)
+      ? [
+          '',
+          '## THEIR BRAND (captured off their own website; the site wears THESE colours)',
+          brand.logoUrl ? `- Their logo: ${briefField(brand.logoUrl, 300)} (fetch it, read its colours, use it in the nav and footer at real size; never redraw it)` : null,
+          brand.brandColor ? `- Their declared brand colour: ${brand.brandColor}` : null,
+          'A template palette is a set of ROLES (ground, paper, ink, accent, support) with default hexes. When a business has established colours, in the logo, on their current site, on their trucks and signage in the mined evidence, those colours FILL the roles: their primary becomes the accent, the ground and ink take its temperature, and the template hex is used only for a role their brand does not cover. Never recolour a business whose brand is known, and never keep a template default that fights their logo. Keep the template\'s contrast relationships (a dark-ground template stays dark, a paper template stays light) and pass WCAG on every text pair.',
+        ].filter((l): l is string => l !== null)
+      : [
+          '',
+          '## THEIR BRAND',
+          'No logo or brand colour could be captured off a live website. Read their materials in the mined evidence for any established colour; if there is none, the template palette applies as written.',
+        ];
   const audit = lead.audit_json;
   const evidence = (lead.notes ?? '')
     .split('\n')
@@ -532,6 +555,7 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null):
           `"${owner}"`,
         ].join('\n')
       : null,
+    ...brandLines,
     '',
     '## REQUIRED: declare your palette',
     'Their command center demo re-skins itself to match this website, so the two',
