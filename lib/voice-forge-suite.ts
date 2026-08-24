@@ -36,6 +36,7 @@ import { clientEmail, demoFilmCard } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { possessive } from '@/lib/business-name';
+import { FORGE_PIECES, PIECE_LABEL, INSTANT, piecesFrom, listPieces, type ForgePiece } from '@/lib/forge-pieces';
 
 const DAILY_CAP = 12;
 
@@ -57,58 +58,14 @@ function nicheOf(trade: string): Niche {
   return 'other';
 }
 
-/**
- * WHAT HE FORGES IS NOW A CHOICE, NOT A FIXED SUITE.
- *
- * Sarah 2026-08-13: "it is currently making the whole demo forge, so even the
- * website and command center even if they just want a voice agent and not a
- * website. i want to make just the one thing they asked for, so have him ask
- * sales questions to see exactly what they need and just make that."
- *
- * Two reasons this matters beyond the obvious. A website build is the only
- * expensive leg (a headless builder plus a film cut, ~20-40 min of worker
- * floor), so forging one nobody asked for burns the daily ceiling on a lead who
- * will never look at it. And since 2026-08-13 the command center is billable
- * outside the bundle, so shipping it unasked contradicts the price he just
- * quoted on the phone.
- *
- * The wire words are his words; the values are the SAME keys the order card,
- * `quoteDemoOrder` and `demo-provision` already use, so a partial forge prices
- * and provisions itself with no translation layer.
+/*
+ * The piece vocabulary, the `build` parser, and the spoken labels now live in
+ * lib/forge-pieces.ts so they can be unit tested without booting next/server,
+ * Supabase and Resend. `piecesFrom` decides what actually gets built for a live
+ * caller and nothing exercised it for the eleven days the tool schema was
+ * sending it nothing at all; scripts/acq-test.mts pins it now.
  */
-export const FORGE_PIECES = {
-  voice_agent: 'voice',
-  website: 'site',
-  command_center: 'os',
-} as const;
-
-export type ForgePiece = (typeof FORGE_PIECES)[keyof typeof FORGE_PIECES];
-
-/** What each piece is called out loud, for his instruction field and the email. */
-const PIECE_LABEL: Record<ForgePiece, string> = {
-  voice: 'voice agent',
-  site: 'website',
-  os: 'command center',
-};
-
-/** Instant vs queued. Only the website goes to the worker floor, and only the
- *  website earns the "within the hour" promise or a walkthrough film. */
-const INSTANT: Record<ForgePiece, boolean> = { voice: true, site: false, os: true };
-
-function piecesFrom(build: unknown): ForgePiece[] {
-  const raw = Array.isArray(build) ? build : typeof build === 'string' ? [build] : [];
-  const out = new Set<ForgePiece>();
-  for (const v of raw) {
-    const k = String(v).trim().toLowerCase().replace(/[\s-]+/g, '_');
-    if (k in FORGE_PIECES) out.add(FORGE_PIECES[k as keyof typeof FORGE_PIECES]);
-    // He is a language model on a phone line, so accept the obvious near misses
-    // rather than bouncing a real request back at a live caller.
-    else if (/^(voice|agent|phone)/.test(k)) out.add('voice');
-    else if (/^(site|web)/.test(k)) out.add('site');
-    else if (/^(os|command|back_?office|dashboard)/.test(k)) out.add('os');
-  }
-  return (['voice', 'site', 'os'] as ForgePiece[]).filter((p) => out.has(p));
-}
+export { FORGE_PIECES, type ForgePiece } from '@/lib/forge-pieces';
 
 /**
  * The one soft line naming what they did NOT take. It runs in the delivery
@@ -131,14 +88,6 @@ function upsellLine(pieces: ForgePiece[]): string {
   if (has('voice')) return wrap(`If you ever want the website to match, ${bundleNote}.`);
   if (has('site')) return wrap(`If you ever want it to answer its own phone too, ${bundleNote}.`);
   return wrap('If you ever want the voice agent that feeds it, or the website to match, we can build either one.');
-}
-
-/** "a voice agent", "a website and a command center", "all three". */
-function listPieces(pieces: ForgePiece[]): string {
-  const names = pieces.map((p) => PIECE_LABEL[p]);
-  if (names.length <= 1) return names[0] ?? 'nothing';
-  if (names.length === 2) return `${names[0]} and ${names[1]}`;
-  return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
 
 export type ForgeSuiteInput = {

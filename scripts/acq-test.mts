@@ -32,6 +32,7 @@ import { env, envAny, isPlaceholder, placeholderVars } from '../lib/env';
 import { parseTeam } from '../app/api/demo-order/intake/route';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 import { classifyAgent, classifyHit, verdictDetail, HUMAN_DELAY_SECONDS, POLL_WINDOW_MINUTES } from '../lib/acq/bots';
+import { piecesFrom, listPieces, PIECE_ORDER } from '../lib/forge-pieces';
 
 /** Four gaps, so a five email sequence. A fixture for the date maths only;
  *  the shipped campaign runs six emails and reads its length off its own row. */
@@ -1921,4 +1922,92 @@ test('bots: the verdict blob carries the reason only when there is one', () => {
   assert.equal(machine.machine_why, 'Scanner');
   assert.equal(human.machine_why, null);
   assert.equal(human.seconds_after_send, 900);
+});
+
+
+/*
+ * THE FORGE'S `build` PARSER.
+ *
+ * This is the function that decides what actually gets built for somebody on
+ * the phone, and until 2026-08-24 nothing exercised it at all. It did not need
+ * to be wrong to fail: the tool schema carried an enum nested inside `items`,
+ * which meant Vapi handed the model a tool it could select and could not fill,
+ * so `forge_demo_suite` arrived at the webhook as the literal `{}` on 16 calls
+ * out of 16 across eleven days and not one demo was ever forged on a phone
+ * call. The schema is now a plain array of strings and this parser is the only
+ * enforcement point, so these pin both halves of its job: take anything a
+ * language model might plausibly say, and still refuse to invent a piece.
+ */
+
+test('forge build: the exact wire vocabulary, which is the happy path', () => {
+  assert.deepEqual(piecesFrom(['voice_agent']), ['voice']);
+  assert.deepEqual(piecesFrom(['website']), ['site']);
+  assert.deepEqual(piecesFrom(['command_center']), ['os']);
+  assert.deepEqual(piecesFrom(['voice_agent', 'website']), ['voice', 'site']);
+});
+
+test('forge build: "command_center" survives the separator split', () => {
+  // Regression: splitting on a bare "and" instead of \band\b tears
+  // "command_center" into "comm" and "_center" and the most common value in
+  // the whole vocabulary silently stops resolving.
+  assert.deepEqual(piecesFrom(['command_center']), ['os']);
+  assert.deepEqual(piecesFrom('command_center'), ['os']);
+  assert.deepEqual(piecesFrom(['command center']), ['os']);
+});
+
+test('forge build: the answer is in canonical order however it was said', () => {
+  assert.deepEqual(piecesFrom(['command_center', 'website', 'voice_agent']), PIECE_ORDER);
+  assert.deepEqual(piecesFrom(['website', 'voice_agent']), ['voice', 'site']);
+});
+
+test('forge build: one string instead of an array still gets built', () => {
+  assert.deepEqual(piecesFrom('voice_agent'), ['voice']);
+  assert.deepEqual(piecesFrom('voice_agent, website'), ['voice', 'site']);
+  assert.deepEqual(piecesFrom('voice agent and a website'), ['voice', 'site']);
+  assert.deepEqual(piecesFrom('voice_agent + command_center'), ['voice', 'os']);
+  assert.deepEqual(piecesFrom('website/command_center'), ['site', 'os']);
+});
+
+test('forge build: the near misses a model actually says', () => {
+  assert.deepEqual(piecesFrom(['voice']), ['voice']);
+  assert.deepEqual(piecesFrom(['phone agent']), ['voice']);
+  assert.deepEqual(piecesFrom(['site']), ['site']);
+  assert.deepEqual(piecesFrom(['web site']), ['site']);
+  assert.deepEqual(piecesFrom(['os']), ['os']);
+  assert.deepEqual(piecesFrom(['back office']), ['os']);
+  assert.deepEqual(piecesFrom(['dashboard']), ['os']);
+});
+
+test('forge build: "everything" means all three, and it beats the word inside it', () => {
+  assert.deepEqual(piecesFrom(['all']), PIECE_ORDER);
+  assert.deepEqual(piecesFrom(['everything']), PIECE_ORDER);
+  assert.deepEqual(piecesFrom(['the_whole_suite']), PIECE_ORDER);
+  // "talking_website" contains "website". If the individual patterns ran first
+  // the flagship would resolve to a bare site and two paid pieces would vanish.
+  assert.deepEqual(piecesFrom(['talking_website']), PIECE_ORDER);
+});
+
+test('forge build: nothing recognisable builds nothing, on purpose', () => {
+  // An empty result is what makes the tool bounce and ask. Building an
+  // unasked-for piece is the one failure worse than asking again: it burns the
+  // daily forge ceiling and contradicts the price he just quoted.
+  assert.deepEqual(piecesFrom([]), []);
+  assert.deepEqual(piecesFrom(undefined), []);
+  assert.deepEqual(piecesFrom(null), []);
+  assert.deepEqual(piecesFrom(''), []);
+  assert.deepEqual(piecesFrom({}), []);
+  assert.deepEqual(piecesFrom(['a pony']), []);
+  assert.deepEqual(piecesFrom(42), []);
+});
+
+test('forge build: no piece is ever duplicated', () => {
+  assert.deepEqual(piecesFrom(['voice_agent', 'voice', 'phone agent']), ['voice']);
+  assert.deepEqual(piecesFrom([['voice_agent'], ['website']]), ['voice', 'site']);
+});
+
+test('forge build: the spoken list matches what was actually forged', () => {
+  assert.equal(listPieces(['voice']), 'voice agent');
+  assert.equal(listPieces(['voice', 'site']), 'voice agent and website');
+  assert.equal(listPieces(PIECE_ORDER), 'voice agent, website, and command center');
+  assert.equal(listPieces([]), 'nothing');
 });

@@ -36,6 +36,18 @@ jobs:
           VAPI_API_KEY: ${{ secrets.VAPI_API_KEY }}
         run: node scripts/vapi-sync.mjs --diff
 
+      # A VALID CONFIG IS NOT A WORKING TOOL. Everything above this line was
+      # green for the eleven days `forge_demo_suite` sent the webhook nothing but
+      # `{}` on every real call, because a tool schema that the model cannot fill
+      # is not drift and is not a lint error: it PATCHes clean, stores clean and
+      # reads back clean. The only place that failure is visible is in the
+      # arguments the model actually sent, so this reads them.
+      - name: Fail if a tool with required arguments came back empty
+        if: always()
+        env:
+          VAPI_API_KEY: ${{ secrets.VAPI_API_KEY }}
+        run: node scripts/vapi-tool-health.mjs --days 30
+
       # Separate step so an unprotected webhook is its own red X in the run log
       # rather than a line buried in the inventory output.
       - name: Fail if any webhook is unprotected
