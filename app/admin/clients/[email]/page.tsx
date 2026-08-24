@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { templateName } from '@/components/admin/TemplatePicker';
 import Link from 'next/link';
 import AdminHeader from '@/components/admin/AdminHeader';
 
@@ -12,7 +13,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
  */
 
 type Product = { id: string; kind: string; label: string; tier: string | null; status: string; home_url: string | null; detail: string | null; amount_cents: number | null; created_at: string };
-type Project = { id: string; name: string; status: string; summary: string | null; progress: number | null; launch_target: string | null; care_plan: boolean | null; site_live_url: string | null; moodboard_status: string | null; revisions_included: number | null; revisions_used: number | null };
+type Project = { id: string; name: string; status: string; summary: string | null; progress: number | null; launch_target: string | null; care_plan: boolean | null; site_live_url: string | null; moodboard_status: string | null; revisions_included: number | null; revisions_used: number | null; site_template?: string | null; edit_status?: string | null; edit_error?: string | null; edit_instruction?: string | null; edit_requested_at?: string | null; has_site?: boolean; demo_site_id?: string | null };
 type Order = { stripe_session_id: string; product_name: string; item_type: string | null; price_paid_cents: number | null; status: string; created_at: string };
 type Billing = { one_time_total: number | null; monthly_total: number | null; deposit_status: string | null; balance_status: string | null; signed_at: string | null; subscription_status: string | null } | null;
 type Message = { id: string; body: string; source: string; status: string; reply_body: string | null; replied_at: string | null; proposed_date: string | null; created_at: string };
@@ -48,6 +49,36 @@ export default function ClientCommandView() {
   const [replyOpen, setReplyOpen] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [sending, setSending] = useState(false);
+  // Edit their site from the card (2026-08-24): one sentence, applied by the forge as
+  // a draft for approval on the Delivery board. Copy, colours, a new photograph.
+  const [editOpen, setEditOpen] = useState<string | null>(null);
+  const [editText, setEditText] = useState('');
+  const [editBusy, setEditBusy] = useState(false);
+  const [editNote, setEditNote] = useState<{ id: string; text: string; error?: boolean } | null>(null);
+
+  const sendEdit = async (projectId: string) => {
+    const instruction = editText.trim();
+    if (!instruction || editBusy) return;
+    setEditBusy(true);
+    setEditNote(null);
+    try {
+      const res = await fetch(`/api/admin/delivery/${projectId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'edit', instruction }),
+      });
+      const j = (await res.json().catch(() => ({}))) as { error?: string; already?: boolean };
+      if (!res.ok) { setEditNote({ id: projectId, text: j.error || 'Could not queue that edit.', error: true }); return; }
+      setEditNote({ id: projectId, text: j.already ? 'An edit was already on the forge; it keeps going.' : 'Edit queued. The forge applies it in the background and it lands as a draft on the Delivery board for approval.' });
+      setEditOpen(null);
+      setEditText('');
+      await load();
+    } catch {
+      setEditNote({ id: projectId, text: 'Could not reach the forge. Try again.', error: true });
+    } finally {
+      setEditBusy(false);
+    }
+  };
 
   const load = useCallback(async () => {
     try {
@@ -150,7 +181,52 @@ export default function ClientCommandView() {
                         {p.care_plan && <span className="text-emerald-700 font-semibold">Care Plan ✓</span>}
                         {p.moodboard_status && <span>Moodboard: {p.moodboard_status}</span>}
                         {p.site_live_url && <a href={p.site_live_url} target="_blank" rel="noopener noreferrer" className="text-[#1E50C8] font-semibold hover:text-[#161616]">Live site ↗</a>}
+                        {templateName(p.site_template) && (
+                          <a href={`/admin/templates#${p.site_template}`} className="text-[#161616]/75 hover:text-[#161616]" title="The template their site wears. Opens the gallery.">◧ {templateName(p.site_template)}</a>
+                        )}
+                        {p.edit_status && p.edit_status !== 'ready' && p.edit_status !== 'approved' && (
+                          <span className={p.edit_status === 'failed' ? 'text-[#C4160B] font-semibold' : 'text-[#8f6600] font-semibold'}>
+                            Edit {p.edit_status}{p.edit_status === 'failed' && p.edit_error ? `: ${p.edit_error}` : ''}
+                          </span>
+                        )}
+                        {p.edit_status === 'ready' && <a href="/admin/delivery" className="text-[#1E50C8] font-semibold hover:text-[#161616]">Edit ready to approve →</a>}
                       </div>
+                      {p.has_site && (
+                        <div className="mt-3">
+                          {editOpen === p.id ? (
+                            <div>
+                              <textarea
+                                value={editText}
+                                onChange={(e) => setEditText(e.target.value)}
+                                rows={3}
+                                autoFocus
+                                maxLength={4000}
+                                placeholder="e.g. Swap the hero for a night shot of the shop, make the phone number bigger, and use their green on every button."
+                                className="w-full text-[13px] font-body bg-white border-2 border-[#161616]/20 focus:border-[#161616] rounded-lg px-3 py-2 outline-none resize-y"
+                              />
+                              <div className="flex items-center justify-between gap-2 mt-2">
+                                <span className="text-[11px] font-body text-[#161616]/55">Copy, colours, sections, or a new photograph. It lands as a draft for approval; their live site keeps serving.</span>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <button onClick={() => { setEditOpen(null); setEditText(''); }} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616]/55 hover:text-[#161616] px-2 py-1.5">Cancel</button>
+                                  <button onClick={() => void sendEdit(p.id)} disabled={editBusy || !editText.trim()} className="text-[9px] uppercase tracking-[0.15em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] px-3 py-1.5 disabled:opacity-45 hover:-translate-y-0.5 transition-all">{editBusy ? 'Queuing…' : 'Send to the forge'}</button>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => { setEditOpen(p.id); setEditText(''); setEditNote(null); }}
+                              disabled={p.edit_status === 'queued' || p.edit_status === 'building'}
+                              className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#161616] disabled:opacity-45"
+                              title={p.edit_status === 'queued' || p.edit_status === 'building' ? 'An edit is on the forge now. Send the next one when it lands.' : 'Change their site from one sentence'}
+                            >
+                              ✎ Edit this site →
+                            </button>
+                          )}
+                          {editNote && editNote.id === p.id && (
+                            <p className={`text-[12px] font-body mt-2 ${editNote.error ? 'text-[#C4160B]' : 'text-emerald-700'}`}>{editNote.text}</p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

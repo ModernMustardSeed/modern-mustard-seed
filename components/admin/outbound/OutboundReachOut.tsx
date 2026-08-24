@@ -7,6 +7,8 @@ import type { EmailPreview, LeadContact, MessageDelivery, OutboundAudit, Outboun
 import { api, btnGhost, btnPrimary, btnSeed, card, eyebrow, inputCls, labelCls } from '@/components/admin/outbound/ui';
 import TapText from '@/components/admin/TapText';
 import { usePoll } from '@/lib/use-poll';
+import { TemplatePicker, templateName } from '@/components/admin/TemplatePicker';
+import { RANDOM_TEMPLATE } from '@/lib/site-templates.mjs';
 
 /**
  * Every way to reach a lead, in one strip: Mr. Mustard AI calls, the audit
@@ -76,6 +78,9 @@ export function ReachOutDeck({
   // Wildmere award-site world) is the house style and the default; tier 3 is the
   // Journey site, built on request. Governs the first forge and any rebuild.
   const [designTier, setDesignTier] = useState<2 | 3>(2);
+  // Sarah's template picker (2026-08-24): Random lets the studio rotate by trade;
+  // a named template is worn exactly. Rides the first forge and any rebuild.
+  const [siteTemplateKey, setSiteTemplateKey] = useState<string>(RANDOM_TEMPLATE);
   const [forgingOs, setForgingOs] = useState(false);
   const [reforgeOpen, setReforgeOpen] = useState(false);
 
@@ -141,7 +146,7 @@ export function ReachOutDeck({
     try {
       const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-site`, {
         method: 'POST',
-        body: JSON.stringify(designTier ? { designTier } : {}),
+        body: JSON.stringify({ ...(designTier ? { designTier } : {}), siteTemplate: siteTemplateKey }),
       });
       if (res.lead) onLead(res.lead);
       push('Website queued. The forge builds it in the background; the chip flips to live when it is done.');
@@ -162,7 +167,7 @@ export function ReachOutDeck({
     try {
       const res = await api<{ already?: boolean }>(`/api/admin/outbound/leads/${lead.id}/refresh-site`, {
         method: 'POST',
-        body: JSON.stringify(designTier ? { designTier } : {}),
+        body: JSON.stringify({ ...(designTier ? { designTier } : {}), siteTemplate: siteTemplateKey }),
       });
       onLead({ ...lead, site_demo_status: 'queued' });
       push(
@@ -382,6 +387,27 @@ export function ReachOutDeck({
             <option value={2}>Design: Tier 2 · World</option>
             <option value={3}>Design: Tier 3 · Journey</option>
           </select>
+        )}
+
+        {!siteForging && (
+          <TemplatePicker
+            value={siteTemplateKey}
+            onChange={setSiteTemplateKey}
+            compact
+            className="bg-white border-2 border-[#1a1815]/20 rounded-lg px-2 py-1.5 font-oswald uppercase tracking-[0.06em] text-[11px] text-[#1a1815]/75 outline-none focus:border-[#b58a2a] hover:border-[#1a1815] max-w-[220px]"
+          />
+        )}
+
+        {templateName(lead.site_template) && (
+          <a
+            href={`/admin/templates#${lead.site_template}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${chip} bg-[#fffdf8] text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`}
+            title="The template their current website wears. Opens the gallery."
+          >
+            ◧ {templateName(lead.site_template)}
+          </a>
         )}
 
         {siteReady ? (

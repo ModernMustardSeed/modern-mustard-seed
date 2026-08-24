@@ -28,7 +28,8 @@ import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective } from '../lib/site-directive.mjs';
+import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective, withTemplate } from '../lib/site-directive.mjs';
+import { templateFromBrief, isTemplateKey } from '../lib/site-templates.mjs';
 import { weighSite, weightLine, weightRefusal } from '../lib/site-weight.mjs';
 import { judgeDemo } from '../lib/demo-quality.mjs';
 import { inlineSiteAssets, remainingLocalRefs } from './inline-site-assets.mjs';
@@ -162,7 +163,7 @@ const MEDIA_NOTES = (
  * that. Both laws ride along here for the same reason.
  */
 const LAW_URL = new URL('../lib/site-directive.mjs', import.meta.url).href;
-const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective };
+const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective, withTemplate };
 
 /**
  * VARIANT ROTATION MEMORY. Tier 2's selection doctrine forbids repeating the
@@ -214,7 +215,39 @@ async function currentLaw() {
     TIER3_DIRECTIVE: (m.tier3DemoDirective || STARTUP_LAW.tier3DemoDirective)({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     REAL_DIRECTIVE: m.cliRealDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     EDIT_DIRECTIVE: m.cliEditDirective(),
+    WITH_TEMPLATE: m.withTemplate || STARTUP_LAW.withTemplate,
   };
+}
+
+/**
+ * WHICH TEMPLATE THIS BUILD WEARS (2026-08-24, Sarah's picker). The route resolves
+ * Random at queue time and writes the key on the row (site_template, migration
+ * 107) and as a "SITE TEMPLATE: key" line in the brief, so either carries it. A
+ * row with neither (queued before the picker) lets the builder choose from the
+ * roster, exactly as before.
+ */
+function templateOf(job) {
+  if (isTemplateKey(job.site_template)) return { key: String(job.site_template).toLowerCase(), how: 'chosen' };
+  const fromBrief = templateFromBrief(job.brief);
+  if (fromBrief) return { key: fromBrief, how: 'brief' };
+  return { key: null, how: 'builder picks' };
+}
+
+/**
+ * Bank the template the build actually wore. The directive asks the builder to
+ * record it in RESULT.json; a row that already carries a chosen key keeps it, a
+ * row that let the builder choose learns what was chosen, so Random on the next
+ * forge can avoid repeating it. Best effort: losing this costs variety, never a build.
+ */
+async function recordTemplate(job, dir) {
+  try {
+    const r = JSON.parse(readFileSync(path.join(dir, 'RESULT.json'), 'utf8'));
+    const key = isTemplateKey(job.site_template) ? String(job.site_template).toLowerCase() : isTemplateKey(r?.template) ? String(r.template).toLowerCase() : null;
+    if (!key) return;
+    if (key !== job.site_template) await supabase.from('outbound_demo_sites').update({ site_template: key }).eq('id', job.id);
+    if (job.lead_id) await supabase.from('outbound_leads').update({ site_template: key }).eq('id', job.lead_id);
+    if (job.project_id) await supabase.from('projects').update({ site_template: key }).eq('id', job.project_id);
+  } catch { /* self-report missing, or the column is not applied yet; nothing breaks */ }
 }
 const isRebuild = (job) => job.kind === 'rebuild';
 const isEdit = (job) => job.kind === 'edit';
@@ -577,6 +610,9 @@ async function process_(job) {
       if (tier === 1) { directive = law.CODEX_DIRECTIVE; engineName = 'codex'; }
       else if (tier === 3) directive = law.TIER3_DIRECTIVE;
       else directive = law.TIER2_DIRECTIVE;
+      const tpl = templateOf(job);
+      log(`template ${tpl.key ?? '(builder picks)'} (${tpl.how}) for`, job.business_name);
+      if (tpl.key) directive = law.WITH_TEMPLATE(directive, tpl.key);
     }
     const { code, out } = engineName === 'codex' ? await runCodex(dir, directive) : await runClaude(dir, directive);
 
@@ -641,6 +677,7 @@ async function process_(job) {
     }
 
     rememberVariant(dir);
+    if (!isEdit(job)) await recordTemplate(job, dir);
     await storeFinished(job, html);
   } catch (e) {
     await fail(job, e?.message || e);

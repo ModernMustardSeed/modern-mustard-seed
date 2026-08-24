@@ -36,13 +36,18 @@ export async function GET(_req: Request, { params }: { params: Promise<{ email: 
   } catch { /* client_products not migrated */ }
 
   let projects: unknown[] = [];
+  const BASE = 'id, name, status, summary, progress, launch_target, care_plan, site_live_url, moodboard_status, revisions_included, revisions_used, created_at';
+  // The site columns (edit state, template, whether html exists) came later; a
+  // database missing one of them must still return the projects.
+  const projectQuery = (cols: string) => sb.from('projects').select(cols).eq('client_email', email).order('created_at', { ascending: false });
   try {
-    const { data } = await sb
-      .from('projects')
-      .select('id, name, status, summary, progress, launch_target, care_plan, site_live_url, moodboard_status, revisions_included, revisions_used, created_at')
-      .eq('client_email', email)
-      .order('created_at', { ascending: false });
-    projects = data ?? [];
+    let { data, error } = await projectQuery(`${BASE}, site_template, edit_status, edit_error, edit_instruction, edit_requested_at, site_html, demo_site_id`);
+    if (error) ({ data } = await projectQuery(BASE));
+    // The html itself never leaves the route; the card only needs to know it exists.
+    projects = ((data ?? []) as unknown as Record<string, unknown>[]).map((p) => {
+      const { site_html, ...rest } = p as { site_html?: string | null } & Record<string, unknown>;
+      return { ...rest, has_site: Boolean(site_html) };
+    });
   } catch { /* projects columns differ */ }
 
   let orders: unknown[] = [];

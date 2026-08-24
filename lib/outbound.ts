@@ -127,6 +127,8 @@ export type OutboundLead = {
   site_demo_id: string | null;
   site_demo_url: string | null;
   site_demo_status: SiteDemoStatus | null;
+  /** lib/site-templates.mjs key their current demo site wears (migration 107). */
+  site_template?: string | null;
   os_demo_id: string | null;
   os_demo_url: string | null;
   os_demo_status: 'ready' | null;
