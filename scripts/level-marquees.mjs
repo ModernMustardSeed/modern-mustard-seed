@@ -38,6 +38,25 @@ const SPIN = /\s*rotate\s*:\s*-?[\d.]+(?:deg|rad|turn)\s*;?/gi;
 const PAD = /padding\s*:\s*([\d.]+)px/i;
 const MIN_PAD = 22;
 
+/**
+ * THE BAND AND ITS TRACK, NEVER WHAT IS INSIDE THEM.
+ *
+ * The first dry run over the fleet wanted to level `.marq-track span::after`,
+ * `.marquee li::after` and `.marq-g i`, which are the little rotated diamonds
+ * BETWEEN the words. Those are supposed to be on the diagonal: rotate(45deg) on
+ * a square is how you draw a diamond. Stripping them would have turned every
+ * separator on four builds back into a square and called it a repair.
+ *
+ * So only a rule whose whole selector is class names is rewritten. A descendant
+ * combinator, an element type, or a pseudo-element means the rule is dressing
+ * something inside the stripe rather than the stripe itself.
+ */
+function bandRule(selector) {
+  return selector
+    .split(',')
+    .every((part) => /^\s*\.[a-z0-9_-]+(?:\.[a-z0-9_-]+)*\s*$/i.test(part));
+}
+
 /** @returns {{html:string, hits:string[]}} */
 export function levelMarqueeCss(html) {
   const hits = [];
@@ -45,6 +64,7 @@ export function levelMarqueeCss(html) {
     /* A keyframes block is not a rule to flatten: the translate that MOVES the
        stripe lives in one, and stripping it would stop the marquee dead. */
     if (/@keyframes/i.test(head)) return whole;
+    if (!bandRule(head.replace(/\{$/, ''))) return whole;
     let next = body;
     next = next.replace(WEDGE, '');
     next = next.replace(TILT, '');
