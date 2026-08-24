@@ -22,6 +22,15 @@ export type ArtifactEntry = {
 
 export const ARTIFACTS: ArtifactEntry[] = [
   {
+    id: '06d1307f-79f9-4887-afcc-c3f03035b49b',
+    title: 'The Hotline',
+    url: 'https://claude.ai/code/artifact/06d1307f-79f9-4887-afcc-c3f03035b49b',
+    updated: '2026-08-24',
+    venture: 'MMS',
+    kind: 'Moodboard',
+    description: 'The Line, summer of 1984: neon Jax Beach moodboard with Mr. Mustard art, payphone booths wired to the Line, Skate Night, the banner plane, the neon sign program, and Mustard After Dark.',
+  },
+  {
     id: '2b6286cf-e034-4121-a8cb-315d6cf6c7aa',
     title: 'The Thousand-Client Map',
     url: 'https://claude.ai/code/artifact/2b6286cf-e034-4121-a8cb-315d6cf6c7aa',
