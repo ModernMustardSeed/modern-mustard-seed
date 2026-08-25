@@ -6,6 +6,7 @@ import { templateName } from '@/components/admin/TemplatePicker';
 import Link from 'next/link';
 import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
+import DripButton from '@/components/admin/DripButton';
 
 /**
  * The single per-client command view. One screen for one customer: who they are,
@@ -137,6 +138,11 @@ export default function ClientCommandView() {
                 {c?.status && <span className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded-full border ${c.status === 'active' ? 'bg-emerald-100 text-emerald-800 border-emerald-800/25' : 'bg-[#161616]/[0.06] text-[#161616]/65 border-[#161616]/15'}`}>{c.status}</span>}
               </div>
               {!c && <p className="mt-2 text-[#8f6600] font-body text-sm">No client record yet. They may be a lead or an unprovisioned buyer.</p>}
+              {/* Renders nothing unless this address has a lead row behind it,
+                  because there is nothing to drip otherwise. */}
+              <div className="mt-4">
+                <DripButton email={data.email} businessName={c?.company ?? displayName} />
+              </div>
             </div>
 
             {/* What they own */}
