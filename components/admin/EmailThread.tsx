@@ -162,9 +162,22 @@ function Preview({ html, text }: { html: string | null; text: string | null }) {
   }
   return (
     <>
+      {/*
+        Said BEFORE the click, not after it.
+        This note used to live at the bottom of the link list, under a 30rem
+        iframe, which meant the first thing anybody did was press the big yellow
+        button, watch nothing happen, and report the button as broken. It is not
+        broken; it is disarmed on purpose, and that has to be readable from the
+        same screenful as the button it describes.
+      */}
+      <p className="mt-3 rounded-t-lg border-2 border-b-0 border-[#161616]/20 bg-[#F5B700]/20 px-3 py-2 text-[11px] leading-snug text-[#161616]/75">
+        <span className="font-mono font-semibold uppercase tracking-[0.14em]">Read only.</span> The buttons below do
+        nothing here. Every one is a tracked redirect, and pressing it would record a click this contact never made.
+        Their real destinations are listed underneath. Phone links still dial.
+      </p>
       <iframe
         title="What they were sent"
-        className="mt-3 w-full rounded-lg border-2 border-[#161616]/20 bg-white"
+        className="w-full rounded-b-lg border-2 border-[#161616]/20 bg-white"
         style={{ height: tall ? '70rem' : '30rem' }}
         srcDoc={html}
         sandbox=""
@@ -213,8 +226,8 @@ function Links({ links }: { links: EmailLink[] }) {
         ))}
       </ul>
       <p className="mt-2 text-[11px] leading-snug text-[#161616]/55">
-        The links are dead inside the preview on purpose. Every button is a tracked redirect, and following one from
-        here would record a click this prospect never made.
+        Copy one to open it yourself. The tracked ones record a click against this contact when they are followed, so
+        open them from a private window if you are only checking that the page loads.
       </p>
     </div>
   );

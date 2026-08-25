@@ -1021,11 +1021,16 @@ test('emails: email one carries the machine, the ranch line and exactly one butt
   assert.match(html, /Model RR-1/, 'the pop-art calculator ships in the first email');
   assert.match(html, /\(406\) 312-1223/, 'his number is printed, not only linked in the signature');
   assert.match(html, /tel:\+14063121223/, 'and it is dialable from a phone');
-  // Two doors, one button. A second button splits the click and measures
-  // nothing; a phone number does not compete with a CTA. The keypad links to
-  // the live machine on /mustard, so it never lands on the tracked route.
+  assert.match(html, /font-size:34px/, 'the number is the biggest thing after the calculator');
+  // ONE BUTTON, TWO TRACKED LINKS. The button opens the free build; the text
+  // link under it opens the Talking Website. Both are measured, and only one of
+  // them is a button, because a second button splits the click and measures
+  // nothing. The keypad links to the live machine on /mustard, so it never
+  // lands on the tracked route.
   const tracked = html.match(/\/api\/acq\/click\?/g) ?? [];
-  assert.equal(tracked.length, 1, 'exactly one tracked button in the email');
+  assert.equal(tracked.length, 2, 'the button and its one text link, nothing else tracked');
+  assert.equal((html.match(/d=demos/g) ?? []).length, 1, 'exactly one button, and it opens the free build');
+  assert.equal((html.match(/d=talking-website/g) ?? []).length, 1, 'exactly one second path');
 });
 
 test('emails: the website email sells the suite and its button opens the suite', () => {
@@ -1044,16 +1049,26 @@ test('emails: the website email sells the suite and its button opens the suite',
   // in the drip at all: not as a piece, not as a freebie, not as an aside.
   assert.ok(!/command center/i.test(html), 'the command center is never suggested alongside anything');
   assert.match(html, /\(406\) 312-1223/, 'the forge close is on the phone, so the number is in the copy');
-  // The button must go to the demo suite, and the quieter second link back to
-  // the callback page. A button labelled BUILD MY SUITE that opens /mustard is
-  // a bait and switch.
+  // The button must go to the free build, and the quieter second link to the
+  // Talking Website. A button labelled BUILD MY SUITE that opens the callback
+  // page is a bait and switch.
   assert.match(html, /\/api\/acq\/click\?[^"]*d=demos/, 'the button carries the demos door');
   assert.ok(!/free\s+(website|suite)\s+for\s+\$/i.test(html), 'never a price on the free demo');
-  assert.match(html, /Have him call me/, 'the second door is a text link');
+  assert.match(html, /Or the Talking Website/, 'the second door is a text link');
 });
 
-test('emails: only the website email changes the door, and the door is a whitelist', () => {
-  for (const body_key of ['default', 'proof', 'challenge', 'keep_her', 'breakup']) {
+/**
+ * NOBODY IS ASKED FOR THEIR PHONE NUMBER (2026-08-25).
+ *
+ * The campaign used to end every email by offering to ring them, which put the
+ * wait and the commitment on the stranger. The new ask hands them a working
+ * agent for free and prints the line for anyone who would rather dial.
+ *
+ * This test is the guard on that decision. A body that asks to call them, or a
+ * button that reopens the permission page, fails here rather than in an inbox.
+ */
+test('emails: every email opens the free build, and none of them asks to call anybody', () => {
+  for (const body_key of ['default', 'proof', 'talking_website', 'challenge', 'keep_her', 'breakup']) {
     const built = buildCampaignEmail({
       lead: lead(),
       variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'S', cta_label: 'YES', body_key, weight: 1, active: true },
@@ -1062,9 +1077,19 @@ test('emails: only the website email changes the door, and the door is a whiteli
       fromEmail: 's@x.com',
       replyTo: 's@x.com',
     });
-    assert.ok(!built!.html.includes('d=demos'), `${body_key} must keep the callback door`);
+    const html = built!.html;
+    assert.match(html, /d=demos/, `${body_key} button must open the free build`);
+    assert.match(html, /d=talking-website/, `${body_key} must offer the second path`);
+    assert.ok(!html.includes('d=mustard'), `${body_key} must not reopen the permission page`);
+    assert.match(html, /\(406\) 312-1223/, `${body_key} must print the line to dial`);
+    // The exact phrasings the sequence used to close on. Any of them coming
+    // back means somebody reinstated the ask without reading why it went.
+    for (const ask of [/have him call you/i, /let him call me/i, /rings your phone/i, /I will have Mr\. Mustard call you/i]) {
+      assert.ok(!ask.test(html), `${body_key} still asks for a callback: ${ask}`);
+    }
   }
   assert.match(permissionUrl(lead(), 3, 'A', 'demos'), /d=demos/);
+  assert.match(permissionUrl(lead(), 3, 'A', 'talking-website'), /d=talking-website/);
   assert.ok(!permissionUrl(lead(), 1, 'A').includes('d='), 'the default door adds no parameter');
 });
 
