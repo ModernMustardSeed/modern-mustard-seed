@@ -66,11 +66,30 @@ if ($escaped.Count -eq 0) { Say 'no escaped build agents' }
 foreach ($a in $escaped) { Kill-Tree $a.ProcessId "escaped build agent, started $($a.CreationDate)" }
 
 # --------------------------------------------------------------- 2. the worker
+#
+# THREE LAYERS, AND THE OUTER ONE IS THE EASY ONE TO MISS. build-worker-watchdog.cmd
+# is a `:loop` in cmd.exe: kill the node watchdog under it and it starts another one
+# thirty seconds later. A repair that kills only node and then starts a fresh
+# supervisor leaves TWO supervisors running, which is two workers, which is the
+# double-claim this whole file exists to clean up after. So the cmd.exe loop is what
+# gets killed, and /T takes the node watchdog and the build agents down with it.
 $workers = @(Get-CimInstance Win32_Process -Filter "Name='node.exe'" |
-  Where-Object { $_.CommandLine -match 'demo-site-worker|worker-watchdog --name build|worker-watchdog.mjs --name build' })
+  Where-Object { $_.CommandLine -match 'demo-site-worker|worker-watchdog(\.mjs)? --name build' })
 
 if ($workers.Count -eq 0) { Say 'build worker was not running' }
-foreach ($w in $workers) { Kill-Tree $w.ProcessId 'build worker' }
+
+$supervisors = @{}
+foreach ($w in $workers) {
+  $par = Get-CimInstance Win32_Process -Filter "ProcessId=$($w.ParentProcessId)" -ErrorAction SilentlyContinue
+  # Only ever the .cmd loop itself. Its own parent is explorer or a shell, and
+  # killing that would take the desktop or this session with it.
+  if ($par -and $par.Name -eq 'cmd.exe' -and $par.CommandLine -match 'build-worker-watchdog') {
+    $supervisors[[int]$par.ProcessId] = $true
+  } else {
+    Kill-Tree $w.ProcessId 'build worker'
+  }
+}
+foreach ($id in $supervisors.Keys) { Kill-Tree $id 'build worker supervisor loop (takes the tree with it)' }
 
 # Anything still holding a build after the tree kills is the remainder: agents
 # whose parent was alive a moment ago because it was the worker we just stopped.
