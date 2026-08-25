@@ -106,7 +106,7 @@ export async function saveRun(db: KV, runId: string, run: DemoAgentRun): Promise
  * sitting in other people's inboxes forever. A run that stops resolving is a
  * dead link on a demo we paid to send.
  *
- * Migration 109 moves every key, so on a healthy database this fallback never
+ * Migration 112 moves every key, so on a healthy database this fallback never
  * fires. It stays anyway, because the cost of keeping it is one extra query on
  * a miss and the cost of being wrong about "every row moved" is silent.
  */

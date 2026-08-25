@@ -16,7 +16,7 @@
 -- double-booking test against real data found zero rows in a table that should
 -- have had 277.
 --
--- Migration 109 drops the table. This file is emptied rather than deleted so the
+-- Migration 112 drops the table. This file is emptied rather than deleted so the
 -- numbered sequence stays intact and the next person to ask "what was 036"
 -- gets an answer instead of a gap. Replaying migrations from scratch now simply
 -- never creates it, which is correct: nothing has ever read or written it.
