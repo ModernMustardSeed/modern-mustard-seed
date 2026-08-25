@@ -308,17 +308,10 @@ async function runDemoEmailJob(
     : await sendDemoEmail(db, campaign, lead);
   if (!sent.ok) return sent.permanent ? { kind: 'skip', note: sent.error } : { kind: 'fail', note: sent.error };
 
-  // Start the "did you try to break it" sequence.
-  for (const [i, kind] of (['demo_no_purchase_1', 'demo_no_purchase_2', 'demo_no_purchase_3'] as FollowupKind[]).entries()) {
-    await enqueue(db, {
-      kind: 'followup',
-      leadId: lead.id,
-      campaignId: campaign.id,
-      step: 10 + i,
-      runAfter: addBusinessDays(new Date(), 2 + i * 3),
-      payload: { followup: kind },
-    });
-  }
+  // The "did you try to break it" sequence starts inside the senders now, so
+  // that a demo sent from the admin, the forge screen, demos-now or Mr. Mustard
+  // on a call gets the same follow-through this worker used to get alone. See
+  // lib/acq/post-demo.ts.
   void job;
   return { kind: 'done', note: sent.subject, result: { messageId: sent.messageId } };
 }
