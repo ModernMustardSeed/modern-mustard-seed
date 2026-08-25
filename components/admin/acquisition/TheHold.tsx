@@ -13,7 +13,16 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { Section, Chip, Stat, api, card, cardFlat } from '@/components/admin/acquisition/ui';
+import { Section, Chip, Stat, api, card, cardFlat, btnPrimary } from '@/components/admin/acquisition/ui';
+
+type SendReport = {
+  ready: number;
+  sent: number;
+  skipped: number;
+  failed: number;
+  held: string | null;
+  outcomes: { leadId: string; company: string | null; email: string | null; status: string; note: string }[];
+};
 
 type Check = { id: string; label: string; passed: boolean; detail: string; critical: boolean };
 type Waiting = { kind: string; label: string; due: number; scheduled: number; oldestDue: string | null; lastNote: string | null };
@@ -74,13 +83,78 @@ export function useHold(): { hold: Hold | null; reload: () => void } {
   return { hold, reload };
 }
 
-export default function TheHold({ hold }: { hold: Hold | null }) {
+export default function TheHold({ hold, onDone }: { hold: Hold | null; onDone?: () => void }) {
+  const [busy, setBusy] = useState(false);
+  const [report, setReport] = useState<SendReport | null>(null);
+  const [sendError, setSendError] = useState('');
+
+  const sendDemosNow = async () => {
+    setBusy(true);
+    setSendError('');
+    setReport(null);
+    try {
+      const res = await api<{ report: SendReport }>('/api/admin/acquisition/hold', {
+        method: 'POST',
+        body: JSON.stringify({ action: 'send-demos-now', reason: 'Sent by hand from the Hold.' }),
+      });
+      setReport(res.report);
+      onDone?.();
+    } catch (e) {
+      setSendError(e instanceof Error ? e.message : 'That did not go through.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
   if (!hold) return null;
 
   const nothingWaiting = hold.totalDue === 0 && hold.totalScheduled === 0;
+  const demosWaiting = hold.waiting.find((w) => w.kind === 'demo_email')?.due ?? 0;
 
   return (
     <div className="space-y-6">
+      {(demosWaiting > 0 || report) && (
+        <section className={`${card} p-6 border-[#F5B700] shadow-[6px_6px_0_0_#F5B700]`}>
+          <p className="font-oswald text-[11px] font-bold uppercase tracking-[0.18em] text-[#7a5c00]">Your demos</p>
+          <h2 className="mt-1 font-oswald text-2xl font-bold uppercase tracking-tight">
+            {demosWaiting > 0
+              ? `${demosWaiting} forged ${demosWaiting === 1 ? 'demo is' : 'demos are'} built and waiting`
+              : 'The waiting demos have gone out'}
+          </h2>
+          <p className="mt-2 text-[15px] leading-relaxed text-[#161616]/75 max-w-3xl">
+            These go the moment you say so. The send window, the hourly cap, the daily allowance and the bounce brake all
+            step aside: they exist to stop the machine running away, not to stand between you and a demo you just built.
+            An unsubscribe, the suppression list, a previous hard bounce and a do-not-contact flag never step aside, for
+            anyone, ever.
+          </p>
+          {demosWaiting > 0 && (
+            <button className={`${btnPrimary} mt-4`} disabled={busy} onClick={() => void sendDemosNow()}>
+              {busy ? 'Sending...' : `Send ${demosWaiting} ${demosWaiting === 1 ? 'demo' : 'demos'} now`}
+            </button>
+          )}
+          {sendError && <p className="mt-3 text-sm font-semibold text-[#E0301E]">{sendError}</p>}
+          {report && (
+            <div className="mt-4">
+              <p className="text-sm font-semibold">
+                {report.sent} sent, {report.skipped} skipped, {report.failed} failed.
+              </p>
+              {report.held && <p className="mt-1 text-sm font-semibold text-[#E0301E]">{report.held}</p>}
+              <ul className="mt-2 space-y-1.5">
+                {report.outcomes.map((o) => (
+                  <li key={o.leadId} className="flex items-start gap-2.5 text-[12px]">
+                    <Chip label={o.status} tone={o.status === 'sent' ? 'good' : o.status === 'skipped' ? 'warn' : 'bad'} />
+                    <span className="min-w-0">
+                      <strong>{o.company ?? o.email ?? o.leadId}</strong>
+                      {o.status !== 'sent' && <span className="text-[#161616]/65"> · {o.note}</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
+
       {hold.held && hold.blocker && (
         <section className={`${card} p-6 border-[#E0301E] shadow-[6px_6px_0_0_#E0301E]`}>
           <p className="font-oswald text-[11px] font-bold uppercase tracking-[0.18em] text-[#a32315]">Nothing is going out</p>

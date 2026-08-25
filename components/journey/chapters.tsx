@@ -95,7 +95,7 @@ function Mile({ label, dark = false }: { label: string; dark?: boolean }) {
 
 /** Children of a `group` container that useReveal marks with data-in="1". */
 const revealBase =
-  'opacity-0 translate-y-6 transition-all duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)] group-data-[in="1"]:opacity-100 group-data-[in="1"]:translate-y-0 motion-reduce:transition-none';
+  'mm-r opacity-0 translate-y-6 transition-all duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)] group-data-[in="1"]:opacity-100 group-data-[in="1"]:translate-y-0 motion-reduce:transition-none';
 
 function openMustard(source: string) {
   track('journey_door', { door: source });
