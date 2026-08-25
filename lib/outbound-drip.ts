@@ -382,6 +382,66 @@ export async function startDrip(sb: SupabaseClient, lead: OutboundLead, startedB
   return sendDripStep(sb, lead, data as OutboundDrip, 1);
 }
 
+/**
+ * ENROL THEM THE MOMENT THEIR DEMO GOES OUT, WITHOUT SENDING ANYTHING.
+ *
+ * Sarah, 2026-08-25: "when a demo is sent, then they should automatically enter
+ * a drip campaign after that to try to land the client."
+ *
+ * Step 1 of this sequence IS the demo email ("I built you a website you can
+ * click through"), so a demo that has just left is a drip already one step in.
+ * `startDrip` would send that email a second time, minutes after the real one.
+ * This records the demo as step 1, schedules step 2 on the normal gap, and lets
+ * the cadence cron carry the rest: the missed-call math, the first week, the
+ * price in writing, the close.
+ *
+ * A NEW DEMO RESTARTS IT. Sending somebody a second demo is a new attempt at
+ * the same sale, and it would be strange to have them receive "closing your
+ * file" three days later because the first attempt was four steps along. The
+ * row is reset rather than added to, so there is only ever one live sequence
+ * per lead and the two can never interleave in an inbox.
+ *
+ * Never throws. A delivered demo must not be reported as a failure because its
+ * follow-up could not be scheduled.
+ */
+export async function enrollDripAfterDemo(
+  sb: SupabaseClient,
+  lead: OutboundLead,
+  args: { startedBy: string; messageId?: string | null; subject?: string | null },
+): Promise<{ ok: true; nextAt: string | null; restarted: boolean } | { ok: false; error: string }> {
+  try {
+    const stop = dripStopReason(lead, false);
+    if (stop) return { ok: false, error: stop };
+
+    const existing = await getDrip(sb, lead.id);
+    const nowIso = new Date().toISOString();
+    const nextAt = atCadenceHour(addBusinessDays(new Date(), DRIP_GAPS[0])).toISOString();
+    const row = {
+      lead_id: lead.id,
+      status: 'active' as const,
+      step: 1,
+      gaps: DRIP_GAPS,
+      next_at: nextAt,
+      started_at: nowIso,
+      started_by: args.startedBy,
+      last_sent_at: nowIso,
+      stopped_reason: null,
+      // The demo IS step 1, so it goes in the log as step 1. The panel then
+      // shows a sequence that matches what the prospect actually received.
+      sent: [{ step: 1, at: nowIso, messageId: args.messageId ?? null, subject: args.subject ?? 'Their demo' }],
+      last_error: null,
+      updated_at: nowIso,
+    };
+    const { error } = existing
+      ? await sb.from('outbound_drips').update(row).eq('id', existing.id)
+      : await sb.from('outbound_drips').insert(row);
+    if (error) return { ok: false, error: error.message };
+    return { ok: true, nextAt, restarted: Boolean(existing) };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Could not enrol the drip.' };
+  }
+}
+
 export async function setDripStatus(sb: SupabaseClient, leadId: string, status: 'paused' | 'active' | 'stopped', reason?: string): Promise<OutboundDrip | null> {
   const drip = await getDrip(sb, leadId);
   if (!drip) return null;

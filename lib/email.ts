@@ -156,6 +156,18 @@ function shell({ preheader = '', subtitle, inner, showSocial = true }: ShellArgs
     .mms-ink { color:${C.ink} !important; }
     .mms-body { color:${C.body} !important; }
   }
+  /*
+    THE SIGNATURE STACKS ON A PHONE.
+    Side by side, the 114px portrait and its padding eat half the width of a
+    375px screen and the script name renders at 147px, smaller than the type
+    under it. Stacked, the name gets the full column. Gmail, Apple Mail and
+    Outlook mobile honour this; the desktop clients that strip embedded media
+    queries are all 600px wide, where the two columns fit comfortably anyway.
+  */
+  @media only screen and (max-width:479px) {
+    .mms-sig-face { display:block !important; width:100% !important; padding:0 0 14px 0 !important; }
+    .mms-sig-text { display:block !important; width:100% !important; padding-left:0 !important; }
+  }
 </style>
 </head>
 <body class="body" style="margin:0;padding:0;background:${C.page};font-family:${SANS};color:${C.ink};line-height:1.6;-webkit-font-smoothing:antialiased;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%">
@@ -247,15 +259,29 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
 // The three assets are 2x PNGs in public/brand, sized down in the markup so
 // they stay sharp on retina. The script name carries alt="Sarah Scarano", so a
 // client with images off still shows the name and not a gap.
+//
+// IT MUST BE ABLE TO SHRINK (fixed 2026-08-25). Sarah: "most of my signature is
+// cut off in the new emails." The script name shipped as a hard 339px image
+// beside a 114px portrait, so the signature demanded 473px of content. Inside
+// the card's 44px side padding and the page's 16px, that is a 593px floor under
+// an otherwise fluid email, and on a phone the name ran off the right edge and
+// dragged the whole message into horizontal scroll. The name is fluid now
+// (`width:100%;max-width:339px`), so it scales into whatever it is given and the
+// email has no fixed-width floor left in it.
+//
+// The bottom padding moves with the ranch card. That card used to carry the
+// space under the signature in its own row, so suppressing it for the cold
+// campaign left the sign-off jammed against the bottom edge of the card, which
+// reads exactly like something that failed to finish rendering.
 function signature(_name?: string, opts?: { ranchLine?: boolean }): string {
   const withRanch = opts?.ranchLine !== false;
-  return `<tr><td style="padding:36px 44px 0">
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-      <td width="114" style="width:114px;vertical-align:middle">
-        <img src="${SITE}/brand/sig-sarah.png?v=2026-08-25d" width="114" height="114" alt="" style="display:block;border:0;outline:none;text-decoration:none" />
+  return `<tr><td style="padding:36px 44px ${withRanch ? '0' : '38px'}">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%"><tr>
+      <td class="mms-sig-face" width="114" style="width:114px;vertical-align:middle">
+        <img src="${SITE}/brand/sig-sarah.png?v=2026-08-25d" width="114" height="114" alt="" style="display:block;border:0;outline:none;text-decoration:none;width:114px;max-width:114px;height:auto" />
       </td>
-      <td style="vertical-align:middle;padding-left:20px">
-        <img src="${SITE}/brand/sig-name.png" width="339" height="46" alt="Sarah Scarano" style="display:block;border:0;outline:none;text-decoration:none;max-width:339px" />
+      <td class="mms-sig-text" style="vertical-align:middle;padding-left:20px">
+        <img src="${SITE}/brand/sig-name.png" width="339" height="46" alt="Sarah Scarano" style="display:block;border:0;outline:none;text-decoration:none;width:100%;max-width:339px;height:auto" />
         <p class="mms-body" style="margin:9px 0 0;font-family:${SANS};font-size:14px;color:${C.body};font-weight:600">(Founder &amp; Agentic Engineer)</p>
         <p class="mms-ink" style="margin:9px 0 0;font-family:${SANS};font-size:11px;color:${C.ink};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
       </td>
@@ -263,7 +289,7 @@ function signature(_name?: string, opts?: { ranchLine?: boolean }): string {
   </td></tr>
   ${
     // The ranch card. Suppressed by the cold campaign, which now prints the same
-    // number at 34px in the body with the instruction that turns the call into a
+    // number at 30px in the body with the instruction that turns the call into a
     // demo. Two cream cards carrying one phone number, four inches apart, reads
     // as a template repeating itself rather than as an invitation.
     !withRanch

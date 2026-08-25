@@ -40,12 +40,21 @@ export function dripChipLabel(drip: Drip | null | undefined, length: number): st
   return `■ Drip stopped ${drip.step}/${length}`;
 }
 
+/**
+ * `lead` is only ever read for its id and its business name, so the panel takes
+ * the narrow shape rather than a whole OutboundLead. That is what lets it open
+ * from the Acquisition prospect card and the Client Book, which hold a lead id
+ * and a name and nothing else. `onLead` is optional for the same reason: only
+ * the cockpit keeps a lead object worth refreshing.
+ */
+export type DripPanelLead = { id: string; business_name: string };
+
 export default function DripPanel({ lead, open, onClose, onLead, onDrip, push }: {
-  lead: OutboundLead;
+  lead: DripPanelLead;
   open: boolean;
   onClose: () => void;
-  onLead: (l: OutboundLead) => void;
-  onDrip: (d: Drip | null) => void;
+  onLead?: (l: OutboundLead) => void;
+  onDrip?: (d: Drip | null) => void;
   push: Push;
 }) {
   const [data, setData] = useState<Payload | null>(null);
@@ -57,7 +66,7 @@ export default function DripPanel({ lead, open, onClose, onLead, onDrip, push }:
     try {
       const r = await api<Payload>(`/api/admin/outbound/leads/${lead.id}/drip`);
       setData(r);
-      onDrip(r.drip);
+      onDrip?.(r.drip);
       setError(null);
       const next = r.plan.find((s) => s.state === 'next') ?? r.plan[0];
       setOpenStep(next.step);
@@ -78,8 +87,8 @@ export default function DripPanel({ lead, open, onClose, onLead, onDrip, push }:
         method: 'POST',
         body: JSON.stringify({ action }),
       });
-      if (r.lead) onLead(r.lead);
-      onDrip(r.drip);
+      if (r.lead) onLead?.(r.lead);
+      onDrip?.(r.drip);
       push(
         action === 'start' || action === 'restart'
           ? `Email 1 sent: "${r.subject}". The rest follow on their own unless they reply.`

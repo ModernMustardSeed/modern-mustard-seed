@@ -1023,7 +1023,14 @@ test('emails: email one carries the machine, the ranch line and exactly one butt
   assert.match(html, /Model RR-1/, 'the pop-art calculator ships in the first email');
   assert.match(html, /\(406\) 312-1223/, 'his number is printed, not only linked in the signature');
   assert.match(html, /tel:\+14063121223/, 'and it is dialable from a phone');
-  assert.match(html, /font-size:34px/, 'the number is the biggest thing after the calculator');
+  // The number is the biggest thing in the email after the calculator readout,
+  // and it has to survive a phone: at 34px the nowrap number was a 285px floor
+  // under an otherwise fluid email and pushed the whole card into horizontal
+  // scroll on a 375px screen. Big, but not so big it breaks the message.
+  const ranchSize = Number(html.match(/<a href="tel:[^"]*"[^>]*font-size:(\d+)px/)?.[1] ?? 0);
+  assert.ok(ranchSize >= 28 && ranchSize <= 32, `the ranch number should be 28-32px, got ${ranchSize}`);
+  // And nothing in the signature may impose a fixed width either.
+  assert.match(html, /sig-name\.png[^>]*width:100%/, 'the script name must scale into whatever column it gets');
   // ONE BUTTON, TWO TRACKED LINKS. The button opens the free build; the text
   // link under it opens the Talking Website. Both are measured, and only one of
   // them is a button, because a second button splits the click and measures
