@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { Resend } from 'resend';
 import { resendClient } from '@/lib/send-email';
 import {
@@ -21,6 +21,8 @@ import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { forgeSuiteFromCall } from '@/lib/voice-forge-suite';
 import { DEMO_BOOKING_TOOL_NAMES, runDemoBookingTool } from '@/lib/demo-booking-tools';
 import { getRun } from '@/lib/sidekick-store';
+import { notifyDemoBooking } from '@/lib/demo-booking-notify';
+import { demoAppointmentsFor } from '@/lib/demo-booking';
 import {
   acqContext,
   handleForgeProspectAgent,
@@ -772,25 +774,81 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
   // of email config so recall keeps working even if Resend is down.
   await rememberSummary({ phone: phoneNumber, summary });
 
+  /* ── A DEMO CALL IS NOT AN ANONYMOUS "WEB CALL" ────────────────────────────
+   *
+   * Sarah, 2026-08-25: "def needs to be known if i have a demo booking or cal
+   * or anything!!!"
+   *
+   * Every one of these already reached her, which was the problem: a forged
+   * demo call arrived titled "Mr. Mustard call summary · Web call", identical
+   * whether somebody poked at it for five seconds or booked a job. The signal
+   * was landing in the inbox dressed as noise. So a demo call now says whose
+   * demo it was in the subject, and says whether the agent actually booked
+   * anything, which is the only thing she needs to read to know if it matters.
+   *
+   * A booking also fires its own immediate alert from the tool call (see
+   * notifyDemoBooking). That is deliberate duplication: the alert is the
+   * "phone them today", this is the record of how the call went. */
+  let demoLine: { business: string; booked: Awaited<ReturnType<typeof demoAppointmentsFor>> } | null = null;
+  if (meta.kind === 'sidekick-demo' && typeof meta.runId === 'string' && UUID.test(meta.runId)) {
+    try {
+      const sb = getSupabase();
+      if (sb) {
+        const run = await getRun(sb, meta.runId);
+        const bookedOnThisCall = (await demoAppointmentsFor(sb, meta.runId, 5)).filter(
+          // Only what this call produced, not everything the demo has ever taken.
+          (a) => Date.parse(a.created_at) >= Date.now() - Math.max(durationSeconds ?? 0, 60) * 1000 - 120_000,
+        );
+        demoLine = { business: run?.business || (meta.business as string) || 'a forged demo', booked: bookedOnThisCall };
+      }
+    } catch (err) {
+      console.error('demo call summary lookup failed', err);
+    }
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
   try {
     const resend = resendClient();
+    const bookedCount = demoLine?.booked.length ?? 0;
+    const subject = demoLine
+      ? bookedCount
+        ? `DEMO CALL, BOOKED: ${demoLine.business}`
+        : `Demo call: ${demoLine.business}${durationSeconds ? ` · ${durationSeconds}s` : ''}`
+      : `Mr. Mustard call summary · ${callerNumber}`;
+
     await sendLoud(resend, 'end-of-call-report', {
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: OWNER_NOTIFY_TO,
-      subject: `Mr. Mustard call summary · ${callerNumber}`,
+      subject,
       html: leadNotification({
         type: 'Contact',
-        name: 'Mr. Mustard voice call',
+        name: demoLine ? `${demoLine.business} demo agent` : 'Mr. Mustard voice call',
         email: 'sarah@modernmustardseed.com',
         fields: [
           { label: 'Caller', value: callerNumber },
+          ...(demoLine ? [{ label: 'Demo', value: demoLine.business }] : []),
+          ...(demoLine
+            ? [
+                {
+                  label: 'Booked on this call',
+                  value: bookedCount
+                    ? demoLine.booked
+                        .map((b) => `${b.customer_name || 'a caller'}${b.service ? `, ${b.service}` : ''}`)
+                        .join('; ')
+                    : 'nothing',
+                },
+              ]
+            : []),
           ...(durationSeconds ? [{ label: 'Duration', value: `${durationSeconds}s` }] : []),
           ...(endedReason ? [{ label: 'Ended', value: endedReason }] : []),
         ],
         message: `${summary}${transcript ? `\n\n--- Transcript ---\n${transcript.slice(0, 6000)}` : ''}`,
-        suggestedAction: 'Review the call. Follow up if Mr. Mustard did not close the booking.',
+        suggestedAction: demoLine
+          ? bookedCount
+            ? 'They tested the booking and it worked. Call them today, this is the hottest signal in the funnel.'
+            : 'Somebody tried the demo. Read what they asked for; if the agent could not answer it, that is the next fix.'
+          : 'Review the call. Follow up if Mr. Mustard did not close the booking.',
       }),
     });
   } catch (err) {
@@ -973,6 +1031,11 @@ async function runDemoBooking(
     vapiCallId ?? null,
     name,
     args,
+    /* Sarah finds out the moment it lands, and the lead moves itself onto the
+     * dial floor. Behind `after()` so none of it sits in front of the caller's
+     * next sentence: a booking alert that adds a second of dead air to the call
+     * that produced it is a bad trade. */
+    (booked) => after(() => notifyDemoBooking(sb, booked)),
   );
 }
 

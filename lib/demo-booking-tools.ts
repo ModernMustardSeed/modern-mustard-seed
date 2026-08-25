@@ -29,6 +29,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { demoSlots, bookDemoSlot, type DemoRun } from '@/lib/demo-booking';
+import type { BookedDemo as BookedNotice } from '@/lib/demo-booking-notify';
 
 type ToolDef = {
   type: 'function';
@@ -137,6 +138,18 @@ export async function runDemoBookingTool(
   callId: string | null,
   name: string,
   args: Record<string, unknown>,
+  /**
+   * Called once, synchronously, when a booking actually lands.
+   *
+   * ⚠️ A CALLBACK RATHER THAN CALLING `after()` IN HERE. The alerting work
+   * (email plus a lead update) must not sit in front of the caller's next
+   * sentence, so it belongs behind the response, and `after()` is how that is
+   * done. But `after()` throws outside a request context, and this function is
+   * also driven directly by scripts/demo-booking-smoke.mts, which is the only
+   * thing that proves the booking path works against real data. So the route
+   * owns the `after()` and passes it down, and the smoke test passes nothing.
+   */
+  onBooked?: (booked: BookedNotice) => void,
 ): Promise<string> {
   const s = (v: unknown, max = 200): string | null => {
     const t = typeof v === 'string' ? v.trim().slice(0, max) : '';
@@ -187,6 +200,19 @@ export async function runDemoBookingTool(
       });
 
       if (booked.ok) {
+        /* Sarah, 2026-08-25: "def needs to be known if i have a demo booking".
+         * Fired here rather than at end of call, because a prospect who books
+         * and then keeps talking for four minutes should not delay the alert,
+         * and a caller who books and hangs up mid-sentence must not lose it. */
+        onBooked?.({
+          runId: run.id,
+          business: run.business,
+          label: booked.label,
+          customerName,
+          customerPhone: s(args.customer_phone, 40),
+          service: s(args.service, 200),
+          startsAt,
+        });
         return JSON.stringify({
           ok: true,
           bookedFor: booked.label,
