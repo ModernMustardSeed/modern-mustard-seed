@@ -1,5 +1,5 @@
 /**
- * Render one forged site's hostess tour to audio.
+ * Render one built site's hostess tour to audio.
  *
  *   node scripts/site-tour/build.mjs --site <siteDemoId>
  *   node scripts/site-tour/build.mjs --site <id> --dry     (script only, no TTS)

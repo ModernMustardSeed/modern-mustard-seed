@@ -25,8 +25,8 @@ export function TemplatePicker({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={className}
-      title="Which template the next website forge or rebuild wears. Random rotates by trade and never repeats what this lead already had. Applies to the next build, not to a site already built."
-      aria-label="Site template for the website forge"
+      title="Which template the next website build or rebuild wears. Random rotates by trade and never repeats what this lead already had. Applies to the next build, not to a site already built."
+      aria-label="Site template for the website build"
     >
       <option value={RANDOM_TEMPLATE}>{compact ? 'Style: Random' : 'Style: Random (studio rotates)'}</option>
       {SITE_TEMPLATES.map((t) => (

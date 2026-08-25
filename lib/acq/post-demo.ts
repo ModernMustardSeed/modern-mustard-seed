@@ -12,7 +12,7 @@
  * cold-pitching a phone answering service to somebody who is holding the thing.
  * But the sequence that was supposed to replace it only ever started from ONE of
  * the five places a demo can be sent (the queue worker). A demo sent from the
- * admin button, from the forge screen, from demos-now, or by Mr. Mustard while
+ * admin button, from the build screen, from demos-now, or by Mr. Mustard while
  * he is on the phone started nothing at all. Those prospects went silent at the
  * exact moment they were most interested. This module is now called from inside
  * the senders themselves, so no caller can forget.

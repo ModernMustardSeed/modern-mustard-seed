@@ -1,7 +1,7 @@
 /**
  * INLINE EVERY LOCAL ASSET, OR THE LEAD GETS A PAGE OF ALT TEXT.
  *
- * A forged demo site ships as ONE row of html in `outbound_demo_sites`, served at
+ * A built demo site ships as ONE row of html in `outbound_demo_sites`, served at
  * /demo/site/<id>/raw. Nothing else in the build directory ever leaves the laptop.
  * So a build that writes `<img src="hero.jpg">` beside its index.html looks perfect
  * on the builder's disk and reaches the prospect as fifteen 404s, with the browser

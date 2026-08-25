@@ -4,7 +4,7 @@
  *
  * On 2026-08-21 the default demo tier was found telling the builder to read
  * "the anatomy, the parameter knobs, THE TEN LAWS" from `~/wildmere/TEMPLATE.md`
- * and the award-site skill from `~/modern-mustard-forge/...`. Neither had existed
+ * and the award-site skill from `~/modern-mustard-build/...`. Neither had existed
  * on this machine for some time: they were on Sarah's old computer. The frame
  * library every hero fallback points at, `~/mms-demo-sites/_library/index.json`,
  * was missing too, and the directive itself calls a build that falls back to a

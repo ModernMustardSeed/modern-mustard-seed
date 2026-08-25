@@ -712,7 +712,7 @@ export async function runPresenceAudit(
  *   IDEMPOTENT   an audit under thirty days old is left alone. The website
  *                does not change weekly and the review count barely moves.
  *   FAIL SOFT    it returns false instead of throwing, always. A suite with
- *                four doors is a good day; a forge that died grading a
+ *                four doors is a good day; a build that died grading a
  *                website is a lost customer.
  *   NEVER INLINE ON A HUMAN  callers that have somebody waiting (a phone call,
  *                a form submit) must run this inside `after()`. It can spend a

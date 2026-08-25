@@ -7,7 +7,7 @@
  *   pnpm exec tsx scripts/acq-backfill-post-demo.mts --days 14  # widen the window
  *
  * WHY IT IS NEEDED ONCE. Until 2026-08-25 the post-demo follow-ups were only
- * scheduled by the queue worker, so a demo sent from the admin, the forge
+ * scheduled by the queue worker, so a demo sent from the admin, the build
  * screen, demos-now or by Mr. Mustard on a call started nothing. On the day the
  * fix shipped, fifteen prospects had a demo in hand and an empty queue behind
  * them: the whole funnel had gone silent at its highest-intent moment. Going

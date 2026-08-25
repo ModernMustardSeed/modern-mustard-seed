@@ -5,8 +5,8 @@ import { getCampaign, getAcqSettings, getVariants, pickVariant } from '@/lib/acq
 import { buildCampaignEmail } from '@/lib/acq/campaign';
 import { enqueue, cancelPendingFor } from '@/lib/acq/queue';
 import { evaluate, sequenceLength } from '@/lib/acq/eligibility';
-import { forgeProspectAgent } from '@/lib/acq/forge';
-import { forgeProspectSuite, queueProspectSite, suiteState } from '@/lib/acq/suite';
+import { buildProspectAgent } from '@/lib/acq/build';
+import { buildProspectSuite, queueProspectSite, suiteState } from '@/lib/acq/suite';
 import { sendDemoEmail, sendSuiteEmail, sendCheckoutLink, checkoutUrlFor } from '@/lib/acq/send';
 import { buildPrepBrief } from '@/lib/acq/brief';
 import type { AcqProspect } from '@/lib/acq/types';
@@ -144,14 +144,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }
     /* The instant half: voice agent, command center, hub. No website. */
     case 'forge': {
-      const result = await forgeProspectAgent(db, lead, {}, { deferHeavy: false });
+      const result = await buildProspectAgent(db, lead, {}, { deferHeavy: false });
       return result.ok
         ? NextResponse.json({ ok: true, demoUrl: result.demoUrl, hubUrl: result.hubUrl })
         : NextResponse.json({ error: result.error }, { status: 409 });
     }
     /* The whole thing: voice agent, command center, website, hub. */
     case 'forge-suite': {
-      const result = await forgeProspectSuite(db, lead, {
+      const result = await buildProspectSuite(db, lead, {
         site: body.site !== false,
         designTier: body.designTier === 3 ? 3 : 2,
         talkingWebsite: body.talkingWebsite === true,

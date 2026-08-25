@@ -9,7 +9,7 @@
  * knew until Sarah opened one.
  *
  * Every write path is now gated (the worker re-inlines from disk, the serverless
- * forge refuses a document it cannot repair, the delivery editor rejects a paste).
+ * build refuses a document it cannot repair, the delivery editor rejects a paste).
  * This is the backstop for the case those gates miss: a path nobody thought of, a
  * manual row edit, a restored backup. Gates prevent; this detects.
  *
@@ -172,7 +172,7 @@ export async function GET(req: Request) {
             `text where a photograph should be, in front of whoever opens it.`,
           suggestedAction:
             'Run npm run audit:demo-assets. It says which rows can be repaired in place and which ' +
-            'have lost their assets and need forging again.',
+            'have lost their assets and need building again.',
         }),
       });
     } catch (err) {

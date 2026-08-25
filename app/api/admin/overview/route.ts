@@ -122,31 +122,31 @@ export async function GET() {
         if (created >= ago30) new30d += 1;
 
         // A Demo Station signup is the hottest lead we get: they came off an ad,
-        // typed their own details, and are playing with the demos we just forged
+        // typed their own details, and are playing with the demos we just built
         // them. No 24h grace period, no waiting for them to go cold.
         //
         // Match the notes marker as well as the source, because source records
         // how we FIRST met someone and is never overwritten (that would erase
         // real attribution). Somebody who arrived months ago on a contact form
-        // and has now forged their own demos is still a self-serve signup, and
+        // and has now built their own demos is still a self-serve signup, and
         // is in fact the hottest kind: they already know us. That is not a
         // hypothetical, it is how the first real one (Kyler's Lawncare) came in.
         const bornHere = l.source === 'demo-station';
         const selfServe = bornHere || /^SELF-SERVE:/m.test(String(l.notes ?? ''));
         if (status === 'new' && selfServe) {
           const hours = Math.round((now.getTime() - created.getTime()) / 3600000);
-          // created_at is only the forge time when the station CREATED this row.
+          // created_at is only the build time when the station CREATED this row.
           // On a pre-existing contact it is the day we first met them, so quoting
           // it here would put a confidently wrong age on the one line Sarah reads
           // to decide who to call. Say nothing rather than say something false.
           const detail = !bornHere
-            ? 'Forged their own demos at /demos. No order yet.'
+            ? 'Built their own demos at /demos. No order yet.'
             : hours < 1
               ? 'Just now, self-serve from /demos. Call while they are still on the page.'
               : `${hours}h ago, self-serve from /demos. No order yet.`;
           attention.push({
             kind: 'lead',
-            title: `Forged their own demos: ${(l.business_name as string) || l.name || l.email}`,
+            title: `Built their own demos: ${(l.business_name as string) || l.name || l.email}`,
             detail,
             whenIso: l.created_at as string,
             leadId: l.id as string,

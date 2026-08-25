@@ -11,10 +11,10 @@
  *   npx tsx scripts/factory-worker.mts --tenant <id>
  *
  * IT REUSES, IT DOES NOT REBUILD. Demo sites go through the SAME
- * `outbound_demo_sites` queue and the same demo-site worker the internal Forge
+ * `outbound_demo_sites` queue and the same demo-site worker the internal Build
  * uses (lead_id has been nullable since migration 060, which is what makes a
  * Factory-originated build legal). Demonstration calls go through the same
- * `forgeCall` / `ringDemoCall` path as the Voice Agent Forge. A second builder
+ * `buildCall` / `ringDemoCall` path as the Voice Agent Build. A second builder
  * would be a second thing to keep correct.
  *
  * IT REFUSES BEFORE IT SPENDS. Every handler re-checks mode, pause state,
@@ -43,7 +43,7 @@ const { sendStep } = await import('@/lib/factory/campaigns');
 const { deployedBlueprint, validateBlueprint } = await import('@/lib/factory/blueprint');
 const { recordUsage } = await import('@/lib/factory/usage');
 const { audit } = await import('@/lib/factory/audit-log');
-const { forgeCall, ringDemoCall, toE164 } = await import('@/lib/demo-agent');
+const { buildCall, ringDemoCall, toE164 } = await import('@/lib/demo-agent');
 const { refreshAllHealth } = await import('@/lib/factory/health');
 
 type Blueprint = Awaited<ReturnType<typeof deployedBlueprint>> extends null ? never : Record<string, unknown>;
@@ -92,7 +92,7 @@ async function loadProspect(prospectId: string) {
 type Handler = (job: FactoryJob) => Promise<unknown>;
 
 /**
- * Build a prospect-specific demo site through the existing forge.
+ * Build a prospect-specific demo site through the existing build.
  *
  * The brief is composed from the blueprint and the prospect, then handed to
  * `outbound_demo_sites` with no lead_id. The demo-site worker picks it up,
@@ -158,7 +158,7 @@ const buildDemoSite: Handler = async (job) => {
           factoryId: job.factory_id,
           metric: 'forge_runs',
           moduleKey: 'value.demo_builder',
-          idempotencyKey: `forge:${siteId}`,
+          idempotencyKey: `build:${siteId}`,
         });
       }
       return { siteId, url: outputUrl };
@@ -213,7 +213,7 @@ const receptionistRoleplay: Handler = async (job) => {
 
   const bp = loaded.blueprint as { business: { name: string; services: string[] }; agent: { name: string; voice_enabled: boolean } };
   const runId = `factory:${job.factory_id}:${prospect.id}`;
-  const forged = await forgeCall(
+  const built = await buildCall(
     {
       business: prospect.company,
       verticalId: 'professional',
@@ -230,18 +230,18 @@ const receptionistRoleplay: Handler = async (job) => {
     runId,
     'phone',
   );
-  if (!forged.ok) throw new Error(`Could not forge the demonstration: ${forged.error}`);
+  if (!built.ok) throw new Error(`Could not build the demonstration: ${built.error}`);
 
   if (loaded.factory.mode === 'test' || prospect.is_test) {
     await supabase
       .from('factory_action_runs')
-      .update({ status: 'ready', output: { test: true, note: 'Forged and gated. No call was placed in test mode.' }, completed_at: new Date().toISOString() })
+      .update({ status: 'ready', output: { test: true, note: 'Built and gated. No call was placed in test mode.' }, completed_at: new Date().toISOString() })
       .eq('factory_id', job.factory_id)
       .eq('idempotency_key', `receptionist_roleplay:${prospect.id}`);
     return { test: true };
   }
 
-  const ring = await ringDemoCall(forged.call, number);
+  const ring = await ringDemoCall(built.call, number);
   if (!ring.ok) throw new Error(`The call did not place: ${ring.error}`);
 
   await Promise.all([

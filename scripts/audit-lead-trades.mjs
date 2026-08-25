@@ -11,8 +11,8 @@
  * was filed as a ROOFING company: the voice agent offered emergency tarping, the
  * calculator priced the average job at $12,400 for a shop selling $30 gift boxes.
  * The detector is fixed (idioms scrubbed, business name matched first), but every
- * suite forged BEFORE that fix still carries whatever the old code decided, frozen
- * into outbound_demo_os.config at forge time.
+ * suite built BEFORE that fix still carries whatever the old code decided, frozen
+ * into outbound_demo_os.config at build time.
  *
  * So this recomputes the trade with today's logic and reports where the frozen
  * answer disagrees. It CHANGES NOTHING. Repointing a demo is a judgment call and
@@ -128,7 +128,7 @@ function assertMirrorMatchesSource() {
 }
 assertMirrorMatchesSource();
 
-/* ── read every lead that has a forged suite ─────────────────────────── */
+/* ── read every lead that has a built suite ─────────────────────────── */
 const { data: leads, error } = await sb
   .from('outbound_leads')
   .select('id, business_name, notes, website, niche, source, status, os_demo_id, demo_run_id, site_demo_id, hub_demo_url, created_at')
@@ -140,7 +140,7 @@ if (error) {
   process.exit(2);
 }
 
-// The frozen answer lives on the OS config, written at forge time.
+// The frozen answer lives on the OS config, written at build time.
 const osIds = leads.map((l) => l.os_demo_id).filter(Boolean);
 const frozen = new Map();
 for (let i = 0; i < osIds.length; i += 50) {
@@ -175,7 +175,7 @@ if (JSON_OUT) {
   process.exit(bad.length ? 1 : 0);
 }
 
-console.log(`\nChecked ${rows.length} forged suite(s). ${bad.length} carry a trade the current detector disagrees with.\n`);
+console.log(`\nChecked ${rows.length} built suite(s). ${bad.length} carry a trade the current detector disagrees with.\n`);
 for (const r of ALL ? rows : bad) {
   const flag = r.disagrees ? '🔴' : '  ';
   console.log(`${flag} ${(r.business || '(unnamed)').padEnd(38)} frozen=${String(r.frozen).padEnd(14)} correct=${r.correct}`);
@@ -186,9 +186,9 @@ for (const r of ALL ? rows : bad) {
   }
 }
 if (bad.length) {
-  console.log(`\nNothing was changed. To repoint one, use the trade override on the Forge board,`);
+  console.log(`\nNothing was changed. To repoint one, use the trade override on the Build board,`);
   console.log(`which rewrites the OS config and the voice agent brief without a rebuild.`);
 } else {
-  console.log('Every forged suite agrees with the current detector.');
+  console.log('Every built suite agrees with the current detector.');
 }
 process.exit(bad.length ? 1 : 0);

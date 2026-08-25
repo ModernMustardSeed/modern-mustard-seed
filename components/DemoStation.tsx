@@ -5,8 +5,8 @@ import { track } from '@vercel/analytics';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
 /**
- * The self-serve Demo Station form + the forge sequence. Signature moment:
- * on submit the station "forges" in front of them (staged status lines with
+ * The self-serve Demo Station form + the build sequence. Signature moment:
+ * on submit the station "builds" in front of them (staged status lines with
  * the mascot hammering away), then walks them straight into their hub.
  */
 
@@ -18,7 +18,7 @@ const NICHE_OPTIONS = [
   { value: 'other', label: 'Something else' },
 ];
 
-const FORGE_LINES = [
+const BUILD_LINES = [
   'Hiring your voice agent...',
   'Teaching her your business...',
   'Wiring your command center...',
@@ -43,7 +43,7 @@ export default function DemoStation() {
     setLine(0);
     track('station_submit', { niche: values.niche || 'other' });
 
-    const ticker = window.setInterval(() => setLine((l) => Math.min(l + 1, FORGE_LINES.length - 1)), 1600);
+    const ticker = window.setInterval(() => setLine((l) => Math.min(l + 1, BUILD_LINES.length - 1)), 1600);
     try {
       const res = await fetch('/api/demo-station', {
         method: 'POST',
@@ -51,7 +51,7 @@ export default function DemoStation() {
         body: JSON.stringify(values),
       });
       const json = (await res.json()) as { url?: string; message?: string; returning?: boolean };
-      if (!res.ok || !json.url) throw new Error(json.message || 'The forge hiccuped. Try again in a minute.');
+      if (!res.ok || !json.url) throw new Error(json.message || 'The build hiccuped. Try again in a minute.');
       track('station_forged', { returning: String(Boolean(json.returning)) });
       // Let the sequence land its last line before the reveal.
       window.setTimeout(() => {
@@ -60,7 +60,7 @@ export default function DemoStation() {
     } catch (err) {
       window.clearInterval(ticker);
       setPhase('error');
-      setError(err instanceof Error ? err.message : 'The forge hiccuped. Try again in a minute.');
+      setError(err instanceof Error ? err.message : 'The build hiccuped. Try again in a minute.');
     }
   }
 
@@ -70,9 +70,9 @@ export default function DemoStation() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brand/mascot.png" alt="" width={84} height={84} className="mx-auto animate-[stationHammer_.9s_ease-in-out_infinite]" />
         <style>{`@keyframes stationHammer{0%,100%{transform:rotate(-6deg) translateY(0)}50%{transform:rotate(6deg) translateY(-6px)}}`}</style>
-        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#F5B700] font-bold mt-5">The forge is hot</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#F5B700] font-bold mt-5">The build is hot</p>
         <div className="mt-4 space-y-2 text-left max-w-sm mx-auto">
-          {FORGE_LINES.map((l, i) => (
+          {BUILD_LINES.map((l, i) => (
             <p
               key={l}
               className={`font-mono text-[13px] transition-opacity ${i < line ? 'text-[#FBF6EA]/45' : i === line ? 'text-[#FBF6EA]' : 'text-[#FBF6EA]/15'}`}
@@ -172,7 +172,7 @@ export default function DemoStation() {
         />
       </label>
 
-      {/* The notes go straight into the forge: the website brief, the command
+      {/* The notes go straight into the build: the website brief, the command
           center, and the voice agent's script all read them. */}
       <label className="block mt-4">
         <span className={labelCls}>
@@ -201,7 +201,7 @@ export default function DemoStation() {
         type="submit"
         className="mt-7 w-full bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-[15px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
       >
-        Forge my demos, free →
+        Build my demos, free →
       </button>
       {phase === 'error' && error ? <p className="font-body text-[13px] text-[#C4160B] text-center mt-3">{error}</p> : null}
       <p className="font-body text-[12px] text-[#161616]/70 text-center mt-3.5 leading-relaxed">

@@ -442,13 +442,13 @@ const SALES_DESK: PrompterScript[] = [
     title: 'I Called Your Voice Agent',
     hook: 'Before you even click anything, I wanted to do something. I am on your new website right now, and I am about to call your voice agent, live.',
     directorNote:
-      'The extra-mile move: record this fresh for a lead you really want, right before you send their demo. Use SHARE SCREEN and pick the tab with their forged site so the voice agent records cleanly when you call it in the browser. Arm the camera too and Claude tucks your face in the corner. These are anchor lines, not a script: say their business name, actually talk to the agent, let the call be genuinely live. Flubs are good here, they prove it is real. Keep it to about a minute.',
+      'The extra-mile move: record this fresh for a lead you really want, right before you send their demo. Use SHARE SCREEN and pick the tab with their built site so the voice agent records cleanly when you call it in the browser. Arm the camera too and Claude tucks your face in the corner. These are anchor lines, not a script: say their business name, actually talk to the agent, let the call be genuinely live. Flubs are good here, they prove it is real. Keep it to about a minute.',
     sections: [
       {
         heading: 'The Open',
         paragraphs: [
           'Hi, it is Sarah. Before you even click anything in that email, I wanted to do something for you.',
-          '(Share the tab with their forged website. Say their business name out loud and point at it on the screen.)',
+          '(Share the tab with their built website. Say their business name out loud and point at it on the screen.)',
           'I am on the website my studio built for your business, and I am about to call your new voice agent, live, right here, so you can hear it before you do a single thing.',
         ],
       },
@@ -1045,7 +1045,7 @@ const ORIGIN: PrompterScript[] = [
         heading: 'The Part I Did Not Plan',
         paragraphs: [
           'That next part I did not plan for. Other founders saw what I had built, and they did not say, that is neat. They said, build mine. A woman with a beautiful product and no team behind it. A man running a service business who is drowning in the phone every single day. People with a real thing to offer and no company around them to offer it well.',
-          'So the studio I forged to build my own mission became a studio that builds for other people\'s missions too. That is Modern Mustard Seed. It is an AI studio that builds businesses, and it exists in the first place because I needed it to exist for myself. The order matters, and I want to say it plainly. The mission came first. The studio was the answer to the mission. And the studio turned out to be useful to a whole lot of other people who are carrying missions of their own and hitting the same wall I hit.',
+          'So the studio I built to build my own mission became a studio that builds for other people\'s missions too. That is Modern Mustard Seed. It is an AI studio that builds businesses, and it exists in the first place because I needed it to exist for myself. The order matters, and I want to say it plainly. The mission came first. The studio was the answer to the mission. And the studio turned out to be useful to a whole lot of other people who are carrying missions of their own and hitting the same wall I hit.',
         ],
       },
       {
@@ -1262,7 +1262,7 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
     title: 'How I Build a Business a Front Door Overnight',
     hook: 'A roofing company woke up to a working website, a voice agent that already knew their trade, and a dashboard, all built while they slept. They never asked. Here is exactly how.',
     directorNote:
-      'This is the flagship how-it-works episode, so teach it like you are proud of the machine but not showing off. Slow down on the receipts. The (parens) beats are where I cut in a screen recording of the actual forge, so leave a breath after each one.',
+      'This is the flagship how-it-works episode, so teach it like you are proud of the machine but not showing off. Slow down on the receipts. The (parens) beats are where I cut in a screen recording of the actual build, so leave a breath after each one.',
     sections: [
       {
         heading: 'Cold Open',
@@ -1287,7 +1287,7 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
         ],
       },
       {
-        heading: 'Step Two, Forge the Three Pieces',
+        heading: 'Step Two, Build the Three Pieces',
         paragraphs: [
           'Then three things get built at once. First, the voice agent. An AI agent gets trained on their services, their hours, and the language of their trade, and it can answer the phone as their business in about a minute. It books the job, it speaks like a person who works there, and it is told to never quote a price it should not.',
           'Second, the website. While I am asleep, an agent reads the brief, researches what a business like theirs actually needs, writes the copy, designs the layout, builds the whole thing, tests it on a phone, finds its own broken pieces, fixes them, and publishes it to a live address. It runs on a flat monthly plan, not a meter, so building a hundred of these costs me the same as building one.',
@@ -1493,7 +1493,7 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       {
         heading: 'The Proof',
         paragraphs: [
-          'My studio builds these overnight, forged from your own trade and your own reviews, so it already sounds like you. It took my systems about a minute to make the last one.',
+          'My studio builds these overnight, built from your own trade and your own reviews, so it already sounds like you. It took my systems about a minute to make the last one.',
           '(Fast build montage: a sentence typed, a website assembling itself, a phone calling the voice agent and it answering. Mr. Mustard slaps a big BUILT stamp on it.)',
         ],
       },
@@ -1641,7 +1641,7 @@ const MORE_SAUCE: PrompterScript[] = [
       {
         heading: 'Hook',
         paragraphs: [
-          'Most demos, you look at. This one, you call. We forge a real voice agent for a business, give it a real phone number, and let them dial it right then and there.',
+          'Most demos, you look at. This one, you call. We build a real voice agent for a business, give it a real phone number, and let them dial it right then and there.',
         ],
       },
       {

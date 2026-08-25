@@ -64,7 +64,7 @@ export type Busy = { from: number; to: number };
 /**
  * THE TIME MATHS, WITH NO DATABASE IN IT.
  *
- * Pulled out of `availableSlots` so the forged DEMO agents can offer real
+ * Pulled out of `availableSlots` so the built DEMO agents can offer real
  * openings using the exact same rules a paying office runs on: inside posted
  * hours, past the lead time, never on top of something already booked. There is
  * one implementation of "when could somebody actually come out" and both the

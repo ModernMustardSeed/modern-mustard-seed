@@ -8,7 +8,7 @@
  *
  * Usage:
  *   node scripts/audit-demo-copy.mjs             # last 30 days of demos + all client sites
- *   node scripts/audit-demo-copy.mjs --full      # everything ever forged
+ *   node scripts/audit-demo-copy.mjs --full      # everything ever built
  *   node scripts/audit-demo-copy.mjs --high      # only findings worth waking someone for
  *   node scripts/audit-demo-copy.mjs --id <uuid> # one row
  *

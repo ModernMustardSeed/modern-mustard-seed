@@ -77,7 +77,7 @@ export default function ServicesPage() {
               href="/demos"
               className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
             >
-              Forge free demos →
+              Build free demos →
             </Link>
             <Link
               href="/book"
@@ -99,7 +99,7 @@ export default function ServicesPage() {
             A website, a voice agent, and the brain that runs them.
           </h2>
           <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
-            The three that work together. Forge all three free in about a minute, and take the website and the voice
+            The three that work together. Build all three free in about a minute, and take the website and the voice
             agent together, which costs less than the two apart.
           </p>
           <div className="grid md:grid-cols-3 gap-6 mt-10 items-stretch">
@@ -262,7 +262,7 @@ export default function ServicesPage() {
               href="/demos"
               className="mt-7 inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
             >
-              Forge my free demos →
+              Build my free demos →
             </Link>
           </div>
         </section>

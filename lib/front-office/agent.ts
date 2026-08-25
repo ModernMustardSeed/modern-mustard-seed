@@ -189,7 +189,7 @@ export function assistantConfig(office: OfficeRow, transfers: TransferRow[]): Re
      * THE SECRET IS ATTACHED HERE, PER ASSISTANT, FROM ONE ENVIRONMENT
      * VARIABLE. Vapi sends it back as the x-vapi-secret header and the webhook
      * checks it. Doing it this way means Sarah sets VAPI_WEBHOOK_SECRET once,
-     * ever, and every receptionist we forge from then on carries it without
+     * ever, and every receptionist we build from then on carries it without
      * anybody touching a dashboard per customer. A per-assistant server block
      * would otherwise override any org-level setting, which is exactly the
      * sort of thing that is discovered six clients later.

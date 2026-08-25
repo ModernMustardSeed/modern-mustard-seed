@@ -145,7 +145,7 @@ export default function CommandCenterPage() {
                 </Link>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-4">
-                Forged free and open right away. No card, no meeting.
+                Built free and open right away. No card, no meeting.
               </p>
             </div>
 

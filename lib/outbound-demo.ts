@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { forgeCall } from '@/lib/demo-agent';
+import { buildCall } from '@/lib/demo-agent';
 import { saveRun, updateRunBrief } from '@/lib/demo-run-store';
 import { NICHE_LABELS } from '@/lib/outbound';
 import type { Niche, OutboundLead } from '@/lib/outbound';
@@ -20,9 +20,9 @@ export function leadTrade(lead: Pick<OutboundLead, 'business_name' | 'notes' | '
 }
 
 /**
- * Shared forge logic for outbound leads. Two demos exist per lead:
- *   - the VOICE demo (instant): a Voice Agent run forged serverless, shareable at
- *     /voice-agents/forge/demo/<runId>
+ * Shared build logic for outbound leads. Two demos exist per lead:
+ *   - the VOICE demo (instant): a Voice Agent run built serverless, shareable at
+ *     /voice-agents/build/demo/<runId>
  *   - the WEBSITE demo (queued): a row in outbound_demo_sites that the local
  *     demo-site worker builds with headless Claude Code on the Max plan (flat
  *     subscription, never metered API), shareable at /demo/site/<id> with the
@@ -38,7 +38,7 @@ export const DEMO_AGENT_VERTICAL: Record<Niche, string> = {
   other: 'professional',
 };
 
-export type VoiceForgeResult =
+export type VoiceBuildResult =
   | { ok: true; lead: OutboundLead; demoUrl: string; existing: boolean }
   | { ok: false; status: number; error: string };
 
@@ -46,7 +46,7 @@ export type VoiceForgeResult =
  * What the voice agent is told this business does.
  *
  * ONE definition, because this string is the whole personality of the agent and
- * it is now written from two places: the forge (at signup) and the re-derive
+ * it is now written from two places: the build (at signup) and the re-derive
  * (when a trade is corrected afterwards). Two copies of a prompt drift, and a
  * drifted prompt is invisible until a customer hears it say the wrong thing.
  *
@@ -76,18 +76,18 @@ export function buildVoiceServices(
 }
 
 /**
- * Forge the lead's voice agent demo (Cahill's close, automated). Reuses
- * the Voice Agent forge directly, skipping the public page's per-email and daily
+ * Build the lead's voice agent demo (Cahill's close, automated). Reuses
+ * the Voice Agent build directly, skipping the public page's per-email and daily
  * caps because this is an internal, admin-triggered run; the platform-side
  * 4-minute call cap still applies. Idempotent: an existing demo is returned
  * as-is.
  */
-export async function forgeLeadVoiceDemo(
+export async function buildLeadVoiceDemo(
   supabase: SupabaseClient,
   lead: OutboundLead,
   opts?: { instruction?: string | null; force?: boolean },
-): Promise<VoiceForgeResult> {
-  // Reforge-from-prompt passes force:true to rebuild the voice agent with a new
+): Promise<VoiceBuildResult> {
+  // Rebuild-from-prompt passes force:true to rebuild the voice agent with a new
   // instruction folded in; without it, an existing demo is returned untouched.
   if (!opts?.force && lead.demo_url && lead.demo_run_id) {
     return { ok: true, lead, demoUrl: lead.demo_url, existing: true };
@@ -100,7 +100,7 @@ export async function forgeLeadVoiceDemo(
   // Take the WHOLE note (the Demo Station caps the box at 600 anyway). At 400
   // this cut Olivia's Chocolates off mid-sentence and threw away the entire
   // wholesale half of the business, so the agent never knew it existed.
-  // An admin reforge instruction, when present, steers the voice agent directly.
+  // An admin rebuild instruction, when present, steers the voice agent directly.
   const instruction = (opts?.instruction ?? '').trim().slice(0, 600);
   const profile = {
     business: lead.business_name,
@@ -108,15 +108,15 @@ export async function forgeLeadVoiceDemo(
     city: lead.city || 'your area',
     ownerName: lead.contact_name || 'the owner',
     services: buildVoiceServices(lead, leadTrade(lead), instruction),
-    // Cockpit-forged demos get the clear outbound script: Sarah sent them the
-    // link, they did not forge anything, so no "you just built me" framing.
+    // Cockpit-built demos get the clear outbound script: Sarah sent them the
+    // link, they did not build anything, so no "you just built me" framing.
     flow: 'outbound' as const,
   };
 
   const runId = randomUUID();
-  const forged = await forgeCall(profile, runId, 'web');
-  if (!forged.ok) {
-    return { ok: false, status: 502, error: forged.error || 'The forge is not configured (Vapi keys).' };
+  const built = await buildCall(profile, runId, 'web');
+  if (!built.ok) {
+    return { ok: false, status: 502, error: built.error || 'The build is not configured (Vapi keys).' };
   }
 
   const saved = await saveRun(supabase, runId, {
@@ -127,7 +127,7 @@ export async function forgeLeadVoiceDemo(
   });
   if (!saved) return { ok: false, status: 500, error: 'Could not store the demo run.' };
 
-  const demoUrl = `${SITE.url}/voice-agents/forge/demo/${runId}`;
+  const demoUrl = `${SITE.url}/voice-agents/build/demo/${runId}`;
   const { data: updated, error: updErr } = await supabase
     .from('outbound_leads')
     .update({ demo_url: demoUrl, demo_run_id: runId })
@@ -142,9 +142,9 @@ export async function forgeLeadVoiceDemo(
     channel: 'note',
     from_addr: 'cockpit',
     to_addr: lead.business_name,
-    subject: opts?.force ? 'Voice Agent reforged' : 'Demo forged',
+    subject: opts?.force ? 'Voice Agent rebuilt' : 'Demo built',
     snippet: opts?.force
-      ? `Their voice agent was reforged from your prompt. Live at ${demoUrl}`
+      ? `Their voice agent was rebuilt from your prompt. Live at ${demoUrl}`
       : `Their voice agent is live at ${demoUrl}`,
     read: true,
     occurred_at: new Date().toISOString(),
@@ -155,9 +155,9 @@ export async function forgeLeadVoiceDemo(
 
 /**
  * Every lead with at least one demo gets a DEMO SUITE HUB: one shareable page
- * (/demo/hub/<hubId>) fronting whatever is forged, the welcome video, and the
- * Recovery Calculator. Minted lazily by every forge route and the send path;
- * renders live from the lead row so later forges appear on their own.
+ * (/demo/hub/<hubId>) fronting whatever is built, the welcome video, and the
+ * Recovery Calculator. Minted lazily by every build route and the send path;
+ * renders live from the lead row so later builds appear on their own.
  */
 export async function ensureDemoHub(supabase: SupabaseClient, lead: OutboundLead): Promise<OutboundLead> {
   if (lead.hub_demo_id && lead.hub_demo_url) return lead;
@@ -176,14 +176,14 @@ export async function ensureDemoHub(supabase: SupabaseClient, lead: OutboundLead
 }
 
 /**
- * Forge the lead's BUSINESS OS (command center) demo if it does not exist yet.
+ * Build the lead's BUSINESS OS (command center) demo if it does not exist yet.
  * Instant and token-free (a config-driven template), so it now rides along free
  * ⚠️ NOT AUTOMATIC ANY MORE (Sarah, 2026-08-22). Nothing calls this on its own:
  * the command center left the demo suite and the offer, so the only caller left
- * is the cockpit's explicit Forge OS button. Kept because she still builds them
+ * is the cockpit's explicit Build OS button. Kept because she still builds them
  * by hand. It used to ride along
- * with every voice and website forge: the command center was included with any
- * website or voice agent, so every forged suite should show it. Fail-soft: if
+ * with every voice and website build: the command center was included with any
+ * website or voice agent, so every built suite should show it. Fail-soft: if
  * the insert hiccups, the lead is returned unchanged and the rest of the suite
  * still ships. Idempotent: a ready OS demo is returned untouched.
  */
@@ -224,7 +224,7 @@ export async function ensureOsDemo(supabase: SupabaseClient, lead: OutboundLead)
 }
 
 /**
- * The BUSINESS OS demo config, frozen at forge time. No worker, no tokens:
+ * The BUSINESS OS demo config, frozen at build time. No worker, no tokens:
  * /demo/os/[id] is one polished template app, and this config is everything
  * that personalizes it (real name, trade, city, phone, mined review pain,
  * audit score). See data/demo-os.ts for the per-trade sample data.
@@ -233,7 +233,7 @@ export type OsDemoConfig = {
   business: string;
   ownerFirst: string | null;
   niche: Niche;
-  /** The SPECIFIC detected trade (e.g. 'roofing'), frozen at forge time. Configs older than 2026-07-11 lack it; resolveTrade() re-detects from the business name. */
+  /** The SPECIFIC detected trade (e.g. 'roofing'), frozen at build time. Configs older than 2026-07-11 lack it; resolveTrade() re-detects from the business name. */
   trade?: OsTradeKey;
   tradeLabel: string;
   city: string | null;
@@ -243,9 +243,9 @@ export type OsDemoConfig = {
   evidenceSource: string | null;
   websiteMode: 'none' | 'broken' | null;
   auditScore: number | null;
-  /** Their REAL logo, captured from their live site at forge time (fail-soft). */
+  /** Their REAL logo, captured from their live site at build time (fail-soft). */
   logoUrl?: string | null;
-  /** Their site's declared brand color (theme-color), used when no forged site
+  /** Their site's declared brand color (theme-color), used when no built site
    *  palette exists yet. 6-digit hex. */
   brandColor?: string | null;
 };
@@ -324,13 +324,13 @@ export type RedriveResult = {
 };
 
 /**
- * REBUILD A FORGED SUITE'S CONFIG FROM TODAY'S CODE. Zero tokens, no rebuild.
+ * REBUILD A BUILT SUITE'S CONFIG FROM TODAY'S CODE. Zero tokens, no rebuild.
  *
- * The voice agent's brief and the command center's config are FROZEN at forge
+ * The voice agent's brief and the command center's config are FROZEN at build
  * time. That is the right design (a demo must not change under a prospect who is
  * looking at it), but it has a cost nobody had a lever for: when the law
  * improves, or the trade detector is fixed, or an owner's description is
- * corrected, every already-forged suite keeps the old answer forever.
+ * corrected, every already-built suite keeps the old answer forever.
  *
  * On 2026-08-03 a chocolatier was filed as a roofing company and the fix had to
  * be applied by hand-patching two database rows. A sweep then found four more
@@ -564,7 +564,7 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null, 
         (lead.review_count != null ? ` from ${lead.review_count} reviews` : '') +
         `. This belongs in the proof section as their actual number. Do NOT invent review text to sit beside it: if no quoted review appears in the mined evidence above, show the rating and the count on their own.`
       : null,
-    voiceDemoUrl ? `- Their agent voice demo (already forged, will be overlaid on the hosted page): ${voiceDemoUrl}` : null,
+    voiceDemoUrl ? `- Their agent voice demo (already built, will be overlaid on the hosted page): ${voiceDemoUrl}` : null,
     owner
       ? [
           '',

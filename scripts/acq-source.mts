@@ -10,7 +10,7 @@
  *   npx tsx scripts/acq-source.mts --watch                        # serve the queue
  *   npx tsx scripts/acq-source.mts --hvac 20 --dry                # research only
  *
- * It lives outside Vercel for the same reason the forge worker does: a run that
+ * It lives outside Vercel for the same reason the build worker does: a run that
  * reads nine hundred websites takes far longer than a serverless invocation is
  * allowed to live. Progress is written to the run row every market, so the admin
  * screen shows real movement rather than a spinner.

@@ -25,8 +25,8 @@ type Params = Promise<{ id: string }>;
  * POST -> set it. `{trade: "salon"}` to choose, `{trade: "auto"}` to re-derive.
  *
  * Correcting is cheap and safe: no tokens, no rebuild, and the shareable links
- * do not change. The website is NOT re-forged, because that is a real artifact
- * that costs half an hour; if the site is wrong too, re-forge it deliberately.
+ * do not change. The website is NOT rebuilt, because that is a real artifact
+ * that costs half an hour; if the site is wrong too, rebuild it deliberately.
  */
 export async function GET(_req: Request, { params }: { params: Params }) {
   const guard = await requireOutboundAdmin();
@@ -91,7 +91,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
     changed: result.changed,
     note:
       result.changed.length === 0
-        ? 'Nothing to re-derive: this lead has no forged voice agent or command center.'
+        ? 'Nothing to re-derive: this lead has no built voice agent or command center.'
         : `Rebuilt ${result.changed.join(' + ')}. Links unchanged, website untouched.`,
   });
 }

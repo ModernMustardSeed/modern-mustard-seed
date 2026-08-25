@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 /**
  * TURN THE DEMO INTO THEIR REAL SITE.
  *
- * The forged demo is an immutable HTML blob: before this, the ONLY way to change one
- * was to re-forge the whole thing from scratch and hope the next roll was better. So
+ * The built demo is an immutable HTML blob: before this, the ONLY way to change one
+ * was to rebuild the whole thing from scratch and hope the next roll was better. So
  * "customize it to your business" had no mechanism behind it at all.
  *
  * The real site is a copy of the demo that lives on the project and can be edited,

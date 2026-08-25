@@ -42,7 +42,7 @@ const PINNED: Item[] = [
 // team can open, share, or demo any program in a click. All open in a new tab.
 const PROGRAMS: Item[] = [
   { key: 'p-demos', label: 'Demos', href: '/demos', external: true },
-  { key: 'p-demo-agent', label: 'Voice Agent', href: '/voice-agents/forge', external: true },
+  { key: 'p-demo-agent', label: 'Voice Agent', href: '/voice-agents/build', external: true },
   { key: 'p-chief', label: 'The Chief', href: '/chief', external: true },
   { key: 'p-mode', label: 'Mustard Mode', href: '/mustard-mode', external: true },
   { key: 'p-launch', label: 'Mustard Launch', href: '/mustard-launch', external: true },

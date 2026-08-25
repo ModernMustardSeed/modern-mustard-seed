@@ -219,7 +219,7 @@ export function JourneyRing() {
  * THREE CROPS, NOT FOUR. The Command Center was the third row here until Sarah
  * said on 2026-08-25: "I am not pushing command center anywhere." It is still
  * sold at /command-center and /pay/command-center; the orchard just stops
- * planting it next to the things we forge for free. Do not add it back.
+ * planting it next to the things we build for free. Do not add it back.
  */
 const CROPS = [
   {
@@ -305,13 +305,13 @@ const SIGNS = [
     line: 'The flagship. A site and a voice agent built as one thing off one brain. The answer a visitor reads is the answer a midnight caller hears.',
     cta: 'Read The Sign',
   },
-  { href: '/demos', label: 'The Demo Forge', line: 'Tell us your trade. We forge your website and your voice agent before you pay anything.', cta: 'Forge Mine Free' },
+  { href: '/demos', label: 'The Demo Build', line: 'Tell us your trade. We build your website and your voice agent before you pay anything.', cta: 'Build Mine Free' },
   { href: '/website-audit', label: 'The Free Audit', line: 'Point our AI at your current website and get the honest report in minutes.', cta: 'Run My Audit' },
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, directed by the studio AI.', cta: 'Visit The Studio' },
   { href: '/store', label: 'The Playbook Store', line: 'The exact playbooks the studio runs on, written down and ready to use.', cta: 'Browse The Store' },
   { href: '/mustard-mode', label: 'Mustard Mode', line: 'Coach-led training that makes you dangerous with Claude. First session free.', cta: 'Take The Ramp' },
   { href: '/comic', label: 'Mustard Life', line: 'The whole catalog told as a glossy magazine comic. Every product, every price, printed in ink. Free.', cta: 'Read The Issue' },
-  { href: '/hundredfold', label: 'HUNDREDFOLD', line: 'The scaling program for the operator who already has something working. We interview you, forge the offer, and build the agents that run the plan.', cta: 'See The Program' },
+  { href: '/hundredfold', label: 'HUNDREDFOLD', line: 'The scaling program for the operator who already has something working. We interview you, build the offer, and build the agents that run the plan.', cta: 'See The Program' },
 ];
 
 /**
@@ -627,9 +627,9 @@ const DOORS = [
   },
   {
     key: 'forge',
-    label: 'Forge My Custom Demo',
-    line: 'Give us your name and trade. The forge builds your website and your voice agent to keep or toss.',
-    cta: 'Start The Forge',
+    label: 'Build My Custom Demo',
+    line: 'Give us your name and trade. We build your website and your voice agent to keep or toss.',
+    cta: 'Start The Build',
     href: '/demos',
   },
   {

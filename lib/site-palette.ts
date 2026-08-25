@@ -1,5 +1,5 @@
 /**
- * Make the command center wear the same clothes as the business's own forged
+ * Make the command center wear the same clothes as the business's own built
  * website, so the two demos read as one product THEY own (Sarah, 2026-07-12).
  *
  * Two ways in, in order of trust:
@@ -134,7 +134,7 @@ export function extractPalette(html: string | null | undefined): SitePalette | n
   // does not actually declare one, return null and let the caller fall back to
   // the house deck. A wrong theme is worse than the default one.
   // The worker writes real design systems: `:root{--cream:#F6EEE1}` and then
-  // `body{background:var(--cream)}`. Without resolving var() every forged site
+  // `body{background:var(--cream)}`. Without resolving var() every built site
   // looks like it declares no background at all, and the whole feature no-ops.
   const vars = new Map<string, string>();
   for (const v of html.matchAll(/(--[\w-]+)\s*:\s*(#[0-9a-f]{3,8})\b/gi)) {

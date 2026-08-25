@@ -11,7 +11,7 @@
  * The rule now: NO PUBLIC SURFACE MAY CLAIM THAT A WEBSITE IS MISSING SOMETHING
  * UNLESS THIS MODULE READ THE SITE AND DID NOT FIND IT. Research notes remain
  * the story; this is the evidence. Every consumer (the demo hub's "what we
- * noticed" label, the presence audit, the site brief the forge builds from, the
+ * noticed" label, the presence audit, the site brief the build works from, the
  * printed game plan) runs its claims through `scrubClaims` against these facts.
  *
  * What it reads: the homepage plus up to four pages that look like contact,

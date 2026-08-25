@@ -140,16 +140,16 @@ try {
   if (error || !lead) throw new Error(`Could not create the prospect: ${error?.message}`);
   leadId = lead.id;
 
-  /* ── FORGE A REAL AGENT ──
-     The first version wrote demo_url = /demos and called it forged. Every link
+  /* ── BUILD A REAL AGENT ──
+     The first version wrote demo_url = /demos and called it built. Every link
      then resolved to the marketing page, so "try your receptionist" played
      nothing, which is the one thing this walkthrough exists to demonstrate.
-     This runs the actual forge, so the demo in the email is a real agent that
+     This runs the actual build, so the demo in the email is a real agent that
      really answers. It is slower and it spends real quota; that is the cost of
      a walkthrough that is not a mock-up. */
-  const { forgeProspectAgent } = await import('../lib/acq/forge');
-  const forged = await forgeProspectAgent(db, lead, {}, { deferHeavy: false });
-  console.log(`  0. forging a real voice agent      ${forged.ok ? `FORGED  ${forged.demoUrl}` : `FAILED: ${forged.error}`}`);
+  const { buildProspectAgent } = await import('../lib/acq/build');
+  const built = await buildProspectAgent(db, lead, {}, { deferHeavy: false });
+  console.log(`  0. building a real voice agent      ${built.ok ? `BUILT  ${built.demoUrl}` : `FAILED: ${built.error}`}`);
   const { data: readyLead } = await db.from('outbound_leads').select('*').eq('id', leadId).single();
   const workingLead = readyLead ?? lead;
 

@@ -27,7 +27,7 @@ export const OWNER_NOTIFY_TO = [
  * This exists because a prospect row CAN end up carrying one. The site tracker
  * scrapes contact details off a page and has filed our own address (and once a
  * URL-encoded User-Agent string containing it) as a business's email, and the
- * demo station writes Sarah's address onto every demo she forges for herself.
+ * demo station writes Sarah's address onto every demo she builds for herself.
  * A row like that looks exactly like a prospect: Moses Tree Service of Bozeman
  * sat at acq_stage='emailed' having sent a cold campaign email to
  * wildhopehouse@gmail.com, and the drip was lined up to keep going.

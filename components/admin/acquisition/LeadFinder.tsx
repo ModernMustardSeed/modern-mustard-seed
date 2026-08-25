@@ -173,7 +173,7 @@ export default function LeadFinder() {
               {busy ? 'Queueing...' : 'Start sourcing'}
             </button>
             <p className="mt-3 text-[12px] text-[#161616]/65 leading-relaxed">
-              Runs are served by the local worker, the same way the demo-site forge is: a run reads hundreds of company
+              Runs are served by the local worker, the same way the demo-site build is: a run reads hundreds of company
               websites and drives a real browser, which no serverless function can do. Start it once and leave it up:
               <code className="ml-1 px-1.5 py-0.5 rounded bg-[#161616]/[0.07] font-mono text-[11px]">{data?.workerCommand}</code>
             </p>

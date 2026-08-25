@@ -4,13 +4,13 @@
  * One link a person can be handed on a phone call and open on their phone:
  * https://modernmustardseed.com/pay/talking-website mints a live Stripe
  * Checkout Session and 302s straight into it. No page to load, no form to
- * fill, no forged demo required.
+ * fill, no built demo required.
  *
  * WHY IT EXISTS (2026-08-17, Sarah): "he needs to be able to email payment
  * links and the actual product so they can just pay for it if they want to."
  * Mr. Mustard could email a marketing page and he could email a demo hub, but
  * a caller who said "just take my money" had nowhere to pay unless a demo had
- * already been forged for them. This is that missing door.
+ * already been built for them. This is that missing door.
  *
  * PRICING IS DERIVED, NEVER TYPED. Every amount comes from
  * quoteDemoOrder() over lib/demo-order.ts, the same function the hub checkout

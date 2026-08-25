@@ -12,7 +12,7 @@ export const maxDuration = 30;
 type Params = Promise<{ osId: string }>;
 
 /**
- * The one live-AI surface inside the forged BUSINESS OS demo: the office
+ * The one live-AI surface inside the built BUSINESS OS demo: the office
  * assistant chat and the ad maker's "new angle" button. Hard-capped and
  * fail-closed (never-leak-revenue rule): 60 calls per demo LIFETIME via an
  * atomic-ish app_state counter, short outputs, Haiku. Unguessable demo id is

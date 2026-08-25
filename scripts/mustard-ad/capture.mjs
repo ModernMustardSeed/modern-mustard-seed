@@ -2,8 +2,8 @@
  * THE SCREEN, filmed off the real thing.
  *
  * Two segments, captured in ONE continuous session because they are one
- * continuous event in the product: the forge actually builds Whitaker Med Spa's
- * voice agent, and then that same forged agent takes a real booking on a real
+ * continuous event in the product: the build actually builds Whitaker Med Spa's
+ * voice agent, and then that same built agent takes a real booking on a real
  * web call. Nothing here is mocked, re-created, or sped up to flatter the
  * product; the only speed change is applied in the edit and is disclosed in the
  * cut sheet.
@@ -28,10 +28,10 @@
  *     user turns before this capture is allowed to count.
  *
  * ⚠️ THIS RUN HAS REAL SIDE EFFECTS ON PRODUCTION, by necessity, because a
- * staged forge would not be a real forge:
- *   - it burns the ONE-FORGE-PER-EMAIL claim on the address used, forever
+ * staged build would not be a real build:
+ *   - it burns the ONE-BUILD-PER-EMAIL claim on the address used, forever
  *   - it inserts a lead row into the real leads table
- *   - it emails Sarah a forge notification
+ *   - it emails Sarah a build notification
  *   - it spends 11labs characters against the live line's allowance
  * The address is the established fictional demo subject (memory: hundredfold,
  * "the demo subject"), whose reserved .demo TLD is already blocked from ever
@@ -68,12 +68,12 @@ const SUBJECT = {
   services:
     'Facials, injectables, laser hair removal, and chemical peels. Consultations are free. Most treatments run forty five minutes to an hour. People always ask about downtime and whether we take walk ins (we do not, we book ahead).',
   hours: 'Tue-Sat 9-6',
-  // ⚠️ ONE FORGE PER EMAIL, FOREVER (atomic pk claim in lib/demo-run-store).
+  // ⚠️ ONE BUILD PER EMAIL, FOREVER (atomic pk claim in lib/demo-run-store).
   // A retake therefore CANNOT reuse the previous address, so the take number
   // rides in a plus-tag. Every take permanently burns one address and leaves
   // one lead row behind; both are listed in the run report so they can be
   // pruned.
-  email: (t) => `dana+forge${t}@whitakermedspa.demo`,
+  email: (t) => `dana+build${t}@whitakermedspa.demo`,
 };
 
 /**
@@ -101,7 +101,7 @@ const BOOKING_TURNS = [
  * ⚠️ THE LEAD-IN MUST CLEAR HIS ENTIRE OPENER, and take 1 is why.
  *
  * MEASURED: the fake-audio file starts playing when the CALL opens the
- * microphone, so file time and call time are the same clock. The forged
+ * microphone, so file time and call time are the same clock. The built
  * agent's opener is not a short greeting: it introduces itself to the owner,
  * breaks character, and invites her to test it, which runs ~14s from ~2s in.
  * At LEAD_MS 15s the customer's first line landed inside that speech, was
@@ -211,11 +211,11 @@ const t0 = Date.now();
 const marks = [];
 const mark = (name) => { marks.push({ name, fromStart: (Date.now() - t0) / 1000 }); log(`mark ${name}`); };
 
-log('opening the forge');
-await page.goto(`${SITE}/voice-agents/forge`, { waitUntil: 'domcontentloaded' });
+log('opening the build');
+await page.goto(`${SITE}/voice-agents/build`, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(2500);
 
-// ---- SEGMENT A: the forge --------------------------------------------------
+// ---- SEGMENT A: the build --------------------------------------------------
 await page.locator('#sk-business').scrollIntoViewIfNeeded();
 await page.waitForTimeout(800);
 mark('form_start');
@@ -237,15 +237,15 @@ await type('#sk-email', SUBJECT.email(take));
 await page.waitForTimeout(600);
 
 mark('forge_submit');
-const forgeStarted = Date.now();
-await page.getByRole('button', { name: /forge my voice agent/i }).click();
+const buildStarted = Date.now();
+await page.getByRole('button', { name: /build my voice agent/i }).click();
 
 // The montage is theatre over a real server-side build. "Ready" is the stamped
-// badge, which is the honest end of the forge: it is when the agent can talk.
+// badge, which is the honest end of the build: it is when the agent can talk.
 await page.waitForSelector('.sk-stamp', { timeout: 180_000 });
-const forgeSeconds = (Date.now() - forgeStarted) / 1000;
+const buildSeconds = (Date.now() - buildStarted) / 1000;
 mark('forge_ready');
-log(`⏱ REAL FORGE TIME: ${forgeSeconds.toFixed(1)}s`);
+log(`⏱ REAL BUILD TIME: ${buildSeconds.toFixed(1)}s`);
 
 await page.waitForTimeout(1800);
 
@@ -340,10 +340,10 @@ const userTurns = messages.filter((m) => m.role === 'user').length;
 
 writeFileSync(
   path.join(workDir, 'result.json'),
-  JSON.stringify({ take, callId, userTurns, forgeSeconds, rawSeconds: totalRaw, wall, marks: marksFromEnd }, null, 2),
+  JSON.stringify({ take, callId, userTurns, buildSeconds, rawSeconds: totalRaw, wall, marks: marksFromEnd }, null, 2),
 );
 
-log(`raw take ${totalRaw.toFixed(1)}s | forge ${forgeSeconds.toFixed(1)}s | user turns ${userTurns}`);
+log(`raw take ${totalRaw.toFixed(1)}s | build ${buildSeconds.toFixed(1)}s | user turns ${userTurns}`);
 if (userTurns < 3) log('WARNING the agent did not hear the customer; this booking is not usable');
 for (const m of messages) {
   console.log(`[${(m.secondsFromStart ?? 0).toFixed(2)} +${((m.duration || 0) / 1000).toFixed(2)}] ${String(m.role).toUpperCase()}: ${m.message}`);

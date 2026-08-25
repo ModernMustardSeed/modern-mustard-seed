@@ -178,7 +178,7 @@ export async function renderProposalPdf(p: ProposalRecord): Promise<Uint8Array> 
   const prose = p.prose || {};
   if (prose.intro) para(prose.intro, { size: 11 });
 
-  // The showcase: the forged demos, live and clickable, above the fold of the
+  // The showcase: the built demos, live and clickable, above the fold of the
   // document because the demo is the pitch.
   const demoLinks = (Array.isArray(p.demo_links) ? p.demo_links : []).filter((d) => d && d.url);
   if (demoLinks.length) {

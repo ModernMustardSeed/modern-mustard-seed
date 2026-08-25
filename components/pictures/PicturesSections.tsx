@@ -111,10 +111,10 @@ export function StudioCrossSell() {
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">The other star</p>
           <h3 className="font-display text-xl font-black text-[#161616] mt-1.5">Your ad brings the calls. He answers them.</h3>
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
-            Mr. Mustard also trains voice agents. Forge one for your business free, hear it answer as YOUR front desk, and never miss the customers your new commercial sends.
+            Mr. Mustard also trains voice agents. Build one for your business free, hear it answer as YOUR front desk, and never miss the customers your new commercial sends.
           </p>
           <Link href="/demos" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
-            Forge A Voice Agent →
+            Build A Voice Agent →
           </Link>
         </div>
         <div className="rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">

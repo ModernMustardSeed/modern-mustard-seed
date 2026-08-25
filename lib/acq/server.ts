@@ -125,7 +125,7 @@ export async function priorityQueues(db: SupabaseClient): Promise<PriorityQueues
     if (r.needs_human) needsHuman.push(base(r, r.needs_human, r.last_call_at ?? r.updated_at));
     if (r.reply_at) hot.push(base(r, 'Replied', r.reply_at));
     else if (r.checkout_sent_at && r.client_status !== 'client') hot.push(base(r, 'Checkout link sent, not paid yet', r.checkout_sent_at));
-    else if (r.demo_status === 'ready' && !r.demo_emailed_at) hot.push(base(r, 'Their agent is forged and not sent yet', r.updated_at));
+    else if (r.demo_status === 'ready' && !r.demo_emailed_at) hot.push(base(r, 'Their agent is built and not sent yet', r.updated_at));
     else if (r.demo_status === 'requested' || r.demo_status === 'forging') hot.push(base(r, 'Asked Mr. Mustard to build theirs', r.updated_at));
     else if (r.call_stage === 'completed' && (r.lead_score ?? 0) >= 65) hot.push(base(r, 'Finished a Mr. Mustard call, high score', r.last_call_at));
     else if (r.meeting_status === 'booked') hot.push(base(r, 'Meeting booked', r.updated_at));

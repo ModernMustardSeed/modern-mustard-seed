@@ -8,13 +8,13 @@ import { usePoll } from '@/lib/use-poll';
 
 type Funnel = {
   source: string; label: string; requests: number; consented: number; called: number; completed: number;
-  failed: number; refused: number; forged: number; paid: number;
-  consentRatePct: number | null; completionRatePct: number | null; forgeRatePct: number | null; paidRatePct: number | null;
+  failed: number; refused: number; built: number; paid: number;
+  consentRatePct: number | null; completionRatePct: number | null; buildRatePct: number | null; paidRatePct: number | null;
 };
 type Payload = {
   analytics: {
-    today: { requests: number; calls: number; completed: number; forged: number; paid: number };
-    allTime: { requests: number; calls: number; completed: number; forged: number; paid: number };
+    today: { requests: number; calls: number; completed: number; built: number; paid: number };
+    allTime: { requests: number; calls: number; completed: number; built: number; paid: number };
     bySource: Funnel[];
     recent: { id: string; source: string; label: string; phone: string | null; business: string | null; status: string; leadId: string | null; createdAt: string }[];
     links: { active: number; used: number; expired: number };
@@ -92,7 +92,7 @@ export default function MustardEngine() {
           <Stat label="Demo requests today" value={a.today.requests} big />
           <Stat label="Calls today" value={a.today.calls} tone="mustard" />
           <Stat label="Completed today" value={a.today.completed} tone="seed" big />
-          <Stat label="Forged today" value={a.today.forged} tone="seed" />
+          <Stat label="Built today" value={a.today.built} tone="seed" />
           <Stat label="Paid today" value={a.today.paid} tone="seed" big />
         </div>
 
@@ -110,7 +110,7 @@ export default function MustardEngine() {
                 <table className="w-full text-[13px]">
                   <thead>
                     <tr className="border-b-2 border-[#161616] text-left">
-                      {['Source', 'Requests', 'Consented', 'Called', 'Completed', 'Forged', 'Paid', 'Consent', 'Completion', 'Paid rate'].map((h) => (
+                      {['Source', 'Requests', 'Consented', 'Called', 'Completed', 'Built', 'Paid', 'Consent', 'Completion', 'Paid rate'].map((h) => (
                         <th key={h} className="px-3 py-2 text-[10px] uppercase tracking-[0.14em] font-oswald font-semibold text-[#161616]/65 whitespace-nowrap">
                           {h}
                         </th>
@@ -125,7 +125,7 @@ export default function MustardEngine() {
                         <Num v={s.consented} />
                         <Num v={s.called} />
                         <Num v={s.completed} />
-                        <Num v={s.forged} />
+                        <Num v={s.built} />
                         <td className="px-3 py-2 text-right font-oswald font-bold tabular-nums text-[#3f5d34]">{s.paid}</td>
                         <td className="px-3 py-2 text-right font-mono tabular-nums text-[#161616]/60">{pct(s.consentRatePct)}</td>
                         <td className="px-3 py-2 text-right font-mono tabular-nums text-[#161616]/60">{pct(s.completionRatePct)}</td>
@@ -138,7 +138,7 @@ export default function MustardEngine() {
             )}
             <p className="mt-3 text-xs text-[#161616]/65">
               All time: {a.allTime.requests} requests, {a.allTime.calls} calls, {a.allTime.completed} completed,{' '}
-              {a.allTime.forged} forged, {a.allTime.paid} paid.
+              {a.allTime.built} built, {a.allTime.paid} paid.
             </p>
           </Section>
 

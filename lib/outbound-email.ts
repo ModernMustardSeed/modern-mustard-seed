@@ -135,7 +135,7 @@ export async function buildOutboundEmail(
     .join('');
 
   const n = [withDemo, withSite, withOs].filter(Boolean).length;
-  // Same film the hub picks for this forged set (see app/demo/hub/[hubId]).
+  // Same film the hub picks for this built set (see app/demo/hub/[hubId]).
   const film = SARAH_WELCOME_READY
     ? 'demo-welcome-sarah'
     : withSite && withOs
@@ -232,7 +232,7 @@ export async function buildOutboundEmail(
       });
 
   const summary = includeAny
-    ? `Sent forged demos: ${[withSite && 'website', withOs && 'business OS', withDemo && 'voice agent'].filter(Boolean).join(' + ')}.`
+    ? `Sent built demos: ${[withSite && 'website', withOs && 'business OS', withDemo && 'voice agent'].filter(Boolean).join(' + ')}.`
     : hasAudit
       ? `Sent the website audit (${lead.audit_score ?? '?'}/100).`
       : `Sent an intro email${opts.source ? ` (${opts.source})` : ''}.`;
@@ -260,7 +260,7 @@ export type SendOutboundResult =
 
 /**
  * The one way an outbound lead gets emailed: the branded audit report when an
- * audit exists, a warm intro otherwise, optionally leading with their forged
+ * audit exists, a warm intro otherwise, optionally leading with their built
  * demo links (the voice agent, the demo website, or both). Sends from
  * Sarah's address (replies flow back through the Zoho sync onto the thread),
  * embeds the open-tracking pixel, logs the message row WITH the Resend message

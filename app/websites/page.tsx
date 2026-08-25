@@ -66,7 +66,7 @@ const FAQ = [
   },
   {
     q: 'Can I see it before I pay?',
-    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in your hands within the hour, plus a voice agent so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
+    a: 'Yes. Enter your business once and we build a real working demo website designed from scratch for you, in your hands within the hour, plus a voice agent so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
   },
   {
     q: 'What if I already have a website?',
@@ -399,7 +399,7 @@ export default function WebsitesPage() {
                 Live in a week
               </span>
               <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">The Website</span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">Forge it free, keep it monthly</h3>
+              <h3 className="font-display italic font-extrabold text-2xl mt-2">Build it free, keep it monthly</h3>
               <p className="font-mono font-bold text-[15px] mt-3 text-[#161616]">
                 {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(site.setupCents)} setup</span>
               </p>
@@ -434,7 +434,7 @@ export default function WebsitesPage() {
             </div>
           </div>
           <p className="font-body text-[13px] text-[#161616]/70 mt-6 text-center">
-            Not sure which? Forge a free demo, or{' '}
+            Not sure which? Build a free demo, or{' '}
             <Link href="/website-audit" className="font-bold text-[#1E50C8] underline underline-offset-4 hover:text-[#161616]">grade your current site free</Link>{' '}
             and we will tell you the highest-leverage move.
           </p>
@@ -445,7 +445,7 @@ export default function WebsitesPage() {
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
-              ['1', 'Forge it free', 'Tell us your business and we design a real working demo site for you, in your hands within the hour. Tour it, poke around, no card.'],
+              ['1', 'Build it free', 'Tell us your business and we design a real working demo site for you, in your hands within the hour. Tour it, poke around, no card.'],
               ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the funnels and the forms, and put it on your domain by hand.'],
               ['3', 'Own it, and grow', 'Live in about a week. You get the repo, the domain, and every account. Add the voice agent whenever you want it answering the phone.'],
             ].map(([n, t, d]) => (

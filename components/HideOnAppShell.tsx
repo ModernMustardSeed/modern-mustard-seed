@@ -3,10 +3,10 @@
 import { usePathname } from 'next/navigation';
 
 /** Hides marketing chrome (footer, etc.) on app shells that have their own
- *  layout: admin, the client portal, program HQs, and every forged demo
- *  surface. A forged demo is a one-offer sales page; the marketing footer sold
+ *  layout: admin, the client portal, program HQs, and every built demo
+ *  surface. A built demo is a one-offer sales page; the marketing footer sold
  *  competing offers (a FREE voice agent demo) directly under a paid ask. Note
- *  the voice demo still lives at the legacy /voice-agents/forge/demo/ path. */
+ *  the voice demo still lives at the legacy /voice-agents/build/demo/ path. */
 export default function HideOnAppShell({
   children,
   alsoOn = [],
@@ -27,7 +27,7 @@ export default function HideOnAppShell({
     // The CXC and Eternal Optimist booths: no MMS footer under another house.
     p.startsWith('/sarahcxc') ||
     p.startsWith('/sarahbook') ||
-    p.startsWith('/voice-agents/forge/demo/')
+    p.startsWith('/voice-agents/build/demo/')
   )
     return null;
   return <>{children}</>;

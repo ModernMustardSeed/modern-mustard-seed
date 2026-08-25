@@ -67,7 +67,7 @@ export const SWIPE_OFFERS: SwipeOffer[] = [
     key: 'ai-receptionist',
     name: 'The Voice Agent (recurring)',
     earn: 'You earn 25% of their bill, every month, for a year',
-    // Forge parked 2026-08-12 (Sarah). The swipe copy promises a personalized
+    // Build parked 2026-08-12 (Sarah). The swipe copy promises a personalized
     // demo, which /demos delivers. See Navbar.tsx.
     linkPath: '/demos',
     bestFor: 'Anyone with local or service-business owners in their audience.',

@@ -1,6 +1,6 @@
 /**
  * Proof that the two things a prospect actually receives are right, without a
- * database: the SUITE EMAIL they open, and the SITE BRIEF the forge builds
+ * database: the SUITE EMAIL they open, and the SITE BRIEF the build produces
  * their website from.
  *
  * Run it against a realistic prospect and read the output. Both are pure

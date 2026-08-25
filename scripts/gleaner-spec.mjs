@@ -55,7 +55,7 @@ export function assembleDemoSpec(prospect, vertical, demo) {
   const leak = prospect.revenue_leak_estimate ? `$${Number(prospect.revenue_leak_estimate).toLocaleString()}/month` : 'unknown (compute a defensible estimate from category averages and state it on the dashboard)';
   const brand = prospect.name;
 
-  return `# BUILD BRIEF - ${brand} Voice Concierge Demo (Gleaner forge)
+  return `# BUILD BRIEF - ${brand} Voice Concierge Demo (Gleaner build)
 
 You are the Modern Mustard Seed demo factory. Build a branded, deployable, CALLABLE
 voice-concierge demo for the prospect below. The demo IS the sales pitch: a real

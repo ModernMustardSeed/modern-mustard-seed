@@ -18,14 +18,14 @@ import { buildIcsInvite } from '@/lib/ics';
 import { sendMetaEvent } from '@/lib/meta-capi';
 import { randomUUID } from 'node:crypto';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
-import { forgeSuiteFromCall } from '@/lib/voice-forge-suite';
+import { buildSuiteFromCall } from '@/lib/voice-build-suite';
 import { DEMO_BOOKING_TOOL_NAMES, runDemoBookingTool } from '@/lib/demo-booking-tools';
 import { getRun } from '@/lib/demo-run-store';
 import { notifyDemoBooking } from '@/lib/demo-booking-notify';
 import { demoAppointmentsFor } from '@/lib/demo-booking';
 import {
   acqContext,
-  handleForgeProspectAgent,
+  handleBuildProspectAgent,
   handleEmailProspectDemo,
   handleSendCheckoutLink,
   handleLogCallOutcome,
@@ -449,7 +449,7 @@ const RESOURCE_CATALOG: Record<string, CatalogEntry> = {
   'bottleneck-breaker': { label: 'Find your #1 bottleneck (free 60-second scan)', url: `${SITE_ROOT}/audit` },
   audit: { label: 'Find your #1 bottleneck (free scan)', url: `${SITE_ROOT}/audit` },
   'voice-agents': { label: 'voice agents that answer your phone', url: `${SITE_ROOT}/voice-agents` },
-  'demo-agent': { label: 'Build your own voice agent', url: `${SITE_ROOT}/voice-agents/forge`, ref: true },
+  'demo-agent': { label: 'Build your own voice agent', url: `${SITE_ROOT}/voice-agents/build`, ref: true },
   /* ⚠️ DEPRECATED ALIAS, AND IT IS LOAD BEARING UNTIL VAPI IS PUSHED.
    * Mr. Mustard's LIVE send_email tool description still lists 'sidekick'
    * as a valid key, and the catalog silently drops anything it does not
@@ -457,7 +457,7 @@ const RESOURCE_CATALOG: Record<string, CatalogEntry> = {
    * makes him send a key that resolves to nothing, so the caller gets an
    * email with no link in it and nobody finds out. Delete it AFTER
    * `node scripts/setup-vapi-mustard.mjs --update <id>` has run. */
-  sidekick: { label: 'Build your own voice agent', url: `${SITE_ROOT}/voice-agents/forge`, ref: true },
+  sidekick: { label: 'Build your own voice agent', url: `${SITE_ROOT}/voice-agents/build`, ref: true },
   store: { label: 'The playbook and course store', url: `${SITE_ROOT}/store`, ref: true },
   work: { label: 'See the work', url: `${SITE_ROOT}/work` },
   'work-with-us': { label: 'Ways to work with us', url: `${SITE_ROOT}/work-with-us` },
@@ -787,7 +787,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
    * Sarah, 2026-08-25: "def needs to be known if i have a demo booking or cal
    * or anything!!!"
    *
-   * Every one of these already reached her, which was the problem: a forged
+   * Every one of these already reached her, which was the problem: a built
    * demo call arrived titled "Mr. Mustard call summary · Web call", identical
    * whether somebody poked at it for five seconds or booked a job. The signal
    * was landing in the inbox dressed as noise. So a demo call now says whose
@@ -807,7 +807,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
           // Only what this call produced, not everything the demo has ever taken.
           (a) => Date.parse(a.created_at) >= Date.now() - Math.max(durationSeconds ?? 0, 60) * 1000 - 120_000,
         );
-        demoLine = { business: run?.business || (meta.business as string) || 'a forged demo', booked: bookedOnThisCall };
+        demoLine = { business: run?.business || (meta.business as string) || 'a built demo', booked: bookedOnThisCall };
       }
     } catch (err) {
       console.error('demo call summary lookup failed', err);
@@ -970,7 +970,7 @@ async function runAcqTool(
 ): Promise<string> {
   switch (name) {
     case 'forge_prospect_agent':
-      return handleForgeProspectAgent(ctx, args);
+      return handleBuildProspectAgent(ctx, args);
     case 'email_prospect_demo':
       return handleEmailProspectDemo(ctx, args);
     case 'send_checkout_link':
@@ -990,7 +990,7 @@ async function runAcqTool(
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * THE FORGED DEMO BOOKS THE BUSINESS IT IS ROLE-PLAYING.
+ * THE BUILT DEMO BOOKS THE BUSINESS IT IS ROLE-PLAYING.
  *
  * Resolves the demo from its stored run and hands the tool call to
  * lib/demo-booking-tools.ts. Never throws: a thrown error here is dead air on a
@@ -1015,7 +1015,7 @@ async function runDemoBooking(
    * That table exists and is permanently EMPTY: migration 036 calls itself "the
    * OPTIONAL future upgrade", and the live store is app_state under the key
    * `demo:run:<uuid>`. Reading the table compiles, runs, returns null for
-   * every demo ever forged, and puts the agent straight back to "the owner will
+   * every demo ever built, and puts the agent straight back to "the owner will
    * confirm", which is the exact bug this feature exists to kill. */
   const run = await getRun(sb, runId);
   if (!run) {
@@ -1068,7 +1068,7 @@ export async function POST(req: Request) {
    * literal string "[SENSITIVE]" over sensitive values and that is TRUTHY. A
    * deploy that picked one up would compare every incoming header against
    * "[SENSITIVE]", 401 every request, and Mr. Mustard would keep answering the
-   * phone while silently losing the ability to book, forge, transfer or log
+   * phone while silently losing the ability to book, build, transfer or log
    * anything. The call would sound fine and do nothing, which is the worst
    * possible failure mode for a receptionist.
    *
@@ -1098,7 +1098,7 @@ export async function POST(req: Request) {
     const customer = (callObj.customer ?? {}) as Record<string, unknown>;
     const callerNumber = (customer.number as string) || null;
 
-    // Call metadata rides along on web/desk calls (forged with assistantOverrides.metadata).
+    // Call metadata rides along on web/desk calls (built with assistantOverrides.metadata).
     // The desk lines carry the surface (admin/client/partner) and the signed-in
     // person's authenticated email, so send_email can target them without re-asking.
     const meta = ((callObj.metadata as Record<string, unknown>) ||
@@ -1109,16 +1109,16 @@ export async function POST(req: Request) {
 
     // An acquisition call carries acq:true plus the prospect it belongs to. His
     // five extra tools only resolve on those calls; on the studio line and every
-    // forged web demo this is null and nothing below changes.
+    // built web demo this is null and nothing below changes.
     const acq = acqContext(meta);
 
-    /* A FORGED DEMO CALL CAN BOOK THE BUSINESS IT IS ROLE-PLAYING.
+    /* A BUILT DEMO CALL CAN BOOK THE BUSINESS IT IS ROLE-PLAYING.
      *
      * Demos run on Mr. Mustard's assistant with per-call overrides, so the
      * front-office webhook cannot help: it resolves an office by
      * `vapi_assistant_id` and every demo carries HIS id. The demo identity
      * arrives the only way it can, in the metadata lib/demo-agent.ts already
-     * attaches, and `runId` is the stored run the persona was forged
+     * attaches, and `runId` is the stored run the persona was built
      * from (business, city, hours).
      *
      * ⚠️ Null on the studio line, on desk calls and on acquisition calls, so
@@ -1157,13 +1157,13 @@ export async function POST(req: Request) {
         } else if (fnName === 'reach_sarah') {
           result = await reachSarah(args as Parameters<typeof reachSarah>[0], callerNumber);
         } else if (fnName === 'forge_demo_suite') {
-          result = await forgeSuiteFromCall(args as Parameters<typeof forgeSuiteFromCall>[0], callerNumber);
+          result = await buildSuiteFromCall(args as Parameters<typeof buildSuiteFromCall>[0], callerNumber);
         } else if (DEMO_BOOKING_TOOL_NAMES.has(fnName)) {
           result = demoRunId
             ? await runDemoBooking(demoRunId, callObj.id as string | undefined, fnName, args)
             : JSON.stringify({
                 ok: false,
-                error: 'That tool only exists on a forged demo call. Continue without it.',
+                error: 'That tool only exists on a built demo call. Continue without it.',
               });
         } else if (ACQ_TOOLS.has(fnName)) {
           result = acq

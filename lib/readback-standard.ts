@@ -75,7 +75,7 @@ export const READBACK_HEADING = '# Letters, numbers and addresses, out loud (stu
  *
  * Every agent the studio builds carries the readback standard, and "carries"
  * cannot mean "whoever writes the next prompt remembers to paste it in". That
- * already failed once: the forged demo personas in lib/demo-agent.ts kept their
+ * already failed once: the built demo personas in lib/demo-agent.ts kept their
  * own older copy of these rules for months, and that copy told agents to spell
  * things back "one character at a time separated by commas", with no anchor
  * words. That is the exact instruction that let a caller's email become

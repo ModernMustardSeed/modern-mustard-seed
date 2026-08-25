@@ -537,7 +537,7 @@ export function proposalSendEmail({
   toName?: string;
   url: string;
   note?: string;
-  /** When the proposal carries live forged demos, the email says so: the
+  /** When the proposal carries live built demos, the email says so: the
    * strongest reason to open it is that their new site is already inside. */
   hasDemos?: boolean;
 }): string {
@@ -842,14 +842,14 @@ export function programAccessEmail({
 
 /* ────────────────────────── DEMO FILM CARD ────────────────────────── */
 
-/** The welcome films that ship with a forged Demo Suite. Keep in sync with the
+/** The welcome films that ship with a built Demo Suite. Keep in sync with the
  *  `film` prop on components/demo/DemoHub. */
 export type DemoFilm = 'demo-welcome' | 'demo-welcome-voice' | 'demo-welcome-site' | 'demo-welcome-os' | 'demo-welcome-sarah';
 
 /**
  * Flip to true once Sarah's face-to-camera welcome film is exported to
  * public/video/demo-welcome-sarah.mp4 (plus demo-welcome-sarah-poster.jpg). When
- * true, every forged demo email and hub leads with her hello instead of the
+ * true, every built demo email and hub leads with her hello instead of the
  * Mr. Mustard film. Until then it stays on the mascot films that already ship.
  */
 export const SARAH_WELCOME_READY = false;

@@ -1,5 +1,5 @@
 /**
- * Campaign playbooks for the Campaigns module of the forged BUSINESS OS demo.
+ * Campaign playbooks for the Campaigns module of the built BUSINESS OS demo.
  * Universal plays that read as trade-native through interpolation: {job} is the
  * trade's job word, {city} the lead's town, {biz} the business. Numbers shown in
  * the demo are deterministic sample projections derived from the trade's average

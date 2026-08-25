@@ -83,17 +83,27 @@ const config: NextConfig = {
       // /book automatically, where BookCall prefills it. /api/build-queue is
       // a distinct path and is not affected by this redirect.
       { source: '/build-queue', destination: '/book', permanent: true },
-      // The Sidekick Forge became the Voice Agent Forge (2026-07-28) and moved
+      // The Sidekick Build became the Voice Agent Build (2026-07-28) and moved
       // under the /voice-agents hub, alongside /whitepaper and the trade fleet.
       // /sidekick is in live ads, sent emails, YouTube descriptions, and every
       // partner referral link, so these are permanent and the query string
       // (notably ?ref=CODE, which pays the partner) passes through untouched.
-      { source: '/sidekick', destination: '/voice-agents/forge', permanent: true },
-      { source: '/sidekick/:path*', destination: '/voice-agents/forge/:path*', permanent: true },
-      // The forge's own API moved with it (/api/sidekick -> /api/demo-agent,
+      { source: '/sidekick', destination: '/voice-agents/build', permanent: true },
+      { source: '/sidekick/:path*', destination: '/voice-agents/build/:path*', permanent: true },
+      // The word "forge" was retired 2026-08-25 (Sarah: bad word, everywhere).
+      // /voice-agents/forge is in sent emails, the outbound drip, social posts,
+      // and every demo link already delivered, so the old path is permanent and
+      // the run id (/demo/:runId) and query string pass straight through.
+      { source: '/voice-agents/forge', destination: '/voice-agents/build', permanent: true },
+      { source: '/voice-agents/forge/:path*', destination: '/voice-agents/build/:path*', permanent: true },
+      { source: '/partners/hq/forge', destination: '/partners/hq/build', permanent: true },
+      { source: '/admin/hq/forge', destination: '/admin/hq/build', permanent: false },
+      { source: '/admin/outbound/forge', destination: '/admin/outbound/build', permanent: false },
+      { source: '/admin/acquisition/forge', destination: '/admin/acquisition/build', permanent: false },
+      // The build's own API moved with it (/api/sidekick -> /api/demo-agent,
       // 2026-08-25). A browser tab left open across the deploy would POST to
-      // the old path mid-forge and get a 404 with their details already typed
-      // in. 308 preserves the method and the body, so the forge just works.
+      // the old path mid-build and get a 404 with their details already typed
+      // in. 308 preserves the method and the body, so the build just works.
       { source: '/api/sidekick/:path*', destination: '/api/demo-agent/:path*', permanent: true },
       // The Text Line (/sms) was retired 2026-08-01 (Sarah: we do not offer
       // texting anywhere). The URL is indexed and was filed with carriers, so

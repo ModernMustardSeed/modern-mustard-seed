@@ -2,7 +2,7 @@
  * DEDUPE. The rule is simple and absolute: one business, one outreach record.
  *
  * Sourcing the same metro twice, importing a CSV that overlaps the dial floor,
- * and Mr. Mustard forging a suite for a company already in the pipeline all have
+ * and Mr. Mustard building a suite for a company already in the pipeline all have
  * to converge on the SAME row. Four independent keys are written on every write
  * (domain, email, phone, normalized name + geography) and a candidate matching
  * ANY of them is a duplicate.

@@ -1,7 +1,7 @@
 /**
  * SEND THE DEMOS NOW.
  *
- * A forged demo is a live site and a live agent with somebody's own business
+ * A built demo is a live site and a live agent with somebody's own business
  * name on it. It has a shelf life measured in a day or two, and it was sitting
  * behind a thousand cold emails, an hourly cap, a send window and a bounce
  * brake that a single full mailbox could trip. All of those exist to stop a
@@ -57,7 +57,7 @@ const DEFAULT_REASON = 'Sent by hand from the admin.';
  * Drain every ready demo email immediately.
  *
  * `leadIds` narrows it to specific prospects; omit it to send everything that
- * is queued and forged. `limit` is a safety rail on a runaway click, not a
+ * is queued and built. `limit` is a safety rail on a runaway click, not a
  * pacing rule.
  */
 export async function sendDemosNow(opts: {
@@ -128,7 +128,7 @@ export async function sendDemosNow(opts: {
       continue;
     }
     if (!lead.hub_demo_url && !lead.demo_url) {
-      label({ ...who, status: 'skipped', note: 'Nothing forged yet, so there is nothing to link to.' });
+      label({ ...who, status: 'skipped', note: 'Nothing built yet, so there is nothing to link to.' });
       continue;
     }
 

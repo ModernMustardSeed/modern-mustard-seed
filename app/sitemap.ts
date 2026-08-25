@@ -9,7 +9,7 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
 // PARKED 2026-08-07 (Sarah): /mustard-tree, /press, and /hatchery are out of
 // the sitemap and noindexed. The routes still answer directly; they are simply
 // not advertised to crawlers or AI answer engines. /celebrate was unparked
-// 2026-08-11 with the launch countdown. /voice-agents/forge was parked
+// 2026-08-11 with the launch countdown. /voice-agents/build was parked
 // 2026-08-12 the same way: out of the sitemap and noindexed, still answering for
 // the Meta campaign, Stripe returns, and the drip. See Navbar.tsx.
 const STATIC_PATHS = [

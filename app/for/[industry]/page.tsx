@@ -99,10 +99,10 @@ export default async function IndustryPage({ params }: { params: Params }) {
 
           <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center">
             <Link
-              href={i.forge.href}
+              href={i.build.href}
               className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.2)] hover:shadow-[0_0_40px_rgba(255,107,53,0.35)] transition-all"
             >
-              {i.forge.label}
+              {i.build.label}
             </Link>
             <Link
               href="/audit"
@@ -283,14 +283,14 @@ export default async function IndustryPage({ params }: { params: Params }) {
               {i.cta.body}
             </p>
             <p className="text-white/50 text-sm font-body font-light leading-relaxed mb-7 max-w-xl mx-auto">
-              {i.forge.blurb}
+              {i.build.blurb}
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center">
               <Link
-                href={i.forge.href}
+                href={i.build.href}
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.25)] hover:shadow-[0_0_40px_rgba(255,107,53,0.45)] transition-all"
               >
-                {i.forge.label}
+                {i.build.label}
               </Link>
               <Link
                 href="/audit"

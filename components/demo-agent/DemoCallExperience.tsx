@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { ForgedCall } from '@/lib/demo-agent';
+import type { BuiltCall } from '@/lib/demo-agent';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import { demoVoice, genderFromVoiceId, type VoiceGender } from '@/lib/demo-voice';
 import VoiceGenderToggle from '@/components/demo-agent/VoiceGenderToggle';
@@ -15,7 +15,7 @@ const VOICE = DEMO_PRODUCTS.voice;
 type CallState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 
 /**
- * The prospect-facing side of a cockpit-forged demo: one big button that
+ * The prospect-facing side of a cockpit-built demo: one big button that
  * starts a live web call with the voice agent already branded as their
  * business. Same Vapi web pattern as the public Voice Agent page.
  */
@@ -23,15 +23,15 @@ export default function DemoCallExperience({
   business,
   city,
   call,
-  forgeError,
+  buildError,
   orderUrl,
 }: {
   business: string;
   city: string | null;
-  call: ForgedCall | null;
-  forgeError: string | null;
-  /** The lead's own hub order card. Present for every forged lead; null only for
-   *  legacy runs forged before the hub existed. */
+  call: BuiltCall | null;
+  buildError: string | null;
+  /** The lead's own hub order card. Present for every built lead; null only for
+   *  legacy runs built before the hub existed. */
   orderUrl?: string | null;
 }) {
   const [state, setState] = useState<CallState>('idle');
@@ -145,7 +145,7 @@ export default function DemoCallExperience({
         )}
         <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8 text-center">
           {!ready && (
-            <p className="font-body text-[#C4160B] font-semibold">{forgeError ?? 'The demo line is warming up. Refresh in a minute.'}</p>
+            <p className="font-body text-[#C4160B] font-semibold">{buildError ?? 'The demo line is warming up. Refresh in a minute.'}</p>
           )}
 
           {ready && state !== 'live' && (

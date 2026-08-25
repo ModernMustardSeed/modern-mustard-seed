@@ -3,7 +3,7 @@
 /**
  * MI 19 · THE LEAK. The Revenue Recovery Machine: a giant pop-art desk
  * calculator that adds up what a silent website and an unanswered phone are
- * costing this visitor, then hands them the Forge.
+ * costing this visitor, then hands them the Build.
  *
  * Sits between the Orchards (MI 12) and the Roadside (MI 31). The rail nav in
  * JourneyRig picks it up automatically off `data-journey-chapter`, so nothing
@@ -226,11 +226,11 @@ export default function JourneyCalculator() {
     window.setTimeout(() => setFlash(false), 420);
   };
 
-  const forgeHref = '/demos#forge';
-  const onForge = (where: string) =>
+  const buildHref = '/demos#build';
+  const onBuild = (where: string) =>
     track('calculator_forge_click', { where, annual: Math.round(math.annual) });
 
-  /* The tape, emailed. Cheap ask before the Forge ask, and it lands in the
+  /* The tape, emailed. Cheap ask before the Build ask, and it lands in the
      same inbox as every other lead with the numbers already attached. */
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -563,11 +563,11 @@ export default function JourneyCalculator() {
                   </PopKey>
 
                   <Link
-                    href={forgeHref}
-                    onClick={() => onForge('keypad')}
+                    href={buildHref}
+                    onClick={() => onBuild('keypad')}
                     className="col-span-4 mt-1 flex select-none items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#E0301E] py-4 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[0_5px_0_0_#161616] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_6px_0_0_#161616] active:translate-y-[4px] active:shadow-[0_1px_0_0_#161616] motion-reduce:transition-none sm:text-sm"
                   >
-                    Forge My Demo
+                    Build My Demo
                     <span aria-hidden>→</span>
                   </Link>
                 </div>
@@ -658,7 +658,7 @@ export default function JourneyCalculator() {
                 <p className="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-[#161616]/70">
                   Thank you
                   <br />
-                  Now go forge yours
+                  Now go build yours
                 </p>
                 <div
                   aria-hidden
@@ -683,7 +683,7 @@ export default function JourneyCalculator() {
           </div>
         </div>
 
-        {/* ── Take the tape with you. The cheap ask, ahead of the Forge ask. ── */}
+        {/* ── Take the tape with you. The cheap ask, ahead of the Build ask. ── */}
         <div className="mx-auto mt-14 max-w-3xl">
           {status === 'done' ? (
             <div className="rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-8 text-center shadow-[6px_6px_0_0_#161616] md:p-10">
@@ -699,11 +699,11 @@ export default function JourneyCalculator() {
                 thing itself.
               </p>
               <Link
-                href={forgeHref}
-                onClick={() => onForge('receipt-success')}
+                href={buildHref}
+                onClick={() => onBuild('receipt-success')}
                 className="mt-6 inline-flex items-center gap-2 border-2 border-[#161616] bg-[#161616] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#F5B700] shadow-[5px_5px_0_0_#FBF6EA] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#FBF6EA]"
               >
-                Forge My Demo Free
+                Build My Demo Free
                 <span aria-hidden>→</span>
               </Link>
             </div>
@@ -775,7 +775,7 @@ export default function JourneyCalculator() {
           <div className="relative mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#F5B700] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">
               <span className="block h-2 w-2 rounded-full bg-[#E0301E]" aria-hidden />
-              The Demo Forge · Free
+              The Demo Build · Free
             </span>
             <h3
               className={`${anton.className} mt-5 uppercase leading-[0.95] text-[#FBF6EA]`}
@@ -787,16 +787,16 @@ export default function JourneyCalculator() {
             </h3>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#FBF6EA]/85 md:text-lg">
               That number stays a guess until it is your website and your phone number. Tell us your
-              trade and your town, and we forge your talking website and your voice agent while you
+              trade and your town, and we build your talking website and your voice agent while you
               watch. No card, no call, nothing to cancel.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
-                href={forgeHref}
-                onClick={() => onForge('cta')}
+                href={buildHref}
+                onClick={() => onBuild('cta')}
                 className="inline-flex items-center gap-2 border-2 border-[#161616] bg-[#F5B700] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#161616] shadow-[5px_5px_0_0_#FBF6EA] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#FBF6EA]"
               >
-                Forge My Demo Free
+                Build My Demo Free
                 <span aria-hidden>→</span>
               </Link>
               <button
@@ -815,7 +815,7 @@ export default function JourneyCalculator() {
               </button>
             </div>
             <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-[#F5B700]/60">
-              Forged before you pay a cent
+              Built before you pay a cent
             </p>
           </div>
         </div>

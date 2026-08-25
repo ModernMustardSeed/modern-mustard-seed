@@ -232,10 +232,10 @@ export function aiTxt(f: SiteFacts): string {
 /**
  * Weld the SEO into the page itself.
  *
- * The forge writes a real <title> and description already, so we do not fight it: we
+ * The build writes a real <title> and description already, so we do not fight it: we
  * only ADD what a generated page cannot know (its own canonical URL, its OG image, its
  * structured record), and we replace the title/description only when the page's own is
- * missing or is obviously the forge's placeholder.
+ * missing or is obviously the build's placeholder.
  */
 export function injectSeo(html: string, f: SiteFacts): string {
   const url = siteUrl(f.domain);

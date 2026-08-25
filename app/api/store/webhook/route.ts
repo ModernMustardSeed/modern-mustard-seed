@@ -746,7 +746,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
             eyebrow: 'VOICE AGENT DUNNING',
             greeting: 'A renewal bounced.',
             body: `<p>Subscription ${subId}${subMeta.business ? ` (business: <strong>${business}</strong>)` : ''} failed to renew for ${escapeHtmlSafe(skEmail)}.</p><p>Stripe retries on its own. If it does not recover in a few days, pause the line before the minutes leak.</p>`,
-            signature: 'The Forge',
+            signature: 'The Build',
           }),
         });
       } catch (err) {
@@ -1099,8 +1099,8 @@ async function handleDemoAgentPurchase(
         preheader: 'A Voice Agent was kept. Install within 7 days.',
         eyebrow: 'VOICE AGENT ORDER',
         greeting: 'He got hired.',
-        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just kept their Voice Agent${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${demoAgentUsd(tier.setupCents)} setup + $${demoAgentUsd(tier.monthlyCents)}/mo, ${tier.minutesCap.toLocaleString()} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=demo-agent.</p>`,
-        signature: 'The Forge',
+        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just kept their Voice Agent${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${demoAgentUsd(tier.setupCents)} setup + $${demoAgentUsd(tier.monthlyCents)}/mo, ${tier.minutesCap.toLocaleString()} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their build run and transcript are in Vapi under metadata kind=demo-agent.</p>`,
+        signature: 'The Build',
       }),
     });
   } catch (err) {
@@ -1117,7 +1117,7 @@ async function handleDemoAgentPurchase(
         preheader: 'He starts within 7 days. Here is what happens next.',
         eyebrow: tier?.name ?? 'VOICE AGENT',
         greeting: firstName ? `${firstName}, he got the job.` : 'He got the job.',
-        body: `<p>Your Voice Agent${business ? ` for <strong>${business}</strong>` : ''} is officially hired. Here is exactly what happens next:</p><p><strong>1.</strong> Within one business day, I will email you personally to confirm the details he learned in the forge and how you want your line handled (new local number, or forwarding your existing one).</p><p><strong>2.</strong> I hand-tune his training, wire up bookings and call summaries, and test him on real scenarios.</p><p><strong>3.</strong> Within 7 days he is live, answering ${business || 'your business'} around the clock. ${tier ? `Your plan includes ${tier.minutesCap.toLocaleString()} answered minutes a month; at the cap he switches to message-taking, so there is never a surprise bill.` : ''}</p><p>Month to month, cancel anytime, and your setup fee is credited in full toward any custom build over $2,500 if you ever go bigger.</p>`,
+        body: `<p>Your Voice Agent${business ? ` for <strong>${business}</strong>` : ''} is officially hired. Here is exactly what happens next:</p><p><strong>1.</strong> Within one business day, I will email you personally to confirm the details he learned in the build and how you want your line handled (new local number, or forwarding your existing one).</p><p><strong>2.</strong> I hand-tune his training, wire up bookings and call summaries, and test him on real scenarios.</p><p><strong>3.</strong> Within 7 days he is live, answering ${business || 'your business'} around the clock. ${tier ? `Your plan includes ${tier.minutesCap.toLocaleString()} answered minutes a month; at the cap he switches to message-taking, so there is never a surprise bill.` : ''}</p><p>Month to month, cancel anytime, and your setup fee is credited in full toward any custom build over $2,500 if you ever go bigger.</p>`,
         cta: { label: 'Reply to this email with questions', url: 'mailto:sarah@modernmustardseed.com' },
         signature: 'Sarah',
       }),
@@ -1261,7 +1261,7 @@ async function handleChiefPurchase(
         preheader: 'The Chief was hired. Train and provision within 7 days.',
         eyebrow: 'CHIEF ORDER',
         greeting: 'He got hired.',
-        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just hired The Chief${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${chiefUsd(tier.setupCents)} setup + $${chiefUsd(tier.monthlyCents)}/mo, ${tier.minutesCap.toLocaleString()} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Next: book the onboarding, load their world (business, calendar, people, voice), forge their per-client Chief persona, and turn on their morning briefing. Live within 7 days.</p>`,
+        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just hired The Chief${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${chiefUsd(tier.setupCents)} setup + $${chiefUsd(tier.monthlyCents)}/mo, ${tier.minutesCap.toLocaleString()} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Next: book the onboarding, load their world (business, calendar, people, voice), build their per-client Chief persona, and turn on their morning briefing. Live within 7 days.</p>`,
         signature: 'The Chief Desk',
       }),
     });
@@ -1630,7 +1630,7 @@ async function handleHatcheryPurchase(
 }
 
 /**
- * A DEMO ORDER landed: someone bought straight off their forged demo
+ * A DEMO ORDER landed: someone bought straight off their built demo
  * (voice / site / OS / bundle, monthly + setup on the first invoice).
  * Flip the lifecycle row to paid, mark the outbound lead won, note the
  * thread, and fire the provision + welcome emails. Revenue itself is
@@ -1715,7 +1715,7 @@ function formatCents(cents: number): string {
 }
 
 /**
- * Somebody paid off a /pay/<slug> link, with no forged demo behind them. The
+ * Somebody paid off a /pay/<slug> link, with no built demo behind them. The
  * money is already collected and the client record already written by
  * provisionPurchase, so this owes Sarah two things: the email that tells her a
  * sale landed, and a lead row so the buyer shows up in the pipeline instead of
@@ -1739,7 +1739,7 @@ async function handleDirectPayPaid(
       email: email || null,
       phone: phone || null,
       source: 'pay-link',
-      message: `PAID on a direct pay link: ${itemName} (${products}). First invoice ${amount}. No forged demo behind this one, so the build starts from scratch.`,
+      message: `PAID on a direct pay link: ${itemName} (${products}). First invoice ${amount}. No built demo behind this one, so the build starts from scratch.`,
     });
   } catch (err) {
     console.error('direct-pay lead insert failed:', err instanceof Error ? err.message : err);
@@ -1763,7 +1763,7 @@ async function handleDirectPayPaid(
           { label: 'Email', value: email || 'not given' },
           { label: 'Phone', value: phone || 'not given' },
         ],
-        message: 'They paid off a direct link, so there is no forged demo to release. This build starts from scratch.',
+        message: 'They paid off a direct link, so there is no built demo to release. This build starts from scratch.',
         suggestedAction: 'Send the kickoff questionnaire and get the build on the delivery board',
       }),
     });
@@ -1829,7 +1829,7 @@ async function handleDemoOrderPaid(
           next_action: 'Deliver demo order within 7 days',
           // The acquisition engine counts clients off these fields. Setting them
           // here is what closes its funnel: the prospect who was emailed, called
-          // by Mr. Mustard and forged now shows up as a client on the 50 client
+          // by Mr. Mustard and built now shows up as a client on the 50 client
           // dial rather than sitting forever at "checkout sent".
           client_status: 'client',
           payment_status: 'paid',
@@ -2580,7 +2580,7 @@ async function handleDemoAgentSubscriptionDeleted(sub: Stripe.Subscription) {
         eyebrow: 'VOICE AGENT OFFBOARD',
         greeting: 'A Voice Agent clocked out.',
         body: `<p>Subscription ${sub.id}${sub.metadata?.business ? ` (business: <strong>${escapeHtmlSafe(sub.metadata.business)}</strong>)` : ''} was canceled.</p><p>Decommission the line: unassign or park the Vapi number, archive the assistant, and send the goodbye note.</p>`,
-        signature: 'The Forge',
+        signature: 'The Build',
       }),
     });
   } catch (err) {
@@ -2804,7 +2804,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true, kind: 'subscription' });
   }
 
-  // ── DEMO ORDER: bought straight off a forged demo (no slug; id in metadata) ──
+  // ── DEMO ORDER: bought straight off a built demo (no slug; id in metadata) ──
   if (session.metadata?.kind === 'demo-order') {
     await handleDemoOrderPaid(session, email ?? null, name ?? null);
     return NextResponse.json({ received: true, kind: 'demo-order' });
@@ -2815,7 +2815,7 @@ export async function POST(req: Request) {
   // pipeline above already made them a client and wrote their ownership card,
   // so all this owes is telling Sarah a sale landed and who to build for. It is
   // deliberately thin: no provisioning branches, because a direct buyer has no
-  // forged demo to release, and Sarah starts their build by hand from this
+  // built demo to release, and Sarah starts their build by hand from this
   // email the same way she starts a proposal sale.
   if (session.metadata?.kind === 'direct-pay') {
     await handleDirectPayPaid(session, email ?? null, name ?? null);
@@ -2858,7 +2858,7 @@ export async function POST(req: Request) {
   }
 
   // ── CLIENT FACTORY purchased. Provision the tenant, seat the buyer, apply the
-  //    plan limits, and stop there: the Factory itself is forged and reviewed,
+  //    plan limits, and stop there: the Factory itself is built and reviewed,
   //    never conjured by a card clearing. `plan` metadata picks the tier.
   if (session.metadata?.kind === 'client-factory') {
     const result = email ? await provisionClientFactory(session, email, name ?? null) : { ok: false as const, reason: 'No buyer email.' };

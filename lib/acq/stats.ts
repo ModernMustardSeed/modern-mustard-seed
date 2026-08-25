@@ -5,7 +5,7 @@
  * the prospect rows, the event log and the call records. Two principles:
  *
  *   A denominator is never guessed. Every conversion rate names the stage it
- *   divides by, so "37% forge rate" always means "of people who talked to Mr.
+ *   divides by, so "37% build rate" always means "of people who talked to Mr.
  *   Mustard", not "of everyone we emailed".
  *
  *   The projection is honest. "How many more prospects to reach 50 clients" is

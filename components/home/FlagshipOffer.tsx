@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
 /**
- * FLAGSHIP OFFER. Homepage beat: the studio's headline product, forged free and
+ * FLAGSHIP OFFER. Homepage beat: the studio's headline product, built free and
  * kept for a monthly. TWO pieces, and the saving is the bundle itself.
  *
  * ⚠️ THE COMMAND CENTER IS NOT A PIECE OF THIS OFFER (Sarah, 2026-08-22, again
@@ -52,7 +52,7 @@ export default function FlagshipOffer() {
           A voice agent and a website,<br />built off one brain.
         </h2>
         <p className="font-body text-[15px] md:text-[17px] text-[#161616]/75 mt-5 max-w-2xl leading-relaxed">
-          Tell us your business and we forge both, free, in about a minute. Keep what you love. Take the website
+          Tell us your business and we build both, free, in about a minute. Keep what you love. Take the website
           and the voice agent together and they are built as one thing, for less than the two apart.
         </p>
 
@@ -89,7 +89,7 @@ export default function FlagshipOffer() {
           })}
         </div>
 
-        {/* Whole-system callout + the forge CTA. */}
+        {/* Whole-system callout + the build CTA. */}
         <div className="mt-8 border-2 border-[#161616] bg-white shadow-[6px_6px_0_0_#161616] p-7 md:p-8 md:flex md:items-center md:justify-between gap-8">
           <div className="md:flex-1">
             <span className="font-mono font-bold text-[10px] uppercase tracking-[0.3em] text-[#C4160B] block">
@@ -119,7 +119,7 @@ export default function FlagshipOffer() {
               href="/demos"
               className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
             >
-              Forge my demos, free →
+              Build my demos, free →
             </Link>
             <Link
               href="/book"

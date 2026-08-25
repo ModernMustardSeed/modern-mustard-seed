@@ -208,7 +208,7 @@ export function projectSlug(business: string, suffix: string): string {
  * Ship a single-file site to its own Vercel project, live, on the production target.
  *
  * One project per client site, because a custom domain attaches to a project. The
- * site is one self-contained index.html (that is what the forge produces), so the
+ * site is one self-contained index.html (that is what the build produces), so the
  * deployment is a single inline file: no build step, no framework, nothing to break.
  */
 export async function publishSite(args: {

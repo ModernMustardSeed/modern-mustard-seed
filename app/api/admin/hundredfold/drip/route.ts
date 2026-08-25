@@ -11,7 +11,7 @@ import {
 } from '@/lib/hundredfold-drip';
 import { SITE } from '@/lib/seo';
 import type { RoadmapReport } from '@/lib/roadmap-shape';
-import type { ForgedOffer } from '@/lib/hundredfold-synthesis';
+import type { BuiltOffer } from '@/lib/hundredfold-synthesis';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -65,7 +65,7 @@ export async function GET(req: Request) {
       seq === 'interview'
         ? interviewDripEmail(p, Math.min(step, INTERVIEW_TOUCHES - 1), {
             firstName,
-            offer: (member?.offer as ForgedOffer) ?? null,
+            offer: (member?.offer as BuiltOffer) ?? null,
             roadmapUrl: member?.roadmap_slug ? `${SITE.url}/scaling-roadmap/r/${member.roadmap_slug}` : null,
           })
         : roadmapDripEmail(p, Math.min(step, ROADMAP_TOUCHES - 1), {
