@@ -2,6 +2,7 @@ import { getSupabase } from '@/lib/supabase';
 import { settleCursorCompanions } from '@/lib/cursor-companion';
 import { dressClosingBand } from '@/lib/closing-band';
 import { levelMarquees } from '@/lib/level-marquee';
+import { takeBrownOff } from '@/lib/no-brown';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,11 +28,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ siteId:
     .maybeSingle();
   if (!site?.html) return new Response('Not found', { status: 404 });
 
-  // Every site already in the table was forged before the companion rules and
-  // the level-stripe law existed, so settle its cursor glyph and flatten its
-  // marquee on the way out rather than re-forging a hundred demos to fix one
-  // stuck mark on the hero and one tilted band in the middle.
-  return new Response(levelMarquees(dressClosingBand(settleCursorCompanions(site.html as string))), {
+  // Every site already in the table was forged before the companion rules, the
+  // level-stripe law and the no-brown law existed, so settle its cursor glyph,
+  // flatten its marquee and take the brown off on the way out rather than
+  // re-forging a hundred demos to fix one stuck mark, one tilted band and one
+  // muddy ending. takeBrownOff goes LAST so its script runs after the others and
+  // sees the colours they leave behind.
+  return new Response(takeBrownOff(levelMarquees(dressClosingBand(settleCursorCompanions(site.html as string)))), {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'X-Robots-Tag': 'noindex, nofollow',

@@ -73,6 +73,50 @@ for (const [p, who] of [...found].sort()) {
   console.log(`${tag}  ${short(p).padEnd(52)} <- ${[...who].join(', ')}`);
 }
 
+/**
+ * THE CAPABILITY CHECK, NOT JUST THE PATH CHECK.
+ *
+ * Every path above can exist and the build can still have silently lost a
+ * capability, because the law CHOOSES its image block from what is installed and
+ * then only names the winner. On 2026-08-25 the ref-capable renderer was missing,
+ * pickImageBlock fell through to the plugin that states outright "There is no
+ * reference-image support", and this checker validated the fallback and printed
+ * all-green, twice a day, for weeks.
+ *
+ * What it cost: PROGRESS_SLIDER_RULE, which every build receives, tells the
+ * builder to lock a before/after camera with --ref-mode composition. With the
+ * fallback tool that is impossible, so it rendered the two frames independently
+ * and shipped a slider of two DIFFERENT buildings, in the one section whose
+ * entire effect is that they are the same building.
+ *
+ * So: a directive that DEMANDS a flag must be handed a tool that HAS it. This
+ * asserts the pairing rather than trusting that a green path list means a whole
+ * build system.
+ */
+const text = (build) => { try { return build() || ''; } catch { return ''; } };
+/* Only the LOCAL engines are in scope. The serverless failsafe has no filesystem
+   and no renderer at all (it paints one hero with fal and splices it in), so it
+   names no image tool and the ref procedure is inert there rather than broken. */
+const RENDERER = /(codex-image|genimage)\.mjs/;
+const demandsRef = Object.entries(BUILDERS)
+  .filter(([, b]) => RENDERER.test(text(b)))
+  .filter(([, b]) => text(b).includes('--ref-mode'));
+if (demandsRef.length) {
+  const withoutRef = demandsRef.filter(([, b]) => !/codex-image\.mjs/.test(text(b)));
+  if (withoutRef.length) {
+    console.error('');
+    console.error('CAPABILITY MISMATCH. These directives tell the builder to use --ref-mode, but the');
+    console.error('image tool they were handed does not support reference images:');
+    for (const [name] of withoutRef) console.error(`  x ${name}`);
+    console.error('');
+    console.error('The builder cannot obey, so it renders each frame independently and the');
+    console.error('before/after slider ships two different buildings. Restore the ref-capable');
+    console.error('renderer rather than deleting the rule that needs it.');
+    process.exit(1);
+  }
+  console.log(`ref-capable renderer is wired to all ${demandsRef.length} directive(s) that ask for --ref-mode.`);
+}
+
 console.log('');
 if (repoMissing) {
   console.error(`${repoMissing} path(s) shipped in this repo do not exist. A directive that names a file the`);
