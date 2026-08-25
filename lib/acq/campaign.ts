@@ -124,8 +124,24 @@ export function firstNameOr(lead: Pick<AcqProspect, 'contact_name'>, fallback: s
 }
 
 /** Merge a variant subject. `{{first_name}}` degrades to the business name. */
+/**
+ * THE ASK IS "WANT ONE BUILT FOR YOU", NEVER "CAN HE CALL YOU" (Sarah,
+ * 2026-08-25). The variant rows in acq_variants were seeded when the button
+ * collected a phone number, and migration 111 rewrites them, but a row is data
+ * and data drifts: any label or subject that still asks for a call is replaced
+ * here, at render, so no send can carry the old ask whatever the table says.
+ */
+export const BUILD_CTA_LABEL = 'YES, BUILD MINE FREE';
+export const BUILD_SUBJECT = 'Want an AI receptionist built for {{business_name}}? It is free';
+const ASKS_FOR_A_CALL = /\bcall\b/i;
+export function ctaLabelFor(label: string | null | undefined): string {
+  const l = (label ?? '').trim();
+  return !l || ASKS_FOR_A_CALL.test(l) ? BUILD_CTA_LABEL : l;
+}
+
 export function renderSubject(variant: AcqVariant, lead: AcqProspect): string {
-  return variant.subject
+  const raw = ASKS_FOR_A_CALL.test(variant.subject) ? BUILD_SUBJECT : variant.subject;
+  return raw
     .replace(/\{\{\s*first_name\s*\}\}/gi, firstNameOr(lead, shortBusiness(lead.business_name)))
     .replace(/\{\{\s*business_name\s*\}\}/gi, shortBusiness(lead.business_name))
     .slice(0, 160);
@@ -199,7 +215,7 @@ export function buildCampaignEmail(args: {
 
   const business = shortBusiness(lead.business_name);
   const greeting = greetingFor(lead);
-  const cta = { label: variant.cta_label, url: permissionUrl(lead, step, variant.key, CTA_DOOR) };
+  const cta = { label: ctaLabelFor(variant.cta_label), url: permissionUrl(lead, step, variant.key, CTA_DOOR) };
   const secondary = { label: SECONDARY_LABEL, url: permissionUrl(lead, step, variant.key, 'talking-website') };
 
   // The personalized variant only fires when we genuinely hold two independent
@@ -245,6 +261,23 @@ export function buildCampaignEmail(args: {
  * numbers came from their listing, so it is false for every plain send even
  * though the arithmetic underneath is identical.
  */
+/**
+ * THE BLANK MACHINE (Sarah, 2026-08-25). No estimate is printed in any cold
+ * email any more: the guessed job value was wrong often enough to cost the
+ * argument ("Dolphin Pools, $250 a job"). The machine ships empty, and the
+ * reader puts three numbers in on the live one. `machineFor` with an estimate
+ * stays for the admin preview of the old personalized layout.
+ */
+function blankMachineFor(lead: AcqProspect, business: string): string {
+  return recoveryMachineBlock({
+    blank: true,
+    business,
+    personalized: false,
+    liveUrl: `${SITE.url}/mustard?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}`,
+    escape,
+  });
+}
+
 function machineFor(lead: AcqProspect, est: Estimate, business: string, personalized: boolean): string {
   return recoveryMachineBlock({
     est,
@@ -313,10 +346,9 @@ function emailPersonalized(lead: AcqProspect, est: Estimate, business: string): 
     p(
       `I built an AI receptionist named <strong>Mr. Mustard</strong> that answers, qualifies and books customers for service businesses. Before I pitch you anything, here is the only reason it would matter to you.`,
     ) +
-    machineFor(lead, est, business, true) +
-    machineAssumptions(est, escape) +
+    blankMachineFor(lead, business) +
     p(
-      `Rather than argue about the number, I would rather you hear what he does with those calls. He can pretend he is the receptionist for <strong>${escape(business)}</strong>, so you can test him on your own work.`,
+      `Put your own three numbers in; I would rather you see it than take my word for it. Then hear what he does with those calls: he can pretend he is the receptionist for <strong>${escape(business)}</strong>, so you can test him on your own work.`,
     ) +
     ranchLineBlock(business) +
     buildItAsk()
@@ -381,14 +413,13 @@ export const BODY_KEYS = Object.keys(BODIES).concat('personalized');
  * conversation we get.
  */
 function email1(business: string, lead: AcqProspect): string {
-  const est = estimateFor(lead);
   return (
     p('Slightly unusual question.') +
     p(
       `I built an AI receptionist named <strong>Mr. Mustard</strong> that answers, qualifies and books customers for service businesses. Before I pitch you anything, here is the only reason it would matter to you.`,
     ) +
-    machineFor(lead, est, business, false) +
-    p('Change those three numbers to yours and the display moves. Most owners find out they are wrong about the first one.') +
+    blankMachineFor(lead, business) +
+    p('Three numbers you already know, thirty seconds, and it is your business on the display instead of a stranger\'s guess.') +
     p(`Rather than send you a sales pitch, I would rather you hear what he does with the calls that fall through.`) +
     ranchLineBlock(business) +
     buildItAsk()

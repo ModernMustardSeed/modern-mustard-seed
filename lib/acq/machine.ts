@@ -49,7 +49,15 @@ const SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Helve
 const usd = (cents: number): string => '$' + Math.round(cents / 100).toLocaleString('en-US');
 
 export function recoveryMachineBlock(args: {
-  est: Estimate;
+  /** Their inputs, when we have them. Omitted in blank mode. */
+  est?: Estimate;
+  /**
+   * BLANK MODE (Sarah, 2026-08-25: "the ai guesstimator is remarkably wrong,
+   * Dolphin Pools came back at $250 a job"). No figure is printed anywhere.
+   * The slots read as empty, the display invites them, and every key opens the
+   * live machine with nothing pre-filled but the digit they pressed.
+   */
+  blank?: boolean;
   business: string;
   /** True only when the inputs came from this business's own public record. */
   personalized: boolean;
@@ -57,7 +65,9 @@ export function recoveryMachineBlock(args: {
   liveUrl: string;
   escape: (s: string) => string;
 }): string {
-  const { est, business, personalized, liveUrl, escape: esc } = args;
+  const { business, personalized, liveUrl, escape: esc } = args;
+  const blank = args.blank === true || !args.est;
+  const est: Estimate | null = blank ? null : (args.est as Estimate);
 
   /**
    * EVERY KEY CARRIES ITS DIGIT.
@@ -73,11 +83,9 @@ export function recoveryMachineBlock(args: {
    * already won.
    */
   const machineUrl = (typed?: string): string => {
-    const q = new URLSearchParams({
-      m: String(est.missedPerWeek),
-      c: String(est.closeRatePct),
-      t: String(Math.round(est.avgJobValue)),
-    });
+    const q = new URLSearchParams(
+      est ? { m: String(est.missedPerWeek), c: String(est.closeRatePct), t: String(Math.round(est.avgJobValue)) } : { blank: '1' },
+    );
     if (typed) q.set('k', typed);
     return liveUrl + (liveUrl.includes('?') ? '&' : '?') + q.toString();
   };
@@ -180,8 +188,8 @@ export function recoveryMachineBlock(args: {
     '<td style="font-family:' + MONO + ';font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:' + DIM + '">Leaking Every Month</td>' +
     '<td align="right" style="font-family:' + MONO + ';font-size:9px;font-weight:bold;letter-spacing:1.6px;text-transform:uppercase;color:' + RED + ';white-space:nowrap">&#9679; Live</td>' +
     '</tr></table>' +
-    '<div style="text-align:right;font-family:' + MONO + ';font-size:38px;font-weight:bold;color:' + DIGIT + ';line-height:1.15;padding-top:6px">' + usd(est.monthlyLeakCents) + '</div>' +
-    '<div style="text-align:right;font-family:' + MONO + ';font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:' + DIM + ';padding-top:3px">' + usd(est.annualLeakCents) + ' a year</div>' +
+    '<div style="text-align:right;font-family:' + MONO + ';font-size:38px;font-weight:bold;color:' + DIGIT + ';line-height:1.15;padding-top:6px">' + (est ? usd(est.monthlyLeakCents) : '$ _ _ _ _') + '</div>' +
+    '<div style="text-align:right;font-family:' + MONO + ';font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:' + DIM + ';padding-top:3px">' + (est ? usd(est.annualLeakCents) + ' a year' : 'your numbers, not ours') + '</div>' +
     '</td></tr></table>';
 
   // The false branch names nobody on purpose. A possessive built from a company
@@ -193,9 +201,11 @@ export function recoveryMachineBlock(args: {
   // are links. Tapping one opens the live machine carrying these three numbers
   // and the digit that was pressed. The label says that, because a reader who
   // taps four keys waiting for the total to move decides the email is broken.
-  const label = personalized
-    ? 'Worked back from what ' + esc(business) + ' shows in public. Every guess is printed under the machine. Tap any key to open it and change them.'
-    : 'We could not see your numbers, so these three are ours. Tap any key to open the live one and put yours in.';
+  const label = blank
+    ? 'Nothing on this one is guessed. Tap any key to open the live machine, put in the three numbers you already know, and the display shows what the calls you miss are costing ' + esc(business) + '.'
+    : personalized
+      ? 'Worked back from what ' + esc(business) + ' shows in public. Every guess is printed under the machine. Tap any key to open it and change them.'
+      : 'We could not see your numbers, so these three are ours. Tap any key to open the live one and put yours in.';
 
   return (
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:22px 0 10px"><tr>' +
@@ -207,9 +217,9 @@ export function recoveryMachineBlock(args: {
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + CREAM + '" style="background:' + CREAM + ';border:2px solid ' + INK + ';border-radius:9px;margin-top:10px">' +
     '<tr><td style="padding:9px">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-    slot('Calls You Miss A Week', 'Rings out, voicemail, after hours', String(est.missedPerWeek), true) +
-    slot('Would Have Hired You', 'Of the people you actually talk to', est.closeRatePct + '%', false) +
-    slot('Average Job Value', 'What one is worth to you', '$' + est.avgJobValue.toLocaleString('en-US'), false) +
+    slot('Calls You Miss A Week', 'Rings out, voicemail, after hours', est ? String(est.missedPerWeek) : '_ _', true) +
+    slot('Would Have Hired You', 'Of the people you actually talk to', est ? est.closeRatePct + '%' : '_ _ %', false) +
+    slot('Average Job Value', 'What one is worth to you', est ? '$' + est.avgJobValue.toLocaleString('en-US') : '$ _ _ _', false) +
     '</table>' +
     keypad +
     '</td></tr></table>' +

@@ -408,7 +408,7 @@ export function ReachOutDeck({
             value={siteTemplateKey}
             onChange={setSiteTemplateKey}
             compact
-            className="bg-white border-2 border-[#1a1815]/20 rounded-lg px-2 py-1.5 font-oswald uppercase tracking-[0.06em] text-[11px] text-[#1a1815]/75 outline-none focus:border-[#b58a2a] hover:border-[#1a1815] max-w-[220px]"
+            className="bg-white border-2 border-[#1a1815]/20 rounded-lg px-2 py-1.5 font-oswald uppercase tracking-[0.06em] text-[11px] text-[#1a1815]/75 outline-none focus:border-[#F5B700] hover:border-[#1a1815] max-w-[220px]"
           />
         )}
 
@@ -490,7 +490,7 @@ export function ReachOutDeck({
 
         <button
           onClick={() => setDripOpen(true)}
-          className={`${chip} ${drip?.status === 'active' ? 'bg-[#b58a2a]/15 text-[#7a5c1a] border-[#b58a2a]' : 'bg-white text-[#1a1815]/75 border-[#1a1815]/30'} hover:border-[#1a1815] hover:-translate-y-0.5`}
+          className={`${chip} ${drip?.status === 'active' ? 'bg-[#F5B700]/25 text-[#1a1815] border-[#1a1815]' : 'bg-white text-[#1a1815]/75 border-[#1a1815]/30'} hover:border-[#1a1815] hover:-translate-y-0.5`}
           title="See every email the drip will send, dated, and start it by sending the first one"
         >
           {dripChipLabel(drip, dripLength)}

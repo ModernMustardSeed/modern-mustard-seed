@@ -1122,9 +1122,13 @@ test('emails: every keypad key carries its digit and the numbers on the display'
 
   for (const [, url, face] of keys) {
     const q = new URL(url).searchParams;
+    // Since 2026-08-25 the email machine ships BLANK (Sarah: the guessed job
+    // value was wrong often enough to lose the argument), so no key carries a
+    // number; each carries only the blank flag and its own digit.
     for (const p of ['m', 'c', 't']) {
-      assert.ok(q.get(p), `the "${face}" key must carry ${p} or the landing page shows house numbers`);
+      assert.equal(q.get(p), null, `the "${face}" key must not carry a guessed ${p}`);
     }
+    assert.equal(q.get('blank'), '1', `the "${face}" key opens the live machine blank`);
     if (/^[0-9]$/.test(face)) assert.equal(q.get('k'), face, `the "${face}" key must carry its own digit`);
     if (face === 'C') assert.equal(q.get('k'), 'C', 'clear must clear');
   }
@@ -1671,7 +1675,7 @@ test('personalization: a thin prospect on the personalized variant gets the plai
   assert.match(built!.html, /Slightly unusual question/, 'falls back to the plain email');
   // The machine still ships, because it is the hook. What it must never do is
   // claim the numbers on it were read off a business we could not see.
-  assert.match(built!.html, /these three are ours/, 'the machine admits whose numbers these are');
+  assert.match(built!.html, /Nothing on this one is guessed/, 'the machine ships blank and says so');
   assert.ok(!built!.html.includes('shows in public'), 'no invented research');
   assert.ok(!built!.html.includes('worked back from your'), 'no invented citation');
 });
