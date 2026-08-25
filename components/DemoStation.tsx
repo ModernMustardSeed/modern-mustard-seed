@@ -206,9 +206,8 @@ export default function DemoStation() {
       {phase === 'error' && error ? <p className="font-body text-[13px] text-[#C4160B] text-center mt-3">{error}</p> : null}
       <p className="font-body text-[12px] text-[#161616]/70 text-center mt-3.5 leading-relaxed">
         No card, no meeting, no strings. If you love them:{' '}
-        the website or voice agent from {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, the command center from{' '}
-        {formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo, or all three as The Talking Website for{' '}
-        {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo with the command center free. Month to month.
+        the website or the voice agent from {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, or both together as The
+        Talking Website for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, which is less than the two apart. Month to month.
       </p>
     </form>
   );

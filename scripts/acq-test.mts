@@ -45,6 +45,7 @@ import { FORGE_PIECES } from '../lib/voice-forge-suite';
 import { pickVariant } from '../lib/acq/settings';
 import { normalizeObjection } from '../lib/acq/stats';
 import { addBusinessDays, shouldStopFollowup } from '../lib/acq/runner';
+import { suiteState, type AcqSuiteLead } from '../lib/acq/suite';
 import { cloudflareEmails, extractPhone, extractHours, extractServiceArea, parseOsmHours, matchesTrade, normalizePhone, decodeObfuscated, hostOf } from '../lib/acq/source';
 import { tradeOf, buildBriefing, firstMessage, acquisitionTools } from '../lib/acq/call';
 import { authorize, nextRampStep, backOffStep, tierFor } from '../lib/acq/governor';
@@ -1641,6 +1642,62 @@ test('command center: the bundle still clears the price ladder without it', () =
 test('command center: Mr. Mustard cannot forge one, and asking for one is not silently dropped into a build', () => {
   assert.ok(!('command_center' in FORGE_PIECES), 'it is not a forgeable piece');
   assert.deepEqual(Object.values(FORGE_PIECES).sort(), ['site', 'voice']);
+});
+
+/**
+ * 2026-08-25. Sarah found a live demo suite still telling a prospect the
+ * command center was free and to call Mr. Mustard to claim it. These pin the
+ * two halves of what she asked for: the command center is never shown, and a
+ * prospect who wants another piece gets a button, not a phone number.
+ */
+test('command center: the board never marks one as shown to a prospect, in any shape', () => {
+  const base: AcqSuiteLead = {
+    id: 'lead-1',
+    business_name: 'ABC Heating',
+    acq_stage: 'sent',
+    client_status: null,
+    unsubscribed_at: null,
+    demo_url: 'https://modernmustardseed.com/demo/voice/1',
+    site_demo_url: 'https://modernmustardseed.com/demo/site/1',
+    site_demo_status: 'ready',
+    // A lead forged before 2026-08-22 still carries one of these. It still
+    // resolves for anyone holding the link; it is simply never pointed at.
+    os_demo_url: 'https://modernmustardseed.com/demo/os/1',
+    hub_demo_url: 'https://modernmustardseed.com/demo/hub/1',
+    suite_film_status: 'ready',
+    demo_emailed_at: null,
+  } as unknown as AcqSuiteLead;
+
+  for (const shape of [
+    base,
+    { ...base, site_demo_status: 'building' },
+    { ...base, site_demo_url: null, site_demo_status: null },
+    { ...base, demo_url: null },
+  ]) {
+    assert.equal(suiteState(shape as AcqSuiteLead).osShown, false, 'never shown');
+  }
+
+  // And it is never counted as a piece the prospect can open.
+  const voiceOnly = suiteState({ ...base, site_demo_url: null, site_demo_status: null, suite_film_status: null } as AcqSuiteLead);
+  assert.equal(voiceOnly.pieces, 1, 'the agent, alone');
+});
+
+test('command center: no email names it even when the lead has one', () => {
+  const withOs = lead();
+  (withOs as Record<string, unknown>).os_demo_url = 'https://modernmustardseed.com/demo/os/1';
+  (withOs as Record<string, unknown>).os_demo_status = 'ready';
+  const built = buildDemoEmail({
+    lead: withOs,
+    demoUrl: 'https://modernmustardseed.com/demo/hub/x',
+    checkoutUrl: 'https://modernmustardseed.com/demo/hub/x',
+    calendarUrl: 'https://modernmustardseed.com/book',
+    offerLine: 'From $397 a month',
+    fromName: 'Mr. Mustard',
+    fromEmail: 'm@x.com',
+    replyTo: 'm@x.com',
+  });
+  assert.ok(built);
+  assert.ok(!/command cent|back office/i.test(built!.html), 'no command center, no back office');
 });
 
 test('command center: no suite email names it', () => {

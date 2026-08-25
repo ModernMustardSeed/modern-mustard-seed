@@ -260,11 +260,11 @@ export async function POST(req: Request) {
         replyTo: 'sarah@modernmustardseed.com',
         subject: `${first}, ${possessive(business)} demos are being forged right now`,
         html: clientEmail({
-          preheader: 'Your voice agent and command center are ready now; the rest is with you within the hour.',
+          preheader: 'Your voice agent is ready now; your website is with you within the hour.',
           eyebrow: 'YOUR DEMO SUITE',
           greeting: `${first}, it is happening.`,
           body:
-            `<p>Your voice agent and your command center are <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template, and then we record you a short walkthrough of the finished suite. We are working on it and will have it to you <strong>within the hour</strong>, at the same hub, on its own.</p>` +
+            `<p>Your voice agent is <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template, and then we record you a short walkthrough of the finished suite. We are working on it and will have it to you <strong>within the hour</strong>, at the same hub, on its own.</p>` +
             demoFilmCard({
               film: 'demo-welcome',
               href: lead.hub_demo_url,

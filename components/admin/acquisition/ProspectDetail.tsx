@@ -61,6 +61,7 @@ type Suite = {
   siteUrl: string | null;
   siteStatus: string | null;
   osUrl: string | null;
+  /** Always false: the prospect never sees a command center. */
   osShown: boolean;
   hubUrl: string | null;
   filmStatus: string | null;
@@ -412,7 +413,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                   className={btnGhost}
                   disabled={busy !== ''}
                   onClick={() => void act('forge')}
-                  title="Voice agent and command center only, no website. The suite card above builds all of it."
+                  title="Voice agent only, no website. The suite card above builds both pieces."
                 >
                   {busy === 'forge' ? 'Forging...' : 'Forge the instant pieces'}
                 </button>
@@ -568,9 +569,9 @@ function dotFor(type: string): string {
 /**
  * THEIR SUITE, on one card.
  *
- * Four things get built for a business and they land at different speeds, so
+ * The pieces land at different speeds, so
  * this shows the truth about each one rather than a single "forged" badge: the
- * voice agent and the command center are instant, the website takes the local
+ * voice agent is instant, the website takes the local
  * forge twenty to forty minutes, and the walkthrough film is cut after it.
  *
  * Every piece that is finished is a link you can open right now. Every piece
@@ -652,19 +653,25 @@ function SuitePanel({
               : null,
           'Not queued yet. The forge takes twenty to forty minutes.',
         )}
+        {/*
+          YOURS, NOT THEIRS. The command center is off the suite and out of the
+          offer (Sarah, 2026-08-22 and 2026-08-25). It is sold on its own and
+          built by hand, so this row never links the prospect to one and never
+          reads as a piece they are missing.
+        */}
         {piece(
           'Command center',
-          s?.osShown ? s.osUrl : null,
-          s?.osUrl && !s.osShown
-            ? 'Built, but hidden from them until the website exists. It is free with the website and the voice agent together, not with one of them, so their suite page and their email both leave it out. Forging the website turns it on by itself.'
+          null,
+          s?.osUrl
+            ? 'Built by hand and yours only. It is not part of the suite or the offer, so their page has no door for it and their email never names it.'
             : null,
-          'Not forged yet. Instant, and it rides free once the website and the voice agent are both there.',
+          'Not part of the suite. Sold on its own, built by hand from the Forge OS button.',
         )}
         {piece(
           'Walkthrough film',
           null,
           s?.filmStatus === 'ready'
-            ? 'Cut from their own site, agent and command center. It plays on their suite page.'
+            ? 'Cut from their own site and their own agent. It plays on their suite page.'
             : s?.filmStatus === 'queued' || s?.filmStatus === 'filming'
               ? 'Being cut now, off their own suite.'
               : null,
@@ -731,13 +738,6 @@ function SuitePanel({
             {busy === 'forge-suite' ? 'Queuing…' : '🌐 Forge their website'}
           </button>
         )}
-        {!building && !s?.siteUrl && s?.osUrl && !s?.osShown && (
-          <p className="-mt-1 text-[11px] leading-snug text-[#161616]/55">
-            Their command center is already built and sitting hidden. The website is the only thing standing between
-            them and seeing it, because it is free with the pair and free with neither one alone.
-          </p>
-        )}
-
         {(failed || (s?.siteUrl && !building)) && (
           <button className={btnGhost} disabled={busy !== ''} onClick={() => void act('reforge-site', { designTier, talkingWebsite })}>
             {busy === 'reforge-site' ? 'Queuing…' : failed ? 'Retry the website build' : 'Build their website again'}

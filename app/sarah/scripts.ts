@@ -191,7 +191,7 @@ const SALES_DESK: PrompterScript[] = [
     title: 'What I Just Sent You',
     hook: 'My studio built something for your business this week, and I did not want it to land in your inbox without a face attached.',
     directorNote:
-      'This is the standard video on every demo email, so it is the first real impression of you. Warm and unhurried, like leaving a voicemail for a neighbor. Keep it mostly your face, graphics minimal, no screen share. The command center line is the new value, so let it land. The close is permission, never pressure, and the first five seconds carry everything.',
+      'This is the standard video on every demo email, so it is the first real impression of you. Warm and unhurried, like leaving a voicemail for a neighbor. Keep it mostly your face, graphics minimal, no screen share. The "built as one thing" line is the value, so let it land. The close is permission, never pressure, and the first five seconds carry everything.',
     sections: [
       {
         heading: 'Hook',
@@ -203,8 +203,8 @@ const SALES_DESK: PrompterScript[] = [
         heading: 'What I Sent You',
         paragraphs: [
           'Right below this video is a working demo. Not a slideshow, not a pitch deck. A real thing you can click and call. Depending on what fit your business, it might be a new website, a voice agent that already knows your services and your hours, or both.',
-          '(Optional light graphic as she names them: three clean labels appear, WEBSITE, VOICE AGENT, COMMAND CENTER. Keep it simple, this stays mostly her face.)',
-          'And when you take the website and the voice agent together, one more piece rides along free. A command center. One screen where you can see your analytics, read the transcript of every call your voice agent takes, and watch every new lead land, all from your phone.',
+          '(Optional light graphic as she names them: two clean labels appear, WEBSITE and VOICE AGENT. Keep it simple, this stays mostly her face.)',
+          'And when you take the website and the voice agent together, they are built as one thing off one brain, so the answer somebody reads on the page is the answer they hear at midnight. That costs less than the two apart.',
         ],
       },
       {
@@ -782,145 +782,16 @@ const META_ADS: PrompterScript[] = [
     ],
   },
 
-  /* ---- Websites. The command center came off the offer 2026-08-22: it is
-     sold on its own, built by hand, and never pitched alongside anything. ---- */
-  {
-    id: 'ad-cc-one-screen',
-    kind: 'ad',
-    episode: 'Ad 10',
-    session: 'Meta · Command Center 9:16',
-    publish: 'Command Center · cold',
-    pillar: 'ADS',
-    title: 'One Screen, Whole Business',
-    hook: 'Most owners run their whole business from seven different places. Texts here, voicemails there, a sticky note on the monitor.',
-    directorNote:
-      'Warm, relieved on their behalf, like you are handing them a solution to a headache they gave up on. The "free, included" line is the moment; say it plainly, no salesy lift. Let the calm land after the chaos of the first beat.',
-    sections: [
-      {
-        heading: 'Hook',
-        paragraphs: [
-          'Most owners run their whole business from seven different places. A text here, a voicemail there, a sticky note on the monitor, a lead they swear they will call back.',
-        ],
-      },
-      {
-        heading: 'The Fix',
-        paragraphs: [
-          'So I built one screen that catches all of it. Every call, every message, every new lead, every booking, in one place you can check from your phone out in the truck.',
-          '(Mr. Mustard frantically juggles a phone, a notepad, and a calendar, then sweeps them all into one glowing dashboard that settles and goes calm.)',
-        ],
-      },
-      {
-        heading: 'The Offer + CTA',
-        paragraphs: [
-          'And here is the part I like. Take the website and the voice agent together and they are built as one thing, off one brain, for less than the two apart.',
-          '(Screen record of the command center, real leads pinging in live. Text on screen: FREE WITH YOUR BUILD.)',
-          'One screen for your whole front door. Want to see it work? The link is below. I am Sarah, Modern Mustard Seed.',
-        ],
-      },
-    ],
-  },
-  {
-    id: 'ad-cc-free-part',
-    kind: 'ad',
-    episode: 'Ad 11',
-    session: 'Meta · Command Center 9:16',
-    publish: 'Command Center · curiosity',
-    pillar: 'ADS',
-    title: 'The Free Part Nobody Believes',
-    hook: 'When I build your website, I include something most agencies quietly charge you for every single month.',
-    directorNote:
-      'Playful and a little proud, like you are getting away with being generous. Smile on the price-tag flip. The whole ad is a pattern interrupt on "everything has a monthly fee," so let the word FREE breathe.',
-    sections: [
-      {
-        heading: 'Hook',
-        paragraphs: [
-          'When I build your website, I include something most agencies quietly charge you for every single month. And honestly, people do not believe it is free.',
-        ],
-      },
-      {
-        heading: 'What It Is',
-        paragraphs: [
-          'It is a command center. One dashboard where every lead, call, and message your new site brings in lands in a single place, so nothing slips through the cracks.',
-          '(Mr. Mustard holds a big price tag; it flips over to read FREE. He shrugs, delighted.)',
-        ],
-      },
-      {
-        heading: 'The Why + CTA',
-        paragraphs: [
-          'I include it because a website that just sits there is a brochure. A website wired into a command center is a business. I would rather build you the second kind.',
-          'Free with your build, no catch, no monthly. Come see how it works. The link is below.',
-        ],
-      },
-    ],
-  },
-  {
-    id: 'ad-cc-seven-apps',
-    kind: 'ad',
-    episode: 'Ad 12',
-    session: 'Meta · Command Center 9:16',
-    publish: 'Command Center · pain',
-    pillar: 'ADS',
-    title: 'Seven Apps Down to One',
-    hook: 'Quick question. How many different apps does it take to run your business right now? Be honest.',
-    directorNote:
-      'Conversational, a knowing smile, because everyone is guilty of this. Keep the pace crisp through the app pile-up beat, then exhale on the fix. You are naming a mess they feel every day.',
-    sections: [
-      {
-        heading: 'Hook',
-        paragraphs: [
-          'Quick question. How many different apps does it take to run your business right now? Be honest.',
-        ],
-      },
-      {
-        heading: 'The Mess',
-        paragraphs: [
-          'The calendar app, the texting app, the email, the voicemail you never check, the notebook, the other notebook. Every one of them is a place a customer can fall through.',
-          '(Rapid cuts of app icons stacking into a chaotic pile. Mr. Mustard gets buried under them, then pops out the top.)',
-        ],
-      },
-      {
-        heading: 'The Fix + CTA',
-        paragraphs: [
-          'So I put all of it on one screen. Leads, calls, messages, bookings, one place, on your phone. That one is built by hand and we scope it first, so ask me about it when the front door is handled.',
-          'Fewer apps, nothing dropped. Let me show you. The link is below.',
-        ],
-      },
-    ],
-  },
-  {
-    id: 'ad-cc-front-door',
-    kind: 'ad',
-    episode: 'Ad 13',
-    session: 'Meta · Command Center 9:16',
-    publish: 'Command Center · peace of mind',
-    pillar: 'ADS',
-    title: 'Your Front Door, On Your Phone',
-    hook: 'There is a specific kind of peace that comes from watching your business work while you are doing something else.',
-    directorNote:
-      'Soft, unhurried, aspirational. This one sells a feeling, not a feature. Deliver the opening line slowly and mean it. The lawn-chair beat should feel earned, not lazy.',
-    sections: [
-      {
-        heading: 'Hook',
-        paragraphs: [
-          'There is a specific kind of peace that comes from watching your business work while you are doing something else.',
-        ],
-      },
-      {
-        heading: 'The Center',
-        paragraphs: [
-          'This is your command center. Every lead your website captures, every call your voice agent answers, every message, showing up live, right here, while you are at your kid’s game.',
-          '(Mr. Mustard relaxes in a lawn chair, phone in hand. A gentle notification dings; he smiles as a new lead slides onto the screen.)',
-        ],
-      },
-      {
-        heading: 'The Offer + CTA',
-        paragraphs: [
-          'You just watch the front door fill up.',
-          'Your whole business, on one screen, in your pocket. See it below. I am Sarah, Modern Mustard Seed.',
-        ],
-      },
-    ],
-  },
+  /* ---- THE FOUR COMMAND CENTER ADS WERE DELETED HERE (Sarah, 2026-08-25:
+     "I am not pushing command center anywhere"). They were ad-cc-one-screen,
+     ad-cc-free-part, ad-cc-seven-apps and ad-cc-front-door, and every one of
+     them sold it as the free thing that rides along with a build, which is a
+     rule we retired on 2026-08-22. It is still sold on its own page at its own
+     price. It is simply never advertised, never bundled, never suggested.
+     `git show <this commit>^:app/sarah/scripts.ts` has them if they come back.
+     ---- */
+
+  /* ---- Websites ---- */
   {
     id: 'ad-web-that-works',
     kind: 'ad',
@@ -1017,7 +888,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Offer + CTA',
         paragraphs: [
-          'And take the voice agent with it and the command center is free, so it is not just a pretty site. It is a business you can run from your phone.',
+          'And take the voice agent with it and the site answers its own phone, for less than buying the two apart. Not just a pretty site: a front door that never misses anybody.',
           'A finished website, this week, not someday. The link is below.',
         ],
       },
@@ -1597,39 +1468,10 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       },
     ],
   },
-  {
-    id: 'short-command-center',
-    kind: 'short',
-    episode: 'Short',
-    session: 'Shorts Bank · Real Sauce',
-    publish: 'Use anytime',
-    pillar: 'SYSTEMS',
-    title: 'The Free Thing Worth the Most',
-    hook: 'The single most valuable thing I hand a client is the one I do not charge for.',
-    directorNote:
-      'Plain and a little proud. Show the command center screen with real-feeling activity landing on it. The generosity is the hook, so do not undersell it.',
-    sections: [
-      {
-        heading: 'Hook',
-        paragraphs: [
-          'The single most valuable thing I hand a business is the one thing I do not charge for. It is a command center.',
-        ],
-      },
-      {
-        heading: 'What It Is',
-        paragraphs: [
-          'One screen. Every call your voice agent answers, transcribed. Every lead your website brings in. Every message, your reviews, your traffic, your money, all in one place you can check from your phone in the truck.',
-          '(Screen record: a live dashboard, a new lead sliding in, a call transcript opening, all on a phone.)',
-        ],
-      },
-      {
-        heading: 'Why Free',
-        paragraphs: [
-          'Here is why I care about it. A website that just sits there is a brochure. A website wired into a back office is a business you can actually run. Fewer apps, nothing falls through the cracks, and your whole front door fits in your pocket. I build those one at a time, by hand, around whatever you already use.',
-        ],
-      },
-    ],
-  },
+  /* ---- short-command-center ("The Free Thing Worth the Most") was deleted
+     here on 2026-08-25 with the four command center ads above: the command
+     center is not free with anything any more and is not pushed anywhere. ---- */
+
   {
     id: 'ad-watch-how-fast',
     kind: 'ad',
@@ -1678,7 +1520,7 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       {
         heading: 'Hook',
         paragraphs: [
-          'Everything you are about to see, we built ourselves. The voice agent. The website. The command center. Even the studio this video was filmed in.',
+          'Everything you are about to see, we built ourselves. The voice agent. The website. The back office. Even the studio this video was filmed in.',
         ],
       },
       {

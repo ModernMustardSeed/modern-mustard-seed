@@ -41,10 +41,10 @@ function suiteState(l) {
   const siteReady = l.site_demo_status === 'ready' && !!l.site_demo_url;
   const siteBusy = l.site_demo_status === 'queued' || l.site_demo_status === 'building';
   const siteFailed = l.site_demo_status === 'failed';
-  // Free with the website and the voice agent together, and with neither alone.
-  const osShown = !!l.os_demo_url && !!l.demo_url && (siteReady || siteBusy);
+  // Never shown to a prospect: the command center is off the suite entirely.
+  const osShown = false;
   const pieces =
-    (l.demo_url ? 1 : 0) + (siteReady ? 1 : 0) + (osShown ? 1 : 0) + (l.suite_film_status === 'ready' ? 1 : 0);
+    (l.demo_url ? 1 : 0) + (siteReady ? 1 : 0) + (l.suite_film_status === 'ready' ? 1 : 0);
   let stage;
   if (l.unsubscribed_at || ['client', 'lost'].includes(l.acq_stage) || l.client_status === 'client') stage = 'closed';
   else if (siteBusy) stage = 'forging';
@@ -191,7 +191,7 @@ const builtNoEmail = leads.filter((l) => !l.email && suiteState(l).stage === 'bu
 console.log('Built suites with NO email address (phone only, cannot be mailed):', builtNoEmail, 'of', counts.built);
 const hiddenOs = leads.filter((l) => l.os_demo_url && !suiteState(l).osShown).length;
 const aloneAgent = leads.filter((l) => l.demo_url && suiteState(l).pieces === 1).length;
-console.log('Command centers built but HIDDEN (no website, so not free):', hiddenOs);
+console.log('Command centers built by hand, never shown to a prospect:', hiddenOs);
 console.log('Voice agents standing alone on their suite page:', aloneAgent);
 console.log('\nSAMPLES');
 for (const [k, v] of Object.entries(sample)) {

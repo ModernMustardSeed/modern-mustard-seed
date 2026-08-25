@@ -141,8 +141,8 @@ export default function WebsitesPage() {
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Elite custom design, funnels and SEO baked in, your domain and hosting handled. It captures the lead
-                and follows up while you sleep, and it answers the phone too the day you add the voice agent, which is
-                also the day your command center goes free. From {formatUsd(site.monthlyCents)}/mo, and you own every line.
+                and follows up while you sleep, and it answers the phone too the day you add the voice agent. From{' '}
+                {formatUsd(site.monthlyCents)}/mo, and you own every line.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -257,7 +257,7 @@ export default function WebsitesPage() {
                   'Add it to the site we build you',
                   'Or to the site you already have',
                   'Keeps the number you already have',
-                  'Take both and the command center is free',
+                  'Take both and they cost less than the two apart',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#FBF6EA]/85">
                     <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#F5B700] shrink-0" aria-hidden />
@@ -309,7 +309,7 @@ export default function WebsitesPage() {
               </h2>
               <p className="font-body text-[15px] text-[#161616]/75 mt-4 leading-relaxed">
                 A real online store, not a plugin bolted onto a template. Full catalog, cart, and secure checkout,
-                inventory and shipping wired up, and the command center tracking every order the moment it lands.
+                inventory and shipping wired up, and an orders board that shows every sale the moment it lands.
                 Designed to look like the brand, built to actually sell.
               </p>
               <ul className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-3">
@@ -317,7 +317,7 @@ export default function WebsitesPage() {
                   'Full product catalog + collections',
                   'Cart + secure checkout',
                   'Inventory, shipping, and taxes',
-                  'Orders wired to your command center',
+                  'An orders board you actually run it from',
                   'Discounts, email, abandoned-cart',
                   'You own the store and the data',
                 ].map((f) => (
@@ -361,7 +361,7 @@ export default function WebsitesPage() {
                 <div className="relative">
                   <Image
                     src={STORE.img}
-                    alt="Cross + Covenant, a full online store designed and built by Modern Mustard Seed, with catalog, cart, and checkout wired to the command center"
+                    alt="Cross + Covenant, a full online store designed and built by Modern Mustard Seed, with catalog, cart, and checkout wired to its orders board"
                     width={1600}
                     height={1000}
                     sizes="(min-width: 1024px) 50vw, 100vw"
@@ -369,12 +369,12 @@ export default function WebsitesPage() {
                   />
                   <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-3.5 py-2 shadow-[3px_3px_0_0_#F5B700]">
                     <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#C4160B] font-bold">New order</p>
-                    <p className="font-sans text-[11.5px] font-bold text-[#161616] mt-0.5 leading-snug">Filed to your command center</p>
+                    <p className="font-sans text-[11.5px] font-bold text-[#161616] mt-0.5 leading-snug">Filed to your orders board</p>
                   </div>
                 </div>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-3">
-                A real store we built for Cross + Covenant. 80+ pieces, cart to checkout, orders in the command center.
+                A real store we built for Cross + Covenant. 80+ pieces, cart to checkout, every order on one board.
               </p>
             </div>
           </div>
@@ -405,7 +405,7 @@ export default function WebsitesPage() {
               </p>
               <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
                 A custom site designed from scratch, funnels and SEO baked in. Your domain, hosting, and care all
-                included. Month to month, cancel anytime. Add the voice agent any time and the command center is free.
+                included. Month to month, cancel anytime. Add the voice agent any time and it answers the phone too.
               </p>
               <Link
                 href="/demos"
@@ -446,7 +446,7 @@ export default function WebsitesPage() {
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               ['1', 'Forge it free', 'Tell us your business and we design a real working demo site for you, in your hands within the hour. Tour it, poke around, no card.'],
-              ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the funnels and the command center, and put it on your domain by hand.'],
+              ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the funnels and the forms, and put it on your domain by hand.'],
               ['3', 'Own it, and grow', 'Live in about a week. You get the repo, the domain, and every account. Add the voice agent whenever you want it answering the phone.'],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">
@@ -501,7 +501,7 @@ export default function WebsitesPage() {
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Enter your business once and tour a real working site, designed from scratch for you, in your hands
               within the hour. Keep it for {formatUsd(site.monthlyCents)}/mo, or take the voice agent with it and the
-              command center is free.
+              pair costs less than the two apart.
             </p>
             <Link
               href="/demos"

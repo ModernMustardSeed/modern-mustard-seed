@@ -57,7 +57,7 @@ export default function RowForge({ id, business, email, suite, demoEmailedAt, on
   // A prospect who already has a voice agent and no website used to have no way
   // out of this control: everything was built, so the forge button was gone, and
   // the only path to a website was opening them. The website is also the thing
-  // that turns their free command center on, so it gets its own button.
+  // that lands last and takes the longest, so it gets its own button.
   const needsSite = built && !building && !suite?.siteUrl;
 
   const run = async (action: 'forge' | 'send-suite', done: string) => {
@@ -98,7 +98,7 @@ export default function RowForge({ id, business, email, suite, demoEmailedAt, on
           onClick={() => void run('forge', 'forged. The website is on the anvil.')}
           disabled={busy !== ''}
           className={`${btn} border-[#161616] bg-[#F5B700] text-[#161616] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5`}
-          title="Build their voice agent, their website and their command center."
+          title="Build their voice agent and their website."
         >
           {busy === 'forge' ? 'Forging…' : '⚒ Forge'}
         </button>
@@ -109,7 +109,7 @@ export default function RowForge({ id, business, email, suite, demoEmailedAt, on
           onClick={() => void run('forge', 'website queued. It is on the anvil now.')}
           disabled={busy !== ''}
           className={`${btn} border-[#161616] bg-[#F5B700] text-[#161616] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5`}
-          title="Queue their demo website. It also turns their command center on, which is free once the website and the voice agent are both there."
+          title="Queue their demo website. Twenty to forty minutes on your machine."
         >
           {busy === 'forge' ? 'Queuing…' : '🌐 Forge website'}
         </button>

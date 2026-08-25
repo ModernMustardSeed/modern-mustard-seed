@@ -21,7 +21,7 @@ const SAVE_MONTHLY = PAIR_MONTHLY - DEMO_BUNDLE.monthlyCents;
 
 export const metadata = buildMetadata({
   title: 'The Talking Website: a website that answers its own phone',
-  description: `Your website and your voice agent built as one thing, off one brain, so the answer a visitor reads is the exact answer a caller hears at midnight. Command center free. ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month. See yours built free.`,
+  description: `Your website and your voice agent built as one thing, off one brain, so the answer a visitor reads is the exact answer a caller hears at midnight. ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month. See yours built free.`,
   path: '/talking-website',
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
@@ -35,6 +35,12 @@ const STATS = [
   { figure: '78%', label: 'Already walked over one missed call', source: 'CallRail, 2025' },
 ];
 
+/**
+ * TWO PIECES. There was a third card here, the command center, priced "Free
+ * inside the bundle." Sarah took it off the offer on 2026-08-22 and repeated it
+ * on 2026-08-25: it is sold on its own and never suggested next to anything.
+ * The Talking Website is the site and the phone, off one brain. Nothing else.
+ */
 const PIECES = [
   {
     icon: '🌐',
@@ -47,12 +53,6 @@ const PIECES = [
     name: 'The voice agent',
     price: `${formatUsd(voice.setupCents)} + ${formatUsd(voice.monthlyCents)}/mo on its own`,
     desc: 'Answers your real number on ring one, around the clock. Qualifies the caller, books the job, and texts you the details before you have put your phone down.',
-  },
-  {
-    icon: '⚙',
-    name: 'The command center',
-    price: 'Free inside the bundle',
-    desc: 'Every call transcribed, your traffic and leads, customers, reviews, and money on one board. It is what makes the page and the phone one business instead of two tools.',
   },
 ];
 
@@ -105,7 +105,7 @@ function talkingWebsiteJsonLd() {
         serviceType:
           'Combined small-business website and AI voice agent built on one shared knowledge base',
         description:
-          'A website that answers its own phone. The website and the AI voice agent are built as one system off one brain, so the answer a visitor reads on the page is the same answer a caller hears at midnight. Includes custom website design, funnels, SEO and GEO, a 24/7 AI voice agent answering the number you already have, and the business command center free.',
+          'A website that answers its own phone. The website and the AI voice agent are built as one system off one brain, so the answer a visitor reads on the page is the same answer a caller hears at midnight. Includes custom website design, funnels, SEO and GEO, and a 24/7 AI voice agent answering the number you already have.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/talking-website`,
@@ -303,12 +303,12 @@ export default function TalkingWebsitePage() {
         {/* ── What is in it ── */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
-            What you get // Three pieces, one system
+            What you get // Two pieces, one system
           </p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             Everything it takes to stop losing the job.
           </h2>
-          <div className="grid md:grid-cols-3 gap-5 mt-10">
+          <div className="grid md:grid-cols-2 gap-5 mt-10">
             {PIECES.map((p) => (
               <div
                 key={p.name}
@@ -433,7 +433,7 @@ export default function TalkingWebsitePage() {
                   {formatUsd(SAVE_MONTHLY)} every month
                 </p>
                 <p className="font-body text-[12.5px] text-[#161616]/70 mt-3 leading-relaxed">
-                  Plus the command center on the house. We would rather you had the whole system than half of it.
+                  Built as one system rather than two tools. We would rather you had the whole thing than half of it.
                 </p>
               </div>
             </div>

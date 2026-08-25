@@ -484,7 +484,7 @@ export default function MustardLifeComic() {
               <PriceTag
                 name={P.os.name}
                 price={`${usd(P.os.setupCents)} + ${usd(P.os.monthlyCents)}/mo`}
-                note={`${P.os.blurb} Free when you take the website and the voice agent together.`}
+                note={P.os.blurb}
               />
               <PriceTag
                 name={P.bundle.name}

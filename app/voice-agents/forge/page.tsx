@@ -1,7 +1,7 @@
 import { buildMetadata, SITE } from '@/lib/seo';
 import { SIDEKICK, sidekickTiers, sidekickFaq, sidekickUsd } from '@/data/sidekick';
 import ForgeExperience from '@/components/sidekick/ForgeExperience';
-import { HowItWorks, Boundaries, Faq, MeetTheTrainer, CrossSell, FreeCommandCenter } from '@/components/sidekick/SidekickSections';
+import { HowItWorks, Boundaries, Faq, MeetTheTrainer, CrossSell, GiveHimAHome } from '@/components/sidekick/SidekickSections';
 
 export const metadata = buildMetadata({
   title: SIDEKICK.metaTitle,
@@ -93,7 +93,7 @@ export default function SidekickPage() {
 
       <HowItWorks />
       <MeetTheTrainer />
-      <FreeCommandCenter />
+      <GiveHimAHome />
       <Boundaries />
       <Faq />
       <CrossSell />

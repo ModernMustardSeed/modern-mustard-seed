@@ -262,27 +262,26 @@ rule('THE EMAIL THAT ALREADY SHIPS (control)');
 console.log('written:', path.join(OUT, 'acq-demo-email-existing.html'));
 console.log('bytes  :', existing?.html.length);
 
-/* ── 8. THE COMMAND CENTER RULE ──────────────────────────────────────────────
-   Free with the website and the voice agent TOGETHER, free with neither alone.
-   So the email names the back office only when both are present, and the demo
-   suite page applies the identical rule. Three shapes, checked. ------------ */
-rule('THE COMMAND CENTER RULE (free with both, hidden with one)');
+/* ── 8. THE COMMAND CENTER RULE ──────────────────────────────────────
+   IT IS NEVER NAMED. It came off the demo suite and out of the offer on
+   2026-08-22, and Sarah said it again on 2026-08-25: "I am not pushing command
+   center anywhere." So no shape of a suite email may name a back office, not
+   even a lead who still carries an os_demo_url from before that date, and the
+   board's suiteState must never mark one as shown. ------------------------- */
+rule('THE COMMAND CENTER RULE (never named, in any shape)');
 
 const shapes = [
   {
-    name: 'voice agent alone (a command center IS minted, and must stay hidden)',
+    name: 'voice agent alone (an os_demo_url from before the change is present)',
     suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: prospect.demo_url, siteUrl: null, osUrl: prospect.os_demo_url, personalVideo: false, film: false },
-    expectOs: false,
   },
   {
     name: 'website alone',
     suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: null, siteUrl: prospect.site_demo_url, osUrl: prospect.os_demo_url, personalVideo: false, film: false },
-    expectOs: false,
   },
   {
     name: 'the pair',
     suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: prospect.demo_url, siteUrl: prospect.site_demo_url, osUrl: prospect.os_demo_url, personalVideo: false, film: false },
-    expectOs: true,
   },
 ];
 
@@ -300,12 +299,12 @@ for (const shape of shapes) {
     fromMustard: false,
   });
   if (!built) { console.log(` ${shape.name}: REFUSED TO BUILD`); failures++; continue; }
-  const namesOs = /back office/i.test(built.html);
-  const ok = namesOs === shape.expectOs;
+  const namesOs = /back office|command cent/i.test(built.html);
+  const ok = !namesOs;
   if (!ok) failures++;
   console.log(` ${ok ? 'OK  ' : 'FAIL'} ${shape.name}`);
   console.log(`        subject: ${built.subject}`);
-  console.log(`        names the back office: ${namesOs} (expected ${shape.expectOs})`);
+  console.log(`        names the back office: ${namesOs} (expected false)`);
 }
 
 /* And the suite state the board reads must agree with the email. */
@@ -313,11 +312,11 @@ const voiceOnly = suiteState({ ...prospect, site_demo_url: null, site_demo_statu
 const pair = suiteState(prospect);
 const siteBuilding = suiteState({ ...prospect, site_demo_status: 'building', suite_film_status: null } as AcqProspect);
 console.log('');
-console.log(' suiteState.osShown, voice only          :', voiceOnly.osShown, '(expected false)');
-console.log(' suiteState.osShown, website still building:', siteBuilding.osShown, '(expected true: it lands within the hour)');
-console.log(' suiteState.osShown, the pair             :', pair.osShown, '(expected true)');
-if (voiceOnly.osShown !== false || siteBuilding.osShown !== true || pair.osShown !== true) failures++;
-console.log(' pieces the prospect can open, voice only :', voiceOnly.pieces, '(expected 1: the agent, alone)');
+console.log(' suiteState.osShown, voice only            :', voiceOnly.osShown, '(expected false)');
+console.log(' suiteState.osShown, website still building:', siteBuilding.osShown, '(expected false)');
+console.log(' suiteState.osShown, the pair              :', pair.osShown, '(expected false)');
+if (voiceOnly.osShown !== false || siteBuilding.osShown !== false || pair.osShown !== false) failures++;
+console.log(' pieces the prospect can open, voice only  :', voiceOnly.pieces, '(expected 1: the agent, alone)');
 if (voiceOnly.pieces !== 1) failures++;
 
 console.log(failures === 0 ? 'ALL COMMAND CENTER CHECKS PASS' : `${failures} CHECK(S) FAILED`);

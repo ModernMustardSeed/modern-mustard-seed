@@ -199,7 +199,7 @@ export default function DemoCallExperience({
               Make it real →
             </a>
             <p className="font-body text-[12px] text-[#FBF6EA]/50 mt-4">
-              Takes you back to your demo suite, where you can add your website and command center too.{' '}
+              Takes you back to your demo suite, where you can add your website too.{' '}
               <a href="/book" className="underline hover:text-[#F5B700]">
                 Prefer to talk it through first?
               </a>

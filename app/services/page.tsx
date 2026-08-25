@@ -17,11 +17,11 @@ const rest = DEPARTMENTS.filter((d) => !d.flagship);
 const FAQ = [
   {
     q: 'What does Modern Mustard Seed build?',
-    a: 'Productized doors that each open with a free demo (a website, a voice agent, a command center, a commercial, ads, print, a launch plan, and more), plus fully bespoke work: custom web and mobile apps, specialty AI tools, online stores, and agentic systems. Every engagement is shipped end to end by Sarah Scarano, fixed scope and fixed quote, and you own it.',
+    a: 'Productized doors that each open with a free demo (a website, a voice agent, a commercial, ads, print, a launch plan, and more), plus fully bespoke work: custom web and mobile apps, specialty AI tools, online stores, and agentic systems. Every engagement is shipped end to end by Sarah Scarano, fixed scope and fixed quote, and you own it.',
   },
   {
     q: 'How fast can you ship?',
-    a: 'Websites, voice agents, and command centers go live in about a week from kickoff, and you can tour a free demo of each first, in your hands within the hour. Custom apps, software, and online stores usually take two to four weeks. Every engagement is fixed scope with a fixed timeline you see before work begins.',
+    a: 'Websites, voice agents, and command centers go live in about a week from kickoff, and you can tour a free demo of the website and the voice agent first, in your hands within the hour. Custom apps, software, and online stores usually take two to four weeks. Every engagement is fixed scope with a fixed timeline you see before work begins.',
   },
   {
     q: 'What is a specialty AI tool?',
@@ -255,7 +255,7 @@ export default function ServicesPage() {
               Pick a door. It opens free.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
-              Enter your business once and tour a working website, a voice agent, and a command center, all with you
+              Enter your business once and tour a working website and a voice agent, both with you
               within the hour. No card, no meeting.
             </p>
             <Link

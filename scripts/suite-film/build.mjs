@@ -112,11 +112,14 @@ async function main() {
 
   const have = {
     site: lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url),
-    os: lead.os_demo_status === 'ready' && Boolean(lead.os_demo_url),
+    // ALWAYS FALSE. The command center is off the demo suite and out of the
+    // offer (Sarah, 2026-08-22, again 2026-08-25), so no film narrates one,
+    // even for a lead forged back when the suite still had one.
+    os: false,
     call: Boolean(lead.demo_run_id),
   };
-  if (!have.site && !have.os) {
-    console.error('Nothing forged yet worth filming (no ready website, no ready command center).');
+  if (!have.site) {
+    console.error('Nothing forged yet worth filming (no ready website).');
     process.exit(2);
   }
   // The call rides on the website shell, so with no site there is nothing to
@@ -321,7 +324,7 @@ async function main() {
       from_addr: 'cockpit',
       to_addr: lead.business_name,
       subject: 'Suite film cut',
-      snippet: `Their own ${Math.round(cut.seconds)}s suite film is on the hub: their website, a live call with their agent, and their command center.`,
+      snippet: `Their own ${Math.round(cut.seconds)}s suite film is on the hub: their website and a live call with their agent.`,
       read: true,
       occurred_at: new Date().toISOString(),
     });

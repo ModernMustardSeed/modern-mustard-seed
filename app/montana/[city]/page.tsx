@@ -210,12 +210,6 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                 p: `${formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo`,
                 href: '/voice-agents',
               },
-              {
-                t: 'The Command Center',
-                b: 'Calls, leads, customers, reviews, traffic, and money on one board, with an AI that reads it back to you. Built by hand, scoped with you first.',
-                p: `${formatUsd(DEMO_PRODUCTS.os.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.os.monthlyCents)}/mo`,
-                href: '/command-center',
-              },
             ].map((c) => (
               <Link
                 key={c.t}

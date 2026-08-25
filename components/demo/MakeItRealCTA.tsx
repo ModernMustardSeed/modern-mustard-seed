@@ -4,16 +4,18 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, DEMO_ORDER_KEYS, quoteDemoOrder, formatUsd, type DemoProductKey } from '@/lib/demo-order';
 
 /**
- * "Make it real" — order straight from the demo. Toggle any pieces, watch the
+ * "Make it real" — order straight from the demo. Toggle either piece, watch the
  * monthly total roll like the Recovery Calculator. Each is individually
- * purchasable; the Business Command Center shows its own price, STRUCK THROUGH
- * with "Free" the moment BOTH the website and the voice agent are in the cart,
- * which is the bundle (Sarah 2026-08-13: free with both, not with either).
+ * purchasable, and taking both is The Talking Website, which costs less than
+ * the two apart. The strip under the list names that saving, because it is a
+ * true sentence they deserve to read before they pay.
  *
- * When they are one piece away from that, the strip under the list says so and
- * names the number, because "add the website and the whole system costs less
- * than what you have selected" is a true sentence they deserve to read before
- * they pay. Checkout happens right here (Stripe); booking is the quiet second path.
+ * There is no third card and no waiver: the Business Command Center came off
+ * this card on 2026-08-22 and is never suggested here (Sarah, 2026-08-25: "I am
+ * not pushing command center anywhere"). It is sold on its own page and its own
+ * pay link. Do not add it back to DEMO_ORDER_KEYS.
+ *
+ * Checkout happens right here (Stripe); booking is the quiet second path.
  */
 
 function useCountUp(target: number, ms = 700): number {

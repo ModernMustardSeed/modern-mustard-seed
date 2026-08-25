@@ -3,16 +3,22 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
 /**
  * FLAGSHIP OFFER. Homepage beat: the studio's headline product, forged free and
- * kept for a monthly. Three pieces, and the command center's price is STRUCK
- * THROUGH under a "free with both" stamp (the signature moment, the hook).
- * Narrowed 2026-08-13: the waiver needs BOTH paid pieces, which is the bundle.
+ * kept for a monthly. TWO pieces, and the saving is the bundle itself.
+ *
+ * ⚠️ THE COMMAND CENTER IS NOT A PIECE OF THIS OFFER (Sarah, 2026-08-22, again
+ * on 2026-08-25: "I am not pushing command center anywhere"). There used to be
+ * a third card here with its price struck through under a "free with both"
+ * rubber stamp. It is still sold on its own page and its own pay link, it is
+ * simply never bundled, never stamped free, and never suggested next to
+ * anything. Do not add it back to PIECES.
+ *
  * Pop-art cabin system: cream canvas, ink pop-cards, gold, halftone. Every
  * price DERIVES from DEMO_PRODUCTS / DEMO_BUNDLE (never typed).
  */
 
-type Tone = 'ink' | 'gold' | 'white';
+type Tone = 'ink' | 'gold';
 
-const PIECES: { key: 'voice' | 'site' | 'os'; icon: string; name: string; desc: string; tone: Tone; free?: boolean }[] = [
+const PIECES: { key: 'voice' | 'site'; icon: string; name: string; desc: string; tone: Tone }[] = [
   {
     key: 'voice',
     icon: '🎙',
@@ -27,17 +33,9 @@ const PIECES: { key: 'voice' | 'site' | 'os'; icon: string; name: string; desc: 
     desc: 'Designed from scratch for your trade and your town. A real working site on your own domain, live in about a week.',
     tone: 'gold',
   },
-  {
-    key: 'os',
-    icon: '⚙',
-    name: 'Business Command Center',
-    desc: 'Your back office: every call transcribed, your website traffic, customers, reviews, and money on one board.',
-    tone: 'white',
-    free: true,
-  },
 ];
 
-const priceLine = (key: 'voice' | 'site' | 'os') => {
+const priceLine = (key: 'voice' | 'site') => {
   const p = DEMO_PRODUCTS[key];
   return `${formatUsd(p.monthlyCents)}/mo + ${formatUsd(p.setupCents)} setup`;
 };
@@ -51,17 +49,16 @@ export default function FlagshipOffer() {
           Our flagship // Built free before you pay a cent
         </p>
         <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#161616] mt-3 leading-[1.02] max-w-3xl">
-          A voice agent, a website,<br />and the brain that runs them.
+          A voice agent and a website,<br />built off one brain.
         </h2>
         <p className="font-body text-[15px] md:text-[17px] text-[#161616]/75 mt-5 max-w-2xl leading-relaxed">
-          Tell us your business and we forge all three, free, in about a minute. Keep what you love. Take the website
+          Tell us your business and we forge both, free, in about a minute. Keep what you love. Take the website
           and the voice agent together and they are built as one thing, for less than the two apart.
         </p>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-12 items-stretch">
+        <div className="grid md:grid-cols-2 gap-6 mt-12 items-stretch">
           {PIECES.map((c) => {
             const inkCard = c.tone === 'ink';
-            const goldCard = c.tone === 'gold';
             const bodyColor = inkCard ? 'text-[#FBF6EA]/75' : 'text-[#161616]/75';
             return (
               <div
@@ -69,21 +66,9 @@ export default function FlagshipOffer() {
                 className={`relative flex flex-col border-2 border-[#161616] p-7 transition-transform hover:-translate-y-1 ${
                   inkCard
                     ? 'bg-[#161616] shadow-[6px_6px_0_0_#F5B700]'
-                    : goldCard
-                      ? 'bg-[#F5B700] shadow-[6px_6px_0_0_#161616]'
-                      : 'bg-white shadow-[8px_8px_0_0_#161616]'
+                    : 'bg-[#F5B700] shadow-[6px_6px_0_0_#161616]'
                 }`}
               >
-                {/* Signature moment: the FREE rubber-stamp on the command center. */}
-                {c.free ? (
-                  <span
-                    aria-hidden
-                    className="absolute -top-4 -right-3 rotate-[8deg] select-none bg-[#C4160B] text-[#FBF6EA] font-mono font-extrabold text-[11px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616]"
-                  >
-                    Free with both
-                  </span>
-                ) : null}
-
                 <span className="text-3xl leading-none" aria-hidden>{c.icon}</span>
                 <h3 className={`font-display italic font-extrabold text-2xl mt-3 ${inkCard ? 'text-[#FBF6EA]' : 'text-[#161616]'}`}>
                   {c.name}
@@ -92,23 +77,12 @@ export default function FlagshipOffer() {
 
                 {/* Price pill pinned to a common baseline (mt-auto). */}
                 <div className="mt-auto pt-6">
-                  {c.free ? (
-                    <p className="font-mono text-[13px] font-bold">
-                      <span className={`line-through ${inkCard ? 'text-[#FBF6EA]/40' : 'text-[#161616]/40'}`}>
-                        {priceLine(c.key)}
-                      </span>
-                      <span className="block mt-1 text-[#C4160B] font-extrabold text-[15px] not-italic">
-                        Free with your site and voice agent
-                      </span>
-                    </p>
-                  ) : (
-                    <p className={`font-mono text-[13px] font-bold ${inkCard ? 'text-[#F5B700]' : 'text-[#161616]'}`}>
-                      <span className={`block text-[10px] uppercase tracking-[0.14em] ${inkCard ? 'text-[#FBF6EA]/50' : 'text-[#161616]/55'}`}>
-                        Free demo, then
-                      </span>
-                      {priceLine(c.key)}
-                    </p>
-                  )}
+                  <p className={`font-mono text-[13px] font-bold ${inkCard ? 'text-[#F5B700]' : 'text-[#161616]'}`}>
+                    <span className={`block text-[10px] uppercase tracking-[0.14em] ${inkCard ? 'text-[#FBF6EA]/50' : 'text-[#161616]/55'}`}>
+                      Free demo, then
+                    </span>
+                    {priceLine(c.key)}
+                  </p>
                 </div>
               </div>
             );
@@ -127,7 +101,7 @@ export default function FlagshipOffer() {
             <p className="font-body text-[14px] text-[#161616]/75 mt-2 leading-relaxed max-w-xl">
               Your site and your voice agent built as one thing, off one brain, so the answer a
               visitor reads is the answer a caller hears. {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
-              {formatUsd(DEMO_BUNDLE.setupCents)} setup, command center on the house. That is{' '}
+              {formatUsd(DEMO_BUNDLE.setupCents)} setup. That is{' '}
               {formatUsd(
                 DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents - DEMO_BUNDLE.setupCents
               )}{' '}

@@ -392,10 +392,9 @@ export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: s
                 `<p>${one ? 'It lives' : 'It all lives'} at your private hub, and when you love it you can <strong>make it real right from that same page</strong>. No second meeting required.</p>` +
                 // The upsell belongs HERE, in writing, not on the phone. He was
                 // told on the call to close and stop selling, so this is where
-                // the other pieces get named, at the reader's pace. When both
-                // paid pieces would land it also says the command center comes
-                // free with them, which is the signpost demo-order.ts requires
-                // on every surface that can put a buyer in the dominated cart.
+                // the other piece gets named, at the reader's pace. It names the
+                // website and the voice agent and nothing else: the command
+                // center is off the offer and is never suggested (2026-08-25).
                 upsellLine(pieces),
               cta: { label: one ? `Open your ${PIECE_LABEL[pieces[0]]}` : 'Open your Demo Suite', url: lead.hub_demo_url },
               signature: 'Sarah',

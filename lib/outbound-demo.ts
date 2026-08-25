@@ -213,8 +213,8 @@ export async function ensureOsDemo(supabase: SupabaseClient, lead: OutboundLead)
     channel: 'note',
     from_addr: 'cockpit',
     to_addr: lead.business_name,
-    subject: 'Command center included',
-    snippet: `Their command center is live at ${osUrl}`,
+    subject: 'Command center built by hand',
+    snippet: `Built for you, not offered to them: ${osUrl}`,
     read: true,
     occurred_at: new Date().toISOString(),
   });

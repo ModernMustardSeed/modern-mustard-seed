@@ -26,7 +26,7 @@ const FAQ = [
   },
   {
     q: 'What does a website cost?',
-    a: 'The productized website is $497 to set up and $147 a month, including domain, hosting, care, and the business command center. Bigger custom builds are scoped and quoted after a free call. Month to month, cancel anytime, no trials, and you own the code and every account.',
+    a: 'The productized website is $497 to set up and $147 a month, including domain, hosting, and care. Bigger custom builds are scoped and quoted after a free call. Month to month, cancel anytime, no trials, and you own the code and every account.',
   },
   {
     q: 'Can I try it before paying?',

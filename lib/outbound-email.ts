@@ -101,7 +101,12 @@ export async function buildOutboundEmail(
   // Only offer what actually exists and is live; a queued site never ships.
   const withDemo = Boolean(opts.includeDemo && lead.demo_url);
   const withSite = Boolean(opts.includeSite && lead.site_demo_status === 'ready' && lead.site_demo_url);
-  const withOs = Boolean(opts.includeOs && lead.os_demo_status === 'ready' && lead.os_demo_url);
+  // ALWAYS FALSE. The command center came off the suite and out of the offer
+  // (Sarah, 2026-08-22, again on 2026-08-25: "I am not pushing command center
+  // anywhere"). No outbound email names one, links one, or puts one in a
+  // subject line, even for a lead who has an os_demo_url from before then.
+  // opts.includeOs is accepted and ignored so old callers do not break.
+  const withOs = false;
   const includeAny = withDemo || withSite || withOs;
 
   // The suite block: one card per demo (email-safe table rows) under a short
@@ -122,9 +127,8 @@ export async function buildOutboundEmail(
     withSite &&
       demoRow('🌐', 'Your new website', `A real working draft designed for your business${withDemo ? '. The gold button in the corner is your voice agent riding along so you can hear it on the page, it is its own add-on' : ''}.`, lead.site_demo_url!),
     withOs &&
-      // "Included free with your site or voice agent" came off 2026-08-04: the
-      // suite email should sell what the board does, not price-anchor it at
-      // zero. Same rule as the film narration (scripts/suite-film/lines.mjs).
+      // Unreachable: withOs is pinned false above. Left as the one place that
+      // would have to change if the command center ever rejoins the offer.
       demoRow('⚙️', 'Your command center', 'Every call transcribed, your website traffic, customers, reviews, and money on one board, with an AI that knows it all.', lead.os_demo_url!),
   ]
     .filter(Boolean)

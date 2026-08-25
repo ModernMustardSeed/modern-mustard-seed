@@ -139,7 +139,7 @@ export default function DemoHub({
    *  personal video about this business, never a stock/house reel. */
   personalVideoUrl?: string | null;
   /** THEIR film: a fresh recording of this lead's own website, a live call with
-   *  their own voice agent, and their own command center. Outranks every other
+   *  their own voice agent. Outranks every other
    *  video here, because a tour of somebody else's business is what it replaced. */
   suiteFilmUrl?: string | null;
   suiteFilmPoster?: string | null;
@@ -422,8 +422,8 @@ export default function DemoHub({
                   </p>
                   <p className="font-body text-[14px] text-[#FBF6EA]/65 mt-2 max-w-sm mx-auto">
                     {suiteFilmPending
-                      ? 'A short film of your own site, a real call with your own agent, and your command center. We are working on it and will have it to you within the hour. Everything below is open now.'
-                      : 'A short film of your own site, a real call with your own agent, and your command center. It is not cut yet, so nothing plays here until it is. Everything below is open now, and reaching out gets it made today.'}
+                      ? 'A short film of your own site and a real call with your own agent. We are working on it and will have it to you within the hour. Everything below is open now.'
+                      : 'A short film of your own site and a real call with your own agent. It is not cut yet, so nothing plays here until it is. Everything below is open now, and reaching out gets it made today.'}
                   </p>
                 </div>
               </div>
@@ -572,17 +572,14 @@ export default function DemoHub({
                 {onlyOne ? 'Want more than the one thing?' : 'One piece still missing'}
               </p>
               <p className="font-body mt-3 text-[15.5px] leading-relaxed text-[#161616]/80 max-w-xl mx-auto">{restLine}</p>
-              {forgeMissing.length ? (
-                <SuiteMoreForm hubId={hubId} missing={forgeMissing} hasEmail={hasEmail ?? false} />
-              ) : (
-                <a
-                  href="tel:+14063121223"
-                  className="mt-5 inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#F5B700] px-5 py-3 font-display text-[17px] font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616]"
-                >
-                  <span aria-hidden="true">📞</span>
-                  Call Mr. Mustard and say the word
-                </a>
-              )}
+              {/*
+                NEVER "call Mr. Mustard and say the word." Sarah, 2026-08-25:
+                if they want to add a piece, hand them the button that adds it.
+                forgeMissing is non-empty whenever restLine is, so this form is
+                the only path out of this card; the phone lives inside it as
+                the small human fallback, not as the ask.
+              */}
+              <SuiteMoreForm hubId={hubId} missing={forgeMissing} hasEmail={hasEmail ?? false} />
             </div>
           </section>
         )}

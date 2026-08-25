@@ -1046,7 +1046,10 @@ function EmailComposer({
   const osReady = lead.os_demo_status === 'ready' && Boolean(lead.os_demo_url);
   const opts =
     mode === 'demos'
-      ? { includeDemo: Boolean(lead.demo_url), includeSite: siteReady, includeOs: osReady }
+      // includeOs is deliberately false: the command center is never named in
+      // an email to a prospect. Sarah still forges and opens one from the chips
+      // above; it is hers to show, not the email's to offer.
+      ? { includeDemo: Boolean(lead.demo_url), includeSite: siteReady, includeOs: false }
       : {};
 
   // Reset per open so a previous lead's draft can never be sent to this one.

@@ -304,7 +304,7 @@ const SIGNS = [
     line: 'The flagship. A site and a voice agent built as one thing off one brain. The answer a visitor reads is the answer a midnight caller hears.',
     cta: 'Read The Sign',
   },
-  { href: '/demos', label: 'The Demo Forge', line: 'Tell us your trade. We forge your website, voice agent, and command center before you pay anything.', cta: 'Forge Mine Free' },
+  { href: '/demos', label: 'The Demo Forge', line: 'Tell us your trade. We forge your website and your voice agent before you pay anything.', cta: 'Forge Mine Free' },
   { href: '/website-audit', label: 'The Free Audit', line: 'Point our AI at your current website and get the honest report in minutes.', cta: 'Run My Audit' },
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, directed by the studio AI.', cta: 'Visit The Studio' },
   { href: '/store', label: 'The Playbook Store', line: 'The exact playbooks the studio runs on, written down and ready to use.', cta: 'Browse The Store' },
@@ -424,7 +424,7 @@ const SQUARE = [
     tag: 'Proof',
     label: 'The Numbers, In Plain English',
     line:
-      'Your command center shows calls answered, forms filled, reviews collected, and where every one of them came from. Written in sentences, not charts you have to decode.',
+      'You see calls answered, forms filled, reviews collected, and where every one of them came from. Written in sentences, not charts you have to decode.',
   },
 ];
 
@@ -627,7 +627,7 @@ const DOORS = [
   {
     key: 'forge',
     label: 'Forge My Custom Demo',
-    line: 'Give us your name and trade. The forge builds your website, voice agent, and command center to keep or toss.',
+    line: 'Give us your name and trade. The forge builds your website and your voice agent to keep or toss.',
     cta: 'Start The Forge',
     href: '/demos',
   },

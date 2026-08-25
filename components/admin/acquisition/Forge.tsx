@@ -54,7 +54,7 @@ type Suite = {
   siteUrl: string | null;
   siteStatus: string | null;
   osUrl: string | null;
-  /** Whether the prospect sees it. Free with the pair, hidden without it. */
+  /** Always false: the prospect never sees a command center. */
   osShown: boolean;
   hubUrl: string | null;
   filmStatus: string | null;
@@ -236,7 +236,7 @@ function WorkerVitals({ vitals }: { vitals: Vitals | null }) {
         {detail ? <> {detail}</> : null}
         {down && (
           <>
-            {' '}Voice agents and command centers still forge instantly; only the websites wait. Start it with{' '}
+            {' '}Voice agents still forge instantly; only the websites wait. Start it with{' '}
             <code className="font-mono text-[12px] text-[#F5B700]">node scripts/demo-site-worker.mjs</code> and the queue moves on its own.
           </>
         )}
@@ -265,26 +265,22 @@ function SuiteChips({ row }: { row: Row }) {
           🌐 Website building{row.siteRun ? ` · ${minsSince(row.siteRun.claimed_at ?? row.siteRun.created_at)}m` : ''}
         </span>
       )}
-      {row.suite.osUrl &&
-        (row.suite.osShown ? (
-          <a href={row.suite.osUrl} target="_blank" rel="noopener noreferrer" className={`${chip} border-[#161616]/30 bg-[#161616]/[0.05] text-[#161616]/75 hover:border-[#161616]`}>
-            ⚙ Command center ↗
-          </a>
-        ) : (
-          // Built, but the prospect does not see it: the command center is free
-          // with the website and the voice agent together and with neither one
-          // alone, so it stays off their page until the pair exists. Forging
-          // the website turns it on by itself, nothing else to do.
-          <a
-            href={row.suite.osUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${chip} border-dashed border-[#161616]/25 bg-transparent text-[#161616]/40 hover:border-[#161616]/60`}
-            title="Built, but hidden from them: the command center is only free with the website and the voice agent together. Forge their website and it appears on their suite by itself."
-          >
-            ⚙ Command center · hidden ↗
-          </a>
-        ))}
+      {/*
+        YOURS, NOT THEIRS. The command center is off the suite and out of the
+        offer, so this chip is an internal link to something you built by hand.
+        The prospect's page has no door for it and their email never names it.
+      */}
+      {row.suite.osUrl && (
+        <a
+          href={row.suite.osUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${chip} border-dashed border-[#161616]/25 bg-transparent text-[#161616]/40 hover:border-[#161616]/60`}
+          title="Yours only. The command center is not part of the suite or the offer: they never see it and it is never suggested to them."
+        >
+          ⚙ Command center · yours only ↗
+        </a>
+      )}
       {row.suite.hubUrl && (
         <a href={row.suite.hubUrl} target="_blank" rel="noopener noreferrer" className={`${chip} border-[#161616] bg-[#161616] text-[#F5B700] hover:-translate-y-0.5`}>
           ▦ Their suite ↗
@@ -655,8 +651,8 @@ export default function AcqForge() {
                 aria-pressed={withSite}
                 title={
                   withSite
-                    ? 'A forge builds the voice agent, the command center AND queues the website.'
-                    : 'A forge builds only the instant pieces: the voice agent and the command center.'
+                    ? 'A forge builds the voice agent AND queues the website.'
+                    : 'A forge builds only the instant piece: the voice agent.'
                 }
                 className={`rounded-lg border-2 px-3 py-1.5 font-oswald text-[11px] uppercase tracking-[0.08em] transition-colors ${
                   withSite
@@ -787,13 +783,13 @@ export default function AcqForge() {
                         </button>
                       )}
                       {/* Built, but no website: name the website on the button that
-                          builds it. It is also what turns their command center on. */}
+                          builds it. */}
                       {r.suite.pieces > 0 && !r.suite.siteUrl && r.segment !== 'forging' && r.segment !== 'closed' && (
                         <button
                           onClick={() => void act('forge', [r.id])}
                           disabled={busy !== ''}
                           className={`${btnPrimary} !px-3.5 !py-2 !text-xs`}
-                          title="Queue their demo website. It also turns their free command center on."
+                          title="Queue their demo website. Twenty to forty minutes on your machine."
                         >
                           {busy === 'forge' ? 'Queuing…' : '🌐 Forge website'}
                         </button>

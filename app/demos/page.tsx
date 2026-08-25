@@ -31,7 +31,7 @@ const FAQ = [
   },
   {
     q: 'How fast?',
-    a: 'Your voice agent and your command center open right away. The website is different, because it is designed from scratch rather than filled into a template, and then we record you a walkthrough of the finished suite. We have the whole thing to you within the hour. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
+    a: 'Your voice agent opens right away. The website is different, because it is designed from scratch rather than filled into a template, and then we record you a walkthrough of the finished suite. We have the whole thing to you within the hour. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
   },
   {
     q: 'What happens if I want to keep something?',
@@ -110,7 +110,7 @@ function demosJsonLd() {
       {
         '@type': 'Service',
         name: 'The Demo Station by Modern Mustard Seed',
-        serviceType: 'Free AI business demos: voice agent, website, and command center',
+        serviceType: 'Free AI business demos: voice agent and website',
         description:
           'A free self-serve forge. Enter your business once and receive two working demos: a voice agent trained on your company, and a custom website designed from scratch. No account and no credit card.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
@@ -144,8 +144,8 @@ function demosJsonLd() {
           },
           {
             '@type': 'HowToStep',
-            name: 'Meet your voice agent and command center',
-            text: 'Both open right away at your private hub. Talk to the voice agent in your browser and try to stump it.',
+            name: 'Meet your voice agent',
+            text: 'It opens right away at your private hub. Talk to it in your browser and try to stump it.',
           },
           {
             '@type': 'HowToStep',
@@ -196,11 +196,11 @@ export default function DemosPage() {
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 We build your business{' '}
-                <em className="italic text-[#C4160B]">three free demos.</em> Right now.
+                <em className="italic text-[#C4160B]">two free demos.</em> Right now.
               </h1>
               <p className="font-body text-[17px] text-[#161616]/70 mt-5 leading-relaxed">
-                A voice agent that answers as your business. A brand-new website. A command center with your name on
-                the door. Real and working, personalized to you, not a slideshow.
+                A voice agent that answers as your business, and a brand-new website with your name on the door. Real
+                and working, personalized to you, not a slideshow.
               </p>
 
               <ul className="mt-6 space-y-2.5">
@@ -274,7 +274,7 @@ export default function DemosPage() {
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">What lands, and when</p>
               <ul className="mt-3 space-y-2">
                 {[
-                  ['Right away', 'Your voice agent and your command center, live at your private hub.'],
+                  ['Right away', 'Your voice agent, live at your private hub.'],
                   ['Within the hour', 'Your website, designed from scratch (not a template), plus a recorded walkthrough of the finished suite, landing at the same hub.'],
                 ].map(([when, what]) => (
                   <li key={when} className="font-body text-[14px] text-[#FBF6EA]/80 leading-relaxed">
@@ -345,7 +345,7 @@ export default function DemosPage() {
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               { n: '1', t: 'You tell us who you are', d: 'One short form, the one above. No card, no meeting.' },
-              { n: '2', t: 'The forge builds', d: 'Voice Agent and command center open right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within the hour, at the same hub, on its own.' },
+              { n: '2', t: 'The forge builds', d: 'Your Voice Agent opens right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within the hour, at the same hub, on its own.' },
               {
                 n: '3',
                 t: 'Keep what you love',

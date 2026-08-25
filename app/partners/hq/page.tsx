@@ -121,7 +121,7 @@ export default async function PartnerHQ() {
               <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-2">Forge under your flag</span>
               <h3 className="font-display text-2xl font-semibold text-[#161616]">Mint a demo suite for a business you know</h3>
               <p className="text-[#161616]/70 font-body text-sm mt-1 max-w-xl">
-                Give us their name and website; we forge their voice agent, a designed-from-scratch site, and a command center demo, presented by you. If they buy, your commission records itself.
+                Give us their name and website; we forge their voice agent and a designed-from-scratch site, presented by you. If they buy, your commission records itself.
               </p>
             </div>
             <span className="inline-block mt-4 md:mt-0 shrink-0 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616]">
