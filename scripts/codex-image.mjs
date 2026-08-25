@@ -237,9 +237,18 @@ function runCodex(dir, opts, stagedRefs = []) {
   // The prompt rides on STDIN (`-`), never as an argument. Same rule the forge
   // worker learned: a long multi-line instruction passed through argv is one
   // quoting bug away from arriving as its first word.
+  // --skip-git-repo-check is NOT optional, and leaving it off is why this tool
+  // never rendered anything. It writes into a fresh temp directory, which is
+  // not a git repo, so codex exec refuses on sight:
+  //   "Not inside a trusted directory and --skip-git-repo-check was not specified"
+  // It fails in 0s, every attempt, on every machine. The image-gen plugin's own
+  // codex backend has always passed it; this copy never did, so the forge fell
+  // back to the tool WITHOUT --ref and every before/after slider shipped as two
+  // unrelated buildings (2026-08-25, Sarah on South Florida Roofing: "the 2
+  // houses are very different and need to be exact same always").
   const args = entry
-    ? [entry, 'exec', '--sandbox', 'workspace-write', '--cd', dir, '-']
-    : ['exec', '--sandbox', 'workspace-write', '--cd', dir, '-'];
+    ? [entry, 'exec', '--sandbox', 'workspace-write', '--skip-git-repo-check', '--cd', dir, '-']
+    : ['exec', '--sandbox', 'workspace-write', '--skip-git-repo-check', '--cd', dir, '-'];
 
   return new Promise((resolve) => {
     const child = entry

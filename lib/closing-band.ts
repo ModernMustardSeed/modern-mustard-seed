@@ -252,6 +252,43 @@ const SCRIPT = `<script data-${MARKER}>
        white, and give the small uppercase labels the accent they were missing.
        Both are skipped when the build already made that distinction itself. */
     var white={r:255,g:255,b:255};
+    /* Is this element standing on a surface the band did not paint? A pale card
+       or a pale button inside a dark band keeps its own light background, so
+       everything inside it must keep the ink the build chose. */
+    function onOwnSurface(el){
+      try{ return contrast(bgOf(el),bandBg)>1.35; }catch(e){ return false; }
+    }
+
+    /* ---------- CARDS KEEP THE INK THE BUILD GAVE THEM ----------
+       Sparing a card from the repaint is only half of it, because color is
+       INHERITED and the card's own wrapper is not.
+       On South Florida Roofing the booking form is a pale panel inside the
+       band. Its wrapper, .book__grid, is transparent and genuinely sits on the
+       dark ink, so the pass correctly painted it near-white. The pale form
+       inside it sets a background but no color, so it inherited that white, and
+       so did every element in it that relies on inheritance. "You are on the
+       calendar", the line someone sees the moment they book, computed to 1.07:1
+       against its own panel.
+       So each card's pre-existing color is captured BEFORE anything is painted
+       and pinned back on afterwards. The value is the one the build already
+       computed, so the card looks identical; it just stops the band's white from
+       cascading through a surface the band never touched. */
+    var cards=[];
+    if(!wasDark){
+      parts.forEach(function(band){
+        var els=band.getElementsByTagName('*');
+        for(var i=0;i<els.length;i++){
+          try{
+            var el=els[i], cs0=getComputedStyle(el);
+            var own=parse(cs0.backgroundColor);
+            if(!own) continue;
+            if(contrast(own,bandBg)<=1.35) continue;
+            cards.push({el:el,color:cs0.color});
+          }catch(e){}
+        }
+      });
+    }
+
     parts.forEach(function(band,bi){
       var heads=band.querySelectorAll('h1,h2,h3,h4');
       // The note the page should end on is the business name, and it gets the
@@ -277,6 +314,7 @@ const SCRIPT = `<script data-${MARKER}>
         try{
           var h=heads[i], hc=parse(getComputedStyle(h).color);
           if(!hc) continue;
+          if(onOwnSurface(h)) continue;                  // sits on its own card, not on the band
           if(contrast(hc,bandBg)>=9) continue;           // already the bright thing
           if(contrast(hc,accent)<2) continue;            // deliberately accent-colored
           h.style.setProperty('color',rgb(mix(hc,white,0.72)),'important');
@@ -291,6 +329,7 @@ const SCRIPT = `<script data-${MARKER}>
           if(e2.children.length) continue;
           var t=(e2.textContent||'').trim();
           if(!t||t.length>44) continue;
+          if(onOwnSurface(e2)) continue;               // a label inside a light card is not on the band
           var c2=getComputedStyle(e2);
           var isLabel=(c2.textTransform==='uppercase')&&parseFloat(c2.letterSpacing||'0')>0.4;
           if(!isLabel) continue;
@@ -329,17 +368,31 @@ const SCRIPT = `<script data-${MARKER}>
           if(el.hasAttribute('data-mms-band-rule')) continue;
           try{
             var cs=getComputedStyle(el);
-            // An element that paints its own opaque background is its own
-            // surface (a button, a card). Leave it whole.
-            var own=parse(cs.backgroundColor);
-            if(own&&contrast(own,bandBg)>1.35) continue;
+            // THE SURFACE IS INHERITED, AND CHECKING ONLY THIS ELEMENT'S OWN
+            // BACKGROUND IS THE BUG THAT SHIPPED (2026-08-25, South Florida
+            // Roofing: "the text is white and buttons are white so you cant see
+            // what the time windows are").
+            //
+            // The old test skipped an element that painted its own opaque
+            // background, and stopped there. But a continue skips one ELEMENT,
+            // not its subtree. The booking form is a pale card and each time
+            // window is a pale button; both were correctly spared. Their
+            // children are transparent, so the very next iteration measured a
+            // <b> reading "Early" against the BAND's dark ink, decided it was
+            // unreadable, and painted it near-white, on a near-white chip.
+            //
+            // A transparent element sits on whatever is painted behind it, so
+            // that is what its text has to read against. bgOf() already walks to
+            // the nearest painted ancestor; the pass simply never used it.
+            var surface=bgOf(el);
+            if(contrast(surface,bandBg)>1.35) continue;   // its own card; the band never reached it
             var col=parse(cs.color);
             if(!col) continue;
-            if(contrast(col,bandBg)>=MIN_CONTRAST) continue;
+            if(contrast(col,surface)>=MIN_CONTRAST) continue;
             // Keep accent-ish text accented, just lifted enough to read.
             var toAccent=contrast(col,accent);
             var repl=(toAccent<2.2)?mix(accent,{r:255,g:255,b:255},0.55):onBand;
-            if(contrast(repl,bandBg)<MIN_CONTRAST) repl=onBand;
+            if(contrast(repl,surface)<MIN_CONTRAST) repl=onBand;
             el.style.setProperty('color',rgb(repl),'important');
             if(cs.borderTopColor&&parse(cs.borderTopColor)&&contrast(parse(cs.borderTopColor),bandBg)<1.6){
               el.style.setProperty('border-color',rgba(onBand,0.18),'important');
@@ -347,6 +400,11 @@ const SCRIPT = `<script data-${MARKER}>
           }catch(e){}
         }
       });
+      /* Pin every card back to its own ink, so nothing inside a pale panel
+         inherits the band's near-white. Last, so it wins over the passes. */
+      for(var ci=0;ci<cards.length;ci++){
+        try{ cards[ci].el.style.setProperty('color',cards[ci].color,'important'); }catch(e){}
+      }
     }
   }catch(e){}
 })();
