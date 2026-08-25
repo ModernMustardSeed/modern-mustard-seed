@@ -14,7 +14,13 @@
  * forward lib/acq/post-demo.ts runs inside the senders and this script finds
  * nothing.
  *
- * WHAT IT REFUSES TO TOUCH. Anyone who already has follow-ups queued, anyone who
+ * WHAT IT STARTS. The five-email outbound drip, with the demo recorded as its
+ * step 1, so the next thing they receive is the missed-call math rather than
+ * the demo a second time. A lead the drip refuses falls back to the three queue
+ * follow-ups. Run on 2026-08-25 against the fifteen: all fifteen took the drip.
+ *
+ * WHAT IT REFUSES TO TOUCH. Anyone already in a live drip, anyone who already
+ * has follow-ups queued, anyone who
  * bought, booked Sarah or unsubscribed, and any test prospect. It only ever
  * queues: the governor still decides at send time whether each one may leave,
  * so this cannot push past the daily cap or the bounce brake.
@@ -102,8 +108,22 @@ for (const [leadId, info] of latest) {
     .gte('step', POST_DEMO_STEP_BASE)
     .lt('step', POST_DEMO_STEP_BASE + POST_DEMO_SEQUENCE.length);
 
+  // A LIVE DRIP IS ALSO "ALREADY CHASED", and this check missed it. The queue
+  // is only the fallback path; the normal outcome is a row in outbound_drips
+  // that queues nothing. Without this a second run RESET all fifteen drips to
+  // step 1 and rescheduled step 2, which on a sequence already at step 3 would
+  // silently restart the chase from the beginning.
+  const { data: drip } = await db
+    .from('outbound_drips')
+    .select('status, step')
+    .eq('lead_id', leadId)
+    .maybeSingle();
+  const liveDrip = drip && (drip.status === 'active' || drip.status === 'paused');
+
   const already = (count ?? 0) > 0;
-  const reason = refuse ?? (already ? 'already has follow-ups queued' : null);
+  const reason =
+    refuse ??
+    (liveDrip ? `drip already ${drip.status} at step ${drip.step}` : already ? 'already has follow-ups queued' : null);
 
   if (reason) {
     skipped++;
@@ -115,10 +135,20 @@ for (const [leadId, info] of latest) {
   if (!apply) continue;
 
   // Scheduled from NOW, not from the original send: a demo from last week whose
-  // "+2 days" is already in the past would otherwise fire all three at once.
+  // gap is already in the past would otherwise fire everything at once.
   const res = await startPostDemoSequence(db, { leadId, campaignId: info.campaignId, from: new Date() });
-  if (res.queued > 0) started++;
-  console.log(`        queued ${res.queued} as demo #${res.demoNumber}`);
+  // COUNT THE OUTCOME, NOT THE MECHANISM. The drip is the normal result and it
+  // queues nothing, so counting queued jobs printed "Started 0 sequences" over
+  // fifteen live enrolments: a run that worked, reporting that it had not.
+  if (res.drip.enrolled) {
+    started++;
+    console.log(`        enrolled in the drip, step 2 goes ${res.drip.nextAt ? new Date(res.drip.nextAt).toLocaleString() : 'on the next gap'}`);
+  } else if (res.queued > 0) {
+    started++;
+    console.log(`        drip refused (${res.drip.reason ?? 'unknown'}), queued ${res.queued} follow-ups instead`);
+  } else {
+    console.log(`        nothing started: ${res.drip.reason ?? 'no drip and no follow-ups'}`);
+  }
 }
 
 console.log('');
