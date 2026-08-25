@@ -387,6 +387,59 @@ async function reclaimStranded() {
 }
 
 /**
+ * THE LEAD AND ITS BUILD MUST AGREE ABOUT WHETHER THE BUILD IS OVER.
+ *
+ * A finished build is two writes, not one: the demo row goes 'ready', and then a
+ * SEPARATE, unchecked update puts 'ready' on the lead. Nothing is transactional
+ * about that pair. Lose the second write (a dropped connection, a kill between
+ * the two, an early return) and the lead sits at 'building' with no process
+ * anywhere that will ever revisit it.
+ *
+ * The cost is not cosmetic, because the BOARDS READ THE LEAD, not the build. So
+ * the lead shows on the anvil forever, its finished website is filed under
+ * "still building" instead of "built", and the count of what has been made is
+ * quietly short by one. Abruzzo Italian Kitchen did this for four days: its site
+ * was ready on 8/21 and the board still read "BUILDING · 6150M" on 8/25.
+ *
+ * Narrow on purpose. A lead only ever comes OFF the anvil here, and only when
+ * the build row it points at says the build is over. A build still running is
+ * never touched.
+ */
+const TERMINAL = ['ready', 'failed'];
+
+async function reconcileLeadStatuses() {
+  const { data: stuck, error } = await supabase
+    .from('outbound_leads')
+    .select('id, business_name, site_demo_id, site_demo_status')
+    .in('site_demo_status', ['queued', 'building'])
+    .not('site_demo_id', 'is', null);
+  if (error) { log('lead status reconcile failed (ignored):', error.message); return; }
+  if (!stuck?.length) return;
+
+  const byId = new Map();
+  const ids = stuck.map((l) => l.site_demo_id);
+  for (let i = 0; i < ids.length; i += 100) {
+    const { data } = await supabase.from('outbound_demo_sites').select('id, status').in('id', ids.slice(i, i + 100));
+    for (const row of data || []) byId.set(row.id, row.status);
+  }
+
+  const fixed = [];
+  for (const lead of stuck) {
+    const actual = byId.get(lead.site_demo_id);
+    if (!actual || !TERMINAL.includes(actual) || actual === lead.site_demo_status) continue;
+    const { error: updErr } = await supabase
+      .from('outbound_leads')
+      .update({ site_demo_status: actual })
+      .eq('id', lead.id)
+      // Compare-and-swap on the value we read, so a build that finished during
+      // this pass writes its own answer rather than being overwritten by ours.
+      .eq('site_demo_status', lead.site_demo_status);
+    if (!updErr) fixed.push(`${lead.business_name || lead.id} -> ${actual}`);
+  }
+  if (fixed.length) log(`reconciled ${fixed.length} lead(s) whose build had already finished:`, fixed.join(', '));
+}
+
+/**
  * ANYTHING THIS MACHINE WAS BUILDING WHEN IT DIED IS DEAD.
  *
  * One worker runs per machine, and the row carries the hostname that claimed it.
@@ -1408,6 +1461,7 @@ async function tick() {
   // starts a new build, so they are safe under memory pressure.
   await rescueFinished();
   await reclaimStranded();
+  await reconcileLeadStatuses();
 
   const freeMb = Math.round(os.freemem() / (1024 * 1024));
 
