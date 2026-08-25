@@ -532,7 +532,7 @@ export default function OutboundForge() {
                 value={siteTemplateKey}
                 onChange={setSiteTemplateKey}
                 compact
-                className="px-3 py-1.5 rounded-lg border-2 bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#b58a2a] font-oswald uppercase tracking-[0.08em] text-[11px] outline-none max-w-[210px]"
+                className="px-3 py-1.5 rounded-lg border-2 bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#F5B700] font-oswald uppercase tracking-[0.08em] text-[11px] outline-none max-w-[210px]"
               />
             </span>
             <span className="ml-auto font-oswald text-sm text-[#1a1815]/50 uppercase tracking-[0.1em]">

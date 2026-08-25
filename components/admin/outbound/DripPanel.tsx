@@ -152,7 +152,7 @@ export default function DripPanel({ lead, open, onClose, onLead, onDrip, push }:
               const on = openStep === s.step;
               const tone =
                 s.state === 'sent' ? 'bg-[#e8f3e8] border-[#245c2a]/40 text-[#245c2a]'
-                  : s.state === 'next' ? 'bg-[#b58a2a]/15 border-[#b58a2a] text-[#7a5c1a]'
+                  : s.state === 'next' ? 'bg-[#F5B700]/25 border-[#1a1815] text-[#1a1815]'
                     : s.state === 'skipped' ? 'bg-white border-[#1a1815]/15 text-[#1a1815]/45'
                       : 'bg-white border-[#1a1815]/25 text-[#1a1815]/75';
               return (
@@ -180,7 +180,7 @@ export default function DripPanel({ lead, open, onClose, onLead, onDrip, push }:
             return (
               <div className="rounded-xl border-2 border-[#1a1815] overflow-hidden bg-white min-h-[420px] flex flex-col">
                 <div className="px-4 py-2.5 bg-[#1a1815] text-[#f7f3e9] text-[12px] font-sans flex flex-wrap items-baseline justify-between gap-2">
-                  <span><span className="font-oswald uppercase tracking-[0.15em] text-[10px] text-[#b58a2a] mr-2">Subject</span>{s.subject}</span>
+                  <span><span className="font-oswald uppercase tracking-[0.15em] text-[10px] text-[#F5B700] mr-2">Subject</span>{s.subject}</span>
                   <span className="text-[#f7f3e9]/60">{s.preheader}</span>
                 </div>
                 <iframe
