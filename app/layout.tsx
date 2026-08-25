@@ -9,6 +9,7 @@ import AnalyticsScripts from '@/components/AnalyticsScripts';
 import CookieConsent from '@/components/CookieConsent';
 import Script from 'next/script';
 import HideOnAppShell from '@/components/HideOnAppShell';
+import HydrationGate from '@/components/HydrationGate';
 import AppNavDock from '@/components/AppNavDock';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
@@ -34,6 +35,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
         <JsonLd data={siteGraphJsonLd} />
+        {/* Entrance animations across the site start hidden and are revealed by
+            JS. If JS never runs (a dead bundle, a blocked script, a browser under
+            our build target) that leaves a page of invisible content. So arm the
+            hidden states only once JS is proven to run, and disarm them again if
+            React never marks the document live: immediately if a script fails
+            to load or parse, and after 6s as a backstop. */}
+        {/* Deliberately a raw <script>, NOT next/script. `beforeInteractive`
+            only queues code into self.__next_s for the Next runtime to drain,
+            so it would run after the bundle loads: too late to stop a flash of
+            visible content, and never at all on the browsers this exists for. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){var d=document.documentElement,done=0;d.className+=' mm-js';function live(){return d.getAttribute('data-mm-live')}function off(){if(done||live())return;done=1;d.className=d.className.replace(' mm-js','')}addEventListener('error',function(e){var t=e&&e.target;if(!t||t===window||t.nodeName==='SCRIPT')off()},true);setTimeout(off,6000)})();",
+          }}
+        />
         {/* Google Consent Mode v2: default everything non-essential to denied
             until the visitor accepts. Belt-and-suspenders with the hard gate. */}
         <Script id="consent-default" strategy="beforeInteractive">
@@ -58,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <HideOnAppShell alsoOn={['/mustard']}>
           <DeferredChat />
         </HideOnAppShell>
+        <HydrationGate />
         <RefCapture />
         <AnalyticsScripts />
         <CookieConsent />
