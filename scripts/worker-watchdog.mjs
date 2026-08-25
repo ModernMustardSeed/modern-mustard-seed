@@ -44,7 +44,8 @@
  */
 import { createClient } from '@supabase/supabase-js';
 import { spawn } from 'node:child_process';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, createWriteStream, statSync, renameSync, mkdirSync } from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -78,6 +79,54 @@ const CRASH_LIMIT = 5;
 const RENOTIFY_MS = 10 * 60_000;
 /** How much of the child's dying words to keep. Enough for a stack, not a log file. */
 const CRASH_TAIL_CHARS = 1500;
+
+/**
+ * THE WORKER'S OWN LOG, SEPARATE AND CAPPED.
+ *
+ * The forge child speaks stream-json: every tool call, every result, every base64
+ * chunk of every generated photograph. All of it used to be INHERITED straight
+ * into the supervisor's log file, which the outer .cmd opens `>>` and never
+ * rotates. By 2026-08-24 that file was 488 MEGABYTES, and when the forge went
+ * down the one line that explained why was buried in it. Diagnosing a two-day
+ * outage started with working out how to read the log at all.
+ *
+ * So the firehose gets its own file with a ceiling, and the supervisor's log goes
+ * back to being useful for what it is: a short list of ups, downs and reasons.
+ * One rollover is kept, which is plenty for "what was it doing when it died".
+ */
+const WORK_LOG = path.join(os.tmpdir(), `mms-worker-${NAME}.out.log`);
+const MAX_LOG_BYTES = Number(process.env.WATCHDOG_LOG_MAX_BYTES || 64 * 1024 * 1024);
+let workLog = null;
+let workLogBytes = 0;
+
+function openWorkLog() {
+  try {
+    mkdirSync(path.dirname(WORK_LOG), { recursive: true });
+    workLogBytes = existsSync(WORK_LOG) ? statSync(WORK_LOG).size : 0;
+    workLog = createWriteStream(WORK_LOG, { flags: 'a' });
+    workLog.on('error', () => { workLog = null; });
+  } catch {
+    workLog = null; // a worker must never fail to start because a log file would not open
+  }
+}
+
+function writeWorkLog(buf) {
+  if (!workLog) return;
+  try {
+    workLog.write(buf);
+    workLogBytes += buf.length;
+    if (workLogBytes >= MAX_LOG_BYTES) {
+      const stream = workLog;
+      workLog = null; // stop writing while the file is being moved
+      stream.end(() => {
+        try { renameSync(WORK_LOG, `${WORK_LOG}.1`); } catch { /* keep appending if the move fails */ }
+        openWorkLog();
+      });
+    }
+  } catch { /* never let logging take the supervisor down */ }
+}
+
+openWorkLog();
 
 const url = process.env.supabase_url || process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.supabase_service_role_key || process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -196,16 +245,22 @@ function crashHeadline(text) {
 
 function launch() {
   errTail = '';
-  // stdout is inherited so a healthy worker still logs to the supervisor's log file.
-  // stderr is PIPED and echoed, so the crash can be captured as well as seen: an
-  // inherited stderr goes straight to a file nobody is tailing at 2am.
-  child = spawn(process.execPath, [SCRIPT], { stdio: ['ignore', 'inherit', 'pipe'], cwd: root });
+  // BOTH streams are piped. stdout is the child's stream-json firehose and goes
+  // only to the capped work log. stderr goes there too, AND is echoed to the
+  // supervisor's log and kept as a tail, because stderr is where a death gets
+  // explained and that explanation has to live somewhere short enough to read.
+  child = spawn(process.execPath, [SCRIPT], { stdio: ['ignore', 'pipe', 'pipe'], cwd: root });
   up = true;
   downSince = null;
-  log(`worker up pid ${child.pid} (restart #${restarts})`);
+  log(`worker up pid ${child.pid} (restart #${restarts}) | its output: ${WORK_LOG}`);
   void beat();
 
+  child.stdout.on('data', (buf) => {
+    writeWorkLog(buf);
+  });
+
   child.stderr.on('data', (buf) => {
+    writeWorkLog(buf);
     process.stderr.write(buf);
     errTail = (errTail + buf.toString()).slice(-CRASH_TAIL_CHARS);
   });
