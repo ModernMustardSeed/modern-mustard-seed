@@ -112,8 +112,18 @@ if (-not $WhatIfOnly) { Start-Sleep -Seconds 3 }
 # 'ready' is banked in the database, so nothing here is the only copy.
 $sitesDir = Join-Path $env:USERPROFILE 'mms-demo-sites'
 if (Test-Path $sitesDir) {
-  $node = (Get-Command node).Source
-  $ids = & $node "$repo\scripts\wedged-build-ids.mjs" 2>$null
+  # From the repo, always. wedged-build-ids.mjs reads .env.local out of the
+  # working directory, so a repair run from anywhere else silently finds no
+  # credentials, prints nothing, and clears nothing.
+  #
+  # No `2>$null` either: in Windows PowerShell 5.1 redirecting a native exe's
+  # stderr wraps every line in a NativeCommandError, which under
+  # $ErrorActionPreference = 'Stop' aborts the repair before it restarts anything.
+  $ids = @()
+  Push-Location $repo
+  try { $ids = @(& (Get-Command node).Source (Join-Path $repo 'scripts\wedged-build-ids.mjs')) }
+  catch { Say "could not read the wedged build ids (skipping the directory sweep): $($_.Exception.Message)" }
+  finally { Pop-Location }
   foreach ($id in @($ids | Where-Object { $_ -match '^[0-9a-f-]{36}$' })) {
     $dir = Join-Path $sitesDir $id
     if (Test-Path $dir) {
