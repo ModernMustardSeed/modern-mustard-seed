@@ -33,6 +33,8 @@ import { parseTeam } from '../app/api/demo-order/intake/route';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 import { classifyAgent, classifyHit, verdictDetail, HUMAN_DELAY_SECONDS, POLL_WINDOW_MINUTES } from '../lib/acq/bots';
 import { piecesFrom, listPieces, PIECE_ORDER } from '../lib/forge-pieces';
+import { demoHoursFrom, DEMO_DEFAULT_HOURS } from '../lib/demo-booking';
+import { slotsFrom, parseDayHours } from '../lib/front-office/calendar';
 
 /** Four gaps, so a five email sequence. A fixture for the date maths only;
  *  the shipped campaign runs six emails and reads its length off its own row. */
@@ -2151,4 +2153,97 @@ test('forge build: the spoken list matches what was actually forged', () => {
   assert.equal(listPieces(['voice', 'site']), 'voice agent and website');
   assert.equal(listPieces(PIECE_ORDER), 'voice agent and website');
   assert.equal(listPieces([]), 'nothing');
+});
+
+
+/*
+ * WHAT THE DEMO AGENT IS ALLOWED TO OFFER.
+ *
+ * On 2026-08-25 a tester asked three forged demos for an appointment and all
+ * three said "the owner will confirm". They had no booking tool, and the
+ * persona prompt told them to treat availability as an unknown. Both halves are
+ * fixed; these pin the half that can silently rot, which is the time maths.
+ *
+ * The riskiest new code is demoHoursFrom: it reads whatever a stranger typed
+ * into a forge form. Getting it wrong in the CLOSED direction is the expensive
+ * one, because zero slots puts the agent straight back to deflecting.
+ */
+
+test('demo hours: nothing typed still gets a bookable week', () => {
+  // The real product treats an unreadable day as closed, which is right for a
+  // paying office and exactly wrong for a demo: it would offer nothing and the
+  // agent would deflect to the owner again, which is the bug being fixed.
+  for (const raw of [null, undefined, '', '   ']) {
+    const h = demoHoursFrom(raw as string | null | undefined);
+    assert.deepEqual(h, DEMO_DEFAULT_HOURS);
+    assert.ok(parseDayHours(h.monday), 'monday must be bookable');
+  }
+});
+
+test('demo hours: the shapes people actually type', () => {
+  const weekday = demoHoursFrom('Mon-Fri 8-5');
+  assert.ok(parseDayHours(weekday.monday));
+  assert.ok(parseDayHours(weekday.friday));
+  assert.ok(parseDayHours(weekday.wednesday), 'a day inside the range is open');
+
+  const spelled = demoHoursFrom('Monday through Friday 7am-6pm');
+  assert.ok(parseDayHours(spelled.tuesday));
+
+  const withSat = demoHoursFrom('Mon-Fri 8-5, Saturday 9-1');
+  assert.ok(parseDayHours(withSat.saturday));
+  assert.ok(parseDayHours(withSat.monday));
+});
+
+test('demo hours: a day nobody mentioned keeps the default, it does not close', () => {
+  // "Saturday 9-1" must not accidentally shut the business Monday to Friday.
+  const h = demoHoursFrom('Saturday 9-1');
+  assert.ok(parseDayHours(h.saturday));
+  assert.ok(parseDayHours(h.monday), 'an unmentioned weekday stays open');
+  assert.ok(parseDayHours(h.thursday));
+});
+
+test('demo hours: round the clock means every day', () => {
+  const h = demoHoursFrom('24/7');
+  for (const d of ['sunday', 'monday', 'saturday']) assert.ok(parseDayHours(h[d]), `${d} open`);
+});
+
+test('demo hours: unreadable text falls back to bookable, never to nothing', () => {
+  const h = demoHoursFrom('call us anytime lol');
+  assert.ok(parseDayHours(h.monday), 'garbage must not close the calendar');
+});
+
+test('demo slots: only real openings, and never sooner than the lead time', () => {
+  // Monday 9am. Two hour lead time means nothing before 11.
+  const now = new Date(2026, 7, 24, 9, 0, 0);
+  const slots = slotsFrom(DEMO_DEFAULT_HOURS, 'America/Denver', [], { now, limit: 3, minutes: 60 });
+  assert.ok(slots.length > 0, 'a demo must always have something to offer');
+  for (const s of slots) {
+    assert.ok(new Date(s.startsAt).getTime() >= now.getTime() + 120 * 60_000, 'past the lead time');
+    assert.ok(s.label && !/T\d\d:/.test(s.label), 'the label is sayable, not an ISO string');
+  }
+});
+
+test('demo slots: a booked time is gone for everybody after it', () => {
+  const now = new Date(2026, 7, 24, 9, 0, 0);
+  const first = slotsFrom(DEMO_DEFAULT_HOURS, 'America/Denver', [], { now, limit: 3, minutes: 60 });
+  const taken = [{ from: Date.parse(first[0].startsAt), to: Date.parse(first[0].endsAt) }];
+  const after = slotsFrom(DEMO_DEFAULT_HOURS, 'America/Denver', taken, { now, limit: 3, minutes: 60 });
+  assert.ok(
+    !after.some((s) => s.startsAt === first[0].startsAt),
+    'the slot the agent just booked must not be offered again',
+  );
+});
+
+test('demo slots: a closed day is never offered', () => {
+  // Sunday is closed in the demo default, so nothing may land on one.
+  const now = new Date(2026, 7, 24, 9, 0, 0);
+  const slots = slotsFrom(DEMO_DEFAULT_HOURS, 'America/Denver', [], { now, limit: 20, minutes: 60 });
+  assert.ok(!slots.some((s) => new Date(s.startsAt).getDay() === 0), 'no Sunday appointments');
+});
+
+test('demo slots: no hours at all means no slots, so the agent takes a message', () => {
+  // The one case where offering nothing is correct: every day explicitly shut.
+  const closed = Object.fromEntries(Object.keys(DEMO_DEFAULT_HOURS).map((d) => [d, 'closed']));
+  const slots = slotsFrom(closed, 'America/Denver', [], { now: new Date(2026, 7, 24, 9, 0, 0) });
+  assert.equal(slots.length, 0);
 });

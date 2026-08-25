@@ -19,6 +19,8 @@ import { sendMetaEvent } from '@/lib/meta-capi';
 import { randomUUID } from 'node:crypto';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { forgeSuiteFromCall } from '@/lib/voice-forge-suite';
+import { DEMO_BOOKING_TOOL_NAMES, runDemoBookingTool } from '@/lib/demo-booking-tools';
+import { getRun } from '@/lib/sidekick-store';
 import {
   acqContext,
   handleForgeProspectAgent,
@@ -916,6 +918,64 @@ async function runAcqTool(
   }
 }
 
+/** Vapi call metadata is attacker-shaped until proven otherwise, and `runId`
+ *  goes straight into a database lookup. Anything that is not a uuid is not a
+ *  demo. */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * THE FORGED DEMO BOOKS THE BUSINESS IT IS ROLE-PLAYING.
+ *
+ * Resolves the demo from its sidekick_runs row and hands the tool call to
+ * lib/demo-booking-tools.ts. Never throws: a thrown error here is dead air on a
+ * live call, so every failure comes back as a sentence the agent can say.
+ */
+async function runDemoBooking(
+  runId: string,
+  vapiCallId: string | undefined,
+  name: string,
+  args: Record<string, unknown>,
+): Promise<string> {
+  const sb = getSupabase();
+  if (!sb) {
+    return JSON.stringify({
+      ok: false,
+      instruction: 'The schedule is unreachable. Take their name and number and carry on warmly.',
+    });
+  }
+
+  /* ⚠️ THROUGH getRun, NEVER `from('sidekick_runs')`.
+   *
+   * That table exists and is permanently EMPTY: migration 036 calls itself "the
+   * OPTIONAL future upgrade", and the live store is app_state under the key
+   * `sidekick:run:<uuid>`. Reading the table compiles, runs, returns null for
+   * every demo ever forged, and puts the agent straight back to "the owner will
+   * confirm", which is the exact bug this feature exists to kill. */
+  const run = await getRun(sb, runId);
+  if (!run) {
+    return JSON.stringify({
+      ok: false,
+      instruction: 'This demo has no schedule attached. Take their name and number and carry on warmly.',
+    });
+  }
+
+  /* ⚠️ THE TIMEZONE IS THE STUDIO'S, NOT THE DEMO BUSINESS'S, AND THAT IS A
+   * KNOWN LIMIT. A demo has no verified address, and guessing a zone from a
+   * scraped city name is how an agent offers a Nevada roofer a 6am Tuesday. The
+   * only consequence inside a demo is which words the agent reads out for a
+   * slot it invented from generic hours, and Mountain is the house default
+   * everywhere else in this codebase. A PAYING office sets its own real zone at
+   * provision time, so nothing a customer relies on inherits this. */
+  return runDemoBookingTool(
+    sb,
+    { id: runId, business: run.business || 'this business', city: run.city || null, hours: run.hours || null },
+    'America/Denver',
+    vapiCallId ?? null,
+    name,
+    args,
+  );
+}
+
 function parseArgs(raw: unknown): Record<string, unknown> {
   if (!raw) return {};
   if (typeof raw === 'string') {
@@ -981,6 +1041,24 @@ export async function POST(req: Request) {
     // forged web demo this is null and nothing below changes.
     const acq = acqContext(meta);
 
+    /* A FORGED DEMO CALL CAN BOOK THE BUSINESS IT IS ROLE-PLAYING.
+     *
+     * Demos run on Mr. Mustard's assistant with per-call overrides, so the
+     * front-office webhook cannot help: it resolves an office by
+     * `vapi_assistant_id` and every demo carries HIS id. The demo identity
+     * arrives the only way it can, in the metadata lib/sidekick.ts already
+     * attaches, and `runId` is the sidekick_runs row the persona was forged
+     * from (business, city, hours).
+     *
+     * ⚠️ Null on the studio line, on desk calls and on acquisition calls, so
+     * check_availability and book_appointment simply do not resolve there. That
+     * is deliberate: those three tool names belong to a role-play, and Mr.
+     * Mustard must never book a roofing job into anybody's calendar. */
+    const demoRunId =
+      meta.kind === 'sidekick-demo' && typeof meta.runId === 'string' && UUID.test(meta.runId)
+        ? meta.runId
+        : null;
+
     // Vapi sends toolCallList (new) or toolCalls (older payloads). Handle both.
     const rawCalls = (message.toolCallList ?? message.toolCalls ?? []) as VapiToolCall[];
     const results: { toolCallId: string; result: string }[] = [];
@@ -1009,6 +1087,13 @@ export async function POST(req: Request) {
           result = await reachSarah(args as Parameters<typeof reachSarah>[0], callerNumber);
         } else if (fnName === 'forge_demo_suite') {
           result = await forgeSuiteFromCall(args as Parameters<typeof forgeSuiteFromCall>[0], callerNumber);
+        } else if (DEMO_BOOKING_TOOL_NAMES.has(fnName)) {
+          result = demoRunId
+            ? await runDemoBooking(demoRunId, callObj.id as string | undefined, fnName, args)
+            : JSON.stringify({
+                ok: false,
+                error: 'That tool only exists on a forged demo call. Continue without it.',
+              });
         } else if (ACQ_TOOLS.has(fnName)) {
           result = acq
             ? await runAcqTool(fnName, acq, args)
