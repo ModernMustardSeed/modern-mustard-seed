@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------
+   Blank-page safety net.
+
+   Anything that hides itself to animate in (`mm-reveal` from
+   components/mustard-mode/Reveal.tsx, `mm-r` from the journey chapters)
+   is only allowed to stay hidden while JS is alive to reveal it again.
+   `mm-js` is put on <html> by the mm-js-gate script in app/layout.tsx and
+   taken back off if React never marks the document live, so a dead bundle
+   degrades to an unanimated page instead of an empty one.
+
+   On 2026-08-25 this site rendered near-empty on any Safari under 16.4,
+   because Next 16 compiles to that target by default and one unparseable
+   class static block killed the App Router chunk. The browserslist floor
+   in package.json is the fix; this is what makes the next one survivable.
+   ------------------------------------------------------------------ */
+html:not(.mm-js) .mm-reveal,
+html:not(.mm-js) .mm-r {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+  animation: none !important;
+}
+
 @layer base {
   /* Metric-compatible fallbacks (capsize-computed) so the webfont swap occupies
      the exact same space as the final face: no layout shift while Playfair or
