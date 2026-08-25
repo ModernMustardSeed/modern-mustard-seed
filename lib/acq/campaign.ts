@@ -267,13 +267,21 @@ export function buildCampaignEmail(args: {
  * argument ("Dolphin Pools, $250 a job"). The machine ships empty, and the
  * reader puts three numbers in on the live one. `machineFor` with an estimate
  * stays for the admin preview of the old personalized layout.
+ *
+ * THE KEYPAD LANDS ON /demos. It used to land on /mustard, which meant a reader
+ * who tapped a calculator key arrived on the page asking for their phone
+ * number, a day after the campaign stopped asking for callbacks. Sarah: "it
+ * should land on demo instead of mustard." Every path out of the email, the
+ * button and the keypad both, now converges on the free build, and `#machine`
+ * drops them on the live calculator rather than at the top of a long page.
  */
 function blankMachineFor(lead: AcqProspect, business: string): string {
   return recoveryMachineBlock({
     blank: true,
     business,
     personalized: false,
-    liveUrl: `${SITE.url}/mustard?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}`,
+    liveUrl: `${SITE.url}/demos?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}`,
+    hash: 'machine',
     escape,
   });
 }
@@ -283,7 +291,8 @@ function machineFor(lead: AcqProspect, est: Estimate, business: string, personal
     est,
     business,
     personalized,
-    liveUrl: `${SITE.url}/mustard?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}`,
+    liveUrl: `${SITE.url}/demos?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}`,
+    hash: 'machine',
     escape,
   });
 }

@@ -518,7 +518,13 @@ function stoppedReasonFor(lead: AcqProspect): string | null {
   if (!lead.acq_eligible) return `Held out of the campaign${lead.acq_ineligible_reason ? `: ${lead.acq_ineligible_reason}` : '.'}`;
   if (lead.consent_status === 'granted') return 'They gave Mr. Mustard permission to call, so the drip stops and the phone takes over.';
   if (lead.reply_at) return 'They replied, so the drip stops. This is a conversation now.';
-  if (['consented', 'called', 'demoed', 'forged', 'demo_sent', 'meeting', 'client'].includes(String(lead.acq_stage))) {
+  // A demo does not end the follow-up, it changes which one is running. Saying
+  // "the sequence ended" over a screen that is about to show three queued
+  // follow-ups reads as a contradiction, so this names the handover instead.
+  if (['demoed', 'forged', 'demo_sent'].includes(String(lead.acq_stage))) {
+    return 'The cold drip is done: they have their demo. The post-demo sequence takes over and its emails are listed above.';
+  }
+  if (['consented', 'called', 'meeting', 'client'].includes(String(lead.acq_stage))) {
     return `They moved to ${String(lead.acq_stage).replace(/_/g, ' ')}, which ends the sequence.`;
   }
   if (!lead.email) return 'No email address on file.';

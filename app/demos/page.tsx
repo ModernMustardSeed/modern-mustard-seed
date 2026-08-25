@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import DemoStation from '@/components/DemoStation';
+import MoneyMachine from '@/components/demos/MoneyMachine';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
 /**
@@ -339,6 +340,31 @@ export default function DemosPage() {
             Take the voice agent and the website together and they are built as one thing: The Talking Website,
             {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
           </p>
+        </section>
+
+        {/* ── What the phone is costing. Where the cold email's keypad lands. ──
+            The email carries this same machine drawn in tables, and every key on
+            it is a link to this section carrying the three numbers it displayed
+            and the digit that was pressed. It sits after the pieces on purpose:
+            they have just read what they get, and this is what not having it is
+            worth per month. ── */}
+        <section id="machine" className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center scroll-mt-8">
+          <div className="lg:col-span-5">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Do the math yourself</span>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 leading-[1.08]">
+              What the missed ones are <em className="italic">costing</em>
+            </h2>
+            <p className="font-body text-[15px] text-[#161616]/70 mt-4 leading-relaxed">
+              Your numbers, not ours. Punch in a normal week. The voice agent above answers every one of those calls,
+              and you can have it built free in the next few minutes.
+            </p>
+            <p className="font-body text-[14px] text-[#161616]/55 mt-3">
+              Keep it after and it is {formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo. Or keep nothing.
+            </p>
+          </div>
+          <div className="lg:col-span-7">
+            <MoneyMachine />
+          </div>
         </section>
 
         {/* ── How it works ── */}

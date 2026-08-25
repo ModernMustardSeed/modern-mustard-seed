@@ -11,8 +11,8 @@
  *   NO JAVASCRIPT       no mail client runs any, so the display is a picture and
  *                       the keys cannot type. They are links instead, and each
  *                       digit key carries ITS OWN digit plus these three inputs
- *                       to /mustard, so a tap on "6" opens the live machine with
- *                       a 6 punched in and the same figure on the readout. The
+ *                       to the live machine, so a tap on "6" opens it with a 6
+ *                       punched in and the same figure on the readout. The
  *                       label says so, because a reader who taps four keys
  *                       waiting for the total to move decides we sent a broken
  *                       email.
@@ -63,9 +63,11 @@ export function recoveryMachineBlock(args: {
   personalized: boolean;
   /** Where the live, typeable machine lives. Every key points here. */
   liveUrl: string;
+  /** Fragment appended after the query, so a tap lands on the machine itself. */
+  hash?: string;
   escape: (s: string) => string;
 }): string {
-  const { business, personalized, liveUrl, escape: esc } = args;
+  const { business, personalized, liveUrl, hash, escape: esc } = args;
   const blank = args.blank === true || !args.est;
   const est: Estimate | null = blank ? null : (args.est as Estimate);
 
@@ -87,7 +89,9 @@ export function recoveryMachineBlock(args: {
       est ? { m: String(est.missedPerWeek), c: String(est.closeRatePct), t: String(Math.round(est.avgJobValue)) } : { blank: '1' },
     );
     if (typed) q.set('k', typed);
-    return liveUrl + (liveUrl.includes('?') ? '&' : '?') + q.toString();
+    // The fragment goes last, after the query, or the browser reads the rest of
+    // the parameters as part of the anchor name and nothing carries.
+    return liveUrl + (liveUrl.includes('?') ? '&' : '?') + q.toString() + (hash ? '#' + hash : '');
   };
 
   const slot = (label: string, hint: string, value: string, on: boolean) =>

@@ -25,6 +25,7 @@ import { OFFER } from '@/lib/acq/types';
 import type { AcqCampaign, AcqProspect } from '@/lib/acq/types';
 import { SITE } from '@/lib/seo';
 import { authorize, recordSend, recordRefusal } from '@/lib/acq/governor';
+import { startPostDemoSequence } from '@/lib/acq/post-demo';
 
 /** Above this share of the day's sends bouncing, stop and shout. */
 export const BOUNCE_ALARM_PCT = 4;
@@ -373,12 +374,24 @@ export async function sendDemoEmail(
     .from('outbound_leads')
     .update({ demo_emailed_at: new Date().toISOString(), acq_stage: 'demo_sent', reservoir_state: 'hot' })
     .eq('id', lead.id);
+  // The cold drip stops at demo_sent, so the follow-through has to start here
+  // rather than in whichever caller happened to send this one. See
+  // lib/acq/post-demo.ts for why this lives in the sender and not the worker.
+  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id });
+
   await recordEvent(db, {
     leadId: lead.id,
     campaignId: campaign.id,
     type: 'demo_emailed',
     label: `Personalized demo emailed to ${built.to}${override ? ' (sent by hand)' : ''}`,
-    detail: { demoUrl, messageId: sent.id, ...(override ? { override: override.reason } : {}) },
+    detail: {
+      demoUrl,
+      messageId: sent.id,
+      demoNumber: chase.demoNumber,
+      followupsQueued: chase.queued,
+      ...(chase.cancelled ? { supersededFollowups: chase.cancelled } : {}),
+      ...(override ? { override: override.reason } : {}),
+    },
   });
 
   return { ok: true, messageId: sent.id, subject: built.subject };
@@ -477,6 +490,8 @@ export async function sendSuiteEmail(
     .from('outbound_leads')
     .update({ demo_emailed_at: new Date().toISOString(), acq_stage: 'demo_sent', reservoir_state: 'hot' })
     .eq('id', lead.id);
+  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id });
+
   await recordEvent(db, {
     leadId: lead.id,
     campaignId: campaign.id,
@@ -490,6 +505,9 @@ export async function sendSuiteEmail(
       personalVideo,
       film,
       messageId: sent.id,
+      demoNumber: chase.demoNumber,
+      followupsQueued: chase.queued,
+      ...(chase.cancelled ? { supersededFollowups: chase.cancelled } : {}),
     },
   });
 
