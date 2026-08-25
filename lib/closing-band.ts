@@ -73,11 +73,80 @@ const SCRIPT = `<script data-${MARKER}>
     /* The ink is the accent driven far down toward black but never TO black:
        keeping a trace of their hue is the whole difference between "a dark
        footer" and "their dark footer". */
+    /* ---------- NO BROWN, EVER (2026-08-25) ----------
+       Sarah: "i hate brown - please take brown off now and never use it anywhere
+       again."
+
+       Brown is not a colour anyone here CHOSE. It is what darkening a warm accent
+       produces, and inkFrom darkens the accent by 86% to build the closing band.
+       An orange accent (#F27C21, the South Florida Roofing site) came out at
+       #221105, which is chocolate, and it was painted as a full-width field
+       across the bottom of the page. Every demo with a warm accent, and warm is
+       most of them, had a brown ending.
+
+       So brown is DEFINED and then removed, rather than blocklisted. It is the
+       warm hues (20-50 degrees) that are dark or dull. Deliberately NOT caught:
+       terracotta and brick (below 20 degrees), vivid orange and gold (saturation
+       above 0.70), and warm greys (saturation under 0.18). Those read as colours;
+       brown reads as mud. A colour that fails the test is pulled toward its own
+       neutral, which keeps its lightness exactly and drops the hue out of it. */
+    function hslOf(c){
+      var r=c.r/255,g=c.g/255,b=c.b/255;
+      var mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;
+      if(mx===mn) return {h:0,s:0,l:l};
+      var d=mx-mn;
+      var sat=l>0.5?d/(2-mx-mn):d/(mx+mn);
+      var h;
+      if(mx===r) h=((g-b)/d+(g<b?6:0)); else if(mx===g) h=((b-r)/d+2); else h=((r-g)/d+4);
+      return {h:h*60,s:sat,l:l};
+    }
+    function isBrown(c){
+      var q=hslOf(c);
+      if(q.s<0.18) return false;      /* warm grey, taupe, stone */
+      if(q.h<20||q.h>50) return false; /* brick and terracotta below, lime above */
+      if(q.l<=0.12) return q.s>=0.40;  /* saturated warm near-black reads brown at field size */
+      if(q.l<=0.50) return q.s<=0.70;  /* chocolate, umber, coffee; above 0.70 it is rust */
+      if(q.l<=0.62) return q.s<=0.60;  /* mid tan; above 0.60 it is orange */
+      if(q.l<=0.82) return q.s>=0.30&&q.s<=0.55; /* tan and khaki, but NOT bone or cream */
+      return false;
+    }
+    function hue2rgb(p,q,t){
+      if(t<0)t+=1; if(t>1)t-=1;
+      if(t<1/6) return p+(q-p)*6*t;
+      if(t<1/2) return q;
+      if(t<2/3) return p+(q-p)*(2/3-t)*6;
+      return p;
+    }
+    function fromHsl(q){
+      var h=q.h/360,s=q.s,l=q.l;
+      if(s===0) return {r:l*255,g:l*255,b:l*255};
+      var v2=l<0.5?l*(1+s):l+s-l*s, v1=2*l-v2;
+      return {r:hue2rgb(v1,v2,h+1/3)*255,g:hue2rgb(v1,v2,h)*255,b:hue2rgb(v1,v2,h-1/3)*255};
+    }
+    /* A SURFACE is pulled to its own grey. Lightness is preserved exactly, so
+       every contrast decision made around it still holds; only the mud comes out.
+       Right for a full-width dark field, where a hint of hue is all it ever had. */
+    function deBrown(c){
+      if(!c||!isBrown(c)) return c;
+      var g=c.r*0.2126+c.g*0.7152+c.b*0.0722;
+      var out=mix(c,{r:g,g:g,b:g},0.86);
+      return isBrown(out)?{r:g,g:g,b:g}:out;
+    }
+    /* An ACCENT is lifted OUT of brown instead, never greyed. Greying it would
+       leave the one mark carrying the brand as a smear of charcoal. Brown is dark
+       or dull orange, so brightening and saturating it at the same hue lands it
+       back on the vivid amber it was always trying to be: #a85c22 becomes a clean
+       orange, not a grey. */
+    function unbrownAccent(c){
+      if(!c||!isBrown(c)) return c;
+      var q=hslOf(c);
+      return fromHsl({h:q.h,s:Math.max(q.s,0.80),l:Math.max(q.l,0.56)});
+    }
     function inkFrom(accent){
       var deep=mix(accent,{r:0,g:0,b:0},0.86);
       // Guarantee it is genuinely dark even if the accent was near-black already.
       if(lum(deep)>0.08) deep=mix(deep,{r:0,g:0,b:0},0.5);
-      return deep;
+      return deBrown(deep);
     }
 
     /* ---------- read what the build published about itself ---------- */
@@ -167,18 +236,25 @@ const SCRIPT = `<script data-${MARKER}>
         if(ab&&lum(ab)<0.16) ink=mix(ab,{r:0,g:0,b:0},0.35);
       }catch(e){}
     }
-    var bandBg=wasDark?bgOf(parts[0]):ink;
+    /* A build that chose its own dark ending is normally left alone. Not when
+       what it chose was brown: Moose's Saloon (#170d06) and Agave Cantina
+       (#1D120B) both ended on chocolate of their own accord. wasDark spares the
+       LAYOUT, not the mud, so the background is repainted in that one case. */
+    var rawBandBg=wasDark?bgOf(parts[0]):ink;
+    var bandBg=deBrown(rawBandBg);
+    var repaintDarkBand=wasDark&&(bandBg.r!==rawBandBg.r||bandBg.g!==rawBandBg.g||bandBg.b!==rawBandBg.b);
     var onBand=mix(bandBg,{r:255,g:255,b:255},0.94);
 
     /* A grain plate. Flat ink photographs as a dead rectangle; a few percent of
        noise is what makes it read as a printed surface instead of a CSS color. */
     var GRAIN="url(\\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.42'/></svg>\\")";
 
-    var glow=mix(accent,{r:255,g:255,b:255},0.32);
+    accent=unbrownAccent(accent);
+    var glow=deBrown(mix(accent,{r:255,g:255,b:255},0.32));
     var css=document.createElement('style');
     css.setAttribute('data-${MARKER}','');
     css.textContent=
-      '[data-mms-band]{position:relative;isolation:isolate;'+(wasDark?'':'background:'+rgb(bandBg)+' !important;')+'}'+
+      '[data-mms-band]{position:relative;isolation:isolate;'+((wasDark&&!repaintDarkBand)?'':'background:'+rgb(bandBg)+' !important;')+'}'+
       /* Two blooms, anchored to opposite corners so the field has a direction.
          The first is the light source, the second only keeps the far corner from
          going dead flat. Both are large: a small gradient reads as a smudge. */

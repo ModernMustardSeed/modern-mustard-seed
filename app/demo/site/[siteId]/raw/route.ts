@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import { settleCursorCompanions } from '@/lib/cursor-companion';
 import { dressClosingBand } from '@/lib/closing-band';
+import { takeBrownOff } from '@/lib/no-brown';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,7 +30,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ siteId:
   // Every site already in the table was forged before the companion rules
   // existed, so settle its cursor glyph on the way out rather than re-forging
   // a hundred demos to fix one stuck mark on the hero.
-  return new Response(dressClosingBand(settleCursorCompanions(site.html as string)), {
+  return new Response(takeBrownOff(dressClosingBand(settleCursorCompanions(site.html as string))), {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'X-Robots-Tag': 'noindex, nofollow',
