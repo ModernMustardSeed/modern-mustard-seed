@@ -12,9 +12,9 @@
  * platform enforces the cap even if our code dies mid-call.
  */
 
-import { SIDEKICK, getVertical } from '@/data/sidekick';
+import { DEMO_AGENT, getVertical } from '@/data/demo-agent';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
-import { sidekickVoice, type VoiceGender, type VapiVoice } from '@/lib/sidekick-voice';
+import { demoVoice, type VoiceGender, type VapiVoice } from '@/lib/demo-voice';
 import { possessive } from '@/lib/business-name';
 import { env, envAny } from '@/lib/env';
 import { ensureReadbackStandard } from '@/lib/readback-standard';
@@ -24,7 +24,7 @@ const MUSTARD_ASSISTANT_ID = 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee';
 /** Mr. Mustard's own line, (406) 312-1223. Callbacks reach him, which is the point. */
 const MUSTARD_PHONE_NUMBER_ID = '462f988d-ce3a-4961-b652-dfc1fb1ac5d0';
 
-export type SidekickProfile = {
+export type DemoAgentProfile = {
   business: string;
   verticalId: string;
   city: string;
@@ -33,12 +33,12 @@ export type SidekickProfile = {
   services: string;
   hours?: string;
   /**
-   * Which story the demo tells. 'sidekick' (default): the visitor forged it
+   * Which story the demo tells. 'demo-agent' (default): the visitor forged it
    * themselves on /voice-agents/forge, so "you just built me" is true. 'outbound': the
    * cockpit forged it and Sarah SENT them the link, so the script must
    * introduce itself clearly instead of assuming they know what a forge is.
    */
-  flow?: 'sidekick' | 'outbound';
+  flow?: 'demo-agent' | 'outbound';
   /** Agent voice: 'female' or 'male' (default). Rides as a Vapi override. */
   voice?: VoiceGender;
 };
@@ -167,7 +167,7 @@ export const VOICE_CRAFT = `
 - A US phone number has exactly ten digits. If you heard fewer or more, say so and take it again.
 - On these demo calls, skip the recall_caller and send_email tools entirely: if they want something in writing, point them to the button right below the call or offer to book Sarah. Never say "just a sec" or "hold on" unless you are actually fetching calendar slots or booking. Checking the schedule and booking are real work, so a short "let me check the schedule" there is right, not filler.`;
 
-export function sidekickSystemPrompt(p: SidekickProfile): string {
+export function demoAgentSystemPrompt(p: DemoAgentProfile): string {
   const v = getVertical(p.verticalId);
   if (p.flow === 'outbound') return outboundDemoSystemPrompt(p, v.scenario);
   return `You are the brand-new voice agent for ${p.business} in ${p.city}. Mr. Mustard, the AI at Modern Mustard Seed, finished training you moments ago, and this is your live DEMO call with ${p.ownerName}, the owner, who just forged you at modernmustardseed.com/voice-agents/forge. You are talking to your possible future boss. Be warm, sharp, and quietly thrilled to exist.
@@ -198,7 +198,7 @@ You have a REAL calendar for ${p.business} and you can really book on it, right 
 - If asked what you are: a fully voice agent, proudly, trained by Mr. Mustard on the same stack that answers Modern Mustard Seed's own phones.
 - Turns are 1 to 2 sentences. Warm, natural, zero pushiness. No em dashes, ever.
 - When booking with Sarah: confirm name and email out loud, spell the email back letter by letter, and get an explicit yes BEFORE calling the booking tool. All times Mountain Time.
-- As the call winds down, sign off with your maker's mark, once and lightly: this demo was forged at modernmustardseed dot com slash sidekick.${VOICE_CRAFT}`;
+- As the call winds down, sign off with your maker's mark, once and lightly: this demo was forged at modernmustardseed dot com slash voice agents.${VOICE_CRAFT}`;
 }
 
 /**
@@ -207,7 +207,7 @@ You have a REAL calendar for ${p.business} and you can really book on it, right 
  * the phone). No inside jokes, no "you just built me", no Mr. Mustard lore.
  * One clear promise: this is how your phone could be answered, test me.
  */
-function outboundDemoSystemPrompt(p: SidekickProfile, scenario: string): string {
+function outboundDemoSystemPrompt(p: DemoAgentProfile, scenario: string): string {
   return `You are a live DEMO of a voice agent for ${p.business} in ${p.city}, built by Sarah Scarano's studio, Modern Mustard Seed. The person talking to you is most likely ${p.ownerName} or someone from ${p.business} who opened the demo link Sarah sent them. They may have no idea what a voice agent is. Your one job: make them feel, in under two minutes, what it would be like if every call to ${p.business} got answered this well.
 
 # How this demo goes
@@ -240,7 +240,7 @@ You have a REAL calendar for ${p.business} and you can really book on it, right 
 - As the call winds down, one light sign-off: this demo was built by Modern Mustard Seed, modernmustardseed dot com.${VOICE_CRAFT}`;
 }
 
-export function sidekickFirstMessage(p: SidekickProfile): string {
+export function demoAgentFirstMessage(p: DemoAgentProfile): string {
   if (p.flow === 'outbound') {
     // Wording matters here: the old line "I'm the voice agent Sarah at
     // Modern Mustard Seed built..." was spoken as if the voice agent were
@@ -272,7 +272,7 @@ export function sidekickFirstMessage(p: SidekickProfile): string {
  * the ones the transcriber mangles without help. Keyterm accepted by Vapi on
  * nova-3, probed 201 on 2026-07-21.
  */
-function demoTranscriber(p: SidekickProfile): Record<string, unknown> {
+function demoTranscriber(p: DemoAgentProfile): Record<string, unknown> {
   const keyterm = [
     ...new Set(
       [p.business, p.ownerName, p.city, 'Modern Mustard Seed', 'Sarah']
@@ -319,7 +319,7 @@ export function assistantId(): string {
 }
 
 function phoneNumberId(): string {
-  return envAny('SIDEKICK_PHONE_NUMBER_ID', 'VAPI_PHONE_NUMBER_ID') ?? MUSTARD_PHONE_NUMBER_ID;
+  return envAny('DEMO_AGENT_PHONE_NUMBER_ID', 'VAPI_PHONE_NUMBER_ID') ?? MUSTARD_PHONE_NUMBER_ID;
 }
 
 export type ForgeResult =
@@ -327,7 +327,7 @@ export type ForgeResult =
   | { ok: false; billing?: boolean; error: string };
 
 /** Forge the call payload (shared by web and phone paths). */
-export async function forgeCall(p: SidekickProfile, runId: string, mode: 'web' | 'phone'): Promise<ForgeResult> {
+export async function forgeCall(p: DemoAgentProfile, runId: string, mode: 'web' | 'phone'): Promise<ForgeResult> {
   const apiKey = env('VAPI_API_KEY') ?? '';
   if (!apiKey) return { ok: false, error: 'not_configured' };
 
@@ -337,16 +337,16 @@ export async function forgeCall(p: SidekickProfile, runId: string, mode: 'web' |
   return {
     ok: true,
     call: {
-      firstMessage: sidekickFirstMessage(p),
+      firstMessage: demoAgentFirstMessage(p),
       // The demo can book the roleplayed business's OWN schedule now, which is
       // the one thing every forged demo is sold on and the one thing it could
       // not do. See lib/demo-booking-tools.ts.
-      model: demoModel(model, sidekickSystemPrompt(p), DEMO_TOOLS, demoBookingTools(p.business)),
+      model: demoModel(model, demoAgentSystemPrompt(p), DEMO_TOOLS, demoBookingTools(p.business)),
       transcriber: demoTranscriber(p),
       ...SPEAKING_PIPELINE,
-      maxDurationSeconds: SIDEKICK.demoSeconds,
-      metadata: { kind: 'sidekick-demo', mode, runId, business: p.business.slice(0, 80) },
-      voice: sidekickVoice(p.voice),
+      maxDurationSeconds: DEMO_AGENT.demoSeconds,
+      metadata: { kind: 'demo-agent', mode, runId, business: p.business.slice(0, 80) },
+      voice: demoVoice(p.voice),
     },
   };
 }

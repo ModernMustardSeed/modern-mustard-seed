@@ -240,7 +240,7 @@ export const SOCIAL_SETS: SocialSet[] = [
       {
         q: 'How much?',
         a: 'The call is free, always. If you want one of your own it is $397 to build and $397 a month, and I scope it on a 15 minute call. Not trying to sell you in the comments though, go break the demo first.',
-        warn: 'Price check before you post. That came from data/sidekick.ts on 2026-07-28. Never type a price from memory, re-read the file if the tiers have moved.',
+        warn: 'Price check before you post. That came from data/demo-agent.ts on 2026-07-28. Never type a price from memory, re-read the file if the tiers have moved.',
       },
       {
         q: 'Does it sound fake?',
@@ -531,7 +531,7 @@ export const SOCIAL_SETS: SocialSet[] = [
       '⚠️ The Optifai 2026 study (47 hour average) is B2B SaaS, NOT home services. Fine as corroboration in a comment that nothing has moved in 15 years. Never put it on a card aimed at trades.',
       'Jobber 2026 is the audience-appropriate one, actual home service customers, so lead with it when the room is sceptical of old data.',
       'Do not run this in the same group in the same week as the Missed Call Files. They are close cousins and it reads as one pitch.',
-      'Never type a price from memory. Sidekick tiers come from data/sidekick.ts.',
+      'Never type a price from memory. Demo agent tiers come from data/demo-agent.ts.',
     ],
     cards: [
       {
@@ -644,7 +644,7 @@ export const SOCIAL_SETS: SocialSet[] = [
       {
         q: 'How much?',
         a: 'The call is free and always will be. If you want one of your own it is $397 to build and $397 a month, scoped on a 15 minute call. Go time your own phone first though, you might just need the text-back switched on.',
-        warn: 'Price from data/sidekick.ts on 2026-07-28. Re-read the file if the tiers have moved. Never type a price from memory.',
+        warn: 'Price from data/demo-agent.ts on 2026-07-28. Re-read the file if the tiers have moved. Never type a price from memory.',
       },
     ],
   },

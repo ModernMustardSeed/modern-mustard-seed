@@ -8,7 +8,7 @@
  *
  * Every gate fails CLOSED. Voice minutes cost real money:
  *   - honeypot + per-instance IP throttle
- *   - 1 forge per email, atomic via app_state pk claim (lib/sidekick-store)
+ *   - 1 forge per email, atomic via app_state pk claim (lib/demo-run-store)
  *   - 1 ring per phone number, same mechanism
  *   - global daily backstop across all visitors
  *   - Vapi billing failure trips a loud kill switch email to Sarah
@@ -18,7 +18,7 @@ import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { resendClient } from '@/lib/send-email';
 import { getSupabase, insertLead } from '@/lib/supabase';
-import { forgeCall, ringDemoCall, toE164, type SidekickProfile } from '@/lib/sidekick';
+import { forgeCall, ringDemoCall, toE164, type DemoAgentProfile } from '@/lib/demo-agent';
 import {
   claimEmail,
   claimPhone,
@@ -29,9 +29,9 @@ import {
   saveRun,
   getRun,
   markRunRang,
-  type SidekickRun,
-} from '@/lib/sidekick-store';
-import { SIDEKICK, getVertical } from '@/data/sidekick';
+  type DemoAgentRun,
+} from '@/lib/demo-run-store';
+import { DEMO_AGENT, getVertical } from '@/data/demo-agent';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 
 export const runtime = 'nodejs';
@@ -71,7 +71,7 @@ async function notifySarah(subject: string, lines: string[]) {
         .join('')}</div>`,
     });
   } catch (err) {
-    console.error('sidekick notify failed', err instanceof Error ? err.message : err);
+    console.error('demo agent notify failed', err instanceof Error ? err.message : err);
   }
 }
 
@@ -157,16 +157,16 @@ async function handleForge(
     await releaseKey(supabase, 'email', email);
     await notifySarah('VOICE AGENT FORGE: daily cap reached', [
       `The forge hit its ${GLOBAL_DAILY_CAP}-demo daily cap. Latest attempt: ${business} (${email}).`,
-      'Raise GLOBAL_DAILY_CAP in app/api/sidekick/forge/route.ts if this is good traffic.',
+      'Raise GLOBAL_DAILY_CAP in app/api/demo-agent/forge/route.ts if this is good traffic.',
     ]);
     return NextResponse.json(
-      { error: 'forge_cooling', message: 'The forge is cooling down after a busy day. Come back tomorrow, or call Mr. Mustard right now at ' + SIDEKICK.phoneLine + '.' },
+      { error: 'forge_cooling', message: 'The forge is cooling down after a busy day. Come back tomorrow, or call Mr. Mustard right now at ' + DEMO_AGENT.phoneLine + '.' },
       { status: 429 }
     );
   }
 
-  const profile: SidekickProfile = { business, verticalId, city, ownerName, services, hours: hours || undefined };
-  const run: SidekickRun = { ...profile, email, ip, createdAt: new Date().toISOString() };
+  const profile: DemoAgentProfile = { business, verticalId, city, ownerName, services, hours: hours || undefined };
+  const run: DemoAgentRun = { ...profile, email, ip, createdAt: new Date().toISOString() };
 
   if (!(await saveRun(supabase, runId, run))) {
     await releaseKey(supabase, 'email', email);
@@ -177,7 +177,7 @@ async function handleForge(
   if (!forged.ok) {
     // Release every claim so a transient Vapi outage never locks this visitor out.
     await releaseKey(supabase, 'email', email);
-    console.error('sidekick forge failed', forged.error);
+    console.error('demo agent forge failed', forged.error);
     return NextResponse.json({ error: 'forge_offline' }, { status: 503 });
   }
 
@@ -190,14 +190,14 @@ async function handleForge(
       business_name: business,
       company: business,
       industry: verticalId,
-      source: 'sidekick-forge',
+      source: 'demo-agent-forge',
       status: 'new',
-      // `run=<uuid>` is a MACHINE-READ TOKEN, not prose: lib/sidekick-drip.ts
+      // `run=<uuid>` is a MACHINE-READ TOKEN, not prose: lib/demo-agent-drip.ts
       // extracts it to link the follow-up emails back to this exact demo.
       // Keep it first and keep the shape. (The leads table has no demo_url
       // column and the Voice Agent forge is a no-DDL surface, so the token is
       // how the run travels with the lead.)
-      notes: `run=${runId} [sidekick] ${business} · ${getVertical(verticalId).label} · ${city} · taught him: ${services.slice(0, 160)}`,
+      notes: `run=${runId} [demo agent] ${business} · ${getVertical(verticalId).label} · ${city} · taught him: ${services.slice(0, 160)}`,
     });
   } catch {
     /* non-fatal */
@@ -207,10 +207,10 @@ async function handleForge(
     `<strong>${esc(ownerName)}</strong> just forged a Voice Agent for <strong>${esc(business)}</strong> (${getVertical(verticalId).label}, ${esc(city)}).`,
     `Email: ${esc(email)}`,
     `Taught him: ${esc(services.slice(0, 300))}`,
-    `Run ${runId}. Transcript lands in the Vapi dashboard under metadata kind=sidekick-demo.`,
+    `Run ${runId}. Transcript lands in the Vapi dashboard under metadata kind=demo-agent.`,
   ]);
 
-  return NextResponse.json({ runId, call: forged.call, phoneLine: SIDEKICK.phoneLine });
+  return NextResponse.json({ runId, call: forged.call, phoneLine: DEMO_AGENT.phoneLine });
 }
 
 async function handleRing(
@@ -247,7 +247,7 @@ async function handleRing(
     return NextResponse.json({ error: 'already_rang', message: 'This number already met its Voice Agent. Ready for the real thing?' }, { status: 402 });
   }
 
-  const profile: SidekickProfile = {
+  const profile: DemoAgentProfile = {
     business: run.business,
     verticalId: run.verticalId || 'other',
     city: run.city || '',
@@ -277,11 +277,11 @@ async function handleRing(
         'Top up at dashboard.vapi.ai. Inbound Mr. Mustard is likely down too.',
       ]);
     }
-    console.error('sidekick ring failed', rang.error);
-    return NextResponse.json({ error: 'ring_failed', message: 'The call could not go out just now. The browser demo above still works, and Mr. Mustard is live at ' + SIDEKICK.phoneLine + '.' }, { status: 502 });
+    console.error('demo agent ring failed', rang.error);
+    return NextResponse.json({ error: 'ring_failed', message: 'The call could not go out just now. The browser demo above still works, and Mr. Mustard is live at ' + DEMO_AGENT.phoneLine + '.' }, { status: 502 });
   }
 
   await markRunRang(supabase, runId, run, to, rang.callId);
 
-  return NextResponse.json({ ok: true, from: SIDEKICK.phoneLine });
+  return NextResponse.json({ ok: true, from: DEMO_AGENT.phoneLine });
 }

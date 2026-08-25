@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createInterview, upsertMember } from '@/lib/hundredfold-store';
 import { getRoadmapBySlug } from '@/lib/roadmap-store';
 import { interviewSystemPrompt, type InterviewChannel } from '@/lib/hundredfold-interview';
-import { SPEAKING_PIPELINE, demoModel, getAssistantModel } from '@/lib/sidekick';
+import { SPEAKING_PIPELINE, demoModel, getAssistantModel } from '@/lib/demo-agent';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;

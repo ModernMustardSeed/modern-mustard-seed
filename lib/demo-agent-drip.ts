@@ -1,9 +1,9 @@
 /**
- * THE SIDEKICK DRIP: follow-up for people who forged a Voice Agent at /voice-agents/forge
+ * THE DEMO_AGENT DRIP: follow-up for people who forged a Voice Agent at /voice-agents/forge
  * and did not buy.
  *
  * WHY THIS EXISTS (2026-07-20): /voice-agents/forge forgers received NOTHING. The forge
- * wrote a row to `leads` with source 'sidekick-forge' and emailed Sarah, and
+ * wrote a row to `leads` with source 'demo-agent-forge' and emailed Sarah, and
  * that was the end of it. The demo-station drip only covers `outbound_leads`
  * where source = 'demo-station', and the mustard-sequence cron only covers
  * sources 'mustard-seed-chat' and 'tracker'. A stranger could hear their own
@@ -29,7 +29,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { sendViaResend } from '@/lib/send-email';
 import { clientEmail, escape } from '@/lib/email';
 import { SITE } from '@/lib/seo';
-import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
+import { demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
 import { possessive } from '@/lib/business-name';
 
 const CAP_PER_RUN = 12;
@@ -48,7 +48,7 @@ const START_MAX_AGE_HRS = 96;
 
 type DripState = { step: number; at: string };
 
-type SidekickLead = {
+type DemoAgentLead = {
   id: string;
   email: string | null;
   name: string | null;
@@ -84,17 +84,17 @@ function due(step: number, ageHrs: number, sinceLastHrs: number): boolean {
   return false;
 }
 
-function firstNameOf(lead: SidekickLead): string | null {
+function firstNameOf(lead: DemoAgentLead): string | null {
   const n = lead.name?.trim().split(/\s+/)[0];
   return n && n.length > 1 ? n : null;
 }
 
-function bizOf(lead: SidekickLead): string {
+function bizOf(lead: DemoAgentLead): string {
   return lead.business_name?.trim() || lead.company?.trim() || 'your business';
 }
 
-export function sidekickDripEmail(
-  lead: SidekickLead,
+export function demoAgentDripEmail(
+  lead: DemoAgentLead,
   step: number,
 ): { subject: string; html: string; snippet: string } {
   const first = firstNameOf(lead);
@@ -102,8 +102,8 @@ export function sidekickDripEmail(
   const biz = escape(bizOf(lead));
   const runId = runIdFromNotes(lead.notes);
   const demoUrl = runId ? `${SITE.url}/voice-agents/forge/demo/${runId}` : `${SITE.url}/voice-agents/forge`;
-  const monthly = sidekickUsd(sidekickTiers[0].monthlyCents);
-  const setup = sidekickUsd(sidekickTiers[0].setupCents);
+  const monthly = demoAgentUsd(demoAgentTiers[0].monthlyCents);
+  const setup = demoAgentUsd(demoAgentTiers[0].setupCents);
 
   const cta = { label: 'Hear your Voice Agent again', url: demoUrl };
   const secondary = { label: 'Book 10 minutes with Sarah', url: `${SITE.url}/book` };
@@ -179,13 +179,13 @@ export async function staleUnstarted(
   const { data } = await sb
     .from('leads')
     .select('id, email, name, business_name, company, status, notes, created_at')
-    .eq('source', 'sidekick-forge')
+    .eq('source', 'demo-agent-forge')
     .not('email', 'is', null)
     .lt('created_at', new Date(now - START_MAX_AGE_HRS * 3600000).toISOString())
     .gte('created_at', new Date(now - WINDOW_DAYS * 86400000).toISOString())
     .limit(200);
 
-  const rows = (data ?? []) as SidekickLead[];
+  const rows = (data ?? []) as DemoAgentLead[];
   const fresh = rows.filter((r) => !TERMINAL.has((r.status ?? '').toLowerCase()));
   if (!fresh.length) return { count: 0, leads: [] };
 
@@ -211,7 +211,7 @@ export async function staleUnstarted(
  * One drip pass. Fail-quiet per lead: a send failure leaves the state row
  * untouched so the same touch is retried next run rather than skipped.
  */
-export async function sidekickDrip(
+export async function demoAgentDrip(
   sb: SupabaseClient,
   opts: { onlyLeadId?: string; dryRun?: boolean } = {},
 ): Promise<{ sent: number; skipped: number; due: number; dryRun?: true }> {
@@ -220,17 +220,17 @@ export async function sidekickDrip(
   const { data: rows, error } = await sb
     .from('leads')
     .select('id, email, name, business_name, company, status, notes, created_at')
-    .eq('source', 'sidekick-forge')
+    .eq('source', 'demo-agent-forge')
     .not('email', 'is', null)
     .gte('created_at', new Date(now - WINDOW_DAYS * 86400000).toISOString())
     .limit(200);
 
   if (error) {
-    console.error('sidekick drip query failed:', error.message);
+    console.error('demo agent drip query failed:', error.message);
     return { sent: 0, skipped: 0, due: 0 };
   }
 
-  const pool = (opts.onlyLeadId ? (rows ?? []).filter((r) => r.id === opts.onlyLeadId) : (rows ?? [])) as SidekickLead[];
+  const pool = (opts.onlyLeadId ? (rows ?? []).filter((r) => r.id === opts.onlyLeadId) : (rows ?? [])) as DemoAgentLead[];
   if (!pool.length) return { sent: 0, skipped: 0, due: 0 };
 
   const ids = pool.map((l) => l.id);
@@ -263,7 +263,7 @@ export async function sidekickDrip(
     dueCount++;
     if (opts.dryRun) continue;
 
-    const mail = sidekickDripEmail(lead, state.step);
+    const mail = demoAgentDripEmail(lead, state.step);
     const unsub = `${SITE.url}/api/outreach/unsubscribe?c=${encodeURIComponent(lead.email)}`;
     const html =
       mail.html +
@@ -283,7 +283,7 @@ export async function sidekickDrip(
     if (!result.ok) {
       // Suppressed or failed. Do NOT advance state: an unsubscribed address
       // simply never advances, and a transient failure retries next run.
-      console.error(`sidekick drip send failed for ${lead.id}: ${result.error}`);
+      console.error(`demo agent drip send failed for ${lead.id}: ${result.error}`);
       skipped++;
       continue;
     }

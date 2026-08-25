@@ -1,6 +1,6 @@
 /**
  * Durable MUSTARD PICTURES state on the existing app_state k/v table, same
- * atomic-claim design as lib/sidekick-store.ts (text PK conflict = the cap).
+ * atomic-claim design as lib/demo-run-store.ts (text PK conflict = the cap).
  *
  * Keys:
  *   pictures:run:<uuid>     the screen test (profile + storyboard + frame url)

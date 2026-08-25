@@ -13,7 +13,7 @@
  * A human chief of staff runs four to eight thousand a month. Not anymore.
  *
  * PRICE LIVES HERE, IN CENTS, AND NOWHERE ELSE. Checkout builds inline Stripe
- * price_data from these cents (same pattern as data/sidekick.ts), so the number
+ * price_data from these cents (same pattern as data/demo-agent.ts), so the number
  * on the page IS the number Stripe charges. Every plan is hard-capped on voice
  * minutes and fails closed at the cap (he drops to text and takes a message,
  * never an overage bill), per the never-leak-revenue rule.

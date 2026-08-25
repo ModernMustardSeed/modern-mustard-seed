@@ -9,7 +9,7 @@
  *                sanitized catalog replaces the stored run (the paid PDF
  *                renders whatever is current).
  *
- * Every gate fails CLOSED, same spine as sidekick/pictures.
+ * Every gate fails CLOSED, same spine as demo agent / pictures.
  */
 
 import { NextResponse } from 'next/server';

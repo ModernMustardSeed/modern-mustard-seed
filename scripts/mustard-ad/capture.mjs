@@ -68,7 +68,7 @@ const SUBJECT = {
   services:
     'Facials, injectables, laser hair removal, and chemical peels. Consultations are free. Most treatments run forty five minutes to an hour. People always ask about downtime and whether we take walk ins (we do not, we book ahead).',
   hours: 'Tue-Sat 9-6',
-  // ⚠️ ONE FORGE PER EMAIL, FOREVER (atomic pk claim in lib/sidekick-store).
+  // ⚠️ ONE FORGE PER EMAIL, FOREVER (atomic pk claim in lib/demo-run-store).
   // A retake therefore CANNOT reuse the previous address, so the take number
   // rides in a plus-tag. Every take permanently burns one address and leaves
   // one lead row behind; both are listed in the run report so they can be
@@ -151,7 +151,7 @@ const PREP = `
 (() => {
   if (window.top !== window) return;
   try { document.cookie = 'mms_consent=denied; path=/; max-age=31536000; samesite=lax'; } catch {}
-  try { localStorage.removeItem('mms_sidekick_forge'); } catch {}
+  try { localStorage.removeItem('mms_demo_agent_forge'); } catch {}
   const css = document.createElement('style');
   css.textContent = 'html,body,*{scroll-behavior:auto !important}';
   const add = () => document.documentElement.appendChild(css);

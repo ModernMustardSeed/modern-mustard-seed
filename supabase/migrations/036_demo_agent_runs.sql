@@ -1,0 +1,30 @@
+-- TOMBSTONE. This migration is intentionally empty.
+--
+-- It originally created a `sidekick_runs` table as, in its own words, "the
+-- OPTIONAL future upgrade to a real table (nicer admin browsing)". That upgrade
+-- never happened. The live store has always been lib/demo-run-store.ts, which
+-- keeps each forged demo as JSON in `app_state` under `demo:run:<uuid>` (277 of
+-- them at the time of writing). The table was created, indexed, RLS-enabled,
+-- and never held a single row.
+--
+-- ── WHY IT IS A TOMBSTONE AND NOT JUST LEFT ALONE ────────────────────────────
+-- An empty table with an inviting name is a trap. On 2026-08-25 the demo booking
+-- work wrote `demo_appointments.run_id references sidekick_runs(id)`, which is
+-- the obvious and wrong thing: the schema applied cleanly, every test passed,
+-- and every booking would have failed at runtime with a constraint error that a
+-- caller hears as "the owner will confirm". It was caught only because a
+-- double-booking test against real data found zero rows in a table that should
+-- have had 277.
+--
+-- Migration 109 drops the table. This file is emptied rather than deleted so the
+-- numbered sequence stays intact and the next person to ask "what was 036"
+-- gets an answer instead of a gap. Replaying migrations from scratch now simply
+-- never creates it, which is correct: nothing has ever read or written it.
+--
+-- Renamed from 036_sidekick.sql on 2026-08-25 (Sarah: "take sidekick away
+-- everywhere"). Safe to rename because migrations here are applied by hand
+-- through the Management API and the remote migration history table is empty,
+-- so nothing keys off the filename. `supabase db push` remains banned for the
+-- same reason.
+
+select 1;

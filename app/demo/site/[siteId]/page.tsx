@@ -1,8 +1,8 @@
 import { getSupabase } from '@/lib/supabase';
-import { getRun } from '@/lib/sidekick-store';
-import { forgeCall } from '@/lib/sidekick';
+import { getRun } from '@/lib/demo-run-store';
+import { forgeCall } from '@/lib/demo-agent';
 import { buildMetadata } from '@/lib/seo';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { ForgedCall } from '@/lib/demo-agent';
 import SiteDemoShell from '@/components/demo/SiteDemoShell';
 import { possessive } from '@/lib/business-name';
 import SiteBuildProgress from '@/components/demo/SiteBuildProgress';

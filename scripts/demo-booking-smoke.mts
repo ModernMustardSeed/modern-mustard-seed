@@ -10,7 +10,7 @@
  * loses to the unique index instead of double-booking.
  *
  * It exists because the first version of this feature was WRONG in a way no
- * unit test could see: `run_id` had a foreign key to `sidekick_runs`, a table
+ * unit test could see: `run_id` had a foreign key to an empty leftover table
  * that is present, permanently empty (the live store is app_state), and would
  * therefore have rejected every booking at runtime while every test passed.
  *
@@ -31,7 +31,7 @@ for (const l of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
 }
 
 const { getSupabase } = await import('../lib/supabase');
-const { getRun } = await import('../lib/sidekick-store');
+const { getRun } = await import('../lib/demo-run-store');
 const { runDemoBookingTool } = await import('../lib/demo-booking-tools');
 
 const MARKER = 'SMOKE TEST CALLER';
@@ -52,13 +52,13 @@ async function main() {
   const { data: rows, error } = await sb
     .from('app_state')
     .select('key')
-    .like('key', 'sidekick:run:%')
+    .like('key', 'demo:run:%')
     .order('updated_at', { ascending: false })
     .limit(1);
   if (error) throw new Error(`app_state read failed: ${error.message}`);
   if (!rows?.length) throw new Error('no forged runs in app_state to test with');
 
-  const runId = rows[0].key.replace('sidekick:run:', '');
+  const runId = rows[0].key.replace('demo:run:', '');
   const stored = await getRun(sb, runId);
   if (!stored) throw new Error(`getRun could not resolve ${runId}`);
 

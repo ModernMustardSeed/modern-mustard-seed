@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { sendOutboundEmail } from '@/lib/outbound-email';
 import { demoStationDrip } from '@/lib/demo-drip';
-import { sidekickDrip, staleUnstarted } from '@/lib/sidekick-drip';
+import { demoAgentDrip, staleUnstarted } from '@/lib/demo-agent-drip';
 import type { OutboundLead } from '@/lib/outbound';
 
 export const runtime = 'nodejs';
@@ -20,7 +20,7 @@ export const dynamic = 'force-dynamic';
  * have not bought get a three-touch sequence that stops the moment they buy,
  * reply, or a rep moves the lead.
  *
- * ALSO runs the VOICE AGENT DRIP (lib/sidekick-drip.ts): the same idea for
+ * ALSO runs the VOICE AGENT DRIP (lib/demo-agent-drip.ts): the same idea for
  * /voice-agents/forge forgers, who until 2026-07-20 received no follow-up at all. Both
  * ride this cron because Vercel Hobby cron slots are 12/12 full.
  */
@@ -84,9 +84,9 @@ export async function GET(req: Request) {
   }
 
   const drip = await demoStationDrip(sb);
-  const sidekick = await sidekickDrip(sb);
+  const demoAgent = await demoAgentDrip(sb);
   // Forgers the drip will not cold-start. Surfaced, never silently dropped.
   const stale = await staleUnstarted(sb);
 
-  return NextResponse.json({ ok: true, due: due?.length ?? 0, sent, parked, drip, sidekick, stale });
+  return NextResponse.json({ ok: true, due: due?.length ?? 0, sent, parked, drip, demoAgent, stale });
 }

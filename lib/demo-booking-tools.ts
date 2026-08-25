@@ -6,7 +6,7 @@
  *   take_message         the fallback, so no caller ever leaves with nothing
  *
  * ── WHY THESE ARE APPENDED, NOT FILTERED IN ──────────────────────────────────
- * `demoModel` in lib/sidekick.ts trims the BASE assistant's tools down with an
+ * `demoModel` in lib/demo-agent.ts trims the BASE assistant's tools down with an
  * allow-list. These three are not on the base assistant at all (Mr. Mustard has
  * no reason to book a roofing job), so an allow-list can never produce them.
  * They are added.
@@ -18,7 +18,7 @@
  * failure that matters is booking a customer's leaky roof into Sarah's
  * discovery calendar, or offering Sarah's Tuesday to somebody who wants a
  * plumber. So every description below names WHOSE calendar it is in its first
- * sentence, and sidekickSystemPrompt carries the same split in words. Names
+ * sentence, and demoAgentSystemPrompt carries the same split in words. Names
  * were chosen to be unmistakable rather than symmetrical.
  *
  * ── ⚠️ NO `enum` INSIDE AN ARRAY'S `items` ───────────────────────────────────

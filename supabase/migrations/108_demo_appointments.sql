@@ -23,14 +23,14 @@
 --
 -- ⚠️ `run_id` IS NOT A FOREIGN KEY, AND MUST NOT BECOME ONE.
 --
--- The obvious thing is `references sidekick_runs(id)`, because that table exists
+-- The obvious thing was `references sidekick_runs(id)`, because that table existed
 -- and its name says exactly what this points at. It was written that way first
 -- and it would have rejected every insert this feature ever attempted.
 --
--- The `sidekick_runs` TABLE (migration 036) is dead. Its own header calls itself
+-- That table (migration 036) was dead. Its own header called itself
 -- "the OPTIONAL future upgrade to a real table"; the live store is
--- lib/sidekick-store.ts, which keeps each run as JSON in `app_state` under the
--- key `sidekick:run:<uuid>`. So the table is present, empty, and permanently so,
+-- lib/demo-run-store.ts, which keeps each run as JSON in `app_state` under the
+-- key `demo:run:<uuid>`. So the table is present, empty, and permanently so,
 -- which is the worst possible shape for a foreign key: the schema applies
 -- cleanly, the constraint is created, and then every booking fails at runtime
 -- with a constraint error a caller experiences as "the owner will confirm".

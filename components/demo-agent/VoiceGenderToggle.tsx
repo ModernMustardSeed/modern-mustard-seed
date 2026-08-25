@@ -1,6 +1,6 @@
 'use client';
 
-import type { VoiceGender } from '@/lib/sidekick-voice';
+import type { VoiceGender } from '@/lib/demo-voice';
 
 /**
  * Female / male agent voice picker. A tiny segmented control shared by

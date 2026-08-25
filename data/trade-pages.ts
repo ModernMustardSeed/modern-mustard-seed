@@ -1,5 +1,5 @@
 import { TRADE_PRESETS, VOICE_SERVICES, TICKET_WORD, type OsTradeKey } from '@/data/demo-os-trades';
-import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
+import { demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
 
 /**
  * The voice agent trade fleet: one landing page per trade at
@@ -96,7 +96,7 @@ export function tradeFaqs(forWord: string, services: string, avgTicket: number, 
     },
     {
       q: 'What does it cost once it is installed?',
-      a: `Plans start at $${sidekickUsd(sidekickTiers[0].monthlyCents)} a month plus a $${sidekickUsd(sidekickTiers[0].setupCents)} one-time setup, with a hard minute cap, no free trial games, and no per-seat pricing. The right first step is the free forged demo: hear it answer for your business, then decide. Every install is done by a human at Modern Mustard Seed and includes the setup of your services, hours, and booking flow.`,
+      a: `Plans start at $${demoAgentUsd(demoAgentTiers[0].monthlyCents)} a month plus a $${demoAgentUsd(demoAgentTiers[0].setupCents)} one-time setup, with a hard minute cap, no free trial games, and no per-seat pricing. The right first step is the free forged demo: hear it answer for your business, then decide. Every install is done by a human at Modern Mustard Seed and includes the setup of your services, hours, and booking flow.`,
     },
   ];
 }

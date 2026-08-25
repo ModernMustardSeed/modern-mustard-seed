@@ -215,7 +215,7 @@ const CX_CHECKLIST = [
 
 // ============ Campaign five: The Voice Agent Forge ============
 
-const SK_LANDING = 'https://modernmustardseed.com/voice-agents/forge?utm_source=meta&utm_medium=paid&utm_campaign=sidekick';
+const SK_LANDING = 'https://modernmustardseed.com/voice-agents/forge?utm_source=meta&utm_medium=paid&utm_campaign=demo agent';
 
 const SK_COPY_A = `Right now, someone is calling your business. Nobody's answering.
 
@@ -233,9 +233,9 @@ const SK_HEADLINE = 'Hear YOUR voice agent answer live.';
 const SK_DESCRIPTION = 'Free demo. He talks. You decide. From Modern Mustard Seed.';
 
 const SK_CUTS = [
-  { file: '/ads/sidekick-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
-  { file: '/ads/sidekick-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical placements.' },
-  { file: '/ads/sidekick-16x9.mp4', label: '16:9 — In-stream + site', note: 'Video feeds, search, and the landing hero.' },
+  { file: '/ads/demo-agent-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/demo-agent-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Full-screen vertical placements.' },
+  { file: '/ads/demo-agent-16x9.mp4', label: '16:9 — In-stream + site', note: 'Video feeds, search, and the landing hero.' },
 ];
 
 const SK_CHECKLIST = [
@@ -243,11 +243,11 @@ const SK_CHECKLIST = [
   { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
   { id: 'audience', label: 'Audience: Advantage+, local-owner tilted. Suggestions: Small business owners, Restaurant owners, Home services, Salon owners, Missed call/answering service interest. Age 25-65, United States.' },
   { id: 'captions', label: 'Decline Meta auto-captions (styled captions are burned in).' },
-  { id: 'organic', label: 'Post the 9:16 cut as an organic Reel + the 4:5 to FB the same day. Launch drafts are in social-drafts/sidekick-launch.md (ask Claude to fetch them).' },
+  { id: 'organic', label: 'Post the 9:16 cut as an organic Reel + the 4:5 to FB the same day. Launch drafts are in social-drafts/demo-agent-launch.md (ask Claude to fetch them).' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the missed-calls math) and let them fight. Kill the loser at day 6.' },
   { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers across all five commercials pointed at the forge. Call Me viewers are the hottest overlap.' },
-  { id: 'capwatch', label: 'The free forge is capped at 20 demos/day globally. If ads fill the cap (email alert fires), raise GLOBAL_DAILY_CAP in app/api/sidekick/forge/route.ts before scaling spend.' },
-  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads tagged source sidekick-forge in the admin). The truth metric: Keep Him subscriptions, which email you on every sale, and booked calls from demo transcripts.' },
+  { id: 'capwatch', label: 'The free forge is capped at 20 demos/day globally. If ads fill the cap (email alert fires), raise GLOBAL_DAILY_CAP in app/api/demo-agent/forge/route.ts before scaling spend.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads tagged source demo-agent-forge in the admin). The truth metric: Keep Him subscriptions, which email you on every sale, and booked calls from demo transcripts.' },
 ];
 
 // ============ Campaigns six-eight: Pictures, Press, GEO (image creative) ============
@@ -260,7 +260,7 @@ const PX_DESCRIPTION = 'The free Screen Test at MUSTARD PICTURES.';
 const PX_IMAGES = [
   { file: '/ads/pictures-45.png', label: '4:5 — Feed', note: 'The workhorse feed placement.' },
   { file: '/ads/pictures-sq.png', label: '1:1 — Square', note: 'Right column, marketplace, catalog.' },
-  { file: '/ads/sidekick-9x16.mp4', label: '9:16 video — borrow The Graduate', note: 'Until Pictures has its own spot, the studio-brand video warms the same audience.' },
+  { file: '/ads/demo-agent-9x16.mp4', label: '9:16 video — borrow The Graduate', note: 'Until Pictures has its own spot, the studio-brand video warms the same audience.' },
 ];
 const PX_CHECKLIST = [
   { id: 'cell', label: 'One Traffic cell at $10/day → the Screen Test UTM link. Paste Copy Variant 1, Learn More button.' },
@@ -1858,7 +1858,7 @@ export default function AdsPlaybook() {
           <div className="grid md:grid-cols-3 gap-5">
             {SK_CUTS.map((c) => (
               <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
-                <video controls preload="metadata" poster="/ads/sidekick-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <video controls preload="metadata" poster="/ads/demo-agent-poster.png" className="w-full border border-[#161616] bg-black" src={c.file} />
                 <div className="mt-3 flex items-center justify-between gap-2">
                   <div>
                     <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
@@ -3188,7 +3188,7 @@ export default function AdsPlaybook() {
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">How to read results</span>
           <div className="grid md:grid-cols-3 gap-6 mt-4 text-sm font-sans">
             <p><b className="text-[#F5B700]">Calls:</b> every ad-driven call hits the Mustard line and lands in <a href="/admin/callers" className="underline decoration-[#F5B700]">Callers</a> with a transcript. Bookings email you automatically.</p>
-            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, fablemind, sidekick, and goodnews. MUSTARD MODE free-plays, Fable Mind playbook emails, and forged Voice Agent demos land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
+            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, fablemind, sidekick (the old name, still what GA4 has), and goodnews. MUSTARD MODE free-plays, Fable Mind playbook emails, and forged Voice Agent demos land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
             <p><b className="text-[#F5B700]">Weekly:</b> ask Claude to read Callers against spend and report the true cost per booked discovery call.</p>
           </div>
         </section>

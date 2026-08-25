@@ -20,7 +20,7 @@ import { randomUUID } from 'node:crypto';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { forgeSuiteFromCall } from '@/lib/voice-forge-suite';
 import { DEMO_BOOKING_TOOL_NAMES, runDemoBookingTool } from '@/lib/demo-booking-tools';
-import { getRun } from '@/lib/sidekick-store';
+import { getRun } from '@/lib/demo-run-store';
 import { notifyDemoBooking } from '@/lib/demo-booking-notify';
 import { demoAppointmentsFor } from '@/lib/demo-booking';
 import {
@@ -449,6 +449,14 @@ const RESOURCE_CATALOG: Record<string, CatalogEntry> = {
   'bottleneck-breaker': { label: 'Find your #1 bottleneck (free 60-second scan)', url: `${SITE_ROOT}/audit` },
   audit: { label: 'Find your #1 bottleneck (free scan)', url: `${SITE_ROOT}/audit` },
   'voice-agents': { label: 'voice agents that answer your phone', url: `${SITE_ROOT}/voice-agents` },
+  'demo-agent': { label: 'Build your own voice agent', url: `${SITE_ROOT}/voice-agents/forge`, ref: true },
+  /* ⚠️ DEPRECATED ALIAS, AND IT IS LOAD BEARING UNTIL VAPI IS PUSHED.
+   * Mr. Mustard's LIVE send_email tool description still lists 'sidekick'
+   * as a valid key, and the catalog silently drops anything it does not
+   * recognise. Deleting this line before pushing the updated description
+   * makes him send a key that resolves to nothing, so the caller gets an
+   * email with no link in it and nobody finds out. Delete it AFTER
+   * `node scripts/setup-vapi-mustard.mjs --update <id>` has run. */
   sidekick: { label: 'Build your own voice agent', url: `${SITE_ROOT}/voice-agents/forge`, ref: true },
   store: { label: 'The playbook and course store', url: `${SITE_ROOT}/store`, ref: true },
   work: { label: 'See the work', url: `${SITE_ROOT}/work` },
@@ -790,7 +798,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
    * notifyDemoBooking). That is deliberate duplication: the alert is the
    * "phone them today", this is the record of how the call went. */
   let demoLine: { business: string; booked: Awaited<ReturnType<typeof demoAppointmentsFor>> } | null = null;
-  if (meta.kind === 'sidekick-demo' && typeof meta.runId === 'string' && UUID.test(meta.runId)) {
+  if (meta.kind === 'demo-agent' && typeof meta.runId === 'string' && UUID.test(meta.runId)) {
     try {
       const sb = getSupabase();
       if (sb) {
@@ -984,7 +992,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 /**
  * THE FORGED DEMO BOOKS THE BUSINESS IT IS ROLE-PLAYING.
  *
- * Resolves the demo from its sidekick_runs row and hands the tool call to
+ * Resolves the demo from its stored run and hands the tool call to
  * lib/demo-booking-tools.ts. Never throws: a thrown error here is dead air on a
  * live call, so every failure comes back as a sentence the agent can say.
  */
@@ -1002,11 +1010,11 @@ async function runDemoBooking(
     });
   }
 
-  /* ⚠️ THROUGH getRun, NEVER `from('sidekick_runs')`.
+  /* ⚠️ ALWAYS THROUGH getRun.
    *
    * That table exists and is permanently EMPTY: migration 036 calls itself "the
    * OPTIONAL future upgrade", and the live store is app_state under the key
-   * `sidekick:run:<uuid>`. Reading the table compiles, runs, returns null for
+   * `demo:run:<uuid>`. Reading the table compiles, runs, returns null for
    * every demo ever forged, and puts the agent straight back to "the owner will
    * confirm", which is the exact bug this feature exists to kill. */
   const run = await getRun(sb, runId);
@@ -1109,8 +1117,8 @@ export async function POST(req: Request) {
      * Demos run on Mr. Mustard's assistant with per-call overrides, so the
      * front-office webhook cannot help: it resolves an office by
      * `vapi_assistant_id` and every demo carries HIS id. The demo identity
-     * arrives the only way it can, in the metadata lib/sidekick.ts already
-     * attaches, and `runId` is the sidekick_runs row the persona was forged
+     * arrives the only way it can, in the metadata lib/demo-agent.ts already
+     * attaches, and `runId` is the stored run the persona was forged
      * from (business, city, hours).
      *
      * ⚠️ Null on the studio line, on desk calls and on acquisition calls, so
@@ -1118,7 +1126,7 @@ export async function POST(req: Request) {
      * is deliberate: those three tool names belong to a role-play, and Mr.
      * Mustard must never book a roofing job into anybody's calendar. */
     const demoRunId =
-      meta.kind === 'sidekick-demo' && typeof meta.runId === 'string' && UUID.test(meta.runId)
+      meta.kind === 'demo-agent' && typeof meta.runId === 'string' && UUID.test(meta.runId)
         ? meta.runId
         : null;
 

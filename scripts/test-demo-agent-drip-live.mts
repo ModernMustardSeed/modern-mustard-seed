@@ -1,13 +1,13 @@
 /**
- * REAL end-to-end send test for the sidekick drip. Sends ONE actual email
- * through the exact production path (sidekickDrip → sendViaResend → Resend),
+ * REAL end-to-end send test for the demo agent drip. Sends ONE actual email
+ * through the exact production path (demoAgentDrip → sendViaResend → Resend),
  * scoped to a single throwaway lead so no real forger is touched, then cleans
  * up every row it created.
  *
  * Proves: real render, real Resend accept, real List-Unsubscribe header, real
  * suppression gate, real external delivery. Run once, on purpose.
  *
- * Usage: npx tsx scripts/test-sidekick-drip-live.mts <destination-email>
+ * Usage: npx tsx scripts/test-demo-agent-drip-live.mts <destination-email>
  */
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
@@ -24,12 +24,12 @@ try {
 
 const dest = process.argv[2];
 if (!dest || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dest)) {
-  console.error('Pass a destination email: npx tsx scripts/test-sidekick-drip-live.mts you@example.com');
+  console.error('Pass a destination email: npx tsx scripts/test-demo-agent-drip-live.mts you@example.com');
   process.exit(1);
 }
 
 const { getSupabase } = await import('../lib/supabase');
-const { sidekickDrip } = await import('../lib/sidekick-drip');
+const { demoAgentDrip } = await import('../lib/demo-agent-drip');
 
 const sb = getSupabase();
 if (!sb) {
@@ -41,7 +41,7 @@ const runId = randomUUID();
 const KEY = (id: string) => `skdrip:${id}`;
 const created = new Date(Date.now() - 30 * 3600 * 1000).toISOString(); // 30h old: touch 1 is due (>=20h, <=96h)
 
-console.log(`Inserting throwaway sidekick-forge lead -> ${dest}`);
+console.log(`Inserting throwaway demo-agent-forge lead -> ${dest}`);
 const { data: lead, error: insErr } = await sb
   .from('leads')
   .insert({
@@ -51,9 +51,9 @@ const { data: lead, error: insErr } = await sb
     business_name: 'MMS Deliverability Test',
     company: 'MMS Deliverability Test',
     industry: 'home-services',
-    source: 'sidekick-forge',
+    source: 'demo-agent-forge',
     status: 'new',
-    notes: `run=${runId} [sidekick] MMS Deliverability Test - live send test, safe to ignore`,
+    notes: `run=${runId} [demo agent] MMS Deliverability Test - live send test, safe to ignore`,
     created_at: created,
   })
   .select('id')
@@ -66,11 +66,11 @@ if (insErr || !lead) {
 const leadId = lead.id as string;
 console.log(`Lead ${leadId} created (aged 30h so touch 1 is due).`);
 
-let result: Awaited<ReturnType<typeof sidekickDrip>> | null = null;
+let result: Awaited<ReturnType<typeof demoAgentDrip>> | null = null;
 try {
   // The REAL production function, scoped to this one lead.
-  result = await sidekickDrip(sb, { onlyLeadId: leadId });
-  console.log('sidekickDrip result:', JSON.stringify(result));
+  result = await demoAgentDrip(sb, { onlyLeadId: leadId });
+  console.log('demoAgentDrip result:', JSON.stringify(result));
 } catch (err) {
   console.error('drip threw:', err);
 } finally {

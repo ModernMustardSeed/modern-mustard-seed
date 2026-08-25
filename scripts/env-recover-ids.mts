@@ -308,10 +308,10 @@ async function main() {
   // somebody forgot to restore, and the next person to notice will go hunting
   // in Stripe for prices that should never be wired up again.
   const RETIRED: Record<string, string> = {
-    STRIPE_PRICE_SIDEKICK_MONTHLY: 'Sidekick was retired; data/sidekick.ts says these are read nowhere.',
-    STRIPE_PRICE_SIDEKICK_SETUP: 'Sidekick was retired; data/sidekick.ts says these are read nowhere.',
-    STRIPE_PRICE_SIDEKICK_PRO_MONTHLY: 'Sidekick was retired; data/sidekick.ts says these are read nowhere.',
-    STRIPE_PRICE_SIDEKICK_PRO_SETUP: 'Sidekick was retired; data/sidekick.ts says these are read nowhere.',
+    STRIPE_PRICE_SIDEKICK_MONTHLY: 'Sidekick was retired; data/demo-agent.ts says these are read nowhere.',
+    STRIPE_PRICE_SIDEKICK_SETUP: 'Sidekick was retired; data/demo-agent.ts says these are read nowhere.',
+    STRIPE_PRICE_SIDEKICK_PRO_MONTHLY: 'Sidekick was retired; data/demo-agent.ts says these are read nowhere.',
+    STRIPE_PRICE_SIDEKICK_PRO_SETUP: 'Sidekick was retired; data/demo-agent.ts says these are read nowhere.',
     STRIPE_PRICE_MUSTARD_CABINET: "The Founders' Cabinet was retired 2026-08-01; existing subscribers keep their entitlement.",
   };
   const retiredAndMissing = Object.keys(RETIRED).filter((k) => needs(k));

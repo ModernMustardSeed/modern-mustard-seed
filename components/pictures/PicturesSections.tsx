@@ -50,7 +50,7 @@ export function HowTheStudioWorks() {
 export function TheReel() {
   const films = [
     { src: '/video/night-shift-16x9.mp4', title: 'Night Shift', note: 'The one that started the studio.' },
-    { src: '/ads/sidekick-16x9.mp4', title: 'The Graduate', note: 'Two characters, one diploma.' },
+    { src: '/ads/demo-agent-16x9.mp4', title: 'The Graduate', note: 'Two characters, one diploma.' },
     { src: '/video/mustard-mode-16x9.mp4', title: 'Mustard Mode', note: 'The arcade spot.' },
   ];
   return (

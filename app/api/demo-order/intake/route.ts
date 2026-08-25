@@ -10,7 +10,7 @@ import { resendClient } from '@/lib/send-email';
 import { clientEmail } from '@/lib/email';
 import { queueRebuild, rebuildInputFor } from '@/lib/site-rebuild';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
-import { sidekickVoice } from '@/lib/sidekick-voice';
+import { demoVoice } from '@/lib/demo-voice';
 import { recordOfficeEvent } from '@/lib/front-office/provision';
 import { syncAssistant } from '@/lib/front-office/agent';
 
@@ -220,7 +220,7 @@ export async function POST(req: Request) {
 
         const patch: Record<string, unknown> = {
           voice_gender: voiceGender,
-          voice_id: sidekickVoice(voiceGender).voiceId,
+          voice_id: demoVoice(voiceGender).voiceId,
           forward_mode: oneOf(FORWARD_MODES, fo.forwardMode, 'after_hours'),
           tone: oneOf(TONES, fo.tone, 'warm'),
           languages: langs,

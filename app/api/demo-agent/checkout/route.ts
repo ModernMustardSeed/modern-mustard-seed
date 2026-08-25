@@ -1,5 +1,5 @@
 /**
- * Stripe Checkout for keeping your Voice Agent. Amounts come from data/sidekick.ts
+ * Stripe Checkout for keeping your Voice Agent. Amounts come from data/demo-agent.ts
  * (cents), never from env price IDs, so the page and the charge cannot diverge.
  *   VOICE AGENT      $397 setup + $397/mo   (250 min hard cap)
  *   VOICE AGENT PRO  $597 setup + $497/mo   (600 min hard cap)
@@ -11,7 +11,7 @@
 
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
-import { getSidekickTier } from '@/data/sidekick';
+import { getDemoAgentTier } from '@/data/demo-agent';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'invalid_body' }, { status: 400 });
   }
 
-  const tier = getSidekickTier((body.tier || '').trim());
+  const tier = getDemoAgentTier((body.tier || '').trim());
   if (!tier) return NextResponse.json({ error: 'unknown_item' }, { status: 404 });
 
   // Affiliate attribution: read the first-party mms_ref cookie (set by
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   if (!stripe) return NextResponse.json({ error: 'stripe_not_configured' }, { status: 503 });
 
   const metadata = {
-    kind: 'sidekick',
+    kind: 'demo-agent',
     slug: tier.slug,
     item_name: tier.name,
     ...(body.business ? { business: body.business.trim().slice(0, 80) } : {}),
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
-      // Inline price_data, built from data/sidekick.ts. Prices used to come from
+      // Inline price_data, built from data/demo-agent.ts. Prices used to come from
       // Stripe price IDs in env while the page rendered its own hardcoded dollars,
       // so the two could silently disagree and we would advertise one number and
       // charge another. One source of truth now. The setup fee is a non-recurring
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
     if (!session.url) return NextResponse.json({ error: 'no_url' }, { status: 500 });
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    console.error('sidekick checkout error:', err instanceof Error ? err.message : err);
+    console.error('demo agent checkout error:', err instanceof Error ? err.message : err);
     return NextResponse.json(
       { error: 'stripe_error', message: 'Checkout hiccuped. Try again in a minute or email sarah@modernmustardseed.com.' },
       { status: 500 }

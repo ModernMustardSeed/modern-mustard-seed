@@ -1,11 +1,11 @@
 /**
- * Verification for lib/sidekick-drip.ts. Read-only and send-free.
+ * Verification for lib/demo-agent-drip.ts. Read-only and send-free.
  *
  * Part 1 exercises the pure functions (token extraction + rendered copy).
  * Part 2 runs the real drip against the real database with dryRun, which
  * queries and counts but never sends, so it proves the query matches real rows.
  *
- * Run: npx tsx scripts/verify-sidekick-drip.mts
+ * Run: npx tsx scripts/verify-demo-agent-drip.mts
  */
 import { readFileSync } from 'node:fs';
 
@@ -20,9 +20,9 @@ try {
   /* no .env.local, rely on the environment */
 }
 
-const { runIdFromNotes, sidekickDripEmail, sidekickDrip, staleUnstarted } = await import('../lib/sidekick-drip');
+const { runIdFromNotes, demoAgentDripEmail, demoAgentDrip, staleUnstarted } = await import('../lib/demo-agent-drip');
 const { getSupabase } = await import('../lib/supabase');
-const { sidekickTiers, sidekickUsd } = await import('../data/sidekick');
+const { demoAgentTiers, demoAgentUsd } = await import('../data/demo-agent');
 
 let fail = 0;
 const ok = (label: string, cond: boolean, detail = '') => {
@@ -32,8 +32,8 @@ const ok = (label: string, cond: boolean, detail = '') => {
 
 console.log('--- 1. run token extraction ---');
 const RUN = '3f2504e0-4f89-11d3-9a0c-0305e82c3301';
-ok('extracts a valid run id', runIdFromNotes(`run=${RUN} [sidekick] Acme`) === RUN);
-ok('returns null with no token', runIdFromNotes('[sidekick] Acme · Plumbing') === null);
+ok('extracts a valid run id', runIdFromNotes(`run=${RUN} [demo agent] Acme`) === RUN);
+ok('returns null with no token', runIdFromNotes('[demo agent] Acme · Plumbing') === null);
 ok('returns null on malformed token', runIdFromNotes('run=not-a-uuid') === null);
 ok('returns null on empty notes', runIdFromNotes(null) === null);
 
@@ -45,15 +45,15 @@ const lead = {
   business_name: 'Acme Plumbing',
   company: 'Acme Plumbing',
   status: 'new',
-  notes: `run=${RUN} [sidekick] Acme Plumbing`,
+  notes: `run=${RUN} [demo agent] Acme Plumbing`,
   created_at: new Date().toISOString(),
 };
 
-const monthly = sidekickUsd(sidekickTiers[0].monthlyCents);
-const setup = sidekickUsd(sidekickTiers[0].setupCents);
+const monthly = demoAgentUsd(demoAgentTiers[0].monthlyCents);
+const setup = demoAgentUsd(demoAgentTiers[0].setupCents);
 
 for (const step of [0, 1, 2]) {
-  const m = sidekickDripEmail(lead as never, step);
+  const m = demoAgentDripEmail(lead as never, step);
   ok(`step ${step} has a subject`, m.subject.length > 8, m.subject);
   ok(`step ${step} personalizes the business`, m.html.includes('Acme Plumbing'));
   ok(`step ${step} deep-links the real run`, m.html.includes(`/voice-agents/forge/demo/${RUN}`));
@@ -61,15 +61,15 @@ for (const step of [0, 1, 2]) {
   ok(`step ${step} has no unreplaced placeholder`, !/\[first name\]|\[their/.test(m.html));
 }
 
-const t2 = sidekickDripEmail(lead as never, 1);
+const t2 = demoAgentDripEmail(lead as never, 1);
 ok(`touch 2 quotes the CURRENT monthly ($${monthly})`, t2.html.includes(`$${monthly} a month`), t2.html.slice(0, 0));
 ok(`touch 2 quotes the CURRENT setup ($${setup})`, t2.html.includes(`$${setup} to set up`));
 ok('touch 2 does NOT contain the retired $197', !t2.html.includes('$197'));
 
-const noRun = sidekickDripEmail({ ...lead, notes: '[sidekick] legacy lead' } as never, 0);
+const noRun = demoAgentDripEmail({ ...lead, notes: '[demo agent] legacy lead' } as never, 0);
 ok('legacy lead falls back to /voice-agents/forge, no broken URL', noRun.html.includes('/voice-agents/forge') && !noRun.html.includes('/voice-agents/forge/demo/null'));
 
-const noName = sidekickDripEmail({ ...lead, name: null, business_name: null, company: null } as never, 0);
+const noName = demoAgentDripEmail({ ...lead, name: null, business_name: null, company: null } as never, 0);
 ok('missing name degrades to "Hi there,"', noName.html.includes('Hi there,'));
 ok('missing business degrades gracefully', noName.html.includes('your business'));
 
@@ -81,13 +81,13 @@ if (!sb) {
   const { count } = await sb
     .from('leads')
     .select('id', { count: 'exact', head: true })
-    .eq('source', 'sidekick-forge');
-  console.log(`      sidekick-forge leads in the table (all time): ${count ?? 'unknown'}`);
+    .eq('source', 'demo-agent-forge');
+  console.log(`      demo-agent-forge leads in the table (all time): ${count ?? 'unknown'}`);
 
   const { data: rows } = await sb
     .from('leads')
     .select('business_name, status, created_at, notes')
-    .eq('source', 'sidekick-forge')
+    .eq('source', 'demo-agent-forge')
     .order('created_at', { ascending: false });
   for (const r of rows ?? []) {
     const ageDays = ((Date.now() - new Date(r.created_at as string).getTime()) / 86400000).toFixed(1);
@@ -95,7 +95,7 @@ if (!sb) {
     console.log(`      ${ageDays}d old | ${r.business_name ?? '(no business_name)'} | status=${r.status} | runToken=${hasToken}`);
   }
 
-  const res = await sidekickDrip(sb, { dryRun: true });
+  const res = await demoAgentDrip(sb, { dryRun: true });
   console.log(`      dry run result: ${JSON.stringify(res)}`);
   ok('dry run completed without throwing', typeof res.due === 'number');
   ok('dry run sent nothing', res.sent === 0);
@@ -115,8 +115,8 @@ if (!sb) {
 
 console.log('\n--- 4. age-aware copy (no false "yesterday") ---');
 const old = { ...lead, created_at: new Date(Date.now() - 3 * 86400000).toISOString() };
-const y = sidekickDripEmail(lead as never, 0);
-const o = sidekickDripEmail(old as never, 0);
+const y = demoAgentDripEmail(lead as never, 0);
+const o = demoAgentDripEmail(old as never, 0);
 ok('a 1-day-old forge says "Yesterday"', y.html.includes('Yesterday you'));
 ok('a 3-day-old forge does NOT claim yesterday', !o.html.includes('Yesterday you'));
 ok('a 3-day-old forge stays truthful', o.html.includes('A few days ago you'));

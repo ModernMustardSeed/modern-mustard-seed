@@ -137,7 +137,7 @@ if (UPDATE_ID === PLACEHOLDER) {
 /* ─────────────────── Prices (DERIVED, never typed) ───────────────────
  * mms-price-single-source is law: never hand-type a price. Mr. Mustard now
  * SAYS prices out loud, so his catalog is read out of the same TypeScript that
- * bills the customer (lib/demo-order.ts, data/sidekick.ts) at update time.
+ * bills the customer (lib/demo-order.ts, data/demo-agent.ts) at update time.
  * Reprice there and re-run --update; his script follows automatically.
  * Every lookup THROWS if the anchor moves, so a refactor can never quietly
  * ship a voice agent quoting a blank or a stale number to a live caller.
@@ -190,7 +190,7 @@ if (stdStart === -1 || stdEnd === -1) {
 const READBACK_STANDARD = stdSrc.slice(stdStart, stdEnd).trim();
 
 const orderSrc = readSrc('lib/demo-order.ts');
-const tierSrc = readSrc('data/sidekick.ts');
+const tierSrc = readSrc('data/demo-agent.ts');
 const usd = (cents) => `$${Math.round(cents / 100)}`;
 
 const PRICE = {
@@ -202,10 +202,10 @@ const PRICE = {
   siteMonthly: usd(centsAt(orderSrc, "key: 'site'", 'monthlyCents', 'Website')),
   osSetup: usd(centsAt(orderSrc, "key: 'os'", 'setupCents', 'Command Center')),
   osMonthly: usd(centsAt(orderSrc, "key: 'os'", 'monthlyCents', 'Command Center')),
-  proSetup: usd(centsAt(tierSrc, "slug: 'sidekick-pro'", 'setupCents', 'Voice Agent Pro')),
-  proMonthly: usd(centsAt(tierSrc, "slug: 'sidekick-pro'", 'monthlyCents', 'Voice Agent Pro')),
-  voiceMinutes: centsAt(tierSrc, "slug: 'sidekick'", 'minutesCap', 'base minutes').toLocaleString(),
-  proMinutes: centsAt(tierSrc, "slug: 'sidekick-pro'", 'minutesCap', 'pro minutes').toLocaleString(),
+  proSetup: usd(centsAt(tierSrc, "slug: 'demo-agent-pro'", 'setupCents', 'Voice Agent Pro')),
+  proMonthly: usd(centsAt(tierSrc, "slug: 'demo-agent-pro'", 'monthlyCents', 'Voice Agent Pro')),
+  voiceMinutes: centsAt(tierSrc, "slug: 'demo-agent'", 'minutesCap', 'base minutes').toLocaleString(),
+  proMinutes: centsAt(tierSrc, "slug: 'demo-agent-pro'", 'minutesCap', 'pro minutes').toLocaleString(),
 };
 
 /* ───────────────────────── Persona ───────────────────────── */
@@ -579,7 +579,7 @@ const TOOLS = [
             type: 'array',
             items: { type: 'string' },
             description:
-              "Zero or more page keys to include as buttons. PAY LINKS, for a caller who has already said yes, send exactly one: 'pay-talking-website' (the whole system), 'pay-voice-agent', 'pay-website', 'pay-command-center'. Each opens a real secure checkout at the real price. Never send one unasked, and never send two. Everything else is information, not a bill. Valid keys ONLY: 'book' (book a call with Sarah), 'website-audit' (free website audit), 'bottleneck-breaker' (free 60-second business scan), 'voice-agents' (voice agents), 'sidekick' (build your own voice agent), 'store' (playbooks and courses), 'work' (the portfolio), 'work-with-us' (ways to work together), 'portal' (client portal sign-in), 'partner-hub' (partner dashboard), 'partners' (partner program), 'home' (the main site). On the internal ADMIN desk line ONLY, you may also send admin screens by key: 'admin-outbound' (dial floor), 'admin-pipeline' (every lead), 'admin-partner-hub', 'admin-delivery', 'admin-proposals', 'admin-campaigns', 'admin-inbox', 'admin-calendar', 'admin-academy' (onboarding), 'admin-audit'. Use only these keys; anything else is dropped, and admin keys are dropped on any non-admin call.",
+              "Zero or more page keys to include as buttons. PAY LINKS, for a caller who has already said yes, send exactly one: 'pay-talking-website' (the whole system), 'pay-voice-agent', 'pay-website', 'pay-command-center'. Each opens a real secure checkout at the real price. Never send one unasked, and never send two. Everything else is information, not a bill. Valid keys ONLY: 'book' (book a call with Sarah), 'website-audit' (free website audit), 'bottleneck-breaker' (free 60-second business scan), 'voice-agents' (voice agents), 'demo-agent' (build your own voice agent), 'store' (playbooks and courses), 'work' (the portfolio), 'work-with-us' (ways to work together), 'portal' (client portal sign-in), 'partner-hub' (partner dashboard), 'partners' (partner program), 'home' (the main site). On the internal ADMIN desk line ONLY, you may also send admin screens by key: 'admin-outbound' (dial floor), 'admin-pipeline' (every lead), 'admin-partner-hub', 'admin-delivery', 'admin-proposals', 'admin-campaigns', 'admin-inbox', 'admin-calendar', 'admin-academy' (onboarding), 'admin-audit'. Use only these keys; anything else is dropped, and admin keys are dropped on any non-admin call.",
           },
         },
         required: [],
@@ -699,7 +699,7 @@ const TOOLS = [
   },
   // Live warm handoff to Sarah's real cell. This is a Vapi-native structural tool
   // (no function.name), so it is INTENTIONALLY stripped from every forged web/demo/
-  // desk call by demoModel() in lib/sidekick.ts: it can only ring Sarah's personal
+  // desk call by demoModel() in lib/demo-agent.ts: it can only ring Sarah's personal
   // phone from the real inbound line, never from an anonymous browser demo.
   {
     type: 'transferCall',
@@ -770,7 +770,7 @@ const TOOLS = [
  * month instead of the 60-80 minutes Starter allowed. It is still SHARED with
  * the homepage hero button, the chat widget and VoiceTalkButton in English (all
  * three call `vapi.start(id)` with NO voice override, so they use this voice and
- * this quota; forged demos do not, `sidekickVoice()` overrides them to native).
+ * this quota; forged demos do not, `demoVoice()` overrides them to native).
  * When it does run out, ElevenLabs 401s and the call dies mid-sentence with
  * `pipeline-error-eleven-labs-blocked`. Upgrading the plan is the fix, not a
  * different voice.
@@ -1254,7 +1254,7 @@ const assistant = {
 // --dry-run renders everything (including the DERIVED prices) and prints it
 // without touching Vapi. Always dry-run before pointing an edit at the live line.
 if (DRY_RUN) {
-  console.log('\n── DERIVED PRICES (from lib/demo-order.ts + data/sidekick.ts) ──');
+  console.log('\n── DERIVED PRICES (from lib/demo-order.ts + data/demo-agent.ts) ──');
   console.log(PRICE);
   console.log('\n── VOICE ──');
   console.log(voice);

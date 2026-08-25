@@ -1,8 +1,8 @@
 import { getSupabase } from '@/lib/supabase';
-import { getRun } from '@/lib/sidekick-store';
-import { forgeCall } from '@/lib/sidekick';
+import { getRun } from '@/lib/demo-run-store';
+import { forgeCall } from '@/lib/demo-agent';
 import { buildMetadata } from '@/lib/seo';
-import DemoCallExperience from '@/components/sidekick/DemoCallExperience';
+import DemoCallExperience from '@/components/demo-agent/DemoCallExperience';
 import Link from 'next/link';
 
 export const metadata = buildMetadata({ title: 'Your Voice Agent Demo', noindex: true });
@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
  * meeting. Unlisted (unguessable run id, noindex); each call is capped
  * platform-side at 4 minutes.
  */
-export default async function SidekickDemoPage({ params }: { params: Promise<{ runId: string }> }) {
+export default async function DemoAgentDemoPage({ params }: { params: Promise<{ runId: string }> }) {
   const { runId } = await params;
   const sb = getSupabase();
   const run = sb ? await getRun(sb, runId) : null;

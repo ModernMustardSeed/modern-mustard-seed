@@ -1,6 +1,6 @@
 /**
  * Durable MUSTARD PRESS state on the existing app_state k/v table, same
- * atomic-claim spine as sidekick/pictures (text PK conflict = the cap).
+ * atomic-claim spine as demo agent / pictures (text PK conflict = the cap).
  *
  * Keys:
  *   press:run:<uuid>     the press run (business meta + parsed catalog)

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { ForgedCall } from '@/lib/demo-agent';
 import DemoVoiceWidget, { type VoiceState } from '@/components/demo/DemoVoiceWidget';
 import SiteTour from '@/components/demo/SiteTour';
 

@@ -19,9 +19,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import type Vapi from '@vapi-ai/web';
 import { trackEvent } from '@/lib/analytics';
-import { SIDEKICK, sidekickVerticals, sidekickTiers, getVertical, forgeScript, sidekickUsd } from '@/data/sidekick';
-import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
-import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
+import { DEMO_AGENT, demoAgentVerticals, demoAgentTiers, getVertical, forgeScript, demoAgentUsd } from '@/data/demo-agent';
+import { demoVoice, genderFromVoiceId, type VoiceGender } from '@/lib/demo-voice';
+import VoiceGenderToggle from '@/components/demo-agent/VoiceGenderToggle';
 import { possessive } from '@/lib/business-name';
 import Link from 'next/link';
 
@@ -85,7 +85,7 @@ export default function ForgeExperience() {
   // Restore a prior forge so a returning visitor keeps their badge + context.
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('mms_sidekick_forge');
+      const saved = localStorage.getItem('mms_demo_agent_forge');
       if (saved) {
         const parsed = JSON.parse(saved) as { forged: ForgeResponse; form: typeof form };
         if (parsed?.forged?.runId && parsed?.forged?.call) {
@@ -155,14 +155,14 @@ export default function ForgeExperience() {
     }
     setSubmitting(true);
     setStage('forging');
-    trackEvent('sidekick_forge_start', { vertical: f.vertical });
+    trackEvent('demo_agent_forge_start', { vertical: f.vertical });
     forgeApiDone.current = false;
     montageDone.current = false;
     runMontage();
 
     try {
       const hp = (document.getElementById('sk-website') as HTMLInputElement | null)?.value || '';
-      const res = await fetch('/api/sidekick/forge', {
+      const res = await fetch('/api/demo-agent/forge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode: 'web', ...f, website: hp }),
@@ -187,8 +187,8 @@ export default function ForgeExperience() {
         return;
       }
       setForged(data as ForgeResponse);
-      try { localStorage.setItem('mms_sidekick_forge', JSON.stringify({ forged: data, form: f })); } catch { /* fine */ }
-      trackEvent('sidekick_forged', { vertical: f.vertical });
+      try { localStorage.setItem('mms_demo_agent_forge', JSON.stringify({ forged: data, form: f })); } catch { /* fine */ }
+      trackEvent('demo_agent_forged', { vertical: f.vertical });
       forgeApiDone.current = true;
       maybeReady();
     } catch {
@@ -203,7 +203,7 @@ export default function ForgeExperience() {
     if (callState === 'connecting' || callState === 'live') return;
     setCallError(null);
     setCallState('connecting');
-    trackEvent('sidekick_call_web_start', { business: form.business });
+    trackEvent('demo_agent_call_web_start', { business: form.business });
     try {
       const { default: VapiClient } = await import('@vapi-ai/web');
       const { hardenMicPath, teardownVapi } = await import('@/lib/vapi-web');
@@ -220,14 +220,14 @@ export default function ForgeExperience() {
         setCallState('ended');
         setSpeaking(false);
         setVolume(0);
-        trackEvent('sidekick_call_web_end', { business: form.business });
+        trackEvent('demo_agent_call_web_end', { business: form.business });
         document.getElementById('keep')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
       vapi.on('speech-start', () => setSpeaking(true));
       vapi.on('speech-end', () => setSpeaking(false));
       vapi.on('volume-level', (v: number) => setVolume(v));
       vapi.on('error', (e: unknown) => {
-        console.error('sidekick vapi error', e);
+        console.error('demo agent vapi error', e);
         setCallState('error');
         setCallError('The line dropped. Mind trying again?');
       });
@@ -242,10 +242,10 @@ export default function ForgeExperience() {
         silenceTimeoutSeconds: forged.call.silenceTimeoutSeconds,
         maxDurationSeconds: forged.call.maxDurationSeconds,
         metadata: forged.call.metadata,
-        voice: sidekickVoice(gender),
+        voice: demoVoice(gender),
       } as never);
     } catch (err) {
-      console.error('sidekick call start failed', err);
+      console.error('demo agent call start failed', err);
       setCallState('error');
       setCallError(
         err instanceof Error && /denied|permission/i.test(err.message)
@@ -263,9 +263,9 @@ export default function ForgeExperience() {
     const digits = cell.replace(/[^\d]/g, '');
     if (digits.length < 10) { setRingMsg('He needs a full US number, area code first.'); return; }
     setRingState('ringing');
-    trackEvent('sidekick_ring_request', { business: form.business });
+    trackEvent('demo_agent_ring_request', { business: form.business });
     try {
-      const res = await fetch('/api/sidekick/forge', {
+      const res = await fetch('/api/demo-agent/forge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode: 'phone', runId: forged.runId, phone: cell, voice: gender }),
@@ -318,7 +318,7 @@ export default function ForgeExperience() {
             <div>
               <label htmlFor="sk-vertical" className={LABEL}>What kind of business</label>
               <select id="sk-vertical" className={FIELD} value={form.vertical} onChange={set('vertical')}>
-                {sidekickVerticals.map((v) => (
+                {demoAgentVerticals.map((v) => (
                   <option key={v.id} value={v.id}>{v.label}</option>
                 ))}
               </select>
@@ -518,16 +518,16 @@ export default function ForgeExperience() {
             He already knows your business.<br className="hidden md:block" /> Put him on the phones.
           </h2>
           <p className="font-body text-[#161616]/65 max-w-xl mx-auto mt-4">
-            Sarah hand-installs your Voice Agent on a real line within 7 days. Hard-capped minutes, month to month, {SIDEKICK.creditNote.charAt(0).toLowerCase() + SIDEKICK.creditNote.slice(1)}
+            Sarah hand-installs your Voice Agent on a real line within 7 days. Hard-capped minutes, month to month, {DEMO_AGENT.creditNote.charAt(0).toLowerCase() + DEMO_AGENT.creditNote.slice(1)}
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {sidekickTiers.map((tier) => (
+          {demoAgentTiers.map((tier) => (
             <PricingCard key={tier.slug} tier={tier} business={form.business.trim() || undefined} runId={forged?.runId} />
           ))}
         </div>
         <p className="text-center mt-6 font-body text-sm text-[#161616]/60">
-          Phones ring more than {sidekickTiers[sidekickTiers.length - 1].minutesCap.toLocaleString()}{' '}
+          Phones ring more than {demoAgentTiers[demoAgentTiers.length - 1].minutesCap.toLocaleString()}{' '}
           minutes a month? You want the full custom concierge.{' '}
           <Link href="/voice-agents" className="text-[#1E50C8] font-semibold underline underline-offset-2">Start here</Link> or book Sarah from the demo call.
         </p>
@@ -536,7 +536,7 @@ export default function ForgeExperience() {
   );
 }
 
-function PricingCard({ tier, business, runId }: { tier: (typeof sidekickTiers)[number]; business?: string; runId?: string }) {
+function PricingCard({ tier, business, runId }: { tier: (typeof demoAgentTiers)[number]; business?: string; runId?: string }) {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -544,9 +544,9 @@ function PricingCard({ tier, business, runId }: { tier: (typeof sidekickTiers)[n
     if (busy) return;
     setBusy(true);
     setMsg(null);
-    trackEvent('sidekick_checkout_click', { tier: tier.slug });
+    trackEvent('demo_agent_checkout_click', { tier: tier.slug });
     try {
-      const res = await fetch('/api/sidekick/checkout', {
+      const res = await fetch('/api/demo-agent/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier: tier.slug, business, runId }),
@@ -574,8 +574,8 @@ function PricingCard({ tier, business, runId }: { tier: (typeof sidekickTiers)[n
       <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">{tier.chip}</p>
       <h3 className="font-display text-2xl font-black text-[#161616] mt-1.5">{tier.name}</h3>
       <p className="mt-3">
-        <span className="font-display text-4xl font-black text-[#161616]">${sidekickUsd(tier.monthlyCents)}</span>
-        <span className="font-body text-sm text-[#161616]/60">/mo + ${sidekickUsd(tier.setupCents)} setup</span>
+        <span className="font-display text-4xl font-black text-[#161616]">${demoAgentUsd(tier.monthlyCents)}</span>
+        <span className="font-body text-sm text-[#161616]/60">/mo + ${demoAgentUsd(tier.setupCents)} setup</span>
       </p>
       <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">{tier.pitch}</p>
       <ul className="mt-5 space-y-2.5 flex-1">

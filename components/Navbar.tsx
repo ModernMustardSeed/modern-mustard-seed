@@ -85,7 +85,7 @@ const MENU_GROUPS = [
 // index, cross-sell CTA, sitemap, and llms.txt entry, and noindexed. Three voice
 // agent pages competed with each other; /voice-agents and /demos are the two
 // that stay. The route still answers so the Meta campaign, Stripe checkout
-// returns, and the Sidekick drip keep working, and the forged demos at
+// returns, and the demo agent drip keep working, and the forged demos at
 // /voice-agents/forge/demo/<runId> are untouched. To bring it back: restore this
 // row plus the Footer, sitemap, services-hub, llms.txt, front-desk, portfolio,
 // industries, partner-swipe, jsonld, and comic entries, drop the noindex flag on

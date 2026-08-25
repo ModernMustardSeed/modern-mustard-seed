@@ -8,12 +8,12 @@
  * an abandoned line; the conversion is "Keep Him": a productized, hard-capped
  * monthly Voice Agent.
  *
- * Price lives in `sidekickTiers` below, in cents, and nowhere else. Checkout
+ * Price lives in `demoAgentTiers` below, in cents, and nowhere else. Checkout
  * builds inline Stripe price_data from it, so the env price ids this file used
- * to name (STRIPE_PRICE_SIDEKICK_*) are dead and no longer read anywhere.
+ * to name (STRIPE_PRICE_DEMO_AGENT_*) are dead and no longer read anywhere.
  */
 
-export const SIDEKICK = {
+export const DEMO_AGENT = {
   name: 'The Voice Agent Forge',
   wordmark: '[ VOICE AGENT: FORGED ]',
   tagline: 'Your front desk, forged while you watch.',
@@ -34,7 +34,7 @@ export const SIDEKICK = {
   creditNote: 'Your setup fee is credited toward any custom build over $2,500.',
 } as const;
 
-export type SidekickVertical = {
+export type DemoAgentVertical = {
   id: string;
   label: string;
   /** One flavor line the forge montage brags about during training. */
@@ -43,7 +43,7 @@ export type SidekickVertical = {
   scenario: string;
 };
 
-export const sidekickVerticals: SidekickVertical[] = [
+export const demoAgentVerticals: DemoAgentVertical[] = [
   {
     id: 'home-services',
     label: 'Home services (plumbing, HVAC, electrical, landscaping)',
@@ -101,8 +101,8 @@ export const sidekickVerticals: SidekickVertical[] = [
   },
 ];
 
-export function getVertical(id: string): SidekickVertical {
-  return sidekickVerticals.find((v) => v.id === id) || sidekickVerticals[sidekickVerticals.length - 1];
+export function getVertical(id: string): DemoAgentVertical {
+  return demoAgentVerticals.find((v) => v.id === id) || demoAgentVerticals[demoAgentVerticals.length - 1];
 }
 
 /**
@@ -114,8 +114,8 @@ export function getVertical(id: string): SidekickVertical {
  * amount. Checkout now builds inline price_data from these cents (the same
  * pattern lib/demo-order.ts uses), so the advertised price IS the charged price.
  */
-export type SidekickTier = {
-  slug: 'sidekick' | 'sidekick-pro';
+export type DemoAgentTier = {
+  slug: 'demo-agent' | 'demo-agent-pro';
   name: string;
   chip: string;
   setupCents: number;
@@ -128,13 +128,13 @@ export type SidekickTier = {
 };
 
 /** Display helper, so no surface can invent its own formatting. */
-export function sidekickUsd(cents: number): number {
+export function demoAgentUsd(cents: number): number {
   return Math.round(cents / 100);
 }
 
-export const sidekickTiers: SidekickTier[] = [
+export const demoAgentTiers: DemoAgentTier[] = [
   {
-    slug: 'sidekick',
+    slug: 'demo-agent',
     name: 'VOICE AGENT',
     chip: '[ ON THE PHONES ]',
     // Matches DEMO_PRODUCTS.voice in lib/demo-order.ts. It is the SAME product,
@@ -160,7 +160,7 @@ export const sidekickTiers: SidekickTier[] = [
     cta: 'Keep him',
   },
   {
-    slug: 'sidekick-pro',
+    slug: 'demo-agent-pro',
     name: 'VOICE AGENT PRO',
     chip: '[ RUNS THE DESK ]',
     // Must stay strictly above VOICE AGENT, and by enough that the upgrade reads as a
@@ -188,12 +188,12 @@ export const sidekickTiers: SidekickTier[] = [
   },
 ];
 
-export function getSidekickTier(slug: string): SidekickTier | undefined {
-  return sidekickTiers.find((t) => t.slug === slug);
+export function getDemoAgentTier(slug: string): DemoAgentTier | undefined {
+  return demoAgentTiers.find((t) => t.slug === slug);
 }
 
 /** Honest capability boundary. Edge cases become upsells, not unpaid scope. */
-export const sidekickBoundaries = {
+export const demoAgentBoundaries = {
   handles: [
     'Answers every call in a natural voice, 24/7, no hold music',
     'Your hours, prices, services, directions, and policies (the ones you give him)',
@@ -210,7 +210,7 @@ export const sidekickBoundaries = {
   ],
 } as const;
 
-export const sidekickFaq = [
+export const demoAgentFaq = [
   {
     q: 'What happens when I hit my monthly minutes?',
     a: 'He switches to message-taking mode: short calls, name and number captured, nothing dropped. You never get a surprise bill. If you keep hitting the cap, that is a good problem, and upgrading takes one email.',
