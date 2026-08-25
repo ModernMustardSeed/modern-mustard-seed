@@ -57,7 +57,7 @@ import { goalLadder, forecast, monthsBetween, type FunnelRate } from '../lib/acq
 import { estimateFor, personalOpener } from '../lib/acq/personalize';
 import { recoveryMachineBlock, machineAssumptions } from '../lib/acq/machine';
 import {
-  scoreReviews, scoreProfile, scoreWebsite, blend, letterFor, buildPresenceReport,
+  scoreReviews, scoreProfile, scoreWebsite, blend, letterFor, buildPresenceReport, listingSeen,
   inputFromLead, PILLAR_WEIGHTS, type PresenceInput,
 } from '../lib/presence-audit';
 import { readAttribution, labelSource } from '../lib/mustard/surface';
@@ -1875,6 +1875,8 @@ const presence = (over: Partial<PresenceInput> = {}): PresenceInput => ({
   emergency_service: true,
   trade: 'hvac',
   source_urls: ['https://www.google.com/maps/place/abc'],
+  listing_seen: true,
+  site_facts: null,
   ...over,
 });
 
@@ -2386,4 +2388,125 @@ test('demo slots: no hours at all means no slots, so the agent takes a message',
   const closed = Object.fromEntries(Object.keys(DEMO_DEFAULT_HOURS).map((d) => [d, 'closed']));
   const slots = slotsFrom(closed, 'America/Denver', [], { now: new Date(2026, 7, 24, 9, 0, 0) });
   assert.equal(slots.length, 0);
+});
+
+/* ------------------------------ site facts -------------------------------- */
+
+import { scrubClaims, contradicts, emailTrusted, siteFactsLine, parseSiteFacts, withSiteFactsLine, siteFactsSummary, type SiteFacts } from '../lib/site-facts';
+
+/** murrelldental.com as read on 2026-08-25: everything the note said was missing was there. */
+const murrell = (over: Partial<SiteFacts> = {}): SiteFacts => ({
+  url: 'https://www.murrelldental.com/',
+  verified: '2026-08-25',
+  reachable: true,
+  ssl_error: false,
+  address: '1286 Timberlane Road, Tallahassee, FL 32312',
+  hours_days: 5,
+  hours_sample: 'Monday 8:00 am - 5:00 pm',
+  email: 'info@murrelldental.com',
+  phone: '(850) 893-0711',
+  booking: null,
+  pages: ['/', '/contact-us.html'],
+  ...over,
+});
+
+test('site facts: a claim the site contradicts does not print (the Murrell sentence)', () => {
+  const r = scrubClaims('The site does not even show hours or an address; new patients cannot find the front door', murrell());
+  assert.equal(r.text, '', 'both clauses were false, nothing survives');
+  assert.equal(r.removed.length, 2);
+});
+
+test('site facts: only the false clause goes, the true research stays', () => {
+  const r = scrubClaims('clean enough design, but no address, no hours, and no online quoting on it; scheduling is call-or-email only', murrell({ address: null }), 'notes');
+  assert.ok(!/no hours/.test(r.text), 'hours are on the site, the claim is gone');
+  assert.ok(/no address/.test(r.text), 'no address was found, the claim stands');
+  assert.ok(/no online quoting/.test(r.text), 'no booking was found, the claim stands');
+  assert.ok(/call-or-email/.test(r.text), 'unrelated research is untouched');
+  assert.ok(!/,\s*$/.test(r.text) && !/,\s*and\s*,/.test(r.text), 'no dangling separators after surgery');
+});
+
+test('site facts: an unverified absence never prints in public, but survives in notes', () => {
+  const claim = 'no posted hours and no address block';
+  assert.equal(scrubClaims(claim, null, 'public').text, '', 'no facts, no claim');
+  assert.equal(scrubClaims(claim, murrell({ reachable: false, address: null, hours_days: 0 }), 'public').text, '', 'unreachable site, no claim');
+  assert.equal(scrubClaims(claim, null, 'notes').text, claim, 'notes keep the research until a read says otherwise');
+});
+
+test('site facts: "phone" means the printed number, not whether anyone answers it', () => {
+  // All three were scrubbed on the first sweep (2026-08-25) and all three are true.
+  for (const s of [
+    'Sales, rentals, winterization, consignment: all high-ticket, seasonal-surge phone traffic with no capture',
+    'Phone-only booking while the captain is on a boat with no hands free',
+    'A solo therapist physically cannot answer the phone mid-massage',
+  ]) {
+    assert.equal(scrubClaims(s, murrell()).text, s, s);
+  }
+  assert.equal(scrubClaims('no phone number anywhere on the site', murrell()).text, '', 'a claim about the number itself is still checked');
+});
+
+test('site facts: only an email that is plainly theirs fills the lead', () => {
+  assert.equal(emailTrusted('info@murrelldental.com', 'https://www.murrelldental.com/'), true);
+  assert.equal(emailTrusted('bowmancherries@gmail.com', 'https://bowmancherryorchards.com'), true);
+  assert.equal(emailTrusted('help.us@booksy.com', 'http://kentthebarber.booksy.com/'), false, 'the platform help desk is not the barber');
+  assert.equal(emailTrusted('info@lakestream.com', 'https://www.kalispellfamilydental.com'), false, 'the web agency in the footer is not the dentist');
+  assert.equal(emailTrusted('black9@qq.com', 'https://bigskycafe.top/'), false);
+  assert.equal(emailTrusted(null, 'https://x.com'), false);
+});
+
+test('site facts: sentences that are not about presence pass through untouched', () => {
+  const s = 'Real reservation demand with the phone as the funnel and online booking hidden';
+  assert.equal(contradicts('mid-2010s styling', murrell()), null);
+  assert.equal(scrubClaims('Every booking is a phone call the owner takes between guiding trips.', murrell()).text, 'Every booking is a phone call the owner takes between guiding trips.');
+  // "online booking hidden" is an absence claim; with no booking found it stands.
+  assert.equal(scrubClaims(s, murrell()).text, s);
+  // With a Calendly link on the site, that clause goes and the true half stays.
+  assert.equal(scrubClaims(s, murrell({ booking: 'https://calendly.com/x' })).text, 'Real reservation demand with the phone as the funnel');
+});
+
+test('site facts: the notes line round-trips and sits above OWNER NOTES', () => {
+  const f = murrell();
+  const line = siteFactsLine(f);
+  const back = parseSiteFacts(line)!;
+  assert.equal(back.address, f.address);
+  assert.equal(back.hours_days, 5);
+  assert.equal(back.email, f.email);
+  assert.equal(back.reachable, true);
+  assert.equal(back.verified, '2026-08-25');
+  const notes = withSiteFactsLine(['WEBSITE: x', 'GAP: y', 'OWNER NOTES: they said things', 'more owner words'].join('\n'), f);
+  assert.ok(notes.indexOf('SITE FACTS') < notes.indexOf('OWNER NOTES:'), 'OWNER NOTES swallows everything after it, so facts go above');
+  const again = withSiteFactsLine(notes, murrell({ verified: '2026-09-01' }));
+  assert.equal((again.match(/SITE FACTS/g) ?? []).length, 1, 'a second write replaces, never appends');
+  assert.match(again, /verified 2026-09-01/);
+  const summary = siteFactsSummary(f);
+  assert.ok(summary.some((l) => /1286 Timberlane/.test(l)));
+  assert.ok(!summary.some((l) => /none|missing/i.test(l)), 'the summary states presence only, never absence');
+});
+
+test('audit: a listing nobody read is withheld, not failed', () => {
+  assert.equal(listingSeen({ rating: null, review_count: null, source_urls: null, hours: null }), false);
+  assert.equal(listingSeen({ rating: 4.7 }), true);
+  assert.equal(listingSeen({ source_urls: ['https://www.google.com/maps/place/x'] }), true);
+  const blind = scoreProfile(presence({ listing_seen: false, address: null, hours: null, rating: null, review_count: null }));
+  assert.equal(blind.unknown, true, 'we never opened the profile, so it is not scored');
+  assert.equal(blind.checks.length, 0, 'no failed checks about a profile nobody read');
+  assert.match(blind.verdict, /did not read/);
+  const seen = scoreProfile(presence({ address: null }));
+  assert.equal(seen.unknown, false, 'a listing we read and found short is scored');
+  const report = buildPresenceReport(presence({ listing_seen: false, rating: null, review_count: null, address: null, hours: null }), null);
+  assert.ok(!/free stuff/i.test(report.headline), 'the profile headline cannot fire on a profile nobody read');
+  assert.ok(!report.top_fixes.some((f) => /address|hours|claim your/i.test(f.title)), 'no profile fixes for a profile nobody read');
+  const rev = report.pillars.find((p) => p.key === 'reviews')!;
+  assert.match(rev.verdict, /did not pull/, 'the reviews verdict says we did not look, not that there are none');
+});
+
+test('audit: the receipts print what the website itself says, presence only', () => {
+  const report = buildPresenceReport(presence({ listing_seen: false, rating: null, review_count: null, address: null, hours: null, site_facts: murrell() }), null);
+  const labels = report.provenance.map((r) => r.label);
+  assert.ok(labels.includes('Address on your site'));
+  assert.ok(labels.includes('Hours on your site'));
+  assert.ok(labels.includes('Email on your site'));
+  assert.ok(!labels.some((l) => /booking/i.test(l)), 'nothing found, nothing asserted');
+  const phone = report.provenance.find((r) => r.label === 'Phone')!;
+  assert.ok(!/Google/i.test(phone.source), 'a listing nobody opened is never cited as a source');
+  assert.ok(!/reviews say/i.test(report.summary), 'the summary cannot praise reviews it withheld');
 });

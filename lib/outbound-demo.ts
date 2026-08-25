@@ -7,6 +7,7 @@ import type { Niche, OutboundLead } from '@/lib/outbound';
 import { detectTrade, TRADE_PRESETS, VOICE_SERVICES } from '@/data/demo-os-trades';
 import type { OsTradeKey } from '@/data/demo-os-trades';
 import { SITE } from '@/lib/seo';
+import { parseSiteFacts, scrubClaims, siteFactsSummary } from '@/lib/site-facts';
 
 /**
  * The specific trade, detected from the lead's own words (name, notes, site).
@@ -498,10 +499,18 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null, 
           'No logo or brand colour could be captured off a live website. Read their materials in the mined evidence for any established colour; if there is none, the template palette applies as written.',
         ];
   const audit = lead.audit_json;
+  // The WEBSITE line is a person's research. Before it reaches a builder that
+  // will treat it as truth, every "no hours / no address / no email" clause is
+  // checked against the site as read live (lib/site-facts.ts) and dropped when
+  // the site has it. The facts themselves go in below, as the only contact
+  // details the builder may print.
+  const facts = parseSiteFacts(lead.notes);
   const evidence = (lead.notes ?? '')
     .split('\n')
     .filter((l) => /^(REVIEWS|WEBSITE):/.test(l.trim()))
+    .map((l) => (l.trim().startsWith('WEBSITE:') ? `WEBSITE: ${scrubClaims(l.replace(/^\s*WEBSITE:\s*/, ''), facts, 'notes').text}` : l))
     .join('\n');
+  const verifiedFacts = siteFactsSummary(facts);
   const business = briefField(lead.business_name, 90);
   const website = briefField(lead.website, 200);
   const owner = ownerNotes(lead);
@@ -533,6 +542,13 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null, 
           .join('; ')}`
       : null,
     evidence ? `- Why they qualified (mined evidence):\n${evidence.slice(0, 1200)}` : null,
+    // WHAT THEIR OWN SITE SAYS, READ LIVE. These are the only address, hours,
+    // email and booking details the builder may print. Anything not listed here
+    // was not found, and a site that shows a made-up street or a guessed
+    // opening time is worse than one that shows neither.
+    verifiedFacts.length
+      ? `- VERIFIED FROM THEIR LIVE WEBSITE (${facts?.verified}). Use these exactly. Do not invent any contact detail that is not in this list:\n${verifiedFacts.map((f) => `  - ${f}`).join('\n')}`
+      : '- No contact details could be verified from their website. Print the phone above and nothing else: no street address, no opening hours, no email.',
     // THEIR REAL REPUTATION, WHICH WE ALREADY HOLD AND USED TO THROW AWAY.
     //
     // outbound_leads.rating and .review_count are populated on roughly 4,400

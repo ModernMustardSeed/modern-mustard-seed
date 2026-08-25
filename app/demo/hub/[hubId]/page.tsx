@@ -1,3 +1,5 @@
+import { parseSiteFacts, scrubClaims, siteFactsFresh } from '@/lib/site-facts';
+import { ensureSiteFacts } from '@/lib/site-facts-store';
 import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import DemoHub from '@/components/demo/DemoHub';
@@ -110,7 +112,21 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
   // notes is walk-in research: keep only the factual sentences (anything that
   // reads like our sales plan stays internal), and only when enough survives
   // to stand alone.
+  //
+  // AND ONLY WHEN IT IS TRUE. Sarah, 2026-08-25: the Murrell Dental hub said
+  // "the site does not even show hours or an address" while both sat on their
+  // contact page. Research is a person's note; the label is a claim in front of
+  // the prospect. So every clause that says the website is missing something is
+  // checked against the site as read live (`lib/site-facts.ts`) and dropped when
+  // the site has it, or when the site could not be read at all. What remains is
+  // only what we can back.
   const gapRaw = /^GAP:\s*(.+)$/m.exec((lead.notes as string) ?? '')?.[1] ?? null;
+  let siteFacts = parseSiteFacts(lead.notes as string | null);
+  if (gapRaw && lead.website && !siteFactsFresh(siteFacts)) {
+    // A lead nobody has read yet pays for one live read here, capped, and the
+    // result is stored so this never happens twice for the same business.
+    siteFacts = await ensureSiteFacts(sb, lead as { id: string; website?: string | null; notes?: string | null }, { timeoutMs: 10_000, maxPages: 4 });
+  }
   const noticedLine = (() => {
     if (!gapRaw) return null;
     const kept = gapRaw
@@ -119,7 +135,8 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       .join(' ')
       .trim()
       .replace(/[;,]$/, '');
-    return kept.length >= 30 ? kept : null;
+    const verified = scrubClaims(kept, siteFacts, 'public').text.replace(/[;,]$/, '');
+    return verified.length >= 30 ? verified : null;
   })();
   // Weekend-dark businesses start the slider closer to their reality.
   const missedPreset = /closed (both )?weekend|closed sat|closed sun|after-hours|every evening|nights and weekends/i.test((lead.notes as string) ?? '') ? 11 : null;
