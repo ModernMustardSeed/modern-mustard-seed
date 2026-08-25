@@ -146,6 +146,53 @@ async function main() {
   const { error: delErr } = await sb.from('demo_appointments').delete().eq('run_id', runId).like('customer_name', `${MARKER}%`);
   check(!delErr, 'cleaned up after itself');
 
+  /*
+   * THE ALERT PATH, only with --notify, because it sends Sarah a real email.
+   *
+   * Snapshots the lead it touches and puts it back afterwards. The lead update
+   * is the half that matters most (an email is something she has to read; a
+   * lead on the dial floor works even if she does not), so it is worth proving
+   * rather than assuming, and worth proving without leaving a fake booking note
+   * on a real prospect's record.
+   */
+  if (process.argv.includes('--notify')) {
+    const { notifyDemoBooking } = await import('../lib/demo-booking-notify');
+    const { data: lead } = await sb
+      .from('outbound_leads')
+      .select('id, business_name, notes, next_action, status')
+      .eq('demo_run_id', runId)
+      .maybeSingle();
+
+    console.log(`\n  Alert test against lead: ${lead ? lead.business_name : 'none (self-serve forge, email only)'}`);
+    const before = lead ? { notes: lead.notes, next_action: lead.next_action, status: lead.status } : null;
+
+    await notifyDemoBooking(sb, {
+      runId,
+      business: run.business,
+      label: slot.say,
+      customerName: MARKER,
+      customerPhone: '4065550147',
+      service: 'a leaking roof',
+      startsAt: slot.startsAt,
+    });
+
+    if (lead && before) {
+      const { data: after } = await sb
+        .from('outbound_leads')
+        .select('notes, next_action, status')
+        .eq('id', lead.id)
+        .maybeSingle();
+      check(!!after?.notes?.includes('BOOKED ON THEIR OWN DEMO'), 'the booking is written onto the lead');
+      check(/BOOKED on their own demo/i.test(after?.next_action ?? ''), 'the lead is flagged for a call today');
+
+      const { error: restoreErr } = await sb.from('outbound_leads').update(before).eq('id', lead.id);
+      check(!restoreErr, 'the lead was put back exactly as it was');
+      const { data: restored } = await sb.from('outbound_leads').select('notes, next_action, status').eq('id', lead.id).maybeSingle();
+      check(restored?.notes === before.notes && restored?.next_action === before.next_action, 'restore verified by reading it back');
+    }
+    console.log('  Alert email sent to the owner list. Check the inbox for "DEMO BOOKING".');
+  }
+
   console.log(`\n${failures ? `${failures} FAILURE(S)` : 'All checks passed.'}\n`);
   process.exitCode = failures ? 1 : 0;
 }
