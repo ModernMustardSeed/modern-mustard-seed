@@ -94,6 +94,7 @@ const MENU_GROUPS = [
 const DEPARTMENTS = [
   { name: 'HUNDREDFOLD', tag: 'THE FLAGSHIP SCALING PROGRAM', href: '/hundredfold' },
   { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
+  { name: 'Brand / Rebrand', tag: 'A NEW BRAND ON EVERY SURFACE', href: '/brand' },
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
   { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },

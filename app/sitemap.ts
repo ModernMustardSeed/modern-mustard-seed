@@ -15,6 +15,7 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
 const STATIC_PATHS = [
   '',
   '/talking-website',
+  '/brand',
   '/ads',
   '/chief',
   '/command-center',
