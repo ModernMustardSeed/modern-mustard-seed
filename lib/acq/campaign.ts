@@ -131,12 +131,16 @@ export function firstNameOr(lead: Pick<AcqProspect, 'contact_name'>, fallback: s
  * and data drifts: any label or subject that still asks for a call is replaced
  * here, at render, so no send can carry the old ask whatever the table says.
  */
-export const BUILD_CTA_LABEL = 'YES, BUILD MINE FREE';
-export const BUILD_SUBJECT = 'Want an AI receptionist built for {{business_name}}? It is free';
+export const BUILD_CTA_LABEL = 'YES, BUILD MY DEMO';
+export const BUILD_SUBJECT = 'Can we build {{business_name}} a demo? It is free';
 const ASKS_FOR_A_CALL = /\bcall\b/i;
-export function ctaLabelFor(label: string | null | undefined): string {
-  const l = (label ?? '').trim();
-  return !l || ASKS_FOR_A_CALL.test(l) ? BUILD_CTA_LABEL : l;
+/**
+ * EVERY EMAIL ASKS THE SAME THING (Sarah, 2026-08-25: "i want all of them to
+ * ask if we can build them a demo"). The row's label is ignored on purpose: one
+ * ask, one button, whatever an A/B row was seeded with.
+ */
+export function ctaLabelFor(_label: string | null | undefined): string {
+  return BUILD_CTA_LABEL;
 }
 
 export function renderSubject(variant: AcqVariant, lead: AcqProspect): string {
@@ -273,7 +277,10 @@ function blankMachineFor(lead: AcqProspect, business: string): string {
     blank: true,
     business,
     personalized: false,
-    liveUrl: `${SITE.url}/mustard?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}`,
+    // The live machine on the demo page, never /mustard (Sarah, 2026-08-25:
+    // "not ever send to mustard page"). The keys land on the calculator, and
+    // the build form is one scroll above it.
+    liveUrl: `${SITE.url}/demos?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}#calculator`,
     escape,
   });
 }
@@ -283,7 +290,10 @@ function machineFor(lead: AcqProspect, est: Estimate, business: string, personal
     est,
     business,
     personalized,
-    liveUrl: `${SITE.url}/mustard?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}`,
+    // The live machine on the demo page, never /mustard (Sarah, 2026-08-25:
+    // "not ever send to mustard page"). The keys land on the calculator, and
+    // the build form is one scroll above it.
+    liveUrl: `${SITE.url}/demos?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}#calculator`,
     escape,
   });
 }
@@ -327,7 +337,7 @@ function ranchLineBlock(business: string): string {
  */
 function buildItAsk(): string {
   return p(
-    '<strong>Or build your own and hear it yourself.</strong> Put your business in once and we build you a working voice agent, free, plus a website to go with it if you want one. No card, no meeting, nothing to sit through.',
+    '<strong>Can we build you a demo?</strong> Say yes and we make you a working voice agent that answers as your business, plus a website to go with it if you want one. Free, no card, no meeting, nothing to sit through. It is with you inside the hour.',
   );
 }
 
@@ -703,8 +713,10 @@ export function buildDemoEmail(args: {
       eyebrow: 'YOUR RECEPTIONIST IS BUILT',
       greeting,
       body:
-        p('Mr. Mustard here.') +
-        p(`I built the ${escape(business)} version we talked about.`) +
+        // Never "we talked about": this email goes out whether or not anyone
+        // has spoken to them (Sarah, 2026-08-25). It opens as a gift, not a recap.
+        p('Mr. Mustard here. We made you something.') +
+        p(`A receptionist for ${escape(business)}, already answering to your name. Not a mockup: pick up the phone, and it picks up as you.`) +
         p('Test it like a customer. Try weird questions. Try an emergency. Try to stump it.') +
         auditBlock(args) +
         `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0"><tr>
@@ -926,7 +938,9 @@ export function buildFollowupEmail(args: {
   if (!lead.email) return null;
   const business = shortBusiness(lead.business_name);
   const greeting = greetingFor(lead);
-  const demo = args.demoUrl || permissionPageUrl(lead.id);
+  // Never /mustard from an email (Sarah, 2026-08-25). The demo page is where
+  // the build is asked for, so it is the fallback when no demo exists yet.
+  const demo = args.demoUrl || `${SITE.url}/demos?source=followup&p=${encodeURIComponent(lead.id)}`;
 
   const bodies: Record<FollowupKind, string> = {
     no_call_after_consent:

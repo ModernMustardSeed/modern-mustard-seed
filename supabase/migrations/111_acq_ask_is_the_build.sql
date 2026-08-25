@@ -4,13 +4,13 @@
 -- phone number. lib/acq/campaign.ts also rewrites any label or subject that
 -- still asks for a call at render time, so this is hygiene the admin can read.
 
+-- Every email asks the same question, so every row carries the same label.
 update public.acq_variants
-   set cta_label = 'YES, BUILD MINE FREE'
- where cta_label ~* '\mcall\M';
+   set cta_label = 'YES, BUILD MY DEMO';
 
 update public.acq_variants
-   set subject = 'Want an AI receptionist built for {{business_name}}? It is free'
+   set subject = 'Can we build {{business_name}} a demo? It is free'
  where subject ~* '\mcall\M';
 
 alter table public.acq_variants
-  alter column cta_label set default 'YES, BUILD MINE FREE';
+  alter column cta_label set default 'YES, BUILD MY DEMO';
