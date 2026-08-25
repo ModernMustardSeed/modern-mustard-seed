@@ -51,6 +51,7 @@ export default function Footer() {
     {
       title: 'Work With Us',
       links: [
+        { label: 'The System', href: '/the-system' },
         { label: 'How It Works', href: '/work-with-us' },
         { label: 'Services', href: '/services' },
         { label: 'Voice Agents', href: '/voice-agents' },
