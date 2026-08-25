@@ -787,8 +787,8 @@ export default function JourneyCalculator() {
             </h3>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#FBF6EA]/85 md:text-lg">
               That number stays a guess until it is your website and your phone number. Tell us your
-              trade and your town, and we forge your talking website, your voice agent, and your command
-              center while you watch. No card, no call, nothing to cancel.
+              trade and your town, and we forge your talking website and your voice agent while you
+              watch. No card, no call, nothing to cancel.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
