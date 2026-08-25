@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
+import DripButton from '@/components/admin/DripButton';
 import { AcqNav, Chip, Section, Stat, ToastHost, api, card, cardFlat, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, eyebrow, timeAgo, useToasts } from '@/components/admin/acquisition/ui';
 import PersonalVideoCard from '@/components/admin/acquisition/PersonalVideoCard';
 
@@ -407,6 +408,16 @@ export default function ProspectDetail({ id }: { id: string }) {
 
             <Section title="Do something">
               <div className="flex flex-col gap-2">
+                {/* Starting a sequence is an action, so it sits with the actions.
+                    It was only in the mail panel's header, a third of the way
+                    down the page, which is not a place anybody goes looking for
+                    a button. */}
+                <DripButton
+                  leadId={l.id}
+                  businessName={l.business_name}
+                  className={btnPrimary}
+                  onNotice={(text, tone) => (tone === 'error' ? setError(text) : setNotice(text))}
+                />
                 <button className={btnPrimary} disabled={busy !== '' || !l.acq_eligible} onClick={() => void act('queue-email')}>
                   Queue email {Math.min(3, (l.email_stage ?? 0) + 1)}
                 </button>
