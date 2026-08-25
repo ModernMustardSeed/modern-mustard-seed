@@ -28,6 +28,9 @@ const PAD = Number(process.argv[7] || 0)
 
 const c = SIZE / 2
 const D = R_PHOTO * 2
+// A tight crop off a full-body shot has to be upscaled into the disc, and an
+// upscale needs more sharpening than a downscale to survive at 114px.
+const SHARPEN = Math.min(1.1, 0.7 * Math.max(1, D / (CR * 2)))
 
 async function padded() {
   if (!PAD) return sharp(src)
@@ -79,7 +82,7 @@ const disc = await base
   // gentle sharpen are what keep it reading at the 114px it actually ships at.
   .modulate({ saturation: 1.05 })
   .linear(1.04, -3)
-  .sharpen({ sigma: 0.7 })
+  .sharpen({ sigma: SHARPEN })
   .composite([{
     input: Buffer.from(
       `<svg width="${D}" height="${D}"><circle cx="${D / 2}" cy="${D / 2}" r="${D / 2}" fill="#fff"/></svg>`,
