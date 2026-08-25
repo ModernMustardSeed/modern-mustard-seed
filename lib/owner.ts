@@ -16,3 +16,30 @@ export const OWNER_NOTIFY_TO = [
   'makeourcitypretty@gmail.com',
   'wildhopehouse@gmail.com',
 ];
+
+/**
+ * ONE OF OURS, NOT A CONTACT'S.
+ *
+ * Every address the studio owns: the Zoho mailbox of record, Sarah's two
+ * Gmails, and anything else on the domain. Used to keep our own inboxes out of
+ * places that are meant to hold a customer's address.
+ *
+ * This exists because a prospect row CAN end up carrying one. The site tracker
+ * scrapes contact details off a page and has filed our own address (and once a
+ * URL-encoded User-Agent string containing it) as a business's email, and the
+ * demo station writes Sarah's address onto every demo she forges for herself.
+ * A row like that looks exactly like a prospect: Moses Tree Service of Bozeman
+ * sat at acq_stage='emailed' having sent a cold campaign email to
+ * wildhopehouse@gmail.com, and the drip was lined up to keep going.
+ */
+const INTERNAL = new Set(OWNER_NOTIFY_TO.map((a) => a.toLowerCase()));
+
+export function isInternalAddress(addr: string | null | undefined): boolean {
+  const a = String(addr ?? '').trim().toLowerCase();
+  if (!a) return false;
+  const bare = a.match(/<([^>]+)>/)?.[1]?.trim().toLowerCase() ?? a;
+  // Substring, not endsWith: the tracker has stored addresses like
+  // "modernmustardseed-tracker%2f1.0+%28sarah@modernmustardseed.com", which is
+  // a User-Agent header, not an address, and must never be mailed either.
+  return INTERNAL.has(bare) || bare.includes('@modernmustardseed.com');
+}

@@ -12,6 +12,7 @@ import { OutboundNav, BackButton, StatusChip, NicheChip, ToastHost, useToasts, u
 import type { DialSession } from '@/components/admin/outbound/ui';
 import { ReachOutDeck, AuditIntelCard, ReviewAmmoCard, ThreadPanel, LeadFile } from '@/components/admin/outbound/OutboundReachOut';
 import PersonalVideoCard from '@/components/admin/outbound/PersonalVideoCard';
+import EmailThread from '@/components/admin/EmailThread';
 
 /** Company callback line read out in the voicemail script (Mr. Mustard's number). */
 const MMS_LINE = '(406) 312-1223';
@@ -687,6 +688,13 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
             <LeadFile lead={lead} onLead={setLead} push={push} />
 
             <PersonalVideoCard leadId={lead.id} push={push} />
+
+            {/* Before you dial: what they have already been sent, in full, and
+                what is queued to land next. The correspondence modal above only
+                knows the mail this cockpit sent by hand; the drip is over here. */}
+            <div className="mb-6">
+              <EmailThread leadId={lead.id} email={lead.email} title="What they have been sent" />
+            </div>
 
             <div className="grid lg:grid-cols-12 gap-5 items-start">
               {/* a. Script rail */}

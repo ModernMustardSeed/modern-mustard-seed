@@ -273,6 +273,14 @@ test('eligibility: the deny list is absolute', () => {
     [{ phone: '555' }, /dialable/i],
     [{ lead_score: 10 }, /under the campaign minimum/i],
     [{ duplicate_of: 'x' }, /duplicate/i],
+    // One of our own inboxes is not a prospect's address, however it got there.
+    // Moses Tree Service of Bozeman was emailed at wildhopehouse@gmail.com
+    // because the tracker read it off a page; two other rows carry the tracker's
+    // own User-Agent string, which has our domain buried in the middle of it.
+    [{ email: 'wildhopehouse@gmail.com' }, /one of our own/i],
+    [{ email: 'sarah@modernmustardseed.com' }, /one of our own/i],
+    [{ email: 'makeourcitypretty@gmail.com' }, /one of our own/i],
+    [{ email: 'modernmustardseed-tracker%2f1.0+%28sarah@modernmustardseed.com' }, /one of our own/i],
   ];
   for (const [over, expected] of cases) {
     const v = evaluate(lead(over), ctx);
