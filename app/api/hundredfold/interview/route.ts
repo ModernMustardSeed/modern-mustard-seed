@@ -108,7 +108,7 @@ export async function POST(req: Request) {
   //
   // Vapi 400s on a PARTIAL model override, so the live assistant's whole model
   // object is fetched and the interview brief is merged into it. Same pattern
-  // the forge uses, and the same reason: a bare `{ messages: [...] }` looks
+  // the build uses, and the same reason: a bare `{ messages: [...] }` looks
   // right and is rejected. Every named tool is stripped, because Mr. Mustard
   // must not wander off and book a call in the middle of the interview.
   let call: Record<string, unknown> | null = null;

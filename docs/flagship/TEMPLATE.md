@@ -8,7 +8,7 @@ photography stripped out so it stays readable.
 
 The tier directives used to send the builder to `~/wildmere/TEMPLATE.md` for
 "the anatomy, the parameter knobs, THE TEN LAWS" and to
-`~/modern-mustard-forge/...` for the award-site skill. Neither exists on this
+`~/modern-mustard-build/...` for the award-site skill. Neither exists on this
 machine. They were on Sarah's old computer. So the DEFAULT demo tier has been
 telling the builder to go read its own design system from paths that resolve to
 nothing, and the builder has been improvising the whole standard on every job.

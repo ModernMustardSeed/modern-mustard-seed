@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { BuiltCall } from '@/lib/sidekick';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
 import { OS_AUTOMATIONS } from '@/data/demo-os';
 import type { OsCustomer } from '@/data/demo-os';
@@ -24,9 +24,9 @@ import OsTour from '@/components/demo/os/OsTour';
 import { fillNoun } from '@/lib/business-name';
 
 /**
- * The forged BUSINESS OS demo: one template command center that renders as
+ * The built BUSINESS OS demo: one template command center that renders as
  * THEIR software from the frozen per-lead config, wearing THEIR brand (logo +
- * colors captured at forge time, palette borrowed from their forged website).
+ * colors captured at build time, palette borrowed from their built website).
  * Modules: Today, the trade-specific SIGNATURE BOARD, Customers (CRM), Quotes
  * (branded proposal generator), Jobs (run sheet), Campaigns (growth plays +
  * ad studio), Money, Books, Reviews, Automations, and the live AI assistant
@@ -227,10 +227,10 @@ export default function OsDemoApp({
 }: {
   osId: string;
   config: OsDemoConfig;
-  call: ForgedCall | null;
+  call: BuiltCall | null;
   /** the hub's order section; buying happens there, one tap away */
   orderUrl?: string | null;
-  /** Derived from THEIR forged website, so the suite matches. Falls back to the
+  /** Derived from THEIR built website, so the suite matches. Falls back to the
    *  house midnight deck when the site has not landed yet. */
   theme?: OsTheme;
 }) {

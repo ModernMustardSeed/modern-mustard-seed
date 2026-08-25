@@ -6,7 +6,7 @@
  *
  * WHY THIS IS A SHIM AND NOT A PROMPT LINE. The design law now forbids choosing
  * brown, which fixes every site built from today. It does nothing for the 143
- * already forged and sitting in the cockpit, and re-forging them would throw away
+ * already built and sitting in the cockpit, and rebuilding them would throw away
  * work that is otherwise good over one colour. So brown comes off at serve time,
  * on the way out, the same way the closing band goes on.
  *
@@ -205,7 +205,7 @@ const SCRIPT = `<script data-${MARKER}>
 </script>`;
 
 /**
- * Take brown off a forged document on the way out. Safe to call twice: the
+ * Take brown off a built document on the way out. Safe to call twice: the
  * marker makes a second pass a no-op.
  */
 export function takeBrownOff(html: string): string {

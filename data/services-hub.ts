@@ -27,7 +27,7 @@ export type Dept = {
 
 export const DEPARTMENTS: Dept[] = [
   { key: 'websites', name: 'Websites', tag: 'Free website demo', blurb: 'A site that captures the lead and follows up on its own. Not a brochure, an engine.', href: '/websites', icon: '🌐', flagship: true },
-  // Forge parked 2026-08-12 (Sarah); this row points at /voice-agents now. See Navbar.tsx.
+  // Build parked 2026-08-12 (Sarah); this row points at /voice-agents now. See Navbar.tsx.
   { key: 'sidekick', name: 'Voice Agents', tag: 'Free voice agent demo', blurb: 'Answers your calls 24/7 in a natural voice, books the job, texts you the details.', href: '/voice-agents', icon: '🎙', flagship: true },
   { key: 'command-center', name: 'Command Center', tag: 'The AI back office', blurb: 'One board: calls transcribed, website traffic, customers, reviews, and money, wired together.', href: '/command-center', icon: '⚙', flagship: true },
   { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },

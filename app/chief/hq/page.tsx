@@ -140,7 +140,7 @@ export default async function ChiefHqPage() {
         </section>
       </main>
 
-      {/* Live browser call with Mr. Mustard, forged behind this client's auth */}
+      {/* Live browser call with Mr. Mustard, built behind this client's auth */}
       <MustardDeskCall endpoint="/api/portal/desk-call" label="Talk to your Chief" sublabel="Live, in your browser" />
     </div>
   );

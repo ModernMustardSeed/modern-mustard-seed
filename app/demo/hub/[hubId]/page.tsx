@@ -13,9 +13,9 @@ export const dynamic = 'force-dynamic';
 
 /**
  * The DEMO SUITE HUB: one shareable, adorable front door per lead. Mr.
- * Mustard says hi (video), the three forged demos open from here, and the
+ * Mustard says hi (video), the three built demos open from here, and the
  * Recovery Calculator shows what missed calls cost them. Renders live from
- * the lead row (keyed by its own unguessable hub id), so demos forged later
+ * the lead row (keyed by its own unguessable hub id), so demos built later
  * appear on their own.
  */
 export default async function DemoHubPage({ params }: { params: Promise<{ hubId: string }> }) {
@@ -91,7 +91,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
 
   // THEIR OWN suite film: a fresh recording of this lead's website, a live call
   // with this lead's voice agent, and this lead's command center, cut by
-  // scripts/suite-film/build.mjs as the last step of the forge. It outranks
+  // scripts/suite-film/build.mjs as the last step of the build. It outranks
   // everything else, because a house film about somebody else's business is
   // exactly what this replaced (Sarah, 2026-08-01).
   let suiteFilmUrl: string | null = null;
@@ -115,7 +115,7 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
     if (!gapRaw) return null;
     const kept = gapRaw
       .split(/(?<=[.;])\s+/)
-      .filter((s) => !/voice|agent|pitch|demo|sale|textbook|lead with|walk-in|forge/i.test(s))
+      .filter((s) => !/voice|agent|pitch|demo|sale|textbook|lead with|walk-in|build/i.test(s))
       .join(' ')
       .trim()
       .replace(/[;,]$/, '');
@@ -160,8 +160,8 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
   const niche = (lead.niche ?? 'other') as Niche;
   // Through leadTrade, never a hand-rolled detectTrade call: this page hand-built
   // the same corpus join and so quietly skipped the business-name precedence the
-  // forge uses, which is how the hub calculator can price a different trade than
-  // the voice agent and command center were forged for.
+  // build uses, which is how the hub calculator can price a different trade than
+  // the voice agent and command center were built for.
   const trade = leadTrade(lead);
 
   /* What their agent booked while they were on the phone. Only ever non-empty

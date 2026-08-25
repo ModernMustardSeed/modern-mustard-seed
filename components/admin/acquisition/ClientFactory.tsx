@@ -7,7 +7,7 @@ import { AcqNav, Section, Stat, Chip, api, card, cardFlat, btnPrimary, btnGhost,
 import { usePoll } from '@/lib/use-poll';
 
 type Rate = { key: string; label: string; numerator: number; denominator: number; ratePct: number | null; thin: boolean };
-type Forecast = { target: number; prospectsNeeded: number | null; emailsNeeded: number | null; permissionsNeeded: number | null; callsNeeded: number | null; forgesNeeded: number | null; low: number | null; high: number | null; basedOn: string; confident: boolean };
+type Forecast = { target: number; prospectsNeeded: number | null; emailsNeeded: number | null; permissionsNeeded: number | null; callsNeeded: number | null; buildsNeeded: number | null; low: number | null; high: number | null; basedOn: string; confident: boolean };
 type Report = {
   campaign: { id: string; goal_clients: number; goal_revenue_cents: number; goal_horizon_months: number; monthly_client_target_min: number; monthly_client_target_stretch: number; status: string } | null;
   path: { goalRevenueCents: number; realizedRevenueCents: number; remainingCents: number; monthsElapsed: number; monthsRemaining: number; requiredMonthlyCents: number; currentMonthlyRunRateCents: number; arrRunRateCents: number; status: string; activeClients: number; newThisMonth: number; targetMin: number; targetStretch: number; activeMrrCents: number } | null;
@@ -321,7 +321,7 @@ export default function ClientFactory() {
                         <Pair label="Emails" v={f.emailsNeeded} />
                         <Pair label="Permissions" v={f.permissionsNeeded} />
                         <Pair label="Calls" v={f.callsNeeded} />
-                        <Pair label="Forges" v={f.forgesNeeded} />
+                        <Pair label="Builds" v={f.buildsNeeded} />
                       </dl>
                       <p className="mt-2 text-[11px] font-mono text-[#161616]/65">
                         Range {f.low?.toLocaleString()} to {f.high?.toLocaleString()} emails. {f.basedOn}

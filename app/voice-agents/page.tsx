@@ -354,7 +354,7 @@ export default function VoiceAgentsPage() {
           </div>
         </section>
 
-        {/* ═══════════ THE FORGE ═══════════ */}
+        {/* ═══════════ THE BUILD ═══════════ */}
         <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#F5B700]">
           <div aria-hidden="true" className="absolute inset-0 stripe-ink opacity-[0.07]" />
           <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
@@ -376,7 +376,7 @@ export default function VoiceAgentsPage() {
                     href="/demos"
                     className="rounded-full border-2 border-[#161616] bg-[#161616] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#FBF6EA]"
                   >
-                    Forge Mine, Free →
+                    Build Mine, Free →
                   </Link>
                   <Link
                     href="/voice-agents/whitepaper"

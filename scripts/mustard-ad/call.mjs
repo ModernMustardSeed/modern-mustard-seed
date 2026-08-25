@@ -10,7 +10,7 @@
  * WHY THE CALL IS BRIEFED (and the after-hours ad's was not). That spot was a
  * cold prospect call, so an unbriefed line was both honest and better than
  * anything scripted. This one has to hit specific beats in a fixed order and,
- * more importantly, has to stay TRUE about timing: the voice agent forges in
+ * more importantly, has to stay TRUE about timing: the voice agent builds in
  * well under a minute and the WEBSITE takes about an hour and arrives by email.
  * An unbriefed agent quotes the standing $397 setup line from his own prompt,
  * which is the price of putting him on a REAL line and not the price of the
@@ -19,7 +19,7 @@
  *
  * ⚠️ VAPI 400s ON A PARTIAL MODEL OVERRIDE. The live assistant's WHOLE `model`
  * object is fetched and the brief is merged into it. A bare
- * `{ messages: [...] }` looks right and is rejected. Same trap the forge and
+ * `{ messages: [...] }` looks right and is rejected. Same trap the build and
  * the hundredfold interview both hit (memory: hundredfold, trap 1).
  *
  * ⚠️ THE VOICE IS DELIBERATELY NOT OVERRIDDEN. Leaving `voice` off the
@@ -66,7 +66,7 @@ const ASSISTANT_ID = env('VAPI_MUSTARD_ASSISTANT_ID');
  * advertising:
  *   - three demos, free, no card and no sales call  -> app/demos/page.tsx
  *   - the suite arrives within the hour             -> app/demos/page.tsx
- *   - the voice agent forges in well under a minute -> measured, see forge.mjs
+ *   - the voice agent builds in well under a minute -> measured, see build.mjs
  * He is told the beats and the order, not the words. His own phrasing is
  * better than mine and the after-hours cut proved it.
  */
@@ -78,7 +78,7 @@ Hit these beats IN THIS ORDER, in your own words, and keep each one to one or tw
 
 1. When she describes both problems: tell her you can fix both, and ask what the business is called. Nothing else.
 2. When she gives you the business name: tell her to give you about forty seconds on the phone part. Nothing else. Do not explain what you are doing.
-3. THE MOMENT SHE MAKES ANY SOUND AFTER THAT, the forge has finished. Your very next sentence is that it is done and her agent is live, and then you ask if she wants to hear him take a booking. Nothing else may come between beat 2 and this line. Do not ask her for anything first. Take 2 of this recording was lost because you asked for an email here instead.
+3. THE MOMENT SHE MAKES ANY SOUND AFTER THAT, the build has finished. Your very next sentence is that it is done and her agent is live, and then you ask if she wants to hear him take a booking. Nothing else may come between beat 2 and this line. Do not ask her for anything first. Take 2 of this recording was lost because you asked for an email here instead.
 4. When she asks what this costs: the answer is NOTHING. It is free, no credit card and no sales call. Then tell her the website takes a bit longer and will be in her inbox inside the hour.
 5. When she asks what the catch is: your entire answer is that she will like them. Say it warmly and stop talking.
 
@@ -96,8 +96,8 @@ HARD RULES:
  * of ~13s clears his reply with a few seconds of margin.
  *
  * ⚠️ THE FORTY-SECOND GAP DOES NOT EXIST ON THE CALL, ON PURPOSE. In the script
- * the forge runs between "give me forty seconds" and "done, your agent's live",
- * and on screen that window is filled by the real capture of the forge running.
+ * the build runs between "give me forty seconds" and "done, your agent's live",
+ * and on screen that window is filled by the real capture of the build running.
  * Holding a real 40s silence here would only trip Vapi's silence timeout and
  * end the call before the last two beats. Turn 3 is a short listening noise
  * that cues his "done" line; the picture supplies the wait.

@@ -1,6 +1,6 @@
-# SIDEKICK FORGE launch posts (DRAFTS — Sarah approves before anything posts)
+# SIDEKICK BUILD launch posts (DRAFTS — Sarah approves before anything posts)
 
-Landing: https://modernmustardseed.com/voice-agents/forge
+Landing: https://modernmustardseed.com/voice-agents/build
 UTM for links: ?utm_source={platform}&utm_medium=social&utm_campaign=sidekick
 Video: sidekick-9x16.mp4 (Reels/Shorts/TikTok-format) or sidekick-16x9.mp4 (X/LinkedIn/YouTube)
 
@@ -14,7 +14,7 @@ Type what you do. Watch Mr. Mustard drill him. Then he talks to you, live. He ca
 
 Free, no card. If you love him, he's answering your real phone this week.
 
-modernmustardseed.com/voice-agents/forge
+modernmustardseed.com/voice-agents/build
 
 ---
 
@@ -24,13 +24,13 @@ The average small business misses about 4 in 10 calls. Every one of those caller
 
 So we productized the fix, and we made the demo the product.
 
-Go to the Voice Agent Forge, tell Mr. Mustard (our AI) about your business: what you do, what you charge, what customers ask. Sixty seconds later your own voice agent graduates and talks to you, live, in your browser. Ask it your hardest customer question. Or have it call your cell so you feel exactly what your customers would feel.
+Go to the Voice Agent Build, tell Mr. Mustard (our AI) about your business: what you do, what you charge, what customers ask. Sixty seconds later your own voice agent graduates and talks to you, live, in your browser. Ask it your hardest customer question. Or have it call your cell so you feel exactly what your customers would feel.
 
 If you love him: $297 setup + $197 a month, live within 7 days, answering the number you already have, hard-capped minutes so there is never a surprise bill, cancel anytime. The setup fee credits toward any custom build if you outgrow him.
 
 The demo is free and there is no card. It is honestly just fun, even if you never buy.
 
-modernmustardseed.com/voice-agents/forge
+modernmustardseed.com/voice-agents/build
 
 ---
 
@@ -40,11 +40,11 @@ Your business misses calls every week. Nights, weekends, lunch rush, that one ho
 
 Meet your Voice Agent: a voice agent trained on YOUR business by Mr. Mustard, our in-house AI (yes, the one from the commercials).
 
-Try the forge free: tell him about your business and 60 seconds later your own voice agent talks to you, live. He can even call your phone.
+Try the build free: tell him about your business and 60 seconds later your own voice agent talks to you, live. He can even call your phone.
 
 Keep him and he answers 24/7, books appointments, and sends every call summary to your inbox. Installed by hand within a week.
 
-modernmustardseed.com/voice-agents/forge
+modernmustardseed.com/voice-agents/build
 
 ---
 
@@ -55,7 +55,7 @@ He trains front desks. Yours graduates in 60 seconds. 🌱📞
 
 Tell Mr. Mustard about your business, watch the training montage, then TALK to your own voice agent, live. He can even call your cell. Free demo, no card.
 
-Link in bio → the Voice Agent Forge
+Link in bio → the Voice Agent Build
 
 Hashtags (5 max per house rule):
 #smallbusiness #voiceagent #entrepreneur #montana

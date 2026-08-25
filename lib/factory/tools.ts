@@ -10,7 +10,7 @@ import { sendViaResend } from '@/lib/send-email';
  * THE MMS TOOL REGISTRY.
  *
  * One definition per capability, used by the AI salesperson, by workflows, by
- * the Forge and by the admin. There is deliberately no second implementation of
+ * the Build and by the admin. There is deliberately no second implementation of
  * "book a meeting" living inside a prompt somewhere: business logic lives here,
  * and every surface calls the same function.
  *

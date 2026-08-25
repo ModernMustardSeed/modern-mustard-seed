@@ -9,7 +9,7 @@ import MissedCallMath from '@/components/voice-agents/MissedCallMath';
 
 /**
  * The voice agent trade fleet: /voice-agents/[trade].
- * Rendered from TRADE_PRESETS (the same source the forged demos use), so the
+ * Rendered from TRADE_PRESETS (the same source the built demos use), so the
  * page can never drift from what the product actually says on a call.
  * Only LIVE_TRADE_SLUGS build; everything else 404s until Sarah releases it.
  */
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ trade: st
   if (!page) return buildMetadata({ noindex: true });
   return buildMetadata({
     title: `Voice Agent For ${page.forWord}. Hear It Answer Live`,
-    description: `A 24/7 voice agent built for ${page.forWord.toLowerCase()}: ${page.services.toLowerCase()}. Forge a free demo trained on your business and hear it answer live.`,
+    description: `A 24/7 voice agent built for ${page.forWord.toLowerCase()}: ${page.services.toLowerCase()}. Build a free demo trained on your business and hear it answer live.`,
     path: `/voice-agents/${page.slug}`,
   });
 }
@@ -76,7 +76,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                   href="/demos"
                   className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
                 >
-                  Forge My Free Demo
+                  Build My Free Demo
                 </Link>
                 <a
                   href={`tel:${DEMO_LINE.tel}`}
@@ -86,7 +86,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                 </a>
               </div>
               <p className="mt-6 font-body text-[15px] text-[#5c554a]">
-                The demo line answers live, any hour. The forged demo goes further: it answers as{' '}
+                The demo line answers live, any hour. The built demo goes further: it answers as{' '}
                 <em className="italic">your</em> business, trained on your services, and it is with you within the hour.
               </p>
             </div>
@@ -147,7 +147,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               <p className="mt-2 font-display text-xl font-extrabold">{preset.signature.title}</p>
               <p className="mt-1 font-body text-sm text-[#5c554a]">{preset.signature.sub}</p>
               <p className="mt-3 font-body text-sm text-[#3d382e]">
-                Every forged demo ships with a website designed from scratch for your trade, free to tour, and free
+                Every built demo ships with a website designed from scratch for your trade, free to tour, and free
                 to keep when you take the voice agent and the website together. This board is its centerpiece.
               </p>
             </div>
@@ -193,7 +193,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
            the day's schedule. Roofing shows hail claims and adjuster meetings,
            plumbing shows something else entirely, so this is genuinely distinct
            copy per page rather than padding. Nothing is invented: it is the
-           same sample data the forged demos use, and it is labeled as sample.
+           same sample data the built demos use, and it is labeled as sample.
 
            Rendered defensively. Five of the 28 presets lack customers/todayJobs,
            and a missing field must not 404 a live page. */}
@@ -316,7 +316,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
             {[
               {
                 n: '01',
-                t: 'Forge The Demo',
+                t: 'Build The Demo',
                 b: 'Type your business name at the demo station. A voice agent trained on your company is with you within the hour.',
               },
               {
@@ -373,14 +373,14 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
             Your next {preset.jobWord} is calling.
           </h2>
           <p className="mt-4 font-body text-lg text-[#3d382e]">
-            Forge the free demo and hear your own voice agent in about a minute.
+            Build the free demo and hear your own voice agent in about a minute.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href="/demos"
               className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              Forge My Free Demo
+              Build My Free Demo
             </Link>
             <a
               href={`tel:${DEMO_LINE.tel}`}

@@ -66,11 +66,11 @@ if (run('roadmap')) {
 }
 
 if (run('offer')) {
-  console.log('\n[3/3] Forging the offer and the build plan...');
+  console.log('\n[3/3] Building the offer and the build plan...');
   const m2 = await store.getMemberById(memberId);
   const fresh = await store.getInterview(interview.id);
   if (!m2?.deep_roadmap) throw new Error('no roadmap yet, run the roadmap step first');
-  const { offer, systems, gates } = await synth.forgeOffer({
+  const { offer, systems, gates } = await synth.buildOffer({
     businessName: m2.business_name,
     answers: fresh?.answers ?? {},
     roadmap: m2.deep_roadmap,

@@ -2,7 +2,7 @@ import type { OutboundLead } from '@/lib/outbound';
 
 /**
  * The AI Game Plan one-pager: the letter-size sheet Sarah hands a business at
- * the door. Three QR codes (demo hub, forged site, integration plan), the
+ * the door. Three QR codes (demo hub, built site, integration plan), the
  * findings mined from the lead's research notes, and the studio contact bar.
  *
  * Deliberately ink-light: white fills and thin mustard borders only, because

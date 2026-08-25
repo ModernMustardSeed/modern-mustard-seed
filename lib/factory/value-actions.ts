@@ -18,7 +18,7 @@ import { audit } from './audit-log';
  * product from "leads plus a sequencer plus a chatbot".
  *
  * TWO SHAPES, ONE INTERFACE. Some actions run inside the request (an audit, a
- * calculation). Some are minutes of work and get queued (a built demo, a forged
+ * calculation). Some are minutes of work and get queued (a built demo, a built
  * voice agent). Callers do not branch on which: `runValueAction` returns either
  * a finished run or a queued one, and the run row is the contract either way.
  *

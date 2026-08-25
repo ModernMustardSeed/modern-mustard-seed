@@ -1,15 +1,15 @@
 /**
- * THE SIDEKICK DRIP: follow-up for people who forged a Voice Agent at /voice-agents/forge
+ * THE SIDEKICK DRIP: follow-up for people who built a Voice Agent at /voice-agents/build
  * and did not buy.
  *
- * WHY THIS EXISTS (2026-07-20): /voice-agents/forge forgers received NOTHING. The forge
+ * WHY THIS EXISTS (2026-07-20): people who ran /voice-agents/build received NOTHING. The build
  * wrote a row to `leads` with source 'sidekick-forge' and emailed Sarah, and
  * that was the end of it. The demo-station drip only covers `outbound_leads`
  * where source = 'demo-station', and the mustard-sequence cron only covers
  * sources 'mustard-seed-chat' and 'tracker'. A stranger could hear their own
  * phone answered by an AI trained on their business, the single best moment in
  * the product, and never hear from us again. The 28 trade pages and four of the
- * /for/* pillar pages now point at /voice-agents/forge, so this was the leak that mattered.
+ * /for/* pillar pages now point at /voice-agents/build, so this was the leak that mattered.
  *
  * Design notes:
  *  - Rides the outbound-cadence cron. Vercel Hobby cron slots are 12/12 FULL,
@@ -37,10 +37,10 @@ const KEY = (id: string) => `skdrip:${id}`;
 const WINDOW_DAYS = 45;
 
 /**
- * A sequence may only START for a genuinely fresh forge. Without this, the
+ * A sequence may only START for a genuinely fresh build. Without this, the
  * first run of this module would have opened touch 1 ("your Voice Agent is still
  * standing by") on leads 11 and 13 days old, which reads as a robot that lost
- * track of time. Stale forgers are a human's job, not a drip's: they surface in
+ * track of time. Stale builders are a human's job, not a drip's: they surface in
  * staleUnstarted() instead. Once a sequence is underway the cadence gaps in
  * due() govern it, so cron lag can never restart anything.
  */
@@ -63,10 +63,10 @@ type SidekickLead = {
 const TERMINAL = new Set(['replied', 'booked', 'won', 'lost', 'archived']);
 
 /**
- * Pull the run id the forge wrote as `run=<uuid>`. Strict UUID shape, so a
+ * Pull the run id the build wrote as `run=<uuid>`. Strict UUID shape, so a
  * malformed or missing token simply yields no deep link rather than a broken
- * URL. Leads forged before 2026-07-20 have no token; they still get the drip,
- * just pointed at /voice-agents/forge instead of their specific run.
+ * URL. Leads built before 2026-07-20 have no token; they still get the drip,
+ * just pointed at /voice-agents/build instead of their specific run.
  */
 export function runIdFromNotes(notes: string | null): string | null {
   const m = /run=([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i.exec(notes ?? '');
@@ -101,7 +101,7 @@ export function sidekickDripEmail(
   const hi = first ? `Hi ${first},` : 'Hi there,';
   const biz = escape(bizOf(lead));
   const runId = runIdFromNotes(lead.notes);
-  const demoUrl = runId ? `${SITE.url}/voice-agents/forge/demo/${runId}` : `${SITE.url}/voice-agents/forge`;
+  const demoUrl = runId ? `${SITE.url}/voice-agents/build/demo/${runId}` : `${SITE.url}/voice-agents/build`;
   const monthly = sidekickUsd(sidekickTiers[0].monthlyCents);
   const setup = sidekickUsd(sidekickTiers[0].setupCents);
 
@@ -167,7 +167,7 @@ export function sidekickDripEmail(
 }
 
 /**
- * Forgers too old for the drip to open a sequence on, who never got a touch and
+ * Builders too old for the drip to open a sequence on, who never got a touch and
  * were never moved by a human. These are warm-ish hands that went cold in
  * silence, so they belong on a person's list rather than in a robot's.
  * Reported by the cron so they are visible instead of invisible.

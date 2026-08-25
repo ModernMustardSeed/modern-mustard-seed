@@ -1,5 +1,5 @@
 /**
- * THE THREE TOOLS A FORGED DEMO AGENT NEEDS TO ACT LIKE THE PRODUCT.
+ * THE THREE TOOLS A BUILT DEMO AGENT NEEDS TO ACT LIKE THE PRODUCT.
  *
  *   check_availability   real openings only, never invented
  *   book_appointment     the database awards the slot, not the model
@@ -23,7 +23,7 @@
  *
  * ── ⚠️ NO `enum` INSIDE AN ARRAY'S `items` ───────────────────────────────────
  * See scripts/vapi-lint.mjs. That shape empties the ENTIRE arguments object on
- * a live Vapi call, which is how the forge sent nothing for eleven days. These
+ * a live Vapi call, which is how the build sent nothing for eleven days. These
  * are all plain strings.
  */
 

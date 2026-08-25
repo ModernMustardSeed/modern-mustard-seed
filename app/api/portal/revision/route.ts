@@ -12,13 +12,13 @@ export const runtime = 'nodejs';
  *
  * Edits are unlimited and included, forever, before launch and after (decided
  * 2026-08-03). There is no counter in front of the client, no third-edit price, and
- * no plan to upgrade to. They type the change, the forge builds it into a draft
+ * no plan to upgrade to. They type the change, the build turns it into a draft
  * within minutes, they preview it and ship it themselves.
  *
- * Behind the glass it is still hard-capped, because every edit is real forge spend
+ * Behind the glass it is still hard-capped, because every edit is real build spend
  * and the never-leak-revenue rule has no exceptions. claim_revision() (migration 078)
  * does the fair-use check and the increment in ONE locked statement and FAILS CLOSED,
- * so two tabs, a double-click, or a retry cannot run the forge twice.
+ * so two tabs, a double-click, or a retry cannot run the build twice.
  *
  * Hitting the ceiling is NOT an error, and it must never silently swallow the
  * client's words. We return 200 with sentAsNote:true and record the same text as a
@@ -146,7 +146,7 @@ export async function POST(req: Request) {
   }
 
   // AUTO-APPLY IT, but never straight to the live site. When their real site already
-  // exists, queue the edit against a copy: the forge builds it into a draft they
+  // exists, queue the edit against a copy: the build turns it into a draft they
   // preview and ship themselves. If the site is not built yet, there is nothing to
   // edit against, so it stays a request for Sarah.
   let applying = false;

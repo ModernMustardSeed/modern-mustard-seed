@@ -1,7 +1,7 @@
 /**
  * THE STRIPE RUNS LEVEL (2026-08-24).
  *
- * Sarah, on the forged sites: "the stripe block that has words auto scrolling,
+ * Sarah, on the built sites: "the stripe block that has words auto scrolling,
  * its not straight horizontal, its at a diagonal and gets squeezed between the
  * other 2 blocks and text becomes illegible."
  *
@@ -28,8 +28,8 @@
  * band or on the section pressed against it. A band that was already level is
  * left exactly as the build drew it.
  *
- * Applied at every surface forged html reaches a human: the demo routes (which
- * fixes every site already in the table without a re-forge) and the publish
+ * Applied at every surface built html reaches a human: the demo routes (which
+ * fixes every site already in the table without a rebuild) and the publish
  * path (which fixes the ones people paid for). New builds are born level via
  * the third clause of LEGIBILITY_LAW in lib/site-directive.mjs, and this shim
  * is idempotent, so carrying both costs nothing.
@@ -252,7 +252,7 @@ const SCRIPT = `<script data-${MARKER}>
 </script>`;
 
 /**
- * Append the leveller to a forged document. Safe to call twice: the marker
+ * Append the leveller to a built document. Safe to call twice: the marker
  * attribute makes a second pass a no-op.
  */
 export function levelMarquees(html: string): string {

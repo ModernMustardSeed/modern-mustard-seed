@@ -1,7 +1,7 @@
 # Studio departments launch pack (DRAFTS — Sarah approves before anything posts or sends)
 
 Landings (append per-platform UTM: ?utm_source={platform}&utm_medium=social&utm_campaign={sidekick|pictures|press}):
-- https://modernmustardseed.com/voice-agents/forge (drafts already in sidekick-launch.md)
+- https://modernmustardseed.com/voice-agents/build (drafts already in sidekick-launch.md)
 - https://modernmustardseed.com/pictures
 - https://modernmustardseed.com/press
 Video available NOW (no fal needed): the caption cut of The Graduate at /ads/sidekick-{16x9,9x16,4x5}.mp4. Press/Pictures posts work as image posts (press sample proofs at /press/sample-*.png; pictures OG card).
@@ -80,7 +80,7 @@ Hi {firstName|there},
 We spent the week building three things you can try free, right now, each in about a minute:
 
 **1. Hear your own voice agent.** Tell Mr. Mustard about your business and talk to your trained front desk live, in your browser. It can even call your cell.
-→ modernmustardseed.com/voice-agents/forge
+→ modernmustardseed.com/voice-agents/build
 
 **2. Watch your commercial get directed.** The free Screen Test: your logline, six shots, and three taglines, written for YOUR business on the spot.
 → modernmustardseed.com/pictures

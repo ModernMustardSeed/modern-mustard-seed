@@ -81,7 +81,7 @@ export async function POST(req: Request) {
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     notifySarah(
       `Direction board change request: ${current.businessName}`,
-      `${session.email} on the "${current.board.directionName}" direction:\n\n"${note}"\n\nRe-forge it on /admin/delivery and send the new cut.`,
+      `${session.email} on the "${current.board.directionName}" direction:\n\n"${note}"\n\nRebuild it on /admin/delivery and send the new cut.`,
     );
     return NextResponse.json({ ok: true });
   }

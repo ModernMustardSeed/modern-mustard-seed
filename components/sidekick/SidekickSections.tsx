@@ -1,5 +1,5 @@
 /**
- * The static story around the Forge: how it works, what he handles (and
+ * The static story around the Build: how it works, what he handles (and
  * honestly does not), FAQ, and the cross-links. Server-rendered.
  */
 
@@ -18,7 +18,7 @@ export function HowItWorks() {
     },
     {
       n: '02',
-      title: 'Watch the forge run',
+      title: 'Watch the build run',
       body: 'Greeting drills, booking reps, one furious caller for composure. Your Voice Agent graduates trained on YOUR business, not a script.',
     },
     {
@@ -30,7 +30,7 @@ export function HowItWorks() {
   return (
     <section className="py-16 md:py-24" aria-labelledby="how-heading">
       <div className="max-w-5xl mx-auto px-5">
-        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3 text-center">[ How the forge works ]</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3 text-center">[ How the build works ]</p>
         <h2 id="how-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
           Interview to hired in one visit.
         </h2>
@@ -94,7 +94,7 @@ export function GiveHimAHome() {
             <span className="text-2xl leading-none" aria-hidden="true">&#9889;</span>
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">The pair, as one thing</span>
             <h3 className="font-display italic font-black text-xl text-[#161616] mt-1">The Talking Website</h3>
-            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Site and voice agent forged together off one brain, for less than buying the two of them apart.</p>
+            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Site and voice agent built together off one brain, for less than buying the two of them apart.</p>
             <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">&rarr;</span></span>
           </Link>
         </div>
@@ -240,7 +240,7 @@ export function CrossSell() {
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Rather build?</p>
           <h3 className="font-display text-xl font-black text-[#161616] mt-1.5">Learn the method in MUSTARD MODE</h3>
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
-            Mr. Mustard also coaches humans. Learn Claude and ship your own tools with the same trainer who forged your Voice Agent.
+            Mr. Mustard also coaches humans. Learn Claude and ship your own tools with the same trainer who built your Voice Agent.
           </p>
           <Link href="/mustard-mode" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
             [ MUSTARD MODE: ON ] →

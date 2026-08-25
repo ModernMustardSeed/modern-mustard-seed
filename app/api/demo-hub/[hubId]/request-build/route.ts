@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { buildSiteBrief, forgeLeadVoiceDemo } from '@/lib/outbound-demo';
+import { buildSiteBrief, buildLeadVoiceDemo } from '@/lib/outbound-demo';
 import { sendViaResend } from '@/lib/send-email';
 import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
@@ -9,14 +9,14 @@ export const runtime = 'nodejs';
 export const maxDuration = 30;
 
 /**
- * "Forge it for me now", from the suite page itself (Sarah, 2026-08-20: the
+ * "Build it for me now", from the suite page itself (Sarah, 2026-08-20: the
  * outro used to say call Mr. Mustard; a prospect holding one piece should be
  * able to queue the rest on the spot). Public and hub-scoped: knowing a hub's
  * unguessable id is the credential, same trust model as viewing the hub.
  *
  * Queues at most what is actually missing, through the same paths the cockpit
- * uses: outbound_demo_sites for the website (the local forge worker builds
- * it), forgeLeadVoiceDemo for the agent. The suite page renders live off the
+ * uses: outbound_demo_sites for the website (the local build worker builds
+ * it), buildLeadVoiceDemo for the agent. The suite page renders live off the
  * lead row, so finished pieces appear on their own, and the suite-ready
  * announcement (hooks/suite-ready, film-gated) emails them when the build is
  * done, which is why the email lands on the lead here.
@@ -34,7 +34,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ hubId: 
   const wants = Array.isArray(body.wants) ? body.wants.filter((w): w is 'voice' | 'site' => w === 'voice' || w === 'site') : [];
   const email = typeof body.email === 'string' && /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(body.email.trim()) ? body.email.trim().toLowerCase() : null;
   const note = typeof body.note === 'string' ? body.note.trim().slice(0, 500) : '';
-  if (!wants.length) return NextResponse.json({ message: 'Pick at least one thing to forge.' }, { status: 400 });
+  if (!wants.length) return NextResponse.json({ message: 'Pick at least one thing to build.' }, { status: 400 });
 
   const { data: lead } = await sb.from('outbound_leads').select('*').eq('hub_demo_id', hubId).maybeSingle();
   if (!lead) return NextResponse.json({ message: 'Not found' }, { status: 404 });
@@ -45,7 +45,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ hubId: 
   const { data: prior } = await sb.from('app_state').select('value').eq('key', key).maybeSingle();
   const priorAt = (prior?.value as { at?: string } | null)?.at;
   if (priorAt && Date.now() - new Date(priorAt).getTime() < 5 * 60_000) {
-    return NextResponse.json({ message: 'Already queued a minute ago. The forge is on it.' }, { status: 429 });
+    return NextResponse.json({ message: 'Already queued a minute ago. The build is on it.' }, { status: 429 });
   }
   await sb.from('app_state').upsert({ key, value: { at: new Date().toISOString() } });
 
@@ -57,7 +57,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ hubId: 
   const queued: string[] = [];
 
   if (wants.includes('voice') && !l.demo_run_id) {
-    const voice = await forgeLeadVoiceDemo(sb, l);
+    const voice = await buildLeadVoiceDemo(sb, l);
     if (voice.ok) queued.push('voice agent');
   }
 
@@ -81,14 +81,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ hubId: 
   // above already stands.
   const ackTo = l.email;
   if (ackTo && queued.length) {
-    const voiceLine = queued.includes('voice agent') && l.demo_url ? `Your voice agent is actually ready RIGHT NOW; it forges in seconds: ${l.demo_url}\n\n` : '';
+    const voiceLine = queued.includes('voice agent') && l.demo_url ? `Your voice agent is actually ready RIGHT NOW; it builds in seconds: ${l.demo_url}\n\n` : '';
     await sendViaResend({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: ackTo,
       replyTo: 'sarah@modernmustardseed.com',
       subject: `On the anvil: your ${queued.join(' and ')}`,
       text:
-        `Got it. The forge is building your ${queued.join(' and ')} for ${l.business_name} as of this minute.\n\n` +
+        `Got it. The build is building your ${queued.join(' and ')} for ${l.business_name} as of this minute.\n\n` +
         voiceLine +
         `Your demo suite updates itself the moment each piece is ready:\n${l.hub_demo_url ?? ''}\n\n` +
         `Nothing to sign, nothing owed. Reply here if you want anything done differently.\n\nSarah`,

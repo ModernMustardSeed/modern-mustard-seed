@@ -23,7 +23,7 @@ export const dynamic = 'force-dynamic';
  *
  * Runs hourly. Vercel Pro allows sub-daily crons; Hobby rejects them AT BUILD TIME and
  * has broken every deploy in this repo before, so if this project is ever downgraded,
- * this schedule has to move to GitHub Actions like forge-fallback did.
+ * this schedule has to move to GitHub Actions like build-fallback did.
  */
 
 const BATCH = 5;

@@ -77,7 +77,7 @@ function ffprobeMs(file) {
 /**
  * Measure an MP3 by walking its own frame headers, with no external binary.
  *
- * ffprobe is not on every machine that runs the forge (it is missing on Sarah's,
+ * ffprobe is not on every machine that runs the build (it is missing on Sarah's,
  * which is how a finished suite ended up with no narration at all on
  * 2026-08-11), and duration is the one number the whole cut is timed off. Each
  * MPEG audio frame declares its bitrate and sample rate, so the file can time
@@ -250,7 +250,7 @@ async function falSpeak(text, voice, outFile, timeoutMs) {
  *
  * Fails LOUD when both engines fail. A film with a missing narration line is
  * not a film, and shipping one to a prospect is worse than shipping none, so
- * the caller aborts rather than degrading. (The forge's imagery rules are the
+ * the caller aborts rather than degrading. (The build's imagery rules are the
  * opposite, because a hero can fall back to another photograph. A narrator
  * cannot fall back to silence.)
  */

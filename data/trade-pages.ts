@@ -4,7 +4,7 @@ import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
 /**
  * The voice agent trade fleet: one landing page per trade at
  * /voice-agents/[slug], rendered entirely from the trade intelligence that
- * already powers the forged OS demos (TRADE_PRESETS). No invented facts:
+ * already powers the built OS demos (TRADE_PRESETS). No invented facts:
  * ticket values, services, and board names come from the same source the
  * demos use, and sample data is labeled as sample on the page.
  *
@@ -88,7 +88,7 @@ export function tradeFaqs(forWord: string, services: string, avgTicket: number, 
     },
     {
       q: 'How fast can I hear it answering for my business?',
-      a: 'About 60 seconds. Modern Mustard Seed forges a free demo trained on your business name and services, and your own phone rings with the voice agent answering as your company. There is no meeting, no setup call, and no card required for the demo. You judge it with your own ears first.',
+      a: 'About 60 seconds. Modern Mustard Seed builds a free demo trained on your business name and services, and your own phone rings with the voice agent answering as your company. There is no meeting, no setup call, and no card required for the demo. You judge it with your own ears first.',
     },
     {
       q: 'What does a missed call really cost?',
@@ -96,7 +96,7 @@ export function tradeFaqs(forWord: string, services: string, avgTicket: number, 
     },
     {
       q: 'What does it cost once it is installed?',
-      a: `Plans start at $${sidekickUsd(sidekickTiers[0].monthlyCents)} a month plus a $${sidekickUsd(sidekickTiers[0].setupCents)} one-time setup, with a hard minute cap, no free trial games, and no per-seat pricing. The right first step is the free forged demo: hear it answer for your business, then decide. Every install is done by a human at Modern Mustard Seed and includes the setup of your services, hours, and booking flow.`,
+      a: `Plans start at $${sidekickUsd(sidekickTiers[0].monthlyCents)} a month plus a $${sidekickUsd(sidekickTiers[0].setupCents)} one-time setup, with a hard minute cap, no free trial games, and no per-seat pricing. The right first step is the free built demo: hear it answer for your business, then decide. Every install is done by a human at Modern Mustard Seed and includes the setup of your services, hours, and booking flow.`,
     },
   ];
 }

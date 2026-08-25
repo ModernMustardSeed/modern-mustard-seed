@@ -3,7 +3,7 @@
  *
  * The twin of demo-asset-health. That one asks whether the pictures load. This
  * one reads the words, because on 2026-08-03 a full funnel test found that every
- * bakery, dental, medspa and salon demo we had ever forged said "wants a quote on
+ * bakery, dental, medspa and salon demo we had ever built said "wants a quote on
  * a order", and that twenty-five surfaces (including the call pill on every demo
  * site, and therefore the walkthrough film) said "Olivia's Chocolates's".
  *

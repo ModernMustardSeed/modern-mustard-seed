@@ -344,7 +344,7 @@ const slug = (s: string) =>
 
 /**
  * A page or a tool is one self-contained HTML document, exactly like the site
- * forge produces. Self-contained is not a style preference: the document is
+ * build produces. Self-contained is not a style preference: the document is
  * served from our origin and iframed onto the member's own site, so anything it
  * fetches from elsewhere is a request that can be blocked, throttled, or gone
  * next year, on a page with their name on it.

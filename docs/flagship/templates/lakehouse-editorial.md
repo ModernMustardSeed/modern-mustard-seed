@@ -1,4 +1,4 @@
-# Daisy's Lakehouse Editorial : Website Forge Template
+# Daisy's Lakehouse Editorial : Website Build Template
 
 Use this template when building a hospitality, restaurant, lodge, retreat, or destination brand that should feel editorial, tactile, warm, and highly art-directed.
 

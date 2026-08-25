@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
  *
  * The first version of this screen read demo_orders only, so a signed proposal
  * client, a Chief buyer, or a project Sarah opened by hand never appeared here;
- * the delivery experience was gated to the forge funnel by a single FROM clause.
+ * the delivery experience was gated to the build funnel by a single FROM clause.
  * Now the board keys on PROJECTS (the record every funnel mints) and enriches
  * each row from wherever it came: the demo order, the proposal, the client
  * record. Paid demo orders that never got a project still show, because that is

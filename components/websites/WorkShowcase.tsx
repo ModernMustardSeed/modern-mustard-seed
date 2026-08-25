@@ -6,7 +6,7 @@ import { WORK_SITES } from '@/data/website-work';
  * on hover and stands still under reduced-motion. Pop-art cabin framing, full-bleed
  * so it feels like a reel.
  *
- * Copy discipline (2026-07-28): the reel mixes shipped client sites with forged
+ * Copy discipline (2026-07-28): the reel mixes shipped client sites with built
  * builds, so the headline claims what is true of ALL of them (designed from scratch,
  * no templates). Do NOT reintroduce "every one is a real business live on the web."
  */

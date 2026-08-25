@@ -1,8 +1,8 @@
 import { getSupabase } from '@/lib/supabase';
 import { getRun } from '@/lib/sidekick-store';
-import { forgeCall } from '@/lib/sidekick';
+import { buildCall } from '@/lib/sidekick';
 import { buildMetadata } from '@/lib/seo';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { BuiltCall } from '@/lib/sidekick';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
 import { extractPalette, themeFromPalette } from '@/lib/site-palette';
 import OsDemoApp from '@/components/demo/OsDemoApp';
@@ -11,9 +11,9 @@ export const metadata = buildMetadata({ title: 'Your Business Command Center Dem
 export const dynamic = 'force-dynamic';
 
 /**
- * The forged BUSINESS OS demo: one template command center rendered from the
- * per-lead config frozen at forge time. Unlisted (unguessable id, noindex).
- * The lead's forged voice agent rides along as the live call widget.
+ * The built BUSINESS OS demo: one template command center rendered from the
+ * per-lead config frozen at build time. Unlisted (unguessable id, noindex).
+ * The lead's built voice agent rides along as the live call widget.
  */
 export default async function OsDemoPage({ params }: { params: Promise<{ osId: string }> }) {
   const { osId } = await params;
@@ -42,13 +42,13 @@ export default async function OsDemoPage({ params }: { params: Promise<{ osId: s
   if (!demo?.config) return fallback;
 
   // Resurrect the lead's voice demo for the widget.
-  let call: ForgedCall | null = null;
+  let call: BuiltCall | null = null;
   const { data: lead } = await sb.from('outbound_leads').select('demo_run_id, hub_demo_url').eq('id', demo.lead_id).maybeSingle();
   if (lead?.demo_run_id) {
     const run = await getRun(sb, lead.demo_run_id);
     if (run) {
-      const forged = await forgeCall(run, lead.demo_run_id, 'web');
-      if (forged.ok) call = forged.call;
+      const built = await buildCall(run, lead.demo_run_id, 'web');
+      if (built.ok) call = built.call;
     }
   }
 
@@ -63,8 +63,8 @@ export default async function OsDemoPage({ params }: { params: Promise<{ osId: s
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle();
-  // Palette order of trust: their forged website's declared palette, then the
-  // brand color captured from their REAL site at forge time (on the house
+  // Palette order of trust: their built website's declared palette, then the
+  // brand color captured from their REAL site at build time (on the house
   // midnight canvas), then the house deck.
   const cfg = demo.config as OsDemoConfig;
   const palette = extractPalette(site?.html) ?? (cfg.brandColor ? { bg: '#0e1220', accent: cfg.brandColor } : null);

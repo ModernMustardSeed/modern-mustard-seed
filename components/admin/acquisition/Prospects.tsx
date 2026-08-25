@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Chip, api, card, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, timeAgo } from '@/components/admin/acquisition/ui';
-import RowForge from '@/components/admin/acquisition/RowForge';
-import type { RowSuite } from '@/components/admin/acquisition/RowForge';
+import RowBuild from '@/components/admin/acquisition/RowBuild';
+import type { RowSuite } from '@/components/admin/acquisition/RowBuild';
 
 type Row = {
   id: string;
@@ -144,7 +144,7 @@ export default function Prospects() {
               />
             </div>
             <Select label="Trade" value={trade} options={TRADES} onChange={(v) => { setPage(0); setTrade(v); }} />
-            <Select label="Stage" value={stage} options={STAGES} onChange={(v) => { setPage(0); setStage(v); }} />
+            <Select label="Stage" value={stage} options={STAGES} labels={{ forged: 'built' }} onChange={(v) => { setPage(0); setStage(v); }} />
             <Select label="Email" value={emailStatus} options={EMAIL_STATUSES} onChange={(v) => { setPage(0); setEmailStatus(v); }} />
             <Select
               label="Eligible"
@@ -278,7 +278,7 @@ export default function Prospects() {
                     </div>
                   </Td>
                   <Td>
-                    <RowForge
+                    <RowBuild
                       id={r.id}
                       business={r.business_name}
                       email={r.email}

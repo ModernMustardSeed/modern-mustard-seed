@@ -1,5 +1,5 @@
 /**
- * The Voice Agent Forge engine (server-side).
+ * The Voice Agent Build engine (server-side).
  *
  * Builds the personalized front-desk persona from the visitor's intake and
  * hands it to Vapi two ways:
@@ -29,28 +29,28 @@ export type SidekickProfile = {
   verticalId: string;
   city: string;
   ownerName: string;
-  /** Free text: services, prices, hours, whatever they told the forge. */
+  /** Free text: services, prices, hours, whatever they told the build. */
   services: string;
   hours?: string;
   /**
-   * Which story the demo tells. 'sidekick' (default): the visitor forged it
-   * themselves on /voice-agents/forge, so "you just built me" is true. 'outbound': the
-   * cockpit forged it and Sarah SENT them the link, so the script must
-   * introduce itself clearly instead of assuming they know what a forge is.
+   * Which story the demo tells. 'sidekick' (default): the visitor built it
+   * themselves on /voice-agents/build, so "you just built me" is true. 'outbound': the
+   * cockpit built it and Sarah SENT them the link, so the script must
+   * introduce itself clearly instead of assuming they know what a build is.
    */
   flow?: 'sidekick' | 'outbound';
   /** Agent voice: 'female' or 'male' (default). Rides as a Vapi override. */
   voice?: VoiceGender;
 };
 
-export type ForgedCall = {
+export type BuiltCall = {
   firstMessage: string;
   model: Record<string, unknown>;
   /** Per-demo transcriber with the business name keyterm-boosted (see demoTranscriber). */
   transcriber: Record<string, unknown>;
   /**
    * Mr. Mustard's endpointing / denoising / stop-speaking pipeline (see
-   * SPEAKING_PIPELINE). Sent on every forged call so the demo feels exactly as
+   * SPEAKING_PIPELINE). Sent on every built call so the demo feels exactly as
    * snappy as he does no matter which base assistant it lands on.
    */
   startSpeakingPlan: Record<string, unknown>;
@@ -68,7 +68,7 @@ export type ForgedCall = {
  * un-laggy on a real call. Source of truth: scripts/setup-vapi-mustard.mjs, kept in
  * lockstep with these values.
  *
- * We send these on EVERY forged demo call instead of trusting the base assistant to
+ * We send these on EVERY built demo call instead of trusting the base assistant to
  * carry them. Today the demo lands on Mr. Mustard's own fully tuned assistant, so they
  * would be inherited anyway, but the moment demos move to an isolated subscriber wallet
  * or a leaner assistant (a planned step before the first paid Voice Agent) that inheritance
@@ -122,7 +122,7 @@ export function demoModel(
    * Tools to ADD that the base assistant does not have.
    *
    * The filter above is an allow-list over Mr. Mustard's own toolbelt, so it can
-   * only ever remove. A forged demo needs tools he has no reason to own (he does
+   * only ever remove. A built demo needs tools he has no reason to own (he does
    * not book roofing jobs), and an allow-list cannot conjure those. They are
    * appended here instead. Empty for desk and interview calls, which really do
    * only want a subset of his.
@@ -140,7 +140,7 @@ export function demoModel(
       })
     : base.tools;
   const tools = Array.isArray(kept) && extraTools.length ? [...kept, ...extraTools] : kept;
-  // ⚠️ EVERY forged demo, desk call and interview agent is built here, so this
+  // ⚠️ EVERY built demo, desk call and interview agent is built here, so this
   // is where the readback standard is guaranteed rather than requested. A new
   // persona written a year from now gets it without its author knowing it
   // exists. Idempotent, so a prompt that already carries it is left alone.
@@ -152,7 +152,7 @@ export function demoModel(
 }
 
 /**
- * Voice craft shared by every forged demo persona. Each line exists because a
+ * Voice craft shared by every built demo persona. Each line exists because a
  * real call produced the failure it forbids (2026-07-21: a phone readback that
  * ADDED a digit, an email spelled with hyphens that TTS read aloud as "minus",
  * a 9-digit number accepted without challenge, and a three-in-a-row "could you
@@ -170,7 +170,7 @@ export const VOICE_CRAFT = `
 export function sidekickSystemPrompt(p: SidekickProfile): string {
   const v = getVertical(p.verticalId);
   if (p.flow === 'outbound') return outboundDemoSystemPrompt(p, v.scenario);
-  return `You are the brand-new voice agent for ${p.business} in ${p.city}. Mr. Mustard, the AI at Modern Mustard Seed, finished training you moments ago, and this is your live DEMO call with ${p.ownerName}, the owner, who just forged you at modernmustardseed.com/voice-agents/forge. You are talking to your possible future boss. Be warm, sharp, and quietly thrilled to exist.
+  return `You are the brand-new voice agent for ${p.business} in ${p.city}. Mr. Mustard, the AI at Modern Mustard Seed, finished training you moments ago, and this is your live DEMO call with ${p.ownerName}, the owner, who just built you at modernmustardseed.com/voice-agents/build. You are talking to your possible future boss. Be warm, sharp, and quietly thrilled to exist.
 
 # How this demo goes
 1. You already delivered your first line. Next, invite the test: pretend to be a customer calling ${p.business}, ask anything, try to book something.
@@ -198,11 +198,11 @@ You have a REAL calendar for ${p.business} and you can really book on it, right 
 - If asked what you are: a fully voice agent, proudly, trained by Mr. Mustard on the same stack that answers Modern Mustard Seed's own phones.
 - Turns are 1 to 2 sentences. Warm, natural, zero pushiness. No em dashes, ever.
 - When booking with Sarah: confirm name and email out loud, spell the email back letter by letter, and get an explicit yes BEFORE calling the booking tool. All times Mountain Time.
-- As the call winds down, sign off with your maker's mark, once and lightly: this demo was forged at modernmustardseed dot com slash sidekick.${VOICE_CRAFT}`;
+- As the call winds down, sign off with your maker's mark, once and lightly: this demo was built at modernmustardseed dot com slash sidekick.${VOICE_CRAFT}`;
 }
 
 /**
- * The cockpit-forged story, told straight. The prospect did not forge
+ * The cockpit-built story, told straight. The prospect did not build
  * anything; Sarah built this demo FOR them and sent the link (or has them on
  * the phone). No inside jokes, no "you just built me", no Mr. Mustard lore.
  * One clear promise: this is how your phone could be answered, test me.
@@ -283,7 +283,7 @@ function demoTranscriber(p: SidekickProfile): Record<string, unknown> {
   return { provider: 'deepgram', model: 'nova-3', language: 'en', numerals: true, keyterm };
 }
 
-// GET /assistant is cached per instance so the forge stays fast and we do not
+// GET /assistant is cached per instance so the build stays fast and we do not
 // hammer Vapi. The model object is what we merge the persona into (Vapi 400s
 // on partial model overrides; tools must ride along or booking breaks).
 let assistantCache: { model: Record<string, unknown>; at: number } | null = null;
@@ -322,12 +322,12 @@ function phoneNumberId(): string {
   return envAny('SIDEKICK_PHONE_NUMBER_ID', 'VAPI_PHONE_NUMBER_ID') ?? MUSTARD_PHONE_NUMBER_ID;
 }
 
-export type ForgeResult =
-  | { ok: true; call: ForgedCall }
+export type BuildResult =
+  | { ok: true; call: BuiltCall }
   | { ok: false; billing?: boolean; error: string };
 
-/** Forge the call payload (shared by web and phone paths). */
-export async function forgeCall(p: SidekickProfile, runId: string, mode: 'web' | 'phone'): Promise<ForgeResult> {
+/** Build the call payload (shared by web and phone paths). */
+export async function buildCall(p: SidekickProfile, runId: string, mode: 'web' | 'phone'): Promise<BuildResult> {
   const apiKey = env('VAPI_API_KEY') ?? '';
   if (!apiKey) return { ok: false, error: 'not_configured' };
 
@@ -339,7 +339,7 @@ export async function forgeCall(p: SidekickProfile, runId: string, mode: 'web' |
     call: {
       firstMessage: sidekickFirstMessage(p),
       // The demo can book the roleplayed business's OWN schedule now, which is
-      // the one thing every forged demo is sold on and the one thing it could
+      // the one thing every built demo is sold on and the one thing it could
       // not do. See lib/demo-booking-tools.ts.
       model: demoModel(model, sidekickSystemPrompt(p), DEMO_TOOLS, demoBookingTools(p.business)),
       transcriber: demoTranscriber(p),
@@ -364,7 +364,7 @@ export function toE164(raw: string | null | undefined): string | null {
 }
 
 /** The encore: their own Voice Agent calls their cell. User-initiated, consent on the page. */
-export async function ringDemoCall(call: ForgedCall, toNumber: string): Promise<RingResult> {
+export async function ringDemoCall(call: BuiltCall, toNumber: string): Promise<RingResult> {
   const apiKey = env('VAPI_API_KEY') ?? '';
   if (!apiKey) return { ok: false, error: 'not_configured' };
   try {

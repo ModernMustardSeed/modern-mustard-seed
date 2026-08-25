@@ -40,7 +40,7 @@ function useTyped(text: string, speed = 28): { shown: string; typing: boolean } 
 
 /**
  * The encore: their own agent calls THEM. Rides the existing public
- * /api/sidekick/forge phone path, which enforces one ring per run, one ring
+ * /api/sidekick/build phone path, which enforces one ring per run, one ring
  * per number, and the Vapi billing kill switch. User-initiated, consent on
  * the page, US numbers only.
  */
@@ -52,7 +52,7 @@ function EncoreRing({ runId, business }: { runId: string; business: string }) {
     if (state === 'calling' || state === 'done') return;
     setState('calling');
     try {
-      const res = await fetch('/api/sidekick/forge', {
+      const res = await fetch('/api/sidekick/build', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode: 'phone', runId, phone }),
@@ -166,10 +166,10 @@ export default function DemoHub({
   auditScore?: number | null;
   /** The audit's own one-line verdict, quoted on the door. */
   auditHeadline?: string | null;
-  /** The lead's forged voice run. Powers the encore: their agent calls THEM,
-   *  through the existing /api/sidekick/forge phone path with all its caps. */
+  /** The lead's built voice run. Powers the encore: their agent calls THEM,
+   *  through the existing /api/sidekick/build phone path with all its caps. */
   demoRunId?: string | null;
-  /** Appointments the forged agent booked on a demo call. Usually empty;
+  /** Appointments the built agent booked on a demo call. Usually empty;
    *  the card renders nothing at all when it is, on purpose. */
   bookedOnCall?: React.ComponentProps<typeof BookedOnTheCall>['appointments'];
   /** A factual line from the walk-in research ("closed both weekend days..."),
@@ -241,7 +241,7 @@ export default function DemoHub({
    * own, built by hand, and never suggested next to anything.
    *
    * That supersedes the gate rather than tightening it, so the gate is gone
-   * too. A lead forged before that decision can still carry an os_demo_url and
+   * too. A lead built before that decision can still carry an os_demo_url and
    * that page still resolves, so a link already emailed keeps working. It is
    * simply not part of a suite.
    */
@@ -278,9 +278,9 @@ export default function DemoHub({
           title: 'Your new website',
           desc: siteUrl
             ? 'A real, working draft designed for your business. The gold button is your voice agent riding along so you can try it, and it is its own add-on.'
-            : 'Being forged right now. The page refreshes itself until it is ready.',
+            : 'Being built right now. The page refreshes itself until it is ready.',
           tone: 'gold' as const,
-          cta: siteUrl ? 'See it live' : 'Watch it forge',
+          cta: siteUrl ? 'See it live' : 'Watch it build',
         },
         integrationPlanUrl && {
           href: integrationPlanUrl,
@@ -302,9 +302,9 @@ export default function DemoHub({
    *
    * Sarah, 2026-08-18: "only give the demo for whatever they asked for... use
    * the normal demo suite for talking websites or both, but not for just one
-   * thing forged."
+   * thing built."
    *
-   * The forge stopped building unasked-for pieces on 2026-08-13, and the cards
+   * The build stopped building unasked-for pieces on 2026-08-13, and the cards
    * and the order card below have been piece-aware ever since. This page never
    * caught up: it still greeted a caller who asked for one voice agent with
    * "The Acme Demo Suite" and "everything below", which reads as either a
@@ -316,12 +316,12 @@ export default function DemoHub({
    */
   //
   // THE COMMAND CENTER IS NOT A SUITE PIECE ANY MORE (Sarah, 2026-08-22). It is
-  // still sold and still built by hand, it is simply not forged, not shown here
-  // and not suggested next to anything. A lead forged before that date can
+  // still sold and still built by hand, it is simply not built, not shown here
+  // and not suggested next to anything. A lead built before that date can
   // still carry an os_demo_url and its page still resolves, so any link already
   // emailed keeps working; it just no longer appears as a door.
   //
-  const forged = [
+  const built = [
     voiceUrl ? 'voice' : null,
     siteUrl || sitePending ? 'site' : null,
   ].filter(Boolean) as ('voice' | 'site')[];
@@ -329,20 +329,20 @@ export default function DemoHub({
     voice: 'Voice Agent',
     site: 'Website',
   };
-  const onlyOne = forged.length === 1;
-  const missing = (['voice', 'site'] as const).filter((p) => !forged.includes(p));
-  const forgeMissing = missing;
+  const onlyOne = built.length === 1;
+  const missing = (['voice', 'site'] as const).filter((p) => !built.includes(p));
+  const buildMissing = missing;
 
   /** The line about the one piece they did not take. */
   const restLine = (() => {
     if (!missing.length) return null;
-    if (forged.includes('voice')) {
+    if (built.includes('voice')) {
       return 'Want the website to match, built the same way, off the same brain? Taken together they become one thing, and it costs less than the two apart.';
     }
-    if (forged.includes('site')) {
+    if (built.includes('site')) {
       return 'Want it to answer its own phone too? Taken together they become one thing, and it costs less than the two apart.';
     }
-    return 'Want the voice agent that feeds this, or the website to match? We can forge either one.';
+    return 'Want the voice agent that feeds this, or the website to match? We can build either one.';
   })();
 
   const toneCls: Record<'dark' | 'gold' | 'ink', string> = {
@@ -378,7 +378,7 @@ export default function DemoHub({
             </div>
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-bold mt-4 leading-tight">
-            {onlyOne ? `The ${business} ${PIECE_NAME[forged[0]]}` : `The ${business} Demo Suite`}
+            {onlyOne ? `The ${business} ${PIECE_NAME[built[0]]}` : `The ${business} Demo Suite`}
           </h1>
           <p className="font-body text-[#161616]/70 mt-3 max-w-xl mx-auto">
             {presenter
@@ -554,7 +554,7 @@ export default function DemoHub({
         <MakeItRealCTA
           hubId={hubId}
           business={business}
-          forged={[
+          built={[
             voiceUrl ? ('voice' as DemoProductKey) : null,
             siteUrl || sitePending ? ('site' as DemoProductKey) : null,
           ].filter(Boolean) as DemoProductKey[]}
@@ -569,7 +569,7 @@ export default function DemoHub({
           Here it reads as "there is more if you want it", which is the truth.
 
           The ask WAS a phone call; Sarah 2026-08-20 flipped it: the missing
-          pieces get forged from this page on the spot (SuiteMoreForm hits
+          pieces get built from this page on the spot (SuiteMoreForm hits
           /api/demo-hub/<hubId>/request-build), the suite updates itself when
           the build lands, and the suite-ready announcement emails them. The
           phone survives as the small human fallback under the button.
@@ -584,11 +584,11 @@ export default function DemoHub({
               {/*
                 NEVER "call Mr. Mustard and say the word." Sarah, 2026-08-25:
                 if they want to add a piece, hand them the button that adds it.
-                forgeMissing is non-empty whenever restLine is, so this form is
+                buildMissing is non-empty whenever restLine is, so this form is
                 the only path out of this card; the phone lives inside it as
                 the small human fallback, not as the ask.
               */}
-              <SuiteMoreForm hubId={hubId} missing={forgeMissing} hasEmail={hasEmail ?? false} />
+              <SuiteMoreForm hubId={hubId} missing={buildMissing} hasEmail={hasEmail ?? false} />
             </div>
           </section>
         )}

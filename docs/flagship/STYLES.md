@@ -1,6 +1,6 @@
 # The site templates
 
-Thirteen visual systems, every one of them named, and the Forge builds exactly one
+Thirteen visual systems, every one of them named, and the Build picks exactly one
 per site. Six were lifted off real builds Sarah approved, two are packages Sarah handed over (Daisy's
 Lakehouse Editorial and Easton Kinetic), and five were
 designed in the studio to cover the trades the first seven did not fit.
@@ -13,7 +13,7 @@ its real palette and shows how many live sites wear it.
 
 ## How a template reaches a build
 
-- The cockpit deck and the Forge board carry a **picker**: Random, or one named
+- The cockpit deck and the Build board carry a **picker**: Random, or one named
   template. Random is the default.
 - Random is resolved at **queue time** (`lib/site-template-choice.ts`), weighted
   by how well each template fits the lead's trade, never the template the lead

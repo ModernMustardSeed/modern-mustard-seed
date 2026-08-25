@@ -15,7 +15,7 @@ type Params = Promise<{ id: string }>;
  *
  * Three things separate it from everything else that touches a demo site:
  *
- *  1. It is NOT the reforge-from-prompt. That one is an EDIT: it preserves the design
+ *  1. It is NOT the rebuild-from-prompt. That one is an EDIT: it preserves the design
  *     and changes only the sentence you typed. This one throws the design away and
  *     rebuilds from scratch on whatever the current design law says, which is the
  *     whole point when the law has moved forward.
@@ -36,8 +36,8 @@ export async function POST(req: Request, { params }: { params: Params }) {
   if ('error' in guard) return guard.error;
   const { id } = await params;
 
-  // Same tier picker the initial forge takes (2 = Wildmere award-site world, 3 =
-  // the Journey site). Absent means the worker rolls roulette, same as forge-site.
+  // Same tier picker the initial build takes (2 = Wildmere award-site world, 3 =
+  // the Journey site). Absent means the worker rolls roulette, same as build-site.
   const body = (await req.json().catch(() => ({}))) as { designTier?: unknown; siteTemplate?: unknown };
   const designTier = body.designTier === 1 || body.designTier === 2 || body.designTier === 3 ? body.designTier : null;
 
@@ -47,7 +47,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
 
   if (!l.site_demo_id) {
     return NextResponse.json(
-      { error: 'There is no website to rebuild yet. Forge one first.' },
+      { error: 'There is no website to rebuild yet. Build one first.' },
       { status: 400 },
     );
   }
@@ -58,22 +58,22 @@ export async function POST(req: Request, { params }: { params: Params }) {
     .eq('id', l.site_demo_id)
     .maybeSingle();
 
-  if (!site) return NextResponse.json({ error: 'That website row is gone. Forge a new one.' }, { status: 404 });
+  if (!site) return NextResponse.json({ error: 'That website row is gone. Build a new one.' }, { status: 404 });
   if (site.status === 'queued' || site.status === 'building') {
     return NextResponse.json({ ok: true, already: true, message: 'That rebuild is already in the queue.' });
   }
   if (!site.html) {
     return NextResponse.json(
-      { error: 'That site has never finished a build, so there is nothing to rebuild. Retry the forge instead.' },
+      { error: 'That site has never finished a build, so there is nothing to rebuild. Retry the build instead.' },
       { status: 400 },
     );
   }
 
-  // A prompt-reforge leaves the row as kind 'edit'. A rebuild is never an edit, so put
+  // A prompt-rebuild leaves the row as kind 'edit'. A rebuild is never an edit, so put
   // the row back on the directive it belongs on: a paid client's site stays 'rebuild',
   // everything else is a demo build.
   const kind = site.kind === 'rebuild' ? 'rebuild' : 'demo';
-  // Same template picker the first forge takes. Random on a rebuild never repeats
+  // Same template picker the first build takes. Random on a rebuild never repeats
   // the template the site already wears, which is usually the point of rebuilding.
   const template = await resolveSiteTemplate(guard.supabase, l, body.siteTemplate);
   const brand = await captureLeadBrand(l.website).catch(() => null);
@@ -86,7 +86,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
       kind,
       // Facts move. Rebuild the brief from what we know about them right now rather
       // than replaying whatever the row was first queued with. A chosen tier rides
-      // as the brief's first line, same convention forge-site uses (see tierOf in
+      // as the brief's first line, same convention build-site uses (see tierOf in
       // scripts/demo-site-worker.mjs).
       brief: (designTier ? `DESIGN TIER: ${designTier}\n` : '') + templateBriefLine(template.key) + '\n' + buildSiteBrief(l, l.demo_url ?? null, brand),
       // KEEP THE PHOTOGRAPHS ONLY IF THEY ARE WORTH KEEPING.

@@ -2,7 +2,7 @@
  * THE DURABLE QUEUE.
  *
  * Everything the engine does to a stranger goes through here: send an email,
- * place a call, forge a demo, mail the demo, send checkout. The queue exists for
+ * place a call, build a demo, mail the demo, send checkout. The queue exists for
  * exactly one reason, and it is not throughput.
  *
  * IT IS IDEMPOTENCY. A cron that overlaps itself, a Vapi webhook delivered

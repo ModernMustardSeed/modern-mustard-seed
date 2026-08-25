@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { BuiltCall } from '@/lib/sidekick';
 import DemoVoiceWidget, { type VoiceState } from '@/components/demo/DemoVoiceWidget';
 import SiteTour from '@/components/demo/SiteTour';
 
 /**
- * Serves a forged demo website full-screen with the lead's voice agent
+ * Serves a built demo website full-screen with the lead's voice agent
  * floating over it, bottom-right: the two demos in one link. The site itself
  * lives in an iframe (srcdoc) so its own styles and scripts stay contained;
  * the call widget lives in the parent so the mic permission is ours. A
@@ -22,10 +22,10 @@ export default function SiteDemoShell({
 }: {
   siteId: string;
   business: string;
-  call: ForgedCall | null;
+  call: BuiltCall | null;
   /** the hub's order section; buying happens there, one tap away */
   orderUrl?: string | null;
-  /** Derived from THIS lead's own forged website; falls back to house mustard. */
+  /** Derived from THIS lead's own built website; falls back to house mustard. */
   theme?: { accent: string; accentInk: string };
 }) {
   const [showIntro, setShowIntro] = useState(false);

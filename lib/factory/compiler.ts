@@ -196,7 +196,7 @@ async function compile(
  * How much of this deployment the software did by itself.
  *
  * A rough, honest estimate: every area the blueprint filled from a template or
- * the Forge counts as automated, every area still carrying a placeholder counts
+ * the Build counts as automated, every area still carrying a placeholder counts
  * as manual. It is not precision, it is a trend line, and the trend is the
  * metric the company is actually steering by.
  */

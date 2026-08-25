@@ -13,7 +13,7 @@ export const maxDuration = 30;
  * and agent, and cutting it is the FINAL STEP before the
  * suite is published and shown to the client).
  *
- * So this fires last, not first. The forge worker knocks after the film has
+ * So this fires last, not first. The build worker knocks after the film has
  * been cut and uploaded; if the film is not ready the announcement is held,
  * and the worker knocks again on the next attempt. Nobody is ever pointed at a
  * suite whose walkthrough is still being made.

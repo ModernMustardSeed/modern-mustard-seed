@@ -3,16 +3,16 @@ import { OS_PRESETS } from '@/data/demo-os';
 import type { OsPreset } from '@/data/demo-os';
 
 /**
- * TRADE-SPECIFIC presets for the forged BUSINESS OS demo.
+ * TRADE-SPECIFIC presets for the built BUSINESS OS demo.
  *
  * The cockpit's `niche` field is five broad buckets, which made every roofer
  * see water-heater jobs. This layer detects the SPECIFIC trade from the
- * lead's own data (business name, mined notes, website) at forge time, zero
+ * lead's own data (business name, mined notes, website) at build time, zero
  * tokens, and backs it with deep authentic content: real ticket values,
  * trade-true pipeline scenarios, and a per-trade SIGNATURE BOARD (the module
  * that makes an owner say "it knows my business"). Legacy configs frozen
  * before this layer existed resolve at render time from the business name,
- * so every already-forged demo upgrades itself.
+ * so every already-built demo upgrades itself.
  */
 
 export type OsTradeKey =
@@ -107,7 +107,7 @@ const TRADE_PATTERNS: [OsTradeKey, RegExp][] = [
   // THE CONSTRUCTION FAMILY (2026-08-22), sitting just ahead of the generalist
   // below it and behind every specific trade above. Acquisition can now source
   // concrete, masonry, fencing, siding, windows, excavation and paving, and
-  // without these lines every one of them forged as a generic handyman: the
+  // without these lines every one of them built as a generic handyman: the
   // detector had no word for them, so a fence company got a price book about
   // furnaces. They all map onto `construction`, whose own service list already
   // covers decks, fences, siding and trim, because a separate preset per trade
@@ -188,7 +188,7 @@ const TRADE_NEGATIONS =
  *
  * Glimmer Landscape Lighting was filed under `landscaping` because the general
  * pattern sees "landscap" and stops. Their command center then showed weekly
- * mowing routes, mulch and sod, and their forged agent's only facts said it
+ * mowing routes, mulch and sod, and their built agent's only facts said it
  * mowed lawns. An owner watching their own agent book a job they do not do
  * stops believing the rest of the demo, so this is a correctness bug, not
  * polish (memory: feedback_name_the_business_exactly, "trade presets are a
@@ -227,9 +227,9 @@ export function detectTrade(corpus: string, niche: Niche, primary?: string): OsT
 }
 
 /**
- * Resolve the trade KEY for a frozen config. Configs forged after this layer
+ * Resolve the trade KEY for a frozen config. Configs built after this layer
  * carry `trade`; older ones are re-detected from the business name so every
- * existing demo upgrades itself at render time with no re-forge. Anything that
+ * existing demo upgrades itself at render time with no rebuild. Anything that
  * keys per-trade data (price books, presets) must go through THIS, never read
  * config.trade raw: a legacy config without the field would silently get the
  * generic fallback while the rest of the app renders the detected trade.
@@ -247,7 +247,7 @@ export function resolveTrade(config: { trade?: string | null; business: string; 
 
 /* ------------------------------------------------------------------------ */
 /* Voice + calculator wiring: the same trade knowledge, consumed by the      */
-/* forged voice agent (services menu spoken on calls) and the hub's         */
+/* built voice agent (services menu spoken on calls) and the hub's         */
 /* Recovery Calculator (slider label + default ticket). Typical TRADE        */
 /* services only, never invented facts about the specific business.          */
 /* ------------------------------------------------------------------------ */

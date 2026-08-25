@@ -18,7 +18,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
  *
  * The preview is deliberately inert. Its open pixel is stripped and its buttons
  * have no href, because a rendered tracking pixel would report that the
- * prospect read the email and a stray click would forge engagement on the
+ * prospect read the email and a stray click would build engagement on the
  * funnel. The real destinations are listed underneath instead.
  */
 
@@ -84,7 +84,7 @@ const KIND_LABEL: Record<string, string> = {
   reply: 'Their reply',
   email: 'Drip',
   call: 'Call',
-  forge: 'Forge',
+  build: 'Build',
   demo_email: 'Demo',
   research: 'Research',
 };

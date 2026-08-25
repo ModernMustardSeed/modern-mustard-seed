@@ -234,7 +234,7 @@ const BADGE: Record<string, string> = {
   deprecated: 'bg-[#EFEADC] text-[#5C5850] border-[#5C5850]',
   stable: 'bg-[#DFF0E4] text-[#12502B] border-[#12502B]',
   internal: 'bg-[#EFEADC] text-[#3A362D] border-[#5C5850]',
-  forging: 'bg-[#F5B700] text-[#161616] border-[#161616]',
+  building: 'bg-[#F5B700] text-[#161616] border-[#161616]',
 };
 
 export function Badge({ children, tone }: { children: ReactNode; tone?: string }) {

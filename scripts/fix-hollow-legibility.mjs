@@ -91,7 +91,7 @@ function hollowRule(strokeColor) {
 
 /** The patch, appended so it wins on cascade order without rewriting their CSS. */
 const PATCH = `
-/* --- forge fix 2026-07-29: hollow hero words must survive the photograph --- */
+/* --- build fix 2026-07-29: hollow hero words must survive the photograph --- */
 [class*="hollow"], .mast-name .hollow, h1 .hollow {
   /* a faint fill so the counters are not raw photograph */
   /* 26% read as mud over a dark photograph. The fill has to carry the brand
@@ -122,7 +122,7 @@ const PATCH = `
 }
 `;
 
-const MARK = 'forge fix 2026-07-29: hollow hero words';
+const MARK = 'build fix 2026-07-29: hollow hero words';
 
 let q = sb.from('outbound_demo_sites').select('id,business_name,html,status').eq('status', 'ready');
 if (ONLY) q = q.eq('id', ONLY);
@@ -190,4 +190,4 @@ for (const r of affected) {
   fixed += 1;
   console.log(`  fixed ${r.business_name}`);
 }
-console.log(`\n${fixed} site(s) patched. Originals in .forge-backups/html-<id>.html`);
+console.log(`\n${fixed} site(s) patched. Originals in .build-backups/html-<id>.html`);

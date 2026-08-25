@@ -139,7 +139,7 @@ export default function HomePage() {
         <JourneyOrchard />
         {/* MI 19. The leak, priced. Conversion proof for the talking website and
             the voice agent, then a working pop-art calculator that totals what
-            the silence costs, and the Forge as the next move. */}
+            the silence costs, and the Build as the next move. */}
         <JourneyCalculator />
         <JourneySigns />
         {/* MI 47. How a business gets found and gets chosen: the Google profile,

@@ -1,13 +1,13 @@
 /**
- * Durable Voice Agent Forge state on the existing app_state key/value table
- * (migration 030, live in prod), so the forge ships with fail-closed caps and
+ * Durable Voice Agent Build state on the existing app_state key/value table
+ * (migration 030, live in prod), so the build ships with fail-closed caps and
  * zero new DDL. The text primary key gives us atomic once-per-email and
  * once-per-phone guards for free: a duplicate insert conflicts (23505), which
  * IS the cap.
  *
  * Keys:
- *   sidekick:run:<uuid>     the forged run (profile + phone ring state)
- *   sidekick:email:<email>  claimed the moment a forge is granted
+ *   sidekick:run:<uuid>     the built run (profile + phone ring state)
+ *   sidekick:email:<email>  claimed the moment a build is granted
  *   sidekick:phone:<e164>   claimed the moment a ring is placed
  *   sidekick:day:<UTC date> best-effort daily counter (backstop, not the main gate)
  *
@@ -111,9 +111,9 @@ export async function getRun(db: KV, runId: string): Promise<SidekickRun | null>
 /**
  * Rewrite a stored run's brief IN PLACE, keeping its id.
  *
- * The forged demo lives at /voice-agents/forge/demo/<runId>, and that link has
+ * The built demo lives at /voice-agents/build/demo/<runId>, and that link has
  * already been emailed, texted, put on a hub and embedded in a walkthrough film.
- * Re-forging mints a NEW id and silently orphans every one of those. So when a
+ * Rebuilding mints a NEW id and silently orphans every one of those. So when a
  * correction is needed (a trade fixed after the fact, a law improved), the run is
  * edited where it stands and the link keeps working.
  */

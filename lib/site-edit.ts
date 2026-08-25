@@ -5,7 +5,7 @@ import type { OutboundLead } from '@/lib/outbound';
  * QUEUE A SITE EDIT.
  *
  * One finished site plus one instruction becomes the same site with that one change
- * made. It rides the existing forge queue (outbound_demo_sites) as kind='edit', so
+ * made. It rides the existing build queue (outbound_demo_sites) as kind='edit', so
  * the workstation worker AND the serverless failsafe both already drain it, claim it,
  * reclaim it when stranded, cap the spend, and report failure. base_html carries the
  * site to edit; brief carries the instruction.
@@ -38,7 +38,7 @@ export function buildEditBrief(instruction: string): string {
 export type EditQueueResult = { ok: true; jobId: string; already?: boolean } | { ok: false; error: string };
 
 /**
- * Reforge-from-prompt for a lead's DEMO site (#2). Re-queues the lead's existing
+ * Rebuild-from-prompt for a lead's DEMO site (#2). Re-queues the lead's existing
  * demo row as an edit: the current html becomes base_html, the instruction becomes
  * the brief, and created_at is reset to now so the job orders and grace-windows like
  * a fresh one rather than jumping the failsafe queue with a stale timestamp.
@@ -48,14 +48,14 @@ export async function queueLeadSiteEdit(
   lead: OutboundLead,
   instruction: string,
 ): Promise<EditQueueResult> {
-  if (!lead.site_demo_id) return { ok: false, error: 'There is no demo website to edit yet. Forge one first.' };
+  if (!lead.site_demo_id) return { ok: false, error: 'There is no demo website to edit yet. Build one first.' };
 
   const { data: demo } = await sb
     .from('outbound_demo_sites')
     .select('id, html, status')
     .eq('id', lead.site_demo_id)
     .maybeSingle();
-  if (!demo?.html) return { ok: false, error: 'Their website has not finished building yet. Wait for it, then reforge.' };
+  if (!demo?.html) return { ok: false, error: 'Their website has not finished building yet. Wait for it, then rebuild.' };
   if (demo.status === 'queued' || demo.status === 'building') {
     return { ok: true, jobId: demo.id as string, already: true };
   }
@@ -136,12 +136,12 @@ export async function queueProjectEdit(
  *
  * No budget, no counter shown to the client, nothing to buy. The $29 one-off edit
  * and the $97/mo Care Plan are both retired: charging for a change to a site we
- * already host is nickel-and-diming, and the forge makes an edit cheap.
+ * already host is nickel-and-diming, and the build makes an edit cheap.
  *
- * Unlimited to the client, hard-capped behind the glass. Every edit is real forge
+ * Unlimited to the client, hard-capped behind the glass. Every edit is real build
  * spend, so the never-leak-revenue rule still applies: a generous rolling fair-use
  * ceiling that FAILS CLOSED. Past it the edit becomes a note to Sarah rather than
- * another forge run. A client editing their website like a normal human never sees it.
+ * another build run. A client editing their website like a normal human never sees it.
  */
 export const EDIT_FAIR_USE_CAP = 30;
 export const EDIT_FAIR_USE_DAYS = 30;

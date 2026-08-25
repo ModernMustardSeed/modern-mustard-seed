@@ -344,7 +344,7 @@ export type AgentSpec = z.infer<typeof agentSchema>;
 export type ValueActionSpec = z.infer<typeof valueActionSchema>;
 
 /**
- * A partial blueprint: what a template layer or a Forge step contributes.
+ * A partial blueprint: what a template layer or a Build step contributes.
  *
  * Deliberately loose. zod v4 dropped `deepPartial`, and a hand-written deep
  * partial of a schema this size would be a second copy to keep in sync. Layers

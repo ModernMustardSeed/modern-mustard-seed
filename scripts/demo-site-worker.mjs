@@ -1,14 +1,14 @@
 /**
  * Modern Mustard Seed demo-site worker.
  *
- * Watches the outbound_demo_sites queue (cockpit "Forge website" button) and
+ * Watches the outbound_demo_sites queue (cockpit "Build website" button) and
  * runs Claude Code HEADLESS on Sarah's Max plan to design and build a complete
  * single-file demo website for each lead. Flat subscription cost by
  * construction: ANTHROPIC_API_KEY is STRIPPED from the child environment, so
  * the CLI can only ever use the logged-in subscription, never metered credits.
  *
  * The finished HTML is stored back on the row and served by the site at
- * /demo/site/<id>, where the lead's forged voice agent (Voice Agent voice
+ * /demo/site/<id>, where the lead's built voice agent (Voice Agent voice
  * demo) is overlaid as a live call widget. One link, both demos.
  *
  * Prereqs on the machine that runs this:
@@ -82,7 +82,7 @@ const STALE_MS = Number(process.env.DEMO_SITE_STALE_MS || 100 * 60 * 1000);
 // The walkthrough film runs inline after a fresh build (see cutSuiteFilm). It
 // is normally 3-6 minutes: narration, a real ~30s call, then the encode. The
 // ceiling exists so a wedged browser or a locked fal wallet cannot hold the
-// whole forge queue hostage; blowing it fails the film, never the build.
+// whole build queue hostage; blowing it fails the film, never the build.
 const SUITE_FILM_MAX_MS = Number(process.env.SUITE_FILM_MAX_MS || 14 * 60 * 1000);
 // The tour is a handful of short TTS clips and an upload, no browser and no
 // call, so it lives in a different order of magnitude from the film.
@@ -133,12 +133,12 @@ const log = (...a) => console.log(new Date().toISOString(), ...a);
  * because the first scroll is the close.
  *
  * The design law itself lives in lib/site-directive.mjs, shared with the
- * serverless failsafe (app/api/cron/forge-fallback) so that a lead who forges
+ * serverless failsafe (app/api/cron/build-fallback) so that a lead who builds
  * at 2am while this machine is asleep gets the same caliber of site.
  */
 const FAL_ENV = path.join(os.homedir(), '.claude', 'fal.env').replace(/\\/g, '/');
 // Derived from the running user's home rather than one machine's name, so the
-// same worker finds its own notes wherever the forge happens to be running.
+// same worker finds its own notes wherever the build happens to be running.
 const MEDIA_NOTES = (
   env.MMS_MEDIA_NOTES ||
   path.join(os.homedir(), '.claude', 'projects', `C--Users-${path.basename(os.homedir())}`, 'memory', 'image-generation-setup.md')
@@ -158,7 +158,7 @@ const MEDIA_NOTES = (
  * ever fails to parse, we fall back to the copy loaded at startup rather than taking
  * the worker down: a stale law still builds a site, a crashed worker builds nothing.
  *
- * A REBUILD is the same forge pointed at the truth (paid client, real assets, no
+ * A REBUILD is the same build pointed at the truth (paid client, real assets, no
  * demo pitch). An EDIT takes a finished site plus one instruction and changes only
  * that. Both laws ride along here for the same reason.
  */
@@ -239,7 +239,7 @@ function templateOf(job) {
  * Bank the template the build actually wore. The directive asks the builder to
  * record it in RESULT.json; a row that already carries a chosen key keeps it, a
  * row that let the builder choose learns what was chosen, so Random on the next
- * forge can avoid repeating it. Best effort: losing this costs variety, never a build.
+ * build can avoid repeating it. Best effort: losing this costs variety, never a build.
  */
 async function recordTemplate(job, dir) {
   try {
@@ -259,7 +259,7 @@ const isProjectEdit = (job) => isEdit(job) && Boolean(job.project_id);
 /**
  * Worker health, written where the cockpit can see it.
  *
- * The forge is a LOCAL poller, so when it declines to claim there is nothing in
+ * The build is a LOCAL poller, so when it declines to claim there is nothing in
  * the database to distinguish "holding off, machine is busy" from "dead". This
  * writes a heartbeat plus the reason into app_state (no migration needed) so the
  * cockpit can say WHY the queue is not moving instead of showing silence.
@@ -371,7 +371,7 @@ async function claimNext() {
     .from('outbound_demo_sites')
     // `error: null` matters more than it looks. The previous attempt's failure text
     // used to survive the re-claim, so a row that was actively BUILDING still read
-    // "[requeued after stall] ..." in forge-health and in the cockpit. On 2026-08-24
+    // "[requeued after stall] ..." in build-health and in the cockpit. On 2026-08-24
     // that stale line cost real minutes of diagnosis: it made a healthy retry look
     // like the fault. A row's error describes its CURRENT state or it says nothing.
     .update({ status: 'building', claimed_at: new Date().toISOString(), worker: WORKER, error: null, updated_at: new Date().toISOString() })
@@ -898,7 +898,7 @@ async function storeFinished(job, html) {
     to_addr: job.business_name,
     subject: isEdit(job) ? 'Website demo updated' : 'Website demo live',
     snippet: isEdit(job)
-      ? `Their demo website was reforged from your prompt. Live at ${siteUrl}`
+      ? `Their demo website was rebuilt from your prompt. Live at ${siteUrl}`
       : `Their demo website is live at ${siteUrl} (voice agent riding along on it, sell it as a separate add-on).`,
     read: true,
     occurred_at: new Date().toISOString(),
@@ -976,7 +976,7 @@ async function buildSiteTour(job) {
 }
 
 /**
- * THE WALKTHROUGH FILM, the final step of the forge.
+ * THE WALKTHROUGH FILM, the final step of the build.
  *
  * Sarah 2026-08-01: the video at the top of a suite has to be a fresh
  * recording of THAT lead's site, agent and command center. It had been serving
@@ -1141,7 +1141,7 @@ async function finishRebuild(job, html) {
 }
 
 /**
- * HEARTBEAT. The serverless failsafe (app/api/cron/forge-fallback) needs to know
+ * HEARTBEAT. The serverless failsafe (app/api/cron/build-fallback) needs to know
  * whether this machine is alive, and it cannot tell "laptop is asleep" from
  * "laptop is mid-build on the job ahead of yours" by looking at timestamps
  * alone. So we say so out loud on every poll. A fresh heartbeat means hands off,
@@ -1171,7 +1171,7 @@ let blockedSince = null;
 /**
  * THE STARVATION OVERRIDE.
  *
- * On 2026-07-30 Sarah forged four sites, ran the worker herself, and nothing
+ * On 2026-07-30 Sarah built four sites, ran the worker herself, and nothing
  * moved: 16GB of RAM with ~600MB actually available, so the guard refused every
  * claim forever. The comment above MIN_FREE_MEM_MB already says it. "A guard that
  * never lets anything through is not a safety feature, it is an outage." That was
@@ -1211,7 +1211,7 @@ async function tick() {
     }
     // 2026-07-28: this guard once held the whole floor for six hours with twelve
     // leads queued, and the only trace was one line on a console nobody was
-    // watching. From the cockpit it looked like the forge had simply stopped.
+    // watching. From the cockpit it looked like the build had simply stopped.
     // A stall that nobody can see is indistinguishable from a broken product, so
     // the reason now goes where Sarah actually looks.
     const waited = Math.round(starvedMs / 60000);

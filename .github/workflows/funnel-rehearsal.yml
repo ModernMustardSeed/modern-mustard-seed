@@ -9,7 +9,7 @@
 #
 # This is the standing version of that pass. It runs in SMOKE mode: every guard is
 # exercised over real HTTP, the happy path is driven through the database so that
-# NOTHING IS EMAILED and no daily forge slot is burned, and every row it creates is
+# NOTHING IS EMAILED and no daily build slot is burned, and every row it creates is
 # deleted in a finally. It also checks the things that go quiet rather than loud:
 # a dead worker heartbeat, a job queued for over an hour, a build that failed in
 # the night, and copy on the newest demos that reads like a machine wrote it.

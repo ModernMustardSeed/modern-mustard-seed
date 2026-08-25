@@ -5,7 +5,7 @@
  * personality to the bottom of the page where booking and footer is, kinda
  * drags. make it way more artistic and beautiful."
  *
- * She is right, and the reason is structural rather than per-site. Every forge
+ * She is right, and the reason is structural rather than per-site. Every build
  * spends its craft budget on the hero and the middle of the page, then lands the
  * booking section and the footer in the same tone as everything above them. The
  * page never changes temperature, so it does not finish, it just stops. The best
@@ -14,7 +14,7 @@
  * gesture carries the eye to the single thing they want you to do.
  *
  * This gives every site that ending at serve time, in its OWN colors, with no
- * re-forge. It reads the palette the build already published in
+ * rebuild. It reads the palette the build already published in
  * <meta name="mms-palette"> and derives the band from it, so a warm terracotta
  * restaurant and a cold steel fabricator each get an ending that looks like it
  * was designed for them, because it was drawn from their own accent.
@@ -487,7 +487,7 @@ const SCRIPT = `<script data-${MARKER}>
 </script>`;
 
 /**
- * Append the closing-band treatment to a forged document. Safe to call twice:
+ * Append the closing-band treatment to a built document. Safe to call twice:
  * the marker attribute makes a second pass a no-op.
  */
 export function dressClosingBand(html: string): string {

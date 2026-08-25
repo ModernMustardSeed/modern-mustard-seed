@@ -15,7 +15,7 @@
  *   2. THE ACQUISITION TOOLBELT, appended to model.tools. These exist only on
  *      acquisition calls, which is why they are added here instead of pushed
  *      onto the live assistant. A bad push to him breaks the studio phone line
- *      AND every forged demo in flight at once.
+ *      AND every built demo in flight at once.
  *
  * The call is only ever placed against a live, unrevoked consent record.
  */
@@ -105,7 +105,7 @@ export function acquisitionTools() {
       function: {
         name: 'email_prospect_demo',
         description:
-          "Email the prospect the personalized demo you forged, with the activation link and Sarah's calendar. Only after forge_prospect_agent succeeded. If the build is still running, say so instead of calling this twice.",
+          "Email the prospect the personalized demo you built, with the activation link and Sarah's calendar. Only after forge_prospect_agent succeeded. If the build is still running, say so instead of calling this twice.",
         parameters: {
           type: 'object',
           properties: {

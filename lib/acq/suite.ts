@@ -1,9 +1,9 @@
 /**
- * THE ACQUISITION SUITE FORGE.
+ * THE ACQUISITION SUITE BUILD.
  *
- * The outbound cockpit has been able to forge a whole suite for a lead since
+ * The outbound cockpit has been able to build a whole suite for a lead since
  * July: a voice agent, a demo website, a command center, and one hub that
- * fronts all three. Acquisition could forge exactly one of those four, and only
+ * fronts all three. Acquisition could build exactly one of those four, and only
  * from inside a live Mr. Mustard call. So the thousands of businesses the
  * campaign emails, the ones who click, the ones who open the permission page
  * and then think better of typing their phone number, all had nothing to be
@@ -11,7 +11,7 @@
  * never made.
  *
  * This file unlocks it. Same engine as outbound (lib/outbound-demo.ts is the
- * one forge and this never forks it), bound to an acquisition prospect and fed
+ * one build and this never forks it), bound to an acquisition prospect and fed
  * the acquisition record, which is RICHER than an outbound lead's: a verified
  * Google rating and review count with the listing URL they came from, published
  * hours, a service area, an emergency posture, the score reasons, and whatever
@@ -29,7 +29,7 @@ import {
   briefField,
   ensureDemoHub,
   ensureOsDemo,
-  forgeLeadVoiceDemo,
+  buildLeadVoiceDemo,
   leadTrade,
 } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
@@ -65,7 +65,7 @@ export type SuiteStage =
   | 'closed';
 
 export const SUITE_STAGE_LABELS: Record<SuiteStage, string> = {
-  unforged: 'Not forged',
+  unforged: 'Not built',
   forging: 'On the anvil',
   failed: 'Build failed',
   built: 'Built, not sent',
@@ -73,7 +73,7 @@ export const SUITE_STAGE_LABELS: Record<SuiteStage, string> = {
   closed: 'Closed',
 };
 
-/** Everything a prospect row says about what has been forged for them. */
+/** Everything a prospect row says about what has been built for them. */
 export type SuiteState = {
   stage: SuiteStage;
   voiceUrl: string | null;
@@ -86,7 +86,7 @@ export type SuiteState = {
    * The command center came off the suite and out of the offer entirely
    * (Sarah, 2026-08-22, again on 2026-08-25: "I am not pushing command center
    * anywhere"). The hub draws no door for it, the suite email never names it,
-   * and the forge no longer mints one. Rows forged before that date still carry
+   * and the build no longer mints one. Rows built before that date still carry
    * an os_demo_url and that page still resolves, so a link already emailed
    * keeps working; the prospect is simply never pointed at it.
    */
@@ -153,7 +153,7 @@ export type AcqSuiteLead = Pick<
 /**
  * Tier 2 is the Wildmere award-site world and it is the house style. Tier 3 is
  * the Journey site (the Flathead homepage template). Tier 1 stays unwired until
- * Sarah reworks it, exactly as on the outbound board, so the two forges cannot
+ * Sarah reworks it, exactly as on the outbound board, so the two builds cannot
  * disagree about what a tier means.
  */
 export type DesignTier = 2 | 3;
@@ -296,14 +296,14 @@ export function buildAcqSiteBrief(
   const tier = opts.designTier ?? DEFAULT_DESIGN_TIER;
   // The tier and the talking-website flag ride as leading lines because that is
   // how the worker parses them (scripts/demo-site-worker.mjs tierOf), so no
-  // schema change is needed and the two forges stay byte-identical here.
+  // schema change is needed and the two builds stay byte-identical here.
   const header = `DESIGN TIER: ${tier}\n${opts.talkingWebsite ? 'TALKING WEBSITE: yes\n' : ''}\n`;
   return header + buildSiteBrief(lead as unknown as OutboundLead, voiceDemoUrl) + '\n' + acqBriefAddendum(lead, intel);
 }
 
-/* ────────────────────────────── the forge ──────────────────────────────── */
+/* ────────────────────────────── the build ──────────────────────────────── */
 
-export type SuiteForgeResult =
+export type SuiteBuildResult =
   | {
       ok: true;
       /** Which pieces this call actually created, as opposed to found already built. */
@@ -317,7 +317,7 @@ export type SuiteForgeResult =
     }
   | { ok: false; error: string; retryable: boolean };
 
-export type SuiteForgeOptions = SiteOptions & {
+export type SuiteBuildOptions = SiteOptions & {
   /** Queue the demo WEBSITE too. Off means the instant pieces only. */
   site?: boolean;
   /** Re-queue the website even when one is already built. */
@@ -349,12 +349,12 @@ export type SuiteForgeOptions = SiteOptions & {
 };
 
 /**
- * How many suites each unattended path may forge in a day.
+ * How many suites each unattended path may build in a day.
  *
  * This is not a policy about ambition, it is a spend guard. Every suite mints a
  * Vapi assistant and puts a website on a queue that one machine works through at
  * roughly two an hour, so an unattended job that fans out to five hundred would
- * commit weeks of the forge and a wallet's worth of assistants before anybody
+ * commit weeks of the build and a wallet's worth of assistants before anybody
  * saw it.
  *
  * The phone gets the tighter number, and it always will: the queue is fed from
@@ -378,7 +378,7 @@ async function claimSuiteSlot(db: SupabaseClient, path: 'queue' | 'phone'): Prom
 }
 
 /**
- * Forge the whole suite for one acquisition prospect.
+ * Build the whole suite for one acquisition prospect.
  *
  * Order matters and it is not arbitrary. The voice agent goes first because the
  * website's brief carries its URL and the finished page overlays it as a live
@@ -389,14 +389,14 @@ async function claimSuiteSlot(db: SupabaseClient, path: 'queue' | 'phone'): Prom
  *
  * Every piece fails soft. A Vapi hiccup must not cost them the website, and a
  * full build queue must not cost them the voice agent. The result says exactly
- * what landed and what did not, so nothing is ever reported as forged that was
+ * what landed and what did not, so nothing is ever reported as built that was
  * not.
  */
-export async function forgeProspectSuite(
+export async function buildProspectSuite(
   db: SupabaseClient,
   prospect: AcqProspect,
-  opts: SuiteForgeOptions = {},
-): Promise<SuiteForgeResult> {
+  opts: SuiteBuildOptions = {},
+): Promise<SuiteBuildResult> {
   const created: SuitePiece[] = [];
   const warnings: string[] = [];
   let row = prospect as unknown as OutboundLead;
@@ -411,8 +411,8 @@ export async function forgeProspectSuite(
       retryable: true,
       error:
         opts.capped === 'phone'
-          ? `The forge has built its ${SUITE_CAPS.phone} suites off the phone today. Take their details and tell them it gets built first thing.`
-          : `The engine has forged its ${SUITE_CAPS.queue} suites for today. It picks this one up tomorrow, or you can build it by hand from the board right now.`,
+          ? `The build has built its ${SUITE_CAPS.phone} suites off the phone today. Take their details and tell them it gets built first thing.`
+          : `The engine has built its ${SUITE_CAPS.queue} suites for today. It picks this one up tomorrow, or you can build it by hand from the board right now.`,
     };
   }
 
@@ -420,18 +420,18 @@ export async function forgeProspectSuite(
     leadId: prospect.id,
     campaignId: prospect.acq_campaign_id,
     type: 'forge_started',
-    label: opts.site ? 'Forging their full suite' : 'Forging their voice agent and command center',
+    label: opts.site ? 'Building their full suite' : 'Building their voice agent and command center',
     detail: { site: Boolean(opts.site), designTier: opts.designTier ?? DEFAULT_DESIGN_TIER, by: opts.by ?? 'admin' },
   });
 
   /* ── 1. The voice agent. ── */
   const hadVoice = Boolean(prospect.demo_url);
-  const voice = await forgeLeadVoiceDemo(db, row);
+  const voice = await buildLeadVoiceDemo(db, row);
   if (voice.ok) {
     row = voice.lead;
     if (!hadVoice) created.push('voice');
   } else {
-    warnings.push(`The voice agent did not forge: ${voice.error}`);
+    warnings.push(`The voice agent did not build: ${voice.error}`);
   }
 
   /* ── 2. The command center, with their real logo and brand color. ── */
@@ -440,7 +440,7 @@ export async function forgeProspectSuite(
     row = await ensureOsDemo(db, row);
     if (!hadOs && row.os_demo_url) created.push('os');
   } catch (err) {
-    warnings.push(`The command center did not forge: ${err instanceof Error ? err.message : String(err)}`);
+    warnings.push(`The command center did not build: ${err instanceof Error ? err.message : String(err)}`);
   }
 
   /* ── 3. The website. ── */
@@ -479,7 +479,7 @@ export async function forgeProspectSuite(
       label: 'Nothing in the suite would build',
       detail: { warnings },
     });
-    return { ok: false, retryable: true, error: warnings[0] ?? 'The forge produced nothing.' };
+    return { ok: false, retryable: true, error: warnings[0] ?? 'The build produced nothing.' };
   }
 
   // `demo_status` says whether the INSTANT half is usable. The website has its
@@ -503,8 +503,8 @@ export async function forgeProspectSuite(
     campaignId: prospect.acq_campaign_id,
     type: 'forge_completed',
     label: created.length
-      ? `Forged: ${created.join(', ')}`
-      : 'Their suite was already built; nothing new was forged',
+      ? `Built: ${created.join(', ')}`
+      : 'Their suite was already built; nothing new was built',
     detail: {
       created,
       warnings,
@@ -533,12 +533,12 @@ export type SiteQueueResult =
   | { ok: false; error: string };
 
 /**
- * Queue this prospect's demo WEBSITE at the forge.
+ * Queue this prospect's demo WEBSITE at the build.
  *
  * The build itself runs on Sarah's machine: scripts/demo-site-worker.mjs claims
  * the row and runs headless Claude Code on the Max plan (flat subscription,
  * never the metered API). The finished page ships at /demo/site/<id> with their
- * forged voice agent overlaid as a live call widget, and the worker queues the
+ * built voice agent overlaid as a live call widget, and the worker queues the
  * walkthrough film as its last step.
  *
  * Idempotent by default: a queued, building or ready run is left exactly as it
@@ -597,7 +597,7 @@ export async function queueProspectSite(
     leadId: prospect.id,
     campaignId: prospect.acq_campaign_id,
     type: 'forge_started',
-    label: opts.force ? 'Their website was re-queued at the forge' : 'Their website was queued at the forge',
+    label: opts.force ? 'Their website was re-queued at the build' : 'Their website was queued at the build',
     detail: {
       siteUrl,
       designTier: opts.designTier ?? DEFAULT_DESIGN_TIER,
@@ -611,6 +611,6 @@ export async function queueProspectSite(
     ok: true,
     queued: true,
     siteUrl,
-    note: `Their website is on the anvil. It lands at ${siteUrl} when the forge finishes it.`,
+    note: `Their website is on the anvil. It lands at ${siteUrl} when the build finishes it.`,
   };
 }
