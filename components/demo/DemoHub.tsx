@@ -7,6 +7,7 @@ import type { OsTradeKey } from '@/data/demo-os-trades';
 import MakeItRealCTA from '@/components/demo/MakeItRealCTA';
 import RecoveryMachine, { type RecoveryValues } from '@/components/RecoveryMachine';
 import SuiteMoreForm from '@/components/demo/SuiteMoreForm';
+import BookedOnTheCall from '@/components/demo/BookedOnTheCall';
 import type { DemoProductKey } from '@/lib/demo-order';
 
 /**
@@ -123,6 +124,7 @@ export default function DemoHub({
   auditScore,
   auditHeadline,
   demoRunId,
+  bookedOnCall = [],
   noticedLine,
   missedPreset,
   hasEmail,
@@ -167,6 +169,9 @@ export default function DemoHub({
   /** The lead's forged voice run. Powers the encore: their agent calls THEM,
    *  through the existing /api/sidekick/forge phone path with all its caps. */
   demoRunId?: string | null;
+  /** Appointments the forged agent booked on a demo call. Usually empty;
+   *  the card renders nothing at all when it is, on purpose. */
+  bookedOnCall?: React.ComponentProps<typeof BookedOnTheCall>['appointments'];
   /** A factual line from the walk-in research ("closed both weekend days..."),
    *  already sanitized server-side. Shown above the calculator so the numbers
    *  start as theirs. */
@@ -493,6 +498,10 @@ export default function DemoHub({
 
         {/* The encore: strongest moment in the suite, one tap after the doors. */}
         {demoRunId && voiceUrl && <EncoreRing runId={demoRunId} business={business} />}
+
+        {/* Proof, in writing, of what the call already did out loud. Sits
+            right under the encore, because the encore is what produces it. */}
+        <BookedOnTheCall appointments={bookedOnCall} business={business} jobWord={job.label.toLowerCase()} />
 
         {/* Recovery Calculator: the shared pop-art desk machine, hub sized
             (Sarah, 2026-08-20: same calc as the landing page, a little smaller,
