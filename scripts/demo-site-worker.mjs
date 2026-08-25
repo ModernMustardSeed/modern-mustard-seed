@@ -26,7 +26,7 @@
  * DEMO_SITE_MAX_MS (default 25 min), DEMO_SITE_POLL_MS (default 15s).
  */
 import { createClient } from '@supabase/supabase-js';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -90,6 +90,8 @@ const SUITE_FILM_MAX_MS = Number(process.env.SUITE_FILM_MAX_MS || 14 * 60 * 1000
 // call, so it lives in a different order of magnitude from the film.
 const SITE_TOUR_MAX_MS = Number(process.env.SITE_TOUR_MAX_MS || 4 * 60 * 1000);
 const WORKER = os.hostname();
+/** When this process started. The orphan sweep's only safe dividing line. */
+const WORKER_STARTED = Date.now();
 const SITE_URL = 'https://modernmustardseed.com';
 
 // Load .env.local. This repo's file has LOWERCASE supabase keys, so accept both
@@ -416,6 +418,56 @@ async function reclaimOwnOrphans() {
 }
 
 /**
+ * THE ROW IS NOT THE ONLY THING THE DEAD WORKER LEFT BEHIND.
+ *
+ * killTree() reaps the whole tree when THIS process ends a build. It cannot run
+ * when the process is killed from outside, and the documented restart does exactly
+ * that: Stop-Process on node.exe. node dies, the `cmd /c` wrapper dies, and the
+ * claude.exe GRANDCHILD keeps building into `~/mms-demo-sites/<id>` forever.
+ *
+ * That is not merely wasted compute. The next run of the same job gets the same
+ * directory, so the escapee overwrites the new run's index.html underneath it. On
+ * 2026-08-25 three escapees (36, 22 and 5 minutes old) were writing into two live
+ * builds; both agents noticed, said "a parallel session is building in this same
+ * directory", and neither ever finished. Two lanes, no output, five leads waiting.
+ *
+ * So the tree gets swept here too, by the only signal that is always true: one
+ * build worker runs per machine, and this one is starting RIGHT NOW, so a build
+ * child older than this process cannot possibly be ours. Sarah's interactive
+ * sessions are `claude.exe` with no `-p`, so the print-mode + stream-json +
+ * strict-mcp-config signature belongs to a build and nothing else.
+ */
+function killOrphanBuildAgents() {
+  if (process.platform !== 'win32') return;
+  // Win32_Process.CreationDate comes back as LOCAL time, so the cutoff is written
+  // as local wall-clock too. An ISO string with a Z on it would be reparsed into
+  // local by PowerShell and quietly shift the cutoff by the UTC offset, which on
+  // this machine would spare a six-hour-old escapee.
+  const d = new Date(WORKER_STARTED);
+  const p2 = (n) => String(n).padStart(2, '0');
+  const cutoff = `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}T${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;
+  const ps = [
+    "Get-CimInstance Win32_Process -Filter \"Name='claude.exe'\"",
+    "Where-Object { $_.CommandLine -match '--output-format stream-json' -and $_.CommandLine -match '--strict-mcp-config' -and $_.CommandLine -match ' -p ' }",
+    `Where-Object { $_.CreationDate -lt [datetime]'${cutoff}' }`,
+    'ForEach-Object { taskkill /PID $_.ProcessId /T /F 2>$null; $_.ProcessId }',
+  ].join(' | ');
+  try {
+    const out = spawnSync('powershell', ['-NoProfile', '-NonInteractive', '-Command', ps], {
+      encoding: 'utf8',
+      timeout: 30_000,
+    });
+    const pids = String(out.stdout || '').match(/\d+/g) || [];
+    if (pids.length) log(`killed ${pids.length} escaped build agent(s) left by an earlier worker: ${pids.join(', ')}`);
+  } catch (e) {
+    // Never let a sweep stop a worker starting. A worker that runs with an
+    // escapee still loose is a bad day; a worker that will not start is the
+    // 39-hour outage.
+    log('orphan build-agent sweep failed (ignored):', e?.message || e);
+  }
+}
+
+/**
  * Take the oldest queued build nobody else has.
  *
  * A WINDOW, not one row. Asking for exactly one row was right while this worker
@@ -425,17 +477,38 @@ async function reclaimOwnOrphans() {
  * four leads waiting. Reading a few extra rows costs nothing and means losing a
  * race just moves you to the next lead.
  *
+ * A LEAD ALWAYS OUTRANKS A CHORE, whatever the clock says.
+ *
+ * `worker_only` rows are housekeeping: sites that are already live, requeued in a
+ * batch to move them onto a newer design law. Nobody is watching one. But they are
+ * queued in bulk, so they are almost always the OLDEST rows in the table, and a
+ * strict oldest-first claim hands them every lane forever. On 2026-08-25 two of
+ * them queued on 8/20 held both lanes while five real leads sat four hours behind
+ * a countdown, and the GitHub fallback could not help because it refuses demos on
+ * purpose. Oldest-first is still the rule; it just runs inside each tier now, so
+ * the chores get the lanes exactly when no lead wants one.
+ *
  * The claim itself is unchanged and is the only thing that makes this safe: the
  * update filters on status='queued', so it is a compare-and-swap. Two lanes can
  * both read the same row and exactly one of them can write it.
  */
 async function claimNext() {
-  const { data } = await supabase
-    .from('outbound_demo_sites')
-    .select('*')
-    .eq('status', 'queued')
-    .order('created_at', { ascending: true })
-    .limit(LANES + 3);
+  const queueWindow = () =>
+    supabase
+      .from('outbound_demo_sites')
+      .select('*')
+      .eq('status', 'queued')
+      .order('created_at', { ascending: true })
+      .limit(LANES + 3);
+
+  // Leads first. The `worker_only` filter is applied defensively, the same way
+  // build-fallback.mjs applies it: if the column is not on this database yet, an
+  // unfiltered window is far better than a worker that claims nothing at all.
+  let { data, error } = await queueWindow().eq('worker_only', false);
+  if (error && /worker_only/.test(error.message || '')) ({ data } = await queueWindow());
+  // Nothing real waiting, so the housekeeping batch gets the machine.
+  else if (!data?.length) ({ data } = await queueWindow().eq('worker_only', true));
+
   for (const row of data || []) {
     // Belt and braces against a row this very process is already building: the
     // status filter below would refuse it anyway, but skipping is cheaper and
@@ -1466,6 +1539,7 @@ for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGBREAK']) {
   });
 }
 
+killOrphanBuildAgents();
 await reclaimOwnOrphans();
 log(`demo-site worker up. ${LANES} lane(s).`, 'sites dir:', SITES_DIR, '| design tiers:', FORCED_TIER ? `forced ${FORCED_TIER}` : 'row choice, else tier 2', '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
 
