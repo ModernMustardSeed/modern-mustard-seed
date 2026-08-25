@@ -8,6 +8,7 @@ import { api, btnGhost, btnPrimary, btnSeed, card, eyebrow, inputCls, labelCls }
 import TapText from '@/components/admin/TapText';
 import { usePoll } from '@/lib/use-poll';
 import { TemplatePicker, templateName } from '@/components/admin/TemplatePicker';
+import DripPanel, { dripChipLabel } from '@/components/admin/outbound/DripPanel';
 import { RANDOM_TEMPLATE } from '@/lib/site-templates.mjs';
 
 /**
@@ -83,6 +84,18 @@ export function ReachOutDeck({
   const [siteTemplateKey, setSiteTemplateKey] = useState<string>(RANDOM_TEMPLATE);
   const [forgingOs, setForgingOs] = useState(false);
   const [reforgeOpen, setReforgeOpen] = useState(false);
+  // The drip campaign (2026-08-25): one button shows the whole sequence and
+  // starts it by sending email 1. The chip label reads the drip's state.
+  const [dripOpen, setDripOpen] = useState(false);
+  const [drip, setDrip] = useState<Parameters<typeof dripChipLabel>[0]>(null);
+  const [dripLength, setDripLength] = useState(5);
+  useEffect(() => {
+    let live = true;
+    void api<{ drip: Parameters<typeof dripChipLabel>[0]; length: number }>(`/api/admin/outbound/leads/${lead.id}/drip?summary=1`)
+      .then((r) => { if (live) { setDrip(r.drip); setDripLength(r.length); } })
+      .catch(() => {});
+    return () => { live = false; };
+  }, [lead.id]);
 
   // Tap-to-text: we write it, her own phone sends it. No Twilio, no A2P.
   const [textOpen, setTextOpen] = useState(false);
@@ -475,6 +488,14 @@ export function ReachOutDeck({
           </button>
         )}
 
+        <button
+          onClick={() => setDripOpen(true)}
+          className={`${chip} ${drip?.status === 'active' ? 'bg-[#b58a2a]/15 text-[#7a5c1a] border-[#b58a2a]' : 'bg-white text-[#1a1815]/75 border-[#1a1815]/30'} hover:border-[#1a1815] hover:-translate-y-0.5`}
+          title="See every email the drip will send, dated, and start it by sending the first one"
+        >
+          {dripChipLabel(drip, dripLength)}
+        </button>
+
         {demoCount > 0 && (
           <button
             onClick={() => setReforgeOpen(true)}
@@ -568,6 +589,7 @@ export function ReachOutDeck({
       />
 
       <ReforgeModal lead={lead} open={reforgeOpen} onClose={() => setReforgeOpen(false)} onLead={onLead} push={push} />
+      <DripPanel lead={lead} open={dripOpen} onClose={() => setDripOpen(false)} onLead={onLead} onDrip={setDrip} push={push} />
     </>
   );
 }
