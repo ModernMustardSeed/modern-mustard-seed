@@ -72,7 +72,18 @@ export async function drainQueue(opts: { limit?: number; worker?: string } = {})
   const worker = opts.worker ?? 'cron';
   const limit = opts.limit ?? 40;
 
-  const jobs = await claimJobs(db, null, limit, worker);
+  // Demo suite emails go first, always.
+  //
+  // A forged demo is a live agent and a live site standing there with the
+  // prospect's own name on it, built because that person asked. A cold email
+  // is a cold email. FIFO across one shared queue means a backlog of cold
+  // sends starves the demos behind it, and at 25 an hour a thousand-job
+  // backlog is days: on 2026-08-24 sixteen forged demos sat behind 1,082 cold
+  // emails. The person who raised their hand does not wait behind the people
+  // who did not.
+  const demoFirst = await claimJobs(db, ['demo_email'], limit, worker);
+  const rest = demoFirst.length < limit ? await claimJobs(db, null, limit - demoFirst.length, worker) : [];
+  const jobs = [...demoFirst, ...rest];
   report.claimed = jobs.length;
 
   let emailsSent = 0;

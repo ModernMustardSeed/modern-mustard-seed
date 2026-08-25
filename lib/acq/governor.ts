@@ -87,7 +87,27 @@ export type GovernorDecision = {
   ceiling: number;
 };
 
-export type Rolling = { sent24h: number; sent1h: number; bounced24h: number; complained24h: number; unsub24h: number };
+/**
+ * How many sends there have to be before a bounce percentage means anything.
+ *
+ * This was 25, and 25 is indefensible: one dead address out of 25 is 4.00%,
+ * which is the entire ceiling, so a single bad row in a list of twenty-five
+ * stopped a day of sending. At 100 a single address is 1%, the rate moves in
+ * steps a human can reason about, and a genuinely bad list still trips the
+ * brake long before it does real damage.
+ */
+export const RATE_MEASUREMENT_FLOOR = 100;
+
+export type Rolling = {
+  sent24h: number;
+  sent1h: number;
+  /** Permanent bounces only. This is the number that governs. */
+  bounced24h: number;
+  complained24h: number;
+  unsub24h: number;
+  /** Full mailboxes and busy servers. Reported, never enforced. */
+  softBounced24h: number;
+};
 
 export async function rollingCounts(db: SupabaseClient): Promise<Rolling> {
   const { data, error } = await db.rpc('acq_rolling_send_counts');
@@ -95,13 +115,14 @@ export async function rollingCounts(db: SupabaseClient): Promise<Rolling> {
     // Fail closed: an unreadable count must read as "at the limit", never as zero.
     throw new Error(`The governor cannot read recent send volume (${error?.message ?? 'no rows'}). Refusing to send.`);
   }
-  const r = data[0] as { sent_24h: number; sent_1h: number; bounced_24h: number; complained_24h: number; unsub_24h: number };
+  const r = data[0] as { sent_24h: number; sent_1h: number; bounced_24h: number; complained_24h: number; unsub_24h: number; soft_bounced_24h?: number };
   return {
     sent24h: Number(r.sent_24h ?? 0),
     sent1h: Number(r.sent_1h ?? 0),
     bounced24h: Number(r.bounced_24h ?? 0),
     complained24h: Number(r.complained_24h ?? 0),
     unsub24h: Number(r.unsub_24h ?? 0),
+    softBounced24h: Number(r.soft_bounced_24h ?? 0),
   };
 }
 
@@ -228,8 +249,9 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
 
   /* ── measured health ── */
 
-  const bounceRate = sent24h >= 25 ? (rolling.bounced24h / Math.max(1, sent24h)) * 100 : 0;
-  const complaintRate = sent24h >= 25 ? (rolling.complained24h / Math.max(1, sent24h)) * 100 : 0;
+  const measurable = sent24h >= RATE_MEASUREMENT_FLOOR;
+  const bounceRate = measurable ? (rolling.bounced24h / Math.max(1, sent24h)) * 100 : 0;
+  const complaintRate = measurable ? (rolling.complained24h / Math.max(1, sent24h)) * 100 : 0;
   const maxBounce = Number(settings.max_bounce_rate_pct ?? 4);
   const maxComplaint = Number(settings.max_complaint_rate_pct ?? 0.1);
 
@@ -237,7 +259,9 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
     'bounce-rate',
     'Bounce rate',
     bounceRate <= maxBounce,
-    sent24h < 25 ? 'Not enough sent today to measure.' : `${bounceRate.toFixed(2)}% over the last 24 hours, ceiling ${maxBounce}%.`,
+    measurable
+      ? `${bounceRate.toFixed(2)}% over the last 24 hours, ceiling ${maxBounce}%. ${rolling.bounced24h} permanent of ${sent24h} sent${rolling.softBounced24h ? `, plus ${rolling.softBounced24h} soft that do not count` : ''}.`
+      : `${sent24h} sent in the last 24 hours; the rate is not measured under ${RATE_MEASUREMENT_FLOOR}.`,
   );
   if (bounceRate > maxBounce) return deny();
 
@@ -245,7 +269,9 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
     'complaint-rate',
     'Complaint rate',
     complaintRate <= maxComplaint,
-    sent24h < 25 ? 'Not enough sent today to measure.' : `${complaintRate.toFixed(3)}% over the last 24 hours, ceiling ${maxComplaint}%.`,
+    measurable
+      ? `${complaintRate.toFixed(3)}% over the last 24 hours, ceiling ${maxComplaint}%.`
+      : `${sent24h} sent in the last 24 hours; the rate is not measured under ${RATE_MEASUREMENT_FLOOR}.`,
   );
   if (complaintRate > maxComplaint) return deny();
 
@@ -400,7 +426,7 @@ export async function rampSender(db: SupabaseClient, now = new Date()): Promise<
   const state = (settings.sender_state ?? 'validating') as SenderState;
   const rolling = await rollingCounts(db);
 
-  const measurable = rolling.sent24h >= 25;
+  const measurable = rolling.sent24h >= RATE_MEASUREMENT_FLOOR;
   const bounceRate = measurable ? (rolling.bounced24h / rolling.sent24h) * 100 : 0;
   const complaintRate = measurable ? (rolling.complained24h / rolling.sent24h) * 100 : 0;
   const maxBounce = Number(settings.max_bounce_rate_pct ?? 4);
