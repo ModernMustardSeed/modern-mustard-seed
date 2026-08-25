@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { runOutboundDrips } from '@/lib/outbound-drip';
 import { getSupabase } from '@/lib/supabase';
 import { sendOutboundEmail } from '@/lib/outbound-email';
 import { demoStationDrip } from '@/lib/demo-drip';
@@ -83,10 +84,12 @@ export async function GET(req: Request) {
     }
   }
 
+  // The per-lead outbound drips (lib/outbound-drip.ts), started from the cockpit.
+  const outboundDrips = await runOutboundDrips(sb).catch((e) => ({ error: e instanceof Error ? e.message : String(e) }));
   const drip = await demoStationDrip(sb);
   const sidekick = await sidekickDrip(sb);
   // Forgers the drip will not cold-start. Surfaced, never silently dropped.
   const stale = await staleUnstarted(sb);
 
-  return NextResponse.json({ ok: true, due: due?.length ?? 0, sent, parked, drip, sidekick, stale });
+  return NextResponse.json({ ok: true, due: due?.length ?? 0, sent, parked, outboundDrips, drip, sidekick, stale });
 }
