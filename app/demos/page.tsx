@@ -77,7 +77,9 @@ const PIECES = [
  * here: see the $197/$297 split that leaked into the trade FAQ schema.
  */
 function demosJsonLd() {
-  const products = [DEMO_PRODUCTS.voice, DEMO_PRODUCTS.site, DEMO_PRODUCTS.os];
+  // Two, not three: the command center is not one of the demos we forge, so it
+  // is not one of the offers this page advertises (Sarah, 2026-08-25).
+  const products = [DEMO_PRODUCTS.voice, DEMO_PRODUCTS.site];
   const offer = (name: string, monthlyCents: number, setupCents: number, desc: string) => ({
     '@type': 'Offer' as const,
     name,

@@ -10,7 +10,6 @@ import CommercialPlayer from '@/components/talking-website/CommercialPlayer';
 
 const voice = DEMO_PRODUCTS.voice;
 const site = DEMO_PRODUCTS.site;
-const os = DEMO_PRODUCTS.os;
 
 // The savings story is DERIVED, never typed. If any single price moves, this
 // moves with it (see mms-price-single-source).
@@ -400,15 +399,6 @@ export default function TalkingWebsitePage() {
                   <dt className="text-[#161616]/75">{voice.name}</dt>
                   <dd className="font-mono text-[12.5px] text-right shrink-0">
                     {formatUsd(voice.setupCents)} + {formatUsd(voice.monthlyCents)}/mo
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-4 border-b-2 border-[#161616] pb-2.5">
-                  <dt className="text-[#161616]/75">{os.name}</dt>
-                  <dd className="font-mono text-[12.5px] text-right shrink-0">
-                    <span className="line-through text-[#161616]/70">
-                      {formatUsd(os.setupCents)} + {formatUsd(os.monthlyCents)}/mo
-                    </span>{' '}
-                    <span className="font-bold text-[#161616]">free</span>
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4 pt-1">
