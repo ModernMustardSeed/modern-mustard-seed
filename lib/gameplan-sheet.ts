@@ -1,3 +1,4 @@
+import { parseSiteFacts, scrubClaims } from '@/lib/site-facts';
 import type { OutboundLead } from '@/lib/outbound';
 
 /**
@@ -57,10 +58,14 @@ export type GameplanQrs = { hubQr: string | null; siteQr: string | null; planQr:
 export function gameplanSheetHtml(l: OutboundLead, { hubQr, siteQr, planQr }: GameplanQrs): string {
   const notes = l.notes || '';
   const trade = noteLine(notes, 'TRADE') || '';
-  const web = sanitizeWeb(noteLine(notes, 'WEBSITE')) || '';
+  // Every claim about their website is checked against the site as read live
+  // (lib/site-facts.ts) before it prints. A clause that says the site lacks
+  // something the site has, or that we never verified, does not print.
+  const facts = parseSiteFacts(notes);
+  const web = scrubClaims(sanitizeWeb(noteLine(notes, 'WEBSITE')) || '', facts, 'public').text;
   const reviews = noteLine(notes, 'REVIEWS') || '';
   const hours = noteLine(notes, 'HOURS') || '';
-  const gap = noteLine(notes, 'GAP') || '';
+  const gap = scrubClaims(noteLine(notes, 'GAP') || '', facts, 'public').text;
   const voiceFirst = /voice demo only|voice-first|Voice only|voice demo first/i.test(notes);
   const steps = planSteps(voiceFirst);
   const found = [

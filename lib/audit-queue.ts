@@ -16,6 +16,7 @@
  * 080_audit_queue.sql` (the table and the atomic claim).
  */
 
+import type { SiteFacts } from '@/lib/site-facts';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { runWebsiteAudit, type WebsiteAuditReport } from '@/lib/website-audit';
 
@@ -142,10 +143,10 @@ export type AuditOutcome =
  */
 export async function auditPreferringWorker(
   sb: SupabaseClient,
-  opts: { url: string; sourceTable?: string; sourceId?: string; waitMs?: number },
+  opts: { url: string; sourceTable?: string; sourceId?: string; waitMs?: number; facts?: SiteFacts | null },
 ): Promise<AuditOutcome> {
   const viaApi = async (): Promise<AuditOutcome> => {
-    const result = await runWebsiteAudit(opts.url);
+    const result = await runWebsiteAudit(opts.url, { facts: opts.facts });
     return result.ok
       ? { kind: 'report', url: result.url, report: result.report, via: 'api' }
       : { kind: 'error', status: result.status, error: result.error };

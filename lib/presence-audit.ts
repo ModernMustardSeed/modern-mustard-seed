@@ -28,6 +28,8 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { parseSiteFacts, type SiteFacts } from '@/lib/site-facts';
+import { ensureSiteFacts } from '@/lib/site-facts-store';
 import type { WebsiteAuditReport } from '@/lib/website-audit';
 import { auditPreferringWorker } from '@/lib/audit-queue';
 import { SITE } from '@/lib/seo';
@@ -135,6 +137,16 @@ export type PresenceInput = {
   trade: string | null;
   /** Where the listing facts came from, for the provenance footer. */
   source_urls: string[] | null;
+  /**
+   * Did anyone actually read a Google listing for this business? False when
+   * the lead was typed in by hand or imported from a walk-in list and never
+   * enriched from Maps. The profile and reviews pillars are WITHHELD then, and
+   * nothing about the listing is asserted, because "no address on the profile"
+   * about a profile nobody opened is not a finding. It is a lie with a score.
+   */
+  listing_seen: boolean;
+  /** Their own website, read live: address, hours, email, phone, booking. */
+  site_facts: SiteFacts | null;
 };
 
 /* ──────────────────────────── the reviews pillar ────────────────────────── */
@@ -161,7 +173,9 @@ export function scoreReviews(input: PresenceInput): Pillar {
       label: PILLAR_LABELS.reviews,
       score: 0,
       letter: 'F',
-      verdict: 'We could not find any reviews for you. That is either a profile nobody has claimed or a profile nobody has been asked to review, and both are fixable in a week.',
+      verdict: input.listing_seen
+        ? 'We could not find any reviews for you. That is either a profile nobody has claimed or a profile nobody has been asked to review, and both are fixable in a week.'
+        : 'We did not pull your Google reviews for this audit, so this part is not scored and nothing here counts against you.',
       checks,
       unknown: true,
       weight: PILLAR_WEIGHTS.reviews,
@@ -238,6 +252,18 @@ export function scoreReviews(input: PresenceInput): Pillar {
  * no hours is the single most common reason a business gets skipped at 6pm.
  */
 export function scoreProfile(input: PresenceInput): Pillar {
+  if (!input.listing_seen) {
+    return {
+      key: 'profile',
+      label: PILLAR_LABELS.profile,
+      score: 0,
+      letter: 'F',
+      verdict: 'We did not read your Google Business Profile for this audit, so it is not scored and nothing here counts against you. The website grade below is from your site itself, read live.',
+      checks: [],
+      unknown: true,
+      weight: PILLAR_WEIGHTS.profile,
+    };
+  }
   const hoursCount = input.hours ? Object.keys(input.hours).length : 0;
   const alwaysOpen = Boolean(input.open_24_7);
   const checks: Check[] = [
@@ -414,28 +440,42 @@ export function headlineFor(pillars: Pillar[], business: string): { headline: st
       summary: `${business} has the hard part done. People trust you, and they say so in public. What is missing is the one thing that turns that trust into a booked job at ten at night, which is a page of your own that answers for you.`,
     };
   }
-  if (gap >= 30 && !rev.unknown) {
+  if (gap >= 30 && !rev.unknown && !web.unknown) {
     return {
       headline: 'Your reviews are outrunning your website.',
       summary: `Your reputation scores ${rev.score} and your website scores ${web.score}. That gap is the whole story. People read the reviews, click through, and land somewhere that does not sound like the business those reviews are describing. The fix is not more marketing, it is closing that gap.`,
     };
   }
-  if (web.score >= 80 && rev.score >= 70 && gbp.score >= 80) {
+  if (!web.unknown && !rev.unknown && !gbp.unknown && web.score >= 80 && rev.score >= 70 && gbp.score >= 80) {
     return {
       headline: 'Strong across all three. Now make it answer the phone.',
       summary: `${business} is in the top slice of what we audit. Website, profile and reviews all hold up. The only thing left is the part almost nobody has: something that picks up at eleven at night and turns those searches into booked work while you sleep.`,
     };
   }
-  if (gbp.score < 60) {
+  if (!gbp.unknown && gbp.score < 60) {
     return {
       headline: 'The free stuff is the part that is broken.',
       summary: `Your Google profile scores ${gbp.score}, and everything missing from it costs nothing to fix. That is the good news and the annoying news at once: you are losing calls to a form you have not finished filling in.`,
     };
   }
-  if (web.score < 60) {
+  if (!web.unknown && web.score < 60) {
     return {
       headline: 'You are being judged in eight seconds and losing.',
-      summary: `Your website scores ${web.score}. People decide about a contractor before they ever speak to one, and right now that decision is being made on a page that is not making your case. Your reviews say you do good work. Your site does not say it back.`,
+      summary: rev.unknown
+        ? `Your website scores ${web.score}. People decide about a business before they ever speak to one, and right now that decision is being made on a page that is not making your case.`
+        : `Your website scores ${web.score}. People decide about a business before they ever speak to one, and right now that decision is being made on a page that is not making your case. Your reviews say you do good work. Your site does not say it back.`,
+    };
+  }
+  if (web.unknown && rev.unknown && gbp.unknown) {
+    return {
+      headline: 'We could not read enough to score you yet.',
+      summary: `${business} has not been graded: the website could not be opened and the Google listing was not read. Nothing below is a verdict. Call and we will do it by hand.`,
+    };
+  }
+  if (rev.unknown && gbp.unknown) {
+    return {
+      headline: 'Your website, graded on its own.',
+      summary: `This audit read ${business}'s website live and scored it ${web.score}. The Google profile and reviews were not read this time, so they are not scored and do not count against you.`,
     };
   }
   return {
@@ -453,7 +493,7 @@ export function fixesFor(pillars: Pillar[], report: WebsiteAuditReport | null): 
   const by = Object.fromEntries(pillars.map((p) => [p.key, p])) as Record<PillarKey, Pillar>;
   const out: PresenceFix[] = [];
 
-  for (const c of by.profile.checks.filter((c) => !c.passed)) {
+  for (const c of (by.profile.unknown ? [] : by.profile.checks).filter((c) => !c.passed)) {
     out.push({
       title: c.label.replace(/^You have a/, 'Claim your'),
       why: c.detail,
@@ -493,7 +533,9 @@ export function fixesFor(pillars: Pillar[], report: WebsiteAuditReport | null): 
  */
 export function provenanceFor(input: PresenceInput): { label: string; value: string; source: string; sourceUrl?: string | null }[] {
   const listingUrl = (input.source_urls ?? []).find((u) => /google|maps/i.test(u)) ?? null;
-  const listing = { source: 'your public Google Business Profile', sourceUrl: listingUrl };
+  // A listing nobody opened cannot be cited. Facts on a hand-entered lead are
+  // "on file", and the receipt says so.
+  const listing = input.listing_seen ? { source: 'your public Google Business Profile', sourceUrl: listingUrl } : { source: 'on file for your business', sourceUrl: null };
   const rows: { label: string; value: string; source: string; sourceUrl?: string | null }[] = [];
   if (input.rating !== null) rows.push({ label: 'Star rating', value: `${input.rating}`, ...listing });
   if (input.review_count !== null) rows.push({ label: 'Review count', value: input.review_count.toLocaleString('en-US'), ...listing });
@@ -511,6 +553,18 @@ export function provenanceFor(input: PresenceInput): { label: string; value: str
   if (input.address) rows.push({ label: 'Address', value: input.address, ...listing });
   const hoursCount = input.hours ? Object.keys(input.hours).length : 0;
   if (hoursCount) rows.push({ label: 'Published hours', value: `${hoursCount} days listed`, ...listing });
+  // What their own site says, read live, page by page. Only what was FOUND is
+  // printed: an absence is never asserted here, because the reader can miss a
+  // line in an image or a widget and "not found" must never read as "not there".
+  const f = input.site_facts;
+  if (f?.reachable) {
+    const site = { source: 'read live from your website', sourceUrl: f.url };
+    if (f.address) rows.push({ label: 'Address on your site', value: f.address, ...site });
+    if (f.hours_days) rows.push({ label: 'Hours on your site', value: `${f.hours_days} days listed`, ...site });
+    if (f.email) rows.push({ label: 'Email on your site', value: f.email, ...site });
+    if (f.phone && f.phone !== input.phone) rows.push({ label: 'Phone on your site', value: f.phone, ...site });
+    if (f.booking) rows.push({ label: 'Online booking on your site', value: /^https?:/i.test(f.booking) ? 'yes, linked' : `"${f.booking}"`, ...site });
+  }
   return rows;
 }
 
@@ -558,7 +612,20 @@ export function inputFromLead(lead: Record<string, unknown>): PresenceInput {
     emergency_service: (lead.emergency_service as boolean | null) ?? null,
     trade: (lead.trade as string | null) ?? null,
     source_urls: (lead.source_urls as string[] | null) ?? null,
+    listing_seen: listingSeen(lead),
+    site_facts: parseSiteFacts(lead.notes as string | null),
   };
+}
+
+/**
+ * Was a Google listing ever read for this lead? Maps-harvested rows carry a
+ * rating or a review count or a Maps URL; a walk-in import or a hand-typed lead
+ * carries none of them. Hours alone do not count: they are typed by hand too.
+ */
+export function listingSeen(lead: Record<string, unknown>): boolean {
+  if (typeof lead.rating === 'number' || typeof lead.review_count === 'number') return true;
+  const urls = (lead.source_urls as string[] | null) ?? [];
+  return urls.some((u) => /google\.|maps\./i.test(u));
 }
 
 /**
@@ -580,7 +647,11 @@ export async function runPresenceAudit(
   const leadId = String(lead.id ?? '');
   if (!leadId) return { ok: false, status: 400, error: 'No lead id.' };
 
+  // Their own website, read live, before anything is asserted about it. Stored
+  // on the lead so the hub, the brief and the sheet all print the same facts.
+  const facts = await ensureSiteFacts(sb, lead as { id: string; website?: string | null; notes?: string | null; email?: string | null });
   const input = inputFromLead(lead);
+  input.site_facts = facts;
 
   const cachedAt = lead.audit_at ? new Date(String(lead.audit_at)).getTime() : 0;
   const cacheFresh = !opts.force && cachedAt > 0 && Date.now() - cachedAt < 14 * 24 * 60 * 60 * 1000;
@@ -592,6 +663,7 @@ export async function runPresenceAudit(
       sourceTable: 'outbound_leads',
       sourceId: leadId,
       waitMs: opts.waitMs ?? 85_000,
+      facts,
     });
     if (outcome.kind === 'report') {
       report = outcome.report;
