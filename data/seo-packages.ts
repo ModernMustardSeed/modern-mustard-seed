@@ -2,7 +2,7 @@
  * SEO + GBP PACKAGES. Productized local visibility offers.
  *
  * Price lives here in cents, and nowhere else. Checkout builds inline
- * price_data from these values (same pattern as sidekick.ts).
+ * price_data from these values (same pattern as demo agent.ts).
  *
  * Two tiers:
  * - Basic SEO Setup: one-time foundation work ($97)

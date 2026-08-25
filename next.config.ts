@@ -90,6 +90,11 @@ const config: NextConfig = {
       // (notably ?ref=CODE, which pays the partner) passes through untouched.
       { source: '/sidekick', destination: '/voice-agents/forge', permanent: true },
       { source: '/sidekick/:path*', destination: '/voice-agents/forge/:path*', permanent: true },
+      // The forge's own API moved with it (/api/sidekick -> /api/demo-agent,
+      // 2026-08-25). A browser tab left open across the deploy would POST to
+      // the old path mid-forge and get a 404 with their details already typed
+      // in. 308 preserves the method and the body, so the forge just works.
+      { source: '/api/sidekick/:path*', destination: '/api/demo-agent/:path*', permanent: true },
       // The Text Line (/sms) was retired 2026-08-01 (Sarah: we do not offer
       // texting anywhere). The URL is indexed and was filed with carriers, so
       // it redirects to the contact page instead of 404ing.

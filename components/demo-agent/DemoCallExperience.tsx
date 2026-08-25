@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { ForgedCall } from '@/lib/demo-agent';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
-import { sidekickVoice, genderFromVoiceId, type VoiceGender } from '@/lib/sidekick-voice';
-import VoiceGenderToggle from '@/components/sidekick/VoiceGenderToggle';
+import { demoVoice, genderFromVoiceId, type VoiceGender } from '@/lib/demo-voice';
+import VoiceGenderToggle from '@/components/demo-agent/VoiceGenderToggle';
 import { possessive } from '@/lib/business-name';
 import Link from 'next/link';
 
@@ -89,7 +89,7 @@ export default function DemoCallExperience({
         silenceTimeoutSeconds: call.silenceTimeoutSeconds,
         maxDurationSeconds: call.maxDurationSeconds,
         metadata: call.metadata,
-        voice: sidekickVoice(gender),
+        voice: demoVoice(gender),
       } as never);
     } catch (err) {
       setState('error');

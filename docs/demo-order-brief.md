@@ -32,8 +32,8 @@ within a week.
    price_data lines (monthly recurring + one-time setup) — mirror
    app/api/admin/proposals/[id]/subscription/route.ts:40-60. metadata
    kind='demo-order' + ref (mms_ref cookie, else lead's rep affiliate code),
-   mirrored into subscription_data.metadata (sidekick pattern
-   app/api/sidekick/checkout/route.ts:60-80). success →
+   mirrored into subscription_data.metadata (demo agent pattern
+   app/api/demo-agent/checkout/route.ts:60-80). success →
    /demo/order/[hubId]/thanks?session_id=..., cancel → hub url.
 4. Webhook `app/api/store/webhook/route.ts`: add kind='demo-order' branch in
    checkout.session.completed (dispatch at line ~1405): insert demo_orders
@@ -53,7 +53,7 @@ within a week.
    bundle auto-upgrade when all three picked, checkout POST → Stripe redirect,
    quiet /book link. Drop into: DemoHub close (replace static book block,
    components/demo/DemoHub.tsx:242-260), SiteDemoShell chip (90-97), OsDemoApp
-   pill (210-218), sidekick DemoCallExperience (164-167).
+   pill (210-218), demo agent DemoCallExperience (164-167).
 7. Hub page query: widen app/demo/hub/[hubId]/page.tsx:39-43 select to include
    id, phone, email.
 8. Design: pop-art MMS tokens per brand file; on dark surfaces use the

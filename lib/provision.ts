@@ -59,7 +59,7 @@ export function productSpecFor(kind: string, session: Stripe.Checkout.Session): 
         homeUrl: '/chief/hq',
         detail: 'Live within 7 days. Your command center is open right now.',
       };
-    case 'sidekick':
+    case 'demo-agent':
       return {
         kind,
         label: 'Your Voice Agent',

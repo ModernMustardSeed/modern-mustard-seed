@@ -1,6 +1,6 @@
 /**
  * GEO DESK state on the existing app_state k/v table (same spine as
- * sidekick/pictures/press).
+ * demo agent / pictures/press).
  *
  * Keys:
  *   geo:pack:<sessionId>   the generated fix pack for a paid Stripe session

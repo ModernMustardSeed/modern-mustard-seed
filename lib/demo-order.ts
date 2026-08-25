@@ -26,7 +26,7 @@
  * below still holds. All amounts in cents.
  */
 
-import { sidekickTiers } from '@/data/sidekick';
+import { demoAgentTiers } from '@/data/demo-agent';
 
 export type DemoProductKey = 'voice' | 'site' | 'os';
 
@@ -50,7 +50,7 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
     setupCents: 39700,
     monthlyCents: 39700,
     blurb: 'The voice that answered your demo, answering your calls, 24/7.',
-    finePrint: `${sidekickTiers[0].minutesCap.toLocaleString()} answered minutes a month, then message-taking mode.`,
+    finePrint: `${demoAgentTiers[0].minutesCap.toLocaleString()} answered minutes a month, then message-taking mode.`,
   },
   site: {
     key: 'site',

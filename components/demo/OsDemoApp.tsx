@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { ForgedCall } from '@/lib/demo-agent';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
 import { OS_AUTOMATIONS } from '@/data/demo-os';
 import type { OsCustomer } from '@/data/demo-os';

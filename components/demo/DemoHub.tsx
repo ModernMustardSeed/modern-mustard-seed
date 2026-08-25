@@ -40,7 +40,7 @@ function useTyped(text: string, speed = 28): { shown: string; typing: boolean } 
 
 /**
  * The encore: their own agent calls THEM. Rides the existing public
- * /api/sidekick/forge phone path, which enforces one ring per run, one ring
+ * /api/demo-agent/forge phone path, which enforces one ring per run, one ring
  * per number, and the Vapi billing kill switch. User-initiated, consent on
  * the page, US numbers only.
  */
@@ -52,7 +52,7 @@ function EncoreRing({ runId, business }: { runId: string; business: string }) {
     if (state === 'calling' || state === 'done') return;
     setState('calling');
     try {
-      const res = await fetch('/api/sidekick/forge', {
+      const res = await fetch('/api/demo-agent/forge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode: 'phone', runId, phone }),
@@ -167,7 +167,7 @@ export default function DemoHub({
   /** The audit's own one-line verdict, quoted on the door. */
   auditHeadline?: string | null;
   /** The lead's forged voice run. Powers the encore: their agent calls THEM,
-   *  through the existing /api/sidekick/forge phone path with all its caps. */
+   *  through the existing /api/demo-agent/forge phone path with all its caps. */
   demoRunId?: string | null;
   /** Appointments the forged agent booked on a demo call. Usually empty;
    *  the card renders nothing at all when it is, on purpose. */

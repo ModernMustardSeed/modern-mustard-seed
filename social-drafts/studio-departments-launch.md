@@ -1,10 +1,10 @@
 # Studio departments launch pack (DRAFTS — Sarah approves before anything posts or sends)
 
-Landings (append per-platform UTM: ?utm_source={platform}&utm_medium=social&utm_campaign={sidekick|pictures|press}):
-- https://modernmustardseed.com/voice-agents/forge (drafts already in sidekick-launch.md)
+Landings (append per-platform UTM: ?utm_source={platform}&utm_medium=social&utm_campaign={demo agent|pictures|press}):
+- https://modernmustardseed.com/voice-agents/forge (drafts already in demo-agent-launch.md)
 - https://modernmustardseed.com/pictures
 - https://modernmustardseed.com/press
-Video available NOW (no fal needed): the caption cut of The Graduate at /ads/sidekick-{16x9,9x16,4x5}.mp4. Press/Pictures posts work as image posts (press sample proofs at /press/sample-*.png; pictures OG card).
+Video available NOW (no fal needed): the caption cut of The Graduate at /ads/demo-agent-{16x9,9x16,4x5}.mp4. Press/Pictures posts work as image posts (press sample proofs at /press/sample-*.png; pictures OG card).
 
 ---
 

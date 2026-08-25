@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       mode: 'subscription',
       payment_method_types: ['card'],
       // Inline price_data built from data/chief.ts. The setup fee is a
-      // non-recurring line, so it rides invoice #1 only (same shape as sidekick).
+      // non-recurring line, so it rides invoice #1 only (same shape as demo agent).
       line_items: [
         {
           quantity: 1,

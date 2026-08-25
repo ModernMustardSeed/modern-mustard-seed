@@ -24,7 +24,7 @@
  *
  * ⚠️ THE VOICE IS DELIBERATELY NOT OVERRIDDEN. Leaving `voice` off the
  * overrides means the call uses the base assistant's own 11labs voice, which is
- * the point. Passing sidekickVoice() here would swap him to a Vapi-native voice
+ * the point. Passing demoVoice() here would swap him to a Vapi-native voice
  * and the ad would feature a man who does not answer the phone.
  *
  * ⚠️ 11LABS QUOTA IS TIGHT (memory: mms-after-hours-ad). Every take spends real
@@ -120,7 +120,7 @@ const TURNS = [
  * the words simply never reached him.
  *
  * nova-3 keyterm boosting is this repo's existing answer to exactly that
- * failure (demoTranscriber in lib/sidekick.ts): the words a call is guaranteed
+ * failure (demoTranscriber in lib/demo-agent.ts): the words a call is guaranteed
  * to contain are the ones a general model mangles without help.
  */
 const TRANSCRIBER = {

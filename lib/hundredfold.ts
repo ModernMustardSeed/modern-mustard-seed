@@ -7,7 +7,7 @@
  * agents and automations that execute the plan, and we coach them through four
  * gates over twelve months.
  *
- * ⚠️ PRICE LIVES HERE AND NOWHERE ELSE, in cents. Same law as data/sidekick.ts:
+ * ⚠️ PRICE LIVES HERE AND NOWHERE ELSE, in cents. Same law as data/demo-agent.ts:
  * the landing page, the checkout, the portal, the emails, and the offer stack
  * all derive from these constants. A price typed as a string anywhere else is a
  * bug waiting for a customer to find it.

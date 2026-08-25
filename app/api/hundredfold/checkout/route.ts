@@ -13,7 +13,7 @@ export const maxDuration = 30;
  * Subscription mode with the setup fee as a one-time line, so it rides invoice
  * one only. Amounts come from lib/hundredfold.ts in cents, never from a Stripe
  * price id, so the page and the charge cannot drift apart. Same shape as the
- * Chief and Sidekick checkouts.
+ * Chief and Demo agent checkouts.
  *
  * No trial. The interview is free and the roadmap is free; those are the trial,
  * and they are worth more than a fortnight of unpaid access.

@@ -43,7 +43,7 @@ const { sendStep } = await import('@/lib/factory/campaigns');
 const { deployedBlueprint, validateBlueprint } = await import('@/lib/factory/blueprint');
 const { recordUsage } = await import('@/lib/factory/usage');
 const { audit } = await import('@/lib/factory/audit-log');
-const { forgeCall, ringDemoCall, toE164 } = await import('@/lib/sidekick');
+const { forgeCall, ringDemoCall, toE164 } = await import('@/lib/demo-agent');
 const { refreshAllHealth } = await import('@/lib/factory/health');
 
 type Blueprint = Awaited<ReturnType<typeof deployedBlueprint>> extends null ? never : Record<string, unknown>;

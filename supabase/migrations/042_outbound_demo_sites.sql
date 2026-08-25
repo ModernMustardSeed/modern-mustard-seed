@@ -6,7 +6,7 @@
 -- (flat subscription cost, never the metered API) to build a complete
 -- single-file demo website for the lead, stores the HTML back on the row, and
 -- the public page /demo/site/<id> serves it with the lead's forged AI
--- receptionist (the Sidekick voice demo) overlaid as a live call widget.
+-- receptionist (the demo agent voice demo) overlaid as a live call widget.
 -- Service-role only, RLS enabled with no policies, like the rest of outbound_*.
 
 create table if not exists public.outbound_demo_sites (

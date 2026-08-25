@@ -20,7 +20,7 @@ export const OUTBOUND_REPLY_TO = 'sarah@modernmustardseed.com';
  * expect one-click unsubscribe, and this rides sarah@modernmustardseed.com, the
  * same domain real client mail depends on.
  *
- * The drip paths (lib/sidekick-drip.ts, lib/demo-drip.ts) already did this
+ * The drip paths (lib/demo-agent-drip.ts, lib/demo-drip.ts) already did this
  * correctly. This just brings the cockpit path in line.
  *
  * ⚠️ MMS_POSTAL_ADDRESS is NOT SET. CAN-SPAM wants a street address or a

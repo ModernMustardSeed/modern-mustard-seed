@@ -43,7 +43,7 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
     anchor: 'tour-signs',
     text:
       'Now watch the roadside. Every sign out here is something real that you can walk into today. ' +
-      'The Talking Website, voice sidekicks, commercials, and free tools you can try before you spend a single dollar.',
+      'The Talking Website, voice demo agents, commercials, and free tools you can try before you spend a single dollar.',
   },
   {
     id: 'square',

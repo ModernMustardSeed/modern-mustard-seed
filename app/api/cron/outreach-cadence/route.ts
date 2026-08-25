@@ -33,7 +33,7 @@ export const maxDuration = 60;
  *     spam reputation of cold outreach.
  *
  * The warm follow-up that DOES run lives in lib/demo-drip.ts (demo-station
- * forgers) and lib/sidekick-drip.ts (sidekick forgers). Those are people who
+ * forgers) and lib/demo-agent-drip.ts (demo agent forgers). Those are people who
  * raised their hand, so they send from the main domain by design.
  */
 function authed(req: Request): boolean {

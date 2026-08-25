@@ -5,7 +5,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { SIDEKICK, sidekickBoundaries, sidekickFaq } from '@/data/sidekick';
+import { DEMO_AGENT, demoAgentBoundaries, demoAgentFaq } from '@/data/demo-agent';
 import { chiefTiers, chiefUsd } from '@/data/chief';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 
@@ -118,7 +118,7 @@ export function Boundaries() {
           <div className="rounded-2xl border-2 border-[#F5B700] bg-[#161616] p-7">
             <h3 className="font-mono text-xs uppercase tracking-[0.28em] font-bold text-[#F5B700] mb-5">He handles</h3>
             <ul className="space-y-3">
-              {sidekickBoundaries.handles.map((line) => (
+              {demoAgentBoundaries.handles.map((line) => (
                 <li key={line} className="flex gap-3 font-body text-[14.5px] text-[#FBF6EA]/85 leading-snug">
                   <span className="text-[#F5B700] font-black" aria-hidden="true">✓</span>
                   {line}
@@ -129,7 +129,7 @@ export function Boundaries() {
           <div className="rounded-2xl border-2 border-[#FBF6EA]/25 bg-[#161616] p-7">
             <h3 className="font-mono text-xs uppercase tracking-[0.28em] font-bold text-[#FBF6EA]/60 mb-5">He routes to you (on purpose)</h3>
             <ul className="space-y-3">
-              {sidekickBoundaries.routes.map((line) => (
+              {demoAgentBoundaries.routes.map((line) => (
                 <li key={line} className="flex gap-3 font-body text-[14.5px] text-[#FBF6EA]/70 leading-snug">
                   <span className="text-[#FBF6EA]/45 font-black" aria-hidden="true">→</span>
                   {line}
@@ -152,7 +152,7 @@ export function Faq() {
           Fair questions, straight answers.
         </h2>
         <div className="mt-10 space-y-3">
-          {sidekickFaq.map((f) => (
+          {demoAgentFaq.map((f) => (
             <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616] open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
               <summary className="cursor-pointer list-none px-5 py-4 font-sans font-bold text-[15px] text-[#161616] flex items-center justify-between gap-4">
                 {f.q}
@@ -189,7 +189,7 @@ export function MeetTheTrainer() {
           <p className="font-body text-[#161616]/70 leading-relaxed mt-4">
             He answers Modern Mustard Seed&apos;s own phones, books Sarah&apos;s calendar, and has taken more curveballs than any receptionist in Montana.
             Don&apos;t take our word for it. Interview the trainer himself, day or night, at{' '}
-            <a href="tel:+14063121223" className="font-bold text-[#1E50C8] underline underline-offset-2 whitespace-nowrap">{SIDEKICK.phoneLine}</a>.
+            <a href="tel:+14063121223" className="font-bold text-[#1E50C8] underline underline-offset-2 whitespace-nowrap">{DEMO_AGENT.phoneLine}</a>.
           </p>
           <p className="font-body text-sm text-[#161616]/70 mt-3">
             Yes, that is a real number. Yes, he answers. Ask him anything, including what his trainees can do for you.

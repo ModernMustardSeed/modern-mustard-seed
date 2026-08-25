@@ -138,7 +138,7 @@ export async function compose({ workDir, raw, scoreMs, tracks, bed, outMp4, outP
  *
  * The lead was 30s while the greeting ran ~20 seconds ("I'm not a person, I'm
  * a voice agent, a free demo Sarah built for you..."). That greeting was cut to
- * about nine seconds on 2026-08-04 (lib/sidekick.ts, sidekickFirstMessage:
+ * about nine seconds on 2026-08-04 (lib/demo-agent.ts, demoAgentFirstMessage:
  * Sarah wanted the waiting gone and the word "free" out of the film), so the
  * lead came down with it: ~9s connect + ~9s greeting + margin. IF THE GREETING
  * IS EVER LENGTHENED AGAIN, LENGTHEN THIS TO MATCH or the caller talks over it

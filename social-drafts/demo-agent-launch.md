@@ -1,8 +1,8 @@
-# SIDEKICK FORGE launch posts (DRAFTS — Sarah approves before anything posts)
+# DEMO_AGENT FORGE launch posts (DRAFTS — Sarah approves before anything posts)
 
 Landing: https://modernmustardseed.com/voice-agents/forge
-UTM for links: ?utm_source={platform}&utm_medium=social&utm_campaign=sidekick
-Video: sidekick-9x16.mp4 (Reels/Shorts/TikTok-format) or sidekick-16x9.mp4 (X/LinkedIn/YouTube)
+UTM for links: ?utm_source={platform}&utm_medium=social&utm_campaign=demo agent
+Video: demo agent-9x16.mp4 (Reels/Shorts/TikTok-format) or demo agent-16x9.mp4 (X/LinkedIn/YouTube)
 
 ---
 
