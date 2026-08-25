@@ -10,7 +10,7 @@ import { byId, isRecurring, isHourly, formatMoney as money, TERMS, type Service 
  * Pop-art system: midnight header (dark is reserved for the proposal doc header
  * by brand law), gold halftone, Playfair display for names and money, JetBrains
  * mono eyebrows, DM Sans body, hard sticker shadows. The "Already built for
- * you" showcase renders the forged demos as clickable gold cards, because the
+ * you" showcase renders the built demos as clickable gold cards, because the
  * demo IS the pitch.
  */
 
@@ -23,7 +23,7 @@ export type ProposalDocProps = {
   headlineFor?: string | null;
   dateStr?: string | null;
   siteUrl?: string | null;
-  /** Live demo/site links forged for this prospect. Rendered as the clickable showcase. */
+  /** Live demo/site links built for this prospect. Rendered as the clickable showcase. */
   demoLinks?: ProposalDemoLink[] | null;
   prose: { intro?: string; situation?: string; recommendation?: string; close?: string };
   situationFallback?: string | null;
@@ -62,7 +62,7 @@ function canEmbed(url: string): boolean {
   return /modernmustardseed\.com\/demo\//i.test(url) || /localhost:\d+\/demo\//i.test(url);
 }
 
-/** A live, scrolling preview of the forged site inside a drawn browser frame.
+/** A live, scrolling preview of the built site inside a drawn browser frame.
  * The iframe renders at 2x container size scaled to 0.5, so the demo lays out
  * like a desktop page at any doc width, phones included. Click-through overlay
  * carries the whole frame to the real thing. */
@@ -211,7 +211,7 @@ export default function ProposalDoc({
 
         {/* The showcase: work that already exists, live, clickable. This sells
             harder than any paragraph, so it sits above the situation. Our own
-            forged demos render as LIVE embedded previews (the prospect sees
+            built demos render as LIVE embedded previews (the prospect sees
             their new site breathing inside the proposal); everything else gets
             a gold card. */}
         {showcase.length > 0 && (() => {

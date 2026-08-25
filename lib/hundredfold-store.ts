@@ -10,7 +10,7 @@
 import { getSupabase } from './supabase';
 import { HUNDREDFOLD, type MemberStatus, type SystemStatus } from './hundredfold';
 import type { RoadmapReport } from './roadmap-shape';
-import type { ForgedOffer, PlannedGate, PlannedSystem } from './hundredfold-synthesis';
+import type { BuiltOffer, PlannedGate, PlannedSystem } from './hundredfold-synthesis';
 import type { InterviewChannel, Turn } from './hundredfold-interview';
 
 export type Member = {
@@ -23,7 +23,7 @@ export type Member = {
   status: MemberStatus;
   roadmap_slug: string | null;
   deep_roadmap: RoadmapReport | null;
-  offer: ForgedOffer | null;
+  offer: BuiltOffer | null;
   setup_cents: number | null;
   monthly_cents: number | null;
   price_locked_until: string | null;
@@ -329,7 +329,7 @@ export async function completeInterview(
 /* -------------------------------------------------------------------------- */
 
 /**
- * Write the synthesis onto the member: the deep roadmap, the forged offer, the
+ * Write the synthesis onto the member: the deep roadmap, the built offer, the
  * systems we will build, and the gates they will clear.
  *
  * Gates and systems are REPLACED wholesale, but only the not-yet-done gates:
@@ -340,7 +340,7 @@ export async function saveSynthesis(
   memberId: string,
   input: {
     roadmap: RoadmapReport;
-    offer: ForgedOffer;
+    offer: BuiltOffer;
     systems: PlannedSystem[];
     gates: PlannedGate[];
   }

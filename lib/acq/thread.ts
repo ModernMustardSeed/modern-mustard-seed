@@ -145,7 +145,7 @@ function decodeEntities(s: string): string {
  *   the buttons      every CTA is a tracked redirect through /api/acq/click,
  *                    which records a click and flips the lead to `engaged`. An
  *                    iframe with sandbox="" blocks scripts but still follows a
- *                    link, so one stray click inside a preview would forge
+ *                    link, so one stray click inside a preview would build
  *                    engagement on a prospect nobody has heard from.
  *
  * So the pixel comes out and every anchor loses its href, keeping its text and

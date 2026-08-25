@@ -10,7 +10,7 @@
  *   npx tsx scripts/audit-worker.mts --once     # drain the queue and exit
  *   npx tsx scripts/audit-worker.mts --engine api   # emergency, back on the meter
  *
- * Runs alongside the demo-site forge worker. They compete for the same RAM and
+ * Runs alongside the demo-site build worker. They compete for the same RAM and
  * the same subscription, which is why both hold a memory floor and why this one
  * audits strictly one site at a time.
  *
@@ -59,7 +59,7 @@ const log = (...a: unknown[]) => console.log(new Date().toISOString().slice(11, 
  * The heartbeat is what lets a Vercel route decide whether to wait for this
  * worker or fall straight back to the metered API. Without it the cockpit's
  * audit button would hang for ninety seconds every time the machine is asleep,
- * which is exactly the silent-stall failure the forge shipped with and had to
+ * which is exactly the silent-stall failure the build shipped with and had to
  * fix later. Written on EVERY poll, including idle ones.
  */
 async function heartbeat(state: string, extra: Record<string, unknown> = {}) {

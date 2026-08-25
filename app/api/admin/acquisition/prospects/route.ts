@@ -18,7 +18,7 @@ const LIST_COLS =
   'call_stage,call_attempts,last_call_at,demo_status,demo_emailed_at,checkout_sent_at,meeting_status,' +
   'payment_status,client_status,unsubscribed_at,bounced,is_test,duplicate_of,needs_human,source,' +
   'open_24_7,emergency_service,created_at,updated_at,imported_at,last_researched_at,assigned_to,reply_at,' +
-  // What is forged for them, so a row can build and send without opening it.
+  // What is built for them, so a row can build and send without opening it.
   'demo_url,site_demo_url,site_demo_status,os_demo_url,hub_demo_url,suite_film_status';
 
 /** The CRM list: search, filter, sort, page. */
@@ -73,7 +73,7 @@ export async function GET(req: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // The suite state is computed HERE, not in the browser: suiteState lives
-  // beside the forge and pulls in node crypto through it, and the free-with-both
+  // beside the build and pulls in node crypto through it, and the free-with-both
   // command center rule must be decided in exactly one place or two screens will
   // eventually disagree about what a prospect can see.
   const rows = ((data ?? []) as unknown as AcqProspect[]).map((r) => ({ ...r, suite: suiteState(r) }));

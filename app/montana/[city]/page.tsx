@@ -281,7 +281,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               href="/demos"
               className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              Forge My Demos
+              Build My Demos
             </Link>
             <a
               href={`tel:${SITE.phoneE164}`}

@@ -6,7 +6,7 @@
  * how it suggests to call mr mustard, as it can answer any questions, and can
  * book a call with us."*
  *
- * ⚠️ WRITTEN BY HAND, unlike a forged client site.
+ * ⚠️ WRITTEN BY HAND, unlike a built client site.
  *
  * `lib/site-tour.mjs` extracts a client's tour from their own markup because we
  * must never put a sentence in a stranger's mouth. That constraint does not
@@ -37,7 +37,7 @@ export const MMS_TOUR: MmsTourBeat[] = [
     anchor: 'tour-flagship',
     text:
       'Start with the flagship. A voice agent, a website, and the brain that runs them. ' +
-      'Tell us about your business and we forge all three before you pay anything, in about a minute. Keep whatever you love.',
+      'Tell us about your business and we build all three before you pay anything, in about a minute. Keep whatever you love.',
   },
   {
     id: 'build',

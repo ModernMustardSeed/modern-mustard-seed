@@ -21,7 +21,7 @@ import { audit } from './audit-log';
  *
  * WHAT PROVISIONING DOES NOT DO. It does not create a Factory and it does not
  * activate anything. It creates the tenant, seats the buyer, applies the plan
- * limits, and opens the Forge. A Factory that appeared fully built the instant
+ * limits, and opens the Build. A Factory that appeared fully built the instant
  * a card cleared would be a Factory nobody reviewed.
  */
 

@@ -13,7 +13,7 @@
  *   SMOKE (default, works today against prod)
  *     Every guard is exercised over real HTTP, and the happy path is driven
  *     through the database rather than the signup route, so NOTHING IS EMAILED
- *     and no daily forge slot is burned. Catches route 500s, auth regressions,
+ *     and no daily build slot is burned. Catches route 500s, auth regressions,
  *     schema drift, a guard that stopped guarding, a dead worker, bad copy.
  *
  *   FULL (needs a preview deployment on Stripe TEST keys)
@@ -158,7 +158,7 @@ async function run() {
 
   /* ── 3. THE HAPPY PATH, THROUGH THE DATABASE ──────────────────────────
      Deliberately NOT through /api/demo-station: that route emails the owner
-     and burns a slot from the global daily forge cap. What matters here is
+     and burns a slot from the global daily build cap. What matters here is
      that the rows the funnel depends on can still be written and read. */
   const { data: lead, error: leadErr } = await sb
     .from('outbound_leads')
@@ -202,7 +202,7 @@ async function run() {
   /* ── 4. THE MACHINE BEHIND IT IS ALIVE ────────────────────────────── */
   const { data: health } = await sb.from('app_state').select('value, updated_at').eq('key', 'forge_worker_health').maybeSingle();
   const ageMin = health ? (Date.now() - new Date(health.updated_at).getTime()) / 60000 : Infinity;
-  check('the forge worker has a fresh heartbeat', ageMin < 5, `${Number.isFinite(ageMin) ? ageMin.toFixed(1) : '∞'}m old, state=${health?.value?.state ?? 'unknown'}`);
+  check('the build worker has a fresh heartbeat', ageMin < 5, `${Number.isFinite(ageMin) ? ageMin.toFixed(1) : '∞'}m old, state=${health?.value?.state ?? 'unknown'}`);
 
   const { count: stuck } = await sb
     .from('outbound_demo_sites')

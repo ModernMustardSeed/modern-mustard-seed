@@ -32,7 +32,7 @@ export function validateBlueprint(input: unknown): ValidateResult {
 
 /**
  * The minimum a blueprint needs to exist at all. Used as the floor under a
- * template so a half-answered Forge still produces a document that validates
+ * template so a half-answered Build still produces a document that validates
  * and can be edited, rather than an error the operator has to decode.
  */
 export function emptyBlueprint(businessName: string): BlueprintInput {
@@ -61,7 +61,7 @@ export function emptyBlueprint(businessName: string): BlueprintInput {
 }
 
 /**
- * Build a starting blueprint: template chain first, then whatever the Forge or
+ * Build a starting blueprint: template chain first, then whatever the Build or
  * an operator learned about this specific business layered on top. Template
  * supplies structure, the overlay supplies facts, and facts always win.
  */

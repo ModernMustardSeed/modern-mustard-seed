@@ -19,7 +19,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'HUNDREDFOLD. The Scaling Program That Builds The Machine With You.',
   description:
-    'Mr. Mustard interviews you, we forge your offer, we build the AI agents that run your plan, and a coach that knows your plan answers you at any hour. $5,000 to start, then $2,500 a month, month to month.',
+    'Mr. Mustard interviews you, we build your offer, we build the AI agents that run your plan, and a coach that knows your plan answers you at any hour. $5,000 to start, then $2,500 a month, month to month.',
   path: '/hundredfold',
 });
 
@@ -30,11 +30,11 @@ const RED = '#C4160B';
 const FAQS = [
   {
     q: 'What is HUNDREDFOLD?',
-    a: 'A twelve month scaling program for a business that already works and is capped. It has four parts that most programs only have one of. Mr. Mustard interviews you with about thirty questions and builds your roadmap from your answers. We forge the offer you should actually be selling, priced and guaranteed and written. We build the AI agents and automations that execute the plan inside your business, in your accounts. And your own coach lives in your portal, having read your whole plan, so you get the answer the moment you need it instead of saving questions for a call. You learn to run the machine instead of just owning one.',
+    a: 'A twelve month scaling program for a business that already works and is capped. It has four parts that most programs only have one of. Mr. Mustard interviews you with about thirty questions and builds your roadmap from your answers. We build the offer you should actually be selling, priced and guaranteed and written. We build the AI agents and automations that execute the plan inside your business, in your accounts. And your own coach lives in your portal, having read your whole plan, so you get the answer the moment you need it instead of saving questions for a call. You learn to run the machine instead of just owning one.',
   },
   {
     q: 'What does it cost?',
-    a: 'Five thousand dollars to start, then two thousand five hundred a month, month to month. The start covers your interview, your roadmap, your forged offer, and the first system we build and put live. The monthly covers your coach, the ongoing build queue, the arsenal you build from, and running your agents. There is no free trial, because the interview and the roadmap are free and they are worth more than a fortnight of access. Cancel with thirty days notice any month and everything we built stays in your accounts.',
+    a: 'Five thousand dollars to start, then two thousand five hundred a month, month to month. The start covers your interview, your roadmap, your built offer, and the first system we build and put live. The monthly covers your coach, the ongoing build queue, the arsenal you build from, and running your agents. There is no free trial, because the interview and the roadmap are free and they are worth more than a fortnight of access. Cancel with thirty days notice any month and everything we built stays in your accounts.',
   },
   {
     q: 'How is this different from a coaching program or a mastermind?',
@@ -87,7 +87,7 @@ export default function HundredfoldPage() {
             '@id': `${SITE.url}/hundredfold#service`,
             name: 'HUNDREDFOLD',
             description:
-              'A twelve month scaling program: a thirty question coaching interview, a forged offer, custom AI agents and automations built into the business, a 24/7 coach that knows the plan, and four numeric gates.',
+              'A twelve month scaling program: a thirty question coaching interview, a built offer, custom AI agents and automations built into the business, a 24/7 coach that knows the plan, and four numeric gates.',
             provider: { '@id': `${SITE.url}/#organization` },
             serviceType: 'Business scaling program',
             areaServed: 'United States',
@@ -101,7 +101,7 @@ export default function HundredfoldPage() {
           serviceJsonLd({
             name: 'HUNDREDFOLD scaling program',
             description:
-              'Coaching plus custom AI systems: interview, offer forge, agent builds, a 24/7 coach in your own portal, and four gates over twelve months.',
+              'Coaching plus custom AI systems: interview, offer build, agent builds, a 24/7 coach in your own portal, and four gates over twelve months.',
           }),
           faqJsonLd(FAQS),
           breadcrumbJsonLd([
@@ -130,7 +130,7 @@ export default function HundredfoldPage() {
                 We do not hand you a plan. We build the machine that runs it.
               </p>
               <p className="mt-5 text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
-                Mr. Mustard interviews you like a coach who will not take a vague answer. We forge the offer
+                Mr. Mustard interviews you like a coach who will not take a vague answer. We build the offer
                 you should actually be selling. We wire the AI agents that execute your roadmap inside your
                 business. Then your own coach answers you at any hour, against four gates with a number on each.
               </p>

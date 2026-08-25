@@ -114,7 +114,7 @@ export default function OutboundPilots() {
           <div className={`${card} p-10 text-center mb-8`}>
             <p className="font-oswald uppercase text-xl text-[#1a1815]/50">No pilots running</p>
             <p className="font-sans text-sm text-[#1a1815]/55 mt-1.5 max-w-md mx-auto">
-              Free pilots are retired. The <strong>demo</strong> is the free part now: forge their suite in the{' '}
+              Free pilots are retired. The <strong>demo</strong> is the free part now: build their suite in the{' '}
               <Link href="/admin/outbound" className="text-[#b58a2a] font-semibold">cockpit</Link>, send it, and close on setup plus monthly.
               Anything still running below stays here until it converts.
             </p>

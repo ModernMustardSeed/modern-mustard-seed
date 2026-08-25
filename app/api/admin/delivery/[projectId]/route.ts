@@ -158,7 +158,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
     /* ── Start the real site from the demo they actually bought. ── */
     case 'seed': {
       if (project.site_html) return NextResponse.json({ ok: true, seeded: false, note: 'It already has a site.' });
-      if (!project.demo_site_id) return NextResponse.json({ error: 'This project has no forged demo to start from.' }, { status: 400 });
+      if (!project.demo_site_id) return NextResponse.json({ error: 'This project has no built demo to start from.' }, { status: 400 });
       const { data: demo } = await sb
         .from('outbound_demo_sites')
         .select('html')
@@ -189,7 +189,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
 
     /**
      * EDIT FROM THE CLIENT CARD (2026-08-24). One sentence from Sarah, applied to
-     * the client's current site by the forge in the background: copy, colours, a
+     * the client's current site by the build in the background: copy, colours, a
      * new photograph, a swapped section. Same path the client's own portal edit
      * takes, so it lands as a draft for approval, never straight onto the domain.
      */
@@ -198,7 +198,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
       if (!instruction) return NextResponse.json({ error: 'Tell it what to change first.' }, { status: 400 });
       if (instruction.length > 4000) return NextResponse.json({ error: 'That is a lot. Trim it down.' }, { status: 400 });
       if (project.edit_status === 'queued' || project.edit_status === 'building') {
-        return NextResponse.json({ error: 'An edit is already on the forge. Wait for it to land, then send the next one.' }, { status: 400 });
+        return NextResponse.json({ error: 'An edit is already on the build. Wait for it to land, then send the next one.' }, { status: 400 });
       }
       const current = (project.site_html_draft as string | null) || (project.site_html as string | null);
       if (!current) return NextResponse.json({ error: 'This project has no site to edit yet. Seed it from their demo first.' }, { status: 400 });
@@ -258,7 +258,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
     /**
      * ── Approve a client's auto-applied edit. ──
      *
-     * The client typed a change in their portal, the forge built it into a draft, and
+     * The client typed a change in their portal, the build built it into a draft, and
      * nothing has touched their live site. This is the signature: the draft becomes the
      * real site, and if the site was already live it is republished so the change is out.
      * Approving an AI edit is the ONLY thing that can put it in front of the client.
@@ -296,12 +296,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
     }
 
     /**
-     * ── Forge the direction board. ──
+     * ── Build the direction board. ──
      *
      * Built from what they told us at intake (business, trade, town, their
      * "look and feel" words) elevated by studio taste, with an optional steer
      * from Sarah. Saves as a DRAFT: nothing reaches the client until she
-     * sends it. Re-forging after a client's change request folds their note in.
+     * sends it. Rebuilding after a client's change request folds their note in.
      */
     case 'moodboard-forge': {
       const input = await rebuildInputFor(sb, projectId);
@@ -324,7 +324,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
         ].filter(Boolean).join(' | ') || undefined,
       };
       const board = await generateMoodboard(brief);
-      if (!board) return NextResponse.json({ error: 'The forge came back empty. Try again in a moment.' }, { status: 502 });
+      if (!board) return NextResponse.json({ error: 'The build came back empty. Try again in a moment.' }, { status: 502 });
       const { error } = await sb
         .from('projects')
         .update({ moodboard: board, moodboard_status: 'draft', moodboard_approved_at: null })
@@ -335,7 +335,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
 
     /* ── Send the board to the client's portal, with the email that says so. ── */
     case 'moodboard-send': {
-      if (!project.moodboard) return NextResponse.json({ error: 'Forge a board first.' }, { status: 400 });
+      if (!project.moodboard) return NextResponse.json({ error: 'Build a board first.' }, { status: 400 });
       const now = new Date().toISOString();
       const { error } = await sb
         .from('projects')

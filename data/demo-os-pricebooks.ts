@@ -1,7 +1,7 @@
 import type { OsTradeKey } from '@/data/demo-os-trades';
 
 /**
- * Per-trade PRICE BOOKS for the Quotes module of the forged BUSINESS OS demo.
+ * Per-trade PRICE BOOKS for the Quotes module of the built BUSINESS OS demo.
  * This is what makes the proposal generator feel like "it knows my business":
  * real line items, real units, believable prices for each trade. Everything is
  * honest sample data (prices are editable in the demo, and the real build loads

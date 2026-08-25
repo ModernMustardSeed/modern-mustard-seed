@@ -2,13 +2,13 @@ import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getAffiliateByEmail } from '@/lib/affiliate';
 import { getSupabase } from '@/lib/supabase';
-import { partnerDeskPrompt, forgeDeskCall } from '@/lib/mustard-desk';
+import { partnerDeskPrompt, buildDeskCall } from '@/lib/mustard-desk';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * Forge Mr. Mustard's PARTNER desk call for the signed-in, APPROVED partner.
+ * Build Mr. Mustard's PARTNER desk call for the signed-in, APPROVED partner.
  * Same numbers the /partners/hq page renders: clicks, sales, and earnings by
  * status, all scoped to this partner's code.
  */
@@ -45,7 +45,7 @@ export async function POST() {
     } catch { /* stats optional; the desk degrades to rules-only */ }
   }
 
-  const forged = await forgeDeskCall('partner', {
+  const built = await buildDeskCall('partner', {
     greetName: affiliate.name || session.email.split('@')[0],
     email: session.email,
     systemPrompt: partnerDeskPrompt({
@@ -59,6 +59,6 @@ export async function POST() {
     }),
     keyterms: [code, 'Voice Agent'],
   });
-  if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: 503 });
-  return NextResponse.json({ call: forged.call });
+  if (!built.ok) return NextResponse.json({ error: built.error }, { status: 503 });
+  return NextResponse.json({ call: built.call });
 }

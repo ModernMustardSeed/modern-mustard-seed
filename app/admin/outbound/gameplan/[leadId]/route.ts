@@ -12,7 +12,7 @@ type Params = Promise<{ leadId: string }>;
 /**
  * The printable AI Game Plan sheet for one lead, straight from the cockpit.
  * Renders the same letter-size one-pager the batch print packs use, with live
- * QR codes for whatever exists on the lead right now (hub, forged site,
+ * QR codes for whatever exists on the lead right now (hub, built site,
  * integration plan), plus an on-screen Print button. Sits under /admin so the
  * middleware login guard covers it; the QR targets themselves are public.
  */

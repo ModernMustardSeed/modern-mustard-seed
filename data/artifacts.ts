@@ -67,7 +67,7 @@ export const ARTIFACTS: ArtifactEntry[] = [
     updated: '2026-08-20',
     venture: 'MMS',
     kind: 'Plan',
-    description: 'The week-one walk-in hit list: 37 verified stops across Kalispell, Bigfork, and Whitefish with owners, hours traps, forged demo links, and the bench.',
+    description: 'The week-one walk-in hit list: 37 verified stops across Kalispell, Bigfork, and Whitefish with owners, hours traps, built demo links, and the bench.',
     pinned: true,
   },
   {

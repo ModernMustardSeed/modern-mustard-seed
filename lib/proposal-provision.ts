@@ -11,7 +11,7 @@ type Line = { id: string; scope?: string[] };
  *  - upsert a client (keyed by email) so the client portal recognizes them
  *  - create a project seeded from the proposal (deliverables become milestones)
  *    with the same unlimited portal editing a demo buyer gets
- *  - seed the demos we forged for them as client_files, so their portal opens
+ *  - seed the demos we built for them as client_files, so their portal opens
  *    on the thing that sold them, not an empty shell
  *  - mint a client_products ownership card so they appear in the unified layer
  *    (the client book, the delivery board) like every other buyer
@@ -81,7 +81,7 @@ export async function provisionFromProposal(proposalId: string): Promise<void> {
     }
   }
 
-  // 3. The demos forged for them land in the portal as files (deduped by URL).
+  // 3. The demos built for them land in the portal as files (deduped by URL).
   const links = cleanDemoLinks(p.demo_links);
   if (links.length) {
     try {

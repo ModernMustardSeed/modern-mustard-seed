@@ -1,5 +1,5 @@
 /**
- * THE MOODBOARD FORGE (server only: pulls the Anthropic SDK, so no client
+ * THE MOODBOARD BUILD (server only: pulls the Anthropic SDK, so no client
  * component may import this file; the types, pairings, and sanitizer live in
  * lib/moodboard-shared.ts).
  */
@@ -24,7 +24,7 @@ export type MoodboardBrief = {
   sarahNote?: string;     // optional steer typed on the admin board
 };
 
-const SYSTEM = `You are the art director at Modern Mustard Seed, a product studio whose design bar is Apple, Linear, and Awwwards site-of-the-day work. You are forging a DIRECTION BOARD for a small business's new website. The client already paid; this board is what they approve before their site goes live.
+const SYSTEM = `You are the art director at Modern Mustard Seed, a product studio whose design bar is Apple, Linear, and Awwwards site-of-the-day work. You are building a DIRECTION BOARD for a small business's new website. The client already paid; this board is what they approve before their site goes live.
 
 Return ONLY a JSON object, no markdown fences, with exactly these keys:
 {
@@ -57,7 +57,7 @@ function extractJson(raw: string): unknown {
   return JSON.parse(cleaned);
 }
 
-/** Forge a moodboard from the intake brief. Returns null on any failure. */
+/** Build a moodboard from the intake brief. Returns null on any failure. */
 export async function generateMoodboard(brief: MoodboardBrief): Promise<Moodboard | null> {
   const lines = [
     `Business: ${brief.businessName}`,

@@ -1,10 +1,10 @@
 /**
- * PROVE A FORGED DEMO CAN ACTUALLY BOOK, AGAINST THE REAL DATABASE.
+ * PROVE A BUILT DEMO CAN ACTUALLY BOOK, AGAINST THE REAL DATABASE.
  *
  *   npx tsx scripts/demo-booking-smoke.mts
  *
  * The unit tests pin the time maths with no database in them. This exercises
- * the other half: that a real forged run resolves, that check_availability comes
+ * the other half: that a real built run resolves, that check_availability comes
  * back with real slots, that book_appointment writes a row, that the slot then
  * disappears from the next lookup, and that a second attempt on the same slot
  * loses to the unique index instead of double-booking.
@@ -48,7 +48,7 @@ async function main() {
   const sb = getSupabase();
   if (!sb) throw new Error('no supabase client; check SUPABASE_SERVICE_ROLE_KEY');
 
-  // A real forged demo, newest first.
+  // A real built demo, newest first.
   const { data: rows, error } = await sb
     .from('app_state')
     .select('key')
@@ -56,7 +56,7 @@ async function main() {
     .order('updated_at', { ascending: false })
     .limit(1);
   if (error) throw new Error(`app_state read failed: ${error.message}`);
-  if (!rows?.length) throw new Error('no forged runs in app_state to test with');
+  if (!rows?.length) throw new Error('no built runs in app_state to test with');
 
   const runId = rows[0].key.replace('sidekick:run:', '');
   const stored = await getRun(sb, runId);
@@ -163,7 +163,7 @@ async function main() {
       .eq('demo_run_id', runId)
       .maybeSingle();
 
-    console.log(`\n  Alert test against lead: ${lead ? lead.business_name : 'none (self-serve forge, email only)'}`);
+    console.log(`\n  Alert test against lead: ${lead ? lead.business_name : 'none (self-serve build, email only)'}`);
     const before = lead ? { notes: lead.notes, next_action: lead.next_action, status: lead.status } : null;
 
     await notifyDemoBooking(sb, {

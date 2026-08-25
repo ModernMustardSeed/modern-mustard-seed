@@ -9,7 +9,7 @@ export const maxDuration = 15;
 type Params = Promise<{ id: string }>;
 
 /**
- * Queue the lead's AI INTEGRATION PLAN. Same shape as forge-site: the heavy
+ * Queue the lead's AI INTEGRATION PLAN. Same shape as build-site: the heavy
  * lifting happens on Sarah's machine (scripts/integration-plan-worker.mjs runs
  * headless Claude on the Max plan) and the finished document serves at
  * /demo/plan/<id>, print-ready. Idempotent: queued/building/ready runs are

@@ -419,7 +419,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                   onClick={() => void act('forge')}
                   title="Voice agent only, no website. The suite card above builds both pieces."
                 >
-                  {busy === 'forge' ? 'Forging...' : 'Forge the instant pieces'}
+                  {busy === 'forge' ? 'Building...' : 'Build the instant pieces'}
                 </button>
                 <button className={btnGhost} disabled={busy !== ''} onClick={() => void act('send-checkout')}>
                   Send the checkout link
@@ -490,7 +490,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                 <ul className="space-y-1.5 text-[13px]">
                   {data.queue.map((j) => (
                     <li key={j.id} className="flex items-center gap-2">
-                      <Chip label={j.kind} tone={j.status === 'failed' ? 'bad' : j.status === 'done' ? 'good' : 'neutral'} />
+                      <Chip label={j.kind === 'forge' ? 'build' : j.kind} tone={j.status === 'failed' ? 'bad' : j.status === 'done' ? 'good' : 'neutral'} />
                       <span className="text-[#161616]/65">
                         {j.status}
                         {j.step ? ` · step ${j.step}` : ''}
@@ -566,7 +566,7 @@ function IntelGrid({ intel }: { intel: Record<string, unknown> }) {
 function dotFor(type: string): string {
   if (/purchase|client|won/.test(type)) return 'bg-[#3f5d34]';
   if (/fail|bounce|unsub|suppress|needs_human/.test(type)) return 'bg-[#E0301E]';
-  if (/call|consent|forge|demo|checkout|meeting/.test(type)) return 'bg-[#F5B700]';
+  if (/call|consent|build|demo|checkout|meeting/.test(type)) return 'bg-[#F5B700]';
   return 'bg-white';
 }
 
@@ -576,7 +576,7 @@ function dotFor(type: string): string {
  * The pieces land at different speeds, so
  * this shows the truth about each one rather than a single "forged" badge: the
  * voice agent is instant, the website takes the local
- * forge twenty to forty minutes, and the walkthrough film is cut after it.
+ * build twenty to forty minutes, and the walkthrough film is cut after it.
  *
  * Every piece that is finished is a link you can open right now. Every piece
  * that is not says exactly what it is waiting on.
@@ -635,7 +635,7 @@ function SuitePanel({
       note={
         nothing
           ? 'Nothing is built for them yet. One press builds all of it.'
-          : 'Everything forged for this business. The hub is the one link you send.'
+          : 'Everything built for this business. The hub is the one link you send.'
       }
       right={
         s?.hubUrl ? (
@@ -646,16 +646,16 @@ function SuitePanel({
       }
     >
       <div className="grid gap-2 sm:grid-cols-2">
-        {piece('Voice agent', s?.voiceUrl ?? null, null, 'Not forged yet. Instant when you build.')}
+        {piece('Voice agent', s?.voiceUrl ?? null, null, 'Not built yet. Instant when you build.')}
         {piece(
           'Website',
           s?.siteUrl ?? null,
           building
-            ? 'On the anvil. The forge on your machine is building it now.'
+            ? 'On the anvil. The build on your machine is building it now.'
             : failed
               ? 'The last build failed. Retry puts it back on the anvil.'
               : null,
-          'Not queued yet. The forge takes twenty to forty minutes.',
+          'Not queued yet. The build takes twenty to forty minutes.',
         )}
         {/*
           YOURS, NOT THEIRS. The command center is off the suite and out of the
@@ -669,7 +669,7 @@ function SuitePanel({
           s?.osUrl
             ? 'Built by hand and yours only. It is not part of the suite or the offer, so their page has no door for it and their email never names it.'
             : null,
-          'Not part of the suite. Sold on its own, built by hand from the Forge OS button.',
+          'Not part of the suite. Sold on its own, built by hand from the Build OS button.',
         )}
         {piece(
           'Walkthrough film',
@@ -719,17 +719,17 @@ function SuitePanel({
           disabled={busy !== ''}
           onClick={() => void act('forge-suite', { site: true, designTier, talkingWebsite })}
         >
-          {busy === 'forge-suite' ? 'Forging…' : nothing ? '⚒ Forge the whole suite' : '⚒ Forge whatever is missing'}
+          {busy === 'forge-suite' ? 'Building…' : nothing ? '⚒ Build the whole suite' : '⚒ Build whatever is missing'}
         </button>
 
         {/*
           THE WEBSITE, ON ITS OWN BUTTON.
 
-          "Forge whatever is missing" is accurate and it is also invisible: when
+          "Build whatever is missing" is accurate and it is also invisible: when
           the thing missing is the website, the word website appears nowhere on
           the control that builds it. This is the button Sarah went looking for
           and could not find. It says what it does, and it says the other half
-          out loud too, because forging the website is what turns their command
+          out loud too, because building the website is what turns their command
           center on.
         */}
         {!building && !s?.siteUrl && (
@@ -737,9 +737,9 @@ function SuitePanel({
             className={btnPrimary}
             disabled={busy !== ''}
             onClick={() => void act('forge-suite', { site: true, designTier, talkingWebsite })}
-            title="Queue their demo website at the forge. Twenty to forty minutes on your machine."
+            title="Queue their demo website at the build. Twenty to forty minutes on your machine."
           >
-            {busy === 'forge-suite' ? 'Queuing…' : '🌐 Forge their website'}
+            {busy === 'forge-suite' ? 'Queuing…' : '🌐 Build their website'}
           </button>
         )}
         {(failed || (s?.siteUrl && !building)) && (
@@ -765,8 +765,8 @@ function SuitePanel({
       {building && (
         <p className="mt-3 font-sans text-[12px] text-[#161616]/55">
           The website builds on your machine. If nothing moves, open{' '}
-          <Link href="/admin/acquisition/forge" className="underline decoration-[#F5B700] decoration-2 underline-offset-4">
-            the Forge board
+          <Link href="/admin/acquisition/build" className="underline decoration-[#F5B700] decoration-2 underline-offset-4">
+            the Build board
           </Link>
           , which says out loud whether the worker is running.
         </p>

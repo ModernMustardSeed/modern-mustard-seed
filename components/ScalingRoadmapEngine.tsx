@@ -408,7 +408,7 @@ export default function ScalingRoadmapEngine() {
         </p>
         <p className="mt-4 text-[#FBF6EA]/80 text-base md:text-lg font-body leading-relaxed max-w-2xl">
           HUNDREDFOLD is the version where it actually happens. Mr. Mustard interviews you properly, we
-          forge the offer, we wire the agents that run this plan inside your business, and a coach who has
+          build the offer, we wire the agents that run this plan inside your business, and a coach who has
           read every word of it answers you at any hour.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row gap-3">

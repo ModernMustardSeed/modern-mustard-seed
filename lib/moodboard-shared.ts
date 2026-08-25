@@ -1,5 +1,5 @@
 /**
- * THE MOODBOARD, SHARED SHAPES. After a client pays and finishes intake, Sarah forges
+ * THE MOODBOARD, SHARED SHAPES. After a client pays and finishes intake, Sarah builds
  * a direction board from their real assets (logo, colors, photos, trade,
  * town) elevated by studio taste, sends it to their portal, and the client
  * approves it BEFORE the official site goes live.

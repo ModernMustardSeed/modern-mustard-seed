@@ -65,7 +65,7 @@ const matchesView = (l: OutboundLead, v: ViewKey) =>
  * falls through to "contacted" for everything else), so status === 'new' means
  * no dial was ever logged. The rest of the test catches the quieter touches a
  * status never records: an audit email sent, a follow-up scheduled, a note Sarah
- * typed, a suite already forged. `notes` is deliberately NOT a touch, since the
+ * typed, a suite already built. `notes` is deliberately NOT a touch, since the
  * sourcer writes mining ammo into it on every mined lead.
  */
 const neverWorked = (l: OutboundLead) =>
@@ -576,7 +576,7 @@ export default function OutboundLeads() {
             <button
               onClick={() => setUntouchedOnly((v) => !v)}
               aria-pressed={untouchedOnly}
-              title="Nobody has worked this lead: no call logged, no email sent, no follow-up scheduled, no note, no demo forged. Stacks on top of the view you picked."
+              title="Nobody has worked this lead: no call logged, no email sent, no follow-up scheduled, no note, no demo built. Stacks on top of the view you picked."
               className={`px-3 py-1.5 rounded-lg border-2 font-oswald uppercase tracking-[0.08em] text-[11px] transition-colors ${
                 untouchedOnly
                   ? 'bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815] shadow-[2px_2px_0_0_#1a1815]'

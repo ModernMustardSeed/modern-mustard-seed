@@ -17,7 +17,7 @@
  * or deliver anything it received from a worker, because both doing it is a
  * duplicate row and a duplicate email.
  *
- * Runs alongside the audit worker and the demo-site forge worker. All three
+ * Runs alongside the audit worker and the demo-site build worker. All three
  * compete for the same RAM and the same subscription, which is why
  * lib/claude-code-json.ts serialises them behind one semaphore and holds a
  * memory floor.

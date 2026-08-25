@@ -1,6 +1,6 @@
 /**
- * THE DEMO STATION: self-serve version of the cockpit forge. A business owner
- * lands from an ad, gives us their details, and we forge their whole suite:
+ * THE DEMO STATION: self-serve version of the cockpit build. A business owner
+ * lands from an ad, gives us their details, and we build their whole suite:
  * voice agent (instant) + business OS (instant) + website (queued to
  * the worker), fronted by their Demo Suite hub. Every signup is a lead on the
  * dial floor (source 'demo-station'), so the funnel is: ad -> station -> hub
@@ -9,9 +9,9 @@
  * Never-leak guards (fail CLOSED):
  *   - ATOMIC global daily cap (claim_forge_slot RPC, migration 047): the check
  *     and the increment happen in one statement, so a burst of parallel
- *     requests cannot all read the same count and slip through. Every forge
+ *     requests cannot all read the same count and slip through. Every build
  *     costs a real Vapi run plus a website build on the worker, so this is the
- *     spend guard that matters. Any error here = no forge.
+ *     spend guard that matters. Any error here = no build.
  *   - best-effort per-instance IP throttle (3/hr) + honeypot field. Both are
  *     soft (serverless instances do not share the map, and the client IP is
  *     only as trustworthy as the proxy chain), which is exactly why the cap
@@ -24,7 +24,7 @@
 
 import { NextResponse, after } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { forgeLeadVoiceDemo, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
+import { buildLeadVoiceDemo, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
 import { ensurePresenceAudit } from '@/lib/presence-audit';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import type { OutboundLead, Niche } from '@/lib/outbound';
@@ -132,7 +132,7 @@ export async function POST(req: Request) {
   // name all agree, and only a previous SELF-SERVE signup qualifies. Phone-only
   // matching would turn this route into a lookup service for other people's
   // private hubs (a phone number is public; the pairing is not). And the same
-  // owner forging a DIFFERENT business must get that business's own forge, not
+  // owner building a DIFFERENT business must get that business's own build, not
   // whichever suite their contact info built first: that exact bug sent a new
   // submission to the old Glacier Peak Plumbing test hub (2026-07-17). Phones
   // compare digits-only (the old raw LIKE also missed dash-formatted rows).
@@ -155,7 +155,7 @@ export async function POST(req: Request) {
 
   // Global daily cap, ATOMIC and fail CLOSED: one statement checks and claims
   // the slot (migration 047), so a parallel burst cannot all pass the check.
-  const capMessage = 'The forge hit today\'s limit. Come back tomorrow morning, or call (406) 312-1223 and we will save your spot.';
+  const capMessage = 'The build hit today\'s limit. Come back tomorrow morning, or call (406) 312-1223 and we will save your spot.';
   const { data: claimed, error: capErr } = await supabase.rpc('claim_forge_slot', {
     p_key: `demostation:day:${new Date().toISOString().slice(0, 10)}`,
     p_cap: DAILY_CAP,
@@ -181,10 +181,10 @@ export async function POST(req: Request) {
       status: 'new',
       source: 'demo-station',
       // OWNER NOTES is a parsed convention (see buildSiteBrief / buildOsConfig /
-      // forgeLeadVoiceDemo in lib/outbound-demo.ts): everything the owner told us
+      // buildLeadVoiceDemo in lib/outbound-demo.ts): everything the owner told us
       // in their own words drives all three demos, so it must survive here.
       notes: [
-        `SELF-SERVE: forged their own demo suite from ${SITE.url}/demos.`,
+        `SELF-SERVE: built their own demo suite from ${SITE.url}/demos.`,
         website ? null : 'WEBSITE: none, they came without one.',
         notes ? `OWNER NOTES: ${notes}` : null,
       ]
@@ -201,11 +201,11 @@ export async function POST(req: Request) {
   let lead = leadRow as OutboundLead;
 
   // Voice is instant; the website is queued to the worker below.
-  const voice = await forgeLeadVoiceDemo(supabase, lead);
+  const voice = await buildLeadVoiceDemo(supabase, lead);
   if (voice.ok) lead = voice.lead;
 
-  // THE COMMAND CENTER IS NOT FORGED ANY MORE (Sarah, 2026-08-22). It is sold
-  // on its own, built by hand, and scoped with the client first. A forge that
+  // THE COMMAND CENTER IS NOT BUILT ANY MORE (Sarah, 2026-08-22). It is sold
+  // on its own, built by hand, and scoped with the client first. A build that
   // quietly produced one was shipping a product that is not finished yet, and
   // the freebie it used to ride in on is gone from the offer too.
 
@@ -241,7 +241,7 @@ export async function POST(req: Request) {
   // Into the CRM pipeline too, or the command center never sees them: /admin
   // counts, charts, and its needs-attention rail all read public.leads, not the
   // dial floor. Fail-soft, because a pipeline hiccup must never cost the owner
-  // the demos they just forged.
+  // the demos they just built.
   try {
     const synced = await syncLeadToPipeline(supabase, lead, { source: 'demo-station' });
     if (!synced.ok) console.error('demo-station pipeline sync failed:', synced.error);
@@ -258,7 +258,7 @@ export async function POST(req: Request) {
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
-        subject: `${first}, ${possessive(business)} demos are being forged right now`,
+        subject: `${first}, ${possessive(business)} demos are being built right now`,
         html: clientEmail({
           preheader: 'Your voice agent is ready now; your website is with you within the hour.',
           eyebrow: 'YOUR DEMO SUITE',
@@ -282,12 +282,12 @@ export async function POST(req: Request) {
       await resend.emails.send({
         from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
         to: OWNER_NOTIFY_TO,
-        subject: `SELF-SERVE FORGE: ${business} (${city || state || 'unknown'})`,
+        subject: `SELF-SERVE BUILD: ${business} (${city || state || 'unknown'})`,
         html: clientEmail({
-          preheader: 'Someone forged their own suite from an ad.',
+          preheader: 'Someone built their own suite from an ad.',
           eyebrow: 'DEMO STATION',
           greeting: 'The station caught one.',
-          body: `<p><strong>${business}</strong> (${name}, ${email}, ${phone}) forged their own suite from /demos.</p><p>They are on the dial floor unassigned, source demo-station, with "call while the demos are hot" as the next action. Hub: <a href="${lead.hub_demo_url}">${lead.hub_demo_url}</a></p>`,
+          body: `<p><strong>${business}</strong> (${name}, ${email}, ${phone}) built their own suite from /demos.</p><p>They are on the dial floor unassigned, source demo-station, with "call while the demos are hot" as the next action. Hub: <a href="${lead.hub_demo_url}">${lead.hub_demo_url}</a></p>`,
           signature: 'The Demo Station',
         }),
       });

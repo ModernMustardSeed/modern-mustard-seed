@@ -171,7 +171,7 @@ export function cityFaqs(city: MontanaCity): { q: string; a: string }[] {
     },
     {
       q: `Will a voice agent sound right for a ${city.name} business?`,
-      a: `It is trained on your business specifically: your services, your hours, your service area, and how you talk about the work. ${city.phoneProblem.split('. ')[0]}. The voice agent answers in that gap. The fastest way to judge it is to hear it, so forge a free demo and it will answer as your business in about a minute.`,
+      a: `It is trained on your business specifically: your services, your hours, your service area, and how you talk about the work. ${city.phoneProblem.split('. ')[0]}. The voice agent answers in that gap. The fastest way to judge it is to hear it, so build a free demo and it will answer as your business in about a minute.`,
     },
     {
       q: `What happens to calls that come in after hours in ${city.name}?`,

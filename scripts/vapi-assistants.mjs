@@ -146,7 +146,7 @@ for (const a of assistants) {
   // timeoutSeconds}), but it exposes the BOOLEAN `isServerUrlSecretSet` at the
   // top level. Read that, never server.secret, or you will conclude every
   // assistant is unprotected and start ignoring a real alarm.
-  // An unprotected webhook means anyone who learns the URL can POST forged tool
+  // An unprotected webhook means anyone who learns the URL can POST built tool
   // calls to it: book jobs, capture leads, hit customer lookups.
   if (a.server?.url) {
     console.log(`  webhook       ${a.server.url}${a.isServerUrlSecretSet ? ' (secret set)' : '  ⚠ UNPROTECTED, no secret'}`);
@@ -184,7 +184,7 @@ const unprotected = assistants.filter((a) => a.server?.url && !a.isServerUrlSecr
 if (unprotected.length) {
   console.log(`\n${'='.repeat(60)}`);
   console.log(`⚠ ${unprotected.length} UNPROTECTED WEBHOOK(S). No secret set, so anyone who`);
-  console.log(`  learns the URL can POST forged tool calls to it:`);
+  console.log(`  learns the URL can POST built tool calls to it:`);
   for (const a of unprotected) console.log(`    ${a.name || a.id}`);
 }
 

@@ -2,7 +2,7 @@
  * Unit tests for lib/site-copy-lint.mjs. Zero deps, run with `node`.
  *
  * A linter that cries wolf gets switched off, so the NEGATIVE cases here matter
- * more than the positive ones: real sentences from real forged sites that must
+ * more than the positive ones: real sentences from real built sites that must
  * stay silent. Every "clean" case below is lifted from a shipped build.
  */
 import { copyFindings, visibleText, hasHighSeverity } from '../lib/site-copy-lint.mjs';
@@ -85,7 +85,7 @@ else { console.log('FAIL em dash severity'); fail++; }
 
 /* ── THE SOURCE GUARD ───────────────────────────────────────────────
  *
- * The linter above reads STORED html: forged demos and client sites. But the
+ * The linter above reads STORED html: built demos and client sites. But the
  * defect Sarah found on 2026-08-03 was not in stored html at all. It was in
  * React that wraps those pages, and never gets written to a row: the live call
  * pill on every demo site, the command center tour, the Demo Station emails.

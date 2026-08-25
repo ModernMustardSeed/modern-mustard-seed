@@ -12,7 +12,7 @@
  *   1. THE LAW IS IN THE LAW. Every build directive must carry NO_BROWN. A rule
  *      that quietly stops being handed to the builder is a rule that does not
  *      exist, which is exactly how the before/after slider lost its camera lock.
- *   2. THE SHIM IS WIRED. takeBrownOff must be applied on both paths a forged
+ *   2. THE SHIM IS WIRED. takeBrownOff must be applied on both paths a built
  *      document can leave by: the demo route and the published client site. The
  *      143 sites already built are only clean because of it.
  *   3. THE SOURCE DOES NOT GET BROWNER. Brown literals already in the repo are

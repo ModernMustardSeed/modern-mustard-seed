@@ -56,7 +56,7 @@ for (const step of [0, 1, 2]) {
   const m = sidekickDripEmail(lead as never, step);
   ok(`step ${step} has a subject`, m.subject.length > 8, m.subject);
   ok(`step ${step} personalizes the business`, m.html.includes('Acme Plumbing'));
-  ok(`step ${step} deep-links the real run`, m.html.includes(`/voice-agents/forge/demo/${RUN}`));
+  ok(`step ${step} deep-links the real run`, m.html.includes(`/voice-agents/build/demo/${RUN}`));
   ok(`step ${step} has no em dash`, !m.html.includes('—'));
   ok(`step ${step} has no unreplaced placeholder`, !/\[first name\]|\[their/.test(m.html));
 }
@@ -67,7 +67,7 @@ ok(`touch 2 quotes the CURRENT setup ($${setup})`, t2.html.includes(`$${setup} t
 ok('touch 2 does NOT contain the retired $197', !t2.html.includes('$197'));
 
 const noRun = sidekickDripEmail({ ...lead, notes: '[sidekick] legacy lead' } as never, 0);
-ok('legacy lead falls back to /voice-agents/forge, no broken URL', noRun.html.includes('/voice-agents/forge') && !noRun.html.includes('/voice-agents/forge/demo/null'));
+ok('legacy lead falls back to /voice-agents/build, no broken URL', noRun.html.includes('/voice-agents/build') && !noRun.html.includes('/voice-agents/build/demo/null'));
 
 const noName = sidekickDripEmail({ ...lead, name: null, business_name: null, company: null } as never, 0);
 ok('missing name degrades to "Hi there,"', noName.html.includes('Hi there,'));
@@ -82,7 +82,7 @@ if (!sb) {
     .from('leads')
     .select('id', { count: 'exact', head: true })
     .eq('source', 'sidekick-forge');
-  console.log(`      sidekick-forge leads in the table (all time): ${count ?? 'unknown'}`);
+  console.log(`      sidekick-build leads in the table (all time): ${count ?? 'unknown'}`);
 
   const { data: rows } = await sb
     .from('leads')
@@ -101,8 +101,8 @@ if (!sb) {
   ok('dry run sent nothing', res.sent === 0);
 
   const stale = await staleUnstarted(sb);
-  console.log(`      stale unstarted forgers (for a human): ${JSON.stringify(stale.leads)}`);
-  ok('stale forgers are surfaced, not silently dropped', typeof stale.count === 'number');
+  console.log(`      stale unstarted builders (for a human): ${JSON.stringify(stale.leads)}`);
+  ok('stale builders are surfaced, not silently dropped', typeof stale.count === 'number');
 
   const ages = (rows ?? []).map((r) => (Date.now() - new Date(r.created_at as string).getTime()) / 3600000);
   const oldOnes = ages.filter((h) => h > 96).length;
@@ -117,9 +117,9 @@ console.log('\n--- 4. age-aware copy (no false "yesterday") ---');
 const old = { ...lead, created_at: new Date(Date.now() - 3 * 86400000).toISOString() };
 const y = sidekickDripEmail(lead as never, 0);
 const o = sidekickDripEmail(old as never, 0);
-ok('a 1-day-old forge says "Yesterday"', y.html.includes('Yesterday you'));
-ok('a 3-day-old forge does NOT claim yesterday', !o.html.includes('Yesterday you'));
-ok('a 3-day-old forge stays truthful', o.html.includes('A few days ago you'));
+ok('a 1-day-old build says "Yesterday"', y.html.includes('Yesterday you'));
+ok('a 3-day-old build does NOT claim yesterday', !o.html.includes('Yesterday you'));
+ok('a 3-day-old build stays truthful', o.html.includes('A few days ago you'));
 
 console.log(`\n${fail === 0 ? 'ALL CHECKS PASSED' : `${fail} CHECK(S) FAILED`}`);
 process.exit(fail === 0 ? 0 : 1);

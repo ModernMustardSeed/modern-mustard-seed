@@ -5,7 +5,7 @@ import Link from 'next/link';
 import AdminHeader from './AdminHeader';
 
 /**
- * THE SITE TEMPLATE GALLERY (2026-08-24). Every visual system the Forge can
+ * THE SITE TEMPLATE GALLERY (2026-08-24). Every visual system the Build can
  * build, named, with the real reference site embedded whole, its real palette
  * and type rendered in the real fonts, what it fits, what it carries, and how
  * many live sites wear it. Above the templates sit the three STRUCTURES (the
@@ -357,7 +357,7 @@ export default function SiteTemplates() {
       <main className="max-w-5xl mx-auto px-6 py-8">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
           <p className="text-[#161616]/65 text-sm font-body max-w-2xl">
-            Every structure and every visual system the Forge can build, each with its real reference site embedded whole. Pick a template on a contact card and the build wears it;
+            Every structure and every visual system the Build can build, each with its real reference site embedded whole. Pick a template on a contact card and the build wears it;
             leave the picker on Random and the studio rotates by trade. The structure (Award, World or Journey) is the bones, the template is the skin, and the colours are always the
             client&apos;s own.
           </p>
@@ -420,7 +420,7 @@ export default function SiteTemplates() {
               <p className="text-[13px] font-body text-[#161616]/85 max-w-3xl">
                 A template is an entry in <code className="font-mono text-[12px] bg-[#FBF6EA] border border-[#161616]/15 rounded px-1">lib/site-templates.mjs</code>: key, name, origin, default colour roles, three type
                 families, skeleton, devices, copy register, imagery and the law block. Its reference build is pinned in the gallery route. Merge to master and it appears here, in every picker,
-                and in the worker&apos;s roster on the next build. The <Link href="/admin/outbound/forge" className="text-[#1E50C8] font-semibold hover:text-[#161616]">Forge board</Link> and every
+                and in the worker&apos;s roster on the next build. The <Link href="/admin/outbound/build" className="text-[#1E50C8] font-semibold hover:text-[#161616]">Build board</Link> and every
                 contact card pick from the same list.
               </p>
             </section>

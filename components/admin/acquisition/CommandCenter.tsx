@@ -193,7 +193,7 @@ export default function CommandCenter() {
 
             <Section
               title="The funnel"
-              note="Prospect → email → permission → consent → Mr. Mustard → demo → forge → demo sent → meeting or checkout → client. The percentage is the conversion from the step above."
+              note="Prospect → email → permission → consent → Mr. Mustard → demo → build → demo sent → meeting or checkout → client. The percentage is the conversion from the step above."
             >
               <Funnel steps={data.stats.funnel} />
             </Section>
@@ -213,7 +213,7 @@ export default function CommandCenter() {
                 <Stat label="Calls requested" value={n('callsRequested')} tone="mustard" />
                 <Stat label="Calls attempted" value={n('callsAttempted')} />
                 <Stat label="Conversations" value={n('conversationsCompleted')} tone="seed" />
-                <Stat label="Demos forged" value={n('demosCreated')} tone="seed" />
+                <Stat label="Demos built" value={n('demosCreated')} tone="seed" />
                 <Stat label="Demos emailed" value={n('demosEmailed')} />
                 <Stat label="Meetings booked" value={n('meetingsBooked')} />
                 <Stat label="Checkouts sent" value={n('checkoutsSent')} />

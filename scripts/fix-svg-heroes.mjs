@@ -23,7 +23,7 @@ const sharp = (await import('file:///C:/Users/moder/cross-covenant/node_modules/
 
 const APPLY = process.argv.includes('--apply');
 const LIB = path.join(os.homedir(), 'mms-demo-sites', '_library');
-const MARK = 'forge fix 2026-07-29: real hero photograph';
+const MARK = 'build fix 2026-07-29: real hero photograph';
 
 if (existsSync('.env.local')) {
   for (const line of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
@@ -241,4 +241,4 @@ for (const { row, pick } of plan) {
   fixed += 1;
   console.log(`  photographed ${row.business_name}  (+${Math.round(buf.length / 1024)}KB)`);
 }
-console.log(`\n${fixed} hero(es) now carry a real photograph. Originals in .forge-backups/svghero-<id>.html`);
+console.log(`\n${fixed} hero(es) now carry a real photograph. Originals in .build-backups/svghero-<id>.html`);

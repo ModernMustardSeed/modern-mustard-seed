@@ -75,7 +75,7 @@ export function productSpecFor(kind: string, session: Stripe.Checkout.Session): 
         tier: tier ?? 'Client Factory',
         status: 'provisioning',
         homeUrl: '/portal/factory',
-        detail: 'We are forging your acquisition system now. You confirm the facts only you know, then we test it before it contacts anybody.',
+        detail: 'We are building your acquisition system now. You confirm the facts only you know, then we test it before it contacts anybody.',
       };
     case 'switchboard':
       return {

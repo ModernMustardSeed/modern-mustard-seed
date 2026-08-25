@@ -7,7 +7,7 @@
  * link actually hands off to the next one.
  *
  *   sourced -> enrolled -> emailed -> clicked -> consented -> called
- *   -> forged -> demo sent -> checkout -> PAID -> client -> project
+ *   -> built -> demo sent -> checkout -> PAID -> client -> project
  *   -> Front Office -> agent built -> tested -> line bought -> live
  *
  * ── WHAT IS REAL AND WHAT IS PRETEND ─────────────────────────────────────────
@@ -179,7 +179,7 @@ async function run() {
       monthly_cents: OFFER.monthlyCents,
       status: 'pending',
       // hub_demo_id is a uuid, not a slug. A generated one keeps this order
-      // unlinked to any real forged demo.
+      // unlinked to any real built demo.
       hub_demo_id: crypto.randomUUID(),
       stripe_session_id: `cs_test_${MARKER}_${STAMP}`,
     })

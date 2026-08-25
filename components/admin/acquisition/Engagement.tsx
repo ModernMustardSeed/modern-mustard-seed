@@ -5,13 +5,13 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Section, Chip, api, card, cardFlat, btnGhost, timeAgo } from '@/components/admin/acquisition/ui';
 import { usePoll } from '@/lib/use-poll';
-import RowForge from '@/components/admin/acquisition/RowForge';
-import type { RowSuite } from '@/components/admin/acquisition/RowForge';
+import RowBuild from '@/components/admin/acquisition/RowBuild';
+import type { RowSuite } from '@/components/admin/acquisition/RowBuild';
 
 /**
  * WHO IS MOVING.
  *
- * Every other screen in the machine is about what we did: sent, forged,
+ * Every other screen in the machine is about what we did: sent, built,
  * queued. This one is only about what THEY did, by name. Who opened, who
  * clicked, who landed on the permission page, who typed their number in, who
  * is on the phone with Mr. Mustard, who picked up the phone and called him.
@@ -350,7 +350,7 @@ export default function Engagement() {
                               )}
                             </Td>
                             <Td>
-                              <RowForge
+                              <RowBuild
                                 id={p.id}
                                 business={p.business_name}
                                 email={p.email}

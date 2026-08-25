@@ -1,7 +1,7 @@
 /**
  * The agent voice picker: female or male, one source of truth.
  *
- * Pure constants and helpers, no server imports, so both the server forge
+ * Pure constants and helpers, no server imports, so both the server build
  * (lib/sidekick.ts, the outbound-call path) and the browser call widgets can
  * import it. The chosen voice rides as a Vapi `voice` override on the call, so
  * the same base assistant answers in either voice with no second assistant to
@@ -42,7 +42,7 @@ export function sidekickVoice(g?: string | null): VapiVoice {
   return SIDEKICK_VOICES[toVoiceGender(g)];
 }
 
-/** Recover the gender from a voiceId so a UI can seed its toggle from a forged call. */
+/** Recover the gender from a voiceId so a UI can seed its toggle from a built call. */
 export function genderFromVoiceId(voiceId?: string | null): VoiceGender {
   return voiceId === SIDEKICK_VOICES.female.voiceId ? 'female' : 'male';
 }

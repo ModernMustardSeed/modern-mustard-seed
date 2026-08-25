@@ -28,7 +28,7 @@ export const dynamic = 'force-dynamic';
  *   - one address is rate-limited per tool per hour, so the form cannot be used
  *     to mail-bomb the owner from their own website;
  *   - the member's address comes from OUR row, never from the payload, so a
- *     forged submission cannot redirect the notification anywhere.
+ *     built submission cannot redirect the notification anywhere.
  */
 
 const MAX_BODY = 24_000;

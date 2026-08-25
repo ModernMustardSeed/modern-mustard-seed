@@ -5,7 +5,7 @@
  * On 2026-08-22 at 09:10 a merge took master's whole copy of lib/site-directive.mjs
  * and kept the branch's copy of scripts/demo-site-worker.mjs. Master's copy had no
  * `editMultipageAddendum`; the worker imported it by name on line 31. Nothing in the
- * repo noticed. The forge worker was already running with the old module cached, so
+ * repo noticed. The build worker was already running with the old module cached, so
  * it kept building all day and the break stayed invisible until the process next
  * restarted, thirty-nine hours later. From that moment, on every single launch:
  *

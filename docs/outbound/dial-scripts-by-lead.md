@@ -72,7 +72,7 @@ one for Voila Flower. It handles orders and questions. Want to see it in action?
 
 ## Notes
 
-- **Price**: $497 setup + $497/mo is the AI receptionist tier (Sidekick Forge voice agent).
-- **Demo**: Every lead referenced here should have a forged demo in the Suite Hub.
+- **Price**: $497 setup + $497/mo is the AI receptionist tier (Sidekick Build voice agent).
+- **Demo**: Every lead referenced here should have a built demo in the Suite Hub.
 - **Tokens**: [business name], [owner first], [niche] should be filled from the lead row.
 - The 2-minute framing is intentional. Keep it short.

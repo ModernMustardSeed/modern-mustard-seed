@@ -34,8 +34,8 @@ export type Industry = {
   faqs: IndustryFaq[];
   cta: { headline: string; body: string };
   /**
-   * The free forge this industry is sent to. Added 2026-07-20: these six pages
-   * had no path into either forge, so every visitor exited to /audit or a
+   * The free build this industry is sent to. Added 2026-07-20: these six pages
+   * had no path into either build, so every visitor exited to /audit or a
    * booking link and the strongest free asset never got shown.
    *
    * Route by what the industry actually loses. Missed-call businesses go to
@@ -43,14 +43,14 @@ export type Industry = {
    * Build-shaped businesses go to /demos (voice agent + a
    * custom site). Never send a DTC brand to a voice agent pitch.
    *
-   * The Voice Agent Forge was parked 2026-08-12 (Sarah); the missed-call route
+   * The Voice Agent Build was parked 2026-08-12 (Sarah); the missed-call route
    * pointed there and now points at /voice-agents. See Navbar.tsx.
    */
-  forge: { href: '/voice-agents' | '/demos'; label: string; blurb: string };
+  build: { href: '/voice-agents' | '/demos'; label: string; blurb: string };
 };
 
-/** Copy for the two forge destinations, so no page invents its own promise. */
-export const FORGE_CTA = {
+/** Copy for the two build destinations, so no page invents its own promise. */
+export const BUILD_CTA = {
   sidekick: {
     href: '/voice-agents' as const,
     label: 'Hear One Answer Now',
@@ -59,7 +59,7 @@ export const FORGE_CTA = {
   },
   demos: {
     href: '/demos' as const,
-    label: 'Forge My Free Demo',
+    label: 'Build My Free Demo',
     blurb:
       'Free, no account, no card. Enter your business once and get a voice agent you can talk to and a custom website built from scratch.',
   },
@@ -69,7 +69,7 @@ export const industries: Industry[] = [
   // 1. Real Estate Investors
   {
     slug: 'real-estate-investors',
-    forge: FORGE_CTA.sidekick,
+    build: BUILD_CTA.sidekick,
     name: 'Real Estate Investors',
     shortName: 'Investors',
     metaTitle: 'AI Tools for Real Estate Investors. What to Build First.',
@@ -167,7 +167,7 @@ export const industries: Industry[] = [
   // 2. Realtors / Real Estate Agents
   {
     slug: 'realtors',
-    forge: FORGE_CTA.sidekick,
+    build: BUILD_CTA.sidekick,
     name: 'Real Estate Agents',
     shortName: 'Realtors',
     metaTitle: 'AI Tools for Realtors and Real Estate Agents. Win the Next Five Years.',
@@ -263,7 +263,7 @@ export const industries: Industry[] = [
   // 3. Service Businesses
   {
     slug: 'service-businesses',
-    forge: FORGE_CTA.sidekick,
+    build: BUILD_CTA.sidekick,
     name: 'Service Businesses',
     shortName: 'Service Pros',
     metaTitle: 'AI for Service Businesses. Voice Agents and Automation, Built Custom.',
@@ -363,7 +363,7 @@ export const industries: Industry[] = [
   // 4. DTC Brands and Apparel
   {
     slug: 'dtc-brands',
-    forge: FORGE_CTA.demos,
+    build: BUILD_CTA.demos,
     name: 'DTC and Apparel Brands',
     shortName: 'DTC Brands',
     metaTitle: 'AI for DTC and Apparel Brands. Sketch to Shipped Drop, Faster.',
@@ -467,7 +467,7 @@ export const industries: Industry[] = [
   // 5. Solopreneurs and Creators
   {
     slug: 'solopreneurs',
-    forge: FORGE_CTA.demos,
+    build: BUILD_CTA.demos,
     name: 'Solopreneurs and Creators',
     shortName: 'Solopreneurs',
     metaTitle: 'AI for Solopreneurs and Creators. The OS You Should Have Built Years Ago.',
@@ -565,7 +565,7 @@ export const industries: Industry[] = [
   // 6. Coaches and Consultants
   {
     slug: 'coaches-consultants',
-    forge: FORGE_CTA.sidekick,
+    build: BUILD_CTA.sidekick,
     name: 'Coaches and Consultants',
     shortName: 'Coaches',
     metaTitle: 'AI for Coaches and Consultants. Reclaim Your Calendar.',

@@ -1,8 +1,8 @@
 import { getSupabase } from '@/lib/supabase';
 import { getRun } from '@/lib/sidekick-store';
-import { forgeCall } from '@/lib/sidekick';
+import { buildCall } from '@/lib/sidekick';
 import { buildMetadata } from '@/lib/seo';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { BuiltCall } from '@/lib/sidekick';
 import SiteDemoShell from '@/components/demo/SiteDemoShell';
 import { possessive } from '@/lib/business-name';
 import SiteBuildProgress from '@/components/demo/SiteBuildProgress';
@@ -12,11 +12,11 @@ export const metadata = buildMetadata({ title: 'Your New Website Demo', noindex:
 export const dynamic = 'force-dynamic';
 
 /**
- * The shareable forged demo WEBSITE: the cockpit queues a build, the local
+ * The shareable built demo WEBSITE: the cockpit queues a build, the local
  * demo-site worker (headless Claude Code on the Max plan) writes the HTML back
- * onto the row, and this page serves it full-screen with the lead's forged AI
+ * onto the row, and this page serves it full-screen with the lead's built AI
  * voice agent overlaid as a live call widget. Unlisted (unguessable id,
- * noindex). While the forge is still working, a holding page auto-refreshes.
+ * noindex). While the build is still working, a holding page auto-refreshes.
  */
 
 function Card({ title, body, cta }: { title: string; body: string; cta?: boolean }) {
@@ -55,7 +55,7 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
     return <Card title="This demo has moved on" body="We could not find that website demo. Want one built for your business? That is exactly what we do." cta />;
   }
 
-  // A re-forge in flight must never take a lead's working demo down: if a
+  // A rebuild in flight must never take a lead's working demo down: if a
   // finished site already exists, keep serving it and let the new build land
   // silently. The drafting-table screen is only for a FIRST build.
   if ((site.status === 'queued' || site.status === 'building') && !site.html) {
@@ -100,7 +100,7 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
                 )}
                 {/*
                   NO COMMAND CENTER DOOR. It came off the suite and out of the
-                  offer (Sarah, 2026-08-22, again 2026-08-25). A lead forged
+                  offer (Sarah, 2026-08-22, again 2026-08-25). A lead built
                   before then can still carry an os_demo_url and that page still
                   resolves, so a link already emailed keeps working; we simply
                   never point anybody at one again.
@@ -118,11 +118,11 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
   // No html at all (first build failed): the snag card. If an OLD site exists,
   // serve it no matter what state a newer build is in.
   if (!site.html) {
-    return <Card title="This demo needs a re-forge" body="The build hit a snag. Ask us to forge it again and we will have it back to you within the hour." cta />;
+    return <Card title="This demo needs a rebuild" body="The build hit a snag. Ask us to build it again and we will have it back to you within the hour." cta />;
   }
 
   // Resurrect the lead's voice demo for the overlay widget.
-  let call: ForgedCall | null = null;
+  let call: BuiltCall | null = null;
   const { data: lead } = await sb
     .from('outbound_leads')
     .select('demo_run_id, business_name, city, hub_demo_url')
@@ -131,8 +131,8 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
   if (lead?.demo_run_id) {
     const run = await getRun(sb, lead.demo_run_id);
     if (run) {
-      const forged = await forgeCall(run, lead.demo_run_id, 'web');
-      if (forged.ok) call = forged.call;
+      const built = await buildCall(run, lead.demo_run_id, 'web');
+      if (built.ok) call = built.call;
     }
   }
 

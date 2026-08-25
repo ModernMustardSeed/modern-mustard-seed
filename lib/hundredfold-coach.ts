@@ -2,7 +2,7 @@
  * THE COACH IN THE PORTAL.
  *
  * Every member has Mr. Mustard sitting inside their own Command Center, and he
- * has read everything: their interview, their roadmap, their forged offer,
+ * has read everything: their interview, their roadmap, their built offer,
  * every gate, every system we have built or queued. He answers in their context
  * at any hour, which replaced the weekly call entirely (Sarah, 2026-08-07:
  * "take off the one on one, we don't do calls, they have a 24/7 agent").
@@ -20,7 +20,7 @@
  */
 
 import type { RoadmapReport } from './roadmap-shape';
-import type { ForgedOffer } from './hundredfold-synthesis';
+import type { BuiltOffer } from './hundredfold-synthesis';
 import type { GateRow, Member, SystemRow } from './hundredfold-store';
 import { possessive } from './business-name';
 
@@ -142,7 +142,7 @@ export const COACH_DECISION_SCHEMA = {
 export function coachSystemPrompt(ctx: {
   member: Member;
   roadmap: RoadmapReport | null;
-  offer: ForgedOffer | null;
+  offer: BuiltOffer | null;
   gates: GateRow[];
   systems: SystemRow[];
   currentWindow: number;
@@ -169,7 +169,7 @@ Scoreboard: ${roadmap.scoreboard.map((r) => `${r.metric} (now ${r.current}, targ
     : 'They have not been interviewed yet, so there is no plan. Your first job is to get them to do the interview at /hundredfold#interview, because everything else is built from it.';
 
   const offerBlock = offer
-    ? `THEIR OFFER (you forged this):
+    ? `THEIR OFFER (you built this):
 ${offer.name}. ${offer.promise}
 Price: ${offer.price}
 Guarantee: ${offer.guarantee}

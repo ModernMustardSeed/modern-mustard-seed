@@ -20,7 +20,7 @@ export default function ChiefWelcomePage() {
     {
       n: '2',
       title: 'We train him on your world',
-      body: 'Your business, your priorities, and how you like to be spoken to. We forge your private Chief persona and switch on your morning briefing.',
+      body: 'Your business, your priorities, and how you like to be spoken to. We build your private Chief persona and switch on your morning briefing.',
     },
     {
       n: '3',

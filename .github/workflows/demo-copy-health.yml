@@ -4,7 +4,7 @@
 # reads the words.
 #
 # On 2026-08-03 a full funnel test found that EVERY bakery, dental, medspa and salon
-# demo we had ever forged said "wants a quote on a order", and that twenty-five
+# demo we had ever built said "wants a quote on a order", and that twenty-five
 # surfaces said "Olivia's Chocolates's", including the live call pill that rides on
 # every demo site and therefore the walkthrough film we send buyers. Both had been
 # shipping for weeks.
@@ -35,7 +35,7 @@ on:
         type: boolean
         default: false
       full:
-        description: "Sweep every site ever forged, not just the last 7 days"
+        description: "Sweep every site ever built, not just the last 7 days"
         type: boolean
         default: false
 
@@ -57,7 +57,7 @@ jobs:
             echo "SELFTEST run: firing a synthetic finding to verify the alert email."
           elif [ "$FULL" = "true" ]; then
             QS="?full=1"
-            echo "FULL sweep: reading every site ever forged."
+            echo "FULL sweep: reading every site ever built."
           fi
           echo "Reading demos and client sites for copy a customer would notice..."
           BODY=$(curl -sS -m 90 -w $'\n%{http_code}' \

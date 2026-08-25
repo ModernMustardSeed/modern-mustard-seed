@@ -91,7 +91,7 @@ export async function POST(req: Request) {
             product_data: {
               name: 'HUNDREDFOLD start (one time)',
               description:
-                'Your interview, your roadmap, your forged offer, and your first system built and live.',
+                'Your interview, your roadmap, your built offer, and your first system built and live.',
             },
           },
         },

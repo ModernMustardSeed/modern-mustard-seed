@@ -20,7 +20,7 @@
  *
  * WHY THE LOOP IS SERIAL. `lib/claude-code-json.ts` caps itself at two
  * concurrent children because each one wants a few hundred megabytes and the
- * forge OOM-killed a build at 0.9GB free. Draining is not a race; a queue that
+ * build OOM-killed a build at 0.9GB free. Draining is not a race; a queue that
  * finishes ten seconds later is fine and a workstation that swaps is not.
  *
  * Related: `supabase/migrations/092_llm_jobs.sql`, `lib/llm.ts`.

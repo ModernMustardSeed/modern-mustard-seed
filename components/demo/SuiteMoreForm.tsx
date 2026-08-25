@@ -4,8 +4,8 @@ import { useState } from 'react';
 
 /**
  * "Make it right here." Sarah, 2026-08-20: the outro used to say call Mr.
- * Mustard; now the missing pieces get forged from the page itself. Pick what
- * you want, leave an email, and the forge queues it on the spot. The suite
+ * Mustard; now the missing pieces get built from the page itself. Pick what
+ * you want, leave an email, and the build queues it on the spot. The suite
  * page renders live off the lead row, so the new piece appears here on its
  * own, and the suite-ready announcement emails them when the build (and its
  * walkthrough film) is done. The phone stays as the human fallback below.
@@ -16,7 +16,7 @@ export default function SuiteMoreForm({
   hasEmail,
 }: {
   hubId: string;
-  /** Which forgeable pieces this suite does not have yet. */
+  /** Which buildable pieces this suite does not have yet. */
   missing: ('voice' | 'site')[];
   /** Whether we already hold an email for this business (server-checked). */
   hasEmail: boolean;
@@ -54,7 +54,7 @@ export default function SuiteMoreForm({
       const j = (await res.json().catch(() => ({}))) as { message?: string };
       if (!res.ok) throw new Error(j.message || 'Could not queue it just now.');
       setState('done');
-      setMsg('On the anvil. The forge is building it now: this page updates itself the moment it is ready, and the announcement lands in your inbox.');
+      setMsg('On the anvil. The build is building it now: this page updates itself the moment it is ready, and the announcement lands in your inbox.');
     } catch (e) {
       setState('error');
       setMsg(e instanceof Error ? e.message : 'Could not queue it just now.');
@@ -64,7 +64,7 @@ export default function SuiteMoreForm({
   if (state === 'done') {
     return (
       <div className="mt-5 rounded-xl border-2 border-[#161616] bg-[#F5B700] px-5 py-4 text-center">
-        <p className="font-display text-lg font-bold text-[#161616]">Forging it now.</p>
+        <p className="font-display text-lg font-bold text-[#161616]">Building it now.</p>
         <p className="font-body mt-1 text-[13.5px] text-[#161616]/75">{msg}</p>
       </div>
     );
@@ -115,7 +115,7 @@ export default function SuiteMoreForm({
         className="mt-3 flex w-full min-h-[52px] items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#F5B700] px-5 py-3 font-display text-[17px] font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616] disabled:opacity-50 disabled:hover:translate-y-0"
       >
         <span aria-hidden>🔨</span>
-        {state === 'sending' ? 'Queuing…' : 'Forge it for me now'}
+        {state === 'sending' ? 'Queuing…' : 'Build it for me now'}
       </button>
       {state === 'error' && <p className="mt-2 text-center font-mono text-xs text-[#C4160B]">{msg}</p>}
       <p className="mt-2 text-center font-body text-[12px] text-[#161616]/55">

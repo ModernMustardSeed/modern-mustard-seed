@@ -39,7 +39,7 @@ type PartnerFunnel = {
   name: string | null;
   email: string;
   code: string | null;
-  canForge: boolean;
+  canBuild: boolean;
   mints: number;
   hubOpens: number;
   checkouts: number;
@@ -133,26 +133,26 @@ export async function GET() {
     const partners: PartnerFunnel[] = (affiliates || []).map((a) => {
       const mid = byAff.get(a.id as string) || { mints: 0, hubOpens: 0, checkouts: 0 };
       const money = (a.code ? byCode.get((a.code as string).trim()) : null) || { installs: 0, mrrCents: 0 };
-      const canForge = Boolean(a.can_forge);
+      const canBuild = Boolean(a.can_forge);
       return {
         id: a.id as string,
         name: (a.name as string | null) ?? null,
         email: a.email as string,
         code: (a.code as string | null) ?? null,
-        canForge,
+        canBuild,
         mints: mid.mints,
         hubOpens: mid.hubOpens,
         checkouts: mid.checkouts,
         installs: money.installs,
         mrrCents: money.mrrCents,
-        activated: canForge && mid.mints > 0,
+        activated: canBuild && mid.mints > 0,
       };
     });
 
     // The flywheel cohort: partners who can mint or already have. Others (a
     // partner who only ever earned a product commission) are not in this funnel.
     const cohort = partners
-      .filter((p) => p.canForge || p.mints > 0)
+      .filter((p) => p.canBuild || p.mints > 0)
       .sort((a, b) => b.mints - a.mints || b.hubOpens - a.hubOpens || b.mrrCents - a.mrrCents);
 
     const totals: FlywheelTotals = {

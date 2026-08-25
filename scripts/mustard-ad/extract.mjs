@@ -37,7 +37,7 @@ mkdirSync(OUT, { recursive: true });
 const PAD = 0.18;
 const BEATS = [
   { id: 'm1', from: 33.48, to: 36.09, text: "We can fix both of those. What's the business called?" },
-  { id: 'm2a', from: 47.71, to: 49.38, text: 'Alright. Firing up the forge right now.' },
+  { id: 'm2a', from: 47.71, to: 49.38, text: 'Alright. Firing up the build right now.' },
   { id: 'm2b', from: 51.12, to: 53.00, text: 'Give me about forty seconds on the phone part.' },
   { id: 'm3', from: 62.03, to: 65.44, text: "It's done. Her agent is live right now. Wanna hear her take a booking?" },
   { id: 'm4', from: 82.02, to: 87.92, text: "Nothing. Free. No credit card. No sales call. The website takes a bit longer. It'll be in your inbox inside the hour." },

@@ -1,7 +1,7 @@
 /**
  * REAL end-to-end send test for the sidekick drip. Sends ONE actual email
  * through the exact production path (sidekickDrip → sendViaResend → Resend),
- * scoped to a single throwaway lead so no real forger is touched, then cleans
+ * scoped to a single throwaway lead so no real builder is touched, then cleans
  * up every row it created.
  *
  * Proves: real render, real Resend accept, real List-Unsubscribe header, real
@@ -41,7 +41,7 @@ const runId = randomUUID();
 const KEY = (id: string) => `skdrip:${id}`;
 const created = new Date(Date.now() - 30 * 3600 * 1000).toISOString(); // 30h old: touch 1 is due (>=20h, <=96h)
 
-console.log(`Inserting throwaway sidekick-forge lead -> ${dest}`);
+console.log(`Inserting throwaway sidekick-build lead -> ${dest}`);
 const { data: lead, error: insErr } = await sb
   .from('leads')
   .insert({

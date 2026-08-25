@@ -1,13 +1,13 @@
 /**
  * THE PARKED COMPANION FIX (2026-07-23).
  *
- * Every forged site ships the cursor companion the directive asks for: a small
+ * Every built site ships the cursor companion the directive asks for: a small
  * themed glyph (a paw, an anchor, a spray gun, or on the plainer builds just a
  * dot) that rides the pointer, position:fixed, pointer-events:none.
  *
  * The directive never said what that glyph should do when the pointer STOPS, so
  * the builds each guessed, and a lot of them guessed wrong. Observed across the
- * twelve most recent forges:
+ * twelve most recent builds:
  *   - three park the glyph ON SCREEN before the visitor has moved the mouse at
  *     all (millender and sons sat one dead centre of the hero photograph at
  *     0.92 opacity; Finer Floors sat one in the hero's top-left corner)
@@ -22,8 +22,8 @@
  * on touch. It only ever manages an element it has WATCHED follow the pointer,
  * so a legitimate fixed decoration is left alone.
  *
- * Applied at every surface the forged html reaches a human: the demo route
- * (fixes every site already in the table without a re-forge) and the client
+ * Applied at every surface the built html reaches a human: the demo route
+ * (fixes every site already in the table without a rebuild) and the client
  * publish path (fixes the ones people paid for). New builds are born correct via
  * the companion rules in lib/site-directive.mjs, and the shim is idempotent, so
  * carrying both costs nothing.
@@ -37,11 +37,11 @@
  * then holds that spot while the page scrolls under it, which is exactly the
  * complaint. lib/site-directive.mjs banned the glyph the same day, but a law only
  * governs the NEXT build: it cannot reach the sites already in the table, and it
- * does not always land on the one-shot API path either (Underscore Art, forged by
+ * does not always land on the one-shot API path either (Underscore Art, built by
  * the failsafe at 19:32 that evening, came out with a dot two hours after the ban).
  *
  * So the removal lives here instead, where every surface already passes through
- * and no re-forge is needed. Two guards keep it from eating anything real:
+ * and no rebuild is needed. Two guards keep it from eating anything real:
  *   - a page carrying data-mms-tool-cursor is left entirely alone, because it was
  *     built under the law and its glyph is a drawn tool with traces that belong
  *   - an element is only ever judged AFTER it has been watched riding the pointer,
@@ -192,7 +192,7 @@ const SCRIPT = `<script data-${MARKER}>
 </script>`;
 
 /**
- * Append the settle shim to a forged document. Safe to call twice: the marker
+ * Append the settle shim to a built document. Safe to call twice: the marker
  * attribute makes a second pass a no-op.
  */
 export function settleCursorCompanions(html: string): string {

@@ -37,7 +37,7 @@ const sb = createClient(
   { auth: { persistSession: false } },
 );
 
-const MARK = 'forge fix 2026-07-29: display tracking floor';
+const MARK = 'build fix 2026-07-29: display tracking floor';
 
 /**
  * Find `selector { ... letter-spacing:-.055em ... }` and return the tight ones.
@@ -113,7 +113,7 @@ for (const { row, tight } of work) {
     .join('\n');
 
   const patch = `<style>
-/* --- forge fix 2026-07-29: display tracking floor --- */
+/* --- build fix 2026-07-29: display tracking floor --- */
 /* Ink measurement showed 3-6px of real glyph overlap below ${FLOOR}em, worst
    around punctuation, where a period is nearly all side bearing and tightening
    eats it. Only selectors that were already tighter than the floor are clamped. */
@@ -129,4 +129,4 @@ h1, h2, .mast-name, [class*="head"], [class*="title"] { font-kerning: normal; te
   fixed += 1;
   console.log(`  clamped ${row.business_name}`);
 }
-console.log(`\n${fixed} site(s) patched. Originals in .forge-backups/clash-<id>.html`);
+console.log(`\n${fixed} site(s) patched. Originals in .build-backups/clash-<id>.html`);

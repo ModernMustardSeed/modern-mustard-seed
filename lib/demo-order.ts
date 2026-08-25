@@ -1,5 +1,5 @@
 /**
- * "Order it right there" catalog for the forged-demo surfaces.
+ * "Order it right there" catalog for the built-demo surfaces.
  *
  * A prospect watching their own demo buys on the spot: monthly plan + one-time
  * setup, month to month, cancel anytime, no trials (the demo was the trial).
@@ -9,14 +9,14 @@
  *
  * THE COMMAND CENTER IS OFF THE SUITE AND OFF THE BUNDLE (Sarah, 2026-08-22).
  * It is still sold, at its own price, on its own page, through its own pay
- * link. What it is no longer is bundled, waived, forged automatically, or
+ * link. What it is no longer is bundled, waived, built automatically, or
  * suggested alongside anything else. Her reason, in her words: clients just
  * want it done, most already run software for it, and it is not perfected yet.
  * An offer that cannot ship clean poisons the two that can.
  *
  * So DEMO_ORDER_KEYS (what the demo suite offers) and PRICEABLE_KEYS (what a
  * pay link can quote) are now DIFFERENT LISTS, and that gap is the feature.
- * Anything that suggests, forges, bundles or waives the command center is a
+ * Anything that suggests, builds, bundles or waives the command center is a
  * regression, not an improvement.
  *
  * Pricing locked by Sarah 2026-07-11. REPRICED 2026-07-29: voice $397/$397,

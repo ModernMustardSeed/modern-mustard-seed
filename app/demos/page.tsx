@@ -59,7 +59,7 @@ const PIECES = [
 
 /**
  * THE DEMO STATION: the ad-funnel front door. Ads land here, the visitor
- * forges their own three-demo suite, the hub sells the keep, and the dial
+ * builds their own three-demo suite, the hub sells the keep, and the dial
  * floor follows up on everyone who stalls.
  *
  * Layout law here (learned the hard way): this page is a CONVERSION page, so
@@ -72,13 +72,13 @@ const PIECES = [
 /**
  * The full schema graph for /demos. This page previously carried FAQPage ONLY,
  * so AI crawlers could read the questions but had no idea what the Demo Station
- * offers or costs (added 2026-07-20 to match the /voice-agents/forge graph).
+ * offers or costs (added 2026-07-20 to match the /voice-agents/build graph).
  *
  * Every price is DERIVED from DEMO_PRODUCTS and DEMO_BUNDLE. Never type one
  * here: see the $197/$297 split that leaked into the trade FAQ schema.
  */
 function demosJsonLd() {
-  // Two, not three: the command center is not one of the demos we forge, so it
+  // Two, not three: the command center is not one of the demos we build, so it
   // is not one of the offers this page advertises (Sarah, 2026-08-25).
   const products = [DEMO_PRODUCTS.voice, DEMO_PRODUCTS.site];
   const offer = (name: string, monthlyCents: number, setupCents: number, desc: string) => ({
@@ -115,7 +115,7 @@ function demosJsonLd() {
         name: 'The Demo Station by Modern Mustard Seed',
         serviceType: 'Free AI business demos: voice agent and website',
         description:
-          'A free self-serve forge. Enter your business once and receive two working demos: a voice agent trained on your company, and a custom website designed from scratch. No account and no credit card.',
+          'A free self-serve build. Enter your business once and receive two working demos: a voice agent trained on your company, and a custom website designed from scratch. No account and no credit card.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         offers: [
@@ -142,7 +142,7 @@ function demosJsonLd() {
         step: [
           {
             '@type': 'HowToStep',
-            name: 'Tell the forge about your business',
+            name: 'Tell the build about your business',
             text: 'Business name, what you do, and where you are. One short form, no account and no card.',
           },
           {
@@ -211,7 +211,7 @@ export default async function DemosPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(demosJsonLd()) }}
       />
 
-      {/* ── Hero: headline left, the forge itself right. Never a centered column. ──
+      {/* ── Hero: headline left, the build itself right. Never a centered column. ──
            The site Navbar is FIXED, and its height CHANGES with width (70px on
            phone and desktop, 84px at ~1024, 102px around 768 where it wraps), so
            hero padding must clear the worst case before it starts breathing.
@@ -252,15 +252,15 @@ export default async function DemosPage({
               </ul>
 
               <a
-                href="#forge"
+                href="#build"
                 className="mt-8 inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform lg:hidden"
               >
-                Forge my demos →
+                Build my demos →
               </a>
             </div>
 
             {/* The proof: the film. Real motion beats another color block.
-                This is the STATION's own film (the forge), not the Demo Suite's
+                This is the STATION's own film (the build), not the Demo Suite's
                 welcome film. Different audience: cold ad traffic who have never
                 heard of us, versus someone who already has their demos. Served
                 from the 3.4MB web cut, not the 23MB master: this page is the
@@ -278,7 +278,7 @@ export default async function DemosPage({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/brand/mascot.png" alt="" width={34} height={34} className="shrink-0" />
                   <p className="font-body text-[13px] text-[#161616]/70 leading-snug">
-                    Thirty seconds at the forge: what we build you, and why it costs nothing.
+                    Thirty seconds at the build: what we build you, and why it costs nothing.
                   </p>
                 </div>
               </div>
@@ -289,11 +289,11 @@ export default async function DemosPage({
 
       <main className="max-w-6xl mx-auto px-6 py-12 lg:py-16 space-y-16">
         {/* ── The form. The whole point of the page, so it does not hide below cards. ── */}
-        <section id="forge" className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start scroll-mt-8">
+        <section id="build" className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start scroll-mt-8">
           <div className="lg:col-span-5">
-            <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Start the forge</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Start the build</span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 leading-[1.08]">
-              One short form from you. Then the forge does the rest.
+              One short form from you. Then the build does the rest.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/70 mt-4 leading-relaxed">
               Your voice agent demo answers as your business, and you talk to it right in your browser. The phone
@@ -401,7 +401,7 @@ export default async function DemosPage({
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               { n: '1', t: 'You tell us who you are', d: 'One short form, the one above. No card, no meeting.' },
-              { n: '2', t: 'The forge builds', d: 'Your Voice Agent opens right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within the hour, at the same hub, on its own.' },
+              { n: '2', t: 'The build runs', d: 'Your Voice Agent opens right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within the hour, at the same hub, on its own.' },
               {
                 n: '3',
                 t: 'Keep what you love',

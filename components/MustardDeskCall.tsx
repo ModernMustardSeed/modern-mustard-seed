@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { BuiltCall } from '@/lib/sidekick';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
@@ -11,7 +11,7 @@ type CallState = 'idle' | 'forging' | 'connecting' | 'live' | 'ended' | 'error';
 
 /**
  * Mr. Mustard's desk line: the floating voice pill for internal surfaces
- * (admin, client portal, partner hub). Forges the desk persona on demand from
+ * (admin, client portal, partner hub). Builds the desk persona on demand from
  * the gated endpoint, then runs a live web call. The mascot bounces with his
  * actual speech volume while he talks, so the pill feels alive on the line.
  */
@@ -57,7 +57,7 @@ export default function MustardDeskCall({
     setSeconds(0);
     try {
       const res = await fetch(endpoint, { method: 'POST' });
-      const json = (await res.json().catch(() => ({}))) as { call?: ForgedCall; error?: string };
+      const json = (await res.json().catch(() => ({}))) as { call?: BuiltCall; error?: string };
       if (!res.ok || !json.call) {
         setState('error');
         setError(
