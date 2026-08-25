@@ -28,7 +28,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { toVoiceGender, sidekickVoice, type VoiceGender } from '@/lib/sidekick-voice';
+import { toVoiceGender, demoVoice, type VoiceGender } from '@/lib/demo-voice';
 import { TRADE_DEFS } from '@/lib/acq/trades';
 import type { Trade } from '@/lib/acq/types';
 
@@ -160,7 +160,7 @@ export async function provisionFrontOffice(sb: SupabaseClient, input: ProvisionI
       business_name: business,
       status: 'provisioning',
       voice_gender: voice,
-      voice_id: sidekickVoice(voice).voiceId,
+      voice_id: demoVoice(voice).voiceId,
       greeting: defaultGreeting(business),
       forward_from: input.phone ?? null,
       // Nights and weekends by default, which is what the KEEP HER email

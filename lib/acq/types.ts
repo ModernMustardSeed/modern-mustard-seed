@@ -157,7 +157,7 @@ export type QueueKind = (typeof QUEUE_KINDS)[number];
 
 /**
  * The offer this campaign sells, read from the ONE place price lives
- * (data/sidekick.ts → lib/demo-order.ts). Never retype the number: if Sarah
+ * (data/demo-agent.ts → lib/demo-order.ts). Never retype the number: if Sarah
  * reprices the Voice Agent, the emails, the goal math and Mr. Mustard's script
  * all move with it on the next request.
  */

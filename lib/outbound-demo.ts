@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { forgeCall } from '@/lib/sidekick';
-import { saveRun, updateRunBrief } from '@/lib/sidekick-store';
+import { forgeCall } from '@/lib/demo-agent';
+import { saveRun, updateRunBrief } from '@/lib/demo-run-store';
 import { NICHE_LABELS } from '@/lib/outbound';
 import type { Niche, OutboundLead } from '@/lib/outbound';
 import { detectTrade, TRADE_PRESETS, VOICE_SERVICES } from '@/data/demo-os-trades';
@@ -30,7 +30,7 @@ export function leadTrade(lead: Pick<OutboundLead, 'business_name' | 'notes' | '
  */
 
 /** Cockpit niches to Voice Agent verticals. */
-export const SIDEKICK_VERTICAL: Record<Niche, string> = {
+export const DEMO_AGENT_VERTICAL: Record<Niche, string> = {
   home_service: 'home-services',
   restaurant: 'restaurant',
   dental_medspa: 'health',
@@ -104,7 +104,7 @@ export async function forgeLeadVoiceDemo(
   const instruction = (opts?.instruction ?? '').trim().slice(0, 600);
   const profile = {
     business: lead.business_name,
-    verticalId: SIDEKICK_VERTICAL[niche] ?? 'professional',
+    verticalId: DEMO_AGENT_VERTICAL[niche] ?? 'professional',
     city: lead.city || 'your area',
     ownerName: lead.contact_name || 'the owner',
     services: buildVoiceServices(lead, leadTrade(lead), instruction),

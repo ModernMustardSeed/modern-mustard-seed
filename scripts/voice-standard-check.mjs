@@ -35,7 +35,7 @@ const read = (p) => (existsSync(resolve(root, p)) ? readFileSync(resolve(root, p
  */
 const FUNNELS = [
   {
-    file: 'lib/sidekick.ts',
+    file: 'lib/demo-agent.ts',
     must: 'ensureReadbackStandard(systemPrompt)',
     why: 'demoModel() builds every forged demo, desk call and interview agent.',
   },

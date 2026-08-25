@@ -2,7 +2,7 @@
  * The agent voice picker: female or male, one source of truth.
  *
  * Pure constants and helpers, no server imports, so both the server forge
- * (lib/sidekick.ts, the outbound-call path) and the browser call widgets can
+ * (lib/demo-agent.ts, the outbound-call path) and the browser call widgets can
  * import it. The chosen voice rides as a Vapi `voice` override on the call, so
  * the same base assistant answers in either voice with no second assistant to
  * provision.
@@ -24,7 +24,7 @@ export type VoiceGender = 'male' | 'female';
 
 export type VapiVoice = { provider: 'vapi'; voiceId: string };
 
-export const SIDEKICK_VOICES: Record<VoiceGender, VapiVoice> = {
+export const DEMO_AGENT_VOICES: Record<VoiceGender, VapiVoice> = {
   male: { provider: 'vapi', voiceId: 'Sid' },
   female: { provider: 'vapi', voiceId: 'Clara' },
 };
@@ -38,11 +38,11 @@ export function toVoiceGender(g?: string | null): VoiceGender {
 }
 
 /** The Vapi voice override for a chosen gender. */
-export function sidekickVoice(g?: string | null): VapiVoice {
-  return SIDEKICK_VOICES[toVoiceGender(g)];
+export function demoVoice(g?: string | null): VapiVoice {
+  return DEMO_AGENT_VOICES[toVoiceGender(g)];
 }
 
 /** Recover the gender from a voiceId so a UI can seed its toggle from a forged call. */
 export function genderFromVoiceId(voiceId?: string | null): VoiceGender {
-  return voiceId === SIDEKICK_VOICES.female.voiceId ? 'female' : 'male';
+  return voiceId === DEMO_AGENT_VOICES.female.voiceId ? 'female' : 'male';
 }

@@ -139,7 +139,7 @@ That is exactly the kind of thing that gets caught.
 > build and $297 a month, scoped on a 15 minute call. Go time your own phone
 > first though, you might just need the text-back switched on.
 
-> ⚠️ Price check before posting: from `data/sidekick.ts`, 2026-07-28. Re-read the
+> ⚠️ Price check before posting: from `data/demo-agent.ts`, 2026-07-28. Re-read the
 > file if the tiers have moved. Never type a price from memory.
 
 ---

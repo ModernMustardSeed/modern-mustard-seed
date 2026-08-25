@@ -29,7 +29,7 @@ import { getProductBySlug, getBundleBySlug, products as ALL_PRODUCTS } from '@/d
 import { programBundle } from '@/data/programs';
 import { getSignedDownloadUrl } from '@/lib/storage';
 import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccessEmail, leadNotification, subscriptionPaymentFailedEmail, clientEmail } from '@/lib/email';
-import { getSidekickTier, sidekickUsd } from '@/data/sidekick';
+import { getDemoAgentTier, demoAgentUsd } from '@/data/demo-agent';
 import { getChiefTier, chiefUsd } from '@/data/chief';
 import { getPicturesTier, PICTURES } from '@/data/pictures';
 import { getBroadcastTier } from '@/data/ads';
@@ -718,7 +718,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
   // Voice Agent renewals get their own recovery note (the /portal link below is
   // for proposal clients and means nothing to a Voice Agent buyer).
   const subMeta = (invoice as { subscription_details?: { metadata?: Record<string, string> } }).subscription_details?.metadata;
-  if (subMeta?.kind === 'sidekick') {
+  if (subMeta?.kind === 'demo-agent') {
     const skEmail = invoice.customer_email;
     if (process.env.RESEND_API_KEY && skEmail) {
       const business = escapeHtmlSafe(subMeta.business || 'your business');
@@ -750,7 +750,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
           }),
         });
       } catch (err) {
-        console.error('sidekick dunning email failed', err);
+        console.error('demo agent dunning email failed', err);
       }
     }
     return;
@@ -1061,13 +1061,13 @@ async function handleRefundClawback(stripe: ReturnType<typeof getStripe>, charge
  * the buyer, tells Sarah to PROVISION, and welcomes the client. Fulfillment
  * is hand-installed within 7 days.
  */
-async function handleSidekickPurchase(
+async function handleDemoAgentPurchase(
   session: Stripe.Checkout.Session,
   slug: string,
   email: string,
   name: string | null
 ) {
-  const tier = getSidekickTier(slug);
+  const tier = getDemoAgentTier(slug);
   const businessRaw = (session.metadata?.business || '').trim();
   const business = escapeHtmlSafe(businessRaw);
   const firstName = name?.split(' ')[0];
@@ -1078,12 +1078,12 @@ async function handleSidekickPurchase(
       type: 'contact',
       email,
       name: name ?? null,
-      source: 'sidekick-buyer',
+      source: 'demo-agent-buyer',
       status: 'new',
       notes: `[bought:${slug}]${businessRaw ? ` business: ${businessRaw}` : ''} PROVISION within 7 days`,
     });
   } catch (err) {
-    console.error('sidekick lead insert failed', err);
+    console.error('demo agent lead insert failed', err);
   }
 
   const apiKey = process.env.RESEND_API_KEY;
@@ -1099,12 +1099,12 @@ async function handleSidekickPurchase(
         preheader: 'A Voice Agent was kept. Install within 7 days.',
         eyebrow: 'VOICE AGENT ORDER',
         greeting: 'He got hired.',
-        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just kept their Voice Agent${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${sidekickUsd(tier.setupCents)} setup + $${sidekickUsd(tier.monthlyCents)}/mo, ${tier.minutesCap.toLocaleString()} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=sidekick-demo.</p>`,
+        body: `<p><strong>${safeName ?? escapeHtmlSafe(email)}</strong> just kept their Voice Agent${business ? ` for <strong>${business}</strong>` : ''}.</p><p>Plan: ${tier?.name ?? slug} (${tier ? `$${demoAgentUsd(tier.setupCents)} setup + $${demoAgentUsd(tier.monthlyCents)}/mo, ${tier.minutesCap.toLocaleString()} min cap` : slug}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: live within 7 days, installed by hand. Their forge run and transcript are in Vapi under metadata kind=demo-agent.</p>`,
         signature: 'The Forge',
       }),
     });
   } catch (err) {
-    console.error('sidekick provision email failed', err);
+    console.error('demo agent provision email failed', err);
   }
 
   try {
@@ -1123,7 +1123,7 @@ async function handleSidekickPurchase(
       }),
     });
   } catch (err) {
-    console.error('sidekick welcome email failed', err);
+    console.error('demo agent welcome email failed', err);
   }
 }
 
@@ -2124,7 +2124,7 @@ async function handlePicturesPurchase(
         preheader: 'A commercial was greenlit. Pipeline runbook: ~/launch-studio.',
         eyebrow: 'MUSTARD PICTURES ORDER',
         greeting: 'Lights. Camera.',
-        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> greenlit <strong>${tier?.name ?? slug}</strong>${business ? ` for <strong>${business}</strong>` : ''} ($${tier?.priceUsd ?? '?'}${isSub ? '/mo' : ''}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise: ${slug === 'pictures-premiere' ? PICTURES.deliveryPromisePremiere : PICTURES.deliveryPromiseSpot}. Pipeline: clone ~/launch-studio/projects/sidekick-commercial, swap the shots for their storyboard below.</p>${brief}`,
+        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> greenlit <strong>${tier?.name ?? slug}</strong>${business ? ` for <strong>${business}</strong>` : ''} ($${tier?.priceUsd ?? '?'}${isSub ? '/mo' : ''}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise: ${slug === 'pictures-premiere' ? PICTURES.deliveryPromisePremiere : PICTURES.deliveryPromiseSpot}. Pipeline: clone ~/launch-studio/projects/demo-agent-commercial, swap the shots for their storyboard below.</p>${brief}`,
         signature: 'The Studio',
       }),
     });
@@ -2566,7 +2566,7 @@ async function handlePicturesSubscriptionDeleted(sub: Stripe.Subscription) {
 }
 
 /** A Voice Agent subscription ended: Sarah decommissions the line by hand. */
-async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
+async function handleDemoAgentSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
   try {
@@ -2584,7 +2584,7 @@ async function handleSidekickSubscriptionDeleted(sub: Stripe.Subscription) {
       }),
     });
   } catch (err) {
-    console.error('sidekick offboard email failed', err);
+    console.error('demo agent offboard email failed', err);
   }
 }
 
@@ -2692,9 +2692,9 @@ export async function POST(req: Request) {
       await handleLaunchSubscriptionDeleted(stripe, sub);
       return NextResponse.json({ received: true, kind: 'launch_subscription_canceled' });
     }
-    if (sub.metadata?.kind === 'sidekick') {
-      await handleSidekickSubscriptionDeleted(sub);
-      return NextResponse.json({ received: true, kind: 'sidekick_subscription_canceled' });
+    if (sub.metadata?.kind === 'demo-agent') {
+      await handleDemoAgentSubscriptionDeleted(sub);
+      return NextResponse.json({ received: true, kind: 'demo_agent_subscription_canceled' });
     }
     if (sub.metadata?.kind === 'chief') {
       await handleChiefSubscriptionDeleted(stripe, sub);
@@ -2852,9 +2852,9 @@ export async function POST(req: Request) {
   }
 
   // ── VOICE AGENT subscription started (setup fee rides the first invoice) ──
-  if (session.metadata?.kind === 'sidekick') {
-    await handleSidekickPurchase(session, slug, email, name ?? null);
-    return NextResponse.json({ received: true, kind: 'sidekick' });
+  if (session.metadata?.kind === 'demo-agent') {
+    await handleDemoAgentPurchase(session, slug, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'demo-agent' });
   }
 
   // ── CLIENT FACTORY purchased. Provision the tenant, seat the buyer, apply the

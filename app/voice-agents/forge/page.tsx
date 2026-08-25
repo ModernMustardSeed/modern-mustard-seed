@@ -1,11 +1,11 @@
 import { buildMetadata, SITE } from '@/lib/seo';
-import { SIDEKICK, sidekickTiers, sidekickFaq, sidekickUsd } from '@/data/sidekick';
-import ForgeExperience from '@/components/sidekick/ForgeExperience';
-import { HowItWorks, Boundaries, Faq, MeetTheTrainer, CrossSell, GiveHimAHome } from '@/components/sidekick/SidekickSections';
+import { DEMO_AGENT, demoAgentTiers, demoAgentFaq, demoAgentUsd } from '@/data/demo-agent';
+import ForgeExperience from '@/components/demo-agent/ForgeExperience';
+import { HowItWorks, Boundaries, Faq, MeetTheTrainer, CrossSell, GiveHimAHome } from '@/components/demo-agent/DemoAgentSections';
 
 export const metadata = buildMetadata({
-  title: SIDEKICK.metaTitle,
-  description: SIDEKICK.metaDescription,
+  title: DEMO_AGENT.metaTitle,
+  description: DEMO_AGENT.metaDescription,
   path: '/voice-agents/forge',
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
@@ -13,13 +13,13 @@ export const metadata = buildMetadata({
   // PARKED 2026-08-12 (Sarah). The site already has /voice-agents and /demos, so
   // the forge landing is unlisted from every nav, the sitemap, and llms.txt, and
   // noindexed. It still answers at its URL on purpose: the Meta campaign lands
-  // here with UTMs, Stripe checkout returns here, and the Sidekick drip links
+  // here with UTMs, Stripe checkout returns here, and the demo agent drip links
   // here. The /forge/demo/<runId> and /forge/welcome subroutes are unaffected.
   // Drop this flag and restore the nav rows to bring the department back.
   noindex: true,
 });
 
-export default function SidekickPage() {
+export default function DemoAgentPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -27,17 +27,17 @@ export default function SidekickPage() {
         '@type': 'Service',
         name: 'Voice Agent by Modern Mustard Seed',
         serviceType: 'voice agent for small businesses',
-        description: SIDEKICK.metaDescription,
+        description: DEMO_AGENT.metaDescription,
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
-        offers: sidekickTiers.map((t) => ({
+        offers: demoAgentTiers.map((t) => ({
           '@type': 'Offer',
           name: t.name,
-          price: sidekickUsd(t.monthlyCents),
+          price: demoAgentUsd(t.monthlyCents),
           priceCurrency: 'USD',
           priceSpecification: {
             '@type': 'UnitPriceSpecification',
-            price: sidekickUsd(t.monthlyCents),
+            price: demoAgentUsd(t.monthlyCents),
             priceCurrency: 'USD',
             billingIncrement: 1,
             unitText: 'MONTH',
@@ -57,7 +57,7 @@ export default function SidekickPage() {
       },
       {
         '@type': 'FAQPage',
-        mainEntity: sidekickFaq.map((f) => ({
+        mainEntity: demoAgentFaq.map((f) => ({
           '@type': 'Question',
           name: f.q,
           acceptedAnswer: { '@type': 'Answer', text: f.a },
@@ -79,7 +79,7 @@ export default function SidekickPage() {
               Your missed calls just met<br className="hidden md:block" /> their worst enemy.
             </h1>
             <p className="font-body text-base md:text-lg text-[#161616]/70 max-w-2xl mx-auto mt-5 leading-relaxed">
-              {SIDEKICK.promise}
+              {DEMO_AGENT.promise}
             </p>
             <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#161616]/70 mt-5">
               Free · No card · He talks to you live

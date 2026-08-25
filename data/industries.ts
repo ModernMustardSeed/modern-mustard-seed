@@ -51,7 +51,7 @@ export type Industry = {
 
 /** Copy for the two forge destinations, so no page invents its own promise. */
 export const FORGE_CTA = {
-  sidekick: {
+  voiceAgent: {
     href: '/voice-agents' as const,
     label: 'Hear One Answer Now',
     blurb:
@@ -69,7 +69,7 @@ export const industries: Industry[] = [
   // 1. Real Estate Investors
   {
     slug: 'real-estate-investors',
-    forge: FORGE_CTA.sidekick,
+    forge: FORGE_CTA.voiceAgent,
     name: 'Real Estate Investors',
     shortName: 'Investors',
     metaTitle: 'AI Tools for Real Estate Investors. What to Build First.',
@@ -167,7 +167,7 @@ export const industries: Industry[] = [
   // 2. Realtors / Real Estate Agents
   {
     slug: 'realtors',
-    forge: FORGE_CTA.sidekick,
+    forge: FORGE_CTA.voiceAgent,
     name: 'Real Estate Agents',
     shortName: 'Realtors',
     metaTitle: 'AI Tools for Realtors and Real Estate Agents. Win the Next Five Years.',
@@ -263,7 +263,7 @@ export const industries: Industry[] = [
   // 3. Service Businesses
   {
     slug: 'service-businesses',
-    forge: FORGE_CTA.sidekick,
+    forge: FORGE_CTA.voiceAgent,
     name: 'Service Businesses',
     shortName: 'Service Pros',
     metaTitle: 'AI for Service Businesses. Voice Agents and Automation, Built Custom.',
@@ -565,7 +565,7 @@ export const industries: Industry[] = [
   // 6. Coaches and Consultants
   {
     slug: 'coaches-consultants',
-    forge: FORGE_CTA.sidekick,
+    forge: FORGE_CTA.voiceAgent,
     name: 'Coaches and Consultants',
     shortName: 'Coaches',
     metaTitle: 'AI for Coaches and Consultants. Reclaim Your Calendar.',

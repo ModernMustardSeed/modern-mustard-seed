@@ -36,7 +36,7 @@ const DEMO_MINUTES = 60;
 /**
  * What a demo business is open, when nobody told us.
  *
- * ⚠️ A demo has no posted hours. `sidekick_runs.hours` is free text a visitor
+ * ⚠️ A demo has no posted hours. the run's `hours` is free text a visitor
  * typed, and on an outbound forge it is usually empty entirely, because we
  * scraped the business rather than asking it. The real product treats an
  * unreadable day as CLOSED, which is right for a paying office (offering a 3am

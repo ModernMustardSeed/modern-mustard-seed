@@ -4,7 +4,7 @@
 -- Before this, a buyer's post-purchase fate was decided entirely by which `kind`
 -- branch they hit in the Stripe webhook. Demo/proposal buyers became real portal
 -- clients with a project; Chief/program buyers got a separate entitlement HQ;
--- Sidekick/Pictures/Ads/Hatchery/Press/GEO/Switchboard buyers became nothing but
+-- Demo agent/Pictures/Ads/Hatchery/Press/GEO/Switchboard buyers became nothing but
 -- a lead row and a note in Sarah's inbox. Three disjoint worlds, no shared record.
 --
 -- client_products is the one normalized thing EVERY paid offer writes, so a signed-in
@@ -19,7 +19,7 @@
 create table if not exists public.client_products (
   id uuid primary key default gen_random_uuid(),
   client_email text not null,                       -- tenancy, like every portal table
-  kind text not null,                               -- 'demo-order','chief','sidekick','pictures','ads','press','hatchery','geo','program','mustard-mode','mustard-launch','switchboard','store','engagement'
+  kind text not null,                               -- 'demo-order','chief','demo agent','pictures','ads','press','hatchery','geo','program','mustard-mode','mustard-launch','switchboard','store','engagement'
   label text not null,                              -- human name of what they own, e.g. "The Chief"
   tier text,                                        -- plan name (free text; clients.tier is CHECK-constrained, this is not)
   status text not null default 'provisioning',      -- provisioning | building | in_production | active | delivered

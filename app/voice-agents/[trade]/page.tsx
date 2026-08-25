@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, faqJsonLd, serviceJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { getTradePage, liveTradePages, tradeFaqs, DEMO_LINE } from '@/data/trade-pages';
-import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
+import { demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
 import MissedCallMath from '@/components/voice-agents/MissedCallMath';
 
 /**
@@ -327,7 +327,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               {
                 n: '03',
                 t: 'We Install It',
-                b: `A human at Modern Mustard Seed wires it to your real line, services, hours, and booking flow. Plans from $${sidekickUsd(sidekickTiers[0].monthlyCents)} a month, hard caps, no trial games.`,
+                b: `A human at Modern Mustard Seed wires it to your real line, services, hours, and booking flow. Plans from $${demoAgentUsd(demoAgentTiers[0].monthlyCents)} a month, hard caps, no trial games.`,
               },
             ].map((s) => (
               <div key={s.n} className="rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616]">

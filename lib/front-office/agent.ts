@@ -21,7 +21,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { sidekickVoice } from '@/lib/sidekick-voice';
+import { demoVoice } from '@/lib/demo-voice';
 import { SITE } from '@/lib/seo';
 import { frontOfficeTools } from '@/lib/front-office/tools';
 import { env, envAny } from '@/lib/env';
@@ -174,7 +174,7 @@ export function assistantConfig(office: OfficeRow, transfers: TransferRow[]): Re
   return {
     name: `${office.business_name} front desk`,
     firstMessage: firstMessageFor(office),
-    voice: sidekickVoice(office.voice_gender),
+    voice: demoVoice(office.voice_gender),
     model: {
       provider: 'openai',
       model: 'gpt-4o',

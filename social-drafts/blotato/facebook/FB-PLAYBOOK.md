@@ -232,7 +232,7 @@ Real weekly cost after batching: **about 2 hours 45 minutes.** That is the hones
 
 ## 9. Guardrails (the same discipline as the LI/X lane)
 
-- **Never type a price.** Prices derive from `sidekickTiers`. Facebook posts carry no prices at all.
+- **Never type a price.** Prices derive from `demoAgentTiers`. Facebook posts carry no prices at all.
 - **No fabricated clients, names, or numbers.** Businesses in the content are archetypes ("a roofer in a mountain town"). Stats are category truths. Real client wins only with written permission.
 - **No em dashes.** Periods, commas, parentheses.
 - **Teardowns are volunteers only.** Never a business that did not raise its hand.

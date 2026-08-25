@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { ForgedCall } from '@/lib/sidekick';
-import { sidekickVoice } from '@/lib/sidekick-voice';
+import type { ForgedCall } from '@/lib/demo-agent';
+import { demoVoice } from '@/lib/demo-voice';
 import { possessive } from '@/lib/business-name';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
@@ -94,7 +94,7 @@ export default function DemoVoiceWidget({
         silenceTimeoutSeconds: call.silenceTimeoutSeconds,
         maxDurationSeconds: call.maxDurationSeconds,
         metadata: call.metadata,
-        voice: sidekickVoice('female'),
+        voice: demoVoice('female'),
       } as never);
     } catch (err) {
       setState('error');
