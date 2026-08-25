@@ -60,6 +60,29 @@ export default async function MustardPage({
   const requestHeaders = await headers();
   const attribution = readAttribution(url, requestHeaders as unknown as Headers);
 
+  /**
+   * THE KEYPAD IN THE EMAIL FINISHES HERE.
+   *
+   * The cold email carries the same Model RR-1, drawn in tables, where no
+   * JavaScript exists to make it add up. Its keys are links, and each one hands
+   * over the three inputs the email displayed plus the digit that was pressed,
+   * so the machine on this page opens on the SAME figure rather than on the
+   * house defaults. Landing on a different number than the one that made them
+   * tap is how the email's arithmetic becomes a number we apparently invented.
+   *
+   * Every value is clamped, because these arrive off a link a stranger can edit.
+   */
+  const num = (k: string, max: number): number | null => {
+    const v = Number(one(k));
+    return Number.isFinite(v) && v > 0 ? Math.min(max, Math.round(v)) : null;
+  };
+  const machine = {
+    missed: num('m', 200),
+    close: num('c', 100),
+    ticket: num('t', 500000),
+    typed: /^([0-9]|C)$/.test(one('k')) ? one('k') : null,
+  };
+
   const surface = await getSurface(one('s') || undefined);
   const version = consentVersion(surface.consent_version) ?? CURRENT_CONSENT;
 
@@ -570,7 +593,13 @@ export default async function MustardPage({
             Every bubble carries its source under the figure for that reason.
           */}
           <div className="mt-14 grid gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start">
-            <MissedMoney monthlyPrice={formatUsd(DEMO_BUNDLE.monthlyCents)} />
+            <MissedMoney
+              monthlyPrice={formatUsd(DEMO_BUNDLE.monthlyCents)}
+              missedPreset={machine.missed}
+              closePreset={machine.close}
+              ticketPreset={machine.ticket}
+              typedKey={machine.typed}
+            />
 
             <div>
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#C4160B]">
