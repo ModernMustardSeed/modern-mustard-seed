@@ -22,6 +22,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
 import { activeSuppressions } from '@/lib/email-log';
 import { getAcqSettings, getCampaign } from '@/lib/acq/settings';
+import { isInternalAddress } from '@/lib/owner';
 import { denverParts, nextWindowOpen } from '@/lib/acq/send';
 import { isMailableEmailStatus } from '@/lib/acq/types';
 import type { AcqCampaign, AcqProspect, AcqSettings } from '@/lib/acq/types';
@@ -255,6 +256,13 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
   const email = (lead.email ?? '').trim().toLowerCase();
   add('address', 'Recipient address', Boolean(email), email ? email : 'No email address on the prospect.');
   if (!email) return deny();
+
+  // Eligibility is cached on the lead row and can be stale; this is the live
+  // gate, so the same rule is enforced again here. Mailing our own inbox burns
+  // a send, teaches the funnel a lie, and reads to Resend as self-traffic.
+  const ours = isInternalAddress(email);
+  add('not-ours', 'Recipient is theirs', !ours, ours ? `${email} is one of our own addresses, not the prospect's.` : 'A real outside address.');
+  if (ours) return deny();
 
   add('test', 'Real prospect', !lead.is_test, lead.is_test ? 'Marked as a test prospect.' : 'Real prospect.');
   if (lead.is_test) return deny();

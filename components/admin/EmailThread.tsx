@@ -283,9 +283,24 @@ function Fact({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ScheduledRow({ s, openId, setOpenId }: { s: ScheduledMessage; openId: string | null; setOpenId: (id: string | null) => void }) {
+function ScheduledRow({
+  s,
+  openId,
+  setOpenId,
+  onSendNow,
+  sending,
+}: {
+  s: ScheduledMessage;
+  openId: string | null;
+  setOpenId: (id: string | null) => void;
+  onSendNow: ((step: number) => void) | null;
+  sending: boolean;
+}) {
   const open = openId === s.id;
   const failed = s.status === 'failed';
+  // Only a projected email can be pulled forward. A queued one is already
+  // committed and jumping it would just make a second row for the same step.
+  const canSendNow = Boolean(onSendNow) && s.source === 'projected' && s.kind === 'email' && Boolean(s.step);
   return (
     <li className={`rounded-xl border-2 ${failed ? 'border-[#E0301E]/45 bg-[#E0301E]/[0.05]' : 'border-[#F5B700] bg-[#F5B700]/[0.10]'}`}>
       <button
@@ -309,7 +324,25 @@ function ScheduledRow({ s, openId, setOpenId }: { s: ScheduledMessage; openId: s
       </button>
       {open && (
         <div className="border-t-2 border-[#161616]/10 px-3.5 py-3">
-          <p className="text-[12px] text-[#161616]/70">{s.note}</p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="min-w-0 flex-1 text-[12px] text-[#161616]/70">{s.note}</p>
+            {canSendNow && (
+              <button
+                type="button"
+                disabled={sending}
+                onClick={() => onSendNow?.(s.step as number)}
+                className="shrink-0 rounded-xl border-2 border-[#161616] bg-[#F5B700] px-3.5 py-2 font-oswald text-xs font-semibold uppercase tracking-[0.08em] text-[#161616] shadow-[3px_3px_0_0_#161616] transition-all hover:-translate-y-0.5 disabled:opacity-40"
+              >
+                {sending ? 'Queueing...' : 'Send this one now'}
+              </button>
+            )}
+          </div>
+          {canSendNow && (
+            <p className="mt-1.5 text-[11px] leading-snug text-[#161616]/55">
+              It jumps the drip gap and goes out in the next send window. The governor still applies: the window, the
+              daily cap and the bounce brake all still have to say yes.
+            </p>
+          )}
           <Preview html={s.html} text={null} />
           <Links links={s.links} />
         </div>
@@ -332,6 +365,8 @@ export default function EmailThread({
   const [loading, setLoading] = useState(true);
   const [openSent, setOpenSent] = useState<string | null>(null);
   const [openNext, setOpenNext] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+  const [notice, setNotice] = useState('');
 
   const load = useCallback(async () => {
     if (!leadId && !email) {
@@ -358,6 +393,42 @@ export default function EmailThread({
   useEffect(() => {
     void load();
   }, [load]);
+
+  /**
+   * Pull an email forward. This QUEUES it rather than sending it, because every
+   * campaign send goes through the governor and the send window exists to
+   * protect the domain the client invoices ride on. Nothing here is an override
+   * of that; it only removes the wait.
+   */
+  const sendNow = useCallback(
+    async (step: number) => {
+      const id = thread?.leadId;
+      if (!id) return;
+      setSending(true);
+      setNotice('');
+      setError('');
+      try {
+        const res = await fetch(`/api/admin/acquisition/prospects/${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'queue-email', step }),
+        });
+        const json = (await res.json().catch(() => ({}))) as { created?: boolean; error?: string };
+        if (!res.ok) throw new Error(json.error || `Could not queue it (${res.status}).`);
+        setNotice(
+          json.created
+            ? `Email ${step} is queued. It leaves in the next send window.`
+            : `Email ${step} was already queued, so nothing changed.`,
+        );
+        await load();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Could not queue it.');
+      } finally {
+        setSending(false);
+      }
+    },
+    [thread?.leadId, load],
+  );
 
   const counts = useMemo(() => {
     const ms = thread?.messages ?? [];
@@ -393,6 +464,7 @@ export default function EmailThread({
       </div>
 
       {error && <p className="mb-3 text-sm font-semibold text-[#E0301E]">{error}</p>}
+      {notice && <p className="mb-3 text-sm font-semibold text-[#3f5d34]">{notice}</p>}
 
       {loading && !thread && <p className="text-sm text-[#161616]/60">Opening the mailbox...</p>}
 
@@ -431,7 +503,14 @@ export default function EmailThread({
               </p>
               <ul className="mb-5 space-y-2">
                 {thread.scheduled.map((s) => (
-                  <ScheduledRow key={s.id} s={s} openId={openNext} setOpenId={setOpenNext} />
+                  <ScheduledRow
+                    key={s.id}
+                    s={s}
+                    openId={openNext}
+                    setOpenId={setOpenNext}
+                    onSendNow={thread.leadId ? sendNow : null}
+                    sending={sending}
+                  />
                 ))}
               </ul>
             </>

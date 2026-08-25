@@ -30,7 +30,7 @@ import { buildCampaignEmail } from '@/lib/acq/campaign';
 import { getCampaign, getVariants, pickVariant } from '@/lib/acq/settings';
 import { sequenceGaps, sequenceLength } from '@/lib/acq/eligibility';
 import { stripTrackingPixels } from '@/lib/email';
-import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { isInternalAddress } from '@/lib/owner';
 import type { AcqProspect } from '@/lib/acq/types';
 
 /** One button or text link in a message, with where it really goes. */
@@ -183,25 +183,6 @@ export function bareAddress(raw: string | null | undefined): string {
   const s = String(raw ?? '');
   const angled = s.match(/<([^>]+)>/);
   return (angled ? angled[1] : s).trim().toLowerCase();
-}
-
-const INTERNAL_ADDRESSES = new Set(OWNER_NOTIFY_TO.map((a) => a.toLowerCase()));
-
-/**
- * One of ours, not a contact's.
- *
- * A handful of prospect rows carry an internal address (a test import, a lead
- * sourced from a form Sarah filled in herself). Sweeping the mailbox by that
- * address pulls in every cron alert, call summary and rehearsal report the
- * studio has ever sent itself: two hundred internal notices filed under one
- * veterinary clinic. When the address is ours the sweep is skipped and the
- * thread is built from the lead link alone, which is the only correspondence
- * that was ever really theirs.
- */
-export function isInternalAddress(addr: string | null | undefined): boolean {
-  const a = bareAddress(addr);
-  if (!a) return false;
-  return INTERNAL_ADDRESSES.has(a) || a.endsWith('@modernmustardseed.com');
 }
 
 function anyAddressMatches(field: string | null | undefined, target: string): boolean {
