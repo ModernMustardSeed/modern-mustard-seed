@@ -118,6 +118,9 @@ type Vitals = {
   worker: string | null;
   stallMs?: number | null;
   current?: { id: string; name: string | null; since: string } | null;
+  building?: { id: string; name: string | null; since: string }[] | null;
+  lanes?: number | null;
+  busy?: number | null;
   at: string;
   ageSeconds: number;
   alive: boolean;
@@ -209,17 +212,32 @@ function WorkerVitals({ vitals }: { vitals: Vitals | null }) {
     headline = 'The build worker is up and refusing to claim';
     detail = <>{vitals.reason}. It resumes on its own the moment the machine frees up, so close something heavy rather than restarting it.</>;
   } else if (vitals.state === 'building' && vitals.current) {
-    headline = `Building ${vitals.current.name || vitals.current.id}`;
+    // A worker with lanes is building more than one lead at a time, and naming
+    // only the oldest reads as a worker stuck on it. Name them all, with how long
+    // each has been going, and say how many lanes are still free.
+    const bench = vitals.building?.length ? vitals.building : [vitals.current];
+    const lanes = vitals.lanes ?? 1;
+    const free = Math.max(0, lanes - bench.length);
+    headline = bench.length === 1 ? `Building ${bench[0].name || bench[0].id}` : `Building ${bench.length} at once`;
     detail = (
       <>
-        {minsSince(vitals.current.since)}m in on {vitals.worker}. Free memory {gb(vitals.freeMb)}.
+        {bench.map((b, i) => (
+          <span key={b.id}>
+            {i > 0 ? ' · ' : ''}
+            {bench.length > 1 ? `${b.name || b.id}, ` : ''}
+            {minsSince(b.since)}m in
+          </span>
+        ))}
+        {' '}on {vitals.worker}.{' '}
+        {lanes > 1 ? `${free} of ${lanes} lanes free. ` : ''}
+        Free memory {gb(vitals.freeMb)}.
       </>
     );
   } else {
     headline = 'The build worker is up and polling';
     detail = (
       <>
-        {vitals.queued ?? 0} queued. Free memory {gb(vitals.freeMb)} against a {gb(vitals.minFreeMb)} floor. Heard {age(vitals.ageSeconds)} ago.
+        {vitals.queued ?? 0} queued{vitals.lanes && vitals.lanes > 1 ? `, ${vitals.lanes} lanes open` : ''}. Free memory {gb(vitals.freeMb)} against a {gb(vitals.minFreeMb)} floor. Heard {age(vitals.ageSeconds)} ago.
       </>
     );
   }

@@ -318,7 +318,13 @@ export type BuildWorkerHealth = {
   queued: number | null;
   worker: string | null;
   stallMs?: number | null;
+  /** The oldest build on the bench. Named `current` since the forge had one lane. */
   current?: { id: string; name: string | null; since: string } | null;
+  /** Every build in flight, oldest first. One entry per busy lane. */
+  building?: { id: string; name: string | null; since: string }[] | null;
+  /** How many builds this worker will run at once, and how many it is running. */
+  lanes?: number | null;
+  busy?: number | null;
   at: string;
 };
 

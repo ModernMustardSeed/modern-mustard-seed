@@ -117,18 +117,31 @@ function WorkerVitals({ vitals }: { vitals: BuildWorkerVitals | null }) {
     headline = 'Build worker is UP but refusing to claim';
     detail = <>{vitals.reason}. It resumes on its own the moment the machine frees up, so close something heavy rather than restarting it.</>;
   } else if (vitals.state === 'building' && vitals.current) {
-    headline = `Building ${vitals.current.name || vitals.current.id}`;
+    // The worker runs lanes, so name every lead on the bench. Showing only the
+    // oldest made a busy two-lane worker read as one stuck on a single build.
+    const bench = vitals.building?.length ? vitals.building : [vitals.current];
+    const lanes = vitals.lanes ?? 1;
+    headline = bench.length === 1 ? `Building ${bench[0].name || bench[0].id}` : `Building ${bench.length} at once`;
     detail = (
       <>
-        {minsSince(vitals.current.since)}m in on {vitals.worker}. Free memory {gb(vitals.freeMb)}.
-        {vitals.stallMs ? ` Dies automatically after ${Math.round(vitals.stallMs / 60000)}m of silence.` : ''}
+        {bench.map((b, i) => (
+          <span key={b.id}>
+            {i > 0 ? ' · ' : ''}
+            {bench.length > 1 ? `${b.name || b.id}, ` : ''}
+            {minsSince(b.since)}m in
+          </span>
+        ))}
+        {' '}on {vitals.worker}.{' '}
+        {lanes > 1 ? `${Math.max(0, lanes - bench.length)} of ${lanes} lanes free. ` : ''}
+        Free memory {gb(vitals.freeMb)}.
+        {vitals.stallMs ? ` Each build dies automatically after ${Math.round(vitals.stallMs / 60000)}m of silence.` : ''}
       </>
     );
   } else {
     headline = 'Build worker is up and polling';
     detail = (
       <>
-        {vitals.queued ?? 0} queued. Free memory {gb(vitals.freeMb)} against a {gb(vitals.minFreeMb)} floor. Heard from {age(vitals.ageSeconds)} ago.
+        {vitals.queued ?? 0} queued{vitals.lanes && vitals.lanes > 1 ? `, ${vitals.lanes} lanes open` : ''}. Free memory {gb(vitals.freeMb)} against a {gb(vitals.minFreeMb)} floor. Heard from {age(vitals.ageSeconds)} ago.
       </>
     );
   }
