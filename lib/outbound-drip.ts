@@ -133,9 +133,11 @@ export function dripEmail(lead: OutboundLead, step: number): DripEmail {
         body:
           p(proof) +
           p(`Here is the math I run with every owner${city ? ` in ${city}` : ''}: take your average job, count the calls that went to voicemail this week, and assume half of them called the next name on the list. That number, every week, is what the demo I sent you is built to stop.`) +
-          p(hub ? `The suite page has a calculator that does this with your own numbers. Thirty seconds.` : `Reply with your average job and I will run it for you in one line.`),
-        cta: hub ? { label: 'Run your own numbers', url: hub } : { label: 'Book 10 minutes', url: BOOK },
-        secondary: hub ? { label: 'Book 10 minutes with Sarah', url: BOOK } : undefined,
+          p(`${hub ? 'The suite page' : 'The demo page'} has a calculator that does this with your own numbers. Nothing on it is guessed. Thirty seconds.`),
+        // Their suite hub when one exists, else the calculator on the demo page.
+        // Never a page that asks for their phone number.
+        cta: { label: 'Run your own numbers', url: hub ?? `https://modernmustardseed.com/demos?source=outbound-drip&p=${encodeURIComponent(lead.id)}#calculator` },
+        secondary: { label: 'Book 10 minutes with Sarah', url: BOOK },
         trackId: lead.id,
       }),
       summary: `Drip 2 of ${DRIP_LENGTH}: the missed-call math.`,
