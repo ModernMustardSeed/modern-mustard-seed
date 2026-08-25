@@ -223,7 +223,7 @@ export default function DemoHub({
       : leak >= 8000
         ? "That's someone's salary walking out the door."
         : leak >= 3000
-          ? "That's a truck payment. Every month."
+          ? "That's money you already earned, going to someone else."
           : leak >= 1000
             ? 'That would cover this whole suite many times over.'
             : 'Even this adds up to real money over a year.';
