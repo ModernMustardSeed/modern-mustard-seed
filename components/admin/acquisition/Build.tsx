@@ -365,6 +365,8 @@ export default function AcqBuild() {
   const [, setTick] = useState(0);
   const buildingRef = useRef<Set<string>>(new Set());
   const armed = useRef(false);
+  // Whether the opening bucket has been decided yet. See the effect below.
+  const openingPicked = useRef(false);
 
   const load = useCallback(
     async (background = false) => {
@@ -399,7 +401,10 @@ export default function AcqBuild() {
     void load();
     if (typeof window !== 'undefined') {
       const s = new URLSearchParams(window.location.search).get('segment');
-      if (s && (s === 'all' || (ORDER as string[]).includes(s))) setSegment(s as Segment | 'all');
+      if (s && (s === 'all' || (ORDER as string[]).includes(s))) {
+        openingPicked.current = true;
+        setSegment(s as Segment | 'all');
+      }
     }
     const poll = window.setInterval(() => void load(true), 20000);
     const tick = window.setInterval(() => setTick((t) => t + 1), 15000);
@@ -408,6 +413,28 @@ export default function AcqBuild() {
       window.clearInterval(tick);
     };
   }, [load]);
+
+  /**
+   * THE BOARD OPENS ON A BUCKET THAT HAS SOMETHING IN IT.
+   *
+   * `door` is the sharpest signal acquisition produces, so it led the work order
+   * and it was also the hard-coded opening bucket. On 2026-08-25 it held ZERO,
+   * because every prospect who reached the permission page already had a suite
+   * built. So The Build opened on "0 BUSINESSES / Nobody warm is going unbuilt"
+   * while 361 prospects and 205 finished suites sat one unclicked chip away, and
+   * it read as a board that had lost everything it ever made.
+   *
+   * An empty bucket is a fact about that bucket. It must never be the first thing
+   * the board says about itself. So the opening bucket is the first one in work
+   * order that actually has rows, and `all` only when the board is genuinely
+   * empty. A `?segment=` in the URL still wins: a link Sarah followed, or a
+   * bucket she picked and reloaded, is a decision and this does not overrule it.
+   */
+  useEffect(() => {
+    if (openingPicked.current || !data) return;
+    openingPicked.current = true;
+    setSegment(ORDER.find((s) => data.counts[s] > 0) ?? 'all');
+  }, [data]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -717,6 +744,20 @@ export default function AcqBuild() {
                     ? 'No match for that search in this bucket.'
                     : 'Try another bucket.'}
               </p>
+              {/* An empty bucket is never allowed to imply an empty board. Say
+                  what the board actually holds and give one click out of here. */}
+              {!q && segment !== 'all' && (data?.counts.all ?? 0) > 0 && (
+                <p className="mt-4 font-sans text-sm text-[#161616]/70">
+                  This bucket only. The board holds {data!.counts.all.toLocaleString()} businesses.{' '}
+                  <button
+                    type="button"
+                    onClick={() => setSegment('all')}
+                    className="font-oswald uppercase tracking-wide text-[#161616] underline decoration-[#F5B700] decoration-2 underline-offset-4 hover:text-[#161616]/70"
+                  >
+                    Show everything
+                  </button>
+                </p>
+              )}
             </div>
           )}
 

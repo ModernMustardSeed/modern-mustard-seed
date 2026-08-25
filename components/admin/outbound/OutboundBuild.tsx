@@ -212,6 +212,8 @@ export default function OutboundBuild() {
   const [, setTick] = useState(0);
   const buildingRef = useRef<Map<string, string>>(new Map());
   const armed = useRef(false);
+  // Whether the opening bucket has been decided yet. See the effect below.
+  const openingPicked = useRef(false);
 
   const load = useCallback(
     async (background = false) => {
@@ -249,7 +251,10 @@ export default function OutboundBuild() {
     // Suspense boundary needed — same pattern as the leads table).
     if (typeof window !== 'undefined') {
       const s = new URLSearchParams(window.location.search).get('stage');
-      if (s && (s === 'all' || (STAGE_ORDER as string[]).includes(s))) setStage(s as BuildStage | 'all');
+      if (s && (s === 'all' || (STAGE_ORDER as string[]).includes(s))) {
+        openingPicked.current = true;
+        setStage(s as BuildStage | 'all');
+      }
     }
     // The anvil clock ticks every 15s; it is local and costs nothing.
     const tick = window.setInterval(() => setTick((t) => t + 1), 15000);
@@ -262,6 +267,25 @@ export default function OutboundBuild() {
   // refreshes itself while Sarah is looking at it, and stops the moment the tab
   // goes to the background.
   usePoll(() => void load(true), 20000);
+
+  /**
+   * THE BOARD OPENS ON A BUCKET THAT HAS SOMETHING IN IT.
+   *
+   * `uncontacted` is the money bucket, so it led the work order and it was also
+   * the hard-coded opening bucket. The day it empties, this board opens on
+   * "Nothing built is going unspent" with every suite it ever made hidden behind
+   * an unclicked chip, which reads as a board that lost the lot. Acquisition's
+   * Build hit exactly that on 2026-08-25 with its own `door` bucket at zero.
+   *
+   * So the opening bucket is the first one in work order that actually has rows,
+   * and `all` only when the board is genuinely empty. A `?stage=` in the URL
+   * still wins: that is a decision Sarah or a link already made.
+   */
+  useEffect(() => {
+    if (openingPicked.current || !data) return;
+    openingPicked.current = true;
+    setStage(STAGE_ORDER.find((s) => data.counts[s] > 0) ?? 'all');
+  }, [data]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -574,6 +598,20 @@ export default function OutboundBuild() {
                   ? 'Every built suite has been called or emailed. That is the way it should look.'
                   : 'Try another bucket, or build a suite from a lead.'}
               </p>
+              {/* An empty bucket is never allowed to imply an empty board. Say
+                  what the board actually holds and give one click out of here. */}
+              {!q && stage !== 'all' && (data?.counts.all ?? 0) > 0 && (
+                <p className="mt-4 font-sans text-sm text-[#1a1815]/70">
+                  This bucket only. The board holds {data!.counts.all.toLocaleString()} built leads.{' '}
+                  <button
+                    type="button"
+                    onClick={() => setStage('all')}
+                    className="font-oswald uppercase tracking-wide text-[#1a1815] underline decoration-[#b58a2a] decoration-2 underline-offset-4 hover:text-[#1a1815]/70"
+                  >
+                    Show everything
+                  </button>
+                </p>
+              )}
             </div>
           )}
 
