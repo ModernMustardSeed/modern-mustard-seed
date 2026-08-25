@@ -1117,7 +1117,9 @@ test('emails: every keypad key carries its digit and the numbers on the display'
     replyTo: 's@x.com',
   });
   const html = built!.html;
-  const keys = [...html.matchAll(/<a href="([^"]*\/mustard\?[^"]*)"[^>]*>([^<]{1,6})<\/a>/g)];
+  // The keys land on the demo page's calculator, never /mustard (2026-08-25).
+  const keys = [...html.matchAll(/<a href="([^"]*\/demos\?[^"]*)"[^>]*>([^<]{1,6})<\/a>/g)];
+  assert.ok(!/href="[^"]*\/mustard[?"#]/.test(html), 'no email link may land on /mustard');
   assert.equal(keys.length, 14, 'sixteen key faces, two of which span, so fourteen links');
 
   for (const [, url, face] of keys) {
