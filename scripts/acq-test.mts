@@ -21,6 +21,8 @@ import { TRADE_DEFS, SOURCEABLE_TRADES, PROVEN_TRADES } from '../lib/acq/trades'
 import { detectTrade } from '../data/demo-os-trades';
 import { neverDoFor, escalateOnFor, defaultGreeting, callerKey } from '../lib/front-office/provision';
 import { runwayDays } from '../lib/acq/reservoir';
+import { POST_DEMO_SEQUENCE, POST_DEMO_STEP_BASE, afterBusinessDays } from '../lib/acq/post-demo';
+import { idempotencyKey } from '../lib/acq/queue';
 import { buildInstructions, assistantConfig } from '../lib/front-office/agent';
 import { frontOfficeTools } from '../lib/front-office/tools';
 import { parseDayHours, sayable } from '../lib/front-office/calendar';
@@ -1142,10 +1144,60 @@ test('emails: every keypad key carries its digit and the numbers on the display'
   // And the keypad still never touches the tracked route: a man poking a
   // calculator has not clicked the call to action.
   assert.ok(!keys.some(([, u]) => u.includes('/api/acq/click')), 'the keypad is not the CTA');
+  assert.ok(keys.every(([, u]) => u.endsWith('#calculator')), 'a tap lands on the calculator, not the top of a long page');
 
   // The label must not promise typing that cannot happen in an inbox.
   assert.ok(!/tap a key and change them/i.test(html), 'the old label promised in-place editing');
   assert.match(html, /Tap any key to open/i, 'it has to say where the tap goes');
+});
+
+/**
+ * A DEMO STARTS A SEQUENCE, IT DOES NOT END ONE.
+ *
+ * Sarah, 2026-08-25: "when we send a demo, it shouldnt end the drip sequence, it
+ * should start a new one for every demo sent."
+ *
+ * The cold drip does stop at demo_sent, and should. What must not stop is the
+ * follow-through, and "for every demo sent" is the part that was structurally
+ * impossible: the three jobs were keyed on (kind, lead, step) with nothing to
+ * tell one demo from the next, so demo two produced byte-identical keys and the
+ * unique index refused them. The ordinal in the key is what makes a second
+ * sequence possible at all, so it gets a test of its own.
+ */
+test('post-demo: every demo gets its own sequence, and they cannot collide', () => {
+  assert.equal(POST_DEMO_SEQUENCE.length, 3, 'three nudges after a demo');
+
+  // Front-loaded and strictly increasing: a demo is interesting on the day it
+  // lands and it is furniture the week after.
+  const gaps = POST_DEMO_SEQUENCE.map((s) => s.afterBusinessDays);
+  assert.deepEqual(gaps, [...gaps].sort((a, b) => a - b), 'the gaps only ever grow');
+  assert.ok(gaps[0] <= 2, 'the first nudge lands while they still remember opening it');
+  assert.ok(new Set(gaps).size === gaps.length, 'no two follow-ups on the same day');
+
+  const lead = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+  const keysFor = (demoNumber: number) =>
+    POST_DEMO_SEQUENCE.map((_, i) => idempotencyKey('followup', lead, POST_DEMO_STEP_BASE + i, `demo${demoNumber}`));
+
+  const first = keysFor(1);
+  const second = keysFor(2);
+  assert.equal(new Set(first).size, 3, 'the three jobs of one demo are distinct from each other');
+  assert.equal(new Set([...first, ...second]).size, 6, 'demo two must not collide with demo one');
+
+  // The regression this exists to catch: drop the discriminator and the second
+  // demo silently schedules nothing at all.
+  const undiscriminated = POST_DEMO_SEQUENCE.map((_, i) => idempotencyKey('followup', lead, POST_DEMO_STEP_BASE + i));
+  assert.equal(new Set([...undiscriminated, ...undiscriminated]).size, 3, 'without the ordinal, demo two IS demo one');
+});
+
+test('post-demo: the follow-ups land on a weekday, in the morning, never on a weekend', () => {
+  // Saturday. Every offset from here has to skip the weekend, not land in it.
+  const sat = new Date(Date.UTC(2026, 7, 22, 18, 0, 0));
+  for (const { afterBusinessDays: n } of POST_DEMO_SEQUENCE) {
+    const d = afterBusinessDays(n, sat);
+    assert.ok(d.getUTCDay() !== 0 && d.getUTCDay() !== 6, `${n} business days from Saturday landed on a weekend`);
+    assert.ok(d > sat, 'a follow-up is never scheduled into the past');
+    assert.equal(d.getUTCHours(), 16, 'sends land mid-morning Mountain, not at midnight');
+  }
 });
 
 test('emails: the proof email quotes only cited figures, and shows the contested one as a range', () => {
