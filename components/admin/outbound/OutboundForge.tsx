@@ -78,7 +78,13 @@ function ago(iso: string | null): string {
  * The worker now writes its own state, and this reads it.
  */
 function WorkerVitals({ vitals }: { vitals: ForgeWorkerVitals | null }) {
-  const down = !vitals || !vitals.alive;
+  // Two ways to be down, and the first one is new. The SUPERVISOR now reports a
+  // crashed child within a poll ('down'), instead of the board waiting three
+  // minutes for a timestamp to go stale and then only being able to say "DOWN"
+  // with no cause. On 2026-08-24 the cause was one line long and would have
+  // ended a multi-hour outage on sight.
+  const crashed = vitals?.state === 'down';
+  const down = !vitals || !vitals.alive || crashed;
   const blocked = !down && vitals!.state === 'blocked';
   const tone = down || blocked
     ? { border: 'border-[#a03123]/60', bg: 'bg-[#a03123]/15', dot: 'bg-[#e8a598]' }
@@ -92,6 +98,17 @@ function WorkerVitals({ vitals }: { vitals: ForgeWorkerVitals | null }) {
   if (!vitals) {
     headline = 'Forge worker has never reported in';
     detail = <>It writes its health every poll, so no row at all means it has not run since this was deployed.</>;
+  } else if (crashed) {
+    headline = 'Forge worker CRASHED and is restarting in a loop';
+    detail = (
+      <>
+        {vitals.reason || 'It exited without saying why.'}
+        {vitals.restarts ? ` ${vitals.restarts} restarts so far.` : ''}
+        {vitals.downSince ? ` Down since ${new Date(vitals.downSince).toLocaleTimeString()}.` : ''}
+        {' '}Nothing in the queue is being built until this is fixed. It is a code fault,
+        not a busy machine, so restarting it will not help.
+      </>
+    );
   } else if (!vitals.alive) {
     headline = `Forge worker is DOWN (last seen ${age(vitals.ageSeconds)} ago)`;
   } else if (vitals.state === 'blocked') {
@@ -120,11 +137,16 @@ function WorkerVitals({ vitals }: { vitals: ForgeWorkerVitals | null }) {
       <span className="min-w-0">
         <strong className="font-oswald uppercase tracking-[0.06em]">{headline}</strong>
         {detail ? <> {detail}</> : null}
-        {down && (
+        {down && !crashed && (
           <>
             {' '}The forge runs on your machine. Start it with{' '}
             <code className="font-mono text-[12px] text-[#b58a2a]">node scripts/demo-site-worker.mjs</code> and the queue moves on its own.
           </>
+        )}
+        {crashed && vitals?.crash && (
+          <pre className="mt-2 max-h-40 overflow-auto rounded-lg bg-[#1a1815]/60 p-2.5 font-mono text-[11px] leading-snug text-[#e8a598] whitespace-pre-wrap break-words">
+            {vitals.crash}
+          </pre>
         )}
       </span>
     </div>

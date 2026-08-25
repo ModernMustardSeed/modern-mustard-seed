@@ -293,6 +293,37 @@ async function reclaimStranded() {
   if (data?.length) log('reclaimed stranded builds:', data.map((d) => d.id).join(', '));
 }
 
+/**
+ * ANYTHING THIS MACHINE WAS BUILDING WHEN IT DIED IS DEAD.
+ *
+ * One worker runs per machine, and the row carries the hostname that claimed it.
+ * So at STARTUP, a row still marked 'building' by THIS hostname cannot be a live
+ * build: the only process that could have been running it is the one just now
+ * starting. Waiting out STALE_MS for it is a hundred minutes of the queue holding
+ * still for a process that no longer exists.
+ *
+ * Written after 2026-08-24, where exactly that happened and then got worse: the
+ * worker could not start at all for hours, so even the stale sweep never ran, and
+ * Angel's Care sat 'building' with nothing building it while two fresher leads
+ * queued up behind it.
+ *
+ * Safe by construction. It matches on worker = this hostname only, so a second
+ * machine's in-flight build is never touched, and it runs once before the loop
+ * starts rather than on every tick.
+ */
+async function reclaimOwnOrphans() {
+  const { data, error } = await supabase
+    .from('outbound_demo_sites')
+    .update({ status: 'queued', claimed_at: null, updated_at: new Date().toISOString() })
+    .eq('status', 'building')
+    .eq('worker', WORKER)
+    .select('id,business_name');
+  if (error) { log('startup orphan sweep failed (ignored):', error.message); return; }
+  if (data?.length) {
+    log(`requeued ${data.length} build(s) this machine was holding when it died:`, data.map((d) => d.business_name || d.id).join(', '));
+  }
+}
+
 async function claimNext() {
   const { data } = await supabase
     .from('outbound_demo_sites')
@@ -304,7 +335,12 @@ async function claimNext() {
   if (!data) return null;
   const { data: claimed } = await supabase
     .from('outbound_demo_sites')
-    .update({ status: 'building', claimed_at: new Date().toISOString(), worker: WORKER, updated_at: new Date().toISOString() })
+    // `error: null` matters more than it looks. The previous attempt's failure text
+    // used to survive the re-claim, so a row that was actively BUILDING still read
+    // "[requeued after stall] ..." in forge-health and in the cockpit. On 2026-08-24
+    // that stale line cost real minutes of diagnosis: it made a healthy retry look
+    // like the fault. A row's error describes its CURRENT state or it says nothing.
+    .update({ status: 'building', claimed_at: new Date().toISOString(), worker: WORKER, error: null, updated_at: new Date().toISOString() })
     .eq('id', data.id)
     .eq('status', 'queued')
     .select('*')
@@ -1271,6 +1307,50 @@ async function tick() {
   return true;
 }
 
+/**
+ * HAND THE BUILD BACK BEFORE DYING.
+ *
+ * A row is marked 'building' the moment it is claimed and only reclaimed by
+ * reclaimStranded() once STALE_MS (100 minutes) has passed. That window exists so
+ * two workers never race the same row, and it is right. What was missing is the
+ * other half: a worker that KNOWS it is going away should not make the queue wait
+ * out the full window for it.
+ *
+ * On 2026-08-24 the supervisor was restarted while Angel's Care was in flight. The
+ * build died with the process, the row stayed 'building' with nobody building it,
+ * and because the worker then could not start at all, nothing was ever going to
+ * run reclaimStranded() either. The lead's site simply stopped existing as work.
+ *
+ * So: on any orderly shutdown, put the claim back. Best effort and time-boxed,
+ * because a shutdown that hangs on a database write is its own outage.
+ */
+let releasing = false;
+async function releaseCurrentClaim(why) {
+  if (releasing || !current) return;
+  releasing = true;
+  const id = current.id;
+  log(`shutting down (${why}) with ${current.name || id} in flight - handing it back to the queue`);
+  try {
+    await Promise.race([
+      supabase
+        .from('outbound_demo_sites')
+        .update({ status: 'queued', worker: null, claimed_at: null, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .eq('status', 'building'),
+      new Promise((r) => setTimeout(r, 5000)),
+    ]);
+  } catch (e) {
+    log('could not hand the build back (it will be reclaimed as stranded):', e?.message || e);
+  }
+}
+
+for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGBREAK']) {
+  process.on(sig, () => {
+    void releaseCurrentClaim(sig).finally(() => process.exit(0));
+  });
+}
+
+await reclaimOwnOrphans();
 log('demo-site worker up. sites dir:', SITES_DIR, '| design tiers:', FORCED_TIER ? `forced ${FORCED_TIER}` : 'row choice, else tier 2', '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
 
 // Beat on a timer, not inside the work loop: a 30-minute build must not look
