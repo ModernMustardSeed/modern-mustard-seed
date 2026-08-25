@@ -531,12 +531,27 @@ export default function EmailThread({
             </p>
           ) : null}
 
+          <p className="mb-2 text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-[#161616]/55">
+            Sent so far, in order ({thread.messages.length})
+          </p>
+          {thread.messages.length === 0 ? (
+            <p className="text-sm text-[#161616]/60">
+              Nothing has been emailed to this contact yet.
+            </p>
+          ) : (
+            <ul className="mb-5 space-y-2">
+              {[...thread.messages].reverse().map((m) => (
+                <SentRow key={m.id} m={m} openId={openSent} setOpenId={setOpenSent} />
+              ))}
+            </ul>
+          )}
+
           {thread.scheduled.length > 0 && (
             <>
               <p className="mb-2 text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-[#161616]/55">
                 Still to go ({thread.scheduled.length})
               </p>
-              <ul className="mb-5 space-y-2">
+              <ul className="space-y-2">
                 {thread.scheduled.map((s) => (
                   <ScheduledRow
                     key={s.id}
@@ -549,21 +564,6 @@ export default function EmailThread({
                 ))}
               </ul>
             </>
-          )}
-
-          <p className="mb-2 text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-[#161616]/55">
-            Already sent ({thread.messages.length})
-          </p>
-          {thread.messages.length === 0 ? (
-            <p className="text-sm text-[#161616]/60">
-              Nothing has been emailed to this contact yet.
-            </p>
-          ) : (
-            <ul className="space-y-2">
-              {thread.messages.map((m) => (
-                <SentRow key={m.id} m={m} openId={openSent} setOpenId={setOpenSent} />
-              ))}
-            </ul>
           )}
 
           {thread.refusals.length > 0 && (
