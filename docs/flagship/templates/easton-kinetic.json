@@ -3,7 +3,7 @@
   "name": "easton-kinetic-event-studio",
   "display_name": "Easton Kinetic Event Studio",
   "version": "2.0.0",
-  "type": "website-forge-template",
+  "type": "website-build-template",
   "category": "events-and-experiences",
   "description": "A kinetic, scroll-driven event production studio site with a midnight canvas, signal-color accents, sticky storytelling, immersive galleries, and production-ready readability guardrails.",
   "entry": "CLAUDE.md",

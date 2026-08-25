@@ -31,7 +31,7 @@ function stepsFor(surface: 'client' | 'partner', first: string): Step[] {
         badge: '🌱 Welcome',
         title: `Welcome, ${first}.`,
         body:
-          'This is your partner dashboard. Your promo kit, your links, the forge, and your earnings all live on this one page. Share what you believe in and you earn on everything you send our way.',
+          'This is your partner dashboard. Your promo kit, your links, the build, and your earnings all live on this one page. Share what you believe in and you earn on everything you send our way.',
       },
       {
         badge: 'Stuck? Just ask',

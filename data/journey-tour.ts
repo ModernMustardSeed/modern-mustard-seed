@@ -94,7 +94,7 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
     anchor: 'tour-doors',
     text:
       'Four doors, and every one of them is open. ' +
-      'Press the gold button in the corner and talk to Mr. Mustard right now. He can answer anything about how this works, show you a live demo, forge a custom demo for your business while you watch, or book you straight onto Sarah’s calendar. ' +
+      'Press the gold button in the corner and talk to Mr. Mustard right now. He can answer anything about how this works, show you a live demo, build a custom demo for your business while you watch, or book you straight onto Sarah’s calendar. ' +
       'The drive is over. The growing starts now.',
   },
 ];

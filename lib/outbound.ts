@@ -151,24 +151,24 @@ export type OutboundLead = {
   presence_audit_url: string | null;
   presence_audit_score: number | null;
   presence_audit_at: string | null;
-  /** Their own walkthrough film, cut as the last step of the forge
+  /** Their own walkthrough film, cut as the last step of the build
    *  (scripts/suite-film). The suite is not announced until this is 'ready'. */
   suite_film_status: 'queued' | 'filming' | 'ready' | 'failed' | null;
   affiliate_id: string | null;
-  origin: ForgeOrigin | null;
-  forge_qa: ForgeQaStatus | null;
+  origin: BuildOrigin | null;
+  forge_qa: BuildQaStatus | null;
   last_seen_at: string | null;
   created_at: string;
   updated_at: string;
 };
 
-/** Who minted a forged suite for this lead (054). Null = mined/self-serve/manual. */
-export type ForgeOrigin = 'rep' | 'partner';
+/** Who minted a built suite for this lead (054). Null = mined/self-serve/manual. */
+export type BuildOrigin = 'rep' | 'partner';
 
 /** QA hold on a partner's first three mints; null once lifted or never held. */
-export type ForgeQaStatus = 'pending' | 'approved';
+export type BuildQaStatus = 'pending' | 'approved';
 
-/** Lifecycle of the forged demo WEBSITE (built by the local demo-site worker). */
+/** Lifecycle of the built demo WEBSITE (built by the local demo-site worker). */
 export type SiteDemoStatus = 'queued' | 'building' | 'ready' | 'failed';
 
 /** Why a lead is where it is in the heat-ranked queue. */
@@ -191,9 +191,9 @@ export const HEAT_LABELS: Record<HeatReason, string> = {
   replied: 'Replied',
   watching_now: 'On their demo right now',
   reading_now: 'Reading your audit now',
-  self_serve: 'Forged their own demos',
+  self_serve: 'Built their own demos',
   partner_forge: 'Partner-minted warm intro',
-  rep_forge: 'Pre-forged by the team',
+  rep_forge: 'Prebuilt by the team',
   opened_recently: 'Opened the email',
   callback_due: 'Callback due',
   retry_due: 'Retry due',
@@ -203,27 +203,27 @@ export const HEAT_LABELS: Record<HeatReason, string> = {
   fresh: 'Fresh lead',
 };
 
-/* --------------------------------- forge ---------------------------------- */
+/* --------------------------------- build ---------------------------------- */
 
 /**
- * Where a forged lead stands on the workbench. The whole point of the Forge
- * board is that a forged suite is WORK ALREADY DONE that nobody has spent yet:
+ * Where a built lead stands on the workbench. The whole point of the Build
+ * board is that a built suite is WORK ALREADY DONE that nobody has spent yet:
  * 'uncontacted' is the bucket that makes money, because those leads have a full
  * demo suite built for them and have never been called or emailed.
  */
-export type ForgeStage = 'forging' | 'failed' | 'uncontacted' | 'waiting' | 'landed' | 'closed';
+export type BuildStage = 'forging' | 'failed' | 'uncontacted' | 'waiting' | 'landed' | 'closed';
 
-export const FORGE_STAGE_LABELS: Record<ForgeStage, string> = {
+export const BUILD_STAGE_LABELS: Record<BuildStage, string> = {
   forging: 'On the anvil',
-  failed: 'Forge failed',
-  uncontacted: 'Forged, never contacted',
+  failed: 'Build failed',
+  uncontacted: 'Built, never contacted',
   waiting: 'Reached out, waiting',
   landed: 'Landed',
   closed: 'Closed out',
 };
 
 /** The demo-website build row behind a lead, when one exists. */
-export type ForgeSiteRun = {
+export type BuildSiteRun = {
   id: string;
   status: SiteDemoStatus;
   kind: string | null;
@@ -233,8 +233,8 @@ export type ForgeSiteRun = {
   built_at: string | null;
 };
 
-/** One row on the Forge board: the lead, what is forged for it, and its contact state. */
-export type ForgeRow = {
+/** One row on the Build board: the lead, what is built for it, and its contact state. */
+export type BuildRow = {
   id: string;
   business_name: string;
   contact_name: string | null;
@@ -245,7 +245,7 @@ export type ForgeRow = {
   state: string | null;
   status: LeadStatus;
   source: string | null;
-  origin: ForgeOrigin | null;
+  origin: BuildOrigin | null;
   owner_rep_id: string | null;
   dnc_checked: boolean;
   audit_score: number | null;
@@ -267,13 +267,13 @@ export type ForgeRow = {
   last_open_at: string | null;
   next_action_at: string | null;
   created_at: string;
-  /** When the newest piece of this suite was forged, when we can date it. */
+  /** When the newest piece of this suite was built, when we can date it. */
   forged_at: string | null;
   /** How many demos are live for this lead (voice agent, website, command center). */
   asset_count: number;
   /**
    * The trade the suite was actually BUILT on, off the frozen command-center
-   * config. Null when nothing is forged yet. Shown on the board because this one
+   * config. Null when nothing is built yet. Shown on the board because this one
    * keyword drives the voice agent's services, the whole command-center dataset,
    * and the hub calculator, and it used to be invisible and uncorrectable.
    */
@@ -281,23 +281,23 @@ export type ForgeRow = {
   calls: number;
   last_call_at: string | null;
   last_outcome: CallOutcome | null;
-  stage: ForgeStage;
-  site: ForgeSiteRun | null;
+  stage: BuildStage;
+  site: BuildSiteRun | null;
 };
 
-export type ForgeCounts = Record<ForgeStage, number> & { all: number };
+export type BuildCounts = Record<BuildStage, number> & { all: number };
 
 /**
- * The forge worker's own vital signs.
+ * The build worker's own vital signs.
  *
- * The forge is a LOCAL poller, so the database cannot tell "holding off, this
+ * The build is a LOCAL poller, so the database cannot tell "holding off, this
  * machine is busy" apart from "dead" on its own. On 2026-07-26 the worker
  * declined every claim for days because free memory sat under its floor, and the
  * only trace was one line in a console nobody had open: the cockpit just showed
  * a queue that never moved. The worker now writes this to app_state every poll
  * and mid-build, and the board renders it.
  */
-export type ForgeWorkerHealth = {
+export type BuildWorkerHealth = {
   /**
    * 'down' is written by the SUPERVISOR, not the worker: a worker that cannot
    * link its own imports never reaches its first line, so it can never report
@@ -327,10 +327,10 @@ export type ForgeWorkerHealth = {
  * forty minutes ago means the worker is DOWN, and rendering it without the age
  * would be worse than showing nothing.
  */
-export type ForgeWorkerVitals = ForgeWorkerHealth & { ageSeconds: number; alive: boolean };
+export type BuildWorkerVitals = BuildWorkerHealth & { ageSeconds: number; alive: boolean };
 
 /** Two poll cycles plus slack. Past this, the worker is not running. */
-export const FORGE_WORKER_DEAD_AFTER_S = 180;
+export const BUILD_WORKER_DEAD_AFTER_S = 180;
 
 /** What the provider says happened to a sent email. 'sent' only means Resend accepted it. */
 export type MessageDelivery = {

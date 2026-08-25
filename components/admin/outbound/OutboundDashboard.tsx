@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { formatPhone, fmtMoney } from '@/lib/outbound';
-import type { ForgeCounts, HeatReason, Rep } from '@/lib/outbound';
+import type { BuildCounts, HeatReason, Rep } from '@/lib/outbound';
 import { usePoll } from '@/lib/use-poll';
 import { GoalRing, OutboundNav, StatusChip, NicheChip, HeatChip, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, eyebrow, labelCls, setDialSession } from '@/components/admin/outbound/ui';
 
@@ -110,19 +110,19 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
   const [meId, setMeId] = useState<string | null>(null);
   const [resume, setResume] = useState<ResumeInfo | null>(null);
 
-  const [forge, setForge] = useState<ForgeCounts | null>(null);
+  const [build, setBuild] = useState<BuildCounts | null>(null);
 
   const loadFloor = useCallback(async () => {
     try {
       const [pres, bat, fg] = await Promise.all([
         api<{ presence: RepPresence[]; meId: string | null }>('/api/admin/outbound/presence'),
         api<{ resume: ResumeInfo | null }>('/api/admin/outbound/batch'),
-        api<{ counts: ForgeCounts }>('/api/admin/outbound/forge?summary=1'),
+        api<{ counts: BuildCounts }>('/api/admin/outbound/build?summary=1'),
       ]);
       setPresence(pres.presence);
       setMeId(pres.meId);
       setResume(bat.resume);
-      setForge(fg.counts);
+      setBuild(fg.counts);
     } catch {
       /* floor is ambient; a hiccup shouldn't error the whole page */
     }
@@ -132,7 +132,7 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
     void loadFloor();
   }, [loadFloor]);
 
-  // Three calls a tick: presence, batch, forge counts. That trio ran every 20s
+  // Three calls a tick: presence, batch, build counts. That trio ran every 20s
   // in every open tab, seen or not, and it is what burned the egress budget.
   usePoll(() => void loadFloor(), 20000);
 
@@ -216,7 +216,7 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
       <main className="max-w-7xl mx-auto px-5 md:px-6 py-8">
         <OutboundNav
           active="dashboard"
-          badge={{ forge: forge?.uncontacted ?? 0 }}
+          badge={{ build: build?.uncontacted ?? 0 }}
           right={
             <div className="flex items-center gap-2">
               {resume ? (
@@ -232,7 +232,7 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
         />
 
         {/* Self-serve arrivals. The best news the floor gets, so it says so
-            before anything else: these people came off an ad, forged their own
+            before anything else: these people came off an ad, built their own
             suite, and are on their hub right now. */}
         {(data?.selfServe?.waiting ?? 0) > 0 && (
           <Link
@@ -242,7 +242,7 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
             <span className="text-lg" aria-hidden>⚡</span>
             <span className="font-sans text-sm text-[#1a1815]">
               <strong className="font-oswald text-base">{data?.selfServe?.waiting}</strong>{' '}
-              {data?.selfServe?.waiting === 1 ? 'owner forged their own demos' : 'owners forged their own demos'} and{' '}
+              {data?.selfServe?.waiting === 1 ? 'owner built their own demos' : 'owners built their own demos'} and{' '}
               {data?.selfServe?.waiting === 1 ? 'is' : 'are'} waiting on a call.
               {(data?.selfServe?.today ?? 0) > 0 && (
                 <span className="text-[#1a1815]/70"> {data?.selfServe?.today} in the last 24 hours.</span>
@@ -252,32 +252,32 @@ export default function OutboundDashboard({ adminName = '' }: { adminName?: stri
           </Link>
         )}
 
-        {/* Work already paid for. A forged suite nobody has called is the most
+        {/* Work already paid for. A built suite nobody has called is the most
             expensive thing on this floor, so it gets a line of its own. */}
-        {((forge?.uncontacted ?? 0) > 0 || (forge?.forging ?? 0) > 0 || (forge?.failed ?? 0) > 0) && (
+        {((build?.uncontacted ?? 0) > 0 || (build?.forging ?? 0) > 0 || (build?.failed ?? 0) > 0) && (
           <Link
-            href={`/admin/outbound/forge${(forge?.uncontacted ?? 0) > 0 ? '?stage=uncontacted' : '?stage=forging'}`}
+            href={`/admin/outbound/build${(build?.uncontacted ?? 0) > 0 ? '?stage=uncontacted' : '?stage=forging'}`}
             className="flex items-center gap-3 mb-5 px-4 py-3.5 rounded-2xl border-2 border-[#1a1815] bg-[#1a1815] shadow-[4px_4px_0_0_#b58a2a] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#b58a2a] transition-all"
           >
             <span className="text-lg" aria-hidden>⚒</span>
             <span className="font-sans text-sm text-[#f7f3e9]">
-              {(forge?.forging ?? 0) > 0 && (
+              {(build?.forging ?? 0) > 0 && (
                 <>
-                  <strong className="font-oswald text-base text-[#b58a2a]">{forge?.forging}</strong>{' '}
-                  {forge?.forging === 1 ? 'demo is' : 'demos are'} on the anvil right now.{' '}
+                  <strong className="font-oswald text-base text-[#b58a2a]">{build?.forging}</strong>{' '}
+                  {build?.forging === 1 ? 'demo is' : 'demos are'} on the anvil right now.{' '}
                 </>
               )}
-              {(forge?.uncontacted ?? 0) > 0 && (
+              {(build?.uncontacted ?? 0) > 0 && (
                 <>
-                  <strong className="font-oswald text-base text-[#b58a2a]">{forge?.uncontacted}</strong> forged{' '}
-                  {forge?.uncontacted === 1 ? 'suite has' : 'suites have'} never been called or emailed.
+                  <strong className="font-oswald text-base text-[#b58a2a]">{build?.uncontacted}</strong> built{' '}
+                  {build?.uncontacted === 1 ? 'suite has' : 'suites have'} never been called or emailed.
                 </>
               )}
-              {(forge?.failed ?? 0) > 0 && (
-                <span className="text-[#e8a598]"> {forge?.failed} build{forge?.failed === 1 ? '' : 's'} failed.</span>
+              {(build?.failed ?? 0) > 0 && (
+                <span className="text-[#e8a598]"> {build?.failed} build{build?.failed === 1 ? '' : 's'} failed.</span>
               )}
             </span>
-            <span className="ml-auto font-oswald uppercase tracking-[0.1em] text-xs font-semibold text-[#b58a2a] shrink-0">Open the forge →</span>
+            <span className="ml-auto font-oswald uppercase tracking-[0.1em] text-xs font-semibold text-[#b58a2a] shrink-0">Open the build →</span>
           </Link>
         )}
 

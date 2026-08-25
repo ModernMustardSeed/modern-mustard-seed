@@ -25,7 +25,7 @@ export const maxDuration = 60;
  *     Code course and the idea-to-spec product as the lead offer. Decision-ledger
  *     entry 4 moved Player/Builder OFF the promoted ladder and entry 5 killed the
  *     playbook SKU. Turning this on would cold-email strangers about products the
- *     business has deliberately stopped selling. Rewrite the touches forge-forward
+ *     business has deliberately stopped selling. Rewrite the touches build-forward
  *     (lead with "hear your own phone answered, free") BEFORE enabling.
  *  2. DELIVERABILITY. This is cold mail to people with no prior relationship. The
  *     separate-domain design above is correct and must be honored; sending it from
@@ -33,7 +33,7 @@ export const maxDuration = 60;
  *     spam reputation of cold outreach.
  *
  * The warm follow-up that DOES run lives in lib/demo-drip.ts (demo-station
- * forgers) and lib/demo-agent-drip.ts (demo agent forgers). Those are people who
+ * builders) and lib/demo-agent-drip.ts (demo agent builders). Those are people who
  * raised their hand, so they send from the main domain by design.
  */
 function authed(req: Request): boolean {
@@ -52,7 +52,7 @@ export async function GET(req: Request) {
       ok: true,
       disabled: true,
       reason:
-        'Intentionally off. OUTREACH_FROM is unset in local AND production. Enabling needs TWO things, not one: (1) rewrite the three touches in lib/outreach.ts forge-forward, they still pitch products retired by decision-ledger entries 4 and 5, and (2) point OUTREACH_FROM at a SEPARATE verified sending domain so cold mail cannot damage buyer-mail deliverability.',
+        'Intentionally off. OUTREACH_FROM is unset in local AND production. Enabling needs TWO things, not one: (1) rewrite the three touches in lib/outreach.ts build-forward, they still pitch products retired by decision-ledger entries 4 and 5, and (2) point OUTREACH_FROM at a SEPARATE verified sending domain so cold mail cannot damage buyer-mail deliverability.',
     });
 
   const supabase = getSupabase();

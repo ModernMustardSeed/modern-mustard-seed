@@ -17,8 +17,8 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
 import { recordEvent } from '@/lib/acq/events';
 import { enqueue, cancelPendingFor } from '@/lib/acq/queue';
-import { foldCallContext } from '@/lib/acq/forge';
-import { forgeProspectSuite } from '@/lib/acq/suite';
+import { foldCallContext } from '@/lib/acq/build';
+import { buildProspectSuite } from '@/lib/acq/suite';
 import { getCampaign } from '@/lib/acq/settings';
 import { revokeConsent } from '@/lib/acq/consent';
 import { sendDemoEmail, sendSuiteEmail, sendCheckoutLink } from '@/lib/acq/send';
@@ -59,12 +59,12 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /* ───────────────────────── forge_prospect_agent ─────────────────────────── */
 
-export async function handleForgeProspectAgent(
+export async function handleBuildProspectAgent(
   ctx: AcqCallContext,
   args: Record<string, unknown>,
 ): Promise<string> {
   const db = getSupabase();
-  if (!db) return say({ ok: false, instruction: 'The forge is unreachable. Offer to have Sarah build it and send it over instead.' });
+  if (!db) return say({ ok: false, instruction: 'The build is unreachable. Offer to have Sarah build it and send it over instead.' });
 
   const lead = await loadLead(db, ctx.leadId);
   if (!lead) return say({ ok: false, instruction: 'Something is wrong on our side. Take their email out loud and promise Sarah will follow up today.' });
@@ -118,7 +118,7 @@ export async function handleForgeProspectAgent(
     // THEIR OWN WORDS GO ON THE ROW FIRST.
     //
     // The voice agent's script, the command center and the website brief all
-    // read `notes`, so a forge that starts before this lands builds from what we
+    // read `notes`, so a build that starts before this lands builds from what we
     // guessed off a Google listing instead of what the owner just said out loud
     // thirty seconds ago. This is the single most valuable thing on the call.
     const notes = foldCallContext({ ...fresh, email } as AcqProspect, context);
@@ -126,11 +126,11 @@ export async function handleForgeProspectAgent(
     const { data: ready } = await db.from('outbound_leads').select('*').eq('id', ctx.leadId).single();
 
     // The WHOLE suite, website included (Sarah, 2026-08-22). Somebody who says
-    // yes on the phone used to end up with less than somebody Sarah forged from
+    // yes on the phone used to end up with less than somebody Sarah built from
     // the board without ever speaking to them, which is backwards: the caller is
     // the warmest lead in the building and they just told us about their own
     // business for four minutes.
-    const result = await forgeProspectSuite(db, (ready ?? { ...fresh, email }) as AcqProspect, {
+    const result = await buildProspectSuite(db, (ready ?? { ...fresh, email }) as AcqProspect, {
       site: true,
       by: 'mr-mustard',
       capped: 'phone',
@@ -143,18 +143,18 @@ export async function handleForgeProspectAgent(
         leadId: ctx.leadId,
         campaignId: ctx.campaignId,
         type: 'forge_failed',
-        label: 'The forge failed after the call',
+        label: 'The build failed after the call',
         detail: { error: result.error },
       });
-      // A failed forge is a promise we made out loud, so it becomes Sarah's problem.
-      await db.from('outbound_leads').update({ needs_human: 'Forge failed after Mr. Mustard promised it on the call.' }).eq('id', ctx.leadId);
+      // A failed build is a promise we made out loud, so it becomes Sarah's problem.
+      await db.from('outbound_leads').update({ needs_human: 'Build failed after Mr. Mustard promised it on the call.' }).eq('id', ctx.leadId);
     }
   });
 
   return say({
     ok: true,
     instruction:
-      `The forge is running. Tell them in your own words: you are building the ${ctx.business ?? 'their'} version right now, ` +
+      `The build is running. Tell them in your own words: you are building the ${ctx.business ?? 'their'} version right now, ` +
       `and it is not just the phone agent, it is a whole website for them as well, designed from scratch off what they just told you. ` +
       `The agent lands at ${email} within minutes and they can call it and try to break it as many times as they like. ` +
       `The website takes longer, up to an hour, because a person's worth of work goes into it, and it turns up on the same page when it is done. ` +

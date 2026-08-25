@@ -12,7 +12,7 @@ export const runtime = 'nodejs';
  *
  * The route only opens a run row; the work is done by the local worker
  * (`npx tsx scripts/acq-source.mts --watch`), for the same reason the demo-site
- * forge runs locally: a run that reads nine hundred company websites and drives
+ * build runs locally: a run that reads nine hundred company websites and drives
  * a real browser cannot live inside a sixty second serverless invocation.
  *
  * Progress is written back to the run row every market, so this screen shows the

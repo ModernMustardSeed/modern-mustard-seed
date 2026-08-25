@@ -1,5 +1,5 @@
 /**
- * Stripe Checkout for ordering straight from a forged demo.
+ * Stripe Checkout for ordering straight from a built demo.
  *
  * Subscription mode: recurring monthly line + one-time setup line on the first
  * invoice (inline price_data, no pre-created prices). Month to month, cancel
@@ -82,7 +82,7 @@ export async function POST(req: Request) {
   }
 
   // Attribution: sharing partner's cookie first, then the minting partner
-  // frozen on the lead (partner-wielded forge, 054), then the owning rep's
+  // frozen on the lead (partner-wielded build, 054), then the owning rep's
   // code. A malformed cookie ("%") would throw a URIError out of
   // decodeURIComponent and 500 the money path, so a bad ref degrades to no
   // ref, never to a crash.

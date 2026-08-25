@@ -7,7 +7,7 @@ import { usePoll } from '@/lib/use-poll';
 
 /**
  * THE DELIVERY BOARD, universal edition. Every client build, whatever door they
- * came through: a forge demo order, a signed proposal, or a project opened by
+ * came through: a build demo order, a signed proposal, or a project opened by
  * hand. One pipeline for all of them: intake and files, the direction board, a
  * domain, and the button that puts them on the internet. Paid demo orders that
  * never got a portal still surface, because that is the failure this board
@@ -224,7 +224,7 @@ export default function DeliveryBoard() {
         <span className="text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold block mb-1">Delivery</span>
         <h1 className="font-display text-4xl font-bold text-[#161616] mb-1">Everyone we owe a build</h1>
         <p className="font-body text-[#161616]/60 mb-6">
-          Forge orders, signed proposals, and hand-opened projects, all on one pipeline: what they bought,
+          Build orders, signed proposals, and hand-opened projects, all on one pipeline: what they bought,
           what they sent us, and the button that puts them on the internet.
         </p>
 
@@ -360,7 +360,7 @@ function DeliveryRow({
   const doRebuild = async () => {
     if (p?.hasSite && !confirm('Rebuild their site from their intake? This replaces the current draft, including any edits you made here.')) return;
     const j = await act('rebuild', videoBeats ? { videoBeats: true } : {});
-    if (j?.ok) { setMsg(`Queued. The forge is rebuilding their real site from what they sent us${videoBeats ? ', with generated video beats (spends fal)' : ''}. It takes a few minutes.`); onChanged(); }
+    if (j?.ok) { setMsg(`Queued. The build is rebuilding their real site from what they sent us${videoBeats ? ', with generated video beats (spends fal)' : ''}. It takes a few minutes.`); onChanged(); }
   };
 
   const doApprove = async () => {
@@ -379,10 +379,10 @@ function DeliveryRow({
     if (j?.ok) { setMsg('Approval pulled. Nothing will go out.'); onChanged(); }
   };
 
-  const doMoodboardForge = async () => {
+  const doMoodboardBuild = async () => {
     const j = await act('moodboard-forge', steer.trim() ? { steer: steer.trim() } : {});
     if (j?.ok) {
-      setMsg('Board forged. Preview it below, then send it when it sings.');
+      setMsg('Board built. Preview it below, then send it when it sings.');
       setShowBoard(true);
       setSteer('');
       onChanged();
@@ -480,7 +480,7 @@ function DeliveryRow({
             </p>
           </div>
           <div className="flex flex-wrap gap-1.5 items-center">
-            {row.source === 'demo' && <Chip tone="gold">Forge order</Chip>}
+            {row.source === 'demo' && <Chip tone="gold">Build order</Chip>}
             {row.source === 'proposal' && <Chip tone="blue">Proposal</Chip>}
             {row.source === 'direct' && <Chip tone="plain">Direct</Chip>}
             {!row.hasPortal && <Chip tone="red">No portal opened</Chip>}
@@ -652,15 +652,15 @@ function DeliveryRow({
             </div>
           )}
 
-          {/* The direction board: forge it from their intake, preview it, send it
+          {/* The direction board: build it from their intake, preview it, send it
               for the client's signature. The reveal waits on that signature. It
-              forges from the demo intake, so it only renders for forge orders. */}
+              builds from the demo intake, so it only renders for build orders. */}
           {row.hasPortal && row.source === 'demo' && (
             <div>
               <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">The Direction</h4>
               {p?.moodboardStatus === 'changes' && p.moodboardNote && (
                 <p className="mb-2 rounded-lg border-2 border-[#E0301E]/40 bg-[#FFF1EF] px-3 py-2 font-body text-[13px] text-[#161616]">
-                  They asked: &ldquo;{p.moodboardNote}&rdquo;. Re-forge below (their note rides along automatically).
+                  They asked: &ldquo;{p.moodboardNote}&rdquo;. Rebuild below (their note rides along automatically).
                 </p>
               )}
               {p?.moodboardStatus === 'approved' && p.moodboardApprovedAt && (
@@ -673,12 +673,12 @@ function DeliveryRow({
                   type="text"
                   value={steer}
                   onChange={(e) => setSteer(e.target.value)}
-                  placeholder="Optional steer for the forge: moodier, more heritage, lean into the lake..."
+                  placeholder="Optional steer for the build: moodier, more heritage, lean into the lake..."
                   className="w-full rounded-lg border-2 border-[#161616] bg-white px-3 py-2 font-body text-[13px] focus:outline-none focus:ring-2 focus:ring-[#F5B700]"
                 />
                 <div className="flex flex-wrap gap-2 mt-2">
-                  <button type="button" onClick={doMoodboardForge} disabled={!!busy || !row.intakeAt} className={`${BTN_QUIET}`}>
-                    {busy === 'moodboard-forge' ? 'Forging…' : p?.moodboard ? 'Forge a new cut' : 'Forge the board'}
+                  <button type="button" onClick={doMoodboardBuild} disabled={!!busy || !row.intakeAt} className={`${BTN_QUIET}`}>
+                    {busy === 'moodboard-forge' ? 'Building…' : p?.moodboard ? 'Build a new cut' : 'Build the board'}
                   </button>
                   {p?.moodboard && (
                     <button type="button" onClick={() => setShowBoard((v) => !v)} disabled={!!busy} className={`${BTN_QUIET}`}>
@@ -702,7 +702,7 @@ function DeliveryRow({
                   )}
                 </div>
                 {!row.intakeAt && (
-                  <p className="mt-2 font-body text-[12px] text-[#161616]/55">Waiting on their intake. The board forges from what they tell us.</p>
+                  <p className="mt-2 font-body text-[12px] text-[#161616]/55">Waiting on their intake. The board builds from what they tell us.</p>
                 )}
               </div>
               {showBoard && p?.moodboard && (
@@ -828,7 +828,7 @@ function DeliveryRow({
 
             {p?.buildStatus === 'queued' && (
               <p className="font-body text-[13px] text-[#1E50C8] mb-2">
-                Rebuild queued. The forge picks it up within a minute.
+                Rebuild queued. The build picks it up within a minute.
               </p>
             )}
             {p?.buildStatus === 'building' && (
@@ -855,7 +855,7 @@ function DeliveryRow({
                     onClick={doRebuild}
                     disabled={!!busy || p?.buildStatus === 'queued' || p?.buildStatus === 'building' || Boolean(p?.publishedAt)}
                     className={p?.hasSite ? BTN_QUIET : BTN}
-                    title={p?.publishedAt ? 'It is already live. Edit it instead.' : 'Forge their real site from their intake'}
+                    title={p?.publishedAt ? 'It is already live. Edit it instead.' : 'Build their real site from their intake'}
                   >
                     {busy === 'rebuild' ? 'Queueing…' : 'Rebuild from their intake'}
                   </button>
@@ -883,7 +883,7 @@ function DeliveryRow({
             </div>
             {!p?.demoSiteId && !p?.hasSite && !row.intakeAt && (
               <p className="font-body text-[12.5px] text-[#161616]/55 mt-1.5">
-                No forged demo is linked to this project, so there is nothing to start from.
+                No built demo is linked to this project, so there is nothing to start from.
               </p>
             )}
           </div>
@@ -909,7 +909,7 @@ function DeliveryRow({
 
               {(p.editStatus === 'queued' || p.editStatus === 'building') && (
                 <p className="font-body text-[13px] text-[#1E50C8]">
-                  The forge is applying their change to a copy of their site. Usually a few minutes. It will not touch anything live.
+                  The build is applying their change to a copy of their site. Usually a few minutes. It will not touch anything live.
                 </p>
               )}
               {p.editStatus === 'failed' && (

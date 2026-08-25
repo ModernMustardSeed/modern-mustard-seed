@@ -40,7 +40,7 @@ export default function SiteTour({
   onActiveChange,
   invite,
 }: {
-  /** A forged demo site. Its manifest is served signed, per site. */
+  /** A built demo site. Its manifest is served signed, per site. */
   siteId?: string;
   /** A page that owns its own static manifest (our marketing site). */
   manifestUrl?: string;

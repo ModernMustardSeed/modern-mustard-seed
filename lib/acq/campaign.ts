@@ -449,7 +449,7 @@ function email1(business: string, lead: AcqProspect): string {
  * website and have phone line". Then it hands them the free suite, which is the
  * lowest-friction yes in the whole business: no card, no call, built for them.
  *
- * The forge close stays available to people who would rather talk than click,
+ * The build close stays available to people who would rather talk than click,
  * because Mr. Mustard builds it live on the phone.
  */
 function emailTalkingWebsite(business: string): string {
@@ -680,7 +680,7 @@ function auditBlock(args: { auditUrl?: string | null; auditScore?: number | null
 }
 
 /**
- * The "I built their receptionist" email. Sent the moment the Forge lands,
+ * The "I built their receptionist" email. Sent the moment the Build lands,
  * either by Mr. Mustard on the call or by the queue when the build finishes.
  * The subject runs the business name through possessive() so a company called
  * Ross Plumbing never becomes "Ross Plumbing's" when it should be "Ross
@@ -742,7 +742,7 @@ export function buildDemoEmail(args: {
     subject: `I built ${possessive(business)} receptionist`,
     html,
     unsubscribeUrl: unsubscribeUrlFor(lead.email),
-    summary: 'Sent the personalized demo Mr. Mustard forged on the call.',
+    summary: 'Sent the personalized demo Mr. Mustard built on the call.',
     step: 0,
     variantKey: 'demo',
   };
@@ -905,7 +905,7 @@ export function buildSuiteEmail(args: {
         : `I built ${business} a website and a receptionist`,
     html,
     unsubscribeUrl: unsubscribeUrlFor(lead.email),
-    summary: `Sent the full forged suite: ${pieces.map((x) => x.label.toLowerCase()).join(', ')}.`,
+    summary: `Sent the full built suite: ${pieces.map((x) => x.label.toLowerCase()).join(', ')}.`,
     step: 0,
     variantKey: 'suite',
   };

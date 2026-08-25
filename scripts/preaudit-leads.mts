@@ -55,7 +55,7 @@ const LIMIT = ALL ? Number.MAX_SAFE_INTEGER : Number(flag('limit') || 25);
  *
  * Concurrency drops with it, and not by preference. Eight simultaneous API
  * calls are nothing; eight headless Claude processes are a few GB of RAM and
- * the reason the forge OOM-killed a build at 0.9GB free. `lib/claude-code-json`
+ * the reason the build OOM-killed a build at 0.9GB free. `lib/claude-code-json`
  * enforces its own ceiling regardless, this just keeps the log honest.
  */
 // There is one engine now and it is the subscription, so `--engine` and the

@@ -93,7 +93,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
       },
       {
         name: 'Voice Agent',
-        url: '/voice-agents/forge',
+        url: '/voice-agents/build',
         internal: true,
         status: 'live',
         blurb: 'Instant voice agent. A prospect hears it answer their own phone in one click, then subscribes.',
@@ -312,7 +312,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
     kicker: 'Products and prototypes',
     items: [
       {
-        name: 'FORGE',
+        name: 'BUILD',
         url: 'https://forge-one-mu.vercel.app',
         status: 'live',
         blurb: 'App factory cockpit. Spins up new micro-apps from a brief.',

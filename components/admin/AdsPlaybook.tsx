@@ -213,13 +213,13 @@ const CX_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per build-queue enquiry, not clicks. The truth metric is booked calls that mention the store.' },
 ];
 
-// ============ Campaign five: The Voice Agent Forge ============
+// ============ Campaign five: The Voice Agent Build ============
 
 const SK_LANDING = 'https://modernmustardseed.com/voice-agents/forge?utm_source=meta&utm_medium=paid&utm_campaign=demo agent';
 
 const SK_COPY_A = `Right now, someone is calling your business. Nobody's answering.
 
-So we built the Voice Agent Forge. Tell Mr. Mustard about your business (what you do, what you charge, what customers ask) and your own voice agent graduates and talks to you. Live. In your browser. He can even call your cell.
+So we built the Voice Agent Build. Tell Mr. Mustard about your business (what you do, what you charge, what customers ask) and your own voice agent graduates and talks to you. Live. In your browser. He can even call your cell.
 
 The demo is free, no card. If you love him, he's answering your real phone 24/7 this week: hard-capped minutes, month to month, never a surprise bill.`;
 
@@ -227,7 +227,7 @@ const SK_COPY_B = `The average small business misses 4 in 10 calls. Every missed
 
 Your Voice Agent answers every one: books appointments, takes clean messages, flags emergencies to your cell, and sends you a summary of every call. Trained on YOUR business, live within a week, answering the number you already have.
 
-Hear yours before you pay a cent. The forge is free and it is honestly just fun.`;
+Hear yours before you pay a cent. The build is free and it is honestly just fun.`;
 
 const SK_HEADLINE = 'Hear YOUR voice agent answer live.';
 const SK_DESCRIPTION = 'Free demo. He talks. You decide. From Modern Mustard Seed.';
@@ -239,15 +239,15 @@ const SK_CUTS = [
 ];
 
 const SK_CHECKLIST = [
-  { id: 'cell', label: 'One cell to start: Campaign objective Traffic (switch to Conversions once the pixel is live). Budget $15/day. Learn More button → the forge UTM link above. Paste Copy Variant 1.' },
+  { id: 'cell', label: 'One cell to start: Campaign objective Traffic (switch to Conversions once the pixel is live). Budget $15/day. Learn More button → the build UTM link above. Paste Copy Variant 1.' },
   { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
   { id: 'audience', label: 'Audience: Advantage+, local-owner tilted. Suggestions: Small business owners, Restaurant owners, Home services, Salon owners, Missed call/answering service interest. Age 25-65, United States.' },
   { id: 'captions', label: 'Decline Meta auto-captions (styled captions are burned in).' },
   { id: 'organic', label: 'Post the 9:16 cut as an organic Reel + the 4:5 to FB the same day. Launch drafts are in social-drafts/demo-agent-launch.md (ask Claude to fetch them).' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the missed-calls math) and let them fight. Kill the loser at day 6.' },
-  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers across all five commercials pointed at the forge. Call Me viewers are the hottest overlap.' },
-  { id: 'capwatch', label: 'The free forge is capped at 20 demos/day globally. If ads fill the cap (email alert fires), raise GLOBAL_DAILY_CAP in app/api/demo-agent/forge/route.ts before scaling spend.' },
-  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads tagged source demo-agent-forge in the admin). The truth metric: Keep Him subscriptions, which email you on every sale, and booked calls from demo transcripts.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers across all five commercials pointed at the build. Call Me viewers are the hottest overlap.' },
+  { id: 'capwatch', label: 'The free build is capped at 20 demos/day globally. If ads fill the cap (email alert fires), raise GLOBAL_DAILY_CAP in app/api/demo-agent/build/route.ts before scaling spend.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per built demo (leads tagged source demo-agent-build in the admin). The truth metric: Keep Him subscriptions, which email you on every sale, and booked calls from demo transcripts.' },
 ];
 
 // ============ Campaigns six-eight: Pictures, Press, GEO (image creative) ============
@@ -492,8 +492,8 @@ const UNV_CHECKLIST = [
   { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same /demos landing, swap the link to utm_source=google.' },
   { id: 'organic', label: 'Post the 4:5 to FB and the 9:16 as an IG Reel + a YouTube Short the same day (free reach). The FB post, IG caption, and IG Story line are ready to paste in the "Organic launch posts" section below.' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the test-drive angle) and let them fight. Kill the loser at day 6.' },
-  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at the same /demos link. Anyone who watched the unveiling but did not forge gets the second knock.' },
-  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (station_submit / station_forged in Vercel Analytics, leads land in the cockpit under source=demo-station). Truth metric: paid demo orders on the hub order card.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at the same /demos link. Anyone who watched the unveiling but did not build gets the second knock.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per built demo (station_submit / station_forged in Vercel Analytics, leads land in the cockpit under source=demo-station). Truth metric: paid demo orders on the hub order card.' },
 ];
 
 // ============ Campaign thirteen: The Unveiling: Restaurants (demo funnel vertical) ============
@@ -535,7 +535,7 @@ const UR_CHECKLIST = [
   { id: 'sibling', label: 'Mind Campaign 11 (The Dinner Rush): same audience, different offer. Do not run both cold cells at once. Either alternate weeks, or run Dinner Rush as the voice-only angle and this as the full-suite angle and let cost per lead pick the winner.' },
   { id: 'organic', label: 'Organic: post the 9:16 as a Reel and share the 4:5 into local restaurant-owner FB groups where you are a member. Add the trattoria clip to the /for/restaurants page hero rotation.' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the Friday-night phone) and let them fight. Kill the loser at day 6.' },
-  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=unveilingrest). Truth metric: paid demo orders on the hub order card.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per built demo (leads land in the cockpit under source=demo-station, utm_campaign=unveilingrest). Truth metric: paid demo orders on the hub order card.' },
 ];
 
 // ============ Campaign fourteen: The Unveiling: Roofers (demo funnel vertical) ============
@@ -575,7 +575,7 @@ const UF_CHECKLIST = [
   { id: 'seasonal', label: 'Seasonality: roofing demand spikes after storms and in re-roof season. Keep a saved duplicate of this cell you can 3x for a week when a hail event hits a metro you can serve remotely.' },
   { id: 'organic', label: 'Organic: post the 9:16 as a Reel and share the 4:5 into roofing and contractor FB groups where you are a member. This one is also a natural DM opener for cockpit roofing leads.' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (forty feet up) and let them fight. Kill the loser at day 6.' },
-  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=unveilingroof). Truth metric: paid demo orders on the hub order card.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per built demo (leads land in the cockpit under source=demo-station, utm_campaign=unveilingroof). Truth metric: paid demo orders on the hub order card.' },
 ];
 
 // ============ Campaign fifteen: Take the Bridge (demo funnel, retro starship) ============
@@ -649,7 +649,7 @@ const ST_CHECKLIST = [
   { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same /demos landing, swap the link to utm_source=google.' },
   { id: 'organic', label: 'Organic: post the 9:16 as a Reel + YouTube Short and the 4:5 to FB the same day. Drafts are in the Organic launch posts section below (Sarah approves every post).' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the evenings angle) and let them fight. Kill the loser at day 6.' },
-  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=stoneage). Truth metric: paid demo orders on the hub order card.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per built demo (leads land in the cockpit under source=demo-station, utm_campaign=stoneage). Truth metric: paid demo orders on the hub order card.' },
 ];
 
 const ST_POST_FB = `Most businesses are still running on rock.
@@ -715,7 +715,7 @@ const AM_CUTS = [
 
 const AM_CHECKLIST = [
   { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $15/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the same three things).' },
-  { id: 'rotate', label: 'This is a demo-funnel creative on the same broad audience and same /demos landing as Campaign 12 and Campaign 16. Never run three cold demo cells at once: pause 15 (Take the Bridge) and run this against whichever of 12 or 16 is currently cheaper per forged demo.' },
+  { id: 'rotate', label: 'This is a demo-funnel creative on the same broad audience and same /demos landing as Campaign 12 and Campaign 16. Never run three cold demo cells at once: pause 15 (Take the Bridge) and run this against whichever of 12 or 16 is currently cheaper per built demo.' },
   { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot has spoken dialogue AND burned-in captions.' },
   { id: 'captions', label: 'Decline Meta auto-captions (styled caption pills are already burned in).' },
   { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" in any edit.' },
@@ -724,7 +724,7 @@ const AM_CHECKLIST = [
   { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same /demos landing, swap the link to utm_source=google.' },
   { id: 'organic', label: 'Organic: post the 9:16 as a Reel + YouTube Short and the 4:5 to FB the same day. Drafts are in the Organic launch posts section below (Sarah approves every post).' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (name the last three problems) and let them fight. Kill the loser at day 6.' },
-  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=answermachine). Truth metric: paid demo orders on the hub order card.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per built demo (leads land in the cockpit under source=demo-station, utm_campaign=answermachine). Truth metric: paid demo orders on the hub order card.' },
 ];
 
 const AM_POST_FB = `Every small business owner tells us the same three things.
@@ -822,7 +822,7 @@ const SW_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medi
 
 const SW_COPY_A = `Our website narrates itself out loud. That is the least interesting thing about it.
 
-Because at the end of the drive you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the forge while you are still talking: your own voice agent and your own website.
+Because at the end of the drive you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the build while you are still talking: your own voice agent and your own website.
 
 Free demos, in your inbox within the hour. Love them? Order right from the page.
 
@@ -838,7 +838,7 @@ const SW_HEADLINE = 'The site talks. The agent builds.';
 const SW_DESCRIPTION = 'Tell our AI your trade. Your voice agent and your website land in your inbox within the hour. Free.';
 
 const SW_CUTS = [
-  { file: '/ads/say-whaa-16x9.mp4', label: '16:9 — In-stream + site', note: 'The full film: Ava drives, Mr. Mustard forges. Two voices, real product.' },
+  { file: '/ads/say-whaa-16x9.mp4', label: '16:9 — In-stream + site', note: 'The full film: Ava drives, Mr. Mustard builds. Two voices, real product.' },
   { file: '/ads/say-whaa-9x16.mp4', label: '9:16 — Reels + Stories', note: 'Filmed on the REAL mobile site, not a cropped wide cut. IG Reel + YouTube Short.' },
 ];
 
@@ -850,12 +850,12 @@ const SW_CHECKLIST = [
   { id: 'placements', label: 'No burned captions on this one, so ACCEPT platform captions for sound-off viewers.' },
   { id: 'organic', label: 'Organic first: 9:16 as a Reel + YouTube Short, 16:9 to FB and the site. Drafts below (Sarah approves every post).' },
   { id: 'stack', label: 'This is the PRODUCT spot; The Scenic Route (19) is the brand film. Run them as a story: organic Scenic Route first, then this one two days later.' },
-  { id: 'review', label: 'Day 5-7: judge on forged demos under utm_campaign=saywhaa (source=demo-station in the cockpit) plus calls answered on the Mustard line.' },
+  { id: 'review', label: 'Day 5-7: judge on built demos under utm_campaign=saywhaa (source=demo-station in the cockpit) plus calls answered on the Mustard line.' },
 ];
 
 const SW_POST_FB = `Our website reads itself to you out loud while you scroll. And that is the least interesting thing about it.
 
-Because at the end of the drive, you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the forge while you are still on the line: your own voice agent and your own website. Free, in your inbox within the hour.
+Because at the end of the drive, you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the build while you are still on the line: your own voice agent and your own website. Free, in your inbox within the hour.
 
 The site talks. The agent builds. Say whaaa.
 
@@ -914,7 +914,7 @@ const AH_CUTS = [
 ];
 
 const AH_CHECKLIST = [
-  { id: 'quota', label: 'STOP. Upgrade ElevenLabs before a dollar of spend. Measured 8/07: organic traffic alone runs 37,267 characters a month against a 40,000 cap, 93% of the quota with zero ads, leaving room for about four extra calls. When it runs out the line does not slow down, it breaks, and it takes every web demo on the site with it because they all forge off the same assistant. Size the plan on 665 characters per call.' },
+  { id: 'quota', label: 'STOP. Upgrade ElevenLabs before a dollar of spend. Measured 8/07: organic traffic alone runs 37,267 characters a month against a 40,000 cap, 93% of the quota with zero ads, leaving room for about four extra calls. When it runs out the line does not slow down, it breaks, and it takes every web demo on the site with it because they all build off the same assistant. Size the plan on 665 characters per call.' },
   { id: 'booking', label: 'Clear the test booking recording the ad created: Tuesday August 11, 9:30 AM MT, "Ava Bennett". It sits one slot after a real one. /admin/calendar.' },
   { id: 'dial', label: 'Dial (406) 312-1223 yourself once, the day you launch. The entire ad is a dare to call it, so a broken line is worse here than in any other campaign.' },
   { id: 'cellA', label: 'Cell A (main): objective Leads with the Calls performance goal. Budget $15/day. Upload the 4:5, customize placements (9:16 for Reels/Stories). Call Now button dialing (406) 312-1223. Paste Copy Variant 1.' },
@@ -948,7 +948,7 @@ const AH_POST_STORY = 'We recorded our AI answering a call at 9:47 PM and made i
 
 const BR_CHECKLIST = [
   { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $10/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the captain\'s log).' },
-  { id: 'challenger', label: 'This is a CHALLENGER to Campaign 12 (same broad audience, same /demos landing, different creative). Do not run both cold cells at once: A/B them for a week and keep the cheaper cost per forged demo.' },
+  { id: 'challenger', label: 'This is a CHALLENGER to Campaign 12 (same broad audience, same /demos landing, different creative). Do not run both cold cells at once: A/B them for a week and keep the cheaper cost per built demo.' },
   { id: 'placements', label: 'Upload the 4:5 cut, then customize per placement: 9:16 for Reels/Stories, 16:9 for in-stream. The spot has spoken dialogue AND burned-in captions.' },
   { id: 'captions', label: 'Decline Meta auto-captions (styled caption pills are already burned in).' },
   { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" in any edit.' },
@@ -956,7 +956,7 @@ const BR_CHECKLIST = [
   { id: 'google', label: 'Google (optional, the reason for the 16:9 cut): run it as a YouTube / Demand Gen video ad. Same /demos landing, swap the link to utm_source=google.' },
   { id: 'organic', label: 'Organic: this one is built to be shared. Post the 9:16 as a Reel + YouTube Short and the 4:5 to FB the same day. Ask Claude for launch drafts (Sarah approves every post).' },
   { id: 'abtest', label: 'Day 3: duplicate the ad with Copy Variant 2 (the crew angle) and let them fight. Kill the loser at day 6.' },
-  { id: 'review', label: 'Day 5-7: judge on cost per forged demo (leads land in the cockpit under source=demo-station, utm_campaign=takethebridge). Truth metric: paid demo orders on the hub order card.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per built demo (leads land in the cockpit under source=demo-station, utm_campaign=takethebridge). Truth metric: paid demo orders on the hub order card.' },
 ];
 
 const CH_LANDING = 'https://modernmustardseed.com/chief?utm_source=meta&utm_medium=paid&utm_campaign=thechief';
@@ -1051,7 +1051,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'tw', num: '02', label: 'Talking Website', blurb: 'Full system · audit funnel · $10/day' },
   { key: 'mm', num: '03', label: 'MUSTARD MODE', blurb: 'The product · free-play funnel · $10/day' },
   { key: 'fm', num: '04', label: 'The Fable Mind', blurb: 'Free playbook · lead magnet · $10/day' },
-  { key: 'sk', num: '05', label: 'Voice Agent Forge', blurb: 'Instant demo · forge funnel · $15/day' },
+  { key: 'sk', num: '05', label: 'Voice Agent Build', blurb: 'Instant demo · build funnel · $15/day' },
   { key: 'px', num: '06', label: 'Pictures', blurb: 'Screen Test funnel · image ads · $10/day' },
   { key: 'pr', num: '07', label: 'Press', blurb: 'Proof funnel · image ads · $10/day' },
   { key: 'geo', num: '08', label: 'GEO Desk', blurb: 'Audit funnel · image ads · $10/day' },
@@ -1068,7 +1068,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'scenic', num: '19', label: 'The Scenic Route', blurb: 'Brand film · the homepage journey · $10/day' },
   { key: 'cxc', num: '20', label: 'Cross + Covenant', blurb: 'Online stores · a real live storefront · $15/day' },
   { key: 'ah', num: '21', label: '9:47 PM', blurb: 'Voice agents · a REAL recorded call · $25/day' },
-  { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The forge · the agent that builds · $10/day' },
+  { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The build · the agent that builds · $10/day' },
   { key: 'social', num: '💬', label: 'Organic Social', blurb: 'FB + IG + X posts · free · same day as the paid cut' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
@@ -1829,7 +1829,7 @@ export default function AdsPlaybook() {
         </>)}
 
         {tab === 'sk' && (<>
-        {/* ============ Campaign five: The Voice Agent Forge ============ */}
+        {/* ============ Campaign five: The Voice Agent Build ============ */}
         <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
           <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
           <div className="relative">
@@ -1838,15 +1838,15 @@ export default function AdsPlaybook() {
               &ldquo;The Graduate&rdquo; <span className="italic text-[#F5B700]">The demo IS the product.</span>
             </h2>
             <p className="text-white/75 mt-3 max-w-3xl font-sans">
-              The forge funnel. Mr. Mustard trains a Voice Agent in the spot; the viewer forges their own
+              The build funnel. Mr. Mustard trains a Voice Agent in the spot; the viewer builds their own
               for free and HEARS it answer as their business. Every demo is a transcript-attached lead
               at roughly 45 cents of voice cost, and Keep Him subscriptions convert at the moment of
-              peak delight. One traffic cell at $15/day, judged on cost per forged demo.
+              peak delight. One traffic cell at $15/day, judged on cost per built demo.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
-              <Link href="/voice-agents/forge" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The forge (landing)</Link>
-              <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads (forged demos)</a>
+              <Link href="/voice-agents/build" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The build (landing)</Link>
+              <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads (built demos)</a>
             </div>
           </div>
         </section>
@@ -1879,7 +1879,7 @@ export default function AdsPlaybook() {
             <CopyBlock title="Primary text — Variant 2 (the missed-calls math)" text={SK_COPY_B} />
             <CopyBlock title="Headline" text={SK_HEADLINE} />
             <CopyBlock title="Description" text={SK_DESCRIPTION} />
-            <CopyBlock title="Landing link with UTM (forge funnel)" text={SK_LANDING} />
+            <CopyBlock title="Landing link with UTM (build funnel)" text={SK_LANDING} />
           </div>
         </section>
 
@@ -2207,13 +2207,13 @@ export default function AdsPlaybook() {
               The front door of the demo machine. Mr. and Mrs. Mustard, in black tie, unveil two exhibits in an
               exquisite private gallery: your website and your voice agent. The pitch is
               the funnel&rsquo;s actual promise, we build both for you first, real and working and free, and you
-              only pay to make them real. One short form on /demos forges the whole suite. One traffic cell at
-              $15/day, judged on cost per forged demo. Runs on Meta and, via the 16:9 cut, on Google / YouTube.
+              only pay to make them real. One short form on /demos builds the whole suite. One traffic cell at
+              $15/day, judged on cost per built demo. Runs on Meta and, via the 16:9 cut, on Google / YouTube.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
               <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
-              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Built leads (results)</a>
             </div>
           </div>
         </section>
@@ -2301,12 +2301,12 @@ export default function AdsPlaybook() {
               The gallery walks into the dining room. Mr. Mustard in chef whites and Mrs. Mustard in her hostess
               apron lift silver cloches off two courses in a candlelit dining room after close: the restaurant&rsquo;s
               website, and an AI host that answers and books through the dinner rush. Same funnel promise, built free first, and the closing line writes itself: your table is
-              already set. One traffic cell at $10/day into /demos, judged on cost per forged demo.
+              already set. One traffic cell at $10/day into /demos, judged on cost per built demo.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
               <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
-              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Built leads (results)</a>
             </div>
           </div>
         </section>
@@ -2380,12 +2380,12 @@ export default function AdsPlaybook() {
               The unveiling climbs onto the roof. Hard hats, tool belts, a shingle ridge at sunrise, and two
               reveals under canvas tarps: the company&rsquo;s website, and a voice agent that catches every call
               while they are forty feet up a ladder. Ends on a thermos toast and &ldquo;we left the ladder out for you.&rdquo; One traffic cell at $10/day
-              into /demos, judged on cost per forged demo.
+              into /demos, judged on cost per built demo.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
               <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
-              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Built leads (results)</a>
             </div>
           </div>
         </section>
@@ -2461,12 +2461,12 @@ export default function AdsPlaybook() {
               franchise IP): the website goes up on the big screen and the voice agent answers every hail
               from the captain&rsquo;s chair. Built to catch the eye of the guy who grew up on space
               adventures and now owns a business. Same demo-funnel promise, all built free first. One traffic
-              cell at $10/day into /demos as a CHALLENGER to Campaign 12, judged on cost per forged demo.
+              cell at $10/day into /demos as a CHALLENGER to Campaign 12, judged on cost per built demo.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
               <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
-              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Built leads (results)</a>
             </div>
           </div>
         </section>
@@ -2547,7 +2547,7 @@ export default function AdsPlaybook() {
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
               <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
-              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Built leads (results)</a>
             </div>
           </div>
         </section>
@@ -2729,7 +2729,7 @@ export default function AdsPlaybook() {
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
               <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
-              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Built leads (results)</a>
             </div>
           </div>
         </section>
@@ -3005,7 +3005,7 @@ export default function AdsPlaybook() {
             Measured 2026-08-07 off the last hundred calls: organic traffic alone runs <b>37,267 characters
             a month against a 40,000 cap</b>, 93% of the quota with zero advertising. That leaves room for
             about four extra calls. When it runs out the line does not slow down, it breaks, and it takes
-            every web demo on the site with it because they all forge off the same assistant. You would be
+            every web demo on the site with it because they all build off the same assistant. You would be
             paying for impressions that reach a dead phone, and you cannot catch it by watching, because by
             then the ad has already sent people to silence. Size the plan on <b>665 characters per call</b>.
           </p>
@@ -3103,13 +3103,13 @@ export default function AdsPlaybook() {
             <p className="text-white/75 mt-3 max-w-3xl font-sans">
               A screen film of the real thing: Ava drives the journey out loud, hands the visitor to Mr.
               Mustard at the four doors, and he makes the offer that ends the ad market: tell me your trade
-              and your email, and I fire the forge while we talk. Voice agent and website, in
+              and your email, and I fire the build while we talk. Voice agent and website, in
               your inbox within the hour, order right from the page. One cell at $10/day into /demos.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
               <a href="/demos" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Demo Station (landing)</a>
-              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Forged leads (results)</a>
+              <a href="/admin/outbound/leads?source=demo-station" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Built leads (results)</a>
             </div>
           </div>
         </section>
@@ -3188,7 +3188,7 @@ export default function AdsPlaybook() {
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-mono font-bold">How to read results</span>
           <div className="grid md:grid-cols-3 gap-6 mt-4 text-sm font-sans">
             <p><b className="text-[#F5B700]">Calls:</b> every ad-driven call hits the Mustard line and lands in <a href="/admin/callers" className="underline decoration-[#F5B700]">Callers</a> with a transcript. Bookings email you automatically.</p>
-            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, fablemind, sidekick (the old name, still what GA4 has), and goodnews. MUSTARD MODE free-plays, Fable Mind playbook emails, and forged Voice Agent demos land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
+            <p><b className="text-[#F5B700]">Site:</b> paid traffic shows in GA4 + the first-party beacon under utm_campaign=callme, talkingwebsite, mustardmode, fablemind, sidekick (the old name, still what GA4 has), and goodnews. MUSTARD MODE free-plays, Fable Mind playbook emails, and built Voice Agent demos land in <a href="/admin/leads" className="underline decoration-[#F5B700]">Leads</a>, and purchases hit Orders with an email on every sale. Conversions get exact once the pixel vars are set.</p>
             <p><b className="text-[#F5B700]">Weekly:</b> ask Claude to read Callers against spend and report the true cost per booked discovery call.</p>
           </div>
         </section>

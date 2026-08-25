@@ -1,7 +1,7 @@
 import type { Niche } from '@/lib/outbound';
 
 /**
- * Per-trade sample data for the forged BUSINESS OS demo (/demo/os/[id]).
+ * Per-trade sample data for the built BUSINESS OS demo (/demo/os/[id]).
  * Everything here is honest sample data (the app labels it as such); the
  * per-lead config only swaps in the real name, city, phone, and any mined
  * evidence. One template, every trade, zero generation cost.

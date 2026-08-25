@@ -73,7 +73,7 @@ const faqs = [
   },
   {
     q: 'We are a franchisee. Can we add this ourselves, or do we need corporate approval?',
-    a: 'In almost every franchise system the individual operator owns their own phone line and local vendor decisions, so you can add an AI host at the store or group level without waiting on corporate. A few brands mandate a specific ordering stack from headquarters, so we confirm your exact situation on a short call before anything goes live. Most franchisees start with the free forged demo, hear it answer their own restaurant, and roll it out across their locations from there.',
+    a: 'In almost every franchise system the individual operator owns their own phone line and local vendor decisions, so you can add an AI host at the store or group level without waiting on corporate. A few brands mandate a specific ordering stack from headquarters, so we confirm your exact situation on a short call before anything goes live. Most franchisees start with the free built demo, hear it answer their own restaurant, and roll it out across their locations from there.',
   },
   {
     q: 'Can one voice agent cover all of my locations?',
@@ -156,7 +156,7 @@ export default function RestaurantsPage() {
               </a>
             </div>
             <p className="mt-4 text-[13px] font-body text-[#161616]/55 max-w-md mx-auto">
-              Free, no card. Mr. Mustard forges a host trained on your restaurant,
+              Free, no card. Mr. Mustard builds a host trained on your restaurant,
               then it answers a live call.{' '}
               <Link
                 href="/book"
@@ -167,7 +167,7 @@ export default function RestaurantsPage() {
             </p>
           </div>
 
-          {/* Hear it live: the free forged demo (the productized entry point) */}
+          {/* Hear it live: the free built demo (the productized entry point) */}
           <div className="pop-card p-8 md:p-10 bg-[#F5B700] mb-24">
             <div className="flex flex-col md:flex-row md:items-center gap-6">
               <div className="flex-1">
@@ -178,7 +178,7 @@ export default function RestaurantsPage() {
                   Hear one trained on your restaurant.
                 </h2>
                 <p className="text-[#161616]/75 text-base font-body leading-7 max-w-xl">
-                  Tell Mr. Mustard your restaurant name and menu. He forges a
+                  Tell Mr. Mustard your restaurant name and menu. He builds a
                   host that answers in your voice, then it talks to you live or calls your cell. Free,
                   no card. It is the fastest way to hear exactly what your callers would.
                 </p>
@@ -187,7 +187,7 @@ export default function RestaurantsPage() {
                 href="/demos"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-[#161616] bg-[#161616] text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all whitespace-nowrap"
               >
-                Forge mine, free →
+                Build mine, free →
               </Link>
             </div>
           </div>
@@ -307,7 +307,7 @@ export default function RestaurantsPage() {
                   href="/demos"
                   className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#FBF6EA] bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
                 >
-                  Forge mine, free →
+                  Build mine, free →
                 </Link>
                 <Link
                   href="/book"

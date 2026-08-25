@@ -253,9 +253,9 @@ const hunter: Connector = {
 };
 
 /** Two poll cycles plus slack, matching the outbound cockpit's own threshold. */
-const FORGE_DEAD_AFTER_S = 180;
+const BUILD_DEAD_AFTER_S = 180;
 
-const forgeWorker: Connector = {
+const buildWorker: Connector = {
   key: 'forge_worker',
   name: 'Build Worker',
   category: 'build',
@@ -270,7 +270,7 @@ const forgeWorker: Connector = {
     const at = (data as { updated_at: string } | null)?.updated_at;
     if (!at) return { ok: false, detail: 'The build worker has never reported in.' };
     const ageSeconds = Math.round((Date.now() - new Date(at).getTime()) / 1000);
-    if (ageSeconds > FORGE_DEAD_AFTER_S) {
+    if (ageSeconds > BUILD_DEAD_AFTER_S) {
       return { ok: false, detail: `The build worker last reported ${Math.round(ageSeconds / 60)} minutes ago, so it is not running. Demo builds will queue until it is back.` };
     }
     return { ok: true, detail: `Build worker alive, last heartbeat ${ageSeconds}s ago.`, meta: { ageSeconds } };
@@ -293,7 +293,7 @@ const crm: Connector = {
   },
 };
 
-export const CONNECTORS: Connector[] = [emailSender, telephony, payments, hunter, forgeWorker, crm];
+export const CONNECTORS: Connector[] = [emailSender, telephony, payments, hunter, buildWorker, crm];
 
 const BY_KEY = new Map(CONNECTORS.map((c) => [c.key, c]));
 

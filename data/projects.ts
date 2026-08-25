@@ -60,7 +60,7 @@ export const projects: Project[] = [
     color: 'from-rose-900/40 to-rose-800/20',
   },
   {
-    title: 'AdForge Studio',
+    title: 'AdBuild Studio',
     subtitle: 'AI-powered ad creative generation and campaign design',
     tags: ['AI', 'Creative', 'Studio'],
     href: 'https://adforge-studio.vercel.app',

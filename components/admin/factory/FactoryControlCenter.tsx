@@ -277,7 +277,7 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
           }
         >
           {!data.blueprintValid && (
-            <div className="mb-4"><Notice kind="bad">This Factory has no valid blueprint. Forge one or fix the configuration before anything else.</Notice></div>
+            <div className="mb-4"><Notice kind="bad">This Factory has no valid blueprint. Build one or fix the configuration before anything else.</Notice></div>
           )}
 
           {data.preflight && (
@@ -534,7 +534,7 @@ export default function FactoryControlCenter({ factoryId }: { factoryId: string 
                 ))}
               </ul>
             ) : (
-              <Empty title="No versions yet">A blueprint appears here the moment the Forge writes one.</Empty>
+              <Empty title="No versions yet">A blueprint appears here the moment the Build writes one.</Empty>
             )}
           </Card>
 

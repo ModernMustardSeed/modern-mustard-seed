@@ -8,11 +8,11 @@ REM best-effort and lands every 30 to 60 minutes, so without this worker awake
 REM the Run Audit button returns a report with the website pillar withheld.
 REM With it awake the pickup is sub-second and the button does the whole job.
 REM
-REM Same two-layer shape as forge-worker-watchdog.cmd: the inner watchdog
+REM Same two-layer shape as build-worker-watchdog.cmd: the inner watchdog
 REM restarts the worker and heartbeats; this loop only exists so a death of the
 REM watchdog itself is not a silent failure. Repo root derives from this file's
 REM own location, never a hardcoded path (see the note in
-REM forge-worker-watchdog.cmd for what a hardcoded one cost).
+REM build-worker-watchdog.cmd for what a hardcoded one cost).
 cd /d "%~dp0.."
 :loop
 echo [%DATE% %TIME%] starting llm worker watchdog >> "%LOCALAPPDATA%\Temp\llm-worker.log"

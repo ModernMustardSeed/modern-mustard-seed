@@ -22,7 +22,7 @@ Nothing to configure. It runs against production and:
   on an order that never paid, an unauthenticated portal read, an unauthenticated
   admin read
 - drives the **happy path through the database** rather than the signup route, on
-  purpose, so nothing is emailed and no slot is taken from the global daily forge cap
+  purpose, so nothing is emailed and no slot is taken from the global daily build cap
 - renders the hub and the command center and asserts the business name is on the page
 - checks the things that fail **quietly**: a stale worker heartbeat, a job queued over
   90 minutes, any build that failed in the last 24 hours

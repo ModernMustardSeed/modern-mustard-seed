@@ -120,7 +120,7 @@
 
 **CAPTION:** No editing, no script, just a real call to a real voice agent. Whatever you think about AI, this is what your after-hours customer is comparing you to now. Curious what you make of it. 👇
 
-**ASK REEL (1 of 3 this month):** pinned comment gets the /voice-agents/forge link, phrased as "you can call one yourself here."
+**ASK REEL (1 of 3 this month):** pinned comment gets the /voice-agents/build link, phrased as "you can call one yourself here."
 
 ---
 
@@ -525,7 +525,7 @@
 
 **CAPTION:** Save this one. Four weeks, zero dollars, four afternoons, and it's more than most businesses do in a year. I do this every week for free in the group, link in the comments. Start with week one and tell me your missed-call number, I promise it's worse than you think.
 
-**ASK REEL (2 of 3 this month):** pinned comment carries the group link plus "if you want to hear what an AI answering your phone sounds like, you can call one at modernmustardseed.com/voice-agents/forge."
+**ASK REEL (2 of 3 this month):** pinned comment carries the group link plus "if you want to hear what an AI answering your phone sounds like, you can call one at modernmustardseed.com/voice-agents/build."
 
 ---
 

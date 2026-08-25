@@ -17,7 +17,7 @@ import {
  * that can tell you the company is in trouble.
  *
  * MISSING CAPABILITY IS SHOWN, NOT HIDDEN. A module marked NEEDS DEVELOPMENT
- * appears with its build spec. The Forge refuses to deploy a blueprint that
+ * appears with its build spec. The Build refuses to deploy a blueprint that
  * depends on one, which is the whole point of naming them.
  */
 

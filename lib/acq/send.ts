@@ -265,10 +265,10 @@ export async function sendCampaignEmail(
 /**
  * Where they buy.
  *
- * The real order page is the forged hub's own order screen, because that is
+ * The real order page is the built hub's own order screen, because that is
  * where the Stripe session is minted with the demo order attached, and it is
  * what carries the purchase back onto this lead through the store webhook. A
- * prospect with nothing forged yet has no hub, so they get the public offer page
+ * prospect with nothing built yet has no hub, so they get the public offer page
  * instead of a link that would 404 in front of a buyer.
  */
 /**
@@ -307,14 +307,14 @@ export async function sendDemoEmail(
   override?: { reason: string } | null,
 ): Promise<SendResult> {
   const demoUrl = lead.hub_demo_url || lead.demo_url;
-  if (!demoUrl) return { ok: false, error: 'Nothing forged yet.', permanent: false };
+  if (!demoUrl) return { ok: false, error: 'Nothing built yet.', permanent: false };
 
   const gate = await gateOrRefuse(db, campaign, lead, 'demo', override);
   if (!gate.ok) return gate.result;
 
   // Their Presence Audit rides along when one exists. Read fresh rather than
   // carried on the prospect type, because the audit is written by a different
-  // path (the cockpit, or the forge) and the lead row in hand can be stale.
+  // path (the cockpit, or the build) and the lead row in hand can be stale.
   let auditUrl: string | null = null;
   let auditScore: number | null = null;
   let auditHeadline: string | null = null;
@@ -408,7 +408,7 @@ export async function sendDemoEmail(
  *
  * Three refusals happen before a byte moves, and each of them exists because
  * the alternative is a broken link in front of a stranger:
- *   1. Nothing forged: there is no suite to send.
+ *   1. Nothing built: there is no suite to send.
  *   2. A website that is still on the anvil is never named. The email is
  *      rebuilt around whatever is genuinely finished.
  *   3. The governor decides, exactly as it does for every other send, so the
@@ -423,7 +423,7 @@ export async function sendSuiteEmail(
   const hubUrl = lead.hub_demo_url;
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
   if (!hubUrl || (!lead.demo_url && !siteReady && !lead.os_demo_url)) {
-    return { ok: false, error: 'Nothing is forged for them yet. Build the suite first.', permanent: false };
+    return { ok: false, error: 'Nothing is built for them yet. Build the suite first.', permanent: false };
   }
   if (lead.demo_emailed_at && !opts.resend) {
     return { ok: false, error: 'Their suite already went out. Use the follow-ups from here.', permanent: true };

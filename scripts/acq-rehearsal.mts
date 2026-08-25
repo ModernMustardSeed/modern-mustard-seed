@@ -4,7 +4,7 @@
  * The demo funnel has had a nightly rehearsal since 2026-08-03 because driving
  * it by hand once found five real defects in a single pass. The acquisition
  * funnel is longer (cold email -> /mustard -> consent -> Mr. Mustard calls ->
- * forge -> demo email -> checkout -> client -> Front Office), touches a sending
+ * build -> demo email -> checkout -> client -> Front Office), touches a sending
  * reputation that every client invoice also rides on, and had nothing.
  *
  * Two halves:
@@ -506,7 +506,7 @@ async function run() {
     const buyRes = await http(buyPath);
     check('the checkout link in the email resolves', buyRes.status === 200, `HTTP ${buyRes.status}  ${buyPath}`);
 
-    // And the fallbacks, for a prospect with no forged hub at all.
+    // And the fallbacks, for a prospect with no built hub at all.
     const noHub = checkoutUrlFor({ ...withHub, hub_demo_id: null, hub_demo_url: null });
     const fallbackRes = await http(noHub.replace(BASE, ''));
     check('the checkout fallback resolves too', fallbackRes.status === 200, `HTTP ${fallbackRes.status}  ${noHub.replace(BASE, '')}`);

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SEE YOURS direction study v2, after Sarah rejected the flat-vector Marquee.
 // Rule this round: stunning art carries every direction. One cinematic fal
-// plate (art/storefront-dusk.png) + one REAL forged-demo screenshot.
+// plate (art/storefront-dusk.png) + one REAL built-demo screenshot.
 // Usage: node moodboard-v2.mjs
 
 import fs from 'node:fs';
@@ -65,9 +65,9 @@ const DIRECTIONS = [
   {
     id: 'gallery',
     name: 'The Gallery',
-    emotion: 'Wanting one. Real demos we forged, hung and lit like paintings.',
+    emotion: 'Wanting one. Real demos we built, hung and lit like paintings.',
     thesis:
-      'A dark gallery wall, one spotlight, a REAL forged-demo screenshot in a gold frame with a museum plaque: forged in two minutes, free. Six cards, six real demos. Proof instead of promise.',
+      'A dark gallery wall, one spotlight, a REAL built-demo screenshot in a gold frame with a museum plaque: built in two minutes, free. Six cards, six real demos. Proof instead of promise.',
     type: 'DM Serif Display · Jost',
     palette: ['#151312', '#C9A24B', '#F3EAD3', '#242021', '#FFFFFF'],
     card: () => `
@@ -76,7 +76,7 @@ const DIRECTIONS = [
         <div class="frame3">
           <img src="${SHOT}">
         </div>
-        <div class="plaque"><b>UNTITLED (YOUR BUSINESS)</b><span>FORGED IN TWO MINUTES · ADMISSION FREE</span></div>
+        <div class="plaque"><b>UNTITLED (YOUR BUSINESS)</b><span>BUILT IN TWO MINUTES · ADMISSION FREE</span></div>
         <div class="scrim">
           <h1>We hang one of these for free.</h1>
           <p class="kick">${COPY.kick}</p>

@@ -123,7 +123,7 @@ export function PressCrossSell() {
             Mr. Mustard trains a voice agent on your business, free, then it answers your real line 24/7.
           </p>
           <Link href="/demos" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
-            Forge yours, free →
+            Build yours, free →
           </Link>
         </div>
       </div>

@@ -1536,14 +1536,14 @@ export const SOCIAL_SETS: SocialSet[] = [
     name: 'The Lit Window',
     eyebrow: 'Set eleven · Our Sites, Lit',
     blurb:
-      'The showcase set for other people’s groups: cinematic dusk paintings, each carrying a REAL site we built glowing in an ivory frame. The post sells nothing and shows everything; the link in the first comment forges a free talking-website demo of their business at /demos.',
+      'The showcase set for other people’s groups: cinematic dusk paintings, each carrying a REAL site we built glowing in an ivory frame. The post sells nothing and shows everything; the link in the first comment builds a free talking-website demo of their business at /demos.',
     cta: 'Free demo · modernmustardseed.com/demos',
     accent: '#F5A623',
     rules: [
       'The demo link goes in the FIRST COMMENT, never the post body. The URL on the card art keeps lifted screenshots working.',
       'Say "the demo is free." Never say "free trial." The demo is the free thing; going live is paid from day one.',
       'No prices on cards, in posts, or in comments. The money question gets the canned reply, not a number.',
-      'The six cards mix client builds, our own brands, and forge showcases. Never claim a specific card is a paying client; if someone asks, answer honestly and move on.',
+      'The six cards mix client builds, our own brands, and build showcases. Never claim a specific card is a paying client; if someone asks, answer honestly and move on.',
       'When someone loves one card, reply with that build’s live link. They are all in the /websites reel.',
       'Do not run this in the same group in the same week as the Say Hello set. Same product, and back to back it reads as a campaign.',
     ],
@@ -1600,7 +1600,7 @@ export const SOCIAL_SETS: SocialSet[] = [
           label: 'First comment, post it yourself right away',
           lines: [
             'modernmustardseed.com/demos',
-            'Sixty seconds of questions, then it builds a real working demo of your business. Free, no card. If the day’s forge queue is full, tomorrow morning works too, it will still be free.',
+            'Sixty seconds of questions, then it builds a real working demo of your business. Free, no card. If the day’s build queue is full, tomorrow morning works too, it will still be free.',
           ],
         },
       },
@@ -1661,7 +1661,7 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
       {
         q: 'Are those real businesses?',
-        a: 'The honest answer: it is a mix. Some are client builds, some are our own brands, and some are showcase builds straight off our forge. Every pixel is ours either way, so judge the work itself, and if you want to poke around any of them live, say which one and I will drop the link.',
+        a: 'The honest answer: it is a mix. Some are client builds, some are our own brands, and some are showcase builds straight off our build. Every pixel is ours either way, so judge the work itself, and if you want to poke around any of them live, say which one and I will drop the link.',
       },
       {
         q: 'Can you do my trade?',
@@ -1673,7 +1673,7 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
       {
         q: 'I tried the link and it did not build.',
-        a: 'The forge builds a limited number each day so every demo gets full attention. Come back tomorrow morning, it will still be free. If it still misbehaves, message me and I will run yours personally.',
+        a: 'We build a limited number each day so every demo gets full attention. Come back tomorrow morning, it will still be free. If it still misbehaves, message me and I will run yours personally.',
       },
     ],
   },

@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
-import { clientDeskPrompt, forgeDeskCall, type ClientDeskData } from '@/lib/mustard-desk';
+import { clientDeskPrompt, buildDeskCall, type ClientDeskData } from '@/lib/mustard-desk';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * Forge Mr. Mustard's CLIENT desk call for the signed-in portal client. The
+ * Build Mr. Mustard's CLIENT desk call for the signed-in portal client. The
  * persona is built ONLY from this client's rows (same queries the portal page
  * itself uses), so the call can never say more than the page already shows.
  */
@@ -80,12 +80,12 @@ export async function POST() {
 
   if (!data.name) data.name = email.split('@')[0];
 
-  const forged = await forgeDeskCall('client', {
+  const built = await buildDeskCall('client', {
     greetName: data.name,
     email,
     systemPrompt: clientDeskPrompt(data),
     keyterms: [data.company || '', data.projects[0]?.name || ''],
   });
-  if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: 503 });
-  return NextResponse.json({ call: forged.call });
+  if (!built.ok) return NextResponse.json({ error: built.error }, { status: 503 });
+  return NextResponse.json({ call: built.call });
 }

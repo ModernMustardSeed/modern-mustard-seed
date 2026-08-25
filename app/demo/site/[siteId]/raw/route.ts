@@ -7,7 +7,7 @@ import { takeBrownOff } from '@/lib/no-brown';
 export const dynamic = 'force-dynamic';
 
 /**
- * The forged site's html as a real same-origin document. The demo shell's
+ * The built site's html as a real same-origin document. The demo shell's
  * iframe points HERE instead of using srcdoc: inside a srcdoc document a
  * nav link like href="#services" resolves against the PARENT page URL, so
  * clicking it reloaded the wrapper instead of scrolling to the section
@@ -28,10 +28,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ siteId:
     .maybeSingle();
   if (!site?.html) return new Response('Not found', { status: 404 });
 
-  // Every site already in the table was forged before the companion rules, the
+  // Every site already in the table was built before the companion rules, the
   // level-stripe law and the no-brown law existed, so settle its cursor glyph,
   // flatten its marquee and take the brown off on the way out rather than
-  // re-forging a hundred demos to fix one stuck mark, one tilted band and one
+  // rebuilding a hundred demos to fix one stuck mark, one tilted band and one
   // muddy ending. takeBrownOff goes LAST so its script runs after the others and
   // sees the colours they leave behind.
   return new Response(takeBrownOff(levelMarquees(dressClosingBand(settleCursorCompanions(site.html as string)))), {

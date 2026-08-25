@@ -156,7 +156,7 @@ export async function runPreflight(): Promise<Preflight> {
           id: 'vapi-secret',
           level: 'warning',
           label: 'Voice webhook is unauthenticated',
-          detail: 'Anyone who learns the /api/voice URL can POST forged tool calls.',
+          detail: 'Anyone who learns the /api/voice URL can POST built tool calls.',
           fix: 'Set VAPI_WEBHOOK_SECRET in Vercel and on the assistant in the Vapi dashboard.',
         },
   );

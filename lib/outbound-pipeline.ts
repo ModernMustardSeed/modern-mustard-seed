@@ -97,7 +97,7 @@ export async function syncLeadToPipeline(
   let pipelineId = existingId;
   if (existingId) {
     // Source is set once, at creation: overwriting it would erase how we really
-    // met this person (a lead-magnet download who later forged demos is still
+    // met this person (a lead-magnet download who later built demos is still
     // a lead-magnet lead).
     const { error } = await sb.from('leads').update(fields).eq('id', existingId);
     if (error) return { ok: false, error: error.message };

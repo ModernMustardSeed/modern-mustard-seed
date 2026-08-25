@@ -5,7 +5,7 @@
  * or re-created:
  *   her side   .mustard-ad/shots/*.mp4      infinitalk over a staged still, Ava
  *   his side   .mustard-ad/mustard/*.wav    cut from a REAL call to the live line
- *   the forge  .mustard-ad/capture/         a REAL forge, filmed as it ran
+ *   the build  .mustard-ad/capture/         a REAL build, filmed as it ran
  *   the booking same capture                a REAL call, both sides, real audio
  *
  * ⚠️ THE PICTURE IS 16:9 AND HER FOOTAGE IS SQUARE. infinitalk returns 640x640,
@@ -17,14 +17,14 @@
  * harder problem, which is that the ad's second character has no face and
  * cannot be shown any other way.
  *
- * ⚠️ HIS LINES RUN OVER THE SCREEN, NOT OVER A HELD FRAME. "Firing up the forge
- * right now" plays across the real forge starting, and "It's done, her agent is
+ * ⚠️ HIS LINES RUN OVER THE SCREEN, NOT OVER A HELD FRAME. "Firing up the build
+ * right now" plays across the real build starting, and "It's done, her agent is
  * live" plays across the badge actually stamping. That is not a trick of the
  * edit: it is when those things happened, and cutting it any other way would
  * have left six seconds of dead air in a sixty second ad.
  *
  * ⏱ THE TIMING CLAIM IS TRUE AND CONSERVATIVE. Measured on the filmed run, the
- * forge took 13.5s and 13.7s. He says "about forty seconds". The website is
+ * build took 13.5s and 13.7s. He says "about forty seconds". The website is
  * never shown arriving during the call; he says it lands by email inside the
  * hour, which matches what /demos promises.
  *
@@ -87,10 +87,10 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 /**
  * ⚠️ `bg:false` IS LOAD-BEARING FOR THE SCREEN SEGMENTS.
  *
- * The chip that sits over the forge and the booking is composited ON TOP of the
+ * The chip that sits over the build and the booking is composited ON TOP of the
  * capture. Rendered with the standard cream body it is a fully opaque
  * 1920x1080 image, so the first cut came out with both screen segments as blank
- * cream rectangles: the real forge and the real booking, the two things the ad
+ * cream rectangles: the real build and the real booking, the two things the ad
  * exists to show, were painted over by their own caption. The page must be
  * transparent AND the screenshot must be taken with omitBackground.
  */
@@ -239,10 +239,10 @@ const TIMELINE = [
   { kind: 'her', id: 's2', video: path.join(shots, 'shot2.mp4'),
     caption: 'Whitaker Med Spa.' },
 
-  // His two forge lines run OVER the real forge starting. This is when it happened.
+  // His two build lines run OVER the real build starting. This is when it happened.
   { kind: 'screen', id: 'forge', audio: [M('m2a'), M('m2b')],
     from: markAt('forge_submit') + 0.4, pad: 0.9, speed: 2.1,
-    caption: 'Alright. Firing up the forge right now.' },
+    caption: 'Alright. Firing up the build right now.' },
 
   /**
    * ...and "it's done, HER agent is live" runs over the graduated agent.

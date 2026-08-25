@@ -340,7 +340,7 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
             : `Logged: ${OUTCOME_LABELS[outcome]}.`,
       );
       // Session bookkeeping: tally, celebrate demos, and keep the treadmill
-      // moving (demo advances are orchestrated by the modal so the forge can
+      // moving (demo advances are orchestrated by the modal so the build can
       // finish first).
       const bumped = bumpDialSession(outcome === 'demo_booked' ? 'demo' : 'dial');
       if (bumped) setSessionState(bumped);
@@ -375,18 +375,18 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
     }
   }, [lead, push]);
 
-  const handleDemoBooked = async (iso: string, notes: string, forge: boolean) => {
+  const handleDemoBooked = async (iso: string, notes: string, build: boolean) => {
     await logOutcome('demo_booked', { next_action_at: iso, next_action: 'Demo', disposition: notes || undefined });
-    if (forge && lead) {
+    if (build && lead) {
       try {
-        push('Forging their voice agent and queuing their demo website...');
-        // forge-site forges the voice demo first, then queues the website
+        push('Building their voice agent and queuing their demo website...');
+        // build-site builds the voice demo first, then queues the website
         // build on the worker. One call, both demos.
-        const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-site`, { method: 'POST' });
+        const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/build-site`, { method: 'POST' });
         if (res.lead) setLead(res.lead);
-        push('Voice Agent forged; the website builds itself in the background. Send both before the meeting.');
+        push('Voice Agent built; the website builds itself in the background. Send both before the meeting.');
       } catch (e) {
-        push(e instanceof Error ? e.message : 'Forge failed, you can retry from the deck.', 'error');
+        push(e instanceof Error ? e.message : 'Build failed, you can retry from the deck.', 'error');
       }
     }
     if (getDialSession()) advanceToNext(2200);
@@ -914,7 +914,7 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
         open={demoOpen}
         onClose={() => setDemoOpen(false)}
         hasDemo={Boolean(lead?.demo_url) && Boolean(lead?.site_demo_status && lead.site_demo_status !== 'failed')}
-        onSave={(iso, notes, forge) => { setDemoOpen(false); void handleDemoBooked(iso, notes, forge); }}
+        onSave={(iso, notes, build) => { setDemoOpen(false); void handleDemoBooked(iso, notes, build); }}
       />
       {/* Callback modal */}
       <CallbackModal open={cbOpen} onClose={() => setCbOpen(false)} onSave={(iso, note) => { setCbOpen(false); void logOutcome('callback', { next_action_at: iso, next_action: note || 'Callback' }); }} />
@@ -941,12 +941,12 @@ function nextHourPlus(hours: number): { date: string; time: string } {
   return { date: `${get('year')}-${get('month')}-${get('day')}`, time: `${String(Number(get('hour')) % 24).padStart(2, '0')}:00` };
 }
 
-function DemoModal({ open, onClose, onSave, hasDemo }: { open: boolean; onClose: () => void; onSave: (iso: string, notes: string, forge: boolean) => void; hasDemo: boolean }) {
+function DemoModal({ open, onClose, onSave, hasDemo }: { open: boolean; onClose: () => void; onSave: (iso: string, notes: string, build: boolean) => void; hasDemo: boolean }) {
   const init = nextHourPlus(3);
   const [date, setDate] = useState(init.date);
   const [time, setTime] = useState(init.time);
   const [notes, setNotes] = useState('');
-  const [forge, setForge] = useState(true);
+  const [build, setBuild] = useState(true);
   return (
     <Modal open={open} onClose={onClose} eyebrow="The win" title="Demo booked" subtitle="Lock the slot while they are still warm." size="sm" headerTone="dark">
       <div className="grid grid-cols-2 gap-3">
@@ -965,15 +965,15 @@ function DemoModal({ open, onClose, onSave, hasDemo }: { open: boolean; onClose:
       </div>
       {!hasDemo && (
         <label className="flex items-center gap-2 font-sans text-sm text-[#1a1815]/75 cursor-pointer mt-3">
-          <input type="checkbox" checked={forge} onChange={(e) => setForge(e.target.checked)} className="accent-[#3f5d34] w-4 h-4" />
-          Forge their AI demo and their demo website now, so they can see both before the meeting
+          <input type="checkbox" checked={build} onChange={(e) => setBuild(e.target.checked)} className="accent-[#3f5d34] w-4 h-4" />
+          Build their AI demo and their demo website now, so they can see both before the meeting
         </label>
       )}
       <div className="flex justify-end gap-2 mt-4">
         <button onClick={onClose} className={btnGhost}>Cancel</button>
         <button
           onClick={() => {
-            onSave(denverIso(date, time || '10:00'), notes, !hasDemo && forge);
+            onSave(denverIso(date, time || '10:00'), notes, !hasDemo && build);
             setNotes('');
           }}
           disabled={!date}

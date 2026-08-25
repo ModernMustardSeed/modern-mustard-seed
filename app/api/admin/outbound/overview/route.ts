@@ -190,7 +190,7 @@ export async function GET() {
         score += ageHrs <= 48 ? 900 : 300;
         if (reason === 'fresh') reason = 'partner_forge';
       }
-      // Rep pre-forges surface gently: the minting rep planned the dial, the
+      // Rep pre-builds surface gently: the minting rep planned the dial, the
       // queue just needs to not lose it.
       if (l.source === 'rep-forge') {
         score += 200;

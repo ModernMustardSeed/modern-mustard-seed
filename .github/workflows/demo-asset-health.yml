@@ -7,7 +7,7 @@
 # until Sarah opened one.
 #
 # Every write path is gated now (the worker re-inlines from disk, the serverless
-# forge refuses what it cannot repair, the delivery editor rejects a bad paste).
+# build refuses what it cannot repair, the delivery editor rejects a bad paste).
 # This is the backstop for whatever those gates miss. Gates prevent; this detects.
 #
 # All the logic is server-side in app/api/cron/demo-asset-health/route.ts. This job

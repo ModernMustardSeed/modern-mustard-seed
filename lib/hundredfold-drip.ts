@@ -12,7 +12,7 @@
  *      business produces and it was going cold in a database row.
  *
  * ⚠️ THE RULE THAT SHAPES EVERY LINE HERE: the mail is written FROM THEIR OWN
- * DOCUMENT. Their constraint, their gate, their first move, their forged offer,
+ * DOCUMENT. Their constraint, their gate, their first move, their built offer,
  * in the words the engine already wrote for them. If a touch could be sent to
  * anybody else, it is a bug. That is why `personalise()` FAILS CLOSED: a row
  * with no readable diagnosis is not mailed a generic nudge, it is surfaced in
@@ -39,7 +39,7 @@ import { clientEmail, escape } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 import { HUNDREDFOLD, GUARANTEE, priceSentence } from '@/lib/hundredfold';
 import type { RoadmapReport } from '@/lib/roadmap-shape';
-import type { ForgedOffer } from '@/lib/hundredfold-synthesis';
+import type { BuiltOffer } from '@/lib/hundredfold-synthesis';
 
 /* -------------------------------------------------------------------------- */
 /* Shared guards                                                               */
@@ -309,7 +309,7 @@ export const INTERVIEW_TOUCHES = 3;
 export function interviewDripEmail(
   p: Personal,
   step: number,
-  ctx: { firstName: string | null; offer: ForgedOffer | null; roadmapUrl: string | null }
+  ctx: { firstName: string | null; offer: BuiltOffer | null; roadmapUrl: string | null }
 ): { subject: string; html: string; snippet: string } {
   const first = ctx.firstName;
   const hi = first ? `Hi ${first},` : 'Hi there,';
@@ -344,14 +344,14 @@ export function interviewDripEmail(
   if (step === 1) {
     const o = ctx.offer;
     return {
-      subject: o?.name ? `The offer we forged for you: ${o.name}` : `The offer we forged for ${p.business}`,
-      snippet: 'Interview follow-up 2 of 3: the forged offer.',
+      subject: o?.name ? `The offer we built for you: ${o.name}` : `The offer we built for ${p.business}`,
+      snippet: 'Interview follow-up 2 of 3: the built offer.',
       html: clientEmail({
         preheader: 'Named, promised, priced, and guaranteed. Built from your interview.',
-        eyebrow: 'THE OFFER FORGE',
+        eyebrow: 'THE OFFER BUILD',
         greeting: hi,
         body: o
-          ? `<p>This is the part of the program people underestimate until they see theirs. From your interview we forged the thing ${biz} should actually be selling:</p>` +
+          ? `<p>This is the part of the program people underestimate until they see theirs. From your interview we built the thing ${biz} should actually be selling:</p>` +
             `<p style="font-family:Georgia,serif;font-size:22px;line-height:1.35;color:#161616;margin:0 0 6px">${escape(o.name)}</p>` +
             (o.one_liner ? `<p style="margin:0 0 18px;color:#8A8378">${escape(clip(o.one_liner, 200))}</p>` : '') +
             (o.promise ? `<p><strong>The promise.</strong> ${escape(clip(o.promise, 300))}</p>` : '') +
@@ -635,7 +635,7 @@ export async function interviewDrip(
           business_name: string | null;
           status: string;
           deep_roadmap: RoadmapReport | null;
-          offer: ForgedOffer | null;
+          offer: BuiltOffer | null;
           roadmap_slug: string | null;
         }
       | undefined;

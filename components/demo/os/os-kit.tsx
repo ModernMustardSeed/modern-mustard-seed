@@ -77,7 +77,7 @@ export function Icon({ d, size = 18, color }: { d: string; size?: number; color?
   );
 }
 
-/** The business's mark: their REAL logo when the forge captured one, the
+/** The business's mark: their REAL logo when the build captured one, the
  *  monogram otherwise. The white chip keeps transparent favicons readable on
  *  a dark deck; onError falls back so a dead URL can never leave a hole. */
 export function BizMark({ size = 32, radius = 10 }: { size?: number; radius?: number }) {

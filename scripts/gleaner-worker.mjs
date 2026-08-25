@@ -8,7 +8,7 @@
  *            pricing) and writes it into gleaner_verticals.intelligence
  *   field  - shells out to the harvest CLI (~/harvest): discover -> audit ->
  *            enrich, then reads back the scored prospects
- *   forge  - enqueues build_requests (deliverable_type 'demo') with a
+ *   build  - enqueues build_requests (deliverable_type 'demo') with a
  *            voice-concierge brief and builds them right here with headless
  *            Claude Code on the Max plan (no metered API)
  *   court  - drafts outreach via harvest Module 6 (drafts only, never sends)
@@ -25,7 +25,7 @@
  *   HARVEST_DIR (default ~/harvest)   BUILDS_DIR (default ~/mms-builds)
  *   CLAUDE_BIN (claude)               CLAUDE_PERMISSION (acceptEdits; bypassPermissions for full autonomy)
  *   GLEANER_POLL_MS (15000)           GLEANER_EMAIL (sarah@modernmustardseed.com)
- *   SCOUT_MAX_MS (15m)  FIELD_MAX_MS (30m per command)  FORGE_MAX_MS (55m per demo)
+ *   SCOUT_MAX_MS (15m)  FIELD_MAX_MS (30m per command)  BUILD_MAX_MS (55m per demo)
  */
 import { createClient } from '@supabase/supabase-js';
 import { spawn } from 'node:child_process';
@@ -62,7 +62,7 @@ const PERMISSION = env.CLAUDE_PERMISSION || 'acceptEdits';
 const GLEANER_EMAIL = env.GLEANER_EMAIL || 'sarah@modernmustardseed.com';
 const SCOUT_MAX_MS = Number(env.SCOUT_MAX_MS || 15 * 60 * 1000);
 const FIELD_MAX_MS = Number(env.FIELD_MAX_MS || 30 * 60 * 1000);
-const FORGE_MAX_MS = Number(env.FORGE_MAX_MS || 55 * 60 * 1000);
+const BUILD_MAX_MS = Number(env.BUILD_MAX_MS || 55 * 60 * 1000);
 // A mid-stage run whose updated_at is older than this is stranded (its worker
 // died). The heartbeat below keeps healthy runs fresher than this bar.
 const STALE_MS = Number(env.GLEANER_STALE_MS || 10 * 60 * 1000);
@@ -341,11 +341,11 @@ async function field(run, vertical) {
   return { prospects: prospects || [], qualified, stats };
 }
 
-// ---------- gear 3: FORGE ----------
+// ---------- gear 3: BUILD ----------
 
 const BUILD_PROMPT = 'You are building a deliverable for Modern Mustard Seed. The full brief is in BUILD_BRIEF.md in this directory. Read it first and follow it exactly. Build production-grade and distinctive, never generic-AI. Make reasonable decisions and proceed. Do not ask questions. When finished write RESULT.json exactly per the brief contract.';
 
-async function forgeOne(run, vertical, prospect) {
+async function buildOne(run, vertical, prospect) {
   const { data: demo } = await supabase.from('gleaner_demos').insert({
     run_id: run.id,
     prospect_id: prospect.id,
@@ -363,7 +363,7 @@ async function forgeOne(run, vertical, prospect) {
     status: 'requested',
   }).select('*').single();
   await supabase.from('gleaner_demos').update({ build_request_id: req.id }).eq('id', demo.id);
-  await event(run.id, 'info', 'forge', `Forging ${prospect.name} (leak est $${(prospect.revenue_leak_estimate || 0).toLocaleString()}/mo)`);
+  await event(run.id, 'info', 'forge', `Building ${prospect.name} (leak est $${(prospect.revenue_leak_estimate || 0).toLocaleString()}/mo)`);
 
   // Claim our own build row (optimistic; if the standalone build-worker daemon
   // grabbed it first we just wait for that worker to finish it).
@@ -378,7 +378,7 @@ async function forgeOne(run, vertical, prospect) {
     const dir = path.join(BUILDS_DIR, req.id);
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(path.join(dir, 'BUILD_BRIEF.md'), spec);
-    const { code } = await runClaude(dir, BUILD_PROMPT, FORGE_MAX_MS);
+    const { code } = await runClaude(dir, BUILD_PROMPT, BUILD_MAX_MS);
     try { result = JSON.parse(readFileSync(path.join(dir, 'RESULT.json'), 'utf8')); } catch { result = null; }
     if (!result && code !== 0) {
       await supabase.from('build_requests').update({ status: 'failed', error: `claude exited ${code}`, updated_at: nowIso() }).eq('id', req.id);
@@ -387,7 +387,7 @@ async function forgeOne(run, vertical, prospect) {
     }
   } else {
     // Another worker owns it; poll until it lands.
-    const deadline = Date.now() + FORGE_MAX_MS;
+    const deadline = Date.now() + BUILD_MAX_MS;
     while (Date.now() < deadline) {
       await new Promise((r) => setTimeout(r, 20000));
       const { data: row } = await supabase.from('build_requests').select('status,result').eq('id', req.id).maybeSingle();
@@ -416,7 +416,7 @@ async function forgeOne(run, vertical, prospect) {
         title: `Gleaner demo ready: ${prospect.name}`,
         to_email: GLEANER_EMAIL,
         subject: `Demo ready: ${prospect.name}`,
-        body: `The ${prospect.name} voice concierge demo is forged.\n\nSite: ${result.live_url}${result.phone ? `\nPhone: ${result.phone}` : ''}\n\nReview it before any outreach goes out.`,
+        body: `The ${prospect.name} voice concierge demo is built.\n\nSite: ${result.live_url}${result.phone ? `\nPhone: ${result.phone}` : ''}\n\nReview it before any outreach goes out.`,
         context: { buildId: req.id, gleanerRunId: run.id, gleanerDemoId: demo.id, liveUrl: result.live_url, phone: result.phone || null, deliverableType: 'demo' },
         source: 'gleaner',
         dedupe_key: `build:${req.id}`,
@@ -425,23 +425,23 @@ async function forgeOne(run, vertical, prospect) {
     return true;
   }
 
-  await supabase.from('gleaner_demos').update({ status: 'failed', notes: result?.summary || 'forge failed' }).eq('id', demo.id);
-  await event(run.id, 'error', 'forge', `${prospect.name} demo failed to forge`, { demoId: demo.id });
+  await supabase.from('gleaner_demos').update({ status: 'failed', notes: result?.summary || 'build failed' }).eq('id', demo.id);
+  await event(run.id, 'error', 'forge', `${prospect.name} demo failed to build`, { demoId: demo.id });
   return false;
 }
 
-async function forge(run, vertical, qualified) {
+async function build(run, vertical, qualified) {
   await assertActive(run.id);
   const maxDemos = Math.min(Math.max(Number(run.config?.maxDemos) || 1, 0), 3);
   if (!maxDemos || !qualified.length) {
-    await event(run.id, 'warn', 'forge', maxDemos ? 'No qualified prospects to forge for.' : 'Demo forging disabled for this run.');
+    await event(run.id, 'warn', 'forge', maxDemos ? 'No qualified prospects to build for.' : 'Demo building disabled for this run.');
     return 0;
   }
-  await setRun(run.id, { status: 'forging', stage_detail: `forging ${Math.min(maxDemos, qualified.length)} demo(s)` });
+  await setRun(run.id, { status: 'forging', stage_detail: `building ${Math.min(maxDemos, qualified.length)} demo(s)` });
 
   // Resume-safety: demos this run already produced (or half-produced before an
-  // interruption) count toward the cap and never forge twice, which matters
-  // because forgeOne provisions real Vapi numbers.
+  // interruption) count toward the cap and never build twice, which matters
+  // because buildOne provisions real Vapi numbers.
   const { data: existingDemos } = await supabase.from('gleaner_demos').select('*').eq('run_id', run.id);
   const settled = new Set();
   let built = 0;
@@ -459,7 +459,7 @@ async function forge(run, vertical, qualified) {
         settled.add(d.prospect_id); built += 1;
       } else {
         await supabase.from('gleaner_demos').update({ status: 'failed', notes: 'stranded by an interrupted worker; superseded' }).eq('id', d.id);
-        await event(run.id, 'warn', 'forge', `${d.brand_name} demo was stranded mid-forge; will re-forge if capacity allows.`, { demoId: d.id });
+        await event(run.id, 'warn', 'forge', `${d.brand_name} demo was stranded mid-build; will rebuild if capacity allows.`, { demoId: d.id });
       }
     }
   }
@@ -467,7 +467,7 @@ async function forge(run, vertical, qualified) {
   const targets = qualified.filter((p) => !settled.has(p.id)).slice(0, Math.max(0, maxDemos - built));
   for (const prospect of targets) {
     await assertActive(run.id);
-    if (await forgeOne(run, vertical, prospect)) built += 1;
+    if (await buildOne(run, vertical, prospect)) built += 1;
   }
   const { data: runRow } = await supabase.from('gleaner_runs').select('stats').eq('id', run.id).maybeSingle();
   await setRun(run.id, { stats: { ...(runRow?.stats || {}), demos: built } });
@@ -499,7 +499,7 @@ async function court(run, qualified) {
     `Gleaner run complete: ${run.vertical_slug} / ${run.geo || 'configured geo'}.`,
     '',
     `Qualified prospects: ${qualified.length}`,
-    `Demos forged: ${live.length}${live.map((d) => `\n  - ${d.brand_name}: ${d.demo_url}${d.phone ? ` | ${d.phone}` : ''}`).join('')}`,
+    `Demos built: ${live.length}${live.map((d) => `\n  - ${d.brand_name}: ${d.demo_url}${d.phone ? ` | ${d.phone}` : ''}`).join('')}`,
     `Outreach drafts waiting: ${drafts ?? 0} (review in /admin/outreach, send via harvest approve + send)`,
     '',
     'Nothing has been sent. The machine is parked at your gate.',
@@ -543,7 +543,7 @@ async function processRun(run, resumeFrom = null) {
       ? (await field(freshRun, vertical)).qualified
       : await loadQualified(freshRun);
     if (from > 1) await event(run.id, 'info', 'field', `Resume: re-read ${qualified.length} qualified prospects from the swept field.`);
-    if (from <= 2) await forge(freshRun, vertical, qualified);
+    if (from <= 2) await build(freshRun, vertical, qualified);
     await court(freshRun, qualified);
     await setRun(run.id, { status: 'gated', stage_detail: 'awaiting your review', finished_at: nowIso() });
     log('run gated', run.id);

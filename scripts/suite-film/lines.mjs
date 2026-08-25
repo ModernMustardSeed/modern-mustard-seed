@@ -7,7 +7,7 @@
  *
  * So nothing here is a fixed film. Every line is written from the lead's own
  * row and their frozen OS config, and the staged call is a real call to THEIR
- * forged agent about a job THEIR trade actually gets called about. The format
+ * built agent about a job THEIR trade actually gets called about. The format
  * is the one Sarah approved on the Wills Electric cut: female narrator,
  * pop-art open and close, and a live call in the middle where the agent gets
  * shown off rather than described.

@@ -15,7 +15,7 @@ type Params = Promise<{ id: string }>;
  *
  * GET  → the drip row (or null), the stop reason if any, and the whole
  *        sequence dated: every email rendered from the lead as it stands,
- *        pixel stripped and links de-armed so previewing cannot forge an open.
+ *        pixel stripped and links de-armed so previewing cannot build an open.
  * POST → { action: 'start' | 'restart' | 'pause' | 'resume' | 'stop' }.
  *        start sends email 1 right now and schedules the rest.
  */

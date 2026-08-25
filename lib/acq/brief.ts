@@ -55,7 +55,7 @@ export function buildPrepBrief(lead: AcqProspect, calls: CallRow[]): PrepBrief {
   push('Missed call risk', lead.missed_call_score != null ? `${lead.missed_call_score}/100` : null);
   push('After hours', lead.open_24_7 ? 'Advertises 24/7' : lead.emergency_service ? 'Advertises emergency service' : null);
   push('Consent given', lead.consent_at ? new Date(lead.consent_at).toLocaleString() : null);
-  push('Forge', lead.demo_status === 'ready' ? 'Completed' : lead.demo_status ?? 'Not started');
+  push('Build', lead.demo_status === 'ready' ? 'Completed' : lead.demo_status ?? 'Not started');
   push('Demo sent', lead.demo_emailed_at ? new Date(lead.demo_emailed_at).toLocaleString() : null);
   push('Checkout sent', lead.checkout_sent_at ? new Date(lead.checkout_sent_at).toLocaleString() : null);
 

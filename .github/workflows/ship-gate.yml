@@ -77,7 +77,7 @@ jobs:
           done
           echo "pnpm-lock.yaml is the only lockfile."
 
-      # Every file a build directive tells the forge to go read has to exist.
+      # Every file a build directive tells the build to go read has to exist.
       # The default demo tier spent weeks pointing at a design system that was
       # on a computer Sarah no longer owns, and nothing ever said so.
       - name: Every path a directive names still resolves
@@ -86,7 +86,7 @@ jobs:
       # Every named import a WORKER makes has to resolve. On 2026-08-22 a merge
       # took master's lib/site-directive.mjs and kept the branch's worker, which
       # imported a function master's copy did not export. ESM refuses to link that,
-      # so the forge could not start at all: 91 restarts, two days, nothing built,
+      # so the build could not start at all: 91 restarts, two days, nothing built,
       # and no gate anywhere saw it because `next build` never touches scripts/.
       - name: Every named import a worker makes resolves
         run: node scripts/check-worker-imports.mjs

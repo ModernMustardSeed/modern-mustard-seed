@@ -58,6 +58,6 @@ jobs:
           node scripts/vapi-assistants.mjs > inventory.txt
           cat inventory.txt
           if grep -q 'UNPROTECTED WEBHOOK' inventory.txt; then
-            echo "::error::One or more Vapi webhooks have no secret set. Anyone who learns the URL can POST forged tool calls."
+            echo "::error::One or more Vapi webhooks have no secret set. Anyone who learns the URL can POST built tool calls."
             exit 1
           fi

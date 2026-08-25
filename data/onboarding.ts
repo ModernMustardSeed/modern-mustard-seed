@@ -246,7 +246,7 @@ export const PHASES: Phase[] = [
               'The old story was "we build custom software." The new story is "we put AI staff to work for you, and you can hear it right now." Same studio, sharper spear. You are joining at the exact moment it gets easy to sell.',
           },
         ],
-        mission: { do: 'Go to /voice-agents/forge, and let Mr. Mustard forge a voice agent for a made-up business. Talk to it out loud.', why: 'This is the single most important thing we make right now. You cannot sell the wow until you have felt it yourself.' },
+        mission: { do: 'Go to /voice-agents/build, and let Mr. Mustard build a voice agent for a made-up business. Talk to it out loud.', why: 'This is the single most important thing we make right now. You cannot sell the wow until you have felt it yourself.' },
       },
       {
         id: 'your-seat',
@@ -334,9 +334,9 @@ export const PHASES: Phase[] = [
             body: 'These four are the heart of the new business. Each one gives a free wow starring our mascot, Mr. Mustard, then turns into a paid product. These are what you demo in the field. Know the free hook and the entry price for each, and you can start any conversation.',
           },
           {
-            heading: 'The Voice Agent, a 24/7 voice agent  ·  /voice-agents/forge',
+            heading: 'The Voice Agent, a 24/7 voice agent  ·  /voice-agents/build',
             bullets: [
-              'The free wow: it forges a personalized voice agent for their business in about 60 seconds, and they talk to it live.',
+              'The free wow: it builds a personalized voice agent for their business in about 60 seconds, and they talk to it live.',
               'To keep him: $397 to set up plus $397 a month (500 answered minutes). The Pro is $597 plus $597 a month (1,200 minutes, caller memory, booking, a monthly tune-up with Sarah).',
               'Say it like this: "An AI that answers your phone 24/7 in a natural voice and books appointments, even when you are closed or slammed."',
             ],
@@ -370,7 +370,7 @@ export const PHASES: Phase[] = [
             body: 'Our coaching arcade. Mr. Mustard is a personal AI coach who teaches anyone to build with Claude, in levels, with missions and XP (a lot like this program). Free first session, then Player at $197 or Builder at $397. This is the "learn to build it yourself" door, and it is also how YOU will start becoming a builder later in this program.',
           },
         ],
-        mission: { do: 'Visit all four free demos (/voice-agents/forge, /pictures, /press, /website-audit) and run one of each on a real local business you can think of.', why: 'You will sell these every day. You should be able to run each one in your sleep before you show a stranger.' },
+        mission: { do: 'Visit all four free demos (/voice-agents/build, /pictures, /press, /website-audit) and run one of each on a real local business you can think of.', why: 'You will sell these every day. You should be able to run each one in your sleep before you show a stranger.' },
       },
       {
         id: 'the-builds',
@@ -498,10 +498,10 @@ export const PHASES: Phase[] = [
           },
           {
             heading: 'Free tools are your best openers',
-            body: 'The free demos and audits are not just products, they are the best reason to reach out. Run someone\'s website through the audit and send the grade. Forge them a voice agent and text the link. You showed value before you asked for anything, which is exactly how trust starts.',
+            body: 'The free demos and audits are not just products, they are the best reason to reach out. Run someone\'s website through the audit and send the grade. Build them a voice agent and text the link. You showed value before you asked for anything, which is exactly how trust starts.',
             links: [
               { label: 'Website audit', url: '/website-audit', external: false },
-              { label: 'Voice Agent demo', url: '/voice-agents/forge', external: false },
+              { label: 'Voice Agent demo', url: '/voice-agents/build', external: false },
             ],
           },
           {
@@ -697,7 +697,7 @@ export const PHASES: Phase[] = [
         blocks: [
           {
             heading: 'One business, start to finish',
-            body: 'A roofer misses calls. You forge them a voice agent demo at a walk-in and text the /voice-agents link. You log them in the Tracker as demoed. You book a call, and they show up in the Pipeline and on the Calendar. Sarah runs the call, notes go in Call, and a fixed quote goes out from Proposals. They pay a deposit, and it becomes a live Project with a client Portal. They launch, leave a Review, and their replies land in the Inbox. Later, Gleaner reminds us to check in about a monthly plan.',
+            body: 'A roofer misses calls. You build them a voice agent demo at a walk-in and text the /voice-agents link. You log them in the Tracker as demoed. You book a call, and they show up in the Pipeline and on the Calendar. Sarah runs the call, notes go in Call, and a fixed quote goes out from Proposals. They pay a deposit, and it becomes a live Project with a client Portal. They launch, leave a Review, and their replies land in the Inbox. Later, Gleaner reminds us to check in about a monthly plan.',
           },
           {
             heading: 'Why the loop matters to you',
@@ -750,7 +750,7 @@ export const PHASES: Phase[] = [
   {
     id: 'forge',
     num: 6,
-    codename: 'The Forge',
+    codename: 'The Build',
     emoji: '⚒️',
     name: "The Builder's Path",
     tagline: 'The horizon: start becoming a builder.',
@@ -805,7 +805,7 @@ export const PHASES: Phase[] = [
             heading: 'Small real steps you can take now',
             bullets: [
               'Run a full audit and read the whole report. Understand what "good" looks like.',
-              'Forge a few Voice Agent demos and notice how the same tool adapts to each business.',
+              'Build a few Voice Agent demos and notice how the same tool adapts to each business.',
               'Play your free Mustard Mode session and ship the first tiny mission.',
             ],
           },
@@ -860,7 +860,7 @@ export const MODULES: GuideModule[] = PHASES.flatMap((p) => p.modules);
 export type FieldMission = { id: string; day: string; label: string; detail: string };
 export const FIELD_MISSIONS: FieldMission[] = [
   { id: 'fm-login', day: 'Day 1', label: 'Get in and get set up', detail: 'Confirm your /admin login works, open your Partner HQ, and save your personal booking link.' },
-  { id: 'fm-feel', day: 'Day 1', label: 'Feel the wow', detail: 'Forge a Voice Agent voice agent at /voice-agents/forge and talk to it out loud. This is what you sell.' },
+  { id: 'fm-feel', day: 'Day 1', label: 'Feel the wow', detail: 'Build a Voice Agent voice agent at /voice-agents/build and talk to it out loud. This is what you sell.' },
   { id: 'fm-p1p2', day: 'Day 2', label: 'Clear Foundations and the Arsenal', detail: 'Work Phases 1 and 2. You should be able to explain the mission and the ladder to anyone.' },
   { id: 'fm-demos', day: 'Day 3', label: 'Run all four free demos', detail: 'Voice Agent, Pictures, Press, and the audit, each on a real local business you can picture.' },
   { id: 'fm-craft', day: 'Day 4', label: 'Learn the craft', detail: 'Work Phase 3, then roleplay a cold walk-in with Mr. Mustard until it feels natural.' },
@@ -880,7 +880,7 @@ export const GLOSSARY: GlossaryTerm[] = [
   { term: 'Pipeline', def: 'The list of all leads and what stage each is at, from new to won or lost.' },
   { term: 'Discovery call', def: 'The first short call with a lead to understand what they need before we quote.' },
   { term: 'Demo', def: 'Showing the product live, usually the voice agent. The fastest way to sell it.' },
-  { term: 'Forge', def: 'What the Voice Agent does: it builds a personalized voice agent for a business in about 60 seconds.' },
+  { term: 'Build', def: 'What the Voice Agent does: it builds a personalized voice agent for a business in about 60 seconds.' },
   { term: 'Screen Test', def: 'The free Mustard Pictures preview: a storyboard, taglines, and one cinematic frame for a business.' },
   { term: 'Proof', def: 'The free, watermarked version of a Mustard Press typeset page, before they pay to keep it.' },
   { term: 'GEO', def: 'Getting your business cited inside AI answers (ChatGPT, Perplexity), where more people now search.' },

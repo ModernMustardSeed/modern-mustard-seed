@@ -9,7 +9,7 @@
  *   4. What would it take to hit target?    → THE FORECAST
  *
  * Two rules run through all of it. Every rate names the denominator it divides
- * by, so "31% forge rate" always means "of people who completed a call". And
+ * by, so "31% build rate" always means "of people who completed a call". And
  * anything with too small a sample says so instead of projecting off three
  * data points: a forecast built on one customer is a rumour with a decimal point.
  */
@@ -266,7 +266,7 @@ export async function findBottleneck(campaign: AcqCampaign | null): Promise<Bott
   const { count: emailed } = await db.from('acq_sends').select('id', { count: 'exact', head: true }).eq('kind', 'campaign').neq('status', 'refused');
   const { count: consented } = await db.from('outbound_leads').select('id', { count: 'exact', head: true }).eq('consent_status', 'granted');
   const { count: called } = await db.from('acq_calls').select('id', { count: 'exact', head: true }).eq('status', 'completed');
-  const { count: forged } = await db.from('outbound_leads').select('id', { count: 'exact', head: true }).eq('demo_status', 'ready');
+  const { count: built } = await db.from('outbound_leads').select('id', { count: 'exact', head: true }).eq('demo_status', 'ready');
   const { count: clients } = await db.from('outbound_leads').select('id', { count: 'exact', head: true }).eq('client_status', 'client');
   const { count: ready } = await db.from('outbound_leads').select('id', { count: 'exact', head: true }).eq('acq_eligible', true).eq('email_stage', 0);
 
@@ -281,8 +281,8 @@ export async function findBottleneck(campaign: AcqCampaign | null): Promise<Bott
 
   rates.push(rate('email-permission', 'Email to permission', consented ?? 0, emailed ?? 0));
   rates.push(rate('permission-call', 'Permission to completed call', called ?? 0, consented ?? 0));
-  rates.push(rate('call-forge', 'Call to forge', forged ?? 0, called ?? 0));
-  rates.push(rate('forge-paid', 'Forge to paid', clients ?? 0, forged ?? 0));
+  rates.push(rate('call-forge', 'Call to build', built ?? 0, called ?? 0));
+  rates.push(rate('forge-paid', 'Build to paid', clients ?? 0, built ?? 0));
 
   // The stage with the worst rate that still has enough behind it to believe.
   const believable = rates.filter((r) => !r.thin && r.ratePct !== null);
@@ -293,7 +293,7 @@ export async function findBottleneck(campaign: AcqCampaign | null): Promise<Bott
   const { data: settingsRow } = await db.from('acq_settings').select('*').eq('id', true).maybeSingle();
   const allowance = Number(settingsRow?.adaptive_daily_allowance ?? 100);
   const targetInventory = Number(settingsRow?.target_ready_inventory ?? 25000);
-  const { count: forgeQueue } = await db.from('acq_queue').select('id', { count: 'exact', head: true }).eq('kind', 'forge').eq('status', 'pending');
+  const { count: buildQueue } = await db.from('acq_queue').select('id', { count: 'exact', head: true }).eq('kind', 'forge').eq('status', 'pending');
   const { count: callQueue } = await db.from('acq_queue').select('id', { count: 'exact', head: true }).eq('kind', 'call').eq('status', 'pending');
 
   let constraint: Bottleneck['constraint'];
@@ -312,8 +312,8 @@ export async function findBottleneck(campaign: AcqCampaign | null): Promise<Bott
     constraint = { id: 'sender', label: 'Sender health', detail: settingsRow.sender_state_reason ?? 'The sender is held.', severity: 'blocking' };
   } else if ((callQueue ?? 0) > 25) {
     constraint = { id: 'mustard', label: 'Mr. Mustard capacity', detail: `${callQueue} people are waiting on a call they asked for.`, severity: 'tight' };
-  } else if ((forgeQueue ?? 0) > 15) {
-    constraint = { id: 'forge', label: 'Forge capacity', detail: `${forgeQueue} demos are queued behind the local worker.`, severity: 'tight' };
+  } else if ((buildQueue ?? 0) > 15) {
+    constraint = { id: 'forge', label: 'Build capacity', detail: `${buildQueue} demos are queued behind the local worker.`, severity: 'tight' };
   } else if (allowance < 1000) {
     constraint = {
       id: 'sender',
@@ -363,7 +363,7 @@ export type Forecast = {
   emailsNeeded: number | null;
   permissionsNeeded: number | null;
   callsNeeded: number | null;
-  forgesNeeded: number | null;
+  buildsNeeded: number | null;
   low: number | null;
   high: number | null;
   basedOn: string;
@@ -384,7 +384,7 @@ export function forecast(rates: FunnelRate[], target: number): Forecast {
   if (!usable) {
     return {
       target,
-      prospectsNeeded: null, emailsNeeded: null, permissionsNeeded: null, callsNeeded: null, forgesNeeded: null,
+      prospectsNeeded: null, emailsNeeded: null, permissionsNeeded: null, callsNeeded: null, buildsNeeded: null,
       low: null, high: null,
       basedOn: 'Not enough of the funnel has run to project from.',
       confident: false,
@@ -392,8 +392,8 @@ export function forecast(rates: FunnelRate[], target: number): Forecast {
   }
 
   const [ep, pc, cf, fp] = chain.map((r) => r!.ratePct! / 100);
-  const forges = Math.ceil(target / fp);
-  const calls = Math.ceil(forges / cf);
+  const builds = Math.ceil(target / fp);
+  const calls = Math.ceil(builds / cf);
   const permissions = Math.ceil(calls / pc);
   const emails = Math.ceil(permissions / ep);
 
@@ -407,7 +407,7 @@ export function forecast(rates: FunnelRate[], target: number): Forecast {
     emailsNeeded: emails,
     permissionsNeeded: permissions,
     callsNeeded: calls,
-    forgesNeeded: forges,
+    buildsNeeded: builds,
     low: Math.round(emails * (1 - spread / 2)),
     high: Math.round(emails * (1 + spread / 2)),
     basedOn: `Observed rates over a smallest sample of ${smallest.toLocaleString()}. PROJECTION, NOT GUARANTEE.`,

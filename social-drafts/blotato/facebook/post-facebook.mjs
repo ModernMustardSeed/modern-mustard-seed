@@ -192,7 +192,7 @@ for (let i = 0; i < avail.length; i++) {
   const date = dates[i];
   const idnum = b.id.replace(/[^a-z0-9]/gi, '');
 
-  // Render the card. Non-CTA posts get the brand footer instead of the /voice-agents/forge URL:
+  // Render the card. Non-CTA posts get the brand footer instead of the /voice-agents/build URL:
   // Facebook suppresses reach on posts that push people off-platform, and the FB lane
   // runs a 9-give-to-1-ask ratio. Done here as a string swap so the shared renderer
   // used by the live LinkedIn/X engine is untouched.

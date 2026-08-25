@@ -39,24 +39,24 @@ function useCountUp(target: number, ms = 700): number {
 
 const PRODUCT_ICONS: Record<DemoProductKey, string> = { voice: '🎙', site: '🌐', os: '⚙' };
 
-/** The house mustard, used until a lead's own brand color has been forged. */
+/** The house mustard, used until a lead's own brand color has been built. */
 const MMS_THEME = { accent: '#F5B700', accentInk: '#161616' };
 
 export default function MakeItRealCTA({
   hubId,
   business,
-  forged,
+  built,
   theme = MMS_THEME,
 }: {
   hubId: string;
   business: string;
-  /** which demos were actually forged; these start selected */
-  forged: DemoProductKey[];
-  /** Derived from THIS lead's own forged website; falls back to house mustard. */
+  /** which demos were actually built; these start selected */
+  built: DemoProductKey[];
+  /** Derived from THIS lead's own built website; falls back to house mustard. */
   theme?: { accent: string; accentInk: string };
 }) {
   const { accent, accentInk } = theme;
-  const seed = DEMO_ORDER_KEYS.filter((k) => forged.includes(k));
+  const seed = DEMO_ORDER_KEYS.filter((k) => built.includes(k));
   const [picked, setPicked] = useState<DemoProductKey[]>(seed.length ? seed : ['voice']);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -18,7 +18,7 @@
  * that is `config`, validated against `configSchema` at deploy time.
  *
  * MISSING CAPABILITY IS A FIRST-CLASS STATE. `status: 'proposed'` means the
- * Factory Forge and the System Designer may reference it, clearly marked NEEDS
+ * Factory Build and the System Designer may reference it, clearly marked NEEDS
  * DEVELOPMENT, and a blueprint that depends on it will not deploy. Pretending a
  * capability exists is the one failure mode that reaches a customer.
  */
@@ -410,7 +410,7 @@ export function availableModules(): FactoryModule[] {
 /**
  * THE CAPABILITY MAP. What MMS can actually do, machine-readable.
  *
- * The Forge and the System Designer compose from this and nothing else. Asking
+ * The Build and the System Designer compose from this and nothing else. Asking
  * for something outside it does not produce a quiet approximation; it produces a
  * MISSING CAPABILITY with a build spec, which is a decision Sarah gets to make
  * rather than a surprise a customer finds.

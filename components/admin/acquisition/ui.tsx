@@ -86,7 +86,7 @@ export function useCountUp(target: number, ms = 700): number {
 export type Toast = { id: number; text: string; tone: 'ok' | 'error' };
 
 /**
- * Feedback that does not steal the screen. Every action on the forge board
+ * Feedback that does not steal the screen. Every action on the build board
  * either succeeds quietly or says exactly what refused it, in the same words
  * the server used, because "something went wrong" in front of a queue of
  * fifty businesses is worse than no message at all.
@@ -158,13 +158,13 @@ export function SeedBurst() {
 
 /* ----------------------------------- nav ---------------------------------- */
 
-export type AcqTab = 'factory' | 'command' | 'engagement' | 'forge' | 'prospects' | 'finder' | 'campaign' | 'mustard' | 'calls' | 'sender' | 'intelligence' | 'settings';
+export type AcqTab = 'factory' | 'command' | 'engagement' | 'build' | 'prospects' | 'finder' | 'campaign' | 'mustard' | 'calls' | 'sender' | 'intelligence' | 'settings';
 
 const TABS: { key: AcqTab; href: string; label: string }[] = [
   { key: 'factory', href: '/admin/acquisition', label: 'Client Factory' },
   { key: 'command', href: '/admin/acquisition/command', label: 'Command Center' },
   { key: 'engagement', href: '/admin/acquisition/engagement', label: 'Who is moving' },
-  { key: 'forge', href: '/admin/acquisition/forge', label: 'The Forge' },
+  { key: 'build', href: '/admin/acquisition/build', label: 'The Build' },
   { key: 'prospects', href: '/admin/acquisition/prospects', label: 'Prospects' },
   { key: 'finder', href: '/admin/acquisition/lead-finder', label: 'Lead Finder' },
   { key: 'campaign', href: '/admin/acquisition/campaign', label: 'Campaign' },

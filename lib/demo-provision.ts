@@ -154,7 +154,7 @@ export async function provisionDemoOrder(sb: SupabaseClient, order: DemoOrderRow
     return { ok: true, clientEmail: email, projectId: prior.id, created: false };
   }
 
-  // 3. Which forged demo are we rebuilding? This is the thread back to the actual
+  // 3. Which built demo are we rebuilding? This is the thread back to the actual
   //    HTML the customer fell in love with, and what the site editor edits.
   let demoSiteId: string | null = null;
   if (order.outbound_lead_id) {

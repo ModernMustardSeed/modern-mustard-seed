@@ -8,7 +8,7 @@
  *      which applies the standard.
  *   2. Someone edits a funnel and drops the call that applies it.
  *
- * Both happened in miniature already: the forged demo personas carried their
+ * Both happened in miniature already: the built demo personas carried their
  * own older copy of these rules for months, and that copy contradicted the
  * standard in the one way that mattered, so demos spelled things back without
  * anchor words and a caller's email went out as busyai2023.
@@ -37,7 +37,7 @@ const FUNNELS = [
   {
     file: 'lib/demo-agent.ts',
     must: 'ensureReadbackStandard(systemPrompt)',
-    why: 'demoModel() builds every forged demo, desk call and interview agent.',
+    why: 'demoModel() builds every built demo, desk call and interview agent.',
   },
   {
     file: 'lib/factory/agent.ts',
@@ -117,7 +117,7 @@ if (!std) {
 const audited = new Set([...FUNNELS.map((f) => f.file), ...EXEMPT.keys()]);
 const CANDIDATES = [
   'lib/outbound-call.ts', 'lib/instant-callback.ts', 'lib/acq/call.ts', 'lib/mustard-desk.ts',
-  'lib/voice-forge-suite.ts', 'scripts/vapi-create-wildhorse.mjs', 'scripts/mustard-ad/call.mjs',
+  'lib/voice-build-suite.ts', 'scripts/vapi-create-wildhorse.mjs', 'scripts/mustard-ad/call.mjs',
 ];
 for (const file of CANDIDATES) {
   if (audited.has(file)) continue;

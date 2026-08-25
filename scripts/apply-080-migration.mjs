@@ -1,7 +1,7 @@
 /**
  * Applies supabase/migrations/080_audit_queue.sql to the MMS project via the
  * Supabase Management API, then VERIFIES the table and the claim function
- * actually respond. Same shape as scripts/forge-apply-migration.mjs.
+ * actually respond. Same shape as scripts/build-apply-migration.mjs.
  *
  * Verification is not optional here: migration 037 appeared to apply cleanly
  * and then 404'd through PostgREST because the schema cache was stale, so a
