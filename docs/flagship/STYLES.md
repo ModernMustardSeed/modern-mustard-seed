@@ -1,8 +1,8 @@
 # The site templates
 
-Twelve visual systems, every one of them named, and the Forge builds exactly one
-per site. Six were lifted off real builds Sarah approved, one is the Daisy's
-Lakehouse Editorial package she asked to keep (2026-08-24), and five were
+Thirteen visual systems, every one of them named, and the Forge builds exactly one
+per site. Six were lifted off real builds Sarah approved, two are packages Sarah handed over (Daisy's
+Lakehouse Editorial and Easton Kinetic), and five were
 designed in the studio to cover the trades the first seven did not fit.
 
 **The registry is code: `lib/site-templates.mjs`.** This file is the reading
@@ -94,7 +94,7 @@ face is used for anything numeric and nowhere else.
 > honest > visit. For churches, retreats, galleries, guides, anything sold on
 feeling. The scroll-driven turn is the centrepiece; see `MOTION.md`.
 
-## The package
+## The packages
 
 ### 7. Lakehouse Editorial `lakehouse-editorial`
 *From: Daisy's Lakehouse, Sarah's package (2026-08-24).* Cream `#F2EDDF`, paper
@@ -107,35 +107,50 @@ accent reservation CTA > footer. For hospitality that should feel editorial,
 tactile and art-directed. The full package is filed at
 `docs/flagship/templates/lakehouse-editorial.md`.
 
+### 8. Easton Kinetic Event Studio `easton-kinetic`
+*From: Easton Events, Sarah's package v2 (2026-08-25).* Black `#08090D`, paper
+`#F1EEE9`, four signal colours led by lime `#D9FF43` with cyan, violet and
+coral. **Big Shoulders Display** condensed display, **Inter** body, **JetBrains
+Mono** coordinates and indexes. Eleven-section kinetic architecture: hero nav
+with a real drawer > full-viewport hero with orbit rings, coordinates and a
+rotated sticker > capability ticker > cream manifesto > sticky four-card stack,
+one signal colour per card > metrics band > sticky method with scroll-revealed
+steps > editorial gallery with a lightbox > studio section > coral CTA >
+footer. CSS-first motion with one real scroll listener and a reduced-motion
+fallback on everything. For event production, AV, venues, festivals, creative
+studios, anything sold on energy. Filed at
+`docs/flagship/templates/easton-kinetic.md`; reference at
+`/demo/reference/easton-kinetic`.
+
 ## The studio designs (2026-08-24)
 
-### 8. Midnight Atelier `midnight-atelier`
+### 9. Midnight Atelier `midnight-atelier`
 Ground `#0E0D0B`, accent `#C9A24A`. **Cormorant Garamond** display, **Manrope**
 body, **DM Mono** prices and index. Quiet luxury: hairline gold rules as the
 only ornament, numbered chapters, inset images, slow crossfades, dot-leader
 prices. For jewelers, fine dining, custom builders, aesthetics, bridal.
 
-### 9. Swiss Grid `swiss-grid`
+### 10. Swiss Grid `swiss-grid`
 Ground `#F1F0EB`, accent `#E0201B`. **Inter Tight** display, **Inter** body,
 **JetBrains Mono** figures. A visible twelve-column grid, 1px rules and no boxes,
 one red word per screen, flush-left everything, tables in mono. For engineers,
 architects, accountants, IT, logistics, anyone who sells precision.
 
-### 10. Poster Press `poster-press`
+### 11. Poster Press `poster-press`
 Paper `#F4EFE2`, ink `#1B2A4A`, accent `#F26A3D`. **Bricolage Grotesque**
 display, **Public Sans** body, **Courier Prime** stamps. Two-ink risograph
 discipline, CSS halftone on photographs, 2px misregistration on the hero
 headline, rubber stamps, a perforated ticket strip. For breweries, roasters,
 food trucks, venues, makers.
 
-### 11. Greenhouse `greenhouse`
+### 12. Greenhouse `greenhouse`
 Linen `#ECEBE1`, ink `#1E3A2B` (green is the ink; no black), accent `#D7A21A`.
 **Newsreader** display, **Karla** body, **Kalam** plant-tag labels. Arched image
 masks, plant-tag service cards, a month-by-month season strip, line-art leaf
 marks, a before/after slider. For landscapers, nurseries, florists, tree
 services, farms.
 
-### 12. Clinic Calm `clinic-calm`
+### 13. Clinic Calm `clinic-calm`
 Ground `#F7F8F6`, ink `#16302B`, accent `#2F7F6F`, highlight `#F2B850`. **DM
 Serif Display**, **DM Sans** body, **DM Mono** hours and codes. Pill-shaped
 photographs, big friendly numerals, a live appointment strip, marigold on
