@@ -51,6 +51,10 @@ const REFERENCES: Record<string, { fixed?: Reference; business?: string; demoId?
     fixed: { label: "Daisy's Cafe (the package build, whole site)", url: '/demo/reference/daisys-cafe', source: 'repo', notes: '' },
     notes: 'The complete package site: over-image nav, hero with the rotating sunrise badge, ticker, outline-type intro, paper-note image break, tabbed menu on ink, the sailboat ritual with the outline numeral, contact-sheet gallery with a lightbox, Supper Club, two service cards, the reservation close, footer. Every interaction is live here.',
   },
+  'easton-kinetic': {
+    fixed: { label: 'Easton Events (the package build, whole site)', url: '/demo/reference/easton-kinetic', source: 'repo', notes: '' },
+    notes: 'The complete package site: scroll progress bar, hero with orbit rings, coordinates and the rotated sticker, capability ticker, cream manifesto with the rotating glyph, the sticky four-card stack (lime, violet, coral, cyan), metrics band, sticky method with scroll-revealed steps, editorial gallery with a lightbox, studio section, coral CTA, footer. Every motion and interaction is live here.',
+  },
   'midnight-atelier': { notes: 'No reference build yet. Forge one: pick Midnight Atelier on a jeweler, med-spa or custom-builder lead and it becomes the reference here.' },
   'swiss-grid': { notes: 'No reference build yet. Forge one: pick Swiss Grid on an engineer, accountant or law-office lead.' },
   'poster-press': { notes: 'No reference build yet. Forge one: pick Poster Press on a brewery, roaster, food-truck or venue lead.' },
