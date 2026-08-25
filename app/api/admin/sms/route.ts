@@ -34,7 +34,10 @@ type Mode = 'provider' | 'handset';
 /** Which number we speak from, and whether it may speak yet. */
 async function outgoing(sb: ReturnType<typeof getSupabase>) {
   const configured = smsConfigured();
-  const from = toE164(process.env.TWILIO_SMS_NUMBER || '');
+  // TWILIO_SMS_FROM is the name already set in production. TWILIO_SMS_NUMBER is
+  // accepted as well so a fresh environment set up from this file's own error
+  // message still works, rather than failing over a variable spelling.
+  const from = toE164(process.env.TWILIO_SMS_FROM || process.env.TWILIO_SMS_NUMBER || '');
   const row = from ? await numberFor(sb, from) : null;
 
   // A number we have never registered in sms_numbers is treated as not ready.
@@ -72,7 +75,7 @@ export async function GET(req: Request) {
           : !out.configured
             ? 'Twilio is not configured, so nothing can send from the app yet.'
             : !out.from
-              ? 'No TWILIO_SMS_NUMBER is set, so there is no number to send from.'
+              ? 'No TWILIO_SMS_FROM is set, so there is no number to send from.'
               : 'This number is not cleared for outbound yet (A2P 10DLC pending), so sending from the app would be filtered by the carrier.',
     },
   });
