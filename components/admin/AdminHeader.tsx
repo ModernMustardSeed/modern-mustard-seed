@@ -95,6 +95,10 @@ const GROUPS: { name: string; items: Item[] }[] = [
     name: 'Desk',
     items: [
       { key: 'inbox', label: 'Inbox', href: '/admin/inbox' },
+      // The `texting` key has been in the Tab union since the old SMS stack and
+      // pointed at nothing after it was retired. It points at a page again now
+      // that replies actually arrive somewhere.
+      { key: 'texting', label: 'Texting', href: '/admin/texting' },
       { key: 'calendar', label: 'Calendar', href: '/admin/calendar' },
       { key: 'approvals', label: 'Approvals', href: '/admin/approvals' },
       { key: 'team', label: 'Team', href: '/admin/team' },

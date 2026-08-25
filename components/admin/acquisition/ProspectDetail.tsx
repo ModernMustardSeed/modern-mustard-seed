@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
+import SmsThread from '@/components/admin/SmsThread';
 import { AcqNav, Chip, Section, Stat, ToastHost, api, card, cardFlat, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, eyebrow, timeAgo, useToasts } from '@/components/admin/acquisition/ui';
 import PersonalVideoCard from '@/components/admin/acquisition/PersonalVideoCard';
 
@@ -293,6 +294,9 @@ export default function ProspectDetail({ id }: { id: string }) {
 
             {/* ── the mail ── */}
             <EmailThread leadId={id} email={l.email} />
+
+            {/* ── the texts ── */}
+            <SmsThread phone={l.phone} />
 
             {/* ── Mr. Mustard ── */}
             <Section title="Mr. Mustard" note="What he heard, and what he did about it.">

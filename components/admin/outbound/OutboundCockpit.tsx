@@ -13,6 +13,7 @@ import type { DialSession } from '@/components/admin/outbound/ui';
 import { ReachOutDeck, AuditIntelCard, ReviewAmmoCard, ThreadPanel, LeadFile } from '@/components/admin/outbound/OutboundReachOut';
 import PersonalVideoCard from '@/components/admin/outbound/PersonalVideoCard';
 import EmailThread from '@/components/admin/EmailThread';
+import SmsThread from '@/components/admin/SmsThread';
 
 /** Company callback line read out in the voicemail script (Mr. Mustard's number). */
 const MMS_LINE = '(406) 312-1223';
@@ -694,6 +695,14 @@ export default function OutboundCockpit({ leadId, adminName }: { leadId: string;
                 knows the mail this cockpit sent by hand; the drip is over here. */}
             <div className="mb-6">
               <EmailThread leadId={lead.id} email={lead.email} title="What they have been sent" />
+            </div>
+
+            {/* And what they texted back. Until the inbound webhook shipped this
+                half of the conversation lived on a personal handset and never
+                reached the dial floor, so a rep opened a lead with no idea the
+                person had already answered. */}
+            <div className="mb-6">
+              <SmsThread phone={lead.phone} title="Texts" />
             </div>
 
             <div className="grid lg:grid-cols-12 gap-5 items-start">
