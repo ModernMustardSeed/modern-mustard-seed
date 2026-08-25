@@ -447,6 +447,9 @@ export default function AcqBuild() {
 
   const rows = data?.rows ?? [];
   const counts = data?.counts;
+  // The same number the Everything chip shows, so the board never quotes two
+  // different totals about itself in one view.
+  const openCount = counts ? counts.all - counts.closed : 0;
   const building = useMemo(() => rows.filter((r) => r.segment === 'forging'), [rows]);
   const stalled = useMemo(
     () => building.filter((r) => r.siteRun && !r.siteRun.claimed_at && minsSince(r.siteRun.created_at) >= 10),
@@ -635,7 +638,7 @@ export default function AcqBuild() {
           <div className="mb-3 flex flex-wrap items-center gap-2 border-b-2 border-[#161616]/10 pb-3">
             <span className={`${eyebrow} mr-1`}>Workbench</span>
             {(['all', ...ORDER] as const).map((k) => {
-              const n = k === 'all' ? (counts ? counts.all - counts.closed : 0) : (counts?.[k] ?? 0);
+              const n = k === 'all' ? openCount : (counts?.[k] ?? 0);
               if ((k === 'closed' || k === 'cold') && n === 0) return null;
               const active = segment === k;
               return (
@@ -746,9 +749,9 @@ export default function AcqBuild() {
               </p>
               {/* An empty bucket is never allowed to imply an empty board. Say
                   what the board actually holds and give one click out of here. */}
-              {!q && segment !== 'all' && (data?.counts.all ?? 0) > 0 && (
+              {!q && segment !== 'all' && openCount > 0 && (
                 <p className="mt-4 font-sans text-sm text-[#161616]/70">
-                  This bucket only. The board holds {data!.counts.all.toLocaleString()} businesses.{' '}
+                  This bucket only. The board holds {openCount.toLocaleString()} businesses.{' '}
                   <button
                     type="button"
                     onClick={() => setSegment('all')}

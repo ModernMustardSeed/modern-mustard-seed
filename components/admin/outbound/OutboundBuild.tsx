@@ -298,6 +298,9 @@ export default function OutboundBuild() {
 
   const rows = data?.rows ?? [];
   const counts = data?.counts;
+  // The same number the Everything chip shows, so the board never quotes two
+  // different totals about itself in one view.
+  const openCount = counts ? counts.all - counts.closed : 0;
   const building = useMemo(() => rows.filter((r) => r.stage === 'forging'), [rows]);
   // The worker runs on Sarah's machine. A row nobody claimed in ten minutes is
   // not "building", it is waiting on a process that is not up.
@@ -497,7 +500,7 @@ export default function OutboundBuild() {
           <div className="flex flex-wrap items-center gap-2 mb-3 pb-3 border-b-2 border-[#1a1815]/10">
             <span className={`${eyebrow} mr-1`}>Workbench</span>
             {(['all', ...STAGE_ORDER] as const).map((k) => {
-              const n = k === 'all' ? (counts ? counts.all - counts.closed : 0) : (counts?.[k] ?? 0);
+              const n = k === 'all' ? openCount : (counts?.[k] ?? 0);
               if (k === 'closed' && n === 0) return null;
               const active = stage === k;
               return (
@@ -600,9 +603,9 @@ export default function OutboundBuild() {
               </p>
               {/* An empty bucket is never allowed to imply an empty board. Say
                   what the board actually holds and give one click out of here. */}
-              {!q && stage !== 'all' && (data?.counts.all ?? 0) > 0 && (
+              {!q && stage !== 'all' && openCount > 0 && (
                 <p className="mt-4 font-sans text-sm text-[#1a1815]/70">
-                  This bucket only. The board holds {data!.counts.all.toLocaleString()} built leads.{' '}
+                  This bucket only. The board holds {openCount.toLocaleString()} built leads.{' '}
                   <button
                     type="button"
                     onClick={() => setStage('all')}
