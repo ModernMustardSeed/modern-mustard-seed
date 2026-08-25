@@ -5,7 +5,7 @@
   "packageManager": "pnpm@11.21.0",
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "node scripts/check-no-brown.mjs && node scripts/voice-standard-check.mjs && node scripts/cron-collision-check.mjs && next build",
+    "build": "node scripts/check-worker-imports.mjs && node scripts/check-no-brown.mjs && node scripts/voice-standard-check.mjs && node scripts/cron-collision-check.mjs && next build",
     "crons:check": "node scripts/cron-collision-check.mjs",
     "start": "next start",
     "fieldguide:sheet": "tsx scripts/build-fieldguide-onepager.ts",
@@ -55,6 +55,7 @@
     "acq:rail": "tsx scripts/acq-rail-test.mts",
     "acq:fo-demo": "tsx scripts/acq-fo-demo.mts",
     "check:brown": "node scripts/check-no-brown.mjs",
+    "check:imports": "node scripts/check-worker-imports.mjs",
     "voice:standard": "node scripts/voice-standard-check.mjs",
     "voice:audit": "node scripts/vapi-readback-audit.mjs",
     "voice:tools": "node scripts/vapi-tool-health.mjs",
