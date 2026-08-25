@@ -1093,6 +1093,55 @@ test('emails: every email opens the free build, and none of them asks to call an
   assert.ok(!permissionUrl(lead(), 1, 'A').includes('d='), 'the default door adds no parameter');
 });
 
+/**
+ * THE KEYPAD IN THE EMAIL HAS TO GO SOMEWHERE.
+ *
+ * No mail client runs JavaScript, so the keys cannot type and the readout cannot
+ * move. Sarah, looking at a send: "the calculator looks good, but its not
+ * working and letting me typ in it."
+ *
+ * It cannot, in an inbox, ever. What it can do is finish the press on the web:
+ * every digit key carries ITS OWN digit plus the three inputs the email printed,
+ * so /mustard opens on the same figure with that digit already entered. A key
+ * that dropped the numbers would land the reader on the house defaults, quoting
+ * a different total than the email that made them tap.
+ */
+test('emails: every keypad key carries its digit and the numbers on the display', () => {
+  const l = lead();
+  const built = buildCampaignEmail({
+    lead: l,
+    variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'S', cta_label: 'BUILD', body_key: 'default', weight: 1, active: true },
+    step: 1,
+    fromName: 'Sarah',
+    fromEmail: 's@x.com',
+    replyTo: 's@x.com',
+  });
+  const html = built!.html;
+  const keys = [...html.matchAll(/<a href="([^"]*\/mustard\?[^"]*)"[^>]*>([^<]{1,6})<\/a>/g)];
+  assert.equal(keys.length, 14, 'sixteen key faces, two of which span, so fourteen links');
+
+  for (const [, url, face] of keys) {
+    const q = new URL(url).searchParams;
+    for (const p of ['m', 'c', 't']) {
+      assert.ok(q.get(p), `the "${face}" key must carry ${p} or the landing page shows house numbers`);
+    }
+    if (/^[0-9]$/.test(face)) assert.equal(q.get('k'), face, `the "${face}" key must carry its own digit`);
+    if (face === 'C') assert.equal(q.get('k'), 'C', 'clear must clear');
+  }
+  // The digits must not all point at the same place: that was the old bug, and
+  // it is invisible unless something counts.
+  const distinct = new Set(keys.map((k) => k[1]));
+  assert.ok(distinct.size >= 11, `expected a destination per digit, got ${distinct.size}`);
+
+  // And the keypad still never touches the tracked route: a man poking a
+  // calculator has not clicked the call to action.
+  assert.ok(!keys.some(([, u]) => u.includes('/api/acq/click')), 'the keypad is not the CTA');
+
+  // The label must not promise typing that cannot happen in an inbox.
+  assert.ok(!/tap a key and change them/i.test(html), 'the old label promised in-place editing');
+  assert.match(html, /Tap any key to open/i, 'it has to say where the tap goes');
+});
+
 test('emails: the proof email quotes only cited figures, and shows the contested one as a range', () => {
   const built = buildCampaignEmail({
     lead: lead(),

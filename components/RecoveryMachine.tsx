@@ -90,12 +90,23 @@ export default function RecoveryMachine({
   ticketPreset,
   ticketLabel = 'Average Job Value',
   noticedLine,
+  typedKey,
   onChange,
 }: {
   /** Research-informed starting values; sensible defaults otherwise. */
   missedPreset?: number | null;
   closePreset?: number | null;
   ticketPreset?: number | null;
+  /**
+   * A key already pressed somewhere this machine could not run.
+   *
+   * The cold email renders this same machine in tables, where no JavaScript
+   * exists, so its keypad is a row of links. Each digit key carries its own
+   * digit here, and the field it would have entered opens holding it, focused,
+   * with the caret after it. The tap finishes on this page instead of dying in
+   * the inbox. 'C' clears the field the same way the real key does.
+   */
+  typedKey?: string | null;
   /** The trade word for the money slot ("average install", "average booking"). */
   ticketLabel?: string;
   /** A factual, pre-sanitized line about this exact business, shown as the
@@ -108,8 +119,12 @@ export default function RecoveryMachine({
     { key: 'close', label: 'Would Have Hired You', hint: 'Of the people you actually talk to', max: 100, suffix: '%' },
     { key: 'ticket', label: ticketLabel, hint: 'What one is worth to you', max: 500000, prefix: '$' },
   ];
+  // A digit arriving from the email replaces the first field rather than being
+  // appended to it, because on the keypad it WAS the first press: the reader
+  // saw our estimate and started typing over it.
+  const seeded = /^[0-9]$/.test(String(typedKey ?? '')) ? Number(typedKey) : null;
   const [vals, setVals] = useState<Record<Key, number>>({
-    missed: missedPreset ?? 7,
+    missed: typedKey === 'C' ? 0 : (seeded ?? missedPreset ?? 7),
     close: closePreset ?? 45,
     ticket: ticketPreset ?? 500,
   });
@@ -135,6 +150,24 @@ export default function RecoveryMachine({
   useEffect(() => {
     onChange?.({ ...vals, leak });
   }, [vals, leak, onChange]);
+
+  // Land with the caret where the tap left off, so the next thing they type
+  // goes into the field the email's keypad was pointed at. Runs once: a later
+  // re-render must not yank focus back out from under them.
+  const carried = useRef(false);
+  useEffect(() => {
+    if (carried.current || !typedKey) return;
+    carried.current = true;
+    const el = inputs.current.missed;
+    if (!el) return;
+    el.focus();
+    const end = el.value.length;
+    try {
+      el.setSelectionRange(end, end);
+    } catch {
+      /* number inputs refuse setSelectionRange in some browsers */
+    }
+  }, [typedKey]);
 
   const shown = useCountUp(leak);
   const annualShown = useCountUp(leak * 12);
