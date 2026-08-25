@@ -18,7 +18,7 @@ import { resolveTxt, resolveCname } from 'node:dns/promises';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
 import { getAcqSettings } from '@/lib/acq/settings';
-import { rollingCounts, SENDER_STATE_LABELS, RAMP_STEPS } from '@/lib/acq/governor';
+import { rollingCounts, RATE_MEASUREMENT_FLOOR, SENDER_STATE_LABELS, RAMP_STEPS } from '@/lib/acq/governor';
 import type { SenderState } from '@/lib/acq/governor';
 
 export type HealthLevel = 'pass' | 'warning' | 'error' | 'unknown';
@@ -267,7 +267,7 @@ export async function computeSenderHealth(dbIn?: SupabaseClient | null): Promise
   let bounceWebhook: HealthCheck = { id: 'bounce-webhook', label: 'Bounce and complaint webhook', level: 'unknown', detail: 'No database.' };
   let suppression: HealthCheck = { id: 'suppression', label: 'Suppression engine', level: 'unknown', detail: 'No database.' };
   let statuses: Record<string, number> = {};
-  let volume = { sent24h: 0, sent1h: 0, bounced24h: 0, complained24h: 0, unsub24h: 0 };
+  let volume = { sent24h: 0, sent1h: 0, bounced24h: 0, complained24h: 0, unsub24h: 0, softBounced24h: 0 };
 
   if (db) {
     try {
@@ -311,7 +311,7 @@ export async function computeSenderHealth(dbIn?: SupabaseClient | null): Promise
 
   const ceiling = settings.global_rolling_24h_ceiling ?? 4500;
   const allowance = Math.min(settings.adaptive_daily_allowance ?? 100, ceiling);
-  const measurable = volume.sent24h >= 25;
+  const measurable = volume.sent24h >= RATE_MEASUREMENT_FLOOR;
 
   checks.push({
     id: 'ceiling',
@@ -330,13 +330,17 @@ export async function computeSenderHealth(dbIn?: SupabaseClient | null): Promise
     id: 'bounce-rate',
     label: 'Bounce rate',
     level: !measurable ? 'unknown' : bouncePct! > maxBounce ? 'error' : bouncePct! > maxBounce / 2 ? 'warning' : 'pass',
-    detail: measurable ? `${bouncePct!.toFixed(2)}% over 24 hours, ceiling ${maxBounce}%.` : 'Under 25 sends in 24 hours, so there is nothing honest to measure yet.',
+    detail: measurable
+      ? `${bouncePct!.toFixed(2)}% over 24 hours, ceiling ${maxBounce}%. ${volume.bounced24h} permanent of ${volume.sent24h} sent${volume.softBounced24h ? `, plus ${volume.softBounced24h} soft (full mailboxes) that do not count against it` : ''}.`
+      : `${volume.sent24h} sent in 24 hours. Under ${RATE_MEASUREMENT_FLOOR} there is nothing honest to measure: one dead address in twenty-five is already 4%.`,
   });
   checks.push({
     id: 'complaint-rate',
     label: 'Complaint rate',
     level: !measurable ? 'unknown' : complaintPct! > maxComplaint ? 'error' : complaintPct! > maxComplaint / 2 ? 'warning' : 'pass',
-    detail: measurable ? `${complaintPct!.toFixed(3)}% over 24 hours, ceiling ${maxComplaint}%.` : 'Under 25 sends in 24 hours, so there is nothing honest to measure yet.',
+    detail: measurable
+      ? `${complaintPct!.toFixed(3)}% over 24 hours, ceiling ${maxComplaint}%.`
+      : `${volume.sent24h} sent in 24 hours, under the ${RATE_MEASUREMENT_FLOOR} needed to measure a rate.`,
   });
 
   checks.push({

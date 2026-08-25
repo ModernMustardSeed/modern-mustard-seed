@@ -57,7 +57,8 @@
     "voice:standard": "node scripts/voice-standard-check.mjs",
     "voice:audit": "node scripts/vapi-readback-audit.mjs",
     "voice:tools": "node scripts/vapi-tool-health.mjs",
-    "demo:booking": "tsx scripts/demo-booking-smoke.mts"
+    "demo:booking": "tsx scripts/demo-booking-smoke.mts",
+    "acq:demos": "tsx scripts/acq-demos-now.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",

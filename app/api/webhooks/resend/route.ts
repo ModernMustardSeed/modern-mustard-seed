@@ -116,7 +116,7 @@ export async function POST(req: Request) {
   // Feed the outbound governor. Its bounce and complaint rates, and therefore
   // the adaptive allowance and the automatic throttle, are read off acq_sends,
   // so an event that is not carried across here is a warning nobody acts on.
-  await recordAcqDelivery(providerId, type, detail);
+  await recordAcqDelivery(providerId, type, detail, bounce?.type ?? null);
 
   return NextResponse.json({ ok: true });
 }
@@ -129,7 +129,13 @@ export async function POST(req: Request) {
  * not overwrite a real "bounced". Best effort throughout, because this is
  * bookkeeping and the suppression write above is the part that protects people.
  */
-async function recordAcqDelivery(providerId: string, type: string, detail: string | null): Promise<void> {
+async function recordAcqDelivery(
+  providerId: string,
+  type: string,
+  detail: string | null,
+  /** Resend's classification: Permanent, Transient, Undetermined, or null. */
+  bounceType: string | null,
+): Promise<void> {
   const TERMINAL: Record<string, string> = {
     'email.bounced': 'bounced',
     'email.complained': 'complaint',
@@ -140,19 +146,30 @@ async function recordAcqDelivery(providerId: string, type: string, detail: strin
   const status = TERMINAL[type];
   if (!status) return;
 
+  // A full mailbox or a busy server is not a bad address. The suppression
+  // path above has always known that; the reputation math and the lead's own
+  // record did not, so one MailboxFull permanently retired a real prospect
+  // and counted against the domain. Both stop here.
+  const soft = status === 'bounced' && bounceType === 'Transient';
+
   try {
     const db = getSupabase();
     if (!db) return;
     const stamp = new Date().toISOString();
     const patch: Record<string, unknown> = { status, status_detail: detail };
+    if (status === 'bounced') patch.bounce_type = bounceType ?? 'Permanent';
     if (status === 'delivered') patch.delivered_at = stamp;
     if (status === 'bounced') patch.bounced_at = stamp;
     if (status === 'complaint') patch.complained_at = stamp;
     if (status === 'suppressed') patch.unsubscribed_at = stamp;
 
     let q = db.from('acq_sends').update(patch).eq('provider_message_id', providerId);
-    // A drop is authoritative. Anything softer must not overwrite one.
-    if (status === 'delivered' || status === 'deferred') q = q.not('status', 'in', '(bounced,complaint,unsubscribed,suppressed)');
+    // A drop is authoritative. Anything softer must not overwrite one. A soft
+    // bounce is not a drop: Resend retries them, and a later delivered is the
+    // truer answer, so it is allowed to win.
+    if (status === 'delivered' || status === 'deferred') {
+      q = q.not('status', 'in', '(complaint,unsubscribed,suppressed)').or('status.neq.bounced,bounce_type.eq.Transient');
+    }
     const { data } = await q.select('lead_id');
 
     const leadId = ((data ?? [])[0] as { lead_id: string | null } | undefined)?.lead_id;
@@ -176,7 +193,19 @@ async function recordAcqDelivery(providerId: string, type: string, detail: strin
         label: 'Resend suppressed this address, so the message never went out',
       },
     };
-    const dead = DEAD[status];
+    const dead = soft ? null : DEAD[status];
+
+    if (leadId && soft) {
+      // Keep them in the campaign. Record what happened so a pattern of full
+      // mailboxes on one address is still visible on the timeline.
+      await recordEvent(db, {
+        leadId,
+        type: 'note',
+        label: `Soft bounce, still mailable: ${detail ?? 'the mailbox was temporarily unavailable'}`,
+        detail: { providerId, detail, bounceType },
+      });
+    }
+
     if (leadId && dead) {
       await db
         .from('outbound_leads')
