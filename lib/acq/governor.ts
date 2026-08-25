@@ -366,11 +366,15 @@ export async function recordRefusal(
   lead: AcqProspect,
   campaignId: string | null,
   reason: string,
+  // The kind matters: a demo suite email refused for volume reads as an
+  // ordinary campaign refusal unless the row says which one it was, and
+  // "the demos never went" is exactly the question this table has to answer.
+  kind: 'campaign' | 'followup' | 'demo' | 'checkout' = 'campaign',
 ): Promise<void> {
   await db.from('acq_sends').insert({
     lead_id: lead.id,
     campaign_id: campaignId,
-    kind: 'campaign',
+    kind,
     to_email: (lead.email ?? 'unknown').toLowerCase(),
     from_email: 'sarah@modernmustardseed.com',
     status: 'refused',
