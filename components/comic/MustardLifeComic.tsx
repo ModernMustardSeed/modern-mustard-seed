@@ -479,12 +479,12 @@ export default function MustardLifeComic() {
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#E0301E]">p. 08 · The Bridge</p>
               <p className="mlc-pop font-body text-[15px] leading-relaxed text-[#3a3733]">
                 The Business Command Center wires your calls, website traffic, customers, and reviews into one glowing
-                dashboard, and it rides free when you take the website and the voice agent together. One system, one login.
+                dashboard. Sold on its own, built by hand, and scoped with you first. One system, one login.
               </p>
               <PriceTag
                 name={P.os.name}
                 price={`${usd(P.os.setupCents)} + ${usd(P.os.monthlyCents)}/mo`}
-                note={`${P.os.blurb} Free when you take the website and the voice agent together.`}
+                note={P.os.blurb}
               />
               <PriceTag
                 name={P.bundle.name}

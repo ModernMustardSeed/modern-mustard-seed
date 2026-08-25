@@ -855,7 +855,7 @@ export function personalVideoCard({ href, business }: { href: string; business: 
  * THEIR OWN walkthrough film, as an email-safe card.
  *
  * The suite film is a real recording of this lead's site, a live call with
- * their own voice agent, and their own command center (scripts/suite-film).
+ * and their own voice agent (scripts/suite-film).
  * It lives in a private bucket behind a short-lived signed URL, so the email
  * cannot embed its poster the way the house film card does: a signed image URL
  * would 404 in the inbox a few hours later, which looks worse than no image.

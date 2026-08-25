@@ -177,7 +177,11 @@ export async function ensureDemoHub(supabase: SupabaseClient, lead: OutboundLead
 /**
  * Forge the lead's BUSINESS OS (command center) demo if it does not exist yet.
  * Instant and token-free (a config-driven template), so it now rides along free
- * with every voice and website forge: the command center is included with any
+ * ⚠️ NOT AUTOMATIC ANY MORE (Sarah, 2026-08-22). Nothing calls this on its own:
+ * the command center left the demo suite and the offer, so the only caller left
+ * is the cockpit's explicit Forge OS button. Kept because she still builds them
+ * by hand. It used to ride along
+ * with every voice and website forge: the command center was included with any
  * website or voice agent, so every forged suite should show it. Fail-soft: if
  * the insert hiccups, the lead is returned unchanged and the rest of the suite
  * still ships. Idempotent: a ready OS demo is returned untouched.
@@ -209,8 +213,8 @@ export async function ensureOsDemo(supabase: SupabaseClient, lead: OutboundLead)
     channel: 'note',
     from_addr: 'cockpit',
     to_addr: lead.business_name,
-    subject: 'Command center included',
-    snippet: `Their command center (free with the site or voice agent) is live at ${osUrl}`,
+    subject: 'Command center built by hand',
+    snippet: `Built for you, not offered to them: ${osUrl}`,
     read: true,
     occurred_at: new Date().toISOString(),
   });

@@ -167,7 +167,7 @@ export function cityFaqs(city: MontanaCity): { q: string; a: string }[] {
     },
     {
       q: `How much does a website cost in ${city.name}?`,
-      a: `The productized website is $497 to set up and $147 a month, which covers the domain, hosting, care, and the business command center. That is the same price whether you are in ${city.name} or anywhere else: we do not price by zip code. Larger custom builds (booking systems, an embedded CRM, a store) are scoped and quoted after a free call. Month to month, cancel anytime, and no trials.`,
+      a: `The productized website is $497 to set up and $147 a month, which covers the domain, hosting, and care. That is the same price whether you are in ${city.name} or anywhere else: we do not price by zip code. Larger custom builds (booking systems, an embedded CRM, a store) are scoped and quoted after a free call. Month to month, cancel anytime, and no trials.`,
     },
     {
       q: `Will a voice agent sound right for a ${city.name} business?`,
@@ -179,7 +179,7 @@ export function cityFaqs(city: MontanaCity): { q: string; a: string }[] {
     },
     {
       q: `Can I see something before I pay anything?`,
-      a: `Yes, and you should. Enter your business once at the demo station and you get three working demos free: a voice agent you can talk to, a website designed from scratch for your business, and a command center wired to both. No card, no meeting, no sales call to sit through. Keep what you love or keep nothing.`,
+      a: `Yes, and you should. Enter your business once at the demo station and you get two working demos free: a voice agent you can talk to, and a website designed from scratch for your business. No card, no meeting, no sales call to sit through. Keep what you love or keep nothing.`,
     },
   ];
 }

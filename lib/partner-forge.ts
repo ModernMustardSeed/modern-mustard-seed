@@ -24,7 +24,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { forgeLeadVoiceDemo, buildOsConfig, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import { recordDemoEvent } from '@/lib/demo-events';
 import type { OutboundLead, Niche, ForgeOrigin } from '@/lib/outbound';
@@ -296,25 +296,15 @@ export async function mintForgedSuite(
   }
   let lead = leadRow as OutboundLead;
 
-  // Forge order proven by the Demo Station: voice (the OS references it),
-  // OS (instant), website (queued to the worker), then the hub.
+  // Forge order proven by the Demo Station: voice (instant), website (queued
+  // to the worker), then the hub.
   const voice = await forgeLeadVoiceDemo(supabase, lead);
   if (voice.ok) lead = voice.lead;
 
-  const { data: osRow } = await supabase
-    .from('outbound_demo_os')
-    .insert({ lead_id: lead.id, business_name: lead.business_name, config: buildOsConfig(lead) })
-    .select('id')
-    .single();
-  if (osRow) {
-    const { data: updated } = await supabase
-      .from('outbound_leads')
-      .update({ os_demo_id: osRow.id, os_demo_url: `${SITE.url}/demo/os/${osRow.id}`, os_demo_status: 'ready' })
-      .eq('id', lead.id)
-      .select('*')
-      .single();
-    if (updated) lead = updated as OutboundLead;
-  }
+  // THE COMMAND CENTER IS NOT FORGED ANY MORE (Sarah, 2026-08-22). It is sold
+  // on its own, built by hand, and scoped with the client first. A forge that
+  // quietly produced one was shipping a product that is not finished yet, and
+  // the freebie it used to ride in on is gone from the offer too.
 
   const { data: siteRow } = await supabase
     .from('outbound_demo_sites')
@@ -421,11 +411,11 @@ export async function sendForgeHandoffEmail(
     replyTo: 'sarah@modernmustardseed.com',
     subject: `${first}, the suite you forged for ${args.business} is live`,
     html: clientEmail({
-      preheader: 'Their voice agent and command center are ready now; the website lands at the same link.',
+      preheader: 'Their voice agent is ready now; the website lands at the same link.',
       eyebrow: 'YOUR FORGE, THEIR FLAG',
       greeting: `${first}, it is ready.`,
       body:
-        `<p>The demo suite you minted for <strong>${args.business}</strong> is live at their private hub. The voice agent and the command center are ready right now; the custom website is designed from scratch, and it plus their walkthrough film land at the same link within the hour.</p>` +
+        `<p>The demo suite you minted for <strong>${args.business}</strong> is live at their private hub. The voice agent is ready right now; the custom website is designed from scratch, and it plus their walkthrough film land at the same link within the hour.</p>` +
         `<p>Hand it off in your own words, or use these three lines:</p>` +
         `<p style="padding:12px 16px;border-left:4px solid #F5B700;background:#FBF6EA;">` +
         `"${ownerFirst}, I had something built for ${args.business}. A team I trust makes voice agents and websites, and I asked them to make yours first so you could see it real, not as a pitch. It is at this link, with your name on it, and it took me two minutes: have a look before you talk to anyone."` +

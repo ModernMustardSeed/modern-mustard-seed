@@ -437,7 +437,7 @@ const UNV_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_med
 
 const UNV_COPY_A = `Most companies ask you to pay first and imagine the rest. We do the opposite.
 
-Tell us about your business (it takes about 60 seconds) and we build your demos first: a real working website, a voice agent that answers actual calls, and a command center with your business inside it. Built for you, with your name on them, free.
+Tell us about your business (it takes about 60 seconds) and we build your demos first: a real working website and a voice agent that answers actual calls. Built for you, with your name on them, free.
 
 Then you walk your own gallery. If you love what we built, we make it real. If not, it cost you a minute.
 
@@ -445,12 +445,12 @@ Your unveiling is waiting.`;
 
 const UNV_COPY_B = `You would never buy a car without driving it. So why would you buy a website, a voice agent, or business software without seeing YOURS working first?
 
-Modern Mustard Seed builds your demos before you pay anything: your website, your voice agent answering a real call, your command center running the numbers. Sixty seconds to tell us about your business. The demos are on us.
+Modern Mustard Seed builds your demos before you pay anything: your website, and your voice agent answering a real call. Sixty seconds to tell us about your business. The demos are on us.
 
 See them working. Then make it real.`;
 
 const UNV_HEADLINE = 'We build yours first. Free.';
-const UNV_DESCRIPTION = 'A real website, voice agent, and command center, built for your business before you pay.';
+const UNV_DESCRIPTION = 'A real website and a voice agent, built for your business before you pay.';
 
 const UNV_CUTS = [
   { file: '/ads/unveiling-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
@@ -463,7 +463,7 @@ const UNV_FB_POST = `Tonight, an unveiling. 🥂
 
 Most companies ask you to pay first and imagine the rest. We flipped it.
 
-Tell us about your business (60 seconds, that is the whole form) and we build your demos first: a real working website, a voice agent that answers actual calls, and a command center with your business inside it. Your name on all three. Free to see working.
+Tell us about your business (60 seconds, that is the whole form) and we build your demos first: a real working website and a voice agent that answers actual calls. Your name on both. Free to see working.
 
 If you love them, we make them real. If not, it cost you a minute.
 
@@ -473,7 +473,7 @@ Your unveiling is waiting: modernmustardseed.com/demos?utm_source=facebook&utm_m
 
 const UNV_IG_CAPTION = `Tonight, an unveiling 🥂
 
-We build your demos FIRST. A real website. A voice agent that answers actual calls. A command center with your business inside it.
+We build your demos FIRST. A real website. A voice agent that answers actual calls. Both with your name on them.
 
 Free to see working. You only pay to make them real.
 
@@ -481,7 +481,7 @@ Free to see working. You only pay to make them real.
 
 #smallbusiness #voiceagent #websitedesign #entrepreneur #automation`;
 
-const UNV_IG_STORY = `We built something for you. No, really. For you. 🥂 Sixty seconds → your website, your voice agent, your command center. Working demos, free. Sticker link → modernmustardseed.com/demos`;
+const UNV_IG_STORY = `We built something for you. No, really. For you. 🥂 Sixty seconds → your website and your voice agent. Working demos, free. Sticker link → modernmustardseed.com/demos`;
 
 const UNV_CHECKLIST = [
   { id: 'cell', label: 'Cell A (Meta): objective Traffic (switch to Conversions once the pixel is live). Budget $15/day. Learn More button → the demos UTM link above. Paste Copy Variant 1 (the unveiling story).' },
@@ -502,7 +502,7 @@ const UR_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medi
 
 const UR_COPY_A = `Tonight's tasting menu was made for one table. Yours.
 
-Tell us about your restaurant (60 seconds, that is the whole form) and we build your demos first: a website that makes people hungry, an AI host that answers every call and books every table even during the dinner rush, and a command center that runs the house. Your restaurant's name on all three. Free to see working.
+Tell us about your restaurant (60 seconds, that is the whole form) and we build your demos first: a website that makes people hungry, and an AI host that answers every call and books every table even during the dinner rush. Your restaurant's name on both. Free to see working.
 
 If you love them, we make them real. If not, dinner was on us.
 
@@ -510,14 +510,14 @@ Your table is already set.`;
 
 const UR_COPY_B = `Friday night. Every table full. The phone ringing into nothing.
 
-Every missed call is a four-top eating somewhere else right now. So before you pay us anything, we build your fix and let you taste it: your website, your AI host answering a real call for YOUR restaurant, your command center with the whole house in it.
+Every missed call is a four-top eating somewhere else right now. So before you pay us anything, we build your fix and let you taste it: your website, and your AI host answering a real call for YOUR restaurant.
 
 Sixty seconds to tell us about your place. The demos are on the house.
 
 See them working. Then make them real.`;
 
 const UR_HEADLINE = 'We build yours first. On the house.';
-const UR_DESCRIPTION = 'A website, an AI host, and a command center, built for your restaurant before you pay.';
+const UR_DESCRIPTION = 'A website and an AI host, built for your restaurant before you pay.';
 
 const UR_CUTS = [
   { file: '/ads/unveiling-rest-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
@@ -544,7 +544,7 @@ const UF_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medi
 
 const UF_COPY_A = `We climbed onto the roof for this one.
 
-Tell us about your roofing company (60 seconds, that is the whole form) and we build your demos first: a website that wins the click before your competitor's does, a voice agent that catches every call while your hands are full of shingles, and a command center that runs the crew: estimates, jobs, the money. Your company's name on all three. Free to see working.
+Tell us about your roofing company (60 seconds, that is the whole form) and we build your demos first: a website that wins the click before your competitor's does, and a voice agent that catches every call while your hands are full of shingles. Your company's name on both. Free to see working.
 
 Love them? We make them real. If not, it cost you a coffee break.
 
@@ -552,12 +552,12 @@ We left the ladder out for you.`;
 
 const UF_COPY_B = `You cannot answer the phone forty feet up a ladder. But somebody is calling a roofer right now.
 
-Whoever picks up first usually wins the job. So we built the fix, and we will build YOURS free before you pay a cent: your website, your voice agent answering a real call, your command center tracking every estimate and every dollar.
+Whoever picks up first usually wins the job. So we built the fix, and we will build YOURS free before you pay a cent: your website, and your voice agent answering a real call.
 
 Sixty seconds to tell us about your company. See your demos working, then make them real.`;
 
 const UF_HEADLINE = 'Every call caught. Even on the roof.';
-const UF_DESCRIPTION = 'A website, a voice agent, and a command center, built for your roofing company before you pay.';
+const UF_DESCRIPTION = 'A website and a voice agent, built for your roofing company before you pay.';
 
 const UF_CUTS = [
   { file: '/ads/unveiling-roof-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
@@ -584,7 +584,7 @@ const BR_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medi
 
 const BR_COPY_A = `Captain's log: the owner is still answering his own phone, patching his own website at midnight, and running the books from memory.
 
-There is a better way to fly. Tell us about your business (sixty seconds, that is the whole form) and we build your demos first: a website worth putting on the big screen, a voice agent that answers every hail (day, night, or warp speed), and a command center that runs the whole business from one chair.
+There is a better way to fly. Tell us about your business (sixty seconds, that is the whole form) and we build your demos first: a website worth putting on the big screen, and a voice agent that answers every hail, day, night, or warp speed.
 
 All three. Free. Working. Before you pay a cent.
 
@@ -592,12 +592,12 @@ Set a course. Your bridge is waiting.`;
 
 const BR_COPY_B = `Every great captain has a crew. You have been flying solo.
 
-Modern Mustard Seed builds yours: a website that sells while you sleep, a voice agent that never leaves its post, and a command center that puts jobs, orders, and money on one screen. We build all three for your business first, free, and you see them working before any money changes hands.
+Modern Mustard Seed builds yours: a website that sells while you sleep, and a voice agent that never leaves its post. We build both for your business first, free, and you see them working before any money changes hands.
 
 Take the bridge. It takes sixty seconds.`;
 
 const BR_HEADLINE = 'Take the bridge of your business.';
-const BR_DESCRIPTION = 'A website, a voice agent, and a command center. Built free first, for any business.';
+const BR_DESCRIPTION = 'A website and a voice agent. Built free first, for any business.';
 
 const BR_CUTS = [
   { file: '/ads/bridge-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
@@ -614,7 +614,7 @@ Chiseling the website by hand. Answering every call themselves. Keeping the numb
 
 It is not the stone age anymore.
 
-Tell us about your business (sixty seconds, that is the whole form) and we build your demos first: a website that sells while you sleep, a voice agent that answers every call day or night, and a command center that runs the whole thing from one screen.
+Tell us about your business (sixty seconds, that is the whole form) and we build your demos first: a website that sells while you sleep, and a voice agent that answers every call, day or night.
 
 All three. Real. Working. Before you pay a cent.
 
@@ -624,12 +624,12 @@ const ST_COPY_B = `You did not open a business to be the website guy, the recept
 
 That is the old way. It is slow, it is manual, and it is costing you the evenings you started this thing to have.
 
-Modern Mustard Seed builds you three things and builds them before you pay anything: the website, the voice agent that never misses a call, and the command center that puts jobs, orders, and money on one screen.
+Modern Mustard Seed builds you two things and builds them before you pay anything: the website, and the voice agent that never misses a call.
 
 One little seed, and the whole thing rebuilds itself. Sixty seconds to start.`;
 
 const ST_HEADLINE = 'The stone age is over.';
-const ST_DESCRIPTION = 'A website, a voice agent, and a command center. Built free first, for any business.';
+const ST_DESCRIPTION = 'A website and a voice agent. Built free first, for any business.';
 
 const ST_CUTS = [
   { file: '/ads/stone-age-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
@@ -662,7 +662,6 @@ We build you three things, and we build them before you pay us anything:
 
 1. A website that actually sells for you
 2. A voice agent that answers every call, day or night
-3. A command center that runs the whole business from one screen
 
 Real, working, and yours to look at first. Telling us about your business takes about sixty seconds.
 
@@ -670,13 +669,13 @@ The future is already here. Come see it: modernmustardseed.com/demos`;
 
 const ST_POST_IG = `One seed. The whole thing rebuilds itself.
 
-Your website, your voice agent, your command center. We build all three before you pay a cent, then you decide.
+Your website and your voice agent. We build both before you pay a cent, then you decide.
 
 Sixty seconds to start. Link in bio.
 
 #smallbusiness #aiforbusiness #businessowner #automation #modernmustardseed`;
 
-const ST_POST_STORY = 'The stone age is over. See your three demos free → modernmustardseed.com/demos';
+const ST_POST_STORY = 'The stone age is over. See your demos free → modernmustardseed.com/demos';
 
 /* ===================== Campaign 18: The Answer Machine ===================== */
 
@@ -688,7 +687,7 @@ I miss calls. Nobody can find me online. I am doing paperwork at midnight.
 
 So we stopped handing out advice about it and built the machine that answers all three.
 
-A website that sells while you sleep. An AI receptionist that answers every call, day or night. A command center that runs the whole business from one screen.
+A website that sells while you sleep. An AI receptionist that answers every call, day or night.
 
 Tell us about your business (sixty seconds, that is the entire form) and we build all three of yours first. Real, working, and yours to look at before you pay anything.
 
@@ -700,12 +699,12 @@ Odds are it was a call you never got to, a customer who could not find you, and 
 
 Every consultant in the world will tell you that. None of them will fix it.
 
-We build the fix and hand it to you first: your website, your AI receptionist, and your command center, all three built for your actual business before you pay a cent.
+We build the fix and hand it to you first: your website and your AI receptionist, both built for your actual business before you pay a cent.
 
 Sixty seconds to start. Then you decide.`;
 
 const AM_HEADLINE = 'You don’t need advice. You need the answer.';
-const AM_DESCRIPTION = 'A website, an AI receptionist, and a command center. All three built free before you pay.';
+const AM_DESCRIPTION = 'A website and an AI receptionist. Both built free before you pay.';
 
 const AM_CUTS = [
   { file: '/ads/answer-machine-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
@@ -736,7 +735,7 @@ const AM_POST_FB = `Every small business owner tells us the same three things.
 
 So we stopped handing out advice about it and built the machine that answers all three:
 
-A website that sells while you sleep. An AI receptionist that answers every call, day or night. A command center that runs the whole business from one screen.
+A website that sells while you sleep. An AI receptionist that answers every call, day or night.
 
 Here is the part people do not believe: we build all three for your business before you pay us anything. Telling us about your business takes about sixty seconds.
 
@@ -764,20 +763,20 @@ Ours takes you for a drive.
 
 Mr. and Mrs. Mustard ride the lake road past the cherry orchards, plant one seed at the ranch, and a tree grows tall enough for every bird to come home. That is the whole business plan, on one page, out loud (the site literally narrates itself).
 
-The same crew that built that page builds websites that talk, voice agents that answer every call, and command centers that run the whole business.
+The same crew that built that page builds websites that talk and voice agents that answer every call.
 
 Take the scenic route. It ends at your front door.`;
 
 const SR_COPY_B = `We rebuilt our own homepage as a drive around Flathead Lake, with a narrator, a red convertible, and a tree full of birds.
 
-Why show you that? Because it is the exact same build we do for businesses like yours: a website that talks, a voice agent that answers, and a command center that runs it all.
+Why show you that? Because it is the exact same build we do for businesses like yours: a website that talks and a voice agent that answers.
 
 If a page can drive you around a lake, it can certainly answer your customers at midnight.
 
 Come for a drive. Stay for the demo, built free before you pay anything.`;
 
 const SR_HEADLINE = 'This is the scenic route. It ends at your front door.';
-const SR_DESCRIPTION = 'A website that talks, a voice agent that answers, and a command center. See the drive.';
+const SR_DESCRIPTION = 'A website that talks and a voice agent that answers. See the drive.';
 
 const SR_CUTS = [
   { file: '/ads/scenic-route-4x5.mp4', label: '4:5 — Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
@@ -803,7 +802,7 @@ A red convertible. The cherry orchards. One seed planted at the ranch, and a tre
 
 It narrates itself out loud as you scroll (really, turn your sound on), and at the end, our AI answers any question you have, live.
 
-That is what we do for a living: websites that talk, voice agents that answer every call, and command centers that run the whole business.
+That is what we do for a living: websites that talk and voice agents that answer every call.
 
 Take the scenic route → modernmustardseed.com`;
 
@@ -823,7 +822,7 @@ const SW_LANDING = 'https://modernmustardseed.com/demos?utm_source=meta&utm_medi
 
 const SW_COPY_A = `Our website narrates itself out loud. That is the least interesting thing about it.
 
-Because at the end of the drive you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the forge while you are still talking: your own voice agent, your own website, your own command center.
+Because at the end of the drive you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the forge while you are still talking: your own voice agent and your own website.
 
 Free demos, in your inbox within the hour. Love them? Order right from the page.
 
@@ -831,12 +830,12 @@ The site talks. The agent builds. Say whaaa.`;
 
 const SW_COPY_B = `Most AI assistants answer questions.
 
-Ours takes your details on the phone and BUILDS: a voice agent that answers as your business, a website designed from scratch, and a command center with your name on the door. Free, in your inbox within the hour, yours to keep or toss.
+Ours takes your details on the phone and BUILDS: a voice agent that answers as your business and a website designed from scratch, both with your name on them. Free, in your inbox within the hour, yours to keep or toss.
 
 Watch the film, then go say hi. He picks up every time.`;
 
 const SW_HEADLINE = 'The site talks. The agent builds.';
-const SW_DESCRIPTION = 'Tell our AI your trade. Your voice agent, website, and command center land in your inbox within the hour. Free.';
+const SW_DESCRIPTION = 'Tell our AI your trade. Your voice agent and your website land in your inbox within the hour. Free.';
 
 const SW_CUTS = [
   { file: '/ads/say-whaa-16x9.mp4', label: '16:9 — In-stream + site', note: 'The full film: Ava drives, Mr. Mustard forges. Two voices, real product.' },
@@ -856,7 +855,7 @@ const SW_CHECKLIST = [
 
 const SW_POST_FB = `Our website reads itself to you out loud while you scroll. And that is the least interesting thing about it.
 
-Because at the end of the drive, you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the forge while you are still on the line: your own voice agent, your own website, your own command center. Free, in your inbox within the hour.
+Because at the end of the drive, you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the forge while you are still on the line: your own voice agent and your own website. Free, in your inbox within the hour.
 
 The site talks. The agent builds. Say whaaa.
 
@@ -864,7 +863,7 @@ Take the drive → modernmustardseed.com`;
 
 const SW_POST_IG = `The site talks. The agent builds.
 
-Tell our AI your trade. Your own voice agent, website, and command center land in your inbox within the hour. Free.
+Tell our AI your trade. Your own voice agent and your own website land in your inbox within the hour. Free.
 
 Turn your sound on for this one. Link in bio.
 
@@ -2205,9 +2204,9 @@ export default function AdsPlaybook() {
               &ldquo;The Unveiling&rdquo; <span className="italic text-[#F5B700]">Mr. &amp; Mrs. Mustard host the gallery</span>
             </h2>
             <p className="text-white/75 mt-3 max-w-3xl font-sans">
-              The front door of the demo machine. Mr. and Mrs. Mustard, in black tie, unveil three exhibits in an
-              exquisite private gallery: your website, your voice agent, and your command center. The pitch is
-              the funnel&rsquo;s actual promise, we build all three for you first, real and working and free, and you
+              The front door of the demo machine. Mr. and Mrs. Mustard, in black tie, unveil two exhibits in an
+              exquisite private gallery: your website and your voice agent. The pitch is
+              the funnel&rsquo;s actual promise, we build both for you first, real and working and free, and you
               only pay to make them real. One short form on /demos forges the whole suite. One traffic cell at
               $15/day, judged on cost per forged demo. Runs on Meta and, via the 16:9 cut, on Google / YouTube.
             </p>
@@ -2300,9 +2299,8 @@ export default function AdsPlaybook() {
             </h2>
             <p className="text-white/75 mt-3 max-w-3xl font-sans">
               The gallery walks into the dining room. Mr. Mustard in chef whites and Mrs. Mustard in her hostess
-              apron lift silver cloches off three courses in a candlelit dining room after close: the restaurant&rsquo;s
-              website, an AI host that answers and books through the dinner rush, and the command center that runs
-              the house. Same funnel promise, built free first, and the closing line writes itself: your table is
+              apron lift silver cloches off two courses in a candlelit dining room after close: the restaurant&rsquo;s
+              website, and an AI host that answers and books through the dinner rush. Same funnel promise, built free first, and the closing line writes itself: your table is
               already set. One traffic cell at $10/day into /demos, judged on cost per forged demo.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
@@ -2379,10 +2377,9 @@ export default function AdsPlaybook() {
               &ldquo;The Unveiling: Roofers&rdquo; <span className="italic text-[#F5B700]">the rooftop reveal</span>
             </h2>
             <p className="text-white/75 mt-3 max-w-3xl font-sans">
-              The unveiling climbs onto the roof. Hard hats, tool belts, a shingle ridge at sunrise, and three
-              reveals under canvas tarps: the company&rsquo;s website, a voice agent that catches every call while
-              they are forty feet up a ladder, and the command center that runs the crew (estimates, jobs, the
-              money). Ends on a thermos toast and &ldquo;we left the ladder out for you.&rdquo; One traffic cell at $10/day
+              The unveiling climbs onto the roof. Hard hats, tool belts, a shingle ridge at sunrise, and two
+              reveals under canvas tarps: the company&rsquo;s website, and a voice agent that catches every call
+              while they are forty feet up a ladder. Ends on a thermos toast and &ldquo;we left the ladder out for you.&rdquo; One traffic cell at $10/day
               into /demos, judged on cost per forged demo.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
@@ -2461,8 +2458,8 @@ export default function AdsPlaybook() {
             <p className="text-white/75 mt-3 max-w-3xl font-sans">
               The nostalgia spot. Captain Mr. Mustard and Mrs. Mustard on the bridge of an original retro
               starship (1960s jewel-button consoles, a captain&rsquo;s chair, a warp-streak finale, and zero
-              franchise IP): the website goes up on the big screen, the voice agent answers every hail, and
-              the command center IS the bridge. Built to catch the eye of the guy who grew up on space
+              franchise IP): the website goes up on the big screen and the voice agent answers every hail
+              from the captain&rsquo;s chair. Built to catch the eye of the guy who grew up on space
               adventures and now owns a business. Same demo-funnel promise, all built free first. One traffic
               cell at $10/day into /demos as a CHALLENGER to Campaign 12, judged on cost per forged demo.
             </p>
@@ -2543,8 +2540,8 @@ export default function AdsPlaybook() {
               The era spot. Mr. Mustard chisels his own website by hand in a torchlit rock workshop, answers
               his own stone horn, and looks exactly like every owner doing it the hard way. Then he presses a
               single glowing seed and the whole world rebuilds around him in one unbroken shot: the cave
-              dissolves into a bright sky city where the website floats, the voice agent answers every call,
-              and the command center runs the business. Universal gag, no franchise IP, and the transformation
+              dissolves into a bright sky city where the website floats and the voice agent answers every
+              call. Universal gag, no franchise IP, and the transformation
               at 0:09 is the scroll-stopper. One cell at $15/day into /demos.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
@@ -3106,7 +3103,7 @@ export default function AdsPlaybook() {
             <p className="text-white/75 mt-3 max-w-3xl font-sans">
               A screen film of the real thing: Ava drives the journey out loud, hands the visitor to Mr.
               Mustard at the four doors, and he makes the offer that ends the ad market: tell me your trade
-              and your email, and I fire the forge while we talk. Voice agent, website, command center, in
+              and your email, and I fire the forge while we talk. Voice agent and website, in
               your inbox within the hour, order right from the page. One cell at $10/day into /demos.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">

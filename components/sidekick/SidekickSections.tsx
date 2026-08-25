@@ -48,53 +48,54 @@ export function HowItWorks() {
   );
 }
 
-export function FreeCommandCenter() {
-  const os = DEMO_PRODUCTS.os;
+/**
+ * ⚠️ THIS SECTION USED TO BE "FREE COMMAND CENTER."
+ *
+ * It stamped a struck-through price under "Free with your Voice Agent," which
+ * was the pre-2026-08-13 rule, retired twice over. Sarah took the command
+ * center off the offer entirely on 2026-08-22 and said it again on 2026-08-25:
+ * "I am not pushing command center anywhere." It is still sold on its own page
+ * and its own pay link; it is simply never bundled, never stamped free, and
+ * never suggested next to anything.
+ *
+ * What a voice-agent visitor actually needs next is the website that gives him
+ * a home, which is The Talking Website. That is what this beat sells now.
+ */
+export function GiveHimAHome() {
+  const site = DEMO_PRODUCTS.site;
   return (
-    <section className="py-16 md:py-24" aria-labelledby="freecc-heading">
+    <section className="py-16 md:py-24" aria-labelledby="home-heading">
       <div className="max-w-5xl mx-auto px-5">
-        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3 text-center">[ Comes with a free command center ]</p>
-        <h2 id="freecc-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
-          The calls he catches, on one board. Free.
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3 text-center">[ Give him a home ]</p>
+        <h2 id="home-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
+          One brain. The page and the phone.
         </h2>
         <p className="font-body text-[#161616]/70 text-center max-w-2xl mx-auto mt-4 leading-relaxed">
-          Every call your Voice Agent answers lands transcribed on your Business Command Center, with the caller already
-          filed as a lead. That back office is {formatUsd(os.monthlyCents)}/mo on its own, and free with your
-          voice agent. Add a website and you have The Talking Website: one brain answering the page and the phone.
+          Your Voice Agent answers the phone. Your website answers everybody who never picks one up. Built together off
+          one brain, the answer a visitor reads is the answer a caller hears, and the pair costs less than the two
+          apart. That is The Talking Website.
         </p>
 
-        {/* The value, made plain */}
-        <div className="mt-8 flex justify-center">
-          <div className="inline-flex flex-wrap items-center justify-center gap-3 rounded-2xl border-2 border-[#161616] bg-[#161616] px-6 py-4 shadow-[6px_6px_0_0_#F5B700]">
-            <span className="font-display italic font-black text-lg text-[#FBF6EA]">Business Command Center</span>
-            {/* /45 cream on ink measures ~4.35:1 at 15px bold, just under AA.
-                /60 stays visually secondary and clears the bar. */}
-            <span className="font-mono font-bold text-[15px] text-[#FBF6EA]/60 line-through">{formatUsd(os.monthlyCents)}/mo</span>
-            <span className="font-mono font-bold text-[12px] uppercase tracking-[0.12em] text-[#161616] bg-[#F5B700] rounded-full px-3 py-1">Free with your Voice Agent</span>
-          </div>
-        </div>
-
-        {/* Trio cross-links: complete the flagship set. */}
         <div className="grid sm:grid-cols-2 gap-5 mt-10">
-          <Link
-            href="/command-center"
-            className="group flex flex-col rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#F5B700] transition-all"
-          >
-            <span className="text-2xl leading-none" aria-hidden="true">⚙</span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">Your free back office</span>
-            <h3 className="font-display italic font-black text-xl text-[#161616] mt-1">The Command Center</h3>
-            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Every call transcribed, your customers, reviews, and money, on one board wired to your Voice Agent.</p>
-            <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span></span>
-          </Link>
           <Link
             href="/websites"
             className="group flex flex-col rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#F5B700] transition-all"
           >
             <span className="text-2xl leading-none" aria-hidden="true">🌐</span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">Give him a home</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">From {formatUsd(site.monthlyCents)}/mo</span>
             <h3 className="font-display italic font-black text-xl text-[#161616] mt-1">A Website That Works</h3>
-            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Your Voice Agent answers right on a site built to capture the lead. Website plus voice agent plus the free command center is The Talking Website, the first of its kind.</p>
-            <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span></span>
+            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Designed from scratch for your trade and your town, built to capture the lead your Voice Agent then answers.</p>
+            <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">&rarr;</span></span>
+          </Link>
+          <Link
+            href="/talking-website"
+            className="group flex flex-col rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#F5B700] transition-all"
+          >
+            <span className="text-2xl leading-none" aria-hidden="true">&#9889;</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">The pair, as one thing</span>
+            <h3 className="font-display italic font-black text-xl text-[#161616] mt-1">The Talking Website</h3>
+            <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Site and voice agent forged together off one brain, for less than buying the two of them apart.</p>
+            <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">&rarr;</span></span>
           </Link>
         </div>
       </div>
