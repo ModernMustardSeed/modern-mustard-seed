@@ -252,7 +252,7 @@ function signature(_name?: string, opts?: { ranchLine?: boolean }): string {
   return `<tr><td style="padding:36px 44px 0">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
       <td width="114" style="width:114px;vertical-align:middle">
-        <img src="${SITE}/brand/sig-sarah.png?v=2026-08-25b" width="114" height="114" alt="" style="display:block;border:0;outline:none;text-decoration:none" />
+        <img src="${SITE}/brand/sig-sarah.png?v=2026-08-25c" width="114" height="114" alt="" style="display:block;border:0;outline:none;text-decoration:none" />
       </td>
       <td style="vertical-align:middle;padding-left:20px">
         <img src="${SITE}/brand/sig-name.png" width="339" height="46" alt="Sarah Scarano" style="display:block;border:0;outline:none;text-decoration:none;max-width:339px" />
